@@ -16,6 +16,7 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
+import {getDataLayerIdentity} from 'src/cloud/utils/experiments'
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 const CARDINALITY_LIMIT = 1_000_000
@@ -48,8 +49,12 @@ export const Credit250PAYGConversion: FC = () => {
               <CloudUpgradeButton
                 className="credit-250-conversion-upgrade--button"
                 metric={() => {
-                  event('credit-250 pay-as-you conversion upgrade', {
+                  const identity = getDataLayerIdentity()
+                  event(`billing.conversion.payg.upgrade.credit-250`, {
                     location: 'billing',
+                    ...identity,
+                    experimentId: CREDIT_250_EXPERIMENT_ID,
+                    experimentVariantId: '1',
                   })
                 }}
                 showPromoMessage={false}

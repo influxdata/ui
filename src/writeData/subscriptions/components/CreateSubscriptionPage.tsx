@@ -38,7 +38,10 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 import {getAll} from 'src/resources/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+import {
+  getDataLayerIdentity,
+  getExperimentVariantId,
+} from 'src/cloud/utils/experiments'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
@@ -167,11 +170,21 @@ const CreateSubscriptionPage: FC = () => {
               >
                 <CloudUpgradeButton
                   metric={() => {
+                    const experimentVariantId = getExperimentVariantId(
+                      CREDIT_250_EXPERIMENT_ID
+                    )
+                    const identity = getDataLayerIdentity()
                     event(
                       isFlagEnabled('credit250Experiment') &&
-                        getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
-                        ? 'credit-250 create subscription upgrade'
-                        : 'create subscription upgrade'
+                        experimentVariantId === '1'
+                        ? `subscriptions.create.upgrade.credit-250`
+                        : `subscriptions.create.upgrade`,
+                      {
+                        location: 'subscriptions create',
+                        ...identity,
+                        experimentId: CREDIT_250_EXPERIMENT_ID,
+                        experimentVariantId,
+                      }
                     )
                   }}
                 />

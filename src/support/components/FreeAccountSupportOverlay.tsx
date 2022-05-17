@@ -11,7 +11,10 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+import {
+  getDataLayerIdentity,
+  getExperimentVariantId,
+} from 'src/cloud/utils/experiments'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
@@ -72,11 +75,21 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
       <Overlay.Footer>
         <CloudUpgradeButton
           metric={() => {
+            const experimentVariantId = getExperimentVariantId(
+              CREDIT_250_EXPERIMENT_ID
+            )
+            const identity = getDataLayerIdentity()
             event(
               isFlagEnabled('credit250Experiment') &&
-                getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
-                ? 'credit-250 free account support upgrade'
-                : 'free account support upgrade'
+                experimentVariantId === '1'
+                ? `help-bar.overlay.free-account.upgrade.credit-250`
+                : `help-bar.overlay.free-account.upgrade`,
+              {
+                location: 'help bar',
+                ...identity,
+                experimentId: CREDIT_250_EXPERIMENT_ID,
+                experimentVariantId,
+              }
             )
           }}
         />

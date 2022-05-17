@@ -16,7 +16,10 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+import {
+  getDataLayerIdentity,
+  getExperimentVariantId,
+} from 'src/cloud/utils/experiments'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
@@ -66,12 +69,21 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
               size={ComponentSize.Large}
               className="upgrade-payg--button__asset-create"
               metric={() => {
+                const experimentVariantId = getExperimentVariantId(
+                  CREDIT_250_EXPERIMENT_ID
+                )
+                const identity = getDataLayerIdentity()
                 event(
                   isFlagEnabled('credit250Experiment') &&
-                    getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
-                    ? 'credit-250 asset limit overlay upgrade'
-                    : 'asset limit overlay upgrade',
-                  {asset: assetName}
+                    experimentVariantId === '1'
+                    ? `${assetName}.overlay.limit.upgrade.credit-250`
+                    : `${assetName}.overlay.limit.upgrade`,
+                  {
+                    asset: assetName,
+                    ...identity,
+                    experimentId: CREDIT_250_EXPERIMENT_ID,
+                    experimentVariantId,
+                  }
                 )
               }}
             />

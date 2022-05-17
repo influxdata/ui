@@ -33,7 +33,10 @@ import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+import {
+  getDataLayerIdentity,
+  getExperimentVariantId,
+} from 'src/cloud/utils/experiments'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
@@ -157,11 +160,21 @@ const ParsingForm: FC<Props> = ({
               <CloudUpgradeButton
                 className="create-parsing-form__upgrade-button"
                 metric={() => {
+                  const experimentVariantId = getExperimentVariantId(
+                    CREDIT_250_EXPERIMENT_ID
+                  )
+                  const identity = getDataLayerIdentity()
                   event(
                     isFlagEnabled('credit250Experiment') &&
-                      getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
-                      ? 'credit-250 parsing form upgrade'
-                      : 'parsing form upgrade'
+                      experimentVariantId === '1'
+                      ? `subscriptions.parsing-form.upgrade.credit-250`
+                      : `subscriptions.parsing-form.upgrade`,
+                    {
+                      location: 'subscriptions parsing form',
+                      ...identity,
+                      experimentId: CREDIT_250_EXPERIMENT_ID,
+                      experimentVariantId,
+                    }
                   )
                 }}
               />

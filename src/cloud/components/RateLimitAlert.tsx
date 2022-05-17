@@ -25,7 +25,10 @@ import {
 } from 'src/cloud/utils/limits'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+import {
+  getDataLayerIdentity,
+  getExperimentVariantId,
+} from 'src/cloud/utils/experiments'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -128,12 +131,20 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
       <CloudUpgradeButton
         className="upgrade-payg--button__header"
         metric={() => {
+          const experimentVariantId = getExperimentVariantId(
+            CREDIT_250_EXPERIMENT_ID
+          )
+          const identity = getDataLayerIdentity()
           event(
-            isFlagEnabled('credit250Experiment') &&
-              getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
-              ? 'credit-250 rate limit upgrade'
-              : 'rate limit upgrade',
-            {location}
+            isFlagEnabled('credit250Experiment') && experimentVariantId === '1'
+              ? `${location}.alert.upgrade.rate-limit.credit-250`
+              : `${location}.alert.upgrade.rate-limit`,
+            {
+              location,
+              ...identity,
+              experimentId: CREDIT_250_EXPERIMENT_ID,
+              experimentVariantId,
+            }
           )
         }}
       />

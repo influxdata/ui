@@ -18,7 +18,10 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+import {
+  getDataLayerIdentity,
+  getExperimentVariantId,
+} from 'src/cloud/utils/experiments'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -57,12 +60,21 @@ const AssetLimitAlert: FC<Props> = ({limitStatus, resourceName, className}) => {
                 buttonText={`Get more ${resourceName}`}
                 className="upgrade-payg--button__asset-alert"
                 metric={() => {
+                  const experimentVariantId = getExperimentVariantId(
+                    CREDIT_250_EXPERIMENT_ID
+                  )
+                  const identity = getDataLayerIdentity()
                   event(
                     isFlagEnabled('credit250Experiment') &&
-                      getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
-                      ? 'credit-250 asset limit alert upgrade'
-                      : 'asset limit alert upgrade',
-                    {asset: resourceName}
+                      experimentVariantId === '1'
+                      ? `${resourceName}.alert.limit.upgrade.credit-250`
+                      : `${resourceName}.alert.limit.upgrade`,
+                    {
+                      asset: resourceName,
+                      ...identity,
+                      experimentId: CREDIT_250_EXPERIMENT_ID,
+                      experimentVariantId,
+                    }
                   )
                 }}
               />

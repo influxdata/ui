@@ -7,30 +7,25 @@ import React, {
 } from 'react'
 import {EditorType} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
-
-export enum InjectionType {
-  OnOwnLine = 'onOwnLine',
-  SameLine = 'sameLine',
-}
-
-interface InjectionPosition {
-  row: number
-  column: number
-  shouldStartWithNewLine: boolean
-  shouldEndInNewLine: boolean
-}
+import {
+  InjectionType,
+  calcInjectionPosition,
+  moveCursorAndTriggerSuggest,
+} from 'src/shared/utils/fluxFunctions'
+export {InjectionType, InjectionPosition} from 'src/shared/utils/fluxFunctions'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export interface InjectionOptions {
   header?: string | null
   text: string
   type: InjectionType
+  triggerSuggest?: boolean
 }
 
 export interface EditorContextType {
   editor: EditorType | null
   setEditor: (editor: EditorType) => void
   inject: (options: InjectionOptions) => void
-  calcInjectiontPosition: (type: InjectionType) => Partial<InjectionPosition>
   updateText: (t: string) => void
 }
 
@@ -38,7 +33,6 @@ const DEFAULT_CONTEXT: EditorContextType = {
   editor: null,
   setEditor: _ => {},
   inject: _ => {},
-  calcInjectiontPosition: _ => ({}),
   updateText: _ => {},
 }
 
@@ -62,88 +56,25 @@ export const EditorProvider: FC = ({children}) => {
     [queries, activeQuery]
   )
 
-  const calcInjectiontPosition = useCallback(
-    (type: InjectionType): Partial<InjectionPosition> => {
-      if (!editor) {
-        return {}
-      }
-      const {lineNumber, column: col} = editor.getPosition()
-      let row = lineNumber
-      let column = col
-
-      const queryText = editor.getModel().getValue()
-      const split = queryText.split('\n')
-      const getCurrentLineText = () => {
-        // row is not zero indexed in monaco editor. 1..N
-        return (split[row - 1] || split[split.length - 1]).trimEnd()
-      }
-
-      let currentLineText = getCurrentLineText()
-      // column is not zero indexed in monnao editor. 1..N
-      let textAheadOfCursor = currentLineText.slice(0, column - 1).trim()
-      let textBehindCursor = currentLineText.slice(column - 1).trim()
-
-      // if cursor has text in front of it, and should be onOwnRow
-      if (type == InjectionType.OnOwnLine && textAheadOfCursor) {
-        row++
-        column = 1
-      }
-      // edge case for when user toggles to the script editor
-      // this defaults the cursor to the initial position (top-left, 1:1 position)
-      const [currentRange] = editor.getVisibleRanges()
-      if (row === 1 && column === 1) {
-        row = currentRange.endLineNumber + 1
-      }
-
-      if (row !== lineNumber) {
-        currentLineText = getCurrentLineText()
-        textAheadOfCursor = currentLineText.slice(0, column - 1).trim()
-        textBehindCursor = currentLineText.slice(column - 1).trim()
-      }
-
-      let shouldEndInNewLine = false
-      // if cursor has text behind it, and should be onOwnRow
-      if (type == InjectionType.OnOwnLine && textBehindCursor) {
-        shouldEndInNewLine = true
-      }
-
-      const cursorInMiddleOfText = textAheadOfCursor && textBehindCursor
-      if (type == InjectionType.OnOwnLine && cursorInMiddleOfText) {
-        row++
-        column = 1
-        shouldEndInNewLine = true
-      }
-
-      // if we asked to insert on a row out-of-range
-      // then need to manually append newline to front of row
-      const shouldStartWithNewLine = row > currentRange.endLineNumber
-
-      return {row, column, shouldStartWithNewLine, shouldEndInNewLine}
-    },
-    [editor]
-  )
-
   const inject = useCallback(
     (options: InjectionOptions) => {
       if (!editor) {
         return {}
       }
 
-      const {header, text: initT, type} = options
+      const {header, text: initT, type, triggerSuggest} = options
+      const injectionPosition = calcInjectionPosition(editor, type)
       const {
         row,
         column: initC,
         shouldStartWithNewLine,
         shouldEndInNewLine,
-      } = calcInjectiontPosition(type)
-      let text = ''
+      } = injectionPosition
 
+      let text = initT.trimRight()
       if (shouldStartWithNewLine) {
-        text = `\n${initT}`
-      } else {
-        text = initT
+        text = `\n${text}`
       }
-
       if (shouldEndInNewLine) {
         text = `${text}\n`
       }
@@ -157,13 +88,13 @@ export const EditorProvider: FC = ({children}) => {
         },
       ]
 
-      if (
+      const addHeader =
         header &&
         !editor
           .getModel()
           .getValue()
           .includes(header)
-      ) {
+      if (addHeader) {
         edits.unshift({
           range: new monaco.Range(1, 1, 1, 1),
           text: `${header}\n`,
@@ -172,8 +103,17 @@ export const EditorProvider: FC = ({children}) => {
 
       editor.executeEdits('', edits)
       updateText(editor.getValue())
+
+      if (isFlagEnabled('fluxDynamicDocs') && triggerSuggest) {
+        moveCursorAndTriggerSuggest(
+          editor,
+          injectionPosition,
+          addHeader,
+          text.length
+        )
+      }
     },
-    [editor, calcInjectiontPosition, updateText]
+    [editor, updateText]
   )
 
   return (
@@ -182,7 +122,6 @@ export const EditorProvider: FC = ({children}) => {
         editor,
         setEditor,
         inject,
-        calcInjectiontPosition,
         updateText,
       }}
     >

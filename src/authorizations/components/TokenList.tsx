@@ -15,6 +15,7 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
+import {SelectionState} from './TokensTab'
 
 type SortKey = keyof Authorization
 
@@ -29,13 +30,15 @@ interface Props {
   sortType: SortTypes
   tokenCount: number
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
-  selectedTokens: Authorization[]
-  handleTokenCardCheckboxClick: (tokenId: Authorization) => void
+  batchSelectionState: SelectionState
+  updateNumberOfTokensSelected: (numberOfTokensSelected: number) => void
 }
 
 interface State {
   isTokenOverlayVisible: boolean
   authInView: Authorization
+
+  selectedTokens: Authorization[]
 }
 
 export default class TokenList extends PureComponent<Props, State> {
@@ -53,6 +56,7 @@ export default class TokenList extends PureComponent<Props, State> {
     this.state = {
       isTokenOverlayVisible: false,
       authInView: null,
+      selectedTokens: [],
     }
   }
 
@@ -84,6 +88,15 @@ export default class TokenList extends PureComponent<Props, State> {
       )
       this.setState({authInView})
     }
+
+    const {batchSelectionState: prevBatchSelectionState} = prevProps
+    const {batchSelectionState} = this.props
+
+    if (!isEqual(prevBatchSelectionState, batchSelectionState)) {
+      this.updateSelectedTokens()
+    }
+
+    this.props.updateNumberOfTokensSelected(this.state.selectedTokens.length)
   }
 
   public render() {
@@ -159,16 +172,58 @@ export default class TokenList extends PureComponent<Props, State> {
             key={auth.id}
             auth={auth}
             onClickDescription={this.handleClickDescription}
-            handleChangeSelectedTokens={this.props.handleTokenCardCheckboxClick}
-            cardSelected={this.props.selectedTokens.includes(auth)}
+            handleChangeSelectedTokens={this.handleTokenCardCheckboxClick}
+            cardSelected={this.state.selectedTokens.includes(auth)}
           />
         )
       }
     }
-    console.log('bam')
-    // this.props.setTokensStartAndStopIndex(startIndex, endIndex, sortedAuths)
 
     return paginatedAuths
+  }
+
+  private handleTokenCardCheckboxClick = (token: Authorization) => {
+    const tokenAlreadySelected = this.state.selectedTokens.includes(token)
+
+    if (tokenAlreadySelected) {
+      const updatedTokensList = this.state.selectedTokens.filter(
+        tokenA => tokenA !== token
+      )
+      this.setState({
+        selectedTokens: updatedTokensList,
+      })
+    } else {
+      this.setState({selectedTokens: [...this.state.selectedTokens, token]})
+    }
+  }
+
+  private updateSelectedTokens = () => {
+    const {auths, sortDirection, sortKey, sortType} = this.props
+    const sortedAuths = this.memGetSortedResources(
+      auths,
+      sortKey,
+      sortDirection,
+      sortType
+    )
+
+    const startIndex = this.rowsPerPage * Math.max(this.currentPage - 1, 0)
+    const endIndex = Math.min(
+      startIndex + this.rowsPerPage,
+      this.props.tokenCount
+    )
+
+    const currentSelectionState = this.props.batchSelectionState
+
+    switch (currentSelectionState) {
+      case SelectionState.NoneSelected:
+        this.setState({selectedTokens: []})
+        break
+      case SelectionState.SomeSelected:
+        break
+      case SelectionState.AllSelected:
+        this.setState({selectedTokens: sortedAuths.slice(startIndex, endIndex)})
+        break
+    }
   }
 
   private handleDismissOverlay = () => {

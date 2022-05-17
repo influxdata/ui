@@ -69,7 +69,7 @@ class TokensRow extends PureComponent<Props> {
         margin={ComponentSize.Large}
         cardSelected={this.props.cardSelected}
         cardSelectable={true}
-        handleCardSelection={() => this.handleCardSelection(auth.id)}
+        handleCardSelection={() => this.handleCardSelection(auth)}
       >
         <FlexBox
           alignItems={AlignItems.FlexStart}

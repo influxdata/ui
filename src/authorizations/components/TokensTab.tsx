@@ -40,7 +40,7 @@ enum AuthSearchKeys {
   CreatedAt = 'createdAt',
 }
 
-enum SelectionState {
+export enum SelectionState {
   NoneSelected,
   SomeSelected,
   AllSelected,
@@ -51,8 +51,8 @@ interface State {
   sortKey: SortKey
   sortDirection: Sort
   sortType: SortTypes
-  selectedTokens?: Authorization[] // array of ID of tokens selected
-  batchSelectionState?: SelectionState
+  batchSelectionState: SelectionState
+  numberOfTokensSelected: number
 }
 
 interface StateProps {
@@ -79,8 +79,8 @@ class TokensTab extends PureComponent<Props, State> {
       sortKey: 'description',
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
-      selectedTokens: [],
       batchSelectionState: SelectionState.NoneSelected,
+      numberOfTokensSelected: 0,
     }
     this.paginationRef = createRef<HTMLDivElement>()
   }
@@ -114,7 +114,13 @@ class TokensTab extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {searchTerm, sortKey, sortDirection, sortType} = this.state
+    const {
+      searchTerm,
+      sortKey,
+      sortDirection,
+      sortType,
+      numberOfTokensSelected,
+    } = this.state
     const {tokens} = this.props
 
     const leftHeaderItems = (
@@ -132,21 +138,18 @@ class TokensTab extends PureComponent<Props, State> {
             marginLeft: '24px',
             marginRight: '24px',
           }}
-          onChange={() => {
-            return true
-          }}
         />
-        {this.state.selectedTokens.length > 0 && (
+        {numberOfTokensSelected > 0 && (
           <ConfirmationButton
             confirmationButtonText="Delete"
-            confirmationLabel="Deletes"
+            confirmationLabel={`Are you sure you want to delete the ${numberOfTokensSelected} selected API Token(s)?`}
             onConfirm={() => {}}
-            text="Delete selected"
+            text={`Delete ${numberOfTokensSelected} selected`}
             icon={IconFont.Trash_New}
             color={ComponentColor.Secondary}
           />
         )}
-        {this.state.selectedTokens.length === 0 && (
+        {numberOfTokensSelected <= 0 && (
           <>
             <SearchWidget
               searchTerm={searchTerm}
@@ -223,9 +226,9 @@ class TokensTab extends PureComponent<Props, State> {
                         sortDirection={sortDirection}
                         sortType={sortType}
                         onClickColumn={this.handleClickColumn}
-                        selectedTokens={this.state.selectedTokens}
-                        handleTokenCardCheckboxClick={
-                          this.handleTokenCardCheckboxClick
+                        batchSelectionState={this.state.batchSelectionState}
+                        updateNumberOfTokensSelected={
+                          this.handleNumberOfTokensSelected
                         }
                       />
                     )}
@@ -239,18 +242,8 @@ class TokensTab extends PureComponent<Props, State> {
     )
   }
 
-  private updateSelectedTokens = () => {
-    const currentSelectionState = this.state.batchSelectionState
-
-    switch (currentSelectionState) {
-      case SelectionState.NoneSelected:
-        this.setState({selectedTokens: []})
-        break
-      case SelectionState.SomeSelected:
-        break
-      case SelectionState.AllSelected:
-        break
-    }
+  private handleNumberOfTokensSelected = (numberOfTokensSelected: number) => {
+    this.setState({numberOfTokensSelected})
   }
 
   private changeBatchSelectionState = () => {
@@ -258,38 +251,14 @@ class TokensTab extends PureComponent<Props, State> {
 
     switch (currentSelectionState) {
       case SelectionState.NoneSelected:
-        this.setState(
-          {batchSelectionState: SelectionState.SomeSelected},
-          this.updateSelectedTokens
-        )
+        this.setState({batchSelectionState: SelectionState.AllSelected})
         break
       case SelectionState.SomeSelected:
-        this.setState(
-          {batchSelectionState: SelectionState.AllSelected},
-          this.updateSelectedTokens
-        )
+        this.setState({batchSelectionState: SelectionState.AllSelected})
         break
       case SelectionState.AllSelected:
-        this.setState(
-          {batchSelectionState: SelectionState.NoneSelected},
-          this.updateSelectedTokens
-        )
+        this.setState({batchSelectionState: SelectionState.NoneSelected})
         break
-    }
-  }
-
-  private handleTokenCardCheckboxClick = (tokenId: Authorization) => {
-    const tokenAlreadySelected = this.state.selectedTokens.includes(tokenId)
-
-    if (tokenAlreadySelected) {
-      const updatedTokensList = this.state.selectedTokens.filter(
-        token => token !== tokenId
-      )
-      this.setState({
-        selectedTokens: updatedTokensList,
-      })
-    } else {
-      this.setState({selectedTokens: [...this.state.selectedTokens, tokenId]})
     }
   }
 

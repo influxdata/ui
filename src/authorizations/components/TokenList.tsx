@@ -29,8 +29,8 @@ interface Props {
   sortType: SortTypes
   tokenCount: number
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
-  selectedTokens: string[]
-  handleChangeSelectedTokens: (tokenId: string) => void
+  selectedTokens: Authorization[]
+  handleChangeSelectedTokens: (tokenId: Authorization) => void
 }
 
 interface State {
@@ -160,11 +160,13 @@ export default class TokenList extends PureComponent<Props, State> {
             auth={auth}
             onClickDescription={this.handleClickDescription}
             handleChangeSelectedTokens={this.props.handleChangeSelectedTokens}
-            cardSelected={this.props.selectedTokens.includes(auth.id)}
+            cardSelected={this.props.selectedTokens.includes(auth)}
           />
         )
       }
     }
+    console.log('bam')
+    // this.props.setTokensStartAndStopIndex(startIndex, endIndex, sortedAuths)
 
     return paginatedAuths
   }

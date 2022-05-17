@@ -40,12 +40,19 @@ enum AuthSearchKeys {
   CreatedAt = 'createdAt',
 }
 
+enum SelectionState {
+  NoneSelected,
+  SomeSelected,
+  AllSelected,
+}
+
 interface State {
   searchTerm: string
   sortKey: SortKey
   sortDirection: Sort
   sortType: SortTypes
-  selectedTokens?: string[] // array of ID of tokens selected
+  selectedTokens?: Authorization[] // array of ID of tokens selected
+  selectionState?: SelectionState
 }
 
 interface StateProps {
@@ -73,6 +80,7 @@ class TokensTab extends PureComponent<Props, State> {
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
       selectedTokens: [],
+      selectionState: SelectionState.NoneSelected,
     }
     this.paginationRef = createRef<HTMLDivElement>()
   }
@@ -111,20 +119,51 @@ class TokensTab extends PureComponent<Props, State> {
 
     const leftHeaderItems = (
       <>
-        <SearchWidget
-          searchTerm={searchTerm}
-          placeholderText="Filter Tokens..."
-          onSearch={this.handleFilterUpdate}
-          testID="input-field--filter"
+        <Input
+          type={InputType.Checkbox}
+          checked={
+            this.state.selectionState === SelectionState.SomeSelected ||
+            this.state.selectionState === SelectionState.AllSelected
+          }
+          onCheckboxClick={this.changeSelectionState}
+          size={ComponentSize.ExtraSmall}
+          style={{
+            width: 'fit-content',
+            marginLeft: '24px',
+            marginRight: '24px',
+          }}
+          onChange={() => {
+            return true
+          }}
         />
-        <ResourceSortDropdown
-          resourceType={ResourceType.Authorizations}
-          sortDirection={sortDirection}
-          sortKey={sortKey}
-          sortType={sortType}
-          onSelect={this.handleSort}
-          width={238}
-        />
+        {this.state.selectedTokens.length > 0 && (
+          <ConfirmationButton
+            confirmationButtonText="Delete"
+            confirmationLabel="Deletes"
+            onConfirm={() => {}}
+            text="Delete selected"
+            icon={IconFont.Trash_New}
+            color={ComponentColor.Secondary}
+          />
+        )}
+        {this.state.selectedTokens.length === 0 && (
+          <>
+            <SearchWidget
+              searchTerm={searchTerm}
+              placeholderText="Filter Tokens..."
+              onSearch={this.handleFilterUpdate}
+              testID="input-field--filter"
+            />
+            <ResourceSortDropdown
+              resourceType={ResourceType.Authorizations}
+              sortDirection={sortDirection}
+              sortKey={sortKey}
+              sortType={sortType}
+              onSelect={this.handleSort}
+              width={238}
+            />
+          </>
+        )}
       </>
     )
 
@@ -146,7 +185,6 @@ class TokensTab extends PureComponent<Props, State> {
       )
     }
 
-    console.log(this.state.selectedTokens)
     return (
       <>
         {tokensBanner()}
@@ -168,22 +206,6 @@ class TokensTab extends PureComponent<Props, State> {
                     childrenRight={rightHeaderItems}
                     width={width}
                   />
-                  <Input
-                    type={InputType.Checkbox}
-                    checked={false}
-                    size={ComponentSize.ExtraSmall}
-                    style={{width: 'fit-content'}}
-                  />
-                  {this.state.selectedTokens.length > 0 && (
-                    <ConfirmationButton
-                      confirmationButtonText="Delete"
-                      confirmationLabel="Deletes"
-                      onConfirm={() => {}}
-                      text="Delete selected"
-                      icon={IconFont.Trash_New}
-                      color={ComponentColor.Secondary}
-                    />
-                  )}
                   <FilterAuthorizations
                     list={tokens}
                     searchTerm={searchTerm}
@@ -217,7 +239,46 @@ class TokensTab extends PureComponent<Props, State> {
     )
   }
 
-  private handleChangeSelectedTokens = (tokenId: string) => {
+  private changeTokenSelection = () => {
+    const currentSelectionState = this.state.selectionState
+
+    switch (currentSelectionState) {
+      case SelectionState.NoneSelected:
+        this.setState({selectedTokens: []})
+        break
+      case SelectionState.SomeSelected:
+        break
+      case SelectionState.AllSelected:
+        break
+    }
+  }
+
+  private changeSelectionState = () => {
+    const currentSelectionState = this.state.selectionState
+
+    switch (currentSelectionState) {
+      case SelectionState.NoneSelected:
+        this.setState(
+          {selectionState: SelectionState.SomeSelected},
+          this.changeTokenSelection
+        )
+        break
+      case SelectionState.SomeSelected:
+        this.setState(
+          {selectionState: SelectionState.AllSelected},
+          this.changeTokenSelection
+        )
+        break
+      case SelectionState.AllSelected:
+        this.setState(
+          {selectionState: SelectionState.NoneSelected},
+          this.changeTokenSelection
+        )
+        break
+    }
+  }
+
+  private handleChangeSelectedTokens = (tokenId: Authorization) => {
     const tokenAlreadySelected = this.state.selectedTokens.includes(tokenId)
 
     if (tokenAlreadySelected) {

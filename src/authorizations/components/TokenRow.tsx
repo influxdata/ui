@@ -44,7 +44,7 @@ import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   auth: Authorization
   onClickDescription: (authID: string) => void
-  handleChangeSelectedTokens: (tokenId: string) => void
+  handleChangeSelectedTokens: (token: Authorization) => void
   cardSelected: boolean
 }
 

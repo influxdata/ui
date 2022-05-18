@@ -40,12 +40,13 @@ import {
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {setCloneName} from 'src/utils/naming'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from '../../shared/utils/featureFlag'
 
 interface OwnProps {
   auth: Authorization
   onClickDescription: (authID: string) => void
-  tokenIsSelected: boolean
-  onCheckboxClick: (token: Authorization) => void
+  tokenIsSelected?: boolean
+  onCheckboxClick?: (token: Authorization) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -58,6 +59,7 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth, tokenIsSelected, onCheckboxClick} = this.props
     const date = new Date(auth.createdAt)
+    const enableBulkActionDelete = isFlagEnabled('bulkActionDelete')
 
     return (
       <ResourceCard
@@ -67,7 +69,7 @@ class TokensRow extends PureComponent<Props> {
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
-        cardSelectable={true}
+        cardSelectable={enableBulkActionDelete}
         cardSelected={tokenIsSelected}
         handleCardSelection={() => onCheckboxClick(auth)}
         id={auth.id}

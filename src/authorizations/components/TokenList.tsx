@@ -15,6 +15,7 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
+import {isFlagEnabled} from '../../shared/utils/featureFlag'
 
 type SortKey = keyof Authorization
 
@@ -29,10 +30,11 @@ interface Props {
   sortType: SortTypes
   tokenCount: number
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
-  setAllTokens: (sortedAuths: Authorization[]) => void
-  setTokensOnCurrentPage: (tokens: Authorization[]) => void
-  tokensSelectedForBatchOperation: Authorization[]
-  toggleTokenSelection: (token: Authorization) => void
+  // bulk action props
+  setAllTokens?: (sortedAuths: Authorization[]) => void
+  setTokensOnCurrentPage?: (tokens: Authorization[]) => void
+  tokensSelectedForBatchOperation?: Authorization[]
+  toggleTokenSelection?: (token: Authorization) => void
 }
 
 interface State {
@@ -49,6 +51,7 @@ export default class TokenList extends PureComponent<Props, State> {
   public currentPage: number = 1
   public rowsPerPage: number = 10
   public totalPages: number
+  private enableBulkActionDelete = isFlagEnabled('bulkActionDelete')
 
   constructor(props) {
     super(props)
@@ -70,7 +73,9 @@ export default class TokenList extends PureComponent<Props, State> {
     }
 
     // send the tokens info up once when the component finishes mounting
-    this.passTokensInformationToParent()
+    if (this.enableBulkActionDelete) {
+      this.passTokensInformationToParent()
+    }
   }
 
   public componentDidUpdate(prevProps) {
@@ -90,7 +95,9 @@ export default class TokenList extends PureComponent<Props, State> {
       this.setState({authInView})
 
       // send the tokens info up when new tokens are passed as props (e.g: search filter was used by the user)
-      this.passTokensInformationToParent()
+      if (this.enableBulkActionDelete) {
+        this.passTokensInformationToParent()
+      }
     }
   }
 
@@ -191,13 +198,21 @@ export default class TokenList extends PureComponent<Props, State> {
 
       if (auth) {
         paginatedAuths.push(
-          <TokenRow
-            key={auth.id}
-            auth={auth}
-            onClickDescription={this.handleClickDescription}
-            tokenIsSelected={tokensSelectedForBatchOperation.includes(auth)}
-            onCheckboxClick={this.handleTokenCardCheckboxClick}
-          />
+          this.enableBulkActionDelete ? (
+            <TokenRow
+              key={auth.id}
+              auth={auth}
+              onClickDescription={this.handleClickDescription}
+              tokenIsSelected={tokensSelectedForBatchOperation.includes(auth)}
+              onCheckboxClick={this.handleTokenCardCheckboxClick}
+            />
+          ) : (
+            <TokenRow
+              key={auth.id}
+              auth={auth}
+              onClickDescription={this.handleClickDescription}
+            />
+          )
         )
       }
     }

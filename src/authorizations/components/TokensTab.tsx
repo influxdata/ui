@@ -38,6 +38,7 @@ import {bulkDeleteAuthorizations} from 'src/authorizations/actions/thunks'
 
 // Styles
 import './TokensTabStyles.scss'
+import {isFlagEnabled} from '../../shared/utils/featureFlag'
 
 enum AuthSearchKeys {
   Description = 'description',
@@ -131,31 +132,36 @@ class TokensTab extends PureComponent<Props, State> {
     } = this.state
     const {tokens} = this.props
 
+    const enableBulkActionDelete = isFlagEnabled('bulkActionDelete')
+
     const leftHeaderItems = (
       <>
-        <Toggle
-          type={InputToggleType.Checkbox}
-          checked={tokensSelectedForBatchOperation.length > 0}
-          style={{
-            marginLeft: '24px',
-            marginRight: '24px',
-          }}
-          id="batch-select-global-toggle"
-          size={ComponentSize.Small}
-          icon={this.getGlobalBatchSelectionToggleIcon()}
-          onChange={this.toggleGlobalBatchSelection}
-        />
-
-        {tokensSelectedForBatchOperation.length > 0 && (
-          <ConfirmationButton
-            confirmationButtonText="Delete"
-            confirmationLabel={`Are you sure you want to delete the ${tokensSelectedForBatchOperation.length} selected API Token(s)?`}
-            onConfirm={this.handleBulkDeleteTokens}
-            text={`Delete ${tokensSelectedForBatchOperation.length} selected`}
-            icon={IconFont.Trash_New}
-            color={ComponentColor.Secondary}
+        {enableBulkActionDelete && (
+          <Toggle
+            type={InputToggleType.Checkbox}
+            checked={tokensSelectedForBatchOperation.length > 0}
+            style={{
+              marginLeft: '24px',
+              marginRight: '24px',
+            }}
+            id="batch-select-global-toggle"
+            size={ComponentSize.Small}
+            icon={this.getGlobalBatchSelectionToggleIcon()}
+            onChange={this.toggleGlobalBatchSelection}
           />
         )}
+
+        {enableBulkActionDelete &&
+          tokensSelectedForBatchOperation.length > 0 && (
+            <ConfirmationButton
+              confirmationButtonText="Delete"
+              confirmationLabel={`Are you sure you want to delete the ${tokensSelectedForBatchOperation.length} selected API Token(s)?`}
+              onConfirm={this.handleBulkDeleteTokens}
+              text={`Delete ${tokensSelectedForBatchOperation.length} selected`}
+              icon={IconFont.Trash_New}
+              color={ComponentColor.Secondary}
+            />
+          )}
         {tokensSelectedForBatchOperation.length === 0 && (
           <>
             <SearchWidget
@@ -221,30 +227,45 @@ class TokensTab extends PureComponent<Props, State> {
                     searchTerm={searchTerm}
                     searchKeys={this.searchKeys}
                   >
-                    {filteredAuths => (
-                      <TokenList
-                        tokenCount={tokens.length}
-                        auths={filteredAuths}
-                        emptyState={this.emptyState}
-                        pageWidth={width}
-                        pageHeight={adjustedHeight}
-                        searchTerm={searchTerm}
-                        sortKey={sortKey}
-                        sortDirection={sortDirection}
-                        sortType={sortType}
-                        onClickColumn={this.handleClickColumn}
-                        setAllTokens={allTokens =>
-                          this.setState({allTokens: allTokens})
-                        }
-                        setTokensOnCurrentPage={tokensOnPage =>
-                          this.setState({tokensOnCurrentPage: tokensOnPage})
-                        }
-                        tokensSelectedForBatchOperation={
-                          tokensSelectedForBatchOperation
-                        }
-                        toggleTokenSelection={this.updateSelectedTokensList}
-                      />
-                    )}
+                    {filteredAuths =>
+                      enableBulkActionDelete ? (
+                        <TokenList
+                          tokenCount={tokens.length}
+                          auths={filteredAuths}
+                          emptyState={this.emptyState}
+                          pageWidth={width}
+                          pageHeight={adjustedHeight}
+                          searchTerm={searchTerm}
+                          sortKey={sortKey}
+                          sortDirection={sortDirection}
+                          sortType={sortType}
+                          onClickColumn={this.handleClickColumn}
+                          setAllTokens={allTokens =>
+                            this.setState({allTokens: allTokens})
+                          }
+                          setTokensOnCurrentPage={tokensOnPage =>
+                            this.setState({tokensOnCurrentPage: tokensOnPage})
+                          }
+                          tokensSelectedForBatchOperation={
+                            tokensSelectedForBatchOperation
+                          }
+                          toggleTokenSelection={this.updateSelectedTokensList}
+                        />
+                      ) : (
+                        <TokenList
+                          tokenCount={tokens.length}
+                          auths={filteredAuths}
+                          emptyState={this.emptyState}
+                          pageWidth={width}
+                          pageHeight={adjustedHeight}
+                          searchTerm={searchTerm}
+                          sortKey={sortKey}
+                          sortDirection={sortDirection}
+                          sortType={sortType}
+                          onClickColumn={this.handleClickColumn}
+                        />
+                      )
+                    }
                   </FilterAuthorizations>
                 </div>
               </>

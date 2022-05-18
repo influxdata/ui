@@ -79,6 +79,17 @@ export const UsageContext = React.createContext<UsageContextType>(
   DEFAULT_CONTEXT
 )
 
+export const calculateCreditDaysUsed = (creditStartDate: string): number => {
+  const MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24
+  if (!creditStartDate) {
+    return -1
+  }
+  const startDate = new Date(creditStartDate)
+  const current = new Date()
+  const diffTime = current.getTime() - startDate.getTime()
+  return Math.floor(diffTime / MILLISECONDS_IN_ONE_DAY)
+}
+
 export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [billingDateTime, setBillingDateTime] = useState('')
   const [usageVectors, setUsageVectors] = useState([])
@@ -103,12 +114,12 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const {quartzMe} = useSelector(getMe)
   const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
 
-  const creditDaysUsed = useMemo(() => {
-    const startDate = new Date(quartzMe?.paygCreditStartDate)
-    const current = new Date()
-    const diffTime = Math.abs(current.getTime() - startDate.getTime())
-    return Math.floor(diffTime / (1000 * 60 * 60 * 24))
-  }, [quartzMe?.paygCreditStartDate])
+  const paygCreditStartDate = quartzMe?.paygCreditStartDate ?? ''
+
+  const creditDaysUsed = useMemo(
+    () => calculateCreditDaysUsed(paygCreditStartDate),
+    [paygCreditStartDate]
+  )
 
   const paygCreditEnabled =
     creditDaysUsed >= 0 && creditDaysUsed < PAYG_CREDIT_DAYS

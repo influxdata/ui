@@ -281,10 +281,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> sort()
     |> limit(n: ${limit})`
 
-    if (
-      data.buckets[0].type !== 'sample' &&
-      isFlagEnabled('queryBuilderUseMetadataCaching')
-    ) {
+    if (data.buckets[0].type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`
       queryText = `${_source}
@@ -409,10 +406,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> limit(n: ${limit})
     |> sort()`
 
-    if (
-      data.buckets[0].type !== 'sample' &&
-      isFlagEnabled('queryBuilderUseMetadataCaching')
-    ) {
+    if (data.buckets[0].type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`
       queryText = `${_source}

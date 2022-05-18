@@ -92,7 +92,7 @@ export const CHECK_FIXTURE_3: GenDeadmanCheck = {
 describe('checksReducer', () => {
   describe('setChecks', () => {
     it('sets list and status properties of state.', () => {
-      const initialState = defaultChecksState
+      const initialState = defaultChecksState()
       const cid_1 = CHECK_FIXTURE_1.id
       const cid_2 = CHECK_FIXTURE_2.id
 
@@ -125,7 +125,7 @@ describe('checksReducer', () => {
 
   describe('setCheck', () => {
     it('adds check to list if it is new', () => {
-      const initialState = defaultChecksState
+      const initialState = defaultChecksState()
       const id = CHECK_FIXTURE_2.id
 
       const check = normalize<Check, CheckEntities, string>(
@@ -150,7 +150,7 @@ describe('checksReducer', () => {
 
   describe('removeCheck', () => {
     it('removes check from state', () => {
-      const initialState = defaultChecksState
+      const initialState = defaultChecksState()
       const id = CHECK_FIXTURE_1.id
 
       initialState.byID[id] = {

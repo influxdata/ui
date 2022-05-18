@@ -54,7 +54,15 @@ export const HomepageContainer: FC = () => {
   const squareGridCardSize = '200px'
 
   // events handling
-  const logPythonEvent = () => {
+  const logGoWizardClick = () => {
+    event('firstMile.goWizard.clicked')
+  }
+
+  const logNodeWizardClick = () => {
+    event('firstMile.goWizard.clicked')
+  }
+
+  const logPythonWizardClick = () => {
     event('firstMile.pythonWizard.clicked')
   }
 
@@ -91,7 +99,7 @@ export const HomepageContainer: FC = () => {
                       <Link
                         to={pythonWizardLink}
                         style={linkStyle}
-                        onClick={logPythonEvent}
+                        onClick={logPythonWizardClick}
                       >
                         <div
                           className="homepage-wizard-language-tile"
@@ -103,7 +111,11 @@ export const HomepageContainer: FC = () => {
                       </Link>
                     </ResourceCard>
                     <ResourceCard style={cardStyle}>
-                      <Link to={javaScriptNodeLink} style={linkStyle}>
+                      <Link
+                        to={javaScriptNodeLink}
+                        style={linkStyle}
+                        onClick={logNodeWizardClick}
+                      >
                         <div className="homepage-wizard-language-tile">
                           <h5>JavaScript/Node.js</h5>
                           {NodejsIcon}
@@ -111,7 +123,11 @@ export const HomepageContainer: FC = () => {
                       </Link>
                     </ResourceCard>
                     <ResourceCard style={cardStyle}>
-                      <Link to={golangLink} style={linkStyle}>
+                      <Link
+                        to={golangLink}
+                        style={linkStyle}
+                        onClick={logGoWizardClick}
+                      >
                         <div className="homepage-wizard-language-tile">
                           <h5>Go</h5>
                           {GoIcon}

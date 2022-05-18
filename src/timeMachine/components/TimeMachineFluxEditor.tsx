@@ -10,7 +10,7 @@ import {
 // Components
 import FluxToolbar from 'src/timeMachine/components/FluxToolbar'
 
-// Actions
+// Actions and Selectors
 import {setActiveQueryText} from 'src/timeMachine/actions'
 import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
 
@@ -30,11 +30,16 @@ import {
 } from 'src/shared/utils/fluxFunctions'
 
 // Types
-import {FluxToolbarFunction, FluxFunction, EditorType} from 'src/types'
+import {
+  FluxToolbarFunction,
+  FluxFunction,
+  EditorType,
+  Variable,
+} from 'src/types'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
-const TimeMachineFluxEditor: FC = () => {
+const TimeMachineFluxEditor: FC<{variables: Variable[]}> = props => {
   const dispatch = useDispatch()
   const activeQueryText = useSelector(getActiveQuery).text
   const {activeQueryIndex} = useSelector(getActiveTimeMachine)
@@ -185,6 +190,7 @@ const TimeMachineFluxEditor: FC = () => {
           >
             <FluxEditor
               script={activeQueryText}
+              variables={props.variables}
               onChangeScript={handleActiveQuery}
               onSubmitScript={handleSubmitQueries}
               setEditorInstance={setEditorInstance}
@@ -200,7 +206,7 @@ const TimeMachineFluxEditor: FC = () => {
         </div>
       </div>
     )
-  }, [activeQueryText, editorInstance, activeQueryIndex])
+  }, [activeQueryText, editorInstance, activeQueryIndex, props.variables])
 }
 
 export {TimeMachineFluxEditor}

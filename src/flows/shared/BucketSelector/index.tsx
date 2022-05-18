@@ -12,7 +12,7 @@ import {
 import CreateBucketDropdownItem from 'src/flows/shared/BucketSelector/CreateBucketDropdownItem'
 
 // Contexts
-import {BucketContext} from 'src/flows/context/bucket.scoped'
+import {BucketContext} from 'src/shared/contexts/buckets'
 
 // Types
 import {Bucket} from 'src/types'

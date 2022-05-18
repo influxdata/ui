@@ -5,7 +5,7 @@ import React, {FC, useContext} from 'react'
 import {Bucket} from 'src/types'
 
 // Contexts
-import {BucketProvider} from 'src/flows/context/bucket.scoped'
+import {BucketProvider} from 'src/shared/contexts/buckets'
 import {PipeContext} from 'src/flows/context/pipe'
 
 // Components
@@ -15,27 +15,27 @@ import BucketSelector from 'src/flows/shared/BucketSelector'
 import {event} from 'src/cloud/utils/reporting'
 
 const ToBucket: FC = () => {
-  const {data, update} = useContext(PipeContext)
+  const {data, update, scope} = useContext(PipeContext)
   const updateBucket = (bucket: Bucket) => {
     event('Updated Bucket', {context: 'to bucket'})
     update({bucket})
   }
 
   return (
-    <div className="data-source--controls">
-      <BucketSelector
-        selected={data.bucket}
-        onSelect={updateBucket}
-        style={{width: '250px', flex: '0 0 250px'}}
-      />
-    </div>
+    <BucketProvider scope={scope}>
+      <div className="data-source--controls">
+        <BucketSelector
+          selected={data.bucket}
+          onSelect={updateBucket}
+          style={{width: '250px', flex: '0 0 250px'}}
+        />
+      </div>
+    </BucketProvider>
   )
 }
 
 export default ({Context}) => (
-  <BucketProvider>
-    <Context>
-      <ToBucket />
-    </Context>
-  </BucketProvider>
+  <Context>
+    <ToBucket />
+  </Context>
 )

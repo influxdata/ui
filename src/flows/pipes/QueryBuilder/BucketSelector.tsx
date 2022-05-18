@@ -3,11 +3,13 @@ import React, {FC, useState, useContext, useEffect} from 'react'
 
 // Components
 import {Input, ComponentSize, List, Gradients} from '@influxdata/clockface'
+import CreateBucket from 'src/flows/pipes/QueryBuilder/CreateBucket'
 import {Bucket, RemoteDataState} from 'src/types'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
-import {BucketContext} from 'src/flows/context/bucket.scoped'
+import {BucketContext} from 'src/shared/contexts/buckets'
 import {PipeContext} from 'src/flows/context/pipe'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 // this is used by notebooks
@@ -19,6 +21,9 @@ const BucketSelector: FC = () => {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
+    if (loading !== RemoteDataState.Done) {
+      return
+    }
     const allBuckets = new Set(buckets.map(b => b.name))
     data.buckets
       .filter(b => !allBuckets.has(b.name))
@@ -28,7 +33,7 @@ const BucketSelector: FC = () => {
           type: b.type,
         } as Bucket)
       })
-  }, [buckets, data.buckets])
+  }, [loading, buckets, data.buckets])
 
   if (loading === RemoteDataState.Done && !buckets.length) {
     return (
@@ -120,14 +125,13 @@ const BucketSelector: FC = () => {
         style={{flex: '1 0 0'}}
         scrollToSelected={true}
       >
-        {sections.user.length && (
-          <List.Divider
-            key="userHeader"
-            text="user"
-            size={ComponentSize.ExtraSmall}
-          />
-        )}
+        <List.Divider
+          key="userHeader"
+          text="user"
+          size={ComponentSize.ExtraSmall}
+        />
         {sections.user.map(renderListItem)}
+        {isFlagEnabled('sharedBucketCreator') && <CreateBucket />}
         {sections.system.length && (
           <List.Divider
             key="systemHeader"

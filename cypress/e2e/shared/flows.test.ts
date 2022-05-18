@@ -15,6 +15,8 @@ describe('Flows', () => {
   })
 
   it('CRUD a flow from the index page', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const now = Date.now()
     cy.writeData(
       [
@@ -34,7 +36,10 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type('My Flow {enter}')
+    cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
@@ -73,6 +78,8 @@ describe('Flows', () => {
   })
 
   it('can execute preview, see results, change tags, execute preview, see different results', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const newBucketName = 'lets goooo'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -96,7 +103,10 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type('My Flow {enter}')
+    cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
@@ -197,7 +207,9 @@ describe('Flows', () => {
       .first()
       .click()
 
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type(`${flowName}{enter}`)
     cy.wait('@updateNotebook')
 
     cy.getByTestID('page-title').contains(flowName)
@@ -264,6 +276,11 @@ describe('Flows', () => {
     cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
 
     cy.clickNavBarItem('nav-item-flows')
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.location('pathname').should('eq', `${orgs}/${id}/notebooks`)
+      })
+    )
 
     cy.get('.cf-resource-card').should('have.length', 1)
 
@@ -271,6 +288,8 @@ describe('Flows', () => {
   })
 
   it('should have the same number of flow panels and no presentation panel when presentation mode is off', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const newBucketName = 'shmucket'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -296,7 +315,10 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type(`${flowName}{enter}`)
+    cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
@@ -370,6 +392,8 @@ describe('Flows', () => {
   })
 
   it('should have a presentation panel and no flow panels when presentation mode is on', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const newBucketName = 'shmucket'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -395,7 +419,10 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type(`${flowName}{enter}`)
+    cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
@@ -524,7 +551,6 @@ describe('Flows', () => {
     ]
 
     // Intercepts
-    cy.intercept('/api/v2/buckets?*').as('fetchAllBuckets')
     cy.intercept('/api/v2/orgs/*/secrets').as('fetchSecrets')
 
     items.forEach(item => {
@@ -541,9 +567,7 @@ describe('Flows', () => {
         cy.getByTestID(`add-flow-btn--${item.panel}`)
           .last()
           .click()
-        if (item.panel === 'queryBuilder') {
-          cy.wait('@fetchAllBuckets')
-        } else if (item.panel === 'notification') {
+        if (item.panel === 'notification') {
           cy.wait('@fetchSecrets')
         }
       })
@@ -564,6 +588,8 @@ describe('Flows', () => {
   })
 
   it('can create a Band plot without crashing', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const newBucketName = 'lets goooo'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -590,6 +616,7 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type(
       'I am not afraid of Band Plot {enter}'
     )
+    cy.wait('@updateNotebook')
 
     // select our bucket
     cy.getByTestID('bucket-selector').within(() => {

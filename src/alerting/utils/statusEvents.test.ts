@@ -1,11 +1,10 @@
 import {processStatusesResponse} from 'src/alerting/utils/statusEvents'
-import {fromFlux, fastFromFlux, Table} from '@influxdata/giraffe'
+import {fromFlux, Table} from '@influxdata/giraffe'
 import {range} from 'lodash'
 import {mocked} from 'ts-jest/utils'
 
 jest.mock('@influxdata/giraffe', () => ({
   fromFlux: jest.fn(),
-  fastFromFlux: jest.fn(),
 }))
 // todo: test will fails on binaryPrefixFormatter not a function in src/shared/copy/notifications.ts:22:24 this mock can be removed after this will be fixed
 jest.mock('src/cloud/utils/reporting')

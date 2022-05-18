@@ -1,12 +1,11 @@
 import * as history from 'src/alerting/utils/history'
-import {fromFlux, fastFromFlux, Table} from '@influxdata/giraffe'
+import {fromFlux, Table} from '@influxdata/giraffe'
 import {range, uniq} from 'lodash'
 import {mocked} from 'ts-jest/utils'
 import {runQuery} from 'src/shared/apis/query'
 
 jest.mock('@influxdata/giraffe', () => ({
   fromFlux: jest.fn(),
-  fastFromFlux: jest.fn(),
   // todo: test will fails on binaryPrefixFormatter not a function in src/shared/copy/notifications.ts:22:24 this mock can be removed after this will be fixed
   binaryPrefixFormatter: jest.fn(),
 }))

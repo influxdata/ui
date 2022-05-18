@@ -1,7 +1,7 @@
 import {cleanup} from '@testing-library/react'
 import 'intersection-observer'
 import MutationObserver from 'mutation-observer'
-import fetchMock from 'jest-fetch-mock'
+// import fetchMock from 'jest-fetch-mock'
 import '@testing-library/jest-dom'
 import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
 import 'setimmediate'
@@ -24,7 +24,7 @@ window.flushAllPromises = async () => {
 }
 
 // mocks and stuff
-fetchMock.enableMocks()
+// fetchMock.enableMocks()
 jest.mock('src/shared/utils/errors')
 
 /*
@@ -41,5 +41,5 @@ jest.mock('src/languageSupport/languages/flux/parser', () => ({
 afterEach(() => {
   window.localStorage.clear()
   cleanup()
-  fetchMock.resetMocks()
+  // fetchMock.resetMocks()
 })

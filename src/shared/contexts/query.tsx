@@ -7,13 +7,14 @@ import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {getSortedBuckets} from 'src/buckets/selectors'
 import {getStatus} from 'src/resources/selectors'
-import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
+import {fastFromFlux} from '@influxdata/giraffe'
 import {
   FluxResult,
   QueryScope,
   InternalFromFluxResult,
   Column,
 } from 'src/types/flows'
+import {fromFlux} from './fromFlux'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants

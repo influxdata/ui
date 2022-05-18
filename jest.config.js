@@ -19,6 +19,8 @@ module.exports = {
     'react-dnd$': 'react-dnd/dist/cjs',
     'react-dnd-html5-backend$': 'react-dnd-html5-backend/dist/cjs',
     'dnd-core$': 'dnd-core/dist/cjs',
+    'd3-dsv': '<rootDir>/node_modules/d3-dsv/dist/d3-dsv.min.js',
+    dsv: '<rootDir>/node_modules/dsv/dist/dsv.min.js',
   },
   globals: {
     'ts-jest': {

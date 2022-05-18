@@ -55,6 +55,7 @@ interface State {
   sortType: SortTypes
   batchSelectionState: SelectionState
   tokensToDelete: Authorization[]
+  totalTokens: number
 }
 
 interface StateProps {
@@ -88,8 +89,26 @@ class TokensTab extends PureComponent<Props, State> {
       sortType: SortTypes.String,
       batchSelectionState: SelectionState.NoneSelected,
       tokensToDelete: [],
+      totalTokens: null,
     }
+
     this.paginationRef = createRef<HTMLDivElement>()
+  }
+
+  componentDidUpdate(_, prevState) {
+    const {totalTokens, tokensToDelete} = this.state
+
+    if (
+      tokensToDelete.length !== 0 &&
+      tokensToDelete.length < totalTokens
+    ) {
+      console.log('some selected')
+      this.setState({batchSelectionState: SelectionState.SomeSelected})
+    }
+
+    if (tokensToDelete.length === 0) {
+      // this.setState({batchSelectionState: SelectionState.NoneSelected})
+    }
   }
 
   public componentDidMount() {
@@ -125,6 +144,7 @@ class TokensTab extends PureComponent<Props, State> {
     const {tokens} = this.props
     const numberOfTokensSelected = this.state.tokensToDelete.length
 
+    console.log('batch selection state' , this.state.batchSelectionState)
     const leftHeaderItems = (
       <>
         <Toggle
@@ -233,6 +253,9 @@ class TokensTab extends PureComponent<Props, State> {
                         updateTokensSelected={tokens =>
                           this.setState({tokensToDelete: tokens})
                         }
+                        totalTokens={total =>
+                          this.setState({totalTokens: total})
+                        }
                       />
                     )}
                   </FilterAuthorizations>
@@ -250,30 +273,35 @@ class TokensTab extends PureComponent<Props, State> {
       this.state.tokensToDelete.map(t => t.id)
     )
     this.setState({
+      // reset
       tokensToDelete: [],
       batchSelectionState: SelectionState.NoneSelected,
     })
   }
 
   private getGlobalBatchSelectionIcon = (): IconFont => {
-    console.log(this.state.batchSelectionState)
     switch (this.state.batchSelectionState) {
       case SelectionState.SomeSelected:
         return IconFont.Subtract
       case SelectionState.AllSelected:
         return IconFont.Checkmark
+
+      default:
+        return null
     }
   }
 
   private changeBatchSelectionState = () => {
     const currentSelectionState = this.state.batchSelectionState
+    console.log(this.state.batchSelectionState)
+
 
     switch (currentSelectionState) {
       case SelectionState.NoneSelected:
         this.setState({batchSelectionState: SelectionState.AllSelected})
         break
       case SelectionState.SomeSelected:
-        this.setState({batchSelectionState: SelectionState.AllSelected})
+        this.setState({batchSelectionState: SelectionState.NoneSelected})
         break
       case SelectionState.AllSelected:
         this.setState({batchSelectionState: SelectionState.NoneSelected})

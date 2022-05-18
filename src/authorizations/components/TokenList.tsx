@@ -28,8 +28,8 @@ interface Props {
   tokenCount: number
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
   batchSelectionState: SelectionState
-  overrideBatchSelectionState: (override: SelectionState) => void
   updateTokensSelected: (tokens: Authorization[]) => void
+  totalTokens: (total: number) => void
 }
 
 interface State {
@@ -94,8 +94,15 @@ export default class TokenList extends PureComponent<Props, State> {
       this.updateSelectedTokens()
     }
 
-    this.props.updateTokensSelected(this.state.selectedTokens)
 
+    const startIndex = this.rowsPerPage * Math.max(this.currentPage - 1, 0)
+    const endIndex = Math.min(
+      startIndex + this.rowsPerPage,
+      this.props.tokenCount
+    )
+
+    this.props.updateTokensSelected(this.state.selectedTokens)
+    this.props.totalTokens(endIndex - startIndex)
   }
 
   public render() {
@@ -182,7 +189,6 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   private handleTokenCardCheckboxClick = (token: Authorization) => {
-    console.log({token})
     const tokenAlreadySelected = this.state.selectedTokens.includes(token)
 
     if (tokenAlreadySelected) {

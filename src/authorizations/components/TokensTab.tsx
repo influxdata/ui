@@ -38,7 +38,7 @@ import {bulkDeleteAuthorizations} from 'src/authorizations/actions/thunks'
 
 // Styles
 import './TokensTabStyles.scss'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 enum AuthSearchKeys {
   Description = 'description',

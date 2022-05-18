@@ -70,6 +70,7 @@ class TokensRow extends PureComponent<Props> {
         cardSelected={this.props.cardSelected}
         cardSelectable={true}
         handleCardSelection={() => this.handleCardSelection(auth)}
+        id={auth.id}
       >
         <FlexBox
           alignItems={AlignItems.FlexStart}

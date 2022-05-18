@@ -1,6 +1,6 @@
 // Libraries
 import React, {createRef, PureComponent, RefObject} from 'react'
-import {connect} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import {RouteComponentProps, withRouter} from 'react-router-dom'
 import {isEmpty} from 'lodash'
 import {AutoSizer} from 'react-virtualized'
@@ -15,7 +15,9 @@ import {
   Gradients,
   IconFont,
   InfluxColors,
+  InputToggleType,
   Sort,
+  Toggle,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/components/TokenList'
@@ -32,7 +34,7 @@ import {AuthorizationSortKey} from 'src/shared/components/resource_sort_dropdown
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
-import {Input, InputType} from '../../../../clockface/src'
+import {bulkDeleteAuthorizations} from '../actions/thunks'
 
 enum AuthSearchKeys {
   Description = 'description',
@@ -52,11 +54,15 @@ interface State {
   sortDirection: Sort
   sortType: SortTypes
   batchSelectionState: SelectionState
-  numberOfTokensSelected: number
+  tokensToDelete: Authorization[]
 }
 
 interface StateProps {
   tokens: Authorization[]
+}
+
+interface DispatchProps {
+  bulkDeleteAuthorizations: (tokenIds: string[]) => void
 }
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
@@ -65,7 +71,8 @@ const DEFAULT_ALERT_HEIGHT = 100
 
 type SortKey = keyof Authorization
 
-type Props = StateProps & RouteComponentProps<{orgID: string}>
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = StateProps & RouteComponentProps<{orgID: string}> & ReduxProps
 
 const FilterAuthorizations = FilterList<Authorization>()
 
@@ -80,7 +87,7 @@ class TokensTab extends PureComponent<Props, State> {
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
       batchSelectionState: SelectionState.NoneSelected,
-      numberOfTokensSelected: 0,
+      tokensToDelete: [],
     }
     this.paginationRef = createRef<HTMLDivElement>()
   }
@@ -114,36 +121,32 @@ class TokensTab extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {
-      searchTerm,
-      sortKey,
-      sortDirection,
-      sortType,
-      numberOfTokensSelected,
-    } = this.state
+    const {searchTerm, sortKey, sortDirection, sortType} = this.state
     const {tokens} = this.props
+    const numberOfTokensSelected = this.state.tokensToDelete.length
 
     const leftHeaderItems = (
       <>
-        <Input
-          type={InputType.Checkbox}
+        <Toggle
+          type={InputToggleType.Checkbox}
           checked={
             this.state.batchSelectionState === SelectionState.SomeSelected ||
             this.state.batchSelectionState === SelectionState.AllSelected
           }
-          onCheckboxClick={this.changeBatchSelectionState}
-          size={ComponentSize.ExtraSmall}
+          onChange={this.changeBatchSelectionState}
           style={{
-            width: 'fit-content',
             marginLeft: '24px',
             marginRight: '24px',
           }}
+          id="batch-select-global-toggle"
+          size={ComponentSize.Small}
+          icon={this.getGlobalBatchSelectionIcon()}
         />
         {numberOfTokensSelected > 0 && (
           <ConfirmationButton
             confirmationButtonText="Delete"
             confirmationLabel={`Are you sure you want to delete the ${numberOfTokensSelected} selected API Token(s)?`}
-            onConfirm={() => {}}
+            onConfirm={this.handleBulkDeleteTokens}
             text={`Delete ${numberOfTokensSelected} selected`}
             icon={IconFont.Trash_New}
             color={ComponentColor.Secondary}
@@ -227,8 +230,8 @@ class TokensTab extends PureComponent<Props, State> {
                         sortType={sortType}
                         onClickColumn={this.handleClickColumn}
                         batchSelectionState={this.state.batchSelectionState}
-                        updateNumberOfTokensSelected={
-                          this.handleNumberOfTokensSelected
+                        updateTokensSelected={tokens =>
+                          this.setState({tokensToDelete: tokens})
                         }
                       />
                     )}
@@ -242,8 +245,24 @@ class TokensTab extends PureComponent<Props, State> {
     )
   }
 
-  private handleNumberOfTokensSelected = (numberOfTokensSelected: number) => {
-    this.setState({numberOfTokensSelected})
+  private handleBulkDeleteTokens = () => {
+    this.props.bulkDeleteAuthorizations(
+      this.state.tokensToDelete.map(t => t.id)
+    )
+    this.setState({
+      tokensToDelete: [],
+      batchSelectionState: SelectionState.NoneSelected,
+    })
+  }
+
+  private getGlobalBatchSelectionIcon = (): IconFont => {
+    console.log(this.state.batchSelectionState)
+    switch (this.state.batchSelectionState) {
+      case SelectionState.SomeSelected:
+        return IconFont.Subtract
+      case SelectionState.AllSelected:
+        return IconFont.Checkmark
+    }
   }
 
   private changeBatchSelectionState = () => {
@@ -321,4 +340,12 @@ const mstp = (state: AppState) => ({
   tokens: getAll<Authorization>(state, ResourceType.Authorizations),
 })
 
-export default connect<StateProps>(mstp)(withRouter(TokensTab))
+const mdtp = {
+  bulkDeleteAuthorizations,
+}
+const connector = connect(mstp, mdtp)
+
+export default connect<StateProps, DispatchProps>(
+  mstp,
+  mdtp
+)(withRouter(TokensTab))

@@ -4,17 +4,14 @@ import memoizeOne from 'memoize-one'
 import isEqual from 'lodash/isEqual'
 
 // Components
-import {Overlay, PaginationNav, ResourceList} from '@influxdata/clockface'
+import {Overlay, PaginationNav, ResourceList, Sort} from '@influxdata/clockface'
 import {TokenRow} from 'src/authorizations/components/TokenRow'
 import EditTokenOverlay from 'src/authorizations/components/EditTokenOverlay'
 
 // Types
 import {Authorization} from 'src/types'
-import {SortTypes} from 'src/shared/utils/sort'
-import {Sort} from '@influxdata/clockface'
-
 // Utils
-import {getSortedResources} from 'src/shared/utils/sort'
+import {getSortedResources, SortTypes} from 'src/shared/utils/sort'
 import {SelectionState} from './TokensTab'
 
 type SortKey = keyof Authorization
@@ -31,7 +28,8 @@ interface Props {
   tokenCount: number
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
   batchSelectionState: SelectionState
-  updateNumberOfTokensSelected: (numberOfTokensSelected: number) => void
+  overrideBatchSelectionState: (override: SelectionState) => void
+  updateTokensSelected: (tokens: Authorization[]) => void
 }
 
 interface State {
@@ -96,7 +94,8 @@ export default class TokenList extends PureComponent<Props, State> {
       this.updateSelectedTokens()
     }
 
-    this.props.updateNumberOfTokensSelected(this.state.selectedTokens.length)
+    this.props.updateTokensSelected(this.state.selectedTokens)
+
   }
 
   public render() {
@@ -183,6 +182,7 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   private handleTokenCardCheckboxClick = (token: Authorization) => {
+    console.log({token})
     const tokenAlreadySelected = this.state.selectedTokens.includes(token)
 
     if (tokenAlreadySelected) {

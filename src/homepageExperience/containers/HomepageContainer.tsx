@@ -58,12 +58,16 @@ export const HomepageContainer: FC = () => {
     event('firstMile.goWizard.clicked')
   }
 
-  const logNodeWizardClick = () => {
-    event('firstMile.goWizard.clicked')
+  const logNodeJSWizardClick = () => {
+    event('firstMile.nodejsWizard.clicked')
   }
 
   const logPythonWizardClick = () => {
     event('firstMile.pythonWizard.clicked')
+  }
+
+  const logMoreButtonClick = () => {
+    event('firstMile.moreButton.clicked')
   }
 
   return (
@@ -114,7 +118,7 @@ export const HomepageContainer: FC = () => {
                       <Link
                         to={javaScriptNodeLink}
                         style={linkStyle}
-                        onClick={logNodeWizardClick}
+                        onClick={logNodeJSWizardClick}
                       >
                         <div className="homepage-wizard-language-tile">
                           <h5>JavaScript/Node.js</h5>
@@ -135,7 +139,11 @@ export const HomepageContainer: FC = () => {
                       </Link>
                     </ResourceCard>
                     <ResourceCard style={cardStyle}>
-                      <Link to={loadDataSourcesLink} style={moreStyle}>
+                      <Link
+                        to={loadDataSourcesLink}
+                        style={moreStyle}
+                        onClick={logMoreButtonClick}
+                      >
                         <div className="homepage-wizard-language-tile">
                           <span>
                             <h5>

@@ -14,8 +14,8 @@
 
 .container-side-bar {
   border-left: 1px solid $cf-grey-25;
-  margin-top: $cf-space-xs;
   padding-left: $cf-space-2xs;
+  margin-top: $cf-space-xs;
 }
 
 .selector-title {
@@ -28,10 +28,6 @@
 
 .selector-title--icon .cf-question-mark-tooltip {
   background-color: $cf-grey-35;
-}
-
-.fields-tags-search-bar {
-  padding-top: $cf-space-s;
 }
 
 .field-selector,
@@ -60,12 +56,13 @@
 .field-selector--list-item,
 .tag-selector--list-item,
 .tag-value-selector--list-item {
-  padding: $cf-space-3xs 0 $cf-space-3xs $cf-space-xs;
+  padding-bottom: $cf-space-3xs;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.tag-value-selector--list-item {
-  padding: $cf-space-2xs 0 0 $cf-space-xs;
+.field-selector .container-side-bar,
+.tag-selector .container-side-bar {
+  margin-top: 0;
 }

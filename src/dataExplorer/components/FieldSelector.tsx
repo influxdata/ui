@@ -33,7 +33,7 @@ const FieldSelector: FC = () => {
       <Accordion.AccordionHeader className="field-selector--header">
         <SelectorTitle title="Fields" info="Test info" />
       </Accordion.AccordionHeader>
-      {list}
+      <div className="container-side-bar">{list}</div>
     </Accordion>
   )
 }

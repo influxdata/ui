@@ -42,14 +42,12 @@ const FieldsTags: FC = () => {
     }
 
     return (
-      <div>
-        <div className="fields-tags-search-bar">
-          <SearchWidget
-            placeholderText="Search fields and tags"
-            onSearch={handleSearchFieldsTags}
-            searchTerm={searchTerm}
-          />
-        </div>
+      <div className="container-side-bar">
+        <SearchWidget
+          placeholderText="Search fields and tags..."
+          onSearch={handleSearchFieldsTags}
+          searchTerm={searchTerm}
+        />
         <FieldSelector />
         <TagSelector />
       </div>

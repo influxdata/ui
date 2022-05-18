@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useState} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
@@ -7,18 +7,13 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 // Context
 import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
+import {BucketContext} from 'src/shared/contexts/buckets'
 
 const BucketSelector: FC = () => {
   const {data, updateData} = useContext(NewDataExplorerContext)
+  const {buckets} = useContext(BucketContext)
   const [searchTerm, setSearchTerm] = useState('')
   const selectedBucket = data?.bucket
-
-  const buckets = [
-    {type: 'sample', name: 'Air Sensor Data', id: 'airSensor'},
-    {type: 'sample', name: 'Coinbase bitcoin price', id: 'bitcoin'},
-    {type: 'sample', name: 'NOAA National Buoy Data', id: 'noaa'},
-    {type: 'sample', name: 'USGS Earthquakes', id: 'usgs'},
-  ]
 
   const handleSelectBucket = useCallback(
     (option: string) => {

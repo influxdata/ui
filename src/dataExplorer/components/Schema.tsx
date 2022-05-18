@@ -1,4 +1,5 @@
 import React, {FC, useState, useContext, useMemo} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
@@ -12,9 +13,14 @@ import WaitingText from 'src/shared/components/WaitingText'
 
 // Context
 import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
+import {BucketProvider} from 'src/shared/contexts/buckets'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {QueryScope} from 'src/types/dataExplorer'
+
+// Utils
+import {getOrg} from 'src/organizations/selectors'
 
 // Style
 import './Schema.scss'
@@ -56,19 +62,27 @@ const FieldsTags: FC = () => {
 }
 
 const Schema: FC = () => {
+  const org = useSelector(getOrg)
+  const scope = {
+    org: org.id,
+    region: window.location.origin,
+  } as QueryScope
+
   return (
     <NewDataExplorerProvider>
-      <div className="scroll--container">
-        <DapperScrollbars>
-          <div className="data-schema">
-            <BucketSelector />
-            <div className="container-side-bar">
-              <MeasurementSelector />
-              <FieldsTags />
+      <BucketProvider scope={scope}>
+        <div className="scroll--container">
+          <DapperScrollbars>
+            <div className="data-schema">
+              <BucketSelector />
+              <div className="container-side-bar">
+                <MeasurementSelector />
+                <FieldsTags />
+              </div>
             </div>
-          </div>
-        </DapperScrollbars>
-      </div>
+          </DapperScrollbars>
+        </div>
+      </BucketProvider>
     </NewDataExplorerProvider>
   )
 }

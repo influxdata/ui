@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
-import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {fromFlux, fastFromFlux, FromFluxResult} from '@influxdata/giraffe'
 import {useSelector} from 'react-redux'
 
 // Utils
@@ -11,6 +11,7 @@ import {
   getUsageVectors,
   getUsageRateLimits,
 } from 'src/client/unityRoutes'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {PAYG_CREDIT_DAYS} from 'src/shared/constants'
@@ -100,6 +101,8 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     DEFAULT_USAGE_TIME_RANGE
   )
   const {quartzMe} = useSelector(getMe)
+  const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
+
   const creditDaysUsed = useMemo(() => {
     const startDate = new Date(quartzMe?.paygCreditStartDate)
     const current = new Date()
@@ -178,7 +181,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       query_count: v => (v * 0.01) / 100,
     }
 
-    const values = fromFlux(csvData).table.getColumn(vector_name) as Array<any>
+    const values = parser(csvData).table.getColumn(vector_name) as Array<any>
     if (!values) {
       return 0
     }
@@ -244,7 +247,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
       const csv = resp.data?.trim().replace(/\r\n/g, '\n')
 
-      const csvs = csv.split('\n\n').map(c => fromFlux(c))
+      const csvs = csv.split('\n\n').map(c => parser(c))
 
       setBillingStatsStatus(RemoteDataState.Done)
       setBillingStats(csvs)
@@ -305,7 +308,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
-      const fromFluxResult = fromFlux(resp.data)
+      const fromFluxResult = parser(resp.data)
 
       setRateLimits(fromFluxResult)
       setRateLimitsStatus(RemoteDataState.Done)

@@ -140,8 +140,9 @@ export function extractBoxedCol(
 }
 
 export function extractCol(csv: string, colName: string): string[] {
-  const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
-  const {table} = parser(csv)
+  const {table} = isFlagEnabled('fastFromFlux')
+    ? fastFromFlux(csv)
+    : fromFlux(csv)
   return table.getColumn(colName, 'string') || []
 }
 

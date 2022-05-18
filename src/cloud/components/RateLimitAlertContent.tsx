@@ -24,6 +24,10 @@ import {event} from 'src/cloud/utils/reporting'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
+import {
+  getDataLayerIdentity,
+  getExperimentVariantId,
+} from 'src/cloud/utils/experiments'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
@@ -99,7 +103,24 @@ export const UpgradeContent: FC<UpgradeProps> = ({
         <CloudUpgradeButton
           className="upgrade-payg--button__rate-alert"
           showPromoMessage={false}
-          metric={() => event(`user.limits.${type}.upgrade`, {location})}
+          metric={() => {
+            const experimentVariantId = getExperimentVariantId(
+              CREDIT_250_EXPERIMENT_ID
+            )
+            const identity = getDataLayerIdentity()
+            event(
+              isFlagEnabled('credit250Experiment') &&
+                experimentVariantId === '1'
+                ? `user.limits.${type}.credit-250.upgrade`
+                : `user.limits.${type}.upgrade`,
+              {
+                location,
+                ...identity,
+                experimentId: CREDIT_250_EXPERIMENT_ID,
+                experimentVariantId,
+              }
+            )
+          }}
         />
       </FlexBox>
     </div>

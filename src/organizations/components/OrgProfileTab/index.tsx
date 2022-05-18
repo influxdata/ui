@@ -85,9 +85,10 @@ const OrgProfileTab: FC = () => {
             stretchToFitWidth={true}
             style={{width: '85%'}}
           >
-            {me.quartzMe?.billingProvider && (
+            {me.quartzMe?.billingProvider &&
+            me.quartzMe?.accountType !== 'pay_as_you_go' ? (
               <LabeledData label="Provider" src={me.quartzMe.billingProvider} />
-            )}
+            ) : null}
             {me.quartzMe?.regionCode && (
               <LabeledData label="Region" src={me.quartzMe.regionCode} />
             )}

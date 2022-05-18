@@ -70,7 +70,7 @@ export const cleanTags = (data: Point): Point => {
       }
 
       // if it's made it this far, it's a string, cast it explicitly so typescript will stfu
-      acc[key] = (val as string).trim()
+      acc[key] = String(val).trim()
       return acc
     }, {}),
   }

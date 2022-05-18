@@ -50,7 +50,7 @@ export const Credit250PAYGConversion: FC = () => {
                 className="credit-250-conversion-upgrade--button"
                 metric={() => {
                   const identity = getDataLayerIdentity()
-                  event(`billing.conversion.payg.upgrade.credit-250`, {
+                  event(`billing.conversion.payg.credit-250.upgrade`, {
                     location: 'billing',
                     ...identity,
                     experimentId: CREDIT_250_EXPERIMENT_ID,

@@ -22,7 +22,7 @@ const CancelButton: FC = () => {
 
   const handleCancelCredit250Click = () => {
     const identity = getDataLayerIdentity()
-    event('checkout.cancel.upgrade.credit-250', {
+    event('checkout.cancel.credit-250.upgrade', {
       location: 'checkout',
       ...identity,
       experimentId: CREDIT_250_EXPERIMENT_ID,

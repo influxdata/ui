@@ -167,7 +167,7 @@ const ParsingForm: FC<Props> = ({
                   event(
                     isFlagEnabled('credit250Experiment') &&
                       experimentVariantId === '1'
-                      ? `subscriptions.parsing-form.upgrade.credit-250`
+                      ? `subscriptions.parsing-form.credit-250.upgrade`
                       : `subscriptions.parsing-form.upgrade`,
                     {
                       location: 'subscriptions parsing form',

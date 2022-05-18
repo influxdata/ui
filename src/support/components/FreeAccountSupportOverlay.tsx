@@ -82,7 +82,7 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
             event(
               isFlagEnabled('credit250Experiment') &&
                 experimentVariantId === '1'
-                ? `help-bar.overlay.free-account.upgrade.credit-250`
+                ? `help-bar.overlay.free-account.credit-250.upgrade`
                 : `help-bar.overlay.free-account.upgrade`,
               {
                 location: 'help bar',

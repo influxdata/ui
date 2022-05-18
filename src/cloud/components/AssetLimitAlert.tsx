@@ -67,7 +67,7 @@ const AssetLimitAlert: FC<Props> = ({limitStatus, resourceName, className}) => {
                   event(
                     isFlagEnabled('credit250Experiment') &&
                       experimentVariantId === '1'
-                      ? `${resourceName}.alert.limit.upgrade.credit-250`
+                      ? `${resourceName}.alert.limit.credit-250.upgrade`
                       : `${resourceName}.alert.limit.upgrade`,
                     {
                       asset: resourceName,

@@ -177,7 +177,7 @@ const CreateSubscriptionPage: FC = () => {
                     event(
                       isFlagEnabled('credit250Experiment') &&
                         experimentVariantId === '1'
-                        ? `subscriptions.create.upgrade.credit-250`
+                        ? `subscriptions.create.credit-250.upgrade`
                         : `subscriptions.create.upgrade`,
                       {
                         location: 'subscriptions create',

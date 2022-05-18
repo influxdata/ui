@@ -137,8 +137,8 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
           const identity = getDataLayerIdentity()
           event(
             isFlagEnabled('credit250Experiment') && experimentVariantId === '1'
-              ? `${location}.alert.upgrade.rate-limit.credit-250`
-              : `${location}.alert.upgrade.rate-limit`,
+              ? `${location}.alert.credit-250.upgrade`
+              : `${location}.alert.upgrade`,
             {
               location,
               ...identity,

@@ -111,7 +111,7 @@ export const UpgradeContent: FC<UpgradeProps> = ({
             event(
               isFlagEnabled('credit250Experiment') &&
                 experimentVariantId === '1'
-                ? `user.limits.${type}.upgrade.credit-250`
+                ? `user.limits.${type}.credit-250.upgrade`
                 : `user.limits.${type}.upgrade`,
               {
                 location,

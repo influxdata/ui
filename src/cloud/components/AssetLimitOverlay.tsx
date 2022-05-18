@@ -76,7 +76,7 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
                 event(
                   isFlagEnabled('credit250Experiment') &&
                     experimentVariantId === '1'
-                    ? `${assetName}.overlay.limit.upgrade.credit-250`
+                    ? `${assetName}.overlay.limit.credit-250.upgrade`
                     : `${assetName}.overlay.limit.upgrade`,
                   {
                     asset: assetName,

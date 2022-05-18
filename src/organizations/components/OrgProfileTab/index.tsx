@@ -86,7 +86,7 @@ const OrgProfileTab: FC = () => {
             style={{width: '85%'}}
           >
             {me.quartzMe?.billingProvider &&
-            me.quartzMe?.accountType !== 'pay_as_you_go' ? (
+            me.quartzMe?.billingProvider !== 'zuora' ? (
               <LabeledData label="Provider" src={me.quartzMe.billingProvider} />
             ) : null}
             {me.quartzMe?.regionCode && (

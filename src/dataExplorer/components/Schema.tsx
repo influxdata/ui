@@ -16,8 +16,7 @@ import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
 import {BucketProvider} from 'src/shared/contexts/buckets'
 
 // Types
-import {RemoteDataState} from 'src/types'
-import {QueryScope} from 'src/types/dataExplorer'
+import {RemoteDataState, QueryScope} from 'src/types'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'

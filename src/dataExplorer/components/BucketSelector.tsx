@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
+import React, {FC, useCallback, useContext, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'

@@ -40,7 +40,7 @@ import {
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {setCloneName} from 'src/utils/naming'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
   auth: Authorization

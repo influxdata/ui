@@ -82,7 +82,7 @@ export const UsageContext = React.createContext<UsageContextType>(
 export const calculateCreditDaysUsed = (creditStartDate: string): number => {
   const MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24
   if (!creditStartDate) {
-    return -1
+    return NaN
   }
   const startDate = new Date(creditStartDate)
   const current = new Date()

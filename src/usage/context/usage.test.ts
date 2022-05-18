@@ -4,9 +4,9 @@ describe('calculateCreditDaysUsed', () => {
   const ONE_DAY_MILLSECONDS = 1000 * 60 * 60 * 24
 
   it('handles falsy values as invalid date', () => {
-    expect(calculateCreditDaysUsed(undefined)).toEqual(-1)
-    expect(calculateCreditDaysUsed(null)).toEqual(-1)
-    expect(calculateCreditDaysUsed('')).toEqual(-1)
+    expect(calculateCreditDaysUsed(undefined)).toEqual(NaN)
+    expect(calculateCreditDaysUsed(null)).toEqual(NaN)
+    expect(calculateCreditDaysUsed('')).toEqual(NaN)
   })
 
   it('handles valid dates in the past', () => {

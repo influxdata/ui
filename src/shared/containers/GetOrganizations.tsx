@@ -76,7 +76,7 @@ const GetOrganizations: FunctionComponent = () => {
         accountType: account_type,
         accountCreatedAt: account_created_at = '',
       } = quartzMe
-      const {id: orgId = ''} = org
+      const orgId = org?.id ?? ''
       window.dataLayer = window.dataLayer ?? []
       window.dataLayer.push({
         identity: {

@@ -150,8 +150,9 @@ export const processResponse = ({
       return Promise.reject(new Error(resp.message))
     }
 
-    const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
-    const {table} = parser(resp.csv)
+    const {table} = isFlagEnabled('fastFromFlux')
+      ? fastFromFlux(resp.csv)
+      : fromFlux(resp.csv)
     const rows: Row[] = []
 
     for (let i = 0; i < table.length; i++) {

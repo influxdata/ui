@@ -112,9 +112,9 @@ export const getWindowPeriodFromTimeRange = (state: AppState): string => {
   )
 }
 
-const getVisTableMemoized = memoizeOne(
-  isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
-)
+const getVisTableMemoized = isFlagEnabled('fastFromFlux')
+  ? memoizeOne(fastFromFlux)
+  : memoizeOne(fromFlux)
 
 export const getVisTable = (
   state: AppState

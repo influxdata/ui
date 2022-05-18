@@ -4,7 +4,7 @@ import React, {FC, createContext, useContext, useState} from 'react'
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {BucketContext} from 'src/flows/context/bucket.scoped'
+import {BucketContext} from 'src/shared/contexts/buckets'
 
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
@@ -281,10 +281,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> sort()
     |> limit(n: ${limit})`
 
-    if (
-      data.buckets[0].type !== 'sample' &&
-      isFlagEnabled('queryBuilderUseMetadataCaching')
-    ) {
+    if (data.buckets[0].type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`
       queryText = `${_source}
@@ -409,10 +406,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> limit(n: ${limit})
     |> sort()`
 
-    if (
-      data.buckets[0].type !== 'sample' &&
-      isFlagEnabled('queryBuilderUseMetadataCaching')
-    ) {
+    if (data.buckets[0].type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`
       queryText = `${_source}

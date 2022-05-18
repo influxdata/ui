@@ -21,3 +21,18 @@ export const getExperimentVariantId = (
   pushDataLayerEvent(activationEvent)
   return getVariant(experimentID)
 }
+
+export const getDataLayerIdentity = () => {
+  const identity = Object.assign(
+    {},
+    ...(window?.dataLayer.map(element => {
+      for (const key in element) {
+        if (key === 'identity') {
+          return element[key]
+        }
+      }
+      return {}
+    }) ?? [])
+  )
+  return identity
+}

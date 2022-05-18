@@ -89,6 +89,7 @@ describe('visualizations', () => {
           cy.log('check to see if new aggregate rate is at the bottom')
           cy.get('.view-line')
             .last()
+            .prev()
             .contains('aggregate.')
           cy.getByTestID('flux-editor').should('exist')
           cy.getByTestID('flux-editor').monacoType(`yoyoyoyoyo`)

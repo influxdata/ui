@@ -106,10 +106,12 @@ export const measurementSchemaUpdateSuccessful = (
 export const measurementSchemaAdditionFailed = (
   bucketName: string,
   schemaName: string,
-  errorMsg: string
+  errorMsg?: string
 ): Notification => ({
   ...defaultErrorNotification,
-  message: `MeasurementSchema ${schemaName}  has *not* been successfully added to bucket ${bucketName}, error: ${errorMsg}`,
+  message: `MeasurementSchema ${schemaName}  has *not* been successfully added to bucket ${bucketName}${
+    errorMsg ? `, error: ${errorMsg}` : ''
+  }`,
 })
 
 export const measurementSchemaUpdateFailed = (

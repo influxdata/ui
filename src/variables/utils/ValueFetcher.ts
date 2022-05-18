@@ -41,8 +41,9 @@ export const extractValues = (
   prevSelection?: string,
   defaultSelection?: string
 ): VariableValues => {
-  const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
-  const {table} = parser(csv)
+  const {table} = isFlagEnabled('fastFromFlux')
+    ? fastFromFlux(csv)
+    : fromFlux(csv)
   if (!table || !table.getColumn('_value', 'string')) {
     return {
       values: [],

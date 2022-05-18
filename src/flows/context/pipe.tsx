@@ -1,6 +1,7 @@
 import React, {FC, useContext, useEffect, useMemo, useCallback} from 'react'
-import {PipeData, FluxResult} from 'src/types/flows'
+import {PipeData, FluxResult, QueryScope} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {ResultsContext} from 'src/flows/context/results'
 import {RemoteDataState, TimeRange} from 'src/types'
 import {useHistory, useLocation} from 'react-router-dom'
@@ -13,9 +14,10 @@ export interface PipeContextType {
   loading: RemoteDataState
   results: FluxResult
   readOnly: boolean
+  scope: QueryScope
 }
 
-export const DEFAULT_CONTEXT: PipeContextType = {
+const DEFAULT_CONTEXT: PipeContextType = {
   id: '',
   data: {},
   range: null,
@@ -26,6 +28,7 @@ export const DEFAULT_CONTEXT: PipeContextType = {
     parsed: {},
   } as FluxResult,
   readOnly: false,
+  scope: {},
 }
 
 export const PipeContext = React.createContext<PipeContextType>(DEFAULT_CONTEXT)
@@ -36,6 +39,7 @@ interface PipeContextProps {
 
 export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const {flow, updateData} = useContext(FlowContext)
+  const {getPanelQueries} = useContext(FlowQueryContext)
   const {results, statuses} = useContext(ResultsContext)
   const result = results[id]
   const status = statuses[id]
@@ -65,6 +69,8 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     [flow, updateData]
   )
 
+  const scope = getPanelQueries(id)?.scope
+
   return useMemo(() => {
     return (
       <PipeContext.Provider
@@ -76,10 +82,11 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
           results: result || {...DEFAULT_CONTEXT.results},
           loading: status || RemoteDataState.NotStarted,
           readOnly: flow.readOnly,
+          scope: scope,
         }}
       >
         {children}
       </PipeContext.Provider>
     )
-  }, [flow, id, result, status, children, updater])
+  }, [flow, id, result, status, children, updater, scope])
 }

@@ -16,6 +16,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Constants
 import {PAYG_CREDIT_DAYS} from 'src/shared/constants'
 import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {MILLISECONDS_IN_ONE_DAY} from 'src/utils/datetime/constants'
 
 // Types
 import {
@@ -80,7 +81,6 @@ export const UsageContext = React.createContext<UsageContextType>(
 )
 
 export const calculateCreditDaysUsed = (creditStartDate: string): number => {
-  const MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24
   if (!creditStartDate) {
     return NaN
   }

@@ -56,7 +56,7 @@
 .field-selector--list-item,
 .tag-selector--list-item,
 .tag-value-selector--list-item {
-  padding-bottom: $cf-space-3xs;
+  padding: $cf-space-2xs 0 $cf-space-2xs $cf-space-2xs;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

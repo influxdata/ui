@@ -13,7 +13,6 @@ import {
   getStringColumns as getStringColumnsUtil,
   getMainColumnName,
 } from 'src/shared/utils/vis'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {
   calcWindowPeriodForDuration,

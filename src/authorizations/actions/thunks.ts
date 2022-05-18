@@ -168,6 +168,30 @@ export const deleteAuthorization = (id: string, name: string = '') => async (
   }
 }
 
+export const bulkDeleteAuthorizations = (tokenIds: string[]) => async (
+  dispatch: Dispatch<Action | NotificationAction>
+) => {
+  try {
+    for (const id of tokenIds) {
+      try {
+        const resp = await api.deleteAuthorization({authID: id})
+
+        if (resp.status !== 204) {
+          throw new Error(resp.data.message)
+        }
+        event('token.delete.success', {id})
+        dispatch(removeAuthorization(id))
+      } catch (e) {
+        event('token.delete.failure', {id})
+        console.error(e)
+      }
+    }
+    dispatch(notify(authorizationDeleteSuccess()))
+  } catch (e) {
+    dispatch(notify(authorizationDeleteFailed('Bulk')))
+  }
+}
+
 export const getAllResources = () => async dispatch => {
   const resp = await api.getResources({headers: {}})
 

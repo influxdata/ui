@@ -29,6 +29,10 @@ interface Props {
   sortType: SortTypes
   tokenCount: number
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
+  setAllTokens: (sortedAuths: Authorization[]) => void
+  setTokensOnCurrentPage: (tokens: Authorization[]) => void
+  tokensSelectedForBatchOperation: Authorization[]
+  toggleTokenSelection: (token: Authorization) => void
 }
 
 interface State {
@@ -64,6 +68,9 @@ export default class TokenList extends PureComponent<Props, State> {
     if (passedInPageIsValid) {
       this.currentPage = urlPageNumber
     }
+
+    // send the tokens info up once when the component finishes mounting
+    this.passTokensInformationToParent()
   }
 
   public componentDidUpdate(prevProps) {
@@ -81,7 +88,32 @@ export default class TokenList extends PureComponent<Props, State> {
         auth => auth.id === this.state.authInView?.id
       )
       this.setState({authInView})
+
+      // send the tokens info up when new tokens are passed as props (e.g: search filter was used by the user)
+      this.passTokensInformationToParent()
     }
+  }
+
+  private passTokensInformationToParent() {
+    const {auths, sortDirection, sortKey, sortType} = this.props
+    const sortedAuths = this.memGetSortedResources(
+      auths,
+      sortKey,
+      sortDirection,
+      sortType
+    )
+
+    // send sorted tokens to parent
+    this.props.setAllTokens(sortedAuths)
+
+    // send tokens on the current page
+    const startIndex = this.rowsPerPage * Math.max(this.currentPage - 1, 0)
+    const endIndex = Math.min(
+      startIndex + this.rowsPerPage,
+      this.props.tokenCount
+    )
+
+    this.props.setTokensOnCurrentPage(sortedAuths.slice(startIndex, endIndex))
   }
 
   public render() {
@@ -133,7 +165,13 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   private get rows(): JSX.Element[] {
-    const {auths, sortDirection, sortKey, sortType} = this.props
+    const {
+      auths,
+      sortDirection,
+      sortKey,
+      sortType,
+      tokensSelectedForBatchOperation,
+    } = this.props
     const sortedAuths = this.memGetSortedResources(
       auths,
       sortKey,
@@ -157,12 +195,19 @@ export default class TokenList extends PureComponent<Props, State> {
             key={auth.id}
             auth={auth}
             onClickDescription={this.handleClickDescription}
+            tokenIsSelected={tokensSelectedForBatchOperation.includes(auth)}
+            onCheckboxClick={this.handleTokenCardCheckboxClick}
           />
         )
       }
     }
 
     return paginatedAuths
+  }
+
+  // adds or removes the token from the tokensSelectedForBatchOperation list based on whether the token already exists in the list
+  private handleTokenCardCheckboxClick = (token: Authorization) => {
+    this.props.toggleTokenSelection(token)
   }
 
   private handleDismissOverlay = () => {

@@ -19,7 +19,6 @@ import {
   FlexBox,
   AlignItems,
   FlexDirection,
-  JustifyContent,
   ComponentColor,
   ResourceCard,
   IconFont,
@@ -45,6 +44,8 @@ import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   auth: Authorization
   onClickDescription: (authID: string) => void
+  tokenIsSelected: boolean
+  onCheckboxClick: (token: Authorization) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -55,7 +56,7 @@ const formatter = createDateTimeFormatter(UPDATED_AT_TIME_FORMAT)
 class TokensRow extends PureComponent<Props> {
   public render() {
     const {description} = this.props.auth
-    const {auth} = this.props
+    const {auth, tokenIsSelected, onCheckboxClick} = this.props
     const date = new Date(auth.createdAt)
 
     return (
@@ -64,9 +65,12 @@ class TokensRow extends PureComponent<Props> {
         disabled={!this.isTokenActive}
         testID={`token-card ${auth.description}`}
         direction={FlexDirection.Row}
-        justifyContent={JustifyContent.SpaceBetween}
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
+        cardSelectable={true}
+        cardSelected={tokenIsSelected}
+        handleCardSelection={() => onCheckboxClick(auth)}
+        id={auth.id}
       >
         <FlexBox
           alignItems={AlignItems.FlexStart}

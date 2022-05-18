@@ -79,7 +79,7 @@ const CheckoutForm: FC = () => {
           >
             Upgrade to Usage-Based Account
           </h1>
-          {isFlagEnabled('credit250Experiment') && (
+          {isFlagEnabled('credit250Experiment') && !isPaygCreditActive && (
             <GoogleOptimizeExperiment
               experimentID={CREDIT_250_EXPERIMENT_ID}
               variants={[

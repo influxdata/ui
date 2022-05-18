@@ -1,0 +1,16 @@
+
+// .ScrollbarsCustom-Wrapper .cf-dapper-scrollbars--wrapper {
+//     position: relative;
+// }
+
+.helpBarStyle {
+    margin-top: 365px !important;
+    // position: absolute !important;
+    // bottom: 0 !important;
+}
+
+*:last-of-type > .cf-tree-nav--sub-menu-trigger:last-of-type {
+    height: 225px;
+    bottom: 0;
+    top: unset;
+}

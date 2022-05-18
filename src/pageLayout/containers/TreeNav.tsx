@@ -27,6 +27,7 @@ import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
 import {AppState} from 'src/types'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import './TreeNav.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
@@ -70,7 +71,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
         setNavbarMode('expanded')
       }
     }
-
+  
     // Hiding Contact Support and Feedback code for Help Bar phase 1 release
     // https://github.com/influxdata/ui/issues/3457
     // https://github.com/influxdata/ui/issues/3454
@@ -163,6 +164,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
               icon={<Icon glyph={IconFont.QuestionMark_New} />}
               label="Help & Support"
               shortLabel="Support"
+              className="helpBarStyle" // margin-top is 365px or position: absolute bottom: 0
             >
               <TreeNav.SubMenu>
                 <TreeNav.SubHeading label="Support" />

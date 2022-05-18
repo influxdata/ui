@@ -7,7 +7,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {getSortedBuckets} from 'src/buckets/selectors'
 import {getStatus} from 'src/resources/selectors'
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 import {
   FluxResult,
   QueryScope,
@@ -575,6 +575,9 @@ export const QueryProvider: FC = ({children}) => {
       .then(raw => {
         if (isFlagEnabled('fastFlows')) {
           return parseCSV(raw.csv)
+        }
+        if (isFlagEnabled('fastFromFlux')) {
+          return fastFromFlux(raw.csv)
         }
         return fromFlux(raw.csv)
       })

@@ -1,11 +1,12 @@
 // Libraries
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 
 // Utils
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
 import {parseSearchInput, searchExprToFlux} from 'src/eventViewer/utils/search'
 import {findNodes} from 'src/shared/utils/ast'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {
@@ -149,7 +150,9 @@ export const processResponse = ({
       return Promise.reject(new Error(resp.message))
     }
 
-    const {table} = fromFlux(resp.csv)
+    const {table} = isFlagEnabled('fastFromFlux')
+      ? fastFromFlux(resp.csv)
+      : fromFlux(resp.csv)
     const rows: Row[] = []
 
     for (let i = 0; i < table.length; i++) {

@@ -16,22 +16,21 @@ import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
 
 // Utils
 import {getActiveQuery, getActiveTimeMachine} from 'src/timeMachine/selectors'
-import {
-  functionRequiresNewLine,
-  generateImport,
-} from 'src/timeMachine/utils/insertFunction'
+import {generateImport} from 'src/timeMachine/utils/insertFunction'
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
+import {
+  isPipeTransformation,
+  functionRequiresNewLine,
+  InjectionType,
+  calcInjectionPosition,
+  moveCursorAndTriggerSuggest,
+} from 'src/shared/utils/fluxFunctions'
 
 // Types
-import {
-  FluxToolbarFunction,
-  FluxFunction,
-  EditorType,
-  MonacoRange,
-} from 'src/types'
+import {FluxToolbarFunction, FluxFunction, EditorType} from 'src/types'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
@@ -66,74 +65,46 @@ const TimeMachineFluxEditor: FC = () => {
     handleSetActiveQueryText(editorInstance.getValue())
   }
 
-  const getInsertLineNumber = (currentLineNumber: number): number => {
-    const scriptLines = activeQueryText.split('\n')
-
-    const currentLine =
-      scriptLines[currentLineNumber] || scriptLines[scriptLines.length - 1]
-
-    // Insert on the current line if its an empty line
-    if (!currentLine.trim()) {
-      return currentLineNumber
-    }
-
-    return currentLineNumber + 1
-  }
-
-  const defaultColumnPosition = 1 // beginning column of the row
-
-  const getFluxTextAndRange = (func): {text: string; range: MonacoRange} => {
+  const getFluxTextAndRange = func => {
     if (!editorInstance) {
       return null
     }
-    const p = editorInstance.getPosition()
-    const insertLineNumber = getInsertLineNumber(p.lineNumber)
 
-    let row = insertLineNumber
+    const type =
+      isPipeTransformation(func) || functionRequiresNewLine(func)
+        ? InjectionType.OnOwnLine
+        : InjectionType.SameLine
 
-    const [currentRange] = editorInstance.getVisibleRanges()
-    // Determines whether the new insert line is beyond the current range
-    let shouldInsertOnNextLine = insertLineNumber > currentRange.endLineNumber
-    // edge case for when user toggles to the script editor
-    // this defaults the cursor to the initial position (top-left, 1:1 position)
-    if (p.lineNumber === 1 && p.column === defaultColumnPosition) {
-      // adds the function to the end of the query
-      shouldInsertOnNextLine = true
-      row = currentRange.endLineNumber + 1
-    }
-
-    let text = ''
-    if (shouldInsertOnNextLine) {
-      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
-        // only fluxTypes with <- sign require a pipe forward sign
-        text = func.fluxType.startsWith('<-', 1)
-          ? `\n  |> ${func.example}`
-          : `\n   ${func.example}`
-      } else {
-        text = `\n  |> ${func.example}`
-      }
-    } else {
-      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
-        text = func.fluxType.startsWith('<-', 1)
-          ? `  |> ${func.example}\n`
-          : `   ${func.example}\n`
-      } else {
-        text = `  |> ${func.example}\n`
-      }
-    }
-
-    if (functionRequiresNewLine(func.name)) {
-      text = `\n${func.example}\n`
-    }
-
-    const range = new monaco.Range(
+    const {
       row,
-      defaultColumnPosition,
-      row,
-      defaultColumnPosition
-    )
+      column,
+      shouldStartWithNewLine,
+      shouldEndInNewLine,
+    } = calcInjectionPosition(editorInstance, type)
 
-    return {text, range}
+    let text = isPipeTransformation(func)
+      ? `  |> ${func.example.trimRight()}`
+      : `${func.example.trimRight()}`
+
+    if (shouldStartWithNewLine) {
+      text = `\n${text}`
+    }
+    if (shouldEndInNewLine) {
+      text = `${text}\n`
+    }
+
+    const range = new monaco.Range(row, column, row, column)
+
+    return {
+      text,
+      range,
+      injectionPosition: {
+        shouldStartWithNewLine,
+        shouldEndInNewLine,
+        row,
+        column,
+      },
+    }
   }
 
   const handleInsertFluxFunction = (
@@ -142,11 +113,13 @@ const TimeMachineFluxEditor: FC = () => {
     if (!editorInstance) {
       return
     }
-    const {text, range} = getFluxTextAndRange(
+
+    const funcDefn =
       CLOUD && isFlagEnabled('fluxDynamicDocs')
         ? getFluxExample(func as FluxFunction)
         : func
-    )
+
+    const {text, range, injectionPosition} = getFluxTextAndRange(funcDefn)
 
     const edits = [
       {
@@ -167,6 +140,15 @@ const TimeMachineFluxEditor: FC = () => {
     }
     editorInstance.executeEdits('', edits)
     handleSetActiveQueryText(editorInstance.getValue())
+
+    if (isFlagEnabled('fluxDynamicDocs')) {
+      moveCursorAndTriggerSuggest(
+        editorInstance,
+        injectionPosition,
+        !!importStatement,
+        text.length
+      )
+    }
   }
 
   const handleActiveQuery = React.useCallback(

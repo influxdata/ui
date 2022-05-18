@@ -15,7 +15,7 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type SortKey = keyof Authorization
 

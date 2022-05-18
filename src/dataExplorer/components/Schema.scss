@@ -1,17 +1,11 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-.data-selection--title {
-  font-size: large;
-  font-weight: bold;
-}
-
 .scroll--container {
   position: absolute;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
-  margin-top: $cf-space-l;
 }
 
 .data-schema {

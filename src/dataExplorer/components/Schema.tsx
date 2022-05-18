@@ -60,19 +60,16 @@ const FieldsTags: FC = () => {
 const Schema: FC = () => {
   return (
     <NewDataExplorerProvider>
-      <div>
-        <div className="data-selection--title">Data Selection</div>
-        <div className="scroll--container">
-          <DapperScrollbars>
-            <div className="data-schema">
-              <BucketSelector />
-              <div className="container-side-bar">
-                <MeasurementSelector />
-                <FieldsTags />
-              </div>
+      <div className="scroll--container">
+        <DapperScrollbars>
+          <div className="data-schema">
+            <BucketSelector />
+            <div className="container-side-bar">
+              <MeasurementSelector />
+              <FieldsTags />
             </div>
-          </DapperScrollbars>
-        </div>
+          </div>
+        </DapperScrollbars>
       </div>
     </NewDataExplorerProvider>
   )

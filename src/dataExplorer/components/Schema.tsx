@@ -1,5 +1,6 @@
 import React, {FC, useContext, useMemo} from 'react'
 import {useSelector} from 'react-redux'
+import {isEmpty} from 'lodash'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
@@ -40,7 +41,7 @@ const FieldsTags: FC = () => {
   }
 
   return useMemo(() => {
-    if (!selectedBucket || !selectedMeasurement) {
+    if (isEmpty(selectedBucket) || !selectedMeasurement) {
       return null
     }
 

@@ -1,17 +1,17 @@
 import React, {FC, createContext, useState, useMemo} from 'react'
 
 // Types
-import {Field, RemoteDataState} from 'src/types'
+import {Bucket, Field, RemoteDataState} from 'src/types'
 
 interface NewDataExplorerContextType {
   // Schema
-  selectedBucket: string // TODO: type Bucket?
+  selectedBucket: Bucket
   measurements: string[] // TODO: type MeasurementSchema?
   selectedMeasurement: string // TODO: type Measurement?
   fields: Field[]
   tags: any[]
   searchTerm: string // for searching fields and tags
-  selectBucket: (bucket: string) => void // TODO: type Bucket?
+  selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void // TODO: type Measurement?
   setSearchTerm: (str: string) => void
 
@@ -23,15 +23,15 @@ interface NewDataExplorerContextType {
 
 const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   // Schema
-  selectedBucket: '',
+  selectedBucket: null,
   measurements: [],
   selectedMeasurement: '',
   fields: [],
   tags: [],
   searchTerm: '',
-  setSearchTerm: _s => {},
-  selectBucket: _b => {},
-  selectMeasurement: _m => {},
+  selectBucket: (_b: Bucket) => {},
+  selectMeasurement: (_m: string) => {},
+  setSearchTerm: (_s: string) => {},
 
   // Query building
   query: '',
@@ -54,14 +54,14 @@ const SAMPLE_MEASUREMENT = [
 export const NewDataExplorerProvider: FC = ({children}) => {
   const [loading] = useState(RemoteDataState.NotStarted)
   const [query, setQuery] = useState('')
-  const [selectedBucket, setSelectedBucket] = useState('')
+  const [selectedBucket, setSelectedBucket] = useState(null)
   const [measurements, setMeasurements] = useState([])
   const [selectedMeasurement, setSelectedMeasurement] = useState('')
   const [fields, setFields] = useState([])
   const [tags, setTags] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
 
-  const handleSelectBucket = (bucket: string): void => {
+  const handleSelectBucket = (bucket: Bucket): void => {
     setSelectedBucket(bucket)
 
     // Reset measurement, tags, and fields

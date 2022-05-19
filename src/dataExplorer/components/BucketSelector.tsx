@@ -15,7 +15,12 @@ const BucketSelector: FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSelectBucket = (option: string) => {
-    selectBucket(option)
+    const bucket = buckets.filter(b => b.name === option)
+    if (!bucket.length) {
+      // TODO: any error message?
+      return
+    }
+    selectBucket(bucket[0])
   }
 
   const handleChangeSearchTerm = (value: string) => {
@@ -28,7 +33,7 @@ const BucketSelector: FC = () => {
       <SearchableDropdown
         searchTerm={searchTerm}
         searchPlaceholder="Search buckets"
-        selectedOption={selectedBucket || 'Select bucket...'}
+        selectedOption={selectedBucket?.name || 'Select bucket...'}
         onSelect={handleSelectBucket}
         onChangeSearchTerm={handleChangeSearchTerm}
         options={buckets.map(b => b.name)}

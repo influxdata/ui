@@ -15,6 +15,7 @@ export interface InjectionOptions {
   text: string
   type: InjectionType
   triggerSuggest?: boolean
+  updateTextToParentState: (t: string) => void
 }
 
 export function calcInjectionPosition(

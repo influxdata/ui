@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useMemo} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useMemo} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -19,6 +19,7 @@ import {getSecrets} from 'src/secrets/actions/thunks'
 import {getAllSecrets} from 'src/resources/selectors'
 
 // Injection
+import {PipeContext} from 'src/flows/context/pipe'
 import {InjectionOptions, InjectionType} from 'src/shared/contexts/editor'
 
 // Utils
@@ -32,6 +33,8 @@ interface Props {
 const SecretsList: FC<Props> = ({inject}) => {
   const dispatch = useDispatch()
   const secrets = useSelector(getAllSecrets)
+  const {data, update} = useContext(PipeContext)
+  const {queries, activeQuery} = data
 
   const handleCreateSecret = () => {
     event('Create Secret Modal Opened')
@@ -40,17 +43,31 @@ const SecretsList: FC<Props> = ({inject}) => {
     )
   }
 
+  const updateText = useCallback(
+    text => {
+      const _queries = [...queries]
+      _queries[activeQuery] = {
+        ...queries[activeQuery],
+        text,
+      }
+
+      update({queries: _queries})
+    },
+    [queries, activeQuery]
+  )
+
   const onSelect = useCallback(
     secret => {
       const options = {
         text: `secrets.get(key: "${secret.id}") `,
         type: InjectionType.SameLine,
         header: `import "influxdata/influxdb/secrets"`,
+        updateTextToParentState: updateText,
       }
       inject(options)
       event('Inject secret into Flux Script', {secret: secret.id})
     },
-    [inject]
+    [inject, updateText]
   )
 
   useEffect(() => {

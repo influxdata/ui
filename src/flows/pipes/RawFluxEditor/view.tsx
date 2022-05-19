@@ -52,12 +52,12 @@ const FluxMonacoEditor = lazy(() =>
 )
 
 const Query: FC<PipeProp> = ({Context}) => {
-  const {id, data} = useContext(PipeContext)
+  const {id, data, update} = useContext(PipeContext)
   const {hideSub, id: showId, show, showSub, register} = useContext(
     SidebarContext
   )
   const editorContext = useContext(EditorContext)
-  const {setEditor, inject, updateText} = editorContext
+  const {setEditor, inject} = editorContext
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
   const {variables} = useContext(VariablesContext)
@@ -78,6 +78,19 @@ const Query: FC<PipeProp> = ({Context}) => {
       ])
     }
   }, [id, inject])
+
+  const updateText = useCallback(
+    text => {
+      const _queries = [...queries]
+      _queries[activeQuery] = {
+        ...queries[activeQuery],
+        text,
+      }
+
+      update({queries: _queries})
+    },
+    [queries, activeQuery]
+  )
 
   const injectIntoEditor = useCallback(
     (fn): void => {
@@ -112,10 +125,11 @@ const Query: FC<PipeProp> = ({Context}) => {
         type,
         header: getHeader(fn),
         triggerSuggest: true,
+        updateTextToParentState: updateText,
       }
       inject(options)
     },
-    [inject]
+    [inject, updateText]
   )
 
   const launcher = () => {

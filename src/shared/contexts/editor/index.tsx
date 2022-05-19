@@ -1,12 +1,5 @@
-import React, {
-  FC,
-  createContext,
-  useState,
-  useCallback,
-  useContext,
-} from 'react'
+import React, {FC, createContext, useState, useCallback} from 'react'
 import {EditorType} from 'src/types'
-import {PipeContext} from 'src/flows/context/pipe'
 import {
   InjectionType,
   InjectionOptions,
@@ -19,35 +12,18 @@ export interface EditorContextType {
   editor: EditorType | null
   setEditor: (editor: EditorType) => void
   inject: (options: InjectionOptions) => void
-  updateText: (t: string) => void
 }
 
 const DEFAULT_CONTEXT: EditorContextType = {
   editor: null,
   setEditor: _ => {},
   inject: _ => {},
-  updateText: _ => {},
 }
 
 export const EditorContext = createContext<EditorContextType>(DEFAULT_CONTEXT)
 
 export const EditorProvider: FC = ({children}) => {
   const [editor, setEditor] = useState<EditorType>(null)
-  const {data, update} = useContext(PipeContext)
-  const {queries, activeQuery} = data
-
-  const updateText = useCallback(
-    text => {
-      const _queries = [...queries]
-      _queries[activeQuery] = {
-        ...queries[activeQuery],
-        text,
-      }
-
-      update({queries: _queries})
-    },
-    [queries, activeQuery]
-  )
 
   const inject = useCallback(
     (options: InjectionOptions) => {
@@ -55,7 +31,13 @@ export const EditorProvider: FC = ({children}) => {
         return {}
       }
 
-      const {header, text: initT, type, triggerSuggest} = options
+      const {
+        header,
+        text: initT,
+        type,
+        triggerSuggest,
+        updateTextToParentState: updateText,
+      } = options
       const injectionPosition = calcInjectionPosition(editor, type)
       const {
         row,
@@ -106,7 +88,7 @@ export const EditorProvider: FC = ({children}) => {
         )
       }
     },
-    [editor, updateText]
+    [editor]
   )
 
   return (
@@ -115,7 +97,6 @@ export const EditorProvider: FC = ({children}) => {
         editor,
         setEditor,
         inject,
-        updateText,
       }}
     >
       {children}

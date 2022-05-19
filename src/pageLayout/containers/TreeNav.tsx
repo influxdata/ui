@@ -6,7 +6,7 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {Icon, IconFont, TreeNav} from '@influxdata/clockface'
+import {Icon, IconFont, TreeNav, PopoverPosition} from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
 import OrgSettings from 'src/cloud/components/OrgSettings'
@@ -71,7 +71,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
         setNavbarMode('expanded')
       }
     }
-  
+
     // Hiding Contact Support and Feedback code for Help Bar phase 1 release
     // https://github.com/influxdata/ui/issues/3457
     // https://github.com/influxdata/ui/issues/3454
@@ -166,7 +166,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
               shortLabel="Support"
               className="helpBarStyle" // margin-top is 365px or position: absolute bottom: 0
             >
-              <TreeNav.SubMenu>
+              <TreeNav.SubMenu position={PopoverPosition.ToTheRight}>
                 <TreeNav.SubHeading label="Support" />
                 <TreeNav.SubItem
                   id="documentation"

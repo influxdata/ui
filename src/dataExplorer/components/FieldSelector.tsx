@@ -1,14 +1,17 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
+// Contexts
+import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
+
 // Syles
 import './Schema.scss'
 
 const FieldSelector: FC = () => {
-  const fields = ['air_temp_degc', 'avg_wave_period_sec', 'dewpoint_temp_degc']
+  const {fields} = useContext(NewDataExplorerContext)
 
   let list: JSX.Element | JSX.Element[] = (
     <div className="field-selector--list-item">No Fields Found</div>

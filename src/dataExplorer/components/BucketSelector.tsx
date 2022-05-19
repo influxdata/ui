@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
@@ -10,18 +10,13 @@ import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
 import {BucketContext} from 'src/shared/contexts/buckets'
 
 const BucketSelector: FC = () => {
-  const {data, updateData} = useContext(NewDataExplorerContext)
+  const {selectedBucket, selectBucket} = useContext(NewDataExplorerContext)
   const {buckets} = useContext(BucketContext)
   const [searchTerm, setSearchTerm] = useState('')
-  const selectedBucket = data?.bucket
 
-  const handleSelectBucket = useCallback(
-    (option: string) => {
-      // TODO: reset measurement, tags and fields to null
-      updateData({bucket: option})
-    },
-    [updateData, selectedBucket]
-  )
+  const handleSelectBucket = (option: string) => {
+    selectBucket(option)
+  }
 
   const handleChangeSearchTerm = (value: string) => {
     setSearchTerm(value)

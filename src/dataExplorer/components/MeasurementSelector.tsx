@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useMemo, useState} from 'react'
+import React, {FC, useContext, useMemo, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
@@ -9,32 +9,24 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
 
 const MeasurementSelector: FC = () => {
-  const {data, updateData} = useContext(NewDataExplorerContext)
+  const {
+    measurements,
+    selectedBucket,
+    selectedMeasurement,
+    selectMeasurement,
+  } = useContext(NewDataExplorerContext)
   const [searchTerm, setSearchTerm] = useState('')
-  const selectedMeasurement = data?.measurement
 
-  const measurements = [
-    'airSensors',
-    'average_temperature',
-    'coindesk',
-    'earthquake',
-    'explosion',
-  ]
-
-  const handleSelect = useCallback(
-    (option: string): void => {
-      // TODO: reset tags and fields to null
-      updateData({...data, measurement: option})
-    },
-    [data, updateData]
-  )
+  const handleSelect = (option: string): void => {
+    selectMeasurement(option)
+  }
 
   const handleChangeSearchTerm = (value: string) => {
     setSearchTerm(value)
   }
 
   return useMemo(() => {
-    if (!data?.bucket) {
+    if (!selectedBucket) {
       return null
     }
 
@@ -57,7 +49,7 @@ const MeasurementSelector: FC = () => {
         />
       </div>
     )
-  }, [data])
+  }, [selectedBucket, measurements])
 }
 
 export default MeasurementSelector

@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext, useMemo} from 'react'
+import React, {FC, useContext, useMemo} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -8,11 +8,13 @@ import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldSelector from 'src/dataExplorer/components/FieldSelector'
 import TagSelector from 'src/dataExplorer/components/TagSelector'
-import {NewDataExplorerProvider} from 'src/dataExplorer/context/newDataExplorer'
 import WaitingText from 'src/shared/components/WaitingText'
 
 // Context
-import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
+import {
+  NewDataExplorerContext,
+  NewDataExplorerProvider,
+} from 'src/dataExplorer/context/newDataExplorer'
 import {BucketProvider} from 'src/shared/contexts/buckets'
 
 // Types
@@ -25,20 +27,20 @@ import {getOrg} from 'src/organizations/selectors'
 import './Schema.scss'
 
 const FieldsTags: FC = () => {
-  const {loading, data} = useContext(NewDataExplorerContext)
-
-  const [searchTerm, setSearchTerm] = useState('')
+  const {
+    loading,
+    selectedBucket,
+    selectedMeasurement,
+    searchTerm,
+    setSearchTerm,
+  } = useContext(NewDataExplorerContext)
 
   const handleSearchFieldsTags = (searchTerm: string): void => {
-    // TODO
-    /* eslint-disable no-console */
-    console.log('Search: ', searchTerm)
-    /* eslint-disable no-console */
     setSearchTerm(searchTerm)
   }
 
   return useMemo(() => {
-    if (!data?.bucket || !data?.measurement) {
+    if (!selectedBucket || !selectedMeasurement) {
       return null
     }
 
@@ -57,7 +59,7 @@ const FieldsTags: FC = () => {
         <TagSelector />
       </div>
     )
-  }, [loading, data])
+  }, [selectedBucket, selectedMeasurement, loading])
 }
 
 const Schema: FC = () => {

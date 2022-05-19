@@ -1451,7 +1451,7 @@
     gud "^1.0.0"
     warning "^4.0.3"
 
-"@influxdata/clockface@^4.0.2":
+"@influxdata/clockface@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-4.1.0.tgz#f3c742f9f5099ffffc6c198d70f497a2b94457a3"
   integrity sha512-Pk/aumfSdE6Wun6d1zwtx2OIe/g7oqdskc3wMJewn36OhVy/iIzPBzVXrSS0J+ysgTQu2S9CGLsCTp28qB/vKA==

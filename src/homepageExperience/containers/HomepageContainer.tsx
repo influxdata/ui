@@ -70,6 +70,14 @@ export const HomepageContainer: FC = () => {
     event('firstMile.moreButton.clicked')
   }
 
+  const logCLIButtonClick = () => {
+    event('firstMile.CLIButton.clicked')
+  }
+
+  const logTelegrafButtonClick = () => {
+    event('firstMile.telegrafButton.clicked')
+  }
+
   return (
     <>
       <Page titleTag={pageTitleSuffixer(['Get Started'])}>
@@ -155,7 +163,11 @@ export const HomepageContainer: FC = () => {
                     </ResourceCard>
                   </SquareGrid>
                   <hr style={{marginTop: '32px'}} />
-                  <Link to={cliPageLink} style={linkStyle}>
+                  <Link
+                    to={cliPageLink}
+                    style={linkStyle}
+                    onClick={logCLIButtonClick}
+                  >
                     <div className="homepage-write-data-tile">
                       <div className="tile-icon-text-wrapper">
                         <div className="icon">{CLIIcon}</div>
@@ -174,7 +186,11 @@ export const HomepageContainer: FC = () => {
                       />
                     </div>
                   </Link>
-                  <Link to={telegrafPageLink} style={linkStyle}>
+                  <Link
+                    to={telegrafPageLink}
+                    style={linkStyle}
+                    onClick={logTelegrafButtonClick}
+                  >
                     <div className="homepage-write-data-tile">
                       <div className="tile-icon-text-wrapper">
                         <div className="icon">{TelegrafIcon}</div>

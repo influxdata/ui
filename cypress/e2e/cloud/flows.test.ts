@@ -282,13 +282,13 @@ describe('Flows', () => {
   })
 })
 
-describe('Flows with queryBuilderUseMetadataCaching flag on', () => {
+describe('Flows with newQueryBuilder flag on', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
-        cy.setFeatureFlags({queryBuilderUseMetadataCaching: true}).then(() => {
+        cy.setFeatureFlags({newQueryBuilder: true}).then(() => {
           cy.visit(`${orgs}/${id}`)
         })
       })

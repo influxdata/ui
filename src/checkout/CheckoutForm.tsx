@@ -39,10 +39,7 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 import {event} from 'src/cloud/utils/reporting'
 
 // Constants
-import {
-  CREDIT_250_EXPERIMENT_ID,
-  PAYG_CREDIT_EXPERIMENT_ID,
-} from 'src/shared/constants'
+import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -82,7 +79,7 @@ const CheckoutForm: FC = () => {
           >
             Upgrade to Usage-Based Account
           </h1>
-          {isFlagEnabled('credit250Experiment') && (
+          {isFlagEnabled('credit250Experiment') && !isPaygCreditActive && (
             <GoogleOptimizeExperiment
               experimentID={CREDIT_250_EXPERIMENT_ID}
               variants={[
@@ -124,7 +121,7 @@ const CheckoutForm: FC = () => {
 
               {isPaygCreditActive && (
                 <GoogleOptimizeExperiment
-                  experimentID={PAYG_CREDIT_EXPERIMENT_ID}
+                  experimentID={CREDIT_250_EXPERIMENT_ID}
                   variants={[
                     <div
                       className="checkout-form--banner"

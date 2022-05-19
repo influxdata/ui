@@ -115,6 +115,7 @@ export default class VariableForm extends PureComponent<Props, State> {
             <Grid.Row>
               <Grid.Column>
                 <VariableArgumentsEditor
+                  variables={[]}
                   onChange={this.handleChangeArgs}
                   onSelectMapDefault={this.handleSelectMapDefault}
                   selected={selected}

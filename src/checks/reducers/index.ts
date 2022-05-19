@@ -22,11 +22,11 @@ import {
 
 export type ChecksState = ResourceState['checks']
 
-export const defaultChecksState: ChecksState = {
+export const defaultChecksState = (): ChecksState => ({
   status: RemoteDataState.NotStarted,
   byID: {},
   allIDs: [],
-}
+})
 
 export interface ResourceIDs {
   checkIDs: {[x: string]: boolean}
@@ -35,7 +35,7 @@ export interface ResourceIDs {
 }
 
 export default (
-  state: ChecksState = defaultChecksState,
+  state: ChecksState = defaultChecksState(),
   action: Action
 ): ChecksState =>
   produce(state, draftState => {

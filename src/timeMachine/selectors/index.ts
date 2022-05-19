@@ -1,7 +1,7 @@
 // Libraries
 import memoizeOne from 'memoize-one'
 import {get} from 'lodash'
-import {fromFlux, Table} from '@influxdata/giraffe'
+import {fromFlux, fastFromFlux, Table} from '@influxdata/giraffe'
 
 // Utils
 import {
@@ -13,6 +13,7 @@ import {
   getStringColumns as getStringColumnsUtil,
   getMainColumnName,
 } from 'src/shared/utils/vis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {
   calcWindowPeriodForDuration,
@@ -111,7 +112,9 @@ export const getWindowPeriodFromTimeRange = (state: AppState): string => {
   )
 }
 
-const getVisTableMemoized = memoizeOne(fromFlux)
+const getVisTableMemoized = isFlagEnabled('fastFromFlux')
+  ? memoizeOne(fastFromFlux)
+  : memoizeOne(fromFlux)
 
 export const getVisTable = (
   state: AppState

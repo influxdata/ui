@@ -13,7 +13,7 @@ import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
 import {Page} from '@influxdata/clockface'
 
-// Actions
+// Actions and Selectors
 import {
   setCurrentScript,
   setTaskOption,
@@ -25,6 +25,7 @@ import {
   cancel,
   setAllTaskOptionsByID,
 } from 'src/tasks/actions/thunks'
+import {getAllVariables} from 'src/variables/selectors'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -90,6 +91,7 @@ class TaskEditPage extends PureComponent<Props> {
               >
                 <FluxMonacoEditor
                   script={currentScript}
+                  variables={this.props.variables}
                   onChangeScript={this.handleChangeScript}
                   autofocus
                 />
@@ -142,6 +144,7 @@ const mstp = (state: AppState) => {
     taskOptions,
     currentScript,
     currentTask,
+    variables: getAllVariables(state),
   }
 }
 

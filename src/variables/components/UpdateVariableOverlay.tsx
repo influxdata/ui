@@ -130,6 +130,7 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
                   <Grid.Row>
                     <Grid.Column>
                       <VariableArgumentsEditor
+                        variables={this.props.variables}
                         onChange={this.handleChangeArgs}
                         onSelectMapDefault={this.handleSelectMapDefault}
                         selected={workingVariable.selected}

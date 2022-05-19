@@ -9,18 +9,11 @@ import {EditorType} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
 import {
   InjectionType,
+  InjectionOptions,
   calcInjectionPosition,
   moveCursorAndTriggerSuggest,
-} from 'src/shared/utils/fluxFunctions'
-export {InjectionType, InjectionPosition} from 'src/shared/utils/fluxFunctions'
+} from 'src/shared/contexts/editor/injection'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-export interface InjectionOptions {
-  header?: string | null
-  text: string
-  type: InjectionType
-  triggerSuggest?: boolean
-}
 
 export interface EditorContextType {
   editor: EditorType | null
@@ -128,4 +121,11 @@ export const EditorProvider: FC = ({children}) => {
       {children}
     </EditorContext.Provider>
   )
+}
+
+export {
+  InjectionType,
+  InjectionOptions,
+  calcInjectionPosition,
+  moveCursorAndTriggerSuggest,
 }

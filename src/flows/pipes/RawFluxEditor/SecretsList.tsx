@@ -18,8 +18,8 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {getSecrets} from 'src/secrets/actions/thunks'
 import {getAllSecrets} from 'src/resources/selectors'
 
-// Context
-import {InjectionOptions, InjectionType} from 'src/flows/context/editor'
+// Injection
+import {InjectionOptions, InjectionType} from 'src/shared/contexts/editor'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'

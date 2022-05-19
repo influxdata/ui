@@ -24,10 +24,12 @@ import {getFluxExample} from 'src/shared/utils/fluxExample'
 import {
   isPipeTransformation,
   functionRequiresNewLine,
+} from 'src/shared/utils/fluxFunctions'
+import {
   InjectionType,
   calcInjectionPosition,
   moveCursorAndTriggerSuggest,
-} from 'src/shared/utils/fluxFunctions'
+} from 'src/shared/contexts/editor'
 
 // Types
 import {

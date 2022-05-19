@@ -27,7 +27,7 @@ import {
   EditorContext,
   EditorProvider,
   InjectionType,
-} from 'src/flows/context/editor'
+} from 'src/shared/contexts/editor'
 import {VariablesContext} from 'src/flows/context/variables'
 
 // Components

@@ -30,6 +30,7 @@ import {CLOUD} from 'src/shared/constants'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 
 // Types
 import {Me} from 'src/client/unityRoutes'
@@ -81,7 +82,7 @@ const GetOrganizations: FunctionComponent = () => {
       window.dataLayer.push({
         identity: {
           account_type,
-          account_created_at,
+          account_created_at: convertStringToEpoch(account_created_at),
           id: meId,
           email,
           organization_id: orgId,

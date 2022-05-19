@@ -164,7 +164,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
               icon={<Icon glyph={IconFont.QuestionMark_New} />}
               label="Help & Support"
               shortLabel="Support"
-              className="helpBarStyle" // margin-top is 365px or position: absolute bottom: 0
+              className="helpBarStyle"
             >
               <TreeNav.SubMenu position={PopoverPosition.ToTheRight}>
                 <TreeNav.SubHeading label="Support" />

@@ -11,7 +11,7 @@ import CSVVariableBuilder from 'src/variables/components/CSVVariableBuilder'
 import {Form} from '@influxdata/clockface'
 
 // Types
-import {KeyValueMap, VariableProperties} from 'src/types'
+import {KeyValueMap, VariableProperties, Variable} from 'src/types'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
@@ -22,11 +22,12 @@ interface Props {
   onChange: (update: {args: VariableProperties; isValid: boolean}) => void
   onSelectMapDefault: (selectedKey: string) => void
   selected: string[]
+  variables: Variable[]
 }
 
 class VariableArgumentsEditor extends PureComponent<Props> {
   render() {
-    const {args, onSelectMapDefault, selected} = this.props
+    const {args, onSelectMapDefault, selected, variables} = this.props
     switch (args.type) {
       case 'query':
         return (
@@ -42,6 +43,7 @@ class VariableArgumentsEditor extends PureComponent<Props> {
               >
                 <FluxMonacoEditor
                   script={args.values.query}
+                  variables={variables}
                   onChangeScript={this.handleChangeQuery}
                   autofocus
                 />

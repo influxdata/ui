@@ -430,29 +430,16 @@ describe('DataExplorer', () => {
         .click()
     })
 
-    it('shows the proper errors and query button state', () => {
+    it('shows the proper query button state', () => {
       cy.getByTestID('time-machine-submit-button').should('be.disabled')
 
       cy.getByTestID('time-machine--bottom').then(() => {
         cy.getByTestID('flux-editor', {timeout: 30000})
           .should('be.visible')
-          .monacoType('foo |> bar')
-          .within(() => {
-            cy.get('.squiggly-error', {timeout: 30000}).should('be.visible')
-          })
-          .monacoType('{selectall} {backspace}')
-          .monacoType('from(')
-          .within(() => {
-            cy.get('[widgetid="editor.widget.suggestWidget"]', {
-              timeout: 30000,
-            }).should('be.visible')
-          })
-          .monacoType(`{selectall}{del}from(bucket: )`)
+          .monacoType(`{selectall}{del}from(bucket: "my-bucket")`)
       })
 
       cy.getByTestID('time-machine-submit-button').should('not.be.disabled')
-
-      cy.getByTestID('flux-editor').monacoType('yo')
       cy.getByTestID('flux-editor').monacoType('{selectall}{del}')
     })
 

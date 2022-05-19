@@ -59,7 +59,6 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth, tokenIsSelected, onCheckboxClick} = this.props
     const date = new Date(auth.createdAt)
-    const enableBulkActionDelete = isFlagEnabled('bulkActionDelete')
 
     return (
       <ResourceCard
@@ -69,7 +68,7 @@ class TokensRow extends PureComponent<Props> {
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
-        cardSelectable={enableBulkActionDelete}
+        cardSelectable={isFlagEnabled('bulkActionDeleteTokens')}
         cardSelected={tokenIsSelected}
         handleCardSelection={() => onCheckboxClick(auth)}
         id={auth.id}

@@ -134,7 +134,7 @@ class TokensTab extends PureComponent<Props, State> {
 
     const leftHeaderItems = (
       <>
-        {isFlagEnabled('bulkActionDelete') && (
+        {isFlagEnabled('bulkActionDeleteTokens') && (
           <Toggle
             type={InputToggleType.Checkbox}
             checked={tokensSelectedForBatchOperation.length > 0}
@@ -149,7 +149,7 @@ class TokensTab extends PureComponent<Props, State> {
           />
         )}
 
-        {isFlagEnabled('bulkActionDelete') &&
+        {isFlagEnabled('bulkActionDeleteTokens') &&
           tokensSelectedForBatchOperation.length > 0 && (
             <ConfirmationButton
               confirmationButtonText="Delete"
@@ -226,7 +226,7 @@ class TokensTab extends PureComponent<Props, State> {
                     searchKeys={this.searchKeys}
                   >
                     {filteredAuths =>
-                      isFlagEnabled('bulkActionDelete') ? (
+                      isFlagEnabled('bulkActionDeleteTokens') ? (
                         <TokenList
                           tokenCount={tokens.length}
                           auths={filteredAuths}

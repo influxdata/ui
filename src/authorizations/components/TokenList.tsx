@@ -72,7 +72,7 @@ export default class TokenList extends PureComponent<Props, State> {
     }
 
     // send the tokens info up once when the component finishes mounting
-    if (isFlagEnabled('bulkActionDelete')) {
+    if (isFlagEnabled('bulkActionDeleteTokens')) {
       this.passTokensInformationToParent()
     }
   }
@@ -94,7 +94,7 @@ export default class TokenList extends PureComponent<Props, State> {
       this.setState({authInView})
 
       // send the tokens info up when new tokens are passed as props (e.g: search filter was used by the user)
-      if (isFlagEnabled('bulkActionDelete')) {
+      if (isFlagEnabled('bulkActionDeleteTokens')) {
         this.passTokensInformationToParent()
       }
     }
@@ -197,7 +197,7 @@ export default class TokenList extends PureComponent<Props, State> {
 
       if (auth) {
         paginatedAuths.push(
-          isFlagEnabled('bulkActionDelete') ? (
+          isFlagEnabled('bulkActionDeleteTokens') ? (
             <TokenRow
               key={auth.id}
               auth={auth}

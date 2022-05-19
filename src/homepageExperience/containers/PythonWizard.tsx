@@ -71,7 +71,13 @@ export class PythonWizard extends PureComponent<null, State> {
         ),
       },
       () => {
-        event('firstMile.pythonWizard.next.clicked')
+        console.log('clicked next')
+        console.log('current step is now ' + this.state.currentStep)
+        event(
+          'firstMile.pythonWizard.next.clicked',
+          {clickType: 'next'},
+          {step: this.state.currentStep}
+        )
       }
     )
   }
@@ -80,7 +86,13 @@ export class PythonWizard extends PureComponent<null, State> {
     this.setState(
       {currentStep: Math.max(this.state.currentStep - 1, 1)},
       () => {
-        event('firstMile.pythonWizard.previous.clicked')
+        console.log('clicked previous')
+        console.log('current step is now ' + this.state.currentStep)
+        event(
+          'firstMile.pythonWizard.previous.clicked',
+          {clickType: 'previous'},
+          {step: this.state.currentStep}
+        )
       }
     )
   }

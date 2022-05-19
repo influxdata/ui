@@ -1,4 +1,11 @@
-import React, {FC, createContext, useState, useMemo, useContext} from 'react'
+import React, {
+  FC,
+  createContext,
+  useState,
+  useMemo,
+  useContext,
+  useCallback,
+} from 'react'
 import {isEmpty} from 'lodash'
 
 // Constants
@@ -60,13 +67,6 @@ export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(
   DEFAULT_CONTEXT
 )
 
-const SAMPLE_MEASUREMENT = [
-  'airSensors',
-  'average_temperature',
-  'coindesk',
-  'earthquake',
-  'explosion',
-]
 interface Prop {
   scope: QueryScope
 }
@@ -82,26 +82,27 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   const [tags, setTags] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
 
-  const getMeasurements = async bucket => {
-    if (isEmpty(bucket)) {
-      return
-    }
+  const getMeasurements = useCallback(
+    async bucket => {
+      if (isEmpty(bucket)) {
+        return
+      }
 
-    // Simplified version of query from this file:
-    //   src/flows/pipes/QueryBuilder/context.tsx
-    let _source = 'import "regexp"\n'
-    if (bucket.type === 'sample') {
-      _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${bucket.id}")`
-    } else {
-      _source += `from(bucket: "${bucket.name}")`
-    }
+      // Simplified version of query from this file:
+      //   src/flows/pipes/QueryBuilder/context.tsx
+      let _source = 'import "regexp"\n'
+      if (bucket.type === 'sample') {
+        _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${bucket.id}")`
+      } else {
+        _source += `from(bucket: "${bucket.name}")`
+      }
 
-    const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-      ? EXTENDED_TAG_LIMIT
-      : DEFAULT_TAG_LIMIT
+      const limit = isFlagEnabled('increasedMeasurmentTagLimit')
+        ? EXTENDED_TAG_LIMIT
+        : DEFAULT_TAG_LIMIT
 
-    // TODO: can we do hard coded time range here?
-    let queryText = `${_source}
+      // TODO: can we do hard coded time range here?
+      let queryText = `${_source}
     |> range(start: -30d, stop: now())
     |> filter(fn: (r) => true)
     |> keep(columns: ["_measurement"])
@@ -110,9 +111,9 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     |> limit(n: ${limit})
     |> sort()`
 
-    if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `import "regexp"\nimport "influxdata/influxdb/schema"`
-      queryText = `${_source}
+      if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
+        _source = `import "regexp"\nimport "influxdata/influxdb/schema"`
+        queryText = `${_source}
       schema.tagValues(
         bucket: "${bucket.name}",
         tag: "_measurement",
@@ -122,30 +123,36 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       )
       |> limit(n: ${limit})
       |> sort()`
-    }
+      }
 
-    try {
-      const resp = await queryAPI(queryText, scope)
-      const values = (Object.values(resp.parsed.table.columns).filter(
-        c => c.name === '_value' && c.type === 'string'
-      )[0]?.data ?? []) as string[]
-      setMeasurements(values)
-    } catch (error) {
-      console.error(error.message)
-    }
-  }
+      try {
+        const resp = await queryAPI(queryText, scope)
+        const values = (Object.values(resp.parsed.table.columns).filter(
+          c => c.name === '_value' && c.type === 'string'
+        )[0]?.data ?? []) as string[]
+        setMeasurements(values)
+      } catch (error) {
+        console.error(error.message)
+      }
+    },
+    [scope]
+  )
 
-  const handleSelectBucket = (bucket: Bucket): void => {
-    setSelectedBucket(bucket)
+  const handleSelectBucket = useCallback(
+    (bucket: Bucket): void => {
+      setSelectedBucket(bucket)
 
-    // Reset measurement, tags, and fields
-    setSelectedMeasurement('')
-    setFields([])
-    setTags([])
+      // Reset measurement, tags, and fields
+      // TODO: loading status for measurements
+      setSelectedMeasurement('')
+      setFields([])
+      setTags([])
 
-    // Get measurement values
-    getMeasurements(bucket)
-  }
+      // Get measurement values
+      getMeasurements(bucket)
+    },
+    [getMeasurements]
+  )
 
   const handleSelectMeasurement = (measurement: string): void => {
     setSelectedMeasurement(measurement)
@@ -194,6 +201,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       fields,
       tags,
       searchTerm,
+      handleSelectBucket,
 
       // Query building
       query,

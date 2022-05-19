@@ -51,7 +51,6 @@ export default class TokenList extends PureComponent<Props, State> {
   public currentPage: number = 1
   public rowsPerPage: number = 10
   public totalPages: number
-  private enableBulkActionDelete = isFlagEnabled('bulkActionDelete')
 
   constructor(props) {
     super(props)
@@ -73,7 +72,7 @@ export default class TokenList extends PureComponent<Props, State> {
     }
 
     // send the tokens info up once when the component finishes mounting
-    if (this.enableBulkActionDelete) {
+    if (isFlagEnabled('bulkActionDelete')) {
       this.passTokensInformationToParent()
     }
   }
@@ -95,7 +94,7 @@ export default class TokenList extends PureComponent<Props, State> {
       this.setState({authInView})
 
       // send the tokens info up when new tokens are passed as props (e.g: search filter was used by the user)
-      if (this.enableBulkActionDelete) {
+      if (isFlagEnabled('bulkActionDelete')) {
         this.passTokensInformationToParent()
       }
     }
@@ -198,7 +197,7 @@ export default class TokenList extends PureComponent<Props, State> {
 
       if (auth) {
         paginatedAuths.push(
-          this.enableBulkActionDelete ? (
+          isFlagEnabled('bulkActionDelete') ? (
             <TokenRow
               key={auth.id}
               auth={auth}

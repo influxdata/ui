@@ -6,7 +6,7 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {Icon, IconFont, TreeNav, PopoverPosition} from '@influxdata/clockface'
+import {Icon, IconFont, PopoverPosition, TreeNav} from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
 import OrgSettings from 'src/cloud/components/OrgSettings'

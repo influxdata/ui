@@ -5,7 +5,7 @@ import {ComponentStatus} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
-// Context
+// Contexts
 import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
 import {BucketContext} from 'src/shared/contexts/buckets'
 

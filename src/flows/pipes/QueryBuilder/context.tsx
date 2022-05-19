@@ -6,10 +6,9 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {BucketContext} from 'src/shared/contexts/buckets'
 
-import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
-
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
 // Types
 import {

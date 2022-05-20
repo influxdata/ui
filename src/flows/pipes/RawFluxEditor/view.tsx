@@ -63,7 +63,7 @@ const Query: FC<PipeProp> = ({Context}) => {
             {
               title: 'Inject Secret',
               disable: () => false,
-              menu: <SecretsList inject={inject} />,
+              menu: <SecretsList inject={inject} cbOnInject={updateText} />,
             },
           ],
         },

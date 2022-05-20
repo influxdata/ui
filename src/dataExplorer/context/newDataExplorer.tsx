@@ -34,6 +34,8 @@ const SAMPLE_DATA_SET = (bucketID: string) =>
 const FROM_BUCKET = (bucketName: string) => `from(bucket: "${bucketName}")`
 
 const LOCAL_LIMIT = 8
+const INITIAL_FIELDS = []
+const INITIAL_TAGS = []
 
 interface NewDataExplorerContextType {
   // Schema
@@ -42,6 +44,7 @@ interface NewDataExplorerContextType {
   selectedMeasurement: string // TODO: type Measurement?
   fields: string[] // TODO: type Field[]?
   tags: any[]
+  loadingTags: RemoteDataState
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void // TODO: type Measurement?
@@ -60,6 +63,7 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   selectedMeasurement: '',
   fields: [],
   tags: [],
+  loadingTags: RemoteDataState.NotStarted,
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
@@ -86,13 +90,14 @@ export interface Tag {
 
 export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   const [loading] = useState(RemoteDataState.NotStarted)
+  const [loadingTags, setLoadingTags] = useState(RemoteDataState.NotStarted)
   const {query: queryAPI} = useContext(QueryContext)
   const [query, setQuery] = useState('')
   const [selectedBucket, setSelectedBucket] = useState(null)
   const [measurements, setMeasurements] = useState<Array<string>>([])
   const [selectedMeasurement, setSelectedMeasurement] = useState('')
-  const [fields, setFields] = useState<Array<string>>([])
-  const [tags, setTags] = useState<Array<Tag>>([])
+  const [fields, setFields] = useState<Array<string>>(INITIAL_FIELDS)
+  const [tags, setTags] = useState<Array<Tag>>(INITIAL_TAGS)
   const [searchTerm, setSearchTerm] = useState('')
 
   const limit = isFlagEnabled('increasedMeasurmentTagLimit')
@@ -281,11 +286,13 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
         tag.values = tagKeys[tag.key]
       })
       setTags(tags)
+      setLoadingTags(RemoteDataState.Done)
     } catch (e) {
       console.error(
         `Failed to get tags for measurement: "${measurement}"\n`,
         e.message
       )
+      setLoadingTags(RemoteDataState.Error)
     }
   }
 
@@ -353,8 +360,8 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       // Reset measurement, tags, and fields
       // TODO: loading status for measurements
       setSelectedMeasurement('')
-      setFields([])
-      setTags([])
+      setFields(INITIAL_FIELDS)
+      setTags(INITIAL_TAGS)
 
       // Get measurement values
       getMeasurements(bucket)
@@ -364,7 +371,13 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
 
   const handleSelectMeasurement = (measurement: string): void => {
     setSelectedMeasurement(measurement)
-    // TODO: Reset fields and tags, add loading status
+
+    // Reset fields and tags, update loading status
+    setFields(INITIAL_FIELDS)
+    setTags(INITIAL_TAGS)
+    setLoadingTags(RemoteDataState.Loading)
+
+    // Get fields and tags
     getFields(measurement)
     getTagKeys(measurement)
   }
@@ -387,6 +400,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
           selectedMeasurement,
           fields,
           tags,
+          loadingTags,
           searchTerm,
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,
@@ -408,6 +422,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       selectedMeasurement,
       fields,
       tags,
+      loadingTags,
       searchTerm,
       handleSelectBucket,
 

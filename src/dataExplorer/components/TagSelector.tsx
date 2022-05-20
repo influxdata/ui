@@ -3,12 +3,16 @@ import React, {FC, useContext} from 'react'
 // Components
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
+import WaitingText from 'src/shared/components/WaitingText'
 
 // Contexts
 import {
   NewDataExplorerContext,
   Tag,
 } from 'src/dataExplorer/context/newDataExplorer'
+
+// Types
+import {RemoteDataState} from 'src/types'
 
 interface Prop {
   tag: Tag
@@ -37,7 +41,7 @@ const TagValues: FC<Prop> = ({tag, onSelect}) => {
 }
 
 const TagSelector: FC = () => {
-  const {tags} = useContext(NewDataExplorerContext)
+  const {tags, loadingTags} = useContext(NewDataExplorerContext)
 
   const handleSelect = (value: string) => {
     // TODO
@@ -50,7 +54,14 @@ const TagSelector: FC = () => {
     <div className="tag-selector--list-item">No Tags Found</div>
   )
 
-  if (tags.length) {
+  if (loadingTags === RemoteDataState.Error) {
+    list = <div className="tag-selector--list-item">Failed to load tags</div>
+  } else if (
+    loadingTags === RemoteDataState.Loading ||
+    loadingTags === RemoteDataState.NotStarted
+  ) {
+    list = <WaitingText text="Loading tags" />
+  } else if (loadingTags === RemoteDataState.Done && tags.length) {
     list = tags.map(tag => (
       <div key={tag.key} className="tag-selector--list-item">
         <TagValues tag={tag} onSelect={handleSelect} />

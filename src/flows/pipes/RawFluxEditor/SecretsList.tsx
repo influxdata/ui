@@ -62,7 +62,7 @@ const SecretsList: FC<Props> = ({inject}) => {
         text: `secrets.get(key: "${secret.id}") `,
         type: InjectionType.SameLine,
         header: `import "influxdata/influxdb/secrets"`,
-        updateTextToParentState: updateText,
+        cbParentOnUpdateText: updateText,
       }
       inject(options)
       event('Inject secret into Flux Script', {secret: secret.id})

@@ -23,11 +23,7 @@ import {PipeProp} from 'src/types/flows'
 // Context
 import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {
-  EditorContext,
-  EditorProvider,
-  InjectionType,
-} from 'src/shared/contexts/editor'
+import {EditorContext, EditorProvider} from 'src/shared/contexts/editor'
 import {VariablesContext} from 'src/flows/context/variables'
 
 // Components
@@ -39,10 +35,6 @@ import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/FunctionsList/Dynami
 import 'src/flows/pipes/RawFluxEditor/style.scss'
 
 // Utils
-import {
-  isPipeTransformation,
-  functionRequiresNewLine,
-} from 'src/shared/utils/fluxFunctions'
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -57,7 +49,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     SidebarContext
   )
   const editorContext = useContext(EditorContext)
-  const {setEditor, inject} = editorContext
+  const {setEditor, inject, injectFunction} = editorContext
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
   const {variables} = useContext(VariablesContext)
@@ -94,42 +86,9 @@ const Query: FC<PipeProp> = ({Context}) => {
 
   const injectIntoEditor = useCallback(
     (fn): void => {
-      const text = isPipeTransformation(fn)
-        ? `  |> ${fn.example}`
-        : `${fn.example}`
-
-      const getHeader = fn => {
-        let importStatement = null
-
-        // universe packages are loaded by deafult. Don't need import statement
-        if (fn.package && fn.package !== 'universe') {
-          importStatement = `import "${fn.package}"`
-          if (
-            CLOUD &&
-            isFlagEnabled('fluxDynamicDocs') &&
-            fn.path.includes('/')
-          ) {
-            importStatement = `import "${fn.path}"`
-          }
-        }
-        return importStatement
-      }
-
-      const type =
-        isPipeTransformation(fn) || functionRequiresNewLine(fn)
-          ? InjectionType.OnOwnLine
-          : InjectionType.SameLine
-
-      const options = {
-        text,
-        type,
-        header: getHeader(fn),
-        triggerSuggest: true,
-        updateTextToParentState: updateText,
-      }
-      inject(options)
+      injectFunction(fn, updateText)
     },
-    [inject, updateText]
+    [injectFunction, updateText]
   )
 
   const launcher = () => {

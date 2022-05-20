@@ -75,7 +75,7 @@ import "influxdata/influxdb/schema"
 
 schema.tagKeys(
   bucket: "${bucket}",
-  predicate: (r) => ${tagFilters},
+  predicate: ${tagFilters},
   start: ${CACHING_REQUIRED_START_DATE},
   stop: ${CACHING_REQUIRED_END_DATE},
 )${searchFilter}${previousKeyFilter}
@@ -140,9 +140,10 @@ export function findValues({
     query = `import "regexp"
 import "influxdata/influxdb/schema"
 
-schema.tagKeys(
+schema.tagValues(
   bucket: "${bucket}",
-  predicate: (r) => ${tagFilters},
+  tag: "${key}",
+  predicate: ${tagFilters},
   start: ${CACHING_REQUIRED_START_DATE},
   stop: ${CACHING_REQUIRED_END_DATE},
 )${searchFilter}

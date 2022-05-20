@@ -1,13 +1,15 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
-interface Tag {
-  key: string
-  values: string[]
-}
+// Contexts
+import {
+  NewDataExplorerContext,
+  Tag,
+} from 'src/dataExplorer/context/newDataExplorer'
+
 interface Prop {
   tag: Tag
   onSelect: (value: string) => void
@@ -35,13 +37,7 @@ const TagValues: FC<Prop> = ({tag, onSelect}) => {
 }
 
 const TagSelector: FC = () => {
-  const tags = [
-    {key: 'station_id', values: ['Everglades National Park']},
-    {key: 'station_owner', values: ['COMPS', 'Chicago Park District']},
-    {key: 'station_name', values: ['Everglades National Park']},
-    {key: 'station_pgm', values: ['COMPS', 'Chicago Park District']},
-    {key: 'station_type', values: ['Everglades National Park']},
-  ]
+  const {tags} = useContext(NewDataExplorerContext)
 
   const handleSelect = (value: string) => {
     // TODO

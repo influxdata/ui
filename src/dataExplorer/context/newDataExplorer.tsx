@@ -77,6 +77,11 @@ interface Prop {
   scope: QueryScope
 }
 
+export interface Tag {
+  key: string
+  values: string[]
+}
+
 export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   const [loading] = useState(RemoteDataState.NotStarted)
   const {query: queryAPI} = useContext(QueryContext)
@@ -85,8 +90,12 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   const [measurements, setMeasurements] = useState<Array<string>>([])
   const [selectedMeasurement, setSelectedMeasurement] = useState('')
   const [fields, setFields] = useState<Array<string>>([])
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState<Array<Tag>>([])
   const [searchTerm, setSearchTerm] = useState('')
+
+  const limit = isFlagEnabled('increasedMeasurmentTagLimit')
+    ? EXTENDED_TAG_LIMIT
+    : DEFAULT_TAG_LIMIT
 
   const getMeasurements = useCallback(
     async bucket => {
@@ -102,10 +111,6 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       } else {
         _source += FROM_BUCKET(bucket.name)
       }
-
-      const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-        ? EXTENDED_TAG_LIMIT
-        : DEFAULT_TAG_LIMIT
 
       // TODO: can we do hard coded time range here?
       let queryText = `${_source}
@@ -137,6 +142,11 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
           c => c.name === '_value' && c.type === 'string'
         )[0]?.data ?? []) as string[]
         setMeasurements(values)
+        /* eslint-disable no-console */
+        // TODO: remove
+        console.log('get measurements\n\n', queryText)
+        console.log(values)
+        /* eslint-disable no-console */
       } catch (e) {
         console.error(e.message)
       }
@@ -156,10 +166,6 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     } else {
       _source += FROM_BUCKET(selectedBucket.name)
     }
-
-    const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-      ? EXTENDED_TAG_LIMIT
-      : DEFAULT_TAG_LIMIT
 
     // TODO: can we do hard coded time range here?
     let queryText = `${_source}
@@ -191,7 +197,75 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
       setFields(values)
+      /* eslint-disable no-console */
+      // TODO: remove
+      console.log('get fields\n\n', queryText)
+      console.log(values)
+      /* eslint-disable no-console */
     } catch (e) {
+      console.error(e.message)
+    }
+  }
+
+  const getTags = async (measurement: string) => {
+    if (isEmpty(selectedBucket) || measurement === '') {
+      return
+    }
+
+    let tags: Tag[] = []
+
+    // Simplified version of query from this file:
+    //   src/flows/pipes/QueryBuilder/context.tsx
+    let _source = IMPORT_REGEXP
+    if (selectedBucket.type === 'sample') {
+      _source += SAMPLE_DATA_SET(selectedBucket.id)
+    } else {
+      _source += FROM_BUCKET(selectedBucket.name)
+    }
+
+    // TODO: can we do hard coded time range here?
+    let queryText = `${_source}
+      |> range(start: -30d, stop: now())
+      |> filter(fn: (r) => true)
+      |> keys()
+      |> keep(columns: ["_value"])
+      |> distinct()
+      |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
+      |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+      |> sort()
+      |> limit(n: ${limit})`
+
+    if (selectedBucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
+      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
+      queryText = `${_source}
+        schema.tagKeys(
+          bucket: "${selectedBucket.name}",
+          predicate: (r) => true,
+          start: ${CACHING_REQUIRED_START_DATE},
+          stop: ${CACHING_REQUIRED_END_DATE},
+          )
+          |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
+          |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value != "_stop" and r._value != "_value")
+          |> sort()
+          |> limit(n: ${limit})`
+    }
+
+    try {
+      const resp = await queryAPI(queryText, scope)
+      const keys = (Object.values(resp.parsed.table.columns).filter(
+        c => c.name === '_value' && c.type === 'string'
+      )[0]?.data ?? []) as string[]
+      tags = keys.map(key => {
+        return {key, values: []} as Tag
+      })
+      setTags(tags)
+      /* eslint-disable no-console */
+      // TODO: remove
+      console.log('get tag keys\n\n', queryText)
+      console.log(tags)
+      /* eslint-disable no-console */
+    } catch (e) {
+      // TODO: add more in front of error message
       console.error(e.message)
     }
   }
@@ -216,8 +290,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     setSelectedMeasurement(measurement)
     // TODO: Reset fields and tags, add loading status
     getFields(measurement)
-    // TODO: get tags from context
-    setTags([])
+    getTags(measurement)
   }
 
   const handleSearchTerm = (searchTerm: string): void => {

@@ -43,6 +43,7 @@ interface NewDataExplorerContextType {
   measurements: string[] // TODO: type MeasurementSchema?
   selectedMeasurement: string // TODO: type Measurement?
   fields: string[] // TODO: type Field[]?
+  loadingFields: RemoteDataState
   tags: any[]
   loadingTags: RemoteDataState
   searchTerm: string // for searching fields and tags
@@ -62,6 +63,7 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   measurements: [],
   selectedMeasurement: '',
   fields: [],
+  loadingFields: RemoteDataState.NotStarted,
   tags: [],
   loadingTags: RemoteDataState.NotStarted,
   searchTerm: '',
@@ -90,6 +92,7 @@ export interface Tag {
 
 export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   const [loading] = useState(RemoteDataState.NotStarted)
+  const [loadingFields, setLoadingFields] = useState(RemoteDataState.NotStarted)
   const [loadingTags, setLoadingTags] = useState(RemoteDataState.NotStarted)
   const {query: queryAPI} = useContext(QueryContext)
   const [query, setQuery] = useState('')
@@ -208,6 +211,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
       setFields(values)
+      setLoadingFields(RemoteDataState.Done)
       /* eslint-disable no-console */
       // TODO: remove
       console.log('get fields\n\n', queryText)
@@ -215,6 +219,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       /* eslint-disable no-console */
     } catch (e) {
       console.error(e.message)
+      setLoadingFields(RemoteDataState.Error)
     }
   }
 
@@ -375,6 +380,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     // Reset fields and tags, update loading status
     setFields(INITIAL_FIELDS)
     setTags(INITIAL_TAGS)
+    setLoadingFields(RemoteDataState.Loading)
     setLoadingTags(RemoteDataState.Loading)
 
     // Get fields and tags
@@ -399,6 +405,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
           measurements,
           selectedMeasurement,
           fields,
+          loadingFields,
           tags,
           loadingTags,
           searchTerm,
@@ -421,6 +428,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       measurements,
       selectedMeasurement,
       fields,
+      loadingFields,
       tags,
       loadingTags,
       searchTerm,

@@ -47,10 +47,6 @@ import {
   GetState,
 } from 'src/types'
 
-interface Organization extends Organization {
-  cloudProvider?: string
-}
-
 export const getOrganizations = () => async (
   dispatch: Dispatch<Action>,
   getState: GetState

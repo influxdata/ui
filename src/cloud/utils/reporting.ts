@@ -176,7 +176,7 @@ export const event = (
   if (isFlagEnabled('streamEvents')) {
     /* eslint-disable no-console */
     console.log(`Event:  [ ${measurement} ]`)
-    if (Object.keys(meta).length) {
+    if (Object.keys(meta).length || Object.keys(values).length) {
       console.log('tags')
       console.log(
         Object.entries(meta)

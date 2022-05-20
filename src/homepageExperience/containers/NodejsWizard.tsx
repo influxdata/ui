@@ -72,7 +72,7 @@ export class NodejsWizard extends PureComponent<null, State> {
       () => {
         event(
           'firstMile.nodejsWizard.next.clicked',
-          {clickType: 'next'},
+          {},
           {
             clickedButtonAtStep: this.state.currentStep - 1,
             currentStep: this.state.currentStep,
@@ -88,7 +88,7 @@ export class NodejsWizard extends PureComponent<null, State> {
       () => {
         event(
           'firstMile.nodejsWizard.previous.clicked',
-          {clickType: 'previous'},
+          {},
           {
             clickedButtonAtStep: this.state.currentStep + 1,
             currentStep: this.state.currentStep,

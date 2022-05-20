@@ -13,6 +13,9 @@ import {
   ComponentColor,
   ComponentStatus,
   ButtonType,
+  ReflessPopover,
+  PopoverPosition,
+  PopoverInteraction,
 } from '@influxdata/clockface'
 
 // Types
@@ -48,25 +51,37 @@ const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => (
       currentSubscription.status === 'VALIDATING' ||
       currentSubscription.status === 'INVALID'
     ) && (
-      <Button
-        text={currentSubscription.status === 'RUNNING' ? 'stop' : 'start'}
-        color={
-          currentSubscription.status === 'RUNNING'
-            ? ComponentColor.Danger
-            : ComponentColor.Success
-        }
-        onClick={() => {
-          if (currentSubscription.status === 'RUNNING') {
-            setStatus(false)
-          } else {
-            setStatus(true)
+      <ReflessPopover
+        position={PopoverPosition.Below}
+        showEvent={PopoverInteraction.Hover}
+        hideEvent={PopoverInteraction.Hover}
+        style={{width: 'max-content'}}
+        contents={() => <>cannot start flow in errored state</>}
+      >
+        <Button
+          text={currentSubscription.status === 'RUNNING' ? 'stop' : 'start'}
+          color={
+            currentSubscription.status === 'RUNNING'
+              ? ComponentColor.Danger
+              : ComponentColor.Success
           }
-        }}
-        type={ButtonType.Submit}
-        testID="subscription-details-page--status-button"
-        status={ComponentStatus.Default}
-        className="subscription-details-page__status--button"
-      />
+          onClick={() => {
+            if (currentSubscription.status === 'RUNNING') {
+              setStatus(false)
+            } else {
+              setStatus(true)
+            }
+          }}
+          type={ButtonType.Submit}
+          testID="subscription-details-page--status-button"
+          status={
+            currentSubscription.status === 'ERRORED'
+              ? ComponentStatus.Disabled
+              : ComponentStatus.Default
+          }
+          className="subscription-details-page__status--button"
+        />
+      </ReflessPopover>
     )}
   </FlexBox>
 )

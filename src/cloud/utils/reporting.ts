@@ -176,19 +176,21 @@ export const event = (
   if (isFlagEnabled('streamEvents')) {
     /* eslint-disable no-console */
     console.log(`Event:  [ ${measurement} ]`)
-    if (Object.keys(meta).length || Object.keys(values).length) {
+    if (Object.keys(meta).length) {
       console.log('tags')
       console.log(
         Object.entries(meta)
           .map(([k, v]) => `        ${k}: ${v}`)
           .join('\n')
       )
-      console.log('fields')
-      console.log(
-        Object.entries(values)
-          .map(([k, v]) => `        ${k}: ${v}`)
-          .join('\n')
-      )
+      if (Object.keys(values).length) {
+        console.log('fields')
+        console.log(
+          Object.entries(values)
+            .map(([k, v]) => `        ${k}: ${v}`)
+            .join('\n')
+        )
+      }
     }
     /* eslint-enable no-console */
   }

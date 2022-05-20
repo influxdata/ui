@@ -27,6 +27,12 @@ import {Bucket, QueryScope, RemoteDataState} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+const IMPORT_REGEXP = 'import "regexp"\n'
+const IMPORT_INFLUX_SCHEMA = 'import "influxdata/influxdb/schema"'
+const SAMPLE_DATA_SET = (bucketID: string) =>
+  `import "influxdata/influxdb/sample"\nsample.data(set: "${bucketID}")`
+const FROM_BUCKET = (bucketName: string) => `from(bucket: "${bucketName}")`
+
 interface NewDataExplorerContextType {
   // Schema
   selectedBucket: Bucket
@@ -90,11 +96,11 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
 
       // Simplified version of query from this file:
       //   src/flows/pipes/QueryBuilder/context.tsx
-      let _source = 'import "regexp"\n'
+      let _source = IMPORT_REGEXP
       if (bucket.type === 'sample') {
-        _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${bucket.id}")`
+        _source += SAMPLE_DATA_SET(bucket.id)
       } else {
-        _source += `from(bucket: "${bucket.name}")`
+        _source += FROM_BUCKET(bucket.name)
       }
 
       const limit = isFlagEnabled('increasedMeasurmentTagLimit')
@@ -112,7 +118,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
         |> sort()`
 
       if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-        _source = `import "regexp"\nimport "influxdata/influxdb/schema"`
+        _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
         queryText = `${_source}
           schema.tagValues(
             bucket: "${bucket.name}",
@@ -144,11 +150,11 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     }
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
-    let _source = 'import "regexp"\n'
+    let _source = IMPORT_REGEXP
     if (selectedBucket.type === 'sample') {
-      _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${selectedBucket.id}")`
+      _source += SAMPLE_DATA_SET(selectedBucket.id)
     } else {
-      _source += `from(bucket: "${selectedBucket.name}")`
+      _source += FROM_BUCKET(selectedBucket.name)
     }
 
     const limit = isFlagEnabled('increasedMeasurmentTagLimit')
@@ -166,12 +172,12 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       |> sort()`
 
     if (selectedBucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `import "regexp"\nimport "influxdata/influxdb/schema"`
+      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
         schema.tagValues(
           bucket: "${selectedBucket.name}",
-          tag: "_measurement",
-          predicate: (r) => true,
+          tag: "_field",
+          predicate: (r) => (r["_measurement"] == "${measurement}"),
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )

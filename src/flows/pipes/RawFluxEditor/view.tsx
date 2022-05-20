@@ -91,7 +91,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     [injectFunction, updateText]
   )
 
-  const launcher = () => {
+  const launcher = useCallback(() => {
     if (showId === id) {
       event('Flux Panel (Notebooks) - Toggle Functions - Off')
       hideSub()
@@ -104,7 +104,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         showSub(<Functions onSelect={injectIntoEditor} />)
       }
     }
-  }
+  }, [injectIntoEditor, showId])
 
   const controls = (
     <Button
@@ -145,6 +145,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       updateText,
       editorContext.editor,
       variables,
+      launcher,
     ]
   )
 }

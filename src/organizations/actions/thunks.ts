@@ -6,6 +6,7 @@ import {normalize} from 'normalizr'
 // APIs
 import {getErrorMessage} from 'src/utils/api'
 import * as api from 'src/client'
+import {getOrg as getNewAPIData} from 'src/client/unityRoutes'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
@@ -46,6 +47,10 @@ import {
   GetState,
 } from 'src/types'
 
+interface Organization extends Organization {
+  cloudProvider?: string
+}
+
 export const getOrganizations = () => async (
   dispatch: Dispatch<Action>,
   getState: GetState
@@ -60,6 +65,14 @@ export const getOrganizations = () => async (
     }
 
     const {orgs} = resp.data
+
+    const quartzOrgData = await getNewAPIData({orgId: orgs[0].id})
+
+    if (quartzOrgData.status !== 200) {
+      throw new Error(quartzOrgData.data.message)
+    }
+
+    orgs[0].cloudProvider = quartzOrgData.data.provider
 
     const organizations = normalize<Organization, OrgEntities, string[]>(
       orgs,

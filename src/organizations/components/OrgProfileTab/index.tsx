@@ -85,8 +85,8 @@ const OrgProfileTab: FC = () => {
             stretchToFitWidth={true}
             style={{width: '85%'}}
           >
-            {me.quartzMe?.billingProvider && (
-              <LabeledData label="Provider" src={me.quartzMe.billingProvider} />
+            {org.cloudProvider && (
+              <LabeledData label="Provider" src={org.cloudProvider} />
             )}
             {me.quartzMe?.regionCode && (
               <LabeledData label="Region" src={me.quartzMe.regionCode} />

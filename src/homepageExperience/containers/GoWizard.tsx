@@ -88,7 +88,7 @@ export class GoWizard extends PureComponent<null, State> {
       () => {
         event(
           'firstMile.goWizard.previous.clicked',
-          {clickType: 'next'},
+          {clickType: 'previous'},
           {
             clickedButtonAtStep: this.state.currentStep + 1,
             currentStep: this.state.currentStep,

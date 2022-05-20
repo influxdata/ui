@@ -89,7 +89,7 @@ export class PythonWizard extends PureComponent<null, State> {
       () => {
         event(
           'firstMile.pythonWizard.previous.clicked',
-          {clickType: 'next'},
+          {clickType: 'previous'},
           {
             clickedButtonAtStep: this.state.currentStep + 1,
             currentStep: this.state.currentStep,

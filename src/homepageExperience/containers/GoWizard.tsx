@@ -70,7 +70,14 @@ export class GoWizard extends PureComponent<null, State> {
         ),
       },
       () => {
-        event('firstMile.goWizard.next.clicked')
+        event(
+          'firstMile.goWizard.next.clicked',
+          {clickType: 'next'},
+          {
+            clickedButtonAtStep: this.state.currentStep - 1,
+            currentStep: this.state.currentStep,
+          }
+        )
       }
     )
   }
@@ -79,7 +86,14 @@ export class GoWizard extends PureComponent<null, State> {
     this.setState(
       {currentStep: Math.max(this.state.currentStep - 1, 1)},
       () => {
-        event('firstMile.goWizard.previous.clicked')
+        event(
+          'firstMile.goWizard.previous.clicked',
+          {clickType: 'next'},
+          {
+            clickedButtonAtStep: this.state.currentStep + 1,
+            currentStep: this.state.currentStep,
+          }
+        )
       }
     )
   }

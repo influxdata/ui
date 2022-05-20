@@ -266,15 +266,83 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       tags = keys.map(key => {
         return {key, values: []} as Tag
       })
-      setTags(tags)
       /* eslint-disable no-console */
       // TODO: remove
       console.log('get tag keys\n\n', queryText)
       console.log(tags)
       /* eslint-disable no-console */
+      const tagKeys = {}
+      for (const key of keys) {
+        const values = await getTagValues(measurement, key)
+        tagKeys[key] = values
+      }
+      // update the tag values into tags
+      tags.map(tag => {
+        tag.values = tagKeys[tag.key]
+      })
+      setTags(tags)
     } catch (e) {
-      // TODO: add more details to error message
-      console.error(e.message)
+      console.error(
+        `Failed to get tags for measurement: "${measurement}"\n`,
+        e.message
+      )
+    }
+  }
+
+  const getTagValues = async (measurement: string, tagKey: string) => {
+    if (isEmpty(selectedBucket) || measurement === '') {
+      return
+    }
+
+    // Simplified version of query from this file:
+    //   src/flows/pipes/QueryBuilder/context.tsx
+    let _source = IMPORT_REGEXP
+    if (selectedBucket.type === 'sample') {
+      _source += SAMPLE_DATA_SET(selectedBucket.id)
+    } else {
+      _source += FROM_BUCKET(selectedBucket.name)
+    }
+
+    // TODO: can we do hard coded time range here?
+    let queryText = `${_source}
+      |> range(start: -30d, stop: now())
+      |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
+      |> keep(columns: ["${tagKey}"])
+      |> group()
+      |> distinct(column: "${tagKey}")
+      |> limit(n: ${LOCAL_LIMIT})
+      |> sort()
+    `
+
+    if (selectedBucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
+      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
+      queryText = `${_source}
+        schema.tagValues(
+          bucket: "${selectedBucket.name}",
+          tag: "${tagKey}",
+          predicate: (r) => (r["_measurement"] == "${measurement}"),
+          start: ${CACHING_REQUIRED_START_DATE},
+          stop: ${CACHING_REQUIRED_END_DATE},
+        )
+        |> limit(n: ${LOCAL_LIMIT})
+        |> sort()
+      `
+    }
+
+    try {
+      const resp = await queryAPI(queryText, scope)
+      const values = (Object.values(resp.parsed.table.columns).filter(
+        c => c.name === '_value' && c.type === 'string'
+      )[0]?.data ?? []) as string[]
+      console.log(`get tag value for [${tagKey}]\n\n`, queryText)
+      console.log(values)
+      return values
+    } catch (e) {
+      console.error(
+        `Failed to get tag value for tag key: "${tagKey}"\n`,
+        e.message
+      )
+      return []
     }
   }
 

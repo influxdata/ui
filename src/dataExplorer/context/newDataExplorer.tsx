@@ -33,6 +33,8 @@ const SAMPLE_DATA_SET = (bucketID: string) =>
   `import "influxdata/influxdb/sample"\nsample.data(set: "${bucketID}")`
 const FROM_BUCKET = (bucketName: string) => `from(bucket: "${bucketName}")`
 
+const LOCAL_LIMIT = 8
+
 interface NewDataExplorerContextType {
   // Schema
   selectedBucket: Bucket
@@ -120,7 +122,8 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
         |> group()
         |> distinct(column: "_measurement")
         |> limit(n: ${limit})
-        |> sort()`
+        |> sort()
+      `
 
       if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
         _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
@@ -133,7 +136,8 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
             stop: ${CACHING_REQUIRED_END_DATE},
           )
             |> limit(n: ${limit})
-            |> sort()`
+            |> sort()
+          `
       }
 
       try {
@@ -175,7 +179,8 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       |> group()
       |> distinct(column: "_field")
       |> limit(n: ${limit})
-      |> sort()`
+      |> sort()
+    `
 
     if (selectedBucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
@@ -188,7 +193,8 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
           stop: ${CACHING_REQUIRED_END_DATE},
         )
           |> limit(n: ${limit})
-          |> sort()`
+          |> sort()
+      `
     }
 
     try {
@@ -207,7 +213,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     }
   }
 
-  const getTags = async (measurement: string) => {
+  const getTagKeys = async (measurement: string) => {
     if (isEmpty(selectedBucket) || measurement === '') {
       return
     }
@@ -232,8 +238,9 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       |> distinct()
       |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
       |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+      |> limit(n: ${limit})
       |> sort()
-      |> limit(n: ${limit})`
+    `
 
     if (selectedBucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
@@ -246,8 +253,9 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
           )
           |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
           |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value != "_stop" and r._value != "_value")
+          |> limit(n: ${limit})
           |> sort()
-          |> limit(n: ${limit})`
+      `
     }
 
     try {
@@ -265,7 +273,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       console.log(tags)
       /* eslint-disable no-console */
     } catch (e) {
-      // TODO: add more in front of error message
+      // TODO: add more details to error message
       console.error(e.message)
     }
   }
@@ -290,7 +298,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     setSelectedMeasurement(measurement)
     // TODO: Reset fields and tags, add loading status
     getFields(measurement)
-    getTags(measurement)
+    getTagKeys(measurement)
   }
 
   const handleSearchTerm = (searchTerm: string): void => {

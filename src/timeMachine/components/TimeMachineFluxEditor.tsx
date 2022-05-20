@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useState, useMemo} from 'react'
+import React, {FC, lazy, Suspense, useContext, useMemo} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {
   RemoteDataState,
@@ -14,36 +14,24 @@ import FluxToolbar from 'src/timeMachine/components/FluxToolbar'
 import {setActiveQueryText} from 'src/timeMachine/actions'
 import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
 
+// Contexts
+import {EditorContext, EditorProvider} from 'src/shared/contexts/editor'
+
 // Utils
 import {getActiveQuery, getActiveTimeMachine} from 'src/timeMachine/selectors'
-import {generateImport} from 'src/timeMachine/utils/insertFunction'
 import {event} from 'src/cloud/utils/reporting'
-import {CLOUD} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getFluxExample} from 'src/shared/utils/fluxExample'
-import {
-  isPipeTransformation,
-  functionRequiresNewLine,
-  InjectionType,
-  calcInjectionPosition,
-  moveCursorAndTriggerSuggest,
-} from 'src/shared/utils/fluxFunctions'
 
 // Types
-import {
-  FluxToolbarFunction,
-  FluxFunction,
-  EditorType,
-  Variable,
-} from 'src/types'
+import {FluxToolbarFunction, FluxFunction, Variable} from 'src/types'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
-const TimeMachineFluxEditor: FC<{variables: Variable[]}> = props => {
+const TMFluxEditor: FC<{variables: Variable[]}> = props => {
   const dispatch = useDispatch()
   const activeQueryText = useSelector(getActiveQuery).text
   const {activeQueryIndex} = useSelector(getActiveTimeMachine)
-  const [editorInstance, setEditorInstance] = useState<EditorType>(null)
+  const editorContext = useContext(EditorContext)
+  const {setEditor, injectFunction, injectVariable} = editorContext
 
   const handleSetActiveQueryText = React.useCallback(
     (text: string) => {
@@ -57,103 +45,13 @@ const TimeMachineFluxEditor: FC<{variables: Variable[]}> = props => {
   }
 
   const handleInsertVariable = (variableName: string): void => {
-    if (!editorInstance) {
-      return null
-    }
-    const p = editorInstance.getPosition()
-    editorInstance.executeEdits('', [
-      {
-        range: new monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
-        text: `v.${variableName}`,
-      },
-    ])
-    handleSetActiveQueryText(editorInstance.getValue())
-  }
-
-  const getFluxTextAndRange = func => {
-    if (!editorInstance) {
-      return null
-    }
-
-    const type =
-      isPipeTransformation(func) || functionRequiresNewLine(func)
-        ? InjectionType.OnOwnLine
-        : InjectionType.SameLine
-
-    const {
-      row,
-      column,
-      shouldStartWithNewLine,
-      shouldEndInNewLine,
-    } = calcInjectionPosition(editorInstance, type)
-
-    let text = isPipeTransformation(func)
-      ? `  |> ${func.example.trimRight()}`
-      : `${func.example.trimRight()}`
-
-    if (shouldStartWithNewLine) {
-      text = `\n${text}`
-    }
-    if (shouldEndInNewLine) {
-      text = `${text}\n`
-    }
-
-    const range = new monaco.Range(row, column, row, column)
-
-    return {
-      text,
-      range,
-      injectionPosition: {
-        shouldStartWithNewLine,
-        shouldEndInNewLine,
-        row,
-        column,
-      },
-    }
+    injectVariable(variableName, handleSetActiveQueryText)
   }
 
   const handleInsertFluxFunction = (
     func: FluxToolbarFunction | FluxFunction
   ): void => {
-    if (!editorInstance) {
-      return
-    }
-
-    const funcDefn =
-      CLOUD && isFlagEnabled('fluxDynamicDocs')
-        ? getFluxExample(func as FluxFunction)
-        : func
-
-    const {text, range, injectionPosition} = getFluxTextAndRange(funcDefn)
-
-    const edits = [
-      {
-        range,
-        text,
-      },
-    ]
-    const importStatement = generateImport(
-      func.package,
-      editorInstance.getValue(),
-      func as FluxFunction
-    )
-    if (importStatement) {
-      edits.unshift({
-        range: new monaco.Range(1, 1, 1, 1),
-        text: `${importStatement}\n`,
-      })
-    }
-    editorInstance.executeEdits('', edits)
-    handleSetActiveQueryText(editorInstance.getValue())
-
-    if (isFlagEnabled('fluxDynamicDocs')) {
-      moveCursorAndTriggerSuggest(
-        editorInstance,
-        injectionPosition,
-        !!importStatement,
-        text.length
-      )
-    }
+    injectFunction(func, handleSetActiveQueryText)
   }
 
   const handleActiveQuery = React.useCallback(
@@ -193,7 +91,7 @@ const TimeMachineFluxEditor: FC<{variables: Variable[]}> = props => {
               variables={props.variables}
               onChangeScript={handleActiveQuery}
               onSubmitScript={handleSubmitQueries}
-              setEditorInstance={setEditorInstance}
+              setEditorInstance={setEditor}
               autofocus
             />
           </Suspense>
@@ -206,8 +104,14 @@ const TimeMachineFluxEditor: FC<{variables: Variable[]}> = props => {
         </div>
       </div>
     )
-  }, [activeQueryText, editorInstance, activeQueryIndex, props.variables])
+  }, [activeQueryText, activeQueryIndex, props.variables, editorContext.editor])
 }
+
+const TimeMachineFluxEditor = props => (
+  <EditorProvider>
+    <TMFluxEditor {...props} />
+  </EditorProvider>
+)
 
 export {TimeMachineFluxEditor}
 

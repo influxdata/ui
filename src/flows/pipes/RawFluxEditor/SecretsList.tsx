@@ -18,8 +18,8 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {getSecrets} from 'src/secrets/actions/thunks'
 import {getAllSecrets} from 'src/resources/selectors'
 
-// Context
-import {InjectionOptions, InjectionType} from 'src/flows/context/editor'
+// Injection
+import {InjectionOptions, InjectionType} from 'src/shared/contexts/editor'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -27,9 +27,10 @@ import {Secret} from 'src/types'
 
 interface Props {
   inject: (options: InjectionOptions) => void
+  cbOnInject: (queryText: string) => void
 }
 
-const SecretsList: FC<Props> = ({inject}) => {
+const SecretsList: FC<Props> = ({inject, cbOnInject}) => {
   const dispatch = useDispatch()
   const secrets = useSelector(getAllSecrets)
 
@@ -46,11 +47,12 @@ const SecretsList: FC<Props> = ({inject}) => {
         text: `secrets.get(key: "${secret.id}") `,
         type: InjectionType.SameLine,
         header: `import "influxdata/influxdb/secrets"`,
+        cbParentOnUpdateText: cbOnInject,
       }
       inject(options)
       event('Inject secret into Flux Script', {secret: secret.id})
     },
-    [inject]
+    [inject, cbOnInject]
   )
 
   useEffect(() => {

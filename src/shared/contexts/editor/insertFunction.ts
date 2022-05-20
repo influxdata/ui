@@ -7,14 +7,8 @@ import {FluxFunction} from 'src/types/shared'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-export const generateImport = (
-  funcPackage: string,
-  script: string,
-  func?: FluxFunction
-): false | string | FluxFunction => {
-  let importStatement
-
-  importStatement = `import "${funcPackage}"`
+export const generateImport = (func: FluxFunction, script: string): string => {
+  let importStatement = `import "${func.package}"`
 
   if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
     // if package is nested, use func.path to import.
@@ -24,11 +18,11 @@ export const generateImport = (
   }
 
   if (
-    !funcPackage ||
-    funcPackage === 'universe' ||
+    !func.package ||
+    func.package === 'universe' ||
     script.includes(importStatement)
   ) {
-    return false
+    return null
   }
 
   return importStatement

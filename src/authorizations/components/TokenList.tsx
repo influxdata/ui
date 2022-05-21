@@ -215,7 +215,7 @@ export default class TokenList extends PureComponent<Props, State> {
               auth={auth}
               onClickDescription={this.handleClickDescription}
               tokenIsSelected={tokensSelectedForBatchOperation.includes(auth)}
-              onCheckboxClick={this.handleTokenCardCheckboxClick}
+              onSelectForBulkAction={this.handleTokenCardCheckboxClick}
             />
           ) : (
             <TokenRow

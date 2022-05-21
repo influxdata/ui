@@ -19,7 +19,7 @@ import {rateLimitReached, resultTooLarge} from 'src/shared/copy/notifications'
 
 // Utils
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
-import {findNodes} from 'src/shared/utils/ast'
+import {findNodes} from 'src/shared/utils/ast/visitors'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'

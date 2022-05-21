@@ -17,7 +17,7 @@ import {
 } from 'src/dashboards/selectors'
 import {getVariables} from 'src/variables/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
-import {getWindowVarsFromVariables} from 'src/variables/utils/getWindowVars'
+import {getWindowVarAssignmentFromVariables} from 'src/variables/utils/getWindowVars'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
 import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
@@ -245,7 +245,7 @@ class TimeSeries extends Component<Props, State> {
         const orgID =
           getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
 
-        const windowVars = getWindowVarsFromVariables(text, variables)
+        const windowVars = getWindowVarAssignmentFromVariables(text, variables)
         const extern = buildUsedVarsOption(text, variables, windowVars)
 
         event('runQuery', {context: 'TimeSeries'})

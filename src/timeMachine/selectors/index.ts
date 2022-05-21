@@ -15,10 +15,7 @@ import {
 } from 'src/shared/utils/vis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-import {
-  calcWindowPeriodForDuration,
-  getWindowPeriodFromVariables,
-} from 'src/variables/utils/getWindowVars'
+import {calcWindowPeriodForDuration} from 'src/variables/utils/getWindowVars'
 import {
   timeRangeToDuration,
   parseDuration,
@@ -27,7 +24,6 @@ import {
 } from 'src/shared/utils/duration'
 
 // Selectors
-import {getAllVariables} from 'src/variables/selectors'
 import {getTimeRange} from 'src/dashboards/selectors'
 
 // Types
@@ -83,16 +79,6 @@ export const getActiveQueryIndex = (state: AppState): number => {
     return activeTimeMachine.activeQueryIndex
   }
   return 0
-}
-
-/*
-  Get the value of the `v.windowPeriod` variable for the currently active query, in milliseconds.
-*/
-// TODO kill this function
-export const getActiveWindowPeriod = (state: AppState) => {
-  const {text} = getActiveQuery(state)
-  const variables = getAllVariables(state)
-  return getWindowPeriodFromVariables(text, variables)
 }
 
 export const getWindowPeriodFromTimeRange = (state: AppState): string => {

@@ -1,78 +1,78 @@
-import {getWindowPeriodVariable} from 'src/variables/utils/getWindowVars'
-import {defaultVariableAssignments} from 'src/variables/mocks'
+// import {getWindowPeriodVariable} from 'src/variables/utils/getWindowVars'
+// import {defaultVariableAssignments} from 'src/variables/mocks'
 
-describe('getWindowPeriodVariable', () => {
-  beforeEach(() => {
-    // NOTE: as long as you mock children like below, before importing your
-    // component by using a require().default pattern, this will reset your
-    // mocks between tests (alex)
-    jest.resetModules()
-  })
-  test('should return null when passed an empty query string', () => {
-    const actual = getWindowPeriodVariable('', [])
-    expect(actual).toEqual(null)
-  })
+// describe('getWindowPeriodVariable', () => {
+//   beforeEach(() => {
+//     // NOTE: as long as you mock children like below, before importing your
+//     // component by using a require().default pattern, this will reset your
+//     // mocks between tests (alex)
+//     jest.resetModules()
+//   })
+//   test('should return null when passed an empty query string', () => {
+//     const actual = getWindowPeriodVariable('', [])
+//     expect(actual).toEqual(null)
+//   })
 
-  test('should return null when no timeRange is input', () => {
-    const query = `from(bucket: "Cool Story")
-    |> filter(fn: (r) => r._measurement == "cpu")
-    |> filter(fn: (r) => r._field == "usage_user")`
-    const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
-    expect(actual).toEqual(null)
-  })
+//   test('should return null when no timeRange is input', () => {
+//     const query = `from(bucket: "Cool Story")
+//     |> filter(fn: (r) => r._measurement == "cpu")
+//     |> filter(fn: (r) => r._field == "usage_user")`
+//     const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
+//     expect(actual).toEqual(null)
+//   })
 
-  /* The following two tests are checking that this issue: https://github.com/influxdata/ui/issues/422 is resolved.
-    (Summary: The windowPeriod calculation was returning infinity for identical or negative ranges)
-  */
-  test('should return null when timeRange is identical', () => {
-    const query = `from(bucket: "Go Pack Go")
-    |> range(start: 2020-12-10T17:00:00Z, stop: 2020-12-10T17:00:00Z)
-    |> filter(fn: (r) => r["_measurement"] == "query_request_duration")
-    |> filter(fn: (r) => r["_field"] == "success_rate")`
+//   /* The following two tests are checking that this issue: https://github.com/influxdata/ui/issues/422 is resolved.
+//     (Summary: The windowPeriod calculation was returning infinity for identical or negative ranges)
+//   */
+//   test('should return null when timeRange is identical', () => {
+//     const query = `from(bucket: "Go Pack Go")
+//     |> range(start: 2020-12-10T17:00:00Z, stop: 2020-12-10T17:00:00Z)
+//     |> filter(fn: (r) => r["_measurement"] == "query_request_duration")
+//     |> filter(fn: (r) => r["_field"] == "success_rate")`
 
-    const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
-    expect(actual).toEqual(null)
-  })
+//     const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
+//     expect(actual).toEqual(null)
+//   })
 
-  test('should return null when timeRange is negative', () => {
-    const query = `from(bucket: "Go Pack Go")
-    |> range(start: 2020-12-10T17:00:00Z, stop: 2020-12-09T17:00:00Z)
-    |> filter(fn: (r) => r["_measurement"] == "query_request_duration")
-    |> filter(fn: (r) => r["_field"] == "success_rate")`
+//   test('should return null when timeRange is negative', () => {
+//     const query = `from(bucket: "Go Pack Go")
+//     |> range(start: 2020-12-10T17:00:00Z, stop: 2020-12-09T17:00:00Z)
+//     |> filter(fn: (r) => r["_measurement"] == "query_request_duration")
+//     |> filter(fn: (r) => r["_field"] == "success_rate")`
 
-    const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
-    expect(actual).toEqual(null)
-  })
+//     const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
+//     expect(actual).toEqual(null)
+//   })
 
-  test('should return a dynamic windowPeriod depending on the timeRange that is input', () => {
-    jest.mock('src/shared/utils/getMinDurationFromAST', () => {
-      return {
-        getMinDurationFromAST: jest.fn(() => 86400000),
-      }
-    })
-    const getWindowVars = require('src/variables/utils/getWindowVars')
-    const query = `from(bucket: "Phil Collins")
-    |> range(start: time(v: "2020-03-03T12:00:00Z"), stop: time(v: "2020-03-04T12:00:00Z"))
-    |> filter(fn: (r) => r._measurement == "cpu")
-    |> filter(fn: (r) => r._field == "usage_user")`
+//   test('should return a dynamic windowPeriod depending on the timeRange that is input', () => {
+//     jest.mock('src/shared/utils/getMinDurationFromAST', () => {
+//       return {
+//         getMinDurationFromAST: jest.fn(() => 86400000),
+//       }
+//     })
+//     const getWindowVars = require('src/variables/utils/getWindowVars')
+//     const query = `from(bucket: "Phil Collins")
+//     |> range(start: time(v: "2020-03-03T12:00:00Z"), stop: time(v: "2020-03-04T12:00:00Z"))
+//     |> filter(fn: (r) => r._measurement == "cpu")
+//     |> filter(fn: (r) => r._field == "usage_user")`
 
-    const actual = getWindowVars.getWindowPeriodVariable(
-      query,
-      defaultVariableAssignments
-    )
-    const expected = [
-      {
-        orgID: '',
-        id: 'windowPeriod',
-        name: 'windowPeriod',
-        arguments: {
-          type: 'system',
-          values: [240000],
-        },
-        status: 'Done',
-        labels: [],
-      },
-    ]
-    expect(actual).toEqual(expected)
-  })
-})
+//     const actual = getWindowVars.getWindowPeriodVariable(
+//       query,
+//       defaultVariableAssignments
+//     )
+//     const expected = [
+//       {
+//         orgID: '',
+//         id: 'windowPeriod',
+//         name: 'windowPeriod',
+//         arguments: {
+//           type: 'system',
+//           values: [240000],
+//         },
+//         status: 'Done',
+//         labels: [],
+//       },
+//     ]
+//     expect(actual).toEqual(expected)
+//   })
+// })

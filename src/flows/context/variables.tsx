@@ -5,7 +5,6 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import {PipeContext} from 'src/flows/context/pipe'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
-import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 
 const EMPTY_STATE = [] as Variable[]
 
@@ -37,8 +36,7 @@ export const VariablesProvider: FC = ({children}) => {
       getRangeVariable(TIME_RANGE_START, range),
       getRangeVariable(TIME_RANGE_STOP, range),
     ]
-    const windowVar = getWindowPeriodVariableFromVariables(source, timeVars)
-    setVariables(!!windowVar ? timeVars.concat(windowVar) : timeVars)
+    setVariables(timeVars)
   }, [id, source, pipeRange, flow?.range])
 
   return (

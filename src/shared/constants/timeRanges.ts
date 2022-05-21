@@ -4,6 +4,8 @@ export const TIME_RANGE_FORMAT = 'YYYY-MM-DD HH:mm'
 
 export const CUSTOM_TIME_RANGE_LABEL = 'Custom Time Range' as 'Custom Time Range'
 
+export const FALLBACK_WINDOW_PERIOD = 15000
+
 export const pastHourTimeRange: SelectableDurationTimeRange = {
   seconds: 3600,
   lower: 'now() - 1h',

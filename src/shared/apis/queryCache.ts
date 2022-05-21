@@ -1,11 +1,14 @@
 // Libraries
 import {sortBy} from 'lodash'
 
+// Selectors
+import {getAllVariables} from 'src/variables/selectors'
+
 // Utils
-import {asAssignment, getAllVariables} from 'src/variables/selectors'
+import {asAssignmentNode} from 'src/variables/utils/convertVariables'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {getWindowVarsFromVariables} from 'src/variables/utils/getWindowVars'
+import {getWindowVarAssignmentFromVariables} from 'src/variables/utils/getWindowVars'
 
 // Types
 import {
@@ -230,13 +233,13 @@ export const getCachedResultsOrRunQuery = (
     }
   }
   const variableAssignments = variables
-    .map(v => asAssignment(v))
+    .map(v => asAssignmentNode(v))
     .filter(v => !!v)
 
   let windowVars = []
 
   if (hasWindowVars(variableAssignments) === false) {
-    windowVars = getWindowVarsFromVariables(query, variables)
+    windowVars = getWindowVarAssignmentFromVariables(query, variables)
   }
 
   // otherwise query & set results

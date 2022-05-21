@@ -21,6 +21,7 @@ export type Node =
   | IndexExpression
   | PipeExpression
   | ObjectExpression
+  | ParenExpression
   | UnaryExpression
   | Property
   | Identifier
@@ -31,6 +32,8 @@ export type Node =
   | IntegerLiteral
   | PipeLiteral
   | RegexpLiteral
+  | StringExpression
+  | InterpolatedPart
   | StringLiteral
   | UnsignedIntegerLiteral
 
@@ -146,9 +149,11 @@ export type Expression =
   | MemberExpression
   | IndexExpression
   | ObjectExpression
+  | ParenExpression
   | PipeExpression
   | PipeLiteral
   | RegexpLiteral
+  | StringExpression
   | StringLiteral
   | UnaryExpression
   | UnsignedIntegerLiteral
@@ -174,7 +179,7 @@ export interface BinaryExpression extends BaseNode {
 export interface CallExpression extends BaseNode {
   callee: Expression
   arguments?: Expression[]
-  type: 'CallExpression'
+  type?: 'CallExpression' // observed in ASTs. type not always present.
 }
 
 export interface ConditionalExpression extends BaseNode {
@@ -213,7 +218,10 @@ export interface ObjectExpression extends BaseNode {
   properties: Property[]
   type: 'ObjectExpression'
 }
-
+export interface ParenExpression extends BaseNode {
+  expression: Expression
+  type: 'ParenExpression'
+}
 export interface UnaryExpression extends BaseNode {
   operator: Operator
   argument: Expression
@@ -281,6 +289,16 @@ export interface PipeLiteral extends BaseNode {
 export interface RegexpLiteral extends BaseNode {
   value: string
   type: 'RegexpLiteral'
+}
+
+export interface StringExpression extends BaseNode {
+  parts: InterpolatedPart[]
+  type: 'StringExpression'
+}
+
+export interface InterpolatedPart extends BaseNode {
+  type: 'InterpolatedPart'
+  expression: Expression
 }
 
 export interface StringLiteral extends BaseNode {

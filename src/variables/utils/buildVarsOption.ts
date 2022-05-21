@@ -6,9 +6,7 @@ import {File, Property, VariableAssignment, Variable} from 'src/types'
 
 // Utils
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-
-// Selectors
-import {asAssignment} from 'src/variables/selectors'
+import {asAssignmentNode} from 'src/variables/utils/convertVariables'
 
 export const buildUsedVarsOption = (
   query: string | string[],
@@ -21,7 +19,7 @@ export const buildUsedVarsOption = (
   )
 
   const filteredAssignmentVars = filteredVars
-    .map(v => asAssignment(v))
+    .map(v => asAssignmentNode(v))
     .filter(v => !!v)
 
   windowVars = windowVars ?? []

@@ -5,13 +5,16 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import TaskForm from 'src/tasks/components/TaskForm'
 
-// Actions
+// Actions and Selectors
 import {saveNewScript, goToTasks} from 'src/tasks/actions/thunks'
 import {
   setTaskOption,
   clearTask,
   setNewScript,
 } from 'src/tasks/actions/creators'
+import {getAllVariables} from 'src/variables/selectors'
+import {getOrg} from 'src/organizations/selectors'
+import {getActiveQuery} from 'src/timeMachine/selectors'
 
 // Utils
 import {formatVarsOption} from 'src/variables/utils/formatVarsOption'
@@ -19,9 +22,7 @@ import {
   taskOptionsToFluxScript,
   addDestinationToFluxScript,
 } from 'src/utils/taskOptionsToFluxScript'
-import {getAllVariables, asAssignment} from 'src/variables/selectors'
-import {getOrg} from 'src/organizations/selectors'
-import {getActiveQuery} from 'src/timeMachine/selectors'
+import {asAssignmentNode} from 'src/variables/utils/convertVariables'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
@@ -133,7 +134,7 @@ const mstp = (state: AppState) => {
   const activeQuery = getActiveQuery(state)
   const org = getOrg(state)
   const userDefinedVars = getAllVariables(state)
-    .map(v => asAssignment(v))
+    .map(v => asAssignmentNode(v))
     .filter(v => !!v)
 
   return {

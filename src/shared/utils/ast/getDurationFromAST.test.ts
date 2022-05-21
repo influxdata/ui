@@ -1,4 +1,4 @@
-import {getMinDurationFromAST} from 'src/shared/utils/getMinDurationFromAST'
+import {getMinDurationFromAST} from 'src/shared/utils/getDurationFromAST'
 
 import {File} from 'src/types'
 

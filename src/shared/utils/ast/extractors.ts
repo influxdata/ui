@@ -2,13 +2,17 @@
 import {get} from 'lodash'
 
 // Utils
-import {findNodes} from 'src/shared/utils/ast'
+import {findNodes} from 'src/shared/utils/ast/visitors'
+import {
+  isNowCall,
+  isTimeCall,
+  isVariableDeclaration,
+} from 'src/shared/utils/ast/nodes'
 import {durationToMilliseconds} from 'src/shared/utils/duration'
 
 // Types
 import {
   Node,
-  Package,
   CallExpression,
   Property,
   Expression,
@@ -18,48 +22,16 @@ import {
   DurationLiteral,
 } from 'src/types'
 
-export function getMinDurationFromAST(ast: Package): number {
-  // We can't take the minimum of durations of each range individually, since
-  // separate ranges are potentially combined via an inner `join` call. So the
-  // approach is to:
-  //
-  // 1. Find every possible `[start, stop]` combination for all start and stop
-  //    times across every `range` call
-  // 2. Map each combination to a duration via `stop - start`
-  // 3. Filter out the non-positive durations
-  // 4. Take the minimum duration
-  //
-  const times = allRangeTimes(ast)
-
-  if (!times.length) {
-    throw new Error('no time ranges found in query')
-  }
-
-  const starts = times.map(t => t[0])
-  const stops = times.map(t => t[1])
-  const cartesianProduct = starts.map(start => stops.map(stop => [start, stop]))
-
-  const durations = []
-    .concat(...cartesianProduct)
-    .map(([start, stop]) => stop - start)
-    .filter(d => d > 0)
-
-  const result = Math.min(...durations)
-
-  return result
-}
-
-function allRangeTimes(ast: any): Array<[number, number]> {
-  return findNodes(ast, isRangeNode).map(node => rangeTimes(ast, node))
-}
-
 /*
   Given a `range` call in an AST, reports the `start` and `stop` arguments the
   the call as absolute instants in time. If the `start` or `stop` argument is a
   relative duration literal, it is interpreted as relative to the current
   instant (`Date.now()`).
 */
-function rangeTimes(ast: any, rangeNode: CallExpression): [number, number] {
+export function rangeTimes(
+  ast: any,
+  rangeNode: CallExpression
+): [number, number] {
   const now = Date.now()
   const properties: Property[] = (rangeNode.arguments[0] as ObjectExpression)
     .properties
@@ -84,6 +56,8 @@ function rangeTimes(ast: any, rangeNode: CallExpression): [number, number] {
   return [start, end]
 }
 
+// FIXME: this should not use lookupVariable(ast, value.name)
+// instead should lookup value in scope map
 export function propertyTime(ast: any, value: Expression, now: number): number {
   switch (value.type) {
     case 'UnaryExpression':
@@ -146,12 +120,9 @@ export function propertyTime(ast: any, value: Expression, now: number): number {
   Find the node in the `ast` that defines the value of the variable with the
   given `name`.
 */
-function lookupVariable(ast: any, name: string): Expression {
+export function lookupVariable(ast: Node, name: string): Expression {
   const isDeclarator = node => {
-    return (
-      get(node, 'type') === 'VariableAssignment' &&
-      get(node, 'id.name') === name
-    )
+    return isVariableDeclaration(node) && get(node, 'id.name') === name
   }
 
   const declarator = findNodes(ast, isDeclarator)
@@ -167,19 +138,4 @@ function lookupVariable(ast: any, name: string): Expression {
   const init = declarator[0].init
 
   return init
-}
-
-function isNowCall(node: CallExpression): boolean {
-  return get(node, 'callee.name') === 'now'
-}
-
-function isTimeCall(node: CallExpression): boolean {
-  return get(node, 'callee.name') === 'time'
-}
-
-function isRangeNode(node: Node) {
-  return (
-    get(node, 'callee.type') === 'Identifier' &&
-    get(node, 'callee.name') === 'range'
-  )
 }

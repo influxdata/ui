@@ -1,7 +1,7 @@
 import {OPTION_NAME} from 'src/variables/constants/index'
 import {formatExpression} from 'src/variables/utils/formatExpression'
 import {VariableAssignment, Variable} from 'src/types'
-import {asAssignment} from 'src/variables/selectors'
+import {asAssignmentNode} from 'src/variables/utils/convertVariables'
 
 export const formatVarsOption = (
   variables: VariableAssignment[] | Variable[]
@@ -31,7 +31,7 @@ const getAssignmentVariables = (
     if (!!v) {
       v.type === 'VariableAssignment'
         ? assignments.push(v)
-        : assignments.push(asAssignment(v))
+        : assignments.push(asAssignmentNode(v))
     }
   })
 

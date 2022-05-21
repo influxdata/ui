@@ -4,7 +4,7 @@ import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 // Utils
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
 import {parseSearchInput, searchExprToFlux} from 'src/eventViewer/utils/search'
-import {findNodes} from 'src/shared/utils/ast'
+import {findNodes} from 'src/shared/utils/ast/visitors'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 

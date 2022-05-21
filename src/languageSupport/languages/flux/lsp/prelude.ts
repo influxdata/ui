@@ -4,6 +4,7 @@ import {format_from_js_file} from '@influxdata/flux-lsp-browser'
 // handling variables
 import {EditorType, Variable} from 'src/types'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 
 // LSP methods
 import {didOpen, didChange} from 'src/languageSupport/languages/flux/lsp/utils'
@@ -26,7 +27,14 @@ class Prelude {
     const previousValue = this._preludeModel.getValue()
 
     try {
-      const file = buildUsedVarsOption(this._model.getValue(), variables)
+      const windowVar = getWindowPeriodVariableFromVariables(
+        this._model.getValue(),
+        variables
+      )
+      const file = buildUsedVarsOption(
+        this._model.getValue(),
+        windowVar ? variables.concat(windowVar) : variables
+      )
       const query = format_from_js_file(file)
 
       this._preludeModel.setValue(query)

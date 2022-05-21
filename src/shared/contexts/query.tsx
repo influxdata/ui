@@ -11,7 +11,7 @@ import {
   InternalFromFluxResult,
   Column,
 } from 'src/types/flows'
-import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
+import {propertyTime} from 'src/shared/utils/ast/extractors'
 
 // Constants
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'

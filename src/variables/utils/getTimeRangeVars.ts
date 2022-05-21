@@ -1,6 +1,6 @@
 // Utils
 import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
-import {asAssignment} from 'src/variables/selectors'
+import {asAssignmentNode} from 'src/variables/utils/convertVariables'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
@@ -16,7 +16,7 @@ export const getTimeRangeVars = (
   return [
     getRangeVariable(TIME_RANGE_START, timeRange),
     getRangeVariable(TIME_RANGE_STOP, timeRange),
-  ].map(v => asAssignment(v))
+  ].map(v => asAssignmentNode(v))
 }
 
 export const getRangeVariable = (

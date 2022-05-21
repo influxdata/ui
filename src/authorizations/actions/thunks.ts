@@ -173,41 +173,29 @@ export const deleteAuthorization = (id: string, name: string = '') => async (
 export const bulkDeleteAuthorizations = (tokenIds: string[]) => async (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
-  const deletePromises = tokenIds.map((tokenId: string) => {
-    // const resp = await api.deleteAuthorization({authID: tokenId})
+  const deletePromises = tokenIds.map(async (tokenId: string) => {
+    const resp = await api.deleteAuthorization({authID: tokenId})
 
-    throw Error('simulate error')
-    // if (resp.status !== 204) {
-    //   throw new Error(resp.data.message)
-    // }
-    // dispatch(removeAuthorization(tokenId))
-  })
-  {
-    try {
-      await Promise.allSettled(deletePromises).then(results => {
-        const failedDeletes = results.filter(
-          result => result.status === 'rejected'
-        )
-
-        if (failedDeletes.length === 0) {
-          event('token.bulkDelete.success', {count: deletePromises.length})
-          dispatch(notify(bulkAuthorizationDeleteSuccess()))
-        } else {
-          event('token.bulkDelete.failure', {count: failedDeletes.length})
-          dispatch(
-            notify(
-              bulkAuthorizationDeleteFailed(
-                `${failedDeletes.length} out of ${deletePromises} tokens failed to delete. Please try again.`
-              )
-            )
-          )
-        }
-      })
-    } catch (e) {
-      console.error(e)
-      event('token.bulkDelete.failure', {count: deletePromises.length})
-      dispatch(notify(bulkAuthorizationDeleteFailed('Bulk')))
+    if (resp.status !== 204) {
+      return Promise.reject(new Error(resp.data.message))
     }
+    dispatch(removeAuthorization(tokenId))
+  })
+  const results = await Promise.allSettled(deletePromises)
+  const failedDeletes = results.filter(result => result.status === 'rejected')
+
+  if (failedDeletes.length === 0) {
+    event('token.bulkDelete.success', {count: deletePromises.length})
+    dispatch(notify(bulkAuthorizationDeleteSuccess(deletePromises.length)))
+  } else {
+    event('token.bulkDelete.failure', {count: failedDeletes.length})
+    dispatch(
+      notify(
+        bulkAuthorizationDeleteFailed(
+          `${failedDeletes.length} out of ${deletePromises.length} Tokens. Please try again.`
+        )
+      )
+    )
   }
 }
 

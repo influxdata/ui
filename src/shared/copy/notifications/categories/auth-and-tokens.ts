@@ -51,6 +51,16 @@ export const authorizationDeleteFailed = (desc: string): Notification => ({
   message: `Failed to delete API token: "${desc}"`,
 })
 
+export const bulkAuthorizationDeleteSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'API tokens were deleted successfully',
+})
+
+export const bulkAuthorizationDeleteFailed = (desc: string): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to delete API tokens: "${desc}"`,
+})
+
 export const authorizationCopySuccess = (): Notification => ({
   ...defaultSuccessNotification,
   message: 'API token has been copied to clipboard',

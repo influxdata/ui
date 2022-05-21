@@ -29,6 +29,8 @@ import {
   authorizationCreateSuccess,
   authorizationDeleteSuccess,
   authorizationUpdateSuccess,
+  bulkAuthorizationDeleteSuccess,
+  bulkAuthorizationDeleteFailed,
 } from 'src/shared/copy/notifications'
 
 // Types
@@ -171,24 +173,41 @@ export const deleteAuthorization = (id: string, name: string = '') => async (
 export const bulkDeleteAuthorizations = (tokenIds: string[]) => async (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
-  try {
-    for (const id of tokenIds) {
-      try {
-        const resp = await api.deleteAuthorization({authID: id})
+  const deletePromises = tokenIds.map((tokenId: string) => {
+    // const resp = await api.deleteAuthorization({authID: tokenId})
 
-        if (resp.status !== 204) {
-          throw new Error(resp.data.message)
+    throw Error('simulate error')
+    // if (resp.status !== 204) {
+    //   throw new Error(resp.data.message)
+    // }
+    // dispatch(removeAuthorization(tokenId))
+  })
+  {
+    try {
+      await Promise.allSettled(deletePromises).then(results => {
+        const failedDeletes = results.filter(
+          result => result.status === 'rejected'
+        )
+
+        if (failedDeletes.length === 0) {
+          event('token.bulkDelete.success', {count: deletePromises.length})
+          dispatch(notify(bulkAuthorizationDeleteSuccess()))
+        } else {
+          event('token.bulkDelete.failure', {count: failedDeletes.length})
+          dispatch(
+            notify(
+              bulkAuthorizationDeleteFailed(
+                `${failedDeletes.length} out of ${deletePromises} tokens failed to delete. Please try again.`
+              )
+            )
+          )
         }
-        event('token.delete.success', {id})
-        dispatch(removeAuthorization(id))
-      } catch (e) {
-        event('token.delete.failure', {id})
-        console.error(e)
-      }
+      })
+    } catch (e) {
+      console.error(e)
+      event('token.bulkDelete.failure', {count: deletePromises.length})
+      dispatch(notify(bulkAuthorizationDeleteFailed('Bulk')))
     }
-    dispatch(notify(authorizationDeleteSuccess()))
-  } catch (e) {
-    dispatch(notify(authorizationDeleteFailed('Bulk')))
   }
 }
 

@@ -40,6 +40,8 @@ interface Props {
 interface State {
   isTokenOverlayVisible: boolean
   authInView: Authorization
+
+  currentPage: number
 }
 
 export default class TokenList extends PureComponent<Props, State> {
@@ -48,7 +50,6 @@ export default class TokenList extends PureComponent<Props, State> {
   )
 
   private paginationRef: RefObject<HTMLDivElement>
-  public currentPage: number = 1
   public rowsPerPage: number = 10
   public totalPages: number
 
@@ -57,6 +58,7 @@ export default class TokenList extends PureComponent<Props, State> {
     this.state = {
       isTokenOverlayVisible: false,
       authInView: null,
+      currentPage: 1
     }
   }
 
@@ -68,7 +70,7 @@ export default class TokenList extends PureComponent<Props, State> {
       urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber > 0
 
     if (passedInPageIsValid) {
-      this.currentPage = urlPageNumber
+      this.setState({currentPage: urlPageNumber})
     }
 
     // send the tokens info up once when the component finishes mounting
@@ -77,10 +79,10 @@ export default class TokenList extends PureComponent<Props, State> {
     }
   }
 
-  public componentDidUpdate(prevProps) {
+  public componentDidUpdate(prevProps, prevState) {
     // if the user filters the list while on a page that is
     // outside the new filtered list put them on the last page of the new list
-    if (this.currentPage > this.totalPages) {
+    if (this.state.currentPage > this.totalPages) {
       this.paginate(this.totalPages)
     }
 
@@ -94,6 +96,16 @@ export default class TokenList extends PureComponent<Props, State> {
       this.setState({authInView})
 
       // send the tokens info up when new tokens are passed as props (e.g: search filter was used by the user)
+      if (isFlagEnabled('bulkActionDeleteTokens')) {
+        this.passTokensInformationToParent()
+      }
+    }
+
+    const {currentPage: prevPage} = prevState
+    const {currentPage: nextPage} = this.state
+
+    if (!isEqual(prevPage, nextPage)){
+      // send the tokens info up when a new page is selected from the pagination
       if (isFlagEnabled('bulkActionDeleteTokens')) {
         this.passTokensInformationToParent()
       }
@@ -113,7 +125,7 @@ export default class TokenList extends PureComponent<Props, State> {
     this.props.setAllTokens(sortedAuths)
 
     // send tokens on the current page
-    const startIndex = this.rowsPerPage * Math.max(this.currentPage - 1, 0)
+    const startIndex = this.rowsPerPage * Math.max(this.state.currentPage - 1, 0)
     const endIndex = Math.min(
       startIndex + this.rowsPerPage,
       this.props.tokenCount
@@ -148,7 +160,7 @@ export default class TokenList extends PureComponent<Props, State> {
           ref={this.paginationRef}
           style={{width: this.props.pageWidth}}
           totalPages={this.totalPages}
-          currentPage={this.currentPage}
+          currentPage={this.state.currentPage}
           pageRangeOffset={1}
           onChange={this.paginate}
         />
@@ -163,7 +175,7 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   public paginate = page => {
-    this.currentPage = page
+    this.setState({currentPage: page})
     const url = new URL(location.href)
     url.searchParams.set('page', page)
     history.replaceState(null, '', url.toString())
@@ -185,7 +197,7 @@ export default class TokenList extends PureComponent<Props, State> {
       sortType
     )
 
-    const startIndex = this.rowsPerPage * Math.max(this.currentPage - 1, 0)
+    const startIndex = this.rowsPerPage * Math.max(this.state.currentPage - 1, 0)
     const endIndex = Math.min(
       startIndex + this.rowsPerPage,
       this.props.tokenCount

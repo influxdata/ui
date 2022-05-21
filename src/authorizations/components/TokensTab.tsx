@@ -138,11 +138,8 @@ class TokensTab extends PureComponent<Props, State> {
           <Toggle
             type={InputToggleType.Checkbox}
             checked={tokensSelectedForBatchOperation.length > 0}
-            style={{
-              marginLeft: '24px',
-              marginRight: '24px',
-            }}
             id="batch-select-global-toggle"
+            className="batch-select-global-toggle"
             size={ComponentSize.Small}
             icon={this.getGlobalBatchSelectionToggleIcon()}
             onChange={this.toggleGlobalBatchSelection}

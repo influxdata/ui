@@ -58,7 +58,7 @@ export default class TokenList extends PureComponent<Props, State> {
     this.state = {
       isTokenOverlayVisible: false,
       authInView: null,
-      currentPage: 1
+      currentPage: 1,
     }
   }
 
@@ -104,7 +104,7 @@ export default class TokenList extends PureComponent<Props, State> {
     const {currentPage: prevPage} = prevState
     const {currentPage: nextPage} = this.state
 
-    if (!isEqual(prevPage, nextPage)){
+    if (!isEqual(prevPage, nextPage)) {
       // send the tokens info up when a new page is selected from the pagination
       if (isFlagEnabled('bulkActionDeleteTokens')) {
         this.passTokensInformationToParent()
@@ -125,7 +125,8 @@ export default class TokenList extends PureComponent<Props, State> {
     this.props.setAllTokens(sortedAuths)
 
     // send tokens on the current page
-    const startIndex = this.rowsPerPage * Math.max(this.state.currentPage - 1, 0)
+    const startIndex =
+      this.rowsPerPage * Math.max(this.state.currentPage - 1, 0)
     const endIndex = Math.min(
       startIndex + this.rowsPerPage,
       this.props.tokenCount
@@ -197,7 +198,8 @@ export default class TokenList extends PureComponent<Props, State> {
       sortType
     )
 
-    const startIndex = this.rowsPerPage * Math.max(this.state.currentPage - 1, 0)
+    const startIndex =
+      this.rowsPerPage * Math.max(this.state.currentPage - 1, 0)
     const endIndex = Math.min(
       startIndex + this.rowsPerPage,
       this.props.tokenCount

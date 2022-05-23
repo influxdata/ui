@@ -161,12 +161,6 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
       setMeasurements(values)
-
-      /* eslint-disable no-console */
-      // TODO: remove
-      console.log('get measurements\n\n', queryText)
-      console.log(values)
-      /* eslint-disable no-console */
     } catch (e) {
       console.error(e.message)
     }
@@ -219,11 +213,6 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       )[0]?.data ?? []) as string[]
       setFields(values)
       setLoadingFields(RemoteDataState.Done)
-      /* eslint-disable no-console */
-      // TODO: remove
-      console.log('get fields\n\n', queryText)
-      console.log(values)
-      /* eslint-disable no-console */
     } catch (e) {
       console.error(e.message)
       setLoadingFields(RemoteDataState.Error)
@@ -284,12 +273,6 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       })
       setTags(tags)
       setLoadingTagKeys(RemoteDataState.Done)
-
-      /* eslint-disable no-console */
-      // TODO: remove
-      console.log('get tag keys\n\n', queryText)
-      console.log(tags)
-      /* eslint-disable no-console */
     } catch (e) {
       console.error(
         `Failed to get tags for measurement: "${measurement}"\n`,
@@ -345,15 +328,8 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
 
-      /* eslint-disable no-console */
-      // TODO: remove
-      console.log(`get tag value for [${tagKey}]\n\n`, queryText)
-      console.log(values)
-      /* eslint-disable no-console */
-
       // Update the tag key with the corresponding tag values
       const newTags = {...tags, [tagKey]: values}
-      console.log({newTags})
       setTags(newTags)
       setLoadingTagValues(RemoteDataState.Done)
     } catch (e) {

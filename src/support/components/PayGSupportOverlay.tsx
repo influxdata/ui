@@ -76,21 +76,8 @@ interface OwnProps {
       event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
   
     // submit support form
-
-    const supportRequest = {
-      severity: severity,
-      description: supportText,
-    }
-    // make a post request
-
-    try {
-    } catch (e) {}
-    // if successful
+    //testing confirmaion overlay 
     showOverlay('help-bar-confirmation', {type: 'PAYG'}, dismissOverlay)
-    // open confirmation modal
-    // else
-    // open error modal
-   
   }
 
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {

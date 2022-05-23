@@ -5,7 +5,7 @@ import memoizeOne from 'memoize-one'
 
 // Components
 import DashboardCard from 'src/dashboards/components/dashboard_index/DashboardCard'
-import {TechnoSpinner} from '@influxdata/clockface'
+import {ResourceCard, TechnoSpinner} from '@influxdata/clockface'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 
 // Selectors
@@ -60,6 +60,9 @@ class DashboardCards extends PureComponent<Props> {
   private _observer
   private _isMounted = true
   private _spinner
+  private _assetLimitAlertStyle = {
+    height: 'inherit',
+  }
 
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
     getSortedResources
@@ -69,6 +72,7 @@ class DashboardCards extends PureComponent<Props> {
     pages: 1,
     windowSize: 0,
     pinnedItems: [],
+    dashboardCardHeight: 'inherit',
   }
 
   public componentDidMount() {
@@ -76,6 +80,17 @@ class DashboardCards extends PureComponent<Props> {
       this.updatePinnedItems()
     }
     this.setState(prev => ({...prev, windowSize: 15}))
+  }
+
+  public componentDidUpdate() {
+    const card = document.querySelector<HTMLElement>(
+      '.dashboards-card-grid > .cf-resource-card'
+    )
+    if (card?.offsetHeight) {
+      this.setState({
+        dashboardCardHeight: `${card.offsetHeight}px`,
+      })
+    }
   }
 
   public componentWillUnmount() {
@@ -205,11 +220,16 @@ class DashboardCards extends PureComponent<Props> {
                 }
               />
             ))}
-          <AssetLimitAlert
-            className="dashboards--asset-alert"
-            resourceName="dashboards"
-            limitStatus={this.props.limitStatus}
-          />
+          {this.props.limitStatus === 'exceeded' && (
+            <ResourceCard style={{height: this.state.dashboardCardHeight}}>
+              <AssetLimitAlert
+                className="dashboards--asset-alert"
+                resourceName="dashboards"
+                limitStatus={this.props.limitStatus}
+                style={this._assetLimitAlertStyle}
+              />
+            </ResourceCard>
+          )}
         </div>
         {windowSize * pages < dashboards.length && (
           <div

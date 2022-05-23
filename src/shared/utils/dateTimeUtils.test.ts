@@ -1,4 +1,8 @@
-import {addDurationToDate, isISODate} from './dateTimeUtils'
+import {
+  addDurationToDate,
+  convertStringToEpoch,
+  isISODate,
+} from './dateTimeUtils'
 
 // July 4th, 1983, 20:00:00 UTC ===> 1983-07-04T20:00:00.000Z
 const timestamp = 426196800000
@@ -44,5 +48,23 @@ describe('isISODate', function() {
   })
   it('should return false for an empty string', function() {
     expect(isISODate('')).toBeFalsy()
+  })
+})
+
+describe('convertStringToEpoch', () => {
+  it('handles invalid date strings', () => {
+    expect(convertStringToEpoch('')).toEqual(NaN)
+    expect(convertStringToEpoch('not a date string')).toEqual(NaN)
+    expect(
+      convertStringToEpoch(new Date(`${timestamp}`).toDateString())
+    ).toEqual(NaN)
+  })
+
+  it('converts a valid date string to epoch time', () => {
+    let validDate = new Date()
+    expect(convertStringToEpoch(validDate.toDateString())).not.toEqual(NaN)
+
+    validDate = new Date(timestamp)
+    expect(convertStringToEpoch(validDate.toDateString())).not.toEqual(NaN)
   })
 })

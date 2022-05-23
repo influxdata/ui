@@ -79,6 +79,24 @@ describe('Deep linking', () => {
         cy.visit('/me/secrets')
         cy.location('pathname').should('eq', `/orgs/${org.id}/settings/secrets`)
 
+        cy.visit('/me/setup-golang')
+        cy.location('pathname').should(
+          'eq',
+          `/orgs/${org.id}/new-user-setup/golang`
+        )
+
+        cy.visit('/me/setup-nodejs')
+        cy.location('pathname').should(
+          'eq',
+          `/orgs/${org.id}/new-user-setup/nodejs`
+        )
+
+        cy.visit('/me/setup-python')
+        cy.location('pathname').should(
+          'eq',
+          `/orgs/${org.id}/new-user-setup/python`
+        )
+
         cy.visit('/me/tasks')
         cy.location('pathname').should('eq', `/orgs/${org.id}/tasks`)
 

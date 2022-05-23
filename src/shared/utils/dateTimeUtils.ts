@@ -52,3 +52,11 @@ export function isISODate(dateString: string): boolean {
     return false
   }
 }
+
+export const convertStringToEpoch = (date: string): number => {
+  const convertedDate = new Date(date)
+  if (convertedDate.toDateString() === 'Invalid Date') {
+    return NaN
+  }
+  return convertedDate.valueOf()
+}

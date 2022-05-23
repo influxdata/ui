@@ -55,7 +55,9 @@ export const bulkAuthorizationDeleteSuccess = (
   numberOfTokens: number
 ): Notification => ({
   ...defaultSuccessNotification,
-  message: `${numberOfTokens} API tokens were deleted successfully`,
+  message: `${numberOfTokens} API ${
+    numberOfTokens > 1 ? 'tokens were' : 'token'
+  } deleted successfully`,
 })
 
 export const bulkAuthorizationDeleteFailed = (desc: string): Notification => ({

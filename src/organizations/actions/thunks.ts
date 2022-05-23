@@ -62,21 +62,23 @@ export const getOrganizations = () => async (
     }
 
     const {orgs} = resp.data
-    const quartzOrgData = await getNewAPIData({orgId: orgs[0].id})
 
-    if (quartzOrgData.status !== 200) {
-      throw new Error(quartzOrgData.data.message)
+    if (orgs.length !== 1) {
+      throw new Error('Received more than one organization for this account.')
     }
 
-    const orgWithCloudProvider = {
-      provider: quartzOrgData.data.provider,
-      ...cloneDeep(orgs[0]),
+    const newOrgAPIData = await getNewAPIData({orgId: orgs[0].id})
+
+    if (newOrgAPIData.status !== 200) {
+      throw new Error(newOrgAPIData.data.message)
     }
 
-    const orgsWithCloudProvider = [orgWithCloudProvider]
+    const orgsWithProvider = [
+      {...cloneDeep(orgs[0]), provider: newOrgAPIData.data.provider},
+    ]
 
     const organizations = normalize<Organization, OrgEntities, string[]>(
-      orgsWithCloudProvider,
+      orgsWithProvider,
       arrayOfOrgs
     )
 
@@ -88,7 +90,7 @@ export const getOrganizations = () => async (
 
     dispatch(setOrgs(RemoteDataState.Done, organizations))
 
-    return orgs
+    return orgsWithProvider
   } catch (error) {
     console.error(error)
     if (getOrg(getState())?.id && error.message === 'organization not found') {

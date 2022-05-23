@@ -51,7 +51,7 @@ const FeedbackQuestionsOverlay: FC<Props> = props => {
     )
     const {showOverlay} = props
     event.preventDefault()
-    showOverlay('help-bar-confirmation', null, dismissOverlay)
+    showOverlay('help-bar-confirmation', {type: 'feedback'}, dismissOverlay)
   }
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

@@ -91,7 +91,7 @@ export class GoWizard extends PureComponent<null, State> {
   renderStep = () => {
     switch (this.state.currentStep) {
       case 1: {
-        return <Overview />
+        return <Overview wizard="goWizard" />
       }
       case 2: {
         return <InstallDependencies />
@@ -129,7 +129,7 @@ export class GoWizard extends PureComponent<null, State> {
         )
       }
       default: {
-        return <Overview />
+        return <Overview wizard="goWizard" />
       }
     }
   }

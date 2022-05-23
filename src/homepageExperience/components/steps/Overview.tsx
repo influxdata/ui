@@ -9,7 +9,7 @@ type Props = {
 export const Overview: FC<Props> = ({wizard}) => {
   const videoFrame = useRef<null | HTMLIFrameElement>(null)
 
-  // onClick (and related events) are unavailable for media embedded in iframes because they represented a nested browsing context. This solution, which infers a click from an onBlur event where the iframe is the active element on the DOM, is adapted from https://github.com/springload/react-iframe-click
+  // iFrames represent separate browsing context, requiring this workaround. For more, see resolution of this ticket (https://github.com/influxdata/ui/issues/4623)
 
   useEffect(() => {
     const checkVidClick = () => {

@@ -35,7 +35,7 @@ const FROM_BUCKET = (bucketName: string) => `from(bucket: "${bucketName}")`
 
 export const LOCAL_LIMIT = 8
 const INITIAL_FIELDS = []
-const INITIAL_TAGS = []
+const INITIAL_TAGS = {}
 
 interface NewDataExplorerContextType {
   // Schema
@@ -44,11 +44,13 @@ interface NewDataExplorerContextType {
   selectedMeasurement: string // TODO: type Measurement?
   fields: string[] // TODO: type Field[]?
   loadingFields: RemoteDataState
-  tags: any[]
-  loadingTags: RemoteDataState
+  tags: Tags
+  loadingTagKeys: RemoteDataState
+  loadingTagValues: RemoteDataState
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void // TODO: type Measurement?
+  selectTagKey: (tagKey: string) => void
   setSearchTerm: (str: string) => void
 
   // Query building
@@ -64,11 +66,13 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   selectedMeasurement: '',
   fields: [],
   loadingFields: RemoteDataState.NotStarted,
-  tags: [],
-  loadingTags: RemoteDataState.NotStarted,
+  tags: {},
+  loadingTagKeys: RemoteDataState.NotStarted,
+  loadingTagValues: RemoteDataState.NotStarted,
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
+  selectTagKey: (_tk: string) => {},
   setSearchTerm: (_s: string) => {},
 
   // Query building
@@ -85,22 +89,26 @@ interface Prop {
   scope: QueryScope
 }
 
-export interface Tag {
-  key: string
-  values: string[]
+export interface Tags {
+  [key: string]: string[]
 }
 
 export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   const [loading] = useState(RemoteDataState.NotStarted)
   const [loadingFields, setLoadingFields] = useState(RemoteDataState.NotStarted)
-  const [loadingTags, setLoadingTags] = useState(RemoteDataState.NotStarted)
+  const [loadingTagKeys, setLoadingTagKeys] = useState(
+    RemoteDataState.NotStarted
+  )
+  const [loadingTagValues, setLoadingTagValues] = useState(
+    RemoteDataState.NotStarted
+  )
   const {query: queryAPI} = useContext(QueryContext)
   const [query, setQuery] = useState('')
   const [selectedBucket, setSelectedBucket] = useState(null)
   const [measurements, setMeasurements] = useState<Array<string>>([])
   const [selectedMeasurement, setSelectedMeasurement] = useState('')
   const [fields, setFields] = useState<Array<string>>(INITIAL_FIELDS)
-  const [tags, setTags] = useState<Array<Tag>>(INITIAL_TAGS)
+  const [tags, setTags] = useState<Tags>(INITIAL_TAGS)
   const [searchTerm, setSearchTerm] = useState('')
 
   const limit = isFlagEnabled('increasedMeasurmentTagLimit')
@@ -154,6 +162,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
           c => c.name === '_value' && c.type === 'string'
         )[0]?.data ?? []) as string[]
         setMeasurements(values)
+
         /* eslint-disable no-console */
         // TODO: remove
         console.log('get measurements\n\n', queryText)
@@ -228,7 +237,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       return
     }
 
-    let tags: Tag[] = []
+    let tags: Tags = {}
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
@@ -273,36 +282,28 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       const keys = (Object.values(resp.parsed.table.columns).filter(
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
-      tags = keys.map(key => {
-        return {key, values: []} as Tag
+      keys.map(key => {
+        tags[key] = []
       })
+
       /* eslint-disable no-console */
       // TODO: remove
       console.log('get tag keys\n\n', queryText)
       console.log(tags)
       /* eslint-disable no-console */
-      const tagKeys = {}
-      for (const key of keys) {
-        const values = await getTagValues(measurement, key)
-        tagKeys[key] = values
-      }
-      // update the tag values into tags
-      tags.map(tag => {
-        tag.values = tagKeys[tag.key]
-      })
       setTags(tags)
-      setLoadingTags(RemoteDataState.Done)
+      setLoadingTagKeys(RemoteDataState.Done)
     } catch (e) {
       console.error(
         `Failed to get tags for measurement: "${measurement}"\n`,
         e.message
       )
-      setLoadingTags(RemoteDataState.Error)
+      setLoadingTagKeys(RemoteDataState.Error)
     }
   }
 
-  const getTagValues = async (measurement: string, tagKey: string) => {
-    if (isEmpty(selectedBucket) || measurement === '') {
+  const getTagValues = async (tagKey: string) => {
+    if (isEmpty(selectedBucket) || isEmpty(selectedMeasurement)) {
       return
     }
 
@@ -318,11 +319,11 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     // TODO: can we do hard coded time range here?
     let queryText = `${_source}
       |> range(start: -30d, stop: now())
-      |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
+      |> filter(fn: (r) => (r["_measurement"] == "${selectedMeasurement}"))
       |> keep(columns: ["${tagKey}"])
       |> group()
       |> distinct(column: "${tagKey}")
-      |> limit(n: ${LOCAL_LIMIT})
+      |> limit(n: ${limit})
       |> sort()
     `
 
@@ -332,11 +333,11 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
         schema.tagValues(
           bucket: "${selectedBucket.name}",
           tag: "${tagKey}",
-          predicate: (r) => (r["_measurement"] == "${measurement}"),
+          predicate: (r) => (r["_measurement"] == "${selectedMeasurement}"),
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
-        |> limit(n: ${LOCAL_LIMIT})
+        |> limit(n: ${limit})
         |> sort()
       `
     }
@@ -346,15 +347,24 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       const values = (Object.values(resp.parsed.table.columns).filter(
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
+
+      /* eslint-disable no-console */
+      // TODO: remove
       console.log(`get tag value for [${tagKey}]\n\n`, queryText)
       console.log(values)
-      return values
+      /* eslint-disable no-console */
+
+      // Update the tag key with the corresponding tag values
+      const newTags = {...tags, [tagKey]: values}
+      console.log({newTags})
+      setTags(newTags)
+      setLoadingTagValues(RemoteDataState.Done)
     } catch (e) {
       console.error(
         `Failed to get tag value for tag key: "${tagKey}"\n`,
         e.message
       )
-      return []
+      setLoadingTagValues(RemoteDataState.Error)
     }
   }
 
@@ -381,11 +391,16 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     setFields(INITIAL_FIELDS)
     setTags(INITIAL_TAGS)
     setLoadingFields(RemoteDataState.Loading)
-    setLoadingTags(RemoteDataState.Loading)
+    setLoadingTagKeys(RemoteDataState.Loading)
 
     // Get fields and tags
     getFields(measurement)
     getTagKeys(measurement)
+  }
+
+  const handleSelectTagKey = (tagKey: string): void => {
+    setLoadingTagValues(RemoteDataState.Loading)
+    getTagValues(tagKey)
   }
 
   const handleSearchTerm = (searchTerm: string): void => {
@@ -407,10 +422,12 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
           fields,
           loadingFields,
           tags,
-          loadingTags,
+          loadingTagKeys,
+          loadingTagValues,
           searchTerm,
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,
+          selectTagKey: handleSelectTagKey,
           setSearchTerm: handleSearchTerm,
 
           // Query building
@@ -430,7 +447,8 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       fields,
       loadingFields,
       tags,
-      loadingTags,
+      loadingTagKeys,
+      loadingTagValues,
       searchTerm,
       handleSelectBucket,
 

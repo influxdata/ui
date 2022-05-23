@@ -1,4 +1,5 @@
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
+import {concat, slice} from 'lodash'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
@@ -7,41 +8,113 @@ import WaitingText from 'src/shared/components/WaitingText'
 
 // Contexts
 import {
+  LOCAL_LIMIT,
   NewDataExplorerContext,
-  Tag,
 } from 'src/dataExplorer/context/newDataExplorer'
 
 // Types
 import {RemoteDataState} from 'src/types'
 
 interface Prop {
-  tag: Tag
-  onSelect: (value: string) => void
+  loading: RemoteDataState
+  tagKey: string
+  tagValues: string[]
+  onSelectTagKey: (key: string) => void
+  onSelectTagValue: (value: string) => void
 }
 
-const TagValues: FC<Prop> = ({tag, onSelect}) => {
+const TagValues: FC<Prop> = ({
+  loading,
+  tagKey,
+  tagValues,
+  onSelectTagKey,
+  onSelectTagValue,
+}) => {
+  const [valuesToShow, setValuesToShow] = useState([])
+  const [loadMore, setLoadMore] = useState(false)
+  const [index, setIndex] = useState(LOCAL_LIMIT)
+
+  useEffect(() => {
+    if (tagValues.length === 0) {
+      // Reset
+      setValuesToShow([])
+      setLoadMore(false)
+      setIndex(LOCAL_LIMIT)
+    } else {
+      const newValuesToShow = slice(tagValues, 0, index)
+      const newLoadMore = tagValues.length > LOCAL_LIMIT
+      setValuesToShow(newValuesToShow)
+      setLoadMore(newLoadMore)
+    }
+  }, [tagValues])
+
+  let list: JSX.Element | JSX.Element[] = []
+
+  if (loading === RemoteDataState.Error) {
+    list = (
+      <div className="tag-selector-value--list-item">
+        Failed to load tag values
+      </div>
+    )
+  } else if (
+    loading === RemoteDataState.Loading ||
+    loading === RemoteDataState.NotStarted
+  ) {
+    list = <WaitingText text="Loading tag values" />
+  } else if (loading === RemoteDataState.Done && tagValues.length) {
+    list = valuesToShow.map(value => (
+      <div
+        className="tag-selector-value--list-item"
+        key={value}
+        onClick={() => onSelectTagValue(value)}
+      >
+        {value}
+      </div>
+    ))
+  }
+
+  const handleLoadMore = () => {
+    const newIndex = index + LOCAL_LIMIT
+    if (loadMore) {
+      // Add more key values to show
+      const newValuesToShow = concat(
+        valuesToShow,
+        slice(tagValues, index, newIndex)
+      )
+      setValuesToShow(newValuesToShow)
+    }
+    const newLoadMore = newIndex < tagValues.length
+    setLoadMore(newLoadMore)
+    setIndex(newIndex)
+  }
+
+  const loadMoreButton = loadMore && (
+    <div className="load-more-button" onClick={handleLoadMore}>
+      + Load more
+    </div>
+  )
+
   return (
     <Accordion className="tag-selector-value">
       <Accordion.AccordionHeader className="tag-selector-value--header">
-        <SelectorTitle title={tag.key} />
+        <div onClick={() => onSelectTagKey(tagKey)}>
+          <SelectorTitle title={tagKey} />
+        </div>
       </Accordion.AccordionHeader>
       <div className="container-side-bar">
-        {tag.values.map(value => (
-          <div
-            className="tag-selector-value--list-item"
-            key={value}
-            onClick={() => onSelect(value)}
-          >
-            {value}
-          </div>
-        ))}
+        {list}
+        {loadMoreButton}
       </div>
     </Accordion>
   )
 }
 
 const TagSelector: FC = () => {
-  const {tags, loadingTags} = useContext(NewDataExplorerContext)
+  const {tags, loadingTagKeys, loadingTagValues, selectTagKey} = useContext(
+    NewDataExplorerContext
+  )
+
+  const tagKeys: string[] = Object.keys(tags)
 
   const handleSelect = (value: string) => {
     // TODO
@@ -54,27 +127,29 @@ const TagSelector: FC = () => {
     <div className="tag-selector-key--list-item">No Tags Found</div>
   )
 
-  if (loadingTags === RemoteDataState.Error) {
+  if (loadingTagKeys === RemoteDataState.Error) {
     list = (
       <div className="tag-selector-key--list-item">Failed to load tags</div>
     )
   } else if (
-    loadingTags === RemoteDataState.Loading ||
-    loadingTags === RemoteDataState.NotStarted
+    loadingTagKeys === RemoteDataState.Loading ||
+    loadingTagKeys === RemoteDataState.NotStarted
   ) {
     list = <WaitingText text="Loading tags" />
-  } else if (loadingTags === RemoteDataState.Done && tags.length) {
-    list = tags.map(tag => (
-      <div key={tag.key} className="tag-selector-key--list-item">
-        <TagValues tag={tag} onSelect={handleSelect} />
-      </div>
-    ))
-    // TODO: check length of tags to load more
-    // list.push(
-    //   <div key="load-more" className="tag-selector-key--list-item">
-    //     Load More
-    //   </div>
-    // )
+  } else if (loadingTagKeys === RemoteDataState.Done && tagKeys.length) {
+    list = tagKeys.map(key => {
+      return (
+        <div key={key} className="tag-selector-key--list-item">
+          <TagValues
+            tagKey={key}
+            tagValues={tags[key]}
+            onSelectTagKey={selectTagKey}
+            onSelectTagValue={handleSelect}
+            loading={loadingTagValues}
+          />
+        </div>
+      )
+    })
   }
 
   return (

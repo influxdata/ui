@@ -63,7 +63,7 @@ export const getOrganizations = () => async (
 
     const {orgs} = resp.data
 
-    if (orgs.length !== 1) {
+    if (orgs.length > 1) {
       throw new Error('Received more than one organization for this account.')
     }
 

@@ -9,30 +9,19 @@ type Props = {
 export const Overview: FC<Props> = ({wizard}) => {
   const videoFrame = useRef<null | HTMLIFrameElement>(null)
 
-  // Can't use an onClick for events because the iframe targets another site.
-  // Can use this workaround. For more info see https://github.com/springload/react-iframe-click
+  // onClick (and related events) are unavailable for media embedded in iframes because they represented a nested browsing context. This solution, which infers a click from an onBlur event where the iframe is the active element on the DOM, is adapted from https://github.com/springload/react-iframe-click
 
   useEffect(() => {
-    console.log('loaded')
     const checkVidClick = () => {
-      console.log(document.activeElement)
       if (
         document.activeElement &&
         document.activeElement.nodeName.toLowerCase() === 'iframe' &&
         videoFrame.current &&
         videoFrame.current === document.activeElement
       ) {
-        console.log(wizard)
         event(`firstMile.${wizard}Video.clicked`)
       }
-      // If we don't want this to happen for subsequent clicks on the video, remove during cleanup
-      /*
-      return () => {
-        window.removeEventListener('blur', checkVidClick)
-      }
-      */
     }
-
     window.addEventListener('blur', checkVidClick)
   }, [])
 

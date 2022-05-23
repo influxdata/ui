@@ -109,17 +109,17 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
           method={Method.Post}
         >
           <Overlay.Body>
-      <p className="status-page-text">
-        <span>
-          {' '}
-          <Icon glyph={IconFont.Info_New} />{' '}
-        </span>
-        Check our{' '}
-        <SafeBlankLink href="https://status.influxdata.com">
-          status page
-        </SafeBlankLink>{' '}
-        to see if there is an outage impacting your region.
-      </p>
+            <p className="status-page-text">
+              <span>
+                {' '}
+                <Icon glyph={IconFont.Info_New} />{' '}
+              </span>
+              Check our{' '}
+              <SafeBlankLink href="https://status.influxdata.com">
+                status page
+              </SafeBlankLink>{' '}
+              to see if there is an outage impacting your region.
+            </p>
             <Form.Element label="Subject" required={true}>
               <Input
                 name="subject"

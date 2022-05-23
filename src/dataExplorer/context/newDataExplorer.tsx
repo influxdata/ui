@@ -33,7 +33,7 @@ const SAMPLE_DATA_SET = (bucketID: string) =>
   `import "influxdata/influxdb/sample"\nsample.data(set: "${bucketID}")`
 const FROM_BUCKET = (bucketName: string) => `from(bucket: "${bucketName}")`
 
-const LOCAL_LIMIT = 8
+export const LOCAL_LIMIT = 8
 const INITIAL_FIELDS = []
 const INITIAL_TAGS = []
 

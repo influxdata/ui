@@ -1,11 +1,15 @@
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
+import {concat, slice} from 'lodash'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Contexts
-import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
+import {
+  NewDataExplorerContext,
+  LOCAL_LIMIT,
+} from 'src/dataExplorer/context/newDataExplorer'
 import WaitingText from 'src/shared/components/WaitingText'
 
 // Types
@@ -16,6 +20,16 @@ import './Schema.scss'
 
 const FieldSelector: FC = () => {
   const {fields, loadingFields} = useContext(NewDataExplorerContext)
+  const [fieldsToShow, setFieldsToShow] = useState([])
+  const [loadMore, setLoadMore] = useState(false)
+  const [index, setIndex] = useState(LOCAL_LIMIT)
+
+  useEffect(() => {
+    const newFieldsToShow = slice(fields, 0, index)
+    const newLoadMore = fields.length > LOCAL_LIMIT
+    setFieldsToShow(newFieldsToShow)
+    setLoadMore(newLoadMore)
+  }, [fields])
 
   let list: JSX.Element | JSX.Element[] = (
     <div className="field-selector--list-item">No Fields Found</div>
@@ -31,25 +45,46 @@ const FieldSelector: FC = () => {
   ) {
     list = <WaitingText text="Loading fields" />
   } else if (loadingFields === RemoteDataState.Done && fields.length) {
-    list = fields.map(field => (
+    list = fieldsToShow.map(field => (
       <div key={field} className="field-selector--list-item">
         {field}
       </div>
     ))
-    // TODO: check length of fields to load more
-    // list.push(
-    //   <div key="load-more" className="field-selector--list-item">
-    //     Load More
-    //   </div>
-    // )
   }
+
+  const handleLoadMore = () => {
+    const newIndex = index + LOCAL_LIMIT
+    if (loadMore) {
+      // Add more field values to show
+      const newFieldsToShow = concat(
+        fieldsToShow,
+        slice(fields, index, newIndex)
+      )
+      setFieldsToShow(newFieldsToShow)
+    }
+    const newLoadMore = newIndex < fields.length
+    setLoadMore(newLoadMore)
+    setIndex(newIndex)
+  }
+
+  const loadMoreButton = loadMore && (
+    <div
+      className="load-more-button field-selector--list-item"
+      onClick={handleLoadMore}
+    >
+      + Load more
+    </div>
+  )
 
   return (
     <Accordion className="field-selector" expanded={true}>
       <Accordion.AccordionHeader className="field-selector--header">
         <SelectorTitle title="Fields" info="Test info" />
       </Accordion.AccordionHeader>
-      <div className="container-side-bar">{list}</div>
+      <div className="container-side-bar">
+        {list}
+        {loadMoreButton}
+      </div>
     </Accordion>
   )
 }

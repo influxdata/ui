@@ -6,7 +6,7 @@ import {PipeProp} from 'src/types/flows'
 import {Bucket} from 'src/types'
 
 // Contexts
-import {BucketProvider} from 'src/flows/context/bucket.scoped'
+import {BucketProvider} from 'src/shared/contexts/buckets'
 import {SchemaProvider} from 'src/flows/pipes/MetricSelector/context'
 import {PipeContext} from 'src/flows/context/pipe'
 
@@ -21,7 +21,7 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {event} from 'src/cloud/utils/reporting'
 
 const DataSource: FC<PipeProp> = ({Context}) => {
-  const {data, update} = useContext(PipeContext)
+  const {data, update, scope} = useContext(PipeContext)
 
   const updateBucket = (bucket: Bucket) => {
     if (bucket?.id === data.bucket?.id) {
@@ -35,7 +35,7 @@ const DataSource: FC<PipeProp> = ({Context}) => {
   }
 
   return (
-    <BucketProvider>
+    <BucketProvider scope={scope}>
       <SchemaProvider>
         <Context resizes>
           <div className="data-source">

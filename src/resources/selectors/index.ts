@@ -6,6 +6,7 @@ import {
   AppState,
   Bucket,
   Label,
+  OrgsState,
   RemoteDataState,
   ResourceType,
   Secret,
@@ -72,3 +73,11 @@ export const getLabels = (state: AppState, labelIDs: string[]): Label[] => {
 
 export const getAllTokensResources = (state: AppState): PermissionTypes[] =>
   get(state, 'resources.tokens.allResources', []) || []
+
+export const getAllOrgs = (state: AppState): OrgsState => {
+  const errorOrgsState = {
+    status: RemoteDataState.Error,
+    org: {id: ''},
+  }
+  return get(state, 'resources.orgs', errorOrgsState)
+}

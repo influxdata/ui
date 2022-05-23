@@ -5,6 +5,9 @@ import {mocked} from 'ts-jest/utils'
 
 jest.mock('@influxdata/giraffe', () => ({
   fromFlux: jest.fn(),
+  fastFromFlux: jest.fn(),
+  // todo: test will fails on binaryPrefixFormatter not a function in src/shared/copy/notifications.ts:22:24 this mock can be removed after this will be fixed
+  binaryPrefixFormatter: jest.fn(),
 }))
 // todo: test will fails on binaryPrefixFormatter not a function in src/shared/copy/notifications.ts:22:24 this mock can be removed after this will be fixed
 jest.mock('src/cloud/utils/reporting')

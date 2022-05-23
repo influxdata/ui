@@ -21,13 +21,14 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 
-// Actions
+// Actions and Selectors
 import {
   setAutoRefresh,
   setTimeMachineTimeRange,
   setTimeRange,
 } from 'src/timeMachine/actions'
 import {enableUpdatedTimeRangeInVEO} from 'src/shared/actions/app'
+import {getAllVariables} from 'src/variables/selectors'
 
 // Utils
 import {
@@ -124,7 +125,7 @@ class TimeMachineQueries extends PureComponent<Props> {
     if (activeQuery.editMode === 'builder') {
       return <TimeMachineQueryBuilder />
     } else if (activeQuery.editMode === 'advanced') {
-      return <TimeMachineFluxEditor />
+      return <TimeMachineFluxEditor variables={this.props.variables} />
     } else {
       return null
     }
@@ -142,6 +143,7 @@ const mstp = (state: AppState) => {
     activeQuery,
     autoRefresh,
     isInCheckOverlay: getIsInCheckOverlay(state),
+    variables: getAllVariables(state),
   }
 }
 

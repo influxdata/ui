@@ -2,8 +2,11 @@
 import React, {FC, createContext, useContext, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
+import {darcula} from 'react-syntax-highlighter/dist/cjs/styles/prism'
+
 // Components
-import {DapperScrollbars} from '@influxdata/clockface'
+import {DapperScrollbars, InfluxColors} from '@influxdata/clockface'
 import CopyButton from 'src/shared/components/CopyButton'
 
 // Constants
@@ -74,6 +77,7 @@ interface Props {
   onCopy?: () => void
   type?: string
   showCopyControl?: boolean
+  language?: string
 }
 
 const CodeSnippet: FC<Props> = ({
@@ -83,6 +87,7 @@ const CodeSnippet: FC<Props> = ({
   type,
   onCopy,
   showCopyControl = true,
+  language = null,
 }) => {
   const {transform} = useContext(Context)
   const dispatch = useDispatch()
@@ -109,9 +114,20 @@ const CodeSnippet: FC<Props> = ({
         className="code-snippet--scroll"
       >
         <div className="code-snippet--text">
-          <pre>
-            <code>{_text}</code>
-          </pre>
+          {language === null ? (
+            <pre>
+              <code>{_text}</code>
+            </pre>
+          ) : (
+            <SyntaxHighlighter
+              language={language}
+              style={darcula}
+              customStyle={{backgroundColor: InfluxColors.Grey5}}
+              codeTagProps={{style: {fontFamily: '"IBMPlexMono", monospace'}}}
+            >
+              {_text}
+            </SyntaxHighlighter>
+          )}
         </div>
       </DapperScrollbars>
       <div className="code-snippet--footer">

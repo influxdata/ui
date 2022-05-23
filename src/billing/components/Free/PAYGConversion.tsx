@@ -14,10 +14,12 @@ import {
 import {useHistory} from 'react-router-dom'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
 import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
+import {getDataLayerIdentity} from 'src/cloud/utils/experiments'
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
-const ONE_MILLION = 1_000_000
+const CARDINALITY_LIMIT = 1_000_000
 
 export const Credit250PAYGConversion: FC = () => {
   if (isFlagEnabled('credit250Experiment')) {
@@ -46,6 +48,15 @@ export const Credit250PAYGConversion: FC = () => {
               </Heading>
               <CloudUpgradeButton
                 className="credit-250-conversion-upgrade--button"
+                metric={() => {
+                  const identity = getDataLayerIdentity()
+                  event(`billing.conversion.payg.credit-250.upgrade`, {
+                    location: 'billing',
+                    ...identity,
+                    experimentId: CREDIT_250_EXPERIMENT_ID,
+                    experimentVariantId: '1',
+                  })
+                }}
                 showPromoMessage={false}
                 size={ComponentSize.Large}
               />
@@ -60,7 +71,7 @@ export const Credit250PAYGConversion: FC = () => {
                   <li>Unlimited alert checks and notification rules</li>
                   <li>HTTP and PagerDuty notifications</li>
                   <li>
-                    Up to {Intl.NumberFormat().format(ONE_MILLION)} series
+                    Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)} series
                     cardinality
                   </li>
                 </ul>
@@ -109,7 +120,10 @@ export const PAYGConversion: FC = () => {
                       <li>Unlimited tasks</li>
                       <li>Unlimited alert checks and notification rules</li>
                       <li>HTTP and PagerDuty notifications</li>
-                      <li>Up to 1,000,000 series cardinality</li>
+                      <li>
+                        Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)}{' '}
+                        series cardinality
+                      </li>
                     </ul>
                   </div>
                 </div>

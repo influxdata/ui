@@ -39,10 +39,7 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 import {event} from 'src/cloud/utils/reporting'
 
 // Constants
-import {
-  CREDIT_250_EXPERIMENT_ID,
-  PAYG_CREDIT_EXPERIMENT_ID,
-} from 'src/shared/constants'
+import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -54,7 +51,6 @@ const CheckoutForm: FC = () => {
     handleSubmit,
     setIsDirty,
     isSubmitting,
-    isPaygCreditActive,
   } = useContext(CheckoutContext)
 
   const onSubmit = () => {
@@ -121,21 +117,6 @@ const CheckoutForm: FC = () => {
                 </SafeBlankLink>
                 .
               </p>
-
-              {isPaygCreditActive && (
-                <GoogleOptimizeExperiment
-                  experimentID={PAYG_CREDIT_EXPERIMENT_ID}
-                  variants={[
-                    <div
-                      className="checkout-form--banner"
-                      key="checkout-form-banner"
-                    >
-                      <strong className="checkout-banner--credit">$250</strong>
-                      <p>credit applied</p>
-                    </div>,
-                  ]}
-                />
-              )}
             </Panel.Body>
           </Panel>
           <Panel>

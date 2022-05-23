@@ -1,12 +1,13 @@
 // APIs
 import {runQuery} from 'src/shared/apis/query'
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 
 // Utils
 import {resolveSelectedKey} from 'src/variables/utils/resolveSelectedValue'
 import {formatVarsOption} from 'src/variables/utils/formatVarsOption'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {
@@ -40,7 +41,9 @@ export const extractValues = (
   prevSelection?: string,
   defaultSelection?: string
 ): VariableValues => {
-  const {table} = fromFlux(csv)
+  const {table} = isFlagEnabled('fastFromFlux')
+    ? fastFromFlux(csv)
+    : fromFlux(csv)
   if (!table || !table.getColumn('_value', 'string')) {
     return {
       values: [],

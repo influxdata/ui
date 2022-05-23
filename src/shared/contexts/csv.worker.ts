@@ -88,6 +88,8 @@ const assert = (condition: boolean, errorMessage: string) => {
   [0]: https://github.com/influxdata/flux/blob/master/docs/SPEC.md#csv
   [1]: https://github.com/influxdata/flux/blob/master/docs/SPEC.md#annotations
 */
+// TODO(ariel): come back here and replace this fromFlux function with the fastFromFlux function
+// once it's been derisked and replaced this version in giraffe
 const fromFlux = (fluxCSV: string): FromFluxResult => {
   const columns: Columns = {}
   const fluxGroupKeyUnion = new Set<string>()

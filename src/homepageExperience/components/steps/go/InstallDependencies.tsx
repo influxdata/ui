@@ -29,6 +29,7 @@ export class InstallDependencies extends PureComponent {
         <CodeSnippet
           text={goModuleSnippet}
           onCopy={this.logCopyInitializeModuleSnippet}
+          language="properties"
         />
         <p style={{marginTop: '40px'}}>
           Then, install the{' '}
@@ -40,6 +41,7 @@ export class InstallDependencies extends PureComponent {
         <CodeSnippet
           text="go get github.com/influxdata/influxdb-client-go/v2"
           onCopy={this.logCopyInstallCodeSnippet}
+          language="properties"
         />
         <p style={{fontStyle: 'italic'}}>
           You’ll need to have{' '}

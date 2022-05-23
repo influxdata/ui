@@ -115,7 +115,11 @@ export const Tokens: FC<OwnProps> = ({
         Run this command in your terminal to save your token as an environment
         variable:
       </p>
-      <CodeSnippet text={tokenTextboxText} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet
+        text={tokenTextboxText}
+        onCopy={logCopyCodeSnippet}
+        language="properties"
+      />
       <FlexBox margin={ComponentSize.Large} alignItems={AlignItems.Center}>
         <Icon glyph={IconFont.Info_New} style={{fontSize: '30px'}} />
         <p>

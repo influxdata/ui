@@ -54,8 +54,28 @@ export const HomepageContainer: FC = () => {
   const squareGridCardSize = '200px'
 
   // events handling
-  const logPythonEvent = () => {
+  const logGoWizardClick = () => {
+    event('firstMile.goWizard.clicked')
+  }
+
+  const logNodeJSWizardClick = () => {
+    event('firstMile.nodejsWizard.clicked')
+  }
+
+  const logPythonWizardClick = () => {
     event('firstMile.pythonWizard.clicked')
+  }
+
+  const logMoreButtonClick = () => {
+    event('firstMile.moreButton.clicked')
+  }
+
+  const logCLIButtonClick = () => {
+    event('firstMile.CLIButton.clicked')
+  }
+
+  const logTelegrafButtonClick = () => {
+    event('firstMile.telegrafButton.clicked')
   }
 
   return (
@@ -91,7 +111,7 @@ export const HomepageContainer: FC = () => {
                       <Link
                         to={pythonWizardLink}
                         style={linkStyle}
-                        onClick={logPythonEvent}
+                        onClick={logPythonWizardClick}
                       >
                         <div
                           className="homepage-wizard-language-tile"
@@ -103,7 +123,11 @@ export const HomepageContainer: FC = () => {
                       </Link>
                     </ResourceCard>
                     <ResourceCard style={cardStyle}>
-                      <Link to={javaScriptNodeLink} style={linkStyle}>
+                      <Link
+                        to={javaScriptNodeLink}
+                        style={linkStyle}
+                        onClick={logNodeJSWizardClick}
+                      >
                         <div className="homepage-wizard-language-tile">
                           <h5>JavaScript/Node.js</h5>
                           {NodejsIcon}
@@ -111,7 +135,11 @@ export const HomepageContainer: FC = () => {
                       </Link>
                     </ResourceCard>
                     <ResourceCard style={cardStyle}>
-                      <Link to={golangLink} style={linkStyle}>
+                      <Link
+                        to={golangLink}
+                        style={linkStyle}
+                        onClick={logGoWizardClick}
+                      >
                         <div className="homepage-wizard-language-tile">
                           <h5>Go</h5>
                           {GoIcon}
@@ -119,7 +147,11 @@ export const HomepageContainer: FC = () => {
                       </Link>
                     </ResourceCard>
                     <ResourceCard style={cardStyle}>
-                      <Link to={loadDataSourcesLink} style={moreStyle}>
+                      <Link
+                        to={loadDataSourcesLink}
+                        style={moreStyle}
+                        onClick={logMoreButtonClick}
+                      >
                         <div className="homepage-wizard-language-tile">
                           <span>
                             <h5>
@@ -131,7 +163,11 @@ export const HomepageContainer: FC = () => {
                     </ResourceCard>
                   </SquareGrid>
                   <hr style={{marginTop: '32px'}} />
-                  <Link to={cliPageLink} style={linkStyle}>
+                  <Link
+                    to={cliPageLink}
+                    style={linkStyle}
+                    onClick={logCLIButtonClick}
+                  >
                     <div className="homepage-write-data-tile">
                       <div className="tile-icon-text-wrapper">
                         <div className="icon">{CLIIcon}</div>
@@ -150,7 +186,11 @@ export const HomepageContainer: FC = () => {
                       />
                     </div>
                   </Link>
-                  <Link to={telegrafPageLink} style={linkStyle}>
+                  <Link
+                    to={telegrafPageLink}
+                    style={linkStyle}
+                    onClick={logTelegrafButtonClick}
+                  >
                     <div className="homepage-write-data-tile">
                       <div className="tile-icon-text-wrapper">
                         <div className="icon">{TelegrafIcon}</div>

@@ -32,6 +32,14 @@ import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtoco
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  getDataLayerIdentity,
+  getExperimentVariantId,
+} from 'src/cloud/utils/experiments'
+
+// Constants
+import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -152,7 +160,22 @@ const ParsingForm: FC<Props> = ({
               <CloudUpgradeButton
                 className="create-parsing-form__upgrade-button"
                 metric={() => {
-                  event('parsing form upgrade')
+                  const experimentVariantId = getExperimentVariantId(
+                    CREDIT_250_EXPERIMENT_ID
+                  )
+                  const identity = getDataLayerIdentity()
+                  event(
+                    isFlagEnabled('credit250Experiment') &&
+                      experimentVariantId === '1'
+                      ? `subscriptions.parsing-form.credit-250.upgrade`
+                      : `subscriptions.parsing-form.upgrade`,
+                    {
+                      location: 'subscriptions parsing form',
+                      ...identity,
+                      experimentId: CREDIT_250_EXPERIMENT_ID,
+                      experimentVariantId,
+                    }
+                  )
                 }}
               />
             ) : (

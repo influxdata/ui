@@ -1,5 +1,5 @@
 // Libraries
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 
 // APIs
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
@@ -10,6 +10,10 @@ import {formatExpression} from 'src/variables/utils/formatExpression'
 import {tagToFlux} from 'src/timeMachine/utils/queryBuilder'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  CACHING_REQUIRED_END_DATE,
+  CACHING_REQUIRED_START_DATE,
+} from 'src/utils/datetime/constants'
 
 // Types
 import {TimeRange, BuilderConfig} from 'src/types'
@@ -53,7 +57,7 @@ export function findKeys({
 
   // TODO: Use the `v1.tagKeys` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-  const query = `import "regexp"
+  let query = `import "regexp"
 
   from(bucket: "${bucket}")
   |> range(${timeRangeArguments})
@@ -64,6 +68,21 @@ export function findKeys({
   |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
   |> sort()
   |> limit(n: ${adjustedLimit})`
+
+  if (bucket !== 'sample' && isFlagEnabled('newQueryBuilder')) {
+    query = `import "regexp"
+import "influxdata/influxdb/schema"
+
+schema.tagKeys(
+  bucket: "${bucket}",
+  predicate: ${tagFilters},
+  start: ${CACHING_REQUIRED_START_DATE},
+  stop: ${CACHING_REQUIRED_END_DATE},
+)${searchFilter}${previousKeyFilter}
+  |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+  |> sort()
+  |> limit(n: ${limit})`
+  }
 
   event('runQuery', {
     context: 'queryBuilder-findKeys',
@@ -106,8 +125,8 @@ export function findValues({
 
   // TODO: Use the `v1.tagValues` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-  const query = `import "regexp"
-  
+  let query = `import "regexp"
+
   from(bucket: "${bucket}")
   |> range(${timeRangeArguments})
   |> filter(fn: ${tagFilters})
@@ -116,6 +135,22 @@ export function findValues({
   |> distinct(column: "${key}")${searchFilter}
   |> limit(n: ${adjustedLimit})
   |> sort()`
+
+  if (bucket !== 'sample' && isFlagEnabled('newQueryBuilder')) {
+    query = `import "regexp"
+import "influxdata/influxdb/schema"
+
+schema.tagValues(
+  bucket: "${bucket}",
+  tag: "${key}",
+  predicate: ${tagFilters},
+  start: ${CACHING_REQUIRED_START_DATE},
+  stop: ${CACHING_REQUIRED_END_DATE},
+)${searchFilter}
+  |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+  |> sort()
+  |> limit(n: ${limit})`
+  }
 
   event('runQuery', {
     context: 'queryBuilder-findValues',
@@ -140,7 +175,9 @@ export function extractBoxedCol(
 }
 
 export function extractCol(csv: string, colName: string): string[] {
-  const {table} = fromFlux(csv)
+  const {table} = isFlagEnabled('fastFromFlux')
+    ? fastFromFlux(csv)
+    : fromFlux(csv)
   return table.getColumn(colName, 'string') || []
 }
 

@@ -1,15 +1,9 @@
 import React, {FC} from 'react'
-import {
-  FontWeight,
-  Heading,
-  HeadingElement,
-  Typeface,
-} from '@influxdata/clockface'
+import {FontWeight, Heading, HeadingElement} from '@influxdata/clockface'
 
 const HelperText: FC = ({children}) => (
   <Heading
     element={HeadingElement.H6}
-    type={Typeface.Rubik}
     weight={FontWeight.Regular}
     className="helper-link-text"
     selectable={true}

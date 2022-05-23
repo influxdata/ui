@@ -24,9 +24,9 @@ import {
 } from 'src/shared/copy/notifications'
 import {
   BALANCE_THRESHOLD_DEFAULT,
+  CREDIT_250_EXPERIMENT_ID,
   EMPTY_ZUORA_PARAMS,
 } from 'src/shared/constants'
-import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Types
 import {CreditCardParams, RemoteDataState} from 'src/types'
@@ -86,8 +86,6 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
 export const CheckoutContext = React.createContext<CheckoutContextType>(
   DEFAULT_CONTEXT
 )
-
-const CHECKOUT_PARAM_CODE = '757vMPJiCMdTFkO4'
 
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
@@ -258,11 +256,8 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     return errs.length
   }
 
-  const query = new URLSearchParams(window.location.search)
-  const checkoutCode = query.get('c')
   const isPaygCreditActive =
-    getExperimentVariantId(PAYG_CREDIT_EXPERIMENT_ID) === '1' &&
-    checkoutCode === CHECKOUT_PARAM_CODE
+    getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
 
   const handleSubmit = useCallback(
     async (paymentMethodId: string) => {

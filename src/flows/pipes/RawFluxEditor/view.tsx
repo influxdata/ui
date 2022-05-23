@@ -23,11 +23,8 @@ import {PipeProp} from 'src/types/flows'
 // Context
 import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {
-  EditorContext,
-  EditorProvider,
-  InjectionType,
-} from 'src/flows/context/editor'
+import {EditorContext, EditorProvider} from 'src/shared/contexts/editor'
+import {VariablesContext} from 'src/flows/context/variables'
 
 // Components
 import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
@@ -47,14 +44,15 @@ const FluxMonacoEditor = lazy(() =>
 )
 
 const Query: FC<PipeProp> = ({Context}) => {
-  const {id, data} = useContext(PipeContext)
+  const {id, data, update} = useContext(PipeContext)
   const {hideSub, id: showId, show, showSub, register} = useContext(
     SidebarContext
   )
   const editorContext = useContext(EditorContext)
-  const {setEditor, inject, updateText} = editorContext
+  const {setEditor, inject, injectFunction} = editorContext
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
+  const {variables} = useContext(VariablesContext)
 
   useEffect(() => {
     if (isFlagEnabled('fluxInjectSecrets')) {
@@ -65,7 +63,7 @@ const Query: FC<PipeProp> = ({Context}) => {
             {
               title: 'Inject Secret',
               disable: () => false,
-              menu: <SecretsList inject={inject} />,
+              menu: <SecretsList inject={inject} cbOnInject={updateText} />,
             },
           ],
         },
@@ -73,50 +71,27 @@ const Query: FC<PipeProp> = ({Context}) => {
     }
   }, [id, inject])
 
-  const injectIntoEditor = useCallback(
-    (fn): void => {
-      let text = ''
-      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
-        // only fluxTypes with <- sign require a pipe forward sign
-        text = fn.fluxType.startsWith('<-', 1)
-          ? `  |> ${fn.example}`
-          : `${fn.example}`
-      } else {
-        if (fn.name === 'from' || fn.name === 'union') {
-          text = `${fn.example}`
-        } else {
-          text = `  |> ${fn.example}`
-        }
-      }
-
-      const getHeader = fn => {
-        let importStatement = null
-
-        // universe packages are loaded by deafult. Don't need import statement
-        if (fn.package && fn.package !== 'universe') {
-          importStatement = `import "${fn.package}"`
-          if (
-            CLOUD &&
-            isFlagEnabled('fluxDynamicDocs') &&
-            fn.path.includes('/')
-          ) {
-            importStatement = `import "${fn.path}"`
-          }
-        }
-        return importStatement
-      }
-
-      const options = {
+  const updateText = useCallback(
+    text => {
+      const _queries = [...queries]
+      _queries[activeQuery] = {
+        ...queries[activeQuery],
         text,
-        type: InjectionType.OnOwnLine,
-        header: getHeader(fn),
       }
-      inject(options)
+
+      update({queries: _queries})
     },
-    [inject]
+    [queries, activeQuery]
   )
 
-  const launcher = () => {
+  const injectIntoEditor = useCallback(
+    (fn): void => {
+      injectFunction(fn, updateText)
+    },
+    [injectFunction, updateText]
+  )
+
+  const launcher = useCallback(() => {
     if (showId === id) {
       event('Flux Panel (Notebooks) - Toggle Functions - Off')
       hideSub()
@@ -129,7 +104,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         showSub(<Functions onSelect={injectIntoEditor} />)
       }
     }
-  }
+  }, [injectIntoEditor, showId])
 
   const controls = (
     <Button
@@ -155,6 +130,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         >
           <FluxMonacoEditor
             script={query.text}
+            variables={variables}
             onChangeScript={updateText}
             setEditorInstance={setEditor}
             wrapLines="on"
@@ -163,7 +139,14 @@ const Query: FC<PipeProp> = ({Context}) => {
         </Suspense>
       </Context>
     ),
-    [RemoteDataState.Loading, query.text, updateText, editorContext.editor]
+    [
+      RemoteDataState.Loading,
+      query.text,
+      updateText,
+      editorContext.editor,
+      variables,
+      launcher,
+    ]
   )
 }
 

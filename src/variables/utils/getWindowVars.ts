@@ -5,21 +5,16 @@ import {parse} from 'src/languageSupport/languages/flux/parser'
 import {
   getDurationFromAST,
   getWindowPeriodVariableAssignment,
-} from 'src/shared/utils/ast/getDurationFromAST'
+} from 'src/shared/utils/duration'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
 import {asAssignmentNode} from 'src/variables/utils/convertVariables'
 
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
-import {DESIRED_POINTS_PER_GRAPH} from 'src/shared/constants'
-import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
 // Types
 import {VariableAssignment} from 'src/types/ast'
 import {RemoteDataState, Variable, Package} from 'src/types'
-
-export const calcWindowPeriodForDuration = (queryDuration: number) =>
-  Math.round(queryDuration / DESIRED_POINTS_PER_GRAPH) // queryDuration in ms
 
 /*
   Get the duration (in milliseconds) used by `v.windowPeriod`
@@ -44,16 +39,7 @@ export const getDurationFromVariables = (
     }
 
     const ast = parse(query)
-    const queryDuration = getDurationFromAST(ast, outerScopeAst)
-
-    const foundDuration = SELECTABLE_TIME_RANGES.find(
-      tr => tr.seconds * 1000 === queryDuration
-    )
-    if (foundDuration) {
-      return foundDuration.windowPeriod
-    }
-
-    return calcWindowPeriodForDuration(queryDuration)
+    return getDurationFromAST(ast, outerScopeAst)
   } catch (error) {
     console.warn('error', error)
     return null

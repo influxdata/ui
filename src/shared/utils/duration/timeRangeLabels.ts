@@ -78,13 +78,13 @@ export const durationToMilliseconds = (duration: Duration[]): number =>
   )
 
 /*
-  Convert an amount of milliseconds to a duration string.
+Convert an amount of milliseconds to a duration string.
 
-  The returned duration string will use the largest units possible, e.g.
+The returned duration string will use the largest units possible, e.g.
 
-      millisecondsToDuration(9_000_000)
+    millisecondsToDuration(9_000_000)
 
-  Will return `2h30m` rather than `9000000ms`.
+Will return `2h30m` rather than `9000000ms`.
 */
 export const millisecondsToDuration = (value: number): string => {
   const unitsAndMs = Object.entries(UNIT_TO_APPROX_MS).sort(

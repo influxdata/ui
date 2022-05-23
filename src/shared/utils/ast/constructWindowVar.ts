@@ -11,6 +11,7 @@ import {
   TIME_RANGE_STOP,
 } from 'src/variables/constants'
 import {rangeTimes, propertyTime} from 'src/shared/utils/ast/extractors'
+import {convertTimeRangeDurationToWindowPeriodDuration} from 'src/shared/utils/duration'
 
 export function constructWindowVarAssignmentFromTimes(
   startAst: Property,
@@ -32,6 +33,8 @@ export function constructWindowVarAssignmentFromTimes(
     end = extractFromPropertySubtree(stopAst, TIME_RANGE_STOP)
   }
 
+  const duration = convertTimeRangeDurationToWindowPeriodDuration(end - start)
+
   return {
     type: 'VariableAssignment',
     id: {
@@ -40,7 +43,7 @@ export function constructWindowVarAssignmentFromTimes(
     },
     init: {
       type: 'DurationLiteral',
-      values: [{magnitude: end - start, unit: 'ms'}],
+      values: [{magnitude: duration, unit: 'ms'}],
     },
   }
 }
@@ -58,7 +61,14 @@ export function constructWindowVarAssignmentFromRange(
     },
     init: {
       type: 'DurationLiteral',
-      values: [{magnitude: end - start, unit: 'ms'}],
+      values: [
+        {
+          magnitude: convertTimeRangeDurationToWindowPeriodDuration(
+            end - start
+          ),
+          unit: 'ms',
+        },
+      ],
     },
   }
 }

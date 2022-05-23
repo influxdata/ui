@@ -51,6 +51,8 @@ export function getWindowPeriodVariableAssignment(
   Determining a set duration value for `v.windowPeriod`:
     * when a number must be returned
     * used in the outer UI window (scope outside editor)
+
+  Note this is a windowPeriod duration. Not a timeRange duration.
 */
 export function getDurationFromAST(ast: Node, outerContext: Node): number {
   const windowVariableAssignmentNode = getWindowPeriodVariableAssignment(

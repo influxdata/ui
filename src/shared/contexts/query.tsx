@@ -11,7 +11,7 @@ import {
   InternalFromFluxResult,
   Column,
 } from 'src/types/flows'
-import {propertyTime} from 'src/shared/utils/ast/extractors'
+import {getDurationFromAST} from 'src/shared/utils/duration'
 
 // Constants
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
@@ -44,9 +44,6 @@ export const DEFAULT_CONTEXT: QueryContextType = {
 export const QueryContext = React.createContext<QueryContextType>(
   DEFAULT_CONTEXT
 )
-
-const DESIRED_POINTS_PER_GRAPH = 360
-const FALLBACK_WINDOW_PERIOD = 15000
 
 // Finds all instances of nodes that match with the test function
 // and returns them as an array
@@ -104,78 +101,23 @@ export const remove = (node: File, test, acc = []) => {
 }
 
 const _addWindowPeriod = (ast, optionAST): void => {
-  const NOW = Date.now()
-
-  const queryRanges = find(
-    ast,
-    node =>
-      node?.callee?.type === 'Identifier' && node?.callee?.name === 'range'
-  ).map(node =>
-    (node.arguments[0]?.properties || []).reduce(
-      (acc, curr) => {
-        if (curr.key.name === 'start') {
-          acc.start = propertyTime(ast, curr.value, NOW)
-        }
-
-        if (curr.key.name === 'stop') {
-          acc.stop = propertyTime(ast, curr.value, NOW)
-        }
-
-        return acc
-      },
-      {
-        start: '',
-        stop: NOW,
-      }
-    )
-  )
-
   const windowPeriod = find(
     optionAST,
     node => node?.type === 'Property' && node?.key?.name === 'windowPeriod'
   )
-  if (!queryRanges.length) {
-    windowPeriod.forEach(node => {
-      node.value = {
-        type: 'DurationLiteral',
-        values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
-      }
-    })
 
-    return
-  }
+  const queryDuration = getDurationFromAST(ast, optionAST)
 
-  const starts = queryRanges.map(t => t.start)
-  const stops = queryRanges.map(t => t.stop)
-  const cartesianProduct = starts.map(start => stops.map(stop => [start, stop]))
-
-  const durations = []
-    .concat(...cartesianProduct)
-    .map(([start, stop]) => stop - start)
-    .filter(d => d > 0)
-
-  const queryDuration = Math.min(...durations)
-  const foundDuration = SELECTABLE_TIME_RANGES.find(
+  const windowDuration = SELECTABLE_TIME_RANGES.find(
     tr => tr.seconds * 1000 === queryDuration
   )
-
-  if (foundDuration) {
-    windowPeriod.forEach(node => {
-      node.value = {
-        type: 'DurationLiteral',
-        values: [{magnitude: foundDuration.windowPeriod, unit: 'ms'}],
-      }
-    })
-
-    return
-  }
 
   windowPeriod.forEach(node => {
     node.value = {
       type: 'DurationLiteral',
       values: [
         {
-          magnitude: Math.round(queryDuration / DESIRED_POINTS_PER_GRAPH),
+          magnitude: windowDuration,
           unit: 'ms',
         },
       ],

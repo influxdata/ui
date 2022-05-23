@@ -5,7 +5,7 @@ import {
   millisecondsToDuration,
   isDurationWithNowParseable,
   isDurationParseable,
-} from 'src/shared/utils/duration'
+} from 'src/shared/utils/duration/timeRangeLabels'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
 import {CustomTimeRange, SelectableDurationTimeRange} from 'src/types'

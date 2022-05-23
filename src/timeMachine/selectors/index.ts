@@ -15,12 +15,11 @@ import {
 } from 'src/shared/utils/vis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-import {calcWindowPeriodForDuration} from 'src/variables/utils/getWindowVars'
+import {getDurationFromTimeRange} from 'src/shared/utils/duration/getDurationFromTimeRange'
 import {
   timeRangeToDuration,
   parseDuration,
   durationToMilliseconds,
-  millisecondsToDuration,
 } from 'src/shared/utils/duration'
 
 // Selectors
@@ -83,19 +82,7 @@ export const getActiveQueryIndex = (state: AppState): number => {
 
 export const getWindowPeriodFromTimeRange = (state: AppState): string => {
   const timeRange = getTimeRange(state)
-  if (timeRange.type === 'selectable-duration') {
-    return millisecondsToDuration(timeRange.windowPeriod)
-  }
-
-  if (timeRange.type === 'custom') {
-    const upper = Date.parse(timeRange.upper)
-    const lower = Date.parse(timeRange.lower)
-    return millisecondsToDuration(calcWindowPeriodForDuration(upper - lower))
-  }
-
-  throw new Error(
-    'Unknown timeRange type provided to getWindowPeriodFromTimeRange'
-  )
+  return getDurationFromTimeRange(timeRange)
 }
 
 const getVisTableMemoized = isFlagEnabled('fastFromFlux')

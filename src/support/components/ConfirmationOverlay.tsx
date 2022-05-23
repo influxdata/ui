@@ -31,8 +31,8 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
           {params === 'payg' ? 
           <>
         <p>
-          Your support ticket (#ticket number here) has been submitted. Please check your account email 
-          for a confirmation and follow-up.
+          Your support ticket has been submitted. A Support Engineer will investigate the issue and get back to you shortly.
+          Please check your account email for a confirmation and follow-up.
         </p>
         <p>
           For more resources, check out <SafeBlankLink href="https://support.influxdata.com"> support.influxdata.com </SafeBlankLink>

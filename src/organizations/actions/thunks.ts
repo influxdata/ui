@@ -2,6 +2,7 @@
 import {Dispatch} from 'redux'
 import {push, RouterAction} from 'connected-react-router'
 import {normalize} from 'normalizr'
+import {cloneDeep} from 'lodash'
 
 // APIs
 import {getErrorMessage} from 'src/utils/api'
@@ -61,17 +62,21 @@ export const getOrganizations = () => async (
     }
 
     const {orgs} = resp.data
-
     const quartzOrgData = await getNewAPIData({orgId: orgs[0].id})
 
     if (quartzOrgData.status !== 200) {
       throw new Error(quartzOrgData.data.message)
     }
 
-    orgs[0].cloudProvider = quartzOrgData.data.provider
+    const orgWithCloudProvider = {
+      provider: quartzOrgData.data.provider,
+      ...cloneDeep(orgs[0]),
+    }
+
+    const orgsWithCloudProvider = [orgWithCloudProvider]
 
     const organizations = normalize<Organization, OrgEntities, string[]>(
-      orgs,
+      orgsWithCloudProvider,
       arrayOfOrgs
     )
 

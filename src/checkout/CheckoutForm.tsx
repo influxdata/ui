@@ -51,7 +51,6 @@ const CheckoutForm: FC = () => {
     handleSubmit,
     setIsDirty,
     isSubmitting,
-    isPaygCreditActive,
   } = useContext(CheckoutContext)
 
   const onSubmit = () => {
@@ -79,7 +78,7 @@ const CheckoutForm: FC = () => {
           >
             Upgrade to Usage-Based Account
           </h1>
-          {isFlagEnabled('credit250Experiment') && !isPaygCreditActive && (
+          {isFlagEnabled('credit250Experiment') && (
             <GoogleOptimizeExperiment
               experimentID={CREDIT_250_EXPERIMENT_ID}
               variants={[
@@ -118,21 +117,6 @@ const CheckoutForm: FC = () => {
                 </SafeBlankLink>
                 .
               </p>
-
-              {isPaygCreditActive && (
-                <GoogleOptimizeExperiment
-                  experimentID={CREDIT_250_EXPERIMENT_ID}
-                  variants={[
-                    <div
-                      className="checkout-form--banner"
-                      key="checkout-form-banner"
-                    >
-                      <strong className="checkout-banner--credit">$250</strong>
-                      <p>credit applied</p>
-                    </div>,
-                  ]}
-                />
-              )}
             </Panel.Body>
           </Panel>
           <Panel>

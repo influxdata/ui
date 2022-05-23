@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {CSSProperties, FC} from 'react'
 
 // Components
 import {
@@ -34,15 +34,22 @@ interface Props {
   limitStatus: LimitStatus['status']
   resourceName: string
   className?: string
+  style?: CSSProperties
 }
 
-const AssetLimitAlert: FC<Props> = ({limitStatus, resourceName, className}) => {
+const AssetLimitAlert: FC<Props> = ({
+  limitStatus,
+  resourceName,
+  className,
+  style = {},
+}) => {
   if (CLOUD && limitStatus === 'exceeded') {
     return (
       <GradientBox
         borderGradient={Gradients.MiyazakiSky}
         borderColor={InfluxColors.Grey5}
         className={className}
+        style={{...style}}
       >
         <Panel backgroundColor={InfluxColors.Grey5} className="asset-alert">
           <Panel.Header>

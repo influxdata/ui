@@ -106,7 +106,7 @@ export class PythonWizard extends PureComponent<null, State> {
   renderStep = () => {
     switch (this.state.currentStep) {
       case 1: {
-        return <Overview />
+        return <Overview wizard="pythonWizard" />
       }
       case 2: {
         return <InstallDependencies />
@@ -144,7 +144,7 @@ export class PythonWizard extends PureComponent<null, State> {
         )
       }
       default: {
-        return <Overview />
+        return <Overview wizard="pythonWizard" />
       }
     }
   }

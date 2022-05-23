@@ -116,9 +116,9 @@ export const VIS_THEME: Partial<Config> = {
   axisColor: InfluxColors.Grey35,
   gridColor: InfluxColors.Grey35,
   gridOpacity: 1,
-  tickFont: '500 11px Rubik',
+  tickFont: '700 12px Proxima Nova',
   tickFontColor: InfluxColors.Grey75,
-  legendFont: '12px Rubik',
+  legendFont: '12px Proxima Nova',
   legendFontColor: InfluxColors.Grey55,
   legendFontBrightColor: InfluxColors.Grey75,
   legendBackgroundColor: InfluxColors.Grey5,
@@ -130,9 +130,9 @@ export const VIS_THEME_LIGHT: Partial<Config> = {
   axisColor: InfluxColors.Grey95,
   gridColor: InfluxColors.Grey95,
   gridOpacity: 1,
-  tickFont: '500 11px Rubik',
+  tickFont: '700 12px Proxima Nova',
   tickFontColor: InfluxColors.Grey45,
-  legendFont: '12px Rubik',
+  legendFont: '12px Proxima Nova',
   legendFontColor: InfluxColors.Grey35,
   legendFontBrightColor: InfluxColors.Grey65,
   legendBackgroundColor: InfluxColors.Grey95,
@@ -166,4 +166,4 @@ export const GLOBALSEARCH_API_KEY = formatConstant(
 export const PAYG_CREDIT_DAYS = 30
 export const PAYG_MAX_CREDIT = 250
 export const PAYG_CREDIT_EXPERIMENT_ID = process.env.PAYG_CREDIT_EXPERIMENT_ID
-export const CREDIT_250_EXPERIMENT_ID = process.env.CREDIT_250_EXPERIMENT_ID
+export const CREDIT_250_EXPERIMENT_ID = 'JVfGg-umSiSk-JVpeh4hGA'

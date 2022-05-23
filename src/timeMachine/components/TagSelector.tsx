@@ -78,12 +78,7 @@ class TagSelector extends PureComponent<Props> {
   }
 
   public render() {
-    return (
-      <BuilderCard>
-        {this.header}
-        {this.body}
-      </BuilderCard>
-    )
+    return <BuilderCard>{this.body}</BuilderCard>
   }
 
   private get isCompliant() {
@@ -97,26 +92,9 @@ class TagSelector extends PureComponent<Props> {
     return (
       isFlagEnabled('newQueryBuilder') &&
       index === 0 &&
-      selectedKey === '_measurement' &&
+      (selectedKey === '' || selectedKey === '_measurement') &&
       aggregateFunctionType !== 'group' &&
       selectedValues.length <= 1
-    )
-  }
-
-  private get header() {
-    const {aggregateFunctionType, index, isInCheckOverlay} = this.props
-
-    if (this.isCompliant) {
-      return null
-    }
-    return (
-      <BuilderCard.DropdownHeader
-        options={['filter', 'group']}
-        selectedOption={this.renderAggregateFunctionType(aggregateFunctionType)}
-        onDelete={index !== 0 && this.handleRemoveTagSelector}
-        onSelect={this.handleAggregateFunctionSelect}
-        isInCheckOverlay={isInCheckOverlay}
-      />
     )
   }
 
@@ -148,39 +126,60 @@ class TagSelector extends PureComponent<Props> {
       )
     }
 
+    let tag = selectedKey
+
+    if (tag === '' && index === 0) {
+      tag = '_measurement'
+    }
+
     const placeholderText =
       aggregateFunctionType === 'group'
         ? 'Search group column values'
-        : `Search ${selectedKey} tag values`
+        : `Search ${tag} tag values`
     return (
       <>
+        {!this.isCompliant && (
+          <BuilderCard.DropdownHeader
+            options={['filter', 'group']}
+            selectedOption={this.renderAggregateFunctionType(
+              aggregateFunctionType
+            )}
+            onDelete={index !== 0 && this.handleRemoveTagSelector}
+            onSelect={this.handleAggregateFunctionSelect}
+            isInCheckOverlay={this.props.isInCheckOverlay}
+          />
+        )}
         {this.isCompliant && <BuilderCard.Header title="Measurement" />}
         <BuilderCard.Menu testID={`tag-selector--container ${index}`}>
-          {aggregateFunctionType !== 'group' && (
-            <FlexBox
-              direction={FlexDirection.Row}
-              alignItems={AlignItems.Center}
-              margin={ComponentSize.Small}
-            >
-              <ErrorBoundary>
-                {!this.isCompliant && (
-                  <SearchableDropdown
-                    searchTerm={keysSearchTerm}
-                    emptyText="No Tags Found"
-                    searchPlaceholder="Search keys..."
-                    buttonStatus={toComponentStatus(keysStatus)}
-                    selectedOption={selectedKey}
-                    onSelect={this.handleSelectTag}
-                    onChangeSearchTerm={this.handleKeysSearch}
-                    testID="tag-selector--dropdown"
-                    buttonTestID="tag-selector--dropdown-button"
-                    menuTestID="tag-selector--dropdown-menu"
-                    options={keys}
-                  />
-                )}
-              </ErrorBoundary>
-              {this.selectedCounter}
-            </FlexBox>
+          {!this.isCompliant && (
+            <>
+              {aggregateFunctionType !== 'group' && (
+                <FlexBox
+                  direction={FlexDirection.Row}
+                  alignItems={AlignItems.Center}
+                  margin={ComponentSize.Small}
+                >
+                  <ErrorBoundary>
+                    {!this.isCompliant && (
+                      <SearchableDropdown
+                        searchTerm={keysSearchTerm}
+                        emptyText="No Tags Found"
+                        searchPlaceholder="Search keys..."
+                        buttonStatus={toComponentStatus(keysStatus)}
+                        selectedOption={selectedKey}
+                        onSelect={this.handleSelectTag}
+                        onChangeSearchTerm={this.handleKeysSearch}
+                        testID="tag-selector--dropdown"
+                        buttonTestID="tag-selector--dropdown-button"
+                        menuTestID="tag-selector--dropdown-menu"
+                        options={keys}
+                      />
+                    )}
+                  </ErrorBoundary>
+                  {this.selectedCounter}
+                </FlexBox>
+              )}
+            </>
           )}
           <Input
             value={valuesSearchTerm}

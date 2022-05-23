@@ -10,6 +10,7 @@ import {
   Form,
   Icon,
   IconFont,
+  Input,
   Method,
   Overlay,
   QuestionMarkTooltip,
@@ -30,6 +31,7 @@ interface OwnProps {
 }
 
 const PayGSupportOverlay: FC<OwnProps> = () => {
+  const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('')
   const [textInput, setTextInput] = useState('')
   const {onClose} = useContext(OverlayContext)
@@ -42,15 +44,19 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   ]
 
   const submitButtonStatus =
-    textInput.length && severity.length
+    textInput.length && severity.length && subject.length
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
-  const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setTextInput(e.target.value)
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setTextInput(event.target.value)
   }
   const handleSubmit = (): void => {
     // submit support form
+  }
+
+  const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSubject(event.target.value)
   }
 
   const handleChangeSeverity = (severity): void => {
@@ -114,6 +120,14 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
           method={Method.Post}
         >
           <Overlay.Body>
+            <Form.Element label="Subject" required={true}>
+              <Input
+                name="subject"
+                value={subject}
+                onChange={handleSubjectChange}
+                testID="contact-support-subject-input"
+              />
+            </Form.Element>
             <Form.Element
               label="Severity"
               required={true}

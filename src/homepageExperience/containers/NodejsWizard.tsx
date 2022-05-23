@@ -105,7 +105,7 @@ export class NodejsWizard extends PureComponent<null, State> {
   renderStep = () => {
     switch (this.state.currentStep) {
       case 1: {
-        return <Overview />
+        return <Overview wizard="nodejsWizard" />
       }
       case 2: {
         return <InstallDependencies />
@@ -143,7 +143,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         )
       }
       default: {
-        return <Overview />
+        return <Overview wizard="nodejsWizard" />
       }
     }
   }

@@ -115,70 +115,68 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     ? EXTENDED_TAG_LIMIT
     : DEFAULT_TAG_LIMIT
 
-  const getMeasurements = useCallback(
-    async bucket => {
-      if (isEmpty(bucket)) {
-        return
-      }
+  const getMeasurements = async bucket => {
+    if (isEmpty(bucket)) {
+      return
+    }
 
-      // Simplified version of query from this file:
-      //   src/flows/pipes/QueryBuilder/context.tsx
-      let _source = IMPORT_REGEXP
-      if (bucket.type === 'sample') {
-        _source += SAMPLE_DATA_SET(bucket.id)
-      } else {
-        _source += FROM_BUCKET(bucket.name)
-      }
+    // Simplified version of query from this file:
+    //   src/flows/pipes/QueryBuilder/context.tsx
+    let _source = IMPORT_REGEXP
+    if (bucket.type === 'sample') {
+      _source += SAMPLE_DATA_SET(bucket.id)
+    } else {
+      _source += FROM_BUCKET(bucket.name)
+    }
 
-      // TODO: can we do hard coded time range here?
-      let queryText = `${_source}
-        |> range(start: -30d, stop: now())
-        |> filter(fn: (r) => true)
-        |> keep(columns: ["_measurement"])
-        |> group()
-        |> distinct(column: "_measurement")
-        |> limit(n: ${limit})
-        |> sort()
-      `
+    // TODO: can we do hard coded time range here?
+    let queryText = `${_source}
+      |> range(start: -30d, stop: now())
+      |> filter(fn: (r) => true)
+      |> keep(columns: ["_measurement"])
+      |> group()
+      |> distinct(column: "_measurement")
+      |> limit(n: ${limit})
+      |> sort()
+    `
 
-      if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-        _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
-        queryText = `${_source}
-          schema.tagValues(
-            bucket: "${bucket.name}",
-            tag: "_measurement",
-            predicate: (r) => true,
-            start: ${CACHING_REQUIRED_START_DATE},
-            stop: ${CACHING_REQUIRED_END_DATE},
-          )
-            |> limit(n: ${limit})
-            |> sort()
-          `
-      }
+    if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
+      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
+      queryText = `${_source}
+        schema.tagValues(
+          bucket: "${bucket.name}",
+          tag: "_measurement",
+          predicate: (r) => true,
+          start: ${CACHING_REQUIRED_START_DATE},
+          stop: ${CACHING_REQUIRED_END_DATE},
+        )
+          |> limit(n: ${limit})
+          |> sort()
+        `
+    }
 
-      try {
-        const resp = await queryAPI(queryText, scope)
-        const values = (Object.values(resp.parsed.table.columns).filter(
-          c => c.name === '_value' && c.type === 'string'
-        )[0]?.data ?? []) as string[]
-        setMeasurements(values)
+    try {
+      const resp = await queryAPI(queryText, scope)
+      const values = (Object.values(resp.parsed.table.columns).filter(
+        c => c.name === '_value' && c.type === 'string'
+      )[0]?.data ?? []) as string[]
+      setMeasurements(values)
 
-        /* eslint-disable no-console */
-        // TODO: remove
-        console.log('get measurements\n\n', queryText)
-        console.log(values)
-        /* eslint-disable no-console */
-      } catch (e) {
-        console.error(e.message)
-      }
-    },
-    [scope]
-  )
+      /* eslint-disable no-console */
+      // TODO: remove
+      console.log('get measurements\n\n', queryText)
+      console.log(values)
+      /* eslint-disable no-console */
+    } catch (e) {
+      console.error(e.message)
+    }
+  }
 
   const getFields = async (measurement: string) => {
     if (isEmpty(selectedBucket) || measurement === '') {
       return
     }
+
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
     let _source = IMPORT_REGEXP
@@ -237,8 +235,6 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       return
     }
 
-    let tags: Tags = {}
-
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
     let _source = IMPORT_REGEXP
@@ -277,6 +273,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       `
     }
 
+    const tags: Tags = {}
     try {
       const resp = await queryAPI(queryText, scope)
       const keys = (Object.values(resp.parsed.table.columns).filter(
@@ -285,14 +282,14 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       keys.map(key => {
         tags[key] = []
       })
+      setTags(tags)
+      setLoadingTagKeys(RemoteDataState.Done)
 
       /* eslint-disable no-console */
       // TODO: remove
       console.log('get tag keys\n\n', queryText)
       console.log(tags)
       /* eslint-disable no-console */
-      setTags(tags)
-      setLoadingTagKeys(RemoteDataState.Done)
     } catch (e) {
       console.error(
         `Failed to get tags for measurement: "${measurement}"\n`,
@@ -368,21 +365,18 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     }
   }
 
-  const handleSelectBucket = useCallback(
-    (bucket: Bucket): void => {
-      setSelectedBucket(bucket)
+  const handleSelectBucket = (bucket: Bucket): void => {
+    setSelectedBucket(bucket)
 
-      // Reset measurement, tags, and fields
-      // TODO: loading status for measurements
-      setSelectedMeasurement('')
-      setFields(INITIAL_FIELDS)
-      setTags(INITIAL_TAGS)
+    // Reset measurement, tags, and fields
+    // TODO: loading status for measurements
+    setSelectedMeasurement('')
+    setFields(INITIAL_FIELDS)
+    setTags(INITIAL_TAGS)
 
-      // Get measurement values
-      getMeasurements(bucket)
-    },
-    [getMeasurements]
-  )
+    // Get measurement values
+    getMeasurements(bucket)
+  }
 
   const handleSelectMeasurement = (measurement: string): void => {
     setSelectedMeasurement(measurement)
@@ -450,7 +444,6 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       loadingTagKeys,
       loadingTagValues,
       searchTerm,
-      handleSelectBucket,
 
       // Query building
       query,

@@ -116,7 +116,14 @@ const TagSelector: FC = () => {
 
   const tagKeys: string[] = Object.keys(tags)
 
-  const handleSelect = (value: string) => {
+  const handleSelectTagKey = (key: string) => {
+    if (tags[key].length === 0) {
+      // Only need to get tag values if currently no values
+      selectTagKey(key)
+    }
+  }
+
+  const handleSelectTagValue = (value: string) => {
     // TODO
     /* eslint-disable no-console */
     console.log(value)
@@ -143,8 +150,8 @@ const TagSelector: FC = () => {
           <TagValues
             tagKey={key}
             tagValues={tags[key]}
-            onSelectTagKey={selectTagKey}
-            onSelectTagValue={handleSelect}
+            onSelectTagKey={handleSelectTagKey}
+            onSelectTagValue={handleSelectTagValue}
             loading={loadingTagValues}
           />
         </div>

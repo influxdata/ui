@@ -21,14 +21,14 @@ interface Prop {
 
 const TagValues: FC<Prop> = ({tag, onSelect}) => {
   return (
-    <Accordion className="tag-value-selector">
-      <Accordion.AccordionHeader className="tag-value-selector--header">
+    <Accordion className="tag-selector-value">
+      <Accordion.AccordionHeader className="tag-selector-value--header">
         <SelectorTitle title={tag.key} />
       </Accordion.AccordionHeader>
       <div className="container-side-bar">
         {tag.values.map(value => (
           <div
-            className="tag-value-selector--list-item"
+            className="tag-selector-value--list-item"
             key={value}
             onClick={() => onSelect(value)}
           >
@@ -51,11 +51,13 @@ const TagSelector: FC = () => {
   }
 
   let list: JSX.Element | JSX.Element[] = (
-    <div className="tag-selector--list-item">No Tags Found</div>
+    <div className="tag-selector-key--list-item">No Tags Found</div>
   )
 
   if (loadingTags === RemoteDataState.Error) {
-    list = <div className="tag-selector--list-item">Failed to load tags</div>
+    list = (
+      <div className="tag-selector-key--list-item">Failed to load tags</div>
+    )
   } else if (
     loadingTags === RemoteDataState.Loading ||
     loadingTags === RemoteDataState.NotStarted
@@ -63,21 +65,21 @@ const TagSelector: FC = () => {
     list = <WaitingText text="Loading tags" />
   } else if (loadingTags === RemoteDataState.Done && tags.length) {
     list = tags.map(tag => (
-      <div key={tag.key} className="tag-selector--list-item">
+      <div key={tag.key} className="tag-selector-key--list-item">
         <TagValues tag={tag} onSelect={handleSelect} />
       </div>
     ))
     // TODO: check length of tags to load more
     // list.push(
-    //   <div key="load-more" className="tag-selector--list-item">
+    //   <div key="load-more" className="tag-selector-key--list-item">
     //     Load More
     //   </div>
     // )
   }
 
   return (
-    <Accordion className="tag-selector" expanded={true}>
-      <Accordion.AccordionHeader className="tag-selector--header">
+    <Accordion className="tag-selector-key" expanded={true}>
+      <Accordion.AccordionHeader className="tag-selector-key--header">
         <SelectorTitle title="Tag Keys" info="Test info" />
       </Accordion.AccordionHeader>
       <div className="container-side-bar">{list}</div>

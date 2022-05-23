@@ -68,10 +68,7 @@ const FieldSelector: FC = () => {
   }
 
   const loadMoreButton = loadMore && (
-    <div
-      className="load-more-button field-selector--list-item"
-      onClick={handleLoadMore}
-    >
+    <div className="load-more-button" onClick={handleLoadMore}>
       + Load more
     </div>
   )

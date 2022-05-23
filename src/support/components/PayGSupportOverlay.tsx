@@ -102,6 +102,13 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
         title="Contact Support"
         onDismiss={onClose}
       />
+      <ErrorBoundary>
+        <Form
+          onSubmit={handleSubmit}
+          action="https://influxdata--full.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
+          method={Method.Post}
+        >
+          <Overlay.Body>
       <p className="status-page-text">
         <span>
           {' '}
@@ -113,13 +120,6 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
         </SafeBlankLink>{' '}
         to see if there is an outage impacting your region.
       </p>
-      <ErrorBoundary>
-        <Form
-          onSubmit={handleSubmit}
-          action="https://influxdata--full.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
-          method={Method.Post}
-        >
-          <Overlay.Body>
             <Form.Element label="Subject" required={true}>
               <Input
                 name="subject"

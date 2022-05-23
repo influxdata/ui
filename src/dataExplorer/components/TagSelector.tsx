@@ -152,7 +152,7 @@ const TagSelector: FC = () => {
             tagValues={tags[key]}
             onSelectTagKey={handleSelectTagKey}
             onSelectTagValue={handleSelectTagValue}
-            loading={loadingTagValues}
+            loading={loadingTagValues[key]}
           />
         </div>
       )

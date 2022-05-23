@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  createContext,
-  useState,
-  useMemo,
-  useContext,
-  useCallback,
-} from 'react'
+import React, {FC, createContext, useState, useMemo, useContext} from 'react'
 import {isEmpty} from 'lodash'
 
 // Constants
@@ -34,8 +27,15 @@ const SAMPLE_DATA_SET = (bucketID: string) =>
 const FROM_BUCKET = (bucketName: string) => `from(bucket: "${bucketName}")`
 
 export const LOCAL_LIMIT = 8
-const INITIAL_FIELDS = []
-const INITIAL_TAGS = {}
+const INITIAL_FIELDS = [] as string[]
+const INITIAL_TAGS = {} as Tags
+const INITIAL_LOADING_TAG_VALUES = {} as Hash<RemoteDataState>
+
+interface Hash<T> {
+  [key: string]: T
+}
+
+export type Tags = Hash<string[]>
 
 interface NewDataExplorerContextType {
   // Schema
@@ -46,7 +46,7 @@ interface NewDataExplorerContextType {
   loadingFields: RemoteDataState
   tags: Tags
   loadingTagKeys: RemoteDataState
-  loadingTagValues: RemoteDataState
+  loadingTagValues: Hash<RemoteDataState>
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void // TODO: type Measurement?
@@ -68,7 +68,7 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   loadingFields: RemoteDataState.NotStarted,
   tags: {},
   loadingTagKeys: RemoteDataState.NotStarted,
-  loadingTagValues: RemoteDataState.NotStarted,
+  loadingTagValues: {} as Hash<RemoteDataState>,
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
@@ -89,10 +89,6 @@ interface Prop {
   scope: QueryScope
 }
 
-export interface Tags {
-  [key: string]: string[]
-}
-
 export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   const [loading] = useState(RemoteDataState.NotStarted)
   const [loadingFields, setLoadingFields] = useState(RemoteDataState.NotStarted)
@@ -100,7 +96,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     RemoteDataState.NotStarted
   )
   const [loadingTagValues, setLoadingTagValues] = useState(
-    RemoteDataState.NotStarted
+    INITIAL_LOADING_TAG_VALUES
   )
   const {query: queryAPI} = useContext(QueryContext)
   const [query, setQuery] = useState('')
@@ -268,11 +264,21 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       const keys = (Object.values(resp.parsed.table.columns).filter(
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
+
+      // Initialize tags with keys
       keys.map(key => {
         tags[key] = []
       })
+
+      // Initialize status for each key
+      const tagValueStatuses = {} as Hash<RemoteDataState>
+      keys.map(key => {
+        tagValueStatuses[key] = RemoteDataState.NotStarted
+      })
+
       setTags(tags)
       setLoadingTagKeys(RemoteDataState.Done)
+      setLoadingTagValues(tagValueStatuses)
     } catch (e) {
       console.error(
         `Failed to get tags for measurement: "${measurement}"\n`,
@@ -331,13 +337,16 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       // Update the tag key with the corresponding tag values
       const newTags = {...tags, [tagKey]: values}
       setTags(newTags)
-      setLoadingTagValues(RemoteDataState.Done)
+      setLoadingTagValues({...loadingTagValues, [tagKey]: RemoteDataState.Done})
     } catch (e) {
       console.error(
         `Failed to get tag value for tag key: "${tagKey}"\n`,
         e.message
       )
-      setLoadingTagValues(RemoteDataState.Error)
+      setLoadingTagValues({
+        ...loadingTagValues,
+        [tagKey]: RemoteDataState.Error,
+      })
     }
   }
 
@@ -369,7 +378,10 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   }
 
   const handleSelectTagKey = (tagKey: string): void => {
-    setLoadingTagValues(RemoteDataState.Loading)
+    setLoadingTagValues({
+      ...loadingTagValues,
+      [tagKey]: RemoteDataState.Loading,
+    })
     getTagValues(tagKey)
   }
 

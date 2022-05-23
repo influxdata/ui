@@ -81,7 +81,6 @@ interface OwnProps {
     setSubject(event.target.value)
   }
 
-
   const handleChangeSeverity = (severity): void => {
     setSeverity(severity)
   }
@@ -126,9 +125,9 @@ interface OwnProps {
       />
       <ErrorBoundary>
         <Form
-          // onSubmit={handleSubmit}
-          // action="https://influxdata--full.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
-          // method={Method.Post}
+        // onSubmit={handleSubmit}
+        // action="https://influxdata--full.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
+        // method={Method.Post}
         >
           <Overlay.Body>
             <p className="status-page-text">
@@ -179,9 +178,9 @@ interface OwnProps {
                 />
               )}
             </Form.ValidationElement>
-      </Overlay.Body>
-          </Form>
-        </ErrorBoundary>
+          </Overlay.Body>
+        </Form>
+      </ErrorBoundary>
       <Overlay.Footer>
         <Button
           text="Cancel"

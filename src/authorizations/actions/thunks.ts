@@ -192,7 +192,7 @@ export const bulkDeleteAuthorizations = (tokenIds: string[]) => async (
     dispatch(
       notify(
         bulkAuthorizationDeleteFailed(
-          `${failedDeletes.length} out of ${deletePromises.length} Tokens. Please try again.`
+          `${failedDeletes.length} out of ${deletePromises.length}`
         )
       )
     )

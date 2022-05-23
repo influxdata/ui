@@ -60,7 +60,7 @@ export const bulkAuthorizationDeleteSuccess = (
 
 export const bulkAuthorizationDeleteFailed = (desc: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to delete API tokens: "${desc}"`,
+  message: `We couldn't delete ${desc} tokens you selected. Please check the list and try again. If the problem persists, contact support.`,
 })
 
 export const authorizationCopySuccess = (): Notification => ({

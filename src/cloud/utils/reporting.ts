@@ -183,8 +183,6 @@ export const event = (
           .map(([k, v]) => `        ${k}: ${v}`)
           .join('\n')
       )
-    }
-    if (Object.keys(values).length) {
       console.log('fields')
       console.log(
         Object.entries(values)

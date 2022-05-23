@@ -47,7 +47,9 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
     <Overlay.Container maxWidth={500}>
       <Overlay.Header
         testID="confirmation-overlay-header"
-        title={params.type === 'PAYG' ? 'Contact Support' : 'Feedback & Questions'}
+        title={
+          params.type === 'PAYG' ? 'Contact Support' : 'Feedback & Questions'
+        }
         onDismiss={onClose}
       />
       <Overlay.Body>

@@ -76,7 +76,7 @@ interface OwnProps {
       event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
   
     // submit support form
-    //testing confirmaion overlay 
+    //testing confirmaion overlay
     showOverlay('help-bar-confirmation', {type: 'PAYG'}, dismissOverlay)
   }
 

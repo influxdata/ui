@@ -216,8 +216,16 @@ export const updateBucket = (bucket: OwnBucket) => async (
       throw new Error(resp.data.message)
     }
 
+    const labelsResponse = await api.getBucketsLabels({
+      bucketID: bucket.id,
+    })
+
+    if (labelsResponse.status !== 200) {
+      throw new Error(labelsResponse.data.message)
+    }
+
     const newBucket = normalize<Bucket, BucketEntities, string>(
-      resp.data,
+      Object.assign(resp.data, {labels: labelsResponse.data.labels}),
       bucketSchema
     )
 

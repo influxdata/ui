@@ -51,7 +51,7 @@ interface OwnProps {
   const {id: meID} = useSelector(getMe)
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('')
-  const [textInput, setTextInput] = useState('')
+  const [supportText, setSupportText] = useState('')
   const {onClose} = useContext(OverlayContext)
 
   const severityLevel = [
@@ -62,12 +62,12 @@ interface OwnProps {
   ]
 
   const submitButtonStatus =
-    textInput.length && severity.length
+    supportText.length && severity.length
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setTextInput(event.target.value)
+    setSupportText(event.target.value)
   }
     // submit support form
     const handleSubmit = (e): void => {
@@ -166,7 +166,7 @@ interface OwnProps {
             <Form.ValidationElement
               label="Description"
               required={true}
-              value={textInput}
+              value={supportText}
               validationFunc={handleValidation}
             >
               {status => (
@@ -175,7 +175,7 @@ interface OwnProps {
                   rows={10}
                   testID="support-description--textarea"
                   name="description"
-                  value={textInput}
+                  value={supportText}
                   onChange={handleInputChange}
                 />
               )}

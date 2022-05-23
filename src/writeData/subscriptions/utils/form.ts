@@ -60,7 +60,7 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       form.jsonTimestamp.path = newVal
     }
   }
-  if (form.stringMeasurement) {
+  if (form.stringMeasurement?.pattern) {
     form.stringMeasurement.pattern =
       form.stringMeasurement?.pattern.replace(/\\\\/g, '\\') ?? ''
   }
@@ -73,6 +73,10 @@ export const sanitizeForm = (form: Subscription): Subscription => {
     form.stringTags.map(t => {
       t.pattern = t.pattern?.replace(/\\\\/g, '\\') ?? ''
     })
+  }
+  if (form.stringTimestamp?.pattern) {
+    form.stringTimestamp.pattern =
+      form.stringTimestamp?.pattern.replace(/\\\\/g, '\\') ?? ''
   }
   if (form.brokerPassword === '' || form.brokerUsername === '') {
     delete form.brokerUsername
@@ -122,6 +126,24 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
     if (newVal) {
       form.jsonTimestamp.path = newVal
     }
+  }
+  if (form.stringMeasurement?.pattern) {
+    form.stringMeasurement.pattern =
+      form.stringMeasurement?.pattern.replace(/\\\\/g, '\\') ?? ''
+  }
+  if (form.stringFields) {
+    form.stringFields.map(f => {
+      f.pattern = f.pattern?.replace(/\\\\/g, '\\') ?? ''
+    })
+  }
+  if (form.stringTags) {
+    form.stringTags.map(t => {
+      t.pattern = t.pattern?.replace(/\\\\/g, '\\') ?? ''
+    })
+  }
+  if (form.stringTimestamp?.pattern) {
+    form.stringTimestamp.pattern =
+      form.stringTimestamp?.pattern.replace(/\\\\/g, '\\') ?? ''
   }
   delete form.id
   delete form.orgID

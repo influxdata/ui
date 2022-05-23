@@ -6,7 +6,7 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {Icon, IconFont, TreeNav} from '@influxdata/clockface'
+import {Icon, IconFont, PopoverPosition, TreeNav} from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
 import OrgSettings from 'src/cloud/components/OrgSettings'
@@ -27,6 +27,7 @@ import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
 import {AppState} from 'src/types'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import './TreeNav.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
@@ -163,8 +164,9 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
               icon={<Icon glyph={IconFont.QuestionMark_New} />}
               label="Help & Support"
               shortLabel="Support"
+              className="helpBarStyle"
             >
-              <TreeNav.SubMenu>
+              <TreeNav.SubMenu position={PopoverPosition.ToTheRight}>
                 <TreeNav.SubHeading label="Support" />
                 <TreeNav.SubItem
                   id="documentation"

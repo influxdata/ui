@@ -51,7 +51,7 @@ interface OwnProps {
   const {id: meID} = useSelector(getMe)
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('')
-  const [supportText, setSupportText] = useState('')
+  const [textInput, setTextInput] = useState('')
   const {onClose} = useContext(OverlayContext)
 
   const severityLevel = [
@@ -62,22 +62,19 @@ interface OwnProps {
   ]
 
   const submitButtonStatus =
-    supportText.length && severity.length
+    textInput.length && severity.length && subject.length
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
-  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setSupportText(event.target.value)
-  }
-    // submit support form
-    const handleSubmit = (e): void => {
+    const handleSubmit = (event): void => {
       const {showOverlay} = props
-      e.preventDefault()
+      event.preventDefault()
       event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
-  
-    // submit support form
-    //testing confirmaion overlay
-    showOverlay('help-bar-confirmation', {type: 'PAYG'}, dismissOverlay)
+      showOverlay('help-bar-confirmation', {type: 'PAYG'}, dismissOverlay)
+    }
+
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setTextInput(event.target.value)
   }
 
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -168,7 +165,7 @@ interface OwnProps {
             <Form.ValidationElement
               label="Description"
               required={true}
-              value={supportText}
+              value={textInput}
               validationFunc={handleValidation}
             >
               {status => (
@@ -177,7 +174,7 @@ interface OwnProps {
                   rows={10}
                   testID="support-description--textarea"
                   name="description"
-                  value={supportText}
+                  value={textInput}
                   onChange={handleInputChange}
                 />
               )}

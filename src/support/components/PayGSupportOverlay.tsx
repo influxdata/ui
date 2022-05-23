@@ -75,13 +75,28 @@ interface OwnProps {
       e.preventDefault()
       event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
   
-    showOverlay('help-bar-confirmation', 'payg', dismissOverlay)
+    // submit support form
+
+    const supportRequest = {
+      severity: severity,
+      description: supportText,
+    }
+    // make a post request
+
+    try {
+    } catch (e) {}
+    // if successful
+    showOverlay('help-bar-confirmation', {type: 'PAYG'}, dismissOverlay)
+    // open confirmation modal
+    // else
+    // open error modal
    
   }
 
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSubject(event.target.value)
   }
+
 
   const handleChangeSeverity = (severity): void => {
     setSeverity(severity)
@@ -180,34 +195,33 @@ interface OwnProps {
                 />
               )}
             </Form.ValidationElement>
-          </Overlay.Body>
-            </Form>
-            </ErrorBoundary>
-          <Overlay.Footer>
-            <Button
-              text="Cancel"
-              color={ComponentColor.Tertiary}
-              onClick={onClose}
-              type={ButtonType.Button}
-              testID="payg-contact-support--cancel"
-            />
-            <Button
-              text="Submit"
-              color={ComponentColor.Success}
-              type={ButtonType.Submit}
-              onClick={handleSubmit}
-              testID="payg-contact-support--submit"
-              status={submitButtonStatus}
-            />
-          </Overlay.Footer>
-        
+      </Overlay.Body>
+          </Form>
+        </ErrorBoundary>
+      <Overlay.Footer>
+        <Button
+          text="Cancel"
+          color={ComponentColor.Tertiary}
+          onClick={onClose}
+          type={ButtonType.Button}
+          testID="payg-contact-support--cancel"
+        />
+        <Button
+          text="Submit"
+          color={ComponentColor.Success}
+          type={ButtonType.Submit}
+          onClick={handleSubmit}
+          testID="payg-contact-support--submit"
+          status={submitButtonStatus}
+        />
+      </Overlay.Footer>
     </Overlay.Container>
   )
 }
 
 const mdtp = {
   showOverlay,
-  dismissOverlay
+  dismissOverlay,
 }
 
 const connector = connect(null, mdtp)

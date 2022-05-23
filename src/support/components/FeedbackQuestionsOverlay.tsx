@@ -42,7 +42,7 @@ const FeedbackQuestionsOverlay: FC<Props> = props => {
   const {id: meID} = useSelector(getMe)
   const [feedbackText, setFeedbackText] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = event => {
     // handle form submit
     event(
       'helpBar.feedbackAndQuestions.submitted',
@@ -50,7 +50,7 @@ const FeedbackQuestionsOverlay: FC<Props> = props => {
       {userID: meID, orgID: orgID}
     )
     const {showOverlay} = props
-    e.preventDefault()
+    event.preventDefault()
     showOverlay('help-bar-confirmation', null, dismissOverlay)
   }
 

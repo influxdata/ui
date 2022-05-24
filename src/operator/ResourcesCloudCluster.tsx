@@ -5,9 +5,9 @@ import {
 } from '@influxdata/clockface'
 import React, {FC, useContext} from 'react'
 import {OperatorContext} from './context/operator'
-import {OperatorRegions} from 'src/types'
+import {getRegions} from './utils'
 
-const ResourcesCloudProvider: FC = () => {
+const ResourcesCloudCluster: FC = () => {
   const {
     providerInfo,
     providers,
@@ -18,29 +18,29 @@ const ResourcesCloudProvider: FC = () => {
 
   const hasSelectedProvider = providers.length > 0
 
-  const availableRegions: OperatorRegions = providers
-    .map(p => getRegions(p, providerInfo.regions))
-    .flat()
-
   const providerOptions = providerInfo.providers.map(p => p.provider)
-  const regionOptions = availableRegions.flat().map(r => r.region)
+  const regionOptions: string[] = providers
+    .flatMap(p => getRegions(p, providerInfo.regions))
+    .map(r => r.region)
 
   const handleSelectProvider = (selectedOption: string): void => {
     setRegions([])
     providers.includes(selectedOption)
-      ? setProviders(prev => prev.filter(x => x !== selectedOption))
+      ? setProviders(prev =>
+          prev.filter(provider => provider !== selectedOption)
+        )
       : setProviders(prev => [selectedOption, ...prev])
   }
 
   const handleSelectRegion = (selectedOption: string): void =>
     regions.includes(selectedOption)
-      ? setRegions(prev => prev.filter(x => x !== selectedOption))
+      ? setRegions(prev => prev.filter(region => region !== selectedOption))
       : setRegions(prev => [selectedOption, ...prev])
 
   return (
     <>
       <MultiSelectDropdown
-        style={{width: '220px', marginRight: '10px'}}
+        style={providersStyle}
         options={providerOptions}
         selectedOptions={providers}
         onSelect={handleSelectProvider}
@@ -50,7 +50,7 @@ const ResourcesCloudProvider: FC = () => {
       />
       {hasSelectedProvider && (
         <MultiSelectDropdown
-          style={{width: '220px', marginRight: '20px'}}
+          style={regionsStyle}
           options={regionOptions}
           selectedOptions={regions}
           onSelect={handleSelectRegion}
@@ -63,24 +63,7 @@ const ResourcesCloudProvider: FC = () => {
   )
 }
 
-const getRegions = (
-  provider: string,
-  regions: {
-    Azure?: OperatorRegions
-    AWS?: OperatorRegions
-    GCP?: OperatorRegions
-  }
-) => {
-  switch (provider) {
-    case 'Azure':
-      return regions.Azure
-    case 'AWS':
-      return regions.AWS
-    case 'GCP':
-      return regions.GCP
-    default:
-      return []
-  }
-}
+const providersStyle = {width: '220px', marginRight: '10px'}
+const regionsStyle = {width: '220px', marginRight: '20px'}
 
-export default ResourcesCloudProvider
+export default ResourcesCloudCluster

@@ -122,6 +122,12 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
     if (newVal) {
       form.jsonTimestamp.path = newVal
     }
+    if (!form.jsonTimestamp?.name) {
+      form.jsonTimestamp.name = 'timestamp'
+    }
+    if (!form.jsonTimestamp?.type) {
+      form.jsonTimestamp.type = 'string'
+    }
   }
   delete form.id
   delete form.orgID

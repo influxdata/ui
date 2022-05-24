@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 // Components
 // Types
@@ -19,7 +18,7 @@ import {CommunityTemplateInstallInstructions} from 'src/templates/components/Com
 import {CommunityTemplateReadme} from 'src/templates/components/CommunityTemplateReadme'
 import {CommunityTemplateResourceContent} from 'src/templates/components/CommunityTemplateResourceContent'
 
-interface OwnProps {
+interface Props {
   isVisible?: boolean
   onDismissOverlay: () => void
   onInstall: () => void
@@ -40,8 +39,6 @@ enum Tab {
 }
 
 type ActiveTab = Tab.IncludedResources | Tab.Readme
-
-type Props = OwnProps & RouteComponentProps<{orgID: string}>
 
 class CommunityTemplateOverlayUnconnected extends PureComponent<Props, State> {
   state: State = {
@@ -119,6 +116,4 @@ class CommunityTemplateOverlayUnconnected extends PureComponent<Props, State> {
   }
 }
 
-export const CommunityTemplateOverlay = withRouter(
-  CommunityTemplateOverlayUnconnected
-)
+export const CommunityTemplateOverlay = CommunityTemplateOverlayUnconnected

@@ -90,7 +90,6 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
         diameter={14}
         tooltipContents={tooltipContent}
         tooltipStyle={{fontSize: '13px'}}
-        style={{marginLeft: '420px'}}
       />
     )
   }

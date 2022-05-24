@@ -27,7 +27,19 @@
 .status-page-text {
   font-weight: lighter;
   margin-top: 0px;
+
+  .info-new {
+    bottom: 1px;
+    position: relative;
+  }
 }
-.cf-question-mark-tooltip {
-  margin-left: 412px !important;
+
+div.cf-form--label {
+  position: relative;
+
+  .cf-question-mark-tooltip {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }

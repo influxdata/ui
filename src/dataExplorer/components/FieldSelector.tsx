@@ -6,7 +6,7 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Contexts
 import {LOCAL_LIMIT} from 'src/dataExplorer/context/newDataExplorer'
-import {FieldContext} from 'src/dataExplorer/context/fields'
+import {FieldsContext} from 'src/dataExplorer/context/fields'
 import WaitingText from 'src/shared/components/WaitingText'
 
 // Types
@@ -16,7 +16,7 @@ import {RemoteDataState} from 'src/types'
 import './Schema.scss'
 
 const FieldSelector: FC = () => {
-  const {fields, loading} = useContext(FieldContext)
+  const {fields, loading} = useContext(FieldsContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
 
   useEffect(() => {

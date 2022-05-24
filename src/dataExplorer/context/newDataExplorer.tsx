@@ -13,7 +13,7 @@ import {
 // Context
 import {QueryContext} from 'src/shared/contexts/query'
 import {MeasurementContext} from 'src/dataExplorer/context/measurements'
-import {FieldContext} from 'src/dataExplorer/context/fields'
+import {FieldsContext} from 'src/dataExplorer/context/fields'
 
 // Types
 import {Bucket, QueryScope, RemoteDataState} from 'src/types'
@@ -86,7 +86,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
   const {getMeasurements} = useContext(MeasurementContext)
-  const {getFields, resetFields} = useContext(FieldContext)
+  const {getFields, resetFields} = useContext(FieldsContext)
 
   // States
   const [selectedBucket, setSelectedBucket] = useState(null)

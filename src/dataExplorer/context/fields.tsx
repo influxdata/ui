@@ -24,21 +24,21 @@ import {QueryContext} from 'src/shared/contexts/query'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-interface FieldContextType {
+interface FieldsContextType {
   fields: Array<string>
   loading: RemoteDataState
   getFields: (bucket: any, measurement: string) => void
   resetFields: () => void
 }
 
-const DEFAULT_CONTEXT: FieldContextType = {
+const DEFAULT_CONTEXT: FieldsContextType = {
   fields: [],
   loading: RemoteDataState.NotStarted,
   getFields: (_b: any, _m: string) => {},
   resetFields: () => {},
 }
 
-export const FieldContext = createContext<FieldContextType>(DEFAULT_CONTEXT)
+export const FieldsContext = createContext<FieldsContextType>(DEFAULT_CONTEXT)
 
 const INITIAL_FIELDS = [] as string[]
 
@@ -46,7 +46,7 @@ interface Prop {
   scope: QueryScope
 }
 
-export const FieldProvider: FC<Prop> = ({children, scope}) => {
+export const FieldsProvider: FC<Prop> = ({children, scope}) => {
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
 
@@ -121,9 +121,9 @@ export const FieldProvider: FC<Prop> = ({children, scope}) => {
 
   return useMemo(
     () => (
-      <FieldContext.Provider value={{fields, loading, getFields, resetFields}}>
+      <FieldsContext.Provider value={{fields, loading, getFields, resetFields}}>
         {children}
-      </FieldContext.Provider>
+      </FieldsContext.Provider>
     ),
     [fields, loading]
   )

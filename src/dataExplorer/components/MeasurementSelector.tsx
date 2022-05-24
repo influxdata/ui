@@ -1,13 +1,16 @@
 import React, {FC, useContext, useMemo, useState} from 'react'
 
 // Components
-import {ComponentStatus, RemoteDataState} from '@influxdata/clockface'
+import {ComponentStatus} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 // Context
 import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
 import {MeasurementContext} from 'src/dataExplorer/context/measurements'
+
+// Types
+import {RemoteDataState} from 'src/types'
 
 const convertStatus = (remoteDataState: RemoteDataState): ComponentStatus => {
   switch (remoteDataState) {

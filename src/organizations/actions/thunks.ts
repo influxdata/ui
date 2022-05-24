@@ -32,6 +32,8 @@ import {gaEvent} from 'src/cloud/utils/reporting'
 
 import {getOrg} from 'src/organizations/selectors'
 
+import {patchOrg} from 'src/client/unityRoutes'
+
 // Schemas
 import {orgSchema, arrayOfOrgs} from 'src/schemas'
 
@@ -177,7 +179,7 @@ export const updateOrg = (org: Organization) => async (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
-    const resp = await api.patchOrg({orgID: org.id, data: org})
+    const resp = await patchOrg({orgId: org.id, data: org})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
@@ -205,7 +207,7 @@ export const renameOrg = (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
-    const resp = await api.patchOrg({orgID: org.id, data: org})
+    const resp = await patchOrg({orgId: org.id, data: org})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

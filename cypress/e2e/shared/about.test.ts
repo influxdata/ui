@@ -41,7 +41,7 @@ describe('About Page', () => {
 
     const newOrgName = `hard@knock.life${Math.random()}`
 
-    cy.intercept('PATCH', 'api/v2/orgs/*').as('patchOrg')
+    cy.intercept('PATCH', 'api/v2/quartz/orgs/*').as('patchOrg')
 
     cy.getByTestID('create-org-name-input').type(newOrgName)
     cy.getByTestID('rename-org-submit--button')

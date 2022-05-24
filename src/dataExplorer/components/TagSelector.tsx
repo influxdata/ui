@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
@@ -10,6 +10,7 @@ import {
   LOCAL_LIMIT,
   NewDataExplorerContext,
 } from 'src/dataExplorer/context/newDataExplorer'
+import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -21,7 +22,10 @@ interface Prop {
 }
 
 const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
-  const {fetchTagValues} = useContext(NewDataExplorerContext)
+  const {selectedBucket, selectedMeasurement} = useContext(
+    NewDataExplorerContext
+  )
+  const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])
 
   useEffect(() => {
@@ -45,7 +49,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       return
     }
 
-    fetchTagValues(key)
+    getTagValues(selectedBucket, selectedMeasurement, key)
   }
 
   let list: JSX.Element | JSX.Element[] = []
@@ -78,33 +82,32 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     setValuesToShow(tagValues.slice(0, newIndex))
   }
 
-  const shouldLoadMore = valuesToShow.length < tagValues.length
-
-  const loadMoreButton = shouldLoadMore && (
-    <div className="load-more-button" onClick={handleLoadMore}>
-      + Load more
-    </div>
-  )
-
-  return (
-    <Accordion className="tag-selector-value">
-      <Accordion.AccordionHeader className="tag-selector-value--header">
-        <div onClick={() => handleSelectTagKey(tagKey)}>
-          <SelectorTitle title={tagKey} />
-        </div>
-      </Accordion.AccordionHeader>
-      <div className="container-side-bar">
-        {list}
-        {loadMoreButton}
+  return useMemo(() => {
+    const shouldLoadMore = valuesToShow.length < tagValues.length
+    const loadMoreButton = shouldLoadMore && (
+      <div className="load-more-button" onClick={handleLoadMore}>
+        + Load more
       </div>
-    </Accordion>
-  )
+    )
+
+    return (
+      <Accordion className="tag-selector-value">
+        <Accordion.AccordionHeader className="tag-selector-value--header">
+          <div onClick={() => handleSelectTagKey(tagKey)}>
+            <SelectorTitle title={tagKey} />
+          </div>
+        </Accordion.AccordionHeader>
+        <div className="container-side-bar">
+          {list}
+          {loadMoreButton}
+        </div>
+      </Accordion>
+    )
+  }, [list])
 }
 
 const TagSelector: FC = () => {
-  const {tags, loadingTagKeys, loadingTagValues} = useContext(
-    NewDataExplorerContext
-  )
+  const {tags, loadingTagKeys, loadingTagValues} = useContext(TagsContext)
 
   const tagKeys: string[] = Object.keys(tags)
 
@@ -135,13 +138,16 @@ const TagSelector: FC = () => {
     })
   }
 
-  return (
-    <Accordion className="tag-selector-key" expanded={true}>
-      <Accordion.AccordionHeader className="tag-selector-key--header">
-        <SelectorTitle title="Tag Keys" info="Test info" />
-      </Accordion.AccordionHeader>
-      <div className="container-side-bar">{list}</div>
-    </Accordion>
+  return useMemo(
+    () => (
+      <Accordion className="tag-selector-key" expanded={true}>
+        <Accordion.AccordionHeader className="tag-selector-key--header">
+          <SelectorTitle title="Tag Keys" info="Test info" />
+        </Accordion.AccordionHeader>
+        <div className="container-side-bar">{list}</div>
+      </Accordion>
+    ),
+    [tags, loadingTagKeys, loadingTagValues, list]
   )
 }
 

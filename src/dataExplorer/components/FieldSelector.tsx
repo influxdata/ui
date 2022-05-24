@@ -20,17 +20,10 @@ import './Schema.scss'
 const FieldSelector: FC = () => {
   const {fields, loadingFields} = useContext(NewDataExplorerContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
-  const [loadMore, setLoadMore] = useState(false)
-  const [index, setIndex] = useState(LOCAL_LIMIT)
 
   useEffect(() => {
     // Reset
-    const newIndex = LOCAL_LIMIT
-    const newFieldsToShow = fields.slice(0, newIndex)
-    const newLoadMore = fields.length > LOCAL_LIMIT
-    setIndex(newIndex)
-    setFieldsToShow(newFieldsToShow)
-    setLoadMore(newLoadMore)
+    setFieldsToShow(fields.slice(0, LOCAL_LIMIT))
   }, [fields])
 
   let list: JSX.Element | JSX.Element[] = (
@@ -55,17 +48,13 @@ const FieldSelector: FC = () => {
   }
 
   const handleLoadMore = () => {
-    const newIndex = index + LOCAL_LIMIT
-    if (loadMore) {
-      const newFieldsToShow = fields.slice(0, newIndex)
-      setFieldsToShow(newFieldsToShow)
-    }
-    const newLoadMore = newIndex < fields.length
-    setLoadMore(newLoadMore)
-    setIndex(newIndex)
+    const newIndex = fieldsToShow.length + LOCAL_LIMIT
+    setFieldsToShow(fields.slice(0, newIndex))
   }
 
-  const loadMoreButton = loadMore && (
+  const shouldLoadMore = fieldsToShow.length < fields.length
+
+  const loadMoreButton = shouldLoadMore && (
     <div className="load-more-button" onClick={handleLoadMore}>
       + Load more
     </div>

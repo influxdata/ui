@@ -1028,4 +1028,177 @@ describe('Subscriptions', () => {
     cy.wait('@GetSubscriptions')
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
   })
+
+  it('should create, update, stop, then disable start button on error', () => {
+    const mockErroredSubscription = {
+      id: '603dd8ae88aee000',
+      orgID: '9c9c9c9c9c9c9c9c',
+      processGroupID: 'f762b298-0180-1000-0000-000067f29ae1',
+      brokerHost: 'localhost',
+      brokerPort: 1883,
+      topic: 'datopic',
+      dataFormat: 'lineprotocol',
+      jsonMeasurementKey: {name: 'measurement', path: '$.', type: 'string'},
+      jsonFieldKeys: [{name: '', path: '$.', type: 'string'}],
+      jsonTagKeys: [{name: '', path: '$.', type: 'string'}],
+      jsonTimestamp: {name: 'timestamp', path: '', type: 'string'},
+      createdAt: '2022-05-24T18:44:44.196Z',
+      updatedAt: '2022-05-24T19:20:48.371Z',
+      protocol: 'mqtt',
+      bucket: 'devbucket',
+      qos: 0,
+      name: 'aaaa',
+      stringMeasurement: {name: 'measurement', pattern: ''},
+      stringFields: [{name: '', pattern: ''}],
+      stringTags: [{name: '', pattern: ''}],
+      stringTimestamp: {name: '', pattern: ''},
+      tokenID: '0969d8059c6c9000',
+      description: 'aaaa',
+      isActive: true,
+      flowVersion: 5,
+      status: 'ERRORED',
+    }
+    cy.getByTestID('subscriptions--tab').click()
+    cy.getByTestID('create-subscription-button--empty').should('be.visible')
+    cy.getByTestID('create-subscription-button--empty')
+      .first()
+      .click()
+    // broker form
+    cy.getByTestID('create-broker-form-overlay').should('be.visible')
+    // back to create landing
+    cy.getByTestID('create-broker-form--cancel').should('be.visible')
+    cy.getByTestID('create-broker-form--cancel').click()
+    // return to broker form
+    cy.getByTestID('create-subscription-button--control-bar').should(
+      'be.visible'
+    )
+    cy.getByTestID('create-subscription-button--control-bar')
+      .first()
+      .click()
+    cy.getByTestID('create-broker-form-overlay').should('be.visible')
+    // fill in broker form
+    cy.getByTestID('create-broker-form--name').type('My Subscription')
+    cy.getByTestID('create-broker-form--description').type('My Description')
+    cy.getByTestID('dropdown')
+      .contains('MQTT')
+      .click()
+    cy.getByTestID('create-broker-form--host').type('localhost')
+    cy.getByTestID('create-broker-form--port').type('1883')
+    cy.getByTestID('create-broker-form--submit').click()
+    // subscription form
+    cy.getByTestID('create-subscription-form--overlay-form').should(
+      'be.visible'
+    )
+    // back to broker form
+    cy.getByTestID('create-subscription-form--back').should('be.visible')
+    cy.getByTestID('create-subscription-form--back').click()
+    cy.getByTestID('create-broker-form-overlay').should('be.visible')
+    // return to subscription
+    cy.getByTestID('create-broker-form--submit').should('be.visible')
+    cy.getByTestID('create-broker-form--submit').click()
+    cy.getByTestID('create-subscription-form--overlay-form').should(
+      'be.visible'
+    )
+    // fill in subscription form
+    cy.getByTestID('create-subscription-form--topic').type('topic')
+    cy.getByTestID('list-item')
+      .contains('defbuck')
+      .click()
+    cy.getByTestID('create-subscription-form--submit').click()
+    // parsing form
+    cy.getByTestID('create-parsing-form-overlay').should('be.visible')
+    // back to subscription
+    cy.getByTestID('create-parsing-form--back').should('be.visible')
+    cy.getByTestID('create-parsing-form--back').click()
+    cy.getByTestID('create-subscription-form--overlay-form').should(
+      'be.visible'
+    )
+    // return to parsing
+    cy.getByTestID('create-subscription-form--submit').click()
+    // line protocol
+    cy.getByTestID('create-parsing-form-line-protocol--button').click()
+    cy.getByTestID('create-parsing-form--submit').click()
+    // wait for intercepts
+    cy.wait('@CreateSubscription')
+    cy.wait('@GetSubscriptions')
+    // subscriptions list view
+    cy.get('.subscriptions-list').should('be.visible')
+    cy.get('.cf-resource-card').should('be.visible')
+    cy.get('.cf-resource-card').should('have.length', 1)
+    cy.get('.cf-resource-card').contains('My Subscription')
+    // update
+    cy.getByTestID('subscription-card').should('be.visible')
+    cy.getByTestID('subscription-name').should('be.visible')
+    cy.getByTestID('subscription-name').click()
+    cy.get('.subscription-details-page').should('be.visible')
+    cy.getByTestID('update-subscription-form--edit')
+      .should('be.visible')
+      .click()
+    cy.getByTestID('update-broker-form--name').should('be.visible')
+    cy.getByTestID('update-broker-form--name')
+      .clear()
+      .type('My Edited Subscription')
+    cy.getByTestID('update-broker-form--description')
+      .clear()
+      .type('Edited Description')
+    cy.getByTestID('update-broker-form--host')
+      .clear()
+      .type('local.host')
+    cy.getByTestID('update-broker-form--port')
+      .clear()
+      .type('1884')
+    cy.getByTestID('update-broker-form--user--button').click()
+    cy.getByTestID('update-broker-form--username')
+      .clear()
+      .type('username')
+    cy.getByTestID('update-broker-form--password')
+      .clear()
+      .type('password')
+    cy.getByTestID('update-subscription-form--submit')
+      .should('be.visible')
+      .click()
+    cy.getByTestID('update-subscription-form--topic').should('be.visible')
+    cy.getByTestID('update-subscription-form--topic')
+      .clear()
+      .type('edit/topic')
+    cy.getByTestID('Create Bucket').click()
+    cy.getByTestID('form--validation-element').should('be.visible')
+    cy.getByTestID('bucket-form-name').type('nifid')
+    cy.getByTestID('bucket-form-submit').click()
+    cy.getByTestID('update-subscription-form--submit')
+      .should('be.visible')
+      .click()
+    cy.getByTestID('heading')
+      .should('be.visible')
+      .contains('Data Format')
+    cy.getByTestID('update-parsing-form--submit')
+      .should('be.visible')
+      .click()
+    cy.get('.cf-resource-card').should('have.length', 1)
+    cy.get('.cf-resource-card').contains('My Edited Subscription')
+    // stop subscription
+    cy.getByTestID('subscription-name').should('be.visible')
+    cy.getByTestID('subscription-name').click()
+    cy.get('.subscription-details-page').should('be.visible')
+    cy.getByTestID('subscription-details-page--status-button')
+      .should('be.visible')
+      .click()
+    cy.get('.cf-spinner-container').should('be.visible')
+    cy.get('.subscription-details-page__status--STOPPED')
+      .should('be.visible')
+      .contains('STOPPED')
+    cy.intercept(
+      'GET',
+      '/api/v2private/broker/subs/*',
+      mockErroredSubscription
+    ).as('GetMockedErroredSubscription')
+    // start subscription
+    cy.getByTestID('subscription-details-page--status-button')
+      .should('be.visible')
+      .click()
+    cy.wait('@GetMockedErroredSubscription')
+    cy.getByTestID('subscription-details-page--status-button').should(
+      'be.disabled'
+    )
+  })
 })

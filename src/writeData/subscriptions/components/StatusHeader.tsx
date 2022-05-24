@@ -50,14 +50,8 @@ const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => (
     {!(
       currentSubscription.status === 'VALIDATING' ||
       currentSubscription.status === 'INVALID'
-    ) && (
-      <ReflessPopover
-        position={PopoverPosition.Below}
-        showEvent={PopoverInteraction.Hover}
-        hideEvent={PopoverInteraction.Hover}
-        style={{width: 'max-content'}}
-        contents={() => <>cannot start flow in errored state</>}
-      >
+    ) &&
+      (currentSubscription.status !== 'ERRORED' ? (
         <Button
           text={currentSubscription.status === 'RUNNING' ? 'stop' : 'start'}
           color={
@@ -81,8 +75,24 @@ const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => (
           }
           className="subscription-details-page__status--button"
         />
-      </ReflessPopover>
-    )}
+      ) : (
+        <ReflessPopover
+          position={PopoverPosition.Below}
+          showEvent={PopoverInteraction.Hover}
+          hideEvent={PopoverInteraction.Hover}
+          style={{width: 'max-content'}}
+          contents={() => <>cannot start flow in errored state</>}
+        >
+          <Button
+            text="start"
+            color={ComponentColor.Success}
+            type={ButtonType.Submit}
+            testID="subscription-details-page--status-button"
+            status={ComponentStatus.Disabled}
+            className="subscription-details-page__status--button"
+          />
+        </ReflessPopover>
+      ))}
   </FlexBox>
 )
 

@@ -1,5 +1,4 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {concat, slice} from 'lodash'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
@@ -41,7 +40,7 @@ const TagValues: FC<Prop> = ({
       setLoadMore(false)
       setIndex(LOCAL_LIMIT)
     } else {
-      const newValuesToShow = slice(tagValues, 0, index)
+      const newValuesToShow = tagValues.slice(0, index)
       const newLoadMore = tagValues.length > LOCAL_LIMIT
       setValuesToShow(newValuesToShow)
       setLoadMore(newLoadMore)
@@ -76,10 +75,9 @@ const TagValues: FC<Prop> = ({
   const handleLoadMore = () => {
     const newIndex = index + LOCAL_LIMIT
     if (loadMore) {
-      // Add more key values to show
-      const newValuesToShow = concat(
-        valuesToShow,
-        slice(tagValues, index, newIndex)
+      // Add more tag values to show
+      const newValuesToShow = valuesToShow.concat(
+        tagValues.slice(index, newIndex)
       )
       setValuesToShow(newValuesToShow)
     }

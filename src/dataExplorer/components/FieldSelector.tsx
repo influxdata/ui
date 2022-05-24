@@ -1,5 +1,4 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {concat, slice} from 'lodash'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
@@ -30,7 +29,7 @@ const FieldSelector: FC = () => {
       setLoadMore(false)
       setIndex(LOCAL_LIMIT)
     } else {
-      const newFieldsToShow = slice(fields, 0, index)
+      const newFieldsToShow = fields.slice(0, index)
       const newLoadMore = fields.length > LOCAL_LIMIT
       setFieldsToShow(newFieldsToShow)
       setLoadMore(newLoadMore)
@@ -61,11 +60,7 @@ const FieldSelector: FC = () => {
   const handleLoadMore = () => {
     const newIndex = index + LOCAL_LIMIT
     if (loadMore) {
-      // Add more field values to show
-      const newFieldsToShow = concat(
-        fieldsToShow,
-        slice(fields, index, newIndex)
-      )
+      const newFieldsToShow = fieldsToShow.concat(fields.slice(index, newIndex))
       setFieldsToShow(newFieldsToShow)
     }
     const newLoadMore = newIndex < fields.length

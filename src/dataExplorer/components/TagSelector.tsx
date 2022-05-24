@@ -18,23 +18,35 @@ interface Prop {
   loading: RemoteDataState
   tagKey: string
   tagValues: string[]
-  onSelectTagKey: (key: string) => void
-  onSelectTagValue: (value: string) => void
 }
 
-const TagValues: FC<Prop> = ({
-  loading,
-  tagKey,
-  tagValues,
-  onSelectTagKey,
-  onSelectTagValue,
-}) => {
+const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
+  const {fetchTagValues} = useContext(NewDataExplorerContext)
   const [valuesToShow, setValuesToShow] = useState([])
 
   useEffect(() => {
     // Reset
     setValuesToShow(tagValues.slice(0, LOCAL_LIMIT))
   }, [tagValues])
+
+  const handleSelectTagValue = (value: string) => {
+    // TODO: potentially inject tag value into the flux script editor
+    //   still TBD on product
+
+    /* eslint-disable no-console */
+    console.log(value)
+    /* eslint-disable no-console */
+  }
+
+  const handleSelectTagKey = (key: string) => {
+    if (tagValues.length > 0) {
+      // No need to fetch since tag values
+      // have already been in front-end memory
+      return
+    }
+
+    fetchTagValues(key)
+  }
 
   let list: JSX.Element | JSX.Element[] = []
 
@@ -54,7 +66,7 @@ const TagValues: FC<Prop> = ({
       <div
         className="tag-selector-value--list-item"
         key={value}
-        onClick={() => onSelectTagValue(value)}
+        onClick={() => handleSelectTagValue(value)}
       >
         {value}
       </div>
@@ -77,7 +89,7 @@ const TagValues: FC<Prop> = ({
   return (
     <Accordion className="tag-selector-value">
       <Accordion.AccordionHeader className="tag-selector-value--header">
-        <div onClick={() => onSelectTagKey(tagKey)}>
+        <div onClick={() => handleSelectTagKey(tagKey)}>
           <SelectorTitle title={tagKey} />
         </div>
       </Accordion.AccordionHeader>
@@ -90,27 +102,11 @@ const TagValues: FC<Prop> = ({
 }
 
 const TagSelector: FC = () => {
-  const {tags, loadingTagKeys, loadingTagValues, fetchTagValues} = useContext(
+  const {tags, loadingTagKeys, loadingTagValues} = useContext(
     NewDataExplorerContext
   )
 
   const tagKeys: string[] = Object.keys(tags)
-
-  const handleSelectTagKey = (key: string) => {
-    if (tags[key].length === 0) {
-      // Fetch tag values on demand
-      // Only need to fetch tag values if currently no values
-      fetchTagValues(key)
-    }
-  }
-
-  const handleSelectTagValue = (value: string) => {
-    // TODO: potentially inject tag value into the flux script editor
-    //   still TBD on product
-    /* eslint-disable no-console */
-    console.log(value)
-    /* eslint-disable no-console */
-  }
 
   let list: JSX.Element | JSX.Element[] = (
     <div className="tag-selector-key--list-item">No Tags Found</div>
@@ -132,8 +128,6 @@ const TagSelector: FC = () => {
           <TagValues
             tagKey={key}
             tagValues={tags[key]}
-            onSelectTagKey={handleSelectTagKey}
-            onSelectTagValue={handleSelectTagValue}
             loading={loadingTagValues[key]}
           />
         </div>

@@ -164,7 +164,7 @@ class TagSelector extends PureComponent<Props> {
                       <SearchableDropdown
                         searchTerm={keysSearchTerm}
                         emptyText="No Tags Found"
-                        searchPlaceholder="Search keys..."
+                        searchPlaceholder="Search keys"
                         buttonStatus={toComponentStatus(keysStatus)}
                         selectedOption={selectedKey}
                         onSelect={this.handleSelectTag}

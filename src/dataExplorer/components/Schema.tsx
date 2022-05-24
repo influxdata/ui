@@ -8,7 +8,6 @@ import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldSelector from 'src/dataExplorer/components/FieldSelector'
 import TagSelector from 'src/dataExplorer/components/TagSelector'
-import WaitingText from 'src/shared/components/WaitingText'
 
 // Context
 import {
@@ -19,7 +18,7 @@ import QueryProvider from 'src/shared/contexts/query'
 import {BucketProvider} from 'src/shared/contexts/buckets'
 
 // Types
-import {RemoteDataState, QueryScope} from 'src/types'
+import {QueryScope} from 'src/types'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'

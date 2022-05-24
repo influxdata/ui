@@ -39,16 +39,17 @@ export type Tags = Record<string, string[]>
 interface NewDataExplorerContextType {
   // Schema
   selectedBucket: Bucket
-  measurements: string[] // TODO: type MeasurementSchema?
-  selectedMeasurement: string // TODO: type Measurement?
-  fields: string[] // TODO: type Field[]?
-  loadingFields: RemoteDataState
+  measurements: string[]
+  selectedMeasurement: string
+  fields: string[]
   tags: Tags
+  loadingMeasurements: RemoteDataState
+  loadingFields: RemoteDataState
   loadingTagKeys: RemoteDataState
   loadingTagValues: Hash<RemoteDataState>
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
-  selectMeasurement: (measurement: string) => void // TODO: type Measurement?
+  selectMeasurement: (measurement: string) => void
   fetchTagValues: (tagKey: string) => void
   setSearchTerm: (str: string) => void
 
@@ -63,8 +64,9 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   measurements: [],
   selectedMeasurement: '',
   fields: [],
-  loadingFields: RemoteDataState.NotStarted,
   tags: {},
+  loadingMeasurements: RemoteDataState.NotStarted,
+  loadingFields: RemoteDataState.NotStarted,
   loadingTagKeys: RemoteDataState.NotStarted,
   loadingTagValues: {} as Hash<RemoteDataState>,
   searchTerm: '',
@@ -87,6 +89,15 @@ interface Prop {
 }
 
 export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
+  // State
+  const [selectedBucket, setSelectedBucket] = useState(null)
+  const [measurements, setMeasurements] = useState<Array<string>>([])
+  const [selectedMeasurement, setSelectedMeasurement] = useState('')
+  const [fields, setFields] = useState<Array<string>>(INITIAL_FIELDS)
+  const [tags, setTags] = useState<Tags>(INITIAL_TAGS)
+  const [loadingMeasurements, setLoadingMeasurements] = useState(
+    RemoteDataState.NotStarted
+  )
   const [loadingFields, setLoadingFields] = useState(RemoteDataState.NotStarted)
   const [loadingTagKeys, setLoadingTagKeys] = useState(
     RemoteDataState.NotStarted
@@ -94,15 +105,13 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   const [loadingTagValues, setLoadingTagValues] = useState(
     INITIAL_LOADING_TAG_VALUES
   )
-  const {query: queryAPI} = useContext(QueryContext)
   const [query, setQuery] = useState('')
-  const [selectedBucket, setSelectedBucket] = useState(null)
-  const [measurements, setMeasurements] = useState<Array<string>>([])
-  const [selectedMeasurement, setSelectedMeasurement] = useState('')
-  const [fields, setFields] = useState<Array<string>>(INITIAL_FIELDS)
-  const [tags, setTags] = useState<Tags>(INITIAL_TAGS)
   const [searchTerm, setSearchTerm] = useState('')
 
+  // Context
+  const {query: queryAPI} = useContext(QueryContext)
+
+  // Constant
   const limit = isFlagEnabled('increasedMeasurmentTagLimit')
     ? EXTENDED_TAG_LIMIT
     : DEFAULT_TAG_LIMIT
@@ -153,8 +162,10 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
       setMeasurements(values)
+      setLoadingMeasurements(RemoteDataState.Done)
     } catch (e) {
       console.error(e.message)
+      setLoadingMeasurements(RemoteDataState.Error)
     }
   }
 
@@ -350,12 +361,12 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     setSelectedBucket(bucket)
 
     // Reset measurement, tags, and fields
-    // TODO: loading status for measurements
     setSelectedMeasurement('')
     setFields(INITIAL_FIELDS)
     setTags(INITIAL_TAGS)
 
     // Get measurement values
+    setLoadingMeasurements(RemoteDataState.Loading)
     getMeasurements(bucket)
   }
 
@@ -382,7 +393,10 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   }
 
   const handleSearchTerm = (searchTerm: string): void => {
-    // TODO
+    // TODO: handle search
+    //  Need to confirm with the product team what the scope of search
+    //  e.g. field values? (and/or) tag keys? (and/or) tag values?
+
     /* eslint-disable no-console */
     console.log('Search: ', searchTerm)
     /* eslint-disable no-console */
@@ -398,8 +412,9 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
           measurements,
           selectedMeasurement,
           fields,
-          loadingFields,
           tags,
+          loadingMeasurements,
+          loadingFields,
           loadingTagKeys,
           loadingTagValues,
           searchTerm,
@@ -422,8 +437,9 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
       measurements,
       selectedMeasurement,
       fields,
-      loadingFields,
       tags,
+      loadingMeasurements,
+      loadingFields,
       loadingTagKeys,
       loadingTagValues,
       searchTerm,

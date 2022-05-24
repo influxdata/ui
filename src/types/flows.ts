@@ -141,7 +141,10 @@ export interface VariableMap {
 
 // TODO: type this better. there are required properties, that have types, but
 // we also need this to stay open for panels to register whatever they want
-export interface QueryScope {
+interface VariableOuterScope {
+  vars?: Variable[]
+}
+export interface QueryScope extends VariableOuterScope {
   [props: string]: any
 }
 

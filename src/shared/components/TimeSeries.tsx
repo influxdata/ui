@@ -16,7 +16,7 @@ import {
   isCurrentPageDashboard as isCurrentPageDashboardSelector,
 } from 'src/dashboards/selectors'
 import {getVariables} from 'src/variables/selectors'
-import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
+import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
 import {getWindowVarAssignmentFromVariables} from 'src/variables/utils/getWindowVars'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
@@ -27,7 +27,6 @@ import {parseASTIM} from 'src/variables/utils/astim'
 
 // Constants
 import {rateLimitReached, resultTooLarge} from 'src/shared/copy/notifications'
-import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
 // Actions & Selectors
 import {getAll} from 'src/resources/selectors'
@@ -391,8 +390,7 @@ const mstp = (state: AppState, props: OwnProps) => {
   )
   const variables = [
     ...vars,
-    getRangeVariable(TIME_RANGE_START, timeRange),
-    getRangeVariable(TIME_RANGE_STOP, timeRange),
+    ...getTimeRangeVars(timeRange),
   ]
 
   return {

@@ -9,14 +9,19 @@ import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {RemoteDataState, TimeRange, Variable} from 'src/types'
 import {VariableAssignment} from 'src/types/ast'
 
-// TODO kill this function
-export const getTimeRangeVars = (
+export const getTimeRangeVarAssignments = (
   timeRange: TimeRange
 ): VariableAssignment[] => {
+  return getTimeRangeVars(timeRange).map(v => asAssignmentNode(v)).filter(v => !!v)
+}
+
+export const getTimeRangeVars = (
+  timeRange: TimeRange
+): Variable[] => {
   return [
     getRangeVariable(TIME_RANGE_START, timeRange),
     getRangeVariable(TIME_RANGE_STOP, timeRange),
-  ].map(v => asAssignmentNode(v))
+  ]
 }
 
 export const getRangeVariable = (

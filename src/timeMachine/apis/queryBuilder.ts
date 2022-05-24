@@ -5,7 +5,7 @@ import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
 
 // Utils
-import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
+import {getTimeRangeVarAssignments} from 'src/variables/utils/getTimeRangeVars'
 import {formatExpression} from 'src/variables/utils/formatExpression'
 import {tagToFlux} from 'src/timeMachine/utils/queryBuilder'
 import {event} from 'src/cloud/utils/reporting'
@@ -210,7 +210,7 @@ export function formatTagKeyFilterCall(tagsSelections: BuilderConfig['tags']) {
 }
 
 export function formatTimeRangeArguments(timeRange: TimeRange): string {
-  const [start, stop] = getTimeRangeVars(timeRange).map(assignment =>
+  const [start, stop] = getTimeRangeVarAssignments(timeRange).map(assignment =>
     formatExpression(assignment.init)
   )
 

@@ -2,19 +2,14 @@ import React, {FC, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
+import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 
 import {getOrg} from 'src/organizations/selectors'
-import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
-import {
-  FluxResult,
-  QueryScope,
-  InternalFromFluxResult,
-  Column,
-} from 'src/types/flows'
-import {getDurationFromAST} from 'src/shared/utils/duration'
+import {RunQueryResult} from 'src/shared/apis/query'
+// import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+// import {getWindowVarAssignmentFromVariables} from 'src/variables/utils/getWindowVars'
 
 // Constants
-import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
@@ -22,8 +17,13 @@ import {
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
-import {CancellationError, File} from 'src/types'
-import {RunQueryResult} from 'src/shared/apis/query'
+import {CancellationError, File, Variable} from 'src/types'
+import {
+  FluxResult,
+  QueryScope,
+  InternalFromFluxResult,
+  Column,
+} from 'src/types/flows'
 
 interface CancelMap {
   [key: string]: () => void
@@ -125,7 +125,7 @@ const _addWindowPeriod = (ast, optionAST): void => {
   })
 }
 
-export const simplify = (text, vars = {}) => {
+export const simplify = (text, vars: Variable[]) => {
   try {
     const ast = isFlagEnabled('fastFlows') ? parseQuery(text) : parse(text)
     const referencedVars = find(
@@ -354,7 +354,7 @@ export const QueryProvider: FC = ({children}) => {
   }, [])
 
   const basic = (text: string, override?: QueryScope) => {
-    const query = simplify(text, override?.vars || {})
+    const query = simplify(text, override?.vars || [])
 
     const orgID = override?.org || org.id
 

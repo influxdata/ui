@@ -1,5 +1,4 @@
 import React, {FC, createContext, useState, useMemo, useContext} from 'react'
-import {isEmpty} from 'lodash'
 
 // Constants
 import {
@@ -112,7 +111,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     : DEFAULT_TAG_LIMIT
 
   const getMeasurements = async bucket => {
-    if (isEmpty(bucket)) {
+    if (!bucket) {
       return
     }
 
@@ -163,7 +162,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   }
 
   const getFields = async (measurement: string) => {
-    if (isEmpty(selectedBucket) || measurement === '') {
+    if (!selectedBucket || !measurement) {
       return
     }
 
@@ -216,7 +215,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   }
 
   const getTagKeys = async (measurement: string) => {
-    if (isEmpty(selectedBucket) || measurement === '') {
+    if (!selectedBucket || !measurement) {
       return
     }
 
@@ -289,7 +288,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
   }
 
   const getTagValues = async (tagKey: string) => {
-    if (isEmpty(selectedBucket) || isEmpty(selectedMeasurement)) {
+    if (!selectedBucket || !selectedMeasurement) {
       return
     }
 

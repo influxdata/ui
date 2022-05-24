@@ -1,5 +1,4 @@
 import React, {FC, useContext, useMemo, useState} from 'react'
-import {isEmpty} from 'lodash'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
@@ -27,7 +26,7 @@ const MeasurementSelector: FC = () => {
   }
 
   return useMemo(() => {
-    if (isEmpty(selectedBucket)) {
+    if (!selectedBucket) {
       return null
     }
 

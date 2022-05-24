@@ -54,7 +54,6 @@ interface NewDataExplorerContextType {
 
   // Query building
   query: string
-  loading: RemoteDataState
   updateQuery: (q: string) => void
 }
 
@@ -76,7 +75,6 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
 
   // Query building
   query: '',
-  loading: RemoteDataState.NotStarted,
   updateQuery: _q => {},
 }
 
@@ -89,7 +87,6 @@ interface Prop {
 }
 
 export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
-  const [loading] = useState(RemoteDataState.NotStarted)
   const [loadingFields, setLoadingFields] = useState(RemoteDataState.NotStarted)
   const [loadingTagKeys, setLoadingTagKeys] = useState(
     RemoteDataState.NotStarted
@@ -413,7 +410,6 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
 
           // Query building
           query,
-          loading,
           updateQuery: setQuery,
         }}
       >
@@ -434,7 +430,6 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
 
       // Query building
       query,
-      loading,
       children,
     ]
   )

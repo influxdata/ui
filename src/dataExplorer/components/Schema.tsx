@@ -29,7 +29,6 @@ import './Schema.scss'
 
 const FieldsTags: FC = () => {
   const {
-    loading,
     selectedBucket,
     selectedMeasurement,
     searchTerm,
@@ -45,10 +44,6 @@ const FieldsTags: FC = () => {
       return null
     }
 
-    if (loading === RemoteDataState.Loading) {
-      return <WaitingText text="Loading" />
-    }
-
     return (
       <div className="container-side-bar">
         <SearchWidget
@@ -60,7 +55,7 @@ const FieldsTags: FC = () => {
         <TagSelector />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement, loading])
+  }, [selectedBucket, selectedMeasurement])
 }
 
 const Schema: FC = () => {

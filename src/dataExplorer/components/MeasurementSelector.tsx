@@ -7,6 +7,7 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 // Context
 import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
+import {MeasurementContext} from 'src/dataExplorer/context/measurements'
 
 const convertStatus = (remoteDataState: RemoteDataState): ComponentStatus => {
   switch (remoteDataState) {
@@ -20,13 +21,10 @@ const convertStatus = (remoteDataState: RemoteDataState): ComponentStatus => {
 }
 
 const MeasurementSelector: FC = () => {
-  const {
-    measurements,
-    selectedBucket,
-    selectedMeasurement,
-    loadingMeasurements,
-    selectMeasurement,
-  } = useContext(NewDataExplorerContext)
+  const {selectedBucket, selectedMeasurement, selectMeasurement} = useContext(
+    NewDataExplorerContext
+  )
+  const {measurements, loading} = useContext(MeasurementContext)
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSelect = (option: string): void => {
@@ -52,7 +50,7 @@ const MeasurementSelector: FC = () => {
           onSelect={handleSelect}
           onChangeSearchTerm={handleChangeSearchTerm}
           options={measurements}
-          buttonStatus={convertStatus(loadingMeasurements)}
+          buttonStatus={convertStatus(loading)}
           testID="measurement-selector--dropdown"
           buttonTestID="measurement-selector--dropdown-button"
           menuTestID="measurement-selector--dropdown--menu"
@@ -60,7 +58,7 @@ const MeasurementSelector: FC = () => {
         />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement, measurements, loadingMeasurements])
+  }, [selectedBucket, selectedMeasurement, measurements, loading])
 }
 
 export default MeasurementSelector

@@ -30,17 +30,10 @@ const TagValues: FC<Prop> = ({
   onSelectTagValue,
 }) => {
   const [valuesToShow, setValuesToShow] = useState([])
-  const [loadMore, setLoadMore] = useState(false)
-  const [index, setIndex] = useState(LOCAL_LIMIT)
 
   useEffect(() => {
     // Reset
-    const newIndex = LOCAL_LIMIT
-    const newValuesToShow = tagValues.slice(0, newIndex)
-    const newLoadMore = tagValues.length > LOCAL_LIMIT
-    setIndex(newIndex)
-    setValuesToShow(newValuesToShow)
-    setLoadMore(newLoadMore)
+    setValuesToShow(tagValues.slice(0, LOCAL_LIMIT))
   }, [tagValues])
 
   let list: JSX.Element | JSX.Element[] = []
@@ -69,18 +62,13 @@ const TagValues: FC<Prop> = ({
   }
 
   const handleLoadMore = () => {
-    const newIndex = index + LOCAL_LIMIT
-    if (loadMore) {
-      // Add more tag values to show
-      const newValuesToShow = tagValues.slice(0, newIndex)
-      setValuesToShow(newValuesToShow)
-    }
-    const newLoadMore = newIndex < tagValues.length
-    setLoadMore(newLoadMore)
-    setIndex(newIndex)
+    const newIndex = valuesToShow.length + LOCAL_LIMIT
+    setValuesToShow(tagValues.slice(0, newIndex))
   }
 
-  const loadMoreButton = loadMore && (
+  const shouldLoadMore = valuesToShow.length < tagValues.length
+
+  const loadMoreButton = shouldLoadMore && (
     <div className="load-more-button" onClick={handleLoadMore}>
       + Load more
     </div>

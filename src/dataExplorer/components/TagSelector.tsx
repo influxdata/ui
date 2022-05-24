@@ -90,7 +90,7 @@ const TagValues: FC<Prop> = ({
 }
 
 const TagSelector: FC = () => {
-  const {tags, loadingTagKeys, loadingTagValues, selectTagKey} = useContext(
+  const {tags, loadingTagKeys, loadingTagValues, fetchTagValues} = useContext(
     NewDataExplorerContext
   )
 
@@ -98,8 +98,9 @@ const TagSelector: FC = () => {
 
   const handleSelectTagKey = (key: string) => {
     if (tags[key].length === 0) {
-      // Only need to get tag values if currently no values
-      selectTagKey(key)
+      // Fetch tag values on demand
+      // Only need to fetch tag values if currently no values
+      fetchTagValues(key)
     }
   }
 

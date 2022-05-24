@@ -49,7 +49,7 @@ interface NewDataExplorerContextType {
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void // TODO: type Measurement?
-  selectTagKey: (tagKey: string) => void
+  fetchTagValues: (tagKey: string) => void
   setSearchTerm: (str: string) => void
 
   // Query building
@@ -71,7 +71,7 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
-  selectTagKey: (_tk: string) => {},
+  fetchTagValues: (_tk: string) => {},
   setSearchTerm: (_s: string) => {},
 
   // Query building
@@ -376,7 +376,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
     getTagKeys(measurement)
   }
 
-  const handleSelectTagKey = (tagKey: string): void => {
+  const handleFetchTagValues = (tagKey: string): void => {
     setLoadingTagValues({
       ...loadingTagValues,
       [tagKey]: RemoteDataState.Loading,
@@ -408,7 +408,7 @@ export const NewDataExplorerProvider: FC<Prop> = ({scope, children}) => {
           searchTerm,
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,
-          selectTagKey: handleSelectTagKey,
+          fetchTagValues: handleFetchTagValues,
           setSearchTerm: handleSearchTerm,
 
           // Query building

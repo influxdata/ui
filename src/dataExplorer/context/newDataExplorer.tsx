@@ -34,7 +34,7 @@ interface Hash<T> {
   [key: string]: T
 }
 
-export type Tags = Hash<string[]>
+export type Tags = Record<string, string[]>
 
 interface NewDataExplorerContextType {
   // Schema

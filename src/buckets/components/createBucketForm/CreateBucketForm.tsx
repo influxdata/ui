@@ -147,7 +147,9 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
       overlayParams.onUpdateBucket(bucket)
     }
 
-    props.callbackAfterBucketCreation(bucket)
+    if (props.callbackAfterBucketCreation) {
+      props.callbackAfterBucketCreation(bucket)
+    }
   }
 
   const handleChangeInput = (event: ChangeEvent<HTMLInputElement>): void => {

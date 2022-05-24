@@ -17,6 +17,7 @@ import {
 import QueryProvider from 'src/shared/contexts/query'
 import {BucketProvider} from 'src/shared/contexts/buckets'
 import {MeasurementProvider} from 'src/dataExplorer/context/measurements'
+import {FieldProvider} from 'src/dataExplorer/context/fields'
 
 // Types
 import {QueryScope} from 'src/types'
@@ -68,21 +69,23 @@ const Schema: FC = () => {
   return (
     <QueryProvider>
       <MeasurementProvider scope={scope}>
-        <NewDataExplorerProvider scope={scope}>
-          <BucketProvider scope={scope}>
-            <div className="scroll--container">
-              <DapperScrollbars>
-                <div className="data-schema">
-                  <BucketSelector />
-                  <div className="container-side-bar">
-                    <MeasurementSelector />
-                    <FieldsTags />
+        <FieldProvider scope={scope}>
+          <NewDataExplorerProvider scope={scope}>
+            <BucketProvider scope={scope}>
+              <div className="scroll--container">
+                <DapperScrollbars>
+                  <div className="data-schema">
+                    <BucketSelector />
+                    <div className="container-side-bar">
+                      <MeasurementSelector />
+                      <FieldsTags />
+                    </div>
                   </div>
-                </div>
-              </DapperScrollbars>
-            </div>
-          </BucketProvider>
-        </NewDataExplorerProvider>
+                </DapperScrollbars>
+              </div>
+            </BucketProvider>
+          </NewDataExplorerProvider>
+        </FieldProvider>
       </MeasurementProvider>
     </QueryProvider>
   )

@@ -1,14 +1,12 @@
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Contexts
-import {
-  NewDataExplorerContext,
-  LOCAL_LIMIT,
-} from 'src/dataExplorer/context/newDataExplorer'
+import {LOCAL_LIMIT} from 'src/dataExplorer/context/newDataExplorer'
+import {FieldContext} from 'src/dataExplorer/context/fields'
 import WaitingText from 'src/shared/components/WaitingText'
 
 // Types
@@ -18,7 +16,7 @@ import {RemoteDataState} from 'src/types'
 import './Schema.scss'
 
 const FieldSelector: FC = () => {
-  const {fields, loadingFields} = useContext(NewDataExplorerContext)
+  const {fields, loading} = useContext(FieldContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
 
   useEffect(() => {
@@ -30,16 +28,16 @@ const FieldSelector: FC = () => {
     <div className="field-selector--list-item">No Fields Found</div>
   )
 
-  if (loadingFields === RemoteDataState.Error) {
+  if (loading === RemoteDataState.Error) {
     list = (
       <div className="field-selector--list-item">Failed to load fields</div>
     )
   } else if (
-    loadingFields === RemoteDataState.Loading ||
-    loadingFields === RemoteDataState.NotStarted
+    loading === RemoteDataState.Loading ||
+    loading === RemoteDataState.NotStarted
   ) {
     list = <WaitingText text="Loading fields" />
-  } else if (loadingFields === RemoteDataState.Done && fields.length) {
+  } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
     list = fieldsToShow.map(field => (
       <div key={field} className="field-selector--list-item">
         {field}
@@ -52,25 +50,26 @@ const FieldSelector: FC = () => {
     setFieldsToShow(fields.slice(0, newIndex))
   }
 
-  const shouldLoadMore = fieldsToShow.length < fields.length
-
-  const loadMoreButton = shouldLoadMore && (
-    <div className="load-more-button" onClick={handleLoadMore}>
-      + Load more
-    </div>
-  )
-
-  return (
-    <Accordion className="field-selector" expanded={true}>
-      <Accordion.AccordionHeader className="field-selector--header">
-        <SelectorTitle title="Fields" info="Test info" />
-      </Accordion.AccordionHeader>
-      <div className="container-side-bar">
-        {list}
-        {loadMoreButton}
+  return useMemo(() => {
+    const shouldLoadMore = fieldsToShow.length < fields.length
+    const loadMoreButton = shouldLoadMore && (
+      <div className="load-more-button" onClick={handleLoadMore}>
+        + Load more
       </div>
-    </Accordion>
-  )
+    )
+
+    return (
+      <Accordion className="field-selector" expanded={true}>
+        <Accordion.AccordionHeader className="field-selector--header">
+          <SelectorTitle title="Fields" info="Test info" />
+        </Accordion.AccordionHeader>
+        <div className="container-side-bar">
+          {list}
+          {loadMoreButton}
+        </div>
+      </Accordion>
+    )
+  }, [fields, list])
 }
 
 export default FieldSelector

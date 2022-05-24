@@ -14,13 +14,12 @@ const BucketSelector: FC = () => {
   const {buckets} = useContext(BucketContext)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const handleSelectBucket = (option: string) => {
-    const bucket = buckets.filter(b => b.name === option)
-    if (!bucket.length) {
-      // TODO: any error message?
+  const handleSelectBucket = (name: string) => {
+    const bucket = buckets.find(b => b.name === name)
+    if (!bucket) {
       return
     }
-    selectBucket(bucket[0])
+    selectBucket(bucket)
   }
 
   const handleChangeSearchTerm = (value: string) => {

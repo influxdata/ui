@@ -110,31 +110,34 @@ export const findNodeScope = (
 
     // Statement which sets scope.
     case 'VariableAssignment':
-      // v = 'foo'
-      const simpleBinding = !node.init.hasOwnProperty('properties')
-      if (simpleBinding) {
-        acc.scope = {...acc.scope, [node.id.name]: node.init}
+      // v = {bar: 'foo', windowPeriod: int}
+      const hasObjProps =
+        node.init.hasOwnProperty('properties') ||
+        node.init.type == 'ObjectExpression'
+      if (hasObjProps) {
+        const declarations = extractVariableSubtrees(node, node.id.name)
+        // Assume siblings can consume.
+        // v = {windowPeriod: time, myVar: expr(v.windowPeriod)}
+        acc.scope = {...acc.scope, ...declarations}
+        // to not pass along any nested declarations
+        // v = {rangeStartTime: time, myVar: expr({v = {rangeStartTime: time}})}
+        // in which case the inner rangeStartTime should not be overwritten
         return recurseWithoutSharingSiblingScope(
-          [node.init],
+          (node.init as ObjectExpression).properties,
           halt,
           whenFound,
           acc
         )
       }
-      // v = {bar: 'foo', windowPeriod: int}
-      const declarations = extractVariableSubtrees(node, node.id.name)
-      // Assume siblings can consume.
-      // v = {windowPeriod: time, myVar: expr(v.windowPeriod)}
-      acc.scope = {...acc.scope, ...declarations}
-      // to not pass along any nested declarations
-      // v = {rangeStartTime: time, myVar: expr({v = {rangeStartTime: time}})}
-      // in which case the inner rangeStartTime should not be overwritten
+      // v = 'foo'
+      acc.scope = {...acc.scope, [node.id.name]: node.init}
       return recurseWithoutSharingSiblingScope(
-        (node.init as ObjectExpression).properties,
+        [node.init],
         halt,
         whenFound,
         acc
       )
+
 
     // Member assignment is equivalent to setting an array index value.
     // Not the use case for our scope map.

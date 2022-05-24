@@ -12,12 +12,12 @@ import {VariableAssignment} from 'src/types/ast'
 export const getTimeRangeVarAssignments = (
   timeRange: TimeRange
 ): VariableAssignment[] => {
-  return getTimeRangeVars(timeRange).map(v => asAssignmentNode(v)).filter(v => !!v)
+  return getTimeRangeVars(timeRange)
+    .map(v => asAssignmentNode(v))
+    .filter(v => !!v)
 }
 
-export const getTimeRangeVars = (
-  timeRange: TimeRange
-): Variable[] => {
+export const getTimeRangeVars = (timeRange: TimeRange): Variable[] => {
   return [
     getRangeVariable(TIME_RANGE_START, timeRange),
     getRangeVariable(TIME_RANGE_STOP, timeRange),

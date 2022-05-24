@@ -6,8 +6,7 @@ import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 
 import {getOrg} from 'src/organizations/selectors'
 import {RunQueryResult} from 'src/shared/apis/query'
-// import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
-// import {getWindowVarAssignmentFromVariables} from 'src/variables/utils/getWindowVars'
+import {getDurationFromAST} from '../utils/duration'
 
 // Constants
 import {
@@ -106,11 +105,7 @@ const _addWindowPeriod = (ast, optionAST): void => {
     node => node?.type === 'Property' && node?.key?.name === 'windowPeriod'
   )
 
-  const queryDuration = getDurationFromAST(ast, optionAST)
-
-  const windowDuration = SELECTABLE_TIME_RANGES.find(
-    tr => tr.seconds * 1000 === queryDuration
-  )
+  const windowDuration = getDurationFromAST(ast, optionAST)
 
   windowPeriod.forEach(node => {
     node.value = {
@@ -134,7 +129,9 @@ export const simplify = (text, vars: Variable[]) => {
     )
       .map(node => node.property.name)
       .reduce((acc, curr) => {
-        acc[curr] = vars[curr]
+        if (vars[curr]) {
+          acc[curr] = vars[curr]
+        }
         return acc
       }, {})
 

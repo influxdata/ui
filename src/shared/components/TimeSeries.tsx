@@ -17,7 +17,7 @@ import {
 } from 'src/dashboards/selectors'
 import {getVariables} from 'src/variables/selectors'
 import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
-import {getWindowVarAssignmentFromVariables} from 'src/variables/utils/getWindowVars'
+import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
 import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
@@ -244,8 +244,11 @@ class TimeSeries extends Component<Props, State> {
         const orgID =
           getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
 
-        const windowVars = getWindowVarAssignmentFromVariables(text, variables)
-        const extern = buildUsedVarsOption(text, variables, windowVars)
+        const windowVar = getWindowPeriodVariableFromVariables(text, variables)
+        const extern = buildUsedVarsOption(
+          text,
+          windowVar ? variables.concat(windowVar) : variables
+        )
 
         event('runQuery', {context: 'TimeSeries'})
         if (isCurrentPageDashboard) {
@@ -265,6 +268,7 @@ class TimeSeries extends Component<Props, State> {
 
       let statuses = [] as StatusRow[][]
       if (check) {
+        // DLW FIXME TODO: decide how to handle
         const extern = buildUsedVarsOption(
           queries.map(query => query.text),
           variables
@@ -388,10 +392,7 @@ const mstp = (state: AppState, props: OwnProps) => {
   const vars = getVariables(state).filter(v =>
     astims.some(astim => astim.hasVariable(v.name))
   )
-  const variables = [
-    ...vars,
-    ...getTimeRangeVars(timeRange),
-  ]
+  const variables = [...vars, ...getTimeRangeVars(timeRange)]
 
   return {
     isCurrentPageDashboard: isCurrentPageDashboardSelector(state),

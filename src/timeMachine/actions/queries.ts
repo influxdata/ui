@@ -23,6 +23,7 @@ import {findNodes} from 'src/shared/utils/ast/visitors'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
+import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -285,8 +286,11 @@ export const executeQueries = (abortController?: AbortController) => async (
       if (getOrg(state).id === orgID) {
         event('orgData_queried')
       }
-
-      const extern = buildUsedVarsOption(text, allVariables)
+      const windowVar = getWindowPeriodVariableFromVariables(text, allVariables)
+      const extern = buildUsedVarsOption(
+        text,
+        windowVar ? allVariables.concat(windowVar) : allVariables
+      )
 
       event('runQuery', {context: 'timeMachine'})
 

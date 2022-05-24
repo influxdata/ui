@@ -5,10 +5,9 @@ import {sortBy} from 'lodash'
 import {getAllVariables} from 'src/variables/selectors'
 
 // Utils
-import {asAssignmentNode} from 'src/variables/utils/convertVariables'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {getWindowVarAssignmentFromVariables} from 'src/variables/utils/getWindowVars'
+import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 
 // Types
 import {
@@ -18,16 +17,8 @@ import {
   RunQuerySuccessResult,
 } from 'src/shared/apis/query'
 import {CancelBox} from 'src/types/promises'
-import {
-  GetState,
-  RemoteDataState,
-  Variable,
-  VariableAssignment,
-} from 'src/types'
+import {GetState, RemoteDataState, Variable} from 'src/types'
 import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
-
-// Constants
-import {WINDOW_PERIOD} from 'src/variables/constants'
 
 export const TIME_INVALIDATION = 1000 * 60 * 10 // 10 minutes
 
@@ -207,9 +198,6 @@ const calculateHashedVariables = (
   return {queryID, variables, hashedVariables}
 }
 
-const hasWindowVars = (variables: VariableAssignment[]): boolean =>
-  variables.some(vari => vari.id.name === WINDOW_PERIOD)
-
 export const getCachedResultsOrRunQuery = (
   orgID: string,
   query: string,
@@ -232,18 +220,14 @@ export const getCachedResultsOrRunQuery = (
       cancel: () => {},
     }
   }
-  const variableAssignments = variables
-    .map(v => asAssignmentNode(v))
-    .filter(v => !!v)
 
-  let windowVars = []
-
-  if (hasWindowVars(variableAssignments) === false) {
-    windowVars = getWindowVarAssignmentFromVariables(query, variables)
-  }
+  const windowVar = getWindowPeriodVariableFromVariables(query, variables)
 
   // otherwise query & set results
-  const extern = buildUsedVarsOption(query, variables, windowVars)
+  const extern = buildUsedVarsOption(
+    query,
+    windowVar ? variables.concat(windowVar) : variables
+  )
   const {mutex} = queryCache.initializeCacheByID(queryID, hashedVariables)
   const results = mutex.run(orgID, query, extern)
   results.promise = results.promise

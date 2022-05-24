@@ -30,7 +30,8 @@ export const buildVarsOption = (variables: VariableAssignment[]): File => ({
   type: 'File',
   package: null,
   imports: null,
-  body: [
+  // only claim namespace `v` if needed
+  ...(!variables.length ? {body: []} : {body: [
     {
       type: 'OptionStatement',
       assignment: {
@@ -45,7 +46,7 @@ export const buildVarsOption = (variables: VariableAssignment[]): File => ({
         },
       },
     },
-  ],
+  ]}),
 })
 
 const assignmentToProperty = (variable: VariableAssignment): Property => {

@@ -1,0 +1,19 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+label[for='batch-select-global-toggle'] {
+  outline: rgba(49, 49, 61, 1) 11px solid;
+
+  .cf-toggle--box {
+    border: $cf-grey-85 2px solid;
+  }
+}
+
+.batch-select-card-checkbox {
+  .cf-toggle--box {
+    border: $cf-grey-75 2px solid;
+  }
+}
+
+.batch-select-global-toggle {
+  margin: 0 24px 0 24px;
+}

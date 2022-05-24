@@ -5,6 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import DashboardCard from 'src/dashboards/components/dashboard_index/DashboardCard'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
+import {ResourceCard} from '@influxdata/clockface'
 
 // Types
 import {AppState, Dashboard} from 'src/types'
@@ -51,14 +52,29 @@ type Props = OwnProps & StateProps & ReduxProps
 
 class DashboardCards extends PureComponent<Props> {
   private _isMounted = true
+  private _assetLimitAlertStyle = {
+    height: 'inherit',
+  }
 
   state = {
     pinnedItems: [],
+    dashboardCardHeight: 'inherit',
   }
 
   public componentDidMount() {
     if (isFlagEnabled('pinnedItems') && CLOUD) {
       this.updatePinnedItems()
+    }
+  }
+
+  public componentDidUpdate() {
+    const card = document.querySelector<HTMLElement>(
+      '.dashboards-card-grid > .cf-resource-card'
+    )
+    if (card?.offsetHeight) {
+      this.setState({
+        dashboardCardHeight: `${card.offsetHeight}px`,
+      })
     }
   }
 
@@ -72,30 +88,33 @@ class DashboardCards extends PureComponent<Props> {
     const {pinnedItems} = this.state
 
     return (
-      <div>
-        <div className="dashboards-card-grid">
-          {dashboards.map(({id, name, description, labels, meta}) => (
-            <DashboardCard
-              key={id}
-              id={id}
-              name={name}
-              labels={labels}
-              updatedAt={meta.updatedAt}
-              description={description}
-              onFilterChange={onFilterChange}
-              onPinDashboard={this.handlePinDashboard}
-              onUnpinDashboard={this.handleUnpinDashboard}
-              isPinned={
-                !!pinnedItems.find(item => item?.metadata.dashboardID === id)
-              }
-            />
-          ))}
-          <AssetLimitAlert
-            className="dashboards--asset-alert"
-            resourceName="dashboards"
-            limitStatus={this.props.limitStatus}
+      <div className="dashboards-card-grid">
+        {dashboards.map(({id, name, description, labels, meta}) => (
+          <DashboardCard
+            key={id}
+            id={id}
+            name={name}
+            labels={labels}
+            updatedAt={meta.updatedAt}
+            description={description}
+            onFilterChange={onFilterChange}
+            onPinDashboard={this.handlePinDashboard}
+            onUnpinDashboard={this.handleUnpinDashboard}
+            isPinned={
+              !!pinnedItems.find(item => item?.metadata.dashboardID === id)
+            }
           />
-        </div>
+        ))}
+        {this.props.limitStatus === 'exceeded' && (
+          <ResourceCard style={{height: this.state.dashboardCardHeight}}>
+            <AssetLimitAlert
+              className="dashboards--asset-alert"
+              resourceName="dashboards"
+              limitStatus={this.props.limitStatus}
+              style={this._assetLimitAlertStyle}
+            />
+          </ResourceCard>
+        )}
       </div>
     )
   }

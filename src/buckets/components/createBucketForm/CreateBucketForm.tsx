@@ -18,7 +18,7 @@ import {
   initialBucketState,
   DEFAULT_RULES,
 } from 'src/buckets/reducers/createBucket'
-import {AppState, Bucket, RetentionRule} from 'src/types'
+import {AppState, Bucket, OwnBucket, RetentionRule} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
 // Selectors
@@ -40,6 +40,7 @@ interface CreateBucketFormProps {
   onClose: () => void
   testID?: string
   useSimplifiedBucketForm?: boolean
+  callbackAfterBucketCreation?: (bucket: OwnBucket) => void
 }
 
 export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
@@ -145,6 +146,8 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     if (overlayParams?.onUpdateBucket) {
       overlayParams.onUpdateBucket(bucket)
     }
+
+    props.callbackAfterBucketCreation(bucket)
   }
 
   const handleChangeInput = (event: ChangeEvent<HTMLInputElement>): void => {

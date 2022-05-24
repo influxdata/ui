@@ -70,7 +70,14 @@ export class NodejsWizard extends PureComponent<null, State> {
         ),
       },
       () => {
-        event('firstMile.nodejsWizard.next.clicked')
+        event(
+          'firstMile.nodejsWizard.next.clicked',
+          {},
+          {
+            clickedButtonAtStep: this.state.currentStep - 1,
+            currentStep: this.state.currentStep,
+          }
+        )
       }
     )
   }
@@ -79,7 +86,14 @@ export class NodejsWizard extends PureComponent<null, State> {
     this.setState(
       {currentStep: Math.max(this.state.currentStep - 1, 1)},
       () => {
-        event('firstMile.nodejsWizard.previous.clicked')
+        event(
+          'firstMile.nodejsWizard.previous.clicked',
+          {},
+          {
+            clickedButtonAtStep: this.state.currentStep + 1,
+            currentStep: this.state.currentStep,
+          }
+        )
       }
     )
   }
@@ -91,7 +105,7 @@ export class NodejsWizard extends PureComponent<null, State> {
   renderStep = () => {
     switch (this.state.currentStep) {
       case 1: {
-        return <Overview />
+        return <Overview wizard="nodejsWizard" />
       }
       case 2: {
         return <InstallDependencies />
@@ -129,7 +143,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         )
       }
       default: {
-        return <Overview />
+        return <Overview wizard="nodejsWizard" />
       }
     }
   }

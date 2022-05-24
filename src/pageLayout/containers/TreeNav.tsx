@@ -181,7 +181,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                   label="FAQs"
                   testID="nav-subitem-faqs"
                   linkElement={() => (
-                    <SafeBlankLink href="https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/" />
+                    <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/reference/faq/" />
                   )}
                 />
                 {/* <TreeNav.SubItem

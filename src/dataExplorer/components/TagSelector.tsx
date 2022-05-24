@@ -76,9 +76,7 @@ const TagValues: FC<Prop> = ({
     const newIndex = index + LOCAL_LIMIT
     if (loadMore) {
       // Add more tag values to show
-      const newValuesToShow = valuesToShow.concat(
-        tagValues.slice(index, newIndex)
-      )
+      const newValuesToShow = tagValues.slice(0, newIndex)
       setValuesToShow(newValuesToShow)
     }
     const newLoadMore = newIndex < tagValues.length

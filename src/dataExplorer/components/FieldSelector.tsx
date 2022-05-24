@@ -60,7 +60,7 @@ const FieldSelector: FC = () => {
   const handleLoadMore = () => {
     const newIndex = index + LOCAL_LIMIT
     if (loadMore) {
-      const newFieldsToShow = fieldsToShow.concat(fields.slice(index, newIndex))
+      const newFieldsToShow = fields.slice(0, newIndex)
       setFieldsToShow(newFieldsToShow)
     }
     const newLoadMore = newIndex < fields.length

@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {Form, Input, Button, Overlay} from '@influxdata/clockface'
@@ -31,8 +30,7 @@ interface State {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{orgID: string; id: string}>
-type Props = OwnProps & RouterProps & ReduxProps
+type Props = OwnProps & ReduxProps
 
 class RenameVariableOverlayForm extends PureComponent<Props, State> {
   public state: State = {
@@ -132,4 +130,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default withRouter(connector(RenameVariableOverlayForm))
+export default connector(RenameVariableOverlayForm)

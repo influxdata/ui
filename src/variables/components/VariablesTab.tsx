@@ -1,10 +1,9 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {FC, useState} from 'react'
+import {useSelector} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Utils
-import {deleteVariable} from 'src/variables/actions/thunks'
 import {getVariables} from 'src/variables/selectors'
 
 // Components
@@ -19,160 +18,124 @@ import GetResources from 'src/resources/components/GetResources'
 import {Sort} from '@influxdata/clockface'
 
 // Types
-import {AppState, OverlayState, ResourceType, Variable} from 'src/types'
+import {ResourceType, Variable} from 'src/types'
 import {ComponentSize} from '@influxdata/clockface'
 import {SortTypes} from 'src/shared/utils/sort'
 import {VariableSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = RouteComponentProps<{orgID: string}> & ReduxProps
-
-interface State {
-  searchTerm: string
-  importOverlayState: OverlayState
-  sortKey: VariableSortKey
-  sortDirection: Sort
-  sortType: SortTypes
-}
-
 const FilterList = Filter<Variable>()
 
-class VariablesTab extends PureComponent<Props, State> {
-  public state: State = {
-    searchTerm: '',
-    importOverlayState: OverlayState.Closed,
+const VariablesTab: FC = () => {
+  const variables = useSelector(getVariables)
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sort, setSort] = useState({
     sortKey: 'name',
     sortDirection: Sort.Ascending,
     sortType: SortTypes.String,
-  }
+  })
 
-  public render() {
-    const {variables} = this.props
-    const {searchTerm, sortKey, sortDirection, sortType} = this.state
-
-    const leftHeaderItems = (
-      <>
-        <SearchWidget
-          placeholderText="Filter variables..."
-          searchTerm={searchTerm}
-          onSearch={this.handleFilterChange}
-        />
-        <ResourceSortDropdown
-          onSelect={this.handleSort}
-          resourceType={ResourceType.Variables}
-          sortDirection={sortDirection}
-          sortKey={sortKey}
-          sortType={sortType}
-        />
-      </>
-    )
-
-    const rightHeaderItems = (
-      <AddResourceDropdown
-        resourceName="Variable"
-        onSelectNew={this.handleOpenCreateOverlay}
-        onSelectImport={this.handleOpenImportOverlay}
-      />
-    )
-
-    return (
-      <>
-        <TabbedPageHeader
-          childrenLeft={leftHeaderItems}
-          childrenRight={rightHeaderItems}
-        />
-        <GetResources resources={[ResourceType.Labels]}>
-          <FilterList
-            searchTerm={searchTerm}
-            searchKeys={['name', 'labels[].name']}
-            list={variables}
-          >
-            {variables => (
-              <VariableList
-                variables={variables}
-                emptyState={this.emptyState}
-                onDeleteVariable={this.handleDeleteVariable}
-                onFilterChange={this.handleFilterUpdate}
-                sortKey={sortKey}
-                sortDirection={sortDirection}
-                sortType={sortType}
-              />
-            )}
-          </FilterList>
-        </GetResources>
-      </>
-    )
-  }
-
-  private handleSort = (
+  const handleSort = (
     sortKey: VariableSortKey,
     sortDirection: Sort,
     sortType: SortTypes
   ): void => {
-    this.setState({sortKey, sortDirection, sortType})
+    setSort({
+      sortKey,
+      sortDirection,
+      sortType,
+    })
   }
 
-  private get emptyState(): JSX.Element {
-    const {searchTerm} = this.state
+  const handleOpenCreateOverlay = (): void => {
+    history.push(`/orgs/${orgID}/settings/variables/new`)
+  }
 
-    if (!searchTerm) {
-      return (
-        <EmptyState size={ComponentSize.Large}>
-          <EmptyState.Text>
-            Looks like there aren't any <b>Variables</b>, why not create one?
-          </EmptyState.Text>
-          <AddResourceDropdown
-            resourceName="Variable"
-            onSelectNew={this.handleOpenCreateOverlay}
-            onSelectImport={this.handleOpenImportOverlay}
-          />
-        </EmptyState>
-      )
-    }
+  const handleOpenImportOverlay = () => {
+    history.push(`/orgs/${orgID}/settings/variables/import`)
+  }
 
-    return (
+  const handleFilterUpdate = (term: string) => {
+    setSearchTerm(term)
+  }
+
+  const handleFilterChange = (searchTerm: string) => {
+    handleFilterUpdate(searchTerm)
+  }
+
+  let emptyState = (
+    <EmptyState size={ComponentSize.Large}>
+      <EmptyState.Text>No Variables match your query</EmptyState.Text>
+    </EmptyState>
+  )
+
+  if (!searchTerm) {
+    emptyState = (
       <EmptyState size={ComponentSize.Large}>
-        <EmptyState.Text>No Variables match your query</EmptyState.Text>
+        <EmptyState.Text>
+          Looks like there aren't any <b>Variables</b>, why not create one?
+        </EmptyState.Text>
+        <AddResourceDropdown
+          resourceName="Variable"
+          onSelectNew={handleOpenCreateOverlay}
+          onSelectImport={handleOpenImportOverlay}
+        />
       </EmptyState>
     )
   }
 
-  private handleFilterChange = (searchTerm: string) => {
-    this.handleFilterUpdate(searchTerm)
-  }
+  const leftHeaderItems = (
+    <>
+      <SearchWidget
+        placeholderText="Filter variables..."
+        searchTerm={searchTerm}
+        onSearch={handleFilterChange}
+      />
+      <ResourceSortDropdown
+        onSelect={handleSort}
+        resourceType={ResourceType.Variables}
+        sortDirection={sort.sortDirection}
+        sortKey={sort.sortKey}
+        sortType={sort.sortType}
+      />
+    </>
+  )
 
-  private handleFilterUpdate = (searchTerm: string) => {
-    this.setState({searchTerm})
-  }
+  const rightHeaderItems = (
+    <AddResourceDropdown
+      resourceName="Variable"
+      onSelectNew={handleOpenCreateOverlay}
+      onSelectImport={handleOpenImportOverlay}
+    />
+  )
 
-  private handleOpenCreateOverlay = (): void => {
-    const {history, match} = this.props
-
-    history.push(`/orgs/${match.params.orgID}/settings/variables/new`)
-  }
-
-  private handleDeleteVariable = (variable: Variable): void => {
-    const {onDeleteVariable} = this.props
-    onDeleteVariable(variable.id)
-  }
-
-  private handleOpenImportOverlay = () => {
-    const {history, match} = this.props
-
-    history.push(`/orgs/${match.params.orgID}/settings/variables/import`)
-  }
+  return (
+    <>
+      <TabbedPageHeader
+        childrenLeft={leftHeaderItems}
+        childrenRight={rightHeaderItems}
+      />
+      <GetResources resources={[ResourceType.Labels]}>
+        <FilterList
+          searchTerm={searchTerm}
+          searchKeys={['name', 'labels[].name']}
+          list={variables}
+        >
+          {variables => (
+            <VariableList
+              variables={variables}
+              emptyState={emptyState}
+              onFilterChange={handleFilterUpdate}
+              sortKey={sort.sortKey}
+              sortDirection={sort.sortDirection}
+              sortType={sort.sortType}
+            />
+          )}
+        </FilterList>
+      </GetResources>
+    </>
+  )
 }
 
-const mstp = (state: AppState) => {
-  const variables = getVariables(state)
-
-  return {variables}
-}
-
-const mdtp = {
-  onDeleteVariable: deleteVariable,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(VariablesTab))
+export default VariablesTab

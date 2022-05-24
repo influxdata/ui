@@ -16,7 +16,6 @@ import {getSortedResources} from 'src/shared/utils/sort'
 interface Props {
   variables: Variable[]
   emptyState: JSX.Element
-  onDeleteVariable: (variable: Variable) => void
   onFilterChange: (searchTerm: string) => void
   sortKey: string
   sortDirection: Sort
@@ -30,7 +29,6 @@ const VariableList: FC<Props> = props => {
     sortKey,
     sortDirection,
     sortType,
-    onDeleteVariable,
     onFilterChange,
   } = props
 
@@ -47,7 +45,6 @@ const VariableList: FC<Props> = props => {
             <VariableCard
               key={variable.id || `variable-${index}`}
               variable={variable}
-              onDeleteVariable={onDeleteVariable}
               onFilterChange={onFilterChange}
             />
           ))}

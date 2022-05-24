@@ -1,7 +1,7 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {FC} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
+import {useParams, useHistory} from 'react-router-dom'
 
 // Components
 import {ComponentStatus, ResourceCard} from '@influxdata/clockface'
@@ -9,11 +9,12 @@ import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 import VariableContextMenu from 'src/variables/components/VariableContextMenu'
 
 // Types
-import {AppState, Label, Variable} from 'src/types'
+import {Label, Variable} from 'src/types'
 
 // Utils
 import {getVariables} from 'src/variables/selectors'
 import {validateVariableName} from 'src/variables/utils/validation'
+import {deleteVariable} from 'src/variables/actions/thunks'
 
 // Actions
 import {
@@ -23,112 +24,80 @@ import {
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {downloadVariableTemplate} from '../apis'
 
-interface OwnProps {
-  variable: Variable
-  onDeleteVariable: (variable: Variable) => void
+interface Props {
   onFilterChange: (searchTerm: string) => void
+  variable: Variable
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+const VariableCard: FC<Props> = ({onFilterChange, variable}) => {
+  const dispatch = useDispatch()
+  const variables = useSelector(getVariables)
+  const {orgID} = useParams<{orgID: string}>()
+  const history = useHistory()
 
-class VariableCard extends PureComponent<
-  Props & RouteComponentProps<{orgID: string}>
-> {
-  public render() {
-    const {variable, variables, onDeleteVariable} = this.props
-
-    const {error} = validateVariableName(variables, variable.name, variable.id)
-    const errorMessage = (error && `Rename required. ${error}`) ?? null
-    const status = error ? ComponentStatus.Error : ComponentStatus.Default
-
-    return (
-      <ErrorBoundary>
-        <ResourceCard
-          testID="resource-card variable"
-          contextMenu={
-            <VariableContextMenu
-              variable={variable}
-              onExport={this.handleExport}
-              onRename={this.handleRenameVariable}
-              onDelete={onDeleteVariable}
-            />
-          }
-        >
-          <ResourceCard.Name
-            onClick={this.handleNameClick}
-            name={variable.name}
-            testID={`variable-card--name ${variable.name}`}
-            errorMessage={errorMessage}
-            status={status}
-          />
-          <ResourceCard.Meta>
-            <>Type: {variable.arguments.type}</>
-          </ResourceCard.Meta>
-          {this.labels}
-        </ResourceCard>
-      </ErrorBoundary>
-    )
+  const handleDeleteVariable = (variable: Variable): void => {
+    dispatch(deleteVariable(variable.id))
   }
 
-  private handleNameClick = (): void => {
-    const {variable, match, history} = this.props
+  const {error} = validateVariableName(variables, variable.name, variable.id)
+  const errorMessage = (error && `Rename required. ${error}`) ?? null
+  const status = error ? ComponentStatus.Error : ComponentStatus.Default
 
-    history.push(
-      `/orgs/${match.params.orgID}/settings/variables/${variable.id}/edit`
-    )
+  const handleNameClick = (): void => {
+    history.push(`/orgs/${orgID}/settings/variables/${variable.id}/edit`)
   }
 
-  private get labels(): JSX.Element {
-    const {variable, onFilterChange} = this.props
-
-    return (
-      <InlineLabels
-        selectedLabelIDs={variable.labels}
-        onFilterChange={onFilterChange}
-        onAddLabel={this.handleAddLabel}
-        onRemoveLabel={this.handleRemoveLabel}
-      />
-    )
+  const handleAddLabel = (label: Label): void => {
+    dispatch(addVariableLabelAsync(variable.id, label))
   }
 
-  private handleAddLabel = (label: Label): void => {
-    const {variable, onAddVariableLabel} = this.props
-
-    onAddVariableLabel(variable.id, label)
+  const handleRemoveLabel = (label: Label): void => {
+    dispatch(removeVariableLabelAsync(variable.id, label))
   }
 
-  private handleRemoveLabel = (label: Label): void => {
-    const {variable, onRemoveVariableLabel} = this.props
-
-    onRemoveVariableLabel(variable.id, label)
-  }
-
-  private handleExport = () => {
-    const {variable} = this.props
+  const handleExport = () => {
     downloadVariableTemplate(variable)
   }
 
-  private handleRenameVariable = () => {
-    const {history, variable, match} = this.props
-
-    history.push(
-      `/orgs/${match.params.orgID}/settings/variables/${variable.id}/rename`
-    )
+  const handleRenameVariable = () => {
+    history.push(`/orgs/${orgID}/settings/variables/${variable.id}/rename`)
   }
+  const labels = (
+    <InlineLabels
+      selectedLabelIDs={variable.labels}
+      onFilterChange={onFilterChange}
+      onAddLabel={handleAddLabel}
+      onRemoveLabel={handleRemoveLabel}
+    />
+  )
+
+  return (
+    <ErrorBoundary>
+      <ResourceCard
+        testID="resource-card variable"
+        contextMenu={
+          <VariableContextMenu
+            variable={variable}
+            onExport={handleExport}
+            onRename={handleRenameVariable}
+            onDelete={handleDeleteVariable}
+          />
+        }
+      >
+        <ResourceCard.Name
+          onClick={handleNameClick}
+          name={variable.name}
+          testID={`variable-card--name ${variable.name}`}
+          errorMessage={errorMessage}
+          status={status}
+        />
+        <ResourceCard.Meta>
+          <>Type: {variable.arguments.type}</>
+        </ResourceCard.Meta>
+        {labels}
+      </ResourceCard>
+    </ErrorBoundary>
+  )
 }
 
-const mstp = (state: AppState) => {
-  const variables = getVariables(state)
-
-  return {variables}
-}
-
-const mdtp = {
-  onAddVariableLabel: addVariableLabelAsync,
-  onRemoveVariableLabel: removeVariableLabelAsync,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(VariableCard))
+export default VariableCard

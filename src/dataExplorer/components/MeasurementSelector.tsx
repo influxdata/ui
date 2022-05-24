@@ -57,7 +57,6 @@ const MeasurementSelector: FC = () => {
           buttonTestID="measurement-selector--dropdown-button"
           menuTestID="measurement-selector--dropdown--menu"
           emptyText="No Measurements Found"
-          iconOn={true}
         />
       </div>
     )

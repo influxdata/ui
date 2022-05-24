@@ -41,7 +41,6 @@ const BucketSelector: FC = () => {
         buttonTestID="bucket-selector--dropdown-button"
         menuTestID="bucket-selector--dropdown-menu"
         emptyText="No Buckets Found"
-        iconOn={true}
       />
     </div>
   )

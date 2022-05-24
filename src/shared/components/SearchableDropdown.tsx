@@ -26,7 +26,6 @@ interface Props {
   options: (string | number)[]
   emptyText: string
   style?: CSSProperties
-  iconOn?: boolean
 }
 
 const SearchableDropdown: FC<Props> = ({
@@ -43,7 +42,6 @@ const SearchableDropdown: FC<Props> = ({
   onChangeSearchTerm,
   emptyText,
   onSelect,
-  iconOn = false,
 }) => {
   const [isSearchActive, setIsSearchActive] = useState(false)
 
@@ -104,7 +102,7 @@ const SearchableDropdown: FC<Props> = ({
         >
           <div className="searchable-dropdown--input-container">
             <Input
-              icon={iconOn && IconFont.Search_New}
+              icon={IconFont.Search_New}
               onFocus={() => setIsSearchActive(true)}
               onChange={handleChange}
               onBlur={() => setIsSearchActive(false)}

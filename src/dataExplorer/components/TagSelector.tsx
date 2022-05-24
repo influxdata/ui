@@ -34,17 +34,13 @@ const TagValues: FC<Prop> = ({
   const [index, setIndex] = useState(LOCAL_LIMIT)
 
   useEffect(() => {
-    if (tagValues.length === 0) {
-      // Reset
-      setValuesToShow([])
-      setLoadMore(false)
-      setIndex(LOCAL_LIMIT)
-    } else {
-      const newValuesToShow = tagValues.slice(0, index)
-      const newLoadMore = tagValues.length > LOCAL_LIMIT
-      setValuesToShow(newValuesToShow)
-      setLoadMore(newLoadMore)
-    }
+    // Reset
+    const newIndex = LOCAL_LIMIT
+    const newValuesToShow = tagValues.slice(0, newIndex)
+    const newLoadMore = tagValues.length > LOCAL_LIMIT
+    setIndex(newIndex)
+    setValuesToShow(newValuesToShow)
+    setLoadMore(newLoadMore)
   }, [tagValues])
 
   let list: JSX.Element | JSX.Element[] = []

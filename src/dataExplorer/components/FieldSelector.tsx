@@ -24,16 +24,13 @@ const FieldSelector: FC = () => {
   const [index, setIndex] = useState(LOCAL_LIMIT)
 
   useEffect(() => {
-    if (fields.length === 0) {
-      setFieldsToShow([])
-      setLoadMore(false)
-      setIndex(LOCAL_LIMIT)
-    } else {
-      const newFieldsToShow = fields.slice(0, index)
-      const newLoadMore = fields.length > LOCAL_LIMIT
-      setFieldsToShow(newFieldsToShow)
-      setLoadMore(newLoadMore)
-    }
+    // Reset
+    const newIndex = LOCAL_LIMIT
+    const newFieldsToShow = fields.slice(0, newIndex)
+    const newLoadMore = fields.length > LOCAL_LIMIT
+    setIndex(newIndex)
+    setFieldsToShow(newFieldsToShow)
+    setLoadMore(newLoadMore)
   }, [fields])
 
   let list: JSX.Element | JSX.Element[] = (

@@ -104,7 +104,8 @@ const TagSelector: FC = () => {
   }
 
   const handleSelectTagValue = (value: string) => {
-    // TODO
+    // TODO: potentially inject tag value into the flux script editor
+    //   still TBD on product
     /* eslint-disable no-console */
     console.log(value)
     /* eslint-disable no-console */

@@ -41,7 +41,10 @@ import {notify} from 'src/shared/actions/notifications'
 import {writeLimitReached} from 'src/shared/copy/notifications'
 
 // Selectors
-import {shouldShowUpgradeButton} from 'src/me/selectors'
+import {
+  shouldGetCredit250Experience,
+  shouldShowUpgradeButton,
+} from 'src/me/selectors'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 import {UpgradeContent} from 'src/cloud/components/RateLimitAlertContent'
 
@@ -57,6 +60,8 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   const resources = useSelector(extractRateLimitResources)
   const status = useSelector(extractRateLimitStatus)
   const showUpgrade = useSelector(shouldShowUpgradeButton)
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
+
   const dispatch = useDispatch()
 
   const appearOverlay = () => {
@@ -136,14 +141,17 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
           )
           const identity = getDataLayerIdentity()
           event(
-            isFlagEnabled('credit250Experiment') && experimentVariantId === '1'
+            isFlagEnabled('credit250Experiment') &&
+              (experimentVariantId === '1' || isCredit250ExperienceActive)
               ? `${location}.alert.credit-250.upgrade`
               : `${location}.alert.upgrade`,
             {
               location,
               ...identity,
               experimentId: CREDIT_250_EXPERIMENT_ID,
-              experimentVariantId,
+              experimentVariantId: isCredit250ExperienceActive
+                ? '2'
+                : experimentVariantId,
             }
           )
         }}

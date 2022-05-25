@@ -13,8 +13,9 @@ import {
   getSettingsNotifications,
   postCheckout,
 } from 'src/client/unityRoutes'
-import {getQuartzMe} from 'src/me/selectors'
+import {getQuartzMe, shouldGetCredit250Experience} from 'src/me/selectors'
 import {getQuartzMe as getQuartzMeThunk} from 'src/me/actions/thunks'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {states} from 'src/billing/constants'
@@ -95,6 +96,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   )
   const [isDirty, setIsDirty] = useState(false)
   const me = useSelector(getQuartzMe)
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
@@ -257,7 +259,9 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   }
 
   const isPaygCreditActive =
-    getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
+    isFlagEnabled('credit250Experiment') &&
+    (getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1' ||
+      isCredit250ExperienceActive)
 
   const handleSubmit = useCallback(
     async (paymentMethodId: string) => {

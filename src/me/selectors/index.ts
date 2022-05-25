@@ -14,8 +14,8 @@ export const getMe = (state: AppState): AppState['me'] => {
 export const getQuartzMe = (state: AppState): Me => state.me.quartzMe
 
 export const shouldGetCredit250Experience = (state: AppState): boolean => {
-  const accountType = state.me?.quartzMe.accountType ?? ''
-  const accountCreatedAt = state.me?.quartzMe.accountCreatedAt ?? ''
+  const accountType = state.me.quartzMe?.accountType ?? ''
+  const accountCreatedAt = state.me.quartzMe?.accountCreatedAt ?? ''
 
   const accountCreatedAtEpoch = convertStringToEpoch(accountCreatedAt)
 

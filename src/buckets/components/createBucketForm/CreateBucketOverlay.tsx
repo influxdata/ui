@@ -14,6 +14,7 @@ import {getBucketOverlayWidth} from 'src/buckets/constants'
 const CreateBucketOverlay: FC = () => {
   const {onClose, params} = useContext(OverlayContext)
   const useSimplifiedBucketForm = params?.useSimplifiedBucketForm
+  const callbackAfterBucketCreation = params?.callbackAfterBucketCreation
 
   return (
     <Overlay.Container maxWidth={getBucketOverlayWidth()}>
@@ -21,6 +22,7 @@ const CreateBucketOverlay: FC = () => {
       <CreateBucketForm
         onClose={onClose}
         useSimplifiedBucketForm={useSimplifiedBucketForm}
+        callbackAfterBucketCreation={callbackAfterBucketCreation}
       />
     </Overlay.Container>
   )

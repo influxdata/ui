@@ -49,7 +49,7 @@ const FieldsTags: FC = () => {
     return (
       <div className="container-side-bar">
         <SearchWidget
-          placeholderText="Search fields and tags..."
+          placeholderText="Search fields and tags"
           onSearch={handleSearchFieldsTags}
           searchTerm={searchTerm}
         />

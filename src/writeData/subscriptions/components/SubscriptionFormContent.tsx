@@ -117,7 +117,7 @@ const SubscriptionFormContent: FC<Props> = ({
               className={`${className}-subscription-form__text`}
               testID={`${className}-subscription-form--bucket`}
             >
-              SBucket: {currentSubscription && currentSubscription.bucket}
+              Bucket: {currentSubscription && currentSubscription.bucket}
             </Heading>
           )}
         </Grid.Column>

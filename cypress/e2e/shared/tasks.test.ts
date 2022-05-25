@@ -32,7 +32,7 @@ describe('Tasks', () => {
   })
 
   it('can create a task', () => {
-    const taskName = 'Task'
+    const taskName = 'Task A'
     cy.createTaskFromEmpty(taskName, ({name}) => {
       return `import "influxdata/influxdb/v1"
 v1.tagValues(bucket: "${name}", tag: "_field")
@@ -40,27 +40,25 @@ from(bucket: "${name}")
    |> range(start: -2m)`
     })
 
-    cy.getByTestID('task-save-btn').click()
-
+    cy.getByTestID('task-save-btn')
+      .should('not.be.disabled')
+      .click()
     cy.getByTestID('notification-success--dismiss').click()
-
-    cy.getByTestID('task-card')
-      .should('have.length', 1)
-      .and('contain', taskName)
+    cy.getByTestID('task-card--name').contains(taskName)
   })
 
   it('can create a task using http.post', () => {
-    const taskName = 'Task'
+    const taskName = 'Task B'
     cy.createTaskFromEmpty(taskName, () => {
       return `import "http"
 http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
 
-    cy.getByTestID('task-save-btn').click()
-
-    cy.getByTestID('task-card')
-      .should('have.length', 1)
-      .and('contain', taskName)
+    cy.getByTestID('task-save-btn')
+      .should('not.be.disabled')
+      .click()
+    cy.getByTestID('notification-success--dismiss').click()
+    cy.getByTestID('task-card--name').contains(taskName)
   })
 
   it('can create a cron task', () => {
@@ -84,8 +82,8 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
 
     cy.getByTestID('task-save-btn').click()
 
+    cy.getByTestID('task-card--name').contains('Cron task test')
     cy.getByTestID('task-card')
-      .contains('Cron task test')
       .get('.cf-resource-meta--item')
       .contains('Scheduled to run 0 4 8-14 * *')
 
@@ -133,8 +131,8 @@ from(bucket: "defbuck")
   })
 
   describe('When tasks already exist', () => {
+    const TaskName = `🦄ask ${Math.random()}`
     beforeEach(() => {
-      const TaskName = '🦄ask'
       cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id, TaskName)
@@ -161,8 +159,9 @@ from(bucket: "defbuck")
       // Editing a name
       const newName = 'Task'
 
-      cy.getByTestID('task-card').then(() => {
-        cy.getByTestID('task-card--name').then(() => {
+      cy.getByTestID('task-card--name')
+        .contains(TaskName)
+        .then(() => {
           cy.getByTestID('task-card--name-button')
             .click()
             .then(() => {
@@ -174,7 +173,6 @@ from(bucket: "defbuck")
           cy.getByTestID('notification-success').should('exist')
           cy.contains(newName).should('exist')
         })
-      })
 
       // Add a label
       cy.getByTestID('task-card').within(() => {
@@ -192,8 +190,6 @@ from(bucket: "defbuck")
     })
 
     it('can delete a task', () => {
-      const TaskName = '🦄ask'
-
       cy.getByTestID('task-card')
         .first()
         .then(() => {
@@ -258,7 +254,7 @@ from(bucket: "defbuck")
 
     it('can clone a task and edit it', () => {
       // clone a task
-      const cloneNamePrefix = '🦄ask (cloned at '
+      const cloneNamePrefix = `${TaskName} (cloned at `
       cy.getByTestID('task-card').then(() => {
         cy.getByTestID('context-menu-task').click()
         cy.getByTestID('context-clone-task')
@@ -414,7 +410,8 @@ from(bucket: "defbuck")
     })
 
     it('can click to filter tasks by labels', () => {
-      cy.getByTestID('task-card').should('have.length', 2)
+      // should be > 1 length
+      cy.getByTestID('task-card').should('not.have.length', 1)
 
       cy.getByTestID(`label--pill ${newLabelName}`).click()
 
@@ -430,7 +427,7 @@ from(bucket: "defbuck")
   describe('update & persist data', () => {
     // address a bug that was reported when editing tasks:
     // https://github.com/influxdata/influxdb/issues/15534
-    const taskName = 'Task'
+    const taskName = 'Task for persistence checking'
     const interval = '12h'
     const offset = '30m'
     beforeEach(() => {
@@ -445,11 +442,10 @@ from(bucket: "defbuck")
         interval,
         offset
       )
-      cy.getByTestID('task-save-btn').click()
-      cy.getByTestID('task-card')
-        .should('have.length', 1)
-        .and('contain', taskName)
-
+      cy.getByTestID('task-save-btn')
+        .should('not.be.disabled')
+        .click()
+      cy.getByTestID('notification-success--dismiss').click()
       cy.getByTestID('task-card--name').contains(taskName)
 
       cy.getByTestID('task-card').then(() => {

@@ -91,7 +91,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: can we do hard coded time range here?
+    // TODO: is 30d large enough to get all tag keys?
     let queryText = `${_source}
         |> range(start: -30d, stop: now())
         |> filter(fn: (r) => true)
@@ -173,7 +173,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: can we do hard coded time range here?
+    // TODO: is 30d large enough to get all tag values for this key?
     let queryText = `${_source}
       |> range(start: -30d, stop: now())
       |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))

@@ -39,6 +39,7 @@ import {bulkDeleteAuthorizations} from 'src/authorizations/actions/thunks'
 // Styles
 import './TokensTabStyles.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
 
 enum AuthSearchKeys {
   Description = 'description',
@@ -295,6 +296,9 @@ class TokensTab extends PureComponent<Props, State> {
     this.props.bulkDeleteAuthorizations(
       this.state.tokensSelectedForBatchOperation.map(token => token.id)
     )
+
+    const numberOfSelectedTokens = this.state.tokensSelectedForBatchOperation
+    event(`bulkAction.deleted.${numberOfSelectedTokens}.tokens`)
     // reset the list of selected tokens
     this.setState({
       tokensSelectedForBatchOperation: [],
@@ -319,7 +323,9 @@ class TokensTab extends PureComponent<Props, State> {
 
     if (isEmpty(tokensSelectedForBatchOperation)) {
       this.setState({tokensSelectedForBatchOperation: tokensOnCurrentPage})
+      event(`bulkAction.selectAll`, {count: tokensOnCurrentPage.length})
     } else {
+      event(`bulkAction.deSelectAll`)
       this.setState({tokensSelectedForBatchOperation: []})
     }
   }

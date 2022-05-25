@@ -115,8 +115,9 @@ const SubscriptionFormContent: FC<Props> = ({
               element={HeadingElement.H4}
               weight={FontWeight.Regular}
               className={`${className}-subscription-form__text`}
+              testID={`${className}-subscription-form--bucket`}
             >
-              Bucket: {currentSubscription && currentSubscription.bucket}
+              SBucket: {currentSubscription && currentSubscription.bucket}
             </Heading>
           )}
         </Grid.Column>

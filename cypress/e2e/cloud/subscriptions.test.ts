@@ -30,28 +30,28 @@ describe('Subscriptions', () => {
     )
   )
 
-  it('should navigate to empty subscriptions page via sources tab', () => {
-    cy.getByTestID('tree-nav-toggle').should('be.visible')
-    cy.getByTestID('tree-nav-toggle').click()
-    cy.getByTestID('nav-item-load-data').should('be.visible')
-    cy.getByTestID('nav-item-load-data').click()
-    cy.getByTestID('subscriptions--tab').should('be.visible')
-    cy.getByTestID('load-data-item mqtt')
-      .scrollIntoView()
-      .should('be.visible')
-    cy.getByTestID('load-data-item mqtt').click()
-    cy.getByTestID('subscriptions-empty-state').should('exist')
-  })
+  // it('should navigate to empty subscriptions page via sources tab', () => {
+  //   cy.getByTestID('tree-nav-toggle').should('be.visible')
+  //   cy.getByTestID('tree-nav-toggle').click()
+  //   cy.getByTestID('nav-item-load-data').should('be.visible')
+  //   cy.getByTestID('nav-item-load-data').click()
+  //   cy.getByTestID('subscriptions--tab').should('be.visible')
+  //   cy.getByTestID('load-data-item mqtt')
+  //     .scrollIntoView()
+  //     .should('be.visible')
+  //   cy.getByTestID('load-data-item mqtt').click()
+  //   cy.getByTestID('subscriptions-empty-state').should('exist')
+  // })
 
-  it('should navigate to empty subscriptions page via load data dropdown', () => {
-    cy.getByTestID('tree-nav-toggle').should('be.visible')
-    cy.getByTestID('tree-nav-toggle').click()
-    cy.getByTestID('nav-item-load-data').should('be.visible')
-    cy.getByTestID('nav-item-load-data').click()
-    cy.getByTestID('nav-subitem-subscriptions').should('be.visible')
-    cy.getByTestID('nav-subitem-subscriptions').click()
-    cy.getByTestID('subscriptions-empty-state').should('exist')
-  })
+  // it('should navigate to empty subscriptions page via load data dropdown', () => {
+  //   cy.getByTestID('tree-nav-toggle').should('be.visible')
+  //   cy.getByTestID('tree-nav-toggle').click()
+  //   cy.getByTestID('nav-item-load-data').should('be.visible')
+  //   cy.getByTestID('nav-item-load-data').click()
+  //   cy.getByTestID('nav-subitem-subscriptions').should('be.visible')
+  //   cy.getByTestID('nav-subitem-subscriptions').click()
+  //   cy.getByTestID('subscriptions-empty-state').should('exist')
+  // })
 
   it('should create, update, stop, start and delete LP subscription', () => {
     cy.getByTestID('subscriptions--tab').click()
@@ -122,6 +122,21 @@ describe('Subscriptions', () => {
     cy.get('.cf-resource-card').should('be.visible')
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-card').contains('My Subscription')
+
+    // bucket review
+    cy.getByTestID('subscription-card').should('be.visible')
+    cy.getByTestID('subscription-name').should('be.visible')
+    cy.getByTestID('subscription-name').click()
+    cy.get('.subscription-details-page').should('be.visible')
+    cy.getByTestID('update-subscription-form--submit').click()
+    cy.getByTestID('update-subscription-form--bucket').contains('defbuck')
+    cy.getByTestID('update-subscription-form--edit').click()
+    cy.getByTestID('buckets--list').should('be.visible')
+    cy.getByTestID('list-item')
+      .should('have.length', 1)
+      .should('have.attr', 'style')
+    cy.getByTestID('update-subscription-form--cancel').click()
+
     // update
     cy.getByTestID('subscription-card').should('be.visible')
     cy.getByTestID('subscription-name').should('be.visible')

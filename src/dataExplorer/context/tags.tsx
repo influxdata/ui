@@ -91,9 +91,8 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: is 30d large enough to get all tag keys?
     let queryText = `${_source}
-        |> range(start: -30d, stop: now())
+        |> range(start: ${CACHING_REQUIRED_START_DATE}, stop: ${CACHING_REQUIRED_END_DATE})
         |> filter(fn: (r) => true)
         |> keys()
         |> keep(columns: ["_value"])
@@ -173,9 +172,8 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: is 30d large enough to get all tag values for this key?
     let queryText = `${_source}
-      |> range(start: -30d, stop: now())
+      |> range(start: ${CACHING_REQUIRED_START_DATE}, stop: ${CACHING_REQUIRED_END_DATE})
       |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
       |> keep(columns: ["${tagKey}"])
       |> group()

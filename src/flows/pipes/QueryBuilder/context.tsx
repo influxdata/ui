@@ -6,22 +6,26 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {BucketContext} from 'src/shared/contexts/buckets'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
+// Types
 import {
   RemoteDataState,
   BuilderTagsType,
   BuilderAggregateFunctionType,
 } from 'src/types'
+
+// Constants
 import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
-
-const DEFAULT_TAG_LIMIT = 200
-const EXTENDED_TAG_LIMIT = 500
+import {
+  DEFAULT_TAG_LIMIT,
+  EXTENDED_TAG_LIMIT,
+} from 'src/shared/constants/queryBuilder'
 
 interface APIResultArray<T> {
   selected: T[]

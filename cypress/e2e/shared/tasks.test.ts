@@ -410,8 +410,7 @@ from(bucket: "defbuck")
     })
 
     it('can click to filter tasks by labels', () => {
-      // should be > 1 length
-      cy.getByTestID('task-card').should('not.have.length', 1)
+      cy.getByTestID('task-card').should('have.length.greaterThan', 1)
 
       cy.getByTestID(`label--pill ${newLabelName}`).click()
 

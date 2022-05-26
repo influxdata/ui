@@ -185,7 +185,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                   linkElement={() => (
                     <SafeBlankLink
                       href="https://community.influxdata.com"
-                      onClick={() => handleEventing('OfficialForum')}
+                      onClick={() => handleEventing('officialForum')}
                     />
                   )}
                 />

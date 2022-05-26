@@ -1,4 +1,5 @@
 import React, {FC, ChangeEvent, useContext, useState} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -25,12 +26,21 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Types
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {getMe} from 'src/me/selectors'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 import './ContactSupport.scss'
 interface OwnProps {
   onClose: () => void
 }
 
 const PayGSupportOverlay: FC<OwnProps> = () => {
+  const {id: orgID} = useSelector(getOrg)
+  const {id: meID} = useSelector(getMe)
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('')
   const [textInput, setTextInput] = useState('')
@@ -53,6 +63,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   }
   const handleSubmit = (): void => {
     // submit support form
+    event('support.request.submitted', {userID: meID, orgID: orgID})
   }
 
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {

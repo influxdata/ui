@@ -1,4 +1,5 @@
 import React, {FC, ChangeEvent, useContext, useState} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -17,16 +18,26 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Types
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {getMe} from 'src/me/selectors'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface OwnProps {
   onClose: () => void
 }
 
 const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
   const {onClose} = useContext(OverlayContext)
+  const {id: orgID} = useSelector(getOrg)
+  const {id: meID} = useSelector(getMe)
   const [feedbackText, setFeedbackText] = useState('')
 
   const handleSubmit = () => {
     // handle form submit
+    event('feedback.and.questions.submitted', {userID: meID, orgID: orgID})
   }
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

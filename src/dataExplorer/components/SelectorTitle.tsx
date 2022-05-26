@@ -17,7 +17,11 @@ const SelectorTitle: FC<TitleProps> = ({title, info = ''}) => {
       <div>{title}</div>
       {info && (
         <div className="selector-title--icon">
-          <QuestionMarkTooltip tooltipContents={info} diameter={14} />
+          <QuestionMarkTooltip
+            tooltipContents={info}
+            diameter={14}
+            tooltipStyle={{width: '300px'}}
+          />
         </div>
       )}
     </FlexBox>

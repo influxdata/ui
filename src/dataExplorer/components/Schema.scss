@@ -1,0 +1,86 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.scroll--container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.data-schema {
+  padding-right: $cf-space-xs;
+}
+
+.container-side-bar {
+  border-left: 1px solid $cf-grey-25;
+  padding-left: $cf-space-2xs;
+  margin-top: $cf-space-xs;
+}
+
+.selector-title {
+  padding-bottom: $cf-space-2xs;
+}
+
+.selector-title--icon {
+  padding-left: $cf-space-2xs;
+}
+
+.selector-title--icon .cf-question-mark-tooltip {
+  background-color: $cf-grey-35;
+}
+
+.field-selector,
+.tag-selector-key {
+  padding-top: $cf-space-2xs;
+}
+
+.field-selector .cf-accordion--icon,
+.tag-selector-key .cf-accordion--icon,
+.tag-selector-value .cf-accordion--icon {
+  color: gray;
+}
+
+.field-selector--header,
+.tag-selector-key--header,
+.tag-selector-value--header {
+  background-color: transparent;
+  min-height: 0;
+  padding: 0;
+}
+
+.field-selector--list-item,
+.tag-selector-value--list-item {
+  padding: $cf-space-2xs 0 $cf-space-2xs $cf-space-2xs;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-selector-key--list-item {
+  padding: $cf-space-3xs 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.field-selector--list-item:hover,
+.tag-selector-value--list-item:hover {
+  cursor: pointer;
+  color: $c-krypton;
+  background-color: $cf-grey-25;
+}
+
+.field-selector .container-side-bar,
+.tag-selector-key .container-side-bar {
+  margin-top: 0;
+}
+
+.load-more-button {
+  color: $c-pool;
+  cursor: pointer;
+  padding: $cf-space-2xs 0 $cf-space-xs 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

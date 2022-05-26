@@ -19,7 +19,6 @@ import {
   FlexBox,
   AlignItems,
   FlexDirection,
-  JustifyContent,
   ComponentColor,
   ResourceCard,
   IconFont,
@@ -41,10 +40,13 @@ import {
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {setCloneName} from 'src/utils/naming'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
   auth: Authorization
   onClickDescription: (authID: string) => void
+  tokenIsSelected?: boolean
+  onSelectForBulkAction?: (token: Authorization) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -55,7 +57,7 @@ const formatter = createDateTimeFormatter(UPDATED_AT_TIME_FORMAT)
 class TokensRow extends PureComponent<Props> {
   public render() {
     const {description} = this.props.auth
-    const {auth} = this.props
+    const {auth, tokenIsSelected, onSelectForBulkAction} = this.props
     const date = new Date(auth.createdAt)
 
     return (
@@ -64,9 +66,12 @@ class TokensRow extends PureComponent<Props> {
         disabled={!this.isTokenActive}
         testID={`token-card ${auth.description}`}
         direction={FlexDirection.Row}
-        justifyContent={JustifyContent.SpaceBetween}
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
+        cardSelectable={isFlagEnabled('bulkActionDeleteTokens')}
+        cardSelected={tokenIsSelected}
+        handleCardSelection={() => onSelectForBulkAction(auth)}
+        id={auth.id}
       >
         <FlexBox
           alignItems={AlignItems.FlexStart}

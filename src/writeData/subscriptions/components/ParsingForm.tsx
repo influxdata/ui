@@ -30,6 +30,7 @@ import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtoco
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {shouldGetCredit250Experience} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -65,6 +66,7 @@ const ParsingForm: FC<Props> = ({
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
   const requiredFields = checkRequiredFields(formContent)
   return (
     formContent && (
@@ -166,14 +168,17 @@ const ParsingForm: FC<Props> = ({
                   const identity = getDataLayerIdentity()
                   event(
                     isFlagEnabled('credit250Experiment') &&
-                      experimentVariantId === '1'
+                      (experimentVariantId === '1' ||
+                        isCredit250ExperienceActive)
                       ? `subscriptions.parsing-form.credit-250.upgrade`
                       : `subscriptions.parsing-form.upgrade`,
                     {
                       location: 'subscriptions parsing form',
                       ...identity,
                       experimentId: CREDIT_250_EXPERIMENT_ID,
-                      experimentVariantId,
+                      experimentVariantId: isCredit250ExperienceActive
+                        ? '2'
+                        : experimentVariantId,
                     }
                   )
                 }}

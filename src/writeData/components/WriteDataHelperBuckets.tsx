@@ -91,7 +91,10 @@ const WriteDataHelperBuckets: FC<Props> = ({
     <>
       <Heading element={HeadingElement.H6} className={className}>
         Bucket
-        <CreateBucketButton useSimplifiedBucketForm={useSimplifiedBucketForm} />
+        <CreateBucketButton
+          useSimplifiedBucketForm={useSimplifiedBucketForm}
+          callbackAfterBucketCreation={changeBucket}
+        />
       </Heading>
       {body}
     </>

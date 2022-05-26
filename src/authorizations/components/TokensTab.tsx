@@ -1,19 +1,23 @@
 // Libraries
 import React, {createRef, PureComponent, RefObject} from 'react'
-import {connect} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {connect, ConnectedProps} from 'react-redux'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 import {isEmpty} from 'lodash'
 import {AutoSizer} from 'react-virtualized'
 
 // Components
 import {
-  Sort,
-  ComponentSize,
-  EmptyState,
   BannerPanel,
+  ComponentColor,
+  ComponentSize,
+  ConfirmationButton,
+  EmptyState,
   Gradients,
   IconFont,
   InfluxColors,
+  InputToggleType,
+  Sort,
+  Toggle,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/components/TokenList'
@@ -30,6 +34,11 @@ import {AuthorizationSortKey} from 'src/shared/components/resource_sort_dropdown
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import {bulkDeleteAuthorizations} from 'src/authorizations/actions/thunks'
+
+// Styles
+import './TokensTabStyles.scss'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 enum AuthSearchKeys {
   Description = 'description',
@@ -42,10 +51,18 @@ interface State {
   sortKey: SortKey
   sortDirection: Sort
   sortType: SortTypes
+
+  allTokens: Authorization[]
+  tokensOnCurrentPage: Authorization[]
+  tokensSelectedForBatchOperation: Authorization[]
 }
 
 interface StateProps {
   tokens: Authorization[]
+}
+
+interface DispatchProps {
+  bulkDeleteAuthorizations: (tokenIds: string[]) => void
 }
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
@@ -54,7 +71,8 @@ const DEFAULT_ALERT_HEIGHT = 100
 
 type SortKey = keyof Authorization
 
-type Props = StateProps & RouteComponentProps<{orgID: string}>
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = StateProps & RouteComponentProps<{orgID: string}> & ReduxProps
 
 const FilterAuthorizations = FilterList<Authorization>()
 
@@ -68,6 +86,10 @@ class TokensTab extends PureComponent<Props, State> {
       sortKey: 'description',
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
+
+      allTokens: [],
+      tokensOnCurrentPage: [],
+      tokensSelectedForBatchOperation: [],
     }
     this.paginationRef = createRef<HTMLDivElement>()
   }
@@ -101,25 +123,58 @@ class TokensTab extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {searchTerm, sortKey, sortDirection, sortType} = this.state
+    const {
+      searchTerm,
+      sortKey,
+      sortDirection,
+      sortType,
+      tokensSelectedForBatchOperation,
+    } = this.state
     const {tokens} = this.props
 
     const leftHeaderItems = (
       <>
-        <SearchWidget
-          searchTerm={searchTerm}
-          placeholderText="Filter Tokens..."
-          onSearch={this.handleFilterUpdate}
-          testID="input-field--filter"
-        />
-        <ResourceSortDropdown
-          resourceType={ResourceType.Authorizations}
-          sortDirection={sortDirection}
-          sortKey={sortKey}
-          sortType={sortType}
-          onSelect={this.handleSort}
-          width={238}
-        />
+        {isFlagEnabled('bulkActionDeleteTokens') && (
+          <Toggle
+            type={InputToggleType.Checkbox}
+            checked={tokensSelectedForBatchOperation.length > 0}
+            id="batch-select-global-toggle"
+            className="batch-select-global-toggle"
+            size={ComponentSize.Small}
+            icon={this.getGlobalBatchSelectionToggleIcon()}
+            onChange={this.toggleGlobalBatchSelection}
+          />
+        )}
+
+        {isFlagEnabled('bulkActionDeleteTokens') &&
+          tokensSelectedForBatchOperation.length > 0 && (
+            <ConfirmationButton
+              confirmationButtonText="Delete"
+              confirmationLabel={`Are you sure you want to delete the ${tokensSelectedForBatchOperation.length} selected API Token(s)?`}
+              onConfirm={this.handleBulkDeleteTokens}
+              text={`Delete ${tokensSelectedForBatchOperation.length} selected`}
+              icon={IconFont.Trash_New}
+              color={ComponentColor.Secondary}
+            />
+          )}
+        {tokensSelectedForBatchOperation.length === 0 && (
+          <>
+            <SearchWidget
+              searchTerm={searchTerm}
+              placeholderText="Filter Tokens..."
+              onSearch={this.handleFilterUpdate}
+              testID="input-field--filter"
+            />
+            <ResourceSortDropdown
+              resourceType={ResourceType.Authorizations}
+              sortDirection={sortDirection}
+              sortKey={sortKey}
+              sortType={sortType}
+              onSelect={this.handleSort}
+              width={238}
+            />
+          </>
+        )}
       </>
     )
 
@@ -167,20 +222,45 @@ class TokensTab extends PureComponent<Props, State> {
                     searchTerm={searchTerm}
                     searchKeys={this.searchKeys}
                   >
-                    {filteredAuths => (
-                      <TokenList
-                        tokenCount={tokens.length}
-                        auths={filteredAuths}
-                        emptyState={this.emptyState}
-                        pageWidth={width}
-                        pageHeight={adjustedHeight}
-                        searchTerm={searchTerm}
-                        sortKey={sortKey}
-                        sortDirection={sortDirection}
-                        sortType={sortType}
-                        onClickColumn={this.handleClickColumn}
-                      />
-                    )}
+                    {filteredAuths =>
+                      isFlagEnabled('bulkActionDeleteTokens') ? (
+                        <TokenList
+                          tokenCount={tokens.length}
+                          auths={filteredAuths}
+                          emptyState={this.emptyState}
+                          pageWidth={width}
+                          pageHeight={adjustedHeight}
+                          searchTerm={searchTerm}
+                          sortKey={sortKey}
+                          sortDirection={sortDirection}
+                          sortType={sortType}
+                          onClickColumn={this.handleClickColumn}
+                          setAllTokens={allTokens =>
+                            this.setState({allTokens: allTokens})
+                          }
+                          setTokensOnCurrentPage={tokensOnPage =>
+                            this.setState({tokensOnCurrentPage: tokensOnPage})
+                          }
+                          tokensSelectedForBatchOperation={
+                            tokensSelectedForBatchOperation
+                          }
+                          toggleTokenSelection={this.updateSelectedTokensList}
+                        />
+                      ) : (
+                        <TokenList
+                          tokenCount={tokens.length}
+                          auths={filteredAuths}
+                          emptyState={this.emptyState}
+                          pageWidth={width}
+                          pageHeight={adjustedHeight}
+                          searchTerm={searchTerm}
+                          sortKey={sortKey}
+                          sortDirection={sortDirection}
+                          sortType={sortType}
+                          onClickColumn={this.handleClickColumn}
+                        />
+                      )
+                    }
                   </FilterAuthorizations>
                 </div>
               </>
@@ -189,6 +269,59 @@ class TokensTab extends PureComponent<Props, State> {
         </AutoSizer>
       </>
     )
+  }
+
+  private updateSelectedTokensList = (token: Authorization) => {
+    const {tokensSelectedForBatchOperation} = this.state
+    const tokenAlreadySelected = tokensSelectedForBatchOperation.includes(token)
+
+    if (tokenAlreadySelected) {
+      const updatedTokensList = tokensSelectedForBatchOperation.filter(
+        tokenA => tokenA !== token
+      )
+      this.setState({
+        tokensSelectedForBatchOperation: updatedTokensList,
+      })
+    } else {
+      this.setState({
+        tokensSelectedForBatchOperation: [
+          ...tokensSelectedForBatchOperation,
+          token,
+        ],
+      })
+    }
+  }
+  private handleBulkDeleteTokens = () => {
+    this.props.bulkDeleteAuthorizations(
+      this.state.tokensSelectedForBatchOperation.map(token => token.id)
+    )
+    // reset the list of selected tokens
+    this.setState({
+      tokensSelectedForBatchOperation: [],
+    })
+  }
+
+  private getGlobalBatchSelectionToggleIcon = () => {
+    const {tokensOnCurrentPage, tokensSelectedForBatchOperation} = this.state
+
+    if (tokensSelectedForBatchOperation.length < tokensOnCurrentPage.length) {
+      return IconFont.Subtract
+    }
+    if (tokensSelectedForBatchOperation.length === tokensOnCurrentPage.length) {
+      return IconFont.Checkmark
+    }
+
+    return IconFont.Subtract
+  }
+
+  private toggleGlobalBatchSelection = () => {
+    const {tokensOnCurrentPage, tokensSelectedForBatchOperation} = this.state
+
+    if (isEmpty(tokensSelectedForBatchOperation)) {
+      this.setState({tokensSelectedForBatchOperation: tokensOnCurrentPage})
+    } else {
+      this.setState({tokensSelectedForBatchOperation: []})
+    }
   }
 
   private handleSort = (
@@ -250,4 +383,12 @@ const mstp = (state: AppState) => ({
   tokens: getAll<Authorization>(state, ResourceType.Authorizations),
 })
 
-export default connect<StateProps>(mstp)(withRouter(TokensTab))
+const mdtp = {
+  bulkDeleteAuthorizations,
+}
+const connector = connect(mstp, mdtp)
+
+export default connect<StateProps, DispatchProps>(
+  mstp,
+  mdtp
+)(withRouter(TokensTab))

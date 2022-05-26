@@ -36,6 +36,11 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
+import {
+  shouldGetCredit250Experience,
+  shouldShowUpgradeButton,
+  getQuartzMe,
+} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
@@ -45,9 +50,6 @@ import {
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
-
-// Actions
-import {shouldShowUpgradeButton, getQuartzMe} from 'src/me/selectors'
 
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
@@ -86,6 +88,7 @@ const CreateSubscriptionPage: FC = () => {
     SubscriptionCreateContext
   )
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
   const {accountType} = useSelector(getQuartzMe)
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
@@ -176,14 +179,17 @@ const CreateSubscriptionPage: FC = () => {
                     const identity = getDataLayerIdentity()
                     event(
                       isFlagEnabled('credit250Experiment') &&
-                        experimentVariantId === '1'
+                        (experimentVariantId === '1' ||
+                          isCredit250ExperienceActive)
                         ? `subscriptions.create.credit-250.upgrade`
                         : `subscriptions.create.upgrade`,
                       {
                         location: 'subscriptions create',
                         ...identity,
                         experimentId: CREDIT_250_EXPERIMENT_ID,
-                        experimentVariantId,
+                        experimentVariantId: isCredit250ExperienceActive
+                          ? '2'
+                          : experimentVariantId,
                       }
                     )
                   }}

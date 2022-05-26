@@ -297,8 +297,8 @@ class TokensTab extends PureComponent<Props, State> {
       this.state.tokensSelectedForBatchOperation.map(token => token.id)
     )
 
-    const numberOfSelectedTokens = this.state.tokensSelectedForBatchOperation
-    event(`bulkAction.deleted.${numberOfSelectedTokens}.tokens`)
+    const numberOfSelectedTokens = this.state.tokensSelectedForBatchOperation.length
+    event('bulkAction.tokens.deleted', {}, {count: numberOfSelectedTokens})
     // reset the list of selected tokens
     this.setState({
       tokensSelectedForBatchOperation: [],

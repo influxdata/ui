@@ -67,30 +67,47 @@ export const getOrganizations = () => async (
       throw new Error('Received more than one organization for this account.')
     }
 
-    const newOrgAPIData = await getNewAPIData({orgId: orgs[0].id})
+    if (orgs.length > 0) {
+      const newOrgAPIData = await getNewAPIData({orgId: orgs[0].id})
 
-    if (newOrgAPIData.status !== 200) {
-      throw new Error(newOrgAPIData.data.message)
+      if (newOrgAPIData.status !== 200) {
+        throw new Error(newOrgAPIData.data.message)
+      }
+
+      const orgsWithProvider = [
+        {...cloneDeep(orgs[0]), provider: newOrgAPIData.data.provider},
+      ]
+
+      const organizations = normalize<Organization, OrgEntities, string[]>(
+        orgsWithProvider,
+        arrayOfOrgs
+      )
+
+      gaEvent('cloudAppOrgIdReady', {
+        identity: {
+          organizationIds: organizations.result,
+        },
+      })
+
+      dispatch(setOrgs(RemoteDataState.Done, organizations))
+
+      return orgsWithProvider
+    } else {
+      const organizations = normalize<Organization, OrgEntities, string[]>(
+        orgs,
+        arrayOfOrgs
+      )
+
+      gaEvent('cloudAppOrgIdReady', {
+        identity: {
+          organizationIds: organizations.result,
+        },
+      })
+
+      dispatch(setOrgs(RemoteDataState.Done, organizations))
+
+      return orgs
     }
-
-    const orgsWithProvider = [
-      {...cloneDeep(orgs[0]), provider: newOrgAPIData.data.provider},
-    ]
-
-    const organizations = normalize<Organization, OrgEntities, string[]>(
-      orgsWithProvider,
-      arrayOfOrgs
-    )
-
-    gaEvent('cloudAppOrgIdReady', {
-      identity: {
-        organizationIds: organizations.result,
-      },
-    })
-
-    dispatch(setOrgs(RemoteDataState.Done, organizations))
-
-    return orgsWithProvider
   } catch (error) {
     console.error(error)
     if (getOrg(getState())?.id && error.message === 'organization not found') {

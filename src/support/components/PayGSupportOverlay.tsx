@@ -63,7 +63,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   }
   const handleSubmit = (): void => {
     // submit support form
-    event('support.request.submitted', {userID: meID, orgID: orgID})
+    event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
   }
 
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {

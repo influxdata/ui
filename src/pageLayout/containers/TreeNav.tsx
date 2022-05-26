@@ -72,29 +72,10 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
       }
     }
 
-    const handleEventing = (): void => {
+    const handleEventing = (link: string): void => {
       const currentPage = location.pathname
-      event('help.and.support.clicked', {from: currentPage})
+      event(`helpBar.${link}.opened`, {}, {from: currentPage})
     }
-
-    // Hiding Contact Support and Feedback code for Help Bar phase 1 release
-    // https://github.com/influxdata/ui/issues/3457
-    // https://github.com/influxdata/ui/issues/3454
-    // const handleSelect = (): void => {
-    //   const accountType = quartzMe?.accountType ?? 'free'
-    //   const isPayGCustomer = accountType !== 'free'
-
-    //   if (isPayGCustomer) {
-    //     showOverlay('payg-support', null, dismissOverlay)
-    //   } else {
-    //     showOverlay('free-account-support', null, dismissOverlay)
-    //   }
-    // }
-
-    // const openFeedbackOverlay = (): void => {
-    //   showOverlay('feedback-questions', null, dismissOverlay)
-    //   console.log('opened feedback overlay')
-    // }
 
     return (
       <OrgSettings>
@@ -181,7 +162,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                   linkElement={() => (
                     <SafeBlankLink
                       href="https://docs.influxdata.com/"
-                      onClick={handleEventing}
+                      onClick={() => handleEventing('documentation')}
                     />
                   )}
                 />
@@ -192,16 +173,10 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                   linkElement={() => (
                     <SafeBlankLink
                       href="https://docs.influxdata.com/influxdb/cloud/reference/faq/"
-                      onClick={handleEventing}
+                      onClick={() => handleEventing('faq')}
                     />
                   )}
                 />
-                {/* <TreeNav.SubItem
-                  id="contactSupport"
-                  label="Contact Support"
-                  testID="nav-subitem-contact-support"
-                  onClick={handleSelect}
-                /> */}
                 <TreeNav.SubHeading label="Community" />
                 <TreeNav.SubItem
                   id="offcialForum"
@@ -210,7 +185,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                   linkElement={() => (
                     <SafeBlankLink
                       href="https://community.influxdata.com"
-                      onClick={handleEventing}
+                      onClick={() => handleEventing('OfficialForum')}
                     />
                   )}
                 />
@@ -222,13 +197,6 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                     <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
                   )}
                 />
-                {/* <TreeNav.SubHeading label="Feedback" /> */}
-                {/* <TreeNav.SubItem
-                  id="feedback"
-                  label="Feedback & Questions"
-                  testID="nav-subitem-feedback-questions"
-                  onClick={openFeedbackOverlay}
-                /> */}
               </TreeNav.SubMenu>
             </TreeNav.Item>
           ) : null}

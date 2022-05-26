@@ -37,7 +37,11 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
 
   const handleSubmit = () => {
     // handle form submit
-    event('feedback.and.questions.submitted', {userID: meID, orgID: orgID})
+    event(
+      'helpBar.feedbackAndQuestions.submitted',
+      {},
+      {userID: meID, orgID: orgID}
+    )
   }
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

@@ -9,6 +9,9 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
 import {BucketContext} from 'src/shared/contexts/buckets'
 
+const BUCKET_TOOLTIP = `A bucket is a named location where time series data \
+is stored. You can think of a bucket like you would a database in SQL systems.`
+
 const BucketSelector: FC = () => {
   const {selectedBucket, selectBucket} = useContext(NewDataExplorerContext)
   const {buckets} = useContext(BucketContext)
@@ -28,7 +31,7 @@ const BucketSelector: FC = () => {
 
   return (
     <div>
-      <SelectorTitle title="Bucket" info="Test info" />
+      <SelectorTitle title="Bucket" info={BUCKET_TOOLTIP} />
       <SearchableDropdown
         searchTerm={searchTerm}
         searchPlaceholder="Search buckets"

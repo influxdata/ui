@@ -78,7 +78,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     }
 
     let queryText = `${_source}
-      |> range(start: ${CACHING_REQUIRED_START_DATE}, stop: ${CACHING_REQUIRED_END_DATE})
+      |> range(start: -100y, stop: now())
       |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
       |> keep(columns: ["_field"])
       |> group()

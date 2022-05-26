@@ -110,6 +110,9 @@ const SetOrg: FC = () => {
     }
     updateReportingContext({orgID: null})
 
+    console.log('content of orgs at the setOrg page')
+    console.log(orgs)
+
     if (!orgs.length) {
       history.push(`/no-orgs`)
       return

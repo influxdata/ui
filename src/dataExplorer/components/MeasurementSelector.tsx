@@ -12,6 +12,12 @@ import {MeasurementContext} from 'src/dataExplorer/context/measurements'
 // Types
 import {RemoteDataState} from 'src/types'
 
+const MEASUREMENT_TOOLTIP = `The measurement acts as a container for tags, \
+fields, and the time column, and the measurement name is the description of \
+the data that are stored in the associated fields. Measurement names are \
+strings, and, for any SQL users out there, a measurement is conceptually \
+similar to a table.`
+
 const convertStatus = (remoteDataState: RemoteDataState): ComponentStatus => {
   switch (remoteDataState) {
     case RemoteDataState.Error:
@@ -45,7 +51,7 @@ const MeasurementSelector: FC = () => {
 
     return (
       <div>
-        <SelectorTitle title="Measurement" info="Test info" />
+        <SelectorTitle title="Measurement" info={MEASUREMENT_TOOLTIP} />
         <SearchableDropdown
           searchTerm={searchTerm}
           searchPlaceholder="Search measurements"

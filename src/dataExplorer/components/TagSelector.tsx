@@ -15,6 +15,10 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 // Types
 import {RemoteDataState} from 'src/types'
 
+const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
+pairs within a measurement. For SQL users, this is conceptually \
+similar to an indexed column and value.`
+
 interface Prop {
   loading: RemoteDataState
   tagKey: string
@@ -142,7 +146,7 @@ const TagSelector: FC = () => {
     () => (
       <Accordion className="tag-selector-key" expanded={true}>
         <Accordion.AccordionHeader className="tag-selector-key--header">
-          <SelectorTitle title="Tag Keys" info="Test info" />
+          <SelectorTitle title="Tag Keys" info={TAG_KEYS_TOOLTIP} />
         </Accordion.AccordionHeader>
         <div className="container-side-bar">{list}</div>
       </Accordion>

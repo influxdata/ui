@@ -67,8 +67,12 @@ export const getOrganizations = () => async (
       throw new Error('Received more than one organization for this account.')
     }
 
-    if (orgs.length > 0) {
-      const newOrgAPIData = await getNewAPIData({orgId: orgs[0].id})
+    console.log('here is what orgs looks like')
+    console.log(orgs)
+
+    if (Object.keys(orgs[0]).length > 0) {
+      // const newOrgAPIData = await getNewAPIData({orgId: orgs[0].id})
+      const newOrgAPIData = await getNewAPIData({orgId: 'fakeId'})
 
       if (newOrgAPIData.status !== 200) {
         throw new Error(newOrgAPIData.data.message)

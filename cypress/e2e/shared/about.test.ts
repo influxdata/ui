@@ -41,14 +41,12 @@ describe('About Page', () => {
 
     const newOrgName = `hard@knock.life${Math.random()}`
 
-    cy.intercept('PATCH', 'api/v2/quartz/orgs/*').as('patchOrg')
-
     cy.getByTestID('create-org-name-input').type(newOrgName)
     cy.getByTestID('rename-org-submit--button')
       .should('not.be.disabled')
       .click()
 
-    cy.wait('@patchOrg')
+    cy.intercept('PATCH', 'api/v2/quartz/orgs/*')
 
     cy.getByTestID('notification-success')
       .should('be.visible')

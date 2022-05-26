@@ -323,9 +323,9 @@ class TokensTab extends PureComponent<Props, State> {
 
     if (isEmpty(tokensSelectedForBatchOperation)) {
       this.setState({tokensSelectedForBatchOperation: tokensOnCurrentPage})
-      event(`bulkAction.selectAll`, {count: tokensOnCurrentPage.length})
+      event('bulkAction.tokens.selectAll', {count: tokensOnCurrentPage.length})
     } else {
-      event(`bulkAction.deSelectAll`)
+      event('bulkAction.tokens.deSelectAll')
       this.setState({tokensSelectedForBatchOperation: []})
     }
   }

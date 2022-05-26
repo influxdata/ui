@@ -42,7 +42,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
       AppSettingContext
     )
     const org = useSelector(getOrg)
-    let location = useLocation()
+    const location = useLocation()
     useEffect(() => {
       if (isFlagEnabled('helpBar')) {
         const helpBarMenu = document.querySelectorAll<HTMLElement>(

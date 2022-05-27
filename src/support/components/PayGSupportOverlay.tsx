@@ -1,5 +1,5 @@
 import React, {FC, ChangeEvent, useContext, useState} from 'react'
-import {connect, useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -39,19 +39,16 @@ import './ContactSupport.scss'
 interface OwnProps {
   onClose: () => void
 }
-interface DispatchProps {
-  showOverlay: (arg1: string, arg2: any, any) => {}
-}
 
-type Props = OwnProps & DispatchProps
-
-const PayGSupportOverlay: FC<Props> = props => {
+const PayGSupportOverlay: FC<OwnProps> = () => {
   const {id: orgID} = useSelector(getOrg)
   const {id: meID} = useSelector(getMe)
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('')
   const [textInput, setTextInput] = useState('')
   const {onClose} = useContext(OverlayContext)
+
+  const dispatch = useDispatch()
 
   const severityLevel = [
     '1 - Critical',
@@ -65,11 +62,10 @@ const PayGSupportOverlay: FC<Props> = props => {
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
-  const handleSubmit = (e): void => {
-    const {showOverlay} = props
-    e.preventDefault()
+  const handleSubmit = (evt): void => {
+    evt.preventDefault()
     event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
-    showOverlay('help-bar-confirmation', {type: 'PAYG'}, dismissOverlay)
+    dispatch(showOverlay('help-bar-confirmation', {type: 'PAYG'}, () => dispatch(dismissOverlay)))
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -197,11 +193,4 @@ const PayGSupportOverlay: FC<Props> = props => {
   )
 }
 
-const mdtp = {
-  showOverlay,
-  dismissOverlay,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(PayGSupportOverlay)
+export default PayGSupportOverlay

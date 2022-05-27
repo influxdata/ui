@@ -1,5 +1,5 @@
 import React, {FC, ChangeEvent, useContext, useState} from 'react'
-import {connect, useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -13,7 +13,7 @@ import {
 } from '@influxdata/clockface'
 
 // Actions
-import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
@@ -31,26 +31,23 @@ import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   onClose: () => void
 }
-interface DispatchProps {
-  showOverlay: (arg1: string, arg2: any, any) => {}
-}
-type Props = OwnProps & DispatchProps
 
-const FeedbackQuestionsOverlay: FC<Props> = props => {
+const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
+  const [feedbackText, setFeedbackText] = useState('')
   const {onClose} = useContext(OverlayContext)
   const {id: orgID} = useSelector(getOrg)
   const {id: meID} = useSelector(getMe)
-  const [feedbackText, setFeedbackText] = useState('')
+  
+  const dispatch = useDispatch()
 
-  const handleSubmit = (e): void => {
-    const {showOverlay} = props
-    e.preventDefault()
+  const handleSubmit = (evt): void => {
+    evt.preventDefault()
     event(
       'helpBar.feedbackAndQuestions.submitted',
       {},
       {userID: meID, orgID: orgID}
     )
-    showOverlay('help-bar-confirmation', {type: 'feedback'}, dismissOverlay)
+    dispatch(showOverlay('help-bar-confirmation', {type: 'feedback'}, () => dispatch(dismissOverlay)))
   }
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -123,11 +120,4 @@ const FeedbackQuestionsOverlay: FC<Props> = props => {
   )
 }
 
-const mdtp = {
-  showOverlay,
-  dismissOverlay,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(FeedbackQuestionsOverlay)
+export default FeedbackQuestionsOverlay

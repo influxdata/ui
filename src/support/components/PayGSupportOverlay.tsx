@@ -66,9 +66,9 @@ interface OwnProps {
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
-    const handleSubmit = (event): void => {
+    const handleSubmit = (e): void => {
       const {showOverlay} = props
-      event.preventDefault()
+      e.preventDefault()
       event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
       showOverlay('help-bar-confirmation', {type: 'PAYG'}, dismissOverlay)
     }

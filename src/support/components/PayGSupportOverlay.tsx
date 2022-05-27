@@ -12,7 +12,6 @@ import {
   Icon,
   IconFont,
   Input,
-  Method,
   Overlay,
   QuestionMarkTooltip,
   SelectDropdown,
@@ -124,11 +123,7 @@ const PayGSupportOverlay: FC<Props> = props => {
         onDismiss={onClose}
       />
       <ErrorBoundary>
-        <Form
-        // onSubmit={handleSubmit}
-        // action="https://influxdata--full.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
-        // method={Method.Post}
-        >
+        <Form>
           <Overlay.Body>
             <p className="status-page-text">
               <span>
@@ -193,9 +188,9 @@ const PayGSupportOverlay: FC<Props> = props => {
           text="Submit"
           color={ComponentColor.Success}
           type={ButtonType.Submit}
-          onClick={handleSubmit}
           testID="payg-contact-support--submit"
           status={submitButtonStatus}
+          onClick={handleSubmit}
         />
       </Overlay.Footer>
     </Overlay.Container>

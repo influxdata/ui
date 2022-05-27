@@ -40,13 +40,13 @@ import './ContactSupport.scss'
 interface OwnProps {
   onClose: () => void
 }
-  interface DispatchProps {
-    showOverlay: (arg1: string, arg2: any, any) => {}
-  }
-  
-  type Props = OwnProps & DispatchProps
-  
-  const PayGSupportOverlay: FC<Props> = props => {
+interface DispatchProps {
+  showOverlay: (arg1: string, arg2: any, any) => {}
+}
+
+type Props = OwnProps & DispatchProps
+
+const PayGSupportOverlay: FC<Props> = props => {
   const {id: orgID} = useSelector(getOrg)
   const {id: meID} = useSelector(getMe)
   const [subject, setSubject] = useState('')
@@ -66,12 +66,12 @@ interface OwnProps {
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
-    const handleSubmit = (e): void => {
-      const {showOverlay} = props
-      e.preventDefault()
-      event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
-      showOverlay('help-bar-confirmation', {type: 'PAYG'}, dismissOverlay)
-    }
+  const handleSubmit = (e): void => {
+    const {showOverlay} = props
+    e.preventDefault()
+    event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
+    showOverlay('help-bar-confirmation', {type: 'PAYG'}, dismissOverlay)
+  }
 
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setTextInput(event.target.value)

@@ -75,8 +75,8 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
     setDescription(event.target.value)
   }
 
-  const handleSubmit = async (): void => {
-    const email = quartzMe?.email ?? me.email
+  const handleSubmit = async () => {
+    const email = quartzMe?.email
     try {
       throw new Error('whooooooooooooooooooops')
       await createSfdcSupportCase(description, email, severity, subject)
@@ -92,11 +92,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       )
     } catch {
       dispatch(notify(supportRequestError()))
-      event(
-        'helpBar.supportRequest.failed',
-        {},
-        {userID: me.id, orgID: orgID}
-      )
+      event('helpBar.supportRequest.failed', {}, {userID: me.id, orgID: orgID})
     }
   }
 

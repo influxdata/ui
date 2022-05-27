@@ -1,4 +1,7 @@
-import {postUiproxySfdcSupport, PostUiproxySfdcSupportParams} from 'src/client/uiproxydRoutes'
+import {
+  postUiproxySfdcSupport,
+  PostUiproxySfdcSupportParams,
+} from 'src/client/uiproxydRoutes'
 
 export const createSfdcSupportCase = async (
   description: string,

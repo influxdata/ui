@@ -31,12 +31,11 @@ import './TreeNav.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
-  // {
-  //   showOverlay,
-  //   dismissOverlay,
-  //   quartzMe,
-  // }
+const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
+    showOverlay,
+    dismissOverlay,
+    quartzMe,
+  }) =>
   {
     const {presentationMode, navbarMode, setNavbarMode} = useContext(
       AppSettingContext
@@ -75,6 +74,17 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
     const handleEventing = (link: string): void => {
       const currentPage = location.pathname
       event(`helpBar.${link}.opened`, {}, {from: currentPage})
+    }
+
+    const handleSelect = (): void => {
+      const accountType = quartzMe?.accountType ?? 'free'
+      const isPayGCustomer = accountType !== 'free'
+
+      if (isPayGCustomer) {
+        showOverlay('payg-support', null, dismissOverlay)
+      } else {
+        showOverlay('free-account-support', null, dismissOverlay)
+      }
     }
 
     return (
@@ -144,7 +154,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
               </TreeNav.Item>
             )
           })}
-          {isFlagEnabled('helpBar') ? (
+          {isFlagEnabled('helpBar') && (
             <TreeNav.Item
               id="support"
               testID="nav-item-support"
@@ -177,6 +187,15 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                     />
                   )}
                 />
+
+                {isFlagEnabled('helpBarSfdcIntegration') && (
+                  <TreeNav.SubItem
+                    id="contactSupport"
+                    label="Contact Support"
+                    testID="nav-subitem-contact-support"
+                    onClick={handleSelect}
+                  />
+                )}
                 <TreeNav.SubHeading label="Community" />
                 <TreeNav.SubItem
                   id="offcialForum"
@@ -199,7 +218,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                 />
               </TreeNav.SubMenu>
             </TreeNav.Item>
-          ) : null}
+          )}
         </TreeNav>
       </OrgSettings>
     )

@@ -2,7 +2,6 @@
 import {Dispatch} from 'redux'
 import {push, RouterAction} from 'connected-react-router'
 import {normalize} from 'normalizr'
-import {cloneDeep} from 'lodash'
 
 // APIs
 import {getErrorMessage} from 'src/utils/api'
@@ -75,7 +74,6 @@ export const getOrganizations = () => async (
 
       orgsWithCloudProvider[0].provider = newOrgAPIData.data.provider
     }
-
     const organizations = normalize<Organization, OrgEntities, string[]>(
       orgsWithCloudProvider,
       arrayOfOrgs

@@ -86,13 +86,25 @@ const OrgProfileTab: FC = () => {
             style={{width: '85%'}}
           >
             {org.provider && (
-              <LabeledData label="Provider" src={org.provider} />
+              <LabeledData
+                label="Provider"
+                src={org.provider}
+                testID="cloud-provider--field"
+              />
             )}
             {me.quartzMe?.regionCode && (
-              <LabeledData label="Region" src={me.quartzMe.regionCode} />
+              <LabeledData
+                label="Region"
+                src={me.quartzMe.regionCode}
+                testID="region-code--field"
+              />
             )}
             {me.quartzMe?.regionName && (
-              <LabeledData label="Location" src={me.quartzMe.regionName} />
+              <LabeledData
+                label="Location"
+                src={me.quartzMe.regionName}
+                testID="region-name--field"
+              />
             )}
           </FlexBox>
           {expectQuartzData && me.quartzMe?.clusterHost && (

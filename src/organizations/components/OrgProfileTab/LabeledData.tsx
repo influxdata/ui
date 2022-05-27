@@ -15,13 +15,15 @@ import {
 interface Props {
   label: string
   src: string
+  testID: string
 }
 
-const LabeledData: FC<Props> = ({label, src}) => (
+const LabeledData: FC<Props> = ({label, src, testID}) => (
   <FlexBox
     direction={FlexDirection.Column}
     margin={ComponentSize.Large}
     alignItems={AlignItems.FlexStart}
+    testID={testID}
   >
     <Heading
       className="org-profile-tab--heading"

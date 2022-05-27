@@ -30,10 +30,17 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-import {getMe} from 'src/me/selectors'
+import {getMe, getQuartzMe} from 'src/me/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+
+// API
+import {createSfdcSupportCase} from 'src/shared/apis/sfdc'
+
+// Notifications
+import {notify} from 'src/shared/actions/notifications'
+import {supportRequestError} from 'src/shared/copy/notifications/categories/help-and-support'
 
 import './ContactSupport.scss'
 interface OwnProps {
@@ -42,10 +49,12 @@ interface OwnProps {
 
 const PayGSupportOverlay: FC<OwnProps> = () => {
   const {id: orgID} = useSelector(getOrg)
-  const {id: meID} = useSelector(getMe)
+  const quartzMe = useSelector(getQuartzMe)
+  const me = useSelector(getMe)
+
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('')
-  const [textInput, setTextInput] = useState('')
+  const [description, setDescription] = useState('')
   const {onClose} = useContext(OverlayContext)
 
   const dispatch = useDispatch()
@@ -58,22 +67,37 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   ]
 
   const submitButtonStatus =
-    textInput.length && severity.length && subject.length
+    description.length && severity.length && subject.length
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
-  const handleSubmit = (evt): void => {
-    evt.preventDefault()
-    event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
-    dispatch(
-      showOverlay('help-bar-confirmation', {type: 'PAYG'}, () =>
-        dispatch(dismissOverlay)
-      )
-    )
+  const handleDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(event.target.value)
   }
 
-  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setTextInput(event.target.value)
+  const handleSubmit = async (): void => {
+    const email = quartzMe?.email ?? me.email
+    try {
+      throw new Error('whooooooooooooooooooops')
+      await createSfdcSupportCase(description, email, severity, subject)
+      event(
+        'helpBar.supportRequest.submitted',
+        {},
+        {userID: me.id, orgID: orgID}
+      )
+      dispatch(
+        showOverlay('help-bar-confirmation', {type: 'PAYG'}, () =>
+          dispatch(dismissOverlay)
+        )
+      )
+    } catch {
+      dispatch(notify(supportRequestError()))
+      event(
+        'helpBar.supportRequest.failed',
+        {},
+        {userID: me.id, orgID: orgID}
+      )
+    }
   }
 
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -159,7 +183,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
             <Form.ValidationElement
               label="Description"
               required={true}
-              value={textInput}
+              value={description}
               validationFunc={handleValidation}
             >
               {status => (
@@ -168,8 +192,8 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
                   rows={10}
                   testID="support-description--textarea"
                   name="description"
-                  value={textInput}
-                  onChange={handleInputChange}
+                  value={description}
+                  onChange={handleDescriptionChange}
                 />
               )}
             </Form.ValidationElement>

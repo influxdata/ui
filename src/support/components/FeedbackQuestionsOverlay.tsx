@@ -37,7 +37,7 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
   const {onClose} = useContext(OverlayContext)
   const {id: orgID} = useSelector(getOrg)
   const {id: meID} = useSelector(getMe)
-  
+
   const dispatch = useDispatch()
 
   const handleSubmit = (evt): void => {
@@ -47,7 +47,11 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
       {},
       {userID: meID, orgID: orgID}
     )
-    dispatch(showOverlay('help-bar-confirmation', {type: 'feedback'}, () => dispatch(dismissOverlay)))
+    dispatch(
+      showOverlay('help-bar-confirmation', {type: 'feedback'}, () =>
+        dispatch(dismissOverlay)
+      )
+    )
   }
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

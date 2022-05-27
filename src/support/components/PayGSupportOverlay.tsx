@@ -65,7 +65,11 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   const handleSubmit = (evt): void => {
     evt.preventDefault()
     event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
-    dispatch(showOverlay('help-bar-confirmation', {type: 'PAYG'}, () => dispatch(dismissOverlay)))
+    dispatch(
+      showOverlay('help-bar-confirmation', {type: 'PAYG'}, () =>
+        dispatch(dismissOverlay)
+      )
+    )
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {

@@ -62,52 +62,34 @@ export const getOrganizations = () => async (
     }
 
     const {orgs} = resp.data
+    const numOrgs = orgs.length
+    const orgsWithCloudProvider: Organization[] = orgs
 
-    if (orgs.length > 1) {
-      throw new Error('Received more than one organization for this account.')
-    }
-
-    if (Object.keys(orgs[0]).length > 0) {
+    // If expected behavior of one org being returned, retrieve name of its cloud provider from the new org API, and add to org object to be stored in state.
+    if (numOrgs > 0 && numOrgs < 2 && Object.keys(orgs[0]).length > 0) {
       const newOrgAPIData = await getNewAPIData({orgId: orgs[0].id})
 
       if (newOrgAPIData.status !== 200) {
         throw new Error(newOrgAPIData.data.message)
       }
 
-      const orgsWithProvider = [
-        {...cloneDeep(orgs[0]), provider: newOrgAPIData.data.provider},
-      ]
-
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        orgsWithProvider,
-        arrayOfOrgs
-      )
-
-      gaEvent('cloudAppOrgIdReady', {
-        identity: {
-          organizationIds: organizations.result,
-        },
-      })
-
-      dispatch(setOrgs(RemoteDataState.Done, organizations))
-
-      return orgsWithProvider
-    } else {
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        orgs,
-        arrayOfOrgs
-      )
-
-      gaEvent('cloudAppOrgIdReady', {
-        identity: {
-          organizationIds: organizations.result,
-        },
-      })
-
-      dispatch(setOrgs(RemoteDataState.Done, organizations))
-
-      return orgs
+      orgsWithCloudProvider[0].provider = newOrgAPIData.data.provider
     }
+
+    const organizations = normalize<Organization, OrgEntities, string[]>(
+      orgsWithCloudProvider,
+      arrayOfOrgs
+    )
+
+    gaEvent('cloudAppOrgIdReady', {
+      identity: {
+        organizationIds: organizations.result,
+      },
+    })
+
+    dispatch(setOrgs(RemoteDataState.Done, organizations))
+
+    return orgsWithCloudProvider
   } catch (error) {
     console.error(error)
     if (getOrg(getState())?.id && error.message === 'organization not found') {

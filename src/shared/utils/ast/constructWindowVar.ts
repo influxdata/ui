@@ -10,8 +10,7 @@ import {
   TIME_RANGE_START,
   TIME_RANGE_STOP,
 } from 'src/variables/constants'
-import {rangeTimes, propertyTime} from 'src/shared/utils/ast/extractors'
-import {AstScope} from 'src/shared/utils/ast/visitors'
+import {AstScope, rangeTimes, propertyTime} from 'src/shared/utils/ast'
 import {convertTimeRangeDurationToWindowPeriodDuration} from 'src/shared/utils/duration'
 
 export function constructWindowVarAssignmentFromTimes(

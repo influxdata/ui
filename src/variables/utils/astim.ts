@@ -1,6 +1,6 @@
 // Utils
 import {parse} from 'src/languageSupport/languages/flux/parser'
-import {findNodes} from 'src/shared/utils/ast/visitors'
+import {findNodes} from 'src/shared/utils/ast'
 
 // Types
 import {File, MemberExpression} from 'src/types'

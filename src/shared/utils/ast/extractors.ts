@@ -2,8 +2,7 @@
 import {get} from 'lodash'
 
 // Utils
-import {AstScope} from 'src/shared/utils/ast/visitors'
-import {isNowCall, isTimeCall} from 'src/shared/utils/ast/nodes'
+import {AstScope, isNowCall, isTimeCall} from 'src/shared/utils/ast'
 import {durationToMilliseconds} from 'src/shared/utils/duration'
 
 // Types
@@ -103,7 +102,6 @@ export function propertyTime(
         const property = get(value, 'arguments[0].properties[0]value', {})
         return propertyTime(scope, property, now)
       }
-
       throw new Error('unexpected CallExpression')
 
     default:

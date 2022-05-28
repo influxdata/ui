@@ -11,8 +11,7 @@ import {
   StringLiteral,
 } from 'src/types/ast'
 import {WINDOW_PERIOD} from 'src/variables/constants'
-import {isRangeNode} from 'src/shared/utils/ast/nodes'
-import {constructWindowVarAssignmentFromRange} from 'src/shared/utils/ast/constructWindowVar'
+import {isRangeNode, constructWindowVarAssignmentFromRange} from 'src/shared/utils/ast'
 
 /*
   Find all nodes in a tree matching the `predicate` function. Each node in the

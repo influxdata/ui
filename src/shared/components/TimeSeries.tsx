@@ -244,6 +244,7 @@ class TimeSeries extends Component<Props, State> {
         const orgID =
           getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
 
+        // DLW FIXME TODO: how test/hit this code?
         const windowVarNode = getWindowPeriodVarAssignment(text, variables)
         const extern = buildUsedVarsOption(text, variables, windowVarNode)
 

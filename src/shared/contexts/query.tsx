@@ -6,27 +6,25 @@ import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 
 import {getOrg} from 'src/organizations/selectors'
 import {RunQueryResult} from 'src/shared/apis/query'
-import {getDurationFromAST} from 'src/shared/utils/duration'
 import {getWindowPeriodVarAssignment} from 'src/variables/utils/getWindowVars'
+import {
+  findNodeScope,
+  isTimeRangeStartVariableNode,
+  isTimeRangeStopVariableNode,
+} from 'src/shared/utils/ast'
+import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {asAssignmentNode} from 'src/variables/utils/convertVariables'
 
 // Constants
 import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
 } from 'src/cloud/constants'
-import {WINDOW_PERIOD} from 'src/variables/constants'
+import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
-import {
-  CancellationError,
-  File,
-  ObjectExpression,
-  OptionStatement,
-  Property,
-  Variable,
-  VariableAssignment,
-} from 'src/types'
+import {CancellationError, File, Variable} from 'src/types'
 import {
   FluxResult,
   QueryScope,
@@ -109,100 +107,43 @@ export const remove = (node: File, test, acc = []) => {
   return acc
 }
 
-const _updateWindowPeriod = (ast, optionAST): void => {
-  const windowPeriod = find(
-    optionAST,
-    node => node?.type === 'Property' && node?.key?.name === 'windowPeriod'
-  )
-  const windowDuration = getDurationFromAST(ast, optionAST)
-
-  windowPeriod.forEach(node => {
-    node.value = {
-      type: 'DurationLiteral',
-      values: [
-        {
-          magnitude: windowDuration,
-          unit: 'ms',
-        },
-      ],
-    }
-  })
-}
-
-const _addWindowPeriod = (text: string, optionAST: File, vars: Variable[]) => {
-  const windowVarAstNode = getWindowPeriodVarAssignment(text, vars)
-  if (!windowVarAstNode.length) {
-    return
-  }
-
-  const node = {
-    key: windowVarAstNode[0].id,
-    value: windowVarAstNode[0].init,
-    type: 'Property',
-  } as Property
-  ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment)
-    .init as ObjectExpression).properties.push(node)
-}
-
 export const simplify = (text, vars: Variable[]) => {
   try {
     const ast = isFlagEnabled('fastFlows') ? parseQuery(text) : parse(text)
-    const referencedVars = find(
+
+    const {scope: scopeStartUsed} = findNodeScope(
       ast,
-      node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
+      isTimeRangeStartVariableNode,
+      (_, acc) => acc
     )
-      .map(node => node.property.name)
-      .reduce((acc, curr) => {
-        if (vars[curr]) {
-          acc[curr] = vars[curr]
-        }
-        return acc
-      }, {})
-
-    // Grab all variables that are defined in the query while removing the old definition from the AST
-    const queryDefinedVars = remove(
+    const {scope: scopeStopUsed} = findNodeScope(
       ast,
-      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
-
-        return _acc
-      }, acc)
-
-      return acc
-    }, {})
-
-    // Merge the two variable maps, allowing for any user defined variables to override
-    // global system variables
-    Object.keys(queryDefinedVars).forEach(vari => {
-      if (referencedVars.hasOwnProperty(vari)) {
-        referencedVars[vari] = queryDefinedVars[vari]
-      }
-    })
-
-    const varVals = Object.entries(referencedVars)
-      .map(([k, v]) => `${k}: ${v}`)
-      .join(',\n')
-    const optionQuery = varVals.trim().length
-      ? `option v = {\n${varVals}\n}\n`
-      : `option v = {}`
-    const optionAST = isFlagEnabled('fastFlows')
-      ? parseQuery(optionQuery)
-      : parse(optionQuery)
-
-    // load in windowPeriod at the last second, because it needs to self reference all the things
-    if (referencedVars.hasOwnProperty('windowPeriod')) {
-      _updateWindowPeriod(ast, optionAST)
-    } else if (text.includes(WINDOW_PERIOD)) {
-      _addWindowPeriod(text, optionAST, vars)
+      isTimeRangeStopVariableNode,
+      (_, acc) => acc
+    )
+    const variableAssignmentNodes = getWindowPeriodVarAssignment(text, vars)
+    if (
+      text.includes(`v.${TIME_RANGE_START}`) &&
+      !scopeStartUsed[`v.${TIME_RANGE_START}`]
+    ) {
+      variableAssignmentNodes.push(
+        asAssignmentNode(vars.filter(v => v.name == TIME_RANGE_START)[0])
+      )
     }
+    if (
+      text.includes(`v.${TIME_RANGE_STOP}`) &&
+      !scopeStopUsed[`v.${TIME_RANGE_STOP}`]
+    ) {
+      variableAssignmentNodes.push(
+        asAssignmentNode(vars.filter(v => v.name == TIME_RANGE_STOP)[0])
+      )
+    }
+    const optionAST = buildVarsOption(variableAssignmentNodes)
 
     // append optionAST to top of AST File
-    ast.body.unshift(optionAST.body[0])
+    if (optionAST.body.length) {
+      ast.body.unshift(optionAST.body[0])
+    }
 
     // Join together any duplicate task options
     const taskParams = remove(

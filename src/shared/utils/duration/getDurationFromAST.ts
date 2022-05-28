@@ -5,7 +5,11 @@ import {
   TIME_RANGE_STOP,
 } from 'src/variables/constants'
 import {FALLBACK_WINDOW_PERIOD} from 'src/shared/constants/timeRanges'
-import {isWindowPeriodVariableNode, findNodeScope, constructWindowVarAssignmentFromTimes} from 'src/shared/utils/ast'
+import {
+  isWindowPeriodVariableNode,
+  findNodeScope,
+  constructWindowVarAssignmentFromTimes,
+} from 'src/shared/utils/ast'
 
 /*
   Determining the AST subtree for `v.windowPeriod`:

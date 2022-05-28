@@ -1,6 +1,10 @@
 import {get} from 'lodash'
 import {Node, CallExpression} from 'src/types'
-import { TIME_RANGE_START, TIME_RANGE_STOP, WINDOW_PERIOD } from 'src/variables/constants'
+import {
+  TIME_RANGE_START,
+  TIME_RANGE_STOP,
+  WINDOW_PERIOD,
+} from 'src/variables/constants'
 
 export function isNowCall(node: CallExpression): boolean {
   return get(node, 'callee.name') === 'now'

@@ -221,7 +221,8 @@ export const getCachedResultsOrRunQuery = (
     }
   }
 
-  const windowVarNode = getWindowPeriodVarAssignment(query, variables)
+  // DLW FIXME TODO: had to use allVars, not the cached `variables`. is this correct?
+  const windowVarNode = getWindowPeriodVarAssignment(query, allVars)
 
   // otherwise query & set results
   const extern = buildUsedVarsOption(query, variables, windowVarNode)

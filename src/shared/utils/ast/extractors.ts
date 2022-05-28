@@ -2,17 +2,12 @@
 import {get} from 'lodash'
 
 // Utils
-import {findNodes} from 'src/shared/utils/ast/visitors'
-import {
-  isNowCall,
-  isTimeCall,
-  isVariableDeclaration,
-} from 'src/shared/utils/ast/nodes'
+import {AstScope} from 'src/shared/utils/ast/visitors'
+import {isNowCall, isTimeCall} from 'src/shared/utils/ast/nodes'
 import {durationToMilliseconds} from 'src/shared/utils/duration'
 
 // Types
 import {
-  Node,
   CallExpression,
   Property,
   Expression,
@@ -29,7 +24,7 @@ import {
   instant (`Date.now()`).
 */
 export function rangeTimes(
-  ast: any,
+  scope: AstScope,
   rangeNode: CallExpression
 ): [number, number] {
   const now = Date.now()
@@ -40,15 +35,14 @@ export function rangeTimes(
   const startProperty = properties.find(
     p => (p.key as Identifier).name === 'start'
   )
-
-  const start = propertyTime(ast, startProperty.value, now)
+  const start = propertyTime(scope, startProperty.value, now)
 
   // The `end` argument to a `range` call is optional, and defaults to now
   const endProperty = properties.find(
     p => (p.key as Identifier).name === 'stop'
   )
+  const end = endProperty ? propertyTime(scope, endProperty.value, now) : now
 
-  const end = endProperty ? propertyTime(ast, endProperty.value, now) : now
   if (isNaN(start) || isNaN(end)) {
     throw new Error('failed to analyze query')
   }
@@ -56,9 +50,11 @@ export function rangeTimes(
   return [start, end]
 }
 
-// FIXME: this should not use lookupVariable(ast, value.name)
-// instead should lookup value in scope map
-export function propertyTime(ast: any, value: Expression, now: number): number {
+export function propertyTime(
+  scope: AstScope,
+  value: Expression,
+  now: number
+): number {
   switch (value.type) {
     case 'UnaryExpression':
       return (
@@ -73,7 +69,7 @@ export function propertyTime(ast: any, value: Expression, now: number): number {
       return Date.parse(value.value)
 
     case 'Identifier':
-      return propertyTime(ast, lookupVariable(ast, value.name), now)
+      return propertyTime(scope, lookupVariable(scope, value.name), now)
 
     case 'BinaryExpression':
       const leftTime = Date.parse((value.left as DateTimeLiteral).value)
@@ -93,12 +89,11 @@ export function propertyTime(ast: any, value: Expression, now: number): number {
     case 'MemberExpression':
       const objName = get(value, 'object.name')
       const propertyName = get(value, 'property.name')
-      const objExpr = lookupVariable(ast, objName) as ObjectExpression
-      const property = objExpr.properties.find(
-        p => get(p, 'key.name') === propertyName
-      )
-
-      return propertyTime(ast, property.value, now)
+      const objExpr = lookupVariable(
+        scope,
+        `${objName}.${propertyName}`
+      ) as ObjectExpression
+      return propertyTime(scope, objExpr, now)
 
     case 'CallExpression':
       if (isNowCall(value)) {
@@ -106,7 +101,7 @@ export function propertyTime(ast: any, value: Expression, now: number): number {
       }
       if (isTimeCall(value)) {
         const property = get(value, 'arguments[0].properties[0]value', {})
-        return propertyTime(ast, property, now)
+        return propertyTime(scope, property, now)
       }
 
       throw new Error('unexpected CallExpression')
@@ -116,26 +111,17 @@ export function propertyTime(ast: any, value: Expression, now: number): number {
   }
 }
 
-/*
-  Find the node in the `ast` that defines the value of the variable with the
-  given `name`.
-*/
-export function lookupVariable(ast: Node, name: string): Expression {
-  const isDeclarator = node => {
-    return isVariableDeclaration(node) && get(node, 'id.name') === name
+function lookupVariable(scope: AstScope, name: string): Expression {
+  if (!scope[name]) {
+    throw new Error('Used variable is missing from scope')
   }
-
-  const declarator = findNodes(ast, isDeclarator)
-
-  if (!declarator.length) {
-    throw new Error(`unable to lookup variable "${name}"`)
+  const node = scope[name]
+  switch (node.type) {
+    case 'Property':
+      return node.value
+    case 'VariableAssignment':
+      return node.init
+    default:
+      return node
   }
-
-  if (declarator.length > 1) {
-    throw new Error('cannot lookup variable with duplicate declarations')
-  }
-
-  const init = declarator[0].init
-
-  return init
 }

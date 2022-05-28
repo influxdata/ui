@@ -28,6 +28,7 @@ export function getWindowPeriodVariableAssignment(
       acc.scope[`v.${TIME_RANGE_START}`]
     ) {
       acc.scope[`v.${WINDOW_PERIOD}`] = constructWindowVarAssignmentFromTimes(
+        acc.scope,
         acc.scope[`v.${TIME_RANGE_START}`] as Property,
         acc.scope[`v.${TIME_RANGE_STOP}`] as Property | undefined
       )

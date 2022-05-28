@@ -11,9 +11,11 @@ import {
   TIME_RANGE_STOP,
 } from 'src/variables/constants'
 import {rangeTimes, propertyTime} from 'src/shared/utils/ast/extractors'
+import {AstScope} from 'src/shared/utils/ast/visitors'
 import {convertTimeRangeDurationToWindowPeriodDuration} from 'src/shared/utils/duration'
 
 export function constructWindowVarAssignmentFromTimes(
+  scope: AstScope,
   startAst: Property,
   stopAst: Property = null
 ): VariableAssignment {
@@ -21,9 +23,9 @@ export function constructWindowVarAssignmentFromTimes(
 
   const extractFromPropertySubtree = (n: Property, k: string) => {
     if ((n.key as Identifier)?.name === k) {
-      return propertyTime(n, n.value, NOW)
+      return propertyTime(scope, n.value, NOW)
     } else if ((n.key as StringLiteral)?.value === k) {
-      return propertyTime(n, n.key as StringLiteral, NOW)
+      return propertyTime(scope, n.key as StringLiteral, NOW)
     }
   }
 
@@ -49,10 +51,10 @@ export function constructWindowVarAssignmentFromTimes(
 }
 
 export function constructWindowVarAssignmentFromRange(
-  ast: Node,
+  scope,
   range: CallExpression
 ): VariableAssignment {
-  const [start, end] = rangeTimes(ast, range)
+  const [start, end] = rangeTimes(scope, range)
   return {
     type: 'VariableAssignment',
     id: {

@@ -1,9 +1,12 @@
 import {isObject} from 'lodash'
+import {format_from_js_file} from '@influxdata/flux-lsp-browser'
 import {
   Node,
   CallExpression,
   VariableAssignment,
   ObjectExpression,
+  Expression,
+  Property,
   Identifier,
   StringLiteral,
 } from 'src/types/ast'
@@ -38,8 +41,8 @@ export const findNodes = (
   return acc
 }
 
-interface AstScope {
-  [variableIdentifier: string]: Node
+export interface AstScope {
+  [variableIdentifier: string]: Property | VariableAssignment | Expression
 }
 interface RequiredAcc {
   halted: boolean
@@ -59,7 +62,7 @@ const SCOPED_WINDOW_PERIOD = `v.${WINDOW_PERIOD}`
 export const findNodeScope = (
   node: Node,
   halt: (node: any) => boolean,
-  whenFound: (node, acc) => {halted: boolean; scope: AstScope},
+  whenFound: (node, acc) => Accumulator,
   acc: Accumulator = {halted: false, scope: {} as AstScope}
 ): Accumulator => {
   if (acc.halted) {
@@ -74,7 +77,7 @@ export const findNodeScope = (
     let fn = recurseWithoutSharingSiblingScope
     if (isRangeNode(node)) {
       const windowVar = constructWindowVarAssignmentFromRange(
-        node as any,
+        acc.scope,
         node as CallExpression
       )
       acc.scope = {...acc.scope, [SCOPED_WINDOW_PERIOD]: windowVar}
@@ -149,12 +152,13 @@ export const findNodeScope = (
         acc
       )
 
-    // Member assignment is equivalent to setting an array index value.
-    // Not the use case for our scope map.
-    // But can still consume the halt node
     case 'MemberAssignment':
       // obj[kProperty] = Expr
       // obj can be an expr
+      try {
+        const bindName = format_from_js_file(node.member) // can be an expr, could error
+        acc.scope = {...acc.scope, [bindName]: node.init}
+      } catch (_) {}
       return recurseWithoutSharingSiblingScope(
         [node.member.object, node.init],
         halt,

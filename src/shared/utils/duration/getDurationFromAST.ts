@@ -11,13 +11,17 @@ import {constructWindowVarAssignmentFromTimes} from 'src/shared/utils/ast/constr
 
 /*
   Determining the AST subtree for `v.windowPeriod`:
-    * construction of optionASTs
-    * for sending to LSP, or in query construction (for backend)
+    * always return a windowPeriod ast node:
+        * flag if node was created (and must be injected)
+    * use cases:
+        * construction of optionASTs
+        * in query construction (for backend)
+        * for sending to LSP
 */
 export function getWindowPeriodVariableAssignment(
   ast: Node,
   outerContext: Node
-): VariableAssignment {
+): {toInject: boolean; node: VariableAssignment} {
   const whenFound = (_, acc) => {
     if (
       !acc.scope[`v.${WINDOW_PERIOD}`] &&
@@ -27,6 +31,7 @@ export function getWindowPeriodVariableAssignment(
         acc.scope[`v.${TIME_RANGE_START}`] as Property,
         acc.scope[`v.${TIME_RANGE_STOP}`] as Property | undefined
       )
+      acc.toInjectWindowVar = true
     }
     return acc
   }
@@ -36,29 +41,41 @@ export function getWindowPeriodVariableAssignment(
     _ => false,
     (_, acc) => acc
   )
-  const {scope} = findNodeScope(ast, isWindowPeriodVariableNode, whenFound, {
-    scope: outerScope,
-    halted: false,
-  })
+  const {scope, toInjectWindowVar} = findNodeScope(
+    ast,
+    isWindowPeriodVariableNode,
+    whenFound,
+    {
+      scope: outerScope,
+      halted: false,
+    }
+  )
 
   if (scope[`v.${WINDOW_PERIOD}`]) {
-    return scope[`v.${WINDOW_PERIOD}`] as VariableAssignment
+    return {
+      toInject: !!toInjectWindowVar,
+      node: scope[`v.${WINDOW_PERIOD}`] as VariableAssignment,
+    }
   }
-  return null
+  return {toInject: false, node: null}
 }
 
 /*
   Determining a set duration value for `v.windowPeriod`:
     * when a number must be returned
-    * used in the outer UI window (scope outside editor)
+    * use cases:
+        * the outer UI window display (scope outside editor)
+        * NOT for lsp, query to backend, etc
+    * tech debt:
+        * currently, notebooks code is seeking & overwriting `option v` in flux
+        * therefore, this method is used for that code. Although this is not ideal. 
 
   Note this is a windowPeriod duration. Not a timeRange duration.
 */
 export function getDurationFromAST(ast: Node, outerContext: Node): number {
-  const windowVariableAssignmentNode = getWindowPeriodVariableAssignment(
-    ast,
-    outerContext
-  )
+  const {
+    node: windowVariableAssignmentNode,
+  } = getWindowPeriodVariableAssignment(ast, outerContext)
   if (!windowVariableAssignmentNode) {
     throw new Error('windowPeriod not found in neither query nor outer scope')
   } else if (windowVariableAssignmentNode.init.hasOwnProperty('values')) {

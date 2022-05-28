@@ -134,6 +134,8 @@ export const FlowQueryProvider: FC = ({children}) => {
             timeRangeStart,
             timeRangeStop,
           },
+          // future use: additional Variables injected into notebooks
+          variables: flow?.range ? getTimeRangeVars(flow.range) : [],
         },
         source: '',
         visual: '',
@@ -243,32 +245,20 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
-    // DLW FIXME TODO:
-    // this override can be the individual range on a pipe
-    // but it's not a TimeRange time. have to reach further into the code.
-    console.log('override', override)
-    console.log('flow.query > query', flow.range)
     const _override: QueryScope = {
       region: window.location.origin,
       org: org.id,
-      vars: flow?.range ? getTimeRangeVars(flow.range) : [],
-      ...(override || {}),
+      ...(override || {variables: []}),
     }
 
     return queryAPI(text, _override)
   }
 
   const basic = (text: string, override?: QueryScope): Promise<FluxResult> => {
-    // DLW FIXME TODO:
-    // this override can be the individual range on a pipe
-    // but it's not a TimeRange time. have to reach further into the code.
-    console.log('override', override)
-    console.log('flow.query > basic', flow.range)
     const _override: QueryScope = {
       region: window.location.origin,
       org: org.id,
-      vars: flow?.range ? getTimeRangeVars(flow.range) : [],
-      ...(override || {}),
+      ...(override || {variables: []}),
     }
 
     return basicAPI(text, _override)
@@ -399,8 +389,8 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   const simple = (text: string) => {
-    const vars = flow?.range ? getTimeRangeVars(flow.range) : []
-    return simplify(text, vars)
+    const variables = flow?.range ? getTimeRangeVars(flow.range) : []
+    return simplify(text, variables)
   }
 
   if (!flow) {

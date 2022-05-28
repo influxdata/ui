@@ -2,10 +2,8 @@
 import {get} from 'lodash'
 
 // Utils
-import {getActiveQuery} from 'src/timeMachine/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
-import {getTimeRange, getTimeRangeWithTimezone} from 'src/dashboards/selectors'
-import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 import {
   TIME_RANGE_START,
   TIME_RANGE_STOP,
@@ -150,21 +148,6 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
   if (variableID === TIME_RANGE_START || variableID === TIME_RANGE_STOP) {
     const timeRange = getTimeRangeWithTimezone(state)
     vari = getRangeVariable(variableID, timeRange)
-  }
-
-  if (variableID === WINDOW_PERIOD) {
-    const {text} = getActiveQuery(state)
-    const variables = getVariables(state)
-    const range = getTimeRange(state)
-    const timeVars = [
-      getRangeVariable(TIME_RANGE_START, range),
-      getRangeVariable(TIME_RANGE_STOP, range),
-    ]
-
-    vari = (getWindowPeriodVariableFromVariables(text, [
-      ...timeVars,
-      ...variables,
-    ]) || [])[0]
   }
 
   if (!vari) {

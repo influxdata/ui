@@ -26,7 +26,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {QueryContext} from 'src/shared/contexts/query'
 import {notify} from 'src/shared/actions/notifications'
 import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
-import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
 
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
@@ -68,7 +67,7 @@ const ResultsPane: FC = () => {
   const submit = () => {
     setStatus(RemoteDataState.Loading)
     query(text, {
-      vars: !!timeRange ? getTimeRangeVars(timeRange) : [],
+      variables: !!timeRange ? getTimeRangeVars(timeRange) : [],
     })
       .then(r => {
         event('resultReceived', {
@@ -83,10 +82,7 @@ const ResultsPane: FC = () => {
       })
   }
 
-  const timeVars = getTimeRangeVars(timeRange)
-  const variables = timeVars.concat(
-    getWindowPeriodVariableFromVariables(text, timeVars) || []
-  )
+  const variables = getTimeRangeVars(timeRange)
 
   return (
     <DraggableResizer

@@ -8,7 +8,7 @@ import {formatVarsOption} from 'src/variables/utils/formatVarsOption'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+import {getWindowPeriodVarAssignment} from 'src/variables/utils/getWindowVars'
 
 // Types
 import {
@@ -103,11 +103,8 @@ export class DefaultValueFetcher implements ValueFetcher {
       }
     }
 
-    const windowVar = getWindowPeriodVariableFromVariables(query, variables)
-    const extern = buildUsedVarsOption(
-      query,
-      windowVar ? variables.concat(windowVar) : variables
-    )
+    const windowVarNode = getWindowPeriodVarAssignment(query, variables)
+    const extern = buildUsedVarsOption(query, variables, windowVarNode)
     const request = runQuery(orgID, query, extern, abortController)
     event('runQuery', {context: 'variables'})
 

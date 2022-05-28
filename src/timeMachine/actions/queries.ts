@@ -23,7 +23,7 @@ import {findNodes} from 'src/shared/utils/ast/visitors'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+import {getWindowPeriodVarAssignment} from 'src/variables/utils/getWindowVars'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -286,11 +286,8 @@ export const executeQueries = (abortController?: AbortController) => async (
       if (getOrg(state).id === orgID) {
         event('orgData_queried')
       }
-      const windowVar = getWindowPeriodVariableFromVariables(text, allVariables)
-      const extern = buildUsedVarsOption(
-        text,
-        windowVar ? allVariables.concat(windowVar) : allVariables
-      )
+      const windowVarNode = getWindowPeriodVarAssignment(text, allVariables)
+      const extern = buildUsedVarsOption(text, allVariables, windowVarNode)
 
       event('runQuery', {context: 'timeMachine'})
 
@@ -323,6 +320,7 @@ export const executeQueries = (abortController?: AbortController) => async (
     } = state
 
     if (checkID) {
+      // DLW FIXME TODO: decide how to handle
       const extern = buildUsedVarsOption(
         queries.map(query => query.text),
         allVariables

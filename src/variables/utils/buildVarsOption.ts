@@ -11,7 +11,7 @@ import {asAssignmentNode} from 'src/variables/utils/convertVariables'
 export const buildUsedVarsOption = (
   query: string | string[],
   allVariables: Variable[],
-  windowVars?: VariableAssignment[]
+  variableAssignmentNodesToAppend?: VariableAssignment[]
 ): File => {
   const filteredVars = filterUnusedVarsBasedOnQuery(
     allVariables,
@@ -22,8 +22,10 @@ export const buildUsedVarsOption = (
     .map(v => asAssignmentNode(v))
     .filter(v => !!v)
 
-  windowVars = windowVars ?? []
-  return buildVarsOption([...filteredAssignmentVars, ...(windowVars ?? [])])
+  return buildVarsOption([
+    ...filteredAssignmentVars,
+    ...(variableAssignmentNodesToAppend ?? []),
+  ])
 }
 
 export const buildVarsOption = (variables: VariableAssignment[]): File => ({
@@ -31,22 +33,28 @@ export const buildVarsOption = (variables: VariableAssignment[]): File => ({
   package: null,
   imports: null,
   // only claim namespace `v` if needed
-  ...(!variables.length ? {body: []} : {body: [
-    {
-      type: 'OptionStatement',
-      assignment: {
-        type: 'VariableAssignment',
-        id: {
-          type: 'Identifier',
-          name: OPTION_NAME,
-        },
-        init: {
-          type: 'ObjectExpression',
-          properties: variables.filter(v => !!v).map(assignmentToProperty),
-        },
-      },
-    },
-  ]}),
+  ...(!variables.length
+    ? {body: []}
+    : {
+        body: [
+          {
+            type: 'OptionStatement',
+            assignment: {
+              type: 'VariableAssignment',
+              id: {
+                type: 'Identifier',
+                name: OPTION_NAME,
+              },
+              init: {
+                type: 'ObjectExpression',
+                properties: variables
+                  .filter(v => !!v)
+                  .map(assignmentToProperty),
+              },
+            },
+          },
+        ],
+      }),
 })
 
 const assignmentToProperty = (variable: VariableAssignment): Property => {

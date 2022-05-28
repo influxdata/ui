@@ -6,17 +6,27 @@ import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 
 import {getOrg} from 'src/organizations/selectors'
 import {RunQueryResult} from 'src/shared/apis/query'
-import {getDurationFromAST} from '../utils/duration'
+import {getDurationFromAST} from 'src/shared/utils/duration'
+import {getWindowPeriodVarAssignment} from 'src/variables/utils/getWindowVars'
 
 // Constants
 import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
 } from 'src/cloud/constants'
+import {WINDOW_PERIOD} from 'src/variables/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
-import {CancellationError, File, Variable} from 'src/types'
+import {
+  CancellationError,
+  File,
+  ObjectExpression,
+  OptionStatement,
+  Property,
+  Variable,
+  VariableAssignment,
+} from 'src/types'
 import {
   FluxResult,
   QueryScope,
@@ -99,12 +109,11 @@ export const remove = (node: File, test, acc = []) => {
   return acc
 }
 
-const _addWindowPeriod = (ast, optionAST): void => {
+const _updateWindowPeriod = (ast, optionAST): void => {
   const windowPeriod = find(
     optionAST,
     node => node?.type === 'Property' && node?.key?.name === 'windowPeriod'
   )
-
   const windowDuration = getDurationFromAST(ast, optionAST)
 
   windowPeriod.forEach(node => {
@@ -118,6 +127,21 @@ const _addWindowPeriod = (ast, optionAST): void => {
       ],
     }
   })
+}
+
+const _addWindowPeriod = (text: string, optionAST: File, vars: Variable[]) => {
+  const windowVarAstNode = getWindowPeriodVarAssignment(text, vars)
+  if (!windowVarAstNode.length) {
+    return
+  }
+
+  const node = {
+    key: windowVarAstNode[0].id,
+    value: windowVarAstNode[0].init,
+    type: 'Property',
+  } as Property
+  ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment)
+    .init as ObjectExpression).properties.push(node)
 }
 
 export const simplify = (text, vars: Variable[]) => {
@@ -163,18 +187,22 @@ export const simplify = (text, vars: Variable[]) => {
     const varVals = Object.entries(referencedVars)
       .map(([k, v]) => `${k}: ${v}`)
       .join(',\n')
+    const optionQuery = varVals.trim().length
+      ? `option v = {\n${varVals}\n}\n`
+      : `option v = {}`
     const optionAST = isFlagEnabled('fastFlows')
-      ? parseQuery(`option v = {\n${varVals}\n}\n`)
-      : parse(`option v = {\n${varVals}\n}\n`)
-
-    if (varVals.length) {
-      ast.body.unshift(optionAST.body[0])
-    }
+      ? parseQuery(optionQuery)
+      : parse(optionQuery)
 
     // load in windowPeriod at the last second, because it needs to self reference all the things
     if (referencedVars.hasOwnProperty('windowPeriod')) {
-      _addWindowPeriod(ast, optionAST)
+      _updateWindowPeriod(ast, optionAST)
+    } else if (text.includes(WINDOW_PERIOD)) {
+      _addWindowPeriod(text, optionAST, vars)
     }
+
+    // append optionAST to top of AST File
+    ast.body.unshift(optionAST.body[0])
 
     // Join together any duplicate task options
     const taskParams = remove(
@@ -351,7 +379,7 @@ export const QueryProvider: FC = ({children}) => {
   }, [])
 
   const basic = (text: string, override?: QueryScope) => {
-    const query = simplify(text, override?.vars || [])
+    const query = simplify(text, override?.variables || [])
 
     const orgID = override?.org || org.id
 

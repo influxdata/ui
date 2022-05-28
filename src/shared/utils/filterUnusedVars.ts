@@ -50,6 +50,7 @@ export const createdUsedVarsCache = (variables: Variable[]) => {
   }, {})
 }
 
+// TODO: use scope-appropriate de-duping of the allVariables
 export const filterUnusedVarsBasedOnQuery = (
   variables: Variable[],
   queryTexts: string[]

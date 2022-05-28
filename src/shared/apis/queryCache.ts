@@ -7,7 +7,7 @@ import {getAllVariables} from 'src/variables/selectors'
 // Utils
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+import {getWindowPeriodVarAssignment} from 'src/variables/utils/getWindowVars'
 
 // Types
 import {
@@ -221,13 +221,10 @@ export const getCachedResultsOrRunQuery = (
     }
   }
 
-  const windowVar = getWindowPeriodVariableFromVariables(query, variables)
+  const windowVarNode = getWindowPeriodVarAssignment(query, variables)
 
   // otherwise query & set results
-  const extern = buildUsedVarsOption(
-    query,
-    windowVar ? variables.concat(windowVar) : variables
-  )
+  const extern = buildUsedVarsOption(query, variables, windowVarNode)
   const {mutex} = queryCache.initializeCacheByID(queryID, hashedVariables)
   const results = mutex.run(orgID, query, extern)
   results.promise = results.promise

@@ -38,9 +38,17 @@ export const findNodes = (
   return acc
 }
 
-export interface Scope {
+interface AstScope {
   [variableIdentifier: string]: Node
 }
+interface RequiredAcc {
+  halted: boolean
+  scope: AstScope
+}
+interface Accumulator extends RequiredAcc {
+  [callerProps: string]: any
+}
+
 const SCOPED_WINDOW_PERIOD = `v.${WINDOW_PERIOD}`
 
 /*
@@ -51,15 +59,16 @@ const SCOPED_WINDOW_PERIOD = `v.${WINDOW_PERIOD}`
 export const findNodeScope = (
   node: Node,
   halt: (node: any) => boolean,
-  whenFound: (node, acc) => {halted: boolean; scope: Scope},
-  acc = {halted: false, scope: {} as Scope}
-): {halted: boolean; scope: Scope} => {
+  whenFound: (node, acc) => {halted: boolean; scope: AstScope},
+  acc: Accumulator = {halted: false, scope: {} as AstScope}
+): Accumulator => {
   if (acc.halted) {
     return acc
   }
   if (halt(node)) {
     return whenFound(node, {...acc, halted: true})
   }
+
   // have seen this with range subtrees, and lambda expr
   if (!node.type) {
     let fn = recurseWithoutSharingSiblingScope
@@ -70,6 +79,8 @@ export const findNodeScope = (
       )
       acc.scope = {...acc.scope, [SCOPED_WINDOW_PERIOD]: windowVar}
       fn = recurseWITHSharingSiblingScope
+      // TODO: fix tech debt. Breaking the interface of this visitor.
+      acc.toInjectWindowVar = true
     }
     if (node.hasOwnProperty('arguments')) {
       return fn((node as any).arguments, halt, whenFound, acc)
@@ -115,7 +126,7 @@ export const findNodeScope = (
         node.init.hasOwnProperty('properties') ||
         node.init.type == 'ObjectExpression'
       if (hasObjProps) {
-        const declarations = extractVariableSubtrees(node, node.id.name)
+        const declarations = extractVariableSubtrees(node, node.id.name, acc)
         // Assume siblings can consume.
         // v = {windowPeriod: time, myVar: expr(v.windowPeriod)}
         acc.scope = {...acc.scope, ...declarations}
@@ -137,7 +148,6 @@ export const findNodeScope = (
         whenFound,
         acc
       )
-
 
     // Member assignment is equivalent to setting an array index value.
     // Not the use case for our scope map.
@@ -236,8 +246,7 @@ export const findNodeScope = (
       // pipe needs to share range set earlier in the pipe
       // nested expressions (not range) will still not be shared
       return recurseWITHSharingSiblingScope(
-        // order is important.
-        // parse tree has the yield be the callee, and argument is everything upstream of the pipe
+        // order is important. reference AST upstream of the transformation, first.
         [node.argument, node.call],
         halt,
         whenFound,
@@ -297,39 +306,59 @@ export const findNodeScope = (
 function recurseWITHSharingSiblingScope(children, halt, whenFound, acc) {
   let halted = acc.halted
   for (const child of children) {
-    const subtreeRes = findNodeScope(child, halt, whenFound, acc)
+    const {scope: s, halted: h, ...subtreeRes} = findNodeScope(
+      child,
+      halt,
+      whenFound,
+      acc
+    )
     // Pass along scope. Do not halt.
-    acc.scope = {...acc.scope, ...subtreeRes.scope}
-    halted = halted || subtreeRes.halted
+    acc.scope = {...acc.scope, ...s}
+    halted = halted || h
+    acc = {...acc, ...subtreeRes}
   }
   return {...acc, halted}
 }
 
 function recurseWithoutSharingSiblingScope(children, halt, whenFound, acc) {
   let halted = acc.halted
-  let scopeToInclude = {} as Scope
+  let scopeToInclude = {} as AstScope
+  let restToInclude = {}
   for (const child of children) {
-    const subtreeRes = findNodeScope(child, halt, whenFound, {...acc})
+    const {halted: h, scope: s, ...restSubtree} = findNodeScope(
+      child,
+      halt,
+      whenFound,
+      {...acc}
+    )
     // These should only set scope, if they have halt node.
-    if (subtreeRes.halted) {
-      scopeToInclude = {...scopeToInclude, ...subtreeRes.scope}
+    if (h) {
+      scopeToInclude = {...scopeToInclude, ...s}
+      restToInclude = {...restToInclude, ...restSubtree}
     }
-    halted = halted || subtreeRes.halted
+    halted = halted || h
   }
-  return {scope: {...acc.scope, ...scopeToInclude}, halted}
+  return {...restToInclude, scope: {...acc.scope, ...scopeToInclude}, halted}
 }
 
 function extractVariableSubtrees(
   node: VariableAssignment,
-  prependLabel: string
-): Scope {
+  prependLabel: string,
+  acc: Accumulator
+): AstScope {
   const {properties} = node.init as ObjectExpression
-  return properties.reduce((acc, p) => {
+  return properties.reduce((accBindings, p) => {
     // `v.windowPeriod` or `v.myVar`
     const bindName = `${prependLabel}.${(p.key as Identifier).name ||
       (p.key as StringLiteral).value}`
-    return {...acc, [bindName]: p}
-  }, {} as Scope)
+
+    // TODO: fix tech debt. Breaking the interface of this visitor.
+    if (bindName === SCOPED_WINDOW_PERIOD) {
+      acc.toInjectWindowVar = false
+    }
+
+    return {...accBindings, [bindName]: p}
+  }, {} as AstScope)
 }
 
 // use for proving exhuastive switch during type checking

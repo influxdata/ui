@@ -18,8 +18,6 @@ import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-// Types
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -74,13 +72,12 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
     : ComponentStatus.Disabled
 
   return (
-    <Overlay.Container maxWidth={600}>
+    <Overlay.Container maxWidth={600} testID="overlay--container">
       <Overlay.Header
         testID="feedback-questions-overlay-header"
         title="Feedback & Questions"
         onDismiss={onClose}
       />
-      <ErrorBoundary>
         <Form onSubmit={handleSubmit}>
           <Overlay.Body>
             <Form.ValidationElement
@@ -108,18 +105,17 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
               color={ComponentColor.Tertiary}
               onClick={onClose}
               type={ButtonType.Button}
-              testID="payg-contact-support--cancel"
+              testID="feedback-questions-overlay--cancel"
             />
             <Button
               text="Submit"
               color={ComponentColor.Success}
               type={ButtonType.Submit}
-              testID="payg-contact-support--submit"
+              testID="feedback-questions-overlay--submit"
               status={submitButtonStatus}
             />
           </Overlay.Footer>
         </Form>
-      </ErrorBoundary>
     </Overlay.Container>
   )
 }

@@ -26,11 +26,15 @@ const TimeMachine: FunctionComponent = () => {
     'time-machine--split': isViewingVisOptions,
   })
 
-  let bottomContents: JSX.Element = null
-  if (activeTab === 'alerting') {
-    bottomContents = <TimeMachineAlerting />
-  } else if (activeTab === 'queries') {
-    bottomContents = <TimeMachineQueries />
+  const [bottomRef, setBottomRef] = useState(null)
+
+  const bottomContents = (): JSX.Element => {
+    if (activeTab === 'alerting') {
+      return <TimeMachineAlerting />
+    } else if (activeTab === 'queries') {
+      const bottomContentsMaxHeight = bottomRef?.getBoundingClientRect().height
+      return <TimeMachineQueries maxHeight={bottomContentsMaxHeight} />
+    }
   }
 
   return (
@@ -53,8 +57,13 @@ const TimeMachine: FunctionComponent = () => {
                 className="time-machine--bottom"
                 data-testid="time-machine--bottom"
               >
-                <div className="time-machine--bottom-contents">
-                  {bottomContents}
+                <div
+                  className="time-machine--bottom-contents"
+                  ref={ref => {
+                    setBottomRef(ref)
+                  }}
+                >
+                  {bottomContents()}
                 </div>
               </div>
             </ErrorBoundary>

@@ -72,6 +72,9 @@ export const parseFromFluxResults = (
       ) {
         columnData = new Date(columnData).toISOString()
       }
+      if (typeof columnData === 'string') {
+        columnData = `"${columnData}"`
+      }
       if (column === 'result') {
         // setting the column data for result as an empty string since the default
         // value given is set in the default headers:

@@ -1,4 +1,5 @@
 import React, {FC, ChangeEvent, useContext, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -11,7 +12,6 @@ import {
   Icon,
   IconFont,
   Input,
-  Method,
   Overlay,
   QuestionMarkTooltip,
   SelectDropdown,
@@ -19,11 +19,21 @@ import {
 } from '@influxdata/clockface'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
+// Actions
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Types
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {getMe} from 'src/me/selectors'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 import './ContactSupport.scss'
 interface OwnProps {
@@ -31,10 +41,14 @@ interface OwnProps {
 }
 
 const PayGSupportOverlay: FC<OwnProps> = () => {
+  const {id: orgID} = useSelector(getOrg)
+  const {id: meID} = useSelector(getMe)
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('')
   const [textInput, setTextInput] = useState('')
   const {onClose} = useContext(OverlayContext)
+
+  const dispatch = useDispatch()
 
   const severityLevel = [
     '1 - Critical',
@@ -48,11 +62,18 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
+  const handleSubmit = (evt): void => {
+    evt.preventDefault()
+    event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
+    dispatch(
+      showOverlay('help-bar-confirmation', {type: 'PAYG'}, () =>
+        dispatch(dismissOverlay)
+      )
+    )
+  }
+
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setTextInput(event.target.value)
-  }
-  const handleSubmit = (): void => {
-    // submit support form
   }
 
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +111,6 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
         diameter={14}
         tooltipContents={tooltipContent}
         tooltipStyle={{fontSize: '13px'}}
-        style={{marginLeft: '420px'}}
       />
     )
   }
@@ -102,24 +122,20 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
         title="Contact Support"
         onDismiss={onClose}
       />
-      <p className="status-page-text">
-        <span>
-          {' '}
-          <Icon glyph={IconFont.Info_New} />{' '}
-        </span>
-        Check our{' '}
-        <SafeBlankLink href="https://status.influxdata.com">
-          status page
-        </SafeBlankLink>{' '}
-        to see if there is an outage impacting your region.
-      </p>
       <ErrorBoundary>
-        <Form
-          onSubmit={handleSubmit}
-          action="https://influxdata--full.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
-          method={Method.Post}
-        >
+        <Form>
           <Overlay.Body>
+            <p className="status-page-text">
+              <span>
+                {' '}
+                <Icon glyph={IconFont.Info_New} />{' '}
+              </span>
+              Check our{' '}
+              <SafeBlankLink href="https://status.influxdata.com">
+                status page
+              </SafeBlankLink>{' '}
+              to see if there is an outage impacting your region.
+            </p>
             <Form.Element label="Subject" required={true}>
               <Input
                 name="subject"
@@ -158,24 +174,25 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
               )}
             </Form.ValidationElement>
           </Overlay.Body>
-          <Overlay.Footer>
-            <Button
-              text="Cancel"
-              color={ComponentColor.Tertiary}
-              onClick={onClose}
-              type={ButtonType.Button}
-              testID="payg-contact-support--cancel"
-            />
-            <Button
-              text="Submit"
-              color={ComponentColor.Success}
-              type={ButtonType.Submit}
-              testID="payg-contact-support--submit"
-              status={submitButtonStatus}
-            />
-          </Overlay.Footer>
         </Form>
       </ErrorBoundary>
+      <Overlay.Footer>
+        <Button
+          text="Cancel"
+          color={ComponentColor.Tertiary}
+          onClick={onClose}
+          type={ButtonType.Button}
+          testID="payg-contact-support--cancel"
+        />
+        <Button
+          text="Submit"
+          color={ComponentColor.Success}
+          type={ButtonType.Submit}
+          testID="payg-contact-support--submit"
+          status={submitButtonStatus}
+          onClick={handleSubmit}
+        />
+      </Overlay.Footer>
     </Overlay.Container>
   )
 }

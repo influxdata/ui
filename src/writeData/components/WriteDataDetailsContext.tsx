@@ -25,6 +25,7 @@ const DEFAULT_BUCKET = '<BUCKET>'
 
 interface WriteDataDetailsContextType {
   bucket: Bucket
+  buckets: Bucket[]
   changeBucket: (bucket: Bucket) => void
   query: string
   changeQuery: (query: string) => void
@@ -32,6 +33,7 @@ interface WriteDataDetailsContextType {
 
 export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
   bucket: null,
+  buckets: [],
   changeBucket: () => {},
   query: null,
   changeQuery: () => {},
@@ -119,6 +121,7 @@ const WriteDataDetailsProvider: FC = ({children}) => {
     <WriteDataDetailsContext.Provider
       value={{
         bucket,
+        buckets,
         changeBucket,
         query,
         changeQuery,

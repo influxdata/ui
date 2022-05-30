@@ -163,3 +163,11 @@ export const FeedbackQuestionsOverlay = RouteOverlay(
     history.push(`/orgs/${params.orgID}/support`)
   }
 )
+
+export const ConfirmationOverlay = RouteOverlay(
+  OverlayHandler,
+  'help-bar-confirmation',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/support`)
+  }
+)

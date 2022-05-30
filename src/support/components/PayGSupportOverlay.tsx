@@ -25,9 +25,6 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-// Types
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getMe, getQuartzMe} from 'src/me/selectors'
@@ -175,7 +172,6 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
         title="Contact Support"
         onDismiss={handleClose}
       />
-      <ErrorBoundary>
         <Form>
           <Overlay.Body>
             <p className="status-page-text">
@@ -207,6 +203,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
                 selectedOption={severity}
                 onSelect={handleChangeSeverity}
                 indicator={DropdownItemType.None}
+                testID="severity-level-dropdown"
               />
             </Form.Element>
             <Form.ValidationElement
@@ -228,7 +225,6 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
             </Form.ValidationElement>
           </Overlay.Body>
         </Form>
-      </ErrorBoundary>
       <Overlay.Footer>
         <Button
           text="Cancel"

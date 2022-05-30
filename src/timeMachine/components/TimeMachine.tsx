@@ -59,9 +59,7 @@ const TimeMachine: FunctionComponent = () => {
               >
                 <div
                   className="time-machine--bottom-contents"
-                  ref={ref => {
-                    setBottomRef(ref)
-                  }}
+                  ref={ref => setBottomRef(ref)}
                 >
                   {bottomContents()}
                 </div>

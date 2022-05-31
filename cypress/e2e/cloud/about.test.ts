@@ -115,15 +115,4 @@ describe('About Page for PAYG users', () => {
   it('should display the cloud provider in the provider field', () => {
     cy.getByTestID('cloud-provider--field').should('contains.text', 'AWS')
   })
-
-  /*
-            {org.provider && (
-              <LabeledData label="Provider" src={org.provider} testID="cloud-provider--field"/>
-            )}
-            {me.quartzMe?.regionCode && (
-              <LabeledData label="Region" src={me.quartzMe.regionCode} testID="region-code--field"/>
-            )}
-            {me.quartzMe?.regionName && (
-              <LabeledData label="Location" src={me.quartzMe.regionName} testID="region-name--field"/>
-  */
 })

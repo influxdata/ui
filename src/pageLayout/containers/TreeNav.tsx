@@ -82,6 +82,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
 
     if (isPayGCustomer) {
       showOverlay('payg-support', null, dismissOverlay)
+      event('helpBar.supportRequest.overlay.shown')
     } else {
       showOverlay('free-account-support', null, dismissOverlay)
     }

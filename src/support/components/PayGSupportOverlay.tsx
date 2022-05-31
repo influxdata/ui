@@ -43,6 +43,7 @@ import {notify} from 'src/shared/actions/notifications'
 import {supportRequestError} from 'src/shared/copy/notifications/categories/help-and-support'
 
 import './ContactSupport.scss'
+
 interface OwnProps {
   onClose: () => void
 }
@@ -73,6 +74,11 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
 
   const handleDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value)
+  }
+
+  const handleClose = () => {
+    event('helpBar.supportRequest.overlay.closed')
+    onClose()
   }
 
   const handleSubmit = async () => {
@@ -139,7 +145,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       <Overlay.Header
         testID="payg-support-overlay-header"
         title="Contact Support"
-        onDismiss={onClose}
+        onDismiss={handleClose}
       />
       <ErrorBoundary>
         <Form>
@@ -199,7 +205,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
         <Button
           text="Cancel"
           color={ComponentColor.Tertiary}
-          onClick={onClose}
+          onClick={handleClose}
           type={ButtonType.Button}
           testID="payg-contact-support--cancel"
         />

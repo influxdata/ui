@@ -13,6 +13,7 @@ import OrgSettings from 'src/cloud/components/OrgSettings'
 
 // Constants
 import {generateNavItems} from 'src/pageLayout/constants/navigationHierarchy'
+import {CLOUD} from 'src/shared/constants'
 
 // Utils
 import {getNavItemActivation} from 'src/pageLayout/utils'
@@ -153,12 +154,12 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
             </TreeNav.Item>
           )
         })}
-        {isFlagEnabled('helpBar') && (
+        {CLOUD && isFlagEnabled('helpBar') && (
           <TreeNav.Item
             id="support"
             testID="nav-item-support"
             icon={<Icon glyph={IconFont.QuestionMark_New} />}
-            label="Help & Support"
+            label="Help &amp; Support"
             shortLabel="Support"
             className="helpBarStyle"
           >

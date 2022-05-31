@@ -42,6 +42,7 @@ import ShareOverlay from 'src/flows/components/ShareOverlay'
 import PayGSupportOverlay from 'src/support/components/PayGSupportOverlay'
 import FreeAccountSupportOverlay from 'src/support/components/FreeAccountSupportOverlay'
 import FeedbackQuestionsOverlay from 'src/support/components/FeedbackQuestionsOverlay'
+import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -158,6 +159,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'feedback-questions':
         activeOverlay.current = <FeedbackQuestionsOverlay onClose={onClose} />
+        break
+      case 'help-bar-confirmation':
+        activeOverlay.current = <ConfirmationOverlay onClose={onClose} />
         break
       default:
         activeOverlay.current = null

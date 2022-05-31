@@ -33,6 +33,7 @@ export type OverlayID =
   | 'payg-support'
   | 'free-account-support'
   | 'feedback-questions'
+  | 'help-bar-confirmation'
 
 export interface OverlayState {
   id: OverlayID | null

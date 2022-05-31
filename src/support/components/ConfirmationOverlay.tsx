@@ -42,11 +42,11 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
         <div>
           For critical issues, please contact the InfluxData support team at the
           toll-free numbers{' '}
-          <SafeBlankLink href="tel:+18559581047">+1 855-958-1047</SafeBlankLink>{' '}
+          <a href="tel:+18559581047" rel="noopener noreferrer" target="_self">+1 855-958-1047</a>{' '}
           and{' '}
-          <SafeBlankLink href="tel:+448081966148">
+          <a href="tel:+448081966148" rel="noopener noreferrer" target="_self">
             +44 808-196-6148
-          </SafeBlankLink>
+          </a>
           .
         </div>
       </BannerPanel>

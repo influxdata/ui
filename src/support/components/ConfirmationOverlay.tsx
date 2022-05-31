@@ -20,9 +20,9 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Constants
 import {
   INFLUXDATA_SUPPORT_CONTACT_UK,
-  INFLUXDATA_SUPPORT_CONTACT_UK_NO_SPACE,
+  INFLUXDATA_SUPPORT_CONTACT_UK_TELEPHONE_LINK,
   INFLUXDATA_SUPPORT_CONTACT_US,
-  INFLUXDATA_SUPPORT_CONTACT_US_NO_SPACE,
+  INFLUXDATA_SUPPORT_CONTACT_US_TELEPHONE_LINK,
 } from 'src/shared/constants/index'
 
 interface OwnProps {
@@ -50,11 +50,11 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
         <div>
           For critical issues, please contact the InfluxData support team at the
           toll-free numbers{' '}
-          <a href={INFLUXDATA_SUPPORT_CONTACT_US_NO_SPACE}>
+          <a href={INFLUXDATA_SUPPORT_CONTACT_US_TELEPHONE_LINK}>
             {INFLUXDATA_SUPPORT_CONTACT_US}
           </a>{' '}
           and{' '}
-          <a href={INFLUXDATA_SUPPORT_CONTACT_UK_NO_SPACE}>
+          <a href={INFLUXDATA_SUPPORT_CONTACT_UK_TELEPHONE_LINK}>
             {INFLUXDATA_SUPPORT_CONTACT_UK}
           </a>
           .

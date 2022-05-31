@@ -1056,7 +1056,7 @@ export const createTaskFromEmpty = (
   interval: string = '24h',
   offset: string = '20m',
   force: boolean = true,
-  delay: number = 10
+  delay: number = 15
 ) => {
   cy.getByTestID('create-task--button')
     .first()

@@ -2,9 +2,14 @@ import React, {FC, useContext} from 'react'
 
 // Components
 import {
+  BannerPanel,
   Button,
   ButtonType,
   ComponentColor,
+  ComponentSize,
+  Gradients,
+  IconFont,
+  InfluxColors,
   Overlay,
 } from '@influxdata/clockface'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
@@ -28,6 +33,23 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
 
   const paygSupport = (
     <>
+      <BannerPanel
+        size={ComponentSize.ExtraSmall}
+        gradient={Gradients.WarpSpeed}
+        icon={IconFont.Info_New}
+        textColor={InfluxColors.Yeti}
+      >
+        <div>
+          For critical issues, please contact the InfluxData support team at the
+          toll-free numbers{' '}
+          <SafeBlankLink href="tel:+18559581047">+1 855-958-1047</SafeBlankLink>{' '}
+          and{' '}
+          <SafeBlankLink href="tel:+448081966148">
+            +44 808-196-6148
+          </SafeBlankLink>
+          .
+        </div>
+      </BannerPanel>
       <p>
         Your support ticket has been submitted. A Support Engineer will
         investigate the issue and get back to you shortly. Please check your
@@ -44,7 +66,7 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
   )
 
   return (
-    <Overlay.Container maxWidth={500}>
+    <Overlay.Container maxWidth={550}>
       <Overlay.Header
         testID="confirmation-overlay-header"
         title={

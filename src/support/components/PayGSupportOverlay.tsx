@@ -78,7 +78,6 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   const handleSubmit = async () => {
     const email = quartzMe?.email
     try {
-      throw new Error('whooooooooooooooooooops')
       await createSfdcSupportCase(description, email, severity, subject)
       event(
         'helpBar.supportRequest.submitted',

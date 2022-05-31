@@ -1,7 +1,13 @@
-import {
-  postUiproxySfdcSupport,
-  PostUiproxySfdcSupportParams,
-} from 'src/client/uiproxydRoutes'
+import {CLOUD} from 'src/shared/constants'
+
+let postUiproxySfdcSupport
+let PostUiproxySfdcSupportParams
+if (CLOUD) {
+  postUiproxySfdcSupport = require('src/client/uiproxydRoutes')
+    .postUiproxySfdcSupport
+  PostUiproxySfdcSupportParams = require('src/client/uiproxydRoutes')
+    .PostUiproxySfdcSupportParams
+}
 
 export const createSfdcSupportCase = async (
   description: string,
@@ -9,7 +15,7 @@ export const createSfdcSupportCase = async (
   severity: string,
   subject: string
 ) => {
-  const params: PostUiproxySfdcSupportParams = {
+  const params: typeof PostUiproxySfdcSupportParams = {
     data: {description, email, severity, subject},
   }
 

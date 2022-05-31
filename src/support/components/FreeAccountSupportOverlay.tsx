@@ -39,19 +39,18 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
         title="Contact Support"
         onDismiss={onClose}
       />
-
-      <p className="status-page-text">
-        <span>
-          {' '}
-          <Icon glyph={IconFont.Info_New} />{' '}
-        </span>
-        Check our{' '}
-        <SafeBlankLink href="https://status.influxdata.com">
-          status page
-        </SafeBlankLink>{' '}
-        to see if there is an outage impacting your region.
-      </p>
       <Overlay.Body>
+        <p className="status-page-text">
+          <span>
+            {' '}
+            <Icon glyph={IconFont.Info_New} />{' '}
+          </span>
+          Check our{' '}
+          <SafeBlankLink href="https://status.influxdata.com">
+            status page
+          </SafeBlankLink>{' '}
+          to see if there is an outage impacting your region.
+        </p>
         <p>
           Contact support is currently only available for Usage-Based Plan and
           Annual customers. Please try our community resources below to recieve

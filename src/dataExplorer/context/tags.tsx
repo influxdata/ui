@@ -91,18 +91,17 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: is 30d large enough to get all tag keys?
     let queryText = `${_source}
-        |> range(start: -30d, stop: now())
-        |> filter(fn: (r) => true)
-        |> keys()
-        |> keep(columns: ["_value"])
-        |> distinct()
-        |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
-        |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
-        |> limit(n: ${limit})
-        |> sort()
-      `
+      |> range(start: -100y, stop: now())
+      |> filter(fn: (r) => true)
+      |> keys()
+      |> keep(columns: ["_value"])
+      |> distinct()
+      |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
+      |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+      |> limit(n: ${limit})
+      |> sort()
+    `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
@@ -173,9 +172,8 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: is 30d large enough to get all tag values for this key?
     let queryText = `${_source}
-      |> range(start: -30d, stop: now())
+      |> range(start: -100y, stop: now())
       |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
       |> keep(columns: ["${tagKey}"])
       |> group()

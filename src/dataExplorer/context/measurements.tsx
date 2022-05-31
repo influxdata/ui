@@ -88,15 +88,9 @@ export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
-        schema.tagValues(
-          bucket: "${bucket.name}",
-          tag: "_measurement",
-          predicate: (r) => true,
-          start: ${CACHING_REQUIRED_START_DATE},
-          stop: ${CACHING_REQUIRED_END_DATE},
-        )
-          |> limit(n: ${limit})
+        schema.measurements(bucket: "${bucket.name}")
           |> sort()
+          |> limit(n: ${limit})
         `
     }
 

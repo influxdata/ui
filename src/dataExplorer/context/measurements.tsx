@@ -75,9 +75,8 @@ export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: is 30d large enough to get all measurement values?
     let queryText = `${_source}
-      |> range(start: -30d, stop: now())
+      |> range(start: -100y, stop: now())
       |> filter(fn: (r) => true)
       |> keep(columns: ["_measurement"])
       |> group()

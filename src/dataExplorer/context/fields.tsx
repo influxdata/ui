@@ -77,9 +77,8 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: is 30d large enough to get all field values?
     let queryText = `${_source}
-      |> range(start: -30d, stop: now())
+      |> range(start: -100y, stop: now())
       |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
       |> keep(columns: ["_field"])
       |> group()

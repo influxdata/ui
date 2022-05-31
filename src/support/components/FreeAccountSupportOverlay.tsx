@@ -25,6 +25,10 @@ import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {getMe} from 'src/me/selectors'
+
 import './ContactSupport.scss'
 
 interface OwnProps {
@@ -32,6 +36,8 @@ interface OwnProps {
 }
 
 const FreeAccountSupportOverlay: FC<OwnProps> = () => {
+  const {id: orgID} = useSelector(getOrg)
+  const {id: meID} = useSelector(getMe)
   const {onClose} = useContext(OverlayContext)
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
@@ -39,6 +45,11 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
 
   const openFeedbackOverlay = (event): void => {
     event.preventDefault()
+    event(
+      'helpBar.feedbackAndQuestions.supportOverlay.shown',
+      {},
+      {userID: meID, orgID: orgID}
+    )
     dispatch(
       showOverlay('feedback-questions', null, () => dispatch(dismissOverlay))
     )

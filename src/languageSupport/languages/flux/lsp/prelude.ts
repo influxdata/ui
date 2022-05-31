@@ -25,20 +25,22 @@ class Prelude {
     this._variables = variables
     const previousValue = this._preludeModel.getValue()
 
-    const file = buildUsedVarsOption(this._model.getValue(), variables)
-    const query = format_from_js_file(file)
+    try {
+      const file = buildUsedVarsOption(this._model.getValue(), variables)
+      const query = format_from_js_file(file)
 
-    this._preludeModel.setValue(query)
-    if (query != previousValue) {
       this._preludeModel.setValue(query)
-      this._worker.postMessage(
-        didChange(
-          this._preludeModel.uri.toString(),
-          query,
-          this._preludeModel.getVersionId()
+      if (query != previousValue) {
+        this._preludeModel.setValue(query)
+        this._worker.postMessage(
+          didChange(
+            this._preludeModel.uri.toString(),
+            query,
+            this._preludeModel.getVersionId()
+          )
         )
-      )
-    }
+      }
+    } catch (_) {}
   }
 
   subscribeToModel(editor: EditorType) {

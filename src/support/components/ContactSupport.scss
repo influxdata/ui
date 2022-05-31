@@ -26,7 +26,20 @@
 
 .status-page-text {
   font-weight: lighter;
-  margin-left: 25px;
   margin-top: 0px;
-  margin-bottom: 25px;
+
+  .info-new {
+    bottom: 1px;
+    position: relative;
+  }
+}
+
+div.cf-form--label {
+  position: relative;
+
+  .cf-question-mark-tooltip {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }

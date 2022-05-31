@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext, useEffect} from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useLocation} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
@@ -42,7 +42,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
       AppSettingContext
     )
     const org = useSelector(getOrg)
-
+    const location = useLocation()
     useEffect(() => {
       if (isFlagEnabled('helpBar')) {
         const helpBarMenu = document.querySelectorAll<HTMLElement>(
@@ -72,23 +72,10 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
       }
     }
 
-    // Hiding Contact Support and Feedback code for Help Bar phase 1 release
-    // https://github.com/influxdata/ui/issues/3457
-    // https://github.com/influxdata/ui/issues/3454
-    // const handleSelect = (): void => {
-    //   const accountType = quartzMe?.accountType ?? 'free'
-    //   const isPayGCustomer = accountType !== 'free'
-
-    //   if (isPayGCustomer) {
-    //     showOverlay('payg-support', null, dismissOverlay)
-    //   } else {
-    //     showOverlay('free-account-support', null, dismissOverlay)
-    //   }
-    // }
-
-    // const openFeedbackOverlay = (): void => {
-    //   showOverlay('feedback-questions', null, dismissOverlay)
-    // }
+    const handleEventing = (link: string): void => {
+      const currentPage = location.pathname
+      event(`helpBar.${link}.opened`, {}, {from: currentPage})
+    }
 
     return (
       <OrgSettings>
@@ -173,7 +160,10 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                   label="Documentation"
                   testID="nav-subitem-documentation"
                   linkElement={() => (
-                    <SafeBlankLink href="https://docs.influxdata.com/" />
+                    <SafeBlankLink
+                      href="https://docs.influxdata.com/"
+                      onClick={() => handleEventing('documentation')}
+                    />
                   )}
                 />
                 <TreeNav.SubItem
@@ -181,22 +171,22 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                   label="FAQs"
                   testID="nav-subitem-faqs"
                   linkElement={() => (
-                    <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/reference/faq/" />
+                    <SafeBlankLink
+                      href="https://docs.influxdata.com/influxdb/cloud/reference/faq/"
+                      onClick={() => handleEventing('faq')}
+                    />
                   )}
                 />
-                {/* <TreeNav.SubItem
-                id="contactSupport"
-                label="Contact Support"
-                testID="nav-subitem-contact-support"
-                onClick={handleSelect}
-              /> */}
                 <TreeNav.SubHeading label="Community" />
                 <TreeNav.SubItem
                   id="offcialForum"
                   label="Official Forum"
                   testID="nav-subitem-forum"
                   linkElement={() => (
-                    <SafeBlankLink href="https://community.influxdata.com" />
+                    <SafeBlankLink
+                      href="https://community.influxdata.com"
+                      onClick={() => handleEventing('officialForum')}
+                    />
                   )}
                 />
                 <TreeNav.SubItem
@@ -207,13 +197,6 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
                     <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
                   )}
                 />
-                {/* <TreeNav.SubHeading label="Feedback" />
-              <TreeNav.SubItem
-                id="feedback"
-                label="Feedback & Questions"
-                testID="nav-subitem-feedback-questions"
-                onClick={openFeedbackOverlay}
-              /> */}
               </TreeNav.SubMenu>
             </TreeNav.Item>
           ) : null}

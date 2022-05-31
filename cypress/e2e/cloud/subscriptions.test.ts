@@ -122,6 +122,21 @@ describe('Subscriptions', () => {
     cy.get('.cf-resource-card').should('be.visible')
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-card').contains('My Subscription')
+
+    // bucket review
+    cy.getByTestID('subscription-card').should('be.visible')
+    cy.getByTestID('subscription-name').should('be.visible')
+    cy.getByTestID('subscription-name').click()
+    cy.get('.subscription-details-page').should('be.visible')
+    cy.getByTestID('update-subscription-form--submit').click()
+    cy.getByTestID('update-subscription-form--bucket').contains('defbuck')
+    cy.getByTestID('update-subscription-form--edit').click()
+    cy.getByTestID('buckets--list').should('be.visible')
+    cy.getByTestID('list-item')
+      .should('have.length', 1)
+      .should('have.attr', 'style')
+    cy.getByTestID('update-subscription-form--cancel').click()
+
     // update
     cy.getByTestID('subscription-card').should('be.visible')
     cy.getByTestID('subscription-name').should('be.visible')

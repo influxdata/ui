@@ -17,6 +17,14 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
+// Constants
+import {
+  INFLUXDATA_SUPPORT_CONTACT_UK,
+  INFLUXDATA_SUPPORT_CONTACT_UK_NO_SPACE,
+  INFLUXDATA_SUPPORT_CONTACT_US,
+  INFLUXDATA_SUPPORT_CONTACT_US_NO_SPACE,
+} from 'src/shared/constants/index'
+
 interface OwnProps {
   onClose: () => void
 }
@@ -42,12 +50,12 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
         <div>
           For critical issues, please contact the InfluxData support team at the
           toll-free numbers{' '}
-          <a href="tel:+18559581047" rel="noopener noreferrer" target="_self">
-            +1 855-958-1047
+          <a href={INFLUXDATA_SUPPORT_CONTACT_US_NO_SPACE}>
+            {INFLUXDATA_SUPPORT_CONTACT_US}
           </a>{' '}
           and{' '}
-          <a href="tel:+448081966148" rel="noopener noreferrer" target="_self">
-            +44 808-196-6148
+          <a href={INFLUXDATA_SUPPORT_CONTACT_UK_NO_SPACE}>
+            {INFLUXDATA_SUPPORT_CONTACT_UK}
           </a>
           .
         </div>

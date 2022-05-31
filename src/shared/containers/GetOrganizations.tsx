@@ -44,6 +44,8 @@ const canAccessCheckout = (me: Me): boolean => {
 }
 
 const GetOrganizations: FunctionComponent = () => {
+  console.log('entering getOrganizations component')
+
   const {status, org} = useSelector(getAllOrgs)
   const quartzMeStatus = useSelector(
     (state: AppState) => state.me.quartzMeStatus
@@ -54,6 +56,7 @@ const GetOrganizations: FunctionComponent = () => {
 
   useEffect(() => {
     if (status === RemoteDataState.NotStarted) {
+      console.log('getting organizations')
       dispatch(getOrganizations())
     }
   }, [dispatch, status])
@@ -63,6 +66,7 @@ const GetOrganizations: FunctionComponent = () => {
       isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
     ) {
+      console.log('dispatching apiGetQuartzMe')
       dispatch(apiGetQuartzMe())
     }
   }, [dispatch, quartzMeStatus])

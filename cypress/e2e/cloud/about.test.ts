@@ -86,6 +86,10 @@ describe('About Page for free users with multiple users', () => {
       expect(loc.pathname).to.include(`/users`)
     })
   })
+
+  it('should display the cloud provider in the provider field', () => {
+    cy.getByTestID('cloud-provider--field').should('contains.text', 'AWS')
+  })
 })
 
 describe('About Page for PAYG users', () => {

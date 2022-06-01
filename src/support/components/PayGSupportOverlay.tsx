@@ -77,7 +77,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   }
 
   const handleClose = () => {
-    event('helpBar.supportRequest.overlay.closed')
+    event('helpBar.paygSupportRequest.overlay.closed')
     onClose()
   }
 
@@ -86,7 +86,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
     try {
       await createSfdcSupportCase(description, email, severity, subject)
       event(
-        'helpBar.supportRequest.submitted',
+        'helpBar.paygSupportRequest.submitted',
         {},
         {userID: me.id, orgID: orgID}
       )
@@ -97,7 +97,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       )
     } catch {
       dispatch(notify(supportRequestError()))
-      event('helpBar.supportRequest.failed', {}, {userID: me.id, orgID: orgID})
+      event('helpBar.paygSupportRequest.failed', {}, {userID: me.id, orgID: orgID})
     }
   }
 

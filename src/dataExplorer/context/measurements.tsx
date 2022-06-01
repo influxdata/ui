@@ -26,19 +26,19 @@ import {QueryScope, RemoteDataState} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-interface MeasurementContextType {
+interface MeasurementsContextType {
   measurements: string[]
   loading: RemoteDataState
   getMeasurements: (bucket: any) => void
 }
 
-const DEFAULT_CONTEXT: MeasurementContextType = {
+const DEFAULT_CONTEXT: MeasurementsContextType = {
   measurements: [],
   loading: RemoteDataState.NotStarted,
   getMeasurements: (_: any) => {},
 }
 
-export const MeasurementContext = createContext<MeasurementContextType>(
+export const MeasurementsContext = createContext<MeasurementsContextType>(
   DEFAULT_CONTEXT
 )
 
@@ -46,7 +46,7 @@ interface Prop {
   scope: QueryScope
 }
 
-export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
+export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
 
@@ -115,11 +115,11 @@ export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
 
   return useMemo(
     () => (
-      <MeasurementContext.Provider
+      <MeasurementsContext.Provider
         value={{measurements, loading, getMeasurements}}
       >
         {children}
-      </MeasurementContext.Provider>
+      </MeasurementsContext.Provider>
     ),
     [measurements, loading, children]
   )

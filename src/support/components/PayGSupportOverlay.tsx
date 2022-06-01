@@ -97,7 +97,11 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       )
     } catch {
       dispatch(notify(supportRequestError()))
-      event('helpBar.paygSupportRequest.failed', {}, {userID: me.id, orgID: orgID})
+      event(
+        'helpBar.paygSupportRequest.failed',
+        {},
+        {userID: me.id, orgID: orgID}
+      )
     }
   }
 

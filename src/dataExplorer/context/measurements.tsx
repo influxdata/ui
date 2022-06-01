@@ -81,8 +81,8 @@ export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
       |> keep(columns: ["_measurement"])
       |> group()
       |> distinct(column: "_measurement")
-      |> limit(n: ${limit})
       |> sort()
+      |> limit(n: ${limit})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {

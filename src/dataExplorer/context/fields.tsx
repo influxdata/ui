@@ -83,8 +83,8 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
       |> keep(columns: ["_field"])
       |> group()
       |> distinct(column: "_field")
-      |> limit(n: ${limit})
       |> sort()
+      |> limit(n: ${limit})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {

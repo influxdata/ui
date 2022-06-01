@@ -99,8 +99,8 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> distinct()
       |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
       |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
-      |> limit(n: ${limit})
       |> sort()
+      |> limit(n: ${limit})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
@@ -178,8 +178,8 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> keep(columns: ["${tagKey}"])
       |> group()
       |> distinct(column: "${tagKey}")
-      |> limit(n: ${limit})
       |> sort()
+      |> limit(n: ${limit})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {

@@ -30,6 +30,129 @@ describe('Subscriptions', () => {
     )
   )
 
+  const deleteSubscription = (subscription: string) => {
+    cy.getByTestID('subscription-card')
+      .contains(subscription)
+      // delete
+      .parents('[data-testid="subscription-card"]')
+      .find('[data-testid="context-delete-menu--button"]')
+      .first()
+      .click()
+    cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
+    cy.getByTestID('context-delete-menu--confirm-button').click()
+    cy.wait('@DeleteSubscription')
+    cy.wait('@GetSubscriptions')
+  }
+
+  const createBasicLPSubscription = (name: string) => {
+    cy.getByTestID('subscriptions--tab').click()
+    cy.getByTestID('create-subscription-button--control-bar')
+      .should('be.visible')
+      .first()
+      .click()
+
+    // broker form
+    cy.getByTestID('create-broker-form-overlay').should('be.visible')
+    // back to create landing
+    cy.getByTestID('create-broker-form--cancel').should('be.visible')
+    cy.getByTestID('create-broker-form--cancel').click()
+    // return to broker form
+    cy.getByTestID('create-subscription-button--control-bar').should(
+      'be.visible'
+    )
+    cy.getByTestID('create-subscription-button--control-bar')
+      .first()
+      .click()
+    cy.getByTestID('create-broker-form-overlay').should('be.visible')
+    // fill in broker form
+    cy.getByTestID('create-broker-form--name').type(name)
+    cy.getByTestID('create-broker-form--description').type('My Description')
+    cy.getByTestID('dropdown')
+      .contains('MQTT')
+      .click()
+    cy.getByTestID('create-broker-form--host').type('localhost')
+    cy.getByTestID('create-broker-form--port').type('1883')
+    cy.getByTestID('create-broker-form--submit').click()
+    // subscription form
+    cy.getByTestID('create-subscription-form--overlay-form').should(
+      'be.visible'
+    )
+    // back to broker form
+    cy.getByTestID('create-subscription-form--back').should('be.visible')
+    cy.getByTestID('create-subscription-form--back').click()
+    cy.getByTestID('create-broker-form-overlay').should('be.visible')
+    // return to subscription
+    cy.getByTestID('create-broker-form--submit').should('be.visible')
+    cy.getByTestID('create-broker-form--submit').click()
+    cy.getByTestID('create-subscription-form--overlay-form').should(
+      'be.visible'
+    )
+    // fill in subscription form
+    cy.getByTestID('create-subscription-form--topic').type('topic')
+    cy.getByTestID('list-item')
+      .contains('defbuck')
+      .click()
+    cy.getByTestID('create-subscription-form--submit').click()
+    // parsing form
+    cy.getByTestID('create-parsing-form-overlay').should('be.visible')
+    // back to subscription
+    cy.getByTestID('create-parsing-form--back').should('be.visible')
+    cy.getByTestID('create-parsing-form--back').click()
+    cy.getByTestID('create-subscription-form--overlay-form').should(
+      'be.visible'
+    )
+
+    // return to parsing
+    cy.getByTestID('create-subscription-form--submit').click()
+    // line protocol
+    cy.getByTestID('create-parsing-form-line-protocol--button').click()
+    cy.getByTestID('create-parsing-form--submit').click()
+
+    // wait for intercepts
+    cy.wait('@CreateSubscription')
+    cy.wait('@GetSubscriptions')
+  }
+
+  it('should filter listing', () => {
+    const subscription1 = 'My Subscription'
+    const subscription2 = 'Your Subscription'
+    createBasicLPSubscription(subscription1)
+    createBasicLPSubscription(subscription2)
+
+    // subscriptions list view
+    cy.get('.subscriptions-list').should('be.visible')
+    cy.getByTestID('subscription-card')
+      .should('be.visible')
+      .should('have.length', 2)
+
+    // Search for subscription1 name(partial match)
+    cy.getByTestID('search-widget')
+      .clear()
+      .type('my ')
+    cy.getByTestID('subscription-card')
+      .should('be.visible')
+      .should('have.length', 1)
+    cy.getByTestID('dismiss-button').click()
+    cy.getByTestID('subscription-card')
+      .should('be.visible')
+      .should('have.length', 2)
+
+    // Search for subscription2 name(partial match)
+    cy.getByTestID('search-widget')
+      .clear()
+      .type('your ')
+    cy.getByTestID('subscription-card')
+      .should('be.visible')
+      .should('have.length', 1)
+    cy.getByTestID('dismiss-button').click()
+    cy.getByTestID('subscription-card')
+      .should('be.visible')
+      .should('have.length', 2)
+
+    deleteSubscription(subscription1)
+    deleteSubscription(subscription2)
+  })
+
   it('should navigate to empty subscriptions page via sources tab', () => {
     cy.getByTestID('tree-nav-toggle').should('be.visible')
     cy.getByTestID('tree-nav-toggle').click()

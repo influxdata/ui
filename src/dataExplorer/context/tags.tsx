@@ -28,7 +28,7 @@ interface TagsContextType {
   tags: Tags
   loadingTagKeys: RemoteDataState
   loadingTagValues: Hash<RemoteDataState>
-  getTagKeys: (bucket: any, measurement: string) => void
+  getTagKeys: (bucket: any, measurement: string, searchTerm?: string) => void
   getTagValues: (bucket: any, measurement: string, tagKey: string) => void
   resetTags: () => void
 }
@@ -37,7 +37,7 @@ const DEFAULT_CONTEXT: TagsContextType = {
   tags: {} as Tags,
   loadingTagKeys: RemoteDataState.NotStarted,
   loadingTagValues: {} as Hash<RemoteDataState>,
-  getTagKeys: (_b: any, _m: string) => {},
+  getTagKeys: (_b: any, _m: string, _s: string) => {},
   getTagValues: (_b: any, _m: string, _tk: string) => {},
   resetTags: () => {},
 }
@@ -75,7 +75,14 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     ? EXTENDED_TAG_LIMIT
     : DEFAULT_TAG_LIMIT
 
-  const getTagKeys = async (bucket: any, measurement: string) => {
+  const searchString = (searchTerm: string): string =>
+    `|> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
+
+  const getTagKeys = async (
+    bucket: any,
+    measurement: string,
+    searchTerm?: string
+  ) => {
     if (!bucket || !measurement) {
       return
     }
@@ -97,6 +104,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> keys()
       |> keep(columns: ["_value"])
       |> distinct()
+      ${searchTerm ? searchString(searchTerm) : ''}
       |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
       |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
       |> sort()
@@ -114,6 +122,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         )
           |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
           |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
+          ${searchTerm ? searchString(searchTerm) : ''}
           |> sort()
           |> limit(n: ${limit})
       `

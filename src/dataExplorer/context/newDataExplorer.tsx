@@ -85,14 +85,8 @@ export const NewDataExplorerProvider: FC = ({children}) => {
   }
 
   const handleSearchTerm = (searchTerm: string): void => {
-    // TODO: handle search
-    //  Need to confirm with the product team what the scope of search
-    //  e.g. field values? (and/or) tag keys? (and/or) tag values?
-
-    /* eslint-disable no-console */
-    console.log('Search: ', searchTerm)
-    /* eslint-disable no-console */
     setSearchTerm(searchTerm)
+    getTagKeys(selectedBucket, selectedMeasurement, searchTerm)
   }
 
   return useMemo(

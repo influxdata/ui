@@ -6,7 +6,7 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-import GetMe from 'src/shared/containers/GetMe'
+import GetIdentity from 'src/shared/containers/GetIdentity'
 
 // Utils
 import {

@@ -113,7 +113,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
           stop: ${CACHING_REQUIRED_END_DATE},
         )
           |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
-          |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value != "_stop" and r._value != "_value")
+          |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
           |> sort()
           |> limit(n: ${limit})
       `

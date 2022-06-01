@@ -168,7 +168,6 @@ describe('Buckets', () => {
     beforeEach(() => {
       cy.setFeatureFlags({
         exploreWithFlows: true,
-        uiUnificationFlag: true,
       })
     })
     it('with redirect to notebooks', () => {

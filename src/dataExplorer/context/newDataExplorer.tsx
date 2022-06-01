@@ -78,6 +78,7 @@ export const NewDataExplorerProvider: FC = ({children}) => {
 
   const handleSearchTerm = (searchTerm: string): void => {
     setSearchTerm(searchTerm)
+    getFields(selectedBucket, selectedMeasurement, searchTerm)
     getTagKeys(selectedBucket, selectedMeasurement, searchTerm)
   }
 

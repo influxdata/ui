@@ -22,19 +22,20 @@ import {
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
+  SEARCH_STRING,
 } from 'src/dataExplorer/shared/utils'
 
 interface FieldsContextType {
   fields: Array<string>
   loading: RemoteDataState
-  getFields: (bucket: any, measurement: string) => void
+  getFields: (bucket: any, measurement: string, searchTerm?: string) => void
   resetFields: () => void
 }
 
 const DEFAULT_CONTEXT: FieldsContextType = {
   fields: [],
   loading: RemoteDataState.NotStarted,
-  getFields: (_b: any, _m: string) => {},
+  getFields: (_b: any, _m: string, _s: string) => {},
   resetFields: () => {},
 }
 
@@ -61,7 +62,11 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     ? EXTENDED_TAG_LIMIT
     : DEFAULT_TAG_LIMIT
 
-  const getFields = async (bucket: any, measurement: string) => {
+  const getFields = async (
+    bucket: any,
+    measurement: string,
+    searchTerm?: string
+  ) => {
     if (!bucket || !measurement) {
       return
     }
@@ -83,6 +88,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
       |> keep(columns: ["_field"])
       |> group()
       |> distinct(column: "_field")
+      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
       |> sort()
       |> limit(n: ${limit})
     `
@@ -96,6 +102,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
+          ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
           |> sort()
           |> limit(n: ${limit})
       `

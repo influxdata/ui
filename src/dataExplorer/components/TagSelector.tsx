@@ -96,11 +96,11 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
 
     return (
       <Accordion className="tag-selector-value">
-        <Accordion.AccordionHeader className="tag-selector-value--header">
-          <div onClick={() => handleSelectTagKey(tagKey)}>
+        <div onClick={() => handleSelectTagKey(tagKey)}>
+          <Accordion.AccordionHeader className="tag-selector-value--header">
             <SelectorTitle title={tagKey} />
-          </div>
-        </Accordion.AccordionHeader>
+          </Accordion.AccordionHeader>
+        </div>
         <div className="container-side-bar">
           {list}
           {loadMoreButton}

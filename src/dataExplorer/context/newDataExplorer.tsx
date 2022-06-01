@@ -1,4 +1,11 @@
-import React, {FC, createContext, useState, useMemo, useContext} from 'react'
+import React, {
+  FC,
+  createContext,
+  useState,
+  useMemo,
+  useContext,
+  useCallback,
+} from 'react'
 
 // Context
 import {MeasurementContext} from 'src/dataExplorer/context/measurements'
@@ -7,6 +14,17 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
 import {Bucket} from 'src/types'
+
+const DEBOUNCE_TIMEOUT = 500
+let timer
+type NOOP = () => void
+const debouncer = (action: NOOP): void => {
+  clearTimeout(timer)
+  timer = setTimeout(() => {
+    action()
+    timer = null
+  }, DEBOUNCE_TIMEOUT)
+}
 
 interface NewDataExplorerContextType {
   // Schema
@@ -76,11 +94,16 @@ export const NewDataExplorerProvider: FC = ({children}) => {
     getTagKeys(selectedBucket, measurement)
   }
 
-  const handleSearchTerm = (searchTerm: string): void => {
-    setSearchTerm(searchTerm)
-    getFields(selectedBucket, selectedMeasurement, searchTerm)
-    getTagKeys(selectedBucket, selectedMeasurement, searchTerm)
-  }
+  const handleSearchTerm = useCallback(
+    (searchTerm: string): void => {
+      setSearchTerm(searchTerm)
+      debouncer(() => {
+        getFields(selectedBucket, selectedMeasurement, searchTerm)
+        getTagKeys(selectedBucket, selectedMeasurement, searchTerm)
+      })
+    },
+    [getFields, getTagKeys, selectedBucket, selectedMeasurement]
+  )
 
   return useMemo(
     () => (

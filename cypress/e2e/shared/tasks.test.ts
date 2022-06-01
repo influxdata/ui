@@ -52,7 +52,7 @@ from(bucket: "${name}")
   it('can create a task using http.post', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, () => {
-      return `import "http"
+      return `import "http" {enter}
 http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
 

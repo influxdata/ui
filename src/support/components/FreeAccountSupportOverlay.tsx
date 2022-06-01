@@ -33,7 +33,7 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
   return (
-    <Overlay.Container maxWidth={550}>
+    <Overlay.Container maxWidth={550} testID="overlay--container">
       <Overlay.Header
         testID="free-support-overlay-header"
         title="Contact Support"
@@ -56,7 +56,7 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
           Annual customers. Please try our community resources below to recieve
           help or file a feedback & questions form.
         </p>
-        <List className="support-links">
+        <List className="support-links" testID="free-account-links">
           <List.Item>
             <div className="help-logo forum" />
             <SafeBlankLink href="https://community.influxdata.com">
@@ -68,10 +68,6 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
             <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email">
               InfluxDB Slack
             </SafeBlankLink>
-          </List.Item>
-          <List.Item>
-            <div className="help-logo feedback" />
-            <SafeBlankLink href="">Feedback & Questions Form</SafeBlankLink>
           </List.Item>
         </List>
       </Overlay.Body>

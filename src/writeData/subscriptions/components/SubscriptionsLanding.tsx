@@ -51,15 +51,30 @@ const SubscriptionsLanding: FC = () => {
     sortType: SortTypes.String,
     sortDirection: Sort.Ascending,
   })
+  const [filteredSubscriptions, setFilteredSubscriptions] = useState([])
+
   useEffect(() => {
     event('visited subscriptions page', {}, {feature: 'subscriptions'})
   }, [])
-  const filteredSubscriptions =
-    subscriptions && search
-      ? subscriptions.filter(
-          s => s.name.toLowerCase() === search.toLowerCase().trim()
-        )
-      : subscriptions
+
+  useEffect(() => {
+    if (!subscriptions || !subscriptions.length) {
+      setFilteredSubscriptions([])
+      return
+    }
+
+    const lowerCaseSearch = search.toLowerCase().trim()
+    if (!lowerCaseSearch) {
+      setFilteredSubscriptions(subscriptions)
+      return
+    }
+
+    const filtered = subscriptions.filter(s =>
+      s.name.toLowerCase().includes(lowerCaseSearch)
+    )
+    setFilteredSubscriptions(filtered)
+  }, [subscriptions, search])
+
   const handleSort = (subscriptions: Subscription[]): Subscription[] => {
     let sortedSubscriptions
     if (sortOptions.sortDirection === Sort.Ascending) {

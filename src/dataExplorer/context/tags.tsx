@@ -99,24 +99,24 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> distinct()
       |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
       |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
-      |> limit(n: ${limit})
       |> sort()
+      |> limit(n: ${limit})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
-          schema.tagKeys(
-            bucket: "${bucket.name}",
-            predicate: (r) => true,
-            start: ${CACHING_REQUIRED_START_DATE},
-            stop: ${CACHING_REQUIRED_END_DATE},
-            )
-            |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
-            |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value != "_stop" and r._value != "_value")
-            |> limit(n: ${limit})
-            |> sort()
-        `
+        schema.measurementTagKeys(
+          bucket: "${bucket.name}",
+          measurement: "${measurement}",
+          start: ${CACHING_REQUIRED_START_DATE},
+          stop: ${CACHING_REQUIRED_END_DATE},
+        )
+          |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
+          |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
+          |> sort()
+          |> limit(n: ${limit})
+      `
     }
 
     const newTags: Tags = {}
@@ -178,22 +178,22 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> keep(columns: ["${tagKey}"])
       |> group()
       |> distinct(column: "${tagKey}")
-      |> limit(n: ${limit})
       |> sort()
+      |> limit(n: ${limit})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
-        schema.tagValues(
+        schema.measurementTagValues(
           bucket: "${bucket.name}",
+          measurement: "${measurement}",
           tag: "${tagKey}",
-          predicate: (r) => (r["_measurement"] == "${measurement}"),
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
-        |> limit(n: ${limit})
         |> sort()
+        |> limit(n: ${limit})
       `
     }
 

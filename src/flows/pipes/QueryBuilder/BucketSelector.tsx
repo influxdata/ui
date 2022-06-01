@@ -31,6 +31,7 @@ const BucketSelector: FC = () => {
         addBucket({
           name: b.name,
           type: b.type,
+          retentionRules: b.retentionRules,
         } as Bucket)
       })
   }, [loading, buckets, data.buckets])

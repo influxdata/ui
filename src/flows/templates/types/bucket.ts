@@ -1,6 +1,7 @@
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PIPE_DEFINITIONS} from 'src/flows'
+import {Bucket as GenBucket} from 'src/client'
 
 export default register =>
   register({
@@ -20,7 +21,7 @@ export default register =>
               ...JSON.parse(
                 JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)
               ),
-              buckets: [{name, type: 'user'}],
+              buckets: [{name, type: 'user', retentionRules: []} as GenBucket],
             },
             {
               title: 'Validate the Data',

@@ -6,7 +6,7 @@ import {normalize} from 'normalizr'
 // APIs
 import {getErrorMessage} from 'src/utils/api'
 import * as api from 'src/client'
-import {getOrg as getNewAPIData} from 'src/client/unityRoutes'
+import {getOrg as getCloudOrgData} from 'src/client/unityRoutes'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -76,13 +76,13 @@ export const getOrganizations = () => async (
       numOrgs < 2 &&
       Object.keys(orgs[0]).length > 0
     ) {
-      const newOrgAPIData = await getNewAPIData({orgId: orgs[0].id})
+      const cloudOrgData = await getCloudOrgData({orgId: orgs[0].id})
 
-      if (newOrgAPIData.status !== 200) {
-        throw new Error(newOrgAPIData.data.message)
+      if (cloudOrgData.status !== 200) {
+        throw new Error(cloudOrgData.data.message)
       }
 
-      orgsWithCloudProvider[0].provider = newOrgAPIData.data.provider
+      orgsWithCloudProvider[0].provider = cloudOrgData.data.provider
     }
     const organizations = normalize<Organization, OrgEntities, string[]>(
       orgsWithCloudProvider,
@@ -247,4 +247,5 @@ export const renameOrg = (
     dispatch(notify(orgRenameFailed(originalName)))
     console.error(error)
   }
+  Z
 }

@@ -58,7 +58,7 @@ const SubscriptionsLanding: FC = () => {
   }, [])
 
   useEffect(() => {
-    if (subscriptions === null || !subscriptions.length) {
+    if (!subscriptions || !subscriptions.length) {
       setFilteredSubscriptions([])
       return
     }

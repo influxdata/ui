@@ -34,6 +34,7 @@ import {RemoteDataState, GetState} from 'src/types'
 
 // Creators
 import {Actions} from 'src/me/actions/creators'
+import {createAbsolutePositionFromRelativePosition} from 'yjs'
 
 export const getIdentity = () => async (
   dispatch: Dispatch<Actions>,
@@ -66,57 +67,6 @@ export const getIdentity = () => async (
         console.log(identityEndPoint)
         throw new Error('Error')
       }
-
-      // console.log('herei s the data coming from /identity')
-      // console.log(identityEndPoint.data)
-
-      // const arrayOfAccounts = await getAccounts({})
-      // console.log('here is a list of all accounts')
-      // console.log(arrayOfAccounts.data)
-
-      // const specificAccountInfo = await getAccount({
-      //   accountId: arrayOfAccounts.data[0].id,
-      // })
-
-      // if (specificAccountInfo.status !== 200) {
-      //   throw new Error(specificAccountInfo.data.message)
-      // }
-
-      // // Need a way to get the specific org id
-      // const specificOrgInfo = await getOrgAPI({
-      //   orgId: identityEndPoint.data.org.id,
-      // })
-      // if (specificOrgInfo.status !== 200) {
-      //   throw new Error(specificOrgInfo.data.message)
-      // }
-
-      // console.log('here is the specific account data for id 2')
-      // console.log(specificAccountInfo.data)
-
-      // // This information would need to be moved into the quartz function though.
-      // const quartzMeObj = {
-      //   accountCreatedAt: identityEndPoint.data.account.accountCreatedAt,
-      //   accountType: identityEndPoint.data.account.type,
-
-      //   // For billing provider, I'm getting an undefined when I should be getting null.
-      //   // Check with ecommerce team to make sure that's right.
-      //   billingProvider: specificAccountInfo.data.billing_provider,
-      //   clusterHost: identityEndPoint.data.org.clusterHost,
-      //   email: identityEndPoint.data.user.email,
-      //   id: identityEndPoint.data.user.id,
-
-      //   // I don't see an isOperator. For now, I'm going to set it to false by default,
-      //   // unless operatorRole is true.
-      //   isOperator: identityEndPoint.data.user.operatorRole ? true : false,
-      //   isRegionBeta: specificOrgInfo.data.isRegionBeta,
-      //   operatorRole: identityEndPoint.data.user.operatorRole,
-      //   paygCreditStartDate: identityEndPoint.data.account.paygCreditStartDate,
-      //   regionCode: specificOrgInfo.data.regionCode,
-      //   regionName: specificOrgInfo.data.regionName,
-      // }
-      // console.log('here is the shoehorn for quartzMe')
-      // console.log(quartzMeObj)
-
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
@@ -195,12 +145,16 @@ export const getQuartzMe = () => async dispatch => {
     }
 
     const arrayOfAccounts = await getAccounts({})
+    console.log('here is the result of querying /api/v2private/accounts/')
+    console.log(arrayOfAccounts)
     // console.log('here is a list of all accounts')
     // console.log(arrayOfAccounts.data)
 
     const specificAccountInfo = await getAccount({
       accountId: arrayOfAccounts.data[0].id,
     })
+    console.log('here is the result of looking for a specific account')
+    console.log(specificAccountInfo)
 
     if (specificAccountInfo.status !== 200) {
       throw new Error(specificAccountInfo.data.message)
@@ -218,7 +172,7 @@ export const getQuartzMe = () => async dispatch => {
       accountCreatedAt: identityEndPoint.data.account.accountCreatedAt + 'P',
       accountType: identityEndPoint.data.account.type,
       // For billing provider, I'm getting an undefined when I should be getting null.
-      billingProvider: specificAccountInfo.data.billing_provider,
+      billingProvider: specificAccountInfo.data.billingProvider,
       clusterHost: identityEndPoint.data.org.clusterHost,
       email: identityEndPoint.data.user.email,
       id: identityEndPoint.data.user.id,

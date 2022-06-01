@@ -20,7 +20,7 @@ interface Props {
 const EmptyGraphError: FunctionComponent<Props> = ({message, testID}) => {
   const [didCopy, setDidCopy] = useState(false)
 
-  const buttonText = didCopy ? 'Copied' : 'Copy'
+  const buttonText = didCopy ? 'Copied!' : 'Copy'
   const buttonColor = didCopy ? ComponentColor.Success : ComponentColor.Default
 
   const onClick = () => {
@@ -43,7 +43,6 @@ const EmptyGraphError: FunctionComponent<Props> = ({message, testID}) => {
             color={buttonColor}
             titleText={buttonText}
             text={buttonText}
-            icon={didCopy ? IconFont.Checkmark_New : null}
             placeIconAfterText={true}
             onClick={onClick}
             className="empty-graph-error--copy"

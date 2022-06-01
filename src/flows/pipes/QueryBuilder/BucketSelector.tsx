@@ -25,15 +25,10 @@ const BucketSelector: FC = () => {
       return
     }
     const allBuckets = new Set(buckets.map(b => b.name))
-    data.buckets
-      .filter(b => !allBuckets.has(b.name))
-      .forEach(b => {
-        addBucket({
-          name: b.name,
-          type: b.type,
-          retentionRules: b.retentionRules,
-        } as Bucket)
-      })
+    const missingBuckets = data.buckets.filter(b => !allBuckets.has(b.name))
+    missingBuckets.forEach(b => {
+      addBucket(b as Bucket)
+    })
   }, [loading, buckets, data.buckets])
 
   if (loading === RemoteDataState.Done && !buckets.length) {

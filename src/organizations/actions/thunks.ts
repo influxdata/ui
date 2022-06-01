@@ -57,17 +57,25 @@ export const getOrganizations = () => async (
   try {
     dispatch(setOrgs(RemoteDataState.Loading))
 
+    // Call to api.getOrgs({}) returns an object with two properties, links (single prop - self)and orgs
+    // orgs contains an array of organizations.
     const resp = await api.getOrgs({})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
 
+    // console.log('this is the response from getOrgs')
+    // console.log(resp)
+    //
+
     const {orgs} = resp.data
     const numOrgs = orgs.length
+    // console.log('this is the number of orgs retrieved')
+    // console.log(numOrgs)
     const orgsWithCloudProvider: Organization[] = orgs
 
-    // If expected behavior of one org being returned, retrieve name of its cloud provider from the new org API, and add to org object to be stored in state.
+    // Assuming only one org is returned (no multi-org in Cloud yet), retrieve name of the cloud provider from the new org API and add it to the current 'org' object stored in state.
     if (
       CLOUD &&
       numOrgs > 0 &&
@@ -75,6 +83,8 @@ export const getOrganizations = () => async (
       Object.keys(orgs[0]).length > 0
     ) {
       const newOrgAPIData = await getNewAPIData({orgId: orgs[0].id})
+      // console.log('the cloud flag is enabled, so get the provider information')
+      // console.log(newOrgAPIData)
 
       if (newOrgAPIData.status !== 200) {
         throw new Error(newOrgAPIData.data.message)
@@ -86,6 +96,9 @@ export const getOrganizations = () => async (
       orgsWithCloudProvider,
       arrayOfOrgs
     )
+
+    // console.log('here is what organizations now looks like')
+    // console.log(organizations)
 
     gaEvent('cloudAppOrgIdReady', {
       identity: {

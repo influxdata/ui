@@ -6,14 +6,14 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import WaitingText from 'src/shared/components/WaitingText'
 
 // Contexts
-import {
-  LOCAL_LIMIT,
-  NewDataExplorerContext,
-} from 'src/dataExplorer/context/newDataExplorer'
+import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
 import {RemoteDataState} from 'src/types'
+
+// Utils
+import {LOCAL_LIMIT} from 'src/dataExplorer/shared/utils'
 
 const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \

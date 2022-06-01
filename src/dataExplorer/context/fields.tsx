@@ -13,16 +13,16 @@ import {
 } from 'src/shared/constants/queryBuilder'
 
 // Contexts
+import {QueryContext} from 'src/shared/contexts/query'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_REGEXP,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
-} from 'src/dataExplorer/context/newDataExplorer'
-import {QueryContext} from 'src/shared/contexts/query'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+} from 'src/dataExplorer/shared/utils'
 
 interface FieldsContextType {
   fields: Array<string>

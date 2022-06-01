@@ -13,16 +13,17 @@ import {
 } from 'src/shared/constants/queryBuilder'
 
 // Contexts
+import {QueryContext} from 'src/shared/contexts/query'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_REGEXP,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
-} from 'src/dataExplorer/context/newDataExplorer'
-import {QueryContext} from 'src/shared/contexts/query'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+  SEARCH_STRING,
+} from 'src/dataExplorer/shared/utils'
 
 interface TagsContextType {
   tags: Tags
@@ -75,9 +76,6 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     ? EXTENDED_TAG_LIMIT
     : DEFAULT_TAG_LIMIT
 
-  const searchString = (searchTerm: string): string =>
-    `|> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
-
   const getTagKeys = async (
     bucket: any,
     measurement: string,
@@ -104,7 +102,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> keys()
       |> keep(columns: ["_value"])
       |> distinct()
-      ${searchTerm ? searchString(searchTerm) : ''}
+      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
       |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
       |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
       |> sort()
@@ -122,7 +120,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         )
           |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
           |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
-          ${searchTerm ? searchString(searchTerm) : ''}
+          ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
           |> sort()
           |> limit(n: ${limit})
       `

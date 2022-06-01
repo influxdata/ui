@@ -5,7 +5,6 @@ import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Contexts
-import {LOCAL_LIMIT} from 'src/dataExplorer/context/newDataExplorer'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
 import WaitingText from 'src/shared/components/WaitingText'
 
@@ -14,6 +13,9 @@ import {RemoteDataState} from 'src/types'
 
 // Syles
 import './Schema.scss'
+
+// Utils
+import {LOCAL_LIMIT} from 'src/dataExplorer/shared/utils'
 
 const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
 key values pairs within a measurement. For SQL users, this is \

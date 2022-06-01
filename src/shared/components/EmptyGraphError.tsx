@@ -20,7 +20,7 @@ interface Props {
 const EmptyGraphError: FunctionComponent<Props> = ({message, testID}) => {
   const [didCopy, setDidCopy] = useState(false)
 
-  const buttonText = didCopy ? 'Copied!' : 'Copy'
+  const buttonText = didCopy ? 'Copied' : 'Copy'
   const buttonColor = didCopy ? ComponentColor.Success : ComponentColor.Default
 
   const onClick = () => {
@@ -31,22 +31,24 @@ const EmptyGraphError: FunctionComponent<Props> = ({message, testID}) => {
   return (
     <div className="cell--view-empty" data-testid={testID}>
       <div className="empty-graph-error" data-testid="empty-graph-error">
-        <CopyToClipboard text={message}>
-          <Button
-            size={ComponentSize.ExtraSmall}
-            color={buttonColor}
-            titleText={buttonText}
-            text={buttonText}
-            onClick={onClick}
-            className="empty-graph-error--copy"
-          />
-        </CopyToClipboard>
         <DapperScrollbars className="empty-graph-error--scroll" autoHide={true}>
           <pre>
             <Icon glyph={IconFont.AlertTriangle} />
             <code className="cell--error-message"> {message}</code>
           </pre>
         </DapperScrollbars>
+        <CopyToClipboard text={message}>
+          <Button
+            size={ComponentSize.ExtraSmall}
+            color={buttonColor}
+            titleText={buttonText}
+            text={buttonText}
+            icon={didCopy ? IconFont.Checkmark_New : null}
+            placeIconAfterText={true}
+            onClick={onClick}
+            className="empty-graph-error--copy"
+          />
+        </CopyToClipboard>
       </div>
     </div>
   )

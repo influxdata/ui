@@ -116,7 +116,7 @@ export class Signin extends PureComponent<Props, State> {
       if (CLOUD) {
         if (isFlagEnabled('useQuartzLogin')) {
           window.location.reload()
-          throw error
+          return
         }
 
         /**

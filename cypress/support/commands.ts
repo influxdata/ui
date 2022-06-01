@@ -1084,7 +1084,7 @@ export const createSFDCSupportCase = (
       description,
       email,
       severity,
-      subject
+      subject,
     },
   })
 }

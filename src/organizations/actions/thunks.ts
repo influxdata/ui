@@ -8,6 +8,9 @@ import {getErrorMessage} from 'src/utils/api'
 import * as api from 'src/client'
 import {getOrg as getNewAPIData} from 'src/client/unityRoutes'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -65,7 +68,12 @@ export const getOrganizations = () => async (
     const orgsWithCloudProvider: Organization[] = orgs
 
     // If expected behavior of one org being returned, retrieve name of its cloud provider from the new org API, and add to org object to be stored in state.
-    if (numOrgs > 0 && numOrgs < 2 && Object.keys(orgs[0]).length > 0) {
+    if (
+      CLOUD &&
+      numOrgs > 0 &&
+      numOrgs < 2 &&
+      Object.keys(orgs[0]).length > 0
+    ) {
       const newOrgAPIData = await getNewAPIData({orgId: orgs[0].id})
 
       if (newOrgAPIData.status !== 200) {

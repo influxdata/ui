@@ -13,6 +13,7 @@ import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
 // Types
 import {getMe} from 'src/client'
+import {getIdentity} from 'src/client/unityRoutes'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -25,7 +26,8 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      const resp = await getMe({})
+      // const resp = await getMe({})
+      const resp = await getIdentity({})
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

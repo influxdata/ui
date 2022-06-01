@@ -13,7 +13,7 @@ import {
   getAccount,
   getAccounts,
   getMe as apiGetQuartzMe,
-  getIdentity,
+  getIdentity as getIdentityAPI,
   getOrg as getOrgAPI,
 } from 'src/client/unityRoutes'
 // Utils
@@ -21,6 +21,8 @@ import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {getOrg} from 'src/organizations/selectors'
+// import {getMe as getMeSelector} from 'src/me/selectors'
+
 // Actions
 import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 
@@ -33,7 +35,7 @@ import {RemoteDataState, GetState} from 'src/types'
 // Creators
 import {Actions} from 'src/me/actions/creators'
 
-export const getMe = () => async (
+export const getIdentity = () => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {
@@ -43,10 +45,10 @@ export const getMe = () => async (
     let user
 
     if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-      console.log('avatarWidgetMultiAccountInfo')
+      // console.log('avatarWidgetMultiAccountInfo')
       const resp = await getAccounts({})
-      console.log('here is the information from multi account')
-      console.log(resp)
+      // console.log('here is the information from multi account')
+      // console.log(resp)
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
@@ -54,11 +56,14 @@ export const getMe = () => async (
       user = resp.data.find(account => account.isActive)
     } else {
       const resp = await apiGetApiMe({})
-      console.log('here is the data coming from /me')
+      console.log('Original /me data')
       console.log(resp.data)
-      const identityEndPoint = await getIdentity({})
+      const identityEndPoint = await getIdentityAPI({})
+      console.log('here is result')
+      console.log(identityEndPoint)
 
       if (identityEndPoint.status !== 200) {
+        console.log(identityEndPoint)
         throw new Error('Error')
       }
 
@@ -122,6 +127,9 @@ export const getMe = () => async (
 
       const user2 = identityEndPoint.data.user
 
+      // Note absence of 'links' from property.
+      // Status property is also shoehorned: this
+      // should be coming from somewhere.
       const shoeHorn = {
         id: user2.id,
         links: {self: `/api/v2/users/${user2.id}`},
@@ -129,9 +137,7 @@ export const getMe = () => async (
         status: 'active',
       }
 
-      console.log(
-        'here is the shoehorned data, which should be identical to /me'
-      )
+      console.log('/Identity data implemented and used in shoehorn')
       console.log(shoeHorn)
 
       user = shoeHorn
@@ -175,22 +181,22 @@ export const getQuartzMe = () => async dispatch => {
   try {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
     const resp = await apiGetQuartzMe({})
-    console.log('here is the quartzMe data')
+    console.log('here is what quartzMe contains')
     console.log(resp.data)
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
 
     // This info should be pulled from state, not re-pulled from the API.
-    const identityEndPoint = await getIdentity({})
+    const identityEndPoint = await getIdentityAPI({})
 
     if (identityEndPoint.status !== 200) {
       throw new Error('Error')
     }
 
     const arrayOfAccounts = await getAccounts({})
-    console.log('here is a list of all accounts')
-    console.log(arrayOfAccounts.data)
+    // console.log('here is a list of all accounts')
+    // console.log(arrayOfAccounts.data)
 
     const specificAccountInfo = await getAccount({
       accountId: arrayOfAccounts.data[0].id,
@@ -208,23 +214,15 @@ export const getQuartzMe = () => async dispatch => {
       throw new Error(specificOrgInfo.data.message)
     }
 
-    console.log('here is the specific account data for id 2')
-    console.log(specificAccountInfo.data)
-
-    // This information would need to be moved into the quartz function though.
     const quartzMeObj = {
-      accountCreatedAt: identityEndPoint.data.account.accountCreatedAt,
+      accountCreatedAt: identityEndPoint.data.account.accountCreatedAt + 'P',
       accountType: identityEndPoint.data.account.type,
-
       // For billing provider, I'm getting an undefined when I should be getting null.
-      // Check with ecommerce team to make sure that's right.
       billingProvider: specificAccountInfo.data.billing_provider,
       clusterHost: identityEndPoint.data.org.clusterHost,
       email: identityEndPoint.data.user.email,
       id: identityEndPoint.data.user.id,
-
-      // I don't see an isOperator. For now, I'm going to set it to false by default,
-      // unless operatorRole is true.
+      // I don't see an isOperator. This is hacky.
       isOperator: identityEndPoint.data.user.operatorRole ? true : false,
       isRegionBeta: specificOrgInfo.data.isRegionBeta,
       operatorRole: identityEndPoint.data.user.operatorRole,
@@ -232,17 +230,10 @@ export const getQuartzMe = () => async dispatch => {
       regionCode: specificOrgInfo.data.regionCode,
       regionName: specificOrgInfo.data.regionName,
     }
-    console.log('here is the shoehorn for quartzMe')
+
+    console.log('here is the new state')
     console.log(quartzMeObj)
 
-    console.log('HERE IS THE BIG COMPARISON')
-    console.log('HERE IS RESP.DATA')
-    console.log(resp.data)
-    console.log('HERE IS THE CLONE')
-    console.log(quartzMeObj)
-
-    // Here's what happens when we replace it.
-    // dispatch(setQuartzMe(resp.data, RemoteDataState.Done))
     dispatch(setQuartzMe(quartzMeObj, RemoteDataState.Done))
   } catch (error) {
     console.error(error)

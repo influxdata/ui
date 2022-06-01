@@ -11,7 +11,7 @@ import GetFlags from 'src/shared/containers/GetFlags'
 import {RemoteDataState} from 'src/types'
 
 // Actions
-import {getMe} from 'src/me/actions/thunks'
+import {getIdentity} from 'src/me/actions/thunks'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -24,7 +24,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
 @ErrorHandling
-class GetMe extends PureComponent<Props, State> {
+class GetIdentity extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
@@ -46,15 +46,15 @@ class GetMe extends PureComponent<Props, State> {
   }
 
   public componentDidMount() {
-    this.props.getMe()
+    this.props.getIdentity()
     this.setState({loading: RemoteDataState.Done})
   }
 }
 
 const mdtp = {
-  getMe,
+  getIdentity,
 }
 
 const connector = connect(null, mdtp)
 
-export default connector(GetMe)
+export default connector(GetIdentity)

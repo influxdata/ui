@@ -31,6 +31,7 @@ import {
 // Types
 import {RemoteDataState} from 'src/types'
 import {getMe} from 'src/client'
+import {getIdentity} from 'src/client/unityRoutes'
 
 interface State {
   loading: RemoteDataState
@@ -94,7 +95,9 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      const resp = await getMe({})
+      // should put this behind a feature flag.
+      // const resp = await getMe({})
+      const resp = await getIdentity({})
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

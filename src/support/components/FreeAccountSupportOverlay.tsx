@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Components
 import {Icon, IconFont, List, Overlay} from '@influxdata/clockface'
@@ -19,15 +19,8 @@ import {
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {shouldGetCredit250Experience} from 'src/me/selectors'
 
-// Actions
-import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
-
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
-
-// Selectors
-import {getOrg} from 'src/organizations/selectors'
-import {getMe} from 'src/me/selectors'
 
 import './ContactSupport.scss'
 
@@ -36,27 +29,11 @@ interface OwnProps {
 }
 
 const FreeAccountSupportOverlay: FC<OwnProps> = () => {
-  const {id: orgID} = useSelector(getOrg)
-  const {id: meID} = useSelector(getMe)
   const {onClose} = useContext(OverlayContext)
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
-  const dispatch = useDispatch()
-
-  const openFeedbackOverlay = (event): void => {
-    event.preventDefault()
-    event(
-      'helpBar.feedbackAndQuestions.supportOverlay.shown',
-      {},
-      {userID: meID, orgID: orgID}
-    )
-    dispatch(
-      showOverlay('feedback-questions', null, () => dispatch(dismissOverlay))
-    )
-  }
-
   return (
-    <Overlay.Container maxWidth={550}>
+    <Overlay.Container maxWidth={550} testID="overlay--container">
       <Overlay.Header
         testID="free-support-overlay-header"
         title="Contact Support"
@@ -79,7 +56,7 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
           Annual customers. Please try our community resources below to recieve
           help or file a feedback & questions form.
         </p>
-        <List className="support-links">
+        <List className="support-links" testID="free-account-links">
           <List.Item>
             <div className="help-logo forum" />
             <SafeBlankLink href="https://community.influxdata.com">
@@ -90,12 +67,6 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
             <div className="help-logo slack" />
             <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email">
               InfluxDB Slack
-            </SafeBlankLink>
-          </List.Item>
-          <List.Item>
-            <div className="help-logo feedback" />
-            <SafeBlankLink href="" onClick={openFeedbackOverlay}>
-              Feedback & Questions Form
             </SafeBlankLink>
           </List.Item>
         </List>

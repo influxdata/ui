@@ -43,7 +43,6 @@ const EmptyGraphError: FunctionComponent<Props> = ({message, testID}) => {
             color={buttonColor}
             titleText={buttonText}
             text={buttonText}
-            placeIconAfterText={true}
             onClick={onClick}
             className="empty-graph-error--copy"
           />

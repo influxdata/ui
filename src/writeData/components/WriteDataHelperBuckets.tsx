@@ -46,7 +46,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets)
       .filter(b => b.type === 'user')
-      // sort by selected and then recently created
+      // sort by selected and then by name
       .sort((a, b) => {
         if (isSelected(a.id)) {
           return -1
@@ -54,7 +54,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
         if (isSelected(b.id)) {
           return 1
         }
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        return a.name.localeCompare(b.name)
       })
   )
 

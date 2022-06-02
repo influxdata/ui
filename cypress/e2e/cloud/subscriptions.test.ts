@@ -177,69 +177,9 @@ describe('Subscriptions', () => {
   })
 
   it('should create, update, stop, start and delete LP subscription', () => {
-    cy.getByTestID('subscriptions--tab').click()
-    cy.getByTestID('create-subscription-button--empty').should('be.visible')
-    cy.getByTestID('create-subscription-button--empty')
-      .first()
-      .click()
-    // broker form
-    cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    // back to create landing
-    cy.getByTestID('create-broker-form--cancel').should('be.visible')
-    cy.getByTestID('create-broker-form--cancel').click()
-    // return to broker form
-    cy.getByTestID('create-subscription-button--control-bar').should(
-      'be.visible'
-    )
-    cy.getByTestID('create-subscription-button--control-bar')
-      .first()
-      .click()
-    cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    // fill in broker form
-    cy.getByTestID('create-broker-form--name').type('My Subscription')
-    cy.getByTestID('create-broker-form--description').type('My Description')
-    cy.getByTestID('dropdown')
-      .contains('MQTT')
-      .click()
-    cy.getByTestID('create-broker-form--host').type('localhost')
-    cy.getByTestID('create-broker-form--port').type('1883')
-    cy.getByTestID('create-broker-form--submit').click()
-    // subscription form
-    cy.getByTestID('create-subscription-form--overlay-form').should(
-      'be.visible'
-    )
-    // back to broker form
-    cy.getByTestID('create-subscription-form--back').should('be.visible')
-    cy.getByTestID('create-subscription-form--back').click()
-    cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    // return to subscription
-    cy.getByTestID('create-broker-form--submit').should('be.visible')
-    cy.getByTestID('create-broker-form--submit').click()
-    cy.getByTestID('create-subscription-form--overlay-form').should(
-      'be.visible'
-    )
-    // fill in subscription form
-    cy.getByTestID('create-subscription-form--topic').type('topic')
-    cy.getByTestID('list-item')
-      .contains('defbuck')
-      .click()
-    cy.getByTestID('create-subscription-form--submit').click()
-    // parsing form
-    cy.getByTestID('create-parsing-form-overlay').should('be.visible')
-    // back to subscription
-    cy.getByTestID('create-parsing-form--back').should('be.visible')
-    cy.getByTestID('create-parsing-form--back').click()
-    cy.getByTestID('create-subscription-form--overlay-form').should(
-      'be.visible'
-    )
-    // return to parsing
-    cy.getByTestID('create-subscription-form--submit').click()
-    // line protocol
-    cy.getByTestID('create-parsing-form-line-protocol--button').click()
-    cy.getByTestID('create-parsing-form--submit').click()
-    // wait for intercepts
-    cy.wait('@CreateSubscription')
-    cy.wait('@GetSubscriptions')
+    let subscription = 'My Subscription'
+    createBasicLPSubscription(subscription)
+
     // subscriptions list view
     cy.get('.subscriptions-list').should('be.visible')
     cy.get('.cf-resource-card').should('be.visible')
@@ -268,10 +208,11 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-subscription-form--edit')
       .should('be.visible')
       .click()
+    subscription = 'My Edited Subscription'
     cy.getByTestID('update-broker-form--name').should('be.visible')
     cy.getByTestID('update-broker-form--name')
       .clear()
-      .type('My Edited Subscription')
+      .type(subscription)
     cy.getByTestID('update-broker-form--description')
       .clear()
       .type('Edited Description')
@@ -332,17 +273,15 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-subscription-form--cancel')
       .should('be.visible')
       .click()
+
     // delete
-    cy.getByTestID('context-delete-menu--button').should('be.visible')
-    cy.getByTestID('context-delete-menu--button').click()
-    cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-    // empty list
-    cy.wait('@DeleteSubscription')
-    cy.wait('@GetSubscriptions')
+    deleteSubscription(subscription)
+
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
   })
+
   it('should create, update, stop, start and delete a JSON subscription', () => {
+    let subscription = 'My Subscription 2'
     cy.getByTestID('subscriptions--tab').click()
     cy.getByTestID('create-subscription-button--control-bar').should(
       'be.visible'
@@ -352,7 +291,7 @@ describe('Subscriptions', () => {
       .click()
     // broker form
     cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    cy.getByTestID('create-broker-form--name').type('My Subscription 2')
+    cy.getByTestID('create-broker-form--name').type(subscription)
     cy.getByTestID('create-broker-form--description').type('My Description')
     cy.getByTestID('dropdown')
       .contains('MQTT')
@@ -479,7 +418,8 @@ describe('Subscriptions', () => {
       .should('be.visible')
       .click()
     cy.get('.cf-resource-card').should('have.length', 1)
-    cy.get('.cf-resource-card').contains('My Edited Subscription')
+    subscription = 'My Edited Subscription'
+    cy.get('.cf-resource-card').contains(subscription)
     // stop subscription
     cy.getByTestID('subscription-name').should('be.visible')
     cy.getByTestID('subscription-name').click()
@@ -503,17 +443,12 @@ describe('Subscriptions', () => {
       .should('be.visible')
       .click()
     // delete
-    cy.getByTestID('context-delete-menu--button').should('be.visible')
-    cy.getByTestID('context-delete-menu--button').click()
-    cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-    // empty list
-    cy.wait('@DeleteSubscription')
-    cy.wait('@GetSubscriptions')
+    deleteSubscription(subscription)
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
   })
 
   it('should create, update, stop, start and delete a String subscription', () => {
+    let subscription = 'My Subscription 3'
     cy.getByTestID('subscriptions--tab').click()
     cy.getByTestID('create-subscription-button--control-bar').should(
       'be.visible'
@@ -523,7 +458,7 @@ describe('Subscriptions', () => {
       .click()
     // broker form
     cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    cy.getByTestID('create-broker-form--name').type('My Subscription 3')
+    cy.getByTestID('create-broker-form--name').type(subscription)
     cy.getByTestID('create-broker-form--description').type('My Description')
     cy.getByTestID('dropdown')
       .contains('MQTT')
@@ -581,10 +516,11 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-subscription-form--edit')
       .should('be.visible')
       .click()
+    subscription = 'My Edited Subscription'
     cy.getByTestID('update-broker-form--name').should('be.visible')
     cy.getByTestID('update-broker-form--name')
       .clear()
-      .type('My Edited Subscription')
+      .type(subscription)
     cy.getByTestID('update-subscription-form--submit')
       .should('be.visible')
       .click()
@@ -659,14 +595,10 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-subscription-form--cancel')
       .should('be.visible')
       .click()
+
     // delete
-    cy.getByTestID('context-delete-menu--button').should('be.visible')
-    cy.getByTestID('context-delete-menu--button').click()
-    cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-    // empty list
-    cy.wait('@DeleteSubscription')
-    cy.wait('@GetSubscriptions')
+    deleteSubscription(subscription)
+
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
   })
 
@@ -675,69 +607,10 @@ describe('Subscriptions', () => {
       subscriptionsUI: true,
       subscriptionsSinglePage: true,
     })
-    cy.getByTestID('subscriptions--tab').click()
-    cy.getByTestID('create-subscription-button--empty').should('be.visible')
-    cy.getByTestID('create-subscription-button--empty')
-      .first()
-      .click()
-    // broker form
-    cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    // back to create landing
-    cy.getByTestID('create-broker-form--cancel').should('be.visible')
-    cy.getByTestID('create-broker-form--cancel').click()
-    // return to broker form
-    cy.getByTestID('create-subscription-button--control-bar').should(
-      'be.visible'
-    )
-    cy.getByTestID('create-subscription-button--control-bar')
-      .first()
-      .click()
-    cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    // fill in broker form
-    cy.getByTestID('create-broker-form--name').type('My Subscription')
-    cy.getByTestID('create-broker-form--description').type('My Description')
-    cy.getByTestID('dropdown')
-      .contains('MQTT')
-      .click()
-    cy.getByTestID('create-broker-form--host').type('localhost')
-    cy.getByTestID('create-broker-form--port').type('1883')
-    cy.getByTestID('create-broker-form--submit').click()
-    // subscription form
-    cy.getByTestID('create-subscription-form--overlay-form').should(
-      'be.visible'
-    )
-    // back to broker form
-    cy.getByTestID('create-subscription-form--back').should('be.visible')
-    cy.getByTestID('create-subscription-form--back').click()
-    cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    // return to subscription
-    cy.getByTestID('create-broker-form--submit').should('be.visible')
-    cy.getByTestID('create-broker-form--submit').click()
-    cy.getByTestID('create-subscription-form--overlay-form').should(
-      'be.visible'
-    )
-    // fill in subscription form
-    cy.getByTestID('create-subscription-form--topic').type('topic')
-    cy.getByTestID('list-item')
-      .contains('defbuck')
-      .click()
-    cy.getByTestID('create-subscription-form--submit').click()
-    // parsing form
-    cy.getByTestID('create-parsing-form-overlay').should('be.visible')
-    // back to subscription
-    cy.getByTestID('create-parsing-form--back').should('be.visible')
-    cy.getByTestID('create-parsing-form--back').click()
-    cy.getByTestID('create-subscription-form--overlay-form').should(
-      'be.visible'
-    )
-    // return to parsing
-    cy.getByTestID('create-subscription-form--submit').click()
-    // line protocol
-    cy.getByTestID('create-parsing-form-line-protocol--button').click()
-    cy.getByTestID('create-parsing-form--submit').click()
-    // wait for intercepts
-    cy.wait('@CreateSubscription')
-    cy.wait('@GetSubscriptions')
+
+    let subscription = 'My Subscription'
+    createBasicLPSubscription(subscription)
+
     // subscriptions list view
     cy.get('.subscriptions-list').should('be.visible')
     cy.get('.cf-resource-card').should('be.visible')
@@ -751,10 +624,11 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-broker-form--edit')
       .should('be.visible')
       .click()
+    subscription = 'My Edited Subscription'
     cy.getByTestID('update-broker-form--name').should('be.visible')
     cy.getByTestID('update-broker-form--name')
       .clear()
-      .type('My Edited Subscription')
+      .type(subscription)
     cy.getByTestID('update-broker-form--description')
       .clear()
       .type('Edited Description')
@@ -810,14 +684,10 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-broker-form--cancel')
       .should('be.visible')
       .click()
+
     // delete
-    cy.getByTestID('context-delete-menu--button').should('be.visible')
-    cy.getByTestID('context-delete-menu--button').click()
-    cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-    // empty list
-    cy.wait('@DeleteSubscription')
-    cy.wait('@GetSubscriptions')
+    deleteSubscription(subscription)
+
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
   })
 
@@ -826,6 +696,8 @@ describe('Subscriptions', () => {
       subscriptionsUI: true,
       subscriptionsSinglePage: true,
     })
+
+    let subscription = 'My Subscription 2'
     cy.getByTestID('subscriptions--tab').click()
     cy.getByTestID('create-subscription-button--control-bar').should(
       'be.visible'
@@ -835,7 +707,7 @@ describe('Subscriptions', () => {
       .click()
     // broker form
     cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    cy.getByTestID('create-broker-form--name').type('My Subscription 2')
+    cy.getByTestID('create-broker-form--name').type(subscription)
     cy.getByTestID('create-broker-form--description').type('My Description')
     cy.getByTestID('dropdown')
       .contains('MQTT')
@@ -904,10 +776,11 @@ describe('Subscriptions', () => {
       .scrollIntoView()
       .should('be.visible')
       .click()
+    subscription = 'My Edited Subscription'
     cy.getByTestID('update-broker-form--name').should('be.visible')
     cy.getByTestID('update-broker-form--name')
       .clear()
-      .type('My Edited Subscription')
+      .type(subscription)
     cy.get('.subway-navigation-step-flex-wrapper')
       .eq(1)
       .should('be.visible')
@@ -992,14 +865,10 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-broker-form--cancel')
       .should('be.visible')
       .click()
+
     // delete
-    cy.getByTestID('context-delete-menu--button').should('be.visible')
-    cy.getByTestID('context-delete-menu--button').click()
-    cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-    // empty list
-    cy.wait('@DeleteSubscription')
-    cy.wait('@GetSubscriptions')
+    deleteSubscription(subscription)
+
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
   })
 
@@ -1008,6 +877,8 @@ describe('Subscriptions', () => {
       subscriptionsUI: true,
       subscriptionsSinglePage: true,
     })
+
+    let subscription = 'My Subscription 3'
     cy.getByTestID('subscriptions--tab').click()
     cy.getByTestID('create-subscription-button--control-bar').should(
       'be.visible'
@@ -1017,7 +888,7 @@ describe('Subscriptions', () => {
       .click()
     // broker form
     cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    cy.getByTestID('create-broker-form--name').type('My Subscription 3')
+    cy.getByTestID('create-broker-form--name').type(subscription)
     cy.getByTestID('create-broker-form--description').type('My Description')
     cy.getByTestID('dropdown')
       .contains('MQTT')
@@ -1076,10 +947,11 @@ describe('Subscriptions', () => {
       .scrollIntoView()
       .should('be.visible')
       .click()
+    subscription = 'My Edited Subscription'
     cy.getByTestID('update-broker-form--name').should('be.visible')
     cy.getByTestID('update-broker-form--name')
       .clear()
-      .type('My Edited Subscription')
+      .type(subscription)
     cy.get('.subway-navigation-step-flex-wrapper')
       .eq(0)
       .should('be.visible')
@@ -1156,14 +1028,10 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-broker-form--cancel')
       .should('be.visible')
       .click()
+
     // delete
-    cy.getByTestID('context-delete-menu--button').should('be.visible')
-    cy.getByTestID('context-delete-menu--button').click()
-    cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-    // empty list
-    cy.wait('@DeleteSubscription')
-    cy.wait('@GetSubscriptions')
+    deleteSubscription(subscription)
+
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
   })
 
@@ -1196,69 +1064,9 @@ describe('Subscriptions', () => {
       flowVersion: 5,
       status: 'ERRORED',
     }
-    cy.getByTestID('subscriptions--tab').click()
-    cy.getByTestID('create-subscription-button--empty').should('be.visible')
-    cy.getByTestID('create-subscription-button--empty')
-      .first()
-      .click()
-    // broker form
-    cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    // back to create landing
-    cy.getByTestID('create-broker-form--cancel').should('be.visible')
-    cy.getByTestID('create-broker-form--cancel').click()
-    // return to broker form
-    cy.getByTestID('create-subscription-button--control-bar').should(
-      'be.visible'
-    )
-    cy.getByTestID('create-subscription-button--control-bar')
-      .first()
-      .click()
-    cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    // fill in broker form
-    cy.getByTestID('create-broker-form--name').type('My Subscription')
-    cy.getByTestID('create-broker-form--description').type('My Description')
-    cy.getByTestID('dropdown')
-      .contains('MQTT')
-      .click()
-    cy.getByTestID('create-broker-form--host').type('localhost')
-    cy.getByTestID('create-broker-form--port').type('1883')
-    cy.getByTestID('create-broker-form--submit').click()
-    // subscription form
-    cy.getByTestID('create-subscription-form--overlay-form').should(
-      'be.visible'
-    )
-    // back to broker form
-    cy.getByTestID('create-subscription-form--back').should('be.visible')
-    cy.getByTestID('create-subscription-form--back').click()
-    cy.getByTestID('create-broker-form-overlay').should('be.visible')
-    // return to subscription
-    cy.getByTestID('create-broker-form--submit').should('be.visible')
-    cy.getByTestID('create-broker-form--submit').click()
-    cy.getByTestID('create-subscription-form--overlay-form').should(
-      'be.visible'
-    )
-    // fill in subscription form
-    cy.getByTestID('create-subscription-form--topic').type('topic')
-    cy.getByTestID('list-item')
-      .contains('defbuck')
-      .click()
-    cy.getByTestID('create-subscription-form--submit').click()
-    // parsing form
-    cy.getByTestID('create-parsing-form-overlay').should('be.visible')
-    // back to subscription
-    cy.getByTestID('create-parsing-form--back').should('be.visible')
-    cy.getByTestID('create-parsing-form--back').click()
-    cy.getByTestID('create-subscription-form--overlay-form').should(
-      'be.visible'
-    )
-    // return to parsing
-    cy.getByTestID('create-subscription-form--submit').click()
-    // line protocol
-    cy.getByTestID('create-parsing-form-line-protocol--button').click()
-    cy.getByTestID('create-parsing-form--submit').click()
-    // wait for intercepts
-    cy.wait('@CreateSubscription')
-    cy.wait('@GetSubscriptions')
+    const subscription = 'My Subscription'
+    createBasicLPSubscription(subscription)
+
     // subscriptions list view
     cy.get('.subscriptions-list').should('be.visible')
     cy.get('.cf-resource-card').should('be.visible')

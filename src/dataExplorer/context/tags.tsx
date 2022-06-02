@@ -1,6 +1,6 @@
 // Libraries
 import React, {createContext, FC, useContext, useMemo, useState} from 'react'
-import {QueryScope, RemoteDataState} from 'src/types'
+import {Bucket, QueryScope, RemoteDataState} from 'src/types'
 
 // Constants
 import {
@@ -29,8 +29,8 @@ interface TagsContextType {
   tags: Tags
   loadingTagKeys: RemoteDataState
   loadingTagValues: Hash<RemoteDataState>
-  getTagKeys: (bucket: any, measurement: string, searchTerm?: string) => void
-  getTagValues: (bucket: any, measurement: string, tagKey: string) => void
+  getTagKeys: (bucket: Bucket, measurement: string, searchTerm?: string) => void
+  getTagValues: (bucket: Bucket, measurement: string, tagKey: string) => void
   resetTags: () => void
 }
 
@@ -38,8 +38,8 @@ const DEFAULT_CONTEXT: TagsContextType = {
   tags: {} as Tags,
   loadingTagKeys: RemoteDataState.NotStarted,
   loadingTagValues: {} as Hash<RemoteDataState>,
-  getTagKeys: (_b: any, _m: string, _s: string) => {},
-  getTagValues: (_b: any, _m: string, _tk: string) => {},
+  getTagKeys: (_b: Bucket, _m: string, _s: string) => {},
+  getTagValues: (_b: Bucket, _m: string, _tk: string) => {},
   resetTags: () => {},
 }
 
@@ -77,7 +77,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     : DEFAULT_TAG_LIMIT
 
   const getTagKeys = async (
-    bucket: any,
+    bucket: Bucket,
     measurement: string,
     searchTerm?: string
   ) => {
@@ -157,7 +157,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
   }
 
   const getTagValues = async (
-    bucket: any,
+    bucket: Bucket,
     measurement: string,
     tagKey: string
   ) => {

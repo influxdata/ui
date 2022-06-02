@@ -15,7 +15,7 @@ import {
 import {QueryContext} from 'src/shared/contexts/query'
 
 // Types
-import {QueryScope, RemoteDataState} from 'src/types'
+import {Bucket, QueryScope, RemoteDataState} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -29,13 +29,13 @@ import {
 interface MeasurementContextType {
   measurements: string[]
   loading: RemoteDataState
-  getMeasurements: (bucket: any) => void
+  getMeasurements: (bucket: Bucket) => void
 }
 
 const DEFAULT_CONTEXT: MeasurementContextType = {
   measurements: [],
   loading: RemoteDataState.NotStarted,
-  getMeasurements: (_: any) => {},
+  getMeasurements: (_: Bucket) => {},
 }
 
 export const MeasurementContext = createContext<MeasurementContextType>(

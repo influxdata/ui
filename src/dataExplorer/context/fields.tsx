@@ -1,6 +1,6 @@
 // Libraries
 import React, {createContext, FC, useContext, useMemo, useState} from 'react'
-import {QueryScope, RemoteDataState} from 'src/types'
+import {Bucket, QueryScope, RemoteDataState} from 'src/types'
 
 // Constants
 import {
@@ -28,14 +28,14 @@ import {
 interface FieldsContextType {
   fields: Array<string>
   loading: RemoteDataState
-  getFields: (bucket: any, measurement: string, searchTerm?: string) => void
+  getFields: (bucket: Bucket, measurement: string, searchTerm?: string) => void
   resetFields: () => void
 }
 
 const DEFAULT_CONTEXT: FieldsContextType = {
   fields: [],
   loading: RemoteDataState.NotStarted,
-  getFields: (_b: any, _m: string, _s: string) => {},
+  getFields: (_b: Bucket, _m: string, _s: string) => {},
   resetFields: () => {},
 }
 
@@ -63,7 +63,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     : DEFAULT_TAG_LIMIT
 
   const getFields = async (
-    bucket: any,
+    bucket: Bucket,
     measurement: string,
     searchTerm?: string
   ) => {

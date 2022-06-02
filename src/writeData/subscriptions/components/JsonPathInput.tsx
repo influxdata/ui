@@ -53,7 +53,12 @@ const JsonPathInput: FC<Props> = ({
   return (
     <div>
       <Grid.Column>
-        <div className="json-parsing-form__header-wrap">
+        <FlexBox
+          alignItems={AlignItems.Center}
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Medium}
+          className="header-wrap"
+        >
           <Heading
             element={HeadingElement.H3}
             weight={FontWeight.Bold}
@@ -62,7 +67,7 @@ const JsonPathInput: FC<Props> = ({
             {name}
           </Heading>
           {(tagType
-            ? !(formContent.jsonTagKeys.length === 1)
+            ? !(formContent.jsonTagKeys.length === 0)
             : !(formContent.jsonFieldKeys.length === 1)) && (
             <ConfirmationButton
               color={ComponentColor.Colorless}
@@ -89,7 +94,7 @@ const JsonPathInput: FC<Props> = ({
               testID={`${tagType}-json-delete-label`}
             />
           )}
-        </div>
+        </FlexBox>
         <FlexBox
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}

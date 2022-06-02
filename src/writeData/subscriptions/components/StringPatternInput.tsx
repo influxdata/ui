@@ -61,7 +61,7 @@ const StringPatternInput: FC<Props> = ({
             {name}
           </Heading>
           {(tagType
-            ? !(formContent.stringTags.length === 1)
+            ? !(formContent.stringTags.length === 0)
             : !(formContent.stringFields.length === 1)) && (
             <ConfirmationButton
               color={ComponentColor.Colorless}

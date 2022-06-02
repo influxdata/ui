@@ -70,7 +70,7 @@ export const getOrganizations = () => async (
     // api.getOrgs returns all organizations associated with the currently active account.
     // Assuming cloud user, and assuming one org returned (no multi-org in cloud yet), retrieve
     // organization's cloud provider from new org API.
-    if (CLOUD && numOrgs === 1 && Object.keys(orgs[0]).length > 0) {
+    if (CLOUD && numOrgs === 1 && orgs[0].id) {
       const cloudOrgData = await getCloudOrgData({orgId: orgs[0].id})
 
       if (cloudOrgData.status !== 200) {

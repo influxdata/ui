@@ -5,7 +5,7 @@ import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Contexts
-import {LOCAL_LIMIT} from 'src/dataExplorer/context/newDataExplorer'
+import {LOCAL_LIMIT} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
 import WaitingText from 'src/shared/components/WaitingText'
 

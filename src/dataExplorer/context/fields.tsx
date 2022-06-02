@@ -18,7 +18,7 @@ import {
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
-} from 'src/dataExplorer/context/newDataExplorer'
+} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {QueryContext} from 'src/shared/contexts/query'
 
 // Utils

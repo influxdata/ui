@@ -6,7 +6,7 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 // Contexts
-import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
+import {NewDataExplorerContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {BucketContext} from 'src/shared/contexts/buckets'
 
 const BUCKET_TOOLTIP = `A bucket is a named location where time series data \

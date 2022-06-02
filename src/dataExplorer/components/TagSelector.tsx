@@ -9,7 +9,7 @@ import WaitingText from 'src/shared/components/WaitingText'
 import {
   LOCAL_LIMIT,
   NewDataExplorerContext,
-} from 'src/dataExplorer/context/newDataExplorer'
+} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types

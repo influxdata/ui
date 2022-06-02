@@ -13,7 +13,7 @@ import TagSelector from 'src/dataExplorer/components/TagSelector'
 import {
   NewDataExplorerContext,
   NewDataExplorerProvider,
-} from 'src/dataExplorer/context/newDataExplorer'
+} from 'src/dataExplorer/context/fluxQueryBuilder'
 import QueryProvider from 'src/shared/contexts/query'
 import {BucketProvider} from 'src/shared/contexts/buckets'
 import {MeasurementsProvider} from 'src/dataExplorer/context/measurements'

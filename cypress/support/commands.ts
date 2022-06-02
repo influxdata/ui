@@ -1071,24 +1071,6 @@ export const createTaskFromEmpty = (
   cy.getByTestID('task-form-offset-input').type(offset)
 }
 
-export const createSFDCSupportCase = (
-  description: string,
-  email: string,
-  severity: string,
-  subject: string
-): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.request({
-    method: 'POST',
-    url: '/api/v2private/uiproxy/sfdc-support',
-    body: {
-      description,
-      email,
-      severity,
-      subject,
-    },
-  })
-}
-
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)
@@ -1187,7 +1169,4 @@ Cypress.Commands.add(
 Cypress.Commands.add('getByTestIDAndSetInputValue', getByTestIDAndSetInputValue)
 Cypress.Commands.add('setFeatureFlags', setFeatureFlags)
 Cypress.Commands.add('createTaskFromEmpty', createTaskFromEmpty)
-
-// support
-Cypress.Commands.add('createSFDCSupportCase', createSFDCSupportCase)
 /* eslint-enable */

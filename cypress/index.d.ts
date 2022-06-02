@@ -48,8 +48,7 @@ import {
   setFeatureFlags,
   quartzProvision,
   createTaskFromEmpty,
-  createAlertGroup,
-  createSFDCSupportCase,
+  createAlertGroup
 } from './support/commands'
 
 declare global {
@@ -106,7 +105,6 @@ declare global {
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision
       createTaskFromEmpty: typeof createTaskFromEmpty
-      createSFDCSupportCase: typeof createSFDCSupportCase
     }
   }
 }

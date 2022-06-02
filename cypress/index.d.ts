@@ -48,7 +48,7 @@ import {
   setFeatureFlags,
   quartzProvision,
   createTaskFromEmpty,
-  createAlertGroup
+  createAlertGroup,
 } from './support/commands'
 
 declare global {

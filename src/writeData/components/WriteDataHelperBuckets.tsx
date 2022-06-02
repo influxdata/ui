@@ -35,10 +35,28 @@ const WriteDataHelperBuckets: FC<Props> = ({
   className = 'write-data--details-widget-title',
   useSimplifiedBucketForm = false,
 }) => {
-  const buckets = useSelector((state: AppState) =>
-    getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
-  )
   const {bucket, changeBucket} = useContext(WriteDataDetailsContext)
+  const isSelected = (bucketID: string): boolean => {
+    if (!bucket) {
+      return false
+    }
+    return bucketID === bucket.id
+  }
+
+  const buckets = useSelector((state: AppState) =>
+    getAll<Bucket>(state, ResourceType.Buckets)
+      .filter(b => b.type === 'user')
+      // sort by selected and then recently created
+      .sort((a, b) => {
+        if (isSelected(a.id)) {
+          return -1
+        }
+        if (isSelected(b.id)) {
+          return 1
+        }
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      })
+  )
 
   let body = (
     <EmptyState className="write-data--details-empty-state">
@@ -54,14 +72,6 @@ const WriteDataHelperBuckets: FC<Props> = ({
       </span>
     </EmptyState>
   )
-
-  const isSelected = (bucketID: string): boolean => {
-    if (!bucket) {
-      return false
-    }
-
-    return bucketID === bucket.id
-  }
 
   if (buckets.length) {
     body = (

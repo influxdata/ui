@@ -29,6 +29,22 @@ export const parseFromFluxResults = (
   const groupSet = new Set(fluxGroupKeyUnion)
   let max = 0
 
+  const isJsonObject = jsonString => {
+    try {
+      const o = JSON.parse(jsonString)
+
+      // Handle non-exception-throwing cases:
+      // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
+      // but... JSON.parse(null) returns null, and typeof null === "object",
+      // so we must check for that, too. Thankfully, null is falsey, so this suffices:
+      if (o && typeof o === 'object') {
+        return o
+      }
+    } catch (_) {}
+
+    return false
+  }
+
   for (let i = 0; i < tables.length; i++) {
     if (values[i] !== currVal || tables[i] !== currTable) {
       // sets the boundaries for the chunk based on different yields or tables
@@ -72,7 +88,16 @@ export const parseFromFluxResults = (
       ) {
         columnData = new Date(columnData).toISOString()
       }
-      if (typeof columnData === 'string') {
+
+      // (Sahas):
+      // the columnData can have a comma (,) in two cases
+      // 1. it's a JSON Object
+      // 2. It's a string of CSV
+      if (isJsonObject(columnData)) {
+        // replace Double quotes \" with single quotes \' in a json object
+        // columnData = `"${columnData.replace(/['"]+/g, '\'')}"`
+        columnData = `"${columnData.replace(/['"]+/g, "'")}"`
+      } else if (typeof columnData === 'string' && columnData.includes(',')) {
         columnData = `"${columnData}"`
       }
       if (column === 'result') {

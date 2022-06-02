@@ -1,4 +1,4 @@
-describe('Help bar menu', () => {
+describe('Help bar menu sub nav links', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
@@ -8,74 +8,93 @@ describe('Help bar menu', () => {
     })
   })
 
-  it('can navigate to Help Bar sub nav items ', () => {
+  it('launches InfluxDB documentation page when documentation link is clicked', () => {
     cy.getByTestID('nav-item-support')
       .get('.cf-tree-nav--sub-menu-trigger')
       .eq(3)
       .trigger('mouseover')
 
-    cy.getByTestID('nav-subitem-documentation')
-      .should('exist')
-      .then(link => {
-        cy.request(link.prop('href'))
-          .its('status')
-          .should('eq', 200)
-      })
-
-    cy.getByTestID('nav-subitem-faqs')
-      .should('exist')
-      .then(link => {
-        cy.request(link.prop('href'))
-          .its('status')
-          .should('eq', 200)
-      })
-
-    cy.getByTestID('nav-subitem-forum')
-      .should('exist')
-      .then(link => {
-        cy.request(link.prop('href'))
-          .its('status')
-          .should('eq', 200)
-      })
-
-    cy.getByTestID('nav-subitem-influxdb-slack')
-      .should('exist')
-      .then(link => {
-        cy.request(link.prop('href'))
-          .its('status')
-          .should('eq', 200)
+    cy.getByTestID('tree-nav--sub-menu')
+      .get('#documentation')
+      .within(() => {
+        cy.get('a')
+          .should($a => {
+            expect($a.attr('href'), 'href').to.equal(
+              'https://docs.influxdata.com/'
+            )
+            expect($a.attr('target'), 'target').to.equal('_blank')
+            $a.attr('target', '_self')
+          })
+          .click({force: true})
+        cy.location().should(loc => {
+          expect(loc.href).to.eq('https://docs.influxdata.com/')
+        })
       })
   })
 
-  it('can submit feedback and questions form', () => {
-    cy.getByTestID('nav-item-support')
-      .get('.cf-tree-nav--sub-menu-trigger')
-      .eq(3)
-      .trigger('mouseover')
-    cy.getByTestID('nav-subitem-feedback-questions')
-      .eq(0)
-      .click({force: true})
+  it('launches InfluxDB FAQ page when FAQ link is clicked', () => {
+    cy.getByTestID('tree-nav--sub-menu')
+      .get('#faqs')
+      .within(() => {
+        cy.get('a')
+          .should($a => {
+            expect($a.attr('href'), 'href').to.equal(
+              'https://docs.influxdata.com/influxdb/cloud/reference/faq/'
+            )
+            expect($a.attr('target'), 'target').to.equal('_blank')
+            $a.attr('target', '_self')
+          })
+          .click({force: true})
+        cy.location().should(loc => {
+          expect(loc.href).to.eq(
+            'https://docs.influxdata.com/influxdb/cloud/reference/faq/'
+          )
+        })
+      })
+  })
 
-    cy.getByTestID('feedback-questions-overlay-header').should('be.visible')
+  it('launches InfluxDB official forum page when forum link is clicked', () => {
+    cy.getByTestID('tree-nav--sub-menu')
+      .get('#offcialForum')
+      .within(() => {
+        cy.get('a')
+          .should($a => {
+            expect($a.attr('href'), 'href').to.equal(
+              'https://community.influxdata.com'
+            )
+            expect($a.attr('target'), 'target').to.equal('_blank')
+            $a.attr('target', '_self')
+          })
+          .click({force: true})
+        cy.location().should(loc => {
+          expect(loc.href).to.eq('https://community.influxdata.com/')
+        })
+      })
+  })
 
-    cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('support-description--textarea').type(
-        'here is some feedback and questions from a cloud customer'
-      )
-
-      cy.getByTestID('feedback-questions-overlay--submit').click()
-    })
-
-    cy.getByTestID('confirmation-overlay-header').should('be.visible')
-    cy.getByTestID('confirmation-overlay-header').contains(
-      'Feedback & Questions'
-    )
-    cy.getByTestID('confirmation-overlay--OK').click()
-    cy.getByTestID('confirmation-overlay-header').should('not.exist')
+  it('launches InfluxDB slack page when slack link is clicked', () => {
+    cy.getByTestID('tree-nav--sub-menu')
+      .get('#influxdbSlack')
+      .within(() => {
+        cy.get('a')
+          .should($a => {
+            expect($a.attr('href'), 'href').to.equal(
+              'https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email'
+            )
+            expect($a.attr('target'), 'target').to.equal('_blank')
+            $a.attr('target', '_self')
+          })
+          .click({force: true})
+        cy.location().should(loc => {
+          expect(loc.href).to.eq(
+            'https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email'
+          )
+        })
+      })
   })
 })
 
-describe('Help bar support for free users', () => {
+describe('Help bar support for free account users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
@@ -95,7 +114,7 @@ describe('Help bar support for free users', () => {
       })
     )
   )
-  it('displays important links free users can use to seek help', () => {
+  it('displays important links for free account users', () => {
     cy.getByTestID('nav-item-support')
       .get('.cf-tree-nav--sub-menu-trigger')
       .eq(3)
@@ -112,9 +131,6 @@ describe('Help bar support for free users', () => {
       cy.getByTestID('free-account-links')
         .eq(0)
         .contains('InfluxDB Slack')
-      cy.getByTestID('free-account-links')
-        .eq(0)
-        .contains('Feedback & Questions Form')
     })
   })
 })
@@ -140,11 +156,9 @@ describe('Help bar support for PAYG users', () => {
     )
   )
 
-  it.only('Allows PAYG users to submit a support request', () => {
+  it('Allows PAYG users to submit a support request', () => {
     const description =
       'here is a description from user about something they need help with'
-    const email = 'test@example.com'
-    const severity = '1 - Critical'
     const subject = 'testing help bar'
 
     cy.getByTestID('nav-item-support')
@@ -166,12 +180,6 @@ describe('Help bar support for PAYG users', () => {
       .clear()
       .type(description)
     cy.getByTestID('payg-contact-support--submit').click()
-
-    cy.createSFDCSupportCase(description, email, severity, subject).then(
-      response => {
-        expect(response.status).to.eq(204)
-      }
-    )
 
     cy.getByTestID('confirmation-overlay-header').should('exist')
   })

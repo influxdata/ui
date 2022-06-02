@@ -4,7 +4,7 @@ import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
-import NewDataExplorer from 'src/dataExplorer/components/NewDataExplorer'
+import NewDataExplorer from 'src/dataExplorer/components/FluxQueryBuilder'
 import {
   Page,
   Icon,

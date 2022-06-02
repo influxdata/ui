@@ -58,7 +58,7 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
         </p>
         <List className="support-links" testID="free-account-links">
           <List.Item>
-            <div className="help-logo forum"/>
+            <div className="help-logo forum" />
             <SafeBlankLink href="https://community.influxdata.com">
               InfluxDB Community Forums
             </SafeBlankLink>

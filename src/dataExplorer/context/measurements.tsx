@@ -26,19 +26,19 @@ import {QueryScope, RemoteDataState} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-interface MeasurementContextType {
+interface MeasurementsContextType {
   measurements: string[]
   loading: RemoteDataState
   getMeasurements: (bucket: any) => void
 }
 
-const DEFAULT_CONTEXT: MeasurementContextType = {
+const DEFAULT_CONTEXT: MeasurementsContextType = {
   measurements: [],
   loading: RemoteDataState.NotStarted,
   getMeasurements: (_: any) => {},
 }
 
-export const MeasurementContext = createContext<MeasurementContextType>(
+export const MeasurementsContext = createContext<MeasurementsContextType>(
   DEFAULT_CONTEXT
 )
 
@@ -46,7 +46,7 @@ interface Prop {
   scope: QueryScope
 }
 
-export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
+export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
 
@@ -75,29 +75,26 @@ export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: is 30d large enough to get all measurement values?
     let queryText = `${_source}
-      |> range(start: -30d, stop: now())
+      |> range(start: -100y, stop: now())
       |> filter(fn: (r) => true)
       |> keep(columns: ["_measurement"])
       |> group()
       |> distinct(column: "_measurement")
-      |> limit(n: ${limit})
       |> sort()
+      |> limit(n: ${limit})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
-        schema.tagValues(
+        schema.measurements(
           bucket: "${bucket.name}",
-          tag: "_measurement",
-          predicate: (r) => true,
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
-          |> limit(n: ${limit})
           |> sort()
+          |> limit(n: ${limit})
         `
     }
 
@@ -116,11 +113,11 @@ export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
 
   return useMemo(
     () => (
-      <MeasurementContext.Provider
+      <MeasurementsContext.Provider
         value={{measurements, loading, getMeasurements}}
       >
         {children}
-      </MeasurementContext.Provider>
+      </MeasurementsContext.Provider>
     ),
     [measurements, loading, children]
   )

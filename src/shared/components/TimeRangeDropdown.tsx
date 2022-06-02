@@ -40,6 +40,7 @@ interface Props {
   timeZone: TimeZone
   onSetTimeRange: (timeRange: TimeRange) => void
   width?: number
+  maxHeight?: number
 }
 
 interface State {
@@ -58,6 +59,8 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
   public render() {
     const timeRange = this.timeRange
     const timeRangeLabel = getTimeRangeLabel(timeRange, this.props.timeZone)
+    const {maxHeight} = this.props
+
     return (
       <>
         <Popover
@@ -98,6 +101,7 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
               <Dropdown.Menu
                 onCollapse={onCollapse}
                 style={{width: `${this.dropdownWidth}px`}}
+                maxHeight={maxHeight}
               >
                 <Dropdown.Divider
                   key="Time Range"

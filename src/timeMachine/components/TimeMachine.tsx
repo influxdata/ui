@@ -1,5 +1,5 @@
 // Libraries
-import React, {useState, FunctionComponent} from 'react'
+import React, {useState, FunctionComponent, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import classnames from 'classnames'
 
@@ -26,11 +26,15 @@ const TimeMachine: FunctionComponent = () => {
     'time-machine--split': isViewingVisOptions,
   })
 
-  let bottomContents: JSX.Element = null
-  if (activeTab === 'alerting') {
-    bottomContents = <TimeMachineAlerting />
-  } else if (activeTab === 'queries') {
-    bottomContents = <TimeMachineQueries />
+  const bottomContentRef = useRef(null)
+
+  const bottomContents = (): JSX.Element => {
+    if (activeTab === 'alerting') {
+      return <TimeMachineAlerting />
+    } else if (activeTab === 'queries') {
+      const bottomContentsMaxHeight = bottomContentRef.current?.clientHeight
+      return <TimeMachineQueries maxHeight={bottomContentsMaxHeight} />
+    }
   }
 
   return (
@@ -53,8 +57,11 @@ const TimeMachine: FunctionComponent = () => {
                 className="time-machine--bottom"
                 data-testid="time-machine--bottom"
               >
-                <div className="time-machine--bottom-contents">
-                  {bottomContents}
+                <div
+                  className="time-machine--bottom-contents"
+                  ref={bottomContentRef}
+                >
+                  {bottomContents()}
                 </div>
               </div>
             </ErrorBoundary>

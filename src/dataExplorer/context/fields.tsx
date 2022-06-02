@@ -77,29 +77,27 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
       _source += FROM_BUCKET(bucket.name)
     }
 
-    // TODO: is 30d large enough to get all field values?
     let queryText = `${_source}
-      |> range(start: -30d, stop: now())
+      |> range(start: -100y, stop: now())
       |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
       |> keep(columns: ["_field"])
       |> group()
       |> distinct(column: "_field")
-      |> limit(n: ${limit})
       |> sort()
+      |> limit(n: ${limit})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
-        schema.tagValues(
+        schema.measurementFieldKeys(
           bucket: "${bucket.name}",
-          tag: "_field",
-          predicate: (r) => (r["_measurement"] == "${measurement}"),
+          measurement: "${measurement}",
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
-          |> limit(n: ${limit})
           |> sort()
+          |> limit(n: ${limit})
       `
     }
 

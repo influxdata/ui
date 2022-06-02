@@ -1,7 +1,7 @@
 import React, {FC, createContext, useState, useMemo, useContext} from 'react'
 
 // Context
-import {MeasurementContext} from 'src/dataExplorer/context/measurements'
+import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 
@@ -50,7 +50,7 @@ export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(
 
 export const NewDataExplorerProvider: FC = ({children}) => {
   // Contexts
-  const {getMeasurements} = useContext(MeasurementContext)
+  const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
 

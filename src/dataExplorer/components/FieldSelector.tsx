@@ -15,6 +15,10 @@ import {RemoteDataState} from 'src/types'
 // Syles
 import './Schema.scss'
 
+const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
+key values pairs within a measurement. For SQL users, this is \
+conceptually similar to a non-indexed column and value.`
+
 const FieldSelector: FC = () => {
   const {fields, loading} = useContext(FieldsContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
@@ -61,7 +65,7 @@ const FieldSelector: FC = () => {
     return (
       <Accordion className="field-selector" expanded={true}>
         <Accordion.AccordionHeader className="field-selector--header">
-          <SelectorTitle title="Fields" info="Test info" />
+          <SelectorTitle title="Fields" info={FIELD_TOOLTIP} />
         </Accordion.AccordionHeader>
         <div className="container-side-bar">
           {list}

@@ -16,7 +16,7 @@ import {
 } from 'src/dataExplorer/context/newDataExplorer'
 import QueryProvider from 'src/shared/contexts/query'
 import {BucketProvider} from 'src/shared/contexts/buckets'
-import {MeasurementProvider} from 'src/dataExplorer/context/measurements'
+import {MeasurementsProvider} from 'src/dataExplorer/context/measurements'
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
 import {TagsProvider} from 'src/dataExplorer/context/tags'
 
@@ -69,7 +69,7 @@ const Schema: FC = () => {
 
   return (
     <QueryProvider>
-      <MeasurementProvider scope={scope}>
+      <MeasurementsProvider scope={scope}>
         <FieldsProvider scope={scope}>
           <TagsProvider scope={scope}>
             <NewDataExplorerProvider>
@@ -89,7 +89,7 @@ const Schema: FC = () => {
             </NewDataExplorerProvider>
           </TagsProvider>
         </FieldsProvider>
-      </MeasurementProvider>
+      </MeasurementsProvider>
     </QueryProvider>
   )
 }

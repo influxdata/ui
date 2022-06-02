@@ -14,19 +14,29 @@
     brightness(107%) contrast(110%);
 }
 
-.help-logo.feedback {
-  background-image: url('../../../assets/images/feedback-fill.svg');
-  filter: invert(59%) sepia(51%) saturate(7472%) hue-rotate(180deg)
-    brightness(107%) contrast(110%);
-}
-
 .cf-list--contents {
   padding: 0px;
 }
 
 .status-page-text {
   font-weight: lighter;
-  margin-left: 25px;
   margin-top: 0px;
-  margin-bottom: 25px;
+
+  .info-new {
+    bottom: 1px;
+    position: relative;
+  }
+}
+
+div.cf-form--label {
+  position: relative;
+
+  .cf-question-mark-tooltip {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+}
+.cf-banner-panel--contents {
+  margin-top: 0;
 }

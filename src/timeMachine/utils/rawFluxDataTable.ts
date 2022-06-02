@@ -29,16 +29,12 @@ export const parseFromFluxResults = (
   const groupSet = new Set(fluxGroupKeyUnion)
   let max = 0
 
+  // checks whether the string is valid JSON object or not
   const isJsonObject = jsonString => {
     try {
-      const o = JSON.parse(jsonString)
-
-      // Handle non-exception-throwing cases:
-      // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
-      // but... JSON.parse(null) returns null, and typeof null === "object",
-      // so we must check for that, too. Thankfully, null is falsey, so this suffices:
-      if (o && typeof o === 'object') {
-        return o
+      const object = JSON.parse(jsonString)
+      if (object && typeof object === 'object') {
+        return object
       }
     } catch (_) {}
 

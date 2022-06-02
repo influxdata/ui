@@ -8,7 +8,7 @@ import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Schema from 'src/dataExplorer/components/Schema'
 
 // Styles
-import './NewDataExplorer.scss'
+import './FluxQueryBuilder.scss'
 
 const INITIAL_VERT_RESIZER_HANDLE = 0.2
 

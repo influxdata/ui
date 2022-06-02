@@ -11,7 +11,7 @@ import TagSelector from 'src/dataExplorer/components/TagSelector'
 
 // Context
 import {
-  NewDataExplorerContext,
+  FluxQueryBuilderContext,
   NewDataExplorerProvider,
 } from 'src/dataExplorer/context/fluxQueryBuilder'
 import QueryProvider from 'src/shared/contexts/query'
@@ -35,7 +35,7 @@ const FieldsTags: FC = () => {
     selectedMeasurement,
     searchTerm,
     setSearchTerm,
-  } = useContext(NewDataExplorerContext)
+  } = useContext(FluxQueryBuilderContext)
 
   const handleSearchFieldsTags = (searchTerm: string): void => {
     setSearchTerm(searchTerm)

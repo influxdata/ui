@@ -16,7 +16,7 @@ export const FROM_BUCKET = (bucketName: string) =>
   `from(bucket: "${bucketName}")`
 
 export const LOCAL_LIMIT = 8
-interface NewDataExplorerContextType {
+interface FluxQueryBuilderContextType {
   // Schema
   selectedBucket: Bucket
   selectedMeasurement: string
@@ -30,7 +30,7 @@ interface NewDataExplorerContextType {
   updateQuery: (q: string) => void
 }
 
-const DEFAULT_CONTEXT: NewDataExplorerContextType = {
+const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   // Schema
   selectedBucket: null,
   selectedMeasurement: '',
@@ -44,9 +44,9 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   updateQuery: _q => {},
 }
 
-export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(
-  DEFAULT_CONTEXT
-)
+export const FluxQueryBuilderContext = createContext<
+  FluxQueryBuilderContextType
+>(DEFAULT_CONTEXT)
 
 export const NewDataExplorerProvider: FC = ({children}) => {
   // Contexts
@@ -97,7 +97,7 @@ export const NewDataExplorerProvider: FC = ({children}) => {
 
   return useMemo(
     () => (
-      <NewDataExplorerContext.Provider
+      <FluxQueryBuilderContext.Provider
         value={{
           // Schema
           selectedBucket,
@@ -113,7 +113,7 @@ export const NewDataExplorerProvider: FC = ({children}) => {
         }}
       >
         {children}
-      </NewDataExplorerContext.Provider>
+      </FluxQueryBuilderContext.Provider>
     ),
     [
       // Schema

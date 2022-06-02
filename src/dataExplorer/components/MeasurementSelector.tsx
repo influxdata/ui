@@ -6,7 +6,7 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 // Context
-import {NewDataExplorerContext} from 'src/dataExplorer/context/fluxQueryBuilder'
+import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 
 // Types
@@ -31,7 +31,7 @@ const convertStatus = (remoteDataState: RemoteDataState): ComponentStatus => {
 
 const MeasurementSelector: FC = () => {
   const {selectedBucket, selectedMeasurement, selectMeasurement} = useContext(
-    NewDataExplorerContext
+    FluxQueryBuilderContext
   )
   const {measurements, loading} = useContext(MeasurementsContext)
   const [searchTerm, setSearchTerm] = useState('')

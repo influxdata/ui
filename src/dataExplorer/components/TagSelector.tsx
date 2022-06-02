@@ -8,7 +8,7 @@ import WaitingText from 'src/shared/components/WaitingText'
 // Contexts
 import {
   LOCAL_LIMIT,
-  NewDataExplorerContext,
+  FluxQueryBuilderContext,
 } from 'src/dataExplorer/context/fluxQueryBuilder'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 
@@ -27,7 +27,7 @@ interface Prop {
 
 const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
   const {selectedBucket, selectedMeasurement} = useContext(
-    NewDataExplorerContext
+    FluxQueryBuilderContext
   )
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])

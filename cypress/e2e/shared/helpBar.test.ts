@@ -8,85 +8,48 @@ describe('Help bar menu sub nav links', () => {
     })
   })
 
-  it('launches InfluxDB documentation page when documentation link is clicked', () => {
-    cy.getByTestID('nav-item-support')
-      .get('.cf-tree-nav--sub-menu-trigger')
-      .eq(3)
-      .trigger('mouseover')
-
+  it('checks if help bar InfluxDB documentation link is correct', () => {
     cy.getByTestID('tree-nav--sub-menu')
       .get('#documentation')
       .within(() => {
-        cy.get('a')
-          .should($a => {
-            expect($a.attr('href'), 'href').to.equal(
-              'https://docs.influxdata.com/'
-            )
-            expect($a.attr('target'), 'target').to.equal('_blank')
-            $a.attr('target', '_self')
-          })
-          .click({force: true})
-        cy.location().should(loc => {
-          expect(loc.href).to.eq('https://docs.influxdata.com/')
+        cy.get('a').should($a => {
+          expect($a.attr('href'), 'href').to.equal(
+            'https://docs.influxdata.com/'
+          )
         })
       })
   })
 
-  it('launches InfluxDB FAQ page when FAQ link is clicked', () => {
+  it('checks if help bar InfluxDB FAQ link is correct', () => {
     cy.getByTestID('tree-nav--sub-menu')
       .get('#faqs')
       .within(() => {
-        cy.get('a')
-          .should($a => {
-            expect($a.attr('href'), 'href').to.equal(
-              'https://docs.influxdata.com/influxdb/cloud/reference/faq/'
-            )
-            expect($a.attr('target'), 'target').to.equal('_blank')
-            $a.attr('target', '_self')
-          })
-          .click({force: true})
-        cy.location().should(loc => {
-          expect(loc.href).to.eq(
+        cy.get('a').should($a => {
+          expect($a.attr('href'), 'href').to.equal(
             'https://docs.influxdata.com/influxdb/cloud/reference/faq/'
           )
         })
       })
   })
 
-  it('launches InfluxDB official forum page when forum link is clicked', () => {
+  it('checks if help bar InfluxDB official forum link is correct', () => {
     cy.getByTestID('tree-nav--sub-menu')
       .get('#offcialForum')
       .within(() => {
-        cy.get('a')
-          .should($a => {
-            expect($a.attr('href'), 'href').to.equal(
-              'https://community.influxdata.com'
-            )
-            expect($a.attr('target'), 'target').to.equal('_blank')
-            $a.attr('target', '_self')
-          })
-          .click({force: true})
-        cy.location().should(loc => {
-          expect(loc.href).to.eq('https://community.influxdata.com/')
+        cy.get('a').should($a => {
+          expect($a.attr('href'), 'href').to.equal(
+            'https://community.influxdata.com'
+          )
         })
       })
   })
 
-  it('launches InfluxDB slack page when slack link is clicked', () => {
+  it('checks if help bar InfluxDB slack link is correct', () => {
     cy.getByTestID('tree-nav--sub-menu')
       .get('#influxdbSlack')
       .within(() => {
-        cy.get('a')
-          .should($a => {
-            expect($a.attr('href'), 'href').to.equal(
-              'https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email'
-            )
-            expect($a.attr('target'), 'target').to.equal('_blank')
-            $a.attr('target', '_self')
-          })
-          .click({force: true})
-        cy.location().should(loc => {
-          expect(loc.href).to.eq(
+        cy.get('a').should($a => {
+          expect($a.attr('href'), 'href').to.equal(
             'https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email'
           )
         })

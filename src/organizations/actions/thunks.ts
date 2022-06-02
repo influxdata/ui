@@ -207,7 +207,7 @@ export const renameOrg = (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
-    const resp = await patchOrg({orgId: org.id, data: org})
+    const resp = await patchOrg({orgId: org.id, data: {name: org.name}})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

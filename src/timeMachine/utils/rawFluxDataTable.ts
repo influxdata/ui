@@ -34,9 +34,9 @@ export const parseFromFluxResults = (
     try {
       const object = JSON.parse(jsonString)
       if (object && typeof object === 'object') {
-        return object
+        return true
       }
-    } catch (_) {}
+    } catch {}
 
     return false
   }
@@ -90,8 +90,8 @@ export const parseFromFluxResults = (
       // 1. it's a JSON Object
       // 2. It's a string of CSV
       if (isJsonObject(columnData)) {
-        // replace Double quotes \" with single quotes \' in a json object
-        // columnData = `"${columnData.replace(/['"]+/g, '\'')}"`
+        // 1. replace Double quotes \" with Single quotes \' in a json object
+        // 2. then wrap the JSON object in double quotes
         columnData = `"${columnData.replace(/['"]+/g, "'")}"`
       } else if (typeof columnData === 'string' && columnData.includes(',')) {
         columnData = `"${columnData}"`

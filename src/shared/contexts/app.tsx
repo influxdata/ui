@@ -5,7 +5,7 @@ import {
   setTimeZone as setTimeZoneAction,
   setTheme as setThemeAction,
   setNavBarState as setNavbarModeAction,
-  setNewDataExplorer as setFluxQueryBuilderAction,
+  setFluxQueryBuilder as setFluxQueryBuilderAction,
   enablePresentationMode,
   disablePresentationMode,
   setFlowsCTA as setFlowsCTAAction,
@@ -35,7 +35,7 @@ interface AppSettingContextType {
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
   setPresentationMode: (active: boolean) => void
-  setNewDataExplorer: (active: boolean) => void
+  setFluxQueryBuilder: (active: boolean) => void
   setNavbarMode: (mode: NavBarState) => void
   setFlowsCTA: (flowsCTA: FlowsCTA) => void
 }
@@ -51,7 +51,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
   setPresentationMode: (_active: boolean) => {},
-  setNewDataExplorer: (_active: boolean) => {},
+  setFluxQueryBuilder: (_active: boolean) => {},
   setNavbarMode: (_mode: NavBarState) => {},
   setFlowsCTA: (_flowsCTA: FlowsCTA) => {},
 }
@@ -103,7 +103,7 @@ export const AppSettingProvider: FC = ({children}) => {
     },
     [dispatch]
   )
-  const setNewDataExplorer = useCallback(
+  const setFluxQueryBuilder = useCallback(
     (_active: boolean) => {
       dispatch(setFluxQueryBuilderAction(_active))
     },
@@ -135,7 +135,7 @@ export const AppSettingProvider: FC = ({children}) => {
         setTimeZone,
         setTheme,
         setPresentationMode,
-        setNewDataExplorer,
+        setFluxQueryBuilder,
         setNavbarMode,
         setFlowsCTA,
       }}

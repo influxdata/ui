@@ -41,7 +41,7 @@ const DataExplorerPage: FC = () => {
     flowsCTA,
     newDataExplorer,
     setFlowsCTA,
-    setNewDataExplorer,
+    setFluxQueryBuilder,
   } = useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
 
@@ -79,7 +79,7 @@ const DataExplorerPage: FC = () => {
                 <SlideToggle
                   active={newDataExplorer}
                   onChange={() => {
-                    setNewDataExplorer(!newDataExplorer)
+                    setFluxQueryBuilder(!newDataExplorer)
                   }}
                 />
               </FlexBox>

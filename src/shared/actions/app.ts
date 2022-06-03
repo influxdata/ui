@@ -20,7 +20,7 @@ export type Action =
   | ReturnType<typeof disablePresentationMode>
   | ReturnType<typeof enableUpdatedTimeRangeInVEO>
   | ReturnType<typeof disableUpdatedTimeRangeInVEO>
-  | ReturnType<typeof setNewDataExplorer>
+  | ReturnType<typeof setFluxQueryBuilder>
   | ReturnType<typeof setNavBarState>
   | ReturnType<typeof setAutoRefresh>
   | ReturnType<typeof setTimeZone>
@@ -54,7 +54,7 @@ export const disableUpdatedTimeRangeInVEO = () =>
 
 export const setTheme = (theme: Theme) => ({type: 'SET_THEME', theme} as const)
 
-export const setNewDataExplorer = (active: boolean) =>
+export const setFluxQueryBuilder = (active: boolean) =>
   ({
     type: ActionTypes.SetNewDataExplorer,
     active,

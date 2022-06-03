@@ -30,6 +30,26 @@ describe('Editor+LSP communication', () => {
           .monacoType(`{selectall}{del}`)
       })
     })
+
+    // TODO: turn on once LSP can inject functions
+    it.skip('can coordination with the LSP for function code injection', () => {
+      cy.setFeatureFlags({
+        injectionFunctionsViaLsp: true,
+      })
+      cy.getByTestID(editorSelector).then(() => {
+        cy.getByTestID('flux-editor', {timeout: 30000}).monacoType(
+          '{selectall} {backspace}'
+        )
+        cy.getByTestID('flux--count--inject')
+          .should('be.visible')
+          .click()
+        cy.getByTestID('flux-editor').contains('aggregate.count(')
+        cy.getByTestID('flux-editor').monacoType('{selectall}{del}')
+      })
+      cy.setFeatureFlags({
+        injectionViaLsp: false,
+      })
+    })
   }
 
   describe('in Flows:', () => {
@@ -58,6 +78,9 @@ describe('Editor+LSP communication', () => {
         .last()
         .click()
       cy.getByTestID('flux-editor').should('be.visible')
+      cy.getByTestID('flows-open-function-panel')
+        .should('be.visible')
+        .click()
     })
 
     runTest('flux-editor')
@@ -77,8 +100,37 @@ describe('Editor+LSP communication', () => {
       cy.getByTestID('switch-to-script-editor')
         .should('be.visible')
         .click()
+      cy.getByTestID('functions-toolbar-tab')
+        .should('be.visible')
+        .click()
     })
 
     runTest('time-machine--bottom')
+  })
+
+  describe('in QX FluxBuilder', () => {
+    before(() => {
+      cy.flush()
+      cy.signin().then(() => {
+        cy.setFeatureFlags({
+          newDataExplorer: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
+            cy.createMapVariable(id)
+            cy.fixture('routes').then(({orgs, explorer}) => {
+              cy.visit(`${orgs}/${id}${explorer}`)
+              cy.getByTestID('tree-nav').should('be.visible')
+            })
+          })
+
+          cy.getByTestID('flux-query-builder-toggle')
+            .should('be.visible')
+            .click()
+          cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
+        })
+      })
+    })
+
+    runTest('flux-editor')
   })
 })

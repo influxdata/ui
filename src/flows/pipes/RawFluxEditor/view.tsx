@@ -114,6 +114,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       color={ComponentColor.Default}
       titleText="Function Reference"
       className="flows-config-function-button"
+      testID="flows-open-function-panel"
     />
   )
 

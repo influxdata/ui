@@ -15,16 +15,30 @@ import {
 } from 'src/shared/utils/fluxFunctions'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
 
+// LSP
+import {
+  ExecuteCommand,
+  ExecuteCommandArgument,
+} from 'src/languageSupport/languages/flux/lsp/utils'
+import LspConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
 export interface EditorContextType {
   editor: EditorType | null
-  setEditor: (editor: EditorType) => void
+  setEditor: (
+    editor: EditorType,
+    conn: React.MutableRefObject<LspConnectionManager>
+  ) => void
   inject: (options: InjectionOptions) => void
   injectFunction: (fn, cbToParent) => void
   injectVariable: (variableName, cbToParent) => void
+  injectViaLsp: (
+    cmd: ExecuteCommand,
+    data: Omit<ExecuteCommandArgument, 'textDocument'>
+  ) => void
 }
 
 const DEFAULT_CONTEXT: EditorContextType = {
@@ -33,12 +47,28 @@ const DEFAULT_CONTEXT: EditorContextType = {
   inject: _ => {},
   injectFunction: (_, __) => {},
   injectVariable: (_, __) => {},
+  injectViaLsp: (_, __) => {},
 }
 
 export const EditorContext = createContext<EditorContextType>(DEFAULT_CONTEXT)
 
 export const EditorProvider: FC = ({children}) => {
-  const [editor, setEditor] = useState<EditorType>(null)
+  const [editor, setEditorOnState] = useState<EditorType>(null)
+  const [connection, setConnection] = useState<
+    React.MutableRefObject<LspConnectionManager>
+  >(null)
+
+  const setEditor = (ed, conn) => {
+    setEditorOnState(ed)
+    setConnection(conn)
+  }
+
+  const injectViaLsp = useCallback(
+    (cmd, data: Omit<ExecuteCommandArgument, 'textDocument'>) => {
+      connection.current.inject(cmd, data)
+    },
+    [editor, connection]
+  )
 
   const inject = useCallback(
     (options: InjectionOptions) => {
@@ -116,6 +146,10 @@ export const EditorProvider: FC = ({children}) => {
           ? getFluxExample(rawFn as FluxFunction)
           : (rawFn as FluxFunction)
 
+      if (isFlagEnabled('injectionFunctionsViaLsp')) {
+        return injectViaLsp(ExecuteCommand.InjectFunction, {data: fn})
+      }
+
       const text = isPipeTransformation(fn)
         ? `  |> ${fn.example.trimRight()}`
         : `${fn.example.trimRight()}`
@@ -164,6 +198,7 @@ export const EditorProvider: FC = ({children}) => {
         inject,
         injectFunction,
         injectVariable,
+        injectViaLsp,
       }}
     >
       {children}

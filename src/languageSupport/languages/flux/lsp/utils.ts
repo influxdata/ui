@@ -2,6 +2,8 @@ import {
   ProtocolRequestType,
   ProtocolNotificationType,
 } from 'vscode-languageserver-protocol'
+import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
+import {FluxDocs} from 'src/types'
 
 export const makeRequestType = (method: string) => {
   return new ProtocolRequestType<any, any, any, any, any>(method)
@@ -19,6 +21,15 @@ const createNotification = (method: string, params: object = {}) => {
     jsonrpc: JSONRPC,
     method,
     params,
+  }
+}
+
+const createRequest = (method: string, params: object = {}) => {
+  return {
+    jsonrpc: JSONRPC,
+    method,
+    params,
+    id: Math.random().toString(),
   }
 }
 
@@ -43,6 +54,55 @@ export const didOpen = (uri: string, text: string, version: number) => {
   })
 }
 
+interface ExecuteCommandParams {
+  textDocument: {
+    uri: string
+    position: MonacoTypes.Position
+  }
+}
+
+export interface ExecuteCommandInjectMeasurement extends ExecuteCommandParams {
+  name: string
+  bucket: string
+}
+
+export type ExecuteCommandInjectTag = ExecuteCommandInjectMeasurement
+
+export interface ExecuteCommandInjectTagValue extends ExecuteCommandInjectTag {
+  value: string
+}
+
+export type ExecuteCommandInjectField = ExecuteCommandInjectMeasurement
+
+// TODO: LSP contract is not yet decided to this one.
+export interface ExecuteCommandInjectFunction extends ExecuteCommandParams {
+  data: FluxDocs
+}
+
+export type ExecuteCommandArgument =
+  | ExecuteCommandInjectMeasurement
+  | ExecuteCommandInjectTag
+  | ExecuteCommandInjectTagValue
+  | ExecuteCommandInjectField
+  | ExecuteCommandInjectFunction
+
+export type ExecuteCommandT =
+  | [ExecuteCommand.InjectionMeasurement, ExecuteCommandInjectMeasurement]
+  | [ExecuteCommand.InjectTag, ExecuteCommandInjectTag]
+  | [ExecuteCommand.InjectTagValue, ExecuteCommandInjectTagValue]
+  | [ExecuteCommand.InjectField, ExecuteCommandInjectField]
+  | [ExecuteCommand.InjectFunction, ExecuteCommandInjectFunction]
+
+export const executeCommand = ([command, arg]: ExecuteCommandT) => {
+  return createRequest(Methods.ExecuteCommand, {
+    command,
+    arguments: [arg],
+    workDoneProgressParams: {
+      workDoneToken: null,
+    },
+  })
+}
+
 export enum Methods {
   Initialize = 'initialize',
   Initialized = 'initialized',
@@ -58,4 +118,13 @@ export enum Methods {
   Hover = 'textDocument/hover',
   References = 'textDocument/references',
   Rename = 'textDocument/rename',
+  ExecuteCommand = 'workspace/executeCommand',
+}
+
+export enum ExecuteCommand {
+  InjectionMeasurement = 'injectMeasurementFilter',
+  InjectField = 'injectFieldFilter',
+  InjectTag = 'injectTagFilter',
+  InjectTagValue = 'injectTagValueFilter',
+  InjectFunction = 'injectFunction',
 }

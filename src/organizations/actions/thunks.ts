@@ -7,6 +7,9 @@ import {normalize} from 'normalizr'
 import {getErrorMessage} from 'src/utils/api'
 import * as api from 'src/client'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -207,21 +210,43 @@ export const renameOrg = (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
-    const resp = await patchOrg({orgId: org.id, data: {name: org.name}})
+    if (CLOUD) {
+      const resp = await patchOrg({
+        orgId: org.id,
+        data: {name: org.name, description: org.description},
+      })
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+      const updatedOrg = resp.data
+
+      const normOrg = normalize<Organization, OrgEntities, string>(
+        updatedOrg,
+        orgSchema
+      )
+
+      dispatch(editOrg(normOrg))
+      dispatch(notify(orgRenameSuccess(updatedOrg.name)))
+    } else {
+      const resp = await api.patchOrg({
+        orgID: org.id,
+        data: org,
+      })
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+      const updatedOrg = resp.data
+
+      const normOrg = normalize<Organization, OrgEntities, string>(
+        updatedOrg,
+        orgSchema
+      )
+
+      dispatch(editOrg(normOrg))
+      dispatch(notify(orgRenameSuccess(updatedOrg.name)))
     }
-
-    const updatedOrg = resp.data
-
-    const normOrg = normalize<Organization, OrgEntities, string>(
-      updatedOrg,
-      orgSchema
-    )
-
-    dispatch(editOrg(normOrg))
-    dispatch(notify(orgRenameSuccess(updatedOrg.name)))
   } catch (error) {
     dispatch(notify(orgRenameFailed(originalName)))
     console.error(error)

@@ -411,8 +411,6 @@ describe('fromFlux', () => {
     expect(() => {
       fromFlux(CSV)
     }).not.toThrow()
-    const actual = fromFlux(CSV)
-    expect(actual.error).toBeTruthy()
   })
 
   it('uses the default annotation to fill in empty values', () => {

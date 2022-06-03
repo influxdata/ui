@@ -4,14 +4,14 @@ import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 import {getOrg} from 'src/organizations/selectors'
-// import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
+// import {fastFromFlux} from '@influxdata/giraffe'
 import {
   FluxResult,
   QueryScope,
   InternalFromFluxResult,
   Column,
 } from 'src/types/flows'
-import {fromFlux} from './fromFlux'
+import {fromFlux, fastFromFlux} from './fromFlux'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
@@ -538,9 +538,9 @@ export const QueryProvider: FC = ({children}) => {
         if (isFlagEnabled('fastFlows')) {
           return parseCSV(raw.csv)
         }
-        // if (isFlagEnabled('fastFromFlux')) {
-        //   return fastFromFlux(raw.csv)
-        // }
+        if (isFlagEnabled('fastFromFlux')) {
+          return fastFromFlux(raw.csv)
+        }
         return fromFlux(raw.csv)
       })
       .then(

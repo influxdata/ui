@@ -12,7 +12,7 @@ import './FluxQueryBuilder.scss'
 
 const INITIAL_VERT_RESIZER_HANDLE = 0.2
 
-const NewDataExplorer: FC = () => {
+const FluxQueryBuilder: FC = () => {
   const [vertDragPosition, setVertDragPosition] = useState([
     INITIAL_VERT_RESIZER_HANDLE,
   ])
@@ -37,4 +37,4 @@ const NewDataExplorer: FC = () => {
   )
 }
 
-export default NewDataExplorer
+export default FluxQueryBuilder

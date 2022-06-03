@@ -1,47 +1,43 @@
-// General approach here: I would basically finesse this into the legacy quartzme structure for now,
-// under a feature flag,
-// but also store the appropriate new information in orgs as needed.
-
 // Libraries
 import HoneyBadger from 'honeybadger-js'
 import {identify} from 'rudder-sdk-js'
 import {Dispatch} from 'react'
 
 // API
-import {getMe as apiGetApiMe} from 'src/client'
+// IDPE endpoints
+import {getMe as getIdpeMe} from 'src/client'
+// Quartz endpoints
 import {
   getAccount,
   getAccounts,
-  getMe as apiGetQuartzMe,
+  getMe as getQuartzMe,
   getIdentity as getIdentityAPI,
-  getOrg as getOrgAPI,
+  getOrg as getQuartzOrg,
 } from 'src/client/unityRoutes'
+
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {getOrg} from 'src/organizations/selectors'
-// import {getMe as getMeSelector} from 'src/me/selectors'
 
 // Actions
 import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 
 // Reducers
-import {MeState} from 'src/me/reducers'
+import {IdentityState} from 'src/me/reducers'
 
 // Types
 import {RemoteDataState, GetState} from 'src/types'
 
 // Creators
 import {Actions} from 'src/me/actions/creators'
-import {createAbsolutePositionFromRelativePosition} from 'yjs'
+// import {createAbsolutePositionFromRelativePosition} from 'yjs'
 
-export const getIdentity = () => async (
+export const getIdentityThunk = () => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {
-  console.log('entering getMe')
-
   try {
     let user
 
@@ -56,15 +52,11 @@ export const getIdentity = () => async (
       }
       user = resp.data.find(account => account.isActive)
     } else {
-      const resp = await apiGetApiMe({})
-      console.log('Original /me data')
-      console.log(resp.data)
+      const resp = await getIdpeMe({})
+
       const identityEndPoint = await getIdentityAPI({})
-      console.log('here is result')
-      console.log(identityEndPoint)
 
       if (identityEndPoint.status !== 200) {
-        console.log(identityEndPoint)
         throw new Error('Error')
       }
       if (resp.status !== 200) {
@@ -77,7 +69,7 @@ export const getIdentity = () => async (
 
       const user2 = identityEndPoint.data.user
 
-      // Note absence of 'links' from property.
+      // Links is missing from property.
       // Status property is also shoehorned: this
       // should be coming from somewhere.
       const shoeHorn = {
@@ -86,9 +78,6 @@ export const getIdentity = () => async (
         name: user2.email,
         status: 'active',
       }
-
-      console.log('/Identity data implemented and used in shoehorn')
-      console.log(shoeHorn)
 
       user = shoeHorn
     }
@@ -115,24 +104,17 @@ export const getIdentity = () => async (
       identify(user.id, {email: user.name, orgID: org.id})
     }
 
-    dispatch(setMe(user as MeState))
+    dispatch(setMe(user as IdentityState))
   } catch (error) {
     console.error(error)
   }
 }
 
-export const getQuartzMe = () => async dispatch => {
-  // Ideally the best way to do this is:
-  // (1) Check if flag is enabled. If it isn't, keep the old logic.
-  // (2) If flag is enabled, then store a bunch of new information in a new piece of state
-  // That keeps track fo organization data (this is true of both functions.
-  // (3) If flag is enabled, also map over the data into a separate object.
-
+export const getQuartzMeThunk = () => async dispatch => {
   try {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
-    const resp = await apiGetQuartzMe({})
-    console.log('here is what quartzMe contains')
-    console.log(resp.data)
+    const resp = await getQuartzMe({})
+
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
@@ -145,34 +127,28 @@ export const getQuartzMe = () => async dispatch => {
     }
 
     const arrayOfAccounts = await getAccounts({})
-    console.log('here is the result of querying /api/v2private/accounts/')
-    console.log(arrayOfAccounts)
-    // console.log('here is a list of all accounts')
-    // console.log(arrayOfAccounts.data)
 
     const specificAccountInfo = await getAccount({
       accountId: arrayOfAccounts.data[0].id,
     })
-    console.log('here is the result of looking for a specific account')
-    console.log(specificAccountInfo)
 
     if (specificAccountInfo.status !== 200) {
       throw new Error(specificAccountInfo.data.message)
     }
 
     // Need a way to get the specific org id
-    const specificOrgInfo = await getOrgAPI({
+    const specificOrgInfo = await getQuartzOrg({
       orgId: identityEndPoint.data.org.id,
     })
     if (specificOrgInfo.status !== 200) {
       throw new Error(specificOrgInfo.data.message)
     }
 
-    const quartzMeObj = {
-      accountCreatedAt: identityEndPoint.data.account.accountCreatedAt + 'P',
+    const identityObj = {
+      accountCreatedAt: identityEndPoint.data.account.accountCreatedAt,
       accountType: identityEndPoint.data.account.type,
       // For billing provider, I'm getting an undefined when I should be getting null.
-      billingProvider: specificAccountInfo.data.billingProvider,
+      billingProvider: specificAccountInfo.data.billing_provider,
       clusterHost: identityEndPoint.data.org.clusterHost,
       email: identityEndPoint.data.user.email,
       id: identityEndPoint.data.user.id,
@@ -185,10 +161,7 @@ export const getQuartzMe = () => async dispatch => {
       regionName: specificOrgInfo.data.regionName,
     }
 
-    console.log('here is the new state')
-    console.log(quartzMeObj)
-
-    dispatch(setQuartzMe(quartzMeObj, RemoteDataState.Done))
+    dispatch(setQuartzMe(identityObj, RemoteDataState.Done))
   } catch (error) {
     console.error(error)
     dispatch(setQuartzMeStatus(RemoteDataState.Error))

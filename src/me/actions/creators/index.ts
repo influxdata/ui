@@ -1,4 +1,4 @@
-import {MeState} from 'src/me/reducers'
+import {IdentityState} from 'src/me/reducers'
 import {Me} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
@@ -11,7 +11,7 @@ export type Actions =
   | ReturnType<typeof setQuartzMe>
   | ReturnType<typeof setQuartzMeStatus>
 
-export const setMe = (me: MeState) =>
+export const setMe = (me: IdentityState) =>
   ({
     type: SET_ME,
     me,

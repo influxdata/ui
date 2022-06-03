@@ -17,7 +17,7 @@ export interface MeLinks {
   log: string
 }
 
-export interface MeState {
+export interface IdentityState {
   id: string
   name: string
   links: MeLinks
@@ -25,7 +25,7 @@ export interface MeState {
   quartzMeStatus: RemoteDataState
 }
 
-export const initialState: MeState = {
+export const initialState: IdentityState = {
   id: '',
   name: '',
   links: {
@@ -36,7 +36,7 @@ export const initialState: MeState = {
   quartzMeStatus: RemoteDataState.NotStarted,
 }
 
-export default (state = initialState, action: Actions): MeState =>
+export default (state = initialState, action: Actions): IdentityState =>
   produce(state, draftState => {
     switch (action.type) {
       case SET_ME: {

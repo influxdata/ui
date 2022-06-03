@@ -18,7 +18,7 @@ import {RemoteDataState, AppState} from 'src/types'
 
 // Actions
 import {getOrganizations} from 'src/organizations/actions/thunks'
-import {getQuartzMe as apiGetQuartzMe} from 'src/me/actions/thunks'
+import {getQuartzMeThunk} from 'src/me/actions/thunks'
 import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
@@ -67,7 +67,7 @@ const GetOrganizations: FunctionComponent = () => {
       quartzMeStatus === RemoteDataState.NotStarted
     ) {
       // console.log('dispatching apiGetQuartzMe')
-      dispatch(apiGetQuartzMe())
+      dispatch(getQuartzMeThunk())
     }
   }, [dispatch, quartzMeStatus])
 

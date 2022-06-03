@@ -14,7 +14,7 @@ import {
   postCheckout,
 } from 'src/client/unityRoutes'
 import {getQuartzMe, shouldGetCredit250Experience} from 'src/me/selectors'
-import {getQuartzMe as getQuartzMeThunk} from 'src/me/actions/thunks'
+import {getQuartzMeThunk} from 'src/me/actions/thunks'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants

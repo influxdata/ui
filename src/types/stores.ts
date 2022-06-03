@@ -29,7 +29,7 @@ import {LimitsState} from 'src/cloud/reducers/limits'
 import {AlertBuilderState} from 'src/alerting/reducers/alertBuilder'
 import {CurrentPage} from 'src/shared/reducers/currentPage'
 import {PerfState} from 'src/perf/reducers'
-import {MeState} from 'src/me/reducers'
+import {IdentityState} from 'src/me/reducers'
 
 export interface AppState {
   router: RouterState
@@ -45,7 +45,7 @@ export interface AppState {
   dataLoading: DataLoadingState
   flags: FlagState
   fluxDocs: FluxDocsState
-  me: MeState
+  me: IdentityState
   noteEditor: NoteEditorState
   notifications: Notification[]
   onboarding: OnboardingState

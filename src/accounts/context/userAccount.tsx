@@ -27,7 +27,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {setMe} from 'src/me/actions/creators'
-import {MeState} from 'src/me/reducers'
+import {IdentityState} from 'src/me/reducers'
 
 export type Props = {
   children: JSX.Element
@@ -143,7 +143,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
           const name = resp.data.name
           const id = resp.data.id.toString()
           // update the state
-          dispatch(setMe({name, id} as MeState))
+          dispatch(setMe({name, id} as IdentityState))
         }
       }
     } catch (error) {

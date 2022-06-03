@@ -95,9 +95,13 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      // should put this behind a feature flag.
-      // const resp = await getMe({})
-      const resp = await getIdentity({})
+      let resp
+
+      if (isFlagEnabled('quartzIdentity')) {
+        resp = await getIdentity({})
+      } else {
+        resp = await getMe({})
+      }
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

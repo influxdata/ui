@@ -13,11 +13,12 @@ import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
 // Types
 import {getMe} from 'src/client'
-import {getIdentity} from 'src/client/unityRoutes'
+// import {getIdentity} from 'src/client/unityRoutes'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
+// import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
@@ -26,8 +27,13 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      // const resp = await getMe({})
-      const resp = await getIdentity({})
+      const resp = await getMe({})
+
+      // if (isFlagEnabled('quartzIdentity')) {
+      //   resp = await getIdentity({})
+      // } else {
+      //   resp = await getMe({})
+      // }
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

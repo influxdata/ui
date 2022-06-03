@@ -14,7 +14,6 @@ import {
   NewDataExplorerContext,
   NewDataExplorerProvider,
 } from 'src/dataExplorer/context/newDataExplorer'
-import QueryProvider from 'src/shared/contexts/query'
 import {BucketProvider} from 'src/shared/contexts/buckets'
 import {MeasurementProvider} from 'src/dataExplorer/context/measurements'
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
@@ -68,29 +67,27 @@ const Schema: FC = () => {
   } as QueryScope
 
   return (
-    <QueryProvider>
-      <MeasurementProvider scope={scope}>
-        <FieldsProvider scope={scope}>
-          <TagsProvider scope={scope}>
-            <NewDataExplorerProvider>
-              <BucketProvider scope={scope}>
-                <div className="scroll--container">
-                  <DapperScrollbars>
-                    <div className="data-schema">
-                      <BucketSelector />
-                      <div className="container-side-bar">
-                        <MeasurementSelector />
-                        <FieldsTags />
-                      </div>
+    <MeasurementProvider scope={scope}>
+      <FieldsProvider scope={scope}>
+        <TagsProvider scope={scope}>
+          <NewDataExplorerProvider>
+            <BucketProvider scope={scope}>
+              <div className="scroll--container">
+                <DapperScrollbars>
+                  <div className="data-schema">
+                    <BucketSelector />
+                    <div className="container-side-bar">
+                      <MeasurementSelector />
+                      <FieldsTags />
                     </div>
-                  </DapperScrollbars>
-                </div>
-              </BucketProvider>
-            </NewDataExplorerProvider>
-          </TagsProvider>
-        </FieldsProvider>
-      </MeasurementProvider>
-    </QueryProvider>
+                  </div>
+                </DapperScrollbars>
+              </div>
+            </BucketProvider>
+          </NewDataExplorerProvider>
+        </TagsProvider>
+      </FieldsProvider>
+    </MeasurementProvider>
   )
 }
 

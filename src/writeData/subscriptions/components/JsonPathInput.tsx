@@ -234,18 +234,13 @@ const JsonPathInput: FC<Props> = ({
           }
           required={true}
           validationFunc={() => {
-            const validErr = handleValidation(
-              `${name} Path`,
-              tagType
-                ? formContent.jsonTagKeys[itemNum].path
-                : formContent.jsonFieldKeys[itemNum].path
+            const path = tagType
+              ? formContent.jsonTagKeys[itemNum].path
+              : formContent.jsonFieldKeys[itemNum].path
+            return (
+              handleValidation(`${name} Path`, path) ??
+              handleJsonPathValidation(path)
             )
-            const jsonpathErr = handleJsonPathValidation(
-              tagType
-                ? formContent.jsonTagKeys[itemNum].path
-                : formContent.jsonFieldKeys[itemNum].path
-            )
-            return validErr ?? jsonpathErr
           }}
         >
           {status => (

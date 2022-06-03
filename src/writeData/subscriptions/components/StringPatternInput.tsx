@@ -25,7 +25,10 @@ import {
 import {Subscription} from 'src/types/subscriptions'
 
 // Utils
-import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {
+  handleRegexValidation,
+  handleValidation,
+} from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
@@ -162,14 +165,15 @@ const StringPatternInput: FC<Props> = ({
               : formContent.stringFields[itemNum].pattern
           }
           required={true}
-          validationFunc={() =>
-            handleValidation(
-              'Pattern',
-              tagType
-                ? formContent.stringTags[itemNum].pattern
-                : formContent.stringFields[itemNum].pattern
+          validationFunc={() => {
+            const pattern = tagType
+              ? formContent.stringTags[itemNum].pattern
+              : formContent.stringFields[itemNum].pattern
+            return (
+              handleValidation('Pattern', pattern) ??
+              handleRegexValidation(pattern)
             )
-          }
+          }}
         >
           {status => (
             <Input

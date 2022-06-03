@@ -21,6 +21,12 @@ export const handleJsonPathValidation = (formVal: string): string | null => {
   }
 }
 
+export const handleRegexValidation = (formVal: string): string | null => {
+  if (!validateRegex(formVal)) {
+    return `${formVal} is not a valid Regular Expression`
+  }
+}
+
 export const checkJSONPathStarts$ = (firstChar, formVal): string | null => {
   if (firstChar !== '$') {
     return formVal.replace(/^/, '$.')
@@ -197,7 +203,9 @@ export const checkRequiredStringFields = (form: Subscription): boolean => {
     return true
   }
   return (
-    !!form.stringMeasurement?.pattern &&
+    !!form.stringMeasurement.pattern &&
+    validateRegex(form.stringMeasurement.pattern) &&
+    checkStringTimestamp(form.stringTimestamp) &&
     form.stringFields?.length > 0 &&
     form.stringFields?.every(f => checkStringObjRequiredFields(f)) &&
     form.stringTags?.every(t => checkStringObjRequiredFields(t))
@@ -206,7 +214,26 @@ export const checkRequiredStringFields = (form: Subscription): boolean => {
 
 const checkStringObjRequiredFields = (
   stringObjParams: StringObjectParams
-): boolean => !!stringObjParams.pattern && !!stringObjParams.name
+): boolean =>
+  !!stringObjParams.pattern &&
+  !!stringObjParams.name &&
+  validateRegex(stringObjParams?.pattern)
+
+const checkStringTimestamp = (stringObjParams: StringObjectParams): boolean => {
+  if (!stringObjParams.pattern) {
+    return true
+  }
+  return validateRegex(stringObjParams.pattern)
+}
+
+const validateRegex = (regex: string): boolean => {
+  try {
+    new RegExp(regex)
+    return true
+  } catch {
+    return false
+  }
+}
 
 const checkJsonObjRequiredFields = (jsonObjParams: JsonSpec): boolean =>
   !!jsonObjParams.name &&
@@ -236,7 +263,7 @@ export const checkRequiredJsonFields = (form: Subscription): boolean => {
   )
 }
 
-export const validateJsonPath = (path: string): boolean => {
+const validateJsonPath = (path: string): boolean => {
   try {
     jsonpath.parse(path)
     return true

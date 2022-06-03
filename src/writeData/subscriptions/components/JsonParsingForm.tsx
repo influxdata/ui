@@ -137,14 +137,11 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
             value={formContent.jsonMeasurementKey.path}
             required={true}
             validationFunc={() => {
-              const validErr = handleValidation(
-                'Measurement Path',
-                formContent.jsonMeasurementKey.path
+              const path = formContent.jsonMeasurementKey.path
+              return (
+                handleValidation('Measurement Path', path) ??
+                handleJsonPathValidation(path)
               )
-              const jsonpathErr = handleJsonPathValidation(
-                formContent.jsonMeasurementKey.path
-              )
-              return validErr ?? jsonpathErr
             }}
           >
             {status => (

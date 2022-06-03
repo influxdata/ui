@@ -75,6 +75,11 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
+    // Note that sample buckets are not in storage level.
+    //   They are fetched dynamically from csv.
+    //   Here is the source code for handling sample data:
+    //   https://github.com/influxdata/flux/blob/master/stdlib/influxdata/influxdb/sample/sample.flux
+    //   That is why _source and query script for sample data is different
     let _source = IMPORT_REGEXP
     if (bucket.type === 'sample') {
       _source += SAMPLE_DATA_SET(bucket.id)

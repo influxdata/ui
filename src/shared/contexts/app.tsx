@@ -5,7 +5,7 @@ import {
   setTimeZone as setTimeZoneAction,
   setTheme as setThemeAction,
   setNavBarState as setNavbarModeAction,
-  setNewDataExplorer as setNewDataExplorerAction,
+  setNewDataExplorer as setFluxQueryBuilderAction,
   enablePresentationMode,
   disablePresentationMode,
   setFlowsCTA as setFlowsCTAAction,
@@ -105,7 +105,7 @@ export const AppSettingProvider: FC = ({children}) => {
   )
   const setNewDataExplorer = useCallback(
     (_active: boolean) => {
-      dispatch(setNewDataExplorerAction(_active))
+      dispatch(setFluxQueryBuilderAction(_active))
     },
     [dispatch]
   )

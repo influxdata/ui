@@ -14,7 +14,7 @@ import {
   timeZone as timeZoneFromState,
   theme as themeFromState,
   getPresentationMode as presentationModeFromState,
-  newDataExplorer as newDataExplorerFromState,
+  fluxQueryBuilder as fluxQueryBuilderFromState,
   navbarMode as navbarModeFromState,
   getFlowsCTA,
 } from 'src/shared/selectors/app'
@@ -28,7 +28,7 @@ interface AppSettingContextType {
   timeZone: TimeZone
   theme: Theme
   presentationMode: boolean
-  newDataExplorer: boolean
+  fluxQueryBuilder: boolean
   navbarMode: NavBarState
   flowsCTA: FlowsCTA
 
@@ -44,7 +44,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   timeZone: 'Local' as TimeZone,
   theme: 'dark' as Theme,
   presentationMode: false,
-  newDataExplorer: false,
+  fluxQueryBuilder: false,
   navbarMode: 'collapsed' as NavBarState,
   flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
 
@@ -65,14 +65,14 @@ export const AppSettingProvider: FC = ({children}) => {
     timeZone,
     theme,
     presentationMode,
-    newDataExplorer,
+    fluxQueryBuilder,
     navbarMode,
     flowsCTA,
   } = useSelector((state: AppState) => ({
     timeZone: timeZoneFromState(state),
     theme: themeFromState(state),
     presentationMode: presentationModeFromState(state),
-    newDataExplorer: newDataExplorerFromState(state),
+    fluxQueryBuilder: fluxQueryBuilderFromState(state),
     navbarMode: navbarModeFromState(state),
     flowsCTA: getFlowsCTA(state),
   }))
@@ -128,7 +128,7 @@ export const AppSettingProvider: FC = ({children}) => {
         timeZone,
         theme,
         presentationMode,
-        newDataExplorer,
+        fluxQueryBuilder,
         navbarMode,
         flowsCTA,
 

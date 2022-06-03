@@ -12,7 +12,7 @@ import TagSelector from 'src/dataExplorer/components/TagSelector'
 // Context
 import {
   FluxQueryBuilderContext,
-  NewDataExplorerProvider,
+  FluxQueryBuilderProvider,
 } from 'src/dataExplorer/context/fluxQueryBuilder'
 import QueryProvider from 'src/shared/contexts/query'
 import {BucketProvider} from 'src/shared/contexts/buckets'
@@ -72,7 +72,7 @@ const Schema: FC = () => {
       <MeasurementsProvider scope={scope}>
         <FieldsProvider scope={scope}>
           <TagsProvider scope={scope}>
-            <NewDataExplorerProvider>
+            <FluxQueryBuilderProvider>
               <BucketProvider scope={scope}>
                 <div className="scroll--container">
                   <DapperScrollbars>
@@ -86,7 +86,7 @@ const Schema: FC = () => {
                   </DapperScrollbars>
                 </div>
               </BucketProvider>
-            </NewDataExplorerProvider>
+            </FluxQueryBuilderProvider>
           </TagsProvider>
         </FieldsProvider>
       </MeasurementsProvider>

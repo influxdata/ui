@@ -48,7 +48,7 @@ export const FluxQueryBuilderContext = createContext<
   FluxQueryBuilderContextType
 >(DEFAULT_CONTEXT)
 
-export const NewDataExplorerProvider: FC = ({children}) => {
+export const FluxQueryBuilderProvider: FC = ({children}) => {
   // Contexts
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)

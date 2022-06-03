@@ -6,7 +6,7 @@ export enum ActionTypes {
   EnableUpdatedTimeRangeInVEO = 'ENABLE_UPDATED_TIMERANGE_IN_VEO',
   DisableUpdatedTimeRangeInVEO = 'DISABLE_UPDATED_TIMERANGE_IN_VEO',
   SetNavBarState = 'SET_NAV_BAR_STATE',
-  SetNewDataExplorer = 'SET_NEW_DATA_EXPLORER',
+  SetFluxQueryBuilder = 'SET_FLUX_QUERY_BUILDER',
   SetAutoRefresh = 'SET_AUTOREFRESH',
   SetTimeZone = 'SET_APP_TIME_ZONE',
   SetVersionInfo = 'SET_VERSION_INFO',
@@ -56,7 +56,7 @@ export const setTheme = (theme: Theme) => ({type: 'SET_THEME', theme} as const)
 
 export const setFluxQueryBuilder = (active: boolean) =>
   ({
-    type: ActionTypes.SetNewDataExplorer,
+    type: ActionTypes.SetFluxQueryBuilder,
     active,
   } as const)
 

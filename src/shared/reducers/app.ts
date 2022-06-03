@@ -111,7 +111,7 @@ const appPersistedReducer = (
       return {...state, timeZone}
     }
 
-    case ActionTypes.SetNewDataExplorer: {
+    case ActionTypes.SetFluxQueryBuilder: {
       return {...state, newDataExplorer: action.active}
     }
 

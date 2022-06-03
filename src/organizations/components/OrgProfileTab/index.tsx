@@ -28,12 +28,12 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
 // Types
-import {getMe} from 'src/me/selectors'
+import {selectIdentity} from 'src/me/selectors'
 
 import 'src/organizations/components/OrgProfileTab/style.scss'
 
 const OrgProfileTab: FC = () => {
-  const me = useSelector(getMe)
+  const me = useSelector(selectIdentity)
   const org = useSelector(getOrg)
   const history = useHistory()
 

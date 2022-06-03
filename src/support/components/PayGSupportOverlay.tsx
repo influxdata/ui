@@ -30,7 +30,7 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-import {getMe} from 'src/me/selectors'
+import {selectIdentity} from 'src/me/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -42,7 +42,7 @@ interface OwnProps {
 
 const PayGSupportOverlay: FC<OwnProps> = () => {
   const {id: orgID} = useSelector(getOrg)
-  const {id: meID} = useSelector(getMe)
+  const {id: meID} = useSelector(selectIdentity)
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('')
   const [textInput, setTextInput] = useState('')

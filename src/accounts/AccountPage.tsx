@@ -17,7 +17,7 @@ import {
   Page,
 } from '@influxdata/clockface'
 
-import {getMe} from 'src/me/selectors'
+import {selectIdentity} from 'src/me/selectors'
 import {UsersContext, UsersProvider} from 'src/users/context/users'
 
 // Utils
@@ -87,7 +87,7 @@ const AccountAboutPage: FC = () => {
   const closeSwitchAccountDialog = () => {
     setSwitchAccountVisible(false)
   }
-  const currentUserId = useSelector(getMe)?.id
+  const currentUserId = useSelector(selectIdentity)?.id
 
   const handleRemove = () => {
     handleRemoveUser(currentUserId)

@@ -4,7 +4,7 @@ import {useParams, useHistory} from 'react-router-dom'
 import 'src/flows/components/FlowContextMenu.scss'
 
 // Selector
-import {getMe} from 'src/me/selectors'
+import {selectIdentity} from 'src/me/selectors'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
@@ -49,7 +49,7 @@ interface Props {
 const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   const {remove, clone} = useContext(FlowListContext)
   const {orgID} = useParams<{orgID: string}>()
-  const me = useSelector(getMe)
+  const me = useSelector(selectIdentity)
   const history = useHistory()
   const dispatch = useDispatch()
 

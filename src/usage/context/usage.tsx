@@ -24,7 +24,7 @@ import {
   SelectableDurationTimeRange,
   UsageVector,
 } from 'src/types'
-import {getMe} from 'src/me/selectors'
+import {selectIdentity} from 'src/me/selectors'
 
 export type Props = {
   children: JSX.Element
@@ -111,7 +111,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [timeRange, setTimeRange] = useState<SelectableDurationTimeRange>(
     DEFAULT_USAGE_TIME_RANGE
   )
-  const {quartzMe} = useSelector(getMe)
+  const {quartzMe} = useSelector(selectIdentity)
   const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
 
   const paygCreditStartDate = quartzMe?.paygCreditStartDate ?? ''

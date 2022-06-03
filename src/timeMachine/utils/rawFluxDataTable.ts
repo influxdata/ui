@@ -75,7 +75,7 @@ export const parseFromFluxResults = (
       }
       max = Math.max(groupHeaders.length, dataTypes.length, max)
     }
-    rowData = ['']
+    rowData = [''] // comment
     for (let index = 0; index < columnHeaders.length; index++) {
       column = columnHeaders[index]
       rowType = table.getColumnType(column)

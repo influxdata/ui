@@ -27,6 +27,7 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Utils
 import {
+  handleJsonPathValidation,
   handleValidation,
   sanitizeType,
 } from 'src/writeData/subscriptions/utils/form'
@@ -232,14 +233,20 @@ const JsonPathInput: FC<Props> = ({
               : formContent.jsonFieldKeys[itemNum].path
           }
           required={true}
-          validationFunc={() =>
-            handleValidation(
+          validationFunc={() => {
+            const validErr = handleValidation(
               `${name} Path`,
               tagType
                 ? formContent.jsonTagKeys[itemNum].path
                 : formContent.jsonFieldKeys[itemNum].path
             )
-          }
+            const jsonpathErr = handleJsonPathValidation(
+              tagType
+                ? formContent.jsonTagKeys[itemNum].path
+                : formContent.jsonFieldKeys[itemNum].path
+            )
+            return validErr ?? jsonpathErr
+          }}
         >
           {status => (
             <Input

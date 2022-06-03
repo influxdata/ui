@@ -3,6 +3,7 @@ import {
   StringObjectParams,
   JsonSpec,
 } from 'src/types/subscriptions'
+import jsonpath from 'jsonpath'
 
 export const handleValidation = (
   property: string,
@@ -12,6 +13,12 @@ export const handleValidation = (
     return `${property} is required`
   }
   return null
+}
+
+export const handleJsonPathValidation = (formVal: string): string | null => {
+  if (!validateJsonPath(formVal)) {
+    return `${formVal} is not a valid JSON Path expression`
+  }
 }
 
 export const checkJSONPathStarts$ = (firstChar, formVal): string | null => {
@@ -202,7 +209,17 @@ const checkStringObjRequiredFields = (
 ): boolean => !!stringObjParams.pattern && !!stringObjParams.name
 
 const checkJsonObjRequiredFields = (jsonObjParams: JsonSpec): boolean =>
-  !!jsonObjParams.name && !!jsonObjParams.path && !!jsonObjParams.type
+  !!jsonObjParams.name &&
+  !!jsonObjParams.path &&
+  !!jsonObjParams.type &&
+  validateJsonPath(jsonObjParams.path)
+
+const checkJsonTimestamp = (jsonObjParams: JsonSpec): boolean => {
+  if (!jsonObjParams.path) {
+    return true
+  }
+  return validateJsonPath(jsonObjParams.path)
+}
 
 export const checkRequiredJsonFields = (form: Subscription): boolean => {
   if (form.dataFormat !== 'json') {
@@ -211,8 +228,19 @@ export const checkRequiredJsonFields = (form: Subscription): boolean => {
   return (
     !!form.jsonMeasurementKey?.path &&
     !!form.jsonMeasurementKey?.type &&
+    validateJsonPath(form.jsonMeasurementKey.path) &&
+    checkJsonTimestamp(form.jsonTimestamp) &&
     form.jsonFieldKeys?.length > 0 &&
     form.jsonFieldKeys?.every(f => checkJsonObjRequiredFields(f)) &&
     form.jsonTagKeys?.every(t => checkJsonObjRequiredFields(t))
   )
+}
+
+export const validateJsonPath = (path: string): boolean => {
+  try {
+    jsonpath.parse(path)
+    return true
+  } catch {
+    return false
+  }
 }

@@ -28,6 +28,7 @@ import {Subscription} from 'src/types/subscriptions'
 import {
   sanitizeType,
   handleValidation,
+  handleJsonPathValidation,
 } from 'src/writeData/subscriptions/utils/form'
 
 // Styles
@@ -71,32 +72,44 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   return (
     <div className="json-parsing-form">
       <Grid.Column>
-        <Form.Label label="JSON Path to Timestamp" />
-        <Input
-          type={InputType.Text}
-          placeholder="eg. $.myJSON.myObject[0].timestampKey"
-          name="timestamp"
-          autoFocus={true}
+        <Form.ValidationElement
+          label="JSON Path to Timestmap"
           value={formContent.jsonTimestamp?.path}
-          onChange={e => {
-            updateForm({
-              ...formContent,
-              jsonTimestamp: {
-                ...formContent.jsonTimestamp,
-                path: e.target.value,
-              },
-            })
-          }}
-          onBlur={() =>
-            event(
-              'completed form field',
-              {formField: 'jsonTimestamp.path'},
-              {feature: 'subscriptions'}
-            )
+          required={false}
+          validationFunc={() =>
+            !!formContent.jsonTimestamp?.path
+              ? handleJsonPathValidation(formContent.jsonTimestamp?.path)
+              : null
           }
-          testID="timestamp-json-parsing"
-          status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
-        />
+        >
+          {status => (
+            <Input
+              type={InputType.Text}
+              placeholder="eg. $.myJSON.myObject[0].timestampKey"
+              name="timestamp"
+              autoFocus={true}
+              value={formContent.jsonTimestamp?.path}
+              onChange={e => {
+                updateForm({
+                  ...formContent,
+                  jsonTimestamp: {
+                    ...formContent.jsonTimestamp,
+                    path: e.target.value,
+                  },
+                })
+              }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {formField: 'jsonTimestamp.path'},
+                  {feature: 'subscriptions'}
+                )
+              }
+              testID="timestamp-json-parsing"
+              status={edit ? status : ComponentStatus.Disabled}
+            />
+          )}
+        </Form.ValidationElement>
       </Grid.Column>
       <Grid.Column>
         <FlexBox
@@ -123,12 +136,16 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
             label="JSON Path"
             value={formContent.jsonMeasurementKey.path}
             required={true}
-            validationFunc={() =>
-              handleValidation(
+            validationFunc={() => {
+              const validErr = handleValidation(
                 'Measurement Path',
                 formContent.jsonMeasurementKey.path
               )
-            }
+              const jsonpathErr = handleJsonPathValidation(
+                formContent.jsonMeasurementKey.path
+              )
+              return validErr ?? jsonpathErr
+            }}
           >
             {status => (
               <Input

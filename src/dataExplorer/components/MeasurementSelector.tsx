@@ -7,7 +7,7 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 // Context
 import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
-import {MeasurementContext} from 'src/dataExplorer/context/measurements'
+import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -33,7 +33,7 @@ const MeasurementSelector: FC = () => {
   const {selectedBucket, selectedMeasurement, selectMeasurement} = useContext(
     NewDataExplorerContext
   )
-  const {measurements, loading} = useContext(MeasurementContext)
+  const {measurements, loading} = useContext(MeasurementsContext)
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSelect = (option: string): void => {

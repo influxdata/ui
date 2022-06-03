@@ -38,7 +38,9 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
 }) => {
   const handleNameClick = () => {
     if (isFlagEnabled('exploreWithFlows')) {
-      history.push(`/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}`)
+      history.push(
+        `/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}/${bucket.id}`
+      )
     } else {
       history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
     }

@@ -49,7 +49,7 @@ const SubscriptionFormContent: FC<Props> = ({
     if (found) {
       changeBucket(found)
     }
-  }, [])
+  }, [buckets.length])
 
   return (
     <Grid>

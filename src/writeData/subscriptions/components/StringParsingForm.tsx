@@ -24,7 +24,10 @@ import StringPatternInput from 'src/writeData/subscriptions/components/StringPat
 import {Subscription} from 'src/types/subscriptions'
 
 // Utils
-import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {
+  handleRegexValidation,
+  handleValidation,
+} from 'src/writeData/subscriptions/utils/form'
 
 // Styles
 import 'src/writeData/subscriptions/components/StringParsingForm.scss'
@@ -63,35 +66,47 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   return (
     <div className="string-parsing-form">
       <Grid.Column>
-        <Form.Label label="Regex to find Timestamp" />
-        <Input
-          type={InputType.Text}
-          placeholder="eg. regexExample"
-          name="timestamp"
-          autoFocus={true}
+        <Form.ValidationElement
+          label="Regex Pattern to find Timestamp"
           value={formContent.stringTimestamp.pattern}
-          onChange={e => {
-            updateForm({
-              ...formContent,
-              stringTimestamp: {
-                ...formContent.stringTimestamp,
-                pattern: e.target.value,
-              },
-            })
-          }}
-          onBlur={() =>
-            event(
-              'completed form field',
-              {
-                formField: 'stringTimestamp.pattern',
-              },
-              {feature: 'subscriptions'}
-            )
+          required={false}
+          validationFunc={() =>
+            !!formContent.stringTimestamp.pattern
+              ? handleRegexValidation(formContent.stringTimestamp.pattern)
+              : null
           }
-          maxLength={255}
-          testID="timestamp-string-parsing"
-          status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
-        />
+        >
+          {status => (
+            <Input
+              type={InputType.Text}
+              placeholder="eg. regexExample"
+              name="timestamp"
+              autoFocus={true}
+              value={formContent.stringTimestamp.pattern}
+              onChange={e => {
+                updateForm({
+                  ...formContent,
+                  stringTimestamp: {
+                    ...formContent.stringTimestamp,
+                    pattern: e.target.value,
+                  },
+                })
+              }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {
+                    formField: 'stringTimestamp.pattern',
+                  },
+                  {feature: 'subscriptions'}
+                )
+              }
+              maxLength={255}
+              testID="timestamp-string-parsing"
+              status={edit ? status : ComponentStatus.Disabled}
+            />
+          )}
+        </Form.ValidationElement>
       </Grid.Column>
       <Grid.Column>
         <FlexBox
@@ -112,9 +127,13 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           label="Regex Pattern to find Measurement"
           value={formContent.stringMeasurement.pattern}
           required={true}
-          validationFunc={() =>
-            handleValidation('Pattern', formContent.stringMeasurement.pattern)
-          }
+          validationFunc={() => {
+            const pattern = formContent.stringMeasurement.pattern
+            return (
+              handleValidation('Pattern', pattern) ??
+              handleRegexValidation(pattern)
+            )
+          }}
         >
           {status => (
             <Input

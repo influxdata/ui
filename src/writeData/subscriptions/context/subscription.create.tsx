@@ -50,13 +50,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
         type: 'string',
       },
     ],
-    jsonTagKeys: [
-      {
-        name: '',
-        path: '',
-        type: 'string',
-      },
-    ],
+    jsonTagKeys: [],
     jsonTimestamp: {
       name: 'timestamp',
       path: '',
@@ -72,12 +66,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
         name: '',
       },
     ],
-    stringTags: [
-      {
-        pattern: '',
-        name: '',
-      },
-    ],
+    stringTags: [],
     stringTimestamp: {
       pattern: '',
       name: '',

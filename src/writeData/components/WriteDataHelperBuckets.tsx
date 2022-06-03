@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 
 // Contexts
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
@@ -8,9 +7,6 @@ import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 
 // Constants
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
-
-// Utils
-import {getAll} from 'src/resources/selectors'
 
 // Components
 import {
@@ -23,9 +19,6 @@ import {
   EmptyState,
 } from '@influxdata/clockface'
 
-// Types
-import {AppState, ResourceType, Bucket} from 'src/types'
-
 interface Props {
   className?: string
   useSimplifiedBucketForm?: boolean
@@ -35,7 +28,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
   className = 'write-data--details-widget-title',
   useSimplifiedBucketForm = false,
 }) => {
-  const {bucket, changeBucket} = useContext(WriteDataDetailsContext)
+  const {bucket, buckets, changeBucket} = useContext(WriteDataDetailsContext)
   const isSelected = (bucketID: string): boolean => {
     if (!bucket) {
       return false
@@ -43,20 +36,18 @@ const WriteDataHelperBuckets: FC<Props> = ({
     return bucketID === bucket.id
   }
 
-  const buckets = useSelector((state: AppState) =>
-    getAll<Bucket>(state, ResourceType.Buckets)
-      .filter(b => b.type === 'user')
-      // sort by selected and then by name
-      .sort((a, b) => {
-        if (isSelected(a.id)) {
-          return -1
-        }
-        if (isSelected(b.id)) {
-          return 1
-        }
-        return a.name.localeCompare(b.name)
-      })
-  )
+  const filteredBuckets = buckets
+    .filter(b => b.type === 'user')
+    // sort by selected and then by name
+    .sort((a, b) => {
+      if (isSelected(a.id)) {
+        return -1
+      }
+      if (isSelected(b.id)) {
+        return 1
+      }
+      return a.name.localeCompare(b.name)
+    })
 
   let body = (
     <EmptyState className="write-data--details-empty-state">
@@ -73,7 +64,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
     </EmptyState>
   )
 
-  if (buckets.length) {
+  if (filteredBuckets.length) {
     body = (
       <List
         backgroundColor={InfluxColors.Grey5}
@@ -81,7 +72,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
         maxHeight="200px"
         testID="buckets--list"
       >
-        {buckets.map(b => (
+        {filteredBuckets.map(b => (
           <List.Item
             size={ComponentSize.Small}
             key={b.id}

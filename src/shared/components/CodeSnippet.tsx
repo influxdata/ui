@@ -130,10 +130,12 @@ const CodeSnippet: FC<Props> = ({
           )}
         </div>
       </DapperScrollbars>
-      <div className="code-snippet--footer">
-        {showCopyControl && <CopyButton text={_text} onCopy={handleCopy} />}
-        {label && <label className="code-snippet--label">{label}</label>}
-      </div>
+      {(showCopyControl || label) && (
+        <div className="code-snippet--footer">
+          {showCopyControl && <CopyButton text={_text} onCopy={handleCopy} />}
+          {label && <label className="code-snippet--label">{label}</label>}
+        </div>
+      )}
     </div>
   )
 }

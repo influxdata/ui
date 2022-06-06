@@ -28,6 +28,13 @@ import {IdentityState} from 'src/me/reducers'
 // Types
 import {RemoteDataState, GetState} from 'src/types'
 import {Actions} from 'src/me/actions/creators'
+import {Identity, Me} from 'src/client/unityRoutes'
+
+interface LegacyIdentityResponse {
+  status: string
+  data: Me | null
+  error?: Error
+}
 
 export const getIdentityThunk = () => async (
   dispatch: Dispatch<Actions>,
@@ -85,81 +92,97 @@ export const getQuartzMeThunk = () => async dispatch => {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
 
     if (isFlagEnabled('quartzIdentity')) {
-      console.log('Using new route')
-      getIdentity({})
-        .then(quartzIdentity => {
-          if (quartzIdentity.status !== 200) {
-            throw new Error(quartzIdentity.data.message)
-          }
+      const quartzIdentity = await getIdentity({})
 
-          const {account, org, user} = quartzIdentity.data
-          const {
-            accountCreatedAt,
-            paygCreditStartDate,
-            type: accountType,
-          } = account
-          const {clusterHost, id: orgId} = org
-          const {email, id: userId, operatorRole} = user
+      if (quartzIdentity.status !== 200) {
+        throw new Error(quartzIdentity.data.message)
+      }
 
-          const currentAccount = getAccount({
-            accountId: account.id.toString(),
-          })
+      const legacyMeIdentity = await convertIdentityToMe(quartzIdentity.data)
 
-          const currentOrg = getQuartzOrg({orgId: orgId})
+      if (legacyMeIdentity.status === 'failure') {
+        throw new Error(legacyMeIdentity.error.stack)
+      }
 
-          Promise.all([currentAccount, currentOrg])
-            .then(resolved => {
-              if (resolved[0].status !== 200) {
-                throw new Error(resolved[0].data.message)
-              }
+      console.log('Here is the result of calling quartzIdentity')
+      console.log(legacyMeIdentity.data)
 
-              if (resolved[1].status !== 200) {
-                throw new Error(resolved[1].data.message)
-              }
+      console.log('Here is the result of calling meIdentity')
+      const quartzMe = await getQuartzMe({})
+      console.log(quartzMe.data)
 
-              const {billingProvider} = resolved[0].data
-
-              const {isRegionBeta, regionCode, regionName} = resolved[1].data
-
-              const currentIdentity = {
-                accountCreatedAt: accountCreatedAt,
-                accountType: accountType,
-                billingProvider: billingProvider,
-                clusterHost: clusterHost,
-                email: email,
-                id: userId,
-                isOperator: operatorRole ? true : false,
-                isRegionBeta: isRegionBeta,
-                operatorRole: operatorRole,
-                paygCreditStartDate: paygCreditStartDate,
-                regionCode: regionCode,
-                regionName: regionName,
-              }
-              dispatch(setQuartzMe(currentIdentity, RemoteDataState.Done))
-            })
-            .catch(err => {
-              throw new Error(err)
-            })
-        })
-        .catch(err => {
-          throw new Error(err)
-        })
+      dispatch(setQuartzMe(legacyMeIdentity.data, RemoteDataState.Done))
     } else {
-      console.log('Using old route')
-      getQuartzMe({})
-        .then(quartzMe => {
-          if (quartzMe.status !== 200) {
-            throw new Error(quartzMe.data.message)
-          } else {
-            dispatch(setQuartzMe(quartzMe.data, RemoteDataState.Done))
-          }
-        })
-        .catch(err => {
-          throw new Error(err)
-        })
+      const quartzMe = await getQuartzMe({})
+
+      if (quartzMe.status !== 200) {
+        throw new Error(quartzMe.data.message)
+      }
+      dispatch(setQuartzMe(quartzMe.data, RemoteDataState.Done))
     }
   } catch (error) {
     console.error(error)
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
   }
+}
+
+const convertIdentityToMe = (
+  quartzIdentity: Identity
+): Promise<LegacyIdentityResponse> => {
+  const {account, org, user} = quartzIdentity
+  const {accountCreatedAt, paygCreditStartDate, type: accountType} = account
+  const {clusterHost, id: orgId} = org
+  const {email, id: userId, operatorRole} = user
+
+  const accountPromise = getAccount({
+    accountId: account.id.toString(),
+  })
+
+  const orgPromise = getQuartzOrg({orgId: orgId})
+
+  return Promise.all([accountPromise, orgPromise])
+    .then(res => {
+      // Typescript doesn't trace the typing here if we loop with forEach.
+
+      const currentAccount = res[0]
+      const currentOrg = res[1]
+
+      if (currentAccount.status !== 200) {
+        throw new Error(currentAccount.data.message)
+      }
+
+      if (currentOrg.status !== 200) {
+        throw new Error(currentOrg.data.message)
+      }
+
+      const {billing_provider} = currentAccount.data
+
+      const {isRegionBeta, regionCode, regionName} = currentOrg.data
+
+      const currentIdentity = {
+        accountCreatedAt: accountCreatedAt,
+        accountType: accountType,
+        billingProvider: billing_provider,
+        clusterHost: clusterHost,
+        email: email,
+        id: userId,
+        isOperator: operatorRole ? true : false,
+        isRegionBeta: isRegionBeta,
+        operatorRole: operatorRole,
+        paygCreditStartDate: paygCreditStartDate,
+        regionCode: regionCode,
+        regionName: regionName,
+      }
+      return {
+        status: 'success',
+        data: currentIdentity,
+      }
+    })
+    .catch(err => {
+      return {
+        status: 'failure',
+        data: null,
+        error: err,
+      }
+    })
 }

@@ -1,6 +1,6 @@
 // Libraries
 import React, {createContext, FC, useContext, useMemo, useState} from 'react'
-import {QueryScope, RemoteDataState} from 'src/types'
+import {Bucket, QueryScope, RemoteDataState} from 'src/types'
 
 // Constants
 import {
@@ -13,28 +13,29 @@ import {
 } from 'src/shared/constants/queryBuilder'
 
 // Contexts
+import {QueryContext} from 'src/shared/contexts/query'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_REGEXP,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
-} from 'src/dataExplorer/context/newDataExplorer'
-import {QueryContext} from 'src/shared/contexts/query'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+  SEARCH_STRING,
+} from 'src/dataExplorer/shared/utils'
 
 interface FieldsContextType {
   fields: Array<string>
   loading: RemoteDataState
-  getFields: (bucket: any, measurement: string) => void
+  getFields: (bucket: Bucket, measurement: string, searchTerm?: string) => void
   resetFields: () => void
 }
 
 const DEFAULT_CONTEXT: FieldsContextType = {
   fields: [],
   loading: RemoteDataState.NotStarted,
-  getFields: (_b: any, _m: string) => {},
+  getFields: (_b: Bucket, _m: string, _s: string) => {},
   resetFields: () => {},
 }
 
@@ -61,7 +62,11 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     ? EXTENDED_TAG_LIMIT
     : DEFAULT_TAG_LIMIT
 
-  const getFields = async (bucket: any, measurement: string) => {
+  const getFields = async (
+    bucket: Bucket,
+    measurement: string,
+    searchTerm?: string
+  ) => {
     if (!bucket || !measurement) {
       return
     }
@@ -70,6 +75,11 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
+    // Note that sample buckets are not in storage level.
+    //   They are fetched dynamically from csv.
+    //   Here is the source code for handling sample data:
+    //   https://github.com/influxdata/flux/blob/master/stdlib/influxdata/influxdb/sample/sample.flux
+    //   That is why _source and query script for sample data is different
     let _source = IMPORT_REGEXP
     if (bucket.type === 'sample') {
       _source += SAMPLE_DATA_SET(bucket.id)
@@ -83,6 +93,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
       |> keep(columns: ["_field"])
       |> group()
       |> distinct(column: "_field")
+      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
       |> sort()
       |> limit(n: ${limit})
     `
@@ -96,6 +107,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
+          ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
           |> sort()
           |> limit(n: ${limit})
       `

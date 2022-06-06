@@ -30,7 +30,7 @@ import {CLOUD} from 'src/shared/constants'
 
 interface OwnProps {
   bucket: OwnBucket
-  bucketType: 'user' | 'system'
+  bucketType: OwnBucket['type']
   orgID: string
   onFilterChange: (searchTerm: string) => void
   onGetSchema: (b: OwnBucket) => void

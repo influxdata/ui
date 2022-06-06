@@ -1,6 +1,6 @@
 // Libraries
 import React, {createContext, FC, useContext, useMemo, useState} from 'react'
-import {QueryScope, RemoteDataState} from 'src/types'
+import {Bucket, QueryScope, RemoteDataState} from 'src/types'
 
 // Constants
 import {
@@ -13,23 +13,24 @@ import {
 } from 'src/shared/constants/queryBuilder'
 
 // Contexts
+import {QueryContext} from 'src/shared/contexts/query'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_REGEXP,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
-} from 'src/dataExplorer/context/newDataExplorer'
-import {QueryContext} from 'src/shared/contexts/query'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+  SEARCH_STRING,
+} from 'src/dataExplorer/shared/utils'
 
 interface TagsContextType {
   tags: Tags
   loadingTagKeys: RemoteDataState
   loadingTagValues: Hash<RemoteDataState>
-  getTagKeys: (bucket: any, measurement: string) => void
-  getTagValues: (bucket: any, measurement: string, tagKey: string) => void
+  getTagKeys: (bucket: Bucket, measurement: string, searchTerm?: string) => void
+  getTagValues: (bucket: Bucket, measurement: string, tagKey: string) => void
   resetTags: () => void
 }
 
@@ -37,8 +38,8 @@ const DEFAULT_CONTEXT: TagsContextType = {
   tags: {} as Tags,
   loadingTagKeys: RemoteDataState.NotStarted,
   loadingTagValues: {} as Hash<RemoteDataState>,
-  getTagKeys: (_b: any, _m: string) => {},
-  getTagValues: (_b: any, _m: string, _tk: string) => {},
+  getTagKeys: (_b: Bucket, _m: string, _s: string) => {},
+  getTagValues: (_b: Bucket, _m: string, _tk: string) => {},
   resetTags: () => {},
 }
 
@@ -75,7 +76,11 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     ? EXTENDED_TAG_LIMIT
     : DEFAULT_TAG_LIMIT
 
-  const getTagKeys = async (bucket: any, measurement: string) => {
+  const getTagKeys = async (
+    bucket: Bucket,
+    measurement: string,
+    searchTerm?: string
+  ) => {
     if (!bucket || !measurement) {
       return
     }
@@ -97,6 +102,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> keys()
       |> keep(columns: ["_value"])
       |> distinct()
+      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
       |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
       |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
       |> sort()
@@ -114,6 +120,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         )
           |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
           |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
+          ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
           |> sort()
           |> limit(n: ${limit})
       `
@@ -150,7 +157,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
   }
 
   const getTagValues = async (
-    bucket: any,
+    bucket: Bucket,
     measurement: string,
     tagKey: string
   ) => {

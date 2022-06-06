@@ -1,3 +1,4 @@
+import {CLOUD} from 'src/shared/constants'
 import {Organization} from '../../../src/types'
 
 describe('About Page', () => {
@@ -41,7 +42,9 @@ describe('About Page', () => {
 
     const newOrgName = `hard@knock.life${Math.random()}`
 
-    cy.intercept('PATCH', 'api/v2/quartz/orgs/*').as('patchOrg')
+    const patchOrgPath = CLOUD ? 'api/v2/quartz/orgs/*' : 'api/v2/orgs/*'
+
+    cy.intercept('PATCH', patchOrgPath).as('patchOrg')
     cy.getByTestID('create-org-name-input').type(newOrgName)
     cy.getByTestID('rename-org-submit--button')
       .should('not.be.disabled')

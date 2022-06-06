@@ -13,6 +13,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '@influxdata/clockface'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
@@ -32,6 +33,10 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
 )
+const useLocalStorageState = createLocalStorageStateHook(
+  'dataExplorerQuery',
+  ''
+)
 
 const INITIAL_HORIZ_RESIZER_HANDLE = 0.2
 const fakeNotify = notify
@@ -43,7 +48,7 @@ const ResultsPane: FC = () => {
   const {basic, query} = useContext(QueryContext)
   const {status, setStatus, setResult, setTime} = useContext(ResultsContext)
 
-  const [text, setText] = useState('')
+  const [text, setText] = useLocalStorageState()
   const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
 
   const download = () => {

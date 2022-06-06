@@ -14,6 +14,7 @@ COPY ./cypress ./cypress
 COPY ./src/types ./src/types
 COPY ./src/timeMachine/constants ./src/timeMachine/constants
 COPY ./src/shared/constants/fluxFunctions.ts ./src/shared/constants/fluxFunctions.ts
+COPY ./src/shared/constants/index.ts ./src/shared/constants/index.ts
 COPY ./src/shared/actions/flags.ts ./src/shared/actions/flags.ts
 COPY ./src/utils/datetime/constants.ts ./src/utils/datetime/constants.ts
 

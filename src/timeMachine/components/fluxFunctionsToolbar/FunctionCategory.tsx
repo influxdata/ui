@@ -3,7 +3,7 @@ import React, {SFC} from 'react'
 
 // Components
 // TODO: decouple from notebooks and especially a panel type. put in shared location
-import ToolbarFunction from 'src/flows/shared/FilterList/InjectionOption'
+import ToolbarFunction from 'src/shared/components/FilterList/InjectionOption'
 import FunctionTooltipContent from 'src/shared/components/functions/perFunction/FunctionToolTipContent'
 
 // Types

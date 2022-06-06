@@ -3,8 +3,8 @@ import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {FluxFunction} from 'src/types/shared'
-import Fn from 'src/flows/shared/FilterList/InjectionOption'
-import FilterList from 'src/flows/shared/FilterList/FilterList'
+import Fn from 'src/shared/components/FilterList/InjectionOption'
+import FilterList from 'src/shared/components/FilterList/FilterList'
 import FluxDocsTooltipContent from 'src/shared/components/functions/perFunction/FluxDocsTooltipContent'
 
 // Actions

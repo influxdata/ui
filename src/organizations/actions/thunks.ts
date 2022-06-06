@@ -182,9 +182,7 @@ export const updateOrg = (org: Organization) => async (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
-    const resp = CLOUD
-      ? await patchOrg({orgId: org.id, data: org})
-      : await api.patchOrg({orgID: org.id, data: org})
+    const resp = await api.patchOrg({orgID: org.id, data: org})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

@@ -20,77 +20,30 @@ import {CLOUD} from 'src/shared/constants'
 import {getOrg} from 'src/organizations/selectors'
 
 // Actions
-import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
+import {
+  setQuartzIdentity,
+  setQuartzIdentityStatus,
+} from 'src/identity/actions/creators'
 
 // Reducers
-// Check on this
-import {IdentityState} from 'src/me/reducers'
+import {QuartzIdentityState} from 'src/identity/reducers'
 
 // Types
 import {RemoteDataState, GetState} from 'src/types'
-import {Actions} from 'src/me/actions/creators'
+import {Actions} from 'src/identity/actions/creators'
 import {Identity, Me} from 'src/client/unityRoutes'
 
-interface LegacyIdentityResponse {
-  status: string
-  data: Me | null
-  error?: Error
-}
+// interface LegacyIdentityResponse {
+//   status: string
+//   data: Me | null
+//   error?: Error
+// }
 
-export const getIdentityThunk = () => async (
-  dispatch: Dispatch<Actions>,
-  getState: GetState
-) => {
+export const getQuartzIdentityThunk = () => async dispatch => {
   try {
-    let user
+    dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
-    if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-      const resp = await getAccounts({})
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-      user = resp.data.find(account => account.isActive)
-    } else {
-      const resp = await getIdpeMe({})
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-      user = resp.data
-    }
-
-    updateReportingContext({userID: user.id, userEmail: user.name})
-
-    gaEvent('cloudAppUserDataReady', {
-      identity: {
-        id: user.id,
-        email: user.name,
-      },
-    })
-
-    updateReportingContext({
-      userID: user.id,
-    })
-    HoneyBadger.setContext({
-      user_id: user.id,
-    })
-
-    if (CLOUD && isFlagEnabled('rudderstackReporting')) {
-      const state = getState()
-      const org = getOrg(state)
-      identify(user.id, {email: user.name, orgID: org.id})
-    }
-
-    dispatch(setMe(user as IdentityState))
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export const getQuartzMeThunk = () => async dispatch => {
-  try {
-    dispatch(setQuartzMeStatus(RemoteDataState.Loading))
+    // this should probably be happening outside for this one
 
     if (isFlagEnabled('quartzIdentity')) {
       const quartzIdentity = await getIdentity({})
@@ -99,7 +52,7 @@ export const getQuartzMeThunk = () => async dispatch => {
         throw new Error(quartzIdentity.data.message)
       }
 
-      const legacyMeIdentity = await convertIdentityToMe(quartzIdentity.data)
+      // const legacyMeIdentity = await convertIdentityToMe(quartzIdentity.data)
 
       if (legacyMeIdentity.status === 'failure') {
         throw new Error(legacyMeIdentity.error.stack)
@@ -130,9 +83,6 @@ export const getQuartzMeThunk = () => async dispatch => {
 const convertIdentityToMe = (
   quartzIdentity: Identity
 ): Promise<LegacyIdentityResponse> => {
-  console.log('here is quartzIdentity')
-  console.log(quartzIdentity)
-
   const {account, org, user} = quartzIdentity
   const {accountCreatedAt, paygCreditStartDate, type: accountType} = account
   const {clusterHost, id: orgId} = org
@@ -158,12 +108,6 @@ const convertIdentityToMe = (
       if (currentOrg.status !== 200) {
         throw new Error(currentOrg.data.message)
       }
-
-      console.log('here is current account')
-      console.log(currentAccount.data)
-
-      console.log('here is current org')
-      console.log(currentOrg.data)
 
       const {billing_provider} = currentAccount.data
 
@@ -196,3 +140,54 @@ const convertIdentityToMe = (
       }
     })
 }
+
+// export const getIdentityThunk = () => async (
+//   dispatch: Dispatch<Actions>,
+//   getState: GetState
+// ) => {
+//   try {
+//     let user
+
+//     if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
+//       const resp = await getAccounts({})
+
+//       if (resp.status !== 200) {
+//         throw new Error(resp.data.message)
+//       }
+//       user = resp.data.find(account => account.isActive)
+//     } else {
+//       const resp = await getIdpeMe({})
+
+//       if (resp.status !== 200) {
+//         throw new Error(resp.data.message)
+//       }
+//       user = resp.data
+//     }
+
+//     updateReportingContext({userID: user.id, userEmail: user.name})
+
+//     gaEvent('cloudAppUserDataReady', {
+//       identity: {
+//         id: user.id,
+//         email: user.name,
+//       },
+//     })
+
+//     updateReportingContext({
+//       userID: user.id,
+//     })
+//     HoneyBadger.setContext({
+//       user_id: user.id,
+//     })
+
+//     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
+//       const state = getState()
+//       const org = getOrg(state)
+//       identify(user.id, {email: user.name, orgID: org.id})
+//     }
+
+//     dispatch(setMe(user as IdentityState))
+//   } catch (error) {
+//     console.error(error)
+//   }
+// }

@@ -26,6 +26,7 @@ import {notify} from 'src/shared/actions/notifications'
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+import QueryTime from 'src/dataExplorer/components/QueryTime'
 
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
@@ -41,7 +42,7 @@ const ResultsPane: FC = () => {
     INITIAL_HORIZ_RESIZER_HANDLE,
   ])
   const {basic, query} = useContext(QueryContext)
-  const {status, setStatus, setResult, setTime} = useContext(ResultsContext)
+  const {status, setStatus, setResult} = useContext(ResultsContext)
 
   const [text, setText] = useState('')
   const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
@@ -83,7 +84,6 @@ const ResultsPane: FC = () => {
     }
 
     setStatus(RemoteDataState.Loading)
-    const time = Date.now()
     query(text, {
       vars: {
         timeRangeStart,
@@ -93,11 +93,9 @@ const ResultsPane: FC = () => {
       .then(r => {
         setResult(r)
         setStatus(RemoteDataState.Done)
-        setTime(Date.now() - time)
       })
       .catch(() => {
         setStatus(RemoteDataState.Error)
-        setTime(0)
       })
   }
 
@@ -145,6 +143,7 @@ const ResultsPane: FC = () => {
               justifyContent={JustifyContent.FlexEnd}
               margin={ComponentSize.Small}
             >
+              <QueryTime />
               <Button
                 titleText="Download query results as a .CSV file"
                 text="CSV"

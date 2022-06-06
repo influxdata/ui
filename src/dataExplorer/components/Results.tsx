@@ -12,7 +12,7 @@ import './Results.scss'
 
 // simplified version migrated from src/flows/pipes/Table/view.tsx
 const QueryStat: FC = () => {
-  const {result, time} = useContext(ResultsContext)
+  const {result} = useContext(ResultsContext)
 
   const tableColumn = result?.parsed?.table?.getColumn('table') || []
   const lastTableValue = tableColumn[tableColumn.length - 1] || -1
@@ -33,7 +33,6 @@ const QueryStat: FC = () => {
       <span className="query-stat--bold">{`${tableNum} tables`}</span>
       <span className="query-stat--bold">{`${result?.parsed?.table?.length ||
         0} rows`}</span>
-      <span className="query-stat--normal">{`${time} ms`}</span>
     </div>
   )
 }

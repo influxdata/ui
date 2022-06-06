@@ -35,7 +35,7 @@ import {AppState, ResourceType, Authorization} from 'src/types'
 import {Bucket, Telegraf} from 'src/client'
 
 // Seletors
-import {selectMe} from 'src/me/selectors'
+import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
 import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
@@ -397,7 +397,7 @@ const mstp = (state: AppState) => {
     remoteDataState,
     orgID: getOrg(state).id,
     orgName: getOrg(state).name,
-    meID: selectMe(state).id,
+    meID: getMe(state).id,
   }
 }
 

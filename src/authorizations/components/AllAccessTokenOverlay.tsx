@@ -31,7 +31,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-import {selectMe} from 'src/me/selectors'
+import {getMe} from 'src/me/selectors'
 import {getAllTokensResources} from 'src/resources/selectors'
 
 // Types
@@ -46,7 +46,7 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
   const dispatch = useDispatch()
   const [description, setDescription] = useState<string>('')
   const {id: orgID} = useSelector(getOrg)
-  const {id: meID} = useSelector(selectMe)
+  const {id: meID} = useSelector(getMe)
   const allPermissionTypes = useSelector(getAllTokensResources)
 
   const sortedPermissionTypes = useMemo(

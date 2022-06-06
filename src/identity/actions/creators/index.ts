@@ -10,8 +10,6 @@ export type Actions =
 
 export const setQuartzIdentity = (
   identity: QuartzIdentityState,
-
-  // One of these needs to be set
   status: RemoteDataState
 ) =>
   ({

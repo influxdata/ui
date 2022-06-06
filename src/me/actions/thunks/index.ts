@@ -2,7 +2,6 @@
 import HoneyBadger from 'honeybadger-js'
 import {identify} from 'rudder-sdk-js'
 import {Dispatch} from 'react'
-import {omit, isEqual} from 'lodash'
 
 // Functions making API calls
 import {getMe as getIdpeMe} from 'src/client'
@@ -13,27 +12,20 @@ import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {getOrg} from 'src/organizations/selectors'
+import {getQuartzIdentityDetails} from 'src/identity/actions/thunks'
 import {convertIdentityToMe} from 'src/identity/actions/thunks'
 
 // Actions
 import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 
 // Reducers
-// Check on this
-import {IdentityState} from 'src/me/reducers'
+import {MeState} from 'src/me/reducers'
 
 // Types
 import {RemoteDataState, GetState} from 'src/types'
 import {Actions} from 'src/me/actions/creators'
-import {getQuartzIdentityDetails} from 'src/identity/actions/thunks'
 
-// interface LegacyIdentityResponse {
-//   status: string
-//   data: Me | null
-//   error?: Error
-// }
-
-export const getIdentityThunk = () => async (
+export const getMeThunk = () => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {
@@ -78,7 +70,7 @@ export const getIdentityThunk = () => async (
       identify(user.id, {email: user.name, orgID: org.id})
     }
 
-    dispatch(setMe(user as IdentityState))
+    dispatch(setMe(user as MeState))
   } catch (error) {
     console.error(error)
   }
@@ -90,29 +82,12 @@ export const getQuartzMeThunk = () => async dispatch => {
 
     if (isFlagEnabled('quartzIdentity')) {
       const quartzIdentity = await getQuartzIdentityDetails()
-      console.log('quartz Identity')
-      console.log(quartzIdentity)
 
       if (quartzIdentity.status !== 'success') {
         throw new Error(quartzIdentity.error)
       }
 
       const legacyMeIdentity = convertIdentityToMe(quartzIdentity.data)
-
-      console.log('Here is the result of calling quartzIdentity')
-      console.log(legacyMeIdentity)
-
-      console.log('Here is the result of calling meIdentity')
-      const quartzMe = await getQuartzMe({})
-      console.log(quartzMe.data)
-
-      const omissions = ['id', 'accountCreatedAt', 'paygCreditStartDate']
-
-      const obj1 = omit(quartzMe.data, omissions)
-      const obj2 = omit(legacyMeIdentity, omissions)
-
-      console.log('are they equal?')
-      console.log(isEqual(obj1, obj2))
 
       dispatch(setQuartzMe(legacyMeIdentity, RemoteDataState.Done))
     } else {

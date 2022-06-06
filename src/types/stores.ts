@@ -29,7 +29,7 @@ import {LimitsState} from 'src/cloud/reducers/limits'
 import {AlertBuilderState} from 'src/alerting/reducers/alertBuilder'
 import {CurrentPage} from 'src/shared/reducers/currentPage'
 import {PerfState} from 'src/perf/reducers'
-import {IdentityState} from 'src/me/reducers'
+import {MeState} from 'src/me/reducers'
 import {QuartzIdentityState} from 'src/identity/reducers'
 
 export interface AppState {
@@ -47,7 +47,7 @@ export interface AppState {
   flags: FlagState
   fluxDocs: FluxDocsState
   identity: QuartzIdentityState
-  me: IdentityState
+  me: MeState
   noteEditor: NoteEditorState
   notifications: Notification[]
   onboarding: OnboardingState

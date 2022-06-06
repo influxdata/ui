@@ -24,7 +24,7 @@ import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
 import {getAllOrgs} from 'src/resources/selectors'
-import {selectMe, getQuartzMe} from 'src/me/selectors'
+import {getMe, getQuartzMe} from 'src/me/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -45,17 +45,18 @@ const canAccessCheckout = (me: Me): boolean => {
 }
 
 const GetOrganizations: FunctionComponent = () => {
-  // console.log('entering getOrganizations component')
-
   const {status, org} = useSelector(getAllOrgs)
+
   const quartzMeStatus = useSelector(
     (state: AppState) => state.me.quartzMeStatus
   )
   const quartzMe = useSelector(getQuartzMe)
+
   const quartzIdentityStatus = useSelector(
     (state: AppState) => state.identity.status
   )
-  const {id: meId = '', name: email = ''} = useSelector(selectMe)
+
+  const {id: meId = '', name: email = ''} = useSelector(getMe)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -78,7 +79,6 @@ const GetOrganizations: FunctionComponent = () => {
       isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
     ) {
-      // console.log('dispatching apiGetQuartzMe')
       dispatch(getQuartzMeThunk())
     }
   }, [dispatch, quartzMeStatus])

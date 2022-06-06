@@ -18,7 +18,9 @@ import {getMe} from 'src/client'
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
-// import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+import {getIdentity} from 'src/client/unityRoutes'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
@@ -27,13 +29,13 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      const resp = await getMe({})
+      let resp
 
-      // if (isFlagEnabled('quartzIdentity')) {
-      //   resp = await getIdentity({})
-      // } else {
-      //   resp = await getMe({})
-      // }
+      if (isFlagEnabled('quartzIdentity') && CLOUD) {
+        resp = await getIdentity({})
+      } else {
+        resp = await getMe({})
+      }
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

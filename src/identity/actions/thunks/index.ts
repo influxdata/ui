@@ -11,19 +11,22 @@ import {
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Constants
 import {CLOUD} from 'src/shared/constants'
 
 // Actions
 import {
   setQuartzIdentity,
   setQuartzIdentityStatus,
+  Actions,
 } from 'src/identity/actions/creators'
 
 // Reducers
 import {QuartzIdentityState} from 'src/identity/reducers'
 
 // Types
-import {RemoteDataState, GetState} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 interface AccountIdentityResponse {
   status: string
@@ -33,9 +36,7 @@ interface AccountIdentityResponse {
 
 export const getQuartzIdentityThunk = () => async dispatch => {
   try {
-    dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
-
-    if (isFlagEnabled('quartzIdentity')) {
+    if (isFlagEnabled('quartzIdentity') && CLOUD) {
       const quartzIdentityDetails = await getQuartzIdentityDetails()
 
       if (quartzIdentityDetails.error) {
@@ -46,6 +47,7 @@ export const getQuartzIdentityThunk = () => async dispatch => {
         setQuartzIdentity(quartzIdentityDetails.data, RemoteDataState.Done)
       )
     }
+    dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
   } catch (error) {
     console.error(error)
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
@@ -55,14 +57,11 @@ export const getQuartzIdentityThunk = () => async dispatch => {
 export const getQuartzIdentityDetails = async (): Promise<AccountIdentityResponse> => {
   const quartzIdentity = await getIdentity({})
 
-  console.log('here is the identity within getQuartzIdentityDetailsThunk')
-  console.log(quartzIdentity)
-
   if (quartzIdentity.status !== 200) {
     throw new Error(quartzIdentity.data.message)
   }
 
-  const {account, org, user} = quartzIdentity.data
+  const {account, org} = quartzIdentity.data
   const {id: orgId} = org
 
   const accountPromise = getAccount({
@@ -73,7 +72,6 @@ export const getQuartzIdentityDetails = async (): Promise<AccountIdentityRespons
 
   return Promise.all([accountPromise, orgPromise])
     .then(res => {
-      // Typescript doesn't trace the typing here if we loop with forEach.
       const currentAccount = res[0]
       const currentOrg = res[1]
 
@@ -108,7 +106,7 @@ export const getQuartzIdentityDetails = async (): Promise<AccountIdentityRespons
 export const convertIdentityToMe = (
   quartzIdentity: QuartzIdentityState
 ): Me => {
-  // General information from quartz identity endpoint.
+  // General information retrieved from the quartz identity endpoint.
   const {
     currentIdentity,
     currentAccountDetails,
@@ -119,11 +117,11 @@ export const convertIdentityToMe = (
   const {clusterHost} = org
   const {email, id: userId, operatorRole} = user
 
-  // Specific properties from quantz account and organization endpoints.
+  // Specific information retrieved separately from the quartz account and organization endpoints.
   const {billing_provider} = currentAccountDetails
   const {isRegionBeta, regionCode, regionName} = currentOrgDetails
 
-  const me = {
+  const legacyMe = {
     accountCreatedAt: accountCreatedAt,
     accountType: accountType,
     billingProvider: billing_provider,
@@ -138,5 +136,5 @@ export const convertIdentityToMe = (
     regionName: regionName,
   }
 
-  return me
+  return legacyMe
 }

@@ -11,7 +11,7 @@ import GetFlags from 'src/shared/containers/GetFlags'
 import {RemoteDataState} from 'src/types'
 
 // Actions
-import {getIdentityThunk} from 'src/me/actions/thunks'
+import {getMeThunk} from 'src/me/actions/thunks'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -46,13 +46,13 @@ class GetMe extends PureComponent<Props, State> {
   }
 
   public componentDidMount() {
-    this.props.getIdentityThunk()
+    this.props.getMeThunk()
     this.setState({loading: RemoteDataState.Done})
   }
 }
 
 const mdtp = {
-  getIdentityThunk,
+  getMeThunk,
 }
 
 const connector = connect(null, mdtp)

@@ -26,7 +26,7 @@ const debouncer = (action: NOOP): void => {
   }, DEBOUNCE_TIMEOUT)
 }
 
-interface NewDataExplorerContextType {
+interface FluxQueryBuilderContextType {
   // Schema
   selectedBucket: Bucket
   selectedMeasurement: string
@@ -40,7 +40,7 @@ interface NewDataExplorerContextType {
   updateQuery: (q: string) => void
 }
 
-const DEFAULT_CONTEXT: NewDataExplorerContextType = {
+const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   // Schema
   selectedBucket: null,
   selectedMeasurement: '',
@@ -54,11 +54,11 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   updateQuery: _q => {},
 }
 
-export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(
-  DEFAULT_CONTEXT
-)
+export const FluxQueryBuilderContext = createContext<
+  FluxQueryBuilderContextType
+>(DEFAULT_CONTEXT)
 
-export const NewDataExplorerProvider: FC = ({children}) => {
+export const FluxQueryBuilderProvider: FC = ({children}) => {
   // Contexts
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
@@ -107,7 +107,7 @@ export const NewDataExplorerProvider: FC = ({children}) => {
 
   return useMemo(
     () => (
-      <NewDataExplorerContext.Provider
+      <FluxQueryBuilderContext.Provider
         value={{
           // Schema
           selectedBucket,
@@ -123,7 +123,7 @@ export const NewDataExplorerProvider: FC = ({children}) => {
         }}
       >
         {children}
-      </NewDataExplorerContext.Provider>
+      </FluxQueryBuilderContext.Provider>
     ),
     [
       // Schema

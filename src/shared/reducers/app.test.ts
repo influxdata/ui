@@ -20,7 +20,7 @@ describe('Shared.Reducers.appReducer', () => {
       autoRefresh: 0,
       showTemplateControlBar: false,
       navBarState: 'expanded',
-      newDataExplorer: false,
+      fluxQueryBuilder: false,
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
       versionInfo: {version: '', commit: ''},

@@ -6,7 +6,7 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import WaitingText from 'src/shared/components/WaitingText'
 
 // Contexts
-import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
+import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
@@ -27,7 +27,7 @@ interface Prop {
 
 const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
   const {selectedBucket, selectedMeasurement} = useContext(
-    NewDataExplorerContext
+    FluxQueryBuilderContext
   )
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])

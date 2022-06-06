@@ -3,10 +3,10 @@ import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 // Components
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
+import WaitingText from 'src/shared/components/WaitingText'
 
 // Contexts
 import {FieldsContext} from 'src/dataExplorer/context/fields'
-import WaitingText from 'src/shared/components/WaitingText'
 
 // Types
 import {RemoteDataState} from 'src/types'

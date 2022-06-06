@@ -182,39 +182,23 @@ export const updateOrg = (org: Organization) => async (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
-    if (CLOUD) {
-      const resp = await patchOrg({orgId: org.id, data: org})
+    const resp = CLOUD
+      ? await patchOrg({orgId: org.id, data: org})
+      : await api.patchOrg({orgID: org.id, data: org})
 
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-
-      const updatedOrg = resp.data
-      const normOrg = normalize<Organization, OrgEntities, string>(
-        updatedOrg,
-        orgSchema
-      )
-
-      dispatch(editOrg(normOrg))
-
-      dispatch(notify(orgEditSuccess()))
-    } else {
-      const resp = await api.patchOrg({orgID: org.id, data: org})
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-
-      const updatedOrg = resp.data
-      const normOrg = normalize<Organization, OrgEntities, string>(
-        updatedOrg,
-        orgSchema
-      )
-
-      dispatch(editOrg(normOrg))
-
-      dispatch(notify(orgEditSuccess()))
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
     }
+
+    const updatedOrg = resp.data
+    const normOrg = normalize<Organization, OrgEntities, string>(
+      updatedOrg,
+      orgSchema
+    )
+
+    dispatch(editOrg(normOrg))
+
+    dispatch(notify(orgEditSuccess()))
   } catch (error) {
     dispatch(notify(orgEditFailed()))
     console.error(error)
@@ -228,43 +212,28 @@ export const renameOrg = (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
-    if (CLOUD) {
-      const resp = await patchOrg({
-        orgId: org.id,
-        data: {name: org.name, description: org.description},
-      })
+    const resp = CLOUD
+      ? await patchOrg({
+          orgId: org.id,
+          data: {name: org.name, description: org.description},
+        })
+      : await api.patchOrg({
+          orgID: org.id,
+          data: org,
+        })
 
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-      const updatedOrg = resp.data
-
-      const normOrg = normalize<Organization, OrgEntities, string>(
-        updatedOrg,
-        orgSchema
-      )
-
-      dispatch(editOrg(normOrg))
-      dispatch(notify(orgRenameSuccess(updatedOrg.name)))
-    } else {
-      const resp = await api.patchOrg({
-        orgID: org.id,
-        data: org,
-      })
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-      const updatedOrg = resp.data
-
-      const normOrg = normalize<Organization, OrgEntities, string>(
-        updatedOrg,
-        orgSchema
-      )
-
-      dispatch(editOrg(normOrg))
-      dispatch(notify(orgRenameSuccess(updatedOrg.name)))
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
     }
+    const updatedOrg = resp.data
+
+    const normOrg = normalize<Organization, OrgEntities, string>(
+      updatedOrg,
+      orgSchema
+    )
+
+    dispatch(editOrg(normOrg))
+    dispatch(notify(orgRenameSuccess(updatedOrg.name)))
   } catch (error) {
     dispatch(notify(orgRenameFailed(originalName)))
     console.error(error)

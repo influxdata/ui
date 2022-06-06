@@ -1,23 +1,17 @@
 // Libraries
-import HoneyBadger from 'honeybadger-js'
-import {identify} from 'rudder-sdk-js'
 import {Dispatch} from 'react'
 
 // Functions making API calls
-import {getMe as getIdpeMe} from 'src/client'
 import {
   getAccount,
-  getAccounts,
-  getMe as getQuartzMe,
   getIdentity,
   getOrg as getQuartzOrg,
+  Me,
 } from 'src/client/unityRoutes'
 
 // Utils
-import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-import {getOrg} from 'src/organizations/selectors'
 
 // Actions
 import {
@@ -30,63 +24,46 @@ import {QuartzIdentityState} from 'src/identity/reducers'
 
 // Types
 import {RemoteDataState, GetState} from 'src/types'
-import {Actions} from 'src/identity/actions/creators'
-import {Identity, Me} from 'src/client/unityRoutes'
 
-// interface LegacyIdentityResponse {
-//   status: string
-//   data: Me | null
-//   error?: Error
-// }
+interface AccountIdentityResponse {
+  status: string
+  data: QuartzIdentityState | null
+  error: string | null
+}
 
 export const getQuartzIdentityThunk = () => async dispatch => {
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
-    // this should probably be happening outside for this one
-
     if (isFlagEnabled('quartzIdentity')) {
-      const quartzIdentity = await getIdentity({})
+      const quartzIdentityDetails = await getQuartzIdentityDetails()
 
-      if (quartzIdentity.status !== 200) {
-        throw new Error(quartzIdentity.data.message)
+      if (quartzIdentityDetails.error) {
+        throw new Error(quartzIdentityDetails.error)
       }
 
-      // const legacyMeIdentity = await convertIdentityToMe(quartzIdentity.data)
-
-      if (legacyMeIdentity.status === 'failure') {
-        throw new Error(legacyMeIdentity.error.stack)
-      }
-
-      console.log('Here is the result of calling quartzIdentity')
-      console.log(legacyMeIdentity.data)
-
-      console.log('Here is the result of calling meIdentity')
-      const quartzMe = await getQuartzMe({})
-      console.log(quartzMe.data)
-
-      dispatch(setQuartzMe(legacyMeIdentity.data, RemoteDataState.Done))
-    } else {
-      const quartzMe = await getQuartzMe({})
-
-      if (quartzMe.status !== 200) {
-        throw new Error(quartzMe.data.message)
-      }
-      dispatch(setQuartzMe(quartzMe.data, RemoteDataState.Done))
+      dispatch(
+        setQuartzIdentity(quartzIdentityDetails.data, RemoteDataState.Done)
+      )
     }
   } catch (error) {
     console.error(error)
-    dispatch(setQuartzMeStatus(RemoteDataState.Error))
+    dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
   }
 }
 
-const convertIdentityToMe = (
-  quartzIdentity: Identity
-): Promise<LegacyIdentityResponse> => {
-  const {account, org, user} = quartzIdentity
-  const {accountCreatedAt, paygCreditStartDate, type: accountType} = account
-  const {clusterHost, id: orgId} = org
-  const {email, id: userId, operatorRole} = user
+export const getQuartzIdentityDetails = async (): Promise<AccountIdentityResponse> => {
+  const quartzIdentity = await getIdentity({})
+
+  console.log('here is the identity within getQuartzIdentityDetailsThunk')
+  console.log(quartzIdentity)
+
+  if (quartzIdentity.status !== 200) {
+    throw new Error(quartzIdentity.data.message)
+  }
+
+  const {account, org, user} = quartzIdentity.data
+  const {id: orgId} = org
 
   const accountPromise = getAccount({
     accountId: account.id.toString(),
@@ -97,7 +74,6 @@ const convertIdentityToMe = (
   return Promise.all([accountPromise, orgPromise])
     .then(res => {
       // Typescript doesn't trace the typing here if we loop with forEach.
-
       const currentAccount = res[0]
       const currentOrg = res[1]
 
@@ -109,85 +85,58 @@ const convertIdentityToMe = (
         throw new Error(currentOrg.data.message)
       }
 
-      const {billing_provider} = currentAccount.data
-
-      const {isRegionBeta, regionCode, regionName} = currentOrg.data
-
-      const currentIdentity = {
-        accountCreatedAt: accountCreatedAt,
-        accountType: accountType,
-        billingProvider: billing_provider,
-        clusterHost: clusterHost,
-        email: email,
-        id: userId,
-        isOperator: operatorRole ? true : false,
-        isRegionBeta: isRegionBeta,
-        operatorRole: operatorRole,
-        paygCreditStartDate: paygCreditStartDate,
-        regionCode: regionCode,
-        regionName: regionName,
-      }
       return {
         status: 'success',
-        data: currentIdentity,
+        data: {
+          currentIdentity: quartzIdentity.data,
+          currentOrgDetails: currentOrg.data,
+          currentAccountDetails: currentAccount.data,
+          status: RemoteDataState.Done,
+        },
+        error: null,
       }
     })
     .catch(err => {
       return {
         status: 'failure',
         data: null,
-        error: err,
+        error: err.stack,
       }
     })
 }
 
-// export const getIdentityThunk = () => async (
-//   dispatch: Dispatch<Actions>,
-//   getState: GetState
-// ) => {
-//   try {
-//     let user
+export const convertIdentityToMe = (
+  quartzIdentity: QuartzIdentityState
+): Me => {
+  // General information from quartz identity endpoint.
+  const {
+    currentIdentity,
+    currentAccountDetails,
+    currentOrgDetails,
+  } = quartzIdentity
+  const {account, org, user} = currentIdentity
+  const {accountCreatedAt, paygCreditStartDate, type: accountType} = account
+  const {clusterHost} = org
+  const {email, id: userId, operatorRole} = user
 
-//     if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-//       const resp = await getAccounts({})
+  // Specific properties from quantz account and organization endpoints.
+  const {billing_provider} = currentAccountDetails
+  const {isRegionBeta, regionCode, regionName} = currentOrgDetails
 
-//       if (resp.status !== 200) {
-//         throw new Error(resp.data.message)
-//       }
-//       user = resp.data.find(account => account.isActive)
-//     } else {
-//       const resp = await getIdpeMe({})
+  const me = {
+    accountCreatedAt: accountCreatedAt,
+    accountType: accountType,
+    billingProvider: billing_provider,
+    clusterHost: clusterHost,
+    email: email,
+    id: userId,
+    isOperator: operatorRole ? true : false,
+    isRegionBeta: isRegionBeta,
+    operatorRole: operatorRole,
+    paygCreditStartDate: paygCreditStartDate,
+    regionCode: regionCode,
+    regionName: regionName,
+  }
 
-//       if (resp.status !== 200) {
-//         throw new Error(resp.data.message)
-//       }
-//       user = resp.data
-//     }
-
-//     updateReportingContext({userID: user.id, userEmail: user.name})
-
-//     gaEvent('cloudAppUserDataReady', {
-//       identity: {
-//         id: user.id,
-//         email: user.name,
-//       },
-//     })
-
-//     updateReportingContext({
-//       userID: user.id,
-//     })
-//     HoneyBadger.setContext({
-//       user_id: user.id,
-//     })
-
-//     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
-//       const state = getState()
-//       const org = getOrg(state)
-//       identify(user.id, {email: user.name, orgID: org.id})
-//     }
-
-//     dispatch(setMe(user as IdentityState))
-//   } catch (error) {
-//     console.error(error)
-//   }
-// }
+  return me
+}

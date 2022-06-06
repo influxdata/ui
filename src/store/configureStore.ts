@@ -18,6 +18,7 @@ import {loadLocalStorage} from 'src/localStorage'
 
 // v2 reducers
 import meReducer from 'src/me/reducers'
+import identityReducer from 'src/identity/reducers'
 import flagReducer from 'src/shared/reducers/flags'
 import currentDashboardReducer from 'src/shared/reducers/currentDashboard'
 import currentExplorerReducer from 'src/shared/reducers/currentExplorer'
@@ -87,6 +88,7 @@ export const rootReducer = (history: History) => (state, action) => {
     fluxDocs: fluxDocsReducer,
     dataLoading: dataLoadingReducer,
     me: meReducer,
+    identity: identityReducer,
     flags: flagReducer,
     noteEditor: noteEditorReducer,
     onboarding: onboardingReducer,

@@ -1,26 +1,23 @@
 // Libraries
 import produce from 'immer'
 
-// Actions
-import {Actions, SET_QUARTZ_IDENTITY} from 'src/identity/actions/creators'
-
-import {Account, Identity, Organization} from 'src/client/unityRoutes'
-
-// Types
-// import {getIdentity} from 'src/client/unityRoutes'
+import {Identity, Account, Organization} from 'src/client/unityRoutes'
 
 import {RemoteDataState} from 'src/types'
-
-// export interface MeLinks {
-//   self: string
-//   log: string
-// }
 
 export interface QuartzIdentityState {
   currentIdentity: Identity
   currentAccountDetails: Account
   currentOrgDetails: Organization
+  status: RemoteDataState
 }
+
+// Actions
+import {
+  Actions,
+  SET_QUARTZ_IDENTITY,
+  SET_QUARTZ_IDENTITY_STATUS,
+} from 'src/identity/actions/creators'
 
 export const initialState: QuartzIdentityState = {
   currentIdentity: {
@@ -39,10 +36,11 @@ export const initialState: QuartzIdentityState = {
       name: '',
     },
     account: {
-      accountCreatedAt: '',
       id: 0,
       name: '',
       type: 'free',
+      accountCreatedAt: '',
+      paygCreditStartDate: '',
     },
   },
   currentAccountDetails: {
@@ -62,6 +60,7 @@ export const initialState: QuartzIdentityState = {
     regionCode: '',
     regionName: '',
   },
+  status: RemoteDataState.NotStarted,
 }
 
 export default (state = initialState, action: Actions): QuartzIdentityState =>
@@ -71,6 +70,10 @@ export default (state = initialState, action: Actions): QuartzIdentityState =>
         draftState.currentIdentity = action.identity.currentIdentity
         draftState.currentOrgDetails = action.identity.currentOrgDetails
         draftState.currentAccountDetails = action.identity.currentAccountDetails
+        return
+      }
+      case SET_QUARTZ_IDENTITY_STATUS: {
+        draftState.status = action.status
         return
       }
     }

@@ -1,4 +1,4 @@
-import {QuartzIdentityState} from '../../reducers'
+import {QuartzIdentityState} from 'src/identity/reducers'
 import {RemoteDataState} from 'src/types'
 
 export const SET_QUARTZ_IDENTITY = 'SET_QUARTZ_IDENTITY'
@@ -10,11 +10,13 @@ export type Actions =
 
 export const setQuartzIdentity = (
   identity: QuartzIdentityState,
+
+  // One of these needs to be set
   status: RemoteDataState
 ) =>
   ({
     type: SET_QUARTZ_IDENTITY,
-    quartzIdentity: identity,
+    identity: identity,
     status,
   } as const)
 

@@ -19,6 +19,7 @@ import {RemoteDataState, AppState} from 'src/types'
 // Actions
 import {getOrganizations} from 'src/organizations/actions/thunks'
 import {getQuartzMeThunk} from 'src/me/actions/thunks'
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
@@ -51,15 +52,26 @@ const GetOrganizations: FunctionComponent = () => {
     (state: AppState) => state.me.quartzMeStatus
   )
   const quartzMe = useSelector(getQuartzMe)
+  const quartzIdentityStatus = useSelector(
+    (state: AppState) => state.identity.status
+  )
   const {id: meId = '', name: email = ''} = useSelector(selectIdentity)
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (status === RemoteDataState.NotStarted) {
-      // console.log('getting organizations')
       dispatch(getOrganizations())
     }
   }, [dispatch, status])
+
+  useEffect(() => {
+    if (
+      isFlagEnabled('quartzIdentity') &&
+      quartzIdentityStatus === RemoteDataState.NotStarted
+    ) {
+      dispatch(getQuartzIdentityThunk())
+    }
+  }, [dispatch, quartzIdentityStatus])
 
   useEffect(() => {
     if (

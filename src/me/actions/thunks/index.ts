@@ -2,22 +2,18 @@
 import HoneyBadger from 'honeybadger-js'
 import {identify} from 'rudder-sdk-js'
 import {Dispatch} from 'react'
+import {omit, isEqual} from 'lodash'
 
 // Functions making API calls
 import {getMe as getIdpeMe} from 'src/client'
-import {
-  getAccount,
-  getAccounts,
-  getMe as getQuartzMe,
-  getIdentity,
-  getOrg as getQuartzOrg,
-} from 'src/client/unityRoutes'
+import {getAccounts, getMe as getQuartzMe} from 'src/client/unityRoutes'
 
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {getOrg} from 'src/organizations/selectors'
+import {convertIdentityToMe} from 'src/identity/actions/thunks'
 
 // Actions
 import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
@@ -29,13 +25,13 @@ import {IdentityState} from 'src/me/reducers'
 // Types
 import {RemoteDataState, GetState} from 'src/types'
 import {Actions} from 'src/me/actions/creators'
-import {Identity, Me} from 'src/client/unityRoutes'
+import {getQuartzIdentityDetails} from 'src/identity/actions/thunks'
 
-interface LegacyIdentityResponse {
-  status: string
-  data: Me | null
-  error?: Error
-}
+// interface LegacyIdentityResponse {
+//   status: string
+//   data: Me | null
+//   error?: Error
+// }
 
 export const getIdentityThunk = () => async (
   dispatch: Dispatch<Actions>,
@@ -93,26 +89,32 @@ export const getQuartzMeThunk = () => async dispatch => {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
 
     if (isFlagEnabled('quartzIdentity')) {
-      const quartzIdentity = await getIdentity({})
+      const quartzIdentity = await getQuartzIdentityDetails()
+      console.log('quartz Identity')
+      console.log(quartzIdentity)
 
-      if (quartzIdentity.status !== 200) {
-        throw new Error(quartzIdentity.data.message)
+      if (quartzIdentity.status !== 'success') {
+        throw new Error(quartzIdentity.error)
       }
 
-      const legacyMeIdentity = await convertIdentityToMe(quartzIdentity.data)
-
-      if (legacyMeIdentity.status === 'failure') {
-        throw new Error(legacyMeIdentity.error.stack)
-      }
+      const legacyMeIdentity = convertIdentityToMe(quartzIdentity.data)
 
       console.log('Here is the result of calling quartzIdentity')
-      console.log(legacyMeIdentity.data)
+      console.log(legacyMeIdentity)
 
       console.log('Here is the result of calling meIdentity')
       const quartzMe = await getQuartzMe({})
       console.log(quartzMe.data)
 
-      dispatch(setQuartzMe(legacyMeIdentity.data, RemoteDataState.Done))
+      const omissions = ['id', 'accountCreatedAt', 'paygCreditStartDate']
+
+      const obj1 = omit(quartzMe.data, omissions)
+      const obj2 = omit(legacyMeIdentity, omissions)
+
+      console.log('are they equal?')
+      console.log(isEqual(obj1, obj2))
+
+      dispatch(setQuartzMe(legacyMeIdentity, RemoteDataState.Done))
     } else {
       const quartzMe = await getQuartzMe({})
 
@@ -125,74 +127,4 @@ export const getQuartzMeThunk = () => async dispatch => {
     console.error(error)
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
   }
-}
-
-const convertIdentityToMe = (
-  quartzIdentity: Identity
-): Promise<LegacyIdentityResponse> => {
-  console.log('here is quartzIdentity')
-  console.log(quartzIdentity)
-
-  const {account, org, user} = quartzIdentity
-  const {accountCreatedAt, paygCreditStartDate, type: accountType} = account
-  const {clusterHost, id: orgId} = org
-  const {email, id: userId, operatorRole} = user
-
-  const accountPromise = getAccount({
-    accountId: account.id.toString(),
-  })
-
-  const orgPromise = getQuartzOrg({orgId: orgId})
-
-  return Promise.all([accountPromise, orgPromise])
-    .then(res => {
-      // Typescript doesn't trace the typing here if we loop with forEach.
-
-      const currentAccount = res[0]
-      const currentOrg = res[1]
-
-      if (currentAccount.status !== 200) {
-        throw new Error(currentAccount.data.message)
-      }
-
-      if (currentOrg.status !== 200) {
-        throw new Error(currentOrg.data.message)
-      }
-
-      console.log('here is current account')
-      console.log(currentAccount.data)
-
-      console.log('here is current org')
-      console.log(currentOrg.data)
-
-      const {billing_provider} = currentAccount.data
-
-      const {isRegionBeta, regionCode, regionName} = currentOrg.data
-
-      const currentIdentity = {
-        accountCreatedAt: accountCreatedAt,
-        accountType: accountType,
-        billingProvider: billing_provider,
-        clusterHost: clusterHost,
-        email: email,
-        id: userId,
-        isOperator: operatorRole ? true : false,
-        isRegionBeta: isRegionBeta,
-        operatorRole: operatorRole,
-        paygCreditStartDate: paygCreditStartDate,
-        regionCode: regionCode,
-        regionName: regionName,
-      }
-      return {
-        status: 'success',
-        data: currentIdentity,
-      }
-    })
-    .catch(err => {
-      return {
-        status: 'failure',
-        data: null,
-        error: err,
-      }
-    })
 }

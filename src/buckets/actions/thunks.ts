@@ -426,5 +426,5 @@ const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {
   return {
     ...bucket,
     labels,
-  }
+  } as GenBucket
 }

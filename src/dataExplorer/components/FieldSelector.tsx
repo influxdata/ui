@@ -3,17 +3,19 @@ import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 // Components
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
+import WaitingText from 'src/shared/components/WaitingText'
 
 // Contexts
-import {LOCAL_LIMIT} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
-import WaitingText from 'src/shared/components/WaitingText'
 
 // Types
 import {RemoteDataState} from 'src/types'
 
 // Syles
 import './Schema.scss'
+
+// Utils
+import {LOCAL_LIMIT} from 'src/dataExplorer/shared/utils'
 
 const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
 key values pairs within a measurement. For SQL users, this is \

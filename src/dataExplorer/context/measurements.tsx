@@ -12,30 +12,30 @@ import {
 } from 'src/shared/constants/queryBuilder'
 
 // Contexts
+import {QueryContext} from 'src/shared/contexts/query'
+
+// Types
+import {Bucket, QueryScope, RemoteDataState} from 'src/types'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_REGEXP,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
-} from 'src/dataExplorer/context/fluxQueryBuilder'
-import {QueryContext} from 'src/shared/contexts/query'
-
-// Types
-import {QueryScope, RemoteDataState} from 'src/types'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+} from 'src/dataExplorer/shared/utils'
 
 interface MeasurementsContextType {
   measurements: string[]
   loading: RemoteDataState
-  getMeasurements: (bucket: any) => void
+  getMeasurements: (bucket: Bucket) => void
 }
 
 const DEFAULT_CONTEXT: MeasurementsContextType = {
   measurements: [],
   loading: RemoteDataState.NotStarted,
-  getMeasurements: (_: any) => {},
+  getMeasurements: (_: Bucket) => {},
 }
 
 export const MeasurementsContext = createContext<MeasurementsContextType>(

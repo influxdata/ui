@@ -14,7 +14,6 @@ import {
   FluxQueryBuilderContext,
   FluxQueryBuilderProvider,
 } from 'src/dataExplorer/context/fluxQueryBuilder'
-import QueryProvider from 'src/shared/contexts/query'
 import {BucketProvider} from 'src/shared/contexts/buckets'
 import {MeasurementsProvider} from 'src/dataExplorer/context/measurements'
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
@@ -49,7 +48,7 @@ const FieldsTags: FC = () => {
     return (
       <div className="container-side-bar">
         <SearchWidget
-          placeholderText="Search fields and tags"
+          placeholderText="Search fields and tag keys"
           onSearch={handleSearchFieldsTags}
           searchTerm={searchTerm}
         />
@@ -68,29 +67,27 @@ const Schema: FC = () => {
   } as QueryScope
 
   return (
-    <QueryProvider>
-      <MeasurementsProvider scope={scope}>
-        <FieldsProvider scope={scope}>
-          <TagsProvider scope={scope}>
-            <FluxQueryBuilderProvider>
-              <BucketProvider scope={scope}>
-                <div className="scroll--container">
-                  <DapperScrollbars>
-                    <div className="data-schema">
-                      <BucketSelector />
-                      <div className="container-side-bar">
-                        <MeasurementSelector />
-                        <FieldsTags />
-                      </div>
+    <MeasurementsProvider scope={scope}>
+      <FieldsProvider scope={scope}>
+        <TagsProvider scope={scope}>
+          <FluxQueryBuilderProvider>
+            <BucketProvider scope={scope}>
+              <div className="scroll--container">
+                <DapperScrollbars>
+                  <div className="data-schema">
+                    <BucketSelector />
+                    <div className="container-side-bar">
+                      <MeasurementSelector />
+                      <FieldsTags />
                     </div>
-                  </DapperScrollbars>
-                </div>
-              </BucketProvider>
-            </FluxQueryBuilderProvider>
-          </TagsProvider>
-        </FieldsProvider>
-      </MeasurementsProvider>
-    </QueryProvider>
+                  </div>
+                </DapperScrollbars>
+              </div>
+            </BucketProvider>
+          </FluxQueryBuilderProvider>
+        </TagsProvider>
+      </FieldsProvider>
+    </MeasurementsProvider>
   )
 }
 

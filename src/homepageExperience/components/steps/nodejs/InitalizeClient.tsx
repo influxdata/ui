@@ -4,14 +4,14 @@ import {useSelector} from 'react-redux'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 
-import {selectIdentity} from 'src/me/selectors'
+import {selectMe} from 'src/me/selectors'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.nodejsWizard.initializeClient.code.copied')
 }
 
 export const InitalizeClient = () => {
-  const me = useSelector(selectIdentity)
+  const me = useSelector(selectMe)
 
   const url =
     me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'

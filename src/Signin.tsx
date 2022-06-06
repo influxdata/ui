@@ -6,7 +6,7 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-import GetIdentity from 'src/shared/containers/GetMe'
+import GetMe from 'src/shared/containers/GetMe'
 
 // Utils
 import {
@@ -86,7 +86,7 @@ export class Signin extends PureComponent<Props, State> {
       <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
         {auth && (
           <Switch>
-            <Route component={GetIdentity} />
+            <Route component={GetMe} />
           </Switch>
         )}
       </SpinnerContainer>
@@ -97,7 +97,7 @@ export class Signin extends PureComponent<Props, State> {
     try {
       let resp
 
-      if (isFlagEnabled('quartzIdentity')) {
+      if (isFlagEnabled('quartzIdentity') && CLOUD) {
         resp = await getIdentity({})
       } else {
         resp = await getMe({})

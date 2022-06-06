@@ -23,7 +23,7 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-import {selectIdentity} from 'src/me/selectors'
+import {selectMe} from 'src/me/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -36,7 +36,7 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
   const [feedbackText, setFeedbackText] = useState('')
   const {onClose} = useContext(OverlayContext)
   const {id: orgID} = useSelector(getOrg)
-  const {id: meID} = useSelector(selectIdentity)
+  const {id: meID} = useSelector(selectMe)
 
   const dispatch = useDispatch()
 

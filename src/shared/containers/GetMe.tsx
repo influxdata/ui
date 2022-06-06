@@ -24,7 +24,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
 @ErrorHandling
-class GetIdentity extends PureComponent<Props, State> {
+class GetMe extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
@@ -57,4 +57,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export default connector(GetIdentity)
+export default connector(GetMe)

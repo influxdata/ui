@@ -10,7 +10,7 @@ import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 
 // Selectors
 import {getSortedResources, SortTypes} from 'src/shared/utils/sort'
-import {selectIdentity} from 'src/me/selectors'
+import {selectMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
@@ -249,7 +249,7 @@ const mdtp = {
 }
 
 const mstp = (state: AppState) => {
-  const me = selectIdentity(state)
+  const me = selectMe(state)
   const org = getOrg(state)
 
   return {

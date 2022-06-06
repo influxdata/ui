@@ -24,7 +24,7 @@ import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
 import {getAllOrgs} from 'src/resources/selectors'
-import {selectIdentity, getQuartzMe} from 'src/me/selectors'
+import {selectMe, getQuartzMe} from 'src/me/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -55,7 +55,7 @@ const GetOrganizations: FunctionComponent = () => {
   const quartzIdentityStatus = useSelector(
     (state: AppState) => state.identity.status
   )
-  const {id: meId = '', name: email = ''} = useSelector(selectIdentity)
+  const {id: meId = '', name: email = ''} = useSelector(selectMe)
   const dispatch = useDispatch()
 
   useEffect(() => {

@@ -31,7 +31,7 @@ import {GTM_USER_REMOVED} from 'src/users/constants'
 // Types
 import {CloudUser, DraftInvite, Invite, RemoteDataState} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
-import {selectIdentity} from 'src/me/selectors'
+import {selectMe} from 'src/me/selectors'
 import {CLOUD_URL} from 'src/shared/constants'
 
 export type Props = {
@@ -78,7 +78,7 @@ export const UsersContext = React.createContext<UsersContextType>(
 export const UsersProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
   const orgId = useSelector(getOrg)?.id
-  const currentUserId = useSelector(selectIdentity)?.id
+  const currentUserId = useSelector(selectMe)?.id
 
   const [users, setUsers] = useState<CloudUser[]>([])
   const [invites, setInvites] = useState<Invite[]>([])

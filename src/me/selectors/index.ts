@@ -7,7 +7,7 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 // Constants
 import {CREDIT_250_EXPERIENCE_CUTOFF_EPOCH} from 'src/shared/constants'
 
-export const selectIdentity = (state: AppState): AppState['me'] => {
+export const selectMe = (state: AppState): AppState['me'] => {
   return state.me
 }
 

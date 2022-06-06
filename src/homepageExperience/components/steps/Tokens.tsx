@@ -10,7 +10,7 @@ import {
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-import {selectIdentity} from 'src/me/selectors'
+import {selectMe} from 'src/me/selectors'
 import {getAllTokensResources} from 'src/resources/selectors'
 
 // Helper Components
@@ -45,7 +45,7 @@ export const Tokens: FC<OwnProps> = ({
   tokenValue,
 }) => {
   const org = useSelector(getOrg)
-  const me = useSelector(selectIdentity)
+  const me = useSelector(selectMe)
   const allPermissionTypes = useSelector(getAllTokensResources)
   const dispatch = useDispatch()
   const [tokenTextboxText, setTokenTextboxText] = useState(

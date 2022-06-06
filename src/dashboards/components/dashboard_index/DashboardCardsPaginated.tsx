@@ -12,7 +12,7 @@ import {AppState, Dashboard} from 'src/types'
 import {LimitStatus} from 'src/cloud/actions/limits'
 
 // Selectors
-import {selectIdentity} from 'src/me/selectors'
+import {selectMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
 // Contexts
@@ -172,7 +172,7 @@ const mdtp = {
 }
 
 const mstp = (state: AppState) => {
-  const me = selectIdentity(state)
+  const me = selectMe(state)
   const org = getOrg(state)
 
   return {

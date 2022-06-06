@@ -12,6 +12,7 @@ RUN yarn add cypress-circleci-reporter
 COPY ./cypress.json .
 COPY ./cypress ./cypress
 COPY ./src/types ./src/types
+COPY ./src/client/index.ts ./src/client/index.ts
 COPY ./src/timeMachine/constants ./src/timeMachine/constants
 COPY ./src/shared/constants/fluxFunctions.ts ./src/shared/constants/fluxFunctions.ts
 COPY ./src/shared/constants/index.ts ./src/shared/constants/index.ts

@@ -1,4 +1,4 @@
-import {CLOUD} from 'src/shared/constants'
+import {CLOUD} from '../../../src/shared/constants'
 import {Organization} from '../../../src/types'
 
 describe('About Page', () => {

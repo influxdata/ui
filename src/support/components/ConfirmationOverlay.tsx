@@ -2,15 +2,28 @@ import React, {FC, useContext} from 'react'
 
 // Components
 import {
+  BannerPanel,
   Button,
   ButtonType,
   ComponentColor,
+  ComponentSize,
+  Gradients,
+  IconFont,
+  InfluxColors,
   Overlay,
 } from '@influxdata/clockface'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
+
+// Constants
+import {
+  INFLUXDATA_SUPPORT_CONTACT_UK,
+  INFLUXDATA_SUPPORT_CONTACT_UK_TELEPHONE_LINK,
+  INFLUXDATA_SUPPORT_CONTACT_US,
+  INFLUXDATA_SUPPORT_CONTACT_US_TELEPHONE_LINK,
+} from 'src/shared/constants/index'
 
 interface OwnProps {
   onClose: () => void
@@ -28,6 +41,25 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
 
   const paygSupport = (
     <>
+      <BannerPanel
+        size={ComponentSize.ExtraSmall}
+        gradient={Gradients.WarpSpeed}
+        icon={IconFont.Info_New}
+        textColor={InfluxColors.Yeti}
+      >
+        <div>
+          For critical issues, please contact the InfluxData support team at the
+          toll-free numbers{' '}
+          <a href={INFLUXDATA_SUPPORT_CONTACT_US_TELEPHONE_LINK}>
+            {INFLUXDATA_SUPPORT_CONTACT_US}
+          </a>{' '}
+          and{' '}
+          <a href={INFLUXDATA_SUPPORT_CONTACT_UK_TELEPHONE_LINK}>
+            {INFLUXDATA_SUPPORT_CONTACT_UK}
+          </a>
+          .
+        </div>
+      </BannerPanel>
       <p>
         Your support ticket has been submitted. A Support Engineer will
         investigate the issue and get back to you shortly. Please check your
@@ -44,7 +76,7 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
   )
 
   return (
-    <Overlay.Container maxWidth={500}>
+    <Overlay.Container maxWidth={550}>
       <Overlay.Header
         testID="confirmation-overlay-header"
         title={

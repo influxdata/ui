@@ -1,22 +1,32 @@
-import React, {FC, createContext, useState, useMemo, useContext} from 'react'
+import React, {
+  FC,
+  createContext,
+  useState,
+  useMemo,
+  useContext,
+  useCallback,
+} from 'react'
 
 // Context
-import {MeasurementContext} from 'src/dataExplorer/context/measurements'
+import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
 import {Bucket} from 'src/types'
 
-export const IMPORT_REGEXP = 'import "regexp"\n'
-export const IMPORT_INFLUX_SCHEMA = 'import "influxdata/influxdb/schema"'
-export const SAMPLE_DATA_SET = (bucketID: string) =>
-  `import "influxdata/influxdb/sample"\nsample.data(set: "${bucketID}")`
-export const FROM_BUCKET = (bucketName: string) =>
-  `from(bucket: "${bucketName}")`
+const DEBOUNCE_TIMEOUT = 500
+let timer
+type NOOP = () => void
+const debouncer = (action: NOOP): void => {
+  clearTimeout(timer)
+  timer = setTimeout(() => {
+    action()
+    timer = null
+  }, DEBOUNCE_TIMEOUT)
+}
 
-export const LOCAL_LIMIT = 8
-interface NewDataExplorerContextType {
+interface FluxQueryBuilderContextType {
   // Schema
   selectedBucket: Bucket
   selectedMeasurement: string
@@ -30,7 +40,7 @@ interface NewDataExplorerContextType {
   updateQuery: (q: string) => void
 }
 
-const DEFAULT_CONTEXT: NewDataExplorerContextType = {
+const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   // Schema
   selectedBucket: null,
   selectedMeasurement: '',
@@ -44,13 +54,13 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   updateQuery: _q => {},
 }
 
-export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(
-  DEFAULT_CONTEXT
-)
+export const FluxQueryBuilderContext = createContext<
+  FluxQueryBuilderContextType
+>(DEFAULT_CONTEXT)
 
-export const NewDataExplorerProvider: FC = ({children}) => {
+export const FluxQueryBuilderProvider: FC = ({children}) => {
   // Contexts
-  const {getMeasurements} = useContext(MeasurementContext)
+  const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
 
@@ -84,20 +94,20 @@ export const NewDataExplorerProvider: FC = ({children}) => {
     getTagKeys(selectedBucket, measurement)
   }
 
-  const handleSearchTerm = (searchTerm: string): void => {
-    // TODO: handle search
-    //  Need to confirm with the product team what the scope of search
-    //  e.g. field values? (and/or) tag keys? (and/or) tag values?
-
-    /* eslint-disable no-console */
-    console.log('Search: ', searchTerm)
-    /* eslint-disable no-console */
-    setSearchTerm(searchTerm)
-  }
+  const handleSearchTerm = useCallback(
+    (searchTerm: string): void => {
+      setSearchTerm(searchTerm)
+      debouncer(() => {
+        getFields(selectedBucket, selectedMeasurement, searchTerm)
+        getTagKeys(selectedBucket, selectedMeasurement, searchTerm)
+      })
+    },
+    [getFields, getTagKeys, selectedBucket, selectedMeasurement]
+  )
 
   return useMemo(
     () => (
-      <NewDataExplorerContext.Provider
+      <FluxQueryBuilderContext.Provider
         value={{
           // Schema
           selectedBucket,
@@ -113,7 +123,7 @@ export const NewDataExplorerProvider: FC = ({children}) => {
         }}
       >
         {children}
-      </NewDataExplorerContext.Provider>
+      </FluxQueryBuilderContext.Provider>
     ),
     [
       // Schema

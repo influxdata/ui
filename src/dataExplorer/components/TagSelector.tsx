@@ -6,14 +6,14 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import WaitingText from 'src/shared/components/WaitingText'
 
 // Contexts
-import {
-  LOCAL_LIMIT,
-  NewDataExplorerContext,
-} from 'src/dataExplorer/context/newDataExplorer'
+import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
 import {RemoteDataState} from 'src/types'
+
+// Utils
+import {LOCAL_LIMIT} from 'src/dataExplorer/shared/utils'
 
 const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \
@@ -27,7 +27,7 @@ interface Prop {
 
 const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
   const {selectedBucket, selectedMeasurement} = useContext(
-    NewDataExplorerContext
+    FluxQueryBuilderContext
   )
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])
@@ -96,11 +96,11 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
 
     return (
       <Accordion className="tag-selector-value">
-        <Accordion.AccordionHeader className="tag-selector-value--header">
-          <div onClick={() => handleSelectTagKey(tagKey)}>
+        <div onClick={() => handleSelectTagKey(tagKey)}>
+          <Accordion.AccordionHeader className="tag-selector-value--header">
             <SelectorTitle title={tagKey} />
-          </div>
-        </Accordion.AccordionHeader>
+          </Accordion.AccordionHeader>
+        </div>
         <div className="container-side-bar">
           {list}
           {loadMoreButton}

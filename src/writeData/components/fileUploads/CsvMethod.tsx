@@ -51,7 +51,9 @@ const CsvMethod: FC = () => {
 
   const handleSeeUploadedData = () => {
     if (isFlagEnabled('exploreWithFlows')) {
-      history.push(`/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}`)
+      history.push(
+        `/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}/${bucket.id}`
+      )
     } else {
       history.push(`/orgs/${orgId}/data-explorer?bucket=${bucket.name}`)
     }

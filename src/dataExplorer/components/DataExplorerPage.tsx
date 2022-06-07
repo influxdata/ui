@@ -4,7 +4,7 @@ import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
-import NewDataExplorer from 'src/dataExplorer/components/NewDataExplorer'
+import FluxQueryBuilder from 'src/dataExplorer/components/FluxQueryBuilder'
 import {
   Page,
   Icon,
@@ -39,9 +39,9 @@ import {PROJECT_NAME} from 'src/flows'
 const DataExplorerPage: FC = () => {
   const {
     flowsCTA,
-    newDataExplorer,
+    fluxQueryBuilder,
     setFlowsCTA,
-    setNewDataExplorer,
+    setFluxQueryBuilder,
   } = useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
 
@@ -77,9 +77,9 @@ const DataExplorerPage: FC = () => {
               <FlexBox margin={ComponentSize.Medium}>
                 <InputLabel>&#10024; Try new Data Explorer</InputLabel>
                 <SlideToggle
-                  active={newDataExplorer}
+                  active={fluxQueryBuilder}
                   onChange={() => {
-                    setNewDataExplorer(!newDataExplorer)
+                    setFluxQueryBuilder(!fluxQueryBuilder)
                   }}
                 />
               </FlexBox>
@@ -107,7 +107,7 @@ const DataExplorerPage: FC = () => {
             </div>
           </FeatureFlag>
         )}
-        {!newDataExplorer && (
+        {!fluxQueryBuilder && (
           <Page.ControlBar fullWidth={true}>
             <Page.ControlBarLeft>
               <ViewTypeDropdown />
@@ -120,8 +120,8 @@ const DataExplorerPage: FC = () => {
           </Page.ControlBar>
         )}
         <Page.Contents fullWidth={true} scrollable={false}>
-          {!newDataExplorer && <DataExplorer />}
-          {newDataExplorer && <NewDataExplorer />}
+          {!fluxQueryBuilder && <DataExplorer />}
+          {fluxQueryBuilder && <FluxQueryBuilder />}
         </Page.Contents>
       </GetResources>
     </Page>

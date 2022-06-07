@@ -47,6 +47,10 @@ import {
   getDataLayerIdentity,
   getExperimentVariantId,
 } from 'src/cloud/utils/experiments'
+import {
+  checkRequiredJsonFields,
+  checkRequiredStringFields,
+} from 'src/writeData/subscriptions/utils/form'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
@@ -103,26 +107,6 @@ const CreateSubscriptionPage: FC = () => {
     )
   }, [])
 
-  const isParsingFormCompleted = (): boolean => {
-    if (formContent.dataFormat === 'json') {
-      return (
-        formContent.jsonMeasurementKey.path &&
-        formContent.jsonFieldKeys.length &&
-        formContent.jsonFieldKeys[0].name &&
-        !!formContent.jsonFieldKeys[0].path
-      )
-    } else if (formContent.dataFormat === 'string') {
-      return (
-        formContent.stringMeasurement.pattern &&
-        formContent.stringFields.length &&
-        formContent.stringFields[0].name &&
-        !!formContent.stringFields[0].pattern
-      )
-    } else {
-      return true
-    }
-  }
-
   const handleClick = (step: number) => {
     event(
       'subway navigation clicked',
@@ -136,7 +120,11 @@ const CreateSubscriptionPage: FC = () => {
         subscriptionStepCompleted:
           formContent.topic && formContent.bucket ? 'true' : 'false',
         parsingStepCompleted:
-          formContent.dataFormat && isParsingFormCompleted() ? 'true' : 'false',
+          formContent.dataFormat &&
+          checkRequiredJsonFields(formContent) &&
+          checkRequiredStringFields(formContent)
+            ? 'true'
+            : 'false',
         dataFormat: formContent.dataFormat ?? 'not chosen yet',
       },
       {feature: 'subscriptions'}

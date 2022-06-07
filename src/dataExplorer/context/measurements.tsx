@@ -12,33 +12,33 @@ import {
 } from 'src/shared/constants/queryBuilder'
 
 // Contexts
+import {QueryContext} from 'src/shared/contexts/query'
+
+// Types
+import {Bucket, QueryScope, RemoteDataState} from 'src/types'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_REGEXP,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
-} from 'src/dataExplorer/context/newDataExplorer'
-import {QueryContext} from 'src/shared/contexts/query'
+} from 'src/dataExplorer/shared/utils'
 
-// Types
-import {QueryScope, RemoteDataState} from 'src/types'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-interface MeasurementContextType {
+interface MeasurementsContextType {
   measurements: string[]
   loading: RemoteDataState
-  getMeasurements: (bucket: any) => void
+  getMeasurements: (bucket: Bucket) => void
 }
 
-const DEFAULT_CONTEXT: MeasurementContextType = {
+const DEFAULT_CONTEXT: MeasurementsContextType = {
   measurements: [],
   loading: RemoteDataState.NotStarted,
-  getMeasurements: (_: any) => {},
+  getMeasurements: (_: Bucket) => {},
 }
 
-export const MeasurementContext = createContext<MeasurementContextType>(
+export const MeasurementsContext = createContext<MeasurementsContextType>(
   DEFAULT_CONTEXT
 )
 
@@ -46,7 +46,7 @@ interface Prop {
   scope: QueryScope
 }
 
-export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
+export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
 
@@ -81,22 +81,20 @@ export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
       |> keep(columns: ["_measurement"])
       |> group()
       |> distinct(column: "_measurement")
-      |> limit(n: ${limit})
       |> sort()
+      |> limit(n: ${limit})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
-        schema.tagValues(
+        schema.measurements(
           bucket: "${bucket.name}",
-          tag: "_measurement",
-          predicate: (r) => true,
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
-          |> limit(n: ${limit})
           |> sort()
+          |> limit(n: ${limit})
         `
     }
 
@@ -115,11 +113,11 @@ export const MeasurementProvider: FC<Prop> = ({children, scope}) => {
 
   return useMemo(
     () => (
-      <MeasurementContext.Provider
+      <MeasurementsContext.Provider
         value={{measurements, loading, getMeasurements}}
       >
         {children}
-      </MeasurementContext.Provider>
+      </MeasurementsContext.Provider>
     ),
     [measurements, loading, children]
   )

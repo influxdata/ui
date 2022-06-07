@@ -17,8 +17,8 @@ export const theme = (state: AppState): Theme =>
 export const navbarMode = (state: AppState): NavBarState =>
   state.app.persisted.navBarState || ('collapsed' as NavBarState)
 
-export const newDataExplorer = (state: AppState): boolean =>
-  state.app.persisted.newDataExplorer || false
+export const fluxQueryBuilder = (state: AppState): boolean =>
+  state.app.persisted.fluxQueryBuilder || false
 
 export const getVersionInfo = (state: AppState): VersionInfo =>
   state.app.persisted.versionInfo || ({} as VersionInfo)

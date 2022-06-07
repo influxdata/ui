@@ -11,12 +11,11 @@ import TagSelector from 'src/dataExplorer/components/TagSelector'
 
 // Context
 import {
-  NewDataExplorerContext,
-  NewDataExplorerProvider,
-} from 'src/dataExplorer/context/newDataExplorer'
-import QueryProvider from 'src/shared/contexts/query'
+  FluxQueryBuilderContext,
+  FluxQueryBuilderProvider,
+} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {BucketProvider} from 'src/shared/contexts/buckets'
-import {MeasurementProvider} from 'src/dataExplorer/context/measurements'
+import {MeasurementsProvider} from 'src/dataExplorer/context/measurements'
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
 import {TagsProvider} from 'src/dataExplorer/context/tags'
 
@@ -35,7 +34,7 @@ const FieldsTags: FC = () => {
     selectedMeasurement,
     searchTerm,
     setSearchTerm,
-  } = useContext(NewDataExplorerContext)
+  } = useContext(FluxQueryBuilderContext)
 
   const handleSearchFieldsTags = (searchTerm: string): void => {
     setSearchTerm(searchTerm)
@@ -49,7 +48,7 @@ const FieldsTags: FC = () => {
     return (
       <div className="container-side-bar">
         <SearchWidget
-          placeholderText="Search fields and tags"
+          placeholderText="Search fields and tag keys"
           onSearch={handleSearchFieldsTags}
           searchTerm={searchTerm}
         />
@@ -68,29 +67,27 @@ const Schema: FC = () => {
   } as QueryScope
 
   return (
-    <QueryProvider>
-      <MeasurementProvider scope={scope}>
-        <FieldsProvider scope={scope}>
-          <TagsProvider scope={scope}>
-            <NewDataExplorerProvider>
-              <BucketProvider scope={scope}>
-                <div className="scroll--container">
-                  <DapperScrollbars>
-                    <div className="data-schema">
-                      <BucketSelector />
-                      <div className="container-side-bar">
-                        <MeasurementSelector />
-                        <FieldsTags />
-                      </div>
+    <MeasurementsProvider scope={scope}>
+      <FieldsProvider scope={scope}>
+        <TagsProvider scope={scope}>
+          <FluxQueryBuilderProvider>
+            <BucketProvider scope={scope}>
+              <div className="scroll--container">
+                <DapperScrollbars>
+                  <div className="data-schema">
+                    <BucketSelector />
+                    <div className="container-side-bar">
+                      <MeasurementSelector />
+                      <FieldsTags />
                     </div>
-                  </DapperScrollbars>
-                </div>
-              </BucketProvider>
-            </NewDataExplorerProvider>
-          </TagsProvider>
-        </FieldsProvider>
-      </MeasurementProvider>
-    </QueryProvider>
+                  </div>
+                </DapperScrollbars>
+              </div>
+            </BucketProvider>
+          </FluxQueryBuilderProvider>
+        </TagsProvider>
+      </FieldsProvider>
+    </MeasurementsProvider>
   )
 }
 

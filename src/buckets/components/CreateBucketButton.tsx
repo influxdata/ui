@@ -42,15 +42,13 @@ const CreateBucketButton: FC<Props> = ({
     dispatch(checkBucketLimits())
   }, [dispatch])
 
-  const overlayParams = useSimplifiedBucketForm
-    ? {
-        useSimplifiedBucketForm: true,
-        callbackAfterBucketCreation,
-      }
-    : null
   const handleItemClick = (): void => {
     event('create bucket clicked')
-    onShowOverlay('create-bucket', overlayParams, onDismissOverlay)
+    onShowOverlay(
+      'create-bucket',
+      {useSimplifiedBucketForm, callbackAfterBucketCreation},
+      onDismissOverlay
+    )
   }
 
   if (CLOUD && limitStatus === 'exceeded') {

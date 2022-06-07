@@ -9,7 +9,7 @@ COPY ./package.json .
 
 RUN yarn add cypress-circleci-reporter
 
-COPY ./cypress.json .
+COPY ./cypress.json ./cypress.json
 COPY ./cypress ./cypress
 COPY ./src/types ./src/types
 COPY ./src/client ./src/client

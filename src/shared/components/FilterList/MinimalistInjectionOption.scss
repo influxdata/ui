@@ -1,0 +1,32 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+// inherits from the other flux-toolbar--list-item class
+// overwrites certain props
+.flux-toolbar--list-item {
+  padding: 2px 8px;
+  gap: 8px;
+  background-color: inherit;
+  :hover > & {
+    background-color: inherit;
+  }
+  .cf-text-block {
+    font-size: 14px;
+    font-family: 'IBMPlexMono';
+    font-style: normal;
+    font-weight: 400;
+    background-color: inherit;
+    color: #f2f1f3;
+    transition-property: color;
+    &:hover {
+      background: rgba(241, 241, 243, 0.1);
+      /* Note: backdrop-filter has minimal browser support */
+      backdrop-filter: blur(42px);
+      border-radius: 2px;
+      color: $c-galaxy;
+      &:after {
+        content: '+';
+        padding-left: 10px;
+      }
+    }
+  }
+}

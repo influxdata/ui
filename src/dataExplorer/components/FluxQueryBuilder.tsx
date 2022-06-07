@@ -47,7 +47,10 @@ const FluxQueryBuilder: FC = () => {
               style={{height: '100%'}}
             >
               <FlexBox.Child>
-                <span onClick={() => toggleLeftPanel(!showLeft)}>
+                <span
+                  onClick={() => toggleLeftPanel(!showLeft)}
+                  style={{marginLeft: '-20px', float: 'left'}}
+                >
                   <img src={showLeft ? LeftArrow : RightArrow} />
                 </span>
               </FlexBox.Child>
@@ -55,7 +58,15 @@ const FluxQueryBuilder: FC = () => {
                 <ResultsPane />
               </ResultsProvider>
               <FlexBox.Child>
-                <span onClick={() => toggleRightPanel(!showRight)}>
+                <span
+                  onClick={() => toggleRightPanel(!showRight)}
+                  style={{
+                    marginRight: '-20px',
+                    float: 'right',
+                    zIndex: '999',
+                    position: 'absolute',
+                  }}
+                >
                   <img src={showRight ? RightArrow : LeftArrow} />
                 </span>
               </FlexBox.Child>

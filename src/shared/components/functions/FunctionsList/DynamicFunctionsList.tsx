@@ -14,17 +14,12 @@ import {getAllFluxFunctions} from 'src/shared/selectors/app'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
+import {sortFuncs} from 'src/shared/components/functions/utils'
+
 interface Props {
   onSelect: (fn: FluxFunction) => void
 }
 
-const sortFuncs = (a, b) => {
-  if (a.package.toLowerCase() === b.package.toLowerCase()) {
-    return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
-  } else {
-    return a.package.toLowerCase() < b.package.toLowerCase() ? -1 : 1
-  }
-}
 const hoveredFunctions = new Set<string>()
 
 const DynamicFunctionsList: FC<Props> = ({onSelect}) => {

@@ -1,17 +1,41 @@
+/**
+
+export const setQuartzIdentity = (
+  identity: QuartzIdentityState,
+  status: RemoteDataState
+) =>
+  ({
+    type: SET_QUARTZ_IDENTITY,
+    identity: identity,
+    status,
+  } as const)
+
+export const setQuartzIdentityStatus = (status: RemoteDataState) =>
+  ({
+    type: SET_QUARTZ_IDENTITY_STATUS,
+    status,
+  } as const)
+
+**/
+
 // Reducer
-import reducer from 'src/me/reducers'
+// import reducer from 'src/identity/reducers'
 
 // Actions
-import {setMe} from 'src/me/actions/creators'
+import {setIdentity} from 'src/identity/actions/creators'
 
 // Mocks
-import {me} from 'src/me/mockUserData'
+import {mockIdentities} from 'src/identity/mockUserData'
 
-describe('me reducer', () => {
-  it('can set me', () => {
-    const expected = me
-    const actual = reducer(undefined, setMe(me))
-
-    expect(actual).toEqual(expected)
+describe('identity reducer', () => {
+  it('can set the user identity using quartzIdentity, instead of quartzMe', () => {
+    for (let i = 0; i < mockIdentities.identities.length; i++) {
+      const expected = mockIdentities.identities[i]
+      const actual = reducer(
+        undefined,
+        setIdentity(mockIdentities.identities[i])
+      )
+      expect(actual).toEqual(expected)
+    }
   })
 })

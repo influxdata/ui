@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect} from 'react-redux'
 
 // Components
@@ -37,7 +36,7 @@ interface StateProps {
   ranges: TimeRange | null
 }
 
-type Props = OwnProps & StateProps & RouteComponentProps<{orgID: string}>
+type Props = OwnProps & StateProps
 
 class RefreshingView extends PureComponent<Props> {
   public static defaultProps = {
@@ -116,6 +115,4 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
   return {ranges, timeRange, annotations}
 }
 
-export default connect<StateProps, {}, OwnProps>(mstp)(
-  withRouter(RefreshingView)
-)
+export default connect<StateProps, {}, OwnProps>(mstp)(RefreshingView)

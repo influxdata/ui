@@ -3,7 +3,6 @@ import React, {FC, useContext, useEffect} from 'react'
 import {Link, useLocation} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {Icon, IconFont, PopoverPosition, TreeNav} from '@influxdata/clockface'
@@ -32,7 +31,7 @@ import './TreeNav.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
+const TreeSidebar: FC<ReduxProps> = ({
   showOverlay,
   dismissOverlay,
   quartzMe,
@@ -236,4 +235,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(withRouter(TreeSidebar))
+export default connector(TreeSidebar)

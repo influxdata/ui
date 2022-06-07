@@ -10,7 +10,6 @@ import {AppState} from 'src/types'
 const NoOrgsPage: FC = () => {
   const me = useSelector((state: AppState) => state.me)
   const history = useHistory()
-
   const handleClick = () => {
     history.push('/signin')
   }

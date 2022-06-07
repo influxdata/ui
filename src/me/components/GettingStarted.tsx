@@ -15,9 +15,6 @@ import CollectorGraphic from 'src/me/graphics/CollectorGraphic'
 import DashboardingGraphic from 'src/me/graphics/DashboardingGraphic'
 import ExploreGraphic from 'src/me/graphics/ExploreGraphic'
 
-// Types
-import {AppState} from 'src/types'
-
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 

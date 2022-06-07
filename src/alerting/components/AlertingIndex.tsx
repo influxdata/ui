@@ -37,7 +37,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 const alertsPath = '/orgs/:orgID/alerting'
 import {AppSettingContext} from 'src/shared/contexts/app'
-import {PROJECT_NAME} from 'src/flows'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 type ActiveColumn = 'checks' | 'endpoints' | 'rules'
 
@@ -77,8 +77,8 @@ const AlertingIndex: FunctionComponent = () => {
             <FeatureFlag name="flowsCTA">
               <div className="header-cta">
                 <Icon glyph={IconFont.BookPencil} />
-                Now you can use Notebooks to explore your data while building an
-                alert
+                Now you can use {PROJECT_NAME_PLURAL} to explore your data while
+                building an alert
                 <Link
                   to={`/${PROJECT_NAME.toLowerCase()}/from/notification`}
                   onClick={recordClick}

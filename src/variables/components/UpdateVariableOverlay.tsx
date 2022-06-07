@@ -43,8 +43,7 @@ interface State {
   hasValidArgs: boolean
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
+type Props = ConnectedProps<typeof connector>
 
 class UpdateVariableOverlay extends PureComponent<Props, State> {
   public state: State = {

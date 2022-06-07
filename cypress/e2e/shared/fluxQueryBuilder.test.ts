@@ -19,14 +19,22 @@ describe('FluxQueryBuilder', () => {
   })
 
   describe('Schema browser', () => {
-    it('bucket selector', () => {
-      it('no other selectors are shown if no bucket is selected', () => {})
+    const bucketName = 'NOAA National Buoy Data'
 
+    describe('bucket selector', () => {
       it('show empty list if fetching buckets failed', () => {})
 
-      it('allows one (and only one) bucket to be selected from the list', () => {})
+      it('upon selection, will show measurement selector', () => {
+        // open the bucket list
+        cy.getByTestID('bucket-selector--dropdown-button').click()
 
-      it('upon selection, will show measurement selector', () => {})
+        // select a bucket
+        cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+        cy.getByTestID('bucket-selector--dropdown-button').contains(bucketName)
+
+        // upon selection, should show measurement selector
+        cy.getByTestID('measurement-selector--dropdown').should('be.visible')
+      })
     })
 
     describe('measurement selector', () => {
@@ -38,7 +46,9 @@ describe('FluxQueryBuilder', () => {
 
       it('allow the user to select one (and only one) measurement', () => {})
 
-      it('upon selection, will show a list of fields and tag keys to the user', () => {})
+      it('upon selection, will show a list of fields and tag keys to the user', () => {
+        // only show bucket selector if no measurement is selected
+      })
     })
 
     describe('field selector', () => {

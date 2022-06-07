@@ -91,12 +91,9 @@ const TasksHeader: FC<Props> = ({
           <div className="header-cta--tasks">
             <div className="header-cta">
               <Icon glyph={IconFont.BookPencil} />
-              Now you can use {PROJECT_NAME_PLURAL} to explore your data while
-              building a task
-              <Link
-                to={`/${PROJECT_NAME.toLowerCase()}/from/task`}
-                onClick={recordClick}
-              >
+              Now you can use Notebooks to explore your data while building a
+              task
+              <Link to="/notebook/from/task" onClick={recordClick}>
                 Create a Task
               </Link>
               <span className="header-cta--close-icon" onClick={hideFlowsCTA}>

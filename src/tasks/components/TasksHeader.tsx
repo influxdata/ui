@@ -22,7 +22,6 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
-import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 // Types
 import {setSearchTerm as setSearchTermAction} from 'src/tasks/actions/creators'

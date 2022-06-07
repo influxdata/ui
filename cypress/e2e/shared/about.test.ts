@@ -42,9 +42,9 @@ describe('About Page', () => {
     const newOrgName = `hard@knock.life${Math.random()}`
 
     const patchOrgPath =
-      Cypress.env('DEX_URL_VAR') === 'CLOUD'
-        ? 'api/v2/quartz/orgs/*'
-        : 'api/v2/orgs/*'
+      Cypress.env('DEX_URL_VAR') === 'OSS'
+        ? 'api/v2/orgs/*'
+        : 'api/v2/quartz/orgs/*'
 
     cy.intercept('PATCH', patchOrgPath).as('patchOrg')
     cy.getByTestID('create-org-name-input').type(newOrgName)

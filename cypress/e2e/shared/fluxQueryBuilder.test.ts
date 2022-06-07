@@ -1,14 +1,13 @@
 import {Organization} from '../../../src/types'
 
 describe('FluxQueryBuilder', () => {
-  beforeEach(() => {
+  before(() => {
     cy.flush()
     cy.signin()
     cy.get('@org').then(({id}: Organization) => {
       cy.fixture('routes').then(({orgs, explorer}) => {
         cy.setFeatureFlags({newDataExplorer: true}).then(() => {
           cy.visit(`${orgs}/${id}${explorer}`)
-          cy.getByTestID('tree-nav').should('be.visible')
           // Switch to Flux Query Builder
           cy.getByTestID('slide-toggle')
             .should('be.visible')
@@ -18,13 +17,29 @@ describe('FluxQueryBuilder', () => {
     })
   })
 
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) => {
+      cy.fixture('routes').then(({orgs, explorer}) => {
+        cy.setFeatureFlags({newDataExplorer: true}).then(() => {
+          cy.visit(`${orgs}/${id}${explorer}`)
+          cy.getByTestID('tree-nav').should('be.visible')
+        })
+      })
+    })
+  })
+
   describe('Schema browser', () => {
     const bucketName = 'NOAA National Buoy Data'
 
     describe('bucket selector', () => {
-      it('show empty list if fetching buckets failed', () => {})
-
       it('upon selection, will show measurement selector', () => {
+        // no other selectors should be visible, except the bucket selector
+        cy.get('.schema-browser')
+          .find('.cf-dropdown')
+          .should('have.length', 1)
+
         // open the bucket list
         cy.getByTestID('bucket-selector--dropdown-button').click()
 

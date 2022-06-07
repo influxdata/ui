@@ -74,7 +74,7 @@ const Schema: FC = () => {
             <BucketProvider scope={scope}>
               <div className="scroll--container">
                 <DapperScrollbars>
-                  <div className="data-schema">
+                  <div className="schema-browser" data-testid="schema-browser">
                     <BucketSelector />
                     <div className="container-side-bar">
                       <MeasurementSelector />

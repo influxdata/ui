@@ -1,4 +1,3 @@
-import {CLOUD} from '../../../src/shared/constants'
 import {Organization} from '../../../src/types'
 
 describe('About Page', () => {
@@ -42,7 +41,10 @@ describe('About Page', () => {
 
     const newOrgName = `hard@knock.life${Math.random()}`
 
-    const patchOrgPath = CLOUD ? 'api/v2/quartz/orgs/*' : 'api/v2/orgs/*'
+    const patchOrgPath =
+      Cypress.env('DEX_URL_VAR') === 'CLOUD'
+        ? 'api/v2/quartz/orgs/*'
+        : 'api/v2/orgs/*'
 
     cy.intercept('PATCH', patchOrgPath).as('patchOrg')
     cy.getByTestID('create-org-name-input').type(newOrgName)

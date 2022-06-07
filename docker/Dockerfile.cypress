@@ -12,7 +12,6 @@ RUN yarn add cypress-circleci-reporter
 COPY ./cypress.json ./cypress.json
 COPY ./cypress ./cypress
 COPY ./src/types ./src/types
-COPY ./src/client ./src/client
 COPY ./src/timeMachine/constants ./src/timeMachine/constants
 COPY ./src/shared/constants ./src/shared/constants
 COPY ./src/shared/actions/flags.ts ./src/shared/actions/flags.ts

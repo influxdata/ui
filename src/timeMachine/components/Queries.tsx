@@ -47,11 +47,17 @@ type RouterProps = RouteComponentProps<{
   dashboardID: string
   orgID: string
 }>
-type Props = ReduxProps & RouterProps
+
+type OwnProps = {
+  maxHeight: number
+}
+
+type Props = ReduxProps & RouterProps & OwnProps
 
 class TimeMachineQueries extends PureComponent<Props> {
   public render() {
-    const {timeRange, isInCheckOverlay, activeQuery} = this.props
+    const {timeRange, isInCheckOverlay, activeQuery, maxHeight} = this.props
+    const dropdownMaxHeight = maxHeight * 0.5
 
     return (
       <div className="time-machine-queries">
@@ -72,6 +78,7 @@ class TimeMachineQueries extends PureComponent<Props> {
                 <TimeRangeDropdown
                   timeRange={timeRange}
                   onSetTimeRange={this.handleSetTimeRange}
+                  maxHeight={dropdownMaxHeight}
                 />
                 <TimeMachineQueriesSwitcher />
               </>

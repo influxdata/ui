@@ -29,6 +29,18 @@ export const parseFromFluxResults = (
   const groupSet = new Set(fluxGroupKeyUnion)
   let max = 0
 
+  // checks whether the string is valid JSON object or not
+  const isJsonObject = jsonString => {
+    try {
+      const object = JSON.parse(jsonString)
+      if (object && typeof object === 'object') {
+        return true
+      }
+    } catch {}
+
+    return false
+  }
+
   for (let i = 0; i < tables.length; i++) {
     if (values[i] !== currVal || tables[i] !== currTable) {
       // sets the boundaries for the chunk based on different yields or tables
@@ -71,6 +83,18 @@ export const parseFromFluxResults = (
         !isNaN(columnData)
       ) {
         columnData = new Date(columnData).toISOString()
+      }
+
+      // (Sahas):
+      // the columnData can have a comma (,) in two cases
+      // 1. it's a JSON Object
+      // 2. It's a string of CSV
+      if (isJsonObject(columnData)) {
+        // 1. replace Double quotes \" with Single quotes \' in a json object
+        // 2. then wrap the JSON object in double quotes
+        columnData = `"${columnData.replace(/['"]+/g, "'")}"`
+      } else if (typeof columnData === 'string' && columnData.includes(',')) {
+        columnData = `"${columnData}"`
       }
       if (column === 'result') {
         // setting the column data for result as an empty string since the default

@@ -1,4 +1,9 @@
-import {Subscription} from 'src/types/subscriptions'
+import {
+  Subscription,
+  StringObjectParams,
+  JsonSpec,
+} from 'src/types/subscriptions'
+import jsonpath from 'jsonpath'
 
 export const handleValidation = (
   property: string,
@@ -8,6 +13,18 @@ export const handleValidation = (
     return `${property} is required`
   }
   return null
+}
+
+export const handleJsonPathValidation = (formVal: string): string | null => {
+  if (!validateJsonPath(formVal)) {
+    return `${formVal} is not a valid JSON Path expression`
+  }
+}
+
+export const handleRegexValidation = (formVal: string): string | null => {
+  if (!validateRegex(formVal)) {
+    return `${formVal} is not a valid Regular Expression`
+  }
 }
 
 export const checkJSONPathStarts$ = (firstChar, formVal): string | null => {
@@ -60,7 +77,7 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       form.jsonTimestamp.path = newVal
     }
   }
-  if (form.stringMeasurement) {
+  if (form.stringMeasurement?.pattern) {
     form.stringMeasurement.pattern =
       form.stringMeasurement?.pattern.replace(/\\\\/g, '\\') ?? ''
   }
@@ -73,6 +90,10 @@ export const sanitizeForm = (form: Subscription): Subscription => {
     form.stringTags.map(t => {
       t.pattern = t.pattern?.replace(/\\\\/g, '\\') ?? ''
     })
+  }
+  if (form.stringTimestamp?.pattern) {
+    form.stringTimestamp.pattern =
+      form.stringTimestamp?.pattern.replace(/\\\\/g, '\\') ?? ''
   }
   if (form.brokerPassword === '' || form.brokerUsername === '') {
     delete form.brokerUsername
@@ -129,6 +150,24 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
       form.jsonTimestamp.type = 'string'
     }
   }
+  if (form.stringMeasurement?.pattern) {
+    form.stringMeasurement.pattern =
+      form.stringMeasurement?.pattern.replace(/\\\\/g, '\\') ?? ''
+  }
+  if (form.stringFields) {
+    form.stringFields.map(f => {
+      f.pattern = f.pattern?.replace(/\\\\/g, '\\') ?? ''
+    })
+  }
+  if (form.stringTags) {
+    form.stringTags.map(t => {
+      t.pattern = t.pattern?.replace(/\\\\/g, '\\') ?? ''
+    })
+  }
+  if (form.stringTimestamp?.pattern) {
+    form.stringTimestamp.pattern =
+      form.stringTimestamp?.pattern.replace(/\\\\/g, '\\') ?? ''
+  }
   delete form.id
   delete form.orgID
   delete form.processGroupID
@@ -148,18 +187,87 @@ export const sanitizeType = (type: string): string => {
   return type.charAt(0).toUpperCase() + type.slice(1)
 }
 
-export const checkRequiredFields = (form: Subscription): boolean => {
-  if (
-    form.name &&
-    form.protocol &&
-    form.brokerHost &&
-    form.brokerPort &&
-    form.topic &&
-    form.dataFormat &&
-    form.bucket
-  ) {
+export const checkRequiredFields = (form: Subscription): boolean =>
+  form.name &&
+  form.protocol &&
+  form.brokerHost &&
+  form.brokerPort &&
+  form.topic &&
+  form.dataFormat &&
+  form.bucket &&
+  checkRequiredStringFields(form) &&
+  checkRequiredJsonFields(form)
+
+export const checkRequiredStringFields = (form: Subscription): boolean => {
+  if (form.dataFormat !== 'string') {
     return true
-  } else {
+  }
+  return (
+    !!form.stringMeasurement.pattern &&
+    validateRegex(form.stringMeasurement.pattern) &&
+    checkStringTimestamp(form.stringTimestamp) &&
+    form.stringFields?.length > 0 &&
+    form.stringFields?.every(f => checkStringObjRequiredFields(f)) &&
+    form.stringTags?.every(t => checkStringObjRequiredFields(t))
+  )
+}
+
+const checkStringObjRequiredFields = (
+  stringObjParams: StringObjectParams
+): boolean =>
+  !!stringObjParams.pattern &&
+  !!stringObjParams.name &&
+  validateRegex(stringObjParams?.pattern)
+
+const checkStringTimestamp = (stringObjParams: StringObjectParams): boolean => {
+  if (!stringObjParams.pattern) {
+    return true
+  }
+  return validateRegex(stringObjParams.pattern)
+}
+
+const validateRegex = (regex: string): boolean => {
+  try {
+    new RegExp(regex)
+    return true
+  } catch {
+    return false
+  }
+}
+
+const checkJsonObjRequiredFields = (jsonObjParams: JsonSpec): boolean =>
+  !!jsonObjParams.name &&
+  !!jsonObjParams.path &&
+  !!jsonObjParams.type &&
+  validateJsonPath(jsonObjParams.path)
+
+const checkJsonTimestamp = (jsonObjParams: JsonSpec): boolean => {
+  if (!jsonObjParams.path) {
+    return true
+  }
+  return validateJsonPath(jsonObjParams.path)
+}
+
+export const checkRequiredJsonFields = (form: Subscription): boolean => {
+  if (form.dataFormat !== 'json') {
+    return true
+  }
+  return (
+    !!form.jsonMeasurementKey?.path &&
+    !!form.jsonMeasurementKey?.type &&
+    validateJsonPath(form.jsonMeasurementKey.path) &&
+    checkJsonTimestamp(form.jsonTimestamp) &&
+    form.jsonFieldKeys?.length > 0 &&
+    form.jsonFieldKeys?.every(f => checkJsonObjRequiredFields(f)) &&
+    form.jsonTagKeys?.every(t => checkJsonObjRequiredFields(t))
+  )
+}
+
+const validateJsonPath = (path: string): boolean => {
+  try {
+    jsonpath.parse(path)
+    return true
+  } catch {
     return false
   }
 }

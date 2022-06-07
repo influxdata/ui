@@ -1456,10 +1456,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-4.2.1.tgz#1cb1e1ae9ae9fd0a8b18a91319f55f4b21b37ac3"
   integrity sha512-Betuwyxq63pMqoLC8B5xNqm8eJq1EffEh2ACc90ZK81qBrysz3XYgp2EGy8sPg/+K/kaFdt4WWfidVdscW4qWA==
 
-"@influxdata/flux-lsp-browser@0.8.8":
-  version "0.8.8"
-  resolved "https://registry.npmjs.org/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.8.tgz"
-  integrity sha512-SiDmq0Ygghqp3qj/M9r6TA8Gn3yYmiskmhXNWemzJbjs4uLDmkiyTCWCC+I1a+dQPWJqnNK57EW4UkXcY+mPIA==
+"@influxdata/flux-lsp-browser@0.8.15":
+  version "0.8.15"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.15.tgz#5ae511c317ac5fb9f70e86a8195fb95e10b41da2"
+  integrity sha512-i0JVjMy+ZSUcvV0ILh+UQ38x2tYUp8nfUcxmNkYcwizG0HLPPmN0Xr7j311uWKj0LpTpQ4IxjRQsOsPNfF2KtA==
 
 "@influxdata/giraffe@^2.26.0":
   version "2.26.0"
@@ -4118,12 +4118,12 @@ cross-env@^5.2.0:
   dependencies:
     cross-spawn "^6.0.5"
 
-cross-fetch@^3.0.4:
-  version "3.1.4"
-  resolved "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.4.tgz"
-  integrity sha512-1eAtFWdIubi6T4XPy6ei9iUFoKpUkIF971QLN8lIvvvwueI65+Nw5haMNKUwfJxabqlIIDODJKGrQ66gxC0PbQ==
+cross-fetch@^3.0.4, cross-fetch@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
+  integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
   dependencies:
-    node-fetch "2.6.1"
+    node-fetch "2.6.7"
 
 cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
@@ -5002,6 +5002,18 @@ escape-string-regexp@^2.0.0:
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz"
   integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
 
+escodegen@^1.8.1:
+  version "1.14.3"
+  resolved "https://registry.yarnpkg.com/escodegen/-/escodegen-1.14.3.tgz#4e7b81fba61581dc97582ed78cab7f0e8d63f503"
+  integrity sha512-qFcX0XJkdg+PB3xjZZG/wKSuT1PnQWx57+TVSjIMmILd2yC/6ByYElPwJnslDsuWuSAp4AwJGumarAAmJch5Kw==
+  dependencies:
+    esprima "^4.0.1"
+    estraverse "^4.2.0"
+    esutils "^2.0.2"
+    optionator "^0.8.1"
+  optionalDependencies:
+    source-map "~0.6.1"
+
 escodegen@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/escodegen/-/escodegen-2.0.0.tgz"
@@ -5140,6 +5152,11 @@ espree@^6.1.2:
     acorn-jsx "^5.2.0"
     eslint-visitor-keys "^1.1.0"
 
+esprima@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/esprima/-/esprima-1.2.2.tgz#76a0fd66fcfe154fd292667dc264019750b1657b"
+  integrity sha512-+JpPZam9w5DuJ3Q67SqsMGtiHKENSMRVoxvArfJZK01/BfLEObtZ6orJa/MtoGNR/rfMgp5837T41PAmTwAv/A==
+
 esprima@^4.0.0, esprima@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npmjs.org/esprima/-/esprima-4.0.1.tgz"
@@ -5159,7 +5176,7 @@ esrecurse@^4.1.0, esrecurse@^4.3.0:
   dependencies:
     estraverse "^5.2.0"
 
-estraverse@^4.1.1:
+estraverse@^4.1.1, estraverse@^4.2.0:
   version "4.3.0"
   resolved "https://registry.npmjs.org/estraverse/-/estraverse-4.3.0.tgz"
   integrity sha512-39nnKffWz8xN1BU/2c79n9nB9HDzo0niYUqx6xyqUnyoAnQyyWpOTdZEeiCch8BBu515t4wp9ZmgVfVhn9EBpw==
@@ -7576,6 +7593,15 @@ jsonlint-mod@^1.7.5:
     chalk "^2.4.2"
     underscore "^1.9.1"
 
+jsonpath@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/jsonpath/-/jsonpath-1.1.1.tgz#0ca1ed8fb65bb3309248cc9d5466d12d5b0b9901"
+  integrity sha512-l6Cg7jRpixfbgoWgkrl77dgEj8RPvND0wMH6TwQmi9Qs4TFfS9u5cUFnbeKTwj5ga5Y3BTGGNI28k117LJ009w==
+  dependencies:
+    esprima "1.2.2"
+    static-eval "2.0.2"
+    underscore "1.12.1"
+
 jspdf@^2.4.0:
   version "2.4.0"
   resolved "https://registry.npmjs.org/jspdf/-/jspdf-2.4.0.tgz"
@@ -8551,10 +8577,12 @@ no-case@^2.2.0:
   dependencies:
     lower-case "^1.1.1"
 
-node-fetch@2.6.1:
-  version "2.6.1"
-  resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.1.tgz"
-  integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
+node-fetch@2.6.7:
+  version "2.6.7"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
+  integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
+  dependencies:
+    whatwg-url "^5.0.0"
 
 node-forge@^0.10.0:
   version "0.10.0"
@@ -10969,6 +10997,13 @@ stackblur-canvas@^2.0.0:
   resolved "https://registry.npmjs.org/stackblur-canvas/-/stackblur-canvas-2.5.0.tgz"
   integrity sha512-EeNzTVfj+1In7aSLPKDD03F/ly4RxEuF/EX0YcOG0cKoPXs+SLZxDawQbexQDBzwROs4VKLWTOaZQlZkGBFEIQ==
 
+static-eval@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/static-eval/-/static-eval-2.0.2.tgz#2d1759306b1befa688938454c546b7871f806a42"
+  integrity sha512-N/D219Hcr2bPjLxPiV+TQE++Tsmrady7TqAJugLy7Xk1EumfDWS/f5dtBbkRCGE7wKKXuYockQoj8Rm2/pVKyg==
+  dependencies:
+    escodegen "^1.8.1"
+
 static-extend@^0.1.1:
   version "0.1.2"
   resolved "https://registry.npmjs.org/static-extend/-/static-extend-0.1.2.tgz"
@@ -11553,6 +11588,11 @@ tr46@^3.0.0:
   dependencies:
     punycode "^2.1.1"
 
+tr46@~0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
+  integrity sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=
+
 trough@^1.0.0:
   version "1.0.5"
   resolved "https://registry.npmjs.org/trough/-/trough-1.0.5.tgz"
@@ -11717,6 +11757,11 @@ unbox-primitive@^1.0.1:
     has-bigints "^1.0.1"
     has-symbols "^1.0.2"
     which-boxed-primitive "^1.0.2"
+
+underscore@1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.12.1.tgz#7bb8cc9b3d397e201cf8553336d262544ead829e"
+  integrity sha512-hEQt0+ZLDVUMhebKxL4x1BTtDY7bavVofhZ9KZ4aI26X9SRaE+Y3m83XUL1UP2jn8ynjndwCCpEHdUG+9pP1Tw==
 
 underscore@^1.9.1:
   version "1.13.1"
@@ -12121,6 +12166,11 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
+webidl-conversions@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
+  integrity sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=
+
 webidl-conversions@^5.0.0:
   version "5.0.0"
   resolved "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-5.0.0.tgz"
@@ -12308,6 +12358,14 @@ whatwg-url@^10.0.0:
   dependencies:
     tr46 "^3.0.0"
     webidl-conversions "^7.0.0"
+
+whatwg-url@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-5.0.0.tgz#966454e8765462e37644d3626f6742ce8b70965d"
+  integrity sha1-lmRU6HZUYuN2RNNib2dCzotwll0=
+  dependencies:
+    tr46 "~0.0.3"
+    webidl-conversions "^3.0.0"
 
 whatwg-url@^8.0.0, whatwg-url@^8.5.0:
   version "8.7.0"

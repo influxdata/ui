@@ -319,7 +319,7 @@ const Card: FC<Props> = ({idx}) => {
               <SearchableDropdown
                 searchTerm={keySearches[idx] || ''}
                 emptyText="No Tags Found"
-                searchPlaceholder="Search keys..."
+                searchPlaceholder="Search keys"
                 selectedOption={card.keys.selected[0]}
                 onSelect={keySelect}
                 buttonStatus={toComponentStatus(card.keys.loading)}

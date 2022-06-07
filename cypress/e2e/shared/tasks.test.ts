@@ -34,7 +34,7 @@ describe('Tasks', () => {
   it('can create a task', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `import "influxdata/influxdb/v1"{esc}
+      return `import "influxdata/influxdb/v1"
 v1.tagValues(bucket: "${name}", tag: "_field")
 from(bucket: "${name}")
    |> range(start: -2m)`
@@ -52,7 +52,7 @@ from(bucket: "${name}")
   it('can create a task using http.post', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, () => {
-      return `import "http"
+      return `import "http" {enter}
 http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
 

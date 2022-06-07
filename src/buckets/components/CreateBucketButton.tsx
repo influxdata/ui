@@ -14,7 +14,7 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {getBucketLimitStatus} from 'src/cloud/utils/limits'
 
 // Types
-import {AppState} from 'src/types'
+import {AppState, OwnBucket} from 'src/types'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -24,6 +24,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 
 type CreateButtonProps = {
   useSimplifiedBucketForm?: boolean
+  callbackAfterBucketCreation?: (bucket: OwnBucket) => void
 }
 
 type Props = ReduxProps & CreateButtonProps
@@ -33,6 +34,7 @@ const CreateBucketButton: FC<Props> = ({
   onShowOverlay,
   onDismissOverlay,
   useSimplifiedBucketForm = false,
+  callbackAfterBucketCreation = () => {},
 }) => {
   const dispatch = useDispatch()
   useEffect(() => {
@@ -40,12 +42,13 @@ const CreateBucketButton: FC<Props> = ({
     dispatch(checkBucketLimits())
   }, [dispatch])
 
-  const overlayParams = useSimplifiedBucketForm
-    ? {useSimplifiedBucketForm: true}
-    : null
   const handleItemClick = (): void => {
     event('create bucket clicked')
-    onShowOverlay('create-bucket', overlayParams, onDismissOverlay)
+    onShowOverlay(
+      'create-bucket',
+      {useSimplifiedBucketForm, callbackAfterBucketCreation},
+      onDismissOverlay
+    )
   }
 
   if (CLOUD && limitStatus === 'exceeded') {

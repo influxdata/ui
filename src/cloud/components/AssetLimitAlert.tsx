@@ -1,5 +1,6 @@
 // Libraries
 import React, {CSSProperties, FC} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -22,6 +23,7 @@ import {
   getDataLayerIdentity,
   getExperimentVariantId,
 } from 'src/cloud/utils/experiments'
+import {shouldGetCredit250Experience} from 'src/me/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -43,6 +45,8 @@ const AssetLimitAlert: FC<Props> = ({
   className,
   style = {},
 }) => {
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
+
   if (CLOUD && limitStatus === 'exceeded') {
     return (
       <GradientBox
@@ -73,14 +77,17 @@ const AssetLimitAlert: FC<Props> = ({
                   const identity = getDataLayerIdentity()
                   event(
                     isFlagEnabled('credit250Experiment') &&
-                      experimentVariantId === '1'
+                      (experimentVariantId === '1' ||
+                        isCredit250ExperienceActive)
                       ? `${resourceName}.alert.limit.credit-250.upgrade`
                       : `${resourceName}.alert.limit.upgrade`,
                     {
                       asset: resourceName,
                       ...identity,
                       experimentId: CREDIT_250_EXPERIMENT_ID,
-                      experimentVariantId,
+                      experimentVariantId: isCredit250ExperienceActive
+                        ? '2'
+                        : experimentVariantId,
                     }
                   )
                 }}

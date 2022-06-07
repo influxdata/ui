@@ -1,4 +1,4 @@
-import React, {FC, createContext, useState} from 'react'
+import React, {FC, createContext, useState, useRef, useEffect} from 'react'
 import {FluxResult} from 'src/types/flows'
 import {RemoteDataState} from 'src/types'
 
@@ -9,25 +9,57 @@ interface ResultsContextType {
 
   setStatus: (status: RemoteDataState) => void
   setResult: (result: FluxResult) => void
-  setTime: (time: number) => void
 }
 
 export const ResultsContext = createContext<ResultsContextType>({
   status: RemoteDataState.NotStarted,
   result: {} as FluxResult,
-  time: 0,
+  time: null,
 
   setStatus: _ => {},
   setResult: _ => {},
-  setTime: _ => {},
 })
 
 export const ResultsProvider: FC = ({children}) => {
   const [result, setResult] = useState<FluxResult>({} as FluxResult)
-  const [time, setTime] = useState<number>(0)
+  const timeStart = useRef<number>(null)
+  const [time, setTime] = useState<number>(null)
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
+
+  useEffect(() => {
+    let running = false
+    const check = () => {
+      if (!running) {
+        return
+      }
+
+      setTime(Date.now() - timeStart.current)
+
+      window.requestAnimationFrame(check)
+    }
+
+    if (status === RemoteDataState.Loading) {
+      if (!timeStart.current) {
+        timeStart.current = Date.now()
+      }
+
+      running = true
+      window.requestAnimationFrame(check)
+    } else if (
+      status === RemoteDataState.Done ||
+      status === RemoteDataState.Error
+    ) {
+      running = false
+      timeStart.current = null
+    }
+
+    return () => {
+      running = false
+    }
+  }, [status])
+
   return (
     <ResultsContext.Provider
       value={{
@@ -37,7 +69,6 @@ export const ResultsProvider: FC = ({children}) => {
 
         setStatus,
         setResult,
-        setTime,
       }}
     >
       {children}

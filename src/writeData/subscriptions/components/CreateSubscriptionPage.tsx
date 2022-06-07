@@ -36,18 +36,24 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
+import {
+  shouldGetCredit250Experience,
+  shouldShowUpgradeButton,
+  getQuartzMe,
+} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   getDataLayerIdentity,
   getExperimentVariantId,
 } from 'src/cloud/utils/experiments'
+import {
+  checkRequiredJsonFields,
+  checkRequiredStringFields,
+} from 'src/writeData/subscriptions/utils/form'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
-
-// Actions
-import {shouldShowUpgradeButton, getQuartzMe} from 'src/me/selectors'
 
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
@@ -86,6 +92,7 @@ const CreateSubscriptionPage: FC = () => {
     SubscriptionCreateContext
   )
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
   const {accountType} = useSelector(getQuartzMe)
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
@@ -100,26 +107,6 @@ const CreateSubscriptionPage: FC = () => {
     )
   }, [])
 
-  const isParsingFormCompleted = (): boolean => {
-    if (formContent.dataFormat === 'json') {
-      return (
-        formContent.jsonMeasurementKey.path &&
-        formContent.jsonFieldKeys.length &&
-        formContent.jsonFieldKeys[0].name &&
-        !!formContent.jsonFieldKeys[0].path
-      )
-    } else if (formContent.dataFormat === 'string') {
-      return (
-        formContent.stringMeasurement.pattern &&
-        formContent.stringFields.length &&
-        formContent.stringFields[0].name &&
-        !!formContent.stringFields[0].pattern
-      )
-    } else {
-      return true
-    }
-  }
-
   const handleClick = (step: number) => {
     event(
       'subway navigation clicked',
@@ -133,7 +120,11 @@ const CreateSubscriptionPage: FC = () => {
         subscriptionStepCompleted:
           formContent.topic && formContent.bucket ? 'true' : 'false',
         parsingStepCompleted:
-          formContent.dataFormat && isParsingFormCompleted() ? 'true' : 'false',
+          formContent.dataFormat &&
+          checkRequiredJsonFields(formContent) &&
+          checkRequiredStringFields(formContent)
+            ? 'true'
+            : 'false',
         dataFormat: formContent.dataFormat ?? 'not chosen yet',
       },
       {feature: 'subscriptions'}
@@ -176,14 +167,17 @@ const CreateSubscriptionPage: FC = () => {
                     const identity = getDataLayerIdentity()
                     event(
                       isFlagEnabled('credit250Experiment') &&
-                        experimentVariantId === '1'
+                        (experimentVariantId === '1' ||
+                          isCredit250ExperienceActive)
                         ? `subscriptions.create.credit-250.upgrade`
                         : `subscriptions.create.upgrade`,
                       {
                         location: 'subscriptions create',
                         ...identity,
                         experimentId: CREDIT_250_EXPERIMENT_ID,
-                        experimentVariantId,
+                        experimentVariantId: isCredit250ExperienceActive
+                          ? '2'
+                          : experimentVariantId,
                       }
                     )
                   }}

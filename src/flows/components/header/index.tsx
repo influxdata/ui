@@ -165,6 +165,14 @@ const FlowHeader: FC = () => {
           <PresentationMode />
           <TimeZoneDropdown />
           <TimeRangeDropdown />
+          <FeatureFlag name="flowPublishButton">
+            <SquareButton
+              icon={IconFont.Save}
+              onClick={handlePublish}
+              color={ComponentColor.Default}
+              titleText="Save to version history"
+            />
+          </FeatureFlag>
           {flow?.id && (
             <>
               <SquareButton

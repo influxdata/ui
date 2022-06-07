@@ -1,16 +1,15 @@
 // Libraries
 import React, {FC} from 'react'
 import {FunnelPage, Button, ComponentColor} from '@influxdata/clockface'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Types
 import {AppState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps
-
-const NoOrgsPage: FC<Props> = ({history, me}) => {
+const NoOrgsPage: FC = () => {
+  const me = useSelector((state: AppState) => state.me)
+  const history = useHistory()
   const handleClick = () => {
     history.push('/signin')
   }
@@ -39,10 +38,4 @@ const NoOrgsPage: FC<Props> = ({history, me}) => {
   )
 }
 
-const mstp = ({me}: AppState) => {
-  return {me}
-}
-
-const connector = connect(mstp)
-
-export default connector(withRouter(NoOrgsPage))
+export default NoOrgsPage

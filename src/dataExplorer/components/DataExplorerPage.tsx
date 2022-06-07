@@ -34,7 +34,7 @@ import {ResourceType} from 'src/types'
 
 import 'src/shared/components/cta.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
-import {PROJECT_NAME} from 'src/flows'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 const DataExplorerPage: FC = () => {
   const {
@@ -92,13 +92,13 @@ const DataExplorerPage: FC = () => {
             <div className="header-cta--de">
               <div className="header-cta">
                 <Icon glyph={IconFont.BookPencil} />
-                Now you can use Notebooks to explore and take action on your
-                data
+                Now you can use {PROJECT_NAME_PLURAL} to explore and take action
+                on your data
                 <Link
                   to={`/${PROJECT_NAME.toLowerCase()}/from/default`}
                   onClick={recordClick}
                 >
-                  Create a Notebook
+                  Create a {PROJECT_NAME}
                 </Link>
                 <span className="header-cta--close-icon" onClick={hideFlowsCTA}>
                   <Icon glyph={IconFont.Remove_New} />

@@ -45,7 +45,7 @@ export const initialState: QuartzIdentityState = {
   },
   currentAccountDetails: {
     billing_provider: 'zuora',
-    id: null,
+    id: 0,
     name: '',
     type: 'free',
   },

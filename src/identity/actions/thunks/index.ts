@@ -1,6 +1,3 @@
-// Libraries
-import {Dispatch} from 'react'
-
 // Functions making API calls
 import {
   getAccount,
@@ -19,14 +16,12 @@ import {CLOUD} from 'src/shared/constants'
 import {
   setQuartzIdentity,
   setQuartzIdentityStatus,
-  Actions,
+  // Actions,
 } from 'src/identity/actions/creators'
-
-// Reducers
-import {QuartzIdentityState} from 'src/identity/reducers'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {QuartzIdentityState} from 'src/identity/reducers'
 
 interface AccountIdentityResponse {
   status: string
@@ -37,6 +32,8 @@ interface AccountIdentityResponse {
 export const getQuartzIdentityThunk = () => async dispatch => {
   try {
     if (isFlagEnabled('quartzIdentity') && CLOUD) {
+      dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
+
       const quartzIdentityDetails = await getQuartzIdentityDetails()
 
       if (quartzIdentityDetails.error) {
@@ -47,7 +44,6 @@ export const getQuartzIdentityThunk = () => async dispatch => {
         setQuartzIdentity(quartzIdentityDetails.data, RemoteDataState.Done)
       )
     }
-    dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
   } catch (error) {
     console.error(error)
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
@@ -55,58 +51,71 @@ export const getQuartzIdentityThunk = () => async dispatch => {
 }
 
 export const getQuartzIdentityDetails = async (): Promise<AccountIdentityResponse> => {
-  const quartzIdentity = await getIdentity({})
+  // Retrieve user identity from /quartz/identity
+  try {
+    const quartzIdentity = await getIdentity({})
 
-  if (quartzIdentity.status !== 200) {
-    throw new Error(quartzIdentity.data.message)
+    if (quartzIdentity.status !== 200) {
+      throw new Error(quartzIdentity.data.message)
+    }
+
+    // Use the accountId and orgId returned by /quartz/identity to retrieve necessary details
+    // about the current organization and account.
+    const {account, org} = quartzIdentity.data
+    const {id: orgId} = org
+
+    const accountPromise = getAccount({
+      accountId: account.id.toString(),
+    })
+
+    const orgPromise = getQuartzOrg({orgId: orgId})
+
+    return Promise.all([accountPromise, orgPromise])
+      .then(res => {
+        const currentAccount = res[0]
+        const currentOrg = res[1]
+
+        if (currentAccount.status !== 200) {
+          throw new Error(currentAccount.data.message)
+        }
+
+        if (currentOrg.status !== 200) {
+          throw new Error(currentOrg.data.message)
+        }
+
+        return {
+          status: 'success',
+          data: {
+            currentIdentity: quartzIdentity.data,
+            currentOrgDetails: currentOrg.data,
+            currentAccountDetails: currentAccount.data,
+            status: RemoteDataState.Done,
+          },
+          error: null,
+        }
+      })
+      .catch(err => {
+        return {
+          status: 'failure',
+          data: null,
+          error: err.stack,
+        }
+      })
+  } catch (err) {
+    return {
+      status: 'failure',
+      data: null,
+      error: err.stack,
+    }
   }
-
-  const {account, org} = quartzIdentity.data
-  const {id: orgId} = org
-
-  const accountPromise = getAccount({
-    accountId: account.id.toString(),
-  })
-
-  const orgPromise = getQuartzOrg({orgId: orgId})
-
-  return Promise.all([accountPromise, orgPromise])
-    .then(res => {
-      const currentAccount = res[0]
-      const currentOrg = res[1]
-
-      if (currentAccount.status !== 200) {
-        throw new Error(currentAccount.data.message)
-      }
-
-      if (currentOrg.status !== 200) {
-        throw new Error(currentOrg.data.message)
-      }
-
-      return {
-        status: 'success',
-        data: {
-          currentIdentity: quartzIdentity.data,
-          currentOrgDetails: currentOrg.data,
-          currentAccountDetails: currentAccount.data,
-          status: RemoteDataState.Done,
-        },
-        error: null,
-      }
-    })
-    .catch(err => {
-      return {
-        status: 'failure',
-        data: null,
-        error: err.stack,
-      }
-    })
 }
 
+// When quartzIdentity is turned on, since data is not retrieved from /quartz/me, populate the
+// /quartz/identity data into the 'quartzMe' redux state to ensure UI compatibility.
 export const convertIdentityToMe = (
   quartzIdentity: QuartzIdentityState
 ): Me => {
-  // General information retrieved from the quartz identity endpoint.
+  // General identity information retrieved from /quartz/identity
   const {
     currentIdentity,
     currentAccountDetails,
@@ -117,7 +126,7 @@ export const convertIdentityToMe = (
   const {clusterHost} = org
   const {email, id: userId, operatorRole} = user
 
-  // Specific information retrieved separately from the quartz account and organization endpoints.
+  // More specific information retrieved from the quartz/accounts/:accountId and quartz/orgs/:orgId.
   const {billing_provider} = currentAccountDetails
   const {isRegionBeta, regionCode, regionName} = currentOrgDetails
 

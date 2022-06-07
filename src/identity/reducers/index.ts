@@ -70,6 +70,7 @@ export default (state = initialState, action: Actions): QuartzIdentityState =>
         draftState.currentIdentity = action.identity.currentIdentity
         draftState.currentOrgDetails = action.identity.currentOrgDetails
         draftState.currentAccountDetails = action.identity.currentAccountDetails
+        draftState.status = RemoteDataState.Done
         return
       }
       case SET_QUARTZ_IDENTITY_STATUS: {

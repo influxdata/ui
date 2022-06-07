@@ -1,7 +1,6 @@
 // Libraries
 import React, {FunctionComponent, useEffect, useContext} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {withRouter} from 'react-router-dom'
 
 // Components
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
@@ -69,4 +68,4 @@ const NewCheckOverlay: FunctionComponent = () => {
   )
 }
 
-export default withRouter(NewCheckOverlay)
+export default NewCheckOverlay

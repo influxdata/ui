@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {Dropdown} from '@influxdata/clockface'
@@ -17,10 +16,9 @@ import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-type GenerateTokenProps = RouteComponentProps
 type ReduxProps = ConnectedProps<typeof connector>
 
-const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
+const GenerateTokenDropdown: FC<ReduxProps> = ({
   showOverlay,
   dismissOverlay,
   getAllResources,
@@ -110,4 +108,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export default connector(withRouter(GenerateTokenDropdown))
+export default connector(GenerateTokenDropdown)

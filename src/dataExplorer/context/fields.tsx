@@ -18,6 +18,7 @@ import {QueryContext} from 'src/shared/contexts/query'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
+  IMPORT_REGEXP,
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
@@ -80,7 +81,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     //   Here is the source code for handling sample data:
     //   https://github.com/influxdata/flux/blob/master/stdlib/influxdata/influxdb/sample/sample.flux
     //   That is why _source and query script for sample data is different
-    let _source = ''
+    let _source = IMPORT_REGEXP
     if (bucket.type === 'sample') {
       _source += SAMPLE_DATA_SET(bucket.id)
     } else {
@@ -99,7 +100,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
+      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
       queryText = `${_source}
         schema.measurementFieldKeys(
           bucket: "${bucket.name}",

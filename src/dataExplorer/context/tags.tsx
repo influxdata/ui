@@ -18,6 +18,7 @@ import {QueryContext} from 'src/shared/contexts/query'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
+  IMPORT_REGEXP,
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
@@ -89,7 +90,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
-    let _source = ''
+    let _source = IMPORT_REGEXP
     if (bucket.type === 'sample') {
       _source += SAMPLE_DATA_SET(bucket.id)
     } else {
@@ -110,7 +111,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
+      _source = `${IMPORT_INFLUX_SCHEMA}${IMPORT_REGEXP}${IMPORT_STRINGS}`
       queryText = `${_source}
         schema.measurementTagKeys(
           bucket: "${bucket.name}",
@@ -192,7 +193,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
+      _source = `${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
       queryText = `${_source}
         schema.measurementTagValues(
           bucket: "${bucket.name}",

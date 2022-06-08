@@ -43,10 +43,11 @@ export const getQuartzIdentityThunk = () => async dispatch => {
     const legacyMe = convertIdentityToMe(quartzIdentityDetails.data)
 
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
+    dispatch(setQuartzMeStatus(RemoteDataState.Done))
   } catch (error) {
     console.error(error)
-    dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
 
+    dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
   }
 }
@@ -68,13 +69,11 @@ export const getQuartzIdentityDetails = async (): Promise<AccountIdentityRespons
 
     const orgPromise = getQuartzOrg({orgId: orgId})
 
-    // Once quartzMe is fully deprecated, we should consider adjusting the UI so that these API calls aren't required on load
-    // Should not need three API calls to populate identity.
+    // Once quartzMe is fully deprecated, we should consider adjusting the UI so that these API calls aren't required on login
 
     return Promise.all([accountPromise, orgPromise])
       .then(res => {
-        const currentAccount = res[0]
-        const currentOrg = res[1]
+        const [currentAccount, currentOrg] = res
 
         if (currentAccount.status !== 200) {
           throw new Error(currentAccount.data.message)
@@ -114,35 +113,31 @@ export const getQuartzIdentityDetails = async (): Promise<AccountIdentityRespons
 export const convertIdentityToMe = (
   quartzIdentity: QuartzIdentityState
 ): Me => {
-  // General identity information retrieved from /quartz/identity
   const {
     currentIdentity,
     currentAccountDetails,
     currentOrgDetails,
   } = quartzIdentity
   const {account, org, user} = currentIdentity
-  const {accountCreatedAt, paygCreditStartDate, type: accountType} = account
-  const {clusterHost} = org
-  const {email, id: userId, operatorRole} = user
 
-  // More specific information retrieved from the quartz/accounts/:accountId and quartz/orgs/:orgId.
-  const {billing_provider} = currentAccountDetails
-  const {isRegionBeta, regionCode, regionName} = currentOrgDetails
-
-  // Refactor to show where this is coming from
   const legacyMe = {
-    accountCreatedAt: accountCreatedAt,
-    accountType: accountType,
-    billingProvider: billing_provider,
-    clusterHost: clusterHost,
-    email: email,
-    id: userId,
-    isOperator: operatorRole ? true : false,
-    isRegionBeta: isRegionBeta,
-    operatorRole: operatorRole,
-    paygCreditStartDate: paygCreditStartDate,
-    regionCode: regionCode,
-    regionName: regionName,
+    // User Data
+    email: user.email,
+    id: user.id,
+    isOperator: user.operatorRole ? true : false,
+    operatorRole: user.operatorRole,
+
+    // Account Data
+    accountCreatedAt: account.accountCreatedAt,
+    accountType: account.type,
+    paygCreditStartDate: account.paygCreditStartDate,
+    billingProvider: currentAccountDetails.billing_provider,
+
+    // Organization Data
+    clusterHost: org.clusterHost,
+    regionCode: currentOrgDetails.regionCode,
+    isRegionBeta: currentOrgDetails.isRegionBeta,
+    regionName: currentOrgDetails.regionName,
   }
 
   return legacyMe

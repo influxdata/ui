@@ -31,6 +31,7 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {getMe} from './client'
 
 interface State {
   loading: RemoteDataState
@@ -94,7 +95,13 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      const resp = await retrieveQuartzIdentity()
+      let resp
+
+      if (CLOUD) {
+        resp = await retrieveQuartzIdentity()
+      } else {
+        resp = await getMe({})
+      }
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

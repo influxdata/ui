@@ -72,7 +72,7 @@ const GetOrganizations: FunctionComponent = () => {
     ) {
       dispatch(retrieveIdentityThunk())
     }
-  }, [quartzMeStatus]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (

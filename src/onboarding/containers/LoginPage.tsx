@@ -11,10 +11,14 @@ import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
 import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
 import {retrieveQuartzIdentity} from 'src/identity/utils/selectIdentitySource'
+import {getMe} from 'src/client'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
@@ -23,7 +27,13 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      const resp = await retrieveQuartzIdentity()
+      let resp
+
+      if (CLOUD) {
+        resp = await retrieveQuartzIdentity()
+      } else {
+        resp = await getMe({})
+      }
 
       if (resp.status !== 200) {
         // If we receive anything other than a 200 from the /quartz/me or /quartz/identity endpoint, question whether session should also be set to false.

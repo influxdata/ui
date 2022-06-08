@@ -12,7 +12,7 @@ import {CLOUD} from 'src/shared/constants'
 import {getQuartzMeThunk} from 'src/me/actions/thunks'
 import {getQuartzIdentityThunk} from '../actions/thunks'
 
-// Use the old /quartz/me endpoint to retrieve the user's identity if the quartzIdentity flag is disabled.
+// Decide whether or not to use legacy /quartz/me to retrieve user's current status.
 
 export const retrieveQuartzIdentity = () =>
   CLOUD && isFlagEnabled('quartzIdentity') ? getMe({}) : getIdentity({})

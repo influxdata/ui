@@ -32,7 +32,7 @@ import {
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {EditorContext} from 'src/shared/context/editor'
+import {EditorContext} from 'src/shared/contexts/editor'
 import {remove} from 'src/shared/contexts/query'
 import Expressions from 'src/flows/pipes/Notification/Expressions'
 import Measurement from 'src/flows/pipes/Notification/Measurement'

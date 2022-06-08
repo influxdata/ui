@@ -66,11 +66,23 @@
   text-overflow: ellipsis;
 }
 
+.field-selector--list-item--wrapper,
+.tag-selector-value--list-item--wrapper {
+  width: fit-content;
+}
+
 .field-selector--list-item--selectable:hover,
 .tag-selector-value--list-item--selectable:hover {
   cursor: pointer;
   color: $c-krypton;
   background-color: $cf-grey-15;
+  border-radius: 2px;
+  width: fit-content;
+  padding: $cf-space-2xs;
+  
+  &:after {
+    content: " +";
+  }
 }
 
 .field-selector .container-side-bar,

@@ -1,7 +1,7 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {FC} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
+import {useRouteMatch} from 'react-router-dom'
 
 // Components
 import TimeMachineFluxEditor from 'src/timeMachine/components/TimeMachineFluxEditor'
@@ -39,128 +39,89 @@ import {
 import {getTimeRange} from 'src/dashboards/selectors'
 
 // Types
-import {AppState, TimeRange, AutoRefreshStatus} from 'src/types'
+import {TimeRange, AutoRefreshStatus} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{
-  cellID: string
-  dashboardID: string
-  orgID: string
-}>
-
-type OwnProps = {
+type Props = {
   maxHeight: number
 }
 
-type Props = ReduxProps & RouterProps & OwnProps
+const TimeMachineQueries: FC<Props> = ({maxHeight}) => {
+  const dispatch = useDispatch()
+  const timeRange = useSelector(getTimeRange)
+  const {autoRefresh} = useSelector(getActiveTimeMachine)
+  const activeQuery = useSelector(getActiveQuery)
+  const isInCheckOverlay = useSelector(getIsInCheckOverlay)
+  const variables = useSelector(getAllVariables)
 
-class TimeMachineQueries extends PureComponent<Props> {
-  public render() {
-    const {timeRange, isInCheckOverlay, activeQuery, maxHeight} = this.props
-    const dropdownMaxHeight = maxHeight * 0.5
+  const isEditing = useRouteMatch(
+    '/orgs/:orgID/dashboards/:dashboardID/cells/:cellID/edit'
+  )
 
-    return (
-      <div className="time-machine-queries">
-        <div className="time-machine-queries--controls">
-          <QueryTabs />
-          <FlexBox
-            direction={FlexDirection.Row}
-            justifyContent={JustifyContent.FlexEnd}
-            margin={ComponentSize.Small}
-            className="time-machine-queries--buttons"
-          >
-            {activeQuery.editMode === 'advanced' && <EditorShortcutsToolTip />}
-            <RawDataToggle />
-            {!isInCheckOverlay && (
-              <>
-                <CSVExportButton />
-                <TimeMachineRefreshDropdown />
-                <TimeRangeDropdown
-                  timeRange={timeRange}
-                  onSetTimeRange={this.handleSetTimeRange}
-                  maxHeight={dropdownMaxHeight}
-                />
-                <TimeMachineQueriesSwitcher />
-              </>
-            )}
-            <SubmitQueryButton />
-          </FlexBox>
-        </div>
-        <div className="time-machine-queries--body">{this.queryEditor}</div>
-      </div>
-    )
-  }
-
-  private handleSetTimeRange = (timeRange: TimeRange) => {
-    const {
-      autoRefresh,
-      location: {pathname},
-      onEnableUpdatedTimeRangeInVEO,
-      onSetAutoRefresh,
-      onSetTimeRange,
-      setTimeMachineTimeRange,
-      match: {
-        params: {cellID, dashboardID, orgID},
-      },
-    } = this.props
-
-    const inVEOMode =
-      pathname === `orgs/${orgID}/dashboards/${dashboardID}/cell/${cellID}/edit`
-    if (inVEOMode) {
-      onEnableUpdatedTimeRangeInVEO()
+  const handleSetTimeRange = (timeRange: TimeRange) => {
+    if (isEditing) {
+      dispatch(enableUpdatedTimeRangeInVEO())
     }
-    onSetTimeRange(timeRange)
-    setTimeMachineTimeRange(timeRange)
+    dispatch(setTimeRange(timeRange))
+    dispatch(setTimeMachineTimeRange(timeRange))
     if (timeRange.type === 'custom') {
-      onSetAutoRefresh({...autoRefresh, status: AutoRefreshStatus.Disabled})
+      dispatch(
+        setAutoRefresh({...autoRefresh, status: AutoRefreshStatus.Disabled})
+      )
       return
     }
 
     if (autoRefresh.status === AutoRefreshStatus.Disabled) {
       if (autoRefresh.interval === 0) {
-        onSetAutoRefresh({...autoRefresh, status: AutoRefreshStatus.Paused})
+        dispatch(
+          setAutoRefresh({...autoRefresh, status: AutoRefreshStatus.Paused})
+        )
         return
       }
 
-      onSetAutoRefresh({...autoRefresh, status: AutoRefreshStatus.Active})
+      dispatch(
+        setAutoRefresh({...autoRefresh, status: AutoRefreshStatus.Active})
+      )
     }
   }
 
-  private get queryEditor(): JSX.Element {
-    const {activeQuery} = this.props
-
-    if (activeQuery.editMode === 'builder') {
-      return <TimeMachineQueryBuilder />
-    } else if (activeQuery.editMode === 'advanced') {
-      return <TimeMachineFluxEditor variables={this.props.variables} />
-    } else {
-      return null
-    }
+  let queryEditor = null
+  if (activeQuery.editMode === 'builder') {
+    queryEditor = <TimeMachineQueryBuilder />
+  } else if (activeQuery.editMode === 'advanced') {
+    queryEditor = <TimeMachineFluxEditor variables={variables} />
   }
+  const dropdownMaxHeight = maxHeight * 0.5
+
+  return (
+    <div className="time-machine-queries">
+      <div className="time-machine-queries--controls">
+        <QueryTabs />
+        <FlexBox
+          direction={FlexDirection.Row}
+          justifyContent={JustifyContent.FlexEnd}
+          margin={ComponentSize.Small}
+          className="time-machine-queries--buttons"
+        >
+          {activeQuery.editMode === 'advanced' && <EditorShortcutsToolTip />}
+          <RawDataToggle />
+          {!isInCheckOverlay && (
+            <>
+              <CSVExportButton />
+              <TimeMachineRefreshDropdown />
+              <TimeRangeDropdown
+                timeRange={timeRange}
+                onSetTimeRange={handleSetTimeRange}
+                maxHeight={dropdownMaxHeight}
+              />
+              <TimeMachineQueriesSwitcher />
+            </>
+          )}
+          <SubmitQueryButton />
+        </FlexBox>
+      </div>
+      <div className="time-machine-queries--body">{queryEditor}</div>
+    </div>
+  )
 }
 
-const mstp = (state: AppState) => {
-  const timeRange = getTimeRange(state)
-  const {autoRefresh} = getActiveTimeMachine(state)
-
-  const activeQuery = getActiveQuery(state)
-
-  return {
-    timeRange,
-    activeQuery,
-    autoRefresh,
-    isInCheckOverlay: getIsInCheckOverlay(state),
-    variables: getAllVariables(state),
-  }
-}
-
-const mdtp = {
-  setTimeMachineTimeRange,
-  onSetTimeRange: setTimeRange,
-  onEnableUpdatedTimeRangeInVEO: enableUpdatedTimeRangeInVEO,
-  onSetAutoRefresh: setAutoRefresh,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(TimeMachineQueries))
+export default TimeMachineQueries

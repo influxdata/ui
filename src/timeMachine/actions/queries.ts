@@ -81,15 +81,19 @@ export const getOrgIDFromBuckets = (
   text: string,
   allBuckets: Bucket[]
 ): string | null => {
-  const ast = parse(text)
-  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
-    get(node, 'arguments.0.properties.0.value.value', '')
-  )
+  try {
+    const ast = parse(text)
+    const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
+      get(node, 'arguments.0.properties.0.value.value', '')
+    )
 
-  // if there are buckets from multiple orgs in a query, query will error, and user will receive error from query
-  const bucketMatch = allBuckets.find(a => bucketsInQuery.includes(a.name))
+    // if there are buckets from multiple orgs in a query, query will error, and user will receive error from query
+    const bucketMatch = allBuckets.find(a => bucketsInQuery.includes(a.name))
 
-  return get(bucketMatch, 'orgID', null)
+    return get(bucketMatch, 'orgID', null)
+  } catch (_) {
+    return null
+  }
 }
 
 // We only need a minimum of one bucket, function, and tag,

@@ -71,12 +71,13 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     list = <WaitingText text="Loading tag values" />
   } else if (loading === RemoteDataState.Done && tagValues.length) {
     list = valuesToShow.map(value => (
-      <div
-        className="tag-selector-value--list-item"
-        key={value}
-        onClick={() => handleSelectTagValue(value)}
-      >
-        {value}
+      <div key={value} className="tag-selector-value--list-item--wrapper">
+        <div
+          className="tag-selector-value--list-item--selectable"
+          onClick={() => handleSelectTagValue(value)}
+        >
+          {value}
+        </div>
       </div>
     ))
   }

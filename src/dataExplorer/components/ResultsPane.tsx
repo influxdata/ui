@@ -21,6 +21,7 @@ import {
   ResultsContext,
 } from 'src/dataExplorer/components/ResultsContext'
 import {QueryProvider, QueryContext} from 'src/shared/contexts/query'
+import {EditorContext} from 'src/shared/contexts/editor'
 
 // Components
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
@@ -97,6 +98,8 @@ const ResultsPane: FC = () => {
   const [text, setText] = useLocalStorageState()
   const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
 
+  const {setEditor} = useContext(EditorContext)
+
   const download = () => {
     event('CSV Download Initiated')
     basic(text, {vars: rangeToParams(timeRange)}).promise.then(response => {
@@ -157,6 +160,7 @@ const ResultsPane: FC = () => {
                 variables={variables}
                 script={text}
                 onChangeScript={setText}
+                setEditorInstance={setEditor}
               />
             </Suspense>
           </div>

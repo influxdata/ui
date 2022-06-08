@@ -23,9 +23,6 @@ export const fluxQueryBuilder = (state: AppState): boolean =>
 export const getVersionInfo = (state: AppState): VersionInfo =>
   state.app.persisted.versionInfo || ({} as VersionInfo)
 
-export const hasUpdatedTimeRangeInVEO = (state: AppState): boolean =>
-  state.app.ephemeral.hasUpdatedTimeRangeInVEO || false
-
 export const getPresentationMode = (state: AppState): boolean =>
   state.app.ephemeral.inPresentationMode || false
 

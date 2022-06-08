@@ -32,7 +32,6 @@ import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 // Actions & Selectors
 import {getAll} from 'src/resources/selectors'
 import {notify as notifyAction} from 'src/shared/actions/notifications'
-import {hasUpdatedTimeRangeInVEO} from 'src/shared/selectors/app'
 import {setCellMount as setCellMountAction} from 'src/perf/actions'
 
 // Types
@@ -334,13 +333,20 @@ class TimeSeries extends Component<Props, State> {
   }
 
   private shouldReload(prevProps: Props) {
-    if (this.props.hasUpdatedTimeRangeInVEO) {
+    if (
+      this.props.location.pathname.includes('cells') &&
+      this.props.location.pathname.includes('edit')
+    ) {
       return false
     }
 
     if (
-      prevProps.hasUpdatedTimeRangeInVEO &&
-      !this.props.hasUpdatedTimeRangeInVEO
+      prevProps.location.pathname.includes('cells') &&
+      prevProps.location.pathname.includes('edit') &&
+      !(
+        this.props.location.pathname.includes('cells') &&
+        this.props.location.pathname.includes('edit')
+      )
     ) {
       return true
     }
@@ -390,9 +396,7 @@ const mstp = (state: AppState, props: OwnProps) => {
   ]
 
   return {
-    hasUpdatedTimeRangeInVEO: hasUpdatedTimeRangeInVEO(state),
     isCurrentPageDashboard: isCurrentPageDashboardSelector(state),
-    queryLink: '/api/v2/query',
     buckets: getAll<Bucket>(state, ResourceType.Buckets),
     variables,
   }

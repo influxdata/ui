@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {useRouteMatch} from 'react-router-dom'
 
 // Components
 import TimeMachineFluxEditor from 'src/timeMachine/components/TimeMachineFluxEditor'
@@ -27,7 +26,6 @@ import {
   setTimeMachineTimeRange,
   setTimeRange,
 } from 'src/timeMachine/actions'
-import {enableUpdatedTimeRangeInVEO} from 'src/shared/actions/app'
 import {getAllVariables} from 'src/variables/selectors'
 
 // Utils
@@ -53,14 +51,7 @@ const TimeMachineQueries: FC<Props> = ({maxHeight}) => {
   const isInCheckOverlay = useSelector(getIsInCheckOverlay)
   const variables = useSelector(getAllVariables)
 
-  const isEditing = useRouteMatch(
-    '/orgs/:orgID/dashboards/:dashboardID/cells/:cellID/edit'
-  )
-
   const handleSetTimeRange = (timeRange: TimeRange) => {
-    if (isEditing) {
-      dispatch(enableUpdatedTimeRangeInVEO())
-    }
     dispatch(setTimeRange(timeRange))
     dispatch(setTimeMachineTimeRange(timeRange))
     if (timeRange.type === 'custom') {

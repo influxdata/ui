@@ -8,7 +8,6 @@ import {TimeZone, NavBarState, Theme, VersionInfo, FlowsCTA} from 'src/types'
 export interface AppState {
   ephemeral: {
     inPresentationMode: boolean
-    hasUpdatedTimeRangeInVEO: boolean
   }
   persisted: {
     autoRefresh: number
@@ -25,7 +24,6 @@ export interface AppState {
 const initialState: AppState = {
   ephemeral: {
     inPresentationMode: false,
-    hasUpdatedTimeRangeInVEO: false,
   },
   persisted: {
     theme: 'dark',
@@ -60,20 +58,6 @@ const appEphemeralReducer = (
       return {
         ...state,
         inPresentationMode: false,
-      }
-    }
-
-    case ActionTypes.EnableUpdatedTimeRangeInVEO: {
-      return {
-        ...state,
-        hasUpdatedTimeRangeInVEO: true,
-      }
-    }
-
-    case ActionTypes.DisableUpdatedTimeRangeInVEO: {
-      return {
-        ...state,
-        hasUpdatedTimeRangeInVEO: false,
       }
     }
 

@@ -111,7 +111,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_INFLUX_SCHEMA}${IMPORT_REGEXP}${IMPORT_STRINGS}`
+      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
       queryText = `${_source}
         schema.measurementTagKeys(
           bucket: "${bucket.name}",
@@ -193,7 +193,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
+      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
         schema.measurementTagValues(
           bucket: "${bucket.name}",

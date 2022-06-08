@@ -80,7 +80,7 @@ export const getQuartzMeThunk = () => async dispatch => {
   try {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
 
-    if (/*isFlagEnabled('quartzIdentity')*/ CLOUD) {
+    if (/* isFlagEnabled('quartzIdentity') */ CLOUD) {
       const quartzIdentity = await getQuartzIdentityDetails()
 
       if (quartzIdentity.status !== 'success') {

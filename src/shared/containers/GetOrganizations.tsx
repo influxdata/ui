@@ -68,7 +68,7 @@ const GetOrganizations: FunctionComponent = () => {
   useEffect(() => {
     if (
       CLOUD &&
-      /* isFlagEnabled('quartzIdentity')*/ quartzIdentityStatus ===
+      /* isFlagEnabled('quartzIdentity') */ quartzIdentityStatus ===
         RemoteDataState.NotStarted
     ) {
       dispatch(getQuartzIdentityThunk())

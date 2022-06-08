@@ -18,7 +18,7 @@ import {getMe} from 'src/client'
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+// import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {getIdentity} from 'src/client/unityRoutes'
 
@@ -31,7 +31,7 @@ export const LoginPage: FC = () => {
     try {
       let resp
 
-      if (/*isFlagEnabled('quartzIdentity') &&*/ CLOUD) {
+      if (/* isFlagEnabled('quartzIdentity') && */ CLOUD) {
         resp = await getIdentity({})
       } else {
         resp = await getMe({})

@@ -97,7 +97,7 @@ export class Signin extends PureComponent<Props, State> {
     try {
       let resp
 
-      if (/*isFlagEnabled('quartzIdentity') &&*/ CLOUD) {
+      if (/* isFlagEnabled('quartzIdentity') && */ CLOUD) {
         resp = await getIdentity({})
       } else {
         resp = await getMe({})

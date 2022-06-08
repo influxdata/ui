@@ -13,7 +13,10 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 import {RemoteDataState} from 'src/types'
 
 // Utils
-import {LOAD_MORE_LIMIT_INITIAL} from 'src/dataExplorer/shared/utils'
+import {
+  LOAD_MORE_LIMIT_INITIAL,
+  LOAD_MORE_LIMIT,
+} from 'src/dataExplorer/shared/utils'
 
 const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \
@@ -83,7 +86,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
   }
 
   const handleLoadMore = () => {
-    const newIndex = valuesToShow.length + LOAD_MORE_LIMIT_INITIAL
+    const newIndex = valuesToShow.length + LOAD_MORE_LIMIT
     setValuesToShow(tagValues.slice(0, newIndex))
   }
 

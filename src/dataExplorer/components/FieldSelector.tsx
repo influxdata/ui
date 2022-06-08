@@ -15,7 +15,10 @@ import {RemoteDataState} from 'src/types'
 import './Schema.scss'
 
 // Utils
-import {LOAD_MORE_LIMIT_INITIAL} from 'src/dataExplorer/shared/utils'
+import {
+  LOAD_MORE_LIMIT_INITIAL,
+  LOAD_MORE_LIMIT,
+} from 'src/dataExplorer/shared/utils'
 
 const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
 key values pairs within a measurement. For SQL users, this is \
@@ -52,7 +55,7 @@ const FieldSelector: FC = () => {
   }
 
   const handleLoadMore = () => {
-    const newIndex = fieldsToShow.length + LOAD_MORE_LIMIT_INITIAL
+    const newIndex = fieldsToShow.length + LOAD_MORE_LIMIT
     setFieldsToShow(fields.slice(0, newIndex))
   }
 

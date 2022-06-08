@@ -13,7 +13,7 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 import {RemoteDataState} from 'src/types'
 
 // Utils
-import {LOCAL_LIMIT} from 'src/dataExplorer/shared/utils'
+import {LOAD_MORE_LIMIT_INITIAL} from 'src/dataExplorer/shared/utils'
 
 const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \
@@ -34,7 +34,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
 
   useEffect(() => {
     // Reset
-    setValuesToShow(tagValues.slice(0, LOCAL_LIMIT))
+    setValuesToShow(tagValues.slice(0, LOAD_MORE_LIMIT_INITIAL))
   }, [tagValues])
 
   const handleSelectTagValue = (value: string) => {
@@ -83,7 +83,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
   }
 
   const handleLoadMore = () => {
-    const newIndex = valuesToShow.length + LOCAL_LIMIT
+    const newIndex = valuesToShow.length + LOAD_MORE_LIMIT_INITIAL
     setValuesToShow(tagValues.slice(0, newIndex))
   }
 

@@ -77,7 +77,7 @@ const FluxBrowser: FC = () => {
         />
       </>
     ),
-    [render]
+    [render, fluxFunctions]
   )
 }
 

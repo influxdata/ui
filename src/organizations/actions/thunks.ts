@@ -7,6 +7,9 @@ import {normalize} from 'normalizr'
 import {getErrorMessage} from 'src/utils/api'
 import * as api from 'src/client'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -31,6 +34,8 @@ import {
 import {gaEvent} from 'src/cloud/utils/reporting'
 
 import {getOrg} from 'src/organizations/selectors'
+
+import {patchOrg} from 'src/client/unityRoutes'
 
 // Schemas
 import {orgSchema, arrayOfOrgs} from 'src/schemas'
@@ -205,12 +210,19 @@ export const renameOrg = (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
-    const resp = await api.patchOrg({orgID: org.id, data: org})
+    const resp = CLOUD
+      ? await patchOrg({
+          orgId: org.id,
+          data: {name: org.name, description: org.description},
+        })
+      : await api.patchOrg({
+          orgID: org.id,
+          data: org,
+        })
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-
     const updatedOrg = resp.data
 
     const normOrg = normalize<Organization, OrgEntities, string>(

@@ -1,6 +1,6 @@
 // Libraries
 import React, {FunctionComponent, useEffect} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useParams, useHistory} from 'react-router-dom'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import {get} from 'lodash'
 
@@ -20,20 +20,16 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 // Types
 import {AppState, RemoteDataState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps &
-  RouteComponentProps<{orgID: string; dashboardID: string}>
+type Props = ConnectedProps<typeof connector>
 
 const NewViewVEO: FunctionComponent<Props> = ({
   activeTimeMachineID,
   onSaveView,
   onSetName,
-  match: {
-    params: {orgID, dashboardID},
-  },
-  history,
   view,
 }) => {
+  const {orgID, dashboardID} = useParams<{orgID: string; dashboardID: string}>()
+  const history = useHistory()
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(loadNewVEO())
@@ -95,4 +91,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(withRouter(NewViewVEO))
+export default connector(NewViewVEO)

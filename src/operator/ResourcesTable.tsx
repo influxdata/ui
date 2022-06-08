@@ -29,9 +29,10 @@ import {OperatorRoutes} from 'src/operator/constants'
 // Types
 import {OperatorOrg, OperatorAccount} from 'src/types'
 import ResourcesAccountType from './ResourcesAccountType'
+import ResourcesCloudCluster from './ResourcesCloudCluster'
 
 const ResourcesTable: FC = () => {
-  const {pathname, accounts, organizations, status} = useContext(
+  const {accounts, organizations, pathname, status} = useContext(
     OperatorContext
   )
 
@@ -51,6 +52,7 @@ const ResourcesTable: FC = () => {
       <Tabs.TabContents>
         <FlexBox direction={FlexDirection.Row}>
           <ResourcesAccountType />
+          {isOrgsTab && <ResourcesCloudCluster />}
           <ResourcesSearchbar />
         </FlexBox>
         <PageSpinner loading={status}>

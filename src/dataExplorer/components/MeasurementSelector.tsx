@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo, useState} from 'react'
+import React, {FC, useCallback, useContext, useMemo, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
@@ -36,9 +36,12 @@ const MeasurementSelector: FC = () => {
   const {measurements, loading} = useContext(MeasurementsContext)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const handleSelect = (option: string): void => {
-    selectMeasurement(option)
-  }
+  const handleSelect = useCallback(
+    (option: string): void => {
+      selectMeasurement(option)
+    },
+    [selectMeasurement]
+  )
 
   const handleChangeSearchTerm = (value: string) => {
     setSearchTerm(value)
@@ -67,7 +70,14 @@ const MeasurementSelector: FC = () => {
         />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement, measurements, loading])
+  }, [
+    selectedBucket,
+    selectedMeasurement,
+    measurements,
+    loading,
+    searchTerm,
+    handleSelect,
+  ])
 }
 
 export default MeasurementSelector

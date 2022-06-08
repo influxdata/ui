@@ -2,7 +2,7 @@
 import React, {FC, useContext} from 'react'
 import {Overlay} from '@influxdata/clockface'
 import {useSelector} from 'react-redux'
-import {useHistory, withRouter} from 'react-router'
+import {useHistory} from 'react-router'
 
 // Components
 import {CheckoutContext} from 'src/checkout/context/checkout'
@@ -53,4 +53,4 @@ const SuccessOverlay: FC = () => {
   )
 }
 
-export default withRouter(SuccessOverlay)
+export default SuccessOverlay

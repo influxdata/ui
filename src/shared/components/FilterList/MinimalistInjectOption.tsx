@@ -18,20 +18,16 @@ interface Props {
   option: OptionType
   extractor: (func: OptionType) => string
   onClick: (func: OptionType) => void
-  testID: string
+  testID?: string
   ToolTipContent?: (props: {item: any; searchTerm?: string}) => JSX.Element
   searchTerm?: string
-}
-
-const defaultProps = {
-  testID: 'injection-option',
 }
 
 const InjectionOption: FC<Props> = ({
   option,
   extractor,
   onClick,
-  testID,
+  testID = 'injection-option',
   ToolTipContent,
   searchTerm,
 }) => {
@@ -72,7 +68,5 @@ const InjectionOption: FC<Props> = ({
     </>
   )
 }
-
-InjectionOption.defaultProps = defaultProps
 
 export default InjectionOption

@@ -54,7 +54,7 @@ const FilterList: FC<Props> = ({
         </>
       )
     }
-  }, [search, items])
+  }, [search, items, renderItem])
 
   return useMemo(
     () => (

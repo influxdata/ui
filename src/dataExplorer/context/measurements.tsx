@@ -86,7 +86,7 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
+      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
         schema.measurements(
           bucket: "${bucket.name}",

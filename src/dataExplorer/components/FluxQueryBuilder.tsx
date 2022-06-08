@@ -10,7 +10,7 @@ import Schema from 'src/dataExplorer/components/Schema'
 // Styles
 import './FluxQueryBuilder.scss'
 
-const INITIAL_VERT_RESIZER_HANDLE = 0.25
+const INITIAL_VERT_RESIZER_HANDLE = 0.24
 
 const FluxQueryBuilder: FC = () => {
   const [vertDragPosition, setVertDragPosition] = useState([

@@ -48,8 +48,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   const {hideSub, id: showId, show, showSub, register} = useContext(
     SidebarContext
   )
-  const editorContext = useContext(EditorContext)
-  const {setEditor, inject, injectFunction} = editorContext
+  const {editor, inject, injectFunction} = useContext(EditorContext)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
   const {variables} = useContext(VariablesContext)
@@ -132,7 +131,6 @@ const Query: FC<PipeProp> = ({Context}) => {
             script={query.text}
             variables={variables}
             onChangeScript={updateText}
-            setEditorInstance={setEditor}
             wrapLines="on"
             autogrow
           />
@@ -143,7 +141,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       RemoteDataState.Loading,
       query.text,
       updateText,
-      editorContext.editor,
+      editor,
       variables,
       launcher,
     ]

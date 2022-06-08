@@ -30,8 +30,7 @@ const TMFluxEditor: FC<{variables: Variable[]}> = props => {
   const dispatch = useDispatch()
   const activeQueryText = useSelector(getActiveQuery).text
   const {activeQueryIndex} = useSelector(getActiveTimeMachine)
-  const editorContext = useContext(EditorContext)
-  const {setEditor, injectFunction, injectVariable} = editorContext
+  const {editor, injectFunction, injectVariable} = useContext(EditorContext)
 
   const handleSetActiveQueryText = React.useCallback(
     (text: string) => {
@@ -91,7 +90,6 @@ const TMFluxEditor: FC<{variables: Variable[]}> = props => {
               variables={props.variables}
               onChangeScript={handleActiveQuery}
               onSubmitScript={handleSubmitQueries}
-              setEditorInstance={setEditor}
               autofocus
             />
           </Suspense>
@@ -104,7 +102,7 @@ const TMFluxEditor: FC<{variables: Variable[]}> = props => {
         </div>
       </div>
     )
-  }, [activeQueryText, activeQueryIndex, props.variables, editorContext.editor])
+  }, [activeQueryText, activeQueryIndex, props.variables, editor])
 }
 
 const TimeMachineFluxEditor = props => (

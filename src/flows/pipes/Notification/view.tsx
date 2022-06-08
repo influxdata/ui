@@ -32,6 +32,7 @@ import {
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {EditorContext} from 'src/shared/context/editor'
 import {remove} from 'src/shared/contexts/query'
 import Expressions from 'src/flows/pipes/Notification/Expressions'
 import Measurement from 'src/flows/pipes/Notification/Measurement'
@@ -76,7 +77,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
-  const [editorInstance, setEditorInstance] = useState<EditorType>(null)
+  const {editor} = useContext(EditorContext)
 
   let intervalError = ''
   let offsetError = ''
@@ -189,10 +190,10 @@ const Notification: FC<PipeProp> = ({Context}) => {
 
   const inject = useCallback(
     (exp: string): void => {
-      if (!editorInstance) {
+      if (!editor) {
         return
       }
-      const p = editorInstance.getPosition()
+      const p = editor.getPosition()
       const edits = [
         {
           range: new monaco.Range(
@@ -205,11 +206,11 @@ const Notification: FC<PipeProp> = ({Context}) => {
         },
       ]
 
-      editorInstance.executeEdits('', edits)
-      updateMessage(editorInstance.getValue())
+      editor.executeEdits('', edits)
+      updateMessage(editor.getValue())
       event('Injecting Expression into Alert Message')
     },
-    [editorInstance]
+    [editor]
   )
 
   const warningMessage = useMemo(() => {
@@ -404,7 +405,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
                         color={ComponentColor.Secondary}
                         testID="notification-exp-button"
                         status={
-                          editorInstance
+                          editor
                             ? ComponentStatus.Default
                             : ComponentStatus.Loading
                         }
@@ -467,7 +468,6 @@ const Notification: FC<PipeProp> = ({Context}) => {
                             <NotificationMonacoEditor
                               text={data.message}
                               onChangeText={updateMessage}
-                              setEditorInstance={setEditorInstance}
                             />
                           </Suspense>
                         </div>
@@ -490,4 +490,8 @@ const Notification: FC<PipeProp> = ({Context}) => {
   )
 }
 
-export default Notification
+export default () => (
+  <EditorProvider>
+    <Notification />
+  </EditorProvider>
+)

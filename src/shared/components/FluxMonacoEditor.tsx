@@ -1,10 +1,13 @@
 // Libraries
-import React, {FC, useEffect, useRef} from 'react'
+import React, {FC, useEffect, useRef, useContext} from 'react'
 import classnames from 'classnames'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+
+// Contexts
+import {EditorContext} from 'src/shared/contexts/editor'
 
 // Utils
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
@@ -35,7 +38,6 @@ export interface EditorProps {
 }
 
 interface Props extends EditorProps {
-  setEditorInstance?: (editor: EditorType) => void
   variables: Variable[]
 }
 
@@ -43,7 +45,6 @@ const FluxEditorMonaco: FC<Props> = ({
   script,
   onChangeScript,
   onSubmitScript,
-  setEditorInstance,
   autogrow,
   readOnly,
   autofocus,
@@ -51,6 +52,7 @@ const FluxEditorMonaco: FC<Props> = ({
   variables,
 }) => {
   const prelude = useRef<Prelude>(null)
+  const {setEditor} = useContext(EditorContext)
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
@@ -63,9 +65,8 @@ const FluxEditorMonaco: FC<Props> = ({
   const editorDidMount = (editor: EditorType) => {
     prelude.current = setupForReactMonacoEditor(editor)
     prelude.current.updatePreludeModel(variables)
-    if (setEditorInstance) {
-      setEditorInstance(editor)
-    }
+
+    setEditor(editor)
 
     comments(editor)
     submit(editor, () => {

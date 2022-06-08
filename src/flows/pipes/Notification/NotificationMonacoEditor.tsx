@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
@@ -7,6 +7,7 @@ import MonacoEditor from 'react-monaco-editor'
 // Utils
 import LANGID from 'src/languageSupport/languages/markdown/monaco.markdown.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
+import {EditorContext} from 'src/shared/contexts/editor'
 
 // Types
 import {EditorType} from 'src/types'
@@ -15,7 +16,6 @@ import {OnChangeScript} from 'src/types/flux'
 import 'src/shared/components/FluxMonacoEditor.scss'
 
 interface Props {
-  setEditorInstance?: (editor: EditorType) => void
   text: string
   onChangeText: OnChangeScript
   readOnly?: boolean
@@ -24,13 +24,11 @@ interface Props {
 const NotificationMonacoEditor: FC<Props> = ({
   text,
   onChangeText,
-  setEditorInstance,
   readOnly,
 }) => {
+  const {setEditor} = useContext(EditorContext)
   const editorDidMount = (editor: EditorType) => {
-    if (setEditorInstance) {
-      setEditorInstance(editor)
-    }
+    setEditor(editor)
     editor.focus()
   }
 

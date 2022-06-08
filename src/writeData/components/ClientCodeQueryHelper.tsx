@@ -62,7 +62,9 @@ const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {
         query = def.querySanitize(query)
       }
       changeQuery(query)
-    } catch (_) {}
+    } catch (e) {
+      console.error(e)
+    }
   }, [clientQuery, def.query, changeBucket, changeQuery])
 
   return null

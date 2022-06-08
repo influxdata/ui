@@ -91,7 +91,8 @@ export const getOrgIDFromBuckets = (
     const bucketMatch = allBuckets.find(a => bucketsInQuery.includes(a.name))
 
     return get(bucketMatch, 'orgID', null)
-  } catch (_) {
+  } catch (e) {
+    console.error(e)
     return null
   }
 }

@@ -22,7 +22,9 @@ export const parseASTIM = (query: string): ASTIM => {
   let ast: File = null
   try {
     ast = parse(query)
-  } catch (_) {}
+  } catch (e) {
+    console.error(e)
+  }
   const variables: MemberExpression[] = ast ? parseAllVariables(ast) : []
   const variableNames = new Set()
   variables.forEach(variable => {

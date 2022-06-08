@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useRef, RefObject, useState} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 import {get} from 'lodash'
 import classnames from 'classnames'
@@ -39,12 +39,10 @@ interface OwnProps {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
+type Props = OwnProps & ReduxProps
 
 const CellContext: FC<Props> = ({
   view,
-  history,
-  location,
   cell,
   onCloneCell,
   onDeleteCell,
@@ -54,6 +52,8 @@ const CellContext: FC<Props> = ({
   onShowOverlay,
   onDismissOverlay,
 }) => {
+  const history = useHistory()
+  const location = useLocation()
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
   const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
@@ -244,4 +244,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default withRouter(connector(CellContext))
+export default connector(CellContext)

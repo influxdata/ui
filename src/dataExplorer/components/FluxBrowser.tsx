@@ -75,7 +75,7 @@ const FluxBrowser: FC = () => {
         />
       </div>
     ),
-    [editor, render, fluxFunctions]
+    [editor, render, fluxFunctions, injectFunction]
   )
 }
 

@@ -31,7 +31,8 @@ interface AccountIdentityResponse {
 
 export const getQuartzIdentityThunk = () => async dispatch => {
   try {
-    if (isFlagEnabled('quartzIdentity') && CLOUD) {
+    // if (isFlagEnabled('quartzIdentity') && CLOUD) {
+    if (CLOUD) {
       dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
       const quartzIdentityDetails = await getQuartzIdentityDetails()

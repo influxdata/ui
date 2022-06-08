@@ -31,7 +31,7 @@ export const LoginPage: FC = () => {
     try {
       let resp
 
-      if (isFlagEnabled('quartzIdentity') && CLOUD) {
+      if (/*isFlagEnabled('quartzIdentity') &&*/ CLOUD) {
         resp = await getIdentity({})
       } else {
         resp = await getMe({})

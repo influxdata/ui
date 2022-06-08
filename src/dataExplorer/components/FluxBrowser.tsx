@@ -38,9 +38,7 @@ const FluxBrowser: FC = () => {
 
   const handleSelectItem = useCallback(
     (func: FluxFunction) => {
-      injectFunction(getFluxExample(func), _ =>
-        console.warn('Determine use of query context.')
-      )
+      injectFunction(getFluxExample(func), _ => null)
       event('flux.function.injected', {name: `${func.package}.${func.name}`})
     },
     [injectFunction, editor]

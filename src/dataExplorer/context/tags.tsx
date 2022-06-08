@@ -18,7 +18,7 @@ import {QueryContext} from 'src/shared/contexts/query'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
-  IMPORT_REGEXP,
+  IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
@@ -89,7 +89,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
-    let _source = IMPORT_REGEXP
+    let _source = ''
     if (bucket.type === 'sample') {
       _source += SAMPLE_DATA_SET(bucket.id)
     } else {
@@ -110,7 +110,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
+      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
         schema.measurementTagKeys(
           bucket: "${bucket.name}",
@@ -118,11 +118,13 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
-          |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
-          |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
-          ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
-          |> sort()
-          |> limit(n: ${limit})
+        |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
+        |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
+        ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
+        |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
+        |> sort(columns: ["lowercase"])
+        |> drop(columns: ["lowercase"])
+        |> limit(n: ${limit})
       `
     }
 
@@ -172,7 +174,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
-    let _source = IMPORT_REGEXP
+    let _source = ''
     if (bucket.type === 'sample') {
       _source += SAMPLE_DATA_SET(bucket.id)
     } else {
@@ -190,7 +192,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
+      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
         schema.measurementTagValues(
           bucket: "${bucket.name}",
@@ -199,7 +201,9 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
-        |> sort()
+        |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
+        |> sort(columns: ["lowercase"])
+        |> drop(columns: ["lowercase"])
         |> limit(n: ${limit})
       `
     }

@@ -18,7 +18,7 @@ import {QueryContext} from 'src/shared/contexts/query'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
-  IMPORT_REGEXP,
+  IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   FROM_BUCKET,
@@ -80,7 +80,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     //   Here is the source code for handling sample data:
     //   https://github.com/influxdata/flux/blob/master/stdlib/influxdata/influxdb/sample/sample.flux
     //   That is why _source and query script for sample data is different
-    let _source = IMPORT_REGEXP
+    let _source = ''
     if (bucket.type === 'sample') {
       _source += SAMPLE_DATA_SET(bucket.id)
     } else {
@@ -99,7 +99,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}`
+      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
         schema.measurementFieldKeys(
           bucket: "${bucket.name}",
@@ -107,9 +107,11 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
           start: ${CACHING_REQUIRED_START_DATE},
           stop: ${CACHING_REQUIRED_END_DATE},
         )
-          ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
-          |> sort()
-          |> limit(n: ${limit})
+        ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
+        |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
+        |> sort(columns: ["lowercase"])
+        |> drop(columns: ["lowercase"])
+        |> limit(n: ${limit})
       `
     }
 

@@ -20,14 +20,28 @@ import './FluxQueryBuilder.scss'
 import LeftArrow from 'assets/images/collapse-left.svg'
 import RightArrow from 'assets/images/collapse-right.svg'
 
-const INITIAL_VERT_RESIZER_HANDLE = 0.24
+const INITIAL_LEFT_VERT_RESIZER_HANDLE = 0.2
+const INITIAL_RIGHT_VERT_RESIZER_HANDLE = 0.8
 
 const FluxQueryBuilder: FC = () => {
   const [vertDragPosition, setVertDragPosition] = useState([
-    INITIAL_VERT_RESIZER_HANDLE,
+    INITIAL_LEFT_VERT_RESIZER_HANDLE,
+    INITIAL_RIGHT_VERT_RESIZER_HANDLE,
   ])
   const [showLeft, toggleLeftPanel] = useState(true)
   const [showRight, toggleRightPanel] = useState(true)
+
+  const adjustMiddlePanel = grow => {
+    if (!grow) {
+      return
+    }
+    const el = document.querySelector(
+      '[data-testid="flux-query-builder-middle-panel"]'
+    )
+    if (el) {
+      ;(el as any).style.flexGrow = 0.8 // eslint-disable-line
+    }
+  }
 
   return (
     <QueryProvider>
@@ -38,17 +52,23 @@ const FluxQueryBuilder: FC = () => {
           onChangePositions={setVertDragPosition}
         >
           <DraggableResizer.Panel style={showLeft ? {} : {display: 'none'}}>
-            {showLeft && <Schema />}
+            <Schema />
           </DraggableResizer.Panel>
-          <DraggableResizer.Panel className="new-data-explorer-rightside">
+          <DraggableResizer.Panel
+            testID="flux-query-builder-middle-panel"
+            className="new-data-explorer-rightside"
+          >
             <FlexBox
               direction={FlexDirection.Row}
               alignItems={AlignItems.FlexStart}
-              style={{height: '100%'}}
+              style={{height: '100%', width: '100%', position: 'absolute'}}
             >
               <FlexBox.Child>
                 <span
-                  onClick={() => toggleLeftPanel(!showLeft)}
+                  onClick={() => {
+                    toggleLeftPanel(!showLeft)
+                    adjustMiddlePanel(showLeft)
+                  }}
                   style={{marginLeft: '-20px', float: 'left'}}
                 >
                   <img src={showLeft ? LeftArrow : RightArrow} />
@@ -59,7 +79,10 @@ const FluxQueryBuilder: FC = () => {
               </ResultsProvider>
               <FlexBox.Child>
                 <span
-                  onClick={() => toggleRightPanel(!showRight)}
+                  onClick={() => {
+                    toggleRightPanel(!showRight)
+                    adjustMiddlePanel(showRight)
+                  }}
                   style={{
                     marginRight: '-20px',
                     float: 'right',
@@ -73,7 +96,7 @@ const FluxQueryBuilder: FC = () => {
             </FlexBox>
           </DraggableResizer.Panel>
           <DraggableResizer.Panel style={showRight ? {} : {display: 'none'}}>
-            {showRight && <SidePane />}
+            <SidePane />
           </DraggableResizer.Panel>
         </DraggableResizer>
       </EditorProvider>

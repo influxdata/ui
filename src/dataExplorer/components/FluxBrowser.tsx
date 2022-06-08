@@ -59,12 +59,12 @@ const FluxBrowser: FC = () => {
         ToolTipContent={FluxDocsTooltipContent}
       />
     ),
-    [handleSelectItem]
+    [handleSelectItem, editor]
   )
 
   return useMemo(
     () => (
-      <>
+      <div className="qx-builder-flux-browser">
         <SelectorTitle title="Flux library" info={TOOLTIP} />
         <FilterList
           placeholder="Search for package or function..."
@@ -75,9 +75,9 @@ const FluxBrowser: FC = () => {
           items={fluxFunctions.sort(sortFuncs)}
           renderItem={render}
         />
-      </>
+      </div>
     ),
-    [render, fluxFunctions]
+    [editor, render, fluxFunctions]
   )
 }
 

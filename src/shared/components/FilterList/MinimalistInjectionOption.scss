@@ -1,16 +1,13 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-// inherits from the other flux-toolbar--list-item class
-// overwrites certain props
-.flux-toolbar--list-item {
+.flux-toolbar--minimal-list-item {
   padding: 2px 8px;
   gap: 8px;
-  background-color: inherit;
-  :hover > & {
-    background-color: inherit;
-  }
+  white-space: nowrap;
+  overflow: hidden;
   .cf-text-block {
-    font-size: 14px;
+    width: fit-content;
+    font-size: $cf-form-sm-font;
     font-family: 'IBMPlexMono';
     font-style: normal;
     font-weight: 400;

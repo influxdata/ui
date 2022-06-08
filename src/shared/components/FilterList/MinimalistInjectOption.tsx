@@ -60,7 +60,7 @@ const InjectionOption: FC<Props> = ({
       <dd
         ref={itemRef}
         data-testid={`flux--${testID}`}
-        className="flux-toolbar--list-item"
+        className="flux-toolbar--minimal-list-item"
         onClick={handleClick}
       >
         <TextBlock

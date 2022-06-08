@@ -3,8 +3,6 @@ import {TimeZone, Theme, NavBarState, VersionInfo, FlowsCTA} from 'src/types'
 export enum ActionTypes {
   EnablePresentationMode = 'ENABLE_PRESENTATION_MODE',
   DisablePresentationMode = 'DISABLE_PRESENTATION_MODE',
-  EnableUpdatedTimeRangeInVEO = 'ENABLE_UPDATED_TIMERANGE_IN_VEO',
-  DisableUpdatedTimeRangeInVEO = 'DISABLE_UPDATED_TIMERANGE_IN_VEO',
   SetNavBarState = 'SET_NAV_BAR_STATE',
   SetFluxQueryBuilder = 'SET_FLUX_QUERY_BUILDER',
   SetAutoRefresh = 'SET_AUTOREFRESH',
@@ -18,8 +16,6 @@ export enum ActionTypes {
 export type Action =
   | ReturnType<typeof enablePresentationMode>
   | ReturnType<typeof disablePresentationMode>
-  | ReturnType<typeof enableUpdatedTimeRangeInVEO>
-  | ReturnType<typeof disableUpdatedTimeRangeInVEO>
   | ReturnType<typeof setFluxQueryBuilder>
   | ReturnType<typeof setNavBarState>
   | ReturnType<typeof setAutoRefresh>
@@ -38,16 +34,6 @@ export const enablePresentationMode = () =>
 export const disablePresentationMode = () =>
   ({
     type: ActionTypes.DisablePresentationMode,
-  } as const)
-
-export const enableUpdatedTimeRangeInVEO = () =>
-  ({
-    type: ActionTypes.EnableUpdatedTimeRangeInVEO,
-  } as const)
-
-export const disableUpdatedTimeRangeInVEO = () =>
-  ({
-    type: ActionTypes.DisableUpdatedTimeRangeInVEO,
   } as const)
 
 // persistent state action creators

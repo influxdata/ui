@@ -16,6 +16,7 @@ import {
 } from 'src/localStorage'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getPublicFlags} from 'src/shared/thunks/flags'
+import {retrieveQuartzIdentity} from './identity/utils/selectIdentitySource'
 
 // Actions
 import {notify as notifyAction} from 'src/shared/actions/notifications'
@@ -30,8 +31,6 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {getMe} from 'src/client'
-import {getIdentity} from 'src/client/unityRoutes'
 
 interface State {
   loading: RemoteDataState
@@ -95,13 +94,7 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      let resp
-
-      if (/* isFlagEnabled('quartzIdentity') && */ CLOUD) {
-        resp = await getIdentity({})
-      } else {
-        resp = await getMe({})
-      }
+      const resp = await retrieveQuartzIdentity()
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

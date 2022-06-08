@@ -6,22 +6,18 @@ import {
   Me,
 } from 'src/client/unityRoutes'
 
-// Utils
-// import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Constants
-import {CLOUD} from 'src/shared/constants'
-
 // Actions
 import {
   setQuartzIdentity,
   setQuartzIdentityStatus,
   // Actions,
 } from 'src/identity/actions/creators'
+import {setQuartzMeStatus} from 'src/me/actions/creators'
 
 // Types
 import {RemoteDataState} from 'src/types'
 import {QuartzIdentityState} from 'src/identity/reducers'
+import {setQuartzMe} from 'src/me/actions/creators'
 
 interface AccountIdentityResponse {
   status: string
@@ -31,28 +27,31 @@ interface AccountIdentityResponse {
 
 export const getQuartzIdentityThunk = () => async dispatch => {
   try {
-    // if (isFlagEnabled('quartzIdentity') && CLOUD) {
-    if (CLOUD) {
-      dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
+    dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
-      const quartzIdentityDetails = await getQuartzIdentityDetails()
+    const quartzIdentityDetails = await getQuartzIdentityDetails()
 
-      if (quartzIdentityDetails.error) {
-        throw new Error(quartzIdentityDetails.error)
-      }
-
-      dispatch(
-        setQuartzIdentity(quartzIdentityDetails.data, RemoteDataState.Done)
-      )
+    if (quartzIdentityDetails.error) {
+      throw new Error(quartzIdentityDetails.error)
     }
+
+    dispatch(
+      setQuartzIdentity(quartzIdentityDetails.data, RemoteDataState.Done)
+    )
+
+    // For now, enable compatibility with quartzMe by also populating quartzMe state using the same data.
+    const legacyMe = convertIdentityToMe(quartzIdentityDetails.data)
+
+    dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
   } catch (error) {
     console.error(error)
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
+
+    dispatch(setQuartzMeStatus(RemoteDataState.Error))
   }
 }
 
 export const getQuartzIdentityDetails = async (): Promise<AccountIdentityResponse> => {
-  // Retrieve user identity from /quartz/identity
   try {
     const quartzIdentity = await getIdentity({})
 
@@ -60,8 +59,6 @@ export const getQuartzIdentityDetails = async (): Promise<AccountIdentityRespons
       throw new Error(quartzIdentity.data.message)
     }
 
-    // Use the accountId and orgId returned by /quartz/identity to retrieve necessary details
-    // about the current organization and account.
     const {account, org} = quartzIdentity.data
     const {id: orgId} = org
 
@@ -70,6 +67,9 @@ export const getQuartzIdentityDetails = async (): Promise<AccountIdentityRespons
     })
 
     const orgPromise = getQuartzOrg({orgId: orgId})
+
+    // Once quartzMe is fully deprecated, we should consider adjusting the UI so that these API calls aren't required on load
+    // Should not need three API calls to populate identity.
 
     return Promise.all([accountPromise, orgPromise])
       .then(res => {
@@ -111,8 +111,6 @@ export const getQuartzIdentityDetails = async (): Promise<AccountIdentityRespons
   }
 }
 
-// When quartzIdentity is turned on, since data is not retrieved from /quartz/me, populate the
-// /quartz/identity data into the 'quartzMe' redux state to ensure UI compatibility.
 export const convertIdentityToMe = (
   quartzIdentity: QuartzIdentityState
 ): Me => {
@@ -131,6 +129,7 @@ export const convertIdentityToMe = (
   const {billing_provider} = currentAccountDetails
   const {isRegionBeta, regionCode, regionName} = currentOrgDetails
 
+  // Refactor to show where this is coming from
   const legacyMe = {
     accountCreatedAt: accountCreatedAt,
     accountType: accountType,

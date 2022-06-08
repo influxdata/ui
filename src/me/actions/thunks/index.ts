@@ -12,8 +12,6 @@ import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {getOrg} from 'src/organizations/selectors'
-import {getQuartzIdentityDetails} from 'src/identity/actions/thunks'
-import {convertIdentityToMe} from 'src/identity/actions/thunks'
 
 // Actions
 import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
@@ -25,7 +23,7 @@ import {MeState} from 'src/me/reducers'
 import {RemoteDataState, GetState} from 'src/types'
 import {Actions} from 'src/me/actions/creators'
 
-export const getMeThunk = () => async (
+export const getIdpeMeThunk = () => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {
@@ -80,24 +78,12 @@ export const getQuartzMeThunk = () => async dispatch => {
   try {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
 
-    if (/* isFlagEnabled('quartzIdentity') */ CLOUD) {
-      const quartzIdentity = await getQuartzIdentityDetails()
+    const quartzMe = await getQuartzMe({})
 
-      if (quartzIdentity.status !== 'success') {
-        throw new Error(quartzIdentity.error)
-      }
-
-      const legacyMeIdentity = convertIdentityToMe(quartzIdentity.data)
-
-      dispatch(setQuartzMe(legacyMeIdentity, RemoteDataState.Done))
-    } else {
-      const quartzMe = await getQuartzMe({})
-
-      if (quartzMe.status !== 200) {
-        throw new Error(quartzMe.data.message)
-      }
-      dispatch(setQuartzMe(quartzMe.data, RemoteDataState.Done))
+    if (quartzMe.status !== 200) {
+      throw new Error(quartzMe.data.message)
     }
+    dispatch(setQuartzMe(quartzMe.data, RemoteDataState.Done))
   } catch (error) {
     console.error(error)
     dispatch(setQuartzMeStatus(RemoteDataState.Error))

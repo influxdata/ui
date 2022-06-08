@@ -11,16 +11,10 @@ import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
 import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
-// Types
-import {getMe} from 'src/client'
-// import {getIdentity} from 'src/client/unityRoutes'
-
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
-// import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {CLOUD} from 'src/shared/constants'
-import {getIdentity} from 'src/client/unityRoutes'
+import {retrieveQuartzIdentity} from 'src/identity/utils/selectIdentitySource'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
@@ -29,15 +23,10 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      let resp
-
-      if (/* isFlagEnabled('quartzIdentity') && */ CLOUD) {
-        resp = await getIdentity({})
-      } else {
-        resp = await getMe({})
-      }
+      const resp = await retrieveQuartzIdentity()
 
       if (resp.status !== 200) {
+        // If we receive anything other than a 200 from the /quartz/me or /quartz/identity endpoint, question whether session should also be set to false.
         throw new Error(resp.data.message)
       }
 

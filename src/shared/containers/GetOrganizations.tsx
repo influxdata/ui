@@ -18,8 +18,6 @@ import {RemoteDataState, AppState} from 'src/types'
 
 // Actions
 import {getOrganizations} from 'src/organizations/actions/thunks'
-import {getQuartzMeThunk} from 'src/me/actions/thunks'
-import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
@@ -36,6 +34,7 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 // Types
 import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
+import {retrieveIdentityThunk} from 'src/identity/utils/selectIdentitySource'
 
 const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
@@ -63,26 +62,17 @@ const GetOrganizations: FunctionComponent = () => {
     if (status === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
     }
-  }, [dispatch, status])
-
-  useEffect(() => {
-    if (
-      CLOUD &&
-      /* isFlagEnabled('quartzIdentity') */ quartzIdentityStatus ===
-        RemoteDataState.NotStarted
-    ) {
-      dispatch(getQuartzIdentityThunk())
-    }
-  }, [dispatch, quartzIdentityStatus])
+  }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (
       isFlagEnabled('uiUnificationFlag') &&
-      quartzMeStatus === RemoteDataState.NotStarted
+      quartzMeStatus === RemoteDataState.NotStarted &&
+      quartzIdentityStatus === RemoteDataState.NotStarted
     ) {
-      dispatch(getQuartzMeThunk())
+      dispatch(retrieveIdentityThunk())
     }
-  }, [dispatch, quartzMeStatus])
+  }, [quartzMeStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (

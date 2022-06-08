@@ -10,8 +10,8 @@ import {
   IconFont,
   JustifyContent,
 } from '@influxdata/clockface'
-import FilterList from 'src/flows/shared/FilterList/FilterList'
-import InjectSecretOption from 'src/flows/shared/FilterList/InjectionOption'
+import FilterList from 'src/shared/components/FilterList/FilterList'
+import InjectSecretOption from 'src/shared/components/FilterList/InjectionOption'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Actions & Selectors

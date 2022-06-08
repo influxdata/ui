@@ -18,6 +18,7 @@ import {BucketProvider} from 'src/shared/contexts/buckets'
 import {MeasurementsProvider} from 'src/dataExplorer/context/measurements'
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
 import {TagsProvider} from 'src/dataExplorer/context/tags'
+import {QueryProvider} from 'src/shared/contexts/query'
 
 // Types
 import {QueryScope} from 'src/types'
@@ -67,27 +68,29 @@ const Schema: FC = () => {
   } as QueryScope
 
   return (
-    <MeasurementsProvider scope={scope}>
-      <FieldsProvider scope={scope}>
-        <TagsProvider scope={scope}>
-          <FluxQueryBuilderProvider>
-            <BucketProvider scope={scope}>
-              <div className="scroll--container">
-                <DapperScrollbars>
-                  <div className="data-schema">
-                    <BucketSelector />
-                    <div className="container-side-bar">
-                      <MeasurementSelector />
-                      <FieldsTags />
+    <QueryProvider>
+      <MeasurementsProvider scope={scope}>
+        <FieldsProvider scope={scope}>
+          <TagsProvider scope={scope}>
+            <FluxQueryBuilderProvider>
+              <BucketProvider scope={scope}>
+                <div className="scroll--container">
+                  <DapperScrollbars>
+                    <div className="data-schema">
+                      <BucketSelector />
+                      <div className="container-side-bar">
+                        <MeasurementSelector />
+                        <FieldsTags />
+                      </div>
                     </div>
-                  </div>
-                </DapperScrollbars>
-              </div>
-            </BucketProvider>
-          </FluxQueryBuilderProvider>
-        </TagsProvider>
-      </FieldsProvider>
-    </MeasurementsProvider>
+                  </DapperScrollbars>
+                </div>
+              </BucketProvider>
+            </FluxQueryBuilderProvider>
+          </TagsProvider>
+        </FieldsProvider>
+      </MeasurementsProvider>
+    </QueryProvider>
   )
 }
 

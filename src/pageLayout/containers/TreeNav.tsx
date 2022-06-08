@@ -187,7 +187,17 @@ const TreeSidebar: FC<ReduxProps> = ({
                   />
                 )}
               />
-
+              <TreeNav.SubItem
+                id="status-page"
+                label="Status Page"
+                testID="nav-subitem-status"
+                linkElement={() => (
+                  <SafeBlankLink
+                    href="https://status.influxdata.com"
+                    onClick={() => handleEventing('status-page')}
+                  />
+                )}
+              />
               {isFlagEnabled('helpBarSfdcIntegration') && (
                 <TreeNav.SubItem
                   id="contactSupport"

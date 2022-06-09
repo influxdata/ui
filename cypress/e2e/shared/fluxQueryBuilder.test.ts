@@ -9,14 +9,14 @@ describe('FluxQueryBuilder', () => {
         cy.setFeatureFlags({newDataExplorer: true}).then(() => {
           cy.visit(`${orgs}/${id}${explorer}`)
           cy.getByTestID('tree-nav').should('be.visible')
+          cy.getByTestID('slide-toggle').then(toggle => {
+            // Switch to Flux Query Builder if it is not on
+            if (toggle.find('.active').length === 0) {
+              toggle.click()
+            }
+          })
         })
       })
-    })
-    cy.getByTestID('slide-toggle').then(toggle => {
-      // Switch to Flux Query Builder if it is not on
-      if (toggle.find('.active').length === 0) {
-        toggle.click()
-      }
     })
   })
 
@@ -108,19 +108,39 @@ describe('FluxQueryBuilder', () => {
       cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)
     })
 
-    describe('field selector', () => {
-      beforeEach(() => {
-        // select a bucket
-        // select a measurement
-      })
+    it('fields - if less than 8 items, show all', () => {
+      const bucketNameA = 'Air Sensor Data'
+      const measurementA = 'airSensors'
 
-      it('if less than 8 items, show all the items', () => {})
+      // select a bucket
+      cy.getByTestID('bucket-selector--dropdown-button').click()
+      cy.getByTestID(`searchable-dropdown--item ${bucketNameA}`).click()
 
-      it("if more than 8 items, show a 'Load More' option to load more", () => {})
+      // select a measurement
+      cy.getByTestID('measurement-selector--dropdown-button').click()
+      cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
 
-      it('when load more is chosen, up to 25 additional entries will be shown', () => {})
+      // if less than 8 items, show all the items, no "Load More" button
+      cy.get('.field-selector--list-item--wrapper')
+        .its('length')
+        .should('be.lte', 8)
+      cy.get('.load-more-button').should('not.exist')
+    })
 
-      it('if more than 25 more exists in the list, the user has the option to load more', () => {})
+    it('fields - if more than 8 items, "Load More" works', () => {
+      // select a bucket
+      cy.getByTestID('bucket-selector--dropdown-button').click()
+      cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+
+      // select a measurement
+      cy.getByTestID('measurement-selector--dropdown-button').click()
+      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
+
+      // if more than 8 items, show a 'Load More' option to load more
+
+      // when load more is chosen, up to 25 additional entries will be shown
+
+      // if more than 25 more exists in the list, the user has the option to load more
     })
 
     describe('tag values', () => {

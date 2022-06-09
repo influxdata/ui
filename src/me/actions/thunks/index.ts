@@ -5,7 +5,12 @@ import {Dispatch} from 'react'
 
 // Functions making API calls
 import {getMe as getIdpeMe} from 'src/client'
-import {getAccounts, getMe as getQuartzMe} from 'src/client/unityRoutes'
+import {
+  getAccounts,
+  getMe as getQuartzMe,
+  Account,
+  Organization,
+} from 'src/client/unityRoutes'
 
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
@@ -55,7 +60,7 @@ export const getIdpeMeThunk = () => async (
       },
     })
 
-    // DELETE THIS
+    // DELETE THIS?
     // updateReportingContext({
     //   userID: user.id,
     // })

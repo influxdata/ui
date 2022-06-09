@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -10,8 +10,20 @@ import MarketplaceBilling from 'src/billing/components/marketplace/MarketplaceBi
 // Utils
 import {getQuartzMe} from 'src/me/selectors'
 
+//Thunks
+import {getAccountDetailsThunk} from 'src/identity/actions/thunks'
+
 const BillingPageContents: FC = () => {
+  // Leave this constant quartzMe for now. This will be changed to 'identity' when removing the legacy /quartz/me code when it is no longer used.
   const quartzMe = useSelector(getQuartzMe)
+
+  useEffect(() => {
+    // Check this condition. Need to decide what default state is for re-running,
+    // since I think billingProvider needs to be populated.
+    if (!quartzMe.billingProvider) {
+      getAccountDetailsThunk()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (
     (quartzMe?.accountType === 'pay_as_you_go' ||

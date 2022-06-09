@@ -1,5 +1,6 @@
 // Functions making API calls
 import {
+  Account,
   getAccount,
   getIdentity,
   getOrg as getQuartzOrg,
@@ -14,16 +15,26 @@ import {
 } from 'src/identity/actions/creators'
 import {setQuartzMeStatus} from 'src/me/actions/creators'
 
+// Selectors
+import {selectQuartzIdentity} from 'src/identity/selectors'
+
 // Types
 import {RemoteDataState} from 'src/types'
 import {QuartzIdentityState} from 'src/identity/reducers'
 import {setQuartzMe} from 'src/me/actions/creators'
+
+import {getState} from 'react-redux'
 
 interface AccountIdentityResponse {
   status: string
   data: QuartzIdentityState | null
   error: string | null
 }
+
+/*
+These thunks are intended to be invoked only in connection with the new /quartz/identity
+endpoints. For users still using legacy /quartz/me, use the legacy thunks in /src/me.
+*/
 
 export const getQuartzIdentityThunk = () => async dispatch => {
   try {
@@ -111,6 +122,27 @@ export const getQuartzIdentityDetails = async (): Promise<AccountIdentityRespons
       error: err.stack,
     }
   }
+}
+
+export const getBillingProviderThunk = async () => {
+  dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
+  // Right now, the only additional information provided by this endpoint beyond what was
+  // provided by the /identity endpoint is billingProvider.
+  const quartzIdentity = getState()
+
+  // /identity returns account ID as a number, but getAccount expects the ID as a string.
+  const accountIdString = quartzIdentity?.currentIdentity?.account?.id.toString()
+
+  const accountDetails = await getAccount({
+    accountId: accountIdString,
+  })
+
+  if (accountDetails.status !== 200) {
+    throw new Error(accountDetails.data.message)
+  }
+
+  dispatch(setQuartzAccountDetails(accountDetails.data.billing_provider))
+  dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 }
 
 export const convertIdentityToMe = (

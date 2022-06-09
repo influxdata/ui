@@ -1,14 +1,43 @@
 // Libraries
 import produce from 'immer'
 
-import {Identity, Account, Organization} from 'src/client/unityRoutes'
-
+import {
+  Identity,
+  IdentityUser,
+  IdentityAccount,
+  IdentityOrganization,
+} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
+interface CurrentAccount extends IdentityAccount {
+  // These are optional properties of the current account, which are not retrieved from identity.
+  billingProvider?: string
+}
+
+interface CurrentOrg extends IdentityOrganization {
+  // These are optional properties of the current org, which are not retrieved from identity.
+  creationDate?: string
+  description?: string
+  isRegionBeta?: string
+  provider?: string
+  regionCode?: string
+  regionName?: string
+}
+
+interface CurrentUser extends IdentityUser {
+  // These are optional properties of the current user, which are not retrieved from identity.
+}
+
+// May need to extend user properties once profile page work begins.
+
+interface CurrentIdentity {
+  user: CurrentUser
+  account: CurrentAccount
+  org: CurrentOrg
+}
+
 export interface QuartzIdentityState {
-  currentIdentity: Identity
-  currentAccountDetails: Account
-  currentOrgDetails: Organization
+  currentIdentity: CurrentIdentity
   status: RemoteDataState
 }
 
@@ -17,6 +46,7 @@ import {
   Actions,
   SET_QUARTZ_IDENTITY,
   SET_QUARTZ_IDENTITY_STATUS,
+  SET_CURRENT_BILLING_PROVIDER,
 } from 'src/identity/actions/creators'
 
 export const initialState: QuartzIdentityState = {
@@ -66,6 +96,8 @@ export const initialState: QuartzIdentityState = {
 export default (state = initialState, action: Actions): QuartzIdentityState =>
   produce(state, draftState => {
     switch (action.type) {
+      // Remove currentOrgDetails and currentAccount details, let's keep them in one object.
+
       case SET_QUARTZ_IDENTITY: {
         draftState.currentIdentity = action.identity.currentIdentity
         draftState.currentOrgDetails = action.identity.currentOrgDetails
@@ -75,6 +107,11 @@ export default (state = initialState, action: Actions): QuartzIdentityState =>
       }
       case SET_QUARTZ_IDENTITY_STATUS: {
         draftState.status = action.status
+        return
+      }
+      case SET_CURRENT_BILLING_PROVIDER: {
+        draftState.currentIdentity.account.billingProvider =
+          action.billingProvider
         return
       }
     }

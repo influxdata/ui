@@ -50,11 +50,30 @@ describe('FluxQueryBuilder', () => {
 
     it('measurement selector can search and select a measurement', () => {
       // select a bucket
+      cy.getByTestID('bucket-selector--dropdown-button').click()
+      cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+
       // open the measurement list
+      cy.getByTestID('measurement-selector--dropdown-button').click()
+
       // search for a measurement
+      cy.get('.searchable-dropdown--input-container').type(measurement)
+
       // should find the measurement and select it
+      cy.get('.cf-dropdown-item')
+        .should('contain', measurement)
+        .click()
+
       // check the measurement is selected
-      // upon selection, will show a list of fields and tag keys to the user
+      cy.getByTestID('measurement-selector--dropdown-button').contains(
+        measurement
+      )
+
+      // upon selection, will show a search bar
+      // and a list of fields and tag keys
+      cy.get('.search-widget-input').should('be.visible')
+      cy.get('.field-selector').should('be.visible')
+      cy.get('.tag-selector-key').should('be.visible')
     })
 
     describe('field selector', () => {

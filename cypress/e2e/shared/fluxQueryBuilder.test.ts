@@ -34,6 +34,10 @@ describe('FluxQueryBuilder', () => {
     const bucketName = 'NOAA National Buoy Data'
 
     describe('bucket selector', () => {
+      it('can search for a bucket', () => {
+
+      })
+
       it('upon selection, will show measurement selector', () => {
         // no other selectors should be visible, except the bucket selector
         cy.get('.schema-browser')
@@ -57,6 +61,10 @@ describe('FluxQueryBuilder', () => {
         // select a bucket
       })
 
+      it('can search for a measurement', () => {
+
+      })
+      
       it('show empyt list if fetching measurements failed', () => {})
 
       it('allow the user to select one (and only one) measurement', () => {})

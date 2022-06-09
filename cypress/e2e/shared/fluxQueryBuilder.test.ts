@@ -23,6 +23,8 @@ describe('FluxQueryBuilder', () => {
   describe('Schema browser', () => {
     const bucketName = 'NOAA National Buoy Data'
     const measurement = 'ndbc'
+    const searchField = 'air_temp_degc'
+    const searchTagKey = 'station_id'
 
     it('bucket selector can search and select a bucket', () => {
       // no other selectors should be visible, except the bucket selector
@@ -76,6 +78,29 @@ describe('FluxQueryBuilder', () => {
       cy.get('.tag-selector-key').should('be.visible')
     })
 
+    it('search bar can search fields and tag keys dynamically', () => {
+      // select a bucket
+      cy.getByTestID('bucket-selector--dropdown-button').click()
+      cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+
+      // select a measurement
+      cy.getByTestID('measurement-selector--dropdown-button').click()
+      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
+
+      // search a feild, should contain only the feild, no tag keys
+      cy.get('.container-side-bar .search-widget-input').type(searchField)
+      cy.get('.field-selector--list-item--wrapper').contains(searchField)
+      cy.get('.tag-selector-key--list-item').contains('No Tags Found')
+
+      // clear the search bar
+      cy.getByTestID('dismiss-button').click()
+
+      // search a tag key, should contain only that tag key, no fields
+      cy.get('.container-side-bar .search-widget-input').type(searchTagKey)
+      cy.get('.field-selector--list-item').contains('No Fields Found')
+      cy.get('.tag-selector-key--list-item').contains(searchTagKey)
+    })
+
     describe('field selector', () => {
       beforeEach(() => {
         // select a bucket
@@ -100,15 +125,6 @@ describe('FluxQueryBuilder', () => {
       it('allow an expansion of tag keys into a list of tag values', () => {})
 
       it('allow one or more tag values to be selected', () => {})
-    })
-
-    describe('search bar for fields and tag keys', () => {
-      beforeEach(() => {
-        // select a bucket
-        // select a measurement
-      })
-
-      it('can search dynamically', () => {})
     })
   })
 })

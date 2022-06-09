@@ -95,7 +95,6 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
         )
         |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
         |> sort(columns: ["lowercase"])
-        |> drop(columns: ["lowercase"])
         |> limit(n: ${limit})
       `
     }

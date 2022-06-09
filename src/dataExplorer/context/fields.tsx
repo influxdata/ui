@@ -111,7 +111,6 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
         ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
         |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
         |> sort(columns: ["lowercase"])
-        |> drop(columns: ["lowercase"])
         |> limit(n: ${limit})
       `
     }

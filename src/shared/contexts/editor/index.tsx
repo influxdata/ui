@@ -1,13 +1,30 @@
-import React, {FC, createContext, useState, useCallback} from 'react'
-import {EditorType, FluxFunction, FluxToolbarFunction} from 'src/types'
+import React, {
+  FC,
+  createContext,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useContext,
+} from 'react'
+import {EditorType, FluxFunction} from 'src/types'
 
 // Helpers
 import {
-  InjectionType,
+  InjectionMode,
   InjectionOptions,
   calcInjectionPosition,
   moveCursorAndTriggerSuggest,
 } from 'src/shared/contexts/editor/injection'
+import {
+  Injection,
+  InjectionType,
+  InjectionContext,
+  RawInjection,
+  FunctionInjection,
+  VariableInjection,
+  SecretInjection,
+} from 'src/shared/contexts/injection'
 import {generateImport} from 'src/shared/contexts/editor/insertFunction'
 import {
   isPipeTransformation,
@@ -22,37 +39,29 @@ import {CLOUD} from 'src/shared/constants'
 export interface EditorContextType {
   editor: EditorType | null
   setEditor: (editor: EditorType) => void
-  inject: (options: InjectionOptions) => void
-  injectFunction: (fn, cbToParent) => void
-  injectVariable: (variableName, cbToParent) => void
+  onUpdate: (cb: (text: string) => void) => void
 }
 
 const DEFAULT_CONTEXT: EditorContextType = {
   editor: null,
   setEditor: _ => {},
-  inject: _ => {},
-  injectFunction: (_, __) => {},
-  injectVariable: (_, __) => {},
+  onUpdate: _ => {},
 }
 
 export const EditorContext = createContext<EditorContextType>(DEFAULT_CONTEXT)
 
 export const EditorProvider: FC = ({children}) => {
+  const {onInject} = useContext(InjectionContext)
   const [editor, setEditor] = useState<EditorType>(null)
+  const updateCBs = useRef([])
 
-  const inject = useCallback(
+  const _inject = useCallback(
     (options: InjectionOptions) => {
       if (!editor) {
         return {}
       }
 
-      const {
-        header,
-        text: initT,
-        type,
-        triggerSuggest,
-        cbParentOnUpdateText,
-      } = options
+      const {header, text: initT, type, triggerSuggest} = options
       const injectionPosition = calcInjectionPosition(editor, type)
       const {
         row,
@@ -69,7 +78,7 @@ export const EditorProvider: FC = ({children}) => {
         text = `${text}\n`
       }
 
-      const column = type == InjectionType.OnOwnLine ? 1 : initC
+      const column = type == InjectionMode.OnOwnLine ? 1 : initC
       const range = new monaco.Range(row, column, row, column)
       const edits = [
         {
@@ -92,7 +101,6 @@ export const EditorProvider: FC = ({children}) => {
       }
 
       editor.executeEdits('', edits)
-      cbParentOnUpdateText(editor.getValue())
 
       if (isFlagEnabled('fluxDynamicDocs') && triggerSuggest) {
         moveCursorAndTriggerSuggest(
@@ -106,15 +114,23 @@ export const EditorProvider: FC = ({children}) => {
     [editor]
   )
 
+  const injectRaw = useCallback(
+    (injection: RawInjection) => {
+      _inject({
+        text: injection.text,
+        type: InjectionMode.SameLine,
+        triggerSuggest: false,
+      })
+    },
+    [_inject]
+  )
+
   const injectFunction = useCallback(
-    (
-      rawFn: FluxToolbarFunction | FluxFunction,
-      cbParentOnUpdateText: (t: string) => void
-    ): void => {
+    (injection: FunctionInjection) => {
       const fn =
         CLOUD && isFlagEnabled('fluxDynamicDocs')
-          ? getFluxExample(rawFn as FluxFunction)
-          : (rawFn as FluxFunction)
+          ? getFluxExample(injection.function as FluxFunction)
+          : (injection.function as FluxFunction)
 
       const text = isPipeTransformation(fn)
         ? `  |> ${fn.example.trimRight()}`
@@ -124,46 +140,78 @@ export const EditorProvider: FC = ({children}) => {
 
       const type =
         isPipeTransformation(fn) || functionRequiresNewLine(fn.name)
-          ? InjectionType.OnOwnLine
-          : InjectionType.SameLine
+          ? InjectionMode.OnOwnLine
+          : InjectionMode.SameLine
 
-      const options = {
+      _inject({
         text,
         type,
         header,
         triggerSuggest: true,
-        cbParentOnUpdateText,
-      }
-      inject(options)
+      })
     },
-    [inject]
+    [_inject]
   )
 
   const injectVariable = useCallback(
-    (variableName: string, cbToParent: (t: string) => void) => {
-      if (!editor) {
-        return null
-      }
-
-      const options = {
-        text: `v.${variableName}`,
-        type: InjectionType.SameLine,
+    (injection: VariableInjection) => {
+      _inject({
+        text: `v.${injection.variable}`,
+        type: InjectionMode.SameLine,
         triggerSuggest: false,
-        cbParentOnUpdateText: cbToParent,
-      }
-      inject(options)
+      })
     },
-    [editor, inject]
+    [_inject]
   )
+
+  const injectSecret = useCallback(
+    (injection: SecretInjection) => {
+      _inject({
+        text: `secrets.get(key: "${injection.secret.id}") `,
+        type: InjectionMode.SameLine,
+        header: `import "influxdata/influxdb/secrets"`,
+      })
+    },
+    [_inject]
+  )
+
+  const _setEditor = (nextEditor: EditorType) => {
+    nextEditor.getModel().onDidChangeContent(() => {
+      const val = editor.getModel().getValue()
+      updateCBs.current.forEach(cb => cb(val))
+    })
+
+    setEditor(nextEditor)
+  }
+
+  const onUpdate = (cb: (text: string) => void) => {
+    updateCBs.current.push(cb)
+  }
+
+  useEffect(() => {
+    onInject((injection: Injection) => {
+      switch (injection.type) {
+        case InjectionType.Function:
+          injectFunction(injection)
+          break
+        case InjectionType.Variable:
+          injectVariable(injection)
+          break
+        case InjectionType.Secret:
+          injectSecret(injection)
+          break
+        default:
+          injectRaw(injection as RawInjection)
+      }
+    })
+  }, [])
 
   return (
     <EditorContext.Provider
       value={{
         editor,
-        setEditor,
-        inject,
-        injectFunction,
-        injectVariable,
+        setEditor: _setEditor,
+        onUpdate,
       }}
     >
       {children}
@@ -171,9 +219,4 @@ export const EditorProvider: FC = ({children}) => {
   )
 }
 
-export {
-  InjectionType,
-  InjectionOptions,
-  calcInjectionPosition,
-  moveCursorAndTriggerSuggest,
-}
+export {calcInjectionPosition, moveCursorAndTriggerSuggest}

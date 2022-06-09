@@ -32,7 +32,12 @@ import {
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {EditorContext} from 'src/shared/contexts/editor'
+import {EditorProvider} from 'src/shared/contexts/editor'
+import {
+  InjectionType,
+  InjectionProvider,
+  InjectionContext,
+} from 'src/shared/contexts/injection'
 import {remove} from 'src/shared/contexts/query'
 import Expressions from 'src/flows/pipes/Notification/Expressions'
 import Measurement from 'src/flows/pipes/Notification/Measurement'
@@ -48,7 +53,7 @@ const NotificationMonacoEditor = lazy(() =>
 )
 
 // Types
-import {RemoteDataState, EditorType} from 'src/types'
+import {RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 // Utils
@@ -72,12 +77,12 @@ import CreateSecretForm from 'src/secrets/components/CreateSecret/CreateSecretFo
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
   const {id, data, update, results, loading} = useContext(PipeContext)
+  const {inject} = useContext(InjectionContext)
   const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
   const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
-  const {editor} = useContext(EditorContext)
 
   let intervalError = ''
   let offsetError = ''
@@ -188,29 +193,15 @@ const Notification: FC<PipeProp> = ({Context}) => {
     })
   }
 
-  const inject = useCallback(
+  const injectExp = useCallback(
     (exp: string): void => {
-      if (!editor) {
-        return
-      }
-      const p = editor.getPosition()
-      const edits = [
-        {
-          range: new monaco.Range(
-            p.lineNumber,
-            p.column,
-            p.lineNumber,
-            p.column
-          ),
-          text: ` \$\{r.${exp}\} `,
-        },
-      ]
-
-      editor.executeEdits('', edits)
-      updateMessage(editor.getValue())
+      inject({
+        type: InjectionType.Raw,
+        text: ` \$\{r.${exp}\} `,
+      })
       event('Injecting Expression into Alert Message')
     },
-    [editor]
+    [inject]
   )
 
   const warningMessage = useMemo(() => {
@@ -292,7 +283,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     } else {
       event('Opening the Expressions Sidebar')
       show(id)
-      showSub(<Expressions parsed={results?.parsed} onSelect={inject} />)
+      showSub(<Expressions parsed={results?.parsed} onSelect={injectExp} />)
     }
   }
 
@@ -404,11 +395,6 @@ const Notification: FC<PipeProp> = ({Context}) => {
                         onClick={launcher}
                         color={ComponentColor.Secondary}
                         testID="notification-exp-button"
-                        status={
-                          editor
-                            ? ComponentStatus.Default
-                            : ComponentStatus.Loading
-                        }
                       />
                     </FlexBox.Child>
                     <FlexBox.Child grow={0} shrink={0}>
@@ -465,10 +451,12 @@ const Notification: FC<PipeProp> = ({Context}) => {
                               />
                             }
                           >
-                            <NotificationMonacoEditor
-                              text={data.message}
-                              onChangeText={updateMessage}
-                            />
+                            <EditorProvider>
+                              <NotificationMonacoEditor
+                                text={data.message}
+                                onChangeText={updateMessage}
+                              />
+                            </EditorProvider>
                           </Suspense>
                         </div>
                       </Form.Element>
@@ -490,8 +478,8 @@ const Notification: FC<PipeProp> = ({Context}) => {
   )
 }
 
-export default () => (
-  <EditorProvider>
-    <Notification />
-  </EditorProvider>
+export default ({Context}: PipeProp) => (
+  <InjectionProvider>
+    <Notification Context={Context} />
+  </InjectionProvider>
 )

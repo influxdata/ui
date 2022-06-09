@@ -10,7 +10,7 @@ import Fn from 'src/shared/components/FilterList/MinimalistInjectOption'
 // State
 import {getFluxPackages} from 'src/shared/actions/fluxDocs'
 import {getAllFluxFunctions} from 'src/shared/selectors/app'
-import {EditorContext} from 'src/shared/contexts/editor'
+import {InjectionType, InjectionContext} from 'src/shared/contexts/injection'
 
 // Types
 import {FluxFunction} from 'src/types/shared'
@@ -25,7 +25,7 @@ const TOOLTIP = `The flux standard library contains several packages, \
 functions, and variables which may be useful when constructing your flux query.`
 
 const FluxBrowser: FC = () => {
-  const {editor, injectFunction} = useContext(EditorContext)
+  const {inject} = useContext(InjectionContext)
 
   const dispatch = useDispatch()
   const fluxFunctions = useSelector(getAllFluxFunctions)
@@ -38,10 +38,13 @@ const FluxBrowser: FC = () => {
 
   const handleSelectItem = useCallback(
     (func: FluxFunction) => {
-      injectFunction(getFluxExample(func), _ => null)
+      inject({
+        type: InjectionType.Function,
+        function: getFluxExample(func),
+      })
       event('flux.function.injected', {name: `${func.package}.${func.name}`})
     },
-    [injectFunction, editor]
+    [inject]
   )
 
   const render = useCallback(
@@ -57,7 +60,7 @@ const FluxBrowser: FC = () => {
         ToolTipContent={FluxDocsTooltipContent}
       />
     ),
-    [handleSelectItem, editor]
+    [handleSelectItem]
   )
 
   return useMemo(
@@ -75,7 +78,7 @@ const FluxBrowser: FC = () => {
         />
       </div>
     ),
-    [editor, render, fluxFunctions, injectFunction]
+    [render, fluxFunctions]
   )
 }
 

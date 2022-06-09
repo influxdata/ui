@@ -2,7 +2,7 @@ import React, {FC, useState} from 'react'
 import {DraggableResizer, Orientation} from '@influxdata/clockface'
 
 // Components
-import {EditorProvider} from 'src/shared/contexts/editor'
+import {InjectionProvider} from 'src/shared/contexts/injection'
 import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import SidePane from 'src/dataExplorer/components/SidePane'
 import Schema from 'src/dataExplorer/components/Schema'
@@ -20,7 +20,7 @@ const FluxQueryBuilder: FC = () => {
   ])
 
   return (
-    <EditorProvider>
+    <InjectionProvider>
       <DraggableResizer
         handleOrientation={Orientation.Vertical}
         handlePositions={vertDragPosition}
@@ -39,7 +39,7 @@ const FluxQueryBuilder: FC = () => {
           <SidePane />
         </DraggableResizer.Panel>
       </DraggableResizer>
-    </EditorProvider>
+    </InjectionProvider>
   )
 }
 

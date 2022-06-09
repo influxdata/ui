@@ -19,11 +19,17 @@ import {
 
 // Types
 import {PipeProp} from 'src/types/flows'
+import {FluxFunction, FluxToolbarFunction} from 'src/types'
 
 // Context
 import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {EditorContext, EditorProvider} from 'src/shared/contexts/editor'
+import {EditorProvider} from 'src/shared/contexts/editor'
+import {
+  InjectionType,
+  InjectionContext,
+  InjectionProvider,
+} from 'src/shared/contexts/injection'
 import {VariablesContext} from 'src/flows/context/variables'
 
 // Components
@@ -48,7 +54,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   const {hideSub, id: showId, show, showSub, register} = useContext(
     SidebarContext
   )
-  const {editor, inject, injectFunction} = useContext(EditorContext)
+  const {inject} = useContext(InjectionContext)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
   const {variables} = useContext(VariablesContext)
@@ -62,7 +68,7 @@ const Query: FC<PipeProp> = ({Context}) => {
             {
               title: 'Inject Secret',
               disable: () => false,
-              menu: <SecretsList inject={inject} cbOnInject={updateText} />,
+              menu: <SecretsList inject={injectSecret} />,
             },
           ],
         },
@@ -83,11 +89,24 @@ const Query: FC<PipeProp> = ({Context}) => {
     [queries, activeQuery]
   )
 
-  const injectIntoEditor = useCallback(
-    (fn): void => {
-      injectFunction(fn, updateText)
+  const injectSecret = useCallback(
+    secret => {
+      inject({
+        type: InjectionType.Secret,
+        secret,
+      })
     },
-    [injectFunction, updateText]
+    [inject]
+  )
+
+  const injectFunction = useCallback(
+    (fn: FluxFunction | FluxToolbarFunction): void => {
+      inject({
+        type: InjectionType.Function,
+        function: fn,
+      })
+    },
+    [inject]
   )
 
   const launcher = useCallback(() => {
@@ -98,12 +117,12 @@ const Query: FC<PipeProp> = ({Context}) => {
       event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
       if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
-        showSub(<DynamicFunctions onSelect={injectIntoEditor} />)
+        showSub(<DynamicFunctions onSelect={injectFunction} />)
       } else {
-        showSub(<Functions onSelect={injectIntoEditor} />)
+        showSub(<Functions onSelect={injectFunction} />)
       }
     }
-  }, [injectIntoEditor, showId])
+  }, [injectFunction, showId])
 
   const controls = (
     <Button
@@ -137,19 +156,14 @@ const Query: FC<PipeProp> = ({Context}) => {
         </Suspense>
       </Context>
     ),
-    [
-      RemoteDataState.Loading,
-      query.text,
-      updateText,
-      editor,
-      variables,
-      launcher,
-    ]
+    [RemoteDataState.Loading, query.text, updateText, variables, launcher]
   )
 }
 
 export default ({Context}) => (
-  <EditorProvider>
-    <Query Context={Context} />
-  </EditorProvider>
+  <InjectionProvider>
+    <EditorProvider>
+      <Query Context={Context} />
+    </EditorProvider>
+  </InjectionProvider>
 )

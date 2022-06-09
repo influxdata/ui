@@ -21,6 +21,7 @@ import {
   ResultsContext,
 } from 'src/dataExplorer/components/ResultsContext'
 import {QueryProvider, QueryContext} from 'src/shared/contexts/query'
+import {EditorProvider} from 'src/shared/contexts/editor'
 
 // Components
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
@@ -99,7 +100,7 @@ const ResultsPane: FC = () => {
 
   const download = () => {
     event('CSV Download Initiated')
-    basic(text, {vars: rangeToParams(timeRange)}).promise.then(response => {
+    basic(text, {vars: rangeToParam(timeRange)}).promise.then(response => {
       if (response.type !== 'SUCCESS') {
         return
       }
@@ -111,7 +112,7 @@ const ResultsPane: FC = () => {
   const submit = () => {
     setStatus(RemoteDataState.Loading)
     query(text, {
-      vars: rangeToParams(timeRange),
+      vars: rangeToParam(timeRange),
     })
       .then(r => {
         setResult(r)
@@ -153,11 +154,13 @@ const ResultsPane: FC = () => {
                 />
               }
             >
-              <FluxMonacoEditor
-                variables={variables}
-                script={text}
-                onChangeScript={setText}
-              />
+              <EditorProvider>
+                <FluxMonacoEditor
+                  variables={variables}
+                  script={text}
+                  onChangeScript={setText}
+                />
+              </EditorProvider>
             </Suspense>
           </div>
           <div style={{width: '100%'}}>

@@ -1,11 +1,12 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useContext} from 'react'
 
 // Components
 import FluxFunctionsToolbar from 'src/timeMachine/components/fluxFunctionsToolbar/FluxFunctionsToolbar'
 import DynamicFluxFunctionsToolbar from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/FluxFunctionsToolbar'
 import VariableToolbar from 'src/timeMachine/components/variableToolbar/VariableToolbar'
 import FluxToolbarTab from 'src/timeMachine/components/FluxToolbarTab'
+import {InjectionType, InjectionContext} from 'src/shared/contexts/injection'
 
 // Types
 import {FluxToolbarFunction} from 'src/types'
@@ -14,21 +15,31 @@ import {FluxToolbarFunction} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-interface Props {
-  onInsertFluxFunction: (func: FluxToolbarFunction) => void
-  onInsertVariable: (variableName: string) => void
-}
-
 type FluxToolbarTabs = 'functions' | 'variables' | 'none'
 
-const FluxToolbar: FC<Props> = ({onInsertFluxFunction, onInsertVariable}) => {
+const FluxToolbar: FC = () => {
   const [activeTab, setActiveTab] = useState<FluxToolbarTabs>('functions')
+  const {inject} = useContext(InjectionContext)
 
   const handleTabClick = (id: FluxToolbarTabs): void => {
     setActiveTab(id)
   }
 
   let activeToolbar
+
+  const onInsertFluxFunction = (func: FluxToolbarFunction) => {
+    inject({
+      type: InjectionType.Function,
+      function: func,
+    })
+  }
+
+  const onInsertVariable = (variableName: string) => {
+    inject({
+      type: InjectionType.Variable,
+      variable: variableName,
+    })
+  }
 
   if (activeTab === 'functions') {
     if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {

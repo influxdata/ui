@@ -1,4 +1,4 @@
-export enum InjectionType {
+export enum InjectionMode {
   OnOwnLine = 'onOwnLine',
   SameLine = 'sameLine',
 }
@@ -13,14 +13,13 @@ export interface InjectionPosition {
 export interface InjectionOptions {
   header?: string | null
   text: string
-  type: InjectionType
+  type: InjectionMode
   triggerSuggest?: boolean
-  cbParentOnUpdateText: (t: string) => void
 }
 
 export function calcInjectionPosition(
   editor,
-  type: InjectionType
+  type: InjectionMode
 ): InjectionPosition {
   const {lineNumber, column: col} = editor.getPosition()
   let row = lineNumber
@@ -39,7 +38,7 @@ export function calcInjectionPosition(
   let textBehindCursor = currentLineText.slice(column - 1).trim()
 
   // if cursor has text in front of it, and should be onOwnRow
-  if (type == InjectionType.OnOwnLine && textAheadOfCursor) {
+  if (type == InjectionMode.OnOwnLine && textAheadOfCursor) {
     row++
     column = 1
   }
@@ -58,16 +57,16 @@ export function calcInjectionPosition(
 
   let shouldEndInNewLine = false
   // if cursor has text behind it, and should be onOwnRow
-  if (type == InjectionType.OnOwnLine && textBehindCursor) {
+  if (type == InjectionMode.OnOwnLine && textBehindCursor) {
     shouldEndInNewLine = true
   }
 
   const cursorInMiddleOfText = textAheadOfCursor && textBehindCursor
-  if (type == InjectionType.OnOwnLine && cursorInMiddleOfText) {
+  if (type == InjectionMode.OnOwnLine && cursorInMiddleOfText) {
     row++
     shouldEndInNewLine = true
   }
-  if (type == InjectionType.OnOwnLine) {
+  if (type == InjectionMode.OnOwnLine) {
     column = 1
   }
 

@@ -12,7 +12,7 @@ describe('FluxQueryBuilder', () => {
         })
       })
     })
-    cy.getByTestID('slide-toggle').then((toggle) => {
+    cy.getByTestID('slide-toggle').then(toggle => {
       // Switch to Flux Query Builder if it is not on
       if (toggle.find('.active').length === 0) {
         toggle.click()
@@ -27,8 +27,8 @@ describe('FluxQueryBuilder', () => {
     it('bucket selector can search and select a bucket', () => {
       // no other selectors should be visible, except the bucket selector
       cy.get('.schema-browser')
-      .find('.cf-dropdown')
-      .should('have.length', 1)
+        .find('.cf-dropdown')
+        .should('have.length', 1)
 
       // open the bucket list
       cy.getByTestID('bucket-selector--dropdown-button').click()
@@ -37,7 +37,9 @@ describe('FluxQueryBuilder', () => {
       cy.get('.searchable-dropdown--input-container').type(bucketName)
 
       // should find the bucket and select it
-      cy.get('.cf-dropdown-item').should('contain', bucketName).click()
+      cy.get('.cf-dropdown-item')
+        .should('contain', bucketName)
+        .click()
 
       // check the bucket is selected
       cy.getByTestID('bucket-selector--dropdown-button').contains(bucketName)
@@ -48,15 +50,10 @@ describe('FluxQueryBuilder', () => {
 
     it('measurement selector can search and select a measurement', () => {
       // select a bucket
-
       // open the measurement list
-
       // search for a measurement
-
       // should find the measurement and select it
-
       // check the measurement is selected
-
       // upon selection, will show a list of fields and tag keys to the user
     })
 

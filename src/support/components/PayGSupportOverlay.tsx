@@ -103,7 +103,12 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
     const descriptionWithOrgId = `${description}  [Org Id: ${orgID}]`
     const translatedSeverity = translateSeverityLevelForSfdc(severity)
     try {
-      await createSfdcSupportCase(descriptionWithOrgId, email, translatedSeverity, subject)
+      await createSfdcSupportCase(
+        descriptionWithOrgId,
+        email,
+        translatedSeverity,
+        subject
+      )
       event(
         'helpBar.paygSupportRequest.submitted',
         {},

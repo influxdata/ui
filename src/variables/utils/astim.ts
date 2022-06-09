@@ -19,11 +19,21 @@ const parseAllVariables = (ast: File): MemberExpression[] => {
 }
 
 export const parseASTIM = (query: string): ASTIM => {
-  const ast: File = parse(query)
-  // Using `any` to circumvent ts error
-  const variables: any = ast ? parseAllVariables(ast) : []
+  let ast: File = null
+  try {
+    ast = parse(query)
+  } catch (e) {
+    console.error(e)
+  }
+  const variables: MemberExpression[] = ast ? parseAllVariables(ast) : []
   const variableNames = new Set()
-  variables.forEach(variable => variableNames.add(variable.property.name))
+  variables.forEach(variable => {
+    if (variable.property.type === 'Identifier') {
+      variableNames.add(variable.property.name)
+    } else if (variable.property.type === 'StringLiteral') {
+      variableNames.add(variable.property.value)
+    }
+  })
 
   const hasVariable = (v: string): boolean => {
     return variableNames.has(v)

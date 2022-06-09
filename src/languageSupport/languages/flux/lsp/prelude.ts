@@ -40,7 +40,9 @@ class Prelude {
           )
         )
       }
-    } catch (_) {}
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   subscribeToModel(editor: EditorType) {

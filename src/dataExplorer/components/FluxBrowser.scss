@@ -1,0 +1,23 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.qx-builder-flux-browser {
+  .flux-toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    .flux-toolbar--search {
+      padding: 0px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+    }
+    .flux-toolbar--list {
+      overflow-y: scroll;
+      height: 100%;
+    }
+  }
+}

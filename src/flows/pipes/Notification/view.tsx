@@ -42,6 +42,7 @@ import {
 } from 'src/flows/pipes/Notification/endpoints'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import ExportTask from 'src/flows/pipes/Notification/ExportTask'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 const NotificationMonacoEditor = lazy(() =>
   import('src/flows/pipes/Notification/NotificationMonacoEditor')
 )
@@ -481,7 +482,9 @@ const Notification: FC<PipeProp> = ({Context}) => {
         </FlexBox>
         <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
           <FlexBox margin={ComponentSize.Medium}>
-            <ExportTask />
+            <ErrorBoundary>
+              <ExportTask />
+            </ErrorBoundary>
           </FlexBox>
         </Panel.Footer>
       </div>

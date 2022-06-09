@@ -146,13 +146,15 @@ const Query: FC<PipeProp> = ({Context}) => {
             />
           }
         >
-          <FluxMonacoEditor
-            script={query.text}
-            variables={variables}
-            onChangeScript={updateText}
-            wrapLines="on"
-            autogrow
-          />
+          <EditorProvider>
+            <FluxMonacoEditor
+              script={query.text}
+              variables={variables}
+              onChangeScript={updateText}
+              wrapLines="on"
+              autogrow
+            />
+          </EditorProvider>
         </Suspense>
       </Context>
     ),
@@ -162,8 +164,6 @@ const Query: FC<PipeProp> = ({Context}) => {
 
 export default ({Context}) => (
   <InjectionProvider>
-    <EditorProvider>
-      <Query Context={Context} />
-    </EditorProvider>
+    <Query Context={Context} />
   </InjectionProvider>
 )

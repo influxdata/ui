@@ -51,7 +51,7 @@ const DEFAULT_CONTEXT: EditorContextType = {
 export const EditorContext = createContext<EditorContextType>(DEFAULT_CONTEXT)
 
 export const EditorProvider: FC = ({children}) => {
-  const {onInject} = useContext(InjectionContext)
+  const {sub, unsub} = useContext(InjectionContext)
   const [editor, setEditor] = useState<EditorType>(null)
   const updateCBs = useRef([])
 
@@ -125,33 +125,34 @@ export const EditorProvider: FC = ({children}) => {
     [_inject]
   )
 
-  const injectFunction = useCallback(
-    (injection: FunctionInjection) => {
-      const fn =
-        CLOUD && isFlagEnabled('fluxDynamicDocs')
-          ? getFluxExample(injection.function as FluxFunction)
-          : (injection.function as FluxFunction)
+  const injectFunction = (injection: FunctionInjection) => {
+    if (!editor) {
+      return
+    }
 
-      const text = isPipeTransformation(fn)
-        ? `  |> ${fn.example.trimRight()}`
-        : `${fn.example.trimRight()}`
+    const fn =
+      CLOUD && isFlagEnabled('fluxDynamicDocs')
+        ? getFluxExample(injection.function as FluxFunction)
+        : (injection.function as FluxFunction)
 
-      const header = generateImport(fn as FluxFunction, editor.getValue())
+    const text = isPipeTransformation(fn)
+      ? `  |> ${fn.example.trimRight()}`
+      : `${fn.example.trimRight()}`
 
-      const type =
-        isPipeTransformation(fn) || functionRequiresNewLine(fn.name)
-          ? InjectionMode.OnOwnLine
-          : InjectionMode.SameLine
+    const header = generateImport(fn as FluxFunction, editor.getValue())
 
-      _inject({
-        text,
-        type,
-        header,
-        triggerSuggest: true,
-      })
-    },
-    [_inject]
-  )
+    const type =
+      isPipeTransformation(fn) || functionRequiresNewLine(fn.name)
+        ? InjectionMode.OnOwnLine
+        : InjectionMode.SameLine
+
+    _inject({
+      text,
+      type,
+      header,
+      triggerSuggest: true,
+    })
+  }
 
   const injectVariable = useCallback(
     (injection: VariableInjection) => {
@@ -177,7 +178,10 @@ export const EditorProvider: FC = ({children}) => {
 
   const _setEditor = (nextEditor: EditorType) => {
     nextEditor.getModel().onDidChangeContent(() => {
-      const val = editor.getModel().getValue()
+      if (!editor) {
+        return
+      }
+      const val = editor.getValue()
       updateCBs.current.forEach(cb => cb(val))
     })
 
@@ -189,7 +193,7 @@ export const EditorProvider: FC = ({children}) => {
   }
 
   useEffect(() => {
-    onInject((injection: Injection) => {
+    const cb = (injection: Injection) => {
       switch (injection.type) {
         case InjectionType.Function:
           injectFunction(injection)
@@ -203,8 +207,13 @@ export const EditorProvider: FC = ({children}) => {
         default:
           injectRaw(injection as RawInjection)
       }
-    })
-  }, [])
+    }
+    sub(cb)
+
+    return () => {
+      unsub(cb)
+    }
+  }, [sub, unsub, _inject, editor])
 
   return (
     <EditorContext.Provider

@@ -59,12 +59,14 @@ export type Injection =
 
 interface InjectionContextType {
   inject: (injection: Injection) => void
-  onInject: (cb: (injection: Injection) => void) => void
+  sub: (cb: (injection: Injection) => void) => void
+  unsub: (cb: (injection: Injection) => void) => void
 }
 
 const DEFAULT_CONTEXT = {
   inject: _ => {},
-  onInject: _ => {},
+  sub: _ => {},
+  unsub: _ => {},
 }
 
 export const InjectionContext = createContext<InjectionContextType>(
@@ -77,15 +79,19 @@ export const InjectionProvider: FC = ({children}) => {
   const inject = (injection: Injection) => {
     injectCBs.current.forEach(cb => cb(injection))
   }
-  const onInject = (cb: (injection: Injection) => void) => {
+  const sub = (cb: (injection: Injection) => void) => {
     injectCBs.current.push(cb)
+  }
+  const unsub = (cb: (injection: Injection) => void) => {
+    injectCBs.current = injectCBs.current.filter(c => c === cb)
   }
 
   return (
     <InjectionContext.Provider
       value={{
         inject,
-        onInject,
+        sub,
+        unsub,
       }}
     >
       {children}

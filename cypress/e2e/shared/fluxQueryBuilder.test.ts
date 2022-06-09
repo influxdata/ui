@@ -44,7 +44,10 @@ describe('FluxQueryBuilder', () => {
         .click()
 
       // check the bucket is selected
-      cy.getByTestID('bucket-selector--dropdown-button').contains(bucketName)
+      cy.getByTestID('bucket-selector--dropdown-button').should(
+        'contain',
+        bucketName
+      )
 
       // upon selection, should show measurement selector
       cy.getByTestID('measurement-selector--dropdown').should('be.visible')
@@ -67,7 +70,8 @@ describe('FluxQueryBuilder', () => {
         .click()
 
       // check the measurement is selected
-      cy.getByTestID('measurement-selector--dropdown-button').contains(
+      cy.getByTestID('measurement-selector--dropdown-button').should(
+        'contain',
         measurement
       )
 
@@ -89,16 +93,19 @@ describe('FluxQueryBuilder', () => {
 
       // search a feild, should contain only the feild, no tag keys
       cy.get('.container-side-bar .search-widget-input').type(searchField)
-      cy.get('.field-selector--list-item--wrapper').contains(searchField)
-      cy.get('.tag-selector-key--list-item').contains('No Tags Found')
+      cy.get('.field-selector--list-item--wrapper').should(
+        'contain',
+        searchField
+      )
+      cy.get('.tag-selector-key--list-item').should('contain', 'No Tags Found')
 
       // clear the search bar
       cy.getByTestID('dismiss-button').click()
 
       // search a tag key, should contain only that tag key, no fields
       cy.get('.container-side-bar .search-widget-input').type(searchTagKey)
-      cy.get('.field-selector--list-item').contains('No Fields Found')
-      cy.get('.tag-selector-key--list-item').contains(searchTagKey)
+      cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
+      cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)
     })
 
     describe('field selector', () => {

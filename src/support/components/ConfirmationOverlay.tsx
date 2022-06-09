@@ -48,7 +48,7 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
         textColor={InfluxColors.Yeti}
       >
         <div>
-          For critical issues, please contact the InfluxData support team at the
+          For critical issues, in addition to opening this case, please contact the InfluxData support team at the
           toll-free numbers{' '}
           <a href={INFLUXDATA_SUPPORT_CONTACT_US_TELEPHONE_LINK}>
             {INFLUXDATA_SUPPORT_CONTACT_US}

@@ -39,6 +39,9 @@ export const getQuartzIdentityThunk = () => async dispatch => {
       setQuartzIdentity(quartzIdentityDetails.data, RemoteDataState.Done)
     )
 
+    // Draw up diagrams of what's going on here --> showing how info gets transferred from API
+    // to reducers
+
     // For now, enable compatibility with quartzMe by also populating quartzMe state using the same data.
     const legacyMe = convertIdentityToMe(quartzIdentityDetails.data)
 
@@ -119,6 +122,8 @@ export const convertIdentityToMe = (
     currentOrgDetails,
   } = quartzIdentity
   const {account, org, user} = currentIdentity
+
+  // Consider placing this in the API layer
 
   const legacyMe = {
     // User Data

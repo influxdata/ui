@@ -163,7 +163,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       // Call the 'quartz/me' or 'quartz/identity' endpoint as applicable.
       dispatch(retrieveIdentityThunk)
     }
-  }, [dispatch, getBillingSettings])
+  }, [getBillingSettings]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [errors, setErrors] = useState({
     notifyEmail: false,

@@ -55,9 +55,11 @@ export const getIdpeMeThunk = () => async (
       },
     })
 
-    updateReportingContext({
-      userID: user.id,
-    })
+    // DELETE THIS
+    // updateReportingContext({
+    //   userID: user.id,
+    // })
+
     HoneyBadger.setContext({
       user_id: user.id,
     })

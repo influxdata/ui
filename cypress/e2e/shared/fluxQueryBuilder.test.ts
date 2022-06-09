@@ -1,22 +1,6 @@
 import {Organization} from '../../../src/types'
 
 describe('FluxQueryBuilder', () => {
-  before(() => {
-    cy.flush()
-    cy.signin()
-    cy.get('@org').then(({id}: Organization) => {
-      cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.setFeatureFlags({newDataExplorer: true}).then(() => {
-          cy.visit(`${orgs}/${id}${explorer}`)
-          // Switch to Flux Query Builder
-          cy.getByTestID('slide-toggle')
-            .should('be.visible')
-            .click()
-        })
-      })
-    })
-  })
-
   beforeEach(() => {
     cy.flush()
     cy.signin()
@@ -28,50 +12,52 @@ describe('FluxQueryBuilder', () => {
         })
       })
     })
+    cy.getByTestID('slide-toggle').then((toggle) => {
+      // Switch to Flux Query Builder if it is not on
+      if (toggle.find('.active').length === 0) {
+        toggle.click()
+      }
+    })
   })
 
   describe('Schema browser', () => {
     const bucketName = 'NOAA National Buoy Data'
+    const measurement = 'ndbc'
 
-    describe('bucket selector', () => {
-      it('can search for a bucket', () => {
+    it('bucket selector can search and select a bucket', () => {
+      // no other selectors should be visible, except the bucket selector
+      cy.get('.schema-browser')
+      .find('.cf-dropdown')
+      .should('have.length', 1)
 
-      })
+      // open the bucket list
+      cy.getByTestID('bucket-selector--dropdown-button').click()
 
-      it('upon selection, will show measurement selector', () => {
-        // no other selectors should be visible, except the bucket selector
-        cy.get('.schema-browser')
-          .find('.cf-dropdown')
-          .should('have.length', 1)
+      // search for a bucket
+      cy.get('.searchable-dropdown--input-container').type(bucketName)
 
-        // open the bucket list
-        cy.getByTestID('bucket-selector--dropdown-button').click()
+      // should find the bucket and select it
+      cy.get('.cf-dropdown-item').should('contain', bucketName).click()
 
-        // select a bucket
-        cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
-        cy.getByTestID('bucket-selector--dropdown-button').contains(bucketName)
+      // check the bucket is selected
+      cy.getByTestID('bucket-selector--dropdown-button').contains(bucketName)
 
-        // upon selection, should show measurement selector
-        cy.getByTestID('measurement-selector--dropdown').should('be.visible')
-      })
+      // upon selection, should show measurement selector
+      cy.getByTestID('measurement-selector--dropdown').should('be.visible')
     })
 
-    describe('measurement selector', () => {
-      beforeEach(() => {
-        // select a bucket
-      })
+    it('measurement selector can search and select a measurement', () => {
+      // select a bucket
 
-      it('can search for a measurement', () => {
+      // open the measurement list
 
-      })
-      
-      it('show empyt list if fetching measurements failed', () => {})
+      // search for a measurement
 
-      it('allow the user to select one (and only one) measurement', () => {})
+      // should find the measurement and select it
 
-      it('upon selection, will show a list of fields and tag keys to the user', () => {
-        // only show bucket selector if no measurement is selected
-      })
+      // check the measurement is selected
+
+      // upon selection, will show a list of fields and tag keys to the user
     })
 
     describe('field selector', () => {

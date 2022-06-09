@@ -121,9 +121,10 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
 
       // if less than 8 items, show all the items, no "Load More" button
-      cy.get('.field-selector--list-item--wrapper')
-        .its('length')
-        .should('be.lte', 8)
+      cy.get('.field-selector--list-item--wrapper').should(
+        'have.length.at.most',
+        8
+      )
       cy.get('.load-more-button').should('not.exist')
     })
 
@@ -137,21 +138,20 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
       // if more than 8 items, show a 'Load More' option to load more
+      cy.get('.field-selector--list-item--wrapper').should('have.length', 8)
+      cy.get('.load-more-button')
+        .should('exist')
+        .click()
 
       // when load more is chosen, up to 25 additional entries will be shown
-
-      // if more than 25 more exists in the list, the user has the option to load more
-    })
-
-    describe('tag values', () => {
-      beforeEach(() => {
-        // select a bucket
-        // select a measurement
-      })
-
-      it('allow an expansion of tag keys into a list of tag values', () => {})
-
-      it('allow one or more tag values to be selected', () => {})
+      cy.get('.field-selector--list-item--wrapper').should(
+        'have.length.above',
+        8
+      )
+      cy.get('.field-selector--list-item--wrapper').should(
+        'have.length.at.most',
+        33
+      ) // 8 + 25
     })
   })
 })

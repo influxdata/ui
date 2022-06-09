@@ -54,7 +54,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   const me = useSelector(getMe)
 
   const [subject, setSubject] = useState('')
-  const [severity, setSeverity] = useState('')
+  const [severity, setSeverity] = useState('3 - Standard')
   const [description, setDescription] = useState('')
   const {onClose} = useContext(OverlayContext)
 

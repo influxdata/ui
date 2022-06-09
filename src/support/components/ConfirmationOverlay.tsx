@@ -53,7 +53,7 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
           <a href={INFLUXDATA_SUPPORT_CONTACT_US_TELEPHONE_LINK}>
             {INFLUXDATA_SUPPORT_CONTACT_US}
           </a>{' '}
-          and{' '}
+          or{' '}
           <a href={INFLUXDATA_SUPPORT_CONTACT_UK_TELEPHONE_LINK}>
             {INFLUXDATA_SUPPORT_CONTACT_UK}
           </a>

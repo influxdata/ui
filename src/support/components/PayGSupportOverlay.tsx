@@ -44,6 +44,23 @@ import {supportRequestError} from 'src/shared/copy/notifications/categories/help
 
 import './ContactSupport.scss'
 
+const translateSeverityLevelForSfdc = (severity: string): string => {
+  switch (severity) {
+    case '1 - Critical': {
+      return 'Severity 1'
+    }
+    case '2 - High': {
+      return 'Severity 2'
+    }
+    case '3 - Standard': {
+      return 'Severity 3'
+    }
+    case '4 - Request': {
+      return 'Severity 4'
+    }
+  }
+}
+
 interface OwnProps {
   onClose: () => void
 }
@@ -54,7 +71,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   const me = useSelector(getMe)
 
   const [subject, setSubject] = useState('')
-  const [severity, setSeverity] = useState('')
+  const [severity, setSeverity] = useState('3 - Standard')
   const [description, setDescription] = useState('')
   const {onClose} = useContext(OverlayContext)
 
@@ -83,8 +100,15 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
 
   const handleSubmit = async () => {
     const email = quartzMe?.email
+    const descriptionWithOrgId = `${description}  [Org Id: ${orgID}]`
+    const translatedSeverity = translateSeverityLevelForSfdc(severity)
     try {
-      await createSfdcSupportCase(description, email, severity, subject)
+      await createSfdcSupportCase(
+        descriptionWithOrgId,
+        email,
+        translatedSeverity,
+        subject
+      )
       event(
         'helpBar.paygSupportRequest.submitted',
         {},

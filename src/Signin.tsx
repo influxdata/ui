@@ -26,6 +26,7 @@ import {
   CLOUD,
   CLOUD_LOGIN_PATHNAME,
   CLOUD_SIGNIN_PATHNAME,
+  CLOUD_URL,
 } from 'src/shared/constants'
 
 // Types
@@ -114,8 +115,12 @@ export class Signin extends PureComponent<Props, State> {
       clearInterval(this.intervalID)
 
       if (CLOUD) {
-        if (isFlagEnabled('useQuartzLogin')) {
-          window.location.reload()
+        if (
+          isFlagEnabled('useQuartzLogin') &&
+          process.env.NODE_ENV &&
+          process.env.NODE_ENV !== 'development'
+        ) {
+          window.location.href = CLOUD_URL
           return
         }
 

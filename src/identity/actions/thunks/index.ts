@@ -1,35 +1,31 @@
 // Functions making API calls
 import {
-  Account,
   getAccount,
   getIdentity,
-  getOrg as getQuartzOrg,
+  getOrg,
+  Identity,
   Me,
 } from 'src/client/unityRoutes'
 
+import {Dispatch} from 'react'
+
+import {GetState} from 'src/types'
+
 // Actions
 import {
+  setCurrentOrgDetails,
+  setCurrentBillingProvider,
   setQuartzIdentity,
   setQuartzIdentityStatus,
+  // I think this should really be changed throughout to be action
+  // Compare to other files where getState was called.
+  Actions,
   // Actions,
 } from 'src/identity/actions/creators'
 import {setQuartzMeStatus} from 'src/me/actions/creators'
 
-// Selectors
-import {selectQuartzIdentity} from 'src/identity/selectors'
-
 // Types
 import {RemoteDataState} from 'src/types'
-import {QuartzIdentityState} from 'src/identity/reducers'
-import {setQuartzMe} from 'src/me/actions/creators'
-
-import {getState} from 'react-redux'
-
-interface AccountIdentityResponse {
-  status: string
-  data: QuartzIdentityState | null
-  error: string | null
-}
 
 /*
 These thunks are intended to be invoked only in connection with the new /quartz/identity
@@ -40,24 +36,25 @@ export const getQuartzIdentityThunk = () => async dispatch => {
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
-    const quartzIdentityDetails = await getQuartzIdentityDetails()
+    const quartzIdentity = await getIdentity({})
 
-    if (quartzIdentityDetails.error) {
-      throw new Error(quartzIdentityDetails.error)
+    if (quartzIdentity.status !== 200) {
+      throw new Error(quartzIdentity.data.message)
     }
 
-    dispatch(
-      setQuartzIdentity(quartzIdentityDetails.data, RemoteDataState.Done)
-    )
+    // Enable compatibility with /quartz/me.
+    const legacyMe = convertIdentityToMe(quartzIdentity.data)
 
-    // Draw up diagrams of what's going on here --> showing how info gets transferred from API
-    // to reducers
+    // this seems pretty duplicative
+    const identityDispatch = {
+      currentIdentity: quartzIdentity.data,
+      status: RemoteDataState.Loading,
+    }
 
+    dispatch(setQuartzIdentity(identityDispatch, RemoteDataState.Done))
     // For now, enable compatibility with quartzMe by also populating quartzMe state using the same data.
-    const legacyMe = convertIdentityToMe(quartzIdentityDetails.data)
-
-    dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
-    dispatch(setQuartzMeStatus(RemoteDataState.Done))
+    // dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
+    // dispatch(setQuartzMeStatus(RemoteDataState.Done))
   } catch (error) {
     console.error(error)
 
@@ -66,72 +63,16 @@ export const getQuartzIdentityThunk = () => async dispatch => {
   }
 }
 
-export const getQuartzIdentityDetails = async (): Promise<AccountIdentityResponse> => {
-  try {
-    const quartzIdentity = await getIdentity({})
-
-    if (quartzIdentity.status !== 200) {
-      throw new Error(quartzIdentity.data.message)
-    }
-
-    const {account, org} = quartzIdentity.data
-    const {id: orgId} = org
-
-    const accountPromise = getAccount({
-      accountId: account.id.toString(),
-    })
-
-    const orgPromise = getQuartzOrg({orgId: orgId})
-
-    // Once quartzMe is fully deprecated, we should consider adjusting the UI so that these API calls aren't required on login
-
-    return Promise.all([accountPromise, orgPromise])
-      .then(res => {
-        const [currentAccount, currentOrg] = res
-
-        if (currentAccount.status !== 200) {
-          throw new Error(currentAccount.data.message)
-        }
-
-        if (currentOrg.status !== 200) {
-          throw new Error(currentOrg.data.message)
-        }
-
-        return {
-          status: 'success',
-          data: {
-            currentIdentity: quartzIdentity.data,
-            currentOrgDetails: currentOrg.data,
-            currentAccountDetails: currentAccount.data,
-            status: RemoteDataState.Done,
-          },
-          error: null,
-        }
-      })
-      .catch(err => {
-        return {
-          status: 'failure',
-          data: null,
-          error: err.stack,
-        }
-      })
-  } catch (err) {
-    return {
-      status: 'failure',
-      data: null,
-      error: err.stack,
-    }
-  }
-}
-
-export const getBillingProviderThunk = async () => {
+export const getBillingProviderThunk = () => async (
+  dispatch: Dispatch<Actions>,
+  getState: GetState
+) => {
   dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
-  // Right now, the only additional information provided by this endpoint beyond what was
-  // provided by the /identity endpoint is billingProvider.
-  const quartzIdentity = getState()
+  // At moment, the additional information provideed by account endpoint beyond identity is billing provider.
+  const state = getState()
 
   // /identity returns account ID as a number, but getAccount expects the ID as a string.
-  const accountIdString = quartzIdentity?.currentIdentity?.account?.id.toString()
+  const accountIdString = state?.identity?.currentIdentity?.account?.id.toString()
 
   const accountDetails = await getAccount({
     accountId: accountIdString,
@@ -141,19 +82,35 @@ export const getBillingProviderThunk = async () => {
     throw new Error(accountDetails.data.message)
   }
 
-  dispatch(setQuartzAccountDetails(accountDetails.data.billing_provider))
+  dispatch(setCurrentBillingProvider(accountDetails.data.billing_provider))
   dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 }
 
-export const convertIdentityToMe = (
-  quartzIdentity: QuartzIdentityState
-): Me => {
-  const {
-    currentIdentity,
-    currentAccountDetails,
-    currentOrgDetails,
-  } = quartzIdentity
-  const {account, org, user} = currentIdentity
+export const getCurrentOrgDetailsThunk = () => async (
+  // I think we only need one action imported here
+  dispatch: Dispatch<Actions>,
+  getState: GetState
+) => {
+  dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
+
+  const state = getState()
+
+  const orgId = state?.identity?.currentIdentity?.org?.id
+
+  const orgDetails = await getOrg({
+    orgId: orgId,
+  })
+
+  if (orgDetails.status !== 200) {
+    throw new Error(orgDetails.data.message)
+  }
+
+  dispatch(setCurrentOrgDetails(orgDetails.data))
+  dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
+}
+
+export const convertIdentityToMe = (quartzIdentity: Identity): Me => {
+  const {account, org, user} = quartzIdentity
 
   // Consider placing this in the API layer
 
@@ -168,14 +125,20 @@ export const convertIdentityToMe = (
     accountCreatedAt: account.accountCreatedAt,
     accountType: account.type,
     paygCreditStartDate: account.paygCreditStartDate,
-    billingProvider: currentAccountDetails.billing_provider,
+    billingProvider: '',
+    // billingProvider: account.billingProvider,
 
     // Organization Data
+    // Need this separately retrieved from elsewhere.
     clusterHost: org.clusterHost,
-    regionCode: currentOrgDetails.regionCode,
-    isRegionBeta: currentOrgDetails.isRegionBeta,
-    regionName: currentOrgDetails.regionName,
+    regionCode: '',
+    isRegionBeta: '',
+    regionName: '',
+    // regionCode: org.regionCode ? org.regionCode : '',
+    // isRegionBeta: org.isRegionBeta ? org.isRegionBeta : '',
+    // regionName: org.regionName ? org.regionName : '',
   }
 
+  // Need to fix typing here.
   return legacyMe
 }

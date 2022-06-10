@@ -46,6 +46,7 @@ import {
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 
@@ -88,17 +89,32 @@ class DashboardPage extends Component<Props> {
           <Page titleTag={this.pageTitle} testID="dashboard-page">
             <LimitChecker>
               <HoverTimeProvider>
+                {isFlagEnabled('openCellPage') === false && (
+                  <>
+                    <DashboardHeader onManualRefresh={onManualRefresh} />
+                    <RateLimitAlert
+                      alertOnly={true}
+                      location="dashboard page"
+                    />
+                    <VariablesControlBar />
+                    <ErrorBoundary>
+                      <DashboardComponent manualRefresh={manualRefresh} />
+                    </ErrorBoundary>
+                  </>
+                )}
                 <Switch>
-                  <Route
-                    path={dashRoute}
-                    render={() => (
-                      <SingleDashboardPage
-                        manualRefresh={manualRefresh}
-                        onManualRefresh={onManualRefresh}
-                      />
-                    )}
-                    exact
-                  />
+                  <FeatureFlag name="openCellPage">
+                    <Route
+                      path={dashRoute}
+                      render={() => (
+                        <SingleDashboardPage
+                          manualRefresh={manualRefresh}
+                          onManualRefresh={onManualRefresh}
+                        />
+                      )}
+                      exact
+                    />
+                  </FeatureFlag>
                   <Route
                     path={`${dashRoute}/cells/new`}
                     component={NewViewVEO}

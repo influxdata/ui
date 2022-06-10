@@ -46,7 +46,7 @@ const OrgProfileTab: FC = () => {
         id="orgName"
         label="Name"
         src={org.name}
-        renameableOrg={true}
+        isRenameableOrg={true}
       />
       {expectQuartzData && hasSomeQuartzOrgData && (
         <>

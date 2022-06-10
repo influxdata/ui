@@ -29,7 +29,7 @@ interface Props {
   label: string
   src: string
   name?: string
-  renameableOrg?: boolean
+  isRenameableOrg?: boolean
 }
 
 const CopyableLabeledData: FC<Props> = ({
@@ -37,7 +37,7 @@ const CopyableLabeledData: FC<Props> = ({
   label,
   src,
   name,
-  renameableOrg,
+  isRenameableOrg,
 }) => {
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
@@ -80,7 +80,7 @@ const CopyableLabeledData: FC<Props> = ({
             testID={`copy-btn--${id}`}
             onCopy={generateCopyText}
           />
-          {renameableOrg && (
+          {isRenameableOrg && (
             <Button
               testID="rename-org--button"
               text="Rename"

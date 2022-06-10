@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {FluxFunction} from 'src/types/shared'
 import Fn from 'src/shared/components/FilterList/InjectionOption'
 import FilterList from 'src/shared/components/FilterList/FilterList'
-import FluxDocsTooltipContent from 'src/shared/components/functions/perFunction/FluxDocsTooltipContent'
+import FluxDocsTooltipContent from 'src/shared/components/FluxDocsTooltipContent'
 
 // Actions
 import {getFluxPackages} from 'src/shared/actions/fluxDocs'

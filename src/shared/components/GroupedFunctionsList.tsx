@@ -5,7 +5,7 @@ import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
 import Fn from 'src/shared/components/FilterList/InjectionOption'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
-import FunctionTooltipContent from 'src/shared/components/functions/perFunction/FunctionToolTipContent'
+import FunctionTooltipContent from 'src/shared/components/FunctionToolTipContent'
 
 interface Props {
   onSelect: (fn: FluxToolbarFunction) => void

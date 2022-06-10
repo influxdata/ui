@@ -166,17 +166,6 @@ const TreeSidebar: FC<ReduxProps> = ({
             <TreeNav.SubMenu position={PopoverPosition.ToTheRight}>
               <TreeNav.SubHeading label="Support" />
               <TreeNav.SubItem
-                id="documentation"
-                label="Documentation"
-                testID="nav-subitem-documentation"
-                linkElement={() => (
-                  <SafeBlankLink
-                    href="https://docs.influxdata.com/"
-                    onClick={() => handleEventing('documentation')}
-                  />
-                )}
-              />
-              <TreeNav.SubItem
                 id="faqs"
                 label="FAQs"
                 testID="nav-subitem-faqs"
@@ -184,6 +173,28 @@ const TreeSidebar: FC<ReduxProps> = ({
                   <SafeBlankLink
                     href="https://docs.influxdata.com/influxdb/cloud/reference/faq/"
                     onClick={() => handleEventing('faq')}
+                  />
+                )}
+              />
+              <TreeNav.SubItem
+                id="status-page"
+                label="Status Page"
+                testID="nav-subitem-status"
+                linkElement={() => (
+                  <SafeBlankLink
+                    href="https://status.influxdata.com"
+                    onClick={() => handleEventing('status-page')}
+                  />
+                )}
+              />
+              <TreeNav.SubItem
+                id="documentation"
+                label="Documentation"
+                testID="nav-subitem-documentation"
+                linkElement={() => (
+                  <SafeBlankLink
+                    href="https://docs.influxdata.com/"
+                    onClick={() => handleEventing('documentation')}
                   />
                 )}
               />
@@ -224,6 +235,17 @@ const TreeSidebar: FC<ReduxProps> = ({
                 testID="nav-subitem-influxdb-slack"
                 linkElement={() => (
                   <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
+                )}
+              />
+              <TreeNav.SubItem
+                id="influxUniversity"
+                label="InfluxDB University"
+                testID="nav-subitem-university"
+                linkElement={() => (
+                  <SafeBlankLink
+                    href="https://university.influxdata.com/"
+                    onClick={() => handleEventing('influxdbUniversity')}
+                  />
                 )}
               />
             </TreeNav.SubMenu>

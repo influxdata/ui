@@ -22,7 +22,7 @@ import {NotificationEndpoint, AppState, ResourceType} from 'src/types'
 import {getByID} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
-const EditEndpointOverlay: FC<Props> = () => {
+const EditEndpointOverlay: FC = () => {
   const dispatch = useDispatch()
   const {endpointID} = useParams<{endpointID: string}>()
   const endpoint = useSelector((state: AppState) => {

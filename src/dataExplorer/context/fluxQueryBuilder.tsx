@@ -5,7 +5,9 @@ import React, {
   useMemo,
   useContext,
   useCallback,
+  useEffect,
 } from 'react'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 // Context
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
@@ -14,6 +16,14 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
 import {Bucket} from 'src/types'
+
+const useLocalStorageState = createLocalStorageStateHook(
+  'dataExplorer.schema',
+  {
+    bucket: null,
+    measurement: null,
+  }
+)
 
 const DEBOUNCE_TIMEOUT = 500
 let timer
@@ -64,17 +74,19 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
 
+  const [selection, setSelection] = useLocalStorageState()
+
   // States
-  const [selectedBucket, setSelectedBucket] = useState(null)
-  const [selectedMeasurement, setSelectedMeasurement] = useState('')
   const [query, setQuery] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSelectBucket = (bucket: Bucket): void => {
-    setSelectedBucket(bucket)
+    selection.bucket = bucket
+    selection.measurement = null
+
+    setSelection({...selection})
 
     // Reset measurement, tags, and fields
-    setSelectedMeasurement('')
     resetFields()
     resetTags()
 
@@ -83,35 +95,51 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectMeasurement = (measurement: string): void => {
-    setSelectedMeasurement(measurement)
+    selection.measurement = measurement
+    setSelection({...selection})
 
     // Reset fields and tags
     resetFields()
     resetTags()
 
     // Get fields and tags
-    getFields(selectedBucket, measurement)
-    getTagKeys(selectedBucket, measurement)
+    getFields(selection.bucket, measurement)
+    getTagKeys(selection.bucket, measurement)
   }
 
   const handleSearchTerm = useCallback(
     (searchTerm: string): void => {
       setSearchTerm(searchTerm)
       debouncer(() => {
-        getFields(selectedBucket, selectedMeasurement, searchTerm)
-        getTagKeys(selectedBucket, selectedMeasurement, searchTerm)
+        getFields(selection.bucket, selection.measurement, searchTerm)
+        getTagKeys(selection.bucket, selection.measurement, searchTerm)
       })
     },
-    [getFields, getTagKeys, selectedBucket, selectedMeasurement]
+    [getFields, getTagKeys, selection.bucket, selection.measurement]
   )
+
+  // initial load
+  useEffect(() => {
+    if (!selection.bucket || !selection.measurement) {
+      return
+    }
+
+    // Reset fields and tags
+    resetFields()
+    resetTags()
+
+    // Get fields and tags
+    getFields(selection.bucket, selection.measurement)
+    getTagKeys(selection.bucket, selection.measurement)
+  }, [])
 
   return useMemo(
     () => (
       <FluxQueryBuilderContext.Provider
         value={{
           // Schema
-          selectedBucket,
-          selectedMeasurement,
+          selectedBucket: selection.bucket,
+          selectedMeasurement: selection.measurement,
           searchTerm,
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,
@@ -127,8 +155,8 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     ),
     [
       // Schema
-      selectedBucket,
-      selectedMeasurement,
+      selection.bucket,
+      selection.measurement,
       searchTerm,
 
       // Query building

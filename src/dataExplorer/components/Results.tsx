@@ -8,8 +8,13 @@ import {
   ComponentStatus,
   ComponentColor,
 } from '@influxdata/clockface'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
 
-import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
+import {
+  RemoteDataState,
+  ViewProperties,
+  SimpleTableViewProperties,
+} from 'src/types'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
@@ -21,6 +26,22 @@ import {
 } from 'src/visualization'
 
 import './Results.scss'
+
+interface LocalState {
+  visualization: 'table' | 'graph'
+  properties: ViewProperties
+}
+
+const useLocalStorageState = createLocalStorageStateHook(
+  'dataExplorer.results',
+  {
+    visualization: 'table',
+    properties: {
+      type: 'simple-table',
+      showAll: false,
+    } as SimpleTableViewProperties,
+  } as LocalState
+)
 
 // simplified version migrated from src/flows/pipes/Table/view.tsx
 const QueryStat: FC = () => {
@@ -63,26 +84,18 @@ const EmptyResults: FC = () => {
 const Results: FC = () => {
   const [search, setSearch] = useState('')
   const {result, status} = useContext(ResultsContext)
-  const [vizState, setVizState] = useState('table')
-  const [viewProperties, setViewProperties] = useState(
-    SUPPORTED_VISUALIZATIONS['xy'].initial
-  )
+  const [view, setView] = useLocalStorageState()
 
   let resultView
 
   if (status === RemoteDataState.NotStarted) {
     resultView = <EmptyResults />
   } else {
-    if (vizState === 'table') {
+    if (view.visualization === 'table') {
       resultView = (
         <View
           loading={status}
-          properties={
-            {
-              type: 'simple-table',
-              showAll: false,
-            } as SimpleTableViewProperties
-          }
+          properties={view.properties}
           result={result.parsed}
         />
       )
@@ -91,7 +104,7 @@ const Results: FC = () => {
         <div style={{height: '100%', width: '100%', padding: 12}}>
           <View
             loading={status}
-            properties={viewProperties}
+            properties={view.properties}
             result={result.parsed}
           />
         </div>
@@ -100,13 +113,23 @@ const Results: FC = () => {
   }
 
   const dataExists = result.parsed && Object.entries(result.parsed).length
+  const setVizState = state => {
+    view.visualization = state
+    if (state === 'table') {
+      view.properties = SUPPORTED_VISUALIZATIONS['simple-table'].initial
+    } else {
+      view.properties = SUPPORTED_VISUALIZATIONS['xy'].initial
+    }
+    setView({...view})
+  }
   const updateType = viewType => {
-    setViewProperties(SUPPORTED_VISUALIZATIONS[viewType].initial)
+    view.properties = SUPPORTED_VISUALIZATIONS[viewType].initial
+    setView({...view})
   }
   const launcher = () => {}
 
   const tableHeader =
-    vizState === 'table' ? (
+    view.visualization === 'table' ? (
       <>
         <div style={{width: '300px'}}>
           <SearchWidget
@@ -125,10 +148,10 @@ const Results: FC = () => {
     ) : null
 
   const vizHeader =
-    vizState === 'graph' ? (
+    view.visualization === 'graph' ? (
       <>
         <ViewTypeDropdown
-          viewType={viewProperties.type}
+          viewType={view.properties.type}
           onUpdateType={updateType}
         />
         <Button
@@ -161,7 +184,7 @@ const Results: FC = () => {
                   id="table"
                   name="viz-setting"
                   value="table"
-                  active={vizState === 'table'}
+                  active={view.visualization === 'table'}
                   onClick={setVizState}
                 >
                   Table
@@ -170,7 +193,7 @@ const Results: FC = () => {
                   id="graph"
                   name="viz-setting"
                   value="graph"
-                  active={vizState === 'graph'}
+                  active={view.visualization === 'graph'}
                   onClick={setVizState}
                 >
                   Graph

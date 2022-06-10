@@ -100,6 +100,7 @@ export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
 export const CLOUD_SIGNOUT_PATHNAME = '/api/v2/signout'
 export const CLOUD_LOGIN_PATHNAME = '/login'
 export const CLOUD_URL = formatConstant(process.env.CLOUD_URL)
+export const CLOUD_QUARTZ_URL = 'https://cloud2.influxdata.com/login'
 export const CLOUD_CHECKOUT_PATH = '/checkout'
 export const CLOUD_BILLING_PATH = '/billing'
 export const CLOUD_USAGE_PATH = '/usage'

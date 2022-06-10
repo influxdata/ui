@@ -26,7 +26,7 @@ import {
   CLOUD,
   CLOUD_LOGIN_PATHNAME,
   CLOUD_SIGNIN_PATHNAME,
-  CLOUD_URL,
+  CLOUD_QUARTZ_URL,
 } from 'src/shared/constants'
 
 // Types
@@ -120,7 +120,7 @@ export class Signin extends PureComponent<Props, State> {
           process.env.NODE_ENV &&
           process.env.NODE_ENV !== 'development'
         ) {
-          window.location.href = CLOUD_URL
+          window.location.href = CLOUD_QUARTZ_URL
           return
         }
 

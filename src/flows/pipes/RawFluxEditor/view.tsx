@@ -34,8 +34,9 @@ import {VariablesContext} from 'src/flows/context/variables'
 
 // Components
 import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
-import Functions from 'src/shared/components/functions/FunctionsList/GroupedFunctionsList'
-import DynamicFunctions from 'src/shared/components/functions/FunctionsList/DynamicFunctionsList'
+
+import Functions from 'src/shared/components/GroupedFunctionsList'
+import DynamicFunctions from 'src/shared/components/DynamicFunctionsList'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'

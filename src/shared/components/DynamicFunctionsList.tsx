@@ -14,7 +14,7 @@ import {getAllFluxFunctions} from 'src/shared/selectors/app'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
-import {sortFuncs} from 'src/shared/components/functions/utils'
+import {sortFuncs} from 'src/shared/utils/function'
 
 interface Props {
   onSelect: (fn: FluxFunction) => void

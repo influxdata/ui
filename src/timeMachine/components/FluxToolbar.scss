@@ -62,6 +62,11 @@ $flux-toolbar--gap: $cf-space-2xs;
   border-radius: $cf-radius;
   overflow: hidden;
   margin-right: $flux-toolbar--gap;
+
+  .flux-toolbar {
+    flex-direction: column;
+    padding: $cf-space-2xs 0;
+  }
 }
 
 .flux-toolbar--search {

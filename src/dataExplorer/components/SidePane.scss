@@ -4,4 +4,8 @@
   margin-left: $cf-space-s;
   width: inherit;
   overflow-x: hidden;
+
+  .flux-toolbar {
+    flex-direction: column;
+  }
 }

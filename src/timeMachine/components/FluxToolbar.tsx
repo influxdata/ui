@@ -2,16 +2,17 @@
 import React, {FC, useState, useContext} from 'react'
 
 // Components
-import FluxFunctionsToolbar from 'src/timeMachine/components/fluxFunctionsToolbar/FluxFunctionsToolbar'
-import DynamicFluxFunctionsToolbar from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/FluxFunctionsToolbar'
+import Functions from 'src/shared/components/GroupedFunctionsList'
+import DynamicFunctions from 'src/shared/components/DynamicFunctionsList'
 import VariableToolbar from 'src/timeMachine/components/variableToolbar/VariableToolbar'
 import FluxToolbarTab from 'src/timeMachine/components/FluxToolbarTab'
 import {InjectionType, InjectionContext} from 'src/shared/contexts/injection'
 
 // Types
-import {FluxToolbarFunction} from 'src/types'
+import {FluxFunction, FluxToolbarFunction} from 'src/types'
 
 // Utils
+import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -27,10 +28,14 @@ const FluxToolbar: FC = () => {
 
   let activeToolbar
 
-  const onInsertFluxFunction = (func: FluxToolbarFunction) => {
+  const onInsertFluxFunction = (fn: FluxFunction | FluxToolbarFunction) => {
     inject({
       type: InjectionType.Function,
-      function: func,
+      function: fn,
+    })
+    event('flux function injected', {
+      name: `${fn.package}.${fn.name}`,
+      context: 'time machine',
     })
   }
 
@@ -39,19 +44,14 @@ const FluxToolbar: FC = () => {
       type: InjectionType.Variable,
       variable: variableName,
     })
+    event('variable injected', {context: 'time machine'})
   }
 
   if (activeTab === 'functions') {
     if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
-      activeToolbar = (
-        <DynamicFluxFunctionsToolbar
-          onInsertFluxFunction={onInsertFluxFunction}
-        />
-      )
+      activeToolbar = <DynamicFunctions onSelect={onInsertFluxFunction} />
     } else {
-      activeToolbar = (
-        <FluxFunctionsToolbar onInsertFluxFunction={onInsertFluxFunction} />
-      )
+      activeToolbar = <Functions onSelect={onInsertFluxFunction} />
     }
   }
 

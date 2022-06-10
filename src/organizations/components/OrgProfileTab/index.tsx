@@ -42,12 +42,12 @@ const OrgProfileTab: FC = () => {
       testID="org-profile--panel"
     >
       <h4>Organization Profile</h4>
-        <CopyableLabeledData
-          id='orgName'
-          label='Name'
-          src={org.name}
-          renameableOrg={true}
-        />
+      <CopyableLabeledData
+        id="orgName"
+        label="Name"
+        src={org.name}
+        renameableOrg={true}
+      />
       {expectQuartzData && hasSomeQuartzOrgData && (
         <>
           <FlexBox

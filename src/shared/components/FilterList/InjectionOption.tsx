@@ -12,6 +12,8 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 type OptionType = Record<string, any>
 
 interface Props {
@@ -48,6 +50,21 @@ const FluxInjectionOption: FC<Props> = ({
   const handleClick = () => {
     onClick(option)
   }
+  const fullClick = () => {
+    if (!isFlagEnabled('fluxEditorButtonStyling')) {
+      return
+    }
+    onClick(option)
+  }
+
+  const classer = [
+    ['flux-toolbar--list-item', true],
+    ['flux-toolbar--function', true],
+    ['flux-toolbar--new-style', isFlagEnabled('fluxEditorButtonStyling')],
+  ]
+    .filter(c => c[1])
+    .map(c => c[0])
+    .join(' ')
 
   return (
     <>
@@ -74,17 +91,20 @@ const FluxInjectionOption: FC<Props> = ({
       <dd
         ref={itemRef}
         data-testid={`flux--${testID}`}
-        className="flux-toolbar--list-item flux-toolbar--function"
+        className={classer}
+        onClick={fullClick}
       >
         <code>{extractor(option)}</code>
-        <Button
-          testID={`flux--${testID}--inject`}
-          text="Inject"
-          onClick={handleClick}
-          size={ComponentSize.ExtraSmall}
-          className="flux-toolbar--injector"
-          color={ComponentColor.Primary}
-        />
+        {!isFlagEnabled('fluxEditorButtonStyling') && (
+          <Button
+            testID={`flux--${testID}--inject`}
+            text="Inject"
+            onClick={handleClick}
+            size={ComponentSize.ExtraSmall}
+            className="flux-toolbar--injector"
+            color={ComponentColor.Primary}
+          />
+        )}
       </dd>
     </>
   )

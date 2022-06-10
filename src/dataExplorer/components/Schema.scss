@@ -38,7 +38,8 @@
 .field-selector .cf-accordion--icon,
 .tag-selector-key .cf-accordion--icon,
 .tag-selector-value .cf-accordion--icon {
-  color: gray;
+  color: $cf-grey-65;
+  margin-top: -6px;
 }
 
 .field-selector--header,

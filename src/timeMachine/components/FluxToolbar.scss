@@ -138,6 +138,29 @@ $flux-toolbar--gap: $cf-space-2xs;
       opacity: 1;
     }
   }
+
+  &.flux-toolbar--new-style {
+    cursor: pointer;
+    background: none;
+
+    > code {
+      color: $cf-white;
+      background-color: none;
+    }
+
+    &:hover {
+      > code {
+        background-color: $cf-grey-15;
+        color: $c-comet;
+
+        &:after {
+          content: '+';
+          background-color: $cf-grey-15;
+          padding-left: 8px;
+        }
+      }
+    }
+  }
 }
 
 .flux-toolbar--heading {

@@ -1,6 +1,6 @@
 // Libraries
-import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
+import React, {FC, useEffect} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
 // Components
@@ -31,17 +31,31 @@ import {CLOUD} from 'src/shared/constants'
 import {getMe} from 'src/me/selectors'
 
 import 'src/organizations/components/OrgProfileTab/style.scss'
+import {
+  getBillingProviderThunk,
+  getCurrentOrgDetailsThunk,
+} from 'src/identity/actions/thunks'
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
   const history = useHistory()
+  const dispatch = useDispatch()
 
   const handleShowEditOverlay = () => {
     history.push(`/orgs/${org.id}/about/rename`)
   }
 
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
+
+  useEffect(() => {
+    if (!me.quartzMe.billingProvider) {
+      dispatch(getBillingProviderThunk())
+    }
+    if (!me.quartzMe.regionCode) {
+      dispatch(getCurrentOrgDetailsThunk())
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const hasSomeQuartzOrgData =
     me.quartzMe?.billingProvider ||

@@ -1,6 +1,9 @@
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 // Libraries
 import React, {FC, useEffect} from 'react'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import BillingFree from 'src/billing/components/Free/Free'
@@ -9,19 +12,25 @@ import MarketplaceBilling from 'src/billing/components/marketplace/MarketplaceBi
 
 // Utils
 import {getQuartzMe} from 'src/me/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-//Thunks
-import {getAccountDetailsThunk} from 'src/identity/actions/thunks'
+// Thunks
+import {getBillingProviderThunk} from 'src/identity/actions/thunks'
 
 const BillingPageContents: FC = () => {
-  // Leave this constant quartzMe for now. This will be changed to 'identity' when removing the legacy /quartz/me code when it is no longer used.
+  const dispatch = useDispatch()
   const quartzMe = useSelector(getQuartzMe)
 
   useEffect(() => {
-    // Check this condition. Need to decide what default state is for re-running,
-    // since I think billingProvider needs to be populated.
-    if (!quartzMe.billingProvider) {
-      getAccountDetailsThunk()
+    // After isFlagEnabled is removed, keep other condition. billingProvider isn't delivered by /quartz/identity.
+    if (
+      CLOUD &&
+      isFlagEnabled('quartzIdentity') &&
+      quartzMe.billingProvider === null
+    ) {
+      // billingProviderThunk populates billingProvider into state at identity.currentIdentity.org.billingProvider
+      // (and for now, into me.quartzMe.billingProvider).
+      dispatch(getBillingProviderThunk())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 

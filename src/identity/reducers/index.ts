@@ -11,7 +11,7 @@ import {RemoteDataState} from 'src/types'
 
 interface CurrentAccount extends IdentityAccount {
   // These are optional properties of the current account, which are not retrieved from identity.
-  billingProvider?: string
+  billingProvider?: 'zuora' | 'aws' | 'gcm' | 'azure'
 }
 
 interface CurrentOrg extends IdentityOrganization {
@@ -30,7 +30,7 @@ interface CurrentUser extends IdentityUser {
 
 // May need to extend user properties once profile page work begins.
 
-interface CurrentIdentity {
+export interface CurrentIdentity {
   user: CurrentUser
   account: CurrentAccount
   org: CurrentOrg

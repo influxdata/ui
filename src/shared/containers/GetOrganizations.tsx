@@ -35,6 +35,7 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
 import {retrieveIdentityThunk} from 'src/identity/utils/selectIdentitySource'
+import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 
 const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
@@ -57,6 +58,18 @@ const GetOrganizations: FunctionComponent = () => {
 
   const {id: meId = '', name: email = ''} = useSelector(getMe)
   const dispatch = useDispatch()
+
+  // It isn't ideal to need to retrieve isRegionBeta from a separate endpoint, just to access the GetOrganizations component.
+  useEffect(() => {
+    // Remove quartzIdentity condition once flag is deployed for all users.
+    if (
+      CLOUD &&
+      isFlagEnabled('quartzIdentity') &&
+      quartzMe?.isRegionBeta === null
+    ) {
+      dispatch(getCurrentOrgDetailsThunk())
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (status === RemoteDataState.NotStarted) {

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useMemo} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
@@ -26,7 +26,6 @@ import {
   setTimeMachineTimeRange,
   setTimeRange,
 } from 'src/timeMachine/actions'
-import {getAllVariables} from 'src/variables/selectors'
 
 // Utils
 import {
@@ -49,7 +48,6 @@ const TimeMachineQueries: FC<Props> = ({maxHeight}) => {
   const {autoRefresh} = useSelector(getActiveTimeMachine)
   const activeQuery = useSelector(getActiveQuery)
   const isInCheckOverlay = useSelector(getIsInCheckOverlay)
-  const variables = useSelector(getAllVariables)
 
   const handleSetTimeRange = (timeRange: TimeRange) => {
     dispatch(setTimeRange(timeRange))
@@ -75,44 +73,49 @@ const TimeMachineQueries: FC<Props> = ({maxHeight}) => {
     }
   }
 
-  let queryEditor = null
-  if (activeQuery.editMode === 'builder') {
-    queryEditor = <TimeMachineQueryBuilder />
-  } else if (activeQuery.editMode === 'advanced') {
-    queryEditor = <TimeMachineFluxEditor variables={variables} />
-  }
+  const queryEditor = useMemo(() => {
+    if (activeQuery.editMode === 'builder') {
+      return <TimeMachineQueryBuilder />
+    } else if (activeQuery.editMode === 'advanced') {
+      return <TimeMachineFluxEditor />
+    }
+    return null
+  }, [activeQuery.editMode])
+
   const dropdownMaxHeight = maxHeight * 0.5
 
-  return (
-    <div className="time-machine-queries">
-      <div className="time-machine-queries--controls">
-        <QueryTabs />
-        <FlexBox
-          direction={FlexDirection.Row}
-          justifyContent={JustifyContent.FlexEnd}
-          margin={ComponentSize.Small}
-          className="time-machine-queries--buttons"
-        >
-          {activeQuery.editMode === 'advanced' && <EditorShortcutsToolTip />}
-          <RawDataToggle />
-          {!isInCheckOverlay && (
-            <>
-              <CSVExportButton />
-              <TimeMachineRefreshDropdown />
-              <TimeRangeDropdown
-                timeRange={timeRange}
-                onSetTimeRange={handleSetTimeRange}
-                maxHeight={dropdownMaxHeight}
-              />
-              <TimeMachineQueriesSwitcher />
-            </>
-          )}
-          <SubmitQueryButton />
-        </FlexBox>
+  return useMemo(() => {
+    return (
+      <div className="time-machine-queries">
+        <div className="time-machine-queries--controls">
+          <QueryTabs />
+          <FlexBox
+            direction={FlexDirection.Row}
+            justifyContent={JustifyContent.FlexEnd}
+            margin={ComponentSize.Small}
+            className="time-machine-queries--buttons"
+          >
+            {activeQuery.editMode === 'advanced' && <EditorShortcutsToolTip />}
+            <RawDataToggle />
+            {!isInCheckOverlay && (
+              <>
+                <CSVExportButton />
+                <TimeMachineRefreshDropdown />
+                <TimeRangeDropdown
+                  timeRange={timeRange}
+                  onSetTimeRange={handleSetTimeRange}
+                  maxHeight={dropdownMaxHeight}
+                />
+                <TimeMachineQueriesSwitcher />
+              </>
+            )}
+            <SubmitQueryButton />
+          </FlexBox>
+        </div>
+        <div className="time-machine-queries--body">{queryEditor}</div>
       </div>
-      <div className="time-machine-queries--body">{queryEditor}</div>
-    </div>
-  )
+    )
+  }, [queryEditor])
 }
 
 export default TimeMachineQueries

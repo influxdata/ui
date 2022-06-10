@@ -83,7 +83,7 @@ export const InjectionProvider: FC = ({children}) => {
     injectCBs.current.push(cb)
   }
   const unsub = (cb: (injection: Injection) => void) => {
-    injectCBs.current = injectCBs.current.filter(c => c === cb)
+    injectCBs.current = injectCBs.current.filter(c => c !== cb)
   }
 
   return (

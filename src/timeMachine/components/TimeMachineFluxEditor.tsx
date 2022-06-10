@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useMemo} from 'react'
+import React, {FC, lazy, Suspense} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {
   RemoteDataState,
@@ -13,24 +13,22 @@ import FluxToolbar from 'src/timeMachine/components/FluxToolbar'
 // Actions and Selectors
 import {setActiveQueryText} from 'src/timeMachine/actions'
 import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
+import {getAllVariables} from 'src/variables/selectors'
 
 // Contexts
 import {EditorProvider} from 'src/shared/contexts/editor'
 import {InjectionProvider} from 'src/shared/contexts/injection'
 
 // Utils
-import {getActiveQuery, getActiveTimeMachine} from 'src/timeMachine/selectors'
+import {getActiveQuery} from 'src/timeMachine/selectors'
 import {event} from 'src/cloud/utils/reporting'
-
-// Types
-import {Variable} from 'src/types'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
-const TimeMachineFluxEditor: FC<{variables: Variable[]}> = ({variables}) => {
+const TimeMachineFluxEditor: FC = () => {
   const dispatch = useDispatch()
   const activeQueryText = useSelector(getActiveQuery).text
-  const {activeQueryIndex} = useSelector(getActiveTimeMachine)
+  const variables = useSelector(getAllVariables)
 
   const handleSetActiveQueryText = React.useCallback(
     (text: string) => {
@@ -63,37 +61,37 @@ const TimeMachineFluxEditor: FC<{variables: Variable[]}> = ({variables}) => {
     [activeQueryText, handleSetActiveQueryText]
   )
 
-  return useMemo(() => {
-    return (
-      <div className="flux-editor">
-        <InjectionProvider>
-          <div className="flux-editor--left-panel">
-            <Suspense
-              fallback={
-                <SpinnerContainer
-                  loading={RemoteDataState.Loading}
-                  spinnerComponent={<TechnoSpinner />}
-                />
-              }
-            >
-              <EditorProvider>
-                <FluxEditor
-                  script={activeQueryText}
-                  variables={variables}
-                  onChangeScript={handleActiveQuery}
-                  onSubmitScript={handleSubmitQueries}
-                  autofocus
-                />
-              </EditorProvider>
-            </Suspense>
-          </div>
-          <div className="flux-editor--right-panel">
-            <FluxToolbar />
-          </div>
-        </InjectionProvider>
+  return (
+    <div className="flux-editor">
+      <div className="flux-editor--left-panel">
+        <Suspense
+          fallback={
+            <SpinnerContainer
+              loading={RemoteDataState.Loading}
+              spinnerComponent={<TechnoSpinner />}
+            />
+          }
+        >
+          <EditorProvider>
+            <FluxEditor
+              script={activeQueryText}
+              variables={variables}
+              onChangeScript={handleActiveQuery}
+              onSubmitScript={handleSubmitQueries}
+              autofocus
+            />
+          </EditorProvider>
+        </Suspense>
       </div>
-    )
-  }, [activeQueryText, activeQueryIndex, variables])
+      <div className="flux-editor--right-panel">
+        <FluxToolbar />
+      </div>
+    </div>
+  )
 }
 
-export default TimeMachineFluxEditor
+export default () => (
+  <InjectionProvider>
+    <TimeMachineFluxEditor />
+  </InjectionProvider>
+)

@@ -208,6 +208,7 @@ export const EditorProvider: FC = ({children}) => {
           injectRaw(injection as RawInjection)
       }
     }
+
     sub(cb)
 
     return () => {

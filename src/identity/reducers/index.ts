@@ -36,11 +36,6 @@ export interface CurrentIdentity {
   org: CurrentOrg
 }
 
-export interface QuartzIdentityState {
-  currentIdentity: CurrentIdentity
-  status: RemoteDataState
-}
-
 // Actions
 import {
   Actions,
@@ -50,34 +45,32 @@ import {
   SET_CURRENT_ORG_DETAILS,
 } from 'src/identity/actions/creators'
 
-export const initialState: QuartzIdentityState = {
-  currentIdentity: {
-    user: {
-      accountCount: 0,
-      email: '',
-      firstName: '',
-      id: '',
-      lastName: '',
-      operatorRole: null,
-      orgCount: 0,
-    },
-    org: {
-      clusterHost: '',
-      id: '',
-      name: '',
-    },
-    account: {
-      id: 0,
-      name: '',
-      type: 'free',
-      accountCreatedAt: '',
-      paygCreditStartDate: '',
-    },
+export const initialState: CurrentIdentity = {
+  user: {
+    accountCount: 0,
+    email: '',
+    firstName: '',
+    id: '',
+    lastName: '',
+    operatorRole: null,
+    orgCount: 0,
+  },
+  org: {
+    clusterHost: '',
+    id: '',
+    name: '',
+  },
+  account: {
+    id: 0,
+    name: '',
+    type: 'free',
+    accountCreatedAt: '',
+    paygCreditStartDate: '',
   },
   status: RemoteDataState.NotStarted,
 }
 
-export default (state = initialState, action: Actions): QuartzIdentityState =>
+export default (state = initialState, action: Actions): CurrentIdentity =>
   produce(state, draftState => {
     switch (action.type) {
       case SET_QUARTZ_IDENTITY: {

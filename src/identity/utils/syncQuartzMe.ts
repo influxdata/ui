@@ -1,7 +1,12 @@
 import {CurrentIdentity} from '../reducers'
-import {Me} from 'src/types'
+import {RemoteDataState} from 'src/types'
+import {setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 
-export const convertIdentityToMe = (quartzIdentity: CurrentIdentity): Me => {
+// Transitional function that translates quartzIdentity state into quartzMe state.
+export const syncQuartzMe = (
+  quartzIdentity: CurrentIdentity,
+  dispatch: any
+): void => {
   const {account, org, user} = quartzIdentity
 
   const legacyMe = {
@@ -25,5 +30,6 @@ export const convertIdentityToMe = (quartzIdentity: CurrentIdentity): Me => {
     regionName: org.regionName ? org.regionName : null,
   }
 
-  return legacyMe
+  dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
+  dispatch(setQuartzMeStatus(RemoteDataState.Done))
 }

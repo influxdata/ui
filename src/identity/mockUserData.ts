@@ -1,9 +1,8 @@
-import {QuartzIdentityState} from 'src/identity/reducers'
+import {CurrentIdentity} from 'src/identity/reducers'
 import {RemoteDataState} from 'src/types'
 
-export const mockIdentities: QuartzIdentityState[] = [
+export const mockIdentities: CurrentIdentity[] = [
   {
-    currentIdentity: {
       account: {
         accountCreatedAt: '2022-06-08T16:59:37.939531Z',
         id: 1,
@@ -42,8 +41,6 @@ export const mockIdentities: QuartzIdentityState[] = [
       provider: 'AWS',
       regionCode: 'aws-local',
       regionName: 'AWS Local',
-    },
-    status: RemoteDataState.Done,
   },
   {
     currentIdentity: {

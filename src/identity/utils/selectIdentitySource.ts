@@ -14,12 +14,6 @@ import {getQuartzIdentityThunk} from '../actions/thunks'
 
 // Decide whether or not to use legacy /quartz/me to retrieve user's current status.
 
-/*
-
-Keep UIUnification regardless of whether we use quartz-identity
-
-*/
-
 export const retrieveQuartzIdentity = () =>
   CLOUD && isFlagEnabled('quartzIdentity') ? getIdentity({}) : getMe({})
 

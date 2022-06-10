@@ -1,4 +1,4 @@
-import {QuartzIdentityState} from 'src/identity/reducers'
+import {CurrentIdentity} from 'src/identity/reducers'
 import {RemoteDataState} from 'src/types'
 import {Organization} from 'src/client/unityRoutes'
 
@@ -13,14 +13,10 @@ export type Actions =
   | ReturnType<typeof setCurrentBillingProvider>
   | ReturnType<typeof setCurrentOrgDetails>
 
-export const setQuartzIdentity = (
-  identity: QuartzIdentityState,
-  status: RemoteDataState
-) =>
+export const setQuartzIdentity = (identity: CurrentIdentity) =>
   ({
     type: SET_QUARTZ_IDENTITY,
     identity: identity,
-    status,
   } as const)
 
 // This might need to be a specific string (zuora or otherwise) to be imported

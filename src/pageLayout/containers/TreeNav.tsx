@@ -154,7 +154,7 @@ const TreeSidebar: FC<ReduxProps> = ({
             </TreeNav.Item>
           )
         })}
-        {CLOUD && isFlagEnabled('helpBar') && (
+        {isFlagEnabled('helpBar') && (
           <TreeNav.Item
             id="support"
             testID="nav-item-support"
@@ -176,17 +176,19 @@ const TreeSidebar: FC<ReduxProps> = ({
                   />
                 )}
               />
-              <TreeNav.SubItem
-                id="status-page"
-                label="Status Page"
-                testID="nav-subitem-status"
-                linkElement={() => (
-                  <SafeBlankLink
-                    href="https://status.influxdata.com"
-                    onClick={() => handleEventing('status-page')}
-                  />
-                )}
-              />
+              {CLOUD && (
+                <TreeNav.SubItem
+                  id="status-page"
+                  label="Status Page"
+                  testID="nav-subitem-status"
+                  linkElement={() => (
+                    <SafeBlankLink
+                      href="https://status.influxdata.com"
+                      onClick={() => handleEventing('status-page')}
+                    />
+                  )}
+                />
+              )}
               <TreeNav.SubItem
                 id="documentation"
                 label="Documentation"
@@ -198,18 +200,7 @@ const TreeSidebar: FC<ReduxProps> = ({
                   />
                 )}
               />
-              <TreeNav.SubItem
-                id="status-page"
-                label="Status Page"
-                testID="nav-subitem-status"
-                linkElement={() => (
-                  <SafeBlankLink
-                    href="https://status.influxdata.com"
-                    onClick={() => handleEventing('status-page')}
-                  />
-                )}
-              />
-              {isFlagEnabled('helpBarSfdcIntegration') && (
+              {CLOUD && isFlagEnabled('helpBarSfdcIntegration') && (
                 <TreeNav.SubItem
                   id="contactSupport"
                   label="Contact Support"

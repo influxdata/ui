@@ -9,7 +9,7 @@ describe('FluxQueryBuilder', () => {
         cy.setFeatureFlags({newDataExplorer: true}).then(() => {
           cy.visit(`${orgs}/${id}${explorer}`)
           cy.getByTestID('tree-nav').should('be.visible')
-          cy.getByTestID('slide-toggle')
+          cy.getByTestID('flux-query-builder-toggle')
             .should('be.visible')
             .then(toggle => {
               // Switch to Flux Query Builder if it is not on

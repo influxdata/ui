@@ -81,6 +81,7 @@ const DataExplorerPage: FC = () => {
                   onChange={() => {
                     setFluxQueryBuilder(!fluxQueryBuilder)
                   }}
+                  testID="flux-query-builder-toggle"
                 />
               </FlexBox>
             </FeatureFlag>

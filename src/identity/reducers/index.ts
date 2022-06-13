@@ -5,7 +5,6 @@ import {
   IdentityUser,
   IdentityAccount,
   IdentityOrganization,
-  Me,
 } from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
@@ -34,6 +33,7 @@ export interface CurrentIdentity {
   user: CurrentUser
   account: CurrentAccount
   org: CurrentOrg
+  status?: RemoteDataState
 }
 
 // Actions
@@ -74,7 +74,7 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
   produce(state, draftState => {
     switch (action.type) {
       case SET_QUARTZ_IDENTITY: {
-        draftState.currentIdentity = action.identity.currentIdentity
+        draftState = action.identity
         draftState.status = RemoteDataState.Done
         return
       }
@@ -83,19 +83,18 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
         return
       }
       case SET_CURRENT_BILLING_PROVIDER: {
-        draftState.currentIdentity.account.billingProvider =
-          action.billingProvider
+        draftState.account.billingProvider = action.billingProvider
         return
       }
 
       case SET_CURRENT_ORG_DETAILS: {
         // This could be shortened with an alias, but adhere to immer pattern for now.
-        draftState.currentIdentity.org.creationDate = action.org.creationDate
-        draftState.currentIdentity.org.description = action.org.description
-        draftState.currentIdentity.org.isRegionBeta = action.org.isRegionBeta
-        draftState.currentIdentity.org.provider = action.org.provider
-        draftState.currentIdentity.org.regionCode = action.org.regionCode
-        draftState.currentIdentity.org.regionName = action.org.regionName
+        draftState.org.creationDate = action.org.creationDate
+        draftState.org.description = action.org.description
+        draftState.org.isRegionBeta = action.org.isRegionBeta
+        draftState.org.provider = action.org.provider
+        draftState.org.regionCode = action.org.regionCode
+        draftState.org.regionName = action.org.regionName
         return
       }
     }

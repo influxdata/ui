@@ -25,7 +25,6 @@ import {
   setCurrentBillingProvider,
   setQuartzIdentity,
   setQuartzIdentityStatus,
-  // Actions,
 } from 'src/identity/actions/creators'
 
 // Types
@@ -35,11 +34,8 @@ import {RemoteDataState} from 'src/types'
 import {syncQuartzMe} from 'src/identity/utils/syncQuartzMe'
 
 // Retrieves user's quartz identity from /quartz/identity, and stores it in state.identity.
-export const getQuartzIdentityThunk = () => async (
-  dispatch: any,
-  getState: GetState
-) => {
-  console.log('entering getQuartzIdentityThunk')
+export const getQuartzIdentityThunk = () => async (dispatch: any) => {
+  // console.log('entering getQuartzIdentityThunk')
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
@@ -49,12 +45,12 @@ export const getQuartzIdentityThunk = () => async (
       throw new Error(quartzIdentity.data.message)
     }
 
-    console.log('here is the response')
-    console.log(quartzIdentity)
+    // console.log('here is the response')
+    // console.log(quartzIdentity)
     dispatch(setQuartzIdentity(quartzIdentity.data))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-    console.log('successfully retrieved quartzIdentity')
-    console.log(getState().identity)
+    // console.log('successfully retrieved quartzIdentity')
+    // console.log(getState().identity)
 
     // Remove line below once quartzMe is deprecated.
     syncQuartzMe(quartzIdentity.data, dispatch)
@@ -72,7 +68,7 @@ export const getBillingProviderThunk = () => async (
   dispatch: any,
   getState: GetState
 ) => {
-  console.log('Entering getBillingProviderThunk')
+  // console.log('Entering getBillingProviderThunk')
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
@@ -97,7 +93,7 @@ export const getBillingProviderThunk = () => async (
     // Resolve openAPI issue ith billingProvider versus billing_provider.
     dispatch(setCurrentBillingProvider(accountDetails.data.billingProvider))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-    console.log('successfully retrieved billing provider')
+    // console.log('successfully retrieved billing provider')
 
     // Remove two below lines once quartzIdentity is removed.
     const updatedState = getState()
@@ -143,7 +139,7 @@ export const getCurrentOrgDetailsThunk = () => async (
 
     dispatch(setCurrentOrgDetails(orgDetails.data))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-    console.log('successfully retrieved additional organization details')
+    // console.log('successfully retrieved additional organization details')
 
     // Remove two below lines after quartzIdentity flag is removed.
     const updatedState = getState()

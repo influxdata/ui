@@ -8,16 +8,11 @@ describe('FluxQueryBuilder', () => {
       cy.fixture('routes').then(({orgs, explorer}) => {
         cy.visit(`${orgs}/${id}${explorer}`)
         cy.getByTestID('tree-nav').should('be.visible')
+        // Switch to Flux Query Builder
         cy.setFeatureFlags({newDataExplorer: true})
         cy.getByTestID('flux-query-builder-toggle')
           .should('be.visible')
           .click()
-        // .then(toggle => {
-        //   // Switch to Flux Query Builder if it is not on
-        //   if (toggle.find('.active').length === 0) {
-        //     toggle.click()
-        //   }
-        // })
       })
     })
   })

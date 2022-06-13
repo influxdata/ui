@@ -12,12 +12,12 @@ describe('FluxQueryBuilder', () => {
         cy.getByTestID('flux-query-builder-toggle')
           .should('be.visible')
           .click()
-          // .then(toggle => {
-          //   // Switch to Flux Query Builder if it is not on
-          //   if (toggle.find('.active').length === 0) {
-          //     toggle.click()
-          //   }
-          // })
+        // .then(toggle => {
+        //   // Switch to Flux Query Builder if it is not on
+        //   if (toggle.find('.active').length === 0) {
+        //     toggle.click()
+        //   }
+        // })
       })
     })
   })

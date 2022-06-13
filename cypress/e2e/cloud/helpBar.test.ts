@@ -10,7 +10,7 @@ describe('Help bar support for free account users', () => {
             cy.quartzProvision({
               accountType: 'free',
             }).then(() => {
-              cy.visit('/')
+              // cy.visit('/')
               cy.getByTestID('nav-item-support').should('be.visible')
             })
           })
@@ -77,14 +77,12 @@ describe('Help bar support for PAYG users', () => {
     cy.getByTestID('contact-support-subject-input')
       .clear()
       .type(subject)
-    cy.getByTestID('severity-level-dropdown').click()
+    cy.getByTestID('dropdown--button').click()
     cy.getByTitle('1 - Critical').click()
 
     cy.getByTestID('support-description--textarea')
       .clear()
       .type(description)
-    cy.getByTestID('payg-contact-support--submit').click()
-
-    cy.getByTestID('confirmation-overlay-header').should('exist')
+    cy.getByTestID('payg-contact-support--submit').should('not.be.disabled')
   })
 })

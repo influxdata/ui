@@ -32,7 +32,9 @@ import {
 import {CreditCardParams, RemoteDataState} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
 import {event} from 'src/cloud/utils/reporting'
-import {storeIdentityInStateThunk} from 'src/identity/apis'
+
+// Thunks
+import {getQuartzMeThunk} from 'src/me/actions/thunks'
 
 export type Props = {
   children: JSX.Element
@@ -161,7 +163,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     getBillingSettings()
     return () => {
       // Call the 'quartz/me' or 'quartz/identity' endpoint as applicable.
-      dispatch(storeIdentityInStateThunk)
+      dispatch(getQuartzMeThunk())
     }
   }, [getBillingSettings]) // eslint-disable-line react-hooks/exhaustive-deps
 

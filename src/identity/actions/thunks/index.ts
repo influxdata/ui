@@ -1,9 +1,7 @@
-import {getAccount, getIdentity, getOrg} from 'src/client/unityRoutes'
-
 import {GetState} from 'src/types'
 
 // Actions
-import {setQuartzMeStatus} from 'src/me/actions/creators'
+import {setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 import {
   setCurrentOrgDetails,
   setCurrentBillingProvider,
@@ -13,32 +11,46 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
+enum RetrievalError {
+  accountIdentity = 'Unable to retrieve account ID from user identity.',
+  orgIdentity = 'Unable to retrieve organization ID from user identity.',
+}
 
 // Utilities
-import {syncQuartzMe} from 'src/identity/apis/'
+import {
+  convertIdentityToMe,
+  retrieveIdentity,
+  retrieveAccountDetails,
+  retrieveOrgDetails,
+} from 'src/identity/apis/'
+
+// Error catching options
+// Options:
+// (1) event - error fetching identity
+// (2) user - notify user
+// (3) honeybadger? req here or elsewhere
 
 // Retrieves user's quartz identity from /quartz/identity, and stores it in state.identity.
 export const getQuartzIdentityThunk = () => async (dispatch: any) => {
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
-    const quartzIdentity = await getIdentity({})
+    const quartzIdentity = await retrieveIdentity()
 
-    if (quartzIdentity.status !== 200) {
-      throw new Error(quartzIdentity.data.message)
-    }
-
-    dispatch(setQuartzIdentity(quartzIdentity.data))
+    dispatch(setQuartzIdentity(quartzIdentity))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 
-    // Remove line below once quartzMe is deprecated.
-    syncQuartzMe(quartzIdentity.data, dispatch)
+    const legacyMe = convertIdentityToMe(quartzIdentity)
+    // Remove lines below once quartzMe is deprecated.
+    dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
+    dispatch(setQuartzMeStatus(RemoteDataState.Done))
   } catch (error) {
-    console.error(error)
+    // Test error handler here by associating it with a 200.
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
-
     // Remove line below once quartzMe is deprecated.
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
+    console.error(error)
+    throw new Error(error)
   }
 }
 
@@ -53,40 +65,30 @@ export const getBillingProviderThunk = () => async (
     const initialState = getState()
     const accountId = initialState?.identity?.account?.id
 
-    if (accountId === undefined) {
-      throw new Error('Unable to retrieve account ID from identity data.')
+    if (typeof accountId !== 'string' && typeof accountId !== 'number') {
+      throw new Error(RetrievalError.accountIdentity)
     }
 
-    // /quartz/identity returns account ID to us as a number, but getAccount expects a string.
-    const accountIdString = accountId.toString()
-
-    const accountDetails = await getAccount({
-      accountId: accountIdString,
-    })
-
-    if (accountDetails.status !== 200) {
-      throw new Error(accountDetails.data.message)
-    }
+    const accountDetails = await retrieveAccountDetails(accountId)
 
     // Resolve openAPI issue ith billingProvider versus billing_provider.
-    dispatch(setCurrentBillingProvider(accountDetails.data.billingProvider))
+    dispatch(setCurrentBillingProvider(accountDetails.billingProvider))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 
-    // Remove two below lines once quartzIdentity is removed.
+    // Remove below lines once quartzIdentity is removed.
     const updatedState = getState()
-    syncQuartzMe(updatedState.identity, dispatch)
-  } catch (err) {
-    console.error(err)
+    const legacyMe = convertIdentityToMe(updatedState.identity)
+    dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
+    dispatch(setQuartzMeStatus(RemoteDataState.Done))
+  } catch (error) {
+    // Test error handler here by associating it with a 200.
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
-
     // Remove line below once quartzMe is deprecated.
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
+    console.error(error)
+    throw new Error(error)
   }
 }
-
-// Double check typing.
-// It's actually mandatory for us to invoke this logic and ping this endpoint once at the moment,
-// Since isRegionBeta is always used.
 
 // Retrieves more details about the current organization, and stores it in state.identity.org.
 export const getCurrentOrgDetailsThunk = () => async (
@@ -99,29 +101,26 @@ export const getCurrentOrgDetailsThunk = () => async (
     const state = getState()
     const orgId = state?.identity?.org?.id
 
-    if (orgId === undefined) {
-      throw new Error('Unable to retrieve organization ID from identity data.')
+    if (typeof orgId !== 'string') {
+      throw new Error(RetrievalError.orgIdentity)
     }
 
-    const orgDetails = await getOrg({
-      orgId: orgId,
-    })
+    const orgDetails = await retrieveOrgDetails(orgId)
 
-    if (orgDetails.status !== 200) {
-      throw new Error(orgDetails.data.message)
-    }
-
-    dispatch(setCurrentOrgDetails(orgDetails.data))
+    dispatch(setCurrentOrgDetails(orgDetails))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 
     // Remove two below lines after quartzIdentity flag is removed.
     const updatedState = getState()
-    syncQuartzMe(updatedState.identity, dispatch)
-  } catch (err) {
-    console.error(err)
+    const legacyMe = convertIdentityToMe(updatedState.identity)
+    dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
+    dispatch(setQuartzMeStatus(RemoteDataState.Done))
+  } catch (error) {
+    // Test error handler here by associating it with a 200.
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
-
     // Remove line below once quartzMe is deprecated.
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
+    console.error(error)
+    throw new Error(error)
   }
 }

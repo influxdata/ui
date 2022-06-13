@@ -1,11 +1,7 @@
 // Libraries
 import produce from 'immer'
 
-import {
-  IdentityUser,
-  IdentityAccount,
-  IdentityOrganization,
-} from 'src/client/unityRoutes'
+import {IdentityUser, IdentityAccount} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
 export interface CurrentAccount extends IdentityAccount {

@@ -22,6 +22,7 @@ import {MeState} from 'src/me/reducers'
 // Types
 import {RemoteDataState, GetState} from 'src/types'
 import {Actions} from 'src/me/actions/creators'
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 export const getIdpeMeThunk = () => async (
   dispatch: Dispatch<Actions>,
@@ -55,10 +56,9 @@ export const getIdpeMeThunk = () => async (
       },
     })
 
-    // DELETE THIS?
-    // updateReportingContext({
-    //   userID: user.id,
-    // })
+    updateReportingContext({
+      userID: user.id,
+    })
 
     HoneyBadger.setContext({
       user_id: user.id,
@@ -77,17 +77,21 @@ export const getIdpeMeThunk = () => async (
 }
 
 export const getQuartzMeThunk = () => async dispatch => {
-  try {
-    dispatch(setQuartzMeStatus(RemoteDataState.Loading))
+  if (CLOUD && isFlagEnabled('quartzIdentity')) {
+    getQuartzIdentityThunk()
+  } else {
+    try {
+      dispatch(setQuartzMeStatus(RemoteDataState.Loading))
 
-    const quartzMe = await getQuartzMe({})
+      const quartzMe = await getQuartzMe({})
 
-    if (quartzMe.status !== 200) {
-      throw new Error(quartzMe.data.message)
+      if (quartzMe.status !== 200) {
+        throw new Error(quartzMe.data.message)
+      }
+      dispatch(setQuartzMe(quartzMe.data, RemoteDataState.Done))
+    } catch (error) {
+      console.error(error)
+      dispatch(setQuartzMeStatus(RemoteDataState.Error))
     }
-    dispatch(setQuartzMe(quartzMe.data, RemoteDataState.Done))
-  } catch (error) {
-    console.error(error)
-    dispatch(setQuartzMeStatus(RemoteDataState.Error))
   }
 }

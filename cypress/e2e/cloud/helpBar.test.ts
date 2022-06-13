@@ -17,7 +17,7 @@ describe('Help bar support for free account users', () => {
       })
     )
   )
-  it.only('displays important links for free account users', () => {
+  it('displays important links for free account users', () => {
     cy.getByTestID('nav-item-support')
       .get('.cf-tree-nav--sub-menu-trigger')
       .eq(3)
@@ -28,12 +28,8 @@ describe('Help bar support for free account users', () => {
     cy.getByTestID('free-support-overlay-header').should('exist')
 
     cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('free-account-links')
-        .eq(0)
-        .contains('InfluxDB Community Forums')
-      cy.getByTestID('free-account-links')
-        .eq(0)
-        .contains('InfluxDB Slack')
+      cy.getByTestID('free-account-links').contains('InfluxDB Community Forums')
+      cy.getByTestID('free-account-links').contains('InfluxDB Slack')
     })
   })
 })

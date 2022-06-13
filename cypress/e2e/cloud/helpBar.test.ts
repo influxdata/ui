@@ -10,7 +10,6 @@ describe('Help bar support for free account users', () => {
             cy.quartzProvision({
               accountType: 'free',
             }).then(() => {
-              // cy.visit('/')
               cy.getByTestID('nav-item-support').should('be.visible')
             })
           })

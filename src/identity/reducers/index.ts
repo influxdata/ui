@@ -13,8 +13,13 @@ export interface CurrentAccount extends IdentityAccount {
   billingProvider?: 'zuora' | 'aws' | 'gcm' | 'azure'
 }
 
-export interface CurrentOrg extends IdentityOrganization {
+export interface CurrentOrg {
   // These are optional properties of the current org, which are not retrieved from identity.
+  // Typing this here is required because different properties are optional in state
+  // than are optional when retrieved from each endpoint.
+  id: string
+  clusterHost: string
+  name?: string
   creationDate?: string
   description?: string
   isRegionBeta?: boolean

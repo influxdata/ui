@@ -44,6 +44,7 @@ import {
   SET_CURRENT_BILLING_PROVIDER,
   SET_CURRENT_ORG_DETAILS,
 } from 'src/identity/actions/creators'
+import {accountCancellationError} from 'src/shared/copy/notifications'
 
 export const initialState: CurrentIdentity = {
   user: {
@@ -74,6 +75,29 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
   produce(state, draftState => {
     switch (action.type) {
       case SET_QUARTZ_IDENTITY: {
+        const {account, org, user} = action.identity
+
+        // Store account information from /identity in state.
+        draftState.account.accountCreatedAt = account.accountCreatedAt
+        draftState.account.id = account.id
+        draftState.account.name = account.name
+        draftState.account.paygCreditStartDate = account.paygCreditStartDate
+        draftState.account.type = account.type
+
+        // Store org information from /identity in state.
+        draftState.org.clusterHost = org.clusterHost
+        draftState.org.id = org.id
+        draftState.org.name = org.name
+
+        // Store user information from /identity in state.
+        draftState.user.accountCount = user.accountCount
+        draftState.user.email = user.email
+        draftState.user.firstName = user.firstName
+        draftState.user.id = user.id
+        draftState.user.lastName = user.lastName
+        draftState.user.operatorRole = user.operatorRole
+        draftState.user.orgCount = user.orgCount
+
         draftState = action.identity
         draftState.status = RemoteDataState.Done
         return

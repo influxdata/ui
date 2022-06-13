@@ -1,19 +1,10 @@
-// Current Workflow -- need to structure CurrentIdentity and Status in reducer correctly,
-// so that data is actually being pulled into the endpoint
+// To Dos:
 
-// Further to-dos
+// 1 - Try to abstract away more into API later.
+// 2 - Maybe move the utils in the API layer
+// 3 - Is there any way we can get rid of the extra useEffect hooks?
+// 4 - Think we need to call most of these APIS right now because of how getOrgs is structured.
 
-// 1 - more testing
-
-// 2 - try to abstract away more into API later.
-
-// 3 - Maybe move the utils in the API layer
-
-// 4 - Is there any way we can get rid of the extra useEffect hooks?
-
-// 5 - basically, dont we need to call these extra APIs regardless now?
-
-// Functions making API calls
 import {getAccount, getIdentity, getOrg} from 'src/client/unityRoutes'
 
 import {GetState} from 'src/types'
@@ -35,7 +26,6 @@ import {syncQuartzMe} from 'src/identity/utils/syncQuartzMe'
 
 // Retrieves user's quartz identity from /quartz/identity, and stores it in state.identity.
 export const getQuartzIdentityThunk = () => async (dispatch: any) => {
-  // console.log('entering getQuartzIdentityThunk')
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
@@ -45,12 +35,8 @@ export const getQuartzIdentityThunk = () => async (dispatch: any) => {
       throw new Error(quartzIdentity.data.message)
     }
 
-    // console.log('here is the response')
-    // console.log(quartzIdentity)
     dispatch(setQuartzIdentity(quartzIdentity.data))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-    // console.log('successfully retrieved quartzIdentity')
-    // console.log(getState().identity)
 
     // Remove line below once quartzMe is deprecated.
     syncQuartzMe(quartzIdentity.data, dispatch)
@@ -68,7 +54,6 @@ export const getBillingProviderThunk = () => async (
   dispatch: any,
   getState: GetState
 ) => {
-  // console.log('Entering getBillingProviderThunk')
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
@@ -93,13 +78,12 @@ export const getBillingProviderThunk = () => async (
     // Resolve openAPI issue ith billingProvider versus billing_provider.
     dispatch(setCurrentBillingProvider(accountDetails.data.billingProvider))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-    // console.log('successfully retrieved billing provider')
 
     // Remove two below lines once quartzIdentity is removed.
     const updatedState = getState()
     syncQuartzMe(updatedState.identity, dispatch)
   } catch (err) {
-    console.log(err)
+    console.error(err)
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
 
     // Remove line below once quartzMe is deprecated.
@@ -108,7 +92,7 @@ export const getBillingProviderThunk = () => async (
 }
 
 // Same - need to change/fix types here
-// So, this is a little silly, because it's actually mandatory for us to invoke this logic and ping this endpoint once
+// It's actually mandatory for us to invoke this logic and ping this endpoint once
 // whenever logging into the app. So I would just move this information over to /identity.
 // Note to self: add this to Miro diagram.
 
@@ -117,12 +101,11 @@ export const getCurrentOrgDetailsThunk = () => async (
   dispatch: any,
   getState: GetState
 ) => {
-  console.log('entering getCurrentOrgDetailsThunk')
+  // console.log('entering getCurrentOrgDetailsThunk')
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
     const state = getState()
-
     const orgId = state?.identity?.org?.id
 
     if (orgId === undefined) {
@@ -139,13 +122,12 @@ export const getCurrentOrgDetailsThunk = () => async (
 
     dispatch(setCurrentOrgDetails(orgDetails.data))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-    // console.log('successfully retrieved additional organization details')
 
     // Remove two below lines after quartzIdentity flag is removed.
     const updatedState = getState()
     syncQuartzMe(updatedState.identity, dispatch)
   } catch (err) {
-    console.log(err)
+    console.error(err)
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
 
     // Remove line below once quartzMe is deprecated.

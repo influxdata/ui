@@ -1,6 +1,6 @@
-// import {CurrentIdentity} from 'src/identity/reducers'
+import {CurrentIdentity} from 'src/identity/reducers'
 import {RemoteDataState} from 'src/types'
-import {Organization, Identity} from 'src/client/unityRoutes'
+import {Organization} from 'src/client/unityRoutes'
 
 export const SET_QUARTZ_IDENTITY = 'SET_QUARTZ_IDENTITY'
 export const SET_QUARTZ_IDENTITY_STATUS = 'SET_QUARTZ_IDENTITY_STATUS'
@@ -13,7 +13,7 @@ export type Actions =
   | ReturnType<typeof setCurrentBillingProvider>
   | ReturnType<typeof setCurrentOrgDetails>
 
-export const setQuartzIdentity = (identity: Identity) =>
+export const setQuartzIdentity = (identity: CurrentIdentity) =>
   ({
     type: SET_QUARTZ_IDENTITY,
     identity: identity,

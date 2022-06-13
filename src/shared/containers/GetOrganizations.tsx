@@ -34,7 +34,7 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 // Types
 import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
-import {retrieveIdentityThunk} from 'src/identity/utils/selectIdentitySource'
+import {storeIdentityInStateThunk} from 'src/identity/apis'
 import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 
 const canAccessCheckout = (me: Me): boolean => {
@@ -71,6 +71,7 @@ const GetOrganizations: FunctionComponent = () => {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // This doesn't require another API call.
   useEffect(() => {
     if (status === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
@@ -83,10 +84,11 @@ const GetOrganizations: FunctionComponent = () => {
       quartzMeStatus === RemoteDataState.NotStarted &&
       quartzIdentityStatus === RemoteDataState.NotStarted
     ) {
-      dispatch(retrieveIdentityThunk())
+      dispatch(storeIdentityInStateThunk())
     }
   }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // This doesn't require another API call.
   useEffect(() => {
     if (
       isFlagEnabled('credit250Experiment') &&

@@ -1,10 +1,3 @@
-// To Dos:
-
-// 1 - Try to abstract away more into API later.
-// 2 - Maybe move the utils in the API layer
-// 3 - Is there any way we can get rid of the extra useEffect hooks?
-// 4 - Think we need to call most of these APIS right now because of how getOrgs is structured.
-
 import {getAccount, getIdentity, getOrg} from 'src/client/unityRoutes'
 
 import {GetState} from 'src/types'
@@ -22,7 +15,7 @@ import {
 import {RemoteDataState} from 'src/types'
 
 // Utilities
-import {syncQuartzMe} from 'src/identity/utils/syncQuartzMe'
+import {syncQuartzMe} from 'src/identity/apis/'
 
 // Retrieves user's quartz identity from /quartz/identity, and stores it in state.identity.
 export const getQuartzIdentityThunk = () => async (dispatch: any) => {
@@ -91,17 +84,15 @@ export const getBillingProviderThunk = () => async (
   }
 }
 
-// Same - need to change/fix types here
-// It's actually mandatory for us to invoke this logic and ping this endpoint once
-// whenever logging into the app. So I would just move this information over to /identity.
-// Note to self: add this to Miro diagram.
+// Double check typing.
+// It's actually mandatory for us to invoke this logic and ping this endpoint once at the moment,
+// Since isRegionBeta is always used.
 
 // Retrieves more details about the current organization, and stores it in state.identity.org.
 export const getCurrentOrgDetailsThunk = () => async (
   dispatch: any,
   getState: GetState
 ) => {
-  // console.log('entering getCurrentOrgDetailsThunk')
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 

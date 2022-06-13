@@ -16,7 +16,7 @@ import {
 } from 'src/localStorage'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getPublicFlags} from 'src/shared/thunks/flags'
-import {retrieveQuartzIdentity} from './identity/utils/selectIdentitySource'
+import {retrieveQuartzIdentity} from 'src/identity/apis'
 
 // Actions
 import {notify as notifyAction} from 'src/shared/actions/notifications'

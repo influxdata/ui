@@ -1,39 +1,69 @@
 // Reducer
 import reducer from 'src/identity/reducers'
 import {initialState} from 'src/identity/reducers'
-import {omit} from 'lodash'
 
 // Actions
-import {setQuartzIdentity} from 'src/identity/actions/creators'
+import {
+  setQuartzIdentity,
+  setCurrentBillingProvider,
+  setCurrentOrgDetails,
+} from 'src/identity/actions/creators'
 
 // Mocks
-import {mockIdentities} from 'src/identity/mockUserData'
+import {
+  mockIdentities,
+  BillingProvider,
+  mockBillingProviders,
+  mockOrgDetailsArr,
+} from 'src/identity/mockUserData'
 
 // Types
 import {RemoteDataState} from 'src/types'
 
-describe('identity reducer', () => {
-  it('can initialize an empty state', () => {
-    const emptiedState = {
-      ...omit(initialState, ['status']),
-      status: RemoteDataState.Done,
-    }
+// Utils
+import {omit} from 'lodash'
 
-    const newState = reducer(
-      undefined,
-      setQuartzIdentity(emptiedState, RemoteDataState.Done)
-    )
-    expect(newState).toEqual(emptiedState)
+describe('identity reducer', () => {
+  it('can initialize a default state', () => {
+    const newState = reducer(undefined, setQuartzIdentity(initialState))
+    expect(newState).toEqual(initialState)
   })
 
-  it('can set user identity using quartzIdentity', () => {
-    for (let i = 0; i < mockIdentities.length; i++) {
-      const expected = mockIdentities[i]
-      const actual = reducer(
-        undefined,
-        setQuartzIdentity(mockIdentities[i], RemoteDataState.Done)
+  it('can change the user identity using quartzIdentity', () => {
+    const expectedState = mockIdentities[0]
+    const actual = reducer(undefined, setQuartzIdentity(mockIdentities[0]))
+    expect(actual).toEqual(expectedState)
+  })
+})
+
+describe('billing reducer', () => {
+  const identity = reducer(undefined, setQuartzIdentity(mockIdentities[0]))
+  it('can set any billing provider', () => {
+    for (let i = 0; i < mockBillingProviders.length; i++) {
+      const addedProvider = reducer(
+        identity,
+        setCurrentBillingProvider(mockBillingProviders[i])
       )
-      expect(actual).toEqual(expected)
+      expect(addedProvider.account.billingProvider).toEqual(
+        mockBillingProviders[i]
+      )
+    }
+  })
+})
+
+describe('organization reducer', () => {
+  const identity = reducer(undefined, setQuartzIdentity(mockIdentities[0]))
+  it('correctly changes the user organization data', () => {
+    for (let i = 0; i < mockOrgDetailsArr.length; i++) {
+      const newOrg = reducer(
+        identity,
+        setCurrentOrgDetails(mockOrgDetailsArr[i])
+      )
+      const expectedOrg = {
+        ...omit(identity, 'org'),
+        org: mockOrgDetailsArr[i],
+      }
+      expect(newOrg).toEqual(expectedOrg)
     }
   })
 })

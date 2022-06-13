@@ -8,12 +8,12 @@ import {
 } from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
-interface CurrentAccount extends IdentityAccount {
+export interface CurrentAccount extends IdentityAccount {
   // These are optional properties of the current account, which are not retrieved from identity.
   billingProvider?: 'zuora' | 'aws' | 'gcm' | 'azure'
 }
 
-interface CurrentOrg extends IdentityOrganization {
+export interface CurrentOrg extends IdentityOrganization {
   // These are optional properties of the current org, which are not retrieved from identity.
   creationDate?: string
   description?: string
@@ -23,7 +23,7 @@ interface CurrentOrg extends IdentityOrganization {
   regionName?: string
 }
 
-interface CurrentUser extends IdentityUser {
+export interface CurrentUser extends IdentityUser {
   // These are optional properties of the current user, which are not retrieved from identity.
 }
 
@@ -44,7 +44,6 @@ import {
   SET_CURRENT_BILLING_PROVIDER,
   SET_CURRENT_ORG_DETAILS,
 } from 'src/identity/actions/creators'
-import {accountCancellationError} from 'src/shared/copy/notifications'
 
 export const initialState: CurrentIdentity = {
   user: {
@@ -112,13 +111,18 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
       }
 
       case SET_CURRENT_ORG_DETAILS: {
-        // This could be shortened with an alias, but adhere to immer pattern for now.
-        draftState.org.creationDate = action.org.creationDate
-        draftState.org.description = action.org.description
-        draftState.org.isRegionBeta = action.org.isRegionBeta
-        draftState.org.provider = action.org.provider
-        draftState.org.regionCode = action.org.regionCode
-        draftState.org.regionName = action.org.regionName
+        // draftState.org.id = action.org.id
+        // draftState.org.name = action.org.name
+        // draftState.org.clusterHost = action.org.clusterHost
+
+        // draftState.org.creationDate = action.org.creationDate
+        // draftState.org.description = action.org.description
+        // draftState.org.isRegionBeta = action.org.isRegionBeta
+        // draftState.org.provider = action.org.provider
+        // draftState.org.regionCode = action.org.regionCode
+        // draftState.org.regionName = action.org.regionName
+        draftState.org = action.org
+
         return
       }
     }

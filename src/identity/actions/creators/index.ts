@@ -1,4 +1,4 @@
-import {CurrentIdentity} from 'src/identity/reducers'
+import {CurrentIdentity, CurrentOrg} from 'src/identity/reducers'
 import {RemoteDataState} from 'src/types'
 import {Organization} from 'src/client/unityRoutes'
 
@@ -28,7 +28,7 @@ export const setCurrentBillingProvider = (
     billingProvider: billingProvider,
   } as const)
 
-export const setCurrentOrgDetails = (orgDetails: Organization) =>
+export const setCurrentOrgDetails = (orgDetails: CurrentOrg) =>
   ({
     type: SET_CURRENT_ORG_DETAILS,
     org: orgDetails,

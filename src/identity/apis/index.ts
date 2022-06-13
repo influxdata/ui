@@ -1,6 +1,30 @@
+// Functions calling API
+import {getMe} from 'src/client/unityRoutes'
+import {getIdentity} from 'src/client/unityRoutes'
+
+// Feature Flag Check
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
+// Thunks
+import {getQuartzMeThunk} from 'src/me/actions/thunks'
+import {getQuartzIdentityThunk} from '../actions/thunks'
+
 import {CurrentIdentity} from '../reducers'
 import {RemoteDataState} from 'src/types'
 import {setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
+
+// Retrieve the user's quartz identity, using /quartz/identity if the 'quartzIdentity' flag is enabled.
+export const retrieveQuartzIdentity = () =>
+  CLOUD && isFlagEnabled('quartzIdentity') ? getIdentity({}) : getMe({})
+
+// Populate the user's quartz identity in state, using /quartz/identity if the 'quartzIdentity' flag is enabled.
+export const storeIdentityInStateThunk = () =>
+  CLOUD && isFlagEnabled('quartzIdentity')
+    ? getQuartzIdentityThunk()
+    : getQuartzMeThunk()
 
 // Transitional function that translates quartzIdentity state into quartzMe state.
 export const syncQuartzMe = (

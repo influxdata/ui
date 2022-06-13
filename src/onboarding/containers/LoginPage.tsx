@@ -17,7 +17,7 @@ import {CLOUD} from 'src/shared/constants'
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
-import {retrieveQuartzIdentity} from 'src/identity/utils/selectIdentitySource'
+import {retrieveQuartzIdentity} from 'src/identity/apis'
 import {getMe} from 'src/client'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2

@@ -34,7 +34,7 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 // Types
 import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
-import {getQuartzMeThunk} from 'src/me/actions/thunks'
+import {getIdentityThunk} from 'src/identity/utils/getIdentityThunk'
 import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 
 const canAccessCheckout = (me: Me): boolean => {
@@ -73,21 +73,19 @@ const GetOrganizations: FunctionComponent = () => {
 
   // This doesn't require another API call.
   useEffect(() => {
-    console.log('about to get organizations')
     if (status === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
     }
   }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    console.log('about to get quartz')
     if (
       isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
       // For now, just check whether quartzMeStatus is not set, because quartzMe is what is
       // currently being used by the application.
     ) {
-      dispatch(getQuartzMeThunk())
+      dispatch(getIdentityThunk())
     }
   }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 

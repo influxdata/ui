@@ -60,6 +60,7 @@ export const getBillingProviderThunk = () => async (
   getState: GetState
 ) => {
   try {
+    console.log('entering billing provider thunk')
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
     const initialState = getState()

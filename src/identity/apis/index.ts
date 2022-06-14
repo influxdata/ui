@@ -39,15 +39,77 @@ export enum IdentityError {
   Unknown = 'Received an error of unknown type. Please report this information to InfluxDB',
 }
 
+export const pollIdentityRetry = async (
+  retries: number,
+  delay: number
+): Promise<Identity | Me> => {
+  try {
+    const quartzIdentity = await pollIdentity()
+    return quartzIdentity
+  } catch (err) {
+    if (err.message === IdentityError.InternalServer) {
+      let currentTries = 0
+      console.log('internal server error. trying again')
+      const intervalID = window.setInterval(() => {
+        if (++currentTries >= retries) {
+          window.clearInterval(intervalID)
+          throw new Error(
+            `Failed to retrieve session information after ${retries} retries. Please try again later, or report this information to InfluxData.`
+          )
+        }
+      }, delay)
+    } else {
+      throw new Error(err.message)
+    }
+  }
+}
+
+export const pollIdentity = async (): Promise<Identity | Me> => {
+  try {
+    let quartzIdentity
+    if (CLOUD && isFlagEnabled('quartzIdentity')) {
+      quartzIdentity = await retrieveIdentity()
+    } else {
+      quartzIdentity = await retrieveMe()
+    }
+    return quartzIdentity
+  } catch (err) {
+    if (err.message === IdentityError.InternalServer) {
+      throw new Error(IdentityError.InternalServer)
+    } else if (err.message === IdentityError.Unauthorized) {
+      throw new Error(IdentityError.Unauthorized)
+    } else {
+      throw new Error(IdentityError.Unknown)
+    }
+  }
+}
+
 export const retrieveIdentity = async (): Promise<Identity> => {
   // Returns 200, 401, or 500.
   const quartzIdentity = await getIdentity({})
 
   if (quartzIdentity.status === 200) {
     return quartzIdentity.data
+    // throw new Error(IdentityError.InternalServer)
   } else if (quartzIdentity.status === 401) {
     throw new Error(IdentityError.Unauthorized)
   } else if (quartzIdentity.status === 500) {
+    throw new Error(IdentityError.InternalServer)
+  } else {
+    throw new Error(IdentityError.Unknown)
+  }
+}
+
+export const retrieveMe = async (): Promise<Me> => {
+  const quartzMe = await getMe({})
+
+  // Check error handling codes here.
+
+  if (quartzMe.status === 200) {
+    return quartzMe.data
+  } else if (quartzMe.status === 401) {
+    throw new Error(IdentityError.Unauthorized)
+  } else if (quartzMe.status === 500) {
     throw new Error(IdentityError.InternalServer)
   } else {
     throw new Error(IdentityError.Unknown)

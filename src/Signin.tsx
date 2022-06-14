@@ -32,6 +32,7 @@ import {
 // Types
 import {RemoteDataState} from 'src/types'
 import {getMe} from 'src/client'
+import {pollIdentityRetry} from './identity/apis'
 
 interface State {
   loading: RemoteDataState
@@ -95,17 +96,9 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      let resp
-
-      if (CLOUD) {
-        resp = await retrieveQuartzIdentity()
-      } else {
-        resp = await getMe({})
-      }
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
+      console.log('polling for identity')
+      const result = await pollIdentityRetry(5, 5000)
+      console.log(result)
 
       this.setState({auth: true})
       const redirectIsSet = !!getFromLocalStorage('redirectTo')

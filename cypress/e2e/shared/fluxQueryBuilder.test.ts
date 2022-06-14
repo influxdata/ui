@@ -26,7 +26,9 @@ describe('FluxQueryBuilder', () => {
     const searchField = 'air_temp_degc'
     const searchTagKey = 'station_id'
 
-    it('bucket selector can search and select a bucket', () => {
+    it('bucket selector can search and select a bucket, then search and select a measurement', () => {
+      // Bucket
+
       // no other selectors should be visible, except the bucket selector
       cy.getByTestID('bucket-selector--dropdown-button').should('be.visible')
       cy.getByTestID('measurement-selector--dropdown-button').should(
@@ -53,17 +55,12 @@ describe('FluxQueryBuilder', () => {
         bucketName
       )
 
-      // upon selection, should show measurement selector
-      cy.getByTestID('measurement-selector--dropdown').should('be.visible')
-    })
+      // Measurement
 
-    it('measurement selector can search and select a measurement', () => {
-      // select a bucket
-      cy.getByTestID('bucket-selector--dropdown-button').click()
-      cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
-
-      // open the measurement list
-      cy.getByTestID('measurement-selector--dropdown-button').click()
+      // upon the selection of a bucket, should show measurement selector
+      cy.getByTestID('measurement-selector--dropdown-button')
+        .should('be.visible')
+        .click()
 
       // search for a measurement
       cy.get('.searchable-dropdown--input-container').type(measurement)

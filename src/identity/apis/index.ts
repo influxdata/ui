@@ -32,29 +32,29 @@ export enum IdentityError {
 
 // Poll and retrieve user's identity from /quartz/me or /quartz/identity as applicable.
 // Retry on failure.
-export const pollIdentityRetry = async (
-  retries: number, // number of retries
-  backoff: number // milliseconds
-): Promise<Identity | Me> => {
-  return pollIdentity()
-    .then(res => {
-      return res
-    })
-    .catch(err => {
-      if (err.message === IdentityError.InternalServer) {
-        if (retries > 0) {
-          setTimeout((): any => {
-            return pollIdentityRetry(--retries, backoff * 2)
-          }, backoff)
-        }
-        throw new Error(IdentityError.RetriesFailed)
-      } else if (err.message === IdentityError.Unauthorized) {
-        throw new Error(IdentityError.Unauthorized)
-      } else {
-        throw new Error(IdentityError.Unknown)
-      }
-    })
-}
+// export const pollIdentityRetry = async (
+//   retries: number, // number of retries
+//   backoff: number // milliseconds
+// ): Promise<Identity | Me> => {
+//   return pollIdentity()
+//     .then(res => {
+//       return res
+//     })
+//     .catch(err => {
+//       if (err.message === IdentityError.InternalServer) {
+//         if (retries > 0) {
+//           setTimeout((): any => {
+//             return pollIdentityRetry(--retries, backoff * 2)
+//           }, backoff)
+//         }
+//         throw new Error(IdentityError.RetriesFailed)
+//       } else if (err.message === IdentityError.Unauthorized) {
+//         throw new Error(IdentityError.Unauthorized)
+//       } else {
+//         throw new Error(IdentityError.Unknown)
+//       }
+//     })
+// }
 
 // Poll and retrieve the user's identity from /quarz/me or /quartz/identity, as applicable.
 // Do not retry on failure.

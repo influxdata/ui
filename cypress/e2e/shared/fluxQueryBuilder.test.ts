@@ -4,10 +4,10 @@ describe('FluxQueryBuilder', () => {
   beforeEach(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({
-            newDataExplorer: true,
-          }).then(() => {
+        cy.setFeatureFlags({
+          newDataExplorer: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
             cy.visit(`/orgs/${id}/data-explorer`)
             cy.getByTestID('tree-nav').should('be.visible')
             // Switch to Flux Query Builder

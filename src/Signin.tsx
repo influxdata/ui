@@ -26,11 +26,12 @@ import {
   CLOUD,
   CLOUD_LOGIN_PATHNAME,
   CLOUD_SIGNIN_PATHNAME,
+  CLOUD_QUARTZ_URL,
 } from 'src/shared/constants'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {pollIdentityRetry} from './identity/apis'
+import {getMe} from 'src/client'
 
 interface State {
   loading: RemoteDataState
@@ -93,62 +94,70 @@ export class Signin extends PureComponent<Props, State> {
   }
 
   private checkForLogin = async () => {
-    pollIdentityRetry(5, 5000)
-      .then(() => {
-        this.setState({auth: true})
-        const redirectIsSet = !!getFromLocalStorage('redirectTo')
-        if (redirectIsSet) {
-          removeFromLocalStorage('redirectTo')
+    try {
+      const resp = await getMe({})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      this.setState({auth: true})
+      const redirectIsSet = !!getFromLocalStorage('redirectTo')
+      if (redirectIsSet) {
+        removeFromLocalStorage('redirectTo')
+      }
+    } catch (error) {
+      this.setState({auth: false})
+      const {
+        location: {pathname},
+      } = this.props
+
+      clearInterval(this.intervalID)
+
+      if (CLOUD) {
+        if (
+          isFlagEnabled('useQuartzLogin') &&
+          process.env.NODE_ENV &&
+          process.env.NODE_ENV !== 'development'
+        ) {
+          window.location.href = CLOUD_QUARTZ_URL
+          return
         }
-      })
-      .catch(error => {
-        this.setState({auth: false})
-        const {
-          location: {pathname},
-        } = this.props
 
-        clearInterval(this.intervalID)
-
-        if (CLOUD) {
-          if (isFlagEnabled('useQuartzLogin')) {
-            window.location.reload()
-            return
-          }
-
-          /**
-           * We'll need this authSessionCookieOn flag off for tools until
-           * Quartz is integrated into that environment
-           */
-          if (isFlagEnabled('authSessionCookieOn')) {
-            const url = new URL(
-              `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`
-            )
-            setToLocalStorage('redirectTo', window.location.href)
-            window.location.href = url.href
-            throw error
-          }
-
+        /**
+         * We'll need this authSessionCookieOn flag off for tools until
+         * Quartz is integrated into that environment
+         */
+        if (isFlagEnabled('authSessionCookieOn')) {
           const url = new URL(
-            `${window.location.origin}${CLOUD_SIGNIN_PATHNAME}?redirectTo=${window.location.href}`
+            `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`
           )
           setToLocalStorage('redirectTo', window.location.href)
           window.location.href = url.href
           throw error
         }
 
-        if (pathname.startsWith('/signin')) {
-          return
-        }
+        const url = new URL(
+          `${window.location.origin}${CLOUD_SIGNIN_PATHNAME}?redirectTo=${window.location.href}`
+        )
+        setToLocalStorage('redirectTo', window.location.href)
+        window.location.href = url.href
+        throw error
+      }
 
-        let returnTo = ''
+      if (pathname.startsWith('/signin')) {
+        return
+      }
 
-        if (pathname !== '/') {
-          returnTo = `?returnTo=${pathname}`
-          this.props.notify(sessionTimedOut())
-        }
+      let returnTo = ''
 
-        this.props.history.replace(`/signin${returnTo}`)
-      })
+      if (pathname !== '/') {
+        returnTo = `?returnTo=${pathname}`
+        this.props.notify(sessionTimedOut())
+      }
+
+      this.props.history.replace(`/signin${returnTo}`)
+    }
   }
 }
 

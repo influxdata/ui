@@ -10,7 +10,7 @@ describe('FluxQueryBuilder', () => {
           cy.setFeatureFlags({
             newDataExplorer: true,
           }).then(() => {
-            cy.wait(1000)
+            cy.wait(100)
             // Switch to Flux Query Builder
             cy.getByTestID('flux-query-builder-toggle')
               .should('be.visible')

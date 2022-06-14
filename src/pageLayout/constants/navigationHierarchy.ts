@@ -1,5 +1,9 @@
 import {IconFont} from '@influxdata/clockface'
-import {PROJECT_NAME_PLURAL, PROJECT_NAME_SHORT} from 'src/flows'
+import {
+  PROJECT_NAME,
+  PROJECT_NAME_PLURAL,
+  PROJECT_NAME_SHORT,
+} from 'src/flows/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getStore} from 'src/store/configureStore'
 
@@ -8,7 +12,6 @@ import {CLOUD} from 'src/shared/constants'
 
 // Types
 import {AppState} from 'src/types'
-import {PROJECT_NAME} from 'src/flows'
 
 export interface NavSubItem {
   id: string

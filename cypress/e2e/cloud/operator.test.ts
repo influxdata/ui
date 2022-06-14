@@ -6,6 +6,7 @@ describe('Operator Page', () => {
           cy.getByTestID('home-page--header').should('be.visible')
           cy.setFeatureFlags({
             uiUnificationFlag: true,
+            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               isOperator: true,
@@ -228,6 +229,7 @@ describe('Operator Page should not be accessible for non-operator users', () => 
           cy.getByTestID('home-page--header').should('be.visible')
           cy.setFeatureFlags({
             uiUnificationFlag: true,
+            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               isOperator: false,

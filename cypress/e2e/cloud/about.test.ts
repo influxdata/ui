@@ -8,6 +8,7 @@ describe.skip('About Page for free users with only 1 user', () => {
         cy.get('@org').then(({id}: Organization) => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
+            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'free',
@@ -58,6 +59,7 @@ describe('About Page for free users with multiple users', () => {
         cy.get('@org').then(({id}: Organization) => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
+            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'free',
@@ -95,6 +97,7 @@ describe('About Page for PAYG users', () => {
         cy.get('@org').then(({id}: Organization) => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
+            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',

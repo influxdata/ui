@@ -5,7 +5,10 @@ describe('Users Page', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+          cy.setFeatureFlags({
+            uiUnificationFlag: true,
+            quartzIdentity: true,
+          }).then(() => {
             cy.quartzProvision({
               hasUsers: true,
             }).then(() => {

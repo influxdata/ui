@@ -7,6 +7,7 @@ describe('Billing Page Free Users', () => {
         cy.get('@org').then(() => {
           cy.setFeatureFlags({
             quartzZuoraDisabled: true,
+            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'free',
@@ -33,6 +34,7 @@ describe('Billing Page PAYG Users', () => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
             quartzZuoraDisabled: true,
+            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',

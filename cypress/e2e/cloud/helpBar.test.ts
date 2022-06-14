@@ -6,6 +6,7 @@ describe('Help bar support for free account users', () => {
           cy.setFeatureFlags({
             helpBar: true,
             helpBarSfdcIntegration: true,
+            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'free',
@@ -42,6 +43,7 @@ describe('Help bar support for PAYG users', () => {
           cy.setFeatureFlags({
             helpBar: true,
             helpBarSfdcIntegration: true,
+            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',

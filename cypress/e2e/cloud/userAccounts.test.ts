@@ -7,6 +7,7 @@ const doSetup = (cy, numAccounts: number) => {
         cy.setFeatureFlags({
           uiUnificationFlag: true,
           multiAccount: true,
+          quartzIdentity: true,
         }).then(() => {
           cy.quartzProvision({
             accountType: 'free',

@@ -1,12 +1,18 @@
 import {GetState} from 'src/types'
+import {Dispatch} from 'react'
 
 // Actions
-import {setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
+import {
+  setQuartzMe,
+  setQuartzMeStatus,
+  Actions as MeActions,
+} from 'src/me/actions/creators'
 import {
   setCurrentOrgDetails,
   setCurrentBillingProvider,
   setQuartzIdentity,
   setQuartzIdentityStatus,
+  Actions as IdentityActions,
 } from 'src/identity/actions/creators'
 
 // Types
@@ -25,7 +31,9 @@ import {
 } from 'src/identity/apis/auth'
 
 // Retrieves user's quartz identity from /quartz/identity, and stores it in state.identity.
-export const getQuartzIdentityThunk = () => async (dispatch: any) => {
+export const getQuartzIdentityThunk = () => async (
+  dispatch: Dispatch<IdentityActions | MeActions>
+) => {
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
@@ -39,18 +47,16 @@ export const getQuartzIdentityThunk = () => async (dispatch: any) => {
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
   } catch (error) {
-    // Test error handler here by associating it with a 200.
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     // Remove line below once quartzMe is deprecated.
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
     console.error(error)
-    throw new Error(error)
   }
 }
 
 // Retrieves current account's billingProvider, and stores it in state.identity.account.
 export const getBillingProviderThunk = () => async (
-  dispatch: any,
+  dispatch: Dispatch<IdentityActions | MeActions>,
   getState: GetState
 ) => {
   try {
@@ -65,7 +71,6 @@ export const getBillingProviderThunk = () => async (
 
     const accountDetails = await fetchAccountDetails(accountId)
 
-    // Resolve openAPI issue ith billingProvider versus billing_provider.
     dispatch(setCurrentBillingProvider(accountDetails.billingProvider))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 
@@ -75,18 +80,16 @@ export const getBillingProviderThunk = () => async (
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
   } catch (error) {
-    // Test error handler here by associating it with a 200.
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     // Remove line below once quartzMe is deprecated.
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
     console.error(error)
-    throw new Error(error)
   }
 }
 
 // Retrieves more details about the current organization, and stores it in state.identity.org.
 export const getCurrentOrgDetailsThunk = () => async (
-  dispatch: any,
+  dispatch: Dispatch<IdentityActions | MeActions>,
   getState: GetState
 ) => {
   try {
@@ -110,11 +113,9 @@ export const getCurrentOrgDetailsThunk = () => async (
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
   } catch (error) {
-    // Test error handler here by associating it with a 200.
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     // Remove line below once quartzMe is deprecated.
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
     console.error(error)
-    throw new Error(error)
   }
 }

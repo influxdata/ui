@@ -37,7 +37,11 @@ const OrgProfileTab: FC = () => {
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
   useEffect(() => {
-    if (CLOUD && isFlagEnabled('uiUnificationFlag')) {
+    if (
+      CLOUD &&
+      isFlagEnabled('uiUnificationFlag') &&
+      isFlagEnabled('quartzIdentity')
+    ) {
       if (!me.quartzMe.billingProvider) {
         dispatch(getBillingProviderThunk())
       }

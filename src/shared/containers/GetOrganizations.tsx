@@ -59,12 +59,13 @@ const GetOrganizations: FunctionComponent = () => {
   const {id: meId = '', name: email = ''} = useSelector(getMe)
   const dispatch = useDispatch()
 
-  // It isn't ideal to need to retrieve isRegionBeta from a separate endpoint, just to access the GetOrganizations component.
+  // Ecommerce is refactoring so that we have a flag similar to isRegionBeta coming from the /quartz/identity endpoint.
   useEffect(() => {
     // Remove quartzIdentity condition once flag is deployed for all users.
     if (
       CLOUD &&
       isFlagEnabled('quartzIdentity') &&
+      isFlagEnabled('uiUnificationFlag') &&
       quartzMe?.isRegionBeta === null
     ) {
       dispatch(getCurrentOrgDetailsThunk())

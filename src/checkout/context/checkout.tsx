@@ -162,7 +162,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   useEffect(() => {
     getBillingSettings()
     return () => {
-      // Call the 'quartz/me' or 'quartz/identity' endpoint as applicable.
+      // Call the 'quartz/me' or 'quartz/identity' endpoint as applicable (checks for presence of feature flag)
       dispatch(getIdentityThunk())
     }
   }, [getBillingSettings]) // eslint-disable-line react-hooks/exhaustive-deps

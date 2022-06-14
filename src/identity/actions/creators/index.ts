@@ -18,7 +18,6 @@ export const setQuartzIdentity = (identity: CurrentIdentity) =>
     identity: identity,
   } as const)
 
-// This might need to be a specific string (zuora or otherwise) to be imported
 export const setCurrentBillingProvider = (
   billingProvider: 'zuora' | 'aws' | 'gcm' | 'azure'
 ) =>

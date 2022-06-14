@@ -3,7 +3,8 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getQuartzMeThunk} from 'src/me/actions/thunks'
 import {getQuartzIdentityThunk} from '../actions/thunks'
 
+// For now, check for both uiUnificationFlag and quartzIdentity to ensure this isn't used in tools.
 export const getIdentityThunk = () =>
-  CLOUD && isFlagEnabled('quartzIdentity')
+  CLOUD && isFlagEnabled('uiUnificationFlag') && isFlagEnabled('quartzIdentity')
     ? getQuartzIdentityThunk()
     : getQuartzMeThunk()

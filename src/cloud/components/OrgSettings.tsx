@@ -23,7 +23,12 @@ const OrgSettings: FC<Props> = ({children}) => {
   const accountType = quartzMe?.accountType ?? 'free'
 
   useEffect(() => {
-    if (CLOUD && isFlagEnabled('quartzIdentity') && !quartzMe?.isRegionBeta) {
+    if (
+      CLOUD &&
+      isFlagEnabled('uiUnificationFlag') &&
+      isFlagEnabled('quartzIdentity') &&
+      !quartzMe?.isRegionBeta
+    ) {
       dispatch(getCurrentOrgDetailsThunk())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

@@ -25,11 +25,11 @@ const BillingPageContents: FC = () => {
     // After isFlagEnabled is removed, keep other condition. billingProvider isn't delivered by /quartz/identity.
     if (
       CLOUD &&
+      isFlagEnabled('uiUnificationFlag') && // Need this check to avoid having quartz endpoints hit in tools.
       isFlagEnabled('quartzIdentity') &&
       quartzMe.billingProvider === null
     ) {
-      // billingProviderThunk populates billingProvider into state at identity.currentIdentity.org.billingProvider
-      // (and for now, into me.quartzMe.billingProvider).
+      // billingProviderThunk populates billingProvider into 'identity' and (for now) 'me' state.
       dispatch(getBillingProviderThunk())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

@@ -22,6 +22,7 @@ import {MeState} from 'src/me/reducers'
 // Types
 import {RemoteDataState, GetState} from 'src/types'
 import {Actions} from 'src/me/actions/creators'
+import {fetchQuartzMe} from 'src/identity/apis/auth'
 
 export const getIdpeMeThunk = () => async (
   dispatch: Dispatch<Actions>,
@@ -79,12 +80,9 @@ export const getQuartzMeThunk = () => async dispatch => {
   try {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
 
-    const quartzMe = await getQuartzMe({})
+    const quartzMe = await fetchQuartzMe()
 
-    if (quartzMe.status !== 200) {
-      throw new Error(quartzMe.data.message)
-    }
-    dispatch(setQuartzMe(quartzMe.data, RemoteDataState.Done))
+    dispatch(setQuartzMe(quartzMe, RemoteDataState.Done))
   } catch (error) {
     console.error(error)
     dispatch(setQuartzMeStatus(RemoteDataState.Error))

@@ -24,12 +24,6 @@ import {
   retrieveOrgDetails,
 } from 'src/identity/apis/'
 
-// Error catching options
-// Options:
-// (1) event - error fetching identity
-// (2) user - notify user
-// (3) honeybadger? req here or elsewhere
-
 // Retrieves user's quartz identity from /quartz/identity, and stores it in state.identity.
 export const getQuartzIdentityThunk = () => async (dispatch: any) => {
   try {
@@ -60,7 +54,6 @@ export const getBillingProviderThunk = () => async (
   getState: GetState
 ) => {
   try {
-    console.log('entering billing provider thunk')
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
     const initialState = getState()

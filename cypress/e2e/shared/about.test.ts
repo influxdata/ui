@@ -57,6 +57,6 @@ describe('About Page', () => {
       .contains(newOrgName)
 
     cy.getByTestID('org-profile--name').contains(newOrgName)
-    cy.getByTestID('danger-zone--org-name').should('have.value', newOrgName)
+    cy.getByTestID('code-snippet--orgName').contains(newOrgName)
   })
 })

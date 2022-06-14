@@ -25,9 +25,6 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-// Types
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getMe, getQuartzMe} from 'src/me/selectors'
@@ -44,6 +41,23 @@ import {supportRequestError} from 'src/shared/copy/notifications/categories/help
 
 import './ContactSupport.scss'
 
+const translateSeverityLevelForSfdc = (severity: string): string => {
+  switch (severity) {
+    case '1 - Critical': {
+      return 'Severity 1'
+    }
+    case '2 - High': {
+      return 'Severity 2'
+    }
+    case '3 - Standard': {
+      return 'Severity 3'
+    }
+    case '4 - Request': {
+      return 'Severity 4'
+    }
+  }
+}
+
 interface OwnProps {
   onClose: () => void
 }
@@ -54,7 +68,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   const me = useSelector(getMe)
 
   const [subject, setSubject] = useState('')
-  const [severity, setSeverity] = useState('')
+  const [severity, setSeverity] = useState('3 - Standard')
   const [description, setDescription] = useState('')
   const {onClose} = useContext(OverlayContext)
 
@@ -83,8 +97,15 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
 
   const handleSubmit = async () => {
     const email = quartzMe?.email
+    const descriptionWithOrgId = `${description}  [Org Id: ${orgID}]`
+    const translatedSeverity = translateSeverityLevelForSfdc(severity)
     try {
-      await createSfdcSupportCase(description, email, severity, subject)
+      await createSfdcSupportCase(
+        descriptionWithOrgId,
+        email,
+        translatedSeverity,
+        subject
+      )
       event(
         'helpBar.paygSupportRequest.submitted',
         {},
@@ -151,60 +172,59 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
         title="Contact Support"
         onDismiss={handleClose}
       />
-      <ErrorBoundary>
-        <Form>
-          <Overlay.Body>
-            <p className="status-page-text">
-              <span>
-                {' '}
-                <Icon glyph={IconFont.Info_New} />{' '}
-              </span>
-              Check our{' '}
-              <SafeBlankLink href="https://status.influxdata.com">
-                status page
-              </SafeBlankLink>{' '}
-              to see if there is an outage impacting your region.
-            </p>
-            <Form.Element label="Subject" required={true}>
-              <Input
-                name="subject"
-                value={subject}
-                onChange={handleSubjectChange}
-                testID="contact-support-subject-input"
+      <Form>
+        <Overlay.Body>
+          <p className="status-page-text">
+            <span>
+              {' '}
+              <Icon glyph={IconFont.Info_New} />{' '}
+            </span>
+            Check our{' '}
+            <SafeBlankLink href="https://status.influxdata.com">
+              status page
+            </SafeBlankLink>{' '}
+            to see if there is an outage impacting your region.
+          </p>
+          <Form.Element label="Subject" required={true}>
+            <Input
+              name="subject"
+              value={subject}
+              onChange={handleSubjectChange}
+              testID="contact-support-subject-input"
+            />
+          </Form.Element>
+          <Form.Element
+            label="Severity"
+            required={true}
+            labelAddOn={severityTip}
+          >
+            <SelectDropdown
+              options={severityLevel}
+              selectedOption={severity}
+              onSelect={handleChangeSeverity}
+              indicator={DropdownItemType.None}
+              testID="severity-level-dropdown"
+            />
+          </Form.Element>
+          <Form.ValidationElement
+            label="Description"
+            required={true}
+            value={description}
+            validationFunc={handleValidation}
+          >
+            {status => (
+              <TextArea
+                status={status}
+                rows={10}
+                testID="support-description--textarea"
+                name="description"
+                value={description}
+                onChange={handleDescriptionChange}
               />
-            </Form.Element>
-            <Form.Element
-              label="Severity"
-              required={true}
-              labelAddOn={severityTip}
-            >
-              <SelectDropdown
-                options={severityLevel}
-                selectedOption={severity}
-                onSelect={handleChangeSeverity}
-                indicator={DropdownItemType.None}
-              />
-            </Form.Element>
-            <Form.ValidationElement
-              label="Description"
-              required={true}
-              value={description}
-              validationFunc={handleValidation}
-            >
-              {status => (
-                <TextArea
-                  status={status}
-                  rows={10}
-                  testID="support-description--textarea"
-                  name="description"
-                  value={description}
-                  onChange={handleDescriptionChange}
-                />
-              )}
-            </Form.ValidationElement>
-          </Overlay.Body>
-        </Form>
-      </ErrorBoundary>
+            )}
+          </Form.ValidationElement>
+        </Overlay.Body>
+      </Form>
       <Overlay.Footer>
         <Button
           text="Cancel"

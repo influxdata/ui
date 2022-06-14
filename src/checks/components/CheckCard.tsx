@@ -1,7 +1,7 @@
 // Libraries
 import React, {MouseEvent, FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {connect, ConnectedProps, useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {
@@ -48,13 +48,14 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {shouldOpenLinkInNewTab} from 'src/utils/crossPlatform'
 import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
+import {getOrg} from 'src/organizations/selectors'
 
 interface OwnProps {
   check: Check
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
+type Props = OwnProps & ReduxProps
 
 const CheckCard: FC<Props> = ({
   onRemoveCheckLabel,
@@ -64,11 +65,9 @@ const CheckCard: FC<Props> = ({
   check,
   onUpdateCheckDisplayProperties,
   deleteCheck,
-  match: {
-    params: {orgID},
-  },
-  history,
 }) => {
+  const history = useHistory()
+  const orgID = useSelector(getOrg).id
   const {activeStatus, description, id, name, taskID} = check
 
   const checkUrl = `/orgs/${orgID}/alerting/checks/${id}/edit`
@@ -231,4 +230,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export default connector(withRouter(CheckCard))
+export default connector(CheckCard)

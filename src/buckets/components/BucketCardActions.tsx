@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {
@@ -31,28 +31,27 @@ import {CLOUD} from 'src/shared/constants'
 interface OwnProps {
   bucket: OwnBucket
   bucketType: OwnBucket['type']
-  orgID: string
   onFilterChange: (searchTerm: string) => void
   onGetSchema: (b: OwnBucket) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{orgID: string}>
-type Props = OwnProps & ReduxProps & RouterProps
+type Props = OwnProps & ReduxProps
 
 const BucketCardActions: FC<Props> = ({
   bucket,
   bucketType,
-  orgID,
   onFilterChange,
   onGetSchema,
   onAddBucketLabel,
   onDeleteBucketLabel,
-  history,
   onSetDataLoadersBucket,
   onSetDataLoadersType,
   setLocationOnDismiss,
 }) => {
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
+
   if (bucketType === 'system') {
     return null
   }
@@ -163,4 +162,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export default connector(withRouter(BucketCardActions))
+export default connector(BucketCardActions)

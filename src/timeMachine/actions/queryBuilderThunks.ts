@@ -94,8 +94,9 @@ const loadTagSelectorValues = (index: number) => async (
   try {
     const timeRange = getTimeRangeWithTimezone(state)
     const key = getActiveQuery(getState()).builderConfig.tags[index].key
-    const searchTerm = getActiveTimeMachine(getState()).queryBuilder.tags[index]
-      .valuesSearchTerm
+    const searchTerm =
+      getActiveTimeMachine(getState()).queryBuilder.tags[index]
+        ?.valuesSearchTerm ?? ''
 
     const values = await queryBuilderFetcher.findValues(index, {
       url: '/api/v2/query',
@@ -163,8 +164,8 @@ export const loadTagSelector = (index: number) => async (
   try {
     const timeRange = getTimeRangeWithTimezone(state)
 
-    const searchTerm = getActiveTimeMachine(state).queryBuilder.tags[index]
-      .keysSearchTerm
+    const searchTerm =
+      getActiveTimeMachine(state).queryBuilder.tags[index]?.keysSearchTerm ?? ''
 
     const keys = await queryBuilderFetcher.findKeys(index, {
       url: '/api/v2/query',

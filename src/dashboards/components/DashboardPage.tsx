@@ -89,7 +89,7 @@ class DashboardPage extends Component<Props> {
           <Page titleTag={this.pageTitle} testID="dashboard-page">
             <LimitChecker>
               <HoverTimeProvider>
-                {isFlagEnabled('openCellPage') === false && (
+                {!isFlagEnabled('openCellPage') && (
                   <>
                     <DashboardHeader onManualRefresh={onManualRefresh} />
                     <RateLimitAlert
@@ -103,18 +103,18 @@ class DashboardPage extends Component<Props> {
                   </>
                 )}
                 <Switch>
-                  <FeatureFlag name="openCellPage">
-                    <Route
-                      path={dashRoute}
-                      render={() => (
+                  <Route
+                    path={dashRoute}
+                    render={() => (
+                      <FeatureFlag name="openCellPage">
                         <SingleDashboardPage
                           manualRefresh={manualRefresh}
                           onManualRefresh={onManualRefresh}
                         />
-                      )}
-                      exact
-                    />
-                  </FeatureFlag>
+                      </FeatureFlag>
+                    )}
+                    exact
+                  />
                   <Route
                     path={`${dashRoute}/cells/new`}
                     component={NewViewVEO}

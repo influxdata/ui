@@ -6,13 +6,16 @@ describe('FluxQueryBuilder', () => {
     cy.signin()
     cy.get('@org').then(({id}: Organization) => {
       cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
-        cy.getByTestID('tree-nav').should('be.visible')
-        // Switch to Flux Query Builder
-        cy.setFeatureFlags({newDataExplorer: true})
-        cy.getByTestID('flux-query-builder-toggle')
-          .should('be.visible')
-          .click()
+        cy.setFeatureFlags({
+          newDataExplorer: true,
+        }).then(() => {
+          cy.visit(`${orgs}/${id}${explorer}`)
+          cy.getByTestID('tree-nav').should('be.visible')
+          // Switch to Flux Query Builder
+          cy.getByTestID('flux-query-builder-toggle')
+            .should('be.visible')
+            .click()
+        })
       })
     })
   })

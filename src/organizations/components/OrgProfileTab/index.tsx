@@ -37,11 +37,13 @@ const OrgProfileTab: FC = () => {
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
   useEffect(() => {
-    if (!me.quartzMe.billingProvider) {
-      dispatch(getBillingProviderThunk())
-    }
-    if (!me.quartzMe.regionCode) {
-      dispatch(getCurrentOrgDetailsThunk())
+    if (CLOUD && isFlagEnabled('uiUnificationFlag')) {
+      if (!me.quartzMe.billingProvider) {
+        dispatch(getBillingProviderThunk())
+      }
+      if (CLOUD && !me.quartzMe.regionCode) {
+        dispatch(getCurrentOrgDetailsThunk())
+      }
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 

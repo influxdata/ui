@@ -12,13 +12,9 @@ import {
 // Mocks
 import {
   mockIdentities,
-  BillingProvider,
   mockBillingProviders,
   mockOrgDetailsArr,
 } from 'src/identity/mockUserData'
-
-// Types
-import {RemoteDataState} from 'src/types'
 
 // Utils
 import {omit} from 'lodash'
@@ -30,9 +26,11 @@ describe('identity reducer', () => {
   })
 
   it('can change the user identity using quartzIdentity', () => {
-    const expectedState = mockIdentities[0]
-    const actual = reducer(undefined, setQuartzIdentity(mockIdentities[0]))
-    expect(actual).toEqual(expectedState)
+    for (let i = 0; i < mockIdentities.length; i++) {
+      const expectedState = mockIdentities[i]
+      const actual = reducer(undefined, setQuartzIdentity(mockIdentities[i]))
+      expect(actual).toEqual(expectedState)
+    }
   })
 })
 

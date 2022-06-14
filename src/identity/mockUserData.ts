@@ -33,6 +33,52 @@ export const mockIdentities: CurrentIdentity[] = [
       orgCount: 1,
     },
   },
+  {
+    account: {
+      accountCreatedAt: '2022-06-010T16:59:37.939531Z',
+      id: 2,
+      name: 'TestCo 2',
+      paygCreditStartDate: null,
+      type: 'contract',
+    },
+    org: {
+      clusterHost: 'https://newhost.newhost.new',
+      id: '89d20c01076ba140',
+      name: 'newemaill@influxdata.com',
+    },
+    user: {
+      accountCount: 4,
+      email: 'newemail@influxdata.com',
+      firstName: 'New',
+      id: '08a1757b8987d0c3',
+      lastName: 'User',
+      operatorRole: null,
+      orgCount: 3,
+    },
+  },
+  {
+    account: {
+      accountCreatedAt: '2022-06-01T16:59:37.939531Z',
+      id: 3,
+      name: 'Hollow Knight',
+      paygCreditStartDate: null,
+      type: 'pay_as_you_go',
+    },
+    org: {
+      clusterHost: 'https://cityoftears.hallownest.org',
+      id: '72d20c01076ba140',
+      name: 'the_knight@influxdata.com',
+    },
+    user: {
+      accountCount: 1,
+      email: 'the_knight@influxdata.com',
+      firstName: 'Hollow',
+      id: '04a1757b8987d0c3',
+      lastName: 'Knight',
+      operatorRole: null,
+      orgCount: 5,
+    },
+  },
 ]
 
 export const mockOrgDetailsArr: CurrentOrg[] = [

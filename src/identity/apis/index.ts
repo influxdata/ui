@@ -36,32 +36,33 @@ export const retrieveQuartzIdentity = () =>
 export enum IdentityError {
   Unauthorized = 'Not authorized to access this user. Please log in again or update your credentials.',
   InternalServer = 'Our servers encountered an unexpected error. Please try again later.',
-  Unknown = 'Received an error of unknown type. Please report this information to InfluxDB',
+  RetriesFailed = 'Received internal server errrors after multiple attempts. Please contact InfluxData, or try again later.',
+  Unknown = 'Received an error of unknown type. Please report this information to InfluxData',
 }
 
 export const pollIdentityRetry = async (
   retries: number,
-  delay: number
+  backoff: number
 ): Promise<Identity | Me> => {
-  try {
-    const quartzIdentity = await pollIdentity()
-    return quartzIdentity
-  } catch (err) {
-    if (err.message === IdentityError.InternalServer) {
-      let currentTries = 0
-      console.log('internal server error. trying again')
-      const intervalID = window.setInterval(() => {
-        if (++currentTries >= retries) {
-          window.clearInterval(intervalID)
-          throw new Error(
-            `Failed to retrieve session information after ${retries} retries. Please try again later, or report this information to InfluxData.`
-          )
+  return pollIdentity()
+    .then(res => {
+      return res
+    })
+    .catch(err => {
+      if (err.message === IdentityError.InternalServer) {
+        if (retries > 0) {
+          setTimeout((): any => {
+            console.log('retrying once after ' + backoff + ' seconds')
+            return pollIdentityRetry(--retries, backoff * 2)
+          }, backoff)
         }
-      }, delay)
-    } else {
-      throw new Error(err.message)
-    }
-  }
+        throw new Error(IdentityError.RetriesFailed)
+      } else if (err.message === IdentityError.Unauthorized) {
+        throw new Error(IdentityError.Unauthorized)
+      } else {
+        throw new Error(IdentityError.Unknown)
+      }
+    })
 }
 
 export const pollIdentity = async (): Promise<Identity | Me> => {

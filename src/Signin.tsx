@@ -94,65 +94,63 @@ export class Signin extends PureComponent<Props, State> {
     )
   }
 
-  private checkForLogin = async () => {
-    try {
-      console.log('polling for identity')
-      const result = await pollIdentityRetry(5, 5000)
-      console.log(result)
-
-      this.setState({auth: true})
-      const redirectIsSet = !!getFromLocalStorage('redirectTo')
-      if (redirectIsSet) {
-        removeFromLocalStorage('redirectTo')
-      }
-    } catch (error) {
-      this.setState({auth: false})
-      const {
-        location: {pathname},
-      } = this.props
-
-      clearInterval(this.intervalID)
-
-      if (CLOUD) {
-        if (isFlagEnabled('useQuartzLogin')) {
-          window.location.reload()
-          return
+  private checkForLogin = () => {
+    pollIdentityRetry(5, 5000)
+      .then(() => {
+        this.setState({auth: true})
+        const redirectIsSet = !!getFromLocalStorage('redirectTo')
+        if (redirectIsSet) {
+          removeFromLocalStorage('redirectTo')
         }
+      })
+      .catch(error => {
+        this.setState({auth: false})
+        const {
+          location: {pathname},
+        } = this.props
 
-        /**
-         * We'll need this authSessionCookieOn flag off for tools until
-         * Quartz is integrated into that environment
-         */
-        if (isFlagEnabled('authSessionCookieOn')) {
+        clearInterval(this.intervalID)
+
+        if (CLOUD) {
+          if (isFlagEnabled('useQuartzLogin')) {
+            window.location.reload()
+            return
+          }
+
+          /**
+           * We'll need this authSessionCookieOn flag off for tools until
+           * Quartz is integrated into that environment
+           */
+          if (isFlagEnabled('authSessionCookieOn')) {
+            const url = new URL(
+              `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`
+            )
+            setToLocalStorage('redirectTo', window.location.href)
+            window.location.href = url.href
+            throw error
+          }
+
           const url = new URL(
-            `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`
+            `${window.location.origin}${CLOUD_SIGNIN_PATHNAME}?redirectTo=${window.location.href}`
           )
           setToLocalStorage('redirectTo', window.location.href)
           window.location.href = url.href
           throw error
         }
 
-        const url = new URL(
-          `${window.location.origin}${CLOUD_SIGNIN_PATHNAME}?redirectTo=${window.location.href}`
-        )
-        setToLocalStorage('redirectTo', window.location.href)
-        window.location.href = url.href
-        throw error
-      }
+        if (pathname.startsWith('/signin')) {
+          return
+        }
 
-      if (pathname.startsWith('/signin')) {
-        return
-      }
+        let returnTo = ''
 
-      let returnTo = ''
+        if (pathname !== '/') {
+          returnTo = `?returnTo=${pathname}`
+          this.props.notify(sessionTimedOut())
+        }
 
-      if (pathname !== '/') {
-        returnTo = `?returnTo=${pathname}`
-        this.props.notify(sessionTimedOut())
-      }
-
-      this.props.history.replace(`/signin${returnTo}`)
-    }
+        this.props.history.replace(`/signin${returnTo}`)
+      })
   }
 }
 

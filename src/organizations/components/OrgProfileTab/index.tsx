@@ -1,12 +1,6 @@
 // Libraries
-<<<<<<< HEAD
 import React, {FC, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {useHistory} from 'react-router-dom'
-=======
-import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
->>>>>>> master
 
 // Components
 import {

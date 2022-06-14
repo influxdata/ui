@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useMemo} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Actions
 import {createEndpoint} from 'src/notifications/endpoints/actions/thunks'
@@ -15,19 +15,19 @@ import EndpointOverlayContents from 'src/notifications/endpoints/components/Endp
 import {NEW_ENDPOINT_DRAFT} from 'src/alerting/constants'
 import {NotificationEndpoint} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {getOrg} from 'src/organizations/selectors'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = RouteComponentProps<{orgID: string}> & ReduxProps
-
-const NewRuleOverlay: FC<Props> = ({match, history, onCreateEndpoint}) => {
-  const {orgID} = match.params
+const NewRuleOverlay: FC = () => {
+  const dispatch = useDispatch()
+  const orgID = useSelector(getOrg).id
+  const history = useHistory()
 
   const handleDismiss = () => {
     history.push(`/orgs/${orgID}/alerting`)
   }
 
   const handleCreateEndpoint = (endpoint: NotificationEndpoint) => {
-    onCreateEndpoint(endpoint)
+    dispatch(createEndpoint(endpoint))
     handleDismiss()
   }
 
@@ -54,10 +54,4 @@ const NewRuleOverlay: FC<Props> = ({match, history, onCreateEndpoint}) => {
   )
 }
 
-const mdtp = {
-  onCreateEndpoint: createEndpoint,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(withRouter(NewRuleOverlay))
+export default NewRuleOverlay

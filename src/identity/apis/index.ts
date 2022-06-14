@@ -22,27 +22,19 @@ import {CurrentIdentity} from '../reducers'
 export const retrieveQuartzIdentity = () =>
   CLOUD && isFlagEnabled('quartzIdentity') ? getIdentity({}) : getMe({})
 
-// API LAYER SHOULDNT KNOW ABOUT THUNKS OR REDUX
-//
-
-// THIS DECISION - MAKING SHOULD BE MADE IN THE THUNK, NOT IN API LAYER
-// relevant information is what should be sent back
-// e.g., # of failures or retries, error message, etc.
-
-// Populate the user's quartz identity in state, using /quartz/identity if the 'quartzIdentity' flag is enabled.
-
-// Transitional function that translates quartzIdentity state into quartzMe state.
-
 export enum IdentityError {
   Unauthorized = 'Not authorized to access this user. Please log in again or update your credentials.',
+  NotFound = 'This page or resource was not found. Please contact InfluxData.',
   InternalServer = 'Our servers encountered an unexpected error. Please try again later.',
-  RetriesFailed = 'Received internal server errrors after multiple attempts. Please contact InfluxData, or try again later.',
-  Unknown = 'Received an error of unknown type. Please report this information to InfluxData',
+  RetriesFailed = 'Received internal server errrors after multiple attempts. Please try again later.',
+  Unknown = 'Received an error of unknown type. Please try again later, or report this information to InfluxData',
 }
 
+// Poll and retrieve user's identity from /quartz/me or /quartz/identity as applicable.
+// Retry on failure.
 export const pollIdentityRetry = async (
-  retries: number,
-  backoff: number
+  retries: number, // number of retries
+  backoff: number // milliseconds
 ): Promise<Identity | Me> => {
   return pollIdentity()
     .then(res => {
@@ -52,7 +44,6 @@ export const pollIdentityRetry = async (
       if (err.message === IdentityError.InternalServer) {
         if (retries > 0) {
           setTimeout((): any => {
-            console.log('retrying once after ' + backoff + ' seconds')
             return pollIdentityRetry(--retries, backoff * 2)
           }, backoff)
         }
@@ -65,6 +56,8 @@ export const pollIdentityRetry = async (
     })
 }
 
+// Poll and retrieve the user's identity from /quarz/me or /quartz/identity, as applicable.
+// Do not retry on failure.
 export const pollIdentity = async (): Promise<Identity | Me> => {
   try {
     let quartzIdentity
@@ -85,13 +78,12 @@ export const pollIdentity = async (): Promise<Identity | Me> => {
   }
 }
 
+// Retrieve user identity from /quartz/identity.
 export const retrieveIdentity = async (): Promise<Identity> => {
   // Returns 200, 401, or 500.
   const quartzIdentity = await getIdentity({})
-
   if (quartzIdentity.status === 200) {
     return quartzIdentity.data
-    // throw new Error(IdentityError.InternalServer)
   } else if (quartzIdentity.status === 401) {
     throw new Error(IdentityError.Unauthorized)
   } else if (quartzIdentity.status === 500) {
@@ -101,11 +93,10 @@ export const retrieveIdentity = async (): Promise<Identity> => {
   }
 }
 
+// Retrieve user identity from /quartz/me.
 export const retrieveMe = async (): Promise<Me> => {
+  // Returns 200, 401, 404, or 500.
   const quartzMe = await getMe({})
-
-  // Check error handling codes here.
-
   if (quartzMe.status === 200) {
     return quartzMe.data
   } else if (quartzMe.status === 401) {
@@ -117,6 +108,7 @@ export const retrieveMe = async (): Promise<Me> => {
   }
 }
 
+// Retrieve details about user's current account.
 export const retrieveAccountDetails = async (
   accountId: string | number
 ): Promise<Account> => {
@@ -138,6 +130,7 @@ export const retrieveAccountDetails = async (
   }
 }
 
+// Retrieve details about user's current organization.
 export const retrieveOrgDetails = async (
   orgId: string
 ): Promise<Organization> => {

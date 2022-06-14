@@ -16,7 +16,6 @@ import {
 } from 'src/localStorage'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getPublicFlags} from 'src/shared/thunks/flags'
-import {retrieveQuartzIdentity} from 'src/identity/apis'
 
 // Actions
 import {notify as notifyAction} from 'src/shared/actions/notifications'
@@ -31,7 +30,6 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {getMe} from 'src/client'
 import {pollIdentityRetry} from './identity/apis'
 
 interface State {
@@ -94,7 +92,7 @@ export class Signin extends PureComponent<Props, State> {
     )
   }
 
-  private checkForLogin = () => {
+  private checkForLogin = async () => {
     pollIdentityRetry(5, 5000)
       .then(() => {
         this.setState({auth: true})

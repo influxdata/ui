@@ -10,6 +10,7 @@ describe('FluxQueryBuilder', () => {
           cy.get('@org').then(({id}: Organization) => {
             cy.visit(`/orgs/${id}/data-explorer`)
             cy.getByTestID('tree-nav').should('be.visible')
+            cy.wait(1000)
             // Switch to Flux Query Builder
             cy.getByTestID('flux-query-builder-toggle')
               .should('be.visible')

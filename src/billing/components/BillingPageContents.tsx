@@ -27,7 +27,7 @@ const BillingPageContents: FC = () => {
       CLOUD &&
       isFlagEnabled('uiUnificationFlag') && // Need this check to avoid having quartz endpoints hit in tools.
       isFlagEnabled('quartzIdentity') &&
-      quartzMe.billingProvider === null
+      !quartzMe.billingProvider
     ) {
       // billingProviderThunk populates billingProvider into 'identity' and (for now) 'me' state.
       dispatch(getBillingProviderThunk())
@@ -37,6 +37,8 @@ const BillingPageContents: FC = () => {
   if (
     (quartzMe?.accountType === 'pay_as_you_go' ||
       quartzMe?.accountType === 'contract') &&
+    // This additional check is needed because, on page load, billingProvider (esp. with /identity on) may be 'null', which !== 'zuora.
+    quartzMe.billingProvider &&
     quartzMe?.billingProvider !== 'zuora'
   ) {
     return <MarketplaceBilling />

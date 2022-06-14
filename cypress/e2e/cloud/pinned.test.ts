@@ -9,6 +9,7 @@ describe('Pinned Items', () => {
       orgID = id
       cy.setFeatureFlags({
         pinnedItems: true,
+        uiUnificationFlag: true,
         quartzIdentity: true,
       })
       cy.getByTestID('tree-nav')
@@ -27,6 +28,7 @@ describe('Pinned Items', () => {
       cy.createDashboard(orgID)
       cy.setFeatureFlags({
         pinnedItems: true,
+        uiUnificationFlag: true,
         quartzIdentity: true,
       })
       cy.getByTestID('nav-item-dashboards').should('be.visible')
@@ -220,6 +222,7 @@ from(bucket: "${name}"{rightarrow}
     beforeEach(() => {
       cy.setFeatureFlags({
         pinnedItems: true,
+        uiUnificationFlag: true,
         quartzIdentity: true,
       })
       cy.intercept('GET', '/api/v2private/notebooks*').as('getNotebooks')

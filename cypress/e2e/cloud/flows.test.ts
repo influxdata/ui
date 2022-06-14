@@ -195,6 +195,7 @@ describe('Flows', () => {
 
   it('can use the dynamic flux function selector to build a query', () => {
     cy.setFeatureFlags({
+      uiUnificationFlag: true,
       fluxDynamicDocs: true,
       quartzIdentity: true,
     }).then(() => {
@@ -290,11 +291,13 @@ describe('Flows with newQueryBuilder flag on', () => {
     cy.signin()
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
-        cy.setFeatureFlags({newQueryBuilder: true, quartzIdentity: true}).then(
-          () => {
-            cy.visit(`${orgs}/${id}`)
-          }
-        )
+        cy.setFeatureFlags({
+          newQueryBuilder: true,
+          uiUnificationFlag: true,
+          quartzIdentity: true,
+        }).then(() => {
+          cy.visit(`${orgs}/${id}`)
+        })
       })
     )
     cy.getByTestID('version-info')

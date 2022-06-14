@@ -36,6 +36,7 @@ describe('DataExplorer', () => {
 
     it('can use the dynamic flux function selector to build a query', () => {
       cy.setFeatureFlags({
+        uiUnificationFlag: true,
         fluxDynamicDocs: true,
         quartzIdentity: true,
       }).then(() => {
@@ -69,6 +70,7 @@ describe('DataExplorer', () => {
 
     it('can use the dynamic flux function search bar to search by package or function name', () => {
       cy.setFeatureFlags({
+        uiUnificationFlag: true,
         fluxDynamicDocs: true,
         quartzIdentity: true,
       }).then(() => {

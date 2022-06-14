@@ -1,6 +1,8 @@
-export const LOCAL_LIMIT = 8
+export const LOAD_MORE_LIMIT_INITIAL = 8
+export const LOAD_MORE_LIMIT = 25
 export const IMPORT_REGEXP = 'import "regexp"\n'
-export const IMPORT_INFLUX_SCHEMA = 'import "influxdata/influxdb/schema"'
+export const IMPORT_STRINGS = 'import "strings"\n'
+export const IMPORT_INFLUX_SCHEMA = 'import "influxdata/influxdb/schema"\n'
 
 // Sample data always has bucket id. Here is the code for sample bucket list
 //  Src/shared/contexts/buckets.tsx

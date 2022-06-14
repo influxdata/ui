@@ -2,7 +2,6 @@
 import React, {createRef, PureComponent, RefObject} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Actions
 import {
@@ -51,7 +50,7 @@ interface OwnProps {
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
+type Props = ReduxProps & OwnProps
 
 const formatter = createDateTimeFormatter(UPDATED_AT_TIME_FORMAT)
 class TokensRow extends PureComponent<Props> {
@@ -192,4 +191,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export const TokenRow = connector(withRouter(TokensRow))
+export const TokenRow = connector(TokensRow)

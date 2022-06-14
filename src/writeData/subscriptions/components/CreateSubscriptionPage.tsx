@@ -93,7 +93,7 @@ const CreateSubscriptionPage: FC = () => {
   )
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
-  const {accountType} = useSelector(getQuartzMe)
+  const quartzMe = useSelector(getQuartzMe)
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
@@ -102,7 +102,7 @@ const CreateSubscriptionPage: FC = () => {
   useEffect(() => {
     event(
       'visited creation page',
-      {userAccountType: accountType},
+      {userAccountType: quartzMe?.accountType ?? 'unknown'},
       {feature: 'subscriptions'}
     )
   }, [])

@@ -27,6 +27,7 @@ import {downloadImage} from 'src/shared/utils/download'
 // Constants
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const backgroundColor = '#07070E'
 
@@ -175,12 +176,6 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   const menuItems: any[] = [
     {
       type: 'menuitem',
-      title: 'Save to version history',
-      onClick: handlePublish,
-      icon: IconFont.Save,
-    },
-    {
-      type: 'menuitem',
       title: 'Version history',
       onClick: handleViewPublish,
       icon: IconFont.History,
@@ -215,6 +210,15 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
       testID: 'flow-menu-button-delete',
     },
   ]
+
+  if (!isFlagEnabled('flowPublishButton')) {
+    menuItems.splice(0, 0, {
+      type: 'menuitem',
+      title: 'Save to version history',
+      onClick: handlePublish,
+      icon: IconFont.Save,
+    })
+  }
 
   if (CLOUD) {
     menuItems.splice(3, 0, {

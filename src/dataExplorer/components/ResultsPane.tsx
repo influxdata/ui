@@ -18,6 +18,7 @@ import {createLocalStorageStateHook} from 'use-local-storage-state'
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {EditorContext} from 'src/shared/contexts/editor'
 import {TimeRange} from 'src/types'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {downloadTextFile} from 'src/shared/utils/download'
@@ -51,6 +52,8 @@ const ResultsPane: FC = () => {
 
   const [text, setText] = useLocalStorageState()
   const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
+
+  const {setEditor} = useContext(EditorContext)
 
   const download = () => {
     event('CSV Download Initiated')
@@ -139,6 +142,7 @@ const ResultsPane: FC = () => {
                 variables={variables}
                 script={text}
                 onChangeScript={setText}
+                setEditorInstance={setEditor}
               />
             </Suspense>
           </div>

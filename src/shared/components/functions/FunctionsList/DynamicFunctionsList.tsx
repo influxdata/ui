@@ -3,9 +3,9 @@ import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {FluxFunction} from 'src/types/shared'
-import Fn from 'src/flows/shared/FilterList/InjectionOption'
-import FilterList from 'src/flows/shared/FilterList/FilterList'
-import FluxDocsTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionsList/perFunction/FluxDocsTooltipContent'
+import Fn from 'src/shared/components/FilterList/InjectionOption'
+import FilterList from 'src/shared/components/FilterList/FilterList'
+import FluxDocsTooltipContent from 'src/shared/components/functions/perFunction/FluxDocsTooltipContent'
 
 // Actions
 import {getFluxPackages} from 'src/shared/actions/fluxDocs'
@@ -14,17 +14,12 @@ import {getAllFluxFunctions} from 'src/shared/selectors/app'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
+import {sortFuncs} from 'src/shared/components/functions/utils'
+
 interface Props {
   onSelect: (fn: FluxFunction) => void
 }
 
-const sortFuncs = (a, b) => {
-  if (a.package.toLowerCase() === b.package.toLowerCase()) {
-    return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
-  } else {
-    return a.package.toLowerCase() < b.package.toLowerCase() ? -1 : 1
-  }
-}
 const hoveredFunctions = new Set<string>()
 
 const DynamicFunctionsList: FC<Props> = ({onSelect}) => {

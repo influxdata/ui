@@ -20,8 +20,8 @@ const FluxDocsTooltipContent: FC<TooltipProps> = ({
   setHoverdFunction,
 }) => {
   useEffect(() => {
-    setToolTipPopup(true)
-    setHoverdFunction(`${func.package}.${func.name}`)
+    setToolTipPopup && setToolTipPopup(true)
+    setHoverdFunction && setHoverdFunction(`${func.package}.${func.name}`)
   }, [])
   const argComponent = () => {
     if (func.fluxParameters.length > 0) {

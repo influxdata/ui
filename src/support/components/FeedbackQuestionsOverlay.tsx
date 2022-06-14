@@ -18,9 +18,6 @@ import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-// Types
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
@@ -74,52 +71,50 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
     : ComponentStatus.Disabled
 
   return (
-    <Overlay.Container maxWidth={600}>
+    <Overlay.Container maxWidth={600} testID="overlay--container">
       <Overlay.Header
         testID="feedback-questions-overlay-header"
         title="Feedback & Questions"
         onDismiss={onClose}
       />
-      <ErrorBoundary>
-        <Form onSubmit={handleSubmit}>
-          <Overlay.Body>
-            <Form.ValidationElement
-              label="Description"
-              required={true}
-              value={feedbackText}
-              validationFunc={handleValidation}
-            >
-              {status => (
-                <TextArea
-                  status={status}
-                  rows={10}
-                  testID="support-description--textarea"
-                  name="description"
-                  value={feedbackText}
-                  onChange={handleInputChange}
-                  placeholder="Describe your feeback (like/dislikes with reasoning, bug you found, what could be improved, etc.) or question (e.g. product pricing) in detail."
-                />
-              )}
-            </Form.ValidationElement>
-          </Overlay.Body>
-          <Overlay.Footer>
-            <Button
-              text="Cancel"
-              color={ComponentColor.Tertiary}
-              onClick={onClose}
-              type={ButtonType.Button}
-              testID="payg-contact-support--cancel"
-            />
-            <Button
-              text="Submit"
-              color={ComponentColor.Success}
-              type={ButtonType.Submit}
-              testID="payg-contact-support--submit"
-              status={submitButtonStatus}
-            />
-          </Overlay.Footer>
-        </Form>
-      </ErrorBoundary>
+      <Form onSubmit={handleSubmit}>
+        <Overlay.Body>
+          <Form.ValidationElement
+            label="Description"
+            required={true}
+            value={feedbackText}
+            validationFunc={handleValidation}
+          >
+            {status => (
+              <TextArea
+                status={status}
+                rows={10}
+                testID="support-description--textarea"
+                name="description"
+                value={feedbackText}
+                onChange={handleInputChange}
+                placeholder="Describe your feeback (like/dislikes with reasoning, bug you found, what could be improved, etc.) or question (e.g. product pricing) in detail."
+              />
+            )}
+          </Form.ValidationElement>
+        </Overlay.Body>
+        <Overlay.Footer>
+          <Button
+            text="Cancel"
+            color={ComponentColor.Tertiary}
+            onClick={onClose}
+            type={ButtonType.Button}
+            testID="feedback-questions-overlay--cancel"
+          />
+          <Button
+            text="Submit"
+            color={ComponentColor.Success}
+            type={ButtonType.Submit}
+            testID="feedback-questions-overlay--submit"
+            status={submitButtonStatus}
+          />
+        </Overlay.Footer>
+      </Form>
     </Overlay.Container>
   )
 }

@@ -41,8 +41,10 @@ describe('About Page', () => {
 
     const newOrgName = `hard@knock.life${Math.random()}`
 
-    cy.intercept('PATCH', 'api/v2/orgs/*').as('patchOrg')
+    const patchOrgPath =
+      Cypress.env('dexUrl') === 'OSS' ? 'api/v2/orgs/*' : 'api/v2/quartz/orgs/*'
 
+    cy.intercept('PATCH', patchOrgPath).as('patchOrg')
     cy.getByTestID('create-org-name-input').type(newOrgName)
     cy.getByTestID('rename-org-submit--button')
       .should('not.be.disabled')
@@ -55,6 +57,6 @@ describe('About Page', () => {
       .contains(newOrgName)
 
     cy.getByTestID('org-profile--name').contains(newOrgName)
-    cy.getByTestID('danger-zone--org-name').should('have.value', newOrgName)
+    cy.getByTestID('code-snippet--orgName').contains(newOrgName)
   })
 })

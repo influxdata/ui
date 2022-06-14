@@ -3,7 +3,6 @@ import React, {FC, useContext, useEffect} from 'react'
 import {Link, useLocation} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {Icon, IconFont, PopoverPosition, TreeNav} from '@influxdata/clockface'
@@ -32,7 +31,7 @@ import './TreeNav.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
+const TreeSidebar: FC<ReduxProps> = ({
   showOverlay,
   dismissOverlay,
   quartzMe,
@@ -155,7 +154,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
             </TreeNav.Item>
           )
         })}
-        {CLOUD && isFlagEnabled('helpBar') && (
+        {isFlagEnabled('helpBar') && (
           <TreeNav.Item
             id="support"
             testID="nav-item-support"
@@ -167,17 +166,6 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
             <TreeNav.SubMenu position={PopoverPosition.ToTheRight}>
               <TreeNav.SubHeading label="Support" />
               <TreeNav.SubItem
-                id="documentation"
-                label="Documentation"
-                testID="nav-subitem-documentation"
-                linkElement={() => (
-                  <SafeBlankLink
-                    href="https://docs.influxdata.com/"
-                    onClick={() => handleEventing('documentation')}
-                  />
-                )}
-              />
-              <TreeNav.SubItem
                 id="faqs"
                 label="FAQs"
                 testID="nav-subitem-faqs"
@@ -188,8 +176,31 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
                   />
                 )}
               />
-
-              {isFlagEnabled('helpBarSfdcIntegration') && (
+              {CLOUD && (
+                <TreeNav.SubItem
+                  id="status-page"
+                  label="Status Page"
+                  testID="nav-subitem-status"
+                  linkElement={() => (
+                    <SafeBlankLink
+                      href="https://status.influxdata.com"
+                      onClick={() => handleEventing('status-page')}
+                    />
+                  )}
+                />
+              )}
+              <TreeNav.SubItem
+                id="documentation"
+                label="Documentation"
+                testID="nav-subitem-documentation"
+                linkElement={() => (
+                  <SafeBlankLink
+                    href="https://docs.influxdata.com/"
+                    onClick={() => handleEventing('documentation')}
+                  />
+                )}
+              />
+              {CLOUD && isFlagEnabled('helpBarSfdcIntegration') && (
                 <TreeNav.SubItem
                   id="contactSupport"
                   label="Contact Support"
@@ -217,6 +228,17 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
                   <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
                 )}
               />
+              <TreeNav.SubItem
+                id="influxUniversity"
+                label="InfluxDB University"
+                testID="nav-subitem-university"
+                linkElement={() => (
+                  <SafeBlankLink
+                    href="https://university.influxdata.com/"
+                    onClick={() => handleEventing('influxdbUniversity')}
+                  />
+                )}
+              />
             </TreeNav.SubMenu>
           </TreeNav.Item>
         )}
@@ -236,4 +258,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(withRouter(TreeSidebar))
+export default connector(TreeSidebar)

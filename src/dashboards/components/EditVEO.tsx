@@ -1,6 +1,6 @@
 // Libraries
 import React, {FunctionComponent, useEffect} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import {get} from 'lodash'
 
@@ -10,7 +10,6 @@ import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import VEOHeader from 'src/dashboards/components/VEOHeader'
 
 // Actions
-import {disableUpdatedTimeRangeInVEO} from 'src/shared/actions/app'
 import {setName} from 'src/timeMachine/actions'
 import {saveVEOView} from 'src/dashboards/actions/thunks'
 import {getViewAndResultsForVEO} from 'src/views/actions/thunks'
@@ -21,21 +20,21 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 // Types
 import {AppState, RemoteDataState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps &
-  RouteComponentProps<{orgID: string; cellID: string; dashboardID: string}>
+type Props = ConnectedProps<typeof connector>
 
 const EditViewVEO: FunctionComponent<Props> = ({
   activeTimeMachineID,
   onSaveView,
   onSetName,
-  match: {
-    params: {orgID, cellID, dashboardID},
-  },
-  history,
   view,
 }) => {
   const dispatch = useDispatch()
+  const history = useHistory()
+  const {cellID, orgID, dashboardID} = useParams<{
+    orgID: string
+    cellID: string
+    dashboardID: string
+  }>()
   useEffect(() => {
     // TODO split this up into "loadView" "setActiveTimeMachine"
     // and something to tell the component to pull from the context
@@ -45,7 +44,6 @@ const EditViewVEO: FunctionComponent<Props> = ({
 
   const handleClose = () => {
     history.push(`/orgs/${orgID}/dashboards/${dashboardID}`)
-    dispatch(disableUpdatedTimeRangeInVEO())
   }
 
   const handleSave = () => {
@@ -99,4 +97,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(withRouter(EditViewVEO))
+export default connector(EditViewVEO)

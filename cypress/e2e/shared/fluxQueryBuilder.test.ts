@@ -9,7 +9,6 @@ describe('FluxQueryBuilder', () => {
         }).then(() => {
           cy.get('@org').then(({id}: Organization) => {
             cy.visit(`/orgs/${id}/data-explorer`)
-            cy.getByTestID('tree-nav').should('be.visible')
             // Switch to Flux Query Builder
             cy.getByTestID('flux-query-builder-toggle')
               .should('be.visible')
@@ -27,8 +26,6 @@ describe('FluxQueryBuilder', () => {
     const searchTagKey = 'station_id'
 
     it('bucket selector can search and select a bucket, then search and select a measurement', () => {
-      // Bucket
-
       // no other selectors should be visible, except the bucket selector
       cy.getByTestID('bucket-selector--dropdown-button').should('be.visible')
       cy.getByTestID('measurement-selector--dropdown-button').should(
@@ -55,8 +52,6 @@ describe('FluxQueryBuilder', () => {
         bucketName
       )
 
-      // Measurement
-
       // upon the selection of a bucket, should show measurement selector
       cy.getByTestID('measurement-selector--dropdown-button')
         .should('be.visible')
@@ -78,9 +73,9 @@ describe('FluxQueryBuilder', () => {
 
       // upon selection, will show a search bar
       // and a list of fields and tag keys
-      cy.get('.search-widget-input').should('be.visible')
-      cy.get('.field-selector').should('be.visible')
-      cy.get('.tag-selector-key').should('be.visible')
+      cy.getByTestID('field-tag-key-search-bar').should('be.visible')
+      cy.getByTestID('field-selector').should('be.visible')
+      cy.getByTestID('tag-selector-key').should('be.visible')
     })
 
     it('search bar can search fields and tag keys dynamically', () => {
@@ -93,7 +88,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
       // search a feild, should contain only the feild, no tag keys
-      cy.get('.container-side-bar .search-widget-input').type(searchField)
+      cy.getByTestID('field-tag-key-search-bar').type(searchField)
       cy.get('.field-selector--list-item--wrapper').should(
         'contain',
         searchField
@@ -104,12 +99,13 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('dismiss-button').click()
 
       // search a tag key, should contain only that tag key, no fields
-      cy.get('.container-side-bar .search-widget-input').type(searchTagKey)
+      cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
       cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
       cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)
     })
 
-    it('fields - if less than 8 items, show all', () => {
+    it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
+      // if less than 8 items, show all items
       const bucketNameA = 'Air Sensor Data'
       const measurementA = 'airSensors'
 
@@ -121,24 +117,25 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
 
-      // if less than 8 items, show all the items, no "Load More" button
+      // less than 8 items, no "Load More" button
       cy.get('.field-selector--list-item--wrapper').should(
         'have.length.at.most',
         8
       )
       cy.get('.load-more-button').should('not.exist')
-    })
 
-    it('fields - if more than 8 items, "Load More" works', () => {
-      // select a bucket
+      // if more than 8 items, show "Load More" button
+      // and load additional 25 items
+
+      // select another bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
 
-      // select a measurement
+      // select another measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
-      // if more than 8 items, show a 'Load More' option to load more
+      // more than 8 items, show 'Load More' button
       cy.get('.field-selector--list-item--wrapper').should('have.length', 8)
       cy.get('.load-more-button')
         .should('exist')

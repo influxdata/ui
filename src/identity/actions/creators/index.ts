@@ -1,4 +1,4 @@
-import {CurrentIdentity, CurrentOrg} from 'src/identity/reducers'
+import {CurrentIdentity, CurrentOrg} from 'src/identity/apis/auth'
 import {RemoteDataState} from 'src/types'
 
 export const SET_QUARTZ_IDENTITY = 'SET_QUARTZ_IDENTITY'

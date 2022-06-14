@@ -1,41 +1,8 @@
 // Libraries
 import produce from 'immer'
 
-import {IdentityUser, IdentityAccount} from 'src/client/unityRoutes'
+import {CurrentIdentity} from '../apis/auth'
 import {RemoteDataState} from 'src/types'
-
-export interface CurrentAccount extends IdentityAccount {
-  // These are optional properties of the current account, which are not retrieved from identity.
-  billingProvider?: 'zuora' | 'aws' | 'gcm' | 'azure'
-}
-
-export interface CurrentOrg {
-  // These are optional properties of the current org, which are not retrieved from identity.
-  // Typing this here is required because different properties are optional in state
-  // than are optional when retrieved from each endpoint.
-  id: string
-  clusterHost: string
-  name?: string
-  creationDate?: string
-  description?: string
-  isRegionBeta?: boolean
-  provider?: string
-  regionCode?: string
-  regionName?: string
-}
-
-export interface CurrentUser extends IdentityUser {
-  // These are optional properties of the current user, which are not retrieved from identity.
-}
-
-// May need to extend user properties once profile page work begins.
-
-export interface CurrentIdentity {
-  user: CurrentUser
-  account: CurrentAccount
-  org: CurrentOrg
-  status?: RemoteDataState
-}
 
 // Actions
 import {
@@ -112,18 +79,7 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
       }
 
       case SET_CURRENT_ORG_DETAILS: {
-        // draftState.org.id = action.org.id
-        // draftState.org.name = action.org.name
-        // draftState.org.clusterHost = action.org.clusterHost
-
-        // draftState.org.creationDate = action.org.creationDate
-        // draftState.org.description = action.org.description
-        // draftState.org.isRegionBeta = action.org.isRegionBeta
-        // draftState.org.provider = action.org.provider
-        // draftState.org.regionCode = action.org.regionCode
-        // draftState.org.regionName = action.org.regionName
         draftState.org = action.org
-
         return
       }
     }

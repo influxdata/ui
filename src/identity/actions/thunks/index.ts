@@ -19,17 +19,17 @@ enum RetrievalError {
 // Utilities
 import {
   convertIdentityToMe,
-  retrieveIdentity,
-  retrieveAccountDetails,
-  retrieveOrgDetails,
-} from 'src/identity/apis/'
+  fetchQuartzIdentity,
+  fetchAccountDetails,
+  fetchOrgDetails,
+} from 'src/identity/apis/auth'
 
 // Retrieves user's quartz identity from /quartz/identity, and stores it in state.identity.
 export const getQuartzIdentityThunk = () => async (dispatch: any) => {
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
-    const quartzIdentity = await retrieveIdentity()
+    const quartzIdentity = await fetchQuartzIdentity()
 
     dispatch(setQuartzIdentity(quartzIdentity))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
@@ -63,7 +63,7 @@ export const getBillingProviderThunk = () => async (
       throw new Error(RetrievalError.accountIdentity)
     }
 
-    const accountDetails = await retrieveAccountDetails(accountId)
+    const accountDetails = await fetchAccountDetails(accountId)
 
     // Resolve openAPI issue ith billingProvider versus billing_provider.
     dispatch(setCurrentBillingProvider(accountDetails.billingProvider))
@@ -99,7 +99,7 @@ export const getCurrentOrgDetailsThunk = () => async (
       throw new Error(RetrievalError.orgIdentity)
     }
 
-    const orgDetails = await retrieveOrgDetails(orgId)
+    const orgDetails = await fetchOrgDetails(orgId)
 
     dispatch(setCurrentOrgDetails(orgDetails))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))

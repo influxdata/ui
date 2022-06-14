@@ -1,6 +1,6 @@
 // Types
 import {AppState} from 'src/types'
-import {CurrentIdentity} from 'src/identity/reducers'
+import {CurrentIdentity} from 'src/identity/apis/auth'
 
 export const selectQuartzIdentity = (state: AppState): AppState['identity'] => {
   return state.identity

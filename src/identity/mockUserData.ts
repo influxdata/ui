@@ -1,4 +1,4 @@
-import {CurrentIdentity, CurrentOrg} from 'src/identity/reducers'
+import {CurrentIdentity, CurrentOrg} from 'src/identity/apis/auth'
 
 export type BillingProvider = 'zuora' | 'aws' | 'gcm' | 'azure'
 
@@ -60,21 +60,21 @@ export const mockIdentities: CurrentIdentity[] = [
     account: {
       accountCreatedAt: '2022-06-01T16:59:37.939531Z',
       id: 3,
-      name: 'Hollow Knight',
+      name: 'Test Name 3',
       paygCreditStartDate: null,
       type: 'pay_as_you_go',
     },
     org: {
-      clusterHost: 'https://cityoftears.hallownest.org',
+      clusterHost: 'https://testdomain.testdomain.org',
       id: '72d20c01076ba140',
-      name: 'the_knight@influxdata.com',
+      name: 'testname3@influxdata.com',
     },
     user: {
       accountCount: 1,
-      email: 'the_knight@influxdata.com',
-      firstName: 'Hollow',
+      email: 'testemail3@influxdata.com',
+      firstName: 'Test',
       id: '04a1757b8987d0c3',
-      lastName: 'Knight',
+      lastName: 'Email',
       operatorRole: null,
       orgCount: 5,
     },

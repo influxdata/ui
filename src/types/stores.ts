@@ -30,7 +30,7 @@ import {AlertBuilderState} from 'src/alerting/reducers/alertBuilder'
 import {CurrentPage} from 'src/shared/reducers/currentPage'
 import {PerfState} from 'src/perf/reducers'
 import {MeState} from 'src/me/reducers'
-import {CurrentIdentity} from 'src/identity/reducers'
+import {CurrentIdentity} from 'src/identity/apis/auth'
 
 export interface AppState {
   router: RouterState

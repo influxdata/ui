@@ -60,9 +60,9 @@ const SinglePageBrokerDetails: FC<Props> = ({
     <div className="update-broker-form" id="broker">
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
         <Form onSubmit={() => {}} testID="update-broker-form-overlay">
-          <div>
+          <div className="update-broker-form__fixed">
             <FlexBox
-              className="update-broker-form__broker-buttons"
+              className="update-broker-form__fixed__broker-buttons"
               direction={FlexDirection.Row}
               margin={ComponentSize.Medium}
               justifyContent={JustifyContent.FlexEnd}

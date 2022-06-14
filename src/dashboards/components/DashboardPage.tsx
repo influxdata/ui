@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, Component} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, useRouteMatch} from 'react-router-dom'
 
 // Components
 import {Page} from '@influxdata/clockface'
@@ -46,7 +46,7 @@ import {
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 
@@ -54,6 +54,25 @@ const SingleDashboardPage: FC<ManualRefreshProps> = ({
   manualRefresh,
   onManualRefresh,
 }) => {
+  const {isExact} = useRouteMatch(dashRoute)
+
+  if (!isFlagEnabled('openCellPage')) {
+    return (
+      <>
+        <DashboardHeader onManualRefresh={onManualRefresh} />
+        <RateLimitAlert alertOnly={true} location="dashboard page" />
+        <VariablesControlBar />
+        <ErrorBoundary>
+          <DashboardComponent manualRefresh={manualRefresh} />
+        </ErrorBoundary>
+      </>
+    )
+  }
+
+  if (!isExact) {
+    return null
+  }
+
   return (
     <>
       <DashboardHeader onManualRefresh={onManualRefresh} />
@@ -89,32 +108,11 @@ class DashboardPage extends Component<Props> {
           <Page titleTag={this.pageTitle} testID="dashboard-page">
             <LimitChecker>
               <HoverTimeProvider>
-                {!isFlagEnabled('openCellPage') && (
-                  <>
-                    <DashboardHeader onManualRefresh={onManualRefresh} />
-                    <RateLimitAlert
-                      alertOnly={true}
-                      location="dashboard page"
-                    />
-                    <VariablesControlBar />
-                    <ErrorBoundary>
-                      <DashboardComponent manualRefresh={manualRefresh} />
-                    </ErrorBoundary>
-                  </>
-                )}
+                <SingleDashboardPage
+                  manualRefresh={manualRefresh}
+                  onManualRefresh={onManualRefresh}
+                />
                 <Switch>
-                  <Route
-                    path={dashRoute}
-                    render={() => (
-                      <FeatureFlag name="openCellPage">
-                        <SingleDashboardPage
-                          manualRefresh={manualRefresh}
-                          onManualRefresh={onManualRefresh}
-                        />
-                      </FeatureFlag>
-                    )}
-                    exact
-                  />
                   <Route
                     path={`${dashRoute}/cells/new`}
                     component={NewViewVEO}

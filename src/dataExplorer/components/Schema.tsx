@@ -51,6 +51,7 @@ const FieldsTags: FC = () => {
           placeholderText="Search fields and tag keys"
           onSearch={handleSearchFieldsTags}
           searchTerm={searchTerm}
+          testID="field-tag-key-search-bar"
         />
         <FieldSelector />
         <TagSelector />

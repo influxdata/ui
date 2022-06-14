@@ -68,7 +68,11 @@ const FieldSelector: FC = () => {
     )
 
     return (
-      <Accordion className="field-selector" expanded={true}>
+      <Accordion
+        className="field-selector"
+        expanded={true}
+        testID="field-selector"
+      >
         <Accordion.AccordionHeader className="field-selector--header">
           <SelectorTitle title="Fields" info={FIELD_TOOLTIP} />
         </Accordion.AccordionHeader>

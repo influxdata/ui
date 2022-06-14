@@ -28,9 +28,13 @@ describe('FluxQueryBuilder', () => {
 
     it('bucket selector can search and select a bucket', () => {
       // no other selectors should be visible, except the bucket selector
-      cy.get('.schema-browser')
-        .find('.cf-dropdown')
-        .should('have.length', 1)
+      cy.getByTestID('bucket-selector--dropdown-button').should('be.visible')
+      cy.getByTestID('measurement-selector--dropdown-button').should(
+        'not.exist'
+      )
+      cy.getByTestID('field-tag-key-search-bar').should('not.exist')
+      cy.getByTestID('field-selector').should('not.exist')
+      cy.getByTestID('tag-selector-key').should('not.exist')
 
       // open the bucket list
       cy.getByTestID('bucket-selector--dropdown-button').click()

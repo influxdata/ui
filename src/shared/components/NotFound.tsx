@@ -12,8 +12,9 @@ import {
   JustifyContent,
   Panel,
 } from '@influxdata/clockface'
-import React, {useState, FC, useCallback, useEffect} from 'react'
+import React, {useState, FC, useCallback, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
+import {useHistory, useLocation} from 'react-router-dom'
 import {getOrg} from 'src/organizations/selectors'
 import {getOrg as fetchOrg} from 'src/organizations/apis'
 
@@ -25,7 +26,7 @@ import {event} from 'src/cloud/utils/reporting'
 // Components
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import GetInfluxButton from 'src/shared/components/GetInfluxButton'
-import {useHistory, useLocation} from 'react-router-dom'
+import {Organization} from 'src/types'
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" data-testid="not-found">
@@ -128,15 +129,16 @@ const NotFound: FC = () => {
   const [isFetchingOrg, setIsFetchingOrg] = useState(false)
   const location = useLocation()
   const history = useHistory()
-  const org = useSelector(getOrg)
+  const reduxOrg = useSelector(getOrg)
+  const org = useRef<Organization>(reduxOrg)
 
   const handleDeepLink = useCallback(async () => {
     if (!org) {
       setIsFetchingOrg(true)
-      await fetchOrg()
+      org.current = await fetchOrg()
     }
 
-    const deepLinkingMap = buildDeepLinkingMap(org)
+    const deepLinkingMap = buildDeepLinkingMap(org.current)
 
     if (deepLinkingMap.hasOwnProperty(location.pathname)) {
       event('deeplink')
@@ -144,7 +146,7 @@ const NotFound: FC = () => {
       return
     }
     setIsFetchingOrg(false)
-  }, [history, location.pathname, org])
+  }, [history, location.pathname])
 
   useEffect(() => {
     if (isFlagEnabled('deepLinking')) {

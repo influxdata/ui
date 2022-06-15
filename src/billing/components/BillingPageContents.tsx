@@ -12,24 +12,17 @@ import MarketplaceBilling from 'src/billing/components/marketplace/MarketplaceBi
 
 // Utils
 import {getQuartzMe} from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Thunks
 import {getBillingProviderThunk} from 'src/identity/actions/thunks'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 const BillingPageContents: FC = () => {
   const dispatch = useDispatch()
   const quartzMe = useSelector(getQuartzMe)
 
   useEffect(() => {
-    // After isFlagEnabled is removed, keep other condition. billingProvider isn't delivered by /quartz/identity.
-    if (
-      CLOUD &&
-      isFlagEnabled('uiUnificationFlag') && // Need this check to avoid having quartz endpoints hit in tools.
-      isFlagEnabled('quartzIdentity') &&
-      !quartzMe.billingProvider
-    ) {
-      // billingProviderThunk populates billingProvider into 'identity' and (for now) 'me' state.
+    if (CLOUD && shouldUseQuartzIdentity() && !quartzMe.billingProvider) {
       dispatch(getBillingProviderThunk())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

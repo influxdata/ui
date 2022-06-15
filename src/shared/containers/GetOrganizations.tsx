@@ -34,8 +34,9 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 // Types
 import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
-import {getIdentityThunk} from 'src/identity/utils/getIdentityThunk'
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
@@ -59,15 +60,8 @@ const GetOrganizations: FunctionComponent = () => {
   const {id: meId = '', name: email = ''} = useSelector(getMe)
   const dispatch = useDispatch()
 
-  // Ecommerce is refactoring so that we have a flag similar to isRegionBeta coming from the /quartz/identity endpoint.
   useEffect(() => {
-    // Remove quartzIdentity condition once flag is deployed for all users.
-    if (
-      CLOUD &&
-      isFlagEnabled('quartzIdentity') &&
-      isFlagEnabled('uiUnificationFlag') &&
-      quartzMe?.isRegionBeta === null
-    ) {
+    if (CLOUD && shouldUseQuartzIdentity() && quartzMe?.isRegionBeta === null) {
       dispatch(getCurrentOrgDetailsThunk())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -83,10 +77,8 @@ const GetOrganizations: FunctionComponent = () => {
     if (
       isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
-      // For now, just check whether quartzMeStatus is not set, because quartzMe is what is
-      // currently being used by the application.
     ) {
-      dispatch(getIdentityThunk())
+      dispatch(getQuartzIdentityThunk())
     }
   }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 

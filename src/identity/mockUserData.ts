@@ -1,6 +1,5 @@
 import {CurrentIdentity, CurrentOrg} from 'src/identity/apis/auth'
-
-export type BillingProvider = 'zuora' | 'aws' | 'gcm' | 'azure'
+import {BillingProvider} from 'src/types'
 
 export const mockBillingProviders: BillingProvider[] = [
   'zuora',

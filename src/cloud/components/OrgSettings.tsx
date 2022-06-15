@@ -5,11 +5,11 @@ import {useSelector, useDispatch} from 'react-redux'
 // Utils
 import {updateReportingContext} from 'src/cloud/utils/reporting'
 import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 import {getQuartzMe} from 'src/me/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   children: React.ReactElement<any>
@@ -23,12 +23,10 @@ const OrgSettings: FC<Props> = ({children}) => {
   const accountType = quartzMe?.accountType ?? 'free'
 
   useEffect(() => {
-    if (
-      CLOUD &&
-      isFlagEnabled('uiUnificationFlag') &&
-      isFlagEnabled('quartzIdentity') &&
-      !quartzMe?.isRegionBeta
-    ) {
+    if (!CLOUD) {
+      return
+    }
+    if (shouldUseQuartzIdentity() && !quartzMe?.isRegionBeta) {
       dispatch(getCurrentOrgDetailsThunk())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

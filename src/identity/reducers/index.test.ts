@@ -19,6 +19,10 @@ import {
 // Utils
 import {omit} from 'lodash'
 
+// Types
+import {BillingProvider} from 'src/types'
+import {CurrentIdentity, CurrentOrg} from 'src/identity/apis/auth'
+
 describe('identity reducer', () => {
   it('can initialize a default state', () => {
     const newState = reducer(undefined, setQuartzIdentity(initialState))
@@ -26,42 +30,37 @@ describe('identity reducer', () => {
   })
 
   it('can change the user identity using quartzIdentity', () => {
-    for (let i = 0; i < mockIdentities.length; i++) {
-      const expectedState = mockIdentities[i]
-      const actual = reducer(undefined, setQuartzIdentity(mockIdentities[i]))
+    mockIdentities.forEach((identity: CurrentIdentity) => {
+      const expectedState = identity
+      const actual = reducer(undefined, setQuartzIdentity(identity))
       expect(actual).toEqual(expectedState)
-    }
+    })
   })
 })
 
 describe('billing reducer', () => {
   const identity = reducer(undefined, setQuartzIdentity(mockIdentities[0]))
   it('can set any billing provider', () => {
-    for (let i = 0; i < mockBillingProviders.length; i++) {
+    mockBillingProviders.forEach((billingProvider: BillingProvider) => {
       const addedProvider = reducer(
         identity,
-        setCurrentBillingProvider(mockBillingProviders[i])
+        setCurrentBillingProvider(billingProvider)
       )
-      expect(addedProvider.account.billingProvider).toEqual(
-        mockBillingProviders[i]
-      )
-    }
+      expect(addedProvider.account.billingProvider).toEqual(billingProvider)
+    })
   })
 })
 
 describe('organization reducer', () => {
   const identity = reducer(undefined, setQuartzIdentity(mockIdentities[0]))
   it('correctly changes the user organization data', () => {
-    for (let i = 0; i < mockOrgDetailsArr.length; i++) {
-      const newOrg = reducer(
-        identity,
-        setCurrentOrgDetails(mockOrgDetailsArr[i])
-      )
+    mockOrgDetailsArr.forEach((org: CurrentOrg) => {
+      const newOrg = reducer(identity, setCurrentOrgDetails(org))
       const expectedOrg = {
         ...omit(identity, 'org'),
-        org: mockOrgDetailsArr[i],
+        org: org,
       }
       expect(newOrg).toEqual(expectedOrg)
-    }
+    })
   })
 })

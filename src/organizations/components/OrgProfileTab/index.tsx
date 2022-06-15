@@ -28,6 +28,7 @@ import {
   getBillingProviderThunk,
   getCurrentOrgDetailsThunk,
 } from 'src/identity/actions/thunks'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
@@ -37,11 +38,7 @@ const OrgProfileTab: FC = () => {
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
   useEffect(() => {
-    if (
-      CLOUD &&
-      isFlagEnabled('uiUnificationFlag') &&
-      isFlagEnabled('quartzIdentity')
-    ) {
+    if (CLOUD && shouldUseQuartzIdentity()) {
       if (!me.quartzMe.billingProvider) {
         dispatch(getBillingProviderThunk())
       }

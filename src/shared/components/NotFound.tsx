@@ -141,7 +141,7 @@ const NotFound: FC = () => {
     const deepLinkingMap = buildDeepLinkingMap(org.current)
 
     if (deepLinkingMap.hasOwnProperty(location.pathname)) {
-      event('deeplink')
+      event('deeplink', {from: location.pathname})
       history.replace(deepLinkingMap[location.pathname])
       return
     }

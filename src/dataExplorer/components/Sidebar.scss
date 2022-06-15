@@ -1,0 +1,24 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.container-right-side-bar {
+  margin-left: $cf-space-s;
+  width: inherit;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.flux-builder-sidebar--buttons {
+  text-align: right;
+}
+
+.flux-builder-sidebar--menu {
+  padding-top: $cf-space-2xs;
+  height: calc(
+    100% - 30px
+  ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
+}
+
+.flux-builder-sidebar--menu-wrapper {
+  width: calc(100% - 16px);
+  padding-bottom: 20px;
+}

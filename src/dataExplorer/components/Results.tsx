@@ -11,12 +11,14 @@ import {
 
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {
   View,
   ViewTypeDropdown,
+  ViewOptions,
   SUPPORTED_VISUALIZATIONS,
 } from 'src/visualization'
 
@@ -63,6 +65,7 @@ const EmptyResults: FC = () => {
 const Results: FC = () => {
   const [search, setSearch] = useState('')
   const {result, status} = useContext(ResultsContext)
+  const {launch} = useContext(SidebarContext)
   const [vizState, setVizState] = useState('table')
   const [viewProperties, setViewProperties] = useState(
     SUPPORTED_VISUALIZATIONS['xy'].initial
@@ -103,7 +106,15 @@ const Results: FC = () => {
   const updateType = viewType => {
     setViewProperties(SUPPORTED_VISUALIZATIONS[viewType].initial)
   }
-  const launcher = () => {}
+  const launcher = () => {
+    launch(
+      <ViewOptions
+        properties={viewProperties}
+        results={result.parsed}
+        update={setViewProperties}
+      />
+    )
+  }
 
   const tableHeader =
     vizState === 'table' ? (

@@ -37,9 +37,9 @@ const BillingPageContents: FC = () => {
   if (
     (quartzMe?.accountType === 'pay_as_you_go' ||
       quartzMe?.accountType === 'contract') &&
-    // This additional check is needed because, on page load, billingProvider (esp. with /identity on) may be 'null', which !== 'zuora.
-    quartzMe.billingProvider &&
-    quartzMe?.billingProvider !== 'zuora'
+    // This additional check is needed because, on page load, billingProvider (esp. with /identity on) may be 'null', which !== 'zuora. A 'null' billingProvider corresponds to free accounts.
+    quartzMe.billingProvider !== null &&
+    quartzMe.billingProvider !== 'zuora'
   ) {
     return <MarketplaceBilling />
   }

@@ -28,7 +28,7 @@ import GetInfluxButton from 'src/shared/components/GetInfluxButton'
 import {useHistory, useLocation} from 'react-router-dom'
 
 const NotFoundNew: FC = () => (
-  <AppWrapper type="funnel" className="page-not-found">
+  <AppWrapper type="funnel" className="page-not-found" data-testid="not-found">
     <FunnelPage enableGraphic={true} className="page-not-found-funnel">
       <FlexBox
         direction={FlexDirection.Row}

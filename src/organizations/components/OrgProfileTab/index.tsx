@@ -28,8 +28,10 @@ import {
   getBillingProviderThunk,
   getCurrentOrgDetailsThunk,
 } from 'src/identity/actions/thunks'
+import {selectQuartzIdentity} from 'src/identity/selectors'
 
 const OrgProfileTab: FC = () => {
+  const identity = useSelector(selectQuartzIdentity)
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
@@ -77,9 +79,11 @@ const OrgProfileTab: FC = () => {
             stretchToFitWidth={true}
             style={{width: '85%'}}
           >
-            {me.quartzMe?.billingProvider && (
-              <LabeledData label="Provider" src={me.quartzMe.billingProvider} />
-            )}
+            {isFlagEnabled('uiUnificationFlag') &&
+              isFlagEnabled('quartzIdentity') &&
+              identity?.org?.provider && (
+                <LabeledData label="Provider" src={identity.org.provider} />
+              )}
             {me.quartzMe?.regionCode && (
               <LabeledData label="Region" src={me.quartzMe.regionCode} />
             )}

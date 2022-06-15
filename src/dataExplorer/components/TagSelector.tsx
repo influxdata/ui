@@ -148,7 +148,11 @@ const TagSelector: FC = () => {
 
   return useMemo(
     () => (
-      <Accordion className="tag-selector-key" expanded={true}>
+      <Accordion
+        className="tag-selector-key"
+        expanded={true}
+        testID="tag-selector-key"
+      >
         <Accordion.AccordionHeader className="tag-selector-key--header">
           <SelectorTitle title="Tag Keys" info={TAG_KEYS_TOOLTIP} />
         </Accordion.AccordionHeader>

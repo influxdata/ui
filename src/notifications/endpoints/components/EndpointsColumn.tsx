@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {Button, IconFont, ComponentColor} from '@influxdata/clockface'
@@ -15,19 +15,21 @@ import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 // Utils
 import {getAll} from 'src/resources/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getOrg} from 'src/organizations/selectors'
 
-interface StateProps {
-  endpoints: NotificationEndpoint[]
-}
-interface OwnProps {
+interface Props {
   tabIndex: number
 }
 
-type Props = OwnProps & RouteComponentProps<{orgID: string}> & StateProps
+const EndpointsColumn: FC<Props> = ({tabIndex}) => {
+  const orgID = useSelector(getOrg).id
+  const endpoints = useSelector((state: AppState) =>
+    getAll<NotificationEndpoint>(state, ResourceType.NotificationEndpoints)
+  )
 
-const EndpointsColumn: FC<Props> = ({history, match, endpoints, tabIndex}) => {
+  const history = useHistory()
   const handleOpenOverlay = () => {
-    const newRuleRoute = `/orgs/${match.params.orgID}/alerting/endpoints/new`
+    const newRuleRoute = `/orgs/${orgID}/alerting/endpoints/new`
     history.push(newRuleRoute)
   }
 
@@ -80,13 +82,4 @@ const EndpointsColumn: FC<Props> = ({history, match, endpoints, tabIndex}) => {
   )
 }
 
-const mstp = (state: AppState) => {
-  const endpoints = getAll<NotificationEndpoint>(
-    state,
-    ResourceType.NotificationEndpoints
-  )
-
-  return {endpoints}
-}
-
-export default connect<StateProps>(mstp)(withRouter(EndpointsColumn))
+export default EndpointsColumn

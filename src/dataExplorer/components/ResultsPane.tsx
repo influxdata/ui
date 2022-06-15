@@ -99,10 +99,14 @@ const ResultsPane: FC = () => {
       },
     })
       .then(r => {
+        event('resultReceived', {
+          status: r.parsed.table.length === 0 ? 'empty' : 'good',
+        })
         setResult(r)
         setStatus(RemoteDataState.Done)
       })
       .catch(() => {
+        event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)
       })
   }

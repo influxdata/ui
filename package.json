@@ -52,7 +52,7 @@
     "cy": "CYPRESS_dexUrl=https://$INGRESS_HOST:$PORT_HTTPS CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_dexUrl=CLOUD CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_dexUrl=OSS CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "export SHA=7525c8c2c845ba783addc76041a134b80cc6c581 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
+    "generate": "export SHA=45f906aedb8a8ab548a2d3cf7ef2774e2469b668 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",
     "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn pinned && yarn mapsd-oss && yarn uiproxyd-oss && yarn cloudPriv && yarn fluxdocs && yarn subscriptions-oss",

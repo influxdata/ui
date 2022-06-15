@@ -18,7 +18,6 @@ import {RemoteDataState, AppState} from 'src/types'
 
 // Actions
 import {getOrganizations} from 'src/organizations/actions/thunks'
-import {getQuartzMe as apiGetQuartzMe} from 'src/me/actions/thunks'
 import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
@@ -35,6 +34,8 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 // Types
 import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
+import {getIdentityThunk} from 'src/identity/utils/getIdentityThunk'
+import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 
 const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
@@ -45,28 +46,51 @@ const canAccessCheckout = (me: Me): boolean => {
 
 const GetOrganizations: FunctionComponent = () => {
   const {status, org} = useSelector(getAllOrgs)
+
   const quartzMeStatus = useSelector(
     (state: AppState) => state.me.quartzMeStatus
   )
   const quartzMe = useSelector(getQuartzMe)
+
+  const quartzIdentityStatus = useSelector(
+    (state: AppState) => state.identity.status
+  )
+
   const {id: meId = '', name: email = ''} = useSelector(getMe)
   const dispatch = useDispatch()
 
+  // Ecommerce is refactoring so that we have a flag similar to isRegionBeta coming from the /quartz/identity endpoint.
+  useEffect(() => {
+    // Remove quartzIdentity condition once flag is deployed for all users.
+    if (
+      CLOUD &&
+      isFlagEnabled('quartzIdentity') &&
+      isFlagEnabled('uiUnificationFlag') &&
+      quartzMe?.isRegionBeta === null
+    ) {
+      dispatch(getCurrentOrgDetailsThunk())
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // This doesn't require another API call.
   useEffect(() => {
     if (status === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
     }
-  }, [dispatch, status])
+  }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (
       isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
+      // For now, just check whether quartzMeStatus is not set, because quartzMe is what is
+      // currently being used by the application.
     ) {
-      dispatch(apiGetQuartzMe())
+      dispatch(getIdentityThunk())
     }
-  }, [dispatch, quartzMeStatus])
+  }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // This doesn't require another API call.
   useEffect(() => {
     if (
       isFlagEnabled('credit250Experiment') &&

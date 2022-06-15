@@ -3,14 +3,16 @@ import HoneyBadger from 'honeybadger-js'
 import {identify} from 'rudder-sdk-js'
 import {Dispatch} from 'react'
 
-// API
-import {getMe as apiGetApiMe} from 'src/client'
-import {getAccounts, getMe as apiGetQuartzMe} from 'src/client/unityRoutes'
+// Functions making API calls
+import {getMe as getIdpeMe} from 'src/client'
+import {getAccounts} from 'src/client/unityRoutes'
+
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {getOrg} from 'src/organizations/selectors'
+
 // Actions
 import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 
@@ -19,11 +21,10 @@ import {MeState} from 'src/me/reducers'
 
 // Types
 import {RemoteDataState, GetState} from 'src/types'
-
-// Creators
 import {Actions} from 'src/me/actions/creators'
+import {fetchQuartzMe} from 'src/identity/apis/auth'
 
-export const getMe = () => async (
+export const getIdpeMeThunk = () => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {
@@ -38,7 +39,7 @@ export const getMe = () => async (
       }
       user = resp.data.find(account => account.isActive)
     } else {
-      const resp = await apiGetApiMe({})
+      const resp = await getIdpeMe({})
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
@@ -58,6 +59,7 @@ export const getMe = () => async (
     updateReportingContext({
       userID: user.id,
     })
+
     HoneyBadger.setContext({
       user_id: user.id,
     })
@@ -74,16 +76,13 @@ export const getMe = () => async (
   }
 }
 
-export const getQuartzMe = () => async dispatch => {
+export const getQuartzMeThunk = () => async dispatch => {
   try {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
-    const resp = await apiGetQuartzMe({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
+    const quartzMe = await fetchQuartzMe()
 
-    dispatch(setQuartzMe(resp.data, RemoteDataState.Done))
+    dispatch(setQuartzMe(quartzMe, RemoteDataState.Done))
   } catch (error) {
     console.error(error)
     dispatch(setQuartzMeStatus(RemoteDataState.Error))

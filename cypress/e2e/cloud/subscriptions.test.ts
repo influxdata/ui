@@ -12,6 +12,8 @@ describe('Subscriptions', () => {
               cy.visit(`${orgs}/${id}/load-data/sources`)
               cy.setFeatureFlags({
                 subscriptionsUI: true,
+                uiUnificationFlag: true,
+                quartzIdentity: true,
               })
               cy.getByTestID('subscriptions--tab').should('be.visible')
               cy.intercept('POST', `/api/v2private/broker/subs*`).as(
@@ -617,6 +619,8 @@ describe('Subscriptions', () => {
       cy.setFeatureFlags({
         subscriptionsUI: true,
         subscriptionsSinglePage: true,
+        quartzIdentity: true,
+        uiUnificationFlag: true,
       })
       let subscription = 'My Subscription'
       createBasicLPSubscription(subscription)
@@ -704,6 +708,8 @@ describe('Subscriptions', () => {
       cy.setFeatureFlags({
         subscriptionsUI: true,
         subscriptionsSinglePage: true,
+        quartzIdentity: true,
+        uiUnificationFlag: true,
       })
       let subscription = 'My Subscription 2'
       cy.getByTestID('subscriptions--tab').click()
@@ -889,6 +895,8 @@ describe('Subscriptions', () => {
       cy.setFeatureFlags({
         subscriptionsUI: true,
         subscriptionsSinglePage: true,
+        quartzIdentity: true,
+        uiUnificationFlag: true,
       })
 
       let subscription = 'My Subscription 3'

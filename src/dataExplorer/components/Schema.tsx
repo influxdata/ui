@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext, useEffect, useMemo} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -36,6 +36,10 @@ const FieldsTags: FC = () => {
     setSearchTerm,
   } = useContext(FluxQueryBuilderContext)
 
+  useEffect(() => {
+    setSearchTerm('')
+  }, [selectedBucket, selectedMeasurement])
+
   const handleSearchFieldsTags = (searchTerm: string): void => {
     setSearchTerm(searchTerm)
   }
@@ -57,7 +61,7 @@ const FieldsTags: FC = () => {
         <TagSelector />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement])
+  }, [selectedBucket, selectedMeasurement, searchTerm])
 }
 
 const Schema: FC = () => {

@@ -1,20 +1,13 @@
 // Libraries
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
 
 // Components
 import {
-  Button,
-  IconFont,
   FlexBox,
   AlignItems,
   FlexDirection,
   ComponentSize,
-  Input,
-  Heading,
-  HeadingElement,
-  FontWeight,
   JustifyContent,
 } from '@influxdata/clockface'
 import UsersProvider from 'src/users/context/users'
@@ -35,11 +28,6 @@ import 'src/organizations/components/OrgProfileTab/style.scss'
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
-  const history = useHistory()
-
-  const handleShowEditOverlay = () => {
-    history.push(`/orgs/${org.id}/about/rename`)
-  }
 
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
@@ -54,28 +42,12 @@ const OrgProfileTab: FC = () => {
       testID="org-profile--panel"
     >
       <h4>Organization Profile</h4>
-      <Heading
-        className="org-profile-tab--heading"
-        element={HeadingElement.H4}
-        weight={FontWeight.Regular}
-      >
-        Name
-      </Heading>
-      <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
-        <Input
-          value={org.name}
-          onChange={() => {}}
-          style={{width: 'max-content'}}
-          data-testid="danger-zone--org-name"
-          testID="danger-zone--org-name"
-        ></Input>
-        <Button
-          testID="rename-org--button"
-          text="Rename"
-          icon={IconFont.Pencil}
-          onClick={handleShowEditOverlay}
-        />
-      </FlexBox>
+      <CopyableLabeledData
+        id="orgName"
+        label="Name"
+        src={org.name}
+        isRenameableOrg={true}
+      />
       {expectQuartzData && hasSomeQuartzOrgData && (
         <>
           <FlexBox
@@ -98,7 +70,7 @@ const OrgProfileTab: FC = () => {
           {expectQuartzData && me.quartzMe?.clusterHost && (
             <CopyableLabeledData
               id="clusterUrl"
-              label="Cluster URL"
+              label="Cluster URL (Host Name)"
               src={me.quartzMe.clusterHost}
             />
           )}

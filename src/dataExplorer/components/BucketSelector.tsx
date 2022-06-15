@@ -8,6 +8,7 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 // Contexts
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {BucketContext} from 'src/shared/contexts/buckets'
+import {event} from 'src/cloud/utils/reporting'
 
 const BUCKET_TOOLTIP = `A bucket is a named location where time series data \
 is stored. You can think of a bucket like you would a database in SQL systems.`
@@ -22,6 +23,7 @@ const BucketSelector: FC = () => {
     if (!bucket) {
       return
     }
+    event('bucketSelected', {search: searchTerm.length})
     selectBucket(bucket)
   }
 

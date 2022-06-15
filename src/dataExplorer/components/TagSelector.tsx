@@ -13,7 +13,10 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 import {RemoteDataState} from 'src/types'
 
 // Utils
-import {LOCAL_LIMIT} from 'src/dataExplorer/shared/utils'
+import {
+  LOAD_MORE_LIMIT_INITIAL,
+  LOAD_MORE_LIMIT,
+} from 'src/dataExplorer/shared/utils'
 
 const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \
@@ -34,7 +37,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
 
   useEffect(() => {
     // Reset
-    setValuesToShow(tagValues.slice(0, LOCAL_LIMIT))
+    setValuesToShow(tagValues.slice(0, LOAD_MORE_LIMIT_INITIAL))
   }, [tagValues])
 
   const handleSelectTagValue = (value: string) => {
@@ -71,18 +74,19 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     list = <WaitingText text="Loading tag values" />
   } else if (loading === RemoteDataState.Done && tagValues.length) {
     list = valuesToShow.map(value => (
-      <div
-        className="tag-selector-value--list-item"
-        key={value}
-        onClick={() => handleSelectTagValue(value)}
-      >
-        {value}
+      <div key={value} className="tag-selector-value--list-item--wrapper">
+        <div
+          className="tag-selector-value--list-item--selectable"
+          onClick={() => handleSelectTagValue(value)}
+        >
+          {value}
+        </div>
       </div>
     ))
   }
 
   const handleLoadMore = () => {
-    const newIndex = valuesToShow.length + LOCAL_LIMIT
+    const newIndex = valuesToShow.length + LOAD_MORE_LIMIT
     setValuesToShow(tagValues.slice(0, newIndex))
   }
 
@@ -144,7 +148,11 @@ const TagSelector: FC = () => {
 
   return useMemo(
     () => (
-      <Accordion className="tag-selector-key" expanded={true}>
+      <Accordion
+        className="tag-selector-key"
+        expanded={true}
+        testID="tag-selector-key"
+      >
         <Accordion.AccordionHeader className="tag-selector-key--header">
           <SelectorTitle title="Tag Keys" info={TAG_KEYS_TOOLTIP} />
         </Accordion.AccordionHeader>

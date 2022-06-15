@@ -12,15 +12,11 @@ import {
   JustifyContent,
   Panel,
 } from '@influxdata/clockface'
-import React, {Component, FC} from 'react'
-import {connect} from 'react-redux'
+import React, {useState, FC, useCallback, useEffect, useRef} from 'react'
+import {useSelector} from 'react-redux'
+import {useHistory, useLocation} from 'react-router-dom'
 import {getOrg} from 'src/organizations/selectors'
-
 import {getOrg as fetchOrg} from 'src/organizations/apis'
-
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-
-import {AppState, Organization} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -30,15 +26,10 @@ import {event} from 'src/cloud/utils/reporting'
 // Components
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import GetInfluxButton from 'src/shared/components/GetInfluxButton'
-
-interface StateProps {
-  org: Organization
-}
-
-type Props = RouteComponentProps & StateProps
+import {Organization} from 'src/types'
 
 const NotFoundNew: FC = () => (
-  <AppWrapper type="funnel" className="page-not-found">
+  <AppWrapper type="funnel" className="page-not-found" testID="not-found">
     <FunnelPage enableGraphic={true} className="page-not-found-funnel">
       <FlexBox
         direction={FlexDirection.Row}
@@ -134,63 +125,42 @@ const NotFoundNew: FC = () => (
   </AppWrapper>
 )
 
-const NotFoundOld: FC = () => (
-  <div className="container-fluid" data-testid="not-found">
-    <div className="panel">
-      <div className="panel-heading text-center">
-        <h1 className="deluxe">404</h1>
-        <h4>Bummer! We couldn't find the page you were looking for</h4>
-      </div>
-    </div>
-  </div>
-)
+const NotFound: FC = () => {
+  const [isFetchingOrg, setIsFetchingOrg] = useState(false)
+  const location = useLocation()
+  const history = useHistory()
+  const reduxOrg = useSelector(getOrg)
+  const org = useRef<Organization>(reduxOrg)
 
-class NotFound extends Component<Props> {
-  state = {
-    isFetchingOrg: false,
-  }
+  const handleDeepLink = useCallback(async () => {
+    if (!org) {
+      setIsFetchingOrg(true)
+      org.current = await fetchOrg()
+    }
 
-  async componentDidMount() {
+    const deepLinkingMap = buildDeepLinkingMap(org.current)
+
+    if (deepLinkingMap.hasOwnProperty(location.pathname)) {
+      event('deeplink', {from: location.pathname})
+      history.replace(deepLinkingMap[location.pathname])
+      return
+    }
+    setIsFetchingOrg(false)
+  }, [history, location.pathname])
+
+  useEffect(() => {
     if (isFlagEnabled('deepLinking')) {
-      let org = this.props?.org
-
-      if (!org) {
-        this.setState({isFetchingOrg: true})
-        org = await fetchOrg()
-      }
-
-      const deepLinkingMap = buildDeepLinkingMap(org)
-
-      if (deepLinkingMap.hasOwnProperty(this.props.location.pathname)) {
-        event('deeplink', {from: this.props.location.pathname})
-        this.props.history.replace(deepLinkingMap[this.props.location.pathname])
-        return
-      }
-      this.setState({isFetchingOrg: false})
+      handleDeepLink()
     }
+  }, [handleDeepLink])
+
+  if (isFetchingOrg) {
+    // don't render anything if this component is actively fetching org id
+    // this prevents popping in a 404 page then redirecting
+    return null
   }
 
-  render() {
-    if (this.state.isFetchingOrg) {
-      // don't render anything if this component is actively fetching org id
-      // this prevents popping in a 404 page then redirecting
-      return null
-    }
-
-    if (isFlagEnabled('newNotFoundPage')) {
-      return <NotFoundNew />
-    }
-
-    return <NotFoundOld />
-  }
+  return <NotFoundNew />
 }
 
-const mstp = (state: AppState) => {
-  return {
-    org: getOrg(state),
-  }
-}
-
-const connector = connect(mstp)
-
-export default connector(withRouter(NotFound))
+export default NotFound

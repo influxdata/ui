@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo, useState} from 'react'
+import React, {FC, useCallback, useContext, useMemo, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
@@ -11,6 +11,7 @@ import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 const MEASUREMENT_TOOLTIP = `The measurement acts as a container for tags, \
 fields, and the time column, and the measurement name is the description of \
@@ -36,9 +37,13 @@ const MeasurementSelector: FC = () => {
   const {measurements, loading} = useContext(MeasurementsContext)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const handleSelect = (option: string): void => {
-    selectMeasurement(option)
-  }
+  const handleSelect = useCallback(
+    (option: string): void => {
+      selectMeasurement(option)
+      event('measurementSelected', {search: searchTerm.length})
+    },
+    [searchTerm, selectMeasurement]
+  )
 
   const handleChangeSearchTerm = (value: string) => {
     setSearchTerm(value)
@@ -67,7 +72,14 @@ const MeasurementSelector: FC = () => {
         />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement, measurements, loading])
+  }, [
+    selectedBucket,
+    selectedMeasurement,
+    measurements,
+    loading,
+    searchTerm,
+    handleSelect,
+  ])
 }
 
 export default MeasurementSelector

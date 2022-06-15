@@ -3,9 +3,9 @@ import React, {FC, useState, useMemo, useCallback} from 'react'
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
-import Fn from 'src/flows/shared/FilterList/InjectionOption'
+import Fn from 'src/shared/components/FilterList/InjectionOption'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
-import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionsList/perFunction/FunctionToolTipContent'
+import FunctionTooltipContent from 'src/shared/components/functions/perFunction/FunctionToolTipContent'
 
 interface Props {
   onSelect: (fn: FluxToolbarFunction) => void

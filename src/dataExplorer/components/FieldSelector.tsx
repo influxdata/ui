@@ -15,7 +15,10 @@ import {RemoteDataState} from 'src/types'
 import './Schema.scss'
 
 // Utils
-import {LOCAL_LIMIT} from 'src/dataExplorer/shared/utils'
+import {
+  LOAD_MORE_LIMIT_INITIAL,
+  LOAD_MORE_LIMIT,
+} from 'src/dataExplorer/shared/utils'
 
 const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
 key values pairs within a measurement. For SQL users, this is \
@@ -27,7 +30,7 @@ const FieldSelector: FC = () => {
 
   useEffect(() => {
     // Reset
-    setFieldsToShow(fields.slice(0, LOCAL_LIMIT))
+    setFieldsToShow(fields.slice(0, LOAD_MORE_LIMIT_INITIAL))
   }, [fields])
 
   let list: JSX.Element | JSX.Element[] = (
@@ -45,14 +48,14 @@ const FieldSelector: FC = () => {
     list = <WaitingText text="Loading fields" />
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
     list = fieldsToShow.map(field => (
-      <div key={field} className="field-selector--list-item">
-        {field}
+      <div key={field} className="field-selector--list-item--wrapper">
+        <div className="field-selector--list-item--selectable">{field}</div>
       </div>
     ))
   }
 
   const handleLoadMore = () => {
-    const newIndex = fieldsToShow.length + LOCAL_LIMIT
+    const newIndex = fieldsToShow.length + LOAD_MORE_LIMIT
     setFieldsToShow(fields.slice(0, newIndex))
   }
 
@@ -65,7 +68,11 @@ const FieldSelector: FC = () => {
     )
 
     return (
-      <Accordion className="field-selector" expanded={true}>
+      <Accordion
+        className="field-selector"
+        expanded={true}
+        testID="field-selector"
+      >
         <Accordion.AccordionHeader className="field-selector--header">
           <SelectorTitle title="Fields" info={FIELD_TOOLTIP} />
         </Accordion.AccordionHeader>

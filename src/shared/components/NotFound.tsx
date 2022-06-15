@@ -130,27 +130,27 @@ const NotFound: FC = () => {
   const history = useHistory()
   const org = useSelector(getOrg)
 
-  const handleGetOrg = useCallback(async () => {
-    await fetchOrg()
-  }, [])
+  const handleDeepLink = useCallback(async () => {
+    if (!org) {
+      setIsFetchingOrg(true)
+      await fetchOrg()
+    }
+
+    const deepLinkingMap = buildDeepLinkingMap(org)
+
+    if (deepLinkingMap.hasOwnProperty(location.pathname)) {
+      event('deeplink')
+      history.replace(deepLinkingMap[location.pathname])
+      return
+    }
+    setIsFetchingOrg(false)
+  }, [history, location.pathname, org])
 
   useEffect(() => {
     if (isFlagEnabled('deepLinking')) {
-      if (!org) {
-        setIsFetchingOrg(true)
-        handleGetOrg()
-      }
-
-      const deepLinkingMap = buildDeepLinkingMap(org)
-
-      if (deepLinkingMap.hasOwnProperty(location.pathname)) {
-        event('deeplink')
-        history.replace(deepLinkingMap[location.pathname])
-        return
-      }
-      setIsFetchingOrg(false)
+      handleDeepLink()
     }
-  }, [handleGetOrg, history, org])
+  }, [handleDeepLink])
 
   if (isFetchingOrg) {
     // don't render anything if this component is actively fetching org id

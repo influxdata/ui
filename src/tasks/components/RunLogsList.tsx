@@ -6,11 +6,12 @@ import {Overlay, IndexList, DapperScrollbars} from '@influxdata/clockface'
 import RunLogRow from 'src/tasks/components/RunLogRow'
 
 // Types
-import {LogEvent} from 'src/types'
+import {LogEvent, Run} from 'src/types'
 
 interface Props {
   onDismissOverlay: () => void
   logs: LogEvent[]
+  run: Run
 }
 
 class RunLogsOverlay extends PureComponent<Props> {
@@ -42,10 +43,15 @@ class RunLogsOverlay extends PureComponent<Props> {
   }
 
   public get listLogs(): JSX.Element[] {
-    const logs = this.props.logs.map(rl => (
-      <RunLogRow key={rl.message} log={rl} />
+    const logs = this.props.logs.map((rl) => (
+      <RunLogRow
+        key={rl.message}
+        log={rl}
+        run={this.props.run}
+        isFlux={false}
+      />
     ))
-
+    logs.push(<RunLogRow run={this.props.run} isFlux={true} />)
     return logs
   }
 }

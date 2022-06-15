@@ -8,6 +8,7 @@ import {RemoteDataState} from 'src/types'
 import {
   Actions,
   SET_QUARTZ_IDENTITY,
+  CLEAR_QUARTZ_IDENTITY,
   SET_QUARTZ_IDENTITY_STATUS,
   SET_CURRENT_BILLING_PROVIDER,
   SET_CURRENT_ORG_DETAILS,
@@ -69,6 +70,10 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
         draftState.status = RemoteDataState.Done
         return
       }
+      case CLEAR_QUARTZ_IDENTITY: {
+        draftState = initialState
+        return
+      }
       case SET_QUARTZ_IDENTITY_STATUS: {
         draftState.status = action.status
         return
@@ -77,7 +82,6 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
         draftState.account.billingProvider = action.billingProvider
         return
       }
-
       case SET_CURRENT_ORG_DETAILS: {
         draftState.org = action.org
         return

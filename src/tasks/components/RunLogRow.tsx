@@ -6,6 +6,7 @@ import {IndexList} from '@influxdata/clockface'
 
 // Types
 import {LogEvent, Run} from 'src/types'
+import {CLOUD} from 'src/shared/constants'
 
 // DateTime
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
@@ -45,16 +46,18 @@ class RunLogRow extends PureComponent<Props> {
               {this.dateTimeString(run.startedAt)}
             </span>
           </IndexList.Cell>
-          <IndexList.Cell>
-            <span className="run-logs--list-flux">
-              <FluxEditorMonaco
-                script={run.flux}
-                variables={[]}
-                onChangeScript={() => {}}
-                readOnly
-              />
-            </span>
-          </IndexList.Cell>
+          {CLOUD && (
+            <IndexList.Cell>
+              <span className="run-logs--list-flux">
+                <FluxEditorMonaco
+                  script={run.flux}
+                  variables={[]}
+                  onChangeScript={() => {}}
+                  readOnly
+                />
+              </span>
+            </IndexList.Cell>
+          )}
         </IndexList.Row>
       )
     }

@@ -29,7 +29,7 @@ import GetInfluxButton from 'src/shared/components/GetInfluxButton'
 import {Organization} from 'src/types'
 
 const NotFoundNew: FC = () => (
-  <AppWrapper type="funnel" className="page-not-found" data-testid="not-found">
+  <AppWrapper type="funnel" className="page-not-found" testID="not-found">
     <FunnelPage enableGraphic={true} className="page-not-found-funnel">
       <FlexBox
         direction={FlexDirection.Row}

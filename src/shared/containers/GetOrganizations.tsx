@@ -13,11 +13,6 @@ const NotebookTemplates = lazy(() =>
 const App = lazy(() => import('src/App'))
 const NotFound = lazy(() => import('src/shared/components/NotFound'))
 
-import {decideThunk} from 'src/identity/utils/decideThunk'
-
-// Types
-import {RemoteDataState, AppState} from 'src/types'
-
 // Actions
 import {getOrganizations} from 'src/organizations/actions/thunks'
 import RouteToOrg from 'src/shared/containers/RouteToOrg'
@@ -38,6 +33,10 @@ import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
 import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
+import {RemoteDataState, AppState} from 'src/types'
+
+// Thunks
+import {retrieveQuartzIdentity} from 'src/identity/utils/retrieveQuartzIdentity'
 
 const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
@@ -79,7 +78,7 @@ const GetOrganizations: FunctionComponent = () => {
       isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
     ) {
-      dispatch(decideThunk())
+      dispatch(retrieveQuartzIdentity())
     }
   }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -11,7 +11,7 @@ export const convertIdentityToMe = (
     // User Data
     email: user.email,
     id: user.id,
-    // Careful about this line.
+    // isOperator is inferred from presence of a string value to operatorRole (read-write or read-only).
     isOperator: user.operatorRole ? true : false,
     operatorRole: user.operatorRole,
 

@@ -3,7 +3,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getQuartzIdentityThunk} from '../actions/thunks'
 import {CLOUD} from 'src/shared/constants'
 
-export const decideThunk = () => {
+export const retrieveQuartzIdentity = () => {
   if (!CLOUD || !isFlagEnabled('uiUnificationFlag')) {
     return
   }

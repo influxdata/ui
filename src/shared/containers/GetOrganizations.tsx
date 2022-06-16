@@ -36,7 +36,7 @@ import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentit
 import {RemoteDataState, AppState} from 'src/types'
 
 // Thunks
-import {retrieveQuartzIdentity} from 'src/identity/utils/retrieveQuartzIdentity'
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
@@ -78,7 +78,7 @@ const GetOrganizations: FunctionComponent = () => {
       isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
     ) {
-      dispatch(retrieveQuartzIdentity())
+      dispatch(getQuartzIdentityThunk())
     }
   }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 

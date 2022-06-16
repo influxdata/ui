@@ -34,7 +34,7 @@ import {getErrorMessage} from 'src/utils/api'
 import {event} from 'src/cloud/utils/reporting'
 
 // Thunks
-import {retrieveQuartzIdentity} from 'src/identity/utils/retrieveQuartzIdentity'
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 export type Props = {
   children: JSX.Element
@@ -162,7 +162,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   useEffect(() => {
     getBillingSettings()
     return () => {
-      dispatch(retrieveQuartzIdentity())
+      dispatch(getQuartzIdentityThunk())
     }
   }, [getBillingSettings]) // eslint-disable-line react-hooks/exhaustive-deps
 

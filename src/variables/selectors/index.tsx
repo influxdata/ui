@@ -5,7 +5,10 @@ import {get} from 'lodash'
 import {getActiveQuery} from 'src/timeMachine/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {getTimeRange, getTimeRangeWithTimezone} from 'src/dashboards/selectors'
-import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+import {
+  getWindowPeriodVariableForZoomRequery,
+  getWindowPeriodVariableFromVariables,
+} from 'src/variables/utils/getWindowVars'
 import {
   TIME_RANGE_START,
   TIME_RANGE_STOP,
@@ -131,6 +134,25 @@ export const getAllVariables = (
       return prev
     }, [])
     .filter(v => !!v)
+  return vars
+}
+
+export const getAllVariablesForZoomRequery = (
+  state: AppState,
+  contextID?: string
+): Variable[] => {
+  const vars = getUserVariableNames(state, contextID || currentContext(state))
+    .concat([TIME_RANGE_START, TIME_RANGE_STOP, WINDOW_PERIOD])
+    .reduce((result, variableID) => {
+      if (variableID === WINDOW_PERIOD) {
+        result.push(getWindowPeriodVariableForZoomRequery())
+      } else {
+        result.push(getVariable(state, variableID))
+      }
+      return result
+    }, [])
+    .filter(v => !!v)
+
   return vars
 }
 

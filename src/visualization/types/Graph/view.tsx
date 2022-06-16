@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useMemo, useContext} from 'react'
+import React, {FC, useMemo, useContext, useState, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {
   Config,
@@ -40,6 +40,8 @@ import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
+  useZoomRequeryXDomainSettings,
+  useZoomRequeryYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
 import {
   geomToInterpolation,
@@ -70,6 +72,12 @@ const XYPlot: FC<Props> = ({
   annotations,
   cellID,
 }) => {
+  const [resultState, setResultState] = useState(result)
+
+  useEffect(() => {
+    setResultState(result)
+  }, [result])
+
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
@@ -98,11 +106,12 @@ const XYPlot: FC<Props> = ({
   const storedYDomain = useMemo(() => parseYBounds(properties.axes.y.bounds), [
     properties.axes.y.bounds,
   ])
-  const columnKeys = Object.keys(result.table.columns)
-  const xColumn = properties.xColumn || defaultXColumn(result.table, '_time')
+  const columnKeys = Object.keys(resultState.table.columns)
+  const xColumn =
+    properties.xColumn || defaultXColumn(resultState.table, '_time')
   const yColumn =
     (columnKeys.includes(properties.yColumn) && properties.yColumn) ||
-    defaultYColumn(result.table)
+    defaultYColumn(resultState.table)
 
   const isValidView =
     xColumn &&
@@ -119,33 +128,27 @@ const XYPlot: FC<Props> = ({
 
   const interpolation = geomToInterpolation(properties.geom)
 
-  const groupKey = useMemo(() => [...result.fluxGroupKeyUnion, 'result'], [
-    result,
+  const groupKey = useMemo(() => [...resultState.fluxGroupKeyUnion, 'result'], [
+    resultState,
   ])
-
-  const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
-    storedXDomain,
-    result.table.getColumn(xColumn, 'number'),
-    timeRange
-  )
 
   const memoizedYColumnData = useMemo(() => {
     if (properties.position === 'stacked') {
       const {lineData} = lineTransform(
-        result.table,
+        resultState.table,
         xColumn,
         yColumn,
         groupKey,
         colorHexes,
         properties.position
       )
-      const [fillColumn] = createGroupIDColumn(result.table, groupKey)
+      const [fillColumn] = createGroupIDColumn(resultState.table, groupKey)
       return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
     }
 
-    return result.table.getColumn(yColumn, 'number')
+    return resultState.table.getColumn(yColumn, 'number')
   }, [
-    result.table,
+    resultState.table,
     xColumn,
     yColumn,
     groupKey,
@@ -153,10 +156,48 @@ const XYPlot: FC<Props> = ({
     properties.position,
   ])
 
-  const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
-    storedYDomain,
-    memoizedYColumnData
-  )
+  let useXDomainSettings = ({storedDomain, parsedResult, timeRange}) =>
+    useVisXDomainSettings(
+      storedDomain,
+      parsedResult.table.getColumn(xColumn, 'number'),
+      timeRange
+    )
+  let useYDomainSettings = options => {
+    const {storedDomain} = options
+    return useVisYDomainSettings(storedDomain, memoizedYColumnData)
+  }
+
+  if (isFlagEnabled('zoomRequery')) {
+    useXDomainSettings = ({storedDomain, parsedResult, timeRange}) =>
+      useZoomRequeryXDomainSettings(
+        parsedResult,
+        setResultState,
+        properties.queries[0].text,
+        storedDomain,
+        parsedResult.table.getColumn(xColumn, 'number'),
+        timeRange
+      )
+    useYDomainSettings = ({storedDomain, parsedResult}) =>
+      useZoomRequeryYDomainSettings(
+        parsedResult,
+        setResultState,
+        properties.queries[0].text,
+        storedDomain,
+        memoizedYColumnData
+      )
+  }
+
+  const [xDomain, onSetXDomain, onResetXDomain] = useXDomainSettings({
+    storedDomain: storedXDomain,
+    parsedResult: resultState,
+    timeRange,
+  })
+
+  const [yDomain, onSetYDomain, onResetYDomain] = useYDomainSettings({
+    storedDomain: storedYDomain,
+    parsedResult: resultState,
+    timeRange,
+  })
 
   const legendColumns = filterNoisyColumns(
     properties.position === 'stacked'
@@ -168,10 +209,10 @@ const XYPlot: FC<Props> = ({
           `_${LINE_COUNT}`,
         ]
       : [...groupKey, xColumn, yColumn],
-    result.table
+    resultState.table
   )
 
-  const xFormatter = getFormatter(result.table.getColumnType(xColumn), {
+  const xFormatter = getFormatter(resultState.table.getColumnType(xColumn), {
     prefix: properties.axes.x.prefix,
     suffix: properties.axes.x.suffix,
     base: properties.axes.x.base,
@@ -179,7 +220,7 @@ const XYPlot: FC<Props> = ({
     timeFormat: properties.timeFormat,
   })
 
-  const yFormatter = getFormatter(result.table.getColumnType(yColumn), {
+  const yFormatter = getFormatter(resultState.table.getColumnType(yColumn), {
     prefix: properties.axes.y.prefix,
     suffix: properties.axes.y.suffix,
     base: properties.axes.y.base,
@@ -197,7 +238,7 @@ const XYPlot: FC<Props> = ({
 
   if (isFlagEnabled('graphColorMapping')) {
     const memoizedGetColorMappingObjects = memoizeOne(getColorMappingObjects)
-    const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
+    const [, fillColumnMap] = createGroupIDColumn(resultState.table, groupKey)
     const {
       colorMappingForGiraffe,
       colorMappingForIDPE,
@@ -218,7 +259,7 @@ const XYPlot: FC<Props> = ({
 
   const config: Config = {
     ...currentTheme,
-    table: result.table,
+    table: resultState.table,
     xAxisLabel: properties.axes.x.label,
     yAxisLabel: properties.axes.y.label,
     xDomain,

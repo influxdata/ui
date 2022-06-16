@@ -7,6 +7,7 @@ import {
   buildUsedVarsOption,
   buildVarsOption,
 } from 'src/variables/utils/buildVarsOption'
+
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
 
@@ -190,3 +191,16 @@ export const getWindowPeriodVariableFromVariables = (
 
   return [windowPeriodVariable]
 }
+
+export const getWindowPeriodVariableForZoomRequery = (): Variable => ({
+  orgID: '',
+  id: WINDOW_PERIOD,
+  name: WINDOW_PERIOD,
+  arguments: {
+    type: 'system',
+    values: [1000],
+  },
+  status: RemoteDataState.Done,
+  labels: [],
+  selected: [],
+})

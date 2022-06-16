@@ -27,23 +27,13 @@ import {
   fetchAccountDetails,
   fetchOrgDetails,
 } from 'src/identity/apis/auth'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {convertIdentityToMe} from 'src/identity/utils/convertIdentityToMe'
 
 // Thunks
-import {getQuartzMeThunk} from 'src/me/actions/thunks'
 
 export const getQuartzIdentityThunk = () => async (
   dispatch: Dispatch<IdentityActions | MeActions>
 ) => {
-  if (!CLOUD || !isFlagEnabled('uiUnificationFlag')) {
-    return
-  }
-
-  if (!isFlagEnabled('quartzIdentity')) {
-    return getQuartzMeThunk()
-  }
-
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 

@@ -3,7 +3,7 @@
   float: right;
   width: 75%;
   .cf-overlay--body {
-    padding-top: 200px;
+    padding-top: 50px;
   }
   button {
     margin-left: 4px;
@@ -89,13 +89,14 @@
     position: fixed;
     background-color: $cf-grey-5;
     background-attachment: fixed;
-    width: 60%;
+    width: 61%;
     z-index: 9999;
     padding-bottom: 20px;
 
     &__broker-buttons {
       padding-top: 46px;
-      padding-right: 19px;
+      padding-left: 24px;
+      padding-right: 24px;
 
       button {
         margin-left: 8px;

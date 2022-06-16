@@ -4,8 +4,6 @@ import React, {FC} from 'react'
 // Components
 import {
   FlexBox,
-  JustifyContent,
-  AlignItems,
   Heading,
   HeadingElement,
   FontWeight,
@@ -27,11 +25,7 @@ interface Props {
 }
 
 const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => (
-  <FlexBox
-    justifyContent={JustifyContent.SpaceBetween}
-    alignItems={AlignItems.FlexEnd}
-    stretchToFitHeight={true}
-  >
+  <FlexBox>
     <Heading
       element={HeadingElement.H3}
       weight={FontWeight.Regular}

@@ -62,21 +62,33 @@ const EmptyResults: FC = () => {
   )
 }
 
+const WrappedOptions: FC = () => {
+  const {result, view, setView} = useContext(ResultsContext)
+
+  return (
+    <ViewOptions
+      properties={view.properties}
+      results={result.parsed}
+      update={update => {
+        Object.keys(update).forEach(k => (view.properties[k] = update[k]))
+
+        setView({...view})
+      }}
+    />
+  )
+}
+
 const Results: FC = () => {
   const [search, setSearch] = useState('')
-  const {result, status} = useContext(ResultsContext)
+  const {result, status, view, setView} = useContext(ResultsContext)
   const {launch} = useContext(SidebarContext)
-  const [vizState, setVizState] = useState('table')
-  const [viewProperties, setViewProperties] = useState(
-    SUPPORTED_VISUALIZATIONS['xy'].initial
-  )
 
   let resultView
 
   if (status === RemoteDataState.NotStarted) {
     resultView = <EmptyResults />
   } else {
-    if (vizState === 'table') {
+    if (view.state === 'table') {
       resultView = (
         <View
           loading={status}
@@ -94,7 +106,7 @@ const Results: FC = () => {
         <div style={{height: '100%', width: '100%', padding: 12}}>
           <View
             loading={status}
-            properties={viewProperties}
+            properties={view.properties}
             result={result.parsed}
           />
         </div>
@@ -104,20 +116,18 @@ const Results: FC = () => {
 
   const dataExists = result.parsed && Object.entries(result.parsed).length
   const updateType = viewType => {
-    setViewProperties(SUPPORTED_VISUALIZATIONS[viewType].initial)
+    setView({
+      state: 'graph',
+      properties: SUPPORTED_VISUALIZATIONS[viewType].initial,
+    })
   }
+
   const launcher = () => {
-    launch(
-      <ViewOptions
-        properties={viewProperties}
-        results={result.parsed}
-        update={setViewProperties}
-      />
-    )
+    launch(<WrappedOptions />)
   }
 
   const tableHeader =
-    vizState === 'table' ? (
+    view.state === 'table' ? (
       <>
         <div style={{width: '300px'}}>
           <SearchWidget
@@ -136,10 +146,10 @@ const Results: FC = () => {
     ) : null
 
   const vizHeader =
-    vizState === 'graph' ? (
+    view.state === 'graph' ? (
       <>
         <ViewTypeDropdown
-          viewType={viewProperties.type}
+          viewType={view.properties.type}
           onUpdateType={updateType}
         />
         <Button
@@ -172,8 +182,8 @@ const Results: FC = () => {
                   id="table"
                   name="viz-setting"
                   value="table"
-                  active={vizState === 'table'}
-                  onClick={setVizState}
+                  active={view.state === 'table'}
+                  onClick={state => setView({...view, state})}
                 >
                   Table
                 </SelectGroup.Option>
@@ -181,8 +191,8 @@ const Results: FC = () => {
                   id="graph"
                   name="viz-setting"
                   value="graph"
-                  active={vizState === 'graph'}
-                  onClick={setVizState}
+                  active={view.state === 'graph'}
+                  onClick={state => setView({...view, state})}
                 >
                   Graph
                 </SelectGroup.Option>

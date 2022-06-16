@@ -93,6 +93,7 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
           color={ComponentColor.Success}
           onClick={onClose}
           type={ButtonType.Button}
+          testID="confirmation-overlay--OK"
         />
       </Overlay.Footer>
     </Overlay.Container>

@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext, useEffect, useMemo} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -36,6 +36,10 @@ const FieldsTags: FC = () => {
     setSearchTerm,
   } = useContext(FluxQueryBuilderContext)
 
+  useEffect(() => {
+    setSearchTerm('')
+  }, [selectedBucket, selectedMeasurement])
+
   const handleSearchFieldsTags = (searchTerm: string): void => {
     setSearchTerm(searchTerm)
   }
@@ -51,12 +55,13 @@ const FieldsTags: FC = () => {
           placeholderText="Search fields and tag keys"
           onSearch={handleSearchFieldsTags}
           searchTerm={searchTerm}
+          testID="field-tag-key-search-bar"
         />
         <FieldSelector />
         <TagSelector />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement])
+  }, [selectedBucket, selectedMeasurement, searchTerm])
 }
 
 const Schema: FC = () => {
@@ -74,7 +79,7 @@ const Schema: FC = () => {
             <BucketProvider scope={scope}>
               <div className="scroll--container">
                 <DapperScrollbars>
-                  <div className="data-schema">
+                  <div className="schema-browser" data-testid="schema-browser">
                     <BucketSelector />
                     <div className="container-side-bar">
                       <MeasurementSelector />

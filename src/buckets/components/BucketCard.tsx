@@ -61,7 +61,6 @@ const BucketCard: FC<Props> = ({
       <BucketCardMeta bucket={bucket} />
       <BucketCardActions
         bucket={bucket}
-        orgID={orgID}
         bucketType={bucket.type}
         onFilterChange={onFilterChange}
         onGetSchema={onGetBucketSchema}

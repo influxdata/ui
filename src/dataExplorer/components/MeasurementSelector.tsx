@@ -11,6 +11,7 @@ import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 const MEASUREMENT_TOOLTIP = `The measurement acts as a container for tags, \
 fields, and the time column, and the measurement name is the description of \
@@ -39,8 +40,9 @@ const MeasurementSelector: FC = () => {
   const handleSelect = useCallback(
     (option: string): void => {
       selectMeasurement(option)
+      event('measurementSelected', {search: searchTerm.length})
     },
-    [selectMeasurement]
+    [searchTerm, selectMeasurement]
   )
 
   const handleChangeSearchTerm = (value: string) => {

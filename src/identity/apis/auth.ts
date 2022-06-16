@@ -183,3 +183,4 @@ export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   const orgDetails = response.data
   return orgDetails
 }
+

@@ -60,67 +60,77 @@ const SinglePageBrokerDetails: FC<Props> = ({
     <div className="update-broker-form" id="broker">
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
         <Form onSubmit={() => {}} testID="update-broker-form-overlay">
-          <div>
+          <div className="update-broker-form__fixed">
             <FlexBox
-              className="update-broker-form__broker-buttons"
+              className="update-broker-form__fixed__broker-buttons"
               direction={FlexDirection.Row}
               margin={ComponentSize.Medium}
-              justifyContent={JustifyContent.FlexEnd}
+              justifyContent={JustifyContent.SpaceBetween}
             >
-              <Button
-                text="Close"
-                color={ComponentColor.Tertiary}
-                onClick={() => {
-                  event('close button clicked', {}, {feature: 'subscriptions'})
-                  history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-                }}
-                titleText="Cancel update of Subscription and return to list"
-                type={ButtonType.Button}
-                testID="update-broker-form--cancel"
+              <StatusHeader
+                currentSubscription={currentSubscription}
+                setStatus={setStatus}
               />
-              <Button
-                text="Edit"
-                color={edit ? ComponentColor.Success : ComponentColor.Secondary}
-                onClick={() => {
-                  event('edit button clicked', {}, {feature: 'subscriptions'})
-                  setEdit(!edit)
-                }}
-                type={ButtonType.Button}
-                titleText="Edit"
-                testID="update-broker-form--edit"
-              />
-              {edit ? (
+              <div>
                 <Button
-                  type={ButtonType.Button}
-                  text="Save Changes"
-                  color={ComponentColor.Success}
-                  onClick={() => {
-                    saveForm(currentSubscription)
-                  }}
-                  testID="update-broker-form--submit"
-                />
-              ) : (
-                <Button
-                  text="View Data"
-                  color={ComponentColor.Success}
+                  text="Close"
+                  color={ComponentColor.Tertiary}
                   onClick={() => {
                     event(
-                      'view data button clicked',
+                      'close button clicked',
                       {},
                       {feature: 'subscriptions'}
                     )
-                    history.push(`/orgs/${org.id}/notebooks`)
+                    history.push(
+                      `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`
+                    )
+                  }}
+                  titleText="Cancel update of Subscription and return to list"
+                  type={ButtonType.Button}
+                  testID="update-broker-form--cancel"
+                />
+                <Button
+                  text="Edit"
+                  color={
+                    edit ? ComponentColor.Success : ComponentColor.Secondary
+                  }
+                  onClick={() => {
+                    event('edit button clicked', {}, {feature: 'subscriptions'})
+                    setEdit(!edit)
                   }}
                   type={ButtonType.Button}
-                  testID="update-broker-form--view-data"
-                  status={ComponentStatus.Default}
+                  titleText="Edit"
+                  testID="update-broker-form--edit"
                 />
-              )}
+                {edit ? (
+                  <Button
+                    type={ButtonType.Button}
+                    text="Save Changes"
+                    color={ComponentColor.Success}
+                    onClick={() => {
+                      saveForm(currentSubscription)
+                    }}
+                    testID="update-broker-form--submit"
+                  />
+                ) : (
+                  <Button
+                    text="View Data"
+                    color={ComponentColor.Success}
+                    onClick={() => {
+                      event(
+                        'view data button clicked',
+                        {},
+                        {feature: 'subscriptions'}
+                      )
+                      history.push(`/orgs/${org.id}/notebooks`)
+                    }}
+                    type={ButtonType.Button}
+                    testID="update-broker-form--view-data"
+                    status={ComponentStatus.Default}
+                  />
+                )}
+              </div>
             </FlexBox>
-            <StatusHeader
-              currentSubscription={currentSubscription}
-              setStatus={setStatus}
-            />
           </div>
           <Overlay.Body>
             <Heading

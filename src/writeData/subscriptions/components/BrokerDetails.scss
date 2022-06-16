@@ -2,6 +2,9 @@
 .update-broker-form {
   float: right;
   width: 75%;
+  .cf-overlay--body {
+    padding-top: 50px;
+  }
   button {
     margin-left: 4px;
   }
@@ -82,12 +85,22 @@
     margin-right: 12px;
   }
 
-  &__broker-buttons {
-    padding-top: 46px;
-    padding-right: 19px;
+  &__fixed {
+    position: fixed;
+    background-color: $cf-grey-5;
+    background-attachment: fixed;
+    width: 61%;
+    z-index: 9999;
+    padding-bottom: 20px;
 
-    button {
-      margin-left: 8px;
+    &__broker-buttons {
+      padding-top: 46px;
+      padding-left: 24px;
+      padding-right: 24px;
+
+      button {
+        margin-left: 8px;
+      }
     }
   }
 }

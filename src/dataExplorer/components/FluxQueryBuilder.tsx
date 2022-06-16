@@ -13,7 +13,7 @@ import Schema from 'src/dataExplorer/components/Schema'
 // Styles
 import './FluxQueryBuilder.scss'
 
-const INITIAL_LEFT_VERT_RESIZER_HANDLE = 0.2
+const INITIAL_LEFT_VERT_RESIZER_HANDLE = 0.25
 const INITIAL_RIGHT_VERT_RESIZER_HANDLE = 0.8
 
 const FluxQueryBuilder: FC = () => {
@@ -24,30 +24,30 @@ const FluxQueryBuilder: FC = () => {
 
   return (
     <QueryProvider>
-      <EditorProvider>
-        <SidebarProvider>
-          <DraggableResizer
-            handleOrientation={Orientation.Vertical}
-            handlePositions={vertDragPosition}
-            onChangePositions={setVertDragPosition}
-          >
-            <DraggableResizer.Panel>
-              <Schema />
-            </DraggableResizer.Panel>
-            <DraggableResizer.Panel
-              testID="flux-query-builder-middle-panel"
-              className="new-data-explorer-rightside"
+      <ResultsProvider>
+        <EditorProvider>
+          <SidebarProvider>
+            <DraggableResizer
+              handleOrientation={Orientation.Vertical}
+              handlePositions={vertDragPosition}
+              onChangePositions={setVertDragPosition}
             >
-              <ResultsProvider>
+              <DraggableResizer.Panel>
+                <Schema />
+              </DraggableResizer.Panel>
+              <DraggableResizer.Panel
+                testID="flux-query-builder-middle-panel"
+                className="new-data-explorer-rightside"
+              >
                 <ResultsPane />
-              </ResultsProvider>
-            </DraggableResizer.Panel>
-            <DraggableResizer.Panel>
-              <Sidebar />
-            </DraggableResizer.Panel>
-          </DraggableResizer>
-        </SidebarProvider>
-      </EditorProvider>
+              </DraggableResizer.Panel>
+              <DraggableResizer.Panel>
+                <Sidebar />
+              </DraggableResizer.Panel>
+            </DraggableResizer>
+          </SidebarProvider>
+        </EditorProvider>
+      </ResultsProvider>
     </QueryProvider>
   )
 }

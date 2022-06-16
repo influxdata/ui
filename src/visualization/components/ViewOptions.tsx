@@ -11,6 +11,8 @@ const ViewOptions: FC<VisualizationOptionProps> = ({
   results,
   update,
 }) => {
+  console.log('render', JSON.parse(JSON.stringify(properties)))
+
   if (!SUPPORTED_VISUALIZATIONS[properties.type].options) {
     return
   }

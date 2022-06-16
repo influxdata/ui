@@ -6,7 +6,6 @@ describe('Checkout Page should not be accessible for non-free users', () => {
           cy.getByTestID('home-page--header').should('be.visible')
           cy.setFeatureFlags({
             uiUnificationFlag: true,
-            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',

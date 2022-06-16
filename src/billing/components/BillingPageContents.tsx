@@ -22,7 +22,11 @@ const BillingPageContents: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
 
   useEffect(() => {
-    if (CLOUD && shouldUseQuartzIdentity() && !quartzMe.billingProvider) {
+    if (!CLOUD) {
+      return
+    }
+
+    if (shouldUseQuartzIdentity() && !quartzMe.billingProvider) {
       dispatch(getBillingProviderThunk())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

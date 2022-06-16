@@ -29,7 +29,6 @@ describe('Checkout Page Works', () => {
           cy.getByTestID('home-page--header').should('be.visible')
           cy.setFeatureFlags({
             uiUnificationFlag: true,
-            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'free',

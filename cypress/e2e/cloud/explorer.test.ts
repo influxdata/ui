@@ -38,7 +38,6 @@ describe('DataExplorer', () => {
       cy.setFeatureFlags({
         uiUnificationFlag: true,
         fluxDynamicDocs: true,
-        quartzIdentity: true,
       }).then(() => {
         cy.get('.view-line').should('be.visible')
 
@@ -72,7 +71,6 @@ describe('DataExplorer', () => {
       cy.setFeatureFlags({
         uiUnificationFlag: true,
         fluxDynamicDocs: true,
-        quartzIdentity: true,
       }).then(() => {
         cy.get('.view-line').should('be.visible')
 

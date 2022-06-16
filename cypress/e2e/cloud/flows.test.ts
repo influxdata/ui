@@ -197,7 +197,6 @@ describe('Flows', () => {
     cy.setFeatureFlags({
       uiUnificationFlag: true,
       fluxDynamicDocs: true,
-      quartzIdentity: true,
     }).then(() => {
       cy.getByTestID('preset-script')
         .first()
@@ -238,7 +237,6 @@ describe('Flows', () => {
   it('can use the dynamic flux function search bar to search by package or function name', () => {
     cy.setFeatureFlags({
       fluxDynamicDocs: true,
-      quartzIdentity: true,
     }).then(() => {
       cy.getByTestID('preset-script')
         .first()
@@ -294,7 +292,6 @@ describe('Flows with newQueryBuilder flag on', () => {
         cy.setFeatureFlags({
           newQueryBuilder: true,
           uiUnificationFlag: true,
-          quartzIdentity: true,
         }).then(() => {
           cy.visit(`${orgs}/${id}`)
         })

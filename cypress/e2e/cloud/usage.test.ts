@@ -14,7 +14,6 @@ describe('Usage Page Free User No Data', () => {
         cy.get('@org').then(({id}: Organization) => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
-            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               hasData: false,
@@ -121,7 +120,6 @@ describe('Usage Page PAYG With Data', () => {
         cy.get('@org').then(({id}: Organization) => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
-            quartzIdentity: true,
           }).then(() => {
             cy.quartzProvision({
               hasData: true,

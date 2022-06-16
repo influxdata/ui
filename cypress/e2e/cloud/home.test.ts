@@ -9,7 +9,6 @@ describe('Home Page Tests', () => {
           cy.setFeatureFlags({
             alertsActivity: true,
             uiUnificationFlag: true,
-            quartzIdentity: true,
           }).then(() => cy.getByTestID('nav-item-flows').should('be.visible'))
         })
       })

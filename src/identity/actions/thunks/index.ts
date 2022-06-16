@@ -1,9 +1,6 @@
 import {GetState} from 'src/types'
 import {Dispatch} from 'react'
 
-// Constants
-import {CLOUD} from 'src/shared/constants'
-
 // Actions
 import {
   setQuartzMe,

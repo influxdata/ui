@@ -34,10 +34,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getQuartzMeThunk} from 'src/me/actions/thunks'
 
 export const getQuartzIdentityThunk = () => async dispatch => {
-  if (!CLOUD || !isFlagEnabled('uiUnificationFlag')) {
-    return
-  }
-
   if (!isFlagEnabled('quartzIdentity')) {
     dispatch(getQuartzMeThunk())
     return

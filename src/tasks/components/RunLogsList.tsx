@@ -4,9 +4,11 @@ import React, {PureComponent} from 'react'
 // Components
 import {Overlay, IndexList, DapperScrollbars} from '@influxdata/clockface'
 import RunLogRow from 'src/tasks/components/RunLogRow'
+import RunLogRowFlux from 'src/tasks/components/RunLogRowFlux'
 
 // Types
 import {LogEvent, Run} from 'src/types'
+import {CLOUD} from 'src/shared/constants'
 
 interface Props {
   onDismissOverlay: () => void
@@ -44,14 +46,11 @@ class RunLogsOverlay extends PureComponent<Props> {
 
   public get listLogs(): JSX.Element[] {
     const logs = this.props.logs.map((rl) => (
-      <RunLogRow
-        key={rl.message}
-        log={rl}
-        run={this.props.run}
-        isFlux={false}
-      />
+      <RunLogRow key={rl.message} log={rl} />
     ))
-    logs.push(<RunLogRow run={this.props.run} isFlux={true} />)
+    if (CLOUD) {
+      logs.push(<RunLogRowFlux run={this.props.run} />)
+    }
     return logs
   }
 }

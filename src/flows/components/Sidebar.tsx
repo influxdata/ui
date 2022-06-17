@@ -51,13 +51,7 @@ export const SubSideBar: FC = () => {
         ></button>
       </div>
       <div className="flow-sidebar--submenu">
-        <DapperScrollbars
-          noScrollX={true}
-          thumbStopColor="gray"
-          thumbStartColor="gray"
-        >
-          <div className="flow-sidebar--submenu-wrapper">{submenu}</div>
-        </DapperScrollbars>
+        <div className="flow-sidebar--submenu-wrapper">{submenu}</div>
       </div>
     </div>
   )
@@ -221,7 +215,11 @@ const Sidebar: FC = () => {
         },
         {
           title: 'Export to Client Library',
-          menu: <ClientList />,
+          menu: (
+            <DapperScrollbars>
+              <ClientList />
+            </DapperScrollbars>
+          ),
           disable: () => {
             return !source
           },

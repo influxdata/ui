@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, createRef} from 'react'
+import React, {FC, createRef, useContext} from 'react'
 
 // Component
 import {
@@ -11,6 +11,7 @@ import {
   ComponentSize,
   ComponentColor,
 } from '@influxdata/clockface'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 type OptionType = Record<string, any>
 
@@ -30,24 +31,38 @@ interface Props {
   setHoverdFunction?: (string: string) => void
 }
 
-const defaultProps = {
-  testID: 'flux-injection-option',
-}
-
 const FluxInjectionOption: FC<Props> = ({
   option,
   extractor,
   onClick,
-  testID,
+  testID = 'flux-injection-option',
   ToolTipContent,
   searchTerm,
   setToolTipPopup,
   setHoverdFunction,
 }) => {
+  // TODO: move this to a flag once design wants to branch it out further
+  const {fluxQueryBuilder} = useContext(AppSettingContext)
   const itemRef = createRef<HTMLDListElement>()
   const handleClick = () => {
     onClick(option)
   }
+
+  const fullClick = () => {
+    if (!fluxQueryBuilder) {
+      return
+    }
+    onClick(option)
+  }
+
+  const classer = [
+    ['flux-toolbar--list-item', true],
+    ['flux-toolbar--function', true],
+    ['flux-toolbar--new-style', fluxQueryBuilder],
+  ]
+    .filter(c => c[1])
+    .map(c => c[0])
+    .join(' ')
 
   return (
     <>
@@ -75,21 +90,23 @@ const FluxInjectionOption: FC<Props> = ({
         ref={itemRef}
         data-testid={`flux--${testID}`}
         className="flux-toolbar--list-item flux-toolbar--function"
+        className={classer}
+        onClick={fullClick}
       >
         <code>{extractor(option)}</code>
-        <Button
-          testID={`flux--${testID}--inject`}
-          text="Inject"
-          onClick={handleClick}
-          size={ComponentSize.ExtraSmall}
-          className="flux-toolbar--injector"
-          color={ComponentColor.Primary}
-        />
+        {!fluxQueryBuilder && (
+          <Button
+            testID={`flux--${testID}--inject`}
+            text="Inject"
+            onClick={handleClick}
+            size={ComponentSize.ExtraSmall}
+            className="flux-toolbar--injector"
+            color={ComponentColor.Primary}
+          />
+        )}
       </dd>
     </>
   )
 }
-
-FluxInjectionOption.defaultProps = defaultProps
 
 export default FluxInjectionOption

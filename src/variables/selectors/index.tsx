@@ -143,14 +143,12 @@ export const getAllVariablesForZoomRequery = (
 ): Variable[] => {
   const vars = getUserVariableNames(state, contextID || currentContext(state))
     .concat([TIME_RANGE_START, TIME_RANGE_STOP, WINDOW_PERIOD])
-    .reduce((result, variableID) => {
+    .map(variableID => {
       if (variableID === WINDOW_PERIOD) {
-        result.push(getWindowPeriodVariableForZoomRequery())
-      } else {
-        result.push(getVariable(state, variableID))
+        return getWindowPeriodVariableForZoomRequery()
       }
-      return result
-    }, [])
+      return getVariable(state, variableID)
+    })
     .filter(v => !!v)
 
   return vars

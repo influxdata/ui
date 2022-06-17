@@ -18,6 +18,7 @@ import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
 const DESIRED_POINTS_PER_GRAPH = 360
 const FALLBACK_WINDOW_PERIOD = 15000
+const FINEST_WINDOW_PERIOD_PRECISION = 1000
 
 /*
   Compute the `v.windowPeriod` variable assignment for a query.
@@ -198,7 +199,7 @@ export const getWindowPeriodVariableForZoomRequery = (): Variable => ({
   name: WINDOW_PERIOD,
   arguments: {
     type: 'system',
-    values: [1000],
+    values: [FINEST_WINDOW_PERIOD_PRECISION],
   },
   status: RemoteDataState.Done,
   labels: [],

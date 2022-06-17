@@ -32,7 +32,7 @@ const FluxToolbar: FC = () => {
   const onInsertFluxFunction = (fn: FluxFunction | FluxToolbarFunction) => {
     injectFunction(fn, () => {})
 
-    event('flux function injected', {
+    event('flux.function.injected', {
       name: `${fn.package}.${fn.name}`,
       context: 'time machine',
     })

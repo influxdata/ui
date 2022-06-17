@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, createRef, useContext} from 'react'
+import {useRouteMatch} from 'react-router-dom'
 
 // Component
 import {
@@ -43,13 +44,16 @@ const FluxInjectionOption: FC<Props> = ({
 }) => {
   // TODO: move this to a flag once design wants to branch it out further
   const {fluxQueryBuilder} = useContext(AppSettingContext)
+  const {path} = useRouteMatch()
+  const useNewStyling =
+    fluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
   const itemRef = createRef<HTMLDListElement>()
   const handleClick = () => {
     onClick(option)
   }
 
   const fullClick = () => {
-    if (!fluxQueryBuilder) {
+    if (!useNewStyling) {
       return
     }
     onClick(option)
@@ -58,7 +62,7 @@ const FluxInjectionOption: FC<Props> = ({
   const classer = [
     ['flux-toolbar--list-item', true],
     ['flux-toolbar--function', true],
-    ['flux-toolbar--new-style', fluxQueryBuilder],
+    ['flux-toolbar--new-style', useNewStyling],
   ]
     .filter(c => c[1])
     .map(c => c[0])
@@ -93,7 +97,7 @@ const FluxInjectionOption: FC<Props> = ({
         onClick={fullClick}
       >
         <code>{extractor(option)}</code>
-        {!fluxQueryBuilder && (
+        {!useNewStyling && (
           <Button
             testID={`flux--${testID}--inject`}
             text="Inject"

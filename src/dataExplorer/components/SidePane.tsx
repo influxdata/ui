@@ -25,7 +25,7 @@ const SidePane: FC = () => {
     (fn: FluxFunction | FluxToolbarFunction) => {
       injectFunction(fn, () => {})
 
-      event('flux function injected', {
+      event('flux.function.injected', {
         name: `${fn.package}.${fn.name}`,
         context: 'flux query builder',
       })

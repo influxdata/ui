@@ -49,7 +49,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     SidebarContext
   )
   const editorContext = useContext(EditorContext)
-  const {setEditor, inject, injectFunction} = editorContext
+  const {inject, injectFunction} = editorContext
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
   const {variables} = useContext(VariablesContext)
@@ -132,7 +132,6 @@ const Query: FC<PipeProp> = ({Context}) => {
             script={query.text}
             variables={variables}
             onChangeScript={updateText}
-            setEditorInstance={setEditor}
             wrapLines="on"
             autogrow
           />

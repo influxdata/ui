@@ -89,7 +89,6 @@ const FluxInjectionOption: FC<Props> = ({
       <dd
         ref={itemRef}
         data-testid={`flux--${testID}`}
-        className="flux-toolbar--list-item flux-toolbar--function"
         className={classer}
         onClick={fullClick}
       >

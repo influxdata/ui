@@ -29,7 +29,13 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
-import {AppState, ResourceType, View, XYViewProperties} from 'src/types'
+import {
+  AppState,
+  InternalFromFluxResult,
+  ResourceType,
+  View,
+  XYViewProperties,
+} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
@@ -73,6 +79,9 @@ const XYPlot: FC<Props> = ({
   cellID,
 }) => {
   const [resultState, setResultState] = useState(result)
+  const [preZoomResult, setPreZoomResult] = useState<InternalFromFluxResult>(
+    null
+  )
 
   useEffect(() => {
     setResultState(result)
@@ -169,22 +178,26 @@ const XYPlot: FC<Props> = ({
 
   if (isFlagEnabled('zoomRequery')) {
     useXDomainSettings = ({storedDomain, parsedResult, timeRange}) =>
-      useZoomRequeryXDomainSettings(
+      useZoomRequeryXDomainSettings({
         parsedResult,
-        setResultState,
-        properties.queries[0].text,
+        setResult: setResultState,
+        preZoomResult,
+        setPreZoomResult,
+        query: properties.queries[0].text,
         storedDomain,
-        parsedResult.table.getColumn(xColumn, 'number'),
-        timeRange
-      )
+        data: parsedResult.table.getColumn(xColumn, 'number'),
+        timeRange,
+      })
     useYDomainSettings = ({storedDomain, parsedResult}) =>
-      useZoomRequeryYDomainSettings(
+      useZoomRequeryYDomainSettings({
         parsedResult,
-        setResultState,
-        properties.queries[0].text,
+        setResult: setResultState,
+        preZoomResult,
+        setPreZoomResult,
+        query: properties.queries[0].text,
         storedDomain,
-        memoizedYColumnData
-      )
+        data: memoizedYColumnData,
+      })
   }
 
   const [xDomain, onSetXDomain, onResetXDomain] = useXDomainSettings({

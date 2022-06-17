@@ -110,14 +110,29 @@ export const useVisYDomainSettings = (
   return [domain, setDomain, resetDomain]
 }
 
-export const useZoomRequeryXDomainSettings = (
-  parsedResult: InternalFromFluxResult,
-  setResult: Function,
-  query: string,
-  storedDomain: number[],
-  data: NumericColumnData,
-  timeRange: TimeRange | null = null
-) => {
+interface ZoomRequeryArgs {
+  parsedResult: InternalFromFluxResult
+  setResult: Function
+  preZoomResult: InternalFromFluxResult
+  setPreZoomResult: Function
+  query: string
+  storedDomain: number[]
+  data: NumericColumnData | string[]
+  timeRange?: TimeRange
+}
+
+export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
+  const {
+    parsedResult,
+    setResult,
+    preZoomResult,
+    setPreZoomResult,
+    query,
+    storedDomain,
+    data,
+    timeRange = null,
+  } = args
+
   const orgId = useSelector(getOrg)?.id
   const variables = useSelector(getAllVariablesForZoomRequery)
   const extern = buildUsedVarsOption(query, variables)
@@ -132,9 +147,6 @@ export const useZoomRequeryXDomainSettings = (
 
   const [domain, setDomain] = useState(initialDomain)
   const [preZoomDomain, setPreZoomDomain] = useState<Array<number>>(null)
-  const [preZoomResult, setPreZoomResult] = useState<InternalFromFluxResult>(
-    null
-  )
 
   const setZoomDomain = (updatedDomain: number[]) => {
     if (!preZoomResult) {
@@ -161,14 +173,17 @@ export const useZoomRequeryXDomainSettings = (
   return [domain, setZoomDomain, resetDomain]
 }
 
-export const useZoomRequeryYDomainSettings = (
-  parsedResult: InternalFromFluxResult,
-  setResult: Function,
-  query: string,
-  storedDomain: number[],
-  data: NumericColumnData | string[],
-  timeRange: TimeRange | null = null
-) => {
+export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
+  const {
+    parsedResult,
+    setResult,
+    preZoomResult,
+    setPreZoomResult,
+    query,
+    storedDomain,
+    data,
+    timeRange = null,
+  } = args
   const orgId = useSelector(getOrg)?.id
   const variables = useSelector(getAllVariablesForZoomRequery)
   const extern = buildUsedVarsOption(query, variables)
@@ -188,9 +203,6 @@ export const useZoomRequeryYDomainSettings = (
 
   const [domain, setDomain] = useState(initialDomain)
   const [preZoomDomain, setPreZoomDomain] = useState<Array<number>>(null)
-  const [preZoomResult, setPreZoomResult] = useState<InternalFromFluxResult>(
-    null
-  )
 
   const setZoomDomain = (updatedDomain: number[]) => {
     if (!preZoomResult) {

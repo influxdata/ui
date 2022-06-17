@@ -79,8 +79,13 @@ export const Finish = (props: OwnProps) => {
     }
   }, [])
 
-  const showSampleApp = props.wizardEventName === 'pythonWizard' || props.wizardEventName === 'nodejsWizard'
-  const sampleAppLink = props.wizardEventName === 'pythonWizard' ? "https://github.com/InfluxCommunity/sample-flask/blob/main/app.py" : "https://github.com/influxdata/nodejs-samples"
+  const showSampleApp =
+    props.wizardEventName === 'pythonWizard' ||
+    props.wizardEventName === 'nodejsWizard'
+  const sampleAppLink =
+    props.wizardEventName === 'pythonWizard'
+      ? 'https://github.com/InfluxCommunity/sample-flask/blob/main/app.py'
+      : 'https://github.com/influxdata/nodejs-samples'
 
   return (
     <>
@@ -105,16 +110,17 @@ export const Finish = (props: OwnProps) => {
             <SafeBlankLink href={sampleAppLink}>
               <h4>{CodeTerminalIcon}Sample App</h4>
             </SafeBlankLink>
-            {props.wizardEventName === 'pythonWizard' ? 
-            <p>
-              Play around with our template code of sample app to streamline
-              your own data into InfluxData.
-            </p>
-            : 
-            <p>
-              Write and query your own data by viewing boilerplate app files and sample code.
-            </p>
-            }
+            {props.wizardEventName === 'pythonWizard' ? (
+              <p>
+                Play around with our template code of sample app to streamline
+                your own data into InfluxData.
+              </p>
+            ) : (
+              <p>
+                Write and query your own data by viewing boilerplate app files
+                and sample code.
+              </p>
+            )}
           </ResourceCard>
         )}
         <ResourceCard

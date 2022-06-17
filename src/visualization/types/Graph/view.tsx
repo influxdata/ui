@@ -183,7 +183,7 @@ const XYPlot: FC<Props> = ({
         setResult: setResultState,
         preZoomResult,
         setPreZoomResult,
-        query: properties.queries[0].text,
+        query: properties?.queries?.[0]?.text ?? '',
         storedDomain,
         data: parsedResult.table.getColumn(xColumn, 'number'),
         timeRange,
@@ -194,7 +194,7 @@ const XYPlot: FC<Props> = ({
         setResult: setResultState,
         preZoomResult,
         setPreZoomResult,
-        query: properties.queries[0].text,
+        query: properties?.queries?.[0]?.text ?? '',
         storedDomain,
         data: memoizedYColumnData,
       })

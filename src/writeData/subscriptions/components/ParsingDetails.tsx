@@ -91,7 +91,7 @@ const ParsingDetails: FC<Props> = ({
         </Overlay.Body>
         {!singlePage ? (
           <DetailsFormFooter
-            nextForm=""
+            prevForm="subscription"
             id={org.id}
             edit={edit}
             setEdit={setEdit}

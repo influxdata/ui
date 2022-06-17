@@ -19,7 +19,6 @@ import {Subscription} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
-  nextForm: string
   formActive: string
   id: string
   edit: boolean
@@ -27,10 +26,11 @@ interface Props {
   setFormActive: (any) => void
   saveForm: (any) => void
   currentSubscription: Subscription
+  prevForm?: string
+  nextForm?: string
 }
 
 const DetailsFormFooter: FC<Props> = ({
-  nextForm,
   id,
   edit,
   setEdit,
@@ -38,6 +38,8 @@ const DetailsFormFooter: FC<Props> = ({
   formActive,
   saveForm,
   currentSubscription,
+  prevForm,
+  nextForm,
 }) => {
   const history = useHistory()
   return (
@@ -64,6 +66,19 @@ const DetailsFormFooter: FC<Props> = ({
         titleText="Edit"
         testID="update-subscription-form--edit"
       />
+      {!(formActive === 'broker') && (
+        <Button
+          text="Back"
+          color={ComponentColor.Secondary}
+          onClick={() => {
+            event('prev button clicked', {}, {feature: 'subscriptions'})
+            setFormActive(prevForm)
+          }}
+          type={ButtonType.Button}
+          titleText="Back"
+          testID="update-back-subscription-form--submit"
+        />
+      )}
       {!(formActive === 'parsing') && (
         <Button
           text="Next"

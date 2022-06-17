@@ -80,6 +80,7 @@ const SubscriptionDetails: FC<Props> = ({
           {!singlePage ? (
             <DetailsFormFooter
               nextForm="parsing"
+              prevForm="broker"
               id={org.id}
               edit={edit}
               setEdit={setEdit}

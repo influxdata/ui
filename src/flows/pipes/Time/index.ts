@@ -19,7 +19,6 @@ export default register => {
           timeRangeStart: data.start,
           timeRangeStop: data.stop,
         },
-        variables: [],
       }
     },
   })

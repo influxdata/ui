@@ -2,35 +2,28 @@ import React, {FC, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
-import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 
 import {getOrg} from 'src/organizations/selectors'
-import {RunQueryResult} from 'src/shared/apis/query'
-import {getWindowPeriodVarAssignment} from 'src/variables/utils/getWindowVars'
-import {
-  findNodeScope,
-  isTimeRangeStartVariableNode,
-  isTimeRangeStopVariableNode,
-} from 'src/shared/utils/ast'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
-import {asAssignmentNode} from 'src/variables/utils/convertVariables'
-
-// Constants
-import {
-  RATE_LIMIT_ERROR_STATUS,
-  RATE_LIMIT_ERROR_TEXT,
-} from 'src/cloud/constants'
-import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Types
-import {CancellationError, File, Variable} from 'src/types'
+import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 import {
   FluxResult,
   QueryScope,
   InternalFromFluxResult,
   Column,
 } from 'src/types/flows'
+import {propertyTime} from 'src/shared/utils/ast/extractors'
+
+// Constants
+import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
+import {
+  RATE_LIMIT_ERROR_STATUS,
+  RATE_LIMIT_ERROR_TEXT,
+} from 'src/cloud/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Types
+import {CancellationError, File} from 'src/types'
+import {RunQueryResult} from 'src/shared/apis/query'
 
 interface CancelMap {
   [key: string]: () => void
@@ -51,6 +44,9 @@ export const DEFAULT_CONTEXT: QueryContextType = {
 export const QueryContext = React.createContext<QueryContextType>(
   DEFAULT_CONTEXT
 )
+
+const DESIRED_POINTS_PER_GRAPH = 360
+const FALLBACK_WINDOW_PERIOD = 15000
 
 // Finds all instances of nodes that match with the test function
 // and returns them as an array
@@ -107,42 +103,138 @@ export const remove = (node: File, test, acc = []) => {
   return acc
 }
 
-export const simplify = (text, vars: Variable[]) => {
+const _addWindowPeriod = (ast, optionAST): void => {
+  const NOW = Date.now()
+
+  const queryRanges = find(
+    ast,
+    node =>
+      node?.callee?.type === 'Identifier' && node?.callee?.name === 'range'
+  ).map(node =>
+    (node.arguments[0]?.properties || []).reduce(
+      (acc, curr) => {
+        if (curr.key.name === 'start') {
+          acc.start = propertyTime(ast, curr.value, NOW)
+        }
+
+        if (curr.key.name === 'stop') {
+          acc.stop = propertyTime(ast, curr.value, NOW)
+        }
+
+        return acc
+      },
+      {
+        start: '',
+        stop: NOW,
+      }
+    )
+  )
+
+  const windowPeriod = find(
+    optionAST,
+    node => node?.type === 'Property' && node?.key?.name === 'windowPeriod'
+  )
+  if (!queryRanges.length) {
+    windowPeriod.forEach(node => {
+      node.value = {
+        type: 'DurationLiteral',
+        values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
+      }
+    })
+
+    return
+  }
+
+  const starts = queryRanges.map(t => t.start)
+  const stops = queryRanges.map(t => t.stop)
+  const cartesianProduct = starts.map(start => stops.map(stop => [start, stop]))
+
+  const durations = []
+    .concat(...cartesianProduct)
+    .map(([start, stop]) => stop - start)
+    .filter(d => d > 0)
+
+  const queryDuration = Math.min(...durations)
+  const foundDuration = SELECTABLE_TIME_RANGES.find(
+    tr => tr.seconds * 1000 === queryDuration
+  )
+
+  if (foundDuration) {
+    windowPeriod.forEach(node => {
+      node.value = {
+        type: 'DurationLiteral',
+        values: [{magnitude: foundDuration.windowPeriod, unit: 'ms'}],
+      }
+    })
+
+    return
+  }
+
+  windowPeriod.forEach(node => {
+    node.value = {
+      type: 'DurationLiteral',
+      values: [
+        {
+          magnitude: Math.round(queryDuration / DESIRED_POINTS_PER_GRAPH),
+          unit: 'ms',
+        },
+      ],
+    }
+  })
+}
+
+export const simplify = (text, vars = {}) => {
   try {
     const ast = isFlagEnabled('fastFlows') ? parseQuery(text) : parse(text)
-
-    const {scope: scopeStartUsed} = findNodeScope(
+    const referencedVars = find(
       ast,
-      isTimeRangeStartVariableNode,
-      (_, acc) => acc
+      node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
     )
-    const {scope: scopeStopUsed} = findNodeScope(
-      ast,
-      isTimeRangeStopVariableNode,
-      (_, acc) => acc
-    )
-    const variableAssignmentNodes = getWindowPeriodVarAssignment(text, vars)
-    if (
-      text.includes(`v.${TIME_RANGE_START}`) &&
-      !scopeStartUsed[`v.${TIME_RANGE_START}`]
-    ) {
-      variableAssignmentNodes.push(
-        asAssignmentNode(vars.filter(v => v.name == TIME_RANGE_START)[0])
-      )
-    }
-    if (
-      text.includes(`v.${TIME_RANGE_STOP}`) &&
-      !scopeStopUsed[`v.${TIME_RANGE_STOP}`]
-    ) {
-      variableAssignmentNodes.push(
-        asAssignmentNode(vars.filter(v => v.name == TIME_RANGE_STOP)[0])
-      )
-    }
-    const optionAST = buildVarsOption(variableAssignmentNodes)
+      .map(node => node.property.name)
+      .reduce((acc, curr) => {
+        acc[curr] = vars[curr]
+        return acc
+      }, {})
 
-    // append optionAST to top of AST File
-    if (optionAST.body.length) {
+    // Grab all variables that are defined in the query while removing the old definition from the AST
+    const queryDefinedVars = remove(
+      ast,
+      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
+    ).reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+
+    // Merge the two variable maps, allowing for any user defined variables to override
+    // global system variables
+    Object.keys(queryDefinedVars).forEach(vari => {
+      if (referencedVars.hasOwnProperty(vari)) {
+        referencedVars[vari] = queryDefinedVars[vari]
+      }
+    })
+
+    const varVals = Object.entries(referencedVars)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join(',\n')
+    const optionAST = isFlagEnabled('fastFlows')
+      ? parseQuery(`option v = {\n${varVals}\n}\n`)
+      : parse(`option v = {\n${varVals}\n}\n`)
+
+    if (varVals.length) {
       ast.body.unshift(optionAST.body[0])
+    }
+
+    // load in windowPeriod at the last second, because it needs to self reference all the things
+    if (referencedVars.hasOwnProperty('windowPeriod')) {
+      _addWindowPeriod(ast, optionAST)
     }
 
     // Join together any duplicate task options
@@ -320,7 +412,7 @@ export const QueryProvider: FC = ({children}) => {
   }, [])
 
   const basic = (text: string, override?: QueryScope) => {
-    const query = simplify(text, override?.variables || [])
+    const query = simplify(text, override?.vars || {})
 
     const orgID = override?.org || org.id
 

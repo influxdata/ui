@@ -139,17 +139,9 @@ export interface VariableMap {
   [key: string]: Variable
 }
 
-interface VariableOuterScope {
-  // Existing tech debt. Where flows requires a timeRangeStart & timeRangeStop.
-  vars?: {
-    timeRangeStart: any
-    timeRangeStop: any
-  }
-  // Whereas the rest of the UI application requires the strongly typed Variable, in order to use helpers etc.
-  variables?: Variable[]
-}
-// TODO: no longer use any type. This makes flows dev harder, without type checking.
-export interface QueryScope extends VariableOuterScope {
+// TODO: type this better. there are required properties, that have types, but
+// we also need this to stay open for panels to register whatever they want
+export interface QueryScope {
   [props: string]: any
 }
 

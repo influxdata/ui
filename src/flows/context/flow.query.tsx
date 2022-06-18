@@ -1,26 +1,21 @@
 import React, {FC, useContext, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
-
-// Context, and State selectors
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
 import {QueryContext, simplify} from 'src/shared/contexts/query'
+import {event} from 'src/cloud/utils/reporting'
+import {FluxResult, QueryScope} from 'src/types/flows'
+import {PIPE_DEFINITIONS, PROJECT_NAME} from 'src/flows'
+import {notify} from 'src/shared/actions/notifications'
+import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 import {getOrg} from 'src/organizations/selectors'
 
 // Constants
 import {notebookRunFail} from 'src/shared/copy/notifications'
-import {PIPE_DEFINITIONS, PROJECT_NAME} from 'src/flows'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {FluxResult, QueryScope} from 'src/types/flows'
-
-// Utils
-import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
-import {event} from 'src/cloud/utils/reporting'
-import {notify} from 'src/shared/actions/notifications'
 
 export interface Stage {
   id: string
@@ -134,8 +129,6 @@ export const FlowQueryProvider: FC = ({children}) => {
             timeRangeStart,
             timeRangeStop,
           },
-          // future use: additional Variables injected into notebooks
-          variables: flow?.range ? getTimeRangeVars(flow.range) : [],
         },
         source: '',
         visual: '',
@@ -248,7 +241,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     const _override: QueryScope = {
       region: window.location.origin,
       org: org.id,
-      ...(override || {variables: []}),
+      ...(override || {}),
     }
 
     return queryAPI(text, _override)
@@ -258,7 +251,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     const _override: QueryScope = {
       region: window.location.origin,
       org: org.id,
-      ...(override || {variables: []}),
+      ...(override || {}),
     }
 
     return basicAPI(text, _override)
@@ -389,8 +382,10 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   const simple = (text: string) => {
-    const variables = flow?.range ? getTimeRangeVars(flow.range) : []
-    return simplify(text, variables)
+    return simplify(text, {
+      timeRangeStart,
+      timeRangeStop,
+    })
   }
 
   if (!flow) {

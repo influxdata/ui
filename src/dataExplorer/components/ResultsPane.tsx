@@ -25,7 +25,9 @@ import {downloadTextFile} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
 import {QueryContext} from 'src/shared/contexts/query'
 import {notify} from 'src/shared/actions/notifications'
-import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
+import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
+import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
+import {getWindowPeriodVariable} from 'src/variables/utils/getWindowVars'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
 
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
@@ -65,9 +67,36 @@ const ResultsPane: FC = () => {
   }
 
   const submit = () => {
+    let timeRangeStart, timeRangeStop
+
+    if (!timeRange) {
+      timeRangeStart = timeRangeStop = null
+    } else {
+      if (timeRange.type === 'selectable-duration') {
+        timeRangeStart = '-' + timeRange.duration
+      } else if (timeRange.type === 'duration') {
+        timeRangeStart = '-' + timeRange.lower
+      } else if (isNaN(Date.parse(timeRange.lower))) {
+        timeRangeStart = null
+      } else {
+        timeRangeStart = new Date(timeRange.lower).toISOString()
+      }
+
+      if (!timeRange.upper) {
+        timeRangeStop = 'now()'
+      } else if (isNaN(Date.parse(timeRange.upper))) {
+        timeRangeStop = null
+      } else {
+        timeRangeStop = new Date(timeRange.upper).toISOString()
+      }
+    }
+
     setStatus(RemoteDataState.Loading)
     query(text, {
-      variables: !!timeRange ? getTimeRangeVars(timeRange) : [],
+      vars: {
+        timeRangeStart,
+        timeRangeStop,
+      },
     })
       .then(r => {
         event('resultReceived', {
@@ -82,7 +111,14 @@ const ResultsPane: FC = () => {
       })
   }
 
-  const variables = getTimeRangeVars(timeRange)
+  const timeVars = [
+    getRangeVariable(TIME_RANGE_START, timeRange),
+    getRangeVariable(TIME_RANGE_STOP, timeRange),
+  ]
+
+  const variables = timeVars.concat(
+    getWindowPeriodVariable(text, timeVars) || []
+  )
 
   return (
     <DraggableResizer

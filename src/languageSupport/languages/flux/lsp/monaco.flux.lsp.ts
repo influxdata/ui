@@ -61,9 +61,9 @@ const handleConnectionClose = () => {
   })
 }
 
-const handleConnectionError = ([e, ,]: [Error, unknown, number]) => {
+const handleConnectionError = ([error, ,]: [Error, unknown, number]) => {
   // LSP worker will not be stopped. Is only an unhandled error.
-  reportErrorThroughHoneyBadger(e, {name: 'LSP worker'})
+  reportErrorThroughHoneyBadger(error, {name: 'LSP worker'})
 }
 
 export function initLspWorker() {

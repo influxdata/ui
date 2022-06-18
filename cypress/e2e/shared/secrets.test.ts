@@ -223,7 +223,7 @@ describe('Secrets', () => {
         .click()
       const expected = `import "influxdata/influxdb/secrets"\n\nsecrets.get(key: "${secretName}")`
       cy.wait('@query').then(({request}) => {
-        expect(request.body.query).to.equal(expected)
+        expect(request.body.query).to.include(expected)
       })
     })
   })

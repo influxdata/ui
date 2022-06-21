@@ -14,7 +14,12 @@ import {CLOUD} from 'src/shared/constants'
 import {getOrg} from 'src/organizations/selectors'
 
 // Actions
-import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
+import {
+  setMe,
+  setQuartzMe,
+  setQuartzMeStatus,
+  Actions as MeActions,
+} from 'src/me/actions/creators'
 
 // Reducers
 import {MeState} from 'src/me/reducers'
@@ -76,7 +81,7 @@ export const getIdpeMeThunk = () => async (
   }
 }
 
-export const getQuartzMeThunk = () => async dispatch => {
+export const getQuartzMeThunk = () => async (dispatch: Dispatch<MeActions>) => {
   try {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
 

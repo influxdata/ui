@@ -1,5 +1,3 @@
-import {GetState} from 'src/types'
-
 // Actions
 import {setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 import {
@@ -16,7 +14,12 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Types
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, GetState, NotificationAction} from 'src/types'
+import {Actions as MeActions} from 'src/me/actions/creators'
+import {Actions as IdentityActions} from 'src/identity/actions/creators'
+import {Dispatch} from 'redux'
+
+type ActionTypes = IdentityActions | MeActions | NotificationAction
 
 // Utilities
 import {
@@ -55,7 +58,7 @@ export const getQuartzIdentityThunk = () => async dispatch => {
 }
 
 export const getBillingProviderThunk = () => async (
-  dispatch: any,
+  dispatch: Dispatch<ActionTypes>,
   getState: GetState
 ) => {
   try {

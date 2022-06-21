@@ -35,6 +35,7 @@ import {ResourceType} from 'src/types'
 import 'src/shared/components/cta.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import GlobalHeader from '../../shared/components/GlobalHeader/GlobalHeader'
 
 const DataExplorerPage: FC = () => {
   const {
@@ -55,6 +56,7 @@ const DataExplorerPage: FC = () => {
 
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>
+      <GlobalHeader />
       <Switch>
         <Route
           path="/orgs/:orgID/data-explorer/save"

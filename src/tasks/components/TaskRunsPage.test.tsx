@@ -64,7 +64,7 @@ const dummyTaskRuns: Array<Run> = [
       task: `/api/v2/tasks/${tasks[0].id}`,
       retry: `/api/v2/tasks/${tasks[0].id}/runs/${runIDs[0]}/retry`,
     },
-    flux: 'option task = { \n  name: \"bad task\",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: \"devbucket\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"system\")\n  |> filter(fn: (r) => r._field == \"load1\" or r._field == \"load5\" or r._field == \"load15\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")'
+    flux: 'option task = { \n  name: "bad task",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: "devbucket")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == "system")\n  |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
   },
   {
     id: runIDs[1],
@@ -98,7 +98,7 @@ const dummyTaskRuns: Array<Run> = [
       task: `/api/v2/tasks/${tasks[0].id}`,
       retry: `/api/v2/tasks/${tasks[0].id}/runs/${runIDs[1]}/retry`,
     },
-    flux: 'option task = { \n  name: \"bad task\",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: \"devbucket\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"system\")\n  |> filter(fn: (r) => r._field == \"load1\" or r._field == \"load5\" or r._field == \"load15\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")'
+    flux: 'option task = { \n  name: "bad task",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: "devbucket")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == "system")\n  |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
   },
   {
     id: runIDs[2],
@@ -132,7 +132,7 @@ const dummyTaskRuns: Array<Run> = [
       task: `/api/v2/tasks/${tasks[0].id}`,
       retry: `/api/v2/tasks/${tasks[0].id}/runs/${runIDs[2]}/retry`,
     },
-    flux: 'option task = { \n  name: \"bad task\",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: \"devbucket\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"system\")\n  |> filter(fn: (r) => r._field == \"load1\" or r._field == \"load5\" or r._field == \"load15\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")'
+    flux: 'option task = { \n  name: "bad task",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: "devbucket")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == "system")\n  |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
   },
   {
     id: runIDs[3],
@@ -160,7 +160,7 @@ const dummyTaskRuns: Array<Run> = [
       task: `/api/v2/tasks/${tasks[0].id}`,
       retry: `/api/v2/tasks/${tasks[0].id}/runs/${runIDs[3]}/retry`,
     },
-    flux: 'option task = { \n  name: \"bad task\",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: \"devbucket\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"system\")\n  |> filter(fn: (r) => r._field == \"load1\" or r._field == \"load5\" or r._field == \"load15\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")'
+    flux: 'option task = { \n  name: "bad task",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: "devbucket")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == "system")\n  |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
   },
   {
     id: runIDs[4],
@@ -174,7 +174,7 @@ const dummyTaskRuns: Array<Run> = [
       task: `/api/v2/tasks/${tasks[0].id}`,
       retry: `/api/v2/tasks/${tasks[0].id}/runs/${runIDs[3]}/retry`,
     },
-    flux: 'option task = { \n  name: \"bad task\",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: \"devbucket\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"system\")\n  |> filter(fn: (r) => r._field == \"load1\" or r._field == \"load5\" or r._field == \"load15\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")'
+    flux: 'option task = { \n  name: "bad task",\n  every: 1m,\n  offset: 10s\n}\n\nfrom(bucket: "devbucket")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == "system")\n  |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
   },
 ]
 
@@ -295,7 +295,7 @@ const setup = () => {
           [labels[0].id]: labels[0],
           [labels[1].id]: labels[1],
         },
-        allIDs: labels.map(l => l.id),
+        allIDs: labels.map((l) => l.id),
         status: RemoteDataState.Done,
       },
       tasks: {
@@ -303,7 +303,7 @@ const setup = () => {
           [tasks[0].id]: tasks[0],
           [tasks[1].id]: tasks[1],
         },
-        allIDs: tasks.map(t => t.id),
+        allIDs: tasks.map((t) => t.id),
         status: RemoteDataState.Done,
         searchTerm: '',
         labels: [],
@@ -314,7 +314,7 @@ const setup = () => {
         byID: {
           [orgs[0].id]: orgs[0],
         },
-        allIDs: orgs.map(t => t.id),
+        allIDs: orgs.map((t) => t.id),
         status: RemoteDataState.Done,
         org: orgs[0],
       },

@@ -61,8 +61,7 @@ To run Cypress locally with k8s-idpe:
 Running `/ui` locally depends on `monitor-ci` or `k8s-idpe`.
 
 - [Monitor-ci Quickstart](https://github.com/influxdata/monitor-ci#quickstart-for-local-development)
-- [K8s-IDPE Quickstart](https://docs.influxdata.io/development/guides/local-development)
-- [Remocal Quickstart](https://docs.influxdata.io/development/guides/remocal-development)
+- [Remocal Quickstart](https://docs.influxdata.io/development/remocal/development/#ui-development)
 
 ## Zuora Form
 

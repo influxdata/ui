@@ -5,30 +5,36 @@ import React, {PureComponent, ReactElement} from 'react'
 import {IndexList} from '@influxdata/clockface'
 
 // Types
-import {LogEvent} from 'src/types'
+import {Run} from 'src/types'
 
 // DateTime
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
+import FluxEditorMonaco from 'src/shared/components/FluxMonacoEditor'
 
 interface Props {
-  log?: LogEvent
+  run: Run
 }
 
-class RunLogRow extends PureComponent<Props> {
+class RunLogRowFlux extends PureComponent<Props> {
   public render() {
-    const {log} = this.props
+    const {run} = this.props
 
     return (
       <IndexList.Row>
         <IndexList.Cell>
           <span className="run-logs--list-time">
-            {this.dateTimeString(log.time)}
+            {this.dateTimeString(run.startedAt)}
           </span>
         </IndexList.Cell>
         <IndexList.Cell>
-          <span className="run-logs--list-message">
-            <pre>{log.message}</pre>
+          <span className="run-logs--list-flux">
+            <FluxEditorMonaco
+              script={run.flux}
+              variables={[]}
+              onChangeScript={() => {}}
+              readOnly
+            />
           </span>
         </IndexList.Cell>
       </IndexList.Row>
@@ -46,4 +52,4 @@ class RunLogRow extends PureComponent<Props> {
   }
 }
 
-export default RunLogRow
+export default RunLogRowFlux

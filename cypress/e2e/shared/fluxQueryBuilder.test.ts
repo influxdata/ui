@@ -143,6 +143,9 @@ describe('FluxQueryBuilder', () => {
         .should('exist')
         .click()
 
+      // wait for the addtional items to render
+      cy.wait(100)
+
       // when load more is chosen, up to 25 additional entries will be shown
       cy.get('.field-selector--list-item--wrapper').should(
         'have.length.above',

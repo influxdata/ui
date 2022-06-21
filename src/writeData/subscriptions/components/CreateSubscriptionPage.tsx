@@ -36,11 +36,7 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
-import {
-  shouldGetCredit250Experience,
-  shouldShowUpgradeButton,
-  getQuartzMe,
-} from 'src/me/selectors'
+import {shouldGetCredit250Experience, getQuartzMe} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
@@ -91,7 +87,8 @@ const CreateSubscriptionPage: FC = () => {
   const {formContent, saveForm, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
-  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
+  // [gh] temporarily removing this check while this feature is under development.
+  const showUpgradeButton = false // useSelector(shouldShowUpgradeButton)
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
   const quartzMe = useSelector(getQuartzMe)
   const buckets = useSelector((state: AppState) =>

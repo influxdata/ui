@@ -42,7 +42,7 @@ const OrgProfileTab: FC = () => {
       if (!me.quartzMe.billingProvider) {
         dispatch(getBillingProviderThunk())
       }
-      if (CLOUD && !me.quartzMe.regionCode) {
+      if (!me.quartzMe.regionCode) {
         dispatch(getCurrentOrgDetailsThunk())
       }
     }

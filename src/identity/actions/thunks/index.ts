@@ -44,6 +44,7 @@ export const getQuartzIdentityThunk = () => async dispatch => {
     dispatch(setQuartzIdentity(quartzIdentity))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 
+    console.log('Quartz identity has been updated.')
     const legacyMe = convertIdentityToMe(quartzIdentity)
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
@@ -62,13 +63,13 @@ export const getBillingProviderThunk = () => async (
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
     const currentState = getState()
-    const accountId = currentState?.identity?.account?.id
+    const accountId = currentState.identity.account.id
 
     const accountDetails = await fetchAccountDetails(accountId)
 
     dispatch(setCurrentBillingProvider(accountDetails.billingProvider))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-
+    console.log('billingProvider has been updated.')
     const updatedState = getState()
     const legacyMe = convertIdentityToMe(updatedState.identity)
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
@@ -88,12 +89,13 @@ export const getCurrentOrgDetailsThunk = () => async (
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
     const state = getState()
-    const orgId = state?.identity?.org?.id
+    const orgId = state.identity.org.id
 
     const orgDetails = await fetchOrgDetails(orgId)
 
     dispatch(setCurrentOrgDetails(orgDetails))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
+    console.log('Organization details have been updated.')
 
     const updatedState = getState()
     const legacyMe = convertIdentityToMe(updatedState.identity)

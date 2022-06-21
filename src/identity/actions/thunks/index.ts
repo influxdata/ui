@@ -1,19 +1,19 @@
 import {GetState} from 'src/types'
-import {Dispatch} from 'react'
 
 // Actions
-import {
-  setQuartzMe,
-  setQuartzMeStatus,
-  Actions as MeActions,
-} from 'src/me/actions/creators'
+import {setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 import {
   setCurrentOrgDetails,
   setCurrentBillingProvider,
   setQuartzIdentity,
   setQuartzIdentityStatus,
-  Actions as IdentityActions,
 } from 'src/identity/actions/creators'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  updateBillingFailed,
+  updateIdentityFailed,
+  updateOrgFailed,
+} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -44,19 +44,18 @@ export const getQuartzIdentityThunk = () => async dispatch => {
     dispatch(setQuartzIdentity(quartzIdentity))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 
-    console.log('Quartz identity has been updated.')
     const legacyMe = convertIdentityToMe(quartzIdentity)
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
   } catch (error) {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
-    console.error(error)
+    dispatch(notify(updateIdentityFailed()))
   }
 }
 
 export const getBillingProviderThunk = () => async (
-  dispatch: Dispatch<IdentityActions | MeActions>,
+  dispatch: any,
   getState: GetState
 ) => {
   try {
@@ -69,7 +68,6 @@ export const getBillingProviderThunk = () => async (
 
     dispatch(setCurrentBillingProvider(accountDetails.billingProvider))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-    console.log('billingProvider has been updated.')
     const updatedState = getState()
     const legacyMe = convertIdentityToMe(updatedState.identity)
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
@@ -77,12 +75,12 @@ export const getBillingProviderThunk = () => async (
   } catch (error) {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
-    console.error(error)
+    dispatch(notify(updateBillingFailed()))
   }
 }
 
 export const getCurrentOrgDetailsThunk = () => async (
-  dispatch: Dispatch<IdentityActions | MeActions>,
+  dispatch: any,
   getState: GetState
 ) => {
   try {
@@ -95,7 +93,6 @@ export const getCurrentOrgDetailsThunk = () => async (
 
     dispatch(setCurrentOrgDetails(orgDetails))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-    console.log('Organization details have been updated.')
 
     const updatedState = getState()
     const legacyMe = convertIdentityToMe(updatedState.identity)
@@ -104,6 +101,6 @@ export const getCurrentOrgDetailsThunk = () => async (
   } catch (error) {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
-    console.error(error)
+    dispatch(notify(updateOrgFailed()))
   }
 }

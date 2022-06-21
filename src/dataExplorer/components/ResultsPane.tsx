@@ -55,6 +55,11 @@ const ResultsPane: FC = () => {
 
   const {setEditor} = useContext(EditorContext)
 
+  const onChangeScript = (script: string) => {
+    event('ResultsPane onChangeScript: ', {script: script.length})
+    setText(script)
+  }
+
   const download = () => {
     event('CSV Download Initiated')
     basic(text).promise.then(response => {
@@ -145,7 +150,7 @@ const ResultsPane: FC = () => {
               <FluxMonacoEditor
                 variables={variables}
                 script={text}
-                onChangeScript={setText}
+                onChangeScript={onChangeScript}
                 setEditorInstance={setEditor}
               />
             </Suspense>

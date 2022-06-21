@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, createContext, useEffect, useMemo, useRef} from 'react'
+import React, {
+  FC,
+  createContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useContext,
+} from 'react'
 import {useDispatch} from 'react-redux'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 import {normalize} from 'normalizr'
@@ -18,6 +25,7 @@ import {
 // Types
 import {Bucket, BucketEntities, RemoteDataState} from 'src/types'
 import {QueryScope} from 'src/types/flows'
+import {PipeContext} from 'src/flows/context/pipe'
 
 let MeasurementSchemaCreateRequest = null
 if (CLOUD) {
@@ -56,6 +64,7 @@ interface Props {
 export const BucketProvider: FC<Props> = ({children, scope}) => {
   const cacheKey = `${scope.region};;<${scope.org}>`
   const [bucketCache, setBucketCache] = useLocalStorageState()
+  const {data} = useContext(PipeContext)
   const dispatch = useDispatch()
   const buckets = bucketCache[cacheKey]?.buckets ?? []
   const lastFetch = bucketCache[cacheKey]?.lastFetch ?? 0
@@ -309,6 +318,6 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
         {children}
       </BucketContext.Provider>
     ),
-    [loading, buckets]
+    [data.bucket, loading, buckets]
   )
 }

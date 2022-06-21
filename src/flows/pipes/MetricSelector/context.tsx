@@ -239,11 +239,16 @@ export const SchemaProvider: FC = React.memo(({children}) => {
 
     const scope = getPanelQueries(data.id)?.scope ?? {}
 
-    const text = `from(bucket: "${data.bucket.name}")
-|> range(${range})
-|> first()
-|> drop(columns: ["_value"])
-|> group()`
+    let source = `from(bucket: "${data.bucket.name}")`
+    if (data.bucket.type === 'sample') {
+      source = `import "influxdata/influxdb/sample"
+      sample.data(set: "${data.bucket.id}")`
+    }
+    const text = `${source}
+    |> range(${range})
+    |> first()
+    |> drop(columns: ["_value"])
+    |> group()`
 
     query(text, scope)
       .then((response: FluxResult) => {

@@ -47,7 +47,7 @@ describe('FluxQueryBuilder', () => {
       cy.get('.searchable-dropdown--input-container').type(bucketName)
 
       // check the API call
-      cy.intercept('POST', '/api/v2private/query*').as('query')
+      cy.intercept('POST', '/api/v2/query*').as('query')
 
       // should find the bucket and select it
       cy.get('.cf-dropdown-item')
@@ -90,7 +90,7 @@ describe('FluxQueryBuilder', () => {
     })
 
     it('search bar can search fields and tag keys dynamically', () => {
-      cy.intercept('POST', '/api/v2private/query*').as('query')
+      cy.intercept('POST', '/api/v2/query*').as('query')
 
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
@@ -124,7 +124,7 @@ describe('FluxQueryBuilder', () => {
     })
 
     it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
-      cy.intercept('POST', '/api/v2private/query*').as('query')
+      cy.intercept('POST', '/api/v2/query*').as('query')
 
       // if less than 8 items, show all items
       const bucketNameA = 'Air Sensor Data'

@@ -3,7 +3,6 @@ import {
   ProtocolNotificationType,
 } from 'vscode-languageserver-protocol'
 import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
-import {FluxDocs} from 'src/types'
 
 export const makeRequestType = (method: string) => {
   return new ProtocolRequestType<any, any, any, any, any>(method)
@@ -74,24 +73,17 @@ export interface ExecuteCommandInjectTagValue extends ExecuteCommandInjectTag {
 
 export type ExecuteCommandInjectField = ExecuteCommandInjectMeasurement
 
-// TODO: LSP contract is not yet decided to this one.
-export interface ExecuteCommandInjectFunction extends ExecuteCommandParams {
-  data: FluxDocs
-}
-
 export type ExecuteCommandArgument =
   | ExecuteCommandInjectMeasurement
   | ExecuteCommandInjectTag
   | ExecuteCommandInjectTagValue
   | ExecuteCommandInjectField
-  | ExecuteCommandInjectFunction
 
 export type ExecuteCommandT =
   | [ExecuteCommand.InjectionMeasurement, ExecuteCommandInjectMeasurement]
   | [ExecuteCommand.InjectTag, ExecuteCommandInjectTag]
   | [ExecuteCommand.InjectTagValue, ExecuteCommandInjectTagValue]
   | [ExecuteCommand.InjectField, ExecuteCommandInjectField]
-  | [ExecuteCommand.InjectFunction, ExecuteCommandInjectFunction]
 
 export const executeCommand = ([command, arg]: ExecuteCommandT) => {
   return createRequest(Methods.ExecuteCommand, {
@@ -126,5 +118,4 @@ export enum ExecuteCommand {
   InjectField = 'injectFieldFilter',
   InjectTag = 'injectTagFilter',
   InjectTagValue = 'injectTagValueFilter',
-  InjectFunction = 'injectFunction',
 }

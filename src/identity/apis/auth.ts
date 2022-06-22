@@ -85,16 +85,15 @@ export class GenericError extends Error {
 
 export const fetchIdentity = async () => {
   // if we aren't in cloud, or we are in cloud and the unification flag is off
-  if (!CLOUD || !isFlagEnabled('uiUnificationFlag')) {
-    return fetchLegacyIdentity()
-  }
-  // if we make it to this line we are in cloud and ui unification flag is on
+  // if (!CLOUD || !isFlagEnabled('uiUnificationFlag')) {
+  return fetchLegacyIdentity()
+  // }
+  // // if we make it to this line we are in cloud and ui unification flag is on
+  // if (isFlagEnabled('quartzIdentity')) {
+  //   return fetchQuartzIdentity()
+  // }
 
-  if (isFlagEnabled('quartzIdentity')) {
-    return fetchQuartzIdentity()
-  }
-
-  return fetchQuartzMe()
+  // return fetchQuartzMe()
 }
 
 // fetch user identity from /quartz/identity.

@@ -14,7 +14,7 @@ import {getAllFluxFunctions} from 'src/shared/selectors/app'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
-import {sortFuncs} from 'src/shared/components/functions/utils'
+import {sortFuncs} from 'src/shared/utils/functions'
 
 interface Props {
   onSelect: (fn: FluxFunction) => void
@@ -53,10 +53,12 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
     }
   }, [hoveredFunction, tooltipPopup, eventSearchTerm])
 
-  const handleSelectItem = useCallback((func: FluxFunction) => {
-    onSelect(getFluxExample(func))
-    event('flux.function.injected', {name: `${func.package}.${func.name}`})
-  }, [])
+  const handleSelectItem = useCallback(
+    (func: FluxFunction) => {
+      onSelect(getFluxExample(func))
+    },
+    [onSelect]
+  )
 
   const render = fn => (
     <Fn

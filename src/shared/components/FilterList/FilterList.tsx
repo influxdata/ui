@@ -1,6 +1,10 @@
 import React, {FC, useState, useMemo} from 'react'
 
-import {EmptyState, ComponentSize} from '@influxdata/clockface'
+import {
+  EmptyState,
+  ComponentSize,
+  DapperScrollbars,
+} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 type Item = Record<string, any>
@@ -69,7 +73,7 @@ const FilterList: FC<Props> = ({
         </div>
         {!!listHeader && listHeader()}
         <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-          {list}
+          <DapperScrollbars>{list}</DapperScrollbars>
         </div>
       </div>
     ),

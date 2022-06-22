@@ -168,6 +168,20 @@ const Results: FC = () => {
       </>
     ) : null
 
+  const updateViewState = state => {
+    if (state === 'graph') {
+      setView({
+        state: 'graph',
+        properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
+      })
+    } else {
+      setView({
+        state: 'table',
+        properties: SUPPORTED_VISUALIZATIONS['simple-table'].initial,
+      })
+    }
+  }
+
   return (
     <div className="data-explorer-results">
       <FlexBox direction={FlexDirection.Column} style={{height: '100%'}}>
@@ -183,7 +197,7 @@ const Results: FC = () => {
                   name="viz-setting"
                   value="table"
                   active={view.state === 'table'}
-                  onClick={state => setView({...view, state})}
+                  onClick={updateViewState}
                 >
                   Table
                 </SelectGroup.Option>
@@ -192,7 +206,7 @@ const Results: FC = () => {
                   name="viz-setting"
                   value="graph"
                   active={view.state === 'graph'}
-                  onClick={state => setView({...view, state})}
+                  onClick={updateViewState}
                 >
                   Graph
                 </SelectGroup.Option>

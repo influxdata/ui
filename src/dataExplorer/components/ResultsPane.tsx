@@ -35,7 +35,7 @@ const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
 )
 const useLocalStorageState = createLocalStorageStateHook(
-  'dataExplorerQuery',
+  'dataExplorer.query',
   ''
 )
 

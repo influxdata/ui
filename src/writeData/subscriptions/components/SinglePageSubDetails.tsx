@@ -93,7 +93,7 @@ const SinglePageSubDetails: FC = () => {
   const handleClick = (step: number) => {
     document
       .getElementById(navigationSteps[step - 1].type)
-      ?.scrollIntoView({behavior: 'smooth', block: 'start'})
+      ?.scrollIntoView({behavior: 'smooth', block: 'center'})
     setFormActive(navigationSteps[step - 1].type as Steps)
   }
 

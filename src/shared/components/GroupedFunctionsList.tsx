@@ -1,6 +1,10 @@
 import React, {FC, useState, useMemo, useCallback} from 'react'
 
-import {EmptyState, ComponentSize} from '@influxdata/clockface'
+import {
+  EmptyState,
+  ComponentSize,
+  DapperScrollbars,
+} from '@influxdata/clockface'
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
 import Fn from 'src/shared/components/FilterList/InjectionOption'
@@ -80,7 +84,7 @@ const GroupedFunctionsList: FC<Props> = ({onSelect}) => {
           />
         </div>
         <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-          {fnComponent}
+          <DapperScrollbars>{fnComponent}</DapperScrollbars>
         </div>
       </div>
     )

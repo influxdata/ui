@@ -1,7 +1,7 @@
 Closes #
 
 <!-- Describe your proposed changes here. -->
-<!-- A picture is worth a thousand words. -->
+<!-- Including screenshots or visuals is very helpful - a picture is worth a thousand words. -->
 
 ### Checklist
 

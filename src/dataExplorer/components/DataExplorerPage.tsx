@@ -57,7 +57,7 @@ const DataExplorerPage: FC = () => {
     return () => {
       event('Exited Data Explorer')
     }
-  })
+  }, [])
 
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>

@@ -29,20 +29,27 @@ import {
   getCurrentOrgDetailsThunk,
 } from 'src/identity/actions/thunks'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
+import {selectQuartzIdentity} from 'src/identity/selectors'
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
+  const identity = useSelector(selectQuartzIdentity)
+
   const dispatch = useDispatch()
 
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
   useEffect(() => {
     if (CLOUD && shouldUseQuartzIdentity()) {
-      if (!me.quartzMe.billingProvider) {
-        dispatch(getBillingProviderThunk())
-      }
-      if (!me.quartzMe.regionCode) {
+      // if (!me.quartzMe.billingProvider) {
+      //   dispatch(getBillingProviderThunk())
+      // }
+      if (
+        !me.quartzMe.regionCode ||
+        !me.quartzMe.regionName ||
+        !identity.org.provider
+      ) {
         dispatch(getCurrentOrgDetailsThunk())
       }
     }
@@ -74,8 +81,17 @@ const OrgProfileTab: FC = () => {
             stretchToFitWidth={true}
             style={{width: '85%'}}
           >
-            {me.quartzMe?.billingProvider && (
+            {
+              // Case: QuartzIdentity is Off
+              // Option 1: Don't show billing provider information (because billingProvider !== cloudProvider)
+              // Option 2: Don't show billing provider information if billingProvider === 'zuora'
+            }
+
+            {/* {me.quartzMe?.billingProvider && (
               <LabeledData label="Provider" src={me.quartzMe.billingProvider} />
+            )} */}
+            {identity?.org?.provider && (
+              <LabeledData label="Cloud Provider" src={identity.org.provider} />
             )}
             {me.quartzMe?.regionCode && (
               <LabeledData label="Region" src={me.quartzMe.regionCode} />

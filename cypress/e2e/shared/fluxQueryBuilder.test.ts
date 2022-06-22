@@ -113,6 +113,10 @@ describe('FluxQueryBuilder', () => {
 
       // search a feild, should contain only the feild, no tag keys
       cy.getByTestID('field-tag-key-search-bar').type(searchField)
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
+
       cy.get('.field-selector--list-item--wrapper').should(
         'contain',
         searchField
@@ -124,6 +128,10 @@ describe('FluxQueryBuilder', () => {
 
       // search a tag key, should contain only that tag key, no fields
       cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
+
       cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
       cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)
     })

@@ -53,10 +53,7 @@ describe('FluxQueryBuilder', () => {
       cy.get('.cf-dropdown-item')
         .should('contain', bucketName)
         .click()
-
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       // check the bucket is selected
       cy.getByTestID('bucket-selector--dropdown-button').should(
@@ -77,9 +74,7 @@ describe('FluxQueryBuilder', () => {
         .should('contain', measurement)
         .click()
 
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       // check the measurement is selected
       cy.getByTestID('measurement-selector--dropdown-button').should(
@@ -100,22 +95,16 @@ describe('FluxQueryBuilder', () => {
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       // search a feild, should contain only the feild, no tag keys
       cy.getByTestID('field-tag-key-search-bar').type(searchField)
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       cy.get('.field-selector--list-item--wrapper').should(
         'contain',
@@ -128,9 +117,7 @@ describe('FluxQueryBuilder', () => {
 
       // search a tag key, should contain only that tag key, no fields
       cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
       cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)
@@ -146,16 +133,12 @@ describe('FluxQueryBuilder', () => {
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketNameA}`).click()
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       // less than 8 items, no "Load More" button
       cy.get('.field-selector--list-item--wrapper').should(
@@ -170,16 +153,12 @@ describe('FluxQueryBuilder', () => {
       // select another bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       // select another measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
-      cy.wait('@query').then(({response}) => {
-        expect(response.statusCode).to.eq(200)
-      })
+      cy.wait('@query')
 
       // more than 8 items, show 'Load More' button
       cy.get('.field-selector--list-item--wrapper').should('have.length', 8)

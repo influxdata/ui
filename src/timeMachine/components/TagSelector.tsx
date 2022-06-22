@@ -42,6 +42,7 @@ import {
   getActiveTimeMachine,
   getIsInCheckOverlay,
 } from 'src/timeMachine/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {
@@ -244,23 +245,27 @@ class TagSelector extends PureComponent<Props> {
 
   private handleSelectTag = (tag: string): void => {
     const {index, onSelectTag} = this.props
+    event('selected tag old query builder dropdown')
 
     onSelectTag(index, tag)
   }
 
   private handleSelectValue = (value: string): void => {
     const {index, onSelectValue} = this.props
+    event('selected tag value old query builder')
 
     onSelectValue(index, value)
   }
 
   private handleRemoveTagSelector = (): void => {
     const {index, onRemoveTagSelector} = this.props
+    event('tagKeyRemoved')
 
     onRemoveTagSelector(index)
   }
 
   private handleKeysSearch = (value: string) => {
+    event('tagKeySearched', {search: value.length})
     const {onSetKeysSearchTerm, index} = this.props
 
     onSetKeysSearchTerm(index, value)
@@ -275,6 +280,7 @@ class TagSelector extends PureComponent<Props> {
 
   private handleValuesSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target
+    event('tagValueSearched', {search: value.length})
     this.doSearch(value)
   }
 

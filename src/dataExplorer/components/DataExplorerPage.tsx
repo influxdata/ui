@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
@@ -52,6 +52,12 @@ const DataExplorerPage: FC = () => {
   const recordClick = () => {
     event('Data Explorer Page - Clicked Notebooks CTA')
   }
+
+  useEffect(() => {
+    return () => {
+      event('Exited Data Explorer')
+    }
+  }, [])
 
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>

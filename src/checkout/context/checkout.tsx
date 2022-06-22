@@ -14,7 +14,6 @@ import {
   postCheckout,
 } from 'src/client/unityRoutes'
 import {getQuartzMe, shouldGetCredit250Experience} from 'src/me/selectors'
-import {getQuartzMe as getQuartzMeThunk} from 'src/me/actions/thunks'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
@@ -33,6 +32,9 @@ import {
 import {CreditCardParams, RemoteDataState} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
 import {event} from 'src/cloud/utils/reporting'
+
+// Thunks
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 export type Props = {
   children: JSX.Element
@@ -160,10 +162,9 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   useEffect(() => {
     getBillingSettings()
     return () => {
-      // Call the `quartz/me` endpoint to update the existing user metadata
-      dispatch(getQuartzMeThunk())
+      dispatch(getQuartzIdentityThunk())
     }
-  }, [dispatch, getBillingSettings])
+  }, [getBillingSettings]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [errors, setErrors] = useState({
     notifyEmail: false,

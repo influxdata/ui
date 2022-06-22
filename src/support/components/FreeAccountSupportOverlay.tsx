@@ -53,7 +53,7 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
         </p>
         <p>
           Contact support is currently only available for Usage-Based Plan and
-          Annual customers. Please try our community resources below to recieve
+          Annual customers. Please try our community resources below to receive
           help or file a feedback & questions form.
         </p>
         <List className="support-links" testID="free-account-links">

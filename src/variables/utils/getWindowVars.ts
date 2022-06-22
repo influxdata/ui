@@ -7,6 +7,7 @@ import {
   buildUsedVarsOption,
   buildVarsOption,
 } from 'src/variables/utils/buildVarsOption'
+
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
 
@@ -17,6 +18,7 @@ import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
 const DESIRED_POINTS_PER_GRAPH = 360
 const FALLBACK_WINDOW_PERIOD = 15000
+const FINEST_WINDOW_PERIOD_PRECISION = 1000
 
 /*
   Compute the `v.windowPeriod` variable assignment for a query.
@@ -190,3 +192,16 @@ export const getWindowPeriodVariableFromVariables = (
 
   return [windowPeriodVariable]
 }
+
+export const getWindowPeriodVariableForZoomRequery = (): Variable => ({
+  orgID: '',
+  id: WINDOW_PERIOD,
+  name: WINDOW_PERIOD,
+  arguments: {
+    type: 'system',
+    values: [FINEST_WINDOW_PERIOD_PRECISION],
+  },
+  status: RemoteDataState.Done,
+  labels: [],
+  selected: [],
+})

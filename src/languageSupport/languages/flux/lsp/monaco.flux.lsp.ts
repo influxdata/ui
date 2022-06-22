@@ -23,6 +23,9 @@ import fluxWorkerUrl from 'worker-plugin/loader!./worker/flux.worker'
 import Fallback from 'src/languageSupport/languages/flux/lsp/worker/flux.fallback'
 import {EditorType} from 'src/types'
 
+// error notification
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+
 // install Monaco language client services
 MonacoServices.install(monaco)
 
@@ -52,6 +55,17 @@ function createLanguageClient(
 
 let worker: Worker, messageReader, messageWriter, prelude
 
+const handleConnectionClose = () => {
+  reportErrorThroughHoneyBadger(new Error('LSP connection closed.'), {
+    name: 'LSP worker',
+  })
+}
+
+const handleConnectionError = ([error, ,]: [Error, unknown, number]) => {
+  // LSP worker will not be stopped. Is only an unhandled error.
+  reportErrorThroughHoneyBadger(error, {name: 'LSP worker'})
+}
+
 export function initLspWorker() {
   if (worker) {
     return
@@ -68,9 +82,11 @@ export function initLspWorker() {
   const connection = createMessageConnection(messageReader, messageWriter)
   const languageClient = createLanguageClient(connection)
   const disposable = languageClient.start()
+  connection.onError(e => handleConnectionError(e))
   connection.onClose(() => {
     disposable.dispose()
     prelude.dispose()
+    handleConnectionClose()
   })
 }
 initLspWorker()

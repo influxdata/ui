@@ -14,6 +14,7 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
 import {Bucket} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 const DEBOUNCE_TIMEOUT = 500
 let timer
@@ -34,10 +35,6 @@ interface FluxQueryBuilderContextType {
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void
   setSearchTerm: (str: string) => void
-
-  // Query building
-  query: string
-  updateQuery: (q: string) => void
 }
 
 const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
@@ -48,10 +45,6 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
   setSearchTerm: (_s: string) => {},
-
-  // Query building
-  query: '',
-  updateQuery: _q => {},
 }
 
 export const FluxQueryBuilderContext = createContext<
@@ -67,10 +60,10 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   // States
   const [selectedBucket, setSelectedBucket] = useState(null)
   const [selectedMeasurement, setSelectedMeasurement] = useState('')
-  const [query, setQuery] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSelectBucket = (bucket: Bucket): void => {
+    event('selected bucket in new query builder')
     setSelectedBucket(bucket)
 
     // Reset measurement, tags, and fields
@@ -83,6 +76,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectMeasurement = (measurement: string): void => {
+    event('selected measurement in new query builder')
     setSelectedMeasurement(measurement)
 
     // Reset fields and tags
@@ -96,6 +90,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
   const handleSearchTerm = useCallback(
     (searchTerm: string): void => {
+      event('searched in new query builder')
       setSearchTerm(searchTerm)
       debouncer(() => {
         getFields(selectedBucket, selectedMeasurement, searchTerm)
@@ -116,10 +111,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,
           setSearchTerm: handleSearchTerm,
-
-          // Query building
-          query,
-          updateQuery: setQuery,
         }}
       >
         {children}
@@ -131,8 +122,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       selectedMeasurement,
       searchTerm,
 
-      // Query building
-      query,
       children,
     ]
   )

@@ -1,12 +1,29 @@
 import React, {FC, createContext, useState, useRef, useEffect} from 'react'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
+
 import {FluxResult} from 'src/types/flows'
-import {RemoteDataState, ViewProperties} from 'src/types'
+import {
+  RemoteDataState,
+  ViewProperties,
+  SimpleTableViewProperties,
+} from 'src/types'
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
 interface View {
   state: 'table' | 'graph'
   properties: ViewProperties
 }
+
+const useLocalStorageState = createLocalStorageStateHook(
+  'dataExplorer.results',
+  {
+    state: 'table',
+    properties: {
+      type: 'simple-table',
+      showAll: false,
+    } as SimpleTableViewProperties,
+  } as View
+)
 
 interface ResultsContextType {
   status: RemoteDataState
@@ -44,9 +61,7 @@ export const ResultsProvider: FC = ({children}) => {
   )
 
   // for display, should be moved
-  const [view, setView] = useState<View>(
-    JSON.parse(JSON.stringify(DEFAULT_STATE.view))
-  )
+  const [view, setView] = useLocalStorageState()
 
   useEffect(() => {
     let running = false

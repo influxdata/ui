@@ -95,13 +95,21 @@ describe('FluxQueryBuilder', () => {
     })
 
     it('search bar can search fields and tag keys dynamically', () => {
+      cy.intercept('POST', '/api/v2/query*').as('query')
+
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // search a feild, should contain only the feild, no tag keys
       cy.getByTestID('field-tag-key-search-bar').type(searchField)
@@ -121,6 +129,8 @@ describe('FluxQueryBuilder', () => {
     })
 
     it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
+      cy.intercept('POST', '/api/v2/query*').as('query')
+
       // if less than 8 items, show all items
       const bucketNameA = 'Air Sensor Data'
       const measurementA = 'airSensors'
@@ -128,10 +138,16 @@ describe('FluxQueryBuilder', () => {
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketNameA}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // less than 8 items, no "Load More" button
       cy.get('.field-selector--list-item--wrapper').should(
@@ -143,16 +159,16 @@ describe('FluxQueryBuilder', () => {
       // if more than 8 items, show "Load More" button
       // and load additional 25 items
 
-      cy.intercept('POST', '/api/v2/query*').as('query')
-
       // select another bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // select another measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
-
       cy.wait('@query').then(({response}) => {
         expect(response.statusCode).to.eq(200)
       })

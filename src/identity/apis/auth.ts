@@ -85,15 +85,18 @@ export class GenericError extends Error {
 
 export const fetchIdentity = async () => {
   // if we aren't in cloud, or we are in cloud and the unification flag is off
-  // if (!CLOUD || !isFlagEnabled('uiUnificationFlag')) {
-  return fetchLegacyIdentity()
-  // }
-  // // if we make it to this line we are in cloud and ui unification flag is on
-  // if (isFlagEnabled('quartzIdentity')) {
-  //   return fetchQuartzIdentity()
-  // }
+  if (!CLOUD || !isFlagEnabled('uiUnificationFlag')) {
+    // console.log('using legacy identity')
+    return fetchLegacyIdentity()
+  }
+  // if we make it to this line we are in cloud and ui unification flag is on
+  if (isFlagEnabled('quartzIdentity')) {
+    // console.log('using quartz identity')
+    return fetchQuartzIdentity()
+  }
 
-  // return fetchQuartzMe()
+  // console.log('using quartz me')
+  return fetchQuartzMe()
 }
 
 // fetch user identity from /quartz/identity.
@@ -135,6 +138,11 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
 // fetch user identity from /me (used in OSS and environments without Quartz)
 const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
+
+  if (response.status === 401) {
+    const error: IdpeError = response.data
+    throw new ServerError(error.message)
+  }
 
   if (response.status === 500) {
     const error: IdpeError = response.data

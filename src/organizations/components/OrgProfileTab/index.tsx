@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
+import 'src/organizations/components/OrgProfileTab/style.scss'
 
 // Components
 import {
@@ -16,19 +17,19 @@ import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/Copy
 import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
 
 // Utils
-import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
-// Types
+// Selectors
 import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
-import 'src/organizations/components/OrgProfileTab/style.scss'
+// Thunks
 import {
   getBillingProviderThunk,
   getCurrentOrgDetailsThunk,
 } from 'src/identity/actions/thunks'
-import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)

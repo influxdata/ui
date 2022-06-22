@@ -145,7 +145,7 @@ describe('FluxQueryBuilder', () => {
         'have.length.at.most',
         8
       )
-      cy.get('.load-more-button').should('not.exist')
+      cy.get('.field-selector .load-more-button').should('not.exist')
 
       // if more than 8 items, show "Load More" button
       // and load additional 25 items

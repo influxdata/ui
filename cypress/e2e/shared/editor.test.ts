@@ -47,7 +47,7 @@ describe('Editor+LSP communication', () => {
         cy.getByTestID('flux-editor').monacoType('{selectall}{del}')
       })
       cy.setFeatureFlags({
-        injectionViaLsp: false,
+        injectionFunctionsViaLsp: false,
       })
     })
   }

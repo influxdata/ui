@@ -1,25 +1,35 @@
 // Libraries
 import React, {FC} from 'react'
+import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Components
 import {
+  Button,
   Form,
   Overlay,
+  ButtonType,
+  ComponentColor,
+  ComponentStatus,
   Heading,
   HeadingElement,
   FontWeight,
   SpinnerContainer,
   TechnoSpinner,
+  FlexBox,
+  FlexDirection,
+  ComponentSize,
+  JustifyContent,
 } from '@influxdata/clockface'
 import StatusHeader from 'src/writeData/subscriptions/components/StatusHeader'
 import BrokerFormContent from 'src/writeData/subscriptions/components/BrokerFormContent'
-import DetailsFormFooter from 'src/writeData/subscriptions/components/DetailsFormFooter'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
+import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {Subscription} from 'src/types/subscriptions'
 
 // Styles
@@ -31,10 +41,8 @@ interface Props {
   edit: boolean
   setEdit: (any) => void
   loading: any
-  setFormActive: (any) => void
-  setStatus: (any) => void
   saveForm: (any) => void
-  active: string
+  setStatus: (any) => void
 }
 
 const BrokerDetails: FC<Props> = ({
@@ -43,20 +51,87 @@ const BrokerDetails: FC<Props> = ({
   edit,
   setEdit,
   loading,
-  setFormActive,
-  setStatus,
   saveForm,
-  active,
+  setStatus,
 }) => {
+  const history = useHistory()
   const org = useSelector(getOrg)
   return (
     <div className="update-broker-form" id="broker">
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
         <Form onSubmit={() => {}} testID="update-broker-form-overlay">
-          <StatusHeader
-            currentSubscription={currentSubscription}
-            setStatus={setStatus}
-          />
+          <div className="update-broker-form__fixed">
+            <FlexBox
+              className="update-broker-form__fixed__broker-buttons"
+              direction={FlexDirection.Row}
+              margin={ComponentSize.Medium}
+              justifyContent={JustifyContent.SpaceBetween}
+            >
+              <StatusHeader
+                currentSubscription={currentSubscription}
+                setStatus={setStatus}
+              />
+              <div>
+                <Button
+                  text="Close"
+                  color={ComponentColor.Tertiary}
+                  onClick={() => {
+                    event(
+                      'close button clicked',
+                      {},
+                      {feature: 'subscriptions'}
+                    )
+                    history.push(
+                      `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`
+                    )
+                  }}
+                  titleText="Cancel update of Subscription and return to list"
+                  type={ButtonType.Button}
+                  testID="update-broker-form--cancel"
+                />
+                <Button
+                  text="Edit"
+                  color={
+                    edit ? ComponentColor.Success : ComponentColor.Secondary
+                  }
+                  onClick={() => {
+                    event('edit button clicked', {}, {feature: 'subscriptions'})
+                    setEdit(!edit)
+                  }}
+                  type={ButtonType.Button}
+                  titleText="Edit"
+                  testID="update-broker-form--edit"
+                />
+                {edit ? (
+                  <Button
+                    type={ButtonType.Button}
+                    text="Save Changes"
+                    color={ComponentColor.Success}
+                    onClick={() => {
+                      saveForm(currentSubscription)
+                    }}
+                    testID="update-broker-form--submit"
+                  />
+                ) : (
+                  <Button
+                    text="View Data"
+                    color={ComponentColor.Success}
+                    onClick={() => {
+                      event(
+                        'view data button clicked',
+                        {},
+                        {feature: 'subscriptions'}
+                      )
+                      history.push(`/orgs/${org.id}/notebooks`)
+                    }}
+                    type={ButtonType.Button}
+                    testID="update-broker-form--view-data"
+                    status={ComponentStatus.Default}
+                  />
+                )}
+              </div>
+            </FlexBox>
+          </div>
           <Overlay.Body>
             <Heading
               element={HeadingElement.H3}
@@ -72,16 +147,7 @@ const BrokerDetails: FC<Props> = ({
               edit={edit}
             />
           </Overlay.Body>
-          <DetailsFormFooter
-            nextForm="subscription"
-            id={org.id}
-            edit={edit}
-            setEdit={setEdit}
-            setFormActive={setFormActive}
-            formActive={active}
-            currentSubscription={currentSubscription}
-            saveForm={saveForm}
-          />
+          <div className="update-broker-form__line"></div>
         </Form>
       </SpinnerContainer>
     </div>

@@ -616,7 +616,6 @@ describe('Subscriptions', () => {
     it('should create, update, stop, start and delete LP subscription single page', () => {
       cy.setFeatureFlags({
         subscriptionsUI: true,
-        subscriptionsSinglePage: true,
       })
       let subscription = 'My Subscription'
       createBasicLPSubscription(subscription)
@@ -703,7 +702,6 @@ describe('Subscriptions', () => {
     it('should create, update, stop, start and delete a JSON subscription single page', () => {
       cy.setFeatureFlags({
         subscriptionsUI: true,
-        subscriptionsSinglePage: true,
       })
       let subscription = 'My Subscription 2'
       cy.getByTestID('subscriptions--tab').click()
@@ -888,7 +886,6 @@ describe('Subscriptions', () => {
     it('should create, update, stop, start and delete a String subscription single page', () => {
       cy.setFeatureFlags({
         subscriptionsUI: true,
-        subscriptionsSinglePage: true,
       })
 
       let subscription = 'My Subscription 3'

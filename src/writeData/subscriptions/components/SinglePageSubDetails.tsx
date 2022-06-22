@@ -15,7 +15,7 @@ import {
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
 import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
 import GetResources from 'src/resources/components/GetResources'
-import SinglePageBrokerDetails from 'src/writeData/subscriptions/components/SinglePageBrokerDetails'
+import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 
 // Contexts
 import {
@@ -34,13 +34,12 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Graphics
 import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
 
 // Styles
-import 'src/writeData/subscriptions/components/SubscriptionDetailsPage.scss'
+import 'src/writeData/subscriptions/components/SinglePageSubDetails.scss'
 
 interface SubscriptionNavigationModel extends SubwayNavModel {
   type: string
@@ -106,8 +105,6 @@ const SinglePageSubDetails: FC = () => {
     })
     return currentStep
   }
-  const singlePage = isFlagEnabled('subscriptionsSinglePage')
-
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>
@@ -120,13 +117,7 @@ const SinglePageSubDetails: FC = () => {
             scrollable={true}
             className="subscription-details-page"
           >
-            <div
-              className={
-                singlePage
-                  ? 'subscription-details-page__progress--fixed'
-                  : 'subscription-details-page__progress'
-              }
-            >
+            <div className="subscription-details-page__progress">
               <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
@@ -137,7 +128,7 @@ const SinglePageSubDetails: FC = () => {
                 showCheckmark={false}
               />
             </div>
-            <SinglePageBrokerDetails
+            <BrokerDetails
               currentSubscription={currentSubscription}
               updateForm={updateForm}
               edit={edit}
@@ -147,28 +138,16 @@ const SinglePageSubDetails: FC = () => {
               saveForm={saveForm}
             />
             <SubscriptionDetails
-              setFormActive={setFormActive}
               currentSubscription={currentSubscription}
               updateForm={updateForm}
               buckets={buckets}
               bucket={bucket}
               edit={edit}
-              setEdit={setEdit}
-              singlePage={singlePage}
-              setStatus={setStatus}
-              saveForm={saveForm}
-              active={active}
             />
             <ParsingDetails
               currentSubscription={currentSubscription}
               updateForm={updateForm}
-              saveForm={saveForm}
               edit={edit}
-              setEdit={setEdit}
-              singlePage={singlePage}
-              setStatus={setStatus}
-              active={active}
-              setFormActive={setFormActive}
             />
           </Page.Contents>
         </SpinnerContainer>

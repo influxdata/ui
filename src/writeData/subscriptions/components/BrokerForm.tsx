@@ -11,65 +11,130 @@ import {
   ButtonType,
   ComponentColor,
   ComponentStatus,
-  IconFont,
-  Icon,
   Heading,
   HeadingElement,
   FontWeight,
   FlexBox,
   ComponentSize,
-  AlignItems,
   FlexDirection,
+  JustifyContent,
 } from '@influxdata/clockface'
 import BrokerFormContent from 'src/writeData/subscriptions/components/BrokerFormContent'
+import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {shouldGetCredit250Experience} from 'src/me/selectors'
+import {event} from 'src/cloud/utils/reporting'
+import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  getDataLayerIdentity,
+  getExperimentVariantId,
+} from 'src/cloud/utils/experiments'
+
+// Constants
+import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
+
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'
-import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   formContent: Subscription
-  setFormActive: (string) => void
   updateForm: (any) => void
   showUpgradeButton: boolean
+  saveForm: (any) => void
 }
 
 const BrokerForm: FC<Props> = ({
   formContent,
-  setFormActive,
   updateForm,
   showUpgradeButton,
+  saveForm,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
+  const requiredFields = checkRequiredFields(formContent)
   return (
     formContent && (
-      <div className="create-broker-form">
+      <div className="create-broker-form" id="broker">
         <Form onSubmit={() => {}} testID="create-broker-form-overlay">
-          <Overlay.Header title="Connect to Broker">
-            {showUpgradeButton && (
-              <FlexBox
-                alignItems={AlignItems.Center}
-                direction={FlexDirection.Row}
-                margin={ComponentSize.Medium}
-                className="create-broker-form__premium-container"
-              >
-                <Icon glyph={IconFont.CrownSolid_New} />
-                <Heading
-                  element={HeadingElement.H5}
-                  weight={FontWeight.Bold}
-                  className="create-broker-form__premium-container__text"
-                >
-                  Premium
-                </Heading>
-              </FlexBox>
+        <div className="create-broker-form__fixed">
+            <FlexBox
+              className="create-broker-form__fixed__broker-buttons"
+              direction={FlexDirection.Row}
+              margin={ComponentSize.Medium}
+              justifyContent={JustifyContent.FlexEnd}
+            >
+               <Button
+              text="Cancel"
+              color={ComponentColor.Tertiary}
+              onClick={() => {
+                event(
+                  'creation canceled',
+                  {step: 'broker'},
+                  {feature: 'subscriptions'}
+                )
+                history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+              }}
+              titleText="Cancel creation of Subscription and return to list"
+              type={ButtonType.Button}
+              testID="create-broker-form--cancel"
+            />
+            {showUpgradeButton ? (
+              <CloudUpgradeButton
+                className="create-parsing-form__upgrade-button"
+                metric={() => {
+                  const experimentVariantId = getExperimentVariantId(
+                    CREDIT_250_EXPERIMENT_ID
+                  )
+                  const identity = getDataLayerIdentity()
+                  event(
+                    isFlagEnabled('credit250Experiment') &&
+                      (experimentVariantId === '1' ||
+                        isCredit250ExperienceActive)
+                      ? `subscriptions.parsing-form.credit-250.upgrade`
+                      : `subscriptions.parsing-form.upgrade`,
+                    {
+                      location: 'subscriptions parsing form',
+                      ...identity,
+                      experimentId: CREDIT_250_EXPERIMENT_ID,
+                      experimentVariantId: isCredit250ExperienceActive
+                        ? '2'
+                        : experimentVariantId,
+                    }
+                  )
+                }}
+              />
+            ) : (
+              <Button
+                text="Save Subscription"
+                color={ComponentColor.Success}
+                type={ButtonType.Button}
+                onClick={() => {
+                  event(
+                    'save clicked',
+                    {step: 'parsing', dataFormat: formContent.dataFormat},
+                    {feature: 'subscriptions'}
+                  )
+                  saveForm(formContent)
+                }}
+                testID="create-parsing-form--submit"
+                status={
+                  requiredFields
+                    ? ComponentStatus.Default
+                    : ComponentStatus.Disabled
+                }
+              />
             )}
+            </FlexBox>
+            </div>
+          <Overlay.Header title="Connect to Broker">
           </Overlay.Header>
           <Overlay.Body>
             <Heading
@@ -95,38 +160,7 @@ const BrokerForm: FC<Props> = ({
               edit={true}
             />
           </Overlay.Body>
-          <Overlay.Footer>
-            <Button
-              text="Cancel"
-              color={ComponentColor.Tertiary}
-              onClick={() => {
-                event(
-                  'creation canceled',
-                  {step: 'broker'},
-                  {feature: 'subscriptions'}
-                )
-                history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-              }}
-              titleText="Cancel creation of Subscription and return to list"
-              type={ButtonType.Button}
-              testID="create-broker-form--cancel"
-            />
-            <Button
-              text="Next"
-              color={ComponentColor.Success}
-              onClick={() => {
-                event(
-                  'next clicked',
-                  {step: 'broker'},
-                  {feature: 'subscriptions'}
-                )
-                setFormActive('subscription')
-              }}
-              type={ButtonType.Button}
-              testID="create-broker-form--submit"
-              status={ComponentStatus.Default}
-            />
-          </Overlay.Footer>
+          <div className="create-broker-form__line"></div>
         </Form>
       </div>
     )

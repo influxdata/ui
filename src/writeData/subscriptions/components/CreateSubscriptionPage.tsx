@@ -126,6 +126,9 @@ const CreateSubscriptionPage: FC = () => {
       },
       {feature: 'subscriptions'}
     )
+      document
+      .getElementById(navigationSteps[step - 1].type)
+      ?.scrollIntoView({behavior: 'smooth', block: 'center'})
     setFormActive(navigationSteps[step - 1].type as Steps)
   }
 
@@ -190,33 +193,22 @@ const CreateSubscriptionPage: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
-            {active === Steps.BrokerForm && (
               <BrokerForm
-                setFormActive={setFormActive}
                 formContent={formContent}
                 updateForm={updateForm}
                 showUpgradeButton={showUpgradeButton}
+                saveForm={saveForm}
               />
-            )}
-            {active === Steps.SubscriptionForm && (
               <SubscriptionForm
-                setFormActive={setFormActive}
                 formContent={formContent}
                 updateForm={updateForm}
-                showUpgradeButton={showUpgradeButton}
                 buckets={buckets}
                 bucket={bucket}
               />
-            )}
-            {active === Steps.ParsingForm && (
               <ParsingForm
-                setFormActive={setFormActive}
                 formContent={formContent}
                 updateForm={updateForm}
-                saveForm={saveForm}
-                showUpgradeButton={showUpgradeButton}
               />
-            )}
           </Page.Contents>
         </SpinnerContainer>
       </Page>

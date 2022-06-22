@@ -21,7 +21,6 @@ import {
 import {notify} from 'src/shared/actions/notifications'
 import {PRESENTATION_MODE_ANIMATION_DELAY} from 'src/shared/constants'
 import {presentationMode as presentationModeCopy} from 'src/shared/copy/notifications'
-import {event} from 'src/cloud/utils/reporting'
 
 import {AppState, TimeZone, Theme, NavBarState, FlowsCTA} from 'src/types'
 
@@ -106,7 +105,6 @@ export const AppSettingProvider: FC = ({children}) => {
   )
   const setFluxQueryBuilder = useCallback(
     (_active: boolean) => {
-      event('toggled new query builder', {active: `${_active}`})
       dispatch(setFluxQueryBuilderAction(_active))
     },
     [dispatch]

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect} from 'react'
+import React, {FC, useContext, useEffect, MouseEvent} from 'react'
 import {Link, useLocation} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {connect, ConnectedProps} from 'react-redux'
@@ -75,7 +75,10 @@ const TreeSidebar: FC<ReduxProps> = ({
     event(`helpBar.${link}.opened`, {}, {from: currentPage})
   }
 
-  const handleSelect = (): void => {
+  const handleContactSupportClick = (
+    evt: MouseEvent<HTMLAnchorElement>
+  ): void => {
+    evt.preventDefault()
     const accountType = quartzMe?.accountType ?? 'free'
     const isPayGCustomer = accountType !== 'free'
 
@@ -205,7 +208,9 @@ const TreeSidebar: FC<ReduxProps> = ({
                   id="contactSupport"
                   label="Contact Support"
                   testID="nav-subitem-contact-support"
-                  onClick={handleSelect}
+                  linkElement={() => (
+                    <a href="#" onClick={handleContactSupportClick}></a>
+                  )}
                 />
               )}
               <TreeNav.SubHeading label="Community" />

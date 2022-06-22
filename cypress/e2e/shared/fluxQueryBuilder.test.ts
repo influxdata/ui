@@ -140,6 +140,8 @@ describe('FluxQueryBuilder', () => {
       // if more than 8 items, show "Load More" button
       // and load additional 25 items
 
+      cy.intercept('POST', '/api/v2/query*').as('query')
+
       // select another bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
@@ -148,14 +150,15 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
+
       // more than 8 items, show 'Load More' button
       cy.get('.field-selector--list-item--wrapper').should('have.length', 8)
-      cy.get('.load-more-button')
+      cy.get('.field-selector .load-more-button')
         .should('exist')
         .click()
-
-      // wait for the addtional items to render
-      cy.wait(100)
 
       // when load more is chosen, up to 25 additional entries will be shown
       cy.get('.field-selector--list-item--wrapper').should(

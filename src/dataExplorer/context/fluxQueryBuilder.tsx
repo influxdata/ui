@@ -83,7 +83,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectMeasurement = (measurement: string): void => {
-    selection.measurement = measurment
+    selection.measurement = measurement
     setSelection({...selection})
 
     // Reset fields and tags

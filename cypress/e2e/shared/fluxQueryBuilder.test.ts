@@ -43,10 +43,17 @@ describe('FluxQueryBuilder', () => {
       // search for a bucket
       cy.get('.searchable-dropdown--input-container').type(bucketName)
 
+      // check the API call
+      cy.intercept('POST', '/api/v2/query*').as('query')
+
       // should find the bucket and select it
       cy.get('.cf-dropdown-item')
         .should('contain', bucketName)
         .click()
+
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // check the bucket is selected
       cy.getByTestID('bucket-selector--dropdown-button').should(
@@ -67,6 +74,10 @@ describe('FluxQueryBuilder', () => {
         .should('contain', measurement)
         .click()
 
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
+
       // check the measurement is selected
       cy.getByTestID('measurement-selector--dropdown-button').should(
         'contain',
@@ -81,13 +92,21 @@ describe('FluxQueryBuilder', () => {
     })
 
     it('search bar can search fields and tag keys dynamically', () => {
+      cy.intercept('POST', '/api/v2/query*').as('query')
+
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // search a feild, should contain only the feild, no tag keys
       cy.getByTestID('field-tag-key-search-bar').type(searchField)
@@ -102,6 +121,9 @@ describe('FluxQueryBuilder', () => {
 
       // search a tag key, should contain only that tag key, no fields
       cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
       cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
       cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)
     })
@@ -110,14 +132,21 @@ describe('FluxQueryBuilder', () => {
       // if less than 8 items, show all items
       const bucketNameA = 'Air Sensor Data'
       const measurementA = 'airSensors'
+      cy.intercept('POST', '/api/v2/query*').as('query')
 
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketNameA}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // less than 8 items, no "Load More" button
       cy.get('.field-selector--list-item--wrapper').should(
@@ -132,10 +161,16 @@ describe('FluxQueryBuilder', () => {
       // select another bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // select another measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
+      cy.wait('@query').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+      })
 
       // more than 8 items, show 'Load More' button
       cy.get('.field-selector--list-item--wrapper').should('have.length', 8)

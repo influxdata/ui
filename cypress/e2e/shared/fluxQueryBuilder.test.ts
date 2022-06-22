@@ -11,10 +11,13 @@ describe('FluxQueryBuilder', () => {
             newDataExplorer: true,
           }).then(() => {
             cy.wait(100)
-            // Switch to Flux Query Builder
-            cy.getByTestID('flux-query-builder-toggle')
-              .should('be.visible')
-              .click()
+            cy.getByTestID('flux-query-builder-toggle').then(toggle => {
+              cy.wrap(toggle).should('be.visible')
+              // Switch to Flux Query Builder if it is not on
+              if (toggle.find('.active').length === 0) {
+                toggle.click()
+              }
+            })
           })
         })
       })

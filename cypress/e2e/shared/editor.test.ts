@@ -107,30 +107,4 @@ describe('Editor+LSP communication', () => {
 
     runTest('time-machine--bottom')
   })
-
-  describe('in QX FluxBuilder', () => {
-    before(() => {
-      cy.flush()
-      cy.signin().then(() => {
-        cy.setFeatureFlags({
-          newDataExplorer: true,
-        }).then(() => {
-          cy.get('@org').then(({id}: Organization) => {
-            cy.createMapVariable(id)
-            cy.fixture('routes').then(({orgs, explorer}) => {
-              cy.visit(`${orgs}/${id}${explorer}`)
-              cy.getByTestID('tree-nav').should('be.visible')
-            })
-          })
-
-          cy.getByTestID('flux-query-builder-toggle')
-            .should('be.visible')
-            .click()
-          cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
-        })
-      })
-    })
-
-    runTest('flux-editor')
-  })
 })

@@ -136,7 +136,7 @@ export const EditorProvider: FC = ({children}) => {
       }
       inject(options)
     },
-    [inject]
+    [inject, editor]
   )
 
   const injectVariable = useCallback(

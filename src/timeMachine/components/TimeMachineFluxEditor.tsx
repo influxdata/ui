@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useContext, useMemo} from 'react'
+import React, {FC, lazy, Suspense} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {
   RemoteDataState,
@@ -15,23 +15,20 @@ import {setActiveQueryText} from 'src/timeMachine/actions'
 import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
 
 // Contexts
-import {EditorContext, EditorProvider} from 'src/shared/contexts/editor'
+import {EditorProvider} from 'src/shared/contexts/editor'
 
 // Utils
-import {getActiveQuery, getActiveTimeMachine} from 'src/timeMachine/selectors'
+import {getActiveQuery} from 'src/timeMachine/selectors'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
-import {FluxToolbarFunction, FluxFunction, Variable} from 'src/types'
+import {Variable} from 'src/types'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
 const TMFluxEditor: FC<{variables: Variable[]}> = props => {
   const dispatch = useDispatch()
   const activeQueryText = useSelector(getActiveQuery).text
-  const {activeQueryIndex} = useSelector(getActiveTimeMachine)
-  const editorContext = useContext(EditorContext)
-  const {setEditor, injectFunction, injectVariable} = editorContext
 
   const handleSetActiveQueryText = React.useCallback(
     (text: string) => {
@@ -42,16 +39,6 @@ const TMFluxEditor: FC<{variables: Variable[]}> = props => {
 
   const handleSubmitQueries = () => {
     dispatch(saveAndExecuteQueries())
-  }
-
-  const handleInsertVariable = (variableName: string): void => {
-    injectVariable(variableName, handleSetActiveQueryText)
-  }
-
-  const handleInsertFluxFunction = (
-    func: FluxToolbarFunction | FluxFunction
-  ): void => {
-    injectFunction(func, handleSetActiveQueryText)
   }
 
   const handleActiveQuery = React.useCallback(
@@ -74,37 +61,31 @@ const TMFluxEditor: FC<{variables: Variable[]}> = props => {
     [activeQueryText, handleSetActiveQueryText]
   )
 
-  return useMemo(() => {
-    return (
-      <div className="flux-editor">
-        <div className="flux-editor--left-panel">
-          <Suspense
-            fallback={
-              <SpinnerContainer
-                loading={RemoteDataState.Loading}
-                spinnerComponent={<TechnoSpinner />}
-              />
-            }
-          >
-            <FluxEditor
-              script={activeQueryText}
-              variables={props.variables}
-              onChangeScript={handleActiveQuery}
-              onSubmitScript={handleSubmitQueries}
-              setEditorInstance={setEditor}
-              autofocus
+  return (
+    <div className="flux-editor">
+      <div className="flux-editor--left-panel">
+        <Suspense
+          fallback={
+            <SpinnerContainer
+              loading={RemoteDataState.Loading}
+              spinnerComponent={<TechnoSpinner />}
             />
-          </Suspense>
-        </div>
-        <div className="flux-editor--right-panel">
-          <FluxToolbar
-            onInsertFluxFunction={handleInsertFluxFunction}
-            onInsertVariable={handleInsertVariable}
+          }
+        >
+          <FluxEditor
+            script={activeQueryText}
+            variables={props.variables}
+            onChangeScript={handleActiveQuery}
+            onSubmitScript={handleSubmitQueries}
+            autofocus
           />
-        </div>
+        </Suspense>
       </div>
-    )
-  }, [activeQueryText, activeQueryIndex, props.variables, editorContext.editor])
+      <div className="flux-editor--right-panel">
+        <FluxToolbar />
+      </div>
+    </div>
+  )
 }
 
 const TimeMachineFluxEditor = props => (

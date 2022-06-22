@@ -13,12 +13,8 @@ const NotebookTemplates = lazy(() =>
 const App = lazy(() => import('src/App'))
 const NotFound = lazy(() => import('src/shared/components/NotFound'))
 
-// Types
-import {RemoteDataState, AppState} from 'src/types'
-
 // Actions
 import {getOrganizations} from 'src/organizations/actions/thunks'
-import {getQuartzMe as apiGetQuartzMe} from 'src/me/actions/thunks'
 import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
@@ -35,6 +31,12 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 // Types
 import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
+import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
+import {RemoteDataState, AppState} from 'src/types'
+
+// Thunks
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
@@ -45,28 +47,42 @@ const canAccessCheckout = (me: Me): boolean => {
 
 const GetOrganizations: FunctionComponent = () => {
   const {status, org} = useSelector(getAllOrgs)
+
   const quartzMeStatus = useSelector(
     (state: AppState) => state.me.quartzMeStatus
   )
   const quartzMe = useSelector(getQuartzMe)
+
+  const quartzIdentityStatus = useSelector(
+    (state: AppState) => state.identity.status
+  )
+
   const {id: meId = '', name: email = ''} = useSelector(getMe)
   const dispatch = useDispatch()
 
   useEffect(() => {
+    if (CLOUD && shouldUseQuartzIdentity() && quartzMe?.isRegionBeta === null) {
+      dispatch(getCurrentOrgDetailsThunk())
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // This doesn't require another API call.
+  useEffect(() => {
     if (status === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
     }
-  }, [dispatch, status])
+  }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (
       isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
     ) {
-      dispatch(apiGetQuartzMe())
+      dispatch(getQuartzIdentityThunk())
     }
-  }, [dispatch, quartzMeStatus])
+  }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // This doesn't require another API call.
   useEffect(() => {
     if (
       isFlagEnabled('credit250Experiment') &&

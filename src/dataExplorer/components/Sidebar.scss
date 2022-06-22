@@ -5,6 +5,12 @@
   width: inherit;
   overflow-x: hidden;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .flux-toolbar {
+    flex-direction: column;
+  }
 }
 
 .flux-builder-sidebar--buttons {

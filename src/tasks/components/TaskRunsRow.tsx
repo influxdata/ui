@@ -94,13 +94,14 @@ class TaskRunsRow extends PureComponent<Props, State> {
 
   private get renderLogOverlay(): JSX.Element {
     const {isImportOverlayVisible} = this.state
-    const {logs} = this.props
+    const {logs, run} = this.props
 
     return (
       <Overlay visible={isImportOverlayVisible}>
         <RunLogsOverlay
           onDismissOverlay={this.handleToggleOverlay}
           logs={logs}
+          run={run}
         />
       </Overlay>
     )

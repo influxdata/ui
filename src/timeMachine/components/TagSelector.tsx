@@ -244,15 +244,15 @@ class TagSelector extends PureComponent<Props> {
   }
 
   private handleSelectTag = (tag: string): void => {
-    const {index, onSelectTag} = this.props
-    event('selected tag old query builder dropdown')
+    const {index, keysSearchTerm, onSelectTag} = this.props
+    event('handleSelectTag', {searchTerm: keysSearchTerm.length})
 
     onSelectTag(index, tag)
   }
 
   private handleSelectValue = (value: string): void => {
-    const {index, onSelectValue} = this.props
-    event('selected tag value old query builder')
+    const {index, valuesSearchTerm, onSelectValue} = this.props
+    event('handleSelectValue', {searchTerm: valuesSearchTerm.length})
 
     onSelectValue(index, value)
   }
@@ -265,7 +265,6 @@ class TagSelector extends PureComponent<Props> {
   }
 
   private handleKeysSearch = (value: string) => {
-    event('tagKeySearched', {search: value.length})
     const {onSetKeysSearchTerm, index} = this.props
 
     onSetKeysSearchTerm(index, value)
@@ -280,7 +279,6 @@ class TagSelector extends PureComponent<Props> {
 
   private handleValuesSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target
-    event('tagValueSearched', {search: value.length})
     this.doSearch(value)
   }
 

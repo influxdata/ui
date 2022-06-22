@@ -59,6 +59,11 @@ const DataExplorerPage: FC = () => {
     }
   }, [])
 
+  const toggleSlider = () => {
+    event('toggled new query builder', {active: `${!fluxQueryBuilder}`})
+    setFluxQueryBuilder(!fluxQueryBuilder)
+  }
+
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>
       <Switch>
@@ -84,9 +89,7 @@ const DataExplorerPage: FC = () => {
                 <InputLabel>&#10024; Try new Data Explorer</InputLabel>
                 <SlideToggle
                   active={fluxQueryBuilder}
-                  onChange={() => {
-                    setFluxQueryBuilder(!fluxQueryBuilder)
-                  }}
+                  onChange={toggleSlider}
                   testID="flux-query-builder-toggle"
                 />
               </FlexBox>

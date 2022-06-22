@@ -14,7 +14,6 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
 import {Bucket} from 'src/types'
-import {event} from 'src/cloud/utils/reporting'
 
 const DEBOUNCE_TIMEOUT = 500
 let timer
@@ -63,7 +62,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSelectBucket = (bucket: Bucket): void => {
-    event('selected bucket in new query builder')
     setSelectedBucket(bucket)
 
     // Reset measurement, tags, and fields
@@ -76,7 +74,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectMeasurement = (measurement: string): void => {
-    event('selected measurement in new query builder')
     setSelectedMeasurement(measurement)
 
     // Reset fields and tags
@@ -90,7 +87,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
   const handleSearchTerm = useCallback(
     (searchTerm: string): void => {
-      event('searched in new query builder')
       setSearchTerm(searchTerm)
       debouncer(() => {
         getFields(selectedBucket, selectedMeasurement, searchTerm)

@@ -52,11 +52,6 @@ const ResultsPane: FC = () => {
   const [text, setText] = useLocalStorageState()
   const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
 
-  const onChangeScript = (script: string) => {
-    event('ResultsPane onChangeScript: ', {script: script.length})
-    setText(script)
-  }
-
   const download = () => {
     event('CSV Download Initiated')
     basic(text).promise.then(response => {
@@ -147,7 +142,7 @@ const ResultsPane: FC = () => {
               <FluxMonacoEditor
                 variables={variables}
                 script={text}
-                onChangeScript={onChangeScript}
+                onChangeScript={setText}
               />
             </Suspense>
           </div>

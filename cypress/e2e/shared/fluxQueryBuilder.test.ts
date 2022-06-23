@@ -114,12 +114,15 @@ describe('FluxQueryBuilder', () => {
 
       // search a tag key, should not contain any fields
       cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
+      // wait 1000ms for the API call to happen
+      // since there is a debouncer in dataExplorer/context/fluxQueryBuilder
+      cy.wait(600)
       cy.wait('@query')
       cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
 
       // not recommend to assert for searchTagKey value
-      // since it will call all the tag keys to be expanded,
-      // which triggers numbers of API calls
+      // since it will expand all the tag keys, which triggers
+      // numbers of API calls that are time consuming and unnecessary
     })
 
     it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {

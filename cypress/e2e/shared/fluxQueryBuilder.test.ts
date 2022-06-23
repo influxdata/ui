@@ -117,7 +117,7 @@ describe('FluxQueryBuilder', () => {
       // wait 1000ms for the API call to happen
       // since there is a debouncer in dataExplorer/context/fluxQueryBuilder
       cy.wait(600)
-      cy.wait('@query')
+      cy.wait(['@query', '@query'])
       cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
 
       // not recommend to assert for searchTagKey value

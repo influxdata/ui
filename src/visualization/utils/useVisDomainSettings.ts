@@ -171,7 +171,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
    * When the user un-zooms, do not re-run but revert back to old data
    * Hence re-run the query only when both conditions are met:
    * - the window period changes from the domain changing (zooming in)
-   * - the domain cannot equal the original pre-zoom domain (unzooming)
+   * - the domain does not equal the original pre-zoom domain (unzooming)
    */
   useEffect(() => {
     const updatedWindowPeriod = getWindowPeriodFromVariables(query, variables)
@@ -257,6 +257,13 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
     getWindowPeriodFromVariables(query, variables)
   )
 
+  /*
+   * When the user zooms in, re-run the query
+   * When the user un-zooms, do not re-run but revert back to old data
+   * Hence re-run the query only when both conditions are met:
+   * - the window period changes from the domain changing (zooming in)
+   * - the domain does not equal the original pre-zoom domain (unzooming)
+   */
   useEffect(() => {
     const updatedWindowPeriod = getWindowPeriodFromVariables(query, variables)
     if (isNotEqual(windowPeriod, updatedWindowPeriod)) {

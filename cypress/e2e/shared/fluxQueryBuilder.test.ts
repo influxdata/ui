@@ -89,7 +89,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('tag-selector-key').should('be.visible')
     })
 
-    it('search bar can search fields and tag keys dynamically', () => {
+    it.only('search bar can search fields and tag keys dynamically', () => {
       cy.intercept('POST', '/api/v2/query*').as('query')
 
       // select a bucket
@@ -116,7 +116,9 @@ describe('FluxQueryBuilder', () => {
 
       // search a tag key, should contain only that tag key, no fields
       cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
-      cy.wait('@query')
+
+      // one for field-selector, another one for tag-selector
+      cy.wait(['@query', '@query'])
 
       cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
       cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)

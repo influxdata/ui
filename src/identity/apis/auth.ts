@@ -139,12 +139,13 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
 const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
 
-  if (response.status === 401) {
-    const error: IdpeError = response.data
-    throw new ServerError(error.message)
-  }
+  // if (response.status === 401) {
+  //   // const error: IdpeError = response.data
+  //   throw new ServerError(error.message)
+  // }
 
-  if (response.status === 500) {
+  // Use this temporarily until openAPI PR is merged.
+  if (response.status !== 200) {
     const error: IdpeError = response.data
     throw new ServerError(error.message)
   }

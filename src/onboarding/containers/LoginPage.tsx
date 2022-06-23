@@ -25,7 +25,6 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      // console.log('fetching identity on login')
       await fetchIdentity()
       setHasValidSession(true)
     } catch {

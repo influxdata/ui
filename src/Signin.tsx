@@ -97,7 +97,6 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      // console.log('fetching identity on Signin')
       await fetchIdentity()
       this.setState({auth: true})
       const redirectIsSet = !!getFromLocalStorage('redirectTo')

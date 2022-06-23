@@ -6,7 +6,7 @@ import {getActiveQuery} from 'src/timeMachine/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {getTimeRange, getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 import {
-  getWindowPeriodVariableForZoomRequery,
+  getVariableForZoomRequery,
   getWindowPeriodVariableFromVariables,
 } from 'src/variables/utils/getWindowVars'
 import {
@@ -139,13 +139,14 @@ export const getAllVariables = (
 
 export const getAllVariablesForZoomRequery = (
   state: AppState,
+  domain: number[],
   contextID?: string
 ): Variable[] => {
   const vars = getUserVariableNames(state, contextID || currentContext(state))
-    .concat([TIME_RANGE_START, TIME_RANGE_STOP, WINDOW_PERIOD])
+    .concat([TIME_RANGE_START, TIME_RANGE_STOP])
     .map(variableID => {
-      if (variableID === WINDOW_PERIOD) {
-        return getWindowPeriodVariableForZoomRequery()
+      if (domain?.length) {
+        return getVariableForZoomRequery(variableID, domain)
       }
       return getVariable(state, variableID)
     })

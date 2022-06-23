@@ -25,6 +25,7 @@ import {
   ExecuteCommandInjectTagValue,
   ExecuteCommandInjectField,
 } from 'src/languageSupport/languages/flux/lsp/utils'
+import {event} from 'src/cloud/utils/reporting'
 
 const useLocalStorageState = createLocalStorageStateHook(
   'dataExplorer.schema',
@@ -101,11 +102,16 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     selection.measurement = measurement
     setSelection({...selection})
 
-    // Inject bucket and measurement
+    // Inject measurement
     injectViaLsp(ExecuteCommand.InjectionMeasurement, {
       name: measurement,
       bucket: selection.bucket.id,
     } as ExecuteCommandInjectMeasurement)
+
+    event('flux.schema.injected', {
+      command: ExecuteCommand.InjectionMeasurement,
+      context: 'flux query builder',
+    })
 
     // Reset fields and tags
     resetFields()
@@ -123,14 +129,25 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       name: field,
       bucket: selection.bucket.id,
     } as ExecuteCommandInjectField)
+
+    event('flux.schema.injected', {
+      command: ExecuteCommand.InjectField,
+      context: 'flux query builder',
+    })
   }
 
   const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
+    // TODO: check with Gary when to inject tag key
+    //       we may want to move InjectTag to somewhere else
+    //       otherwise, this following function will not be called
+
     // Inject tag key
     injectViaLsp(ExecuteCommand.InjectTag, {
       bucket: selection.bucket.id,
       name: tagKey,
     } as ExecuteCommandInjectTag)
+
+    // TODO: add event for ExecuteCommand.InjectTag?
 
     // Inject tag value
     injectViaLsp(ExecuteCommand.InjectTagValue, {
@@ -138,6 +155,11 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       name: tagKey,
       value: tagValue,
     } as ExecuteCommandInjectTagValue)
+
+    event('flux.schema.injected', {
+      command: ExecuteCommand.InjectTagValue,
+      context: 'flux query builder',
+    })
   }
 
   const handleSearchTerm = useCallback(

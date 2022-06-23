@@ -31,6 +31,8 @@ describe('FluxQueryBuilder', () => {
     const searchTagKey = 'station_id'
 
     it('bucket selector can search and select a bucket, then search and select a measurement', () => {
+      cy.intercept('POST', '/api/v2/query*').as('query')
+
       // no other selectors should be visible, except the bucket selector
       cy.getByTestID('bucket-selector--dropdown-button').should('be.visible')
       cy.getByTestID('measurement-selector--dropdown-button').should(
@@ -45,9 +47,6 @@ describe('FluxQueryBuilder', () => {
 
       // search for a bucket
       cy.get('.searchable-dropdown--input-container').type(bucketName)
-
-      // check the API call
-      cy.intercept('POST', '/api/v2/query*').as('query')
 
       // should find the bucket and select it
       cy.get('.cf-dropdown-item')
@@ -73,7 +72,6 @@ describe('FluxQueryBuilder', () => {
       cy.get('.cf-dropdown-item')
         .should('contain', measurement)
         .click()
-
       cy.wait('@query')
 
       // check the measurement is selected
@@ -118,6 +116,10 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
       cy.wait('@query')
       cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
+
+      // not recommend to assert for searchTagKey value
+      // since it will call all the tag keys to be expanded,
+      // which triggers numbers of API calls
     })
 
     it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {

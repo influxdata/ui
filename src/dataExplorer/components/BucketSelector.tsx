@@ -58,7 +58,7 @@ const BucketSelector: FC = () => {
     <Dropdown.Button
       onClick={onClick}
       active={active}
-      testID="bucket-selector--dropdown"
+      testID="bucket-selector--dropdown-button"
     >
       {buttonText}
     </Dropdown.Button>

@@ -89,7 +89,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('tag-selector-key').should('be.visible')
     })
 
-    it.only('search bar can search fields and tag keys dynamically', () => {
+    it('search bar can search fields and tag keys dynamically', () => {
       cy.intercept('POST', '/api/v2/query*').as('query')
 
       // select a bucket

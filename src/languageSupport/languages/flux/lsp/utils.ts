@@ -2,7 +2,6 @@ import {
   ProtocolRequestType,
   ProtocolNotificationType,
 } from 'vscode-languageserver-protocol'
-import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
 
 export const makeRequestType = (method: string) => {
   return new ProtocolRequestType<any, any, any, any, any>(method)
@@ -56,7 +55,6 @@ export const didOpen = (uri: string, text: string, version: number) => {
 interface ExecuteCommandParams {
   textDocument: {
     uri: string
-    position: MonacoTypes.Position
   }
 }
 

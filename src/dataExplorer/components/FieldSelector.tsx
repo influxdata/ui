@@ -7,6 +7,7 @@ import WaitingText from 'src/shared/components/WaitingText'
 
 // Contexts
 import {FieldsContext} from 'src/dataExplorer/context/fields'
+import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -26,6 +27,7 @@ conceptually similar to a non-indexed column and value.`
 
 const FieldSelector: FC = () => {
   const {fields, loading} = useContext(FieldsContext)
+  const {selectField} = useContext(FluxQueryBuilderContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
 
   useEffect(() => {
@@ -36,6 +38,11 @@ const FieldSelector: FC = () => {
   let list: JSX.Element | JSX.Element[] = (
     <div className="field-selector--list-item">No Fields Found</div>
   )
+
+  const handleSelectField = (field: string) => {
+    // field is actually field key
+    selectField(field)
+  }
 
   if (loading === RemoteDataState.Error) {
     list = (
@@ -48,7 +55,11 @@ const FieldSelector: FC = () => {
     list = <WaitingText text="Loading fields" />
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
     list = fieldsToShow.map(field => (
-      <div key={field} className="field-selector--list-item--wrapper">
+      <div
+        key={field}
+        className="field-selector--list-item--wrapper"
+        onClick={() => handleSelectField(field)}
+      >
         <div className="field-selector--list-item--selectable">{field}</div>
       </div>
     ))

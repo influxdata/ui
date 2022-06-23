@@ -19,7 +19,10 @@ import {Bucket} from 'src/types'
 
 // Utils
 import {ExecuteCommand} from 'src/languageSupport/languages/flux/lsp/utils'
-import {ExecuteCommandInjectMeasurement} from 'src/languageSupport/languages/flux/lsp/utils'
+import {
+  ExecuteCommandInjectMeasurement,
+  ExecuteCommandInjectField,
+} from 'src/languageSupport/languages/flux/lsp/utils'
 
 const useLocalStorageState = createLocalStorageStateHook(
   'dataExplorer.schema',
@@ -47,6 +50,7 @@ interface FluxQueryBuilderContextType {
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void
+  selectField: (field: string) => void
   setSearchTerm: (str: string) => void
 }
 
@@ -57,6 +61,7 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
+  selectField: (_f: string) => {},
   setSearchTerm: (_s: string) => {},
 }
 
@@ -107,6 +112,15 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     getTagKeys(selection.bucket, measurement)
   }
 
+  const handleSelectField = (field: string): void => {
+    // TODO: why field is not injected?
+    // Inject field
+    injectViaLsp(ExecuteCommand.InjectField, {
+      name: field,
+      bucket: selection.bucket.id,
+    } as ExecuteCommandInjectField)
+  }
+
   const handleSearchTerm = useCallback(
     (searchTerm: string): void => {
       setSearchTerm(searchTerm)
@@ -128,6 +142,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
           searchTerm,
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,
+          selectField: handleSelectField,
           setSearchTerm: handleSearchTerm,
         }}
       >

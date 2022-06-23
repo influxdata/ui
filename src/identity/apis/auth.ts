@@ -136,8 +136,11 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
 const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
 
-  // Error codes to be made more explicit once openapi PR #346 is merged.
-  if (response.status !== 200) {
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 500) {
     const error: IdpeError = response.data
     throw new ServerError(error.message)
   }

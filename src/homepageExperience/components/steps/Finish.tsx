@@ -77,7 +77,7 @@ export const Finish = (props: OwnProps) => {
       props.markStepAsCompleted()
       fireConfetti()
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const showSampleApp = props.wizardEventName === 'pythonWizard'
   return (

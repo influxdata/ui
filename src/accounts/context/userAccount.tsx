@@ -102,7 +102,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     } catch (error) {
       event('multiAccount.retrieveAccounts.error', {error})
     }
-  }, [dispatch, defaultAccountId])
+  }, [dispatch, defaultAccountId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSetDefaultAccount(newDefaultAcctId) {
     const accountName = getAccountNameById(newDefaultAcctId)

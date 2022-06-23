@@ -21,7 +21,7 @@ const GroupedFunctionsList: FC<Props> = ({onSelect}) => {
     text => {
       setSearch(text)
     },
-    [search, setSearch]
+    [search, setSearch] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const filteredFunctions: FilteredFn = useMemo(

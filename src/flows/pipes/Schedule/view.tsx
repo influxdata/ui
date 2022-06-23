@@ -192,7 +192,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
           return acc
         }, {})
       ).length,
-    [queryText]
+    [queryText] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const taskText = useMemo(() => {
     const ast = parse(simplify(queryText))
@@ -237,7 +237,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     ast.body.unshift(header.body[0])
 
     return format_from_js_file(ast)
-  }, [queryText, data.interval, data.offset])
+  }, [queryText, data.interval, data.offset]) // eslint-disable-line react-hooks/exhaustive-deps
   const hasChanges = taskText !== latestTask?.flux ?? ''
 
   const updateInterval = evt => {
@@ -339,7 +339,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
         ],
       },
     ])
-  }, [id, data.task, hasChanges])
+  }, [id, data.task, hasChanges]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const persist = (
     <ExportTaskButton

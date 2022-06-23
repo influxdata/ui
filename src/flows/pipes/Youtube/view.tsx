@@ -37,7 +37,7 @@ const Youtube: FC<PipeProp> = ({Context}) => {
         ],
       },
     ])
-  }, [id, toggleEdit])
+  }, [id, toggleEdit]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const showEditing = isEditing || !data.uri
 

@@ -137,7 +137,7 @@ const ThresholdsSettings: FunctionComponent<Props> = ({
     if (state.isDirty && state.isValid) {
       onSetThresholds(state.thresholds)
     }
-  }, [state])
+  }, [state]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <FlexBox

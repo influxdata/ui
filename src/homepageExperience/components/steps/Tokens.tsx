@@ -66,7 +66,7 @@ export const Tokens: FC<OwnProps> = ({
       await dispatch(getAllResources())
     }
     fetchResources()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (sortedPermissionTypes.length && tokenValue === null) {
@@ -79,14 +79,14 @@ export const Tokens: FC<OwnProps> = ({
       dispatch(createAuthorization(authorization))
       event(`firstMile.${wizardEventName}.tokens.tokenCreated`)
     }
-  }, [sortedPermissionTypes.length])
+  }, [sortedPermissionTypes.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // when token generated, save it to the parent component
   useEffect(() => {
     if (currentAuth.token) {
       setTokenValue(currentAuth.token)
     }
-  }, [currentAuth.token])
+  }, [currentAuth.token]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // when tokenValue in the parent component is not null, set text box value to tokenValue
   useEffect(() => {

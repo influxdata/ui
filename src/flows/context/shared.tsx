@@ -23,7 +23,7 @@ export const FlowProvider: FC = ({children}) => {
         console.error('failed to get notebook', error)
         setLoading(RemoteDataState.Error)
       })
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <PageSpinner loading={loading}>

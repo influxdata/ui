@@ -139,6 +139,6 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
         {children}
       </FieldsContext.Provider>
     ),
-    [fields, loading]
+    [fields, loading] // eslint-disable-line react-hooks/exhaustive-deps
   )
 }

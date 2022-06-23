@@ -75,7 +75,7 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
       }
       hoveredFunctions.add(hoveredFunction)
     }
-  }, [hoveredFunction, searchTerm, tooltipPopup])
+  }, [hoveredFunction, searchTerm, tooltipPopup]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const {onInsertFluxFunction, fluxFunctions, getFluxPackages} = props
 

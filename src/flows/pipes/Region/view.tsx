@@ -154,7 +154,7 @@ const Source: FC<PipeProp> = ({Context}) => {
     data.region = window.location.origin
 
     return [options, REGIONS[REGIONS.length - 2]]
-  }, [data.source, data.region, flags])
+  }, [data.source, data.region, flags]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (data.region === window.location.origin) {
@@ -198,7 +198,7 @@ const Source: FC<PipeProp> = ({Context}) => {
         })
       })
     })
-  }, [data.region, data.token])
+  }, [data.region, data.token]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Context>

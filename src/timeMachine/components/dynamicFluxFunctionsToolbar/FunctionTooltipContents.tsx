@@ -23,7 +23,7 @@ const FunctionTooltipContents: FunctionComponent<Props> = ({
   useEffect(() => {
     setToolTipPopup(true)
     setHoverdFunction(`${packageName}.${name}`)
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className="flux-function-docs" data-testid={`flux-docs--${name}`}>
       <DapperScrollbars autoHide={false}>

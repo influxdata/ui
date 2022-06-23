@@ -98,7 +98,7 @@ const Expressions: FC<Props> = ({parsed, onSelect}) => {
     e => {
       setSearch(e.target.value)
     },
-    [search, setSearch]
+    [search, setSearch] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const schemaExpressions = useMemo(

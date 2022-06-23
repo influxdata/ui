@@ -62,7 +62,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
     }
     updateForm({...formContent})
     setRule('')
-  }, [rule])
+  }, [rule]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className="string-parsing-form">
       <Grid.Column>

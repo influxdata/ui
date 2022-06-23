@@ -36,7 +36,7 @@ const DocSearch: FC<DocSearchProps> = ({type}) => {
         searchBar.removeEventListener('click', logClickSearchEvent)
       }
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const facetFilters = useMemo(
     () => ({

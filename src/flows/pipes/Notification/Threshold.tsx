@@ -133,7 +133,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
       )
       return <Dropdown menu={menu} button={menuButton} />
     },
-    [setThresholdType]
+    [setThresholdType] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const columnDropdown = useCallback(
@@ -167,7 +167,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
       )
       return <Dropdown menu={menu} button={menuButton} />
     },
-    [fields, setColumn]
+    [fields, setColumn] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const updateMin = (event: ChangeEvent<HTMLInputElement>, index: number) => {

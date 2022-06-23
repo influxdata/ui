@@ -31,7 +31,7 @@ export const GoogleOptimizeExperiment: FC<Props> = ({
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
 
-  useEffect(() => {
+  useEffect(() => { // eslint-disable-line react-hooks/exhaustive-deps
     setExperimentVariantId(
       getExperimentVariantId(experimentID, activationEvent)
     )

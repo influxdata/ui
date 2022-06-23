@@ -86,7 +86,7 @@ const DashboardContainer: FC = () => {
     } else if (document.visibilityState === 'visible') {
       GlobalAutoRefresher.poll(autoRefresh, stopFunc)
     }
-  }, [autoRefresh.status, stopFunc])
+  }, [autoRefresh.status, stopFunc]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (isEditing) {
@@ -112,7 +112,7 @@ const DashboardContainer: FC = () => {
       GlobalAutoRefresher.stopPolling()
       document.removeEventListener('visibilitychange', visChangeHandler)
     }
-  }, [
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
     autoRefresh.interval,
     autoRefresh?.status,
     autoRefresh.inactivityTimeout,

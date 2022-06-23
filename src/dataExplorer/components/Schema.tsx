@@ -38,7 +38,7 @@ const FieldsTags: FC = () => {
 
   useEffect(() => {
     setSearchTerm('')
-  }, [selectedBucket, selectedMeasurement])
+  }, [selectedBucket, selectedMeasurement]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSearchFieldsTags = (searchTerm: string): void => {
     setSearchTerm(searchTerm)
@@ -61,7 +61,7 @@ const FieldsTags: FC = () => {
         <TagSelector />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement, searchTerm])
+  }, [selectedBucket, selectedMeasurement, searchTerm]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 const Schema: FC = () => {

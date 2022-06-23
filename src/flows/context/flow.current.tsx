@@ -104,7 +104,7 @@ export const FlowProvider: FC = ({children}) => {
     } catch (error) {
       console.error({error})
     }
-  }, [currentFlow, orgID])
+  }, [currentFlow, orgID]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGetNotebook = useCallback(async notebookId => {
     try {
@@ -171,7 +171,7 @@ export const FlowProvider: FC = ({children}) => {
       }
       doc.off('update', onUpdate)
     }
-  }, [id])
+  }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const update = useCallback(
     (flow: Flow) => {

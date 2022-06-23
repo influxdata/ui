@@ -32,7 +32,7 @@ const MeasurementSelectors: FC<Props> = ({measurements}) => {
 
       update({measurement: updated})
     },
-    [update, selectedMeasurement]
+    [update, selectedMeasurement] // eslint-disable-line react-hooks/exhaustive-deps
   )
   return (
     <>

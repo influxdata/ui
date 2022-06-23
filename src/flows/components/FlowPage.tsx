@@ -27,7 +27,7 @@ const RunOnMount = () => {
     if (flow.readOnly) {
       queryAll()
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return null
 }

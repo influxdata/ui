@@ -177,7 +177,7 @@ export const FlowListProvider: FC = ({children}) => {
   useEffect(() => {
     migrate()
     getAll()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const clone = async (id: string): Promise<string | void> => {
     if (!flows.hasOwnProperty(id)) {

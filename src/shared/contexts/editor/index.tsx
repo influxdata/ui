@@ -136,7 +136,7 @@ export const EditorProvider: FC = ({children}) => {
       }
       inject(options)
     },
-    [inject]
+    [inject] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const injectVariable = useCallback(

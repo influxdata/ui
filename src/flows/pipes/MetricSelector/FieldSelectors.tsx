@@ -31,7 +31,7 @@ const FieldSelectors: FC<Props> = ({fields}) => {
       }
       update({field: updated})
     },
-    [update, selectedField]
+    [update, selectedField] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   return (

@@ -57,7 +57,7 @@ const SecretsList: FC<Props> = ({inject, cbOnInject}) => {
 
   useEffect(() => {
     dispatch(getSecrets())
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const header = () => (
     <FlexBox
@@ -100,7 +100,7 @@ const SecretsList: FC<Props> = ({inject, cbOnInject}) => {
         />
       </div>
     ),
-    [onSelect, secrets]
+    [onSelect, secrets] // eslint-disable-line react-hooks/exhaustive-deps
   )
 }
 

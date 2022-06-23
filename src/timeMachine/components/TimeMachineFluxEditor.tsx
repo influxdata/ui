@@ -104,7 +104,7 @@ const TMFluxEditor: FC<{variables: Variable[]}> = props => {
         </div>
       </div>
     )
-  }, [activeQueryText, activeQueryIndex, props.variables, editorContext.editor])
+  }, [activeQueryText, activeQueryIndex, props.variables, editorContext.editor]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 const TimeMachineFluxEditor = props => (

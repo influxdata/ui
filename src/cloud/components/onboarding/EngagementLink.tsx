@@ -31,7 +31,7 @@ const EngagementLink: FC = () => {
       sendToUserPilot()
       userpilot.reload()
     }
-  }, [pathname, org, me])
+  }, [pathname, org, me]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const sendToUserPilot = (): void => {
     const host = window?.location?.hostname.split('.')

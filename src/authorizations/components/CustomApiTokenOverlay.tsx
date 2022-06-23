@@ -81,7 +81,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   useEffect(() => {
     props.getBuckets()
     props.getTelegrafs()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!isEmpty(props.bucketPermissions.sublevelPermissions)) {
@@ -109,7 +109,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     // BUT, code inside the hook won't run until remoteDataState is 'Done'.
     // Only then will props.bucketPermissions.sublevelPermissions will have value.
     // Consequently, we update the permissions state.
-  }, [props.remoteDataState])
+  }, [props.remoteDataState]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDismiss = () => {
     props.onClose()

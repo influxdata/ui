@@ -250,6 +250,6 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         {children}
       </TagsContext.Provider>
     ),
-    [tags, loadingTagKeys, loadingTagValues]
+    [tags, loadingTagKeys, loadingTagValues] // eslint-disable-line react-hooks/exhaustive-deps
   )
 }

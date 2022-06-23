@@ -70,7 +70,7 @@ export const ResultsProvider: FC = ({children}) => {
     }
 
     setInc(inc + 1)
-  }, [inc])
+  }, [inc]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const value = {
     results,

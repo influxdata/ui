@@ -81,7 +81,8 @@ const SecretsTab: FC = () => {
   useEffect(() => {
     if (searchTerm) {
       secretsEmptyState = (
-        <EmptyState size={ComponentSize.Medium}>
+        <EmptyState size= // eslint-disable-line react-hooks/exhaustive-deps
+        {ComponentSize.Medium}> 
           <EmptyState.Text>No Secrets match your query</EmptyState.Text>
         </EmptyState>
       )

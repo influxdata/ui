@@ -20,7 +20,7 @@ const Embedded: FC<Props> = ({visible}) => {
           allow="encrypted-media"
         />
       ),
-    [visible, parts[1], parts[2]]
+    [visible, parts[1], parts[2]]  // eslint-disable-line react-hooks/exhaustive-deps
   )
 }
 

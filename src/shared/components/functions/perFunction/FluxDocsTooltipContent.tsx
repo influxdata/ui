@@ -22,7 +22,7 @@ const FluxDocsTooltipContent: FC<TooltipProps> = ({
   useEffect(() => {
     setToolTipPopup && setToolTipPopup(true)
     setHoverdFunction && setHoverdFunction(`${func.package}.${func.name}`)
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const argComponent = () => {
     if (func.fluxParameters.length > 0) {
       return func.fluxParameters.map(arg => {

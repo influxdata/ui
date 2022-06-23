@@ -321,7 +321,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         setIsSubmitting(false)
       }
     },
-    [dispatch, getInvalidFields, handleSetErrors, inputs, isDirty]
+    [dispatch, getInvalidFields, handleSetErrors, inputs, isDirty] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const history = useHistory()

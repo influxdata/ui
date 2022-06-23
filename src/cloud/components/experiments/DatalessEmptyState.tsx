@@ -51,7 +51,7 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
         setUserHasData(true)
         throw new Error(error)
       })
-  }, [buckets])
+  }, [buckets]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkBucketsHaveData = async (
     userBuckets,

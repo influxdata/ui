@@ -49,13 +49,13 @@ const Table: FC<Props> = ({properties, sort, updateSort, table}) => {
         properties.timeFormat,
         properties.decimalPlaces
       ),
-    [
+    [ // eslint-disable-line react-hooks/exhaustive-deps
       table.data,
       sort,
       properties.fieldOptions,
       properties.timeFormat,
       properties.decimalPlaces,
-    ]
+    ] 
   )
 
   const {theme, timeZone} = useContext(AppSettingContext)

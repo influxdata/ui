@@ -101,7 +101,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
     return () => {
       document.removeEventListener('mousedown', clickoutside)
     }
-  }, [focused, submenu])
+  }, [focused, submenu]) // eslint-disable-line react-hooks/exhaustive-deps
 
   let dropdown
 

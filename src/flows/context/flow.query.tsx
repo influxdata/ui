@@ -72,13 +72,13 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
     _generateMap()
     queryAll()
-  }, [flow?.range?.lower, flow?.range?.upper])
+  }, [flow?.range?.lower, flow?.range?.upper]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (flow?.readOnly) {
       queryAll()
     }
-  }, [flow?.readOnly])
+  }, [flow?.readOnly]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Share querying event across tabs
   const handleStorageEvent = e => {
@@ -175,7 +175,7 @@ export const FlowQueryProvider: FC = ({children}) => {
 
   useEffect(() => {
     _generateMap()
-  }, [flow])
+  }, [flow]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const generateMap = (doubleForceUpdate?: boolean): Stage[] => {
     // this is to get around an issue where a panel is added, which triggers the useEffect that updates

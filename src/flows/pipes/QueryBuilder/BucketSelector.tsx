@@ -29,7 +29,7 @@ const BucketSelector: FC = () => {
     missingBuckets.forEach(b => {
       addBucket(b as Bucket)
     })
-  }, [loading, buckets, data.buckets])
+  }, [loading, buckets, data.buckets]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading === RemoteDataState.Done && !buckets.length) {
     return (

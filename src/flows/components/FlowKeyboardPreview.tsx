@@ -15,7 +15,7 @@ const FlowKeyboardPreview = () => {
   useEffect(() => {
     window.addEventListener('keypress', runPreview)
     return () => window.removeEventListener('keypress', runPreview)
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return null
 }

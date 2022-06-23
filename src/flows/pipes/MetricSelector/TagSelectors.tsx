@@ -56,7 +56,7 @@ const TagSelectors: FC<Props> = ({tags}) => {
         tags: updatedTags,
       })
     },
-    [update]
+    [update] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const handleSubListItemClick = useCallback(
@@ -88,7 +88,7 @@ const TagSelectors: FC<Props> = ({tags}) => {
         tags: updatedTags,
       })
     },
-    [update]
+    [update] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const _tags = tags.reduce((acc, tag) => {

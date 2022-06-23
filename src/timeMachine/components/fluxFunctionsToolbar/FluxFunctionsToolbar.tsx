@@ -29,7 +29,7 @@ const FluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
     (func: FluxToolbarFunction) => {
       props.onInsertFluxFunction(func)
     },
-    [props.onInsertFluxFunction]
+    [props.onInsertFluxFunction] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   return useMemo(() => {

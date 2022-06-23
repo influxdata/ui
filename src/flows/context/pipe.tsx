@@ -66,7 +66,7 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     (data: Partial<PipeData>) => {
       updateData(id, data)
     },
-    [flow, updateData]
+    [flow, updateData] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const scope = getPanelQueries(id)?.scope

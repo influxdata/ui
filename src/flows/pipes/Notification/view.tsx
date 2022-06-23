@@ -84,7 +84,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
 
   useEffect(() => {
     dispatch(getSecrets())
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const createSecret = (callback: (id: string) => void) => {
     if (showId !== id) {
@@ -146,7 +146,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
           return acc
         }, {})
       ).length,
-    [queryText]
+    [queryText] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const numericColumns = (results?.parsed?.table?.columnKeys || []).filter(
@@ -210,7 +210,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
       updateMessage(editorInstance.getValue())
       event('Injecting Expression into Alert Message')
     },
-    [editorInstance]
+    [editorInstance] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const warningMessage = useMemo(() => {

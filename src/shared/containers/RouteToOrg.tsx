@@ -32,7 +32,7 @@ const RouteToOrg: FC<Props> = ({orgs, history, org}) => {
 
     // else default to first org
     history.push(`/orgs/${orgs[0].id}`)
-  }, [orgs, org])
+  }, [orgs, org]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return <></>
 }

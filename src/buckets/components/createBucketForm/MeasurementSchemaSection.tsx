@@ -616,7 +616,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
   // this fixes that by only remaking panels when one is deleted or added.
   // only re-making them when one is added or removed removes the need for debouncing the update
   // (it was debounced to prevent re-renderings with each keystroke when the name was being entered)
-  const addPanels = useMemo(() => makeAddPanels(), [
+  const addPanels = useMemo(() => makeAddPanels(), [ // eslint-disable-line react-hooks/exhaustive-deps
     newSchemas.length,
     showSchemaValidation,
   ])

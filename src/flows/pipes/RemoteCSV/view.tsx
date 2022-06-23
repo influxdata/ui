@@ -67,7 +67,7 @@ const RemoteCSV: FC<PipeProp> = ({Context}) => {
         }, {})
       )
     })
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Context>

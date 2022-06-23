@@ -133,7 +133,7 @@ const DashboardHeader: FC<Props> = ({
     // We want to invalidate the existing cache when a user manually refreshes the dashboard
     resetQueryCache()
     onManualRefresh()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const isActive =
     autoRefresh?.status && autoRefresh.status === AutoRefreshStatus.Active

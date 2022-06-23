@@ -95,7 +95,7 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
         )
       )
     )
-  }, [buckets])
+  }, [buckets]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // TODO: load bucket creation limits on org change
   // expose limits to frontend
@@ -213,7 +213,7 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
     } else if (loading === RemoteDataState.NotStarted) {
       fetchBuckets()
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const createBucket = (bucket: ExtendedBucket) => {
     bucket.orgID = scope.org
@@ -318,6 +318,6 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
         {children}
       </BucketContext.Provider>
     ),
-    [data.bucket, loading, buckets]
+    [data.bucket, loading, buckets] // eslint-disable-line react-hooks/exhaustive-deps
   )
 }

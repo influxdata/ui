@@ -156,7 +156,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(
     newAST.body.unshift(taskHeader.body[0])
 
     return format_from_js_file(newAST)
-  }, [
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
     id,
     queryText,
     data.every,
@@ -289,7 +289,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(
     newAST.body.unshift(taskHeader.body[0])
 
     return format_from_js_file(newAST)
-  }, [
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
     id,
     queryText,
     data.every,

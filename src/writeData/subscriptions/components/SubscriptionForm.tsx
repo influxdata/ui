@@ -55,7 +55,7 @@ const SubscriptionForm: FC<Props> = ({
   const org = useSelector(getOrg)
   useEffect(() => {
     updateForm({...formContent, bucket: bucket.name})
-  }, [bucket])
+  }, [bucket]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     formContent &&
     buckets && (

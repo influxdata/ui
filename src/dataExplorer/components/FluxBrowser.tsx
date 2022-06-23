@@ -34,14 +34,14 @@ const FluxBrowser: FC = () => {
     if (fluxFunctions.length === 0) {
       dispatch(getFluxPackages())
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSelectItem = useCallback(
     (func: FluxFunction) => {
       injectFunction(getFluxExample(func), _ => null)
       event('flux.function.injected', {name: `${func.package}.${func.name}`})
     },
-    [injectFunction, editor]
+    [injectFunction, editor] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const render = useCallback(
@@ -57,7 +57,7 @@ const FluxBrowser: FC = () => {
         ToolTipContent={FluxDocsTooltipContent}
       />
     ),
-    [handleSelectItem, editor]
+    [handleSelectItem, editor] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   return useMemo(
@@ -75,7 +75,7 @@ const FluxBrowser: FC = () => {
         />
       </div>
     ),
-    [editor, render, fluxFunctions, injectFunction]
+    [editor, render, fluxFunctions, injectFunction] // eslint-disable-line react-hooks/exhaustive-deps
   )
 }
 

@@ -99,7 +99,7 @@ const Card: FC<Props> = ({idx}) => {
         loadKeys(idx, search)
       })
     },
-    [loadKeys, card.keys, idx]
+    [loadKeys, card.keys, idx] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const keySelect = val => {
@@ -184,7 +184,7 @@ const Card: FC<Props> = ({idx}) => {
     return () => {
       cancelKey(idx)
     }
-  }, [data.buckets, card.keys.loading])
+  }, [data.buckets, card.keys.loading]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     let promise
@@ -204,7 +204,7 @@ const Card: FC<Props> = ({idx}) => {
     return () => {
       cancelValue(idx)
     }
-  }, [card.keys.loading, card.values.loading])
+  }, [card.keys.loading, card.values.loading]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (card.keys.loading === RemoteDataState.NotStarted) {
     let emptyText = 'Select a value first'

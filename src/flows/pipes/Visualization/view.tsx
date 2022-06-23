@@ -137,7 +137,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         ],
       },
     ])
-  }, [id, data.properties, results.parsed, range])
+  }, [id, data.properties, results.parsed, range]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (results.error) {
     return (

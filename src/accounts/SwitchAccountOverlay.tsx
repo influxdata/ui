@@ -126,7 +126,7 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
           : ComponentStatus.Default
       setDefaultButtonStatus(defaultSwitchStatus)
     }
-  }, [newAccountId])
+  }, [newAccountId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const disabledTitleText =
     'Select a Different Account to Enable the Switch Button'

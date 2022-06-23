@@ -73,7 +73,7 @@ const TaskRunsCard: FC<Props> = ({task, isTaskEditable}) => {
 
   useEffect(() => {
     dispatch(getMembers())
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!isFlagEnabled('createWithFlows')) {
@@ -108,7 +108,7 @@ const TaskRunsCard: FC<Props> = ({task, isTaskEditable}) => {
       .catch(() => {
         setRoute(`/notebook/from/task/${task.id}`)
       })
-  }, [isFlagEnabled('createWithFlows'), org.id, task])
+  }, [isFlagEnabled('createWithFlows'), org.id, task]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!task) {
     return null

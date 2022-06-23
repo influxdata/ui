@@ -68,7 +68,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
     }
     updateForm({...formContent})
     setRule('')
-  }, [rule])
+  }, [rule]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className="json-parsing-form">
       <Grid.Column>

@@ -17,7 +17,7 @@ const Pipe: FC<PipeProp> = props => {
     }
 
     return createElement(PIPE_DEFINITIONS[data.type].component, props)
-  }, [data.type, props.readOnly])
+  }, [data.type, props.readOnly]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 export default Pipe

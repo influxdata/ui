@@ -241,7 +241,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         status: RemoteDataState.Done,
       }))
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     handleGetCreditUsage()
@@ -266,7 +266,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       console.error(error)
       setBillingStatsStatus(RemoteDataState.Error)
     }
-  }, [setBillingStats])
+  }, [setBillingStats]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     handleGetBillingStats()
@@ -328,7 +328,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       console.error(error)
       setRateLimits(null)
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     handleGetRateLimits(timeRange.duration)

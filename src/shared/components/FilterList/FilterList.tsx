@@ -54,7 +54,7 @@ const FilterList: FC<Props> = ({
         </>
       )
     }
-  }, [search, items, renderItem])
+  }, [search, items, renderItem]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return useMemo(
     () => (
@@ -73,7 +73,7 @@ const FilterList: FC<Props> = ({
         </div>
       </div>
     ),
-    [list, setSearch]
+    [list, setSearch] // eslint-disable-line react-hooks/exhaustive-deps
   )
 }
 

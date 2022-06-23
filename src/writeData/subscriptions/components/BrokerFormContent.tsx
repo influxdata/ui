@@ -52,7 +52,7 @@ const BrokerFormContent: FC<Props> = ({
   const [security, setSecurity] = useState('none')
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
-  }, [protocol])
+  }, [protocol]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <Grid>
       <Grid.Row>

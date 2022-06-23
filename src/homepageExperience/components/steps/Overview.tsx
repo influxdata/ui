@@ -23,7 +23,7 @@ export const Overview: FC<Props> = ({wizard}) => {
       }
     }
     window.addEventListener('blur', checkVidClick)
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>

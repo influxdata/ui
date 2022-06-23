@@ -171,7 +171,7 @@ const Run: FC<RunProps> = ({task, run}) => {
         clearInterval(timer.current)
       }
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const format = (date: string) => {
     try {

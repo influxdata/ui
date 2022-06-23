@@ -43,7 +43,7 @@ const BucketSelector: FC<Props> = ({
     }
 
     onSelect(null)
-  }, [buckets])
+  }, [buckets]) // eslint-disable-line react-hooks/exhaustive-deps
 
   let menuItems = (
     <Dropdown.ItemEmpty>

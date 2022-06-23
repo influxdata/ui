@@ -112,7 +112,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
         {children}
       </FluxQueryBuilderContext.Provider>
     ),
-    [
+    [ // eslint-disable-line react-hooks/exhaustive-deps
       // Schema
       selectedBucket,
       selectedMeasurement,

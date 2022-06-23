@@ -32,7 +32,7 @@ const Measurement: FC<Props> = ({readOnly}) => {
       event('Changed Notification Measurement')
       update({measurement})
     },
-    [measurements, update]
+    [measurements, update] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const menuItems = measurements.map(key => (

@@ -70,7 +70,7 @@ const AutoRefreshButton: FC = () => {
       GlobalAutoRefresher.onDisconnect()
       GlobalAutoRefresher.stopPolling()
     }
-  }, [
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
     autoRefresh.interval,
     autoRefresh?.status,
     autoRefresh.inactivityTimeout,

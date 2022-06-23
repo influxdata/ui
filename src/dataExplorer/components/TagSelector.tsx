@@ -111,7 +111,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
         </div>
       </Accordion>
     )
-  }, [list])
+  }, [list]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 const TagSelector: FC = () => {
@@ -159,7 +159,7 @@ const TagSelector: FC = () => {
         <div className="container-side-bar">{list}</div>
       </Accordion>
     ),
-    [tags, loadingTagKeys, loadingTagValues, list]
+    [tags, loadingTagKeys, loadingTagValues, list] // eslint-disable-line react-hooks/exhaustive-deps
   )
 }
 

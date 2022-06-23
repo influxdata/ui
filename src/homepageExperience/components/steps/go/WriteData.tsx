@@ -37,7 +37,7 @@ export const WriteDataComponent = (props: OwnProps) => {
 
   useEffect(() => {
     dispatch(getBuckets())
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const {bucket} = useContext(WriteDataDetailsContext)
 
@@ -46,7 +46,7 @@ export const WriteDataComponent = (props: OwnProps) => {
   useEffect(() => {
     setSelectedBucket(bucket)
     onSelectBucket(bucket.name)
-  }, [bucket])
+  }, [bucket]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const codeSnippet = `org := "${org.name}"
 bucket := "${bucket.name}"

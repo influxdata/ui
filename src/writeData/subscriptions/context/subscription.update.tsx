@@ -114,7 +114,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
       setCurrentSubscription(current)
       setLoading(RemoteDataState.Done)
     }
-  }, [currentID])
+  }, [currentID]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [loading, setLoading] = useState(RemoteDataState.Done)
   const history = useHistory()

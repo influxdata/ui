@@ -70,7 +70,7 @@ const RunPipeResults: FC = () => {
         })
     })
     event('Visited Shared Notebook', {accessID: accessID})
-  }, [flow])
+  }, [flow]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return null
 }

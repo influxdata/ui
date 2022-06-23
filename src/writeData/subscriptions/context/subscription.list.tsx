@@ -55,7 +55,7 @@ export const SubscriptionListProvider: FC = ({children}) => {
     } finally {
       setLoading(RemoteDataState.Done)
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const deleteSubscription = async (id: string): Promise<void> => {
     setLoading(RemoteDataState.Loading)
     try {
@@ -76,11 +76,11 @@ export const SubscriptionListProvider: FC = ({children}) => {
       setCurrentID(id)
       setLoading(RemoteDataState.Done)
     },
-    [setCurrentID, subscriptions]
+    [setCurrentID, subscriptions] // eslint-disable-line react-hooks/exhaustive-deps
   )
   useEffect(() => {
     getAll()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <SubscriptionListContext.Provider
       value={{

@@ -267,7 +267,7 @@ const PagedTable: FC<Props> = ({result, properties}) => {
         clearTimeout(timeout)
       }
     }
-  }, [ref?.current])
+  }, [ref?.current]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const size = useMemo(() => {
     return measurePage(result, offset, height)

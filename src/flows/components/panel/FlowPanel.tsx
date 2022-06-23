@@ -134,7 +134,7 @@ const FlowPanel: FC<Props> = ({
     updateMeta(id, {
       height: size,
     })
-  }, [flow, size])
+  }, [flow, size]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const title = PIPE_DEFINITIONS[flow.data.byID[id]?.type] ? (
     <FlowPanelTitle id={id} />

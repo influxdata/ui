@@ -58,7 +58,7 @@ const CellCloneOverlay: FC = () => {
         })
         dispatch(notify(dashboardsGetFailed(err)))
       })
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const {onClose} = useContext(OverlayContext)
 

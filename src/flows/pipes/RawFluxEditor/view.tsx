@@ -69,7 +69,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         },
       ])
     }
-  }, [id, inject])
+  }, [id, inject]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateText = useCallback(
     text => {
@@ -81,7 +81,7 @@ const Query: FC<PipeProp> = ({Context}) => {
 
       update({queries: _queries})
     },
-    [queries, activeQuery]
+    [queries, activeQuery] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const injectIntoEditor = useCallback(
@@ -104,7 +104,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         showSub(<Functions onSelect={injectIntoEditor} />)
       }
     }
-  }, [injectIntoEditor, showId])
+  }, [injectIntoEditor, showId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const controls = (
     <Button
@@ -139,8 +139,8 @@ const Query: FC<PipeProp> = ({Context}) => {
         </Suspense>
       </Context>
     ),
-    [
-      RemoteDataState.Loading,
+    [ // eslint-disable-line react-hooks/exhaustive-deps
+      RemoteDataState.Loading, 
       query.text,
       updateText,
       editorContext.editor,

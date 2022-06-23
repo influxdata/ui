@@ -188,7 +188,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
             onMoveColumn={moveColumn}
           />
         )),
-    [fieldOptions]
+    [fieldOptions] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   return (

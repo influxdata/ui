@@ -35,7 +35,7 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
     if (fluxFunctions.length === 0) {
       dispatch(getFluxPackages())
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (tooltipPopup && eventSearchTerm !== termRecorded) {
@@ -51,12 +51,12 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       }
       hoveredFunctions.add(hoveredFunction)
     }
-  }, [hoveredFunction, tooltipPopup, eventSearchTerm])
+  }, [hoveredFunction, tooltipPopup, eventSearchTerm]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSelectItem = useCallback((func: FluxFunction) => {
     onSelect(getFluxExample(func))
     event('flux.function.injected', {name: `${func.package}.${func.name}`})
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const render = fn => (
     <Fn

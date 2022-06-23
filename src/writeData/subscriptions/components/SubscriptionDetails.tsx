@@ -53,7 +53,7 @@ const SubscriptionDetails: FC<Props> = ({
     if (edit) {
       updateForm({...currentSubscription, bucket: bucket.name})
     }
-  }, [bucket])
+  }, [bucket]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     buckets && (
       <div className="update-subscription-form" id="subscription">

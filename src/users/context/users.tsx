@@ -234,7 +234,7 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
         })
       }
     },
-    [dispatch, orgId, users]
+    [dispatch, orgId, users] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   return (

@@ -102,7 +102,7 @@ const CreateSubscriptionPage: FC = () => {
       {userAccountType: quartzMe?.accountType ?? 'unknown'},
       {feature: 'subscriptions'}
     )
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleClick = (step: number) => {
     event(

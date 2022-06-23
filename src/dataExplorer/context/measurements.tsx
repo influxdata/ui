@@ -120,6 +120,6 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
         {children}
       </MeasurementsContext.Provider>
     ),
-    [measurements, loading, children]
+    [measurements, loading, children] // eslint-disable-line react-hooks/exhaustive-deps
   )
 }

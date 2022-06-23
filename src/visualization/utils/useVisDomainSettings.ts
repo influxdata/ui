@@ -156,9 +156,8 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const [domain, setDomain] = useState(initialDomain)
   const [preZoomDomain, setPreZoomDomain] = useState<Array<number>>(null)
 
-  const getAllVariablesWithTimeDomain = timeRange
-    ? (state: AppState) => getAllVariablesForZoomRequery(state, domain)
-    : (state: AppState) => getAllVariablesForZoomRequery(state, [])
+  const getAllVariablesWithTimeDomain = (state: AppState) =>
+    getAllVariablesForZoomRequery(state, timeRange ? domain : [])
   const orgId = useSelector(getOrg)?.id
   const variables = useSelector(getAllVariablesWithTimeDomain)
 
@@ -247,9 +246,8 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   const [domain, setDomain] = useState(initialDomain)
   const [preZoomDomain, setPreZoomDomain] = useState<Array<number>>(null)
 
-  const getAllVariablesWithTimeDomain = timeRange
-    ? (state: AppState) => getAllVariablesForZoomRequery(state, domain)
-    : (state: AppState) => getAllVariablesForZoomRequery(state, [])
+  const getAllVariablesWithTimeDomain = (state: AppState) =>
+    getAllVariablesForZoomRequery(state, timeRange ? domain : [])
   const orgId = useSelector(getOrg)?.id
   const variables = useSelector(getAllVariablesWithTimeDomain)
 

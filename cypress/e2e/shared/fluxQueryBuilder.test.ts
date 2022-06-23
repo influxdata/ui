@@ -80,7 +80,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('tag-selector-key').should('be.visible')
     })
 
-    it('search bar can search fields and tag keys dynamically', () => {
+    it.skip('search bar can search fields and tag keys dynamically', () => {
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()

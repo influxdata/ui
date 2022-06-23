@@ -29,7 +29,7 @@ interface Prop {
 }
 
 const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
-  const {selectedBucket, selectedMeasurement} = useContext(
+  const {selectedBucket, selectedMeasurement, selectTagValue} = useContext(
     FluxQueryBuilderContext
   )
   const {getTagValues} = useContext(TagsContext)
@@ -40,13 +40,9 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     setValuesToShow(tagValues.slice(0, LOAD_MORE_LIMIT_INITIAL))
   }, [tagValues])
 
-  const handleSelectTagValue = (value: string) => {
-    // TODO: potentially inject tag value into the flux script editor
-    //   still TBD on product
-
-    /* eslint-disable no-console */
-    console.log(value)
-    /* eslint-disable no-console */
+  const handleSelectTagValue = (tagValue: string) => {
+    // Inject tag key and value into editor
+    selectTagValue(tagKey, tagValue)
   }
 
   const handleSelectTagKey = (key: string) => {

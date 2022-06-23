@@ -21,6 +21,8 @@ import {Bucket} from 'src/types'
 import {ExecuteCommand} from 'src/languageSupport/languages/flux/lsp/utils'
 import {
   ExecuteCommandInjectMeasurement,
+  ExecuteCommandInjectTag,
+  ExecuteCommandInjectTagValue,
   ExecuteCommandInjectField,
 } from 'src/languageSupport/languages/flux/lsp/utils'
 
@@ -51,6 +53,7 @@ interface FluxQueryBuilderContextType {
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void
   selectField: (field: string) => void
+  selectTagValue: (tagKey: string, tagValue: string) => void
   setSearchTerm: (str: string) => void
 }
 
@@ -62,6 +65,7 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
   selectField: (_f: string) => {},
+  selectTagValue: (_k: string, _v: string) => {},
   setSearchTerm: (_s: string) => {},
 }
 
@@ -121,6 +125,21 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     } as ExecuteCommandInjectField)
   }
 
+  const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
+    // Inject tag key
+    injectViaLsp(ExecuteCommand.InjectTag, {
+      bucket: selection.bucket.id,
+      name: tagKey,
+    } as ExecuteCommandInjectTag)
+
+    // Inject tag value
+    injectViaLsp(ExecuteCommand.InjectTagValue, {
+      bucket: selection.bucket.id,
+      name: tagKey,
+      value: tagValue,
+    } as ExecuteCommandInjectTagValue)
+  }
+
   const handleSearchTerm = useCallback(
     (searchTerm: string): void => {
       setSearchTerm(searchTerm)
@@ -143,6 +162,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,
           selectField: handleSelectField,
+          selectTagValue: handleSelectTagValue,
           setSearchTerm: handleSearchTerm,
         }}
       >

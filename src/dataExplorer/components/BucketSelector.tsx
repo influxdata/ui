@@ -22,6 +22,12 @@ import {RemoteDataState, Bucket} from 'src/types'
 const BUCKET_TOOLTIP = `A bucket is a named location where time series data \
 is stored. You can think of a bucket like you would a database in SQL systems.`
 
+const REMAP_BUCKET_TYPES = {
+  user: 'My Data',
+  system: 'System Data',
+  sample: 'Sample Data',
+}
+
 const BucketSelector: FC = () => {
   const {selectedBucket, selectBucket} = useContext(FluxQueryBuilderContext)
   const {loading, buckets} = useContext(BucketContext)
@@ -119,9 +125,15 @@ const BucketSelector: FC = () => {
       </Dropdown.Item>
     ))
 
+    let name = k
+
+    if (REMAP_BUCKET_TYPES.hasOwnProperty(k)) {
+      name = REMAP_BUCKET_TYPES[k]
+    }
+
     return (
-      <Fragment key={k}>
-        <Dropdown.Divider text={k} />
+      <Fragment key={name}>
+        <Dropdown.Divider text={name} />
         {items}
       </Fragment>
     )

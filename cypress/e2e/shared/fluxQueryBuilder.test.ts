@@ -114,14 +114,10 @@ describe('FluxQueryBuilder', () => {
       // clear the search bar
       cy.getByTestID('dismiss-button').click()
 
-      // search a tag key, should contain only that tag key, no fields
+      // search a tag key, should not contain any fields
       cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
-
-      // one for field-selector, another one for tag-selector
-      cy.wait(['@query', '@query'])
-
+      cy.wait('@query')
       cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
-      cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)
     })
 
     it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {

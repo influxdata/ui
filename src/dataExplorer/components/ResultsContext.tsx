@@ -1,24 +1,56 @@
 import React, {FC, createContext, useState, useRef, useEffect} from 'react'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
+
 import {FluxResult} from 'src/types/flows'
-import {RemoteDataState} from 'src/types'
+import {
+  RemoteDataState,
+  ViewProperties,
+  SimpleTableViewProperties,
+} from 'src/types'
+import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
+
+interface View {
+  state: 'table' | 'graph'
+  properties: ViewProperties
+}
+
+const useLocalStorageState = createLocalStorageStateHook(
+  'dataExplorer.results',
+  {
+    state: 'table',
+    properties: {
+      type: 'simple-table',
+      showAll: false,
+    } as SimpleTableViewProperties,
+  } as View
+)
 
 interface ResultsContextType {
   status: RemoteDataState
   result: FluxResult
   time: number
+  view: View
 
   setStatus: (status: RemoteDataState) => void
   setResult: (result: FluxResult) => void
+  setView: (view: View) => void
 }
 
-export const ResultsContext = createContext<ResultsContextType>({
+const DEFAULT_STATE: ResultsContextType = {
   status: RemoteDataState.NotStarted,
   result: {} as FluxResult,
   time: null,
+  view: {
+    state: 'table',
+    properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
+  },
 
   setStatus: _ => {},
   setResult: _ => {},
-})
+  setView: _ => {},
+}
+
+export const ResultsContext = createContext<ResultsContextType>(DEFAULT_STATE)
 
 export const ResultsProvider: FC = ({children}) => {
   const [result, setResult] = useState<FluxResult>({} as FluxResult)
@@ -27,6 +59,9 @@ export const ResultsProvider: FC = ({children}) => {
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
+
+  // for display, should be moved
+  const [view, setView] = useLocalStorageState()
 
   useEffect(() => {
     let running = false
@@ -66,9 +101,11 @@ export const ResultsProvider: FC = ({children}) => {
         status,
         result,
         time,
+        view,
 
         setStatus,
         setResult,
+        setView,
       }}
     >
       {children}

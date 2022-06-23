@@ -38,6 +38,7 @@
   height: calc(
     100% - 30px
   ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
+  display: flex;
 }
 
 .flow-sidebar--submenu-wrapper {

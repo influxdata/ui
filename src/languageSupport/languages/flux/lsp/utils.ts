@@ -22,6 +22,15 @@ const createNotification = (method: string, params: object = {}) => {
   }
 }
 
+const createRequest = (method: string, params: object = {}) => {
+  return {
+    jsonrpc: JSONRPC,
+    method,
+    params,
+    id: Math.random().toString(),
+  }
+}
+
 export const didChange = (uri: string, text: string, version: number) => {
   return createNotification(Methods.didChange, {
     contentChanges: [{text}],
@@ -43,6 +52,47 @@ export const didOpen = (uri: string, text: string, version: number) => {
   })
 }
 
+interface ExecuteCommandParams {
+  textDocument: {
+    uri: string
+  }
+}
+
+export interface ExecuteCommandInjectMeasurement extends ExecuteCommandParams {
+  name: string
+  bucket: string
+}
+
+export type ExecuteCommandInjectTag = ExecuteCommandInjectMeasurement
+
+export interface ExecuteCommandInjectTagValue extends ExecuteCommandInjectTag {
+  value: string
+}
+
+export type ExecuteCommandInjectField = ExecuteCommandInjectMeasurement
+
+export type ExecuteCommandArgument =
+  | ExecuteCommandInjectMeasurement
+  | ExecuteCommandInjectTag
+  | ExecuteCommandInjectTagValue
+  | ExecuteCommandInjectField
+
+export type ExecuteCommandT =
+  | [ExecuteCommand.InjectionMeasurement, ExecuteCommandInjectMeasurement]
+  | [ExecuteCommand.InjectTag, ExecuteCommandInjectTag]
+  | [ExecuteCommand.InjectTagValue, ExecuteCommandInjectTagValue]
+  | [ExecuteCommand.InjectField, ExecuteCommandInjectField]
+
+export const executeCommand = ([command, arg]: ExecuteCommandT) => {
+  return createRequest(Methods.ExecuteCommand, {
+    command,
+    arguments: [arg],
+    workDoneProgressParams: {
+      workDoneToken: null,
+    },
+  })
+}
+
 export enum Methods {
   Initialize = 'initialize',
   Initialized = 'initialized',
@@ -58,4 +108,12 @@ export enum Methods {
   Hover = 'textDocument/hover',
   References = 'textDocument/references',
   Rename = 'textDocument/rename',
+  ExecuteCommand = 'workspace/executeCommand',
+}
+
+export enum ExecuteCommand {
+  InjectionMeasurement = 'injectMeasurementFilter',
+  InjectField = 'injectFieldFilter',
+  InjectTag = 'injectTagFilter',
+  InjectTagValue = 'injectTagValueFilter',
 }

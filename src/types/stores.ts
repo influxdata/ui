@@ -31,6 +31,7 @@ import {CurrentPage} from 'src/shared/reducers/currentPage'
 import {PerfState} from 'src/perf/reducers'
 import {MeState} from 'src/me/reducers'
 import {CurrentIdentity} from 'src/identity/apis/auth'
+import {QuartzOrganizations} from 'src/quartzOrganizations/reducers'
 
 export interface AppState {
   router: RouterState
@@ -65,6 +66,7 @@ export interface AppState {
   variableEditor: VariableEditorState
   VERSION: string
   annotations: AnnotationsState
+  quartzOrganizations: QuartzOrganizations
 }
 
 export type GetState = () => AppState

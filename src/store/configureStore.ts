@@ -59,6 +59,7 @@ import {
 } from 'src/dataLoaders/reducers/telegrafEditor'
 import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
 import perfReducer from 'src/perf/reducers'
+import quartzOrganizationReducer from 'src/quartzOrganizations/reducers'
 
 // Types
 import {AppState, LocalStorage} from 'src/types'
@@ -123,6 +124,7 @@ export const rootReducer = (history: History) => (state, action) => {
     variableEditor: variableEditorReducer,
     VERSION: () => '',
     annotations: annotationsReducer,
+    quartzOrganizations: quartzOrganizationReducer,
   })(state, action)
 }
 

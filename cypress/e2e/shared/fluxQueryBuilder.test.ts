@@ -110,7 +110,6 @@ describe('FluxQueryBuilder', () => {
         'contain',
         searchField
       )
-      cy.get('.tag-selector-key--list-item').should('contain', 'No Tags Found')
 
       // clear the search bar
       cy.getByTestID('dismiss-button').click()

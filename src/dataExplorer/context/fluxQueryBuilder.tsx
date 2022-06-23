@@ -107,8 +107,11 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
     // Inject measurement
     injectViaLsp(ExecuteCommand.InjectionMeasurement, {
+      bucket:
+        selection.bucket.type === 'sample'
+          ? selection.bucket.id
+          : selection.bucket.name,
       name: measurement,
-      bucket: selection.bucket.id,
     } as ExecuteCommandInjectMeasurement)
 
     event('flux.schema.injected', {
@@ -129,8 +132,11 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     // TODO: why field is not injected?
     // Inject field
     injectViaLsp(ExecuteCommand.InjectField, {
+      bucket:
+        selection.bucket.type === 'sample'
+          ? selection.bucket.id
+          : selection.bucket.name,
       name: field,
-      bucket: selection.bucket.id,
     } as ExecuteCommandInjectField)
 
     event('flux.schema.injected', {
@@ -146,7 +152,10 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
     // Inject tag key
     injectViaLsp(ExecuteCommand.InjectTag, {
-      bucket: selection.bucket.id,
+      bucket:
+        selection.bucket.type === 'sample'
+          ? selection.bucket.id
+          : selection.bucket.name,
       name: tagKey,
     } as ExecuteCommandInjectTag)
 
@@ -154,7 +163,10 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
     // Inject tag value
     injectViaLsp(ExecuteCommand.InjectTagValue, {
-      bucket: selection.bucket.id,
+      bucket:
+        selection.bucket.type === 'sample'
+          ? selection.bucket.id
+          : selection.bucket.name,
       name: tagKey,
       value: tagValue,
     } as ExecuteCommandInjectTagValue)

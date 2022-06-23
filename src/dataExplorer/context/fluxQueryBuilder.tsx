@@ -79,7 +79,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
-  const {injectViaLsp} = useContext(EditorContext)
+  const {injectViaLsp, injectDataSourceAndTimeRange} = useContext(EditorContext)
 
   // States
   const [selection, setSelection] = useLocalStorageState()
@@ -89,6 +89,9 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     selection.bucket = bucket
     selection.measurement = ''
     setSelection({...selection})
+
+    // Inject bucket and time range
+    injectDataSourceAndTimeRange(bucket)
 
     // Reset measurement, tags, and fields
     resetFields()

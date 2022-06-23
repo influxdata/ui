@@ -1,5 +1,5 @@
 import React, {FC, createContext, useState, useCallback} from 'react'
-import {EditorType, FluxFunction, FluxToolbarFunction} from 'src/types'
+import {Bucket, EditorType, FluxFunction, FluxToolbarFunction} from 'src/types'
 
 // Helpers
 import {
@@ -25,6 +25,7 @@ import LspConnectionManager from 'src/languageSupport/languages/flux/lsp/connect
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {SAMPLE_DATA_SET, FROM_BUCKET} from 'src/dataExplorer/shared/utils'
 
 export interface EditorContextType {
   editor: EditorType | null
@@ -39,6 +40,7 @@ export interface EditorContextType {
     cmd: ExecuteCommand,
     data: Omit<ExecuteCommandArgument, 'textDocument'>
   ) => void
+  injectDataSourceAndTimeRange: (dataSource: Bucket) => void
 }
 
 const DEFAULT_CONTEXT: EditorContextType = {
@@ -48,6 +50,7 @@ const DEFAULT_CONTEXT: EditorContextType = {
   injectFunction: (_, __) => {},
   injectVariable: (_, __) => {},
   injectViaLsp: (_, __) => {},
+  injectDataSourceAndTimeRange: _ => {},
 }
 
 export const EditorContext = createContext<EditorContextType>(DEFAULT_CONTEXT)
@@ -136,6 +139,30 @@ export const EditorProvider: FC = ({children}) => {
     [editor]
   )
 
+  const injectDataSourceAndTimeRange = useCallback(
+    (dataSource: Bucket): void => {
+      let _source = ''
+      if (dataSource.type === 'sample') {
+        _source += SAMPLE_DATA_SET(dataSource.id)
+      } else {
+        _source += FROM_BUCKET(dataSource.name)
+      }
+
+      const text = `${_source}\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)`
+
+      const type = InjectionType.OnOwnLine
+
+      const options = {
+        text,
+        type,
+        triggerSuggest: false,
+        cbParentOnUpdateText: _ => {},
+      }
+      inject(options)
+    },
+    [inject, editor]
+  )
+
   const injectFunction = useCallback(
     (
       rawFn: FluxToolbarFunction | FluxFunction,
@@ -195,6 +222,7 @@ export const EditorProvider: FC = ({children}) => {
         injectFunction,
         injectVariable,
         injectViaLsp,
+        injectDataSourceAndTimeRange,
       }}
     >
       {children}

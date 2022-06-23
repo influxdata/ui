@@ -42,21 +42,6 @@
     -webkit-appearance: none;
     margin: 0;
   }
-  &__premium-container {
-    margin-left: $cf-space-s;
-    .cf-icon {
-      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    &__text {
-      margin-left: $cf-space-s;
-      text-transform: uppercase;
-      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
   &__upgrade-button {
     background: linear-gradient(45deg, #0098f0 0%, $c-pulsar 100%) !important;
     color: $cf-white;

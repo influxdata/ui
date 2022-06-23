@@ -127,6 +127,6 @@ export const GoWizard = lazy(() =>
   }))
 )
 
-export const SinglePageSubDetails = lazy(() =>
-  import('src/writeData/subscriptions/components/SinglePageSubDetails')
+export const DetailsSubscriptionPage = lazy(() =>
+  import('src/writeData/subscriptions/components/DetailsSubscriptionPage')
 )

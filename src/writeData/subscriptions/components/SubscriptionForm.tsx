@@ -41,8 +41,7 @@ const SubscriptionForm: FC<Props> = ({
           onSubmit={() => {}}
           testID="create-subscription-form--overlay-form"
         >
-          <Overlay.Header title="Subscribe to a Topic">
-          </Overlay.Header>
+          <Overlay.Header title="Subscribe to a Topic"></Overlay.Header>
           <Overlay.Body>
             <Heading
               element={HeadingElement.H5}

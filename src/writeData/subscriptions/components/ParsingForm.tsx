@@ -26,56 +26,56 @@ interface Props {
   updateForm: (any) => void
 }
 
-const ParsingForm: FC<Props> = ({
-  formContent,
-  updateForm,
-}) => {
-  return (
-    formContent && (
-      <div className={formContent.dataFormat === 'lineprotocol' ? "create-parsing-form--line-protocol" : "create-parsing-form"} id="parsing">
-        <Form onSubmit={() => {}} testID="create-parsing-form-overlay">
-          <Overlay.Header title="Define Data Parsing Rules">
-          </Overlay.Header>
-          <Overlay.Body>
-            <Heading
-              element={HeadingElement.H5}
-              weight={FontWeight.Regular}
-              className="create-parsing-form__text"
-            >
-              Specify the format of your messages and define rules to parse it
-              into line protocol.
-            </Heading>
-            <Grid>
-              <Grid.Row>
-                <ParsingDetailsEdit
-                  currentSubscription={formContent}
+const ParsingForm: FC<Props> = ({formContent, updateForm}) =>
+  formContent && (
+    <div
+      className={
+        formContent.dataFormat === 'lineprotocol'
+          ? 'create-parsing-form--line-protocol'
+          : 'create-parsing-form'
+      }
+      id="parsing"
+    >
+      <Form onSubmit={() => {}} testID="create-parsing-form-overlay">
+        <Overlay.Header title="Define Data Parsing Rules"></Overlay.Header>
+        <Overlay.Body>
+          <Heading
+            element={HeadingElement.H5}
+            weight={FontWeight.Regular}
+            className="create-parsing-form__text"
+          >
+            Specify the format of your messages and define rules to parse it
+            into line protocol.
+          </Heading>
+          <Grid>
+            <Grid.Row>
+              <ParsingDetailsEdit
+                currentSubscription={formContent}
+                updateForm={updateForm}
+                className="create"
+              />
+              {formContent.dataFormat === 'lineprotocol' && (
+                <LineProtocolForm />
+              )}
+              {formContent.dataFormat === 'json' && (
+                <JsonParsingForm
+                  formContent={formContent}
                   updateForm={updateForm}
-                  className="create"
+                  edit={true}
                 />
-                {formContent.dataFormat === 'lineprotocol' && (
-                  <LineProtocolForm />
-                )}
-                {formContent.dataFormat === 'json' && (
-                  <JsonParsingForm
-                    formContent={formContent}
-                    updateForm={updateForm}
-                    edit={true}
-                  />
-                )}
-                {formContent.dataFormat === 'string' && (
-                  <StringParsingForm
-                    formContent={formContent}
-                    updateForm={updateForm}
-                    edit={true}
-                  />
-                )}
-              </Grid.Row>
-            </Grid>
-          </Overlay.Body>
-          <div className="create-parsing-form__line"></div>
-        </Form>
-      </div>
-    )
+              )}
+              {formContent.dataFormat === 'string' && (
+                <StringParsingForm
+                  formContent={formContent}
+                  updateForm={updateForm}
+                  edit={true}
+                />
+              )}
+            </Grid.Row>
+          </Grid>
+        </Overlay.Body>
+        <div className="create-parsing-form__line"></div>
+      </Form>
+    </div>
   )
-}
 export default ParsingForm

@@ -22,7 +22,14 @@ interface Props {
 }
 
 const ParsingDetails: FC<Props> = ({currentSubscription, updateForm, edit}) => (
-  <div className={currentSubscription.dataFormat === 'lineprotocol' ? "update-parsing-form--line-protocol" : "update-parsing-form"} id="parsing">
+  <div
+    className={
+      currentSubscription.dataFormat === 'lineprotocol'
+        ? 'update-parsing-form--line-protocol'
+        : 'update-parsing-form'
+    }
+    id="parsing"
+  >
     <Form onSubmit={() => {}} testID="update-parsing-form-overlay">
       <Overlay.Header title="Define Data Parsing Rules"></Overlay.Header>
       <Overlay.Body>

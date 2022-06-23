@@ -12,9 +12,14 @@ import {createLocalStorageStateHook} from 'use-local-storage-state'
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
 import {TagsContext} from 'src/dataExplorer/context/tags'
+import {EditorContext} from 'src/shared/contexts/editor'
 
 // Types
 import {Bucket} from 'src/types'
+
+// Utils
+import {ExecuteCommand} from 'src/languageSupport/languages/flux/lsp/utils'
+import {ExecuteCommandInjectMeasurement} from 'src/languageSupport/languages/flux/lsp/utils'
 
 const useLocalStorageState = createLocalStorageStateHook(
   'dataExplorer.schema',
@@ -64,6 +69,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
+  const {injectViaLsp} = useContext(EditorContext)
 
   // States
   const [selection, setSelection] = useLocalStorageState()
@@ -85,6 +91,12 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const handleSelectMeasurement = (measurement: string): void => {
     selection.measurement = measurement
     setSelection({...selection})
+
+    // Inject bucket and measurement
+    injectViaLsp(ExecuteCommand.InjectionMeasurement, {
+      name: measurement,
+      bucket: selection.bucket.id,
+    } as ExecuteCommandInjectMeasurement)
 
     // Reset fields and tags
     resetFields()

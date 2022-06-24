@@ -49,7 +49,7 @@ const BucketSelector: FC = () => {
 
   let buttonText = 'Loading buckets...'
   if (loading === RemoteDataState.Done && !selectedBucket?.name) {
-    buttonText = 'Choose a bucket'
+    buttonText = 'Select bucket...'
   } else if (loading === RemoteDataState.Done && selectedBucket?.name) {
     buttonText = selectedBucket.name
   }

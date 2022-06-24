@@ -9,7 +9,11 @@ import {
 } from 'src/variables/utils/buildVarsOption'
 
 // Constants
-import {WINDOW_PERIOD} from 'src/variables/constants'
+import {
+  TIME_RANGE_START,
+  TIME_RANGE_STOP,
+  WINDOW_PERIOD,
+} from 'src/variables/constants'
 
 // Types
 import {VariableAssignment, Package} from 'src/types/ast'
@@ -18,7 +22,6 @@ import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
 const DESIRED_POINTS_PER_GRAPH = 360
 const FALLBACK_WINDOW_PERIOD = 15000
-const FINEST_WINDOW_PERIOD_PRECISION = 1000
 
 /*
   Compute the `v.windowPeriod` variable assignment for a query.
@@ -193,15 +196,34 @@ export const getWindowPeriodVariableFromVariables = (
   return [windowPeriodVariable]
 }
 
-export const getWindowPeriodVariableForZoomRequery = (): Variable => ({
-  orgID: '',
-  id: WINDOW_PERIOD,
-  name: WINDOW_PERIOD,
-  arguments: {
-    type: 'system',
-    values: [FINEST_WINDOW_PERIOD_PRECISION],
-  },
-  status: RemoteDataState.Done,
-  labels: [],
-  selected: [],
-})
+export const getVariableForZoomRequery = (
+  variableID: string,
+  domain: number[]
+): Variable => {
+  const variable: Variable = {
+    orgID: '',
+    id: variableID,
+    name: variableID,
+    arguments: {
+      type: 'system',
+    },
+    status: RemoteDataState.Done,
+    labels: [],
+    selected: [],
+  }
+
+  const startTime = new Date(domain?.[0] ?? '')
+  const stopTime = new Date(domain?.[1] ?? '')
+  switch (variableID) {
+    case TIME_RANGE_START:
+      variable.arguments.values = [startTime.toISOString()]
+      return variable
+
+    case TIME_RANGE_STOP:
+      variable.arguments.values = [stopTime.toISOString()]
+      return variable
+
+    default:
+      return variable
+  }
+}

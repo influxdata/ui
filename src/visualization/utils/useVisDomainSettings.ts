@@ -12,11 +12,9 @@ import {useOneWayState} from 'src/shared/utils/useOneWayState'
 import {extent} from 'src/shared/utils/vis'
 import {getStartTime, getEndTime} from 'src/timeMachine/selectors/index'
 import {getOrg} from 'src/organizations/selectors'
-import {
-  // getAllVariables,
-  getAllVariablesForZoomRequery,
-} from 'src/variables/selectors'
+import {getAllVariablesForZoomRequery} from 'src/variables/selectors'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+import {event} from 'src/cloud/utils/reporting'
 
 import {
   getWindowPeriodFromVariables,
@@ -65,9 +63,18 @@ export const useVisXDomainSettings = (
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [domain, setDomain] = useOneWayState(initialDomain)
-  const resetDomain = () => setDomain(initialDomain)
 
-  return [domain, setDomain, resetDomain]
+  const setVisXDomain = (domain: NumericColumnData) => {
+    setDomain(domain)
+    event('plot.zoom_in.xAxis', {zoomRequery: 'false'})
+  }
+
+  const resetDomain = () => {
+    setDomain(initialDomain)
+    event('plot.zoom_restore.xAxis', {zoomRequery: 'false'})
+  }
+
+  return [domain, setVisXDomain, resetDomain]
 }
 
 const isValidStoredDomainValue = (value): boolean => {
@@ -115,8 +122,18 @@ export const useVisYDomainSettings = (
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [domain, setDomain] = useOneWayState(initialDomain)
-  const resetDomain = () => setDomain(initialDomain)
-  return [domain, setDomain, resetDomain]
+
+  const setVisYDomain = (domain: NumericColumnData | string) => {
+    setDomain(domain)
+    event('plot.zoom_in.yAxis', {zoomRequery: 'false'})
+  }
+
+  const resetDomain = () => {
+    setDomain(initialDomain)
+    event('plot.zoom_restore.yAxis', {zoomRequery: 'false'})
+  }
+
+  return [domain, setVisYDomain, resetDomain]
 }
 
 interface ZoomRequeryArgs {
@@ -205,6 +222,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
       setPreZoomResult(parsedResult)
     }
     setDomain(updatedDomain)
+    event('plot.zoom_in.xAxis', {zoomRequery: 'true'}, {orgId})
   }
 
   const resetDomain = () => {
@@ -213,6 +231,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
       setPreZoomResult(null)
     }
     setDomain(preZoomDomain)
+    event('plot.zoom_restore.xAxis', {zoomRequery: 'true'}, {orgId})
   }
 
   return [domain, setZoomDomain, resetDomain]
@@ -295,6 +314,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
       setPreZoomResult(parsedResult)
     }
     setDomain(updatedDomain)
+    event('plot.zoom_in.yAxis', {zoomRequery: 'true'}, {orgId})
   }
 
   const resetDomain = () => {
@@ -303,6 +323,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
       setPreZoomResult(null)
     }
     setDomain(preZoomDomain)
+    event('plot.zoom_restore.yAxis', {zoomRequery: 'true'}, {orgId})
   }
 
   return [domain, setZoomDomain, resetDomain]

@@ -145,6 +145,7 @@ const CreateSubscriptionPage: FC = () => {
                 navigationSteps={navigationSteps}
                 settingUpIcon={FormLogo}
                 settingUpText="MQTT Connector"
+                showCheckmark={false}
               />
             </div>
             <BrokerForm

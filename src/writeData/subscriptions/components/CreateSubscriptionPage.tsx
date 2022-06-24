@@ -4,10 +4,7 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {
-  AlignItems,
-  FlexBox,
   IconFont,
-  JustifyContent,
   Page,
   SpinnerContainer,
   SubwayNav,
@@ -17,7 +14,6 @@ import {
 import BrokerForm from 'src/writeData/subscriptions/components/BrokerForm'
 import ParsingForm from 'src/writeData/subscriptions/components/ParsingForm'
 import SubscriptionForm from 'src/writeData/subscriptions/components/SubscriptionForm'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import GetResources from 'src/resources/components/GetResources'
 
 // Graphics
@@ -36,20 +32,12 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
-import {shouldGetCredit250Experience, getQuartzMe} from 'src/me/selectors'
+import {getQuartzMe} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  getDataLayerIdentity,
-  getExperimentVariantId,
-} from 'src/cloud/utils/experiments'
 import {
   checkRequiredJsonFields,
   checkRequiredStringFields,
 } from 'src/writeData/subscriptions/utils/form'
-
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
@@ -87,9 +75,6 @@ const CreateSubscriptionPage: FC = () => {
   const {formContent, saveForm, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
-  // [gh] temporarily removing this check while this feature is under development.
-  const showUpgradeButton = false // useSelector(shouldShowUpgradeButton)
-  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
   const quartzMe = useSelector(getQuartzMe)
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
@@ -126,6 +111,9 @@ const CreateSubscriptionPage: FC = () => {
       },
       {feature: 'subscriptions'}
     )
+    document
+      .getElementById(navigationSteps[step - 1].type)
+      ?.scrollIntoView({behavior: 'smooth', block: 'center'})
     setFormActive(navigationSteps[step - 1].type as Steps)
   }
 
@@ -150,37 +138,6 @@ const CreateSubscriptionPage: FC = () => {
             scrollable={true}
             className="create-subscription-page"
           >
-            {showUpgradeButton && (
-              <FlexBox
-                justifyContent={JustifyContent.FlexEnd}
-                alignItems={AlignItems.FlexEnd}
-                stretchToFitHeight={true}
-              >
-                <CloudUpgradeButton
-                  metric={() => {
-                    const experimentVariantId = getExperimentVariantId(
-                      CREDIT_250_EXPERIMENT_ID
-                    )
-                    const identity = getDataLayerIdentity()
-                    event(
-                      isFlagEnabled('credit250Experiment') &&
-                        (experimentVariantId === '1' ||
-                          isCredit250ExperienceActive)
-                        ? `subscriptions.create.credit-250.upgrade`
-                        : `subscriptions.create.upgrade`,
-                      {
-                        location: 'subscriptions create',
-                        ...identity,
-                        experimentId: CREDIT_250_EXPERIMENT_ID,
-                        experimentVariantId: isCredit250ExperienceActive
-                          ? '2'
-                          : experimentVariantId,
-                      }
-                    )
-                  }}
-                />
-              </FlexBox>
-            )}
             <div className="create-subscription-page__progress">
               <SubwayNav
                 currentStep={getActiveStep(active)}
@@ -190,33 +147,18 @@ const CreateSubscriptionPage: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
-            {active === Steps.BrokerForm && (
-              <BrokerForm
-                setFormActive={setFormActive}
-                formContent={formContent}
-                updateForm={updateForm}
-                showUpgradeButton={showUpgradeButton}
-              />
-            )}
-            {active === Steps.SubscriptionForm && (
-              <SubscriptionForm
-                setFormActive={setFormActive}
-                formContent={formContent}
-                updateForm={updateForm}
-                showUpgradeButton={showUpgradeButton}
-                buckets={buckets}
-                bucket={bucket}
-              />
-            )}
-            {active === Steps.ParsingForm && (
-              <ParsingForm
-                setFormActive={setFormActive}
-                formContent={formContent}
-                updateForm={updateForm}
-                saveForm={saveForm}
-                showUpgradeButton={showUpgradeButton}
-              />
-            )}
+            <BrokerForm
+              formContent={formContent}
+              updateForm={updateForm}
+              saveForm={saveForm}
+            />
+            <SubscriptionForm
+              formContent={formContent}
+              updateForm={updateForm}
+              buckets={buckets}
+              bucket={bucket}
+            />
+            <ParsingForm formContent={formContent} updateForm={updateForm} />
           </Page.Contents>
         </SpinnerContainer>
       </Page>

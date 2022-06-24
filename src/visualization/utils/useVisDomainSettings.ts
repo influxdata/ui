@@ -1,7 +1,8 @@
 // Libraries
-import {useMemo, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {NumericColumnData, fromFlux} from '@influxdata/giraffe'
+import {isEqual} from 'lodash'
 
 // API
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
@@ -13,9 +14,15 @@ import {getStartTime, getEndTime} from 'src/timeMachine/selectors/index'
 import {getOrg} from 'src/organizations/selectors'
 import {getAllVariablesForZoomRequery} from 'src/variables/selectors'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+import {event} from 'src/cloud/utils/reporting'
+
+import {
+  getWindowPeriodFromVariables,
+  getWindowVarsFromVariables,
+} from 'src/variables/utils/getWindowVars'
 
 // Types
-import {InternalFromFluxResult, TimeRange} from 'src/types'
+import {AppState, InternalFromFluxResult, TimeRange} from 'src/types'
 /*
   This hook helps map the domain setting stored for line graph to the
   appropriate settings on a @influxdata/giraffe `Config` object.
@@ -56,9 +63,18 @@ export const useVisXDomainSettings = (
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [domain, setDomain] = useOneWayState(initialDomain)
-  const resetDomain = () => setDomain(initialDomain)
 
-  return [domain, setDomain, resetDomain]
+  const setVisXDomain = (domain: NumericColumnData) => {
+    setDomain(domain)
+    event('plot.zoom_in.xAxis', {zoomRequery: 'false'})
+  }
+
+  const resetDomain = () => {
+    setDomain(initialDomain)
+    event('plot.zoom_restore.xAxis', {zoomRequery: 'false'})
+  }
+
+  return [domain, setVisXDomain, resetDomain]
 }
 
 const isValidStoredDomainValue = (value): boolean => {
@@ -106,8 +122,18 @@ export const useVisYDomainSettings = (
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [domain, setDomain] = useOneWayState(initialDomain)
-  const resetDomain = () => setDomain(initialDomain)
-  return [domain, setDomain, resetDomain]
+
+  const setVisYDomain = (domain: NumericColumnData | string) => {
+    setDomain(domain)
+    event('plot.zoom_in.yAxis', {zoomRequery: 'false'})
+  }
+
+  const resetDomain = () => {
+    setDomain(initialDomain)
+    event('plot.zoom_restore.yAxis', {zoomRequery: 'false'})
+  }
+
+  return [domain, setVisYDomain, resetDomain]
 }
 
 interface ZoomRequeryArgs {
@@ -121,6 +147,9 @@ interface ZoomRequeryArgs {
   timeRange?: TimeRange
 }
 
+const isNotEqual = (firstValue: any, secondValue: any): boolean =>
+  isEqual(firstValue, secondValue) === false
+
 export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const {
     parsedResult,
@@ -133,10 +162,6 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     timeRange = null,
   } = args
 
-  const orgId = useSelector(getOrg)?.id
-  const variables = useSelector(getAllVariablesForZoomRequery)
-  const extern = buildUsedVarsOption(query, variables)
-
   const initialDomain = useMemo(() => {
     if (storedDomain) {
       return storedDomain
@@ -146,28 +171,66 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [domain, setDomain] = useState(initialDomain)
-  const [preZoomDomain, setPreZoomDomain] = useState<Array<number>>(null)
+  const [preZoomDomain] = useOneWayState(initialDomain)
+
+  const getAllVariablesWithTimeDomain = (state: AppState) =>
+    getAllVariablesForZoomRequery(state, timeRange ? domain : [])
+  const orgId = useSelector(getOrg)?.id
+  const variables = useSelector(getAllVariablesWithTimeDomain)
+
+  const [windowPeriod, setWindowPeriod] = useState<number>(
+    getWindowPeriodFromVariables(query, variables)
+  )
+
+  /*
+   * When the user zooms in, re-run the query
+   * When the user un-zooms, do not re-run but revert back to old data
+   * Hence re-run the query only when both conditions are met:
+   * - the window period changes from the domain changing (zooming in)
+   * - the domain does not equal the original pre-zoom domain (unzooming)
+   */
+  useEffect(() => {
+    const updatedWindowPeriod = getWindowPeriodFromVariables(query, variables)
+    if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
+      setWindowPeriod(getWindowPeriodFromVariables(query, variables))
+
+      if (isNotEqual(preZoomDomain, domain)) {
+        const zoomQueryWindowVariable = getWindowVarsFromVariables(
+          query,
+          variables
+        )
+        const extern = buildUsedVarsOption(
+          query,
+          variables,
+          zoomQueryWindowVariable
+        )
+        runQuery(orgId, query, extern).promise.then(
+          (result: RunQueryResult) => {
+            if (result.type === 'SUCCESS') {
+              const parsed = fromFlux(result.csv)
+              setResult(parsed)
+            }
+          }
+        )
+      }
+    }
+  }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const setZoomDomain = (updatedDomain: number[]) => {
     if (!preZoomResult) {
-      setPreZoomDomain(initialDomain)
       setPreZoomResult(parsedResult)
     }
-
-    runQuery(orgId, query, extern).promise.then((result: RunQueryResult) => {
-      if (result.type === 'SUCCESS') {
-        const parsed = fromFlux(result.csv)
-        setResult(parsed)
-        setDomain(updatedDomain)
-      }
-    })
+    setDomain(updatedDomain)
+    event('plot.zoom_in.xAxis', {zoomRequery: 'true'}, {orgId})
   }
+
   const resetDomain = () => {
     if (preZoomResult) {
       setResult(preZoomResult)
       setPreZoomResult(null)
     }
     setDomain(preZoomDomain)
+    event('plot.zoom_restore.xAxis', {zoomRequery: 'true'}, {orgId})
   }
 
   return [domain, setZoomDomain, resetDomain]
@@ -184,9 +247,6 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
     data,
     timeRange = null,
   } = args
-  const orgId = useSelector(getOrg)?.id
-  const variables = useSelector(getAllVariablesForZoomRequery)
-  const extern = buildUsedVarsOption(query, variables)
 
   const initialDomain = useMemo(() => {
     if (
@@ -202,28 +262,66 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [domain, setDomain] = useState(initialDomain)
-  const [preZoomDomain, setPreZoomDomain] = useState<Array<number>>(null)
+  const [preZoomDomain] = useOneWayState(initialDomain)
+
+  const getAllVariablesWithTimeDomain = (state: AppState) =>
+    getAllVariablesForZoomRequery(state, timeRange ? domain : [])
+  const orgId = useSelector(getOrg)?.id
+  const variables = useSelector(getAllVariablesWithTimeDomain)
+
+  const [windowPeriod, setWindowPeriod] = useState<number>(
+    getWindowPeriodFromVariables(query, variables)
+  )
+
+  /*
+   * When the user zooms in, re-run the query
+   * When the user un-zooms, do not re-run but revert back to old data
+   * Hence re-run the query only when both conditions are met:
+   * - the window period changes from the domain changing (zooming in)
+   * - the domain does not equal the original pre-zoom domain (unzooming)
+   */
+  useEffect(() => {
+    const updatedWindowPeriod = getWindowPeriodFromVariables(query, variables)
+    if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
+      setWindowPeriod(getWindowPeriodFromVariables(query, variables))
+
+      if (isNotEqual(preZoomDomain, domain)) {
+        const zoomQueryWindowVariable = getWindowVarsFromVariables(
+          query,
+          variables
+        )
+        const extern = buildUsedVarsOption(
+          query,
+          variables,
+          zoomQueryWindowVariable
+        )
+        runQuery(orgId, query, extern).promise.then(
+          (result: RunQueryResult) => {
+            if (result.type === 'SUCCESS') {
+              const parsed = fromFlux(result.csv)
+              setResult(parsed)
+            }
+          }
+        )
+      }
+    }
+  }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const setZoomDomain = (updatedDomain: number[]) => {
     if (!preZoomResult) {
-      setPreZoomDomain(initialDomain)
       setPreZoomResult(parsedResult)
     }
-
-    runQuery(orgId, query, extern).promise.then((result: RunQueryResult) => {
-      if (result.type === 'SUCCESS') {
-        const parsed = fromFlux(result.csv)
-        setResult(parsed)
-        setDomain(updatedDomain)
-      }
-    })
+    setDomain(updatedDomain)
+    event('plot.zoom_in.yAxis', {zoomRequery: 'true'}, {orgId})
   }
+
   const resetDomain = () => {
     if (preZoomResult) {
       setResult(preZoomResult)
       setPreZoomResult(null)
     }
     setDomain(preZoomDomain)
+    event('plot.zoom_restore.yAxis', {zoomRequery: 'true'}, {orgId})
   }
 
   return [domain, setZoomDomain, resetDomain]

@@ -10,6 +10,18 @@
 
 .schema-browser {
   padding-right: $cf-space-xs;
+
+  .cf-dropdown-divider {
+    color: $cf-grey-55;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    border-radius: 1px;
+    border-bottom: 2px solid $cf-grey-25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
 }
 
 .container-side-bar {

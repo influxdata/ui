@@ -1,51 +1,174 @@
-import React, {FC, useContext, useState} from 'react'
+import React, {FC, Fragment, ChangeEvent, useContext, useState} from 'react'
+import {
+  TechnoSpinner,
+  ComponentSize,
+  Dropdown,
+  DropdownMenuTheme,
+  IconFont,
+  Input,
+} from '@influxdata/clockface'
 
 // Components
-import {ComponentStatus} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
-import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 // Contexts
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {BucketContext} from 'src/shared/contexts/buckets'
 import {event} from 'src/cloud/utils/reporting'
 
+// Types
+import {RemoteDataState, Bucket} from 'src/types'
+
 const BUCKET_TOOLTIP = `A bucket is a named location where time series data \
 is stored. You can think of a bucket like you would a database in SQL systems.`
 
+const REMAP_BUCKET_TYPES = {
+  user: 'My Data',
+  system: 'System Data',
+  sample: 'Sample Data',
+}
+
 const BucketSelector: FC = () => {
   const {selectedBucket, selectBucket} = useContext(FluxQueryBuilderContext)
-  const {buckets} = useContext(BucketContext)
+  const {loading, buckets} = useContext(BucketContext)
+  const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const handleSelectBucket = (name: string) => {
-    const bucket = buckets.find(b => b.name === name)
-    if (!bucket) {
-      return
-    }
+  const _buckets = buckets.filter(b =>
+    `${b.name}`.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+  )
+
+  const handleSelectBucket = (buck: Bucket) => {
     event('bucketSelected', {search: searchTerm.length})
-    selectBucket(bucket)
+    selectBucket(buck)
   }
 
-  const handleChangeSearchTerm = (value: string) => {
-    setSearchTerm(value)
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setSearchTerm(e.target.value)
   }
+
+  let buttonText = 'Loading buckets...'
+  if (loading === RemoteDataState.Done && !selectedBucket?.name) {
+    buttonText = 'Select bucket...'
+  } else if (loading === RemoteDataState.Done && selectedBucket?.name) {
+    buttonText = selectedBucket.name
+  }
+
+  const button = (active, onClick) => (
+    <Dropdown.Button
+      onClick={onClick}
+      active={active}
+      testID="bucket-selector--dropdown-button"
+    >
+      {buttonText}
+    </Dropdown.Button>
+  )
+
+  if (loading !== RemoteDataState.Done) {
+    return (
+      <div>
+        <SelectorTitle title="Bucket" info={BUCKET_TOOLTIP} />
+        <Dropdown
+          button={button}
+          menu={onCollapse => (
+            <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.ItemEmpty>
+                <TechnoSpinner
+                  strokeWidth={ComponentSize.Small}
+                  diameterPixels={32}
+                />
+              </Dropdown.ItemEmpty>
+            </Dropdown.Menu>
+          )}
+        />
+      </div>
+    )
+  }
+
+  if (!_buckets.length) {
+    return (
+      <div>
+        <SelectorTitle title="Bucket" info={BUCKET_TOOLTIP} />
+        <Dropdown
+          button={button}
+          menu={onCollapse => (
+            <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.ItemEmpty>No Buckets Available</Dropdown.ItemEmpty>
+            </Dropdown.Menu>
+          )}
+        />
+      </div>
+    )
+  }
+
+  const body = Object.entries(
+    _buckets.reduce((acc, curr) => {
+      if (!acc[curr.type]) {
+        acc[curr.type] = []
+      }
+
+      acc[curr.type].push(curr)
+      return acc
+    }, {}) as Record<string, Bucket[]>
+  ).map(([k, v]) => {
+    const items = v.map(bucket => (
+      <Dropdown.Item
+        key={bucket.name}
+        value={bucket}
+        onClick={handleSelectBucket}
+        selected={bucket.name === selectedBucket?.name}
+        title={bucket.name}
+        wrapText={true}
+        testID={`bucket-selector--dropdown--${bucket.name}`}
+      >
+        {bucket.name}
+      </Dropdown.Item>
+    ))
+
+    let name = k
+
+    if (REMAP_BUCKET_TYPES.hasOwnProperty(k)) {
+      name = REMAP_BUCKET_TYPES[k]
+    }
+
+    return (
+      <Fragment key={name}>
+        <Dropdown.Divider text={name} />
+        {items}
+      </Fragment>
+    )
+  })
 
   return (
     <div>
       <SelectorTitle title="Bucket" info={BUCKET_TOOLTIP} />
-      <SearchableDropdown
-        searchTerm={searchTerm}
-        searchPlaceholder="Search buckets"
-        selectedOption={selectedBucket?.name || 'Select bucket...'}
-        onSelect={handleSelectBucket}
-        onChangeSearchTerm={handleChangeSearchTerm}
-        options={buckets.map(b => b.name)}
-        buttonStatus={ComponentStatus.Default}
-        testID="bucket-selector--dropdown"
-        buttonTestID="bucket-selector--dropdown-button"
-        menuTestID="bucket-selector--dropdown-menu"
-        emptyText="No Buckets Found"
+      <Dropdown
+        button={button}
+        menu={onCollapse => (
+          <Dropdown.Menu
+            onCollapse={() => {
+              if (isSearchActive === false) {
+                onCollapse()
+              }
+            }}
+            theme={DropdownMenuTheme.Onyx}
+            testID="searchable-dropdown--menu"
+          >
+            <div className="searchable-dropdown--input-container">
+              <Input
+                icon={IconFont.Search_New}
+                onFocus={() => setIsSearchActive(true)}
+                onChange={handleChange}
+                onBlur={() => setIsSearchActive(false)}
+                value={searchTerm}
+                placeholder="Search buckets"
+                size={ComponentSize.Small}
+                autoFocus={true}
+              />
+            </div>
+            {body}
+          </Dropdown.Menu>
+        )}
       />
     </div>
   )

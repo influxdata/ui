@@ -90,7 +90,6 @@ describe('FluxQueryBuilder', () => {
 
     it('search bar can search fields and tag keys dynamically', () => {
       cy.intercept('POST', '/api/v2/query*').as('query')
-
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()

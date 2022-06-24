@@ -12,10 +12,10 @@ import {
   SubwayNav,
   SubwayNavModel,
 } from '@influxdata/clockface'
-import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
 import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
 import GetResources from 'src/resources/components/GetResources'
+import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 
 // Contexts
 import {
@@ -24,24 +24,22 @@ import {
 } from 'src/writeData/subscriptions/context/subscription.update'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {
+  SubscriptionListContext,
+  SubscriptionListProvider,
+} from 'src/writeData/subscriptions/context/subscription.list'
 
 // Types
 import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Graphics
 import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
 
 // Styles
-import 'src/writeData/subscriptions/components/SubscriptionDetailsPage.scss'
-
-import {
-  SubscriptionListContext,
-  SubscriptionListProvider,
-} from 'src/writeData/subscriptions/context/subscription.list'
+import 'src/writeData/subscriptions/components/DetailsSubscriptionPage.scss'
 
 interface SubscriptionNavigationModel extends SubwayNavModel {
   type: string
@@ -71,7 +69,7 @@ const navigationSteps: SubscriptionNavigationModel[] = [
   },
 ]
 
-const SubscriptionDetailsPage: FC = () => {
+const DetailsSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
   const {
     currentSubscription,
@@ -92,6 +90,9 @@ const SubscriptionDetailsPage: FC = () => {
   const [edit, setEdit] = useState(false)
 
   const handleClick = (step: number) => {
+    document
+      .getElementById(navigationSteps[step - 1].type)
+      ?.scrollIntoView({behavior: 'smooth', block: 'center'})
     setFormActive(navigationSteps[step - 1].type as Steps)
   }
 
@@ -104,7 +105,6 @@ const SubscriptionDetailsPage: FC = () => {
     })
     return currentStep
   }
-  const singlePage = isFlagEnabled('subscriptionsSinglePage')
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>
@@ -117,13 +117,7 @@ const SubscriptionDetailsPage: FC = () => {
             scrollable={true}
             className="subscription-details-page"
           >
-            <div
-              className={
-                singlePage
-                  ? 'subscription-details-page__progress--fixed'
-                  : 'subscription-details-page__progress'
-              }
-            >
+            <div className="subscription-details-page__progress">
               <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
@@ -131,49 +125,30 @@ const SubscriptionDetailsPage: FC = () => {
                 settingUpIcon={FormLogo}
                 settingUpText="MQTT Connector"
                 settingUpHeader={currentSubscription.name}
+                showCheckmark={false}
               />
             </div>
-            {active === Steps.BrokerForm && (
-              <BrokerDetails
-                currentSubscription={currentSubscription}
-                updateForm={updateForm}
-                edit={edit}
-                setEdit={setEdit}
-                loading={loading}
-                setStatus={setStatus}
-                setFormActive={setFormActive}
-                active={active}
-                saveForm={saveForm}
-              />
-            )}
-            {active === Steps.SubscriptionForm && (
-              <SubscriptionDetails
-                setFormActive={setFormActive}
-                currentSubscription={currentSubscription}
-                updateForm={updateForm}
-                buckets={buckets}
-                bucket={bucket}
-                edit={edit}
-                setEdit={setEdit}
-                singlePage={singlePage}
-                setStatus={setStatus}
-                active={active}
-                saveForm={saveForm}
-              />
-            )}
-            {active === Steps.ParsingForm && (
-              <ParsingDetails
-                currentSubscription={currentSubscription}
-                updateForm={updateForm}
-                saveForm={saveForm}
-                edit={edit}
-                setEdit={setEdit}
-                singlePage={singlePage}
-                setStatus={setStatus}
-                active={active}
-                setFormActive={setFormActive}
-              />
-            )}
+            <BrokerDetails
+              currentSubscription={currentSubscription}
+              updateForm={updateForm}
+              edit={edit}
+              setEdit={setEdit}
+              loading={loading}
+              setStatus={setStatus}
+              saveForm={saveForm}
+            />
+            <SubscriptionDetails
+              currentSubscription={currentSubscription}
+              updateForm={updateForm}
+              buckets={buckets}
+              bucket={bucket}
+              edit={edit}
+            />
+            <ParsingDetails
+              currentSubscription={currentSubscription}
+              updateForm={updateForm}
+              edit={edit}
+            />
           </Page.Contents>
         </SpinnerContainer>
       </Page>
@@ -185,7 +160,7 @@ export default () => (
   <SubscriptionListProvider>
     <SubscriptionUpdateProvider>
       <WriteDataDetailsProvider>
-        <SubscriptionDetailsPage />
+        <DetailsSubscriptionPage />
       </WriteDataDetailsProvider>
     </SubscriptionUpdateProvider>
   </SubscriptionListProvider>

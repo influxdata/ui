@@ -16,21 +16,6 @@
   .cf-flex-box__margin-md.cf-flex-box__row.cf-flex-box__justify-flex-start > * {
     margin-right: 0;
   }
-  &__premium-container {
-    margin-left: $cf-space-s;
-    .cf-icon {
-      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    &__text {
-      margin-left: $cf-space-s;
-      text-transform: uppercase;
-      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
   &__text {
     color: $cf-grey-95;
     margin-bottom: $cf-space-l;

@@ -50,6 +50,7 @@ export interface CurrentOrg {
 export interface IdentityState {
   currentIdentity: CurrentIdentity
   quartzOrganizations: QuartzOrganizations
+  status?: RemoteDataState
 }
 
 export type QuartzOrganizations = {

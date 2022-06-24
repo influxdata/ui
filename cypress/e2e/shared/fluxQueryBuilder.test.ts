@@ -97,7 +97,7 @@ describe('FluxQueryBuilder', () => {
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
-      cy.getByTestID(`bucket-selector--dropdown--${measurement}`).click()
+      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
       cy.wait('@query')
 
       // search a feild, should contain only the feild, no tag keys
@@ -139,7 +139,7 @@ describe('FluxQueryBuilder', () => {
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
-      cy.getByTestID(`bucket-selector--dropdown--${measurementA}`).click()
+      cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
       cy.wait('@query')
 
       // less than 8 items, no "Load More" button
@@ -159,7 +159,7 @@ describe('FluxQueryBuilder', () => {
 
       // select another measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
-      cy.getByTestID(`bucket-selector--dropdown--${measurement}`).click()
+      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
       cy.wait('@query')
 
       // more than 8 items, show 'Load More' button

@@ -103,10 +103,6 @@ export const CreateSubscriptionForm = lazy(() =>
   import('src/writeData/subscriptions/components/CreateSubscriptionPage')
 )
 
-export const SubscriptionDetailsPage = lazy(() =>
-  import('src/writeData/subscriptions/components/SubscriptionDetailsPage')
-)
-
 export const HomepageContainer = lazy(() =>
   import(
     'src/homepageExperience/containers/HomepageContainer'
@@ -131,6 +127,6 @@ export const GoWizard = lazy(() =>
   }))
 )
 
-export const SinglePageSubDetails = lazy(() =>
-  import('src/writeData/subscriptions/components/SinglePageSubDetails')
+export const DetailsSubscriptionPage = lazy(() =>
+  import('src/writeData/subscriptions/components/DetailsSubscriptionPage')
 )

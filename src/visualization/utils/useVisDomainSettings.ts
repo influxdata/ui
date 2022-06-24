@@ -171,7 +171,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [domain, setDomain] = useState(initialDomain)
-  const [preZoomDomain, setPreZoomDomain] = useState<Array<number>>(null)
+  const [preZoomDomain] = useOneWayState(initialDomain)
 
   const getAllVariablesWithTimeDomain = (state: AppState) =>
     getAllVariablesForZoomRequery(state, timeRange ? domain : [])
@@ -218,7 +218,6 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
 
   const setZoomDomain = (updatedDomain: number[]) => {
     if (!preZoomResult) {
-      setPreZoomDomain(initialDomain)
       setPreZoomResult(parsedResult)
     }
     setDomain(updatedDomain)
@@ -263,7 +262,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [domain, setDomain] = useState(initialDomain)
-  const [preZoomDomain, setPreZoomDomain] = useState<Array<number>>(null)
+  const [preZoomDomain] = useOneWayState(initialDomain)
 
   const getAllVariablesWithTimeDomain = (state: AppState) =>
     getAllVariablesForZoomRequery(state, timeRange ? domain : [])
@@ -310,7 +309,6 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
 
   const setZoomDomain = (updatedDomain: number[]) => {
     if (!preZoomResult) {
-      setPreZoomDomain(initialDomain)
       setPreZoomResult(parsedResult)
     }
     setDomain(updatedDomain)

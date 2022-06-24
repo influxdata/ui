@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
@@ -53,6 +53,17 @@ const DataExplorerPage: FC = () => {
     event('Data Explorer Page - Clicked Notebooks CTA')
   }
 
+  useEffect(() => {
+    return () => {
+      event('Exited Data Explorer')
+    }
+  }, [])
+
+  const toggleSlider = () => {
+    event('toggled new query builder', {active: `${!fluxQueryBuilder}`})
+    setFluxQueryBuilder(!fluxQueryBuilder)
+  }
+
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>
       <Switch>
@@ -78,9 +89,7 @@ const DataExplorerPage: FC = () => {
                 <InputLabel>&#10024; Try new Data Explorer</InputLabel>
                 <SlideToggle
                   active={fluxQueryBuilder}
-                  onChange={() => {
-                    setFluxQueryBuilder(!fluxQueryBuilder)
-                  }}
+                  onChange={toggleSlider}
                   testID="flux-query-builder-toggle"
                 />
               </FlexBox>

@@ -1,4 +1,7 @@
-import {CreditCardParams as GenCreditCardParams} from 'src/client/unityRoutes'
+import {
+  Account,
+  CreditCardParams as GenCreditCardParams,
+} from 'src/client/unityRoutes'
 export {
   BillingContact,
   BillingInfo,
@@ -11,6 +14,8 @@ export {
   UsageVectors,
   UsageVector,
 } from 'src/client/unityRoutes'
+
+export type BillingProvider = Account['billingProvider']
 
 export interface ZuoraResponse {
   success: boolean

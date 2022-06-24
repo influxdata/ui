@@ -28,8 +28,8 @@ import {VariablesContext} from 'src/flows/context/variables'
 
 // Components
 import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
-import Functions from 'src/shared/components/functions/FunctionsList/GroupedFunctionsList'
-import DynamicFunctions from 'src/shared/components/functions/FunctionsList/DynamicFunctionsList'
+import Functions from 'src/shared/components/GroupedFunctionsList'
+import DynamicFunctions from 'src/shared/components/DynamicFunctionsList'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
@@ -49,7 +49,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     SidebarContext
   )
   const editorContext = useContext(EditorContext)
-  const {setEditor, inject, injectFunction} = editorContext
+  const {inject, injectFunction} = editorContext
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
   const {variables} = useContext(VariablesContext)
@@ -114,6 +114,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       color={ComponentColor.Default}
       titleText="Function Reference"
       className="flows-config-function-button"
+      testID="flows-open-function-panel"
     />
   )
 
@@ -132,7 +133,6 @@ const Query: FC<PipeProp> = ({Context}) => {
             script={query.text}
             variables={variables}
             onChangeScript={updateText}
-            setEditorInstance={setEditor}
             wrapLines="on"
             autogrow
           />

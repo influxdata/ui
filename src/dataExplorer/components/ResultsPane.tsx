@@ -1,3 +1,4 @@
+// Libraries
 import React, {FC, lazy, Suspense, useState, useContext} from 'react'
 import {
   DraggableResizer,
@@ -15,33 +16,71 @@ import {
 } from '@influxdata/clockface'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 
+// Contexts
+import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {QueryContext} from 'src/shared/contexts/query'
+
+// Components
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
-import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
-import {EditorContext} from 'src/shared/contexts/editor'
-import {TimeRange} from 'src/types'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
-import {downloadTextFile} from 'src/shared/utils/download'
-import {event} from 'src/cloud/utils/reporting'
-import {QueryContext} from 'src/shared/contexts/query'
-import {notify} from 'src/shared/actions/notifications'
-import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
-import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
-import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
 
+// Types
+import {TimeRange} from 'src/types'
+
+// Utils
+import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
+import {downloadTextFile} from 'src/shared/utils/download'
+import {event} from 'src/cloud/utils/reporting'
+import {notify} from 'src/shared/actions/notifications'
+import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+
+// Constants
+import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
 )
 const useLocalStorageState = createLocalStorageStateHook(
-  'dataExplorerQuery',
+  'dataExplorer.query',
   ''
 )
 
 const INITIAL_HORIZ_RESIZER_HANDLE = 0.2
 const fakeNotify = notify
+
+const rangeToParam = (timeRange: TimeRange) => {
+  let timeRangeStart, timeRangeStop
+
+  if (!timeRange) {
+    timeRangeStart = timeRangeStop = null
+  } else {
+    if (timeRange.type === 'selectable-duration') {
+      timeRangeStart = '-' + timeRange.duration
+    } else if (timeRange.type === 'duration') {
+      timeRangeStart = '-' + timeRange.lower
+    } else if (isNaN(Date.parse(timeRange.lower))) {
+      timeRangeStart = null
+    } else {
+      timeRangeStart = new Date(timeRange.lower).toISOString()
+    }
+
+    if (!timeRange.upper) {
+      timeRangeStop = 'now()'
+    } else if (isNaN(Date.parse(timeRange.upper))) {
+      timeRangeStop = null
+    } else {
+      timeRangeStop = new Date(timeRange.upper).toISOString()
+    }
+  }
+
+  return {
+    timeRangeStart,
+    timeRangeStop,
+  }
+}
 
 const ResultsPane: FC = () => {
   const [horizDragPosition, setHorizDragPosition] = useState([
@@ -53,11 +92,11 @@ const ResultsPane: FC = () => {
   const [text, setText] = useLocalStorageState()
   const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
 
-  const {setEditor} = useContext(EditorContext)
-
   const download = () => {
     event('CSV Download Initiated')
-    basic(text).promise.then(response => {
+    basic(text, {
+      vars: rangeToParam(timeRange),
+    }).promise.then(response => {
       if (response.type !== 'SUCCESS') {
         return
       }
@@ -67,36 +106,9 @@ const ResultsPane: FC = () => {
   }
 
   const submit = () => {
-    let timeRangeStart, timeRangeStop
-
-    if (!timeRange) {
-      timeRangeStart = timeRangeStop = null
-    } else {
-      if (timeRange.type === 'selectable-duration') {
-        timeRangeStart = '-' + timeRange.duration
-      } else if (timeRange.type === 'duration') {
-        timeRangeStart = '-' + timeRange.lower
-      } else if (isNaN(Date.parse(timeRange.lower))) {
-        timeRangeStart = null
-      } else {
-        timeRangeStart = new Date(timeRange.lower).toISOString()
-      }
-
-      if (!timeRange.upper) {
-        timeRangeStop = 'now()'
-      } else if (isNaN(Date.parse(timeRange.upper))) {
-        timeRangeStop = null
-      } else {
-        timeRangeStop = new Date(timeRange.upper).toISOString()
-      }
-    }
-
     setStatus(RemoteDataState.Loading)
     query(text, {
-      vars: {
-        timeRangeStart,
-        timeRangeStop,
-      },
+      vars: rangeToParam(timeRange),
     })
       .then(r => {
         event('resultReceived', {
@@ -146,7 +158,6 @@ const ResultsPane: FC = () => {
                 variables={variables}
                 script={text}
                 onChangeScript={setText}
-                setEditorInstance={setEditor}
               />
             </Suspense>
           </div>

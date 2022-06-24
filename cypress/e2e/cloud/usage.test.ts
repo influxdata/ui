@@ -12,7 +12,9 @@ describe('Usage Page Free User No Data', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+          cy.setFeatureFlags({
+            uiUnificationFlag: true,
+          }).then(() => {
             cy.quartzProvision({
               hasData: false,
               accountType: 'free',
@@ -116,7 +118,9 @@ describe('Usage Page PAYG With Data', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+          cy.setFeatureFlags({
+            uiUnificationFlag: true,
+          }).then(() => {
             cy.quartzProvision({
               hasData: true,
               accountType: 'pay_as_you_go',

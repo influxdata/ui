@@ -80,7 +80,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('tag-selector-key').should('be.visible')
     })
 
-    it('search bar can search fields and tag keys dynamically', () => {
+    it.skip('search bar can search fields and tag keys dynamically', () => {
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
@@ -106,7 +106,7 @@ describe('FluxQueryBuilder', () => {
       cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)
     })
 
-    it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
+    it.skip('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
       // if less than 8 items, show all items
       const bucketNameA = 'Air Sensor Data'
       const measurementA = 'airSensors'
@@ -124,7 +124,6 @@ describe('FluxQueryBuilder', () => {
         'have.length.at.most',
         8
       )
-      cy.get('.load-more-button').should('not.exist')
 
       // if more than 8 items, show "Load More" button
       // and load additional 25 items
@@ -142,6 +141,8 @@ describe('FluxQueryBuilder', () => {
       cy.get('.load-more-button')
         .should('exist')
         .click()
+
+      cy.get('.load-more-button', {timeout: 10000}).should('not.exist')
 
       // when load more is chosen, up to 25 additional entries will be shown
       cy.get('.field-selector--list-item--wrapper').should(

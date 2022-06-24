@@ -42,6 +42,7 @@ import {
   getActiveTimeMachine,
   getIsInCheckOverlay,
 } from 'src/timeMachine/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {
@@ -243,19 +244,22 @@ class TagSelector extends PureComponent<Props> {
   }
 
   private handleSelectTag = (tag: string): void => {
-    const {index, onSelectTag} = this.props
+    const {index, keysSearchTerm, onSelectTag} = this.props
+    event('handleSelectTag', {searchTerm: keysSearchTerm.length})
 
     onSelectTag(index, tag)
   }
 
   private handleSelectValue = (value: string): void => {
-    const {index, onSelectValue} = this.props
+    const {index, valuesSearchTerm, onSelectValue} = this.props
+    event('handleSelectValue', {searchTerm: valuesSearchTerm.length})
 
     onSelectValue(index, value)
   }
 
   private handleRemoveTagSelector = (): void => {
     const {index, onRemoveTagSelector} = this.props
+    event('tagKeyRemoved')
 
     onRemoveTagSelector(index)
   }

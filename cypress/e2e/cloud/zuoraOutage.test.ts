@@ -7,6 +7,7 @@ describe('Billing Page Free Users', () => {
         cy.get('@org').then(() => {
           cy.setFeatureFlags({
             quartzZuoraDisabled: true,
+            uiUnificationFlag: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'free',

@@ -3,6 +3,7 @@ import {
   ComponentColor,
   ComponentStatus,
   IconFont,
+  DapperScrollbars,
   Button,
 } from '@influxdata/clockface'
 import {millisecondsToDuration} from 'src/shared/utils/duration'
@@ -34,14 +35,16 @@ const WrappedViewOptions: FC = () => {
   )
 
   return (
-    <ErrorBoundary>
-      <ErrorThresholds />
-      <ViewOptions
-        properties={data.properties}
-        results={results.parsed}
-        update={updateProperties}
-      />
-    </ErrorBoundary>
+    <DapperScrollbars>
+      <ErrorBoundary>
+        <ErrorThresholds />
+        <ViewOptions
+          properties={data.properties}
+          results={results.parsed}
+          update={updateProperties}
+        />
+      </ErrorBoundary>
+    </DapperScrollbars>
   )
 }
 

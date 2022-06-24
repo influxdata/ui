@@ -4,12 +4,14 @@ import {
   getIdentity,
   getMe as getMeQuartz,
   getOrg,
+  getOrgs,
   Account,
   Identity,
   IdentityAccount,
   IdentityUser,
   Me as MeQuartz,
   Organization,
+  OrganizationSummaries,
 } from 'src/client/unityRoutes'
 
 import {
@@ -43,6 +45,16 @@ export interface CurrentOrg {
   provider?: string
   regionCode?: string
   regionName?: string
+}
+
+export interface IdentityState {
+  identity: CurrentIdentity
+  quartzOrganizations: QuartzOrganizations
+}
+
+export type QuartzOrganizations = {
+  orgs: OrganizationSummaries
+  status: RemoteDataState
 }
 
 export interface CurrentIdentity {
@@ -183,3 +195,20 @@ export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   const orgDetails = response.data
   return orgDetails
 }
+
+// fetch list of user's current organizations
+export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
+  const response = await getOrgs({})
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
+}
+
+// would prefer having accounts in redux as well, and those APIs can go here.

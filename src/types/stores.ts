@@ -30,8 +30,7 @@ import {AlertBuilderState} from 'src/alerting/reducers/alertBuilder'
 import {CurrentPage} from 'src/shared/reducers/currentPage'
 import {PerfState} from 'src/perf/reducers'
 import {MeState} from 'src/me/reducers'
-import {CurrentIdentity} from 'src/identity/apis/auth'
-import {QuartzOrganizations} from 'src/quartzOrganizations/reducers'
+import {IdentityState} from 'src/identity/apis/auth'
 
 export interface AppState {
   router: RouterState
@@ -47,7 +46,7 @@ export interface AppState {
   dataLoading: DataLoadingState
   flags: FlagState
   fluxDocs: FluxDocsState
-  identity: CurrentIdentity
+  identity: IdentityState
   me: MeState
   noteEditor: NoteEditorState
   notifications: Notification[]

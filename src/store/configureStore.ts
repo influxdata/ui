@@ -89,7 +89,10 @@ export const rootReducer = (history: History) => (state, action) => {
     fluxDocs: fluxDocsReducer,
     dataLoading: dataLoadingReducer,
     me: meReducer,
-    identity: identityReducer,
+    identity: combineReducers({
+      identityReducer,
+      quartzOrganizationsReducer,
+    }),
     flags: flagReducer,
     noteEditor: noteEditorReducer,
     onboarding: onboardingReducer,
@@ -124,7 +127,6 @@ export const rootReducer = (history: History) => (state, action) => {
     variableEditor: variableEditorReducer,
     VERSION: () => '',
     annotations: annotationsReducer,
-    quartzOrganizations: quartzOrganizationReducer,
   })(state, action)
 }
 

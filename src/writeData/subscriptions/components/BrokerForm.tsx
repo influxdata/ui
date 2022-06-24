@@ -80,7 +80,7 @@ const BrokerForm: FC<Props> = ({formContent, updateForm, saveForm}) => {
                 }}
                 titleText="Cancel creation of Subscription and return to list"
                 type={ButtonType.Button}
-                testID="create-broker-form--cancel"
+                testID="create-sub-form--cancel"
               />
               {showUpgradeButton ? (
                 <CloudUpgradeButton
@@ -120,7 +120,7 @@ const BrokerForm: FC<Props> = ({formContent, updateForm, saveForm}) => {
                     )
                     saveForm(formContent)
                   }}
-                  testID="create-parsing-form--submit"
+                  testID="create-sub-form--submit"
                   status={
                     requiredFields
                       ? ComponentStatus.Default

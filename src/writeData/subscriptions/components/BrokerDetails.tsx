@@ -87,7 +87,7 @@ const BrokerDetails: FC<Props> = ({
                   }}
                   titleText="Cancel update of Subscription and return to list"
                   type={ButtonType.Button}
-                  testID="update-broker-form--cancel"
+                  testID="update-sub-form--cancel"
                 />
                 <Button
                   text="Edit"
@@ -100,7 +100,7 @@ const BrokerDetails: FC<Props> = ({
                   }}
                   type={ButtonType.Button}
                   titleText="Edit"
-                  testID="update-broker-form--edit"
+                  testID="update-sub-form--edit"
                 />
                 {edit ? (
                   <Button
@@ -110,7 +110,7 @@ const BrokerDetails: FC<Props> = ({
                     onClick={() => {
                       saveForm(currentSubscription)
                     }}
-                    testID="update-broker-form--submit"
+                    testID="update-sub-form--submit"
                   />
                 ) : (
                   <Button

@@ -1,5 +1,9 @@
 import {QuartzOrganizations} from 'src/identity/apis/auth'
-import {Actions, SET_QUARTZ_ORGANIZATIONS} from '../actions/creators'
+import {
+  Actions,
+  SET_QUARTZ_ORGANIZATIONS,
+  SET_QUARTZ_ORGANIZATIONS_STATUS,
+} from '../actions/creators'
 import produce from 'immer'
 
 import {OrganizationSummaries} from '../../client/unityRoutes'
@@ -15,6 +19,10 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
     switch (action.type) {
       case SET_QUARTZ_ORGANIZATIONS: {
         draftState.orgs = action.quartzOrganizations
+        return
+      }
+      case SET_QUARTZ_ORGANIZATIONS_STATUS: {
+        draftState.status = action.status
         return
       }
     }

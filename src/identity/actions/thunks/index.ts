@@ -65,14 +65,14 @@ export const getBillingProviderThunk = () => async (
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
     const currentState = getState()
-    const accountId = currentState.identity.account.id
+    const accountId = currentState.identity.currentIdentity.account.id
 
     const accountDetails = await fetchAccountDetails(accountId)
 
     dispatch(setCurrentBillingProvider(accountDetails.billingProvider))
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
     const updatedState = getState()
-    const legacyMe = convertIdentityToMe(updatedState.identity)
+    const legacyMe = convertIdentityToMe(updatedState.identity.currentIdentity)
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
   } catch (error) {
@@ -90,7 +90,7 @@ export const getCurrentOrgDetailsThunk = () => async (
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 
     const state = getState()
-    const orgId = state.identity.org.id
+    const orgId = state.identity.currentIdentity.org.id
 
     const orgDetails = await fetchOrgDetails(orgId)
 
@@ -98,7 +98,7 @@ export const getCurrentOrgDetailsThunk = () => async (
     dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 
     const updatedState = getState()
-    const legacyMe = convertIdentityToMe(updatedState.identity)
+    const legacyMe = convertIdentityToMe(updatedState.identity.currentIdentity)
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
   } catch (error) {

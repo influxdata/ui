@@ -65,7 +65,6 @@ export interface AppState {
   variableEditor: VariableEditorState
   VERSION: string
   annotations: AnnotationsState
-  quartzOrganizations: QuartzOrganizations
 }
 
 export type GetState = () => AppState

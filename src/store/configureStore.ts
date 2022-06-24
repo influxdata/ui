@@ -90,8 +90,8 @@ export const rootReducer = (history: History) => (state, action) => {
     dataLoading: dataLoadingReducer,
     me: meReducer,
     identity: combineReducers({
-      identityReducer,
-      quartzOrganizationsReducer,
+      currentIdentity: identityReducer,
+      quartzOrganizations: quartzOrganizationReducer,
     }),
     flags: flagReducer,
     noteEditor: noteEditorReducer,

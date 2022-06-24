@@ -24,34 +24,33 @@ import {CLOUD} from 'src/shared/constants'
 import {getMe} from 'src/me/selectors'
 
 import 'src/organizations/components/OrgProfileTab/style.scss'
-import {
-  getBillingProviderThunk,
-  getCurrentOrgDetailsThunk,
-} from 'src/identity/actions/thunks'
+import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
+import {selectQuartzIdentity} from 'src/identity/selectors'
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
+  const identity = useSelector(selectQuartzIdentity)
+
   const dispatch = useDispatch()
 
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
   useEffect(() => {
     if (CLOUD && shouldUseQuartzIdentity()) {
-      if (!me.quartzMe.billingProvider) {
-        dispatch(getBillingProviderThunk())
-      }
-      if (!me.quartzMe.regionCode) {
+      if (
+        !me.quartzMe.regionCode ||
+        !me.quartzMe.regionName ||
+        !identity.org.provider
+      ) {
         dispatch(getCurrentOrgDetailsThunk())
       }
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const hasSomeQuartzOrgData =
-    me.quartzMe?.billingProvider ||
-    me.quartzMe?.regionCode ||
-    me.quartzMe?.regionName
+    identity.org.provider || me.quartzMe?.regionCode || me.quartzMe?.regionName
 
   const OrgProfile = () => (
     <FlexBox.Child
@@ -74,8 +73,8 @@ const OrgProfileTab: FC = () => {
             stretchToFitWidth={true}
             style={{width: '85%'}}
           >
-            {me.quartzMe?.billingProvider && (
-              <LabeledData label="Provider" src={me.quartzMe.billingProvider} />
+            {identity?.org?.provider && (
+              <LabeledData label="Cloud Provider" src={identity.org.provider} />
             )}
             {me.quartzMe?.regionCode && (
               <LabeledData label="Region" src={me.quartzMe.regionCode} />

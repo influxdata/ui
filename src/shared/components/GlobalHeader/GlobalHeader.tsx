@@ -67,7 +67,7 @@ const GlobalHeader = () => {
           subMenuOptions={accountsDropdownOptions}
           menuHeaderIcon={IconFont.Switch_New}
           menuHeaderText="Switch Account"
-          style={{width: '110px'}}
+          style={{width: 'auto'}}
           menuStyle={{width: '250px'}}
           onSelectOption={switchAccount}
         />

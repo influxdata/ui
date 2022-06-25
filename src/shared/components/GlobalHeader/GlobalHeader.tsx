@@ -9,6 +9,8 @@ import {
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {CLOUD_URL} from '../../constants'
+import {useSelector} from 'react-redux'
+import {getOrg} from 'src/organizations/selectors'
 
 const globalHeaderStyle = {
   padding: '0 32px 0 32px',
@@ -18,6 +20,7 @@ const globalHeaderStyle = {
 const GlobalHeader = () => {
   const {userAccounts} = useContext(UserAccountContext)
   const [activeAccount, setActiveAccount] = useState({} as SubMenuItem)
+  const currentOrg = useSelector(getOrg)
 
   const accountsDropdownOptions =
     userAccounts?.map(acct => {
@@ -41,17 +44,17 @@ const GlobalHeader = () => {
     {
       name: 'Settings',
       iconFont: IconFont.CogOutline,
-      href: '/settings',
+      href: `/orgs/${currentOrg.id}/accounts/settings`,
     },
     {
       name: 'Members',
       iconFont: IconFont.UserOutline_New,
-      href: '/members',
+      href: `/orgs/${currentOrg.id}/accounts/members`,
     },
     {
       name: 'Billing',
       iconFont: IconFont.Bill,
-      href: '/billing',
+      href: `/orgs/${currentOrg.id}/accounts/billings`,
     },
   ]
   return (

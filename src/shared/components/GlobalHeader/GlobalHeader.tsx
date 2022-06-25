@@ -8,6 +8,7 @@ import {
 } from '@influxdata/clockface'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
+import {CLOUD_URL} from '../../constants'
 
 const globalHeaderStyle = {
   padding: '0 32px 0 32px',
@@ -25,8 +26,16 @@ const GlobalHeader = () => {
 
   useEffect(() => {
     const activeAccount = userAccounts?.filter(acct => acct.isActive)[0]
-    setActiveAccount({name: activeAccount?.name, id: activeAccount?.id.toString()})
+    setActiveAccount({
+      name: activeAccount?.name,
+      id: activeAccount?.id.toString(),
+    })
   }, [userAccounts])
+
+  const switchAccount = (account: SubMenuItem) => {
+    setActiveAccount(account)
+    window.location.href = `${CLOUD_URL}/accounts/${account.id}`
+  }
 
   const accountDropdownMenuLinkOptions = [
     {
@@ -62,7 +71,7 @@ const GlobalHeader = () => {
           menuHeaderText="Switch Account"
           style={{width: '110px'}}
           menuStyle={{width: '250px'}}
-          onSelectOption={setActiveAccount}
+          onSelectOption={switchAccount}
         />
         <Icon glyph={IconFont.CaretRight}></Icon>
         <div>Org Dropdown</div>

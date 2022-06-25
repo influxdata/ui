@@ -47,14 +47,9 @@ const GlobalHeader = () => {
       href: `/orgs/${currentOrg.id}/accounts/settings`,
     },
     {
-      name: 'Members',
-      iconFont: IconFont.UserOutline_New,
-      href: `/orgs/${currentOrg.id}/accounts/members`,
-    },
-    {
       name: 'Billing',
       iconFont: IconFont.Bill,
-      href: `/orgs/${currentOrg.id}/accounts/billings`,
+      href: `/orgs/${currentOrg.id}/billing`,
     },
   ]
   return (

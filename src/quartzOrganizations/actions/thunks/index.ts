@@ -1,6 +1,8 @@
 import {fetchQuartzOrgs} from 'src/identity/apis/auth'
 import {setQuartzOrganizations, setQuartzOrganizationsStatus} from '../creators'
-import {RemoteDataState} from '../../../types'
+import {RemoteDataState} from 'src/types'
+import {notify} from 'src/shared/actions/notifications'
+import {updateQuartzOrganizationsFailed} from 'src/shared/copy/notifications'
 
 export const getQuartzOrganizationsThunk = () => async dispatch => {
   try {
@@ -12,6 +14,6 @@ export const getQuartzOrganizationsThunk = () => async dispatch => {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
   } catch (error) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
-    // dispatch(notify(updateQuartzOrganizationsFailed()))
+    dispatch(notify(updateQuartzOrganizationsFailed()))
   }
 }

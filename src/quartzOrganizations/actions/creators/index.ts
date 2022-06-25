@@ -1,5 +1,5 @@
-import {OrganizationSummaries} from '../../../client/unityRoutes'
-import {RemoteDataState} from '../../../types'
+import {OrganizationSummaries} from 'src/client/unityRoutes'
+import {RemoteDataState} from 'src/types'
 
 export const SET_QUARTZ_ORGANIZATIONS = 'SET_QUARTZ_ORGANIZATIONS'
 export const SET_QUARTZ_ORGANIZATIONS_STATUS = 'SET_QUARTZ_ORGANIZATIONS_STATUS'
@@ -16,7 +16,8 @@ export const setQuartzOrganizations = (
     quartzOrganizations: quartzOrganizations,
   } as const)
 
-export const setQuartzOrganizationsStatus = (status: RemoteDataState) => ({
-  type: SET_QUARTZ_ORGANIZATIONS_STATUS,
-  status: status,
-} as const)
+export const setQuartzOrganizationsStatus = (status: RemoteDataState) =>
+  ({
+    type: SET_QUARTZ_ORGANIZATIONS_STATUS,
+    status: status,
+  } as const)

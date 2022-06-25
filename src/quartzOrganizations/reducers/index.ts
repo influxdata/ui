@@ -3,10 +3,10 @@ import {
   Actions,
   SET_QUARTZ_ORGANIZATIONS,
   SET_QUARTZ_ORGANIZATIONS_STATUS,
-} from '../actions/creators'
+} from 'src/quartzOrganizations/actions/creators'
 import produce from 'immer'
 
-import {OrganizationSummaries} from '../../client/unityRoutes'
+import {OrganizationSummaries} from 'src/client/unityRoutes'
 
 const initialState = {
   orgs: [

@@ -1,8 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {ComponentSize, FlexBox, Icon, IconFont, JustifyContent, SelectDropdown} from '@influxdata/clockface'
-import {UserAccountContext} from '../../../accounts/context/userAccount'
-import {useSelector} from 'react-redux'
-import {AppState, ResourceType} from '../../../types'
+import {
+  ComponentSize,
+  FlexBox,
+  Icon,
+  IconFont,
+  JustifyContent,
+} from '@influxdata/clockface'
+import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 
 const globalHeaderStyle = {
@@ -10,20 +14,21 @@ const globalHeaderStyle = {
   margin: '24px 0 24px 0',
 }
 
-
 const GlobalHeader = () => {
   const {userAccounts} = useContext(UserAccountContext)
-  const [selectedOption, setSelectedOption] = useState({name: 'Loading...' , id : ''} as SubMenuItem)
+  const [activeAccount, setActiveAccount] = useState({} as SubMenuItem)
 
-  const options = userAccounts?.map(acct => {return {name: acct.name, id: acct.id.toString()} as SubMenuItem}) || []
+  const accountsDropdownOptions =
+    userAccounts?.map(acct => {
+      return {name: acct.name, id: acct.id.toString()} as SubMenuItem
+    }) || []
 
-  console.log(userAccounts)
   useEffect(() => {
-    const initialPick = userAccounts?.filter(acct => acct.isActive)[0]
-    setSelectedOption({name: initialPick?.name, id: initialPick?.id.toString()})
+    const activeAccount = userAccounts?.filter(acct => acct.isActive)[0]
+    setActiveAccount({name: activeAccount?.name, id: activeAccount?.id.toString()})
   }, [userAccounts])
 
-  const menuHrefOptions = [
+  const accountDropdownMenuLinkOptions = [
     {
       name: 'Settings',
       iconFont: IconFont.CogOutline,
@@ -40,35 +45,31 @@ const GlobalHeader = () => {
       href: '/billing',
     },
   ]
-
-
-  const accountDropdown = <MenuDropdown
-    largeListSearch={true}
-    largeListCeiling={15}
-    selectedOption={selectedOption}
-    options={menuHrefOptions}
-    subMenuOptions={options}
-    menuHeaderIcon={IconFont.Switch_New}
-    menuHeaderText={'Switch Account'}
-    style={{width: '110px'}}
-    menuStyle={{width: '250px'}}
-  />
-
-    return (
-      <FlexBox
-        margin={ComponentSize.Large}
-        justifyContent={JustifyContent.SpaceBetween}
-        style={globalHeaderStyle}
-      >
-        <FlexBox margin={ComponentSize.Medium}>
-
-          {accountDropdown}
-          <Icon glyph={IconFont.CaretRight}></Icon>
-          <div>Org Dropdown</div>
-        </FlexBox>
-        <div>User Icon</div>
+  return (
+    <FlexBox
+      margin={ComponentSize.Large}
+      justifyContent={JustifyContent.SpaceBetween}
+      style={globalHeaderStyle}
+    >
+      <FlexBox margin={ComponentSize.Medium}>
+        <MenuDropdown
+          largeListSearch={true}
+          selectedOption={activeAccount}
+          largeListCeiling={15}
+          options={accountDropdownMenuLinkOptions}
+          subMenuOptions={accountsDropdownOptions}
+          menuHeaderIcon={IconFont.Switch_New}
+          menuHeaderText="Switch Account"
+          style={{width: '110px'}}
+          menuStyle={{width: '250px'}}
+          onSelectOption={setActiveAccount}
+        />
+        <Icon glyph={IconFont.CaretRight}></Icon>
+        <div>Org Dropdown</div>
       </FlexBox>
-    )
+      <div>User Icon</div>
+    </FlexBox>
+  )
 }
 
 export default GlobalHeader

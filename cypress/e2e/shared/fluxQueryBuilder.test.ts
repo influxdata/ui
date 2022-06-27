@@ -91,7 +91,7 @@ describe('FluxQueryBuilder', () => {
 
       // search a feild, should contain only the feild, no tag keys
       cy.getByTestID('field-tag-key-search-bar').type(searchField)
-      cy.get('.field-selector--list-item--wrapper').should(
+      cy.get('.field-selector--list-item--selectable').should(
         'contain',
         searchField
       )
@@ -120,7 +120,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
 
       // less than 8 items, no "Load More" button
-      cy.get('.field-selector--list-item--wrapper').should(
+      cy.get('.field-selector--list-item--selectable').should(
         'have.length.at.most',
         8
       )
@@ -137,7 +137,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
       // more than 8 items, show 'Load More' button
-      cy.get('.field-selector--list-item--wrapper').should('have.length', 8)
+      cy.get('.field-selector--list-item--selectable').should('have.length', 8)
       cy.get('.load-more-button')
         .should('exist')
         .click()
@@ -145,11 +145,11 @@ describe('FluxQueryBuilder', () => {
       cy.get('.load-more-button', {timeout: 10000}).should('not.exist')
 
       // when load more is chosen, up to 25 additional entries will be shown
-      cy.get('.field-selector--list-item--wrapper').should(
+      cy.get('.field-selector--list-item--selectable').should(
         'have.length.above',
         8
       )
-      cy.get('.field-selector--list-item--wrapper').should(
+      cy.get('.field-selector--list-item--selectable').should(
         'have.length.at.most',
         33
       ) // 8 + 25

@@ -5,6 +5,7 @@ import {
   getMe as getMeQuartz,
   getOrg,
   getOrgs,
+  putOrgsDefault,
   Account,
   Identity,
   IdentityAccount,
@@ -211,4 +212,18 @@ export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
   return response.data
 }
 
-// would prefer having accounts in redux as well, and those APIs can go here.
+// change default organization for a given account
+export const putDefaultQuartzOrg = async (orgId: string) => {
+  const response = await putOrgsDefault({
+    data: {
+      id: orgId,
+    },
+  })
+
+  // Only status codes thrown at moment are 204 and 5xx.
+  if (response.status !== 204) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
+}

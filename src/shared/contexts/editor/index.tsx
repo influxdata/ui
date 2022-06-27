@@ -1,5 +1,5 @@
 import React, {FC, createContext, useState, useCallback} from 'react'
-import {Bucket, EditorType, FluxFunction, FluxToolbarFunction} from 'src/types'
+import {EditorType, FluxFunction, FluxToolbarFunction} from 'src/types'
 
 // Helpers
 import {
@@ -25,7 +25,6 @@ import LspConnectionManager from 'src/languageSupport/languages/flux/lsp/connect
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-import {SAMPLE_DATA_SET, FROM_BUCKET} from 'src/dataExplorer/shared/utils'
 
 export interface EditorContextType {
   editor: EditorType | null

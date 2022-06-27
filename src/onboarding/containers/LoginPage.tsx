@@ -11,8 +11,8 @@ import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
 import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
-// Types
-import {getMe} from 'src/client'
+// APIs
+import {fetchIdentity} from 'src/identity/apis/auth'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -25,12 +25,7 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      const resp = await getMe({})
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-
+      await fetchIdentity()
       setHasValidSession(true)
     } catch {
       setHasValidSession(false)

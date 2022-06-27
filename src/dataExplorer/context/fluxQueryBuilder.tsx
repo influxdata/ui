@@ -21,7 +21,6 @@ import {Bucket} from 'src/types'
 import {ExecuteCommand} from 'src/languageSupport/languages/flux/lsp/utils'
 import {
   ExecuteCommandInjectMeasurement,
-  ExecuteCommandInjectTag,
   ExecuteCommandInjectTagValue,
   ExecuteCommandInjectField,
 } from 'src/languageSupport/languages/flux/lsp/utils'

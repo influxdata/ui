@@ -40,6 +40,18 @@ const GlobalHeader = () => {
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
+  const orgs = [
+    {id: '1', name: '1'},
+    {
+      id: '2',
+      name: '2',
+    },
+    {
+      id: '3',
+      name: '3',
+    },
+  ]
+
   const accountDropdownMenuLinkOptions = [
     {
       name: 'Settings',
@@ -47,11 +59,55 @@ const GlobalHeader = () => {
       href: `/orgs/${currentOrg.id}/accounts/settings`,
     },
     {
+      name: 'Members',
+      iconFont: IconFont.UserOutline_New,
+      // List user members within an organizaiton
+      href: '/',
+    },
+    {
       name: 'Billing',
       iconFont: IconFont.Bill,
       href: `/orgs/${currentOrg.id}/billing`,
     },
   ]
+
+  const orgHrefOptions = [
+    {
+      name: 'Settings',
+      iconFont: IconFont.CogOutline,
+      href: '/orgs/${org.id}/about',
+    },
+    {
+      name: 'Members',
+      iconFont: IconFont.CogOutline,
+      href: `/orgs/${currentOrg.id}/users`,
+    },
+    {
+      name: 'Usage',
+      iconFont: IconFont.CogOutline,
+      href: `/orgs/${currentOrg.id}/usage`,
+    },
+  ]
+
+  const orgDropdown = (
+    <MenuDropdown
+      // Check largelist ceiling settings
+      largeListSearch={true}
+      largeListCeiling={15}
+      selectedOption={currentOrg}
+      options={orgHrefOptions}
+      subMenuOptions={orgs}
+      menuHeaderIcon={IconFont.Switch_New}
+      menuHeaderText="Switch Organization"
+      searchText="Search Organizations"
+      style={{width: '110px'}}
+      menuStyle={{width: '250px'}}
+      onSelectOption={() => {
+        console.log('clicked an org option')
+      }}
+    />
+  )
+
   return (
     <FlexBox
       margin={ComponentSize.Large}
@@ -71,8 +127,7 @@ const GlobalHeader = () => {
           menuStyle={{width: '250px'}}
           onSelectOption={switchAccount}
         />
-        <Icon glyph={IconFont.CaretRight}></Icon>
-        <div>Org Dropdown</div>
+        {orgDropdown}
       </FlexBox>
       <div>User Icon</div>
     </FlexBox>

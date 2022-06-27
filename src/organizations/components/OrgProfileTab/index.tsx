@@ -16,17 +16,18 @@ import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/Copy
 import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
 
 // Utils
-import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-
-// Types
-import {getMe} from 'src/me/selectors'
-
-import 'src/organizations/components/OrgProfileTab/style.scss'
-import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
+import 'src/organizations/components/OrgProfileTab/style.scss'
+
+// Selectors
+import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
 import {selectQuartzIdentity} from 'src/identity/selectors'
+
+// Thunks
+import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)

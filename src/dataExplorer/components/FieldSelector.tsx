@@ -39,11 +39,6 @@ const FieldSelector: FC = () => {
     <div className="field-selector--list-item">No Fields Found</div>
   )
 
-  const handleSelectField = (field: string) => {
-    // field is actually field key
-    selectField(field)
-  }
-
   if (loading === RemoteDataState.Error) {
     list = (
       <div className="field-selector--list-item">Failed to load fields</div>
@@ -58,7 +53,7 @@ const FieldSelector: FC = () => {
       <div
         key={field}
         className="field-selector--list-item--wrapper"
-        onClick={() => handleSelectField(field)}
+        onClick={() => selectField(field)}
       >
         <div className="field-selector--list-item--selectable">{field}</div>
       </div>

@@ -1,7 +1,7 @@
 import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 
 // Components
-import {Accordion} from '@influxdata/clockface'
+import {Accordion, ComponentSize, TextBlock} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import WaitingText from 'src/shared/components/WaitingText'
 
@@ -48,8 +48,8 @@ const FieldSelector: FC = () => {
     list = <WaitingText text="Loading fields" />
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
     list = fieldsToShow.map(field => (
-      <div key={field} className="field-selector--list-item--wrapper">
-        <div className="field-selector--list-item--selectable">{field}</div>
+      <div key={field} className="field-selector--list-item--selectable">
+        <TextBlock text={field} size={ComponentSize.ExtraSmall} />
       </div>
     ))
   }

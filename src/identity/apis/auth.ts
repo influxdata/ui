@@ -205,6 +205,10 @@ export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
     throw new UnauthorizedError(response.data.message)
   }
 
+  if (response.status === 404) {
+    throw new ServerError('Page not found')
+  }
+
   if (response.status === 500) {
     throw new ServerError(response.data.message)
   }

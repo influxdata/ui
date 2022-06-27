@@ -9,8 +9,9 @@ import {
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {CLOUD_URL} from '../../constants'
-import {useSelector} from 'react-redux'
-import {getOrg} from 'src/organizations/selectors'
+import {useDispatch, useSelector} from 'react-redux'
+import {selectQuartzOrgs} from 'src/identity/selectors'
+import {getQuartzOrganizationsThunk} from 'src/quartzOrganizations/actions/thunks'
 
 const globalHeaderStyle = {
   padding: '0 32px 0 32px',
@@ -20,13 +21,21 @@ const globalHeaderStyle = {
 const GlobalHeader = () => {
   const {userAccounts} = useContext(UserAccountContext)
   const [activeAccount, setActiveAccount] = useState({} as SubMenuItem)
-  const currentOrg = useSelector(getOrg)
 
+  // We should check whether this information needs to be in state at all, since page is reloaded
+  // after each click to a new 'account' or 'organization' at this stage.
+  const quartzOrganizations = useSelector(selectQuartzOrgs)
+  const [activeOrg, setActiveOrg] = useState(quartzOrganizations.orgs[0])
+  const dispatch = useDispatch()
+
+  // May be able to optimize so that it only runs when there's a change in userAccounts.
   const accountsDropdownOptions =
     userAccounts?.map(acct => {
       return {name: acct.name, id: acct.id.toString()} as SubMenuItem
     }) || []
 
+  // Filter will iterate through the whole array, so let's either use .find (since we can assume at least one active account)
+  // or add error handling for cases where there's more than one active account.
   useEffect(() => {
     const activeAccount = userAccounts?.filter(acct => acct.isActive)[0]
     setActiveAccount({
@@ -35,39 +44,48 @@ const GlobalHeader = () => {
     })
   }, [userAccounts])
 
+  useEffect(() => {
+    const orgs = quartzOrganizations.orgs
+    // Check whether any org is active. Will only be true before page finishes loading.
+    const activeOrg = orgs.find(org => org.isActive === true)
+    // If there is an active org, set it to that org. Otherwise, set it to empty default org.
+    if (activeOrg) {
+      // Per figma, don't include the '@whatever.com' in the name.
+      setActiveOrg({...activeOrg, name: activeOrg.name.replace(/\@.*/, '')})
+    }
+    if (orgs[0].id === '') {
+      dispatch(getQuartzOrganizationsThunk())
+    }
+  }, [dispatch, quartzOrganizations])
+
+  // Do we need to set the active account when we are already refreshing?
   const switchAccount = (account: SubMenuItem) => {
     setActiveAccount(account)
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
-  const orgs = [
-    {id: '1', name: '1'},
-    {
-      id: '2',
-      name: '2',
-    },
-    {
-      id: '3',
-      name: '3',
-    },
-  ]
+  const switchOrg = (org: SubMenuItem) => {
+    window.location.href = `/orgs/${org.id}`
+  }
 
+  // I think we should probably import both of these from another file so that it doesn't clutter up the component,
+  // and so that we can change them separately.
   const accountDropdownMenuLinkOptions = [
     {
       name: 'Settings',
       iconFont: IconFont.CogOutline,
-      href: `/orgs/${currentOrg.id}/accounts/settings`,
+      href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
     {
       name: 'Members',
       iconFont: IconFont.UserOutline_New,
-      // List user members within an organizaiton
+      // List user members within an organization. Need to figure out what to do here.
       href: '/',
     },
     {
       name: 'Billing',
       iconFont: IconFont.Bill,
-      href: `/orgs/${currentOrg.id}/billing`,
+      href: `/orgs/${activeOrg.id}/billing`,
     },
   ]
 
@@ -75,36 +93,36 @@ const GlobalHeader = () => {
     {
       name: 'Settings',
       iconFont: IconFont.CogOutline,
-      href: '/orgs/${org.id}/about',
+      href: `/orgs/${activeOrg.id}/about`,
     },
     {
       name: 'Members',
       iconFont: IconFont.CogOutline,
-      href: `/orgs/${currentOrg.id}/users`,
+      href: `/orgs/${activeOrg.id}/users`,
     },
     {
       name: 'Usage',
       iconFont: IconFont.CogOutline,
-      href: `/orgs/${currentOrg.id}/usage`,
+      href: `/orgs/${activeOrg.id}/usage`,
     },
   ]
 
+  // Same with the dropdowns. When we refactor we can keep them in a different component.
+  // Remember to make size responsive for mobile.
   const orgDropdown = (
     <MenuDropdown
       // Check largelist ceiling settings
       largeListSearch={true}
       largeListCeiling={15}
-      selectedOption={currentOrg}
+      selectedOption={activeOrg}
       options={orgHrefOptions}
-      subMenuOptions={orgs}
+      subMenuOptions={quartzOrganizations.orgs}
       menuHeaderIcon={IconFont.Switch_New}
       menuHeaderText="Switch Organization"
       searchText="Search Organizations"
-      style={{width: '110px'}}
+      style={{width: '200px'}}
       menuStyle={{width: '250px'}}
-      onSelectOption={() => {
-        console.log('clicked an org option')
-      }}
+      onSelectOption={switchOrg}
     />
   )
 

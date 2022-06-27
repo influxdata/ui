@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react'
 import {
   ComponentSize,
   FlexBox,
-  Icon,
   IconFont,
   JustifyContent,
 } from '@influxdata/clockface'
@@ -120,7 +119,7 @@ const GlobalHeader = () => {
       menuHeaderIcon={IconFont.Switch_New}
       menuHeaderText="Switch Organization"
       searchText="Search Organizations"
-      style={{width: '200px'}}
+      style={{width: 'auto'}}
       menuStyle={{width: '250px'}}
       onSelectOption={switchOrg}
     />

@@ -19,7 +19,6 @@ import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
-import 'src/organizations/components/OrgProfileTab/style.scss'
 
 // Selectors
 import {getMe} from 'src/me/selectors'
@@ -29,14 +28,15 @@ import {selectQuartzIdentity} from 'src/identity/selectors'
 // Thunks
 import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 
+// Styles
+import 'src/organizations/components/OrgProfileTab/style.scss'
+
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
   const identity = useSelector(selectQuartzIdentity)
 
   const dispatch = useDispatch()
-
-  const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
   useEffect(() => {
     if (CLOUD && shouldUseQuartzIdentity()) {
@@ -50,8 +50,12 @@ const OrgProfileTab: FC = () => {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
+
   const hasSomeQuartzOrgData =
     identity.org.provider || me.quartzMe?.regionCode || me.quartzMe?.regionName
+
+  const orgProviderExists = identity?.org?.provider
 
   const OrgProfile = () => (
     <FlexBox.Child
@@ -72,9 +76,9 @@ const OrgProfileTab: FC = () => {
             margin={ComponentSize.Medium}
             justifyContent={JustifyContent.SpaceBetween}
             stretchToFitWidth={true}
-            style={{width: '85%'}}
+            style={orgProviderExists ? {width: '85%'} : {width: '48%'}}
           >
-            {identity?.org?.provider && (
+            {orgProviderExists && (
               <LabeledData label="Cloud Provider" src={identity.org.provider} />
             )}
             {me.quartzMe?.regionCode && (

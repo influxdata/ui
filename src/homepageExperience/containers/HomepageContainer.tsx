@@ -64,14 +64,13 @@ export const HomepageContainer: FC = () => {
 
   useEffect(() => {
     dispatch(getTelegrafs)
-  }, [telegrafs])
+  }, [telegrafs]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const telegrafLink = () => {
-    if (telegrafs.length != 0) {
-      return telegrafPageLink
-    } else {
+    if (!telegrafs.length) {
       return newTelegrafPageLink
     }
+    return telegrafPageLink
   }
 
   // events handling

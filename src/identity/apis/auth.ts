@@ -227,3 +227,14 @@ export const putDefaultQuartzOrg = async (orgId: string) => {
 
   return response.data
 }
+
+// fake function for 'changing' organization as dummy func until quartz endpoint is available
+export const changeCurrentQuartzOrg = async (orgId: string) => {
+  const response = {
+    status: 200,
+    data: orgId,
+    message: 'Organization updated.',
+  }
+
+  return response
+}

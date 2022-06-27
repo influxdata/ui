@@ -129,7 +129,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectField = (field: string): void => {
-    // TODO: why field is not injected?
     // Inject field
     injectViaLsp(ExecuteCommand.InjectField, {
       bucket:
@@ -146,21 +145,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
-    // TODO: check with Gary when to inject tag key
-    //       we may want to move InjectTag to somewhere else
-    //       otherwise, this following function will not be called
-
-    // Inject tag key
-    injectViaLsp(ExecuteCommand.InjectTag, {
-      bucket:
-        selection.bucket.type === 'sample'
-          ? selection.bucket.id
-          : selection.bucket.name,
-      name: tagKey,
-    } as ExecuteCommandInjectTag)
-
-    // TODO: add event for ExecuteCommand.InjectTag?
-
     // Inject tag value
     injectViaLsp(ExecuteCommand.InjectTagValue, {
       bucket:

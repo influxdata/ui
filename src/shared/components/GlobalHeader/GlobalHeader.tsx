@@ -76,12 +76,6 @@ const GlobalHeader = () => {
       href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
     {
-      name: 'Members',
-      iconFont: IconFont.UserOutline_New,
-      // List user members within an organization. Need to figure out what to do here.
-      href: '/',
-    },
-    {
       name: 'Billing',
       iconFont: IconFont.Bill,
       href: `/orgs/${activeOrg.id}/billing`,

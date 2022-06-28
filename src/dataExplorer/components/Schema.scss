@@ -85,7 +85,7 @@
 
     &:hover {
       cursor: pointer;
-      color: #7ce490; // color suggested in https://github.com/influxdata/ui/issues/4905
+      color: $c-krypton;
       background: $cf-grey-15;
       border-radius: 2px;
 

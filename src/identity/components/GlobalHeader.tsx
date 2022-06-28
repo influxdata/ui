@@ -8,18 +8,17 @@ import {
 } from '@influxdata/clockface'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
-import {CLOUD_URL} from '../../constants'
+import {CLOUD_URL} from 'src/shared/constants'
 import {useDispatch, useSelector} from 'react-redux'
 import {selectQuartzOrgs} from 'src/identity/selectors'
 import {getQuartzOrganizationsThunk} from 'src/quartzOrganizations/actions/thunks'
 
-const globalHeaderStyle = {
-  padding: '0 32px 0 32px',
-  margin: '24px 0 24px 0',
-}
+// Styles
+import {globalHeaderStyle} from './GlobalHeader.scss'
 
-const GlobalHeader = () => {
+export const GlobalHeader = () => {
   const {userAccounts} = useContext(UserAccountContext)
+  // set more useful default states here.
   const [activeAccount, setActiveAccount] = useState({} as SubMenuItem)
 
   // We should check whether this information needs to be in state at all, since page is reloaded
@@ -37,7 +36,9 @@ const GlobalHeader = () => {
   // Filter will iterate through the whole array, so let's either use .find (since we can assume at least one active account)
   // or add error handling for cases where there's more than one active account.
   useEffect(() => {
-    const activeAccount = userAccounts?.filter(acct => acct.isActive)[0]
+    const activeAccount = userAccounts?.find(
+      account => account.isActive === true
+    )
     setActiveAccount({
       name: activeAccount?.name,
       id: activeAccount?.id.toString(),
@@ -46,19 +47,15 @@ const GlobalHeader = () => {
 
   useEffect(() => {
     const orgs = quartzOrganizations.orgs
-    // Check whether any org is active. Will only be true before page finishes loading.
     const activeOrg = orgs.find(org => org.isActive === true)
-    // If there is an active org, set it to that org. Otherwise, set it to empty default org.
     if (activeOrg) {
-      // Per figma, don't include the '@whatever.com' in the name.
-      setActiveOrg({...activeOrg, name: activeOrg.name.replace(/\@.*/, '')})
+      setActiveOrg(activeOrg)
     }
     if (orgs[0].id === '') {
       dispatch(getQuartzOrganizationsThunk())
     }
   }, [dispatch, quartzOrganizations])
 
-  // Do we need to set the active account when we are already refreshing?
   const switchAccount = (account: SubMenuItem) => {
     setActiveAccount(account)
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
@@ -130,7 +127,7 @@ const GlobalHeader = () => {
     <FlexBox
       margin={ComponentSize.Large}
       justifyContent={JustifyContent.SpaceBetween}
-      style={globalHeaderStyle}
+      className={globalHeaderStyle}
     >
       <FlexBox margin={ComponentSize.Medium}>
         <MenuDropdown
@@ -141,15 +138,15 @@ const GlobalHeader = () => {
           subMenuOptions={accountsDropdownOptions}
           menuHeaderIcon={IconFont.Switch_New}
           menuHeaderText="Switch Account"
-          style={{width: 'auto'}}
+          style={{width: '200px'}}
           menuStyle={{width: '250px'}}
           onSelectOption={switchAccount}
         />
+        {/* Need to replace this with a different icon. */}
+        <Icon glyph={IconFont.CaretRight} />
         {orgDropdown}
       </FlexBox>
       <div>User Icon</div>
     </FlexBox>
   )
 }
-
-export default GlobalHeader

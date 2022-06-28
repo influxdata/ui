@@ -83,7 +83,12 @@ import {updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Decorators
-import {RemoteDataState} from '@influxdata/clockface'
+import {
+  Direction,
+  FlexBox,
+  FlexDirection,
+  RemoteDataState,
+} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'

@@ -26,6 +26,9 @@ import {
 } from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
+import {UserAccountProvider} from './accounts/context/userAccount'
+import {GlobalHeader} from 'src/identity/components/GlobalHeader'
+
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(() =>
   import('src/organizations/components/CreateOrgOverlay')
@@ -86,11 +89,17 @@ const App: FC = () => {
       </OverlayProviderComp>
       <EngagementLink />
       <TreeNav />
+
       <Suspense fallback={<PageSpinner />}>
-        <Switch>
-          <Route path="/orgs/new" component={CreateOrgOverlay} />
-          <Route path="/orgs/:orgID" component={SetOrg} />
-        </Switch>
+        <div style={{height: '100%', width: '100%'}}>
+          <UserAccountProvider>
+            <GlobalHeader />
+          </UserAccountProvider>
+          <Switch>
+            <Route path="/orgs/new" component={CreateOrgOverlay} />
+            <Route path="/orgs/:orgID" component={SetOrg} />
+          </Switch>
+        </div>
       </Suspense>
     </AppWrapper>
   )

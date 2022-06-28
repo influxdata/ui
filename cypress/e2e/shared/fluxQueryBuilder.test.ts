@@ -47,12 +47,10 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('bucket-selector--dropdown-button').click()
 
       // search for a bucket
-      cy.get('.searchable-dropdown--input-container').type(bucketName)
+      cy.getByTestID('bucket-selector--search-bar').type(bucketName)
 
       // should find the bucket and select it
-      cy.get('.cf-dropdown-item')
-        .should('contain', bucketName)
-        .click()
+      cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
       cy.wait('@query')
 
       // check the bucket is selected
@@ -67,12 +65,10 @@ describe('FluxQueryBuilder', () => {
         .click()
 
       // search for a measurement
-      cy.get('.searchable-dropdown--input-container').type(measurement)
+      cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
 
       // should find the measurement and select it
-      cy.get('.cf-dropdown-item')
-        .should('contain', measurement)
-        .click()
+      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
       cy.wait('@query')
 
       // check the measurement is selected

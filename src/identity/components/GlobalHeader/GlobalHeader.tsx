@@ -22,15 +22,25 @@ import {AccountDropdown} from './AccountDropdown'
 // Thunks
 import {getQuartzOrganizationsThunk} from 'src/quartzOrganizations/actions/thunks'
 
-// Utilities
-import {mapAccountsToItems} from 'src/identity/utils/mapAccountsToItems'
-
 // Styles
 import {globalHeaderStyle} from './GlobalHeaderStyle'
 
 // Mock Data
 // import {generateAccounts} from 'src/identity/mockAccountData'
 // import {generateOrgs} from 'src/identity/mockOrgData'
+
+const loadingOrg = {
+  id: '',
+  name: '',
+  isActive: false,
+  isDefault: false,
+}
+const loadingAccount = {
+  id: 0,
+  name: '',
+  isActive: false,
+  isDefault: false,
+}
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
@@ -41,25 +51,24 @@ export const GlobalHeader: FC = () => {
   // const [identity, setIdentity] = useState(generateOrgs(5000))
 
   const orgsList = identity.quartzOrganizations?.orgs
-  const accountsList = userAccounts ? mapAccountsToItems(userAccounts) : []
+  const accountsList = userAccounts ? userAccounts : [loadingAccount] // Might need to memoize the next line
 
-  const [activeOrg, setActiveOrg] = useState(orgsList[0])
-  const [activeAccount, setActiveAccount] = useState(accountsList[0])
+  const [activeOrg, setActiveOrg] = useState(loadingOrg)
+  const [activeAccount, setActiveAccount] = useState(loadingAccount)
+
+  console.log('rendering GlobalHeader')
 
   useEffect(() => {
-    const activeAccount = userAccounts?.find(
+    const activeAccount = accountsList?.find(
       account => account.isActive === true
     )
     if (activeAccount) {
-      setActiveAccount({
-        name: activeAccount?.name,
-        id: activeAccount?.id.toString(),
-      })
+      setActiveAccount(activeAccount)
     }
-  }, [userAccounts])
+  }, [accountsList])
 
   useEffect(() => {
-    const activeOrg = orgsList.find(org => org.isActive === true)
+    const activeOrg = orgsList?.find(org => org.isActive === true)
     if (activeOrg) {
       setActiveOrg(activeOrg)
     }

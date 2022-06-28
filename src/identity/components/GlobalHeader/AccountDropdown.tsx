@@ -1,15 +1,15 @@
 import React, {FC} from 'react'
 import {IconFont} from '@influxdata/clockface'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
-import {OrganizationSummaries} from 'src/client/unityRoutes'
+import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 
 type OrgSummaryItem = OrganizationSummaries[number]
 
 interface Props {
   activeOrg: OrgSummaryItem
-  activeAccount
+  activeAccount: UserAccount
   setActiveAccount: Function
-  accountsList
+  accountsList: UserAccount[]
 }
 
 export const AccountDropdown: FC<Props> = ({
@@ -18,7 +18,17 @@ export const AccountDropdown: FC<Props> = ({
   setActiveAccount,
   accountsList,
 }) => {
-  const accountDropdownMenuLinkOptions = [
+  const accountOptions = accountsList.map(account => ({
+    id: account.id.toString(),
+    name: account.name,
+  }))
+
+  const selectedAccount = {
+    id: activeAccount.id.toString(),
+    name: activeAccount.name,
+  }
+
+  const accountMainMenu = [
     {
       name: 'Settings',
       iconFont: IconFont.CogOutline,
@@ -27,7 +37,6 @@ export const AccountDropdown: FC<Props> = ({
     {
       name: 'Members',
       iconFont: IconFont.UserOutline_New,
-      // Members page not yet implemented.
       href: '/',
     },
     {
@@ -37,6 +46,8 @@ export const AccountDropdown: FC<Props> = ({
     },
   ]
 
+  console.log('rendering Account DropDown')
+
   const switchAccount = (account: SubMenuItem) => {
     setActiveAccount(account)
     window.location.href = `orgs/${activeOrg.id}/accounts/${account.id}`
@@ -45,10 +56,10 @@ export const AccountDropdown: FC<Props> = ({
   return (
     <MenuDropdown
       largeListSearch={true}
-      selectedOption={activeAccount}
+      selectedOption={selectedAccount}
       largeListCeiling={25}
-      options={accountDropdownMenuLinkOptions}
-      subMenuOptions={accountsList}
+      options={accountMainMenu}
+      subMenuOptions={accountOptions}
       menuHeaderIcon={IconFont.Switch_New}
       menuHeaderText="Switch Account"
       style={{width: 'auto'}}

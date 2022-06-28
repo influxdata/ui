@@ -7,12 +7,9 @@ type OrgSummaryItem = OrganizationSummaries[number]
 
 interface Props {
   activeOrg: OrgSummaryItem
-  // We likely don't need to 'set' active or if it's done by setting window.location.
   orgsList: OrganizationSummaries
 }
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
-  // We should check whether this information needs to be in state at all, since page is reloaded
-  // after each click to a new 'account' or 'organization' at this stage.
   const switchOrg = (org: SubMenuItem) => {
     window.location.href = `/orgs/${org.id}`
   }
@@ -34,6 +31,8 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
       href: `/orgs/${activeOrg.id}/usage`,
     },
   ]
+
+  console.log('rendering Org DropDown')
 
   return (
     <MenuDropdown

@@ -2,6 +2,11 @@ import React, {FC, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
+import {FLUX_RESPONSE_BYTES_LIMIT} from 'src/shared/constants'
+import {
+  GATEWAY_TIMEOUT_STATUS,
+  REQUEST_TIMEOUT_STATUS,
+} from 'src/cloud/constants'
 
 import {getOrg} from 'src/organizations/selectors'
 import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
@@ -24,6 +29,37 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Types
 import {CancellationError, File} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
+import {event} from 'src/cloud/utils/reporting'
+
+/*
+  Given an arbitrary text chunk of a Flux CSV, trim partial lines off of the end
+  of the text.
+
+  For example, given the following partial Flux response,
+
+            r,baz,3
+      foo,bar,baz,2
+      foo,bar,b
+
+  we want to trim the last incomplete line, so that the result is
+
+            r,baz,3
+      foo,bar,baz,2
+
+*/
+const trimPartialLines = (partialResp: string): string => {
+  let i = partialResp.length - 1
+
+  while (partialResp[i] !== '\n') {
+    if (i <= 0) {
+      return partialResp
+    }
+
+    i -= 1
+  }
+
+  return partialResp.slice(0, i + 1)
+}
 
 interface CancelMap {
   [key: string]: () => void
@@ -443,20 +479,47 @@ export const QueryProvider: FC = ({children}) => {
       signal: controller.signal,
     })
       .then(
-        (response: Response): Promise<RunQueryResult> => {
+        async (response: Response): Promise<RunQueryResult> => {
           if (response.status === 200) {
-            return response.text().then(csv => {
-              if (pending.current[id]) {
-                delete pending.current[id]
-              }
+            if (pending.current[id]) {
+              delete pending.current[id]
+            }
 
-              return {
-                type: 'SUCCESS',
-                csv,
-                bytesRead: csv.length,
-                didTruncate: false,
+            const reader = response.body.getReader()
+            const decoder = new TextDecoder()
+
+            let csv = ''
+            let bytesRead = 0
+            let didTruncate = false
+
+            let read = await reader.read()
+
+            while (!read.done) {
+              const text = decoder.decode(read.value)
+
+              bytesRead += read.value.byteLength
+
+              if (bytesRead > FLUX_RESPONSE_BYTES_LIMIT) {
+                csv += trimPartialLines(text)
+                didTruncate = true
+                break
+              } else {
+                csv += text
+                read = await reader.read()
               }
-            })
+            }
+
+            reader.cancel()
+            if (pending.current[id]) {
+              delete pending.current[id]
+            }
+
+            return {
+              type: 'SUCCESS',
+              csv,
+              bytesRead,
+              didTruncate,
+            }
           }
 
           if (response.status === RATE_LIMIT_ERROR_STATUS) {
@@ -474,6 +537,13 @@ export const QueryProvider: FC = ({children}) => {
               const json = JSON.parse(text)
               const message = json.message || json.error
               const code = json.code
+
+              if (code === GATEWAY_TIMEOUT_STATUS) {
+                event('gateway timeout')
+              }
+              if (code === REQUEST_TIMEOUT_STATUS) {
+                event('query timeout')
+              }
 
               return {type: 'UNKNOWN_ERROR', message, code}
             } catch {

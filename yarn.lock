@@ -1451,10 +1451,10 @@
     gud "^1.0.0"
     warning "^4.0.3"
 
-"@influxdata/clockface@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-4.2.1.tgz#1cb1e1ae9ae9fd0a8b18a91319f55f4b21b37ac3"
-  integrity sha512-Betuwyxq63pMqoLC8B5xNqm8eJq1EffEh2ACc90ZK81qBrysz3XYgp2EGy8sPg/+K/kaFdt4WWfidVdscW4qWA==
+"@influxdata/clockface@^4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-4.6.0.tgz#0dcc3086e74020547b236da17c86da1c6a7f065f"
+  integrity sha512-tVTVf+xpYxFprk2oy4pt68oG+AI1B6qzHfwemtWnw6IdI2A4wSal+ADl+dAXS0uIKtmEAIXTAwnR1bFMV8F4Tg==
 
 "@influxdata/flux-lsp-browser@0.8.19":
   version "0.8.19"

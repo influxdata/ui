@@ -5,11 +5,10 @@ import {IconFont} from '@influxdata/clockface'
 interface Props {
   activeOrg
   // We likely don't need to 'set' active or if it's done by setting window.location.
-  setActiveOrg: Function
   orgsList
 }
 
-export const OrgDropdown: FC<Props> = ({activeOrg, setActiveOrg, orgsList}) => {
+export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   // We should check whether this information needs to be in state at all, since page is reloaded
   // after each click to a new 'account' or 'organization' at this stage.
   const switchOrg = (org: SubMenuItem) => {

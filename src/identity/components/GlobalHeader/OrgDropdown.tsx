@@ -32,8 +32,6 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     },
   ]
 
-  console.log('rendering Org DropDown')
-
   return (
     <MenuDropdown
       largeListSearch={true}

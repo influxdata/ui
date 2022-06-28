@@ -46,8 +46,6 @@ export const AccountDropdown: FC<Props> = ({
     },
   ]
 
-  console.log('rendering Account DropDown')
-
   const switchAccount = (account: SubMenuItem) => {
     setActiveAccount(account)
     window.location.href = `orgs/${activeOrg.id}/accounts/${account.id}`

@@ -1,4 +1,6 @@
 // Remove bug with globalHeader showing up on error page.
+// For tomorrow - need to decide whether the .map functions should live in this component
+// or the child components, and whether we should use state or memoize
 
 // Library imports
 import React, {useContext, useEffect, useState, FC} from 'react'
@@ -50,13 +52,11 @@ export const GlobalHeader: FC = () => {
   // const [userAccounts, setUserAccounts] = useState(generateAccounts(5000))
   // const [identity, setIdentity] = useState(generateOrgs(5000))
 
-  const orgsList = identity.quartzOrganizations?.orgs
-  const accountsList = userAccounts ? userAccounts : [loadingAccount] // Might need to memoize the next line
+  const orgsList = identity.quartzOrganizations?.orgs // Might need to memoize the next
+  const accountsList = userAccounts ? userAccounts : [loadingAccount] // eslint-disable-line react-hooks/exhaustive-deps
 
   const [activeOrg, setActiveOrg] = useState(loadingOrg)
   const [activeAccount, setActiveAccount] = useState(loadingAccount)
-
-  console.log('rendering GlobalHeader')
 
   useEffect(() => {
     const activeAccount = accountsList?.find(

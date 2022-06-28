@@ -1,5 +1,5 @@
-import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
+import React, {FC, useEffect} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 import {Link} from 'react-router-dom'
 
 import {
@@ -20,7 +20,6 @@ import {
 } from '@influxdata/clockface'
 
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {getOrg} from 'src/organizations/selectors'
 import {
   CLIIcon,
   GoIcon,
@@ -38,11 +37,21 @@ import UsageProvider from 'src/usage/context/usage'
 import Resources from 'src/me/components/Resources'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {getAllTelegrafs} from 'src/resources/selectors'
+
+// Thunks
+import {getTelegrafs} from 'src/telegrafs/actions/thunks'
+
 export const HomepageContainer: FC = () => {
+  const dispatch = useDispatch()
   const org = useSelector(getOrg)
+  const telegrafs = useSelector(getAllTelegrafs)
   const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
   const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
+  const newTelegrafPageLink = `/orgs/${org.id}/load-data/telegrafs/new`
   const golangLink = `/orgs/${org.id}/new-user-setup/golang`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
   const javaScriptNodeLink = `/orgs/${org.id}/new-user-setup/nodejs`
@@ -52,6 +61,17 @@ export const HomepageContainer: FC = () => {
   const moreStyle = {height: '100%', ...linkStyle}
 
   const squareGridCardSize = '200px'
+
+  useEffect(() => {
+    dispatch(getTelegrafs)
+  }, [telegrafs]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const telegrafLink = () => {
+    if (!telegrafs.length) {
+      return newTelegrafPageLink
+    }
+    return telegrafPageLink
+  }
 
   // events handling
   const logGoWizardClick = () => {
@@ -187,7 +207,7 @@ export const HomepageContainer: FC = () => {
                     </div>
                   </Link>
                   <Link
-                    to={telegrafPageLink}
+                    to={telegrafLink}
                     style={linkStyle}
                     onClick={logTelegrafButtonClick}
                   >

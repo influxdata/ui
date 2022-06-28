@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react'
 import {
   ComponentSize,
   FlexBox,
-  Icon,
   IconFont,
   JustifyContent,
 } from '@influxdata/clockface'
@@ -74,12 +73,6 @@ export const GlobalHeader = () => {
       href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
     {
-      name: 'Members',
-      iconFont: IconFont.UserOutline_New,
-      // List user members within an organization. Need to figure out what to do here.
-      href: '/',
-    },
-    {
       name: 'Billing',
       iconFont: IconFont.Bill,
       href: `/orgs/${activeOrg.id}/billing`,
@@ -117,7 +110,7 @@ export const GlobalHeader = () => {
       menuHeaderIcon={IconFont.Switch_New}
       menuHeaderText="Switch Organization"
       searchText="Search Organizations"
-      style={{width: '200px'}}
+      style={{width: 'auto'}}
       menuStyle={{width: '250px'}}
       onSelectOption={switchOrg}
     />

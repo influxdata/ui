@@ -31,7 +31,9 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {getMe} from 'src/client'
+
+// APIs
+import {fetchIdentity} from './identity/apis/auth'
 
 interface State {
   loading: RemoteDataState
@@ -95,12 +97,7 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      const resp = await getMe({})
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-
+      await fetchIdentity()
       this.setState({auth: true})
       const redirectIsSet = !!getFromLocalStorage('redirectTo')
       if (redirectIsSet) {

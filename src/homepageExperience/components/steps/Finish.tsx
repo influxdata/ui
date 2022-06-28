@@ -3,6 +3,7 @@ import {
   AlignItems,
   ComponentSize,
   FlexBox,
+  FlexDirection,
   ResourceCard,
 } from '@influxdata/clockface'
 
@@ -79,7 +80,15 @@ export const Finish = (props: OwnProps) => {
     }
   }, [])
 
-  const showSampleApp = props.wizardEventName === 'pythonWizard'
+  const showSampleApp =
+    props.wizardEventName === 'pythonWizard' ||
+    props.wizardEventName === 'nodejsWizard'
+  const sampleAppLink =
+    props.wizardEventName === 'pythonWizard'
+      ? 'https://github.com/InfluxCommunity/sample-flask/blob/main/app.py'
+      : 'https://github.com/influxdata/iot-api-js'
+  const showBoilerplate = props.wizardEventName === 'nodejsWizard'
+
   return (
     <>
       <h1>Congrats!</h1>
@@ -92,48 +101,87 @@ export const Finish = (props: OwnProps) => {
       <p style={{marginTop: '80px'}}>
         Curious to learn more? Try these next steps!
       </p>
-      <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.Stretch}>
-        {showSampleApp && (
+      <FlexBox
+        margin={ComponentSize.Large}
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.FlexStart}
+      >
+        <FlexBox
+          margin={ComponentSize.Large}
+          alignItems={AlignItems.Stretch}
+          direction={FlexDirection.Row}
+        >
           <ResourceCard
             className="homepage-wizard-next-steps"
             onClick={() =>
-              handleNextStepEvent(props.wizardEventName, 'sampleApp')
+              handleNextStepEvent(props.wizardEventName, 'keyConcepts')
             }
           >
-            <SafeBlankLink href="https://github.com/InfluxCommunity/sample-flask/blob/main/app.py">
-              <h4>{CodeTerminalIcon}Sample App</h4>
+            <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
+              <h4>{BookIcon}Key Concepts</h4>
+            </SafeBlankLink>
+            <p>Learn about important concepts for writing time-series data.</p>
+          </ResourceCard>
+          <ResourceCard
+            className="homepage-wizard-next-steps"
+            onClick={() =>
+              handleNextStepEvent(props.wizardEventName, 'influxUniversity')
+            }
+          >
+            <SafeBlankLink href="https://influxdbu.com/">
+              <h4>{CodeTerminalIcon}InfluxDB University</h4>
             </SafeBlankLink>
             <p>
-              Play around with our template code of sample app to streamline
-              your own data into InfluxData.
+              Our free hands-on courses teach you the technical skills and best
+              practices to get the most out of your real-time data with
+              InfluxDB.
             </p>
           </ResourceCard>
-        )}
-        <ResourceCard
-          className="homepage-wizard-next-steps"
-          onClick={() =>
-            handleNextStepEvent(props.wizardEventName, 'keyConcepts')
-          }
+        </FlexBox>
+        <FlexBox
+          margin={ComponentSize.Large}
+          alignItems={AlignItems.Stretch}
+          direction={FlexDirection.Row}
         >
-          <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
-            <h4>{BookIcon}Key Concepts</h4>
-          </SafeBlankLink>
-          <p>Learn about important concepts for writing time-series data.</p>
-        </ResourceCard>
-        <ResourceCard
-          className="homepage-wizard-next-steps"
-          onClick={() =>
-            handleNextStepEvent(props.wizardEventName, 'influxUniversity')
-          }
-        >
-          <SafeBlankLink href="https://influxdbu.com/">
-            <h4>{CodeTerminalIcon}InfluxDB University</h4>
-          </SafeBlankLink>
-          <p>
-            Our free hands-on courses teach you the technical skills and best
-            practices to get the most out of your real-time data with InfluxDB.
-          </p>
-        </ResourceCard>
+          {showSampleApp && (
+            <ResourceCard
+              className="homepage-wizard-next-steps"
+              onClick={() =>
+                handleNextStepEvent(props.wizardEventName, 'sampleApp')
+              }
+            >
+              <SafeBlankLink href={sampleAppLink}>
+                <h4>{CodeTerminalIcon}Sample App</h4>
+              </SafeBlankLink>
+              {props.wizardEventName === 'pythonWizard' ? (
+                <p>
+                  Play around with our template code of sample app to streamline
+                  your own data into InfluxData.
+                </p>
+              ) : (
+                // nodejs sample app
+                <p>View an IoT sample application written in Node.js.</p>
+              )}
+            </ResourceCard>
+          )}
+          {showBoilerplate && (
+            <ResourceCard
+              className="homepage-wizard-next-steps"
+              onClick={() =>
+                handleNextStepEvent(props.wizardEventName, 'Boilerplate')
+              }
+            >
+              <SafeBlankLink href="https://github.com/influxdata/nodejs-samples/">
+                <h4>{CodeTerminalIcon}Boilerplate Snippets</h4>
+              </SafeBlankLink>
+
+              <p>
+                Get started writing and querying your own data using our code
+                snippets.
+              </p>
+            </ResourceCard>
+          )}
+        </FlexBox>
       </FlexBox>
     </>
   )

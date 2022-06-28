@@ -1,4 +1,4 @@
-import React, {FC, useState, useEffect} from 'react'
+import React, {FC} from 'react'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {IconFont} from '@influxdata/clockface'
 

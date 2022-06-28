@@ -77,7 +77,11 @@ const FieldSelector: FC = () => {
   return useMemo(() => {
     const shouldLoadMore = fieldsToShow.length < fields.length
     const loadMoreButton = shouldLoadMore && (
-      <div className="load-more-button" onClick={handleLoadMore}>
+      <div
+        className="load-more-button"
+        data-testid="field-selector--load-more-button"
+        onClick={handleLoadMore}
+      >
         + Load more
       </div>
     )

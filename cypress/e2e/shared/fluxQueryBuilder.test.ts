@@ -109,7 +109,7 @@ describe('FluxQueryBuilder', () => {
 
       // search a tag key, should not contain any fields
       cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
-      // wait 1000ms for the API call to happen
+      // wait 600ms for the API call to happen
       // since there is a debouncer in dataExplorer/context/fluxQueryBuilder
       cy.wait(600)
       cy.wait(['@query', '@query'])
@@ -141,11 +141,11 @@ describe('FluxQueryBuilder', () => {
       cy.wait('@query')
 
       // less than 8 items, no "Load More" button
-      cy.get('.field-selector--list-item--wrapper').should(
+      cy.getByTestID('field-selector--list-item--selectable').should(
         'have.length.at.most',
         8
       )
-      cy.get('.field-selector .load-more-button').should('not.exist')
+      cy.getByTestID('field-selector--load-more-button').should('not.exist')
 
       // if more than 8 items, show "Load More" button
       // and load additional 25 items
@@ -161,17 +161,18 @@ describe('FluxQueryBuilder', () => {
       cy.wait('@query')
 
       // more than 8 items, show 'Load More' button
-      cy.get('.field-selector--list-item--wrapper').should('have.length', 8)
-      cy.get('.field-selector .load-more-button')
-        .should('exist')
-        .click()
+      cy.getByTestID('field-selector--list-item--selectable').should(
+        'have.length',
+        8
+      )
+      cy.getByTestID('field-selector--load-more-button').click()
 
       // when load more is chosen, up to 25 additional entries will be shown
-      cy.get('.field-selector--list-item--wrapper').should(
+      cy.getByTestID('field-selector--list-item--selectable').should(
         'have.length.above',
         8
       )
-      cy.get('.field-selector--list-item--wrapper').should(
+      cy.getByTestID('field-selector--list-item--selectable').should(
         'have.length.at.most',
         33
       ) // 8 + 25

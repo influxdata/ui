@@ -24,7 +24,10 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
-import {shouldGetCredit250Experience} from 'src/me/selectors'
+import {
+  shouldGetCredit250Experience,
+  shouldShowUpgradeButton,
+} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -52,8 +55,10 @@ interface Props {
 const BrokerForm: FC<Props> = ({formContent, updateForm, saveForm}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
-  // [gh] temporarily removing this check while this feature is under development.
-  const showUpgradeButton = false // useSelector(shouldShowUpgradeButton)
+  // enabled for PAYG accounts and specific free accounts where a flag is enabled
+  const showUpgradeButton =
+    useSelector(shouldShowUpgradeButton) &&
+    !isFlagEnabled('enableFreeSubscriptions')
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
   const requiredFields = checkRequiredFields(formContent)
   return (

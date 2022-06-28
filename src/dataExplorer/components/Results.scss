@@ -4,6 +4,8 @@ $cf-radius-lg: $cf-radius + 4px;
 
 .data-explorer-results {
   height: 100%;
+  width: 100%;
+  position: absolute;
   border-radius: $cf-radius-lg;
   border: 2px solid transparent;
   background-color: $cf-grey-15;
@@ -37,6 +39,18 @@ $cf-radius-lg: $cf-radius + 4px;
   p {
     margin: 0;
   }
+}
+
+.data-explorer--monaco-outer {
+  flex-grow: 1;
+  position: relative;
+  width: 100%;
+}
+
+.data-explorer--monaco-wrap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .query-stat {

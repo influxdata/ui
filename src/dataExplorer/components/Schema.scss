@@ -62,13 +62,38 @@
 }
 
 .field-selector--list-item,
-.field-selector--list-item--selectable,
-.tag-selector-value--list-item,
-.tag-selector-value--list-item--selectable {
+.tag-selector-value--list-item {
   padding: $cf-space-2xs 0 $cf-space-2xs $cf-space-2xs;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.field-selector--list-item--selectable,
+.tag-selector-value--list-item--selectable {
+  white-space: nowrap;
+  overflow: hidden;
+
+  .cf-text-block {
+    text-overflow: ellipsis;
+    width: fit-content;
+    font-family: $cf-code-font;
+    font-weight: 400;
+    background-color: inherit;
+    color: $cf-white;
+    transition-property: color;
+
+    &:hover {
+      cursor: pointer;
+      color: $c-krypton;
+      background: $cf-grey-15;
+      border-radius: 2px;
+
+      &:after {
+        content: ' +';
+      }
+    }
+  }
 }
 
 .tag-selector-key--list-item {
@@ -76,25 +101,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.field-selector--list-item--wrapper,
-.tag-selector-value--list-item--wrapper {
-  width: fit-content;
-}
-
-.field-selector--list-item--selectable:hover,
-.tag-selector-value--list-item--selectable:hover {
-  cursor: pointer;
-  color: $c-krypton;
-  background-color: $cf-grey-15;
-  border-radius: 2px;
-  width: fit-content;
-  padding: $cf-space-2xs;
-
-  &:after {
-    content: ' +';
-  }
 }
 
 .field-selector .container-side-bar,

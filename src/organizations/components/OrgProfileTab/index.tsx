@@ -53,9 +53,9 @@ const OrgProfileTab: FC = () => {
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
   const hasSomeQuartzOrgData =
-    identity.org.provider || me.quartzMe?.regionCode || me.quartzMe?.regionName
+    identity.org?.provider || me.quartzMe?.regionCode || me.quartzMe?.regionName
 
-  const orgProviderExists = identity?.org?.provider
+  const orgProviderExists = identity.org?.provider
 
   const OrgProfile = () => (
     <FlexBox.Child

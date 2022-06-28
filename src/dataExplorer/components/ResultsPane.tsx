@@ -145,21 +145,23 @@ const ResultsPane: FC = () => {
           margin={ComponentSize.Small}
           style={{height: '100%'}}
         >
-          <div style={{height: '100%', width: '100%', position: 'relative'}}>
-            <Suspense
-              fallback={
-                <SpinnerContainer
-                  loading={RemoteDataState.Loading}
-                  spinnerComponent={<TechnoSpinner />}
+          <div className="data-explorer--monaco-outer">
+            <div className="data-explorer--monaco-wrap">
+              <Suspense
+                fallback={
+                  <SpinnerContainer
+                    loading={RemoteDataState.Loading}
+                    spinnerComponent={<TechnoSpinner />}
+                  />
+                }
+              >
+                <FluxMonacoEditor
+                  variables={variables}
+                  script={text}
+                  onChangeScript={setText}
                 />
-              }
-            >
-              <FluxMonacoEditor
-                variables={variables}
-                script={text}
-                onChangeScript={setText}
-              />
-            </Suspense>
+              </Suspense>
+            </div>
           </div>
           <div style={{width: '100%'}}>
             <FlexBox

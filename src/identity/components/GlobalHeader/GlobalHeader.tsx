@@ -83,11 +83,7 @@ export const GlobalHeader: FC = () => {
         />
         {/* Design will replace this with a different icon. */}
         <Icon glyph={IconFont.CaretRight} />
-        <OrgDropdown
-          activeOrg={activeOrg}
-          setActiveOrg={setActiveOrg}
-          orgsList={orgsList}
-        />
+        <OrgDropdown activeOrg={activeOrg} orgsList={orgsList} />
       </FlexBox>
     </FlexBox>
   )

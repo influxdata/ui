@@ -92,7 +92,9 @@ const App: FC = () => {
 
       <Suspense fallback={<PageSpinner />}>
         <div style={{height: '100%', width: '100%'}}>
-          {CLOUD && shouldUseQuartzIdentity() && <GlobalHeaderContainer />}
+          {CLOUD && isFlagEnabled('multiOrg') && shouldUseQuartzIdentity() && (
+            <GlobalHeaderContainer />
+          )}
           <Switch>
             <Route path="/orgs/new" component={CreateOrgOverlay} />
             <Route path="/orgs/:orgID" component={SetOrg} />

@@ -34,12 +34,22 @@ const FieldSelector: FC = () => {
   }, [fields])
 
   let list: JSX.Element | JSX.Element[] = (
-    <div className="field-selector--list-item">No Fields Found</div>
+    <div
+      className="field-selector--list-item"
+      data-testid="field-selector--list-item"
+    >
+      No Fields Found
+    </div>
   )
 
   if (loading === RemoteDataState.Error) {
     list = (
-      <div className="field-selector--list-item">Failed to load fields</div>
+      <div
+        className="field-selector--list-item"
+        data-testid="field-selector--list-item"
+      >
+        Failed to load fields
+      </div>
     )
   } else if (
     loading === RemoteDataState.Loading ||
@@ -49,7 +59,12 @@ const FieldSelector: FC = () => {
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
     list = fieldsToShow.map(field => (
       <div key={field} className="field-selector--list-item--wrapper">
-        <div className="field-selector--list-item--selectable">{field}</div>
+        <div
+          className="field-selector--list-item--selectable"
+          data-testid="field-selector--list-item--selectable"
+        >
+          {field}
+        </div>
       </div>
     ))
   }

@@ -100,7 +100,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('field-tag-key-search-bar').type(searchField)
       cy.wait('@query')
 
-      cy.get('.field-selector--list-item--wrapper').should(
+      cy.getByTestID('field-selector--list-item--selectable').should(
         'contain',
         searchField
       )
@@ -114,7 +114,10 @@ describe('FluxQueryBuilder', () => {
       // since there is a debouncer in dataExplorer/context/fluxQueryBuilder
       cy.wait(600)
       cy.wait(['@query', '@query'])
-      cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
+      cy.getByTestID('field-selector--list-item').should(
+        'contain',
+        'No Fields Found'
+      )
 
       // not recommend to assert for searchTagKey value
       // since it will expand all the tag keys, which triggers

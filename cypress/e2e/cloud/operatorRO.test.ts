@@ -87,7 +87,7 @@ describe('Operator Page', () => {
     cy.getByTestID('orgTab').click()
     cy.getByTestID('operator-resource--searchbar').type('678', {
       force: true,
-      delay: 50,
+      delay: 300,
     })
 
     cy.getByTestID('table-body').within(() => {

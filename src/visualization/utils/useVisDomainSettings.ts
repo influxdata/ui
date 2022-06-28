@@ -23,6 +23,7 @@ import {
 
 // Types
 import {AppState, InternalFromFluxResult, TimeRange} from 'src/types'
+import {RemoteDataState} from '@influxdata/clockface'
 /*
   This hook helps map the domain setting stored for line graph to the
   appropriate settings on a @influxdata/giraffe `Config` object.
@@ -137,13 +138,14 @@ export const useVisYDomainSettings = (
 }
 
 interface ZoomRequeryArgs {
-  parsedResult: InternalFromFluxResult
-  setResult: Function
-  preZoomResult: InternalFromFluxResult
-  setPreZoomResult: Function
-  query: string
-  storedDomain: number[]
   data: NumericColumnData | string[]
+  parsedResult: InternalFromFluxResult
+  preZoomResult: InternalFromFluxResult
+  query: string
+  setPreZoomResult: Function
+  setRequeryStatus: Function
+  setResult: Function
+  storedDomain: number[]
   timeRange?: TimeRange
 }
 
@@ -152,13 +154,14 @@ const isNotEqual = (firstValue: any, secondValue: any): boolean =>
 
 export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const {
-    parsedResult,
-    setResult,
-    preZoomResult,
-    setPreZoomResult,
-    query,
-    storedDomain,
     data,
+    parsedResult,
+    preZoomResult,
+    query,
+    setPreZoomResult,
+    setRequeryStatus,
+    setResult,
+    storedDomain,
     timeRange = null,
   } = args
 
@@ -204,11 +207,16 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
           variables,
           zoomQueryWindowVariable
         )
+
+        setRequeryStatus(RemoteDataState.Loading)
         runQuery(orgId, query, extern).promise.then(
           (result: RunQueryResult) => {
             if (result.type === 'SUCCESS') {
+              setRequeryStatus(RemoteDataState.Done)
               const parsed = fromFlux(result.csv)
               setResult(parsed)
+            } else {
+              setRequeryStatus(RemoteDataState.Error)
             }
           }
         )
@@ -217,6 +225,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const setZoomDomain = (updatedDomain: number[]) => {
+    setRequeryStatus(RemoteDataState.NotStarted)
     if (!preZoomResult) {
       setPreZoomResult(parsedResult)
     }
@@ -225,6 +234,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   }
 
   const resetDomain = () => {
+    setRequeryStatus(RemoteDataState.NotStarted)
     if (preZoomResult) {
       setResult(preZoomResult)
       setPreZoomResult(null)
@@ -238,13 +248,14 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
 
 export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   const {
-    parsedResult,
-    setResult,
-    preZoomResult,
-    setPreZoomResult,
-    query,
-    storedDomain,
     data,
+    parsedResult,
+    preZoomResult,
+    query,
+    setPreZoomResult,
+    setRequeryStatus,
+    setResult,
+    storedDomain,
     timeRange = null,
   } = args
 
@@ -295,11 +306,16 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
           variables,
           zoomQueryWindowVariable
         )
+
+        setRequeryStatus(RemoteDataState.Loading)
         runQuery(orgId, query, extern).promise.then(
           (result: RunQueryResult) => {
             if (result.type === 'SUCCESS') {
+              setRequeryStatus(RemoteDataState.Done)
               const parsed = fromFlux(result.csv)
               setResult(parsed)
+            } else {
+              setRequeryStatus(RemoteDataState.Error)
             }
           }
         )
@@ -308,6 +324,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const setZoomDomain = (updatedDomain: number[]) => {
+    setRequeryStatus(RemoteDataState.NotStarted)
     if (!preZoomResult) {
       setPreZoomResult(parsedResult)
     }
@@ -316,6 +333,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   }
 
   const resetDomain = () => {
+    setRequeryStatus(RemoteDataState.NotStarted)
     if (preZoomResult) {
       setResult(preZoomResult)
       setPreZoomResult(null)

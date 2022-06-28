@@ -2,7 +2,6 @@ import {Organization} from '../../../src/types'
 
 describe('FluxQueryBuilder', () => {
   beforeEach(() => {
-    cy.clearLocalStorage('dataExplorer.schema')
     cy.flush().then(() => {
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {

@@ -1,3 +1,6 @@
+// Remove bug with globalHeader showing up on error page.
+
+// Library imports
 import React, {useContext, useEffect, useState, FC} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {
@@ -6,79 +9,64 @@ import {
   IconFont,
   Icon,
   JustifyContent,
+  SubMenuItem,
 } from '@influxdata/clockface'
-import {selectQuartzOrgs} from 'src/identity/selectors'
-import {selectQuartzIdentity} from 'src/identity/selectors'
 
+// Selectors and Context
+import {selectQuartzIdentity} from 'src/identity/selectors'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
-import {generateAccounts} from 'src/identity/mockAccountData'
-import {generateOrgs} from 'src/identity/mockOrgData'
-import {SubMenuItem} from '@influxdata/clockface'
+
+// Components
 import {OrgDropdown} from './OrgDropdown'
 import {AccountDropdown} from './AccountDropdown'
 
+// Thunks
 import {getQuartzOrganizationsThunk} from 'src/quartzOrganizations/actions/thunks'
 
-const globalHeaderStyle = {
-  height: '60px',
-  paddingTop: '12px',
-  paddingRight: '32px',
-  paddingBottom: '12px',
-  // This is supposed to be 32px in figma, but doesn't produce an alignment. Might be part of component.
-  paddingLeft: '22px',
-  marginTop: '0px',
-  marginRight: '0px',
-  marginBottom: '0px',
-  marginLeft: '0px',
-}
+// Utilities
+import {mapAccountsToItems} from 'src/identity/utils/mapAccountsToItems'
 
-// Remove bug with globalHeader showing up on error page.
+// Styles
+import {globalHeaderStyle} from './GlobalHeaderStyle'
+
+// Mock Data
+// import {generateAccounts} from 'src/identity/mockAccountData'
+// import {generateOrgs} from 'src/identity/mockOrgData'
+
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
-  // const {userAccounts} = useContext(UserAccountContext)
-  // const userAccounts = generateAccounts(20000)
-  const [userAccounts, setUserAccounts] = useState(generateAccounts(5000))
-  const [quartzOrganizations, setQuartzOrganizations] = useState(
-    generateOrgs(5000)
-  )
-  const fullIdentity = useSelector(selectQuartzIdentity)
-  const userIdentity = fullIdentity.currentIdentity.user
-  // const quartzOrganizations = useSelector(selectQuartzOrgs)
 
-  const userName = userIdentity.firstName + ' ' + userIdentity.lastName
+  const identity = useSelector(selectQuartzIdentity)
+  const {userAccounts} = useContext(UserAccountContext)
+  // const [userAccounts, setUserAccounts] = useState(generateAccounts(5000))
+  // const [identity, setIdentity] = useState(generateOrgs(5000))
 
-  const [activeOrg, setActiveOrg] = useState(quartzOrganizations.orgs[0])
-  // set more useful default states here.
+  const [activeOrg, setActiveOrg] = useState({} as SubMenuItem)
   const [activeAccount, setActiveAccount] = useState({} as SubMenuItem)
-
-  useEffect(() => {
-    const orgs = quartzOrganizations.orgs
-    const activeOrg = orgs.find(org => org.isActive === true)
-    if (activeOrg) {
-      setActiveOrg(activeOrg)
-    }
-    if (orgs[0].id === '') {
-      dispatch(getQuartzOrganizationsThunk())
-    }
-  }, [dispatch, quartzOrganizations])
-
-  // May be able to optimize so that it only runs when there's a change in userAccounts.
-  const accountsDropdownOptions =
-    userAccounts?.map(acct => {
-      return {name: acct.name, id: acct.id.toString()} as SubMenuItem
-    }) || []
+  const orgsList = identity.quartzOrganizations?.orgs
+  const accountsList = userAccounts ? mapAccountsToItems(userAccounts) : []
 
   useEffect(() => {
     const activeAccount = userAccounts?.find(
       account => account.isActive === true
     )
-    setActiveAccount({
-      name: activeAccount?.name,
-      id: activeAccount?.id.toString(),
-    })
+    if (activeAccount) {
+      setActiveAccount({
+        name: activeAccount?.name,
+        id: activeAccount?.id.toString(),
+      })
+    }
   }, [userAccounts])
 
-  // Remember to make size responsive for mobile.
+  useEffect(() => {
+    const activeOrg = orgsList.find(org => org.isActive === true)
+    if (activeOrg) {
+      setActiveOrg(activeOrg)
+    }
+    if (orgsList[0].id === '') {
+      dispatch(getQuartzOrganizationsThunk())
+    }
+  }, [dispatch, orgsList])
 
   return (
     <FlexBox
@@ -91,17 +79,16 @@ export const GlobalHeader: FC = () => {
           activeOrg={activeOrg}
           activeAccount={activeAccount}
           setActiveAccount={setActiveAccount}
-          accountsList={accountsDropdownOptions}
+          accountsList={accountsList}
         />
-        {/* Need to replace this with a different icon. */}
+        {/* Design will replace this with a different icon. */}
         <Icon glyph={IconFont.CaretRight} />
         <OrgDropdown
           activeOrg={activeOrg}
           setActiveOrg={setActiveOrg}
-          orgsList={quartzOrganizations?.orgs}
+          orgsList={orgsList}
         />
       </FlexBox>
-      <div>{userName}</div>
     </FlexBox>
   )
 }

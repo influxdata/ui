@@ -1,10 +1,10 @@
 import React, {FC, useState, useEffect} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {IconFont} from '@influxdata/clockface'
 
 interface Props {
   activeOrg
+  // We likely don't need to 'set' active or if it's done by setting window.location.
   setActiveOrg: Function
   orgsList
 }

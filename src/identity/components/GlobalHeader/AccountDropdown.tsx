@@ -24,6 +24,7 @@ export const AccountDropdown: FC<Props> = ({
     {
       name: 'Members',
       iconFont: IconFont.UserOutline_New,
+      // Members page not yet implemented.
       href: '/',
     },
     {

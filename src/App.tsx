@@ -26,8 +26,7 @@ import {
 } from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
-import {UserAccountProvider} from './accounts/context/userAccount'
-import {GlobalHeader} from 'src/identity/components/GlobalHeader/GlobalHeader'
+import {GlobalHeaderContainer} from './identity/components/GlobalHeaderContainer'
 
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(() =>
@@ -92,13 +91,8 @@ const App: FC = () => {
       <TreeNav />
 
       <Suspense fallback={<PageSpinner />}>
-        {/* Need to replace this div with a flexbox */}
         <div style={{height: '100%', width: '100%'}}>
-          {CLOUD && shouldUseQuartzIdentity() && (
-            <UserAccountProvider>
-              <GlobalHeader />
-            </UserAccountProvider>
-          )}
+          {CLOUD && shouldUseQuartzIdentity() && <GlobalHeaderContainer />}
           <Switch>
             <Route path="/orgs/new" component={CreateOrgOverlay} />
             <Route path="/orgs/:orgID" component={SetOrg} />

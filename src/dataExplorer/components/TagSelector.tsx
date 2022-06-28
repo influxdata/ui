@@ -1,7 +1,7 @@
 import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 
 // Components
-import {Accordion} from '@influxdata/clockface'
+import {Accordion, ComponentSize, TextBlock} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import WaitingText from 'src/shared/components/WaitingText'
 
@@ -74,13 +74,12 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     list = <WaitingText text="Loading tag values" />
   } else if (loading === RemoteDataState.Done && tagValues.length) {
     list = valuesToShow.map(value => (
-      <div key={value} className="tag-selector-value--list-item--wrapper">
-        <div
-          className="tag-selector-value--list-item--selectable"
-          onClick={() => handleSelectTagValue(value)}
-        >
-          {value}
-        </div>
+      <div
+        key={value}
+        className="tag-selector-value--list-item--selectable"
+        onClick={() => handleSelectTagValue(value)}
+      >
+        <TextBlock text={value} size={ComponentSize.ExtraSmall} />
       </div>
     ))
   }

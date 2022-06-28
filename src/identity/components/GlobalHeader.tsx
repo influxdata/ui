@@ -3,6 +3,7 @@ import {
   ComponentSize,
   FlexBox,
   IconFont,
+  Icon,
   JustifyContent,
 } from '@influxdata/clockface'
 import {UserAccountContext} from 'src/accounts/context/userAccount'

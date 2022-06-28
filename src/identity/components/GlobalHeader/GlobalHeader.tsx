@@ -9,7 +9,6 @@ import {
   IconFont,
   Icon,
   JustifyContent,
-  SubMenuItem,
 } from '@influxdata/clockface'
 
 // Selectors and Context
@@ -41,10 +40,11 @@ export const GlobalHeader: FC = () => {
   // const [userAccounts, setUserAccounts] = useState(generateAccounts(5000))
   // const [identity, setIdentity] = useState(generateOrgs(5000))
 
-  const [activeOrg, setActiveOrg] = useState({} as SubMenuItem)
-  const [activeAccount, setActiveAccount] = useState({} as SubMenuItem)
   const orgsList = identity.quartzOrganizations?.orgs
   const accountsList = userAccounts ? mapAccountsToItems(userAccounts) : []
+
+  const [activeOrg, setActiveOrg] = useState(orgsList[0])
+  const [activeAccount, setActiveAccount] = useState(accountsList[0])
 
   useEffect(() => {
     const activeAccount = userAccounts?.find(

@@ -1,9 +1,12 @@
 import React, {FC} from 'react'
 import {IconFont} from '@influxdata/clockface'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
+import {OrganizationSummaries} from 'src/client/unityRoutes'
+
+type OrgSummaryItem = OrganizationSummaries[number]
 
 interface Props {
-  activeOrg
+  activeOrg: OrgSummaryItem
   activeAccount
   setActiveAccount: Function
   accountsList
@@ -48,8 +51,8 @@ export const AccountDropdown: FC<Props> = ({
       subMenuOptions={accountsList}
       menuHeaderIcon={IconFont.Switch_New}
       menuHeaderText="Switch Account"
-      style={{width: '200px'}}
-      // menuStyle={{width: '250px'}}
+      style={{width: 'auto'}}
+      menuStyle={{width: '200px'}}
       onSelectOption={switchAccount}
     />
   )

@@ -1,13 +1,15 @@
 import React, {FC} from 'react'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {IconFont} from '@influxdata/clockface'
+import {OrganizationSummaries} from 'src/client/unityRoutes'
+
+type OrgSummaryItem = OrganizationSummaries[number]
 
 interface Props {
-  activeOrg
+  activeOrg: OrgSummaryItem
   // We likely don't need to 'set' active or if it's done by setting window.location.
-  orgsList
+  orgsList: OrganizationSummaries
 }
-
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   // We should check whether this information needs to be in state at all, since page is reloaded
   // after each click to a new 'account' or 'organization' at this stage.
@@ -15,7 +17,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     window.location.href = `/orgs/${org.id}`
   }
 
-  const orgHrefOptions = [
+  const orgMainMenu = [
     {
       name: 'Settings',
       iconFont: IconFont.CogOutline,
@@ -35,16 +37,15 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
 
   return (
     <MenuDropdown
-      // Check largelist ceiling settings
       largeListSearch={true}
       largeListCeiling={25}
       selectedOption={activeOrg}
-      options={orgHrefOptions}
+      options={orgMainMenu}
       subMenuOptions={orgsList}
       menuHeaderIcon={IconFont.Switch_New}
       menuHeaderText="Switch Organization"
       searchText="Search Organizations"
-      // style={{width: 'auto'}}
+      style={{width: 'auto'}}
       menuStyle={{width: '200px'}}
       onSelectOption={switchOrg}
     />

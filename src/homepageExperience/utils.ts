@@ -34,3 +34,34 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
     glyph: IconFont.StarSmile,
   },
 ]
+
+export const HOMEPAGE_NAVIGATION_STEPS_CLI = [
+  {
+    name: 'Overview',
+    glyph: IconFont.BookOutline,
+  },
+  {
+    name: 'Install \n Dependencies',
+    glyph: IconFont.Install,
+  },
+  {
+    name: 'Initialize \n Client',
+    glyph: IconFont.FileSettings,
+  },
+  {
+    name: 'Write \n Data',
+    glyph: IconFont.Pencil,
+  },
+  {
+    name: 'Execute \n Flux Query',
+    glyph: IconFont.PlayOutline,
+  },
+  {
+    name: 'Execute \n Aggregate',
+    glyph: IconFont.PlayOutline,
+  },
+  {
+    name: 'Finished!',
+    glyph: IconFont.StarSmile,
+  },
+]

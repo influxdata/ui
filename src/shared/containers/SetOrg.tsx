@@ -13,6 +13,7 @@ import {
   BucketsIndex,
   CheckHistory,
   ClientLibrariesPage,
+  CliWizard,
   DashboardContainer,
   DashboardsIndex,
   DashboardsIndexPaginated,
@@ -318,6 +319,11 @@ const SetOrg: FC = () => {
                 exact
                 path="/orgs/:orgID/new-user-setup/golang"
                 component={GoWizard}
+              />
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-setup/cli"
+                component={CliWizard}
               />
             </>
           )}

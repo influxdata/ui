@@ -24,6 +24,7 @@ export const buildDeepLinkingMap = (org: Organization) => ({
   '/me/setup-python': `/orgs/${org.id}/new-user-setup/python`,
   '/me/setup-nodejs': `/orgs/${org.id}/new-user-setup/nodejs`,
   '/me/setup-golang': `/orgs/${org.id}/new-user-setup/golang`,
+  '/me/setup-cli': `/orgs/${org.id}/new-user-setup/cli`,
   '/me/tasks': `/orgs/${org.id}/tasks`,
   '/me/telegraf-mqtt': `/orgs/${org.id}/load-data/telegraf-plugins/mqtt_consumer`,
   '/me/telegrafs': `/orgs/${org.id}/load-data/telegrafs`,

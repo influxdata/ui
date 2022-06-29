@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useContext, useEffect} from 'react'
+import React, {FC, useState, useContext, useEffect, useCallback} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -44,6 +44,8 @@ import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 
 interface SubscriptionNavigationModel extends SubwayNavModel {
   type: string
+  // TODO: Use clockface 4.6.2
+  isCompleted?: boolean
 }
 
 enum Steps {
@@ -70,6 +72,34 @@ const navigationSteps: SubscriptionNavigationModel[] = [
   },
 ]
 
+interface CompletedSteps {
+  [Steps.BrokerForm]: boolean
+  [Steps.SubscriptionForm]: boolean
+  [Steps.ParsingForm]: boolean
+}
+const DEFAULT_COMPLETED_STEPS = {
+  [Steps.BrokerForm]: false,
+  [Steps.SubscriptionForm]: false,
+  [Steps.ParsingForm]: false,
+}
+
+interface StepsStatus {
+  currentStep: Steps
+  clickedStep: string
+  brokerStepCompleted: string
+  subscriptionStepCompleted: string
+  parsingStepCompleted: string
+  dataFormat: string
+}
+const DEFAULT_STEPS_STATUS = {
+  currentStep: Steps.BrokerForm,
+  clickedStep: Steps.BrokerForm,
+  brokerStepCompleted: 'false',
+  subscriptionStepCompleted: 'false',
+  parsingStepCompleted: 'false',
+  dataFormat: 'not chosen yet',
+}
+
 const CreateSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
   const {formContent, saveForm, updateForm, loading} = useContext(
@@ -80,6 +110,60 @@ const CreateSubscriptionPage: FC = () => {
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
   const {bucket} = useContext(WriteDataDetailsContext)
+  const [completedSteps, setCompletedSteps] = useState<CompletedSteps>(
+    DEFAULT_COMPLETED_STEPS
+  )
+  const [stepsStatus, setStepsStatus] = useState<StepsStatus>(
+    DEFAULT_STEPS_STATUS
+  )
+
+  const getActiveStep = useCallback(activeForm => {
+    let currentStep = 1
+    navigationSteps.forEach((step, index) => {
+      if (step.type === activeForm) {
+        currentStep = index + 1
+      }
+    })
+    return currentStep
+  }, [])
+
+  useEffect(() => {
+    setCompletedSteps({
+      [Steps.BrokerForm]: stepsStatus.brokerStepCompleted === 'true',
+      [Steps.SubscriptionForm]:
+        stepsStatus.subscriptionStepCompleted === 'true',
+      [Steps.ParsingForm]: stepsStatus.parsingStepCompleted === 'true',
+    })
+  }, [stepsStatus])
+
+  useEffect(() => {
+    const status = {
+      currentStep: active,
+      clickedStep: navigationSteps[getActiveStep(active) - 1].type,
+      brokerStepCompleted:
+        formContent.name && formContent.brokerHost && formContent.brokerPort
+          ? 'true'
+          : 'false',
+      subscriptionStepCompleted:
+        formContent.topic &&
+        formContent.bucket &&
+        formContent.bucket !== '<BUCKET>'
+          ? 'true'
+          : 'false',
+      parsingStepCompleted:
+        formContent.dataFormat &&
+        checkRequiredJsonFields(formContent) &&
+        checkRequiredStringFields(formContent)
+          ? 'true'
+          : 'false',
+      dataFormat: formContent.dataFormat ?? 'not chosen yet',
+    } as StepsStatus
+    setStepsStatus(status)
+  }, [formContent, getActiveStep, active])
+
+  const stepsWithIsCompletedStatus = navigationSteps.map(s => {
+    return {...s, isCompleted: completedSteps[s.type]}
+  })
 
   useEffect(() => {
     event(
@@ -92,40 +176,21 @@ const CreateSubscriptionPage: FC = () => {
   const handleClick = (step: number) => {
     event(
       'subway navigation clicked',
-      {
-        currentStep: active,
-        clickedStep: navigationSteps[step - 1].type,
-        brokerStepCompleted:
-          formContent.name && formContent.brokerHost && formContent.brokerPort
-            ? 'true'
-            : 'false',
-        subscriptionStepCompleted:
-          formContent.topic && formContent.bucket ? 'true' : 'false',
-        parsingStepCompleted:
-          formContent.dataFormat &&
-          checkRequiredJsonFields(formContent) &&
-          checkRequiredStringFields(formContent)
-            ? 'true'
-            : 'false',
-        dataFormat: formContent.dataFormat ?? 'not chosen yet',
-      },
+      {...stepsStatus},
       {feature: 'subscriptions'}
     )
     document
-      .getElementById(navigationSteps[step - 1].type)
+      .getElementById(stepsWithIsCompletedStatus[step - 1].type)
       ?.scrollIntoView({behavior: 'smooth', block: 'center'})
-    setFormActive(navigationSteps[step - 1].type as Steps)
+    setFormActive(stepsWithIsCompletedStatus[step - 1].type as Steps)
+    setCompletedSteps({
+      [Steps.BrokerForm]: stepsStatus.brokerStepCompleted === 'true',
+      [Steps.SubscriptionForm]:
+        stepsStatus.subscriptionStepCompleted === 'true',
+      [Steps.ParsingForm]: stepsStatus.parsingStepCompleted === 'true',
+    })
   }
 
-  const getActiveStep = activeForm => {
-    let currentStep = 1
-    navigationSteps.forEach((step, index) => {
-      if (step.type === activeForm) {
-        currentStep = index + 1
-      }
-    })
-    return currentStep
-  }
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>
@@ -142,10 +207,10 @@ const CreateSubscriptionPage: FC = () => {
               <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
-                navigationSteps={navigationSteps}
+                navigationSteps={stepsWithIsCompletedStatus}
                 settingUpIcon={FormLogo}
                 settingUpText="MQTT Connector"
-                showCheckmark={false}
+                showCheckmark={true}
               />
             </div>
             <BrokerForm

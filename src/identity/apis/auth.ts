@@ -52,6 +52,13 @@ export interface CurrentIdentity {
   status?: RemoteDataState
 }
 
+export enum NetworkErrorTypes {
+  UnauthorizedError = 'UnauthorizedError',
+  NotFoundError = 'NotFoundError',
+  ServerError = 'ServerError',
+  GenericError = 'GenericError',
+}
+
 // 401 error
 export class UnauthorizedError extends Error {
   constructor(message) {
@@ -94,6 +101,41 @@ export const fetchIdentity = async () => {
   }
 
   return fetchQuartzMe()
+}
+
+const identityRetryDelay = 30000 // 30 seconds
+const retryLimit = 5
+
+export const retryFetchIdentity = async (
+  retryAttempts = 1,
+  retryDelay = identityRetryDelay
+) => {
+  try {
+    return await fetchIdentity()
+  } catch (error) {
+    if (
+      error.name === NetworkErrorTypes.UnauthorizedError ||
+      error.name === NetworkErrorTypes.GenericError
+    ) {
+      throw error
+    }
+
+    if (error.name === NetworkErrorTypes.ServerError) {
+      if (retryAttempts >= retryLimit) {
+        throw error
+      }
+      return new Promise((resolve, reject) => {
+        setTimeout(async () => {
+          try {
+            const user = await retryFetchIdentity(retryAttempts + 1, retryDelay)
+            resolve(user)
+          } catch (error) {
+            reject(error)
+          }
+        }, retryAttempts * retryDelay)
+      })
+    }
+  }
 }
 
 // fetch user identity from /quartz/identity.

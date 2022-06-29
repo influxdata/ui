@@ -1,4 +1,4 @@
-import React, {FC, createContext, useState, useRef, useEffect} from 'react'
+import React, {FC, createContext, useState} from 'react'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 import {FluxResult} from 'src/types/flows'

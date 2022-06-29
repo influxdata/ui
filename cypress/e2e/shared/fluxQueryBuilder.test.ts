@@ -110,7 +110,9 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('dismiss-button').click()
 
       // search a tag key, should not contain any fields
-      cy.getByTestID('field-tag-key-search-bar').type(searchTagKey).tick(600)
+      cy.getByTestID('field-tag-key-search-bar')
+        .type(searchTagKey)
+        .tick(600)
       // delay the typing since there is a debouncer
       // in dataExplorer/context/fluxQueryBuilder
 

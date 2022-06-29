@@ -54,8 +54,9 @@ export const ResultsContext = createContext<ResultsContextType>(DEFAULT_STATE)
 
 export const ResultsProvider: FC = ({children}) => {
   const [result, setResult] = useState<FluxResult>({} as FluxResult)
-  const timeStart = useRef<number>(null)
-  const [time, setTime] = useState<number>(null)
+  // const timeStart = useRef<number>(null)
+  // const [time, setTime] = useState<number>(null)
+  const [time] = useState<number>(null)
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -63,37 +64,37 @@ export const ResultsProvider: FC = ({children}) => {
   // for display, should be moved
   const [view, setView] = useLocalStorageState()
 
-  useEffect(() => {
-    let running = false
-    const check = () => {
-      if (!running) {
-        return
-      }
+  // useEffect(() => {
+  //   let running = false
+  //   const check = () => {
+  //     if (!running) {
+  //       return
+  //     }
 
-      setTime(Date.now() - timeStart.current)
+  //     setTime(Date.now() - timeStart.current)
 
-      window.requestAnimationFrame(check)
-    }
+  //     window.requestAnimationFrame(check)
+  //   }
 
-    if (status === RemoteDataState.Loading) {
-      if (!timeStart.current) {
-        timeStart.current = Date.now()
-      }
+  //   if (status === RemoteDataState.Loading) {
+  //     if (!timeStart.current) {
+  //       timeStart.current = Date.now()
+  //     }
 
-      running = true
-      window.requestAnimationFrame(check)
-    } else if (
-      status === RemoteDataState.Done ||
-      status === RemoteDataState.Error
-    ) {
-      running = false
-      timeStart.current = null
-    }
+  //     running = true
+  //     window.requestAnimationFrame(check)
+  //   } else if (
+  //     status === RemoteDataState.Done ||
+  //     status === RemoteDataState.Error
+  //   ) {
+  //     running = false
+  //     timeStart.current = null
+  //   }
 
-    return () => {
-      running = false
-    }
-  }, [status])
+  //   return () => {
+  //     running = false
+  //   }
+  // }, [status])
 
   return (
     <ResultsContext.Provider

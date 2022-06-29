@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useState, useContext} from 'react'
+import React, {FC, lazy, Suspense, useContext} from 'react'
 import {
   DraggableResizer,
   Orientation,
@@ -43,12 +43,19 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
 )
-const useLocalStorageState = createLocalStorageStateHook(
+const useQueryState = createLocalStorageStateHook<string>(
   'dataExplorer.query',
   ''
 )
+const useRangeState = createLocalStorageStateHook<TimeRange>(
+  'dataExplorer.range',
+  DEFAULT_TIME_RANGE
+)
+const useResizeState = createLocalStorageStateHook(
+  'dataExplorer.resize.horizontal',
+  [0.2]
+)
 
-const INITIAL_HORIZ_RESIZER_HANDLE = 0.2
 const fakeNotify = notify
 
 const rangeToParam = (timeRange: TimeRange) => {
@@ -83,14 +90,12 @@ const rangeToParam = (timeRange: TimeRange) => {
 }
 
 const ResultsPane: FC = () => {
-  const [horizDragPosition, setHorizDragPosition] = useState([
-    INITIAL_HORIZ_RESIZER_HANDLE,
-  ])
   const {basic, query} = useContext(QueryContext)
   const {status, setStatus, setResult} = useContext(ResultsContext)
 
-  const [text, setText] = useLocalStorageState()
-  const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
+  const [horizDragPosition, setHorizDragPosition] = useResizeState()
+  const [text, setText] = useQueryState()
+  const [timeRange, setTimeRange] = useRangeState()
 
   const download = () => {
     event('CSV Download Initiated')

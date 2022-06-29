@@ -147,11 +147,15 @@ const processErrorResponse = async (
     const message = json.message || json.error
     const code = json.code
 
-    if (code === REQUEST_TIMEOUT_STATUS) {
-      event('shared query timeout')
-    }
-    if (code === GATEWAY_TIMEOUT_STATUS) {
-      event('shared gateway timeout')
+    switch (code) {
+      case REQUEST_TIMEOUT_STATUS:
+        event('shared query timeout')
+        break
+      case GATEWAY_TIMEOUT_STATUS:
+        event('shared gateway timeout')
+        break
+      default:
+        event('shared query error')
     }
 
     return {type: 'UNKNOWN_ERROR', message, code}

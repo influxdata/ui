@@ -2,7 +2,6 @@ import React, {FC, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
-import {FLUX_RESPONSE_BYTES_LIMIT} from 'src/shared/constants'
 import {
   GATEWAY_TIMEOUT_STATUS,
   REQUEST_TIMEOUT_STATUS,
@@ -30,36 +29,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CancellationError, File} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 import {event} from 'src/cloud/utils/reporting'
-
-/*
-  Given an arbitrary text chunk of a Flux CSV, trim partial lines off of the end
-  of the text.
-
-  For example, given the following partial Flux response,
-
-            r,baz,3
-      foo,bar,baz,2
-      foo,bar,b
-
-  we want to trim the last incomplete line, so that the result is
-
-            r,baz,3
-      foo,bar,baz,2
-
-*/
-const trimPartialLines = (partialResp: string): string => {
-  let i = partialResp.length - 1
-
-  while (partialResp[i] !== '\n') {
-    if (i <= 0) {
-      return partialResp
-    }
-
-    i -= 1
-  }
-
-  return partialResp.slice(0, i + 1)
-}
 
 interface CancelMap {
   [key: string]: () => void
@@ -481,32 +450,24 @@ export const QueryProvider: FC = ({children}) => {
       .then(
         async (response: Response): Promise<RunQueryResult> => {
           if (response.status === 200) {
-            if (pending.current[id]) {
-              delete pending.current[id]
-            }
-
             const reader = response.body.getReader()
             const decoder = new TextDecoder()
 
             let csv = ''
             let bytesRead = 0
-            let didTruncate = false
 
             let read = await reader.read()
 
             while (!read.done) {
+              if (!pending.current[id]) {
+                break
+              }
               const text = decoder.decode(read.value)
 
               bytesRead += read.value.byteLength
 
-              if (bytesRead > FLUX_RESPONSE_BYTES_LIMIT) {
-                csv += trimPartialLines(text)
-                didTruncate = true
-                break
-              } else {
-                csv += text
-                read = await reader.read()
-              }
+              csv += text
+              read = await reader.read()
             }
 
             reader.cancel()
@@ -518,7 +479,7 @@ export const QueryProvider: FC = ({children}) => {
               type: 'SUCCESS',
               csv,
               bytesRead,
-              didTruncate,
+              didTruncate: false,
             }
           }
 

@@ -499,11 +499,15 @@ export const QueryProvider: FC = ({children}) => {
               const message = json.message || json.error
               const code = json.code
 
-              if (code === GATEWAY_TIMEOUT_STATUS) {
-                event('gateway timeout')
-              }
-              if (code === REQUEST_TIMEOUT_STATUS) {
-                event('query timeout')
+              switch (code) {
+                case REQUEST_TIMEOUT_STATUS:
+                  event('shared query timeout')
+                  break
+                case GATEWAY_TIMEOUT_STATUS:
+                  event('shared gateway timeout')
+                  break
+                default:
+                  event('shared query error')
               }
 
               return {type: 'UNKNOWN_ERROR', message, code}

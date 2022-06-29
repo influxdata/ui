@@ -84,7 +84,9 @@ describe('FluxQueryBuilder', () => {
     })
 
     it('search bar can search fields and tag keys dynamically', () => {
+      cy.clock(new Date(), ['Date'])
       cy.intercept('POST', '/api/v2/query*').as('query')
+
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
@@ -108,11 +110,10 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('dismiss-button').click()
 
       // search a tag key, should not contain any fields
-      cy.getByTestID('field-tag-key-search-bar').type(searchTagKey, {
-        // delay the typing since there is a debouncer
-        // in dataExplorer/context/fluxQueryBuilder
-        delay: 600,
-      })
+      cy.getByTestID('field-tag-key-search-bar').type(searchTagKey).tick(600)
+      // delay the typing since there is a debouncer
+      // in dataExplorer/context/fluxQueryBuilder
+
       cy.wait(['@query', '@query'])
       cy.getByTestID('field-selector--list-item').should(
         'contain',

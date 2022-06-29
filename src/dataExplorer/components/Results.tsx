@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useState, useContext, useMemo} from 'react'
 import {
   FlexBox,
   FlexDirection,
@@ -21,6 +21,7 @@ import {
   ViewOptions,
   SUPPORTED_VISUALIZATIONS,
 } from 'src/visualization'
+import {FluxResult} from 'src/types/flows'
 
 import './Results.scss'
 
@@ -82,6 +83,55 @@ const Results: FC = () => {
   const [search, setSearch] = useState('')
   const {result, status, view, setView} = useContext(ResultsContext)
   const {launch} = useContext(SidebarContext)
+  const res = useMemo(() => {
+    if (view.state === 'graph' || !search.trim() || !result?.parsed) {
+      return result?.parsed
+    }
+
+    const dupped = {
+      fluxGroupKeyUnion: [...result.parsed.fluxGroupKeyUnion],
+      resultColumnNames: [...result.parsed.resultColumnNames],
+      table: {
+        length: 0,
+        columns: Object.entries(result.parsed.table.columns).reduce(
+          (acc, [k, v]) => {
+            acc[k] = {...v, data: []}
+            return acc
+          },
+          {}
+        ),
+      },
+    }
+
+    const len = result.parsed.table.length
+    const keys = Object.keys(result.parsed.table.columns)
+    let newLen = 0,
+      ni = 0
+
+    const _search = search.toLocaleLowerCase()
+    const oldCols = result.parsed.table.columns
+    const newCols = dupped.table.columns
+
+    for (; ni < len; ni++) {
+      if (
+        !keys.reduce(
+          (acc, curr) =>
+            acc ||
+            ('' + oldCols[curr].data[ni]).toLocaleLowerCase().includes(_search),
+          false
+        )
+      ) {
+        continue
+      }
+
+      keys.forEach(k => (newCols[k].data[newLen] = oldCols[k].data[ni]))
+      newLen++
+    }
+
+    dupped.table.length = newLen
+
+    return dupped as FluxResult['parsed']
+  }, [search, result?.parsed, view.state])
 
   let resultView
 
@@ -98,23 +148,19 @@ const Results: FC = () => {
               showAll: false,
             } as SimpleTableViewProperties
           }
-          result={result.parsed}
+          result={res}
         />
       )
     } else {
       resultView = (
         <div style={{height: '100%', width: '100%', padding: 12}}>
-          <View
-            loading={status}
-            properties={view.properties}
-            result={result.parsed}
-          />
+          <View loading={status} properties={view.properties} result={res} />
         </div>
       )
     }
   }
 
-  const dataExists = result.parsed && Object.entries(result.parsed).length
+  const dataExists = res && Object.entries(res).length
   const updateType = viewType => {
     setView({
       state: 'graph',

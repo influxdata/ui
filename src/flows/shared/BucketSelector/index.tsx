@@ -17,6 +17,12 @@ import {BucketContext} from 'src/shared/contexts/buckets'
 // Types
 import {Bucket} from 'src/types'
 
+const REMAP_BUCKET_TYPES = {
+  user: 'My Data',
+  system: 'System Data',
+  sample: 'Sample Data',
+}
+
 interface Props {
   selected: Bucket
   onSelect: (bucket: Bucket) => void
@@ -43,7 +49,7 @@ const BucketSelector: FC<Props> = ({
     }
 
     onSelect(null)
-  }, [buckets])
+  }, [buckets, onSelect])
 
   let menuItems = (
     <Dropdown.ItemEmpty>
@@ -52,6 +58,44 @@ const BucketSelector: FC<Props> = ({
   )
 
   if (loading === RemoteDataState.Done && buckets.length) {
+    const body = Object.entries(
+      buckets.reduce((acc, curr) => {
+        if (!acc[curr.type]) {
+          acc[curr.type] = []
+        }
+
+        acc[curr.type].push(curr)
+        return acc
+      }, {}) as Record<string, Bucket[]>
+    ).map(([k, v]) => {
+      const items = v.map(bucket => (
+        <Dropdown.Item
+          key={bucket.name}
+          value={bucket}
+          onClick={onSelect}
+          selected={bucket.name === selected?.name}
+          title={bucket.name}
+          wrapText={true}
+          testID={`bucket-selector--dropdown--${bucket.name}`}
+        >
+          {bucket.name}
+        </Dropdown.Item>
+      ))
+
+      let name = k
+
+      if (REMAP_BUCKET_TYPES.hasOwnProperty(k)) {
+        name = REMAP_BUCKET_TYPES[k]
+      }
+
+      return (
+        <React.Fragment key={name}>
+          <Dropdown.Divider text={name} />
+          {items}
+        </React.Fragment>
+      )
+    })
+
     menuItems = (
       <>
         <CreateBucketDropdownItem
@@ -59,19 +103,7 @@ const BucketSelector: FC<Props> = ({
           testID={`${testID}--create`}
         />
         <Dropdown.Divider />
-        {buckets.map(bucket => (
-          <Dropdown.Item
-            key={bucket.name}
-            value={bucket}
-            onClick={onSelect}
-            selected={bucket.name === selected?.name}
-            title={bucket.name}
-            wrapText={true}
-            testID={`${testID}--${bucket.name}`}
-          >
-            {bucket.name}
-          </Dropdown.Item>
-        ))}
+        {body}
       </>
     )
   }

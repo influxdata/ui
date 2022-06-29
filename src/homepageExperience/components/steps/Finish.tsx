@@ -17,6 +17,7 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 import {event} from 'src/cloud/utils/reporting'
 import FeedbackBar from 'src/homepageExperience/components/FeedbackBar'
+import SampleCode from 'src/homepageExperience/components/steps/SampleCode'
 
 type OwnProps = {
   wizardEventName: string
@@ -80,14 +81,9 @@ export const Finish = (props: OwnProps) => {
     }
   }, [])
 
-  const showSampleApp =
+  const showSampleAppAndBoilerplate =
     props.wizardEventName === 'pythonWizard' ||
     props.wizardEventName === 'nodejsWizard'
-  const sampleAppLink =
-    props.wizardEventName === 'pythonWizard'
-      ? 'https://github.com/influxdata/iot-api-python'
-      : 'https://github.com/influxdata/iot-api-js'
-  const showBoilerplate = props.wizardEventName === 'nodejsWizard'
 
   return (
     <>
@@ -138,49 +134,12 @@ export const Finish = (props: OwnProps) => {
             </p>
           </ResourceCard>
         </FlexBox>
-        <FlexBox
-          margin={ComponentSize.Large}
-          alignItems={AlignItems.Stretch}
-          direction={FlexDirection.Row}
-        >
-          {showSampleApp && (
-            <ResourceCard
-              className="homepage-wizard-next-steps"
-              onClick={() =>
-                handleNextStepEvent(props.wizardEventName, 'sampleApp')
-              }
-            >
-              <SafeBlankLink href={sampleAppLink}>
-                <h4>{CodeTerminalIcon}Sample App</h4>
-              </SafeBlankLink>
-              {props.wizardEventName === 'pythonWizard' ? (
-                <p>
-                  View an IoT sample application written in Python.
-                </p>
-              ) : (
-                // nodejs sample app
-                <p>View an IoT sample application written in Node.js.</p>
-              )}
-            </ResourceCard>
-          )}
-          {showBoilerplate && (
-            <ResourceCard
-              className="homepage-wizard-next-steps"
-              onClick={() =>
-                handleNextStepEvent(props.wizardEventName, 'Boilerplate')
-              }
-            >
-              <SafeBlankLink href="https://github.com/influxdata/nodejs-samples/">
-                <h4>{CodeTerminalIcon}Boilerplate Snippets</h4>
-              </SafeBlankLink>
-
-              <p>
-                Get started writing and querying your own data using our code
-                snippets.
-              </p>
-            </ResourceCard>
-          )}
-        </FlexBox>
+        {showSampleAppAndBoilerplate && (
+          <SampleCode
+            handleNextStepEvent={handleNextStepEvent}
+            wizardEventName={props.wizardEventName}
+          />
+        )}
       </FlexBox>
     </>
   )

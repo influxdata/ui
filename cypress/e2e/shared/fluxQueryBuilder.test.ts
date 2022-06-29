@@ -108,10 +108,11 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('dismiss-button').click()
 
       // search a tag key, should not contain any fields
-      cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
-      // wait 600ms for the API call to happen
-      // since there is a debouncer in dataExplorer/context/fluxQueryBuilder
-      cy.wait(600)
+      cy.getByTestID('field-tag-key-search-bar').type(searchTagKey, {
+        // delay the typing since there is a debouncer
+        // in dataExplorer/context/fluxQueryBuilder
+        delay: 600,
+      })
       cy.wait(['@query', '@query'])
       cy.getByTestID('field-selector--list-item').should(
         'contain',

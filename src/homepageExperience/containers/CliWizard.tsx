@@ -115,7 +115,7 @@ export class CliWizard extends PureComponent<null, State> {
             wizardEventName="cliWizard"
             setTokenValue={this.setTokenValue}
             tokenValue={this.state.tokenValue}
-          /> // wtf is this name lol
+          />
         )
       }
       case 4: {

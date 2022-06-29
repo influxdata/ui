@@ -85,7 +85,7 @@ export const Finish = (props: OwnProps) => {
     props.wizardEventName === 'nodejsWizard'
   const sampleAppLink =
     props.wizardEventName === 'pythonWizard'
-      ? 'https://github.com/InfluxCommunity/sample-flask/blob/main/app.py'
+      ? 'https://github.com/influxdata/iot-api-python' 
       : 'https://github.com/influxdata/iot-api-js'
   const showBoilerplate = props.wizardEventName === 'nodejsWizard'
 

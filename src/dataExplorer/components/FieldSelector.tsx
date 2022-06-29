@@ -7,6 +7,7 @@ import WaitingText from 'src/shared/components/WaitingText'
 
 // Contexts
 import {FieldsContext} from 'src/dataExplorer/context/fields'
+import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -26,6 +27,7 @@ conceptually similar to a non-indexed column and value.`
 
 const FieldSelector: FC = () => {
   const {fields, loading} = useContext(FieldsContext)
+  const {selectField} = useContext(FluxQueryBuilderContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
 
   useEffect(() => {
@@ -62,6 +64,7 @@ const FieldSelector: FC = () => {
         key={field}
         className="field-selector--list-item--selectable"
         data-testid="field-selector--list-item--selectable"
+        onClick={() => selectField(field)}
       >
         <TextBlock text={field} size={ComponentSize.ExtraSmall} />
       </div>

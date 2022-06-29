@@ -12,9 +12,19 @@ import {createLocalStorageStateHook} from 'use-local-storage-state'
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
 import {TagsContext} from 'src/dataExplorer/context/tags'
+import {EditorContext} from 'src/shared/contexts/editor'
 
 // Types
 import {Bucket} from 'src/types'
+
+// Utils
+import {ExecuteCommand} from 'src/languageSupport/languages/flux/lsp/utils'
+import {
+  ExecuteCommandInjectMeasurement,
+  ExecuteCommandInjectTagValue,
+  ExecuteCommandInjectField,
+} from 'src/languageSupport/languages/flux/lsp/utils'
+import {event} from 'src/cloud/utils/reporting'
 
 const useLocalStorageState = createLocalStorageStateHook(
   'dataExplorer.schema',
@@ -42,6 +52,8 @@ interface FluxQueryBuilderContextType {
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void
+  selectField: (field: string) => void
+  selectTagValue: (tagKey: string, tagValue: string) => void
   setSearchTerm: (str: string) => void
 }
 
@@ -52,6 +64,8 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
+  selectField: (_f: string) => {},
+  selectTagValue: (_k: string, _v: string) => {},
   setSearchTerm: (_s: string) => {},
 }
 
@@ -64,6 +78,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
+  const {injectViaLsp} = useContext(EditorContext)
 
   // States
   const [selection, setSelection] = useLocalStorageState()
@@ -86,6 +101,20 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     selection.measurement = measurement
     setSelection({...selection})
 
+    // Inject measurement
+    injectViaLsp(ExecuteCommand.InjectionMeasurement, {
+      bucket:
+        selection.bucket.type === 'sample'
+          ? selection.bucket.id
+          : selection.bucket.name,
+      name: measurement,
+    } as ExecuteCommandInjectMeasurement)
+
+    event('flux.schema.injected', {
+      command: ExecuteCommand.InjectionMeasurement,
+      context: 'flux query builder',
+    })
+
     // Reset fields and tags
     resetFields()
     resetTags()
@@ -93,6 +122,39 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     // Get fields and tags
     getFields(selection.bucket, measurement)
     getTagKeys(selection.bucket, measurement)
+  }
+
+  const handleSelectField = (field: string): void => {
+    // Inject field
+    injectViaLsp(ExecuteCommand.InjectField, {
+      bucket:
+        selection.bucket.type === 'sample'
+          ? selection.bucket.id
+          : selection.bucket.name,
+      name: field,
+    } as ExecuteCommandInjectField)
+
+    event('flux.schema.injected', {
+      command: ExecuteCommand.InjectField,
+      context: 'flux query builder',
+    })
+  }
+
+  const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
+    // Inject tag value
+    injectViaLsp(ExecuteCommand.InjectTagValue, {
+      bucket:
+        selection.bucket.type === 'sample'
+          ? selection.bucket.id
+          : selection.bucket.name,
+      name: tagKey,
+      value: tagValue,
+    } as ExecuteCommandInjectTagValue)
+
+    event('flux.schema.injected', {
+      command: ExecuteCommand.InjectTagValue,
+      context: 'flux query builder',
+    })
   }
 
   const handleSearchTerm = useCallback(
@@ -116,6 +178,8 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
           searchTerm,
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,
+          selectField: handleSelectField,
+          selectTagValue: handleSelectTagValue,
           setSearchTerm: handleSearchTerm,
         }}
       >

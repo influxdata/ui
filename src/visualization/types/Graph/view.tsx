@@ -12,10 +12,12 @@ import {
   lineTransform,
   LineLayerConfig,
 } from '@influxdata/giraffe'
+import {RemoteDataState} from '@influxdata/clockface'
 import memoizeOne from 'memoize-one'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
+import ViewLoadingSpinner from 'src/visualization/components/internal/ViewLoadingSpinner'
 
 // Context
 import {AppSettingContext} from 'src/shared/contexts/app'
@@ -81,6 +83,9 @@ const XYPlot: FC<Props> = ({
   const [resultState, setResultState] = useState(result)
   const [preZoomResult, setPreZoomResult] = useState<InternalFromFluxResult>(
     null
+  )
+  const [requeryStatus, setRequeryStatus] = useState<RemoteDataState>(
+    RemoteDataState.NotStarted
   )
 
   useEffect(() => {
@@ -179,24 +184,26 @@ const XYPlot: FC<Props> = ({
   if (isFlagEnabled('zoomRequery')) {
     useXDomainSettings = ({storedDomain, parsedResult, timeRange}) =>
       useZoomRequeryXDomainSettings({
-        parsedResult,
-        setResult: setResultState,
-        preZoomResult,
-        setPreZoomResult,
-        query: properties?.queries?.[0]?.text ?? '',
-        storedDomain,
         data: parsedResult.table.getColumn(xColumn, 'number'),
+        parsedResult,
+        preZoomResult,
+        query: properties?.queries?.[0]?.text ?? '',
+        setPreZoomResult,
+        setRequeryStatus,
+        setResult: setResultState,
+        storedDomain,
         timeRange,
       })
     useYDomainSettings = ({storedDomain, parsedResult}) =>
       useZoomRequeryYDomainSettings({
-        parsedResult,
-        setResult: setResultState,
-        preZoomResult,
-        setPreZoomResult,
-        query: properties?.queries?.[0]?.text ?? '',
-        storedDomain,
         data: memoizedYColumnData,
+        parsedResult,
+        preZoomResult,
+        query: properties?.queries?.[0]?.text ?? '',
+        setPreZoomResult,
+        setRequeryStatus,
+        setResult: setResultState,
+        storedDomain,
       })
   }
 
@@ -327,7 +334,14 @@ const XYPlot: FC<Props> = ({
     dispatch
   )
 
-  return <Plot config={config} />
+  return (
+    <>
+      {isFlagEnabled('zoomRequery') && (
+        <ViewLoadingSpinner loading={requeryStatus} />
+      )}
+      <Plot config={config} />
+    </>
+  )
 }
 
 export default XYPlot

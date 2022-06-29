@@ -460,7 +460,7 @@ export const QueryProvider: FC = ({children}) => {
 
             while (!read.done) {
               if (!pending.current[id]) {
-                break
+                new CancellationError()
               }
               const text = decoder.decode(read.value)
 

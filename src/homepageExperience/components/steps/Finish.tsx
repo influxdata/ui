@@ -17,7 +17,7 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 import {event} from 'src/cloud/utils/reporting'
 import FeedbackBar from 'src/homepageExperience/components/FeedbackBar'
-import SampleCode from 'src/homepageExperience/components/steps/SampleCode'
+import SampleAppCard from 'src/homepageExperience/components/steps/SampleAppCard'
 
 type OwnProps = {
   wizardEventName: string
@@ -135,7 +135,7 @@ export const Finish = (props: OwnProps) => {
           </ResourceCard>
         </FlexBox>
         {showSampleAppAndBoilerplate && (
-          <SampleCode
+          <SampleAppCard
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}
           />

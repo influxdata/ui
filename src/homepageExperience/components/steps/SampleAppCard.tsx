@@ -17,7 +17,7 @@ type Props = {
   handleNextStepEvent: (wizardEventName: string, nextStepName: string) => void
 }
 
-const SampleCode: FC<Props> = ({wizardEventName, handleNextStepEvent}) => {
+const SampleAppCard: FC<Props> = ({wizardEventName, handleNextStepEvent}) => {
   const resources = [
     {
       title: 'Sample App',
@@ -67,4 +67,4 @@ const SampleCode: FC<Props> = ({wizardEventName, handleNextStepEvent}) => {
   )
 }
 
-export default SampleCode
+export default SampleAppCard

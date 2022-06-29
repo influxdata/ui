@@ -89,6 +89,7 @@ export const fetchIdentity = async () => {
     return fetchLegacyIdentity()
   }
   // if we make it to this line we are in cloud and ui unification flag is on
+
   if (isFlagEnabled('quartzIdentity')) {
     return fetchQuartzIdentity()
   }
@@ -135,10 +136,6 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
 // fetch user identity from /me (used in OSS and environments without Quartz)
 const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
-
-  if (response.status === 401) {
-    throw new UnauthorizedError(response.data.message)
-  }
 
   if (response.status === 500) {
     const error: IdpeError = response.data

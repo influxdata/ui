@@ -59,7 +59,6 @@ const SampleAppCard: FC<Props> = ({wizardEventName, handleNextStepEvent}) => {
               {app.title}
             </h4>
           </SafeBlankLink>
-
           <p>{app.textContent}</p>
         </ResourceCard>
       ))}

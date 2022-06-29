@@ -155,8 +155,7 @@ export const Finish = (props: OwnProps) => {
               </SafeBlankLink>
               {props.wizardEventName === 'pythonWizard' ? (
                 <p>
-                  Play around with our template code of sample app to streamline
-                  your own data into InfluxData.
+                  View an IoT sample application written in Python.
                 </p>
               ) : (
                 // nodejs sample app

@@ -20,6 +20,7 @@ const addFluxQueryInNotebook = (query: string) => {
   cy.get('.monaco-editor .view-line:first')
     .should($el => {
       expect(Cypress.dom.isDetached($el)).to.be.false
+      expect($el).not.to.be.disabled
     })
     .type(`{downarrow}{downarrow}${query}`)
 }

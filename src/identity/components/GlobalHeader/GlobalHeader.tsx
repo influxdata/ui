@@ -28,8 +28,8 @@ import {getQuartzOrganizationsThunk} from 'src/quartzOrganizations/actions/thunk
 import {globalHeaderStyle} from './GlobalHeaderStyle'
 
 // Mock Data
-// import {generateAccounts} from 'src/identity/mockAccountData'
-// import {generateOrgs} from 'src/identity/mockOrgData'
+import {generateAccounts} from 'src/identity/mockAccountData'
+import {generateOrgs} from 'src/identity/mockOrgData'
 
 const loadingOrg = {
   id: '',
@@ -47,10 +47,10 @@ const loadingAccount = {
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
 
-  const identity = useSelector(selectQuartzIdentity)
-  const {userAccounts} = useContext(UserAccountContext)
-  // const [userAccounts, setUserAccounts] = useState(generateAccounts(5000))
-  // const [identity, setIdentity] = useState(generateOrgs(5000))
+  // const identity = useSelector(selectQuartzIdentity)
+  // const {userAccounts} = useContext(UserAccountContext)
+  const [userAccounts, setUserAccounts] = useState(generateAccounts(5000))
+  const [identity, setIdentity] = useState(generateOrgs(5000))
 
   const orgsList = identity.quartzOrganizations?.orgs // Might need to memoize the next
   const accountsList = userAccounts ? userAccounts : [loadingAccount] // eslint-disable-line react-hooks/exhaustive-deps

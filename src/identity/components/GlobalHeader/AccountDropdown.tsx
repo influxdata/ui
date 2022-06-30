@@ -59,7 +59,7 @@ export const AccountDropdown: FC<Props> = ({
       menuHeaderIcon={IconFont.Switch_New}
       menuHeaderText="Switch Account"
       style={{width: 'auto'}}
-      menuStyle={{width: '200px'}}
+      menuStyle={{width: '250px'}}
       onSelectOption={switchAccount}
     />
   )

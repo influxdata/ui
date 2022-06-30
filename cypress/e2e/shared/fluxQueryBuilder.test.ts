@@ -11,11 +11,15 @@ describe('FluxQueryBuilder', () => {
             newDataExplorer: true,
           }).then(() => {
             cy.wait(100)
-            cy.getByTestID('flux-query-builder-toggle').then(toggle => {
-              cy.wrap(toggle).should('be.visible')
-              // Switch to Flux Query Builder if it is not on
-              if (toggle.find('.active').length === 0) {
-                toggle.click()
+            cy.getByTestID('flux-query-builder-toggle').then($toggle => {
+              cy.wrap($toggle).should('be.visible')
+              if ($toggle.hasClass('active')) {
+                // hasClass is a jQuery function
+                // Already switched to Flux Query Builder
+                // do nothing
+              } else {
+                // Switch to Flux Query Builder
+                $toggle.click()
               }
             })
           })

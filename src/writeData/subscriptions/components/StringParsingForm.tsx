@@ -91,7 +91,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           {status => (
             <Input
               type={InputType.Text}
-              placeholder="eg. regexExample"
+              placeholder="eg.(\d{10})"
               name="timestamp"
               autoFocus={true}
               value={formContent.stringTimestamp.pattern}
@@ -192,7 +192,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           {status => (
             <Input
               type={InputType.Text}
-              placeholder="eg. a=(\\d)"
+              placeholder="eg. a=(\d)"
               name="regex"
               autoFocus={true}
               value={formContent.stringMeasurement.pattern}

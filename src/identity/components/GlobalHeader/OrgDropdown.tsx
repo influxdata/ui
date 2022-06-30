@@ -34,8 +34,6 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
 
   return (
     <MenuDropdown
-      largeListSearch={true}
-      largeListCeiling={15}
       selectedOption={activeOrg}
       options={orgMainMenu}
       subMenuOptions={orgsList}
@@ -43,7 +41,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
       menuHeaderText="Switch Organization"
       searchText="Search Organizations"
       style={{width: 'auto'}}
-      menuStyle={{width: '240px'}}
+      menuStyle={{width: '250px'}}
       onSelectOption={switchOrg}
     />
   )

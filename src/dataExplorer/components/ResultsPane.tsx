@@ -13,6 +13,7 @@ import {
   FlexBox,
   FlexDirection,
   JustifyContent,
+  AlignItems,
 } from '@influxdata/clockface'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 
@@ -122,7 +123,12 @@ const ResultsPane: FC = () => {
         setResult(r)
         setStatus(RemoteDataState.Done)
       })
-      .catch(() => {
+      .catch(e => {
+        setResult({
+          source: text,
+          parsed: null,
+          error: e.message,
+        })
         event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)
       })
@@ -172,6 +178,7 @@ const ResultsPane: FC = () => {
             <FlexBox
               direction={FlexDirection.Row}
               justifyContent={JustifyContent.FlexEnd}
+              alignItems={AlignItems.FlexStart}
               margin={ComponentSize.Small}
             >
               <QueryTime />

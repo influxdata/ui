@@ -45,7 +45,7 @@ import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 interface SubscriptionNavigationModel extends SubwayNavModel {
   type: string
   // TODO: Use clockface 4.6.2
-  isCompleted?: boolean
+  isComplete?: boolean
 }
 
 enum Steps {
@@ -162,7 +162,7 @@ const CreateSubscriptionPage: FC = () => {
   }, [formContent, getActiveStep, active])
 
   const stepsWithIsCompletedStatus = navigationSteps.map(s => {
-    return {...s, isCompleted: completedSteps[s.type]}
+    return {...s, isComplete: completedSteps[s.type]}
   })
 
   useEffect(() => {

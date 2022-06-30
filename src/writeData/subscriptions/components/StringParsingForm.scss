@@ -34,4 +34,15 @@
       margin-bottom: $cf-space-l;
     }
   }
+
+  &__container {
+    .cf-form--element {
+      margin-bottom: $cf-space-l;
+      width: 75%;
+    }
+    &__dropdown {
+      width: 25%;
+      margin-left: $cf-space-m;
+    }
+  }
 }

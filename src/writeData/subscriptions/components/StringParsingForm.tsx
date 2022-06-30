@@ -67,59 +67,64 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const secondsType = 'S'
   const microseconds2Type = 'US'
   const nanosecondsType = 'NS'
-  const precisionList = [nanosecondsType, microsecondsType, secondsType, microseconds2Type]
+  const precisionList = [
+    nanosecondsType,
+    microsecondsType,
+    secondsType,
+    microseconds2Type,
+  ]
   const [precision, setPrecision] = useState(nanosecondsType)
   return (
     <div className="string-parsing-form">
       <Grid.Column>
-      <FlexBox
-          alignItems={AlignItems.Center}
+        <FlexBox
+          alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}
           margin={ComponentSize.Large}
-          className="string-parsing-form__header-wrap"
+          className="string-parsing-form__container"
         >
-        <Form.ValidationElement
-          label="Regex Pattern to find Timestamp"
-          value={formContent.stringTimestamp.pattern}
-          required={false}
-          validationFunc={() =>
-            !!formContent.stringTimestamp.pattern
-              ? handleRegexValidation(formContent.stringTimestamp.pattern)
-              : null
-          }
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg.(\d{10})"
-              name="timestamp"
-              autoFocus={true}
-              value={formContent.stringTimestamp.pattern}
-              onChange={e => {
-                updateForm({
-                  ...formContent,
-                  stringTimestamp: {
-                    ...formContent.stringTimestamp,
-                    pattern: e.target.value,
-                  },
-                })
-              }}
-              onBlur={() =>
-                event(
-                  'completed form field',
-                  {
-                    formField: 'stringTimestamp.pattern',
-                  },
-                  {feature: 'subscriptions'}
-                )
-              }
-              maxLength={255}
-              testID="timestamp-string-parsing"
-              status={edit ? status : ComponentStatus.Disabled}
-            />
-          )}
-        </Form.ValidationElement>
-        <div className="string-parsing-form__container__dropdown">
+          <Form.ValidationElement
+            label="Regex Pattern to find Timestamp"
+            value={formContent.stringTimestamp.pattern}
+            required={false}
+            validationFunc={() =>
+              !!formContent.stringTimestamp.pattern
+                ? handleRegexValidation(formContent.stringTimestamp.pattern)
+                : null
+            }
+          >
+            {status => (
+              <Input
+                type={InputType.Text}
+                placeholder="eg.(\d{10})"
+                name="timestamp"
+                autoFocus={true}
+                value={formContent.stringTimestamp.pattern}
+                onChange={e => {
+                  updateForm({
+                    ...formContent,
+                    stringTimestamp: {
+                      ...formContent.stringTimestamp,
+                      pattern: e.target.value,
+                    },
+                  })
+                }}
+                onBlur={() =>
+                  event(
+                    'completed form field',
+                    {
+                      formField: 'stringTimestamp.pattern',
+                    },
+                    {feature: 'subscriptions'}
+                  )
+                }
+                maxLength={255}
+                testID="timestamp-string-parsing"
+                status={edit ? status : ComponentStatus.Disabled}
+              />
+            )}
+          </Form.ValidationElement>
+          <div className="string-parsing-form__container__dropdown">
             <Form.Label label="Timestamp precision" />
             <Dropdown
               button={(active, onClick) => (
@@ -160,7 +165,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               )}
             />
           </div>
-          </FlexBox>
+        </FlexBox>
       </Grid.Column>
       <Grid.Column>
         <FlexBox

@@ -50,7 +50,12 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const secondsType = 'S'
   const microseconds2Type = 'US'
   const nanosecondsType = 'NS'
-  const precisionList = [nanosecondsType, microsecondsType, secondsType, microseconds2Type]
+  const precisionList = [
+    nanosecondsType,
+    microsecondsType,
+    secondsType,
+    microseconds2Type,
+  ]
   const [precision, setPrecision] = useState(nanosecondsType)
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
@@ -78,51 +83,51 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   return (
     <div className="json-parsing-form">
       <Grid.Column>
-      <FlexBox
-          alignItems={AlignItems.Center}
+        <FlexBox
+          alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}
           margin={ComponentSize.Large}
-          className="json-parsing-form__header-wrap"
+          className="json-parsing-form__container"
         >
-        <Form.ValidationElement
-          label="JSON Path to Timestamp"
-          value={formContent.jsonTimestamp?.path}
-          required={false}
-          validationFunc={() =>
-            !!formContent.jsonTimestamp?.path
-              ? handleJsonPathValidation(formContent.jsonTimestamp?.path)
-              : null
-          }
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. $.myJSON.myObject[0].timestampKey"
-              name="timestamp"
-              autoFocus={true}
-              value={formContent.jsonTimestamp?.path}
-              onChange={e => {
-                updateForm({
-                  ...formContent,
-                  jsonTimestamp: {
-                    ...formContent.jsonTimestamp,
-                    path: e.target.value,
-                  },
-                })
-              }}
-              onBlur={() =>
-                event(
-                  'completed form field',
-                  {formField: 'jsonTimestamp.path'},
-                  {feature: 'subscriptions'}
-                )
-              }
-              testID="timestamp-json-parsing"
-              status={edit ? status : ComponentStatus.Disabled}
-            />
-          )}
-        </Form.ValidationElement>
-        <div className="json-parsing-form__container__dropdown">
+          <Form.ValidationElement
+            label="JSON Path to Timestamp"
+            value={formContent.jsonTimestamp?.path}
+            required={false}
+            validationFunc={() =>
+              !!formContent.jsonTimestamp?.path
+                ? handleJsonPathValidation(formContent.jsonTimestamp?.path)
+                : null
+            }
+          >
+            {status => (
+              <Input
+                type={InputType.Text}
+                placeholder="eg. $.myJSON.myObject[0].timestampKey"
+                name="timestamp"
+                autoFocus={true}
+                value={formContent.jsonTimestamp?.path}
+                onChange={e => {
+                  updateForm({
+                    ...formContent,
+                    jsonTimestamp: {
+                      ...formContent.jsonTimestamp,
+                      path: e.target.value,
+                    },
+                  })
+                }}
+                onBlur={() =>
+                  event(
+                    'completed form field',
+                    {formField: 'jsonTimestamp.path'},
+                    {feature: 'subscriptions'}
+                  )
+                }
+                testID="timestamp-json-parsing"
+                status={edit ? status : ComponentStatus.Disabled}
+              />
+            )}
+          </Form.ValidationElement>
+          <div className="json-parsing-form__container__dropdown">
             <Form.Label label="Timestamp precision" />
             <Dropdown
               button={(active, onClick) => (
@@ -163,7 +168,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               )}
             />
           </div>
-          </FlexBox>
+        </FlexBox>
       </Grid.Column>
       <Grid.Column>
         <FlexBox

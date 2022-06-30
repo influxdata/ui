@@ -62,6 +62,9 @@ describe('FluxQueryBuilder', () => {
         bucketName
       )
 
+      // check the monaco editor is mounted to prepare for schema injection
+      cy.getByTestID('flux-editor').should('be.visible')
+
       // upon the selection of a bucket, should show measurement selector
       cy.getByTestID('measurement-selector--dropdown-button')
         .should('be.visible')
@@ -88,13 +91,16 @@ describe('FluxQueryBuilder', () => {
     })
 
     it('search bar can search fields and tag keys dynamically', () => {
-      cy.clock(new Date(), ['Date'])
+      cy.clock(new Date(), ['Date']) // needed by .tick()
       cy.intercept('POST', '/api/v2/query*').as('query')
 
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
       cy.wait('@query')
+
+      // check the monaco editor is mounted to prepare for schema injection
+      cy.getByTestID('flux-editor').should('be.visible')
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()
@@ -142,6 +148,9 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`bucket-selector--dropdown--${bucketNameA}`).click()
       cy.wait('@query')
+
+      // check the monaco editor is mounted to prepare for schema injection
+      cy.getByTestID('flux-editor').should('be.visible')
 
       // select a measurement
       cy.getByTestID('measurement-selector--dropdown-button').click()

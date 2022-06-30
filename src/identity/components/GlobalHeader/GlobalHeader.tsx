@@ -1,6 +1,6 @@
-// Remove bug with globalHeader showing up on error page.
 // For tomorrow - need to decide whether the .map functions should live in this component
 // or the child components, and whether we should use state or memoize
+// Use dictionary to generate random results
 
 // Library imports
 import React, {useContext, useEffect, useState, FC} from 'react'
@@ -27,72 +27,66 @@ import {getQuartzOrganizationsThunk} from 'src/quartzOrganizations/actions/thunk
 // Styles
 import {globalHeaderStyle} from './GlobalHeaderStyle'
 
-// Mock Data
-// import {generateAccounts} from 'src/identity/mockAccountData'
-// import {generateOrgs} from 'src/identity/mockOrgData'
+// Utils
 
-const loadingOrg = {
-  id: '',
-  name: '',
-  isActive: false,
-  isDefault: false,
-}
-const loadingAccount = {
-  id: 0,
-  name: '',
-  isActive: false,
-  isDefault: false,
-}
+// Mock Data
+import {randomEntityGenerator} from 'src/identity/mockdata/generateEntities'
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
 
-  const identity = useSelector(selectQuartzIdentity)
-  const {userAccounts} = useContext(UserAccountContext)
-  // const [userAccounts, setUserAccounts] = useState(generateAccounts(5000))
-  // const [identity, setIdentity] = useState(generateOrgs(5000))
+  // const identity = useSelector(selectQuartzIdentity)
+  const [identity, setIdentity] = useState(randomEntityGenerator('org', 5000))
+  const orgsList = identity.quartzOrganizations?.orgs
 
-  const orgsList = identity.quartzOrganizations?.orgs // Might need to memoize the next
-  const accountsList = userAccounts ? userAccounts : [loadingAccount] // eslint-disable-line react-hooks/exhaustive-deps
+  const [userAccounts, setUserAccounts] = useState(
+    randomEntityGenerator('account', 5000)
+  )
 
-  const [activeOrg, setActiveOrg] = useState(loadingOrg)
-  const [activeAccount, setActiveAccount] = useState(loadingAccount)
+  // Ternary operator needed here because accountsList not fetched when this component first loads.
+  // const {userAccounts} = useContext(UserAccountContext)
+  const accountsList = userAccounts ? userAccounts : [null] // eslint-disable-line react-hooks/exhaustive-deps
+
+  const [activeOrg, setActiveOrg] = useState(null)
+
+  const [activeAccount, setActiveAccount] = useState(null)
 
   useEffect(() => {
-    const activeAccount = accountsList?.find(
-      account => account.isActive === true
-    )
-    if (activeAccount) {
-      setActiveAccount(activeAccount)
+    dispatch(getQuartzOrganizationsThunk())
+  }, [dispatch])
+
+  useEffect(() => {
+    if (orgsList) {
+      setActiveOrg(orgsList?.find(org => org.isActive === true))
+    }
+  }, [orgsList])
+
+  useEffect(() => {
+    if (accountsList) {
+      setActiveAccount(
+        accountsList?.find(account => account?.isActive === true)
+      )
     }
   }, [accountsList])
-
-  useEffect(() => {
-    const activeOrg = orgsList?.find(org => org.isActive === true)
-    if (activeOrg) {
-      setActiveOrg(activeOrg)
-    }
-    if (orgsList[0].id === '') {
-      dispatch(getQuartzOrganizationsThunk())
-    }
-  }, [dispatch, orgsList])
 
   return (
     <FlexBox
       margin={ComponentSize.Large}
       justifyContent={JustifyContent.SpaceBetween}
-      style={globalHeaderStyle}
+      style={globalHeaderStyle} // Move that over to scss file (add file name to chronograph)
     >
       <FlexBox margin={ComponentSize.Medium}>
-        <AccountDropdown
-          activeOrg={activeOrg}
-          activeAccount={activeAccount}
-          setActiveAccount={setActiveAccount}
-          accountsList={accountsList}
-        />
-        {/* Design will replace this with a different icon. */}
-        <Icon glyph={IconFont.CaretRight} />
-        <OrgDropdown activeOrg={activeOrg} orgsList={orgsList} />
+        {activeOrg && activeAccount && (
+          <>
+            <AccountDropdown
+              activeOrg={activeOrg}
+              activeAccount={activeAccount}
+              accountsList={accountsList}
+            />
+            <Icon glyph={IconFont.CaretRight} />
+            <OrgDropdown activeOrg={activeOrg} orgsList={orgsList} />
+          </>
+        )}
       </FlexBox>
     </FlexBox>
   )

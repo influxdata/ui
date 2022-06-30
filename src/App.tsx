@@ -89,7 +89,6 @@ const App: FC = () => {
       </OverlayProviderComp>
       <EngagementLink />
       <TreeNav />
-
       <Suspense fallback={<PageSpinner />}>
         <div style={{height: '100%', width: '100%'}}>
           {CLOUD && isFlagEnabled('multiOrg') && shouldUseQuartzIdentity() && (

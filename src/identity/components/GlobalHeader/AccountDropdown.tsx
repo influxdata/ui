@@ -8,21 +8,15 @@ type OrgSummaryItem = OrganizationSummaries[number]
 interface Props {
   activeOrg: OrgSummaryItem
   activeAccount: UserAccount
-  setActiveAccount: Function
+  // setActiveAccount: Function
   accountsList: UserAccount[]
 }
 
 export const AccountDropdown: FC<Props> = ({
   activeOrg,
   activeAccount,
-  setActiveAccount,
   accountsList,
 }) => {
-  const accountOptions = accountsList.map(account => ({
-    id: account.id.toString(),
-    name: account.name,
-  }))
-
   const selectedAccount = {
     id: activeAccount.id.toString(),
     name: activeAccount.name,
@@ -34,11 +28,11 @@ export const AccountDropdown: FC<Props> = ({
       iconFont: IconFont.CogOutline,
       href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
-    {
-      name: 'Members',
-      iconFont: IconFont.UserOutline_New,
-      href: '/',
-    },
+    // {
+    //   name: 'Members',
+    //   iconFont: IconFont.UserOutline_New,
+    //   href: '/',
+    // },
     {
       name: 'Billing',
       iconFont: IconFont.Bill,
@@ -47,7 +41,6 @@ export const AccountDropdown: FC<Props> = ({
   ]
 
   const switchAccount = (account: SubMenuItem) => {
-    setActiveAccount(account)
     window.location.href = `orgs/${activeOrg.id}/accounts/${account.id}`
   }
 
@@ -55,9 +48,9 @@ export const AccountDropdown: FC<Props> = ({
     <MenuDropdown
       largeListSearch={true}
       selectedOption={selectedAccount}
-      largeListCeiling={25}
+      largeListCeiling={15}
       options={accountMainMenu}
-      subMenuOptions={accountOptions}
+      subMenuOptions={accountsList}
       menuHeaderIcon={IconFont.Switch_New}
       menuHeaderText="Switch Account"
       style={{width: 'auto'}}

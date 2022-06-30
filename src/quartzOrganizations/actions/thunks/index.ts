@@ -7,7 +7,6 @@ import {updateQuartzOrganizationsFailed} from 'src/shared/copy/notifications'
 export const getQuartzOrganizationsThunk = () => async dispatch => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
-
     const quartzOrganizations = await fetchQuartzOrgs()
 
     dispatch(setQuartzOrganizations(quartzOrganizations))

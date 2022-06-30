@@ -47,6 +47,7 @@ import {
   upsertSecret,
   setFeatureFlags,
   quartzProvision,
+  initializeQuartzMockOperator,
   createTaskFromEmpty,
   createAlertGroup,
 } from './support/commands'
@@ -104,6 +105,7 @@ declare global {
       setFeatureFlags: typeof setFeatureFlags
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision
+      initializeQuartzMockOperator: typeof initializeQuartzMockOperator
       createTaskFromEmpty: typeof createTaskFromEmpty
     }
   }

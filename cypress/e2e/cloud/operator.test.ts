@@ -7,6 +7,7 @@ describe('Operator Page', () => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
           }).then(() => {
+            cy.initializeQuartzMockOperator()
             cy.quartzProvision({
               isOperator: true,
               operatorRole: 'read-write',
@@ -145,6 +146,8 @@ describe('Operator Page', () => {
     cy.getByTestID('account-view--header').contains('operator1 (1)')
     // should not be able to delete undeletable accounts
     cy.getByTestID('account-delete--button').should('be.disabled')
+    // should not be able to convert non-free accounts to contract
+    cy.getByTestID('account-convert-to-contract--button').should('be.disabled')
 
     // Associated Users Section
     cy.getByTestID('associated-users--title').contains('Associated Users')
@@ -184,6 +187,33 @@ describe('Operator Page', () => {
       .type('666')
 
     cy.getByTestID('org-overlay--submit-button').click()
+
+    cy.getByTestID('account-view--back-button').click()
+
+    cy.getByTestID('account-id')
+      .last()
+      .within(() => {
+        cy.get('a').click()
+      })
+
+    cy.location().should(loc => {
+      expect(loc.pathname).to.eq('/operator/accounts/678')
+    })
+
+    // should be able to delete deletable accounts
+    cy.getByTestID('account-delete--button').should('not.be.disabled')
+    // should be able to convert free accounts to contract
+    cy.getByTestID('account-type--body').contains('free')
+    cy.getByTestID('account-convert-to-contract--button').should(
+      'not.be.disabled'
+    )
+    cy.getByTestID('account-convert-to-contract--button').click()
+    cy.intercept('GET', '/api/v2/quartz/operator/accounts/678').as(
+      'quartzReloadAccount'
+    )
+    cy.getByTestID('convert-account-to-contract--confirmation-button').click()
+    cy.wait('@quartzReloadAccount')
+    cy.getByTestID('account-type--body').contains('contract')
 
     cy.getByTestID('account-view--back-button').click()
 

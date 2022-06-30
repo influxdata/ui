@@ -18,7 +18,13 @@ import {AccountContext} from 'src/operator/context/account'
 import {OperatorContext} from 'src/operator/context/operator'
 
 const AccountViewHeader: FC = () => {
-  const {account, setVisible, visible} = useContext(AccountContext)
+  const {
+    account,
+    setConvertToContractOverlayVisible,
+    convertToContractOverlayVisible,
+    setDeleteOverlayVisible,
+    deleteOverlayVisible,
+  } = useContext(AccountContext)
   const {hasWritePermissions} = useContext(OperatorContext)
 
   return (
@@ -35,9 +41,26 @@ const AccountViewHeader: FC = () => {
       </FlexBox.Child>
       {hasWritePermissions && (
         <ButtonBase
+          color={ComponentColor.Primary}
+          shape={ButtonShape.Default}
+          onClick={_e =>
+            setConvertToContractOverlayVisible(!convertToContractOverlayVisible)
+          }
+          status={
+            account.type === 'free'
+              ? ComponentStatus.Default
+              : ComponentStatus.Disabled
+          }
+          testID="account-convert-to-contract--button"
+        >
+          Convert to Contract
+        </ButtonBase>
+      )}
+      {hasWritePermissions && (
+        <ButtonBase
           color={ComponentColor.Danger}
           shape={ButtonShape.Default}
-          onClick={_e => setVisible(!visible)}
+          onClick={_e => setDeleteOverlayVisible(!deleteOverlayVisible)}
           status={
             account?.deletable
               ? ComponentStatus.Default

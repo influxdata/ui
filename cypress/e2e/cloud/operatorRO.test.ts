@@ -5,6 +5,7 @@ describe('Operator Page', () => {
         cy.get('@org').then(() => {
           cy.getByTestID('home-page--header').should('be.visible')
 
+          cy.initializeQuartzMockOperator()
           cy.quartzProvision({
             isOperator: true,
             operatorRole: 'read-only',
@@ -78,6 +79,7 @@ describe('Operator Page', () => {
 
     // make sure the buttons don't exist on the page
     cy.getByTestID('account-delete--button').should('not.exist')
+    cy.getByTestID('account-convert-to-contract--button').should('not.exist')
     cy.getByTestID('remove-user--button').should('not.exist')
     cy.getByTestID('page-title').should('contain.text', 'operator1 (1)')
 

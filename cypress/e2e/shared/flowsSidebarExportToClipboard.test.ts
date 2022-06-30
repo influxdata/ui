@@ -17,8 +17,8 @@ const addFluxQueryInNotebook = (query: string) => {
    *   - do not use .monacoType
    *   - must select the first visible line
    */
-  cy.get('.monaco-editor .view-line:first').click()
-  cy.get('textarea.inputarea.monaco-mouse-cursor-text').type(
+  cy.get('.monaco-editor .view-line:first').clickAttached()
+  cy.get('.monaco-editor .view-line:first').type(
     `{downarrow}{downarrow}${query}`
   )
 }

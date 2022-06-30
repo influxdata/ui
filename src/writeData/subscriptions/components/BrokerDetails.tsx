@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -27,6 +27,7 @@ import BrokerFormContent from 'src/writeData/subscriptions/components/BrokerForm
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -56,11 +57,18 @@ const BrokerDetails: FC<Props> = ({
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
+  const {navbarMode} = useContext(AppSettingContext)
+  const navbarOpen = navbarMode === 'expanded'
   return (
     <div className="update-broker-form" id="broker">
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
         <Form onSubmit={() => {}} testID="update-broker-form-overlay">
-          <div className="update-broker-form__fixed">
+          <div
+            className="update-broker-form__fixed"
+            style={{
+              width: navbarOpen ? 'calc(75% - 235px)' : 'calc(100% - 374px)',
+            }}
+          >
             <FlexBox
               className="update-broker-form__fixed__broker-buttons"
               direction={FlexDirection.Row}

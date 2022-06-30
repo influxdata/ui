@@ -24,20 +24,19 @@ import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/acti
 import {globalHeaderStyle} from './GlobalHeaderStyle'
 
 // Mock Data
-import {randomEntityGenerator} from 'src/identity/mockdata/generateEntities'
+// import {randomEntityGenerator} from 'src/identity/mockdata/generateEntities'
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
 
-  // const identity = useSelector(selectQuartzIdentity)
-  const [identity, setIdentity] = useState(randomEntityGenerator('org', 5000))
+  const identity = useSelector(selectQuartzIdentity)
+  // const [identity] = useState(randomEntityGenerator('org', 5000))
   const orgsList = identity.quartzOrganizations?.orgs
 
-  const [userAccounts, setUserAccounts] = useState(
-    randomEntityGenerator('account', 5000)
-  )
-
-  // const {userAccounts} = useContext(UserAccountContext)
+  const {userAccounts} = useContext(UserAccountContext)
+  // const [userAccounts] = useState(
+  //   randomEntityGenerator('account', 5000)
+  // )
   const accountsList = userAccounts ? userAccounts : [null] // eslint-disable-line react-hooks/exhaustive-deps
 
   const [activeOrg, setActiveOrg] = useState(null)
@@ -66,7 +65,7 @@ export const GlobalHeader: FC = () => {
     <FlexBox
       margin={ComponentSize.Large}
       justifyContent={JustifyContent.SpaceBetween}
-      style={globalHeaderStyle} // Move that over to scss file (add file name to chronograph)
+      style={globalHeaderStyle}
     >
       <FlexBox margin={ComponentSize.Medium}>
         {activeOrg && activeAccount && (

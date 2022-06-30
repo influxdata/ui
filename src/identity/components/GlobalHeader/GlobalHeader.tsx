@@ -1,7 +1,3 @@
-// For tomorrow - need to decide whether the .map functions should live in this component
-// or the child components, and whether we should use state or memoize
-// Use dictionary to generate random results
-
 // Library imports
 import React, {useContext, useEffect, useState, FC} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
@@ -27,8 +23,6 @@ import {getQuartzOrganizationsThunk} from 'src/quartzOrganizations/actions/thunk
 // Styles
 import {globalHeaderStyle} from './GlobalHeaderStyle'
 
-// Utils
-
 // Mock Data
 import {randomEntityGenerator} from 'src/identity/mockdata/generateEntities'
 
@@ -43,7 +37,6 @@ export const GlobalHeader: FC = () => {
     randomEntityGenerator('account', 5000)
   )
 
-  // Ternary operator needed here because accountsList not fetched when this component first loads.
   // const {userAccounts} = useContext(UserAccountContext)
   const accountsList = userAccounts ? userAccounts : [null] // eslint-disable-line react-hooks/exhaustive-deps
 

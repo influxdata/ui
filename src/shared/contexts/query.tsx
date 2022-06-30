@@ -18,7 +18,11 @@ import {
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
-import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
+import {
+  SELECTABLE_TIME_RANGES,
+  DESIRED_POINTS_PER_GRAPH,
+  FALLBACK_WINDOW_PERIOD,
+} from 'src/shared/constants/timeRanges'
 import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
@@ -49,9 +53,6 @@ export const DEFAULT_CONTEXT: QueryContextType = {
 export const QueryContext = React.createContext<QueryContextType>(
   DEFAULT_CONTEXT
 )
-
-const DESIRED_POINTS_PER_GRAPH = 360
-const FALLBACK_WINDOW_PERIOD = 15000
 
 // Finds all instances of nodes that match with the test function
 // and returns them as an array

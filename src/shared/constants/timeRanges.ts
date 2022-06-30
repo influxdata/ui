@@ -135,3 +135,6 @@ export const SELECTABLE_USAGE_TIME_RANGES: SelectableDurationTimeRange[] = [
 
 export const DEFAULT_USAGE_TIME_RANGE = pastDayTimeRange
 export const DEFAULT_TIME_RANGE = pastHourTimeRange
+
+export const DESIRED_POINTS_PER_GRAPH = 360
+export const FALLBACK_WINDOW_PERIOD = 15000

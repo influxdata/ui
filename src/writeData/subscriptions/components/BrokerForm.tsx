@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -35,6 +35,7 @@ import {
   getDataLayerIdentity,
   getExperimentVariantId,
 } from 'src/cloud/utils/experiments'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
@@ -61,11 +62,18 @@ const BrokerForm: FC<Props> = ({formContent, updateForm, saveForm}) => {
     !isFlagEnabled('enableFreeSubscriptions')
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
   const requiredFields = checkRequiredFields(formContent)
+  const {navbarMode} = useContext(AppSettingContext)
+  const navbarOpen = navbarMode === 'expanded'
   return (
     formContent && (
       <div className="create-broker-form" id="broker">
         <Form onSubmit={() => {}} testID="create-broker-form-overlay">
-          <div className="create-broker-form__fixed">
+          <div
+            className="create-broker-form__fixed"
+            style={{
+              width: navbarOpen ? 'calc(75% - 235px)' : 'calc(100% - 374px)',
+            }}
+          >
             <FlexBox
               className="create-broker-form__fixed__broker-buttons"
               direction={FlexDirection.Row}
@@ -135,7 +143,10 @@ const BrokerForm: FC<Props> = ({formContent, updateForm, saveForm}) => {
               )}
             </FlexBox>
           </div>
-          <Overlay.Header title="Connect to Broker"></Overlay.Header>
+          <Overlay.Header
+            className="create-broker-form__broker-header"
+            title="Connect to Broker"
+          ></Overlay.Header>
           <Overlay.Body>
             <Heading
               element={HeadingElement.H5}

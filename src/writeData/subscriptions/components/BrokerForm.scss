@@ -7,9 +7,9 @@
     position: fixed;
     background-color: $cf-grey-5;
     background-attachment: fixed;
-    width: 61%;
-    z-index: 9999;
+    z-index: 10;
     padding-bottom: 20px;
+    right: 0;
 
     &__broker-buttons {
       padding-top: 46px;
@@ -33,6 +33,11 @@
   }
   .cf-overlay--header {
     justify-content: unset;
+  }
+
+  &__broker-header {
+    padding-top: 150px;
+    margin-bottom: 25px;
   }
   .cf-select-group.cf-select-group__stretch {
     margin-bottom: $cf-space-l;

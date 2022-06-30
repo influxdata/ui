@@ -2,6 +2,7 @@
 
 .query-status {
   flex-grow: 1;
+  margin-top: 14px;
 
   .status {
     width: 12px;
@@ -25,5 +26,11 @@
     &.done {
       background: $c-rainforest;
     }
+  }
+
+  pre {
+    color: $c-fire;
+    font-family: $cf-code-font;
+    margin: $cf-space-2xs;
   }
 }

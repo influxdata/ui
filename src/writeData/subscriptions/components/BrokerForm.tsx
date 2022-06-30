@@ -68,7 +68,12 @@ const BrokerForm: FC<Props> = ({formContent, updateForm, saveForm}) => {
     formContent && (
       <div className="create-broker-form" id="broker">
         <Form onSubmit={() => {}} testID="create-broker-form-overlay">
-          <div className="create-broker-form__fixed" style={{width: navbarOpen ? 'calc(75% - 235px)' : 'calc(100% - 374px)'}}>
+          <div
+            className="create-broker-form__fixed"
+            style={{
+              width: navbarOpen ? 'calc(75% - 235px)' : 'calc(100% - 374px)',
+            }}
+          >
             <FlexBox
               className="create-broker-form__fixed__broker-buttons"
               direction={FlexDirection.Row}
@@ -138,7 +143,10 @@ const BrokerForm: FC<Props> = ({formContent, updateForm, saveForm}) => {
               )}
             </FlexBox>
           </div>
-          <Overlay.Header className='create-broker-form__broker-header' title="Connect to Broker"></Overlay.Header>
+          <Overlay.Header
+            className="create-broker-form__broker-header"
+            title="Connect to Broker"
+          ></Overlay.Header>
           <Overlay.Body>
             <Heading
               element={HeadingElement.H5}

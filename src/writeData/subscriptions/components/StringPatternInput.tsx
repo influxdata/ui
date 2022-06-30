@@ -178,7 +178,7 @@ const StringPatternInput: FC<Props> = ({
           {status => (
             <Input
               type={InputType.Text}
-              placeholder="eg. a=(\\d)"
+              placeholder="eg. a=(\d)"
               name="regex"
               autoFocus={true}
               value={

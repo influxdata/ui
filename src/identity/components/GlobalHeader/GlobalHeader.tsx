@@ -18,7 +18,7 @@ import {OrgDropdown} from './OrgDropdown'
 import {AccountDropdown} from './AccountDropdown'
 
 // Thunks
-import {getQuartzOrganizationsThunk} from 'src/quartzOrganizations/actions/thunks'
+import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Styles
 import {globalHeaderStyle} from './GlobalHeaderStyle'

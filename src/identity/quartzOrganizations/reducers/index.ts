@@ -3,7 +3,7 @@ import {
   Actions,
   SET_QUARTZ_ORGANIZATIONS,
   SET_QUARTZ_ORGANIZATIONS_STATUS,
-} from 'src/quartzOrganizations/actions/creators'
+} from 'src/identity/quartzOrganizations/actions/creators'
 import produce from 'immer'
 
 import {OrganizationSummaries} from 'src/client/unityRoutes'

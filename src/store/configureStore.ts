@@ -59,7 +59,7 @@ import {
 } from 'src/dataLoaders/reducers/telegrafEditor'
 import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
 import perfReducer from 'src/perf/reducers'
-import quartzOrganizationReducer from 'src/quartzOrganizations/reducers'
+import quartzOrganizationReducer from 'src/identity/quartzOrganizations/reducers'
 
 // Types
 import {AppState, LocalStorage} from 'src/types'

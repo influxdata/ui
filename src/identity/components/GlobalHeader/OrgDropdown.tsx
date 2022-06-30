@@ -34,8 +34,6 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
 
   return (
     <MenuDropdown
-      largeListSearch={true}
-      largeListCeiling={25}
       selectedOption={activeOrg}
       options={orgMainMenu}
       subMenuOptions={orgsList}

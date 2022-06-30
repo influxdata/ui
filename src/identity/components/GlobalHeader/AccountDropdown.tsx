@@ -53,9 +53,7 @@ export const AccountDropdown: FC<Props> = ({
 
   return (
     <MenuDropdown
-      largeListSearch={true}
       selectedOption={selectedAccount}
-      largeListCeiling={25}
       options={accountMainMenu}
       subMenuOptions={accountOptions}
       menuHeaderIcon={IconFont.Switch_New}

@@ -112,7 +112,7 @@
 .load-more-button {
   color: $c-pool;
   cursor: pointer;
-  padding: $cf-space-2xs 0 $cf-space-xs 2px;
+  padding: $cf-space-2xs 0 $cf-space-xs $cf-space-xs;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

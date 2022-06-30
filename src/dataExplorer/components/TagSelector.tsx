@@ -130,7 +130,7 @@ const TagSelector: FC = () => {
   } else if (loadingTagKeys === RemoteDataState.Done && tagKeys.length) {
     list = tagKeys.map(key => {
       return (
-        <div key={key} className="tag-selector-key--list-item">
+        <div key={key}>
           <TagValues
             tagKey={key}
             tagValues={tags[key]}

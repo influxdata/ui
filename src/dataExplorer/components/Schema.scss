@@ -31,7 +31,7 @@
 }
 
 .selector-title {
-  padding-bottom: $cf-space-2xs;
+  padding: $cf-space-2xs 0;
 }
 
 .selector-title--icon {
@@ -40,6 +40,13 @@
 
 .selector-title--icon .cf-question-mark-tooltip {
   background-color: $cf-grey-35;
+}
+
+.bucket-selector,
+.measurement-selector {
+  > .selector-title {
+    padding-top: 0;
+  }
 }
 
 .field-selector,
@@ -62,6 +69,7 @@
 }
 
 .field-selector--list-item,
+.tag-selector-key--list-item,
 .tag-selector-value--list-item {
   padding: $cf-space-2xs 0 $cf-space-2xs $cf-space-2xs;
   white-space: nowrap;
@@ -94,13 +102,6 @@
       }
     }
   }
-}
-
-.tag-selector-key--list-item {
-  padding: $cf-space-3xs 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .field-selector .container-side-bar,

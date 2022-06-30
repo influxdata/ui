@@ -55,7 +55,7 @@ const MeasurementSelector: FC = () => {
     }
 
     return (
-      <div className="measurement-selector">
+      <div>
         <SelectorTitle title="Measurement" info={MEASUREMENT_TOOLTIP} />
         <SearchableDropdown
           searchTerm={searchTerm}

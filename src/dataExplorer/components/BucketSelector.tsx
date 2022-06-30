@@ -140,7 +140,7 @@ const BucketSelector: FC = () => {
   })
 
   return (
-    <div className="bucket-selector">
+    <div>
       <SelectorTitle title="Bucket" info={BUCKET_TOOLTIP} />
       <Dropdown
         button={button}

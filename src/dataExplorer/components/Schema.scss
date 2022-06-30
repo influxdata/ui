@@ -31,7 +31,7 @@
 }
 
 .selector-title {
-  padding: $cf-space-2xs 0;
+  padding-bottom: $cf-space-2xs;
 }
 
 .selector-title--icon {
@@ -40,13 +40,6 @@
 
 .selector-title--icon .cf-question-mark-tooltip {
   background-color: $cf-grey-35;
-}
-
-.bucket-selector,
-.measurement-selector {
-  > .selector-title {
-    padding-top: 0;
-  }
 }
 
 .field-selector,
@@ -66,6 +59,10 @@
   background-color: transparent;
   min-height: 0;
   padding: 0;
+
+  .selector-title {
+    padding: $cf-space-2xs 0;
+  }
 }
 
 .field-selector--list-item,

@@ -66,7 +66,7 @@ const BrokerDetails: FC<Props> = ({
           <div
             className="update-broker-form__fixed"
             style={{
-              width: navbarOpen ? 'calc(75% - 235px)' : 'calc(100% - 374px)',
+              width: navbarOpen ? '61%' : '69%',
             }}
           >
             <FlexBox

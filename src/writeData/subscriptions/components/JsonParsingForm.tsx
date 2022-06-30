@@ -46,6 +46,12 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const numberType = 'Number'
   const dataTypeList = [stringType, numberType]
   const [dataTypeM, setDataTypeM] = useState(stringType)
+  const microsecondsType = 'MS'
+  const secondsType = 'S'
+  const microseconds2Type = 'US'
+  const nanosecondsType = 'NS'
+  const precisionList = [nanosecondsType, microsecondsType, secondsType, microseconds2Type]
+  const [precision, setPrecision] = useState(nanosecondsType)
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
   const defaultJsonFieldTag = {
@@ -72,8 +78,14 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   return (
     <div className="json-parsing-form">
       <Grid.Column>
+      <FlexBox
+          alignItems={AlignItems.Center}
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Large}
+          className="json-parsing-form__header-wrap"
+        >
         <Form.ValidationElement
-          label="JSON Path to Timestmap"
+          label="JSON Path to Timestamp"
           value={formContent.jsonTimestamp?.path}
           required={false}
           validationFunc={() =>
@@ -110,6 +122,48 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
             />
           )}
         </Form.ValidationElement>
+        <div className="json-parsing-form__container__dropdown">
+            <Form.Label label="Timestamp precision" />
+            <Dropdown
+              button={(active, onClick) => (
+                <Dropdown.Button
+                  active={active}
+                  onClick={onClick}
+                  testID="json-timestamp-precision"
+                  status={
+                    edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                  }
+                >
+                  {formContent.timestampPrecision}
+                </Dropdown.Button>
+              )}
+              menu={onCollapse => (
+                <Dropdown.Menu onCollapse={onCollapse}>
+                  {precisionList.map((p, key) => (
+                    <Dropdown.Item
+                      key={key}
+                      id={p}
+                      value={p}
+                      onClick={() => {
+                        event(
+                          'completed form field',
+                          {formField: 'timestampPrecision', selected: p},
+                          {feature: 'subscriptions'}
+                        )
+                        setPrecision(p)
+                        formContent.timestampPrecision = p
+                      }}
+                      selected={precision === p}
+                      testID={`json-timestamp-precision-${key}`}
+                    >
+                      {p}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              )}
+            />
+          </div>
+          </FlexBox>
       </Grid.Column>
       <Grid.Column>
         <FlexBox

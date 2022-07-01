@@ -239,7 +239,6 @@ const Table: FC<PipeProp> = ({Context}) => {
             placeholderText="Search results..."
             onSearch={setSearch}
             searchTerm={search}
-            style={{width: 'auto', flex: '0 1 300px'}}
           />
           <QueryStat />
         </div>

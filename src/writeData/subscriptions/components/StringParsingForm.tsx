@@ -149,7 +149,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                       selected={
                         formContent.timestampPrecision === PrecisionTypes[key]
                       }
-                      testID={`json-timestamp-precision-${key}`}
+                      testID={`string-timestamp-precision-${key}`}
                     >
                       {PrecisionTypes[key]}
                     </Dropdown.Item>

@@ -88,8 +88,6 @@ describe('FluxQueryBuilder', () => {
     })
 
     it('search bar can search fields and tag keys dynamically', () => {
-      cy.clock(new Date(), ['Date']) // needed by .tick()
-
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
@@ -119,9 +117,6 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('field-tag-key-search-bar')
         .should('be.visible')
         .type(searchTagKey)
-        .tick(600)
-      // delay the typing since there is a debouncer
-      // in dataExplorer/context/fluxQueryBuilder
 
       cy.getByTestID('field-selector--list-item')
         .should('be.visible')

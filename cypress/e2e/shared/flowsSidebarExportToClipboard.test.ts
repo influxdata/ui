@@ -17,7 +17,12 @@ const addFluxQueryInNotebook = (query: string) => {
    *   - do not use .monacoType
    *   - must select the first visible line
    */
-  cy.get('.monaco-editor .view-line:first').click()
+  cy.get('.monaco-editor .view-line:first')
+    .should($el => {
+      expect(Cypress.dom.isDetached($el)).to.be.false
+      expect($el).not.to.be.disabled
+    })
+    .click()
   cy.get('textarea.inputarea.monaco-mouse-cursor-text')
     .should($el => {
       expect(Cypress.dom.isDetached($el)).to.be.false

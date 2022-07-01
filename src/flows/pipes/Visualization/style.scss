@@ -4,16 +4,22 @@
   background-color: $cf-grey-5;
   border-radius: $cf-radius;
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   height: 100%;
+  padding: $cf-space-2xs + $cf-space-3xs;
+}
+
+.flow-visualization--header {
+  display: flex;
 }
 
 .flow-visualization--view-error,
 .flow-visualization--view {
+  flex-grow: 1;
   width: 100%;
   border-radius: $cf-radius-sm;
   background-color: $cf-grey-5;
-  padding: $cf-space-2xs + $cf-space-3xs;
 
   .empty-graph-error {
     height: 200px;

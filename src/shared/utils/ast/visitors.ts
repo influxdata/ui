@@ -45,8 +45,13 @@ export const findNodes = (
   return acc
 }
 
+export type ScopeVariableAssignedNodeT =
+  | VariableAssignment
+  | Expression
+  | Property
+
 export interface AstScope {
-  [variableIdentifier: string]: Property | VariableAssignment | Expression
+  [variableIdentifier: string]: ScopeVariableAssignedNodeT
 }
 interface RequiredAcc {
   halted: boolean
@@ -81,18 +86,20 @@ export const findNodeScope = (
     return whenFound(node, {...acc, halted: true})
   }
 
-  // have seen this with range subtrees, and lambda expr
+  // have seen !node.type with range subtrees, and lambda expr
   if (!node.type) {
     let fn = recurseWithoutSharingSiblingScope
     if (isRangeNode(node)) {
-      const windowVar = constructWindowVarAssignmentFromRange(
-        acc.scope,
-        node as CallExpression
-      )
-      acc.scope = {...acc.scope, [SCOPED_WINDOW_PERIOD]: windowVar}
+      if (!acc.scope[SCOPED_WINDOW_PERIOD]) {
+        const windowVar = constructWindowVarAssignmentFromRange(
+          acc.scope,
+          node as CallExpression
+        )
+        acc.scope = {...acc.scope, [SCOPED_WINDOW_PERIOD]: windowVar}
+        // TODO: fix tech debt. Breaking the interface of this visitor.
+        acc.toInjectWindowVar = true
+      }
       fn = recurseWITHSharingSiblingScope
-      // TODO: fix tech debt. Breaking the interface of this visitor.
-      acc.toInjectWindowVar = true
     }
     if (node.hasOwnProperty('arguments')) {
       return fn((node as any).arguments, halt, whenFound, acc)
@@ -361,7 +368,7 @@ function extractVariableSubtrees(
   acc: Accumulator
 ): AstScope {
   const {properties} = node.init as ObjectExpression
-  return properties.reduce((accBindings, p) => {
+  return properties.reduce((accBindings, p: Property) => {
     // `v.windowPeriod` or `v.myVar`
     const bindName = `${prependLabel}.${(p.key as Identifier).name ||
       (p.key as StringLiteral).value}`
@@ -371,7 +378,7 @@ function extractVariableSubtrees(
       acc.toInjectWindowVar = false
     }
 
-    return {...accBindings, [bindName]: p}
+    return {...accBindings, [bindName]: p.value}
   }, {} as AstScope)
 }
 

@@ -4,6 +4,7 @@ import {
   Property,
   VariableAssignment,
   DurationLiteral,
+  Expression,
 } from 'src/types'
 import {
   WINDOW_PERIOD,
@@ -15,6 +16,7 @@ import {
   isWindowPeriodVariableNode,
   findNodeScope,
   constructWindowVarAssignmentFromTimes,
+  constructWindowVarAssignmentFromExpression,
 } from 'src/shared/utils/ast'
 
 /**
@@ -33,6 +35,7 @@ export function getWindowPeriodVariableAssignment(
       !acc.scope[`v.${WINDOW_PERIOD}`] &&
       acc.scope[`v.${TIME_RANGE_START}`]
     ) {
+      // construct v.windowPeriod from flux query range
       acc.scope[`v.${WINDOW_PERIOD}`] = constructWindowVarAssignmentFromTimes(
         acc.scope,
         acc.scope[`v.${TIME_RANGE_START}`] as Property,
@@ -48,6 +51,7 @@ export function getWindowPeriodVariableAssignment(
     _ => false,
     (_, acc) => acc
   )
+
   const {scope, toInjectWindowVar} = findNodeScope(
     ast,
     isWindowPeriodVariableNode,
@@ -58,13 +62,29 @@ export function getWindowPeriodVariableAssignment(
     }
   )
 
+  let astSubTreeToUse
   if (scope[`v.${WINDOW_PERIOD}`]) {
-    return {
-      toInject: !!toInjectWindowVar,
-      node: scope[`v.${WINDOW_PERIOD}`] as VariableAssignment,
-    }
+    astSubTreeToUse = scope[`v.${WINDOW_PERIOD}`]
+  } else if (scope[`v.${TIME_RANGE_START}`]) {
+    astSubTreeToUse = constructWindowVarAssignmentFromTimes(
+      scope,
+      scope[`v.${TIME_RANGE_START}`],
+      scope[`v.${TIME_RANGE_STOP}`]
+    )
   }
-  return {toInject: false, node: null}
+
+  const node =
+    astSubTreeToUse.type === 'VariableAssignment'
+      ? astSubTreeToUse
+      : constructWindowVarAssignmentFromExpression(
+          astSubTreeToUse as Expression,
+          scope
+        )
+
+  return {
+    toInject: !!toInjectWindowVar,
+    node,
+  }
 }
 
 /**
@@ -82,11 +102,16 @@ export function getWindowPeriodFromAST(
   const {
     node: windowVariableAssignmentNode,
   } = getWindowPeriodVariableAssignment(ast, outerContext)
+
   if (!windowVariableAssignmentNode) {
     throw new Error('windowPeriod not found in neither query nor outer scope')
-  } else if (windowVariableAssignmentNode.init.hasOwnProperty('values')) {
+  } else if (
+    windowVariableAssignmentNode.init &&
+    windowVariableAssignmentNode.init.hasOwnProperty('values')
+  ) {
     return (windowVariableAssignmentNode.init as DurationLiteral).values[0]
       .magnitude
   }
+
   return FALLBACK_WINDOW_PERIOD
 }

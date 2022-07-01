@@ -2,7 +2,12 @@
 import {get} from 'lodash'
 
 // Utils
-import {AstScope, isNowCall, isTimeCall} from 'src/shared/utils/ast'
+import {
+  AstScope,
+  isNowCall,
+  isTimeCall,
+  ScopeVariableAssignedNodeT,
+} from 'src/shared/utils/ast'
 import {durationToMilliseconds} from 'src/shared/utils/duration'
 
 // Types
@@ -60,7 +65,7 @@ export function rangeTimes(
  */
 export function propertyTime(
   scope: AstScope,
-  value: Expression,
+  value: ScopeVariableAssignedNodeT,
   now: number
 ): number {
   switch (value.type) {
@@ -94,6 +99,9 @@ export function propertyTime(
           throw new Error(`unexpected operator ${value.operator}`)
       }
 
+    case 'VariableAssignment':
+      return propertyTime(scope, value.init, now)
+
     case 'MemberExpression':
       const objName = get(value, 'object.name')
       const propertyName = get(value, 'property.name')
@@ -126,7 +134,7 @@ export function propertyTime(
  * @returns {Expression} -- the AST node, containing the value
  */
 
-function lookupVariable(scope: AstScope, name: string): Expression {
+export function lookupVariable(scope: AstScope, name: string): Expression {
   if (!scope[name]) {
     throw new Error('Used variable is missing from scope')
   }

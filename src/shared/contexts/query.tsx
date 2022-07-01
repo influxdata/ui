@@ -501,13 +501,13 @@ export const QueryProvider: FC = ({children}) => {
 
               switch (code) {
                 case REQUEST_TIMEOUT_STATUS:
-                  event('shared query timeout')
+                  event('query timeout')
                   break
                 case GATEWAY_TIMEOUT_STATUS:
-                  event('shared gateway timeout')
+                  event('gateway timeout')
                   break
                 default:
-                  event('shared query error')
+                  event('query error')
               }
 
               return {type: 'UNKNOWN_ERROR', message, code}

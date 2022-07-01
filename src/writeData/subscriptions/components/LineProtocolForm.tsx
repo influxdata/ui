@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import {Grid, Form, Dropdown, ComponentStatus} from '@influxdata/clockface'

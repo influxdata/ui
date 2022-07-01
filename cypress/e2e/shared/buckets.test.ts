@@ -326,9 +326,6 @@ describe('Buckets', () => {
         'contain',
         'This is a telegraf description'
       )
-      cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-        cy.getByTestID('bucket-name').should('contain', defaultBucket)
-      })
     })
   })
 

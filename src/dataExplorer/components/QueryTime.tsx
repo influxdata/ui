@@ -9,7 +9,7 @@ const humanReadable = (time: number): string => {
 }
 
 const QueryTime: FC = () => {
-  const {status, time} = useContext(ResultsContext)
+  const {result, status, time} = useContext(ResultsContext)
 
   if (status === RemoteDataState.Done) {
     return (
@@ -42,6 +42,7 @@ const QueryTime: FC = () => {
       <div className="query-status">
         <div className="status error" />
         <label>Error ({humanReadable(time)})</label>
+        <pre>{result.error}</pre>
       </div>
     )
   }

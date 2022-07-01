@@ -143,9 +143,11 @@ $flux-toolbar--gap: $cf-space-2xs;
   &.flux-toolbar--new-style {
     cursor: pointer;
     background: none;
+    font-weight: $cf-font-weight--regular;
+    padding: $cf-space-2xs;
 
     > code {
-      color: $cf-white;
+      color: $cf-grey-85;
       background-color: none;
     }
 
@@ -155,9 +157,7 @@ $flux-toolbar--gap: $cf-space-2xs;
         color: $c-galaxy;
 
         &:after {
-          content: '+';
-          background-color: $cf-grey-15;
-          padding-left: 8px;
+          content: ' +';
         }
       }
     }

@@ -3,6 +3,7 @@ import {
   AlignItems,
   ComponentSize,
   FlexBox,
+  FlexDirection,
   ResourceCard,
 } from '@influxdata/clockface'
 
@@ -16,6 +17,7 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 import {event} from 'src/cloud/utils/reporting'
 import FeedbackBar from 'src/homepageExperience/components/FeedbackBar'
+import SampleAppCard from 'src/homepageExperience/components/steps/SampleAppCard'
 
 type OwnProps = {
   wizardEventName: string
@@ -79,7 +81,10 @@ export const Finish = (props: OwnProps) => {
     }
   }, [])
 
-  const showSampleApp = props.wizardEventName === 'pythonWizard'
+  const showSampleAppAndBoilerplate =
+    props.wizardEventName === 'pythonWizard' ||
+    props.wizardEventName === 'nodejsWizard'
+
   return (
     <>
       <h1>Congrats!</h1>
@@ -92,48 +97,49 @@ export const Finish = (props: OwnProps) => {
       <p style={{marginTop: '80px'}}>
         Curious to learn more? Try these next steps!
       </p>
-      <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.Stretch}>
-        {showSampleApp && (
+      <FlexBox
+        margin={ComponentSize.Large}
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.FlexStart}
+      >
+        <FlexBox
+          margin={ComponentSize.Large}
+          alignItems={AlignItems.Stretch}
+          direction={FlexDirection.Row}
+        >
           <ResourceCard
             className="homepage-wizard-next-steps"
             onClick={() =>
-              handleNextStepEvent(props.wizardEventName, 'sampleApp')
+              handleNextStepEvent(props.wizardEventName, 'keyConcepts')
             }
           >
-            <SafeBlankLink href="https://github.com/InfluxCommunity/sample-flask/blob/main/app.py">
-              <h4>{CodeTerminalIcon}Sample App</h4>
+            <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
+              <h4>{BookIcon}Key Concepts</h4>
+            </SafeBlankLink>
+            <p>Learn about important concepts for writing time-series data.</p>
+          </ResourceCard>
+          <ResourceCard
+            className="homepage-wizard-next-steps"
+            onClick={() =>
+              handleNextStepEvent(props.wizardEventName, 'influxUniversity')
+            }
+          >
+            <SafeBlankLink href="https://influxdbu.com/">
+              <h4>{CodeTerminalIcon}InfluxDB University</h4>
             </SafeBlankLink>
             <p>
-              Play around with our template code of sample app to streamline
-              your own data into InfluxData.
+              Our free hands-on courses teach you the technical skills and best
+              practices to get the most out of your real-time data with
+              InfluxDB.
             </p>
           </ResourceCard>
+        </FlexBox>
+        {showSampleAppAndBoilerplate && (
+          <SampleAppCard
+            handleNextStepEvent={handleNextStepEvent}
+            wizardEventName={props.wizardEventName}
+          />
         )}
-        <ResourceCard
-          className="homepage-wizard-next-steps"
-          onClick={() =>
-            handleNextStepEvent(props.wizardEventName, 'keyConcepts')
-          }
-        >
-          <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
-            <h4>{BookIcon}Key Concepts</h4>
-          </SafeBlankLink>
-          <p>Learn about important concepts for writing time-series data.</p>
-        </ResourceCard>
-        <ResourceCard
-          className="homepage-wizard-next-steps"
-          onClick={() =>
-            handleNextStepEvent(props.wizardEventName, 'influxUniversity')
-          }
-        >
-          <SafeBlankLink href="https://influxdbu.com/">
-            <h4>{CodeTerminalIcon}InfluxDB University</h4>
-          </SafeBlankLink>
-          <p>
-            Our free hands-on courses teach you the technical skills and best
-            practices to get the most out of your real-time data with InfluxDB.
-          </p>
-        </ResourceCard>
       </FlexBox>
     </>
   )

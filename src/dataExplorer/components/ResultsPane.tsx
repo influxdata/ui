@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useState, useContext} from 'react'
+import React, {FC, lazy, Suspense, useContext} from 'react'
 import {
   DraggableResizer,
   Orientation,
@@ -13,6 +13,7 @@ import {
   FlexBox,
   FlexDirection,
   JustifyContent,
+  AlignItems,
 } from '@influxdata/clockface'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 
@@ -43,12 +44,19 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
 )
-const useLocalStorageState = createLocalStorageStateHook(
+const useQueryState = createLocalStorageStateHook<string>(
   'dataExplorer.query',
   ''
 )
+const useRangeState = createLocalStorageStateHook<TimeRange>(
+  'dataExplorer.range',
+  DEFAULT_TIME_RANGE
+)
+const useResizeState = createLocalStorageStateHook(
+  'dataExplorer.resize.horizontal',
+  [0.2]
+)
 
-const INITIAL_HORIZ_RESIZER_HANDLE = 0.2
 const fakeNotify = notify
 
 const rangeToParam = (timeRange: TimeRange) => {
@@ -83,14 +91,12 @@ const rangeToParam = (timeRange: TimeRange) => {
 }
 
 const ResultsPane: FC = () => {
-  const [horizDragPosition, setHorizDragPosition] = useState([
-    INITIAL_HORIZ_RESIZER_HANDLE,
-  ])
   const {basic, query} = useContext(QueryContext)
   const {status, setStatus, setResult} = useContext(ResultsContext)
 
-  const [text, setText] = useLocalStorageState()
-  const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
+  const [horizDragPosition, setHorizDragPosition] = useResizeState()
+  const [text, setText] = useQueryState()
+  const [timeRange, setTimeRange] = useRangeState()
 
   const download = () => {
     event('CSV Download Initiated')
@@ -117,7 +123,12 @@ const ResultsPane: FC = () => {
         setResult(r)
         setStatus(RemoteDataState.Done)
       })
-      .catch(() => {
+      .catch(e => {
+        setResult({
+          source: text,
+          parsed: null,
+          error: e.message,
+        })
         event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)
       })
@@ -145,26 +156,29 @@ const ResultsPane: FC = () => {
           margin={ComponentSize.Small}
           style={{height: '100%'}}
         >
-          <div style={{height: '100%', width: '100%', position: 'relative'}}>
-            <Suspense
-              fallback={
-                <SpinnerContainer
-                  loading={RemoteDataState.Loading}
-                  spinnerComponent={<TechnoSpinner />}
+          <div className="data-explorer--monaco-outer">
+            <div className="data-explorer--monaco-wrap">
+              <Suspense
+                fallback={
+                  <SpinnerContainer
+                    loading={RemoteDataState.Loading}
+                    spinnerComponent={<TechnoSpinner />}
+                  />
+                }
+              >
+                <FluxMonacoEditor
+                  variables={variables}
+                  script={text}
+                  onChangeScript={setText}
                 />
-              }
-            >
-              <FluxMonacoEditor
-                variables={variables}
-                script={text}
-                onChangeScript={setText}
-              />
-            </Suspense>
+              </Suspense>
+            </div>
           </div>
           <div style={{width: '100%'}}>
             <FlexBox
               direction={FlexDirection.Row}
               justifyContent={JustifyContent.FlexEnd}
+              alignItems={AlignItems.FlexStart}
               margin={ComponentSize.Small}
             >
               <QueryTime />

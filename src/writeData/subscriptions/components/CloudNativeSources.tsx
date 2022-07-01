@@ -61,7 +61,7 @@ const CloudNativeSources: FC = () => {
             <Heading
               element={HeadingElement.H5}
               weight={FontWeight.Bold}
-              className="create-broker-form__premium-container__text"
+              className="cloud-native-sources__premium-container__text"
             >
               Premium
             </Heading>

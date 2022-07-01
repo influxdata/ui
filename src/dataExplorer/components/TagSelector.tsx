@@ -17,6 +17,7 @@ import {
   LOAD_MORE_LIMIT_INITIAL,
   LOAD_MORE_LIMIT,
 } from 'src/dataExplorer/shared/utils'
+import {event} from 'src/cloud/utils/reporting'
 
 const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \
@@ -29,9 +30,12 @@ interface Prop {
 }
 
 const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
-  const {selectedBucket, selectedMeasurement} = useContext(
-    FluxQueryBuilderContext
-  )
+  const {
+    selectedBucket,
+    selectedMeasurement,
+    selectTagValue,
+    searchTerm,
+  } = useContext(FluxQueryBuilderContext)
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])
 
@@ -40,13 +44,10 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     setValuesToShow(tagValues.slice(0, LOAD_MORE_LIMIT_INITIAL))
   }, [tagValues])
 
-  const handleSelectTagValue = (value: string) => {
-    // TODO: potentially inject tag value into the flux script editor
-    //   still TBD on product
-
-    /* eslint-disable no-console */
-    console.log(value)
-    /* eslint-disable no-console */
+  const handleSelectTagValue = (tagValue: string) => {
+    // Inject tag key and value into editor
+    event('handleSelectTagValue', {searchTerm: searchTerm.length})
+    selectTagValue(tagKey, tagValue)
   }
 
   const handleSelectTagKey = (key: string) => {
@@ -56,6 +57,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       return
     }
 
+    event('handleSelectTagKey', {searchTerm: searchTerm.length})
     getTagValues(selectedBucket, selectedMeasurement, key)
   }
 
@@ -74,14 +76,13 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     list = <WaitingText text="Loading tag values" />
   } else if (loading === RemoteDataState.Done && tagValues.length) {
     list = valuesToShow.map(value => (
-      <div key={value} className="tag-selector-value--list-item--wrapper">
-        <div
-          className="tag-selector-value--list-item--selectable"
-          onClick={() => handleSelectTagValue(value)}
-        >
-          {value}
-        </div>
-      </div>
+      <dd
+        key={value}
+        className="tag-selector-value--list-item--selectable"
+        onClick={() => handleSelectTagValue(value)}
+      >
+        <code>{value}</code>
+      </dd>
     ))
   }
 
@@ -135,7 +136,7 @@ const TagSelector: FC = () => {
   } else if (loadingTagKeys === RemoteDataState.Done && tagKeys.length) {
     list = tagKeys.map(key => {
       return (
-        <div key={key} className="tag-selector-key--list-item">
+        <div key={key}>
           <TagValues
             tagKey={key}
             tagValues={tags[key]}

@@ -1466,10 +1466,10 @@
     "@types/react-window" "^1.8.5"
     react-window "^1.8.7"
 
-"@influxdata/flux-lsp-browser@0.8.17":
-  version "0.8.17"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.17.tgz#b6509dfd1cbf7e10218cbd6ddb6d6115744184da"
-  integrity sha512-AhBsCdo0Vv3E8xKjx5IH8MKU3gqwMdUoOJDhfuMPNZoiX6ZmEPVc8Ep4EooNDWI0d7sq5sSmM7JiDswPMnqGZA==
+"@influxdata/flux-lsp-browser@0.8.20":
+  version "0.8.20"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.20.tgz#6bd6e9e7fe419ff5178d5b92ac85e74053b55e0b"
+  integrity sha512-X6uVgn4CiW1H4jCkGvaYGGGZ3wz3LvsnldPosfP3lqsYFYHbhoKP0PUu4V5EdJYNu/K/Ov5Krx9srx6r35qRVA==
 
 "@influxdata/giraffe@^2.29.0":
   version "2.29.1"

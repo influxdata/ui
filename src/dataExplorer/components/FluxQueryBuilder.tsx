@@ -1,4 +1,5 @@
-import React, {FC, useState} from 'react'
+import React, {FC} from 'react'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 // Components
 import {DraggableResizer, Orientation} from '@influxdata/clockface'
@@ -13,14 +14,12 @@ import Schema from 'src/dataExplorer/components/Schema'
 // Styles
 import './FluxQueryBuilder.scss'
 
-const INITIAL_LEFT_VERT_RESIZER_HANDLE = 0.25
-const INITIAL_RIGHT_VERT_RESIZER_HANDLE = 0.8
-
+const useResizeState = createLocalStorageStateHook(
+  'dataExplorer.resize.vertical',
+  [0.25, 0.8]
+)
 const FluxQueryBuilder: FC = () => {
-  const [vertDragPosition, setVertDragPosition] = useState([
-    INITIAL_LEFT_VERT_RESIZER_HANDLE,
-    INITIAL_RIGHT_VERT_RESIZER_HANDLE,
-  ])
+  const [vertDragPosition, setVertDragPosition] = useResizeState()
 
   return (
     <QueryProvider>

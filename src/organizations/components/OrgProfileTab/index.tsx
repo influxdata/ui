@@ -16,42 +16,46 @@ import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/Copy
 import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
 
 // Utils
-import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-
-// Types
-import {getMe} from 'src/me/selectors'
-
-import 'src/organizations/components/OrgProfileTab/style.scss'
-import {
-  getBillingProviderThunk,
-  getCurrentOrgDetailsThunk,
-} from 'src/identity/actions/thunks'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
+
+// Selectors
+import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
+import {selectQuartzIdentity} from 'src/identity/selectors'
+
+// Thunks
+import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
+
+// Styles
+import 'src/organizations/components/OrgProfileTab/style.scss'
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
-  const dispatch = useDispatch()
+  const identity = useSelector(selectQuartzIdentity)
 
-  const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (CLOUD && shouldUseQuartzIdentity()) {
-      if (!me.quartzMe.billingProvider) {
-        dispatch(getBillingProviderThunk())
-      }
-      if (!me.quartzMe.regionCode) {
+      if (
+        !me.quartzMe.regionCode ||
+        !me.quartzMe.regionName ||
+        !identity.org.provider
+      ) {
         dispatch(getCurrentOrgDetailsThunk())
       }
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
+
   const hasSomeQuartzOrgData =
-    me.quartzMe?.billingProvider ||
-    me.quartzMe?.regionCode ||
-    me.quartzMe?.regionName
+    identity.org?.provider || me.quartzMe?.regionCode || me.quartzMe?.regionName
+
+  const orgProviderExists = !!identity.org?.provider
 
   const OrgProfile = () => (
     <FlexBox.Child
@@ -72,10 +76,10 @@ const OrgProfileTab: FC = () => {
             margin={ComponentSize.Medium}
             justifyContent={JustifyContent.SpaceBetween}
             stretchToFitWidth={true}
-            style={{width: '85%'}}
+            style={orgProviderExists ? {width: '85%'} : {width: '48%'}}
           >
-            {me.quartzMe?.billingProvider && (
-              <LabeledData label="Provider" src={me.quartzMe.billingProvider} />
+            {orgProviderExists && (
+              <LabeledData label="Cloud Provider" src={identity.org.provider} />
             )}
             {me.quartzMe?.regionCode && (
               <LabeledData label="Region" src={me.quartzMe.regionCode} />

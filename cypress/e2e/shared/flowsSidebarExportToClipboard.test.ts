@@ -17,12 +17,53 @@ const addFluxQueryInNotebook = (query: string) => {
    *   - do not use .monacoType
    *   - must select the first visible line
    */
-  cy.get('.monaco-editor .view-line:first')
+  cy.get('.monaco-editor .view-line:first').click()
+  cy.get('textarea.inputarea.monaco-mouse-cursor-text')
     .should($el => {
-      expect($el).be.visible
       expect(Cypress.dom.isDetached($el)).to.be.false
+      expect($el).not.to.be.disabled
     })
-    .type(`{downarrow}{downarrow}${query}`)
+    .type('{downarrow}')
+  cy.get('textarea.inputarea.monaco-mouse-cursor-text')
+    .should($el => {
+      expect(Cypress.dom.isDetached($el)).to.be.false
+      expect($el).not.to.be.disabled
+    })
+    .type('{downarrow}')
+
+  if (query) {
+    let isCharacterSequence = false
+    let sequence = ''
+    for (let index = 0; index < query.length; index += 1) {
+      if (query.charAt(index) === '{' && isCharacterSequence === false) {
+        isCharacterSequence = true
+        continue
+      }
+
+      if (query.charAt(index) === '}' && isCharacterSequence === true) {
+        cy.get('textarea.inputarea.monaco-mouse-cursor-text')
+          .should($el => {
+            expect(Cypress.dom.isDetached($el)).to.be.false
+            expect($el).not.to.be.disabled
+          })
+          .type(`{${sequence}}`)
+        sequence = ''
+        isCharacterSequence = false
+        continue
+      }
+
+      if (isCharacterSequence) {
+        sequence += query.charAt(index)
+      } else {
+        cy.get('textarea.inputarea.monaco-mouse-cursor-text')
+          .should($el => {
+            expect(Cypress.dom.isDetached($el)).to.be.false
+            expect($el).not.to.be.disabled
+          })
+          .type(query.charAt(index))
+      }
+    }
+  }
 }
 
 const createEmptyNotebook = () => {

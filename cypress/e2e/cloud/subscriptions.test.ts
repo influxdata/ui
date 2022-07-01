@@ -566,6 +566,7 @@ describe('Subscriptions', () => {
       .clear()
       .type('m1=//m1')
     cy.getByTestID('string-timestamp-precision')
+      .scrollIntoView()
       .should('be.visible')
       .contains('NS')
     cy.getByTestID('timestamp-string-parsing')

@@ -25,23 +25,30 @@ import {globalHeaderStyle} from './GlobalHeaderStyle'
 
 // Mock Data
 // import {randomEntityGenerator} from 'src/identity/mockdata/generateEntities'
+import {
+  emptyAccount,
+  emptyOrg,
+} from 'src/identity/components/GlobalHeader/DefaultEntities'
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
 
   const identity = useSelector(selectQuartzIdentity)
-  // const [identity] = useState(randomEntityGenerator('org', 5000))
+
+  // Lines can be uncommented for purposes of mocking/testing with arbitrarily large account and org lists.
+  // const [identity] = useState(randomEntityGenerator('org', 2000))
   const orgsList = identity.quartzOrganizations?.orgs
 
   const {userAccounts} = useContext(UserAccountContext)
-  // const [userAccounts] = useState(
-  //   randomEntityGenerator('account', 5000)
-  // )
-  const accountsList = userAccounts ? userAccounts : [null] // eslint-disable-line react-hooks/exhaustive-deps
+  // const [userAccounts] = useState(randomEntityGenerator('account', 2000))
 
-  const [activeOrg, setActiveOrg] = useState(null)
+  const accountsList = userAccounts ? userAccounts : [emptyAccount] // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [activeAccount, setActiveAccount] = useState(null)
+  const [sortedOrgs, setSortedOrgs] = useState([emptyOrg])
+  const [sortedAccounts, setSortedAccts] = useState([emptyAccount])
+
+  const [activeOrg, setActiveOrg] = useState(emptyOrg)
+  const [activeAccount, setActiveAccount] = useState(emptyAccount)
 
   useEffect(() => {
     dispatch(getQuartzOrganizationsThunk())
@@ -50,13 +57,24 @@ export const GlobalHeader: FC = () => {
   useEffect(() => {
     if (orgsList) {
       setActiveOrg(orgsList?.find(org => org.isActive === true))
+      setSortedOrgs(
+        [...orgsList].sort((a, b) =>
+          a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+        )
+      )
     }
   }, [orgsList])
 
   useEffect(() => {
-    if (accountsList) {
+    if (accountsList.length > 0) {
       setActiveAccount(
         accountsList?.find(account => account?.isActive === true)
+      )
+
+      setSortedAccts(
+        [...accountsList].sort((a, b) =>
+          a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+        )
       )
     }
   }, [accountsList])
@@ -73,10 +91,11 @@ export const GlobalHeader: FC = () => {
             <AccountDropdown
               activeOrg={activeOrg}
               activeAccount={activeAccount}
-              accountsList={accountsList}
+              accountsList={sortedAccounts}
             />
+            {/* Design is working on an adjustment to the caret, and submenu caret designs*/}
             <Icon glyph={IconFont.CaretRight} />
-            <OrgDropdown activeOrg={activeOrg} orgsList={orgsList} />
+            <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
           </>
         )}
       </FlexBox>

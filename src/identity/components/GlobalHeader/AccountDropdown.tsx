@@ -28,6 +28,7 @@ export const AccountDropdown: FC<Props> = ({
       iconFont: IconFont.CogOutline,
       href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
+    // 'Members' is listed on the Figma, but discussed with design, and this may not exist yet.
     // {
     //   name: 'Members',
     //   iconFont: IconFont.UserOutline_New,

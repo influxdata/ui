@@ -30,10 +30,10 @@ import {
   handleValidation,
   handleJsonPathValidation,
 } from 'src/writeData/subscriptions/utils/form'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
-import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   formContent: Subscription

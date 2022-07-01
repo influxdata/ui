@@ -1,38 +1,79 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useState} from 'react'
 
 // Components
-import {Grid, Heading, HeadingElement, FontWeight} from '@influxdata/clockface'
+import {Grid, Form, Dropdown, ComponentStatus} from '@influxdata/clockface'
+
+// Types
+import {Subscription} from 'src/types/subscriptions'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/writeData/subscriptions/components/LineProtocolForm.scss'
 
-const LineProtocolForm: FC = () => {
-  // const [lp, setLineProtocol] = useState('')
+interface Props {
+  formContent: Subscription
+  edit: boolean
+}
+
+const LineProtocolForm: FC<Props> = ({formContent, edit}) => {
+  const microsecondsType = 'MS'
+  const secondsType = 'S'
+  const microseconds2Type = 'US'
+  const nanosecondsType = 'NS'
+  const precisionList = [
+    nanosecondsType,
+    microsecondsType,
+    secondsType,
+    microseconds2Type,
+  ]
+  const [precision, setPrecision] = useState(nanosecondsType)
   return (
     <div className="line-protocol-form">
       <Grid.Column>
-        <Heading
-          element={HeadingElement.H5}
-          weight={FontWeight.Regular}
-          className="line-protocol-form__text"
-        >
-          Great news, Line Protocol doesn’t need additional parsing rules!
-        </Heading>
-        {/* For a later iteration */}
-        {/* <h2 className="form-header">Validate your Line Protocol</h2>
-        <TextArea
-          name="validate"
-          value={lp}
-          onChange={e => {
-            setLineProtocol(e.target.value)
-          }}
-          style={{height: '146px', minHeight: '146px'}}
-          ref={null}
-          maxLength={255}
-          testID="line-protocol-validate"
-          placeholder="Enter a line of your data to verify that your formating is valid line protocol."
-        /> */}
+        <div className="line-protocol-form__container">
+          <Form.Label label="Timestamp precision" />
+          <Dropdown
+            button={(active, onClick) => (
+              <Dropdown.Button
+                active={active}
+                onClick={onClick}
+                testID="lp-timestamp-precision"
+                status={
+                  edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                }
+              >
+                {formContent.timestampPrecision}
+              </Dropdown.Button>
+            )}
+            menu={onCollapse => (
+              <Dropdown.Menu onCollapse={onCollapse}>
+                {precisionList.map((p, key) => (
+                  <Dropdown.Item
+                    key={key}
+                    id={p}
+                    value={p}
+                    onClick={() => {
+                      event(
+                        'completed form field',
+                        {formField: 'timestampPrecision', selected: p},
+                        {feature: 'subscriptions'}
+                      )
+                      setPrecision(p)
+                      formContent.timestampPrecision = p
+                    }}
+                    selected={precision === p}
+                    testID={`lp-timestamp-precision-${key}`}
+                  >
+                    {p}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            )}
+          />
+        </div>
       </Grid.Column>
     </div>
   )

@@ -28,7 +28,7 @@ export interface Subscription {
   token?: string
   isActive?: string
   flowVersion?: number
-  timestampPrecision: string
+  timestampPrecision?: string
 }
 
 export interface JsonSpec {

@@ -24,7 +24,6 @@ import {
   ExecuteCommandInjectTagValue,
   ExecuteCommandInjectField,
 } from 'src/languageSupport/languages/flux/lsp/utils'
-import {event} from 'src/cloud/utils/reporting'
 
 const useLocalStorageState = createLocalStorageStateHook(
   'dataExplorer.schema',
@@ -110,11 +109,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       name: measurement,
     } as ExecuteCommandInjectMeasurement)
 
-    event('flux.schema.injected', {
-      command: ExecuteCommand.InjectionMeasurement,
-      context: 'flux query builder',
-    })
-
     // Reset fields and tags
     resetFields()
     resetTags()
@@ -133,11 +127,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
           : selection.bucket.name,
       name: field,
     } as ExecuteCommandInjectField)
-
-    event('flux.schema.injected', {
-      command: ExecuteCommand.InjectField,
-      context: 'flux query builder',
-    })
   }
 
   const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
@@ -150,11 +139,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       name: tagKey,
       value: tagValue,
     } as ExecuteCommandInjectTagValue)
-
-    event('flux.schema.injected', {
-      command: ExecuteCommand.InjectTagValue,
-      context: 'flux query builder',
-    })
   }
 
   const handleSearchTerm = useCallback(

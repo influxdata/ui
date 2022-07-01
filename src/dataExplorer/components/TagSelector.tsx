@@ -73,7 +73,11 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     loading === RemoteDataState.Loading ||
     loading === RemoteDataState.NotStarted
   ) {
-    list = <WaitingText text="Loading tag values" />
+    list = (
+      <div className="tag-selector-value--list-item">
+        <WaitingText text="Loading tag values" />
+      </div>
+    )
   } else if (loading === RemoteDataState.Done && tagValues.length) {
     list = valuesToShow.map(value => (
       <dd
@@ -94,9 +98,9 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
   return useMemo(() => {
     const shouldLoadMore = valuesToShow.length < tagValues.length
     const loadMoreButton = shouldLoadMore && (
-      <div className="load-more-button" onClick={handleLoadMore}>
+      <button className="load-more-button" onClick={handleLoadMore}>
         + Load more
-      </div>
+      </button>
     )
 
     return (

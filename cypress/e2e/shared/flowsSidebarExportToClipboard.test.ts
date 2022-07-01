@@ -17,10 +17,12 @@ const addFluxQueryInNotebook = (query: string) => {
    *   - do not use .monacoType
    *   - must select the first visible line
    */
-  cy.get('.monaco-editor .view-line:first').click()
-  cy.get('textarea.inputarea.monaco-mouse-cursor-text').type(
-    `{downarrow}{downarrow}${query}`
-  )
+  cy.get('.monaco-editor .view-line:first')
+    .should($el => {
+      expect($el).be.visible
+      expect(Cypress.dom.isDetached($el)).to.be.false
+    })
+    .type(`{downarrow}{downarrow}${query}`)
 }
 
 const createEmptyNotebook = () => {

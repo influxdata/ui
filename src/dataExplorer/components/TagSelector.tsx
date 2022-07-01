@@ -46,7 +46,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
 
   const handleSelectTagValue = (tagValue: string) => {
     // Inject tag key and value into editor
-    event('handleSelectTagValue')
+    event('handleSelectTagValue', {searchTerm: searchTerm.length})
     selectTagValue(tagKey, tagValue)
   }
 

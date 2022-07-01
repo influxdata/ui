@@ -89,7 +89,6 @@ describe('FluxQueryBuilder', () => {
 
     it('search bar can search fields and tag keys dynamically', () => {
       cy.clock(new Date(), ['Date']) // needed by .tick()
-      cy.intercept('POST', '/api/v2/query*').as('query')
 
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
@@ -103,12 +102,11 @@ describe('FluxQueryBuilder', () => {
         .should('contain', 'Select measurement')
         .click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
-      cy.wait('@query')
 
       // search a feild, should contain only the feild, no tag keys
-      cy.getByTestID('field-tag-key-search-bar').type(searchField)
-      cy.wait('@query')
-
+      cy.getByTestID('field-tag-key-search-bar')
+        .should('be.visible')
+        .type(searchField)
       cy.getByTestID('field-selector--list-item--selectable').should(
         'contain',
         searchField
@@ -119,16 +117,15 @@ describe('FluxQueryBuilder', () => {
 
       // search a tag key, should not contain any fields
       cy.getByTestID('field-tag-key-search-bar')
+        .should('be.visible')
         .type(searchTagKey)
         .tick(600)
       // delay the typing since there is a debouncer
       // in dataExplorer/context/fluxQueryBuilder
 
-      cy.wait(['@query', '@query'])
-      cy.getByTestID('field-selector--list-item').should(
-        'contain',
-        'No Fields Found'
-      )
+      cy.getByTestID('field-selector--list-item')
+        .should('be.visible')
+        .should('contain', 'No Fields Found')
 
       // not recommend to assert for searchTagKey value
       // since it will expand all the tag keys, which triggers

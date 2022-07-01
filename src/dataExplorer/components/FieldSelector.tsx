@@ -63,7 +63,14 @@ const FieldSelector: FC = () => {
     loading === RemoteDataState.Loading ||
     loading === RemoteDataState.NotStarted
   ) {
-    list = <WaitingText text="Loading fields" />
+    list = (
+      <div
+        className="field-selector--list-item"
+        data-testid="field-selector--list-item"
+      >
+        <WaitingText text="Loading fields" />
+      </div>
+    )
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
     list = fieldsToShow.map(field => (
       <dd

@@ -82,7 +82,6 @@ export const sanitizeForm = (form: Subscription): Subscription => {
     delete form.brokerUsername
     delete form.brokerPassword
   }
-
   return form
 }
 

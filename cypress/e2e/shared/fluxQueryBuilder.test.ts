@@ -51,7 +51,6 @@ describe('FluxQueryBuilder', () => {
 
       // should find the bucket and select it
       cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
-      cy.wait('@query')
 
       // check the bucket is selected
       cy.getByTestID('bucket-selector--dropdown-button').should(
@@ -63,8 +62,10 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('flux-editor').should('be.visible')
 
       // upon the selection of a bucket, should show measurement selector
+      // check the measurement is loaded before click on it
       cy.getByTestID('measurement-selector--dropdown-button')
         .should('be.visible')
+        .should('contain', 'Select measurement')
         .click()
 
       // search for a measurement
@@ -94,13 +95,14 @@ describe('FluxQueryBuilder', () => {
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
-      cy.wait('@query')
 
       // check the monaco editor is mounted to prepare for schema injection
       cy.getByTestID('flux-editor').should('be.visible')
 
       // select a measurement
-      cy.getByTestID('measurement-selector--dropdown-button').click()
+      cy.getByTestID('measurement-selector--dropdown-button')
+        .should('contain', 'Select measurement')
+        .click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
       cy.wait('@query')
 
@@ -144,13 +146,14 @@ describe('FluxQueryBuilder', () => {
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`bucket-selector--dropdown--${bucketNameA}`).click()
-      cy.wait('@query')
 
       // check the monaco editor is mounted to prepare for schema injection
       cy.getByTestID('flux-editor').should('be.visible')
 
       // select a measurement
-      cy.getByTestID('measurement-selector--dropdown-button').click()
+      cy.getByTestID('measurement-selector--dropdown-button')
+        .should('contain', 'Select measurement')
+        .click()
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
       cy.wait('@query')
 

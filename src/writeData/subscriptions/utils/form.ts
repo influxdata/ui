@@ -82,6 +82,10 @@ export const sanitizeForm = (form: Subscription): Subscription => {
     delete form.brokerUsername
     delete form.brokerPassword
   }
+
+  if (form.dataFormat === 'lineprotocol') {
+    form.timestampPrecision = 'NS'
+  }
   return form
 }
 
@@ -132,6 +136,10 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
     if (!form.jsonTimestamp?.type) {
       form.jsonTimestamp.type = 'string'
     }
+  }
+
+  if (form.dataFormat === 'lineprotocol') {
+    form.timestampPrecision = 'NS'
   }
 
   delete form.id

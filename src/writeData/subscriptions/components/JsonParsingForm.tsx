@@ -22,7 +22,7 @@ import {
 import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
 // Types
-import {Subscription} from 'src/types/subscriptions'
+import {Subscription, PrecisionTypes} from 'src/types/subscriptions'
 
 // Utils
 import {
@@ -30,10 +30,10 @@ import {
   handleValidation,
   handleJsonPathValidation,
 } from 'src/writeData/subscriptions/utils/form'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
-import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   formContent: Subscription
@@ -72,44 +72,96 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   return (
     <div className="json-parsing-form">
       <Grid.Column>
-        <Form.ValidationElement
-          label="JSON Path to Timestmap"
-          value={formContent.jsonTimestamp?.path}
-          required={false}
-          validationFunc={() =>
-            !!formContent.jsonTimestamp?.path
-              ? handleJsonPathValidation(formContent.jsonTimestamp?.path)
-              : null
-          }
+        <FlexBox
+          alignItems={AlignItems.FlexStart}
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Large}
+          className="json-parsing-form__container"
         >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. $.myJSON.myObject[0].timestampKey"
-              name="timestamp"
-              autoFocus={true}
-              value={formContent.jsonTimestamp?.path}
-              onChange={e => {
-                updateForm({
-                  ...formContent,
-                  jsonTimestamp: {
-                    ...formContent.jsonTimestamp,
-                    path: e.target.value,
-                  },
-                })
-              }}
-              onBlur={() =>
-                event(
-                  'completed form field',
-                  {formField: 'jsonTimestamp.path'},
-                  {feature: 'subscriptions'}
-                )
-              }
-              testID="timestamp-json-parsing"
-              status={edit ? status : ComponentStatus.Disabled}
+          <Form.ValidationElement
+            label="JSON Path to Timestamp"
+            value={formContent.jsonTimestamp?.path}
+            required={false}
+            validationFunc={() =>
+              !!formContent.jsonTimestamp?.path
+                ? handleJsonPathValidation(formContent.jsonTimestamp?.path)
+                : null
+            }
+          >
+            {status => (
+              <Input
+                type={InputType.Text}
+                placeholder="eg. $.myJSON.myObject[0].timestampKey"
+                name="timestamp"
+                autoFocus={true}
+                value={formContent.jsonTimestamp?.path}
+                onChange={e => {
+                  updateForm({
+                    ...formContent,
+                    jsonTimestamp: {
+                      ...formContent.jsonTimestamp,
+                      path: e.target.value,
+                    },
+                  })
+                }}
+                onBlur={() =>
+                  event(
+                    'completed form field',
+                    {formField: 'jsonTimestamp.path'},
+                    {feature: 'subscriptions'}
+                  )
+                }
+                testID="timestamp-json-parsing"
+                status={edit ? status : ComponentStatus.Disabled}
+              />
+            )}
+          </Form.ValidationElement>
+          <div className="json-parsing-form__container__dropdown">
+            <Form.Label label="Timestamp precision" />
+            <Dropdown
+              button={(active, onClick) => (
+                <Dropdown.Button
+                  active={active}
+                  onClick={onClick}
+                  testID="json-timestamp-precision"
+                  status={
+                    edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                  }
+                >
+                  {formContent.timestampPrecision}
+                </Dropdown.Button>
+              )}
+              menu={onCollapse => (
+                <Dropdown.Menu onCollapse={onCollapse}>
+                  {Object.keys(PrecisionTypes).map(key => (
+                    <Dropdown.Item
+                      key={key}
+                      id={key}
+                      value={key}
+                      onClick={() => {
+                        event(
+                          'completed form field',
+                          {
+                            formField: 'timestampPrecision',
+                            selected: PrecisionTypes[key],
+                          },
+                          {feature: 'subscriptions'}
+                        )
+                        formContent.timestampPrecision = PrecisionTypes[key]
+                      }}
+                      selected={
+                        formContent.timestampPrecision === PrecisionTypes[key]
+                      }
+                      testID={`json-timestamp-precision-${key}`}
+                    >
+                      {PrecisionTypes[key]}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              )}
             />
-          )}
-        </Form.ValidationElement>
+          </div>
+        </FlexBox>
       </Grid.Column>
       <Grid.Column>
         <FlexBox

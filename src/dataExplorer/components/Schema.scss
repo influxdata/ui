@@ -59,9 +59,14 @@
   background-color: transparent;
   min-height: 0;
   padding: 0;
+
+  .selector-title {
+    padding: $cf-space-2xs 0;
+  }
 }
 
 .field-selector--list-item,
+.tag-selector-key--list-item,
 .tag-selector-value--list-item {
   padding: $cf-space-2xs 0 $cf-space-2xs $cf-space-2xs;
   white-space: nowrap;
@@ -71,36 +76,39 @@
 
 .field-selector--list-item--selectable,
 .tag-selector-value--list-item--selectable {
-  white-space: nowrap;
-  overflow: hidden;
+  padding: $cf-space-2xs;
+  height: $cf-form-xs-height;
+  line-height: $cf-form-xs-height;
+  font-family: $cf-code-font;
+  font-weight: $cf-font-weight--regular;
+  transition-property: background-color 0.25s ease, color 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
 
-  .cf-text-block {
+  > code {
+    font-size: $cf-form-sm-font;
+    border-radius: $cf-radius-sm;
+    padding: 0 $cf-space-2xs;
+    white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
-    width: fit-content;
-    font-family: $cf-code-font;
-    font-weight: 400;
-    background-color: inherit;
-    color: $cf-white;
-    transition-property: color;
+    transition: background-color 0.25s ease, color 0.25s ease,
+      text-shadow 0.25s ease;
+    color: $cf-grey-85;
+  }
 
-    &:hover {
-      cursor: pointer;
-      color: $c-krypton;
+  &:hover {
+    > code {
       background: $cf-grey-15;
-      border-radius: 2px;
+      color: $c-krypton;
 
       &:after {
         content: ' +';
       }
     }
   }
-}
-
-.tag-selector-key--list-item {
-  padding: $cf-space-3xs 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .field-selector .container-side-bar,
@@ -111,7 +119,7 @@
 .load-more-button {
   color: $c-pool;
   cursor: pointer;
-  padding: $cf-space-2xs 0 $cf-space-xs 2px;
+  padding: $cf-space-2xs 0 $cf-space-xs $cf-space-xs;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

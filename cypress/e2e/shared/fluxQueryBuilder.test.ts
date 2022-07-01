@@ -32,8 +32,6 @@ describe('FluxQueryBuilder', () => {
     const searchTagKey = 'station_id'
 
     it('bucket selector can search and select a bucket, then search and select a measurement', () => {
-      cy.intercept('POST', '/api/v2/query*').as('query')
-
       // no other selectors should be visible, except the bucket selector
       cy.getByTestID('bucket-selector--dropdown-button').should('be.visible')
       cy.getByTestID('measurement-selector--dropdown-button').should(
@@ -72,8 +70,9 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
 
       // should find the measurement and select it
-      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
-      cy.wait('@query')
+      cy.getByTestID(`searchable-dropdown--item ${measurement}`)
+        .should('be.visible')
+        .click()
 
       // check the measurement is selected
       cy.getByTestID('measurement-selector--dropdown-button').should(

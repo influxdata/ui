@@ -30,9 +30,12 @@ interface Prop {
 }
 
 const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
-  const {selectedBucket, selectedMeasurement, selectTagValue, searchTerm} = useContext(
-    FluxQueryBuilderContext
-  )
+  const {
+    selectedBucket,
+    selectedMeasurement,
+    selectTagValue,
+    searchTerm,
+  } = useContext(FluxQueryBuilderContext)
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])
 

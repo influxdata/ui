@@ -20,7 +20,7 @@ import {
   LOAD_MORE_LIMIT_INITIAL,
   LOAD_MORE_LIMIT,
 } from 'src/dataExplorer/shared/utils'
-import { event } from 'src/cloud/utils/reporting';
+import {event} from 'src/cloud/utils/reporting'
 
 const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
 key values pairs within a measurement. For SQL users, this is \
@@ -33,7 +33,7 @@ const FieldSelector: FC = () => {
 
   const handleSelectField = (field: string) => {
     event('handleSelectField', {searchTerm: searchTerm.length})
-    selectField(field);
+    selectField(field)
   }
 
   useEffect(() => {

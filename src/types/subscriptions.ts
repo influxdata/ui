@@ -41,3 +41,10 @@ export interface StringObjectParams {
   pattern?: string
   name?: string
 }
+
+export enum Precision {
+  Milliseconds = 'MS',
+  Seconds = 'S',
+  Microseconds = 'US',
+  Nanoseconds = 'NS',
+}

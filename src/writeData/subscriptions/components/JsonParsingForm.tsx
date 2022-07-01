@@ -22,7 +22,7 @@ import {
 import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
 // Types
-import {Subscription} from 'src/types/subscriptions'
+import {Subscription, Precision} from 'src/types/subscriptions'
 
 // Utils
 import {
@@ -46,17 +46,6 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const numberType = 'Number'
   const dataTypeList = [stringType, numberType]
   const [dataTypeM, setDataTypeM] = useState(stringType)
-  const millisecondsType = 'MS'
-  const secondsType = 'S'
-  const microsecondsType = 'US'
-  const nanosecondsType = 'NS'
-  const precisionList = [
-    nanosecondsType,
-    microsecondsType,
-    secondsType,
-    microseconds2Type,
-  ]
-  const [precision, setPrecision] = useState(nanosecondsType)
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
   const defaultJsonFieldTag = {
@@ -144,24 +133,28 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               )}
               menu={onCollapse => (
                 <Dropdown.Menu onCollapse={onCollapse}>
-                  {precisionList.map((p, key) => (
+                  {Object.keys(Precision).map(key => (
                     <Dropdown.Item
                       key={key}
-                      id={p}
-                      value={p}
+                      id={key}
+                      value={key}
                       onClick={() => {
                         event(
                           'completed form field',
-                          {formField: 'timestampPrecision', selected: p},
+                          {
+                            formField: 'timestampPrecision',
+                            selected: Precision[key],
+                          },
                           {feature: 'subscriptions'}
                         )
-                        setPrecision(p)
-                        formContent.timestampPrecision = p
+                        formContent.timestampPrecision = Precision[key]
                       }}
-                      selected={precision === p}
+                      selected={
+                        formContent.timestampPrecision === Precision[key]
+                      }
                       testID={`json-timestamp-precision-${key}`}
                     >
-                      {p}
+                      {Precision[key]}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>

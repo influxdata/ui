@@ -21,7 +21,7 @@ import {
 import StringPatternInput from 'src/writeData/subscriptions/components/StringPatternInput'
 
 // Types
-import {Subscription} from 'src/types/subscriptions'
+import {Subscription, Precision} from 'src/types/subscriptions'
 
 // Utils
 import {
@@ -63,17 +63,6 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
     updateForm({...formContent})
     setRule('')
   }, [rule])
-  const microsecondsType = 'MS'
-  const secondsType = 'S'
-  const microseconds2Type = 'US'
-  const nanosecondsType = 'NS'
-  const precisionList = [
-    nanosecondsType,
-    microsecondsType,
-    secondsType,
-    microseconds2Type,
-  ]
-  const [precision, setPrecision] = useState(nanosecondsType)
   return (
     <div className="string-parsing-form">
       <Grid.Column>
@@ -141,24 +130,28 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               )}
               menu={onCollapse => (
                 <Dropdown.Menu onCollapse={onCollapse}>
-                  {precisionList.map((p, key) => (
+                  {Object.keys(Precision).map(key => (
                     <Dropdown.Item
                       key={key}
-                      id={p}
-                      value={p}
+                      id={key}
+                      value={key}
                       onClick={() => {
                         event(
                           'completed form field',
-                          {formField: 'timestampPrecision', selected: p},
+                          {
+                            formField: 'timestampPrecision',
+                            selected: Precision[key],
+                          },
                           {feature: 'subscriptions'}
                         )
-                        setPrecision(p)
-                        formContent.timestampPrecision = p
+                        formContent.timestampPrecision = Precision[key]
                       }}
-                      selected={precision === p}
-                      testID={`string-timestamp-precision-${key}`}
+                      selected={
+                        formContent.timestampPrecision === Precision[key]
+                      }
+                      testID={`json-timestamp-precision-${key}`}
                     >
-                      {p}
+                      {Precision[key]}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>

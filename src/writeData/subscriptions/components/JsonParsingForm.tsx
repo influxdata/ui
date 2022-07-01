@@ -46,7 +46,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const numberType = 'Number'
   const dataTypeList = [stringType, numberType]
   const [dataTypeM, setDataTypeM] = useState(stringType)
-  const microsecondsType = 'MS'
+  const millisecondsType = 'MS'
   const secondsType = 'S'
   const microseconds2Type = 'US'
   const nanosecondsType = 'NS'

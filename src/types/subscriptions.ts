@@ -42,7 +42,7 @@ export interface StringObjectParams {
   name?: string
 }
 
-export enum Precision {
+export enum PrecisionTypes {
   Milliseconds = 'MS',
   Seconds = 'S',
   Microseconds = 'US',

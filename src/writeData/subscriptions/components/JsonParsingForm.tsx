@@ -22,7 +22,7 @@ import {
 import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
 // Types
-import {Subscription, Precision} from 'src/types/subscriptions'
+import {Subscription, PrecisionTypes} from 'src/types/subscriptions'
 
 // Utils
 import {
@@ -133,7 +133,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               )}
               menu={onCollapse => (
                 <Dropdown.Menu onCollapse={onCollapse}>
-                  {Object.keys(Precision).map(key => (
+                  {Object.keys(PrecisionTypes).map(key => (
                     <Dropdown.Item
                       key={key}
                       id={key}
@@ -143,18 +143,18 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                           'completed form field',
                           {
                             formField: 'timestampPrecision',
-                            selected: Precision[key],
+                            selected: PrecisionTypes[key],
                           },
                           {feature: 'subscriptions'}
                         )
-                        formContent.timestampPrecision = Precision[key]
+                        formContent.timestampPrecision = PrecisionTypes[key]
                       }}
                       selected={
-                        formContent.timestampPrecision === Precision[key]
+                        formContent.timestampPrecision === PrecisionTypes[key]
                       }
                       testID={`json-timestamp-precision-${key}`}
                     >
-                      {Precision[key]}
+                      {PrecisionTypes[key]}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>

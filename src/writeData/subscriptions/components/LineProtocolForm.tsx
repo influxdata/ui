@@ -5,7 +5,7 @@ import React, {FC} from 'react'
 import {Grid, Form, Dropdown, ComponentStatus} from '@influxdata/clockface'
 
 // Types
-import {Subscription, Precision} from 'src/types/subscriptions'
+import {Subscription, PrecisionTypes} from 'src/types/subscriptions'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -36,7 +36,7 @@ const LineProtocolForm: FC<Props> = ({formContent, edit}) => (
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
-              {Object.keys(Precision).map(key => (
+              {Object.keys(PrecisionTypes).map(key => (
                 <Dropdown.Item
                   key={key}
                   id={key}
@@ -46,16 +46,18 @@ const LineProtocolForm: FC<Props> = ({formContent, edit}) => (
                       'completed form field',
                       {
                         formField: 'timestampPrecision',
-                        selected: Precision[key],
+                        selected: PrecisionTypes[key],
                       },
                       {feature: 'subscriptions'}
                     )
-                    formContent.timestampPrecision = Precision[key]
+                    formContent.timestampPrecision = PrecisionTypes[key]
                   }}
-                  selected={formContent.timestampPrecision === Precision[key]}
+                  selected={
+                    formContent.timestampPrecision === PrecisionTypes[key]
+                  }
                   testID={`json-timestamp-precision-${key}`}
                 >
-                  {Precision[key]}
+                  {PrecisionTypes[key]}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>

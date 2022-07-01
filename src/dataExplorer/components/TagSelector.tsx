@@ -17,6 +17,7 @@ import {
   LOAD_MORE_LIMIT_INITIAL,
   LOAD_MORE_LIMIT,
 } from 'src/dataExplorer/shared/utils'
+import {event} from 'src/cloud/utils/reporting'
 
 const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \
@@ -29,9 +30,12 @@ interface Prop {
 }
 
 const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
-  const {selectedBucket, selectedMeasurement, selectTagValue} = useContext(
-    FluxQueryBuilderContext
-  )
+  const {
+    selectedBucket,
+    selectedMeasurement,
+    selectTagValue,
+    searchTerm,
+  } = useContext(FluxQueryBuilderContext)
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])
 
@@ -42,6 +46,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
 
   const handleSelectTagValue = (tagValue: string) => {
     // Inject tag key and value into editor
+    event('handleSelectTagValue', {searchTerm: searchTerm.length})
     selectTagValue(tagKey, tagValue)
   }
 
@@ -52,6 +57,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       return
     }
 
+    event('handleSelectTagKey', {searchTerm: searchTerm.length})
     getTagValues(selectedBucket, selectedMeasurement, key)
   }
 

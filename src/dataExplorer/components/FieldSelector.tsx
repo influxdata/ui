@@ -20,6 +20,7 @@ import {
   LOAD_MORE_LIMIT_INITIAL,
   LOAD_MORE_LIMIT,
 } from 'src/dataExplorer/shared/utils'
+import {event} from 'src/cloud/utils/reporting'
 
 const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
 key values pairs within a measurement. For SQL users, this is \
@@ -27,8 +28,13 @@ conceptually similar to a non-indexed column and value.`
 
 const FieldSelector: FC = () => {
   const {fields, loading} = useContext(FieldsContext)
-  const {selectField} = useContext(FluxQueryBuilderContext)
+  const {selectField, searchTerm} = useContext(FluxQueryBuilderContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
+
+  const handleSelectField = (field: string) => {
+    event('handleSelectField', {searchTerm: searchTerm.length})
+    selectField(field)
+  }
 
   useEffect(() => {
     // Reset
@@ -64,7 +70,7 @@ const FieldSelector: FC = () => {
         key={field}
         className="field-selector--list-item--selectable"
         data-testid="field-selector--list-item--selectable"
-        onClick={() => selectField(field)}
+        onClick={() => handleSelectField(field)}
       >
         <code>{field}</code>
       </dd>

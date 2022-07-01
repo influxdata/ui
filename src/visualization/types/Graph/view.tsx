@@ -326,7 +326,7 @@ const XYPlot: FC<Props> = ({
   addAnnotationLayer(
     config,
     inAnnotationMode,
-    cellID,
+    view.dashboardID,
     xColumn,
     yColumn,
     groupKey,

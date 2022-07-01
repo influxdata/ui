@@ -10,8 +10,6 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Selectors
 import {getOverlayParams} from 'src/overlays/selectors'
-import {getTimeFormatForView} from 'src/views/selectors'
-import {AppState} from 'src/types'
 
 export const AddAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
@@ -21,12 +19,16 @@ export const AddAnnotationOverlay: FC = () => {
     endTime,
     range,
     eventPrefix,
-    cellID,
   } = useSelector(getOverlayParams)
 
-  const timeFormat = useSelector((state: AppState) =>
-    getTimeFormatForView(state, cellID)
-  )
+  // const dashboardID = useSelector((state: AppState) =>
+  // state.currentDashboard.id
+  // )
+
+  // todo: need the to get the proper time; hopefully the time format is the same dashboard wide :crossed_fingers:
+  // const timeFormat = useSelector((state: AppState) =>
+  // getTimeFormatForView(state, state.currentDashboard.id)
+  // )
 
   const handleSubmit = (modifiedAnnotation): void => {
     createAnnotation(modifiedAnnotation)
@@ -44,7 +46,8 @@ export const AddAnnotationOverlay: FC = () => {
       startTime={startTime}
       endTime={endTime}
       eventPrefix={eventPrefix}
-      timeFormat={timeFormat}
+      // timeFormat={timeFormat}
+      // stream={dashboardID}
     />
   )
 }

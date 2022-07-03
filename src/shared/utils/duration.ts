@@ -1,4 +1,12 @@
+import {
+  TimeRange,
+  CustomTimeRange,
+  TimeRangeDirection,
+  TimeZone,
+} from 'src/types'
 import {Duration, DurationUnit} from 'src/types/ast'
+import {TIME_RANGE_FORMAT} from 'src/shared/constants/timeRanges'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 export const removeSpacesAndNow = (input: string): string =>
   input.replace(/\s/g, '').replace(/now\(\)-/, '')
@@ -70,13 +78,13 @@ export const durationToMilliseconds = (duration: Duration[]): number =>
   )
 
 /*
-Convert an amount of milliseconds to a duration string.
+  Convert an amount of milliseconds to a duration string.
 
-The returned duration string will use the largest units possible, e.g.
+  The returned duration string will use the largest units possible, e.g.
 
-    millisecondsToDuration(9_000_000)
+      millisecondsToDuration(9_000_000)
 
-Will return `2h30m` rather than `9000000ms`.
+  Will return `2h30m` rather than `9000000ms`.
 */
 export const millisecondsToDuration = (value: number): string => {
   const unitsAndMs = Object.entries(UNIT_TO_APPROX_MS).sort(
@@ -110,5 +118,67 @@ export const areDurationsEqual = (a: string, b: string): boolean => {
     )
   } catch {
     return false
+  }
+}
+
+export const timeRangeToDuration = (timeRange: TimeRange): string => {
+  if (timeRange.upper || !timeRange.lower || !timeRange.lower.includes('now')) {
+    throw new Error('cannot convert time range to duration')
+  }
+
+  return removeSpacesAndNow(timeRange.lower)
+}
+
+export const convertTimeRangeToCustom = (
+  timeRange: TimeRange
+): CustomTimeRange => {
+  if (timeRange.type === 'custom') {
+    return timeRange
+  }
+
+  const upper = new Date().toISOString()
+  let lower = ''
+
+  if (timeRange.type === 'selectable-duration') {
+    const lowerDate = new Date()
+    lowerDate.setSeconds(lowerDate.getSeconds() - timeRange.seconds)
+    lower = lowerDate.toISOString()
+  } else if (timeRange.type === 'duration') {
+    const millisecondDuration = durationToMilliseconds(
+      parseDuration(timeRangeToDuration(timeRange))
+    )
+    const lowerDate = new Date()
+    lowerDate.setMilliseconds(lowerDate.getMilliseconds() - millisecondDuration)
+    lower = lowerDate.toISOString()
+  }
+
+  return {
+    lower,
+    upper,
+    type: 'custom',
+  }
+}
+
+export const getTimeRangeLabel = (
+  timeRange: TimeRange,
+  timeZone?: TimeZone,
+  singleDirection?: TimeRangeDirection
+): string => {
+  if (timeRange.type === 'selectable-duration') {
+    return timeRange.label
+  }
+  if (timeRange.type === 'duration') {
+    return timeRange.lower
+  }
+  if (timeRange.type === 'custom') {
+    const formatter = createDateTimeFormatter(TIME_RANGE_FORMAT, timeZone)
+    const lower = formatter.format(new Date(timeRange.lower))
+    const upper = formatter.format(new Date(timeRange.upper))
+    if (singleDirection === TimeRangeDirection.Upper) {
+      return upper
+    } else if (singleDirection === TimeRangeDirection.Lower) {
+      return lower
+    }
+    return `${lower} - ${upper}`
   }
 }

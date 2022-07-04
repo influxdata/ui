@@ -48,3 +48,24 @@ export enum PrecisionTypes {
   Microseconds = 'US',
   Nanoseconds = 'NS',
 }
+
+export enum Steps {
+  BrokerForm = 'broker',
+  SubscriptionForm = 'subscription',
+  ParsingForm = 'parsing',
+}
+
+export interface StepsStatus {
+  currentStep: Steps
+  clickedStep: string
+  brokerStepCompleted: string
+  subscriptionStepCompleted: string
+  parsingStepCompleted: string
+  dataFormat: string
+}
+
+export interface CompletedSteps {
+  [Steps.BrokerForm]: boolean
+  [Steps.SubscriptionForm]: boolean
+  [Steps.ParsingForm]: boolean
+}

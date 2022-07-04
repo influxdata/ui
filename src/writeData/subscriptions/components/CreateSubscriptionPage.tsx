@@ -28,7 +28,14 @@ import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetails
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
 
 // Types
-import {AppState, ResourceType, Bucket} from 'src/types'
+import {
+  AppState,
+  ResourceType,
+  Bucket,
+  Steps,
+  CompletedSteps,
+  StepsStatus,
+} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
@@ -44,14 +51,6 @@ import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 
 interface SubscriptionNavigationModel extends SubwayNavModel {
   type: string
-  // TODO: Use clockface 4.6.2
-  isComplete?: boolean
-}
-
-enum Steps {
-  BrokerForm = 'broker',
-  SubscriptionForm = 'subscription',
-  ParsingForm = 'parsing',
 }
 
 const navigationSteps: SubscriptionNavigationModel[] = [
@@ -59,38 +58,28 @@ const navigationSteps: SubscriptionNavigationModel[] = [
     glyph: IconFont.UploadOutline,
     name: 'Connect \n to Broker',
     type: Steps.BrokerForm,
+    isComplete: false,
   },
   {
     glyph: IconFont.Subscribe,
     name: 'Subscribe \n to Topic',
     type: Steps.SubscriptionForm,
+    isComplete: false,
   },
   {
     glyph: IconFont.Braces,
     name: 'Define Data \n Parsing Rules',
     type: Steps.ParsingForm,
+    isComplete: false,
   },
 ]
 
-interface CompletedSteps {
-  [Steps.BrokerForm]: boolean
-  [Steps.SubscriptionForm]: boolean
-  [Steps.ParsingForm]: boolean
-}
 const DEFAULT_COMPLETED_STEPS = {
   [Steps.BrokerForm]: false,
   [Steps.SubscriptionForm]: false,
   [Steps.ParsingForm]: false,
 }
 
-interface StepsStatus {
-  currentStep: Steps
-  clickedStep: string
-  brokerStepCompleted: string
-  subscriptionStepCompleted: string
-  parsingStepCompleted: string
-  dataFormat: string
-}
 const DEFAULT_STEPS_STATUS = {
   currentStep: Steps.BrokerForm,
   clickedStep: Steps.BrokerForm,
@@ -161,8 +150,8 @@ const CreateSubscriptionPage: FC = () => {
     setStepsStatus(status)
   }, [formContent, getActiveStep, active])
 
-  const stepsWithIsCompletedStatus = navigationSteps.map(s => {
-    return {...s, isComplete: completedSteps[s.type]}
+  const stepsWithIsCompletedStatus = navigationSteps.map(step => {
+    return {...step, isComplete: completedSteps[step.type]}
   })
 
   useEffect(() => {

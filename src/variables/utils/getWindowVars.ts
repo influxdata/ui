@@ -18,10 +18,11 @@ import {
 // Types
 import {VariableAssignment, Package} from 'src/types/ast'
 import {RemoteDataState, Variable} from 'src/types'
-import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
-
-const DESIRED_POINTS_PER_GRAPH = 360
-const FALLBACK_WINDOW_PERIOD = 15000
+import {
+  SELECTABLE_TIME_RANGES,
+  DESIRED_POINTS_PER_GRAPH,
+  FALLBACK_WINDOW_PERIOD,
+} from 'src/shared/constants/timeRanges'
 
 /*
   Compute the `v.windowPeriod` variable assignment for a query.

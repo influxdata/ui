@@ -2908,7 +2908,7 @@ export const randomEntityGenerator = (
 
   for (let i = 1; i <= numToGenerate; i++) {
     const currentEntity: CurrentEntity = {
-      id: i,
+      id: entity === 'org' ? i.toString() : i,
       name: generateName(entity),
       isActive: i === 1 ? true : false,
       isDefault: i === 1 ? true : false,

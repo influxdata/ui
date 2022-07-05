@@ -25,10 +25,12 @@ import {globalHeaderStyle} from './GlobalHeaderStyle'
 
 // Mock Data
 // import {randomEntityGenerator} from 'src/identity/mockdata/generateEntities'
+
 import {
   emptyAccount,
   emptyOrg,
 } from 'src/identity/components/GlobalHeader/DefaultEntities'
+import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
@@ -55,29 +57,26 @@ export const GlobalHeader: FC = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (orgsList) {
-      setActiveOrg(orgsList?.find(org => org.isActive === true))
-      setSortedOrgs(
-        [...orgsList].sort((a, b) =>
-          a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
-        )
-      )
-    }
-  }, [orgsList])
-
-  useEffect(() => {
-    if (accountsList.length > 0) {
-      setActiveAccount(
-        accountsList?.find(account => account?.isActive === true)
+    if (accountsList[0].id !== 0) {
+      const currentActiveAccount = accountsList?.find(
+        account => account?.isActive === true
       )
 
-      setSortedAccts(
-        [...accountsList].sort((a, b) =>
-          a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
-        )
-      )
+      setActiveAccount(currentActiveAccount)
+
+      setSortedAccts(alphaSortSelectedFirst(accountsList, currentActiveAccount))
     }
   }, [accountsList])
+
+  useEffect(() => {
+    if (orgsList[0].id !== '') {
+      const currentActiveOrg = orgsList?.find(org => org.isActive === true)
+
+      setActiveOrg(currentActiveOrg)
+
+      setSortedOrgs(alphaSortSelectedFirst(orgsList, currentActiveOrg))
+    }
+  }, [orgsList])
 
   return (
     <FlexBox

@@ -78,7 +78,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
         <WaitingText text="Loading tag values" />
       </div>
     )
-  } else if (loading === RemoteDataState.Done && tagValues.length) {
+  } else if (loading === RemoteDataState.Done && valuesToShow.length) {
     list = valuesToShow.map(value => (
       <dd
         key={value}

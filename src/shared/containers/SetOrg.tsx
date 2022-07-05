@@ -86,6 +86,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import {UserProfileContainer} from 'src/identity/user/UseProfile'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -124,6 +125,8 @@ const SetOrg: FC = () => {
     <PageSpinner loading={loading}>
       <Suspense fallback={<PageSpinner />}>
         <Switch>
+          {/* Temporary User Profile Loader} */}
+          <Route path={`${orgPath}/profile`} component={UserProfileContainer} />
           {/* Alerting */}
           <Route path={`${orgPath}/alerting`} component={AlertingIndex} />
           <Route

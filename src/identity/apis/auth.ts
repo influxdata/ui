@@ -6,6 +6,7 @@ import {
   getOrg,
   getOrgs,
   putOrgsDefault,
+  putAccountsDefault,
   Account,
   Identity,
   IdentityAccount,
@@ -184,6 +185,24 @@ export const fetchAccountDetails = async (
   return accountDetails
 }
 
+// change the user's default account
+export const putDefaultQuartzAccount = async (
+  accountId: number
+): Promise<Organization> => {
+  const response = await putAccountsDefault({
+    data: {
+      id: accountId,
+    },
+  })
+
+  if (response.status === 500) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  const responseEmpty = response.data
+  return responseEmpty
+}
+
 // fetch details about user's current organization
 export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   const response = await getOrg({orgId})
@@ -227,6 +246,5 @@ export const putDefaultQuartzOrg = async (orgId: string) => {
   if (response.status !== 204) {
     throw new ServerError(response.data.message)
   }
-
   return response.data
 }

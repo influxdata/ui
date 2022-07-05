@@ -5,9 +5,12 @@ import {
   setCurrentBillingProvider,
   setQuartzIdentity,
   setQuartzIdentityStatus,
+  setDefaultOrg,
 } from 'src/identity/actions/creators'
 import {notify} from 'src/shared/actions/notifications'
 import {
+  accountDefaultSettingSuccess,
+  accountDefaultSettingError,
   updateBillingFailed,
   updateIdentityFailed,
   updateOrgFailed,
@@ -26,6 +29,7 @@ import {
   fetchQuartzIdentity,
   fetchAccountDetails,
   fetchOrgDetails,
+  putDefaultQuartzOrg,
 } from 'src/identity/apis/auth'
 import {convertIdentityToMe} from 'src/identity/utils/convertIdentityToMe'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -106,4 +110,24 @@ export const getCurrentOrgDetailsThunk = () => async (
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
     dispatch(notify(updateOrgFailed()))
   }
+}
+
+// First, update set in redux, then call this thunk
+export const updateDefaultOrgThunk = newDefaultOrg => async (dispatch: any) => {
+  try {
+    // Dispatching some indication of loading here
+    await putDefaultQuartzOrg(newDefaultOrg.id)
+    dispatch(setDefaultOrg(newDefaultOrg.id))
+    // Dispatch some indication of completion here - end of loading
+
+    // Since we want affirmative UI input, dispatch a notification that
+    dispatch(notify(accountDefaultSettingSuccess(newDefaultOrg.name)))
+  } catch (err) {
+    // Dispatch remote data state error here
+    // Remember to include in quartzme for now
+    dispatch(notify(accountDefaultSettingError(newDefaultOrg.name)))
+    console.log(err)
+  }
+
+  // Dispatch a notification indicating that the update of the org failed
 }

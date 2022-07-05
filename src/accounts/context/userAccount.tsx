@@ -28,6 +28,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Actions
 import {setMe} from 'src/me/actions/creators'
 import {MeState} from 'src/me/reducers'
+import {putDefaultQuartzAccount} from 'src/identity/apis/auth'
 
 export type Props = {
   children: JSX.Element
@@ -108,14 +109,9 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     const accountName = getAccountNameById(newDefaultAcctId)
 
     try {
-      const resp = await putAccountsDefault({data: {id: newDefaultAcctId}})
+      await putDefaultQuartzAccount(newDefaultAcctId)
       setDefaultAccountId(newDefaultAcctId)
-
-      if (resp.status !== 204) {
-        dispatch(notify(accountDefaultSettingError(accountName)))
-      } else {
-        dispatch(notify(accountDefaultSettingSuccess(accountName)))
-      }
+      dispatch(notify(accountDefaultSettingSuccess(accountName)))
     } catch (error) {
       dispatch(notify(accountDefaultSettingError(accountName)))
     }

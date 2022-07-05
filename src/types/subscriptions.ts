@@ -28,6 +28,7 @@ export interface Subscription {
   token?: string
   isActive?: string
   flowVersion?: number
+  timestampPrecision?: string
 }
 
 export interface JsonSpec {
@@ -39,4 +40,11 @@ export interface JsonSpec {
 export interface StringObjectParams {
   pattern?: string
   name?: string
+}
+
+export enum PrecisionTypes {
+  Milliseconds = 'MS',
+  Seconds = 'S',
+  Microseconds = 'US',
+  Nanoseconds = 'NS',
 }

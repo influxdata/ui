@@ -73,6 +73,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     },
     bucket: 'nifi',
     qos: 0,
+    timestampPrecision: 'NS',
   },
   updateForm: () => {},
   loading: RemoteDataState.NotStarted,

@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // Utils
 import {
   AstScope,
@@ -31,7 +28,7 @@ import {
 export function rangeTimes(
   scope: AstScope,
   rangeNode: CallExpression
-): [number, number] {
+): [number, number] | never {
   const now = Date.now()
   const properties: Property[] = (rangeNode.arguments[0] as ObjectExpression)
     .properties
@@ -67,7 +64,7 @@ export function propertyTime(
   scope: AstScope,
   value: ScopeVariableAssignedNodeT,
   now: number
-): number {
+): number | never {
   switch (value.type) {
     case 'UnaryExpression':
       return (
@@ -103,8 +100,16 @@ export function propertyTime(
       return propertyTime(scope, value.init, now)
 
     case 'MemberExpression':
-      const objName = get(value, 'object.name')
-      const propertyName = get(value, 'property.name')
+      const objName = value.object?.type == 'Identifier' && value.object?.name
+      const propertyName =
+        value.property?.type == 'Identifier'
+          ? value.property?.name
+          : value.property.value
+      if (!objName || !propertyName) {
+        throw new Error(
+          `malformed MemberExpression: object name ${objName} and property name ${propertyName}`
+        )
+      }
       const objExpr = lookupVariable(
         scope,
         `${objName}.${propertyName}`
@@ -116,7 +121,13 @@ export function propertyTime(
         return now
       }
       if (isTimeCall(value)) {
-        const property = get(value, 'arguments[0].properties[0]value', {})
+        const property =
+          (value.arguments[0]?.type == 'ObjectExpression' &&
+            value.arguments[0].properties[0]?.value) ||
+          null
+        if (!property) {
+          throw new Error(`did not recognize value of time expression`)
+        }
         return propertyTime(scope, property, now)
       }
       throw new Error('unexpected CallExpression')
@@ -134,7 +145,10 @@ export function propertyTime(
  * @returns {Expression} -- the AST node, containing the value
  */
 
-export function lookupVariable(scope: AstScope, name: string): Expression {
+export function lookupVariable(
+  scope: AstScope,
+  name: string
+): Expression | never {
   if (!scope[name]) {
     throw new Error('Used variable is missing from scope')
   }

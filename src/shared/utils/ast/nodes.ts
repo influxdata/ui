@@ -1,4 +1,3 @@
-import {get} from 'lodash'
 import {Node, CallExpression} from 'src/types'
 import {
   TIME_RANGE_START,
@@ -7,32 +6,34 @@ import {
 } from 'src/variables/constants'
 
 export function isNowCall(node: CallExpression): boolean {
-  return get(node, 'callee.name') === 'now'
+  return node?.callee && (node?.callee as any).name === 'now'
 }
 
 export function isTimeCall(node: CallExpression): boolean {
-  return get(node, 'callee.name') === 'time'
+  return node?.callee && (node?.callee as any).name === 'time'
 }
 
 export function isRangeNode(node: Node) {
   return (
-    get(node, 'callee.type') === 'Identifier' &&
-    get(node, 'callee.name') === 'range'
+    (node as any).callee &&
+    ((node as CallExpression)?.callee as any).type === 'Identifier' &&
+    (node as any).callee &&
+    ((node as CallExpression)?.callee as any).name === 'range'
   )
 }
 
 export function isWindowPeriodVariableNode(node: Node) {
-  return get(node, 'location.source') == `v.${WINDOW_PERIOD}`
+  return node?.location?.source == `v.${WINDOW_PERIOD}`
 }
 
 export function isTimeRangeStartVariableNode(node: Node) {
-  return get(node, 'location.source') == `v.${TIME_RANGE_START}`
+  return node?.location?.source == `v.${TIME_RANGE_START}`
 }
 
 export function isTimeRangeStopVariableNode(node: Node) {
-  return get(node, 'location.source') == `v.${TIME_RANGE_STOP}`
+  return node?.location?.source == `v.${TIME_RANGE_STOP}`
 }
 
 export function isVariableDeclaration(node: Node) {
-  return get(node, 'type') === 'VariableAssignment'
+  return node?.type == 'VariableAssignment'
 }

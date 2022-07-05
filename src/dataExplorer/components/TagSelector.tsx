@@ -102,7 +102,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       list.length > 1
     const loadMoreButton = shouldLoadMore && (
       <button
-        className="load-more-button"
+        className="tag-selector-value--load-more-button"
         data-testid="tag-selector-value--load-more-button"
         onClick={handleLoadMore}
       >

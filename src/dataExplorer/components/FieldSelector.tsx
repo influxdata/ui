@@ -96,7 +96,7 @@ const FieldSelector: FC = () => {
       list.length > 1
     const loadMoreButton = shouldLoadMore && (
       <button
-        className="load-more-button"
+        className="field-selector--load-more-button"
         data-testid="field-selector--load-more-button"
         onClick={handleLoadMore}
       >

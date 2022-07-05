@@ -86,6 +86,8 @@ import {RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import {UserProfilePage} from 'src/identity/user/UserProfilePage'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -294,6 +296,10 @@ const SetOrg: FC = () => {
             path={`${orgPath}/accounts/settings`}
             component={UserAccountPage}
           />
+          {/* User Profile Page */}
+          {CLOUD && shouldUseQuartzIdentity() && isFlagEnabled('multiOrg') && (
+            <Route path={`${orgPath}/profile`} component={UserProfilePage} />
+          )}
 
           {/* Getting Started */}
           {isFlagEnabled('firstMile') ? (

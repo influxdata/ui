@@ -53,10 +53,15 @@ const BrokerFormContent: FC<Props> = ({
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
   }, [protocol])
-  const numberInput = document.getElementById(`${className}-broker-form--port`)
-  numberInput?.addEventListener('mousewheel', function(evt) {
-    evt.preventDefault()
-  })
+
+  useEffect(() => {
+    const numberInput = document.getElementById(
+      `${className}-broker-form--port`
+    )
+    numberInput?.addEventListener('mousewheel', function(evt) {
+      evt.preventDefault()
+    })
+  }, [])
   return (
     <Grid>
       <Grid.Row>

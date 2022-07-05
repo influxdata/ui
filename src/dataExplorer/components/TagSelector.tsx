@@ -96,7 +96,10 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
   }
 
   return useMemo(() => {
-    const shouldLoadMore = valuesToShow.length < tagValues.length
+    const shouldLoadMore =
+      valuesToShow.length < tagValues.length &&
+      Array.isArray(list) &&
+      list.length > 1
     const loadMoreButton = shouldLoadMore && (
       <button className="load-more-button" onClick={handleLoadMore}>
         + Load more

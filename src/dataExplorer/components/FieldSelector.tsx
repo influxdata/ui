@@ -90,7 +90,10 @@ const FieldSelector: FC = () => {
   }
 
   return useMemo(() => {
-    const shouldLoadMore = fieldsToShow.length < fields.length
+    const shouldLoadMore =
+      fieldsToShow.length < fields.length &&
+      Array.isArray(list) &&
+      list.length > 1
     const loadMoreButton = shouldLoadMore && (
       <button
         className="load-more-button"

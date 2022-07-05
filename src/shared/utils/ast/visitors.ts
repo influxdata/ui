@@ -1,6 +1,8 @@
 // Libraries
 import {isObject} from 'lodash'
 
+import {VariableAssignment, Expression, Property} from 'src/types/ast'
+
 /*
   Find all nodes in a tree matching the `predicate` function. Each node in the
   tree is an object, which may contain objects or arrays of objects as children
@@ -26,4 +28,13 @@ export const findNodes = (
   }
 
   return acc
+}
+
+export type ScopeVariableAssignedNodeT =
+  | VariableAssignment
+  | Expression
+  | Property
+
+export interface AstScope {
+  [variableIdentifier: string]: ScopeVariableAssignedNodeT
 }

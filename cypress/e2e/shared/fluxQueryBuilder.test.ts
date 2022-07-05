@@ -176,6 +176,11 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('field-selector--list-item--selectable')
         .should('be.visible')
         .should('have.length.above', 8)
+
+      cy.getByTestID('field-selector--list-item--selectable').should(
+        'have.length.at.most',
+        33
+      ) // 8 + 25
     })
   })
 })

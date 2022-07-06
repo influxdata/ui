@@ -239,13 +239,14 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     }
 
     let timeout
+    let animationFrameID
     const resizer = new ResizeObserver(entries => {
       if (timeout) {
         clearTimeout(timeout)
       }
 
       timeout = setTimeout(() => {
-        requestAnimationFrame(() => {
+        animationFrameID = requestAnimationFrame(() => {
           setHeight(entries[0].contentRect.height)
         })
       }, 200)
@@ -263,6 +264,7 @@ const PagedTable: FC<Props> = ({result, properties}) => {
 
     return () => {
       resizer.disconnect()
+      cancelAnimationFrame(animationFrameID)
       if (timeout) {
         clearTimeout(timeout)
       }

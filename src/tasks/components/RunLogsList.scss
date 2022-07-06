@@ -21,7 +21,7 @@
   height: 30vh;
 }
 
-@supports (-moz-appearance:none) {
+@supports (-moz-appearance: none) {
   tr.run-log--list-row td {
     height: 100%;
   }

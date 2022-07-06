@@ -458,19 +458,15 @@ export const QueryProvider: FC = ({children}) => {
 
             let read = await reader.read()
 
-            if (isFlagEnabled('streamCsvData')) {
-              const text = decoder.decode(read.value)
-
-              if (callback) {
-                callback(text)
-              }
-            }
-
             while (!read.done) {
               if (!pending.current[id]) {
                 throw new CancellationError()
               }
               const text = decoder.decode(read.value)
+
+              if (callback) {
+                callback(text)
+              }
 
               bytesRead += read.value.byteLength
 

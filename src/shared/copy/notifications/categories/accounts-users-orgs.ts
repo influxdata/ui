@@ -142,5 +142,5 @@ export const updateOrgFailed = (): Notification => ({
 export const updateQuartzOrganizationsFailed = (): Notification => ({
   ...defaultErrorNotification,
   message:
-    'Error retrieving quartz organizations information. Please refresh this page.',
+    'Error retrieving organizations available to this account. Please refresh this page.',
 })

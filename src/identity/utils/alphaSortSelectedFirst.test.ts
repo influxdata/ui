@@ -18,7 +18,7 @@ describe('alphaSortSelectedFirst', function() {
     const result = alphaSortSelectedFirst(itemArray, selectedItem)
 
     const expectedResult = [
-      {id: 'uniqueId2', name: 'uniqueName2'},
+      selectedItem,
       {id: 'uniqueId1', name: 'uniqueName1'},
       {id: 'uniqueId3', name: 'uniqueName3'},
     ]

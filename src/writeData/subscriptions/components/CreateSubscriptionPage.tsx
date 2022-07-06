@@ -1,14 +1,12 @@
 // Libraries
-import React, {FC, useState, useContext, useEffect, useCallback} from 'react'
+import React, {FC, useState, useContext, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
 import {
-  IconFont,
   Page,
   SpinnerContainer,
   SubwayNav,
-  SubwayNavModel,
   TechnoSpinner,
 } from '@influxdata/clockface'
 import BrokerForm from 'src/writeData/subscriptions/components/BrokerForm'
@@ -42,52 +40,15 @@ import {getAll} from 'src/resources/selectors'
 import {getQuartzMe} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {
-  checkRequiredJsonFields,
-  checkRequiredStringFields,
+  DEFAULT_COMPLETED_STEPS,
+  DEFAULT_STEPS_STATUS,
+  getActiveStep,
+  getFormStatus,
+  SUBSCRIPTION_NAVIGATION_STEPS,
 } from 'src/writeData/subscriptions/utils/form'
 
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
-
-interface SubscriptionNavigationModel extends SubwayNavModel {
-  type: string
-}
-
-const navigationSteps: SubscriptionNavigationModel[] = [
-  {
-    glyph: IconFont.UploadOutline,
-    name: 'Connect \n to Broker',
-    type: Steps.BrokerForm,
-    isComplete: false,
-  },
-  {
-    glyph: IconFont.Subscribe,
-    name: 'Subscribe \n to Topic',
-    type: Steps.SubscriptionForm,
-    isComplete: false,
-  },
-  {
-    glyph: IconFont.Braces,
-    name: 'Define Data \n Parsing Rules',
-    type: Steps.ParsingForm,
-    isComplete: false,
-  },
-]
-
-const DEFAULT_COMPLETED_STEPS = {
-  [Steps.BrokerForm]: false,
-  [Steps.SubscriptionForm]: false,
-  [Steps.ParsingForm]: false,
-}
-
-const DEFAULT_STEPS_STATUS = {
-  currentStep: Steps.BrokerForm,
-  clickedStep: Steps.BrokerForm,
-  brokerStepCompleted: 'false',
-  subscriptionStepCompleted: 'false',
-  parsingStepCompleted: 'false',
-  dataFormat: 'not chosen yet',
-}
 
 const CreateSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
@@ -106,16 +67,6 @@ const CreateSubscriptionPage: FC = () => {
     DEFAULT_STEPS_STATUS
   )
 
-  const getActiveStep = useCallback(activeForm => {
-    let currentStep = 1
-    navigationSteps.forEach((step, index) => {
-      if (step.type === activeForm) {
-        currentStep = index + 1
-      }
-    })
-    return currentStep
-  }, [])
-
   useEffect(() => {
     setCompletedSteps({
       [Steps.BrokerForm]: stepsStatus.brokerStepCompleted === 'true',
@@ -126,31 +77,10 @@ const CreateSubscriptionPage: FC = () => {
   }, [stepsStatus])
 
   useEffect(() => {
-    const status = {
-      currentStep: active,
-      clickedStep: navigationSteps[getActiveStep(active) - 1].type,
-      brokerStepCompleted:
-        formContent.name && formContent.brokerHost && formContent.brokerPort
-          ? 'true'
-          : 'false',
-      subscriptionStepCompleted:
-        formContent.topic &&
-        formContent.bucket &&
-        formContent.bucket !== '<BUCKET>'
-          ? 'true'
-          : 'false',
-      parsingStepCompleted:
-        formContent.dataFormat &&
-        checkRequiredJsonFields(formContent) &&
-        checkRequiredStringFields(formContent)
-          ? 'true'
-          : 'false',
-      dataFormat: formContent.dataFormat ?? 'not chosen yet',
-    } as StepsStatus
-    setStepsStatus(status)
-  }, [formContent, getActiveStep, active])
+    setStepsStatus(getFormStatus(active, formContent))
+  }, [formContent, active])
 
-  const stepsWithIsCompletedStatus = navigationSteps.map(step => {
+  const stepsWithIsCompletedStatus = SUBSCRIPTION_NAVIGATION_STEPS.map(step => {
     return {...step, isComplete: completedSteps[step.type]}
   })
 
@@ -160,7 +90,7 @@ const CreateSubscriptionPage: FC = () => {
       {userAccountType: quartzMe?.accountType ?? 'unknown'},
       {feature: 'subscriptions'}
     )
-  }, [])
+  }, [quartzMe?.accountType])
 
   const handleClick = (step: number) => {
     event(

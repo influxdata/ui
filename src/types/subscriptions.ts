@@ -1,3 +1,5 @@
+import {SubwayNavModel} from '@influxdata/clockface'
+
 export interface Subscription {
   id?: string
   name?: string
@@ -68,4 +70,8 @@ export interface CompletedSteps {
   [Steps.BrokerForm]: boolean
   [Steps.SubscriptionForm]: boolean
   [Steps.ParsingForm]: boolean
+}
+
+export interface SubscriptionNavigationModel extends SubwayNavModel {
+  type: string
 }

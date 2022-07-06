@@ -81,9 +81,14 @@ export const taskCloneFailed = (
   message: `Failed to clone task ${taskName}: ${additionalMessage} `,
 })
 
-export const taskUpdateFailed = (additionalMessage: string, taskName?: string): Notification => ({
+export const taskUpdateFailed = (
+  additionalMessage: string,
+  taskName?: string
+): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to update task ${taskName ? taskName : ''}: ${additionalMessage}`,
+  message: `Failed to update task ${
+    taskName ? taskName : ''
+  }: ${additionalMessage}`,
 })
 
 export const taskUpdateSuccess = (taskName?: string): Notification => ({

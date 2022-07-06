@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useMemo} from 'react'
 import {IconFont} from '@influxdata/clockface'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
@@ -8,7 +8,6 @@ type OrgSummaryItem = OrganizationSummaries[number]
 interface Props {
   activeOrg: OrgSummaryItem
   activeAccount: UserAccount
-  // setActiveAccount: Function
   accountsList: UserAccount[]
 }
 
@@ -28,12 +27,6 @@ export const AccountDropdown: FC<Props> = ({
       iconFont: IconFont.CogOutline,
       href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
-    // 'Members' is listed on the Figma, but discussed with design, and this may not exist yet.
-    // {
-    //   name: 'Members',
-    //   iconFont: IconFont.UserOutline_New,
-    //   href: '/',
-    // },
     {
       name: 'Billing',
       iconFont: IconFont.Bill,
@@ -41,6 +34,10 @@ export const AccountDropdown: FC<Props> = ({
     },
   ]
 
+  const style = useMemo(() => ({width: 'auto'}), [])
+  const menuStyle = useMemo(() => ({width: '250px'}), [])
+
+  // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: SubMenuItem) => {
     window.location.href = `orgs/${activeOrg.id}/accounts/${account.id}`
   }
@@ -52,8 +49,8 @@ export const AccountDropdown: FC<Props> = ({
       subMenuOptions={accountsList}
       menuHeaderIcon={IconFont.Switch_New}
       menuHeaderText="Switch Account"
-      style={{width: 'auto'}}
-      menuStyle={{width: '250px'}}
+      style={style}
+      menuStyle={menuStyle}
       onSelectOption={switchAccount}
     />
   )

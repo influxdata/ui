@@ -14,17 +14,16 @@ import {selectQuartzIdentity} from 'src/identity/selectors'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 
 // Components
-import {OrgDropdown} from './OrgDropdown'
-import {AccountDropdown} from './AccountDropdown'
+import {OrgDropdown} from 'src/identity/components/GlobalHeader/OrgDropdown'
+import {AccountDropdown} from 'src/identity/components/GlobalHeader/AccountDropdown'
 
 // Thunks
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Styles
-import {globalHeaderStyle} from './GlobalHeaderStyle'
+import {globalHeaderStyle} from 'src/identity/components/GlobalHeader/GlobalHeaderStyle'
 
-// Mock Data
-// import {randomEntityGenerator} from 'src/identity/mockdata/generateEntities'
+import {randomEntityGenerator} from 'src/identity/mockdata/generateEntities'
 
 import {
   emptyAccount,
@@ -35,15 +34,16 @@ import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
 
-  const identity = useSelector(selectQuartzIdentity)
+  //  const identity = useSelector(selectQuartzIdentity)
 
-  // Lines can be uncommented for purposes of mocking/testing with arbitrarily large account and org lists.
-  // const [identity] = useState(randomEntityGenerator('org', 2000))
-  const orgsList = identity.quartzOrganizations?.orgs
+  const [identity] = useState(randomEntityGenerator('org', 2000))
 
-  const {userAccounts} = useContext(UserAccountContext)
-  // const [userAccounts] = useState(randomEntityGenerator('account', 2000))
+  const orgsList = identity.quartzOrganizations.orgs
 
+  // const {userAccounts} = useContext(UserAccountContext)
+  const [userAccounts] = useState(randomEntityGenerator('account', 2000))
+
+  // Check to see here whether we can resolve this at the context level.
   const accountsList = userAccounts ? userAccounts : [emptyAccount] // eslint-disable-line react-hooks/exhaustive-deps
 
   const [sortedOrgs, setSortedOrgs] = useState([emptyOrg])
@@ -92,7 +92,6 @@ export const GlobalHeader: FC = () => {
               activeAccount={activeAccount}
               accountsList={sortedAccounts}
             />
-            {/* Design is working on an adjustment to the caret, and submenu caret designs*/}
             <Icon glyph={IconFont.CaretRight} />
             <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
           </>

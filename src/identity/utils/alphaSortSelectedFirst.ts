@@ -1,3 +1,14 @@
+const collator = new Intl.Collator('en', {
+  usage: 'sort',
+  // Not case or accent sensitive
+  sensitivity: 'base',
+  ignorePunctuation: false,
+  // Sort numerical results like this ('1' < '2' < '10)
+  numeric: true,
+  // Upper case is not sorted before lower case
+  caseFirst: 'false',
+})
+
 export const alphaSortSelectedFirst = (itemArray, selectedItem) => {
   return [...itemArray].sort((a, b) => {
     if (a.id === selectedItem.id) {
@@ -5,7 +16,7 @@ export const alphaSortSelectedFirst = (itemArray, selectedItem) => {
     } else if (b.id === selectedItem.id) {
       return 1
     } else {
-      return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
+      return collator.compare(a.name, b.name)
     }
   })
 }

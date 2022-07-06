@@ -4,14 +4,13 @@ import {
   SET_QUARTZ_ORGANIZATIONS,
   SET_QUARTZ_ORGANIZATIONS_STATUS,
 } from 'src/identity/quartzOrganizations/actions/creators'
+import {emptyOrg} from 'src/identity/components/GlobalHeader/DefaultEntities'
 import produce from 'immer'
 
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 
 const initialState = {
-  orgs: [
-    {id: '', name: '', isActive: false, isDefault: false},
-  ] as OrganizationSummaries,
+  orgs: [emptyOrg] as OrganizationSummaries,
 } as QuartzOrganizations
 
 export default (state = initialState, action: Actions): QuartzOrganizations =>

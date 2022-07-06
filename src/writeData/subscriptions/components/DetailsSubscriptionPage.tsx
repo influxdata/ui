@@ -30,13 +30,7 @@ import {
 } from 'src/writeData/subscriptions/context/subscription.list'
 
 // Types
-import {
-  AppState,
-  ResourceType,
-  Bucket,
-  StepsStatus,
-  CompletedSteps,
-} from 'src/types'
+import {AppState, ResourceType, Bucket, StepsStatus} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
@@ -77,21 +71,6 @@ const navigationSteps: SubscriptionNavigationModel[] = [
   },
 ]
 
-const DEFAULT_STEPS_STATUS = {
-  currentStep: Steps.BrokerForm,
-  clickedStep: Steps.BrokerForm,
-  brokerStepCompleted: 'false',
-  subscriptionStepCompleted: 'false',
-  parsingStepCompleted: 'false',
-  dataFormat: 'not chosen yet',
-}
-
-const DEFAULT_COMPLETED_STEPS = {
-  [Steps.BrokerForm]: false,
-  [Steps.SubscriptionForm]: false,
-  [Steps.ParsingForm]: false,
-}
-
 const DetailsSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
   const {
@@ -111,12 +90,6 @@ const DetailsSubscriptionPage: FC = () => {
     change(id)
   }, [id, change])
   const [edit, setEdit] = useState(false)
-  const [stepsStatus, setStepsStatus] = useState<StepsStatus>(
-    DEFAULT_STEPS_STATUS
-  )
-  const [completedSteps, setCompletedSteps] = useState<CompletedSteps>(
-    DEFAULT_COMPLETED_STEPS
-  )
 
   const getActiveStep = useCallback(activeForm => {
     let currentStep = 1
@@ -128,20 +101,7 @@ const DetailsSubscriptionPage: FC = () => {
     return currentStep
   }, [])
 
-  const stepsWithIsCompletedStatus = navigationSteps.map(step => {
-    return {...step, isComplete: completedSteps[step.type]}
-  })
-
-  useEffect(() => {
-    setCompletedSteps({
-      [Steps.BrokerForm]: stepsStatus.brokerStepCompleted === 'true',
-      [Steps.SubscriptionForm]:
-        stepsStatus.subscriptionStepCompleted === 'true',
-      [Steps.ParsingForm]: stepsStatus.parsingStepCompleted === 'true',
-    })
-  }, [stepsStatus])
-
-  useEffect(() => {
+  const handleClick = (step: number) => {
     const status = {
       currentStep: active,
       clickedStep: navigationSteps[getActiveStep(active) - 1].type,
@@ -165,25 +125,11 @@ const DetailsSubscriptionPage: FC = () => {
           : 'false',
       dataFormat: currentSubscription.dataFormat ?? 'not chosen yet',
     } as StepsStatus
-    setStepsStatus(status)
-  }, [currentSubscription, getActiveStep, active])
-
-  const handleClick = (step: number) => {
-    event(
-      'subway navigation clicked',
-      {...stepsStatus},
-      {feature: 'subscriptions'}
-    )
+    event('subway navigation clicked', {...status}, {feature: 'subscriptions'})
     document
-      .getElementById(stepsWithIsCompletedStatus[step - 1].type)
+      .getElementById(navigationSteps[step - 1].type)
       ?.scrollIntoView({behavior: 'smooth', block: 'center'})
-    setFormActive(stepsWithIsCompletedStatus[step - 1].type as Steps)
-    setCompletedSteps({
-      [Steps.BrokerForm]: stepsStatus.brokerStepCompleted === 'true',
-      [Steps.SubscriptionForm]:
-        stepsStatus.subscriptionStepCompleted === 'true',
-      [Steps.ParsingForm]: stepsStatus.parsingStepCompleted === 'true',
-    })
+    setFormActive(navigationSteps[step - 1].type as Steps)
   }
 
   return (
@@ -202,11 +148,11 @@ const DetailsSubscriptionPage: FC = () => {
               <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
-                navigationSteps={stepsWithIsCompletedStatus}
+                navigationSteps={navigationSteps}
                 settingUpIcon={FormLogo}
                 settingUpText="MQTT Connector"
                 settingUpHeader={currentSubscription.name}
-                showCheckmark={true}
+                showCheckmark={false}
               />
             </div>
             <BrokerDetails

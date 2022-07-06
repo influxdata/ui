@@ -7,6 +7,8 @@ describe('Operator Page', () => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
           }).then(() => {
+            // This call initializes the operator data for quartz mock so the data is reset before each test.
+            // This allows tests to mutate the quartz-mock operator data without breaking subsequent tests.
             cy.initializeQuartzMockOperator()
             cy.quartzProvision({
               isOperator: true,

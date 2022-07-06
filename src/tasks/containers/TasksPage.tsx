@@ -67,10 +67,6 @@ class TasksPage extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    if (!props.showInactive) {
-      props.setShowInactive()
-    }
-
     this.state = {
       isImporting: false,
       taskLabelsEdit: null,

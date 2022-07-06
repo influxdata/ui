@@ -416,7 +416,7 @@ export const QueryProvider: FC = ({children}) => {
     }
   }, [])
 
-  const basic = (text: string, override?: QueryScope) => {
+  const basic = (text: string, override: QueryScope = {}, callback: any) => {
     const query = simplify(text, override?.vars || {})
 
     const orgID = override?.org || org.id
@@ -457,6 +457,14 @@ export const QueryProvider: FC = ({children}) => {
             let bytesRead = 0
 
             let read = await reader.read()
+
+            if (isFlagEnabled('streamCsvData')) {
+              const text = decoder.decode(read.value)
+
+              if (callback) {
+                callback(text)
+              }
+            }
 
             while (!read.done) {
               if (!pending.current[id]) {

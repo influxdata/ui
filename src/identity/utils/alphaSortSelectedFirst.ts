@@ -1,4 +1,9 @@
-export const alphaSortSelectedFirst = (itemArray, selectedItem) => {
+import {SelectableItem} from '@influxdata/clockface'
+
+export const alphaSortSelectedFirst = (
+  itemArray,
+  selectedItem: SelectableItem
+) => {
   return [...itemArray].sort((a, b) => {
     if (a.id === selectedItem.id) {
       return -1

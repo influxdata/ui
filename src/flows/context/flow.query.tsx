@@ -63,6 +63,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {setResult, setStatuses, statuses} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const org = useSelector(getOrg) ?? {id: ''}
+  // TODO(ariel): maybe consolidate this to just be results from the ResultsContext
   const [csvText, setCsvText] = React.useState({})
 
   const dispatch = useDispatch()
@@ -281,9 +282,13 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   function streamData(text: string, stage: any) {
-    setCsvText(prev => ({
-      [stage.id]: (prev[stage.id] ?? '') + text,
-    }))
+    if (csvText[stage.id]) {
+      csvText[stage.id] = csvText[stage.id] + text
+    } else {
+      csvText[stage.id] = text
+    }
+
+    setCsvText(csvText)
   }
 
   const _queryDependents = (startID: string) => {
@@ -308,7 +313,10 @@ export const FlowQueryProvider: FC = ({children}) => {
           return a
         }, {})
     )
-    setCsvText({})
+    for (const key in csvText) {
+      delete csvText[key]
+    }
+    setCsvText(csvText)
     Promise.all(
       map
         .filter(q => !!q?.visual)
@@ -377,7 +385,10 @@ export const FlowQueryProvider: FC = ({children}) => {
         }, {})
     )
 
-    setCsvText({})
+    for (const key in csvText) {
+      delete csvText[key]
+    }
+    setCsvText(csvText)
     Promise.all(
       map
         .filter(q => !!q.visual)

@@ -127,7 +127,7 @@ describe('FluxQueryBuilder', () => {
       // numbers of API calls that are time consuming and unnecessary
     })
 
-    it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
+    it.skip('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
       // if less than 8 items, show all items
       const bucketNameA = 'Air Sensor Data'
       const measurementA = 'airSensors'

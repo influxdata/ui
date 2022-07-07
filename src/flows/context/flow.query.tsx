@@ -323,17 +323,19 @@ export const FlowQueryProvider: FC = ({children}) => {
             setResult(stage.id, result)
             setStatuses({[stage.id]: RemoteDataState.Done})
           }
-          return query(stage.visual, stage.scope, stream)
-            .then(response => {
-              setStatuses({[stage.id]: RemoteDataState.Done})
-              setResult(stage.id, response)
-            })
-            .catch(e => {
-              setResult(stage.id, {
-                error: e.message,
+          return (
+            query(stage.visual, stage.scope, stream)
+              // .then(response => {
+              //   setStatuses({[stage.id]: RemoteDataState.Done})
+              //   setResult(stage.id, response)
+              // })
+              .catch(e => {
+                setResult(stage.id, {
+                  error: e.message,
+                })
+                setStatuses({[stage.id]: RemoteDataState.Error})
               })
-              setStatuses({[stage.id]: RemoteDataState.Error})
-            })
+          )
         })
     )
       .then(() => {

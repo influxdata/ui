@@ -35,14 +35,19 @@ interface CancelMap {
 }
 
 export interface QueryContextType {
-  basic: (text: string, override?: QueryScope) => any
-  query: (text: string, override?: QueryScope) => Promise<FluxResult>
+  basic: (text: string, override: QueryScope, callback?: any) => any
+  query: (
+    text: string,
+    override: QueryScope,
+    callback?: any
+  ) => Promise<FluxResult>
   cancel: (id?: string) => void
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
-  basic: (_: string, __?: QueryScope) => {},
-  query: (_: string, __?: QueryScope) => Promise.resolve({} as FluxResult),
+  basic: (_: string, __: QueryScope, _callback?: any) => {},
+  query: (_: string, __: QueryScope, _callback?: any) =>
+    Promise.resolve({} as FluxResult),
   cancel: (_?: string) => {},
 }
 
@@ -416,7 +421,7 @@ export const QueryProvider: FC = ({children}) => {
     }
   }, [])
 
-  const basic = (text: string, override: QueryScope = {}, callback: any) => {
+  const basic = (text: string, override: QueryScope = {}, callback?: any) => {
     const query = simplify(text, override?.vars || {})
 
     const orgID = override?.org || org.id
@@ -561,8 +566,12 @@ export const QueryProvider: FC = ({children}) => {
     delete pending.current[queryID]
   }
 
-  const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
-    const result = basic(text, override)
+  const query = (
+    text: string,
+    override: QueryScope = {},
+    callback?: any
+  ): Promise<FluxResult> => {
+    const result = basic(text, override, callback)
 
     const promise: any = result.promise
       .then(raw => {

@@ -10,6 +10,7 @@ import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 import {getOrg} from 'src/organizations/selectors'
+import {fastFromFlux} from '@influxdata/giraffe'
 
 // Constants
 import {notebookRunFail} from 'src/shared/copy/notifications'
@@ -62,6 +63,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {setResult, setStatuses, statuses} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const org = useSelector(getOrg) ?? {id: ''}
+  const [csvText, setCsvText] = React.useState({})
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
@@ -237,17 +239,21 @@ export const FlowQueryProvider: FC = ({children}) => {
     /* eslint-enable no-console */
   }
 
-  const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
+  const query = (
+    text: string,
+    override: QueryScope = {},
+    callback?: any
+  ): Promise<FluxResult> => {
     const _override: QueryScope = {
       region: window.location.origin,
       org: org.id,
       ...(override || {}),
     }
 
-    return queryAPI(text, _override)
+    return queryAPI(text, _override, callback)
   }
 
-  const basic = (text: string, override?: QueryScope): Promise<FluxResult> => {
+  const basic = (text: string, override: QueryScope): Promise<FluxResult> => {
     const _override: QueryScope = {
       region: window.location.origin,
       org: org.id,
@@ -274,6 +280,18 @@ export const FlowQueryProvider: FC = ({children}) => {
     _queryDependents(startID)
   }
 
+  function streamData(text: string, stage: any) {
+    setCsvText(prev => ({
+      [stage.id]: (prev[stage.id] ?? '') + text,
+    }))
+    // const result = {
+    //   source: stage.visual,
+    //   parsed: fastFromFlux(csvText),
+    //   error: null,
+    // }
+    // setResult(stage.id, result)
+  }
+
   const _queryDependents = (startID: string) => {
     if (status === RemoteDataState.Loading) {
       return
@@ -296,11 +314,22 @@ export const FlowQueryProvider: FC = ({children}) => {
           return a
         }, {})
     )
+    setCsvText({})
     Promise.all(
       map
         .filter(q => !!q?.visual)
         .map(stage => {
-          return query(stage.visual, stage.scope)
+          function stream(text) {
+            streamData(text, stage)
+            const result = {
+              source: stage.visual,
+              parsed: fastFromFlux(csvText[stage.id] ?? ''),
+              error: null,
+            }
+            setResult(stage.id, result)
+            setStatuses({[stage.id]: RemoteDataState.Done})
+          }
+          return query(stage.visual, stage.scope, stream)
             .then(response => {
               setStatuses({[stage.id]: RemoteDataState.Done})
               setResult(stage.id, response)
@@ -352,21 +381,34 @@ export const FlowQueryProvider: FC = ({children}) => {
         }, {})
     )
 
+    setCsvText({})
     Promise.all(
       map
         .filter(q => !!q.visual)
         .map(stage => {
-          return query(stage.visual, stage.scope)
-            .then(response => {
-              setResult(stage.id, response)
-              setStatuses({[stage.id]: RemoteDataState.Done})
-            })
-            .catch(e => {
-              setResult(stage.id, {
-                error: e.message,
+          function stream(text) {
+            streamData(text, stage)
+            const result = {
+              source: stage.visual,
+              parsed: fastFromFlux(csvText[stage.id] ?? ''),
+              error: null,
+            }
+            setResult(stage.id, result)
+            setStatuses({[stage.id]: RemoteDataState.Done})
+          }
+          return (
+            query(stage.visual, stage.scope, stream)
+              // .then(response => {
+              //   setResult(stage.id, response)
+              //   setStatuses({[stage.id]: RemoteDataState.Done})
+              // })
+              .catch(e => {
+                setResult(stage.id, {
+                  error: e.message,
+                })
+                setStatuses({[stage.id]: RemoteDataState.Error})
               })
-              setStatuses({[stage.id]: RemoteDataState.Error})
-            })
+          )
         })
     )
       .then(() => {

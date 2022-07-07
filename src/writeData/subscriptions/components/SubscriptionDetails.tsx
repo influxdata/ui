@@ -20,6 +20,7 @@ interface Props {
   buckets: any
   bucket: any
   edit: boolean
+  onFocus?: () => void
 }
 
 const SubscriptionDetails: FC<Props> = ({
@@ -28,18 +29,26 @@ const SubscriptionDetails: FC<Props> = ({
   buckets,
   bucket,
   edit,
+  onFocus,
 }) => {
   useEffect(() => {
     event('visited subscription details page', {}, {feature: 'subscriptions'})
   }, [])
+
   useEffect(() => {
     if (edit) {
       updateForm({...currentSubscription, bucket: bucket.name})
     }
   }, [bucket])
+
   return (
     buckets && (
-      <div className="update-subscription-form" id="subscription">
+      <div
+        className="update-subscription-form"
+        id="subscription"
+        onFocus={onFocus}
+        tabIndex={-1}
+      >
         <Form
           onSubmit={() => {}}
           testID="update-subscription-form--overlay-form"

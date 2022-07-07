@@ -24,9 +24,10 @@ import 'src/writeData/subscriptions/components/ParsingForm.scss'
 interface Props {
   formContent: Subscription
   updateForm: (any) => void
+  onFocus?: (any) => void
 }
 
-const ParsingForm: FC<Props> = ({formContent, updateForm}) =>
+const ParsingForm: FC<Props> = ({formContent, updateForm, onFocus}) =>
   formContent && (
     <div
       className={
@@ -35,6 +36,8 @@ const ParsingForm: FC<Props> = ({formContent, updateForm}) =>
           : 'create-parsing-form'
       }
       id="parsing"
+      onFocus={onFocus}
+      tabIndex={-1}
     >
       <Form onSubmit={() => {}} testID="create-parsing-form-overlay">
         <Overlay.Header title="Define Data Parsing Rules"></Overlay.Header>

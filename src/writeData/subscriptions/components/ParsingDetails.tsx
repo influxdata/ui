@@ -19,9 +19,15 @@ interface Props {
   currentSubscription: Subscription
   updateForm: (any) => void
   edit: boolean
+  onFocus?: () => void
 }
 
-const ParsingDetails: FC<Props> = ({currentSubscription, updateForm, edit}) => (
+const ParsingDetails: FC<Props> = ({
+  currentSubscription,
+  updateForm,
+  edit,
+  onFocus,
+}) => (
   <div
     className={
       currentSubscription.dataFormat === 'lineprotocol'
@@ -29,6 +35,8 @@ const ParsingDetails: FC<Props> = ({currentSubscription, updateForm, edit}) => (
         : 'update-parsing-form'
     }
     id="parsing"
+    onFocus={onFocus}
+    tabIndex={-1}
   >
     <Form onSubmit={() => {}} testID="update-parsing-form-overlay">
       <Overlay.Header title="Define Data Parsing Rules"></Overlay.Header>

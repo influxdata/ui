@@ -61,7 +61,7 @@ const ParsingDetails: FC<Props> = ({currentSubscription, updateForm, edit}) => (
               />
             )}
             {currentSubscription.dataFormat === 'lineprotocol' && (
-              <LineProtocolForm />
+              <LineProtocolForm edit={edit} formContent={currentSubscription} />
             )}
           </Grid.Row>
         </Grid>

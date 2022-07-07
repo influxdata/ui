@@ -2,8 +2,48 @@ import {
   Subscription,
   StringObjectParams,
   JsonSpec,
+  StepsStatus,
+  Steps,
+  SubscriptionNavigationModel,
 } from 'src/types/subscriptions'
 import jsonpath from 'jsonpath'
+import {IconFont} from '@influxdata/clockface'
+
+export const DEFAULT_COMPLETED_STEPS = {
+  [Steps.BrokerForm]: false,
+  [Steps.SubscriptionForm]: false,
+  [Steps.ParsingForm]: false,
+}
+
+export const DEFAULT_STEPS_STATUS = {
+  currentStep: Steps.BrokerForm,
+  clickedStep: Steps.BrokerForm,
+  brokerStepCompleted: 'false',
+  subscriptionStepCompleted: 'false',
+  parsingStepCompleted: 'false',
+  dataFormat: 'not chosen yet',
+}
+
+export const SUBSCRIPTION_NAVIGATION_STEPS: SubscriptionNavigationModel[] = [
+  {
+    glyph: IconFont.UploadOutline,
+    name: 'Connect \n to Broker',
+    type: Steps.BrokerForm,
+    isComplete: false,
+  },
+  {
+    glyph: IconFont.Subscribe,
+    name: 'Subscribe \n to Topic',
+    type: Steps.SubscriptionForm,
+    isComplete: false,
+  },
+  {
+    glyph: IconFont.Braces,
+    name: 'Define Data \n Parsing Rules',
+    type: Steps.ParsingForm,
+    isComplete: false,
+  },
+]
 
 export const handleValidation = (
   property: string,
@@ -236,4 +276,36 @@ const validateJsonPath = (path: string): boolean => {
   } catch {
     return false
   }
+}
+
+export const getActiveStep = activeForm => {
+  let currentStep = 1
+
+  SUBSCRIPTION_NAVIGATION_STEPS.forEach((step, index) => {
+    if (step.type === activeForm) {
+      currentStep = index + 1
+    }
+  })
+
+  return currentStep
+}
+
+export const getFormStatus = (active: Steps, form: Subscription) => {
+  return {
+    currentStep: active,
+    clickedStep: SUBSCRIPTION_NAVIGATION_STEPS[getActiveStep(active) - 1].type,
+    brokerStepCompleted:
+      form.name && form.brokerHost && form.brokerPort ? 'true' : 'false',
+    subscriptionStepCompleted:
+      form.topic && form.bucket && form.bucket !== '<BUCKET>'
+        ? 'true'
+        : 'false',
+    parsingStepCompleted:
+      form.dataFormat &&
+      checkRequiredJsonFields(form) &&
+      checkRequiredStringFields(form)
+        ? 'true'
+        : 'false',
+    dataFormat: form.dataFormat ?? 'not chosen yet',
+  } as StepsStatus
 }

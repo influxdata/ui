@@ -227,6 +227,10 @@ describe('Subscriptions', () => {
     cy.getByTestID('heading')
       .should('be.visible')
       .contains('Data Format')
+    cy.getByTestID('lp-timestamp-precision')
+      .scrollIntoView()
+      .should('be.visible')
+      .contains('NS')
     cy.getByTestID('update-sub-form--submit')
       .should('be.visible')
       .click()
@@ -293,6 +297,13 @@ describe('Subscriptions', () => {
     // json
     cy.getByTestID('create-parsing-form-json--button').click()
     cy.getByTestID('timestamp-json-parsing').type('$.t')
+    cy.getByTestID('json-timestamp-precision')
+      .scrollIntoView()
+      .should('be.visible')
+      .click()
+    cy.getByTestID('json-timestamp-precision-Nanoseconds')
+      .first()
+      .click()
     cy.getByTestID('measurement-json-parsing-type')
       .contains('String')
       .click()
@@ -373,6 +384,10 @@ describe('Subscriptions', () => {
     cy.getByTestID('heading')
       .should('be.visible')
       .contains('Data Format')
+    cy.getByTestID('json-timestamp-precision')
+      .scrollIntoView()
+      .should('be.visible')
+      .contains('NS')
     cy.getByTestID('measurement-json-parsing-path')
       .scrollIntoView()
       .should('be.visible')
@@ -475,6 +490,13 @@ describe('Subscriptions', () => {
     // string
     cy.getByTestID('create-parsing-form-string--button').click()
     cy.getByTestID('timestamp-string-parsing').type('0123456789')
+    cy.getByTestID('string-timestamp-precision')
+      .scrollIntoView()
+      .should('be.visible')
+      .click()
+    cy.getByTestID('string-timestamp-precision-Nanoseconds')
+      .first()
+      .click()
     cy.getByTestID('measurment-string-parsing-pattern').type('m=//m')
     // add tag
     cy.getByTestID('string-parsing-add-rule').click()
@@ -543,6 +565,10 @@ describe('Subscriptions', () => {
       .should('be.visible')
       .clear()
       .type('m1=//m1')
+    cy.getByTestID('string-timestamp-precision')
+      .scrollIntoView()
+      .should('be.visible')
+      .contains('NS')
     cy.getByTestID('timestamp-string-parsing')
       .clear()
       .type('987654321')
@@ -635,6 +661,7 @@ describe('Subscriptions', () => {
       isActive: true,
       flowVersion: 5,
       status: 'ERRORED',
+      timestampPrecision: 'NS',
     }
     const subscription = 'My Subscription'
     createBasicLPSubscription(subscription)

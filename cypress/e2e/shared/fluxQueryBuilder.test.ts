@@ -11,10 +11,14 @@ describe('FluxQueryBuilder', () => {
             newDataExplorer: true,
           }).then(() => {
             cy.wait(100)
-            // Switch to Flux Query Builder
-            cy.getByTestID('flux-query-builder-toggle')
-              .should('be.visible')
-              .click()
+            cy.getByTestID('flux-query-builder-toggle').then($toggle => {
+              cy.wrap($toggle).should('be.visible')
+              // Switch to Flux Query Builder if not yet
+              if (!$toggle.hasClass('active')) {
+                // hasClass is a jQuery function
+                $toggle.click()
+              }
+            })
           })
         })
       })
@@ -41,12 +45,10 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('bucket-selector--dropdown-button').click()
 
       // search for a bucket
-      cy.get('.searchable-dropdown--input-container').type(bucketName)
+      cy.getByTestID('bucket-selector--search-bar').type(bucketName)
 
       // should find the bucket and select it
-      cy.get('.cf-dropdown-item')
-        .should('contain', bucketName)
-        .click()
+      cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
 
       // check the bucket is selected
       cy.getByTestID('bucket-selector--dropdown-button').should(
@@ -54,17 +56,22 @@ describe('FluxQueryBuilder', () => {
         bucketName
       )
 
+      // check the monaco editor is mounted to prepare for schema injection
+      cy.getByTestID('flux-editor').should('be.visible')
+
       // upon the selection of a bucket, should show measurement selector
+      // check the measurement is loaded before click on it
       cy.getByTestID('measurement-selector--dropdown-button')
         .should('be.visible')
+        .should('contain', 'Select measurement')
         .click()
 
       // search for a measurement
-      cy.get('.searchable-dropdown--input-container').type(measurement)
+      cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
 
       // should find the measurement and select it
-      cy.get('.cf-dropdown-item')
-        .should('contain', measurement)
+      cy.getByTestID(`searchable-dropdown--item ${measurement}`)
+        .should('be.visible')
         .click()
 
       // check the measurement is selected
@@ -80,76 +87,97 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('tag-selector-key').should('be.visible')
     })
 
-    it.skip('search bar can search fields and tag keys dynamically', () => {
+    it('search bar can search fields and tag keys dynamically', () => {
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
-      cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+      cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
+
+      // check the monaco editor is mounted to prepare for schema injection
+      cy.getByTestID('flux-editor').should('be.visible')
 
       // select a measurement
-      cy.getByTestID('measurement-selector--dropdown-button').click()
+      cy.getByTestID('measurement-selector--dropdown-button')
+        .should('contain', 'Select measurement')
+        .click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
       // search a feild, should contain only the feild, no tag keys
-      cy.getByTestID('field-tag-key-search-bar').type(searchField)
-      cy.get('.field-selector--list-item--selectable').should(
+      cy.getByTestID('field-tag-key-search-bar')
+        .should('be.visible')
+        .type(searchField)
+      cy.getByTestID('field-selector--list-item--selectable').should(
         'contain',
         searchField
       )
-      cy.get('.tag-selector-key--list-item').should('contain', 'No Tags Found')
 
       // clear the search bar
       cy.getByTestID('dismiss-button').click()
 
-      // search a tag key, should contain only that tag key, no fields
-      cy.getByTestID('field-tag-key-search-bar').type(searchTagKey)
-      cy.get('.field-selector--list-item').should('contain', 'No Fields Found')
-      cy.get('.tag-selector-key--list-item').should('contain', searchTagKey)
+      // search a tag key, should not contain any fields
+      cy.getByTestID('field-tag-key-search-bar')
+        .should('be.visible')
+        .type(searchTagKey)
+
+      cy.getByTestID('field-selector--list-item')
+        .should('be.visible')
+        .should('contain', 'No Fields Found')
+
+      // not recommend to assert for searchTagKey value
+      // since it will expand all the tag keys, which triggers
+      // numbers of API calls that are time consuming and unnecessary
     })
 
-    it.skip('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
+    it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
       // if less than 8 items, show all items
       const bucketNameA = 'Air Sensor Data'
       const measurementA = 'airSensors'
 
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
-      cy.getByTestID(`searchable-dropdown--item ${bucketNameA}`).click()
+      cy.getByTestID(`bucket-selector--dropdown--${bucketNameA}`).click()
+
+      // check the monaco editor is mounted to prepare for schema injection
+      cy.getByTestID('flux-editor').should('be.visible')
 
       // select a measurement
-      cy.getByTestID('measurement-selector--dropdown-button').click()
+      cy.getByTestID('measurement-selector--dropdown-button')
+        .should('contain', 'Select measurement')
+        .click()
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
 
       // less than 8 items, no "Load More" button
-      cy.get('.field-selector--list-item--selectable').should(
-        'have.length.at.most',
-        8
-      )
+      cy.getByTestID('field-selector--list-item--selectable')
+        .should('be.visible')
+        .should('have.length.at.most', 8)
+      cy.getByTestID('field-selector--load-more-button').should('not.exist')
 
       // if more than 8 items, show "Load More" button
       // and load additional 25 items
 
       // select another bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
-      cy.getByTestID(`searchable-dropdown--item ${bucketName}`).click()
+      cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
 
       // select another measurement
-      cy.getByTestID('measurement-selector--dropdown-button').click()
+      cy.getByTestID('measurement-selector--dropdown-button')
+        .should('contain', 'Select measurement')
+        .click()
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
       // more than 8 items, show 'Load More' button
-      cy.get('.field-selector--list-item--selectable').should('have.length', 8)
-      cy.get('.load-more-button')
-        .should('exist')
+      cy.getByTestID('field-selector--list-item--selectable')
+        .should('be.visible')
+        .should('have.length', 8)
+      cy.getByTestID('field-selector--load-more-button')
+        .should('be.visible')
         .click()
 
-      cy.get('.load-more-button', {timeout: 10000}).should('not.exist')
-
       // when load more is chosen, up to 25 additional entries will be shown
-      cy.get('.field-selector--list-item--selectable').should(
-        'have.length.above',
-        8
-      )
-      cy.get('.field-selector--list-item--selectable').should(
+      cy.getByTestID('field-selector--list-item--selectable')
+        .should('be.visible')
+        .should('have.length.above', 8)
+
+      cy.getByTestID('field-selector--list-item--selectable').should(
         'have.length.at.most',
         33
       ) // 8 + 25

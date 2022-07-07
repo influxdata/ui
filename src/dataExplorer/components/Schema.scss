@@ -116,7 +116,8 @@
   margin-top: 0;
 }
 
-.load-more-button {
+.field-selector--load-more-button,
+.tag-selector-value--load-more-button {
   color: $c-pool;
   cursor: pointer;
   padding: $cf-space-2xs 0 $cf-space-xs $cf-space-xs;

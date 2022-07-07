@@ -55,7 +55,7 @@ const ParsingForm: FC<Props> = ({formContent, updateForm}) =>
                 className="create"
               />
               {formContent.dataFormat === 'lineprotocol' && (
-                <LineProtocolForm />
+                <LineProtocolForm edit={true} formContent={formContent} />
               )}
               {formContent.dataFormat === 'json' && (
                 <JsonParsingForm

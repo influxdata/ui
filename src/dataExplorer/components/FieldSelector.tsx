@@ -42,23 +42,41 @@ const FieldSelector: FC = () => {
   }, [fields])
 
   let list: JSX.Element | JSX.Element[] = (
-    <div className="field-selector--list-item">No Fields Found</div>
+    <div
+      className="field-selector--list-item"
+      data-testid="field-selector--list-item"
+    >
+      No Fields Found
+    </div>
   )
 
   if (loading === RemoteDataState.Error) {
     list = (
-      <div className="field-selector--list-item">Failed to load fields</div>
+      <div
+        className="field-selector--list-item"
+        data-testid="field-selector--list-item"
+      >
+        Failed to load fields
+      </div>
     )
   } else if (
     loading === RemoteDataState.Loading ||
     loading === RemoteDataState.NotStarted
   ) {
-    list = <WaitingText text="Loading fields" />
+    list = (
+      <div
+        className="field-selector--list-item"
+        data-testid="field-selector--list-item"
+      >
+        <WaitingText text="Loading fields" />
+      </div>
+    )
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
     list = fieldsToShow.map(field => (
       <dd
         key={field}
         className="field-selector--list-item--selectable"
+        data-testid="field-selector--list-item--selectable"
         onClick={() => handleSelectField(field)}
       >
         <code>{field}</code>
@@ -72,11 +90,18 @@ const FieldSelector: FC = () => {
   }
 
   return useMemo(() => {
-    const shouldLoadMore = fieldsToShow.length < fields.length
+    const shouldLoadMore =
+      fieldsToShow.length < fields.length &&
+      Array.isArray(list) &&
+      list.length > 1
     const loadMoreButton = shouldLoadMore && (
-      <div className="load-more-button" onClick={handleLoadMore}>
+      <button
+        className="field-selector--load-more-button"
+        data-testid="field-selector--load-more-button"
+        onClick={handleLoadMore}
+      >
         + Load more
-      </div>
+      </button>
     )
 
     return (

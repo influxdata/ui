@@ -65,7 +65,11 @@ export const EditorProvider: FC = ({children}) => {
 
   const injectViaLsp = useCallback(
     (cmd, data: Omit<ExecuteCommandArgument, 'textDocument'>) => {
-      connection.current.inject(cmd, data)
+      try {
+        connection.current.inject(cmd, data)
+      } catch (e) {
+        console.error(e)
+      }
     },
     [editor, connection]
   )

@@ -116,7 +116,7 @@ describe('Tasks.Actions.Thunks', () => {
 
     expect(dispatch.mock.calls[2][0].type).toBe('PUBLISH_NOTIFICATION')
     expect(dispatch.mock.calls[2][0].payload.notification).toEqual(
-      taskUpdateSuccess()
+      taskUpdateSuccess(sampleTask.name)
     )
   })
 })

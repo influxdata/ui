@@ -35,7 +35,7 @@ interface State {
   finalFeedback: number
 }
 
-export class CliWizard extends PureComponent<null, State> {
+export class CliWizard extends PureComponent<{}, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',
@@ -196,6 +196,7 @@ export class CliWizard extends PureComponent<null, State> {
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
+                  testID={'cli-prev-button'}
                 />
                 <Button
                   onClick={this.handleNextClick}
@@ -207,6 +208,7 @@ export class CliWizard extends PureComponent<null, State> {
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
+                  testID={'cli-next-button'}
                 />
               </div>
             </div>

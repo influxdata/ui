@@ -237,6 +237,26 @@ describe('Getting a windowPeriod from a flux query AST', () => {
     })
   })
 
+  describe('can handle inner scope of functions bound to variables', () => {
+    /*
+        RAW = () => {
+          from(bucket: "sample_data")
+            |> range(start: -12h, stop: now())
+            |> filter(fn: (r) => r["_measurement"] == "airSensors")
+            |> filter(fn: (r) => r["_field"] == "co")
+            |> group()
+            |> sort(columns:["_time"])
+            |> aggregateWindow(fn: mean, every:v.windowPeriod)
+            |> drop(columns:["_measurement","_field","_start","_stop"])
+            |> yield(name:"raw ${v.windowPeriod}")
+          return true
+        }
+        RAW()
+        */
+    const ast = textFixtures['variable_bound_function']
+    runTest(ast, true, 120000)
+  })
+
   // TODO: https://github.com/influxdata/ui/issues/4695
   describe.skip('Can handle complex inner expressions:', () => {
     describe('for windowPeriod:', () => {

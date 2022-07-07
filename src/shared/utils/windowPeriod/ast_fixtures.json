@@ -5121,5 +5121,1017 @@
         }
       }
     ]
+  },
+  "variable_bound_function": {
+    "type": "File",
+    "location": {
+      "start": {"line": 1, "column": 1},
+      "end": {"line": 13, "column": 6},
+      "source": "RAW = () => {\n    from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()\n    |> sort(columns:[\"_time\"])\n    |> aggregateWindow(fn: mean, every:v.windowPeriod)\n    |> drop(columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"])\n    |> yield(name:\"raw ${v.windowPeriod}\")\n    return true\n}\nRAW()"
+    },
+    "metadata": "parser-type=rust",
+    "package": null,
+    "imports": [],
+    "body": [
+      {
+        "type": "VariableAssignment",
+        "location": {
+          "start": {"line": 1, "column": 1},
+          "end": {"line": 12, "column": 2},
+          "source": "RAW = () => {\n    from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()\n    |> sort(columns:[\"_time\"])\n    |> aggregateWindow(fn: mean, every:v.windowPeriod)\n    |> drop(columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"])\n    |> yield(name:\"raw ${v.windowPeriod}\")\n    return true\n}"
+        },
+        "id": {
+          "location": {
+            "start": {"line": 1, "column": 1},
+            "end": {"line": 1, "column": 4},
+            "source": "RAW"
+          },
+          "name": "RAW"
+        },
+        "init": {
+          "type": "FunctionExpression",
+          "location": {
+            "start": {"line": 1, "column": 7},
+            "end": {"line": 12, "column": 2},
+            "source": "() => {\n    from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()\n    |> sort(columns:[\"_time\"])\n    |> aggregateWindow(fn: mean, every:v.windowPeriod)\n    |> drop(columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"])\n    |> yield(name:\"raw ${v.windowPeriod}\")\n    return true\n}"
+          },
+          "params": [],
+          "body": {
+            "type": "Block",
+            "location": {
+              "start": {"line": 1, "column": 13},
+              "end": {"line": 12, "column": 2},
+              "source": "{\n    from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()\n    |> sort(columns:[\"_time\"])\n    |> aggregateWindow(fn: mean, every:v.windowPeriod)\n    |> drop(columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"])\n    |> yield(name:\"raw ${v.windowPeriod}\")\n    return true\n}"
+            },
+            "body": [
+              {
+                "type": "ExpressionStatement",
+                "location": {
+                  "start": {"line": 2, "column": 5},
+                  "end": {"line": 10, "column": 43},
+                  "source": "from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()\n    |> sort(columns:[\"_time\"])\n    |> aggregateWindow(fn: mean, every:v.windowPeriod)\n    |> drop(columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"])\n    |> yield(name:\"raw ${v.windowPeriod}\")"
+                },
+                "expression": {
+                  "type": "PipeExpression",
+                  "location": {
+                    "start": {"line": 2, "column": 5},
+                    "end": {"line": 10, "column": 43},
+                    "source": "from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()\n    |> sort(columns:[\"_time\"])\n    |> aggregateWindow(fn: mean, every:v.windowPeriod)\n    |> drop(columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"])\n    |> yield(name:\"raw ${v.windowPeriod}\")"
+                  },
+                  "argument": {
+                    "type": "PipeExpression",
+                    "location": {
+                      "start": {"line": 2, "column": 5},
+                      "end": {"line": 9, "column": 64},
+                      "source": "from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()\n    |> sort(columns:[\"_time\"])\n    |> aggregateWindow(fn: mean, every:v.windowPeriod)\n    |> drop(columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"])"
+                    },
+                    "argument": {
+                      "type": "PipeExpression",
+                      "location": {
+                        "start": {"line": 2, "column": 5},
+                        "end": {"line": 8, "column": 55},
+                        "source": "from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()\n    |> sort(columns:[\"_time\"])\n    |> aggregateWindow(fn: mean, every:v.windowPeriod)"
+                      },
+                      "argument": {
+                        "type": "PipeExpression",
+                        "location": {
+                          "start": {"line": 2, "column": 5},
+                          "end": {"line": 7, "column": 31},
+                          "source": "from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()\n    |> sort(columns:[\"_time\"])"
+                        },
+                        "argument": {
+                          "type": "PipeExpression",
+                          "location": {
+                            "start": {"line": 2, "column": 5},
+                            "end": {"line": 6, "column": 15},
+                            "source": "from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")\n    |> group()"
+                          },
+                          "argument": {
+                            "type": "PipeExpression",
+                            "location": {
+                              "start": {"line": 2, "column": 5},
+                              "end": {"line": 5, "column": 46},
+                              "source": "from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")\n    |> filter(fn: (r) => r[\"_field\"] == \"co\")"
+                            },
+                            "argument": {
+                              "type": "PipeExpression",
+                              "location": {
+                                "start": {"line": 2, "column": 5},
+                                "end": {"line": 4, "column": 60},
+                                "source": "from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())\n    |> filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")"
+                              },
+                              "argument": {
+                                "type": "PipeExpression",
+                                "location": {
+                                  "start": {"line": 2, "column": 5},
+                                  "end": {"line": 3, "column": 39},
+                                  "source": "from(bucket: \"sample_data\")\n    |> range(start: -12h, stop: now())"
+                                },
+                                "argument": {
+                                  "type": "CallExpression",
+                                  "location": {
+                                    "start": {"line": 2, "column": 5},
+                                    "end": {"line": 2, "column": 32},
+                                    "source": "from(bucket: \"sample_data\")"
+                                  },
+                                  "callee": {
+                                    "type": "Identifier",
+                                    "location": {
+                                      "start": {"line": 2, "column": 5},
+                                      "end": {"line": 2, "column": 9},
+                                      "source": "from"
+                                    },
+                                    "name": "from"
+                                  },
+                                  "arguments": [
+                                    {
+                                      "type": "ObjectExpression",
+                                      "location": {
+                                        "start": {"line": 2, "column": 10},
+                                        "end": {"line": 2, "column": 31},
+                                        "source": "bucket: \"sample_data\""
+                                      },
+                                      "properties": [
+                                        {
+                                          "type": "Property",
+                                          "location": {
+                                            "start": {"line": 2, "column": 10},
+                                            "end": {"line": 2, "column": 31},
+                                            "source": "bucket: \"sample_data\""
+                                          },
+                                          "key": {
+                                            "type": "Identifier",
+                                            "location": {
+                                              "start": {
+                                                "line": 2,
+                                                "column": 10
+                                              },
+                                              "end": {"line": 2, "column": 16},
+                                              "source": "bucket"
+                                            },
+                                            "name": "bucket"
+                                          },
+                                          "value": {
+                                            "type": "StringLiteral",
+                                            "location": {
+                                              "start": {
+                                                "line": 2,
+                                                "column": 18
+                                              },
+                                              "end": {"line": 2, "column": 31},
+                                              "source": "\"sample_data\""
+                                            },
+                                            "value": "sample_data"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "call": {
+                                  "location": {
+                                    "start": {"line": 3, "column": 8},
+                                    "end": {"line": 3, "column": 39},
+                                    "source": "range(start: -12h, stop: now())"
+                                  },
+                                  "callee": {
+                                    "type": "Identifier",
+                                    "location": {
+                                      "start": {"line": 3, "column": 8},
+                                      "end": {"line": 3, "column": 13},
+                                      "source": "range"
+                                    },
+                                    "name": "range"
+                                  },
+                                  "arguments": [
+                                    {
+                                      "type": "ObjectExpression",
+                                      "location": {
+                                        "start": {"line": 3, "column": 14},
+                                        "end": {"line": 3, "column": 38},
+                                        "source": "start: -12h, stop: now()"
+                                      },
+                                      "properties": [
+                                        {
+                                          "type": "Property",
+                                          "location": {
+                                            "start": {"line": 3, "column": 14},
+                                            "end": {"line": 3, "column": 25},
+                                            "source": "start: -12h"
+                                          },
+                                          "key": {
+                                            "type": "Identifier",
+                                            "location": {
+                                              "start": {
+                                                "line": 3,
+                                                "column": 14
+                                              },
+                                              "end": {"line": 3, "column": 19},
+                                              "source": "start"
+                                            },
+                                            "name": "start"
+                                          },
+                                          "value": {
+                                            "type": "UnaryExpression",
+                                            "location": {
+                                              "start": {
+                                                "line": 3,
+                                                "column": 21
+                                              },
+                                              "end": {"line": 3, "column": 25},
+                                              "source": "-12h"
+                                            },
+                                            "operator": "-",
+                                            "argument": {
+                                              "type": "DurationLiteral",
+                                              "location": {
+                                                "start": {
+                                                  "line": 3,
+                                                  "column": 22
+                                                },
+                                                "end": {
+                                                  "line": 3,
+                                                  "column": 25
+                                                },
+                                                "source": "12h"
+                                              },
+                                              "values": [
+                                                {"magnitude": 12, "unit": "h"}
+                                              ]
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "type": "Property",
+                                          "location": {
+                                            "start": {"line": 3, "column": 27},
+                                            "end": {"line": 3, "column": 38},
+                                            "source": "stop: now()"
+                                          },
+                                          "key": {
+                                            "type": "Identifier",
+                                            "location": {
+                                              "start": {
+                                                "line": 3,
+                                                "column": 27
+                                              },
+                                              "end": {"line": 3, "column": 31},
+                                              "source": "stop"
+                                            },
+                                            "name": "stop"
+                                          },
+                                          "value": {
+                                            "type": "CallExpression",
+                                            "location": {
+                                              "start": {
+                                                "line": 3,
+                                                "column": 33
+                                              },
+                                              "end": {"line": 3, "column": 38},
+                                              "source": "now()"
+                                            },
+                                            "callee": {
+                                              "type": "Identifier",
+                                              "location": {
+                                                "start": {
+                                                  "line": 3,
+                                                  "column": 33
+                                                },
+                                                "end": {
+                                                  "line": 3,
+                                                  "column": 36
+                                                },
+                                                "source": "now"
+                                              },
+                                              "name": "now"
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              "call": {
+                                "location": {
+                                  "start": {"line": 4, "column": 8},
+                                  "end": {"line": 4, "column": 60},
+                                  "source": "filter(fn: (r) => r[\"_measurement\"] == \"airSensors\")"
+                                },
+                                "callee": {
+                                  "type": "Identifier",
+                                  "location": {
+                                    "start": {"line": 4, "column": 8},
+                                    "end": {"line": 4, "column": 14},
+                                    "source": "filter"
+                                  },
+                                  "name": "filter"
+                                },
+                                "arguments": [
+                                  {
+                                    "type": "ObjectExpression",
+                                    "location": {
+                                      "start": {"line": 4, "column": 15},
+                                      "end": {"line": 4, "column": 59},
+                                      "source": "fn: (r) => r[\"_measurement\"] == \"airSensors\""
+                                    },
+                                    "properties": [
+                                      {
+                                        "type": "Property",
+                                        "location": {
+                                          "start": {"line": 4, "column": 15},
+                                          "end": {"line": 4, "column": 59},
+                                          "source": "fn: (r) => r[\"_measurement\"] == \"airSensors\""
+                                        },
+                                        "key": {
+                                          "type": "Identifier",
+                                          "location": {
+                                            "start": {"line": 4, "column": 15},
+                                            "end": {"line": 4, "column": 17},
+                                            "source": "fn"
+                                          },
+                                          "name": "fn"
+                                        },
+                                        "value": {
+                                          "type": "FunctionExpression",
+                                          "location": {
+                                            "start": {"line": 4, "column": 19},
+                                            "end": {"line": 4, "column": 59},
+                                            "source": "(r) => r[\"_measurement\"] == \"airSensors\""
+                                          },
+                                          "params": [
+                                            {
+                                              "type": "Property",
+                                              "location": {
+                                                "start": {
+                                                  "line": 4,
+                                                  "column": 20
+                                                },
+                                                "end": {
+                                                  "line": 4,
+                                                  "column": 21
+                                                },
+                                                "source": "r"
+                                              },
+                                              "key": {
+                                                "type": "Identifier",
+                                                "location": {
+                                                  "start": {
+                                                    "line": 4,
+                                                    "column": 20
+                                                  },
+                                                  "end": {
+                                                    "line": 4,
+                                                    "column": 21
+                                                  },
+                                                  "source": "r"
+                                                },
+                                                "name": "r"
+                                              },
+                                              "value": null
+                                            }
+                                          ],
+                                          "body": {
+                                            "type": "BinaryExpression",
+                                            "location": {
+                                              "start": {
+                                                "line": 4,
+                                                "column": 26
+                                              },
+                                              "end": {"line": 4, "column": 59},
+                                              "source": "r[\"_measurement\"] == \"airSensors\""
+                                            },
+                                            "operator": "==",
+                                            "left": {
+                                              "type": "MemberExpression",
+                                              "location": {
+                                                "start": {
+                                                  "line": 4,
+                                                  "column": 26
+                                                },
+                                                "end": {
+                                                  "line": 4,
+                                                  "column": 43
+                                                },
+                                                "source": "r[\"_measurement\"]"
+                                              },
+                                              "object": {
+                                                "type": "Identifier",
+                                                "location": {
+                                                  "start": {
+                                                    "line": 4,
+                                                    "column": 26
+                                                  },
+                                                  "end": {
+                                                    "line": 4,
+                                                    "column": 27
+                                                  },
+                                                  "source": "r"
+                                                },
+                                                "name": "r"
+                                              },
+                                              "property": {
+                                                "type": "StringLiteral",
+                                                "location": {
+                                                  "start": {
+                                                    "line": 4,
+                                                    "column": 28
+                                                  },
+                                                  "end": {
+                                                    "line": 4,
+                                                    "column": 42
+                                                  },
+                                                  "source": "\"_measurement\""
+                                                },
+                                                "value": "_measurement"
+                                              }
+                                            },
+                                            "right": {
+                                              "type": "StringLiteral",
+                                              "location": {
+                                                "start": {
+                                                  "line": 4,
+                                                  "column": 47
+                                                },
+                                                "end": {
+                                                  "line": 4,
+                                                  "column": 59
+                                                },
+                                                "source": "\"airSensors\""
+                                              },
+                                              "value": "airSensors"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "call": {
+                              "location": {
+                                "start": {"line": 5, "column": 8},
+                                "end": {"line": 5, "column": 46},
+                                "source": "filter(fn: (r) => r[\"_field\"] == \"co\")"
+                              },
+                              "callee": {
+                                "type": "Identifier",
+                                "location": {
+                                  "start": {"line": 5, "column": 8},
+                                  "end": {"line": 5, "column": 14},
+                                  "source": "filter"
+                                },
+                                "name": "filter"
+                              },
+                              "arguments": [
+                                {
+                                  "type": "ObjectExpression",
+                                  "location": {
+                                    "start": {"line": 5, "column": 15},
+                                    "end": {"line": 5, "column": 45},
+                                    "source": "fn: (r) => r[\"_field\"] == \"co\""
+                                  },
+                                  "properties": [
+                                    {
+                                      "type": "Property",
+                                      "location": {
+                                        "start": {"line": 5, "column": 15},
+                                        "end": {"line": 5, "column": 45},
+                                        "source": "fn: (r) => r[\"_field\"] == \"co\""
+                                      },
+                                      "key": {
+                                        "type": "Identifier",
+                                        "location": {
+                                          "start": {"line": 5, "column": 15},
+                                          "end": {"line": 5, "column": 17},
+                                          "source": "fn"
+                                        },
+                                        "name": "fn"
+                                      },
+                                      "value": {
+                                        "type": "FunctionExpression",
+                                        "location": {
+                                          "start": {"line": 5, "column": 19},
+                                          "end": {"line": 5, "column": 45},
+                                          "source": "(r) => r[\"_field\"] == \"co\""
+                                        },
+                                        "params": [
+                                          {
+                                            "type": "Property",
+                                            "location": {
+                                              "start": {
+                                                "line": 5,
+                                                "column": 20
+                                              },
+                                              "end": {"line": 5, "column": 21},
+                                              "source": "r"
+                                            },
+                                            "key": {
+                                              "type": "Identifier",
+                                              "location": {
+                                                "start": {
+                                                  "line": 5,
+                                                  "column": 20
+                                                },
+                                                "end": {
+                                                  "line": 5,
+                                                  "column": 21
+                                                },
+                                                "source": "r"
+                                              },
+                                              "name": "r"
+                                            },
+                                            "value": null
+                                          }
+                                        ],
+                                        "body": {
+                                          "type": "BinaryExpression",
+                                          "location": {
+                                            "start": {"line": 5, "column": 26},
+                                            "end": {"line": 5, "column": 45},
+                                            "source": "r[\"_field\"] == \"co\""
+                                          },
+                                          "operator": "==",
+                                          "left": {
+                                            "type": "MemberExpression",
+                                            "location": {
+                                              "start": {
+                                                "line": 5,
+                                                "column": 26
+                                              },
+                                              "end": {"line": 5, "column": 37},
+                                              "source": "r[\"_field\"]"
+                                            },
+                                            "object": {
+                                              "type": "Identifier",
+                                              "location": {
+                                                "start": {
+                                                  "line": 5,
+                                                  "column": 26
+                                                },
+                                                "end": {
+                                                  "line": 5,
+                                                  "column": 27
+                                                },
+                                                "source": "r"
+                                              },
+                                              "name": "r"
+                                            },
+                                            "property": {
+                                              "type": "StringLiteral",
+                                              "location": {
+                                                "start": {
+                                                  "line": 5,
+                                                  "column": 28
+                                                },
+                                                "end": {
+                                                  "line": 5,
+                                                  "column": 36
+                                                },
+                                                "source": "\"_field\""
+                                              },
+                                              "value": "_field"
+                                            }
+                                          },
+                                          "right": {
+                                            "type": "StringLiteral",
+                                            "location": {
+                                              "start": {
+                                                "line": 5,
+                                                "column": 41
+                                              },
+                                              "end": {"line": 5, "column": 45},
+                                              "source": "\"co\""
+                                            },
+                                            "value": "co"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "call": {
+                            "location": {
+                              "start": {"line": 6, "column": 8},
+                              "end": {"line": 6, "column": 15},
+                              "source": "group()"
+                            },
+                            "callee": {
+                              "type": "Identifier",
+                              "location": {
+                                "start": {"line": 6, "column": 8},
+                                "end": {"line": 6, "column": 13},
+                                "source": "group"
+                              },
+                              "name": "group"
+                            }
+                          }
+                        },
+                        "call": {
+                          "location": {
+                            "start": {"line": 7, "column": 8},
+                            "end": {"line": 7, "column": 31},
+                            "source": "sort(columns:[\"_time\"])"
+                          },
+                          "callee": {
+                            "type": "Identifier",
+                            "location": {
+                              "start": {"line": 7, "column": 8},
+                              "end": {"line": 7, "column": 12},
+                              "source": "sort"
+                            },
+                            "name": "sort"
+                          },
+                          "arguments": [
+                            {
+                              "type": "ObjectExpression",
+                              "location": {
+                                "start": {"line": 7, "column": 13},
+                                "end": {"line": 7, "column": 30},
+                                "source": "columns:[\"_time\"]"
+                              },
+                              "properties": [
+                                {
+                                  "type": "Property",
+                                  "location": {
+                                    "start": {"line": 7, "column": 13},
+                                    "end": {"line": 7, "column": 30},
+                                    "source": "columns:[\"_time\"]"
+                                  },
+                                  "key": {
+                                    "type": "Identifier",
+                                    "location": {
+                                      "start": {"line": 7, "column": 13},
+                                      "end": {"line": 7, "column": 20},
+                                      "source": "columns"
+                                    },
+                                    "name": "columns"
+                                  },
+                                  "value": {
+                                    "type": "ArrayExpression",
+                                    "location": {
+                                      "start": {"line": 7, "column": 21},
+                                      "end": {"line": 7, "column": 30},
+                                      "source": "[\"_time\"]"
+                                    },
+                                    "elements": [
+                                      {
+                                        "type": "StringLiteral",
+                                        "location": {
+                                          "start": {"line": 7, "column": 22},
+                                          "end": {"line": 7, "column": 29},
+                                          "source": "\"_time\""
+                                        },
+                                        "value": "_time"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "call": {
+                        "location": {
+                          "start": {"line": 8, "column": 8},
+                          "end": {"line": 8, "column": 55},
+                          "source": "aggregateWindow(fn: mean, every:v.windowPeriod)"
+                        },
+                        "callee": {
+                          "type": "Identifier",
+                          "location": {
+                            "start": {"line": 8, "column": 8},
+                            "end": {"line": 8, "column": 23},
+                            "source": "aggregateWindow"
+                          },
+                          "name": "aggregateWindow"
+                        },
+                        "arguments": [
+                          {
+                            "type": "ObjectExpression",
+                            "location": {
+                              "start": {"line": 8, "column": 24},
+                              "end": {"line": 8, "column": 54},
+                              "source": "fn: mean, every:v.windowPeriod"
+                            },
+                            "properties": [
+                              {
+                                "type": "Property",
+                                "location": {
+                                  "start": {"line": 8, "column": 24},
+                                  "end": {"line": 8, "column": 32},
+                                  "source": "fn: mean"
+                                },
+                                "key": {
+                                  "type": "Identifier",
+                                  "location": {
+                                    "start": {"line": 8, "column": 24},
+                                    "end": {"line": 8, "column": 26},
+                                    "source": "fn"
+                                  },
+                                  "name": "fn"
+                                },
+                                "value": {
+                                  "type": "Identifier",
+                                  "location": {
+                                    "start": {"line": 8, "column": 28},
+                                    "end": {"line": 8, "column": 32},
+                                    "source": "mean"
+                                  },
+                                  "name": "mean"
+                                }
+                              },
+                              {
+                                "type": "Property",
+                                "location": {
+                                  "start": {"line": 8, "column": 34},
+                                  "end": {"line": 8, "column": 54},
+                                  "source": "every:v.windowPeriod"
+                                },
+                                "key": {
+                                  "type": "Identifier",
+                                  "location": {
+                                    "start": {"line": 8, "column": 34},
+                                    "end": {"line": 8, "column": 39},
+                                    "source": "every"
+                                  },
+                                  "name": "every"
+                                },
+                                "value": {
+                                  "type": "MemberExpression",
+                                  "location": {
+                                    "start": {"line": 8, "column": 40},
+                                    "end": {"line": 8, "column": 54},
+                                    "source": "v.windowPeriod"
+                                  },
+                                  "object": {
+                                    "type": "Identifier",
+                                    "location": {
+                                      "start": {"line": 8, "column": 40},
+                                      "end": {"line": 8, "column": 41},
+                                      "source": "v"
+                                    },
+                                    "name": "v"
+                                  },
+                                  "property": {
+                                    "type": "Identifier",
+                                    "location": {
+                                      "start": {"line": 8, "column": 42},
+                                      "end": {"line": 8, "column": 54},
+                                      "source": "windowPeriod"
+                                    },
+                                    "name": "windowPeriod"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "call": {
+                      "location": {
+                        "start": {"line": 9, "column": 8},
+                        "end": {"line": 9, "column": 64},
+                        "source": "drop(columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"])"
+                      },
+                      "callee": {
+                        "type": "Identifier",
+                        "location": {
+                          "start": {"line": 9, "column": 8},
+                          "end": {"line": 9, "column": 12},
+                          "source": "drop"
+                        },
+                        "name": "drop"
+                      },
+                      "arguments": [
+                        {
+                          "type": "ObjectExpression",
+                          "location": {
+                            "start": {"line": 9, "column": 13},
+                            "end": {"line": 9, "column": 63},
+                            "source": "columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"]"
+                          },
+                          "properties": [
+                            {
+                              "type": "Property",
+                              "location": {
+                                "start": {"line": 9, "column": 13},
+                                "end": {"line": 9, "column": 63},
+                                "source": "columns:[\"_measurement\",\"_field\",\"_start\",\"_stop\"]"
+                              },
+                              "key": {
+                                "type": "Identifier",
+                                "location": {
+                                  "start": {"line": 9, "column": 13},
+                                  "end": {"line": 9, "column": 20},
+                                  "source": "columns"
+                                },
+                                "name": "columns"
+                              },
+                              "value": {
+                                "type": "ArrayExpression",
+                                "location": {
+                                  "start": {"line": 9, "column": 21},
+                                  "end": {"line": 9, "column": 63},
+                                  "source": "[\"_measurement\",\"_field\",\"_start\",\"_stop\"]"
+                                },
+                                "elements": [
+                                  {
+                                    "type": "StringLiteral",
+                                    "location": {
+                                      "start": {"line": 9, "column": 22},
+                                      "end": {"line": 9, "column": 36},
+                                      "source": "\"_measurement\""
+                                    },
+                                    "value": "_measurement"
+                                  },
+                                  {
+                                    "type": "StringLiteral",
+                                    "location": {
+                                      "start": {"line": 9, "column": 37},
+                                      "end": {"line": 9, "column": 45},
+                                      "source": "\"_field\""
+                                    },
+                                    "value": "_field"
+                                  },
+                                  {
+                                    "type": "StringLiteral",
+                                    "location": {
+                                      "start": {"line": 9, "column": 46},
+                                      "end": {"line": 9, "column": 54},
+                                      "source": "\"_start\""
+                                    },
+                                    "value": "_start"
+                                  },
+                                  {
+                                    "type": "StringLiteral",
+                                    "location": {
+                                      "start": {"line": 9, "column": 55},
+                                      "end": {"line": 9, "column": 62},
+                                      "source": "\"_stop\""
+                                    },
+                                    "value": "_stop"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "call": {
+                    "location": {
+                      "start": {"line": 10, "column": 8},
+                      "end": {"line": 10, "column": 43},
+                      "source": "yield(name:\"raw ${v.windowPeriod}\")"
+                    },
+                    "callee": {
+                      "type": "Identifier",
+                      "location": {
+                        "start": {"line": 10, "column": 8},
+                        "end": {"line": 10, "column": 13},
+                        "source": "yield"
+                      },
+                      "name": "yield"
+                    },
+                    "arguments": [
+                      {
+                        "type": "ObjectExpression",
+                        "location": {
+                          "start": {"line": 10, "column": 14},
+                          "end": {"line": 10, "column": 42},
+                          "source": "name:\"raw ${v.windowPeriod}\""
+                        },
+                        "properties": [
+                          {
+                            "type": "Property",
+                            "location": {
+                              "start": {"line": 10, "column": 14},
+                              "end": {"line": 10, "column": 42},
+                              "source": "name:\"raw ${v.windowPeriod}\""
+                            },
+                            "key": {
+                              "type": "Identifier",
+                              "location": {
+                                "start": {"line": 10, "column": 14},
+                                "end": {"line": 10, "column": 18},
+                                "source": "name"
+                              },
+                              "name": "name"
+                            },
+                            "value": {
+                              "type": "StringExpression",
+                              "location": {
+                                "start": {"line": 10, "column": 19},
+                                "end": {"line": 10, "column": 42},
+                                "source": "\"raw ${v.windowPeriod}\""
+                              },
+                              "parts": [
+                                {
+                                  "type": "TextPart",
+                                  "location": {
+                                    "start": {"line": 10, "column": 20},
+                                    "end": {"line": 10, "column": 24},
+                                    "source": "raw "
+                                  },
+                                  "value": "raw "
+                                },
+                                {
+                                  "type": "InterpolatedPart",
+                                  "location": {
+                                    "start": {"line": 10, "column": 24},
+                                    "end": {"line": 10, "column": 41},
+                                    "source": "${v.windowPeriod}"
+                                  },
+                                  "expression": {
+                                    "type": "MemberExpression",
+                                    "location": {
+                                      "start": {"line": 10, "column": 26},
+                                      "end": {"line": 10, "column": 40},
+                                      "source": "v.windowPeriod"
+                                    },
+                                    "object": {
+                                      "type": "Identifier",
+                                      "location": {
+                                        "start": {"line": 10, "column": 26},
+                                        "end": {"line": 10, "column": 27},
+                                        "source": "v"
+                                      },
+                                      "name": "v"
+                                    },
+                                    "property": {
+                                      "type": "Identifier",
+                                      "location": {
+                                        "start": {"line": 10, "column": 28},
+                                        "end": {"line": 10, "column": 40},
+                                        "source": "windowPeriod"
+                                      },
+                                      "name": "windowPeriod"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "ReturnStatement",
+                "location": {
+                  "start": {"line": 11, "column": 5},
+                  "end": {"line": 11, "column": 16},
+                  "source": "return true"
+                },
+                "argument": {
+                  "type": "Identifier",
+                  "location": {
+                    "start": {"line": 11, "column": 12},
+                    "end": {"line": 11, "column": 16},
+                    "source": "true"
+                  },
+                  "name": "true"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "ExpressionStatement",
+        "location": {
+          "start": {"line": 13, "column": 1},
+          "end": {"line": 13, "column": 6},
+          "source": "RAW()"
+        },
+        "expression": {
+          "type": "CallExpression",
+          "location": {
+            "start": {"line": 13, "column": 1},
+            "end": {"line": 13, "column": 6},
+            "source": "RAW()"
+          },
+          "callee": {
+            "type": "Identifier",
+            "location": {
+              "start": {"line": 13, "column": 1},
+              "end": {"line": 13, "column": 4},
+              "source": "RAW"
+            },
+            "name": "RAW"
+          }
+        }
+      }
+    ]
   }
 }

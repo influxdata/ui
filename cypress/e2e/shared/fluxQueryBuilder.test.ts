@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('FluxQueryBuilder', () => {
+describe.skip('FluxQueryBuilder', () => {
   beforeEach(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {

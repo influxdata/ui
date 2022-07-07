@@ -125,13 +125,14 @@ export const retryFetchIdentity = async (
         throw error
       }
       return new Promise((resolve, reject) => {
-        setTimeout(async () => {
-          try {
-            const user = await retryFetchIdentity(retryAttempts + 1, retryDelay)
-            resolve(user)
-          } catch (error) {
-            reject(error)
-          }
+        setTimeout(() => {
+          retryFetchIdentity(retryAttempts + 1, retryDelay)
+            .then(user => {
+              resolve(user)
+            })
+            .catch(error => {
+              reject(error)
+            })
         }, retryAttempts * retryDelay)
       })
     }

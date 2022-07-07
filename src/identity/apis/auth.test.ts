@@ -5,7 +5,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   getIdentity,
   Error as UnityError,
-  GetIdentityParams,
   Identity,
 } from 'src/client/unityRoutes'
 

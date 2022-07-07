@@ -14,6 +14,9 @@ interface Props {
   orgsList: OrganizationSummaries
 }
 
+const style = {width: 'auto'}
+const menuStyle = {width: '250px'}
+
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const orgMainMenu = [
     {
@@ -32,9 +35,6 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
       href: `/orgs/${activeOrg.id}/usage`,
     },
   ]
-
-  const style = {width: 'auto'}
-  const menuStyle = {width: '250px'}
 
   return (
     <MenuDropdown

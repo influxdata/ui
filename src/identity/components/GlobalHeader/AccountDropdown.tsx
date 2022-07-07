@@ -11,6 +11,9 @@ interface Props {
   accountsList: UserAccount[]
 }
 
+const style = {width: 'auto'}
+const menuStyle = {width: '250px'}
+
 export const AccountDropdown: FC<Props> = ({
   activeOrg,
   activeAccount,
@@ -33,9 +36,6 @@ export const AccountDropdown: FC<Props> = ({
       href: `/orgs/${activeOrg.id}/billing`,
     },
   ]
-
-  const style = {width: 'auto'}
-  const menuStyle = {width: '250px'}
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: SubMenuItem) => {

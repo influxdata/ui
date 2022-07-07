@@ -284,12 +284,6 @@ export const FlowQueryProvider: FC = ({children}) => {
     setCsvText(prev => ({
       [stage.id]: (prev[stage.id] ?? '') + text,
     }))
-    // const result = {
-    //   source: stage.visual,
-    //   parsed: fastFromFlux(csvText),
-    //   error: null,
-    // }
-    // setResult(stage.id, result)
   }
 
   const _queryDependents = (startID: string) => {

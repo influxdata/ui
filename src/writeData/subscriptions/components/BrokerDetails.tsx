@@ -44,6 +44,7 @@ interface Props {
   loading: any
   saveForm: (any) => void
   setStatus: (any) => void
+  onFocus?: () => void
 }
 
 const BrokerDetails: FC<Props> = ({
@@ -54,13 +55,20 @@ const BrokerDetails: FC<Props> = ({
   loading,
   saveForm,
   setStatus,
+  onFocus,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
   const {navbarMode} = useContext(AppSettingContext)
   const navbarOpen = navbarMode === 'expanded'
+
   return (
-    <div className="update-broker-form" id="broker">
+    <div
+      className="update-broker-form"
+      id="broker"
+      onFocus={onFocus}
+      tabIndex={-1}
+    >
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
         <Form onSubmit={() => {}} testID="update-broker-form-overlay">
           <div

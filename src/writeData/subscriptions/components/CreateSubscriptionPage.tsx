@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useContext, useEffect} from 'react'
+import React, {FC, useState, useContext, useEffect, useCallback} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -99,9 +99,9 @@ const CreateSubscriptionPage: FC = () => {
       {feature: 'subscriptions'}
     )
     document
-      .getElementById(stepsWithIsCompletedStatus[step - 1].type)
+      .getElementById(SUBSCRIPTION_NAVIGATION_STEPS[step - 1].type)
       ?.scrollIntoView({behavior: 'smooth', block: 'center'})
-    setFormActive(stepsWithIsCompletedStatus[step - 1].type as Steps)
+    setFormActive(SUBSCRIPTION_NAVIGATION_STEPS[step - 1].type as Steps)
     setCompletedSteps({
       [Steps.BrokerForm]: stepsStatus.brokerStepCompleted === 'true',
       [Steps.SubscriptionForm]:
@@ -136,14 +136,20 @@ const CreateSubscriptionPage: FC = () => {
               formContent={formContent}
               updateForm={updateForm}
               saveForm={saveForm}
+              onFocus={() => setFormActive(Steps.BrokerForm)}
             />
             <SubscriptionForm
               formContent={formContent}
               updateForm={updateForm}
               buckets={buckets}
               bucket={bucket}
+              onFocus={() => setFormActive(Steps.SubscriptionForm)}
             />
-            <ParsingForm formContent={formContent} updateForm={updateForm} />
+            <ParsingForm
+              formContent={formContent}
+              updateForm={updateForm}
+              onFocus={() => setFormActive(Steps.ParsingForm)}
+            />
           </Page.Contents>
         </SpinnerContainer>
       </Page>

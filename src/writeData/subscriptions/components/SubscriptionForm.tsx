@@ -22,6 +22,7 @@ interface Props {
   updateForm: (any) => void
   buckets: any
   bucket: any
+  onFocus?: (any) => void
 }
 
 const SubscriptionForm: FC<Props> = ({
@@ -29,14 +30,21 @@ const SubscriptionForm: FC<Props> = ({
   updateForm,
   buckets,
   bucket,
+  onFocus,
 }) => {
   useEffect(() => {
     updateForm({...formContent, bucket: bucket.name})
   }, [bucket])
+
   return (
     formContent &&
     buckets && (
-      <div className="create-subscription-form" id="subscription">
+      <div
+        className="create-subscription-form"
+        id="subscription"
+        onFocus={onFocus}
+        tabIndex={-1}
+      >
         <Form
           onSubmit={() => {}}
           testID="create-subscription-form--overlay-form"

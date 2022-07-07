@@ -147,6 +147,7 @@ const DetailsSubscriptionPage: FC = () => {
               loading={loading}
               setStatus={setStatus}
               saveForm={saveForm}
+              onFocus={() => setFormActive(Steps.BrokerForm)}
             />
             <SubscriptionDetails
               currentSubscription={currentSubscription}
@@ -154,11 +155,13 @@ const DetailsSubscriptionPage: FC = () => {
               buckets={buckets}
               bucket={bucket}
               edit={isEditEnabled}
+              onFocus={() => setFormActive(Steps.SubscriptionForm)}
             />
             <ParsingDetails
               currentSubscription={currentSubscription}
               updateForm={updateForm}
               edit={isEditEnabled}
+              onFocus={() => setFormActive(Steps.ParsingForm)}
             />
           </Page.Contents>
         </SpinnerContainer>

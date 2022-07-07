@@ -91,7 +91,7 @@ class TaskEditPage extends PureComponent<Props> {
                   }
                 >
                   <FluxMonacoEditor
-                    script={"Cannot modify or save this task while it is using a script, please use the api directly."}
+                    script="Cannot modify or save this task while it is using a script, please use the api directly."
                     variables={null}
                     onChangeScript={this.handleChangeScript}
                     autofocus

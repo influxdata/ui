@@ -21,7 +21,7 @@ import {AccountDropdown} from 'src/identity/components/GlobalHeader/AccountDropd
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Styles
-import {globalHeaderStyle} from 'src/identity/components/GlobalHeader/GlobalHeaderStyle'
+import 'src/identity/components/GlobalHeader/GlobalHeaderStyle.scss'
 
 import {
   emptyAccount,
@@ -73,7 +73,8 @@ export const GlobalHeader: FC = () => {
     <FlexBox
       margin={ComponentSize.Large}
       justifyContent={JustifyContent.SpaceBetween}
-      style={globalHeaderStyle}
+      className="globalHeaderStyle"
+      // style={globalHeaderStyle}
     >
       <FlexBox margin={ComponentSize.Medium}>
         {activeOrg && activeAccount && (

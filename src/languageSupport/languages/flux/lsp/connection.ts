@@ -15,6 +15,9 @@ import {
   ExecuteCommandT,
 } from 'src/languageSupport/languages/flux/lsp/utils'
 
+// error reporting
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+
 class LspConnectionManager {
   private _worker: Worker
   private _model: MonacoTypes.editor.IModel
@@ -69,15 +72,23 @@ class LspConnectionManager {
     command: ExecuteCommand,
     data: Omit<ExecuteCommandArgument, 'textDocument'>
   ) {
-    this._worker.postMessage(
-      executeCommand([
+    let msg
+    try {
+      msg = executeCommand([
         command,
         {
           ...data,
           textDocument: {uri: this._model.uri.toString()},
         },
       ] as ExecuteCommandT)
-    )
+    } catch (err) {
+      console.error(`Error ExecuteCommand:`, err)
+      reportErrorThroughHoneyBadger(err, {
+        name: 'LSP injection payload',
+      })
+      return
+    }
+    this._worker.postMessage(msg)
   }
 
   dispose() {

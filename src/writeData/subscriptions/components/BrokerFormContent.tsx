@@ -53,6 +53,15 @@ const BrokerFormContent: FC<Props> = ({
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
   }, [protocol])
+
+  useEffect(() => {
+    const numberInput = document.getElementById(
+      `${className}-broker-form--port`
+    )
+    numberInput?.addEventListener('mousewheel', function(evt) {
+      evt.preventDefault()
+    })
+  }, [])
   return (
     <Grid>
       <Grid.Row>
@@ -181,7 +190,7 @@ const BrokerFormContent: FC<Props> = ({
                   type={InputType.Text}
                   placeholder="0.0.0.0"
                   name="host"
-                  autoFocus={true}
+                  autoFocus={false}
                   value={formContent.brokerHost}
                   onChange={e => {
                     updateForm({
@@ -214,7 +223,7 @@ const BrokerFormContent: FC<Props> = ({
                   type={InputType.Number}
                   placeholder="1883"
                   name="port"
-                  autoFocus={true}
+                  autoFocus={false}
                   value={formContent.brokerPort}
                   onChange={e => {
                     updateForm({
@@ -232,6 +241,7 @@ const BrokerFormContent: FC<Props> = ({
                   status={edit ? status : ComponentStatus.Disabled}
                   maxLength={5}
                   testID={`${className}-broker-form--port`}
+                  id={`${className}-broker-form--port`}
                 />
               )}
             </Form.ValidationElement>

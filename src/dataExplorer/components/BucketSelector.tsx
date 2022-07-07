@@ -152,7 +152,6 @@ const BucketSelector: FC = () => {
               }
             }}
             theme={DropdownMenuTheme.Onyx}
-            testID="searchable-dropdown--menu"
           >
             <div className="searchable-dropdown--input-container">
               <Input
@@ -164,6 +163,7 @@ const BucketSelector: FC = () => {
                 placeholder="Search buckets"
                 size={ComponentSize.Small}
                 autoFocus={true}
+                testID="bucket-selector--search-bar"
               />
             </div>
             {body}

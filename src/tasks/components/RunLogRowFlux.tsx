@@ -21,7 +21,7 @@ class RunLogRowFlux extends PureComponent<Props> {
     const {run} = this.props
 
     return (
-      <IndexList.Row>
+      <IndexList.Row className="run-log--list-row">
         <IndexList.Cell>
           <span className="run-logs--list-time">
             {this.dateTimeString(run.startedAt)}

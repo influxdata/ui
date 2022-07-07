@@ -114,8 +114,8 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
           throw new Error(resp.data.message)
         }
         setConvertStatus(RemoteDataState.Done)
-      } catch (error) {
-        console.error({error})
+      } catch {
+        setConvertStatus(RemoteDataState.Error)
         dispatch(notify(convertAccountError(accountID)))
       } finally {
         await handleGetAccount()

@@ -3,7 +3,7 @@ export const globalHeaderStyle = {
   paddingTop: '12px',
   paddingRight: '32px',
   paddingBottom: '12px',
-  // This is supposed to be 32px in figma, but doesn't produce an alignment. Might be part of component.
+  // 32px specified in figma doesn't align on page.
   paddingLeft: '22px',
   marginTop: '0px',
   marginRight: '0px',

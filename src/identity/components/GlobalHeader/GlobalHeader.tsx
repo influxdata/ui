@@ -23,8 +23,6 @@ import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/acti
 // Styles
 import {globalHeaderStyle} from 'src/identity/components/GlobalHeader/GlobalHeaderStyle'
 
-import {randomEntityGenerator} from 'src/identity/mockdata/generateEntities'
-
 import {
   emptyAccount,
   emptyOrg,
@@ -33,17 +31,10 @@ import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
-
-  //  const identity = useSelector(selectQuartzIdentity)
-
-  const [identity] = useState(randomEntityGenerator('org', 2000))
-
+  const identity = useSelector(selectQuartzIdentity)
   const orgsList = identity.quartzOrganizations.orgs
+  const {userAccounts} = useContext(UserAccountContext)
 
-  // const {userAccounts} = useContext(UserAccountContext)
-  const [userAccounts] = useState(randomEntityGenerator('account', 2000))
-
-  // Check to see here whether we can resolve this at the context level.
   const accountsList = userAccounts ? userAccounts : [emptyAccount] // eslint-disable-line react-hooks/exhaustive-deps
 
   const [sortedOrgs, setSortedOrgs] = useState([emptyOrg])

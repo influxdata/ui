@@ -5,7 +5,7 @@ const collator = new Intl.Collator('en', {
   ignorePunctuation: false,
   // Sort numerical results like this ('1' < '2' < '10)
   numeric: true,
-  // Upper case is not sorted before lower case
+  // Upper case not sorted before lower case
   caseFirst: 'false',
 })
 

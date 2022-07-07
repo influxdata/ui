@@ -171,16 +171,17 @@ describe.skip('FluxQueryBuilder', () => {
       cy.getByTestID('field-selector--load-more-button')
         .should('be.visible')
         .click()
+        .then(() => {
+          // when load more is chosen, up to 25 additional entries will be shown
+          cy.getByTestID('field-selector--list-item--selectable')
+            .should('be.visible')
+            .should('have.length.above', 8)
 
-      // when load more is chosen, up to 25 additional entries will be shown
-      cy.getByTestID('field-selector--list-item--selectable')
-        .should('be.visible')
-        .should('have.length.above', 8)
-
-      cy.getByTestID('field-selector--list-item--selectable').should(
-        'have.length.at.most',
-        33
-      ) // 8 + 25
+          cy.getByTestID('field-selector--list-item--selectable').should(
+            'have.length.at.most',
+            33
+          ) // 8 + 25
+        })
     })
   })
 })

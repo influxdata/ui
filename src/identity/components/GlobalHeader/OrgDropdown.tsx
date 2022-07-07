@@ -1,4 +1,4 @@
-import React, {FC, useMemo} from 'react'
+import React, {FC} from 'react'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {IconFont} from '@influxdata/clockface'
 import {OrganizationSummaries} from 'src/client/unityRoutes'
@@ -33,8 +33,8 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     },
   ]
 
-  const style = useMemo(() => ({width: 'auto'}), [])
-  const menuStyle = useMemo(() => ({width: '250px'}), [])
+  const style = {width: 'auto'}
+  const menuStyle = {width: '250px'}
 
   return (
     <MenuDropdown

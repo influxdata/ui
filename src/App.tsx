@@ -41,6 +41,9 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {shouldUseQuartzIdentity} from './identity/utils/shouldUseQuartzIdentity'
 
+// Styles
+const fullScreen = {height: '100%', width: '100%'}
+
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
   const currentPage = useSelector((state: AppState) => state.currentPage)
@@ -90,7 +93,7 @@ const App: FC = () => {
       <EngagementLink />
       <TreeNav />
       <Suspense fallback={<PageSpinner />}>
-        <div style={{height: '100%', width: '100%'}}>
+        <div style={fullScreen}>
           {CLOUD && isFlagEnabled('multiOrg') && shouldUseQuartzIdentity() && (
             <GlobalHeaderContainer />
           )}

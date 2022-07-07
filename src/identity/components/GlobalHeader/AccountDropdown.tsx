@@ -1,4 +1,4 @@
-import React, {FC, useMemo} from 'react'
+import React, {FC} from 'react'
 import {IconFont} from '@influxdata/clockface'
 import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
@@ -34,8 +34,8 @@ export const AccountDropdown: FC<Props> = ({
     },
   ]
 
-  const style = useMemo(() => ({width: 'auto'}), [])
-  const menuStyle = useMemo(() => ({width: '250px'}), [])
+  const style = {width: 'auto'}
+  const menuStyle = {width: '250px'}
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: SubMenuItem) => {

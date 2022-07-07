@@ -82,8 +82,8 @@ class LspConnectionManager {
         },
       ] as ExecuteCommandT)
     } catch (err) {
-      console.warn(`Error ExecuteCommand:`, err)
-      reportErrorThroughHoneyBadger(new Error('Error in ExecuteCommand.'), {
+      console.error(`Error ExecuteCommand:`, err)
+      reportErrorThroughHoneyBadger(err, {
         name: 'LSP injection payload',
       })
       return

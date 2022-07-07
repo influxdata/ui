@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe.skip('FluxQueryBuilder', () => {
+describe('FluxQueryBuilder', () => {
   beforeEach(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {
@@ -105,7 +105,7 @@ describe.skip('FluxQueryBuilder', () => {
       cy.getByTestID('field-tag-key-search-bar')
         .should('be.visible')
         .type(searchField)
-      cy.getByTestID('field-selector--list-item--selectable').should(
+      cy.getByTestID('field-selector--list-item--clickable').should(
         'contain',
         searchField
       )
@@ -127,7 +127,7 @@ describe.skip('FluxQueryBuilder', () => {
       // numbers of API calls that are time consuming and unnecessary
     })
 
-    it.skip('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
+    it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
       // if less than 8 items, show all items
       const bucketNameA = 'Air Sensor Data'
       const measurementA = 'airSensors'
@@ -146,7 +146,7 @@ describe.skip('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
 
       // less than 8 items, no "Load More" button
-      cy.getByTestID('field-selector--list-item--selectable')
+      cy.getByTestID('field-selector--list-item--clickable')
         .should('be.visible')
         .should('have.length.at.most', 8)
       cy.getByTestID('field-selector--load-more-button').should('not.exist')
@@ -165,7 +165,7 @@ describe.skip('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
       // more than 8 items, show 'Load More' button
-      cy.getByTestID('field-selector--list-item--selectable')
+      cy.getByTestID('field-selector--list-item--clickable')
         .should('be.visible')
         .should('have.length', 8)
       cy.getByTestID('field-selector--load-more-button')
@@ -173,11 +173,11 @@ describe.skip('FluxQueryBuilder', () => {
         .click()
         .then(() => {
           // when load more is chosen, up to 25 additional entries will be shown
-          cy.getByTestID('field-selector--list-item--selectable')
+          cy.getByTestID('field-selector--list-item--clickable')
             .should('be.visible')
             .should('have.length.above', 8)
 
-          cy.getByTestID('field-selector--list-item--selectable').should(
+          cy.getByTestID('field-selector--list-item--clickable').should(
             'have.length.at.most',
             33
           ) // 8 + 25

@@ -75,8 +75,8 @@ const FieldSelector: FC = () => {
     list = fieldsToShow.map(field => (
       <dd
         key={field}
-        className="field-selector--list-item--selectable"
-        data-testid="field-selector--list-item--selectable"
+        className="field-selector--list-item--clickable"
+        data-testid="field-selector--list-item--clickable"
         onClick={() => handleSelectField(field)}
       >
         <code>{field}</code>

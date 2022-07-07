@@ -74,8 +74,8 @@
   text-overflow: ellipsis;
 }
 
-.field-selector--list-item--selectable,
-.tag-selector-value--list-item--selectable {
+.field-selector--list-item--clickable,
+.tag-selector-value--list-item--clickable {
   padding: $cf-space-2xs;
   height: $cf-form-xs-height;
   line-height: $cf-form-xs-height;

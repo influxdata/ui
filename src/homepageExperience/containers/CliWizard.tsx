@@ -10,13 +10,13 @@ import {
   SubwayNav,
 } from '@influxdata/clockface'
 
-import {InstallDependencies} from 'src/homepageExperience/components/steps/cli/InstallDependencies'
+//import {InstallDependencies} from 'src/homepageExperience/components/steps/cli/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {InitializeTokenClient} from 'src/homepageExperience/components/steps/cli/InitializeTokenClient'
-import {WriteData} from 'src/homepageExperience/components/steps/cli/WriteData'
-import {ExecuteQuery} from 'src/homepageExperience/components/steps/cli/ExecuteQuery'
+//import {InitializeTokenClient} from 'src/homepageExperience/components/steps/cli/InitializeTokenClient'
+//import {WriteData} from 'src/homepageExperience/components/steps/cli/WriteData'
+//import {ExecuteQuery} from 'src/homepageExperience/components/steps/cli/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
-import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/cli/ExecuteAggregateQuery'
+//import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/cli/ExecuteAggregateQuery'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 
 import {CLIIcon} from 'src/homepageExperience/components/HomepageIcons'
@@ -107,25 +107,25 @@ export class CliWizard extends PureComponent<{}, State> {
         return <Overview wizard="cliWizard" />
       }
       case 2: {
-        return <InstallDependencies />
+        //return <InstallDependencies />
       }
       case 3: {
-        return (
+        /*return (
           <InitializeTokenClient
             wizardEventName="cliWizard"
             setTokenValue={this.setTokenValue}
             tokenValue={this.state.tokenValue}
           />
-        )
+        )*/
       }
       case 4: {
-        return <WriteData onSelectBucket={this.handleSelectBucket} />
+        //return <WriteData onSelectBucket={this.handleSelectBucket} />
       }
       case 5: {
-        return <ExecuteQuery bucket={this.state.selectedBucket} />
+        //return <ExecuteQuery bucket={this.state.selectedBucket} />
       }
       case 6: {
-        return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
+        //return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
       case 7: {
         return (

@@ -127,6 +127,12 @@ export const GoWizard = lazy(() =>
   }))
 )
 
+export const CliWizard = lazy(() =>
+  import('src/homepageExperience/containers/CliWizard').then(module => ({
+    default: module.CliWizard,
+  }))
+)
+
 export const DetailsSubscriptionPage = lazy(() =>
   import('src/writeData/subscriptions/components/DetailsSubscriptionPage')
 )

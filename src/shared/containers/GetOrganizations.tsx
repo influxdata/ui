@@ -54,7 +54,7 @@ const GetOrganizations: FunctionComponent = () => {
   const quartzMe = useSelector(getQuartzMe)
 
   const quartzIdentityStatus = useSelector(
-    (state: AppState) => state.identity.status
+    (state: AppState) => state.identity.currentIdentity.status
   )
 
   const {id: meId = '', name: email = ''} = useSelector(getMe)

@@ -43,7 +43,7 @@ const OrgProfileTab: FC = () => {
       if (
         !me.quartzMe.regionCode ||
         !me.quartzMe.regionName ||
-        !identity.org.provider
+        !identity.currentIdentity.org.provider
       ) {
         dispatch(getCurrentOrgDetailsThunk())
       }
@@ -53,9 +53,11 @@ const OrgProfileTab: FC = () => {
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
   const hasSomeQuartzOrgData =
-    identity.org?.provider || me.quartzMe?.regionCode || me.quartzMe?.regionName
+    identity.currentIdentity.org?.provider ||
+    me.quartzMe?.regionCode ||
+    me.quartzMe?.regionName
 
-  const orgProviderExists = !!identity.org?.provider
+  const orgProviderExists = !!identity.currentIdentity.org?.provider
 
   const OrgProfile = () => (
     <FlexBox.Child
@@ -79,7 +81,10 @@ const OrgProfileTab: FC = () => {
             style={orgProviderExists ? {width: '85%'} : {width: '48%'}}
           >
             {orgProviderExists && (
-              <LabeledData label="Cloud Provider" src={identity.org.provider} />
+              <LabeledData
+                label="Cloud Provider"
+                src={identity.currentIdentity.org.provider}
+              />
             )}
             {me.quartzMe?.regionCode && (
               <LabeledData label="Region" src={me.quartzMe.regionCode} />

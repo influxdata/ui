@@ -4,12 +4,15 @@ import {
   getIdentity,
   getMe as getMeQuartz,
   getOrg,
+  getOrgs,
+  putOrgsDefault,
   Account,
   Identity,
   IdentityAccount,
   IdentityUser,
   Me as MeQuartz,
   Organization,
+  OrganizationSummaries,
 } from 'src/client/unityRoutes'
 
 import {
@@ -43,6 +46,16 @@ export interface CurrentOrg {
   provider?: string
   regionCode?: string
   regionName?: string
+}
+
+export interface IdentityState {
+  currentIdentity: CurrentIdentity
+  quartzOrganizations: QuartzOrganizations
+}
+
+export type QuartzOrganizations = {
+  orgs: OrganizationSummaries
+  status?: RemoteDataState
 }
 
 export interface CurrentIdentity {
@@ -185,4 +198,35 @@ export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
 
   const orgDetails = response.data
   return orgDetails
+}
+
+// fetch list of user's current organizations
+export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
+  const response = await getOrgs({})
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
+}
+
+// change default organization for a given account
+export const putDefaultQuartzOrg = async (orgId: string) => {
+  const response = await putOrgsDefault({
+    data: {
+      id: orgId,
+    },
+  })
+
+  // Only status codes thrown at moment are 204 and 5xx.
+  if (response.status !== 204) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
 }

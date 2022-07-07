@@ -26,6 +26,8 @@ import {
 } from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
+import {GlobalHeaderContainer} from 'src/identity/components/GlobalHeaderContainer'
+
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(() =>
   import('src/organizations/components/CreateOrgOverlay')
@@ -37,6 +39,10 @@ import {AppState} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {shouldUseQuartzIdentity} from './identity/utils/shouldUseQuartzIdentity'
+
+// Styles
+const fullScreen = {height: '100%', width: '100%'}
 
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
@@ -87,10 +93,15 @@ const App: FC = () => {
       <EngagementLink />
       <TreeNav />
       <Suspense fallback={<PageSpinner />}>
-        <Switch>
-          <Route path="/orgs/new" component={CreateOrgOverlay} />
-          <Route path="/orgs/:orgID" component={SetOrg} />
-        </Switch>
+        <div style={fullScreen}>
+          {CLOUD && isFlagEnabled('multiOrg') && shouldUseQuartzIdentity() && (
+            <GlobalHeaderContainer />
+          )}
+          <Switch>
+            <Route path="/orgs/new" component={CreateOrgOverlay} />
+            <Route path="/orgs/:orgID" component={SetOrg} />
+          </Switch>
+        </div>
       </Suspense>
     </AppWrapper>
   )

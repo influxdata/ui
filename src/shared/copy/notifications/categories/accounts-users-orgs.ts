@@ -138,3 +138,9 @@ export const updateOrgFailed = (): Notification => ({
   message:
     'Error retrieving new organization information. Please refresh this page.',
 })
+
+export const updateQuartzOrganizationsFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    'We were unable to retrieve the list of your InfluxData organizations. Please refresh this page.',
+})

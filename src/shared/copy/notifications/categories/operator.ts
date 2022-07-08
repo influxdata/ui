@@ -49,6 +49,12 @@ export const getAccountError = (id: string): Notification => ({
   message: `Could not get the account for ID: ${id}`,
 })
 
+export const convertAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to convert the account with the ID ${id}, please try again.`,
+})
+
 export const deleteAccountError = (id: string): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,

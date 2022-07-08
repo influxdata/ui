@@ -15,8 +15,8 @@ const DeleteAccountOverlay: FC = () => {
     account,
     handleDeleteAccount,
     organizations,
-    setVisible,
-    visible,
+    setDeleteOverlayVisible,
+    deleteOverlayVisible,
   } = useContext(AccountContext)
 
   const deleteAccount = () => {
@@ -24,7 +24,7 @@ const DeleteAccountOverlay: FC = () => {
       try {
         handleDeleteAccount()
       } catch (e) {
-        setVisible(false)
+        setDeleteOverlayVisible(false)
       }
     }
   }
@@ -36,7 +36,7 @@ const DeleteAccountOverlay: FC = () => {
     ${organizations?.[0]?.name ?? 'N/A'}.`
   return (
     <Overlay
-      visible={visible}
+      visible={deleteOverlayVisible}
       renderMaskElement={() => (
         <Overlay.Mask gradient={Gradients.DangerDark} style={{opacity: 0.5}} />
       )}
@@ -47,7 +47,7 @@ const DeleteAccountOverlay: FC = () => {
         <Overlay.Header
           title="Delete Account"
           style={{color: '#FFFFFF'}}
-          onDismiss={() => setVisible(!visible)}
+          onDismiss={() => setDeleteOverlayVisible(!deleteOverlayVisible)}
         />
         <Overlay.Body>
           <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>

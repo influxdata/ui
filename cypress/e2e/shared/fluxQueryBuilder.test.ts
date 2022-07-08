@@ -105,10 +105,12 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('field-tag-key-search-bar')
         .should('be.visible')
         .type(searchField)
-      cy.getByTestID('field-selector--list-item--clickable').should(
-        'contain',
-        searchField
-      )
+      cy.getByTestID('field-selector').within(() => {
+        cy.getByTestID('field-selector--list-item--clickable').should(
+          'contain',
+          searchField
+        )
+      })
 
       // clear the search bar
       cy.getByTestID('dismiss-button').click()
@@ -118,9 +120,11 @@ describe('FluxQueryBuilder', () => {
         .should('be.visible')
         .type(searchTagKey)
 
-      cy.getByTestID('field-selector--list-item')
-        .should('be.visible')
-        .should('contain', 'No Fields Found')
+      cy.getByTestID('field-selector').within(() => {
+        cy.getByTestID('field-selector--list-item')
+          .should('be.visible')
+          .should('contain', 'No Fields Found')
+      })
 
       // not recommend to assert for searchTagKey value
       // since it will expand all the tag keys, which triggers
@@ -146,10 +150,12 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
 
       // less than 8 items, no "Load More" button
-      cy.getByTestID('field-selector--list-item--clickable')
-        .should('be.visible')
-        .should('have.length.at.most', 8)
-      cy.getByTestID('field-selector--load-more-button').should('not.exist')
+      cy.getByTestID('field-selector').within(() => {
+        cy.getByTestID('field-selector--list-item--clickable')
+          .should('be.visible')
+          .should('have.length.at.most', 8)
+        cy.getByTestID('field-selector--load-more-button').should('not.exist')
+      })
 
       // if more than 8 items, show "Load More" button
       // and load additional 25 items
@@ -173,7 +179,7 @@ describe('FluxQueryBuilder', () => {
           .should('be.visible')
           .click()
           .then(() => {
-            // when load more is chosen, up to 25 additional entries will be shown
+            // when load more is chosen, up to 25 additional entries should be shown
             cy.getByTestID('field-selector--list-item--clickable')
               .should('be.visible')
               .should('have.length.above', 8)

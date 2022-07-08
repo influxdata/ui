@@ -421,7 +421,7 @@ export const QueryProvider: FC = ({children}) => {
     }
   }, [])
 
-  const basic = (text: string, override: QueryScope = {}, callback?: any) => {
+  const basic = (text: string, override?: QueryScope, callback?: any) => {
     const query = simplify(text, override?.vars || {})
 
     const orgID = override?.org || org.id
@@ -566,11 +566,29 @@ export const QueryProvider: FC = ({children}) => {
     delete pending.current[queryID]
   }
 
+  // class MagicCSV {
+  //   public pointer = 0
+
+  //   constructor(value) {
+  //     this.pointer = value
+  //   }
+
+  //   public append() {}
+  // }
+
   const query = (
     text: string,
-    override: QueryScope = {},
+    override?: QueryScope,
     callback?: any
   ): Promise<FluxResult> => {
+    // const magicCsv = new MagicCSV(0)
+    // function parsePartial(text: string) {
+    //   const partial = fastFromFlux(text)
+    //   magicCsv.append(partial)
+    //   if (callback) {
+    //     callback(partial)
+    //   }
+    // }
     const result = basic(text, override, callback)
 
     const promise: any = result.promise
@@ -582,6 +600,9 @@ export const QueryProvider: FC = ({children}) => {
         return raw
       })
       .then(raw => {
+        // if (callback) {
+        //   return magicCsv
+        // }
         if (isFlagEnabled('fastFlows')) {
           return parseCSV(raw.csv)
         }

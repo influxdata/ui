@@ -674,19 +674,6 @@ export const quartzProvision = (
   })
 }
 
-export const initializeQuartzMockOperator = (): Cypress.Chainable<Cypress.Response<
-  any
->> => {
-  return cy
-    .request({
-      method: 'GET',
-      url: '/api/v2/quartz/initialize-quartz-mock/operator',
-    })
-    .then(response => {
-      expect(response.status).to.eq(200)
-    })
-}
-
 export const points = (numPoints = 3, offsetMilliseconds = 10_000) => {
   // each point is 10 seconds (10,000ms) before the previous point by default
   // the offset can be changed with the second argument
@@ -1145,10 +1132,6 @@ Cypress.Commands.add('createTelegraf', createTelegraf)
 // general
 Cypress.Commands.add('flush', flush)
 Cypress.Commands.add('quartzProvision', quartzProvision)
-Cypress.Commands.add(
-  'initializeQuartzMockOperator',
-  initializeQuartzMockOperator
-)
 
 // tasks
 Cypress.Commands.add('createTask', createTask)

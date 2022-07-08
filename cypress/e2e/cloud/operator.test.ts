@@ -7,9 +7,6 @@ describe('Operator Page', () => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
           }).then(() => {
-            // This call initializes the operator data for quartz mock so the data is reset before each test.
-            // This allows tests to mutate the quartz-mock operator data without breaking subsequent tests.
-            cy.initializeQuartzMockOperator()
             cy.quartzProvision({
               isOperator: true,
               operatorRole: 'read-write',
@@ -205,17 +202,9 @@ describe('Operator Page', () => {
     // should be able to delete deletable accounts
     cy.getByTestID('account-delete--button').should('not.be.disabled')
     // should be able to convert free accounts to contract
-    cy.getByTestID('account-type--body').contains('free')
     cy.getByTestID('account-convert-to-contract--button').should(
       'not.be.disabled'
     )
-    cy.getByTestID('account-convert-to-contract--button').click()
-    cy.intercept('GET', '/api/v2/quartz/operator/accounts/678').as(
-      'quartzReloadAccount'
-    )
-    cy.getByTestID('convert-account-to-contract--confirmation-button').click()
-    cy.wait('@quartzReloadAccount')
-    cy.getByTestID('account-type--body').contains('contract')
 
     cy.getByTestID('account-view--back-button').click()
 

@@ -14,6 +14,7 @@ import TasksPage from './TasksPage'
 import {deleteTask, patchTask, postTask, getTask} from 'src/client'
 import {parse} from 'src/languageSupport/languages/flux/parser'
 import {mocked} from 'ts-jest/utils'
+import {initialState} from 'src/tasks/reducers/helpers'
 
 const sampleScript =
   'option task = {\n  name: "beetle",\n  every: 1h,\n}\n' +
@@ -151,6 +152,7 @@ const setup = (override = {}) => {
         status: RemoteDataState.Done,
       },
       tasks: {
+        ...initialState(),
         byID: {
           [localTasks[0].id]: localTasks[0],
           [localTasks[1].id]: localTasks[1],

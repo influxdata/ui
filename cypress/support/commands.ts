@@ -680,7 +680,7 @@ export const initializeQuartzMockOperator = (): Cypress.Chainable<Cypress.Respon
   return cy
     .request({
       method: 'GET',
-      url: '/api/v2private/initialize-quartz-mock/operator',
+      url: '/api/v2/quartz/initialize-quartz-mock/operator',
     })
     .then(response => {
       expect(response.status).to.eq(200)

@@ -63,7 +63,6 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {setResult, setStatuses, statuses} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const org = useSelector(getOrg) ?? {id: ''}
-  // TODO(ariel): maybe consolidate this to just be results from the ResultsContext
   const [csvText, setCsvText] = React.useState({})
 
   const dispatch = useDispatch()
@@ -242,7 +241,7 @@ export const FlowQueryProvider: FC = ({children}) => {
 
   const query = (
     text: string,
-    override: QueryScope = {},
+    override?: QueryScope,
     callback?: any
   ): Promise<FluxResult> => {
     const _override: QueryScope = {
@@ -254,14 +253,18 @@ export const FlowQueryProvider: FC = ({children}) => {
     return queryAPI(text, _override, callback)
   }
 
-  const basic = (text: string, override: QueryScope): Promise<FluxResult> => {
+  const basic = (
+    text: string,
+    override?: QueryScope,
+    callback?: any
+  ): Promise<FluxResult> => {
     const _override: QueryScope = {
       region: window.location.origin,
       org: org.id,
       ...(override || {}),
     }
 
-    return basicAPI(text, _override)
+    return basicAPI(text, _override, callback)
   }
 
   const stati = Object.values(statuses)

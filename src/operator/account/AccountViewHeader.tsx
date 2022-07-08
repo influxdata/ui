@@ -43,7 +43,7 @@ const AccountViewHeader: FC = () => {
         <ButtonBase
           color={ComponentColor.Primary}
           shape={ButtonShape.Default}
-          onClick={_e =>
+          onClick={() =>
             setConvertToContractOverlayVisible(!convertToContractOverlayVisible)
           }
           status={
@@ -60,7 +60,7 @@ const AccountViewHeader: FC = () => {
         <ButtonBase
           color={ComponentColor.Danger}
           shape={ButtonShape.Default}
-          onClick={_e => setDeleteOverlayVisible(!deleteOverlayVisible)}
+          onClick={() => setDeleteOverlayVisible(!deleteOverlayVisible)}
           status={
             account?.deletable
               ? ComponentStatus.Default

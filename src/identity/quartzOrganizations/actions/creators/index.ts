@@ -3,7 +3,7 @@ import {RemoteDataState} from 'src/types'
 
 export const SET_QUARTZ_ORGANIZATIONS = 'SET_QUARTZ_ORGANIZATIONS'
 export const SET_QUARTZ_ORGANIZATIONS_STATUS = 'SET_QUARTZ_ORGANIZATIONS_STATUS'
-export const SET_DEFAULT_ORG = 'SET_DEFAULT_ORG'
+export const SET_DEFAULT_QUARTZ_ORG = 'SET_DEFAULT_QUARTZ_ORG'
 
 export type Actions =
   | ReturnType<typeof setDefaultOrg>
@@ -29,7 +29,7 @@ export const setDefaultOrg = (
   newDefaultOrgId: string
 ) =>
   ({
-    type: SET_DEFAULT_ORG,
+    type: SET_DEFAULT_QUARTZ_ORG,
     oldDefaultOrgId: oldDefaultOrgId,
     newDefaultOrgId: newDefaultOrgId,
   } as const)

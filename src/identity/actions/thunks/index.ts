@@ -5,12 +5,9 @@ import {
   setCurrentBillingProvider,
   setQuartzIdentity,
   setQuartzIdentityStatus,
-  setDefaultOrg,
 } from 'src/identity/actions/creators'
 import {notify} from 'src/shared/actions/notifications'
 import {
-  accountDefaultSettingSuccess,
-  accountDefaultSettingError,
   updateBillingFailed,
   updateIdentityFailed,
   updateOrgFailed,
@@ -29,7 +26,6 @@ import {
   fetchQuartzIdentity,
   fetchAccountDetails,
   fetchOrgDetails,
-  putDefaultQuartzOrg,
 } from 'src/identity/apis/auth'
 import {convertIdentityToMe} from 'src/identity/utils/convertIdentityToMe'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'

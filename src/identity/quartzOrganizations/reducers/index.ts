@@ -3,7 +3,7 @@ import {
   Actions,
   SET_QUARTZ_ORGANIZATIONS,
   SET_QUARTZ_ORGANIZATIONS_STATUS,
-  SET_DEFAULT_ORG,
+  SET_DEFAULT_QUARTZ_ORG,
 } from 'src/identity/quartzOrganizations/actions/creators'
 import {emptyOrg} from 'src/identity/components/GlobalHeader/DefaultEntities'
 import produce from 'immer'
@@ -26,7 +26,7 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
         return
       }
 
-      case SET_DEFAULT_ORG: {
+      case SET_DEFAULT_QUARTZ_ORG: {
         const {oldDefaultOrgId, newDefaultOrgId} = action
 
         if (oldDefaultOrgId !== newDefaultOrgId) {

@@ -79,7 +79,7 @@ const OrgOverlay: FC = () => {
       <Overlay.Container maxWidth={1000}>
         <Overlay.Header
           title={orgID}
-          className="overlay-header--color"
+          className="overlay-header--color overlay-header--title"
           onDismiss={() => history.goBack()}
         />
         <SpinnerContainer

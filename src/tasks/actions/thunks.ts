@@ -125,7 +125,7 @@ export const getAllTasks = (name?: string) => async (
     const resp = await fetchTasks(query)
 
     let nonNormalizedTasks = resp.data.tasks
-    let next = resp.data.links.next
+    let next = resp.data?.links?.next
     while (next && next.includes('after=')) {
       const afterAndExtras = next.split('after=')
       if (afterAndExtras.length < 2) {

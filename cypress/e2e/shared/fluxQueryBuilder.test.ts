@@ -106,7 +106,7 @@ describe('FluxQueryBuilder', () => {
         .should('be.visible')
         .type(searchField)
       cy.getByTestID('field-selector').within(() => {
-        cy.getByTestID('field-selector--list-item--clickable').should(
+        cy.getByTestID('field-selector--list-item--selectable').should(
           'contain',
           searchField
         )
@@ -151,7 +151,7 @@ describe('FluxQueryBuilder', () => {
 
       // less than 8 items, no "Load More" button
       cy.getByTestID('field-selector').within(() => {
-        cy.getByTestID('field-selector--list-item--clickable')
+        cy.getByTestID('field-selector--list-item--selectable')
           .should('be.visible')
           .should('have.length.at.most', 8)
         cy.getByTestID('field-selector--load-more-button').should('not.exist')
@@ -172,7 +172,7 @@ describe('FluxQueryBuilder', () => {
 
       // more than 8 items, show 'Load More' button
       cy.getByTestID('field-selector').within(() => {
-        cy.getByTestID('field-selector--list-item--clickable')
+        cy.getByTestID('field-selector--list-item--selectable')
           .should('be.visible')
           .should('have.length', 8)
         cy.getByTestID('field-selector--load-more-button')
@@ -180,7 +180,7 @@ describe('FluxQueryBuilder', () => {
           .click()
           .then(() => {
             // when load more is chosen, up to 25 additional entries should be shown
-            cy.getByTestID('field-selector--list-item--clickable')
+            cy.getByTestID('field-selector--list-item--selectable')
               .should('be.visible')
               .should('have.length.above', 8)
               .and('have.length.at.most', 33) // 8 + 25

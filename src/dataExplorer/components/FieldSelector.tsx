@@ -1,4 +1,11 @@
-import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
@@ -84,10 +91,10 @@ const FieldSelector: FC = () => {
     ))
   }
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     const newIndex = fieldsToShow.length + LOAD_MORE_LIMIT
     setFieldsToShow(fields.slice(0, newIndex))
-  }
+  }, [fieldsToShow])
 
   return useMemo(() => {
     const shouldLoadMore =
@@ -119,7 +126,7 @@ const FieldSelector: FC = () => {
         </div>
       </Accordion>
     )
-  }, [fields, list])
+  }, [fields, list, handleLoadMore])
 }
 
 export default FieldSelector

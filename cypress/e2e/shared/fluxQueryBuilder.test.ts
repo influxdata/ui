@@ -165,19 +165,21 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
       // more than 8 items, show 'Load More' button
-      cy.getByTestID('field-selector--list-item--clickable')
-        .should('be.visible')
-        .should('have.length', 8)
-      cy.getByTestID('field-selector--load-more-button')
-        .should('be.visible')
-        .click()
-        .then(() => {
-          // when load more is chosen, up to 25 additional entries will be shown
-          cy.getByTestID('field-selector--list-item--clickable')
-            .should('be.visible')
-            .should('have.length.above', 8)
-            .and('have.length.at.most', 33) // 8 + 25
-        })
+      cy.getByTestID('field-selector').within(() => {
+        cy.getByTestID('field-selector--list-item--clickable')
+          .should('be.visible')
+          .should('have.length', 8)
+        cy.getByTestID('field-selector--load-more-button')
+          .should('be.visible')
+          .click()
+          .then(() => {
+            // when load more is chosen, up to 25 additional entries will be shown
+            cy.getByTestID('field-selector--list-item--clickable')
+              .should('be.visible')
+              .should('have.length.above', 8)
+              .and('have.length.at.most', 33) // 8 + 25
+          })
+      })
     })
   })
 })

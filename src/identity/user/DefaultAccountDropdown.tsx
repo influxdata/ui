@@ -37,7 +37,7 @@ interface Props {
   label: string
   defaultAccount
   accountList
-  updateDefaultAccount
+  changeSelectedAccount
 }
 
 /* Same issue with typeahead dropdown - it's expecting a number */
@@ -46,7 +46,8 @@ export const DefaultAccountDropDown: FC<Props> = ({
   label,
   defaultAccount,
   accountList,
-  updateDefaultAccount,
+  changeSelectedAccount,
+  // updateDefaultAccount,
 }) => {
   return (
     <FlexBox
@@ -68,7 +69,7 @@ export const DefaultAccountDropDown: FC<Props> = ({
       <TypeAheadDropDown
         selectedOption={defaultAccount}
         items={accountList}
-        onSelect={updateDefaultAccount}
+        onSelect={changeSelectedAccount}
         placeholderText="Select an Account"
         style={{width: '250px'}}
       />

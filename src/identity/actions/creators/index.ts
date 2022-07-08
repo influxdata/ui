@@ -12,7 +12,6 @@ export type Actions =
   | ReturnType<typeof setQuartzIdentityStatus>
   | ReturnType<typeof setCurrentBillingProvider>
   | ReturnType<typeof setCurrentOrgDetails>
-  | ReturnType<typeof setDefaultOrg>
 
 export const setQuartzIdentity = (identity: CurrentIdentity) =>
   ({
@@ -37,8 +36,3 @@ export const setQuartzIdentityStatus = (status: RemoteDataState) =>
     type: SET_QUARTZ_IDENTITY_STATUS,
     status,
   } as const)
-
-export const setDefaultOrg = newDefaultOrgId => ({
-  type: SET_DEFAULT_ORG,
-  newDefaultOrgId: newDefaultOrgId,
-})

@@ -39,7 +39,7 @@ interface Props {
   label: string
   defaultOrg: OrganizationSummaries[number]
   orgList: OrganizationSummaries
-  updateDefaultOrg
+  changeSelectedOrg
 }
 
 /* Same issue with typeahead dropdown - it's expecting a number */
@@ -47,7 +47,7 @@ interface Props {
 export const DefaultOrgDropDown: FC<Props> = ({
   label,
   defaultOrg,
-  updateDefaultOrg,
+  changeSelectedOrg,
   orgList,
 }) => {
   return (
@@ -70,7 +70,7 @@ export const DefaultOrgDropDown: FC<Props> = ({
       <TypeAheadDropDown
         selectedOption={defaultOrg}
         items={orgList}
-        onSelect={updateDefaultOrg}
+        onSelect={changeSelectedOrg}
         placeholderText="Select an Organization"
         style={{width: '250px'}}
       />

@@ -11,7 +11,6 @@ import {
   SET_QUARTZ_IDENTITY_STATUS,
   SET_CURRENT_BILLING_PROVIDER,
   SET_CURRENT_ORG_DETAILS,
-  SET_DEFAULT_ORG,
 } from 'src/identity/actions/creators'
 
 export const initialState: CurrentIdentity = {
@@ -80,55 +79,6 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
       }
       case SET_CURRENT_ORG_DETAILS: {
         draftState.org = action.org
-        return
-      }
-
-      // I think we need some new piece of state in orgs for tracking the current default org
-      // And maybe a reference to that org.
-
-      case SET_DEFAULT_ORG: {
-        const fakeOrgMock = {
-          identity: {
-            user: '',
-            org: '',
-            account: '',
-          },
-          quartzOrganizations: {
-            orgs: [
-              {id: '1', name: 'AAAAA', isDefault: true, isActive: true},
-              {id: '2', name: 'BBBBB', isDefault: false, isActive: false},
-              {id: '3', name: 'CCCCC', isDefault: false, isActive: false},
-              {id: '4', name: 'DDDD', isDefault: false, isActive: false},
-            ],
-          },
-        }
-
-        // We should be storing this somewhere.
-        const oldDefaultOrgId = fakeOrgMock.quartzOrganizations.orgs.find(
-          el => el.isDefault === true
-        ).id
-
-        let foundBoth = 0
-
-        for (let i = 0; i < fakeOrgMock.quartzOrganizations.orgs.length; i++) {
-          if (foundBoth === 2) {
-            break
-          }
-
-          const currentOrg = fakeOrgMock.quartzOrganizations.orgs[i]
-
-          if (currentOrg.id === action.newDefaultOrgId) {
-            foundBoth++
-            currentOrg.isDefault = true
-          }
-          if (currentOrg.id === oldDefaultOrgId) {
-            foundBoth++
-            if (currentOrg.id !== action.newDefaultOrgId) {
-              currentOrg.isDefault = false
-            }
-          }
-        }
-
         return
       }
     }

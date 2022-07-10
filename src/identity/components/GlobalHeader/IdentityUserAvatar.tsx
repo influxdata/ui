@@ -1,0 +1,114 @@
+import React, {CSSProperties} from 'react'
+import {IdentityUser} from 'src/client/unityRoutes'
+import {
+  Button,
+  ButtonShape,
+  ComponentColor,
+  InfluxColors,
+  Popover,
+} from '@influxdata/clockface'
+
+type Props = {
+  user: IdentityUser
+}
+
+type State = {
+  isPopoverOpen: boolean
+}
+
+class IdentityUserAvatar extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      isPopoverOpen: false,
+    }
+  }
+
+  private popoverTriggerRef: React.RefObject<
+    HTMLButtonElement
+  > = React.createRef()
+
+  private getInitials = (): string => {
+    const {user} = this.props
+    const firstName = user.firstName
+    const lastName = user.lastName
+    const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`
+    return initials
+  }
+
+  // get button style based on whether popover is open or not
+  private getButtonStyle = (): CSSProperties => {
+    const {isPopoverOpen} = this.state
+
+    const style: CSSProperties = {
+      borderRadius: '50%',
+      border: isPopoverOpen ? 'none' : `2px solid ${InfluxColors.Grey65}`,
+      background: isPopoverOpen
+        ? `linear-gradient(75.66deg, #0098F0 0%, ${InfluxColors.Amethyst} 79.64%)`
+        : 'none',
+    }
+    return style
+  }
+
+  private setPopoverStateClosed = () => {
+    this.setState({isPopoverOpen: false})
+  }
+
+  private setPopoverStateOpen = () => {
+    this.setState({isPopoverOpen: true})
+  }
+
+  private getUserPopoverContents = () => {
+    const {user} = this.props
+    return (
+      <div className="user-popover">
+        <div className="user-popover-header">
+          <div className="user-popover-header-name">
+            {user.firstName} {user.lastName}
+          </div>
+          <div className="user-popover-header-email">{user.email}</div>
+        </div>
+        <hr />
+        <div className="user-popover-footer">
+          <Button
+            shape={ButtonShape.StretchToFit}
+            color={ComponentColor.Default}
+            text="Profile"
+          />
+          <Button
+            shape={ButtonShape.StretchToFit}
+            color={ComponentColor.Default}
+            text="Logout"
+          />
+        </div>
+      </div>
+    )
+  }
+
+  render() {
+    const {isPopoverOpen} = this.state
+    return (
+      <>
+        {/* Button shape is ButtonShape.Square to make the height and width the same
+            so we can use the border radius to make it a circle  */}
+        <Button
+          text={this.getInitials()}
+          style={this.getButtonStyle()}
+          shape={ButtonShape.Square}
+          color={
+            isPopoverOpen ? ComponentColor.Default : ComponentColor.Tertiary
+          }
+          ref={this.popoverTriggerRef}
+        />
+        <Popover
+          triggerRef={this.popoverTriggerRef}
+          onShow={this.setPopoverStateOpen}
+          onHide={this.setPopoverStateClosed}
+          contents={this.getUserPopoverContents}
+        />
+      </>
+    )
+  }
+}
+
+export default IdentityUserAvatar

@@ -71,6 +71,29 @@ export const orgRenameFailed = (orgName): Notification => ({
   message: `Failed to update organization "${orgName}"`,
 })
 
+export const updateIdentityFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Error retrieving user identity. Please refresh this page.',
+})
+
+export const updateBillingFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    'Error retrieving account billing provider. Please refresh this page.',
+})
+
+export const updateOrgFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    'Error retrieving new organization information. Please refresh this page.',
+})
+
+export const updateQuartzOrganizationsFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    'We were unable to retrieve the list of your InfluxData organizations. Please refresh this page.',
+})
+
 export const memberAddSuccess = (username: string): Notification => ({
   ...defaultSuccessNotification,
   message: `Member "${username}" was added successfully`,
@@ -130,28 +153,4 @@ export const removeUserSuccessful = (): Notification => ({
 export const removeUserFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `Error removing user, try again`,
-})
-
-// These should be removed from the users section and go further up in this file.
-export const updateIdentityFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message: 'Error retrieving user identity. Please refresh this page.',
-})
-
-export const updateBillingFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message:
-    'Error retrieving account billing provider. Please refresh this page.',
-})
-
-export const updateOrgFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message:
-    'Error retrieving new organization information. Please refresh this page.',
-})
-
-export const updateQuartzOrganizationsFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message:
-    'We were unable to retrieve the list of your InfluxData organizations. Please refresh this page.',
 })

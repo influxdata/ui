@@ -11,8 +11,6 @@ export const accountDefaultSettingSuccess = (
   message: `Account "${accountName}" was successfully set as the default account`,
 })
 
-// There could be more than one error here. In one case, the account isn't already teh default account
-// But there could be other errors resulting from states other than starting with a non-default account.
 export const accountDefaultSettingError = (
   accountName: string
 ): Notification => ({

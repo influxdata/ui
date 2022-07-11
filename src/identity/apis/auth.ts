@@ -239,7 +239,7 @@ export const putDefaultQuartzAccount = async (
   })
 
   if (response.status === 500) {
-    throw new UnauthorizedError(response.data.message)
+    throw new ServerError(response.data.message)
   }
 
   const responseEmpty = response.data

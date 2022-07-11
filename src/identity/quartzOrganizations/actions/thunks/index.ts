@@ -6,7 +6,7 @@ import {fetchQuartzOrgs, putDefaultQuartzOrg} from 'src/identity/apis/auth'
 // Actions
 import {
   Actions as QuartzOrganizationActions,
-  setDefaultOrg,
+  setQuartzDefaultOrg,
   setQuartzOrganizations,
   setQuartzOrganizationsStatus,
 } from 'src/identity/quartzOrganizations/actions/creators'
@@ -14,16 +14,18 @@ import {PublishNotificationAction} from 'src/shared/actions/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {OrganizationSummaries} from 'src/client/unityRoutes'
+
 type Actions = QuartzOrganizationActions | PublishNotificationAction
+type DefaultOrg = OrganizationSummaries[number]
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
 import {
-  updateQuartzOrganizationsFailed,
   accountDefaultSettingSuccess,
   accountDefaultSettingError,
+  updateQuartzOrganizationsFailed,
 } from 'src/shared/copy/notifications'
-import {OrganizationSummaries} from 'src/client/unityRoutes'
 
 export const getQuartzOrganizationsThunk = () => async (
   dispatch: Dispatch<Actions>
@@ -41,13 +43,13 @@ export const getQuartzOrganizationsThunk = () => async (
 }
 
 export const updateDefaultOrgThunk = (
-  oldDefaultOrg: OrganizationSummaries[number],
-  newDefaultOrg: OrganizationSummaries[number]
-) => async (dispatch: any) => {
+  oldDefaultOrg: DefaultOrg,
+  newDefaultOrg: DefaultOrg
+) => async (dispatch: Dispatch<Actions>) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
     await putDefaultQuartzOrg(newDefaultOrg.id)
-    dispatch(setDefaultOrg(oldDefaultOrg.id, newDefaultOrg.id))
+    dispatch(setQuartzDefaultOrg(oldDefaultOrg.id, newDefaultOrg.id))
 
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
     dispatch(notify(accountDefaultSettingSuccess(newDefaultOrg.name)))

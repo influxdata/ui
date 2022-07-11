@@ -3,10 +3,10 @@ import {RemoteDataState} from 'src/types'
 
 export const SET_QUARTZ_ORGANIZATIONS = 'SET_QUARTZ_ORGANIZATIONS'
 export const SET_QUARTZ_ORGANIZATIONS_STATUS = 'SET_QUARTZ_ORGANIZATIONS_STATUS'
-export const SET_DEFAULT_QUARTZ_ORG = 'SET_DEFAULT_QUARTZ_ORG'
+export const SET_QUARTZ_DEFAULT_ORG = 'SET_QUARTZ_DEFAULT_ORG'
 
 export type Actions =
-  | ReturnType<typeof setDefaultOrg>
+  | ReturnType<typeof setQuartzDefaultOrg>
   | ReturnType<typeof setQuartzOrganizations>
   | ReturnType<typeof setQuartzOrganizationsStatus>
 
@@ -24,12 +24,12 @@ export const setQuartzOrganizationsStatus = (status: RemoteDataState) =>
     status: status,
   } as const)
 
-export const setDefaultOrg = (
+export const setQuartzDefaultOrg = (
   oldDefaultOrgId: string,
   newDefaultOrgId: string
 ) =>
   ({
-    type: SET_DEFAULT_QUARTZ_ORG,
+    type: SET_QUARTZ_DEFAULT_ORG,
     oldDefaultOrgId: oldDefaultOrgId,
     newDefaultOrgId: newDefaultOrgId,
   } as const)

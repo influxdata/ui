@@ -94,7 +94,7 @@ const FieldSelector: FC = () => {
   const handleLoadMore = useCallback(() => {
     const newIndex = fieldsToShow.length + LOAD_MORE_LIMIT
     setFieldsToShow(fields.slice(0, newIndex))
-  }, [fieldsToShow])
+  }, [fieldsToShow, fields, setFieldsToShow])
 
   return useMemo(() => {
     const shouldLoadMore =

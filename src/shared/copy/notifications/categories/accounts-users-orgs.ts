@@ -11,11 +11,13 @@ export const accountDefaultSettingSuccess = (
   message: `Account "${accountName}" was successfully set as the default account`,
 })
 
+// There could be more than one error here. In one case, the account isn't already teh default account
+// But there could be other errors resulting from states other than starting with a non-default account.
 export const accountDefaultSettingError = (
   accountName: string
 ): Notification => ({
   ...defaultErrorNotification,
-  message: `Account "${accountName}" was not set as the default account; the default is unchanged`,
+  message: `Account "${accountName}" was not set as the default account. The default is unchanged.`,
 })
 
 export const accountRenameSuccess = (
@@ -39,6 +41,16 @@ export const orgCreateSuccess = (): Notification => ({
 export const orgCreateFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to create organization',
+})
+
+export const orgDefaultSettingSuccess = (orgName: string): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Organization "${orgName}" was successfully set as the default organization`,
+})
+
+export const orgDefaultSettingError = (orgName: string): Notification => ({
+  ...defaultErrorNotification,
+  message: `Organization "${orgName}" could not be set as the default organization. Please try again.`,
 })
 
 export const orgEditSuccess = (): Notification => ({
@@ -122,6 +134,7 @@ export const removeUserFailed = (): Notification => ({
   message: `Error removing user, try again`,
 })
 
+// These should be removed from the users section and go further up in this file.
 export const updateIdentityFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Error retrieving user identity. Please refresh this page.',

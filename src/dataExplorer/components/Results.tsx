@@ -75,8 +75,8 @@ const WrappedOptions: FC = () => {
           ...view,
           properties: {
             ...view.properties,
-            ...update
-          }
+            ...update,
+          },
         })
       }}
     />

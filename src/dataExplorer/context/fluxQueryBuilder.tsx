@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useContext,
   useCallback,
+  useEffect,
 } from 'react'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 
@@ -24,6 +25,7 @@ import {
   ExecuteCommandInjectTagValue,
   ExecuteCommandInjectField,
 } from 'src/languageSupport/languages/flux/lsp/utils'
+import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 
 const useLocalStorageState = createLocalStorageStateHook(
   'dataExplorer.schema',
@@ -80,8 +82,21 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {injectViaLsp} = useContext(EditorContext)
 
   // States
-  const [selection, setSelection] = useLocalStorageState()
+  const [oldSelection, setOldSelection] = useLocalStorageState()
+  const [selection, setSelection] = useSessionStorage(
+    'dataExplorer.schema',
+    oldSelection
+  )
   const [searchTerm, setSearchTerm] = useState('')
+
+  // migration to allow people to keep their last used settings
+  // immediately after rollout
+  useEffect(() => {
+    setOldSelection({
+      bucket: null,
+      measurement: null,
+    })
+  }, [])
 
   const handleSelectBucket = (bucket: Bucket): void => {
     selection.bucket = bucket

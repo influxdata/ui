@@ -9,40 +9,16 @@ import {
   HeadingElement,
   TypeAheadDropDown,
 } from '@influxdata/clockface'
-import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
+import {OrganizationSummaries} from 'src/client/unityRoutes'
 
-// declare const TypeAheadDropDown: FC<OwnProps>;
-// interface CreatableTypeAheadDropdownProps extends StandardFunctionProps {
-//     /** Text to render in input field as currently selected or typed option */
-//     selectedOption: string;
-//     /** List of options to render in dropdown menu */
-//     options: string[];
-//     onSelect: (option: string) => void;
-//     placeholder?: string;
-//     inputStatus?: ComponentStatus;
-//     inputSize?: ComponentSize;
-//     /** Optional icon to be displayed to the left of text in input  */
-//     inputIcon?: IconFont;
-//     /** Optional color preview to be displayed to the left of text.
-//      * The color is determined by the selected or typed option in #000000 format.
-//      * If both icon and this props are set, icon will take priority */
-//     inputColorPreviewOn?: boolean;
-//     menuTheme?: DropdownMenuTheme;
-//     menuMaxHeight?: number;
-//     /** Customize the layout of dropdown items */
-//     customizedDropdownItem?: (displayText: string) => JSX.Element;
-// }
-
-// Check ref as prop use in TS
+type DefaultOrg = OrganizationSummaries[number]
 
 interface Props {
   label: string
-  defaultOrg: OrganizationSummaries[number]
+  defaultOrg: DefaultOrg
   orgList: OrganizationSummaries
   changeSelectedOrg
 }
-
-/* Same issue with typeahead dropdown - it's expecting a number */
 
 export const DefaultOrgDropDown: FC<Props> = ({
   label,
@@ -71,7 +47,7 @@ export const DefaultOrgDropDown: FC<Props> = ({
         selectedOption={defaultOrg}
         items={orgList}
         onSelect={changeSelectedOrg}
-        placeholderText="Select an Organization"
+        placeholderText="Select a Default Organization"
         style={{width: '250px'}}
       />
     </FlexBox>

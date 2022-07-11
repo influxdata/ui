@@ -21,7 +21,7 @@ interface Props {
   src: string
 }
 
-const LabeledData: FC<Props> = ({label, src}) => (
+const LabeledUserData: FC<Props> = ({label, src}) => (
   <FlexBox
     direction={FlexDirection.Column}
     margin={ComponentSize.Large}
@@ -52,4 +52,4 @@ const LabeledData: FC<Props> = ({label, src}) => (
   </FlexBox>
 )
 
-export default LabeledData
+export default LabeledUserData

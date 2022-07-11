@@ -46,9 +46,7 @@ export const updateDefaultOrgThunk = (
 ) => async (dispatch: any) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
-
     await putDefaultQuartzOrg(newDefaultOrg.id)
-
     dispatch(setDefaultOrg(oldDefaultOrg.id, newDefaultOrg.id))
 
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))

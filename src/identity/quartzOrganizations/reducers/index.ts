@@ -32,11 +32,11 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
         if (oldDefaultOrgId !== newDefaultOrgId) {
           draftState.orgs.map(org => {
             if (org.id === oldDefaultOrgId) {
-              org.isDefault === false
+              org.isDefault = false
             }
 
             if (org.id === newDefaultOrgId) {
-              org.isDefault === true
+              org.isDefault = true
             }
           })
         }

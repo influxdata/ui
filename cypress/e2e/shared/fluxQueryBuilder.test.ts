@@ -177,7 +177,7 @@ describe('FluxQueryBuilder', () => {
           .should('have.length', 8)
         cy.getByTestID('field-selector--load-more-button')
           .should('be.visible')
-          .click()
+          .trigger('click')
           .then(() => {
             // when load more is chosen, up to 25 additional entries should be shown
             cy.getByTestID('field-selector--list-item--selectable')

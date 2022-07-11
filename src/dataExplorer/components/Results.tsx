@@ -71,9 +71,13 @@ const WrappedOptions: FC = () => {
       properties={view.properties}
       results={result.parsed}
       update={update => {
-        Object.keys(update).forEach(k => (view.properties[k] = update[k]))
-
-        setView({...view})
+        setView({
+          ...view,
+          properties: {
+            ...view.properties,
+            ...update
+          }
+        })
       }}
     />
   )

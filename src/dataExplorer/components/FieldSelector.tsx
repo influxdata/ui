@@ -1,4 +1,11 @@
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
@@ -84,40 +91,43 @@ const FieldSelector: FC = () => {
     ))
   }
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     const newIndex = fieldsToShow.length + LOAD_MORE_LIMIT
     setFieldsToShow(fields.slice(0, newIndex))
-  }
+  }, [fieldsToShow, fields, setFieldsToShow])
 
-  const shouldLoadMore =
-    fieldsToShow.length < fields.length &&
-    Array.isArray(list) &&
-    list.length > 1
-  const loadMoreButton = shouldLoadMore && (
-    <button
-      className="field-selector--load-more-button"
-      data-testid="field-selector--load-more-button"
-      onClick={handleLoadMore}
-    >
-      + Load more
-    </button>
-  )
+  return useMemo(() => {
+    const shouldLoadMore =
+      fieldsToShow.length < fields.length &&
+      Array.isArray(list) &&
+      list.length > 1
 
-  return (
-    <Accordion
-      className="field-selector"
-      expanded={true}
-      testID="field-selector"
-    >
-      <Accordion.AccordionHeader className="field-selector--header">
-        <SelectorTitle title="Fields" info={FIELD_TOOLTIP} />
-      </Accordion.AccordionHeader>
-      <div className="container-side-bar">
-        {list}
-        {loadMoreButton}
-      </div>
-    </Accordion>
-  )
+    const loadMoreButton = shouldLoadMore && (
+      <button
+        className="field-selector--load-more-button"
+        data-testid="field-selector--load-more-button"
+        onClick={handleLoadMore}
+      >
+        + Load more
+      </button>
+    )
+
+    return (
+      <Accordion
+        className="field-selector"
+        expanded={true}
+        testID="field-selector"
+      >
+        <Accordion.AccordionHeader className="field-selector--header">
+          <SelectorTitle title="Fields" info={FIELD_TOOLTIP} />
+        </Accordion.AccordionHeader>
+        <div className="container-side-bar">
+          {list}
+          {loadMoreButton}
+        </div>
+      </Accordion>
+    )
+  }, [fields, list, handleLoadMore])
 }
 
 export default FieldSelector

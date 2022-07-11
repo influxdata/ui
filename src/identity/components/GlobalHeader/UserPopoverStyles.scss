@@ -1,0 +1,51 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.user-popover {
+  z-index: 9999;
+  min-width: 250px;
+  background: rgba(241, 241, 243, 0.1);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(42px);
+
+  .user-popover-header-email {
+    margin-top: 2px;
+    color: $cf-grey-65;
+  }
+
+  hr {
+    background: $cf-grey-65;
+    opacity: 20%;
+    margin: 0;
+    margin-top: 10px;
+  }
+
+  .user-popover-header {
+    padding: 16px 16px 0 16px;
+  }
+
+  .user-popover-footer {
+    padding: 0px 16px 16px 16px;
+    display: inline-flex;
+    flex-direction: column;
+
+    a {
+      margin-top: 10px;
+      cursor: pointer;
+
+      :hover {
+        text-decoration: none;
+        color: inherit;re
+      }
+    }
+
+    .user-popover-footer--button-icon {
+      font-size: 18px;
+      color: $cf-grey-65;
+      margin-right: 11px;
+    }
+  }
+}
+
+.user-avatar-button {
+  box-shadow: none !important;
+}

@@ -86,10 +86,10 @@ export const GlobalHeader: FC = () => {
             />
             <Icon glyph={IconFont.CaretRight} />
             <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
-            <IdentityUserAvatar user={identity.currentIdentity.user} />
           </>
         )}
       </FlexBox>
+      <IdentityUserAvatar user={identity.currentIdentity.user} />
     </FlexBox>
   )
 }

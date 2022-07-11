@@ -3,10 +3,16 @@ import {IdentityUser} from 'src/client/unityRoutes'
 import {
   Button,
   ButtonShape,
+  ClickOutside,
   ComponentColor,
+  FlexBox,
+  FlexDirection,
+  Icon,
+  IconFont,
   InfluxColors,
-  Popover,
 } from '@influxdata/clockface'
+
+import './UserPopoverStyles.scss'
 
 type Props = {
   user: IdentityUser
@@ -24,10 +30,6 @@ class IdentityUserAvatar extends React.Component<Props, State> {
     }
   }
 
-  private popoverTriggerRef: React.RefObject<
-    HTMLButtonElement
-  > = React.createRef()
-
   private getInitials = (): string => {
     const {user} = this.props
     const firstName = user.firstName
@@ -41,6 +43,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
     const {isPopoverOpen} = this.state
 
     const style: CSSProperties = {
+      margin: 0,
       borderRadius: '50%',
       border: isPopoverOpen ? 'none' : `2px solid ${InfluxColors.Grey65}`,
       background: isPopoverOpen
@@ -50,12 +53,13 @@ class IdentityUserAvatar extends React.Component<Props, State> {
     return style
   }
 
-  private setPopoverStateClosed = () => {
-    this.setState({isPopoverOpen: false})
+  private togglePopoverState = () => {
+    const {isPopoverOpen} = this.state
+    this.setState({isPopoverOpen: !isPopoverOpen})
   }
 
-  private setPopoverStateOpen = () => {
-    this.setState({isPopoverOpen: true})
+  private setPopoverStateClosed = () => {
+    this.setState({isPopoverOpen: false})
   }
 
   private getUserPopoverContents = () => {
@@ -67,46 +71,59 @@ class IdentityUserAvatar extends React.Component<Props, State> {
             {user.firstName} {user.lastName}
           </div>
           <div className="user-popover-header-email">{user.email}</div>
+          <hr />
         </div>
-        <hr />
         <div className="user-popover-footer">
-          <Button
-            shape={ButtonShape.StretchToFit}
-            color={ComponentColor.Default}
-            text="Profile"
-          />
-          <Button
-            shape={ButtonShape.StretchToFit}
-            color={ComponentColor.Default}
-            text="Logout"
-          />
+          <a className="user-popover-footer--button">
+            <Icon
+              glyph={IconFont.UserOutline_New}
+              className="user-popover-footer--button-icon"
+            />
+            Profile
+          </a>
+          <a className="user-popover-footer--button">
+            <Icon
+              glyph={IconFont.UserOutline_New}
+              className="user-popover-footer--button-icon"
+            />
+            Profile
+          </a>
         </div>
       </div>
     )
   }
 
+  private getPopoverStyle = () => {
+    return {
+      position: 'absolute',
+      top: 50,
+      right: 32,
+      opacity: this.state.isPopoverOpen ? 100 : 0,
+    } as CSSProperties
+  }
+
   render() {
     const {isPopoverOpen} = this.state
     return (
-      <>
-        {/* Button shape is ButtonShape.Square to make the height and width the same
+      <ClickOutside onClickOutside={this.setPopoverStateClosed}>
+        <div>
+          {/* Button shape is ButtonShape.Square to make the height and width the same
             so we can use the border radius to make it a circle  */}
-        <Button
-          text={this.getInitials()}
-          style={this.getButtonStyle()}
-          shape={ButtonShape.Square}
-          color={
-            isPopoverOpen ? ComponentColor.Default : ComponentColor.Tertiary
-          }
-          ref={this.popoverTriggerRef}
-        />
-        <Popover
-          triggerRef={this.popoverTriggerRef}
-          onShow={this.setPopoverStateOpen}
-          onHide={this.setPopoverStateClosed}
-          contents={this.getUserPopoverContents}
-        />
-      </>
+          <Button
+            text={this.getInitials()}
+            style={this.getButtonStyle()}
+            shape={ButtonShape.Square}
+            color={
+              isPopoverOpen ? ComponentColor.Default : ComponentColor.Tertiary
+            }
+            onClick={this.togglePopoverState}
+            className="user-avatar-button"
+          />
+          <FlexBox style={this.getPopoverStyle()}>
+            {this.getUserPopoverContents()}
+          </FlexBox>
+        </div>
+      </ClickOutside>
     )
   }
 }

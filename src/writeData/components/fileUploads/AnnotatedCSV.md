@@ -1,4 +1,4 @@
-For more detailed and up to date information check out the [Annotated CSV Documentation](https://docs.influxdata.com/influxdb/v2.3/reference/syntax/annotated-csv/#annotated-csv-in-flux)
+For more detailed and up to date information check out the [Annotated CSV Documentation](https://docs.influxdata.com/influxdb/cloud/reference/syntax/annotated-csv/#annotated-csv-in-flux)
 
 ##### Getting Started
 

@@ -6,6 +6,7 @@ import {
   getOrg,
   getOrgs,
   putOrgsDefault,
+  putAccountsDefault,
   Account,
   Identity,
   IdentityAccount,
@@ -227,6 +228,23 @@ export const fetchAccountDetails = async (
   return accountDetails
 }
 
+// change the user's default account
+export const updateDefaultQuartzAccount = async (
+  accountId: number
+): Promise<void> => {
+  const response = await putAccountsDefault({
+    data: {
+      id: accountId,
+    },
+  })
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  // success status code is 204; no data in response.body is expected.
+}
+
 // fetch details about user's current organization
 export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   const response = await getOrg({orgId})
@@ -259,7 +277,7 @@ export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
 }
 
 // change default organization for a given account
-export const putDefaultQuartzOrg = async (orgId: string) => {
+export const updateDefaultQuartzOrg = async (orgId: string) => {
   const response = await putOrgsDefault({
     data: {
       id: orgId,

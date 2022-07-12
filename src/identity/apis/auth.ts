@@ -117,42 +117,6 @@ export const fetchIdentity = async () => {
   return fetchQuartzMe()
 }
 
-const identityRetryDelay = 30000 // 30 seconds
-const retryLimit = 5
-
-export const retryFetchIdentity = async (
-  retryAttempts = 1,
-  retryDelay = identityRetryDelay
-) => {
-  try {
-    return await fetchIdentity()
-  } catch (error) {
-    if (
-      error.name === NetworkErrorTypes.UnauthorizedError ||
-      error.name === NetworkErrorTypes.GenericError
-    ) {
-      throw error
-    }
-
-    if (error.name === NetworkErrorTypes.ServerError) {
-      if (retryAttempts >= retryLimit) {
-        throw error
-      }
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          retryFetchIdentity(retryAttempts + 1, retryDelay)
-            .then(user => {
-              resolve(user)
-            })
-            .catch(error => {
-              reject(error)
-            })
-        }, retryAttempts * retryDelay)
-      })
-    }
-  }
-}
-
 // fetch user identity from /quartz/identity.
 export const fetchQuartzIdentity = async (): Promise<Identity> => {
   const response = await getIdentity({})

@@ -185,10 +185,10 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
    *   - can be changed by user action: zooming or unzooming
    *   - zooming will trigger a new query if the windowPeriod changes
    *   - unzooming will revert the query results back to its original state
-   *     (before zooming), and does not query when unzooming
+   *     (before zooming), but does not query
    *
-   *   - can be changed also by the preZoomDomain, because they should stay synced
-   *     to keep the graph fitted, and does not query when syncing
+   *   - can be changed also by the preZoomDomain, by syncing,
+   *     to keep the graph fitted, and does not query
    */
   const [domain, setDomain] = useState(initialDomain)
 
@@ -234,7 +234,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // sync preZoomDomain and domain
-  //   - when query results change to re-fit the graph
+  //   - when query results change to refit the graph
   //   - except when it is the time axis to prevent a shrunken graph
   useEffect(() => {
     if (!timeRange && isNotEqual(preZoomDomain, domain)) {
@@ -302,10 +302,10 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
    *   - can be changed by user action: zooming or unzooming
    *   - zooming will trigger a new query if the windowPeriod changes
    *   - unzooming will revert the query results back to its original state
-   *     (before zooming), and does not query when unzooming
+   *     (before zooming), but does not query
    *
-   *   - can be changed also by the preZoomDomain, because they should stay synced
-   *     to keep the graph fitted, and does not query when syncing
+   *   - can be changed also by the preZoomDomain, by syncing,
+   *     to keep the graph fitted, and does not query
    */
   const [domain, setDomain] = useState(initialDomain)
 
@@ -351,7 +351,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // sync preZoomDomain and domain
-  //   - when query results change to re-fit the graph
+  //   - when query results change to refit the graph
   //   - except when it is the time axis to prevent a shrunken graph
   useEffect(() => {
     if (!timeRange && isNotEqual(preZoomDomain, domain)) {

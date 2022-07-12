@@ -6,6 +6,7 @@ import {
   getOrg,
   getOrgs,
   putOrgsDefault,
+  putAccountsDefault,
   Account,
   Identity,
   IdentityAccount,
@@ -116,42 +117,6 @@ export const fetchIdentity = async () => {
   return fetchQuartzMe()
 }
 
-const identityRetryDelay = 30000 // 30 seconds
-const retryLimit = 5
-
-export const retryFetchIdentity = async (
-  retryAttempts = 1,
-  retryDelay = identityRetryDelay
-) => {
-  try {
-    return await fetchIdentity()
-  } catch (error) {
-    if (
-      error.name === NetworkErrorTypes.UnauthorizedError ||
-      error.name === NetworkErrorTypes.GenericError
-    ) {
-      throw error
-    }
-
-    if (error.name === NetworkErrorTypes.ServerError) {
-      if (retryAttempts >= retryLimit) {
-        throw error
-      }
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          retryFetchIdentity(retryAttempts + 1, retryDelay)
-            .then(user => {
-              resolve(user)
-            })
-            .catch(error => {
-              reject(error)
-            })
-        }, retryAttempts * retryDelay)
-      })
-    }
-  }
-}
-
 // fetch user identity from /quartz/identity.
 export const fetchQuartzIdentity = async (): Promise<Identity> => {
   const response = await getIdentity({})
@@ -189,7 +154,7 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
 }
 
 // fetch user identity from /me (used in OSS and environments without Quartz)
-const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
+export const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
 
   if (response.status === 401) {
@@ -227,6 +192,23 @@ export const fetchAccountDetails = async (
   return accountDetails
 }
 
+// change the user's default account
+export const updateDefaultQuartzAccount = async (
+  accountId: number
+): Promise<void> => {
+  const response = await putAccountsDefault({
+    data: {
+      id: accountId,
+    },
+  })
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  // success status code is 204; no data in response.body is expected.
+}
+
 // fetch details about user's current organization
 export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   const response = await getOrg({orgId})
@@ -259,7 +241,7 @@ export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
 }
 
 // change default organization for a given account
-export const putDefaultQuartzOrg = async (orgId: string) => {
+export const updateDefaultQuartzOrg = async (orgId: string) => {
   const response = await putOrgsDefault({
     data: {
       id: orgId,

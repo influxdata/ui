@@ -7,12 +7,12 @@ environments:
       namespace: ${local.env.TWODOTOH_NAMESPACE}
 providers:
   - name: kubernetes
-    environments: ["dev"]
-    context:  ${var.context-name}
+    environments: ['dev']
+    context: ${var.context-name}
     namespace:
       name: ${var.namespace}
     kaniko:
-      extraFlags: ["--use-new-run", "--log-timestamp"]
+      extraFlags: ['--use-new-run', '--log-timestamp']
       image: gcr.io/kaniko-project/executor:debug-v1.2.0
       namespace: ${var.namespace}
     buildMode: kaniko

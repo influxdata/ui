@@ -237,7 +237,7 @@ export const SchemaProvider: FC = React.memo(({children}) => {
 
     setLoading(RemoteDataState.Loading)
 
-    const scope = getPanelQueries(data.id)?.scope ?? {}
+    const scope = getPanelQueries(data.id)?.scope
 
     let source = `from(bucket: "${data.bucket.name}")`
     if (data.bucket.type === 'sample') {

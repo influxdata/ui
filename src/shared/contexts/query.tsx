@@ -11,7 +11,6 @@ import {getOrg} from 'src/organizations/selectors'
 import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 import {
   FluxResult,
-  QueryScope,
   InternalFromFluxResult,
   Column,
 } from 'src/types/flows'
@@ -34,15 +33,28 @@ interface CancelMap {
   [key: string]: () => void
 }
 
+export interface QueryOptions {
+  useInjection?: boolean
+  useExtern?: boolean
+}
+
+export interface QueryScope {
+  region: string
+  org: string
+  token?: string
+  vars?: Record<string, string>
+  params?: Record<string, string>
+}
+
 export interface QueryContextType {
-  basic: (text: string, override?: QueryScope) => any
-  query: (text: string, override?: QueryScope) => Promise<FluxResult>
+  basic: (text: string, override?: QueryScope, options?: QueryOptions) => any
+  query: (text: string, override?: QueryScope, options?: QueryOptions) => Promise<FluxResult>
   cancel: (id?: string) => void
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
-  basic: (_: string, __?: QueryScope) => {},
-  query: (_: string, __?: QueryScope) => Promise.resolve({} as FluxResult),
+  basic: (_: string, __: QueryScope, ___: QueryOptions) => {},
+  query: (_: string, __: QueryScope, ___: QueryOptions) => Promise.resolve({} as FluxResult),
   cancel: (_?: string) => {},
 }
 
@@ -188,23 +200,11 @@ const _addWindowPeriod = (ast, optionAST): void => {
   })
 }
 
-export const simplify = (text, vars = {}) => {
-  try {
-    const ast = isFlagEnabled('fastFlows') ? parseQuery(text) : parse(text)
-    const referencedVars = find(
+const joinOption = (ast: any, optionName: string, defaults: Record<string,string> = {}) => {
+  // remove and join duplicate options declared in the query
+    const joinedOption = remove(
       ast,
-      node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
-    )
-      .map(node => node.property.name)
-      .reduce((acc, curr) => {
-        acc[curr] = vars[curr]
-        return acc
-      }, {})
-
-    // Grab all variables that are defined in the query while removing the old definition from the AST
-    const queryDefinedVars = remove(
-      ast,
-      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
+      node => node.type === 'OptionStatement' && node.assignment.id.name === optionName
     ).reduce((acc, curr) => {
       // eslint-disable-next-line no-extra-semi
       ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
@@ -216,60 +216,71 @@ export const simplify = (text, vars = {}) => {
       }, acc)
 
       return acc
-    }, {})
+    }, defaults)
 
-    // Merge the two variable maps, allowing for any user defined variables to override
-    // global system variables
-    Object.keys(queryDefinedVars).forEach(vari => {
-      if (referencedVars.hasOwnProperty(vari)) {
-        referencedVars[vari] = queryDefinedVars[vari]
-      }
-    })
-
-    const varVals = Object.entries(referencedVars)
+    const optionVals = Object.entries(joinedOption)
       .map(([k, v]) => `${k}: ${v}`)
       .join(',\n')
-    const optionAST = isFlagEnabled('fastFlows')
-      ? parseQuery(`option v = {\n${varVals}\n}\n`)
-      : parse(`option v = {\n${varVals}\n}\n`)
+    if (!optionVals.length) {
+      return null
+    }
 
-    if (varVals.length) {
-      ast.body.unshift(optionAST.body[0])
+    return isFlagEnabled('fastFlows')
+      ? parseQuery(`option ${optionName} = {\n${optionVals}\n}\n`)
+      : parse(`option ${optionName} = {\n${optionVals}\n}\n`)
+}
+
+export const simplify = (text, vars = {}, params = {}) => {
+  try {
+    const ast = isFlagEnabled('fastFlows') ? parseQuery(text) : parse(text)
+
+    // find all `v.varname` references and apply
+    // their default value from `vars`
+    // filtering this way prevents flooding the query with all
+    // variable definitions on accident and simplifies the filtering
+    // logic required to support that by centralizing it here
+    const referencedVars = find(
+      ast,
+      node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
+    )
+      .map(node => node.property.name)
+      .reduce((acc, curr) => {
+        acc[curr] = vars[curr]
+        return acc
+      }, {})
+
+    const variableOption = joinOption(ast, 'v', referencedVars)
+
+    if (variableOption) {
+      ast.body.unshift(variableOption.body[0])
     }
 
     // load in windowPeriod at the last second, because it needs to self reference all the things
     if (referencedVars.hasOwnProperty('windowPeriod')) {
-      _addWindowPeriod(ast, optionAST)
+      _addWindowPeriod(ast, variableOption)
     }
 
-    // Join together any duplicate task options
-    const taskParams = remove(
+    // give the same treatment to parameters
+    const referencedParams = find(
       ast,
-      node =>
-        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
+      node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
     )
-      .reverse()
+      .map(node => node.property.name)
       .reduce((acc, curr) => {
-        // eslint-disable-next-line no-extra-semi
-        ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-          if (_curr.key?.name && _curr.value?.location?.source) {
-            _acc[_curr.key.name] = _curr.value.location.source
-          }
-
-          return _acc
-        }, acc)
-
+        acc[curr] = params[curr]
         return acc
       }, {})
 
-    if (Object.keys(taskParams).length) {
-      const taskVals = Object.entries(taskParams)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join(',\n')
-      const taskAST = isFlagEnabled('fastFlows')
-        ? parseQuery(`option task = {\n${taskVals}\n}\n`)
-        : parse(`option task = {\n${taskVals}\n}\n`)
-      ast.body.unshift(taskAST.body[0])
+    const paramOption = joinOption(ast, 'param', referencedParams)
+
+    if (paramOption) {
+      ast.body.unshift(paramOption.body[0])
+    }
+
+    // Join together any duplicate task options
+    const taskOption = joinOption(ast, 'task')
+    if (taskOption) {
+      ast.body.unshift(taskOption.body[0])
     }
 
     // turn it back into a query
@@ -416,8 +427,10 @@ export const QueryProvider: FC = ({children}) => {
     }
   }, [])
 
-  const basic = (text: string, override?: QueryScope) => {
-    const query = simplify(text, override?.vars || {})
+  const basic = (text: string, override: QueryScope, options: QueryOptions) => {
+    const simpleVars = options?.useInjection ? override?.vars ?? {} : {}
+    const simpleParams = options?.useInjection ? override?.params ?? {} : {}
+    const query = simplify(text, simpleVars, simpleParams)
 
     const orgID = override?.org || org.id
 
@@ -557,8 +570,8 @@ export const QueryProvider: FC = ({children}) => {
     delete pending.current[queryID]
   }
 
-  const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
-    const result = basic(text, override)
+  const query = (text: string, override: QueryScope, options: QueryOptions): Promise<FluxResult> => {
+    const result = basic(text, override, options)
 
     const promise: any = result.promise
       .then(raw => {

@@ -1,6 +1,6 @@
 // Libraries
 import React, {createContext, FC, useContext, useMemo, useState} from 'react'
-import {Bucket, QueryScope, RemoteDataState} from 'src/types'
+import {Bucket, RemoteDataState} from 'src/types'
 
 // Constants
 import {
@@ -13,7 +13,7 @@ import {
 } from 'src/shared/constants/queryBuilder'
 
 // Contexts
-import {QueryContext} from 'src/shared/contexts/query'
+import {QueryContext, QueryScope} from 'src/shared/contexts/query'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'

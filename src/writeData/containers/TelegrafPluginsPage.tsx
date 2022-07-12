@@ -45,11 +45,11 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
 
   const eventName = normalizeEventName(name)
   useEffect(() => {
-    event(`telegraf_tile.${eventName}.config_viewed`, {id: contentID, name})
+    event('telegraf_tile.config_viewed', {id: contentID, name, eventName})
   }, [eventName, contentID, name])
 
   const onCopy = () => {
-    event(`telegraf_tile.${eventName}.config_copied`, {id: contentID, name})
+    event('telegraf_tile.config_copied', {id: contentID, name, eventName})
   }
   const codeRenderer: any = (props: any): any => (
     <CodeSnippet text={props.value} label={props.language} onCopy={onCopy} />

@@ -12,6 +12,7 @@ import {
 } from '@influxdata/clockface'
 
 import './UserPopoverStyles.scss'
+import {Link} from 'react-router-dom'
 
 type Props = {
   user: IdentityUser
@@ -73,20 +74,20 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           <hr />
         </div>
         <div className="user-popover-footer">
-          <a className="user-popover-footer--button">
+          <Link className="user-popover-footer--button" to="/">
             <Icon
               glyph={IconFont.UserOutline_New}
               className="user-popover-footer--button-icon"
             />
             Profile
-          </a>
-          <a className="user-popover-footer--button">
+          </Link>
+          <Link className="user-popover-footer--button" to="/logout">
             <Icon
               glyph={IconFont.Logout_New}
               className="user-popover-footer--button-icon"
             />
             Log Out
-          </a>
+          </Link>
         </div>
       </div>
     )

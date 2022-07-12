@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useContext, useEffect} from 'react'
+import React, {FC, lazy, Suspense, useContext} from 'react'
 import {
   DraggableResizer,
   Orientation,
@@ -15,7 +15,6 @@ import {
   JustifyContent,
   AlignItems,
 } from '@influxdata/clockface'
-import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
@@ -44,18 +43,6 @@ import {useSessionStorage} from '../shared/utils'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
-)
-const useQueryState = createLocalStorageStateHook<string>(
-  'dataExplorer.query',
-  ''
-)
-const useRangeState = createLocalStorageStateHook<TimeRange>(
-  'dataExplorer.range',
-  DEFAULT_TIME_RANGE
-)
-const useResizeState = createLocalStorageStateHook(
-  'dataExplorer.resize.horizontal',
-  [0.2]
 )
 
 const fakeNotify = notify
@@ -95,26 +82,15 @@ const ResultsPane: FC = () => {
   const {basic, query} = useContext(QueryContext)
   const {status, setStatus, setResult} = useContext(ResultsContext)
 
-  const [oldHorizDragPosition, setOldHorizDragPosition] = useResizeState()
-  const [horizDragPosition, setHorizDragPosition] = useSessionStorage(
-    'dataExplorer.resize.horizontal',
-    oldHorizDragPosition
-  )
-  const [oldText, setOldText] = useQueryState()
-  const [text, setText] = useSessionStorage('dataExplorer.query', oldText)
-  const [oldTimeRange, setOldTimeRange] = useRangeState()
+  const [
+    horizDragPosition,
+    setHorizDragPosition,
+  ] = useSessionStorage('dataExplorer.resize.horizontal', [0.2])
+  const [text, setText] = useSessionStorage('dataExplorer.query', '')
   const [timeRange, setTimeRange] = useSessionStorage(
     'dataExplorer.range',
-    oldTimeRange
+    DEFAULT_TIME_RANGE
   )
-
-  // migration to allow people to keep their last used settings
-  // immediately after rollout
-  useEffect(() => {
-    setOldHorizDragPosition([0.2])
-    setOldText('')
-    setOldTimeRange(DEFAULT_TIME_RANGE)
-  }, [])
 
   const download = () => {
     event('CSV Download Initiated')

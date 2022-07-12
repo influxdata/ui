@@ -1,5 +1,4 @@
-import React, {FC, useEffect} from 'react'
-import {createLocalStorageStateHook} from 'use-local-storage-state'
+import React, {FC} from 'react'
 
 // Components
 import {DraggableResizer, Orientation} from '@influxdata/clockface'
@@ -15,22 +14,11 @@ import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 // Styles
 import './FluxQueryBuilder.scss'
 
-const useResizeState = createLocalStorageStateHook(
-  'dataExplorer.resize.vertical',
-  [0.25, 0.8]
-)
 const FluxQueryBuilder: FC = () => {
-  const [oldVertDragPosition, oldSetVertDragPosition] = useResizeState()
-  const [vertDragPosition, setVertDragPosition] = useSessionStorage(
-    'dataExplorer.resize.vertical',
-    oldVertDragPosition
-  )
-
-  // migration to allow people to keep their last used settings
-  // immediately after rollout
-  useEffect(() => {
-    oldSetVertDragPosition([0.25, 0.8])
-  }, [])
+  const [
+    vertDragPosition,
+    setVertDragPosition,
+  ] = useSessionStorage('dataExplorer.resize.vertical', [0.25, 0.8])
 
   return (
     <QueryProvider>

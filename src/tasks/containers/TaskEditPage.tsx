@@ -62,14 +62,14 @@ class TaskEditPage extends PureComponent<Props> {
   public render(): JSX.Element {
     const {currentScript, currentTask, taskOptions} = this.props
 
-    if (currentTask != null && currentTask.scriptID != null) {
+    if (currentTask?.scriptID != null) {
       return (
         <Page titleTag={pageTitleSuffixer([`Edit ${taskOptions.name}`])}>
           <TaskHeader
             title="Scripted Task"
             canSubmit={false}
             onCancel={this.handleCancel}
-            onSave={this.handleCancel}
+            onSave={() => {}}
           />
           <Page.Contents fullWidth={true} scrollable={false}>
             <div className="task-form">
@@ -91,7 +91,8 @@ class TaskEditPage extends PureComponent<Props> {
                   }
                 >
                   <FluxMonacoEditor
-                    script="Cannot modify or save this task while it is using a script, please use the api directly."
+                    // Fill with a comment to avoid the syntax highlighting on the `or`
+                    script="// You may not modify or save this task while it is using a script. Please use the API directly."
                     variables={null}
                     onChangeScript={this.handleChangeScript}
                     autofocus

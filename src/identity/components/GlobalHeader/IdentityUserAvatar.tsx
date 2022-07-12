@@ -6,7 +6,6 @@ import {
   ClickOutside,
   ComponentColor,
   FlexBox,
-  FlexDirection,
   Icon,
   IconFont,
   InfluxColors,
@@ -83,10 +82,10 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           </a>
           <a className="user-popover-footer--button">
             <Icon
-              glyph={IconFont.UserOutline_New}
+              glyph={IconFont.Logout_New}
               className="user-popover-footer--button-icon"
             />
-            Profile
+            Log Out
           </a>
         </div>
       </div>
@@ -96,7 +95,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   private getPopoverStyle = () => {
     return {
       position: 'absolute',
-      top: 50,
+      top: 60,
       right: 32,
       opacity: this.state.isPopoverOpen ? 100 : 0,
     } as CSSProperties

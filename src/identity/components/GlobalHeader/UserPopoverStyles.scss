@@ -28,14 +28,13 @@
     display: inline-flex;
     flex-direction: column;
 
-    a {
+    .user-popover-footer--button {
       margin-top: 10px;
       cursor: pointer;
+    }
 
-      :hover {
-        text-decoration: none;
-        color: inherit;re
-      }
+    a:hover {
+      color: $cf-grey-75;
     }
 
     .user-popover-footer--button-icon {

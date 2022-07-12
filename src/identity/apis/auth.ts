@@ -288,5 +288,6 @@ export const updateDefaultQuartzOrg = async (orgId: string) => {
   if (response.status !== 204) {
     throw new ServerError(response.data.message)
   }
+
   return response.data
 }

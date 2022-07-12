@@ -242,6 +242,7 @@ export const putDefaultQuartzAccount = async (
     throw new ServerError(response.data.message)
   }
 
+  // success status code is 204; no response in body is expected.
   const responseEmpty = response.data
   return responseEmpty
 }

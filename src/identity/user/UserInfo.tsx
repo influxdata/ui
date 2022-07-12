@@ -14,6 +14,7 @@ import {selectQuartzIdentity} from '../selectors'
 
 const fullWidth = {width: '100%'}
 const sixtyPercentWidth = {width: '60%'}
+const headerMargin = {marginTop: '40px', marginBottom: '15px'}
 
 export const UserInfo: FC = () => {
   const identity = useSelector(selectQuartzIdentity)
@@ -21,19 +22,20 @@ export const UserInfo: FC = () => {
 
   return (
     <>
-      <Heading weight={FontWeight.Bold} element={HeadingElement.H1}>
-        User Profile
-      </Heading>
       <FlexBox
         direction={FlexDirection.Column}
         style={fullWidth}
         alignItems={AlignItems.FlexStart}
       >
-        <Heading weight={FontWeight.Bold} element={HeadingElement.H3}>
+        <Heading
+          weight={FontWeight.Bold}
+          element={HeadingElement.H3}
+          selectable={false}
+          style={headerMargin}
+        >
           User Details
         </Heading>
         <LabeledUserData label="Email" src={user.email} />
-
         <FlexBox
           direction={FlexDirection.Row}
           style={sixtyPercentWidth}

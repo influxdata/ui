@@ -27,8 +27,7 @@ const LabeledUserData: FC<Props> = ({label, src}) => (
     margin={ComponentSize.Large}
     alignItems={AlignItems.FlexStart}
     style={{
-      marginLeft: '8px',
-      marginRight: '8px',
+      marginRight: '35px',
     }}
   >
     <Heading
@@ -45,6 +44,7 @@ const LabeledUserData: FC<Props> = ({label, src}) => (
         border: '2px solid #333346',
         borderRadius: '2px',
         padding: '12px',
+        marginBottom: '10px',
       }}
     >
       {src}

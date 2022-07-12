@@ -9,12 +9,12 @@ import {
   HeadingElement,
   TypeAheadDropDown,
 } from '@influxdata/clockface'
-import {UserAccount} from 'src/client/unityRoutes'
+// import {UserAccount} from 'src/client/unityRoutes'
 
 interface Props {
   label: string
-  defaultAccount: UserAccount
-  accountList: UserAccount[]
+  defaultAccount
+  accountList
   changeSelectedAccount /* : React.Dispatch<React.SetStateAction<UserAccount>> */
 }
 
@@ -30,13 +30,13 @@ export const DefaultAccountDropDown: FC<Props> = ({
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
       style={{
-        marginLeft: '8px',
-        marginRight: '8px',
+        marginLeft: '0px',
+        marginRight: '20px',
       }}
     >
       <Heading
         className="org-profile-tab--heading"
-        element={HeadingElement.H4}
+        element={HeadingElement.H5}
         weight={FontWeight.Medium}
       >
         {label}

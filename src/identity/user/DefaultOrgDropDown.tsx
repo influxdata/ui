@@ -38,7 +38,7 @@ export const DefaultOrgDropDown: FC<Props> = ({
     >
       <Heading
         className="org-profile-tab--heading"
-        element={HeadingElement.H4}
+        element={HeadingElement.H5}
         weight={FontWeight.Medium}
       >
         {label}

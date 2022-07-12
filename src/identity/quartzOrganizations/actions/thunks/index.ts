@@ -1,7 +1,7 @@
 import {Dispatch} from 'react'
 
 // API
-import {fetchQuartzOrgs, putDefaultQuartzOrg} from 'src/identity/apis/auth'
+import {fetchQuartzOrgs, updateDefaultQuartzOrg} from 'src/identity/apis/auth'
 
 // Actions
 import {
@@ -45,7 +45,7 @@ export const updateDefaultOrgThunk = (
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
 
-    await putDefaultQuartzOrg(newDefaultOrg.id)
+    await updateDefaultQuartzOrg(newDefaultOrg.id)
 
     dispatch(setQuartzDefaultOrg(oldDefaultOrg.id, newDefaultOrg.id))
 

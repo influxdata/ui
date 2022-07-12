@@ -277,7 +277,7 @@ export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
 }
 
 // change default organization for a given account
-export const putDefaultQuartzOrg = async (orgId: string) => {
+export const updateDefaultQuartzOrg = async (orgId: string) => {
   const response = await putOrgsDefault({
     data: {
       id: orgId,

@@ -12,7 +12,7 @@ import Notifications from 'src/shared/components/notifications/Notifications'
 import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
 // APIs
-import {fetchIdentity} from 'src/identity/apis/auth'
+import {fetchLegacyIdentity} from 'src/identity/apis/auth'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -25,7 +25,7 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      await fetchIdentity()
+      await fetchLegacyIdentity()
       setHasValidSession(true)
     } catch {
       setHasValidSession(false)

@@ -189,7 +189,7 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
 }
 
 // fetch user identity from /me (used in OSS and environments without Quartz)
-const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
+export const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
 
   if (response.status === 401) {

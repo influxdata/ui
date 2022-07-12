@@ -186,7 +186,7 @@ const BrokerFormContent: FC<Props> = ({
               }
               helpText={
                 edit
-                  ? "Changing the broker's hostname will require your broker's password to be provided again."
+                  ? 'Changing the hostname will require you to provide your password again.'
                   : ''
               }
             >
@@ -204,7 +204,7 @@ const BrokerFormContent: FC<Props> = ({
                       // clear the password field if broker host is edited
                       brokerPassword:
                         className === 'create'
-                          ? formContent.brokerPassword
+                          ? formContent?.brokerPassword
                           : '',
                     })
                   }}

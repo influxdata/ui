@@ -184,13 +184,17 @@ export const updateTelegraf = (telegraf: Telegraf) => async (
     )
 
     dispatch(editTelegraf(normTelegraf))
-    event(`telegraf.config.${normalizeEventName(telegraf.name)}.edit.success`, {
-      id: telegraf.id,
-    })
+    event(
+      'telegraf.config.edit.success',
+      {id: telegraf.id},
+      {name: normalizeEventName(telegraf.name)}
+    )
   } catch (error) {
-    event(`telegraf.config.${normalizeEventName(telegraf.name)}.edit.failure`, {
-      id: telegraf.id,
-    })
+    event(
+      'telegraf.config.edit.failure',
+      {id: telegraf.id},
+      {name: normalizeEventName(telegraf.name)}
+    )
     console.error(error)
     dispatch(notify(telegrafUpdateFailed(telegraf.name)))
   }
@@ -207,9 +211,17 @@ export const deleteTelegraf = (id: string, name: string) => async (
     }
 
     dispatch(removeTelegraf(id))
-    event(`telegraf.config.${normalizeEventName(name)}.delete.success`, {id})
+    event(
+      'telegraf.config.delete.success',
+      {id},
+      {name: normalizeEventName(name)}
+    )
   } catch (error) {
-    event(`telegraf.config.${normalizeEventName(name)}.delete.failure`, {id})
+    event(
+      'telegraf.config.delete.failure',
+      {id},
+      {name: normalizeEventName(name)}
+    )
     console.error(error)
     dispatch(notify(telegrafDeleteFailed(name)))
   }

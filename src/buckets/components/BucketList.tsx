@@ -5,8 +5,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useReducer,
-  useRef,
+  useState,
 } from 'react'
 
 // Components
@@ -54,9 +53,7 @@ const BucketList: FC<Props> = ({
   sortDirection,
   sortType,
 }) => {
-  const [, forceUpdate] = useReducer(x => x + 1, 0)
-
-  const currentPage = useRef<number>(1)
+  const [currentPage, setCurrentPage] = useState<number>(1)
   const rowsPerPage: number = 10
   const totalPages: number = Math.max(
     Math.ceil(buckets.length / rowsPerPage),
@@ -64,11 +61,10 @@ const BucketList: FC<Props> = ({
   )
 
   const paginate = useCallback((page: number) => {
-    currentPage.current = page
     const url = new URL(location.href)
     url.searchParams.set('page', page.toString())
     history.replaceState(null, '', url.toString())
-    forceUpdate()
+    setCurrentPage(page)
   }, [])
 
   useEffect(() => {
@@ -80,7 +76,7 @@ const BucketList: FC<Props> = ({
       urlPageNumber && urlPageNumber <= totalPages && urlPageNumber > 0
 
     if (passedInPageIsValid) {
-      currentPage.current = urlPageNumber
+      setCurrentPage(urlPageNumber)
     }
   }, [])
 
@@ -89,10 +85,10 @@ const BucketList: FC<Props> = ({
 
     // if the user filters the list while on a page that is
     // outside the new filtered list put them on the last page of the new list
-    if (currentPage.current > totalPages) {
+    if (currentPage > totalPages) {
       paginate(totalPages)
     }
-  }, [totalPages, paginate])
+  }, [currentPage, totalPages, paginate])
 
   const sortedBuckets = useMemo(
     () => getSortedResources(buckets, sortKey, sortDirection, sortType),
@@ -100,7 +96,7 @@ const BucketList: FC<Props> = ({
   )
 
   const listBuckets = (): JSX.Element[] => {
-    const startIndex = rowsPerPage * Math.max(currentPage.current - 1, 0)
+    const startIndex = rowsPerPage * Math.max(currentPage - 1, 0)
     const endIndex = Math.min(startIndex + rowsPerPage, bucketCount)
 
     const userBuckets = []
@@ -152,7 +148,7 @@ const BucketList: FC<Props> = ({
         ref={paginationRef}
         style={{width: pageWidth}}
         totalPages={totalPages}
-        currentPage={currentPage.current}
+        currentPage={currentPage}
         pageRangeOffset={1}
         onChange={paginate}
       />

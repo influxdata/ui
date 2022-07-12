@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 // Components
@@ -10,6 +10,7 @@ import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
 import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
 import Schema from 'src/dataExplorer/components/Schema'
+import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 
 // Styles
 import './FluxQueryBuilder.scss'
@@ -19,7 +20,17 @@ const useResizeState = createLocalStorageStateHook(
   [0.25, 0.8]
 )
 const FluxQueryBuilder: FC = () => {
-  const [vertDragPosition, setVertDragPosition] = useResizeState()
+  const [oldVertDragPosition, oldSetVertDragPosition] = useResizeState()
+  const [vertDragPosition, setVertDragPosition] = useSessionStorage(
+    'dataExplorer.resize.vertical',
+    oldVertDragPosition
+  )
+
+  // migration to allow people to keep their last used settings
+  // immediately after rollout
+  useEffect(() => {
+    oldSetVertDragPosition([0.25, 0.8])
+  }, [])
 
   return (
     <QueryProvider>

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useContext} from 'react'
+import React, {FC, lazy, Suspense, useContext, useEffect} from 'react'
 import {
   DraggableResizer,
   Orientation,
@@ -40,6 +40,7 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {useSessionStorage} from '../shared/utils'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
@@ -94,9 +95,26 @@ const ResultsPane: FC = () => {
   const {basic, query} = useContext(QueryContext)
   const {status, setStatus, setResult} = useContext(ResultsContext)
 
-  const [horizDragPosition, setHorizDragPosition] = useResizeState()
-  const [text, setText] = useQueryState()
-  const [timeRange, setTimeRange] = useRangeState()
+  const [oldHorizDragPosition, setOldHorizDragPosition] = useResizeState()
+  const [horizDragPosition, setHorizDragPosition] = useSessionStorage(
+    'dataExplorer.resize.horizontal',
+    oldHorizDragPosition
+  )
+  const [oldText, setOldText] = useQueryState()
+  const [text, setText] = useSessionStorage('dataExplorer.query', oldText)
+  const [oldTimeRange, setOldTimeRange] = useRangeState()
+  const [timeRange, setTimeRange] = useSessionStorage(
+    'dataExplorer.range',
+    oldTimeRange
+  )
+
+  // migration to allow people to keep their last used settings
+  // immediately after rollout
+  useEffect(() => {
+    setOldHorizDragPosition([0.2])
+    setOldText('')
+    setOldTimeRange(DEFAULT_TIME_RANGE)
+  }, [])
 
   const download = () => {
     event('CSV Download Initiated')

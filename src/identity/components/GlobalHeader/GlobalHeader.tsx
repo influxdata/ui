@@ -28,7 +28,7 @@ import {
   emptyOrg,
 } from 'src/identity/components/GlobalHeader/DefaultEntities'
 import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
-import IdentityUserAvatar from './IdentityUserAvatar'
+import IdentityUserAvatar from 'src/identity/components/GlobalHeader/IdentityUserAvatar'
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()

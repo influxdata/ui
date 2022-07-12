@@ -229,9 +229,9 @@ export const fetchAccountDetails = async (
 }
 
 // change the user's default account
-export const putDefaultQuartzAccount = async (
+export const updateDefaultQuartzAccount = async (
   accountId: number
-): Promise<Organization> => {
+): Promise<void> => {
   const response = await putAccountsDefault({
     data: {
       id: accountId,
@@ -242,9 +242,7 @@ export const putDefaultQuartzAccount = async (
     throw new ServerError(response.data.message)
   }
 
-  // success status code is 204; no response in body is expected.
-  const responseEmpty = response.data
-  return responseEmpty
+  // success status code is 204; no data in response.body is expected.
 }
 
 // fetch details about user's current organization

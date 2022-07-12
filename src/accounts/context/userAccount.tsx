@@ -26,7 +26,7 @@ import {setMe} from 'src/me/actions/creators'
 import {MeState} from 'src/me/reducers'
 
 // API
-import {putDefaultQuartzAccount} from 'src/identity/apis/auth'
+import {updateDefaultQuartzAccount} from 'src/identity/apis/auth'
 
 export type Props = {
   children: JSX.Element
@@ -107,7 +107,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     const accountName = getAccountNameById(newDefaultAcctId)
 
     try {
-      await putDefaultQuartzAccount(newDefaultAcctId)
+      await updateDefaultQuartzAccount(newDefaultAcctId)
       setDefaultAccountId(newDefaultAcctId)
       dispatch(notify(accountDefaultSettingSuccess(accountName)))
     } catch (error) {

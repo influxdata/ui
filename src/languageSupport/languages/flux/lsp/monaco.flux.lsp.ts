@@ -75,6 +75,10 @@ export function initLspWorker() {
   } else {
     worker = new Fallback()
   }
+  worker.onerror = (err: ErrorEvent) => {
+    const error: Error = {...err, name: 'worker.onerror'}
+    reportErrorThroughHoneyBadger(error, {name: 'LSP worker'})
+  }
   manager = new ConnectionManager(worker)
 
   messageReader = new BrowserMessageReader(worker)

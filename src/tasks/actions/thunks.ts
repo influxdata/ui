@@ -125,7 +125,7 @@ export const getAllTasks = (name?: string) => async (
     const resp = await fetchTasks(query)
 
     let nonNormalizedTasks = resp.data.tasks
-    let next = resp.data.links.next
+    let next = resp.data?.links?.next
     while (next && next.includes('after=')) {
       const afterAndExtras = next.split('after=')
       if (afterAndExtras.length < 2) {
@@ -231,11 +231,11 @@ export const updateTaskStatus = (task: Task) => async (
 
     dispatch(editTask(normTask))
     dispatch(setCurrentTask(normTask))
-    dispatch(notify(copy.taskUpdateSuccess()))
+    dispatch(notify(copy.taskUpdateSuccess(task.name)))
   } catch (e) {
     console.error(e)
     const message = getErrorMessage(e)
-    dispatch(notify(copy.taskUpdateFailed(message)))
+    dispatch(notify(copy.taskUpdateFailed(message, task.name)))
   }
 }
 
@@ -255,11 +255,11 @@ export const updateTaskName = (name: string, taskID: string) => async (
     )
 
     dispatch(editTask(normTask))
-    dispatch(notify(copy.taskUpdateSuccess()))
+    dispatch(notify(copy.taskUpdateSuccess(name)))
   } catch (e) {
     console.error(e)
     const message = getErrorMessage(e)
-    dispatch(notify(copy.taskUpdateFailed(message)))
+    dispatch(notify(copy.taskUpdateFailed(message, name)))
   }
 }
 

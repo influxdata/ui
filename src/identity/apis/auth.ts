@@ -4,12 +4,16 @@ import {
   getIdentity,
   getMe as getMeQuartz,
   getOrg,
+  getOrgs,
+  putOrgsDefault,
+  putAccountsDefault,
   Account,
   Identity,
   IdentityAccount,
   IdentityUser,
   Me as MeQuartz,
   Organization,
+  OrganizationSummaries,
 } from 'src/client/unityRoutes'
 
 import {
@@ -45,11 +49,28 @@ export interface CurrentOrg {
   regionName?: string
 }
 
+export interface IdentityState {
+  currentIdentity: CurrentIdentity
+  quartzOrganizations: QuartzOrganizations
+}
+
+export type QuartzOrganizations = {
+  orgs: OrganizationSummaries
+  status?: RemoteDataState
+}
+
 export interface CurrentIdentity {
   user: IdentityUser
   account: CurrentAccount
   org: CurrentOrg
   status?: RemoteDataState
+}
+
+export enum NetworkErrorTypes {
+  UnauthorizedError = 'UnauthorizedError',
+  NotFoundError = 'NotFoundError',
+  ServerError = 'ServerError',
+  GenericError = 'GenericError',
 }
 
 // 401 error
@@ -96,6 +117,42 @@ export const fetchIdentity = async () => {
   return fetchQuartzMe()
 }
 
+const identityRetryDelay = 30000 // 30 seconds
+const retryLimit = 5
+
+export const retryFetchIdentity = async (
+  retryAttempts = 1,
+  retryDelay = identityRetryDelay
+) => {
+  try {
+    return await fetchIdentity()
+  } catch (error) {
+    if (
+      error.name === NetworkErrorTypes.UnauthorizedError ||
+      error.name === NetworkErrorTypes.GenericError
+    ) {
+      throw error
+    }
+
+    if (error.name === NetworkErrorTypes.ServerError) {
+      if (retryAttempts >= retryLimit) {
+        throw error
+      }
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          retryFetchIdentity(retryAttempts + 1, retryDelay)
+            .then(user => {
+              resolve(user)
+            })
+            .catch(error => {
+              reject(error)
+            })
+        }, retryAttempts * retryDelay)
+      })
+    }
+  }
+}
+
 // fetch user identity from /quartz/identity.
 export const fetchQuartzIdentity = async (): Promise<Identity> => {
   const response = await getIdentity({})
@@ -133,7 +190,7 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
 }
 
 // fetch user identity from /me (used in OSS and environments without Quartz)
-const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
+export const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
 
   if (response.status === 401) {
@@ -171,6 +228,23 @@ export const fetchAccountDetails = async (
   return accountDetails
 }
 
+// change the user's default account
+export const updateDefaultQuartzAccount = async (
+  accountId: number
+): Promise<void> => {
+  const response = await putAccountsDefault({
+    data: {
+      id: accountId,
+    },
+  })
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  // success status code is 204; no data in response.body is expected.
+}
+
 // fetch details about user's current organization
 export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   const response = await getOrg({orgId})
@@ -185,4 +259,35 @@ export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
 
   const orgDetails = response.data
   return orgDetails
+}
+
+// fetch list of user's current organizations
+export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
+  const response = await getOrgs({})
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
+}
+
+// change default organization for a given account
+export const updateDefaultQuartzOrg = async (orgId: string) => {
+  const response = await putOrgsDefault({
+    data: {
+      id: orgId,
+    },
+  })
+
+  // Only status codes thrown at moment are 204 and 5xx.
+  if (response.status !== 204) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
 }

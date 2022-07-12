@@ -83,7 +83,38 @@ export type ExecuteCommandT =
   | [ExecuteCommand.InjectTagValue, ExecuteCommandInjectTagValue]
   | [ExecuteCommand.InjectField, ExecuteCommandInjectField]
 
-export const executeCommand = ([command, arg]: ExecuteCommandT) => {
+function validateExecuteCommandPayload([command, arg]: ExecuteCommandT):
+  | boolean
+  | never {
+  const checkIsString = (arg, prop) => {
+    if (!(arg[prop] && typeof arg[prop] === 'string')) {
+      throw new Error(
+        `${prop} should be type string, instead found: ${typeof arg[prop]}`
+      )
+    }
+    return true
+  }
+
+  switch (command) {
+    case ExecuteCommand.InjectionMeasurement:
+      return checkIsString(arg, 'bucket')
+    case ExecuteCommand.InjectTag:
+    case ExecuteCommand.InjectField:
+      return checkIsString(arg, 'bucket') && checkIsString(arg, 'name')
+    case ExecuteCommand.InjectTagValue:
+      return (
+        checkIsString(arg, 'bucket') &&
+        checkIsString(arg, 'name') &&
+        checkIsString(arg, 'value')
+      )
+    default:
+      throw new Error(`unrecognized ExecuteCommand`)
+  }
+}
+
+export const executeCommand = (payload: ExecuteCommandT): object | never => {
+  validateExecuteCommandPayload(payload)
+  const [command, arg] = payload
   return createRequest(Methods.ExecuteCommand, {
     command,
     arguments: [arg],

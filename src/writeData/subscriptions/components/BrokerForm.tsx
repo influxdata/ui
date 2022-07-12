@@ -51,9 +51,15 @@ interface Props {
   formContent: Subscription
   updateForm: (any) => void
   saveForm: (any) => void
+  onFocus?: (any) => void
 }
 
-const BrokerForm: FC<Props> = ({formContent, updateForm, saveForm}) => {
+const BrokerForm: FC<Props> = ({
+  formContent,
+  updateForm,
+  saveForm,
+  onFocus,
+}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
   // enabled for PAYG accounts and specific free accounts where a flag is enabled
@@ -66,7 +72,12 @@ const BrokerForm: FC<Props> = ({formContent, updateForm, saveForm}) => {
   const navbarOpen = navbarMode === 'expanded'
   return (
     formContent && (
-      <div className="create-broker-form" id="broker">
+      <div
+        className="create-broker-form"
+        id="broker"
+        onFocus={onFocus}
+        tabIndex={-1}
+      >
         <Form onSubmit={() => {}} testID="create-broker-form-overlay">
           <div
             className="create-broker-form__fixed"

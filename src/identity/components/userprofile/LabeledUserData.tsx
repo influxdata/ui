@@ -1,20 +1,19 @@
-// rename this later
-
 // Libraries
 import React, {FC} from 'react'
 
 // Components
 import {
-  FlexBox,
   AlignItems,
-  FlexDirection,
   ComponentSize,
+  FlexBox,
+  FlexDirection,
+  FontWeight,
   Heading,
   HeadingElement,
-  FontWeight,
 } from '@influxdata/clockface'
 
-import './style.scss'
+// Styles
+import 'src/identity/components/userprofile/UserProfile.scss'
 
 interface Props {
   label: string
@@ -26,13 +25,11 @@ const LabeledUserData: FC<Props> = ({label, src}) => (
     direction={FlexDirection.Column}
     margin={ComponentSize.Large}
     alignItems={AlignItems.FlexStart}
-    style={{
-      marginRight: '35px',
-    }}
+    className="user-data-field--container"
   >
     <Heading
-      className="org-profile-tab--heading"
-      element={HeadingElement.H4}
+      className="user-data-field--header"
+      element={HeadingElement.H6}
       weight={FontWeight.Medium}
     >
       {label}
@@ -40,7 +37,7 @@ const LabeledUserData: FC<Props> = ({label, src}) => (
     <div
       style={{
         fontWeight: FontWeight.Medium,
-        width: '200px',
+        width: '300px',
         border: '2px solid #333346',
         borderRadius: '2px',
         padding: '12px',

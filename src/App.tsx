@@ -26,7 +26,7 @@ import {
 } from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
-import {GlobalHeaderContainer} from 'src/identity/components/GlobalHeaderContainer'
+import {GlobalHeaderContainer} from 'src/identity/components/GlobalHeader/GlobalHeaderContainer'
 
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(() =>

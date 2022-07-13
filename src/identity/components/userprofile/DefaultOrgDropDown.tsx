@@ -11,6 +11,9 @@ import {
 } from '@influxdata/clockface'
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 
+// Style
+import 'src/identity/components/userprofile/UserProfile.scss'
+
 type DefaultOrg = OrganizationSummaries[number]
 
 interface Props {
@@ -31,15 +34,12 @@ export const DefaultOrgDropDown: FC<Props> = ({
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
-      style={{
-        marginLeft: '8px',
-        marginRight: '8px',
-      }}
+      className="change-account-org-dropdown--container"
     >
       <Heading
-        className="org-profile-tab--heading"
         element={HeadingElement.H5}
         weight={FontWeight.Medium}
+        className="change-account-org-dropdown--header"
       >
         {label}
       </Heading>
@@ -48,7 +48,7 @@ export const DefaultOrgDropDown: FC<Props> = ({
         items={orgList}
         onSelect={changeSelectedOrg}
         placeholderText="Select a Default Organization"
-        style={{width: '250px'}}
+        className="change-account-org--typeahead"
       />
     </FlexBox>
   )

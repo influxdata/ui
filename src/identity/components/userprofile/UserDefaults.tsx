@@ -1,38 +1,49 @@
+// Libraries
 import React, {FC, useEffect, useState, useMemo, useContext} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
+import {
+  AlignItems,
+  Button,
+  ButtonType,
+  ComponentColor,
+  ComponentSize,
+  ComponentStatus,
+  FlexBox,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  Heading,
+  HeadingElement,
+} from '@influxdata/clockface'
+
+// Selectors and Context
 import {UserAccountContext} from 'src/accounts/context/userAccount'
-import {selectQuartzOrgs} from '../selectors'
+import {selectQuartzOrgs} from 'src/identity/selectors'
+
+// Notifications
 import {notify} from 'src/shared/actions/notifications'
 import {
   orgDefaultSettingError,
   orgDefaultSettingSuccess,
 } from 'src/shared/copy/notifications'
 
-import {
-  Heading,
-  FlexBox,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
-  HeadingElement,
-  Button,
-  ComponentStatus,
-  FontWeight,
-  ButtonType,
-  ComponentColor,
-  ComponentSize,
-  InfluxColors,
-} from '@influxdata/clockface'
-import {DefaultAccountDropDown} from './DefaultAccountDropdown'
-import {DefaultOrgDropDown} from './DefaultOrgDropDown'
+// Thunks
+import {updateDefaultOrgThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 
-import {updateDefaultOrgThunk} from '../quartzOrganizations/actions/thunks'
+// Components
+import {DefaultAccountDropDown} from 'src/identity/components/userprofile/DefaultAccountDropdown'
+import {DefaultOrgDropDown} from 'src/identity/components/userprofile/DefaultOrgDropDown'
+
+// Constants
 import {
   emptyAccount,
   emptyOrg,
-} from '../components/GlobalHeader/DefaultEntities'
+} from 'src/identity/components/GlobalHeader/DefaultEntities'
 
-export const DefaultAccountOrgChanger: FC = () => {
+// Styles
+import 'src/identity/components/userprofile/UserProfile.scss'
+
+export const UserDefaults: FC = () => {
   const dispatch = useDispatch()
 
   const {userAccounts, handleSetDefaultAccount} = useContext(UserAccountContext)
@@ -57,12 +68,14 @@ export const DefaultAccountOrgChanger: FC = () => {
   useEffect(() => {
     changeSelectedAccount(defaultAccount)
   }, [accounts, defaultAccount])
-  const selectedNewAccount =
-    defaultAccount?.id !== selectedAccount?.id && selectedAccount !== null
 
   useEffect(() => {
     changeSelectedOrg(defaultOrg)
   }, [orgs, defaultOrg])
+
+  const selectedNewAccount =
+    defaultAccount?.id !== selectedAccount?.id && selectedAccount !== null
+
   const selectedNewOrg =
     defaultOrg?.id !== selectedOrg?.id && selectedOrg !== null
 
@@ -71,7 +84,11 @@ export const DefaultAccountOrgChanger: FC = () => {
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
-  // The account update may be due for a refactor after this button is removed on the accounts page.
+  const saveButtonColor =
+    selectedNewAccount || selectedNewOrg
+      ? ComponentColor.Primary
+      : ComponentColor.Secondary
+
   const handleChangeDefaults = () => {
     if (selectedNewAccount) {
       handleSetDefaultAccount(selectedAccount.id)
@@ -80,36 +97,40 @@ export const DefaultAccountOrgChanger: FC = () => {
       try {
         dispatch(updateDefaultOrgThunk(defaultOrg, selectedOrg))
         dispatch(notify(orgDefaultSettingSuccess(selectedOrg.name)))
+        // console.log('failed to catch error')
       } catch {
+        // console.log('caught error')
         dispatch(notify(orgDefaultSettingError(selectedOrg.name)))
       }
     }
   }
-
-  const sixtyPercentWidth = {width: '60%'}
-  const buttonAlignment = {
-    marginLeft: '20px',
-    alignSelf: 'flex-end',
-    justifySelf: 'flex-end',
-  }
+  // console.log({defaultOrg})
+  // console.log({selectedOrg})
+  // console.log({defaultAccount})
+  // console.log({selectedAccount})
 
   return (
-    <>
+    <FlexBox
+      direction={FlexDirection.Column}
+      alignItems={AlignItems.FlexStart}
+      justifyContent={JustifyContent.FlexStart}
+    >
       <Heading
         weight={FontWeight.Bold}
-        element={HeadingElement.H3}
-        style={{marginTop: '20px', marginBottom: '10px'}}
+        element={HeadingElement.H4}
+        className="change-account-org-container--header"
       >
         Default Account and Organization
       </Heading>
-      <div style={{color: InfluxColors.Grey65}}>
+
+      <div className="change-account-org-container--text">
         The account and organization you'll see when you login
       </div>
+
       <FlexBox
         direction={FlexDirection.Row}
         alignItems={AlignItems.FlexStart}
         justifyContent={JustifyContent.FlexStart}
-        style={sixtyPercentWidth}
       >
         {accounts && (
           <DefaultAccountDropDown
@@ -130,14 +151,14 @@ export const DefaultAccountOrgChanger: FC = () => {
         <Button
           status={saveButtonStatus}
           type={ButtonType.Submit}
-          color={ComponentColor.Default}
+          color={saveButtonColor}
           text="Save"
           size={ComponentSize.Small}
           testID="save-defaultaccountorg--button"
-          style={buttonAlignment}
           onClick={handleChangeDefaults}
+          className="change-account-org-container--button"
         />
       </FlexBox>
-    </>
+    </FlexBox>
   )
 }

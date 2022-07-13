@@ -9,7 +9,9 @@ import {
   HeadingElement,
   TypeAheadDropDown,
 } from '@influxdata/clockface'
-// import {UserAccount} from 'src/client/unityRoutes'
+
+// Style
+import 'src/identity/components/userprofile/UserProfile.scss'
 
 interface Props {
   label: string
@@ -29,15 +31,12 @@ export const DefaultAccountDropDown: FC<Props> = ({
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
-      style={{
-        marginLeft: '0px',
-        marginRight: '20px',
-      }}
+      className="change-account-org-dropdown--container"
     >
       <Heading
-        className="org-profile-tab--heading"
         element={HeadingElement.H5}
         weight={FontWeight.Medium}
+        className="change-account-org-dropdown--header"
       >
         {label}
       </Heading>
@@ -46,7 +45,7 @@ export const DefaultAccountDropDown: FC<Props> = ({
         items={accountList}
         onSelect={changeSelectedAccount}
         placeholderText="Select a Default Account"
-        style={{width: '250px'}}
+        className="change-account-org--typeahead"
       />
     </FlexBox>
   )

@@ -119,7 +119,6 @@ export const sanitizeForm = (form: Subscription): Subscription => {
   }
 
   if (form.brokerPassword === '' || form.brokerUsername === '') {
-    delete form.brokerUsername
     delete form.brokerPassword
   }
   return form

@@ -34,7 +34,7 @@ export const UserDetails: FC = () => {
         User Details
       </Heading>
 
-      <LabeledUserData label="Email" src={user.email} />
+      <LabeledUserData label="Email" data={user.email} />
 
       <FlexBox
         direction={FlexDirection.Row}
@@ -42,8 +42,8 @@ export const UserDetails: FC = () => {
         alignItems={AlignItems.FlexStart}
         justifyContent={JustifyContent.FlexStart}
       >
-        <LabeledUserData label="First name" src={user.firstName} />
-        <LabeledUserData label="Last name" src={user.lastName} />
+        <LabeledUserData label="First name" data={user.firstName} />
+        <LabeledUserData label="Last name" data={user.lastName} />
       </FlexBox>
     </FlexBox>
   )

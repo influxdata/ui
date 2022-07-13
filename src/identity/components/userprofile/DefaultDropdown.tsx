@@ -7,6 +7,7 @@ import {
   FontWeight,
   Heading,
   HeadingElement,
+  SelectableItem,
   TypeAheadDropDown,
 } from '@influxdata/clockface'
 
@@ -14,19 +15,17 @@ import {
 import 'src/identity/components/userprofile/UserProfile.scss'
 
 // Types
-import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
-
-type Entity = OrganizationSummaries[number] | UserAccount
-
 export enum EntityLabel {
   Account = 'Default Account',
   Org = 'Default Organization',
 }
+import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
+type Entity = OrganizationSummaries[number] | UserAccount
 
 interface Props {
   entityLabel: string
-  defaultEntity
-  entityList
+  defaultEntity: Entity
+  entityList: Entity[]
   changeSelectedEntity: VoidFunction
 }
 
@@ -51,8 +50,8 @@ export const DefaultDropdown: FC<Props> = ({
         {entityLabel}
       </Heading>
       <TypeAheadDropDown
-        selectedOption={defaultEntity}
-        items={entityList}
+        selectedOption={defaultEntity as SelectableItem}
+        items={entityList as SelectableItem[]}
         onSelect={changeSelectedEntity}
         placeholderText={`Select a ${entityLabel}`}
         className="change-account-org--typeahead"

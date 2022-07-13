@@ -51,3 +51,12 @@
   margin-top: $cf-space-3xs !important;
   margin-bottom: $cf-space-3xs !important;
 }
+
+.user-data-field--data {
+  width: 300px;
+  border: 2px solid #333346;
+  font-size: $cf-text-base-0;
+  border-radius: 2px;
+  padding: 12px;
+  margin-bottom: 10px;
+}

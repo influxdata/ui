@@ -21,7 +21,6 @@ export const UserProfilePage: FC = () => {
       </Page.Header>
       <Page.Contents fullWidth={true}>
         <UserDetails />
-
         <UserAccountProvider>
           <UserDefaults />
         </UserAccountProvider>

@@ -17,10 +17,12 @@ import 'src/identity/components/userprofile/UserProfile.scss'
 
 interface Props {
   label: string
-  src: string
+  data: string
 }
 
-const LabeledUserData: FC<Props> = ({label, src}) => (
+const userDataStyle = {fontWeight: FontWeight.Medium}
+
+const LabeledUserData: FC<Props> = ({label, data}) => (
   <FlexBox
     direction={FlexDirection.Column}
     margin={ComponentSize.Large}
@@ -34,17 +36,8 @@ const LabeledUserData: FC<Props> = ({label, src}) => (
     >
       {label}
     </Heading>
-    <div
-      style={{
-        fontWeight: FontWeight.Medium,
-        width: '300px',
-        border: '2px solid #333346',
-        borderRadius: '2px',
-        padding: '12px',
-        marginBottom: '10px',
-      }}
-    >
-      {src}
+    <div className="user-data-field--data" style={userDataStyle}>
+      {data}
     </div>
   </FlexBox>
 )

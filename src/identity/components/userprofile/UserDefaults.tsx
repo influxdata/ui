@@ -54,32 +54,35 @@ export const UserDefaults: FC = () => {
   const accounts = userAccounts
   const orgs = quartzOrganizations.orgs
 
-  const defaultAccount = useMemo(
+  const currentDefaultAccount = useMemo(
     () =>
       accounts ? accounts.find(el => el.isDefault === true) : emptyAccount,
     [accounts]
   )
-  const defaultOrg = useMemo(
+  const currentDefaultOrg = useMemo(
     () => (orgs ? orgs.find(el => el.isDefault === true) : emptyOrg),
     [orgs]
   )
 
-  const [selectedAccount, changeSelectedAccount] = useState(defaultAccount)
-  const [selectedOrg, changeSelectedOrg] = useState(defaultOrg)
+  const [newDefaultAccount, setNewDefaultAccount] = useState(
+    currentDefaultAccount
+  )
+  const [newDefaultOrg, setNewDefaultOrg] = useState(currentDefaultOrg)
 
   useEffect(() => {
-    changeSelectedAccount(defaultAccount)
-  }, [accounts, defaultAccount])
+    setNewDefaultAccount(currentDefaultAccount)
+  }, [accounts, currentDefaultAccount])
 
   useEffect(() => {
-    changeSelectedOrg(defaultOrg)
-  }, [orgs, defaultOrg])
+    setNewDefaultOrg(currentDefaultOrg)
+  }, [orgs, currentDefaultOrg])
 
   const selectedNewAccount =
-    defaultAccount?.id !== selectedAccount?.id && selectedAccount !== null
+    currentDefaultAccount?.id !== newDefaultAccount?.id &&
+    newDefaultAccount !== null
 
   const selectedNewOrg =
-    defaultOrg?.id !== selectedOrg?.id && selectedOrg !== null
+    currentDefaultOrg?.id !== newDefaultOrg?.id && newDefaultOrg !== null
 
   const saveButtonStatus =
     selectedNewAccount || selectedNewOrg
@@ -93,14 +96,14 @@ export const UserDefaults: FC = () => {
 
   const handleChangeDefaults = () => {
     if (selectedNewAccount) {
-      handleSetDefaultAccount(selectedAccount.id)
+      handleSetDefaultAccount(newDefaultAccount.id)
     }
     if (selectedNewOrg) {
       try {
-        dispatch(updateDefaultOrgThunk(defaultOrg, selectedOrg))
-        dispatch(notify(orgDefaultSettingSuccess(selectedOrg.name)))
+        dispatch(updateDefaultOrgThunk(currentDefaultOrg, newDefaultOrg))
+        dispatch(notify(orgDefaultSettingSuccess(newDefaultOrg.name)))
       } catch {
-        dispatch(notify(orgDefaultSettingError(selectedOrg.name)))
+        dispatch(notify(orgDefaultSettingError(newDefaultOrg.name)))
       }
     }
   }
@@ -131,17 +134,17 @@ export const UserDefaults: FC = () => {
         {accounts && (
           <DefaultDropdown
             entityLabel={EntityLabel.Account}
-            defaultEntity={defaultAccount}
+            defaultEntity={currentDefaultAccount}
             entityList={accounts}
-            changeSelectedEntity={changeSelectedAccount}
+            changeSelectedEntity={setNewDefaultAccount}
           />
         )}
         {orgs && (
           <DefaultDropdown
             entityLabel={EntityLabel.Org}
-            defaultEntity={defaultOrg}
+            defaultEntity={currentDefaultOrg}
             entityList={orgs}
-            changeSelectedEntity={changeSelectedOrg}
+            changeSelectedEntity={setNewDefaultOrg}
           />
         )}
         <Button

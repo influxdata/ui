@@ -1,0 +1,13 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.required-indicator {
+  color: $c-curacao !important;
+}
+
+.validation-tooltip {
+  margin-left: $cf-space-2xs;
+}
+
+.validation-input {
+  padding-top: $cf-space-2xs;
+}

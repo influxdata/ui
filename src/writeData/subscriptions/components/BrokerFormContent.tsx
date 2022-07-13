@@ -62,7 +62,7 @@ const BrokerFormContent: FC<Props> = ({
       evt.preventDefault()
     })
   }, [])
-  
+
   useEffect(() => {
     if (formContent.brokerUsername) {
       setSecurity('user')

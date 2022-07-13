@@ -23,6 +23,7 @@ import {
   invitationWithdrawnFailed,
   removeUserFailed,
   removeUserSuccessful,
+  memberAddSuccess,
 } from 'src/shared/copy/notifications'
 
 // Constants
@@ -130,13 +131,20 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
     try {
       const resp = await postOrgsInvite({orgId, data: draftInvite})
 
-      if (resp.status !== 201) {
-        throw new Error(resp.data.message)
+      switch (resp.status) {
+        case 201:
+          setInvites(prevInvites => [resp.data, ...prevInvites])
+          dispatch(notify(inviteSent()))
+          setDraftInvite(draft)
+          break
+        case 200:
+          setUsers(prevUsers => [resp.data, ...prevUsers])
+          dispatch(notify(memberAddSuccess(resp.data.email)))
+          setDraftInvite(draft)
+          break
+        default:
+          throw new Error(resp.data.message)
       }
-
-      setInvites(prevInvites => [resp.data, ...prevInvites])
-      dispatch(notify(inviteSent()))
-      setDraftInvite(draft)
     } catch (error) {
       dispatch(notify(inviteFailed()))
       console.error(error)

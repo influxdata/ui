@@ -1,11 +1,11 @@
 import React from 'react'
-import {screen, fireEvent, cleanup, waitFor} from '@testing-library/react'
+import {fireEvent, waitFor} from '@testing-library/react'
 import {mocked} from 'ts-jest/utils'
+import {act} from 'react-dom/test-utils'
 
 import {renderWithReduxAndRouter} from 'src/mockState'
 import {UsersProvider} from '../context/users'
 import UsersPage from './UsersPage'
-import {act} from 'react-dom/test-utils'
 
 jest.mock(
   'src/client/unityRoutes',
@@ -105,7 +105,7 @@ describe('Inviting Users to an Organization', () => {
 
     await act(async () => {
       const inviteButton = getByTestId('user-list-invite--button')
-      fireEvent.click(inviteButton)
+      await fireEvent.click(inviteButton)
     })
 
     await waitFor(() => {
@@ -140,7 +140,7 @@ describe('Inviting Users to an Organization', () => {
 
     await act(async () => {
       const inviteButton = getByTestId('user-list-invite--button')
-      fireEvent.click(inviteButton)
+      await fireEvent.click(inviteButton)
     })
 
     await waitFor(() => {

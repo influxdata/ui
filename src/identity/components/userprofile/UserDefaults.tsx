@@ -97,17 +97,11 @@ export const UserDefaults: FC = () => {
       try {
         dispatch(updateDefaultOrgThunk(defaultOrg, selectedOrg))
         dispatch(notify(orgDefaultSettingSuccess(selectedOrg.name)))
-        // console.log('failed to catch error')
       } catch {
-        // console.log('caught error')
         dispatch(notify(orgDefaultSettingError(selectedOrg.name)))
       }
     }
   }
-  // console.log({defaultOrg})
-  // console.log({selectedOrg})
-  // console.log({defaultAccount})
-  // console.log({selectedAccount})
 
   return (
     <FlexBox

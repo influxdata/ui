@@ -1,5 +1,4 @@
 import {Dispatch} from 'react'
-import rejectWithValue from 'redux-thunk'
 
 // API
 import {fetchQuartzOrgs, updateDefaultQuartzOrg} from 'src/identity/apis/auth'

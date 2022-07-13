@@ -17,7 +17,7 @@ interface Props {
   label: string
   defaultAccount
   accountList
-  changeSelectedAccount /* : React.Dispatch<React.SetStateAction<UserAccount>> */
+  changeSelectedAccount
 }
 
 export const DefaultAccountDropDown: FC<Props> = ({

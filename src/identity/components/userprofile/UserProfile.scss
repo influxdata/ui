@@ -1,25 +1,21 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-// In Figma font-size is base-3, bt base-2 seems more consistent with intent.
 .user-details-container--header {
   font-size: $cf-text-base-2;
   margin-bottom: $cf-space-m;
 }
 
-// Change User Account/Org
 .change-account-org-container--button {
   align-self: flex-end;
   justify-self: flex-end;
 }
 
 .change-account-org-container--text {
-  // Grey65
   color: #9e9ead;
   margin-top: $cf-space-2xs;
   margin-bottom: $cf-space-2xs;
 }
 
-// In Figma font-size is base-3, bt base-2 seems more consistent with intent.
 .change-account-org-container--header {
   font-size: $cf-text-base-2;
   margin-top: $cf-space-s;

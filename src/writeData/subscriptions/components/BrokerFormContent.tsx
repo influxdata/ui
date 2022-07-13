@@ -297,8 +297,8 @@ const BrokerFormContent: FC<Props> = ({
                   {feature: 'subscriptions'}
                 )
                 setSecurity('none')
-                formContent.brokerUsername = undefined
-                formContent.brokerPassword = undefined
+                formContent.brokerUsername = null
+                formContent.brokerPassword = null
               }}
               value="none"
               titleText="None"

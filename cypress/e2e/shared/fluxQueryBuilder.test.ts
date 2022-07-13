@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe.skip('FluxQueryBuilder', () => {
+describe('FluxQueryBuilder', () => {
   beforeEach(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {
@@ -105,10 +105,12 @@ describe.skip('FluxQueryBuilder', () => {
       cy.getByTestID('field-tag-key-search-bar')
         .should('be.visible')
         .type(searchField)
-      cy.getByTestID('field-selector--list-item--selectable').should(
-        'contain',
-        searchField
-      )
+      cy.getByTestID('field-selector').within(() => {
+        cy.getByTestID('field-selector--list-item--selectable').should(
+          'contain',
+          searchField
+        )
+      })
 
       // clear the search bar
       cy.getByTestID('dismiss-button').click()
@@ -118,16 +120,18 @@ describe.skip('FluxQueryBuilder', () => {
         .should('be.visible')
         .type(searchTagKey)
 
-      cy.getByTestID('field-selector--list-item')
-        .should('be.visible')
-        .should('contain', 'No Fields Found')
+      cy.getByTestID('field-selector').within(() => {
+        cy.getByTestID('field-selector--list-item')
+          .should('be.visible')
+          .should('contain', 'No Fields Found')
+      })
 
       // not recommend to assert for searchTagKey value
       // since it will expand all the tag keys, which triggers
       // numbers of API calls that are time consuming and unnecessary
     })
 
-    it.skip('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
+    it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
       // if less than 8 items, show all items
       const bucketNameA = 'Air Sensor Data'
       const measurementA = 'airSensors'
@@ -146,10 +150,12 @@ describe.skip('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
 
       // less than 8 items, no "Load More" button
-      cy.getByTestID('field-selector--list-item--selectable')
-        .should('be.visible')
-        .should('have.length.at.most', 8)
-      cy.getByTestID('field-selector--load-more-button').should('not.exist')
+      cy.getByTestID('field-selector').within(() => {
+        cy.getByTestID('field-selector--list-item--selectable')
+          .should('be.visible')
+          .should('have.length.at.most', 8)
+        cy.getByTestID('field-selector--load-more-button').should('not.exist')
+      })
 
       // if more than 8 items, show "Load More" button
       // and load additional 25 items
@@ -165,22 +171,21 @@ describe.skip('FluxQueryBuilder', () => {
       cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
       // more than 8 items, show 'Load More' button
-      cy.getByTestID('field-selector--list-item--selectable')
-        .should('be.visible')
-        .should('have.length', 8)
-      cy.getByTestID('field-selector--load-more-button')
-        .should('be.visible')
-        .click()
-
-      // when load more is chosen, up to 25 additional entries will be shown
-      cy.getByTestID('field-selector--list-item--selectable')
-        .should('be.visible')
-        .should('have.length.above', 8)
-
-      cy.getByTestID('field-selector--list-item--selectable').should(
-        'have.length.at.most',
-        33
-      ) // 8 + 25
+      cy.getByTestID('field-selector').within(() => {
+        cy.getByTestID('field-selector--list-item--selectable')
+          .should('be.visible')
+          .should('have.length', 8)
+        cy.getByTestID('field-selector--load-more-button')
+          .should('be.visible')
+          .trigger('click')
+          .then(() => {
+            // when load more is chosen, up to 25 additional entries should be shown
+            cy.getByTestID('field-selector--list-item--selectable')
+              .should('be.visible')
+              .should('have.length.above', 8)
+              .and('have.length.at.most', 33) // 8 + 25
+          })
+      })
     })
   })
 })

@@ -184,6 +184,11 @@ const BrokerFormContent: FC<Props> = ({
               validationFunc={() =>
                 handleValidation('Broker Host', formContent.brokerHost)
               }
+              helpText={
+                edit
+                  ? 'Changing the hostname will require you to provide your password again.'
+                  : ''
+              }
             >
               {status => (
                 <Input
@@ -196,6 +201,11 @@ const BrokerFormContent: FC<Props> = ({
                     updateForm({
                       ...formContent,
                       brokerHost: e.target.value,
+                      // clear the password field if broker host is edited
+                      brokerPassword:
+                        className === 'create'
+                          ? formContent?.brokerPassword
+                          : '',
                     })
                   }}
                   onBlur={() =>

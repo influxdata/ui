@@ -31,14 +31,16 @@ import {
 import {updateDefaultOrgThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Components
-import {DefaultAccountDropDown} from 'src/identity/components/userprofile/DefaultAccountDropdown'
-import {DefaultOrgDropDown} from 'src/identity/components/userprofile/DefaultOrgDropDown'
+import {DefaultDropdown} from 'src/identity/components/userprofile/DefaultDropdown'
 
 // Constants
 import {
   emptyAccount,
   emptyOrg,
 } from 'src/identity/components/GlobalHeader/DefaultEntities'
+
+// Types
+import {EntityLabel} from 'src/identity/components/userprofile/DefaultDropdown'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
@@ -127,19 +129,19 @@ export const UserDefaults: FC = () => {
         justifyContent={JustifyContent.FlexStart}
       >
         {accounts && (
-          <DefaultAccountDropDown
-            label="Default Account"
-            defaultAccount={defaultAccount}
-            changeSelectedAccount={changeSelectedAccount}
-            accountList={accounts}
+          <DefaultDropdown
+            entityLabel={EntityLabel.Account}
+            defaultEntity={defaultAccount}
+            entityList={accounts}
+            changeSelectedEntity={changeSelectedAccount}
           />
         )}
         {orgs && (
-          <DefaultOrgDropDown
-            label="Default Organization"
-            defaultOrg={defaultOrg}
-            changeSelectedOrg={changeSelectedOrg}
-            orgList={orgs}
+          <DefaultDropdown
+            entityLabel={EntityLabel.Org}
+            defaultEntity={defaultOrg}
+            entityList={orgs}
+            changeSelectedEntity={changeSelectedOrg}
           />
         )}
         <Button

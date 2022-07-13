@@ -13,18 +13,28 @@ import {
 // Style
 import 'src/identity/components/userprofile/UserProfile.scss'
 
-interface Props {
-  label: string
-  defaultAccount
-  accountList
-  changeSelectedAccount
+// Types
+import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
+
+type Entity = OrganizationSummaries[number] | UserAccount
+
+export enum EntityLabel {
+  Account = 'Default Account',
+  Org = 'Default Organization',
 }
 
-export const DefaultAccountDropDown: FC<Props> = ({
-  label,
-  defaultAccount,
-  accountList,
-  changeSelectedAccount,
+interface Props {
+  entityLabel: string
+  defaultEntity
+  entityList
+  changeSelectedEntity: VoidFunction
+}
+
+export const DefaultDropdown: FC<Props> = ({
+  entityLabel,
+  defaultEntity,
+  entityList,
+  changeSelectedEntity,
 }) => {
   return (
     <FlexBox
@@ -38,13 +48,13 @@ export const DefaultAccountDropDown: FC<Props> = ({
         weight={FontWeight.Medium}
         className="change-account-org-dropdown--header"
       >
-        {label}
+        {entityLabel}
       </Heading>
       <TypeAheadDropDown
-        selectedOption={defaultAccount}
-        items={accountList}
-        onSelect={changeSelectedAccount}
-        placeholderText="Select a Default Account"
+        selectedOption={defaultEntity}
+        items={entityList}
+        onSelect={changeSelectedEntity}
+        placeholderText={`Select a ${entityLabel}`}
         className="change-account-org--typeahead"
       />
     </FlexBox>

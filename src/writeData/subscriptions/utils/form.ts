@@ -45,6 +45,11 @@ export const SUBSCRIPTION_NAVIGATION_STEPS: SubscriptionNavigationModel[] = [
   },
 ]
 
+export const REGEX_TOOLTIP =
+  'Java flavor regular expressions expected. Use a capture group if desired. See https://regex101.com for more info.'
+export const JSON_TOOLTIP =
+  'JsonPath expression that returns a singular value expected. See http://jsonpath.com for more info.'
+
 export const handleValidation = (
   property: string,
   formVal: string

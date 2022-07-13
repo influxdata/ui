@@ -92,7 +92,7 @@ const rangeToParam = (timeRange: TimeRange) => {
 }
 
 const ResultsPane: FC = () => {
-  const {basic, query} = useContext(QueryContext)
+  const {basic, query, cancel} = useContext(QueryContext)
   const {status, setStatus, setResult} = useContext(ResultsContext)
 
   const [oldHorizDragPosition, setOldHorizDragPosition] = useResizeState()
@@ -222,7 +222,9 @@ const ResultsPane: FC = () => {
                 onSubmit={submit}
                 onNotify={fakeNotify}
                 queryID=""
-                cancelAllRunningQueries={() => {}}
+                cancelAllRunningQueries={() => {
+                  cancel()
+                }}
               />
             </FlexBox>
           </div>

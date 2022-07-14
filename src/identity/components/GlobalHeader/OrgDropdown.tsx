@@ -47,6 +47,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
       style={style}
       menuStyle={menuStyle}
       onSelectOption={switchOrg}
+      testID="global-header-org-dropdown"
     />
   )
 }

@@ -74,6 +74,7 @@ export const GlobalHeader: FC = () => {
       margin={ComponentSize.Large}
       justifyContent={JustifyContent.SpaceBetween}
       className="multiaccountorg--header"
+      testID="multiaccountorg-global-header"
     >
       <FlexBox margin={ComponentSize.Medium}>
         {activeOrg && activeAccount && (

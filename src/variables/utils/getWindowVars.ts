@@ -24,8 +24,8 @@ import {RemoteDataState, TimeRange, Variable} from 'src/types'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
 const DESIRED_POINTS_PER_GRAPH = 360
-const FALLBACK_WINDOW_PERIOD = 15000
 const MINIMUM_WINDOW_PERIOD = 1
+export const FALLBACK_WINDOW_PERIOD = 15000
 
 /*
   Compute the `v.windowPeriod` variable assignment for a query.
@@ -246,16 +246,26 @@ export const normalizeWindowPeriodForZoomRequery = (
   column: NumericColumnData | string[]
 ): number => {
   if (windowPeriod || !timeRange || !column) {
+    if (windowPeriod < 0) {
+      return FALLBACK_WINDOW_PERIOD
+    }
     return windowPeriod
   }
 
-  if (column.length === 0 || domain.length !== 2) {
+  if (
+    column.length === 0 ||
+    domain.length !== 2 ||
+    domain[0] !== domain[0] ||
+    domain[1] !== domain[1]
+  ) {
     return FALLBACK_WINDOW_PERIOD
   }
 
   let counter = 0
   let startIndex = counter
   let endIndex = counter
+  let isSorted = true
+  let prevValue = column[counter]
 
   while (counter < column.length) {
     if (domain[0] > column[counter]) {
@@ -264,14 +274,20 @@ export const normalizeWindowPeriodForZoomRequery = (
     if (domain[1] > column[counter]) {
       endIndex = counter
     }
-    counter += 1
+    if (prevValue > column[counter] || column[counter] !== column[counter]) {
+      counter = column.length
+      isSorted = false
+    } else {
+      prevValue = column[counter]
+      counter += 1
+    }
   }
 
   const duration =
     (Number(column[endIndex]) - Number(column[startIndex])) /
     DESIRED_POINTS_PER_GRAPH
 
-  if (duration !== duration) {
+  if (duration === Infinity || duration !== duration || isSorted === false) {
     return FALLBACK_WINDOW_PERIOD
   }
 

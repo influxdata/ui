@@ -236,8 +236,8 @@ export const getVariableForZoomRequery = (
  * Prevents the windowPeriod from being null for the time axis
  *   this fallback is used only for the zoom re-query feature
  *   if the windowPeriod cannot be found, apply the user-selected domain
- *   to the original data set and divide by the optimal number of graph points
- *   to get the estimated windowPeriod
+ *     to the original data set and divide by the optimal number of graph points
+ *     to get the estimated windowPeriod
  */
 export const normalizeWindowPeriodForZoomRequery = (
   windowPeriod: number | null,

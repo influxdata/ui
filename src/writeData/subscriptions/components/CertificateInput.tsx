@@ -31,8 +31,8 @@ const CertificateInput: FC = () => {
         Coming soon!
       </InputLabel>
       <InputLabel size={ComponentSize.Medium}>
-        Interested in certificate authentication with your broker? Let us know
-        so we can notify you when it's available.
+        Interested in using certificates to authenticate with your broker? Let
+        us know so we can notify you when it's available.
       </InputLabel>
       {!subscriptionsCertificateInterest && (
         <Button

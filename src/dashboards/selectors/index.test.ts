@@ -137,6 +137,7 @@ describe('Dashboards.Selector', () => {
         theme: 'dark',
         versionInfo: {version: '', commit: ''},
         flowsCTA: {explorer: true, alerts: true, tasks: true},
+        subscriptionsCertificateInterest: false,
       },
     }
 

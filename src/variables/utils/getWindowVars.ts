@@ -255,8 +255,8 @@ export const normalizeWindowPeriodForZoomRequery = (
   if (
     column.length === 0 ||
     domain.length !== 2 ||
-    domain[0] !== domain[0] ||
-    domain[1] !== domain[1]
+    Number.isNaN(domain[0]) ||
+    Number.isNaN(domain[1])
   ) {
     return FALLBACK_WINDOW_PERIOD
   }
@@ -287,7 +287,7 @@ export const normalizeWindowPeriodForZoomRequery = (
     (Number(column[endIndex]) - Number(column[startIndex])) /
     DESIRED_POINTS_PER_GRAPH
 
-  if (duration === Infinity || duration !== duration || isSorted === false) {
+  if (duration === Infinity || Number.isNaN(duration) || isSorted === false) {
     return FALLBACK_WINDOW_PERIOD
   }
 

@@ -59,26 +59,19 @@ const SubscriptionCard: FC<Props> = ({subscription, status}) => {
       return
     }
 
-    // const newBulletins = Array.from<string>(
-    //   new Set<string>(
-    //     status.processors
-    //       .filter(pb => !!pb.bulletins.length)
-    //       .map(pb => pb.bulletins)
-    //       .flat()
-    //       .map(pb => pb.bulletin.message)
-    //       .map(b => sanitizeBulletin(b))
-    //   )
-    // )
-    const newBulletins = status.processors
-      .filter(pb => !!pb.bulletins.length)
-      .map(pb => pb.bulletins)
-      .flat()
-      .map(pb => pb.bulletin.message)
-      .map(b => sanitizeBulletin(b))
+    const newBulletins = Array.from<string>(
+      new Set<string>(
+        status.processors
+          .filter(pb => !!pb.bulletins.length)
+          .map(pb => pb.bulletins)
+          .flat()
+          .map(pb => pb.bulletin.message)
+          .map(b => sanitizeBulletin(b))
+      )
+    )
     setBulletins(newBulletins)
   }, [status?.processors])
 
-  console.log({bulletins, blah: !!bulletins.length})
   return (
     <ResourceCard
       key={`subscription-card-id--${subscription.id}`}

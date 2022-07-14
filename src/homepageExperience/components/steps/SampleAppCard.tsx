@@ -18,15 +18,23 @@ type Props = {
 }
 
 const SampleAppCard: FC<Props> = ({wizardEventName, handleNextStepEvent}) => {
+
+  const client = {
+    pythonWizard: 'Python', 
+    nodejsWizard: 'Node.js', 
+    goWizard: 'Go',
+  }
+
   const resources = [
     {
       title: 'Sample App',
       textContent: `View an IoT sample application written in ${
-        wizardEventName === 'pythonWizard' ? 'Python' : 'Node.js'
+        client[wizardEventName]
       }.`,
       links: {
         pythonWizard: 'https://github.com/influxdata/iot-api-python',
         nodejsWizard: 'https://github.com/influxdata/iot-api-js',
+        goWizard: 'https://github.com/influxdata/go-samples/tree/master/cmd/iot_app'
       },
     },
     {
@@ -37,6 +45,7 @@ const SampleAppCard: FC<Props> = ({wizardEventName, handleNextStepEvent}) => {
         pythonWizard:
           'https://github.com/InfluxCommunity/sample-flask/blob/main/app.py',
         nodejsWizard: 'https://github.com/influxdata/nodejs-samples/',
+        goWizard: 'https://github.com/influxdata/go-samples/tree/master/cmd/boilerplate'
       },
     },
   ]

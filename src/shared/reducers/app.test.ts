@@ -24,6 +24,7 @@ describe('Shared.Reducers.appReducer', () => {
       theme: 'dark',
       versionInfo: {version: '', commit: ''},
       flowsCTA: {explorer: true, tasks: true, alerts: true},
+      subscriptionsCertificateInterest: false,
     },
   }
 

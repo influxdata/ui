@@ -1,6 +1,7 @@
 import {
   Config,
   NINETEEN_EIGHTY_FOUR,
+  COLOR_BLIND_FRIENDLY,
   ATLANTIS,
   DO_ANDROIDS_DREAM,
   DELOREAN,
@@ -146,6 +147,7 @@ export const GIRAFFE_COLOR_SCHEMES = [
   {name: 'Atlantis', colors: ATLANTIS},
   {name: 'Do Androids Dream of Electric Sheep?', colors: DO_ANDROIDS_DREAM},
   {name: 'Delorean', colors: DELOREAN},
+  {name: 'Color Blind Friendly', colors: COLOR_BLIND_FRIENDLY},
   {name: 'Cthulhu', colors: CTHULHU},
   {name: 'Ectoplasm', colors: ECTOPLASM},
   {name: 'T-MAX 400 Film', colors: T_MAX_400_FILM},

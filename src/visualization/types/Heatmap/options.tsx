@@ -1,6 +1,12 @@
 // Libraries
 import React, {FC, ChangeEvent, useState} from 'react'
-import {VIRIDIS, MAGMA, INFERNO, PLASMA} from '@influxdata/giraffe'
+import {
+  VIRIDIS,
+  MAGMA,
+  INFERNO,
+  PLASMA,
+  COLOR_BLIND_FRIENDLY,
+} from '@influxdata/giraffe'
 import {
   Form,
   Grid,
@@ -33,6 +39,7 @@ const HEATMAP_COLOR_SCHEMES = [
   {name: 'Inferno', colors: INFERNO},
   {name: 'Viridis', colors: VIRIDIS},
   {name: 'Plasma', colors: PLASMA},
+  {name: 'Color Blind Friendly', colors: COLOR_BLIND_FRIENDLY},
 ]
 
 interface Props extends VisualizationOptionProps {

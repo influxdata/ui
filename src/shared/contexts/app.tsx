@@ -25,6 +25,7 @@ import {PRESENTATION_MODE_ANIMATION_DELAY} from 'src/shared/constants'
 import {presentationMode as presentationModeCopy} from 'src/shared/copy/notifications'
 
 import {AppState, TimeZone, Theme, NavBarState, FlowsCTA} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 interface AppSettingContextType {
   timeZone: TimeZone
@@ -131,10 +132,10 @@ export const AppSettingProvider: FC = ({children}) => {
     },
     [dispatch]
   )
-  const setSubscriptionsCertificateInterest = useCallback(
-    () => dispatch(setSubscriptionsCertificateInterestAction()),
-    [dispatch]
-  )
+  const setSubscriptionsCertificateInterest = useCallback(() => {
+    event('certificate auth interest', {}, {feature: 'subscriptions'})
+    dispatch(setSubscriptionsCertificateInterestAction())
+  }, [dispatch])
 
   return (
     <AppSettingContext.Provider

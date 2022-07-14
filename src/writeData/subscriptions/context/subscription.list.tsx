@@ -27,7 +27,7 @@ export interface SubscriptionListContextType {
   loading: RemoteDataState
   currentID: string | null
   change: (id: string) => void
-  statuses: SubscriptionStatus[]
+  bulletins: BulletinsMap
 }
 
 export const DEFAULT_CONTEXT: SubscriptionListContextType = {
@@ -37,16 +37,54 @@ export const DEFAULT_CONTEXT: SubscriptionListContextType = {
   loading: RemoteDataState.NotStarted,
   change: (_id: string) => {},
   currentID: null,
-  statuses: [],
+  bulletins: {},
 } as SubscriptionListContextType
 
 export const SubscriptionListContext = React.createContext<
   SubscriptionListContextType
 >(DEFAULT_CONTEXT)
 
+type Bulletin = string
+
+interface BulletinsMap {
+  [key: string]: Bulletin[]
+}
+
+const sanitizeBulletin = (bulletin: string) => {
+  const patterns = [
+    'Connection to (.*) lost \\(or was never connected\\) and connection failed.',
+  ]
+  const regexObj = new RegExp(patterns.join('|'), 'i')
+  const matched = bulletin.match(regexObj)
+
+  if (!!matched.length) {
+    bulletin = matched[0]
+  }
+
+  return bulletin
+}
+
+const getBulletinsFromStatus = status => {
+  if (!status?.processors?.length) {
+    return []
+  }
+
+  return Array.from<string>(
+    new Set<string>(
+      status.processors
+        .filter(pb => !!pb.bulletins.length)
+        .map(pb => pb.bulletins)
+        .flat()
+        .map(pb => pb.bulletin.message)
+        .map(b => sanitizeBulletin(b))
+    )
+  )
+}
+
 export const SubscriptionListProvider: FC = ({children}) => {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(null)
   const [statuses, setStatuses] = useState<SubscriptionStatus[]>([])
+  const [bulletins, setBulletins] = useState<BulletinsMap>({})
   const [currentID, setCurrentID] = useState(DEFAULT_CONTEXT.currentID)
   const [loading, setLoading] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
@@ -55,9 +93,7 @@ export const SubscriptionListProvider: FC = ({children}) => {
   const getAllSubsStatuses = useCallback(async (): Promise<void> => {
     setLoading(RemoteDataState.Loading)
     try {
-      console.log('getting statuses')
       const allStatuses = await getAllStatuses()
-      console.log({allStatuses})
       setStatuses(allStatuses)
     } catch (err) {
       dispatch(notify(subscriptionStatusesGetFail()))
@@ -65,6 +101,20 @@ export const SubscriptionListProvider: FC = ({children}) => {
       setLoading(RemoteDataState.Done)
     }
   }, [])
+
+  useEffect(() => {
+    if (!statuses.length) {
+      return
+    }
+
+    const newBulletins = {}
+    for (let i = 0; i < statuses.length; i++) {
+      const item = statuses[i]
+      newBulletins[item.id] = getBulletinsFromStatus(item)
+    }
+
+    setBulletins(newBulletins)
+  }, [statuses])
 
   const getAll = useCallback(async (): Promise<void> => {
     setLoading(RemoteDataState.Loading)
@@ -113,11 +163,11 @@ export const SubscriptionListProvider: FC = ({children}) => {
       value={{
         getAll,
         subscriptions,
-        statuses,
         deleteSubscription,
         loading,
         currentID,
         change,
+        bulletins,
       }}
     >
       {children}

@@ -62,6 +62,12 @@ const BrokerFormContent: FC<Props> = ({
       evt.preventDefault()
     })
   }, [])
+
+  useEffect(() => {
+    if (formContent.brokerUsername) {
+      setSecurity('user')
+    }
+  }, [])
   return (
     <Grid>
       <Grid.Row>
@@ -291,6 +297,8 @@ const BrokerFormContent: FC<Props> = ({
                   {feature: 'subscriptions'}
                 )
                 setSecurity('none')
+                formContent.brokerUsername = null
+                formContent.brokerPassword = null
               }}
               value="none"
               titleText="None"

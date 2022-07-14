@@ -27,6 +27,7 @@ import {
   SubscriptionListContext,
   SubscriptionListProvider,
 } from 'src/writeData/subscriptions/context/subscription.list'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -168,7 +169,9 @@ const SubscriptionsLanding: FC = () => {
 SubscriptionsLanding
 
 export default () => (
-  <SubscriptionListProvider>
-    <SubscriptionsLanding />
-  </SubscriptionListProvider>
+  <AppSettingProvider>
+    <SubscriptionListProvider>
+      <SubscriptionsLanding />
+    </SubscriptionListProvider>
+  </AppSettingProvider>
 )

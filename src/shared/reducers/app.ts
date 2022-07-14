@@ -18,6 +18,7 @@ export interface AppState {
     theme: Theme
     versionInfo: VersionInfo
     flowsCTA: FlowsCTA
+    subscriptionsCertificateInterest: boolean
   }
 }
 
@@ -34,6 +35,7 @@ const initialState: AppState = {
     fluxQueryBuilder: false,
     versionInfo: {version: '', commit: ''},
     flowsCTA: {explorer: true, tasks: true, alerts: true},
+    subscriptionsCertificateInterest: false,
   },
 }
 
@@ -114,6 +116,13 @@ const appPersistedReducer = (
           ...state.flowsCTA,
           ...action.payload.flowsCTA,
         },
+      }
+    }
+
+    case ActionTypes.SetSubscriptionsCertificateInterest: {
+      return {
+        ...state,
+        subscriptionsCertificateInterest: true,
       }
     }
 

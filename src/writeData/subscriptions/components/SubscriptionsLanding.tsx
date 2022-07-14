@@ -43,7 +43,7 @@ import {Subscription} from 'src/types/subscriptions'
 import 'src/writeData/subscriptions/components/SubscriptionsLanding.scss'
 
 const SubscriptionsLanding: FC = () => {
-  const {subscriptions, loading} = useContext(SubscriptionListContext)
+  const {subscriptions, statuses, loading} = useContext(SubscriptionListContext)
   const history = useHistory()
   const org = useSelector(getOrg)
   const [search, setSearch] = useState('')
@@ -156,6 +156,7 @@ const SubscriptionsLanding: FC = () => {
           {subscriptions && subscriptions.length ? (
             <SubscriptionsList
               subscriptions={handleSort(filteredSubscriptions)}
+              statuses={statuses}
             />
           ) : (
             <EmptySubscriptionState />

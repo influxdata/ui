@@ -54,6 +54,7 @@
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_dexUrl=OSS CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
     "generate": "export SHA=8cfd00c5b9d7781b510d27304557d323dca0a9c6 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
+    "generate-local-cloud": "export REMOTE=../openapi/ && yarn generate-meta-cloud",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",
     "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn pinned && yarn mapsd-oss && yarn uiproxyd-oss && yarn cloudPriv && yarn fluxdocs && yarn subscriptions-oss",
     "generate-meta-cloud": "yarn cloud-api && yarn notebooks && yarn unity && yarn annotations && yarn cloudPriv && yarn pinned && yarn mapsd && yarn uiproxyd && yarn fluxdocs && yarn subscriptions",

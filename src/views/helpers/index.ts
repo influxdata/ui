@@ -424,6 +424,40 @@ const NEW_VIEW_CREATORS = {
       ],
     },
   }),
+  geo3D: (): NewView<GeoViewProperties> => ({
+    ...defaultView(),
+    properties: {
+      type: 'geo3D',
+      shape: 'chronograf-v2',
+      queries: [defaultViewQuery()],
+      note: '',
+      showNoteWhenEmpty: false,
+      center: {
+        lat: 0,
+        lon: 0,
+      },
+      zoom: 6,
+      allowPanAndZoom: true,
+      detectCoordinateFields: false,
+      mapStyle: '',
+      useS2CellID: true,
+      s2Column: 's2_cell_id',
+      latLonColumns: {
+        lat: {key: '', column: ''},
+        lon: {key: '', column: ''},
+      },
+      layers: [
+        {
+          type: 'trackMap',
+          colorDimension: {label: 'Value'},
+          colorField: '_value',
+          colors: DEFAULT_THRESHOLDS_GEO_COLORS,
+          isClustered: false,
+          tooltipColumns: [],
+        },
+      ],
+    },
+  }),
   threshold: (): NewView<CheckViewProperties> => ({
     ...defaultView('check'),
     properties: {

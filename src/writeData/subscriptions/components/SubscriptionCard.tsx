@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext} from 'react'
 import {DateTime} from 'luxon'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
@@ -20,7 +20,7 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {Subscription, SubscriptionStatus} from 'src/types/subscriptions'
+import {Subscription} from 'src/types/subscriptions'
 import {SubscriptionListContext} from '../context/subscription.list'
 import {LOAD_DATA, SUBSCRIPTIONS} from 'src/shared/constants/routes'
 
@@ -30,47 +30,15 @@ import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   subscription: Subscription
-  status: SubscriptionStatus
 }
 
-const sanitizeBulletin = (bulletin: string) => {
-  const patterns = [
-    'Connection to (.*) lost \\(or was never connected\\) and connection failed.',
-  ]
-  const regexObj = new RegExp(patterns.join('|'), 'i')
-  const matched = bulletin.match(regexObj)
-
-  if (!!matched.length) {
-    bulletin = matched[0]
-  }
-
-  return bulletin
-}
-
-const SubscriptionCard: FC<Props> = ({subscription, status}) => {
+const SubscriptionCard: FC<Props> = ({subscription}) => {
   const history = useHistory()
   const {deleteSubscription} = useContext(SubscriptionListContext)
   const timeSince = new DateTime.fromISO(subscription.updatedAt).toRelative()
   const org = useSelector(getOrg)
-  const [bulletins, setBulletins] = useState<string[]>([])
-
-  useEffect(() => {
-    if (!status?.processors?.length) {
-      return
-    }
-
-    const newBulletins = Array.from<string>(
-      new Set<string>(
-        status.processors
-          .filter(pb => !!pb.bulletins.length)
-          .map(pb => pb.bulletins)
-          .flat()
-          .map(pb => pb.bulletin.message)
-          .map(b => sanitizeBulletin(b))
-      )
-    )
-    setBulletins(newBulletins)
-  }, [status?.processors])
+  const {bulletins: allBulletins} = useContext(SubscriptionListContext)
+  const bulletins = allBulletins?.[subscription.id] ?? []
 
   return (
     <ResourceCard

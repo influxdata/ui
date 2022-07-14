@@ -22,6 +22,11 @@ export const subscriptionsGetFail = (): Notification => ({
   message: `Failed to get Subscriptions, please try again.`,
 })
 
+export const subscriptionStatusesGetFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to get Subscription Statuses, please try again.`,
+})
+
 export const subscriptionsDeleteFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to delete the Subscription, please try again.`,

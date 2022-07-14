@@ -271,6 +271,10 @@ export const normalizeWindowPeriodForZoomRequery = (
     (Number(column[endIndex]) - Number(column[startIndex])) /
     DESIRED_POINTS_PER_GRAPH
 
+  if (duration !== duration) {
+    return FALLBACK_WINDOW_PERIOD
+  }
+
   return Math.max(duration, MINIMUM_WINDOW_PERIOD)
 }
 

@@ -80,17 +80,24 @@ export const checkJSONPathStarts$ = (firstChar, formVal): string | null => {
 }
 
 export const sanitizeForm = (form: Subscription): Subscription => {
+  // if (!form.stringMeasurement.name) {
+  //   form.stringMeasurement.name = 'measurement'
+  // }
+  // if (!form.jsonMeasurementKey.name) {
+  //   form.jsonMeasurementKey.name = 'measurement'
+  // }
   // add $. if not at start of input for json paths
-  if (form.jsonMeasurementKey) {
+  if (form.jsonMeasurementKey.path) {
     const startChar = form.jsonMeasurementKey?.path.charAt(0) ?? ''
     const newVal = checkJSONPathStarts$(startChar, form.jsonMeasurementKey.path)
     if (newVal) {
       form.jsonMeasurementKey.path = newVal
     }
-    if (form.jsonMeasurementKey.type === 'number') {
-      form.jsonMeasurementKey.type = 'double'
-    }
   }
+  if (form.jsonMeasurementKey.type === 'number') {
+    form.jsonMeasurementKey.type = 'double'
+  }
+
   if (form.jsonFieldKeys) {
     form.jsonFieldKeys.map(f => {
       const startChar = f.path?.charAt(0) ?? ''
@@ -130,15 +137,21 @@ export const sanitizeForm = (form: Subscription): Subscription => {
 }
 
 export const sanitizeUpdateForm = (form: Subscription): Subscription => {
+  // if (!form.stringMeasurement.name) {
+  //   form.stringMeasurement.name = 'measurement'
+  // }
+  // if (!form.jsonMeasurementKey.name) {
+  //   form.jsonMeasurementKey.name = 'measurement'
+  // }
   if (form.jsonMeasurementKey.path) {
     const startChar = form.jsonMeasurementKey?.path.charAt(0) ?? ''
     const newVal = checkJSONPathStarts$(startChar, form.jsonMeasurementKey.path)
     if (newVal) {
       form.jsonMeasurementKey.path = newVal
     }
-    if (form.jsonMeasurementKey.type === 'number') {
-      form.jsonMeasurementKey.type = 'double'
-    }
+  }
+  if (form.jsonMeasurementKey.type === 'number') {
+    form.jsonMeasurementKey.type = 'double'
   }
   if (form.jsonFieldKeys) {
     form.jsonFieldKeys.map(f => {
@@ -213,12 +226,18 @@ export const checkRequiredStringFields = (form: Subscription): boolean => {
     return true
   }
   return (
-    !!form.stringMeasurement.pattern &&
-    validateRegex(form.stringMeasurement.pattern) &&
+    checkStringMeasurement(form.stringMeasurement) &&
     checkStringTimestamp(form.stringTimestamp) &&
     form.stringFields?.length > 0 &&
     form.stringFields?.every(f => checkStringObjRequiredFields(f)) &&
     form.stringTags?.every(t => checkStringObjRequiredFields(t))
+  )
+}
+
+const checkStringMeasurement = (stringMeasurement: StringObjectParams) => {
+  return (
+    !!stringMeasurement.name ||
+    (!!stringMeasurement.pattern && validateRegex(stringMeasurement.pattern))
   )
 }
 
@@ -263,13 +282,19 @@ export const checkRequiredJsonFields = (form: Subscription): boolean => {
     return true
   }
   return (
-    !!form.jsonMeasurementKey?.path &&
-    !!form.jsonMeasurementKey?.type &&
-    validateJsonPath(form.jsonMeasurementKey.path) &&
+    checkJsonMeasurement(form.jsonMeasurementKey) &&
     checkJsonTimestamp(form.jsonTimestamp) &&
     form.jsonFieldKeys?.length > 0 &&
     form.jsonFieldKeys?.every(f => checkJsonObjRequiredFields(f)) &&
     form.jsonTagKeys?.every(t => checkJsonObjRequiredFields(t))
+  )
+}
+
+const checkJsonMeasurement = (jsonMeasurement: JsonSpec) => {
+  return (
+    !!jsonMeasurement.type &&
+    (!!jsonMeasurement.name ||
+      (!!jsonMeasurement.path && validateJsonPath(jsonMeasurement.path)))
   )
 }
 

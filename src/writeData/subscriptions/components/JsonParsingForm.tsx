@@ -16,6 +16,8 @@ import {
   FlexDirection,
   FlexBox,
   ComponentStatus,
+  SlideToggle,
+  InputLabel,
 } from '@influxdata/clockface'
 import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
@@ -46,6 +48,9 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const numberType = 'Number'
   const dataTypeList = [stringType, numberType]
   const [dataTypeM, setDataTypeM] = useState(stringType)
+  const [useStaticMeasurement, setUseStaticMeasurement] = useState(
+    !!formContent.jsonMeasurementKey.name
+  )
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
   const defaultJsonFieldTag = {
@@ -173,45 +178,105 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           </Heading>
         </FlexBox>
         <FlexBox
+          direction={FlexDirection.Row}
+          alignItems={AlignItems.Center}
+          margin={ComponentSize.Medium}
+          className="static-toggle"
+        >
+          <InputLabel>JSON Path</InputLabel>
+          <SlideToggle
+            active={useStaticMeasurement}
+            onChange={() => {
+              setUseStaticMeasurement(!useStaticMeasurement)
+              updateForm({
+                ...formContent,
+                jsonMeasurementKey: {
+                  ...formContent.jsonMeasurementKey,
+                  name: '',
+                  path: '',
+                },
+              })
+            }}
+            disabled={!edit}
+          />
+          <InputLabel>Name</InputLabel>
+        </FlexBox>
+        <FlexBox
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}
           margin={ComponentSize.Large}
           className="json-parsing-form__container"
         >
-          <ValidationInputWithTooltip
-            label="JSON Path"
-            value={formContent.jsonMeasurementKey.path}
-            required={true}
-            validationFunc={() => {
-              const path = formContent.jsonMeasurementKey.path
-              return (
-                handleValidation('Measurement Path', path) ??
-                handleJsonPathValidation(path)
-              )
-            }}
-            placeholder="eg. $.myJSON.myObject[0].myKey"
-            name="jsonpath"
-            onChange={e => {
-              updateForm({
-                ...formContent,
-                jsonMeasurementKey: {
-                  ...formContent.jsonMeasurementKey,
-                  path: e.target.value,
-                },
-              })
-            }}
-            onBlur={() =>
-              event(
-                'completed form field',
-                {formField: 'jsonMeasurementKey.path'},
-                {feature: 'subscriptions'}
-              )
-            }
-            edit={edit}
-            testID="measurement-json-parsing-path"
-            tooltip={JSON_TOOLTIP}
-            width="75%"
-          />
+          {useStaticMeasurement ? (
+            <ValidationInputWithTooltip
+              label="Name"
+              value={formContent.jsonMeasurementKey.name}
+              required={true}
+              validationFunc={() => {
+                return handleValidation(
+                  'Measurement Name',
+                  formContent.jsonMeasurementKey.name
+                )
+              }}
+              placeholder="nonDescriptName"
+              name="name"
+              onChange={e => {
+                updateForm({
+                  ...formContent,
+                  jsonMeasurementKey: {
+                    ...formContent.jsonMeasurementKey,
+                    name: e.target.value,
+                  },
+                })
+              }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {formField: 'jsonMeasurementKey.name'},
+                  {feature: 'subscriptions'}
+                )
+              }
+              edit={edit}
+              testID="measurement-json-parsing-name"
+              tooltip="Provide a static measurement for your messages."
+              width="75%"
+            />
+          ) : (
+            <ValidationInputWithTooltip
+              label="JSON Path"
+              value={formContent.jsonMeasurementKey.path}
+              required={true}
+              validationFunc={() => {
+                const path = formContent.jsonMeasurementKey.path
+                return (
+                  handleValidation('Measurement Path', path) ??
+                  handleJsonPathValidation(path)
+                )
+              }}
+              placeholder="eg. $.myJSON.myObject[0].myKey"
+              name="jsonpath"
+              onChange={e => {
+                updateForm({
+                  ...formContent,
+                  jsonMeasurementKey: {
+                    ...formContent.jsonMeasurementKey,
+                    path: e.target.value,
+                  },
+                })
+              }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {formField: 'jsonMeasurementKey.path'},
+                  {feature: 'subscriptions'}
+                )
+              }
+              edit={edit}
+              testID="measurement-json-parsing-path"
+              tooltip={JSON_TOOLTIP}
+              width="75%"
+            />
+          )}
           <div className="json-parsing-form__container__dropdown">
             <Form.Label label="Data Type" />
             <Dropdown
@@ -221,7 +286,9 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                   onClick={onClick}
                   testID="measurement-json-parsing-type"
                   status={
-                    edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                    edit && !useStaticMeasurement
+                      ? ComponentStatus.Default
+                      : ComponentStatus.Disabled
                   }
                 >
                   {sanitizeType(formContent.jsonMeasurementKey.type) ??

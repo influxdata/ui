@@ -21,6 +21,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import UserInput from 'src/writeData/subscriptions/components/UserInput'
+import CertificateInput from 'src/writeData/subscriptions/components/CertificateInput'
 
 // Utils
 import {handleValidation} from 'src/writeData/subscriptions/utils/form'
@@ -185,7 +186,7 @@ const BrokerFormContent: FC<Props> = ({
                 handleValidation('Broker Host', formContent.brokerHost)
               }
               helpText={
-                edit
+                className !== 'create' && edit
                   ? 'Changing the hostname will require you to provide your password again.'
                   : ''
               }
@@ -317,22 +318,25 @@ const BrokerFormContent: FC<Props> = ({
             >
               User
             </SelectGroup.Option>
-            {/* For a later iteration */}
-            {/* <SelectGroup.Option
-            name="user"
-            id="user"
-            testID="user--button"
-            active={security === 'certificate'}
-            onClick={() => {
-              event('broker security toggle', {method: 'certificate'}, {feature: 'subscriptions'})
-              setSecurity('certificate')
-            }}
-            value={'certificate'}
-            titleText="Certificate"
-            disabled={false}
-          >
-            Certificate
-          </SelectGroup.Option> */}
+            <SelectGroup.Option
+              name="certificate"
+              id="certificate"
+              testID="certificate--button"
+              active={security === 'certificate'}
+              onClick={() => {
+                event(
+                  'broker security toggle',
+                  {method: 'certificate', step: 'broker'},
+                  {feature: 'subscriptions'}
+                )
+                setSecurity('certificate')
+              }}
+              value="certificate"
+              titleText="Certificate"
+              disabled={!edit}
+            >
+              Certificate
+            </SelectGroup.Option>
           </SelectGroup>
           {security === 'user' && (
             <UserInput
@@ -342,6 +346,7 @@ const BrokerFormContent: FC<Props> = ({
               edit={edit}
             />
           )}
+          {security === 'certificate' && <CertificateInput />}
         </Grid.Column>
       </Grid.Row>
     </Grid>

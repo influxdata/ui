@@ -26,6 +26,7 @@ import {
   SubscriptionListContext,
   SubscriptionListProvider,
 } from 'src/writeData/subscriptions/context/subscription.list'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Types
 import {
@@ -171,11 +172,13 @@ const DetailsSubscriptionPage: FC = () => {
 }
 
 export default () => (
-  <SubscriptionListProvider>
-    <SubscriptionUpdateProvider>
-      <WriteDataDetailsProvider>
-        <DetailsSubscriptionPage />
-      </WriteDataDetailsProvider>
-    </SubscriptionUpdateProvider>
-  </SubscriptionListProvider>
+  <AppSettingProvider>
+    <SubscriptionListProvider>
+      <SubscriptionUpdateProvider>
+        <WriteDataDetailsProvider>
+          <DetailsSubscriptionPage />
+        </WriteDataDetailsProvider>
+      </SubscriptionUpdateProvider>
+    </SubscriptionListProvider>
+  </AppSettingProvider>
 )

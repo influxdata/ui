@@ -9,6 +9,7 @@ import {
   enablePresentationMode,
   disablePresentationMode,
   setFlowsCTA as setFlowsCTAAction,
+  setSubscriptionsCertificateInterest as setSubscriptionsCertificateInterestAction,
 } from 'src/shared/actions/app'
 import {
   timeZone as timeZoneFromState,
@@ -17,6 +18,7 @@ import {
   fluxQueryBuilder as fluxQueryBuilderFromState,
   navbarMode as navbarModeFromState,
   getFlowsCTA,
+  getSubscriptionsCertificateInterest,
 } from 'src/shared/selectors/app'
 import {notify} from 'src/shared/actions/notifications'
 import {PRESENTATION_MODE_ANIMATION_DELAY} from 'src/shared/constants'
@@ -31,6 +33,7 @@ interface AppSettingContextType {
   fluxQueryBuilder: boolean
   navbarMode: NavBarState
   flowsCTA: FlowsCTA
+  subscriptionsCertificateInterest: boolean
 
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
@@ -38,6 +41,7 @@ interface AppSettingContextType {
   setFluxQueryBuilder: (active: boolean) => void
   setNavbarMode: (mode: NavBarState) => void
   setFlowsCTA: (flowsCTA: FlowsCTA) => void
+  setSubscriptionsCertificateInterest: () => void
 }
 
 const DEFAULT_CONTEXT: AppSettingContextType = {
@@ -47,6 +51,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   fluxQueryBuilder: false,
   navbarMode: 'collapsed' as NavBarState,
   flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
+  subscriptionsCertificateInterest: false,
 
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
@@ -54,6 +59,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   setFluxQueryBuilder: (_active: boolean) => {},
   setNavbarMode: (_mode: NavBarState) => {},
   setFlowsCTA: (_flowsCTA: FlowsCTA) => {},
+  setSubscriptionsCertificateInterest: () => {},
 }
 
 export const AppSettingContext = React.createContext<AppSettingContextType>(
@@ -68,6 +74,7 @@ export const AppSettingProvider: FC = ({children}) => {
     fluxQueryBuilder,
     navbarMode,
     flowsCTA,
+    subscriptionsCertificateInterest,
   } = useSelector((state: AppState) => ({
     timeZone: timeZoneFromState(state),
     theme: themeFromState(state),
@@ -75,6 +82,9 @@ export const AppSettingProvider: FC = ({children}) => {
     fluxQueryBuilder: fluxQueryBuilderFromState(state),
     navbarMode: navbarModeFromState(state),
     flowsCTA: getFlowsCTA(state),
+    subscriptionsCertificateInterest: getSubscriptionsCertificateInterest(
+      state
+    ),
   }))
   const dispatch = useDispatch()
 
@@ -121,6 +131,10 @@ export const AppSettingProvider: FC = ({children}) => {
     },
     [dispatch]
   )
+  const setSubscriptionsCertificateInterest = useCallback(
+    () => dispatch(setSubscriptionsCertificateInterestAction()),
+    [dispatch]
+  )
 
   return (
     <AppSettingContext.Provider
@@ -131,6 +145,7 @@ export const AppSettingProvider: FC = ({children}) => {
         fluxQueryBuilder,
         navbarMode,
         flowsCTA,
+        subscriptionsCertificateInterest,
 
         setTimeZone,
         setTheme,
@@ -138,6 +153,7 @@ export const AppSettingProvider: FC = ({children}) => {
         setFluxQueryBuilder,
         setNavbarMode,
         setFlowsCTA,
+        setSubscriptionsCertificateInterest,
       }}
     >
       {children}

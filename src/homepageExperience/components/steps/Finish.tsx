@@ -130,10 +130,10 @@ export const Finish = (props: OwnProps) => {
             </p>
           </ResourceCard>
         </FlexBox>
-          <SampleAppCard
-            handleNextStepEvent={handleNextStepEvent}
-            wizardEventName={props.wizardEventName}
-          />
+        <SampleAppCard
+          handleNextStepEvent={handleNextStepEvent}
+          wizardEventName={props.wizardEventName}
+        />
       </FlexBox>
     </>
   )

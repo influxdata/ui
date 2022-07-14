@@ -316,7 +316,7 @@ const BrokerFormContent: FC<Props> = ({
               titleText="User"
               disabled={!edit}
             >
-              User
+              Basic
             </SelectGroup.Option>
             <SelectGroup.Option
               name="certificate"

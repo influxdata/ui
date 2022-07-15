@@ -1471,10 +1471,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.21.tgz#28b1ab5d2b9f3130a616628f8da95fc4b886dfc6"
   integrity sha512-N/O9ZfePb7TjgVjecFekBkU5iIW2Ld1FPDE8iuirg5WQMdka9ZLvpCn0jcfUUD3C8mJyBt5gj5+VQe+oSgH49Q==
 
-"@influxdata/giraffe@^2.31.0":
-  version "2.31.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.31.0.tgz#9811b0704c89b60ff73cd009cbcae62577dbf029"
-  integrity sha512-IGPwFaWFrAuduvj1s+VXRtceOJvFGw4I4JnUkBCDX8ohCd2qMjruvW0KPUj13QMuWrx86UsOYc72bwjs7Um4Zg==
+"@influxdata/giraffe@^2.31.1":
+  version "2.31.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.31.1.tgz#c16211e93c392b612401d208950f0d01925efb74"
+  integrity sha512-DhJzm7e3Yk9pTE+y3g4qrcCbfDwMpduGKKmcR9mQjaErEnqLGCtyCgNi6Uo1qMppxRJ0CdZyHkIXV4D1oT8syg==
   dependencies:
     merge-images "^2.0.0"
 

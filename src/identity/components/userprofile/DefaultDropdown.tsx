@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, SetStateAction} from 'react'
 import {
   AlignItems,
   ComponentSize,
@@ -26,7 +26,7 @@ interface Props {
   entityLabel: string
   defaultEntity: Entity
   entityList: Entity[]
-  changeSelectedEntity: VoidFunction
+  changeSelectedEntity: (action: SetStateAction<any>) => void
 }
 
 export const DefaultDropdown: FC<Props> = ({

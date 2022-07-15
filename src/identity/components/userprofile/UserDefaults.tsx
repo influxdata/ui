@@ -108,6 +108,10 @@ export const UserDefaults: FC = () => {
     }
   }
 
+  console.log(accounts)
+  console.log(orgs)
+  console.log({currentDefaultOrg})
+
   return (
     <FlexBox
       direction={FlexDirection.Column}

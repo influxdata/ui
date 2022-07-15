@@ -189,7 +189,6 @@ const DetailsSubscriptionPage: FC = () => {
                       edit={isEditEnabled}
                       onFocus={() => setFormActive(Steps.SubscriptionForm)}
                     />
-                    {/* {!!bulletins.length && <div className='HasIssues'>ssss</div>} */}
                     <ParsingDetails
                       currentSubscription={currentSubscription}
                       updateForm={updateForm}

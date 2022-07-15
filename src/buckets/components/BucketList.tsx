@@ -68,7 +68,6 @@ const BucketList: FC<Props> = ({
   }, [])
 
   useEffect(() => {
-    // serve as componentDidMount()
     const params = new URLSearchParams(window.location.search)
     const urlPageNumber = parseInt(params.get('page'), 10)
 

@@ -13,7 +13,7 @@ import {
 import {PublishNotificationAction} from 'src/shared/actions/notifications'
 
 // Types
-import {RemoteDataState} from 'src/types'
+import {GetState, RemoteDataState} from 'src/types'
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 
 type Actions = QuartzOrganizationActions | PublishNotificationAction
@@ -23,7 +23,8 @@ type DefaultOrg = OrganizationSummaries[number]
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export const getQuartzOrganizationsThunk = () => async (
-  dispatch: Dispatch<Actions>
+  dispatch: Dispatch<Actions>,
+  getState: GetState
 ) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
@@ -36,6 +37,7 @@ export const getQuartzOrganizationsThunk = () => async (
 
     reportErrorThroughHoneyBadger(err, {
       name: 'Failed to fetch /quartz/orgs/',
+      context: {state: getState()},
     })
   }
 }
@@ -43,7 +45,7 @@ export const getQuartzOrganizationsThunk = () => async (
 export const updateDefaultOrgThunk = (
   oldDefaultOrg: DefaultOrg,
   newDefaultOrg: DefaultOrg
-) => async (dispatch: Dispatch<Actions>) => {
+) => async (dispatch: Dispatch<Actions>, getState: GetState) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
 
@@ -57,6 +59,7 @@ export const updateDefaultOrgThunk = (
 
     reportErrorThroughHoneyBadger(err, {
       name: 'Failed to update /quartz/orgs/default',
+      context: {state: getState()},
     })
   }
 }

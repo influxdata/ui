@@ -83,6 +83,7 @@ export const getBillingProviderThunk = () => async (
 
     reportErrorThroughHoneyBadger(error, {
       name: 'Failed to fetch /quartz/accounts/',
+      context: {state: getState()},
     })
   }
 }
@@ -112,6 +113,7 @@ export const getCurrentOrgDetailsThunk = () => async (
 
     reportErrorThroughHoneyBadger(error, {
       name: 'Failed to fetch /quartz/orgs/:orgId',
+      context: {state: getState()},
     })
   }
 }

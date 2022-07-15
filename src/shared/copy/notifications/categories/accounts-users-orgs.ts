@@ -130,9 +130,3 @@ export const removeUserSuccessful = (): Notification => ({
   ...defaultSuccessNotification,
   message: `User Removed`,
 })
-
-export const updateQuartzOrganizationsFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message:
-    'We were unable to retrieve the list of your InfluxData organizations. Please refresh this page.',
-})

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useContext, useEffect, useRef} from 'react'
+import React, {FC, useState, useContext, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 import {useParams} from 'react-router-dom'
 
@@ -9,7 +9,6 @@ import {
   SpinnerContainer,
   TechnoSpinner,
   SubwayNav,
-  DapperScrollbars,
 } from '@influxdata/clockface'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
 import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
@@ -78,7 +77,9 @@ const DetailsSubscriptionPage: FC = () => {
   const [stepsStatus, setStepsStatus] = useState<StepsStatus>(
     DEFAULT_STEPS_STATUS
   )
-  const bulletins = allBulletins?.[currentSubscription.id] ?? []
+  allBulletins
+  // TODO: Continue Here after FlexBox conversion
+  // const bulletins = allBulletins?.[currentSubscription.id] ?? []
 
   const stepsWithIsCompletedStatus = SUBSCRIPTION_NAVIGATION_STEPS.map(step => {
     return {...step, isComplete: completedSteps[step.type]}
@@ -119,8 +120,6 @@ const DetailsSubscriptionPage: FC = () => {
       [Steps.ParsingForm]: stepsStatus.parsingStepCompleted === 'true',
     })
   }
-
-  console.log({bulletins})
 
   return (
     <GetResources resources={[ResourceType.Buckets]}>

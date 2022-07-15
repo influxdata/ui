@@ -38,7 +38,7 @@ describe('Multi Org UI', () => {
 
     // type in the org name
     const orgName = 'Test Org 2'
-    const orgId = 'aa87ab3e-a705-4c19-b16a-090e344a4c11' // comes from quartz-mock data
+    const orgId = 'aa87ab3e-a705-4c19-b16a-090e344a4c11' // TODO: need quartz-mock to send consistent ID's
     searchOrgInputField.type(orgName)
 
     // select the org

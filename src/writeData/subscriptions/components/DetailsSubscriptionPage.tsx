@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useState, useContext, useEffect} from 'react'
 import {useSelector} from 'react-redux'
-import {useParams} from 'react-router-dom'
+import {useLocation, useParams} from 'react-router-dom'
 
 // Components
 import {
@@ -66,6 +66,8 @@ const DetailsSubscriptionPage: FC = () => {
   } = useContext(SubscriptionUpdateContext)
   const {change} = useContext(SubscriptionListContext)
   const {id} = useParams<{id: string}>()
+  const search = useLocation().search
+  const showErrors = new URLSearchParams(search).get('e') !== null
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
@@ -149,6 +151,7 @@ const DetailsSubscriptionPage: FC = () => {
               setStatus={setStatus}
               saveForm={saveForm}
               onFocus={() => setFormActive(Steps.BrokerForm)}
+              showErrors={showErrors}
             />
             <SubscriptionDetails
               currentSubscription={currentSubscription}

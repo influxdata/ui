@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useCallback, useContext} from 'react'
 import {DateTime} from 'luxon'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
@@ -40,6 +40,17 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
   const {bulletins: allBulletins} = useContext(SubscriptionListContext)
   const bulletins = allBulletins?.[subscription.id] ?? []
 
+  const goToSubscriptionDetails = useCallback(
+    (showErrors = false) => {
+      let url = `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}`
+      if (showErrors) {
+        url = `${url}?e`
+      }
+      history.push(url)
+    },
+    [history, org?.id, subscription?.id]
+  )
+
   return (
     <ResourceCard
       key={`subscription-card-id--${subscription.id}`}
@@ -70,9 +81,7 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
         name={subscription.name}
         onClick={() => {
           event('subscription card clicked', {}, {feature: 'subscriptions'})
-          history.push(
-            `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}`
-          )
+          goToSubscriptionDetails()
         }}
         testID="subscription-name"
       />
@@ -81,42 +90,22 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
       />
       <ResourceCard.Meta>
         {!!bulletins.length ? (
-          <>
-            <ReflessPopover
-              position={PopoverPosition.Below}
-              showEvent={PopoverInteraction.Hover}
-              hideEvent={PopoverInteraction.Hover}
-              style={{width: 'max-content'}}
-              contents={() => (
-                <>
-                  {bulletins.map((b, i) => (
-                    <div key={`BulletinIssues${i}`}>
-                      {b}
-                      <br />
-                    </div>
-                  ))}
-                </>
-              )}
-            >
-              <Label
-                id="tid"
-                key="tkey"
-                name={`${bulletins.length} Issues`}
-                color="#DC4E58"
-                description={`${bulletins.length} Issues`}
-              />
-            </ReflessPopover>
-          </>
+          <Label
+            id="tid"
+            key="tkey"
+            name={`${bulletins.length} Issues`}
+            color="#DC4E58"
+            description={`${bulletins.length} Issues`}
+            onClick={() => goToSubscriptionDetails(true)}
+          />
         ) : (
-          <>
-            <Label
-              id="tid"
-              key="tkey"
-              name="All Cool"
-              color="#006f49"
-              description="No Issues"
-            />
-          </>
+          <Label
+            id="tid"
+            key="tkey"
+            name="All Cool"
+            color="#006f49"
+            description="No Issues"
+          />
         )}
         <>{subscription.status}</>
         <>Last Modified: {timeSince}</>

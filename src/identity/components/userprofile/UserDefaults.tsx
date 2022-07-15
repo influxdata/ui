@@ -28,7 +28,10 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Thunks
-import {updateDefaultOrgThunk} from 'src/identity/quartzOrganizations/actions/thunks'
+import {
+  getQuartzOrganizationsThunk,
+  updateDefaultOrgThunk,
+} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Components
 import {DefaultDropdown} from 'src/identity/components/userprofile/DefaultDropdown'
@@ -108,9 +111,8 @@ export const UserDefaults: FC = () => {
     }
   }
 
-  console.log(accounts)
   console.log(orgs)
-  console.log({currentDefaultOrg})
+  console.log(currentDefaultOrg)
 
   return (
     <FlexBox

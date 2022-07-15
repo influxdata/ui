@@ -6,6 +6,7 @@ import {Route, Switch} from 'react-router-dom'
 // Components
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {CheckoutPage, OperatorPage} from 'src/shared/containers'
+
 const NoOrgsPage = lazy(() => import('src/organizations/containers/NoOrgsPage'))
 const NotebookTemplates = lazy(() =>
   import('src/flows/components/FromTemplatePage')

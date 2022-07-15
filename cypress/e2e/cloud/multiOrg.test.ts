@@ -23,12 +23,32 @@ describe('Multi Org UI', () => {
   })
 
   // Assuming that the user has more than one account
-  it.only('should have the dropdown to select/switch the Organization', function() {
+  it.only('should have the dropdown and be able to select/switch the Organization', function() {
+    // open the dropdown
     const orgDropdown = cy.getByTestID('global-header-org-dropdown')
     orgDropdown.click()
 
+    // click the switch org button
     const switchOrgsButton = cy.getByTestID('global-header-org-dropdown--switch-button')
     switchOrgsButton.click()
+
+    // verify that the input field is visible
+    const searchOrgInputField = cy.getByTestID('dropdown-input-typeAhead--menu')
+    searchOrgInputField.should('be.visible')
+
+    // type in the org name
+    const orgName = 'Test Org 2'
+    const orgId = 'aa87ab3e-a705-4c19-b16a-090e344a4c11' // comes from quartz-mock data
+    searchOrgInputField.type(orgName)
+
+    // select the org
+    const orgDropdownItem = cy.getByTestID(`global-header-org-dropdown-typeAhead-item--0`)
+    orgDropdownItem.click()
+
+    // verify that the org id was visited
+    cy.url().then(($url) => {
+      expect($url).to.include(orgId)
+    })
 
   })
 })

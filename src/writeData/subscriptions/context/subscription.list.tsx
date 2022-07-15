@@ -110,7 +110,9 @@ export const SubscriptionListProvider: FC = ({children}) => {
     const newBulletins = {}
     for (let i = 0; i < statuses.length; i++) {
       const item = statuses[i]
-      newBulletins[item.id] = getBulletinsFromStatus(item)
+      if (item?.id) {
+        newBulletins[item.id] = getBulletinsFromStatus(item)
+      }
     }
 
     setBulletins(newBulletins)

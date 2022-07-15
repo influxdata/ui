@@ -42,7 +42,7 @@ describe('Multi Org UI', () => {
     searchOrgInputField.type(orgName)
 
     // select the org
-    const orgDropdownItem = cy.getByTestID(`global-header-org-dropdown-typeAhead-item--0`)
+    const orgDropdownItem = cy.getByTestID(`typeAhead-item--0`)
     orgDropdownItem.click()
 
     // verify that the org id was visited

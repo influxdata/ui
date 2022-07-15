@@ -56,11 +56,9 @@ const SubscriptionControls: FC<Props> = ({
   return (
     <div
       className="update-broker-form__fixed"
-      style={
-        {
-          width: navbarOpen ? '61%' : '69%'
-        }
-      }
+      style={{
+        width: navbarOpen ? '61%' : '69%',
+      }}
     >
       <FlexBox
         className="update-broker-form__fixed__broker-buttons"

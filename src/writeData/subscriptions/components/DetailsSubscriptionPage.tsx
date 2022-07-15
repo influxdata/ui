@@ -122,7 +122,6 @@ const DetailsSubscriptionPage: FC = () => {
 
   console.log({bulletins})
 
-
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>
@@ -135,15 +134,13 @@ const DetailsSubscriptionPage: FC = () => {
             scrollable={true}
             className="subscription-details-page"
           >
-            <div
-              className="subscription-details-page__progress"
-            >
+            <div className="subscription-details-page__progress">
               <div
                 style={{
                   display: 'flex',
                   flex: 2,
                   justifyContent: 'center',
-                  paddingTop: '25px'
+                  paddingTop: '25px',
                 }}
               >
                 <div style={{position: 'fixed'}}>

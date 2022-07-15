@@ -57,7 +57,6 @@ const sanitizeBulletin = (bulletin: string) => {
   const regexObj = new RegExp(patterns.join('|'), 'i')
   const matched = bulletin.match(regexObj)
 
-  console.log({matched, bulletin})
   if (!!matched?.length) {
     bulletin = matched[0]
   }

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -71,8 +71,18 @@ const BrokerDetails: FC<Props> = ({
   const requiredFields = checkRequiredFields(currentSubscription)
   const navbarOpen = navbarMode === 'expanded'
   const {bulletins: allBulletins} = useContext(SubscriptionListContext)
-  const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(showErrors)
   const bulletins = allBulletins?.[currentSubscription.id] ?? []
+  const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(
+    showErrors && !!bulletins.length
+  )
+
+  useEffect(() => {
+    if (!showErrors || !bulletins.length) {
+      return
+    }
+
+    setIsOverlayVisible(true)
+  }, [showErrors, bulletins?.length])
 
   return (
     <div

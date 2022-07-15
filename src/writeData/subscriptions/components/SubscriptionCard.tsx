@@ -13,9 +13,6 @@ import {
   FlexBox,
   IconFont,
   Label,
-  PopoverInteraction,
-  PopoverPosition,
-  ReflessPopover,
   ResourceCard,
 } from '@influxdata/clockface'
 

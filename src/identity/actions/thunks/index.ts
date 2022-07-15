@@ -26,6 +26,8 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Thunks
 import {getQuartzMeThunk} from 'src/me/actions/thunks'
+
+// Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export const getQuartzIdentityThunk = () => async (

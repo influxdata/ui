@@ -6,12 +6,6 @@ import {
   setQuartzIdentity,
   setQuartzIdentityStatus,
 } from 'src/identity/actions/creators'
-import {notify} from 'src/shared/actions/notifications'
-import {
-  updateBillingFailed,
-  updateIdentityFailed,
-  updateOrgFailed,
-} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState, GetState, NotificationAction} from 'src/types'
@@ -34,7 +28,10 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getQuartzMeThunk} from 'src/me/actions/thunks'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
-export const getQuartzIdentityThunk = () => async dispatch => {
+export const getQuartzIdentityThunk = () => async (
+  dispatch: Dispatch<any>,
+  getState: GetState
+) => {
   if (!isFlagEnabled('quartzIdentity')) {
     dispatch(getQuartzMeThunk())
     return
@@ -56,7 +53,8 @@ export const getQuartzIdentityThunk = () => async dispatch => {
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
     reportErrorThroughHoneyBadger(error, {
-      name: 'Unauthorized to Access /quartz/identity',
+      name: 'Failed to fetch /quartz/identity',
+      context: {state: getState()},
     })
   }
 }
@@ -84,7 +82,7 @@ export const getBillingProviderThunk = () => async (
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
     reportErrorThroughHoneyBadger(error, {
-      name: 'Unauthorized to access /quartz/accounts/',
+      name: 'Failed to fetch /quartz/accounts/',
     })
   }
 }
@@ -113,7 +111,7 @@ export const getCurrentOrgDetailsThunk = () => async (
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
     reportErrorThroughHoneyBadger(error, {
-      name: 'Unauthorized to access /quartz/orgs/',
+      name: 'Failed to fetch /quartz/orgs/:orgId',
     })
   }
 }

@@ -19,9 +19,8 @@ import {OrganizationSummaries} from 'src/client/unityRoutes'
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
 
-// Notifications
-import {notify} from 'src/shared/actions/notifications'
-import {updateQuartzOrganizationsFailed} from 'src/shared/copy/notifications'
+// Error Reporting
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export const getQuartzOrganizationsThunk = () => async (
   dispatch: Dispatch<Actions>
@@ -32,9 +31,12 @@ export const getQuartzOrganizationsThunk = () => async (
 
     dispatch(setQuartzOrganizations(quartzOrganizations))
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
-  } catch (error) {
+  } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
-    dispatch(notify(updateQuartzOrganizationsFailed()))
+
+    reportErrorThroughHoneyBadger(err, {
+      name: 'Failed to fetch /quartz/orgs/',
+    })
   }
 }
 
@@ -52,6 +54,9 @@ export const updateDefaultOrgThunk = (
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
   } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
-    throw Error(err)
+
+    reportErrorThroughHoneyBadger(err, {
+      name: 'Failed to update /quartz/orgs/default',
+    })
   }
 }

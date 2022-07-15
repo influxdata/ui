@@ -80,12 +80,6 @@ export const checkJSONPathStarts$ = (firstChar, formVal): string | null => {
 }
 
 export const sanitizeForm = (form: Subscription): Subscription => {
-  // if (!form.stringMeasurement.name) {
-  //   form.stringMeasurement.name = 'measurement'
-  // }
-  // if (!form.jsonMeasurementKey.name) {
-  //   form.jsonMeasurementKey.name = 'measurement'
-  // }
   // add $. if not at start of input for json paths
   if (form.jsonMeasurementKey.path) {
     const startChar = form.jsonMeasurementKey?.path.charAt(0) ?? ''
@@ -137,12 +131,6 @@ export const sanitizeForm = (form: Subscription): Subscription => {
 }
 
 export const sanitizeUpdateForm = (form: Subscription): Subscription => {
-  // if (!form.stringMeasurement.name) {
-  //   form.stringMeasurement.name = 'measurement'
-  // }
-  // if (!form.jsonMeasurementKey.name) {
-  //   form.jsonMeasurementKey.name = 'measurement'
-  // }
   if (form.jsonMeasurementKey.path) {
     const startChar = form.jsonMeasurementKey?.path.charAt(0) ?? ''
     const newVal = checkJSONPathStarts$(startChar, form.jsonMeasurementKey.path)
@@ -196,6 +184,8 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
   delete form.processGroupID
   delete form.createdAt
   delete form.updatedAt
+  delete form.createdBy
+  delete form.updatedBy
   delete form.tokenID
   delete form.isActive
   delete form.status

@@ -32,6 +32,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Thunks
 import {getQuartzMeThunk} from 'src/me/actions/thunks'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export const getQuartzIdentityThunk = () => async dispatch => {
   if (!isFlagEnabled('quartzIdentity')) {
@@ -53,7 +54,10 @@ export const getQuartzIdentityThunk = () => async dispatch => {
   } catch (error) {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
-    dispatch(notify(updateIdentityFailed()))
+
+    reportErrorThroughHoneyBadger(error, {
+      name: 'Unauthorized to Access /quartz/identity',
+    })
   }
 }
 
@@ -78,7 +82,10 @@ export const getBillingProviderThunk = () => async (
   } catch (error) {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
-    dispatch(notify(updateBillingFailed()))
+
+    reportErrorThroughHoneyBadger(error, {
+      name: 'Unauthorized to access /quartz/accounts/',
+    })
   }
 }
 
@@ -104,6 +111,9 @@ export const getCurrentOrgDetailsThunk = () => async (
   } catch (error) {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
-    dispatch(notify(updateOrgFailed()))
+
+    reportErrorThroughHoneyBadger(error, {
+      name: 'Unauthorized to access /quartz/orgs/',
+    })
   }
 }

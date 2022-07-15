@@ -48,11 +48,11 @@ export const getQuartzIdentityThunk = () => async (
     const legacyMe = convertIdentityToMe(quartzIdentity)
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
-  } catch (error) {
+  } catch (err) {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
-    reportErrorThroughHoneyBadger(error, {
+    reportErrorThroughHoneyBadger(err, {
       name: 'Failed to fetch /quartz/identity',
       context: {state: getState()},
     })
@@ -77,11 +77,11 @@ export const getBillingProviderThunk = () => async (
     const legacyMe = convertIdentityToMe(updatedState.identity.currentIdentity)
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
-  } catch (error) {
+  } catch (err) {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
-    reportErrorThroughHoneyBadger(error, {
+    reportErrorThroughHoneyBadger(err, {
       name: 'Failed to fetch /quartz/accounts/',
       context: {state: getState()},
     })
@@ -107,11 +107,11 @@ export const getCurrentOrgDetailsThunk = () => async (
     const legacyMe = convertIdentityToMe(updatedState.identity.currentIdentity)
     dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
     dispatch(setQuartzMeStatus(RemoteDataState.Done))
-  } catch (error) {
+  } catch (err) {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
     dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
-    reportErrorThroughHoneyBadger(error, {
+    reportErrorThroughHoneyBadger(err, {
       name: 'Failed to fetch /quartz/orgs/:orgId',
       context: {state: getState()},
     })

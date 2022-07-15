@@ -139,7 +139,6 @@ const DetailsSubscriptionPage: FC = () => {
                   display: 'flex',
                   flex: 2,
                   justifyContent: 'center',
-                  paddingTop: '25px',
                 }}
               >
                 <div style={{position: 'fixed'}}>

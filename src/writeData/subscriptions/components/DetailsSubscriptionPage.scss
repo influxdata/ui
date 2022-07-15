@@ -5,10 +5,9 @@
     padding-top: $cf-space-m;
   }
   &__progress {
-    float: left;
-    width: 20%;
-    margin-top: $cf-space-l;
-    position: fixed;
+    display: flex;
+    flex-direction: row;
+    position: relative;
 
     .subway-navigation-title {
       margin-bottom: $cf-space-3xl;

@@ -52,18 +52,9 @@ const BrokerDetails: FC<Props> = ({
   currentSubscription,
   updateForm,
   edit,
-  setEdit,
   loading,
-  saveForm,
-  setStatus,
   onFocus,
 }) => {
-  const history = useHistory()
-  const org = useSelector(getOrg)
-  const {navbarMode} = useContext(AppSettingContext)
-  const requiredFields = checkRequiredFields(currentSubscription)
-  const navbarOpen = navbarMode === 'expanded'
-
   return (
     <div
       className="update-broker-form"
@@ -73,86 +64,6 @@ const BrokerDetails: FC<Props> = ({
     >
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
         <Form onSubmit={() => {}} testID="update-broker-form-overlay">
-          <div
-            className="update-broker-form__fixed"
-            style={{
-              width: navbarOpen ? '61%' : '69%',
-            }}
-          >
-            <FlexBox
-              className="update-broker-form__fixed__broker-buttons"
-              direction={FlexDirection.Row}
-              margin={ComponentSize.Medium}
-              justifyContent={JustifyContent.SpaceBetween}
-            >
-              <StatusHeader
-                currentSubscription={currentSubscription}
-                setStatus={setStatus}
-              />
-              <div>
-                <Button
-                  text="Close"
-                  color={ComponentColor.Tertiary}
-                  onClick={() => {
-                    event(
-                      'close button clicked',
-                      {},
-                      {feature: 'subscriptions'}
-                    )
-                    history.push(
-                      `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`
-                    )
-                  }}
-                  titleText="Cancel update of Subscription and return to list"
-                  type={ButtonType.Button}
-                  testID="update-sub-form--cancel"
-                />
-                <Button
-                  text={edit ? 'Cancel' : 'Edit'}
-                  color={ComponentColor.Secondary}
-                  onClick={() => {
-                    event('edit button clicked', {}, {feature: 'subscriptions'})
-                    setEdit(!edit)
-                  }}
-                  type={ButtonType.Button}
-                  titleText="Edit"
-                  testID="update-sub-form--edit"
-                />
-                {edit ? (
-                  <Button
-                    type={ButtonType.Button}
-                    text="Save Changes"
-                    color={ComponentColor.Success}
-                    onClick={() => {
-                      saveForm(currentSubscription)
-                    }}
-                    testID="update-sub-form--submit"
-                    status={
-                      requiredFields
-                        ? ComponentStatus.Default
-                        : ComponentStatus.Disabled
-                    }
-                  />
-                ) : (
-                  <Button
-                    text="View Data"
-                    color={ComponentColor.Success}
-                    onClick={() => {
-                      event(
-                        'view data button clicked',
-                        {},
-                        {feature: 'subscriptions'}
-                      )
-                      history.push(`/orgs/${org.id}/notebooks`)
-                    }}
-                    type={ButtonType.Button}
-                    testID="update-broker-form--view-data"
-                    status={ComponentStatus.Default}
-                  />
-                )}
-              </div>
-            </FlexBox>
-          </div>
           <Overlay.Body>
             <Heading
               element={HeadingElement.H3}

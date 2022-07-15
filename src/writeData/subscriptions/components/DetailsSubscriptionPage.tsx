@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useContext, useEffect} from 'react'
+import React, {FC, useState, useContext, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {useParams} from 'react-router-dom'
 
@@ -9,6 +9,7 @@ import {
   SpinnerContainer,
   TechnoSpinner,
   SubwayNav,
+  DapperScrollbars,
 } from '@influxdata/clockface'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
 import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
@@ -54,6 +55,7 @@ import {
   getFormStatus,
   SUBSCRIPTION_NAVIGATION_STEPS,
 } from '../utils/form'
+import SubscriptionControls from './SubscriptionControls'
 
 const DetailsSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
@@ -64,7 +66,7 @@ const DetailsSubscriptionPage: FC = () => {
     updateForm,
     setStatus,
   } = useContext(SubscriptionUpdateContext)
-  const {change} = useContext(SubscriptionListContext)
+  const {change, bulletins: allBulletins} = useContext(SubscriptionListContext)
   const {id} = useParams<{id: string}>()
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
@@ -76,6 +78,7 @@ const DetailsSubscriptionPage: FC = () => {
   const [stepsStatus, setStepsStatus] = useState<StepsStatus>(
     DEFAULT_STEPS_STATUS
   )
+  const bulletins = allBulletins?.[currentSubscription.id] ?? []
 
   const stepsWithIsCompletedStatus = SUBSCRIPTION_NAVIGATION_STEPS.map(step => {
     return {...step, isComplete: completedSteps[step.type]}
@@ -117,6 +120,9 @@ const DetailsSubscriptionPage: FC = () => {
     })
   }
 
+  console.log({bulletins})
+
+
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>
@@ -129,41 +135,76 @@ const DetailsSubscriptionPage: FC = () => {
             scrollable={true}
             className="subscription-details-page"
           >
-            <div className="subscription-details-page__progress">
-              <SubwayNav
-                currentStep={getActiveStep(active)}
-                onStepClick={handleClick}
-                navigationSteps={stepsWithIsCompletedStatus}
-                settingUpIcon={FormLogo}
-                settingUpText="MQTT Connector"
-                settingUpHeader={currentSubscription.name}
-                showCheckmark={isEditEnabled}
-              />
+            <div
+              className="subscription-details-page__progress"
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flex: 2,
+                  justifyContent: 'center',
+                  paddingTop: '25px'
+                }}
+              >
+                <div style={{position: 'fixed'}}>
+                  <SubwayNav
+                    currentStep={getActiveStep(active)}
+                    onStepClick={handleClick}
+                    navigationSteps={stepsWithIsCompletedStatus}
+                    settingUpIcon={FormLogo}
+                    settingUpText="MQTT Connector"
+                    settingUpHeader={currentSubscription.name}
+                    showCheckmark={isEditEnabled}
+                  />
+                </div>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  flex: 6,
+                  flexDirection: 'column',
+                }}
+              >
+                <div style={{display: 'flex', flexDirection: 'column'}}>
+                  <SubscriptionControls
+                    currentSubscription={currentSubscription}
+                    updateForm={updateForm}
+                    loading={loading}
+                    setStatus={setStatus}
+                    saveForm={saveForm}
+                    edit={isEditEnabled}
+                    setEdit={setEditStatus}
+                  />
+                  <div style={{display: 'flex', flexDirection: 'column'}}>
+                    <BrokerDetails
+                      currentSubscription={currentSubscription}
+                      updateForm={updateForm}
+                      edit={isEditEnabled}
+                      setEdit={setEditStatus}
+                      loading={loading}
+                      setStatus={setStatus}
+                      saveForm={saveForm}
+                      onFocus={() => setFormActive(Steps.BrokerForm)}
+                    />
+                    <SubscriptionDetails
+                      currentSubscription={currentSubscription}
+                      updateForm={updateForm}
+                      buckets={buckets}
+                      bucket={bucket}
+                      edit={isEditEnabled}
+                      onFocus={() => setFormActive(Steps.SubscriptionForm)}
+                    />
+                    {/* {!!bulletins.length && <div className='HasIssues'>ssss</div>} */}
+                    <ParsingDetails
+                      currentSubscription={currentSubscription}
+                      updateForm={updateForm}
+                      edit={isEditEnabled}
+                      onFocus={() => setFormActive(Steps.ParsingForm)}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-            <BrokerDetails
-              currentSubscription={currentSubscription}
-              updateForm={updateForm}
-              edit={isEditEnabled}
-              setEdit={setEditStatus}
-              loading={loading}
-              setStatus={setStatus}
-              saveForm={saveForm}
-              onFocus={() => setFormActive(Steps.BrokerForm)}
-            />
-            <SubscriptionDetails
-              currentSubscription={currentSubscription}
-              updateForm={updateForm}
-              buckets={buckets}
-              bucket={bucket}
-              edit={isEditEnabled}
-              onFocus={() => setFormActive(Steps.SubscriptionForm)}
-            />
-            <ParsingDetails
-              currentSubscription={currentSubscription}
-              updateForm={updateForm}
-              edit={isEditEnabled}
-              onFocus={() => setFormActive(Steps.ParsingForm)}
-            />
           </Page.Contents>
         </SpinnerContainer>
       </Page>

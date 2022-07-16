@@ -29,7 +29,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
-import {PROJECT_NAME} from 'src/flows'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -146,7 +146,9 @@ const BrokerDetails: FC<Props> = ({
                       )
                       history.push(
                         currentSubscription.notebookID
-                          ? `/orgs/${org.id}/${PROJECT_NAME.toLowerCase()}/${
+                          ? `/orgs/${
+                              org.id
+                            }/${PROJECT_NAME_PLURAL.toLowerCase()}/${
                               currentSubscription.notebookID
                             }`
                           : `/${PROJECT_NAME.toLowerCase()}/from/subscription/${

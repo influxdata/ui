@@ -29,6 +29,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
+import {PROJECT_NAME} from 'src/flows'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -143,7 +144,15 @@ const BrokerDetails: FC<Props> = ({
                         {},
                         {feature: 'subscriptions'}
                       )
-                      history.push(`/orgs/${org.id}/notebooks`)
+                      history.push(
+                        currentSubscription.notebookID
+                          ? `/orgs/${org.id}/${PROJECT_NAME.toLowerCase()}/${
+                              currentSubscription.notebookID
+                            }`
+                          : `/${PROJECT_NAME.toLowerCase()}/from/subscription/${
+                              currentSubscription.id
+                            }`
+                      )
                     }}
                     type={ButtonType.Button}
                     testID="update-broker-form--view-data"

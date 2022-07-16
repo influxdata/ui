@@ -94,9 +94,7 @@ export const Finish = (props: OwnProps) => {
       <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.Stretch}>
         <ResourceCard
           className="homepage-wizard-next-steps"
-          onClick={() =>
-            handleNextStepEvent('keyConcepts')
-          }
+          onClick={() => handleNextStepEvent('keyConcepts')}
         >
           <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
             <h4>{BookIcon}Key Concepts</h4>
@@ -105,22 +103,16 @@ export const Finish = (props: OwnProps) => {
         </ResourceCard>
         <ResourceCard
           className="homepage-wizard-next-steps"
-          onClick={() =>
-            handleNextStepEvent('cliCommands')
-          }
+          onClick={() => handleNextStepEvent('cliCommands')}
         >
           <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/">
             <h4>{BookIcon}CLI Commands</h4>
           </SafeBlankLink>
-          <p>
-            See the full list of CLI commands and how to use them.
-          </p>
+          <p>See the full list of CLI commands and how to use them.</p>
         </ResourceCard>
         <ResourceCard
           className="homepage-wizard-next-steps"
-          onClick={() =>
-            handleNextStepEvent('influxUniversity')
-          }
+          onClick={() => handleNextStepEvent('influxUniversity')}
         >
           <SafeBlankLink href="https://influxdbu.com/">
             <h4>{CodeTerminalIcon}InfluxDB University</h4>

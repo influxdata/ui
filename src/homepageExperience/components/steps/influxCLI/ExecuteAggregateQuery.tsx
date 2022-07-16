@@ -39,16 +39,17 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
         function is a powerful method for returning combined, summarized data
         about a set of time-series data.
       </p>
-      <p>An aggregation is applied after the time range and filters, as seen in the example below.</p>
+      <p>
+        An aggregation is applied after the time range and filters, as seen in
+        the example below.
+      </p>
       <CodeSnippet
         text={fromBucketSnippet}
         showCopyControl={false}
         onCopy={logCopyCodeSnippet}
         language="properties"
       />
-      <p>
-       In the InfluxCLI, run the following:
-      </p>
+      <p>In the InfluxCLI, run the following:</p>
       <CodeSnippet
         text={codeSnippet}
         onCopy={logCopyCodeSnippet}

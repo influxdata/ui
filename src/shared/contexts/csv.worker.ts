@@ -1,6 +1,6 @@
-import {csvParse, csvParseRows} from 'd3-dsv'
+import Papa from 'papaparse'
 
-const RESULT_COLUMN_INDEX = 1
+const RESULT = 'result'
 interface FromFluxResult {
   error?: Error
   // The single parsed `Table`
@@ -43,12 +43,6 @@ type FluxDataType =
   | 'dateTime:RFC3339'
   | 'system'
 
-const assert = (condition: boolean, errorMessage: string) => {
-  if (!condition) {
-    throw new Error(errorMessage)
-  }
-}
-
 /*
   Convert a [Flux CSV response][0] to a `Table`.
   For example, given a series of Flux tables that look like this:
@@ -88,100 +82,168 @@ const assert = (condition: boolean, errorMessage: string) => {
   [0]: https://github.com/influxdata/flux/blob/master/docs/SPEC.md#csv
   [1]: https://github.com/influxdata/flux/blob/master/docs/SPEC.md#annotations
 */
-// TODO(ariel): come back here and replace this fromFlux function with the fastFromFlux function
-// once it's been derisked and replaced this version in giraffe
 const fromFlux = (fluxCSV: string): FromFluxResult => {
   const columns: Columns = {}
-  const fluxGroupKeyUnion = new Set<string>()
-  const resultColumnNames = new Set<string>()
   let tableLength = 0
-
   try {
-    const chunks = splitChunks(fluxCSV)
+    /*
+      A Flux CSV response can contain multiple CSV files each joined by a newline.
+      This function splits up a CSV response into these individual CSV files.
+      See https://github.com/influxdata/flux/blob/master/docs/SPEC.md#multiple-tables.
+    */
+    // finds the first non-whitespace character
+    let currentIndex = fluxCSV.search(/\S/)
+
+    if (currentIndex === -1) {
+      return {
+        table: {
+          columns: {},
+        },
+        fluxGroupKeyUnion: [],
+        resultColumnNames: [],
+      }
+    }
+
+    // Split the response into separate chunks whenever we encounter:
+    //
+    // 1. A newline
+    // 2. Followed by any amount of whitespace
+    // 3. Followed by a newline
+    // 4. Followed by a `#` character
+    //
+    // The last condition is [necessary][0] for handling CSV responses with
+    // values containing newlines.
+    //
+    // [0]: https://github.com/influxdata/influxdb/issues/15017
+
+    const chunks = []
+    while (currentIndex !== -1) {
+      const prevIndex = currentIndex
+      const nextIndex = fluxCSV
+        .substring(currentIndex, fluxCSV.length)
+        .search(/\n\s*\n#(?=datatype|group|default)/)
+      if (nextIndex === -1) {
+        chunks.push([prevIndex, fluxCSV.length - 1])
+        currentIndex = -1
+        break
+      } else {
+        chunks.push([prevIndex, prevIndex + nextIndex])
+        currentIndex = prevIndex + nextIndex + 2
+      }
+    }
 
     // declaring all nested variables here to reduce memory drain
-    let tableText = ''
-    let tableData: any = []
-    let annotationText = ''
-    let columnType: any = ''
     let columnKey = ''
-    let columnDefault: any = ''
+    const fluxGroupKeyUnion = new Set<string>()
+    const resultColumnNames = new Set<string>()
+    let _end, _start
+    for (const [start, end] of chunks) {
+      _end = end
+      _start = start
+      let annotationMode = true
 
-    for (const chunk of chunks) {
-      const splittedChunk = chunk.split('\n')
-
-      const tableTexts = []
-      const annotationTexts = []
-
-      splittedChunk.forEach(line => {
-        if (line.startsWith('#')) {
-          annotationTexts.push(line)
-        } else {
-          tableTexts.push(line)
-        }
-        if (line.startsWith('#default')) {
-          const defaults = line.split(',')
-          if (
-            defaults.length >= RESULT_COLUMN_INDEX + 1 &&
-            defaults[RESULT_COLUMN_INDEX].length
-          ) {
-            resultColumnNames.add(defaults[RESULT_COLUMN_INDEX])
-          }
-        }
-      })
-
-      tableText = tableTexts.join('\n').trim()
-
-      assert(
-        !!tableText,
-        'could not find annotation lines in Flux response; are `annotations` enabled in the Flux query `dialect` option?'
-      )
-
-      tableData = csvParse(tableText)
-
-      annotationText = annotationTexts.join('\n').trim()
-
-      assert(
-        !!annotationText,
-        'could not find annotation lines in Flux response; are `annotations` enabled in the Flux query `dialect` option?'
-      )
-      const annotationData = parseAnnotations(annotationText, tableData.columns)
-
-      for (const columnName of tableData.columns.slice(1)) {
-        columnType =
-          TO_COLUMN_TYPE[annotationData.datatypeByColumnName[columnName]]
-
-        assert(
-          !!columnType,
-          `encountered unknown Flux column type ${annotationData.datatypeByColumnName[columnName]}`
-        )
-
-        columnKey = `${columnName} (${columnType})`
-
-        if (!columns[columnKey]) {
-          columns[columnKey] = {
-            name: columnName,
-            type: columnType,
-            fluxDataType: annotationData.datatypeByColumnName[columnName],
-            data: [],
-          } as Column
-        }
-
-        columnDefault = annotationData.defaultByColumnName[columnName]
-
-        for (let i = 0; i < tableData.length; i++) {
-          columns[columnKey].data[tableLength + i] = parseValue(
-            tableData[i][columnName] || columnDefault,
-            columnType
-          )
-        }
-
-        if (annotationData.groupKey.includes(columnName)) {
-          fluxGroupKeyUnion.add(columnKey)
-        }
+      const parsed = {
+        group: [],
+        datatype: [],
+        default: [],
+        columnKey: [],
       }
+      // we want to move the pointer to the first non-whitespace character at the end of the chunk
+      while (/\s/.test(fluxCSV[_end]) && _end > _start) {
+        _end--
+      }
+      // we want to move the pointer to the first non-whitespace character at the start of the chunk
+      while (/\s/.test(fluxCSV[_start]) && _start < _end) {
+        _start++
+      }
+      /**
+       * substring doesn't include the index for the end. For example:
+       *
+       * 'hello'.substring(0, 1) // 'h'
+       *
+       * Given the fact that we want to include the last character of the chunk
+       * we want to add + 1 to the substring ending
+       */
+      Papa.parse(fluxCSV.substring(_start, _end + 1), {
+        step: function(results) {
+          if (results.data[0] === '#group') {
+            parsed.group = results.data.slice(1)
+          } else if (results.data[0] === '#datatype') {
+            parsed.datatype = results.data.slice(1)
+          } else if (results.data[0] === '#default') {
+            parsed.default = results.data.slice(1)
+          } else if (results.data[0][0] !== '#' && annotationMode === true) {
+            annotationMode = false
+            results.data.slice(1).reduce((acc, curr, index) => {
+              columnKey = `${curr} (${TO_COLUMN_TYPE[parsed.datatype[index]]})`
+              parsed.columnKey.push(columnKey)
+              if (!acc[columnKey]) {
+                acc[columnKey] = {
+                  name: curr,
+                  type: TO_COLUMN_TYPE[parsed.datatype[index]],
+                  fluxDataType: parsed.datatype[index],
+                  data: [],
+                }
+              }
+              if (parsed.group[index] === 'true') {
+                fluxGroupKeyUnion.add(columnKey)
+              }
+              return acc
+            }, columns)
+          } else {
+            results.data.slice(1).forEach((data, index) => {
+              const value = data || parsed.default[index]
+              let result = null
 
-      tableLength += tableData.length
+              if (value === undefined) {
+                result = undefined
+              } else if (value === 'null') {
+                result = null
+              } else if (value === 'NaN') {
+                result = NaN
+              } else if (
+                TO_COLUMN_TYPE[parsed.datatype[index]] === 'boolean' &&
+                value === 'true'
+              ) {
+                result = true
+              } else if (
+                TO_COLUMN_TYPE[parsed.datatype[index]] === 'boolean' &&
+                value === 'false'
+              ) {
+                result = false
+              } else if (TO_COLUMN_TYPE[parsed.datatype[index]] === 'string') {
+                result = value
+              } else if (TO_COLUMN_TYPE[parsed.datatype[index]] === 'time') {
+                if (/\s/.test(value)) {
+                  result = Date.parse(value.trim())
+                } else {
+                  result = Date.parse(value)
+                }
+              } else if (TO_COLUMN_TYPE[parsed.datatype[index]] === 'number') {
+                if (value === '') {
+                  result = null
+                } else {
+                  const parsedValue = Number(value)
+                  result = parsedValue === parsedValue ? parsedValue : value
+                }
+              } else {
+                result = null
+              }
+
+              if (columns[parsed.columnKey[index]] !== undefined) {
+                if (
+                  columns[parsed.columnKey[index]].name === RESULT &&
+                  result
+                ) {
+                  resultColumnNames.add(result)
+                }
+                columns[parsed.columnKey[index]].data[tableLength] = result
+              }
+            })
+            tableLength++
+          }
+        },
+      })
     }
 
     resolveNames(columns, fluxGroupKeyUnion)
@@ -209,7 +271,7 @@ const fromFlux = (fluxCSV: string): FromFluxResult => {
     return result
   } catch (error) {
     return {
-      error,
+      error: error as Error,
       table: {
         columns: {},
       },
@@ -219,70 +281,6 @@ const fromFlux = (fluxCSV: string): FromFluxResult => {
   }
 }
 
-/*
-  A Flux CSV response can contain multiple CSV files each joined by a newline.
-  This function splits up a CSV response into these individual CSV files.
-  See https://github.com/influxdata/flux/blob/master/docs/SPEC.md#multiple-tables.
-*/
-const splitChunks = (fluxCSV: string): string[] => {
-  const trimmedResponse = fluxCSV.trim()
-
-  if (trimmedResponse === '') {
-    return []
-  }
-
-  // Split the response into separate chunks whenever we encounter:
-  //
-  // 1. A newline
-  // 2. Followed by any amount of whitespace
-  // 3. Followed by a newline
-  // 4. Followed by a `#` character
-  //
-  // The last condition is [necessary][0] for handling CSV responses with
-  // values containing newlines.
-  //
-  // [0]: https://github.com/influxdata/influxdb/issues/15017
-  const chunks = trimmedResponse
-    .split(/\n\s*\n#/)
-    .map((s, i) => (i === 0 ? s : `#${s}`)) // Add back the `#` characters that were removed by splitting
-
-  return chunks
-}
-
-const parseAnnotations = (
-  annotationData: string,
-  headerRow: string[]
-): {
-  groupKey: string[]
-  datatypeByColumnName: {[columnName: string]: any}
-  defaultByColumnName: {[columnName: string]: any}
-} => {
-  const rows = csvParseRows(annotationData)
-
-  const groupRow = rows.find(row => row[0] === '#group')
-  const datatypeRow = rows.find(row => row[0] === '#datatype')
-  const defaultRow = rows.find(row => row[0] === '#default')
-
-  assert(!!groupRow, 'could not find group annotation in Flux response')
-  assert(!!datatypeRow, 'could not find datatype annotation in Flux response')
-  assert(!!defaultRow, 'could not find default annotation in Flux response')
-
-  const groupKey = groupRow.reduce(
-    (acc, val, i) => (val === 'true' ? [...acc, headerRow[i]] : acc),
-    []
-  )
-
-  const datatypeByColumnName = datatypeRow
-    .slice(1)
-    .reduce((acc, val, i) => ({...acc, [headerRow[i + 1]]: val}), {})
-
-  const defaultByColumnName = defaultRow
-    .slice(1)
-    .reduce((acc, val, i) => ({...acc, [headerRow[i + 1]]: val}), {})
-
-  return {groupKey, datatypeByColumnName, defaultByColumnName}
-}
-
 const TO_COLUMN_TYPE: {[fluxDatatype: string]: ColumnType} = {
   boolean: 'boolean',
   unsignedLong: 'number',
@@ -290,46 +288,6 @@ const TO_COLUMN_TYPE: {[fluxDatatype: string]: ColumnType} = {
   double: 'number',
   string: 'string',
   'dateTime:RFC3339': 'time',
-}
-
-const parseValue = (value: string | undefined, columnType: ColumnType): any => {
-  if (value === undefined) {
-    return undefined
-  }
-
-  if (value === 'null') {
-    return null
-  }
-
-  if (value === 'NaN') {
-    return NaN
-  }
-
-  if (columnType === 'boolean' && value === 'true') {
-    return true
-  }
-
-  if (columnType === 'boolean' && value === 'false') {
-    return false
-  }
-
-  if (columnType === 'string') {
-    return value
-  }
-
-  if (columnType === 'time') {
-    return Date.parse(value.trim())
-  }
-
-  if (columnType === 'number' && value === '') {
-    return null
-  }
-
-  if (columnType === 'number') {
-    return Number(value)
-  }
-
-  return null
 }
 
 /*

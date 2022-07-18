@@ -44,7 +44,7 @@ const SampleAppCard: FC<Props> = ({wizardEventName, handleNextStepEvent}) => {
           'https://github.com/InfluxCommunity/sample-flask/blob/main/app.py',
         nodejsWizard: 'https://github.com/influxdata/nodejs-samples/',
         goWizard:
-          'https://github.com/influxdata/go-samples/tree/master/cmd/boilerplate',
+          'https://github.com/influxdata/go-samples',
       },
     },
   ]

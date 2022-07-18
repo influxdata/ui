@@ -27,7 +27,6 @@ export const getQuartzOrganizationsThunk = () => async (
   dispatch: Dispatch<Actions>
 ) => {
   try {
-    console.log('trying to get orgs')
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
     const quartzOrganizations = await fetchQuartzOrgs()
 

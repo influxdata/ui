@@ -1,4 +1,11 @@
-import React, {FC, useCallback, useContext, useMemo, useState} from 'react'
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
@@ -36,6 +43,10 @@ const MeasurementSelector: FC = () => {
   )
   const {measurements, loading} = useContext(MeasurementsContext)
   const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+    setSearchTerm('')
+  }, [selectedBucket])
 
   const handleSelect = useCallback(
     (option: string): void => {

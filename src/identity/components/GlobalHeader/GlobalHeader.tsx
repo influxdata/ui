@@ -28,6 +28,7 @@ import {
   emptyOrg,
 } from 'src/identity/components/GlobalHeader/DefaultEntities'
 import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
+import IdentityUserAvatar from 'src/identity/components/GlobalHeader/IdentityUserAvatar'
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
@@ -89,6 +90,7 @@ export const GlobalHeader: FC = () => {
           </>
         )}
       </FlexBox>
+      <IdentityUserAvatar user={identity.currentIdentity.user} />
     </FlexBox>
   )
 }

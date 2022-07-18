@@ -145,7 +145,7 @@ describe('Operator Page', () => {
     cy.getByTestID('account-view--header').contains('operator1 (1)')
     // should not be able to delete undeletable accounts
     cy.getByTestID('account-delete--button').should('be.disabled')
-    // should not be able to convert non-free accounts to contract
+    // should not be able to convert cancelled accounts to contract
     cy.getByTestID('account-convert-to-contract--button').should('be.disabled')
 
     // Associated Users Section

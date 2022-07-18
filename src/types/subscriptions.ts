@@ -26,6 +26,8 @@ export interface Subscription {
   qos?: number
   createdAt?: Date
   updatedAt?: Date
+  createdBy?: string
+  updatedBy?: string
   tokenID?: string
   token?: string
   isActive?: string

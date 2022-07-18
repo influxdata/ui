@@ -19,6 +19,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {
   getWindowPeriodFromVariables,
   getWindowVarsFromVariables,
+  normalizeWindowPeriodForZoomRequery,
+  normalizeWindowPeriodVariableForZoomRequery,
 } from 'src/variables/utils/getWindowVars'
 
 // Types
@@ -198,19 +200,31 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const variables = useSelector(getAllVariablesWithTimeDomain)
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
-    getWindowPeriodFromVariables(query, variables)
+    normalizeWindowPeriodForZoomRequery(
+      getWindowPeriodFromVariables(query, variables),
+      timeRange,
+      domain,
+      data
+    )
   )
 
   useEffect(() => {
-    const updatedWindowPeriod = getWindowPeriodFromVariables(query, variables)
+    const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
+      getWindowPeriodFromVariables(query, variables),
+      timeRange,
+      domain,
+      data
+    )
+
     if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
-      setWindowPeriod(getWindowPeriodFromVariables(query, variables))
+      setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable = getWindowVarsFromVariables(
-          query,
-          variables
+        const zoomQueryWindowVariable = normalizeWindowPeriodVariableForZoomRequery(
+          getWindowVarsFromVariables(query, variables),
+          updatedWindowPeriod
         )
+
         const extern = buildUsedVarsOption(
           query,
           variables,
@@ -315,19 +329,31 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   const variables = useSelector(getAllVariablesWithTimeDomain)
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
-    getWindowPeriodFromVariables(query, variables)
+    normalizeWindowPeriodForZoomRequery(
+      getWindowPeriodFromVariables(query, variables),
+      timeRange,
+      domain,
+      data
+    )
   )
 
   useEffect(() => {
-    const updatedWindowPeriod = getWindowPeriodFromVariables(query, variables)
+    const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
+      getWindowPeriodFromVariables(query, variables),
+      timeRange,
+      domain,
+      data
+    )
+
     if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
-      setWindowPeriod(getWindowPeriodFromVariables(query, variables))
+      setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable = getWindowVarsFromVariables(
-          query,
-          variables
+        const zoomQueryWindowVariable = normalizeWindowPeriodVariableForZoomRequery(
+          getWindowVarsFromVariables(query, variables),
+          updatedWindowPeriod
         )
+
         const extern = buildUsedVarsOption(
           query,
           variables,

@@ -35,6 +35,7 @@ export const localState: LocalStorage = {
         commit: '',
       },
       flowsCTA: {alerts: true, explorer: true, tasks: true},
+      subscriptionsCertificateInterest: false,
     },
   },
   flags: {

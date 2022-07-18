@@ -95,17 +95,19 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           {/* Button shape is ButtonShape.Square to make the height and width the same
             so we can use the border radius to make it a circle  */}
           <Button
-            text={this.getInitials()}
+            text={this.getInitials() || '...'}
             shape={ButtonShape.Square}
             color={
               isPopoverOpen ? ComponentColor.Default : ComponentColor.Tertiary
             }
             onClick={this.togglePopoverState}
             className={userAvatarButtonClassName}
+            testID="global-header-user-avatar"
           />
           <FlexBox
             className={userPopoverClassName}
             direction={FlexDirection.Column}
+            testID="global-header--user-popover"
           >
             {this.getUserPopoverContents()}
           </FlexBox>

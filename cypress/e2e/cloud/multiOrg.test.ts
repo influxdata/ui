@@ -11,6 +11,7 @@ describe('Multi Org UI', () => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',
             }).then(() => {
+              cy.visit('/');
               cy.getByTestID('multiaccountorg-global-header').should('exist');
             })
           })
@@ -77,4 +78,27 @@ describe('Multi Org UI', () => {
     })
 
   })
+
+  it('should have the user avatar and user initials and be able to open the user option popover by clicking on the avatar', function() {
+    const avatarButton = cy.getByTestID('global-header-user-avatar')
+
+    avatarButton.should('exist')
+    // check avatarButton text to say "JS" (from mock data)
+    avatarButton.should('have.text', 'JS')
+
+
+    // open the popover
+    avatarButton.click()
+
+    const userOptionsPopover = cy.getByTestID('global-header--user-popover')
+    userOptionsPopover.should('be.visible')
+
+    userOptionsPopover.should('contain.text', 'Jane Smith')
+    userOptionsPopover.should('contain.text', 'test@influxdata.com')
+
+    userOptionsPopover.should('contain', 'Log Out')
+    userOptionsPopover.should('contain', 'Profile')
+
+    }
+  )
 })

@@ -3,13 +3,3 @@
   padding: $cf-space-2xs 0;
   border-bottom: $ix-border solid $cf-grey-25;
 }
-
-.searchable-dropdown--empty {
-  padding: $cf-space-2xs;
-  text-align: center;
-  opacity: 0.75;
-  user-select: none;
-  font-style: italic;
-  font-weight: 500;
-  font-size: 12px;
-}

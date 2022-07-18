@@ -88,7 +88,7 @@ const GeoPlot3D: FC<Props> = ({result, properties}) => {
           dashWeight: 2,
           dashGap: 0.01,
           dashLength: 0.1,
-          spinSpeed: 0.5,
+          spinSpeed: 0,
           detectCoordinateFields: false,
           mapStyle,
           layers: layersOpts,

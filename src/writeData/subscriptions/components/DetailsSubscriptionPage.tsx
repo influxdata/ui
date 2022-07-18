@@ -134,7 +134,7 @@ const DetailsSubscriptionPage: FC = () => {
                 onStepClick={handleClick}
                 navigationSteps={stepsWithIsCompletedStatus}
                 settingUpIcon={FormLogo}
-                settingUpText="MQTT Connector"
+                settingUpText="MQTT Subscriber"
                 settingUpHeader={currentSubscription.name}
                 showCheckmark={isEditEnabled}
               />

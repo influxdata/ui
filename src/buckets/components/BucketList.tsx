@@ -21,6 +21,7 @@ import {PaginationNav, Sort} from '@influxdata/clockface'
 
 // Utils
 import {SortTypes} from 'src/shared/utils/sort'
+import {useHistory} from 'react-router-dom'
 
 interface Props {
   buckets: Bucket[]
@@ -54,6 +55,8 @@ const BucketList: FC<Props> = ({
   sortType,
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const history = useHistory()
+
   const rowsPerPage: number = 10
   const totalPages: number = Math.max(
     Math.ceil(buckets.length / rowsPerPage),
@@ -62,8 +65,7 @@ const BucketList: FC<Props> = ({
 
   const paginate = useCallback((page: number) => {
     const url = new URL(location.href)
-    url.searchParams.set('page', page.toString())
-    history.replaceState(null, '', url.toString())
+    history.replace(`${url.pathname}?page=${page}`, null)
     setCurrentPage(page)
   }, [])
 

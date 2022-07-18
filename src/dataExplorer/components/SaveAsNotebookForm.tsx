@@ -89,10 +89,13 @@ const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
             buckets: bucket,
           }
         } else {
-          pipe.title = 'Query to Run'
-          pipe.queries = draftQuery.builderConfig
-          pipe.activeQuery = 0
-          pipe.type = 'rawFluxEditor'
+          pipe = {
+            ...pipe,
+            title: 'Query to Run',
+            queries: [draftQuery],
+            activeQuery: 0,
+            type: 'rawFluxEditor',
+          }
         }
 
         pipes.push(pipe)

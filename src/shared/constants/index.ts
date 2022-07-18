@@ -1,11 +1,13 @@
 import {
-  Config,
-  NINETEEN_EIGHTY_FOUR,
   ATLANTIS,
-  DO_ANDROIDS_DREAM,
-  DELOREAN,
+  COLOR_BLIND_FRIENDLY_DARK,
+  COLOR_BLIND_FRIENDLY_LIGHT,
   CTHULHU,
+  Config,
+  DELOREAN,
+  DO_ANDROIDS_DREAM,
   ECTOPLASM,
+  NINETEEN_EIGHTY_FOUR,
   T_MAX_400_FILM,
 } from '@influxdata/giraffe'
 import {InfluxColors} from '@influxdata/clockface'
@@ -146,6 +148,8 @@ export const GIRAFFE_COLOR_SCHEMES = [
   {name: 'Atlantis', colors: ATLANTIS},
   {name: 'Do Androids Dream of Electric Sheep?', colors: DO_ANDROIDS_DREAM},
   {name: 'Delorean', colors: DELOREAN},
+  {name: 'Color Blind Friendly - Light', colors: COLOR_BLIND_FRIENDLY_LIGHT},
+  {name: 'Color Blind Friendly - Dark', colors: COLOR_BLIND_FRIENDLY_DARK},
   {name: 'Cthulhu', colors: CTHULHU},
   {name: 'Ectoplasm', colors: ECTOPLASM},
   {name: 'T-MAX 400 Film', colors: T_MAX_400_FILM},

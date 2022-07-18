@@ -28,6 +28,7 @@ import BrokerFormContent from 'src/writeData/subscriptions/components/BrokerForm
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -60,6 +61,7 @@ const BrokerDetails: FC<Props> = ({
   const history = useHistory()
   const org = useSelector(getOrg)
   const {navbarMode} = useContext(AppSettingContext)
+  const requiredFields = checkRequiredFields(currentSubscription)
   const navbarOpen = navbarMode === 'expanded'
 
   return (
@@ -106,10 +108,8 @@ const BrokerDetails: FC<Props> = ({
                   testID="update-sub-form--cancel"
                 />
                 <Button
-                  text="Edit"
-                  color={
-                    edit ? ComponentColor.Success : ComponentColor.Secondary
-                  }
+                  text={edit ? 'Cancel' : 'Edit'}
+                  color={ComponentColor.Secondary}
                   onClick={() => {
                     event('edit button clicked', {}, {feature: 'subscriptions'})
                     setEdit(!edit)
@@ -127,6 +127,11 @@ const BrokerDetails: FC<Props> = ({
                       saveForm(currentSubscription)
                     }}
                     testID="update-sub-form--submit"
+                    status={
+                      requiredFields
+                        ? ComponentStatus.Default
+                        : ComponentStatus.Disabled
+                    }
                   />
                 ) : (
                   <Button

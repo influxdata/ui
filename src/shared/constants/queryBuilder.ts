@@ -1,2 +1,2 @@
-export const DEFAULT_TAG_LIMIT = 200
-export const EXTENDED_TAG_LIMIT = 500
+export const DEFAULT_LIMIT = 200
+export const EXTENDED_LIMIT = 1000

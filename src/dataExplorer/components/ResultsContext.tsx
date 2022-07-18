@@ -1,6 +1,7 @@
 import React, {FC, createContext, useState, useRef, useEffect} from 'react'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 
+import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {FluxResult} from 'src/types/flows'
 import {
   RemoteDataState,
@@ -61,7 +62,20 @@ export const ResultsProvider: FC = ({children}) => {
   )
 
   // for display, should be moved
-  const [view, setView] = useLocalStorageState()
+  const [oldView, setOldView] = useLocalStorageState()
+  const [view, setView] = useSessionStorage('dataExplorer.results', oldView)
+
+  // migration to allow people to keep their last used settings
+  // immediately after rollout
+  useEffect(() => {
+    setOldView({
+      state: 'table',
+      properties: {
+        type: 'simple-table',
+        showAll: false,
+      } as SimpleTableViewProperties,
+    })
+  }, [])
 
   useEffect(() => {
     let running = false

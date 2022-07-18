@@ -11,6 +11,7 @@ export enum ActionTypes {
   TemplateControlBarVisibilityToggled = 'TemplateControlBarVisibilityToggledAction',
   SetFlowsCTA = 'SET_FLOWS_CTA',
   Noop = 'NOOP',
+  SetSubscriptionsCertificateInterest = 'SET_SUB_CERT_INTEREST',
 }
 
 export type Action =
@@ -23,6 +24,7 @@ export type Action =
   | ReturnType<typeof setTheme>
   | ReturnType<typeof setVersionInfo>
   | ReturnType<typeof setFlowsCTA>
+  | ReturnType<typeof setSubscriptionsCertificateInterest>
 
 // ephemeral state action creators
 
@@ -76,4 +78,9 @@ export const setFlowsCTA = (flowsCTA: FlowsCTA) =>
   ({
     type: ActionTypes.SetFlowsCTA,
     payload: {flowsCTA},
+  } as const)
+
+export const setSubscriptionsCertificateInterest = () =>
+  ({
+    type: ActionTypes.SetSubscriptionsCertificateInterest,
   } as const)

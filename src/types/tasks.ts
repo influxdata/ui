@@ -3,6 +3,8 @@ import {NormalizedState, Run, RemoteDataState, LogEvent} from 'src/types'
 
 export interface Task extends Omit<ITask, 'labels'> {
   labels?: string[]
+  scriptID?: string
+  scriptParams?: string
 }
 export interface TaskOptions {
   name: string

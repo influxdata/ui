@@ -60,10 +60,6 @@ export const InitializeTokenClient: FC<OwnProps> = ({
 
   const bucketSnippet = `influx bucket create --name sample-bucket -c onboarding`
 
-  const [tokenTextboxText, setTokenTextboxText] = useState(
-    'Generating your token'
-  )
-
   const sortedPermissionTypes = useMemo(
     () => allPermissionTypes.sort((a, b) => collator.compare(a, b)),
     [allPermissionTypes]
@@ -95,13 +91,6 @@ export const InitializeTokenClient: FC<OwnProps> = ({
       setTokenValue(currentAuth.token)
     }
   }, [currentAuth.token])
-
-  // when tokenValue in the parent component is not null, set text box value to tokenValue
-  useEffect(() => {
-    if (tokenValue !== null) {
-      setTokenTextboxText(`export INFLUXDB_TOKEN=${tokenValue}`)
-    }
-  }, [tokenValue])
 
   // Events log handling
   const logCopyCodeSnippet = () => {

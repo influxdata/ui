@@ -81,10 +81,6 @@ export const Finish = (props: OwnProps) => {
     }
   }, [])
 
-  const showSampleAppAndBoilerplate =
-    props.wizardEventName === 'pythonWizard' ||
-    props.wizardEventName === 'nodejsWizard'
-
   return (
     <>
       <h1>Congrats!</h1>
@@ -134,12 +130,10 @@ export const Finish = (props: OwnProps) => {
             </p>
           </ResourceCard>
         </FlexBox>
-        {showSampleAppAndBoilerplate && (
-          <SampleAppCard
-            handleNextStepEvent={handleNextStepEvent}
-            wizardEventName={props.wizardEventName}
-          />
-        )}
+        <SampleAppCard
+          handleNextStepEvent={handleNextStepEvent}
+          wizardEventName={props.wizardEventName}
+        />
       </FlexBox>
     </>
   )

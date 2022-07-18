@@ -130,26 +130,3 @@ export const removeUserSuccessful = (): Notification => ({
   ...defaultSuccessNotification,
   message: `User Removed`,
 })
-
-export const updateBillingFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message:
-    'Error retrieving account billing provider. Please refresh this page.',
-})
-
-export const updateIdentityFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message: 'Error retrieving user identity. Please refresh this page.',
-})
-
-export const updateOrgFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message:
-    'Error retrieving new organization information. Please refresh this page.',
-})
-
-export const updateQuartzOrganizationsFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message:
-    'We were unable to retrieve the list of your InfluxData organizations. Please refresh this page.',
-})

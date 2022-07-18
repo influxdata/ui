@@ -63,10 +63,11 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
       description,
       permissions: allAccessPermissions(sortedPermissionTypes, orgID, meID),
     }
-    dispatch(createAuthorization(token))
-    handleDismiss()
-    event('token.allAccess.create.success', {meID, name: description})
-    dispatch(showOverlay('access-token', null, () => dismissOverlay()))
+
+    Promise.resolve(dispatch(createAuthorization(token))).then(() => {
+      event('token.allAccess.create.success', {meID, name: description})
+      dispatch(showOverlay('access-token', null, () => dismissOverlay()))
+    }, handleDismiss)
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {

@@ -14,6 +14,7 @@ import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
+import {DEFAULT_LIMIT, EXTENDED_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Types
 import {TimeRange, BuilderConfig} from 'src/types'
@@ -21,8 +22,6 @@ import {CancelBox} from 'src/types/promises'
 import {pastThirtyDaysTimeRange} from 'src/shared/constants/timeRanges'
 
 const DEFAULT_TIME_RANGE: TimeRange = pastThirtyDaysTimeRange
-const DEFAULT_LIMIT = 200
-const EXTENDED_LIMIT = 500
 
 export interface FindKeysOptions {
   url: string

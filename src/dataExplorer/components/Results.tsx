@@ -153,12 +153,18 @@ const Results: FC = () => {
             } as SimpleTableViewProperties
           }
           result={res}
+          hideTimer
         />
       )
     } else {
       resultView = (
         <div style={{height: '100%', width: '100%', padding: 12}}>
-          <View loading={status} properties={view.properties} result={res} />
+          <View
+            loading={status}
+            properties={view.properties}
+            result={res}
+            hideTimer
+          />
         </div>
       )
     }

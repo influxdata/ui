@@ -12,8 +12,10 @@ import produce from 'immer'
 
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
+
 export const initialState = {
   orgs: [emptyOrg] as OrganizationSummaries,
+  status: RemoteDataState.NotStarted,
 } as QuartzOrganizations
 
 export default (state = initialState, action: Actions): QuartzOrganizations =>

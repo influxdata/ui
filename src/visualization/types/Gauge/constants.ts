@@ -68,4 +68,5 @@ export const GAUGE_THEME_DARK: GaugeTheme = {
 }
 
 export const GAUGE_ARC_LENGTH_DEFAULT = 1.5 * Math.PI
+export const GAUGE_VALUE_POSITION_X_OFFSET_DEFAULT = 1.5
 export const GAUGE_VALUE_POSITION_Y_OFFSET_DEFAULT = 1.5

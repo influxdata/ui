@@ -109,24 +109,21 @@ const BucketList: FC<Props> = ({
     })
     const userAndSystemBuckets = [...userBuckets, ...systemBuckets]
 
-    const _buckets = [] as JSX.Element[]
-    for (let i = startIndex; i < endIndex; i++) {
-      const bucket = userAndSystemBuckets[i]
-      if (bucket) {
-        _buckets.push(
-          <BucketCard
-            key={bucket.id}
-            bucket={bucket}
-            onDeleteBucket={onDeleteBucket}
-            onUpdateBucket={onUpdateBucket}
-            onFilterChange={onFilterChange}
-            onGetBucketSchema={onGetBucketSchema}
-          />
-        )
+    return userAndSystemBuckets.slice(startIndex, endIndex).map(bucket => {
+      if (!bucket) {
+        return null
       }
-    }
-
-    return _buckets
+      return (
+        <BucketCard
+          key={bucket.id}
+          bucket={bucket}
+          onDeleteBucket={onDeleteBucket}
+          onUpdateBucket={onUpdateBucket}
+          onFilterChange={onFilterChange}
+          onGetBucketSchema={onGetBucketSchema}
+        />
+      )
+    })
   }
 
   return (

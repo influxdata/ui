@@ -33,6 +33,7 @@ export interface Subscription {
   isActive?: string
   flowVersion?: number
   timestampPrecision?: string
+  notebookID?: string
 }
 
 export interface JsonSpec {

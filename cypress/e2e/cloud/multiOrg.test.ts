@@ -19,11 +19,37 @@ describe('Multi Org UI', () => {
     )
   })
 
-  it('should be able to view all accounts and switch the Account from the dropdown', function() {
+  it.skip('should have the dropdown and be able to select/switch the Account', function() {
+    // open the account dropdown
+    const accountDropdown = cy.getByTestID('global-header-account-dropdown')
+    accountDropdown.click()
+
+    // click the switch org button
+    const switchOrgsButton = cy.getByTestID('global-header-account-dropdown--switch-button')
+    switchOrgsButton.click()
+
+    // verify that the input field is visible
+    const searchOrgInputField = cy.getByTestID('dropdown-input-typeAhead--menu')
+    searchOrgInputField.should('be.visible')
+
+    // type in the org name
+    const accountName = 'Veganomicon'
+    const accountId = 'ac3d3c04b8f1a545'
+    searchOrgInputField.type(accountName)
+
+    // select the org
+    const accountDropdownItem = cy.getByTestID(`typeAhead-item--0`)
+    accountDropdownItem.click()
+
+    // verify that the org id was visited
+    cy.url().then(($url) => {
+      expect($url).to.include(accountId)
+    })
+
   })
 
   // Assuming that the user has more than one account
-  it.only('should have the dropdown and be able to select/switch the Organization', function() {
+  it('should have the dropdown and be able to select/switch the Organization', function() {
     // open the dropdown
     const orgDropdown = cy.getByTestID('global-header-org-dropdown')
     orgDropdown.click()
@@ -38,7 +64,7 @@ describe('Multi Org UI', () => {
 
     // type in the org name
     const orgName = 'Test Org 2'
-    const orgId = 'aa87ab3e-a705-4c19-b16a-090e344a4c11' // TODO: need quartz-mock to send consistent ID's
+    const orgId = 'ac3d3c04b8f1a545'
     searchOrgInputField.type(orgName)
 
     // select the org

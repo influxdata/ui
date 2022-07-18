@@ -85,7 +85,7 @@ export const GlobalHeader: FC = () => {
               activeAccount={activeAccount}
               accountsList={sortedAccounts}
             />
-            <Icon glyph={IconFont.CaretRight} />
+            <Icon glyph={IconFont.CaretOutlineRight} className="global-header-caret-right"/>
             <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
           </>
         )}

@@ -1,3 +1,5 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
 .multiaccountorg--header {
   height: 60px;
   padding-top: 12px;
@@ -8,4 +10,9 @@
   margin-right: 0px;
   margin-bottom: 0px;
   margin-left: 0px;
+}
+
+.global-header-caret-right{
+  font-size: 20px;
+  color: $cf-grey-65;
 }

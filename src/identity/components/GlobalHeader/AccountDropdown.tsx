@@ -52,6 +52,7 @@ export const AccountDropdown: FC<Props> = ({
       style={style}
       menuStyle={menuStyle}
       onSelectOption={switchAccount}
+      testID="global-header-account-dropdown"
     />
   )
 }

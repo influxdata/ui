@@ -157,12 +157,11 @@ export class TaskCard extends PureComponent<
     }
   }
 
-  private handleOnDelete = async (task) => {
+  private handleOnDelete = async task => {
     this.props.onDelete(task)
     try {
-     await deletePinnedItemByParam(task.id)
-    }
-    catch (err) {
+      await deletePinnedItemByParam(task.id)
+    } catch (err) {
       this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
     }
   }

@@ -42,16 +42,16 @@ export const getQuartzOrganizationsThunk = () => async (
   }
 }
 
-export const updateDefaultOrgThunk = (
-  oldDefaultOrg: DefaultOrg,
-  newDefaultOrg: DefaultOrg
-) => async (dispatch: Dispatch<Actions>, getState: GetState) => {
+export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
+  dispatch: Dispatch<Actions>,
+  getState: GetState
+) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
 
     await updateDefaultQuartzOrg(newDefaultOrg.id)
 
-    dispatch(setQuartzDefaultOrg(oldDefaultOrg.id, newDefaultOrg.id))
+    dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
 
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
   } catch (err) {

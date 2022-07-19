@@ -31,7 +31,6 @@ export const getQuartzOrganizationsThunk = () => async (
     const quartzOrganizations = await fetchQuartzOrgs()
 
     dispatch(setQuartzOrganizations(quartzOrganizations))
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
   } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 
@@ -52,8 +51,6 @@ export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
     await updateDefaultQuartzOrg(newDefaultOrg.id)
 
     dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
-
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
   } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 

@@ -11,24 +11,21 @@ import produce from 'immer'
 // Types
 
 import {OrganizationSummaries} from 'src/client/unityRoutes'
+import {RemoteDataState} from 'src/types'
 export const initialState = {
   orgs: [emptyOrg] as OrganizationSummaries,
 } as QuartzOrganizations
-
-export class OrgValidationError extends Error {
-  constructor(message) {
-    super(message)
-    this.name = 'OrgValidationError'
-  }
-}
 
 export default (state = initialState, action: Actions): QuartzOrganizations =>
   produce(state, draftState => {
     switch (action.type) {
       case SET_QUARTZ_ORGANIZATIONS: {
         draftState.orgs = action.quartzOrganizations
+        draftState.status = RemoteDataState.Done
+
         return
       }
+
       case SET_QUARTZ_ORGANIZATIONS_STATUS: {
         draftState.status = action.status
         return
@@ -59,9 +56,9 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
         })
 
         if (newIdCount !== 1) {
-          throw new OrgValidationError(
-            'Error: Failed to identify new default org.'
-          )
+          draftState.status === RemoteDataState.Error
+        } else {
+          draftState.status === RemoteDataState.Done
         }
 
         return

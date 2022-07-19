@@ -161,8 +161,8 @@ export class TaskCard extends PureComponent<
     this.props.onDelete(task)
     try {
       await deletePinnedItemByParam(task.id)
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
+    } catch (error) {
+      this.props.sendNotification(pinnedItemFailure(error.message, 'delete'))
     }
   }
   private get contextMenu(): JSX.Element {

@@ -57,10 +57,14 @@ const SampleAppCard: FC<Props> = ({wizardEventName, handleNextStepEvent}) => {
       {resources.map(app => (
         <ResourceCard
           className="homepage-wizard-next-steps"
-          onClick={() => handleNextStepEvent(wizardEventName, app.title)}
           key={app.links[wizardEventName]}
         >
-          <SafeBlankLink href={app.links[wizardEventName]}>
+          <SafeBlankLink
+            href={app.links[wizardEventName]}
+            onClick={() =>
+              handleNextStepEvent(wizardEventName, app.title.replace(/ +/g, ''))
+            }
+          >
             <h4>
               {CodeTerminalIcon}
               {app.title}

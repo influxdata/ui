@@ -19,12 +19,12 @@ import {OrganizationSummaries} from 'src/client/unityRoutes'
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
 
-// class OrgNotFoundError extends Error {
-//   constructor(message) {
-//     super(message)
-//     this.name = 'DefaultOrgNotFoundError'
-//   }
-// }
+class OrgNotFoundError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'DefaultOrgNotFoundError'
+  }
+}
 
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
@@ -59,22 +59,21 @@ export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
 
     dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
 
-    // const state = getState()
-    // const orgStatus = state.identity.currentIdentity.status
+    const state = getState()
+    const orgStatus = state.identity.currentIdentity.status
 
-    // if (orgStatus === RemoteDataState.Error) {
-    //   const defaultOrgErrMsg =
-    //     'quartzOrganizations state does not contain requested default organization'
-    //   const defaultOrgErr = new OrgNotFoundError(defaultOrgErrMsg)
+    if (orgStatus === RemoteDataState.Error) {
+      const defaultOrgErrMsg =
+        'quartzOrganizations state does not contain requested default organization'
 
-    //   reportErrorThroughHoneyBadger(defaultOrgErr, {
-    //     name: defaultOrgErrMsg,
-    //     context: {
-    //       org: newDefaultOrg,
-    //       state: getState(),
-    //     },
-    //   })
-    // }
+      reportErrorThroughHoneyBadger(new OrgNotFoundError(defaultOrgErrMsg), {
+        name: defaultOrgErrMsg,
+        context: {
+          org: newDefaultOrg,
+          state: getState(),
+        },
+      })
+    }
   } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 

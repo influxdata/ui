@@ -59,22 +59,22 @@ export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
 
     dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
 
-    const state = getState()
-    const orgStatus = state.identity.currentIdentity.status
+    // const state = getState()
+    // const orgStatus = state.identity.currentIdentity.status
 
-    if (orgStatus === RemoteDataState.Error) {
-      const defaultOrgErrMsg =
-        'quartzOrganizations state does not contain requested default organization'
-      const defaultOrgErr = new OrgNotFoundError(defaultOrgErrMsg)
+    // if (orgStatus === RemoteDataState.Error) {
+    //   const defaultOrgErrMsg =
+    //     'quartzOrganizations state does not contain requested default organization'
+    //   const defaultOrgErr = new OrgNotFoundError(defaultOrgErrMsg)
 
-      reportErrorThroughHoneyBadger(defaultOrgErr, {
-        name: defaultOrgErrMsg,
-        context: {
-          org: newDefaultOrg,
-          state: getState(),
-        },
-      })
-    }
+    //   reportErrorThroughHoneyBadger(defaultOrgErr, {
+    //     name: defaultOrgErrMsg,
+    //     context: {
+    //       org: newDefaultOrg,
+    //       state: getState(),
+    //     },
+    //   })
+    // }
   } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 

@@ -19,12 +19,12 @@ import {OrganizationSummaries} from 'src/client/unityRoutes'
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
 
-class OrgNotFoundError extends Error {
-  constructor(message) {
-    super(message)
-    this.name = 'DefaultOrgNotFoundError'
-  }
-}
+// class OrgNotFoundError extends Error {
+//   constructor(message) {
+//     super(message)
+//     this.name = 'DefaultOrgNotFoundError'
+//   }
+// }
 
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'

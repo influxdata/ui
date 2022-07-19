@@ -60,7 +60,7 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
 
         if (newIdCount !== 1) {
           throw new OrgValidationError(
-            'Error: Did not find one old and one new default org.'
+            'Error: Failed to identify new default org.'
           )
         }
 

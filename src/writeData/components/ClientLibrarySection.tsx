@@ -63,14 +63,13 @@ const ClientLibrarySection = () => {
           const goto = () => {
             event('Load data client library clicked', {type: item.name})
             if (onBoardingItems.hasOwnProperty(`${item.id}`)) {
-              history.push(
+              return history.push(
                 `/${ORGS}/${org.id}/new-user-setup/${onBoardingItems[item.id]}`
               )
-            } else {
-              history.push(
-                `/${ORGS}/${org.id}/load-data/${CLIENT_LIBS}/${item.id}`
-              )
             }
+            return history.push(
+              `/${ORGS}/${org.id}/load-data/${CLIENT_LIBS}/${item.id}`
+            )
           }
 
           return (

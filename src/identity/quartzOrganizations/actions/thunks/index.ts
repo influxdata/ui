@@ -63,12 +63,16 @@ export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
     const orgStatus = state.identity.currentIdentity.status
 
     if (orgStatus === RemoteDataState.Error) {
-      const defaultOrgErrMsg = 'Unable to locate new default organization'
+      const defaultOrgErrMsg =
+        'quartzOrganizations state does not contain requested default organization'
       const defaultOrgErr = new OrgNotFoundError(defaultOrgErrMsg)
 
       reportErrorThroughHoneyBadger(defaultOrgErr, {
         name: defaultOrgErrMsg,
-        context: {state: getState()},
+        context: {
+          org: newDefaultOrg,
+          state: getState(),
+        },
       })
     }
   } catch (err) {

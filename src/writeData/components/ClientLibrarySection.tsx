@@ -29,6 +29,12 @@ const ClientLibrarySection = () => {
   const history = useHistory()
   const org = useSelector(getOrg)
 
+  const onBoardingItems = {
+    python: 'python',
+    'javascript-node': 'nodejs',
+    go: 'golang',
+  }
+
   if (!items.length) {
     return null
   }
@@ -56,7 +62,12 @@ const ClientLibrarySection = () => {
         {items.map(item => {
           const goto = () => {
             event('Load data client library clicked', {type: item.name})
-            history.push(
+            if (onBoardingItems.hasOwnProperty(`${item.id}`)) {
+              return history.push(
+                `/${ORGS}/${org.id}/new-user-setup/${onBoardingItems[item.id]}`
+              )
+            }
+            return history.push(
               `/${ORGS}/${org.id}/load-data/${CLIENT_LIBS}/${item.id}`
             )
           }

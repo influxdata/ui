@@ -25,6 +25,7 @@ is stored. You can think of a bucket like you would a database in SQL systems.`
 const REMAP_BUCKET_TYPES = {
   user: 'My Data',
   system: 'System Data',
+  sample: 'Sample Data',
 }
 
 const BucketSelector: FC = () => {
@@ -33,11 +34,9 @@ const BucketSelector: FC = () => {
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const _buckets = buckets
-    .filter(b =>
-      `${b.name}`.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-    )
-    .filter(bucket => bucket.type !== 'sample')
+  const _buckets = buckets.filter(b =>
+    `${b.name}`.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+  )
 
   const handleSelectBucket = (buck: Bucket) => {
     event('bucketSelected', {search: searchTerm.length})

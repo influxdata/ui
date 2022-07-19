@@ -8,11 +8,19 @@ import {
 import {emptyOrg} from 'src/identity/components/GlobalHeader/DefaultEntities'
 import produce from 'immer'
 
-import {OrganizationSummaries} from 'src/client/unityRoutes'
+// Types
 
-const initialState = {
+import {OrganizationSummaries} from 'src/client/unityRoutes'
+export const initialState = {
   orgs: [emptyOrg] as OrganizationSummaries,
 } as QuartzOrganizations
+
+export class OrgValidationError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'OrgValidationError'
+  }
+}
 
 export default (state = initialState, action: Actions): QuartzOrganizations =>
   produce(state, draftState => {
@@ -27,19 +35,35 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
       }
 
       case SET_QUARTZ_DEFAULT_ORG: {
-        const {oldDefaultOrgId, newDefaultOrgId} = action
+        // No existing default org is acceptable; oldDefaultOrg may be undefined.
+        const oldDefaultOrg = draftState.orgs.find(
+          org => org.isDefault === true
+        )
+        const oldDefaultOrgId = oldDefaultOrg?.id
+        const {newDefaultOrgId} = action
 
-        if (oldDefaultOrgId !== newDefaultOrgId) {
-          draftState.orgs.forEach(org => {
-            if (org.id === oldDefaultOrgId) {
-              org.isDefault = false
-            }
-
-            if (org.id === newDefaultOrgId) {
-              org.isDefault = true
-            }
-          })
+        if (oldDefaultOrgId === newDefaultOrgId) {
+          return
         }
+
+        let newIdCount = 0
+
+        draftState.orgs.forEach(org => {
+          if (org.id === oldDefaultOrgId) {
+            org.isDefault = false
+          }
+          if (org.id === newDefaultOrgId) {
+            org.isDefault = true
+            newIdCount++
+          }
+        })
+
+        if (newIdCount !== 1) {
+          throw new OrgValidationError(
+            'Error: Did not find one old and one new default org.'
+          )
+        }
+
         return
       }
     }

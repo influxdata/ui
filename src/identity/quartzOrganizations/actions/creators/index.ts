@@ -24,12 +24,8 @@ export const setQuartzOrganizationsStatus = (status: RemoteDataState) =>
     status: status,
   } as const)
 
-export const setQuartzDefaultOrg = (
-  oldDefaultOrgId: string,
-  newDefaultOrgId: string
-) =>
+export const setQuartzDefaultOrg = (newDefaultOrgId: string) =>
   ({
     type: SET_QUARTZ_DEFAULT_ORG,
-    oldDefaultOrgId: oldDefaultOrgId,
     newDefaultOrgId: newDefaultOrgId,
   } as const)

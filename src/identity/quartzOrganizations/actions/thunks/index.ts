@@ -19,6 +19,13 @@ import {OrganizationSummaries} from 'src/client/unityRoutes'
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
 
+class OrgNotFoundError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'DefaultOrgNotFoundError'
+  }
+}
+
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
@@ -51,6 +58,19 @@ export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
     await updateDefaultQuartzOrg(newDefaultOrg.id)
 
     dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
+
+    const state = getState()
+    const orgStatus = state.identity.currentIdentity.status
+
+    if (orgStatus === RemoteDataState.Error) {
+      const defaultOrgErrMsg = 'Unable to locate new default organization'
+      const defaultOrgErr = new OrgNotFoundError(defaultOrgErrMsg)
+
+      reportErrorThroughHoneyBadger(defaultOrgErr, {
+        name: defaultOrgErrMsg,
+        context: {state: getState()},
+      })
+    }
   } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 

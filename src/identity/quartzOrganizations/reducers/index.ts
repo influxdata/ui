@@ -57,10 +57,10 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
 
         if (newIdCount !== 1) {
           draftState.status === RemoteDataState.Error
-        } else {
-          draftState.status === RemoteDataState.Done
+          return
         }
 
+        draftState.status === RemoteDataState.Done
         return
       }
     }

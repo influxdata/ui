@@ -66,7 +66,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
       event('delete_notebook', {
         context: 'notebook',
       })
-      deletePinnedItemByParam(flow.id)
+      await deletePinnedItemByParam(flow.id)
       await deleteNotebook()
       setLoading(RemoteDataState.Done)
       history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)

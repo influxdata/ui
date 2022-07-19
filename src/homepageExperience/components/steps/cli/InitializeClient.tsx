@@ -49,7 +49,7 @@ export const InitializeClient: FC<OwnProps> = ({
   const dispatch = useDispatch()
   const url =
     me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
-  const orgName = org.name
+  const orgID = org.id
   const currentAuth = useSelector((state: AppState) => {
     return state.resources.tokens.currentAuth.item
   })
@@ -57,7 +57,7 @@ export const InitializeClient: FC<OwnProps> = ({
 
   const codeSnippet = `influx config create --config-name onboarding 
   --host-url "${url}" 
-  --org "${orgName}" 
+  --org "${orgID}" 
   --token "${token}" 
   --active`
 

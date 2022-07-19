@@ -23,7 +23,10 @@ export const parseASTIM = (query: string): ASTIM => {
   try {
     ast = parse(query)
   } catch (e) {
-    console.error(`ERROR: parseASTIM errored on script ${query} with error:`, e)
+    console.error(
+      `ERROR: parseASTIM errored on script:\n ${query}\n with error:`,
+      e
+    )
   }
   const variables: MemberExpression[] = ast ? parseAllVariables(ast) : []
   const variableNames = new Set()

@@ -88,6 +88,9 @@ describe('Deep linking', () => {
         `/orgs/${org.id}/new-user-setup/python`
       )
 
+      cy.visit('/me/setup-cli')
+      cy.location('pathname').should('eq', `/orgs/${org.id}/new-user-setup/cli`)
+
       cy.visit('/me/tasks')
       cy.location('pathname').should('eq', `/orgs/${org.id}/tasks`)
 

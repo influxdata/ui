@@ -156,31 +156,6 @@ export const BucketProvider: FC<Props> = ({
           user: [],
         }
 
-        if (omitSampleData === false) {
-          base.sample = [
-            {
-              type: 'sample',
-              name: 'Air Sensor Data',
-              id: 'airSensor',
-            },
-            {
-              type: 'sample',
-              name: 'Coinbase bitcoin price',
-              id: 'bitcoin',
-            },
-            {
-              type: 'sample',
-              name: 'NOAA National Buoy Data',
-              id: 'noaa',
-            },
-            {
-              type: 'sample',
-              name: 'USGS Earthquakes',
-              id: 'usgs',
-            },
-          ]
-        }
-
         const bucks = response.buckets.reduce((acc, curr) => {
           if (curr.type === 'system') {
             acc.system.push(curr)
@@ -196,15 +171,10 @@ export const BucketProvider: FC<Props> = ({
         bucks.user.sort((a, b) =>
           `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
         )
-        if (bucks.sample) {
-          bucks.sample.sort((a, b) =>
-            `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
-          )
-        }
         updateCache({
           loading: RemoteDataState.Done,
           lastFetch: Date.now(),
-          buckets: [...bucks.user, ...bucks.system, ...(bucks.sample ?? [])],
+          buckets: [...bucks.user, ...bucks.system],
         })
       })
       .catch(error => {
@@ -307,29 +277,56 @@ export const BucketProvider: FC<Props> = ({
     bucks.user.sort((a, b) =>
       `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
     )
-    if (bucks.sample) {
-      bucks.sample.sort((a, b) =>
-        `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
-      )
-    }
 
     updateCache({
-      buckets: [...bucks.user, ...bucks.system, ...(bucks.sample ?? [])],
+      buckets: [...bucks.user, ...bucks.system],
     })
   }
 
   const refresh = () => {
     fetchBuckets()
   }
+  const outBuckets = useMemo(
+    () =>
+      buckets
+        .filter(b => b.type !== 'sample')
+        .concat(
+          omitSampleData
+            ? []
+            : [
+                {
+                  type: 'sample',
+                  name: 'Air Sensor Data',
+                  id: 'airSensor',
+                },
+                {
+                  type: 'sample',
+                  name: 'Coinbase bitcoin price',
+                  id: 'bitcoin',
+                },
+                {
+                  type: 'sample',
+                  name: 'NOAA National Buoy Data',
+                  id: 'noaa',
+                },
+                {
+                  type: 'sample',
+                  name: 'USGS Earthquakes',
+                  id: 'usgs',
+                },
+              ]
+        ),
+    [buckets]
+  )
 
   return useMemo(
     () => (
       <BucketContext.Provider
-        value={{loading, buckets, createBucket, addBucket, refresh}}
+        value={{loading, buckets: outBuckets, createBucket, addBucket, refresh}}
       >
         {children}
       </BucketContext.Provider>
     ),
-    [data.bucket, loading, buckets]
+    [data.bucket, loading, outBuckets]
   )
 }

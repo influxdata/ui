@@ -58,7 +58,7 @@ export const BucketContext = createContext<BucketContextType>(DEFAULT_CONTEXT)
 const useLocalStorageState = createLocalStorageStateHook('buckets', {})
 
 interface Props {
-  omitSampleData: boolean
+  omitSampleData?: boolean
   scope: QueryScope
 }
 

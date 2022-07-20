@@ -20,14 +20,7 @@ export default register => {
         return ''
       }
 
-      try {
-        const ast = isFlagEnabled('fastFlows')
-          ? parseQuery(query)
-          : parse(query)
-        if (!ast.body.length) {
-          return ''
-        }
-      } catch {
+      if (query.length === 0) {
         return ''
       }
 

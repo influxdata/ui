@@ -3,23 +3,6 @@
   float: right;
   width: 75%;
 
-  .subscription_error {
-    background-color: #bf3d5e;
-    background: linear-gradient(45deg, #bf3d5e 0%, #e85b1c 100%);
-    margin-top: 75px;
-    height: 50px;
-    border-radius: 2px;
-    align-items: center;
-    display: flex;
-    padding: 20px;
-
-    > .icon {
-    }
-
-    > .message {
-    }
-  }
-
   &__fixed {
     position: fixed;
     background-color: $cf-grey-5;

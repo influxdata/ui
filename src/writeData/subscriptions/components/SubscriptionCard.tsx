@@ -37,16 +37,11 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
   const {bulletins: allBulletins} = useContext(SubscriptionListContext)
   const bulletins = allBulletins?.[subscription.id] ?? []
 
-  const goToSubscriptionDetails = useCallback(
-    (showErrors = false) => {
-      let url = `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}`
-      if (showErrors) {
-        url = `${url}?e`
-      }
-      history.push(url)
-    },
-    [history, org?.id, subscription?.id]
-  )
+  const goToSubscriptionDetails = useCallback(() => {
+    history.push(
+      `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}`
+    )
+  }, [history, org?.id, subscription?.id])
 
   return (
     <ResourceCard
@@ -90,10 +85,10 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
           <Label
             id="tid"
             key="tkey"
-            name={`${bulletins.length} Issues`}
+            name={`${bulletins.length} Messages`}
             color="#DC4E58"
-            description={`${bulletins.length} Issues`}
-            onClick={() => goToSubscriptionDetails(true)}
+            description={`${bulletins.length} Messages`}
+            onClick={goToSubscriptionDetails}
           />
         ) : (
           <Label
@@ -101,7 +96,7 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
             key="tkey"
             name="All Cool"
             color="#006f49"
-            description="No Issues"
+            description="No Messages"
           />
         )}
         <>{subscription.status}</>

@@ -44,7 +44,10 @@ export const SubscriptionListContext = React.createContext<
   SubscriptionListContextType
 >(DEFAULT_CONTEXT)
 
-type Bulletin = string
+export interface Bulletin {
+  timestamp: number
+  message: string
+}
 
 interface BulletinsMap {
   [key: string]: Bulletin[]
@@ -69,16 +72,60 @@ const getBulletinsFromStatus = status => {
     return []
   }
 
-  return Array.from<string>(
-    new Set<string>(
-      status.processors
-        .filter(pb => !!pb.bulletins.length)
-        .map(pb => pb.bulletins)
-        .flat()
-        .map(pb => pb.bulletin.message)
-        .map(b => sanitizeBulletin(b))
+  const uniqueBulletins = status.processors
+    .filter(pb => !!pb.bulletins.length)
+    .map(pb => pb.bulletins)
+    .flat()
+    .map(pb => {
+      const message = sanitizeBulletin(pb.bulletin.message)
+      const timestamp = parseDate(pb.bulletin.timestamp)
+
+      return {
+        timestamp,
+        message,
+      }
+    })
+    .reduce((prev, curr) => {
+      const existing = prev?.[curr.message] ?? 0
+      prev[curr.message] = existing < curr.timestamp ? curr.timestamp : existing
+      return prev
+    }, {})
+  return Object.keys(uniqueBulletins).map(b => {
+    return {
+      message: b,
+      timestamp: uniqueBulletins[b],
+    } as Bulletin
+  })
+}
+
+const parseDate = (timeString: string) => {
+  const months = [
+    'JAN',
+    'FEB',
+    'MAR',
+    'APR',
+    'MAY',
+    'JUN',
+    'JUL',
+    'AUG',
+    'SEP',
+    'OCT',
+    'NOV',
+    'DEC',
+  ]
+  const date = new Date()
+  const parsed = new Date(
+    Date.parse(
+      `${date.getDate()} ${
+        months[date.getMonth()]
+      } ${date.getFullYear()} ${timeString}`
     )
   )
+  if (parsed > date) {
+    parsed.setDate(parsed.getDate() - 1)
+  }
+
+  return parsed.getTime()
 }
 
 export const SubscriptionListProvider: FC = ({children}) => {

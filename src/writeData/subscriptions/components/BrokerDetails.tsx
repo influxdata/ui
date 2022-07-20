@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -20,8 +20,6 @@ import {
   FlexDirection,
   ComponentSize,
   JustifyContent,
-  Icon,
-  IconFont,
 } from '@influxdata/clockface'
 import StatusHeader from 'src/writeData/subscriptions/components/StatusHeader'
 import BrokerFormContent from 'src/writeData/subscriptions/components/BrokerFormContent'
@@ -39,8 +37,6 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/BrokerDetails.scss'
-import {SubscriptionListContext} from '../context/subscription.list'
-import SubscriptionErrorsOverlay from './SubscriptionErrorsOverlay'
 
 interface Props {
   currentSubscription: Subscription
@@ -51,7 +47,6 @@ interface Props {
   saveForm: (any) => void
   setStatus: (any) => void
   onFocus?: () => void
-  showErrors?: boolean
 }
 
 const BrokerDetails: FC<Props> = ({
@@ -63,26 +58,12 @@ const BrokerDetails: FC<Props> = ({
   saveForm,
   setStatus,
   onFocus,
-  showErrors,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
   const {navbarMode} = useContext(AppSettingContext)
   const requiredFields = checkRequiredFields(currentSubscription)
   const navbarOpen = navbarMode === 'expanded'
-  const {bulletins: allBulletins} = useContext(SubscriptionListContext)
-  const bulletins = allBulletins?.[currentSubscription.id] ?? []
-  const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(
-    showErrors && !!bulletins.length
-  )
-
-  useEffect(() => {
-    if (!showErrors || !bulletins.length) {
-      return
-    }
-
-    setIsOverlayVisible(true)
-  }, [showErrors, bulletins?.length])
 
   return (
     <div
@@ -184,20 +165,6 @@ const BrokerDetails: FC<Props> = ({
             </FlexBox>
           </div>
           <Overlay.Body>
-            {bulletins.length && (
-              <div
-                className="subscription_error"
-                onClick={() => setIsOverlayVisible(true)}
-              >
-                <span className="icon">
-                  <Icon glyph={IconFont.Alerts} />
-                </span>
-                <span className="message">
-                  Your connection snapped and half your data is gone. Please
-                  click to view your issues and contact your administrator.
-                </span>
-              </div>
-            )}
             <Heading
               element={HeadingElement.H3}
               weight={FontWeight.Bold}
@@ -215,12 +182,6 @@ const BrokerDetails: FC<Props> = ({
           <div className="update-broker-form__line"></div>
         </Form>
       </SpinnerContainer>
-      {isOverlayVisible && (
-        <SubscriptionErrorsOverlay
-          bulletins={bulletins}
-          handleClose={() => setIsOverlayVisible(false)}
-        />
-      )}
     </div>
   )
 }

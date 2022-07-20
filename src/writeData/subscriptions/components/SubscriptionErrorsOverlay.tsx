@@ -14,12 +14,12 @@ import {
 // Types
 
 // Styles
-import 'src/writeData/subscriptions/components/SubscriptionDetails.scss'
+import 'src/writeData/subscriptions/components/SubscriptionErrorsOverlay.scss'
 import {event} from 'src/cloud/utils/reporting'
-import CodeSnippet from 'src/shared/components/CodeSnippet'
+import {Bulletin} from '../context/subscription.list'
 
 interface Props {
-  bulletins: string[]
+  bulletins: Bulletin[]
   handleClose: () => void
 }
 
@@ -30,24 +30,36 @@ const SubscriptionErrorsOverlay: FC<Props> = ({bulletins, handleClose}) => {
     handleClose()
   }
 
-  // TODO: Remove This
-  // NOTE: Errors Found in X Bulletins
-  // Does Bulletin term make sense?
   let title = `${bulletins.length} Errors Found`
   if (bulletins.length === 1) {
     title = `1 Error Found`
   }
 
   return (
-    <Overlay visible={true} className="cancellation-overlay">
-      <Overlay.Container maxWidth={700}>
+    <Overlay visible={true} className="subscription-errors-overlay">
+      <Overlay.Container maxWidth={800}>
         <Overlay.Header title={title} onDismiss={handleDismiss} />
         <Overlay.Body>
-          <DapperScrollbars autoSizeHeight={true} style={{maxHeight: '500px'}}>
-            <CodeSnippet
-              showCopyControl={false}
-              text={`${bulletins.join('\n\n')}`}
-            ></CodeSnippet>
+          <DapperScrollbars
+            autoSizeHeight={true}
+            className="subscription-error-scrollbars"
+          >
+            <div className="subscription-errors-overlay-body">
+              <div className="status-header">
+                <div className="timestamp">Last Seen(UTC)</div>
+                <div className="message">Message</div>
+              </div>
+              {bulletins.map((bulletin: Bulletin, i) => {
+                return (
+                  <div className="status-row" key={`SubBulletin${i}`}>
+                    <div className="timestamp">
+                      {new Date(bulletin.timestamp).toISOString()}
+                    </div>
+                    <div className="message">{bulletin.message}</div>
+                  </div>
+                )
+              })}
+            </div>
           </DapperScrollbars>
         </Overlay.Body>
         <Overlay.Footer>

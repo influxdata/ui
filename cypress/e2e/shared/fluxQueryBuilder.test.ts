@@ -36,7 +36,7 @@ describe('FluxQueryBuilder', () => {
     const searchField = 'air_temp_degc'
     const searchTagKey = 'station_id'
 
-    it('bucket selector can search and select a bucket, then search and select a measurement', () => {
+    it('can search buckets, measurements, fields and tag keys dynamically and loads more data when truncated', () => {
       // open the bucket list
       cy.getByTestID('bucket-selector--dropdown-button').click()
 
@@ -81,21 +81,6 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('field-tag-key-search-bar').should('be.visible')
       cy.getByTestID('field-selector').should('be.visible')
       cy.getByTestID('tag-selector-key').should('be.visible')
-    })
-
-    it('search bar can search fields and tag keys dynamically', () => {
-      // select a bucket
-      cy.getByTestID('bucket-selector--dropdown-button').click()
-      cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
-
-      // check the monaco editor is mounted to prepare for schema injection
-      cy.getByTestID('flux-editor').should('be.visible')
-
-      // select a measurement
-      cy.getByTestID('measurement-selector--dropdown-button')
-        .should('contain', 'Select measurement')
-        .click()
-      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
 
       // search a feild, should contain only the feild, no tag keys
       cy.getByTestID('field-tag-key-search-bar')
@@ -121,24 +106,7 @@ describe('FluxQueryBuilder', () => {
           .should('contain', 'No Fields Found')
       })
 
-      // not recommend to assert for searchTagKey value
-      // since it will expand all the tag keys, which triggers
-      // numbers of API calls that are time consuming and unnecessary
-    })
-
-    it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
-      // select a bucket
-      cy.getByTestID('bucket-selector--dropdown-button').click()
-      cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
-
-      // check the monaco editor is mounted to prepare for schema injection
-      cy.getByTestID('flux-editor').should('be.visible')
-
-      // select a measurement
-      cy.getByTestID('measurement-selector--dropdown-button')
-        .should('contain', 'Select measurement')
-        .click()
-      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
+      cy.getByTestID('field-tag-key-search-bar').clear()
 
       // less than 8 items, no "Load More" button
       cy.getByTestID('field-selector').within(() => {
@@ -165,6 +133,10 @@ describe('FluxQueryBuilder', () => {
             .should('have.length.above', 8)
             .and('have.length.at.most', 33) // 8 + 25
         })
+
+      // not recommend to assert for searchTagKey value
+      // since it will expand all the tag keys, which triggers
+      // numbers of API calls that are time consuming and unnecessary
     })
   })
 })

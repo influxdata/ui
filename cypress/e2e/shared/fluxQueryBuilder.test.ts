@@ -100,11 +100,7 @@ describe('FluxQueryBuilder', () => {
         .should('be.visible')
         .type(searchTagKey)
 
-      cy.getByTestID('field-selector').within(() => {
-        cy.getByTestID('field-selector--list-item')
-          .should('be.visible')
-          .should('contain', 'No Fields Found')
-      })
+      cy.getByTestID('field-selector').should('contain', 'No Fields Found')
 
       cy.getByTestID('field-tag-key-search-bar').clear()
 

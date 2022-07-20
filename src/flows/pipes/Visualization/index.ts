@@ -1,8 +1,5 @@
 import View from './view'
 import './style.scss'
-import {parse} from '@influxdata/flux-lsp-browser'
-import {parseQuery} from 'src/shared/contexts/query'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 

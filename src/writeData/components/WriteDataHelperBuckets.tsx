@@ -22,11 +22,13 @@ import {
 interface Props {
   className?: string
   useSimplifiedBucketForm?: boolean
+  showCreateButton?: boolean
 }
 
 const WriteDataHelperBuckets: FC<Props> = ({
   className = 'write-data--details-widget-title',
   useSimplifiedBucketForm = false,
+  showCreateButton,
 }) => {
   const {bucket, buckets, changeBucket} = useContext(WriteDataDetailsContext)
   const isSelected = (bucketID: string): boolean => {
@@ -93,10 +95,12 @@ const WriteDataHelperBuckets: FC<Props> = ({
     <>
       <Heading element={HeadingElement.H6} className={className}>
         Bucket
-        <CreateBucketButton
-          useSimplifiedBucketForm={useSimplifiedBucketForm}
-          callbackAfterBucketCreation={changeBucket}
-        />
+        {showCreateButton && (
+          <CreateBucketButton
+            useSimplifiedBucketForm={useSimplifiedBucketForm}
+            callbackAfterBucketCreation={changeBucket}
+          />
+        )}
       </Heading>
       {body}
     </>

@@ -150,7 +150,6 @@ export const BucketProvider: FC<Props> = ({
         return response.json()
       })
       .then(response => {
-        console.log({response})
         controller.current = null
         const base: any = {
           system: [],

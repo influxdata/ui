@@ -126,7 +126,7 @@ describe('FluxQueryBuilder', () => {
       // numbers of API calls that are time consuming and unnecessary
     })
 
-    it.only('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
+    it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
       // select a bucket
       cy.getByTestID('bucket-selector--dropdown-button').click()
       cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()

@@ -12,7 +12,7 @@ export default register => {
     initial: {
       properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
     },
-    visual: (data, query: String) => {
+    visual: (data, query: string) => {
       if (!query) {
         return ''
       }

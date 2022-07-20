@@ -102,7 +102,7 @@ const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => {
             </ReflessPopover>
           ))}
 
-        {bulletins.length && (
+        {!!bulletins.length && (
           <Label
             id="tid"
             key="tkey"

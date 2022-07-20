@@ -121,7 +121,7 @@ const ShareOverlay: FC = () => {
                 </SafeBlankLink>
               </FlexBox.Child>
             </FlexBox>
-            <Icon glyph={IconFont.Eye_New} />
+            <Icon glyph={IconFont.EyeOpen} />
             <span className="share-text">
               Anyone with this link can view this {PROJECT_NAME}, but will not
               have access to autorefresh updates.

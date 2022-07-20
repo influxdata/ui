@@ -43,7 +43,7 @@ export const defaultWarningNotification: NotificationExcludingMessage = {
 export const defaultSuccessNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
-  icon: IconFont.Checkmark_New,
+  icon: IconFont.CheckMark_New,
   duration: FIVE_SECONDS,
 }
 

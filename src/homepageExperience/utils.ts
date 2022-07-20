@@ -15,7 +15,7 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
   },
   {
     name: 'Initialize \n Client',
-    glyph: IconFont.FileSettings,
+    glyph: IconFont.CogSolid_New,
   },
   {
     name: 'Write \n Data',
@@ -23,11 +23,11 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
   },
   {
     name: 'Execute a \n Simple Query',
-    glyph: IconFont.PlayOutline,
+    glyph: IconFont.Play,
   },
   {
     name: 'Execute an \n Aggregate Query',
-    glyph: IconFont.PlayOutline,
+    glyph: IconFont.Play,
   },
   {
     name: 'Finish',

@@ -24,7 +24,7 @@ const NotificationSettingsForm: FC = () => {
   return (
     <>
       <FormToggle
-        icon={IconFont.Checkmark_New}
+        icon={IconFont.CheckMark_New}
         id="shouldNotify"
         label="Send me an email when my bill exceeds a certain amount"
         tabIndex={0}

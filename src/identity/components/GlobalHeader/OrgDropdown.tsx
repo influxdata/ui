@@ -1,9 +1,12 @@
 import React, {FC} from 'react'
-import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
-import {IconFont} from '@influxdata/clockface'
 import {OrganizationSummaries} from 'src/client/unityRoutes'
+import {
+  TypeAheadMenuItem,
+  GlobalHeaderDropdown,
+} from './GlobalHeaderDropdown/GlobalHeaderDropdown'
+import {IconFont} from '@influxdata/clockface'
 
-const switchOrg = (org: SubMenuItem) => {
+const switchOrg = (org: TypeAheadMenuItem) => {
   window.location.href = `/orgs/${org.id}`
 }
 
@@ -37,16 +40,16 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   ]
 
   return (
-    <MenuDropdown
-      selectedOption={activeOrg}
-      options={orgMainMenu}
-      subMenuOptions={orgsList}
-      menuHeaderIcon={IconFont.Switch_New}
-      menuHeaderText="Switch Organization"
-      searchText="Search Organizations"
+    <GlobalHeaderDropdown
+      typeAheadSelectedOption={activeOrg}
+      mainMenuOptions={orgMainMenu}
+      typeAheadMenuOptions={orgsList}
+      mainMenuHeaderIcon={IconFont.Switch_New}
+      mainMenuHeaderText="Switch Organization"
+      typeAheadInputPlaceholder="Search Organizations"
       style={style}
-      menuStyle={menuStyle}
-      onSelectOption={switchOrg}
+      dropdownMenuStyle={menuStyle}
+      typeAheadOnSelectOption={switchOrg}
     />
   )
 }

@@ -73,10 +73,20 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
       text={subscription.id}
       onCopy={handleCopyAttempt}
       key={subscription.id}
+      data-testid="copy-subscription--component"
     >
-      <span className="copy-subscription-id" title="Click to Copy to Clipboard">
+      <span
+        data-testid="copy-subscription-label"
+        className="copy-subscription-id"
+        title="Click to Copy to Clipboard"
+      >
         ID: {subscription.id}
-        <span className="copy-subscription-id--helper">Copy to Clipboard</span>
+        <span
+          data-testid="copy-subscription-button"
+          className="copy-subscription-id--helper"
+        >
+          Copy to Clipboard
+        </span>
       </span>
     </CopyToClipboard>
   )
@@ -131,6 +141,7 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
               bulletins.length === 1 ? '' : 's'
             }`}
             onClick={goToSubscriptionDetails}
+            testID="subscription-messages--label"
           />
         ) : (
           <Label
@@ -139,6 +150,7 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
             name="No Messages"
             color={InfluxColors.Emerald}
             description="No Messages"
+            testID="subscription-messages--label"
           />
         )}
         <>{subscription.status}</>

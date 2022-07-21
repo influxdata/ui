@@ -101,15 +101,19 @@ const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => {
               />
             </ReflessPopover>
           ))}
-
         {!!bulletins.length && (
           <Label
             id="tid"
             key="tkey"
-            name={`${bulletins.length} Messages`}
+            name={`${bulletins.length} Message${
+              bulletins.length === 1 ? '' : 's'
+            }`}
             color={InfluxColors.Grey25}
-            description={`${bulletins.length} Messages`}
+            description={`${bulletins.length} Message${
+              bulletins.length === 1 ? '' : 's'
+            }`}
             onClick={handleShowMessages}
+            testID="subscription-messages--label"
           />
         )}
       </FlexBox>

@@ -107,8 +107,14 @@ describe('Subscriptions', () => {
     cy.getByTestID('subscription-card')
       .should('be.visible')
       .should('have.length', 2)
-
-    // Search for subscription1 name(partial match)
+    cy.getByTestID('subscription-card')
+      .children()
+      .getByTestID('copy-subscription--component')
+      .should('be.visible')
+    cy.getByTestID('subscription-card')
+      .children()
+      .getByTestID(`subscription-messages--label 1 Message`)
+      .should('be.visible')
     cy.getByTestID('search-widget')
       .clear()
       .type('my ')
@@ -195,6 +201,10 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-sub-form--edit')
       .should('be.visible')
       .click()
+
+    cy.getByTestID(`subscription-messages--label 1 Message`).should(
+      'be.visible'
+    )
     subscription = 'My Edited Subscription'
     cy.getByTestID('update-broker-form--name').should('be.visible')
     cy.getByTestID('update-broker-form--name')

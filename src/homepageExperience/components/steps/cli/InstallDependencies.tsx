@@ -55,10 +55,6 @@ sudo cp influxdb2-client-latest-linux-amd64/influx /usr/local/bin/
 sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
   `
 
-  const [macSelected, setMacSelected] = useState(true)
-  const [windowsSelected, setWindowsSelected] = useState(false)
-  const [linuxSelected, setLinuxSelected] = useState(false)
-
   type CurrentOSSelection = 'Linux' | 'Mac' | 'Windows'
   const [currentSelection, setCurrentSelection] = useState<CurrentOSSelection>('Mac')
 

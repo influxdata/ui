@@ -107,7 +107,7 @@ const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => {
             id="tid"
             key="tkey"
             name={`${bulletins.length} Messages`}
-            color={InfluxColors.Grey15}
+            color={InfluxColors.Grey25}
             description={`${bulletins.length} Messages`}
             onClick={handleShowMessages}
           />

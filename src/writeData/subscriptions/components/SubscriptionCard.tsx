@@ -2,7 +2,7 @@
 import React, {FC, useCallback, useContext} from 'react'
 import {DateTime} from 'luxon'
 import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -12,6 +12,7 @@ import {
   ConfirmationButton,
   FlexBox,
   IconFont,
+  InfluxColors,
   Label,
   ResourceCard,
 } from '@influxdata/clockface'
@@ -24,6 +25,15 @@ import {LOAD_DATA, SUBSCRIPTIONS} from 'src/shared/constants/routes'
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
+import {
+  copyToClipboardFailed,
+  copyToClipboardSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
+
+// Styles
+import 'src/writeData/subscriptions/components/SubscriptionCard.scss'
 
 interface Props {
   subscription: Subscription
@@ -36,12 +46,40 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
   const org = useSelector(getOrg)
   const {bulletins: allBulletins} = useContext(SubscriptionListContext)
   const bulletins = allBulletins?.[subscription.id] ?? []
+  const dispatch = useDispatch()
 
   const goToSubscriptionDetails = useCallback(() => {
     history.push(
       `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}`
     )
   }, [history, org?.id, subscription?.id])
+
+  const handleCopyAttempt = (
+    copiedText: string,
+    isSuccessful: boolean
+  ): void => {
+    const text = copiedText.slice(0, 30).trimRight()
+    const truncatedText = `${text}...`
+
+    if (isSuccessful) {
+      dispatch(notify(copyToClipboardSuccess(truncatedText, 'Subscription ID')))
+    } else {
+      dispatch(notify(copyToClipboardFailed(truncatedText, 'Subscription ID')))
+    }
+  }
+
+  const subscriptionID = (
+    <CopyToClipboard
+      text={subscription.id}
+      onCopy={handleCopyAttempt}
+      key={subscription.id}
+    >
+      <span className="copy-subscription-id" title="Click to Copy to Clipboard">
+        ID: {subscription.id}
+        <span className="copy-subscription-id--helper">Copy to Clipboard</span>
+      </span>
+    </CopyToClipboard>
+  )
 
   return (
     <ResourceCard
@@ -85,22 +123,27 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
           <Label
             id="tid"
             key="tkey"
-            name={`${bulletins.length} Messages`}
-            color="#DC4E58"
-            description={`${bulletins.length} Messages`}
+            name={`${bulletins.length} Message${
+              bulletins.length === 1 ? '' : 's'
+            }`}
+            color={InfluxColors.Grey25}
+            description={`${bulletins.length} Message${
+              bulletins.length === 1 ? '' : 's'
+            }`}
             onClick={goToSubscriptionDetails}
           />
         ) : (
           <Label
             id="tid"
             key="tkey"
-            name="All Cool"
-            color="#006f49"
+            name="No Messages"
+            color={InfluxColors.Emerald}
             description="No Messages"
           />
         )}
         <>{subscription.status}</>
         <>Last Modified: {timeSince}</>
+        {subscriptionID}
       </ResourceCard.Meta>
     </ResourceCard>
   )

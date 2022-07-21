@@ -56,8 +56,9 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
   `
 
   type CurrentOSSelection = 'Linux' | 'Mac' | 'Windows'
-  const [currentSelection, setCurrentSelection] = useState<CurrentOSSelection>('Mac')
-
+  const [currentSelection, setCurrentSelection] = useState<CurrentOSSelection>(
+    'Mac'
+  )
 
   return (
     <>
@@ -65,21 +66,33 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
       <ButtonGroup orientation={Orientation.Horizontal}>
         <Button
           text="mac OS"
-          color={currentSelection === 'Mac' ? ComponentColor.Primary : ComponentColor.Default}
+          color={
+            currentSelection === 'Mac'
+              ? ComponentColor.Primary
+              : ComponentColor.Default
+          }
           onClick={() => {
             setCurrentSelection('Mac')
           }}
         />
         <Button
           text="windows"
-          color={currentSelection === 'Windows' ? ComponentColor.Primary : ComponentColor.Default}
+          color={
+            currentSelection === 'Windows'
+              ? ComponentColor.Primary
+              : ComponentColor.Default
+          }
           onClick={() => {
             setCurrentSelection('Windows')
           }}
         />
         <Button
           text="linux"
-          color={currentSelection === 'Linux' ? ComponentColor.Primary : ComponentColor.Default}
+          color={
+            currentSelection === 'Linux'
+              ? ComponentColor.Primary
+              : ComponentColor.Default
+          }
           onClick={() => {
             setCurrentSelection('Linux')
           }}
@@ -100,9 +113,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
               documentation.
             </SafeBlankLink>{' '}
           </p>
-          <h2 style={headingWithMargin}>
-            Useful InfluxCLI commands
-          </h2>
+          <h2 style={headingWithMargin}>Useful InfluxCLI commands</h2>
           <p>
             To invoke a command, use the following format in the command line:
           </p>
@@ -145,18 +156,14 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
       )}
       {currentSelection === 'Windows' && (
         <>
-          <h2 style={headingWithMargin}>
-            Download the CLI package
-          </h2>
+          <h2 style={headingWithMargin}>Download the CLI package</h2>
           <p>
             {' '}
             <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/?t=Windows">
               Download via our documentation.
             </SafeBlankLink>{' '}
           </p>
-          <h2 style={headingWithMargin}>
-            Expand the downloaded archive
-          </h2>
+          <h2 style={headingWithMargin}>Expand the downloaded archive</h2>
           <p>
             Expand the downloaded archive into C:\Program Files\InfluxData\ and
             rename it if desired
@@ -166,15 +173,11 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
             onCopy={logCopyCodeSnippetWindows}
             language="properties"
           />
-          <h2 style={headingWithMargin}>
-            Grant network access (optional)
-          </h2>
+          <h2 style={headingWithMargin}>Grant network access (optional)</h2>
           <p>To grant the InfluxCLI the required access, do the following:</p>
           <p>1. Select Private networks, such as my home or work network </p>
           <p>2. Click Allow access</p>
-          <h2 style={headingWithMargin}>
-            Useful InfluxCLI commands
-          </h2>
+          <h2 style={headingWithMargin}>Useful InfluxCLI commands</h2>
           <p>
             To invoke a command, use the following format in the command line:
           </p>
@@ -217,9 +220,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
       )}
       {currentSelection === 'Linux' && (
         <>
-          <h2 style={headingWithMargin}>
-            Download from the command line
-          </h2>
+          <h2 style={headingWithMargin}>Download from the command line</h2>
           <CodeSnippet
             text={linuxCodeSnippetA}
             onCopy={logCopyCodeSnippetLinux}
@@ -232,9 +233,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
               documentation.
             </SafeBlankLink>{' '}
           </p>
-          <h2 style={headingWithMargin}>
-            Unpackage the downloaded package
-          </h2>
+          <h2 style={headingWithMargin}>Unpackage the downloaded package</h2>
           <p>
             Install the downloaded InfluxDB client package. Adjust filenames,
             paths, and utilities as needed.
@@ -256,9 +255,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
             onCopy={logCopyCodeSnippetLinux}
             language="properties"
           />
-          <h2 style={headingWithMargin}>
-            Useful InfluxCLI commands
-          </h2>
+          <h2 style={headingWithMargin}>Useful InfluxCLI commands</h2>
           <p>
             To invoke a command, use the following format in the command line:
           </p>

@@ -33,8 +33,8 @@ describe('FluxQueryBuilder', () => {
   describe('Schema browser', () => {
     const bucketName = 'defbuck'
     const measurement = 'ndbc'
-    const searchField = 'air_temp_degc'
-    const searchTagKey = 'station_id'
+    const searchTagKey = 'air_temp_degc'
+    const searchField = 'station_id'
 
     it('can search buckets, measurements, fields and tag keys dynamically and loads more data when truncated', () => {
       // open the bucket list
@@ -79,28 +79,57 @@ describe('FluxQueryBuilder', () => {
       // upon selection, will show a search bar
       // and a list of fields and tag keys
       cy.getByTestID('field-tag-key-search-bar').should('be.visible')
-      cy.getByTestID('field-selector').should('be.visible')
-      cy.getByTestID('tag-selector-key').should('be.visible')
+      cy.getByTestID('field-selector')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+      cy.getByTestID('tag-selector--key')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
 
       // search a feild, should contain only the feild, no tag keys
       cy.getByTestID('field-tag-key-search-bar')
         .should('be.visible')
         .type(searchField)
-      cy.getByTestID('field-selector').within(() => {
-        cy.getByTestID('field-selector--list-item--selectable').should(
-          'not.exist'
-        )
-      })
+      cy.getByTestID('field-selector')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+        .should('not.contain', 'No Fields Found')
+      cy.getByTestID('tag-selector--key')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+      cy.getByTestID('tag-selector-key')
+        .should('be.visible')
+        .should('contain', 'No Tags Found')
 
       // clear the search bar
       cy.getByTestID('dismiss-button').click()
+
+      cy.getByTestID('field-selector')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+        .should('not.contain', 'No Fields Found')
+      cy.getByTestID('tag-selector--key')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+      cy.getByTestID('tag-selector-key')
+        .should('be.visible')
+        .should('not.contain', 'No Tags Found')
 
       // search a tag key, should not contain any fields
       cy.getByTestID('field-tag-key-search-bar')
         .should('be.visible')
         .type(searchTagKey)
 
-      cy.getByTestID('field-selector').should('contain', 'No Fields Found')
+      cy.getByTestID('field-selector')
+        .should('not.contain', 'Loading')
+        .should('contain', 'No Fields Found')
+
+      cy.getByTestID('tag-selector--key')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+      cy.getByTestID('tag-selector-key')
+        .should('be.visible')
+        .should('not.contain', 'No Tags Found')
 
       cy.getByTestID('field-tag-key-search-bar').clear()
 

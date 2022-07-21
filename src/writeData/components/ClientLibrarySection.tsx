@@ -61,7 +61,7 @@ const ClientLibrarySection = () => {
       <SquareGrid cardSize="170px" gutter={ComponentSize.Small}>
         {items.map(item => {
           const goto = () => {
-            event('Load data client library clicked', {type: item.name})
+            event('loadData.clientLibrary.clicked', {type: item.name})
             if (onBoardingItems.hasOwnProperty(`${item.id}`)) {
               return history.push(
                 `/${ORGS}/${org.id}/new-user-setup/${onBoardingItems[item.id]}`

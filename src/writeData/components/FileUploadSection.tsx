@@ -55,7 +55,7 @@ const FileUploadSection = () => {
       <SquareGrid cardSize="170px" gutter={ComponentSize.Small}>
         {items.map(item => {
           const goto = () => {
-            event('Load data file upload clicked', {type: item.name})
+            event('loadData.fileUpload.clicked', {type: item.name})
             history.push(
               `/${ORGS}/${org.id}/load-data/${FILE_UPLOAD}/${item.id}`
             )

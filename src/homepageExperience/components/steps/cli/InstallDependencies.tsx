@@ -9,17 +9,19 @@ import {
   BorderType,
 } from '@influxdata/clockface'
 
-import React, {useEffect, useState} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
 
-export const InstallDependencies = () => {
+export const InstallDependencies: FC = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getBuckets())
   }, [])
+
+  const headingWithMargin = {marginTop: '48px', marginBottom: '0px'}
 
   const logCopyCodeSnippetMac = () => {
     event('firstMile.cliWizard.installDependenciesMac.code.copied')
@@ -57,45 +59,39 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
   const [windowsSelected, setWindowsSelected] = useState(false)
   const [linuxSelected, setLinuxSelected] = useState(false)
 
+  type CurrentOSSelection = 'Linux' | 'Mac' | 'Windows'
+  const [currentSelection, setCurrentSelection] = useState<CurrentOSSelection>('Mac')
+
+
   return (
     <>
       <h1>Install Dependencies</h1>
       <ButtonGroup orientation={Orientation.Horizontal}>
         <Button
           text="mac OS"
-          color={macSelected ? ComponentColor.Primary : ComponentColor.Default}
+          color={currentSelection === 'Mac' ? ComponentColor.Primary : ComponentColor.Default}
           onClick={() => {
-            setMacSelected(true)
-            setWindowsSelected(false)
-            setLinuxSelected(false)
+            setCurrentSelection('Mac')
           }}
         />
         <Button
           text="windows"
-          color={
-            windowsSelected ? ComponentColor.Primary : ComponentColor.Default
-          }
+          color={currentSelection === 'Windows' ? ComponentColor.Primary : ComponentColor.Default}
           onClick={() => {
-            setMacSelected(false)
-            setWindowsSelected(true)
-            setLinuxSelected(false)
+            setCurrentSelection('Windows')
           }}
         />
         <Button
           text="linux"
-          color={
-            linuxSelected ? ComponentColor.Primary : ComponentColor.Default
-          }
+          color={currentSelection === 'Linux' ? ComponentColor.Primary : ComponentColor.Default}
           onClick={() => {
-            setMacSelected(false)
-            setWindowsSelected(false)
-            setLinuxSelected(true)
+            setCurrentSelection('Linux')
           }}
         />
       </ButtonGroup>
-      {macSelected && (
+      {currentSelection === 'Mac' && (
         <>
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>Use Homebrew</h2>
+          <h2 style={headingWithMargin}>Use Homebrew</h2>
           <CodeSnippet
             text="brew install influxdb-cli"
             onCopy={logCopyCodeSnippetMac}
@@ -108,7 +104,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
               documentation.
             </SafeBlankLink>{' '}
           </p>
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>
+          <h2 style={headingWithMargin}>
             Useful InfluxCLI commands
           </h2>
           <p>
@@ -151,9 +147,9 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </p>
         </>
       )}
-      {windowsSelected && (
+      {currentSelection === 'Windows' && (
         <>
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>
+          <h2 style={headingWithMargin}>
             Download the CLI package
           </h2>
           <p>
@@ -162,7 +158,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
               Download via our documentation.
             </SafeBlankLink>{' '}
           </p>
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>
+          <h2 style={headingWithMargin}>
             Expand the downloaded archive
           </h2>
           <p>
@@ -174,13 +170,13 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
             onCopy={logCopyCodeSnippetWindows}
             language="properties"
           />
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>
+          <h2 style={headingWithMargin}>
             Grant network access (optional)
           </h2>
           <p>To grant the InfluxCLI the required access, do the following:</p>
           <p>1. Select Private networks, such as my home or work network </p>
           <p>2. Click Allow access</p>
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>
+          <h2 style={headingWithMargin}>
             Useful InfluxCLI commands
           </h2>
           <p>
@@ -223,9 +219,9 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </p>
         </>
       )}
-      {linuxSelected && (
+      {currentSelection === 'Linux' && (
         <>
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>
+          <h2 style={headingWithMargin}>
             Download from the command line
           </h2>
           <CodeSnippet
@@ -240,7 +236,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
               documentation.
             </SafeBlankLink>{' '}
           </p>
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>
+          <h2 style={headingWithMargin}>
             Unpackage the downloaded package
           </h2>
           <p>
@@ -252,7 +248,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
             onCopy={logCopyCodeSnippetLinux}
             language="properties"
           />
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>
+          <h2 style={headingWithMargin}>
             Place the executable in your $PATH (optional)
           </h2>
           <p>
@@ -264,7 +260,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
             onCopy={logCopyCodeSnippetLinux}
             language="properties"
           />
-          <h2 style={{marginTop: '48px', marginBottom: '0px'}}>
+          <h2 style={headingWithMargin}>
             Useful InfluxCLI commands
           </h2>
           <p>

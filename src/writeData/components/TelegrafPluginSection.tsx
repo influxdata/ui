@@ -57,7 +57,7 @@ const TelegrafPluginSection = () => {
       <SquareGrid cardSize="170px" gutter={ComponentSize.Small}>
         {items.map(item => {
           const goto = () => {
-            event('Load data Telegraf Plugin clicked', {type: item.name})
+            event('loadData.TelegrafPlugin.clicked', {type: item.name})
             history.push(
               `/${ORGS}/${org.id}/load-data/${TELEGRAF_PLUGINS}/${item.id}`
             )

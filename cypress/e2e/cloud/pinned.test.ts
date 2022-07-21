@@ -90,11 +90,14 @@ describe('Pinned Items', () => {
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--container').within(() => {
-        cy.getByTestID('pinneditems--card')
-          .first()
-          .trigger('mouseover')
-      })
+
+      cy.getByTestID('pinneditems--container')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('pinneditems--card')
+            .first()
+            .trigger('mouseover')
+        })
       cy.getByTestID('pinneditems-delete--menu--button').click()
       cy.getByTestID('pinneditems-delete--menu--confirm-button').click()
       cy.getByTestID('pinneditems--emptystate').should(

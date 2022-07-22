@@ -146,7 +146,6 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
         ) : (
           <Dropdown.Item
             key="empty-filter"
-            testID="nothing-in-filter-typeAhead"
             disabled={true}
           >
             {searchTerm.length > 0

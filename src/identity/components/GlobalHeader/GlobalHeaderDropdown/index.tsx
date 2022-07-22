@@ -61,7 +61,6 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
   }
 
   componentDidUpdate() {
-    // if the selected item changes, update the state
     if (this.props.typeAheadSelectedOption !== this.state.selectedItem) {
       this.setState({
         selectedItem: this.props.typeAheadSelectedOption,
@@ -159,7 +158,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       >
         {/* Multi-org UI tickets #4051 and #4047, when user only has 1 account or 1 org, switch button is disabled */}
         {typeAheadMenuOptions.length > 1 && (
-          <Dropdown.Item onClick={() => this.toggleShowTypeAheadMenu()}>
+          <Dropdown.Item onClick={this.toggleShowTypeAheadMenu}>
             <FlexBox
               justifyContent={JustifyContent.SpaceBetween}
               alignItems={AlignItems.Center}
@@ -194,7 +193,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         {...dropdownProps}
         disableAutoFocus
         button={this.dropdownButton}
-        menu={() => this.renderMenu()}
+        menu={this.renderMenu}
       />
     )
   }

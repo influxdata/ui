@@ -4,7 +4,7 @@ import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 import {
   GlobalHeaderDropdown,
   TypeAheadMenuItem,
-} from './GlobalHeaderDropdown/GlobalHeaderDropdown'
+} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 type OrgSummaryItem = OrganizationSummaries[number]
 

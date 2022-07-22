@@ -2,7 +2,7 @@ import React, {ChangeEvent} from 'react'
 import {Dropdown, Input} from '@influxdata/clockface'
 import {FixedSizeList as List} from 'react-window'
 import classnames from 'classnames'
-import {TypeAheadMenuItem} from './GlobalHeaderDropdown'
+import {TypeAheadMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 type Props = {
   defaultText?: string

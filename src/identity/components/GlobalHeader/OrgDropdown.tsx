@@ -3,7 +3,7 @@ import {OrganizationSummaries} from 'src/client/unityRoutes'
 import {
   TypeAheadMenuItem,
   GlobalHeaderDropdown,
-} from './GlobalHeaderDropdown/GlobalHeaderDropdown'
+} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 import {IconFont} from '@influxdata/clockface'
 
 const switchOrg = (org: TypeAheadMenuItem) => {

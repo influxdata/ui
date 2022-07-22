@@ -18,7 +18,7 @@ import {
 import './GlobalHeaderDropdown.scss'
 
 // Types
-import GlobalHeaderTypeAheadMenu from './GlobalHeaderTypeAheadMenu'
+import GlobalHeaderTypeAheadMenu from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
 
 export interface MainMenuItem {
   name: string

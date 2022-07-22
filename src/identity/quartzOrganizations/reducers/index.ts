@@ -34,11 +34,15 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
       }
 
       case SET_QUARTZ_DEFAULT_ORG: {
-        // No existing default org is acceptable; oldDefaultOrg may be undefined.
         const oldDefaultOrg = draftState.orgs.find(
           org => org.isDefault === true
         )
-        const oldDefaultOrgId = oldDefaultOrg?.id
+        if (oldDefaultOrg === undefined) {
+          draftState.status = RemoteDataState.Error
+          return
+        }
+
+        const oldDefaultOrgId = oldDefaultOrg.id
         const {newDefaultOrgId} = action
 
         if (oldDefaultOrgId === newDefaultOrgId) {

@@ -85,17 +85,6 @@ describe('identity reducer for quartz organizations', () => {
 
       expect(oldState).toStrictEqual(newState)
     })
-
-    it('does not require any existing `default` org to set a new default', () => {
-      const mockOrgClone = cloneDeep(mockOrgData)
-      mockOrgClone[0].isDefault = false
-
-      const newOrgId = mockOrgClone[3].id
-      const newState = reducer(oldState, setQuartzDefaultOrg(newOrgId))
-
-      expect(newState.orgs[0].isDefault).toEqual(false)
-      expect(newState.orgs[3].isDefault).toEqual(true)
-    })
   })
 
   describe('sets an appropriate `status` based on whether or not the new default org could be set', () => {
@@ -117,6 +106,20 @@ describe('identity reducer for quartz organizations', () => {
       const newState = reducer(oldState, setQuartzDefaultOrg(newId))
 
       expect(newState.status).toEqual(RemoteDataState.Error)
+    })
+
+    it('sets an `Error` state if there is no existing `default` org', () => {
+      const mockOrgClone = cloneDeep(mockOrgData)
+      mockOrgClone[0].isDefault = false
+
+      const newOrgId = mockOrgClone[3].id
+
+      oldState = reducer(oldState, setQuartzOrganizations(mockOrgClone))
+      const newState = reducer(oldState, setQuartzDefaultOrg(newOrgId))
+
+      expect(newState.status).toEqual(RemoteDataState.Error)
+      expect(newState.orgs[0].isDefault).toEqual(false)
+      expect(newState.orgs[3].isDefault).toEqual(false)
     })
   })
 })

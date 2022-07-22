@@ -19,6 +19,13 @@ import {OrganizationSummaries} from 'src/client/unityRoutes'
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
 
+class OrgNotFoundError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'DefaultOrgNotFoundError'
+  }
+}
+
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
@@ -31,7 +38,6 @@ export const getQuartzOrganizationsThunk = () => async (
     const quartzOrganizations = await fetchQuartzOrgs()
 
     dispatch(setQuartzOrganizations(quartzOrganizations))
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
   } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 
@@ -42,18 +48,32 @@ export const getQuartzOrganizationsThunk = () => async (
   }
 }
 
-export const updateDefaultOrgThunk = (
-  oldDefaultOrg: DefaultOrg,
-  newDefaultOrg: DefaultOrg
-) => async (dispatch: Dispatch<Actions>, getState: GetState) => {
+export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
+  dispatch: Dispatch<Actions>,
+  getState: GetState
+) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
 
     await updateDefaultQuartzOrg(newDefaultOrg.id)
 
-    dispatch(setQuartzDefaultOrg(oldDefaultOrg.id, newDefaultOrg.id))
+    dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
 
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
+    const state = getState()
+    const orgStatus = state.identity.currentIdentity.status
+
+    if (orgStatus === RemoteDataState.Error) {
+      const defaultOrgErrMsg =
+        'quartzOrganizations state does not contain requested default organization'
+
+      reportErrorThroughHoneyBadger(new OrgNotFoundError(defaultOrgErrMsg), {
+        name: defaultOrgErrMsg,
+        context: {
+          org: newDefaultOrg,
+          state: getState(),
+        },
+      })
+    }
   } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 

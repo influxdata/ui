@@ -62,7 +62,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
         <div className="user-popover-footer">
           <Link className="user-popover-footer--button" to="/">
             <Icon
-              glyph={IconFont.UserOutline_New}
+              glyph={IconFont.User}
               className="user-popover-footer--button-icon"
             />
             Profile

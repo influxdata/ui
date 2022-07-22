@@ -161,7 +161,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'settings',
       testID: 'nav-item-settings',
-      icon: IconFont.CogOutline_New,
+      icon: IconFont.CogOutline_New_New,
       label: 'Settings',
       link: `${orgPrefix}/settings/variables`,
       activeKeywords: ['settings'],

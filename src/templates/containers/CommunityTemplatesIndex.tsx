@@ -26,7 +26,6 @@ import {
   Panel,
   FlexDirection,
   FlexBox,
-  IconFont,
   ComponentStatus,
   AlignItems,
 } from '@influxdata/clockface'

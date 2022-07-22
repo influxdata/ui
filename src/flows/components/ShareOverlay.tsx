@@ -80,7 +80,7 @@ const ShareOverlay: FC = () => {
           alignItems={AlignItems.Stretch}
         >
           <FlexBox.Child className="share-section--alert">
-            <Icon glyph={IconFont.AlertTriangle_New} />
+            <Icon glyph={IconFont.AlertTriangle} />
             <span className="share-text">
               By sharing this link, your org may incur charges when a user
               visits the page and the query is run.

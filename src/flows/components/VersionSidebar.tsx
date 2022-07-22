@@ -112,7 +112,7 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
     },
     {
       title: `Clone version to new ${PROJECT_NAME}`,
-      icon: IconFont.Duplicate_New,
+      icon: IconFont.Duplicate_New_New,
       onClick: handleClone,
     },
   ]

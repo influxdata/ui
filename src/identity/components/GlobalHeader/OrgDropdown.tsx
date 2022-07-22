@@ -21,17 +21,17 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const orgMainMenu = [
     {
       name: 'Settings',
-      iconFont: IconFont.CogOutline,
+      iconFont: IconFont.CogOutline_New,
       href: `/orgs/${activeOrg.id}/about`,
     },
     {
       name: 'Members',
-      iconFont: IconFont.UserOutline_New,
+      iconFont: IconFont.User,
       href: `/orgs/${activeOrg.id}/users`,
     },
     {
       name: 'Usage',
-      iconFont: IconFont.PieChart,
+      iconFont: IconFont.Usage,
       href: `/orgs/${activeOrg.id}/usage`,
     },
   ]

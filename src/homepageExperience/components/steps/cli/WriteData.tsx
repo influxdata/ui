@@ -4,43 +4,49 @@ import React, {useState} from 'react'
 // Components
 import {Button, ButtonGroup, ComponentColor} from '@influxdata/clockface'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
-import {CsvGraphic} from 'src/homepageExperience/graphics/CsvGraphic'
 import DataListening from 'src/homepageExperience/components/DataListening'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+
+// Constants
+import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {downloadTextFile} from 'src/shared/utils/download'
 
 // Assets
-const csv = require('src/homepageExperience/assets/sample.csv')
+const csv = require('src/homepageExperience/assets/sample.csv').default
+import sampleCsv from 'assets/images/sample-csv.png'
 
 // Styles
 import './CliSteps.scss'
+
+// Types
+type CurrentDataSelection = 'URL' | 'CSV'
+type OwnProps = {
+  bucket: string
+}
 
 const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.writeData.code.copied')
 }
 
-const downloadCsvHandler = () => {
-  downloadTextFile(csv.default, 'sample', '.csv')
-}
-
-type OwnProps = {
-  bucket: string
+const downloadCsv = () => {
+  downloadTextFile(csv, 'sample', '.csv')
 }
 
 export const WriteDataComponent = (props: OwnProps) => {
   const {bucket} = props
-  const bucketName = bucket === '<BUCKET>' ? 'sample-bucket' : bucket
+  const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
 
   const sampleDataUrl =
     'https://influx-testdata.s3.amazonaws.com/bird-migration.csv'
   const writeDataCodeCsv = `influx write --bucket ${bucketName} --file path/sample.csv`
   const writeDataCodeUrl = `influx write --bucket ${bucketName} --url ${sampleDataUrl}`
 
-  const [urlSelected, setUrlSelected] = useState(true)
-  const [csvSelected, setCsvSelected] = useState(false)
+  const [currentDataSelection, setCurrentDataSelection] = useState<
+    CurrentDataSelection
+  >('URL')
 
   return (
     <>
@@ -53,22 +59,28 @@ export const WriteDataComponent = (props: OwnProps) => {
       <ButtonGroup className="small-margins">
         <Button
           text="URL to File"
-          color={urlSelected ? ComponentColor.Primary : ComponentColor.Default}
+          color={
+            currentDataSelection === 'URL'
+              ? ComponentColor.Primary
+              : ComponentColor.Default
+          }
           onClick={() => {
-            setUrlSelected(true)
-            setCsvSelected(false)
+            setCurrentDataSelection('URL')
           }}
         />
         <Button
           text="Local CSV"
-          color={csvSelected ? ComponentColor.Primary : ComponentColor.Default}
+          color={
+            currentDataSelection === 'CSV'
+              ? ComponentColor.Primary
+              : ComponentColor.Default
+          }
           onClick={() => {
-            setUrlSelected(false)
-            setCsvSelected(true)
+            setCurrentDataSelection('CSV')
           }}
         />
       </ButtonGroup>
-      {csvSelected && (
+      {currentDataSelection === 'CSV' && (
         <>
           <h2 className="large-margins">Download sample data</h2>
           <p className="small-margins">
@@ -78,7 +90,7 @@ export const WriteDataComponent = (props: OwnProps) => {
           <p style={{marginTop: '0px', marginBottom: '16px'}}>
             Our sample CSV is earthquake data from the USGS.
           </p>
-          <Button text="Download Sample .CSV" onClick={downloadCsvHandler} />
+          <Button text="Download Sample .CSV" onClick={downloadCsv} />
           <p>
             The sample file is an Annotated CSV. The InfluxCLI supports both
             annotated and standard CSV formats.{' '}
@@ -130,10 +142,14 @@ export const WriteDataComponent = (props: OwnProps) => {
             <i>key data type: string</i> <br />
             <i>value data type: float, integer, string, or boolean</i>
           </p>
-          <CsvGraphic />
+          <img
+            style={{width: '100%', marginBottom: '48px'}}
+            src={sampleCsv}
+            alt="Sample CSV Screenshot"
+          />
         </>
       )}
-      {urlSelected && (
+      {currentDataSelection === 'URL' && (
         <>
           <h2 className="large-margins">Review sample data</h2>
           <p className="small-margins">{sampleDataUrl}</p>

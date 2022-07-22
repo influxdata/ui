@@ -144,10 +144,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
             }}
           </List>
         ) : (
-          <Dropdown.Item
-            key="empty-filter"
-            disabled={true}
-          >
+          <Dropdown.Item key="empty-filter" disabled={true}>
             {searchTerm.length > 0
               ? `no matches for ${searchTerm}`
               : 'No results'}

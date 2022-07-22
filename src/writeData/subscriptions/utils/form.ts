@@ -50,6 +50,13 @@ export const REGEX_TOOLTIP =
 export const JSON_TOOLTIP =
   'JsonPath expression that returns a singular value expected. See http://jsonpath.com for more info.'
 
+const stringType = 'String'
+const floatType = 'Float'
+const intType = 'Integer'
+const booleanType = 'Boolean'
+
+export const dataTypeList = [stringType, intType, floatType, booleanType]
+
 export const handleValidation = (
   property: string,
   formVal: string

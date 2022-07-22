@@ -30,6 +30,7 @@ import {
   handleValidation,
   handleJsonPathValidation,
   JSON_TOOLTIP,
+  dataTypeList,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -44,12 +45,7 @@ interface Props {
 }
 
 const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
-  const stringType = 'String'
-  const floatType = 'Float'
-  const intType = 'Integer'
-  const booleanType = 'Boolean'
-  const dataTypeList = [stringType, intType, floatType, booleanType]
-  const [dataTypeM, setDataTypeM] = useState(stringType)
+  const [dataTypeM, setDataTypeM] = useState(dataTypeList[0])
   const [useStaticMeasurement, setUseStaticMeasurement] = useState(
     !!formContent.jsonMeasurementKey.name
   )

@@ -48,7 +48,11 @@ const JsonPathInput: FC<Props> = ({
   itemNum,
   edit,
 }) => {
-  const dataTypeList = ['String', 'Number']
+  const stringType = 'String'
+  const floatType = 'Float'
+  const intType = 'Integer'
+  const booleanType = 'Boolean'
+  const dataTypeList = [stringType, intType, floatType, booleanType]
   const [dataType, setDataType] = useState(dataTypeList[0])
   const tagType = name === 'Tag'
   return (

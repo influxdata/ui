@@ -45,8 +45,10 @@ interface Props {
 
 const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const stringType = 'String'
-  const numberType = 'Number'
-  const dataTypeList = [stringType, numberType]
+  const floatType = 'Float'
+  const intType = 'Integer'
+  const booleanType = 'Boolean'
+  const dataTypeList = [stringType, intType, floatType, booleanType]
   const [dataTypeM, setDataTypeM] = useState(stringType)
   const [useStaticMeasurement, setUseStaticMeasurement] = useState(
     !!formContent.jsonMeasurementKey.name

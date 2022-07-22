@@ -88,8 +88,8 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       form.jsonMeasurementKey.path = newVal
     }
   }
-  if (form.jsonMeasurementKey.type === 'number') {
-    form.jsonMeasurementKey.type = 'double'
+  if (form.jsonMeasurementKey.type === 'integer') {
+    form.jsonMeasurementKey.type = 'int'
   }
 
   if (form.jsonFieldKeys) {
@@ -99,8 +99,8 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       if (newVal) {
         f.path = newVal
       }
-      if (f.type === 'number') {
-        f.type = 'double'
+      if (f.type === 'integer') {
+        f.type = 'int'
       }
     })
   }
@@ -111,8 +111,8 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       if (newVal) {
         t.path = newVal
       }
-      if (t.type === 'number') {
-        t.type = 'double'
+      if (t.type === 'integer') {
+        t.type = 'int'
       }
     })
   }
@@ -138,8 +138,8 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
       form.jsonMeasurementKey.path = newVal
     }
   }
-  if (form.jsonMeasurementKey.type === 'number') {
-    form.jsonMeasurementKey.type = 'double'
+  if (form.jsonMeasurementKey.type === 'integer') {
+    form.jsonMeasurementKey.type = 'int'
   }
   if (form.jsonFieldKeys) {
     form.jsonFieldKeys.map(f => {
@@ -148,8 +148,8 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
       if (newVal) {
         f.path = newVal
       }
-      if (f.type === 'number') {
-        f.type = 'double'
+      if (f.type === 'integer') {
+        f.type = 'int'
       }
     })
   }
@@ -160,8 +160,8 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
       if (newVal) {
         t.path = newVal
       }
-      if (t.type === 'number') {
-        t.type = 'double'
+      if (t.type === 'integer') {
+        t.type = 'int'
       }
     })
   }
@@ -195,7 +195,10 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
 
 export const sanitizeType = (type: string): string => {
   if (type === 'double') {
-    type = 'Number'
+    type = 'Float'
+  }
+  if (type === 'int') {
+    type = 'Integer'
   }
   return type.charAt(0).toUpperCase() + type.slice(1)
 }

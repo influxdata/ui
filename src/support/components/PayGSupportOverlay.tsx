@@ -127,7 +127,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       event(
         'helpBar.paygSupportRequest.submitted',
         {},
-        {userID: userID, orgName: orgName, orgID: orgID}
+        {userID, orgName, orgID}
       )
       dispatch(
         showOverlay('help-bar-confirmation', {type: 'PAYG'}, () =>
@@ -136,11 +136,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       )
     } catch {
       dispatch(notify(supportRequestError()))
-      event(
-        'helpBar.paygSupportRequest.failed',
-        {},
-        {userID: userID, orgID: orgID}
-      )
+      event('helpBar.paygSupportRequest.failed', {}, {userID, orgID})
     }
   }
 

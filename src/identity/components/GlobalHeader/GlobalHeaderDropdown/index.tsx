@@ -152,7 +152,6 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     )
     return (
       <Dropdown.Menu
-        // testID={menuTestID}
         theme={dropdownMenuTheme}
         style={dropdownMenuStyle}
       >

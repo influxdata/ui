@@ -92,7 +92,7 @@ export const WriteDataComponent = (props: OwnProps) => {
           </p>
           <Button text="Download Sample .CSV" onClick={downloadCsv} />
           <p>
-            The sample file is an Annotated CSV. The InfluxCLI supports both
+            The sample file is an Annotated CSV. The InfluxDB CLI supports both
             annotated and standard CSV formats.{' '}
             <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/syntax/annotated-csv/">
               Annotated CSVs
@@ -154,14 +154,14 @@ export const WriteDataComponent = (props: OwnProps) => {
           <h2 className="large-margins">Review sample data</h2>
           <p className="small-margins">{sampleDataUrl}</p>
           <p>
-            This file is an unannotated CSV. The InfluxCLI supports both
+            This file is an unannotated CSV. The InfluxDB CLI supports both
             annotated and standard CSV formats. Annotated CSVs contain metadata
             about the data types in the file, which allows for faster write
             performance.
           </p>
           <h2 className="large-margins">Write Data</h2>
           <p className="small-margins">
-            Run the following code in the InfluxCLI to write the data to your
+            Run the following code in the InfluxDB CLI to write the data to your
             bucket.
           </p>
           <CodeSnippet

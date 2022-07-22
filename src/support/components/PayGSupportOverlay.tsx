@@ -115,7 +115,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       orgID = quartzOrg?.id
     }
 
-    const descriptionWithOrgId = `[Org Name: ${orgName}] [Org Id: ${orgID}] \n\n ${description}`
+    const descriptionWithOrgId = `${description} \n\n [Org Name: ${orgName}] [Org Id: ${orgID}]`
     const translatedSeverity = translateSeverityLevelForSfdc(severity)
     try {
       await createSfdcSupportCase(

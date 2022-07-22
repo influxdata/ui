@@ -50,6 +50,7 @@ export const AccountDropdown: FC<Props> = ({
       typeAheadSelectedOption={selectedAccount}
       mainMenuOptions={accountMainMenu}
       typeAheadMenuOptions={accountsList}
+      typeAheadInputPlaceholder="Search Accounts"
       mainMenuHeaderIcon={IconFont.Switch_New}
       mainMenuHeaderText="Switch Account"
       style={style}

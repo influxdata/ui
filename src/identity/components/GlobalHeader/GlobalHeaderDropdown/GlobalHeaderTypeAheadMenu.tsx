@@ -87,7 +87,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
   }
 
   render() {
-    const {typeAheadPlaceHolder, style} = this.props
+    const {typeAheadPlaceHolder = 'Type here to search', style} = this.props
     const {searchTerm, queryResults, selectedItem} = this.state
 
     const filterSearchInput = (

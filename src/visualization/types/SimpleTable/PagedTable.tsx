@@ -43,7 +43,7 @@ const measurePage = (
   let signature
 
   while (rowIdx < result.table.length) {
-    if (result.table.columns.table.data[rowIdx] !== currentTable) {
+    if (result.table.columns?.table?.data?.[rowIdx] !== currentTable) {
       signature = Object.values(result.table.columns)
         .map(
           c =>
@@ -110,26 +110,28 @@ const subsetResult = (
     }, {})
 
   const tables: SubsetTable[] = []
-  let lastTable
+  let lastTable = ''
 
   // group by table id (series)
   for (let ni = 0; ni < size; ni++) {
     if (
-      `y${subset['result'][0].data[ni]}:t${subset['table'][0].data[ni]}` ===
+      `y${subset['result']?.[0]?.data?.[ni]}:t${subset['table']?.[0]?.data?.[ni]}` ===
       lastTable
     ) {
       continue
     }
 
-    lastTable = `y${subset['result'][0].data[ni]}:t${subset['table'][0].data[ni]}`
+    if (subset['result']?.[0]?.data?.[ni] && subset['table']?.[0]?.data?.[ni]) {
+      lastTable = `y${subset['result'][0].data[ni]}:t${subset['table'][0].data[ni]}`
+    }
 
     if (tables.length) {
       tables[tables.length - 1].end = ni
     }
 
     tables.push({
-      idx: subset['table'][0].data[ni],
-      yield: subset['result'][0].data[ni],
+      idx: subset['table']?.[0]?.data?.[ni] ?? -1,
+      yield: subset['result']?.[0]?.data?.[ni] ?? '',
       cols: [],
       signature: '',
       start: ni,
@@ -269,7 +271,7 @@ const PagedTable: FC<Props> = ({result, properties}) => {
         clearTimeout(timeout)
       }
     }
-  }, [ref?.current])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const size = useMemo(() => {
     return measurePage(result, offset, height)

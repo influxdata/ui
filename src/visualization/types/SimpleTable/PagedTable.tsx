@@ -67,7 +67,7 @@ const measurePage = (
         lastSignature = signature
       }
 
-      currentTable = result.table.columns.table.data[rowIdx]
+      currentTable = result.table.columns?.table?.data?.[rowIdx]
 
       continue
     }

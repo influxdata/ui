@@ -215,7 +215,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
       type: 'menuitem',
       title: 'Clone',
       onClick: handleClone,
-      icon: IconFont.Duplicate_New_New,
+      icon: IconFont.Duplicate_New,
     })
   }
 

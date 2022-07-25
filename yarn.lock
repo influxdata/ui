@@ -1458,10 +1458,10 @@
     gud "^1.0.0"
     warning "^4.0.3"
 
-"@influxdata/clockface@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-5.0.0.tgz#efe3d680dc0d7d8c43d16688b9055deb4c4ebf30"
-  integrity sha512-CwIMCA1kWTGJ6KmsXPT72EfCMX2qQ7g3Sl2ANPIvNhDcywttCu3f0GuJYfLSaZLXqE5xG8ykJQ89cGbLbOWrNw==
+"@influxdata/clockface@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-5.1.0.tgz#2220d145db902840dc76f4abdac854a0d00de83c"
+  integrity sha512-u3bFYI4cscqhEEYxT2Ex1ZQof6XUutVDhHYYXjpEY4bZLKMDpxS1NqmWXsXa3/HpqcSBi431IsIZSs0+YQde9w==
   dependencies:
     "@types/react-window" "^1.8.5"
     react-window "^1.8.7"

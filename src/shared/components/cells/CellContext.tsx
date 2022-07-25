@@ -91,7 +91,7 @@ const CellContext: FC<Props> = ({
           <CellContextItem
             label="Clone"
             onClick={handleCloneCell}
-            icon={IconFont.Duplicate_New_New}
+            icon={IconFont.Duplicate_New}
             onHide={onHide}
             testID="cell-context--clone"
           />

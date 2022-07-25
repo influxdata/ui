@@ -46,6 +46,11 @@ import {EntityLabel} from 'src/identity/components/userprofile/DefaultDropdown'
 import 'src/identity/components/userprofile/UserProfile.scss'
 
 export const UserDefaults: FC = () => {
+  // When component is first loaded, pick whichver account the user is currently logged in
+  // Then fetch a list of all of the orgs associated with that account
+
+  // Whenever you click the user menu
+
   const dispatch = useDispatch()
 
   const {userAccounts, handleSetDefaultAccount} = useContext(UserAccountContext)
@@ -121,11 +126,9 @@ export const UserDefaults: FC = () => {
       >
         Default Account and Organization
       </Heading>
-
       <div className="change-account-org-container--text">
         The account and organization you'll see when you login
       </div>
-
       <FlexBox
         direction={FlexDirection.Row}
         alignItems={AlignItems.FlexStart}
@@ -133,7 +136,32 @@ export const UserDefaults: FC = () => {
       >
         {accounts && (
           <DefaultDropdown
-            entityLabel={EntityLabel.Account}
+            entityLabel={EntityLabel.SetDefaultAccount}
+            defaultEntity={currentDefaultAccount}
+            entityList={accounts}
+            changeSelectedEntity={setNewDefaultAccount}
+          />
+        )}
+        <Button
+          status={saveButtonStatus}
+          type={ButtonType.Submit}
+          color={saveButtonColor}
+          text="Save"
+          size={ComponentSize.Small}
+          testID="save-defaultaccountorg--button"
+          onClick={handleChangeDefaults}
+          className="change-account-org-container--button"
+        />
+      </FlexBox>
+      <br /> <br />
+      <FlexBox
+        direction={FlexDirection.Row}
+        alignItems={AlignItems.FlexStart}
+        justifyContent={JustifyContent.FlexStart}
+      >
+        {accounts && (
+          <DefaultDropdown
+            entityLabel={EntityLabel.SelectAccount}
             defaultEntity={currentDefaultAccount}
             entityList={accounts}
             changeSelectedEntity={setNewDefaultAccount}
@@ -141,7 +169,7 @@ export const UserDefaults: FC = () => {
         )}
         {orgs && (
           <DefaultDropdown
-            entityLabel={EntityLabel.Org}
+            entityLabel={EntityLabel.SetDefaultOrg}
             defaultEntity={currentDefaultOrg}
             entityList={orgs}
             changeSelectedEntity={setNewDefaultOrg}

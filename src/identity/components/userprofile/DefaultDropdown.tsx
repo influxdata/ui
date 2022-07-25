@@ -16,8 +16,9 @@ import 'src/identity/components/userprofile/UserProfile.scss'
 
 // Types
 export enum EntityLabel {
-  Account = 'Default Account',
-  Org = 'Default Organization',
+  SetDefaultAccount = 'Set a new default account',
+  SelectAccount = 'Select an account',
+  SetDefaultOrg = 'Set a new default org',
 }
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 type Entity = OrganizationSummaries[number] | UserAccount

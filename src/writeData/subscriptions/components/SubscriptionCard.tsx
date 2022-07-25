@@ -133,11 +133,11 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
           <Label
             id="tid"
             key="tkey"
-            name={`${bulletins.length} Message${
+            name={`${bulletins.length} Notification${
               bulletins.length === 1 ? '' : 's'
             }`}
             color={InfluxColors.Grey25}
-            description={`${bulletins.length} Message${
+            description={`${bulletins.length} Notification${
               bulletins.length === 1 ? '' : 's'
             }`}
             onClick={goToSubscriptionDetails}

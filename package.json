@@ -73,7 +73,6 @@
     "uiproxyd-oss": "touch ./src/client/uiproxydRoutes.ts",
     "uiproxyd": "oats ${REMOTE}contracts/priv/uiproxyd.yml > ./src/client/uiproxydRoutes.ts",
     "subscriptions": "oats ${REMOTE}contracts/priv/nifid.yml > ./src/client/subscriptionsRoutes.ts",
-    "subscriptions-oss": "touch ./src/client/subscriptionsRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
     "fluxdocs": "oats ${REMOTE}contracts/priv/fluxdocsd.yml > ./src/client/fluxdocsdRoutes.ts",
     "telegraf-plugins:update": "node src/writeData/utils/updateTelegrafPlugins.mjs"

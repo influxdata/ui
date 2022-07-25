@@ -13,9 +13,9 @@ interface Props {
 
 const SubscriptionsList: FC<Props> = ({subscriptions}) => (
   <div className="subscriptions-list">
-    {subscriptions.map((s, key) => {
-      return <SubscriptionCard key={key} subscription={s} />
-    })}
+    {subscriptions.map((s, key) => (
+      <SubscriptionCard key={key} subscription={s} />
+    ))}
   </div>
 )
 

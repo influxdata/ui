@@ -19,6 +19,7 @@ import {
 import {Subscription} from 'src/types/subscriptions'
 import {RemoteDataState} from 'src/types'
 import {SubscriptionStatus} from 'src/client/subscriptionsRoutes'
+import {getBulletinsFromStatus} from '../utils/form'
 
 export interface SubscriptionListContextType {
   getAll: () => void
@@ -51,81 +52,6 @@ export interface Bulletin {
 
 interface BulletinsMap {
   [key: string]: Bulletin[]
-}
-
-const sanitizeBulletin = (bulletin: string) => {
-  const patterns = [
-    'Connection to (.*) lost \\(or was never connected\\) and connection failed.',
-  ]
-  const regexObj = new RegExp(patterns.join('|'), 'i')
-  const matched = bulletin.match(regexObj)
-
-  if (!!matched?.length) {
-    bulletin = matched[0]
-  }
-
-  return bulletin
-}
-
-const getBulletinsFromStatus = status => {
-  if (!status?.processors?.length) {
-    return []
-  }
-
-  const uniqueBulletins = status.processors
-    .filter(pb => !!pb.bulletins.length)
-    .map(pb => pb.bulletins)
-    .flat()
-    .map(pb => {
-      const message = sanitizeBulletin(pb.bulletin.message)
-      const timestamp = parseDate(pb.bulletin.timestamp)
-
-      return {
-        timestamp,
-        message,
-      }
-    })
-    .reduce((prev, curr) => {
-      const existing = prev?.[curr.message] ?? 0
-      prev[curr.message] = existing < curr.timestamp ? curr.timestamp : existing
-      return prev
-    }, {})
-  return Object.keys(uniqueBulletins).map(b => {
-    return {
-      message: b,
-      timestamp: uniqueBulletins[b],
-    } as Bulletin
-  })
-}
-
-const parseDate = (timeString: string) => {
-  const months = [
-    'JAN',
-    'FEB',
-    'MAR',
-    'APR',
-    'MAY',
-    'JUN',
-    'JUL',
-    'AUG',
-    'SEP',
-    'OCT',
-    'NOV',
-    'DEC',
-  ]
-  const date = new Date()
-  const parsed = new Date(
-    Date.parse(
-      `${date.getDate()} ${
-        months[date.getMonth()]
-      } ${date.getFullYear()} ${timeString}`
-    )
-  )
-  if (parsed > date) {
-    parsed.setDate(parsed.getDate() - 1)
-  }
-
-  return parsed.getTime()
 }
 
 export const SubscriptionListProvider: FC = ({children}) => {

@@ -14,6 +14,7 @@ import {
   FlexDirection,
   JustifyContent,
   AlignItems,
+  Icon,
 } from '@influxdata/clockface'
 
 // Contexts
@@ -80,7 +81,7 @@ const rangeToParam = (timeRange: TimeRange) => {
 
 const ResultsPane: FC = () => {
   const {basic, query, cancel} = useContext(QueryContext)
-  const {status, setStatus, setResult} = useContext(ResultsContext)
+  const {status, result, setStatus, setResult} = useContext(ResultsContext)
 
   const [
     horizDragPosition,
@@ -168,6 +169,12 @@ const ResultsPane: FC = () => {
               </Suspense>
             </div>
           </div>
+          {status === RemoteDataState.Error && (
+            <div className="data-explorer--error-gutter">
+              <Icon glyph={IconFont.AlertTriangle_New} />
+              <pre>{result.error}</pre>
+            </div>
+          )}
           <div style={{width: '100%'}}>
             <FlexBox
               direction={FlexDirection.Row}

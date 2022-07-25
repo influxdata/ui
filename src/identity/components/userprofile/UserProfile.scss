@@ -2,7 +2,7 @@
 
 .user-details-container--header {
   font-size: $cf-text-base-2;
-  margin-bottom: $cf-space-m;
+  margin-bottom: $cf-space-s;
 }
 
 .change-account-org-container--button {
@@ -22,16 +22,15 @@
 }
 
 .change-account-org-dropdown--container {
-  margin-top: $cf-space-s;
   margin-bottom: 0px;
   margin-left: 0px;
   margin-right: $cf-space-m;
 }
 
 .change-account-org-dropdown--header {
-  margin-top: $cf-space-2xs !important;
+  font-size: $cf-text-base-0 !important;
+  margin-top: $cf-space-3xs !important;
   margin-bottom: $cf-space-3xs !important;
-  padding-bottom: $cf-space-3xs !important;
 }
 
 .change-account-org--typeahead {

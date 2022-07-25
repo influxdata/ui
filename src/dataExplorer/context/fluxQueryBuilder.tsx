@@ -6,7 +6,6 @@ import React, {
   useContext,
   useCallback,
 } from 'react'
-import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 // Context
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
@@ -24,14 +23,7 @@ import {
   ExecuteCommandInjectTagValue,
   ExecuteCommandInjectField,
 } from 'src/languageSupport/languages/flux/lsp/utils'
-
-const useLocalStorageState = createLocalStorageStateHook(
-  'dataExplorer.schema',
-  {
-    bucket: null,
-    measurement: null,
-  }
-)
+import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 
 const DEBOUNCE_TIMEOUT = 500
 let timer
@@ -80,7 +72,10 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {injectViaLsp} = useContext(EditorContext)
 
   // States
-  const [selection, setSelection] = useLocalStorageState()
+  const [selection, setSelection] = useSessionStorage('dataExplorer.schema', {
+    bucket: null,
+    measurement: null,
+  })
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSelectBucket = (bucket: Bucket): void => {

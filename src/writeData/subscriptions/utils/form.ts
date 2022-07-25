@@ -45,6 +45,11 @@ export const SUBSCRIPTION_NAVIGATION_STEPS: SubscriptionNavigationModel[] = [
   },
 ]
 
+export const REGEX_TOOLTIP =
+  'Java flavor regular expressions expected. Use a capture group if desired. See https://regex101.com for more info.'
+export const JSON_TOOLTIP =
+  'JsonPath expression that returns a singular value expected. See http://jsonpath.com for more info.'
+
 export const handleValidation = (
   property: string,
   formVal: string
@@ -76,16 +81,17 @@ export const checkJSONPathStarts$ = (firstChar, formVal): string | null => {
 
 export const sanitizeForm = (form: Subscription): Subscription => {
   // add $. if not at start of input for json paths
-  if (form.jsonMeasurementKey) {
+  if (form.jsonMeasurementKey.path) {
     const startChar = form.jsonMeasurementKey?.path.charAt(0) ?? ''
     const newVal = checkJSONPathStarts$(startChar, form.jsonMeasurementKey.path)
     if (newVal) {
       form.jsonMeasurementKey.path = newVal
     }
-    if (form.jsonMeasurementKey.type === 'number') {
-      form.jsonMeasurementKey.type = 'double'
-    }
   }
+  if (form.jsonMeasurementKey.type === 'number') {
+    form.jsonMeasurementKey.type = 'double'
+  }
+
   if (form.jsonFieldKeys) {
     form.jsonFieldKeys.map(f => {
       const startChar = f.path?.charAt(0) ?? ''
@@ -119,7 +125,6 @@ export const sanitizeForm = (form: Subscription): Subscription => {
   }
 
   if (form.brokerPassword === '' || form.brokerUsername === '') {
-    delete form.brokerUsername
     delete form.brokerPassword
   }
   return form
@@ -132,9 +137,9 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
     if (newVal) {
       form.jsonMeasurementKey.path = newVal
     }
-    if (form.jsonMeasurementKey.type === 'number') {
-      form.jsonMeasurementKey.type = 'double'
-    }
+  }
+  if (form.jsonMeasurementKey.type === 'number') {
+    form.jsonMeasurementKey.type = 'double'
   }
   if (form.jsonFieldKeys) {
     form.jsonFieldKeys.map(f => {
@@ -179,6 +184,8 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
   delete form.processGroupID
   delete form.createdAt
   delete form.updatedAt
+  delete form.createdBy
+  delete form.updatedBy
   delete form.tokenID
   delete form.isActive
   delete form.status
@@ -209,12 +216,18 @@ export const checkRequiredStringFields = (form: Subscription): boolean => {
     return true
   }
   return (
-    !!form.stringMeasurement.pattern &&
-    validateRegex(form.stringMeasurement.pattern) &&
+    checkStringMeasurement(form.stringMeasurement) &&
     checkStringTimestamp(form.stringTimestamp) &&
     form.stringFields?.length > 0 &&
     form.stringFields?.every(f => checkStringObjRequiredFields(f)) &&
     form.stringTags?.every(t => checkStringObjRequiredFields(t))
+  )
+}
+
+const checkStringMeasurement = (stringMeasurement: StringObjectParams) => {
+  return (
+    !!stringMeasurement.name ||
+    (!!stringMeasurement.pattern && validateRegex(stringMeasurement.pattern))
   )
 }
 
@@ -259,13 +272,19 @@ export const checkRequiredJsonFields = (form: Subscription): boolean => {
     return true
   }
   return (
-    !!form.jsonMeasurementKey?.path &&
-    !!form.jsonMeasurementKey?.type &&
-    validateJsonPath(form.jsonMeasurementKey.path) &&
+    checkJsonMeasurement(form.jsonMeasurementKey) &&
     checkJsonTimestamp(form.jsonTimestamp) &&
     form.jsonFieldKeys?.length > 0 &&
     form.jsonFieldKeys?.every(f => checkJsonObjRequiredFields(f)) &&
     form.jsonTagKeys?.every(t => checkJsonObjRequiredFields(t))
+  )
+}
+
+const checkJsonMeasurement = (jsonMeasurement: JsonSpec) => {
+  return (
+    !!jsonMeasurement.type &&
+    (!!jsonMeasurement.name ||
+      (!!jsonMeasurement.path && validateJsonPath(jsonMeasurement.path)))
   )
 }
 

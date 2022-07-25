@@ -120,7 +120,7 @@ const OrgOverlay: FC = () => {
                   <Grid.Row>
                     <h4>Limits</h4>
                     <Grid.Column widthMD={Columns.Four}>
-                      <Form.Label label="Read (KBs)" testID="read-kbs" />
+                      <Form.Label label="Read (KB/s)" testID="read-kbs" />
                       <LimitsField
                         type={InputType.Number}
                         name="rate.readKBs"
@@ -129,7 +129,7 @@ const OrgOverlay: FC = () => {
                       />
                     </Grid.Column>
                     <Grid.Column widthMD={Columns.Four}>
-                      <Form.Label label="Write (KBs)" />
+                      <Form.Label label="Write (KB/s)" />
                       <LimitsField
                         type={InputType.Number}
                         name="rate.writeKBs"

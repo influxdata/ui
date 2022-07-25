@@ -26,12 +26,12 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     },
     {
       name: 'Members',
-      iconFont: IconFont.CogOutline,
+      iconFont: IconFont.UserOutline_New,
       href: `/orgs/${activeOrg.id}/users`,
     },
     {
       name: 'Usage',
-      iconFont: IconFont.CogOutline,
+      iconFont: IconFont.PieChart,
       href: `/orgs/${activeOrg.id}/usage`,
     },
   ]

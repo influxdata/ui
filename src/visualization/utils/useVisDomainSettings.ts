@@ -19,6 +19,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {
   getWindowPeriodFromVariables,
   getWindowVarsFromVariables,
+  normalizeWindowPeriodForZoomRequery,
+  normalizeWindowPeriodVariableForZoomRequery,
 } from 'src/variables/utils/getWindowVars'
 
 // Types
@@ -173,8 +175,24 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     return getValidRange(data, timeRange)
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [domain, setDomain] = useState(initialDomain)
+  /*
+   * preZoomDomain:
+   *   - can be changed only by the query results
+   *   - uses one-way state to capture the very first set of values
+   */
   const [preZoomDomain] = useOneWayState(initialDomain)
+
+  /*
+   * domain:
+   *   - can be changed by user action: zooming or unzooming
+   *   - zooming will trigger a new query if the windowPeriod changes
+   *   - unzooming will revert the query results back to its original state
+   *     (before zooming), but does not query
+   *
+   *   - can be changed also by the preZoomDomain, by syncing,
+   *     to keep the graph fitted, and does not query
+   */
+  const [domain, setDomain] = useState(initialDomain)
 
   const getAllVariablesWithTimeDomain = (state: AppState) =>
     getAllVariablesForZoomRequery(state, timeRange ? domain : [])
@@ -182,26 +200,31 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const variables = useSelector(getAllVariablesWithTimeDomain)
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
-    getWindowPeriodFromVariables(query, variables)
+    normalizeWindowPeriodForZoomRequery(
+      getWindowPeriodFromVariables(query, variables),
+      timeRange,
+      domain,
+      data
+    )
   )
 
-  /*
-   * When the user zooms in, re-run the query
-   * When the user un-zooms, do not re-run but revert back to old data
-   * Hence re-run the query only when both conditions are met:
-   * - the window period changes from the domain changing (zooming in)
-   * - the domain does not equal the original pre-zoom domain (unzooming)
-   */
   useEffect(() => {
-    const updatedWindowPeriod = getWindowPeriodFromVariables(query, variables)
+    const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
+      getWindowPeriodFromVariables(query, variables),
+      timeRange,
+      domain,
+      data
+    )
+
     if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
-      setWindowPeriod(getWindowPeriodFromVariables(query, variables))
+      setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable = getWindowVarsFromVariables(
-          query,
-          variables
+        const zoomQueryWindowVariable = normalizeWindowPeriodVariableForZoomRequery(
+          getWindowVarsFromVariables(query, variables),
+          updatedWindowPeriod
         )
+
         const extern = buildUsedVarsOption(
           query,
           variables,
@@ -223,6 +246,15 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
       }
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // sync preZoomDomain and domain
+  //   - when query results change to refit the graph
+  //   - except when it is the time axis to prevent a shrunken graph
+  useEffect(() => {
+    if (!timeRange && isNotEqual(preZoomDomain, domain)) {
+      setDomain(preZoomDomain)
+    }
+  }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const setZoomDomain = (updatedDomain: number[]) => {
     setRequeryStatus(RemoteDataState.NotStarted)
@@ -272,8 +304,24 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
     return storedDomain
   }, [storedDomain, data]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [domain, setDomain] = useState(initialDomain)
+  /*
+   * preZoomDomain:
+   *   - can be changed only by the query results
+   *   - uses one-way state to capture the very first set of values
+   */
   const [preZoomDomain] = useOneWayState(initialDomain)
+
+  /*
+   * domain:
+   *   - can be changed by user action: zooming or unzooming
+   *   - zooming will trigger a new query if the windowPeriod changes
+   *   - unzooming will revert the query results back to its original state
+   *     (before zooming), but does not query
+   *
+   *   - can be changed also by the preZoomDomain, by syncing,
+   *     to keep the graph fitted, and does not query
+   */
+  const [domain, setDomain] = useState(initialDomain)
 
   const getAllVariablesWithTimeDomain = (state: AppState) =>
     getAllVariablesForZoomRequery(state, timeRange ? domain : [])
@@ -281,26 +329,31 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   const variables = useSelector(getAllVariablesWithTimeDomain)
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
-    getWindowPeriodFromVariables(query, variables)
+    normalizeWindowPeriodForZoomRequery(
+      getWindowPeriodFromVariables(query, variables),
+      timeRange,
+      domain,
+      data
+    )
   )
 
-  /*
-   * When the user zooms in, re-run the query
-   * When the user un-zooms, do not re-run but revert back to old data
-   * Hence re-run the query only when both conditions are met:
-   * - the window period changes from the domain changing (zooming in)
-   * - the domain does not equal the original pre-zoom domain (unzooming)
-   */
   useEffect(() => {
-    const updatedWindowPeriod = getWindowPeriodFromVariables(query, variables)
+    const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
+      getWindowPeriodFromVariables(query, variables),
+      timeRange,
+      domain,
+      data
+    )
+
     if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
-      setWindowPeriod(getWindowPeriodFromVariables(query, variables))
+      setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable = getWindowVarsFromVariables(
-          query,
-          variables
+        const zoomQueryWindowVariable = normalizeWindowPeriodVariableForZoomRequery(
+          getWindowVarsFromVariables(query, variables),
+          updatedWindowPeriod
         )
+
         const extern = buildUsedVarsOption(
           query,
           variables,
@@ -322,6 +375,15 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
       }
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // sync preZoomDomain and domain
+  //   - when query results change to refit the graph
+  //   - except when it is the time axis to prevent a shrunken graph
+  useEffect(() => {
+    if (!timeRange && isNotEqual(preZoomDomain, domain)) {
+      setDomain(preZoomDomain)
+    }
+  }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const setZoomDomain = (updatedDomain: number[]) => {
     setRequeryStatus(RemoteDataState.NotStarted)

@@ -71,9 +71,13 @@ const WrappedOptions: FC = () => {
       properties={view.properties}
       results={result.parsed}
       update={update => {
-        Object.keys(update).forEach(k => (view.properties[k] = update[k]))
-
-        setView({...view})
+        setView({
+          ...view,
+          properties: {
+            ...view.properties,
+            ...update,
+          },
+        })
       }}
     />
   )
@@ -149,12 +153,18 @@ const Results: FC = () => {
             } as SimpleTableViewProperties
           }
           result={res}
+          hideTimer
         />
       )
     } else {
       resultView = (
         <div style={{height: '100%', width: '100%', padding: 12}}>
-          <View loading={status} properties={view.properties} result={res} />
+          <View
+            loading={status}
+            properties={view.properties}
+            result={res}
+            hideTimer
+          />
         </div>
       )
     }

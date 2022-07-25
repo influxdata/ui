@@ -3,10 +3,8 @@ import React, {FC, useState, useEffect} from 'react'
 
 // Components
 import {
-  Input,
   Grid,
   Form,
-  InputType,
   Dropdown,
   IconFont,
   Icon,
@@ -17,6 +15,8 @@ import {
   ComponentSize,
   FlexDirection,
   FlexBox,
+  InputLabel,
+  SlideToggle,
 } from '@influxdata/clockface'
 import StringPatternInput from 'src/writeData/subscriptions/components/StringPatternInput'
 
@@ -27,12 +27,14 @@ import {Subscription, PrecisionTypes} from 'src/types/subscriptions'
 import {
   handleRegexValidation,
   handleValidation,
+  REGEX_TOOLTIP,
 } from 'src/writeData/subscriptions/utils/form'
 
 // Styles
 import 'src/writeData/subscriptions/components/StringParsingForm.scss'
 import {event} from 'src/cloud/utils/reporting'
 import {ComponentStatus} from 'src/clockface'
+import ValidationInputWithTooltip from './ValidationInputWithTooltip'
 
 interface Props {
   formContent: Subscription
@@ -43,6 +45,9 @@ interface Props {
 const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
+  const [useStaticMeasurement, setUseStaticMeasurement] = useState(
+    !!formContent.stringMeasurement.name
+  )
   const defaultStringFieldTag = {
     name: '',
     pattern: '',
@@ -72,7 +77,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           margin={ComponentSize.Large}
           className="string-parsing-form__container"
         >
-          <Form.ValidationElement
+          <ValidationInputWithTooltip
             label="Regex Pattern to find Timestamp"
             value={formContent.stringTimestamp.pattern}
             required={false}
@@ -81,38 +86,32 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                 ? handleRegexValidation(formContent.stringTimestamp.pattern)
                 : null
             }
-          >
-            {status => (
-              <Input
-                type={InputType.Text}
-                placeholder="eg.(\d{10})"
-                name="timestamp"
-                autoFocus={true}
-                value={formContent.stringTimestamp.pattern}
-                onChange={e => {
-                  updateForm({
-                    ...formContent,
-                    stringTimestamp: {
-                      ...formContent.stringTimestamp,
-                      pattern: e.target.value,
-                    },
-                  })
-                }}
-                onBlur={() =>
-                  event(
-                    'completed form field',
-                    {
-                      formField: 'stringTimestamp.pattern',
-                    },
-                    {feature: 'subscriptions'}
-                  )
-                }
-                maxLength={255}
-                testID="timestamp-string-parsing"
-                status={edit ? status : ComponentStatus.Disabled}
-              />
-            )}
-          </Form.ValidationElement>
+            placeholder="eg.(\d{10})"
+            name="timestamp"
+            onChange={e => {
+              updateForm({
+                ...formContent,
+                stringTimestamp: {
+                  ...formContent.stringTimestamp,
+                  pattern: e.target.value,
+                },
+              })
+            }}
+            onBlur={() =>
+              event(
+                'completed form field',
+                {
+                  formField: 'stringTimestamp.pattern',
+                },
+                {feature: 'subscriptions'}
+              )
+            }
+            maxLength={255}
+            testID="timestamp-string-parsing"
+            edit={edit}
+            tooltip={REGEX_TOOLTIP}
+            width="75%"
+          />
           <div className="string-parsing-form__container__dropdown">
             <Form.Label label="Timestamp precision" />
             <Dropdown
@@ -175,49 +174,104 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
             Measurement
           </Heading>
         </FlexBox>
-        <Form.ValidationElement
-          label="Regex Pattern to find Measurement"
-          value={formContent.stringMeasurement.pattern}
-          required={true}
-          validationFunc={() => {
-            const pattern = formContent.stringMeasurement.pattern
-            return (
-              handleValidation('Pattern', pattern) ??
-              handleRegexValidation(pattern)
-            )
-          }}
+        <FlexBox
+          direction={FlexDirection.Row}
+          alignItems={AlignItems.Center}
+          margin={ComponentSize.Medium}
+          className="static-toggle"
         >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. a=(\d)"
-              name="regex"
-              autoFocus={true}
-              value={formContent.stringMeasurement.pattern}
-              onChange={e => {
-                updateForm({
-                  ...formContent,
-                  stringMeasurement: {
-                    ...formContent.stringMeasurement,
-                    pattern: e.target.value,
-                  },
-                })
-              }}
-              onBlur={() =>
-                event(
-                  'completed form field',
-                  {
-                    formField: 'stringMeasurement.pattern',
-                  },
-                  {feature: 'subscriptions'}
-                )
-              }
-              status={edit ? status : ComponentStatus.Disabled}
-              maxLength={255}
-              testID="measurment-string-parsing-pattern"
-            />
-          )}
-        </Form.ValidationElement>
+          <InputLabel>Regex</InputLabel>
+          <SlideToggle
+            active={useStaticMeasurement}
+            onChange={() => {
+              setUseStaticMeasurement(!useStaticMeasurement)
+              updateForm({
+                ...formContent,
+                stringMeasurement: {
+                  ...formContent.stringMeasurement,
+                  name: '',
+                  pattern: '',
+                },
+              })
+            }}
+            disabled={!edit}
+          />
+          <InputLabel>Name</InputLabel>
+        </FlexBox>
+        {useStaticMeasurement ? (
+          <ValidationInputWithTooltip
+            label="Name"
+            value={formContent.stringMeasurement.name}
+            required={true}
+            validationFunc={() => {
+              return handleValidation(
+                'Measurement Name',
+                formContent.stringMeasurement.name
+              )
+            }}
+            placeholder="nonDescriptName"
+            name="name"
+            onChange={e => {
+              updateForm({
+                ...formContent,
+                stringMeasurement: {
+                  ...formContent.stringMeasurement,
+                  name: e.target.value,
+                },
+              })
+            }}
+            onBlur={() =>
+              event(
+                'completed form field',
+                {
+                  formField: 'stringMeasurement.name',
+                },
+                {feature: 'subscriptions'}
+              )
+            }
+            edit={edit}
+            maxLength={255}
+            testID="measurment-string-parsing-name"
+            tooltip="Provide a static measurement for your messages."
+          />
+        ) : (
+          <ValidationInputWithTooltip
+            label="Regex Pattern to find Measurement"
+            value={formContent.stringMeasurement.pattern}
+            required={true}
+            validationFunc={() => {
+              const pattern = formContent.stringMeasurement.pattern
+              return (
+                handleValidation('Pattern', pattern) ??
+                handleRegexValidation(pattern)
+              )
+            }}
+            placeholder="eg. a=(\d)"
+            name="regex"
+            onChange={e => {
+              updateForm({
+                ...formContent,
+                stringMeasurement: {
+                  ...formContent.stringMeasurement,
+                  pattern: e.target.value,
+                },
+              })
+            }}
+            onBlur={() =>
+              event(
+                'completed form field',
+                {
+                  formField: 'stringMeasurement.pattern',
+                },
+                {feature: 'subscriptions'}
+              )
+            }
+            edit={edit}
+            maxLength={255}
+            testID="measurment-string-parsing-pattern"
+            tooltip={REGEX_TOOLTIP}
+          />
+        )}
         <div className="line"></div>
       </Grid.Column>
       {formContent.stringTags.map((_, key) => (

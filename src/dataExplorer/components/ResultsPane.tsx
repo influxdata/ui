@@ -15,7 +15,6 @@ import {
   JustifyContent,
   AlignItems,
 } from '@influxdata/clockface'
-import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
@@ -40,21 +39,10 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {useSessionStorage} from '../shared/utils'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
-)
-const useQueryState = createLocalStorageStateHook<string>(
-  'dataExplorer.query',
-  ''
-)
-const useRangeState = createLocalStorageStateHook<TimeRange>(
-  'dataExplorer.range',
-  DEFAULT_TIME_RANGE
-)
-const useResizeState = createLocalStorageStateHook(
-  'dataExplorer.resize.horizontal',
-  [0.2]
 )
 
 const fakeNotify = notify
@@ -91,12 +79,18 @@ const rangeToParam = (timeRange: TimeRange) => {
 }
 
 const ResultsPane: FC = () => {
-  const {basic, query} = useContext(QueryContext)
+  const {basic, query, cancel} = useContext(QueryContext)
   const {status, setStatus, setResult} = useContext(ResultsContext)
 
-  const [horizDragPosition, setHorizDragPosition] = useResizeState()
-  const [text, setText] = useQueryState()
-  const [timeRange, setTimeRange] = useRangeState()
+  const [
+    horizDragPosition,
+    setHorizDragPosition,
+  ] = useSessionStorage('dataExplorer.resize.horizontal', [0.2])
+  const [text, setText] = useSessionStorage('dataExplorer.query', '')
+  const [timeRange, setTimeRange] = useSessionStorage(
+    'dataExplorer.range',
+    DEFAULT_TIME_RANGE
+  )
 
   const download = () => {
     event('CSV Download Initiated')
@@ -204,7 +198,9 @@ const ResultsPane: FC = () => {
                 onSubmit={submit}
                 onNotify={fakeNotify}
                 queryID=""
-                cancelAllRunningQueries={() => {}}
+                cancelAllRunningQueries={() => {
+                  cancel()
+                }}
               />
             </FlexBox>
           </div>

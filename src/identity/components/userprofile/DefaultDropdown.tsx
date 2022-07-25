@@ -7,8 +7,6 @@ import {
   FontWeight,
   Heading,
   HeadingElement,
-  SelectableItem,
-  TypeAheadDropDown,
 } from '@influxdata/clockface'
 
 // Style
@@ -16,11 +14,12 @@ import 'src/identity/components/userprofile/UserProfile.scss'
 
 // Types
 export enum EntityLabel {
-  SetDefaultAccount = 'Set a new default account',
-  SelectAccount = 'Select an account',
-  SetDefaultOrg = 'Set a new default org',
+  DefaultAccount = 'Account',
+  DefaultOrg = ' Organization',
 }
+
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
+import {GlobalHeaderDropdown} from '../GlobalHeader/GlobalHeaderDropdown'
 type Entity = OrganizationSummaries[number] | UserAccount
 
 interface Props {
@@ -48,14 +47,16 @@ export const DefaultDropdown: FC<Props> = ({
         weight={FontWeight.Medium}
         className="change-account-org-dropdown--header"
       >
-        {entityLabel}
+        {`Default ${entityLabel}`}
       </Heading>
-      <TypeAheadDropDown
-        selectedOption={defaultEntity as SelectableItem}
-        items={entityList as SelectableItem[]}
-        onSelect={changeSelectedEntity}
-        placeholderText={`Select a ${entityLabel}`}
-        className="change-account-org--typeahead"
+      <GlobalHeaderDropdown
+        mainMenuOptions={[]}
+        typeAheadOnly={true}
+        typeAheadMenuOptions={entityList}
+        typeAheadInputPlaceholder={`Search ${entityLabel}s ...`}
+        typeAheadSelectedOption={defaultEntity}
+        typeAheadOnSelectOption={changeSelectedEntity}
+        style={{width: '250px'}}
       />
     </FlexBox>
   )

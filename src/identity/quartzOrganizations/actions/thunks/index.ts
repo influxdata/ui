@@ -13,45 +13,73 @@ import {
 import {PublishNotificationAction} from 'src/shared/actions/notifications'
 
 // Types
-import {RemoteDataState} from 'src/types'
+import {GetState, RemoteDataState} from 'src/types'
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
 
-// Notifications
-import {notify} from 'src/shared/actions/notifications'
-import {updateQuartzOrganizationsFailed} from 'src/shared/copy/notifications'
+class OrgNotFoundError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'DefaultOrgNotFoundError'
+  }
+}
+
+// Error Reporting
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export const getQuartzOrganizationsThunk = () => async (
-  dispatch: Dispatch<Actions>
+  dispatch: Dispatch<Actions>,
+  getState: GetState
 ) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
     const quartzOrganizations = await fetchQuartzOrgs()
 
     dispatch(setQuartzOrganizations(quartzOrganizations))
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
-  } catch (error) {
+  } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
-    dispatch(notify(updateQuartzOrganizationsFailed()))
+
+    reportErrorThroughHoneyBadger(err, {
+      name: 'Failed to fetch /quartz/orgs/',
+      context: {state: getState()},
+    })
   }
 }
 
-export const updateDefaultOrgThunk = (
-  oldDefaultOrg: DefaultOrg,
-  newDefaultOrg: DefaultOrg
-) => async (dispatch: Dispatch<Actions>) => {
+export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
+  dispatch: Dispatch<Actions>,
+  getState: GetState
+) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
 
     await updateDefaultQuartzOrg(newDefaultOrg.id)
 
-    dispatch(setQuartzDefaultOrg(oldDefaultOrg.id, newDefaultOrg.id))
+    dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
 
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
+    const state = getState()
+    const orgStatus = state.identity.currentIdentity.status
+
+    if (orgStatus === RemoteDataState.Error) {
+      const defaultOrgErrMsg =
+        'quartzOrganizations state does not contain requested default organization'
+
+      reportErrorThroughHoneyBadger(new OrgNotFoundError(defaultOrgErrMsg), {
+        name: defaultOrgErrMsg,
+        context: {
+          org: newDefaultOrg,
+          state: getState(),
+        },
+      })
+    }
   } catch (err) {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
-    throw Error(err)
+
+    reportErrorThroughHoneyBadger(err, {
+      name: 'Failed to update /quartz/orgs/default',
+      context: {state: getState()},
+    })
   }
 }

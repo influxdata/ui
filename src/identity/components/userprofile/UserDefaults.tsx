@@ -4,7 +4,6 @@ import {useSelector, useDispatch} from 'react-redux'
 import {
   AlignItems,
   Button,
-  ButtonType,
   ComponentColor,
   ComponentSize,
   ComponentStatus,
@@ -14,6 +13,7 @@ import {
   JustifyContent,
   Heading,
   HeadingElement,
+  ButtonType,
 } from '@influxdata/clockface'
 
 // Selectors and Context
@@ -32,6 +32,7 @@ import {updateDefaultOrgThunk} from 'src/identity/quartzOrganizations/actions/th
 
 // Components
 import {DefaultDropdown} from 'src/identity/components/userprofile/DefaultDropdown'
+import LabeledUserData from 'src/identity/components/userprofile/LabeledUserData'
 
 // Constants
 import {
@@ -105,7 +106,7 @@ export const UserDefaults: FC = () => {
     }
     if (selectedNewOrg) {
       try {
-        dispatch(updateDefaultOrgThunk(currentDefaultOrg, newDefaultOrg))
+        dispatch(updateDefaultOrgThunk(newDefaultOrg))
         dispatch(notify(orgDefaultSettingSuccess(newDefaultOrg.name)))
       } catch {
         dispatch(notify(orgDefaultSettingError(newDefaultOrg.name)))
@@ -114,78 +115,77 @@ export const UserDefaults: FC = () => {
   }
 
   return (
-    <FlexBox
-      direction={FlexDirection.Column}
-      alignItems={AlignItems.FlexStart}
-      justifyContent={JustifyContent.FlexStart}
-    >
-      <Heading
-        weight={FontWeight.Bold}
-        element={HeadingElement.H4}
-        className="change-account-org-container--header"
-      >
-        Default Account and Organization
-      </Heading>
-      <div className="change-account-org-container--text">
-        The account and organization you'll see when you login
-      </div>
+    <>
       <FlexBox
-        direction={FlexDirection.Row}
+        direction={FlexDirection.Column}
         alignItems={AlignItems.FlexStart}
         justifyContent={JustifyContent.FlexStart}
       >
+        <Heading
+          weight={FontWeight.Bold}
+          element={HeadingElement.H4}
+          className="change-account-org-container--header"
+        >
+          Default Account
+        </Heading>
+        <div className="change-account-org-container--text">
+          Select the account you want to see when you first log in
+        </div>
         {accounts && (
           <DefaultDropdown
-            entityLabel={EntityLabel.SetDefaultAccount}
-            defaultEntity={currentDefaultAccount}
+            entityLabel={EntityLabel.DefaultAccount}
+            defaultEntity={newDefaultAccount}
             entityList={accounts}
             changeSelectedEntity={setNewDefaultAccount}
           />
         )}
-        <Button
-          status={saveButtonStatus}
-          type={ButtonType.Submit}
-          color={saveButtonColor}
-          text="Save"
-          size={ComponentSize.Small}
-          testID="save-defaultaccountorg--button"
-          onClick={handleChangeDefaults}
-          className="change-account-org-container--button"
-        />
       </FlexBox>
-      <br /> <br />
+      <br />
+      <FlexBox
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.FlexStart}
+        justifyContent={JustifyContent.FlexStart}
+      >
+        <Heading
+          weight={FontWeight.Bold}
+          element={HeadingElement.H4}
+          className="change-account-org-container--header"
+        >
+          Default Organization
+        </Heading>
+        <div className="change-account-org-container--text">
+          Select the organization you want to see when you switch to this
+          account
+        </div>
+      </FlexBox>
       <FlexBox
         direction={FlexDirection.Row}
         alignItems={AlignItems.FlexStart}
         justifyContent={JustifyContent.FlexStart}
       >
         {accounts && (
-          <DefaultDropdown
-            entityLabel={EntityLabel.SelectAccount}
-            defaultEntity={currentDefaultAccount}
-            entityList={accounts}
-            changeSelectedEntity={setNewDefaultAccount}
-          />
+          <LabeledUserData label="Account" data={newDefaultAccount.name} />
         )}
         {orgs && (
           <DefaultDropdown
-            entityLabel={EntityLabel.SetDefaultOrg}
-            defaultEntity={currentDefaultOrg}
+            entityLabel={EntityLabel.DefaultOrg}
+            defaultEntity={newDefaultOrg}
             entityList={orgs}
             changeSelectedEntity={setNewDefaultOrg}
           />
         )}
-        <Button
-          status={saveButtonStatus}
-          type={ButtonType.Submit}
-          color={saveButtonColor}
-          text="Save"
-          size={ComponentSize.Small}
-          testID="save-defaultaccountorg--button"
-          onClick={handleChangeDefaults}
-          className="change-account-org-container--button"
-        />
       </FlexBox>
-    </FlexBox>
+      <Button
+        text="Save"
+        titleText="Save the currently selected account and organization as defaults"
+        disabledTitleText="Select a new default account or organization to save your preferences."
+        status={saveButtonStatus}
+        color={saveButtonColor}
+        onClick={handleChangeDefaults}
+        size={ComponentSize.Small}
+        type={ButtonType.Submit}
+        testID="user-profile-page--save-button"
+      />
+    </>
   )
 }

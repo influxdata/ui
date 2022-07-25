@@ -5,7 +5,6 @@ import classnames from 'classnames'
 import {TypeAheadMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 type Props = {
-  defaultText?: string
   defaultSelectedItem?: TypeAheadMenuItem
   style?: React.CSSProperties
   typeAheadPlaceHolder: string
@@ -18,8 +17,6 @@ type State = {
   queryResults: TypeAheadMenuItem[]
   selectedItem: TypeAheadMenuItem
 }
-
-const isBlankStr = (str: string): boolean => str.trim().length === 0
 
 export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -67,9 +64,8 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
   }
 
   private getDisplayName = (item: TypeAheadMenuItem | null): string => {
-    const {defaultText} = this.props
     if (item && item.id) {
-      return isBlankStr(item.name) ? defaultText : item.name
+      return item.name
     }
     return ''
   }
@@ -144,11 +140,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
             }}
           </List>
         ) : (
-          <Dropdown.Item
-            key="empty-filter"
-            testID="nothing-in-filter-typeAhead"
-            disabled={true}
-          >
+          <Dropdown.Item key="empty-filter" disabled={true}>
             {searchTerm.length > 0
               ? `no matches for ${searchTerm}`
               : 'No results'}

@@ -151,11 +151,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       />
     )
     return (
-      <Dropdown.Menu
-        // testID={menuTestID}
-        theme={dropdownMenuTheme}
-        style={dropdownMenuStyle}
-      >
+      <Dropdown.Menu theme={dropdownMenuTheme} style={dropdownMenuStyle}>
         {/* Multi-org UI tickets #4051 and #4047, when user only has 1 account or 1 org, switch button is disabled */}
         {typeAheadMenuOptions.length > 1 && (
           <Dropdown.Item onClick={this.toggleShowTypeAheadMenu}>

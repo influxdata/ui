@@ -9,6 +9,7 @@ import {
 } from '@influxdata/clockface'
 
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {normalizeEventName} from 'src/cloud/utils/reporting'
 
 import {CodeTerminalIcon} from 'src/homepageExperience/components/HomepageIcons'
 
@@ -57,10 +58,17 @@ const SampleAppCard: FC<Props> = ({wizardEventName, handleNextStepEvent}) => {
       {resources.map(app => (
         <ResourceCard
           className="homepage-wizard-next-steps"
-          onClick={() => handleNextStepEvent(wizardEventName, app.title)}
           key={app.links[wizardEventName]}
         >
-          <SafeBlankLink href={app.links[wizardEventName]}>
+          <SafeBlankLink
+            href={app.links[wizardEventName]}
+            onClick={() =>
+              handleNextStepEvent(
+                wizardEventName,
+                normalizeEventName(app.title)
+              )
+            }
+          >
             <h4>
               {CodeTerminalIcon}
               {app.title}

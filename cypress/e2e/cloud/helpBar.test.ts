@@ -4,7 +4,6 @@ describe('Help bar support for free account users', () => {
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.setFeatureFlags({
-            helpBar: true,
             helpBarSfdcIntegration: true,
             uiUnificationFlag: true,
           }).then(() => {
@@ -41,7 +40,6 @@ describe('Help bar support for PAYG users', () => {
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.setFeatureFlags({
-            helpBar: true,
             helpBarSfdcIntegration: true,
             uiUnificationFlag: true,
           }).then(() => {

@@ -1,6 +1,8 @@
 // Functions calling API
 import {
   getAccount,
+  getAccountsOrgs,
+  getAccountsOrgsDefault,
   getIdentity,
   getMe as getMeQuartz,
   getOrg,
@@ -70,6 +72,7 @@ export enum NetworkErrorTypes {
   UnauthorizedError = 'UnauthorizedError',
   NotFoundError = 'NotFoundError',
   ServerError = 'ServerError',
+  UnprocessableEntity = 'UnprocessableEntity',
   GenericError = 'GenericError',
 }
 
@@ -86,6 +89,14 @@ export class NotFoundError extends Error {
   constructor(message) {
     super(message)
     this.name = 'NotFoundError'
+  }
+}
+
+// 422 error
+export class UnprocessableEntityError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'UnprocessableEntityError'
   }
 }
 
@@ -225,7 +236,9 @@ export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   return orgDetails
 }
 
-// fetch list of user's current organizations
+// Delete the following two if they are unused and unnecessary
+
+// fetch list of organizations in the user's current account
 export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
   const response = await getOrgs({})
 
@@ -240,7 +253,7 @@ export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
   return response.data
 }
 
-// change default organization for a given account
+// change the default organization for the user's current account
 export const updateDefaultQuartzOrg = async (orgId: string) => {
   const response = await putOrgsDefault({
     data: {
@@ -255,3 +268,133 @@ export const updateDefaultQuartzOrg = async (orgId: string) => {
 
   return response.data
 }
+
+// Keep these two
+// fetch list of organizations for a given account ID
+export const fetchQuartzOrgsByAccountID = async (
+  accountNum: number
+): Promise<OrganizationSummaries> => {
+  const accountId = accountNum.toString()
+
+  const response = await getAccountsOrgs({
+    accountId,
+  })
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
+}
+
+export const updateDefaultQuartzOrgByAccountID = async ({
+  accountNum,
+  orgId,
+}): Promise<void> => {
+  const accountId = accountNum.toString()
+
+  const response = await getAccountsOrgsDefault({
+    accountId,
+    data: {
+      id: orgId,
+    },
+  })
+
+  if (response.status === 404) {
+    throw new NotFoundError(response.data.message)
+  }
+
+  if (response.status === 422) {
+    throw new UnprocessableEntityError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  // success status code is 204; no data in response.body is expected.
+}
+
+// interface PutAccountsOrgsDefaultNoContentResult {
+//   status: 204
+//   headers: Headers
+//   data: any
+// }
+
+// export interface PutAccountsOrgsDefaultParams {
+//   accountId: string
+
+//   data: OrganizationDefaultRequest
+// }
+
+// export interface OrganizationDefaultRequest {
+//   id: string
+// }
+
+// export const putAccountsOrgsDefault = (
+//   params: PutAccountsOrgsDefaultParams,
+//   options: RequestOptions = {}
+// ): Promise<PutAccountsOrgsDefaultResult> =>
+//   request(
+//     'PUT',
+//     `/api/v2/quartz/accounts/${params.accountId}/orgs/default`,
+//     {...params, headers: {'Content-Type': 'application/json'}},
+//     options
+//   ) as Promise<PutAccountsOrgsDefaultResult>
+
+// export interface PutAccountsDefaultParams {
+//   data: {
+//     id: number
+//   }
+// }
+
+// type PutAccountsOrgsDefaultResult =
+//   | PutAccountsOrgsDefaultNoContentResult
+//   | PutAccountsOrgsDefaultNotFoundResult
+//   | PutAccountsOrgsDefaultUnprocessableEntityResult
+//   | PutAccountsOrgsDefaultDefaultResult
+
+// interface PutAccountsOrgsDefaultNoContentResult {
+//   status: 204
+//   headers: Headers
+//   data: any
+// }
+
+// interface PutAccountsOrgsDefaultNotFoundResult {
+//   status: 404
+//   headers: Headers
+//   data: Error
+// }
+
+// interface PutAccountsOrgsDefaultUnprocessableEntityResult {
+//   status: 422
+//   headers: Headers
+//   data: Error
+// }
+
+// interface PutAccountsOrgsDefaultDefaultResult {
+//   status: 500
+//   headers: Headers
+//   data: Error
+// }
+
+// export const putAccountsOrgsDefault = (
+//   params: PutAccountsOrgsDefaultParams,
+//   options: RequestOptions = {}
+// ): Promise<PutAccountsOrgsDefaultResult> =>
+//   request(
+//     'PUT',
+//     `/api/v2/quartz/accounts/${params.accountId}/orgs/default`,
+//     {...params, headers: {'Content-Type': 'application/json'}},
+//     options
+//   ) as Promise<PutAccountsOrgsDefaultResult>
+
+// export interface PutAccountsDefaultParams {
+//   data: {
+//     id: number
+//   }
+// }

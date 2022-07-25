@@ -41,15 +41,15 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
 
   return (
     <GlobalHeaderDropdown
-      typeAheadSelectedOption={activeOrg}
-      mainMenuOptions={orgMainMenu}
-      typeAheadMenuOptions={orgsList}
+      dropdownMenuStyle={menuStyle}
       mainMenuHeaderIcon={IconFont.Switch_New}
       mainMenuHeaderText="Switch Organization"
-      typeAheadInputPlaceholder="Search Organizations"
+      mainMenuOptions={orgMainMenu}
       style={style}
-      dropdownMenuStyle={menuStyle}
+      typeAheadInputPlaceholder="Search Organizations"
+      typeAheadMenuOptions={orgsList}
       typeAheadOnSelectOption={switchOrg}
+      typeAheadSelectedOption={activeOrg}
     />
   )
 }

@@ -8,8 +8,15 @@ const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.executeQuery.code.copied')
 }
 
-export const ExecuteQuery = () => {
-  const query = `influx query 'from(bucket:"sample-bucket") |> range(start:-10m)' --raw`
+type OwnProps = {
+  bucket: string
+}
+
+export const ExecuteQuery = (props: OwnProps) => {
+  const {bucket} = props
+  const query = `influx query 'from(bucket:"${
+    bucket === '<BUCKET>' ? 'sample-bucket' : bucket
+  }") |> range(start:-10m)' --raw`
 
   const fluxExample = `from(bucket: “weather-data”)
   |> range(start: -10m)

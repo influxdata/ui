@@ -1,6 +1,13 @@
+// Libraries
 import React from 'react'
 
+// Components
 import CodeSnippet from 'src/shared/components/CodeSnippet'
+
+// Constants
+import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
+
+// Utils
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
@@ -8,8 +15,14 @@ const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.executeQuery.code.copied')
 }
 
-export const ExecuteQuery = () => {
-  const query = `influx query 'from(bucket:"sample-bucket") |> range(start:-10m)' --raw`
+type OwnProps = {
+  bucket: string
+}
+
+export const ExecuteQuery = (props: OwnProps) => {
+  const {bucket} = props
+  const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
+  const query = `influx query 'from(bucket:"${bucketName}") |> range(start:-10m)' --raw`
 
   const fluxExample = `from(bucket: “weather-data”)
   |> range(start: -10m)
@@ -35,9 +48,9 @@ export const ExecuteQuery = () => {
         language="properties"
       ></CodeSnippet>
       <p style={{marginTop: '60px'}}>
-        Let's write a Flux query in the InfluxCLI to read back all of the data
-        you wrote in the previous step. Copy the code snippet below into the
-        InfluxCLI.
+        Let's write a Flux query in the InfluxDB CLI to read back all of the
+        data you wrote in the previous step. Copy the code snippet below into
+        the InfluxDB CLI.
       </p>
       <CodeSnippet
         text={query}

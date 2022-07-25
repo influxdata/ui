@@ -198,7 +198,7 @@ export class CliWizard extends PureComponent<{}, State> {
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
-                  testID={'cli-prev-button'}
+                  testID="cli-prev-button"
                 />
                 <Button
                   onClick={this.handleNextClick}
@@ -210,7 +210,7 @@ export class CliWizard extends PureComponent<{}, State> {
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
-                  testID={'cli-next-button'}
+                  testID="cli-next-button"
                 />
               </div>
             </div>

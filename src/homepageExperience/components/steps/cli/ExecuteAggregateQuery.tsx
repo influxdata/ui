@@ -12,13 +12,19 @@ const logDocsOpened = () => {
   event('firstMile.cliWizard.executeAggregateQuery.docs.opened')
 }
 
-export const ExecuteAggregateQuery = () => {
+type OwnProps = {
+  bucket: string
+}
+
+export const ExecuteAggregateQuery = (props: OwnProps) => {
+  const {bucket} = props
+
   const fromBucketSnippet = `from(bucket: "weather-data")
   |> range(start: -10m)
   |> filter(fn: (r) => r.measurement == "temperature")
   |> mean()`
 
-  const codeSnippet = `influx query 'from(bucket:"example-bucket") |> range(start:-10m) |> mean()' --raw`
+  const codeSnippet = `influx query 'from(bucket:"${bucket}") |> range(start:-10m) |> mean()' --raw`
 
   return (
     <>

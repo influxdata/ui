@@ -323,7 +323,7 @@ const SetOrg: FC = () => {
               component={GoWizard}
             />,
           ]}
-          {isFlagEnabled('cliOnboarding') && (
+          {isFlagEnabled('onboardCLI') && (
             <Route
               exact
               path="/orgs/:orgID/new-user-setup/cli"

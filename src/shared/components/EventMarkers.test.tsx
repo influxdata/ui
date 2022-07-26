@@ -76,14 +76,14 @@ describe('EventMarkers', () => {
 
     expect(queryByTestId(`eventMarker`)).toBeNull()
     expect(getByTestId(`event-marker-vis-icon-ok`).className).toContain(
-      /(eye-closed)/i
+      /(EyeClosed)/i
     )
 
     const okSpan = getByTestId('event-marker-vis-toggle-ok')
     fireEvent.click(okSpan)
 
     expect(getByTestId(`event-marker-vis-icon-ok`).className).toContain(
-      /(eye-open)/i
+      /(EyeOpen)/i
     )
 
     await waitFor(() => getAllByTestId(`eventMarker`))

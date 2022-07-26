@@ -3,6 +3,7 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {event} from 'src/cloud/utils/reporting'
+import {onboardingName} from 'src/homepageExperience/containers/CliWizard'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.executeAggregateQuery.code.copied')
@@ -50,7 +51,7 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
         onCopy={logCopyCodeSnippet}
         language="properties"
       />
-      <p>In the InfluxCLI, run the following:</p>
+      <p>In the {onboardingName}, run the following:</p>
       <CodeSnippet
         text={codeSnippet}
         onCopy={logCopyCodeSnippet}

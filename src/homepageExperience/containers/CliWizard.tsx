@@ -28,6 +28,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {HOMEPAGE_NAVIGATION_STEPS_CLI} from 'src/homepageExperience/utils'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
+export const onboardingName = `InfluxDB CLI`
+
 interface State {
   currentStep: number
   selectedBucket: string
@@ -163,7 +165,7 @@ export class CliWizard extends PureComponent<{}, State> {
                   onStepClick={this.handleNavClick}
                   navigationSteps={HOMEPAGE_NAVIGATION_STEPS_CLI}
                   settingUpIcon={CLIIcon}
-                  settingUpText="InfluxCLI"
+                  settingUpText={onboardingName}
                   setupTime="5 minutes"
                 />
               </div>

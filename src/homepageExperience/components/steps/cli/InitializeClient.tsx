@@ -27,6 +27,7 @@ import {
 } from '@influxdata/clockface'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
+import {onboardingName} from 'src/homepageExperience/containers/CliWizard'
 
 // Utils
 import {allAccessPermissions} from 'src/authorizations/utils/permissions'
@@ -159,8 +160,8 @@ export const InitializeClient: FC<OwnProps> = ({
         </Panel.Body>
       </Panel>
       <p className="large-margins">
-        We can also create a bucket using the InfluxCLI. We'll link the bucket
-        to the profile you created.
+        We can also create a bucket using the {onboardingName}. We'll link the
+        bucket to the profile you created.
       </p>
       <CodeSnippet
         text={bucketSnippet}

@@ -13,6 +13,7 @@ import React, {FC, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
+import {onboardingName} from 'src/homepageExperience/containers/CliWizard'
 
 export const InstallDependencies: FC = () => {
   const dispatch = useDispatch()
@@ -113,7 +114,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
               documentation.
             </SafeBlankLink>{' '}
           </p>
-          <h2 style={headingWithMargin}>Useful InfluxCLI commands</h2>
+          <h2 style={headingWithMargin}>Useful {onboardingName} commands</h2>
           <p>
             To invoke a command, use the following format in the command line:
           </p>
@@ -174,10 +175,12 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
             language="properties"
           />
           <h2 style={headingWithMargin}>Grant network access (optional)</h2>
-          <p>To grant the InfluxCLI the required access, do the following:</p>
+          <p>
+            To grant the {onboardingName} the required access, do the following:
+          </p>
           <p>1. Select Private networks, such as my home or work network </p>
           <p>2. Click Allow access</p>
-          <h2 style={headingWithMargin}>Useful InfluxCLI commands</h2>
+          <h2 style={headingWithMargin}>Useful {onboardingName} commands</h2>
           <p>
             To invoke a command, use the following format in the command line:
           </p>
@@ -255,7 +258,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
             onCopy={logCopyCodeSnippetLinux}
             language="properties"
           />
-          <h2 style={headingWithMargin}>Useful InfluxCLI commands</h2>
+          <h2 style={headingWithMargin}>Useful {onboardingName} commands</h2>
           <p>
             To invoke a command, use the following format in the command line:
           </p>

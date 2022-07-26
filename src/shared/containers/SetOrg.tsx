@@ -13,6 +13,7 @@ import {
   BucketsIndex,
   CheckHistory,
   ClientLibrariesPage,
+  CliWizard,
   DashboardContainer,
   DashboardsIndex,
   DashboardsIndexPaginated,
@@ -322,6 +323,13 @@ const SetOrg: FC = () => {
               component={GoWizard}
             />,
           ]}
+          {isFlagEnabled('onboardCLI') && (
+            <Route
+              exact
+              path="/orgs/:orgID/new-user-setup/cli"
+              component={CliWizard}
+            />
+          )}
 
           <Route component={NotFound} />
         </Switch>

@@ -33,7 +33,7 @@ const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => {
   const bulletins = allBulletins?.[currentSubscription.id] ?? []
   const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(false)
 
-  const handleShowMessages = useCallback(() => {
+  const handleShowNotifications = useCallback(() => {
     setIsOverlayVisible(true)
   }, [setIsOverlayVisible])
 
@@ -112,8 +112,8 @@ const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => {
             description={`${bulletins.length} Notification${
               bulletins.length === 1 ? '' : 's'
             }`}
-            onClick={handleShowMessages}
-            testID="subscription-messages--label"
+            onClick={handleShowNotifications}
+            testID="subscription-notifications--label"
           />
         )}
       </FlexBox>

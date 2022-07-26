@@ -113,7 +113,7 @@ describe('Subscriptions', () => {
       .should('be.visible')
     cy.getByTestID('subscription-card')
       .children()
-      .getByTestID(`subscription-messages--label 1 Message`)
+      .getByTestID(`subscription-messages--label No Notifications`)
       .should('be.visible')
     cy.getByTestID('search-widget')
       .clear()
@@ -202,7 +202,7 @@ describe('Subscriptions', () => {
       .should('be.visible')
       .click()
 
-    cy.getByTestID(`subscription-messages--label 1 Message`).should(
+    cy.getByTestID(`subscription-messages--label No Notifications`).should(
       'be.visible'
     )
     subscription = 'My Edited Subscription'

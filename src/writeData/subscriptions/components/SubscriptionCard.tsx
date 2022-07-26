@@ -141,16 +141,16 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
               bulletins.length === 1 ? '' : 's'
             }`}
             onClick={goToSubscriptionDetails}
-            testID="subscription-messages--label"
+            testID="subscription-notifications--label"
           />
         ) : (
           <Label
             id="tid"
             key="tkey"
-            name="No Messages"
+            name="No Notifications"
             color={InfluxColors.Emerald}
-            description="No Messages"
-            testID="subscription-messages--label"
+            description="No Notifications"
+            testID="subscription-notifications--label"
           />
         )}
         <>{subscription.status}</>

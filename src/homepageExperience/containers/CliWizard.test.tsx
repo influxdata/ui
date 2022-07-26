@@ -32,5 +32,17 @@ describe('Navigation', () => {
       const prevButton = screen.getByTestId('cli-prev-button')
       expect(prevButton).toHaveAttribute('disabled')
     })
+    it('can click next on the first step', async () => {
+      setup()
+      await fireEvent.click(screen.getByText('Overview'))
+      const prevButton = screen.getByTestId('cli-next-button')
+      expect(prevButton).not.toHaveAttribute('disabled')
+    })
+    it('can click previous on the last step', async () => {
+      setup()
+      await fireEvent.click(screen.getByText('Finished!'))
+      const prevButton = screen.getByTestId('cli-prev-button')
+      expect(prevButton).not.toHaveAttribute('disabled')
+    })
   })
 })

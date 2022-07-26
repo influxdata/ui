@@ -147,8 +147,6 @@ export class CliWizard extends PureComponent<{}, State> {
   }
 
   render() {
-    const {currentStep} = this.state
-
     return (
       <Page>
         <Page.Header fullWidth={false}>
@@ -194,7 +192,7 @@ export class CliWizard extends PureComponent<{}, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Tertiary}
                   status={
-                    currentStep > 1
+                    this.state.currentStep > 1
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
@@ -206,7 +204,7 @@ export class CliWizard extends PureComponent<{}, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    currentStep < 7
+                    this.state.currentStep < 7
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

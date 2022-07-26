@@ -10,6 +10,7 @@ import React, {
 // Context
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 import {EditorContext} from 'src/shared/contexts/editor'
 
@@ -23,10 +24,9 @@ import {
   ExecuteCommandInjectTagValue,
   ExecuteCommandInjectField,
 } from 'src/languageSupport/languages/flux/lsp/utils'
-import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 
 const DEBOUNCE_TIMEOUT = 500
-let timer
+let timer: ReturnType<typeof setTimeout>
 type NOOP = () => void
 const debouncer = (action: NOOP): void => {
   clearTimeout(timer)
@@ -72,10 +72,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {injectViaLsp} = useContext(EditorContext)
 
   // States
-  const [selection, setSelection] = useSessionStorage('dataExplorer.schema', {
-    bucket: null,
-    measurement: null,
-  })
+  const {selection, setSelection} = useContext(PersistanceContext)
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSelectBucket = (bucket: Bucket): void => {

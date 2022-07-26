@@ -27,7 +27,9 @@ import Schema from 'src/dataExplorer/components/Schema'
 import './FluxQueryBuilder.scss'
 
 const FluxQueryBuilder: FC = () => {
-  const {vertical, setVertical, setQuery} = useContext(PersistanceContext)
+  const {vertical, setVertical, setQuery, setSelection} = useContext(
+    PersistanceContext
+  )
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
 
@@ -36,6 +38,7 @@ const FluxQueryBuilder: FC = () => {
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
     setQuery('')
+    setSelection({bucket: null, measurement: ''})
   }, [setQuery])
 
   return (

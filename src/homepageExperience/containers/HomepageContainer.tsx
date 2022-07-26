@@ -194,9 +194,9 @@ export const HomepageContainer: FC = () => {
                       <div className="tile-icon-text-wrapper">
                         <div className="icon">{CLIIcon}</div>
                         <div>
-                          <h4>InfluxCLI</h4>
+                          <h4>InfluxDB CLI</h4>
                           <h6>
-                            Write and query data using the Influx Command Line
+                            Write and query data using the InfluxDB Command Line
                             Interface. Supports CSV and Line Protocol.
                           </h6>
                         </div>

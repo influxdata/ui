@@ -1,13 +1,6 @@
 // Libraries
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useState,
-  useMemo,
-  useContext,
-} from 'react'
-import {useDispatch} from 'react-redux'
+import React, {FC, useEffect, useState, useMemo, useContext} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 import {
   AlignItems,
   Button,
@@ -25,6 +18,7 @@ import {
 
 // Selectors and Context
 import {UserAccountContext} from 'src/accounts/context/userAccount'
+import {selectQuartzIdentity, selectQuartzOrgs} from 'src/identity/selectors'
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
@@ -51,14 +45,18 @@ import {EntityLabel} from 'src/identity/components/userprofile/DefaultDropdown'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
-import {fetchOrgsByAccountID} from 'src/identity/apis/auth'
 
 export const UserDefaults: FC = () => {
   const dispatch = useDispatch()
 
   const {userAccounts, handleSetDefaultAccount} = useContext(UserAccountContext)
+  const identity = useSelector(selectQuartzIdentity)
+  const quartzOrganizations = useSelector(selectQuartzOrgs)
+
   const accounts = userAccounts
-  const [orgs, updateOrgs] = useState([emptyOrg])
+  const orgs = quartzOrganizations.orgs
+
+  const loggedInAccount = identity.currentIdentity.account
 
   const currentDefaultAccount = useMemo(
     () =>
@@ -75,39 +73,13 @@ export const UserDefaults: FC = () => {
   )
   const [newDefaultOrg, setNewDefaultOrg] = useState(currentDefaultOrg)
 
-  // This is temp and kind of hacky
   useEffect(() => {
     setNewDefaultAccount(currentDefaultAccount)
-  }, [currentDefaultAccount])
+  }, [accounts, currentDefaultAccount])
 
   useEffect(() => {
     setNewDefaultOrg(currentDefaultOrg)
   }, [orgs, currentDefaultOrg])
-
-  useEffect(() => {
-    const fetchOrgs = async (accountId: number) => {
-      const newOrgs = await fetchOrgsByAccountID(accountId)
-      updateOrgs(newOrgs)
-    }
-
-    console.log('here is the empty account id')
-    console.log(emptyAccount.id)
-    console.log('here is the new default account id')
-    console.log(newDefaultAccount.id)
-
-    // newDefaultAccount id is the currentAccount id by default
-    // current Account id is just '0' because it's the empty account id by default
-    // is this a good design at all? should we be making states depenednt on other states instead of
-    // directly dependent on base state?
-
-    if (newDefaultAccount.id === 0) {
-      // if it's zero, dont do anything yet
-    } else if (newDefaultAccount.id === currentDefaultAccount.id) {
-      fetchOrgs(currentDefaultAccount.id)
-    } else {
-      fetchOrgs(newDefaultAccount.id)
-    }
-  }, [newDefaultAccount, currentDefaultAccount])
 
   const selectedNewAccount =
     currentDefaultAccount?.id !== newDefaultAccount?.id &&
@@ -115,6 +87,12 @@ export const UserDefaults: FC = () => {
 
   const selectedNewOrg =
     currentDefaultOrg?.id !== newDefaultOrg?.id && newDefaultOrg !== null
+  console.log('new org?')
+  console.log(selectedNewOrg)
+  console.log('currentDefaultOrg')
+  console.log(currentDefaultOrg)
+  console.log('newDefaultOrg')
+  console.log(newDefaultOrg)
 
   const saveButtonStatus =
     selectedNewAccount || selectedNewOrg
@@ -133,12 +111,8 @@ export const UserDefaults: FC = () => {
     if (selectedNewOrg) {
       try {
         dispatch(
-          updateDefaultOrgThunk({
-            accountId: newDefaultAccount.id,
-            newDefaultOrg: newDefaultOrg,
-          })
+          updateDefaultOrgThunk({accountId: loggedInAccount.id, newDefaultOrg})
         )
-
         dispatch(notify(orgDefaultSettingSuccess(newDefaultOrg.name)))
       } catch {
         dispatch(notify(orgDefaultSettingError(newDefaultOrg.name)))
@@ -196,7 +170,7 @@ export const UserDefaults: FC = () => {
         justifyContent={JustifyContent.FlexStart}
       >
         {accounts && (
-          <LabeledUserData label="Account" data={newDefaultAccount.name} />
+          <LabeledUserData label="Account" data={loggedInAccount.name} />
         )}
         {orgs && (
           <DefaultDropdown

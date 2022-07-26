@@ -24,6 +24,9 @@ describe('Subscriptions', () => {
               cy.intercept('GET', `/api/v2private/broker/subs*`).as(
                 'GetSubscriptions'
               )
+              cy.intercept('GET', '/api/v2private/broker/subs/statuses', []).as(
+                'GetStatuses'
+              )
             })
           })
         })
@@ -104,6 +107,7 @@ describe('Subscriptions', () => {
 
     // subscriptions list view
     cy.get('.subscriptions-list').should('be.visible')
+    cy.wait('@GetStatuses')
     cy.getByTestID('subscription-card')
       .should('be.visible')
       .should('have.length', 2)
@@ -113,7 +117,7 @@ describe('Subscriptions', () => {
       .should('be.visible')
     cy.getByTestID('subscription-card')
       .children()
-      .getByTestID(`subscription-messages--label No Notifications`)
+      .getByTestID(`subscription-notifications--label No Notifications`)
       .should('be.visible')
     cy.getByTestID('search-widget')
       .clear()
@@ -171,6 +175,7 @@ describe('Subscriptions', () => {
 
     // subscriptions list view
     cy.get('.subscriptions-list').should('be.visible')
+    cy.wait('@GetStatuses')
     cy.get('.cf-resource-card').should('be.visible')
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-card').contains('My Subscription')
@@ -202,7 +207,7 @@ describe('Subscriptions', () => {
       .should('be.visible')
       .click()
 
-    cy.getByTestID(`subscription-messages--label No Notifications`).should(
+    cy.getByTestID(`subscription-notifications--label No Notifications`).should(
       'be.visible'
     )
     subscription = 'My Edited Subscription'

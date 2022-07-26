@@ -2,13 +2,13 @@
 import {
   getAccount,
   getAccountsOrgs,
-  getAccountsOrgsDefault,
   getIdentity,
   getMe as getMeQuartz,
   getOrg,
   getOrgs,
   putOrgsDefault,
   putAccountsDefault,
+  putAccountsOrgsDefault,
   Account,
   Identity,
   IdentityAccount,
@@ -33,12 +33,12 @@ import {CLOUD} from 'src/shared/constants'
 // Types
 import {RemoteDataState} from 'src/types'
 
-// These are optional properties of the current account which are not retrieved from identity.
+// Additional properties of the current account, which are not retrieved from  /quartz/identity.
 export interface CurrentAccount extends IdentityAccount {
   billingProvider?: 'zuora' | 'aws' | 'gcm' | 'azure'
 }
 
-// Optional properties of the current org, which are not retrieved from identity.
+// Additional properties of the current org, which are not retrieved from /quartz/identity.
 export interface CurrentOrg {
   id: string
   clusterHost: string
@@ -164,7 +164,7 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
   return user
 }
 
-// fetch user identity from /me (used in OSS and environments without Quartz)
+// fetch user identity from IDPE /me (used in OSS and environments without Quartz)
 export const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
 
@@ -181,7 +181,7 @@ export const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   return user
 }
 
-// fetch details about user's current account
+// fetch details about one of the user's accounts
 export const fetchAccountDetails = async (
   accountId: string | number
 ): Promise<Account> => {
@@ -217,10 +217,10 @@ export const updateDefaultQuartzAccount = async (
     throw new ServerError(response.data.message)
   }
 
-  // success status code is 204; no data in response.body is expected.
+  // success status code is 204; no response body expected.
 }
 
-// fetch details about user's current organization
+// fetch details about one of the user's organizations
 export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   const response = await getOrg({orgId})
 
@@ -236,9 +236,7 @@ export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   return orgDetails
 }
 
-// Delete the following two if they are unused and unnecessary
-
-// fetch list of organizations in the user's current account
+// fetch the list of organizations in the user's currently active account
 export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
   const response = await getOrgs({})
 
@@ -253,7 +251,7 @@ export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
   return response.data
 }
 
-// change the default organization for the user's current account
+// change the default organization for the user's currently active account
 export const updateDefaultQuartzOrg = async (orgId: string) => {
   const response = await putOrgsDefault({
     data: {
@@ -269,9 +267,8 @@ export const updateDefaultQuartzOrg = async (orgId: string) => {
   return response.data
 }
 
-// Keep these two
-// fetch list of organizations for a given account ID
-export const fetchQuartzOrgsByAccountID = async (
+// fetch the list of organizations associated with a given account ID
+export const fetchOrgsByAccountID = async (
   accountNum: number
 ): Promise<OrganizationSummaries> => {
   const accountId = accountNum.toString()
@@ -291,13 +288,14 @@ export const fetchQuartzOrgsByAccountID = async (
   return response.data
 }
 
-export const updateDefaultQuartzOrgByAccountID = async ({
+// update the default org for a given account
+export const updateDefaultOrgByAccountID = async ({
   accountNum,
   orgId,
 }): Promise<void> => {
   const accountId = accountNum.toString()
 
-  const response = await getAccountsOrgsDefault({
+  const response = await putAccountsOrgsDefault({
     accountId,
     data: {
       id: orgId,
@@ -316,85 +314,5 @@ export const updateDefaultQuartzOrgByAccountID = async ({
     throw new ServerError(response.data.message)
   }
 
-  // success status code is 204; no data in response.body is expected.
+  // success status code is 204; no response body expected.
 }
-
-// interface PutAccountsOrgsDefaultNoContentResult {
-//   status: 204
-//   headers: Headers
-//   data: any
-// }
-
-// export interface PutAccountsOrgsDefaultParams {
-//   accountId: string
-
-//   data: OrganizationDefaultRequest
-// }
-
-// export interface OrganizationDefaultRequest {
-//   id: string
-// }
-
-// export const putAccountsOrgsDefault = (
-//   params: PutAccountsOrgsDefaultParams,
-//   options: RequestOptions = {}
-// ): Promise<PutAccountsOrgsDefaultResult> =>
-//   request(
-//     'PUT',
-//     `/api/v2/quartz/accounts/${params.accountId}/orgs/default`,
-//     {...params, headers: {'Content-Type': 'application/json'}},
-//     options
-//   ) as Promise<PutAccountsOrgsDefaultResult>
-
-// export interface PutAccountsDefaultParams {
-//   data: {
-//     id: number
-//   }
-// }
-
-// type PutAccountsOrgsDefaultResult =
-//   | PutAccountsOrgsDefaultNoContentResult
-//   | PutAccountsOrgsDefaultNotFoundResult
-//   | PutAccountsOrgsDefaultUnprocessableEntityResult
-//   | PutAccountsOrgsDefaultDefaultResult
-
-// interface PutAccountsOrgsDefaultNoContentResult {
-//   status: 204
-//   headers: Headers
-//   data: any
-// }
-
-// interface PutAccountsOrgsDefaultNotFoundResult {
-//   status: 404
-//   headers: Headers
-//   data: Error
-// }
-
-// interface PutAccountsOrgsDefaultUnprocessableEntityResult {
-//   status: 422
-//   headers: Headers
-//   data: Error
-// }
-
-// interface PutAccountsOrgsDefaultDefaultResult {
-//   status: 500
-//   headers: Headers
-//   data: Error
-// }
-
-// export const putAccountsOrgsDefault = (
-//   params: PutAccountsOrgsDefaultParams,
-//   options: RequestOptions = {}
-// ): Promise<PutAccountsOrgsDefaultResult> =>
-//   request(
-//     'PUT',
-//     `/api/v2/quartz/accounts/${params.accountId}/orgs/default`,
-//     {...params, headers: {'Content-Type': 'application/json'}},
-//     options
-//   ) as Promise<PutAccountsOrgsDefaultResult>
-
-// export interface PutAccountsDefaultParams {
-//   data: {
-//     id: number
-//   }
-// }

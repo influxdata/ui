@@ -1,7 +1,10 @@
 import {Dispatch} from 'react'
 
 // API
-import {fetchQuartzOrgs, updateDefaultQuartzOrg} from 'src/identity/apis/auth'
+import {
+  fetchOrgsByAccountID,
+  updateDefaultOrgByAccountID,
+} from 'src/identity/apis/auth'
 
 // Actions
 import {
@@ -19,6 +22,11 @@ import {OrganizationSummaries} from 'src/client/unityRoutes'
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
 
+interface UpdateOrgParams {
+  accountId: number
+  newDefaultOrg: DefaultOrg
+}
+
 class OrgNotFoundError extends Error {
   constructor(message) {
     super(message)
@@ -29,16 +37,18 @@ class OrgNotFoundError extends Error {
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
-export const getQuartzOrganizationsThunk = () => async (
+// Both of these thunks need to take the current account ID as an argument.
+export const getQuartzOrganizationsThunk = (accountId: number) => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
-    const quartzOrganizations = await fetchQuartzOrgs()
+    const quartzOrganizations = await fetchOrgsByAccountID(accountId)
 
     dispatch(setQuartzOrganizations(quartzOrganizations))
   } catch (err) {
+    console.log('failed to retrieve organizaitons')
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 
     reportErrorThroughHoneyBadger(err, {
@@ -48,17 +58,24 @@ export const getQuartzOrganizationsThunk = () => async (
   }
 }
 
-export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
+export const updateDefaultOrgThunk = ({
+  accountId,
+  newDefaultOrg,
+}: UpdateOrgParams) => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {
   try {
+    console.log('successfully updated default org')
+
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
 
-    await updateDefaultQuartzOrg(newDefaultOrg.id)
+    await updateDefaultOrgByAccountID({
+      accountNum: accountId,
+      orgId: newDefaultOrg.id,
+    })
 
     dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
-
     const state = getState()
     const orgStatus = state.identity.currentIdentity.status
 
@@ -75,6 +92,7 @@ export const updateDefaultOrgThunk = (newDefaultOrg: DefaultOrg) => async (
       })
     }
   } catch (err) {
+    console.log('failed to update org')
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 
     reportErrorThroughHoneyBadger(err, {

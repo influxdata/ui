@@ -45,8 +45,10 @@ export const GlobalHeader: FC = () => {
   const [activeAccount, setActiveAccount] = useState(emptyAccount)
 
   useEffect(() => {
-    dispatch(getQuartzOrganizationsThunk())
-  }, [dispatch])
+    if (activeAccount.id !== emptyAccount.id) {
+      dispatch(getQuartzOrganizationsThunk(activeAccount.id))
+    }
+  }, [dispatch, activeAccount.id])
 
   useEffect(() => {
     if (accountsList[0].id !== 0) {

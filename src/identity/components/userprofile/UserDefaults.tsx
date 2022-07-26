@@ -1,6 +1,13 @@
 // Libraries
-import React, {FC, useEffect, useState, useMemo, useContext} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  useContext,
+} from 'react'
+import {useDispatch} from 'react-redux'
 import {
   AlignItems,
   Button,
@@ -18,7 +25,6 @@ import {
 
 // Selectors and Context
 import {UserAccountContext} from 'src/accounts/context/userAccount'
-import {selectQuartzOrgs} from 'src/identity/selectors'
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
@@ -45,20 +51,14 @@ import {EntityLabel} from 'src/identity/components/userprofile/DefaultDropdown'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
+import {fetchOrgsByAccountID} from 'src/identity/apis/auth'
 
 export const UserDefaults: FC = () => {
-  // When component is first loaded, pick whichver account the user is currently logged in
-  // Then fetch a list of all of the orgs associated with that account
-
-  // Whenever you click the user menu
-
   const dispatch = useDispatch()
 
   const {userAccounts, handleSetDefaultAccount} = useContext(UserAccountContext)
-  const quartzOrganizations = useSelector(selectQuartzOrgs)
-
   const accounts = userAccounts
-  const orgs = quartzOrganizations.orgs
+  const [orgs, updateOrgs] = useState([emptyOrg])
 
   const currentDefaultAccount = useMemo(
     () =>
@@ -75,13 +75,39 @@ export const UserDefaults: FC = () => {
   )
   const [newDefaultOrg, setNewDefaultOrg] = useState(currentDefaultOrg)
 
+  // This is temp and kind of hacky
   useEffect(() => {
     setNewDefaultAccount(currentDefaultAccount)
-  }, [accounts, currentDefaultAccount])
+  }, [currentDefaultAccount])
 
   useEffect(() => {
     setNewDefaultOrg(currentDefaultOrg)
   }, [orgs, currentDefaultOrg])
+
+  useEffect(() => {
+    const fetchOrgs = async (accountId: number) => {
+      const newOrgs = await fetchOrgsByAccountID(accountId)
+      updateOrgs(newOrgs)
+    }
+
+    console.log('here is the empty account id')
+    console.log(emptyAccount.id)
+    console.log('here is the new default account id')
+    console.log(newDefaultAccount.id)
+
+    // newDefaultAccount id is the currentAccount id by default
+    // current Account id is just '0' because it's the empty account id by default
+    // is this a good design at all? should we be making states depenednt on other states instead of
+    // directly dependent on base state?
+
+    if (newDefaultAccount.id === 0) {
+      // if it's zero, dont do anything yet
+    } else if (newDefaultAccount.id === currentDefaultAccount.id) {
+      fetchOrgs(currentDefaultAccount.id)
+    } else {
+      fetchOrgs(newDefaultAccount.id)
+    }
+  }, [newDefaultAccount, currentDefaultAccount])
 
   const selectedNewAccount =
     currentDefaultAccount?.id !== newDefaultAccount?.id &&
@@ -106,7 +132,13 @@ export const UserDefaults: FC = () => {
     }
     if (selectedNewOrg) {
       try {
-        dispatch(updateDefaultOrgThunk(newDefaultOrg))
+        dispatch(
+          updateDefaultOrgThunk({
+            accountId: newDefaultAccount.id,
+            newDefaultOrg: newDefaultOrg,
+          })
+        )
+
         dispatch(notify(orgDefaultSettingSuccess(newDefaultOrg.name)))
       } catch {
         dispatch(notify(orgDefaultSettingError(newDefaultOrg.name)))

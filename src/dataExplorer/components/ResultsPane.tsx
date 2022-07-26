@@ -20,6 +20,7 @@ import {
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {QueryContext} from 'src/shared/contexts/query'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Components
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
@@ -39,8 +40,6 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
-import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
-import {useSessionStorage} from '../shared/utils'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
@@ -49,7 +48,7 @@ const FluxMonacoEditor = lazy(() =>
 const fakeNotify = notify
 
 const rangeToParam = (timeRange: TimeRange) => {
-  let timeRangeStart, timeRangeStop
+  let timeRangeStart: string, timeRangeStop: string
 
   if (!timeRange) {
     timeRangeStart = timeRangeStop = null
@@ -82,21 +81,19 @@ const rangeToParam = (timeRange: TimeRange) => {
 const ResultsPane: FC = () => {
   const {basic, query, cancel} = useContext(QueryContext)
   const {status, result, setStatus, setResult} = useContext(ResultsContext)
-
-  const [
-    horizDragPosition,
-    setHorizDragPosition,
-  ] = useSessionStorage('dataExplorer.resize.horizontal', [0.2])
-  const [text, setText] = useSessionStorage('dataExplorer.query', '')
-  const [timeRange, setTimeRange] = useSessionStorage(
-    'dataExplorer.range',
-    DEFAULT_TIME_RANGE
-  )
+  const {
+    horizontal,
+    setHorizontal,
+    query: text,
+    setQuery,
+    range,
+    setRange,
+  } = useContext(PersistanceContext)
 
   const download = () => {
     event('CSV Download Initiated')
     basic(text, {
-      vars: rangeToParam(timeRange),
+      vars: rangeToParam(range),
     }).promise.then(response => {
       if (response.type !== 'SUCCESS') {
         return
@@ -109,7 +106,7 @@ const ResultsPane: FC = () => {
   const submit = () => {
     setStatus(RemoteDataState.Loading)
     query(text, {
-      vars: rangeToParam(timeRange),
+      vars: rangeToParam(range),
     })
       .then(r => {
         event('resultReceived', {
@@ -130,8 +127,8 @@ const ResultsPane: FC = () => {
   }
 
   const timeVars = [
-    getRangeVariable(TIME_RANGE_START, timeRange),
-    getRangeVariable(TIME_RANGE_STOP, timeRange),
+    getRangeVariable(TIME_RANGE_START, range),
+    getRangeVariable(TIME_RANGE_STOP, range),
   ]
 
   const variables = timeVars.concat(
@@ -141,8 +138,8 @@ const ResultsPane: FC = () => {
   return (
     <DraggableResizer
       handleOrientation={Orientation.Horizontal}
-      handlePositions={horizDragPosition}
-      onChangePositions={setHorizDragPosition}
+      handlePositions={horizontal}
+      onChangePositions={setHorizontal}
     >
       <DraggableResizer.Panel>
         <FlexBox
@@ -164,7 +161,7 @@ const ResultsPane: FC = () => {
                 <FluxMonacoEditor
                   variables={variables}
                   script={text}
-                  onChangeScript={setText}
+                  onChangeScript={setQuery}
                 />
               </Suspense>
             </div>
@@ -193,8 +190,8 @@ const ResultsPane: FC = () => {
                 }
               />
               <TimeRangeDropdown
-                timeRange={timeRange}
-                onSetTimeRange={(range: TimeRange) => setTimeRange(range)}
+                timeRange={range}
+                onSetTimeRange={(range: TimeRange) => setRange(range)}
               />
               <SubmitQueryButton
                 className="submit-btn"

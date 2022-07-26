@@ -207,7 +207,9 @@ describe('Subscriptions', () => {
       .should('be.visible')
       .click()
 
-    cy.getByTestID(`subscription-notifications--label No Notification`).should('not.exist')
+    cy.getByTestID(`subscription-notifications--label No Notification`).should(
+      'not.exist'
+    )
     subscription = 'My Edited Subscription'
     cy.getByTestID('update-broker-form--name').should('be.visible')
     cy.getByTestID('update-broker-form--name')

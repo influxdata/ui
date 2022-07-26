@@ -6,7 +6,7 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
     glyph: IconFont.BookOutline,
   },
   {
-    name: 'Install \n Dependencies',
+    name: 'Install\nDependencies',
     glyph: IconFont.Install,
   },
   {
@@ -14,23 +14,54 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
     glyph: IconFont.CopperCoin,
   },
   {
-    name: 'Initialize \n Client',
+    name: 'Initialize\nClient',
     glyph: IconFont.FileSettings,
   },
   {
-    name: 'Write \n Data',
+    name: 'Write\nData',
     glyph: IconFont.Pencil,
   },
   {
-    name: 'Execute a \n Simple Query',
+    name: 'Execute a\nSimple Query',
     glyph: IconFont.PlayOutline,
   },
   {
-    name: 'Execute an \n Aggregate Query',
+    name: 'Execute an\nAggregate Query',
     glyph: IconFont.PlayOutline,
   },
   {
     name: 'Finish',
+    glyph: IconFont.StarSmile,
+  },
+]
+
+export const HOMEPAGE_NAVIGATION_STEPS_CLI = [
+  {
+    name: 'Overview',
+    glyph: IconFont.BookOutline,
+  },
+  {
+    name: 'Install\nDependencies',
+    glyph: IconFont.Install,
+  },
+  {
+    name: 'Initialize\nClient',
+    glyph: IconFont.FileSettings,
+  },
+  {
+    name: 'Write\nData',
+    glyph: IconFont.Pencil,
+  },
+  {
+    name: 'Execute\nFlux Query',
+    glyph: IconFont.PlayOutline,
+  },
+  {
+    name: 'Execute\nAggregate',
+    glyph: IconFont.PlayOutline,
+  },
+  {
+    name: 'Finished!',
     glyph: IconFont.StarSmile,
   },
 ]

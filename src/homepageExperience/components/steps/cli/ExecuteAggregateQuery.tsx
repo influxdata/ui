@@ -50,7 +50,7 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
         onCopy={logCopyCodeSnippet}
         language="properties"
       />
-      <p>In the InfluxCLI, run the following:</p>
+      <p>In the InfluxDB CLI, run the following:</p>
       <CodeSnippet
         text={codeSnippet}
         onCopy={logCopyCodeSnippet}

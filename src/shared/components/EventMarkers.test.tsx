@@ -83,7 +83,7 @@ describe('EventMarkers', () => {
     fireEvent.click(okSpan)
 
     expect(getByTestId(`event-marker-vis-icon-ok`).className).toContain(
-      /(eye-closed)/i
+      /(eye-open)/i
     )
 
     await waitFor(() => getAllByTestId(`eventMarker`))

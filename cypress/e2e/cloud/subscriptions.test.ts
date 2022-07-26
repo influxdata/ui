@@ -171,11 +171,11 @@ describe('Subscriptions', () => {
 
   it('should create, update, stop, start and delete LP subscription', () => {
     let subscription = 'My Subscription'
-    createBasicLPSubscription(subscription)
-
     // subscriptions list view
-    cy.get('.subscriptions-list').should('be.visible')
+    createBasicLPSubscription(subscription)
     cy.wait('@GetStatuses')
+
+    cy.get('.subscriptions-list').should('be.visible')
     cy.get('.cf-resource-card').should('be.visible')
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-card').contains('My Subscription')
@@ -207,9 +207,7 @@ describe('Subscriptions', () => {
       .should('be.visible')
       .click()
 
-    cy.getByTestID(`subscription-notifications--label No Notifications`).should(
-      'be.visible'
-    )
+    cy.getByTestID(`subscription-notifications--label No Notification`).should('not.exist')
     subscription = 'My Edited Subscription'
     cy.getByTestID('update-broker-form--name').should('be.visible')
     cy.getByTestID('update-broker-form--name')

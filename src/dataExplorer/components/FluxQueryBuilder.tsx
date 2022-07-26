@@ -39,7 +39,7 @@ const FluxQueryBuilder: FC = () => {
     setResult(null)
     setQuery('')
     setSelection({bucket: null, measurement: ''})
-  }, [setQuery])
+  }, [setQuery, setStatus, setResult, setSelection, cancel])
 
   return (
     <EditorProvider>

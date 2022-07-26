@@ -30,7 +30,7 @@ const DEFAULT_CONTEXT = {
   query: '',
   selection: {
     bucket: null,
-    measurement: null,
+    measurement: '',
   },
 
   setHorizontal: (_: number[]) => {},

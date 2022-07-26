@@ -4,7 +4,6 @@ describe('Help bar support for free account users', () => {
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.setFeatureFlags({
-            helpBarSfdcIntegration: true,
             uiUnificationFlag: true,
           }).then(() => {
             cy.quartzProvision({

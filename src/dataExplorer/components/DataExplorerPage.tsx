@@ -81,7 +81,13 @@ const DataExplorerPage: FC = () => {
         />
       </Switch>
       <GetResources resources={[ResourceType.Variables]}>
-        <Page.Header fullWidth={true} testID="data-explorer--header">
+        <Page.Header
+          fullWidth={true}
+          className={`${
+            fluxQueryBuilder ? 'flux-query-builder' : 'data-explorer'
+          }--header`}
+          testID="data-explorer--header"
+        >
           <Page.Title title="Data Explorer" />
           <FlexBox margin={ComponentSize.Large}>
             <FeatureFlag name="newDataExplorer">

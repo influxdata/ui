@@ -200,7 +200,7 @@ const TreeSidebar: FC<ReduxProps> = ({
                 />
               )}
             />
-            {CLOUD && isFlagEnabled('helpBarSfdcIntegration') && (
+            {CLOUD && (
               <TreeNav.SubItem
                 id="contactSupport"
                 label="Contact Support"

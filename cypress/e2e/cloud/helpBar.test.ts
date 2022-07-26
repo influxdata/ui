@@ -3,10 +3,7 @@ describe('Help bar support for free account users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(() => {
-          cy.setFeatureFlags({
-            helpBarSfdcIntegration: true,
-            uiUnificationFlag: true,
-          }).then(() => {
+          cy.then(() => {
             cy.quartzProvision({
               accountType: 'free',
             }).then(() => {
@@ -40,7 +37,6 @@ describe('Help bar support for PAYG users', () => {
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.setFeatureFlags({
-            helpBarSfdcIntegration: true,
             uiUnificationFlag: true,
           }).then(() => {
             cy.quartzProvision({

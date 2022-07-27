@@ -13,6 +13,7 @@ let getBrokerSubsStatus = null
 let GetBrokerSubsStatusParams = null
 let putBrokerSubsStatus = null
 let PutBrokerSubsStatusParams = null
+let getBrokerSubsStatuses = null
 
 if (CLOUD) {
   getBrokerSub = require('src/client/subscriptionsRoutes').getBrokerSub
@@ -36,6 +37,8 @@ if (CLOUD) {
     .putBrokerSubsStatus
   PutBrokerSubsStatusParams = require('src/client/subscriptionsRoutes')
     .PutBrokerSubsStatusParams
+  getBrokerSubsStatuses = require('src/client/subscriptionsRoutes')
+    .getBrokerSubsStatuses
 }
 
 export const createAPI = async (subscription: typeof PostBrokerSubParams) => {
@@ -91,5 +94,14 @@ export const updateStatusAPI = async (
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
+  return res.data
+}
+
+export const getAllStatuses = async () => {
+  const res = await getBrokerSubsStatuses()
+  if (res.status !== 200) {
+    throw new Error(res.data.message)
+  }
+
   return res.data
 }

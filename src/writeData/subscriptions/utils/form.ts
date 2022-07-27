@@ -8,6 +8,7 @@ import {
 } from 'src/types/subscriptions'
 import jsonpath from 'jsonpath'
 import {IconFont} from '@influxdata/clockface'
+import {Bulletin} from '../context/subscription.list'
 
 export const DEFAULT_COMPLETED_STEPS = {
   [Steps.BrokerForm]: false,
@@ -337,4 +338,77 @@ export const getFormStatus = (active: Steps, form: Subscription) => {
         : 'false',
     dataFormat: form.dataFormat ?? 'not chosen yet',
   } as StepsStatus
+}
+
+const sanitizeBulletin = (bulletin: string) => {
+  const pattern = '\\[id=([0-9a-z].*)\\] .*?: (.*)'
+  const regexObj = new RegExp(pattern, 'i')
+  const matched = bulletin.match(regexObj)
+
+  if (!!matched?.length) {
+    bulletin = matched[2]
+  }
+
+  return bulletin
+}
+
+export const getBulletinsFromStatus = status => {
+  if (!status?.processors?.length) {
+    return []
+  }
+
+  const uniqueBulletins = status.processors
+    .filter(pb => !!pb.bulletins.length)
+    .map(pb => pb.bulletins)
+    .flat()
+    .map(pb => {
+      const message = sanitizeBulletin(pb.bulletin.message)
+      const timestamp = parseDate(pb.bulletin.timestamp)
+
+      return {
+        timestamp,
+        message,
+      }
+    })
+    .reduce((prev, curr) => {
+      const existing = prev?.[curr.message] ?? 0
+      prev[curr.message] = existing < curr.timestamp ? curr.timestamp : existing
+      return prev
+    }, {})
+  return Object.keys(uniqueBulletins).map(b => {
+    return {
+      message: b,
+      timestamp: uniqueBulletins[b],
+    } as Bulletin
+  })
+}
+
+const parseDate = (timeString: string) => {
+  const months = [
+    'JAN',
+    'FEB',
+    'MAR',
+    'APR',
+    'MAY',
+    'JUN',
+    'JUL',
+    'AUG',
+    'SEP',
+    'OCT',
+    'NOV',
+    'DEC',
+  ]
+  const date = new Date()
+  const parsed = new Date(
+    Date.parse(
+      `${date.getDate()} ${
+        months[date.getMonth()]
+      } ${date.getFullYear()} ${timeString}`
+    )
+  )
+  if (parsed > date) {
+    parsed.setDate(parsed.getDate() - 1)
+  }
+
+  return parsed.getTime()
 }

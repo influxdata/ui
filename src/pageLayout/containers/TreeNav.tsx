@@ -19,6 +19,7 @@ import {getNavItemActivation} from 'src/pageLayout/utils'
 import {getOrg} from 'src/organizations/selectors'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Types
@@ -240,6 +241,22 @@ const TreeSidebar: FC<ReduxProps> = ({
                 />
               )}
             />
+            {CLOUD && isFlagEnabled('requestPoc') && (
+              <>
+                <TreeNav.SubHeading label="Useful Links" />
+                <TreeNav.SubItem
+                  id="requestpoc"
+                  label="Request Proof of Concept"
+                  testID="nav-subitem-request-poc"
+                  linkElement={() => (
+                    <SafeBlankLink
+                      href="https://www.influxdata.com/proof-of-concept/"
+                      onClick={() => handleEventing('requestPOC')}
+                    />
+                  )}
+                />
+              </>
+            )}
           </TreeNav.SubMenu>
         </TreeNav.Item>
       </TreeNav>

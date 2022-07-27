@@ -9,17 +9,10 @@ import {
   BorderType,
 } from '@influxdata/clockface'
 
-import React, {FC, useEffect, useState} from 'react'
-import {useDispatch} from 'react-redux'
-import {getBuckets} from 'src/buckets/actions/thunks'
+import React, {FC, useState} from 'react'
 import {event} from 'src/cloud/utils/reporting'
 
 export const InstallDependencies: FC = () => {
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getBuckets())
-  }, [])
 
   const headingWithMargin = {marginTop: '48px', marginBottom: '0px'}
 

@@ -37,7 +37,7 @@ export const WriteDataComponent = (props: OwnProps) => {
 
   useEffect(() => {
     dispatch(getBuckets())
-  }, [])
+  }, [dispatch])
 
   const {bucket} = useContext(WriteDataDetailsContext)
 
@@ -46,7 +46,7 @@ export const WriteDataComponent = (props: OwnProps) => {
   useEffect(() => {
     setSelectedBucket(bucket)
     onSelectBucket(bucket.name)
-  }, [bucket])
+  }, [bucket, onSelectBucket])
 
   const codeSnippet = `let org = \`${org.name}\`
 let bucket = \`${bucket.name}\`

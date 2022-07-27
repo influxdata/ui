@@ -23,7 +23,7 @@ export const Overview: FC<Props> = ({wizard}) => {
       }
     }
     window.addEventListener('blur', checkVidClick)
-  }, [])
+  }, [wizard])
 
   return (
     <div>

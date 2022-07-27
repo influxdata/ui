@@ -12,7 +12,6 @@ describe('Deep linking', () => {
   // so you'll probably need to follow-up with the docs and/or marketing teams.
   it('should be redirected to the approprate page from a shortened link', () => {
     cy.get('@org').then((org: Organization) => {
-      cy.wait(1000)
       cy.visit('/me/about')
       cy.location('pathname').should('eq', `/orgs/${org.id}/about`)
 

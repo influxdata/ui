@@ -12,8 +12,10 @@ import produce from 'immer'
 
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
+
 export const initialState = {
   orgs: [emptyOrg] as OrganizationSummaries,
+  status: RemoteDataState.NotStarted,
 } as QuartzOrganizations
 
 export default (state = initialState, action: Actions): QuartzOrganizations =>
@@ -32,11 +34,15 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
       }
 
       case SET_QUARTZ_DEFAULT_ORG: {
-        // No existing default org is acceptable; oldDefaultOrg may be undefined.
         const oldDefaultOrg = draftState.orgs.find(
           org => org.isDefault === true
         )
-        const oldDefaultOrgId = oldDefaultOrg?.id
+        if (oldDefaultOrg === undefined) {
+          draftState.status = RemoteDataState.Error
+          return
+        }
+
+        const oldDefaultOrgId = oldDefaultOrg.id
         const {newDefaultOrgId} = action
 
         if (oldDefaultOrgId === newDefaultOrgId) {

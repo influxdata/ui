@@ -70,6 +70,9 @@ describe('Deep linking', () => {
       cy.visit('/me/secrets')
       cy.location('pathname').should('eq', `/orgs/${org.id}/settings/secrets`)
 
+      cy.visit('/me/setup-cli')
+      cy.location('pathname').should('eq', `/orgs/${org.id}/new-user-setup/cli`)
+
       cy.visit('/me/setup-golang')
       cy.location('pathname').should(
         'eq',

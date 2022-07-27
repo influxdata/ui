@@ -15,12 +15,12 @@
   color: #88889b;
   font-size: $cf-text-base-0;
   margin-top: $cf-space-2xs;
-  margin-bottom: $cf-space-2xs;
+  margin-bottom: $cf-space-xs;
 }
 
 .change-account-org-container--header {
   font-size: $cf-text-base-2;
-  margin-top: $cf-space-s;
+  margin-top: $cf-space-l;
 }
 
 .change-account-org-dropdown--container {
@@ -36,13 +36,13 @@
 }
 
 .change-account-org--typeahead {
-  width: 300px !important;
+  width: 368px !important;
   margin-top: 0px;
 }
 
 // User Data Component
 .user-data-field--container {
-  width: 300px !important;
+  width: 368px !important;
   margin-right: 35px;
   margin-bottom: $cf-space-s;
 }
@@ -54,7 +54,7 @@
 }
 
 .user-data-field--default-account-org {
-  width: 300px;
+  width: 368px;
   border: 2px solid #333346;
   font-size: $cf-text-base-0;
   border-radius: 2px;
@@ -64,4 +64,8 @@
 
 .user-profile-page--save-button {
   margin-top: $cf-space-l;
+}
+
+.user-profile-page--form-element {
+  width: 400px;
 }

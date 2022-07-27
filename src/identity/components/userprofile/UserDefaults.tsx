@@ -4,35 +4,29 @@ import {useSelector, useDispatch} from 'react-redux'
 import {
   AlignItems,
   Button,
+  ButtonType,
   ComponentColor,
   ComponentSize,
   ComponentStatus,
   FlexBox,
   FlexDirection,
   FontWeight,
+  Form,
   JustifyContent,
   Heading,
   HeadingElement,
-  ButtonType,
 } from '@influxdata/clockface'
 
 // Selectors and Context
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {selectQuartzIdentity, selectQuartzOrgs} from 'src/identity/selectors'
 
-// Notifications
-import {notify} from 'src/shared/actions/notifications'
-import {
-  orgDefaultSettingError,
-  orgDefaultSettingSuccess,
-} from 'src/shared/copy/notifications'
-
 // Thunks
 import {updateDefaultOrgThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Components
 import {DefaultDropdown} from 'src/identity/components/userprofile/DefaultDropdown'
-import LabeledUserData from 'src/identity/components/userprofile/LabeledUserData'
+import {UserProfileInput} from 'src/identity/components/userprofile/UserProfileInput'
 
 // Constants
 import {
@@ -54,74 +48,58 @@ export const UserDefaults: FC = () => {
   const quartzOrganizations = useSelector(selectQuartzOrgs)
 
   const accounts = userAccounts
-  const orgs = quartzOrganizations.orgs
-
   const loggedInAccount = identity.currentIdentity.account
 
-  const currentDefaultAccount = useMemo(
+  const orgs = quartzOrganizations.orgs
+
+  const defaultAccount = useMemo(
     () =>
       accounts ? accounts.find(el => el.isDefault === true) : emptyAccount,
     [accounts]
   )
-  const currentDefaultOrg = useMemo(
+  const defaultOrg = useMemo(
     () => (orgs ? orgs.find(el => el.isDefault === true) : emptyOrg),
     [orgs]
   )
 
-  const [newDefaultAccount, setNewDefaultAccount] = useState(
-    currentDefaultAccount
-  )
-  const [newDefaultOrg, setNewDefaultOrg] = useState(currentDefaultOrg)
+  const [selectedAccount, setSelectedAccount] = useState(defaultAccount)
+  const [selectedOrg, setSelectedOrg] = useState(defaultOrg)
 
   useEffect(() => {
-    setNewDefaultAccount(currentDefaultAccount)
-  }, [accounts, currentDefaultAccount])
+    setSelectedAccount(defaultAccount)
+  }, [accounts, defaultAccount])
 
   useEffect(() => {
-    setNewDefaultOrg(currentDefaultOrg)
-  }, [orgs, currentDefaultOrg])
+    setSelectedOrg(defaultOrg)
+  }, [orgs, defaultOrg])
 
   const selectedNewAccount =
-    currentDefaultAccount?.id !== newDefaultAccount?.id &&
-    newDefaultAccount !== null
+    defaultAccount?.id !== selectedAccount?.id && selectedAccount !== null
 
   const selectedNewOrg =
-    currentDefaultOrg?.id !== newDefaultOrg?.id && newDefaultOrg !== null
-  console.log('new org?')
-  console.log(selectedNewOrg)
-  console.log('currentDefaultOrg')
-  console.log(currentDefaultOrg)
-  console.log('newDefaultOrg')
-  console.log(newDefaultOrg)
+    defaultOrg?.id !== selectedOrg?.id && selectedOrg !== null
 
   const saveButtonStatus =
     selectedNewAccount || selectedNewOrg
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
-  const saveButtonColor =
-    selectedNewAccount || selectedNewOrg
-      ? ComponentColor.Primary
-      : ComponentColor.Secondary
-
   const handleChangeDefaults = () => {
     if (selectedNewAccount) {
-      handleSetDefaultAccount(newDefaultAccount.id)
+      handleSetDefaultAccount(selectedAccount.id)
     }
     if (selectedNewOrg) {
-      try {
-        dispatch(
-          updateDefaultOrgThunk({accountId: loggedInAccount.id, newDefaultOrg})
-        )
-        dispatch(notify(orgDefaultSettingSuccess(newDefaultOrg.name)))
-      } catch {
-        dispatch(notify(orgDefaultSettingError(newDefaultOrg.name)))
-      }
+      dispatch(
+        updateDefaultOrgThunk({
+          accountId: loggedInAccount.id,
+          newDefaultOrg: selectedOrg,
+        })
+      )
     }
   }
 
   return (
-    <>
+    <Form>
       <FlexBox
         direction={FlexDirection.Column}
         alignItems={AlignItems.FlexStart}
@@ -140,13 +118,13 @@ export const UserDefaults: FC = () => {
         {accounts && (
           <DefaultDropdown
             entityLabel={EntityLabel.DefaultAccount}
-            defaultEntity={newDefaultAccount}
+            defaultEntity={selectedAccount}
             entityList={accounts}
-            changeSelectedEntity={setNewDefaultAccount}
+            changeSelectedEntity={setSelectedAccount}
           />
         )}
       </FlexBox>
-      <br />
+
       <FlexBox
         direction={FlexDirection.Column}
         alignItems={AlignItems.FlexStart}
@@ -164,38 +142,40 @@ export const UserDefaults: FC = () => {
           your current account
         </div>
       </FlexBox>
+
       <FlexBox
         direction={FlexDirection.Row}
         alignItems={AlignItems.FlexStart}
         justifyContent={JustifyContent.FlexStart}
       >
         {accounts && (
-          <LabeledUserData
-            label="Current Account"
-            data={loggedInAccount.name}
+          <UserProfileInput
+            status={ComponentStatus.Disabled}
+            header="Account"
+            text={loggedInAccount.name}
           />
         )}
         {orgs && (
           <DefaultDropdown
             entityLabel={EntityLabel.DefaultOrg}
-            defaultEntity={newDefaultOrg}
+            defaultEntity={selectedOrg}
             entityList={orgs}
-            changeSelectedEntity={setNewDefaultOrg}
+            changeSelectedEntity={setSelectedOrg}
           />
         )}
       </FlexBox>
+
       <Button
         text="Save Changes"
         titleText="Save the currently selected account and organization as defaults"
         disabledTitleText="Select a new default account or organization to save your preferences."
         status={saveButtonStatus}
-        color={saveButtonColor}
+        color={ComponentColor.Primary}
         onClick={handleChangeDefaults}
         size={ComponentSize.Small}
         type={ButtonType.Submit}
         className="user-profile-page--save-button"
-        testID="user-profile-page--save"
       />
-    </>
+    </Form>
   )
 }

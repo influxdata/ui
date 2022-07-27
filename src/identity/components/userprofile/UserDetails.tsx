@@ -3,31 +3,30 @@ import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
 import {
   AlignItems,
+  ComponentStatus,
   Heading,
   HeadingElement,
   InfluxColors,
   FlexBox,
   FlexDirection,
   FontWeight,
+  Form,
   FormDivider,
   JustifyContent,
 } from '@influxdata/clockface'
 
-// Components
-import LabeledUserData from 'src/identity/components/userprofile/LabeledUserData'
-
 // Selectors
 import {selectQuartzIdentity} from 'src/identity/selectors/index'
+
+// Components
+import {UserProfileInput} from 'src/identity/components/userprofile/UserProfileInput'
 
 export const UserDetails: FC = () => {
   const identity = useSelector(selectQuartzIdentity)
   const user = identity.currentIdentity.user
+
   return (
-    <FlexBox
-      direction={FlexDirection.Column}
-      className="user-details-container--main"
-      alignItems={AlignItems.FlexStart}
-    >
+    <FlexBox direction={FlexDirection.Column} alignItems={AlignItems.FlexStart}>
       <Heading
         weight={FontWeight.Bold}
         element={HeadingElement.H4}
@@ -36,23 +35,34 @@ export const UserDetails: FC = () => {
         User Details
       </Heading>
 
-      <LabeledUserData
-        label="Email"
-        data={user.email}
-        headingColor={InfluxColors.White}
-        textColor={InfluxColors.Grey65}
-      />
+      <Form>
+        <UserProfileInput
+          status={ComponentStatus.Disabled}
+          header="Email"
+          text={user.email}
+        />
+        <FlexBox
+          direction={FlexDirection.Row}
+          alignItems={AlignItems.FlexStart}
+          justifyContent={JustifyContent.FlexStart}
+        >
+          <UserProfileInput
+            status={ComponentStatus.Disabled}
+            header="First name"
+            text={user.firstName}
+          />
+          <UserProfileInput
+            status={ComponentStatus.Disabled}
+            header="Last name"
+            text={user.lastName}
+          />
+        </FlexBox>
+      </Form>
 
-      <FlexBox
-        direction={FlexDirection.Row}
-        className="user-details-container--username"
-        alignItems={AlignItems.FlexStart}
-        justifyContent={JustifyContent.FlexStart}
-      >
-        <LabeledUserData label="First name" data={user.firstName} />
-        <LabeledUserData label="Last name" data={user.lastName} />
-      </FlexBox>
-      <FormDivider lineColor={InfluxColors.Grey15} style={{width: '700px'}} />
+      <FormDivider
+        lineColor={InfluxColors.Grey15}
+        style={{width: '700px', marginBottom: '0px'}}
+      />
     </FlexBox>
   )
 }

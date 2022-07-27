@@ -14,6 +14,13 @@ import {
   setQuartzOrganizationsStatus,
 } from 'src/identity/quartzOrganizations/actions/creators'
 import {PublishNotificationAction} from 'src/shared/actions/notifications'
+import {notify} from 'src/shared/actions/notifications'
+
+// Notifications
+import {
+  orgDefaultSettingError,
+  orgDefaultSettingSuccess,
+} from 'src/shared/copy/notifications'
 
 // Types
 import {GetState, RemoteDataState} from 'src/types'
@@ -37,7 +44,6 @@ class OrgNotFoundError extends Error {
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
-// Both of these thunks need to take the current account ID as an argument.
 export const getQuartzOrganizationsThunk = (accountId: number) => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
@@ -48,7 +54,6 @@ export const getQuartzOrganizationsThunk = (accountId: number) => async (
 
     dispatch(setQuartzOrganizations(quartzOrganizations))
   } catch (err) {
-    console.log('failed to retrieve organizaitons')
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 
     reportErrorThroughHoneyBadger(err, {
@@ -66,8 +71,6 @@ export const updateDefaultOrgThunk = ({
   getState: GetState
 ) => {
   try {
-    console.log('successfully updated default org')
-
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
 
     await updateDefaultOrgByAccountID({
@@ -76,6 +79,7 @@ export const updateDefaultOrgThunk = ({
     })
 
     dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
+
     const state = getState()
     const orgStatus = state.identity.currentIdentity.status
 
@@ -90,14 +94,19 @@ export const updateDefaultOrgThunk = ({
           state: getState(),
         },
       })
+
+      dispatch(notify(orgDefaultSettingError(newDefaultOrg.name)))
+    } else {
+      dispatch(notify(orgDefaultSettingSuccess(newDefaultOrg.name)))
     }
   } catch (err) {
-    console.log('failed to update org')
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
 
     reportErrorThroughHoneyBadger(err, {
       name: 'Failed to update /quartz/orgs/default',
       context: {state: getState()},
     })
+
+    dispatch(notify(orgDefaultSettingError(newDefaultOrg.name)))
   }
 }

@@ -1,24 +1,29 @@
 package example
 
 import akka.actor.ActorSystem
-import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.{Keep, Sink, Source}
+import com.influxdb.annotations.{Column, Measurement}
+import com.influxdb.client.domain.WritePrecision
 import com.influxdb.client.scala.InfluxDBClientScalaFactory
 import com.influxdb.query.FluxRecord
+import com.influxdb.client.write.Point
 
+import java.time.Instant
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 object InfluxDB2ScalaExample {
 
-  implicit val system: ActorSystem = ActorSystem("it-tests")
+  implicit val system: ActorSystem = ActorSystem("examples")
 
   def main(args: Array[String]): Unit = {
 
     // You can generate an API token from the "API Tokens Tab" in the UI
     val token = sys.env.get("INFLUX_TOKEN")
     val org = "<%= org %>"
+    val bucket = "<%= bucket %>"
 
-    val client = InfluxDBClientScalaFactory.create("<%= server %>", token.toCharArray, org)
+    val client = InfluxDBClientScalaFactory.create("<%= server %>", token.get.toCharArray, org, bucket)
   }
 }
 

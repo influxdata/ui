@@ -104,7 +104,7 @@ export const InitializeClient: FC<OwnProps> = ({
       dispatch(createAuthorization(authorization))
       event(`firstMile.${wizardEventName}.tokens.tokenCreated`)
     }
-  }, [sortedPermissionTypes.length, tokenValue])  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [sortedPermissionTypes.length, tokenValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // when token generated, save it to the parent component
   useEffect(() => {

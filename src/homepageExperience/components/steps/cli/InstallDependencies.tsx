@@ -13,7 +13,6 @@ import React, {FC, useState} from 'react'
 import {event} from 'src/cloud/utils/reporting'
 
 export const InstallDependencies: FC = () => {
-
   const headingWithMargin = {marginTop: '48px', marginBottom: '0px'}
 
   const logCopyCodeSnippetMac = () => {

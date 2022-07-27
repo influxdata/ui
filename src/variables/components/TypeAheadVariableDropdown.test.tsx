@@ -106,9 +106,7 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
       setInitialState
     )
 
-    const filterInput = getByTestId(
-      'dropdown-input-typeAhead--typeAhead'
-    )
+    const filterInput = getByTestId('dropdown-input-typeAhead--typeAhead')
 
     const checkDropdown = (filterText, expectedList) => {
       fireEvent.change(filterInput, {target: {value: filterText}})

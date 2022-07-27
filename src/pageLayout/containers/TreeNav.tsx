@@ -245,7 +245,7 @@ const TreeSidebar: FC<ReduxProps> = ({
               <>
                 <TreeNav.SubHeading label="Useful Links" />
                 <TreeNav.SubItem
-                  id="requestpoc"
+                  id="request-poc"
                   label="Request Proof of Concept"
                   testID="nav-subitem-request-poc"
                   linkElement={() => (

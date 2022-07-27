@@ -10,12 +10,12 @@ import {renderWithRedux} from 'src/mockState'
 import {AppState, RemoteDataState} from 'src/types'
 
 const values = {
+  always: 'always',
   def: 'defbuck',
   def2: 'defbuck2',
   foo: 'foobuck',
   goo: 'goobuck',
   new: 'newBuck',
-  always: 'always',
   really: 'reallyYes',
   REALLy2: 'anotherReally',
 }
@@ -92,7 +92,7 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
 
       const dropdownButton = getByTestId('variable-dropdown--button')
       fireEvent.click(dropdownButton)
-      const dropdownItems = getAllByTestId('variable-dropdown--item').map(
+      const dropdownItems = getAllByTestId(/type-ahead-dropdown--item-*/).map(
         node => node.id
       )
 
@@ -107,12 +107,12 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
     )
 
     const filterInput = getByTestId(
-      'variable-dropdown-input-typeAhead--map_buckets'
+      'dropdown-input-typeAhead--typeAhead'
     )
 
     const checkDropdown = (filterText, expectedList) => {
       fireEvent.change(filterInput, {target: {value: filterText}})
-      const dropdownItems = getAllByTestId('variable-dropdown--item').map(
+      const dropdownItems = getAllByTestId(/type-ahead-dropdown--item-*/).map(
         node => node.id
       )
       expect(dropdownItems).toEqual(Object.keys(expectedList))

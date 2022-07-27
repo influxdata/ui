@@ -71,7 +71,7 @@ const setInitialState = (state: AppState): AppState => {
             values: {
               '03cbdc8a53a63000': {
                 values,
-                selected: ['defbuck'],
+                selected: [''],
               },
             },
             order: ['03cbdc8a53a63000'],

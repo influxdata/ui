@@ -5,6 +5,7 @@ import {
   AlignItems,
   Heading,
   HeadingElement,
+  InfluxColors,
   FlexBox,
   FlexDirection,
   FontWeight,
@@ -34,7 +35,12 @@ export const UserDetails: FC = () => {
         User Details
       </Heading>
 
-      <LabeledUserData label="Email" data={user.email} />
+      <LabeledUserData
+        label="Email"
+        data={user.email}
+        headingColor={InfluxColors.White}
+        textColor={InfluxColors.Grey65}
+      />
 
       <FlexBox
         direction={FlexDirection.Row}

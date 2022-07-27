@@ -3,6 +3,7 @@
 .user-details-container--header {
   font-size: $cf-text-base-2;
   margin-bottom: $cf-space-s;
+  color: white;
 }
 
 .change-account-org-container--button {
@@ -51,7 +52,7 @@
   margin-bottom: $cf-space-3xs !important;
 }
 
-.user-data-field--data {
+.user-data-field--default-account-org {
   width: 300px;
   border: 2px solid #333346;
   font-size: $cf-text-base-0;

@@ -9,6 +9,7 @@ import {
   FlexBox,
   FlexDirection,
   FontWeight,
+  FormDivider,
   JustifyContent,
 } from '@influxdata/clockface'
 
@@ -51,6 +52,7 @@ export const UserDetails: FC = () => {
         <LabeledUserData label="First name" data={user.firstName} />
         <LabeledUserData label="Last name" data={user.lastName} />
       </FlexBox>
+      <FormDivider lineColor={InfluxColors.Grey15} style={{width: '700px'}} />
     </FlexBox>
   )
 }

@@ -135,7 +135,7 @@ export const UserDefaults: FC = () => {
           Default Account
         </Heading>
         <div className="change-account-org-container--text">
-          Select the account you want to see when you first log in
+          Select the account you want to see by default when you first log in
         </div>
         {accounts && (
           <DefaultDropdown
@@ -160,8 +160,8 @@ export const UserDefaults: FC = () => {
           Default Organization
         </Heading>
         <div className="change-account-org-container--text">
-          Select the organization you want to see when you switch to this
-          account
+          Select the organization you want to see by default when logging into
+          your current account
         </div>
       </FlexBox>
       <FlexBox
@@ -170,7 +170,10 @@ export const UserDefaults: FC = () => {
         justifyContent={JustifyContent.FlexStart}
       >
         {accounts && (
-          <LabeledUserData label="Account" data={loggedInAccount.name} />
+          <LabeledUserData
+            label="Current Account"
+            data={loggedInAccount.name}
+          />
         )}
         {orgs && (
           <DefaultDropdown
@@ -182,7 +185,7 @@ export const UserDefaults: FC = () => {
         )}
       </FlexBox>
       <Button
-        text="Save"
+        text="Save Changes"
         titleText="Save the currently selected account and organization as defaults"
         disabledTitleText="Select a new default account or organization to save your preferences."
         status={saveButtonStatus}
@@ -190,7 +193,8 @@ export const UserDefaults: FC = () => {
         onClick={handleChangeDefaults}
         size={ComponentSize.Small}
         type={ButtonType.Submit}
-        testID="user-profile-page--save-button"
+        className="user-profile-page--save-button"
+        testID="user-profile-page--save"
       />
     </>
   )

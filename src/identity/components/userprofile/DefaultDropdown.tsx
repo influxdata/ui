@@ -56,7 +56,7 @@ export const DefaultDropdown: FC<Props> = ({
         typeAheadInputPlaceholder={`Search ${entityLabel}s ...`}
         typeAheadSelectedOption={defaultEntity}
         typeAheadOnSelectOption={changeSelectedEntity}
-        style={{width: '250px'}}
+        style={{width: '250px', backgroundColor: '#232533'}}
       />
     </FlexBox>
   )

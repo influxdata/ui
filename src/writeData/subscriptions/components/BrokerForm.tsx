@@ -168,6 +168,17 @@ const BrokerForm: FC<Props> = ({
                 ? 'Upgrade Now to create a new connection to collect data from an MQTT broker and parse messages into metrics.'
                 : 'Create a new connection to collect data from an MQTT broker and parse messages into metrics.'}
             </Heading>
+            <p className="create-broker-form__text">
+              See our{' '}
+              <a
+                href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=JSON#set-up-a-native-subscription"
+                target="_blank"
+                rel="noreferrer"
+              >
+                native subscription documentation
+              </a>{' '}
+              for help getting started.
+            </p>
             <Heading
               element={HeadingElement.H3}
               weight={FontWeight.Bold}

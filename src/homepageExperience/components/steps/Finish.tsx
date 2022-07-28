@@ -129,11 +129,26 @@ export const Finish = (props: OwnProps) => {
               InfluxDB.
             </p>
           </ResourceCard>
+          {props.wizardEventName === 'cliWizard' && (
+            <ResourceCard className="homepage-wizard-next-steps">
+              <SafeBlankLink
+                href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/"
+                onClick={() =>
+                  handleNextStepEvent(props.wizardEventName, 'cliCommands')
+                }
+              >
+                <h4>{BookIcon}CLI Commands</h4>
+              </SafeBlankLink>
+              <p>See the full list of CLI commands and how to use them.</p>
+            </ResourceCard>
+          )}
         </FlexBox>
-        <SampleAppCard
-          handleNextStepEvent={handleNextStepEvent}
-          wizardEventName={props.wizardEventName}
-        />
+        {props.wizardEventName !== 'cliWizard' ? (
+          <SampleAppCard
+            handleNextStepEvent={handleNextStepEvent}
+            wizardEventName={props.wizardEventName}
+          />
+        ) : null}
       </FlexBox>
     </>
   )

@@ -12,7 +12,6 @@ describe('Deep linking', () => {
   // so you'll probably need to follow-up with the docs and/or marketing teams.
   it('should be redirected to the approprate page from a shortened link', () => {
     cy.get('@org').then((org: Organization) => {
-      cy.wait(1000)
       cy.visit('/me/about')
       cy.location('pathname').should('eq', `/orgs/${org.id}/about`)
 
@@ -69,6 +68,9 @@ describe('Deep linking', () => {
 
       cy.visit('/me/secrets')
       cy.location('pathname').should('eq', `/orgs/${org.id}/settings/secrets`)
+
+      cy.visit('/me/setup-cli')
+      cy.location('pathname').should('eq', `/orgs/${org.id}/new-user-setup/cli`)
 
       cy.visit('/me/setup-golang')
       cy.location('pathname').should(

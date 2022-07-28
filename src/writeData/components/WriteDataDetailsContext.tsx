@@ -21,7 +21,7 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
 const DEFAULT_TOKEN = '<INFLUX_TOKEN>'
-const DEFAULT_BUCKET = '<BUCKET>'
+export const DEFAULT_BUCKET = '<BUCKET>'
 
 interface WriteDataDetailsContextType {
   bucket: Bucket

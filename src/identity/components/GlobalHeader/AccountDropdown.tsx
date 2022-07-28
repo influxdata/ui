@@ -1,7 +1,10 @@
 import React, {FC} from 'react'
 import {IconFont} from '@influxdata/clockface'
-import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
+import {
+  GlobalHeaderDropdown,
+  TypeAheadMenuItem,
+} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 type OrgSummaryItem = OrganizationSummaries[number]
 
@@ -27,7 +30,7 @@ export const AccountDropdown: FC<Props> = ({
   const accountMainMenu = [
     {
       name: 'Settings',
-      iconFont: IconFont.CogOutline,
+      iconFont: IconFont.CogSolid_New,
       href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
     {
@@ -38,20 +41,21 @@ export const AccountDropdown: FC<Props> = ({
   ]
 
   // Quartz handles switching accounts by having the user hit this URL.
-  const switchAccount = (account: SubMenuItem) => {
+  const switchAccount = (account: TypeAheadMenuItem) => {
     window.location.href = `orgs/${activeOrg.id}/accounts/${account.id}`
   }
 
   return (
-    <MenuDropdown
-      selectedOption={selectedAccount}
-      options={accountMainMenu}
-      subMenuOptions={accountsList}
-      menuHeaderIcon={IconFont.Switch_New}
-      menuHeaderText="Switch Account"
+    <GlobalHeaderDropdown
+      dropdownMenuStyle={menuStyle}
+      mainMenuHeaderIcon={IconFont.Switch_New}
+      mainMenuHeaderText="Switch Account"
+      mainMenuOptions={accountMainMenu}
       style={style}
-      menuStyle={menuStyle}
-      onSelectOption={switchAccount}
+      typeAheadInputPlaceholder="Search Accounts"
+      typeAheadMenuOptions={accountsList}
+      typeAheadOnSelectOption={switchAccount}
+      typeAheadSelectedOption={selectedAccount}
     />
   )
 }

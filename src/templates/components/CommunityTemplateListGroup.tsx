@@ -49,7 +49,7 @@ export const CommunityTemplateListGroup: FC<Props> = ({
         onClick={handleToggleMode}
       >
         <div className="community-templates--list-toggle">
-          <Icon glyph={IconFont.CaretRight} />
+          <Icon glyph={IconFont.CaretRight_New} />
         </div>
         <Heading element={HeadingElement.H5} testID={`heading-${title}`}>
           {title}

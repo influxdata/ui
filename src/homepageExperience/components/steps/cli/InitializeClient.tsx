@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useMemo} from 'react'
+import React, {FC, useContext, useEffect, useMemo} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Actions
@@ -13,8 +13,20 @@ import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
 import {getAllTokensResources} from 'src/resources/selectors'
 
+// Thunks
+import {getBuckets} from 'src/buckets/actions/thunks'
+
 // Helper Components
 import CodeSnippet from 'src/shared/components/CodeSnippet'
+import {
+  Columns,
+  ComponentSize,
+  Grid,
+  InfluxColors,
+  Panel,
+} from '@influxdata/clockface'
+import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {allAccessPermissions} from 'src/authorizations/utils/permissions'
@@ -23,17 +35,14 @@ import {event} from 'src/cloud/utils/reporting'
 // Types
 import {AppState, Authorization} from 'src/types'
 
+// Styles
+import './CliSteps.scss'
+
 type OwnProps = {
   wizardEventName: string
   setTokenValue: (tokenValue: string) => void
   tokenValue: string
-}
-
-// Style
-
-const inlineStyle = {
-  marginTop: '0px',
-  marginBottom: '8px',
+  onSelectBucket: (bucketName: string) => void
 }
 
 const collator = new Intl.Collator(navigator.language || 'en-US')
@@ -42,6 +51,7 @@ export const InitializeClient: FC<OwnProps> = ({
   wizardEventName,
   setTokenValue,
   tokenValue,
+  onSelectBucket,
 }) => {
   const org = useSelector(getOrg)
   const me = useSelector(getMe)
@@ -49,7 +59,6 @@ export const InitializeClient: FC<OwnProps> = ({
   const dispatch = useDispatch()
   const url =
     me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
-  const orgID = org.id
   const currentAuth = useSelector((state: AppState) => {
     return state.resources.tokens.currentAuth.item
   })
@@ -57,7 +66,7 @@ export const InitializeClient: FC<OwnProps> = ({
 
   const codeSnippet = `influx config create --config-name onboarding 
   --host-url "${url}" 
-  --org "${orgID}" 
+  --org "${org.id}" 
   --token "${token}" 
   --active`
 
@@ -67,6 +76,15 @@ export const InitializeClient: FC<OwnProps> = ({
     () => allPermissionTypes.sort((a, b) => collator.compare(a, b)),
     [allPermissionTypes]
   )
+  const {bucket} = useContext(WriteDataDetailsContext)
+
+  useEffect(() => {
+    dispatch(getBuckets())
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    onSelectBucket(bucket.name)
+  }, [bucket, onSelectBucket])
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -103,8 +121,8 @@ export const InitializeClient: FC<OwnProps> = ({
   return (
     <>
       <h1>Initialize Client</h1>
-      <h2 style={inlineStyle}>Configure an InfluxDB profile</h2>
-      <p style={inlineStyle}>
+      <h2 className="small-margins">Configure an InfluxDB profile</h2>
+      <p className="small-margins">
         Next we'll need to configure the client and its initial connection to
         InfluxDB.
       </p>
@@ -123,10 +141,26 @@ export const InitializeClient: FC<OwnProps> = ({
         recommend using a token with more specific permissions in the long-term.
         You can edit your tokens anytime from the app.
       </p>
-      <h2 style={{marginTop: '48px', marginBottom: '8px'}}>Create a bucket</h2>
-      <p style={inlineStyle}>
-        Now we'll create a bucket. A <b>bucket</b> is used to store time-series
-        data. We'll link the bucket to the profile you created.
+      <h2 className="large-margins">Select or Create a bucket</h2>
+      <p className="small-margins">
+        A <b>bucket</b> is used to store time-series data. Here is a list of
+        your existing buckets. You can select one to use for the rest of the
+        tutorial, or create one below.
+      </p>
+      <Panel backgroundColor={InfluxColors.Grey15}>
+        <Panel.Body size={ComponentSize.ExtraSmall}>
+          <Grid>
+            <Grid.Row>
+              <Grid.Column widthSM={Columns.Twelve}>
+                <WriteDataHelperBuckets useSimplifiedBucketForm={true} />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Panel.Body>
+      </Panel>
+      <p className="large-margins">
+        We can also create a bucket using the InfluxDB CLI. We'll link the
+        bucket to the profile you created.
       </p>
       <CodeSnippet
         text={bucketSnippet}

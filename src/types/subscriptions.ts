@@ -36,6 +36,13 @@ export interface Subscription {
   notebookID?: string
 }
 
+export interface SubscriptionStatus {
+  isActive?: boolean
+  processors?: any
+  processGroupID?: string
+  id: string
+}
+
 export interface JsonSpec {
   path?: string
   name?: string

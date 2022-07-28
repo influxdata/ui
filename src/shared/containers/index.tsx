@@ -19,9 +19,6 @@ export const TaskImportOverlay = lazy(() =>
 export const DashboardsIndex = lazy(() =>
   import('src/dashboards/components/dashboard_index/DashboardsIndex')
 )
-export const DashboardsIndexPaginated = lazy(() =>
-  import('src/dashboards/components/dashboard_index/DashboardsIndexPaginated')
-)
 export const DashboardContainer = lazy(() =>
   import('src/dashboards/components/DashboardContainer')
 )
@@ -124,6 +121,12 @@ export const NodejsWizard = lazy(() =>
 export const GoWizard = lazy(() =>
   import('src/homepageExperience/containers/GoWizard').then(module => ({
     default: module.GoWizard,
+  }))
+)
+
+export const CliWizard = lazy(() =>
+  import('src/homepageExperience/containers/CliWizard').then(module => ({
+    default: module.CliWizard,
   }))
 )
 

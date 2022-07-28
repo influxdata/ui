@@ -24,23 +24,6 @@ const PlanTypePanel: FC = () => {
         >
           <Panel.Header
             size={ComponentSize.ExtraSmall}
-            testID="payg-plan--region-header"
-          >
-            <h5>Region</h5>
-          </Panel.Header>
-          <Panel.Body
-            size={ComponentSize.ExtraSmall}
-            testID="payg-plan--region-body"
-          >
-            {billingInfo?.region}
-          </Panel.Body>
-        </Panel>
-        <Panel
-          backgroundColor={InfluxColors.Grey15}
-          className="plan-type-panel--detail"
-        >
-          <Panel.Header
-            size={ComponentSize.ExtraSmall}
             testID="payg-plan--balance-header"
           >
             <h5>Account Balance</h5>

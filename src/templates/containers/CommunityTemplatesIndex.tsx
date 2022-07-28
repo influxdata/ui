@@ -21,7 +21,6 @@ import {
   ComponentSize,
   Heading,
   HeadingElement,
-  IconFont,
   Input,
   Page,
   Panel,

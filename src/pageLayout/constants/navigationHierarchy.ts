@@ -78,7 +78,7 @@ export const generateNavItems = (): NavItem[] => {
         {
           id: 'subscriptions',
           testID: 'nav-subitem-subscriptions',
-          label: 'Cloud Native Subscriptions',
+          label: 'Native Subscriptions',
           link: `${orgPrefix}/load-data/subscriptions`,
           enabled: () => CLOUD && isFlagEnabled('subscriptionsUI'),
         },

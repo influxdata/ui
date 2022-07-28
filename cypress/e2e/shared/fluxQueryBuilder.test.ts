@@ -82,7 +82,7 @@ describe.skip('FluxQueryBuilder', () => {
       cy.getByTestID('field-selector')
         .should('be.visible')
         .should('not.contain', 'Loading')
-      cy.getByTestID('tag-selector--key')
+      cy.getByTestID('tag-selector-value--header-wrapper')
         .should('be.visible')
         .should('not.contain', 'Loading')
 
@@ -94,7 +94,7 @@ describe.skip('FluxQueryBuilder', () => {
         .should('be.visible')
         .should('not.contain', 'Loading')
         .should('not.contain', 'No Fields Found')
-      cy.getByTestID('tag-selector--key')
+      cy.getByTestID('tag-selector-value--header-wrapper')
         .should('be.visible')
         .should('not.contain', 'Loading')
       cy.getByTestID('tag-selector-key')
@@ -108,7 +108,7 @@ describe.skip('FluxQueryBuilder', () => {
         .should('be.visible')
         .should('not.contain', 'Loading')
         .should('not.contain', 'No Fields Found')
-      cy.getByTestID('tag-selector--key')
+      cy.getByTestID('tag-selector-value--header-wrapper')
         .should('be.visible')
         .should('not.contain', 'Loading')
       cy.getByTestID('tag-selector-key')
@@ -124,7 +124,7 @@ describe.skip('FluxQueryBuilder', () => {
         .should('not.contain', 'Loading')
         .should('contain', 'No Fields Found')
 
-      cy.getByTestID('tag-selector--key')
+      cy.getByTestID('tag-selector-value--header-wrapper')
         .should('be.visible')
         .should('not.contain', 'Loading')
       cy.getByTestID('tag-selector-key')
@@ -142,22 +142,25 @@ describe.skip('FluxQueryBuilder', () => {
       })
 
       // more than 8 items, show 'Load More' button
-      cy.getByTestID('tag-selector--key').within(() => {
-        cy.get('.tag-selector-value--header').click()
+      cy.getByTestID('tag-selector-value--header-wrapper').within(() => {
+        cy.get('.tag-selector-value--header')
+          .click()
+          .then(() => {
+            cy.getByTestID('tag-selector-value--list-item--selectable')
+              .should('be.visible')
+              .should('have.length', 8)
+            cy.getByTestID('tag-selector-value--load-more-button')
+              .should('be.visible')
+              .trigger('click')
+              .then(() => {
+                // when load more is chosen, up to 25 additional entries should be shown
+                cy.getByTestID('tag-selector-value--list-item--selectable')
+                  .should('be.visible')
+                  .should('have.length.above', 8)
+                  .and('have.length.at.most', 33) // 8 + 25
+              })
+          })
       })
-      cy.getByTestID('tag-selector-value--list-item--selectable')
-        .should('be.visible')
-        .should('have.length', 8)
-      cy.getByTestID('tag-selector-value--load-more-button')
-        .should('be.visible')
-        .trigger('click')
-        .then(() => {
-          // when load more is chosen, up to 25 additional entries should be shown
-          cy.getByTestID('tag-selector-value--list-item--selectable')
-            .should('be.visible')
-            .should('have.length.above', 8)
-            .and('have.length.at.most', 33) // 8 + 25
-        })
 
       // not recommend to assert for searchTagKey value
       // since it will expand all the tag keys, which triggers

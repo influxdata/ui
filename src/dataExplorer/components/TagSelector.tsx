@@ -115,7 +115,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       <Accordion className="tag-selector-value">
         <div
           onClick={() => handleSelectTagKey(tagKey)}
-          data-testid="tag-selector--key"
+          data-testid="tag-selector-value--header-wrapper"
         >
           <Accordion.AccordionHeader className="tag-selector-value--header">
             <SelectorTitle title={tagKey} />

@@ -79,14 +79,14 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           <p className="json-parsing-form__link">
             See our{' '}
             <a
-              href={`https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=JSON#define-parsing-rules`}
+              href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=JSON#define-parsing-rules"
               target="_blank"
               rel="noreferrer"
             >
               parsing documentation
             </a>{' '}
             for examples, or validate your parsing rules using{' '}
-            <a href={`https://jsonpath.com/`} target="_blank" rel="noreferrer">
+            <a href="https://jsonpath.com/" target="_blank" rel="noreferrer">
               JSONPath.
             </a>{' '}
           </p>

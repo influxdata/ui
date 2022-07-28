@@ -75,14 +75,14 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           <p className="string-parsing-form__link">
             See our{' '}
             <a
-              href={`https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=String#define-parsing-rules`}
+              href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=String#define-parsing-rules"
               target="_blank"
               rel="noreferrer"
             >
               parsing documentation
             </a>{' '}
             for examples, or validate your parsing rules using{' '}
-            <a href={`https://regex101.com/`} target="_blank" rel="noreferrer">
+            <a href="https://regex101.com/" target="_blank" rel="noreferrer">
               regex 101.
             </a>{' '}
           </p>

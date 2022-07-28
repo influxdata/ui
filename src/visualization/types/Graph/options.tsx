@@ -233,9 +233,12 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
                     results.table,
                     groupKey
                   )
+                  // the properties that we use to calculate the colors are updated in the next render cycle so we need
+                  // to make a new object and override the colors
+                  const newProperties = {...properties, colors}
                   const colorMapping = generateSeriesToColorHex(
                     fillColumnMap,
-                    properties
+                    newProperties
                   )
 
                   update({colors, colorMapping})

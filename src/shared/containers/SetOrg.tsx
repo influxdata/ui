@@ -147,10 +147,10 @@ const SetOrg: FC = () => {
             component={DataExplorerPage}
           />
           {/* Dashboards */}
-            <Route
-              path={`${orgPath}/dashboards-list`}
-              component={DashboardsIndex}
-            />
+          <Route
+            path={`${orgPath}/dashboards-list`}
+            component={DashboardsIndex}
+          />
           <Route
             path={`${orgPath}/dashboards/:dashboardID`}
             component={DashboardContainer}

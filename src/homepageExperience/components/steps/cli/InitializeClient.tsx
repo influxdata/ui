@@ -159,8 +159,8 @@ export const InitializeClient: FC<OwnProps> = ({
         </Panel.Body>
       </Panel>
       <p className="large-margins">
-        We can also create a bucket using the InfluxCLI. We'll link the bucket
-        to the profile you created.
+        We can also create a bucket using the InfluxDB CLI. We'll link the
+        bucket to the profile you created.
       </p>
       <CodeSnippet
         text={bucketSnippet}

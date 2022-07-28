@@ -29,6 +29,7 @@ import {
   handleValidation,
   JSON_TOOLTIP,
   sanitizeType,
+  dataTypeList,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
 import ValidationInputWithTooltip from './ValidationInputWithTooltip'
@@ -48,7 +49,6 @@ const JsonPathInput: FC<Props> = ({
   itemNum,
   edit,
 }) => {
-  const dataTypeList = ['String', 'Number']
   const [dataType, setDataType] = useState(dataTypeList[0])
   const tagType = name === 'Tag'
   return (

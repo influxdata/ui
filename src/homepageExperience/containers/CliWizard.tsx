@@ -163,7 +163,7 @@ export class CliWizard extends PureComponent<{}, State> {
                   onStepClick={this.handleNavClick}
                   navigationSteps={HOMEPAGE_NAVIGATION_STEPS_CLI}
                   settingUpIcon={CLIIcon}
-                  settingUpText="InfluxCLI"
+                  settingUpText="InfluxDB CLI"
                   setupTime="5 minutes"
                 />
               </div>

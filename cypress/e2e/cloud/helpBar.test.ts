@@ -39,7 +39,6 @@ describe('Help bar support for PAYG users', () => {
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.setFeatureFlags({
-            helpBarSfdcIntegration: true,
             uiUnificationFlag: true,
           }).then(() => {
             cy.quartzProvision({

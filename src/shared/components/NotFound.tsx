@@ -132,7 +132,7 @@ const NotFound: FC = () => {
   const org = useRef<Organization>(reduxOrg)
 
   const handleDeepLink = useCallback(async () => {
-    if (!org) {
+    if (!org.current) {
       setIsFetchingOrg(true)
       org.current = await fetchOrg()
     }

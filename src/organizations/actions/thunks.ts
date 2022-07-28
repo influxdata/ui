@@ -206,7 +206,7 @@ export const updateOrg = (org: Organization) => async (
 export const renameOrg = (
   originalName: string,
   org: Organization
-): AppThunk<Promise<void>> => async (
+): AppThunk<Promise<void | string>> => async (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
@@ -220,9 +220,14 @@ export const renameOrg = (
           data: org,
         })
 
+    if (resp.status === 422) {
+      return Promise.resolve(resp.data.message)
+    }
+
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
+
     const updatedOrg = resp.data
 
     const normOrg = normalize<Organization, OrgEntities, string>(

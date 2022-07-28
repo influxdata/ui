@@ -32,6 +32,7 @@ type Props = ReduxProps & RouteComponentProps<{orgID: string}>
 
 interface State {
   org: Organization
+  nameConflict: boolean
 }
 
 @ErrorHandling
@@ -40,6 +41,7 @@ class RenameOrgForm extends PureComponent<Props, State> {
     super(props)
     this.state = {
       org: this.props.startOrg,
+      nameConflict: false,
     }
   }
 
@@ -126,7 +128,9 @@ class RenameOrgForm extends PureComponent<Props, State> {
   }
 
   private isUniqueName = (orgName: string): boolean => {
-    return !this.props.orgNames.find(o => o === orgName)
+    return (
+      !this.props.orgNames.find(o => o === orgName) && !this.state.nameConflict
+    )
   }
 
   private handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -140,9 +144,13 @@ class RenameOrgForm extends PureComponent<Props, State> {
     const {onRenameOrg, startOrg} = this.props
     const {org} = this.state
 
-    await onRenameOrg(startOrg.name, org)
+    const resp = await onRenameOrg(startOrg.name, org)
 
-    this.handleGoBack()
+    if (typeof resp === 'string') {
+      this.setState({...this.state, nameConflict: true})
+    } else {
+      this.handleGoBack()
+    }
   }
 }
 

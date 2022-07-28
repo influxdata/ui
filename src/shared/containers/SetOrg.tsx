@@ -16,7 +16,6 @@ import {
   CliWizard,
   DashboardContainer,
   DashboardsIndex,
-  DashboardsIndexPaginated,
   DataExplorerPage,
   FileUploadsPage,
   FlowPage,
@@ -148,17 +147,10 @@ const SetOrg: FC = () => {
             component={DataExplorerPage}
           />
           {/* Dashboards */}
-          {isFlagEnabled('paginatedDashboards') ? (
-            <Route
-              path={`${orgPath}/dashboards-list`}
-              component={DashboardsIndexPaginated}
-            />
-          ) : (
-            <Route
-              path={`${orgPath}/dashboards-list`}
-              component={DashboardsIndex}
-            />
-          )}
+          <Route
+            path={`${orgPath}/dashboards-list`}
+            component={DashboardsIndex}
+          />
           <Route
             path={`${orgPath}/dashboards/:dashboardID`}
             component={DashboardContainer}

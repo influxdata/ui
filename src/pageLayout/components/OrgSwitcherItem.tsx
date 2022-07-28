@@ -19,8 +19,8 @@ const OrgSwitcherItem: FC<Props> = ({orgName, selected, onDismiss, orgID}) => {
   }`
 
   const orgSwitcherIcon = selected
-    ? IconFont.Checkmark_New
-    : IconFont.CaretRight
+    ? IconFont.CheckMark_New
+    : IconFont.CaretRight_New
 
   const handleClick = (): void => {
     onDismiss()

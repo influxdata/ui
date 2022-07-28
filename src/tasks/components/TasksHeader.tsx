@@ -89,7 +89,7 @@ const TasksHeader: FC<Props> = ({
         <FeatureFlag name="flowsCTA">
           <div className="header-cta--tasks">
             <div className="header-cta">
-              <Icon glyph={IconFont.BookPencil} />
+              <Icon glyph={IconFont.Pencil} />
               Now you can use Notebooks to explore your data while building a
               task
               <Link to="/notebook/from/task" onClick={recordClick}>

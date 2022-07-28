@@ -76,7 +76,7 @@ const AlertingIndex: FunctionComponent = () => {
           {flowsCTA.alerts && (
             <FeatureFlag name="flowsCTA">
               <div className="header-cta">
-                <Icon glyph={IconFont.BookPencil} />
+                <Icon glyph={IconFont.Pencil} />
                 Now you can use {PROJECT_NAME_PLURAL} to explore your data while
                 building an alert
                 <Link

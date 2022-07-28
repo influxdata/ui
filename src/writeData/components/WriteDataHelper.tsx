@@ -41,7 +41,7 @@ const WriteDataHelper: FC<Props> = ({collapsed}) => {
           onClick={handleToggleClick}
         >
           <Icon
-            glyph={IconFont.CaretRight}
+            glyph={IconFont.CaretRight_New}
             className="write-data-helper--caret"
           />
           <Heading

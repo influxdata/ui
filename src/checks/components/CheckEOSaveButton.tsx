@@ -73,7 +73,7 @@ const CheckEOSaveButton: FunctionComponent<Props> = ({
       <SquareButton
         ref={triggerRef}
         className={className}
-        icon={IconFont.Checkmark_New}
+        icon={IconFont.CheckMark_New}
         color={ComponentColor.Success}
         size={ComponentSize.Small}
         status={status}
@@ -98,7 +98,7 @@ const QueryChecklistItem: FunctionComponent<ChecklistItemProps> = ({
   const className = selected
     ? 'query-checklist--item valid'
     : 'query-checklist--item error'
-  const icon = selected ? IconFont.Checkmark_New : IconFont.Remove_New
+  const icon = selected ? IconFont.CheckMark_New : IconFont.Remove_New
 
   return (
     <li className={className}>

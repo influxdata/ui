@@ -107,7 +107,7 @@ const DataExplorerPage: FC = () => {
           <FeatureFlag name="flowsCTA">
             <div className="header-cta--de">
               <div className="header-cta">
-                <Icon glyph={IconFont.BookCode} />
+                <Icon glyph={IconFont.Pencil} />
                 Now you can use {PROJECT_NAME_PLURAL} to explore and take action
                 on your data
                 <Link

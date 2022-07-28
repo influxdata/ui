@@ -132,7 +132,6 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
                     onClick={this.onClickBrowseCommunityTemplates}
                     text="Browse Community Templates"
                     testID="browse-template-button"
-                    icon={IconFont.Trash_New}
                   />
                 </Panel.SymbolHeader>
               </Panel>

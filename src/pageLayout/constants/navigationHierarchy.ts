@@ -113,7 +113,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'flows',
       testID: 'nav-item-flows',
-      icon: IconFont.BookCode,
+      icon: IconFont.Pencil,
       label: PROJECT_NAME_PLURAL,
       shortLabel: PROJECT_NAME_SHORT,
       link: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`,

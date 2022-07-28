@@ -79,7 +79,15 @@ export const Tokens: FC<OwnProps> = ({
       dispatch(createAuthorization(authorization))
       event(`firstMile.${wizardEventName}.tokens.tokenCreated`)
     }
-  }, [dispatch, me.id, org.id, sortedPermissionTypes, sortedPermissionTypes.length, tokenValue, wizardEventName])
+  }, [
+    dispatch,
+    me.id,
+    org.id,
+    sortedPermissionTypes,
+    sortedPermissionTypes.length,
+    tokenValue,
+    wizardEventName,
+  ])
 
   // when token generated, save it to the parent component
   useEffect(() => {

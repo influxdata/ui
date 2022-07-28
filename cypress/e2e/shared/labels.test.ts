@@ -137,10 +137,10 @@ describe('labels', () => {
     // verify name, descr, color
     cy.getByTestID('label-card').should('have.length', 1)
     cy.getByTestID('label-card')
-      .contains(newLabelName)
+      .contains(newLabelName.trim())
       .should('be.visible')
     cy.getByTestID('label-card')
-      .contains(newLabelDescription)
+      .contains(newLabelDescription.trim())
       .should('be.visible')
     cy.getByTestID('label-card')
       .children('div.cf-flex-box')
@@ -179,11 +179,11 @@ describe('labels', () => {
       // verify name, descr, color
       cy.getByTestID('label-card').should('have.length', 1)
       cy.getByTestID('label-card')
-        .contains(oldLabelName)
+        .contains(oldLabelName.trim())
         .should('be.visible')
 
       cy.getByTestID('label-card')
-        .contains(oldLabelDescription)
+        .contains(oldLabelDescription.trim())
         .should('be.visible')
 
       cy.getByTestID('label-card')
@@ -225,10 +225,10 @@ describe('labels', () => {
       // verify name, descr, color
       cy.getByTestID('label-card').should('have.length', 1)
       cy.getByTestID('label-card')
-        .contains(newLabelName)
+        .contains(newLabelName.trim())
         .should('be.visible')
       cy.getByTestID('label-card')
-        .contains(newLabelDescription)
+        .contains(newLabelDescription.trim())
         .should('be.visible')
       cy.getByTestID('label-card')
         .children('div.cf-flex-box')

@@ -19,9 +19,6 @@ export const TaskImportOverlay = lazy(() =>
 export const DashboardsIndex = lazy(() =>
   import('src/dashboards/components/dashboard_index/DashboardsIndex')
 )
-export const DashboardsIndexPaginated = lazy(() =>
-  import('src/dashboards/components/dashboard_index/DashboardsIndexPaginated')
-)
 export const DashboardContainer = lazy(() =>
   import('src/dashboards/components/DashboardContainer')
 )

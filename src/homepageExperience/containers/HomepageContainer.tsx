@@ -190,7 +190,10 @@ export const HomepageContainer: FC = () => {
                     style={linkStyle}
                     onClick={logCLIButtonClick}
                   >
-                    <div className="homepage-write-data-tile">
+                    <div
+                      className="homepage-write-data-tile"
+                      data-testid="homepage-wizard-tile--cli"
+                    >
                       <div className="tile-icon-text-wrapper">
                         <div className="icon">{CLIIcon}</div>
                         <div>

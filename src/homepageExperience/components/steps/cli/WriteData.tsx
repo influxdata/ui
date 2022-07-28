@@ -12,10 +12,8 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {downloadTextFile} from 'src/shared/utils/download'
 
 // Assets
-const csv = require('src/homepageExperience/assets/sample.csv').default
 import sampleCsv from 'assets/images/sample-csv.png'
 
 // Styles
@@ -31,17 +29,13 @@ const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.writeData.code.copied')
 }
 
-const downloadCsv = () => {
-  downloadTextFile(csv, 'sample', '.csv')
-}
-
 export const WriteDataComponent = (props: OwnProps) => {
   const {bucket} = props
   const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
 
   const sampleDataUrl =
     'https://influx-testdata.s3.amazonaws.com/bird-migration.csv'
-  const writeDataCodeCsv = `influx write --bucket ${bucketName} --file path/sample.csv`
+  const writeDataCodeCsv = `influx write --bucket ${bucketName} --file path/usgs-earthquake-all-week-annotated.csv`
   const writeDataCodeUrl = `influx write --bucket ${bucketName} --url ${sampleDataUrl}`
 
   const [currentDataSelection, setCurrentDataSelection] = useState<
@@ -90,7 +84,10 @@ export const WriteDataComponent = (props: OwnProps) => {
           <p style={{marginTop: '0px', marginBottom: '16px'}}>
             Our sample CSV is earthquake data from the USGS.
           </p>
-          <Button text="Download Sample .CSV" onClick={downloadCsv} />
+          <a href="https://influx-testdata.s3.amazonaws.com/usgs-earthquake-all-week-annotated.csv">
+            <Button text="Download Sample .CSV" onClick={() => {}} />
+          </a>
+
           <p>
             The sample file is an Annotated CSV. The InfluxDB CLI supports both
             annotated and standard CSV formats.{' '}

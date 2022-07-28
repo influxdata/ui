@@ -80,15 +80,15 @@ export const InitializeClient: FC<OwnProps> = ({
 
   useEffect(() => {
     dispatch(getBuckets())
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch])
 
   useEffect(() => {
     onSelectBucket(bucket.name)
   }, [bucket, onSelectBucket])
 
   useEffect(() => {
-    const fetchResources = async () => {
-      await dispatch(getAllResources())
+    const fetchResources = () => {
+      dispatch(getAllResources())
     }
     fetchResources()
   }, [dispatch])
@@ -104,7 +104,7 @@ export const InitializeClient: FC<OwnProps> = ({
       dispatch(createAuthorization(authorization))
       event(`firstMile.${wizardEventName}.tokens.tokenCreated`)
     }
-  }, [sortedPermissionTypes.length, tokenValue]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, me.id, org.id, sortedPermissionTypes, sortedPermissionTypes.length, tokenValue, wizardEventName])
 
   // when token generated, save it to the parent component
   useEffect(() => {

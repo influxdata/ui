@@ -89,7 +89,6 @@ const JsonPathInput: FC<Props> = ({
             testID={`${tagType}-json-delete-label`}
           />
         )}
-        {/* </FlexBox> */}
         <FlexBox
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}

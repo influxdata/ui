@@ -254,27 +254,23 @@ const XYPlot: FC<Props> = ({
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
-  let colorMapping = null
+  const memoizedGetColorMappingObjects = memoizeOne(getColorMappingObjects)
+  const [, fillColumnMap] = createGroupIDColumn(resultState.table, groupKey)
+  const {
+    colorMappingForGiraffe,
+    colorMappingForIDPE,
+    needsToSaveToIDPE,
+  } = memoizedGetColorMappingObjects(fillColumnMap, properties)
+  const colorMapping = colorMappingForGiraffe
 
-  if (isFlagEnabled('graphColorMapping')) {
-    const memoizedGetColorMappingObjects = memoizeOne(getColorMappingObjects)
-    const [, fillColumnMap] = createGroupIDColumn(resultState.table, groupKey)
-    const {
-      colorMappingForGiraffe,
-      colorMappingForIDPE,
-      needsToSaveToIDPE,
-    } = memoizedGetColorMappingObjects(fillColumnMap, properties)
-    colorMapping = colorMappingForGiraffe
+  // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.
+  // when VEO is open, prevent from saving because it causes state issues. It will be handled in the timemachine code separately.
+  if (needsToSaveToIDPE && view?.dashboardID && !isVeoOpen) {
+    const newView = {...view}
+    newView.properties.colorMapping = colorMappingForIDPE
 
-    // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.
-    // when VEO is open, prevent from saving because it causes state issues. It will be handled in the timemachine code separately.
-    if (needsToSaveToIDPE && view?.dashboardID && !isVeoOpen) {
-      const newView = {...view}
-      newView.properties.colorMapping = colorMappingForIDPE
-
-      // save to IDPE
-      dispatch(updateViewAndVariables(view.dashboardID, newView))
-    }
+    // save to IDPE
+    dispatch(updateViewAndVariables(view.dashboardID, newView))
   }
 
   const config: Config = {
@@ -315,13 +311,11 @@ const XYPlot: FC<Props> = ({
     ],
   }
 
-  if (isFlagEnabled('graphColorMapping')) {
-    const layer = {...(config.layers[0] as LineLayerConfig)}
+  const layer = {...(config.layers[0] as LineLayerConfig)}
 
-    layer.colorMapping = colorMapping
+  layer.colorMapping = colorMapping
 
-    config.layers[0] = layer
-  }
+  config.layers[0] = layer
 
   addAnnotationLayer(
     config,

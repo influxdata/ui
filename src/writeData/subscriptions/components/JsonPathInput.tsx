@@ -54,48 +54,42 @@ const JsonPathInput: FC<Props> = ({
   return (
     <div>
       <Grid.Column>
-        <FlexBox
-          alignItems={AlignItems.Center}
-          direction={FlexDirection.Row}
-          margin={ComponentSize.Medium}
-          className="header-wrap"
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className="json-parsing-form__header"
         >
-          <Heading
-            element={HeadingElement.H3}
-            weight={FontWeight.Bold}
-            className="json-parsing-form__header-wrap__header"
-          >
-            {name}
-          </Heading>
-          {(tagType
-            ? !(formContent.jsonTagKeys.length === 0)
-            : !(formContent.jsonFieldKeys.length === 1)) && (
-            <ConfirmationButton
-              color={ComponentColor.Colorless}
-              icon={IconFont.Trash_New}
-              shape={ButtonShape.Square}
-              size={ComponentSize.ExtraSmall}
-              confirmationLabel={`Yes, delete this ${name}`}
-              onConfirm={() => {
-                event(
-                  'removed json parsing rule',
-                  {
-                    ruleType: tagType ? 'tag' : 'field',
-                  },
-                  {feature: 'subscriptions'}
-                )
-                if (tagType) {
-                  formContent.jsonTagKeys.splice(itemNum, 1)
-                } else {
-                  formContent.jsonFieldKeys.splice(itemNum, 1)
-                }
-                updateForm({...formContent})
-              }}
-              confirmationButtonText="Confirm"
-              testID={`${tagType}-json-delete-label`}
-            />
-          )}
-        </FlexBox>
+          {name}
+        </Heading>
+        {(tagType
+          ? !(formContent.jsonTagKeys.length === 0)
+          : !(formContent.jsonFieldKeys.length === 1)) && (
+          <ConfirmationButton
+            color={ComponentColor.Colorless}
+            icon={IconFont.Trash_New}
+            shape={ButtonShape.Square}
+            size={ComponentSize.ExtraSmall}
+            confirmationLabel={`Yes, delete this ${name}`}
+            onConfirm={() => {
+              event(
+                'removed json parsing rule',
+                {
+                  ruleType: tagType ? 'tag' : 'field',
+                },
+                {feature: 'subscriptions'}
+              )
+              if (tagType) {
+                formContent.jsonTagKeys.splice(itemNum, 1)
+              } else {
+                formContent.jsonFieldKeys.splice(itemNum, 1)
+              }
+              updateForm({...formContent})
+            }}
+            confirmationButtonText="Confirm"
+            testID={`${tagType}-json-delete-label`}
+          />
+        )}
+        {/* </FlexBox> */}
         <FlexBox
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}

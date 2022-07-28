@@ -26,7 +26,6 @@ import {
   parseYBounds,
 } from 'src/shared/utils/vis'
 import {generateSeriesToColorHex} from 'src/visualization/utils/colorMappingUtils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'

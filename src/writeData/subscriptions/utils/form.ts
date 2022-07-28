@@ -27,7 +27,7 @@ export const DEFAULT_STEPS_STATUS = {
 
 export const SUBSCRIPTION_NAVIGATION_STEPS: SubscriptionNavigationModel[] = [
   {
-    glyph: IconFont.UploadOutline,
+    glyph: IconFont.Upload_Outline,
     name: 'Connect \n to Broker',
     type: Steps.BrokerForm,
     isComplete: false,

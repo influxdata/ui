@@ -158,7 +158,7 @@ const TreeSidebar: FC<ReduxProps> = ({
         <TreeNav.Item
           id="support"
           testID="nav-item-support"
-          icon={<Icon glyph={IconFont.QuestionMark_New} />}
+          icon={<Icon glyph={IconFont.QuestionMark_Outline} />}
           label="Help &amp; Support"
           shortLabel="Support"
           className="helpBarStyle"

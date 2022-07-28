@@ -92,7 +92,7 @@ class MapVariableBuilder extends PureComponent<Props, State> {
                         selected={v.key === this.defaultID}
                       >
                         <strong>{v.key}</strong>{' '}
-                        <Icon glyph={IconFont.CaretRight} /> {v.value}
+                        <Icon glyph={IconFont.CaretRight_New} /> {v.value}
                       </Dropdown.Item>
                     ))}
                   </Dropdown.Menu>

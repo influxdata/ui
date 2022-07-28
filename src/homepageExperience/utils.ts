@@ -15,7 +15,7 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
   },
   {
     name: 'Initialize\nClient',
-    glyph: IconFont.FileSettings,
+    glyph: IconFont.CogSolid_New,
   },
   {
     name: 'Write\nData',
@@ -23,11 +23,11 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
   },
   {
     name: 'Execute a\nSimple Query',
-    glyph: IconFont.PlayOutline,
+    glyph: IconFont.Play,
   },
   {
     name: 'Execute an\nAggregate Query',
-    glyph: IconFont.PlayOutline,
+    glyph: IconFont.Play,
   },
   {
     name: 'Finish',
@@ -46,7 +46,7 @@ export const HOMEPAGE_NAVIGATION_STEPS_CLI = [
   },
   {
     name: 'Initialize\nClient',
-    glyph: IconFont.FileSettings,
+    glyph: IconFont.CogSolid_New,
   },
   {
     name: 'Write\nData',
@@ -54,11 +54,11 @@ export const HOMEPAGE_NAVIGATION_STEPS_CLI = [
   },
   {
     name: 'Execute\nFlux Query',
-    glyph: IconFont.PlayOutline,
+    glyph: IconFont.Play,
   },
   {
     name: 'Execute\nAggregate',
-    glyph: IconFont.PlayOutline,
+    glyph: IconFont.Play,
   },
   {
     name: 'Finished!',

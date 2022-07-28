@@ -45,7 +45,7 @@ const FluxQueryBuilder: FC = () => {
     <EditorProvider>
       <SidebarProvider>
         <div className="flux-query-builder--menu">
-          <Button onClick={clear} text="New Script" icon={IconFont.Plus} />
+          <Button onClick={clear} text="New Script" icon={IconFont.Plus_New} />
         </div>
         <DraggableResizer
           handleOrientation={Orientation.Vertical}

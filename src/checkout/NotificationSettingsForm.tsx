@@ -24,7 +24,7 @@ const NotificationSettingsForm: FC = () => {
   return (
     <>
       <FormToggle
-        icon={IconFont.Checkmark_New}
+        icon={IconFont.CheckMark_New}
         id="shouldNotify"
         label="Send me an email when my bill exceeds a certain amount"
         tabIndex={0}
@@ -43,7 +43,7 @@ const NotificationSettingsForm: FC = () => {
             </Grid.Column>
             <Grid.Column widthSM={Columns.Three}>
               <FormInput
-                icon={IconFont.CurrencyUSD}
+                icon={IconFont.CurrencyDollar}
                 id="balanceThreshold"
                 label={`Limit ($${MINIMUM_BALANCE_THRESHOLD} minimum)`}
                 min={MINIMUM_BALANCE_THRESHOLD}

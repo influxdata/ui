@@ -6,7 +6,7 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
     glyph: IconFont.BookOutline,
   },
   {
-    name: `Install\n Dependencies`,
+    name: 'Install\n Dependencies',
     glyph: IconFont.Install,
   },
   {

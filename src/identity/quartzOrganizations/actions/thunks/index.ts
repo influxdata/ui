@@ -14,7 +14,6 @@ import {
   setQuartzOrganizationsStatus,
 } from 'src/identity/quartzOrganizations/actions/creators'
 import {PublishNotificationAction} from 'src/shared/actions/notifications'
-import {notify} from 'src/shared/actions/notifications'
 
 // Notifications
 import {
@@ -25,8 +24,6 @@ import {
 // Types
 import {GetState, RemoteDataState} from 'src/types'
 import {OrganizationSummaries} from 'src/client/unityRoutes'
-import {AppThunk} from 'src/types'
-
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
 
@@ -35,39 +32,66 @@ interface UpdateOrgParams {
   newDefaultOrg: DefaultOrg
 }
 
-class OrgNotFoundError extends Error {
+// Utils
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+
+// Errors
+import {NetworkErrorTypes} from 'src/identity/apis/auth.ts'
+
+export enum ThunkErrorNames {
+  CannotSetDefaultOrg = 'CannotSetDefaultOrg',
+  NetworkError = 'NetworkError',
+}
+
+export class DefaultOrgReduxError extends Error {
   constructor(message) {
     super(message)
-    this.name = 'DefaultOrgNotFoundError'
+    this.message = message
+      ? message
+      : 'Failed to set new default organization in state'
+    this.name = ThunkErrorNames.CannotSetDefaultOrg
   }
 }
 
-// Error Reporting
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+export class DefaultOrgNetworkError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = ThunkErrorNames.NetworkError
+  }
+}
 
+export class FetchOrgsNetworkError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = ThunkErrorNames.NetworkError
+  }
+}
+
+// Thunks
 export const getQuartzOrganizationsThunk = (accountId: number) => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
+
     const quartzOrganizations = await fetchOrgsByAccountID(accountId)
 
     dispatch(setQuartzOrganizations(quartzOrganizations))
   } catch (err) {
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
-
     reportErrorThroughHoneyBadger(err, {
       name: 'Failed to fetch /quartz/orgs/',
       context: {state: getState()},
     })
+
+    throw new FetchOrgsNetworkError(err)
   }
 }
 
 export const updateDefaultOrgThunk = ({
   accountId,
   newDefaultOrg,
-}: UpdateOrgParams): AppThunk<any> => async (
+}: UpdateOrgParams) => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {
@@ -85,29 +109,23 @@ export const updateDefaultOrgThunk = ({
     const orgStatus = state.identity.currentIdentity.status
 
     if (orgStatus === RemoteDataState.Error) {
-      const defaultOrgErrMsg =
-        'quartzOrganizations state does not contain requested default organization'
-
-      reportErrorThroughHoneyBadger(new OrgNotFoundError(defaultOrgErrMsg), {
-        name: defaultOrgErrMsg,
-        context: {
-          org: newDefaultOrg,
-          state: getState(),
-        },
-      })
-
-      dispatch(notify(orgDefaultSettingError(newDefaultOrg.name)))
-    } else {
-      dispatch(notify(orgDefaultSettingSuccess(newDefaultOrg.name)))
+      throw new DefaultOrgReduxError()
     }
   } catch (err) {
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Error))
-
     reportErrorThroughHoneyBadger(err, {
-      name: 'Failed to update /quartz/orgs/default',
-      context: {state: getState()},
+      name: err.name,
+      context: {
+        message: err.message,
+        org: newDefaultOrg,
+        state: getState(),
+      },
     })
 
-    dispatch(notify(orgDefaultSettingError(newDefaultOrg.name)))
+    switch (err.name) {
+      case ThunkErrorNames.CannotSetDefaultOrg:
+        throw new DefaultOrgReduxError(err)
+      default:
+        throw new DefaultOrgNetworkError(err)
+    }
   }
 }

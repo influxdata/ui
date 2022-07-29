@@ -91,14 +91,22 @@ export const orgCreateSuccess = (): Notification => ({
   message: 'Organization was successfully created',
 })
 
-export const orgDefaultSettingError = (orgName: string): Notification => ({
+export const orgDefaultReduxError = ({orgName, accountName}): Notification => ({
   ...defaultErrorNotification,
-  message: `Organization "${orgName}" could not be set as the default organization. Please try again.`,
+  message: `Organization ${orgName} could not be set as the default organization for account ${accountName}. Please refresh this page and try again.`,
 })
 
-export const orgDefaultSettingSuccess = (orgName: string): Notification => ({
+export const orgDefaultNetworkError = ({
+  orgName,
+  accountName,
+}): Notification => ({
+  ...defaultErrorNotification,
+  message: `Organization ${orgName} could not be set as the default organization for account ${accountName}. Please try again later.`,
+})
+
+export const orgDefaultSetSuccess = ({orgName, accountName}): Notification => ({
   ...defaultSuccessNotification,
-  message: `Organization "${orgName}" was successfully set as the default organization`,
+  message: `Organization ${orgName} was successfully set as the default organization for account ${accountName}.`,
 })
 
 export const orgEditFailed = (): Notification => ({
@@ -119,6 +127,11 @@ export const orgRenameFailed = (orgName): Notification => ({
 export const orgRenameSuccess = (orgName: string): Notification => ({
   ...defaultSuccessNotification,
   message: `Organization was successfully renamed "${orgName}"`,
+})
+
+export const orgFetchFailure = (accountName): Notification => ({
+  ...defaultErrorNotification,
+  message: `Unable to retrieve the organizations for your current account, ${accountName}. Please refresh this page.`,
 })
 
 export const removeUserFailed = (): Notification => ({

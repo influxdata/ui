@@ -11,7 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import {GlobalHeaderDropdown} from '../GlobalHeader/GlobalHeaderDropdown'
+import {GlobalHeaderDropdown} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 // Types
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
@@ -34,9 +34,9 @@ interface Props {
 
 export const DefaultDropdown: FC<Props> = ({
   entityLabel,
-  defaultEntity,
   entityList,
   changeSelectedEntity,
+  defaultEntity,
 }) => {
   return (
     <FlexBox

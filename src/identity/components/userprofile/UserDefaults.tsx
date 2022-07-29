@@ -22,7 +22,10 @@ import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {selectQuartzIdentity, selectQuartzOrgs} from 'src/identity/selectors'
 
 // Thunks
-import {updateDefaultOrgThunk} from 'src/identity/quartzOrganizations/actions/thunks'
+import {
+  updateDefaultOrgThunk,
+  DefaultOrgErrorMsg,
+} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Components
 import {DefaultDropdown} from 'src/identity/components/userprofile/DefaultDropdown'
@@ -34,8 +37,17 @@ import {
   emptyOrg,
 } from 'src/identity/components/GlobalHeader/DefaultEntities'
 
+// Notifications
+import {notify} from 'src/shared/actions/notifications'
+import {
+  orgDefaultReduxError,
+  orgDefaultSetSuccess,
+  orgDefaultNetworkError,
+} from 'src/shared/copy/notifications'
+
 // Types
 import {EntityLabel} from 'src/identity/components/userprofile/DefaultDropdown'
+import {ThunkErrorNames} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
@@ -85,6 +97,11 @@ export const UserDefaults: FC = () => {
       : ComponentStatus.Disabled
 
   const handleChangeDefaults = () => {
+    const notificationParams = {
+      orgName: selectedOrg.name,
+      accountName: loggedInAccount.name,
+    }
+
     if (selectedNewAccount) {
       handleSetDefaultAccount(selectedAccount.id)
     }
@@ -95,6 +112,19 @@ export const UserDefaults: FC = () => {
           newDefaultOrg: selectedOrg,
         })
       )
+        .then(() => {
+          dispatch(notify(orgDefaultSetSuccess(notificationParams)))
+        })
+        .catch(err => {
+          switch (err.name) {
+            case ThunkErrorNames.CannotSetDefaultOrg:
+              dispatch(notify(orgDefaultReduxError(notificationParams)))
+              break
+            default:
+              dispatch(notify(orgDefaultNetworkError(notificationParams)))
+              break
+          }
+        })
     }
   }
 

@@ -40,16 +40,13 @@ let supportLinks = [
       'https://github.com/influxdata/influxdb/issues/new?template=feature_request.md',
     title: 'Feature Requests',
   },
-  {
-    link: 'https://www.influxdata.com/proof-of-concept/',
-    title: 'Request Proof of Concept',
-  },
 ]
 
-if (CLOUD && !isFlagEnabled('requestPoc')) {
-  supportLinks = supportLinks.filter(
-    item => item.title !== 'Request Proof of Concept'
-  )
+if (CLOUD && isFlagEnabled('requestPoc')) {
+  supportLinks.push({
+    link: 'https://www.influxdata.com/proof-of-concept/',
+    title: 'Request Proof of Concept',
+  })
 }
 
 const DocSearchWidget: FC = () => {

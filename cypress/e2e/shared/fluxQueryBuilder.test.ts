@@ -146,6 +146,9 @@ describe('FluxQueryBuilder', () => {
         cy.get('.tag-selector-value--header')
           .click()
           .then(() => {
+            cy.getByTestID('.container-side-bar--tag-value')
+              .should('be.visible')
+              .should('not.contain', 'Loading')
             cy.getByTestID('tag-selector-value--list-item--selectable')
               .should('be.visible')
               .should('have.length', 8)

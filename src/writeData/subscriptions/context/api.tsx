@@ -45,7 +45,7 @@ export const createAPI = async (subscription: typeof PostBrokerSubParams) => {
   const res = await postBrokerSub(subscription)
   if (res.status === 400) {
     // 400s contain an err with info for the user
-    throw new Error(res.data.err)
+    throw new Error(res.data.message)
   }
   if (res.status !== 201) {
     throw new Error()
@@ -56,7 +56,7 @@ export const updateAPI = async (subscription: typeof PutBrokerSubParams) => {
   const res = await putBrokerSub(subscription)
   if (res.status === 400) {
     // 400s contain an err with info for the user
-    throw new Error(res.data.err)
+    throw new Error(res.data.message)
   }
   if (res.status !== 200) {
     throw new Error()
@@ -101,7 +101,7 @@ export const updateStatusAPI = async (
   const res = await putBrokerSubsStatus(status)
   if (res.status === 400) {
     // 400s contain an err with info for the user
-    throw new Error(res.data.err)
+    throw new Error(res.data.message)
   }
   if (res.status !== 200) {
     throw new Error()

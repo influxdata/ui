@@ -44,12 +44,12 @@ export const UserDefaults: FC = () => {
   const dispatch = useDispatch()
 
   const {userAccounts, handleSetDefaultAccount} = useContext(UserAccountContext)
-  const identity = useSelector(selectQuartzIdentity)
   const quartzOrganizations = useSelector(selectQuartzOrgs)
 
-  const accounts = userAccounts
+  const identity = useSelector(selectQuartzIdentity)
   const loggedInAccount = identity.currentIdentity.account
 
+  const accounts = userAccounts
   const orgs = quartzOrganizations.orgs
 
   const defaultAccount = useMemo(

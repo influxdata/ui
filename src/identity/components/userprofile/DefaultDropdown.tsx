@@ -1,3 +1,4 @@
+// Libraries
 import React, {FC, SetStateAction} from 'react'
 import {
   AlignItems,
@@ -9,18 +10,20 @@ import {
   HeadingElement,
 } from '@influxdata/clockface'
 
-// Style
-import 'src/identity/components/userprofile/UserProfile.scss'
+// Components
+import {GlobalHeaderDropdown} from '../GlobalHeader/GlobalHeaderDropdown'
 
 // Types
+import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
+type Entity = OrganizationSummaries[number] | UserAccount
+
 export enum EntityLabel {
   DefaultAccount = 'Account',
   DefaultOrg = ' Organization',
 }
 
-import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
-import {GlobalHeaderDropdown} from '../GlobalHeader/GlobalHeaderDropdown'
-type Entity = OrganizationSummaries[number] | UserAccount
+// Styles
+import 'src/identity/components/userprofile/UserProfile.scss'
 
 interface Props {
   entityLabel: string
@@ -40,12 +43,12 @@ export const DefaultDropdown: FC<Props> = ({
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
-      className="change-account-org-dropdown--container"
+      className="change-default-account-org--dropdown"
     >
       <Heading
         element={HeadingElement.H5}
         weight={FontWeight.Medium}
-        className="change-account-org-dropdown--header"
+        className="change-default-account-org-dropdown--header"
       >
         {`Default ${entityLabel}`}
       </Heading>
@@ -56,7 +59,7 @@ export const DefaultDropdown: FC<Props> = ({
         typeAheadInputPlaceholder={`Search ${entityLabel}s ...`}
         typeAheadSelectedOption={defaultEntity}
         typeAheadOnSelectOption={changeSelectedEntity}
-        style={{width: '250px', backgroundColor: '#232533'}}
+        className="user-profile-page--default-dropdowns"
       />
     </FlexBox>
   )

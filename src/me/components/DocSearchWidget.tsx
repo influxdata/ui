@@ -4,12 +4,12 @@ import React, {FC} from 'react'
 // Components
 import DocSearch, {DocSearchType} from 'src/shared/search/DocSearch'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 // Constants
 import {CLOUD} from 'src/shared/constants'
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import 'src/me/components/DocSearchWidget.scss'
 

@@ -8,7 +8,6 @@ import {
   patchOperatorAccountsConvert,
   deleteOperatorAccount,
   getOperatorAccount,
-  deleteOperatorAccountsUser,
 } from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -32,7 +31,6 @@ export interface AccountContextType {
   handleConvertAccountToContract: (contractStartDate: string) => void
   handleDeleteAccount: () => void
   handleGetAccount: () => void
-  handleRemoveUserFromAccount: (id: string) => void
   organizations: OperatorOrg[]
   setConvertToContractOverlayVisible: (vis: boolean) => void
   convertToContractOverlayVisible: boolean
@@ -48,7 +46,6 @@ export const DEFAULT_CONTEXT: AccountContextType = {
   handleConvertAccountToContract: () => {},
   handleDeleteAccount: () => {},
   handleGetAccount: () => {},
-  handleRemoveUserFromAccount: (_: string) => {},
   organizations: null,
   setConvertToContractOverlayVisible: (_: boolean) => {},
   convertToContractOverlayVisible: false,
@@ -139,28 +136,6 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }, [dispatch, history, accountID])
 
-  const handleRemoveUserFromAccount = useCallback(
-    async (userID: string) => {
-      try {
-        setDeleteStatus(RemoteDataState.Loading)
-        const resp = await deleteOperatorAccountsUser({
-          accountId: accountID,
-          userId: userID,
-        })
-        if (resp.status !== 204) {
-          throw new Error(resp.data.message)
-        }
-        setDeleteStatus(RemoteDataState.Done)
-      } catch (error) {
-        console.error({error})
-        dispatch(notify(deleteAccountError(accountID)))
-      } finally {
-        await handleGetAccount()
-      }
-    },
-    [dispatch, handleGetAccount, accountID]
-  )
-
   return (
     <AccountContext.Provider
       value={{
@@ -171,7 +146,6 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         handleConvertAccountToContract,
         handleDeleteAccount,
         handleGetAccount,
-        handleRemoveUserFromAccount,
         organizations,
         setConvertToContractOverlayVisible,
         convertToContractOverlayVisible,

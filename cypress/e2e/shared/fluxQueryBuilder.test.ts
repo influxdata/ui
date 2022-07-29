@@ -102,17 +102,14 @@ describe('FluxQueryBuilder', () => {
         .should('contain', 'No Tags Found')
 
       // clear the search bar
-      cy.getByTestID('dismiss-button').click()
-
+      cy.getByTestID('field-tag-key-search-bar').clear()
       cy.getByTestID('field-selector')
         .should('be.visible')
         .should('not.contain', 'Loading')
         .should('not.contain', 'No Fields Found')
-      cy.getByTestID('tag-selector-value--header-wrapper')
-        .should('be.visible')
-        .should('not.contain', 'Loading')
       cy.getByTestID('tag-selector-key')
         .should('be.visible')
+        .should('not.contain', 'Loading')
         .should('not.contain', 'No Tags Found')
 
       // search a tag key, should not contain any fields
@@ -131,7 +128,16 @@ describe('FluxQueryBuilder', () => {
         .should('be.visible')
         .should('not.contain', 'No Tags Found')
 
+      // clear the search bar
       cy.getByTestID('field-tag-key-search-bar').clear()
+      cy.getByTestID('field-selector')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+        .should('not.contain', 'No Fields Found')
+      cy.getByTestID('tag-selector-key')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+        .should('not.contain', 'No Tags Found')
 
       // less than 8 items, no "Load More" button
       cy.getByTestID('field-selector').within(() => {
@@ -146,9 +152,9 @@ describe('FluxQueryBuilder', () => {
         cy.get('.tag-selector-value--header')
           .click()
           .then(() => {
-            cy.getByTestID('.container-side-bar--tag-value')
-              .should('be.visible')
-              .should('not.contain', 'Loading')
+            // cy.getByTestID('tag-selector-key')
+            //   .should('be.visible')
+            //   .should('not.contain', 'Loading')
             cy.getByTestID('tag-selector-value--list-item--selectable')
               .should('be.visible')
               .should('have.length', 8)

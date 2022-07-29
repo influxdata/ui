@@ -231,8 +231,8 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     setPage,
     setTotalPages,
   } = useContext(PaginationContext)
-  const [pagedTableHeaderId] = useState<string>(nanoid())
-  const [pagedTableBodyId] = useState<string>(nanoid())
+  const [pagedTableHeaderId] = useState<string>(`pTH-${nanoid()}`)
+  const [pagedTableBodyId] = useState<string>(`pTB-${nanoid()}`)
   const [height, setHeight] = useState(0)
   const [headerHeight, setHeaderHeight] = useState(0)
   const [rowHeight, setRowHeight] = useState(0)

@@ -4,10 +4,16 @@ import React, {FC} from 'react'
 // Components
 import DocSearch, {DocSearchType} from 'src/shared/search/DocSearch'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Constants
+import {CLOUD} from 'src/shared/constants'
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 import 'src/me/components/DocSearchWidget.scss'
 
-import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
-const supportLinks = [
+let supportLinks = [
   {
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/query-data/get-started/`,
     title: 'Get Started with Flux',
@@ -35,11 +41,16 @@ const supportLinks = [
     title: 'Feature Requests',
   },
   {
-    link:
-      'https://www.influxdata.com/proof-of-concept/',
+    link: 'https://www.influxdata.com/proof-of-concept/',
     title: 'Request Proof of Concept',
   },
 ]
+
+if (CLOUD && !isFlagEnabled('requestPoc')) {
+  supportLinks = supportLinks.filter(
+    item => item.title !== 'Request Proof of Concept'
+  )
+}
 
 const DocSearchWidget: FC = () => {
   return (

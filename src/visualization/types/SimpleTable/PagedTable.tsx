@@ -73,7 +73,7 @@ const measurePage = (
 
     runningHeight += rowHeight
 
-    if (runningHeight >= height) {
+    if (runningHeight + 0.25 * rowHeight >= height) {
       break
     }
 

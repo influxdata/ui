@@ -108,11 +108,11 @@ export const UserDefaults: FC = () => {
         <Heading
           weight={FontWeight.Bold}
           element={HeadingElement.H4}
-          className="change-account-org-container--header"
+          className="change-default-account-org--header"
         >
           Default Account
         </Heading>
-        <div className="change-account-org-container--text">
+        <div className="change-default-account-org--text">
           Select the account you want to see by default when you first log in
         </div>
         {accounts && (
@@ -133,11 +133,11 @@ export const UserDefaults: FC = () => {
         <Heading
           weight={FontWeight.Bold}
           element={HeadingElement.H4}
-          className="change-account-org-container--header"
+          className="change-default-account-org--header"
         >
           Default Organization
         </Heading>
-        <div className="change-account-org-container--text">
+        <div className="change-default-account-org--text">
           Select the organization you want to see by default when logging into
           your current account
         </div>

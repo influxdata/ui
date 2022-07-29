@@ -61,9 +61,8 @@ export const UserDetails: FC = () => {
 
       <FormDivider
         lineColor={InfluxColors.Grey15}
-        className="user-profile-page--details-divider"
+        className="user-profile-page--divider"
       />
-      
     </FlexBox>
   )
 }

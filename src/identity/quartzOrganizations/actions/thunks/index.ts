@@ -25,6 +25,7 @@ import {
 // Types
 import {GetState, RemoteDataState} from 'src/types'
 import {OrganizationSummaries} from 'src/client/unityRoutes'
+import {AppThunk} from 'src/types'
 
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
@@ -66,7 +67,7 @@ export const getQuartzOrganizationsThunk = (accountId: number) => async (
 export const updateDefaultOrgThunk = ({
   accountId,
   newDefaultOrg,
-}: UpdateOrgParams) => async (
+}: UpdateOrgParams): AppThunk<any> => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
 ) => {

@@ -43,12 +43,12 @@ export const DefaultDropdown: FC<Props> = ({
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
-      className="change-default-account-org--dropdown"
+      className="change-default-account-org--dropdown-flexbox"
     >
       <Heading
         element={HeadingElement.H5}
         weight={FontWeight.Medium}
-        className="change-default-account-org-dropdown--header"
+        className="change-default-account-org--dropdown-header"
       >
         {`Default ${entityLabel}`}
       </Heading>
@@ -59,7 +59,7 @@ export const DefaultDropdown: FC<Props> = ({
         typeAheadInputPlaceholder={`Search ${entityLabel}s ...`}
         typeAheadSelectedOption={defaultEntity}
         typeAheadOnSelectOption={changeSelectedEntity}
-        className="user-profile-page--default-dropdowns"
+        className="change-default-account-org--dropdowns"
       />
     </FlexBox>
   )

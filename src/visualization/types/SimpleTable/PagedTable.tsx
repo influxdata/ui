@@ -1,12 +1,11 @@
 import React, {
   FC,
   useContext,
+  useEffect,
   useMemo,
   useRef,
-  useEffect,
   useState,
 } from 'react'
-import {nanoid} from 'nanoid'
 import {DapperScrollbars} from '@influxdata/clockface'
 import {FluxDataType} from '@influxdata/giraffe'
 import {
@@ -231,19 +230,18 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     setPage,
     setTotalPages,
   } = useContext(PaginationContext)
-  const [pagedTableHeaderId] = useState<string>(`pTH-${nanoid()}`)
-  const [pagedTableBodyId] = useState<string>(`pTB-${nanoid()}`)
-  const [height, setHeight] = useState(0)
-  const [headerHeight, setHeaderHeight] = useState(0)
-  const [rowHeight, setRowHeight] = useState(0)
-  const ref = useRef()
+  const [height, setHeight] = useState<number>(0)
+  const [headerHeight, setHeaderHeight] = useState<number>(0)
+  const [rowHeight, setRowHeight] = useState<number>(0)
+  const ref = useRef<HTMLDivElement>()
+  const pagedTableHeaderRef = useRef<HTMLTableSectionElement>()
+  const pagedTableBodyRef = useRef<HTMLTableSectionElement>()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (headerHeight === 0) {
+    if (headerHeight === 0 && pagedTableHeaderRef?.current) {
       const calculatedHeaderHeight =
-        document.querySelector<HTMLElement>(`#${pagedTableHeaderId}`)
-          ?.offsetHeight ?? 0
+        pagedTableHeaderRef.current.clientHeight ?? 0
 
       if (calculatedHeaderHeight !== headerHeight) {
         setHeaderHeight(calculatedHeaderHeight)
@@ -253,11 +251,9 @@ const PagedTable: FC<Props> = ({result, properties}) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (rowHeight === 0) {
+    if (rowHeight === 0 && pagedTableBodyRef?.current) {
       const calculatedRowHeight =
-        document.querySelector<HTMLElement>(
-          `#${pagedTableBodyId} > .cf-table--row`
-        )?.offsetHeight ?? 0
+        pagedTableBodyRef.current?.children?.[0].clientHeight ?? 0
 
       if (calculatedRowHeight !== rowHeight) {
         setRowHeight(calculatedRowHeight)
@@ -334,11 +330,8 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     tables.map((t, tIdx) => (
       <InnerTable
         table={t}
-        pagedTableIds={{
-          pagedTableHeaderId,
-          pagedTableBodyId,
-        }}
         key={`table${tIdx}`}
+        pagedTableRefs={{pagedTableHeaderRef, pagedTableBodyRef}}
       />
     ))
 

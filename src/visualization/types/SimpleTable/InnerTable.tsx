@@ -4,9 +4,16 @@ import {SubsetTable} from 'src/visualization/types/SimpleTable'
 
 interface InnerProps {
   table: SubsetTable
+  pagedTableIds: {
+    pagedTableHeaderId: string
+    pagedTableBodyId: string
+  }
 }
 
-const InnerTable: FC<InnerProps> = ({table}) => {
+const InnerTable: FC<InnerProps> = ({
+  pagedTableIds: {pagedTableHeaderId, pagedTableBodyId},
+  table,
+}) => {
   const headers = Object.values(table.cols).map(c => {
     if (c.name === 'table') {
       return (
@@ -61,10 +68,10 @@ const InnerTable: FC<InnerProps> = ({table}) => {
       highlight
       testID="simple-table"
     >
-      <Table.Header>
+      <Table.Header id={pagedTableHeaderId}>
         <Table.Row>{headers}</Table.Row>
       </Table.Header>
-      <Table.Body>{rows}</Table.Body>
+      <Table.Body id={pagedTableBodyId}>{rows}</Table.Body>
     </Table>
   )
 }

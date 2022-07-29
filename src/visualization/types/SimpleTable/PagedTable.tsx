@@ -24,13 +24,12 @@ interface ExtendedColumn {
   data: any[]
 }
 
-const HEADER_HEIGHT = 51
-const ROW_HEIGHT = 25
-
 const measurePage = (
   result: FluxResult['parsed'],
   offset: number,
-  height: number
+  height: number,
+  headerHeight: number,
+  rowHeight: number
 ): number => {
   if (height === 0) {
     return 0
@@ -54,7 +53,7 @@ const measurePage = (
         .join('|')
 
       if (signature !== lastSignature) {
-        runningHeight += HEADER_HEIGHT
+        runningHeight += headerHeight
 
         if (currentTable !== undefined) {
           runningHeight += 10
@@ -72,7 +71,7 @@ const measurePage = (
       continue
     }
 
-    runningHeight += ROW_HEIGHT
+    runningHeight += rowHeight
 
     if (runningHeight >= height) {
       break
@@ -222,6 +221,9 @@ interface Props {
   result: FluxResult['parsed']
 }
 
+const pagedTableHeaderId = 'pagedTableRowId'
+const pagedTableBodyId = 'pagedTabledBodyId'
+
 const PagedTable: FC<Props> = ({result, properties}) => {
   const {
     offset,
@@ -232,7 +234,30 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     setTotalPages,
   } = useContext(PaginationContext)
   const [height, setHeight] = useState(0)
+  const [headerHeight, setHeaderHeight] = useState(0)
+  const [rowHeight, setRowHeight] = useState(0)
   const ref = useRef()
+
+  if (headerHeight === 0) {
+    const calculatedHeaderHeight =
+      document.querySelector<HTMLElement>(`#${pagedTableHeaderId}`)
+        ?.offsetHeight ?? 0
+
+    if (calculatedHeaderHeight !== headerHeight) {
+      setHeaderHeight(calculatedHeaderHeight)
+    }
+  }
+
+  if (rowHeight === 0) {
+    const calculatedRowHeight =
+      document.querySelector<HTMLElement>(
+        `#${pagedTableBodyId} > .cf-table--row`
+      )?.offsetHeight ?? 0
+
+    if (calculatedRowHeight !== rowHeight) {
+      setRowHeight(calculatedRowHeight)
+    }
+  }
 
   // this makes sure that the table is always filling it's parent container
   useEffect(() => {
@@ -274,8 +299,8 @@ const PagedTable: FC<Props> = ({result, properties}) => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const size = useMemo(() => {
-    return measurePage(result, offset, height)
-  }, [result, offset, height])
+    return measurePage(result, offset, height, headerHeight, rowHeight)
+  }, [result, offset, height, headerHeight, rowHeight])
   const tables = useMemo(() => {
     return subsetResult(result, offset, size, properties.showAll)
   }, [result, offset, size]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -285,8 +310,8 @@ const PagedTable: FC<Props> = ({result, properties}) => {
   }, [size]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setMaxSize(measurePage(result, 0, height))
-  }, [height, result]) // eslint-disable-line react-hooks/exhaustive-deps
+    setMaxSize(measurePage(result, 0, height, headerHeight, rowHeight))
+  }, [result, height, headerHeight, rowHeight]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setPage(1)
@@ -300,7 +325,16 @@ const PagedTable: FC<Props> = ({result, properties}) => {
 
   const inner =
     !!size &&
-    tables.map((t, tIdx) => <InnerTable table={t} key={`table${tIdx}`} />)
+    tables.map((t, tIdx) => (
+      <InnerTable
+        table={t}
+        pagedTableIds={{
+          pagedTableHeaderId,
+          pagedTableBodyId,
+        }}
+        key={`table${tIdx}`}
+      />
+    ))
 
   return (
     <div className="visualization--simple-table--results" ref={ref}>

@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react'
+import {nanoid} from 'nanoid'
 import {DapperScrollbars} from '@influxdata/clockface'
 import {FluxDataType} from '@influxdata/giraffe'
 import {
@@ -221,9 +222,6 @@ interface Props {
   result: FluxResult['parsed']
 }
 
-const pagedTableHeaderId = 'pagedTableRowId'
-const pagedTableBodyId = 'pagedTabledBodyId'
-
 const PagedTable: FC<Props> = ({result, properties}) => {
   const {
     offset,
@@ -233,31 +231,39 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     setPage,
     setTotalPages,
   } = useContext(PaginationContext)
+  const [pagedTableHeaderId] = useState<string>(nanoid())
+  const [pagedTableBodyId] = useState<string>(nanoid())
   const [height, setHeight] = useState(0)
   const [headerHeight, setHeaderHeight] = useState(0)
   const [rowHeight, setRowHeight] = useState(0)
   const ref = useRef()
 
-  if (headerHeight === 0) {
-    const calculatedHeaderHeight =
-      document.querySelector<HTMLElement>(`#${pagedTableHeaderId}`)
-        ?.offsetHeight ?? 0
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (headerHeight === 0) {
+      const calculatedHeaderHeight =
+        document.querySelector<HTMLElement>(`#${pagedTableHeaderId}`)
+          ?.offsetHeight ?? 0
 
-    if (calculatedHeaderHeight !== headerHeight) {
-      setHeaderHeight(calculatedHeaderHeight)
+      if (calculatedHeaderHeight !== headerHeight) {
+        setHeaderHeight(calculatedHeaderHeight)
+      }
     }
-  }
+  })
 
-  if (rowHeight === 0) {
-    const calculatedRowHeight =
-      document.querySelector<HTMLElement>(
-        `#${pagedTableBodyId} > .cf-table--row`
-      )?.offsetHeight ?? 0
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (rowHeight === 0) {
+      const calculatedRowHeight =
+        document.querySelector<HTMLElement>(
+          `#${pagedTableBodyId} > .cf-table--row`
+        )?.offsetHeight ?? 0
 
-    if (calculatedRowHeight !== rowHeight) {
-      setRowHeight(calculatedRowHeight)
+      if (calculatedRowHeight !== rowHeight) {
+        setRowHeight(calculatedRowHeight)
+      }
     }
-  }
+  })
 
   // this makes sure that the table is always filling it's parent container
   useEffect(() => {

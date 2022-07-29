@@ -17,10 +17,6 @@ import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {OrgDropdown} from 'src/identity/components/GlobalHeader/OrgDropdown'
 import {AccountDropdown} from 'src/identity/components/GlobalHeader/AccountDropdown'
 
-// Notifications
-import {notify} from 'src/shared/actions/notifications'
-import {orgFetchFailure} from 'src/shared/copy/notifications/categories/accounts-users-orgs'
-
 // Thunks
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 
@@ -50,9 +46,7 @@ export const GlobalHeader: FC = () => {
 
   useEffect(() => {
     if (activeAccount.id !== emptyAccount.id) {
-      dispatch(getQuartzOrganizationsThunk(activeAccount.id)).catch(err => {
-        dispatch(notify(orgFetchFailure(activeAccount.name)))
-      })
+      dispatch(getQuartzOrganizationsThunk(activeAccount.id))
     }
   }, [dispatch, activeAccount.id])
 

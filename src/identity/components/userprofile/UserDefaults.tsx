@@ -22,10 +22,7 @@ import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {selectQuartzIdentity, selectQuartzOrgs} from 'src/identity/selectors'
 
 // Thunks
-import {
-  updateDefaultOrgThunk,
-  DefaultOrgErrorMsg,
-} from 'src/identity/quartzOrganizations/actions/thunks'
+import {updateDefaultOrgThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Components
 import {DefaultDropdown} from 'src/identity/components/userprofile/DefaultDropdown'

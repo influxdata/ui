@@ -129,11 +129,6 @@ export const orgRenameSuccess = (orgName: string): Notification => ({
   message: `Organization was successfully renamed "${orgName}"`,
 })
 
-export const orgFetchFailure = (accountName): Notification => ({
-  ...defaultErrorNotification,
-  message: `Unable to retrieve the organizations for your current account, ${accountName}. Please refresh this page.`,
-})
-
 export const removeUserFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `Error removing user, try again`,

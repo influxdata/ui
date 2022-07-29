@@ -13,7 +13,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import 'src/me/components/DocSearchWidget.scss'
 
-let supportLinks = [
+const supportLinks = [
   {
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/query-data/get-started/`,
     title: 'Get Started with Flux',

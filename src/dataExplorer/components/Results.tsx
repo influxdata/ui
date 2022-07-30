@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext, useMemo} from 'react'
+import React, {CSSProperties, FC, useState, useContext, useMemo} from 'react'
 import {
   FlexBox,
   FlexDirection,
@@ -24,6 +24,12 @@ import {
 import {FluxResult} from 'src/types/flows'
 
 import './Results.scss'
+
+const resultViewStyle: CSSProperties = {
+  height: '100%',
+  width: '100%',
+  padding: 12,
+}
 
 // simplified version migrated from src/flows/pipes/Table/view.tsx
 const QueryStat: FC = () => {
@@ -144,21 +150,23 @@ const Results: FC = () => {
   } else {
     if (view.state === 'table') {
       resultView = (
-        <View
-          loading={status}
-          properties={
-            {
-              type: 'simple-table',
-              showAll: false,
-            } as SimpleTableViewProperties
-          }
-          result={res}
-          hideTimer
-        />
+        <div style={resultViewStyle}>
+          <View
+            loading={status}
+            properties={
+              {
+                type: 'simple-table',
+                showAll: false,
+              } as SimpleTableViewProperties
+            }
+            result={res}
+            hideTimer
+          />
+        </div>
       )
     } else {
       resultView = (
-        <div style={{height: '100%', width: '100%', padding: 12}}>
+        <div style={resultViewStyle}>
           <View
             loading={status}
             properties={view.properties}

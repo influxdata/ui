@@ -126,7 +126,7 @@ describe('Dashboard - variable interactions', () => {
     cy.getByTestID('variable-dropdown--CSVVar').should('be.visible')
   })
 
-  it.only('can manage variable state with a lot of pointing and clicking', () => {
+  it('can manage variable state with a lot of pointing and clicking', () => {
     const bucketOne = 'b1'
     const bucketThree = 'b3'
     const bucketVarName = 'bucketsCSV'
@@ -633,9 +633,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             .should('have.value', bucket5)
 
           // the greeting vars should NOT be there
-          cy.getByTestID(`variable-dropdown--${dependentTypeVarName}`).should(
+          cy.getByTestID(`variable-dropdown--${dependentTypeVarName}`).click().should(
             'contain',
-            'No Values'
+            'No results'
           )
 
           // now, go back to b3; 'hello' should be th eselected greeting

@@ -837,15 +837,15 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('save-cell--button').click()
 
       // the default bucket selection should have no results
-      cy.getByTestID('variable-dropdown-input-typeAhead--static').should(
+      cy.getByTestID('variable-dropdown--static--typeAhead-input').should(
         'have.value',
         'beans'
       )
 
       // and cause the rest to exist in error states
-      cy.getByTestIDSubStr('variable-dropdown--dependent').should(
+      cy.getByTestID('variable-dropdown--dependent').click().should(
         'contain',
-        'Error'
+        'No results'
       )
 
       // An error notification should tell the user that this failed
@@ -864,7 +864,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.get(`#${defaultBucket}`).click()
 
       // default select the first result
-      cy.getByTestID('variable-dropdown-input-typeAhead--dependent').should(
+      cy.getByTestID('variable-dropdown--dependent--typeAhead-input').should(
         'have.value',
         'beans'
       )

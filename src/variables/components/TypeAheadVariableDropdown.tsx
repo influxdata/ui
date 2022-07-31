@@ -46,7 +46,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
         items={typeAheadItems}
         selectedOption={selectedVariableValue}
         onSelect={this.setVariableValue}
-        buttonTestId="variable-dropdown--button"
       />
     )
   }

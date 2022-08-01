@@ -29,7 +29,7 @@ interface UpdateOrgParams {
 // Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
-export enum ThunkErrorNames {
+export enum OrganizationThunkErrors {
   DefaultOrgStateError = 'DefaultOrgStateError',
   DefaultOrgNetworkError = 'DefaultOrgNetworkError',
 }
@@ -37,14 +37,14 @@ export enum ThunkErrorNames {
 export class DefaultOrgStateError extends Error {
   constructor(message) {
     super(message)
-    this.name = ThunkErrorNames.DefaultOrgStateError
+    this.name = OrganizationThunkErrors.DefaultOrgStateError
   }
 }
 
 export class DefaultOrgNetworkError extends Error {
   constructor(message) {
     super(message)
-    this.name = ThunkErrorNames.DefaultOrgNetworkError
+    this.name = OrganizationThunkErrors.DefaultOrgNetworkError
   }
 }
 
@@ -88,7 +88,9 @@ export const updateDefaultOrgThunk = ({
     const orgStatus = state.identity.currentIdentity.status
 
     if (orgStatus === RemoteDataState.Error) {
-      throw new DefaultOrgStateError(ThunkErrorNames.DefaultOrgStateError)
+      throw new DefaultOrgStateError(
+        OrganizationThunkErrors.DefaultOrgStateError
+      )
     }
   } catch (err) {
     reportErrorThroughHoneyBadger(err, {
@@ -100,11 +102,6 @@ export const updateDefaultOrgThunk = ({
       },
     })
 
-    switch (err.name) {
-      case ThunkErrorNames.DefaultOrgStateError:
-        throw new DefaultOrgStateError(err)
-      default:
-        throw new DefaultOrgNetworkError(err)
-    }
+    throw Error(err)
   }
 }

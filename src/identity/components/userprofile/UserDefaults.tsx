@@ -37,9 +37,8 @@ import {
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
 import {
-  orgDefaultReduxError,
+  orgDefaultSetFailure,
   orgDefaultSetSuccess,
-  orgDefaultNetworkError,
 } from 'src/shared/copy/notifications'
 
 // Types
@@ -93,7 +92,7 @@ export const UserDefaults: FC = () => {
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
-  const handleChangeDefaults = () => {
+  const handleChangeDefaults = async () => {
     const notificationParams = {
       orgName: selectedOrg.name,
       accountName: loggedInAccount.name,
@@ -103,25 +102,17 @@ export const UserDefaults: FC = () => {
       handleSetDefaultAccount(selectedAccount.id)
     }
     if (selectedNewOrg) {
-      dispatch(
-        updateDefaultOrgThunk({
-          accountId: loggedInAccount.id,
-          newDefaultOrg: selectedOrg,
-        })
-      )
-        .then(() => {
-          dispatch(notify(orgDefaultSetSuccess(notificationParams)))
-        })
-        .catch(err => {
-          switch (err.name) {
-            case ThunkErrorNames.CannotSetDefaultOrg:
-              dispatch(notify(orgDefaultReduxError(notificationParams)))
-              break
-            default:
-              dispatch(notify(orgDefaultNetworkError(notificationParams)))
-              break
-          }
-        })
+      try {
+        await dispatch(
+          updateDefaultOrgThunk({
+            accountId: loggedInAccount.id,
+            newDefaultOrg: selectedOrg,
+          })
+        )
+        dispatch(notify(orgDefaultSetSuccess(notificationParams)))
+      } catch (err) {
+        dispatch(notify(orgDefaultSetFailure(notificationParams)))
+      }
     }
   }
 

@@ -16,7 +16,7 @@ import {
 import {PublishNotificationAction} from 'src/shared/actions/notifications'
 
 // Types
-import {GetState, RemoteDataState} from 'src/types'
+import {AppThunk, GetState, RemoteDataState} from 'src/types'
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 type Actions = QuartzOrganizationActions | PublishNotificationAction
 type DefaultOrg = OrganizationSummaries[number]
@@ -30,24 +30,21 @@ interface UpdateOrgParams {
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export enum ThunkErrorNames {
-  CannotSetDefaultOrg = 'CannotSetDefaultOrg',
-  NetworkError = 'NetworkError',
+  DefaultOrgStateError = 'DefaultOrgStateError',
+  DefaultOrgNetworkError = 'DefaultOrgNetworkError',
 }
 
-export class DefaultOrgReduxError extends Error {
+export class DefaultOrgStateError extends Error {
   constructor(message) {
-    super()
-    this.message = message
-      ? message
-      : 'Failed to set new default organization in state'
-    this.name = ThunkErrorNames.CannotSetDefaultOrg
+    super(message)
+    this.name = ThunkErrorNames.DefaultOrgStateError
   }
 }
 
 export class DefaultOrgNetworkError extends Error {
   constructor(message) {
     super(message)
-    this.name = ThunkErrorNames.NetworkError
+    this.name = ThunkErrorNames.DefaultOrgNetworkError
   }
 }
 
@@ -73,10 +70,10 @@ export const getQuartzOrganizationsThunk = (accountId: number) => async (
 export const updateDefaultOrgThunk = ({
   accountId,
   newDefaultOrg,
-}: UpdateOrgParams) => async (
+}: UpdateOrgParams): AppThunk<Promise<void>> => async (
   dispatch: Dispatch<Actions>,
   getState: GetState
-) => {
+): Promise<void> => {
   try {
     dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
 
@@ -91,10 +88,8 @@ export const updateDefaultOrgThunk = ({
     const orgStatus = state.identity.currentIdentity.status
 
     if (orgStatus === RemoteDataState.Error) {
-      throw new DefaultOrgReduxError(ThunkErrorNames.CannotSetDefaultOrg)
+      throw new DefaultOrgStateError(ThunkErrorNames.DefaultOrgStateError)
     }
-
-    return Promise.resolve('hi')
   } catch (err) {
     reportErrorThroughHoneyBadger(err, {
       name: err.name,
@@ -106,8 +101,8 @@ export const updateDefaultOrgThunk = ({
     })
 
     switch (err.name) {
-      case ThunkErrorNames.CannotSetDefaultOrg:
-        throw new DefaultOrgReduxError(err)
+      case ThunkErrorNames.DefaultOrgStateError:
+        throw new DefaultOrgStateError(err)
       default:
         throw new DefaultOrgNetworkError(err)
     }

@@ -91,17 +91,9 @@ export const orgCreateSuccess = (): Notification => ({
   message: 'Organization was successfully created',
 })
 
-export const orgDefaultReduxError = ({orgName, accountName}): Notification => ({
+export const orgDefaultSetFailure = ({orgName, accountName}): Notification => ({
   ...defaultErrorNotification,
   message: `Organization ${orgName} could not be set as the default organization for account ${accountName}. Please refresh this page and try again.`,
-})
-
-export const orgDefaultNetworkError = ({
-  orgName,
-  accountName,
-}): Notification => ({
-  ...defaultErrorNotification,
-  message: `Organization ${orgName} could not be set as the default organization for account ${accountName}. Please try again later.`,
 })
 
 export const orgDefaultSetSuccess = ({orgName, accountName}): Notification => ({

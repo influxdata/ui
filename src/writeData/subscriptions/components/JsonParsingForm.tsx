@@ -369,7 +369,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               testID="json-parsing-add-rule"
               status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
             >
-              <Icon glyph={IconFont.Plus} /> Add Rule
+              <Icon glyph={IconFont.Plus_New} /> Add Rule
             </Dropdown.Button>
           )}
           menu={onCollapse => (

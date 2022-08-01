@@ -4,9 +4,15 @@ import React, {FC} from 'react'
 // Components
 import DocSearch, {DocSearchType} from 'src/shared/search/DocSearch'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 import 'src/me/components/DocSearchWidget.scss'
 
-import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 const supportLinks = [
   {
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/query-data/get-started/`,
@@ -35,6 +41,13 @@ const supportLinks = [
     title: 'Feature Requests',
   },
 ]
+
+if (CLOUD && isFlagEnabled('requestPoc')) {
+  supportLinks.push({
+    link: 'https://www.influxdata.com/proof-of-concept/',
+    title: 'Request Proof of Concept',
+  })
+}
 
 const DocSearchWidget: FC = () => {
   return (

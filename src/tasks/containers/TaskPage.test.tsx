@@ -314,7 +314,7 @@ describe('Tasks.Components.TaskCard', () => {
     expect(mocked(notify).mock.calls[0][0].message).toEqual(
       'Failed to create new task: mocked error'
     )
-    expect(mocked(notify).mock.calls[0][0].icon).toEqual('alert-triangle-new')
+    expect(mocked(notify).mock.calls[0][0].icon).toEqual('AlertTriangle')
   })
 
   // ensure clean destruction

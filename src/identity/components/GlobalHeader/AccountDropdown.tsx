@@ -30,7 +30,7 @@ export const AccountDropdown: FC<Props> = ({
   const accountMainMenu = [
     {
       name: 'Settings',
-      iconFont: IconFont.CogOutline,
+      iconFont: IconFont.CogSolid_New,
       href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
     {

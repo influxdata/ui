@@ -12,7 +12,7 @@ const PresentationModeToggle: FC = () => {
 
   return (
     <SquareButton
-      icon={IconFont.ExpandA}
+      icon={IconFont.ExpandB}
       testID="presentation-mode-toggle"
       onClick={() => setPresentationMode(true)}
     />

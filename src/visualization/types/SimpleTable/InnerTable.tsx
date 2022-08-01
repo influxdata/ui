@@ -1,12 +1,19 @@
-import React, {FC} from 'react'
+import React, {FC, Ref} from 'react'
 import {ComponentSize, Table, VerticalAlignment} from '@influxdata/clockface'
 import {SubsetTable} from 'src/visualization/types/SimpleTable'
 
 interface InnerProps {
   table: SubsetTable
+  pagedTableRefs: {
+    pagedTableHeaderRef: Ref<HTMLTableSectionElement>
+    pagedTableBodyRef: Ref<HTMLTableSectionElement>
+  }
 }
 
-const InnerTable: FC<InnerProps> = ({table}) => {
+const InnerTable: FC<InnerProps> = ({
+  pagedTableRefs: {pagedTableHeaderRef, pagedTableBodyRef},
+  table,
+}) => {
   const headers = Object.values(table.cols).map(c => {
     if (c.name === 'table') {
       return (
@@ -61,10 +68,10 @@ const InnerTable: FC<InnerProps> = ({table}) => {
       highlight
       testID="simple-table"
     >
-      <Table.Header>
+      <Table.Header ref={pagedTableHeaderRef}>
         <Table.Row>{headers}</Table.Row>
       </Table.Header>
-      <Table.Body>{rows}</Table.Body>
+      <Table.Body ref={pagedTableBodyRef}>{rows}</Table.Body>
     </Table>
   )
 }

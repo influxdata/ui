@@ -7,7 +7,6 @@ describe('First mile experience', () => {
 
   it('should load the main home-page that has the language tiles', function() {
     cy.getByTestID('home-page--header').should('exist')
-    cy.getByTestID('language-tiles--scrollbox').should('exist')
   })
 
   describe('Python', () => {
@@ -21,31 +20,31 @@ describe('First mile experience', () => {
       cy.contains('Hello, Time-Series World!')
 
       // second page is install dependencies
-      cy.contains('Next').click()
+      cy.getByTestID('python-next-button').click()
       cy.contains('Install Dependencies')
 
       // third page is create token
-      cy.contains('Next').click()
-      cy.contains('Create a Token')
+      cy.getByTestID('python-next-button').click()
+      cy.contains('Tokens')
 
       // fourth page is initalize client
-      cy.contains('Next').click()
-      cy.contains('Initalize Client')
+      cy.getByTestID('python-next-button').click()
+      cy.contains('Initialize Client')
 
       // fifth page is write data
-      cy.contains('Next').click()
+      cy.getByTestID('python-next-button').click()
       cy.contains('Write Data')
 
       // sixth page is execute query
-      cy.contains('Next').click()
+      cy.getByTestID('python-next-button').click()
       cy.contains('Execute a Flux Query')
 
       // seventh page is execute aggregate query
-      cy.contains('Next').click()
+      cy.getByTestID('python-next-button').click()
       cy.contains('Execute an Aggregate Query')
 
       // eight page is finish
-      cy.contains('Next').click()
+      cy.getByTestID('python-next-button').click()
       cy.contains('Congrats!')
     })
 
@@ -53,32 +52,32 @@ describe('First mile experience', () => {
       it('navigates to the correct page when the respective navigation button is clicked', function() {
         cy.get('h1').contains('Hello, Time-Series World!')
 
-        cy.contains('Previous').should('be.disabled')
+        cy.getByTestID('python-prev-button').should('be.disabled')
 
-        cy.contains('Install Dependencies').click()
+        cy.contains(/^Install Dependencies$/).click()
         cy.get('h1').contains('Install Dependencies')
 
         cy.contains('Previous').should('not.be.disabled')
 
-        cy.contains('Create a Token').click()
-        cy.get('h1').contains('Create a Token')
+        cy.contains(/^Tokens$/).click()
+        cy.get('h1').contains('Tokens')
 
-        cy.contains('Initialize Client').click()
+        cy.contains(/^Initialize Client$/).click()
         cy.get('h1').contains('Initialize Client')
 
-        cy.contains('Write Data').click()
+        cy.contains(/^Write Data$/).click()
         cy.get('h1').contains('Write Data')
 
-        cy.contains('Execute a Simple Query').click()
+        cy.contains(/^Execute a Simple Query$/).click()
         cy.contains('Execute a Flux Query')
 
-        cy.contains('Execute an Aggregate Query').click()
+        cy.contains(/^Execute an Aggregate Query$/).click()
         cy.get('h1').contains('Execute an Aggregate Query')
 
-        cy.contains('Finish').click()
+        cy.contains(/^Finish$/).click()
         cy.contains('Congrats!')
 
-        cy.contains('Next').should('be.disabled')
+        cy.getByTestID('python-next-button').should('be.disabled')
       })
     })
   })

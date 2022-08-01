@@ -21,7 +21,7 @@ export const deleteAnnotationFailed = (error: string): Notification => ({
 
 export const editAnnotationSuccess = (): Notification => ({
   ...defaultSuccessNotification,
-  icon: IconFont.Checkmark_New,
+  icon: IconFont.CheckMark_New,
   message: 'Annotation updated successfully',
 })
 

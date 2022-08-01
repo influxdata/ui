@@ -129,7 +129,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   const controls = (
     <Button
       text="Functions"
-      icon={IconFont.Function}
+      icon={IconFont.Flask}
       onClick={launcher}
       color={ComponentColor.Default}
       titleText="Function Reference"

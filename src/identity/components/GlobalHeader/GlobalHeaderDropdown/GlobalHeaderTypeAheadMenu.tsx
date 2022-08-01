@@ -109,6 +109,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
             width="100%"
             layout="vertical"
             itemData={queryResults}
+            className="global-header--list"
           >
             {({data, index, style}) => {
               const value = data[index]

@@ -33,4 +33,5 @@ export const buildDeepLinkingMap = (org: Organization) => ({
   '/me/usage': `/orgs/${org.id}/usage`,
   '/me/users': `/orgs/${org.id}/users`,
   '/me/variables': `/orgs/${org.id}/settings/variables`,
+  '/user/profile': `/orgs/${org.id}/user/profile`,
 })

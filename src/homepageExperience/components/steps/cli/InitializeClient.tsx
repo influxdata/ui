@@ -31,6 +31,7 @@ import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetails
 // Utils
 import {allAccessPermissions} from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
+import {keyboardCopyTriggered} from 'src/utils/keyboardCopy'
 
 // Types
 import {AppState, Authorization} from 'src/types'
@@ -113,9 +114,28 @@ export const InitializeClient: FC<OwnProps> = ({
     }
   }, [currentAuth.token])
 
+  useEffect(() => {
+    document.addEventListener('keydown', fireKeyboardCopyEvent)
+    return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
+  }, [])
+
   // Events log handling
   const logCopyCodeSnippet = () => {
     event(`firstMile.${wizardEventName}.buckets.code.copied`)
+  }
+
+  const userSelection = () => {
+    return window.getSelection().toString()
+  }
+
+  const fireKeyboardCopyEvent = event => {
+    if (
+      keyboardCopyTriggered(event) &&
+      (userSelection().includes('influx config create') ||
+        userSelection().includes('influx bucket create'))
+    ) {
+      logCopyCodeSnippet()
+    }
   }
 
   return (

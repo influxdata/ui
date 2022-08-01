@@ -1,5 +1,5 @@
 // Libraries
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 
 // Components
 import {Button, ButtonGroup, ComponentColor} from '@influxdata/clockface'
@@ -13,6 +13,7 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {downloadTextFile} from 'src/shared/utils/download'
+import {keyboardCopyTriggered} from 'src/utils/keyboardCopy'
 
 // Assets
 const csv = require('src/homepageExperience/assets/sample.csv').default
@@ -47,6 +48,24 @@ export const WriteDataComponent = (props: OwnProps) => {
   const [currentDataSelection, setCurrentDataSelection] = useState<
     CurrentDataSelection
   >('URL')
+
+  useEffect(() => {
+    document.addEventListener('keydown', fireKeyboardCopyEvent)
+    return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
+  }, [])
+
+  const userSelection = () => {
+    return window.getSelection().toString()
+  }
+
+  const fireKeyboardCopyEvent = event => {
+    if (
+      keyboardCopyTriggered(event) &&
+      userSelection().includes('influx write --bucket')
+    ) {
+      logCopyCodeSnippet()
+    }
+  }
 
   return (
     <>

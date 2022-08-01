@@ -113,7 +113,6 @@ export class CliWizard extends PureComponent<{}, State> {
       case 3: {
         return (
           <InitializeClient
-            wizardEventName="cliWizard"
             setTokenValue={this.setTokenValue}
             tokenValue={this.state.tokenValue}
             onSelectBucket={this.handleSelectBucket}

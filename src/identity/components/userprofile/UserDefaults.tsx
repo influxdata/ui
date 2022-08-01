@@ -131,7 +131,7 @@ export const UserDefaults: FC = () => {
           Default Account
         </Heading>
         <div className="change-default-account-org--text">
-          Select the account you want to see by default when you first log in
+          Select the account you want to see when you first log in
         </div>
         {accounts && (
           <DefaultDropdown

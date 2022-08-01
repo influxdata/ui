@@ -6,6 +6,7 @@ import {
   FlexBox,
   FlexDirection,
   FontWeight,
+  Form,
   Heading,
   HeadingElement,
 } from '@influxdata/clockface'
@@ -45,22 +46,20 @@ export const DefaultDropdown: FC<Props> = ({
       alignItems={AlignItems.FlexStart}
       className="change-default-account-org--dropdown-flexbox"
     >
-      <Heading
-        element={HeadingElement.H5}
-        weight={FontWeight.Medium}
-        className="change-default-account-org--dropdown-header"
+      <Form.Element
+        label={`Default ${entityLabel}`}
+        className="user-profile-page--form-element"
       >
-        {`Default ${entityLabel}`}
-      </Heading>
-      <GlobalHeaderDropdown
-        mainMenuOptions={[]}
-        typeAheadOnly={true}
-        typeAheadMenuOptions={entityList}
-        typeAheadInputPlaceholder={`Search ${entityLabel}s ...`}
-        typeAheadSelectedOption={defaultEntity}
-        typeAheadOnSelectOption={changeSelectedEntity}
-        className="change-default-account-org--dropdowns"
-      />
+        <GlobalHeaderDropdown
+          mainMenuOptions={[]}
+          typeAheadOnly={true}
+          typeAheadMenuOptions={entityList}
+          typeAheadInputPlaceholder={`Search ${entityLabel}s ...`}
+          typeAheadSelectedOption={defaultEntity}
+          typeAheadOnSelectOption={changeSelectedEntity}
+          className="change-default-account-org--dropdowns"
+        />
+      </Form.Element>
     </FlexBox>
   )
 }

@@ -14,7 +14,7 @@ interface Props {
 }
 
 const inputStyle = {
-  width: '360px',
+  width: '368px',
   backgroundColor: 'black',
   color: InfluxColors.White,
 }

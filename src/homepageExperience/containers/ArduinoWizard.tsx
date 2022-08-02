@@ -11,7 +11,7 @@ import {
   Page,
   SubwayNav,
 } from '@influxdata/clockface'
-import {CLIIcon} from 'src/homepageExperience/components/HomepageIcons'
+import {ArduinoIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 // Steps
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/arduino/ExecuteAggregateQuery'
@@ -161,7 +161,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
                   navigationSteps={HOMEPAGE_NAVIGATION_STEPS_CLI}
-                  settingUpIcon={CLIIcon}
+                  settingUpIcon={ArduinoIcon}
                   settingUpText="Arduino"
                   setupTime="5 minutes"
                 />

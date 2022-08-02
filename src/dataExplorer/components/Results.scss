@@ -27,6 +27,12 @@ $cf-radius-lg: $cf-radius + 4px;
   display: flex;
 }
 
+.data-explorer-results--view {
+  height: 100%;
+  width: 100%;
+  padding: 12;
+}
+
 .data-explorer-results--empty-header {
   align-self: center;
   text-align: center;

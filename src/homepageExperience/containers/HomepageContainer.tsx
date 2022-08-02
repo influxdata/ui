@@ -48,6 +48,7 @@ export const HomepageContainer: FC = () => {
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
   const telegrafs = useSelector(getAllTelegrafs)
+  const arduinoLink = `/orgs/${org.id}/new-user-setup/arduino`
   const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
   const cliPageLink = isFlagEnabled('onboardCLI')
     ? `/orgs/${org.id}/new-user-setup/cli`
@@ -76,6 +77,9 @@ export const HomepageContainer: FC = () => {
   }
 
   // events handling
+  const logArduinoWizardClick = () => {
+    event('firstMile.arduinoWizard.clicked')
+  }
   const logGoWizardClick = () => {
     event('firstMile.goWizard.clicked')
   }
@@ -164,6 +168,18 @@ export const HomepageContainer: FC = () => {
                       >
                         <div className="homepage-wizard-language-tile">
                           <h5>Go</h5>
+                          {GoIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                    <ResourceCard style={cardStyle}>
+                      <Link
+                        to={arduinoLink}
+                        style={linkStyle}
+                        onClick={logArduinoWizardClick}
+                      >
+                        <div className="homepage-wizard-language-tile">
+                          <h5>Arduino</h5>
                           {GoIcon}
                         </div>
                       </Link>

@@ -49,12 +49,12 @@ const FluxQueryBuilder: FC = () => {
     <EditorProvider>
       <SidebarProvider>
         <FlexBox
+          className="flux-query-builder--container"
           direction={FlexDirection.Column}
           justifyContent={JustifyContent.SpaceBetween}
           alignItems={AlignItems.Stretch}
-          style={{height: '100%'}}
         >
-          <div className="flux-query-builder--menu" style={{width: '100%'}}>
+          <div className="flux-query-builder--menu">
             <Button
               onClick={clear}
               text="New Script"

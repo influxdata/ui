@@ -13,7 +13,7 @@ import React, {FC, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
-import {keyboardCopyTriggered} from 'src/utils/crossPlatform'
+import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 export const InstallDependencies: FC = () => {
   const dispatch = useDispatch()
@@ -62,10 +62,6 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
   )
 
   useEffect(() => {
-    const userSelection = () => {
-      return window.getSelection().toString()
-    }
-
     const fireKeyboardCopyEvent = event => {
       if (
         keyboardCopyTriggered(event) &&

@@ -12,11 +12,11 @@ export const shouldOpenLinkInNewTab = (
   // default behavior at the time of writing this function only supports MacOS
   let OS = OperatingSystems.Mac
 
-  if (window?.navigator?.appVersion.includes('Windows')) {
+  if (window?.navigator?.userAgent.includes('Windows')) {
     OS = OperatingSystems.Windows
   }
 
-  if (window?.navigator?.appVersion.includes('Linux')) {
+  if (window?.navigator?.userAgent.includes('Linux')) {
     OS = OperatingSystems.Linux
   }
 
@@ -48,17 +48,25 @@ export const keyboardCopyTriggered = (
   }
 
   // keyCode 67 is "C"
-  if (OS === OperatingSystems.Mac && event.metaKey && event.keyCode == 67) {
+  if (
+    OS === OperatingSystems.Mac &&
+    event.metaKey &&
+    (event.key === 'KeyC' || event.keyCode == 67)
+  ) {
     return true
   }
 
   if (
     (OS === OperatingSystems.Windows || OS === OperatingSystems.Linux) &&
     event.ctrlKey &&
-    event.keyCode == 67
+    (event.key === 'KeyC' || event.keyCode == 67)
   ) {
     return true
   }
 
   return false
+}
+
+export const userSelection = () => {
+  return window.getSelection().toString()
 }

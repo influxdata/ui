@@ -8,7 +8,7 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 // Utils
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {event} from 'src/cloud/utils/reporting'
-import {keyboardCopyTriggered} from 'src/utils/crossPlatform'
+import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.executeAggregateQuery.code.copied')
@@ -33,10 +33,6 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   const codeSnippet = `influx query 'from(bucket:"${bucketName}") |> range(start:-10m) |> mean()' --raw`
 
   useEffect(() => {
-    const userSelection = () => {
-      return window.getSelection().toString()
-    }
-
     const fireKeyboardCopyEvent = event => {
       if (
         keyboardCopyTriggered(event) &&

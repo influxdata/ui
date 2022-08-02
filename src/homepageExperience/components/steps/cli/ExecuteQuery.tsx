@@ -10,7 +10,7 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {keyboardCopyTriggered} from 'src/utils/crossPlatform'
+import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.executeQuery.code.copied')
@@ -30,10 +30,6 @@ export const ExecuteQuery = (props: OwnProps) => {
   |> filter(fn: (r) => r._measurement == “temperature”)`
 
   useEffect(() => {
-    const userSelection = () => {
-      return window.getSelection().toString()
-    }
-
     const fireKeyboardCopyEvent = event => {
       if (
         keyboardCopyTriggered(event) &&

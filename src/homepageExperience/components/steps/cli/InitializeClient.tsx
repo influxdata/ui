@@ -31,7 +31,7 @@ import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetails
 // Utils
 import {allAccessPermissions} from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
-import {keyboardCopyTriggered} from 'src/utils/crossPlatform'
+import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 // Types
 import {AppState, Authorization} from 'src/types'
@@ -115,10 +115,6 @@ export const InitializeClient: FC<OwnProps> = ({
   }, [currentAuth.token])
 
   useEffect(() => {
-    const userSelection = () => {
-      return window.getSelection().toString()
-    }
-
     const fireKeyboardCopyEvent = event => {
       if (
         keyboardCopyTriggered(event) &&

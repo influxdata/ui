@@ -123,7 +123,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
         </div>
         <div
           className="container-side-bar"
-          data-testid="container-side-bar--tag-value"
+          data-testid="container-side-bar--tag-values"
         >
           {list}
           {loadMoreButton}
@@ -175,7 +175,12 @@ const TagSelector: FC = () => {
         <Accordion.AccordionHeader className="tag-selector-key--header">
           <SelectorTitle title="Tag Keys" info={TAG_KEYS_TOOLTIP} />
         </Accordion.AccordionHeader>
-        <div className="container-side-bar">{list}</div>
+        <div
+          className="container-side-bar"
+          data-testid="container-side-bar--tag-keys"
+        >
+          {list}
+        </div>
       </Accordion>
     ),
     [tags, loadingTagKeys, loadingTagValues, list]

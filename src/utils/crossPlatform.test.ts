@@ -50,6 +50,25 @@ describe('checking whether a link should be opened in a new tab', () => {
       expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
     })
 
+    it('does not trigger a copy when the meta key is pressed', () => {
+      const keyEvent = new KeyboardEvent('keydown', {
+        metaKey: true,
+      })
+      expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
+    })
+
+    it('does not trigger a copy when the c key is pressed', () => {
+      const keyEvent = new KeyboardEvent('keydown', {
+        key: 'KeyC',
+      })
+      expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
+    })
+
+    it('does not trigger a copy when nothing is pressed', () => {
+      const keyEvent = new KeyboardEvent('keydown', {})
+      expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
+    })
+
     it('gets the correct selection', () => {
       expect(userSelection()).toBe('test')
     })
@@ -92,6 +111,25 @@ describe('checking whether a link should be opened in a new tab', () => {
       expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
     })
 
+    it('does not trigger a copy when the meta key is pressed', () => {
+      const keyEvent = new KeyboardEvent('keydown', {
+        ctrlKey: true,
+      })
+      expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
+    })
+
+    it('does not trigger a copy when the c key is pressed', () => {
+      const keyEvent = new KeyboardEvent('keydown', {
+        key: 'KeyC',
+      })
+      expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
+    })
+
+    it('does not trigger a copy when nothing is pressed', () => {
+      const keyEvent = new KeyboardEvent('keydown', {})
+      expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
+    })
+
     it('gets the correct selection', () => {
       expect(userSelection()).toBe('test')
     })
@@ -131,6 +169,25 @@ describe('checking whether a link should be opened in a new tab', () => {
         ctrlKey: true,
         key: 'KeyD',
       })
+      expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
+    })
+
+    it('does not trigger a copy when the meta key is pressed', () => {
+      const keyEvent = new KeyboardEvent('keydown', {
+        ctrlKey: true,
+      })
+      expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
+    })
+
+    it('does not trigger a copy when the c key is pressed', () => {
+      const keyEvent = new KeyboardEvent('keydown', {
+        key: 'KeyC',
+      })
+      expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
+    })
+
+    it('does not trigger a copy when nothing is pressed', () => {
+      const keyEvent = new KeyboardEvent('keydown', {})
       expect(keyboardCopyTriggered(keyEvent)).toBeFalsy()
     })
 

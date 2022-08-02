@@ -21,6 +21,7 @@ import {
 
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {
+  ArduinoIcon,
   CLIIcon,
   GoIcon,
   NodejsIcon,
@@ -180,7 +181,7 @@ export const HomepageContainer: FC = () => {
                       >
                         <div className="homepage-wizard-language-tile">
                           <h5>Arduino</h5>
-                          {GoIcon}
+                          {ArduinoIcon}
                         </div>
                       </Link>
                     </ResourceCard>

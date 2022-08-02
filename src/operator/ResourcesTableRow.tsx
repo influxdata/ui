@@ -11,7 +11,7 @@ interface Props {
 const resolvePath = (object, path, defaultValue) =>
   path.split('.').reduce((o, p) => (o ? o[p] : defaultValue), object)
 
-const ResourcesTableRow: FC<Props> = ({children, resource, infos}) => {
+const ResourcesTableRow: FC<Props> = ({resource, infos}) => {
   const returnValue = (path, defaultValue, renderValue) => {
     const value = resolvePath(resource, path, defaultValue)
     return renderValue ? renderValue(value) : value
@@ -24,7 +24,6 @@ const ResourcesTableRow: FC<Props> = ({children, resource, infos}) => {
           {returnValue(path, defaultValue, renderValue)}
         </Table.Cell>
       ))}
-      {children}
     </Table.Row>
   )
 }

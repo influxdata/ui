@@ -1,17 +1,23 @@
+import {createSelector} from 'reselect'
+
 import {AppState, Cell} from 'src/types'
 
-export const getCells = (
-  {resources}: AppState,
-  dashboardID: string
-): Cell[] => {
-  const dashboard = resources.dashboards.byID[dashboardID]
-  if (!dashboard || !dashboard.cells) {
-    return []
+const getResources = (state: AppState) => state.resources
+const getDashboardId = (_, dashboardID) => dashboardID
+
+export const getCells = createSelector(
+  getResources,
+  getDashboardId,
+  (resources, dashboardId): Cell[] => {
+    const dashboard = resources.dashboards.byID[dashboardId]
+    if (!dashboard || !dashboard.cells) {
+      return []
+    }
+
+    const cellIds = dashboard.cells
+
+    return cellIds
+      .filter(cellId => Boolean(resources.cells.byID[cellId]))
+      .map(cellId => resources.cells.byID[cellId])
   }
-
-  const cellIDs = dashboard.cells
-
-  return cellIDs
-    .filter(id => !!resources.cells.byID[id]) // added filter since it was returning undefined cells
-    .map(id => resources.cells.byID[id])
-}
+)

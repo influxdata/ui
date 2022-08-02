@@ -38,7 +38,7 @@ const REMOVE_COLUMN = '(none)'
 
 const ColumnSelectionError: FC = () => (
   <div className="view-options--band-column-dropdown-error">
-    <Icon glyph={IconFont.AlertTriangle_New} />
+    <Icon glyph={IconFont.AlertTriangle} />
     <span> Cannot be the same as Main Column</span>
   </div>
 )

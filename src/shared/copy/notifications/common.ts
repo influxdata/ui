@@ -29,7 +29,7 @@ const defaultButtonElement = () => null
 export const defaultErrorNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Error,
-  icon: IconFont.AlertTriangle_New,
+  icon: IconFont.AlertTriangle,
   duration: TEN_SECONDS,
 }
 
@@ -43,7 +43,7 @@ export const defaultWarningNotification: NotificationExcludingMessage = {
 export const defaultSuccessNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
-  icon: IconFont.Checkmark_New,
+  icon: IconFont.CheckMark_New,
   duration: FIVE_SECONDS,
 }
 
@@ -84,7 +84,7 @@ export const prohibitedDeselect = (message?: string): Notification => ({
 export const newVersion = (version: string): Notification => ({
   ...defaultSuccessNotification,
   style: NotificationStyle.Info,
-  icon: IconFont.Cubouniform,
+  icon: IconFont.CuboUniform,
   message: `Welcome to the latest Chronograf${version}. Local settings cleared.`,
 })
 
@@ -104,7 +104,7 @@ export const presentationMode = (): Notification => ({
 export const sessionTimedOut = (): Notification => ({
   ...defaultSuccessNotification,
   style: NotificationStyle.Primary,
-  icon: IconFont.Triangle,
+  icon: IconFont.AlertTriangle,
   duration: FIFTEEN_SECONDS,
   message: 'Your session has timed out. Log in again to continue.',
 })

@@ -6,7 +6,7 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
     glyph: IconFont.BookOutline,
   },
   {
-    name: 'Install\nDependencies',
+    name: 'Install\n Dependencies',
     glyph: IconFont.Install,
   },
   {
@@ -14,20 +14,20 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
     glyph: IconFont.CopperCoin,
   },
   {
-    name: 'Initialize\nClient',
-    glyph: IconFont.FileSettings,
+    name: 'Initialize\n Client',
+    glyph: IconFont.CogSolid_New,
   },
   {
-    name: 'Write\nData',
+    name: 'Write\n Data',
     glyph: IconFont.Pencil,
   },
   {
-    name: 'Execute a\nSimple Query',
-    glyph: IconFont.PlayOutline,
+    name: 'Execute a\n Simple Query',
+    glyph: IconFont.Play,
   },
   {
-    name: 'Execute an\nAggregate Query',
-    glyph: IconFont.PlayOutline,
+    name: 'Execute an\n Aggregate Query',
+    glyph: IconFont.Play,
   },
   {
     name: 'Finish',
@@ -41,24 +41,24 @@ export const HOMEPAGE_NAVIGATION_STEPS_CLI = [
     glyph: IconFont.BookOutline,
   },
   {
-    name: 'Install\nDependencies',
+    name: 'Install\n Dependencies',
     glyph: IconFont.Install,
   },
   {
-    name: 'Initialize\nClient',
-    glyph: IconFont.FileSettings,
+    name: 'Initialize\n Client',
+    glyph: IconFont.CogSolid_New,
   },
   {
-    name: 'Write\nData',
+    name: 'Write\n Data',
     glyph: IconFont.Pencil,
   },
   {
-    name: 'Execute\nFlux Query',
-    glyph: IconFont.PlayOutline,
+    name: 'Execute\n Flux Query',
+    glyph: IconFont.Play,
   },
   {
-    name: 'Execute\nAggregate',
-    glyph: IconFont.PlayOutline,
+    name: 'Execute\n Aggregate',
+    glyph: IconFont.Play,
   },
   {
     name: 'Finished!',

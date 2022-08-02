@@ -43,7 +43,7 @@ const CertificateInput: FC = () => {
       {subscriptionsCertificateInterest && (
         <InputLabel size={ComponentSize.Large}>
           <div>
-            <Icon glyph={IconFont.Checkmark_New} />
+            <Icon glyph={IconFont.CheckMark_New} />
             {" You're on the list!"}
           </div>
         </InputLabel>

@@ -168,7 +168,7 @@ const ResultsPane: FC = () => {
           </div>
           {status === RemoteDataState.Error && (
             <div className="data-explorer--error-gutter">
-              <Icon glyph={IconFont.AlertTriangle_New} />
+              <Icon glyph={IconFont.AlertTriangle} />
               <pre>{result.error}</pre>
             </div>
           )}

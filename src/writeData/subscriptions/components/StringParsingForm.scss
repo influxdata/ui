@@ -12,7 +12,7 @@
   .cf-grid--column {
     margin-top: $cf-space-2xs;
     &:first-child {
-      margin-top: $cf-space-l;
+      margin-top: $cf-space-m;
     }
   }
   .cf-grid--column:last-child {
@@ -25,14 +25,12 @@
       }
     }
   }
-  &__header-wrap {
-    margin-bottom: $cf-space-l;
-    margin-top: $cf-space-l;
-    &__header {
-      text-transform: uppercase;
-      margin-top: $cf-space-2xl;
-      margin-bottom: $cf-space-l;
-    }
+  &__link {
+    margin-top: 0;
+  }
+  &__header {
+    text-transform: uppercase;
+    margin: $cf-space-l 0;
   }
 
   &__container {

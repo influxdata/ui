@@ -172,6 +172,19 @@ const BrokerDetails: FC<Props> = ({
             >
               Broker details
             </Heading>
+            {edit && (
+              <p className="update-broker-form__link">
+                Reference our{' '}
+                <a
+                  href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=JSON#set-up-a-native-subscription"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  native subscription documentation
+                </a>{' '}
+                for configuration options.
+              </p>
+            )}
             <BrokerFormContent
               formContent={currentSubscription}
               updateForm={updateForm}

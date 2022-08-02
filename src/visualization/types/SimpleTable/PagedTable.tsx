@@ -41,6 +41,8 @@ const measurePage = (
   let lastSignature
   let signature
 
+  const lastVisibleRowMinimumHeight = 0.2 * rowHeight
+
   while (rowIdx < result.table.length) {
     if (result.table.columns?.table?.data?.[rowIdx] !== currentTable) {
       signature = Object.values(result.table.columns)
@@ -73,7 +75,7 @@ const measurePage = (
 
     runningHeight += rowHeight
 
-    if (runningHeight + 0.25 * rowHeight >= height) {
+    if (runningHeight + lastVisibleRowMinimumHeight >= height) {
       break
     }
 
@@ -253,7 +255,7 @@ const PagedTable: FC<Props> = ({result, properties}) => {
   useEffect(() => {
     if (rowHeight === 0 && pagedTableBodyRef?.current) {
       const calculatedRowHeight =
-        pagedTableBodyRef.current?.children?.[0].clientHeight ?? 0
+        pagedTableBodyRef.current.children?.[0]?.clientHeight ?? 0
 
       if (calculatedRowHeight !== rowHeight) {
         setRowHeight(calculatedRowHeight)

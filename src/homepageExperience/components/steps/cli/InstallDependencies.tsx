@@ -13,6 +13,7 @@ import React, {FC, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
+import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 export const InstallDependencies: FC = () => {
   const dispatch = useDispatch()
@@ -59,6 +60,34 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
   const [currentSelection, setCurrentSelection] = useState<CurrentOSSelection>(
     'Mac'
   )
+
+  useEffect(() => {
+    const fireKeyboardCopyEvent = event => {
+      if (
+        keyboardCopyTriggered(event) &&
+        userSelection().includes('brew install')
+      ) {
+        logCopyCodeSnippetMac()
+      }
+      if (
+        keyboardCopyTriggered(event) &&
+        (userSelection().includes('Expand-Archive') ||
+          userSelection().includes('mv'))
+      ) {
+        logCopyCodeSnippetWindows()
+      }
+      if (
+        keyboardCopyTriggered(event) &&
+        (userSelection().includes('wget') ||
+          userSelection().includes('tar') ||
+          userSelection().includes('sudo'))
+      ) {
+        logCopyCodeSnippetLinux()
+      }
+    }
+    document.addEventListener('keydown', fireKeyboardCopyEvent)
+    return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
+  }, [])
 
   return (
     <>

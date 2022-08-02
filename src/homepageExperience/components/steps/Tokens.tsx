@@ -84,7 +84,6 @@ export const Tokens: FC<OwnProps> = ({
     me.id,
     org.id,
     sortedPermissionTypes,
-    sortedPermissionTypes.length,
     tokenValue,
     wizardEventName,
   ])

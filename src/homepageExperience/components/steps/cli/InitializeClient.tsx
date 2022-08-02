@@ -109,7 +109,6 @@ export const InitializeClient: FC<OwnProps> = ({
     me.id,
     org.id,
     sortedPermissionTypes,
-    sortedPermissionTypes.length,
     tokenValue,
     wizardEventName,
   ])

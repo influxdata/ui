@@ -24,7 +24,10 @@
   }
 }
 
-.container-side-bar {
+.container-side-bar,
+.container-side-bar--fields,
+.container-side-bar--tag-keys,
+.container-side-bar--tag-values {
   border-left: 1px solid $cf-grey-25;
   padding-left: $cf-space-2xs;
   margin-top: $cf-space-xs;
@@ -111,8 +114,9 @@
   }
 }
 
-.field-selector .container-side-bar,
-.tag-selector .container-side-bar {
+.container-side-bar--fields,
+.container-side-bar--tag-keys,
+.container-side-bar--tag-values {
   margin-top: 0;
 }
 

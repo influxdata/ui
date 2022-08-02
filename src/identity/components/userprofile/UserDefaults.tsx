@@ -70,29 +70,29 @@ export const UserDefaults: FC = () => {
     setSelectedOrg(defaultOrg)
   }, [orgs, defaultOrg])
 
-  const selectedNewAccount =
+  const userPickedNewAccount =
     defaultAccount?.id !== selectedAccount?.id && selectedAccount !== null
 
-  const selectedNewOrg =
+  const userPickedNewOrg =
     defaultOrg?.id !== selectedOrg?.id && selectedOrg !== null
 
-  const userChangedPrefs = selectedNewAccount || selectedNewOrg
+  const userChangedPrefs = userPickedNewAccount || userPickedNewOrg
 
   const saveButtonStatus =
-    selectedNewAccount || selectedNewOrg
+    userPickedNewAccount || userPickedNewOrg
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
   const handleChangeDefaults = async () => {
     if (userChangedPrefs) {
       try {
-        if (selectedNewAccount) {
+        if (userPickedNewAccount) {
           await handleSetDefaultAccount(selectedAccount.id, {
             disablePopUps: true,
           })
         }
 
-        if (selectedNewOrg) {
+        if (userPickedNewOrg) {
           await dispatch(
             updateDefaultOrgThunk({
               accountId: loggedInAccount.id,

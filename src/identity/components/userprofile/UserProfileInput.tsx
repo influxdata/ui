@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 
 // Components
-import {ComponentStatus, Input, InfluxColors, Form} from '@influxdata/clockface'
+import {ComponentStatus, InfluxColors, Input, Form} from '@influxdata/clockface'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'

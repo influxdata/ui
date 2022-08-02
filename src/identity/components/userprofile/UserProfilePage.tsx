@@ -7,8 +7,8 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Components
 import {UserAccountProvider} from 'src/accounts/context/userAccount'
-import {UserDetails} from 'src/identity/components/userprofile/UserDetails'
 import {UserDefaults} from 'src/identity/components/userprofile/UserDefaults'
+import {UserDetails} from 'src/identity/components/userprofile/UserDetails'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'

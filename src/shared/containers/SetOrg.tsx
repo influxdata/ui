@@ -9,6 +9,7 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 import {
   AlertHistoryIndex,
   AlertingIndex,
+  ArduinoWizard,
   BillingPage,
   BucketsIndex,
   CheckHistory,
@@ -313,6 +314,12 @@ const SetOrg: FC = () => {
               path="/orgs/:orgID/new-user-setup/golang"
               key="/golang"
               component={GoWizard}
+            />,
+            <Route
+              exact
+              path="/orgs/:orgID/new-user-setup/arduino"
+              key="/arduino"
+              component={ArduinoWizard}
             />,
           ]}
           {isFlagEnabled('onboardCLI') && (

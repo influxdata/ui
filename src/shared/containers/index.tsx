@@ -106,6 +106,12 @@ export const HomepageContainer = lazy(() =>
   ).then(module => ({default: module.HomepageContainer}))
 )
 
+export const ArduinoWizard = lazy(() =>
+  import('src/homepageExperience/containers/ArduinoWizard').then(module => ({
+    default: module.ArduinoWizard,
+  }))
+)
+
 export const PythonWizard = lazy(() =>
   import('src/homepageExperience/containers/PythonWizard').then(module => ({
     default: module.PythonWizard,

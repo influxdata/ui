@@ -89,15 +89,15 @@ describe('FluxQueryBuilder', () => {
         .should('be.visible')
         .should('not.contain', 'Loading')
 
-      // search a feild, should contain only the feild, no tag keys
+      // search a field, should contain only the field, no tag keys
       cy.getByTestID('field-tag-key-search-bar')
         .should('be.visible')
         .type(searchField)
-      cy.getByTestID('container-side-bar--fields')
+      cy.getByTestID('field-selector')
         .should('be.visible')
         .should('not.contain', 'Loading')
         .should('not.contain', 'No Fields Found')
-      cy.getByTestID('container-side-bar--tag-keys')
+      cy.getByTestID('tag-selector')
         .should('be.visible')
         .should('not.contain', 'Loading')
         .should('contain', 'No Tags Found')

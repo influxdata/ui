@@ -1,4 +1,6 @@
-import {AppState} from 'src/types'
+import {createSelector} from 'reselect'
+
+import {AppState, RemoteDataState} from 'src/types'
 import {FlagMap} from 'src/shared/actions/flags'
 import {CLOUD} from 'src/shared/constants'
 
@@ -54,14 +56,21 @@ export const CLOUD_FLAGS = {
   leadWithFlows: false,
 }
 
-export const activeFlags = (state: AppState): FlagMap => {
-  const localState = CLOUD ? CLOUD_FLAGS : OSS_FLAGS
-  const networkState = state.flags.original || {}
-  const override = state.flags.override || {}
+const getConfigCatFlags = (state: AppState) => state.flags.original || {}
+const getLocalFlagOverrides = (state: AppState) => state.flags.override || {}
 
-  return {
-    ...localState,
-    ...networkState,
-    ...override,
+export const activeFlags = createSelector(
+  getConfigCatFlags,
+  getLocalFlagOverrides,
+  (configCatFlags, localFlagOverrides): FlagMap => {
+    const localFlags = CLOUD ? CLOUD_FLAGS : OSS_FLAGS
+    return {
+      ...localFlags,
+      ...configCatFlags,
+      ...localFlagOverrides,
+    }
   }
-}
+)
+
+export const getFlagStatus = (state: AppState) =>
+  state.flags.status || RemoteDataState.NotStarted

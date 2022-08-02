@@ -26,6 +26,7 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {HOMEPAGE_NAVIGATION_STEPS_SHORT} from 'src/homepageExperience/utils'
+import {normalizeEventName} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 interface State {
@@ -74,7 +75,7 @@ export class CliWizard extends PureComponent<{}, State> {
           'firstMile.cliWizard.next.clicked',
           {},
           {
-            clickedButtonAtStep: this.state.currentStep - 1,
+            clickedButtonAtStep: normalizeEventName(HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name),
             currentStep: this.state.currentStep,
           }
         )
@@ -90,7 +91,7 @@ export class CliWizard extends PureComponent<{}, State> {
           'firstMile.cliWizard.previous.clicked',
           {},
           {
-            clickedButtonAtStep: this.state.currentStep + 1,
+            clickedButtonAtStep: normalizeEventName(HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name),
             currentStep: this.state.currentStep,
           }
         )
@@ -100,6 +101,7 @@ export class CliWizard extends PureComponent<{}, State> {
 
   handleNavClick = (clickedStep: number) => {
     this.setState({currentStep: clickedStep})
+    event('firstMile.cliWizard.subNav.clicked', {}, {currentStep: normalizeEventName(HOMEPAGE_NAVIGATION_STEPS_SHORT[clickedStep - 1].name)}) 
   }
 
   renderStep = () => {

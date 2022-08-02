@@ -24,7 +24,7 @@ export const InstallDependencies: FC = () => {
 
   const headingWithMargin = {marginTop: '48px', marginBottom: '0px'}
 
-  const logCopyCodeSnippet = (OS) => {
+  const logCopyCodeSnippet = OS => {
     event(`firstMile.cliWizard.installDependencies${OS}.code.copied`)
   }
 
@@ -65,14 +65,14 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
         keyboardCopyTriggered(event) &&
         userSelection().includes('brew install')
       ) {
-        logCopyCodeSnippetMac()
+        logCopyCodeSnippet('Mac')
       }
       if (
         keyboardCopyTriggered(event) &&
         (userSelection().includes('Expand-Archive') ||
           userSelection().includes('mv'))
       ) {
-        logCopyCodeSnippetWindows()
+        logCopyCodeSnippet('Windows')
       }
       if (
         keyboardCopyTriggered(event) &&
@@ -80,7 +80,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           userSelection().includes('tar') ||
           userSelection().includes('sudo'))
       ) {
-        logCopyCodeSnippetLinux()
+        logCopyCodeSnippet('Linux')
       }
     }
     document.addEventListener('keydown', fireKeyboardCopyEvent)
@@ -136,7 +136,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           <p>
             If you prefer to manually download and install the CLI package,
             follow our{' '}
-            <SafeBlankLink 
+            <SafeBlankLink
               href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/"
               onClick={handleEventing}
             >
@@ -178,7 +178,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </Table>
           <p>
             Full list of commands is available in our{' '}
-            <SafeBlankLink 
+            <SafeBlankLink
               href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/"
               onClick={handleEventing}
             >
@@ -192,7 +192,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           <h2 style={headingWithMargin}>Download the CLI package</h2>
           <p>
             {' '}
-            <SafeBlankLink 
+            <SafeBlankLink
               href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/?t=Windows"
               onClick={handleEventing}
             >
@@ -250,7 +250,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </Table>
           <p>
             Full list of commands is available in our{' '}
-            <SafeBlankLink 
+            <SafeBlankLink
               href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/"
               onClick={handleEventing}
             >
@@ -270,7 +270,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           <p>
             If you prefer to manually download and install the CLI package,
             follow our{' '}
-            <SafeBlankLink 
+            <SafeBlankLink
               href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/?t=Linux"
               onClick={handleEventing}
             >
@@ -334,7 +334,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </Table>
           <p>
             Full list of commands is available in our{' '}
-            <SafeBlankLink 
+            <SafeBlankLink
               href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/"
               onClick={handleEventing}
             >

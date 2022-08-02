@@ -75,8 +75,12 @@ export class CliWizard extends PureComponent<{}, State> {
           'firstMile.cliWizard.next.clicked',
           {},
           {
-            clickedButtonAtStep: normalizeEventName(HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name),
-            currentStep: this.state.currentStep,
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+            ),
           }
         )
       }
@@ -91,8 +95,12 @@ export class CliWizard extends PureComponent<{}, State> {
           'firstMile.cliWizard.previous.clicked',
           {},
           {
-            clickedButtonAtStep: normalizeEventName(HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name),
-            currentStep: this.state.currentStep,
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+            ),
           }
         )
       }

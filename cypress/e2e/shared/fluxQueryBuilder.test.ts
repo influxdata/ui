@@ -108,7 +108,7 @@ describe('FluxQueryBuilder', () => {
         .should('be.visible')
         .should('not.contain', 'Loading')
         .should('not.contain', 'No Fields Found')
-      cy.getByTestID('tag-selector-key')
+      cy.getByTestID('tag-selector')
         .should('be.visible')
         .should('not.contain', 'No Tags Found')
 
@@ -124,7 +124,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('tag-selector-value--header-wrapper')
         .should('be.visible')
         .should('not.contain', 'Loading')
-      cy.getByTestID('tag-selector-key')
+      cy.getByTestID('tag-selector')
         .should('be.visible')
         .should('not.contain', 'No Tags Found')
 
@@ -134,7 +134,7 @@ describe('FluxQueryBuilder', () => {
         .should('be.visible')
         .should('not.contain', 'Loading')
         .should('not.contain', 'No Fields Found')
-      cy.getByTestID('tag-selector-key')
+      cy.getByTestID('tag-selector')
         .should('be.visible')
         .should('not.contain', 'No Tags Found')
 
@@ -150,7 +150,7 @@ describe('FluxQueryBuilder', () => {
       cy.getByTestID('tag-selector-value--header-wrapper')
         .click()
         .then(() => {
-          // cy.getByTestID('tag-selector-key')
+          // cy.getByTestID('tag-selector')
           //   .should('be.visible')
           //   .should('not.contain', 'Loading')
           cy.getByTestID('tag-selector-value--list-item--selectable')

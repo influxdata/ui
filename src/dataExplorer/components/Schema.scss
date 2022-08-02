@@ -43,18 +43,18 @@
 }
 
 .field-selector,
-.tag-selector-key {
+.tag-selector {
   padding-top: $cf-space-2xs;
 }
 
 .field-selector .cf-accordion--icon,
-.tag-selector-key .cf-accordion--icon,
+.tag-selector .cf-accordion--icon,
 .tag-selector-value .cf-accordion--icon {
   color: gray;
 }
 
 .field-selector--header,
-.tag-selector-key--header,
+.tag-selector--header,
 .tag-selector-value--header {
   background-color: transparent;
   min-height: 0;
@@ -66,7 +66,7 @@
 }
 
 .field-selector--list-item,
-.tag-selector-key--list-item,
+.tag-selector--list-item,
 .tag-selector-value--list-item {
   padding: $cf-space-2xs 0 $cf-space-2xs $cf-space-2xs;
   white-space: nowrap;
@@ -112,7 +112,7 @@
 }
 
 .field-selector .container-side-bar,
-.tag-selector-key .container-side-bar {
+.tag-selector .container-side-bar {
   margin-top: 0;
 }
 

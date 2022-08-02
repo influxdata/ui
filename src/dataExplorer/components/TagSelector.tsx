@@ -139,13 +139,11 @@ const TagSelector: FC = () => {
   const tagKeys: string[] = Object.keys(tags)
 
   let list: JSX.Element | JSX.Element[] = (
-    <div className="tag-selector-key--list-item">No Tags Found</div>
+    <div className="tag-selector--list-item">No Tags Found</div>
   )
 
   if (loadingTagKeys === RemoteDataState.Error) {
-    list = (
-      <div className="tag-selector-key--list-item">Failed to load tags</div>
-    )
+    list = <div className="tag-selector--list-item">Failed to load tags</div>
   } else if (
     loadingTagKeys === RemoteDataState.Loading ||
     loadingTagKeys === RemoteDataState.NotStarted
@@ -167,12 +165,8 @@ const TagSelector: FC = () => {
 
   return useMemo(
     () => (
-      <Accordion
-        className="tag-selector-key"
-        expanded={true}
-        testID="tag-selector-key"
-      >
-        <Accordion.AccordionHeader className="tag-selector-key--header">
+      <Accordion className="tag-selector" expanded={true} testID="tag-selector">
+        <Accordion.AccordionHeader className="tag-selector--header">
           <SelectorTitle title="Tag Keys" info={TAG_KEYS_TOOLTIP} />
         </Accordion.AccordionHeader>
         <div

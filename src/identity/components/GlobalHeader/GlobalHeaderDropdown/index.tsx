@@ -40,7 +40,7 @@ export interface Props extends StandardFunctionProps {
   mainMenuHeaderText?: string
   mainMenuHeaderIcon?: IconFont
   mainMenuOptions: MainMenuItem[]
-  typeAheadOnly?: boolean
+  onlyRenderSubmenu?: boolean
   typeAheadSelectedOption?: TypeAheadMenuItem
   typeAheadMenuOptions: TypeAheadMenuItem[]
   typeAheadInputPlaceholder?: string
@@ -56,7 +56,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      showTypeAheadMenu: this.props.typeAheadOnly ?? false,
+      showTypeAheadMenu: this.props.onlyRenderSubmenu ?? false,
       selectedItem: this.props.typeAheadSelectedOption || null,
     }
   }
@@ -141,7 +141,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       dropdownMenuTheme = DropdownMenuTheme.None,
       dropdownMenuStyle,
       typeAheadMenuOptions,
-      typeAheadOnly = false,
+      onlyRenderSubmenu = false,
     } = this.props
     const {showTypeAheadMenu} = this.state
 
@@ -155,7 +155,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     return (
       <Dropdown.Menu theme={dropdownMenuTheme} style={dropdownMenuStyle}>
         {/* Multi-org UI tickets #4051 and #4047, when user only has 1 account or 1 org, switch button is disabled */}
-        {typeAheadOnly === false && typeAheadMenuOptions.length > 1 && (
+        {!onlyRenderSubmenu && typeAheadMenuOptions.length > 1 && (
           <Dropdown.Item onClick={this.toggleShowTypeAheadMenu}>
             <FlexBox
               justifyContent={JustifyContent.SpaceBetween}

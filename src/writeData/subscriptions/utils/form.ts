@@ -250,7 +250,7 @@ const checkStringObjRequiredFields = (
   validateRegex(stringObjParams?.pattern)
 
 const checkStringTimestamp = (stringObjParams: StringObjectParams): boolean => {
-  if (!stringObjParams.pattern) {
+  if (!stringObjParams?.pattern) {
     return true
   }
   return validateRegex(stringObjParams.pattern)
@@ -272,7 +272,7 @@ const checkJsonObjRequiredFields = (jsonObjParams: JsonSpec): boolean =>
   validateJsonPath(jsonObjParams.path)
 
 const checkJsonTimestamp = (jsonObjParams: JsonSpec): boolean => {
-  if (!jsonObjParams.path) {
+  if (!jsonObjParams?.path) {
     return true
   }
   return validateJsonPath(jsonObjParams.path)

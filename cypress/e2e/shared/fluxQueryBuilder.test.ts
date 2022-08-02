@@ -22,8 +22,9 @@ describe('FluxQueryBuilder', () => {
               if (!$toggle.hasClass('active')) {
                 // hasClass is a jQuery function
                 $toggle.click()
-                cy.getByTestID("flux-query-builder--menu")
-                  .contains('New Script')
+                cy.getByTestID('flux-query-builder--menu').contains(
+                  'New Script'
+                )
               }
             })
           })
@@ -111,7 +112,6 @@ describe('FluxQueryBuilder', () => {
         .should('not.contain', 'No Fields Found')
       cy.getByTestID('tag-selector-key')
         .should('be.visible')
-        .should('not.contain', 'Loading')
         .should('not.contain', 'No Tags Found')
 
       // search a tag key, should not contain any fields
@@ -138,7 +138,6 @@ describe('FluxQueryBuilder', () => {
         .should('not.contain', 'No Fields Found')
       cy.getByTestID('tag-selector-key')
         .should('be.visible')
-        .should('not.contain', 'Loading')
         .should('not.contain', 'No Tags Found')
 
       // less than 8 items, no "Load More" button

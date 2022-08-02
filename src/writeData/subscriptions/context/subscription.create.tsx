@@ -72,7 +72,6 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
       name: '',
     },
     bucket: 'nifi',
-    qos: 0,
     timestampPrecision: 'NS',
   },
   updateForm: () => {},

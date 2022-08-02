@@ -23,7 +23,6 @@ export interface Subscription {
   stringTimestamp?: StringObjectParams
   status?: string
   bucket?: string
-  qos?: number
   createdAt?: Date
   updatedAt?: Date
   createdBy?: string

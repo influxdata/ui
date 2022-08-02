@@ -665,7 +665,6 @@ describe('Subscriptions', () => {
       updatedAt: '2022-05-24T19:20:48.371Z',
       protocol: 'mqtt',
       bucket: 'devbucket',
-      qos: 0,
       name: 'aaaa',
       stringMeasurement: {name: 'measurement', pattern: ''},
       stringFields: [{name: '', pattern: ''}],

@@ -2,7 +2,12 @@ import React, {FC, useContext, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
-import {QueryContext, QueryScope, simplify} from 'src/shared/contexts/query'
+import {
+  QueryContext,
+  QueryScope,
+  OverrideMechanism,
+  simplify,
+} from 'src/shared/contexts/query'
 import {event} from 'src/cloud/utils/reporting'
 import {FluxResult} from 'src/types/flows'
 import {PIPE_DEFINITIONS, PROJECT_NAME} from 'src/flows'
@@ -48,7 +53,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
     id: '',
     scope: {
       region: '',
-      org: ''
+      org: '',
     },
     source: '',
     visual: '',
@@ -247,7 +252,9 @@ export const FlowQueryProvider: FC = ({children}) => {
       ...(override || {}),
     }
 
-    return queryAPI(text, _override, { useInjection: true })
+    return queryAPI(text, _override, {
+      overrideMechanism: OverrideMechanism.Injection,
+    })
   }
 
   const basic = (text: string, override?: QueryScope): Promise<FluxResult> => {
@@ -257,7 +264,9 @@ export const FlowQueryProvider: FC = ({children}) => {
       ...(override || {}),
     }
 
-    return basicAPI(text, _override, { useInjection: true })
+    return basicAPI(text, _override, {
+      overrideMechanism: OverrideMechanism.Injection,
+    })
   }
 
   const stati = Object.values(statuses)

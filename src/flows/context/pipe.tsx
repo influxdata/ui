@@ -31,7 +31,7 @@ const DEFAULT_CONTEXT: PipeContextType = {
   readOnly: false,
   scope: {
     region: '',
-    org: ''
+    org: '',
   },
 }
 

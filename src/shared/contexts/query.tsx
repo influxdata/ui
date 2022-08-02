@@ -9,7 +9,7 @@ import {
 
 import {getOrg} from 'src/organizations/selectors'
 import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
-import {FluxResult, QueryScope} from 'src/types/flows'
+import {FluxResult} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
@@ -29,20 +29,50 @@ interface CancelMap {
   [key: string]: () => void
 }
 
+export enum OverrideMechanism {
+  Params,
+  Extern,
+  Injection,
+}
+
 export interface QueryOptions {
-  useInjection?: boolean
-  useExtern?: boolean
+  overrideMechanism: OverrideMechanism
+}
+
+export interface QueryScope {
+  region?: string
+  org?: string
+  token?: string
+  vars?: Record<string, string>
+  params?: Record<string, string>
+  task?: Record<string, string>
+}
+
+interface RequestDialect {
+  annotations: string[]
+}
+
+interface RequestBody {
+  query: string
+  dialect?: RequestDialect
+  options?: Record<string, any>
+  extern?: any
 }
 
 export interface QueryContextType {
   basic: (text: string, override?: QueryScope, options?: QueryOptions) => any
-  query: (text: string, override?: QueryScope, options?: QueryOptions) => Promise<FluxResult>
+  query: (
+    text: string,
+    override?: QueryScope,
+    options?: QueryOptions
+  ) => Promise<FluxResult>
   cancel: (id?: string) => void
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
   basic: (_: string, __: QueryScope, ___: QueryOptions) => {},
-  query: (_: string, __: QueryScope, ___: QueryOptions) => Promise.resolve({} as FluxResult),
+  query: (_: string, __: QueryScope, ___: QueryOptions) =>
+    Promise.resolve({} as FluxResult),
   cancel: (_?: string) => {},
 }
 
@@ -115,8 +145,8 @@ const _addWindowPeriod = (ast, optionAST): void => {
     ast,
     node =>
       node?.callee?.type === 'Identifier' && node?.callee?.name === 'range'
-  ).map(node =>
-    (node.arguments[0]?.properties || []).reduce(
+  ).map(node => {
+    return (node.arguments[0]?.properties || []).reduce(
       (acc, curr) => {
         if (curr.key.name === 'start') {
           acc.start = propertyTime(ast, curr.value, NOW)
@@ -133,12 +163,13 @@ const _addWindowPeriod = (ast, optionAST): void => {
         stop: NOW,
       }
     )
-  )
+  })
 
   const windowPeriod = find(
     optionAST,
     node => node?.type === 'Property' && node?.key?.name === 'windowPeriod'
   )
+
   if (!queryRanges.length) {
     windowPeriod.forEach(node => {
       node.value = {
@@ -188,34 +219,39 @@ const _addWindowPeriod = (ast, optionAST): void => {
   })
 }
 
-const joinOption = (ast: any, optionName: string, defaults: Record<string,string> = {}) => {
+const joinOption = (
+  ast: any,
+  optionName: string,
+  defaults: Record<string, string> = {}
+) => {
   // remove and join duplicate options declared in the query
-    const joinedOption = remove(
-      ast,
-      node => node.type === 'OptionStatement' && node.assignment.id.name === optionName
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
+  const joinedOption = remove(
+    ast,
+    node =>
+      node.type === 'OptionStatement' && node.assignment.id.name === optionName
+  ).reduce((acc, curr) => {
+    // eslint-disable-next-line no-extra-semi
+    ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+      if (_curr.key?.name && _curr.value?.location?.source) {
+        _acc[_curr.key.name] = _curr.value.location.source
+      }
 
-        return _acc
-      }, acc)
+      return _acc
+    }, acc)
 
-      return acc
-    }, defaults)
+    return acc
+  }, defaults)
 
-    const optionVals = Object.entries(joinedOption)
-      .map(([k, v]) => `${k}: ${v}`)
-      .join(',\n')
-    if (!optionVals.length) {
-      return null
-    }
+  const optionVals = Object.entries(joinedOption)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(',\n')
+  if (!optionVals.length) {
+    return null
+  }
 
-    return isFlagEnabled('fastFlows')
-      ? parseQuery(`option ${optionName} = {\n${optionVals}\n}\n`)
-      : parse(`option ${optionName} = {\n${optionVals}\n}\n`)
+  return isFlagEnabled('fastFlows')
+    ? parseQuery(`option ${optionName} = {\n${optionVals}\n}\n`)
+    : parse(`option ${optionName} = {\n${optionVals}\n}\n`)
 }
 
 export const simplify = (text, vars = {}, params = {}) => {
@@ -251,7 +287,8 @@ export const simplify = (text, vars = {}, params = {}) => {
     // give the same treatment to parameters
     const referencedParams = find(
       ast,
-      node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
+      node =>
+        node?.type === 'MemberExpression' && node?.object?.name === 'param'
     )
       .map(node => node.property.name)
       .reduce((acc, curr) => {
@@ -304,9 +341,11 @@ export const QueryProvider: FC = ({children}) => {
   }, [])
 
   const basic = (text: string, override: QueryScope, options: QueryOptions) => {
-    const simpleVars = options?.useInjection ? override?.vars ?? {} : {}
-    const simpleParams = options?.useInjection ? override?.params ?? {} : {}
-    const query = simplify(text, simpleVars, simpleParams)
+    const mechanism = options?.overrideMechanism ?? OverrideMechanism.Extern
+    const query =
+      mechanism === OverrideMechanism.Injection
+        ? simplify(text, override?.vars ?? {}, override?.params ?? {})
+        : text
 
     const orgID = override?.org || org.id
 
@@ -322,9 +361,96 @@ export const QueryProvider: FC = ({children}) => {
       headers['Authorization'] = `Token ${override.token}`
     }
 
-    const body = {
+    const body: RequestBody = {
       query,
       dialect: {annotations: ['group', 'datatype', 'default']},
+    }
+
+    if (mechanism !== OverrideMechanism.Injection) {
+      const options: Record<string, any> = {}
+
+      if (Object.keys(override?.vars ?? {}).length) {
+        options.v = override.vars
+      }
+      if (Object.keys(override?.params ?? {}).length) {
+        options.params = override.params
+      }
+      if (Object.keys(override?.task ?? {}).length) {
+        options.task = override.task
+      }
+
+      const optionTexts = Object.entries(options)
+        .map(([k, v]) => {
+          const vals = Object.entries(v).map(([_k, _v]) => `  ${_k}: ${_v}`)
+          return `option ${k} =  {${vals.join(',\n')}}`
+        })
+        .join('\n\n')
+
+      const queryAST = parse(query)
+      const optionAST = parse(optionTexts)
+
+      // only run this if the query need a windowPeriod
+      if (
+        find(
+          queryAST,
+          node =>
+            node?.type === 'MemberExpression' &&
+            node?.object?.name === 'v' &&
+            node?.property?.name === 'windowPeriod'
+        ).length
+      ) {
+        // make sure there's a variable in there named windowPeriod so later logic doesnt bail
+        find(
+          optionAST,
+          node =>
+            node?.type === 'OptionStatement' &&
+            node?.assignment?.id?.name === 'v'
+        ).forEach(node => {
+          if (
+            find(
+              node,
+              n => n.type === 'Property' && n?.key?.name === 'windowPeriod'
+            ).length
+          ) {
+            return
+          }
+
+          node.assignment.init.properties.push({
+            type: 'Property',
+            key: {
+              type: 'Identifier',
+              name: 'windowPeriod',
+            },
+            value: {
+              type: 'DurationLiteral',
+              values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
+            },
+          })
+        })
+
+        const substitutedAST = {
+          package: '',
+          type: 'Package',
+          files: [queryAST, optionAST],
+        }
+
+        // use the whole query to get that option set by reference
+        _addWindowPeriod(substitutedAST, optionAST)
+      }
+
+      if (
+        Object.keys(options).length &&
+        mechanism === OverrideMechanism.Extern
+      ) {
+        body.extern = optionAST
+      }
+
+      if (
+        Object.keys(options).length &&
+        mechanism === OverrideMechanism.Params
+      ) {
+        body.options = options
+      }
     }
 
     const controller = new AbortController()
@@ -446,7 +572,11 @@ export const QueryProvider: FC = ({children}) => {
     delete pending.current[queryID]
   }
 
-  const query = (text: string, override: QueryScope, options: QueryOptions): Promise<FluxResult> => {
+  const query = (
+    text: string,
+    override: QueryScope,
+    options: QueryOptions
+  ): Promise<FluxResult> => {
     const result = basic(text, override, options)
 
     const promise: any = result.promise

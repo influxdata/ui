@@ -55,7 +55,6 @@ export const WriteDataComponent = (props: OwnProps) => {
         keyboardCopyTriggered(event) &&
         userSelection().includes('influx write --bucket')
       ) {
-        console.log('here')
         logCopyCodeSnippet()
       }
     }

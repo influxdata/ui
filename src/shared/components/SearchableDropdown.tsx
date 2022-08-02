@@ -54,7 +54,7 @@ const SearchableDropdown: FC<Props> = ({
   )
 
   let body: JSX.Element | JSX.Element[] = (
-    <div className="searchable-dropdown--empty">{emptyText}</div>
+    <Dropdown.ItemEmpty>{emptyText}</Dropdown.ItemEmpty>
   )
 
   if (filteredOptions.length) {

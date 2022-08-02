@@ -129,6 +129,14 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.csv$/,
+        use: [
+          {
+            loader: 'raw-loader',
+          },
+        ],
+      },
     ],
   },
   plugins: [

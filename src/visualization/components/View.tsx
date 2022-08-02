@@ -24,6 +24,7 @@ interface Props {
   timeRange?: TimeRange
   annotations?: AnnotationsList
   cellID?: string
+  hideTimer?: boolean
 }
 
 const InnerView: FC<Props> = ({
@@ -68,7 +69,9 @@ const InnerView: FC<Props> = ({
 
 const View: FC<Props> = props => (
   <ErrorBoundary>
-    <ViewLoadingSpinner loading={props.loading || RemoteDataState.Done} />
+    {!props.hideTimer && (
+      <ViewLoadingSpinner loading={props.loading || RemoteDataState.Done} />
+    )}
     <InnerView {...props} />
   </ErrorBoundary>
 )

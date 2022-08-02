@@ -1,7 +1,6 @@
 import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {AutoRefresh, TimeRange, Variable, Secret} from 'src/types'
-import {QueryScope} from 'src/shared/contexts/query'
 
 export interface ControlAction {
   title: string | (() => string)
@@ -184,3 +183,12 @@ export interface EndpointTypeRegistration {
   generateQuery: Function // generates the query for the endpoint
   generateTestQuery: Function // generates teh query to test the endpoint
 }
+
+export interface QueryScope {
+  region: string
+  org: string
+  token?: string
+  vars?: Record<string, string>
+  params?: Record<string, string>
+}
+

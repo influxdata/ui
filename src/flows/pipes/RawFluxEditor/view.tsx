@@ -38,6 +38,7 @@ import 'src/flows/pipes/RawFluxEditor/style.scss'
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {buildQuery} from 'src/timeMachine/utils/queryBuilder'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
@@ -51,8 +52,27 @@ const Query: FC<PipeProp> = ({Context}) => {
   const editorContext = useContext(EditorContext)
   const {inject, injectFunction} = editorContext
   const {queries, activeQuery} = data
-  const query = queries[activeQuery]
+  // NOTE: this is to migrate bad data from an EAR, not part of the spec
+  // the first condition is the correct one
+  const query = Array.isArray(queries) ? queries[activeQuery] : queries
   const {variables} = useContext(VariablesContext)
+
+  // NOTE: this is to migrate bad data from an EAR, not part of the spec
+  // the first condition is the correct one, no need to call build query
+  const queryText = query?.text ?? buildQuery(query)
+
+  // NOTE: this should apply the migration
+  useEffect(() => {
+    if (Array.isArray(queries)) {
+      return
+    }
+
+    if (!query.text) {
+      query.text = buildQuery(query)
+    }
+
+    update({...data, queries: [{...query}]})
+  }, [id])
 
   useEffect(() => {
     if (isFlagEnabled('fluxInjectSecrets')) {
@@ -109,7 +129,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   const controls = (
     <Button
       text="Functions"
-      icon={IconFont.Function}
+      icon={IconFont.Flask}
       onClick={launcher}
       color={ComponentColor.Default}
       titleText="Function Reference"
@@ -130,7 +150,7 @@ const Query: FC<PipeProp> = ({Context}) => {
           }
         >
           <FluxMonacoEditor
-            script={query.text}
+            script={queryText}
             variables={variables}
             onChangeScript={updateText}
             wrapLines="on"
@@ -141,7 +161,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     ),
     [
       RemoteDataState.Loading,
-      query.text,
+      queryText,
       updateText,
       editorContext.editor,
       variables,

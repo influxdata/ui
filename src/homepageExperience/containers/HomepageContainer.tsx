@@ -49,7 +49,9 @@ export const HomepageContainer: FC = () => {
   const org = useSelector(getOrg)
   const telegrafs = useSelector(getAllTelegrafs)
   const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
-  const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
+  const cliPageLink = isFlagEnabled('onboardCLI')
+    ? `/orgs/${org.id}/new-user-setup/cli`
+    : `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
   const newTelegrafPageLink = `/orgs/${org.id}/load-data/telegrafs/new`
   const golangLink = `/orgs/${org.id}/new-user-setup/golang`
@@ -188,13 +190,16 @@ export const HomepageContainer: FC = () => {
                     style={linkStyle}
                     onClick={logCLIButtonClick}
                   >
-                    <div className="homepage-write-data-tile">
+                    <div
+                      className="homepage-write-data-tile"
+                      data-testid="homepage-wizard-tile--cli"
+                    >
                       <div className="tile-icon-text-wrapper">
                         <div className="icon">{CLIIcon}</div>
                         <div>
-                          <h4>InfluxCLI</h4>
+                          <h4>InfluxDB CLI</h4>
                           <h6>
-                            Write and query data using the Influx Command Line
+                            Write and query data using the InfluxDB Command Line
                             Interface. Supports CSV and Line Protocol.
                           </h6>
                         </div>

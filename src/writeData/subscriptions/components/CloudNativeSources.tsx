@@ -49,7 +49,7 @@ const CloudNativeSources: FC = () => {
         weight={FontWeight.Regular}
         style={{marginTop: '24px', marginBottom: '4px'}}
       >
-        Cloud Native Subscriptions
+        Native Subscriptions
         {showUpgradeButton && (
           <FlexBox
             alignItems={AlignItems.Center}

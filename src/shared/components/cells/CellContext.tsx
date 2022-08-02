@@ -1,7 +1,7 @@
 // Libraries
-import React, {FC, useRef, RefObject, useState} from 'react'
+import React, {FC, memo, useRef, RefObject, useState} from 'react'
 import {useHistory, useLocation} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import {get} from 'lodash'
 import classnames from 'classnames'
 
@@ -23,37 +23,27 @@ import CellContextDangerItem from 'src/shared/components/cells/CellContextDanger
 import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
-// Selectors
-import {getAllVariables} from 'src/variables/selectors'
-
 // Types
-import {Cell, View, AppState} from 'src/types'
+import {Cell, View} from 'src/types'
 
-interface OwnProps {
+interface Props {
   cell: Cell
   view: View
   onRefresh: () => void
-  variables: string
   isPaused: boolean
   togglePauseCell: () => void
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
-
 const CellContext: FC<Props> = ({
   view,
   cell,
-  onCloneCell,
-  onDeleteCell,
   onRefresh,
   isPaused,
   togglePauseCell,
-  onShowOverlay,
-  onDismissOverlay,
 }) => {
   const history = useHistory()
   const location = useLocation()
+  const dispatch = useDispatch()
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
   const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
@@ -64,14 +54,14 @@ const CellContext: FC<Props> = ({
   })
 
   const handleCloneCell = () => {
-    onCloneCell(cell.dashboardID, view, cell)
+    dispatch(createCellWithView(cell.dashboardID, view, cell))
   }
 
   const handleDeleteCell = (): void => {
     const viewID = view.id
     const {dashboardID, id} = cell
 
-    onDeleteCell(dashboardID, id, viewID)
+    dispatch(deleteCellAndView(dashboardID, id, viewID))
   }
 
   const handleEditNote = () => {
@@ -108,13 +98,15 @@ const CellContext: FC<Props> = ({
           <CellContextItem
             label="Move"
             onClick={() =>
-              onShowOverlay(
-                'cell-copy-overlay',
-                {
-                  view,
-                  cell,
-                },
-                onDismissOverlay
+              dispatch(
+                showOverlay(
+                  'cell-copy-overlay',
+                  {
+                    view,
+                    cell,
+                  },
+                  () => dispatch(dismissOverlay())
+                )
               )
             }
             icon={IconFont.Export_New}
@@ -151,7 +143,7 @@ const CellContext: FC<Props> = ({
         <CellContextItem
           label="Clone"
           onClick={handleCloneCell}
-          icon={IconFont.Duplicate}
+          icon={IconFont.Duplicate_New}
           onHide={onHide}
           testID="cell-context--clone"
         />
@@ -179,13 +171,15 @@ const CellContext: FC<Props> = ({
         <CellContextItem
           label="Move"
           onClick={() =>
-            onShowOverlay(
-              'cell-copy-overlay',
-              {
-                view,
-                cell,
-              },
-              onDismissOverlay
+            dispatch(
+              showOverlay(
+                'cell-copy-overlay',
+                {
+                  view,
+                  cell,
+                },
+                () => dispatch(dismissOverlay())
+              )
             )
           }
           icon={IconFont.Export_New}
@@ -232,16 +226,4 @@ const CellContext: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => ({
-  variables: getAllVariables(state),
-})
-const mdtp = {
-  onDeleteCell: deleteCellAndView,
-  onCloneCell: createCellWithView,
-  onShowOverlay: showOverlay,
-  onDismissOverlay: dismissOverlay,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(CellContext)
+export default memo(CellContext)

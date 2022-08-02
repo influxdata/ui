@@ -9,6 +9,7 @@ import {VisualizationProps} from 'src/visualization'
 
 import {
   GAUGE_ARC_LENGTH_DEFAULT,
+  GAUGE_VALUE_POSITION_X_OFFSET_DEFAULT,
   GAUGE_VALUE_POSITION_Y_OFFSET_DEFAULT,
 } from './constants'
 
@@ -39,6 +40,7 @@ const GaugeChart: FC<Props> = ({result, properties}) => {
         gaugeColors: colors,
         gaugeSize: GAUGE_ARC_LENGTH_DEFAULT,
         gaugeTheme: {
+          valuePositionXOffset: GAUGE_VALUE_POSITION_X_OFFSET_DEFAULT,
           valuePositionYOffset: GAUGE_VALUE_POSITION_Y_OFFSET_DEFAULT,
         },
       },

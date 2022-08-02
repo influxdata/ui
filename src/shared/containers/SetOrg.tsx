@@ -13,9 +13,9 @@ import {
   BucketsIndex,
   CheckHistory,
   ClientLibrariesPage,
+  CliWizard,
   DashboardContainer,
   DashboardsIndex,
-  DashboardsIndexPaginated,
   DataExplorerPage,
   FileUploadsPage,
   FlowPage,
@@ -147,17 +147,10 @@ const SetOrg: FC = () => {
             component={DataExplorerPage}
           />
           {/* Dashboards */}
-          {isFlagEnabled('paginatedDashboards') ? (
-            <Route
-              path={`${orgPath}/dashboards-list`}
-              component={DashboardsIndexPaginated}
-            />
-          ) : (
-            <Route
-              path={`${orgPath}/dashboards-list`}
-              component={DashboardsIndex}
-            />
-          )}
+          <Route
+            path={`${orgPath}/dashboards-list`}
+            component={DashboardsIndex}
+          />
           <Route
             path={`${orgPath}/dashboards/:dashboardID`}
             component={DashboardContainer}
@@ -302,24 +295,32 @@ const SetOrg: FC = () => {
             <Route exact path="/orgs/:orgID" component={MePage} />
           )}
 
-          {isFlagEnabled('firstMile') && (
-            <>
-              <Route
-                exact
-                path="/orgs/:orgID/new-user-setup/python"
-                component={PythonWizard}
-              />
-              <Route
-                exact
-                path="/orgs/:orgID/new-user-setup/nodejs"
-                component={NodejsWizard}
-              />
-              <Route
-                exact
-                path="/orgs/:orgID/new-user-setup/golang"
-                component={GoWizard}
-              />
-            </>
+          {isFlagEnabled('firstMile') && [
+            <Route
+              exact
+              path="/orgs/:orgID/new-user-setup/python"
+              key="/python"
+              component={PythonWizard}
+            />,
+            <Route
+              exact
+              path="/orgs/:orgID/new-user-setup/nodejs"
+              key="/nodejs"
+              component={NodejsWizard}
+            />,
+            <Route
+              exact
+              path="/orgs/:orgID/new-user-setup/golang"
+              key="/golang"
+              component={GoWizard}
+            />,
+          ]}
+          {isFlagEnabled('onboardCLI') && (
+            <Route
+              exact
+              path="/orgs/:orgID/new-user-setup/cli"
+              component={CliWizard}
+            />
           )}
 
           <Route component={NotFound} />

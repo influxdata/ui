@@ -1,3 +1,6 @@
+// Libraries
+import {NumericColumnData} from '@influxdata/giraffe'
+
 // APIs
 import {parse} from 'src/languageSupport/languages/flux/parser'
 
@@ -17,11 +20,12 @@ import {
 
 // Types
 import {VariableAssignment, Package} from 'src/types/ast'
-import {RemoteDataState, Variable} from 'src/types'
+import {RemoteDataState, TimeRange, Variable} from 'src/types'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
 const DESIRED_POINTS_PER_GRAPH = 360
-const FALLBACK_WINDOW_PERIOD = 15000
+const MINIMUM_WINDOW_PERIOD = 1
+export const FALLBACK_WINDOW_PERIOD = 15000
 
 /*
   Compute the `v.windowPeriod` variable assignment for a query.
@@ -226,4 +230,100 @@ export const getVariableForZoomRequery = (
     default:
       return variable
   }
+}
+
+/*
+ * Prevents the windowPeriod from being null for the time axis
+ *   this fallback is used only for the zoom re-query feature
+ *   if the windowPeriod cannot be found, apply the user-selected domain
+ *     to the original data set and divide by the optimal number of graph points
+ *     to get the estimated windowPeriod
+ */
+export const normalizeWindowPeriodForZoomRequery = (
+  windowPeriod: number | null,
+  timeRange: TimeRange,
+  domain: Array<number>,
+  column: NumericColumnData | string[]
+): number => {
+  if (windowPeriod || !timeRange || !column) {
+    if (windowPeriod < 0) {
+      return FALLBACK_WINDOW_PERIOD
+    }
+    return windowPeriod
+  }
+
+  if (
+    column.length === 0 ||
+    domain.length !== 2 ||
+    Number.isNaN(domain[0]) ||
+    Number.isNaN(domain[1])
+  ) {
+    return FALLBACK_WINDOW_PERIOD
+  }
+
+  let counter = 0
+  let startIndex = counter
+  let endIndex = counter
+  let isSorted = true
+  let prevValue = column[counter]
+
+  while (counter < column.length) {
+    if (domain[0] > column[counter]) {
+      startIndex = counter
+    }
+    if (domain[1] > column[counter]) {
+      endIndex = counter
+    }
+    if (prevValue > column[counter] || column[counter] !== column[counter]) {
+      counter = column.length
+      isSorted = false
+    } else {
+      prevValue = column[counter]
+      counter += 1
+    }
+  }
+
+  const duration =
+    (Number(column[endIndex]) - Number(column[startIndex])) /
+    DESIRED_POINTS_PER_GRAPH
+
+  if (duration === Infinity || Number.isNaN(duration) || isSorted === false) {
+    return FALLBACK_WINDOW_PERIOD
+  }
+
+  return Math.max(duration, MINIMUM_WINDOW_PERIOD)
+}
+
+/*
+ * Prevents the windowPeriod assignment from being empty
+ *   this fallback is used only for the zoom re-query feature
+ *   re-querying should include the windowPeriod assignment as a literal
+ *   even if the backend ignores it due to an override in the Flux script
+ */
+export const normalizeWindowPeriodVariableForZoomRequery = (
+  variableAssignment: VariableAssignment[],
+  windowPeriod: number
+): VariableAssignment[] => {
+  if (Array.isArray(variableAssignment) && variableAssignment.length) {
+    return variableAssignment
+  }
+
+  const assignedWindowPeriod = Math.max(
+    Math.min(Math.round(windowPeriod), FALLBACK_WINDOW_PERIOD),
+    MINIMUM_WINDOW_PERIOD
+  )
+
+  return [
+    {
+      type: 'VariableAssignment',
+      id: {
+        type: 'Identifier',
+        name: WINDOW_PERIOD,
+      },
+      init: {
+        type: 'DurationLiteral',
+        values: [{magnitude: assignedWindowPeriod, unit: 'ms'}],
+      },
+    },
+  ]
 }

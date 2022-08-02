@@ -195,7 +195,7 @@ export const CommunityTemplatesResourceSummary: FC<Props> = ({
         className="community-templates--resources-table-toggle"
         onClick={handleToggleTable}
       >
-        <Icon className={caretClassName} glyph={IconFont.CaretRight} />
+        <Icon className={caretClassName} glyph={IconFont.CaretRight_New} />
         <Heading element={HeadingElement.H4} style={{lineHeight: '40px'}}>
           {toggleText}
         </Heading>

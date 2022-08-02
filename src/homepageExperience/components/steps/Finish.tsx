@@ -81,10 +81,6 @@ export const Finish = (props: OwnProps) => {
     }
   }, [])
 
-  const showSampleAppAndBoilerplate =
-    props.wizardEventName === 'pythonWizard' ||
-    props.wizardEventName === 'nodejsWizard'
-
   return (
     <>
       <h1>Congrats!</h1>
@@ -107,24 +103,24 @@ export const Finish = (props: OwnProps) => {
           alignItems={AlignItems.Stretch}
           direction={FlexDirection.Row}
         >
-          <ResourceCard
-            className="homepage-wizard-next-steps"
-            onClick={() =>
-              handleNextStepEvent(props.wizardEventName, 'keyConcepts')
-            }
-          >
-            <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
+          <ResourceCard className="homepage-wizard-next-steps">
+            <SafeBlankLink
+              href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/"
+              onClick={() =>
+                handleNextStepEvent(props.wizardEventName, 'keyConcepts')
+              }
+            >
               <h4>{BookIcon}Key Concepts</h4>
             </SafeBlankLink>
             <p>Learn about important concepts for writing time-series data.</p>
           </ResourceCard>
-          <ResourceCard
-            className="homepage-wizard-next-steps"
-            onClick={() =>
-              handleNextStepEvent(props.wizardEventName, 'influxUniversity')
-            }
-          >
-            <SafeBlankLink href="https://influxdbu.com/">
+          <ResourceCard className="homepage-wizard-next-steps">
+            <SafeBlankLink
+              href="https://university.influxdata.com/"
+              onClick={() =>
+                handleNextStepEvent(props.wizardEventName, 'influxUniversity')
+              }
+            >
               <h4>{CodeTerminalIcon}InfluxDB University</h4>
             </SafeBlankLink>
             <p>
@@ -133,13 +129,26 @@ export const Finish = (props: OwnProps) => {
               InfluxDB.
             </p>
           </ResourceCard>
+          {props.wizardEventName === 'cliWizard' && (
+            <ResourceCard className="homepage-wizard-next-steps">
+              <SafeBlankLink
+                href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/"
+                onClick={() =>
+                  handleNextStepEvent(props.wizardEventName, 'cliCommands')
+                }
+              >
+                <h4>{BookIcon}CLI Commands</h4>
+              </SafeBlankLink>
+              <p>See the full list of CLI commands and how to use them.</p>
+            </ResourceCard>
+          )}
         </FlexBox>
-        {showSampleAppAndBoilerplate && (
+        {props.wizardEventName !== 'cliWizard' ? (
           <SampleAppCard
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}
           />
-        )}
+        ) : null}
       </FlexBox>
     </>
   )

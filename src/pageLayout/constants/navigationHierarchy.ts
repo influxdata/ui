@@ -78,7 +78,7 @@ export const generateNavItems = (): NavItem[] => {
         {
           id: 'subscriptions',
           testID: 'nav-subitem-subscriptions',
-          label: 'Cloud Native Subscriptions',
+          label: 'Native Subscriptions',
           link: `${orgPrefix}/load-data/subscriptions`,
           enabled: () => CLOUD && isFlagEnabled('subscriptionsUI'),
         },
@@ -93,7 +93,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'data-explorer',
       testID: 'nav-item-data-explorer',
-      icon: IconFont.GraphLine,
+      icon: IconFont.GraphLine_New,
       label: 'Data Explorer',
       shortLabel: 'Explore',
       link: `${orgPrefix}/data-explorer`,
@@ -103,7 +103,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'notebook-explorer',
       testID: 'nav-item-data-explorer',
-      icon: IconFont.GraphLine,
+      icon: IconFont.GraphLine_New,
       label: 'Data Explorer',
       shortLabel: 'Explore',
       link: `/${PROJECT_NAME.toLowerCase()}/from/default`,
@@ -113,7 +113,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'flows',
       testID: 'nav-item-flows',
-      icon: IconFont.BookPencil,
+      icon: IconFont.Pencil,
       label: PROJECT_NAME_PLURAL,
       shortLabel: PROJECT_NAME_SHORT,
       link: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
@@ -122,7 +122,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'dashboards',
       testID: 'nav-item-dashboards',
-      icon: IconFont.GraphLine_New,
+      icon: IconFont.DashH,
       label: 'Dashboards',
       shortLabel: 'Boards',
       link: `${orgPrefix}/dashboards-list`,
@@ -161,7 +161,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'settings',
       testID: 'nav-item-settings',
-      icon: IconFont.WrenchNav,
+      icon: IconFont.CogOutline_New,
       label: 'Settings',
       link: `${orgPrefix}/settings/variables`,
       activeKeywords: ['settings'],

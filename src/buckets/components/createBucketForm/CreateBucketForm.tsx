@@ -69,7 +69,7 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   ] = useState(null)
   const [showSchemaValidation, setShowSchemaValidation] = useState(false)
 
-  const retentionRule = state.retentionRules.find(
+  const retentionRule = state.retentionRules?.find(
     (rule: RetentionRule) => rule.type === 'expire'
   )
   const retentionSeconds = retentionRule ? retentionRule.everySeconds : 3600

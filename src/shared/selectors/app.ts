@@ -32,3 +32,6 @@ export const getFlowsCTA = (state: AppState): FlowsCTA =>
 
 export const getAllFluxFunctions = (state: AppState): FluxFunction[] =>
   state.fluxDocs.fluxDocs
+
+export const getSubscriptionsCertificateInterest = (state: AppState): boolean =>
+  state.app.persisted.subscriptionsCertificateInterest || false

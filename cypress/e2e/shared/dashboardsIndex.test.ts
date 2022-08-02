@@ -40,7 +40,9 @@ describe('Dashboards', () => {
     const newName = 'new 🅱️ashboard'
     // Create from empty state
     cy.getByTestID('empty-dashboards-list').within(() => {
-      cy.getByTestID('add-resource-dropdown--button').click()
+      cy.getByTestID('add-resource-dropdown--button')
+        .first()
+        .click()
     })
 
     cy.getByTestID('add-resource-dropdown--new').click()

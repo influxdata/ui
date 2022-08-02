@@ -107,7 +107,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   })
 
   const icon = isFlagEnabled('credit250Experiment')
-    ? IconFont.Stop
+    ? IconFont.AlertTriangle
     : IconFont.Cloud
 
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {

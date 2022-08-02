@@ -1,0 +1,21 @@
+val mem = new Mem()
+mem.host = "host1"
+mem.used_percent = 23.43234543
+mem.time = Instant.now
+
+val source = Source.single(mem)
+val sink = client.getWriteScalaApi.writeMeasurement()
+val materialized = source.toMat(sink)(Keep.right)
+Await.result(materialized.run(), Duration.Inf)
+
+
+
+@Measurement(name = "mem")
+class Mem() {
+  @Column(tag = true)
+  var host: String = _
+  @Column
+  var used_percent: Double = _
+  @Column(timestamp = true)
+  var time: Instant = _
+}

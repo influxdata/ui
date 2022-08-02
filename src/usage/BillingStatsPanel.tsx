@@ -42,7 +42,7 @@ const BillingStatsPanel: FC = () => {
         >
           <h4 className="usage--billing-date-range">
             {billingDate
-              ? `Billing Stats For ${billingDate} to Today`
+              ? `Billing Stats for ${billingDate} to Today`
               : 'Billing Stats'}
           </h4>
         </ReflessPopover>

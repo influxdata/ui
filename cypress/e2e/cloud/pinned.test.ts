@@ -42,9 +42,11 @@ describe('Pinned Items', () => {
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--container').within(() => {
-        cy.getByTestID('pinneditems--card').should('exist')
-      })
+      cy.getByTestID('pinneditems--container')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('pinneditems--card').should('exist')
+        })
     })
 
     it('reflects an edit to the dashboard name on the dashboard card', () => {
@@ -72,12 +74,14 @@ describe('Pinned Items', () => {
       cy.wait('@updatePinned')
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--container').within(() => {
-        cy.getByTestID('pinneditems--link').should(
-          'contain.text',
-          'Bucks In Six'
-        )
-      })
+      cy.getByTestID('pinneditems--container')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('pinneditems--link').should(
+            'contain.text',
+            'Bucks In Six'
+          )
+        })
     })
 
     it('unpins a card which removes it from the pinned list', () => {
@@ -90,12 +94,15 @@ describe('Pinned Items', () => {
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--card')
-        .first()
-        .trigger('mouseover')
+
+      cy.getByTestID('pinneditems--container')
+        .should('be.visible')
         .within(() => {
-          cy.getByTestID('pinneditems-delete--menu--button').click()
+          cy.getByTestID('pinneditems--card')
+            .first()
+            .trigger('mouseover')
         })
+      cy.getByTestID('pinneditems-delete--menu--button').click()
       cy.getByTestID('pinneditems-delete--menu--confirm-button').click()
       cy.getByTestID('pinneditems--emptystate').should(
         'contain.text',
@@ -114,10 +121,9 @@ describe('Pinned Items', () => {
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--emptystate').should(
-        'contain.text',
-        'Pin a task, dashboard, or notebook here'
-      )
+      cy.getByTestID('pinneditems--emptystate')
+        .should('be.visible')
+        .should('contain.text', 'Pin a task, dashboard, or notebook here')
     })
   })
 
@@ -194,12 +200,14 @@ from(bucket: "${name}"{rightarrow}
       cy.wait('@updatePinned')
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--container').within(() => {
-        cy.getByTestID('pinneditems--link').should(
-          'contain.text',
-          'Bucks In Six'
-        )
-      })
+      cy.getByTestID('pinneditems--container')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('pinneditems--link').should(
+            'contain.text',
+            'Bucks In Six'
+          )
+        })
     })
 
     it('unpins when the underlying resource is removed', () => {
@@ -209,10 +217,9 @@ from(bucket: "${name}"{rightarrow}
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--emptystate').should(
-        'contain.text',
-        'Pin a task, dashboard, or notebook here'
-      )
+      cy.getByTestID('pinneditems--emptystate')
+        .should('be.visible')
+        .should('contain.text', 'Pin a task, dashboard, or notebook here')
     })
   })
 
@@ -280,9 +287,11 @@ from(bucket: "${name}"{rightarrow}
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--container').within(() => {
-        cy.getByTestID('pinneditems--type').should('contain.text', 'NOTEBOOK')
-      })
+      cy.getByTestID('pinneditems--container')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('pinneditems--type').should('contain.text', 'NOTEBOOK')
+        })
     })
 
     it('updates the name when the notebook name is updated', () => {
@@ -313,9 +322,14 @@ from(bucket: "${name}"{rightarrow}
       cy.wait('@updateNotebook')
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--container').within(() => {
-        cy.getByTestID('pinneditems--link').should('contain.text', updatedName)
-      })
+      cy.getByTestID('pinneditems--container')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('pinneditems--link').should(
+            'contain.text',
+            updatedName
+          )
+        })
     })
 
     it('unpins when the resource it is pointing to is deleted', () => {
@@ -334,10 +348,9 @@ from(bucket: "${name}"{rightarrow}
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
-      cy.getByTestID('pinneditems--emptystate').should(
-        'contain.text',
-        'Pin a task, dashboard, or notebook here'
-      )
+      cy.getByTestID('pinneditems--emptystate')
+        .should('be.visible')
+        .should('contain.text', 'Pin a task, dashboard, or notebook here')
     })
   })
 })

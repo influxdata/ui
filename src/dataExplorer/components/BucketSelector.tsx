@@ -85,59 +85,49 @@ const BucketSelector: FC = () => {
     )
   }
 
-  if (!_buckets.length) {
-    return (
-      <div>
-        <SelectorTitle title="Bucket" info={BUCKET_TOOLTIP} />
-        <Dropdown
-          button={button}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.ItemEmpty>No Buckets Available</Dropdown.ItemEmpty>
-            </Dropdown.Menu>
-          )}
-        />
-      </div>
-    )
-  }
+  let body: JSX.Element | JSX.Element[] = (
+    <Dropdown.ItemEmpty>No Buckets Found</Dropdown.ItemEmpty>
+  )
 
-  const body = Object.entries(
-    _buckets.reduce((acc, curr) => {
-      if (!acc[curr.type]) {
-        acc[curr.type] = []
+  if (_buckets.length) {
+    body = Object.entries(
+      _buckets.reduce((acc, curr) => {
+        if (!acc[curr.type]) {
+          acc[curr.type] = []
+        }
+
+        acc[curr.type].push(curr)
+        return acc
+      }, {}) as Record<string, Bucket[]>
+    ).map(([k, v]) => {
+      const items = v.map(bucket => (
+        <Dropdown.Item
+          key={bucket.name}
+          value={bucket}
+          onClick={handleSelectBucket}
+          selected={bucket.name === selectedBucket?.name}
+          title={bucket.name}
+          wrapText={true}
+          testID={`bucket-selector--dropdown--${bucket.name}`}
+        >
+          {bucket.name}
+        </Dropdown.Item>
+      ))
+
+      let name = k
+
+      if (REMAP_BUCKET_TYPES.hasOwnProperty(k)) {
+        name = REMAP_BUCKET_TYPES[k]
       }
 
-      acc[curr.type].push(curr)
-      return acc
-    }, {}) as Record<string, Bucket[]>
-  ).map(([k, v]) => {
-    const items = v.map(bucket => (
-      <Dropdown.Item
-        key={bucket.name}
-        value={bucket}
-        onClick={handleSelectBucket}
-        selected={bucket.name === selectedBucket?.name}
-        title={bucket.name}
-        wrapText={true}
-        testID={`bucket-selector--dropdown--${bucket.name}`}
-      >
-        {bucket.name}
-      </Dropdown.Item>
-    ))
-
-    let name = k
-
-    if (REMAP_BUCKET_TYPES.hasOwnProperty(k)) {
-      name = REMAP_BUCKET_TYPES[k]
-    }
-
-    return (
-      <Fragment key={name}>
-        <Dropdown.Divider text={name} />
-        {items}
-      </Fragment>
-    )
-  })
+      return (
+        <Fragment key={name}>
+          <Dropdown.Divider text={name} />
+          {items}
+        </Fragment>
+      )
+    })
+  }
 
   return (
     <div>

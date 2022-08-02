@@ -26,6 +26,9 @@ const AccountViewHeader: FC = () => {
     deleteOverlayVisible,
   } = useContext(AccountContext)
   const {hasWritePermissions} = useContext(OperatorContext)
+  const canConvertToContract =
+    account.type === 'free' ||
+    (account.type === 'pay_as_you_go' && account.zuoraAccountId !== null)
 
   return (
     <FlexBox
@@ -47,7 +50,7 @@ const AccountViewHeader: FC = () => {
             setConvertToContractOverlayVisible(!convertToContractOverlayVisible)
           }
           status={
-            account.type === 'free'
+            canConvertToContract
               ? ComponentStatus.Default
               : ComponentStatus.Disabled
           }

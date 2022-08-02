@@ -1,0 +1,28 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.global-header--dropdown-button {
+  background: transparent;
+}
+.global-header--typeahead-item {
+  width: 100%;
+  padding-left: 14px;
+}
+
+.global-header--typeahead-input {
+  margin-top: 4px;
+  margin-bottom: 8px;
+  margin-left: 0;
+  margin-right: 0;
+  z-index: 0;
+}
+
+.button-icon {
+  color: $cf-grey-75;
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.line-break {
+  margin: 8px;
+  background-color: rgba(241, 241, 243, 0.1);
+}

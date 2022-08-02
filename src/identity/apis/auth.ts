@@ -1,11 +1,14 @@
 // Functions calling API
 import {
   getAccount,
+  getAccountsOrgs,
   getIdentity,
   getMe as getMeQuartz,
   getOrg,
   getOrgs,
   putOrgsDefault,
+  putAccountsDefault,
+  putAccountsOrgsDefault,
   Account,
   Identity,
   IdentityAccount,
@@ -30,12 +33,12 @@ import {CLOUD} from 'src/shared/constants'
 // Types
 import {RemoteDataState} from 'src/types'
 
-// These are optional properties of the current account which are not retrieved from identity.
+// Additional properties of the current account, which are not retrieved from  /quartz/identity.
 export interface CurrentAccount extends IdentityAccount {
   billingProvider?: 'zuora' | 'aws' | 'gcm' | 'azure'
 }
 
-// Optional properties of the current org, which are not retrieved from identity.
+// Additional properties of the current org, which are not retrieved from /quartz/identity.
 export interface CurrentOrg {
   id: string
   clusterHost: string
@@ -69,6 +72,7 @@ export enum NetworkErrorTypes {
   UnauthorizedError = 'UnauthorizedError',
   NotFoundError = 'NotFoundError',
   ServerError = 'ServerError',
+  UnprocessableEntity = 'UnprocessableEntity',
   GenericError = 'GenericError',
 }
 
@@ -85,6 +89,14 @@ export class NotFoundError extends Error {
   constructor(message) {
     super(message)
     this.name = 'NotFoundError'
+  }
+}
+
+// 422 error
+export class UnprocessableEntityError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'UnprocessableEntityError'
   }
 }
 
@@ -114,42 +126,6 @@ export const fetchIdentity = async () => {
   }
 
   return fetchQuartzMe()
-}
-
-const identityRetryDelay = 30000 // 30 seconds
-const retryLimit = 5
-
-export const retryFetchIdentity = async (
-  retryAttempts = 1,
-  retryDelay = identityRetryDelay
-) => {
-  try {
-    return await fetchIdentity()
-  } catch (error) {
-    if (
-      error.name === NetworkErrorTypes.UnauthorizedError ||
-      error.name === NetworkErrorTypes.GenericError
-    ) {
-      throw error
-    }
-
-    if (error.name === NetworkErrorTypes.ServerError) {
-      if (retryAttempts >= retryLimit) {
-        throw error
-      }
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          retryFetchIdentity(retryAttempts + 1, retryDelay)
-            .then(user => {
-              resolve(user)
-            })
-            .catch(error => {
-              reject(error)
-            })
-        }, retryAttempts * retryDelay)
-      })
-    }
-  }
 }
 
 // fetch user identity from /quartz/identity.
@@ -188,7 +164,7 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
   return user
 }
 
-// fetch user identity from /me (used in OSS and environments without Quartz)
+// fetch user identity from IDPE /me (used in OSS and environments without Quartz)
 export const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
 
@@ -205,7 +181,7 @@ export const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   return user
 }
 
-// fetch details about user's current account
+// fetch details about one of the user's accounts
 export const fetchAccountDetails = async (
   accountId: string | number
 ): Promise<Account> => {
@@ -227,7 +203,24 @@ export const fetchAccountDetails = async (
   return accountDetails
 }
 
-// fetch details about user's current organization
+// change the user's default account
+export const updateDefaultQuartzAccount = async (
+  accountId: number
+): Promise<void> => {
+  const response = await putAccountsDefault({
+    data: {
+      id: accountId,
+    },
+  })
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  // success status code is 204; no response body expected.
+}
+
+// fetch details about one of the user's organizations
 export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   const response = await getOrg({orgId})
 
@@ -243,7 +236,7 @@ export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   return orgDetails
 }
 
-// fetch list of user's current organizations
+// fetch the list of organizations in the user's currently active account
 export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
   const response = await getOrgs({})
 
@@ -258,8 +251,8 @@ export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
   return response.data
 }
 
-// change default organization for a given account
-export const putDefaultQuartzOrg = async (orgId: string) => {
+// change the default organization for the user's currently active account
+export const updateDefaultQuartzOrg = async (orgId: string) => {
   const response = await putOrgsDefault({
     data: {
       id: orgId,
@@ -272,4 +265,54 @@ export const putDefaultQuartzOrg = async (orgId: string) => {
   }
 
   return response.data
+}
+
+// fetch the list of organizations associated with a given account ID
+export const fetchOrgsByAccountID = async (
+  accountNum: number
+): Promise<OrganizationSummaries> => {
+  const accountId = accountNum.toString()
+
+  const response = await getAccountsOrgs({
+    accountId,
+  })
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
+}
+
+// update the default org for a given account
+export const updateDefaultOrgByAccountID = async ({
+  accountNum,
+  orgId,
+}): Promise<void> => {
+  const accountId = accountNum.toString()
+
+  const response = await putAccountsOrgsDefault({
+    accountId,
+    data: {
+      id: orgId,
+    },
+  })
+
+  if (response.status === 404) {
+    throw new NotFoundError(response.data.message)
+  }
+
+  if (response.status === 422) {
+    throw new UnprocessableEntityError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  // success status code is 204; no response body expected.
 }

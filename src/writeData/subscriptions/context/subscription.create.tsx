@@ -39,7 +39,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
-      name: 'measurement',
+      name: '',
       path: '',
       type: 'string',
     },
@@ -58,7 +58,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     },
     stringMeasurement: {
       pattern: '',
-      name: 'measurement',
+      name: '',
     },
     stringFields: [
       {
@@ -96,9 +96,9 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
       })
-      .catch(() => {
+      .catch(err => {
         setLoading(RemoteDataState.Done)
-        dispatch(notify(subscriptionCreateFail()))
+        dispatch(notify(subscriptionCreateFail(err.message)))
       })
   }
 

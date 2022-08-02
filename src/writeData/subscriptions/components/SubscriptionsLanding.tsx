@@ -27,6 +27,7 @@ import {
   SubscriptionListContext,
   SubscriptionListProvider,
 } from 'src/writeData/subscriptions/context/subscription.list'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -108,7 +109,7 @@ const SubscriptionsLanding: FC = () => {
   return (
     <Page
       className="subscriptions-landing"
-      titleTag={pageTitleSuffixer(['Cloud Native Subscriptions', 'Load Data'])}
+      titleTag={pageTitleSuffixer(['Native Subscriptions', 'Load Data'])}
     >
       <LoadDataHeader />
       <LoadDataTabbedPage activeTab="subscriptions">
@@ -168,7 +169,9 @@ const SubscriptionsLanding: FC = () => {
 SubscriptionsLanding
 
 export default () => (
-  <SubscriptionListProvider>
-    <SubscriptionsLanding />
-  </SubscriptionListProvider>
+  <AppSettingProvider>
+    <SubscriptionListProvider>
+      <SubscriptionsLanding />
+    </SubscriptionListProvider>
+  </AppSettingProvider>
 )

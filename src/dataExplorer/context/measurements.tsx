@@ -6,10 +6,7 @@ import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
-import {
-  DEFAULT_TAG_LIMIT,
-  EXTENDED_TAG_LIMIT,
-} from 'src/shared/constants/queryBuilder'
+import {DEFAULT_LIMIT, EXTENDED_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Contexts
 import {QueryContext, QueryScope} from 'src/shared/contexts/query'
@@ -56,8 +53,8 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
 
   // Constant
   const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-    ? EXTENDED_TAG_LIMIT
-    : DEFAULT_TAG_LIMIT
+    ? EXTENDED_LIMIT
+    : DEFAULT_LIMIT
 
   const getMeasurements = async bucket => {
     if (!bucket) {

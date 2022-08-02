@@ -19,7 +19,6 @@ import {getOrg} from 'src/organizations/selectors'
 import {getOrg as fetchOrg} from 'src/organizations/apis'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {buildDeepLinkingMap} from 'src/utils/deepLinks'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -133,7 +132,7 @@ const NotFound: FC = () => {
   const org = useRef<Organization>(reduxOrg)
 
   const handleDeepLink = useCallback(async () => {
-    if (!org) {
+    if (!org.current) {
       setIsFetchingOrg(true)
       org.current = await fetchOrg()
     }
@@ -149,9 +148,7 @@ const NotFound: FC = () => {
   }, [history, location.pathname])
 
   useEffect(() => {
-    if (isFlagEnabled('deepLinking')) {
-      handleDeepLink()
-    }
+    handleDeepLink()
   }, [handleDeepLink])
 
   if (isFetchingOrg) {

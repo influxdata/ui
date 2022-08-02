@@ -52,7 +52,7 @@ const UserInput: FC<Props> = ({formContent, updateForm, className, edit}) => (
     </Form.Element>
     <Form.Element label="Password">
       <Input
-        type={InputType.Text}
+        type={InputType.Password}
         placeholder="*********"
         name="password"
         value={formContent.brokerPassword}

@@ -51,6 +51,30 @@ $cf-radius-lg: $cf-radius + 4px;
   position: absolute;
   width: 100%;
   height: 100%;
+
+  .monaco-editor,
+  .monaco-editor > div:first-of-type {
+    border-radius: $cf-radius-lg;
+  }
+}
+
+.data-explorer--error-gutter {
+  color: $c-fire;
+  background-color: $cf-grey-15;
+  border-radius: $cf-radius-lg;
+  width: 100%;
+  display: flex;
+
+  .cf-icon {
+    padding: $cf-space-2xs $cf-space-s;
+    font-size: $cf-text-base-2;
+  }
+
+  pre {
+    padding: $cf-space-2xs 0;
+    font-family: $cf-code-font;
+    white-space: pre-line;
+  }
 }
 
 .query-stat {

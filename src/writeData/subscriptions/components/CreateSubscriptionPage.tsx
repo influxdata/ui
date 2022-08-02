@@ -24,6 +24,7 @@ import {
 } from 'src/writeData/subscriptions/context/subscription.create'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Types
 import {
@@ -128,7 +129,7 @@ const CreateSubscriptionPage: FC = () => {
                 onStepClick={handleClick}
                 navigationSteps={stepsWithIsCompletedStatus}
                 settingUpIcon={FormLogo}
-                settingUpText="MQTT Connector"
+                settingUpText="Native MQTT"
                 showCheckmark={true}
               />
             </div>
@@ -158,9 +159,11 @@ const CreateSubscriptionPage: FC = () => {
 }
 
 export default () => (
-  <SubscriptionCreateProvider>
-    <WriteDataDetailsProvider>
-      <CreateSubscriptionPage />
-    </WriteDataDetailsProvider>
-  </SubscriptionCreateProvider>
+  <AppSettingProvider>
+    <SubscriptionCreateProvider>
+      <WriteDataDetailsProvider>
+        <CreateSubscriptionPage />
+      </WriteDataDetailsProvider>
+    </SubscriptionCreateProvider>
+  </AppSettingProvider>
 )

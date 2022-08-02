@@ -63,10 +63,11 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
       description,
       permissions: allAccessPermissions(sortedPermissionTypes, orgID, meID),
     }
-    dispatch(createAuthorization(token))
-    handleDismiss()
-    event('token.allAccess.create.success', {meID, name: description})
-    dispatch(showOverlay('access-token', null, () => dismissOverlay()))
+
+    Promise.resolve(dispatch(createAuthorization(token))).then(() => {
+      event('token.allAccess.create.success', {meID, name: description})
+      dispatch(showOverlay('access-token', null, () => dismissOverlay()))
+    }, handleDismiss)
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -108,14 +109,14 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
               <Button
                 text="Cancel"
                 color={ComponentColor.Tertiary}
-                icon={IconFont.Remove}
+                icon={IconFont.Remove_New}
                 onClick={handleDismiss}
               />
 
               <Button
                 text="Save"
                 testID="button--save"
-                icon={IconFont.Checkmark}
+                icon={IconFont.CheckMark_New}
                 color={ComponentColor.Success}
                 type={ButtonType.Submit}
               />

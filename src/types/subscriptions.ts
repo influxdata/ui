@@ -26,11 +26,21 @@ export interface Subscription {
   qos?: number
   createdAt?: Date
   updatedAt?: Date
+  createdBy?: string
+  updatedBy?: string
   tokenID?: string
   token?: string
   isActive?: string
   flowVersion?: number
   timestampPrecision?: string
+  notebookID?: string
+}
+
+export interface SubscriptionStatus {
+  isActive?: boolean
+  processors?: any
+  processGroupID?: string
+  id: string
 }
 
 export interface JsonSpec {

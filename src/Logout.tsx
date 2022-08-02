@@ -1,7 +1,7 @@
 // Libraries
 import {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-import {RouteComponentProps} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 // APIs
 import {postSignout} from 'src/client'
@@ -18,9 +18,8 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Components
 import {reset} from 'src/shared/actions/flags'
 
-type Props = RouteComponentProps
-
-const Logout: FC<Props> = ({history}) => {
+const Logout: FC = () => {
+  const history = useHistory()
   const dispatch = useDispatch()
 
   useEffect(() => {

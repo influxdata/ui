@@ -1,0 +1,71 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.user-avatar-button {
+  box-shadow: none !important;
+  margin: 0;
+  border-radius: 50%;
+  border: 2px solid $cf-grey-65;
+
+  &.user-popover--open {
+    border: none;
+    background: linear-gradient(75.66deg, #0098f0 0%, $c-amethyst 79.64%);
+  }
+}
+
+.user-popover {
+  opacity: 0;
+  position: absolute;
+  top: 60px;
+  right: 32px;
+  z-index: 9999;
+  min-width: 250px;
+  background: rgba(241, 241, 243, 0.1);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(42px);
+  border-radius: 2px;
+  transition: opacity 0.1s ease-in-out;
+
+  &.user-popover--open {
+    opacity: 100;
+  }
+
+  .user-popover-header-email {
+    margin-top: 2px;
+    color: $cf-grey-65;
+  }
+
+  .user-popover-header {
+    width: 100%;
+    padding: 16px 16px 0 16px;
+  }
+
+  .user-popover-footer {
+    width: 100%;
+    padding: 0px 16px 16px 16px;
+    display: inline-flex;
+    flex-direction: column;
+
+    .user-popover-footer--button {
+      margin-top: 10px;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    a:hover {
+      color: $cf-grey-75;
+    }
+
+    .user-popover-footer--button-icon {
+      font-size: 18px;
+      color: $cf-grey-65;
+      margin-right: 11px;
+    }
+  }
+
+  hr {
+    background: $cf-grey-65;
+    opacity: 20%;
+    margin: 0;
+    margin-top: 10px;
+  }
+}

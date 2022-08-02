@@ -84,6 +84,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
         key={value}
         className="tag-selector-value--list-item--selectable"
         onClick={() => handleSelectTagValue(value)}
+        data-testid="tag-selector-value--list-item--selectable"
       >
         <code>{value}</code>
       </dd>
@@ -112,7 +113,10 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
 
     return (
       <Accordion className="tag-selector-value">
-        <div onClick={() => handleSelectTagKey(tagKey)}>
+        <div
+          onClick={() => handleSelectTagKey(tagKey)}
+          data-testid="tag-selector--key"
+        >
           <Accordion.AccordionHeader className="tag-selector-value--header">
             <SelectorTitle title={tagKey} />
           </Accordion.AccordionHeader>

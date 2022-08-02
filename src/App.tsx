@@ -39,7 +39,8 @@ import {AppState} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-import {shouldUseQuartzIdentity} from './identity/utils/shouldUseQuartzIdentity'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
+import {executeVWO} from 'src/utils/vwo'
 
 // Styles
 const fullScreen = {height: '100%', width: '100%'}
@@ -78,6 +79,11 @@ const App: FC = () => {
         document.body.removeChild(script)
       }
     }
+
+    if (CLOUD && isFlagEnabled('vwoAbTesting')) {
+      executeVWO()
+    }
+
     setAutoFreeze(false)
   }, [])
 

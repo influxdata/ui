@@ -1,3 +1,9 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.flux-query-builder--container {
+  height: 100%;
+}
+
 .new-data-explorer-rightside {
   .cf-draggable-resizer--handle > .cf-draggable-resizer--handle-pill1,
   .cf-draggable-resizer--handle > .cf-draggable-resizer--handle-pill2,
@@ -12,4 +18,15 @@
     min-height: auto;
     width: calc(25% - 60px);
   }
+}
+
+.flux-query-builder--header {
+  margin-bottom: 0;
+}
+
+.flux-query-builder--menu {
+  padding: $cf-space-2xs 0;
+  margin-bottom: $cf-space-s;
+  border-top: 1px solid $cf-grey-15;
+  border-bottom: 1px solid $cf-grey-15;
 }

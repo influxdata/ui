@@ -842,11 +842,12 @@ export const timeMachineReducer = (
 
           // but for the group aggregate, want to set default values
           if (builderAggregateFunctionType === 'group') {
-            draftQuery.builderConfig.tags[
-              index
-            ].values = draftQuery.builderConfig.tags
+            const initValues = draftQuery.builderConfig.tags
               .map(t => t.key)
               .filter(x => !!x)
+
+            draftQuery.builderConfig.tags[index].values = initValues
+            draftState.queryBuilder.tags[index].values = initValues
           }
 
           draftQuery.builderConfig.tags[

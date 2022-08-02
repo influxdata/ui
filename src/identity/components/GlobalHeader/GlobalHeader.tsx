@@ -28,6 +28,7 @@ import {
   emptyOrg,
 } from 'src/identity/components/GlobalHeader/DefaultEntities'
 import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
+import IdentityUserAvatar from 'src/identity/components/GlobalHeader/IdentityUserAvatar'
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
@@ -44,8 +45,10 @@ export const GlobalHeader: FC = () => {
   const [activeAccount, setActiveAccount] = useState(emptyAccount)
 
   useEffect(() => {
-    dispatch(getQuartzOrganizationsThunk())
-  }, [dispatch])
+    if (activeAccount.id !== emptyAccount.id) {
+      dispatch(getQuartzOrganizationsThunk(activeAccount.id))
+    }
+  }, [dispatch, activeAccount.id])
 
   useEffect(() => {
     if (accountsList[0].id !== 0) {
@@ -83,11 +86,12 @@ export const GlobalHeader: FC = () => {
               activeAccount={activeAccount}
               accountsList={sortedAccounts}
             />
-            <Icon glyph={IconFont.CaretRight} />
+            <Icon glyph={IconFont.CaretRight_New} />
             <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
           </>
         )}
       </FlexBox>
+      <IdentityUserAvatar user={identity.currentIdentity.user} />
     </FlexBox>
   )
 }

@@ -9,11 +9,7 @@ import {
 
 import {getOrg} from 'src/organizations/selectors'
 import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
-import {
-  FluxResult,
-  InternalFromFluxResult,
-  Column,
-} from 'src/types/flows'
+import {FluxResult, QueryScope} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
@@ -36,14 +32,6 @@ interface CancelMap {
 export interface QueryOptions {
   useInjection?: boolean
   useExtern?: boolean
-}
-
-export interface QueryScope {
-  region: string
-  org: string
-  token?: string
-  vars?: Record<string, string>
-  params?: Record<string, string>
 }
 
 export interface QueryContextType {
@@ -290,118 +278,6 @@ export const simplify = (text, vars = {}, params = {}) => {
   }
 }
 
-const parseCSV = (() => {
-  const worker = new Worker('./csv.worker', {type: 'module'})
-  const queue = {}
-  let counter = 0
-
-  worker.onmessage = msg => {
-    const idx = msg.data[0]
-    const data = msg.data[1] as InternalFromFluxResult
-
-    if (!queue[idx]) {
-      return
-    }
-
-    // NOTE Only POJOs survive the jump between webworkers and the main thread, so here
-    // we have to rewrap the response to mimic the giraffe fromFlux interface
-
-    Object.defineProperty(data.table, 'length', {
-      get: () =>
-        (Object.values(data?.table?.columns ?? {})[0]?.data ?? []).length || 0,
-    })
-    Object.defineProperty(data.table, 'columnKeys', {
-      get: () => Object.keys(data.table.columns),
-    })
-    data.table.getColumn = (
-      columnKey: string,
-      columnType?: string
-    ): any[] | null => {
-      const column = data.table.columns[columnKey]
-
-      if (!column) {
-        return null
-      }
-
-      // Allow time columns to be retrieved as number columns
-      const isWideningTimeType =
-        columnType === 'number' && column.type === 'time'
-
-      if (columnType && columnType !== column.type && !isWideningTimeType) {
-        return null
-      }
-
-      switch (columnType) {
-        case 'number':
-          return column.data as number[]
-        case 'time':
-          return column.data as number[]
-        case 'string':
-          return column.data as string[]
-        case 'boolean':
-          return column.data as boolean[]
-        default:
-          return column.data as any[]
-      }
-    }
-
-    data.table.addColumn = (
-      columnKey: string,
-      fluxDataType: string,
-      type: string,
-      _data: any[],
-      name?: string
-    ) => {
-      data.table.columns[columnKey] = {
-        name: name || columnKey,
-        fluxDataType,
-        type,
-        data: _data,
-      } as Column
-
-      return data.table
-    }
-
-    data.table.getColumnName = (columnKey: string): string => {
-      const column = data.table.columns[columnKey]
-
-      if (!column) {
-        return null
-      }
-
-      return column.name
-    }
-
-    data.table.getColumnType = (columnKey: string) => {
-      const column = data.table.columns[columnKey]
-
-      if (!column) {
-        return null
-      }
-
-      return column.type
-    }
-
-    data.table.getOriginalColumnType = (columnKey: string) => {
-      const column = data.table.columns[columnKey]
-
-      if (!column) {
-        return null
-      }
-
-      return column.fluxDataType
-    }
-
-    queue[idx](data)
-  }
-
-  return (csv: string) =>
-    new Promise<InternalFromFluxResult>(resolve => {
-      queue[++counter] = resolve
-      worker.postMessage([counter, csv])
-    })
-})()
-
 export const parseQuery = (() => {
   const qs = {}
 
@@ -582,9 +458,6 @@ export const QueryProvider: FC = ({children}) => {
         return raw
       })
       .then(raw => {
-        if (isFlagEnabled('fastFlows')) {
-          return parseCSV(raw.csv)
-        }
         if (isFlagEnabled('fastFromFlux')) {
           return fastFromFlux(raw.csv)
         }

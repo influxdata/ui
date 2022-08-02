@@ -41,7 +41,7 @@ const SecretsDropdown: FC<OwnProps> = ({
             className="secrets-dropdown-header"
             onClick={() => onCreate(onSelect)}
           >
-            <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+            <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus_New} />
             Create Secret
           </Dropdown.Item>
           {secrets.map(s => (

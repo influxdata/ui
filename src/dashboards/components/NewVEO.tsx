@@ -5,7 +5,12 @@ import {useSelector, useDispatch} from 'react-redux'
 import {get} from 'lodash'
 
 // Components
-import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import {
+  Overlay,
+  Page,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import VEOHeader from 'src/dashboards/components/VEOHeader'
 
@@ -59,7 +64,7 @@ const NewViewVEO: FC = () => {
 
   if (isFlagEnabled('openCellPage')) {
     return (
-      <div className="veo">
+      <Page>
         <SpinnerContainer
           spinnerComponent={<TechnoSpinner />}
           loading={view.status}
@@ -75,7 +80,7 @@ const NewViewVEO: FC = () => {
             <TimeMachine />
           </div>
         </SpinnerContainer>
-      </div>
+      </Page>
     )
   }
 

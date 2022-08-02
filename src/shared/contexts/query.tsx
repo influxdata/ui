@@ -387,7 +387,7 @@ export const QueryProvider: FC = ({children}) => {
         .join('\n\n')
 
       const queryAST = parse(query)
-      const optionAST = parse(optionTexts)
+      let optionAST = parse(optionTexts)
 
       // only run this if the query need a windowPeriod
       if (
@@ -399,43 +399,50 @@ export const QueryProvider: FC = ({children}) => {
             node?.property?.name === 'windowPeriod'
         ).length
       ) {
-        // make sure there's a variable in there named windowPeriod so later logic doesnt bail
-        find(
-          optionAST,
-          node =>
-            node?.type === 'OptionStatement' &&
-            node?.assignment?.id?.name === 'v'
-        ).forEach(node => {
-          if (
-            find(
-              node,
-              n => n.type === 'Property' && n?.key?.name === 'windowPeriod'
-            ).length
-          ) {
-            return
+        try {
+          const _optionAST = JSON.parse(JSON.stringify(optionAST))
+          // make sure there's a variable in there named windowPeriod so later logic doesnt bail
+          find(
+            _optionAST,
+            node =>
+              node?.type === 'OptionStatement' &&
+              node?.assignment?.id?.name === 'v'
+          ).forEach(node => {
+            if (
+              find(
+                node,
+                n => n.type === 'Property' && n?.key?.name === 'windowPeriod'
+              ).length
+            ) {
+              return
+            }
+
+            node.assignment.init.properties.push({
+              type: 'Property',
+              key: {
+                type: 'Identifier',
+                name: 'windowPeriod',
+              },
+              value: {
+                type: 'DurationLiteral',
+                values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
+              },
+            })
+          })
+
+          const substitutedAST = {
+            package: '',
+            type: 'Package',
+            files: [queryAST, _optionAST],
           }
 
-          node.assignment.init.properties.push({
-            type: 'Property',
-            key: {
-              type: 'Identifier',
-              name: 'windowPeriod',
-            },
-            value: {
-              type: 'DurationLiteral',
-              values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
-            },
-          })
-        })
-
-        const substitutedAST = {
-          package: '',
-          type: 'Package',
-          files: [queryAST, optionAST],
+          // use the whole query to get that option set by reference
+          _addWindowPeriod(substitutedAST, _optionAST)
+          optionAST = _optionAST
+        } catch (e) {
+          // there's a bunch of weird errors until we replace windowPeriod
+          console.error(e)
         }
-
-        // use the whole query to get that option set by reference
-        _addWindowPeriod(substitutedAST, optionAST)
       }
 
       if (

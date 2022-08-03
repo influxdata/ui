@@ -17,6 +17,18 @@ $flux-toolbar--gap: $cf-space-2xs;
   width: $cf-form-md-height;
   flex: 0 0 $cf-form-md-height;
 }
+.flux-toolbar--path {
+  color: $cf-grey-55;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border-radius: 1px;
+  border-bottom: 2px solid $cf-grey-15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  padding: $cf-space-2xs $cf-space-xs;
+}
 
 .flux-toolbar--tab {
   border-radius: $cf-radius;

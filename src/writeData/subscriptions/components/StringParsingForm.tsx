@@ -102,10 +102,10 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
         >
           <ValidationInputWithTooltip
             label="Regex Pattern to find Timestamp"
-            value={formContent.stringTimestamp.pattern}
+            value={formContent?.stringTimestamp?.pattern}
             required={false}
             validationFunc={() =>
-              !!formContent.stringTimestamp.pattern
+              !!formContent?.stringTimestamp?.pattern
                 ? handleRegexValidation(formContent.stringTimestamp.pattern)
                 : null
             }

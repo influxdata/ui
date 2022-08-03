@@ -186,8 +186,6 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     const {id, style, className} = this.props
     const dropdownProps = {id, style, className}
 
-    console.log(dropdownProps)
-
     return (
       <Dropdown
         {...dropdownProps}

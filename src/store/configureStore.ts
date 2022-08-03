@@ -153,7 +153,7 @@ function configureStore(
   return createPersistentStore(rootReducer(history), initialState)
 }
 
-let storeSingleton
+export let storeSingleton
 export const getStore = () => {
   if (!storeSingleton) {
     storeSingleton = configureStore()

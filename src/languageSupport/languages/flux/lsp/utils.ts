@@ -148,3 +148,9 @@ export enum ExecuteCommand {
   InjectTag = 'injectTagFilter',
   InjectTagValue = 'injectTagValueFilter',
 }
+
+// any event that we want to UI to handle, outside of the monaco-editor
+export enum ServerUIEvent {
+  Error = 'error',
+  ShowMessage = 'showMessage',
+}

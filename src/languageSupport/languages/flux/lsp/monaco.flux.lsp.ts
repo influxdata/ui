@@ -26,6 +26,11 @@ import {EditorType} from 'src/types'
 // error notification
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
+// UI interaction, outside the editor
+import {notify} from 'src/shared/actions/notifications'
+import {defaultErrorNotification} from 'src/shared/copy/notifications'
+import {storeSingleton} from 'src/store/configureStore'
+
 // install Monaco language client services
 MonacoServices.install(monaco)
 
@@ -85,6 +90,14 @@ export function initLspWorker() {
   messageWriter = new BrowserMessageWriter(worker)
   const connection = createMessageConnection(messageReader, messageWriter)
   const languageClient = createLanguageClient(connection)
+  languageClient.onTelemetry((data: unknown) => {
+    storeSingleton.dispatch(
+      notify({
+        ...defaultErrorNotification,
+        message: (data as {message: string}).message,
+      })
+    )
+  })
   const disposable = languageClient.start()
   connection.onError(e => handleConnectionError(e))
   connection.onClose(() => {

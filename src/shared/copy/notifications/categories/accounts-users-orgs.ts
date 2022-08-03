@@ -128,6 +128,5 @@ export const userProfileSaveSuccess = (): Notification => ({
 
 export const userProfileSaveError = (): Notification => ({
   ...defaultErrorNotification,
-  message:
-    'Failed to save all changes to your profile. Please try again later.',
+  message: 'Failed to save all changes to your profile. Please try again.',
 })

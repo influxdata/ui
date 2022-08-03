@@ -47,7 +47,10 @@ export const UserDefaults: FC = () => {
   const loggedInAccount = identity.currentIdentity.account
 
   const accounts = userAccounts
+  const numAccounts = userAccounts ? userAccounts.length : 0
+
   const orgs = quartzOrganizations.orgs
+  const numOrgs = quartzOrganizations.orgs ? quartzOrganizations.orgs.length : 0
 
   const defaultAccount = useMemo(
     () =>
@@ -78,10 +81,9 @@ export const UserDefaults: FC = () => {
 
   const userChangedPrefs = userPickedNewAccount || userPickedNewOrg
 
-  const saveButtonStatus =
-    userPickedNewAccount || userPickedNewOrg
-      ? ComponentStatus.Default
-      : ComponentStatus.Disabled
+  const saveButtonStatus = userChangedPrefs
+    ? ComponentStatus.Default
+    : ComponentStatus.Disabled
 
   const handleChangeDefaults = async () => {
     if (userChangedPrefs) {
@@ -109,32 +111,38 @@ export const UserDefaults: FC = () => {
   }
 
   return (
-    <Form>
-      <DefaultAccountForm
-        accounts={accounts}
-        selectedAccount={selectedAccount}
-        setSelectedAccount={setSelectedAccount}
-      />
+    (numAccounts > 1 || numOrgs > 1) && (
+      <Form>
+        {numAccounts > 1 && (
+          <DefaultAccountForm
+            accounts={accounts}
+            selectedAccount={selectedAccount}
+            setSelectedAccount={setSelectedAccount}
+          />
+        )}
 
-      <DefaultOrgForm
-        accounts={accounts}
-        loggedInAccount={loggedInAccount}
-        orgs={orgs}
-        selectedOrg={selectedOrg}
-        setSelectedOrg={setSelectedOrg}
-      />
+        {numOrgs > 1 && (
+          <DefaultOrgForm
+            accounts={accounts}
+            loggedInAccount={loggedInAccount}
+            orgs={orgs}
+            selectedOrg={selectedOrg}
+            setSelectedOrg={setSelectedOrg}
+          />
+        )}
 
-      <Button
-        text="Save Changes"
-        titleText="Save the currently selected account and organization as defaults"
-        disabledTitleText="Select a new default account or organization to save your preferences."
-        status={saveButtonStatus}
-        color={ComponentColor.Primary}
-        onClick={handleChangeDefaults}
-        size={ComponentSize.Small}
-        type={ButtonType.Submit}
-        className="user-profile-page--save-button"
-      />
-    </Form>
+        <Button
+          text="Save Changes"
+          titleText="Save the currently selected account and organization as defaults"
+          disabledTitleText="Select a new default account or organization to save your preferences."
+          status={saveButtonStatus}
+          color={ComponentColor.Primary}
+          onClick={handleChangeDefaults}
+          size={ComponentSize.Small}
+          type={ButtonType.Submit}
+          className="user-profile-page--save-button"
+        />
+      </Form>
+    )
   )
 }

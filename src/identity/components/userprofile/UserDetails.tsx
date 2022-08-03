@@ -4,14 +4,14 @@ import {useSelector} from 'react-redux'
 import {
   AlignItems,
   ComponentStatus,
-  Heading,
-  HeadingElement,
-  InfluxColors,
   FlexBox,
   FlexDirection,
   FontWeight,
   Form,
   FormDivider,
+  Heading,
+  HeadingElement,
+  InfluxColors,
   JustifyContent,
 } from '@influxdata/clockface'
 

@@ -4,9 +4,9 @@ import {
   AlignItems,
   FlexBox,
   FlexDirection,
+  FontWeight,
   Heading,
   HeadingElement,
-  FontWeight,
   JustifyContent,
 } from '@influxdata/clockface'
 

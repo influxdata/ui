@@ -23,6 +23,8 @@ export enum EntityLabel {
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
 
+const globalHeaderStyle = {width: '368px', backgroundColor: '#232533'}
+
 interface Props {
   entityLabel: string
   defaultEntity: Entity
@@ -54,7 +56,7 @@ export const DefaultDropdown: FC<Props> = ({
           typeAheadInputPlaceholder={`Search ${entityLabel}s ...`}
           typeAheadSelectedOption={defaultEntity}
           typeAheadOnSelectOption={changeSelectedEntity}
-          className="change-default-account-org--dropdowns"
+          style={globalHeaderStyle}
         />
       </Form.Element>
     </FlexBox>

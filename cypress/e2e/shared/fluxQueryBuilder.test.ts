@@ -12,7 +12,9 @@ describe('FluxQueryBuilder', () => {
           }).then(() => {
             const writeData = []
             for (let i = 0; i < 30; i++) {
-              writeData.push(`ndbc,air_temp_degc=${i}_degrees station_id=${i}`)
+              writeData.push(
+                `ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`
+              )
             }
             cy.writeData(writeData, 'defbuck')
             cy.wait(100)
@@ -37,7 +39,7 @@ describe('FluxQueryBuilder', () => {
     const bucketName = 'defbuck'
     const measurement = 'ndbc'
     const searchTagKey = 'air_temp_degc'
-    const searchField = 'station_id'
+    const searchField = 'station_id_1'
 
     it('can search buckets, measurements, fields and tag keys dynamically and loads more data when truncated', () => {
       // open the bucket list
@@ -138,34 +140,33 @@ describe('FluxQueryBuilder', () => {
         .should('be.visible')
         .should('not.contain', 'No Tags Found')
 
-      // less than 8 items, no "Load More" button
+      // more than 8 items, show "Load more" button
       cy.getByTestID('field-selector').within(() => {
         cy.getByTestID('field-selector--list-item--selectable')
           .should('be.visible')
-          .should('have.length.at.most', 8)
-        cy.getByTestID('field-selector--load-more-button').should('not.exist')
+          .should('have.length', 8)
+        cy.getByTestID('field-selector--load-more-button')
+          .should('be.visible')
+          .trigger('click')
+          .then(() => {
+            // when load more is chosen, up to 25 additional entries should be shown
+            cy.getByTestID('field-selector--list-item--selectable')
+              .should('be.visible')
+              .should('have.length.above', 8)
+              .and('have.length.at.most', 33) // 8 + 25
+          })
       })
 
-      // more than 8 items, show 'Load More' button
+      // less than 8 items, no "Load more" button
       cy.getByTestID('tag-selector-value--header-wrapper')
         .click()
         .then(() => {
-          // cy.getByTestID('tag-selector')
-          //   .should('be.visible')
-          //   .should('not.contain', 'Loading')
           cy.getByTestID('tag-selector-value--list-item--selectable')
             .should('be.visible')
-            .should('have.length', 8)
-          cy.getByTestID('tag-selector-value--load-more-button')
-            .should('be.visible')
-            .trigger('click')
-            .then(() => {
-              // when load more is chosen, up to 25 additional entries should be shown
-              cy.getByTestID('tag-selector-value--list-item--selectable')
-                .should('be.visible')
-                .should('have.length.above', 8)
-                .and('have.length.at.most', 33) // 8 + 25
-            })
+            .should('have.length.below', 8)
+          cy.getByTestID('tag-selector-value--load-more-button').should(
+            'not.exist'
+          )
         })
 
       // not recommend to assert for searchTagKey value

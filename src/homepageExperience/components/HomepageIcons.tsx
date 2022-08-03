@@ -11,7 +11,7 @@ export const ArduinoIcon = (
     y="0px"
     width="108"
     height="66"
-    enable-background="new 0 0 342.394 261.395"
+    enableBackground="new 0 0 342.394 261.395"
     xmlSpace="preserve"
     viewBox="25.84 27.72 288.36 197.67"
   >

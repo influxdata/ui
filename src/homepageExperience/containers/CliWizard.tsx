@@ -25,7 +25,7 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {HOMEPAGE_NAVIGATION_STEPS_CLI} from 'src/homepageExperience/utils'
+import {HOMEPAGE_NAVIGATION_STEPS_SHORT} from 'src/homepageExperience/utils'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 interface State {
@@ -66,7 +66,7 @@ export class CliWizard extends PureComponent<{}, State> {
       {
         currentStep: Math.min(
           this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS_CLI.length
+          HOMEPAGE_NAVIGATION_STEPS_SHORT.length
         ),
       },
       () => {
@@ -160,7 +160,7 @@ export class CliWizard extends PureComponent<{}, State> {
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
-                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS_CLI}
+                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS_SHORT}
                   settingUpIcon={CLIIcon}
                   settingUpText="InfluxDB CLI"
                   setupTime="5 minutes"
@@ -175,7 +175,7 @@ export class CliWizard extends PureComponent<{}, State> {
                     verticallyCentered:
                       this.state.currentStep === 1 ||
                       this.state.currentStep ===
-                        HOMEPAGE_NAVIGATION_STEPS_CLI.length,
+                        HOMEPAGE_NAVIGATION_STEPS_SHORT.length,
                   }
                 )}
               >

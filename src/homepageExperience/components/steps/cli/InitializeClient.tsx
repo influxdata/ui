@@ -40,7 +40,6 @@ import {AppState, Authorization} from 'src/types'
 import './CliSteps.scss'
 
 type OwnProps = {
-  wizardEventName: string
   setTokenValue: (tokenValue: string) => void
   tokenValue: string
   onSelectBucket: (bucketName: string) => void
@@ -49,7 +48,6 @@ type OwnProps = {
 const collator = new Intl.Collator(navigator.language || 'en-US')
 
 export const InitializeClient: FC<OwnProps> = ({
-  wizardEventName,
   setTokenValue,
   tokenValue,
   onSelectBucket,
@@ -98,12 +96,12 @@ export const InitializeClient: FC<OwnProps> = ({
     if (sortedPermissionTypes.length && tokenValue === null) {
       const authorization: Authorization = {
         orgID: org.id,
-        description: `onboarding-${wizardEventName}-token-${Date.now()}`,
+        description: `onboarding-cliWizard-token-${Date.now()}`,
         permissions: allAccessPermissions(sortedPermissionTypes, org.id, me.id),
       }
 
       dispatch(createAuthorization(authorization))
-      event(`firstMile.${wizardEventName}.tokens.tokenCreated`)
+      event(`firstMile.cliWizard.tokens.tokenCreated`)
     }
   }, [sortedPermissionTypes.length])
 
@@ -130,7 +128,7 @@ export const InitializeClient: FC<OwnProps> = ({
 
   // Events log handling
   const logCopyCodeSnippet = () => {
-    event(`firstMile.${wizardEventName}.buckets.code.copied`)
+    event(`firstMile.cliWizard.buckets.code.copied`)
   }
 
   return (

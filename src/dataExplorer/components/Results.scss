@@ -36,7 +36,8 @@ $cf-radius-lg: $cf-radius + 4px;
     margin-top: $cf-space-s;
   }
 
-  table, canvas {
+  table,
+  .giraffe-plot {
     background-color: black;
   }
 }

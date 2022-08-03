@@ -202,6 +202,8 @@ export const bulkDeleteAuthorizations = (tokenIds: string[]) => async (
 export const getAllResources = () => async dispatch => {
   const resp = await api.getResources({headers: {}})
 
+  throw new Error('haha')
+
   if (resp.status !== 200) {
     throw new Error(resp.data.message)
   }

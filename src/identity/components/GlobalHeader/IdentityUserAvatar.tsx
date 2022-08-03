@@ -16,7 +16,10 @@ import './UserPopoverStyles.scss'
 import {Link} from 'react-router-dom'
 
 type Props = {
-  user: IdentityUser
+  firstName: string
+  lastName: string
+  email: string
+  orgId: string
 }
 
 type State = {
@@ -32,9 +35,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private getInitials = (): string => {
-    const {user} = this.props
-    const firstName = user.firstName
-    const lastName = user.lastName
+    const {firstName, lastName} = this.props
     const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`
     return initials
   }
@@ -49,14 +50,14 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private getUserPopoverContents = () => {
-    const {user} = this.props
+    const {firstName, lastName, email} = this.props
     return (
       <>
         <div className="user-popover-header">
           <div className="user-popover-header-name">
-            {user.firstName} {user.lastName}
+            {firstName} {lastName}
           </div>
-          <div className="user-popover-header-email">{user.email}</div>
+          <div className="user-popover-header-email">{email}</div>
           <hr />
         </div>
         <div className="user-popover-footer">

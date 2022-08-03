@@ -33,6 +33,9 @@ import IdentityUserAvatar from 'src/identity/components/GlobalHeader/IdentityUse
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
   const identity = useSelector(selectQuartzIdentity)
+  const {user} = identity.currentIdentity
+  const {org: currentOrg} = identity.currentIdentity
+
   const orgsList = identity.quartzOrganizations.orgs
   const {userAccounts} = useContext(UserAccountContext)
 
@@ -91,7 +94,12 @@ export const GlobalHeader: FC = () => {
           </>
         )}
       </FlexBox>
-      <IdentityUserAvatar user={identity.currentIdentity.user} />
+      <IdentityUserAvatar
+        firstName={user.firstName}
+        lastName={user.lastName}
+        email={user.email}
+        orgId={currentOrg.id}
+      />
     </FlexBox>
   )
 }

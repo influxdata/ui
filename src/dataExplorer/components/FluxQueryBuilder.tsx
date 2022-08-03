@@ -54,7 +54,10 @@ const FluxQueryBuilder: FC = () => {
           justifyContent={JustifyContent.SpaceBetween}
           alignItems={AlignItems.Stretch}
         >
-          <div className="flux-query-builder--menu">
+          <div
+            className="flux-query-builder--menu"
+            data-testid="flux-query-builder--menu"
+          >
             <Button
               onClick={clear}
               text="New Script"

@@ -13,7 +13,7 @@ describe('Flows', () => {
       })
     })
   })
-
+  
   it('can create, clone a flow and persist selected data in the clone, and delete a flow from the list page', () => {
     cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
 
@@ -45,7 +45,7 @@ describe('Flows', () => {
       .first()
       .click()
 
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
+    cy.getByTestID('renamable-page-title--input').type(`{backspace}${flowName}{enter}`)
     cy.wait('@updateNotebook')
 
     cy.getByTestID('page-title').contains(flowName)

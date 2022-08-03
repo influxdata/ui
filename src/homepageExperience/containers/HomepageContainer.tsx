@@ -173,18 +173,20 @@ export const HomepageContainer: FC = () => {
                         </div>
                       </Link>
                     </ResourceCard>
-                    <ResourceCard style={cardStyle}>
-                      <Link
-                        to={arduinoLink}
-                        style={linkStyle}
-                        onClick={logArduinoWizardClick}
-                      >
-                        <div className="homepage-wizard-language-tile">
-                          <h5>Arduino</h5>
-                          {ArduinoIcon}
-                        </div>
-                      </Link>
-                    </ResourceCard>
+                    {isFlagEnabled('onboardArduino') && (
+                      <ResourceCard style={cardStyle}>
+                        <Link
+                          to={arduinoLink}
+                          style={linkStyle}
+                          onClick={logArduinoWizardClick}
+                        >
+                          <div className="homepage-wizard-language-tile">
+                            <h5>Arduino</h5>
+                            {ArduinoIcon}
+                          </div>
+                        </Link>
+                      </ResourceCard>
+                    )}
                     <ResourceCard style={cardStyle}>
                       <Link
                         to={loadDataSourcesLink}

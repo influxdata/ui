@@ -35,7 +35,7 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
   },
 ]
 
-export const HOMEPAGE_NAVIGATION_STEPS_CLI = [
+export const HOMEPAGE_NAVIGATION_STEPS_SHORT = [
   {
     name: 'Overview',
     glyph: IconFont.BookOutline,

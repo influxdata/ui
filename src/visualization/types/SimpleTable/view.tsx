@@ -15,7 +15,7 @@ import PageControl from 'src/visualization/types/SimpleTable/PageControl'
 import PagedTable from 'src/visualization/types/SimpleTable/PagedTable'
 import {PaginationProvider} from 'src/visualization/context/pagination'
 
-import './style.scss'
+import './SimpleTable.scss'
 interface Props extends VisualizationProps {
   properties: SimpleTableViewProperties
   result: FluxResult['parsed']

@@ -1,5 +1,4 @@
 import React from 'react'
-import {IdentityUser} from 'src/client/unityRoutes'
 import classnames from 'classnames'
 import {
   Button,

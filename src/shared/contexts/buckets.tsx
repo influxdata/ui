@@ -24,7 +24,7 @@ import {
 
 // Types
 import {Bucket, BucketEntities, RemoteDataState} from 'src/types'
-import {QueryScope} from 'src/types/flows'
+import {QueryScope} from 'src/shared/contexts/query'
 import {PipeContext} from 'src/flows/context/pipe'
 
 let MeasurementSchemaCreateRequest = null

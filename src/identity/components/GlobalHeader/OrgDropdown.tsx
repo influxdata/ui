@@ -33,17 +33,17 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     {
       name: 'Settings',
       iconFont: IconFont.CogSolid_New,
-      href: `${CLOUD_URL}/orgs/${activeOrg.id}/about`,
+      href: `/orgs/${activeOrg.id}/about`,
     },
     {
       name: 'Members',
       iconFont: IconFont.Group,
-      href: `${CLOUD_URL}/orgs/${activeOrg.id}/users`,
+      href: `/orgs/${activeOrg.id}/users`,
     },
     {
       name: 'Usage',
       iconFont: IconFont.PieChart,
-      href: `${CLOUD_URL}/orgs/${activeOrg.id}/usage`,
+      href: `/orgs/${activeOrg.id}/usage`,
     },
   ]
 

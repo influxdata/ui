@@ -9,6 +9,7 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 import {
   AlertHistoryIndex,
   AlertingIndex,
+  ArduinoWizard,
   BillingPage,
   BucketsIndex,
   CheckHistory,
@@ -131,7 +132,6 @@ const SetOrg: FC = () => {
             component={AlertHistoryIndex}
           />
           <Route path={`${orgPath}/checks/:checkID`} component={CheckHistory} />
-
           {/* Tasks */}
           <Route path={`${orgPath}/tasks/:id/runs`} component={TaskRunsPage} />
           <Route path={`${orgPath}/tasks/:id/edit`} component={TaskEditPage} />
@@ -160,23 +160,19 @@ const SetOrg: FC = () => {
             path={`${orgPath}/dashboards`}
             component={RouteToDashboardList}
           />
-
           {/* Flows  */}
           <Route
             path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:notebookID/versions/:id`}
             component={VersionPage}
           />
-
           <Route
             path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
             component={FlowPage}
           />
-
           <Route
             path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}`}
             component={FlowsIndex}
           />
-
           {/* Write Data */}
           <Route
             path={`${orgPath}/${LOAD_DATA}/sources`}
@@ -194,7 +190,6 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${TELEGRAF_PLUGINS}/:contentID`}
             component={TelegrafPluginsPage}
           />
-
           {/* Load Data */}
           <Route
             exact
@@ -217,28 +212,24 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
             component={BucketsIndex}
           />
-
           {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/create`}
               component={CreateSubscriptionForm}
             />
           )}
-
           {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
               component={DetailsSubscriptionPage}
             />
           )}
-
           {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
               component={SubscriptionsLanding}
             />
           )}
-
           {/* Settings */}
           <Route
             path={`${orgPath}/${SETTINGS}/${VARIABLES}`}
@@ -262,39 +253,31 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${SETTINGS}`}
             component={VariablesIndex}
           />
-
           {/* Users */}
           {CLOUD && <Route path={`${orgPath}/users`} component={UsersPage} />}
-
           {/* Billing */}
           {CLOUD && (
             <Route path={`${orgPath}/billing`} component={BillingPage} />
           )}
-
           {/* Usage */}
           {CLOUD && <Route path={`${orgPath}/usage`} component={UsagePage} />}
-
           {/* Members */}
           {!CLOUD && (
             <Route path={`${orgPath}/members`} component={MembersIndex} />
           )}
-
           {/* About */}
           <Route path={`${orgPath}/about`} component={OrgProfilePage} />
-
           {/* account settings page */}
           <Route
             path={`${orgPath}/accounts/settings`}
             component={UserAccountPage}
           />
-
           {/* Getting Started */}
           {isFlagEnabled('firstMile') ? (
             <Route exact path="/orgs/:orgID" component={HomepageContainer} />
           ) : (
             <Route exact path="/orgs/:orgID" component={MePage} />
           )}
-
           {isFlagEnabled('firstMile') && [
             <Route
               exact
@@ -315,6 +298,15 @@ const SetOrg: FC = () => {
               component={GoWizard}
             />,
           ]}
+          {isFlagEnabled('onboardArduino') && (
+            <Route
+              exact
+              path="/orgs/:orgID/new-user-setup/arduino"
+              key="/arduino"
+              component={ArduinoWizard}
+            />
+          )}
+          ,
           {isFlagEnabled('onboardCLI') && (
             <Route
               exact
@@ -322,7 +314,6 @@ const SetOrg: FC = () => {
               component={CliWizard}
             />
           )}
-
           <Route component={NotFound} />
         </Switch>
       </Suspense>

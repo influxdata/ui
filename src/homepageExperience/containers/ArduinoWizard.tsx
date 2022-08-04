@@ -11,21 +11,22 @@ import {
   Page,
   SubwayNav,
 } from '@influxdata/clockface'
-import {CLIIcon} from 'src/homepageExperience/components/HomepageIcons'
+import {ArduinoIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 // Steps
-import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/cli/ExecuteAggregateQuery'
-import {ExecuteQuery} from 'src/homepageExperience/components/steps/cli/ExecuteQuery'
+import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/arduino/ExecuteAggregateQuery'
+import {ExecuteQuery} from 'src/homepageExperience/components/steps/arduino/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
-import {InitializeClient} from 'src/homepageExperience/components/steps/cli/InitializeClient'
-import {InstallDependencies} from 'src/homepageExperience/components/steps/cli/InstallDependencies'
+import {InitializeClient} from 'src/homepageExperience/components/steps/arduino/InitializeClient'
+import {InstallDependencies} from 'src/homepageExperience/components/steps/arduino/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {WriteData} from 'src/homepageExperience/components/steps/cli/WriteData'
+import {WriteData} from 'src/homepageExperience/components/steps/arduino/WriteData'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {HOMEPAGE_NAVIGATION_STEPS_SHORT} from 'src/homepageExperience/utils'
+import {normalizeEventName} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 interface State {
@@ -36,7 +37,7 @@ interface State {
   finalFeedback: number
 }
 
-export class CliWizard extends PureComponent<{}, State> {
+export class ArduinoWizard extends PureComponent<{}, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'sample-bucket',
@@ -71,11 +72,15 @@ export class CliWizard extends PureComponent<{}, State> {
       },
       () => {
         event(
-          'firstMile.cliWizard.next.clicked',
+          'firstMile.arduinoWizard.next.clicked',
           {},
           {
-            clickedButtonAtStep: this.state.currentStep - 1,
-            currentStep: this.state.currentStep,
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+            ),
           }
         )
       }
@@ -87,11 +92,15 @@ export class CliWizard extends PureComponent<{}, State> {
       {currentStep: Math.max(this.state.currentStep - 1, 1)},
       () => {
         event(
-          'firstMile.cliWizard.previous.clicked',
+          'firstMile.arduinoWizard.previous.clicked',
           {},
           {
-            clickedButtonAtStep: this.state.currentStep + 1,
-            currentStep: this.state.currentStep,
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+            ),
           }
         )
       }
@@ -100,12 +109,21 @@ export class CliWizard extends PureComponent<{}, State> {
 
   handleNavClick = (clickedStep: number) => {
     this.setState({currentStep: clickedStep})
+    event(
+      'firstMile.arduinoWizard.subNav.clicked',
+      {},
+      {
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_SHORT[clickedStep - 1].name
+        ),
+      }
+    )
   }
 
   renderStep = () => {
     switch (this.state.currentStep) {
       case 1: {
-        return <Overview wizard="cliWizard" />
+        return <Overview wizard="arduinoWizard" />
       }
       case 2: {
         return <InstallDependencies />
@@ -131,7 +149,7 @@ export class CliWizard extends PureComponent<{}, State> {
       case 7: {
         return (
           <Finish
-            wizardEventName="cliWizard"
+            wizardEventName="arduinoWizard"
             markStepAsCompleted={this.handleMarkStepAsCompleted}
             finishStepCompleted={this.state.finishStepCompleted}
             finalFeedback={this.state.finalFeedback}
@@ -140,7 +158,7 @@ export class CliWizard extends PureComponent<{}, State> {
         )
       }
       default: {
-        return <Overview wizard="cliWizard" />
+        return <Overview wizard="arduinoWizard" />
       }
     }
   }
@@ -151,7 +169,7 @@ export class CliWizard extends PureComponent<{}, State> {
         <Page.Header fullWidth={false}>
           {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-between to justifyContent)*/}
           <div />
-          <RateLimitAlert location="firstMile.cliWizard" />
+          <RateLimitAlert location="firstMile.arduinoWizard" />
         </Page.Header>
         <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
@@ -161,8 +179,8 @@ export class CliWizard extends PureComponent<{}, State> {
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
                   navigationSteps={HOMEPAGE_NAVIGATION_STEPS_SHORT}
-                  settingUpIcon={CLIIcon}
-                  settingUpText="InfluxDB CLI"
+                  settingUpIcon={ArduinoIcon}
+                  settingUpText="Arduino"
                   setupTime="5 minutes"
                 />
               </div>
@@ -195,7 +213,7 @@ export class CliWizard extends PureComponent<{}, State> {
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
-                  testID="cli-prev-button"
+                  testID="arduino-prev-button"
                 />
                 <Button
                   onClick={this.handleNextClick}
@@ -207,7 +225,7 @@ export class CliWizard extends PureComponent<{}, State> {
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
-                  testID="cli-next-button"
+                  testID="arduino-next-button"
                 />
               </div>
             </div>

@@ -133,15 +133,15 @@ const NotFound: FC = () => {
   const history = useHistory()
   const reduxOrg = useSelector(getOrg)
   const org = useRef<Organization>(reduxOrg)
-  
+
   const handleDeepLink = useCallback(async () => {
     if (!org.current) {
       setIsFetchingOrg(true)
       org.current = await fetchOrg()
     }
-    
+
     const deepLinkingMap = buildDeepLinkingMap(org.current)
-    
+
     if (deepLinkingMap.hasOwnProperty(location.pathname)) {
       event('deeplink', {from: location.pathname})
       history.replace(deepLinkingMap[location.pathname])
@@ -149,18 +149,18 @@ const NotFound: FC = () => {
     }
     setIsFetchingOrg(false)
   }, [history, location.pathname])
-  
-  useEffect(() => {
-      if (CLOUD) {
-      handleDeepLink()
-      }
-    }, [handleDeepLink])
 
-    if (isFetchingOrg) {
-      // don't render anything if this component is actively fetching org id
-      // this prevents popping in a 404 page then redirecting
-      return null
+  useEffect(() => {
+    if (CLOUD) {
+      handleDeepLink()
     }
+  }, [handleDeepLink])
+
+  if (isFetchingOrg) {
+    // don't render anything if this component is actively fetching org id
+    // this prevents popping in a 404 page then redirecting
+    return null
+  }
 
   return <NotFoundNew />
 }

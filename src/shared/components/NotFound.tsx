@@ -27,6 +27,9 @@ import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import GetInfluxButton from 'src/shared/components/GetInfluxButton'
 import {Organization} from 'src/types'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">
     <FunnelPage enableGraphic={true} className="page-not-found-funnel">
@@ -125,36 +128,38 @@ const NotFoundNew: FC = () => (
 )
 
 const NotFound: FC = () => {
-  const [isFetchingOrg, setIsFetchingOrg] = useState(false)
-  const location = useLocation()
-  const history = useHistory()
-  const reduxOrg = useSelector(getOrg)
-  const org = useRef<Organization>(reduxOrg)
+  if (CLOUD) {
+    const [isFetchingOrg, setIsFetchingOrg] = useState(false)
+    const location = useLocation()
+    const history = useHistory()
+    const reduxOrg = useSelector(getOrg)
+    const org = useRef<Organization>(reduxOrg)
 
-  const handleDeepLink = useCallback(async () => {
-    if (!org.current) {
-      setIsFetchingOrg(true)
-      org.current = await fetchOrg()
+    const handleDeepLink = useCallback(async () => {
+      if (!org.current) {
+        setIsFetchingOrg(true)
+        org.current = await fetchOrg()
+      }
+
+      const deepLinkingMap = buildDeepLinkingMap(org.current)
+
+      if (deepLinkingMap.hasOwnProperty(location.pathname)) {
+        event('deeplink', {from: location.pathname})
+        history.replace(deepLinkingMap[location.pathname])
+        return
+      }
+      setIsFetchingOrg(false)
+    }, [history, location.pathname])
+
+    useEffect(() => {
+      handleDeepLink()
+    }, [handleDeepLink])
+
+    if (isFetchingOrg) {
+      // don't render anything if this component is actively fetching org id
+      // this prevents popping in a 404 page then redirecting
+      return null
     }
-
-    const deepLinkingMap = buildDeepLinkingMap(org.current)
-
-    if (deepLinkingMap.hasOwnProperty(location.pathname)) {
-      event('deeplink', {from: location.pathname})
-      history.replace(deepLinkingMap[location.pathname])
-      return
-    }
-    setIsFetchingOrg(false)
-  }, [history, location.pathname])
-
-  useEffect(() => {
-    handleDeepLink()
-  }, [handleDeepLink])
-
-  if (isFetchingOrg) {
-    // don't render anything if this component is actively fetching org id
-    // this prevents popping in a 404 page then redirecting
-    return null
   }
 
   return <NotFoundNew />

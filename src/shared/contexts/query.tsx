@@ -30,9 +30,9 @@ interface CancelMap {
 }
 
 export enum OverrideMechanism {
-  Params,
-  Extern,
-  Injection,
+  Inline,
+  AST,
+  JSON,
 }
 
 export interface QueryOptions {
@@ -328,6 +328,102 @@ export const parseQuery = (() => {
   }
 })()
 
+const updateWindowPeriod = (
+  query: string,
+  override: QueryScope = {},
+  mode: 'json' | 'ast' = 'ast'
+) => {
+  const options: Record<string, any> = {}
+
+  if (Object.keys(override?.vars ?? {}).length) {
+    options.v = override.vars
+  }
+  if (Object.keys(override?.params ?? {}).length) {
+    options.params = override.params
+  }
+  if (Object.keys(override?.task ?? {}).length) {
+    options.task = override.task
+  }
+
+  const optionTexts = Object.entries(options)
+    .map(([k, v]) => {
+      const vals = Object.entries(v).map(([_k, _v]) => `  ${_k}: ${_v}`)
+      return `option ${k} =  {${vals.join(',\n')}}`
+    })
+    .join('\n\n')
+
+  console.log('neat', optionTexts)
+
+  const queryAST = parse(query)
+  const optionAST = parse(optionTexts)
+
+  // only run this if the query need a windowPeriod
+  if (
+    !find(
+      queryAST,
+      node =>
+        node?.type === 'MemberExpression' &&
+        node?.object?.name === 'v' &&
+        node?.property?.name === 'windowPeriod'
+    ).length
+  ) {
+    return
+  }
+  try {
+    const _optionAST = JSON.parse(JSON.stringify(optionAST))
+    // make sure there's a variable in there named windowPeriod so later logic doesnt bail
+    find(
+      _optionAST,
+      node =>
+        node?.type === 'OptionStatement' && node?.assignment?.id?.name === 'v'
+    ).forEach(node => {
+      if (
+        find(
+          node,
+          n => n.type === 'Property' && n?.key?.name === 'windowPeriod'
+        ).length
+      ) {
+        return
+      }
+
+      node.assignment.init.properties.push({
+        type: 'Property',
+        key: {
+          type: 'Identifier',
+          name: 'windowPeriod',
+        },
+        value: {
+          type: 'DurationLiteral',
+          values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
+        },
+      })
+    })
+
+    const substitutedAST = {
+      package: '',
+      type: 'Package',
+      files: [queryAST, _optionAST],
+    }
+
+    // use the whole query to get that option set by reference
+    _addWindowPeriod(substitutedAST, _optionAST)
+
+    if (mode === 'ast') {
+      return _optionAST
+    }
+
+    // TODO write window period back out to json object
+    return options
+  } catch (e) {
+    // there's a bunch of weird errors until we replace windowPeriod
+    console.error(e)
+    if (mode === 'ast') {
+      return optionAST
+    }
+    return options
+  }
+}
+
 export const QueryProvider: FC = ({children}) => {
   const pending = useRef({} as CancelMap)
   const org = useSelector(getOrg)
@@ -341,9 +437,9 @@ export const QueryProvider: FC = ({children}) => {
   }, [])
 
   const basic = (text: string, override: QueryScope, options: QueryOptions) => {
-    const mechanism = options?.overrideMechanism ?? OverrideMechanism.Extern
+    const mechanism = options?.overrideMechanism ?? OverrideMechanism.AST
     const query =
-      mechanism === OverrideMechanism.Injection
+      mechanism === OverrideMechanism.Inline
         ? simplify(text, override?.vars ?? {}, override?.params ?? {})
         : text
 
@@ -366,96 +462,15 @@ export const QueryProvider: FC = ({children}) => {
       dialect: {annotations: ['group', 'datatype', 'default']},
     }
 
-    if (mechanism !== OverrideMechanism.Injection) {
-      const options: Record<string, any> = {}
-
-      if (Object.keys(override?.vars ?? {}).length) {
-        options.v = override.vars
+    if (mechanism === OverrideMechanism.AST) {
+      const options = updateWindowPeriod(query, override, 'ast')
+      if (options && Object.keys(options).length) {
+        body.extern = options
       }
-      if (Object.keys(override?.params ?? {}).length) {
-        options.params = override.params
-      }
-      if (Object.keys(override?.task ?? {}).length) {
-        options.task = override.task
-      }
-
-      const optionTexts = Object.entries(options)
-        .map(([k, v]) => {
-          const vals = Object.entries(v).map(([_k, _v]) => `  ${_k}: ${_v}`)
-          return `option ${k} =  {${vals.join(',\n')}}`
-        })
-        .join('\n\n')
-
-      const queryAST = parse(query)
-      let optionAST = parse(optionTexts)
-
-      // only run this if the query need a windowPeriod
-      if (
-        find(
-          queryAST,
-          node =>
-            node?.type === 'MemberExpression' &&
-            node?.object?.name === 'v' &&
-            node?.property?.name === 'windowPeriod'
-        ).length
-      ) {
-        try {
-          const _optionAST = JSON.parse(JSON.stringify(optionAST))
-          // make sure there's a variable in there named windowPeriod so later logic doesnt bail
-          find(
-            _optionAST,
-            node =>
-              node?.type === 'OptionStatement' &&
-              node?.assignment?.id?.name === 'v'
-          ).forEach(node => {
-            if (
-              find(
-                node,
-                n => n.type === 'Property' && n?.key?.name === 'windowPeriod'
-              ).length
-            ) {
-              return
-            }
-
-            node.assignment.init.properties.push({
-              type: 'Property',
-              key: {
-                type: 'Identifier',
-                name: 'windowPeriod',
-              },
-              value: {
-                type: 'DurationLiteral',
-                values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
-              },
-            })
-          })
-
-          const substitutedAST = {
-            package: '',
-            type: 'Package',
-            files: [queryAST, _optionAST],
-          }
-
-          // use the whole query to get that option set by reference
-          _addWindowPeriod(substitutedAST, _optionAST)
-          optionAST = _optionAST
-        } catch (e) {
-          // there's a bunch of weird errors until we replace windowPeriod
-          console.error(e)
-        }
-      }
-
-      if (
-        Object.keys(options).length &&
-        mechanism === OverrideMechanism.Extern
-      ) {
-        body.extern = optionAST
-      }
-
-      if (
-        Object.keys(options).length &&
-        mechanism === OverrideMechanism.Params
-      ) {
+    }
+    if (mechanism === OverrideMechanism.JSON) {
+      const options = updateWindowPeriod(query, override, 'json')
+      if (options && Object.keys(options).length) {
         body.options = options
       }
     }

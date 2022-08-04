@@ -253,7 +253,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
 
     return queryAPI(text, _override, {
-      overrideMechanism: OverrideMechanism.Injection,
+      overrideMechanism: OverrideMechanism.Inline,
     })
   }
 
@@ -265,7 +265,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
 
     return basicAPI(text, _override, {
-      overrideMechanism: OverrideMechanism.Injection,
+      overrideMechanism: OverrideMechanism.Inline,
     })
   }
 

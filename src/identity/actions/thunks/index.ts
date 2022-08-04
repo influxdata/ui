@@ -90,15 +90,12 @@ export const getBillingProviderThunk = () => async (
   }
 }
 
-export const getCurrentOrgDetailsThunk = () => async (
+export const getCurrentOrgDetailsThunk = (orgId: string) => async (
   dispatch: any,
   getState: GetState
 ) => {
   try {
     dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
-
-    const state = getState()
-    const orgId = state.identity.currentIdentity.org.id
 
     const orgDetails = await fetchOrgDetails(orgId)
 

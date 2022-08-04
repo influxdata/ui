@@ -18,7 +18,7 @@
 
 .global-header--list {
   /* Works on Firefox */
-  scrollbar-width: thin !important;
+  scrollbar-width: thin;
 }
 
 .global-header--list::-webkit-scrollbar {
@@ -26,8 +26,8 @@
 }
 
 .global-header--list::-webkit-scrollbar-track {
-  background-color: rgba($cf-grey-95, 0.15) !important;
-  border-radius: 20px !important;
+  background-color: rgba($cf-grey-95, 0.15);
+  border-radius: 20px;
 }
 
 .global-header--list::-webkit-scrollbar-thumb {
@@ -36,7 +36,7 @@
     rgba(255, 255, 255, 0.25) 0%,
     rgba(255, 255, 255, 0.25) 100%
   );
-  border-radius: 20px !important;
+  border-radius: 20px;
 }
 
 .button-icon {

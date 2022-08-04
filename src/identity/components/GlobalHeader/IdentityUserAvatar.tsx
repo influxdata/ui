@@ -50,6 +50,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
 
   private getUserPopoverContents = () => {
     const {firstName, lastName, email, orgId} = this.props
+
     return (
       <>
         <div className="user-popover-header">

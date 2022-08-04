@@ -11,6 +11,7 @@ import {
 
 // Selectors and Context
 import {selectQuartzIdentity} from 'src/identity/selectors'
+import {getOrg} from 'src/organizations/selectors'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 
 // Components
@@ -34,7 +35,7 @@ export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
   const identity = useSelector(selectQuartzIdentity)
   const {user} = identity.currentIdentity
-  const {org: currentOrg} = identity.currentIdentity
+  const org = useSelector(getOrg)
 
   const orgsList = identity.quartzOrganizations.orgs
   const {userAccounts} = useContext(UserAccountContext)
@@ -98,7 +99,7 @@ export const GlobalHeader: FC = () => {
         firstName={user.firstName}
         lastName={user.lastName}
         email={user.email}
-        orgId={currentOrg.id}
+        orgId={org.id}
       />
     </FlexBox>
   )

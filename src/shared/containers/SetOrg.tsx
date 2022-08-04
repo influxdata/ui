@@ -316,7 +316,6 @@ const SetOrg: FC = () => {
               component={CliWizard}
             />
           )}
-
           {/* User Profile Page */}
           {CLOUD && shouldUseQuartzIdentity() && isFlagEnabled('multiOrg') && (
             <Route

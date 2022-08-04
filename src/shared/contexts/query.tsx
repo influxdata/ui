@@ -352,8 +352,6 @@ const updateWindowPeriod = (
     })
     .join('\n\n')
 
-  console.log('neat', optionTexts)
-
   const queryAST = parse(query)
   const optionAST = parse(optionTexts)
 

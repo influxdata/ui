@@ -20,14 +20,8 @@ export const InstallDependencies: FC = () => {
 
   const headingWithMargin = {marginTop: '48px', marginBottom: '0px'}
 
-  const logCopyCodeSnippetMac = () => {
-    event('firstMile.arduinoWizard.installDependenciesMac.code.copied')
-  }
-  const logCopyCodeSnippetWindows = () => {
-    event('firstMile.arduinoWizard.installDependenciesWindows.code.copied')
-  }
-  const logCopyCodeSnippetLinux = () => {
-    event('firstMile.arduinoWizard.installDependenciesLinux.code.copied')
+  const logCopyCodeSnippet = OS => {
+    event(`firstMile.cliWizard.installDependencies${OS}.code.copied`)
   }
 
   type CurrentOSSelection = 'Linux' | 'Mac' | 'Windows'
@@ -41,14 +35,14 @@ export const InstallDependencies: FC = () => {
         keyboardCopyTriggered(event) &&
         userSelection().includes('brew install')
       ) {
-        logCopyCodeSnippetMac()
+        logCopyCodeSnippet('Mac')
       }
       if (
         keyboardCopyTriggered(event) &&
         (userSelection().includes('Expand-Archive') ||
           userSelection().includes('mv'))
       ) {
-        logCopyCodeSnippetWindows()
+        logCopyCodeSnippet('Windows')
       }
       if (
         keyboardCopyTriggered(event) &&
@@ -56,7 +50,7 @@ export const InstallDependencies: FC = () => {
           userSelection().includes('tar') ||
           userSelection().includes('sudo'))
       ) {
-        logCopyCodeSnippetLinux()
+        logCopyCodeSnippet('Linux')
       }
     }
     document.addEventListener('keydown', fireKeyboardCopyEvent)

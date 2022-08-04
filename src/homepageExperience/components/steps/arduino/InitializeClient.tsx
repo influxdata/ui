@@ -64,7 +64,7 @@ export const InitializeClient: FC<OwnProps> = ({
 
   useEffect(() => {
     onSelectBucket(bucket.name)
-  }, [bucket, onSelectBucket])
+  }, [bucket.name, onSelectBucket])
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -112,9 +112,5 @@ export const InitializeClient: FC<OwnProps> = ({
     event(`firstMile.arduinoWizard.buckets.code.copied`)
   }
 
-  return (
-    <>
-      <h1>Initialize Client</h1>
-    </>
-  )
+  return <h1>Initialize Client</h1>
 }

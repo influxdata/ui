@@ -26,6 +26,7 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {HOMEPAGE_NAVIGATION_STEPS_SHORT} from 'src/homepageExperience/utils'
+import {normalizeEventName} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 interface State {
@@ -74,8 +75,12 @@ export class ArduinoWizard extends PureComponent<{}, State> {
           'firstMile.arduinoWizard.next.clicked',
           {},
           {
-            clickedButtonAtStep: this.state.currentStep - 1,
-            currentStep: this.state.currentStep,
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+            ),
           }
         )
       }
@@ -90,8 +95,12 @@ export class ArduinoWizard extends PureComponent<{}, State> {
           'firstMile.arduinoWizard.previous.clicked',
           {},
           {
-            clickedButtonAtStep: this.state.currentStep + 1,
-            currentStep: this.state.currentStep,
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+            ),
           }
         )
       }
@@ -100,6 +109,15 @@ export class ArduinoWizard extends PureComponent<{}, State> {
 
   handleNavClick = (clickedStep: number) => {
     this.setState({currentStep: clickedStep})
+    event(
+      'firstMile.arduinoWizard.subNav.clicked',
+      {},
+      {
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_SHORT[clickedStep - 1].name
+        ),
+      }
+    )
   }
 
   renderStep = () => {

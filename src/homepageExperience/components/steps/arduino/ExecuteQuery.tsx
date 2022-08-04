@@ -30,9 +30,5 @@ export const ExecuteQuery = (props: OwnProps) => {
     return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
   }, [])
 
-  return (
-    <>
-      <h1>Execute a Flux Query on {bucket}</h1>
-    </>
-  )
+  return <h1>Execute a Flux Query on {bucket}</h1>
 }

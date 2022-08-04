@@ -29,9 +29,5 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
     return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
   }, [])
 
-  return (
-    <>
-      <h1>Execute a Flux Aggregate Query on {bucket}</h1>
-    </>
-  )
+  return <h1>Execute a Flux Aggregate Query on {bucket}</h1>
 }

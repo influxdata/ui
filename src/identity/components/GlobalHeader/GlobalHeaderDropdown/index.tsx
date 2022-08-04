@@ -109,7 +109,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
             <Dropdown.HrefItem
               key={value.name}
               href={value.href}
-              className="align-center"
+              className="global-header--align-center"
             >
               {iconEl}
               {textEl}
@@ -165,7 +165,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
               justifyContent={JustifyContent.SpaceBetween}
               alignItems={AlignItems.Center}
             >
-              <span className="align-center">
+              <span className="global-header--align-center">
                 {iconEl}
                 {textEl}
               </span>

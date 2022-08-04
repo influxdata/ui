@@ -320,7 +320,7 @@ const SetOrg: FC = () => {
           {CLOUD && shouldUseQuartzIdentity() && isFlagEnabled('multiOrg') && (
             <Route
               exact
-              path={`${orgPath}/user/profile`}
+              path="/orgs/:orgId/user/profile"
               component={UserProfilePage}
             />
           )}

@@ -1,12 +1,10 @@
+// Libraries
 import React, {FC} from 'react'
 import {IconFont} from '@influxdata/clockface'
-import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
-import {
-  GlobalHeaderDropdown,
-  TypeAheadMenuItem,
-} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
+// Types
 type OrgSummaryItem = OrganizationSummaries[number]
+import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 
 interface Props {
   activeOrg: OrgSummaryItem
@@ -14,8 +12,18 @@ interface Props {
   accountsList: UserAccount[]
 }
 
+// Styles
 const style = {width: 'auto'}
 const menuStyle = {width: '250px'}
+
+// Components
+import {
+  GlobalHeaderDropdown,
+  TypeAheadMenuItem,
+} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
+
+// Constants
+import {CLOUD_URL} from 'src/shared/constants'
 
 export const AccountDropdown: FC<Props> = ({
   activeOrg,
@@ -31,18 +39,18 @@ export const AccountDropdown: FC<Props> = ({
     {
       name: 'Settings',
       iconFont: IconFont.CogSolid_New,
-      href: `/orgs/${activeOrg.id}/accounts/settings`,
+      href: `${CLOUD_URL}/orgs/${activeOrg.id}/accounts/settings`,
     },
     {
       name: 'Billing',
       iconFont: IconFont.Bill,
-      href: `/orgs/${activeOrg.id}/billing`,
+      href: `${CLOUD_URL}/orgs/${activeOrg.id}/billing`,
     },
   ]
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: TypeAheadMenuItem) => {
-    window.location.href = `orgs/${activeOrg.id}/accounts/${account.id}`
+    window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
   return (

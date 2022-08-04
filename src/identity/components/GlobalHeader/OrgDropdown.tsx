@@ -1,13 +1,21 @@
+// Libraries
 import React, {FC} from 'react'
-import {OrganizationSummaries} from 'src/client/unityRoutes'
+import {IconFont} from '@influxdata/clockface'
+
+// Components
 import {
   TypeAheadMenuItem,
   GlobalHeaderDropdown,
 } from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
-import {IconFont} from '@influxdata/clockface'
+
+// Types
+import {OrganizationSummaries} from 'src/client/unityRoutes'
+
+// Constants
+import {CLOUD_URL} from 'src/shared/constants'
 
 const switchOrg = (org: TypeAheadMenuItem) => {
-  window.location.href = `/orgs/${org.id}`
+  window.location.href = `${CLOUD_URL}/orgs/${org.id}`
 }
 
 type OrgSummaryItem = OrganizationSummaries[number]
@@ -25,17 +33,17 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     {
       name: 'Settings',
       iconFont: IconFont.CogSolid_New,
-      href: `/orgs/${activeOrg.id}/about`,
+      href: `${CLOUD_URL}/orgs/${activeOrg.id}/about`,
     },
     {
       name: 'Members',
       iconFont: IconFont.Group,
-      href: `/orgs/${activeOrg.id}/users`,
+      href: `${CLOUD_URL}/orgs/${activeOrg.id}/users`,
     },
     {
       name: 'Usage',
       iconFont: IconFont.PieChart,
-      href: `/orgs/${activeOrg.id}/usage`,
+      href: `${CLOUD_URL}/orgs/${activeOrg.id}/usage`,
     },
   ]
 

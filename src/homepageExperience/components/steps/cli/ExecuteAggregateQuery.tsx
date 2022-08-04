@@ -30,7 +30,7 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   |> filter(fn: (r) => r.measurement == "temperature")
   |> mean()`
 
-  const codeSnippet = `influx query 'from(bucket:"${bucketName}") |> range(start:-10m) |> mean()' --raw`
+  const codeSnippet = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m) |> mean()' --raw`
 
   useEffect(() => {
     const fireKeyboardCopyEvent = event => {

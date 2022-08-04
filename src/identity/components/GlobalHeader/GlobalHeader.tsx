@@ -10,8 +10,8 @@ import {
 } from '@influxdata/clockface'
 
 // Selectors and Context
-import {selectQuartzIdentity} from 'src/identity/selectors'
 import {getOrg} from 'src/organizations/selectors'
+import {selectQuartzIdentity} from 'src/identity/selectors'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 
 // Components

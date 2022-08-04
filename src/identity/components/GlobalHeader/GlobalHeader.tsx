@@ -6,7 +6,8 @@ import {
   FlexBox,
   IconFont,
   Icon,
-  JustifyContent, InfluxColors,
+  JustifyContent,
+  InfluxColors,
 } from '@influxdata/clockface'
 
 // Selectors and Context

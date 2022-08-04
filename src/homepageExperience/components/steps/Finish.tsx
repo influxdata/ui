@@ -73,11 +73,11 @@ const marginTopStyle = {marginTop: '80px'}
 
 export const Finish = (props: OwnProps) => {
   const {
-    finishStepCompleted,
-    wizardEventName,
     finalFeedback,
+    finishStepCompleted,
     markStepAsCompleted,
     setFinalFeedback,
+    wizardEventName,
   } = props
 
   useEffect(() => {

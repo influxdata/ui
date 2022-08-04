@@ -10,6 +10,7 @@ import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 import 'src/me/components/DocSearchWidget.scss'
 
@@ -49,6 +50,11 @@ if (CLOUD && isFlagEnabled('requestPoc')) {
   })
 }
 
+const handleEventing = title => {
+  const eventDescription = normalizeEventName(title)
+  event(`HomePage.${eventDescription}.clicked`)
+}
+
 const DocSearchWidget: FC = () => {
   return (
     <div className="WidgetSearch">
@@ -59,7 +65,12 @@ const DocSearchWidget: FC = () => {
         <ul className="docslinks-list">
           {supportLinks.map(({link, title}) => (
             <li key={title}>
-              <a href={link} target="_blank" rel="noreferrer">
+              <a
+                href={link}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => handleEventing(title)}
+              >
                 {title}
               </a>
             </li>

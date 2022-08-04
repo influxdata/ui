@@ -50,9 +50,9 @@ if (CLOUD && isFlagEnabled('requestPoc')) {
   })
 }
 
-const handleEventing = title => {
-  const eventDescription = normalizeEventName(title)
-  event(`HomePage.${eventDescription}.clicked`)
+const handleEventing = eventName => {
+  const normalizedEventName = normalizeEventName(eventName)
+  event(`HomePage.${normalizedEventName}.clicked`)
 }
 
 const DocSearchWidget: FC = () => {

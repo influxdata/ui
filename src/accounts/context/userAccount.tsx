@@ -121,11 +121,11 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       await updateDefaultQuartzAccount(newDefaultAcctId)
       setDefaultAccountId(newDefaultAcctId)
 
-      if (!setDefaultAccountOptions.disablePopUps) {
+      if (!setDefaultAccountOptions?.disablePopUps) {
         dispatch(notify(accountDefaultSettingSuccess(accountName)))
       }
     } catch (error) {
-      if (!setDefaultAccountOptions.disablePopUps) {
+      if (!setDefaultAccountOptions?.disablePopUps) {
         dispatch(notify(accountDefaultSettingError(accountName)))
       } else {
         throw Error('Failed to update default account.')

@@ -49,7 +49,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private getUserPopoverContents = () => {
-    const {firstName, lastName, email} = this.props
+    const {firstName, lastName, email, orgId} = this.props
     return (
       <>
         <div className="user-popover-header">
@@ -60,7 +60,10 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           <hr />
         </div>
         <div className="user-popover-footer">
-          <Link className="user-popover-footer--button" to="/me/profile">
+          <Link
+            className="user-popover-footer--button"
+            to={`/orgs/${orgId}/user/profile`}
+          >
             <Icon
               glyph={IconFont.User}
               className="user-popover-footer--button-icon"

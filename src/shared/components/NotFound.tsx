@@ -128,31 +128,32 @@ const NotFoundNew: FC = () => (
 )
 
 const NotFound: FC = () => {
-  if (CLOUD) {
-    const [isFetchingOrg, setIsFetchingOrg] = useState(false)
-    const location = useLocation()
-    const history = useHistory()
-    const reduxOrg = useSelector(getOrg)
-    const org = useRef<Organization>(reduxOrg)
-
-    const handleDeepLink = useCallback(async () => {
-      if (!org.current) {
-        setIsFetchingOrg(true)
-        org.current = await fetchOrg()
-      }
-
-      const deepLinkingMap = buildDeepLinkingMap(org.current)
-
-      if (deepLinkingMap.hasOwnProperty(location.pathname)) {
-        event('deeplink', {from: location.pathname})
-        history.replace(deepLinkingMap[location.pathname])
-        return
-      }
-      setIsFetchingOrg(false)
-    }, [history, location.pathname])
-
-    useEffect(() => {
+  const [isFetchingOrg, setIsFetchingOrg] = useState(false)
+  const location = useLocation()
+  const history = useHistory()
+  const reduxOrg = useSelector(getOrg)
+  const org = useRef<Organization>(reduxOrg)
+  
+  const handleDeepLink = useCallback(async () => {
+    if (!org.current) {
+      setIsFetchingOrg(true)
+      org.current = await fetchOrg()
+    }
+    
+    const deepLinkingMap = buildDeepLinkingMap(org.current)
+    
+    if (deepLinkingMap.hasOwnProperty(location.pathname)) {
+      event('deeplink', {from: location.pathname})
+      history.replace(deepLinkingMap[location.pathname])
+      return
+    }
+    setIsFetchingOrg(false)
+  }, [history, location.pathname])
+  
+  useEffect(() => {
+      if (CLOUD) {
       handleDeepLink()
+      }
     }, [handleDeepLink])
 
     if (isFetchingOrg) {
@@ -160,7 +161,6 @@ const NotFound: FC = () => {
       // this prevents popping in a 404 page then redirecting
       return null
     }
-  }
 
   return <NotFoundNew />
 }

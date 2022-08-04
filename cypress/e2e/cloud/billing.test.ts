@@ -88,8 +88,6 @@ describe('Billing Page PAYG Users', () => {
 
     // PAYG section
     cy.getByTestID('payg-plan--header').contains('Pay As You Go')
-    cy.getByTestID('payg-plan--region-header').contains('Region')
-    cy.getByTestID('payg-plan--region-body').contains('aws')
 
     cy.getByTestID('payg-plan--balance-header').contains('Account Balance')
     cy.getByTestID('payg-plan--balance-body').contains('10.00')

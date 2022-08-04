@@ -5,8 +5,6 @@ import {
   getIdentity,
   getMe as getMeQuartz,
   getOrg,
-  getOrgs,
-  putOrgsDefault,
   putAccountsDefault,
   putAccountsOrgsDefault,
   Account,
@@ -234,37 +232,6 @@ export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
 
   const orgDetails = response.data
   return orgDetails
-}
-
-// fetch the list of organizations in the user's currently active account
-export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
-  const response = await getOrgs({})
-
-  if (response.status === 401) {
-    throw new UnauthorizedError(response.data.message)
-  }
-
-  if (response.status === 500) {
-    throw new ServerError(response.data.message)
-  }
-
-  return response.data
-}
-
-// change the default organization for the user's currently active account
-export const updateDefaultQuartzOrg = async (orgId: string) => {
-  const response = await putOrgsDefault({
-    data: {
-      id: orgId,
-    },
-  })
-
-  // Only status codes thrown at moment are 204 and 5xx.
-  if (response.status !== 204) {
-    throw new ServerError(response.data.message)
-  }
-
-  return response.data
 }
 
 // fetch the list of organizations associated with a given account ID

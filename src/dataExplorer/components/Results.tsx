@@ -144,21 +144,23 @@ const Results: FC = () => {
   } else {
     if (view.state === 'table') {
       resultView = (
-        <View
-          loading={status}
-          properties={
-            {
-              type: 'simple-table',
-              showAll: false,
-            } as SimpleTableViewProperties
-          }
-          result={res}
-          hideTimer
-        />
+        <div className="data-explorer-results--view">
+          <View
+            loading={status}
+            properties={
+              {
+                type: 'simple-table',
+                showAll: false,
+              } as SimpleTableViewProperties
+            }
+            result={res}
+            hideTimer
+          />
+        </div>
       )
     } else {
       resultView = (
-        <div style={{height: '100%', width: '100%', padding: 12}}>
+        <div className="data-explorer-results--view">
           <View
             loading={status}
             properties={view.properties}

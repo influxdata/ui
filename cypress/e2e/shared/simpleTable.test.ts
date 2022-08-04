@@ -75,18 +75,19 @@ describe('simple table interactions', () => {
       // verify table still exists
       cy.getByTestID('simple-table').should('exist')
       // verify page 1 is selected
-      cy.getByTestID('pagination-item')
-        .first()
-        .within(() => {
-          cy.getByTestID('pagination-item-1-active').should('exist')
-        })
+      cy.getByTestID('pagination-item').should(pageNumbers => {
+        const activePageClasses = pageNumbers[0].className
+        const inactivePageClasses = pageNumbers[1].className
+        expect(activePageClasses.split(' ').length).equal(2)
+        expect(inactivePageClasses.split(' ').length).equal(1)
+      })
       // verify correct number of pages
       cy.getByTestID('pagination-item')
         .last()
         .should('be.visible')
       cy.getByTestID('pagination-item')
         .last()
-        .contains('5')
+        .contains('15')
     })
   })
 
@@ -142,18 +143,19 @@ describe('simple table interactions', () => {
       // verify table still exists
       cy.getByTestID('simple-table').should('exist')
       // verify page 1 is selected
-      cy.getByTestID('pagination-item')
-        .first()
-        .within(() => {
-          cy.getByTestID('pagination-item-1-active').should('exist')
-        })
+      cy.getByTestID('pagination-item').should(pageNumbers => {
+        const activePageClasses = pageNumbers[0].className
+        const inactivePageClasses = pageNumbers[1].className
+        expect(activePageClasses.split(' ').length).equal(2)
+        expect(inactivePageClasses.split(' ').length).equal(1)
+      })
       // verify correct number of pages
       cy.getByTestID('pagination-item')
         .last()
         .should('be.visible')
       cy.getByTestID('pagination-item')
         .last()
-        .contains('50')
+        .contains('150')
     })
   })
 
@@ -228,59 +230,42 @@ describe('simple table interactions', () => {
         .last()
         .click()
 
-      // doing 10-7 to be exhaustive
-      // click page 10
+      // click page 15
       cy.getByTestID('pagination-item')
         .eq(4)
         .click()
-      cy.getByTestID('table-cell 25').should('be.visible')
-      cy.getByTestID('table-cell 26').should('be.visible')
-      cy.getByTestID('table-cell 27').should('be.visible')
-      cy.getByTestID('table-cell 28').should('be.visible')
       cy.getByTestID('table-cell 29').should('be.visible')
       cy.getByTestID('table-cell 30').should('be.visible')
       cy.getByTestID('pagination-item')
         .last()
         .click()
 
-      // click page 9
+      // click page 14
       cy.getByTestID('pagination-item')
         .eq(3)
         .click()
-      cy.getByTestID('table-cell 19').should('be.visible')
-      cy.getByTestID('table-cell 20').should('be.visible')
-      cy.getByTestID('table-cell 21').should('be.visible')
-      cy.getByTestID('table-cell 22').should('be.visible')
-      cy.getByTestID('table-cell 23').should('be.visible')
-      cy.getByTestID('table-cell 24').should('be.visible')
+      cy.getByTestID('table-cell 27').should('be.visible')
+      cy.getByTestID('table-cell 28').should('be.visible')
       cy.getByTestID('pagination-item')
         .last()
         .click()
 
-      // click page 8
+      // click page 13
       cy.getByTestID('pagination-item')
         .eq(2)
         .click()
-      cy.getByTestID('table-cell 13').should('be.visible')
-      cy.getByTestID('table-cell 14').should('be.visible')
-      cy.getByTestID('table-cell 15').should('be.visible')
-      cy.getByTestID('table-cell 16').should('be.visible')
-      cy.getByTestID('table-cell 17').should('be.visible')
-      cy.getByTestID('table-cell 18').should('be.visible')
+      cy.getByTestID('table-cell 25').should('be.visible')
+      cy.getByTestID('table-cell 26').should('be.visible')
       cy.getByTestID('pagination-item')
         .last()
         .click()
 
-      // click page 7
+      // click page 12
       cy.getByTestID('pagination-item')
         .eq(1)
         .click()
-      cy.getByTestID('table-cell 7').should('be.visible')
-      cy.getByTestID('table-cell 8').should('be.visible')
-      cy.getByTestID('table-cell 9').should('be.visible')
-      cy.getByTestID('table-cell 10').should('be.visible')
-      cy.getByTestID('table-cell 11').should('be.visible')
-      cy.getByTestID('table-cell 12').should('be.visible')
+      cy.getByTestID('table-cell 23').should('be.visible')
+      cy.getByTestID('table-cell 24').should('be.visible')
       cy.getByTestID('pagination-item')
         .last()
         .click()
@@ -289,15 +274,8 @@ describe('simple table interactions', () => {
       cy.getByTestID('pagination-direction-item')
         .eq(0)
         .click()
-      cy.getByTestID('table-cell 25').should('be.visible')
-      cy.getByTestID('table-cell 26').should('be.visible')
-      cy.getByTestID('table-cell 27').should('be.visible')
-      cy.getByTestID('table-cell 28').should('be.visible')
       cy.getByTestID('table-cell 29').should('be.visible')
       cy.getByTestID('table-cell 30').should('be.visible')
-      cy.getByTestID('pagination-item')
-        .last()
-        .click()
     })
   })
 })

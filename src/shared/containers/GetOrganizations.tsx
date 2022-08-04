@@ -76,7 +76,8 @@ const GetOrganizations: FunctionComponent = () => {
   useEffect(() => {
     if (
       isFlagEnabled('uiUnificationFlag') &&
-      quartzMeStatus === RemoteDataState.NotStarted
+      quartzMeStatus === RemoteDataState.NotStarted &&
+      quartzIdentityStatus === RemoteDataState.NotStarted
     ) {
       dispatch(getQuartzIdentityThunk())
     }

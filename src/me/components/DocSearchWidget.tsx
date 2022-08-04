@@ -10,7 +10,7 @@ import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {event, normalizeEventName} from 'src/cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 import 'src/me/components/DocSearchWidget.scss'
 

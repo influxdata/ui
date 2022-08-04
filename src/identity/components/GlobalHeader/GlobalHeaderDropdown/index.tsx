@@ -84,7 +84,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         active={active}
         onClick={onClick}
         size={dropdownButtonSize}
-        icon={dropdownButtonIcon}
+        trailingIcon={dropdownButtonIcon || IconFont.DoubleCaretVertical}
         className="global-header--dropdown-button"
       >
         {selectedItem?.name || defaultButtonText}
@@ -106,7 +106,11 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
           const iconEl = <Icon glyph={value.iconFont} className="button-icon" />
           const textEl = <span>{value.name}</span>
           return (
-            <Dropdown.HrefItem key={value.name} href={value.href}>
+            <Dropdown.HrefItem
+              key={value.name}
+              href={value.href}
+              className="global-header--align-center"
+            >
               {iconEl}
               {textEl}
             </Dropdown.HrefItem>
@@ -161,7 +165,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
               justifyContent={JustifyContent.SpaceBetween}
               alignItems={AlignItems.Center}
             >
-              <span>
+              <span className="global-header--align-center">
                 {iconEl}
                 {textEl}
               </span>

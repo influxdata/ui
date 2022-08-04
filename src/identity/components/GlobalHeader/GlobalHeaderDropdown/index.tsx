@@ -84,7 +84,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         active={active}
         onClick={onClick}
         size={dropdownButtonSize}
-        icon={dropdownButtonIcon}
+        trailingIcon={dropdownButtonIcon || IconFont.DoubleCaretVertical}
         className="global-header--dropdown-button"
       >
         {selectedItem?.name || defaultButtonText}

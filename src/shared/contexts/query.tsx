@@ -369,7 +369,6 @@ const updateWindowPeriod = (
       return optionAST
     }
 
-    // TODO write window period back out to json object
     return options
   }
   try {

@@ -51,6 +51,7 @@ import {
   DetailsSubscriptionPage,
   GoWizard,
 } from 'src/shared/containers'
+import {UserProfilePage} from 'src/identity/components/userprofile/UserProfilePage'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
@@ -87,6 +88,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -312,6 +314,14 @@ const SetOrg: FC = () => {
               exact
               path="/orgs/:orgID/new-user-setup/cli"
               component={CliWizard}
+            />
+          )}
+          {/* User Profile Page */}
+          {CLOUD && shouldUseQuartzIdentity() && isFlagEnabled('multiOrg') && (
+            <Route
+              exact
+              path="/orgs/:orgId/user/profile"
+              component={UserProfilePage}
             />
           )}
           <Route component={NotFound} />

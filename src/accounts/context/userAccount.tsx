@@ -31,10 +31,18 @@ import {updateDefaultQuartzAccount} from 'src/identity/apis/auth'
 export type Props = {
   children: JSX.Element
 }
+
+interface SetDefaultAccountOptions {
+  disablePopUps: boolean
+}
+
 export interface UserAccountContextType {
   userAccounts: UserAccount[]
   handleGetAccounts: () => void
-  handleSetDefaultAccount: (newId: number) => void
+  handleSetDefaultAccount: (
+    newId: number,
+    options?: SetDefaultAccountOptions
+  ) => void
   handleRenameActiveAccount: (accountId: number, newName: string) => void
   defaultAccountId: number
   activeAccountId: number
@@ -103,15 +111,25 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }, [dispatch, defaultAccountId])
 
-  async function handleSetDefaultAccount(newDefaultAcctId) {
+  async function handleSetDefaultAccount(
+    newDefaultAcctId: number,
+    setDefaultAccountOptions?: SetDefaultAccountOptions
+  ) {
     const accountName = getAccountNameById(newDefaultAcctId)
 
     try {
       await updateDefaultQuartzAccount(newDefaultAcctId)
       setDefaultAccountId(newDefaultAcctId)
-      dispatch(notify(accountDefaultSettingSuccess(accountName)))
+
+      if (!setDefaultAccountOptions?.disablePopUps) {
+        dispatch(notify(accountDefaultSettingSuccess(accountName)))
+      }
     } catch (error) {
-      dispatch(notify(accountDefaultSettingError(accountName)))
+      if (!setDefaultAccountOptions?.disablePopUps) {
+        dispatch(notify(accountDefaultSettingError(accountName)))
+      } else {
+        throw Error('Failed to update default account.')
+      }
     }
   }
 

@@ -16,6 +16,29 @@
   z-index: 0;
 }
 
+.global-header--list {
+  /* Works on Firefox */
+  scrollbar-width: thin;
+}
+
+.global-header--list::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+.global-header--list::-webkit-scrollbar-track {
+  background-color: rgba($cf-grey-95, 0.15);
+  border-radius: 20px;
+}
+
+.global-header--list::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.25) 100%
+  );
+  border-radius: 20px;
+}
+
 .button-icon {
   color: $cf-grey-75;
   margin-right: 8px;

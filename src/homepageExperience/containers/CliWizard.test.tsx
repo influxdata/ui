@@ -7,9 +7,6 @@ import {renderWithRedux} from 'src/mockState'
 import {CliWizard} from 'src/homepageExperience/containers/CliWizard'
 
 jest.mock('canvas-confetti')
-jest.mock('src/homepageExperience/assets/sample.csv', () => {
-  return 'csv, csv, csv'
-})
 jest.mock('assets/images/sample-csv.png', () => {
   return 'csv screenshot'
 })

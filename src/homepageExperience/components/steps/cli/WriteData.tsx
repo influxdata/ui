@@ -12,11 +12,9 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {downloadTextFile} from 'src/shared/utils/download'
 import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 // Assets
-const csv = require('src/homepageExperience/assets/sample.csv').default
 import sampleCsv from 'assets/images/sample-csv.png'
 
 // Styles
@@ -32,17 +30,13 @@ const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.writeData.code.copied')
 }
 
-const downloadCsv = () => {
-  downloadTextFile(csv, 'sample', '.csv')
-}
-
 export const WriteDataComponent = (props: OwnProps) => {
   const {bucket} = props
   const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
 
   const sampleDataUrl =
-    'https://influx-testdata.s3.amazonaws.com/bird-migration.csv'
-  const writeDataCodeCsv = `influx write --bucket ${bucketName} --file path/sample.csv`
+    'https://influx-testdata.s3.amazonaws.com/air-sensor-data-annotated.csv'
+  const writeDataCodeCsv = `influx write --bucket ${bucketName} --file path/air-sensor-data-annotated.csv`
   const writeDataCodeUrl = `influx write --bucket ${bucketName} --url ${sampleDataUrl}`
 
   const [currentDataSelection, setCurrentDataSelection] = useState<
@@ -102,9 +96,11 @@ export const WriteDataComponent = (props: OwnProps) => {
             and then querying that data.
           </p>
           <p style={{marginTop: '0px', marginBottom: '16px'}}>
-            Our sample CSV is earthquake data from the USGS.
+            Our sample CSV is air sensor data.
           </p>
-          <Button text="Download Sample .CSV" onClick={downloadCsv} />
+          <SafeBlankLink href="https://influx-testdata.s3.amazonaws.com/air-sensor-data-annotated.csv">
+            <Button text="Download Sample .CSV" />
+          </SafeBlankLink>
           <p>
             The sample file is an Annotated CSV. The InfluxDB CLI supports both
             annotated and standard CSV formats.{' '}
@@ -112,7 +108,8 @@ export const WriteDataComponent = (props: OwnProps) => {
               Annotated CSVs
             </SafeBlankLink>{' '}
             contain metadata about the data types in the file, which allows for
-            faster write performance.
+            faster write performance. To make this CSV unannotated, open the
+            file in a text editor and remove the first 3 lines.
           </p>
           <h2 className="large-margins">Write Data</h2>
           <p className="small-margins">
@@ -168,10 +165,13 @@ export const WriteDataComponent = (props: OwnProps) => {
           <h2 className="large-margins">Review sample data</h2>
           <p className="small-margins">{sampleDataUrl}</p>
           <p>
-            This file is an unannotated CSV. The InfluxDB CLI supports both
-            annotated and standard CSV formats. Annotated CSVs contain metadata
-            about the data types in the file, which allows for faster write
-            performance.
+            The sample file is an Annotated CSV. The InfluxDB CLI supports both
+            annotated and standard CSV formats.{' '}
+            <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/syntax/annotated-csv/">
+              Annotated CSVs
+            </SafeBlankLink>{' '}
+            contain metadata about the data types in the file, which allows for
+            faster write performance.
           </p>
           <h2 className="large-margins">Write Data</h2>
           <p className="small-margins">

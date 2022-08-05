@@ -64,6 +64,9 @@ export const AccountDropdown: FC<Props> = ({
       typeAheadMenuOptions={accountsList}
       typeAheadOnSelectOption={switchAccount}
       typeAheadSelectedOption={selectedAccount}
+      testID="multiaccountorg-global-header--account-dropdown"
+      mainMenuTestID="multiaccountorg-global-header--account-menu"
+      typeAheadTestID="multiaccountorg-global-header--typeahead"
     />
   )
 }

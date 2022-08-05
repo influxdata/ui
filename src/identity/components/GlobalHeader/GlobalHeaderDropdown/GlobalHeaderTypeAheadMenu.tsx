@@ -10,6 +10,7 @@ type Props = {
   typeAheadPlaceHolder: string
   typeAheadMenuOptions: TypeAheadMenuItem[]
   onSelectOption: (item: TypeAheadMenuItem) => void
+  testID: string
 }
 
 type State = {
@@ -91,7 +92,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
         placeholder={typeAheadPlaceHolder}
         onChange={this.handleInputChange}
         value={searchTerm}
-        testID="dropdown-input-typeAhead"
+        testID={this.props.testID}
         onClear={this.clearFilter}
         onFocus={this.selectAllTextInInput}
         className="global-header--typeahead-input"

@@ -38,14 +38,16 @@ const OrgProfileTab: FC = () => {
 
   const dispatch = useDispatch()
 
+  const identityOrgId = identity.currentIdentity.org.id
+
   useEffect(() => {
-    if (CLOUD && shouldUseQuartzIdentity()) {
+    if (identityOrgId && CLOUD && shouldUseQuartzIdentity()) {
       if (
         !me.quartzMe.regionCode ||
         !me.quartzMe.regionName ||
         !identity.currentIdentity.org.provider
       ) {
-        dispatch(getCurrentOrgDetailsThunk())
+        dispatch(getCurrentOrgDetailsThunk(identityOrgId))
       }
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

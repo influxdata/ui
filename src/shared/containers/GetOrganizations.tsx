@@ -20,6 +20,7 @@ import RouteToOrg from 'src/shared/containers/RouteToOrg'
 // Selectors
 import {getAllOrgs} from 'src/resources/selectors'
 import {getMe, getQuartzMe} from 'src/me/selectors'
+import {selectQuartzIdentity} from 'src/identity/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -47,6 +48,7 @@ const canAccessCheckout = (me: Me): boolean => {
 
 const GetOrganizations: FunctionComponent = () => {
   const {status, org} = useSelector(getAllOrgs)
+  const identity = useSelector(selectQuartzIdentity)
 
   const quartzMeStatus = useSelector(
     (state: AppState) => state.me.quartzMeStatus
@@ -60,11 +62,18 @@ const GetOrganizations: FunctionComponent = () => {
   const {id: meId = '', name: email = ''} = useSelector(getMe)
   const dispatch = useDispatch()
 
+  const identityOrgId = identity.currentIdentity.org.id
+
   useEffect(() => {
-    if (CLOUD && shouldUseQuartzIdentity() && quartzMe?.isRegionBeta === null) {
-      dispatch(getCurrentOrgDetailsThunk())
+    if (
+      identityOrgId &&
+      CLOUD &&
+      shouldUseQuartzIdentity() &&
+      !quartzMe?.isRegionBeta
+    ) {
+      dispatch(getCurrentOrgDetailsThunk(identityOrgId))
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [identityOrgId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // This doesn't require another API call.
   useEffect(() => {

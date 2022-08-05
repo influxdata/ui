@@ -1,65 +1,99 @@
-import React, {FC, useEffect} from 'react'
-import {createLocalStorageStateHook} from 'use-local-storage-state'
+import React, {FC, useContext, useCallback} from 'react'
+import {RemoteDataState} from 'src/types'
 
 // Components
-import {DraggableResizer, Orientation} from '@influxdata/clockface'
-import {QueryProvider} from 'src/shared/contexts/query'
+import {
+  DraggableResizer,
+  FlexBox,
+  FlexDirection,
+  Orientation,
+  Button,
+  IconFont,
+  AlignItems,
+  JustifyContent,
+} from '@influxdata/clockface'
+import {QueryProvider, QueryContext} from 'src/shared/contexts/query'
 import {EditorProvider} from 'src/shared/contexts/editor'
-import {ResultsProvider} from 'src/dataExplorer/components/ResultsContext'
+import {
+  ResultsProvider,
+  ResultsContext,
+} from 'src/dataExplorer/components/ResultsContext'
 import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
+import {
+  PersistanceProvider,
+  PersistanceContext,
+} from 'src/dataExplorer/context/persistance'
 import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
 import Schema from 'src/dataExplorer/components/Schema'
-import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 
 // Styles
 import './FluxQueryBuilder.scss'
 
-const useResizeState = createLocalStorageStateHook(
-  'dataExplorer.resize.vertical',
-  [0.25, 0.8]
-)
 const FluxQueryBuilder: FC = () => {
-  const [oldVertDragPosition, oldSetVertDragPosition] = useResizeState()
-  const [vertDragPosition, setVertDragPosition] = useSessionStorage(
-    'dataExplorer.resize.vertical',
-    oldVertDragPosition
+  const {vertical, setVertical, setQuery, setSelection} = useContext(
+    PersistanceContext
   )
+  const {cancel} = useContext(QueryContext)
+  const {setStatus, setResult} = useContext(ResultsContext)
 
-  // migration to allow people to keep their last used settings
-  // immediately after rollout
-  useEffect(() => {
-    oldSetVertDragPosition([0.25, 0.8])
-  }, [])
+  const clear = useCallback(() => {
+    cancel()
+    setStatus(RemoteDataState.NotStarted)
+    setResult(null)
+    setQuery('')
+    setSelection({bucket: null, measurement: ''})
+  }, [setQuery, setStatus, setResult, setSelection, cancel])
 
   return (
-    <QueryProvider>
-      <ResultsProvider>
-        <EditorProvider>
-          <SidebarProvider>
-            <DraggableResizer
-              handleOrientation={Orientation.Vertical}
-              handlePositions={vertDragPosition}
-              onChangePositions={setVertDragPosition}
+    <EditorProvider>
+      <SidebarProvider>
+        <FlexBox
+          className="flux-query-builder--container"
+          direction={FlexDirection.Column}
+          justifyContent={JustifyContent.SpaceBetween}
+          alignItems={AlignItems.Stretch}
+        >
+          <div
+            className="flux-query-builder--menu"
+            data-testid="flux-query-builder--menu"
+          >
+            <Button
+              onClick={clear}
+              text="New Script"
+              icon={IconFont.Plus_New}
+            />
+          </div>
+          <DraggableResizer
+            handleOrientation={Orientation.Vertical}
+            handlePositions={vertical}
+            onChangePositions={setVertical}
+          >
+            <DraggableResizer.Panel>
+              <Schema />
+            </DraggableResizer.Panel>
+            <DraggableResizer.Panel
+              testID="flux-query-builder-middle-panel"
+              className="new-data-explorer-rightside"
             >
-              <DraggableResizer.Panel>
-                <Schema />
-              </DraggableResizer.Panel>
-              <DraggableResizer.Panel
-                testID="flux-query-builder-middle-panel"
-                className="new-data-explorer-rightside"
-              >
-                <ResultsPane />
-              </DraggableResizer.Panel>
-              <DraggableResizer.Panel>
-                <Sidebar />
-              </DraggableResizer.Panel>
-            </DraggableResizer>
-          </SidebarProvider>
-        </EditorProvider>
-      </ResultsProvider>
-    </QueryProvider>
+              <ResultsPane />
+            </DraggableResizer.Panel>
+            <DraggableResizer.Panel>
+              <Sidebar />
+            </DraggableResizer.Panel>
+          </DraggableResizer>
+        </FlexBox>
+      </SidebarProvider>
+    </EditorProvider>
   )
 }
 
-export default FluxQueryBuilder
+export default () => (
+  <QueryProvider>
+    <ResultsProvider>
+      <PersistanceProvider>
+        <FluxQueryBuilder />
+      </PersistanceProvider>
+    </ResultsProvider>
+  </QueryProvider>
+)

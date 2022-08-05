@@ -228,10 +228,17 @@ class DashboardCard extends PureComponent<Props> {
     )
   }
 
-  private handleDeleteDashboard = () => {
+  private handleDeleteDashboard = async () => {
     const {id, name, onDeleteDashboard} = this.props
     onDeleteDashboard(id, name)
-    deletePinnedItemByParam(id)
+    if (isFlagEnabled('pinnedItems') && CLOUD && this.props.isPinned) {
+      try {
+        await deletePinnedItemByParam(id)
+        this.props.sendNotification(pinnedItemSuccess('dashboard', 'deleted'))
+      } catch (error) {
+        this.props.sendNotification(pinnedItemFailure(error.message, 'delete'))
+      }
+    }
   }
 
   private handleClickDashboard = event => {

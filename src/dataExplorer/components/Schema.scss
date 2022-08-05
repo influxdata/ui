@@ -24,7 +24,10 @@
   }
 }
 
-.container-side-bar {
+.container-side-bar,
+.container-side-bar--fields,
+.container-side-bar--tag-keys,
+.container-side-bar--tag-values {
   border-left: 1px solid $cf-grey-25;
   padding-left: $cf-space-2xs;
   margin-top: $cf-space-xs;
@@ -43,18 +46,18 @@
 }
 
 .field-selector,
-.tag-selector-key {
+.tag-selector {
   padding-top: $cf-space-2xs;
 }
 
 .field-selector .cf-accordion--icon,
-.tag-selector-key .cf-accordion--icon,
+.tag-selector .cf-accordion--icon,
 .tag-selector-value .cf-accordion--icon {
   color: gray;
 }
 
 .field-selector--header,
-.tag-selector-key--header,
+.tag-selector--header,
 .tag-selector-value--header {
   background-color: transparent;
   min-height: 0;
@@ -66,7 +69,7 @@
 }
 
 .field-selector--list-item,
-.tag-selector-key--list-item,
+.tag-selector--list-item,
 .tag-selector-value--list-item {
   padding: $cf-space-2xs 0 $cf-space-2xs $cf-space-2xs;
   white-space: nowrap;
@@ -111,8 +114,9 @@
   }
 }
 
-.field-selector .container-side-bar,
-.tag-selector-key .container-side-bar {
+.container-side-bar--fields,
+.container-side-bar--tag-keys,
+.container-side-bar--tag-values {
   margin-top: 0;
 }
 

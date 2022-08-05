@@ -3,9 +3,6 @@ describe('Help bar menu sub nav links', () => {
     cy.flush()
     cy.signin()
     cy.visit('/')
-    cy.setFeatureFlags({
-      helpBar: true,
-    })
   })
 
   it('checks if help bar InfluxDB documentation link is correct', () => {

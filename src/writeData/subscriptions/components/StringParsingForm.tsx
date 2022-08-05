@@ -71,6 +71,29 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   return (
     <div className="string-parsing-form">
       <Grid.Column>
+        {edit && (
+          <p className="string-parsing-form__link">
+            See our{' '}
+            <a
+              href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=String#define-parsing-rules"
+              target="_blank"
+              rel="noreferrer"
+            >
+              parsing documentation
+            </a>{' '}
+            for examples, or validate your parsing rules using{' '}
+            <a href="https://regex101.com/" target="_blank" rel="noreferrer">
+              regex 101.
+            </a>{' '}
+          </p>
+        )}
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className="string-parsing-form__header"
+        >
+          Timestamp
+        </Heading>
         <FlexBox
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}
@@ -79,10 +102,10 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
         >
           <ValidationInputWithTooltip
             label="Regex Pattern to find Timestamp"
-            value={formContent.stringTimestamp.pattern}
+            value={formContent?.stringTimestamp?.pattern}
             required={false}
             validationFunc={() =>
-              !!formContent.stringTimestamp.pattern
+              !!formContent?.stringTimestamp?.pattern
                 ? handleRegexValidation(formContent.stringTimestamp.pattern)
                 : null
             }
@@ -160,20 +183,13 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
         </FlexBox>
       </Grid.Column>
       <Grid.Column>
-        <FlexBox
-          alignItems={AlignItems.Center}
-          direction={FlexDirection.Row}
-          margin={ComponentSize.Medium}
-          className="string-parsing-form__header-wrap"
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className="string-parsing-form__header"
         >
-          <Heading
-            element={HeadingElement.H3}
-            weight={FontWeight.Bold}
-            className="string-parsing-form__section__header-wrap__header"
-          >
-            Measurement
-          </Heading>
-        </FlexBox>
+          Measurement
+        </Heading>
         <FlexBox
           direction={FlexDirection.Row}
           alignItems={AlignItems.Center}
@@ -303,7 +319,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               testID="string-parsing-add-rule"
               status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
             >
-              <Icon glyph={IconFont.Plus} /> Add Rule
+              <Icon glyph={IconFont.Plus_New} /> Add Rule
             </Dropdown.Button>
           )}
           menu={onCollapse => (

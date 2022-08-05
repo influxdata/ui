@@ -19,7 +19,6 @@ import {getOrg} from 'src/organizations/selectors'
 import {getOrg as fetchOrg} from 'src/organizations/apis'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {buildDeepLinkingMap} from 'src/utils/deepLinks'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -27,6 +26,9 @@ import {event} from 'src/cloud/utils/reporting'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import GetInfluxButton from 'src/shared/components/GetInfluxButton'
 import {Organization} from 'src/types'
+
+// Constants
+import {CLOUD} from 'src/shared/constants'
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">
@@ -133,7 +135,7 @@ const NotFound: FC = () => {
   const org = useRef<Organization>(reduxOrg)
 
   const handleDeepLink = useCallback(async () => {
-    if (!org) {
+    if (!org.current) {
       setIsFetchingOrg(true)
       org.current = await fetchOrg()
     }
@@ -149,7 +151,7 @@ const NotFound: FC = () => {
   }, [history, location.pathname])
 
   useEffect(() => {
-    if (isFlagEnabled('deepLinking')) {
+    if (CLOUD) {
       handleDeepLink()
     }
   }, [handleDeepLink])

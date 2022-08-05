@@ -109,14 +109,14 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
               <Button
                 text="Cancel"
                 color={ComponentColor.Tertiary}
-                icon={IconFont.Remove}
+                icon={IconFont.Remove_New}
                 onClick={handleDismiss}
               />
 
               <Button
                 text="Save"
                 testID="button--save"
-                icon={IconFont.Checkmark}
+                icon={IconFont.CheckMark_New}
                 color={ComponentColor.Success}
                 type={ButtonType.Submit}
               />

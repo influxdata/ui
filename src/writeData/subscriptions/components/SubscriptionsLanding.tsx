@@ -109,7 +109,7 @@ const SubscriptionsLanding: FC = () => {
   return (
     <Page
       className="subscriptions-landing"
-      titleTag={pageTitleSuffixer(['Cloud Native Subscriptions', 'Load Data'])}
+      titleTag={pageTitleSuffixer(['Native Subscriptions', 'Load Data'])}
     >
       <LoadDataHeader />
       <LoadDataTabbedPage activeTab="subscriptions">

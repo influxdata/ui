@@ -26,7 +26,6 @@ import {
   parseYBounds,
 } from 'src/shared/utils/vis'
 import {generateSeriesToColorHex} from 'src/visualization/utils/colorMappingUtils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
@@ -228,20 +227,19 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
             <ColorSchemeDropdown
               value={properties.colors?.filter(c => c.type === 'scale') ?? []}
               onChange={colors => {
-                if (isFlagEnabled('graphColorMapping')) {
-                  const [, fillColumnMap] = createGroupIDColumn(
-                    results.table,
-                    groupKey
-                  )
-                  const colorMapping = generateSeriesToColorHex(
-                    fillColumnMap,
-                    properties
-                  )
+                const [, fillColumnMap] = createGroupIDColumn(
+                  results.table,
+                  groupKey
+                )
+                // the properties that we use to calculate the colors are updated in the next render cycle so we need
+                // to make a new object and override the colors
+                const newProperties = {...properties, colors}
+                const colorMapping = generateSeriesToColorHex(
+                  fillColumnMap,
+                  newProperties
+                )
 
-                  update({colors, colorMapping})
-                } else {
-                  update({colors})
-                }
+                update({colors, colorMapping})
               }}
             />
           </Form.Element>

@@ -80,7 +80,7 @@ const ShareOverlay: FC = () => {
           alignItems={AlignItems.Stretch}
         >
           <FlexBox.Child className="share-section--alert">
-            <Icon glyph={IconFont.AlertTriangle_New} />
+            <Icon glyph={IconFont.AlertTriangle} />
             <span className="share-text">
               By sharing this link, your org may incur charges when a user
               visits the page and the query is run.
@@ -121,7 +121,7 @@ const ShareOverlay: FC = () => {
                 </SafeBlankLink>
               </FlexBox.Child>
             </FlexBox>
-            <Icon glyph={IconFont.Eye_New} />
+            <Icon glyph={IconFont.EyeOpen} />
             <span className="share-text">
               Anyone with this link can view this {PROJECT_NAME}, but will not
               have access to autorefresh updates.

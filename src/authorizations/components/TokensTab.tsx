@@ -313,7 +313,7 @@ class TokensTab extends PureComponent<Props, State> {
       return IconFont.Subtract
     }
     if (tokensSelectedForBatchOperation.length === tokensOnCurrentPage.length) {
-      return IconFont.Checkmark
+      return IconFont.CheckMark_New
     }
 
     return IconFont.Subtract

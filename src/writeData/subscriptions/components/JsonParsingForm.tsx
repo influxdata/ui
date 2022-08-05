@@ -30,6 +30,7 @@ import {
   handleValidation,
   handleJsonPathValidation,
   JSON_TOOLTIP,
+  dataTypeList,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -44,10 +45,7 @@ interface Props {
 }
 
 const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
-  const stringType = 'String'
-  const numberType = 'Number'
-  const dataTypeList = [stringType, numberType]
-  const [dataTypeM, setDataTypeM] = useState(stringType)
+  const [dataTypeM, setDataTypeM] = useState(dataTypeList[0])
   const [useStaticMeasurement, setUseStaticMeasurement] = useState(
     !!formContent.jsonMeasurementKey.name
   )
@@ -77,6 +75,29 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   return (
     <div className="json-parsing-form">
       <Grid.Column>
+        {edit && (
+          <p className="json-parsing-form__link">
+            See our{' '}
+            <a
+              href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=JSON#define-parsing-rules"
+              target="_blank"
+              rel="noreferrer"
+            >
+              parsing documentation
+            </a>{' '}
+            for examples, or validate your parsing rules using{' '}
+            <a href="https://jsonpath.com/" target="_blank" rel="noreferrer">
+              JSONPath.
+            </a>{' '}
+          </p>
+        )}
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className="json-parsing-form__header"
+        >
+          Timestamp
+        </Heading>
         <FlexBox
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}
@@ -163,20 +184,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
         </FlexBox>
       </Grid.Column>
       <Grid.Column>
-        <FlexBox
-          alignItems={AlignItems.Center}
-          direction={FlexDirection.Row}
-          margin={ComponentSize.Large}
-          className="json-parsing-form__header-wrap"
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className="json-parsing-form__header"
         >
-          <Heading
-            element={HeadingElement.H3}
-            weight={FontWeight.Bold}
-            className="json-parsing-form__header-wrap__header"
-          >
-            Measurement
-          </Heading>
-        </FlexBox>
+          Measurement
+        </Heading>
         <FlexBox
           direction={FlexDirection.Row}
           alignItems={AlignItems.Center}
@@ -355,7 +369,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               testID="json-parsing-add-rule"
               status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
             >
-              <Icon glyph={IconFont.Plus} /> Add Rule
+              <Icon glyph={IconFont.Plus_New} /> Add Rule
             </Dropdown.Button>
           )}
           menu={onCollapse => (

@@ -1,0 +1,7 @@
+val record = "mem,host=host1 used_percent=23.43234543"
+
+val source = Source.single(record)
+val sink = client.getWriteScalaApi.writeRecord()
+val materialized = source.toMat(sink)(Keep.right)
+
+Await.result(materialized.run(), Duration.Inf)

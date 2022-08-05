@@ -1,0 +1,11 @@
+val point = Point
+  .measurement("mem")
+  .addTag("host", "host1")
+  .addField("used_percent", 23.43234543)
+  .time(Instant.now(), WritePrecision.NS)
+
+val source = Source.single(point)
+val sink = client.getWriteScalaApi.writePoint()
+val materialized = source.toMat(sink)(Keep.right)
+
+Await.result(materialized.run(), Duration.Inf)

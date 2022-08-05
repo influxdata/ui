@@ -47,7 +47,7 @@ export const writeLimitReached = (
   ...defaultErrorNotification,
   icon:
     CLOUD && isFlagEnabled('credit250Experiment')
-      ? IconFont.Stop
+      ? IconFont.AlertTriangle
       : defaultErrorNotification.icon,
   message,
   duration: duration ?? TEN_SECONDS,

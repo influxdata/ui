@@ -72,7 +72,6 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
       name: '',
     },
     bucket: 'nifi',
-    qos: 0,
     timestampPrecision: 'NS',
   },
   updateForm: () => {},
@@ -96,9 +95,9 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
       })
-      .catch(() => {
+      .catch(err => {
         setLoading(RemoteDataState.Done)
-        dispatch(notify(subscriptionCreateFail()))
+        dispatch(notify(subscriptionCreateFail(err.message)))
       })
   }
 

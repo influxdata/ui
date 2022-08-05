@@ -127,7 +127,7 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
                   }
                 >
                   <Input
-                    icon={IconFont.CurrencyUSD}
+                    icon={IconFont.CurrencyDollar}
                     type={InputType.Number}
                     min={10}
                     value={balanceThreshold}

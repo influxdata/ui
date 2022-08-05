@@ -23,7 +23,6 @@ export interface Subscription {
   stringTimestamp?: StringObjectParams
   status?: string
   bucket?: string
-  qos?: number
   createdAt?: Date
   updatedAt?: Date
   createdBy?: string
@@ -34,6 +33,13 @@ export interface Subscription {
   flowVersion?: number
   timestampPrecision?: string
   notebookID?: string
+}
+
+export interface SubscriptionStatus {
+  isActive?: boolean
+  processors?: any
+  processGroupID?: string
+  id: string
 }
 
 export interface JsonSpec {

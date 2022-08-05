@@ -1,9 +1,10 @@
+// Libraries
 import React, {FC} from 'react'
 import {IconFont} from '@influxdata/clockface'
-import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
-import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 
+// Types
 type OrgSummaryItem = OrganizationSummaries[number]
+import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 
 interface Props {
   activeOrg: OrgSummaryItem
@@ -11,8 +12,18 @@ interface Props {
   accountsList: UserAccount[]
 }
 
+// Styles
 const style = {width: 'auto'}
 const menuStyle = {width: '250px'}
+
+// Components
+import {
+  GlobalHeaderDropdown,
+  TypeAheadMenuItem,
+} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
+
+// Constants
+import {CLOUD_URL} from 'src/shared/constants'
 
 export const AccountDropdown: FC<Props> = ({
   activeOrg,
@@ -27,7 +38,7 @@ export const AccountDropdown: FC<Props> = ({
   const accountMainMenu = [
     {
       name: 'Settings',
-      iconFont: IconFont.CogOutline,
+      iconFont: IconFont.CogSolid_New,
       href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
     {
@@ -38,21 +49,21 @@ export const AccountDropdown: FC<Props> = ({
   ]
 
   // Quartz handles switching accounts by having the user hit this URL.
-  const switchAccount = (account: SubMenuItem) => {
-    window.location.href = `orgs/${activeOrg.id}/accounts/${account.id}`
+  const switchAccount = (account: TypeAheadMenuItem) => {
+    window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
   return (
-    <MenuDropdown
-      selectedOption={selectedAccount}
-      options={accountMainMenu}
-      subMenuOptions={accountsList}
-      menuHeaderIcon={IconFont.Switch_New}
-      menuHeaderText="Switch Account"
+    <GlobalHeaderDropdown
+      dropdownMenuStyle={menuStyle}
+      mainMenuHeaderIcon={IconFont.Switch_New}
+      mainMenuHeaderText="Switch Account"
+      mainMenuOptions={accountMainMenu}
       style={style}
-      menuStyle={menuStyle}
-      onSelectOption={switchAccount}
-      testID="global-header-account-dropdown"
+      typeAheadInputPlaceholder="Search Accounts"
+      typeAheadMenuOptions={accountsList}
+      typeAheadOnSelectOption={switchAccount}
+      typeAheadSelectedOption={selectedAccount}
     />
   )
 }

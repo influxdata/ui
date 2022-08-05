@@ -42,19 +42,17 @@ const TreeSidebar: FC<ReduxProps> = ({
   const org = useSelector(getOrg)
   const location = useLocation()
   useEffect(() => {
-    if (isFlagEnabled('helpBar')) {
-      const helpBarMenu = document.querySelectorAll<HTMLElement>(
-        '.cf-tree-nav--sub-menu-trigger'
-      )[3]
-      if (!helpBarMenu) {
-        return
-      }
-      if (navbarMode === 'expanded') {
-        helpBarMenu.style.display = 'block'
-        helpBarMenu.style.width = '243px'
-      } else {
-        helpBarMenu.style.width = '44px'
-      }
+    const helpBarMenu = document.querySelectorAll<HTMLElement>(
+      '.cf-tree-nav--sub-menu-trigger'
+    )[3]
+    if (!helpBarMenu) {
+      return
+    }
+    if (navbarMode === 'expanded') {
+      helpBarMenu.style.display = 'block'
+      helpBarMenu.style.width = '243px'
+    } else {
+      helpBarMenu.style.width = '44px'
     }
   }, [navbarMode])
 
@@ -157,96 +155,110 @@ const TreeSidebar: FC<ReduxProps> = ({
             </TreeNav.Item>
           )
         })}
-        {isFlagEnabled('helpBar') && (
-          <TreeNav.Item
-            id="support"
-            testID="nav-item-support"
-            icon={<Icon glyph={IconFont.QuestionMark_New} />}
-            label="Help &amp; Support"
-            shortLabel="Support"
-            className="helpBarStyle"
-          >
-            <TreeNav.SubMenu position={PopoverPosition.ToTheRight}>
-              <TreeNav.SubHeading label="Support" />
+        <TreeNav.Item
+          id="support"
+          testID="nav-item-support"
+          icon={<Icon glyph={IconFont.QuestionMark_Outline} />}
+          label="Help &amp; Support"
+          shortLabel="Support"
+          className="helpBarStyle"
+        >
+          <TreeNav.SubMenu position={PopoverPosition.ToTheRight}>
+            <TreeNav.SubHeading label="Support" />
+            <TreeNav.SubItem
+              id="faqs"
+              label="FAQs"
+              testID="nav-subitem-faqs"
+              linkElement={() => (
+                <SafeBlankLink
+                  href="https://docs.influxdata.com/influxdb/cloud/reference/faq/"
+                  onClick={() => handleEventing('faq')}
+                />
+              )}
+            />
+            {CLOUD && (
               <TreeNav.SubItem
-                id="faqs"
-                label="FAQs"
-                testID="nav-subitem-faqs"
+                id="status-page"
+                label="Status Page"
+                testID="nav-subitem-status"
                 linkElement={() => (
                   <SafeBlankLink
-                    href="https://docs.influxdata.com/influxdb/cloud/reference/faq/"
-                    onClick={() => handleEventing('faq')}
+                    href="https://status.influxdata.com"
+                    onClick={() => handleEventing('status-page')}
                   />
                 )}
               />
-              {CLOUD && (
+            )}
+            <TreeNav.SubItem
+              id="documentation"
+              label="Documentation"
+              testID="nav-subitem-documentation"
+              linkElement={() => (
+                <SafeBlankLink
+                  href="https://docs.influxdata.com/"
+                  onClick={() => handleEventing('documentation')}
+                />
+              )}
+            />
+            {CLOUD && (
+              <TreeNav.SubItem
+                id="contactSupport"
+                label="Contact Support"
+                testID="nav-subitem-contact-support"
+                linkElement={() => (
+                  <a href="#" onClick={handleContactSupportClick}></a>
+                )}
+              />
+            )}
+            <TreeNav.SubHeading label="Community" />
+            <TreeNav.SubItem
+              id="offcialForum"
+              label="Official Forum"
+              testID="nav-subitem-forum"
+              linkElement={() => (
+                <SafeBlankLink
+                  href="https://community.influxdata.com"
+                  onClick={() => handleEventing('officialForum')}
+                />
+              )}
+            />
+            <TreeNav.SubItem
+              id="influxdbSlack"
+              label="InfluxDB Slack"
+              testID="nav-subitem-influxdb-slack"
+              linkElement={() => (
+                <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
+              )}
+            />
+            <TreeNav.SubItem
+              id="influxUniversity"
+              label="InfluxDB University"
+              testID="nav-subitem-university"
+              linkElement={() => (
+                <SafeBlankLink
+                  href="https://university.influxdata.com/"
+                  onClick={() => handleEventing('influxdbUniversity')}
+                />
+              )}
+            />
+            {CLOUD && isFlagEnabled('requestPoc') && (
+              <>
+                <TreeNav.SubHeading label="Useful Links" />
                 <TreeNav.SubItem
-                  id="status-page"
-                  label="Status Page"
-                  testID="nav-subitem-status"
+                  id="request-poc"
+                  label="Request Proof of Concept"
+                  testID="nav-subitem-request-poc"
                   linkElement={() => (
                     <SafeBlankLink
-                      href="https://status.influxdata.com"
-                      onClick={() => handleEventing('status-page')}
+                      href="https://www.influxdata.com/proof-of-concept/"
+                      onClick={() => handleEventing('requestPOC')}
                     />
                   )}
                 />
-              )}
-              <TreeNav.SubItem
-                id="documentation"
-                label="Documentation"
-                testID="nav-subitem-documentation"
-                linkElement={() => (
-                  <SafeBlankLink
-                    href="https://docs.influxdata.com/"
-                    onClick={() => handleEventing('documentation')}
-                  />
-                )}
-              />
-              {CLOUD && isFlagEnabled('helpBarSfdcIntegration') && (
-                <TreeNav.SubItem
-                  id="contactSupport"
-                  label="Contact Support"
-                  testID="nav-subitem-contact-support"
-                  linkElement={() => (
-                    <a href="#" onClick={handleContactSupportClick}></a>
-                  )}
-                />
-              )}
-              <TreeNav.SubHeading label="Community" />
-              <TreeNav.SubItem
-                id="offcialForum"
-                label="Official Forum"
-                testID="nav-subitem-forum"
-                linkElement={() => (
-                  <SafeBlankLink
-                    href="https://community.influxdata.com"
-                    onClick={() => handleEventing('officialForum')}
-                  />
-                )}
-              />
-              <TreeNav.SubItem
-                id="influxdbSlack"
-                label="InfluxDB Slack"
-                testID="nav-subitem-influxdb-slack"
-                linkElement={() => (
-                  <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
-                )}
-              />
-              <TreeNav.SubItem
-                id="influxUniversity"
-                label="InfluxDB University"
-                testID="nav-subitem-university"
-                linkElement={() => (
-                  <SafeBlankLink
-                    href="https://university.influxdata.com/"
-                    onClick={() => handleEventing('influxdbUniversity')}
-                  />
-                )}
-              />
-            </TreeNav.SubMenu>
-          </TreeNav.Item>
-        )}
+              </>
+            )}
+          </TreeNav.SubMenu>
+        </TreeNav.Item>
       </TreeNav>
     </OrgSettings>
   )

@@ -9,7 +9,7 @@ import {labelSchema} from './labels'
 import {ruleToString} from 'src/utils/formatting'
 
 export const getReadableRetention = (bucket: GenBucket): string => {
-  const expire = bucket.retentionRules.find(rule => rule.type === 'expire')
+  const expire = bucket.retentionRules?.find(rule => rule.type === 'expire')
 
   if (!expire) {
     return 'forever'

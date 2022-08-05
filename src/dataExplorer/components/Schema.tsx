@@ -20,7 +20,7 @@ import {FieldsProvider} from 'src/dataExplorer/context/fields'
 import {TagsProvider} from 'src/dataExplorer/context/tags'
 
 // Types
-import {QueryScope} from 'src/types'
+import {QueryScope} from 'src/shared/contexts/query'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -76,7 +76,7 @@ const Schema: FC = () => {
       <FieldsProvider scope={scope}>
         <TagsProvider scope={scope}>
           <FluxQueryBuilderProvider>
-            <BucketProvider scope={scope}>
+            <BucketProvider scope={scope} omitSampleData>
               <div className="scroll--container">
                 <DapperScrollbars>
                   <div className="schema-browser" data-testid="schema-browser">

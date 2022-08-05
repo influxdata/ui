@@ -1,10 +1,21 @@
+// Libraries
 import React, {FC} from 'react'
-import {MenuDropdown, SubMenuItem} from '@influxdata/clockface'
 import {IconFont} from '@influxdata/clockface'
+
+// Components
+import {
+  TypeAheadMenuItem,
+  GlobalHeaderDropdown,
+} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
+
+// Types
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 
-const switchOrg = (org: SubMenuItem) => {
-  window.location.href = `/orgs/${org.id}`
+// Constants
+import {CLOUD_URL} from 'src/shared/constants'
+
+const switchOrg = (org: TypeAheadMenuItem) => {
+  window.location.href = `${CLOUD_URL}/orgs/${org.id}`
 }
 
 type OrgSummaryItem = OrganizationSummaries[number]
@@ -21,12 +32,12 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const orgMainMenu = [
     {
       name: 'Settings',
-      iconFont: IconFont.CogOutline,
+      iconFont: IconFont.CogSolid_New,
       href: `/orgs/${activeOrg.id}/about`,
     },
     {
       name: 'Members',
-      iconFont: IconFont.UserOutline_New,
+      iconFont: IconFont.Group,
       href: `/orgs/${activeOrg.id}/users`,
     },
     {
@@ -37,16 +48,16 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   ]
 
   return (
-    <MenuDropdown
-      selectedOption={activeOrg}
-      options={orgMainMenu}
-      subMenuOptions={orgsList}
-      menuHeaderIcon={IconFont.Switch_New}
-      menuHeaderText="Switch Organization"
-      searchText="Search Organizations"
+    <GlobalHeaderDropdown
+      dropdownMenuStyle={menuStyle}
+      mainMenuHeaderIcon={IconFont.Switch_New}
+      mainMenuHeaderText="Switch Organization"
+      mainMenuOptions={orgMainMenu}
       style={style}
-      menuStyle={menuStyle}
-      onSelectOption={switchOrg}
+      typeAheadInputPlaceholder="Search Organizations"
+      typeAheadMenuOptions={orgsList}
+      typeAheadOnSelectOption={switchOrg}
+      typeAheadSelectedOption={activeOrg}
       testID="global-header-org-dropdown"
     />
   )

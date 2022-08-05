@@ -10,6 +10,13 @@ describe('FluxQueryBuilder', () => {
           cy.setFeatureFlags({
             newDataExplorer: true,
           }).then(() => {
+            const writeData = []
+            for (let i = 0; i < 30; i++) {
+              writeData.push(
+                `ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`
+              )
+            }
+            cy.writeData(writeData, 'defbuck')
             cy.wait(100)
             cy.getByTestID('flux-query-builder-toggle').then($toggle => {
               cy.wrap($toggle).should('be.visible')
@@ -17,6 +24,9 @@ describe('FluxQueryBuilder', () => {
               if (!$toggle.hasClass('active')) {
                 // hasClass is a jQuery function
                 $toggle.click()
+                cy.getByTestID('flux-query-builder--menu').contains(
+                  'New Script'
+                )
               }
             })
           })
@@ -26,21 +36,12 @@ describe('FluxQueryBuilder', () => {
   })
 
   describe('Schema browser', () => {
-    const bucketName = 'NOAA National Buoy Data'
+    const bucketName = 'defbuck'
     const measurement = 'ndbc'
-    const searchField = 'air_temp_degc'
-    const searchTagKey = 'station_id'
+    const searchTagKey = 'air_temp_degc'
+    const searchField = 'station_id_1'
 
-    it('bucket selector can search and select a bucket, then search and select a measurement', () => {
-      // no other selectors should be visible, except the bucket selector
-      cy.getByTestID('bucket-selector--dropdown-button').should('be.visible')
-      cy.getByTestID('measurement-selector--dropdown-button').should(
-        'not.exist'
-      )
-      cy.getByTestID('field-tag-key-search-bar').should('not.exist')
-      cy.getByTestID('field-selector').should('not.exist')
-      cy.getByTestID('tag-selector-key').should('not.exist')
-
+    it('can search buckets, measurements, fields and tag keys dynamically and loads more data when truncated', () => {
       // open the bucket list
       cy.getByTestID('bucket-selector--dropdown-button').click()
 
@@ -83,94 +84,63 @@ describe('FluxQueryBuilder', () => {
       // upon selection, will show a search bar
       // and a list of fields and tag keys
       cy.getByTestID('field-tag-key-search-bar').should('be.visible')
-      cy.getByTestID('field-selector').should('be.visible')
-      cy.getByTestID('tag-selector-key').should('be.visible')
-    })
+      cy.getByTestID('field-selector')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+      cy.getByTestID('tag-selector-value--header-wrapper')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
 
-    it('search bar can search fields and tag keys dynamically', () => {
-      // select a bucket
-      cy.getByTestID('bucket-selector--dropdown-button').click()
-      cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
-
-      // check the monaco editor is mounted to prepare for schema injection
-      cy.getByTestID('flux-editor').should('be.visible')
-
-      // select a measurement
-      cy.getByTestID('measurement-selector--dropdown-button')
-        .should('contain', 'Select measurement')
-        .click()
-      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
-
-      // search a feild, should contain only the feild, no tag keys
+      // search a field, should contain only the field, no tag keys
       cy.getByTestID('field-tag-key-search-bar')
         .should('be.visible')
         .type(searchField)
-      cy.getByTestID('field-selector').within(() => {
-        cy.getByTestID('field-selector--list-item--selectable').should(
-          'contain',
-          searchField
-        )
-      })
+      cy.getByTestID('field-selector')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+        .should('not.contain', 'No Fields Found')
+      cy.getByTestID('tag-selector')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+        .should('contain', 'No Tags Found')
 
       // clear the search bar
-      cy.getByTestID('dismiss-button').click()
+      cy.getByTestID('field-tag-key-search-bar').clear()
+      cy.getByTestID('field-selector')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+        .should('not.contain', 'No Fields Found')
+      cy.getByTestID('tag-selector')
+        .should('be.visible')
+        .should('not.contain', 'No Tags Found')
 
       // search a tag key, should not contain any fields
       cy.getByTestID('field-tag-key-search-bar')
         .should('be.visible')
         .type(searchTagKey)
 
-      cy.getByTestID('field-selector').within(() => {
-        cy.getByTestID('field-selector--list-item')
-          .should('be.visible')
-          .should('contain', 'No Fields Found')
-      })
+      cy.getByTestID('field-selector')
+        .should('not.contain', 'Loading')
+        .should('contain', 'No Fields Found')
 
-      // not recommend to assert for searchTagKey value
-      // since it will expand all the tag keys, which triggers
-      // numbers of API calls that are time consuming and unnecessary
-    })
+      cy.getByTestID('tag-selector-value--header-wrapper')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+      cy.getByTestID('tag-selector')
+        .should('be.visible')
+        .should('not.contain', 'No Tags Found')
 
-    it('fields show all items when less than 8 items, and show "Load More" when more than 8 items', () => {
-      // if less than 8 items, show all items
-      const bucketNameA = 'Air Sensor Data'
-      const measurementA = 'airSensors'
+      // clear the search bar
+      cy.getByTestID('field-tag-key-search-bar').clear()
+      cy.getByTestID('field-selector')
+        .should('be.visible')
+        .should('not.contain', 'Loading')
+        .should('not.contain', 'No Fields Found')
+      cy.getByTestID('tag-selector')
+        .should('be.visible')
+        .should('not.contain', 'No Tags Found')
 
-      // select a bucket
-      cy.getByTestID('bucket-selector--dropdown-button').click()
-      cy.getByTestID(`bucket-selector--dropdown--${bucketNameA}`).click()
-
-      // check the monaco editor is mounted to prepare for schema injection
-      cy.getByTestID('flux-editor').should('be.visible')
-
-      // select a measurement
-      cy.getByTestID('measurement-selector--dropdown-button')
-        .should('contain', 'Select measurement')
-        .click()
-      cy.getByTestID(`searchable-dropdown--item ${measurementA}`).click()
-
-      // less than 8 items, no "Load More" button
-      cy.getByTestID('field-selector').within(() => {
-        cy.getByTestID('field-selector--list-item--selectable')
-          .should('be.visible')
-          .should('have.length.at.most', 8)
-        cy.getByTestID('field-selector--load-more-button').should('not.exist')
-      })
-
-      // if more than 8 items, show "Load More" button
-      // and load additional 25 items
-
-      // select another bucket
-      cy.getByTestID('bucket-selector--dropdown-button').click()
-      cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
-
-      // select another measurement
-      cy.getByTestID('measurement-selector--dropdown-button')
-        .should('contain', 'Select measurement')
-        .click()
-      cy.getByTestID(`searchable-dropdown--item ${measurement}`).click()
-
-      // more than 8 items, show 'Load More' button
+      // more than 8 items, show "Load more" button
       cy.getByTestID('field-selector').within(() => {
         cy.getByTestID('field-selector--list-item--selectable')
           .should('be.visible')
@@ -186,6 +156,22 @@ describe('FluxQueryBuilder', () => {
               .and('have.length.at.most', 33) // 8 + 25
           })
       })
+
+      // less than 8 items, no "Load more" button
+      cy.getByTestID('tag-selector-value--header-wrapper')
+        .click()
+        .then(() => {
+          cy.getByTestID('tag-selector-value--list-item--selectable')
+            .should('be.visible')
+            .should('have.length.below', 8)
+          cy.getByTestID('tag-selector-value--load-more-button').should(
+            'not.exist'
+          )
+        })
+
+      // not recommend to assert for searchTagKey value
+      // since it will expand all the tag keys, which triggers
+      // numbers of API calls that are time consuming and unnecessary
     })
   })
 })

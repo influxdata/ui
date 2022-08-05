@@ -10,7 +10,3 @@ val sink = results
 
 // wait to finish
 Await.result(sink, Duration.Inf)
-
-client.close()
-system.terminate()
-

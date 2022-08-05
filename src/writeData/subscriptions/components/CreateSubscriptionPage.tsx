@@ -129,7 +129,7 @@ const CreateSubscriptionPage: FC = () => {
                 onStepClick={handleClick}
                 navigationSteps={stepsWithIsCompletedStatus}
                 settingUpIcon={FormLogo}
-                settingUpText="MQTT Subscriber"
+                settingUpText="Native MQTT"
                 showCheckmark={true}
               />
             </div>

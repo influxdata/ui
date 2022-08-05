@@ -1,12 +1,12 @@
 // Functions calling API
 import {
   getAccount,
+  getAccountsOrgs,
   getIdentity,
   getMe as getMeQuartz,
   getOrg,
-  getOrgs,
-  putOrgsDefault,
   putAccountsDefault,
+  putAccountsOrgsDefault,
   Account,
   Identity,
   IdentityAccount,
@@ -31,12 +31,12 @@ import {CLOUD} from 'src/shared/constants'
 // Types
 import {RemoteDataState} from 'src/types'
 
-// These are optional properties of the current account which are not retrieved from identity.
+// Additional properties of the current account, which are not retrieved from  /quartz/identity.
 export interface CurrentAccount extends IdentityAccount {
   billingProvider?: 'zuora' | 'aws' | 'gcm' | 'azure'
 }
 
-// Optional properties of the current org, which are not retrieved from identity.
+// Additional properties of the current org, which are not retrieved from /quartz/identity.
 export interface CurrentOrg {
   id: string
   clusterHost: string
@@ -70,6 +70,7 @@ export enum NetworkErrorTypes {
   UnauthorizedError = 'UnauthorizedError',
   NotFoundError = 'NotFoundError',
   ServerError = 'ServerError',
+  UnprocessableEntity = 'UnprocessableEntity',
   GenericError = 'GenericError',
 }
 
@@ -86,6 +87,14 @@ export class NotFoundError extends Error {
   constructor(message) {
     super(message)
     this.name = 'NotFoundError'
+  }
+}
+
+// 422 error
+export class UnprocessableEntityError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'UnprocessableEntityError'
   }
 }
 
@@ -153,7 +162,7 @@ export const fetchQuartzMe = async (): Promise<MeQuartz> => {
   return user
 }
 
-// fetch user identity from /me (used in OSS and environments without Quartz)
+// fetch user identity from IDPE /me (used in OSS and environments without Quartz)
 export const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   const response = await getMeIdpe({})
 
@@ -170,7 +179,7 @@ export const fetchLegacyIdentity = async (): Promise<UserResponseIdpe> => {
   return user
 }
 
-// fetch details about user's current account
+// fetch details about one of the user's accounts
 export const fetchAccountDetails = async (
   accountId: string | number
 ): Promise<Account> => {
@@ -206,10 +215,10 @@ export const updateDefaultQuartzAccount = async (
     throw new ServerError(response.data.message)
   }
 
-  // success status code is 204; no data in response.body is expected.
+  // success status code is 204; no response body expected.
 }
 
-// fetch details about user's current organization
+// fetch details about one of the user's organizations
 export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   const response = await getOrg({orgId})
 
@@ -225,9 +234,15 @@ export const fetchOrgDetails = async (orgId: string): Promise<Organization> => {
   return orgDetails
 }
 
-// fetch list of user's current organizations
-export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
-  const response = await getOrgs({})
+// fetch the list of organizations associated with a given account ID
+export const fetchOrgsByAccountID = async (
+  accountNum: number
+): Promise<OrganizationSummaries> => {
+  const accountId = accountNum.toString()
+
+  const response = await getAccountsOrgs({
+    accountId,
+  })
 
   if (response.status === 401) {
     throw new UnauthorizedError(response.data.message)
@@ -240,18 +255,31 @@ export const fetchQuartzOrgs = async (): Promise<OrganizationSummaries> => {
   return response.data
 }
 
-// change default organization for a given account
-export const updateDefaultQuartzOrg = async (orgId: string) => {
-  const response = await putOrgsDefault({
+// update the default org for a given account
+export const updateDefaultOrgByAccountID = async ({
+  accountNum,
+  orgId,
+}): Promise<void> => {
+  const accountId = accountNum.toString()
+
+  const response = await putAccountsOrgsDefault({
+    accountId,
     data: {
       id: orgId,
     },
   })
 
-  // Only status codes thrown at moment are 204 and 5xx.
-  if (response.status !== 204) {
+  if (response.status === 404) {
+    throw new NotFoundError(response.data.message)
+  }
+
+  if (response.status === 422) {
+    throw new UnprocessableEntityError(response.data.message)
+  }
+
+  if (response.status === 500) {
     throw new ServerError(response.data.message)
   }
 
-  return response.data
+  // success status code is 204; no response body expected.
 }

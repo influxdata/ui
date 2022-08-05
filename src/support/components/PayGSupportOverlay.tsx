@@ -27,10 +27,12 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-import {getMe, getQuartzMe} from 'src/me/selectors'
+import {getQuartzMe} from 'src/me/selectors'
+import {selectQuartzIdentity} from 'src/identity/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 // API
 import {createSfdcSupportCase} from 'src/shared/apis/sfdc'
@@ -63,9 +65,11 @@ interface OwnProps {
 }
 
 const PayGSupportOverlay: FC<OwnProps> = () => {
-  const {id: orgID} = useSelector(getOrg)
+  const quartzIdentity = useSelector(selectQuartzIdentity)
+  const {user: identityUser, org: identityOrg} = quartzIdentity.currentIdentity
+
   const quartzMe = useSelector(getQuartzMe)
-  const me = useSelector(getMe)
+  const quartzOrg = useSelector(getOrg)
 
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('3 - Standard')
@@ -96,20 +100,34 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   }
 
   const handleSubmit = async () => {
-    const email = quartzMe?.email
-    const descriptionWithOrgId = `${description}  [Org Id: ${orgID}]`
+    let userID: string, userEmail: string, orgName: string, orgID: string
+
+    if (shouldUseQuartzIdentity()) {
+      userID = identityUser.id
+      userEmail = identityUser.email
+      orgName = identityOrg.name
+      orgID = identityOrg.id
+    } else {
+      // Optional chaining operator needed because quartzMe's initial reducer state is null.
+      userID = quartzMe?.id
+      userEmail = quartzMe?.email
+      orgName = quartzOrg?.name
+      orgID = quartzOrg?.id
+    }
+
+    const descriptionWithOrgId = `${description} \n\n [Org Name: ${orgName}] [Org Id: ${orgID}]`
     const translatedSeverity = translateSeverityLevelForSfdc(severity)
     try {
       await createSfdcSupportCase(
         descriptionWithOrgId,
-        email,
+        userEmail,
         translatedSeverity,
         subject
       )
       event(
         'helpBar.paygSupportRequest.submitted',
         {},
-        {userID: me.id, orgID: orgID}
+        {userID, orgName, orgID}
       )
       dispatch(
         showOverlay('help-bar-confirmation', {type: 'PAYG'}, () =>
@@ -118,11 +136,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       )
     } catch {
       dispatch(notify(supportRequestError()))
-      event(
-        'helpBar.paygSupportRequest.failed',
-        {},
-        {userID: me.id, orgID: orgID}
-      )
+      event('helpBar.paygSupportRequest.failed', {}, {userID, orgID})
     }
   }
 
@@ -130,7 +144,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
     setSubject(event.target.value)
   }
 
-  const handleChangeSeverity = (severity): void => {
+  const handleChangeSeverity = (severity: string): void => {
     setSeverity(severity)
   }
 

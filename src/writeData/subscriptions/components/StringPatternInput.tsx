@@ -11,10 +11,7 @@ import {
   Heading,
   HeadingElement,
   FontWeight,
-  AlignItems,
   ComponentSize,
-  FlexDirection,
-  FlexBox,
 } from '@influxdata/clockface'
 
 // Types
@@ -48,46 +45,39 @@ const StringPatternInput: FC<Props> = ({
   return (
     <div>
       <Grid.Column>
-        <FlexBox
-          alignItems={AlignItems.Center}
-          direction={FlexDirection.Row}
-          margin={ComponentSize.Medium}
-          className="header-wrap"
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className="string-parsing-form__header"
         >
-          <Heading
-            element={HeadingElement.H3}
-            weight={FontWeight.Bold}
-            className="header-wrap__header"
-          >
-            {name}
-          </Heading>
-          {(tagType
-            ? !(formContent.stringTags.length === 0)
-            : !(formContent.stringFields.length === 1)) && (
-            <ConfirmationButton
-              color={ComponentColor.Colorless}
-              icon={IconFont.Trash_New}
-              shape={ButtonShape.Square}
-              size={ComponentSize.ExtraSmall}
-              confirmationLabel={`Yes, delete this ${name}`}
-              onConfirm={() => {
-                event(
-                  'removed string parsing rule',
-                  {ruleType: tagType ? 'tag' : 'field'},
-                  {feature: 'subscriptions'}
-                )
-                if (tagType) {
-                  formContent.stringTags.splice(itemNum, 1)
-                } else {
-                  formContent.stringFields.splice(itemNum, 1)
-                }
-                updateForm({...formContent})
-              }}
-              confirmationButtonText="Confirm"
-              testID={`${name}-string-delete-label`}
-            />
-          )}
-        </FlexBox>
+          {name}
+        </Heading>
+        {(tagType
+          ? !(formContent.stringTags.length === 0)
+          : !(formContent.stringFields.length === 1)) && (
+          <ConfirmationButton
+            color={ComponentColor.Colorless}
+            icon={IconFont.Trash_New}
+            shape={ButtonShape.Square}
+            size={ComponentSize.ExtraSmall}
+            confirmationLabel={`Yes, delete this ${name}`}
+            onConfirm={() => {
+              event(
+                'removed string parsing rule',
+                {ruleType: tagType ? 'tag' : 'field'},
+                {feature: 'subscriptions'}
+              )
+              if (tagType) {
+                formContent.stringTags.splice(itemNum, 1)
+              } else {
+                formContent.stringFields.splice(itemNum, 1)
+              }
+              updateForm({...formContent})
+            }}
+            confirmationButtonText="Confirm"
+            testID={`${name}-string-delete-label`}
+          />
+        )}
         <ValidationInputWithTooltip
           label="Name"
           name="name"

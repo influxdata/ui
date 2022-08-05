@@ -33,7 +33,6 @@ import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {currentContext} from 'src/shared/selectors/currentContext'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
@@ -166,10 +165,7 @@ export const hydrateVariables = (
   let usedVars = vars
   if (views.length) {
     usedVars = filterUnusedVars(vars, views)
-  } else if (
-    isFlagEnabled('hydrateRelevantDashboardVariables') &&
-    activeQuery.text
-  ) {
+  } else if (activeQuery.text) {
     usedVars = filterUnusedVarsBasedOnQuery(vars, [activeQuery.text])
   }
 

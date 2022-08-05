@@ -8,6 +8,7 @@ import {
 } from 'src/types/subscriptions'
 import jsonpath from 'jsonpath'
 import {IconFont} from '@influxdata/clockface'
+import {Bulletin} from '../context/subscription.list'
 
 export const DEFAULT_COMPLETED_STEPS = {
   [Steps.BrokerForm]: false,
@@ -26,7 +27,7 @@ export const DEFAULT_STEPS_STATUS = {
 
 export const SUBSCRIPTION_NAVIGATION_STEPS: SubscriptionNavigationModel[] = [
   {
-    glyph: IconFont.UploadOutline,
+    glyph: IconFont.Upload_Outline,
     name: 'Connect \n to Broker',
     type: Steps.BrokerForm,
     isComplete: false,
@@ -49,6 +50,13 @@ export const REGEX_TOOLTIP =
   'Java flavor regular expressions expected. Use a capture group if desired. See https://regex101.com for more info.'
 export const JSON_TOOLTIP =
   'JsonPath expression that returns a singular value expected. See http://jsonpath.com for more info.'
+
+const stringType = 'String'
+const floatType = 'Float'
+const intType = 'Integer'
+const booleanType = 'Boolean'
+
+export const dataTypeList = [stringType, intType, floatType, booleanType]
 
 export const handleValidation = (
   property: string,
@@ -88,8 +96,8 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       form.jsonMeasurementKey.path = newVal
     }
   }
-  if (form.jsonMeasurementKey.type === 'number') {
-    form.jsonMeasurementKey.type = 'double'
+  if (form.jsonMeasurementKey.type === 'integer') {
+    form.jsonMeasurementKey.type = 'int'
   }
 
   if (form.jsonFieldKeys) {
@@ -99,8 +107,8 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       if (newVal) {
         f.path = newVal
       }
-      if (f.type === 'number') {
-        f.type = 'double'
+      if (f.type === 'integer') {
+        f.type = 'int'
       }
     })
   }
@@ -111,8 +119,8 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       if (newVal) {
         t.path = newVal
       }
-      if (t.type === 'number') {
-        t.type = 'double'
+      if (t.type === 'integer') {
+        t.type = 'int'
       }
     })
   }
@@ -138,8 +146,8 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
       form.jsonMeasurementKey.path = newVal
     }
   }
-  if (form.jsonMeasurementKey.type === 'number') {
-    form.jsonMeasurementKey.type = 'double'
+  if (form.jsonMeasurementKey.type === 'integer') {
+    form.jsonMeasurementKey.type = 'int'
   }
   if (form.jsonFieldKeys) {
     form.jsonFieldKeys.map(f => {
@@ -148,8 +156,8 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
       if (newVal) {
         f.path = newVal
       }
-      if (f.type === 'number') {
-        f.type = 'double'
+      if (f.type === 'integer') {
+        f.type = 'int'
       }
     })
   }
@@ -160,8 +168,8 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
       if (newVal) {
         t.path = newVal
       }
-      if (t.type === 'number') {
-        t.type = 'double'
+      if (t.type === 'integer') {
+        t.type = 'int'
       }
     })
   }
@@ -195,7 +203,10 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
 
 export const sanitizeType = (type: string): string => {
   if (type === 'double') {
-    type = 'Number'
+    type = 'Float'
+  }
+  if (type === 'int') {
+    type = 'Integer'
   }
   return type.charAt(0).toUpperCase() + type.slice(1)
 }
@@ -239,7 +250,7 @@ const checkStringObjRequiredFields = (
   validateRegex(stringObjParams?.pattern)
 
 const checkStringTimestamp = (stringObjParams: StringObjectParams): boolean => {
-  if (!stringObjParams.pattern) {
+  if (!stringObjParams?.pattern) {
     return true
   }
   return validateRegex(stringObjParams.pattern)
@@ -261,7 +272,7 @@ const checkJsonObjRequiredFields = (jsonObjParams: JsonSpec): boolean =>
   validateJsonPath(jsonObjParams.path)
 
 const checkJsonTimestamp = (jsonObjParams: JsonSpec): boolean => {
-  if (!jsonObjParams.path) {
+  if (!jsonObjParams?.path) {
     return true
   }
   return validateJsonPath(jsonObjParams.path)
@@ -327,4 +338,77 @@ export const getFormStatus = (active: Steps, form: Subscription) => {
         : 'false',
     dataFormat: form.dataFormat ?? 'not chosen yet',
   } as StepsStatus
+}
+
+const sanitizeBulletin = (bulletin: string) => {
+  const pattern = '\\[id=([0-9a-z].*)\\] .*?: (.*)'
+  const regexObj = new RegExp(pattern, 'i')
+  const matched = bulletin.match(regexObj)
+
+  if (!!matched?.length) {
+    bulletin = matched[2]
+  }
+
+  return bulletin
+}
+
+export const getBulletinsFromStatus = status => {
+  if (!status?.processors?.length) {
+    return []
+  }
+
+  const uniqueBulletins = status.processors
+    .filter(pb => !!pb.bulletins.length)
+    .map(pb => pb.bulletins)
+    .flat()
+    .map(pb => {
+      const message = sanitizeBulletin(pb.bulletin.message)
+      const timestamp = parseDate(pb.bulletin.timestamp)
+
+      return {
+        timestamp,
+        message,
+      }
+    })
+    .reduce((prev, curr) => {
+      const existing = prev?.[curr.message] ?? 0
+      prev[curr.message] = existing < curr.timestamp ? curr.timestamp : existing
+      return prev
+    }, {})
+  return Object.keys(uniqueBulletins).map(b => {
+    return {
+      message: b,
+      timestamp: uniqueBulletins[b],
+    } as Bulletin
+  })
+}
+
+const parseDate = (timeString: string) => {
+  const months = [
+    'JAN',
+    'FEB',
+    'MAR',
+    'APR',
+    'MAY',
+    'JUN',
+    'JUL',
+    'AUG',
+    'SEP',
+    'OCT',
+    'NOV',
+    'DEC',
+  ]
+  const date = new Date()
+  const parsed = new Date(
+    Date.parse(
+      `${date.getDate()} ${
+        months[date.getMonth()]
+      } ${date.getFullYear()} ${timeString}`
+    )
+  )
+  if (parsed > date) {
+    parsed.setDate(parsed.getDate() - 1)
+  }
+
+  return parsed.getTime()
 }

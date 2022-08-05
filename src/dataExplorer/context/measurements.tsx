@@ -9,10 +9,10 @@ import {
 import {DEFAULT_LIMIT, EXTENDED_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Contexts
-import {QueryContext} from 'src/shared/contexts/query'
+import {QueryContext, QueryScope} from 'src/shared/contexts/query'
 
 // Types
-import {Bucket, QueryScope, RemoteDataState} from 'src/types'
+import {Bucket, RemoteDataState} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'

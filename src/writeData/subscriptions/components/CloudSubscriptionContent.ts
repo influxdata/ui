@@ -11,7 +11,7 @@ export interface Subscriptions {
 export const CLOUD_NAIVE_SUBSCRIPTIONS: Subscriptions[] = [
   {
     id: 'mqtt',
-    name: 'MQTT Subscriber',
+    name: 'Native MQTT',
     image: MQTTLogo,
   },
 ]

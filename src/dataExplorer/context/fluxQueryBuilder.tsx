@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useContext,
   useCallback,
+  useEffect,
 } from 'react'
 
 // Context
@@ -74,6 +75,15 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   // States
   const {selection, setSelection} = useContext(PersistanceContext)
   const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+    if (selection.bucket && selection.measurement) {
+      // On page refresh, measurements become empty even though
+      // a bucket and a measurement are selected,
+      // so we should get measurements here
+      getMeasurements(selection.bucket)
+    }
+  }, [selection.bucket])
 
   const handleSelectBucket = (bucket: Bucket): void => {
     selection.bucket = bucket

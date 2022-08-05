@@ -7,6 +7,7 @@ import {
   IconFont,
   Icon,
   JustifyContent,
+  InfluxColors,
 } from '@influxdata/clockface'
 
 // Selectors and Context
@@ -76,6 +77,8 @@ export const GlobalHeader: FC = () => {
     }
   }, [orgsList])
 
+  const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
+
   return (
     <FlexBox
       margin={ComponentSize.Large}
@@ -90,7 +93,7 @@ export const GlobalHeader: FC = () => {
               activeAccount={activeAccount}
               accountsList={sortedAccounts}
             />
-            <Icon glyph={IconFont.CaretRight_New} />
+            <Icon glyph={IconFont.CaretOutlineRight} style={caretStyle} />
             <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
           </>
         )}

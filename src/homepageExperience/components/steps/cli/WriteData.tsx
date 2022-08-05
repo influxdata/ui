@@ -13,6 +13,7 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
+import {copyListener} from 'src/homepageExperience/utils'
 
 // Assets
 import sampleCsv from 'assets/images/sample-csv.png'
@@ -44,16 +45,7 @@ export const WriteDataComponent = (props: OwnProps) => {
   >('URL')
 
   useEffect(() => {
-    const fireKeyboardCopyEvent = event => {
-      if (
-        keyboardCopyTriggered(event) &&
-        userSelection().includes('influx write --bucket')
-      ) {
-        logCopyCodeSnippet()
-      }
-    }
-    document.addEventListener('keydown', fireKeyboardCopyEvent)
-    return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
+    copyListener([writeDataCodeCsv, writeDataCodeUrl])
   }, [])
 
   return (

@@ -1,4 +1,6 @@
 import {IconFont} from '@influxdata/clockface'
+import {keyboardCopyTriggered} from 'src/utils/crossPlatform'
+import {userSelection} from 'src/utils/crossPlatform'
 
 export const HOMEPAGE_NAVIGATION_STEPS = [
   {
@@ -65,3 +67,18 @@ export const HOMEPAGE_NAVIGATION_STEPS_SHORT = [
     glyph: IconFont.StarSmile,
   },
 ]
+
+export const copyListener = terms => {
+  const fireKeyboardCopyEvent = event => {
+    if (event.repeat) return
+    console.log('here')
+    terms.forEach(item => {
+      if (keyboardCopyTriggered(event) && item.includes(userSelection())) {
+        console.log('copied')
+        return true
+      }
+    })
+  }
+  document.addEventListener('keydown', fireKeyboardCopyEvent)
+  return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
+}

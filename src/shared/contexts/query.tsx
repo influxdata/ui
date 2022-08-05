@@ -365,7 +365,12 @@ const updateWindowPeriod = (
         node?.property?.name === 'windowPeriod'
     ).length
   ) {
-    return
+    if (mode === 'ast') {
+      return optionAST
+    }
+
+    // TODO write window period back out to json object
+    return options
   }
   try {
     const _optionAST = JSON.parse(JSON.stringify(optionAST))

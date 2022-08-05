@@ -365,7 +365,11 @@ const updateWindowPeriod = (
         node?.property?.name === 'windowPeriod'
     ).length
   ) {
-    return
+    if (mode === 'ast') {
+      return optionAST
+    }
+
+    return options
   }
   try {
     const _optionAST = JSON.parse(JSON.stringify(optionAST))

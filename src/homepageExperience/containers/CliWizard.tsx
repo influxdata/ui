@@ -109,7 +109,15 @@ export class CliWizard extends PureComponent<{}, State> {
 
   handleNavClick = (clickedStep: number) => {
     this.setState({currentStep: clickedStep})
-    event('firstMile.cliWizard.subNav.clicked', {}, {currentStep: normalizeEventName(HOMEPAGE_NAVIGATION_STEPS_SHORT[clickedStep - 1].name)}) 
+    event(
+      'firstMile.cliWizard.subNav.clicked',
+      {},
+      {
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_SHORT[clickedStep - 1].name
+        ),
+      }
+    )
   }
 
   renderStep = () => {

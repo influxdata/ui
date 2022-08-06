@@ -68,6 +68,15 @@ const FluxEditorMonaco: FC<Props> = ({
   const editorDidMount = (editor: EditorType) => {
     connection.current = setupForReactMonacoEditor(editor)
     connection.current.updatePreludeModel(variables)
+
+    // FIXME: this will instead be programmatically called.
+    // for Q3 goal --> in response to UI events
+    // eventually --> responding to both UI events, and LSP-client connection events
+    connection.current.setCompositionBlockStyle(true, 1, 6)
+    setTimeout(() => {
+      connection.current.turnOffCompositionSync(1)
+    }, 5000)
+
     setEditor(editor, connection)
     if (setEditorInstance) {
       setEditorInstance(editor, connection)

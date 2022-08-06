@@ -20,9 +20,11 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 class LspConnectionManager {
   private _worker: Worker
+  private _editor: EditorType
   private _model: MonacoTypes.editor.IModel
   private _preludeModel: MonacoTypes.editor.IModel
   private _variables: Variable[] = []
+  private _compositionStyle: string[] = []
 
   constructor(worker: Worker) {
     this._worker = worker
@@ -56,6 +58,7 @@ class LspConnectionManager {
   }
 
   subscribeToModel(editor: EditorType) {
+    this._editor = editor
     this._model = editor.getModel()
 
     this._model.onDidChangeContent(() => this.updatePreludeModel())
@@ -89,6 +92,48 @@ class LspConnectionManager {
       return
     }
     this._worker.postMessage(msg)
+  }
+
+  _compositionIcon = (synced: boolean) => {
+    return {
+      linesDecorationsClassName: synced
+        ? 'composition-sync-icon-on'
+        : 'composition-sync-icon-off',
+    }
+  }
+
+  setCompositionBlockStyle(
+    synced: boolean,
+    startLine: number,
+    endLine: number
+  ) {
+    const syncIcon = [
+      {
+        range: new MonacoTypes.Range(startLine, 1, startLine, 1),
+        options: this._compositionIcon(synced),
+      },
+    ]
+
+    const compositionBlock = synced
+      ? [
+          {
+            range: new MonacoTypes.Range(startLine, 1, endLine, 1),
+            options: {
+              isWholeLine: true,
+              inlineClassName: 'composition-block',
+            },
+          },
+        ]
+      : []
+
+    this._compositionStyle = this._editor.deltaDecorations(
+      this._compositionStyle,
+      syncIcon.concat(compositionBlock as any)
+    )
+  }
+
+  turnOffCompositionSync(startLine: number) {
+    this.setCompositionBlockStyle(false, startLine, startLine)
   }
 
   dispose() {

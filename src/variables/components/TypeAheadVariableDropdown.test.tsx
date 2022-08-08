@@ -90,7 +90,7 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
         setInitialState
       )
 
-      const dropdownButton = getByTestId('variable-dropdown--button')
+      const dropdownButton = getByTestId('typeAhead-dropdown--button')
       fireEvent.click(dropdownButton)
       const dropdownItems = getAllByTestId(/type-ahead-dropdown--item-*/).map(
         node => node.id
@@ -106,7 +106,9 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
       setInitialState
     )
 
-    const filterInput = getByTestId('dropdown-input-typeAhead--typeAhead')
+    const filterInput = getByTestId(
+      'variable-dropdown--map_buckets--typeAhead-input'
+    )
 
     const checkDropdown = (filterText, expectedList) => {
       fireEvent.change(filterInput, {target: {value: filterText}})

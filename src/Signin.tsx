@@ -25,7 +25,6 @@ import {sessionTimedOut} from 'src/shared/copy/notifications'
 import {
   CLOUD,
   CLOUD_LOGIN_PATHNAME,
-  CLOUD_SIGNIN_PATHNAME,
   CLOUD_QUARTZ_URL,
 } from 'src/shared/constants'
 
@@ -121,21 +120,8 @@ export class Signin extends PureComponent<Props, State> {
           return
         }
 
-        /**
-         * We'll need this authSessionCookieOn flag off for tools until
-         * Quartz is integrated into that environment
-         */
-        if (isFlagEnabled('authSessionCookieOn')) {
-          const url = new URL(
-            `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`
-          )
-          setToLocalStorage('redirectTo', window.location.href)
-          window.location.href = url.href
-          throw error
-        }
-
         const url = new URL(
-          `${window.location.origin}${CLOUD_SIGNIN_PATHNAME}?redirectTo=${window.location.href}`
+          `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`
         )
         setToLocalStorage('redirectTo', window.location.href)
         window.location.href = url.href

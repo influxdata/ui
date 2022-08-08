@@ -22,6 +22,7 @@ import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
 import {
   PersistanceProvider,
   PersistanceContext,
+  DEFAULT_SCHEMA,
 } from 'src/dataExplorer/context/persistance'
 import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
@@ -42,7 +43,7 @@ const FluxQueryBuilder: FC = () => {
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
     setQuery('')
-    setSelection({bucket: null, measurement: ''})
+    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
   }, [setQuery, setStatus, setResult, setSelection, cancel])
 
   return (

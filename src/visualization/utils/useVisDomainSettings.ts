@@ -167,6 +167,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     timeRange = null,
   } = args
 
+  const [selectedTimeRange, setSelectedTimeRange] = useState(timeRange)
   const initialDomain = useMemo(() => {
     if (storedDomain) {
       return storedDomain
@@ -178,6 +179,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   /*
    * preZoomDomain:
    *   - can be changed only by the query results
+   *   - can be changed by the time range dropdown
    *   - uses one-way state to capture the very first set of values
    */
   const [preZoomDomain] = useOneWayState(initialDomain)
@@ -249,9 +251,13 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
 
   // sync preZoomDomain and domain
   //   - when query results change to refit the graph
-  //   - except when it is the time axis to prevent a shrunken graph
+  //   - when it is the time axis, then only if the timeRange has changed
   useEffect(() => {
-    if (!timeRange && isNotEqual(preZoomDomain, domain)) {
+    if (
+      (!timeRange || isNotEqual(timeRange, selectedTimeRange)) &&
+      isNotEqual(preZoomDomain, domain)
+    ) {
+      setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)
     }
   }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -291,6 +297,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
     timeRange = null,
   } = args
 
+  const [selectedTimeRange, setSelectedTimeRange] = useState(timeRange)
   const initialDomain = useMemo(() => {
     if (
       !Array.isArray(storedDomain) ||
@@ -307,6 +314,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   /*
    * preZoomDomain:
    *   - can be changed only by the query results
+   *   - can be changed by the time range dropdown
    *   - uses one-way state to capture the very first set of values
    */
   const [preZoomDomain] = useOneWayState(initialDomain)
@@ -378,9 +386,13 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
 
   // sync preZoomDomain and domain
   //   - when query results change to refit the graph
-  //   - except when it is the time axis to prevent a shrunken graph
+  //   - when it is the time axis, then only if the timeRange has changed
   useEffect(() => {
-    if (!timeRange && isNotEqual(preZoomDomain, domain)) {
+    if (
+      (!timeRange || isNotEqual(timeRange, selectedTimeRange)) &&
+      isNotEqual(preZoomDomain, domain)
+    ) {
+      setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)
     }
   }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps

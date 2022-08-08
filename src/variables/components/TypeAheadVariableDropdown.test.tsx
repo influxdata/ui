@@ -14,7 +14,10 @@ const variable_name = 'xkcd_meme'
 
 /* Note(sahas): Note that there are only 5 values in the variable for the purposes of this unit test.
 This is necessary because the TypeAheadDropDown component now uses react-window to render the list and,
-the list renders limited items to optimize performance.
+the list renders limited items at a time to optimize performance.
+
+Limiting the number of items rendered at a time helps performance,
+but it also means that the test can not target all items at once with getAllByTestId when testing whether the dropdown items are rendered correctly.
 */
 
 // map variable values

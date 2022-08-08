@@ -9,37 +9,35 @@ import TypeAheadVariableDropdown from 'src/variables/components/TypeAheadVariabl
 import {renderWithRedux} from 'src/mockState'
 import {AppState, RemoteDataState} from 'src/types'
 
-const values = {
-  always: 'always',
-  def: 'defbuck',
-  def2: 'defbuck2',
-  foo: 'foobuck',
-  goo: 'goobuck',
-  new: 'newBuck',
-  really: 'reallyYes',
-  REALLy2: 'anotherReally',
-}
-const fvalues = {
-  def: 'defbuck',
-  def2: 'defbuck2',
-  foo: 'foobuck',
+// map variable name
+const variable_name = 'xkcd_meme'
+
+// map variable values
+const xkcd_name_to_url_map = {
+  'Bad Code': 'https://xkcd.com/1926/',
+  'Debugging': 'https://xkcd.com/1722/',
+  'ISO 8601': 'https://xkcd.com/1179/',
+  'Random Number': 'https://xkcd.com/221/',
+  'Tags': 'https://xkcd.com/1144/',
 }
 
-const evalues = {
-  def: 'defbuck',
-  def2: 'defbuck2',
-  new: 'newBuck',
-  really: 'reallyYes',
-  REALLy2: 'anotherReally',
+const values_with_a = {
+  'Bad Code': 'https://xkcd.com/1926/',
+  'Random Number': 'https://xkcd.com/221/',
+  'Tags': 'https://xkcd.com/1144/',
 }
 
-const alvalues = {
-  always: 'always',
-  really: 'reallyYes',
-  REALLy2: 'anotherReally',
+const values_with_b = {
+  'Bad Code': 'https://xkcd.com/1926/',
+  'Debugging': 'https://xkcd.com/1722/',
+  'Random Number': 'https://xkcd.com/221/',
 }
 
-const setInitialState = (state: AppState): AppState => {
+const values_with_c = {
+  'Bad Code': 'https://xkcd.com/1926/',
+}
+
+const initialState = (state: AppState): AppState => {
   return {
     ...state,
     currentDashboard: {
@@ -54,12 +52,12 @@ const setInitialState = (state: AppState): AppState => {
           '03cbdc8a53a63000': {
             id: '03cbdc8a53a63000',
             orgID: '03c02466515c1000',
-            name: 'map_buckets',
+            name: variable_name,
             description: '',
             selected: null,
             arguments: {
               type: 'map',
-              values,
+              values: xkcd_name_to_url_map,
             },
             labels: [],
             status: RemoteDataState.Done,
@@ -70,7 +68,7 @@ const setInitialState = (state: AppState): AppState => {
             status: RemoteDataState.Done,
             values: {
               '03cbdc8a53a63000': {
-                values,
+                values: xkcd_name_to_url_map,
                 selected: [''],
               },
             },
@@ -87,7 +85,7 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
     it('renders dropdown with keys as dropdown items', () => {
       const {getByTestId, getAllByTestId} = renderWithRedux(
         <TypeAheadVariableDropdown variableID="03cbdc8a53a63000" />,
-        setInitialState
+        initialState
       )
 
       const dropdownButton = getByTestId('typeAhead-dropdown--button')
@@ -96,21 +94,22 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
         node => node.id
       )
 
-      expect(dropdownItems).toEqual(Object.keys(values))
+      expect(dropdownItems).toEqual(Object.keys(xkcd_name_to_url_map))
     })
   })
 
   it('filters properly while typing in the input', () => {
     const {getByTestId, getAllByTestId} = renderWithRedux(
       <TypeAheadVariableDropdown variableID="03cbdc8a53a63000" />,
-      setInitialState
+      initialState
     )
 
     const filterInput = getByTestId(
-      'variable-dropdown--map_buckets--typeAhead-input'
+      `variable-dropdown--${variable_name}--typeAhead-input`
     )
 
     const checkDropdown = (filterText, expectedList) => {
+      fireEvent.click(filterInput)
       fireEvent.change(filterInput, {target: {value: filterText}})
       const dropdownItems = getAllByTestId('typeAhead-dropdown--item').map(
         node => node.id
@@ -118,19 +117,19 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
       expect(dropdownItems).toEqual(Object.keys(expectedList))
     }
 
-    // filter on the string 'f':
-    checkDropdown('f', fvalues)
+    // filter on the string 'a':
+    checkDropdown('a', values_with_a)
 
     // clear input, should see everything:
-    checkDropdown('', values)
+    checkDropdown('', xkcd_name_to_url_map)
 
     // filter again by text:
-    checkDropdown('e', evalues)
-    checkDropdown('al', alvalues)
+    checkDropdown('b', values_with_b)
+    checkDropdown('c', values_with_c)
 
     // something that won't match anything
     // (see: https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present)
-    fireEvent.change(filterInput, {target: {value: 'def23'}})
+    fireEvent.change(filterInput, {target: {value: 'this_string_will_not_match'}})
     const items = screen.queryByTestId('variable-dropdown--item')
     expect(items).toBeNull() // it doesn't exist
   })

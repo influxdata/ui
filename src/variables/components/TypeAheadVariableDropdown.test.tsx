@@ -12,6 +12,11 @@ import {AppState, RemoteDataState} from 'src/types'
 // map variable name
 const variable_name = 'xkcd_meme'
 
+/* Note(sahas): Note that there are only 5 values in the variable for the purposes of this unit test.
+This is necessary because the TypeAheadDropDown component now uses react-window to render the list and,
+the list renders limited items to optimize performance.
+*/
+
 // map variable values
 const xkcd_name_to_url_map = {
   'Bad Code': 'https://xkcd.com/1926/',

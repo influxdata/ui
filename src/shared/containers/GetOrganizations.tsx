@@ -19,8 +19,11 @@ import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
 import {getAllOrgs} from 'src/resources/selectors'
-import {getMe, getQuartzMe} from 'src/me/selectors'
-import {selectQuartzIdentity} from 'src/identity/selectors'
+import {getMe, getQuartzMe, getQuartzMeStatus} from 'src/me/selectors'
+import {
+  selectQuartzIdentity,
+  selectQuartzIdentityStatus,
+} from 'src/identity/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -28,16 +31,18 @@ import {CLOUD} from 'src/shared/constants'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 // Types
 import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
-import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
-import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
-import {RemoteDataState, AppState} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 // Thunks
-import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
+import {
+  getCurrentOrgDetailsThunk,
+  getQuartzIdentityThunk,
+} from 'src/identity/actions/thunks'
 
 const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
@@ -49,17 +54,11 @@ const canAccessCheckout = (me: Me): boolean => {
 const GetOrganizations: FunctionComponent = () => {
   const {status, org} = useSelector(getAllOrgs)
   const identity = useSelector(selectQuartzIdentity)
-
-  const quartzMeStatus = useSelector(
-    (state: AppState) => state.me.quartzMeStatus
-  )
+  const quartzMeStatus = useSelector(getQuartzMeStatus)
   const quartzMe = useSelector(getQuartzMe)
-
-  const quartzIdentityStatus = useSelector(
-    (state: AppState) => state.identity.currentIdentity.status
-  )
-
+  const quartzIdentityStatus = useSelector(selectQuartzIdentityStatus)
   const {id: meId = '', name: email = ''} = useSelector(getMe)
+
   const dispatch = useDispatch()
 
   const identityOrgId = identity.currentIdentity.org.id

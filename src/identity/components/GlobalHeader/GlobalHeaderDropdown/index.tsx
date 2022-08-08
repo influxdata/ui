@@ -40,6 +40,7 @@ export interface Props extends StandardFunctionProps {
   mainMenuHeaderText?: string
   mainMenuHeaderIcon?: IconFont
   mainMenuOptions: MainMenuItem[]
+  onlyRenderSubmenu?: boolean
   typeAheadSelectedOption?: TypeAheadMenuItem
   typeAheadMenuOptions: TypeAheadMenuItem[]
   typeAheadInputPlaceholder?: string
@@ -55,7 +56,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      showTypeAheadMenu: false,
+      showTypeAheadMenu: this.props.onlyRenderSubmenu ?? false,
       selectedItem: this.props.typeAheadSelectedOption || null,
     }
   }
@@ -83,7 +84,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         active={active}
         onClick={onClick}
         size={dropdownButtonSize}
-        icon={dropdownButtonIcon}
+        trailingIcon={dropdownButtonIcon || IconFont.DoubleCaretVertical}
         className="global-header--dropdown-button"
       >
         {selectedItem?.name || defaultButtonText}
@@ -105,7 +106,11 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
           const iconEl = <Icon glyph={value.iconFont} className="button-icon" />
           const textEl = <span>{value.name}</span>
           return (
-            <Dropdown.HrefItem key={value.name} href={value.href}>
+            <Dropdown.HrefItem
+              key={value.name}
+              href={value.href}
+              className="global-header--align-center"
+            >
               {iconEl}
               {textEl}
             </Dropdown.HrefItem>
@@ -140,6 +145,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       dropdownMenuTheme = DropdownMenuTheme.None,
       dropdownMenuStyle,
       typeAheadMenuOptions,
+      onlyRenderSubmenu = false,
     } = this.props
     const {showTypeAheadMenu} = this.state
 
@@ -153,13 +159,13 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     return (
       <Dropdown.Menu theme={dropdownMenuTheme} style={dropdownMenuStyle}>
         {/* Multi-org UI tickets #4051 and #4047, when user only has 1 account or 1 org, switch button is disabled */}
-        {typeAheadMenuOptions.length > 1 && (
+        {!onlyRenderSubmenu && typeAheadMenuOptions.length > 1 && (
           <Dropdown.Item onClick={this.toggleShowTypeAheadMenu}>
             <FlexBox
               justifyContent={JustifyContent.SpaceBetween}
               alignItems={AlignItems.Center}
             >
-              <span>
+              <span className="global-header--align-center">
                 {iconEl}
                 {textEl}
               </span>

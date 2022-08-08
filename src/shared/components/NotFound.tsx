@@ -27,6 +27,9 @@ import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import GetInfluxButton from 'src/shared/components/GetInfluxButton'
 import {Organization} from 'src/types'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">
     <FunnelPage enableGraphic={true} className="page-not-found-funnel">
@@ -148,7 +151,9 @@ const NotFound: FC = () => {
   }, [history, location.pathname])
 
   useEffect(() => {
-    handleDeepLink()
+    if (CLOUD) {
+      handleDeepLink()
+    }
   }, [handleDeepLink])
 
   if (isFetchingOrg) {

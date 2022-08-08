@@ -20,7 +20,7 @@ import {FieldsProvider} from 'src/dataExplorer/context/fields'
 import {TagsProvider} from 'src/dataExplorer/context/tags'
 
 // Types
-import {QueryScope} from 'src/types'
+import {QueryScope} from 'src/shared/contexts/query'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'

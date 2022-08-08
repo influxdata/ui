@@ -1,0 +1,41 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+// User Profile Page
+.user-profile-page--form-element {
+  width: 400px;
+}
+
+.user-profile-page--divider {
+  width: 850px;
+  margin-bottom: 0px;
+}
+
+.user-profile-page--save-button {
+  margin-top: $cf-space-l;
+}
+
+// User Profile Page - User Details Form Section
+.user-details-container--header {
+  font-size: $cf-text-base-2;
+  margin-bottom: $cf-space-s;
+  color: #ffffff;
+}
+
+// User Profile Page - Change Default Account & Org Form Section
+.change-default-account-org--header {
+  font-size: $cf-text-base-2;
+  margin-top: $cf-space-l;
+}
+
+.change-default-account-org--text {
+  color: #88889b;
+  font-size: $cf-text-base-0;
+  margin-top: $cf-space-2xs;
+  margin-bottom: $cf-space-xs;
+}
+
+.change-default-account-org--dropdown-flexbox {
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: $cf-space-m;
+}

@@ -91,16 +91,6 @@ export const orgCreateSuccess = (): Notification => ({
   message: 'Organization was successfully created',
 })
 
-export const orgDefaultSettingError = (orgName: string): Notification => ({
-  ...defaultErrorNotification,
-  message: `Organization "${orgName}" could not be set as the default organization. Please try again.`,
-})
-
-export const orgDefaultSettingSuccess = (orgName: string): Notification => ({
-  ...defaultSuccessNotification,
-  message: `Organization "${orgName}" was successfully set as the default organization`,
-})
-
 export const orgEditFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to update organization',
@@ -129,4 +119,14 @@ export const removeUserFailed = (): Notification => ({
 export const removeUserSuccessful = (): Notification => ({
   ...defaultSuccessNotification,
   message: `User Removed`,
+})
+
+export const userProfileSaveSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Saved changes to your profile.',
+})
+
+export const userProfileSaveError = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Failed to save all changes to your profile. Please try again.',
 })

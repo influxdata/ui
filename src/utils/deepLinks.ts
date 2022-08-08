@@ -19,6 +19,7 @@ export const buildDeepLinkingMap = (org: Organization) => ({
     org.id
   }/${PROJECT_NAME_PLURAL.toLowerCase()}`,
   '/me/notebooks': `/orgs/${org.id}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
+  '/me/profile': `/orgs/${org.id}/user/profile`,
   '/me/pythonclient': `/orgs/${org.id}/load-data/client-libraries/python`,
   '/me/secrets': `/orgs/${org.id}/settings/secrets`,
   '/me/setup-cli': `/orgs/${org.id}/new-user-setup/cli`,

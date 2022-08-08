@@ -1,7 +1,8 @@
 import React, {FC, useContext, useEffect, useMemo, useCallback} from 'react'
-import {PipeData, FluxResult, QueryScope} from 'src/types/flows'
+import {PipeData, FluxResult} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {QueryScope} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/flows/context/results'
 import {RemoteDataState, TimeRange} from 'src/types'
 import {useHistory, useLocation} from 'react-router-dom'
@@ -28,7 +29,10 @@ const DEFAULT_CONTEXT: PipeContextType = {
     parsed: {},
   } as FluxResult,
   readOnly: false,
-  scope: {},
+  scope: {
+    region: '',
+    org: '',
+  },
 }
 
 export const PipeContext = React.createContext<PipeContextType>(DEFAULT_CONTEXT)

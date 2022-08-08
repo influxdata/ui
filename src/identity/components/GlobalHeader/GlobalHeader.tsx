@@ -7,9 +7,11 @@ import {
   IconFont,
   Icon,
   JustifyContent,
+  InfluxColors,
 } from '@influxdata/clockface'
 
 // Selectors and Context
+import {getOrg} from 'src/organizations/selectors'
 import {selectQuartzIdentity} from 'src/identity/selectors'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 
@@ -33,6 +35,9 @@ import IdentityUserAvatar from 'src/identity/components/GlobalHeader/IdentityUse
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
   const identity = useSelector(selectQuartzIdentity)
+  const {user} = identity.currentIdentity
+  const org = useSelector(getOrg)
+
   const orgsList = identity.quartzOrganizations.orgs
   const {userAccounts} = useContext(UserAccountContext)
 
@@ -45,8 +50,10 @@ export const GlobalHeader: FC = () => {
   const [activeAccount, setActiveAccount] = useState(emptyAccount)
 
   useEffect(() => {
-    dispatch(getQuartzOrganizationsThunk())
-  }, [dispatch])
+    if (activeAccount.id !== emptyAccount.id) {
+      dispatch(getQuartzOrganizationsThunk(activeAccount.id))
+    }
+  }, [dispatch, activeAccount.id])
 
   useEffect(() => {
     if (accountsList[0].id !== 0) {
@@ -70,6 +77,8 @@ export const GlobalHeader: FC = () => {
     }
   }, [orgsList])
 
+  const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
+
   return (
     <FlexBox
       margin={ComponentSize.Large}
@@ -84,12 +93,17 @@ export const GlobalHeader: FC = () => {
               activeAccount={activeAccount}
               accountsList={sortedAccounts}
             />
-            <Icon glyph={IconFont.CaretRight_New} />
+            <Icon glyph={IconFont.CaretOutlineRight} style={caretStyle} />
             <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
           </>
         )}
       </FlexBox>
-      <IdentityUserAvatar user={identity.currentIdentity.user} />
+      <IdentityUserAvatar
+        firstName={user.firstName}
+        lastName={user.lastName}
+        email={user.email}
+        orgId={org.id}
+      />
     </FlexBox>
   )
 }

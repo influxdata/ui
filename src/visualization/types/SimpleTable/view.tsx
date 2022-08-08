@@ -8,15 +8,14 @@ import {FluxResult} from 'src/types/flows'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
-import {parseFromFluxResults} from 'src/timeMachine/utils/rawFluxDataTable'
-
-import './style.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+// Components
 import PageControl from 'src/visualization/types/SimpleTable/PageControl'
 import PagedTable from 'src/visualization/types/SimpleTable/PagedTable'
 import {PaginationProvider} from 'src/visualization/context/pagination'
 
+import './SimpleTable.scss'
 interface Props extends VisualizationProps {
   properties: SimpleTableViewProperties
   result: FluxResult['parsed']
@@ -24,11 +23,8 @@ interface Props extends VisualizationProps {
 
 const SimpleTable: FC<Props> = ({properties, result}) => {
   if (isFlagEnabled('useGiraffeGraphs')) {
-    const parsed = parseFromFluxResults(result)
-    const fluxResponse = parsed.tableData.join('\n')
-
     const config: Config = {
-      fluxResponse,
+      fromFluxResult: result,
       layers: [
         {
           type: 'simple table',

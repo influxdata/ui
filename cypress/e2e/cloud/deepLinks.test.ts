@@ -60,6 +60,9 @@ describe('Deep linking', () => {
       cy.visit('/me/notebooks')
       cy.location('pathname').should('eq', `/orgs/${org.id}/notebooks`)
 
+      cy.visit('/me/profile')
+      cy.location('pathname').should('eq', `/orgs/${org.id}/user/profile`)
+
       cy.visit('/me/pythonclient')
       cy.location('pathname').should(
         'eq',

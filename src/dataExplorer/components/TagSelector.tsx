@@ -115,13 +115,16 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       <Accordion className="tag-selector-value">
         <div
           onClick={() => handleSelectTagKey(tagKey)}
-          data-testid="tag-selector--key"
+          data-testid="tag-selector-value--header-wrapper"
         >
           <Accordion.AccordionHeader className="tag-selector-value--header">
             <SelectorTitle title={tagKey} />
           </Accordion.AccordionHeader>
         </div>
-        <div className="container-side-bar">
+        <div
+          className="container-side-bar--tag-values"
+          data-testid="container-side-bar--tag-values"
+        >
           {list}
           {loadMoreButton}
         </div>
@@ -136,13 +139,11 @@ const TagSelector: FC = () => {
   const tagKeys: string[] = Object.keys(tags)
 
   let list: JSX.Element | JSX.Element[] = (
-    <div className="tag-selector-key--list-item">No Tags Found</div>
+    <div className="tag-selector--list-item">No Tags Found</div>
   )
 
   if (loadingTagKeys === RemoteDataState.Error) {
-    list = (
-      <div className="tag-selector-key--list-item">Failed to load tags</div>
-    )
+    list = <div className="tag-selector--list-item">Failed to load tags</div>
   } else if (
     loadingTagKeys === RemoteDataState.Loading ||
     loadingTagKeys === RemoteDataState.NotStarted
@@ -164,15 +165,16 @@ const TagSelector: FC = () => {
 
   return useMemo(
     () => (
-      <Accordion
-        className="tag-selector-key"
-        expanded={true}
-        testID="tag-selector-key"
-      >
-        <Accordion.AccordionHeader className="tag-selector-key--header">
+      <Accordion className="tag-selector" expanded={true} testID="tag-selector">
+        <Accordion.AccordionHeader className="tag-selector--header">
           <SelectorTitle title="Tag Keys" info={TAG_KEYS_TOOLTIP} />
         </Accordion.AccordionHeader>
-        <div className="container-side-bar">{list}</div>
+        <div
+          className="container-side-bar--tag-keys"
+          data-testid="container-side-bar--tag-keys"
+        >
+          {list}
+        </div>
       </Accordion>
     ),
     [tags, loadingTagKeys, loadingTagValues, list]

@@ -31,6 +31,7 @@ import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetails
 // Utils
 import {allAccessPermissions} from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
+import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 // Types
 import {AppState, Authorization} from 'src/types'
@@ -39,7 +40,6 @@ import {AppState, Authorization} from 'src/types'
 import './CliSteps.scss'
 
 type OwnProps = {
-  wizardEventName: string
   setTokenValue: (tokenValue: string) => void
   tokenValue: string
   onSelectBucket: (bucketName: string) => void
@@ -48,7 +48,6 @@ type OwnProps = {
 const collator = new Intl.Collator(navigator.language || 'en-US')
 
 export const InitializeClient: FC<OwnProps> = ({
-  wizardEventName,
   setTokenValue,
   tokenValue,
   onSelectBucket,
@@ -97,12 +96,12 @@ export const InitializeClient: FC<OwnProps> = ({
     if (sortedPermissionTypes.length && tokenValue === null) {
       const authorization: Authorization = {
         orgID: org.id,
-        description: `onboarding-${wizardEventName}-token-${Date.now()}`,
+        description: `onboarding-cliWizard-token-${Date.now()}`,
         permissions: allAccessPermissions(sortedPermissionTypes, org.id, me.id),
       }
 
       dispatch(createAuthorization(authorization))
-      event(`firstMile.${wizardEventName}.tokens.tokenCreated`)
+      event(`firstMile.cliWizard.tokens.tokenCreated`)
     }
   }, [sortedPermissionTypes.length])
 
@@ -113,9 +112,23 @@ export const InitializeClient: FC<OwnProps> = ({
     }
   }, [currentAuth.token])
 
+  useEffect(() => {
+    const fireKeyboardCopyEvent = event => {
+      if (
+        keyboardCopyTriggered(event) &&
+        (userSelection().includes('influx config create') ||
+          userSelection().includes('influx bucket create'))
+      ) {
+        logCopyCodeSnippet()
+      }
+    }
+    document.addEventListener('keydown', fireKeyboardCopyEvent)
+    return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
+  }, [])
+
   // Events log handling
   const logCopyCodeSnippet = () => {
-    event(`firstMile.${wizardEventName}.buckets.code.copied`)
+    event(`firstMile.cliWizard.buckets.code.copied`)
   }
 
   return (

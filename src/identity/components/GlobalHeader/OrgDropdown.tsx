@@ -1,13 +1,21 @@
+// Libraries
 import React, {FC} from 'react'
-import {OrganizationSummaries} from 'src/client/unityRoutes'
+import {IconFont} from '@influxdata/clockface'
+
+// Components
 import {
   TypeAheadMenuItem,
   GlobalHeaderDropdown,
 } from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
-import {IconFont} from '@influxdata/clockface'
+
+// Types
+import {OrganizationSummaries} from 'src/client/unityRoutes'
+
+// Constants
+import {CLOUD_URL} from 'src/shared/constants'
 
 const switchOrg = (org: TypeAheadMenuItem) => {
-  window.location.href = `/orgs/${org.id}`
+  window.location.href = `${CLOUD_URL}/orgs/${org.id}`
 }
 
 type OrgSummaryItem = OrganizationSummaries[number]

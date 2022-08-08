@@ -114,7 +114,7 @@ const BrokerFormContent: FC<Props> = ({
               type={InputType.Text}
               placeholder="Describe this connection"
               name="description"
-              value={formContent.description}
+              value={formContent.description ?? ''}
               onChange={e =>
                 updateForm({
                   ...formContent,

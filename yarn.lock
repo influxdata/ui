@@ -1471,10 +1471,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.28.tgz#4f9e4d878c45d1f84efd15d0d8727356655d0517"
   integrity sha512-TcRW4p+uCaKS3dS7Si+VqvS+bVuE4hE/WigtfuzL3leerT/YGkWXLIKchoCx7N1/J8T/rrFH0/iZuyJz+m9NDg==
 
-"@influxdata/giraffe@^2.32.0":
-  version "2.32.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.32.0.tgz#212eb7f1d8db905b0924f149284547f33601fd03"
-  integrity sha512-VoOU0/+otWtZyUd4hHgj2Z52F9vKfKNjUyAyf/3OZi/NrF2nT1oSBXD3E8xI+fUxX1UGqgebiytV8soVFVf7uQ==
+"@influxdata/giraffe@^2.33.4":
+  version "2.33.4"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.33.4.tgz#1d169689e2b141dfbd977774143e6b14583b417d"
+  integrity sha512-9On4TlmzGFCSfWzSUOGQrRExsngGMlzn7XTO7s0f9psXMyDqLCTkV+JOGrAxk4G+0FLao+t4wiuqKikcy6RtJQ==
   dependencies:
     merge-images "^2.0.0"
 
@@ -10317,6 +10317,11 @@ requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
+
+reselect@^4.1.6:
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.1.6.tgz#19ca2d3d0b35373a74dc1c98692cdaffb6602656"
+  integrity sha512-ZovIuXqto7elwnxyXbBtCPo9YFEr3uJqj2rRbcOOog1bmu2Ag85M4hixSwFWyaBMKXNgvPaJ9OSu9SkBPIeJHQ==
 
 resolve-cwd@^3.0.0:
   version "3.0.0"

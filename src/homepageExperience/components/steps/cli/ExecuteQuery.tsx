@@ -1,5 +1,5 @@
 // Libraries
-import React from 'react'
+import React, {useEffect} from 'react'
 
 // Components
 import CodeSnippet from 'src/shared/components/CodeSnippet'
@@ -10,6 +10,7 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.executeQuery.code.copied')
@@ -22,11 +23,24 @@ type OwnProps = {
 export const ExecuteQuery = (props: OwnProps) => {
   const {bucket} = props
   const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
-  const query = `influx query 'from(bucket:"${bucketName}") |> range(start:-10m)' --raw`
+  const query = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m)' --raw`
 
   const fluxExample = `from(bucket: “weather-data”)
   |> range(start: -10m)
   |> filter(fn: (r) => r._measurement == “temperature”)`
+
+  useEffect(() => {
+    const fireKeyboardCopyEvent = event => {
+      if (
+        keyboardCopyTriggered(event) &&
+        userSelection().includes('influx query')
+      ) {
+        logCopyCodeSnippet()
+      }
+    }
+    document.addEventListener('keydown', fireKeyboardCopyEvent)
+    return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
+  }, [])
 
   return (
     <>

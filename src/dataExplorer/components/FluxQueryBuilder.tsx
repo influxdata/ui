@@ -4,9 +4,13 @@ import {RemoteDataState} from 'src/types'
 // Components
 import {
   DraggableResizer,
+  FlexBox,
+  FlexDirection,
   Orientation,
   Button,
   IconFont,
+  AlignItems,
+  JustifyContent,
 } from '@influxdata/clockface'
 import {QueryProvider, QueryContext} from 'src/shared/contexts/query'
 import {EditorProvider} from 'src/shared/contexts/editor'
@@ -44,27 +48,41 @@ const FluxQueryBuilder: FC = () => {
   return (
     <EditorProvider>
       <SidebarProvider>
-        <div className="flux-query-builder--menu">
-          <Button onClick={clear} text="New Script" icon={IconFont.Plus_New} />
-        </div>
-        <DraggableResizer
-          handleOrientation={Orientation.Vertical}
-          handlePositions={vertical}
-          onChangePositions={setVertical}
+        <FlexBox
+          className="flux-query-builder--container"
+          direction={FlexDirection.Column}
+          justifyContent={JustifyContent.SpaceBetween}
+          alignItems={AlignItems.Stretch}
         >
-          <DraggableResizer.Panel>
-            <Schema />
-          </DraggableResizer.Panel>
-          <DraggableResizer.Panel
-            testID="flux-query-builder-middle-panel"
-            className="new-data-explorer-rightside"
+          <div
+            className="flux-query-builder--menu"
+            data-testid="flux-query-builder--menu"
           >
-            <ResultsPane />
-          </DraggableResizer.Panel>
-          <DraggableResizer.Panel>
-            <Sidebar />
-          </DraggableResizer.Panel>
-        </DraggableResizer>
+            <Button
+              onClick={clear}
+              text="New Script"
+              icon={IconFont.Plus_New}
+            />
+          </div>
+          <DraggableResizer
+            handleOrientation={Orientation.Vertical}
+            handlePositions={vertical}
+            onChangePositions={setVertical}
+          >
+            <DraggableResizer.Panel>
+              <Schema />
+            </DraggableResizer.Panel>
+            <DraggableResizer.Panel
+              testID="flux-query-builder-middle-panel"
+              className="new-data-explorer-rightside"
+            >
+              <ResultsPane />
+            </DraggableResizer.Panel>
+            <DraggableResizer.Panel>
+              <Sidebar />
+            </DraggableResizer.Panel>
+          </DraggableResizer>
+        </FlexBox>
       </SidebarProvider>
     </EditorProvider>
   )

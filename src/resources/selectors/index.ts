@@ -1,12 +1,12 @@
 // Libraries
 import {get} from 'lodash'
+import {createSelector} from 'reselect'
 
 // Types
 import {
   AppState,
   Bucket,
   Label,
-  OrgsState,
   RemoteDataState,
   ResourceType,
   Secret,
@@ -74,10 +74,18 @@ export const getLabels = (state: AppState, labelIDs: string[]): Label[] => {
 export const getAllTokensResources = (state: AppState): PermissionTypes[] =>
   get(state, 'resources.tokens.allResources', []) || []
 
-export const getAllOrgs = (state: AppState): OrgsState => {
-  const errorOrgsState = {
-    status: RemoteDataState.Error,
-    org: {id: ''},
+export const getAllOrgs = createSelector(
+  (state: AppState) => state.resources[ResourceType.Orgs],
+  orgs => {
+    const errorOrgsState = {
+      status: RemoteDataState.Error,
+      org: {id: ''},
+    }
+
+    if (!orgs) {
+      return errorOrgsState
+    }
+
+    return orgs
   }
-  return get(state, 'resources.orgs', errorOrgsState)
-}
+)

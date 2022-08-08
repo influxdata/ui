@@ -91,7 +91,6 @@ export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
       name: '',
     },
     bucket: 'nifi',
-    qos: 0,
     timestampPrecision: 'NS',
   },
   updateForm: () => {},
@@ -130,9 +129,9 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
       })
-      .catch(() => {
+      .catch(err => {
         setLoading(RemoteDataState.Done)
-        dispatch(notify(subscriptionUpdateFail()))
+        dispatch(notify(subscriptionUpdateFail(err.message)))
       })
   }
 
@@ -158,9 +157,9 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
       .then(() => {
         getSubscription()
       })
-      .catch(() => {
+      .catch(err => {
         setLoading(RemoteDataState.Done)
-        dispatch(notify(subscriptionStatusUpdateFail()))
+        dispatch(notify(subscriptionStatusUpdateFail(err.message)))
       })
   }
 

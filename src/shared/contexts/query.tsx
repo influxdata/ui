@@ -8,7 +8,7 @@ import {
 } from 'src/cloud/constants'
 
 import {getOrg} from 'src/organizations/selectors'
-import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
+import {fromFlux} from '@influxdata/giraffe'
 import {FluxResult} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
@@ -611,12 +611,7 @@ export const QueryProvider: FC = ({children}) => {
 
         return raw
       })
-      .then(raw => {
-        if (isFlagEnabled('fastFromFlux')) {
-          return fastFromFlux(raw.csv)
-        }
-        return fromFlux(raw.csv)
-      })
+      .then(raw => fromFlux(raw.csv))
       .then(
         parsed =>
           ({

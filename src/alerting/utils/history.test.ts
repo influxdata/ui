@@ -6,7 +6,6 @@ import {runQuery} from 'src/shared/apis/query'
 
 jest.mock('@influxdata/giraffe', () => ({
   fromFlux: jest.fn(),
-  fastFromFlux: jest.fn(),
   // todo: test will fails on binaryPrefixFormatter not a function in src/shared/copy/notifications.ts:22:24 this mock can be removed after this will be fixed
   binaryPrefixFormatter: jest.fn(),
 }))

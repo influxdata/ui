@@ -278,7 +278,9 @@ const PagedTable: FC<Props> = ({result, properties}) => {
 
       timeout = setTimeout(() => {
         animationFrameID = requestAnimationFrame(() => {
-          setHeight(entries[0].contentRect.height)
+          setHeight(
+            Math.min(entries[0].contentRect.height, window.screen.height)
+          )
         })
       }, 200)
     })
@@ -290,7 +292,7 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     const rect = curr?.getBoundingClientRect()
 
     if (rect && rect.height !== height) {
-      setHeight(rect.height)
+      setHeight(Math.min(rect.height, window.screen.height))
     }
 
     return () => {

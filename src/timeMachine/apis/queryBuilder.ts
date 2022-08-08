@@ -1,5 +1,5 @@
 // Libraries
-import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
+import {fromFlux} from '@influxdata/giraffe'
 
 // APIs
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
@@ -174,9 +174,7 @@ export function extractBoxedCol(
 }
 
 export function extractCol(csv: string, colName: string): string[] {
-  const {table} = isFlagEnabled('fastFromFlux')
-    ? fastFromFlux(csv)
-    : fromFlux(csv)
+  const {table} = fromFlux(csv)
   return table.getColumn(colName, 'string') || []
 }
 

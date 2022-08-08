@@ -3,7 +3,7 @@ import React, {Component, RefObject, CSSProperties} from 'react'
 import {isEqual} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {fromFlux, fastFromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 
 // API
 import {RunQueryResult, RunQuerySuccessResult} from 'src/shared/apis/query'
@@ -46,7 +46,6 @@ import {
   CancelBox,
 } from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from '../utils/featureFlag'
 
 interface QueriesState {
   files: string[] | null
@@ -299,8 +298,7 @@ class TimeSeries extends Component<Props, State> {
       }
 
       const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
-      const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
-      const giraffeResult = parser(files.join('\n\n'))
+      const giraffeResult = fromFlux(files.join('\n\n'))
 
       this.pendingReload = false
       // this check prevents a memory leak https://github.com/influxdata/ui/issues/2137

@@ -92,7 +92,7 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
 
       const dropdownButton = getByTestId('typeAhead-dropdown--button')
       fireEvent.click(dropdownButton)
-      const dropdownItems = getAllByTestId(/type-ahead-dropdown--item-*/).map(
+      const dropdownItems = getAllByTestId('typeAhead-dropdown--item').map(
         node => node.id
       )
 
@@ -112,7 +112,7 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
 
     const checkDropdown = (filterText, expectedList) => {
       fireEvent.change(filterInput, {target: {value: filterText}})
-      const dropdownItems = getAllByTestId(/type-ahead-dropdown--item-*/).map(
+      const dropdownItems = getAllByTestId('typeAhead-dropdown--item').map(
         node => node.id
       )
       expect(dropdownItems).toEqual(Object.keys(expectedList))

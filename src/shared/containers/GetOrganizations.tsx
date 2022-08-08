@@ -32,6 +32,7 @@ import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
+import {updateReportingContext} from 'src/cloud/utils/reporting'
 
 // Types
 import {Me} from 'src/client/unityRoutes'
@@ -115,6 +116,18 @@ const GetOrganizations: FunctionComponent = () => {
       })
     }
   }, [quartzMeStatus, status]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const isRegionBeta = quartzMe?.isRegionBeta ?? false
+  const accountType = quartzMe?.accountType ?? 'free'
+
+  useEffect(() => {
+    if (CLOUD) {
+      updateReportingContext({
+        'org (hide_upgrade_cta)': `${accountType === 'free' && !isRegionBeta}`,
+        'org (account_type)': accountType,
+      })
+    }
+  }, [accountType, isRegionBeta])
 
   return (
     <PageSpinner loading={status}>

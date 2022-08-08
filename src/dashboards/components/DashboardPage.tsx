@@ -46,7 +46,6 @@ import {
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 
@@ -55,19 +54,6 @@ const SingleDashboardPage: FC<ManualRefreshProps> = ({
   onManualRefresh,
 }) => {
   const {isExact} = useRouteMatch(dashRoute)
-
-  if (!isFlagEnabled('openCellPage')) {
-    return (
-      <>
-        <DashboardHeader onManualRefresh={onManualRefresh} />
-        <RateLimitAlert alertOnly={true} location="dashboard page" />
-        <VariablesControlBar />
-        <ErrorBoundary>
-          <DashboardComponent manualRefresh={manualRefresh} />
-        </ErrorBoundary>
-      </>
-    )
-  }
 
   if (!isExact) {
     return null

@@ -145,8 +145,6 @@ const CellCloneOverlay: FC = () => {
     <TypeAheadDropDown
       items={dashItems}
       onSelect={onDashSelection}
-      buttonTestId="clone-to-other-dashboard"
-      menuTestID="copy-dashboard-cell--dropdown-menu"
       itemTestIdPrefix="other-dashboard"
       sortNames={true}
       selectedOption={selectedDashboard as SelectableItem}

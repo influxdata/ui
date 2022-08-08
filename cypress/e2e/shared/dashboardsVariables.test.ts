@@ -633,10 +633,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             .should('have.value', bucket5)
 
           // the greeting vars should NOT be there
-          cy.getByTestID(`variable-dropdown--${dependentTypeVarName}`).click().should(
-            'contain',
-            'No results'
-          )
+          cy.getByTestID(`variable-dropdown--${dependentTypeVarName}`)
+            .click()
+            .should('contain', 'No results')
 
           // now, go back to b3; 'hello' should be th eselected greeting
           cy.getByTestID(`variable-dropdown--${bucketVarName}--typeAhead-input`)
@@ -707,11 +706,12 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           )
 
           // and cause the rest to exist in loading states
-          cy.getByTestID('variable-dropdown--dependent').click().should(
-            'contain',
-            'No results'
-          )
-          cy.getByTestID('variable-dropdown--build').click().should('contain', 'No results')
+          cy.getByTestID('variable-dropdown--dependent')
+            .click()
+            .should('contain', 'No results')
+          cy.getByTestID('variable-dropdown--build')
+            .click()
+            .should('contain', 'No results')
 
           // Error notifications should tell the user that these failed
           cy.getByTestID('notification-error').should('have.length', 2)
@@ -738,20 +738,18 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             'have.value',
             'beans'
           )
-          cy.getByTestID('variable-dropdown--dependent--typeAhead-input').should(
-            'have.value',
-            'beans'
-          )
+          cy.getByTestID(
+            'variable-dropdown--dependent--typeAhead-input'
+          ).should('have.value', 'beans')
 
           // updating the third variable should update the second
           cy.getByTestID('typeAhead-dropdown--button')
             .last()
             .click()
           cy.get(`#cool`).click()
-          cy.getByTestID('variable-dropdown--dependent--typeAhead-input').should(
-            'have.value',
-            'cool'
-          )
+          cy.getByTestID(
+            'variable-dropdown--dependent--typeAhead-input'
+          ).should('have.value', 'cool')
 
           cy.getByTestID('typeAhead-dropdown--button')
             .last()
@@ -843,10 +841,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       )
 
       // and cause the rest to exist in error states
-      cy.getByTestID('variable-dropdown--dependent').click().should(
-        'contain',
-        'No results'
-      )
+      cy.getByTestID('variable-dropdown--dependent')
+        .click()
+        .should('contain', 'No results')
 
       // An error notification should tell the user that this failed
       cy.getByTestID('notification-error').contains(

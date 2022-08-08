@@ -15,21 +15,21 @@ const variable_name = 'xkcd_meme'
 // map variable values
 const xkcd_name_to_url_map = {
   'Bad Code': 'https://xkcd.com/1926/',
-  'Debugging': 'https://xkcd.com/1722/',
+  Debugging: 'https://xkcd.com/1722/',
   'ISO 8601': 'https://xkcd.com/1179/',
   'Random Number': 'https://xkcd.com/221/',
-  'Tags': 'https://xkcd.com/1144/',
+  Tags: 'https://xkcd.com/1144/',
 }
 
 const values_with_a = {
   'Bad Code': 'https://xkcd.com/1926/',
   'Random Number': 'https://xkcd.com/221/',
-  'Tags': 'https://xkcd.com/1144/',
+  Tags: 'https://xkcd.com/1144/',
 }
 
 const values_with_b = {
   'Bad Code': 'https://xkcd.com/1926/',
-  'Debugging': 'https://xkcd.com/1722/',
+  Debugging: 'https://xkcd.com/1722/',
   'Random Number': 'https://xkcd.com/221/',
 }
 
@@ -129,7 +129,9 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
 
     // something that won't match anything
     // (see: https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present)
-    fireEvent.change(filterInput, {target: {value: 'this_string_will_not_match'}})
+    fireEvent.change(filterInput, {
+      target: {value: 'this_string_will_not_match'},
+    })
     const items = screen.queryByTestId('variable-dropdown--item')
     expect(items).toBeNull() // it doesn't exist
   })

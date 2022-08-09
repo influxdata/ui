@@ -473,11 +473,9 @@ describe('Legends', () => {
           cy.getByTestID('static-legend-opacity-slider').should('exist')
           cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
 
-          cy.getByTestID('overlay').within(() => {
-            cy.getByTestID('page-header')
-              .click()
-              .type(cellName + '{enter}')
-          })
+          cy.getByTestID('page-header')
+            .click()
+            .type(cellName + '{enter}')
 
           // Without submitting the query, save it to a dashboard
           cy.getByTestID('save-cell--button').click()
@@ -543,11 +541,9 @@ describe('Legends', () => {
           cy.getByTestID('static-legend-opacity-slider').should('exist')
           cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
 
-          cy.getByTestID('overlay').within(() => {
-            cy.getByTestID('page-header')
-              .click()
-              .type(cellName)
-          })
+          cy.getByTestID('page-header')
+            .click()
+            .type(cellName)
 
           // Save it to a dashboard
           cy.getByTestID('save-cell--button').click()

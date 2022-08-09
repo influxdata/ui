@@ -60,14 +60,12 @@ describe('Dashboard', () => {
 
     // Rename View cell
     const xyCellName = 'Line Graph'
-    cy.getByTestID('overlay').within(() => {
-      cy.getByTestID('page-title').click()
-      cy.getByTestID('renamable-page-title--input')
-        .clear()
-        .type(xyCellName)
-        .type('{enter}')
-      cy.getByTestID('save-cell--button').click()
-    })
+    cy.getByTestID('page-title').click()
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type(xyCellName)
+      .type('{enter}')
+    cy.getByTestID('save-cell--button').click()
 
     const xyCell = `cell ${xyCellName}`
 
@@ -522,13 +520,11 @@ describe('Dashboard', () => {
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "cool")`
       cy.getByTestID('flux-editor').monacoType(`{selectall}{del}${query1}`)
-      cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('page-title').click()
-        cy.getByTestID('renamable-page-title--input')
-          .clear()
-          .type('blah{enter}')
-        cy.getByTestID('save-cell--button').click()
-      })
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('blah{enter}')
+      cy.getByTestID('save-cell--button').click()
       cy.getByTestID('cell-context--toggle')
         .first()
         .click()

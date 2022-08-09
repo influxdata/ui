@@ -222,7 +222,7 @@ describe('The Query Builder', () => {
       cy.getByTestID('empty-graph--no-queries').should('exist')
       cy.contains('Submit').click()
       cy.getByTestID('giraffe-layer-line').should('exist')
-      cy.getByTestID('overlay')
+      cy.getByTestID('page-title')
         .contains('Name this Cell')
         .click()
       cy.get('[placeholder="Name this Cell"]').type('A better name!{enter}')
@@ -235,7 +235,7 @@ describe('The Query Builder', () => {
       })
 
       cy.getByTestID('giraffe-layer-line').should('exist')
-      cy.getByTestID('overlay')
+      cy.getByTestID('page-title')
         .contains('A better name!')
         .click()
 

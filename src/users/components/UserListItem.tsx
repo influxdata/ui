@@ -23,23 +23,21 @@ interface Props {
   isDeletable: boolean
 }
 
-// TODO: add back in once https://github.com/influxdata/quartz/issues/2389 back-filling of names is complete
+const formatName = (firstName: string | null, lastName: string | null) => {
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`
+  }
 
-// const formatName = (firstName: string | null, lastName: string | null) => {
-//   if (firstName && lastName) {
-//     return `${firstName} ${lastName}`
-//   }
-//
-//   if (firstName) {
-//     return firstName
-//   }
-//
-//   if (lastName) {
-//     return lastName
-//   }
-//
-//   return ''
-// }
+  if (firstName) {
+    return firstName
+  }
+
+  if (lastName) {
+    return lastName
+  }
+
+  return ''
+}
 
 const UserListItem: FC<Props> = ({user, isDeletable}) => {
   const {email, role} = user

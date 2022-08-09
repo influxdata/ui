@@ -537,8 +537,8 @@ describe('Dashboard', () => {
 
     it('clones a cell to another dashboard and displays it there', () => {
       const cloneNamePrefix = `cell blah (cloned at `
-      cy.getByTestID('clone-to-other-dashboard').click()
-      cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
+      cy.getByTestID('typeAhead-dropdown--button').click()
+      cy.get(`#${otherBoardID}`).click()
       cy.intercept('PATCH', '/api/v2/dashboards/*/cells/*/view').as('setView')
       cy.getByTestID('confirm-clone-cell-button').click()
 
@@ -550,8 +550,8 @@ describe('Dashboard', () => {
 
     it('moves a cell to another dashboard and removes it from the current one', () => {
       const cloneNamePrefix = `cell blah (cloned at `
-      cy.getByTestID('clone-to-other-dashboard').click()
-      cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
+      cy.getByTestID('typeAhead-dropdown--button').click()
+      cy.get(`#${otherBoardID}`).click()
       cy.getByTestID('cell-clone-move-cell').click()
       cy.intercept('PATCH', '/api/v2/dashboards/*/cells/*/view').as('setView')
       cy.getByTestID('confirm-clone-cell-button').click()

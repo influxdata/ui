@@ -63,11 +63,11 @@ export const InitializeClient: FC<OwnProps> = ({
   })
   const token = currentAuth.token
 
-  const codeSnippet = `influx config create --config-name onboarding 
-  --host-url "${url}" 
-  --org "${org.id}" 
-  --token "${token}" 
-  --active`
+  const codeSnippet = `influx config create --config-name onboarding \\
+    --host-url "${url}" \\
+    --org "${org.id}" \\
+    --token "${token}" \\
+    --active`
 
   const bucketSnippet = `influx bucket create --name sample-bucket -c onboarding`
 

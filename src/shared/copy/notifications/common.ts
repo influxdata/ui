@@ -44,7 +44,7 @@ export const defaultSuccessNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
   icon: IconFont.CheckMark_New,
-  duration: FIVE_SECONDS,
+  duration: INDEFINITE,
 }
 
 export const defaultDeletionNotification: NotificationExcludingMessage = {

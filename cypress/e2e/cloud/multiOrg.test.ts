@@ -1,137 +1,299 @@
-describe('Multi Org UI', () => {
-  // visit the home page after login
-  beforeEach(() => {
+// Next steps:
+
+// 0. // Need a separate step for checking whether the user profile avatar works and allows you to get to the page.
+// 1. stub network requests so that we can replicate errors
+// 2. check whether only one part renders if dont get back full array
+// 3. organize and make more concise - see if you can remove anything
+// 4. debug the issue arising with quartzMock.
+
+describe('Multi Org Tests', () => {
+  before(() => {
+    cy.intercept('PUT', '/api/v2/quartz/accounts/resetAllAccountOrgs').as(
+      'resetOrgMock'
+    )
+
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: any) => {
-          cy.log('signed in')
+        cy.get('@org').then(({id}: Organization) => {
+          cy.getByTestID('home-page--header').should('be.visible')
           cy.setFeatureFlags({
+            uiUnificationFlag: true,
             quartzIdentity: true,
             multiOrg: true,
-            uiUnificationFlag: true,
-          }).then(() => {
-            cy.log('provisioning')
-
-            cy.quartzProvision({
-              accountType: 'pay_as_you_go',
-            }).then(() => {
-              cy.log('visiting')
-
-              cy.visit('/')
-              cy.getByTestID('multiaccountorg-global-header').should(
-                'be.visible'
-              )
-            })
           })
+            .then(() => {
+              cy.request('PUT', '/api/v2/quartz/accounts/resetAllAccountOrgs')
+            })
+            // .then(() => {
+            //   cy.wait('@resetOrgMock')
+            // })
+            .then(() => {
+              cy.wait(2000).then(() => {
+                cy.visit('/me/profile')
+              })
+            })
+            .then(() => {
+              cy.getByTestID('user-profile-page')
+            })
         })
       })
     )
   })
 
-  it('should have the dropdown and be able to select/switch the Account', function() {
-    // open the account dropdown
-    const accountDropdown = cy.getByTestID(
-      'multiaccountorg-global-header--account-dropdown'
-    )
-    accountDropdown.click()
+  describe('displays the `user details` data', () => {
+    it('displays the `user details` form field', function() {
+      cy.getByTestID('user-profile-page')
+        .contains('User Profile')
+        .should('be.visible')
+      cy.getByTestID('user-details-header')
+        .contains('User Details')
+        .should('be.visible')
+    })
 
-    cy.getByTestID('multiaccountorg-global-header--account-menu').should(
-      'be.visible'
-    )
+    it("displays the user's email", () => {
+      cy.getByTestID('user-profile-page--email')
+        .contains('Email')
+        .should('be.visible')
 
-    cy.getByTestID(
-      'multiaccountorg-global-header--account-menu-Settings'
-    ).should('be.visible')
+      cy.getByTestID('user-profile-page--email-input').should(
+        'have.attr',
+        'value',
+        'test@influxdata.com'
+      )
+    })
 
-    const mainMenuSettings = cy.getByTestID(
-      'multiaccountorg-global-header--account-menu-Settings'
-    )
+    it("displays the user's first name", () => {
+      cy.getByTestID('user-profile-page--firstname')
+        .contains('First name')
+        .should('be.visible')
+      cy.getByTestID('user-profile-page--firstname-input').should(
+        'have.attr',
+        'value',
+        'Marty'
+      )
+    })
 
-    mainMenuSettings.click()
-
-    // This is where it's gonna be impossible to test unless we make a call to IDPE.
-
-    cy.getByTestID(
-      'multiaccountorg-global-header--account-menu-Billing'
-    ).should('be.visible')
-
-    // Click the settings page
-
-    // Click the billing page
-
-    // click the switch org button
-    // const switchOrgsButton = cy.getByTestID(
-    //   'global-header-account-dropdown--switch-button'
-    // )
-    // switchOrgsButton.click()
-
-    // // verify that the input field is visible
-    // const searchOrgInputField = cy.getByTestID('dropdown-input-typeAhead--menu')
-    // searchOrgInputField.should('be.visible')
-
-    // // type in the org name
-    // const accountName = 'Veganomicon'
-    // const accountId = 'ac3d3c04b8f1a545'
-    // searchOrgInputField.type(accountName)
-
-    // // select the org
-    // const accountDropdownItem = cy.getByTestID(`typeAhead-item--0`)
-    // accountDropdownItem.click()
-
-    // // verify that the org id was visited
-    // cy.url().then($url => {
-    //   expect($url).to.include(accountId)
-    // })
+    it("displays the user's last name", () => {
+      cy.getByTestID('user-profile-page--lastname')
+        .contains('Last name')
+        .should('be.visible')
+      cy.getByTestID('user-profile-page--lastname-input').should(
+        'have.attr',
+        'value',
+        'McFly'
+      )
+    })
   })
+})
 
-  // Assuming that the user has more than one account
-  it('should have the dropdown and be able to select/switch the Organization', function() {
-    // open the dropdown
-    const orgDropdown = cy.getByTestID('global-header-org-dropdown')
-    orgDropdown.click()
+describe('displays the `user defaults` form', () => {
+  it('displays the `user defaults` form field', () => {
+    cy.getByTestID('user-defaults-change-account-header')
+      .contains('Default Account')
+      .should('be.visible')
 
-    // click the switch org button
-    const switchOrgsButton = cy.getByTestID(
-      'global-header-org-dropdown--switch-button'
-    )
-    switchOrgsButton.click()
-
-    // verify that the input field is visible
-    const searchOrgInputField = cy.getByTestID('dropdown-input-typeAhead--menu')
-    searchOrgInputField.should('be.visible')
-
-    // type in the org name
-    const orgName = 'Test Org 2'
-    const orgId = 'ac3d3c04b8f1a545'
-    searchOrgInputField.type(orgName)
-
-    // select the org
-    const orgDropdownItem = cy.getByTestID(`typeAhead-item--0`)
-    orgDropdownItem.click()
-
-    // verify that the org id was visited
-    cy.url().then($url => {
-      expect($url).to.include(orgId)
+    it('displays the save button', () => {
+      cy.getByTestID('user-profile--save-button')
+        .contains('Save Changes')
+        .should('be.visible')
+      cy.getByTestID('user-profile--save-button').should(
+        'have.attr',
+        'disabled'
+      )
     })
   })
 
-  it('should have the user avatar and user initials and be able to open the user option popover by clicking on the avatar', function() {
-    const avatarButton = cy.getByTestID('global-header-user-avatar')
+  it('displays the `change default account` form field', () => {
+    cy.getByTestID('user-defaults-change-account--dropdown-header')
+      .contains('Default Account')
+      .should('be.visible')
+    cy.getByTestID('user-defaults-change-account--dropdown')
+      .contains('Veganomicon')
+      .should('be.visible')
+  })
 
-    avatarButton.should('exist')
-    // check avatarButton text to say "JS" (from mock data)
-    avatarButton.should('have.text', 'JS')
+  it('displays the `change default org` form field', () => {
+    cy.getByTestID('user-defaults-change-org--header')
+      .contains('Default Organization')
+      .should('be.visible')
+    cy.getByTestID('change-default-org--current-account-header')
+      .contains('Account')
+      .should('be.visible')
+    cy.getByTestID('change-default-org--current-account-input').should(
+      'have.attr',
+      'value',
+      'Influx'
+    )
 
-    // open the popover
-    avatarButton.click()
+    cy.getByTestID('change-default-org--default-org-header')
+      .contains('Default Organization')
+      .should('be.visible')
+    cy.getByTestID('change-default-org--default-org-dropdown')
+      .contains('Test Org 0')
+      .should('be.visible')
+  })
 
-    const userOptionsPopover = cy.getByTestID('global-header--user-popover')
-    userOptionsPopover.should('be.visible')
+  it('changes the default account using the dropdown', function() {
+    // Make sure to test notifying the user if the attempt to change accounts fails
 
-    userOptionsPopover.should('contain.text', 'Jane Smith')
-    userOptionsPopover.should('contain.text', 'test@influxdata.com')
+    // Successfully change the default account by clicking through the typeahead.
+    cy.getByTestID('user-defaults-change-account--dropdown').click()
+    cy.getByTestID('user-defaults-change-account--dropdown')
+      .get('.global-header--typeahead-item')
+      .contains('Influx')
+      .click()
 
-    userOptionsPopover.should('contain', 'Log Out')
-    userOptionsPopover.should('contain', 'Profile')
+    // this is necessary for now because we've gotta click outside the menu for the save to work.
+    cy.getByTestID('user-defaults-change-account-header').click({force: true})
+
+    cy.getByTestID('user-profile--save-button').click('center', {
+      force: true,
+    })
+
+    cy.wait(500).then(() => {
+      cy.getByTestID('notification-success')
+        .contains('Saved changes to your profile.')
+        .should('exist')
+        .then(() => {
+          cy.getByTestID('user-defaults-change-account--dropdown')
+            .contains('Influx')
+            .should('be.visible')
+
+          cy.getByTestID('notification-success--dismiss').click({force: true})
+        })
+    })
+  })
+
+  it('changes the default account using the typeahead', () => {
+    cy.getByTestID('user-defaults-change-account--dropdown').click()
+
+    // Need to figure out why this is getting applied to two DOM elements instead of one.
+    cy.getByTestID('user-defaults-change-account--dropdown-header')
+      .type('Vega')
+      .then(() => {
+        cy.getByTestID('user-defaults-change-account--dropdown')
+          .get('.global-header--typeahead-item')
+          .contains('Veganomicon')
+          .click()
+      })
+
+    // this is necessary for now because we've gotta click outside the menu for the save to work.
+    cy.getByTestID('user-defaults-change-account-header').click({force: true})
+
+    cy.getByTestID('user-profile--save-button').click('center', {
+      force: true,
+    })
+
+    cy.wait(500).then(() => {
+      cy.getByTestID('user-defaults-change-account--dropdown')
+        .contains('Veganomicon')
+        .should('be.visible')
+      cy.getByTestID('notification-success')
+        .contains('Saved changes to your profile.')
+        .should('exist')
+
+      cy.getByTestID('notification-success--dismiss').click({force: true})
+    })
+  })
+
+  it('changes the default org using the dropdown', () => {
+    // Make sure to test notifying the user if the attempt to change accounts fails
+
+    // Successfully change the default account by clicking through the typeahead.
+    cy.getByTestID('change-default-org--default-org-dropdown').click()
+    cy.getByTestID('change-default-org--default-org-dropdown')
+      .get('.global-header--typeahead-item')
+      .contains('Test Org 2')
+      .click()
+
+    // this is necessary for now because we've gotta click outside the menu for the save to work.
+    // does not matter what is being clicked here
+    cy.getByTestID('user-defaults-change-account-header').click({force: true})
+
+    cy.getByTestID('user-profile--save-button').click('center', {
+      force: true,
+    })
+
+    cy.wait(500).then(() => {
+      cy.getByTestID('notification-success')
+        .contains('Saved changes to your profile.')
+        .should('exist')
+        .then(() => {
+          cy.getByTestID('change-default-org--default-org-dropdown')
+            .contains('Test Org 2')
+            .should('be.visible')
+
+          cy.getByTestID('notification-success--dismiss').click({force: true})
+        })
+    })
+  })
+
+  it('changes the default org using the typeahead', () => {
+    // Need to figure out why this is getting applied to two DOM elements instead of one.
+    cy.getByTestID('change-default-org--default-org-dropdown')
+      .click()
+      .getByTestID('input-field')
+      .type('Test Org 5')
+      .then(() => {
+        cy.getByTestID('change-default-org--default-org-dropdown')
+          .get('.global-header--typeahead-item')
+          .contains('Test Org 5')
+          .click()
+      })
+
+    cy.getByTestID('user-profile--save-button').click({force: true})
+
+    cy.wait(500).then(() => {
+      cy.getByTestID('change-default-org--default-org-dropdown')
+        .contains('Test Org 5')
+        .should('be.visible')
+      cy.get('.cf-notification-container')
+        .contains('Saved changes to your profile.')
+        .should('exist')
+
+      cy.getByTestID('notification-success--dismiss').click({force: true})
+    })
+  })
+
+  it('changes the default account and default org simultaneously', () => {
+    // Default Account
+    cy.getByTestID('user-defaults-change-account--dropdown-header')
+      .type('Inf')
+      .then(() => {
+        cy.getByTestID('user-defaults-change-account--dropdown')
+          .get('.global-header--typeahead-item')
+          .contains('Influx')
+          .click()
+      })
+
+    // Default Org
+    cy.getByTestID('change-default-org--default-org-dropdown')
+      .click()
+      .getByTestID('input-field')
+      .type('Test Org 1')
+      .then(() => {
+        cy.getByTestID('change-default-org--default-org-dropdown')
+          .get('.global-header--typeahead-item')
+          .contains('Test Org 1')
+          .click()
+      })
+
+    cy.getByTestID('user-profile--save-button').click({force: true})
+
+    cy.wait(500).then(() => {
+      cy.getByTestID('user-defaults-change-account--dropdown')
+        .contains('Influx')
+        .should('be.visible')
+
+      cy.getByTestID('change-default-org--default-org-dropdown')
+        .contains('Test Org 1')
+        .should('be.visible')
+
+      cy.get('.cf-notification-container')
+        .contains('Saved changes to your profile.')
+        .should('exist')
+
+      cy.getByTestID('notification-success--dismiss').click({force: true})
+    })
   })
 })

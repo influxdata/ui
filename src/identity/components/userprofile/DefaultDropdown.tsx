@@ -30,6 +30,8 @@ interface Props {
   defaultEntity: Entity
   entityList: Entity[]
   changeSelectedEntity: (action: SetStateAction<any>) => void
+  headerTestID: string
+  defaultTestID: string
 }
 
 export const DefaultDropdown: FC<Props> = ({
@@ -37,6 +39,8 @@ export const DefaultDropdown: FC<Props> = ({
   entityList,
   changeSelectedEntity,
   defaultEntity,
+  headerTestID,
+  defaultTestID,
 }) => {
   return (
     <FlexBox
@@ -48,6 +52,7 @@ export const DefaultDropdown: FC<Props> = ({
       <Form.Element
         label={`Default ${entityLabel}`}
         className="user-profile-page--form-element"
+        testID={headerTestID}
       >
         <GlobalHeaderDropdown
           mainMenuOptions={[]}
@@ -57,6 +62,7 @@ export const DefaultDropdown: FC<Props> = ({
           typeAheadSelectedOption={defaultEntity}
           typeAheadOnSelectOption={changeSelectedEntity}
           style={globalHeaderStyle}
+          defaultTestID={defaultTestID}
         />
       </Form.Element>
     </FlexBox>

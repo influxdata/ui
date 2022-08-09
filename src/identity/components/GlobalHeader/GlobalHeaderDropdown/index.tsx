@@ -33,6 +33,7 @@ export interface TypeAheadMenuItem {
 
 export interface Props extends StandardFunctionProps {
   defaultButtonText?: string
+  defaultTestID?: string
   dropdownButtonSize?: ComponentSize
   dropdownButtonIcon?: IconFont
   dropdownMenuStyle?: React.CSSProperties
@@ -40,13 +41,13 @@ export interface Props extends StandardFunctionProps {
   mainMenuHeaderText?: string
   mainMenuHeaderIcon?: IconFont
   mainMenuOptions: MainMenuItem[]
-  mainMenuTestID: string
+  mainMenuTestID?: string
   onlyRenderSubmenu?: boolean
   typeAheadSelectedOption?: TypeAheadMenuItem
   typeAheadMenuOptions: TypeAheadMenuItem[]
   typeAheadInputPlaceholder?: string
   typeAheadOnSelectOption?: (item: TypeAheadMenuItem | null) => void
-  typeAheadTestID: string
+  typeAheadTestID?: string
   testID?: string
 }
 
@@ -80,6 +81,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       defaultButtonText,
       dropdownButtonSize,
       dropdownButtonIcon,
+      defaultTestID,
     } = this.props
     const {selectedItem} = this.state
     return (
@@ -89,6 +91,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         size={dropdownButtonSize}
         trailingIcon={dropdownButtonIcon || IconFont.DoubleCaretVertical}
         className="global-header--dropdown-button"
+        testID={defaultTestID}
       >
         {selectedItem?.name || defaultButtonText}
       </Dropdown.Button>

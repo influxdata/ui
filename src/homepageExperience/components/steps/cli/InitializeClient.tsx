@@ -79,18 +79,18 @@ export const InitializeClient: FC<OwnProps> = ({
 
   useEffect(() => {
     dispatch(getBuckets())
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch])
 
   useEffect(() => {
     onSelectBucket(bucket.name)
   }, [bucket, onSelectBucket])
 
   useEffect(() => {
-    const fetchResources = async () => {
-      await dispatch(getAllResources())
+    const fetchResources = () => {
+      dispatch(getAllResources())
     }
     fetchResources()
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (sortedPermissionTypes.length && tokenValue === null) {
@@ -103,14 +103,14 @@ export const InitializeClient: FC<OwnProps> = ({
       dispatch(createAuthorization(authorization))
       event(`firstMile.cliWizard.tokens.tokenCreated`)
     }
-  }, [sortedPermissionTypes.length])
+  }, [dispatch, me.id, org.id, sortedPermissionTypes, tokenValue])
 
   // when token generated, save it to the parent component
   useEffect(() => {
     if (currentAuth.token) {
       setTokenValue(currentAuth.token)
     }
-  }, [currentAuth.token])
+  }, [currentAuth.token, setTokenValue])
 
   useEffect(() => {
     const fireKeyboardCopyEvent = event => {

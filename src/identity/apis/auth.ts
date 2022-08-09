@@ -15,6 +15,7 @@ import {
   Me as MeQuartz,
   Organization,
   OrganizationSummaries,
+  UserAccount,
 } from 'src/client/unityRoutes'
 
 import {
@@ -289,18 +290,19 @@ export const updateDefaultOrgByAccountID = async ({
 }
 
 // fetch user's default account
-export const getDefaultAccount = async () => {
-  try {
-    const resp = await getAccounts({})
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-    const {data} = resp
+export const getDefaultAccount = async (): Promise<UserAccount> => {
+  const response = await getAccounts({})
 
-    if (Array.isArray(data) && data.length) {
-      return data.find(line => line.isDefault)
-    }
-  } catch (error) {
-    event('multiAccount.retrieveAccounts.error', {error})
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+  const {data} = response
+
+  if (Array.isArray(data) && data.length) {
+    return data.find(account => account.isDefault)
   }
 }

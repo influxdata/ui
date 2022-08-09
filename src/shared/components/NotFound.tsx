@@ -136,7 +136,7 @@ const NotFound: FC = () => {
   const location = useLocation()
   const history = useHistory()
   const reduxOrg = useSelector(getOrg)
-  let org = useRef<Organization>(reduxOrg)
+  const org = useRef<Organization>(reduxOrg)
 
   const handleDeepLink = useCallback(async () => {
     if (!org.current) {

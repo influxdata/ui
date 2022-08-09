@@ -1,4 +1,5 @@
+import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const shouldUseQuartzIdentity = (): boolean =>
-  isFlagEnabled('uiUnificationFlag') && isFlagEnabled('quartzIdentity')
+  CLOUD && isFlagEnabled('quartzIdentity')

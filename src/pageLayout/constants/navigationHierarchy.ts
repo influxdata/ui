@@ -194,10 +194,7 @@ export const generateNavItems = (): NavItem[] => {
     },
     {
       id: 'operator',
-      enabled: () =>
-        CLOUD &&
-        quartzMe?.isOperator === true &&
-        isFlagEnabled('uiUnificationFlag'),
+      enabled: () => CLOUD && quartzMe?.isOperator === true,
       testID: 'nav-item--operator',
       icon: IconFont.Shield,
       label: 'Operator',

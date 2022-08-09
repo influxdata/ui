@@ -5,7 +5,6 @@ const doSetup = (cy, numAccounts: number) => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.setFeatureFlags({
-          uiUnificationFlag: true,
           multiAccount: true,
         }).then(() => {
           cy.quartzProvision({

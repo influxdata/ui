@@ -114,8 +114,7 @@ export class GenericError extends Error {
 }
 
 export const fetchIdentity = async () => {
-  // if we aren't in cloud, or we are in cloud and the unification flag is off
-  if (!CLOUD || !isFlagEnabled('uiUnificationFlag')) {
+  if (!CLOUD) {
     return fetchLegacyIdentity()
   }
   // if we make it to this line we are in cloud and ui unification flag is on

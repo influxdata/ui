@@ -16,7 +16,6 @@ import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/Copy
 import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
@@ -52,7 +51,7 @@ const OrgProfileTab: FC = () => {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
+  const expectQuartzData = shouldUseQuartzIdentity()
 
   const hasSomeQuartzOrgData =
     identity.currentIdentity.org?.provider ||

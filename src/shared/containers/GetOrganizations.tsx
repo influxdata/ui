@@ -65,12 +65,7 @@ const GetOrganizations: FunctionComponent = () => {
   const identityOrgId = identity.currentIdentity.org.id
 
   useEffect(() => {
-    if (
-      identityOrgId &&
-      CLOUD &&
-      shouldUseQuartzIdentity() &&
-      !quartzMe?.isRegionBeta
-    ) {
+    if (identityOrgId && shouldUseQuartzIdentity() && !quartzMe?.isRegionBeta) {
       dispatch(getCurrentOrgDetailsThunk(identityOrgId))
     }
   }, [identityOrgId]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -84,7 +79,6 @@ const GetOrganizations: FunctionComponent = () => {
 
   useEffect(() => {
     if (
-      isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted &&
       quartzIdentityStatus === RemoteDataState.NotStarted
     ) {
@@ -132,30 +126,7 @@ const GetOrganizations: FunctionComponent = () => {
   return (
     <PageSpinner loading={status}>
       <Suspense fallback={<PageSpinner />}>
-        {/*
-          NOTE: We'll need this here until Tools gets Quartz integrated
-          Since the API request will fail in a tools environment.
-        */}
-        {isFlagEnabled('uiUnificationFlag') ? (
-          <PageSpinner loading={quartzMeStatus}>
-            <Switch>
-              <Route path="/no-orgs" component={NoOrgsPage} />
-              <Route
-                path={`/${PROJECT_NAME.toLowerCase()}/from`}
-                component={NotebookTemplates}
-              />
-              <Route path="/orgs" component={App} />
-              <Route exact path="/" component={RouteToOrg} />
-              {CLOUD && canAccessCheckout(quartzMe) && (
-                <Route path="/checkout" component={CheckoutPage} />
-              )}
-              {CLOUD && quartzMe?.isOperator && (
-                <Route path="/operator" component={OperatorPage} />
-              )}
-              <Route component={NotFound} />
-            </Switch>
-          </PageSpinner>
-        ) : (
+        <PageSpinner loading={quartzMeStatus}>
           <Switch>
             <Route path="/no-orgs" component={NoOrgsPage} />
             <Route
@@ -164,9 +135,15 @@ const GetOrganizations: FunctionComponent = () => {
             />
             <Route path="/orgs" component={App} />
             <Route exact path="/" component={RouteToOrg} />
+            {CLOUD && canAccessCheckout(quartzMe) && (
+              <Route path="/checkout" component={CheckoutPage} />
+            )}
+            {CLOUD && quartzMe?.isOperator && (
+              <Route path="/operator" component={OperatorPage} />
+            )}
             <Route component={NotFound} />
           </Switch>
-        )}
+        </PageSpinner>
       </Suspense>
     </PageSpinner>
   )

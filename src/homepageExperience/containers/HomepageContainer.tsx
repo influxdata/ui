@@ -260,13 +260,9 @@ export const HomepageContainer: FC = () => {
                 widthMD={Columns.Three}
                 style={{marginTop: '-8px'}}
               >
-                {isFlagEnabled('uiUnificationFlag') ? (
-                  <UsageProvider>
-                    <Resources style={{backgroundColor: InfluxColors.Grey5}} />
-                  </UsageProvider>
-                ) : (
+                <UsageProvider>
                   <Resources style={{backgroundColor: InfluxColors.Grey5}} />
-                )}
+                </UsageProvider>
               </Grid.Column>
             </Grid.Row>
           </Grid>

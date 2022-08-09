@@ -3,14 +3,10 @@ describe('Help bar support for free account users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(() => {
-          cy.setFeatureFlags({
-            uiUnificationFlag: true,
+          cy.quartzProvision({
+            accountType: 'free',
           }).then(() => {
-            cy.quartzProvision({
-              accountType: 'free',
-            }).then(() => {
-              cy.getByTestID('nav-item-support').should('be.visible')
-            })
+            cy.getByTestID('nav-item-support').should('be.visible')
           })
         })
       })
@@ -38,15 +34,11 @@ describe('Help bar support for PAYG users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(() => {
-          cy.setFeatureFlags({
-            uiUnificationFlag: true,
+          cy.quartzProvision({
+            accountType: 'pay_as_you_go',
           }).then(() => {
-            cy.quartzProvision({
-              accountType: 'pay_as_you_go',
-            }).then(() => {
-              cy.visit('/')
-              cy.getByTestID('nav-item-support').should('be.visible')
-            })
+            cy.visit('/')
+            cy.getByTestID('nav-item-support').should('be.visible')
           })
         })
       })

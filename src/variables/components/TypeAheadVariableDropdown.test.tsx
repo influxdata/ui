@@ -45,6 +45,10 @@ const values_with_c = {
   'Bad Code': 'https://xkcd.com/1926/',
 }
 
+const values_with_bad = {
+  'Bad Code': 'https://xkcd.com/1926/',
+}
+
 const initialState = (state: AppState): AppState => {
   return {
     ...state,
@@ -134,6 +138,7 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
     // filter again by text:
     checkDropdown('b', values_with_b)
     checkDropdown('c', values_with_c)
+    checkDropdown('bad', values_with_bad)
 
     // something that won't match anything
     // (see: https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present)

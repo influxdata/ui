@@ -697,7 +697,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 |> filter(fn: (r) => r["_field"] == "dopeness")
 |> filter(fn: (r) => r["container_name"] == v.build)`)
 
-          cy.getByTestID('save-cell--button').click()
+          cy.getByTestID('save-cell--button').click({force: true})
 
           // the default bucket selection should have no results and load all three variables
           // even though only two variables are being used (because 1 is dependent upon another)

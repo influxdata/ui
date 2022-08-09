@@ -62,11 +62,11 @@ export const Tokens: FC<OwnProps> = ({
   )
 
   useEffect(() => {
-    const fetchResources = async () => {
-      await dispatch(getAllResources())
+    const fetchResources = () => {
+      dispatch(getAllResources())
     }
     fetchResources()
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (sortedPermissionTypes.length && tokenValue === null) {
@@ -79,14 +79,21 @@ export const Tokens: FC<OwnProps> = ({
       dispatch(createAuthorization(authorization))
       event(`firstMile.${wizardEventName}.tokens.tokenCreated`)
     }
-  }, [sortedPermissionTypes.length])
+  }, [
+    dispatch,
+    me.id,
+    org.id,
+    sortedPermissionTypes,
+    tokenValue,
+    wizardEventName,
+  ])
 
   // when token generated, save it to the parent component
   useEffect(() => {
     if (currentAuth.token) {
       setTokenValue(currentAuth.token)
     }
-  }, [currentAuth.token])
+  }, [currentAuth.token, setTokenValue])
 
   // when tokenValue in the parent component is not null, set text box value to tokenValue
   useEffect(() => {

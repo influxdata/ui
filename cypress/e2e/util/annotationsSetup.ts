@@ -58,13 +58,11 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
 
               cy.getByTestID('time-machine-submit-button').click()
 
-              cy.getByTestID('overlay').within(() => {
-                cy.getByTestID('page-title').click()
-                cy.getByTestID('renamable-page-title--input')
-                  .clear()
-                  .type('blah{enter}')
-                cy.getByTestID('save-cell--button').click()
-              })
+              cy.getByTestID('page-title').click()
+              cy.getByTestID('renamable-page-title--input')
+                .clear()
+                .type('blah{enter}')
+              cy.getByTestID('save-cell--button').click()
 
               cy.getByTestID('toggle-annotations-controls').click()
             })

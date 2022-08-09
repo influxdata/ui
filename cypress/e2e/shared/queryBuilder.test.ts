@@ -217,12 +217,11 @@ describe('The Query Builder', () => {
       cy.contains('mem').click('topLeft', {force: true}) // users sometimes click in random spots
       cy.contains('cached').click('bottomLeft')
       cy.contains('thrillbo-swaggins').click('left')
-      cy.contains('sum').click()
 
-      cy.getByTestID('empty-graph--no-queries').should('exist')
+      cy.getByTestID('empty-graph--no-results').should('exist')
       cy.contains('Submit').click()
       cy.getByTestID('giraffe-layer-line').should('exist')
-      cy.getByTestID('overlay')
+      cy.getByTestID('page-title')
         .contains('Name this Cell')
         .click()
       cy.get('[placeholder="Name this Cell"]').type('A better name!{enter}')
@@ -235,7 +234,7 @@ describe('The Query Builder', () => {
       })
 
       cy.getByTestID('giraffe-layer-line').should('exist')
-      cy.getByTestID('overlay')
+      cy.getByTestID('page-title')
         .contains('A better name!')
         .click()
 

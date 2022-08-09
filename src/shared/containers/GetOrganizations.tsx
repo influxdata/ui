@@ -79,6 +79,7 @@ const GetOrganizations: FunctionComponent = () => {
 
   useEffect(() => {
     if (
+      CLOUD &&
       quartzMeStatus === RemoteDataState.NotStarted &&
       quartzIdentityStatus === RemoteDataState.NotStarted
     ) {

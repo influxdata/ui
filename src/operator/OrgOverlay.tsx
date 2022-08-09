@@ -31,6 +31,9 @@ import {fromDisplayLimits} from 'src/operator/utils'
 // Components
 import LimitsField from 'src/operator/LimitsField'
 
+// Constants
+import {TOOLS_URL} from 'src/shared/constants'
+
 const OrgOverlay: FC = () => {
   const {
     limits,
@@ -108,7 +111,7 @@ const OrgOverlay: FC = () => {
                       text="View Usage Dashboard"
                       target={LinkTarget.Blank}
                       className="overlay-button--link"
-                      href={`https://influxdb.aws.influxdata.io/orgs/844910ece80be8bc/dashboards/0649b03029c49000?vars%5Borgid%5D=${orgID}`}
+                      href={`${TOOLS_URL}orgs/5d59ccc5163fc318/dashboards/0988da0fd78a7003?vars%5Borgid%5D=${orgID}`}
                     />
                   </Grid.Column>
                 </Grid.Row>

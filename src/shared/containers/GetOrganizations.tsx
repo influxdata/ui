@@ -127,7 +127,26 @@ const GetOrganizations: FunctionComponent = () => {
   return (
     <PageSpinner loading={status}>
       <Suspense fallback={<PageSpinner />}>
-        <PageSpinner loading={quartzMeStatus}>
+        {CLOUD ? (
+          <PageSpinner loading={quartzMeStatus}>
+            <Switch>
+              <Route path="/no-orgs" component={NoOrgsPage} />
+              <Route
+                path={`/${PROJECT_NAME.toLowerCase()}/from`}
+                component={NotebookTemplates}
+              />
+              <Route path="/orgs" component={App} />
+              <Route exact path="/" component={RouteToOrg} />
+              {CLOUD && canAccessCheckout(quartzMe) && (
+                <Route path="/checkout" component={CheckoutPage} />
+              )}
+              {CLOUD && quartzMe?.isOperator && (
+                <Route path="/operator" component={OperatorPage} />
+              )}
+              <Route component={NotFound} />
+            </Switch>
+          </PageSpinner>
+        ) : (
           <Switch>
             <Route path="/no-orgs" component={NoOrgsPage} />
             <Route
@@ -136,15 +155,9 @@ const GetOrganizations: FunctionComponent = () => {
             />
             <Route path="/orgs" component={App} />
             <Route exact path="/" component={RouteToOrg} />
-            {CLOUD && canAccessCheckout(quartzMe) && (
-              <Route path="/checkout" component={CheckoutPage} />
-            )}
-            {CLOUD && quartzMe?.isOperator && (
-              <Route path="/operator" component={OperatorPage} />
-            )}
             <Route component={NotFound} />
           </Switch>
-        </PageSpinner>
+        )}
       </Suspense>
     </PageSpinner>
   )

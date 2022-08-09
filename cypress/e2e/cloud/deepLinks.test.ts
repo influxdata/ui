@@ -72,6 +72,12 @@ describe('Deep linking', () => {
       cy.visit('/me/secrets')
       cy.location('pathname').should('eq', `/orgs/${org.id}/settings/secrets`)
 
+      cy.visit('/me/setup-arduino')
+      cy.location('pathname').should(
+        'eq',
+        `/orgs/${org.id}/new-user-setup/arduino`
+      )
+
       cy.visit('/me/setup-cli')
       cy.location('pathname').should('eq', `/orgs/${org.id}/new-user-setup/cli`)
 

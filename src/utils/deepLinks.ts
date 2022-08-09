@@ -22,6 +22,7 @@ export const buildDeepLinkingMap = (org: Organization) => ({
   '/me/profile': `/orgs/${org.id}/user/profile`,
   '/me/pythonclient': `/orgs/${org.id}/load-data/client-libraries/python`,
   '/me/secrets': `/orgs/${org.id}/settings/secrets`,
+  '/me/setup-arduino': `/orgs/${org.id}/new-user-setup/arduino`,
   '/me/setup-cli': `/orgs/${org.id}/new-user-setup/cli`,
   '/me/setup-golang': `/orgs/${org.id}/new-user-setup/golang`,
   '/me/setup-nodejs': `/orgs/${org.id}/new-user-setup/nodejs`,

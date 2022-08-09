@@ -38,8 +38,12 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
       name: selectedValue,
     } as SelectableItem
 
+    const calculatedWidth = Math.max(
+      selectedVariableValue.name.length * 8 + 95,
+      150
+    )
     const typeAheadStyle = {
-      width: `${selectedVariableValue.name.length * 8 + 95}px`,
+      width: `${calculatedWidth}px`,
     }
     return (
       <TypeAheadDropDown

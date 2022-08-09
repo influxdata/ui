@@ -52,16 +52,12 @@ describe('About Page for free users with multiple users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({
-            quartzIdentity: true,
+          cy.quartzProvision({
+            accountType: 'free',
+            hasUsers: true,
           }).then(() => {
-            cy.quartzProvision({
-              accountType: 'free',
-              hasUsers: true,
-            }).then(() => {
-              cy.visit(`/orgs/${id}/about`)
-              cy.getByTestID('about-page--header').should('be.visible')
-            })
+            cy.visit(`/orgs/${id}/about`)
+            cy.getByTestID('about-page--header').should('be.visible')
           })
         })
       })

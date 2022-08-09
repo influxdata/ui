@@ -33,9 +33,6 @@ import {CLOUD} from 'src/shared/constants'
 // Types
 import {RemoteDataState} from 'src/types'
 
-// Metrics
-import {event} from 'src/cloud/utils/reporting'
-
 // Additional properties of the current account, which are not retrieved from  /quartz/identity.
 export interface CurrentAccount extends IdentityAccount {
   billingProvider?: 'zuora' | 'aws' | 'gcm' | 'azure'

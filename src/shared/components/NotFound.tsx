@@ -149,7 +149,6 @@ const NotFound: FC = () => {
           const deafultQuartzOrg =
             quartzOrgs.find(org => org.isDefault) || quartzOrgs[0]
           org.current = deafultQuartzOrg
-          
         } catch (error) {
           console.error(error)
         }

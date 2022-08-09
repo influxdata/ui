@@ -141,12 +141,18 @@ const NotFound: FC = () => {
   const handleDeepLink = useCallback(async () => {
     if (!org.current) {
       if (shouldUseQuartzIdentity()) {
-        setIsFetchingOrg(true)
-        const defaultAccount = await getDefaultAccount()
-        const quartzOrgs = await fetchOrgsByAccountID(defaultAccount.id)
+        try {
+          setIsFetchingOrg(true)
+          const defaultAccount = await getDefaultAccount()
+          const quartzOrgs = await fetchOrgsByAccountID(defaultAccount.id)
 
-        const deafultQuartzOrg = quartzOrgs.find(org => org.isDefault)
-        org.current = deafultQuartzOrg
+          const deafultQuartzOrg =
+            quartzOrgs.find(org => org.isDefault) || quartzOrgs[0]
+          org.current = deafultQuartzOrg
+          
+        } catch (error) {
+          console.error(error)
+        }
       } else {
         setIsFetchingOrg(true)
         org.current = await fetchOrg()

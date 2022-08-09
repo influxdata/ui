@@ -38,7 +38,9 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
       name: selectedValue,
     } as SelectableItem
 
-    const typeAheadStyle = {width: '150px'}
+    const typeAheadStyle = {
+      width: `${selectedVariableValue.name.length * 8 + 95}px`,
+    }
     return (
       <TypeAheadDropDown
         style={typeAheadStyle}

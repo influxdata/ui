@@ -21,6 +21,7 @@ import {getOrg as fetchOrg} from 'src/organizations/apis'
 // Utils
 import {buildDeepLinkingMap} from 'src/utils/deepLinks'
 import {event} from 'src/cloud/utils/reporting'
+import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 // Components
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
@@ -29,6 +30,9 @@ import {Organization} from 'src/types'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
+
+// API
+import {fetchOrgsByAccountID, getDefaultAccount} from 'src/identity/apis/auth'
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">
@@ -132,14 +136,22 @@ const NotFound: FC = () => {
   const location = useLocation()
   const history = useHistory()
   const reduxOrg = useSelector(getOrg)
-  const org = useRef<Organization>(reduxOrg)
+  let org = useRef<Organization>(reduxOrg)
 
   const handleDeepLink = useCallback(async () => {
     if (!org.current) {
-      setIsFetchingOrg(true)
-      org.current = await fetchOrg()
-    }
+      if (shouldUseQuartzIdentity()) {
+          setIsFetchingOrg(true)
+          const defaultAccount = await getDefaultAccount()
+          const quartzOrgs = await fetchOrgsByAccountID(defaultAccount.id)
 
+          const deafultQuartzOrg = quartzOrgs.find(org => org.isDefault)
+          org.current = deafultQuartzOrg
+      } else {
+        setIsFetchingOrg(true)
+        org.current = await fetchOrg()
+      }
+    }
     const deepLinkingMap = buildDeepLinkingMap(org.current)
 
     if (deepLinkingMap.hasOwnProperty(location.pathname)) {

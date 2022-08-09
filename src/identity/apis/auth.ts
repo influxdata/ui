@@ -1,6 +1,7 @@
 // Functions calling API
 import {
   getAccount,
+  getAccounts,
   getAccountsOrgs,
   getIdentity,
   getMe as getMeQuartz,
@@ -30,6 +31,9 @@ import {CLOUD} from 'src/shared/constants'
 
 // Types
 import {RemoteDataState} from 'src/types'
+
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
 
 // Additional properties of the current account, which are not retrieved from  /quartz/identity.
 export interface CurrentAccount extends IdentityAccount {
@@ -282,4 +286,21 @@ export const updateDefaultOrgByAccountID = async ({
   }
 
   // success status code is 204; no response body expected.
+}
+
+// fetch user's default account
+export const getDefaultAccount = async () => {
+  try {
+    const resp = await getAccounts({})
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+    const {data} = resp
+
+    if (Array.isArray(data) && data.length) {
+      return data.find(line => line.isDefault)
+    }
+  } catch (error) {
+    event('multiAccount.retrieveAccounts.error', {error})
+  }
 }

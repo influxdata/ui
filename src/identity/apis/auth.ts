@@ -286,8 +286,8 @@ export const updateDefaultOrgByAccountID = async ({
   // success status code is 204; no response body expected.
 }
 
-// fetch user's default account
-export const getDefaultAccount = async (): Promise<UserAccount> => {
+// fetch user default account's default org
+export const getDefaultAccountDefaultOrg = async (): Promise<OrganizationSummaries[number]> => {
   const response = await getAccounts({})
 
   if (response.status === 401) {
@@ -300,6 +300,16 @@ export const getDefaultAccount = async (): Promise<UserAccount> => {
   const {data} = response
 
   if (Array.isArray(data) && data.length) {
-    return data.find(account => account.isDefault)
+    const defaultAccount = data.find(account => account.isDefault)
+
+    // fetch default org
+    if (defaultAccount) {
+      const quartzOrg = await fetchOrgsByAccountID(defaultAccount.id)
+      const defaultQuartzOrg =
+        quartzOrg.find(org => org.isDefault) || quartzOrg[0]
+      return defaultQuartzOrg
+    }
   }
+
+  throw new GenericError('No default account found')
 }

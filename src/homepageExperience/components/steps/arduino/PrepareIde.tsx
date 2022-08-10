@@ -29,7 +29,7 @@ export const PrepareIde = () => {
           it.
         </li>
         <li>Click OK.</li>
-        <li>Then under Tools {'>'} Boards: , click on Boards Manager.</li>
+        <li>Then under Tools &rarr; Boards: , click on Boards Manager.</li>
         <li>Search for ESP8266 in the boards.</li>
         <li>Install the ESP8266 board by ESP8266 Community.</li>
       </ol>
@@ -44,7 +44,7 @@ export const PrepareIde = () => {
           in it.
         </li>
         <li>Click OK.</li>
-        <li>Then under Tools {'>'} Boards: , click on Boards Manager.</li>
+        <li>Then under Tools &rarr; Boards: , click on Boards Manager.</li>
         <li>Search for ESP32 in the boards.</li>
         <li>Install the ESP32 board by ESP32 Community.</li>
       </ol>

@@ -30,7 +30,7 @@ export const defaultErrorNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Error,
   icon: IconFont.AlertTriangle,
-  duration: TEN_SECONDS,
+  duration: INDEFINITE,
 }
 
 export const defaultWarningNotification: NotificationExcludingMessage = {
@@ -44,7 +44,7 @@ export const defaultSuccessNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
   icon: IconFont.CheckMark_New,
-  duration: INDEFINITE,
+  duration: FIVE_SECONDS,
 }
 
 export const defaultDeletionNotification: NotificationExcludingMessage = {

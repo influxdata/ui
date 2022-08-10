@@ -1,6 +1,11 @@
 // Libraries
 import React from 'react'
 
+const listStyle = {
+  fontSize: '16px',
+  fontWeight: 'normal',
+}
+
 export const PrepareIde = () => {
   return (
     <>
@@ -13,8 +18,10 @@ export const PrepareIde = () => {
         If you haven't already, add the board you wish to use (ESP8266 or ESP32)
         to the Arduino IDE by following these steps:
       </p>
-      <p>For ESP8266:</p>
-      <ol style={{fontSize: '16px'}}>
+      <p>
+        <b>For ESP8266:</b>
+      </p>
+      <ol style={listStyle}>
         <li>Open the Arduino Preferences (Arduino {'>'} Preferences) </li>
         <li>
           Look for "Additional Boards Manager URLs" input box and paste
@@ -26,8 +33,10 @@ export const PrepareIde = () => {
         <li>Search for ESP8266 in the boards.</li>
         <li>Install the ESP8266 board by ESP8266 Community.</li>
       </ol>
-      <p>For ESP32:</p>
-      <ol style={{fontSize: '16px'}}>
+      <p>
+        <b>For ESP32:</b>
+      </p>
+      <ol style={listStyle}>
         <li>Open the Arduino Preferences (Arduino {'>'} Preferences) </li>
         <li>
           Look for "Additional Boards Manager URLs" input box and paste

@@ -65,3 +65,38 @@ export const HOMEPAGE_NAVIGATION_STEPS_SHORT = [
     glyph: IconFont.StarSmile,
   },
 ]
+
+export const HOMEPAGE_NAVIGATION_STEPS_ARDUINO = [
+  {
+    name: 'Overview',
+    glyph: IconFont.BookOutline,
+  },
+  {
+    name: 'Prepare\n Arduino IDE',
+    glyph: IconFont.Braces,
+  },
+  {
+    name: 'Install\n Dependencies',
+    glyph: IconFont.Install,
+  },
+  {
+    name: 'Initialize\n Client',
+    glyph: IconFont.CogSolid_New,
+  },
+  {
+    name: 'Write\n Data',
+    glyph: IconFont.Pencil,
+  },
+  {
+    name: 'Execute\n Flux Query',
+    glyph: IconFont.Play,
+  },
+  {
+    name: 'Execute\n Aggregate',
+    glyph: IconFont.Play,
+  },
+  {
+    name: 'Finished!',
+    glyph: IconFont.StarSmile,
+  },
+]

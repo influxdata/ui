@@ -15,7 +15,6 @@ import {
   Me as MeQuartz,
   Organization,
   OrganizationSummaries,
-  UserAccount,
 } from 'src/client/unityRoutes'
 
 import {

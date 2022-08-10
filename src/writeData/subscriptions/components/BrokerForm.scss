@@ -72,6 +72,12 @@
   &__text {
     color: $cf-grey-95;
   }
+  &__upgrade-text {
+    background: -webkit-linear-gradient(45deg, #34bb55 0%, #00a3ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
   &__container {
     .cf-flex-box__margin-lg.cf-flex-box__row.cf-flex-box__justify-flex-start
       > * {

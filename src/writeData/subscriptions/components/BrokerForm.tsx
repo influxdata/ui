@@ -159,9 +159,17 @@ const BrokerForm: FC<Props> = ({
               weight={FontWeight.Regular}
               className="create-broker-form__text"
             >
-              {showUpgradeButton
-                ? 'Upgrade Now to create a new connection to collect data from an MQTT broker and parse messages into metrics.'
-                : 'Create a new connection to collect data from an MQTT broker and parse messages into metrics.'}
+              {showUpgradeButton ? (
+                <p>
+                  <strong className="create-broker-form__upgrade-text">
+                    Upgrade Now
+                  </strong>{' '}
+                  to create a new connection to collect data from an MQTT broker
+                  and parse messages into metrics.
+                </p>
+              ) : (
+                'Create a new connection to collect data from an MQTT broker and parse messages into metrics.'
+              )}
             </Heading>
             <p className="create-broker-form__text">
               See our{' '}

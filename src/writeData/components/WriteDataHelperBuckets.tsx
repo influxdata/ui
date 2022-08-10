@@ -70,29 +70,18 @@ const WriteDataHelperBuckets: FC<Props> = ({
     body = (
       <List
         backgroundColor={InfluxColors.Grey5}
-        style={
-          disabled
-            ? {
-                pointerEvents: 'none',
-                height: '200px',
-                cursor: 'not-allowed',
-                borderColor: '#1a1a2a',
-                backgroundColor: '#1a1a2a',
-                opacity: '0.5',
-                color: '#828294',
-              }
-            : {height: '200px'}
-        }
+        style={{height: '200px'}}
         maxHeight="200px"
         testID="buckets--list"
       >
         {filteredBuckets.map(b => (
           <List.Item
+            disabled={disabled}
             size={ComponentSize.Small}
             key={b.id}
-            selected={disabled ? null : isSelected(b.id)}
+            selected={isSelected(b.id)}
             value={b}
-            onClick={disabled ? () => {} : changeBucket}
+            onClick={changeBucket}
             wrapText={true}
             gradient={Gradients.GundamPilot}
           >

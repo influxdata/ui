@@ -40,8 +40,7 @@ const UserList: FC = () => {
       <IndexList>
         <IndexList.Header>
           <IndexList.HeaderCell width="30%" columnName="email" />
-          {/* TODO: add back in once https://github.com/influxdata/quartz/issues/2389 back-filling of names is complete */}
-          {/* <IndexList.HeaderCell width="30%" columnName="name" />*/}
+          <IndexList.HeaderCell width="30%" columnName="name" />
           <IndexList.HeaderCell width="10%" columnName="role" />
           <IndexList.HeaderCell width="20%" columnName="status" />
           <IndexList.HeaderCell width="10%" columnName="" />

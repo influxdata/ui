@@ -25,8 +25,7 @@ const InviteListItem: FC<Props> = ({invite}) => {
       <IndexList.Cell>
         <span className="user-list-email">{email}</span>
       </IndexList.Cell>
-      {/* TODO: add back in once https://github.com/influxdata/quartz/issues/2389 back-filling of names is complete */}
-      {/* <IndexList.Cell /> */}
+      <IndexList.Cell />
       <IndexList.Cell className="user-list-cell-role" testID="invite-list-role">
         {capitalize(role)}
       </IndexList.Cell>

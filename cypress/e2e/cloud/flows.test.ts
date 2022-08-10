@@ -197,7 +197,6 @@ describe('Flows', () => {
 
   it('can use the dynamic flux function selector to build a query', () => {
     cy.setFeatureFlags({
-      uiUnificationFlag: true,
       fluxDynamicDocs: true,
     }).then(() => {
       cy.getByTestID('preset-script')
@@ -293,7 +292,6 @@ describe('Flows with newQueryBuilder flag on', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.setFeatureFlags({
           newQueryBuilder: true,
-          uiUnificationFlag: true,
         }).then(() => {
           cy.visit(`${orgs}/${id}`)
         })

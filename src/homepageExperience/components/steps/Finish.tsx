@@ -69,30 +69,38 @@ const handleNextStepEvent = (wizardEventName: string, nextStepName: string) => {
   event(`firstMile.${wizardEventName}.nextSteps.${nextStepName}.clicked`)
 }
 
+const marginTopStyle = {marginTop: '80px'}
+
 export const Finish = (props: OwnProps) => {
+  const {
+    finalFeedback,
+    finishStepCompleted,
+    markStepAsCompleted,
+    setFinalFeedback,
+    wizardEventName,
+  } = props
+
   useEffect(() => {
     // if the finish step was opened during the session,
     // this check prevents from multiple logging of finish events
     // in case user navigates back and forth
-    if (!props.finishStepCompleted) {
-      event(`firstMile.${props.wizardEventName}.finished`)
-      props.markStepAsCompleted()
+    if (!finishStepCompleted) {
+      event(`firstMile.${wizardEventName}.finished`)
+      markStepAsCompleted()
       fireConfetti()
     }
-  }, [])
+  }, [finishStepCompleted, markStepAsCompleted, wizardEventName])
 
   return (
     <>
       <h1>Congrats!</h1>
       <p>You completed setting up, writing, and querying data.</p>
       <FeedbackBar
-        wizardEventName={props.wizardEventName}
-        selectedFeedback={props.finalFeedback}
-        onFeedbackSelection={props.setFinalFeedback}
+        wizardEventName={wizardEventName}
+        selectedFeedback={finalFeedback}
+        onFeedbackSelection={setFinalFeedback}
       />
-      <p style={{marginTop: '80px'}}>
-        Curious to learn more? Try these next steps!
-      </p>
+      <p style={marginTopStyle}>Curious to learn more? Try these next steps!</p>
       <FlexBox
         margin={ComponentSize.Large}
         direction={FlexDirection.Column}
@@ -107,7 +115,7 @@ export const Finish = (props: OwnProps) => {
             <SafeBlankLink
               href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/"
               onClick={() =>
-                handleNextStepEvent(props.wizardEventName, 'keyConcepts')
+                handleNextStepEvent(wizardEventName, 'keyConcepts')
               }
             >
               <h4>{BookIcon}Key Concepts</h4>
@@ -118,7 +126,7 @@ export const Finish = (props: OwnProps) => {
             <SafeBlankLink
               href="https://university.influxdata.com/"
               onClick={() =>
-                handleNextStepEvent(props.wizardEventName, 'influxUniversity')
+                handleNextStepEvent(wizardEventName, 'influxUniversity')
               }
             >
               <h4>{CodeTerminalIcon}InfluxDB University</h4>

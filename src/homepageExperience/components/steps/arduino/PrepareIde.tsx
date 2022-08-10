@@ -22,7 +22,7 @@ export const PrepareIde = () => {
         <b>For ESP8266:</b>
       </p>
       <ol style={listStyle}>
-        <li>Open the Arduino Preferences (Arduino {'>'} Preferences) </li>
+        <li>Open the Arduino Preferences (Arduino &rarr; Preferences) </li>
         <li>
           Look for "Additional Boards Manager URLs" input box and paste
           "http://arduino.esp8266.com/stable/package_esp8266com_index.json" in
@@ -37,7 +37,7 @@ export const PrepareIde = () => {
         <b>For ESP32:</b>
       </p>
       <ol style={listStyle}>
-        <li>Open the Arduino Preferences (Arduino {'>'} Preferences) </li>
+        <li>Open the Arduino Preferences (Arduino &rarr; Preferences) </li>
         <li>
           Look for "Additional Boards Manager URLs" input box and paste
           "https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json"

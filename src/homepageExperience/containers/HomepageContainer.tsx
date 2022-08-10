@@ -44,6 +44,7 @@ import {getAllTelegrafs} from 'src/resources/selectors'
 
 // Thunks
 import {getTelegrafs} from 'src/telegrafs/actions/thunks'
+import {CLOUD} from 'src/shared/constants'
 
 export const HomepageContainer: FC = () => {
   const dispatch = useDispatch()
@@ -260,7 +261,7 @@ export const HomepageContainer: FC = () => {
                 widthMD={Columns.Three}
                 style={{marginTop: '-8px'}}
               >
-                {isFlagEnabled('uiUnificationFlag') ? (
+                {CLOUD ? (
                   <UsageProvider>
                     <Resources style={{backgroundColor: InfluxColors.Grey5}} />
                   </UsageProvider>

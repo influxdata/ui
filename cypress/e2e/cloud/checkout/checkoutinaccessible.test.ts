@@ -4,14 +4,10 @@ describe('Checkout Page should not be accessible for non-free users', () => {
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.getByTestID('home-page--header').should('be.visible')
-          cy.setFeatureFlags({
-            uiUnificationFlag: true,
+          cy.quartzProvision({
+            accountType: 'pay_as_you_go',
           }).then(() => {
-            cy.quartzProvision({
-              accountType: 'pay_as_you_go',
-            }).then(() => {
-              cy.visit(`/checkout`)
-            })
+            cy.visit(`/checkout`)
           })
         })
       })

@@ -16,7 +16,6 @@ import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/Copy
 import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
@@ -41,7 +40,7 @@ const OrgProfileTab: FC = () => {
   const identityOrgId = identity.currentIdentity.org.id
 
   useEffect(() => {
-    if (identityOrgId && CLOUD && shouldUseQuartzIdentity()) {
+    if (identityOrgId && shouldUseQuartzIdentity()) {
       if (
         !me.quartzMe.regionCode ||
         !me.quartzMe.regionName ||
@@ -51,8 +50,6 @@ const OrgProfileTab: FC = () => {
       }
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
   const hasSomeQuartzOrgData =
     identity.currentIdentity.org?.provider ||
@@ -73,7 +70,7 @@ const OrgProfileTab: FC = () => {
         src={org.name}
         isRenameableOrg={true}
       />
-      {expectQuartzData && hasSomeQuartzOrgData && (
+      {CLOUD && hasSomeQuartzOrgData && (
         <>
           <FlexBox
             direction={FlexDirection.Row}
@@ -95,7 +92,7 @@ const OrgProfileTab: FC = () => {
               <LabeledData label="Location" src={me.quartzMe.regionName} />
             )}
           </FlexBox>
-          {expectQuartzData && me.quartzMe?.clusterHost && (
+          {CLOUD && me.quartzMe?.clusterHost && (
             <CopyableLabeledData
               id="clusterUrl"
               label="Cluster URL (Host Name)"
@@ -144,7 +141,7 @@ const OrgProfileTab: FC = () => {
         <CommonIds />
       </FlexBox>
 
-      {expectQuartzData && (
+      {CLOUD && (
         <FlexBox.Child className="org-profile-tab--section">
           <UsersProvider>
             <DeletePanel />

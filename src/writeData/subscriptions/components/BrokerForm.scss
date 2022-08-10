@@ -73,7 +73,7 @@
     color: $cf-grey-95;
   }
   &__upgrade-text {
-    background: -webkit-linear-gradient(45deg, #34bb55 0%, #00a3ff 100%);
+    background: -webkit-linear-gradient(45deg, #34bb55 0%, $c-pool 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 700;

@@ -48,7 +48,6 @@
     margin: 0;
   }
   &__upgrade-button {
-    background: linear-gradient(45deg, #0098f0 0%, $c-pulsar 100%) !important;
     color: $cf-white;
     padding: 0 $cf-space-xs;
     height: 40px;
@@ -57,9 +56,6 @@
     border-style: solid;
     border-width: 0;
     text-decoration: none;
-    transition: background-color 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
-      box-shadow 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
-      color 200ms cubic-bezier(0.18, 0.16, 0.2, 1);
     outline: none;
     border-radius: 2px;
     white-space: nowrap;

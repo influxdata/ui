@@ -24,18 +24,15 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
-import {
-  shouldGetCredit250Experience,
-  shouldShowUpgradeButton,
-} from 'src/me/selectors'
+import {shouldGetCredit250Experience} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   getDataLayerIdentity,
   getExperimentVariantId,
 } from 'src/cloud/utils/experiments'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
@@ -52,6 +49,7 @@ interface Props {
   updateForm: (any) => void
   saveForm: (any) => void
   onFocus?: (any) => void
+  showUpgradeButton: boolean
 }
 
 const BrokerForm: FC<Props> = ({
@@ -59,13 +57,10 @@ const BrokerForm: FC<Props> = ({
   updateForm,
   saveForm,
   onFocus,
+  showUpgradeButton,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
-  // enabled for PAYG accounts and specific free accounts where a flag is enabled
-  const showUpgradeButton =
-    useSelector(shouldShowUpgradeButton) &&
-    !isFlagEnabled('enableFreeSubscriptions')
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
   const requiredFields = checkRequiredFields(formContent)
   const {navbarMode} = useContext(AppSettingContext)
@@ -190,7 +185,7 @@ const BrokerForm: FC<Props> = ({
               updateForm={updateForm}
               formContent={formContent}
               className="create"
-              edit={true}
+              edit={showUpgradeButton ? false : true}
             />
           </Overlay.Body>
           <div className="create-broker-form__line"></div>

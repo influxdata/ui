@@ -22,11 +22,13 @@ import {
 interface Props {
   className?: string
   useSimplifiedBucketForm?: boolean
+  disabled?: boolean
 }
 
 const WriteDataHelperBuckets: FC<Props> = ({
   className = 'write-data--details-widget-title',
   useSimplifiedBucketForm = false,
+  disabled = false,
 }) => {
   const {bucket, buckets, changeBucket} = useContext(WriteDataDetailsContext)
   const isSelected = (bucketID: string): boolean => {
@@ -68,7 +70,19 @@ const WriteDataHelperBuckets: FC<Props> = ({
     body = (
       <List
         backgroundColor={InfluxColors.Grey5}
-        style={{height: '200px'}}
+        style={
+          disabled
+            ? {
+                pointerEvents: 'none',
+                height: '200px',
+                cursor: 'not-allowed',
+                borderColor: '#1a1a2a',
+                backgroundColor: '#1a1a2a',
+                opacity: '0.5',
+                color: '#828294',
+              }
+            : {height: '200px'}
+        }
         maxHeight="200px"
         testID="buckets--list"
       >
@@ -76,9 +90,9 @@ const WriteDataHelperBuckets: FC<Props> = ({
           <List.Item
             size={ComponentSize.Small}
             key={b.id}
-            selected={isSelected(b.id)}
+            selected={disabled ? null : isSelected(b.id)}
             value={b}
-            onClick={changeBucket}
+            onClick={disabled ? () => {} : changeBucket}
             wrapText={true}
             gradient={Gradients.GundamPilot}
           >
@@ -96,6 +110,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
         <CreateBucketButton
           useSimplifiedBucketForm={useSimplifiedBucketForm}
           callbackAfterBucketCreation={changeBucket}
+          disabled={disabled}
         />
       </Heading>
       {body}

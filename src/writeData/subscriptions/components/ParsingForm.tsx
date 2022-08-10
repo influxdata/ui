@@ -25,9 +25,15 @@ interface Props {
   formContent: Subscription
   updateForm: (any) => void
   onFocus?: (any) => void
+  showUpgradeButton: boolean
 }
 
-const ParsingForm: FC<Props> = ({formContent, updateForm, onFocus}) =>
+const ParsingForm: FC<Props> = ({
+  formContent,
+  updateForm,
+  onFocus,
+  showUpgradeButton,
+}) =>
   formContent && (
     <div
       className={
@@ -58,20 +64,23 @@ const ParsingForm: FC<Props> = ({formContent, updateForm, onFocus}) =>
                 className="create"
               />
               {formContent.dataFormat === 'lineprotocol' && (
-                <LineProtocolForm edit={true} formContent={formContent} />
+                <LineProtocolForm
+                  edit={showUpgradeButton ? false : true}
+                  formContent={formContent}
+                />
               )}
               {formContent.dataFormat === 'json' && (
                 <JsonParsingForm
                   formContent={formContent}
                   updateForm={updateForm}
-                  edit={true}
+                  edit={showUpgradeButton ? false : true}
                 />
               )}
               {formContent.dataFormat === 'string' && (
                 <StringParsingForm
                   formContent={formContent}
                   updateForm={updateForm}
-                  edit={true}
+                  edit={showUpgradeButton ? false : true}
                 />
               )}
             </Grid.Row>

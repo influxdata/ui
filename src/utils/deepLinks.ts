@@ -1,10 +1,7 @@
 import {Organization} from 'src/client'
-import {OrganizationSummaries} from 'src/client/unityRoutes'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 
-export const buildDeepLinkingMap = (
-  org: Organization | OrganizationSummaries[number]
-) => ({
+export const buildDeepLinkingMap = (org: Organization) => ({
   '/me/about': `/orgs/${org.id}/about`,
   '/me/alerts': `/orgs/${org.id}/alerting`,
   '/me/billing': `/orgs/${org.id}/billing`,

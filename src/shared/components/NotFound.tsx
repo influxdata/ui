@@ -32,7 +32,7 @@ import {Organization} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 
 // API
-import {fetchOrgsByAccountID, getDefaultAccount} from 'src/identity/apis/auth'
+import {getDefaultAccountDefaultOrg} from 'src/identity/apis/auth'
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">
@@ -143,14 +143,11 @@ const NotFound: FC = () => {
       if (shouldUseQuartzIdentity()) {
         try {
           setIsFetchingOrg(true)
-          const defaultAccount = await getDefaultAccount()
-          const quartzOrgs = await fetchOrgsByAccountID(defaultAccount.id)
-
-          const deafultQuartzOrg =
-            quartzOrgs.find(org => org.isDefault) || quartzOrgs[0]
-          org.current = deafultQuartzOrg
-        } catch (error) {
-          console.error(error)
+          const defaultQuartzOrg = await getDefaultAccountDefaultOrg()
+          org.current = defaultQuartzOrg
+        } catch {
+          history.push(`/no-orgs`)
+          return
         }
       } else {
         setIsFetchingOrg(true)

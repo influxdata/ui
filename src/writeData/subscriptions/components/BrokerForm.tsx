@@ -103,7 +103,6 @@ const BrokerForm: FC<Props> = ({
               />
               {showUpgradeButton ? (
                 <CloudUpgradeButton
-                  className="create-broker-form__upgrade-button"
                   metric={() => {
                     const experimentVariantId = getExperimentVariantId(
                       CREDIT_250_EXPERIMENT_ID

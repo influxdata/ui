@@ -47,34 +47,18 @@
     -webkit-appearance: none;
     margin: 0;
   }
-  &__upgrade-button {
-    background: linear-gradient(45deg, #0098f0 0%, $c-pulsar 100%) !important;
-    color: $cf-white;
-    padding: 0 $cf-space-xs;
-    height: 40px;
-    font-weight: 500;
-    font-family: 'Proxima Nova', Helvetica, Arial, Tahoma, Verdana, sans-serif;
-    border-style: solid;
-    border-width: 0;
-    text-decoration: none;
-    transition: background-color 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
-      box-shadow 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
-      color 200ms cubic-bezier(0.18, 0.16, 0.2, 1);
-    outline: none;
-    border-radius: 2px;
-    white-space: nowrap;
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-  }
   &__header {
     text-transform: uppercase;
     margin: $cf-space-l 0;
   }
   &__text {
     color: $cf-grey-95;
+  }
+  &__upgrade-text {
+    background: -webkit-linear-gradient(45deg, #34bb55 0%, $c-pool 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
   }
   &__container {
     .cf-flex-box__margin-lg.cf-flex-box__row.cf-flex-box__justify-flex-start

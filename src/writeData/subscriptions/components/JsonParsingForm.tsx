@@ -232,7 +232,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                   formContent.jsonMeasurementKey.name
                 )
               }}
-              placeholder="nonDescriptName"
+              placeholder="measurement_name"
               name="name"
               onChange={e => {
                 updateForm({

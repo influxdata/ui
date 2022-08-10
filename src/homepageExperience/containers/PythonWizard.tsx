@@ -15,7 +15,7 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
-import {InitalizeClient} from 'src/homepageExperience/components/steps/python/InitalizeClient'
+import {InitializeClient} from 'src/homepageExperience/components/steps/python/InitializeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
@@ -121,7 +121,7 @@ export class PythonWizard extends PureComponent<null, State> {
         )
       }
       case 4: {
-        return <InitalizeClient />
+        return <InitializeClient />
       }
       case 5: {
         return <WriteData onSelectBucket={this.handleSelectBucket} />

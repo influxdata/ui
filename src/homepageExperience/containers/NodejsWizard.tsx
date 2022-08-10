@@ -13,7 +13,7 @@ import {
 import {InstallDependencies} from 'src/homepageExperience/components/steps/nodejs/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
-import {InitalizeClient} from 'src/homepageExperience/components/steps/nodejs/InitalizeClient'
+import {InitializeClient} from 'src/homepageExperience/components/steps/nodejs/InitializeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/nodejs/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
@@ -120,7 +120,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         )
       }
       case 4: {
-        return <InitalizeClient />
+        return <InitializeClient />
       }
       case 5: {
         return <WriteData onSelectBucket={this.handleSelectBucket} />

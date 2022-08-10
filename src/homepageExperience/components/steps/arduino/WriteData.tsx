@@ -1,71 +1,80 @@
 // Libraries
-import React, {useState} from 'react'
+import React from 'react'
 
 // Components
-import {Button, ButtonGroup, ComponentColor} from '@influxdata/clockface'
+import CodeSnippet from 'src/shared/components/CodeSnippet'
 
-// Styles
-import './ArduinoSteps.scss'
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
-// Types
-type CurrentDataSelection = 'URL' | 'CSV'
-type OwnProps = {
-  bucket: string
-}
+export const WriteData = () => {
+  const codeSnippetOne = `void setup() {
+    // ... code in setup() from Initialize Client
+   
+    // Add tags to the data point
+    sensor.addTag("device", DEVICE);
+    sensor.addTag("SSID", WiFi.SSID());
+   }`
 
-export const WriteDataComponent = (props: OwnProps) => {
-  const {bucket} = props
+  const codeSnippetTwo = `void loop() {
+    // Clear fields for reusing the point. Tags will remain the same as set above.
+    sensor.clearFields();
+  
+    // Store measured value into point
+    // Report RSSI of currently connected network
+    sensor.addField("rssi", WiFi.RSSI());
+  
+    // Print what are we exactly writing
+    Serial.print("Writing: ");
+    Serial.println(sensor.toLineProtocol());
+  
+    // Check WiFi connection and reconnect if needed
+    if (wifiMulti.run() != WL_CONNECTED) {
+      Serial.println("Wifi connection lost");
+    }
+  
+    // Write point
+    if (!client.writePoint(sensor)) {
+      Serial.print("InfluxDB write failed: ");
+      Serial.println(client.getLastErrorMessage());
+    }
+  
+    Serial.println("Waiting 1 second");
+    delay(1000);
+    }`
 
-  const [currentDataSelection, setCurrentDataSelection] = useState<
-    CurrentDataSelection
-  >('URL')
+  // Events log handling
+  const logCopyCodeSnippet = () => {
+    event(`firstMile.arduinoWizard.buckets.code.copied`) // edit
+  }
 
   return (
     <>
       <h1>Write Data</h1>
-      <h2 style={{marginBottom: '8px'}}>Choose your sample data source</h2>
       <p className="small-margins">
-        We recommend choosing an option that most closely matches how you will
-        write your actual data.
+        Append the lines of code to add tags to the Point, the end of void
+        setup() function like:
       </p>
-      <ButtonGroup className="small-margins">
-        <Button
-          text="URL to File"
-          color={
-            currentDataSelection === 'URL'
-              ? ComponentColor.Primary
-              : ComponentColor.Default
-          }
-          onClick={() => {
-            setCurrentDataSelection('URL')
-          }}
-        />
-        <Button
-          text="Local CSV"
-          color={
-            currentDataSelection === 'CSV'
-              ? ComponentColor.Primary
-              : ComponentColor.Default
-          }
-          onClick={() => {
-            setCurrentDataSelection('CSV')
-          }}
-        />
-      </ButtonGroup>
-      {currentDataSelection === 'CSV' && (
-        <>
-          <h2 className="large-margins">Download sample data to {bucket}</h2>
-        </>
-      )}
-      {currentDataSelection === 'URL' && (
-        <>
-          <h2 className="large-margins">Review sample data</h2>
-        </>
-      )}
+      <CodeSnippet
+        text={codeSnippetOne}
+        onCopy={logCopyCodeSnippet}
+        language="properties"
+      />
+      <p>
+        Add the following{' '}
+        <code className="homepage-wizard--code-highlight">loop()</code> code
+        snippet to your sketch
+      </p>
+      <CodeSnippet
+        text={codeSnippetTwo}
+        onCopy={logCopyCodeSnippet}
+        language="properties"
+      />
+      <p>
+        In the above code snippet, we retrive the RSSI (Received Signal Strength
+        Indicator) of your wifi connection and write it to InfluxDB using the
+        client.
+      </p>
     </>
   )
-}
-
-export const WriteData = props => {
-  return <WriteDataComponent bucket={props.bucket} />
 }

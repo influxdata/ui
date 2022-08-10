@@ -1,120 +1,96 @@
 // Libraries
-import React, {FC, useContext, useEffect, useMemo} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React from 'react'
 
-// Actions
-import {
-  createAuthorization,
-  getAllResources,
-} from 'src/authorizations/actions/thunks'
-
-// Selectors
-import {getOrg} from 'src/organizations/selectors'
-import {getMe} from 'src/me/selectors'
-import {getAllTokensResources} from 'src/resources/selectors'
-
-// Thunks
-import {getBuckets} from 'src/buckets/actions/thunks'
-
-// Helper Components
-import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
+// Components
+import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 // Utils
-import {allAccessPermissions} from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
-import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
-// Types
-import {AppState, Authorization} from 'src/types'
+export const InitializeClient = () => {
 
-// Styles
-import './ArduinoSteps.scss'
-
-type OwnProps = {
-  setTokenValue: (tokenValue: string) => void
-  tokenValue: string
-  onSelectBucket: (bucketName: string) => void
-}
-
-const collator = new Intl.Collator(navigator.language || 'en-US')
-
-export const InitializeClient: FC<OwnProps> = ({
-  setTokenValue,
-  tokenValue,
-  onSelectBucket,
-}) => {
-  const org = useSelector(getOrg)
-  const me = useSelector(getMe)
-  const allPermissionTypes = useSelector(getAllTokensResources)
-  const dispatch = useDispatch()
-
-  const currentAuth = useSelector((state: AppState) => {
-    return state.resources.tokens.currentAuth.item
-  })
-
-  const sortedPermissionTypes = useMemo(
-    () => allPermissionTypes.sort((a, b) => collator.compare(a, b)),
-    [allPermissionTypes]
-  )
-  const {bucket} = useContext(WriteDataDetailsContext)
-
-  useEffect(() => {
-    dispatch(getBuckets())
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    onSelectBucket(bucket.name)
-  }, [bucket, onSelectBucket])
-
-  useEffect(() => {
-    const fetchResources = async () => {
-      await dispatch(getAllResources())
+  const codeSnippet = `#if defined(ESP32)
+  #include <WiFiMulti.h>
+  WiFiMulti wifiMulti;
+  #define DEVICE "ESP32"
+  #elif defined(ESP8266)
+  #include <ESP8266WiFiMulti.h>
+  ESP8266WiFiMulti wifiMulti;
+  #define DEVICE "ESP8266"
+  #endif
+  
+  #include <InfluxDbClient.h>
+  #include <InfluxDbCloud.h>
+  
+  // WiFi AP SSID
+  #define WIFI_SSID "YOUR_WIFI_SSID"
+  // WiFi password
+  #define WIFI_PASSWORD "YOUR_WIFI_PASSWORD"
+  
+  #define INFLUXDB_URL "https://stag-us-east-1-4.aws.cloud2.influxdata.com"
+  #define INFLUXDB_TOKEN "mJC2rCuKlDi4T1pjG-JysYsbTSUJ7mrmck9TlpMrNYbUWzhG7CO23_wDiRFcwrLaFjBc1fHVVNhEK1AMc1BbCA=="
+  #define INFLUXDB_ORG "schitlange@influxdata.com"
+  #define INFLUXDB_BUCKET "apis"
+  
+  // Time zone info
+  #define TZ_INFO "UTC−07:00"
+  
+  // Declare InfluxDB client instance with preconfigured InfluxCloud certificate
+  InfluxDBClient client(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
+  
+  // Declare Data point
+  Point sensor("wifi_status");
+  
+  void setup() {
+    Serial.begin(115200);
+  
+    // Setup wifi
+    WiFi.mode(WIFI_STA);
+    wifiMulti.addAP(WIFI_SSID, WIFI_PASSWORD);
+  
+    Serial.print("Connecting to wifi");
+    while (wifiMulti.run() != WL_CONNECTED) {
+      Serial.print(".");
+      delay(100);
     }
-    fetchResources()
-  }, [])
-
-  useEffect(() => {
-    if (sortedPermissionTypes.length && tokenValue === null) {
-      const authorization: Authorization = {
-        orgID: org.id,
-        description: `onboarding-arduinoWizard-token-${Date.now()}`,
-        permissions: allAccessPermissions(sortedPermissionTypes, org.id, me.id),
-      }
-
-      dispatch(createAuthorization(authorization))
-      event(`firstMile.arduinoWizard.tokens.tokenCreated`)
+    Serial.println();
+  
+    // Accurate time is necessary for certificate validation and writing in batches
+    // We use the NTP servers in your area as provided by: https://www.pool.ntp.org/zone/
+    // Syncing progress and the time will be printed to Serial.
+    timeSync(TZ_INFO, "pool.ntp.org", "time.nis.gov");
+  
+  
+    // Check server connection
+    if (client.validateConnection()) {
+      Serial.print("Connected to InfluxDB: ");
+      Serial.println(client.getServerUrl());
+    } else {
+      Serial.print("InfluxDB connection failed: ");
+      Serial.println(client.getLastErrorMessage());
     }
-  }, [sortedPermissionTypes.length])
-
-  // when token generated, save it to the parent component
-  useEffect(() => {
-    if (currentAuth.token) {
-      setTokenValue(currentAuth.token)
-    }
-  }, [currentAuth.token])
-
-  useEffect(() => {
-    const fireKeyboardCopyEvent = event => {
-      if (
-        keyboardCopyTriggered(event) &&
-        (userSelection().includes('influx config create') ||
-          userSelection().includes('influx bucket create'))
-      ) {
-        logCopyCodeSnippet()
-      }
-    }
-    document.addEventListener('keydown', fireKeyboardCopyEvent)
-    return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
-  }, [])
+  }`
 
   // Events log handling
   const logCopyCodeSnippet = () => {
-    event(`firstMile.arduinoWizard.buckets.code.copied`)
+    event(`firstMile.arduinoWizard.buckets.code.copied`) // edit
   }
 
   return (
     <>
       <h1>Initialize Client</h1>
+      <p className="small-margins">
+        Paste the following snippet into a blank Arduino sketch file.
+      </p>
+      <CodeSnippet
+        text={codeSnippet}
+        onCopy={logCopyCodeSnippet}
+        language="properties"
+      />
+      <p style={{fontSize: '14px', marginTop: '8px', marginBottom: '48px'}}>
+        Note: you will need to set the WIFI_SSID and WIFI_PASSWORD variables to 
+        the correct values for your wifi router.
+      </p>
     </>
   )
 }

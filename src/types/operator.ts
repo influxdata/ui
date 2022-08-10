@@ -7,7 +7,7 @@ export {
   OperatorProviders,
   OperatorRegions,
   OrgLimits,
-  User as OperatorUser,
+  OperatorUser,
 } from 'src/client/unityRoutes'
 
 export interface CellInfo {

@@ -96,7 +96,7 @@ export class CliWizard extends PureComponent<{}, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep + 1].name
             ),
             currentStep: normalizeEventName(
               HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name

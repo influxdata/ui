@@ -27,7 +27,7 @@ describe('First mile experience', () => {
       cy.getByTestID('python-next-button').click()
       cy.contains('Tokens')
 
-      // fourth page is initalize client
+      // fourth page is initialize client
       cy.getByTestID('python-next-button').click()
       cy.contains('Initialize Client')
 

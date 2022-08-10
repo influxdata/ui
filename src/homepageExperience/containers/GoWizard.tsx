@@ -13,7 +13,7 @@ import {
 import {InstallDependencies} from 'src/homepageExperience/components/steps/go/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
-import {InitalizeClient} from 'src/homepageExperience/components/steps/go/InitalizeClient'
+import {InitializeClient} from 'src/homepageExperience/components/steps/go/InitializeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/go/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/go/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
@@ -120,7 +120,7 @@ export class GoWizard extends PureComponent<null, State> {
         )
       }
       case 4: {
-        return <InitalizeClient />
+        return <InitializeClient />
       }
       case 5: {
         return <WriteData onSelectBucket={this.handleSelectBucket} />

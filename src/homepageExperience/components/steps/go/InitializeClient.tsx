@@ -10,7 +10,7 @@ const logCopyCodeSnippet = () => {
   event('firstMile.goWizard.initializeClient.code.copied')
 }
 
-export const InitalizeClient = () => {
+export const InitializeClient = () => {
   const me = useSelector(getMe)
 
   const url =

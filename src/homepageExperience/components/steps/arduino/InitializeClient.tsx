@@ -125,7 +125,9 @@ export const InitializeClient: FC<OwnProps> = ({
   #define INFLUXDB_URL "${url}"
   #define INFLUXDB_TOKEN "${token}"
   #define INFLUXDB_ORG "${org.id}"
-  #define INFLUXDB_BUCKET "${bucket.name}"
+  #define INFLUXDB_BUCKET "${
+    bucket.name === '<BUCKET>' ? 'YOUR_BUCKET' : bucket.name
+  }"
   
   // Time zone info
   #define TZ_INFO "UTC−07:00"

@@ -62,10 +62,7 @@ export const Tokens: FC<OwnProps> = ({
   )
 
   useEffect(() => {
-    const fetchResources = () => {
-      dispatch(getAllResources())
-    }
-    fetchResources()
+    dispatch(getAllResources())
   }, [dispatch])
 
   useEffect(() => {

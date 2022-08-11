@@ -1,6 +1,7 @@
 // Functions calling API
 import {
   getAccount,
+  getAccounts,
   getAccountsOrgs,
   getIdentity,
   getMe as getMeQuartz,
@@ -114,8 +115,7 @@ export class GenericError extends Error {
 }
 
 export const fetchIdentity = async () => {
-  // if we aren't in cloud, or we are in cloud and the unification flag is off
-  if (!CLOUD || !isFlagEnabled('uiUnificationFlag')) {
+  if (!CLOUD) {
     return fetchLegacyIdentity()
   }
   // if we make it to this line we are in cloud and ui unification flag is on
@@ -282,4 +282,32 @@ export const updateDefaultOrgByAccountID = async ({
   }
 
   // success status code is 204; no response body expected.
+}
+
+// fetch user default account's default org
+export const getDefaultAccountDefaultOrg = async (): Promise<OrganizationSummaries[number]> => {
+  const response = await getAccounts({})
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+  const {data} = response
+
+  if (Array.isArray(data) && data.length) {
+    const defaultAccount = data.find(account => account.isDefault)
+
+    // fetch default org
+    if (defaultAccount) {
+      const quartzOrg = await fetchOrgsByAccountID(defaultAccount.id)
+      const defaultQuartzOrg =
+        quartzOrg.find(org => org.isDefault) || quartzOrg[0]
+
+      return defaultQuartzOrg
+    }
+    throw new GenericError('No default account found')
+  }
 }

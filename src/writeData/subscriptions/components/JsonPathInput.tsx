@@ -111,7 +111,7 @@ const JsonPathInput: FC<Props> = ({
                   : formContent.jsonFieldKeys[itemNum].name
               )
             }
-            placeholder="nonDescriptName"
+            placeholder={`${name}_name`.toLowerCase()}
             name={`${name}=name`}
             onChange={e => {
               let newArr

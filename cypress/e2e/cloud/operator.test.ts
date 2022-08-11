@@ -4,16 +4,12 @@ describe('Operator Page', () => {
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.getByTestID('home-page--header').should('be.visible')
-          cy.setFeatureFlags({
-            uiUnificationFlag: true,
+          cy.quartzProvision({
+            isOperator: true,
+            operatorRole: 'read-write',
           }).then(() => {
-            cy.quartzProvision({
-              isOperator: true,
-              operatorRole: 'read-write',
-            }).then(() => {
-              cy.visit(`/operator`)
-              cy.getByTestID('operator-page--title').contains('2.0 Resources')
-            })
+            cy.visit(`/operator`)
+            cy.getByTestID('operator-page--title').contains('2.0 Resources')
           })
         })
       })
@@ -247,14 +243,10 @@ describe('Operator Page should not be accessible for non-operator users', () => 
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.getByTestID('home-page--header').should('be.visible')
-          cy.setFeatureFlags({
-            uiUnificationFlag: true,
+          cy.quartzProvision({
+            isOperator: false,
           }).then(() => {
-            cy.quartzProvision({
-              isOperator: false,
-            }).then(() => {
-              cy.visit(`/operator`)
-            })
+            cy.visit(`/operator`)
           })
         })
       })

@@ -20,12 +20,13 @@ import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {InitializeClient} from 'src/homepageExperience/components/steps/arduino/InitializeClient'
 import {InstallDependencies} from 'src/homepageExperience/components/steps/arduino/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
+import {PrepareIde} from 'src/homepageExperience/components/steps/arduino/PrepareIde'
 import {WriteData} from 'src/homepageExperience/components/steps/arduino/WriteData'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {HOMEPAGE_NAVIGATION_STEPS_SHORT} from 'src/homepageExperience/utils'
+import {HOMEPAGE_NAVIGATION_STEPS_ARDUINO} from 'src/homepageExperience/utils'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
@@ -67,7 +68,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
       {
         currentStep: Math.min(
           this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS_SHORT.length
+          HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
         ),
       },
       () => {
@@ -76,10 +77,10 @@ export class ArduinoWizard extends PureComponent<{}, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep].name
             ),
           }
         )
@@ -96,10 +97,10 @@ export class ArduinoWizard extends PureComponent<{}, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep].name
             ),
           }
         )
@@ -114,7 +115,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
       {},
       {
         currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[clickedStep - 1].name
+          HOMEPAGE_NAVIGATION_STEPS_ARDUINO[clickedStep - 1].name
         ),
       }
     )
@@ -126,9 +127,12 @@ export class ArduinoWizard extends PureComponent<{}, State> {
         return <Overview wizard="arduinoWizard" />
       }
       case 2: {
-        return <InstallDependencies />
+        return <PrepareIde />
       }
       case 3: {
+        return <InstallDependencies />
+      }
+      case 4: {
         return (
           <InitializeClient
             setTokenValue={this.setTokenValue}
@@ -137,16 +141,16 @@ export class ArduinoWizard extends PureComponent<{}, State> {
           />
         )
       }
-      case 4: {
+      case 5: {
         return <WriteData bucket={this.state.selectedBucket} />
       }
-      case 5: {
+      case 6: {
         return <ExecuteQuery bucket={this.state.selectedBucket} />
       }
-      case 6: {
+      case 7: {
         return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
-      case 7: {
+      case 8: {
         return (
           <Finish
             wizardEventName="arduinoWizard"
@@ -178,7 +182,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
-                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS_SHORT}
+                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS_ARDUINO}
                   settingUpIcon={ArduinoIcon}
                   settingUpText="Arduino"
                   setupTime="5 minutes"
@@ -193,7 +197,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
                     verticallyCentered:
                       this.state.currentStep === 1 ||
                       this.state.currentStep ===
-                        HOMEPAGE_NAVIGATION_STEPS_SHORT.length,
+                        HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length,
                   }
                 )}
               >

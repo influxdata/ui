@@ -16,14 +16,12 @@ import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 export const InstallDependencies: FC = () => {
   const headingWithMargin = {marginTop: '48px', marginBottom: '0px'}
 
-  const logCopyCodeSnippetMac = () => {
-    event('firstMile.cliWizard.installDependenciesMac.code.copied')
+  const logCopyCodeSnippet = OS => {
+    event(`firstMile.cliWizard.installDependencies${OS}.code.copied`)
   }
-  const logCopyCodeSnippetWindows = () => {
-    event('firstMile.cliWizard.installDependenciesWindows.code.copied')
-  }
-  const logCopyCodeSnippetLinux = () => {
-    event('firstMile.cliWizard.installDependenciesLinux.code.copied')
+
+  const handleEventing = () => {
+    event('firstMile.cliWizard.documentation.link.clicked')
   }
 
   const windowsCodeSnippet =
@@ -59,14 +57,14 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
         keyboardCopyTriggered(event) &&
         userSelection().includes('brew install')
       ) {
-        logCopyCodeSnippetMac()
+        logCopyCodeSnippet('Mac')
       }
       if (
         keyboardCopyTriggered(event) &&
         (userSelection().includes('Expand-Archive') ||
           userSelection().includes('mv'))
       ) {
-        logCopyCodeSnippetWindows()
+        logCopyCodeSnippet('Windows')
       }
       if (
         keyboardCopyTriggered(event) &&
@@ -74,7 +72,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           userSelection().includes('tar') ||
           userSelection().includes('sudo'))
       ) {
-        logCopyCodeSnippetLinux()
+        logCopyCodeSnippet('Linux')
       }
     }
     document.addEventListener('keydown', fireKeyboardCopyEvent)
@@ -124,13 +122,16 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           <h2 style={headingWithMargin}>Use Homebrew</h2>
           <CodeSnippet
             text="brew install influxdb-cli"
-            onCopy={logCopyCodeSnippetMac}
+            onCopy={() => logCopyCodeSnippet(currentSelection)}
             language="properties"
           />
           <p>
             If you prefer to manually download and install the CLI package,
             follow our{' '}
-            <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/">
+            <SafeBlankLink
+              href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/"
+              onClick={handleEventing}
+            >
               documentation.
             </SafeBlankLink>{' '}
           </p>
@@ -169,7 +170,10 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </Table>
           <p>
             Full list of commands is available in our{' '}
-            <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/">
+            <SafeBlankLink
+              href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/"
+              onClick={handleEventing}
+            >
               documentation.
             </SafeBlankLink>{' '}
           </p>
@@ -180,7 +184,10 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           <h2 style={headingWithMargin}>Download the CLI package</h2>
           <p>
             {' '}
-            <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/?t=Windows">
+            <SafeBlankLink
+              href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/?t=Windows"
+              onClick={handleEventing}
+            >
               Download via our documentation.
             </SafeBlankLink>{' '}
           </p>
@@ -191,7 +198,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </p>
           <CodeSnippet
             text={windowsCodeSnippet}
-            onCopy={logCopyCodeSnippetWindows}
+            onCopy={() => logCopyCodeSnippet(currentSelection)}
             language="properties"
           />
           <h2 style={headingWithMargin}>Grant network access (optional)</h2>
@@ -235,7 +242,10 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </Table>
           <p>
             Full list of commands is available in our{' '}
-            <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/">
+            <SafeBlankLink
+              href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/"
+              onClick={handleEventing}
+            >
               documentation.
             </SafeBlankLink>{' '}
           </p>
@@ -246,13 +256,16 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           <h2 style={headingWithMargin}>Download from the command line</h2>
           <CodeSnippet
             text={linuxCodeSnippetA}
-            onCopy={logCopyCodeSnippetLinux}
+            onCopy={() => logCopyCodeSnippet(currentSelection)}
             language="properties"
           />
           <p>
             If you prefer to manually download and install the CLI package,
             follow our{' '}
-            <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/?t=Linux">
+            <SafeBlankLink
+              href="https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/?t=Linux"
+              onClick={handleEventing}
+            >
               documentation.
             </SafeBlankLink>{' '}
           </p>
@@ -263,7 +276,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </p>
           <CodeSnippet
             text={linuxCodeSnippetB}
-            onCopy={logCopyCodeSnippetLinux}
+            onCopy={() => logCopyCodeSnippet(currentSelection)}
             language="properties"
           />
           <h2 style={headingWithMargin}>
@@ -275,7 +288,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </p>
           <CodeSnippet
             text={linuxCodeSnippetC}
-            onCopy={logCopyCodeSnippetLinux}
+            onCopy={() => logCopyCodeSnippet(currentSelection)}
             language="properties"
           />
           <h2 style={headingWithMargin}>Useful InfluxDB CLI commands</h2>
@@ -313,7 +326,10 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </Table>
           <p>
             Full list of commands is available in our{' '}
-            <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/">
+            <SafeBlankLink
+              href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/"
+              onClick={handleEventing}
+            >
               documentation.
             </SafeBlankLink>{' '}
           </p>

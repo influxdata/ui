@@ -225,7 +225,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                 formContent.stringMeasurement.name
               )
             }}
-            placeholder="nonDescriptName"
+            placeholder="measurement_name"
             name="name"
             onChange={e => {
               updateForm({

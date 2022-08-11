@@ -9,7 +9,7 @@ import {
 } from '@influxdata/clockface'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 import {UsageContext} from 'src/usage/context/usage'
 
 // Components
@@ -36,9 +36,7 @@ const ResourceLists: FC<OwnProps> = (props: OwnProps) => {
           <DocSearchWidget />
         </Panel.Body>
       </Panel>
-      {isFlagEnabled('uiUnificationFlag') && paygCreditEnabled && (
-        <UsagePanel />
-      )}
+      {CLOUD && paygCreditEnabled && <UsagePanel />}
       <Panel>
         <Panel.Footer style={props.style}>
           <VersionInfo />

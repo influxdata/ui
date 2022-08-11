@@ -4,51 +4,47 @@ import {useSelector} from 'react-redux'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 
-import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
 
 const logCopyCodeSnippet = () => {
-  event('firstMile.pythonWizard.initializeClient.code.copied')
+  event('firstMile.nodejsWizard.initializeClient.code.copied')
 }
 
-export const InitalizeClient = () => {
-  const org = useSelector(getOrg)
+export const InitializeClient = () => {
   const me = useSelector(getMe)
 
   const url =
     me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
 
-  const pythonCode = `import influxdb_client, os, time
-from influxdb_client import InfluxDBClient, Point, WritePrecision
-from influxdb_client.client.write_api import SYNCHRONOUS
+  const codeSnippet = `repl.repl.ignoreUndefined=true
 
-token = os.environ.get("INFLUXDB_TOKEN")
-org = "${org.name}"
-url = "${url}"
+const {InfluxDB, Point} = require('@influxdata/influxdb-client')
 
-client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
-`
+const token = process.env.INFLUXDB_TOKEN
+const url = '${url}'
+
+const client = new InfluxDB({url, token})`
 
   return (
     <>
       <h1>Initialize Client</h1>
       <p>
-        Run this command in your terminal to open the interactive Python shell:
+        Run this command in your terminal to open the interactive Nodejs shell:
       </p>
-      <CodeSnippet text="python3" language="properties" />
+      <CodeSnippet text="node" language="properties" />
       <p style={{marginTop: '40px'}}>
-        Paste the following code after the prompt (>>>) and press Enter.
+        Paste the following code after the prompt (>) and press Enter.
       </p>
       <CodeSnippet
-        text={pythonCode}
+        text={codeSnippet}
         onCopy={logCopyCodeSnippet}
-        language="python"
+        language="javascript"
       />
       <p style={{marginTop: '42px'}}>
         Here, we initialize the token, organization info, and server url that
         are needed to set up the initial connection to InfluxDB. The client
         connection is then established with the{' '}
-        <code className="homepage-wizard--code-highlight">InfluxDBClient</code>{' '}
+        <code className="homepage-wizard--code-highlight">InfluxDB</code>{' '}
         initialization.
       </p>
     </>

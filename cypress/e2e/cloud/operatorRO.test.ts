@@ -12,7 +12,6 @@ describe('Operator Page', () => {
             cy.reload()
             cy.setFeatureFlags({
               operatorRole: true,
-              uiUnificationFlag: true,
             }).then(() => {
               cy.getByTestID('nav-item--operator').click()
               cy.getByTestID('operator-page--title').contains('2.0 Resources')

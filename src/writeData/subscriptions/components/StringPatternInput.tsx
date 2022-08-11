@@ -98,7 +98,7 @@ const StringPatternInput: FC<Props> = ({
                 : formContent.stringFields[itemNum].name
             )
           }
-          placeholder="nonDescriptName"
+          placeholder={`${name}_name`.toLowerCase()}
           onChange={e => {
             let newArr
             if (tagType) {

@@ -3,7 +3,12 @@ import React, {FC, useEffect} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 
 // Components
-import {Button, IconFont, ComponentColor} from '@influxdata/clockface'
+import {
+  Button,
+  IconFont,
+  ComponentColor,
+  ComponentStatus,
+} from '@influxdata/clockface'
 import AssetLimitButton from 'src/cloud/components/AssetLimitButton'
 
 // Actions
@@ -25,6 +30,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 type CreateButtonProps = {
   useSimplifiedBucketForm?: boolean
   callbackAfterBucketCreation?: (bucket: OwnBucket) => void
+  disabled?: boolean
 }
 
 type Props = ReduxProps & CreateButtonProps
@@ -35,6 +41,7 @@ const CreateBucketButton: FC<Props> = ({
   onDismissOverlay,
   useSimplifiedBucketForm = false,
   callbackAfterBucketCreation = () => {},
+  disabled = false,
 }) => {
   const dispatch = useDispatch()
   useEffect(() => {
@@ -63,6 +70,7 @@ const CreateBucketButton: FC<Props> = ({
       titleText="Click to create a bucket"
       onClick={handleItemClick}
       testID="Create Bucket"
+      status={disabled ? ComponentStatus.Disabled : ComponentStatus.Default}
     />
   )
 }

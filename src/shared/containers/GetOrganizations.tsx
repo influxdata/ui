@@ -65,12 +65,7 @@ const GetOrganizations: FunctionComponent = () => {
   const identityOrgId = identity.currentIdentity.org.id
 
   useEffect(() => {
-    if (
-      identityOrgId &&
-      CLOUD &&
-      shouldUseQuartzIdentity() &&
-      !quartzMe?.isRegionBeta
-    ) {
+    if (identityOrgId && shouldUseQuartzIdentity() && !quartzMe?.isRegionBeta) {
       dispatch(getCurrentOrgDetailsThunk(identityOrgId))
     }
   }, [identityOrgId]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -84,7 +79,7 @@ const GetOrganizations: FunctionComponent = () => {
 
   useEffect(() => {
     if (
-      isFlagEnabled('uiUnificationFlag') &&
+      CLOUD &&
       quartzMeStatus === RemoteDataState.NotStarted &&
       quartzIdentityStatus === RemoteDataState.NotStarted
     ) {
@@ -132,11 +127,7 @@ const GetOrganizations: FunctionComponent = () => {
   return (
     <PageSpinner loading={status}>
       <Suspense fallback={<PageSpinner />}>
-        {/*
-          NOTE: We'll need this here until Tools gets Quartz integrated
-          Since the API request will fail in a tools environment.
-        */}
-        {isFlagEnabled('uiUnificationFlag') ? (
+        {CLOUD ? (
           <PageSpinner loading={quartzMeStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />

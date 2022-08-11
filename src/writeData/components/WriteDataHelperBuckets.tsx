@@ -22,11 +22,13 @@ import {
 interface Props {
   className?: string
   useSimplifiedBucketForm?: boolean
+  disabled?: boolean
 }
 
 const WriteDataHelperBuckets: FC<Props> = ({
   className = 'write-data--details-widget-title',
   useSimplifiedBucketForm = false,
+  disabled = false,
 }) => {
   const {bucket, buckets, changeBucket} = useContext(WriteDataDetailsContext)
   const isSelected = (bucketID: string): boolean => {
@@ -74,6 +76,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
       >
         {filteredBuckets.map(b => (
           <List.Item
+            disabled={disabled}
             size={ComponentSize.Small}
             key={b.id}
             selected={isSelected(b.id)}
@@ -96,6 +99,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
         <CreateBucketButton
           useSimplifiedBucketForm={useSimplifiedBucketForm}
           callbackAfterBucketCreation={changeBucket}
+          disabled={disabled}
         />
       </Heading>
       {body}

@@ -38,7 +38,7 @@ import {
 
 // Utils
 import {getAll} from 'src/resources/selectors'
-import {getQuartzMe} from 'src/me/selectors'
+import {getQuartzMe, shouldShowUpgradeButton} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {
   DEFAULT_COMPLETED_STEPS,
@@ -47,6 +47,7 @@ import {
   getFormStatus,
   SUBSCRIPTION_NAVIGATION_STEPS,
 } from 'src/writeData/subscriptions/utils/form'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
@@ -111,6 +112,11 @@ const CreateSubscriptionPage: FC = () => {
     })
   }
 
+  // enabled for PAYG accounts and specific free accounts where a flag is enabled
+  const showUpgradeButton =
+    useSelector(shouldShowUpgradeButton) &&
+    !isFlagEnabled('enableFreeSubscriptions')
+
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>
@@ -138,6 +144,7 @@ const CreateSubscriptionPage: FC = () => {
               updateForm={updateForm}
               saveForm={saveForm}
               onFocus={() => setFormActive(Steps.BrokerForm)}
+              showUpgradeButton={showUpgradeButton}
             />
             <SubscriptionForm
               formContent={formContent}
@@ -145,11 +152,13 @@ const CreateSubscriptionPage: FC = () => {
               buckets={buckets}
               bucket={bucket}
               onFocus={() => setFormActive(Steps.SubscriptionForm)}
+              showUpgradeButton={showUpgradeButton}
             />
             <ParsingForm
               formContent={formContent}
               updateForm={updateForm}
               onFocus={() => setFormActive(Steps.ParsingForm)}
+              showUpgradeButton={showUpgradeButton}
             />
           </Page.Contents>
         </SpinnerContainer>

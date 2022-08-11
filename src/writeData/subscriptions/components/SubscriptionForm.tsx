@@ -23,6 +23,7 @@ interface Props {
   buckets: any
   bucket: any
   onFocus?: (any) => void
+  showUpgradeButton: boolean
 }
 
 const SubscriptionForm: FC<Props> = ({
@@ -31,6 +32,7 @@ const SubscriptionForm: FC<Props> = ({
   buckets,
   bucket,
   onFocus,
+  showUpgradeButton,
 }) => {
   useEffect(() => {
     updateForm({...formContent, bucket: bucket.name})
@@ -63,7 +65,7 @@ const SubscriptionForm: FC<Props> = ({
               currentSubscription={formContent}
               updateForm={updateForm}
               className="create"
-              edit={true}
+              edit={showUpgradeButton ? false : true}
             />
           </Overlay.Body>
           <div className="create-subscription-form__line"></div>

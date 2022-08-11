@@ -108,7 +108,10 @@ const SubscriptionFormContent: FC<Props> = ({
               >
                 Select a bucket to write your data to.
               </Heading>
-              <WriteDataHelperBuckets className="write-data--subscriptions-title" />
+              <WriteDataHelperBuckets
+                className="write-data--subscriptions-title"
+                disabled={!edit}
+              />
             </div>
           ) : (
             <Heading

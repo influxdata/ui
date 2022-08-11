@@ -129,7 +129,7 @@ export class MePage extends PureComponent<Props> {
                 </FlexBox>
               </Grid.Column>
               <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>
-                {isFlagEnabled('uiUnificationFlag') ? (
+                {CLOUD ? (
                   <UsageProvider>
                     <Resources />
                   </UsageProvider>

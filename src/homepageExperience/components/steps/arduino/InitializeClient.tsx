@@ -67,18 +67,12 @@ export const InitializeClient: FC<OwnProps> = ({
 
   useEffect(() => {
     dispatch(getBuckets())
+    dispatch(getAllResources())
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     onSelectBucket(bucket.name)
   }, [bucket, onSelectBucket])
-
-  useEffect(() => {
-    const fetchResources = async () => {
-      await dispatch(getAllResources())
-    }
-    fetchResources()
-  }, [])
 
   useEffect(() => {
     if (sortedPermissionTypes.length && tokenValue === null) {

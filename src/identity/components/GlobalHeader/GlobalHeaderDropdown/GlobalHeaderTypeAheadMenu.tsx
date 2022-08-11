@@ -20,6 +20,7 @@ type State = {
 
 export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
   private listItemHeight = 50
+  private maxDropdownHeight = 150
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -83,6 +84,9 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
+  private calculateDropdownHeight = (numberOfItems: number) =>
+    Math.min(numberOfItems * this.listItemHeight, this.maxDropdownHeight)
+
   render() {
     const {typeAheadPlaceHolder = 'Type here to search', style} = this.props
     const {searchTerm, queryResults, selectedItem} = this.state
@@ -99,16 +103,14 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
       />
     )
 
-    // max height should be 150, so we take the min of calculated and 150
-    const calculateDropdownHeight = () =>
-      Math.min(queryResults.length * this.listItemHeight, 150)
-
     return (
       <div>
         {filterSearchInput}
         {queryResults && queryResults.length > 0 ? (
           <List
-            height={style?.height ?? calculateDropdownHeight()}
+            height={
+              style?.height ?? this.calculateDropdownHeight(queryResults.length)
+            }
             itemCount={queryResults.length}
             itemSize={this.listItemHeight}
             width="100%"

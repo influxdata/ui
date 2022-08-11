@@ -68,8 +68,8 @@ export const DefaultOrgForm: FC<Props> = ({
             status={ComponentStatus.Disabled}
             header="Account"
             text={loggedInAccount.name}
-            testID="change-default-org--current-account-header"
-            inputTestID="change-default-org--current-account-input"
+            testID="user-profile--current-account-header"
+            inputTestID="user-profile--current-account-input"
           />
         )}
         {orgs && (
@@ -78,8 +78,8 @@ export const DefaultOrgForm: FC<Props> = ({
             defaultEntity={selectedOrg}
             entityList={orgs}
             changeSelectedEntity={setSelectedOrg}
-            headerTestID="change-default-org--default-org-header"
-            defaultTestID="change-default-org--default-org-dropdown"
+            headerTestID="user-profile--default-org-header"
+            defaultTestID="user-profile--default-org-dropdown"
           />
         )}
       </FlexBox>

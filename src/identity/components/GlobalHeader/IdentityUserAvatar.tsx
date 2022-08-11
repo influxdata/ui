@@ -68,7 +68,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
             <Icon
               glyph={IconFont.User}
               className="user-popover-footer--button-icon"
-              testID="global-header-user-popover-profile-button"
+              testID="global-header--user-popover-profile-button"
             />
             Profile
           </Link>
@@ -76,7 +76,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
             <Icon
               glyph={IconFont.Logout}
               className="user-popover-footer--button-icon"
-              testID="global-header-user-popover-logout-button"
+              testID="global-header--user-popover-logout-button"
             />
             Log Out
           </Link>
@@ -109,7 +109,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
               }
               onClick={this.togglePopoverState}
               className={userAvatarButtonClassName}
-              testID="global-header-user-avatar"
+              testID="global-header--user-avatar"
             />
           ) : null}
           <FlexBox

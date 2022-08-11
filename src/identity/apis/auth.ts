@@ -306,9 +306,9 @@ export const getDefaultAccountDefaultOrg = async (): Promise<OrganizationSummari
       const quartzOrg = await fetchOrgsByAccountID(defaultAccount.id)
       const defaultQuartzOrg =
         quartzOrg.find(org => org.isDefault) || quartzOrg[0]
+
       return defaultQuartzOrg
     }
+    throw new GenericError('No default account found')
   }
-
-  throw new GenericError('No default account found')
 }

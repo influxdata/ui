@@ -33,6 +33,7 @@ import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 // Types
 import {AppState, Authorization} from 'src/types'
+import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
 
 type OwnProps = {
   setTokenValue: (tokenValue: string) => void
@@ -72,7 +73,7 @@ export const InitializeClient: FC<OwnProps> = ({
 
   useEffect(() => {
     onSelectBucket(bucket.name)
-  }, [bucket, onSelectBucket])
+  }, [bucket.name, onSelectBucket])
 
   useEffect(() => {
     if (sortedPermissionTypes.length && tokenValue === null) {
@@ -130,7 +131,7 @@ export const InitializeClient: FC<OwnProps> = ({
   }"
   
   // Time zone info
-  #define TZ_INFO "UTC−07:00"
+  #define TZ_INFO "UTC${-getTimezoneOffset() / 60}"
   
   // Declare InfluxDB client instance with preconfigured InfluxCloud certificate
   InfluxDBClient client(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
@@ -176,7 +177,7 @@ export const InitializeClient: FC<OwnProps> = ({
   return (
     <>
       <h1>Initialize Client</h1>
-      <p>Select or create a bucket to write data to.</p>
+      <p>Select or create a bucket to initialize the arduino client with.</p>
       <Panel backgroundColor={InfluxColors.Grey15}>
         <Panel.Body size={ComponentSize.ExtraSmall}>
           <Grid>
@@ -197,8 +198,10 @@ export const InitializeClient: FC<OwnProps> = ({
         language="arduino"
       />
       <p style={{fontSize: '14px', marginTop: '8px', marginBottom: '48px'}}>
-        Note: you will need to set the WIFI_SSID and WIFI_PASSWORD variables to
-        the correct values for your wifi router.
+        Note: you will need to set the{' '}
+        <code className="homepage-wizard--code-highlight">WIFI_SSID</code> and{' '}
+        <code className="homepage-wizard--code-highlight">WIFI_PASSWORD</code>{' '}
+        variables to the correct values for your wifi router.
       </p>
     </>
   )

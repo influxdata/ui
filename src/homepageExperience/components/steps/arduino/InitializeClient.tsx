@@ -170,7 +170,7 @@ export const InitializeClient: FC<OwnProps> = ({
 
   // Events log handling
   const logCopyCodeSnippet = () => {
-    event(`firstMile.arduinoWizard.buckets.code.copied`) // edit
+    event(`firstMile.arduinoWizard.initializeClient.code.copied`)
   }
 
   return (

@@ -12,7 +12,8 @@ describe('User profile page', () => {
   })
 
   beforeEach(() => {
-    // Maintain the same session for all tests so that further logins aren't required.
+    // Maintain a session for all tests so that we don't need to log in each time.
+    // Cypress 10 may deprecate this in favor of the (currently experimental) https://docs.cypress.io/api/commands/session
     Cypress.Cookies.preserveOnce('sid')
   })
 
@@ -28,6 +29,7 @@ describe('User profile page', () => {
       cy.getByTestID('user-profile--page')
         .contains('User Profile')
         .should('be.visible')
+
       cy.getByTestID('user-profile--user-details-header')
         .contains('User Details')
         .should('be.visible')
@@ -112,7 +114,7 @@ describe('User profile page', () => {
             cy.getByTestID('user-profile--save-button').click()
 
             cy.wait('@putQuartzDefaultAccount').then(() => {
-              // In cypress, it may :look: as though these notifications were not generated, as this test closes them as soon as they appear.
+              // In cypress, it may :look: as though these notifications were not generated, because this test closes them as soon as they appear.
               cy.getByTestID('notification-success')
                 .contains('Saved changes to your profile.')
                 .should('exist')
@@ -424,7 +426,7 @@ describe('User profile page', () => {
         setupProfile()
       })
 
-      it('displays no `change defaults` form if there is one default account, and one org in the current account', () => {
+      it('displays no `change defaults` form if there is only one account, and only org in that account', () => {
         cy.intercept('GET', '/api/v2/quartz/accounts', {
           statusCode: 200,
           body: singleAccount,
@@ -432,7 +434,7 @@ describe('User profile page', () => {
 
         cy.intercept('GET', 'api/v2/quartz/accounts/**/orgs', {
           statusCode: 200,
-          body: [singleOrg],
+          body: singleOrg,
         }).as('getOrgs')
 
         cy.getByTestID('user-profile--user-details-header')
@@ -476,7 +478,7 @@ describe('User profile page', () => {
         )
       })
 
-      it('displays everything but the `switch default org` form if there is only one org', () => {
+      it('displays everything but the `switch default org` form if there is only one org in the current account', () => {
         cy.intercept('GET', '/api/v2/quartz/accounts', {
           statusCode: 200,
           body: multipleAccounts,

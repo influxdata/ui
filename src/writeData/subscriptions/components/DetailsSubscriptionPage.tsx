@@ -53,7 +53,10 @@ import {
   getActiveStep,
   getFormStatus,
   SUBSCRIPTION_NAVIGATION_STEPS,
-} from '../utils/form'
+} from 'src/writeData/subscriptions/utils/form'
+
+// Contexts
+import SubscriptionCertificateProvider from 'src/writeData/subscriptions/context/subscription.certificate'
 
 const DetailsSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
@@ -175,9 +178,11 @@ export default () => (
   <AppSettingProvider>
     <SubscriptionListProvider>
       <SubscriptionUpdateProvider>
-        <WriteDataDetailsProvider>
-          <DetailsSubscriptionPage />
-        </WriteDataDetailsProvider>
+        <SubscriptionCertificateProvider>
+          <WriteDataDetailsProvider>
+            <DetailsSubscriptionPage />
+          </WriteDataDetailsProvider>
+        </SubscriptionCertificateProvider>
       </SubscriptionUpdateProvider>
     </SubscriptionListProvider>
   </AppSettingProvider>

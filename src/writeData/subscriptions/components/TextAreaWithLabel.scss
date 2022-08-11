@@ -1,0 +1,26 @@
+@import '@influxdata/clockface/dist/variables.scss';
+.textareawithlabel-label {
+  > .label {
+    font-weight: bold !important;
+  }
+
+  > .required {
+    color: $c-curacao;
+    font-size: var(--step-1);
+    // font-weight: 400;
+  }
+
+  > .description {
+    color: $cf-grey-65;
+  }
+  margin: 2px 0 !important;
+}
+
+.textareawithlabel-description {
+  color: $cf-grey-65 !important;
+  margin: 2px 0 !important;
+}
+
+.textareawithlabel-textarea {
+  width: 100%;
+}

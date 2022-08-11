@@ -86,10 +86,7 @@ export const InitializeClient: FC<OwnProps> = ({
   }, [bucket, onSelectBucket])
 
   useEffect(() => {
-    const fetchResources = () => {
-      dispatch(getAllResources())
-    }
-    fetchResources()
+    dispatch(getAllResources())
   }, [dispatch])
 
   useEffect(() => {

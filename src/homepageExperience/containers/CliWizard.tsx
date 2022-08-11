@@ -26,6 +26,7 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {HOMEPAGE_NAVIGATION_STEPS_SHORT} from 'src/homepageExperience/utils'
+import {normalizeEventName} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 interface State {
@@ -62,44 +63,54 @@ export class CliWizard extends PureComponent<{}, State> {
   }
 
   handleNextClick = () => {
-    this.setState(
+    this.setState({
+      currentStep: Math.min(
+        this.state.currentStep + 1,
+        HOMEPAGE_NAVIGATION_STEPS_SHORT.length
+      ),
+    })
+
+    event(
+      'firstMile.cliWizard.next.clicked',
+      {},
       {
-        currentStep: Math.min(
-          this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS_SHORT.length
+        clickedButtonAtStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
         ),
-      },
-      () => {
-        event(
-          'firstMile.cliWizard.next.clicked',
-          {},
-          {
-            clickedButtonAtStep: this.state.currentStep - 1,
-            currentStep: this.state.currentStep,
-          }
-        )
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+        ),
       }
     )
   }
 
   handlePreviousClick = () => {
-    this.setState(
-      {currentStep: Math.max(this.state.currentStep - 1, 1)},
-      () => {
-        event(
-          'firstMile.cliWizard.previous.clicked',
-          {},
-          {
-            clickedButtonAtStep: this.state.currentStep + 1,
-            currentStep: this.state.currentStep,
-          }
-        )
+    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
+    event(
+      'firstMile.cliWizard.previous.clicked',
+      {},
+      {
+        clickedButtonAtStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep + 1].name
+        ),
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+        ),
       }
     )
   }
 
   handleNavClick = (clickedStep: number) => {
     this.setState({currentStep: clickedStep})
+    event(
+      'firstMile.cliWizard.subNav.clicked',
+      {},
+      {
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_SHORT[clickedStep - 1].name
+        ),
+      }
+    )
   }
 
   renderStep = () => {

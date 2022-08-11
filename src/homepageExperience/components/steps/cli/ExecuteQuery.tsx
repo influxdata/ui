@@ -48,7 +48,12 @@ export const ExecuteQuery = (props: OwnProps) => {
       <p>
         Now let's query the data we wrote into the database. We use the Flux
         scripting language to query data.{' '}
-        <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/syntax/flux/">
+        <SafeBlankLink
+          href="https://docs.influxdata.com/influxdb/v2.2/reference/syntax/flux/"
+          onClick={() =>
+            event('firstMile.cliWizard.documentation.link.clicked')
+          }
+        >
           Flux
         </SafeBlankLink>{' '}
         is designed for querying, analyzing, and acting on data.

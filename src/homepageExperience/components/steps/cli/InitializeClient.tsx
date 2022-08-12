@@ -63,13 +63,21 @@ export const InitializeClient: FC<OwnProps> = ({
   })
   const token = currentAuth.token
 
-  const codeSnippet = `influx config create --config-name onboarding \\
+  const codeSnippetMac = `influx config create --config-name onboarding \\
     --host-url "${url}" \\
     --org "${org.id}" \\
     --token "${token}" \\
     --active`
 
-  const bucketSnippet = `influx bucket create --name sample-bucket -c onboarding`
+  const bucketSnippetMac = `influx bucket create --name sample-bucket -c onboarding`
+
+  const codeSnippetWindows = `.\\influx config create --config-name onboarding \`
+  --host-url "${url}" \`
+  --org "${org.id}" \`
+  --token "${token}" \`
+  --active`
+
+  const bucketSnippetWindows = `.\\influx bucket create --name sample-bucket -c onboarding`
 
   const sortedPermissionTypes = useMemo(
     () => allPermissionTypes.sort((a, b) => collator.compare(a, b)),
@@ -142,7 +150,11 @@ export const InitializeClient: FC<OwnProps> = ({
         profile using a different token for working with your own data.
       </p>
       <CodeSnippet
-        text={codeSnippet}
+        text={
+          window?.navigator?.userAgent.includes('Mac')
+            ? codeSnippetMac
+            : codeSnippetWindows
+        }
         onCopy={logCopyCodeSnippet}
         language="properties"
       />
@@ -174,7 +186,11 @@ export const InitializeClient: FC<OwnProps> = ({
         skip this step and proceed to the next.
       </p>
       <CodeSnippet
-        text={bucketSnippet}
+        text={
+          window?.navigator?.userAgent.includes('Mac')
+            ? bucketSnippetMac
+            : bucketSnippetWindows
+        }
         onCopy={logCopyCodeSnippet}
         language="properties"
       />

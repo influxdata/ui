@@ -36,8 +36,10 @@ export const WriteDataComponent = (props: OwnProps) => {
 
   const sampleDataUrl =
     'https://influx-testdata.s3.amazonaws.com/air-sensor-data-annotated.csv'
-  const writeDataCodeCsv = `influx write --bucket ${bucketName} --file downloads/air-sensor-data-annotated.csv`
-  const writeDataCodeUrl = `influx write --bucket ${bucketName} --url ${sampleDataUrl}`
+  const writeDataCodeCsvMac = `influx write --bucket ${bucketName} --file downloads/air-sensor-data-annotated.csv`
+  const writeDataCodeCsvWindows = `.\\influx write --bucket ${bucketName} --file <YOUR_PATH>/air-sensor-data-annotated.csv`
+  const writeDataCodeUrlMac = `influx write --bucket ${bucketName} --url ${sampleDataUrl}`
+  const writeDataCodeUrlWindows = `.\\influx write --bucket ${bucketName} --url ${sampleDataUrl}`
 
   const [currentDataSelection, setCurrentDataSelection] = useState<
     CurrentDataSelection
@@ -118,7 +120,11 @@ export const WriteDataComponent = (props: OwnProps) => {
             bucket.
           </p>
           <CodeSnippet
-            text={writeDataCodeCsv}
+            text={
+              window?.navigator?.userAgent.includes('Mac')
+                ? writeDataCodeCsvMac
+                : writeDataCodeCsvWindows
+            }
             onCopy={logCopyCodeSnippet}
             language="properties"
           />
@@ -179,7 +185,11 @@ export const WriteDataComponent = (props: OwnProps) => {
             bucket.
           </p>
           <CodeSnippet
-            text={writeDataCodeUrl}
+            text={
+              window?.navigator?.userAgent.includes('Mac')
+                ? writeDataCodeUrlMac
+                : writeDataCodeUrlWindows
+            }
             onCopy={logCopyCodeSnippet}
             language="properties"
           />

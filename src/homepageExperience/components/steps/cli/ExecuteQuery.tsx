@@ -23,7 +23,8 @@ type OwnProps = {
 export const ExecuteQuery = (props: OwnProps) => {
   const {bucket} = props
   const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
-  const query = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m)' --raw`
+  const queryMac = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m)' --raw`
+  const queryWindows = `.\\influx query 'from(bucket:"${bucketName}") |> range(start:-30m)' --raw`
 
   const fluxExample = `from(bucket: “weather-data”)
   |> range(start: -10m)
@@ -72,7 +73,9 @@ export const ExecuteQuery = (props: OwnProps) => {
         the InfluxDB CLI.
       </p>
       <CodeSnippet
-        text={query}
+        text={
+          window?.navigator?.userAgent.includes('Mac') ? queryMac : queryWindows
+        }
         onCopy={logCopyCodeSnippet}
         language="properties"
       />

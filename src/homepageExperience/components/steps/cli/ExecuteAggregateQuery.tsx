@@ -30,7 +30,8 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   |> filter(fn: (r) => r.measurement == "temperature")
   |> mean()`
 
-  const codeSnippet = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m) |> mean()' --raw`
+  const codeSnippetMac = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m) |> mean()' --raw`
+  const codeSnippetWindows = `.\\influx query 'from(bucket:"${bucketName}") |> range(start:-30m) |> mean()' --raw`
 
   useEffect(() => {
     const fireKeyboardCopyEvent = event => {
@@ -71,7 +72,11 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
       />
       <p>In the InfluxDB CLI, run the following:</p>
       <CodeSnippet
-        text={codeSnippet}
+        text={
+          window?.navigator?.userAgent.includes('Mac')
+            ? codeSnippetMac
+            : codeSnippetWindows
+        }
         onCopy={logCopyCodeSnippet}
         language="properties"
       />

@@ -21,6 +21,7 @@ import {
 // Actions
 import {createAuthorization} from 'src/authorizations/actions/thunks'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {getIdpeMeThunk} from 'src/me/actions/thunks/index'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
@@ -58,6 +59,10 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
   )
 
   const handleSave = () => {
+    if (!meID) {
+      dispatch(getIdpeMeThunk())
+    }
+
     const token: Authorization = {
       orgID,
       description,

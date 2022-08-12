@@ -73,9 +73,9 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
       <p>In the InfluxDB CLI, run the following:</p>
       <CodeSnippet
         text={
-          window?.navigator?.userAgent.includes('Mac')
-            ? codeSnippetMac
-            : codeSnippetWindows
+          window?.navigator?.userAgent.includes('Windows')
+            ? codeSnippetWindows
+            : codeSnippetMac
         }
         onCopy={logCopyCodeSnippet}
         language="properties"

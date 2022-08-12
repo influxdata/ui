@@ -121,9 +121,9 @@ export const WriteDataComponent = (props: OwnProps) => {
           </p>
           <CodeSnippet
             text={
-              window?.navigator?.userAgent.includes('Mac')
-                ? writeDataCodeCsvMac
-                : writeDataCodeCsvWindows
+              window?.navigator?.userAgent.includes('Windows')
+                ? writeDataCodeCsvWindows
+                : writeDataCodeCsvMac
             }
             onCopy={logCopyCodeSnippet}
             language="properties"
@@ -186,9 +186,9 @@ export const WriteDataComponent = (props: OwnProps) => {
           </p>
           <CodeSnippet
             text={
-              window?.navigator?.userAgent.includes('Mac')
-                ? writeDataCodeUrlMac
-                : writeDataCodeUrlWindows
+              window?.navigator?.userAgent.includes('Windows')
+                ? writeDataCodeUrlWindows
+                : writeDataCodeUrlMac
             }
             onCopy={logCopyCodeSnippet}
             language="properties"

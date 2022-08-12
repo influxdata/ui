@@ -74,7 +74,9 @@ export const ExecuteQuery = (props: OwnProps) => {
       </p>
       <CodeSnippet
         text={
-          window?.navigator?.userAgent.includes('Mac') ? queryMac : queryWindows
+          window?.navigator?.userAgent.includes('Windows')
+            ? queryWindows
+            : queryMac
         }
         onCopy={logCopyCodeSnippet}
         language="properties"

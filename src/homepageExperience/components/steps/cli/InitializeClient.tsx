@@ -151,9 +151,9 @@ export const InitializeClient: FC<OwnProps> = ({
       </p>
       <CodeSnippet
         text={
-          window?.navigator?.userAgent.includes('Mac')
-            ? codeSnippetMac
-            : codeSnippetWindows
+          window?.navigator?.userAgent.includes('Windows')
+            ? codeSnippetWindows
+            : codeSnippetMac
         }
         onCopy={logCopyCodeSnippet}
         language="properties"
@@ -187,9 +187,9 @@ export const InitializeClient: FC<OwnProps> = ({
       </p>
       <CodeSnippet
         text={
-          window?.navigator?.userAgent.includes('Mac')
-            ? bucketSnippetMac
-            : bucketSnippetWindows
+          window?.navigator?.userAgent.includes('Windows')
+            ? bucketSnippetWindows
+            : bucketSnippetMac
         }
         onCopy={logCopyCodeSnippet}
         language="properties"

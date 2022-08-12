@@ -120,6 +120,15 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
       {currentSelection === 'Mac' && (
         <>
           <h2 style={headingWithMargin}>Use Homebrew</h2>
+          <p style={{fontSize: '14px'}}>
+            Note: if your Mac is equipped with an{' '}
+            <code className="homepage-wizard--code-highlight">M</code> chip,
+            ensure you have{' '}
+            <SafeBlankLink href="https://support.apple.com/en-us/HT211861">
+              Rosetta
+            </SafeBlankLink>{' '}
+            downloaded and installed before continuing.
+          </p>
           <CodeSnippet
             text="brew install influxdb-cli"
             onCopy={() => logCopyCodeSnippet(currentSelection)}

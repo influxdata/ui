@@ -216,16 +216,44 @@ export const sanitizeType = (type: string): string => {
   return type.charAt(0).toUpperCase() + type.slice(1)
 }
 
-export const checkRequiredFields = (form: Subscription): boolean =>
-  form.name &&
-  form.protocol &&
-  form.brokerHost &&
-  form.brokerPort &&
-  form.topic &&
-  form.dataFormat &&
-  form.bucket &&
-  checkRequiredStringFields(form) &&
-  checkRequiredJsonFields(form)
+export const checkRequiredFields = (form: Subscription): boolean => {
+  return (
+    form.name &&
+    form.protocol &&
+    form.brokerHost &&
+    form.brokerPort &&
+    form.topic &&
+    form.dataFormat &&
+    form.bucket &&
+    checkRequiredStringFields(form) &&
+    checkRequiredJsonFields(form) &&
+    checkSecurityFields(form)
+  )
+}
+
+const checkNoneSelected = (form: Subscription): boolean =>
+  form.brokerSecurity === 'none' &&
+  !form.brokerUsername &&
+  !form.brokerPassword &&
+  !form.brokerCACert &&
+  !form.brokerCACert &&
+  !form.brokerKey
+
+const checkBasicSelected = (form: Subscription): boolean =>
+  form.brokerSecurity === 'user' &&
+  !!form.brokerUsername &&
+  !!form.brokerPassword
+
+const checkCertificateSelected = (form: Subscription): boolean =>
+  form.brokerSecurity === 'certificate' &&
+  !!form.brokerCACert &&
+  ((!!form.brokerCert && !!form.brokerKey) ||
+    (!form.brokerCert && !form.brokerKey))
+
+export const checkSecurityFields = (form: Subscription): boolean =>
+  checkNoneSelected(form) ||
+  checkBasicSelected(form) ||
+  checkCertificateSelected(form)
 
 export const checkRequiredStringFields = (form: Subscription): boolean => {
   if (form.dataFormat !== 'string') {

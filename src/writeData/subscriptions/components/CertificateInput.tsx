@@ -44,8 +44,6 @@ const NewCertificateInput: FC = () => {
     [certificate, updateCertificate]
   )
 
-  console.log(certificate)
-
   return (
     <FlexBox
       alignItems={AlignItems.FlexStart}
@@ -64,16 +62,16 @@ const NewCertificateInput: FC = () => {
         name="Certificate"
         label="Certificate authority"
         description="TODO: Fix this"
-        required={true}
         onChange={handleUpdateCACert}
-        value={certificate?.rootCA}
+        value={certificate?.rootCA ?? ''}
         rows={4}
+        required
       />
       <TextAreaWithLabel
         name="PrivateKey"
         label="Private Key"
         onChange={handleUpdatePrivateKey}
-        value={certificate?.key}
+        value={certificate?.key ?? ''}
         rows={4}
       />
       <TextAreaWithLabel
@@ -81,7 +79,7 @@ const NewCertificateInput: FC = () => {
         label="Certificate"
         description="If your private key is included in this string, be sure to separate it and enter it in the Private key field"
         onChange={handleUpdateCert}
-        value={certificate?.cert}
+        value={certificate?.cert ?? ''}
         rows={4}
       />
     </FlexBox>

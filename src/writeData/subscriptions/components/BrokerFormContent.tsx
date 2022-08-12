@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 
 // Components
 import {
@@ -40,7 +40,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   formContent: Subscription
-  updateForm: (any) => void
+  updateForm: (any: Subscription) => void
   className: string
   edit: boolean
 }
@@ -54,7 +54,8 @@ const BrokerFormContent: FC<Props> = ({
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
-  const [security, setSecurity] = useState('none')
+  // const [security, setSecurity] = useState('certificate')
+
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
   }, [protocol])
@@ -70,7 +71,17 @@ const BrokerFormContent: FC<Props> = ({
 
   useEffect(() => {
     if (formContent.brokerUsername) {
-      setSecurity('user')
+      // setSecurity('user')
+      updateForm({
+        ...formContent,
+        brokerSecurity: 'user',
+      })
+    } else if (formContent?.brokerCACert) {
+      // setSecurity('certificate')
+      updateForm({
+        ...formContent,
+        brokerSecurity: 'certificate',
+      })
     }
   }, [])
   return (
@@ -301,16 +312,23 @@ const BrokerFormContent: FC<Props> = ({
               name="no-security"
               id="none"
               testID={`${className}-broker-form-no-security--button`}
-              active={security === 'none'}
+              active={formContent.brokerSecurity === 'none'}
               onClick={() => {
                 event(
                   'broker security toggle',
                   {method: 'none', step: 'broker'},
                   {feature: 'subscriptions'}
                 )
-                setSecurity('none')
-                formContent.brokerUsername = null
-                formContent.brokerPassword = null
+                // setSecurity('none')
+                updateForm({
+                  ...formContent,
+                  brokerSecurity: 'none',
+                  brokerUsername: null,
+                  brokerPassword: null,
+                  brokerCACert: null,
+                  brokerCert: null,
+                  brokerKey: null,
+                })
               }}
               value="none"
               titleText="None"
@@ -322,14 +340,21 @@ const BrokerFormContent: FC<Props> = ({
               name="user"
               id="user"
               testID={`${className}-broker-form--user--button`}
-              active={security === 'user'}
+              active={formContent.brokerSecurity === 'user'}
               onClick={() => {
                 event(
                   'broker security toggle',
                   {method: 'user', step: 'broker'},
                   {feature: 'subscriptions'}
                 )
-                setSecurity('user')
+                // setSecurity('user')
+                updateForm({
+                  ...formContent,
+                  brokerSecurity: 'user',
+                  brokerCACert: null,
+                  brokerCert: null,
+                  brokerKey: null,
+                })
               }}
               value="user"
               titleText="User"
@@ -341,14 +366,20 @@ const BrokerFormContent: FC<Props> = ({
               name="certificate"
               id="certificate"
               testID="certificate--button"
-              active={security === 'certificate'}
+              active={formContent.brokerSecurity === 'certificate'}
               onClick={() => {
                 event(
                   'broker security toggle',
                   {method: 'certificate', step: 'broker'},
                   {feature: 'subscriptions'}
                 )
-                setSecurity('certificate')
+                // setSecurity('certificate')
+                updateForm({
+                  ...formContent,
+                  brokerUsername: null,
+                  brokerPassword: null,
+                  brokerSecurity: 'certificate',
+                })
               }}
               value="certificate"
               titleText="Certificate"
@@ -357,7 +388,7 @@ const BrokerFormContent: FC<Props> = ({
               Certificate
             </SelectGroup.Option>
           </SelectGroup>
-          {security === 'user' && (
+          {formContent.brokerSecurity === 'user' && (
             <UserInput
               formContent={formContent}
               updateForm={updateForm}
@@ -365,7 +396,7 @@ const BrokerFormContent: FC<Props> = ({
               edit={edit}
             />
           )}
-          {security === 'certificate' && <CertificateInput />}
+          {formContent.brokerSecurity === 'certificate' && <CertificateInput />}
         </Grid.Column>
       </Grid.Row>
     </Grid>

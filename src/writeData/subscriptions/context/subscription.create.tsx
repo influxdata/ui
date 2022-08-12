@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useCallback} from 'react'
+import React, {FC, useState, useCallback, useContext, useEffect} from 'react'
 import {createAPI} from 'src/writeData/subscriptions/context/api'
 import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
@@ -15,6 +15,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {RemoteDataState} from 'src/types'
 import {Subscription} from 'src/types/subscriptions'
 import {subscriptionCreateFail} from 'src/shared/copy/notifications'
+import {SubscriptionCertificateContext} from 'src/writeData/subscriptions/context/subscription.certificate'
 
 export interface SubscriptionCreateContextType {
   create: () => void
@@ -37,6 +38,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     brokerPassword: '',
     brokerCert: '',
     brokerKey: '',
+    brokerSecurity: 'none',
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
@@ -114,6 +116,28 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
         event('subscription creation attempt', {}, {feature: 'subscriptions'})
       })
   }
+  const {isUpdatedCertificate, certificate, updateCertificate} = useContext(
+    SubscriptionCertificateContext
+  )
+
+  useEffect(() => {
+    if (isUpdatedCertificate) {
+      setFormContent(prev => ({
+        ...prev,
+        brokerUsername: null,
+        brokerPassword: null,
+        brokerKey: certificate?.key,
+        brokerCert: certificate?.cert,
+        brokerCACert: certificate?.rootCA,
+      }))
+    }
+  }, [
+    certificate?.key,
+    certificate?.cert,
+    certificate?.rootCA,
+    isUpdatedCertificate,
+    setFormContent,
+  ])
 
   const updateForm = useCallback(
     formContent => {
@@ -121,6 +145,11 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
         ...prev,
         ...formContent,
       }))
+      updateCertificate({
+        cert: formContent?.brokerCert,
+        rootCA: formContent?.brokerCACert,
+        key: formContent?.brokerKey,
+      })
     },
     [formContent] // eslint-disable-line react-hooks/exhaustive-deps
   )

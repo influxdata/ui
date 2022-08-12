@@ -15,12 +15,14 @@ export interface Certificate {
 
 export interface SubscriptionCertificateContextType {
   certificate: Certificate | null
+  isUpdatedCertificate: boolean
   removeCertificate: () => void
   updateCertificate: (_: Certificate) => void
 }
 
 export const DEFAULT_CONTEXT: SubscriptionCertificateContextType = {
   certificate: null,
+  isUpdatedCertificate: false,
   removeCertificate: () => null,
   updateCertificate: (_: Certificate) => null,
 } as SubscriptionCertificateContextType
@@ -30,6 +32,7 @@ export const SubscriptionCertificateContext = React.createContext<
 >(DEFAULT_CONTEXT)
 
 export const SubscriptionCertificateProvider: FC = ({children}) => {
+  const [isUpdated, setIsUpdated] = useState(false)
   const [certificate, setCertificate] = useState<Certificate>(
     DEFAULT_CONTEXT.certificate
   )
@@ -39,8 +42,9 @@ export const SubscriptionCertificateProvider: FC = ({children}) => {
   }, [setCertificate])
 
   const updateCertificate = useCallback(
-    (cert: Certificate) => {
+    (cert: Certificate, isUpdatedCertificate = true) => {
       setCertificate(cert)
+      setIsUpdated(isUpdatedCertificate)
     },
     [setCertificate]
   )
@@ -51,6 +55,7 @@ export const SubscriptionCertificateProvider: FC = ({children}) => {
         certificate,
         removeCertificate,
         updateCertificate,
+        isUpdatedCertificate: isUpdated,
       }}
     >
       {children}

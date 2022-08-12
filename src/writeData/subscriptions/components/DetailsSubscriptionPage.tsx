@@ -177,13 +177,13 @@ const DetailsSubscriptionPage: FC = () => {
 export default () => (
   <AppSettingProvider>
     <SubscriptionListProvider>
-      <SubscriptionUpdateProvider>
-        <SubscriptionCertificateProvider>
+      <SubscriptionCertificateProvider>
+        <SubscriptionUpdateProvider>
           <WriteDataDetailsProvider>
             <DetailsSubscriptionPage />
           </WriteDataDetailsProvider>
-        </SubscriptionCertificateProvider>
-      </SubscriptionUpdateProvider>
+        </SubscriptionUpdateProvider>
+      </SubscriptionCertificateProvider>
     </SubscriptionListProvider>
   </AppSettingProvider>
 )

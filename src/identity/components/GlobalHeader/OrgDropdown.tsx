@@ -58,6 +58,9 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
       typeAheadMenuOptions={orgsList}
       typeAheadOnSelectOption={switchOrg}
       typeAheadSelectedOption={activeOrg}
+      testID="globalheader--org-dropdown"
+      mainMenuTestID="globalheader--org-dropdown-main"
+      typeAheadTestID="globalheader--org-dropdown-typeahead"
     />
   )
 }

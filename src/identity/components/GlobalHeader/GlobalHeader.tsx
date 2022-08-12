@@ -77,17 +77,23 @@ export const GlobalHeader: FC = () => {
     }
   }, [orgsList])
 
+  const shouldLoadDropdowns = activeOrg?.id && activeAccount?.id
+  const shouldLoadAvatar =
+    user.firstName && user.lastName && user.email && org.id
+  const shouldLoadGlobalHeader = shouldLoadDropdowns || shouldLoadAvatar
+
   const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
 
   return (
-    <FlexBox
-      margin={ComponentSize.Large}
-      justifyContent={JustifyContent.SpaceBetween}
-      className="multiaccountorg--header"
-    >
-      <FlexBox margin={ComponentSize.Medium}>
-        {activeOrg && activeAccount && (
-          <>
+    shouldLoadGlobalHeader && (
+      <FlexBox
+        margin={ComponentSize.Large}
+        justifyContent={JustifyContent.SpaceBetween}
+        className="multiaccountorg--header"
+        testID="global-header--container"
+      >
+        {shouldLoadDropdowns && (
+          <FlexBox margin={ComponentSize.Medium}>
             <AccountDropdown
               activeOrg={activeOrg}
               activeAccount={activeAccount}
@@ -95,15 +101,18 @@ export const GlobalHeader: FC = () => {
             />
             <Icon glyph={IconFont.CaretOutlineRight} style={caretStyle} />
             <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
-          </>
+          </FlexBox>
+        )}
+
+        {shouldLoadAvatar && (
+          <IdentityUserAvatar
+            firstName={user.firstName}
+            lastName={user.lastName}
+            email={user.email}
+            orgId={org.id}
+          />
         )}
       </FlexBox>
-      <IdentityUserAvatar
-        firstName={user.firstName}
-        lastName={user.lastName}
-        email={user.email}
-        orgId={org.id}
-      />
-    </FlexBox>
+    )
   )
 }

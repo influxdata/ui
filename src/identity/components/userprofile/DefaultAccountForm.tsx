@@ -40,6 +40,7 @@ export const DefaultAccountForm: FC<Props> = ({
         weight={FontWeight.Bold}
         element={HeadingElement.H4}
         className="change-default-account-org--header"
+        testID="user-profile--change-account-header"
       >
         Default Account
       </Heading>
@@ -52,6 +53,8 @@ export const DefaultAccountForm: FC<Props> = ({
           defaultEntity={selectedAccount}
           entityList={accounts}
           changeSelectedEntity={setSelectedAccount}
+          headerTestID="user-profile--change-account-dropdown-header"
+          defaultTestID="user-profile--change-account-dropdown"
         />
       )}
     </FlexBox>

@@ -10,6 +10,7 @@ type Props = {
   typeAheadPlaceHolder: string
   typeAheadMenuOptions: TypeAheadMenuItem[]
   onSelectOption: (item: TypeAheadMenuItem) => void
+  testID: string
 }
 
 type State = {
@@ -19,8 +20,6 @@ type State = {
 }
 
 export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
-  private listItemHeight = 50
-  private maxDropdownHeight = 150
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -84,9 +83,6 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private calculateDropdownHeight = (numberOfItems: number) =>
-    Math.min(numberOfItems * this.listItemHeight, this.maxDropdownHeight)
-
   render() {
     const {typeAheadPlaceHolder = 'Type here to search', style} = this.props
     const {searchTerm, queryResults, selectedItem} = this.state
@@ -96,7 +92,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
         placeholder={typeAheadPlaceHolder}
         onChange={this.handleInputChange}
         value={searchTerm}
-        testID="dropdown-input-typeAhead"
+        testID={this.props.testID}
         onClear={this.clearFilter}
         onFocus={this.selectAllTextInInput}
         className="global-header--typeahead-input"
@@ -108,11 +104,9 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
         {filterSearchInput}
         {queryResults && queryResults.length > 0 ? (
           <List
-            height={
-              style?.height ?? this.calculateDropdownHeight(queryResults.length)
-            }
+            height={style?.height ?? 150}
             itemCount={queryResults.length}
-            itemSize={this.listItemHeight}
+            itemSize={50}
             width="100%"
             layout="vertical"
             itemData={queryResults}

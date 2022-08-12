@@ -33,6 +33,7 @@ export interface TypeAheadMenuItem {
 
 export interface Props extends StandardFunctionProps {
   defaultButtonText?: string
+  defaultTestID?: string
   dropdownButtonSize?: ComponentSize
   dropdownButtonIcon?: IconFont
   dropdownMenuStyle?: React.CSSProperties
@@ -40,11 +41,14 @@ export interface Props extends StandardFunctionProps {
   mainMenuHeaderText?: string
   mainMenuHeaderIcon?: IconFont
   mainMenuOptions: MainMenuItem[]
+  mainMenuTestID?: string
   onlyRenderSubmenu?: boolean
   typeAheadSelectedOption?: TypeAheadMenuItem
   typeAheadMenuOptions: TypeAheadMenuItem[]
   typeAheadInputPlaceholder?: string
   typeAheadOnSelectOption?: (item: TypeAheadMenuItem | null) => void
+  typeAheadTestID?: string
+  testID?: string
 }
 
 type State = {
@@ -77,6 +81,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       defaultButtonText,
       dropdownButtonSize,
       dropdownButtonIcon,
+      defaultTestID,
     } = this.props
     const {selectedItem} = this.state
     return (
@@ -86,6 +91,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         size={dropdownButtonSize}
         trailingIcon={dropdownButtonIcon || IconFont.DoubleCaretVertical}
         className="global-header--dropdown-button"
+        testID={defaultTestID}
       >
         {selectedItem?.name || defaultButtonText}
       </Dropdown.Button>
@@ -110,6 +116,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
               key={value.name}
               href={value.href}
               className="global-header--align-center"
+              testID={`${this.props.mainMenuTestID}-${value.name}`}
             >
               {iconEl}
               {textEl}
@@ -135,6 +142,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         onSelectOption={typeAheadOnSelectOption}
         style={dropdownMenuStyle}
         defaultSelectedItem={selectedItem}
+        testID={this.props.typeAheadTestID}
       />
     )
   }
@@ -157,7 +165,11 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       />
     )
     return (
-      <Dropdown.Menu theme={dropdownMenuTheme} style={dropdownMenuStyle}>
+      <Dropdown.Menu
+        theme={dropdownMenuTheme}
+        style={dropdownMenuStyle}
+        testID={this.props.mainMenuTestID}
+      >
         {/* Multi-org UI tickets #4051 and #4047, when user only has 1 account or 1 org, switch button is disabled */}
         {!onlyRenderSubmenu && typeAheadMenuOptions.length > 1 && (
           <Dropdown.Item onClick={this.toggleShowTypeAheadMenu}>
@@ -196,6 +208,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         disableAutoFocus
         button={this.dropdownButton}
         menu={this.renderMenu}
+        testID={this.props.testID}
       />
     )
   }

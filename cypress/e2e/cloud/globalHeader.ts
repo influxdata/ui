@@ -36,6 +36,8 @@ describe('multi-account multi-org global header', () => {
         .should('be.visible')
         .click({scrollBehavior: false})
 
+      cy.getByTestID('user-profile--page').should('be.visible')
+
       cy.getByTestID('global-header--user-avatar')
         .should('be.visible')
         .click({scrollBehavior: false})
@@ -46,12 +48,11 @@ describe('multi-account multi-org global header', () => {
         .should('be.visible')
         .click({scrollBehavior: false})
 
-      cy.getByTestID('global-header--user-popover-logout-button').should(
-        'be.visible'
-      )
-      cy.getByTestID('global-header--user-popover-logout-button').click({
-        scrollBehavior: false,
-      })
+      cy.getByTestID('global-header--user-popover-logout-button')
+        .should('be.visible')
+        .click({
+          scrollBehavior: false,
+        })
       // Logout in remocal looks like a 404 because there is no quartz. This tests the logout URL.
       cy.location('pathname').should('eq', '/logout')
     })

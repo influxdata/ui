@@ -243,7 +243,7 @@ const BrokerFormContent: FC<Props> = ({
                 handleValidation(
                   'Broker Port',
                   String(formContent.brokerPort)
-                ) && handlePortValidation(formContent.brokerPort)
+                ) ?? handlePortValidation(formContent.brokerPort)
               }
             >
               {status => (

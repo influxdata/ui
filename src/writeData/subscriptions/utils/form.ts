@@ -58,6 +58,11 @@ const booleanType = 'Boolean'
 
 export const dataTypeList = [stringType, intType, floatType, booleanType]
 
+// min port value is 1025
+const MIN_PORT = 1025
+// max port value is 65535 because its a 16-bit unsigned integer
+const MAX_PORT = 65535
+
 export const handleValidation = (
   property: string,
   formVal: string
@@ -416,8 +421,9 @@ const parseDate = (timeString: string) => {
 export const handlePortValidation = (port: any) => {
   try {
     const numPort = parseInt(port)
-    // max port value because its a 16-bit unsigned integer
-    return numPort <= 65535 ? null : 'Port must be less than 65535'
+    return numPort >= MIN_PORT && numPort <= MAX_PORT
+      ? null
+      : `Port must be between ${MIN_PORT} and ${MAX_PORT}`
   } catch {
     return 'Port must be a valid number'
   }

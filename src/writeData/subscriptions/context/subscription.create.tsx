@@ -38,6 +38,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     brokerPassword: '',
     brokerCert: '',
     brokerKey: '',
+    brokerCACert: '',
     brokerSecurity: 'none',
     topic: '',
     dataFormat: 'lineprotocol',
@@ -93,7 +94,9 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
   const dispatch = useDispatch()
   const create = (formContent?: Subscription): any => {
     setLoading(RemoteDataState.Loading)
-    createAPI({data: formContent})
+    const sanitizedForm = {...formContent} as Subscription
+    delete sanitizedForm.brokerSecurity
+    createAPI({data: sanitizedForm})
       .then(() => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)

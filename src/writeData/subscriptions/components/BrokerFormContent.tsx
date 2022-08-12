@@ -210,7 +210,7 @@ const BrokerFormContent: FC<Props> = ({
               }
               helpText={
                 className !== 'create' && edit
-                  ? 'Changing the hostname will require you to provide your password again.'
+                  ? 'Changing the hostname will require you to provide your security credentials again.'
                   : ''
               }
             >

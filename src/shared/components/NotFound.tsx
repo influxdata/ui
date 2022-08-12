@@ -154,7 +154,7 @@ const NotFound: FC = () => {
         org.current = await fetchOrg()
       }
     }
-    const deepLinkingMap = buildDeepLinkingMap(org.current)
+    const deepLinkingMap = buildDeepLinkingMap(org.current?.id)
 
     if (deepLinkingMap.hasOwnProperty(location.pathname)) {
       event('deeplink', {from: location.pathname})

@@ -36,7 +36,7 @@ export const WriteDataComponent = (props: OwnProps) => {
 
   const sampleDataUrl =
     'https://influx-testdata.s3.amazonaws.com/air-sensor-data-annotated.csv'
-  const writeDataCodeCsv = `influx write --bucket ${bucketName} --file path/air-sensor-data-annotated.csv`
+  const writeDataCodeCsv = `influx write --bucket ${bucketName} --file downloads/air-sensor-data-annotated.csv`
   const writeDataCodeUrl = `influx write --bucket ${bucketName} --url ${sampleDataUrl}`
 
   const [currentDataSelection, setCurrentDataSelection] = useState<

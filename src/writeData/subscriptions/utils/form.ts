@@ -422,3 +422,21 @@ export const handlePortValidation = (port: any) => {
     return 'Port must be a valid number'
   }
 }
+
+// Avro only supports [A-Za-z0-9_]
+export const handleAvroValidation = (property: string, value: string) => {
+  return value.match(/^\w+$/) === null
+    ? `Only [A-Za-z0-9_] can be used in ${property} names for the JSON data format in Native Subscriptions`
+    : null
+}
+
+export const getSchemaFromProtocol = (protocol: string, isSecure: boolean) => {
+  switch (protocol.toLowerCase()) {
+    case 'mqtt': {
+      return `mqtt${isSecure ? 's' : ''}://`
+    }
+    default: {
+      return 'tcp://'
+    }
+  }
+}

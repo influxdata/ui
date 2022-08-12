@@ -27,6 +27,7 @@ import CertificateInput from 'src/writeData/subscriptions/components/Certificate
 import {
   handleValidation,
   handlePortValidation,
+  getSchemaFromProtocol,
 } from 'src/writeData/subscriptions/utils/form'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
@@ -212,7 +213,8 @@ const BrokerFormContent: FC<Props> = ({
                   onChange={e => {
                     updateForm({
                       ...formContent,
-                      brokerHost: e.target.value,
+                      // remove any provided schemas from hostname
+                      brokerHost: e.target.value.replace(/.*:\/\//, ''),
                       // clear the password field if broker host is edited
                       brokerPassword:
                         className === 'create'
@@ -277,8 +279,8 @@ const BrokerFormContent: FC<Props> = ({
             weight={FontWeight.Regular}
             className={`${className}-broker-form__example-text`}
           >
-            TCP://
-            {formContent.protocol ? formContent.protocol : 'MQTT'}:
+            {/* TODO: update `false` after cert support */}
+            {getSchemaFromProtocol(formContent.protocol, false)}
             {formContent.brokerHost ? formContent.brokerHost : '0.0.0.0'}:
             {formContent.brokerPort ? formContent.brokerPort : '1883'}
           </Heading>

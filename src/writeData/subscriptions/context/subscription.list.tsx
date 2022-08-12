@@ -111,11 +111,7 @@ export const SubscriptionListProvider: FC = ({children}) => {
     try {
       await deleteAPI(id)
       setSubscriptions(subscriptions.filter(s => s.id !== id))
-      event(
-        'subscription deletion success',
-        {},
-        {feature: 'subscriptions'}
-      )
+      event('subscription deletion success', {}, {feature: 'subscriptions'})
     } catch (err) {
       dispatch(notify(subscriptionsDeleteFail()))
       event(
@@ -125,11 +121,7 @@ export const SubscriptionListProvider: FC = ({children}) => {
       )
     } finally {
       setLoading(RemoteDataState.Done)
-      event(
-        'subscription deletion attempt',
-        {},
-        {feature: 'subscriptions'}
-      )
+      event('subscription deletion attempt', {}, {feature: 'subscriptions'})
     }
   }
   const change = useCallback(

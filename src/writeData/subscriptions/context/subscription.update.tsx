@@ -157,11 +157,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
     updateStatusAPI(params)
       .then(() => {
         getSubscription()
-        event(
-          'subscription update success',
-          {},
-          {feature: 'subscriptions'}
-        )
+        event('subscription update success', {}, {feature: 'subscriptions'})
       })
       .catch(err => {
         setLoading(RemoteDataState.Done)

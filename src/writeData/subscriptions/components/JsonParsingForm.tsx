@@ -31,6 +31,7 @@ import {
   handleJsonPathValidation,
   JSON_TOOLTIP,
   dataTypeList,
+  handleAvroValidation,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -227,9 +228,15 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               value={formContent.jsonMeasurementKey.name}
               required={true}
               validationFunc={() => {
-                return handleValidation(
-                  'Measurement Name',
-                  formContent.jsonMeasurementKey.name
+                return (
+                  handleValidation(
+                    'Measurement Name',
+                    formContent.jsonMeasurementKey.name
+                  ) ??
+                  handleAvroValidation(
+                    'measurement',
+                    formContent.jsonMeasurementKey.name
+                  )
                 )
               }}
               placeholder="measurement_name"

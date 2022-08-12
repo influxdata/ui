@@ -76,7 +76,7 @@ const ValidationInputWithTooltip: FC<Props> = ({
             onChange={e => onChange(e)}
             onBlur={e => onBlur(e)}
             status={edit ? status : ComponentStatus.Disabled}
-            maxLength={maxLength}
+            maxLength={maxLength ?? 1024}
             testID={testID}
           />
         </div>

@@ -24,7 +24,10 @@ import UserInput from 'src/writeData/subscriptions/components/UserInput'
 import CertificateInput from 'src/writeData/subscriptions/components/CertificateInput'
 
 // Utils
-import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {
+  handleValidation,
+  handlePortValidation,
+} from 'src/writeData/subscriptions/utils/form'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Types
@@ -104,6 +107,7 @@ const BrokerFormContent: FC<Props> = ({
                 }
                 status={edit ? status : ComponentStatus.Disabled}
                 testID={`${className}-broker-form--name`}
+                maxLength={255}
               />
             )}
           </Form.ValidationElement>
@@ -130,6 +134,7 @@ const BrokerFormContent: FC<Props> = ({
               }
               testID={`${className}-broker-form--description`}
               status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
+              maxLength={255}
             />
           </Form.Element>
         </Grid.Column>
@@ -224,6 +229,7 @@ const BrokerFormContent: FC<Props> = ({
                   }
                   status={edit ? status : ComponentStatus.Disabled}
                   testID={`${className}-broker-form--host`}
+                  maxLength={255}
                 />
               )}
             </Form.ValidationElement>
@@ -232,7 +238,10 @@ const BrokerFormContent: FC<Props> = ({
               value={String(formContent.brokerPort)}
               required={true}
               validationFunc={() =>
-                handleValidation('Broker Port', String(formContent.brokerPort))
+                handleValidation(
+                  'Broker Port',
+                  String(formContent.brokerPort)
+                ) && handlePortValidation(formContent.brokerPort)
               }
             >
               {status => (

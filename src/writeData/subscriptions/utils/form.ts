@@ -412,3 +412,13 @@ const parseDate = (timeString: string) => {
 
   return parsed.getTime()
 }
+
+export const handlePortValidation = (port: any) => {
+  try {
+    const numPort = parseInt(port)
+    // max port value because its a 16-bit unsigned integer
+    return numPort <= 65535 ? null : 'Port must be less than 65535'
+  } catch {
+    return 'Port must be a valid number'
+  }
+}

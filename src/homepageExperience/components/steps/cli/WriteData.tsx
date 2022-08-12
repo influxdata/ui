@@ -12,7 +12,11 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
+import {
+  isUsingWindows,
+  keyboardCopyTriggered,
+  userSelection,
+} from 'src/utils/crossPlatform'
 
 // Assets
 import sampleCsv from 'assets/images/sample-csv.png'
@@ -121,9 +125,7 @@ export const WriteDataComponent = (props: OwnProps) => {
           </p>
           <CodeSnippet
             text={
-              window?.navigator?.userAgent.includes('Windows')
-                ? writeDataCodeCsvWindows
-                : writeDataCodeCsvMac
+              isUsingWindows() ? writeDataCodeCsvWindows : writeDataCodeCsvMac
             }
             onCopy={logCopyCodeSnippet}
             language="properties"
@@ -186,9 +188,7 @@ export const WriteDataComponent = (props: OwnProps) => {
           </p>
           <CodeSnippet
             text={
-              window?.navigator?.userAgent.includes('Windows')
-                ? writeDataCodeUrlWindows
-                : writeDataCodeUrlMac
+              isUsingWindows() ? writeDataCodeUrlWindows : writeDataCodeUrlMac
             }
             onCopy={logCopyCodeSnippet}
             language="properties"

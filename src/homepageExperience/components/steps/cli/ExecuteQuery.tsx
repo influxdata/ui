@@ -10,7 +10,11 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
+import {
+  isUsingWindows,
+  keyboardCopyTriggered,
+  userSelection,
+} from 'src/utils/crossPlatform'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.executeQuery.code.copied')
@@ -73,11 +77,7 @@ export const ExecuteQuery = (props: OwnProps) => {
         the InfluxDB CLI.
       </p>
       <CodeSnippet
-        text={
-          window?.navigator?.userAgent.includes('Windows')
-            ? queryWindows
-            : queryMac
-        }
+        text={isUsingWindows() ? queryWindows : queryMac}
         onCopy={logCopyCodeSnippet}
         language="properties"
       />

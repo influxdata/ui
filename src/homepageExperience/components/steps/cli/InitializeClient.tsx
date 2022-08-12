@@ -31,7 +31,11 @@ import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetails
 // Utils
 import {allAccessPermissions} from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
-import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
+import {
+  isUsingWindows,
+  keyboardCopyTriggered,
+  userSelection,
+} from 'src/utils/crossPlatform'
 
 // Types
 import {AppState, Authorization} from 'src/types'
@@ -150,11 +154,7 @@ export const InitializeClient: FC<OwnProps> = ({
         profile using a different token for working with your own data.
       </p>
       <CodeSnippet
-        text={
-          window?.navigator?.userAgent.includes('Windows')
-            ? codeSnippetWindows
-            : codeSnippetMac
-        }
+        text={isUsingWindows() ? codeSnippetWindows : codeSnippetMac}
         onCopy={logCopyCodeSnippet}
         language="properties"
       />
@@ -186,11 +186,7 @@ export const InitializeClient: FC<OwnProps> = ({
         skip this step and proceed to the next.
       </p>
       <CodeSnippet
-        text={
-          window?.navigator?.userAgent.includes('Windows')
-            ? bucketSnippetWindows
-            : bucketSnippetMac
-        }
+        text={isUsingWindows() ? bucketSnippetWindows : bucketSnippetMac}
         onCopy={logCopyCodeSnippet}
         language="properties"
       />

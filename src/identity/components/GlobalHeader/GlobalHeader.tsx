@@ -104,7 +104,6 @@ export const GlobalHeader: FC = () => {
         email={user.email}
         orgId={org.id}
       />
-      )
     </FlexBox>
   )
 }

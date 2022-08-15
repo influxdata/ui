@@ -43,6 +43,7 @@
   color: $cf-grey-75;
   margin-right: 8px;
   font-size: 18px;
+  width: 18px;
 }
 
 .line-break {
@@ -53,4 +54,8 @@
 .global-header--align-center {
   display: flex;
   align-items: center;
+}
+
+.global-header--switch-button {
+  background-color: transparent !important;
 }

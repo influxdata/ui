@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Users Page', () => {
+describe('Members Page', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
@@ -8,8 +8,8 @@ describe('Users Page', () => {
           cy.quartzProvision({
             hasUsers: true,
           }).then(() => {
-            cy.visit(`/orgs/${id}/users`)
-            cy.getByTestID('users-page--header').should('be.visible')
+            cy.visit(`/orgs/${id}/members`)
+            cy.getByTestID('members-page--header').should('be.visible')
           })
         })
       })

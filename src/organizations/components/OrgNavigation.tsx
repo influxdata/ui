@@ -25,7 +25,8 @@ interface OrgPageTab {
 
 enum Tab {
   Members = 'members-oss',
-  Users = 'users',
+  Users = 'members-cloud',
+  Settings = 'settings',
   About = 'about',
   Usage = 'usage',
 }
@@ -42,15 +43,15 @@ const OrgNavigation: FC<Props> = ({activeTab}) => {
     },
     {
       text: 'Settings',
-      id: Tab.About,
+      id: Tab.Settings,
       enabled: () => CLOUD,
-      link: `/orgs/${orgID}/about`,
+      link: `/orgs/${orgID}/org-settings`,
     },
     {
       text: 'Members',
       id: Tab.Users,
       enabled: () => CLOUD,
-      link: `/orgs/${orgID}/users`,
+      link: `/orgs/${orgID}/members`,
     },
     {
       text: 'About',

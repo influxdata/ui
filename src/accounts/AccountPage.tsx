@@ -45,7 +45,7 @@ const leaveBtnStyle = {
   paddingRight: '8px',
 }
 
-const AccountAboutPage: FC = () => {
+const AccountSettingsPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} = useContext(
     UserAccountContext
   )
@@ -131,7 +131,7 @@ const AccountAboutPage: FC = () => {
   const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
 
   return (
-    <AccountTabContainer activeTab="about">
+    <AccountTabContainer activeTab="settings">
       <>
         {userAccounts && userAccounts.length >= 2 && (
           <div>
@@ -211,7 +211,7 @@ const AccountPage: FC = () => {
       <AccountHeader testID="account-page--header" />
       <UsersProvider>
         <UserAccountProvider>
-          <AccountAboutPage />
+          <AccountSettingsPage />
         </UserAccountProvider>
       </UsersProvider>
     </Page>

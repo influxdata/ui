@@ -27,8 +27,8 @@ describe('Orgs', () => {
     it('should be able to rename the org', () => {
       const extraText = '_my_renamed_org_in_e2e'
       cy.getByTestID('user-nav').click()
-      cy.getByTestID('user-nav-item-about').click()
-      cy.get('span:contains("About")').click()
+      cy.getByTestID('user-nav-item-org-settings').click()
+      cy.get('span:contains("Settings")').click()
       cy.getByTestID('rename-org--button').click()
       cy.getByTestID('danger-confirmation--button').click()
       cy.getByTestID('create-org-name-input')

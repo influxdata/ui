@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 
 // resolve flakey behavior for the feature flag setting
-describe.skip('About Page for free users with only 1 user', () => {
+describe.skip('Organization Settings Page for free users with only 1 user', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
@@ -10,8 +10,8 @@ describe.skip('About Page for free users with only 1 user', () => {
             accountType: 'free',
             hasUsers: false,
           }).then(() => {
-            cy.visit(`/orgs/${id}/about`)
-            cy.getByTestID('about-page--header').should('be.visible')
+            cy.visit(`/orgs/${id}/org-settings`)
+            cy.getByTestID('settings-page--header').should('be.visible')
           })
         })
       })
@@ -27,7 +27,7 @@ describe.skip('About Page for free users with only 1 user', () => {
 
     cy.location()
       .should(loc => {
-        expect(loc.pathname).to.include(`/about/delete`)
+        expect(loc.pathname).to.include(`/org-settings/delete`)
       })
       .then(() => {
         cy.getByTestID('delete-org--overlay').should('exist')
@@ -47,7 +47,7 @@ describe.skip('About Page for free users with only 1 user', () => {
   })
 })
 
-describe('About Page for free users with multiple users', () => {
+describe('Organization Settings Page for free users with multiple users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
@@ -56,8 +56,8 @@ describe('About Page for free users with multiple users', () => {
             accountType: 'free',
             hasUsers: true,
           }).then(() => {
-            cy.visit(`/orgs/${id}/about`)
-            cy.getByTestID('about-page--header').should('be.visible')
+            cy.visit(`/orgs/${id}/org-settings`)
+            cy.getByTestID('settings-page--header').should('be.visible')
           })
         })
       })
@@ -75,12 +75,12 @@ describe('About Page for free users with multiple users', () => {
       })
 
     cy.location().should(loc => {
-      expect(loc.pathname).to.include(`/users`)
+      expect(loc.pathname).to.include(`/members`)
     })
   })
 })
 
-describe('About Page for PAYG users', () => {
+describe('Organization Settings Page for PAYG users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
@@ -88,8 +88,8 @@ describe('About Page for PAYG users', () => {
           cy.quartzProvision({
             accountType: 'pay_as_you_go',
           }).then(() => {
-            cy.visit(`/orgs/${id}/about`)
-            cy.getByTestID('about-page--header').should('be.visible')
+            cy.visit(`/orgs/${id}/org-settings`)
+            cy.getByTestID('settings-page--header').should('be.visible')
           })
         })
       })

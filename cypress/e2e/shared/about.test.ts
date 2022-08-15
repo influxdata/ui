@@ -1,13 +1,13 @@
 import {Organization} from '../../../src/types'
 
-describe('About Page', () => {
+describe('Organization Settings Page', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
 
     cy.get('@org').then((org: Organization) => {
-      cy.visit(`/orgs/${org.id}/about`)
-      cy.getByTestID('about-page--header').should('be.visible')
+      cy.visit(`/orgs/${org.id}/org-settings`)
+      cy.getByTestID('settings-page--header').should('be.visible')
     })
   })
 

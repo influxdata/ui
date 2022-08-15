@@ -14,8 +14,8 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 const UserListContainer: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Members', 'Organization'])}>
-      <OrgHeader testID="users-page--header" />
-      <OrgTabbedPage activeTab="users">
+      <OrgHeader testID="members-page--header" />
+      <OrgTabbedPage activeTab="members-cloud">
         <>
           <UserListInviteForm />
           <UserList />

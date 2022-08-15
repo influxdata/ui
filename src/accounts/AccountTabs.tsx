@@ -22,7 +22,7 @@ interface AccountPageTab {
 
 enum Tab {
   Billing = 'billing',
-  About = 'about',
+  Settings = 'settings',
 }
 
 const AccountTabs: FC<Props> = ({activeTab}) => {
@@ -31,7 +31,7 @@ const AccountTabs: FC<Props> = ({activeTab}) => {
   const tabs: AccountPageTab[] = [
     {
       text: 'Settings',
-      id: Tab.About,
+      id: Tab.Settings,
       testID: 'accounts-setting-tab',
       link: `/orgs/${orgID}/accounts/settings`,
     },

@@ -25,17 +25,20 @@ const OrgProfilePage: FC = () => {
   return (
     <>
       <Page titleTag={pageTitleSuffixer(['Settings', 'Organization'])}>
-        <OrgHeader testID="about-page--header" />
-        <OrgTabbedPage activeTab="about">
+        <OrgHeader testID="settings-page--header" />
+        <OrgTabbedPage activeTab="settings">
           <OrgProfileTab />
         </OrgTabbedPage>
       </Page>
       <Switch>
-        <Route path="/orgs/:orgID/about/rename" component={RenameOrgOverlay} />
+        <Route
+          path="/orgs/:orgID/org-settings/rename"
+          component={RenameOrgOverlay}
+        />
         {CLOUD && quartzMe?.accountType === 'free' && (
           <DeleteOrgProvider>
             <Route
-              path="/orgs/:orgID/about/delete"
+              path="/orgs/:orgID/org-settings/delete"
               component={DeleteOrgOverlay}
             />
           </DeleteOrgProvider>

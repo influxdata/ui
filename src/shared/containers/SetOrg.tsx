@@ -254,8 +254,8 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${SETTINGS}`}
             component={VariablesIndex}
           />
-          {/* Users */}
-          {CLOUD && <Route path={`${orgPath}/users`} component={UsersPage} />}
+          {/* Members */}
+          {CLOUD && <Route path={`${orgPath}/members`} component={UsersPage} />}
           {/* Billing */}
           {CLOUD && (
             <Route path={`${orgPath}/billing`} component={BillingPage} />
@@ -266,8 +266,8 @@ const SetOrg: FC = () => {
           {!CLOUD && (
             <Route path={`${orgPath}/members`} component={MembersIndex} />
           )}
-          {/* About */}
-          <Route path={`${orgPath}/about`} component={OrgProfilePage} />
+          {/* Org Settings */}
+          <Route path={`${orgPath}/org-settings`} component={OrgProfilePage} />
           {/* account settings page */}
           <Route
             path={`${orgPath}/accounts/settings`}

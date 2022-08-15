@@ -48,6 +48,7 @@ const UserInput: FC<Props> = ({formContent, updateForm, className, edit}) => (
             ? ComponentStatus.Default
             : ComponentStatus.Disabled
         }
+        maxLength={255}
       />
     </Form.Element>
     <Form.Element label="Password">

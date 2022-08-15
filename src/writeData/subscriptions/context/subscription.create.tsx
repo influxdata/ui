@@ -7,8 +7,9 @@ import {useDispatch, useSelector} from 'react-redux'
 // Utils
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {getOrg} from 'src/organizations/selectors'
-import {sanitizeForm} from '../utils/form'
+import {sanitizeForm} from 'src/writeData/subscriptions/utils/form'
 import {notify} from 'src/shared/actions/notifications'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -94,10 +95,23 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
       .then(() => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+        event(
+          'subscription creation successful',
+          {},
+          {feature: 'subscriptions'}
+        )
       })
       .catch(err => {
         setLoading(RemoteDataState.Done)
         dispatch(notify(subscriptionCreateFail(err.message)))
+        event(
+          'subscription creation failure',
+          {err: err.message},
+          {feature: 'subscriptions'}
+        )
+      })
+      .finally(() => {
+        event('subscription creation attempt', {}, {feature: 'subscriptions'})
       })
   }
 

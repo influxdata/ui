@@ -30,6 +30,7 @@ import {
   JSON_TOOLTIP,
   sanitizeType,
   dataTypeList,
+  handleAvroValidation,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
 import ValidationInputWithTooltip from './ValidationInputWithTooltip'
@@ -103,14 +104,15 @@ const JsonPathInput: FC<Props> = ({
                 : formContent.jsonFieldKeys[itemNum].name
             }
             required={true}
-            validationFunc={() =>
-              handleValidation(
-                `${name}`,
-                tagType
-                  ? formContent.jsonTagKeys[itemNum].name
-                  : formContent.jsonFieldKeys[itemNum].name
+            validationFunc={() => {
+              const value = tagType
+                ? formContent.jsonTagKeys[itemNum].name
+                : formContent.jsonFieldKeys[itemNum].name
+              return (
+                handleValidation(name, value) ??
+                handleAvroValidation(name, value)
               )
-            }
+            }}
             placeholder={`${name}_name`.toLowerCase()}
             name={`${name}=name`}
             onChange={e => {

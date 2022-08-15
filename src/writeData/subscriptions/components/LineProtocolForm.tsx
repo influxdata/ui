@@ -31,7 +31,9 @@ const LineProtocolForm: FC<Props> = ({formContent, edit}) => (
               testID="lp-timestamp-precision"
               status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
             >
-              {formContent.timestampPrecision}
+              {Object.keys(PrecisionTypes).find(
+                k => PrecisionTypes[k] === formContent.timestampPrecision
+              )}{' '}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
@@ -57,7 +59,7 @@ const LineProtocolForm: FC<Props> = ({formContent, edit}) => (
                   }
                   testID={`json-timestamp-precision-${key}`}
                 >
-                  {PrecisionTypes[key]}
+                  {key}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>

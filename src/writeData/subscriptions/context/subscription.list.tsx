@@ -14,6 +14,7 @@ import {
   subscriptionsGetFail,
   subscriptionStatusesGetFail,
 } from 'src/shared/copy/notifications'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {Subscription} from 'src/types/subscriptions'
@@ -110,10 +111,17 @@ export const SubscriptionListProvider: FC = ({children}) => {
     try {
       await deleteAPI(id)
       setSubscriptions(subscriptions.filter(s => s.id !== id))
+      event('subscription deletion success', {}, {feature: 'subscriptions'})
     } catch (err) {
       dispatch(notify(subscriptionsDeleteFail()))
+      event(
+        'subscription deletion failure',
+        {err: err.message},
+        {feature: 'subscriptions'}
+      )
     } finally {
       setLoading(RemoteDataState.Done)
+      event('subscription deletion attempt', {}, {feature: 'subscriptions'})
     }
   }
   const change = useCallback(

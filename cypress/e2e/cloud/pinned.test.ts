@@ -1,6 +1,11 @@
 import {Organization} from '../../../src/types'
 
-describe('Pinned Items', () => {
+// This functionality is not currently on in cloud. These tests target
+// the old version of the homepage, so turning on firstMile causes them
+// to fail. Because the future of this feature is up in the air, we may
+// not want to completely remove these tests, so they are being skipped.
+// See https://github.com/influxdata/ui/pull/5125
+describe.skip('Pinned Items', () => {
   let orgID: string
   beforeEach(() => {
     cy.flush()

@@ -172,7 +172,10 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       >
         {/* Multi-org UI tickets #4051 and #4047, when user only has 1 account or 1 org, switch button is disabled */}
         {!onlyRenderSubmenu && typeAheadMenuOptions.length > 1 && (
-          <Dropdown.Item onClick={this.toggleShowTypeAheadMenu}>
+          <Dropdown.Item
+            onClick={this.toggleShowTypeAheadMenu}
+            className="global-header--switch-button"
+          >
             <FlexBox
               justifyContent={JustifyContent.SpaceBetween}
               alignItems={AlignItems.Center}

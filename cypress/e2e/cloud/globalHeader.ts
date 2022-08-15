@@ -4,19 +4,45 @@ describe('multi-account multi-org global header', () => {
     multiOrg: true,
   }
 
+  // Sync the user's current quartz org ID to the IDPE-generated ID.
+  const syncQuartzToIDPE = () => {
+    cy.intercept('GET', 'api/v2/quartz/identity', req => {
+      req.continue(res => {
+        res.body.org.id = myOrgId
+      })
+    }).as('getIdentity')
+
+    cy.intercept('GET', '/api/v2/quartz/accounts/**/orgs', req => {
+      req.continue(res => {
+        res.body[0].id = myOrgId
+      })
+    }).as('getQuartzOrgs')
+
+    cy.intercept('GET', 'api/v2/quartz/orgs/*', req => {
+      req.continue(res => {
+        res.body.id = myOrgId
+      })
+    }).as('getOrgDetails')
+  }
+
+  let myOrgId: string
+
   beforeEach(() => {
-    // Maintain the same session for all tests so that further logins aren't required.
     Cypress.Cookies.preserveOnce('sid')
   })
 
   before(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(() => {
-          cy.getByTestID('home-page--header').should('be.visible')
+        cy.request({
+          method: 'GET',
+          url: '/api/v2/orgs',
+        }).then(res => {
+          myOrgId =
+            res.body.orgs[0].id.length > 1 ? res.body.orgs[0].id : myOrgId
+          syncQuartzToIDPE()
+
           cy.setFeatureFlags(globalHeaderFeatureFlags).then(() => {
-            // cy.wait is necessary to ensure sufficient time for the feature flag override.
-            // We cannot cy.wait an intercepted route because this isn't a network request.
             cy.wait(400).then(() => {
               cy.visit('/')
             })
@@ -24,6 +50,106 @@ describe('multi-account multi-org global header', () => {
         })
       })
     )
+  })
+
+  describe('change accounts and orgs header', () => {
+    // it('doesnt load the global header if no account or organization data is retrieved', () => {
+
+    //  })
+
+    describe('account header', () => {
+      it('navigates to the account settings page', () => {
+        syncQuartzToIDPE()
+
+        cy.getByTestID('globalheader--account-dropdown')
+          .should('exist')
+          .click()
+
+        cy.getByTestID('globalheader--account-dropdown-main').should(
+          'be.visible'
+        )
+
+        cy.getByTestID('globalheader--account-dropdown-main-Settings')
+          .should('be.visible')
+          .click()
+      })
+
+      it('navigates to the account billing page', () => {
+        syncQuartzToIDPE()
+
+        cy.getByTestID('globalheader--account-dropdown')
+          .should('exist')
+          .click()
+
+        cy.getByTestID('globalheader--account-dropdown-main').should(
+          'be.visible'
+        )
+
+        cy.getByTestID('globalheader--account-dropdown-main-Billing')
+          .should('be.visible')
+          .click()
+      })
+
+      // it('changes the active account', () => {})
+    })
+
+    describe('org header', () => {
+      it('navigates to the org settings page', () => {
+        syncQuartzToIDPE()
+
+        cy.getByTestID('globalheader--org-dropdown')
+          .should('be.visible')
+          .click()
+        cy.getByTestID('globalheader--org-dropdown-main').should('be.visible')
+        cy.getByTestID('globalheader--org-dropdown-main-Settings')
+          .should('be.visible')
+          .click()
+
+        cy.location('pathname').should('eq', `/orgs/${myOrgId}/about`)
+        cy.getByTestID('org-profile--panel')
+          .should('be.visible')
+          .and('contain', 'Organization Profile')
+      })
+
+      it('navigates to the org members page', () => {
+        syncQuartzToIDPE()
+
+        cy.getByTestID('globalheader--org-dropdown')
+          .should('be.visible')
+          .click()
+        cy.getByTestID('globalheader--org-dropdown-main').should('be.visible')
+        cy.getByTestID('globalheader--org-dropdown-main-Members')
+          .should('be.visible')
+          .click()
+
+        cy.location('pathname').should('eq', `/orgs/${myOrgId}/users`)
+        cy.getByTestID('tabs--container')
+          .should('be.visible')
+          .and('contain', 'Add a new user to your organization')
+      })
+
+      it('navigates to the org usage page', () => {
+        syncQuartzToIDPE()
+
+        cy.getByTestID('globalheader--org-dropdown')
+          .should('exist')
+          .click()
+
+        cy.getByTestID('globalheader--org-dropdown-main').should('be.visible')
+
+        cy.getByTestID('globalheader--org-dropdown-main-Usage')
+          .should('be.visible')
+          .click()
+        cy.location('pathname').should('eq', `/orgs/${myOrgId}/usage`)
+        cy.getByTestID('tabs--container')
+          .should('be.visible')
+          .and('contain', 'Billing Stats')
+      })
+
+      // it('changes the active org', () => {
+
+      // })
+    })
   })
 
   describe('user profile avatar', () => {

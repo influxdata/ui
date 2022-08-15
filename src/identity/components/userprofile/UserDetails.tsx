@@ -31,6 +31,7 @@ export const UserDetails: FC = () => {
         weight={FontWeight.Bold}
         element={HeadingElement.H4}
         className="user-details-container--header"
+        testID="user-profile--user-details-header"
       >
         User Details
       </Heading>
@@ -39,6 +40,8 @@ export const UserDetails: FC = () => {
         <UserProfileInput
           status={ComponentStatus.Disabled}
           header="Email"
+          inputTestID="user-profile--email-input"
+          testID="user-profile--email"
           text={user.email}
         />
         <FlexBox
@@ -49,11 +52,15 @@ export const UserDetails: FC = () => {
           <UserProfileInput
             status={ComponentStatus.Disabled}
             header="First name"
+            inputTestID="user-profile--firstname-input"
+            testID="user-profile--firstname"
             text={user.firstName}
           />
           <UserProfileInput
             status={ComponentStatus.Disabled}
             header="Last name"
+            inputTestID="user-profile--lastname-input"
+            testID="user-profile--lastname"
             text={user.lastName}
           />
         </FlexBox>

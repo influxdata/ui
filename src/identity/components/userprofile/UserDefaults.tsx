@@ -141,6 +141,7 @@ export const UserDefaults: FC = () => {
           size={ComponentSize.Small}
           type={ButtonType.Submit}
           className="user-profile-page--save-button"
+          testID="user-profile--save-button"
         />
       </Form>
     )

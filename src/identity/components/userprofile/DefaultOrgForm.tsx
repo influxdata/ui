@@ -48,6 +48,7 @@ export const DefaultOrgForm: FC<Props> = ({
           weight={FontWeight.Bold}
           element={HeadingElement.H4}
           className="change-default-account-org--header"
+          testID="user-defaults-change-org--header"
         >
           Default Organization
         </Heading>
@@ -64,17 +65,21 @@ export const DefaultOrgForm: FC<Props> = ({
       >
         {accounts && (
           <UserProfileInput
-            status={ComponentStatus.Disabled}
             header="Account"
+            inputTestID="user-profile--current-account-input"
+            status={ComponentStatus.Disabled}
             text={loggedInAccount.name}
+            testID="user-profile--current-account-header"
           />
         )}
         {orgs && (
           <DefaultDropdown
-            entityLabel={EntityLabel.DefaultOrg}
             defaultEntity={selectedOrg}
+            defaultTestID="user-profile--default-org-dropdown"
+            entityLabel={EntityLabel.DefaultOrg}
             entityList={orgs}
             changeSelectedEntity={setSelectedOrg}
+            headerTestID="user-profile--default-org-header"
           />
         )}
       </FlexBox>

@@ -8,8 +8,10 @@ import {ComponentStatus, InfluxColors, Input, Form} from '@influxdata/clockface'
 import 'src/identity/components/userprofile/UserProfile.scss'
 
 interface Props {
-  status: ComponentStatus
   header: string
+  inputTestID: string
+  status: ComponentStatus
+  testID: string
   text: string
 }
 
@@ -19,8 +21,23 @@ const inputStyle = {
   color: InfluxColors.White,
 }
 
-export const UserProfileInput: FC<Props> = ({status, header, text}) => (
-  <Form.Element label={header} className="user-profile-page--form-element">
-    <Input status={status} value={text} inputStyle={inputStyle} />
+export const UserProfileInput: FC<Props> = ({
+  header,
+  inputTestID,
+  status,
+  testID,
+  text,
+}) => (
+  <Form.Element
+    label={header}
+    className="user-profile-page--form-element"
+    testID={testID}
+  >
+    <Input
+      status={status}
+      value={text}
+      inputStyle={inputStyle}
+      testID={inputTestID}
+    />
   </Form.Element>
 )

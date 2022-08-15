@@ -273,7 +273,6 @@ const SetOrg: FC = () => {
             path={`${orgPath}/accounts/settings`}
             component={UserAccountPage}
           />
-
           {/* Homepage / First Mile */}
           <Route exact path="/orgs/:orgID" component={HomepageContainer} />
           <Route
@@ -282,14 +281,12 @@ const SetOrg: FC = () => {
             key="/python"
             component={PythonWizard}
           />
-          ,
           <Route
             exact
             path="/orgs/:orgID/new-user-setup/nodejs"
             key="/nodejs"
             component={NodejsWizard}
           />
-          ,
           <Route
             exact
             path="/orgs/:orgID/new-user-setup/golang"

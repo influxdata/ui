@@ -65,21 +65,21 @@ export const DefaultOrgForm: FC<Props> = ({
       >
         {accounts && (
           <UserProfileInput
-            status={ComponentStatus.Disabled}
             header="Account"
+            inputTestID="user-profile--current-account-input"
+            status={ComponentStatus.Disabled}
             text={loggedInAccount.name}
             testID="user-profile--current-account-header"
-            inputTestID="user-profile--current-account-input"
           />
         )}
         {orgs && (
           <DefaultDropdown
-            entityLabel={EntityLabel.DefaultOrg}
             defaultEntity={selectedOrg}
+            defaultTestID="user-profile--default-org-dropdown"
+            entityLabel={EntityLabel.DefaultOrg}
             entityList={orgs}
             changeSelectedEntity={setSelectedOrg}
             headerTestID="user-profile--default-org-header"
-            defaultTestID="user-profile--default-org-dropdown"
           />
         )}
       </FlexBox>

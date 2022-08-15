@@ -10,7 +10,11 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
+import {
+  isUsingWindows,
+  keyboardCopyTriggered,
+  userSelection,
+} from 'src/utils/crossPlatform'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.cliWizard.executeQuery.code.copied')
@@ -23,7 +27,8 @@ type OwnProps = {
 export const ExecuteQuery = (props: OwnProps) => {
   const {bucket} = props
   const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
-  const query = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m)' --raw`
+  const queryMac = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m)' --raw`
+  const queryWindows = `.\\influx query 'from(bucket:"${bucketName}") |> range(start:-30m)' --raw`
 
   const fluxExample = `from(bucket: “weather-data”)
   |> range(start: -10m)
@@ -72,7 +77,7 @@ export const ExecuteQuery = (props: OwnProps) => {
         the InfluxDB CLI.
       </p>
       <CodeSnippet
-        text={query}
+        text={isUsingWindows() ? queryWindows : queryMac}
         onCopy={logCopyCodeSnippet}
         language="properties"
       />

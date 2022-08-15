@@ -218,9 +218,10 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           <p>2. Click Allow access</p>
           <h2 style={headingWithMargin}>Useful InfluxDB CLI commands</h2>
           <p>
-            To invoke a command, use the following format in the command line:
+            To invoke a command, move into the directory where the CLI package
+            is installed and use the following format in the command line:
           </p>
-          <p style={{marginLeft: '40px'}}>influx [command]</p>
+          <p style={{marginLeft: '40px'}}>.\influx [command]</p>
           <Table borders={BorderType.All}>
             <Table.Body>
               <Table.Row>

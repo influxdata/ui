@@ -70,3 +70,24 @@ export const keyboardCopyTriggered = (
 export const userSelection = () => {
   return window.getSelection().toString()
 }
+
+export const isUsingWindows = () => {
+  if (window?.navigator?.userAgent.includes('Windows')) {
+    return true
+  }
+  return false
+}
+
+export const isUsingMac = () => {
+  if (window?.navigator?.userAgent.includes('Mac')) {
+    return true
+  }
+  return false
+}
+
+export const isUsingLinux = () => {
+  if (window?.navigator?.userAgent.includes('Linux')) {
+    return true
+  }
+  return false
+}

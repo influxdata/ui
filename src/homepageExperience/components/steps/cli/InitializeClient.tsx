@@ -31,7 +31,11 @@ import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetails
 // Utils
 import {allAccessPermissions} from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
-import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
+import {
+  isUsingWindows,
+  keyboardCopyTriggered,
+  userSelection,
+} from 'src/utils/crossPlatform'
 
 // Types
 import {AppState, Authorization} from 'src/types'
@@ -63,13 +67,21 @@ export const InitializeClient: FC<OwnProps> = ({
   })
   const token = currentAuth.token
 
-  const codeSnippet = `influx config create --config-name onboarding \\
+  const codeSnippetMac = `influx config create --config-name onboarding \\
     --host-url "${url}" \\
     --org "${org.id}" \\
     --token "${token}" \\
     --active`
 
-  const bucketSnippet = `influx bucket create --name sample-bucket -c onboarding`
+  const bucketSnippetMac = `influx bucket create --name sample-bucket -c onboarding`
+
+  const codeSnippetWindows = `.\\influx config create --config-name onboarding \`
+  --host-url "${url}" \`
+  --org "${org.id}" \`
+  --token "${token}" \`
+  --active`
+
+  const bucketSnippetWindows = `.\\influx bucket create --name sample-bucket -c onboarding`
 
   const sortedPermissionTypes = useMemo(
     () => allPermissionTypes.sort((a, b) => collator.compare(a, b)),
@@ -142,7 +154,7 @@ export const InitializeClient: FC<OwnProps> = ({
         profile using a different token for working with your own data.
       </p>
       <CodeSnippet
-        text={codeSnippet}
+        text={isUsingWindows() ? codeSnippetWindows : codeSnippetMac}
         onCopy={logCopyCodeSnippet}
         language="properties"
       />
@@ -174,7 +186,7 @@ export const InitializeClient: FC<OwnProps> = ({
         skip this step and proceed to the next.
       </p>
       <CodeSnippet
-        text={bucketSnippet}
+        text={isUsingWindows() ? bucketSnippetWindows : bucketSnippetMac}
         onCopy={logCopyCodeSnippet}
         language="properties"
       />

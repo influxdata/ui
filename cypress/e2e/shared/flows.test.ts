@@ -70,10 +70,7 @@ describe('Flows', () => {
       .click()
 
     cy.getByTestID('time-machine-submit-button').click()
-    cy.get('.flow-visualization--view .visualization--simple-table').should(
-      'have.length',
-      1
-    )
+    cy.get('.flow-visualization--view .giraffe-plot').should('have.length', 1)
     cy.getByTestID('giraffe-layer-line').should('have.length', 1)
   })
 

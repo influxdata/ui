@@ -4,7 +4,6 @@ export const DataExplorerPage = lazy(() =>
   import('src/dataExplorer/components/DataExplorerPage')
 )
 
-export const MePage = lazy(() => import('src/me/containers/MePage'))
 export const TasksPage = lazy(() => import('src/tasks/containers/TasksPage'))
 export const TaskPage = lazy(() => import('src/tasks/containers/TaskPage'))
 export const TaskRunsPage = lazy(() =>

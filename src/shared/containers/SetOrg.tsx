@@ -26,7 +26,6 @@ import {
   PythonWizard,
   LabelsIndex,
   MembersIndex,
-  MePage,
   NotFound,
   OrgProfilePage,
   RouteToDashboardList,
@@ -274,32 +273,26 @@ const SetOrg: FC = () => {
             path={`${orgPath}/accounts/settings`}
             component={UserAccountPage}
           />
-          {/* Getting Started */}
-          {isFlagEnabled('firstMile') ? (
-            <Route exact path="/orgs/:orgID" component={HomepageContainer} />
-          ) : (
-            <Route exact path="/orgs/:orgID" component={MePage} />
-          )}
-          {isFlagEnabled('firstMile') && [
-            <Route
-              exact
-              path="/orgs/:orgID/new-user-setup/python"
-              key="/python"
-              component={PythonWizard}
-            />,
-            <Route
-              exact
-              path="/orgs/:orgID/new-user-setup/nodejs"
-              key="/nodejs"
-              component={NodejsWizard}
-            />,
-            <Route
-              exact
-              path="/orgs/:orgID/new-user-setup/golang"
-              key="/golang"
-              component={GoWizard}
-            />,
-          ]}
+          {/* Homepage / First Mile */}
+          <Route exact path="/orgs/:orgID" component={HomepageContainer} />
+          <Route
+            exact
+            path="/orgs/:orgID/new-user-setup/python"
+            key="/python"
+            component={PythonWizard}
+          />
+          <Route
+            exact
+            path="/orgs/:orgID/new-user-setup/nodejs"
+            key="/nodejs"
+            component={NodejsWizard}
+          />
+          <Route
+            exact
+            path="/orgs/:orgID/new-user-setup/golang"
+            key="/golang"
+            component={GoWizard}
+          />
           {isFlagEnabled('onboardArduino') && (
             <Route
               exact

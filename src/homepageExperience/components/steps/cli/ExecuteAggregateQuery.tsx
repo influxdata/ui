@@ -35,7 +35,7 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   |> mean()`
 
   const codeSnippetMac = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m) |> mean()' --raw`
-  const codeSnippetWindows = `.\\influx query 'from(bucket:"${bucketName}") |> range(start:-30m) |> mean()' --raw`
+  const codeSnippetWindows = `.\\influx query 'from(bucket:\\"${bucketName}\\") |> range(start:-30m) |> mean()' --raw`
 
   useEffect(() => {
     const fireKeyboardCopyEvent = event => {

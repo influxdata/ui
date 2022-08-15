@@ -24,7 +24,11 @@ import UserInput from 'src/writeData/subscriptions/components/UserInput'
 import CertificateInput from 'src/writeData/subscriptions/components/CertificateInput'
 
 // Utils
-import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {
+  handleValidation,
+  handlePortValidation,
+  getSchemaFromProtocol,
+} from 'src/writeData/subscriptions/utils/form'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Types
@@ -104,6 +108,7 @@ const BrokerFormContent: FC<Props> = ({
                 }
                 status={edit ? status : ComponentStatus.Disabled}
                 testID={`${className}-broker-form--name`}
+                maxLength={255}
               />
             )}
           </Form.ValidationElement>
@@ -130,6 +135,7 @@ const BrokerFormContent: FC<Props> = ({
               }
               testID={`${className}-broker-form--description`}
               status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
+              maxLength={255}
             />
           </Form.Element>
         </Grid.Column>
@@ -207,7 +213,8 @@ const BrokerFormContent: FC<Props> = ({
                   onChange={e => {
                     updateForm({
                       ...formContent,
-                      brokerHost: e.target.value,
+                      // remove any provided schemas from hostname
+                      brokerHost: e.target.value.replace(/.*:\/\//, ''),
                       // clear the password field if broker host is edited
                       brokerPassword:
                         className === 'create'
@@ -224,6 +231,7 @@ const BrokerFormContent: FC<Props> = ({
                   }
                   status={edit ? status : ComponentStatus.Disabled}
                   testID={`${className}-broker-form--host`}
+                  maxLength={255}
                 />
               )}
             </Form.ValidationElement>
@@ -232,7 +240,10 @@ const BrokerFormContent: FC<Props> = ({
               value={String(formContent.brokerPort)}
               required={true}
               validationFunc={() =>
-                handleValidation('Broker Port', String(formContent.brokerPort))
+                handleValidation(
+                  'Broker Port',
+                  String(formContent.brokerPort)
+                ) ?? handlePortValidation(formContent.brokerPort)
               }
             >
               {status => (
@@ -268,8 +279,8 @@ const BrokerFormContent: FC<Props> = ({
             weight={FontWeight.Regular}
             className={`${className}-broker-form__example-text`}
           >
-            TCP://
-            {formContent.protocol ? formContent.protocol : 'MQTT'}:
+            {/* TODO: update `false` after cert support */}
+            {getSchemaFromProtocol(formContent.protocol, false)}
             {formContent.brokerHost ? formContent.brokerHost : '0.0.0.0'}:
             {formContent.brokerPort ? formContent.brokerPort : '1883'}
           </Heading>

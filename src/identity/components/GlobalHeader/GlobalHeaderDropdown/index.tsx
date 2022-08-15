@@ -43,12 +43,12 @@ export interface Props extends StandardFunctionProps {
   mainMenuOptions: MainMenuItem[]
   mainMenuTestID?: string
   onlyRenderSubmenu?: boolean
+  testID?: string
   typeAheadSelectedOption?: TypeAheadMenuItem
   typeAheadMenuOptions: TypeAheadMenuItem[]
   typeAheadInputPlaceholder?: string
   typeAheadOnSelectOption?: (item: TypeAheadMenuItem | null) => void
   typeAheadTestID?: string
-  testID?: string
 }
 
 type State = {
@@ -79,9 +79,9 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
   ) => {
     const {
       defaultButtonText,
+      defaultTestID,
       dropdownButtonSize,
       dropdownButtonIcon,
-      defaultTestID,
     } = this.props
     const {selectedItem} = this.state
     return (
@@ -166,8 +166,8 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     )
     return (
       <Dropdown.Menu
-        theme={dropdownMenuTheme}
         style={dropdownMenuStyle}
+        theme={dropdownMenuTheme}
         testID={this.props.mainMenuTestID}
       >
         {/* Multi-org UI tickets #4051 and #4047, when user only has 1 account or 1 org, switch button is disabled */}

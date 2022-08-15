@@ -85,7 +85,7 @@ const SubscriptionFormContent: FC<Props> = ({
                   )
                 }
                 status={edit ? status : ComponentStatus.Disabled}
-                maxLength={56}
+                maxLength={255}
                 testID={`${className}-subscription-form--topic`}
               />
             )}

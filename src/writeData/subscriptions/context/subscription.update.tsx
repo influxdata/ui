@@ -12,7 +12,8 @@ import {useDispatch, useSelector} from 'react-redux'
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
-import {sanitizeUpdateForm} from '../utils/form'
+import {sanitizeUpdateForm} from 'src/writeData/subscriptions/utils/form'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -156,10 +157,19 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
     updateStatusAPI(params)
       .then(() => {
         getSubscription()
+        event('subscription update success', {}, {feature: 'subscriptions'})
       })
       .catch(err => {
         setLoading(RemoteDataState.Done)
         dispatch(notify(subscriptionStatusUpdateFail(err.message)))
+        event(
+          'subscription update failure',
+          {err: err.message},
+          {feature: 'subscriptions'}
+        )
+      })
+      .finally(() => {
+        event('subscription update attempt', {}, {feature: 'subscriptions'})
       })
   }
 

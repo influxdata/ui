@@ -1,11 +1,82 @@
-import {
-  multipleAccounts,
-  multipleOrgs,
-  setupProfile,
-  singleAccount,
-  singleOrg,
-} from '../util/userProfileSetup'
+// Utility Functions
+export const setupProfile = (): Promise<any> => {
+  return Cypress.Promise.resolve(
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(() => {
+          cy.request({
+            method: 'PUT',
+            url: 'api/v2/quartz/accounts/resetAllAccountOrgs',
+          })
+          cy.getByTestID('home-page--header').should('be.visible')
+          cy.setFeatureFlags(userProfileFeatureFlags).then(() => {
+            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+            cy.wait(300).then(() => {
+              cy.visit('/me/profile')
+            })
+          })
+        })
+      })
+    )
+  )
+}
 
+// Constants
+const userProfileFeatureFlags = {
+  quartzIdentity: true,
+  multiOrg: true,
+}
+
+export const singleAccount = [
+  {
+    id: 1,
+    name: 'single account',
+    isDefault: true,
+    isActive: true,
+  },
+]
+
+export const multipleAccounts = [
+  {
+    id: 1,
+    name: 'account 1 of 2',
+    isDefault: true,
+    isActive: true,
+  },
+  {
+    id: 2,
+    name: 'account 2 of 2',
+    isDefault: false,
+    isActive: false,
+  },
+]
+
+export const singleOrg = [
+  {
+    id: '1',
+    name: 'single org',
+    isDefault: true,
+    isActive: true,
+  },
+]
+
+export const multipleOrgs = [
+  {
+    id: '1',
+    name: 'org 1 of 2',
+    isDefault: true,
+    isActive: true,
+  },
+  {
+    id: '2',
+    name: 'org 2 of 2',
+    isDefault: false,
+    isActive: false,
+  },
+]
+
+// Tests
 describe('User profile page', () => {
   before(() => {
     setupProfile()
@@ -72,7 +143,7 @@ describe('User profile page', () => {
         'disabled'
       )
 
-      // Confirm that the user can change default accounts solely by :clicking: in the dropdown.
+      // Confirm that the user can change default accounts solely by clicking in the dropdown.
       cy.getByTestID('user-profile--change-account-header')
         .contains('Default Account')
         .should('be.visible')
@@ -108,7 +179,7 @@ describe('User profile page', () => {
 
         cy.getByTestID('notification-success--dismiss').click({force: true})
 
-        // Confirm that the user can also change default accounts when :using the typeahead:.
+        // Confirm that the user can also change default accounts when using the typeahead.
         cy.getByTestID('user-profile--change-account-dropdown')
           .should('be.visible')
           .click()
@@ -169,7 +240,7 @@ describe('User profile page', () => {
         .contains('Default Organization')
         .should('be.visible')
 
-      // Confirm that the user can change default orgs solely by :clicking: in the dropdown.
+      // Confirm that the user can change default orgs solely by clicking in the dropdown.
       cy.getByTestID('user-profile--default-org-dropdown')
         .contains('Test Org 0')
         .should('be.visible')
@@ -204,7 +275,7 @@ describe('User profile page', () => {
         })
       })
 
-      // Confirm that the user can also change default accounts when :using the typeahead:.
+      // Confirm that the user can also change default accounts when using the typeahead.
       cy.getByTestID('user-profile--default-org-dropdown')
         .click()
         .getByTestID('input-field')

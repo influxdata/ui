@@ -58,6 +58,11 @@ const booleanType = 'Boolean'
 
 export const dataTypeList = [stringType, intType, floatType, booleanType]
 
+// min port value is 1025
+const MIN_PORT = 1025
+// max port value is 65535 because its a 16-bit unsigned integer
+const MAX_PORT = 65535
+
 export const handleValidation = (
   property: string,
   formVal: string
@@ -411,4 +416,32 @@ const parseDate = (timeString: string) => {
   }
 
   return parsed.getTime()
+}
+
+export const handlePortValidation = (port: any) => {
+  const numPort = parseInt(port)
+  if (isNaN(numPort)) {
+    return 'Port must be a valid number'
+  }
+  return numPort >= MIN_PORT && numPort <= MAX_PORT
+    ? null
+    : `Port must be between ${MIN_PORT} and ${MAX_PORT}`
+}
+
+// Avro only supports [A-Za-z0-9_]
+export const handleAvroValidation = (property: string, value: string) => {
+  return value.match(/^\w+$/) === null
+    ? `Only [A-Za-z0-9_] can be used in ${property} names for the JSON data format in Native Subscriptions`
+    : null
+}
+
+export const getSchemaFromProtocol = (protocol: string, isSecure: boolean) => {
+  switch (protocol.toLowerCase()) {
+    case 'mqtt': {
+      return `mqtt${isSecure ? 's' : ''}://`
+    }
+    default: {
+      return 'tcp://'
+    }
+  }
 }

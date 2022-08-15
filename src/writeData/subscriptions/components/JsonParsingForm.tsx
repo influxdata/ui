@@ -31,6 +31,7 @@ import {
   handleJsonPathValidation,
   JSON_TOOLTIP,
   dataTypeList,
+  handleAvroValidation,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -148,7 +149,9 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                     edit ? ComponentStatus.Default : ComponentStatus.Disabled
                   }
                 >
-                  {formContent.timestampPrecision}
+                  {Object.keys(PrecisionTypes).find(
+                    k => PrecisionTypes[k] === formContent.timestampPrecision
+                  )}
                 </Dropdown.Button>
               )}
               menu={onCollapse => (
@@ -174,7 +177,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                       }
                       testID={`json-timestamp-precision-${key}`}
                     >
-                      {PrecisionTypes[key]}
+                      {key}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
@@ -227,9 +230,15 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               value={formContent.jsonMeasurementKey.name}
               required={true}
               validationFunc={() => {
-                return handleValidation(
-                  'Measurement Name',
-                  formContent.jsonMeasurementKey.name
+                return (
+                  handleValidation(
+                    'Measurement Name',
+                    formContent.jsonMeasurementKey.name
+                  ) ??
+                  handleAvroValidation(
+                    'measurement',
+                    formContent.jsonMeasurementKey.name
+                  )
                 )
               }}
               placeholder="measurement_name"

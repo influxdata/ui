@@ -2,6 +2,9 @@ import {
   shouldOpenLinkInNewTab,
   keyboardCopyTriggered,
   userSelection,
+  isUsingWindows,
+  isUsingMac,
+  isUsingLinux,
 } from 'src/utils/crossPlatform'
 
 let userAgentGetter
@@ -194,5 +197,35 @@ describe('checking whether a link should be opened in a new tab', () => {
     it('gets the correct selection', () => {
       expect(userSelection()).toBe('test')
     })
+  })
+})
+
+describe('which operating system', () => {
+  beforeEach(() => {
+    userAgentGetter = jest.spyOn(global.window.navigator, 'userAgent', 'get')
+  })
+  it('is windows', () => {
+    userAgentGetter.mockReturnValue('5.0 Windows')
+    expect(isUsingWindows()).toBeTruthy()
+  })
+  it('is mac', () => {
+    userAgentGetter.mockReturnValue('5.0 Macintosh')
+    expect(isUsingMac()).toBeTruthy()
+  })
+  it('is linux', () => {
+    userAgentGetter.mockReturnValue('5.0 Linux')
+    expect(isUsingLinux()).toBeTruthy()
+  })
+  it('is not windows', () => {
+    userAgentGetter.mockReturnValue('5.0 Macintosh')
+    expect(isUsingWindows()).toBeFalsy()
+  })
+  it('is not mac', () => {
+    userAgentGetter.mockReturnValue('5.0 Windows')
+    expect(isUsingMac()).toBeFalsy()
+  })
+  it('is not linux', () => {
+    userAgentGetter.mockReturnValue('5.0 Macintosh')
+    expect(isUsingLinux()).toBeFalsy()
   })
 })

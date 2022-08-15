@@ -26,21 +26,21 @@ import 'src/identity/components/userprofile/UserProfile.scss'
 const globalHeaderStyle = {width: '368px', backgroundColor: '#232533'}
 
 interface Props {
-  entityLabel: string
-  defaultEntity: Entity
-  entityList: Entity[]
   changeSelectedEntity: (action: SetStateAction<any>) => void
-  headerTestID: string
+  defaultEntity: Entity
   defaultTestID: string
+  entityList: Entity[]
+  entityLabel: string
+  headerTestID: string
 }
 
 export const DefaultDropdown: FC<Props> = ({
-  entityLabel,
-  entityList,
   changeSelectedEntity,
   defaultEntity,
-  headerTestID,
   defaultTestID,
+  entityList,
+  entityLabel,
+  headerTestID,
 }) => {
   return (
     <FlexBox
@@ -55,14 +55,14 @@ export const DefaultDropdown: FC<Props> = ({
         testID={headerTestID}
       >
         <GlobalHeaderDropdown
+          defaultTestID={defaultTestID}
           mainMenuOptions={[]}
           onlyRenderSubmenu={true}
+          style={globalHeaderStyle}
           typeAheadMenuOptions={entityList}
           typeAheadInputPlaceholder={`Search ${entityLabel}s ...`}
           typeAheadSelectedOption={defaultEntity}
           typeAheadOnSelectOption={changeSelectedEntity}
-          style={globalHeaderStyle}
-          defaultTestID={defaultTestID}
         />
       </Form.Element>
     </FlexBox>

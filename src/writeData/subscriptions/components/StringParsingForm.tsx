@@ -147,7 +147,9 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                     edit ? ComponentStatus.Default : ComponentStatus.Disabled
                   }
                 >
-                  {formContent.timestampPrecision}
+                  {Object.keys(PrecisionTypes).find(
+                    k => PrecisionTypes[k] === formContent.timestampPrecision
+                  )}
                 </Dropdown.Button>
               )}
               menu={onCollapse => (
@@ -173,7 +175,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                       }
                       testID={`string-timestamp-precision-${key}`}
                     >
-                      {PrecisionTypes[key]}
+                      {key}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>

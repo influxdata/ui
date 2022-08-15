@@ -121,6 +121,9 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
         <>
           <h2 style={headingWithMargin}>Use Homebrew</h2>
           <p style={{fontSize: '14px'}}>
+            If needed, use this link to download{' '}
+            <SafeBlankLink href="https://brew.sh/">Homebrew</SafeBlankLink>.{' '}
+            <br />
             Note: if your Mac is equipped with an{' '}
             <code className="homepage-wizard--code-highlight">M</code> chip,
             ensure you have{' '}
@@ -218,9 +221,10 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           <p>2. Click Allow access</p>
           <h2 style={headingWithMargin}>Useful InfluxDB CLI commands</h2>
           <p>
-            To invoke a command, use the following format in the command line:
+            To invoke a command, move into the directory where the CLI package
+            is installed and use the following format in the command line:
           </p>
-          <p style={{marginLeft: '40px'}}>influx [command]</p>
+          <p style={{marginLeft: '40px'}}>.\influx [command]</p>
           <Table borders={BorderType.All}>
             <Table.Body>
               <Table.Row>

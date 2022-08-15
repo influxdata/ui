@@ -2,7 +2,6 @@ describe('First mile experience', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.setFeatureFlags({firstMile: true})
   })
 
   it('should load the main home-page that has the language tiles', function() {

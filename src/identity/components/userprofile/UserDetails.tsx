@@ -40,9 +40,9 @@ export const UserDetails: FC = () => {
         <UserProfileInput
           status={ComponentStatus.Disabled}
           header="Email"
-          text={user.email}
-          testID="user-profile--email"
           inputTestID="user-profile--email-input"
+          testID="user-profile--email"
+          text={user.email}
         />
         <FlexBox
           direction={FlexDirection.Row}
@@ -52,16 +52,16 @@ export const UserDetails: FC = () => {
           <UserProfileInput
             status={ComponentStatus.Disabled}
             header="First name"
-            text={user.firstName}
-            testID="user-profile--firstname"
             inputTestID="user-profile--firstname-input"
+            testID="user-profile--firstname"
+            text={user.firstName}
           />
           <UserProfileInput
             status={ComponentStatus.Disabled}
             header="Last name"
-            text={user.lastName}
-            testID="user-profile--lastname"
             inputTestID="user-profile--lastname-input"
+            testID="user-profile--lastname"
+            text={user.lastName}
           />
         </FlexBox>
       </Form>

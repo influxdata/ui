@@ -3,19 +3,25 @@ import {defaultErrorNotification} from 'src/shared/copy/notifications'
 
 export const subscriptionCreateFail = (message?: string): Notification => ({
   ...defaultErrorNotification,
-  message: message ?? `Failed to create Subscription, please try again.`,
+  message: message
+    ? message
+    : `Failed to create Subscription, please try again.`,
 })
 
 export const subscriptionUpdateFail = (message?: string): Notification => ({
   ...defaultErrorNotification,
-  message: message ?? `Failed to update Subscription, please try again.`,
+  message: message
+    ? message
+    : `Failed to update Subscription, please try again.`,
 })
 
 export const subscriptionStatusUpdateFail = (
   message?: string
 ): Notification => ({
   ...defaultErrorNotification,
-  message: message ?? `Failed to update Subscription status, please try again.`,
+  message: message
+    ? message
+    : `Failed to update Subscription status, please try again.`,
 })
 
 export const subscriptionsGetFail = (): Notification => ({

@@ -98,12 +98,14 @@ export const GlobalHeader: FC = () => {
           </>
         )}
       </FlexBox>
-      <IdentityUserAvatar
-        firstName={user.firstName}
-        lastName={user.lastName}
-        email={user.email}
-        orgId={org.id}
-      />
+      {user.firstName && user.lastName && user.email && org.id && (
+        <IdentityUserAvatar
+          firstName={user.firstName}
+          lastName={user.lastName}
+          email={user.email}
+          orgId={org.id}
+        />
+      )}
     </FlexBox>
   )
 }

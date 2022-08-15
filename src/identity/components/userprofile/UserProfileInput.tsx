@@ -8,11 +8,11 @@ import {ComponentStatus, InfluxColors, Input, Form} from '@influxdata/clockface'
 import 'src/identity/components/userprofile/UserProfile.scss'
 
 interface Props {
-  status: ComponentStatus
   header: string
-  text: string
-  testID: string
   inputTestID: string
+  status: ComponentStatus
+  testID: string
+  text: string
 }
 
 const inputStyle = {
@@ -22,11 +22,11 @@ const inputStyle = {
 }
 
 export const UserProfileInput: FC<Props> = ({
-  status,
   header,
-  text,
-  testID,
   inputTestID,
+  status,
+  testID,
+  text,
 }) => (
   <Form.Element
     label={header}

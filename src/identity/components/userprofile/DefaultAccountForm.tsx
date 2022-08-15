@@ -51,10 +51,10 @@ export const DefaultAccountForm: FC<Props> = ({
         <DefaultDropdown
           entityLabel={EntityLabel.DefaultAccount}
           defaultEntity={selectedAccount}
+          defaultTestID="user-profile--change-account-dropdown"
           entityList={accounts}
           changeSelectedEntity={setSelectedAccount}
           headerTestID="user-profile--change-account-dropdown-header"
-          defaultTestID="user-profile--change-account-dropdown"
         />
       )}
     </FlexBox>

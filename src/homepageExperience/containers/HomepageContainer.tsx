@@ -181,7 +181,10 @@ export const HomepageContainer: FC = () => {
                           style={linkStyle}
                           onClick={logArduinoWizardClick}
                         >
-                          <div className="homepage-wizard-language-tile">
+                          <div
+                            className="homepage-wizard-language-tile"
+                            data-testid="homepage-wizard-language-tile--arduino"
+                          >
                             <h5>Arduino</h5>
                             {ArduinoIcon}
                           </div>

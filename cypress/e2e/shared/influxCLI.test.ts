@@ -2,7 +2,7 @@ describe('Influx CLI onboarding', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.setFeatureFlags({firstMile: true, onboardCLI: true})
+    cy.setFeatureFlags({onboardCLI: true})
   })
 
   it('should load the main home-page that has the cli tile', function() {

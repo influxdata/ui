@@ -121,6 +121,9 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
         <>
           <h2 style={headingWithMargin}>Use Homebrew</h2>
           <p style={{fontSize: '14px'}}>
+            If needed, use this link to download{' '}
+            <SafeBlankLink href="https://brew.sh/">Homebrew</SafeBlankLink>.{' '}
+            <br />
             Note: if your Mac is equipped with an{' '}
             <code className="homepage-wizard--code-highlight">M</code> chip,
             ensure you have{' '}

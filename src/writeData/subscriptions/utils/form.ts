@@ -419,14 +419,13 @@ const parseDate = (timeString: string) => {
 }
 
 export const handlePortValidation = (port: any) => {
-  try {
-    const numPort = parseInt(port)
-    return numPort >= MIN_PORT && numPort <= MAX_PORT
-      ? null
-      : `Port must be between ${MIN_PORT} and ${MAX_PORT}`
-  } catch {
+  const numPort = parseInt(port)
+  if (isNaN(numPort)) {
     return 'Port must be a valid number'
   }
+  return numPort >= MIN_PORT && numPort <= MAX_PORT
+    ? null
+    : `Port must be between ${MIN_PORT} and ${MAX_PORT}`
 }
 
 // Avro only supports [A-Za-z0-9_]

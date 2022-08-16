@@ -142,7 +142,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
         )
       }
       case 5: {
-        return <WriteData bucket={this.state.selectedBucket} />
+        return <WriteData />
       }
       case 6: {
         return <ExecuteQuery bucket={this.state.selectedBucket} />

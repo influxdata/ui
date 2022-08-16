@@ -52,13 +52,15 @@ export const WriteData = () => {
     <>
       <h1>Write Data</h1>
       <p className="small-margins">
-        Append the lines of code to add tags to the Point, the end of void
-        setup() function like:
+        To start writing data, append the lines of code to add tags to the Point
+        at the end of the{' '}
+        <code className="homepage-wizard--code-highlight">void setup()</code>{' '}
+        function.
       </p>
       <CodeSnippet
         text={codeSnippetOne}
         onCopy={logCopyCodeSnippet}
-        language="properties"
+        language="arduino"
       />
       <p>
         Add the following{' '}
@@ -68,12 +70,37 @@ export const WriteData = () => {
       <CodeSnippet
         text={codeSnippetTwo}
         onCopy={logCopyCodeSnippet}
-        language="properties"
+        language="arduino"
       />
       <p>
         In the above code snippet, we retrive the RSSI (Received Signal Strength
         Indicator) of your wifi connection and write it to InfluxDB using the
         client.
+      </p>
+      <h2>Review data concepts</h2>
+      <p>
+        <b>Field (required)</b> <br />
+        Key-value pair for storing time-series data. For example, insect name
+        and its count. You can have one field per record (row of data), and many
+        fields per bucket. <br />
+        <i>key data type: string</i> <br />
+        <i>value data type: float, integer, string, or boolean</i>
+        <br />
+      </p>
+      <p>
+        <b>Measurement (required)</b> <br />
+        A category for your fields. In our example, it is census. You can have
+        one measurement per record (row of data), and many measurements per
+        bucket. <br />
+        <i>data type: string</i> <br />
+      </p>
+      <p style={{marginBottom: '48px'}}>
+        <b>Tag (optional)</b> <br />
+        Key-value pair for field metadata. For example, census location. You can
+        have many tags per record (row of data) and per bucket.
+        <br />
+        <i>key data type: string</i> <br />
+        <i>value data type: float, integer, string, or boolean</i>
       </p>
     </>
   )

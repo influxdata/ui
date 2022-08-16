@@ -63,7 +63,7 @@ const UserWidget: FC<Props> = ({
           label="Settings"
           testID="user-nav-item-about"
           linkElement={className => (
-            <Link className={className} to={`${orgPrefix}/about`} />
+            <Link className={className} to={`${orgPrefix}/org-settings`} />
           )}
         />
         <TreeNav.UserItem
@@ -71,7 +71,7 @@ const UserWidget: FC<Props> = ({
           label="Members"
           testID="user-nav-item-users"
           linkElement={className => (
-            <Link className={className} to={`${orgPrefix}/users`} />
+            <Link className={className} to={`${orgPrefix}/members`} />
           )}
         />
         <TreeNav.UserItem

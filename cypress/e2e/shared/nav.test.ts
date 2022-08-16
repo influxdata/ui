@@ -63,11 +63,11 @@ describe('navigation', () => {
 
      \**/
 
-    // User Nav -- About
+    // User Nav -- Settings
     cy.getByTestID('user-nav').click()
     cy.getByTestID('user-nav-item-about').click()
     cy.getByTestID('about-page--header').should('exist')
-    cy.url().should('contain', 'about')
+    cy.url().should('contain', 'org-settings')
 
     /** \
 

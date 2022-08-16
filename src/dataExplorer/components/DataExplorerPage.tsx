@@ -35,6 +35,7 @@ import {ResourceType} from 'src/types'
 import 'src/shared/components/cta.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {optionallyApplyGlobalHeaderStyle} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/utils'
 
 const DataExplorerPage: FC = () => {
   const {
@@ -87,6 +88,7 @@ const DataExplorerPage: FC = () => {
             fluxQueryBuilder ? 'flux-query-builder' : 'data-explorer'
           }--header`}
           testID="data-explorer--header"
+          style={optionallyApplyGlobalHeaderStyle()}
         >
           <Page.Title title="Data Explorer" />
           <FlexBox margin={ComponentSize.Large}>

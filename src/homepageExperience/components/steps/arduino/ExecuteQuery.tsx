@@ -1,10 +1,13 @@
 // Libraries
 import React, {useEffect} from 'react'
 
+// Components
+import CodeSnippet from 'src/shared/components/CodeSnippet'
+import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import CodeSnippet from 'src/shared/components/CodeSnippet'
-
 import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 
 const logCopyCodeSnippet = () => {
@@ -17,17 +20,18 @@ type OwnProps = {
 
 export const ExecuteQuery = (props: OwnProps) => {
   const {bucket} = props
+  const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
 
   const codeSnippet = `void loop() {
     // ... code from Write Data step 
     
     // Query will find the RSSI values for last minute for each connected WiFi network with this device
-     String query = "from(bucket: \"apis\")\n\
+     String query = "from(bucket: \"${bucketName}\")\n\
    |> range(start: -1m)\n\
    |> filter(fn: (r) => r._measurement == \"wifi_status\" and r._field == \"rssi\")";
    
      // Print composed query
-     Serial.println("Querying for RSSI values written to the \"apis\" bucket in the last 1 min... ");
+     Serial.println("Querying for RSSI values written to the \"${bucketName}\" bucket in the last 1 min... ");
      Serial.println(query);
    
      // Send query to the server and get result
@@ -71,6 +75,10 @@ export const ExecuteQuery = (props: OwnProps) => {
      delay(5000);
    }`
 
+  const fluxExample = `from(bucket: “weather-data”)
+  |> range(start: -10m)
+  |> filter(fn: (r) => r._measurement == “temperature”)`
+
   useEffect(() => {
     const fireKeyboardCopyEvent = event => {
       if (
@@ -86,7 +94,28 @@ export const ExecuteQuery = (props: OwnProps) => {
 
   return (
     <>
-      <h1>Execute a Flux Query on {bucket}</h1>
+      <h1>Execute a Flux Query</h1>
+      <p>
+        Now let's query the data we wrote into the database. We use the Flux
+        scripting language to query data.{' '}
+        <SafeBlankLink
+          href="https://docs.influxdata.com/influxdb/v2.2/reference/syntax/flux/"
+          onClick={() =>
+            event('firstMile.arduinoWizard.documentation.link.clicked')
+          }
+        >
+          Flux
+        </SafeBlankLink>{' '}
+        is designed for querying, analyzing, and acting on data.
+        <br />
+        <br />
+        Here's an example of a basic Flux script:
+      </p>
+      <CodeSnippet
+        text={fluxExample}
+        showCopyControl={false}
+        language="properties"
+      ></CodeSnippet>
       <p className="small-margins">
         In this query, we are looking for data points within the last 1 minute
         with a measurement of{' '}
@@ -95,7 +124,7 @@ export const ExecuteQuery = (props: OwnProps) => {
       <CodeSnippet
         text={codeSnippet}
         onCopy={logCopyCodeSnippet}
-        language="properties"
+        language="arduino"
       />
     </>
   )

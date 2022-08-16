@@ -107,7 +107,6 @@ export const CLOUD_CHECKOUT_PATH = '/checkout'
 export const CLOUD_BILLING_PATH = '/billing'
 export const CLOUD_USAGE_PATH = '/usage'
 export const CLOUD_LOGOUT_PATH = '/logout'
-export const CLOUD_USERS_PATH = '/members'
 
 export const FLUX_RESPONSE_BYTES_LIMIT = CLOUD
   ? 27 * 1024 * 1024 // 27 MiB  (desa: this was determined by looking at queries responses in the cloud app)

@@ -1,6 +1,6 @@
 import {SubwayNavModel} from '@influxdata/clockface'
 
-export type BrokerSecurity = 'none' | 'user' | 'certificate'
+export type BrokerAuthType = 'none' | 'user' | 'certificate'
 
 export interface Subscription {
   id?: string
@@ -35,10 +35,11 @@ export interface Subscription {
   flowVersion?: number
   timestampPrecision?: string
   notebookID?: string
-  brokerKey?: string
-  brokerCert?: string
+  brokerClientKey?: string
+  brokerClientCert?: string
   brokerCACert?: string
-  brokerSecurity: BrokerSecurity
+  authType: BrokerAuthType
+  certCreatedAt?: string
 }
 
 export interface SubscriptionStatus {

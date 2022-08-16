@@ -53,7 +53,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 
 // Contexts
-import SubscriptionCertificateProvider from 'src/writeData/subscriptions/context/subscription.certificate'
 
 const CreateSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
@@ -172,12 +171,10 @@ const CreateSubscriptionPage: FC = () => {
 
 export default () => (
   <AppSettingProvider>
-    <SubscriptionCertificateProvider>
-      <SubscriptionCreateProvider>
-        <WriteDataDetailsProvider>
-          <CreateSubscriptionPage />
-        </WriteDataDetailsProvider>
-      </SubscriptionCreateProvider>
-    </SubscriptionCertificateProvider>
+    <SubscriptionCreateProvider>
+      <WriteDataDetailsProvider>
+        <CreateSubscriptionPage />
+      </WriteDataDetailsProvider>
+    </SubscriptionCreateProvider>
   </AppSettingProvider>
 )

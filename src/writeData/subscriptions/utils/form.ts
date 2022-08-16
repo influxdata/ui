@@ -232,23 +232,21 @@ export const checkRequiredFields = (form: Subscription): boolean => {
 }
 
 const checkNoneSelected = (form: Subscription): boolean =>
-  form.brokerSecurity === 'none' &&
+  form.authType === 'none' &&
   !form.brokerUsername &&
   !form.brokerPassword &&
   !form.brokerCACert &&
   !form.brokerCACert &&
-  !form.brokerKey
+  !form.brokerClientKey
 
 const checkBasicSelected = (form: Subscription): boolean =>
-  form.brokerSecurity === 'user' &&
-  !!form.brokerUsername &&
-  !!form.brokerPassword
+  form.authType === 'user' && !!form.brokerUsername && !!form.brokerPassword
 
 const checkCertificateSelected = (form: Subscription): boolean =>
-  form.brokerSecurity === 'certificate' &&
+  form.authType === 'certificate' &&
   !!form.brokerCACert &&
-  ((!!form.brokerCert && !!form.brokerKey) ||
-    (!form.brokerCert && !form.brokerKey))
+  ((!!form.brokerClientCert && !!form.brokerClientKey) ||
+    (!form.brokerClientCert && !form.brokerClientKey))
 
 export const checkSecurityFields = (form: Subscription): boolean =>
   checkNoneSelected(form) ||

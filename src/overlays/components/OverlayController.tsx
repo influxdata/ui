@@ -46,6 +46,7 @@ import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
+import {ReplaceCertificateOverlay} from 'src/writeData/subscriptions/components/CertificateInput'
 
 export interface OverlayContextType {
   onClose: () => void
@@ -162,6 +163,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'help-bar-confirmation':
         activeOverlay.current = <ConfirmationOverlay onClose={onClose} />
+        break
+      case 'subscription-replace-certificate':
+        activeOverlay.current = <ReplaceCertificateOverlay onClose={onClose} />
         break
       default:
         activeOverlay.current = null

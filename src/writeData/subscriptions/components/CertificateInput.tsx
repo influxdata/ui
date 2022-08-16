@@ -15,33 +15,43 @@ import {
   Icon,
   IconFont,
   JustifyContent,
+  ComponentColor,
+  ButtonType,
+  Overlay,
+  FlexBoxChild,
 } from '@influxdata/clockface'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import TextAreaWithLabel from 'src/writeData/subscriptions/components/TextAreaWithLabel'
-import {SubscriptionCertificateContext} from 'src/writeData/subscriptions/context/subscription.certificate'
+import {event} from 'src/cloud/utils/reporting'
+import {useDispatch} from 'react-redux'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+import {Subscription} from 'src/types'
+import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-const NewCertificateInput: FC = () => {
-  const {certificate, updateCertificate} = useContext(
-    SubscriptionCertificateContext
-  )
+interface OwnProps {
+  edit?: boolean
+  updateForm: (_: Subscription) => void
+  subscription: Subscription
+}
 
+const NewCertificateInput: FC<OwnProps> = ({updateForm, subscription}) => {
   const handleUpdateCACert = useCallback(
     e => {
-      updateCertificate({...certificate, rootCA: e.target.value})
+      updateForm({...subscription, brokerCACert: e.target.value})
     },
-    [certificate, updateCertificate]
+    [subscription, updateForm]
   )
   const handleUpdatePrivateKey = useCallback(
     e => {
-      updateCertificate({...certificate, key: e.target.value})
+      updateForm({...subscription, brokerClientKey: e.target.value})
     },
-    [certificate, updateCertificate]
+    [subscription, updateForm]
   )
   const handleUpdateCert = useCallback(
     e => {
-      updateCertificate({...certificate, cert: e.target.value})
+      updateForm({...subscription, brokerClientCert: e.target.value})
     },
-    [certificate, updateCertificate]
+    [subscription, updateForm]
   )
 
   return (
@@ -63,7 +73,7 @@ const NewCertificateInput: FC = () => {
         label="Certificate authority"
         description="TODO: Fix this"
         onChange={handleUpdateCACert}
-        value={certificate?.rootCA ?? ''}
+        value={subscription?.brokerCACert ?? ''}
         rows={4}
         required
       />
@@ -71,7 +81,7 @@ const NewCertificateInput: FC = () => {
         name="PrivateKey"
         label="Private Key"
         onChange={handleUpdatePrivateKey}
-        value={certificate?.key ?? ''}
+        value={subscription?.brokerClientKey ?? ''}
         rows={4}
       />
       <TextAreaWithLabel
@@ -79,7 +89,7 @@ const NewCertificateInput: FC = () => {
         label="Certificate"
         description="If your private key is included in this string, be sure to separate it and enter it in the Private key field"
         onChange={handleUpdateCert}
-        value={certificate?.cert ?? ''}
+        value={subscription?.brokerClientCert ?? ''}
         rows={4}
       />
     </FlexBox>
@@ -121,9 +131,117 @@ const OldCertificateInput: FC = () => {
     </FlexBox>
   )
 }
-const CertificateInput: FC = () => {
+
+interface ReplaceCertificateModalProps {
+  onClose: () => void
+}
+export const ReplaceCertificateOverlay: FC<ReplaceCertificateModalProps> = () => {
+  const {
+    onClose,
+    params: {subscription, updateForm},
+  } = useContext(OverlayContext)
+  const handleReplaceCert = useCallback(() => {
+    updateForm({...subscription, certCreatedAt: null})
+    onClose()
+  }, [subscription, updateForm, onClose])
+  return (
+    <Overlay visible={true} className="subscription-replace-cert-overlay">
+      <Overlay.Container maxWidth={450} style={{paddingTop: '20px'}}>
+        <Overlay.Body>
+          <FlexBox
+            direction={FlexDirection.Row}
+            stretchToFitWidth={true}
+            justifyContent={JustifyContent.SpaceBetween}
+            alignItems={AlignItems.Center}
+          >
+            <div>
+              Are you sure you want to replace your certificate? Once you save
+              your changes, we cannot retrieve the previous certificate.
+            </div>
+            <Button
+              color={ComponentColor.Primary}
+              text="Yes, Continue"
+              onClick={handleReplaceCert}
+              testID="subs-replace-cert-confirm-btn"
+            />
+          </FlexBox>
+        </Overlay.Body>
+      </Overlay.Container>
+    </Overlay>
+  )
+}
+
+const CertificateDetails: FC<OwnProps> = ({subscription, updateForm, edit}) => {
+  const dispatch = useDispatch()
+  return (
+    <>
+      {/* {showModal && <ReplaceCertificateModal onConfirm={handleConfirm} onDismiss={handleDismiss} />} */}
+      <FlexBox
+        direction={FlexDirection.Row}
+        margin={ComponentSize.Large}
+        stretchToFitWidth={true}
+        justifyContent={JustifyContent.SpaceBetween}
+        alignItems={AlignItems.Center}
+      >
+        <FlexBoxChild>
+          <FlexBox
+            direction={FlexDirection.Column}
+            alignItems={AlignItems.Stretch}
+            justifyContent={JustifyContent.Center}
+          >
+            <InputLabel
+              size={ComponentSize.Medium}
+              style={{fontWeight: 'bold'}}
+            >
+              Certificate
+            </InputLabel>
+            <InputLabel size={ComponentSize.Small}>
+              {subscription.certCreatedAt}
+            </InputLabel>
+          </FlexBox>
+        </FlexBoxChild>
+        {edit && (
+          <Button
+            text="Replace Certificate"
+            color={ComponentColor.Secondary}
+            onClick={() => {
+              event(
+                'replace certificate clicked',
+                {},
+                {feature: 'subscriptions'}
+              )
+              // setShowModal(true)
+              dispatch(
+                showOverlay(
+                  'subscription-replace-certificate',
+                  {subscription, updateForm},
+                  () => dispatch(dismissOverlay)
+                )
+              )
+            }}
+            type={ButtonType.Button}
+            titleText="Edit"
+            testID="update-sub-form--edit"
+          />
+        )}
+      </FlexBox>
+    </>
+  )
+}
+
+const CertificateInput: FC<OwnProps> = ({subscription, updateForm, edit}) => {
+  if (subscription.certCreatedAt) {
+    return (
+      <CertificateDetails
+        subscription={subscription}
+        updateForm={updateForm}
+        edit={edit}
+      />
+    )
+  }
+
   return isFlagEnabled('enableCertificateSupport') ? (
-    <NewCertificateInput />
+    <NewCertificateInput subscription={subscription} updateForm={updateForm} />
   ) : (
     <OldCertificateInput />
   )

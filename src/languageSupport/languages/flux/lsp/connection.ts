@@ -1,4 +1,3 @@
-import isEqual from 'lodash/isEqual'
 import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
 import {format_from_js_file} from '@influxdata/flux-lsp-browser'
 
@@ -7,6 +6,7 @@ import {EditorType, Variable} from 'src/types'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 
 // handling schema composition
+import {RecursivePartial} from 'src/types'
 import {SchemaSelection} from 'src/dataExplorer/context/persistance'
 
 // LSP methods
@@ -22,8 +22,7 @@ import {
 // error reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
-const ICON_SYNC_ON = 'composition-sync-icon-on'
-const ICON_SYNC_OFF = 'composition-sync-icon-off'
+const ICON_SYNC_CLASSNAME = 'composition-sync'
 export const ICON_SYNC_ID = 'schema-composition-sync-icon'
 
 // hardcoded in LSP
@@ -38,7 +37,9 @@ class LspConnectionManager {
   private _variables: Variable[] = []
   private _compositionStyle: string[] = []
   private _session: SchemaSelection
-  private _callbackSetSession: (schema: SchemaSelection) => void = () => null
+  private _callbackSetSession: (
+    schema: RecursivePartial<SchemaSelection>
+  ) => void = () => null
 
   constructor(worker: Worker) {
     this._worker = worker
@@ -108,53 +109,74 @@ class LspConnectionManager {
     this._worker.postMessage(msg)
   }
 
-  _setSchemaSync(synced: boolean) {
+  _getCompositionBlockLines() {
+    const query = this._model.getValue()
+    const startLine = COMPOSITION_INIT_LINE
+    const endLine =
+      (query.split('\n').findIndex(line => line.includes(COMPOSITION_YIELD)) ||
+        0) + 1
+    return {startLine, endLine}
+  }
+
+  _setSessionSync(synced: boolean) {
     this._callbackSetSession({
-      ...this._session,
-      composition: {...this._session.composition, synced},
+      composition: {synced},
     })
   }
 
-  _setCompositionSyncToggle() {
+  _setEditorSyncToggle() {
     setTimeout(() => {
-      const syncIconOn = document.getElementsByClassName(ICON_SYNC_ON)[0]
-      const syncIconOff = document.getElementsByClassName(ICON_SYNC_OFF)[0]
-      const syncIcon = syncIconOn || syncIconOff
+      // elements in monaco-editor. positioned by editor.
+      const syncIcons = document.getElementsByClassName(ICON_SYNC_CLASSNAME)
 
+      // UI elements we control
       const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-      if (!syncIcon || !clickableInvisibleDiv) {
+      if (!syncIcons.length || !clickableInvisibleDiv) {
         return
       }
-      clickableInvisibleDiv.style.top =
-        ((syncIcon as any).offsetTop || 0) + 'px'
-      clickableInvisibleDiv.style.left = (syncIcon as any).offsetLeft + 'px'
-      clickableInvisibleDiv.style.height =
-        ((syncIcon as any).offsetHeight || 0) + 'px'
-      clickableInvisibleDiv.style.width =
-        ((syncIcon as any).offsetWidth || 0) + 'px'
 
+      const [upperIcon] = syncIcons
+      let [, lowerIcon] = syncIcons
+      if (!lowerIcon) {
+        lowerIcon = upperIcon
+      }
+      const {startLine, endLine} = this._getCompositionBlockLines()
+
+      // move div to match monaco-editor coordinates
+      clickableInvisibleDiv.style.top =
+        ((upperIcon as any).offsetTop || 0) + 'px'
+      const height =
+        ((lowerIcon as any).offsetHeight || 0) * (endLine - startLine + 1) +
+        ((upperIcon as any).offsetTop || 0)
+      clickableInvisibleDiv.style.height = height + 'px'
+      clickableInvisibleDiv.style.width =
+        ((upperIcon as any).offsetWidth || 0) + 'px'
+
+      // add listeners
       clickableInvisibleDiv.removeEventListener('click', () =>
-        this._setSchemaSync(!this._session.composition.synced)
+        this._setSessionSync(!this._session.composition.synced)
       ) // may have existing
       clickableInvisibleDiv.addEventListener('click', () =>
-        this._setSchemaSync(!this._session.composition.synced)
+        this._setSessionSync(!this._session.composition.synced)
       )
     }, 1000)
   }
 
-  _setCompositionIrreversibleExit(schema: SchemaSelection) {
+  _editorChangeIsFromLsp(change) {
+    return !!change.forceMoveMarkers
+  }
+
+  _setEditorIrreversibleExit() {
     this._model.onDidChangeContent(e => {
       const {changes} = e
-      changes.forEach(change => {
+      changes.some(change => {
+        const {startLine, endLine} = this._getCompositionBlockLines()
         if (
-          change.range.startLineNumber >=
-            (schema.composition.block?.startLine || COMPOSITION_INIT_LINE) &&
-          change.range.endLineNumber <=
-            (schema.composition.block?.endLine || COMPOSITION_INIT_LINE)
+          change.range.startLineNumber >= startLine &&
+          change.range.endLineNumber <= endLine &&
+          !this._editorChangeIsFromLsp(change)
         ) {
-          // TODO: eventually, will be based on LSP response
           this._callbackSetSession({
-            ...this._session,
             composition: {synced: false, diverged: true},
           })
           return
@@ -163,37 +185,38 @@ class LspConnectionManager {
     })
   }
 
-  _setCompositionBlockSize() {
-    const query = this._model.getValue()
-    const endLine =
-      query.split('\n').findIndex(line => line.includes(COMPOSITION_YIELD)) + 1
-    this._callbackSetSession({
-      ...this._session,
-      composition: {
-        ...this._session.composition,
-        block: {startLine: COMPOSITION_INIT_LINE, endLine},
+  _setEditorBlockStyle() {
+    const {startLine, endLine} = this._getCompositionBlockLines()
+
+    const startLineStyle = [
+      {
+        range: new MonacoTypes.Range(startLine, 1, startLine, 1),
+        options: {
+          linesDecorationsClassName: ICON_SYNC_CLASSNAME,
+        },
       },
-    })
-  }
+    ]
+    const endLineStyle = [
+      {
+        range: new MonacoTypes.Range(endLine, 1, endLine, 1),
+        options: {
+          linesDecorationsClassName: ICON_SYNC_CLASSNAME,
+        },
+      },
+    ]
 
-  initComposition(schema: SchemaSelection) {
-    // msg to LSP
-    this._compositionInitLsp(schema)
-
-    // handlers to trigger end composition
-    this._setCompositionSyncToggle()
-    this._setCompositionIrreversibleExit(schema)
-
-    // handlers for composition block size
-    // eventually, this could be from the LSP response. onLspCompositionChange()
-    this._setCompositionBlockSize()
-    this._model.onDidChangeContent(
-      () => this._session.composition.synced && this._setCompositionBlockSize()
+    this._compositionStyle = this._editor.deltaDecorations(
+      this._compositionStyle,
+      startLineStyle.concat(endLineStyle)
     )
+
+    const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
+    clickableInvisibleDiv.style.background = this._session.composition.synced
+      ? 'blue'
+      : 'grey'
   }
 
-  _compositionInitLsp(schema: SchemaSelection) {
-    // msg to LSP
+  _initLsp(schema: SchemaSelection) {
     const {bucket, measurement} = schema
     const payload = {bucket: bucket?.name}
     if (measurement) {
@@ -201,107 +224,86 @@ class LspConnectionManager {
     }
     // TODO: finish LSP update first
     // this.inject(ExecuteCommand.CompositionInit, payload)
-
-    this._compositionUpdateLsp(schema)
   }
 
-  _compositionUpdateLsp(schema: SchemaSelection) {
-    const {fields, tags, tagValues} = schema
-    if (fields.length) {
-      // TODO: finish LSP update first
-      // this.inject(ExecuteCommand.CompositionInit, payload)
-    }
-    if (tags.length) {
-      // TODO: finish LSP update first
-      // this.inject(ExecuteCommand.CompositionInit, payload)
-    }
-    if (tagValues.length) {
-      // TODO: finish LSP update first
-      // this.inject(ExecuteCommand.CompositionInit, payload)
-    }
-
-    // msg to monaco-editor
-    this._setCompositionBlockStyle(schema)
+  _updateLsp(_: SchemaSelection) {
+    // TODO: finish LSP update first
+    // this.inject(ExecuteCommand.Composition<Something>, payload)
   }
 
-  // hack for now. To trigger for example video.
-  private _turnOnWithFirstCall = true
+  _initComposition(schema: SchemaSelection) {
+    if (!schema.composition.synced) {
+      this._setSessionSync(true)
+    }
+
+    this._initLsp(schema)
+
+    // handlers to trigger end composition
+    this._setEditorSyncToggle()
+    this._setEditorIrreversibleExit()
+
+    // handlers for composition block size
+    // eventually, this could be from the LSP response. onLspMessage()
+    this._model.onDidChangeContent(
+      () => this._session.composition?.synced && this._setEditorBlockStyle()
+    )
+
+    // TODO: for now, set style on init. Eventually use this.onLspMessage()
+    this._setEditorBlockStyle()
+  }
+
+  _restoreComposition(schema: SchemaSelection) {
+    this._initLsp(schema)
+    this._updateLsp(schema)
+  }
 
   onSchemaSessionChange(schema: SchemaSelection, sessionCb) {
+    this._callbackSetSession = sessionCb
+    const previousState = {
+      ...this._session,
+      composition: {...(this._session?.composition || {})},
+    }
+    this._session = {...schema, composition: {...schema.composition}}
+
     if (!schema.composition) {
+      // FIXME: message to user, to create a new script
       console.error(
         'User has an old session, which does not support schema composition.'
       )
-    }
-
-    this._callbackSetSession = sessionCb
-    const previousState = this._session
-    this._session = {...schema}
-
-    // hack for now. To trigger for example video.
-    if (this._turnOnWithFirstCall) {
-      this._turnOnWithFirstCall = false
-      setTimeout(() => {
-        console.error('MOCK SCHEMA INJECTION FROM USER')
-        this.initComposition(schema)
-      }, 5000)
       return
     }
 
-    if (!isEqual(previousState?.composition, schema.composition)) {
-      return this._setCompositionBlockStyle(schema)
+    if (!previousState.bucket && schema.bucket) {
+      // TODO: if also already have fields and tagValues, then _restoreComposition()
+      const hasFieldsOrTagvalues = false
+      if (hasFieldsOrTagvalues) {
+        return this._restoreComposition(schema)
+      }
+      return this._initComposition(schema)
     }
 
-    // Else, presume change is rest of session's schema selection
-    this._compositionUpdateLsp(schema)
-  }
+    // TODO: decide on tag and tagValues.
+    // Inject on same or different lines? then...how model in session?
+    const tagsDidUpdate = false
 
-  onLspCompositionChange(_jsonrpcMiddlewareResponse: unknown) {
-    // TODO: middleware to read LSP response => call this method
-    // TODO: wait for successful LSP roundtrip, then use response for:
-    // update (true-up) session store
-    // all updates to this._setCompositionBlockStyle(), should occur post-roundtrip
-  }
+    if (
+      previousState.fields?.length != schema.fields?.length ||
+      tagsDidUpdate
+    ) {
+      return this._updateLsp(schema)
+    }
 
-  _compositionIcon = (synced: boolean) => {
-    return {
-      linesDecorationsClassName: synced ? ICON_SYNC_ON : ICON_SYNC_OFF,
+    if (previousState.composition != schema.composition) {
+      return this._setEditorBlockStyle()
     }
   }
 
-  _setCompositionBlockStyle({
-    composition: {
-      synced,
-      block = {
-        startLine: COMPOSITION_INIT_LINE,
-        endLine: COMPOSITION_INIT_LINE,
-      },
-    },
-  }: SchemaSelection) {
-    const {startLine, endLine} = block
-    const syncIcon = [
-      {
-        range: new MonacoTypes.Range(startLine, 1, startLine, 1),
-        options: this._compositionIcon(synced),
-      },
-    ]
-
-    const compositionBlock = synced
-      ? [
-          {
-            range: new MonacoTypes.Range(startLine, 1, endLine, 1),
-            options: {
-              isWholeLine: true,
-              inlineClassName: 'composition-block',
-            },
-          },
-        ]
-      : []
-
-    this._compositionStyle = this._editor.deltaDecorations(
-      this._compositionStyle,
-      syncIcon.concat(compositionBlock as any)
-    )
+  onLspMessage(_jsonrpcMiddlewareResponse: unknown) {
+    // TODO: Q4
+    // 1. middleware detects jsonrpc
+    // 2. call this method
+    // 3a. update (true-up) session store
+    // 3b. this._setEditorBlockStyle()
   }
 
   dispose() {

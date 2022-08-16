@@ -1,24 +1,19 @@
 import React, {FC, createContext, useCallback} from 'react'
-import {TimeRange} from 'src/types'
+import {TimeRange, RecursivePartial} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {Bucket} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+interface SchemaComposition {
+  synced: boolean
+  diverged: boolean
+}
 export interface SchemaSelection {
   bucket: Bucket
   measurement: string
   fields: string[]
-  tags: string[]
-  tagValues: string[][]
-  composition: {
-    synced: boolean
-    diverged: boolean
-    block?: {
-      startLine: number
-      endLine: number
-    }
-  }
+  composition: SchemaComposition
 }
 
 interface ContextType {
@@ -32,15 +27,13 @@ interface ContextType {
   setVertical: (val: number[]) => void
   setRange: (val: TimeRange) => void
   setQuery: (val: string) => void
-  setSelection: (val: SchemaSelection) => void
+  setSelection: (val: RecursivePartial<SchemaSelection>) => void
 }
 
 export const DEFAULT_SCHEMA = {
   bucket: null,
   measurement: null,
   fields: [],
-  tags: [],
-  tagValues: [],
   composition: {
     synced: false,
     diverged: false,
@@ -58,7 +51,7 @@ const DEFAULT_CONTEXT = {
   setVertical: (_: number[]) => {},
   setRange: (_: TimeRange) => {},
   setQuery: (_: string) => {},
-  setSelection: (_: SchemaSelection) => {},
+  setSelection: (_: RecursivePartial<SchemaSelection>) => {},
 }
 
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
@@ -93,14 +86,22 @@ export const PersistanceProvider: FC = ({children}) => {
     schema => {
       if (
         isFlagEnabled('schemaComposition') &&
-        selection.composition.diverged
+        selection.composition?.diverged
       ) {
         // TODO: how message to user?
         return
       }
-      setSelection({...schema, composition: {...schema.composition}})
+      const nextState = {
+        ...selection,
+        ...schema,
+        composition: {
+          ...(selection.composition || {}),
+          ...(schema.composition || {}),
+        },
+      }
+      setSelection(nextState)
     },
-    [selection.composition.diverged, setSelection]
+    [selection, selection.composition, setSelection]
   )
 
   return (

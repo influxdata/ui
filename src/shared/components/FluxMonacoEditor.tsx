@@ -85,7 +85,12 @@ const FluxEditorMonaco: FC<Props> = ({
         sessionStore.setSelection
       )
     }
-  }, [connection.current, sessionStore?.selection, sessionStore?.setSelection])
+  }, [
+    connection.current,
+    sessionStore?.selection,
+    sessionStore?.selection.composition || null,
+    sessionStore?.setSelection,
+  ])
 
   const editorDidMount = (editor: EditorType) => {
     connection.current = setupForReactMonacoEditor(editor)
@@ -125,7 +130,10 @@ const FluxEditorMonaco: FC<Props> = ({
 
   return (
     <ErrorBoundary>
-      <div id={ICON_SYNC_ID} style={{zIndex: 999, position: 'absolute'}} />
+      <div
+        id={ICON_SYNC_ID}
+        style={{zIndex: 999, position: 'absolute', opacity: 0.6}}
+      />
       <div className={wrapperClassName} data-testid="flux-editor">
         <MonacoEditor
           language={FLUXLANGID}

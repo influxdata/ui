@@ -42,27 +42,4 @@
   .current-line ~ .line-numbers {
     color: #bec2cc;
   }
-
-  // TODO: proper style
-  .composition-block {
-    background: #1a335a;
-  }
-
-  // TODO: use the icon
-  .composition-sync-icon-on {
-    background: lightgreen;
-    border: 6px solid green;
-    border-radius: 10px;
-    height: 15px;
-    width: 10px;
-  }
-
-  // TODO: use the icon
-  .composition-sync-icon-off {
-    background: lightgray;
-    border: 6px solid gray;
-    border-radius: 10px;
-    height: 15px;
-    width: 10px;
-  }
 }

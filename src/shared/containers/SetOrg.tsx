@@ -254,7 +254,7 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${SETTINGS}`}
             component={VariablesIndex}
           />
-          {/* Users */}
+          {/* Users - route has multiple paths to ensure backwards compatibility while https://github.com/influxdata/ui/issues/5396 is being worked on*/}
           {CLOUD && (
             <Route
               path={[`${orgPath}/users`, `${orgPath}/members`]}
@@ -271,7 +271,7 @@ const SetOrg: FC = () => {
           {!CLOUD && (
             <Route path={`${orgPath}/members`} component={MembersIndex} />
           )}
-          {/* About */}
+          {/* About - route has multiple paths to ensure backwards compatibility while https://github.com/influxdata/ui/issues/5396 is being worked on*/}
           <Route
             path={[`${orgPath}/about`, `${orgPath}/org-settings`]}
             component={OrgProfilePage}

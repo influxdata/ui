@@ -2,10 +2,6 @@ import React, {FC, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
-import {
-  GATEWAY_TIMEOUT_STATUS,
-  REQUEST_TIMEOUT_STATUS,
-} from 'src/cloud/constants'
 
 import {getOrg} from 'src/organizations/selectors'
 import {fromFlux} from '@influxdata/giraffe'
@@ -17,6 +13,8 @@ import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
+  GATEWAY_TIMEOUT_STATUS,
+  REQUEST_TIMEOUT_STATUS,
 } from 'src/cloud/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -353,7 +351,7 @@ const updateWindowPeriod = (
     .join('\n\n')
 
   const queryAST = parse(query)
-  const optionAST = parse(optionTexts)
+  let optionAST = parse(optionTexts)
 
   // only run this if the query need a windowPeriod
   if (
@@ -370,7 +368,63 @@ const updateWindowPeriod = (
     }
 
     return options
+  } else if (isFlagEnabled('dontSolveWindowPeriod')) {
+    if (options?.v?.timeRangeStart && options?.v?.timeRangeStop) {
+      const NOW = Date.now()
+      const range = find(
+        optionAST,
+        node =>
+          node?.type === 'OptionStatement' && node?.assignment?.id?.name === 'v'
+      ).reduce(
+        (acc, curr) => {
+          acc.start =
+            find(
+              curr,
+              n => n.type === 'Property' && n?.key?.name === 'timeRangeStart'
+            )[0]?.value ?? acc.start
+
+          acc.stop =
+            find(
+              curr,
+              n => n.type === 'Property' && n?.key?.name === 'timeRangeStop'
+            )[0]?.value ?? acc.stop
+
+          return acc
+        },
+        {
+          start: null,
+          stop: null,
+        }
+      )
+      const duration =
+        propertyTime(queryAST, range.stop, NOW) -
+        propertyTime(queryAST, range.start, NOW)
+      const foundDuration = SELECTABLE_TIME_RANGES.find(
+        tr => tr.seconds * 1000 === duration
+      )
+
+      if (foundDuration) {
+        options.v.windowPeriod = `${foundDuration.windowPeriod} ms`
+      } else {
+        options.v.windowPeriod = `${Math.round(
+          duration / DESIRED_POINTS_PER_GRAPH
+        )} ms`
+      }
+    } else {
+      options.v.windowPeriod = `${FALLBACK_WINDOW_PERIOD} ms`
+    }
+
+    // write the mutations back out into the AST
+    optionAST = parse(
+      Object.entries(options)
+        .map(([k, v]) => {
+          const vals = Object.entries(v).map(([_k, _v]) => `  ${_k}: ${_v}`)
+          return `option ${k} =  {${vals.join(',\n')}}`
+        })
+        .join('\n\n')
+    )
   }
+
   try {
     const _optionAST = JSON.parse(JSON.stringify(optionAST))
     // make sure there's a variable in there named windowPeriod so later logic doesnt bail
@@ -386,6 +440,10 @@ const updateWindowPeriod = (
         ).length
       ) {
         return
+      }
+
+      if (isFlagEnabled('dontSolveWindowPeriod')) {
+        throw new Error('v.windowPeriod is used and not defined')
       }
 
       node.assignment.init.properties.push({

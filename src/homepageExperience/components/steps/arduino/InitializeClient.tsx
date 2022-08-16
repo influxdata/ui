@@ -177,7 +177,12 @@ export const InitializeClient: FC<OwnProps> = ({
   return (
     <>
       <h1>Initialize Client</h1>
-      <p>Select or create a bucket to initialize the arduino client with.</p>
+      <h2 className="large-margins">Select or Create a bucket</h2>
+      <p className="small-margins">
+        A <b>bucket</b> is used to store time-series data. Here is a list of
+        your existing buckets. You can select one to use for the rest of the
+        tutorial, or create one below.
+      </p>
       <Panel backgroundColor={InfluxColors.Grey15}>
         <Panel.Body size={ComponentSize.ExtraSmall}>
           <Grid>
@@ -189,6 +194,12 @@ export const InitializeClient: FC<OwnProps> = ({
           </Grid>
         </Panel.Body>
       </Panel>
+      <h2>Configure an InfluxDB profile</h2>
+      <p className="small-margins">
+        Next we'll need to configure the client and its initial connection to
+        InfluxDB. InfluxDB Cloud uses Tokens to authenticate API access. We've
+        created an all-access token for you for this set up process.
+      </p>
       <p className="small-margins">
         Paste the following snippet into a blank Arduino sketch file.
       </p>

@@ -4,8 +4,19 @@ import {FixedSizeList as List} from 'react-window'
 import classnames from 'classnames'
 import {TypeAheadMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
+export enum TypeAheadLocation {
+  HeaderNavSearchAccount = 'headerNav.searchAccounts',
+  HeaderNavSearchOrg = 'headerNav.searchOrgs',
+  UserProfileSearchAccount = 'userProfile.defaultAccount',
+  UserProfileSearchOrg = 'userProfile.defaultOrg',
+}
+
 type Props = {
   defaultSelectedItem?: TypeAheadMenuItem
+  dropdownLocation: TypeAheadLocation
   style?: React.CSSProperties
   typeAheadPlaceHolder: string
   typeAheadMenuOptions: TypeAheadMenuItem[]
@@ -85,6 +96,18 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
+  private sendSearchEvent = e => {
+    const {dropdownLocation} = this.props
+
+    if (e.target.value.trim().length) {
+      event(
+        `${dropdownLocation}.searched`,
+        {initiative: 'multiOrg'},
+        {searchTerm: e.target.value}
+      )
+    }
+  }
+
   private calculateDropdownHeight = (numberOfItems: number) =>
     Math.min(numberOfItems * this.listItemHeight, this.maxDropdownHeight)
 
@@ -100,6 +123,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
         testID={this.props.testID}
         onClear={this.clearFilter}
         onFocus={this.selectAllTextInInput}
+        onBlur={this.sendSearchEvent}
         className="global-header--typeahead-input"
       />
     )
@@ -159,5 +183,3 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     )
   }
 }
-
-export default GlobalHeaderTypeAheadMenu

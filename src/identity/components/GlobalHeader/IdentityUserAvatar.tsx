@@ -11,6 +11,10 @@ import {
   IconFont,
 } from '@influxdata/clockface'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
+// Styles
 import './UserPopoverStyles.scss'
 import {Link} from 'react-router-dom'
 
@@ -39,8 +43,29 @@ class IdentityUserAvatar extends React.Component<Props, State> {
     return initials
   }
 
+  private handlePopoverClick = (eventName: string) => () => {
+    this.sendEvent(eventName)
+  }
+
+  private sendEvent = eventName => {
+    const {email, firstName, lastName} = this.props
+    event(
+      eventName,
+      {initiative: 'multiOrg'},
+      {firstName: firstName, lastName: lastName, email: email}
+    )
+  }
+
   private togglePopoverState = () => {
+    const {email, firstName, lastName} = this.props
     const {isPopoverOpen} = this.state
+    if (!isPopoverOpen) {
+      event(
+        'headerNav.userAvatarIcon.clicked',
+        {initiative: 'multiOrg'},
+        {firstName: firstName, lastName: lastName, email: email}
+      )
+    }
     this.setState({isPopoverOpen: !isPopoverOpen})
   }
 
@@ -64,15 +89,24 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           <Link
             className="user-popover-footer--button"
             to={`/orgs/${orgId}/user/profile`}
+            onClick={this.handlePopoverClick(
+              'headerNav.userAvatarProfile.clicked'
+            )}
           >
             <Icon
-              glyph={IconFont.User}
               className="user-popover-footer--button-icon"
+              glyph={IconFont.User}
               testID="global-header--user-popover-profile-button"
             />
             Profile
           </Link>
-          <Link className="user-popover-footer--button" to="/logout">
+          <Link
+            className="user-popover-footer--button"
+            onClick={this.handlePopoverClick(
+              'headerNav.userAvatarLogOut.clicked'
+            )}
+            to="/logout"
+          >
             <Icon
               glyph={IconFont.Logout}
               className="user-popover-footer--button-icon"

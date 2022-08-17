@@ -13,12 +13,16 @@ import {GlobalHeaderDropdown} from 'src/identity/components/GlobalHeader/GlobalH
 
 // Types
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
+import {DropdownName} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 type Entity = OrganizationSummaries[number] | UserAccount
+import {TypeAheadLocation} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
 
 export enum EntityLabel {
   DefaultAccount = 'Account',
   DefaultOrg = ' Organization',
 }
+
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
@@ -42,12 +46,28 @@ export const DefaultDropdown: FC<Props> = ({
   entityLabel,
   headerTestID,
 }) => {
+  const dropdownName =
+    entityLabel === EntityLabel.DefaultAccount
+      ? DropdownName.UserProfileDefaultAccount
+      : DropdownName.UserProfileDefaultOrg
+
+  const dropdownLocation =
+    entityLabel === EntityLabel.DefaultAccount
+      ? TypeAheadLocation.UserProfileSearchAccount
+      : TypeAheadLocation.UserProfileSearchOrg
+
+  // Likewise, this is going to end up being a bit excessive, I suspect.
+  const handleClick = () => {
+    event(`default${entityLabel}Dropdown.click`)
+  }
+
   return (
     <FlexBox
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
       className="change-default-account-org--dropdown-flexbox"
+      onClick={handleClick}
     >
       <Form.Element
         label={`Default ${entityLabel}`}
@@ -55,7 +75,9 @@ export const DefaultDropdown: FC<Props> = ({
         testID={headerTestID}
       >
         <GlobalHeaderDropdown
+          dropdownLocation={dropdownLocation}
           defaultTestID={defaultTestID}
+          entity={dropdownName}
           mainMenuOptions={[]}
           onlyRenderSubmenu={true}
           style={globalHeaderStyle}

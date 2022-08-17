@@ -34,6 +34,9 @@ import {
   userProfileSaveSuccess,
 } from 'src/shared/copy/notifications'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
 
@@ -89,12 +92,32 @@ export const UserDefaults: FC = () => {
     if (userChangedPrefs) {
       try {
         if (userPickedNewAccount) {
+          event(
+            'userProfile.defaultAccount.changed',
+            {initiative: 'multiOrg'},
+            {
+              newDefaultAccountID: selectedAccount.id,
+              newDefaultAccountName: selectedAccount.name,
+            }
+          )
+
           await handleSetDefaultAccount(selectedAccount.id, {
             disablePopUps: true,
           })
         }
 
         if (userPickedNewOrg) {
+          event(
+            'userProfile.defaultOrg.changed',
+            {initiative: 'multiOrg'},
+            {
+              currentAccountID: loggedInAccount.id,
+              ccurrentAccountName: loggedInAccount.name,
+              newDefaultOrgID: selectedOrg.id,
+              newDefaultOrgName: selectedOrg.name,
+            }
+          )
+
           await dispatch(
             updateDefaultOrgThunk({
               accountId: loggedInAccount.id,

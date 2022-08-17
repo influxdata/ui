@@ -135,10 +135,12 @@ class TagSelector extends PureComponent<Props> {
 
     let placeholderValue = `${tag} tag values`
 
-    if (tag === '_measurement') {
-      placeholderValue = 'measurements'
-    } else if (tag === '_field') {
-      placeholderValue = 'fields'
+    if (isFlagEnabled('newQueryBuilder')) {
+      if (tag === '_measurement') {
+        placeholderValue = 'measurements'
+      } else if (tag === '_field') {
+        placeholderValue = 'fields'
+      }
     }
 
     const placeholderText =

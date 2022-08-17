@@ -274,10 +274,12 @@ const Card: FC<Props> = ({idx}) => {
 
   let placeholderValue = `${card.keys.selected[0]} tag values`
 
-  if (card.keys.selected[0] === '_measurement') {
-    placeholderValue = 'measurements'
-  } else if (card.keys.selected[0] === '_field') {
-    placeholderValue = 'fields'
+  if (isFlagEnabled('newQueryBuilder')) {
+    if (card.keys.selected[0] === '_measurement') {
+      placeholderValue = 'measurements'
+    } else if (card.keys.selected[0] === '_field') {
+      placeholderValue = 'fields'
+    }
   }
 
   if (card.aggregateFunctionType === 'group') {

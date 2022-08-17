@@ -67,8 +67,7 @@ describe('navigation', () => {
     cy.getByTestID('user-nav').click()
     cy.getByTestID('user-nav-item-about').click()
     cy.getByTestID('about-page--header').should('exist')
-    const url =
-      Cypress.env('dexUrl') === 'OSS' ? 'about' : 'org-settings'
+    const url = Cypress.env('dexUrl') === 'OSS' ? 'about' : 'org-settings'
     cy.url().should('contain', url)
 
     /** \

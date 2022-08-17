@@ -45,7 +45,11 @@ const testSchemaFiles = (
   cy.getByTestID(`bucket-card ${bucketName}`)
     .should('exist')
     .within(() => {
-      cy.getByTestID('bucket-settings').click()
+      cy.getByTestID('bucket-settings')
+        .should($el => {
+          expect(Cypress.dom.isDetached($el)).to.eq(false)
+        })
+        .click()
     })
 
   cy.getByTestID('bucket-form').should('be.visible')
@@ -68,7 +72,11 @@ const testSchemaFiles = (
   cy.getByTestID(`bucket-card ${bucketName}`)
     .should('exist')
     .within(() => {
-      cy.getByTestID('bucket-settings').click()
+      cy.getByTestID('bucket-settings')
+        .should($el => {
+          expect(Cypress.dom.isDetached($el)).to.eq(false)
+        })
+        .click()
     })
 
   cy.getByTestID('bucket-form').should('be.visible')
@@ -135,7 +143,11 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('bucket-showSchema').contains('Show Schema')
 
       // click on settings; open up the advanced section, and should see the "explicit" as the bucket schema type:
-      cy.getByTestID('bucket-settings').click()
+      cy.getByTestID('bucket-settings')
+        .should($el => {
+          expect(Cypress.dom.isDetached($el)).to.eq(false)
+        })
+        .click()
     })
     cy.getByTestID('overlay--container').within(() => {
       cy.getByTestID('schemaBucketToggle').click()
@@ -185,7 +197,11 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('bucket-showSchema').should('not.exist')
 
       // click on settings; open up the advanced section, and should see the "implicit" as the bucket schema type:
-      cy.getByTestID('bucket-settings').click()
+      cy.getByTestID('bucket-settings')
+        .should($el => {
+          expect(Cypress.dom.isDetached($el)).to.eq(false)
+        })
+        .click()
     })
     cy.getByTestID('overlay--container').within(() => {
       cy.getByTestID('schemaBucketToggle').click()
@@ -228,7 +244,11 @@ describe('Explicit Buckets', () => {
     cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click()
+        cy.getByTestID('bucket-settings')
+          .should($el => {
+            expect(Cypress.dom.isDetached($el)).to.eq(false)
+          })
+          .click()
       })
 
     cy.getByTestID('bucket-form').should('be.visible')
@@ -321,7 +341,11 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click()
+        cy.getByTestID('bucket-settings')
+          .should($el => {
+            expect(Cypress.dom.isDetached($el)).to.eq(false)
+          })
+          .click()
       })
 
     const schemaName = 'updated schema'
@@ -347,10 +371,11 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').should($el => {
-          expect(Cypress.dom.isDetached($el)).to.eq(false)
-        })
-        .click()
+        cy.getByTestID('bucket-settings')
+          .should($el => {
+            expect(Cypress.dom.isDetached($el)).to.eq(false)
+          })
+          .click()
       })
 
     cy.getByTestID('bucket-form').should('be.visible')
@@ -389,7 +414,11 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click()
+        cy.getByTestID('bucket-settings')
+          .should($el => {
+            expect(Cypress.dom.isDetached($el)).to.eq(false)
+          })
+          .click()
       })
 
     cy.getByTestID('bucket-form').should('be.visible')

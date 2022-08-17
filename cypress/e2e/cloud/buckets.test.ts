@@ -347,7 +347,10 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click()
+        cy.getByTestID('bucket-settings').should($el => {
+          expect(Cypress.dom.isDetached($el)).to.eq(false)
+        })
+        .click()
       })
 
     cy.getByTestID('bucket-form').should('be.visible')

@@ -177,58 +177,47 @@ export const ReplaceCertificateOverlay: FC<ReplaceCertificateModalProps> = () =>
 const CertificateDetails: FC<OwnProps> = ({subscription, updateForm, edit}) => {
   const dispatch = useDispatch()
   return (
-    <>
-      {/* {showModal && <ReplaceCertificateModal onConfirm={handleConfirm} onDismiss={handleDismiss} />} */}
-      <FlexBox
-        direction={FlexDirection.Row}
-        margin={ComponentSize.Large}
-        stretchToFitWidth={true}
-        justifyContent={JustifyContent.SpaceBetween}
-        alignItems={AlignItems.Center}
-      >
-        <FlexBoxChild>
-          <FlexBox
-            direction={FlexDirection.Column}
-            alignItems={AlignItems.Stretch}
-            justifyContent={JustifyContent.Center}
-          >
-            <InputLabel
-              size={ComponentSize.Medium}
-              style={{fontWeight: 'bold'}}
-            >
-              Certificate
-            </InputLabel>
-            <InputLabel size={ComponentSize.Small}>
-              {subscription.certCreatedAt}
-            </InputLabel>
-          </FlexBox>
-        </FlexBoxChild>
-        {edit && (
-          <Button
-            text="Replace Certificate"
-            color={ComponentColor.Secondary}
-            onClick={() => {
-              event(
-                'replace certificate clicked',
-                {},
-                {feature: 'subscriptions'}
+    <FlexBox
+      direction={FlexDirection.Row}
+      margin={ComponentSize.Large}
+      stretchToFitWidth={true}
+      justifyContent={JustifyContent.SpaceBetween}
+      alignItems={AlignItems.Center}
+    >
+      <FlexBoxChild>
+        <FlexBox
+          direction={FlexDirection.Column}
+          alignItems={AlignItems.Stretch}
+          justifyContent={JustifyContent.Center}
+        >
+          <InputLabel size={ComponentSize.Medium} style={{fontWeight: 'bold'}}>
+            Certificate
+          </InputLabel>
+          <InputLabel size={ComponentSize.Small}>
+            {subscription.certCreatedAt}
+          </InputLabel>
+        </FlexBox>
+      </FlexBoxChild>
+      {edit && (
+        <Button
+          text="Replace Certificate"
+          color={ComponentColor.Secondary}
+          onClick={() => {
+            event('replace certificate clicked', {}, {feature: 'subscriptions'})
+            dispatch(
+              showOverlay(
+                'subscription-replace-certificate',
+                {subscription, updateForm},
+                () => dispatch(dismissOverlay)
               )
-              // setShowModal(true)
-              dispatch(
-                showOverlay(
-                  'subscription-replace-certificate',
-                  {subscription, updateForm},
-                  () => dispatch(dismissOverlay)
-                )
-              )
-            }}
-            type={ButtonType.Button}
-            titleText="Edit"
-            testID="update-sub-form--edit"
-          />
-        )}
-      </FlexBox>
-    </>
+            )
+          }}
+          type={ButtonType.Button}
+          titleText="Edit"
+          testID="update-sub-form--edit"
+        />
+      )}
+    </FlexBox>
   )
 }
 

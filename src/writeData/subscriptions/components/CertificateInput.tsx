@@ -19,6 +19,7 @@ import {
   ButtonType,
   Overlay,
   FlexBoxChild,
+  ClickOutside,
 } from '@influxdata/clockface'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import TextAreaWithLabel from 'src/writeData/subscriptions/components/TextAreaWithLabel'
@@ -145,29 +146,31 @@ export const ReplaceCertificateOverlay: FC<ReplaceCertificateModalProps> = () =>
     onClose()
   }, [subscription, updateForm, onClose])
   return (
-    <Overlay visible={true} className="subscription-replace-cert-overlay">
-      <Overlay.Container maxWidth={450} style={{paddingTop: '20px'}}>
-        <Overlay.Body>
-          <FlexBox
-            direction={FlexDirection.Row}
-            stretchToFitWidth={true}
-            justifyContent={JustifyContent.SpaceBetween}
-            alignItems={AlignItems.Center}
-          >
-            <div>
-              Are you sure you want to replace your certificate? Once you save
-              your changes, we cannot retrieve the previous certificate.
-            </div>
-            <Button
-              color={ComponentColor.Primary}
-              text="Yes, Continue"
-              onClick={handleReplaceCert}
-              testID="subs-replace-cert-confirm-btn"
-            />
-          </FlexBox>
-        </Overlay.Body>
-      </Overlay.Container>
-    </Overlay>
+    <ClickOutside onClickOutside={onClose}>
+      <Overlay visible={true} className="subscription-replace-cert-overlay">
+        <Overlay.Container maxWidth={450} style={{paddingTop: '20px'}}>
+          <Overlay.Body>
+            <FlexBox
+              direction={FlexDirection.Row}
+              stretchToFitWidth={true}
+              justifyContent={JustifyContent.SpaceBetween}
+              alignItems={AlignItems.Center}
+            >
+              <div>
+                Are you sure you want to replace your certificate? Once you save
+                your changes, we cannot retrieve the previous certificate.
+              </div>
+              <Button
+                color={ComponentColor.Primary}
+                text="Yes, Continue"
+                onClick={handleReplaceCert}
+                testID="subs-replace-cert-confirm-btn"
+              />
+            </FlexBox>
+          </Overlay.Body>
+        </Overlay.Container>
+      </Overlay>
+    </ClickOutside>
   )
 }
 

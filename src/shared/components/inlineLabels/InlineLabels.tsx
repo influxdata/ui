@@ -114,7 +114,11 @@ class InlineLabels extends Component<Props> {
 
 const mstp = (state: AppState, props: OwnProps) => {
   const labels = getAll<Label>(state, ResourceType.Labels)
-  const selectedLabels = getLabels(state, props.selectedLabelIDs)
+
+  let selectedLabels = []
+  if (props.selectedLabelIDs) {
+    selectedLabels = getLabels(state, props.selectedLabelIDs)
+  }
 
   return {labels, selectedLabels}
 }

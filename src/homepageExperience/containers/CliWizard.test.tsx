@@ -19,7 +19,7 @@ describe('Navigation', () => {
   describe('Next and Previous Buttons', () => {
     it('cannot click next on final step', async () => {
       setup()
-      await fireEvent.click(screen.getByText('Finished!'))
+      await fireEvent.click(screen.getByText('Finish'))
       const nextButton = screen.getByTestId('cli-next-button')
       expect(nextButton).toHaveAttribute('disabled')
     })
@@ -37,7 +37,7 @@ describe('Navigation', () => {
     })
     it('can click previous on the last step', async () => {
       setup()
-      await fireEvent.click(screen.getByText('Finished!'))
+      await fireEvent.click(screen.getByText('Finish'))
       const prevButton = screen.getByTestId('cli-prev-button')
       expect(prevButton).not.toHaveAttribute('disabled')
     })

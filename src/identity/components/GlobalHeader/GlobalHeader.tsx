@@ -1,13 +1,13 @@
 // Library imports
-import React, {useContext, useEffect, useState, FC} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import React, {FC, useContext, useEffect, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   ComponentSize,
   FlexBox,
-  IconFont,
   Icon,
-  JustifyContent,
+  IconFont,
   InfluxColors,
+  JustifyContent,
 } from '@influxdata/clockface'
 
 // Selectors and Context
@@ -16,8 +16,8 @@ import {selectQuartzIdentity} from 'src/identity/selectors'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 
 // Components
-import {OrgDropdown} from 'src/identity/components/GlobalHeader/OrgDropdown'
 import {AccountDropdown} from 'src/identity/components/GlobalHeader/AccountDropdown'
+import {OrgDropdown} from 'src/identity/components/GlobalHeader/OrgDropdown'
 
 // Thunks
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
@@ -77,33 +77,42 @@ export const GlobalHeader: FC = () => {
     }
   }, [orgsList])
 
+  const shouldLoadDropdowns = activeOrg?.id && activeAccount?.id
+  const shouldLoadAvatar =
+    user.firstName && user.lastName && user.email && org.id
+  const shouldLoadGlobalHeader = shouldLoadDropdowns || shouldLoadAvatar
+
   const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
 
   return (
-    <FlexBox
-      margin={ComponentSize.Large}
-      justifyContent={JustifyContent.SpaceBetween}
-      className="multiaccountorg--header"
-    >
-      <FlexBox margin={ComponentSize.Medium}>
-        {activeOrg && activeAccount && (
-          <>
+    shouldLoadGlobalHeader && (
+      <FlexBox
+        className="multiaccountorg--header"
+        justifyContent={JustifyContent.SpaceBetween}
+        margin={ComponentSize.Large}
+        testID="global-header--container"
+      >
+        {shouldLoadDropdowns && (
+          <FlexBox margin={ComponentSize.Medium}>
             <AccountDropdown
-              activeOrg={activeOrg}
               activeAccount={activeAccount}
+              activeOrg={activeOrg}
               accountsList={sortedAccounts}
             />
             <Icon glyph={IconFont.CaretOutlineRight} style={caretStyle} />
             <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
-          </>
+          </FlexBox>
+        )}
+
+        {shouldLoadAvatar && (
+          <IdentityUserAvatar
+            email={user.email}
+            firstName={user.firstName}
+            lastName={user.lastName}
+            orgId={org.id}
+          />
         )}
       </FlexBox>
-      <IdentityUserAvatar
-        firstName={user.firstName}
-        lastName={user.lastName}
-        email={user.email}
-        orgId={org.id}
-      />
-    </FlexBox>
+    )
   )
 }

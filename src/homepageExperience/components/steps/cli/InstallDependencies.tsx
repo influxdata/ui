@@ -11,7 +11,12 @@ import {
 
 import React, {FC, useEffect, useState} from 'react'
 import {event} from 'src/cloud/utils/reporting'
-import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
+import {
+  isUsingLinux,
+  isUsingWindows,
+  keyboardCopyTriggered,
+  userSelection,
+} from 'src/utils/crossPlatform'
 
 export const InstallDependencies: FC = () => {
   const headingWithMargin = {marginTop: '48px', marginBottom: '0px'}
@@ -47,8 +52,17 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
   `
 
   type CurrentOSSelection = 'Linux' | 'Mac' | 'Windows'
+  const initSelection = () => {
+    if (isUsingWindows()) {
+      return 'Windows'
+    } else if (isUsingLinux()) {
+      return 'Linux'
+    } else {
+      return 'Mac'
+    }
+  }
   const [currentSelection, setCurrentSelection] = useState<CurrentOSSelection>(
-    'Mac'
+    initSelection()
   )
 
   useEffect(() => {

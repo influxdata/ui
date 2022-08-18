@@ -63,13 +63,6 @@ export class CliWizard extends PureComponent<{}, State> {
   }
 
   handleNextClick = () => {
-    this.setState({
-      currentStep: Math.min(
-        this.state.currentStep + 1,
-        HOMEPAGE_NAVIGATION_STEPS_SHORT.length
-      ),
-    })
-
     event(
       'firstMile.cliWizard.next.clicked',
       {},
@@ -82,10 +75,16 @@ export class CliWizard extends PureComponent<{}, State> {
         ),
       }
     )
+
+    this.setState({
+      currentStep: Math.min(
+        this.state.currentStep + 1,
+        HOMEPAGE_NAVIGATION_STEPS_SHORT.length
+      ),
+    })
   }
 
   handlePreviousClick = () => {
-    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
     event(
       'firstMile.cliWizard.previous.clicked',
       {},
@@ -98,6 +97,8 @@ export class CliWizard extends PureComponent<{}, State> {
         ),
       }
     )
+    
+    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
   }
 
   handleNavClick = (clickedStep: number) => {

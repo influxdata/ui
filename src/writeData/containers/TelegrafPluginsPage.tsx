@@ -88,10 +88,10 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
               'Load Data',
             ])}
           >
-            <Page.Header fullWidth={false}>
+            <Page.Header fullWidth={true}>
               <Page.Title title={name} />
             </Page.Header>
-            <Page.Contents fullWidth={false} scrollable={true}>
+            <Page.Contents fullWidth={true} scrollable={true}>
               <AddPluginToConfigurationCTA
                 contentID={contentID}
                 history={history}

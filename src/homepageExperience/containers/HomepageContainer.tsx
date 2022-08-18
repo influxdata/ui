@@ -218,7 +218,7 @@ export const HomepageContainer: FC = () => {
                       onClick={logMoreButtonClick}
                       style={inlineViewMoreStyle}
                     >
-                      + View more
+                      View more
                     </Link>
                   </FlexBox>
                   <hr style={{marginTop: '8px'}} />

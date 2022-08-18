@@ -3,11 +3,21 @@ import React from 'react'
 
 // Components
 import CodeSnippet from 'src/shared/components/CodeSnippet'
+import DataListening from 'src/homepageExperience/components/DataListening'
+import {InfluxColors, Panel} from '@influxdata/clockface'
 
 // Utils
+import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 import {event} from 'src/cloud/utils/reporting'
 
-export const WriteData = () => {
+type OwnProps = {
+  bucket: string
+}
+
+export const WriteData = (props: OwnProps) => {
+  const {bucket} = props
+  const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
+
   const codeSnippetOne = `void setup() {
     // ... code in setup() from Initialize Client
    
@@ -77,6 +87,14 @@ export const WriteData = () => {
         Indicator) of your wifi connection and write it to InfluxDB using the
         client.
       </p>
+      <p>
+        Once the data is finished writing, you will see a confirmation below.
+      </p>
+      <Panel backgroundColor={InfluxColors.Grey15}>
+        <Panel.Body>
+          <DataListening bucket={bucketName} />
+        </Panel.Body>
+      </Panel>
       <h2>Review data concepts</h2>
       <p>
         <b>Field (required)</b> <br />

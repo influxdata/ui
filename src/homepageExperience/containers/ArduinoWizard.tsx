@@ -217,7 +217,8 @@ export class ArduinoWizard extends PureComponent<{}, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    this.state.currentStep < 8
+                    this.state.currentStep <
+                    HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

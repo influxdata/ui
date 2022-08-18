@@ -66,7 +66,7 @@ describe('Influx CLI onboarding', () => {
         cy.contains(/^Execute Aggregate$/).click()
         cy.get('h1').contains('Execute a Flux Aggregate Query')
 
-        cy.contains(/^Finished!$/).click()
+        cy.contains(/^Finish$/).click()
         cy.contains('Congrats!')
 
         cy.getByTestID('cli-next-button').should('be.disabled')

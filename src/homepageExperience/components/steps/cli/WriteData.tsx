@@ -2,7 +2,13 @@
 import React, {useEffect, useState} from 'react'
 
 // Components
-import {Button, ButtonGroup, ComponentColor} from '@influxdata/clockface'
+import {
+  Button,
+  ButtonGroup,
+  ComponentColor,
+  InfluxColors,
+  Panel,
+} from '@influxdata/clockface'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import DataListening from 'src/homepageExperience/components/DataListening'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
@@ -134,8 +140,11 @@ export const WriteDataComponent = (props: OwnProps) => {
             Once the data is finished writing, you will see a confirmation
             below.
           </p>
-          <DataListening bucket={bucketName} />
-
+          <Panel backgroundColor={InfluxColors.Grey15}>
+            <Panel.Body>
+              <DataListening bucket={bucketName} />
+            </Panel.Body>
+          </Panel>
           <h2>Review data concepts</h2>
           <p>
             <b>Field (required)</b> <br />
@@ -197,7 +206,11 @@ export const WriteDataComponent = (props: OwnProps) => {
             Once the data is finished writing, you will see a confirmation
             below.
           </p>
-          <DataListening bucket={bucketName} />
+          <Panel backgroundColor={InfluxColors.Grey15}>
+            <Panel.Body>
+              <DataListening bucket={bucketName} />
+            </Panel.Body>
+          </Panel>
           <h2>Review data concepts</h2>
           <p>
             <b>Field (required)</b> <br />

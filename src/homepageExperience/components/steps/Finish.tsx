@@ -151,8 +151,7 @@ export const Finish = (props: OwnProps) => {
             </ResourceCard>
           )}
         </FlexBox>
-        {props.wizardEventName !== 'cliWizard' &&
-        props.wizardEventName !== 'arduinoWizard' ? (
+        {props.wizardEventName !== 'cliWizard' ? (
           <SampleAppCard
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}

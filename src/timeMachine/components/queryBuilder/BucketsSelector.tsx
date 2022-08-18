@@ -64,7 +64,7 @@ const BucketSelector: FunctionComponent<Props> = ({
       <BuilderCard.Menu>
         <Input
           value={searchTerm}
-          placeholder="Search for a bucket"
+          placeholder="Search buckets"
           className="tag-selector--search"
           onChange={e => setSearchTerm(e.target.value)}
           onClear={() => setSearchTerm('')}

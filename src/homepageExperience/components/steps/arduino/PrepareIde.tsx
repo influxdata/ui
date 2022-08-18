@@ -28,7 +28,7 @@ export const PrepareIde = () => {
         If you haven't already, add the board you wish to use (ESP8266 or ESP32)
         to the Arduino IDE by following these steps:
       </p>
-      <ButtonGroup orientation={Orientation.Horizontal}>
+      <ButtonGroup orientation={Orientation.Horizontal} style={{margin: '32px 0px'}}>
         <Button
           text="ESP8266"
           color={

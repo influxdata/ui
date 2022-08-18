@@ -64,38 +64,38 @@ export class ArduinoWizard extends PureComponent<{}, State> {
   }
 
   handleNextClick = () => {
-    this.setState(
+    this.setState({
+      currentStep: Math.min(
+        this.state.currentStep + 1,
+        HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
+      ),
+    })
+    event(
+      'firstMile.arduinoWizard.next.clicked',
+      {},
       {
-        currentStep: Math.min(
-          this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
+        clickedButtonAtStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
         ),
-      },
-      () => {
-        event(
-          'firstMile.arduinoWizard.next.clicked',
-          {},
-          {
-            clickedButtonAtStep: this.state.currentStep - 1,
-            currentStep: this.state.currentStep,
-          }
-        )
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep].name
+        ),
       }
     )
   }
 
   handlePreviousClick = () => {
-    this.setState(
-      {currentStep: Math.max(this.state.currentStep - 1, 1)},
-      () => {
-        event(
-          'firstMile.arduinoWizard.previous.clicked',
-          {},
-          {
-            clickedButtonAtStep: this.state.currentStep + 1,
-            currentStep: this.state.currentStep,
-          }
-        )
+    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
+    event(
+      'firstMile.arduinoWizard.previous.clicked',
+      {},
+      {
+        clickedButtonAtStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
+        ),
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 2].name
+        ),
       }
     )
   }

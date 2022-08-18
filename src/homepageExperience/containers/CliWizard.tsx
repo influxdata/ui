@@ -63,42 +63,40 @@ export class CliWizard extends PureComponent<{}, State> {
   }
 
   handleNextClick = () => {
-    event(
-      'firstMile.cliWizard.next.clicked',
-      {},
+    this.setState(
       {
-        clickedButtonAtStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+        currentStep: Math.min(
+          this.state.currentStep + 1,
+          HOMEPAGE_NAVIGATION_STEPS_SHORT.length
         ),
-        currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
-        ),
+      },
+      () => {
+        event(
+          'firstMile.cliWizard.next.clicked',
+          {},
+          {
+            clickedButtonAtStep: this.state.currentStep - 1,
+            currentStep: this.state.currentStep,
+          }
+        )
       }
     )
-
-    this.setState({
-      currentStep: Math.min(
-        this.state.currentStep + 1,
-        HOMEPAGE_NAVIGATION_STEPS_SHORT.length
-      ),
-    })
   }
 
   handlePreviousClick = () => {
-    event(
-      'firstMile.cliWizard.previous.clicked',
-      {},
-      {
-        clickedButtonAtStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep + 1].name
-        ),
-        currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
-        ),
+    this.setState(
+      {currentStep: Math.max(this.state.currentStep - 1, 1)},
+      () => {
+        event(
+          'firstMile.cliWizard.previous.clicked',
+          {},
+          {
+            clickedButtonAtStep: this.state.currentStep + 1,
+            currentStep: this.state.currentStep,
+          }
+        )
       }
     )
-    
-    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
   }
 
   handleNavClick = (clickedStep: number) => {

@@ -5,22 +5,23 @@ import {IconFont} from '@influxdata/clockface'
 // Types
 type OrgSummaryItem = OrganizationSummaries[number]
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
-import {
-  MainMenuEventPrefix,
-  TypeAheadEventPrefix,
-} from 'src/identity/events/multiOrgEventNames'
 
 interface Props {
-  activeOrg: OrgSummaryItem
   activeAccount: UserAccount
   accountsList: UserAccount[]
+  activeOrg: OrgSummaryItem
 }
 
-// Utils
-import {multiOrgEvent} from 'src/identity/events/multiOrgEvent'
+// Eventing
+import {
+  HeaderNavEvent,
+  MainMenuEventPrefix,
+  multiOrgEvent,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEvents'
 
 // Styles
-const style = {width: 'auto'}
+const accountDropdownStyle = {width: 'auto'}
 const menuStyle = {width: '250px'}
 
 // Components
@@ -33,9 +34,9 @@ import {
 import {CLOUD_URL} from 'src/shared/constants'
 
 export const AccountDropdown: FC<Props> = ({
-  activeOrg,
-  activeAccount,
   accountsList,
+  activeAccount,
+  activeOrg,
 }) => {
   const selectedAccount = {
     id: activeAccount.id.toString(),
@@ -57,28 +58,27 @@ export const AccountDropdown: FC<Props> = ({
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: TypeAheadMenuItem) => {
-    multiOrgEvent('headerNav.account.switched', {
-      'New Account ID': account.id,
-      'New Account Name': account.name,
+    multiOrgEvent(HeaderNavEvent.HeaderNavAccountSwitch, {
+      newAccountID: account.id,
+      newAccountName: account.name,
     })
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
-  const handleClick = () => {
-    // This clicking is going to get very busy. Confirm with Amy.
-    multiOrgEvent('headerNav.accountDropdown.clicked')
+  const sendAccountDropdownEvent = () => {
+    multiOrgEvent(HeaderNavEvent.HeaderNavAccountDropdownClick)
   }
 
   return (
-    <div onClick={handleClick}>
+    <div onClick={sendAccountDropdownEvent}>
       <GlobalHeaderDropdown
-        typeAheadEventPrefix={TypeAheadEventPrefix.HeaderNavSearchAccount}
         dropdownMenuStyle={menuStyle}
         mainMenuEventPrefix={MainMenuEventPrefix.HeaderNavChangeAccount}
         mainMenuHeaderIcon={IconFont.Switch_New}
         mainMenuHeaderText="Switch Account"
         mainMenuOptions={accountMainMenu}
-        style={style}
+        style={accountDropdownStyle}
+        typeAheadEventPrefix={TypeAheadEventPrefix.HeaderNavSearchAccount}
         typeAheadInputPlaceholder="Search Accounts"
         typeAheadMenuOptions={accountsList}
         typeAheadOnSelectOption={switchAccount}

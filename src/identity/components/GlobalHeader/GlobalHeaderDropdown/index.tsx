@@ -19,15 +19,13 @@ import './GlobalHeaderDropdown.scss'
 
 // Types
 import {GlobalHeaderTypeAheadMenu} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
+
+// Eventing
 import {
   MainMenuEventPrefix,
+  multiOrgEvent,
   TypeAheadEventPrefix,
-} from 'src/identity/events/multiOrgEventNames'
-
-// Utils
-import {multiOrgEvent} from 'src/identity/events/multiOrgEvent'
-
-// Maybe we should have a single file that contains all event names for multiOrg. Make it an enum so we can change to whatever.
+} from 'src/identity/events/multiOrgEvents'
 
 export interface MainMenuItem {
   name: string
@@ -43,22 +41,22 @@ export interface TypeAheadMenuItem {
 export interface Props extends StandardFunctionProps {
   defaultButtonText?: string
   defaultTestID?: string
-  dropdownButtonSize?: ComponentSize
   dropdownButtonIcon?: IconFont
-  typeAheadEventPrefix: TypeAheadEventPrefix
+  dropdownButtonSize?: ComponentSize
   dropdownMenuStyle?: React.CSSProperties
   dropdownMenuTheme?: DropdownMenuTheme
   mainMenuEventPrefix?: MainMenuEventPrefix
-  mainMenuHeaderText?: string
   mainMenuHeaderIcon?: IconFont
+  mainMenuHeaderText?: string
   mainMenuOptions: MainMenuItem[]
   mainMenuTestID?: string
   onlyRenderSubmenu?: boolean
   testID?: string
-  typeAheadSelectedOption?: TypeAheadMenuItem
-  typeAheadMenuOptions: TypeAheadMenuItem[]
+  typeAheadEventPrefix: TypeAheadEventPrefix
   typeAheadInputPlaceholder?: string
+  typeAheadMenuOptions: TypeAheadMenuItem[]
   typeAheadOnSelectOption?: (item: TypeAheadMenuItem | null) => void
+  typeAheadSelectedOption?: TypeAheadMenuItem
   typeAheadTestID?: string
 }
 
@@ -91,25 +89,25 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     const {
       defaultButtonText,
       defaultTestID,
-      dropdownButtonSize,
       dropdownButtonIcon,
+      dropdownButtonSize,
     } = this.props
     const {selectedItem} = this.state
     return (
       <Dropdown.Button
         active={active}
+        className="global-header--dropdown-button"
         onClick={onClick}
         size={dropdownButtonSize}
-        trailingIcon={dropdownButtonIcon || IconFont.DoubleCaretVertical}
-        className="global-header--dropdown-button"
         testID={defaultTestID}
+        trailingIcon={dropdownButtonIcon || IconFont.DoubleCaretVertical}
       >
         {selectedItem?.name || defaultButtonText}
       </Dropdown.Button>
     )
   }
 
-  private reportEvent = menuItem => () => {
+  private sendMainMenuEvent = (menuItem: string) => () => {
     const {mainMenuEventPrefix} = this.props
 
     multiOrgEvent(`${mainMenuEventPrefix}${menuItem}.clicked`)
@@ -118,6 +116,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
   private toggleShowTypeAheadMenu = () => {
     const {mainMenuEventPrefix} = this.props
     const {showTypeAheadMenu} = this.state
+    // 'Clicked the switch button' event is only emitted if the typeahead was closed.
     if (!showTypeAheadMenu) {
       multiOrgEvent(`${mainMenuEventPrefix}Switch.clicked`)
     }
@@ -136,13 +135,13 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
           const textEl = <span>{menuItem.name}</span>
           return (
             <div
-              onClick={this.reportEvent(menuItem.name)}
+              onClick={this.sendMainMenuEvent(menuItem.name)}
               key={`eventWrapper.${menuItem.name}`}
             >
               <Dropdown.HrefItem
+                className="global-header--align-center"
                 key={menuItem.name}
                 href={menuItem.href}
-                className="global-header--align-center"
                 testID={`${this.props.mainMenuTestID}-${menuItem.name}`}
               >
                 {iconEl}
@@ -159,31 +158,31 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     const {typeAheadMenuOptions} = this.props
     const {selectedItem} = this.state
     const {
+      dropdownMenuStyle,
+      typeAheadEventPrefix,
       typeAheadInputPlaceholder,
       typeAheadOnSelectOption,
-      typeAheadEventPrefix,
-      dropdownMenuStyle,
     } = this.props
     return (
       <GlobalHeaderTypeAheadMenu
-        typeAheadEventPrefix={typeAheadEventPrefix}
-        typeAheadPlaceHolder={typeAheadInputPlaceholder}
-        typeAheadMenuOptions={typeAheadMenuOptions}
+        defaultSelectedItem={selectedItem}
         onSelectOption={typeAheadOnSelectOption}
         style={dropdownMenuStyle}
-        defaultSelectedItem={selectedItem}
         testID={this.props.typeAheadTestID}
+        typeAheadEventPrefix={typeAheadEventPrefix}
+        typeAheadMenuOptions={typeAheadMenuOptions}
+        typeAheadPlaceHolder={typeAheadInputPlaceholder}
       />
     )
   }
 
   private renderMenu = () => {
     const {
-      mainMenuHeaderText,
-      dropdownMenuTheme = DropdownMenuTheme.None,
       dropdownMenuStyle,
-      typeAheadMenuOptions,
+      dropdownMenuTheme = DropdownMenuTheme.None,
+      mainMenuHeaderText,
       onlyRenderSubmenu = false,
+      typeAheadMenuOptions,
     } = this.props
     const {showTypeAheadMenu} = this.state
 
@@ -241,8 +240,8 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     return (
       <Dropdown
         {...dropdownProps}
-        disableAutoFocus
         button={this.dropdownButton}
+        disableAutoFocus
         menu={this.renderMenu}
         testID={this.props.testID}
       />

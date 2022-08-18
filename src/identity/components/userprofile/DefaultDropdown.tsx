@@ -12,19 +12,20 @@ import {
 import {GlobalHeaderDropdown} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 // Types
-import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
-import {
-  MainMenuEventPrefix,
-  TypeAheadEventPrefix,
-} from 'src/identity/events/multiOrgEventNames'
 type Entity = OrganizationSummaries[number] | UserAccount
+import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 
 export enum EntityLabel {
   DefaultAccount = 'Account',
   DefaultOrg = ' Organization',
 }
 
-import {event} from 'src/cloud/utils/reporting'
+import {
+  MainMenuEventPrefix,
+  multiOrgEvent,
+  TypeAheadEventPrefix,
+  UserProfileEventPrefix,
+} from 'src/identity/events/multiOrgEvents'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
@@ -35,8 +36,8 @@ interface Props {
   changeSelectedEntity: (action: SetStateAction<any>) => void
   defaultEntity: Entity
   defaultTestID: string
-  entityList: Entity[]
   entityLabel: string
+  entityList: Entity[]
   headerTestID: string
 }
 
@@ -44,49 +45,50 @@ export const DefaultDropdown: FC<Props> = ({
   changeSelectedEntity,
   defaultEntity,
   defaultTestID,
-  entityList,
   entityLabel,
+  entityList,
   headerTestID,
 }) => {
-  const mainMenuEventName =
+  // This component is used for both dropdowns on the user profile page; so determine the appropriate event name
+  // based on the entity ('account versus org') for which the dropdown is being used.
+  const mainMenuEventPrefix =
     entityLabel === EntityLabel.DefaultAccount
       ? MainMenuEventPrefix.UserProfileChangeDefaultAccount
       : MainMenuEventPrefix.UserProfileChangeDefaultOrg
 
-  const typeAheadMenuEventName =
+  const typeAheadMenuEventPrefix =
     entityLabel === EntityLabel.DefaultAccount
       ? TypeAheadEventPrefix.UserProfileSearchAccount
       : TypeAheadEventPrefix.UserProfileSearchOrg
 
-  // Likewise, this is going to end up being a bit excessive, I suspect.
-  const handleClick = () => {
-    event(`default${entityLabel}Dropdown.click`)
+  const sendUserProfileDropdownEvent = () => {
+    multiOrgEvent(`${UserProfileEventPrefix}${entityLabel}.clicked`)
   }
 
   return (
     <FlexBox
-      direction={FlexDirection.Column}
-      margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
       className="change-default-account-org--dropdown-flexbox"
-      onClick={handleClick}
+      direction={FlexDirection.Column}
+      margin={ComponentSize.Large}
+      onClick={sendUserProfileDropdownEvent}
     >
       <Form.Element
-        label={`Default ${entityLabel}`}
         className="user-profile-page--form-element"
+        label={`Default ${entityLabel}`}
         testID={headerTestID}
       >
         <GlobalHeaderDropdown
-          typeAheadEventPrefix={typeAheadMenuEventName}
           defaultTestID={defaultTestID}
-          mainMenuEventPrefix={mainMenuEventName}
+          mainMenuEventPrefix={mainMenuEventPrefix}
           mainMenuOptions={[]}
           onlyRenderSubmenu={true}
           style={globalHeaderStyle}
-          typeAheadMenuOptions={entityList}
+          typeAheadEventPrefix={typeAheadMenuEventPrefix}
           typeAheadInputPlaceholder={`Search ${entityLabel}s ...`}
-          typeAheadSelectedOption={defaultEntity}
+          typeAheadMenuOptions={entityList}
           typeAheadOnSelectOption={changeSelectedEntity}
+          typeAheadSelectedOption={defaultEntity}
         />
       </Form.Element>
     </FlexBox>

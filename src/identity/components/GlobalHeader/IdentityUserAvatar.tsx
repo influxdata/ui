@@ -1,4 +1,6 @@
+// Libraries
 import React from 'react'
+import {Link} from 'react-router-dom'
 import classnames from 'classnames'
 import {
   Button,
@@ -11,17 +13,16 @@ import {
   IconFont,
 } from '@influxdata/clockface'
 
-// Utils
-import {event} from 'src/cloud/utils/reporting'
+// Eventing
+import {HeaderNavEvent, multiOrgEvent} from 'src/identity/events/multiOrgEvents'
 
 // Styles
 import './UserPopoverStyles.scss'
-import {Link} from 'react-router-dom'
 
 type Props = {
+  email: string
   firstName: string
   lastName: string
-  email: string
   orgId: string
 }
 
@@ -44,27 +45,22 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private handlePopoverClick = (eventName: string) => () => {
-    this.sendEvent(eventName)
+    this.sendUserAvatarEvent(eventName)
   }
 
-  private sendEvent = eventName => {
+  private sendUserAvatarEvent = (eventName: string) => {
     const {email, firstName, lastName} = this.props
-    event(
-      eventName,
-      {initiative: 'multiOrg'},
-      {firstName: firstName, lastName: lastName, email: email}
-    )
+    multiOrgEvent(eventName, {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+    })
   }
 
   private togglePopoverState = () => {
-    const {email, firstName, lastName} = this.props
     const {isPopoverOpen} = this.state
     if (!isPopoverOpen) {
-      event(
-        'headerNav.userAvatarIcon.clicked',
-        {initiative: 'multiOrg'},
-        {firstName: firstName, lastName: lastName, email: email}
-      )
+      this.sendUserAvatarEvent(HeaderNavEvent.HeaderNavUserAvatarClick)
     }
     this.setState({isPopoverOpen: !isPopoverOpen})
   }
@@ -74,7 +70,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private getUserPopoverContents = () => {
-    const {firstName, lastName, email, orgId} = this.props
+    const {email, firstName, lastName, orgId} = this.props
 
     return (
       <>
@@ -90,7 +86,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
             className="user-popover-footer--button"
             to={`/orgs/${orgId}/user/profile`}
             onClick={this.handlePopoverClick(
-              'headerNav.userAvatarProfile.clicked'
+              HeaderNavEvent.HeaderNavUserProfileClick
             )}
           >
             <Icon
@@ -103,7 +99,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           <Link
             className="user-popover-footer--button"
             onClick={this.handlePopoverClick(
-              'headerNav.userAvatarLogOut.clicked'
+              HeaderNavEvent.HeaderNavUserLogoutClick
             )}
             to="/logout"
           >

@@ -8,25 +8,25 @@ import {
   TypeAheadMenuItem,
 } from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
-// Utils
-import {event} from 'src/cloud/utils/reporting'
-
 // Types
 import {OrganizationSummaries} from 'src/client/unityRoutes'
-import {
-  MainMenuEventPrefix,
-  TypeAheadEventPrefix,
-} from 'src/identity/events/multiOrgEventNames'
 
 // Constants
 import {CLOUD_URL} from 'src/shared/constants'
 
+// Eventing
+import {
+  HeaderNavEvent,
+  MainMenuEventPrefix,
+  multiOrgEvent,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEvents'
+
 const switchOrg = (org: TypeAheadMenuItem) => {
-  event(
-    'headerNav.org.switched',
-    {initiative: 'multiOrg'},
-    {'New Account ID': org.id, 'New Account Name': org.name}
-  )
+  multiOrgEvent(HeaderNavEvent.HeaderNavOrgSwitch, {
+    newOrgID: org.id,
+    newOrgName: org.name,
+  })
   window.location.href = `${CLOUD_URL}/orgs/${org.id}`
 }
 
@@ -38,7 +38,7 @@ interface Props {
 }
 
 const menuStyle = {width: '250px'}
-const style = {width: 'auto'}
+const orgDropdownStyle = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const orgMainMenu = [
@@ -59,21 +59,20 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     },
   ]
 
-  const handleClick = () => {
-    // This clicking is going to get very busy. Confirm with Amy.
-    event('headerNav.orgDropdown.clicked')
+  const sendOrgDropdownEvent = () => {
+    multiOrgEvent(HeaderNavEvent.HeaderNavOrgDropdownClick)
   }
 
   return (
-    <div onClick={handleClick}>
+    <div onClick={sendOrgDropdownEvent}>
       <GlobalHeaderDropdown
-        typeAheadEventPrefix={TypeAheadEventPrefix.HeaderNavSearchOrg}
         dropdownMenuStyle={menuStyle}
         mainMenuEventPrefix={MainMenuEventPrefix.HeaderNavChangeOrg}
         mainMenuHeaderIcon={IconFont.Switch_New}
         mainMenuHeaderText="Switch Organization"
         mainMenuOptions={orgMainMenu}
-        style={style}
+        style={orgDropdownStyle}
+        typeAheadEventPrefix={TypeAheadEventPrefix.HeaderNavSearchOrg}
         typeAheadInputPlaceholder="Search Organizations"
         typeAheadMenuOptions={orgsList}
         typeAheadOnSelectOption={switchOrg}

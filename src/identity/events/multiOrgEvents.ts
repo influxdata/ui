@@ -9,9 +9,9 @@ export const multiOrgEvent = (name: string, fields?: PointFields) => {
 }
 
 export enum HeaderNavEvent {
-  HeaderNavAccountSwitch = 'headerNav.account.switched',
+  HeaderNavAccountSwitch = 'headerNav.account.switched', // ideally this would be headerNav.accountDropdown.accountSwitched
   HeaderNavAccountDropdownClick = 'headerNav.accountDropdown.clicked',
-  HeaderNavOrgSwitch = 'headerNav.org.switched',
+  HeaderNavOrgSwitch = 'headerNav.org.switched', // ideally this would be headerNav.orgDropdown.orgSwitched
   HeaderNavOrgDropdownClick = 'headerNav.orgDropdown.clicked',
   HeaderNavUserAvatarClick = 'headerNav.userAvatarIcon.clicked',
   HeaderNavUserProfileClick = 'headerNav.userAvatarProfile.clicked',

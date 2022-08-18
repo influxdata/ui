@@ -140,13 +140,14 @@ export const getAllVariables = (
 export const getAllVariablesForZoomRequery = (
   state: AppState,
   domain: number[],
+  timeRangeType: string,
   contextID?: string
 ): Variable[] => {
   const vars = getUserVariableNames(state, contextID || currentContext(state))
     .concat([TIME_RANGE_START, TIME_RANGE_STOP])
     .map(variableID => {
       if (domain?.length) {
-        return getVariableForZoomRequery(variableID, domain)
+        return getVariableForZoomRequery(variableID, domain, timeRangeType)
       }
       return getVariable(state, variableID)
     })

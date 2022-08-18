@@ -31,11 +31,14 @@ const OrgProfilePage: FC = () => {
         </OrgTabbedPage>
       </Page>
       <Switch>
-        <Route path="/orgs/:orgID/about/rename" component={RenameOrgOverlay} />
+        <Route
+          path="/orgs/:orgID/org-settings/rename"
+          component={RenameOrgOverlay}
+        />
         {CLOUD && quartzMe?.accountType === 'free' && (
           <DeleteOrgProvider>
             <Route
-              path="/orgs/:orgID/about/delete"
+              path="/orgs/:orgID/org-settings/delete"
               component={DeleteOrgOverlay}
             />
           </DeleteOrgProvider>

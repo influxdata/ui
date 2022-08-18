@@ -108,7 +108,7 @@ describe('change-account change-org global header', () => {
           .should('be.visible')
           .click()
 
-        cy.location('pathname').should('eq', `/orgs/${idpeOrgID}/about`)
+        cy.location('pathname').should('eq', `/orgs/${idpeOrgID}/org-settings`)
         cy.getByTestID('org-profile--panel')
           .should('be.visible')
           .and('contain', 'Organization Profile')
@@ -123,7 +123,7 @@ describe('change-account change-org global header', () => {
           .should('be.visible')
           .click()
 
-        cy.location('pathname').should('eq', `/orgs/${idpeOrgID}/users`)
+        cy.location('pathname').should('eq', `/orgs/${idpeOrgID}/members`)
         cy.getByTestID('tabs--container')
           .should('be.visible')
           .and('contain', 'Add a new user to your organization')

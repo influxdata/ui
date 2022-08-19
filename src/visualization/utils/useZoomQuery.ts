@@ -12,10 +12,6 @@ export const useZoomQuery = (properties): string => {
   const {getPanelQueries} = useContext(FlowQueryContext)
   const queryTextFromProperties = properties?.queries?.[0]?.text ?? ''
 
-  console.log('Pipe id:', id)
-  console.log('queryTextFromProperties:', queryTextFromProperties)
-  console.log('persistance query:', query)
-
   let zoomQuery = ''
 
   if (id) {

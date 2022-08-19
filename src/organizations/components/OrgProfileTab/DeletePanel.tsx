@@ -43,12 +43,12 @@ const DeletePanel: FC = () => {
       track('DeleteOrgInitiation', payload)
     }
 
-    history.push(`/orgs/${org.id}/about/delete`)
+    history.push(`/orgs/${org.id}/org-settings/delete`)
   }
 
   const handleShowWarning = () => {
     const buttonElement: NotificationButtonElement = onDismiss =>
-      getDeleteAccountWarningButton(`/orgs/${org.id}/users`, onDismiss)
+      getDeleteAccountWarningButton(`/orgs/${org.id}/members`, onDismiss)
     dispatch(notify(deleteAccountWarning(buttonElement)))
   }
 

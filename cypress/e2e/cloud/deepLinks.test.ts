@@ -12,8 +12,8 @@ describe('Deep linking', () => {
   // so you'll probably need to follow-up with the docs and/or marketing teams.
   it('should be redirected to the approprate page from a shortened link', () => {
     cy.get('@org').then((org: Organization) => {
-      cy.visit('/me/about')
-      cy.location('pathname').should('eq', `/orgs/${org.id}/about`)
+      cy.visit('/me/org-settings')
+      cy.location('pathname').should('eq', `/orgs/${org.id}/org-settings`)
 
       cy.visit('/me/alerts')
       cy.location('pathname').should('eq', `/orgs/${org.id}/alerting`)
@@ -123,8 +123,8 @@ describe('Deep linking', () => {
       cy.visit('/me/usage')
       cy.location('pathname').should('eq', `/orgs/${org.id}/usage`)
 
-      cy.visit('/me/users')
-      cy.location('pathname').should('eq', `/orgs/${org.id}/users`)
+      cy.visit('/me/members')
+      cy.location('pathname').should('eq', `/orgs/${org.id}/members`)
 
       cy.visit('/me/variables')
       cy.location('pathname').should('eq', `/orgs/${org.id}/settings/variables`)

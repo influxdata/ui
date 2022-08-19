@@ -19,7 +19,7 @@ const SuccessOverlay: FC = () => {
   const orgId = useSelector(getOrg)?.id
 
   const handleClick = () => {
-    history.push(`/orgs/${orgId}/users`)
+    history.push(`/orgs/${orgId}/members`)
   }
 
   return (

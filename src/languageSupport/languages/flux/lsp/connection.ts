@@ -174,7 +174,8 @@ class LspConnectionManager {
         if (
           change.range.startLineNumber >= startLine &&
           change.range.endLineNumber <= endLine &&
-          !this._editorChangeIsFromLsp(change)
+          !this._editorChangeIsFromLsp(change) &&
+          !this._session.composition.diverged
         ) {
           this._callbackSetSession({
             composition: {synced: false, diverged: true},
@@ -205,15 +206,21 @@ class LspConnectionManager {
       },
     ]
 
+    const removeAllStyles = this._session.composition.diverged
+
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
-      startLineStyle.concat(endLineStyle)
+      removeAllStyles ? [] : startLineStyle.concat(endLineStyle)
     )
 
     const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
     clickableInvisibleDiv.style.background = this._session.composition.synced
       ? 'blue'
       : 'grey'
+
+    if (removeAllStyles) {
+      clickableInvisibleDiv.style.display = 'none'
+    }
   }
 
   _initLsp(schema: SchemaSelection) {

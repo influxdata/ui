@@ -6,9 +6,10 @@ import {Bucket} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface SchemaComposition {
-  synced: boolean
-  diverged: boolean
+  synced: boolean // true == can modify session's schema
+  diverged: boolean // true == cannot re-sync. (e.g. user has typed in the composition block)
 }
+
 export interface SchemaSelection {
   bucket: Bucket
   measurement: string

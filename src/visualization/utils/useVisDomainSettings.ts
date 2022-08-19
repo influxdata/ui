@@ -7,15 +7,16 @@ import {isEqual} from 'lodash'
 // API
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {getStartTime, getEndTime} from 'src/timeMachine/selectors/index'
+import {getAllVariablesForZoomRequery} from 'src/variables/selectors'
+
 // Utils
 import {useOneWayState} from 'src/shared/utils/useOneWayState'
 import {extent} from 'src/shared/utils/vis'
-import {getStartTime, getEndTime} from 'src/timeMachine/selectors/index'
-import {getOrg} from 'src/organizations/selectors'
-import {getAllVariablesForZoomRequery} from 'src/variables/selectors'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
-
 import {
   getWindowPeriodFromVariables,
   getWindowVarsFromVariables,
@@ -26,6 +27,7 @@ import {
 // Types
 import {AppState, InternalFromFluxResult, TimeRange} from 'src/types'
 import {RemoteDataState} from '@influxdata/clockface'
+
 /*
   This hook helps map the domain setting stored for line graph to the
   appropriate settings on a @influxdata/giraffe `Config` object.
@@ -167,6 +169,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     timeRange = null,
   } = args
 
+  const {type: timeRangeType} = timeRange ? timeRange : {type: 'duration'}
   const [selectedTimeRange, setSelectedTimeRange] = useState(timeRange)
   const initialDomain = useMemo(() => {
     if (storedDomain) {
@@ -197,7 +200,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const [domain, setDomain] = useState(initialDomain)
 
   const getAllVariablesWithTimeDomain = (state: AppState) =>
-    getAllVariablesForZoomRequery(state, timeRange ? domain : [])
+    getAllVariablesForZoomRequery(state, timeRange ? domain : [], timeRangeType)
   const orgId = useSelector(getOrg)?.id
   const variables = useSelector(getAllVariablesWithTimeDomain)
 
@@ -297,6 +300,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
     timeRange = null,
   } = args
 
+  const {type: timeRangeType} = timeRange ? timeRange : {type: 'duration'}
   const [selectedTimeRange, setSelectedTimeRange] = useState(timeRange)
   const initialDomain = useMemo(() => {
     if (
@@ -332,7 +336,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   const [domain, setDomain] = useState(initialDomain)
 
   const getAllVariablesWithTimeDomain = (state: AppState) =>
-    getAllVariablesForZoomRequery(state, timeRange ? domain : [])
+    getAllVariablesForZoomRequery(state, timeRange ? domain : [], timeRangeType)
   const orgId = useSelector(getOrg)?.id
   const variables = useSelector(getAllVariablesWithTimeDomain)
 

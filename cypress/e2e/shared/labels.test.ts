@@ -149,6 +149,88 @@ describe('labels', () => {
       .should('contain', hex2BgColor(newLabelColor))
   })
 
+  it.only('fails when creating a label that exceeds name length more than 30 bytes', () => {
+    const newLabelName = 'Substantia: adding more than 30 bytes (48 bytes)'
+    const newLabelDescription =
+      '(\u03943) quod in se est et per se concipitur hoc est id cujus conceptus non indiget conceptu alterius rei a quo formari debeat. '
+    const newLabelColor = '#D4AF37'
+
+    cy.getByTestID('table-row').should('have.length', 0)
+
+    // open create - first button
+    cy.getByTestID('button-create-initial').click()
+
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('overlay--header')
+        .contains('Create Label')
+        .should('be.visible')
+      // dismiss
+      cy.getByTestID('overlay--header')
+        .children('button')
+        .click()
+    })
+
+    // open create
+    cy.getByTestID('button-create-initial').click()
+
+    // Try to save without name (required field) button should be disabled
+    cy.getByTestID('create-label-form--submit').should('be.disabled')
+
+    // enter name
+    cy.getByTestID('create-label-form--name').type(newLabelName)
+    // enter description
+    cy.getByTestID('create-label-form--description').type(newLabelDescription)
+    // select color
+    cy.getByTestID('color-picker--input')
+      .invoke('attr', 'value')
+      .should('contain', '#326BBA')
+    cy.getByTestID('color-picker--swatch').should('have.length', 50)
+    cy.getByTestID('color-picker--swatch')
+      .eq(23)
+      .trigger('mouseover')
+    cy.getByTestID('color-picker--swatch')
+      .eq(23)
+      .invoke('attr', 'title')
+      .should('contain', 'Honeydew')
+    cy.getByTestID('color-picker--swatch')
+      .eq(33)
+      .trigger('mouseover')
+    cy.getByTestID('color-picker--swatch')
+      .eq(33)
+      .invoke('attr', 'title')
+      .should('contain', 'Thunder')
+    cy.getByTestID('color-picker--swatch')
+      .eq(33)
+      .click()
+    cy.getByTestID('color-picker--input')
+      .invoke('attr', 'value')
+      .should('equal', '#FFD255')
+    cy.getByTestID('color-picker--input')
+      .parent()
+      .parent()
+      .children('div.cf-color-preview')
+      .invoke('attr', 'style')
+      .should('equal', 'background-color: rgb(255, 210, 85);')
+
+
+    // enter color
+    cy.getByTestID('color-picker--input').clear()
+    cy.getByTestID('color-picker--input').type(newLabelColor)
+    cy.getByTestID('color-picker--input').invoke('val')
+    cy.getByTestID('color-picker--input')
+      .parent()
+      .parent()
+      .children('div.cf-color-preview')
+      .invoke('attr', 'style')
+      .should('equal', hex2BgColor(newLabelColor))
+
+    // save
+    cy.getByTestID('create-label-form--submit').click()
+
+    // verify name, descr, color
+
+  })
+
   describe('updating', () => {
     const oldLabelName = 'attributum (атрибут)'
     const oldLabelDescription =

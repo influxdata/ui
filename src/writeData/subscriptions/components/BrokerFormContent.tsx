@@ -32,7 +32,7 @@ import {
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Types
-import {BrokerAuthType, Subscription} from 'src/types/subscriptions'
+import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'

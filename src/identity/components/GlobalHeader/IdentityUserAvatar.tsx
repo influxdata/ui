@@ -50,17 +50,12 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private handlePopoverClick = (eventName: string) => () => {
-    this.sendUserAvatarEvent(eventName)
-  }
-
-  private sendUserAvatarEvent = (eventName: string) => {
     this.props.multiOrgEvent(eventName)
   }
-
   private togglePopoverState = () => {
     const {isPopoverOpen} = this.state
     if (!isPopoverOpen) {
-      this.sendUserAvatarEvent(HeaderNavEvent.UserAvatarClick)
+      this.props.multiOrgEvent(HeaderNavEvent.UserAvatarClick)
     }
     this.setState({isPopoverOpen: !isPopoverOpen})
   }

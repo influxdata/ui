@@ -1,6 +1,6 @@
-import {event} from 'src/cloud/utils/reporting'
 import {Dispatch} from 'redux'
 import {GetState} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 import {PointFields, PointTags} from 'src/cloud/apis/reporting'
 
 export const multiOrgEvent = (eventName: string, fields?: PointFields) => (
@@ -18,25 +18,29 @@ export const multiOrgEvent = (eventName: string, fields?: PointFields) => (
 }
 
 export enum HeaderNavEvent {
-  AccountSwitch = 'headerNav.accountDropdown.switchAccount',
   AccountDropdownClick = 'headerNav.accountDropdown.clicked',
-  OrgSwitch = 'headerNav.orgDropdown.switchOrg',
+  AccountSwitch = 'headerNav.accountDropdown.accountSwitched',
+
   OrgDropdownClick = 'headerNav.orgDropdown.clicked',
+  OrgSwitch = 'headerNav.orgDropdown.orgSwitched',
+
   UserAvatarClick = 'headerNav.userAvatarIcon.clicked',
   UserProfileClick = 'headerNav.userAvatarProfile.clicked',
   UserLogoutClick = 'headerNav.userAvatarLogOut.clicked',
 }
 
 export enum UserProfileEvent {
-  DefaultAccountChange = 'userProfile.defaultAccountDropdown.accountChanged',
-  DefaultOrgChange = 'userProfile.defaultOrgDropdown.orgChanged',
+  DefaultAccountChange = 'userProfile.defaultAccountDropdown.defaultAccountChanged',
+  DefaultOrgChange = 'userProfile.defaultOrgDropdown.defaultOrgChanged',
 }
 
 export const UserProfileEventPrefix = 'userProfile.default'
 
+// Check this one
 export enum MainMenuEvent {
   SwitchOrg = 'headerNav.org',
   SwitchAccount = 'headerNav.account',
+
   ChangeDefaultOrg = 'userProfile.defaultOrgDropdown',
   ChangDefaultAccount = 'userProfile.defaultAccountDropdown',
 }
@@ -44,6 +48,7 @@ export enum MainMenuEvent {
 export enum TypeAheadEventPrefix {
   HeaderNavSearchAccount = 'headerNav.searchAccounts',
   HeaderNavSearchOrg = 'headerNav.searchOrgs',
-  UserProfileSearchAccount = 'userProfile.defaultAccount',
-  UserProfileSearchOrg = 'userProfile.defaultOrg',
+
+  UserProfileSearchAccount = 'userProfile.defaultAccountDropdown',
+  UserProfileSearchOrg = 'userProfile.defaultOrgDropdown',
 }

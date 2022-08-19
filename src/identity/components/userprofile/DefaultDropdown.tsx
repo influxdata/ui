@@ -18,7 +18,7 @@ import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 
 export enum EntityLabel {
   DefaultAccount = 'Account',
-  DefaultOrg = ' Organization',
+  DefaultOrg = 'Organization',
 }
 
 import {
@@ -52,8 +52,8 @@ export const DefaultDropdown: FC<Props> = ({
 }) => {
   const dispatch = useDispatch()
 
-  // This component is used for both dropdowns on the user profile page; so determine the appropriate event name
-  // based on the entity ('account versus org') for which the dropdown is being used.
+  // This component is used in both dropdowns on the user profile page; so determine the appropriate event name
+  // based on the entity (account vs. org) for which the dropdown is being used.
   const mainMenuEventPrefix =
     entityLabel === EntityLabel.DefaultAccount
       ? MainMenuEvent.ChangDefaultAccount
@@ -65,7 +65,9 @@ export const DefaultDropdown: FC<Props> = ({
       : TypeAheadEventPrefix.UserProfileSearchOrg
 
   const sendUserProfileDropdownEvent = () => {
-    dispatch(multiOrgEvent(`${UserProfileEventPrefix}${entityLabel}.clicked`))
+    dispatch(
+      multiOrgEvent(`${UserProfileEventPrefix}${entityLabel}Dropdown.clicked`)
+    )
   }
 
   return (

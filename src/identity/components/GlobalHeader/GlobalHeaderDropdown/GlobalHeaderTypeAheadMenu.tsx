@@ -44,9 +44,9 @@ class GlobalHeaderTypeAhead extends React.Component<Props, State> {
     }
   }
 
-  private selectAllTextInInput = (e?: ChangeEvent<HTMLInputElement>) => {
-    if (e) {
-      e.target.select()
+  private selectAllTextInInput = (event?: ChangeEvent<HTMLInputElement>) => {
+    if (event) {
+      event.target.select()
     }
   }
 
@@ -70,8 +70,8 @@ class GlobalHeaderTypeAhead extends React.Component<Props, State> {
     }
   }
 
-  private handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const filterString = e?.target?.value
+  private handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const filterString = event?.target?.value
     this.applyFilter(filterString)
   }
 
@@ -98,11 +98,11 @@ class GlobalHeaderTypeAhead extends React.Component<Props, State> {
     }
   }
 
-  private sendTypeAheadSearchEvent = (e: ChangeEvent<HTMLInputElement>) => {
+  private sendTypeAheadSearchEvent = (event: ChangeEvent<HTMLInputElement>) => {
     const {typeAheadEventPrefix} = this.props
 
     // No event should be sent if the input field is empty, or just contains whitespace.
-    if (e.target.value.trim().length) {
+    if (event.target.value.trim().length) {
       this.props.multiOrgEvent(`${typeAheadEventPrefix}.searched`)
     }
   }

@@ -70,7 +70,7 @@ type State = {
   selectedItem?: TypeAheadMenuItem
 }
 
-export class GlobalHeaderDrop extends React.Component<Props, State> {
+class GlobalHeaderDropdownMenu extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -120,7 +120,7 @@ export class GlobalHeaderDrop extends React.Component<Props, State> {
   private toggleShowTypeAheadMenu = () => {
     const {mainMenuEventPrefix, multiOrgEvent} = this.props
     const {showTypeAheadMenu} = this.state
-    // 'Clicked the switch button' event is only emitted if the typeahead was closed.
+    // 'Clicked the switch button' event only emitted when opening the typeahead.
     if (!showTypeAheadMenu) {
       multiOrgEvent(`${mainMenuEventPrefix}Switch.clicked`)
     }
@@ -259,4 +259,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export const GlobalHeaderDropdown = connector(GlobalHeaderDrop)
+export const GlobalHeaderDropdown = connector(GlobalHeaderDropdownMenu)

@@ -70,12 +70,12 @@ export const AccountDropdown: FC<Props> = ({
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
-  const sendAccountDropdownEvent = () => {
+  const sendDropdownClickEvent = () => {
     dispatch(multiOrgEvent(HeaderNavEvent.AccountDropdownClick))
   }
 
   return (
-    <div onClick={sendAccountDropdownEvent}>
+    <div onClick={sendDropdownClickEvent}>
       <GlobalHeaderDropdown
         dropdownMenuStyle={menuStyle}
         mainMenuEventPrefix={MainMenuEvent.SwitchAccount}

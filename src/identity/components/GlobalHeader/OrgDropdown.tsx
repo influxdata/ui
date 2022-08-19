@@ -39,6 +39,8 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const switchOrg = (org: TypeAheadMenuItem) => {
     dispatch(
       multiOrgEvent(HeaderNavEvent.OrgSwitch, {
+        oldOrgID: activeOrg.id,
+        oldOrgName: activeOrg.name,
         newOrgID: org.id,
         newOrgName: org.name,
       })
@@ -64,12 +66,12 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     },
   ]
 
-  const sendOrgDropdownEvent = () => {
+  const sendDropdownClickEvent = () => {
     dispatch(multiOrgEvent(HeaderNavEvent.OrgDropdownClick))
   }
 
   return (
-    <div onClick={sendOrgDropdownEvent}>
+    <div onClick={sendDropdownClickEvent}>
       <GlobalHeaderDropdown
         dropdownMenuStyle={menuStyle}
         mainMenuEventPrefix={MainMenuEvent.SwitchOrg}

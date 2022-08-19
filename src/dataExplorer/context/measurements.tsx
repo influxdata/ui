@@ -6,7 +6,7 @@ import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
-import {DEFAULT_LIMIT, EXTENDED_LIMIT} from 'src/shared/constants/queryBuilder'
+import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Contexts
 import {QueryContext, QueryScope} from 'src/shared/contexts/query'
@@ -51,11 +51,6 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
   const [measurements, setMeasurements] = useState<Array<string>>([])
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
 
-  // Constant
-  const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-    ? EXTENDED_LIMIT
-    : DEFAULT_LIMIT
-
   const getMeasurements = async bucket => {
     if (!bucket) {
       return
@@ -79,7 +74,7 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
       |> group()
       |> distinct(column: "_measurement")
       |> sort()
-      |> limit(n: ${limit})
+      |> limit(n: ${DEFAULT_LIMIT})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
@@ -92,7 +87,7 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
         )
         |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
         |> sort(columns: ["lowercase"])
-        |> limit(n: ${limit})
+        |> limit(n: ${DEFAULT_LIMIT})
       `
     }
 

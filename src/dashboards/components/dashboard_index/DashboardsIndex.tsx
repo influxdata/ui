@@ -118,11 +118,11 @@ class DashboardIndex extends PureComponent<Props, State> {
           testID="empty-dashboards-list"
           titleTag={pageTitleSuffixer(['Dashboards'])}
         >
-          <Page.Header fullWidth={false}>
+          <Page.Header fullWidth={true}>
             <Page.Title title="Dashboards" />
             <RateLimitAlert location="dashboards" />
           </Page.Header>
-          <Page.ControlBar fullWidth={false}>
+          <Page.ControlBar fullWidth={true}>
             <ErrorBoundary>
               <Page.ControlBarLeft>
                 <SearchWidget

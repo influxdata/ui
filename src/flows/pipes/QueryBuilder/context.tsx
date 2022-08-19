@@ -22,7 +22,7 @@ import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
-import {DEFAULT_LIMIT, EXTENDED_LIMIT} from 'src/shared/constants/queryBuilder'
+import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 
 interface APIResultArray<T> {
   selected: T[]
@@ -268,10 +268,6 @@ export const QueryBuilderProvider: FC = ({children}) => {
       _source += `from(bucket: "${data.buckets[0].name}")`
     }
 
-    const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-      ? EXTENDED_LIMIT
-      : DEFAULT_LIMIT
-
     let queryText = `${_source}
     |> range(${formatTimeRangeArguments(range)})
     |> filter(fn: (r) => ${tagString})
@@ -280,7 +276,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> distinct()${searchString}${previousTagString}
     |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
     |> sort()
-    |> limit(n: ${limit})`
+    |> limit(n: ${DEFAULT_LIMIT})`
 
     if (data.buckets[0].type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
       _source = `import "regexp"
@@ -294,7 +290,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
   )${searchString}${previousTagString}
     |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
     |> sort()
-    |> limit(n: ${limit})`
+    |> limit(n: ${DEFAULT_LIMIT})`
     }
 
     const result = query(queryText, scope)
@@ -395,16 +391,13 @@ export const QueryBuilderProvider: FC = ({children}) => {
       _source += `from(bucket: "${data.buckets[0].name}")`
     }
 
-    const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-      ? EXTENDED_LIMIT
-      : DEFAULT_LIMIT
     let queryText = `${_source}
     |> range(${formatTimeRangeArguments(range)})
     |> filter(fn: (r) => ${tagString})
     |> keep(columns: ["${cards[idx].keys.selected[0]}"])
     |> group()
     |> distinct(column: "${cards[idx].keys.selected[0]}")${searchString}
-    |> limit(n: ${limit})
+    |> limit(n: ${DEFAULT_LIMIT})
     |> sort()`
 
     if (data.buckets[0].type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
@@ -418,7 +411,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
     start: ${CACHING_REQUIRED_START_DATE},
     stop: ${CACHING_REQUIRED_END_DATE},
   )${searchString}
-  |> limit(n: ${limit})
+  |> limit(n: ${DEFAULT_LIMIT})
   |> sort()`
     }
 

@@ -7,7 +7,7 @@ import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
-import {DEFAULT_LIMIT, EXTENDED_LIMIT} from 'src/shared/constants/queryBuilder'
+import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Contexts
 import {QueryContext, QueryScope} from 'src/shared/contexts/query'
@@ -55,11 +55,6 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     RemoteDataState.NotStarted
   )
 
-  // Constant
-  const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-    ? EXTENDED_LIMIT
-    : DEFAULT_LIMIT
-
   const getFields = async (
     bucket: Bucket,
     measurement: string,
@@ -93,7 +88,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
       |> distinct(column: "_field")
       ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
       |> sort()
-      |> limit(n: ${limit})
+      |> limit(n: ${DEFAULT_LIMIT})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
@@ -108,7 +103,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
         ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
         |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
         |> sort(columns: ["lowercase"])
-        |> limit(n: ${limit})
+        |> limit(n: ${DEFAULT_LIMIT})
       `
     }
 

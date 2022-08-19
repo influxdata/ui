@@ -19,7 +19,7 @@ class AccountTabContainer extends PureComponent<Props> {
     const {activeTab, children} = this.props
 
     return (
-      <Page.Contents fullWidth={false} scrollable={true}>
+      <Page.Contents fullWidth={true} scrollable={true}>
         <Tabs.Container orientation={Orientation.Horizontal}>
           <AccountTabs activeTab={activeTab} />
           <Tabs.TabContents>{children}</Tabs.TabContents>

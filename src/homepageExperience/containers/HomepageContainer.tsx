@@ -1,5 +1,5 @@
-import React, {FC, useEffect} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import React, {CSSProperties, FC, useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 
 import {
@@ -14,6 +14,7 @@ import {
   Icon,
   IconFont,
   InfluxColors,
+  JustifyContent,
   Page,
   ResourceCard,
   SquareGrid,
@@ -64,6 +65,11 @@ export const HomepageContainer: FC = () => {
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
   const moreStyle = {height: '100%', ...linkStyle}
+  // checks for
+  const inlineViewMoreStyle = {
+    marginTop: '8px',
+    visibility: isFlagEnabled('onboardArduino') ? 'visible' : 'hidden',
+  } as CSSProperties
 
   const squareGridCardSize = '200px'
 
@@ -109,7 +115,7 @@ export const HomepageContainer: FC = () => {
   return (
     <>
       <Page titleTag={pageTitleSuffixer(['Get Started'])}>
-        <Page.Header fullWidth={false}>
+        <Page.Header fullWidth={true}>
           <Heading
             id="first-mile--header"
             element={HeadingElement.H1}
@@ -119,7 +125,7 @@ export const HomepageContainer: FC = () => {
           </Heading>
           <RateLimitAlert location="firstMile.homepage" />
         </Page.Header>
-        <Page.Contents scrollable={true} fullWidth={false}>
+        <Page.Contents scrollable={true} fullWidth={true}>
           <Grid>
             <Grid.Row>
               <Grid.Column widthSM={Columns.Eight} widthMD={Columns.Nine}>
@@ -188,23 +194,34 @@ export const HomepageContainer: FC = () => {
                         </Link>
                       </ResourceCard>
                     )}
-                    <ResourceCard style={cardStyle}>
-                      <Link
-                        to={loadDataSourcesLink}
-                        style={moreStyle}
-                        onClick={logMoreButtonClick}
-                      >
-                        <div className="homepage-wizard-language-tile">
-                          <span>
-                            <h5>
-                              MORE <Icon glyph={IconFont.ArrowRight_New} />
-                            </h5>
-                          </span>
-                        </div>
-                      </Link>
-                    </ResourceCard>
+                    {!isFlagEnabled('onboardArduino') && (
+                      <ResourceCard style={cardStyle}>
+                        <Link
+                          to={loadDataSourcesLink}
+                          style={moreStyle}
+                          onClick={logMoreButtonClick}
+                        >
+                          <div className="homepage-wizard-language-tile">
+                            <span>
+                              <h5>
+                                MORE <Icon glyph={IconFont.ArrowRight_New} />
+                              </h5>
+                            </span>
+                          </div>
+                        </Link>
+                      </ResourceCard>
+                    )}
                   </SquareGrid>
-                  <hr style={{marginTop: '32px'}} />
+                  <FlexBox justifyContent={JustifyContent.FlexStart}>
+                    <Link
+                      to={loadDataSourcesLink}
+                      onClick={logMoreButtonClick}
+                      style={inlineViewMoreStyle}
+                    >
+                      View more
+                    </Link>
+                  </FlexBox>
+                  <hr style={{marginTop: '8px'}} />
                   <Link
                     to={cliPageLink}
                     style={linkStyle}

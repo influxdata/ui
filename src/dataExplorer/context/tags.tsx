@@ -7,7 +7,7 @@ import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
-import {DEFAULT_LIMIT, EXTENDED_LIMIT} from 'src/shared/constants/queryBuilder'
+import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Contexts
 import {QueryContext, QueryScope} from 'src/shared/contexts/query'
@@ -69,11 +69,6 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     Hash<RemoteDataState>
   >(INITIAL_LOADING_TAG_VALUES)
 
-  // Constant
-  const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-    ? EXTENDED_LIMIT
-    : DEFAULT_LIMIT
-
   const getTagKeys = async (
     bucket: Bucket,
     measurement: string,
@@ -104,7 +99,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
       |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
       |> sort()
-      |> limit(n: ${limit})
+      |> limit(n: ${DEFAULT_LIMIT})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
@@ -121,7 +116,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
         |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
         |> sort(columns: ["lowercase"])
-        |> limit(n: ${limit})
+        |> limit(n: ${DEFAULT_LIMIT})
       `
     }
 
@@ -185,7 +180,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> group()
       |> distinct(column: "${tagKey}")
       |> sort()
-      |> limit(n: ${limit})
+      |> limit(n: ${DEFAULT_LIMIT})
     `
 
     if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
@@ -200,7 +195,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         )
         |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
         |> sort(columns: ["lowercase"])
-        |> limit(n: ${limit})
+        |> limit(n: ${DEFAULT_LIMIT})
       `
     }
 

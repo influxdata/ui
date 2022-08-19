@@ -10,7 +10,7 @@ interface Props {
 
 const AppPageHeader: FC<Props> = ({title, children}) => {
   return (
-    <Page.Header fullWidth={false}>
+    <Page.Header fullWidth={true}>
       <Page.Title title={title} />
       {children}
     </Page.Header>

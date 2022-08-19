@@ -143,7 +143,7 @@ class TasksPage extends PureComponent<Props, State> {
             sortType={sortType}
             onSort={this.handleSort}
           />
-          <Page.Contents fullWidth={false} scrollable={false}>
+          <Page.Contents fullWidth={true} scrollable={false}>
             <AutoSizer>
               {({width, height}) => {
                 return (

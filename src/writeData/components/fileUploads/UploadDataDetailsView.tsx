@@ -77,10 +77,10 @@ const UploadDataDetailsView: FC = () => {
               'Load Data',
             ])}
           >
-            <Page.Header fullWidth={false}>
+            <Page.Header fullWidth={true}>
               <Page.Title title={name} />
             </Page.Header>
-            <Page.Contents fullWidth={false} scrollable={true}>
+            <Page.Contents fullWidth={true} scrollable={true}>
               <div className="write-data--details">
                 <div className="write-data--details-thumbnail">{thumbnail}</div>
                 <div

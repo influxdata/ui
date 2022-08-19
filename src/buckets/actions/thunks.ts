@@ -225,7 +225,7 @@ export const updateBucket = (bucket: OwnBucket) => async (
     }
 
     const newBucket = normalize<Bucket, BucketEntities, string>(
-      Object.assign(resp.data, {labels: labelsResponse.data.labels}),
+      Object.assign(resp.data, {labels: labelsResponse.data.labels || []}),
       bucketSchema
     )
 

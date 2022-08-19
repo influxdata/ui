@@ -10,7 +10,7 @@ type Props = {
 }
 
 const AccountHeader: FC<Props> = ({testID = 'member-page--header'}) => (
-  <Page.Header fullWidth={false} testID={testID}>
+  <Page.Header fullWidth={true} testID={testID}>
     <Page.Title title="Account" />
     <LimitChecker>
       <RateLimitAlert location="account" />

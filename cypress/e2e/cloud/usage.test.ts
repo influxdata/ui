@@ -26,7 +26,7 @@ describe('Usage Page Free User No Data', () => {
 
   it('should display the usage page common features', () => {
     // Display the upgrade button when the user is a free user
-    cy.get('.cf-page-header--fixed')
+    cy.get('.cf-page-header--fluid')
       .children()
       .should('have.length', 2)
     cy.getByTestID('cloud-upgrade--button').should('be.visible')
@@ -128,7 +128,7 @@ describe('Usage Page PAYG With Data', () => {
 
   it('should display the usage page with data for a PAYG user', () => {
     // The implication here is that there is no Upgrade Now button
-    cy.get('.cf-page-header--fixed')
+    cy.get('.cf-page-header--fluid')
       .children()
       .should('have.length', 1)
 

@@ -16,7 +16,7 @@ const BillingPage: FC = () => {
   return (
     <BillingProvider>
       <Page titleTag={pageTitleSuffixer(['Billing'])}>
-        <Page.Header fullWidth={false} testID="billing-page--header">
+        <Page.Header fullWidth={true} testID="billing-page--header">
           <Page.Title title="Account" />
           <LimitChecker>
             <RateLimitAlert location="billing" />

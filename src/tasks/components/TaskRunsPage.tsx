@@ -56,7 +56,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
         spinnerComponent={<TechnoSpinner />}
       >
         <Page titleTag={pageTitleSuffixer(['Task Runs'])}>
-          <Page.Header fullWidth={false}>
+          <Page.Header fullWidth={true}>
             <PageBreadcrumbs
               pages={[
                 {
@@ -70,15 +70,15 @@ class TaskRunsPage extends PureComponent<Props, State> {
             />
             <RateLimitAlert location="task runs" />
           </Page.Header>
-          <Page.ControlBar fullWidth={false}>
+          <Page.ControlBar fullWidth={true}>
             <TaskRunsCard task={currentTask} isTaskEditable={isTaskEditable} />
           </Page.ControlBar>
-          <Page.ControlBar fullWidth={false}>
+          <Page.ControlBar fullWidth={true}>
             <Page.ControlBarRight>
               <TimeZoneDropdown />
             </Page.ControlBarRight>
           </Page.ControlBar>
-          <Page.Contents fullWidth={false} scrollable={true}>
+          <Page.Contents fullWidth={true} scrollable={true}>
             <TaskRunsList
               taskID={match.params.id}
               runs={runs}

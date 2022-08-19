@@ -14,7 +14,7 @@ interface Props {
 const LoadDataTabbedPage: FC<Props> = ({activeTab, children}) => {
   return (
     <Page.Contents
-      fullWidth={false}
+      fullWidth={true}
       scrollable={shouldPageBeScrollable(activeTab)}
       scrollbarSize={ComponentSize.Large}
       autoHideScrollbar={true}

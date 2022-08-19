@@ -115,7 +115,7 @@ export const HomepageContainer: FC = () => {
   return (
     <>
       <Page titleTag={pageTitleSuffixer(['Get Started'])}>
-        <Page.Header fullWidth={false}>
+        <Page.Header fullWidth={true}>
           <Heading
             id="first-mile--header"
             element={HeadingElement.H1}
@@ -125,7 +125,7 @@ export const HomepageContainer: FC = () => {
           </Heading>
           <RateLimitAlert location="firstMile.homepage" />
         </Page.Header>
-        <Page.Contents scrollable={true} fullWidth={false}>
+        <Page.Contents scrollable={true} fullWidth={true}>
           <Grid>
             <Grid.Row>
               <Grid.Column widthSM={Columns.Eight} widthMD={Columns.Nine}>

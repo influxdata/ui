@@ -1,6 +1,5 @@
 // Libraries
 import React from 'react'
-import {store} from 'redux'
 import {connect, ConnectedProps} from 'react-redux'
 import {Link} from 'react-router-dom'
 import classnames from 'classnames'

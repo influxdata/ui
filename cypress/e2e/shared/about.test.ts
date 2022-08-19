@@ -6,7 +6,7 @@ describe('About Page', () => {
     cy.signin()
 
     cy.get('@org').then((org: Organization) => {
-      cy.visit(`/orgs/${org.id}/about`)
+      cy.visit(`/orgs/${org.id}/org-settings`)
       cy.getByTestID('about-page--header').should('be.visible')
     })
   })

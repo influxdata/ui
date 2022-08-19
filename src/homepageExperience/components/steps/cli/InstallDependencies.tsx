@@ -33,10 +33,10 @@ export const InstallDependencies: FC = () => {
     "> Expand-Archive .\\influxdb2-client-latest-amd64.zip -DestinationPath 'C:\\Program Files\\InfluxData\\'\n" +
     "> mv 'C:\\Program Files\\InfluxData\\influxdb2-client-latest-windows-amd64' 'C:\\Program Files\\InfluxData\\influx'"
   const linuxCodeSnippetA = `# amd64
-wget https://dl.influxdata.com/influxdb/releases/influxdb2-client-latest-linux-amd64.tar.gz
+wget https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.3.0-linux-amd64.tar.gz
   
 # arm
-wget https://dl.influxdata.com/influxdb/releases/influxdb2-client-latest-linux-arm64.tar.gz
+wget https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.3.0-linux-arm64.tar.gz
   `
   const linuxCodeSnippetB = `# amd64
 tar xvzf path/to/influxdb2-client-latest-linux-amd64.tar.gz

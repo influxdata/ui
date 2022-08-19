@@ -32,7 +32,7 @@ import {
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Types
-import {Subscription} from 'src/types/subscriptions'
+import {BrokerAuthType, Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'
@@ -66,20 +66,6 @@ const BrokerFormContent: FC<Props> = ({
     numberInput?.addEventListener('mousewheel', function(evt) {
       evt.preventDefault()
     })
-  }, [])
-
-  useEffect(() => {
-    if (formContent.brokerUsername) {
-      updateForm({
-        ...formContent,
-        authType: 'user',
-      })
-    } else if (formContent?.certCreatedAt) {
-      updateForm({
-        ...formContent,
-        authType: 'certificate',
-      })
-    }
   }, [])
 
   return (

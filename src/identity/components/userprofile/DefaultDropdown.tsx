@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, SetStateAction} from 'react'
+import {useDispatch} from 'react-redux'
 import {
   AlignItems,
   ComponentSize,
@@ -21,7 +22,7 @@ export enum EntityLabel {
 }
 
 import {
-  MainMenuEventPrefix,
+  MainMenuEvent,
   multiOrgEvent,
   TypeAheadEventPrefix,
   UserProfileEventPrefix,
@@ -49,12 +50,14 @@ export const DefaultDropdown: FC<Props> = ({
   entityList,
   headerTestID,
 }) => {
+  const dispatch = useDispatch()
+
   // This component is used for both dropdowns on the user profile page; so determine the appropriate event name
   // based on the entity ('account versus org') for which the dropdown is being used.
   const mainMenuEventPrefix =
     entityLabel === EntityLabel.DefaultAccount
-      ? MainMenuEventPrefix.UserProfileChangeDefaultAccount
-      : MainMenuEventPrefix.UserProfileChangeDefaultOrg
+      ? MainMenuEvent.ChangDefaultAccount
+      : MainMenuEvent.ChangeDefaultOrg
 
   const typeAheadMenuEventPrefix =
     entityLabel === EntityLabel.DefaultAccount
@@ -62,7 +65,7 @@ export const DefaultDropdown: FC<Props> = ({
       : TypeAheadEventPrefix.UserProfileSearchOrg
 
   const sendUserProfileDropdownEvent = () => {
-    multiOrgEvent(`${UserProfileEventPrefix}${entityLabel}.clicked`)
+    dispatch(multiOrgEvent(`${UserProfileEventPrefix}${entityLabel}.clicked`))
   }
 
   return (

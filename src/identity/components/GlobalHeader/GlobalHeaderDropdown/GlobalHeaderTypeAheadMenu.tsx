@@ -1,5 +1,6 @@
 // Libraries
 import React, {ChangeEvent} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 import {Dropdown, Input} from '@influxdata/clockface'
 import {FixedSizeList as List} from 'react-window'
 import classnames from 'classnames'
@@ -11,7 +12,7 @@ import {
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
 
-type Props = {
+type OwnProps = {
   defaultSelectedItem?: TypeAheadMenuItem
   onSelectOption: (item: TypeAheadMenuItem) => void
   style?: React.CSSProperties
@@ -21,13 +22,17 @@ type Props = {
   typeAheadPlaceHolder: string
 }
 
+type ReduxProps = ConnectedProps<typeof connector>
+
+type Props = OwnProps & ReduxProps
+
 type State = {
   queryResults: TypeAheadMenuItem[]
   searchTerm: string
   selectedItem: TypeAheadMenuItem
 }
 
-export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
+class GlobalHeaderTypeAhead extends React.Component<Props, State> {
   private listItemHeight = 50
   private maxDropdownHeight = 150
   constructor(props: Props) {
@@ -98,9 +103,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
 
     // No event should be sent if the input field is empty, or just contains whitespace.
     if (e.target.value.trim().length) {
-      multiOrgEvent(`${typeAheadEventPrefix}.searched`, {
-        searchTerm: e.target.value,
-      })
+      this.props.multiOrgEvent(`${typeAheadEventPrefix}.searched`)
     }
   }
 
@@ -179,3 +182,11 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     )
   }
 }
+
+const mdtp = {
+  multiOrgEvent,
+}
+
+const connector = connect(null, mdtp)
+
+export const GlobalHeaderTypeAheadMenu = connector(GlobalHeaderTypeAhead)

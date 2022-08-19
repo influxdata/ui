@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
+import {useDispatch} from 'react-redux'
 import {IconFont} from '@influxdata/clockface'
 
 // Components
@@ -17,18 +18,10 @@ import {CLOUD_URL} from 'src/shared/constants'
 // Eventing
 import {
   HeaderNavEvent,
-  MainMenuEventPrefix,
+  MainMenuEvent,
   multiOrgEvent,
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
-
-const switchOrg = (org: TypeAheadMenuItem) => {
-  multiOrgEvent(HeaderNavEvent.HeaderNavOrgSwitch, {
-    newOrgID: org.id,
-    newOrgName: org.name,
-  })
-  window.location.href = `${CLOUD_URL}/orgs/${org.id}`
-}
 
 type OrgSummaryItem = OrganizationSummaries[number]
 
@@ -41,6 +34,18 @@ const menuStyle = {width: '250px'}
 const orgDropdownStyle = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
+  const dispatch = useDispatch()
+
+  const switchOrg = (org: TypeAheadMenuItem) => {
+    dispatch(
+      multiOrgEvent(HeaderNavEvent.OrgSwitch, {
+        newOrgID: org.id,
+        newOrgName: org.name,
+      })
+    )
+    window.location.href = `${CLOUD_URL}/orgs/${org.id}`
+  }
+
   const orgMainMenu = [
     {
       name: 'Settings',
@@ -60,14 +65,14 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   ]
 
   const sendOrgDropdownEvent = () => {
-    multiOrgEvent(HeaderNavEvent.HeaderNavOrgDropdownClick)
+    dispatch(multiOrgEvent(HeaderNavEvent.OrgDropdownClick))
   }
 
   return (
     <div onClick={sendOrgDropdownEvent}>
       <GlobalHeaderDropdown
         dropdownMenuStyle={menuStyle}
-        mainMenuEventPrefix={MainMenuEventPrefix.HeaderNavChangeOrg}
+        mainMenuEventPrefix={MainMenuEvent.SwitchOrg}
         mainMenuHeaderIcon={IconFont.Switch_New}
         mainMenuHeaderText="Switch Organization"
         mainMenuOptions={orgMainMenu}

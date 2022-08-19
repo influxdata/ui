@@ -1,5 +1,7 @@
 // Libraries
 import React from 'react'
+import {store} from 'redux'
+import {connect, ConnectedProps} from 'react-redux'
 import {Link} from 'react-router-dom'
 import classnames from 'classnames'
 import {
@@ -19,12 +21,16 @@ import {HeaderNavEvent, multiOrgEvent} from 'src/identity/events/multiOrgEvents'
 // Styles
 import './UserPopoverStyles.scss'
 
-type Props = {
+type OwnProps = {
   email: string
   firstName: string
   lastName: string
   orgId: string
 }
+
+type ReduxProps = ConnectedProps<typeof connector>
+
+type Props = ReduxProps & OwnProps
 
 type State = {
   isPopoverOpen: boolean
@@ -49,18 +55,13 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private sendUserAvatarEvent = (eventName: string) => {
-    const {email, firstName, lastName} = this.props
-    multiOrgEvent(eventName, {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-    })
+    this.props.multiOrgEvent(eventName)
   }
 
   private togglePopoverState = () => {
     const {isPopoverOpen} = this.state
     if (!isPopoverOpen) {
-      this.sendUserAvatarEvent(HeaderNavEvent.HeaderNavUserAvatarClick)
+      this.sendUserAvatarEvent(HeaderNavEvent.UserAvatarClick)
     }
     this.setState({isPopoverOpen: !isPopoverOpen})
   }
@@ -85,9 +86,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           <Link
             className="user-popover-footer--button"
             to={`/orgs/${orgId}/user/profile`}
-            onClick={this.handlePopoverClick(
-              HeaderNavEvent.HeaderNavUserProfileClick
-            )}
+            onClick={this.handlePopoverClick(HeaderNavEvent.UserProfileClick)}
           >
             <Icon
               className="user-popover-footer--button-icon"
@@ -98,9 +97,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           </Link>
           <Link
             className="user-popover-footer--button"
-            onClick={this.handlePopoverClick(
-              HeaderNavEvent.HeaderNavUserLogoutClick
-            )}
+            onClick={this.handlePopoverClick(HeaderNavEvent.UserLogoutClick)}
             to="/logout"
           >
             <Icon
@@ -154,4 +151,8 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 }
 
-export default IdentityUserAvatar
+const mdtp = {multiOrgEvent}
+
+const connector = connect(null, mdtp)
+
+export default connector(IdentityUserAvatar)

@@ -1,35 +1,44 @@
 import {event} from 'src/cloud/utils/reporting'
+import {Dispatch} from 'redux'
+import {GetState} from 'src/types'
 import {PointFields, PointTags} from 'src/cloud/apis/reporting'
 
-export const multiOrgEvent = (name: string, fields?: PointFields) => {
+export const multiOrgEvent = (eventName: string, fields?: PointFields) => (
+  _dispatch: Dispatch,
+  getState: GetState
+) => {
   const tags: PointTags = {
     initiative: 'multiOrg',
   }
-  event(name, tags, fields)
+
+  const account = getState().identity.currentIdentity.account
+  const {id: activeAccountID, name: activeAccountName} = account
+
+  event(eventName, tags, {activeAccountID, activeAccountName, ...fields})
 }
 
 export enum HeaderNavEvent {
-  HeaderNavAccountSwitch = 'headerNav.account.switched', // ideally this would be headerNav.accountDropdown.accountSwitched
-  HeaderNavAccountDropdownClick = 'headerNav.accountDropdown.clicked',
-  HeaderNavOrgSwitch = 'headerNav.org.switched', // ideally this would be headerNav.orgDropdown.orgSwitched
-  HeaderNavOrgDropdownClick = 'headerNav.orgDropdown.clicked',
-  HeaderNavUserAvatarClick = 'headerNav.userAvatarIcon.clicked',
-  HeaderNavUserProfileClick = 'headerNav.userAvatarProfile.clicked',
-  HeaderNavUserLogoutClick = 'headerNav.userAvatarLogOut.clicked',
+  AccountSwitch = 'headerNav.accountDropdown.switchAccount',
+  AccountDropdownClick = 'headerNav.accountDropdown.clicked',
+  OrgSwitch = 'headerNav.orgDropdown.switchOrg',
+  OrgDropdownClick = 'headerNav.orgDropdown.clicked',
+  UserAvatarClick = 'headerNav.userAvatarIcon.clicked',
+  UserProfileClick = 'headerNav.userAvatarProfile.clicked',
+  UserLogoutClick = 'headerNav.userAvatarLogOut.clicked',
 }
 
 export enum UserProfileEvent {
-  DefaultAccountChange = 'userProfile.defaultAccount.changed',
-  DefaultOrgChange = 'userProfile.defaultOrg.changed',
+  DefaultAccountChange = 'userProfile.defaultAccountDropdown.accountChanged',
+  DefaultOrgChange = 'userProfile.defaultOrgDropdown.orgChanged',
 }
 
 export const UserProfileEventPrefix = 'userProfile.default'
 
-export enum MainMenuEventPrefix {
-  HeaderNavChangeOrg = 'headerNav.org',
-  HeaderNavChangeAccount = 'headerNav.account',
-  UserProfileChangeDefaultOrg = 'userProfile.defaultOrg',
-  UserProfileChangeDefaultAccount = 'userProfile.defaultAccount',
+export enum MainMenuEvent {
+  SwitchOrg = 'headerNav.org',
+  SwitchAccount = 'headerNav.account',
+  ChangeDefaultOrg = 'userProfile.defaultOrgDropdown',
+  ChangDefaultAccount = 'userProfile.defaultAccountDropdown',
 }
 
 export enum TypeAheadEventPrefix {

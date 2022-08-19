@@ -95,12 +95,14 @@ export const UserDefaults: FC = () => {
     if (userChangedPrefs) {
       try {
         if (userPickedNewAccount) {
-          multiOrgEvent(UserProfileEvent.DefaultAccountChange, {
-            oldDefaultAccountID: loggedInAccount.id,
-            oldDefaultAccountName: loggedInAccount.name,
-            newDefaultAccountID: selectedAccount.id,
-            newDefaultAccountName: selectedAccount.name,
-          })
+          dispatch(
+            multiOrgEvent(UserProfileEvent.DefaultAccountChange, {
+              oldDefaultAccountID: loggedInAccount.id,
+              oldDefaultAccountName: loggedInAccount.name,
+              newDefaultAccountID: selectedAccount.id,
+              newDefaultAccountName: selectedAccount.name,
+            })
+          )
 
           await handleSetDefaultAccount(selectedAccount.id, {
             disablePopUps: true,
@@ -108,12 +110,14 @@ export const UserDefaults: FC = () => {
         }
 
         if (userPickedNewOrg) {
-          multiOrgEvent(UserProfileEvent.DefaultOrgChange, {
-            oldDefaultOrgID: defaultOrg.id,
-            oldDefaultOrgName: defaultOrg.name,
-            newDefaultOrgID: selectedOrg.id,
-            newDefaultOrgName: selectedOrg.name,
-          })
+          dispatch(
+            multiOrgEvent(UserProfileEvent.DefaultOrgChange, {
+              oldDefaultOrgID: defaultOrg.id,
+              oldDefaultOrgName: defaultOrg.name,
+              newDefaultOrgID: selectedOrg.id,
+              newDefaultOrgName: selectedOrg.name,
+            })
+          )
 
           await dispatch(
             updateDefaultOrgThunk({

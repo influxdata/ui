@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
+import {useDispatch} from 'react-redux'
 import {IconFont} from '@influxdata/clockface'
 
 // Types
@@ -15,7 +16,7 @@ interface Props {
 // Eventing
 import {
   HeaderNavEvent,
-  MainMenuEventPrefix,
+  MainMenuEvent,
   multiOrgEvent,
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
@@ -38,6 +39,8 @@ export const AccountDropdown: FC<Props> = ({
   activeAccount,
   activeOrg,
 }) => {
+  const dispatch = useDispatch()
+
   const selectedAccount = {
     id: activeAccount.id.toString(),
     name: activeAccount.name,
@@ -58,22 +61,24 @@ export const AccountDropdown: FC<Props> = ({
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: TypeAheadMenuItem) => {
-    multiOrgEvent(HeaderNavEvent.HeaderNavAccountSwitch, {
-      newAccountID: account.id,
-      newAccountName: account.name,
-    })
+    dispatch(
+      multiOrgEvent(HeaderNavEvent.AccountSwitch, {
+        newAccountID: account.id,
+        newAccountName: account.name,
+      })
+    )
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
   const sendAccountDropdownEvent = () => {
-    multiOrgEvent(HeaderNavEvent.HeaderNavAccountDropdownClick)
+    dispatch(multiOrgEvent(HeaderNavEvent.AccountDropdownClick))
   }
 
   return (
     <div onClick={sendAccountDropdownEvent}>
       <GlobalHeaderDropdown
         dropdownMenuStyle={menuStyle}
-        mainMenuEventPrefix={MainMenuEventPrefix.HeaderNavChangeAccount}
+        mainMenuEventPrefix={MainMenuEvent.SwitchAccount}
         mainMenuHeaderIcon={IconFont.Switch_New}
         mainMenuHeaderText="Switch Account"
         mainMenuOptions={accountMainMenu}

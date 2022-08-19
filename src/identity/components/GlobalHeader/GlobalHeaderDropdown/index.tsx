@@ -1,5 +1,6 @@
 // Libraries
 import React, {MouseEvent} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
@@ -22,7 +23,7 @@ import {GlobalHeaderTypeAheadMenu} from 'src/identity/components/GlobalHeader/Gl
 
 // Eventing
 import {
-  MainMenuEventPrefix,
+  MainMenuEvent,
   multiOrgEvent,
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
@@ -38,14 +39,14 @@ export interface TypeAheadMenuItem {
   name: string
 }
 
-export interface Props extends StandardFunctionProps {
+export interface OwnProps extends StandardFunctionProps {
   defaultButtonText?: string
   defaultTestID?: string
   dropdownButtonIcon?: IconFont
   dropdownButtonSize?: ComponentSize
   dropdownMenuStyle?: React.CSSProperties
   dropdownMenuTheme?: DropdownMenuTheme
-  mainMenuEventPrefix?: MainMenuEventPrefix
+  mainMenuEventPrefix?: MainMenuEvent
   mainMenuHeaderIcon?: IconFont
   mainMenuHeaderText?: string
   mainMenuOptions: MainMenuItem[]
@@ -60,12 +61,16 @@ export interface Props extends StandardFunctionProps {
   typeAheadTestID?: string
 }
 
+type ReduxProps = ConnectedProps<typeof connector>
+
+type Props = OwnProps & ReduxProps
+
 type State = {
   showTypeAheadMenu: boolean
   selectedItem?: TypeAheadMenuItem
 }
 
-export class GlobalHeaderDropdown extends React.Component<Props, State> {
+export class GlobalHeaderDrop extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -108,13 +113,12 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
   }
 
   private sendMainMenuEvent = (menuItem: string) => () => {
-    const {mainMenuEventPrefix} = this.props
-
+    const {mainMenuEventPrefix, multiOrgEvent} = this.props
     multiOrgEvent(`${mainMenuEventPrefix}${menuItem}.clicked`)
   }
 
   private toggleShowTypeAheadMenu = () => {
-    const {mainMenuEventPrefix} = this.props
+    const {mainMenuEventPrefix, multiOrgEvent} = this.props
     const {showTypeAheadMenu} = this.state
     // 'Clicked the switch button' event is only emitted if the typeahead was closed.
     if (!showTypeAheadMenu) {
@@ -248,3 +252,11 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     )
   }
 }
+
+const mdtp = {
+  multiOrgEvent,
+}
+
+const connector = connect(null, mdtp)
+
+export const GlobalHeaderDropdown = connector(GlobalHeaderDrop)

@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useRef, useContext} from 'react'
+import {useSelector} from 'react-redux'
 import classnames from 'classnames'
 
 // Components
@@ -19,10 +20,10 @@ import ConnectionManager, {
   ICON_SYNC_ID,
 } from 'src/languageSupport/languages/flux/lsp/connection'
 
-// Contexts
-import {AppSettingContext} from 'src/shared/contexts/app'
+// Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {fluxQueryBuilder} from 'src/shared/selectors/app'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
@@ -63,7 +64,7 @@ const FluxEditorMonaco: FC<Props> = ({
 }) => {
   const connection = useRef<ConnectionManager>(null)
   const {setEditor} = useContext(EditorContext)
-  const {fluxQueryBuilder} = useContext(AppSettingContext)
+  const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
 
   const wrapperClassName = classnames('flux-editor--monaco', {
@@ -77,7 +78,7 @@ const FluxEditorMonaco: FC<Props> = ({
   useEffect(() => {
     if (
       connection.current &&
-      fluxQueryBuilder &&
+      isFluxQueryBuilder &&
       isFlagEnabled('schemaComposition')
     ) {
       connection.current.onSchemaSessionChange(

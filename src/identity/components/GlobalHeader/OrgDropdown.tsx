@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {useDispatch} from 'react-redux'
 import {IconFont} from '@influxdata/clockface'
 
 // Components
@@ -34,17 +33,13 @@ const menuStyle = {width: '250px'}
 const orgDropdownStyle = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
-  const dispatch = useDispatch()
-
   const switchOrg = (org: TypeAheadMenuItem) => {
-    dispatch(
-      multiOrgEvent(HeaderNavEvent.OrgSwitch, {
-        oldOrgID: activeOrg.id,
-        oldOrgName: activeOrg.name,
-        newOrgID: org.id,
-        newOrgName: org.name,
-      })
-    )
+    multiOrgEvent(HeaderNavEvent.OrgSwitch, {
+      oldOrgID: activeOrg.id,
+      oldOrgName: activeOrg.name,
+      newOrgID: org.id,
+      newOrgName: org.name,
+    })
     window.location.href = `${CLOUD_URL}/orgs/${org.id}`
   }
 
@@ -67,7 +62,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   ]
 
   const sendDropdownClickEvent = () => {
-    dispatch(multiOrgEvent(HeaderNavEvent.OrgDropdownClick))
+    multiOrgEvent(HeaderNavEvent.OrgDropdownClick)
   }
 
   return (

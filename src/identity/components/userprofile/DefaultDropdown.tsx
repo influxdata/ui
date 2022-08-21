@@ -50,8 +50,6 @@ export const DefaultDropdown: FC<Props> = ({
   entityList,
   headerTestID,
 }) => {
-  const dispatch = useDispatch()
-
   // This component is used in both dropdowns on the user profile page; so determine the appropriate event name
   // based on the entity (account vs. org) for which the dropdown is being used.
   const mainMenuEventPrefix =
@@ -65,9 +63,7 @@ export const DefaultDropdown: FC<Props> = ({
       : TypeAheadEventPrefix.UserProfileSearchOrg
 
   const sendUserProfileDropdownEvent = () => {
-    dispatch(
-      multiOrgEvent(`${UserProfileEventPrefix}${entityLabel}Dropdown.clicked`)
-    )
+    multiOrgEvent(`${UserProfileEventPrefix}${entityLabel}Dropdown.clicked`)
   }
 
   return (

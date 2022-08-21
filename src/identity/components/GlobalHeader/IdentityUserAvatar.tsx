@@ -1,6 +1,5 @@
 // Libraries
 import React from 'react'
-import {connect, ConnectedProps} from 'react-redux'
 import {Link} from 'react-router-dom'
 import classnames from 'classnames'
 import {
@@ -20,22 +19,18 @@ import {HeaderNavEvent, multiOrgEvent} from 'src/identity/events/multiOrgEvents'
 // Styles
 import './UserPopoverStyles.scss'
 
-type OwnProps = {
+type Props = {
   email: string
   firstName: string
   lastName: string
   orgId: string
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-
-type Props = ReduxProps & OwnProps
-
 type State = {
   isPopoverOpen: boolean
 }
 
-class IdentityUserAvatar extends React.Component<Props, State> {
+export class IdentityUserAvatar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -50,12 +45,12 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private handlePopoverClick = (eventName: string) => () => {
-    this.props.multiOrgEvent(eventName)
+    multiOrgEvent(eventName)
   }
   private togglePopoverState = () => {
     const {isPopoverOpen} = this.state
     if (!isPopoverOpen) {
-      this.props.multiOrgEvent(HeaderNavEvent.UserAvatarClick)
+      multiOrgEvent(HeaderNavEvent.UserAvatarClick)
     }
     this.setState({isPopoverOpen: !isPopoverOpen})
   }
@@ -145,8 +140,4 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 }
 
-const mdtp = {multiOrgEvent}
-
-const connector = connect(null, mdtp)
-
-export default connector(IdentityUserAvatar)
+export default IdentityUserAvatar

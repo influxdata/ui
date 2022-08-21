@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {useDispatch} from 'react-redux'
 import {IconFont} from '@influxdata/clockface'
 
 // Types
@@ -39,8 +38,6 @@ export const AccountDropdown: FC<Props> = ({
   activeAccount,
   activeOrg,
 }) => {
-  const dispatch = useDispatch()
-
   const selectedAccount = {
     id: activeAccount.id.toString(),
     name: activeAccount.name,
@@ -61,17 +58,15 @@ export const AccountDropdown: FC<Props> = ({
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: TypeAheadMenuItem) => {
-    dispatch(
-      multiOrgEvent(HeaderNavEvent.AccountSwitch, {
-        newAccountID: account.id,
-        newAccountName: account.name,
-      })
-    )
+    multiOrgEvent(HeaderNavEvent.AccountSwitch, {
+      newAccountID: account.id,
+      newAccountName: account.name,
+    })
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
   const sendDropdownClickEvent = () => {
-    dispatch(multiOrgEvent(HeaderNavEvent.AccountDropdownClick))
+    multiOrgEvent(HeaderNavEvent.AccountDropdownClick)
   }
 
   return (

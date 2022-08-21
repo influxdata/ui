@@ -1,20 +1,11 @@
-import {Dispatch} from 'redux'
-import {GetState} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 import {PointFields, PointTags} from 'src/cloud/apis/reporting'
 
-export const multiOrgEvent = (eventName: string, fields?: PointFields) => (
-  _dispatch: Dispatch,
-  getState: GetState
-) => {
+export const multiOrgEvent = (eventName: string, fields?: PointFields) => {
   const tags: PointTags = {
     initiative: 'multiOrg',
   }
-
-  const account = getState().identity.currentIdentity.account
-  const {id: activeAccountID, name: activeAccountName} = account
-
-  event(eventName, tags, {activeAccountID, activeAccountName, ...fields})
+  event(eventName, tags, fields)
 }
 
 export enum HeaderNavEvent {

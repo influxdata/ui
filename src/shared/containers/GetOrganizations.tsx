@@ -101,7 +101,7 @@ const GetOrganizations: FunctionComponent = () => {
         })
       }
     }
-  }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [quartzMeStatus, quartzIdentityStatus, org.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // This doesn't require another API call.
   useEffect(() => {

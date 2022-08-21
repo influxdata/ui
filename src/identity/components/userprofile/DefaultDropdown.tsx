@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, SetStateAction} from 'react'
-import {useDispatch} from 'react-redux'
 import {
   AlignItems,
   ComponentSize,

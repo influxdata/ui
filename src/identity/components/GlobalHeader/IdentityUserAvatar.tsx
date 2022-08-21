@@ -30,7 +30,7 @@ type State = {
   isPopoverOpen: boolean
 }
 
-export class IdentityUserAvatar extends React.Component<Props, State> {
+class IdentityUserAvatar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {

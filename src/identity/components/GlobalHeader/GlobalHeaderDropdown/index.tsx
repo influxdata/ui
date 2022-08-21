@@ -1,6 +1,5 @@
 // Libraries
 import React, {MouseEvent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
@@ -19,7 +18,7 @@ import {
 import './GlobalHeaderDropdown.scss'
 
 // Types
-import {GlobalHeaderTypeAheadMenu} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
+import GlobalHeaderTypeAheadMenu from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
 
 // Eventing
 import {

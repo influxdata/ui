@@ -27,7 +27,6 @@ export enum UserProfileEvent {
 
 export const UserProfileEventPrefix = 'userProfile.default'
 
-// Check this one
 export enum MainMenuEvent {
   SwitchOrg = 'headerNav.org',
   SwitchAccount = 'headerNav.account',

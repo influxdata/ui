@@ -21,7 +21,7 @@ export enum EntityLabel {
 }
 
 import {
-  MainMenuEvent,
+  MainMenuEventPrefix,
   multiOrgEvent,
   TypeAheadEventPrefix,
   UserProfileEventPrefix,
@@ -49,20 +49,26 @@ export const DefaultDropdown: FC<Props> = ({
   entityList,
   headerTestID,
 }) => {
+  let mainMenuEventPrefix: MainMenuEventPrefix
+  let typeAheadMenuEventPrefix: TypeAheadEventPrefix
+  let entityAbbreviation: UserProfileEventPrefix
+
   // This component is used in both dropdowns on the user profile page; so determine the appropriate event name
   // based on the entity (account vs. org) for which the dropdown is being used.
-  const mainMenuEventPrefix =
-    entityLabel === EntityLabel.DefaultAccount
-      ? MainMenuEvent.ChangDefaultAccount
-      : MainMenuEvent.ChangeDefaultOrg
-
-  const typeAheadMenuEventPrefix =
-    entityLabel === EntityLabel.DefaultAccount
-      ? TypeAheadEventPrefix.UserProfileSearchAccount
-      : TypeAheadEventPrefix.UserProfileSearchOrg
+  if (entityLabel === EntityLabel.DefaultAccount) {
+    mainMenuEventPrefix = MainMenuEventPrefix.ChangeDefaultAccount
+    typeAheadMenuEventPrefix = TypeAheadEventPrefix.UserProfileSearchAccount
+    entityAbbreviation = UserProfileEventPrefix.Account
+  } else {
+    mainMenuEventPrefix = MainMenuEventPrefix.ChangeDefaultOrg
+    typeAheadMenuEventPrefix = TypeAheadEventPrefix.UserProfileSearchOrg
+    entityAbbreviation = UserProfileEventPrefix.Organization
+  }
 
   const sendUserProfileDropdownEvent = () => {
-    multiOrgEvent(`${UserProfileEventPrefix}${entityLabel}Dropdown.clicked`)
+    multiOrgEvent(
+      `${UserProfileEventPrefix.Default}${entityAbbreviation}Dropdown.clicked`
+    )
   }
 
   return (

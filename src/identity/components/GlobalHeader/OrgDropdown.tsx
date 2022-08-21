@@ -17,7 +17,7 @@ import {CLOUD_URL} from 'src/shared/constants'
 // Eventing
 import {
   HeaderNavEvent,
-  MainMenuEvent,
+  MainMenuEventPrefix,
   multiOrgEvent,
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
@@ -69,7 +69,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     <div onClick={sendDropdownClickEvent}>
       <GlobalHeaderDropdown
         dropdownMenuStyle={menuStyle}
-        mainMenuEventPrefix={MainMenuEvent.SwitchOrg}
+        mainMenuEventPrefix={MainMenuEventPrefix.SwitchOrg}
         mainMenuHeaderIcon={IconFont.Switch_New}
         mainMenuHeaderText="Switch Organization"
         mainMenuOptions={orgMainMenu}

@@ -22,7 +22,7 @@ import GlobalHeaderTypeAheadMenu from 'src/identity/components/GlobalHeader/Glob
 
 // Eventing
 import {
-  MainMenuEvent,
+  MainMenuEventPrefix,
   multiOrgEvent,
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
@@ -45,7 +45,7 @@ export interface Props extends StandardFunctionProps {
   dropdownButtonSize?: ComponentSize
   dropdownMenuStyle?: React.CSSProperties
   dropdownMenuTheme?: DropdownMenuTheme
-  mainMenuEventPrefix?: MainMenuEvent
+  mainMenuEventPrefix?: MainMenuEventPrefix
   mainMenuHeaderIcon?: IconFont
   mainMenuHeaderText?: string
   mainMenuOptions: MainMenuItem[]

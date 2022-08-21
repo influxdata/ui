@@ -15,7 +15,7 @@ interface Props {
 // Eventing
 import {
   HeaderNavEvent,
-  MainMenuEvent,
+  MainMenuEventPrefix,
   multiOrgEvent,
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
@@ -73,7 +73,7 @@ export const AccountDropdown: FC<Props> = ({
     <div onClick={sendDropdownClickEvent}>
       <GlobalHeaderDropdown
         dropdownMenuStyle={menuStyle}
-        mainMenuEventPrefix={MainMenuEvent.SwitchAccount}
+        mainMenuEventPrefix={MainMenuEventPrefix.SwitchAccount}
         mainMenuHeaderIcon={IconFont.Switch_New}
         mainMenuHeaderText="Switch Account"
         mainMenuOptions={accountMainMenu}

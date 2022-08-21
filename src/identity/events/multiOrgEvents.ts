@@ -25,14 +25,18 @@ export enum UserProfileEvent {
   DefaultOrgChange = 'userProfile.defaultOrgDropdown.defaultOrgChanged',
 }
 
-export const UserProfileEventPrefix = 'userProfile.default'
+export enum UserProfileEventPrefix {
+  Default = 'userProfile.default',
+  Account = 'Account',
+  Organization = 'Org',
+}
 
-export enum MainMenuEvent {
+export enum MainMenuEventPrefix {
   SwitchOrg = 'headerNav.org',
   SwitchAccount = 'headerNav.account',
 
   ChangeDefaultOrg = 'userProfile.defaultOrgDropdown',
-  ChangDefaultAccount = 'userProfile.defaultAccountDropdown',
+  ChangeDefaultAccount = 'userProfile.defaultAccountDropdown',
 }
 
 export enum TypeAheadEventPrefix {

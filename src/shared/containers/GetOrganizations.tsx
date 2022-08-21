@@ -60,6 +60,7 @@ const GetOrganizations: FunctionComponent = () => {
   const quartzMe = useSelector(getQuartzMe)
   const quartzIdentityStatus = useSelector(selectQuartzIdentityStatus)
   const {id: meId = '', name: email = ''} = useSelector(getMe)
+  const {account} = identity.currentIdentity
 
   const dispatch = useDispatch()
 
@@ -79,18 +80,26 @@ const GetOrganizations: FunctionComponent = () => {
   }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (CLOUD && org?.id && isFlagEnabled('rudderstackReporting')) {
-      identify(meId, {email, orgID: org.id})
-    }
-  }, [org?.id, identify])
-
-  useEffect(() => {
     if (
       CLOUD &&
       quartzMeStatus === RemoteDataState.NotStarted &&
       quartzIdentityStatus === RemoteDataState.NotStarted
     ) {
       dispatch(getQuartzIdentityThunk())
+
+      if (
+        org?.id &&
+        isFlagEnabled('rudderstackReporting') &&
+        account.id &&
+        account.name
+      ) {
+        identify(meId, {
+          email,
+          orgID: org.id,
+          accountID: account.id,
+          accountName: account.name,
+        })
+      }
     }
   }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 

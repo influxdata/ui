@@ -109,7 +109,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
             onClick={this.togglePopoverState}
             className={userAvatarButtonClassName}
             testID="global-header--user-avatar"
-            icon={!this.getInitials() ? IconFont.User : undefined}
+            icon={!this.getInitials() ? IconFont.User : null}
           />
           <FlexBox
             className={userPopoverClassName}

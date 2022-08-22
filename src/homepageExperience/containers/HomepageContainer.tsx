@@ -280,10 +280,10 @@ export const HomepageContainer: FC = () => {
               >
                 {CLOUD ? (
                   <UsageProvider>
-                    <Resources style={{backgroundColor: InfluxColors.Grey5}} />
+                    <Resources style={{backgroundColor: InfluxColors.Grey5, paddingRight: 0}} />
                   </UsageProvider>
                 ) : (
-                  <Resources style={{backgroundColor: InfluxColors.Grey5}} />
+                  <Resources style={{backgroundColor: InfluxColors.Grey5, paddingRight: 0}} />
                 )}
               </Grid.Column>
             </Grid.Row>

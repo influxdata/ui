@@ -4,6 +4,10 @@ export const setupProfile = (): Promise<any> => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(() => {
+          cy.request({
+            method: 'PUT',
+            url: 'api/v2/quartz/accounts/resetAllAccountOrgs',
+          })
           cy.visit('/')
           cy.getByTestID('home-page--header').should('be.visible')
           cy.setFeatureFlags(userProfileFeatureFlags).then(() => {

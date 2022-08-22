@@ -80,28 +80,25 @@ const GetOrganizations: FunctionComponent = () => {
   }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if (CLOUD && org?.id && isFlagEnabled('rudderstackReporting')) {
+      identify(meId, {
+        email,
+        orgID: org.id,
+        accountID: account.id,
+        accountName: account.name,
+      })
+    }
+  }, [meId, email, org?.id, account.id, account.name])
+
+  useEffect(() => {
     if (
       CLOUD &&
       quartzMeStatus === RemoteDataState.NotStarted &&
       quartzIdentityStatus === RemoteDataState.NotStarted
     ) {
       dispatch(getQuartzIdentityThunk())
-
-      if (
-        org?.id &&
-        isFlagEnabled('rudderstackReporting') &&
-        account.id &&
-        account.name
-      ) {
-        identify(meId, {
-          email,
-          orgID: org.id,
-          accountID: account.id,
-          accountName: account.name,
-        })
-      }
     }
-  }, [quartzMeStatus, quartzIdentityStatus, org.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // This doesn't require another API call.
   useEffect(() => {

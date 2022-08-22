@@ -96,8 +96,8 @@ export const UserDefaults: FC = () => {
       try {
         if (userPickedNewAccount) {
           multiOrgEvent(UserProfileEvent.DefaultAccountChange, {
-            oldDefaultAccountID: loggedInAccount.id,
-            oldDefaultAccountName: loggedInAccount.name,
+            oldDefaultAccountID: defaultAccount.id,
+            oldDefaultAccountName: defaultAccount.name,
             newDefaultAccountID: selectedAccount.id,
             newDefaultAccountName: selectedAccount.name,
           })

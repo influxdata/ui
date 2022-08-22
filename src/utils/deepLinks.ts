@@ -14,6 +14,8 @@ export const buildDeepLinkingMap = (orgId: string) => ({
   '/me/javaclient': `/orgs/${orgId}/load-data/client-libraries/java`,
   '/me/labels': `/orgs/${orgId}/settings/labels`,
   '/me/load-data': `/orgs/${orgId}/load-data/sources`,
+  '/me/load-data/subscriptions': `/orgs/${orgId}/load-data/subscriptions`,
+  '/me/load-data/subscriptions/create': `/orgs/${orgId}/load-data/subscriptions/create`,
   '/me/nodejsclient': `/orgs/${orgId}/load-data/client-libraries/javascript-node`,
   [`/me/${PROJECT_NAME_PLURAL.toLowerCase()}`]: `/orgs/${orgId}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
   '/me/notebooks': `/orgs/${orgId}/${PROJECT_NAME_PLURAL.toLowerCase()}`,

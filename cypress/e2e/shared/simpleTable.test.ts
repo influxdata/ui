@@ -53,7 +53,7 @@ describe('simple table interactions', () => {
     // verify correct number of pages
     cy.getByTestID('pagination-item')
       .last()
-      .contains('50')
+      .contains('100')
 
     // show raw data view of data with 10 pages
     cy.getByTestID(`selector-list ${simpleSmall}`).should('be.visible')
@@ -84,7 +84,7 @@ describe('simple table interactions', () => {
       .should('be.visible')
     cy.getByTestID('pagination-item')
       .last()
-      .contains('15')
+      .contains('10')
   })
 
   it('should render correctly after switching from a dataset with fewer pages to one with more', () => {
@@ -117,7 +117,7 @@ describe('simple table interactions', () => {
     // verify correct number of pages
     cy.getByTestID('pagination-item')
       .last()
-      .contains('5')
+      .contains('10')
 
     // show raw data view of data with 100 pages
     cy.getByTestID(`selector-list ${simpleLarge}`).should('be.visible')
@@ -148,7 +148,7 @@ describe('simple table interactions', () => {
       .should('be.visible')
     cy.getByTestID('pagination-item')
       .last()
-      .contains('150')
+      .contains('100')
   })
 
   it('should not duplicate records from the n-1 page on the nth page', () => {
@@ -181,7 +181,7 @@ describe('simple table interactions', () => {
     // verify correct number of pages
     cy.getByTestID('pagination-item')
       .last()
-      .contains('6')
+      .contains('11')
     // verify only record 31 is on last page
     cy.getByTestID('table-cell 30').should('not.exist')
     cy.getByTestID('table-cell 31').should('be.visible')
@@ -229,8 +229,8 @@ describe('simple table interactions', () => {
     cy.getByTestID('pagination-item')
       .eq(3)
       .click()
+    cy.getByTestID('table-cell 26').should('be.visible')
     cy.getByTestID('table-cell 27').should('be.visible')
-    cy.getByTestID('table-cell 28').should('be.visible')
     cy.getByTestID('pagination-item')
       .last()
       .click()
@@ -239,8 +239,8 @@ describe('simple table interactions', () => {
     cy.getByTestID('pagination-item')
       .eq(2)
       .click()
-    cy.getByTestID('table-cell 25').should('be.visible')
-    cy.getByTestID('table-cell 26').should('be.visible')
+    cy.getByTestID('table-cell 23').should('be.visible')
+    cy.getByTestID('table-cell 24').should('be.visible')
     cy.getByTestID('pagination-item')
       .last()
       .click()
@@ -249,8 +249,8 @@ describe('simple table interactions', () => {
     cy.getByTestID('pagination-item')
       .eq(1)
       .click()
-    cy.getByTestID('table-cell 23').should('be.visible')
-    cy.getByTestID('table-cell 24').should('be.visible')
+    cy.getByTestID('table-cell 20').should('be.visible')
+    cy.getByTestID('table-cell 21').should('be.visible')
     cy.getByTestID('pagination-item')
       .last()
       .click()

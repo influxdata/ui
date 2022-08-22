@@ -45,6 +45,7 @@ import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerat
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {useLegendOpacity} from 'src/visualization/utils/useLegendOpacity'
 import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
+import {useZoomQuery} from 'src/visualization/utils/useZoomQuery'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -181,13 +182,14 @@ const XYPlot: FC<Props> = ({
     return useVisYDomainSettings(storedDomain, memoizedYColumnData)
   }
 
+  const zoomQuery = useZoomQuery(properties)
   if (isFlagEnabled('zoomRequery')) {
     useXDomainSettings = ({storedDomain, parsedResult, timeRange}) =>
       useZoomRequeryXDomainSettings({
         data: parsedResult.table.getColumn(xColumn, 'number'),
         parsedResult,
         preZoomResult,
-        query: properties?.queries?.[0]?.text ?? '',
+        query: zoomQuery,
         setPreZoomResult,
         setRequeryStatus,
         setResult: setResultState,
@@ -199,7 +201,7 @@ const XYPlot: FC<Props> = ({
         data: memoizedYColumnData,
         parsedResult,
         preZoomResult,
-        query: properties?.queries?.[0]?.text ?? '',
+        query: zoomQuery,
         setPreZoomResult,
         setRequeryStatus,
         setResult: setResultState,

@@ -64,12 +64,6 @@ export class ArduinoWizard extends PureComponent<{}, State> {
   }
 
   handleNextClick = () => {
-    this.setState({
-      currentStep: Math.min(
-        this.state.currentStep + 1,
-        HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
-      ),
-    })
     event(
       'firstMile.arduinoWizard.next.clicked',
       {},
@@ -82,10 +76,15 @@ export class ArduinoWizard extends PureComponent<{}, State> {
         ),
       }
     )
+    this.setState({
+      currentStep: Math.min(
+        this.state.currentStep + 1,
+        HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
+      ),
+    })
   }
 
   handlePreviousClick = () => {
-    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
     event(
       'firstMile.arduinoWizard.previous.clicked',
       {},
@@ -98,6 +97,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
         ),
       }
     )
+    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
   }
 
   handleNavClick = (clickedStep: number) => {

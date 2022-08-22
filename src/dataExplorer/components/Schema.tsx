@@ -1,21 +1,14 @@
-import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
+import React, {FC, useContext, useEffect, useMemo} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
-import {
-  DapperScrollbars,
-  FlexBox,
-  InputLabel,
-  SlideToggle,
-  JustifyContent,
-  IconFont,
-} from '@influxdata/clockface'
+import {DapperScrollbars} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldSelector from 'src/dataExplorer/components/FieldSelector'
 import TagSelector from 'src/dataExplorer/components/TagSelector'
-import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
+import SchemaBrowserHeading from 'src/dataExplorer/components/SchemaBrowserHeading'
 
 // Context
 import {
@@ -35,42 +28,6 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Style
 import './Schema.scss'
-
-const FLUX_SYNC_TOOLTIP = `Flux Sync autopopulates the script editor to help you \
-start a query. You can turn this feature on and off, but typing within this \
-section will disable synchronization.`
-
-const Heading: FC = () => {
-  const [fluxSyncOn, setFluxSyncOn] = useState(true)
-
-  const handleFluxSyncToggle = () => {
-    setFluxSyncOn(!fluxSyncOn)
-  }
-
-  return (
-    <FlexBox
-      className="schema-browser--heading"
-      justifyContent={JustifyContent.SpaceBetween}
-    >
-      <div className="schema-browser--text">Schema Browser</div>
-      <FlexBox className="flux-sync">
-        <SlideToggle
-          className="flux-sync--toggle"
-          active={fluxSyncOn}
-          onChange={handleFluxSyncToggle}
-          testID="flux-sync--toggle"
-        />
-        <InputLabel className="flux-sync--label">
-          <SelectorTitle
-            title="Flux Sync"
-            info={FLUX_SYNC_TOOLTIP}
-            icon={IconFont.Switch_New}
-          />
-        </InputLabel>
-      </FlexBox>
-    </FlexBox>
-  )
-}
 
 const FieldsTags: FC = () => {
   const {
@@ -124,7 +81,7 @@ const Schema: FC = () => {
               <div className="scroll--container">
                 <DapperScrollbars>
                   <div className="schema-browser" data-testid="schema-browser">
-                    <Heading />
+                    <SchemaBrowserHeading />
                     <BucketSelector />
                     <div className="container-side-bar">
                       <MeasurementSelector />

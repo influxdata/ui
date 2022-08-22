@@ -13,7 +13,7 @@ export const setupProfile = (): Promise<any> => {
           cy.setFeatureFlags(userProfileFeatureFlags).then(() => {
             // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
             // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-            cy.wait(1200).then(() => {
+            cy.wait(1000).then(() => {
               cy.visit('/me/profile')
             })
           })
@@ -134,9 +134,9 @@ describe('User profile page', () => {
 
   describe('multi-org users', () => {
     it('allows the user to change their default account', () => {
-      cy.intercept({
-        path: '/api/v2/quartz/accounts/default',
-        method: 'PUT',
+      cy.intercept('PUT', '/api/v2/quartz/accounts/default', {
+        statusCode: 204,
+        data: '',
       }).as('putQuartzDefaultAccount')
 
       cy.getByTestID('user-profile--save-button').should(
@@ -144,7 +144,6 @@ describe('User profile page', () => {
         'disabled'
       )
 
-      // Confirm that the user can change default accounts solely by clicking in the dropdown.
       cy.getByTestID('user-profile--change-account-header')
         .contains('Default Account')
         .should('be.visible')
@@ -157,6 +156,15 @@ describe('User profile page', () => {
         .getByTestID('dropdown-item')
         .contains('Influx')
         .click()
+
+      cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
+        quartzAccounts[0].isDefault = true
+        quartzAccounts[1].isDefault = false
+
+        cy.intercept('GET', '/api/v2/quartz/accounts', quartzAccounts).as(
+          'getAccounts'
+        )
+      })
 
       cy.getByTestID('user-profile--save-button')
         .should('be.visible')
@@ -195,6 +203,13 @@ describe('User profile page', () => {
           .contains('Veganomicon')
           .click()
 
+        // Reset to default fixture, where Veganomicon is default.
+        cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
+          cy.intercept('GET', '/api/v2/quartz/accounts', quartzAccounts).as(
+            'getAccounts'
+          )
+        })
+
         cy.getByTestID('user-profile--save-button')
           .should('be.visible')
           .click()
@@ -223,9 +238,9 @@ describe('User profile page', () => {
     })
 
     it('allows the user to change their default org', () => {
-      cy.intercept({
-        path: '/api/v2/quartz/accounts/**/orgs/default',
-        method: 'PUT',
+      cy.intercept('PUT', '/api/v2/quartz/accounts/**/orgs/default', {
+        statusCode: 204,
+        data: '',
       }).as('putQuartzDefaultOrg')
 
       cy.getByTestID('user-profile--current-account-header')
@@ -310,14 +325,14 @@ describe('User profile page', () => {
     })
 
     it('allows the user to change both their default account and org', () => {
-      cy.intercept({
-        path: '/api/v2/quartz/accounts/default',
-        method: 'PUT',
+      cy.intercept('PUT', '/api/v2/quartz/accounts/default', {
+        statusCode: 204,
+        data: '',
       }).as('putQuartzDefaultAccount')
 
-      cy.intercept({
-        path: '/api/v2/quartz/accounts/**/orgs/default',
-        method: 'PUT',
+      cy.intercept('PUT', '/api/v2/quartz/accounts/**/orgs/default', {
+        statusCode: 204,
+        data: '',
       }).as('putQuartzDefaultOrg')
 
       cy.getByTestID('user-profile--change-account-dropdown').type('Inf')
@@ -335,6 +350,15 @@ describe('User profile page', () => {
         .getByTestID('dropdown-item')
         .contains('Test Org 1')
         .click()
+
+      cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
+        quartzAccounts[0].isDefault = true
+        quartzAccounts[1].isDefault = false
+
+        cy.intercept('GET', '/api/v2/quartz/accounts', quartzAccounts).as(
+          'getAccounts'
+        )
+      })
 
       cy.getByTestID('user-profile--save-button').click()
 

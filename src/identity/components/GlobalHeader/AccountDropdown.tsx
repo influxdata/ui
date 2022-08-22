@@ -77,12 +77,15 @@ export const AccountDropdown: FC<Props> = ({
         mainMenuHeaderIcon={IconFont.Switch_New}
         mainMenuHeaderText="Switch Account"
         mainMenuOptions={accountMainMenu}
+        mainMenuTestID="globalheader--account-dropdown-main"
         style={accountDropdownStyle}
+        testID="globalheader--account-dropdown"
         typeAheadEventPrefix={TypeAheadEventPrefix.HeaderNavSearchAccount}
         typeAheadInputPlaceholder="Search Accounts"
         typeAheadMenuOptions={accountsList}
         typeAheadOnSelectOption={switchAccount}
         typeAheadSelectedOption={selectedAccount}
+        typeAheadTestID="globalheader--account-dropdown-typeahead"
       />
     </div>
   )

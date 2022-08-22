@@ -13,7 +13,7 @@ export const setupProfile = (): Promise<any> => {
           cy.setFeatureFlags(userProfileFeatureFlags).then(() => {
             // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
             // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-            cy.wait(500).then(() => {
+            cy.wait(1000).then(() => {
               cy.visit('/me/profile')
             })
           })

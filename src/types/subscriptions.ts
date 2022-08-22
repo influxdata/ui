@@ -39,7 +39,7 @@ export interface Subscription {
   brokerClientCert?: string
   brokerCACert?: string
   authType: BrokerAuthType
-  certCreatedAt?: string
+  certProvidedAt?: string
 }
 
 export interface SubscriptionStatus {

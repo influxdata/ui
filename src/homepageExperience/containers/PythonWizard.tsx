@@ -20,6 +20,7 @@ import {WriteData} from 'src/homepageExperience/components/steps/python/WriteDat
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuery'
+import {normalizeEventName} from 'src/cloud/utils/reporting'
 
 import {PythonIcon} from 'src/homepageExperience/components/HomepageIcons'
 
@@ -63,38 +64,38 @@ export class PythonWizard extends PureComponent<null, State> {
   }
 
   handleNextClick = () => {
-    this.setState(
+    event(
+      'firstMile.pythonWizard.next.clicked',
+      {},
       {
-        currentStep: Math.min(
-          this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS.length
+        clickedButtonAtStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
         ),
-      },
-      () => {
-        event(
-          'firstMile.pythonWizard.next.clicked',
-          {},
-          {
-            clickedButtonAtStep: this.state.currentStep - 1,
-            currentStep: this.state.currentStep,
-          }
-        )
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep].name
+        ),
       }
     )
+    this.setState({
+      currentStep: Math.min(
+        this.state.currentStep + 1,
+        HOMEPAGE_NAVIGATION_STEPS.length
+      ),
+    })
   }
 
   handlePreviousClick = () => {
-    this.setState(
-      {currentStep: Math.max(this.state.currentStep - 1, 1)},
-      () => {
-        event(
-          'firstMile.pythonWizard.previous.clicked',
-          {},
-          {
-            clickedButtonAtStep: this.state.currentStep + 1,
-            currentStep: this.state.currentStep,
-          }
-        )
+    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
+    event(
+      'firstMile.pythonWizard.previous.clicked',
+      {},
+      {
+        clickedButtonAtStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+        ),
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 2].name
+        ),
       }
     )
   }
@@ -209,7 +210,7 @@ export class PythonWizard extends PureComponent<null, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    currentStep < 8
+                    currentStep < HOMEPAGE_NAVIGATION_STEPS.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

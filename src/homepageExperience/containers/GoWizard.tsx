@@ -19,6 +19,7 @@ import {ExecuteQuery} from 'src/homepageExperience/components/steps/go/ExecuteQu
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/go/ExecuteAggregateQuery'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {normalizeEventName} from 'src/cloud/utils/reporting'
 
 import {GoIcon} from 'src/homepageExperience/components/HomepageIcons'
 
@@ -62,38 +63,38 @@ export class GoWizard extends PureComponent<null, State> {
   }
 
   handleNextClick = () => {
-    this.setState(
+    event(
+      'firstMile.goWizard.next.clicked',
+      {},
       {
-        currentStep: Math.min(
-          this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS.length
+        clickedButtonAtStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
         ),
-      },
-      () => {
-        event(
-          'firstMile.goWizard.next.clicked',
-          {},
-          {
-            clickedButtonAtStep: this.state.currentStep - 1,
-            currentStep: this.state.currentStep,
-          }
-        )
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep].name
+        ),
       }
     )
+    this.setState({
+      currentStep: Math.min(
+        this.state.currentStep + 1,
+        HOMEPAGE_NAVIGATION_STEPS.length
+      ),
+    })
   }
 
   handlePreviousClick = () => {
-    this.setState(
-      {currentStep: Math.max(this.state.currentStep - 1, 1)},
-      () => {
-        event(
-          'firstMile.goWizard.previous.clicked',
-          {},
-          {
-            clickedButtonAtStep: this.state.currentStep + 1,
-            currentStep: this.state.currentStep,
-          }
-        )
+    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
+    event(
+      'firstMile.goWizard.previous.clicked',
+      {},
+      {
+        clickedButtonAtStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+        ),
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 2].name
+        ),
       }
     )
   }
@@ -205,7 +206,7 @@ export class GoWizard extends PureComponent<null, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    this.state.currentStep < 8
+                    this.state.currentStep < HOMEPAGE_NAVIGATION_STEPS.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

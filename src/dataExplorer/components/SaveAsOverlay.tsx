@@ -17,10 +17,12 @@ import {
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {PROJECT_NAME} from 'src/flows'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 enum SaveAsOption {
   Dashboard = 'dashboard',
   Notebook = 'notebook',
+  Script = 'script',
   Task = 'task',
   Variable = 'variable',
 }
@@ -44,6 +46,11 @@ const SaveAsOverlay: FC = () => {
     saveAsForm = <SaveAsVariable onHideOverlay={hide} />
   } else if (saveAsOption === SaveAsOption.Notebook) {
     saveAsForm = <SaveAsNotebookForm dismiss={hide} />
+  } else if (
+    saveAsOption === SaveAsOption.Script &&
+    isFlagEnabled('saveLoadFeature')
+  ) {
+    saveAsForm = <SaveAsNotebookForm dismiss={hide} />
   }
 
   return (
@@ -64,6 +71,15 @@ const SaveAsOverlay: FC = () => {
                 onClick={() => setSaveAsOption(SaveAsOption.Notebook)}
                 active={saveAsOption === SaveAsOption.Notebook}
               />
+              {isFlagEnabled('saveLoadFeature') && (
+                <Tabs.Tab
+                  id={SaveAsOption.Script}
+                  text="Script"
+                  testID="cell--radio-button"
+                  onClick={() => setSaveAsOption(SaveAsOption.Script)}
+                  active={saveAsOption === SaveAsOption.Script}
+                />
+              )}
               <Tabs.Tab
                 id={SaveAsOption.Dashboard}
                 text="Dashboard Cell"

@@ -16,9 +16,9 @@ interface Props {
 import {
   HeaderNavEvent,
   MainMenuEventPrefix,
-  multiOrgEvent,
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 const accountDropdownStyle = {width: 'auto'}
@@ -58,15 +58,21 @@ export const AccountDropdown: FC<Props> = ({
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: TypeAheadMenuItem) => {
-    multiOrgEvent(HeaderNavEvent.AccountSwitch, {
-      newAccountID: account.id,
-      newAccountName: account.name,
-    })
+    event(
+      HeaderNavEvent.AccountSwitch,
+      {
+        initiative: 'multiOrg',
+      },
+      {
+        newAccountID: account.id,
+        newAccountName: account.name,
+      }
+    )
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
   const sendDropdownClickEvent = () => {
-    multiOrgEvent(HeaderNavEvent.AccountDropdownClick)
+    event(HeaderNavEvent.AccountDropdownClick, {initiative: 'multiOrg'})
   }
 
   return (

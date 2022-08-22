@@ -18,9 +18,9 @@ import {CLOUD_URL} from 'src/shared/constants'
 import {
   HeaderNavEvent,
   MainMenuEventPrefix,
-  multiOrgEvent,
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
 
 type OrgSummaryItem = OrganizationSummaries[number]
 
@@ -34,12 +34,16 @@ const orgDropdownStyle = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const switchOrg = (org: TypeAheadMenuItem) => {
-    multiOrgEvent(HeaderNavEvent.OrgSwitch, {
-      oldOrgID: activeOrg.id,
-      oldOrgName: activeOrg.name,
-      newOrgID: org.id,
-      newOrgName: org.name,
-    })
+    event(
+      HeaderNavEvent.OrgSwitch,
+      {initiative: 'multiOrg'},
+      {
+        oldOrgID: activeOrg.id,
+        oldOrgName: activeOrg.name,
+        newOrgID: org.id,
+        newOrgName: org.name,
+      }
+    )
     window.location.href = `${CLOUD_URL}/orgs/${org.id}`
   }
 
@@ -62,7 +66,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   ]
 
   const sendDropdownClickEvent = () => {
-    multiOrgEvent(HeaderNavEvent.OrgDropdownClick)
+    event(HeaderNavEvent.OrgDropdownClick, {initiative: 'multiOrg'})
   }
 
   return (

@@ -6,10 +6,8 @@ import classnames from 'classnames'
 import {TypeAheadMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 // Eventing
-import {
-  multiOrgEvent,
-  TypeAheadEventPrefix,
-} from 'src/identity/events/multiOrgEvents'
+import {TypeAheadEventPrefix} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
 
 type Props = {
   defaultSelectedItem?: TypeAheadMenuItem
@@ -39,9 +37,9 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private selectAllTextInInput = (event?: ChangeEvent<HTMLInputElement>) => {
-    if (event) {
-      event.target.select()
+  private selectAllTextInInput = (e?: ChangeEvent<HTMLInputElement>) => {
+    if (e) {
+      e.target.select()
     }
   }
 
@@ -65,8 +63,8 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const filterString = event?.target?.value
+  private handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const filterString = e?.target?.value
     this.applyFilter(filterString)
   }
 
@@ -93,12 +91,12 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private sendTypeAheadSearchEvent = (event: ChangeEvent<HTMLInputElement>) => {
+  private sendTypeAheadSearchEvent = (e: ChangeEvent<HTMLInputElement>) => {
     const {typeAheadEventPrefix} = this.props
 
     // No event should be sent if the input field is empty, or just contains whitespace.
-    if (event.target.value.trim().length) {
-      multiOrgEvent(`${typeAheadEventPrefix}.searched`)
+    if (e.target.value.trim().length) {
+      event(`${typeAheadEventPrefix}.searched`, {initiative: 'multiOrg'})
     }
   }
 

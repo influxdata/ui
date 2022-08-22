@@ -22,10 +22,10 @@ export enum EntityLabel {
 
 import {
   MainMenuEventPrefix,
-  multiOrgEvent,
   TypeAheadEventPrefix,
   UserProfileEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
@@ -66,8 +66,9 @@ export const DefaultDropdown: FC<Props> = ({
   }
 
   const sendUserProfileDropdownEvent = () => {
-    multiOrgEvent(
-      `${UserProfileEventPrefix.Default}${entityAbbreviation}Dropdown.clicked`
+    event(
+      `${UserProfileEventPrefix.Default}${entityAbbreviation}Dropdown.clicked`,
+      {initiative: 'multiOrg'}
     )
   }
 

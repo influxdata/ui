@@ -35,10 +35,8 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Eventing
-import {
-  multiOrgEvent,
-  UserProfileEvent,
-} from 'src/identity/events/multiOrgEvents'
+import {UserProfileEvent} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/identity/components/userprofile/UserProfile.scss'
@@ -95,12 +93,16 @@ export const UserDefaults: FC = () => {
     if (userChangedPrefs) {
       try {
         if (userPickedNewAccount) {
-          multiOrgEvent(UserProfileEvent.DefaultAccountChange, {
-            oldDefaultAccountID: defaultAccount.id,
-            oldDefaultAccountName: defaultAccount.name,
-            newDefaultAccountID: selectedAccount.id,
-            newDefaultAccountName: selectedAccount.name,
-          })
+          event(
+            UserProfileEvent.DefaultAccountChange,
+            {initiative: 'multiOrg'},
+            {
+              oldDefaultAccountID: defaultAccount.id,
+              oldDefaultAccountName: defaultAccount.name,
+              newDefaultAccountID: selectedAccount.id,
+              newDefaultAccountName: selectedAccount.name,
+            }
+          )
 
           await handleSetDefaultAccount(selectedAccount.id, {
             disablePopUps: true,
@@ -108,12 +110,16 @@ export const UserDefaults: FC = () => {
         }
 
         if (userPickedNewOrg) {
-          multiOrgEvent(UserProfileEvent.DefaultOrgChange, {
-            oldDefaultOrgID: defaultOrg.id,
-            oldDefaultOrgName: defaultOrg.name,
-            newDefaultOrgID: selectedOrg.id,
-            newDefaultOrgName: selectedOrg.name,
-          })
+          event(
+            UserProfileEvent.DefaultOrgChange,
+            {initiative: 'multiOrg'},
+            {
+              oldDefaultOrgID: defaultOrg.id,
+              oldDefaultOrgName: defaultOrg.name,
+              newDefaultOrgID: selectedOrg.id,
+              newDefaultOrgName: selectedOrg.name,
+            }
+          )
 
           await dispatch(
             updateDefaultOrgThunk({

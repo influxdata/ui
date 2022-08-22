@@ -1,13 +1,3 @@
-import {event} from 'src/cloud/utils/reporting'
-import {PointFields, PointTags} from 'src/cloud/apis/reporting'
-
-export const multiOrgEvent = (eventName: string, fields?: PointFields) => {
-  const tags: PointTags = {
-    initiative: 'multiOrg',
-  }
-  event(eventName, tags, fields)
-}
-
 export enum HeaderNavEvent {
   AccountDropdownClick = 'headerNav.accountDropdown.clicked',
   AccountSwitch = 'headerNav.accountDropdown.accountSwitched',

@@ -5,7 +5,6 @@ import {
   ButtonShape,
   ClickOutside,
   ComponentColor,
-  ComponentSize,
   FlexBox,
   FlexDirection,
   Icon,

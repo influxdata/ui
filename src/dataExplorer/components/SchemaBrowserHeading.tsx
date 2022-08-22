@@ -1,4 +1,4 @@
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useMemo} from 'react'
 
 // Components
 import {
@@ -21,31 +21,34 @@ const SchemaBrowserHeading: FC = () => {
   const {fluxSync, toggleFluxSync} = useContext(FluxQueryBuilderContext)
 
   const handleFluxSyncToggle = () => {
-    toggleFluxSync()
+    toggleFluxSync(!fluxSync)
   }
 
-  return (
-    <FlexBox
-      className="schema-browser-heading"
-      justifyContent={JustifyContent.SpaceBetween}
-    >
-      <div className="schema-browser-heading--text">Schema Browser</div>
-      <FlexBox className="flux-sync">
-        <SlideToggle
-          className="flux-sync--toggle"
-          active={fluxSync}
-          onChange={handleFluxSyncToggle}
-          testID="flux-sync--toggle"
-        />
-        <InputLabel className="flux-sync--label">
-          <SelectorTitle
-            title="Flux Sync"
-            info={FLUX_SYNC_TOOLTIP}
-            icon={IconFont.Switch_New}
+  return useMemo(
+    () => (
+      <FlexBox
+        className="schema-browser-heading"
+        justifyContent={JustifyContent.SpaceBetween}
+      >
+        <div className="schema-browser-heading--text">Schema Browser</div>
+        <FlexBox className="flux-sync">
+          <SlideToggle
+            className="flux-sync--toggle"
+            active={fluxSync}
+            onChange={handleFluxSyncToggle}
+            testID="flux-sync--toggle"
           />
-        </InputLabel>
+          <InputLabel className="flux-sync--label">
+            <SelectorTitle
+              title="Flux Sync"
+              info={FLUX_SYNC_TOOLTIP}
+              icon={IconFont.Switch_New}
+            />
+          </InputLabel>
+        </FlexBox>
       </FlexBox>
-    </FlexBox>
+    ),
+    [fluxSync]
   )
 }
 

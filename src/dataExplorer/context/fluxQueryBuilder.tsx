@@ -40,7 +40,7 @@ const debouncer = (action: NOOP): void => {
 interface FluxQueryBuilderContextType {
   // Flux Sync
   fluxSync: boolean
-  toggleFluxSync: () => void
+  toggleFluxSync: (synced: boolean) => void
 
   // Schema
   selectedBucket: Bucket
@@ -56,7 +56,7 @@ interface FluxQueryBuilderContextType {
 const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   // Flux Sync
   fluxSync: true,
-  toggleFluxSync: () => {},
+  toggleFluxSync: _s => {},
 
   // Schema
   selectedBucket: null,
@@ -93,8 +93,8 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     }
   }, [selection.bucket])
 
-  const handleToggleFluxSync = (): void => {
-    setSelection({composition: {synced: !selection.composition?.synced}})
+  const handleToggleFluxSync = (synced: boolean): void => {
+    setSelection({composition: {synced: synced}})
   }
 
   const handleSelectBucket = (bucket: Bucket): void => {

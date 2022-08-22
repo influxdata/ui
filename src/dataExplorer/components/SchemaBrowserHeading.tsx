@@ -26,10 +26,10 @@ const SchemaBrowserHeading: FC = () => {
 
   return (
     <FlexBox
-      className="schema-browser--heading"
+      className="schema-browser-heading"
       justifyContent={JustifyContent.SpaceBetween}
     >
-      <div className="schema-browser--text">Schema Browser</div>
+      <div className="schema-browser-heading--text">Schema Browser</div>
       <FlexBox className="flux-sync">
         <SlideToggle
           className="flux-sync--toggle"

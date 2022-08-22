@@ -88,7 +88,14 @@ const ResultsPane: FC = () => {
     setQuery,
     range,
     setRange,
+    selection,
   } = useContext(PersistanceContext)
+
+  const submitButtonDisabled = !text || !selection.measurement
+
+  const disabledTitleText = submitButtonDisabled
+    ? 'Select measurement before running script'
+    : ''
 
   const download = () => {
     event('CSV Download Initiated')
@@ -197,7 +204,8 @@ const ResultsPane: FC = () => {
                 className="submit-btn"
                 text="Run"
                 icon={IconFont.Play}
-                submitButtonDisabled={!text}
+                submitButtonDisabled={submitButtonDisabled}
+                disabledTitleText={disabledTitleText}
                 queryStatus={status}
                 onSubmit={submit}
                 onNotify={fakeNotify}

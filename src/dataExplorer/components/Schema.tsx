@@ -8,7 +8,7 @@ import {
   InputLabel,
   SlideToggle,
   JustifyContent,
-  QuestionMarkTooltip,
+  IconFont,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import BucketSelector from 'src/dataExplorer/components/BucketSelector'
@@ -48,12 +48,24 @@ const Heading: FC = () => {
   }
 
   return (
-    <FlexBox justifyContent={JustifyContent.SpaceBetween}>
-      <div>Schema Browser</div>
-      <FlexBox>
-        <SlideToggle active={fluxSyncOn} onChange={handleFluxSyncToggle} />
-        <InputLabel>
-          <SelectorTitle title="Flux Sync" info={FLUX_SYNC_TOOLTIP} />
+    <FlexBox
+      className="schema-browser--heading"
+      justifyContent={JustifyContent.SpaceBetween}
+    >
+      <div className="schema-browser--text">Schema Browser</div>
+      <FlexBox className="flux-sync">
+        <SlideToggle
+          className="flux-sync--toggle"
+          active={fluxSyncOn}
+          onChange={handleFluxSyncToggle}
+          testID="flux-sync--toggle"
+        />
+        <InputLabel className="flux-sync--label">
+          <SelectorTitle
+            title="Flux Sync"
+            info={FLUX_SYNC_TOOLTIP}
+            icon={IconFont.Switch_New}
+          />
         </InputLabel>
       </FlexBox>
     </FlexBox>

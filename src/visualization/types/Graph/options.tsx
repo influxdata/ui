@@ -147,6 +147,13 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }
             />
           </Form.Element>
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
+          <h5 className="view-options--header">Options</h5>
           <Form.Element label="Time Format">
             <SelectDropdown
               options={FORMAT_OPTIONS.map(option => option.text)}
@@ -156,13 +163,6 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-        </Grid.Column>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthMD={Columns.Six}
-          widthLG={Columns.Four}
-        >
-          <h5 className="view-options--header">Options</h5>
           {properties.geom && (
             <Form.Element label="Interpolation">
               <Dropdown

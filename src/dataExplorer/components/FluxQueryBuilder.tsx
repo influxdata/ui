@@ -1,5 +1,6 @@
 import React, {FC, useContext, useCallback} from 'react'
 import {RemoteDataState} from 'src/types'
+import {useHistory, useLocation} from 'react-router-dom'
 
 // Components
 import {
@@ -11,6 +12,7 @@ import {
   IconFont,
   AlignItems,
   JustifyContent,
+  ComponentColor,
 } from '@influxdata/clockface'
 import {QueryProvider, QueryContext} from 'src/shared/contexts/query'
 import {EditorProvider} from 'src/shared/contexts/editor'
@@ -30,11 +32,14 @@ import Schema from 'src/dataExplorer/components/Schema'
 
 // Styles
 import './FluxQueryBuilder.scss'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FluxQueryBuilder: FC = () => {
   const {vertical, setVertical, setQuery, setSelection} = useContext(
     PersistanceContext
   )
+  const history = useHistory()
+  const {pathname} = useLocation()
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
 
@@ -45,6 +50,10 @@ const FluxQueryBuilder: FC = () => {
     setQuery('')
     setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
   }, [setQuery, setStatus, setResult, setSelection, cancel])
+
+  const handleShowOverlay = () => {
+    history.push(`${pathname}/save`)
+  }
 
   return (
     <EditorProvider>
@@ -64,6 +73,16 @@ const FluxQueryBuilder: FC = () => {
               text="New Script"
               icon={IconFont.Plus_New}
             />
+            {isFlagEnabled('saveLoadFeature') && (
+              <Button
+                className="flux-query-builder__save-button"
+                icon={IconFont.Save}
+                onClick={handleShowOverlay}
+                color={ComponentColor.Default}
+                titleText="Save your query as a Script, Cell, Notebook or Task"
+                text="Save"
+              />
+            )}
           </div>
           <DraggableResizer
             handleOrientation={Orientation.Vertical}

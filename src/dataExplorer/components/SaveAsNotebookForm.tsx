@@ -1,8 +1,9 @@
 // Libraries
 import React, {FC, ChangeEvent, useState} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 import {nanoid} from 'nanoid'
+import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
 // Selectors
 import {getActiveTimeMachine, getSaveableView} from 'src/timeMachine/selectors'
@@ -23,6 +24,7 @@ import {
 } from '@influxdata/clockface'
 
 // Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 import {chartTypeName} from 'src/visualization/utils/chartTypeName'
 import {
@@ -33,12 +35,15 @@ import {
 import {hydrate, serialize} from 'src/flows/context/flow.list'
 import {getBucketByName} from 'src/buckets/selectors'
 import {AppState} from 'src/types'
+import {notify} from 'src/shared/actions/notifications'
+import {savedAsNotebookSucceeded} from 'src/shared/copy/notifications'
 
 interface Props {
   dismiss: () => void
 }
 
 const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
+  const dispatch = useDispatch()
   const [notebookName, setNotebookName] = useState('')
   const orgID = useSelector(getOrg).id
   const {draftQueries, autoRefresh, timeRange, activeQueryIndex} = useSelector(
@@ -71,6 +76,66 @@ const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
         which: normalizeEventName(chartTypeName(properties?.type ?? 'xy')),
       })
       const pipes: any = []
+
+      if (isFlagEnabled('saveLoadFeature')) {
+        const query = JSON.parse(
+          window.sessionStorage.getItem('dataExplorer.query')
+        )
+        const visualization = JSON.parse(
+          window.sessionStorage.getItem('dataExplorer.results')
+        )
+        const pipes: any = [
+          {
+            id: `local_${nanoid()}`,
+            title: 'Query to Run',
+            queries: [
+              {
+                builderConfig: {
+                  buckets: [],
+                  functions: [],
+                  tags: [],
+                },
+                editMode: 'advanced',
+                text: query,
+              },
+            ],
+            activeQuery: 0,
+            type: 'rawFluxEditor',
+            visible: true,
+          },
+          {
+            id: `local_${nanoid()}`,
+            properties:
+              visualization?.state === 'graph'
+                ? SUPPORTED_VISUALIZATIONS['xy'].initial
+                : SUPPORTED_VISUALIZATIONS['simple-table'].initial,
+            title: `Visualize the Result 1`,
+            type: 'visualization',
+            visible: true,
+          },
+        ]
+
+        const flow = hydrate({
+          name: notebookName || DEFAULT_PROJECT_NAME,
+          range: timeRange,
+          orgID,
+          spec: {
+            readOnly: false,
+            range: timeRange,
+            refresh: autoRefresh || AUTOREFRESH_DEFAULT,
+            pipes,
+          },
+        })
+        const response = await postNotebook(serialize(flow))
+
+        if (response.status !== 200) {
+          throw new Error(response.data.message)
+        }
+
+        // TODO(ariel): allow for linking to the newly created notebook
+        dispatch(notify(savedAsNotebookSucceeded()))
+        return
+      }
 
       for (let i = 0; i < draftQueries.length; i++) {
         const draftQuery = JSON.parse(JSON.stringify(draftQueries[i]))

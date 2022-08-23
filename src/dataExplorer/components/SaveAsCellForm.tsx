@@ -1,8 +1,8 @@
 // Libraries
-import React, {PureComponent, ChangeEvent} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
-import {get, isEmpty} from 'lodash'
+import React, {FC, useState, memo, useEffect, ChangeEvent} from 'react'
+import {useHistory} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
+import {isEmpty} from 'lodash'
 
 // Selectors
 import {getActiveTimeMachine, getSaveableView} from 'src/timeMachine/selectors'
@@ -12,8 +12,8 @@ import {sortDashboardByName} from 'src/dashboards/selectors'
 
 // Components
 import {Form, Input, Button, Grid} from '@influxdata/clockface'
-import {ErrorHandling} from 'src/shared/decorators/errors'
 import DashboardsDropdown from 'src/dataExplorer/components/DashboardsDropdown'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 import {
   DashboardTemplate,
@@ -27,7 +27,6 @@ import {
   createCellWithView,
   createDashboardWithView,
 } from 'src/cells/actions/thunks'
-import {notify} from 'src/shared/actions/notifications'
 import {setActiveTimeMachine} from 'src/timeMachine/actions'
 
 // Types
@@ -45,57 +44,134 @@ import {initialStateHelper} from 'src/timeMachine/reducers'
 import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 import {chartTypeName} from 'src/visualization/utils/chartTypeName'
 
-interface State {
-  targetDashboardIDs: string[]
-  cellName: string
-  isNameDashVisible: boolean
-  newDashboardName: string
-}
-
-interface OwnProps {
+interface Props {
   dismiss: () => void
 }
-type RouterProps = RouteComponentProps
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & OwnProps & RouterProps
 
-@ErrorHandling
-class SaveAsCellForm extends PureComponent<Props, State> {
-  public state: State = {
-    targetDashboardIDs: [],
-    cellName: '',
-    isNameDashVisible: false,
-    newDashboardName: DEFAULT_DASHBOARD_NAME,
+const SaveAsCellForm: FC<Props> = ({dismiss}) => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const view = useSelector(getSaveableView)
+  const orgID = useSelector(getOrg)?.id ?? ''
+  const dashboards = useSelector((state: AppState) => {
+    const resources = getAll<Dashboard>(state, ResourceType.Dashboards)
+    return sortDashboardByName(resources)
+  })
+  const timeRange = useSelector(getActiveTimeMachine).timeRange
+  const [targetDashboardIDs, setTargetDashboardIDs] = useState([])
+  const [cellName, setCellName] = useState('')
+  const [isNameDashVisible, setIsNameDashVisible] = useState(false)
+  const [newDashboardName, setNewDashboardName] = useState(
+    DEFAULT_DASHBOARD_NAME
+  )
+
+  const handleSelectDashboardID = (selectedIDs: string[], value: Dashboard) => {
+    if (value.id === DashboardTemplate.id) {
+      setIsNameDashVisible(selectedIDs.includes(DashboardTemplate.id))
+    }
+    setTargetDashboardIDs(selectedIDs)
   }
 
-  public componentDidMount() {
-    const {onGetDashboards} = this.props
-    onGetDashboards()
+  const handleChangeDashboardName = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewDashboardName(e.target.value)
   }
 
-  public render() {
-    const {dismiss, dashboards} = this.props
-    const {
-      cellName,
-      isNameDashVisible,
-      targetDashboardIDs,
-      newDashboardName,
-    } = this.state
-    return (
-      <Form onSubmit={this.handleSubmit}>
+  const handleChangeCellName = (e: ChangeEvent<HTMLInputElement>) => {
+    setCellName(e.target.value)
+  }
+
+  useEffect(() => {
+    dispatch(getDashboards())
+  }, [dispatch])
+
+  const resetForm = () => {
+    setTargetDashboardIDs([])
+    setCellName('')
+    setIsNameDashVisible(false)
+    setNewDashboardName(DEFAULT_DASHBOARD_NAME)
+  }
+
+  const handleSubmit = () => {
+    event('Data Explorer Save as Dashboard Submitted')
+    const name = cellName || DEFAULT_CELL_NAME
+    const dashboardName = newDashboardName || DEFAULT_DASHBOARD_NAME
+
+    const viewWithProps: View = {...view, name: name}
+    const redirectHandler = (dashboardId: string): void =>
+      history.push(`/orgs/${orgID}/dashboards/${dashboardId}`)
+
+    try {
+      targetDashboardIDs.forEach((dashID, i) => {
+        const toRedirect =
+          i === targetDashboardIDs.length - 1 ? redirectHandler : undefined
+        if (dashID === DashboardTemplate.id) {
+          dispatch(
+            createDashboardWithView(
+              orgID,
+              dashboardName,
+              viewWithProps,
+              toRedirect,
+              timeRange
+            )
+          )
+          return
+        }
+
+        const selectedDashboard = dashboards.find(d => d.id === dashID)
+        dispatch(
+          createCellWithView(
+            selectedDashboard.id,
+            viewWithProps,
+            null,
+            toRedirect,
+            timeRange
+          )
+        )
+      })
+      dispatch(setActiveTimeMachine('de', initialStateHelper()))
+      event(`data_explorer.save.as_dashboard_cell.success`, {
+        which: normalizeEventName(chartTypeName(view?.properties?.type)),
+      })
+    } catch (error) {
+      event(`data_explorer.save.as_dashboard_cell.failure`, {
+        which: normalizeEventName(chartTypeName(view?.properties?.type)),
+      })
+      console.error(error)
+      dismiss()
+    } finally {
+      resetForm()
+    }
+  }
+
+  return (
+    <ErrorBoundary>
+      <Form onSubmit={handleSubmit}>
         <Grid>
           <Grid.Row>
             <Grid.Column widthXS={Columns.Twelve}>
               <Form.Element label="Target Dashboard(s)">
                 <DashboardsDropdown
-                  onSelect={this.handleSelectDashboardID}
+                  onSelect={handleSelectDashboardID}
                   selectedIDs={targetDashboardIDs}
                   dashboards={dashboards}
                   newDashboardName={newDashboardName}
                 />
               </Form.Element>
             </Grid.Column>
-            {isNameDashVisible && this.nameDashboard}
+            {isNameDashVisible && (
+              <Grid.Column widthXS={Columns.Twelve}>
+                <Form.Element label="New Dashboard Name">
+                  <Input
+                    type={InputType.Text}
+                    placeholder="Add dashboard name"
+                    name="dashboardName"
+                    value={newDashboardName}
+                    onChange={handleChangeDashboardName}
+                    testID="save-as-dashboard-cell--dashboard-name"
+                  />
+                </Form.Element>
+              </Grid.Column>
+            )}
             <Grid.Column widthXS={Columns.Twelve}>
               <Form.Element label="Cell Name">
                 <Input
@@ -103,7 +179,7 @@ class SaveAsCellForm extends PureComponent<Props, State> {
                   placeholder="Add optional cell name"
                   name="cellName"
                   value={cellName}
-                  onChange={this.handleChangeCellName}
+                  onChange={handleChangeCellName}
                   testID="save-as-dashboard-cell--cell-name"
                 />
               </Form.Element>
@@ -123,9 +199,9 @@ class SaveAsCellForm extends PureComponent<Props, State> {
                   testID="save-as-dashboard-cell--submit"
                   color={ComponentColor.Success}
                   type={ButtonType.Submit}
-                  onClick={this.handleSubmit}
+                  onClick={handleSubmit}
                   status={
-                    this.isFormValid
+                    !isEmpty(targetDashboardIDs)
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
@@ -135,144 +211,8 @@ class SaveAsCellForm extends PureComponent<Props, State> {
           </Grid.Row>
         </Grid>
       </Form>
-    )
-  }
-
-  private get nameDashboard(): JSX.Element {
-    const {newDashboardName} = this.state
-    return (
-      <Grid.Column widthXS={Columns.Twelve}>
-        <Form.Element label="New Dashboard Name">
-          <Input
-            type={InputType.Text}
-            placeholder="Add dashboard name"
-            name="dashboardName"
-            value={newDashboardName}
-            onChange={this.handleChangeDashboardName}
-            testID="save-as-dashboard-cell--dashboard-name"
-          />
-        </Form.Element>
-      </Grid.Column>
-    )
-  }
-
-  private get isFormValid(): boolean {
-    const {targetDashboardIDs} = this.state
-    return !isEmpty(targetDashboardIDs)
-  }
-
-  private handleSubmit = () => {
-    const {
-      onCreateCellWithView,
-      onCreateDashboardWithView,
-      dashboards,
-      view,
-      dismiss,
-      orgID,
-      history,
-      timeRange,
-    } = this.props
-    const {targetDashboardIDs} = this.state
-
-    event('Data Explorer Save as Dashboard Submitted')
-    const cellName = this.state.cellName || DEFAULT_CELL_NAME
-    const newDashboardName =
-      this.state.newDashboardName || DEFAULT_DASHBOARD_NAME
-
-    const viewWithProps: View = {...view, name: cellName}
-    const redirectHandler = (dashboardId: string): void =>
-      history.push(`/orgs/${orgID}/dashboards/${dashboardId}`)
-
-    try {
-      targetDashboardIDs.forEach((dashID, i) => {
-        const toRedirect =
-          i === targetDashboardIDs.length - 1 ? redirectHandler : undefined
-        if (dashID === DashboardTemplate.id) {
-          onCreateDashboardWithView(
-            orgID,
-            newDashboardName,
-            viewWithProps,
-            toRedirect,
-            timeRange
-          )
-          return
-        }
-
-        const selectedDashboard = dashboards.find(d => d.id === dashID)
-        onCreateCellWithView(
-          selectedDashboard.id,
-          viewWithProps,
-          null,
-          toRedirect,
-          timeRange
-        )
-      })
-      this.props.setActiveTimeMachine('de', initialStateHelper())
-      event(`data_explorer.save.as_dashboard_cell.success`, {
-        which: normalizeEventName(chartTypeName(view?.properties?.type)),
-      })
-    } catch (error) {
-      event(`data_explorer.save.as_dashboard_cell.failure`, {
-        which: normalizeEventName(chartTypeName(view?.properties?.type)),
-      })
-      console.error(error)
-      dismiss()
-    } finally {
-      this.resetForm()
-    }
-  }
-
-  private resetForm() {
-    this.setState({
-      targetDashboardIDs: [],
-      cellName: '',
-      isNameDashVisible: false,
-      newDashboardName: DEFAULT_DASHBOARD_NAME,
-    })
-  }
-
-  private handleSelectDashboardID = (
-    selectedIDs: string[],
-    value: Dashboard
-  ) => {
-    if (value.id === DashboardTemplate.id) {
-      this.setState({
-        isNameDashVisible: selectedIDs.includes(DashboardTemplate.id),
-      })
-    }
-    this.setState({targetDashboardIDs: selectedIDs})
-  }
-
-  private handleChangeDashboardName = (e: ChangeEvent<HTMLInputElement>) => {
-    this.setState({newDashboardName: e.target.value})
-  }
-
-  private handleChangeCellName = (e: ChangeEvent<HTMLInputElement>) => {
-    this.setState({cellName: e.target.value})
-  }
+    </ErrorBoundary>
+  )
 }
 
-const mstp = (state: AppState) => {
-  const view = getSaveableView(state)
-  const org = getOrg(state)
-  const dashboards = getAll<Dashboard>(state, ResourceType.Dashboards)
-  const timeRange = getActiveTimeMachine(state).timeRange
-  return {
-    dashboards: sortDashboardByName(dashboards),
-    view,
-    orgID: get(org, 'id', ''),
-    timeRange,
-  }
-}
-
-const mdtp = {
-  onGetDashboards: getDashboards,
-  onCreateCellWithView: createCellWithView,
-  onCreateDashboardWithView: createDashboardWithView,
-  setActiveTimeMachine,
-  notify,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(SaveAsCellForm))
+export default memo(SaveAsCellForm)

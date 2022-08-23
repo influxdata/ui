@@ -8,6 +8,7 @@ import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldSelector from 'src/dataExplorer/components/FieldSelector'
 import TagSelector from 'src/dataExplorer/components/TagSelector'
+import SchemaBrowserHeading from 'src/dataExplorer/components/SchemaBrowserHeading'
 
 // Context
 import {
@@ -83,6 +84,7 @@ const Schema: FC = () => {
               <div className="scroll--container">
                 <DapperScrollbars>
                   <div className="schema-browser" data-testid="schema-browser">
+                    <SchemaBrowserHeading />
                     <BucketSelector />
                     <div className="container-side-bar">
                       <MeasurementSelector />

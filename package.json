@@ -188,7 +188,7 @@
     "jsonpath": "^1.1.1",
     "jspdf": "^2.4.0",
     "lodash": "^4.17.21",
-    "luxon": "^2.0.2",
+    "luxon": "^3.0.1",
     "memoize-one": "^4.0.2",
     "monaco-editor": "~0.32.1",
     "monaco-editor-textmate": "^3.0.0",

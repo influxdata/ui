@@ -47,8 +47,9 @@ export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
     brokerPort: 0,
     brokerUsername: '',
     brokerPassword: '',
-    brokerCert: '',
-    brokerKey: '',
+    brokerClientCert: '',
+    brokerClientKey: '',
+    authType: 'none',
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {

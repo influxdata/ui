@@ -88,7 +88,6 @@ const FieldSelector: FC = () => {
         selectedItems={selection.fields}
         onSelectItem={handleSelectField}
         multiSelect={true}
-        testID="field-selector--list-item--selectable"
       />
     )
   }
@@ -100,9 +99,7 @@ const FieldSelector: FC = () => {
 
   return useMemo(() => {
     const shouldLoadMore =
-      fieldsToShow.length < fields.length &&
-      Array.isArray(list) &&
-      list.length > 1
+      fieldsToShow.length < fields.length && loading === RemoteDataState.Done
 
     const loadMoreButton = shouldLoadMore && (
       <button

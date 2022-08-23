@@ -13,6 +13,12 @@ describe('change-account change-org global header', () => {
   }
 
   const makeQuartzUseIDPEOrgID = () => {
+    cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
+      cy.intercept('GET', 'api/v2/quartz/accounts', quartzAccounts).as(
+        'getQuartzAccounts'
+      )
+    })
+
     cy.fixture('multiOrgIdentity').then(quartzIdentity => {
       quartzIdentity.org.id = idpeOrgID
       cy.intercept('GET', 'api/v2/quartz/identity', quartzIdentity).as(
@@ -58,7 +64,6 @@ describe('change-account change-org global header', () => {
           url: 'api/v2/orgs',
         }).then(res => {
           // Store the IDPE org ID so that it can be cloned when intercepting quartz.
-          cy.log(res.body.orgs[0].id)
           if (res.body.orgs) {
             idpeOrgID = res.body.orgs[0].id
           }
@@ -79,9 +84,6 @@ describe('change-account change-org global header', () => {
 
   describe('global change-account and change-org header', () => {
     it('does not render when API requests to quartz fail', () => {
-      cy.log('new value')
-      cy.log(idpeOrgID)
-
       mockQuartzOutage()
       interceptPageReload()
       cy.setFeatureFlags(globalHeaderFeatureFlags).then(() => {
@@ -94,10 +96,9 @@ describe('change-account change-org global header', () => {
 
     describe('change org dropdown', () => {
       before(() => {
+        makeQuartzUseIDPEOrgID()
         cy.setFeatureFlags(globalHeaderFeatureFlags)
-        cy.log(idpeOrgID)
         cy.visit('/')
-        // })
       })
 
       it('navigates to the org settings page', () => {
@@ -151,10 +152,8 @@ describe('change-account change-org global header', () => {
       it('can change change the active org', () => {
         makeQuartzUseIDPEOrgID()
         // No real quartz, so we can't handle this redirect in testing. But we can
-        // intercept the request to change orgs and send the user
-        // to the org settings page instead. If this intercept succeeds,
-        // this active org is pointing to the correct URL.
-
+        // intercept the request and send the user to another page to confirm
+        // that we've targeted the right URL.
         // Other interception methods - like sending back a JSON object on success -
         // appear to work only in Chrome, and not Firefox.
         cy.intercept('GET', 'auth/orgs/58fafbb4f68e05e5', req => {
@@ -188,6 +187,7 @@ describe('change-account change-org global header', () => {
 
     describe('change account dropdown', () => {
       beforeEach(() => {
+        makeQuartzUseIDPEOrgID()
         cy.setFeatureFlags(globalHeaderFeatureFlags)
       })
 

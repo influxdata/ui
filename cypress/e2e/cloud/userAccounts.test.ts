@@ -25,6 +25,17 @@ describe('Account Page tests', () => {
   describe('User with 4 accounts', () => {
     beforeEach(() => doSetup(cy, 4))
 
+    // Revert account names to default.
+    after(() => {
+      const name = 'Influx'
+      cy.getByTestID('input--active-account-name')
+        .clear()
+        .type(name)
+      cy.getByTestID('rename-account--button').click()
+
+      cy.getByTestID('notification-success').should('be.visible')
+    })
+
     it('can change the default account', () => {
       const defaultMarker = '(default)'
 

@@ -56,7 +56,7 @@
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-local-cloud": "export REMOTE=../openapi/ && yarn generate-meta-cloud",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",
-    "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn scripts && yarn pinned && yarn mapsd-oss && yarn uiproxyd-oss && yarn cloudPriv && yarn fluxdocs && yarn subscriptions",
+    "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn scripts-oss && yarn pinned && yarn mapsd-oss && yarn uiproxyd-oss && yarn cloudPriv && yarn fluxdocs && yarn subscriptions",
     "generate-meta-cloud": "yarn cloud-api && yarn notebooks && yarn unity && yarn annotations && yarn scripts && yarn cloudPriv && yarn pinned && yarn mapsd && yarn uiproxyd && yarn fluxdocs && yarn subscriptions",
     "oss": "oats ${REMOTE}contracts/oss-diff.yml > ./src/client/ossRoutes.ts",
     "cloud": "oats ${REMOTE}contracts/cloud-diff.yml > ./src/client/cloudRoutes.ts",

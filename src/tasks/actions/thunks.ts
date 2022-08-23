@@ -522,7 +522,7 @@ export const createTaskFromTemplate = (template: api.Template) => async (
     dispatch(notify(copy.taskImportSuccess()))
   } catch (error) {
     event('task.create.from_template.failure', {
-      template: template[0].meta.name,
+      template: template[0].metadata.name
     })
     console.error(error)
     dispatch(notify(copy.taskImportFailed(error.message)))

@@ -81,6 +81,11 @@ export const multipleOrgs = [
 describe('User profile page', () => {
   before(() => {
     setupProfile()
+    cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
+      cy.intercept('GET', '/api/v2/quartz/accounts', quartzAccounts).as(
+        'getAccounts'
+      )
+    })
   })
 
   beforeEach(() => {

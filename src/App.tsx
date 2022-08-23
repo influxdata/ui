@@ -42,9 +42,6 @@ import {CLOUD} from 'src/shared/constants'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 import {executeVWO} from 'src/utils/vwo'
 
-if (isFlagEnabled('multiOrg')) {
-  require('./MultiOrgOverrideStyles.scss')
-}
 // Styles
 const fullScreen = {height: '100%', width: '100%'}
 
@@ -85,6 +82,10 @@ const App: FC = () => {
 
     if (CLOUD && isFlagEnabled('vwoAbTesting')) {
       executeVWO()
+    }
+
+    if (isFlagEnabled('multiOrg')) {
+      require('./MultiOrgOverrideStyles.scss')
     }
 
     setAutoFreeze(false)

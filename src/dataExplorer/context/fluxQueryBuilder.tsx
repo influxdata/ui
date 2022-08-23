@@ -118,6 +118,8 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectField = (field: string): void => {
+    setSelection({fields: [...selection.fields, field]})
+
     // Inject field
     injectViaLsp(ExecuteCommand.InjectField, {
       bucket:
@@ -171,8 +173,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     ),
     [
       // Schema
-      selection.bucket,
-      selection.measurement,
+      selection,
       searchTerm,
 
       children,

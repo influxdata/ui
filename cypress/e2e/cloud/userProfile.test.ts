@@ -81,11 +81,6 @@ export const multipleOrgs = [
 describe('User profile page', () => {
   before(() => {
     setupProfile()
-    cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
-      cy.intercept('GET', '/api/v2/quartz/accounts', quartzAccounts).as(
-        'getAccounts'
-      )
-    })
   })
 
   beforeEach(() => {
@@ -102,6 +97,12 @@ describe('User profile page', () => {
   })
 
   it("displays the user's name and email", () => {
+    cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
+      cy.intercept('GET', '/api/v2/quartz/accounts', quartzAccounts).as(
+        'getAccounts'
+      )
+    })
+
     cy.getByTestID('user-profile--page')
       .contains('User Profile')
       .should('be.visible')
@@ -139,6 +140,12 @@ describe('User profile page', () => {
 
   describe('multi-org users', () => {
     it('allows the user to change their default account', () => {
+      cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
+        cy.intercept('GET', '/api/v2/quartz/accounts', quartzAccounts).as(
+          'getAccounts'
+        )
+      })
+
       cy.intercept('PUT', '/api/v2/quartz/accounts/default', {
         statusCode: 204,
         data: '',

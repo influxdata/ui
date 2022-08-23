@@ -75,6 +75,7 @@ const NewCertificateInput: FC<OwnProps> = ({updateForm, subscription}) => {
         description="TODO: Fix this"
         onChange={handleUpdateCACert}
         value={subscription?.brokerCACert ?? ''}
+        placeholder={CertificatePlaceholders.caCert}
         rows={4}
         required
       />
@@ -82,6 +83,7 @@ const NewCertificateInput: FC<OwnProps> = ({updateForm, subscription}) => {
         name="PrivateKey"
         label="Private Key"
         onChange={handleUpdatePrivateKey}
+        placeholder={CertificatePlaceholders.clientKey}
         value={subscription?.brokerClientKey ?? ''}
         rows={4}
       />
@@ -91,6 +93,7 @@ const NewCertificateInput: FC<OwnProps> = ({updateForm, subscription}) => {
         description="If your private key is included in this string, be sure to separate it and enter it in the Private key field"
         onChange={handleUpdateCert}
         value={subscription?.brokerClientCert ?? ''}
+        placeholder={CertificatePlaceholders.clientCert}
         rows={4}
       />
     </FlexBox>
@@ -131,6 +134,12 @@ const OldCertificateInput: FC = () => {
       )}
     </FlexBox>
   )
+}
+
+const CertificatePlaceholders = {
+  caCert: `-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----`,
+  clientCert: `-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----`,
+  clientKey: `-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----`,
 }
 
 interface ReplaceCertificateModalProps {

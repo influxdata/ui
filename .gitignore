@@ -37,6 +37,7 @@ src/client/managedFunctionsRoutes.ts
 src/client/mapsdRoutes.ts
 src/client/notebooksRoutes.ts
 src/client/pinnedItemRoutes.ts
+src/client/scriptsRoutes.ts
 src/client/subscriptionsRoutes.ts
 src/client/uiproxydRoutes.ts
 src/client/unityRoutes.ts

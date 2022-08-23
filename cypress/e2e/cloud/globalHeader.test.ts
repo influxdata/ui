@@ -15,19 +15,25 @@ describe('change-account change-org global header', () => {
   const makeQuartzUseIDPEOrgID = () => {
     cy.intercept('GET', 'api/v2/quartz/identity', req => {
       req.continue(res => {
-        res.body.org.id = idpeOrgID
+        if (idpeOrgID) {
+          res.body.org.id = idpeOrgID
+        }
       })
     }).as('getQuartzIdentity')
 
     cy.intercept('GET', '/api/v2/quartz/accounts/**/orgs', req => {
       req.continue(res => {
-        res.body[0].id = idpeOrgID
+        if (idpeOrgID) {
+          res.body[0].id = idpeOrgID
+        }
       })
     }).as('getQuartzOrgs')
 
     cy.intercept('GET', 'api/v2/quartz/orgs/*', req => {
       req.continue(res => {
-        res.body.id = idpeOrgID
+        if (idpeOrgID) {
+          res.body.id = idpeOrgID
+        }
       })
     }).as('getQuartzOrgDetails')
   }

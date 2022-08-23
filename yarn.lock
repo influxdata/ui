@@ -1458,10 +1458,10 @@
     gud "^1.0.0"
     warning "^4.0.3"
 
-"@influxdata/clockface@^6.1.0":
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-6.1.0.tgz#e79ca58d9027590ed8240b9d05693181aab6ce44"
-  integrity sha512-HCaQXkQ4Av9rGeqBSznmhi2OmJuQzj92LRQEgs3MHAeCUjWNci2wk5NBkwsIuFagbMJx83NhgSU8EIOL1p47nQ==
+"@influxdata/clockface@^6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-6.1.1.tgz#1af121883cd3fa6c2310559b3cb4a33a4cdc2f34"
+  integrity sha512-mImBIjE+1K5KWZBUI+tHbwFLE/qUFj9NqDrt4S9UiHR+6AiGNocZNLfi0gVSJihjYE0p5uYPS7CSCRrAfRiKjg==
   dependencies:
     "@types/react-window" "^1.8.5"
     react-window "^1.8.7"
@@ -7996,10 +7996,10 @@ ltgt@^2.1.2:
   resolved "https://registry.npmjs.org/ltgt/-/ltgt-2.2.1.tgz"
   integrity sha1-81ypHEk/e3PaDgdJUwTxezH4fuU=
 
-luxon@^2.0.2:
-  version "2.1.1"
-  resolved "https://registry.npmjs.org/luxon/-/luxon-2.1.1.tgz"
-  integrity sha512-6VQVNw7+kQu3hL1ZH5GyOhnk8uZm21xS7XJ/6vDZaFNcb62dpFDKcH8TI5NkoZOdMRxr7af7aYGrJlE/Wv0i1w==
+luxon@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.0.1.tgz#6901111d10ad06fd267ad4e4128a84bef8a77299"
+  integrity sha512-hF3kv0e5gwHQZKz4wtm4c+inDtyc7elkanAsBq+fundaCdUBNJB1dHEGUZIM6SfSBUlbVFduPwEtNjFK8wLtcw==
 
 lz-string@^1.4.4:
   version "1.4.4"

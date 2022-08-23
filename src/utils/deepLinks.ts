@@ -1,7 +1,8 @@
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 export const buildDeepLinkingMap = (orgId: string) => ({
-  '/me/about': `/orgs/${orgId}/about`,
+  '/me/about': `/orgs/${orgId}/org-settings`,
+  '/me/org-settings': `/orgs/${orgId}/org-settings`,
   '/me/alerts': `/orgs/${orgId}/alerting`,
   '/me/billing': `/orgs/${orgId}/billing`,
   '/me/buckets': `/orgs/${orgId}/load-data/buckets`,
@@ -13,6 +14,8 @@ export const buildDeepLinkingMap = (orgId: string) => ({
   '/me/javaclient': `/orgs/${orgId}/load-data/client-libraries/java`,
   '/me/labels': `/orgs/${orgId}/settings/labels`,
   '/me/load-data': `/orgs/${orgId}/load-data/sources`,
+  '/me/load-data/subscriptions': `/orgs/${orgId}/load-data/subscriptions`,
+  '/me/load-data/subscriptions/create': `/orgs/${orgId}/load-data/subscriptions/create`,
   '/me/nodejsclient': `/orgs/${orgId}/load-data/client-libraries/javascript-node`,
   [`/me/${PROJECT_NAME_PLURAL.toLowerCase()}`]: `/orgs/${orgId}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
   '/me/notebooks': `/orgs/${orgId}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
@@ -30,6 +33,7 @@ export const buildDeepLinkingMap = (orgId: string) => ({
   '/me/templates': `/orgs/${orgId}/settings/templates`,
   '/me/tokens': `/orgs/${orgId}/load-data/tokens`,
   '/me/usage': `/orgs/${orgId}/usage`,
-  '/me/users': `/orgs/${orgId}/users`,
+  '/me/users': `/orgs/${orgId}/members`,
+  '/me/members': `/orgs/${orgId}/members`,
   '/me/variables': `/orgs/${orgId}/settings/variables`,
 })

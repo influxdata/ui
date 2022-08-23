@@ -8,7 +8,7 @@ describe('Users Page', () => {
           cy.quartzProvision({
             hasUsers: true,
           }).then(() => {
-            cy.visit(`/orgs/${id}/users`)
+            cy.visit(`/orgs/${id}/members`)
             cy.getByTestID('users-page--header').should('be.visible')
           })
         })

@@ -60,7 +60,7 @@ const BucketSelector: FC = () => {
         <BuilderCard.Menu>
           <Input
             value={search}
-            placeholder="Search for a bucket"
+            placeholder="Search buckets"
             className="tag-selector--search"
             onChange={e => setSearch(e.target.value)}
           />
@@ -109,7 +109,7 @@ const BucketSelector: FC = () => {
       <BuilderCard.Menu>
         <Input
           value={search}
-          placeholder="Search for a bucket"
+          placeholder="Search buckets"
           className="tag-selector--search"
           onChange={e => setSearch(e.target.value)}
           onClear={() => setSearch('')}

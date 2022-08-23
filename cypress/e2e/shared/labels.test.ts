@@ -24,7 +24,10 @@ describe('labels', () => {
   }
 
   it('can create a label', () => {
-    const newLabelName = 'Substantia (サブスタンス)'
+    const newLabelName = 'Substantia'
+    const labelNameWith43Characters =
+      'Substantia Substantia Substantia Substantia'
+
     const newLabelDescription =
       '(\u03943) quod in se est et per se concipitur hoc est id cujus conceptus non indiget conceptu alterius rei a quo formari debeat. '
     const newLabelColor = '#D4AF37'
@@ -57,6 +60,14 @@ describe('labels', () => {
 
     // Try to save without name (required field) button should be disabled
     cy.getByTestID('create-label-form--submit').should('be.disabled')
+
+    // check that input limits name to 30 characters
+    cy.getByTestID('create-label-form--name').type(labelNameWith43Characters)
+    cy.getByTestID('create-label-form--name').should(
+      'not.have.value',
+      labelNameWith43Characters
+    )
+    cy.getByTestID('create-label-form--name').clear()
 
     // enter name
     cy.getByTestID('create-label-form--name').type(newLabelName)

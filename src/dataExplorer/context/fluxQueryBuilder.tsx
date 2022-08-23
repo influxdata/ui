@@ -38,6 +38,10 @@ const debouncer = (action: NOOP): void => {
 }
 
 interface FluxQueryBuilderContextType {
+  // Flux Sync
+  fluxSync: boolean
+  toggleFluxSync: (synced: boolean) => void
+
   // Schema
   selectedBucket: Bucket
   selectedMeasurement: string
@@ -50,6 +54,10 @@ interface FluxQueryBuilderContextType {
 }
 
 const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
+  // Flux Sync
+  fluxSync: true,
+  toggleFluxSync: _s => {},
+
   // Schema
   selectedBucket: null,
   selectedMeasurement: '',
@@ -85,10 +93,12 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     }
   }, [selection.bucket])
 
+  const handleToggleFluxSync = (synced: boolean): void => {
+    setSelection({composition: {synced}})
+  }
+
   const handleSelectBucket = (bucket: Bucket): void => {
-    selection.bucket = bucket
-    selection.measurement = ''
-    setSelection({...selection})
+    setSelection({bucket, measurement: ''})
 
     // Reset measurement, tags, and fields
     resetFields()
@@ -99,8 +109,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectMeasurement = (measurement: string): void => {
-    selection.measurement = measurement
-    setSelection({...selection})
+    setSelection({measurement})
 
     // Inject measurement
     injectViaLsp(ExecuteCommand.InjectionMeasurement, {
@@ -158,6 +167,10 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     () => (
       <FluxQueryBuilderContext.Provider
         value={{
+          // Flux Sync
+          fluxSync: selection.composition?.synced,
+          toggleFluxSync: handleToggleFluxSync,
+
           // Schema
           selectedBucket: selection.bucket,
           selectedMeasurement: selection.measurement,
@@ -173,6 +186,9 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       </FluxQueryBuilderContext.Provider>
     ),
     [
+      // Flux Sync
+      selection.composition?.synced,
+
       // Schema
       selection.bucket,
       selection.measurement,

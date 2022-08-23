@@ -48,7 +48,7 @@ const CopyableLabeledData: FC<Props> = ({
   }
 
   const handleShowEditOverlay = () => {
-    history.push(`/orgs/${org.id}/about/rename`)
+    history.push(`/orgs/${org.id}/org-settings/rename`)
   }
 
   return (

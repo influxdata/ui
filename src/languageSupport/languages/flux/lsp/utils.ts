@@ -71,11 +71,17 @@ export interface ExecuteCommandInjectTagValue extends ExecuteCommandInjectTag {
 
 export type ExecuteCommandInjectField = ExecuteCommandInjectMeasurement
 
+export interface ExecuteCommandCompositionInit {
+  bucket: string
+  measurement?: string
+}
+
 export type ExecuteCommandArgument =
   | ExecuteCommandInjectMeasurement
   | ExecuteCommandInjectTag
   | ExecuteCommandInjectTagValue
   | ExecuteCommandInjectField
+  | ExecuteCommandCompositionInit
 
 export type ExecuteCommandT =
   | [ExecuteCommand.InjectionMeasurement, ExecuteCommandInjectMeasurement]
@@ -147,4 +153,5 @@ export enum ExecuteCommand {
   InjectField = 'injectFieldFilter',
   InjectTag = 'injectTagFilter',
   InjectTagValue = 'injectTagValueFilter',
+  CompositionInit = 'composition/initialize',
 }

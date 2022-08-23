@@ -832,7 +832,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
 |> filter(fn: (r) => r["container_name"] == v.dependent)`)
-      cy.getByTestID('save-cell--button').click()
+      cy.getByTestID('save-cell--button').click({force: true})
 
       // the default bucket selection should have no results
       cy.getByTestID('variable-dropdown--static--typeAhead-input').should(

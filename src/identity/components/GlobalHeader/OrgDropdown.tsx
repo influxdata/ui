@@ -4,8 +4,8 @@ import {IconFont} from '@influxdata/clockface'
 
 // Components
 import {
-  TypeAheadMenuItem,
   GlobalHeaderDropdown,
+  TypeAheadMenuItem,
 } from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 // Types
@@ -25,20 +25,20 @@ interface Props {
   orgsList: OrganizationSummaries
 }
 
-const style = {width: 'auto'}
 const menuStyle = {width: '250px'}
+const style = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const orgMainMenu = [
     {
       name: 'Settings',
       iconFont: IconFont.CogSolid_New,
-      href: `/orgs/${activeOrg.id}/about`,
+      href: `/orgs/${activeOrg.id}/org-settings`,
     },
     {
       name: 'Members',
       iconFont: IconFont.Group,
-      href: `/orgs/${activeOrg.id}/users`,
+      href: `/orgs/${activeOrg.id}/members`,
     },
     {
       name: 'Usage',
@@ -53,11 +53,14 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
       mainMenuHeaderIcon={IconFont.Switch_New}
       mainMenuHeaderText="Switch Organization"
       mainMenuOptions={orgMainMenu}
+      mainMenuTestID="globalheader--org-dropdown-main"
       style={style}
       typeAheadInputPlaceholder="Search Organizations"
       typeAheadMenuOptions={orgsList}
       typeAheadOnSelectOption={switchOrg}
       typeAheadSelectedOption={activeOrg}
+      testID="globalheader--org-dropdown"
+      typeAheadTestID="globalheader--org-dropdown-typeahead"
     />
   )
 }

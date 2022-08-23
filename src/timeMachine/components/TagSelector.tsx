@@ -133,10 +133,21 @@ class TagSelector extends PureComponent<Props> {
       tag = '_measurement'
     }
 
+    let placeholderValue = `${tag} tag values`
+
+    if (isFlagEnabled('newQueryBuilder')) {
+      if (tag === '_measurement') {
+        placeholderValue = 'measurements'
+      } else if (tag === '_field') {
+        placeholderValue = 'fields'
+      }
+    }
+
     const placeholderText =
       aggregateFunctionType === 'group'
         ? 'Search group column values'
-        : `Search ${tag} tag values`
+        : `Search ${placeholderValue}`
+
     return (
       <>
         {!this.isCompliant && (

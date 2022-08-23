@@ -133,17 +133,19 @@ const AccountAboutPage: FC = () => {
   return (
     <AccountTabContainer activeTab="about">
       <>
-        {userAccounts && userAccounts.length >= 2 && (
-          <div>
-            <Button
-              text="Switch Account"
-              icon={IconFont.Switch_New}
-              onClick={showSwitchAccountDialog}
-              testID="user-account-switch-btn"
-            />
-            <hr style={dividerStyle} />
-          </div>
-        )}
+        {userAccounts &&
+          userAccounts.length >= 2 &&
+          !isFlagEnabled('multiOrg') && (
+            <div>
+              <Button
+                text="Switch Account"
+                icon={IconFont.Switch_New}
+                onClick={showSwitchAccountDialog}
+                testID="user-account-switch-btn"
+              />
+              <hr style={dividerStyle} />
+            </div>
+          )}
 
         <h4
           data-testid="account-settings--header"

@@ -61,7 +61,7 @@ export const HOMEPAGE_NAVIGATION_STEPS_SHORT = [
     glyph: IconFont.Play,
   },
   {
-    name: 'Finished!',
+    name: 'Finish',
     glyph: IconFont.StarSmile,
   },
 ]
@@ -96,7 +96,7 @@ export const HOMEPAGE_NAVIGATION_STEPS_ARDUINO = [
     glyph: IconFont.Play,
   },
   {
-    name: 'Finished!',
+    name: 'Finish',
     glyph: IconFont.StarSmile,
   },
 ]

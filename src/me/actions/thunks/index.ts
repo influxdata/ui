@@ -1,6 +1,5 @@
 // Libraries
 import HoneyBadger from 'honeybadger-js'
-import {identify} from 'rudder-sdk-js'
 import {Dispatch} from 'react'
 
 // Functions making API calls
@@ -10,8 +9,6 @@ import {getAccounts} from 'src/client/unityRoutes'
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {CLOUD} from 'src/shared/constants'
-import {getOrg} from 'src/organizations/selectors'
 
 // Actions
 import {
@@ -25,14 +22,11 @@ import {
 import {MeState} from 'src/me/reducers'
 
 // Types
-import {RemoteDataState, GetState} from 'src/types'
+import {RemoteDataState} from 'src/types'
 import {Actions} from 'src/me/actions/creators'
 import {fetchQuartzMe} from 'src/identity/apis/auth'
 
-export const getIdpeMeThunk = () => async (
-  dispatch: Dispatch<Actions>,
-  getState: GetState
-) => {
+export const getIdpeMeThunk = () => async (dispatch: Dispatch<Actions>) => {
   try {
     let user
 
@@ -61,19 +55,9 @@ export const getIdpeMeThunk = () => async (
       },
     })
 
-    updateReportingContext({
-      userID: user.id,
-    })
-
     HoneyBadger.setContext({
       user_id: user.id,
     })
-
-    if (CLOUD && isFlagEnabled('rudderstackReporting')) {
-      const state = getState()
-      const org = getOrg(state)
-      identify(user.id, {email: user.name, orgID: org.id})
-    }
 
     dispatch(setMe(user as MeState))
   } catch (error) {

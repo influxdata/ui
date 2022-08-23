@@ -63,39 +63,46 @@ export class CliWizard extends PureComponent<{}, State> {
   }
 
   handleNextClick = () => {
-    this.setState({
-      currentStep: Math.min(
-        this.state.currentStep + 1,
-        HOMEPAGE_NAVIGATION_STEPS_SHORT.length
-      ),
-    })
-
-    event(
-      'firstMile.cliWizard.next.clicked',
-      {},
+    this.setState(
       {
-        clickedButtonAtStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+        currentStep: Math.min(
+          this.state.currentStep + 1,
+          HOMEPAGE_NAVIGATION_STEPS_SHORT.length
         ),
-        currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
-        ),
+      },
+      () => {
+        event(
+          'firstMile.cliWizard.next.clicked',
+          {},
+          {
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 2].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+            ),
+          }
+        )
       }
     )
   }
 
   handlePreviousClick = () => {
-    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
-    event(
-      'firstMile.cliWizard.previous.clicked',
-      {},
-      {
-        clickedButtonAtStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep + 1].name
-        ),
-        currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
-        ),
+    this.setState(
+      {currentStep: Math.max(this.state.currentStep - 1, 1)},
+      () => {
+        event(
+          'firstMile.cliWizard.previous.clicked',
+          {},
+          {
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+            ),
+          }
+        )
       }
     )
   }
@@ -214,7 +221,8 @@ export class CliWizard extends PureComponent<{}, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    this.state.currentStep < 7
+                    this.state.currentStep <
+                    HOMEPAGE_NAVIGATION_STEPS_SHORT.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

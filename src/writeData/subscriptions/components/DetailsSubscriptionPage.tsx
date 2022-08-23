@@ -53,7 +53,9 @@ import {
   getActiveStep,
   getFormStatus,
   SUBSCRIPTION_NAVIGATION_STEPS,
-} from '../utils/form'
+} from 'src/writeData/subscriptions/utils/form'
+
+// Contexts
 
 const DetailsSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)

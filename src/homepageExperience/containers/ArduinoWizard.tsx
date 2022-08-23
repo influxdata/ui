@@ -64,22 +64,26 @@ export class ArduinoWizard extends PureComponent<{}, State> {
   }
 
   handleNextClick = () => {
-    this.setState({
-      currentStep: Math.min(
-        this.state.currentStep + 1,
-        HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
-      ),
-    })
-    event(
-      'firstMile.arduinoWizard.next.clicked',
-      {},
+    this.setState(
       {
-        clickedButtonAtStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
+        currentStep: Math.min(
+          this.state.currentStep + 1,
+          HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
         ),
-        currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep].name
-        ),
+      },
+      () => {
+        event(
+          'firstMile.arduinoWizard.next.clicked',
+          {},
+          {
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 2].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
+            ),
+          }
+        )
       }
     )
   }
@@ -221,7 +225,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    this.state.currentStep < 8
+                    this.state.currentStep < 7
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

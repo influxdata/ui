@@ -81,7 +81,7 @@ const TasksHeader: FC<Props> = ({
   }
   return (
     <>
-      <Page.Header fullWidth={false} testID="tasks-page--header">
+      <Page.Header fullWidth={true} testID="tasks-page--header">
         <Page.Title title="Tasks" />
         <RateLimitAlert location="task list" />
       </Page.Header>
@@ -102,7 +102,7 @@ const TasksHeader: FC<Props> = ({
           </div>
         </FeatureFlag>
       )}
-      <Page.ControlBar fullWidth={false}>
+      <Page.ControlBar fullWidth={true}>
         <Page.ControlBarLeft>
           <SearchWidget
             placeholderText="Filter tasks..."

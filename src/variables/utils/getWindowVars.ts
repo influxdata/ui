@@ -20,7 +20,7 @@ import {
 
 // Types
 import {VariableAssignment, Package} from 'src/types/ast'
-import {RemoteDataState, TimeRange, Variable} from 'src/types'
+import {DurationLiteral, RemoteDataState, TimeRange, Variable} from 'src/types'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
 const DESIRED_POINTS_PER_GRAPH = 360
@@ -202,7 +202,8 @@ export const getWindowPeriodVariableFromVariables = (
 
 export const getVariableForZoomRequery = (
   variableID: string,
-  domain: number[]
+  domain: number[],
+  timeRangeType: string
 ): Variable => {
   const variable: Variable = {
     orgID: '',
@@ -220,7 +221,18 @@ export const getVariableForZoomRequery = (
   const stopTime = new Date(domain?.[1] ?? '')
   switch (variableID) {
     case TIME_RANGE_START:
-      variable.arguments.values = [startTime.toISOString()]
+      if (timeRangeType === 'custom') {
+        variable.arguments.values = [startTime.toISOString()]
+      } else {
+        variable.arguments.values = [
+          [
+            {
+              magnitude: Date.now() - startTime.getTime(),
+              unit: 'ms',
+            },
+          ],
+        ]
+      }
       return variable
 
     case TIME_RANGE_STOP:
@@ -245,7 +257,11 @@ export const normalizeWindowPeriodForZoomRequery = (
   domain: Array<number>,
   column: NumericColumnData | string[]
 ): number => {
-  if (windowPeriod || !timeRange || !column) {
+  if (
+    !timeRange ||
+    !column ||
+    (windowPeriod && Math.abs(windowPeriod) !== Infinity)
+  ) {
     if (windowPeriod < 0) {
       return FALLBACK_WINDOW_PERIOD
     }
@@ -304,14 +320,22 @@ export const normalizeWindowPeriodVariableForZoomRequery = (
   variableAssignment: VariableAssignment[],
   windowPeriod: number
 ): VariableAssignment[] => {
-  if (Array.isArray(variableAssignment) && variableAssignment.length) {
-    return variableAssignment
-  }
-
   const assignedWindowPeriod = Math.max(
     Math.min(Math.round(windowPeriod), FALLBACK_WINDOW_PERIOD),
     MINIMUM_WINDOW_PERIOD
   )
+
+  const init = (variableAssignment?.[0]?.init
+    ? variableAssignment?.[0]?.init
+    : {
+        values: [{magnitude: assignedWindowPeriod, unit: 'ms'}],
+        type: 'DurationLiteral',
+      }) as DurationLiteral
+
+  const magnitude = init?.values?.[0]?.magnitude
+  if (magnitude && Math.abs(magnitude) !== Infinity) {
+    return variableAssignment
+  }
 
   return [
     {

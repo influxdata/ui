@@ -1,12 +1,13 @@
 // Libraries
 import React, {FC, useEffect, useRef, useContext} from 'react'
+import {useSelector} from 'react-redux'
 import classnames from 'classnames'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
-// Utils
+// LSP
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
 import {setupForReactMonacoEditor} from 'src/languageSupport/languages/flux/lsp/monaco.flux.lsp'
@@ -15,8 +16,14 @@ import {
   submit,
 } from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
+import ConnectionManager, {
+  ICON_SYNC_ID,
+} from 'src/languageSupport/languages/flux/lsp/connection'
+
+// Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'
-import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {fluxQueryBuilder} from 'src/shared/selectors/app'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
@@ -24,6 +31,7 @@ import {EditorType, Variable} from 'src/types'
 import {editor as monacoEditor} from 'monaco-editor'
 
 import './FluxMonacoEditor.scss'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export interface EditorProps {
   script: string
@@ -56,6 +64,8 @@ const FluxEditorMonaco: FC<Props> = ({
 }) => {
   const connection = useRef<ConnectionManager>(null)
   const {setEditor} = useContext(EditorContext)
+  const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
+  const sessionStore = useContext(PersistanceContext)
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
@@ -65,9 +75,28 @@ const FluxEditorMonaco: FC<Props> = ({
     connection.current.updatePreludeModel(variables)
   }, [variables])
 
+  useEffect(() => {
+    if (
+      connection.current &&
+      isFluxQueryBuilder &&
+      isFlagEnabled('schemaComposition')
+    ) {
+      connection.current.onSchemaSessionChange(
+        sessionStore.selection,
+        sessionStore.setSelection
+      )
+    }
+  }, [
+    connection.current,
+    sessionStore?.selection,
+    sessionStore?.selection.composition || null,
+    sessionStore?.setSelection,
+  ])
+
   const editorDidMount = (editor: EditorType) => {
     connection.current = setupForReactMonacoEditor(editor)
     connection.current.updatePreludeModel(variables)
+
     setEditor(editor, connection)
     if (setEditorInstance) {
       setEditorInstance(editor, connection)
@@ -102,6 +131,10 @@ const FluxEditorMonaco: FC<Props> = ({
 
   return (
     <ErrorBoundary>
+      <div
+        id={ICON_SYNC_ID}
+        style={{zIndex: 999, position: 'absolute', opacity: 0.6}}
+      />
       <div className={wrapperClassName} data-testid="flux-editor">
         <MonacoEditor
           language={FLUXLANGID}

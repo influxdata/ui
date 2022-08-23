@@ -2,6 +2,7 @@
 import React, {useEffect, FunctionComponent, lazy, Suspense} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {Route, Switch} from 'react-router-dom'
+import {identify} from 'rudder-sdk-js'
 
 // Components
 import PageSpinner from 'src/perf/components/PageSpinner'
@@ -76,6 +77,12 @@ const GetOrganizations: FunctionComponent = () => {
       dispatch(getOrganizations())
     }
   }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (CLOUD && org?.id && isFlagEnabled('rudderstackReporting')) {
+      identify(meId, {email, orgID: org.id})
+    }
+  }, [org?.id, identify])
 
   useEffect(() => {
     if (

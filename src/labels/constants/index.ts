@@ -210,3 +210,5 @@ export const PRESET_LABEL_COLORS: LabelColor[] = [
 ]
 
 export const INPUT_ERROR_COLOR = '#0F0E15'
+
+export const LABEL_NAME_MAX_LENGTH = 30

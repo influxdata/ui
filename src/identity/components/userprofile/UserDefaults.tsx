@@ -35,10 +35,7 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Eventing
-import {
-  multiOrgEvent,
-  UserProfileEvent,
-} from 'src/identity/events/multiOrgEvents'
+import {multiOrgTag, UserProfileEvent} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
 // Styles
@@ -96,7 +93,7 @@ export const UserDefaults: FC = () => {
     if (userChangedPrefs) {
       try {
         if (userPickedNewAccount) {
-          event(UserProfileEvent.DefaultAccountChange, multiOrgEvent, {
+          event(UserProfileEvent.DefaultAccountChange, multiOrgTag, {
             oldDefaultAccountID: defaultAccount.id,
             oldDefaultAccountName: defaultAccount.name,
             newDefaultAccountID: selectedAccount.id,
@@ -109,7 +106,7 @@ export const UserDefaults: FC = () => {
         }
 
         if (userPickedNewOrg) {
-          event(UserProfileEvent.DefaultOrgChange, multiOrgEvent, {
+          event(UserProfileEvent.DefaultOrgChange, multiOrgTag, {
             oldDefaultOrgID: defaultOrg.id,
             oldDefaultOrgName: defaultOrg.name,
             newDefaultOrgID: selectedOrg.id,

@@ -13,7 +13,7 @@ import './Schema.scss'
 
 interface TitleProps {
   title: string
-  info?: string // TODO: markdon? since there might be link
+  info?: string
   icon?: IconFont
 }
 

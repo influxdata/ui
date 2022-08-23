@@ -101,6 +101,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the org settings page', () => {
+        makeQuartzUseIDPEOrgID()
         cy.getByTestID('globalheader--org-dropdown')
           .should('be.visible')
           .click()
@@ -116,6 +117,8 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the org members page', () => {
+        makeQuartzUseIDPEOrgID()
+        makeQuartzUseIDPEOrgID()
         cy.getByTestID('globalheader--org-dropdown')
           .should('be.visible')
           .click()
@@ -139,13 +142,14 @@ describe('change-account change-org global header', () => {
         cy.getByTestID('globalheader--org-dropdown-main-Usage')
           .should('be.visible')
           .click()
-        cy.location('pathname').should('eq', `orgs/${idpeOrgID}/usage`)
+        cy.location('pathname').should('eq', `/orgs/${idpeOrgID}/usage`)
         cy.getByTestID('tabs--container')
           .should('be.visible')
           .and('contain', 'Billing Stats')
       })
 
       it('can change change the active org', () => {
+        makeQuartzUseIDPEOrgID()
         cy.getByTestID('globalheader--org-dropdown')
           .should('exist')
           .click()
@@ -212,6 +216,10 @@ describe('change-account change-org global header', () => {
         cy.getByTestID('globalheader--account-dropdown-main-Billing')
           .should('be.visible')
           .click()
+
+        cy.getByTestID('accounts-billing-tab')
+          .should('be.visible')
+          .and('contain', 'Billing')
       })
 
       it('can change change the active account', () => {

@@ -40,7 +40,7 @@ const FieldsTags: FC = () => {
 
   useEffect(() => {
     setSearchTerm('')
-    setSelection({fields: []})
+    setSelection({fields: [], tagValues: []})
   }, [selectedBucket, selectedMeasurement])
 
   const handleSearchFieldsTags = (searchTerm: string): void => {

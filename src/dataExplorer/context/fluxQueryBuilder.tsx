@@ -16,7 +16,7 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 import {EditorContext} from 'src/shared/contexts/editor'
 
 // Types
-import {Bucket} from 'src/types'
+import {Bucket, TagKeyValuePair} from 'src/types'
 
 // Utils
 import {ExecuteCommand} from 'src/languageSupport/languages/flux/lsp/utils'
@@ -131,6 +131,13 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
+    setSelection({
+      tagValues: [
+        ...selection.tagValues,
+        {tagKey, tagValue} as TagKeyValuePair,
+      ],
+    })
+
     // Inject tag value
     injectViaLsp(ExecuteCommand.InjectTagValue, {
       bucket:

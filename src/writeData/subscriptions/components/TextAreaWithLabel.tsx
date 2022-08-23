@@ -14,7 +14,7 @@ import {
 
 // Style
 import 'src/writeData/subscriptions/components/TextAreaWithLabel.scss'
-import {handleValidation} from '../utils/form'
+import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 interface OwnProps {
   description?: string

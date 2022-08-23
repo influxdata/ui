@@ -221,7 +221,8 @@ export class CliWizard extends PureComponent<{}, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    this.state.currentStep < HOMEPAGE_NAVIGATION_STEPS_SHORT.length
+                    this.state.currentStep <
+                    HOMEPAGE_NAVIGATION_STEPS_SHORT.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

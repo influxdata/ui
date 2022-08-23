@@ -42,6 +42,9 @@ import {CLOUD} from 'src/shared/constants'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 import {executeVWO} from 'src/utils/vwo'
 
+if (isFlagEnabled('multiOrg')) {
+  require('./MultiOrgOverrideStyles.scss')
+}
 // Styles
 const fullScreen = {height: '100%', width: '100%'}
 

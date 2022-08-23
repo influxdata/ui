@@ -9,7 +9,6 @@ import {CLOUD} from 'src/shared/constants'
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 import 'src/me/components/DocSearchWidget.scss'
@@ -53,7 +52,7 @@ const supportLinks = [
   },
 ]
 
-if (CLOUD && isFlagEnabled('requestPoc')) {
+if (CLOUD) {
   supportLinks.push({
     link: 'https://www.influxdata.com/proof-of-concept/',
     title: 'Request Proof of Concept',

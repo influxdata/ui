@@ -107,7 +107,6 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     const {mainMenuOptions} = this.props
     return (
       <div>
-        <hr className="line-break" />
         {mainMenuOptions.map(value => {
           const iconEl = <Icon glyph={value.iconFont} className="button-icon" />
           const textEl = <span>{value.name}</span>
@@ -172,6 +171,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       >
         {/* Multi-org UI tickets #4051 and #4047, when user only has 1 account or 1 org, switch button is disabled */}
         {!onlyRenderSubmenu && typeAheadMenuOptions.length > 1 && (
+          <>
           <Dropdown.Item
             onClick={this.toggleShowTypeAheadMenu}
             className="global-header--switch-button"
@@ -193,6 +193,8 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
               )}
             </FlexBox>
           </Dropdown.Item>
+          <hr className="line-break" />
+          </>
         )}
         {showTypeAheadMenu
           ? this.renderTypeAheadMenu()

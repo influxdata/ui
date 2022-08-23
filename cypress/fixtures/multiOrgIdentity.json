@@ -1,0 +1,24 @@
+{
+  "user": {
+    "id": "03b0f952abf7e5ce",
+    "email": "test@influxdata.com",
+    "firstName": "Marty",
+    "lastName": "McFly",
+    "operatorRole": null,
+    "accountCount": 2,
+    "orgCount": 20
+  },
+  "org": {
+    "id": "a12eb3c74e6c3azc",
+    "name": "Test Organization",
+    "clusterHost": "https://us-west1.iamzuora.cloud2.influxdata.com"
+  },
+
+  "account": {
+    "id": 416,
+    "name": "Influx",
+    "type": "free",
+    "accountCreatedAt": "Tue Jun 01 2022 08:49:14 GMT-0400 (Eastern Daylight Time)",
+    "billing_provider": "zuora"
+  }
+}

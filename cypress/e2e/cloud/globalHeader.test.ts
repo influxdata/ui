@@ -13,23 +13,27 @@ describe('change-account change-org global header', () => {
   }
 
   const makeQuartzUseIDPEOrgID = () => {
-    cy.intercept('GET', 'api/v2/quartz/identity', req => {
-      req.continue(res => {
-        res.body.org.id = idpeOrgID
-      })
-    }).as('getQuartzIdentity')
+    cy.fixture('multiOrgIdentity').then(quartzIdentity => {
+      quartzIdentity.org.id = idpeOrgID
+      cy.intercept('GET', 'api/v2/quartz/identity', quartzIdentity).as(
+        'getQuartzIdentity'
+      )
+    })
 
-    cy.intercept('GET', '/api/v2/quartz/accounts/**/orgs', req => {
-      req.continue(res => {
-        res.body[0].id = idpeOrgID
-      })
-    }).as('getQuartzOrgs')
+    cy.fixture('multiOrgOrgs1').then(quartzOrgs => {
+      quartzOrgs[0].id = idpeOrgID
 
-    cy.intercept('GET', 'api/v2/quartz/orgs/*', req => {
-      req.continue(res => {
-        res.body.id = idpeOrgID
-      })
-    }).as('getQuartzOrgDetails')
+      cy.intercept('GET', 'api/v2/quartz/accounts/**/orgs', quartzOrgs).as(
+        'getQuartzOrgs'
+      )
+    })
+
+    cy.fixture('orgDetails').then(quartzOrgDetails => {
+      quartzOrgDetails.id = idpeOrgID
+      cy.intercept('GET', 'api/v2/quartz/orgs/*', quartzOrgDetails).as(
+        'getQuartzOrgDetails'
+      )
+    })
   }
 
   const mockQuartzOutage = () => {
@@ -51,10 +55,13 @@ describe('change-account change-org global header', () => {
       cy.signin().then(() => {
         cy.request({
           method: 'GET',
-          url: '/api/v2/orgs',
+          url: 'api/v2/orgs',
         }).then(res => {
           // Store the IDPE org ID so that it can be cloned when intercepting quartz.
-          idpeOrgID = res.body.orgs[0].id
+          cy.log(res.body.orgs[0].id)
+          if (res.body.orgs) {
+            idpeOrgID = res.body.orgs[0].id
+          }
         })
       })
     )
@@ -63,13 +70,22 @@ describe('change-account change-org global header', () => {
   beforeEach(() => {
     // Preserve one session throughout.
     Cypress.Cookies.preserveOnce('sid')
+    cy.setFeatureFlags(globalHeaderFeatureFlags)
+  })
+
+  afterEach(() => {
+    cy.wait(1200)
   })
 
   describe('global change-account and change-org header', () => {
     it('does not render when API requests to quartz fail', () => {
+      cy.log('new value')
+      cy.log(idpeOrgID)
+
       mockQuartzOutage()
       interceptPageReload()
       cy.setFeatureFlags(globalHeaderFeatureFlags).then(() => {
+        cy.wait(500)
         cy.visit('/')
         cy.wait(['@getQuartzIdentity', '@getQuartzAccounts'])
         cy.getByTestID('global-header--container').should('not.exist')
@@ -78,28 +94,14 @@ describe('change-account change-org global header', () => {
 
     describe('change org dropdown', () => {
       before(() => {
-        cy.request({
-          method: 'GET',
-          url: '/api/v2/orgs',
-        }).then(res => {
-          // Retrieve the user's org ID from IDPE.
-          idpeOrgID = res.body.orgs[0].id
-
-          cy.setFeatureFlags(globalHeaderFeatureFlags)
-          cy.visit('/')
-        })
-      })
-
-      beforeEach(() => {
-        // For each test, replace the org id served by quartz-mock with the IDPE org id.
-        // This ensures that routes based on the current org id are compatible with quartz-mock.
-        makeQuartzUseIDPEOrgID()
-        // A short wait is needed to ensure we've completed trailing API calls. Can't consistently cy.wait one route,
-        // as the problem call varies. This adds < 1s to a 35+ second run, which seems acceptable to combat flake.
-        cy.wait(200)
+        cy.setFeatureFlags(globalHeaderFeatureFlags)
+        cy.log(idpeOrgID)
+        cy.visit('/')
+        // })
       })
 
       it('navigates to the org settings page', () => {
+        makeQuartzUseIDPEOrgID()
         cy.getByTestID('globalheader--org-dropdown')
           .should('be.visible')
           .click()
@@ -115,6 +117,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the org members page', () => {
+        makeQuartzUseIDPEOrgID()
         cy.getByTestID('globalheader--org-dropdown')
           .should('be.visible')
           .click()
@@ -130,6 +133,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the org usage page', () => {
+        makeQuartzUseIDPEOrgID()
         cy.getByTestID('globalheader--org-dropdown')
           .should('exist')
           .click()
@@ -145,10 +149,17 @@ describe('change-account change-org global header', () => {
       })
 
       it('can change change the active org', () => {
-        cy.intercept('GET', 'auth/orgs/58fafbb4f68e05e5', {
-          statusCode: 200,
-          body: 'Reaching this page serves an org change in prod.',
-        }).as('getNewOrg')
+        makeQuartzUseIDPEOrgID()
+        // No real quartz, so we can't handle this redirect in testing. But we can
+        // intercept the request to change orgs and send the user
+        // to the org settings page instead. If this intercept succeeds,
+        // this active org is pointing to the correct URL.
+
+        // Other interception methods - like sending back a JSON object on success -
+        // appear to work only in Chrome, and not Firefox.
+        cy.intercept('GET', 'auth/orgs/58fafbb4f68e05e5', req => {
+          req.redirect(`/orgs/${idpeOrgID}/org-settings`)
+        })
 
         cy.getByTestID('globalheader--org-dropdown')
           .should('exist')
@@ -169,15 +180,14 @@ describe('change-account change-org global header', () => {
           .should('be.visible')
           .click()
 
-        cy.contains('Reaching this page serves an org change in prod.').should(
-          'be.visible'
-        )
+        cy.getByTestID('tabs--tab-contents')
+          .should('be.visible')
+          .and('contain', 'Organization Profile')
       })
     })
 
     describe('change account dropdown', () => {
       beforeEach(() => {
-        makeQuartzUseIDPEOrgID()
         cy.setFeatureFlags(globalHeaderFeatureFlags)
       })
 
@@ -186,6 +196,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the account settings page', () => {
+        makeQuartzUseIDPEOrgID()
         cy.getByTestID('globalheader--account-dropdown')
           .should('exist')
           .click()
@@ -202,6 +213,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the account billing page', () => {
+        makeQuartzUseIDPEOrgID()
         cy.getByTestID('globalheader--account-dropdown')
           .should('exist')
           .click()
@@ -216,10 +228,12 @@ describe('change-account change-org global header', () => {
       })
 
       it('can change change the active account', () => {
-        cy.intercept('GET', 'auth/accounts/415', {
-          statusCode: 200,
-          body: 'Reaching this page serves an account change in prod.',
-        }).as('getNewAccount')
+        makeQuartzUseIDPEOrgID()
+
+        // See earlier comment - cannot handle this quartz redirect, so must intercept.
+        cy.intercept('GET', 'auth/accounts/415', req => {
+          req.redirect(`/orgs/${idpeOrgID}/accounts/settings`)
+        })
 
         cy.getByTestID('globalheader--account-dropdown')
           .should('exist')
@@ -242,29 +256,14 @@ describe('change-account change-org global header', () => {
           .should('be.visible')
           .click()
 
-        cy.contains(
-          'Reaching this page serves an account change in prod.'
-        ).should('be.visible')
+        cy.getByTestID('account-settings--header').should('be.visible')
       })
     })
   })
 
   describe('user profile avatar', {scrollBehavior: false}, () => {
-    before(() => {
-      interceptPageReload()
-      makeQuartzUseIDPEOrgID()
-      // A reset is required here because the prior test ends on a mocked-up page served by cy.intercept,
-      // which stands in for the 'change account' page actually served by quartz in prod.
-      cy.visit('/').then(() => {
-        cy.wait(['@getOrgs', '@getFlags'])
-        cy.setFeatureFlags(globalHeaderFeatureFlags).then(() => {
-          cy.wait('@getQuartzOrgs')
-          cy.visit('/')
-        })
-      })
-    })
-
     it('navigates to the `user profile` page', () => {
+      makeQuartzUseIDPEOrgID()
       cy.getByTestID('global-header--user-avatar')
         .should('be.visible')
         .click()
@@ -281,15 +280,18 @@ describe('change-account change-org global header', () => {
     })
 
     it('allows the user to log out', () => {
+      makeQuartzUseIDPEOrgID()
       cy.getByTestID('global-header--user-avatar')
         .should('be.visible')
         .click()
 
+      // Logout can't be handled in the test, and redirects to a 404 that
+      // Firefox doesn't recognize as a new page. Instead, just check if the
+      // href of the logout button is correct.
       cy.getByTestID('global-header--user-popover-logout-button')
         .should('be.visible')
-        .click()
-      // Logout in remocal looks like a 404 because there is no quartz. This tests the logout URL.
-      cy.location('pathname').should('eq', '/logout')
+        .parent()
+        .should('have.attr', 'href', '/logout')
     })
   })
 })

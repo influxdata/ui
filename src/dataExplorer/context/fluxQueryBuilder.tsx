@@ -94,7 +94,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }, [selection.bucket])
 
   const handleToggleFluxSync = (synced: boolean): void => {
-    setSelection({composition: {synced: synced}})
+    setSelection({composition: {synced}})
   }
 
   const handleSelectBucket = (bucket: Bucket): void => {

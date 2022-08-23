@@ -4,6 +4,7 @@ import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import WaitingText from 'src/shared/components/WaitingText'
+import SelectorList from 'src/timeMachine/components/SelectorList'
 
 // Contexts
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
@@ -61,7 +62,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     getTagValues(selectedBucket, selectedMeasurement, key)
   }
 
-  let list: JSX.Element | JSX.Element[] = []
+  let list: JSX.Element = null
 
   if (loading === RemoteDataState.Error) {
     list = (
@@ -79,16 +80,24 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && valuesToShow.length) {
-    list = valuesToShow.map(value => (
-      <dd
-        key={value}
-        className="tag-selector-value--list-item--selectable"
-        onClick={() => handleSelectTagValue(value)}
-        data-testid="tag-selector-value--list-item--selectable"
-      >
-        <code>{value}</code>
-      </dd>
-    ))
+    // list = valuesToShow.map(value => (
+    //   <dd
+    //     key={value}
+    //     className="tag-selector-value--list-item--selectable"
+    //     onClick={() => handleSelectTagValue(value)}
+    //     data-testid="tag-selector-value--list-item--selectable"
+    //   >
+    //     <code>{value}</code>
+    //   </dd>
+    // ))
+    list = (
+      <SelectorList
+        items={valuesToShow}
+        selectedItems={[]}
+        onSelectItem={handleSelectTagValue}
+        multiSelect={true}
+      />
+    )
   }
 
   const handleLoadMore = () => {
@@ -98,9 +107,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
 
   return useMemo(() => {
     const shouldLoadMore =
-      valuesToShow.length < tagValues.length &&
-      Array.isArray(list) &&
-      list.length > 1
+      valuesToShow.length < tagValues.length && loading === RemoteDataState.Done
     const loadMoreButton = shouldLoadMore && (
       <button
         className="tag-selector-value--load-more-button"

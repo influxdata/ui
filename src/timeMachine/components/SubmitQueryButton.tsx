@@ -35,6 +35,7 @@ interface OwnProps {
   icon?: IconFont
   testID?: string
   className?: string
+  disabledTitleText?: string // Text to be displayed on hover tooltip when the button is disabled
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -86,7 +87,15 @@ class SubmitQueryButton extends PureComponent<Props> {
   }
 
   public render() {
-    const {color, text, queryStatus, icon, testID, className} = this.props
+    const {
+      color,
+      text,
+      queryStatus,
+      icon,
+      testID,
+      className,
+      disabledTitleText,
+    } = this.props
     if (queryStatus === RemoteDataState.Loading && this.state.timer) {
       return (
         <Button
@@ -112,6 +121,7 @@ class SubmitQueryButton extends PureComponent<Props> {
         color={color ?? ComponentColor.Primary}
         testID={testID}
         style={{minWidth: '100px'}}
+        disabledTitleText={disabledTitleText}
       />
     )
   }

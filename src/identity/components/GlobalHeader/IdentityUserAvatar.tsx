@@ -14,7 +14,7 @@ import {
 } from '@influxdata/clockface'
 
 // Eventing
-import {HeaderNavEvent} from 'src/identity/events/multiOrgEvents'
+import {HeaderNavEvent, multiOrgTag} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
 // Styles
@@ -46,12 +46,12 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private handlePopoverClick = (eventName: string) => () => {
-    event(eventName, {initiative: 'multiOrg'})
+    event(eventName, multiOrgTag)
   }
   private togglePopoverState = () => {
     const {isPopoverOpen} = this.state
     if (!isPopoverOpen) {
-      event(HeaderNavEvent.UserAvatarClick, {initiative: 'multiOrg'})
+      event(HeaderNavEvent.UserAvatarClick, multiOrgTag)
     }
     this.setState({isPopoverOpen: !isPopoverOpen})
   }

@@ -35,7 +35,10 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Eventing
-import {UserProfileEvent} from 'src/identity/events/multiOrgEvents'
+import {
+  multiOrgEvent,
+  UserProfileEvent,
+} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
 // Styles
@@ -93,16 +96,12 @@ export const UserDefaults: FC = () => {
     if (userChangedPrefs) {
       try {
         if (userPickedNewAccount) {
-          event(
-            UserProfileEvent.DefaultAccountChange,
-            {initiative: 'multiOrg'},
-            {
-              oldDefaultAccountID: defaultAccount.id,
-              oldDefaultAccountName: defaultAccount.name,
-              newDefaultAccountID: selectedAccount.id,
-              newDefaultAccountName: selectedAccount.name,
-            }
-          )
+          event(UserProfileEvent.DefaultAccountChange, multiOrgEvent, {
+            oldDefaultAccountID: defaultAccount.id,
+            oldDefaultAccountName: defaultAccount.name,
+            newDefaultAccountID: selectedAccount.id,
+            newDefaultAccountName: selectedAccount.name,
+          })
 
           await handleSetDefaultAccount(selectedAccount.id, {
             disablePopUps: true,
@@ -110,16 +109,12 @@ export const UserDefaults: FC = () => {
         }
 
         if (userPickedNewOrg) {
-          event(
-            UserProfileEvent.DefaultOrgChange,
-            {initiative: 'multiOrg'},
-            {
-              oldDefaultOrgID: defaultOrg.id,
-              oldDefaultOrgName: defaultOrg.name,
-              newDefaultOrgID: selectedOrg.id,
-              newDefaultOrgName: selectedOrg.name,
-            }
-          )
+          event(UserProfileEvent.DefaultOrgChange, multiOrgEvent, {
+            oldDefaultOrgID: defaultOrg.id,
+            oldDefaultOrgName: defaultOrg.name,
+            newDefaultOrgID: selectedOrg.id,
+            newDefaultOrgName: selectedOrg.name,
+          })
 
           await dispatch(
             updateDefaultOrgThunk({

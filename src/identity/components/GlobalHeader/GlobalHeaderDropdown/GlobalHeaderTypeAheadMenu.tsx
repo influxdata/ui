@@ -6,7 +6,10 @@ import classnames from 'classnames'
 import {TypeAheadMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 // Eventing
-import {TypeAheadEventPrefix} from 'src/identity/events/multiOrgEvents'
+import {
+  multiOrgTag,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
 type Props = {
@@ -96,7 +99,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
 
     // No event should be sent if the input field is empty, or just contains whitespace.
     if (e.target.value.trim().length) {
-      event(`${typeAheadEventPrefix}.searched`, {initiative: 'multiOrg'})
+      event(`${typeAheadEventPrefix}.searched`, multiOrgTag)
     }
   }
 

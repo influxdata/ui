@@ -80,7 +80,14 @@ const GetOrganizations: FunctionComponent = () => {
   }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (CLOUD && org?.id && isFlagEnabled('rudderstackReporting')) {
+    if (
+      CLOUD &&
+      email &&
+      org?.id &&
+      account.id &&
+      account.name &&
+      isFlagEnabled('rudderstackReporting')
+    ) {
       identify(meId, {
         email,
         orgID: org.id,

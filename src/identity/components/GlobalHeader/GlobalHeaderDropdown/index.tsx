@@ -23,6 +23,7 @@ import GlobalHeaderTypeAheadMenu from 'src/identity/components/GlobalHeader/Glob
 // Eventing
 import {
   MainMenuEventPrefix,
+  multiOrgTag,
   TypeAheadEventPrefix,
 } from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
@@ -109,7 +110,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
 
   private sendMainMenuEvent = (menuItem: string) => () => {
     const {mainMenuEventPrefix} = this.props
-    event(`${mainMenuEventPrefix}${menuItem}.clicked`, {initiative: 'multiOrg'})
+    event(`${mainMenuEventPrefix}${menuItem}.clicked`, multiOrgTag)
   }
 
   private toggleShowTypeAheadMenu = () => {
@@ -117,7 +118,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     const {showTypeAheadMenu} = this.state
     // 'Clicked the switch button' event only emitted when opening the typeahead.
     if (!showTypeAheadMenu) {
-      event(`${mainMenuEventPrefix}Switch.clicked`, {initiative: 'multiOrg'})
+      event(`${mainMenuEventPrefix}Switch.clicked`, multiOrgTag)
     }
     this.setState({showTypeAheadMenu: !showTypeAheadMenu})
   }

@@ -1,3 +1,7 @@
+export const multiOrgTag = {
+  initiative: 'multiOrg',
+}
+
 export enum HeaderNavEvent {
   AccountDropdownClick = 'headerNav.accountDropdown.clicked',
   AccountSwitch = 'headerNav.accountDropdown.accountSwitched',

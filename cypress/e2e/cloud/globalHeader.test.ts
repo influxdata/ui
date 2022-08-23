@@ -60,7 +60,10 @@ describe('change-account change-org global header', () => {
           url: '/api/v2/orgs',
         }).then(res => {
           // Store the IDPE org ID so that it can be cloned when intercepting quartz.
-          idpeOrgID = res.body.orgs[0].id
+
+          if (res.body.orgs) {
+            idpeOrgID = res.body.orgs[0].id
+          }
         })
       })
     )
@@ -89,8 +92,10 @@ describe('change-account change-org global header', () => {
           method: 'GET',
           url: '/api/v2/orgs',
         }).then(res => {
-          // Retrieve the user's org ID from IDPE.
-          idpeOrgID = res.body.orgs[0].id
+          if (res.body.orgs) {
+            // Retrieve the user's org ID from IDPE.
+            idpeOrgID = res.body.orgs[0].id
+          }
 
           cy.setFeatureFlags(globalHeaderFeatureFlags)
           cy.visit('/')
@@ -265,7 +270,9 @@ describe('change-account change-org global header', () => {
             url: '/api/v2/orgs',
           }).then(res => {
             // Store the IDPE org ID so that it can be cloned when intercepting quartz.
-            idpeOrgID = res.body.orgs[0].id
+            if (res.body.orgs) {
+              idpeOrgID = res.body.orgs[0].id
+            }
           })
         })
       )

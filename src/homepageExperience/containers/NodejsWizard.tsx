@@ -63,44 +63,61 @@ export class NodejsWizard extends PureComponent<null, State> {
   }
 
   handleNextClick = () => {
-    event(
-      'firstMile.NodejsWizard.next.clicked',
-      {},
+    this.setState(
       {
-        clickedButtonAtStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+        currentStep: Math.min(
+          this.state.currentStep + 1,
+          HOMEPAGE_NAVIGATION_STEPS.length
         ),
-        currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep].name
-        ),
+      },
+      () => {
+        event(
+          'firstMile.nodejsWizard.next.clicked',
+          {},
+          {
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 2].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+            ),
+          }
+        )
       }
     )
-    this.setState({
-      currentStep: Math.min(
-        this.state.currentStep + 1,
-        HOMEPAGE_NAVIGATION_STEPS.length
-      ),
-    })
   }
 
   handlePreviousClick = () => {
-    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
-    event(
-      'firstMile.NodejsWizard.previous.clicked',
-      {},
-      {
-        clickedButtonAtStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
-        ),
-        currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 2].name
-        ),
+    this.setState(
+      {currentStep: Math.max(this.state.currentStep - 1, 1)},
+      () => {
+        event(
+          'firstMile.nodejsWizard.previous.clicked',
+          {},
+          {
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+            ),
+          }
+        )
       }
     )
   }
 
   handleNavClick = (clickedStep: number) => {
     this.setState({currentStep: clickedStep})
+    event(
+      'firstMile.nodejsWizard.subNav.clicked',
+      {},
+      {
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[clickedStep - 1].name
+        ),
+      }
+    )
   }
 
   renderStep = () => {

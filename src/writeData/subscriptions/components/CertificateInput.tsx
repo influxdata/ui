@@ -63,16 +63,13 @@ const NewCertificateInput: FC<OwnProps> = ({updateForm, subscription}) => {
       margin={ComponentSize.Large}
     >
       <InputLabel size={ComponentSize.Medium}>
-        TODO: CHANGE THIS We download your certs and put those
+        Enable secure communication for your subscription with SSL and TLS
         <br />
-        on a 1.44 inch floppy disk. The Gen Z/Alpha don't even
-        <br />
-        know about Floppy Drive.. So, we're gewd..
+        certificates by configuring the following certificate information:
       </InputLabel>
       <TextAreaWithLabel
         name="Certificate"
         label="Certificate authority"
-        description="TODO: Fix this"
         onChange={handleUpdateCACert}
         value={subscription?.brokerCACert ?? ''}
         placeholder={CertificatePlaceholders.caCert}
@@ -90,7 +87,6 @@ const NewCertificateInput: FC<OwnProps> = ({updateForm, subscription}) => {
       <TextAreaWithLabel
         name="CertificateAuthority"
         label="Certificate"
-        description="If your private key is included in this string, be sure to separate it and enter it in the Private key field"
         onChange={handleUpdateCert}
         value={subscription?.brokerClientCert ?? ''}
         placeholder={CertificatePlaceholders.clientCert}

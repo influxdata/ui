@@ -118,7 +118,14 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectField = (field: string): void => {
-    setSelection({fields: [...selection.fields, field]})
+    let fields = []
+    if (selection.fields.includes(field)) {
+      fields = selection.fields.filter(item => item !== field)
+    } else {
+      fields = [...selection.fields, field]
+    }
+
+    setSelection({fields})
 
     // Inject field
     injectViaLsp(ExecuteCommand.InjectField, {

@@ -11,10 +11,12 @@ import React, {
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import WaitingText from 'src/shared/components/WaitingText'
+import SelectorList from 'src/timeMachine/components/SelectorList'
 
 // Contexts
 import {FieldsContext} from 'src/dataExplorer/context/fields'
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -36,6 +38,7 @@ conceptually similar to a non-indexed column and value.`
 const FieldSelector: FC = () => {
   const {fields, loading} = useContext(FieldsContext)
   const {selectField, searchTerm} = useContext(FluxQueryBuilderContext)
+  const {selection} = useContext(PersistanceContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
 
   const handleSelectField = (field: string) => {
@@ -79,16 +82,15 @@ const FieldSelector: FC = () => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
-    list = fieldsToShow.map(field => (
-      <dd
-        key={field}
-        className="field-selector--list-item--selectable"
-        data-testid="field-selector--list-item--selectable"
-        onClick={() => handleSelectField(field)}
-      >
-        <code>{field}</code>
-      </dd>
-    ))
+    list = (
+      <SelectorList
+        items={fieldsToShow}
+        selectedItems={selection.fields}
+        onSelectItem={handleSelectField}
+        multiSelect={true}
+        testID="field-selector--list-item--selectable"
+      />
+    )
   }
 
   const handleLoadMore = useCallback(() => {

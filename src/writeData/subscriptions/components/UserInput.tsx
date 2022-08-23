@@ -35,7 +35,7 @@ const UserInput: FC<Props> = ({formContent, updateForm, className, edit}) => (
         type={InputType.Text}
         placeholder="userName"
         name="username"
-        value={formContent.brokerUsername}
+        value={formContent?.brokerUsername ?? ''}
         onChange={e =>
           updateForm({
             ...formContent,
@@ -56,7 +56,7 @@ const UserInput: FC<Props> = ({formContent, updateForm, className, edit}) => (
         type={InputType.Password}
         placeholder="*********"
         name="password"
-        value={formContent.brokerPassword}
+        value={formContent?.brokerPassword ?? ''}
         onChange={e =>
           updateForm({
             ...formContent,

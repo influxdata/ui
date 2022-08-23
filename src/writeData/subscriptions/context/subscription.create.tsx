@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useCallback} from 'react'
+import React, {FC, useState, useCallback, useEffect} from 'react'
 import {createAPI} from 'src/writeData/subscriptions/context/api'
 import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
@@ -35,8 +35,10 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     brokerPort: undefined,
     brokerUsername: '',
     brokerPassword: '',
-    brokerCert: '',
-    brokerKey: '',
+    brokerClientCert: '',
+    brokerClientKey: '',
+    brokerCACert: '',
+    authType: 'none',
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
@@ -91,7 +93,8 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
   const dispatch = useDispatch()
   const create = (formContent?: Subscription): any => {
     setLoading(RemoteDataState.Loading)
-    createAPI({data: formContent})
+    const sanitizedForm = {...formContent} as Subscription
+    createAPI({data: sanitizedForm})
       .then(() => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
@@ -114,6 +117,14 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
         event('subscription creation attempt', {}, {feature: 'subscriptions'})
       })
   }
+
+  useEffect(() => {
+    setFormContent(prev => ({
+      ...prev,
+      brokerUsername: null,
+      brokerPassword: null,
+    }))
+  }, [setFormContent])
 
   const updateForm = useCallback(
     formContent => {

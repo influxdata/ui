@@ -97,10 +97,10 @@ export class ArduinoWizard extends PureComponent<{}, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
+              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep].name
+              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
             ),
           }
         )

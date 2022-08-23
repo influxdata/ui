@@ -63,17 +63,18 @@ describe('change-account change-org global header', () => {
   beforeEach(() => {
     // Preserve one session throughout.
     Cypress.Cookies.preserveOnce('sid')
+    cy.setFeatureFlags(globalHeaderFeatureFlags)
   })
 
   describe('global change-account and change-org header', () => {
     it('does not render when API requests to quartz fail', () => {
       mockQuartzOutage()
       interceptPageReload()
-      cy.setFeatureFlags(globalHeaderFeatureFlags).then(() => {
-        cy.visit('/')
-        cy.wait(['@getQuartzIdentity', '@getQuartzAccounts'])
-        cy.getByTestID('global-header--container').should('not.exist')
-      })
+      // cy.setFeatureFlags(globalHeaderFeatureFlags).then(() => {
+      cy.visit('/')
+      cy.wait(['@getQuartzIdentity', '@getQuartzAccounts'])
+      cy.getByTestID('global-header--container').should('not.exist')
+      // })
     })
 
     describe('change org dropdown', () => {
@@ -96,7 +97,7 @@ describe('change-account change-org global header', () => {
         makeQuartzUseIDPEOrgID()
         // A short wait is needed to ensure we've completed trailing API calls. Can't consistently cy.wait one route,
         // as the problem call varies. This adds < 1s to a 35+ second run, which seems acceptable to combat flake.
-        cy.wait(200)
+        cy.wait(500)
       })
 
       it('navigates to the org settings page', () => {
@@ -251,6 +252,18 @@ describe('change-account change-org global header', () => {
 
   describe('user profile avatar', {scrollBehavior: false}, () => {
     before(() => {
+      cy.flush().then(() =>
+        cy.signin().then(() => {
+          cy.request({
+            method: 'GET',
+            url: '/api/v2/orgs',
+          }).then(res => {
+            // Store the IDPE org ID so that it can be cloned when intercepting quartz.
+            idpeOrgID = res.body.orgs[0].id
+          })
+        })
+      )
+
       interceptPageReload()
       makeQuartzUseIDPEOrgID()
       // A reset is required here because the prior test ends on a mocked-up page served by cy.intercept,

@@ -87,9 +87,8 @@ describe('change-account change-org global header', () => {
       mockQuartzOutage()
       interceptPageReload()
       cy.setFeatureFlags(globalHeaderFeatureFlags).then(() => {
-        cy.wait(500)
         cy.visit('/')
-        cy.wait(['@getQuartzIdentity', '@getQuartzAccounts'])
+        cy.wait('@getQuartzAccounts')
         cy.getByTestID('global-header--container').should('not.exist')
       })
     })

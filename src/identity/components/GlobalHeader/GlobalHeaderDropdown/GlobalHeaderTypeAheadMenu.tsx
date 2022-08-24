@@ -100,7 +100,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     // No event should be sent if the input field is empty, or just contains whitespace.
 
     if (
-      typeof evt.target.value === 'string' &&
+      typeof evt?.target?.value === 'string' &&
       evt.target.value.trim().length
     ) {
       event(`${typeAheadEventPrefix}.searched`, multiOrgTag)

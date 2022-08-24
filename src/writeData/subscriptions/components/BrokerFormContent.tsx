@@ -54,6 +54,7 @@ const BrokerFormContent: FC<Props> = ({
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
+  const DEFAULT_PORT = formContent.authType === 'certificate' ? 8883 : 1883
 
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
@@ -68,6 +69,7 @@ const BrokerFormContent: FC<Props> = ({
     })
   }, [])
 
+  console.log(formContent.authType, formContent.brokerPort)
   return (
     <Grid>
       <Grid.Row>
@@ -244,7 +246,11 @@ const BrokerFormContent: FC<Props> = ({
               {status => (
                 <Input
                   type={InputType.Number}
-                  placeholder="1883"
+                  placeholder={`${
+                    !formContent || isNaN(formContent.brokerPort)
+                      ? DEFAULT_PORT
+                      : formContent.brokerPort
+                  }`}
                   name="port"
                   autoFocus={false}
                   value={formContent.brokerPort}

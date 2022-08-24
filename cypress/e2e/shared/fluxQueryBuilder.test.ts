@@ -142,6 +142,7 @@ describe('FluxQueryBuilder', () => {
 
       // more than 8 items, show "Load more" button
       cy.getByTestID('field-selector').within(() => {
+        // This class name is used by the childen of `SelectorList` component
         cy.get('.selector-list--item')
           .should('be.visible')
           .should('have.length', 8)

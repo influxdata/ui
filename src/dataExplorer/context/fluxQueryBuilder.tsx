@@ -121,7 +121,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectBucket = (bucket: Bucket): void => {
-    setSelection({bucket, measurement: ''})
+    setSelection({bucket, measurement: '', fields: [], tagValues: []})
     // Reset measurement, tags, and fields
     resetFields()
     resetTags()
@@ -131,7 +131,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectMeasurement = (measurement: string): void => {
-    setSelection({measurement})
+    setSelection({measurement, fields: [], tagValues: []})
 
     // Inject measurement
     injectViaLsp(ExecuteCommand.InjectionMeasurement, {

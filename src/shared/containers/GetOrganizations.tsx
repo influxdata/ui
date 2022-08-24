@@ -84,8 +84,8 @@ const GetOrganizations: FunctionComponent = () => {
       CLOUD &&
       email &&
       org?.id &&
-      account.id &&
-      account.name &&
+      account?.id &&
+      account?.name &&
       isFlagEnabled('rudderstackReporting')
     ) {
       identify(meId, {

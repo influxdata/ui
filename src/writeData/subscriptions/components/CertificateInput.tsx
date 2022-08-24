@@ -240,7 +240,7 @@ const CertificateInput: FC<OwnProps> = ({subscription, updateForm, edit}) => {
     )
   }
 
-  return isFlagEnabled('enableCertificateSupport') ? (
+  return isFlagEnabled('subscriptionsCertificateSupport') ? (
     <NewCertificateInput subscription={subscription} updateForm={updateForm} />
   ) : (
     <OldCertificateInput />

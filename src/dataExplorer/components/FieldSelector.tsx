@@ -30,6 +30,7 @@ import {
   LOAD_MORE_LIMIT,
 } from 'src/dataExplorer/shared/utils'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
 key values pairs within a measurement. For SQL users, this is \
@@ -82,14 +83,27 @@ const FieldSelector: FC = () => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
-    list = (
-      <SelectorList
-        items={fieldsToShow}
-        selectedItems={selection.fields}
-        onSelectItem={handleSelectField}
-        multiSelect={true}
-      />
-    )
+    if (isFlagEnabled('schemaComposition')) {
+      list = (
+        <SelectorList
+          items={fieldsToShow}
+          selectedItems={selection.fields}
+          onSelectItem={handleSelectField}
+          multiSelect={true}
+        />
+      )
+    } else {
+      list = fieldsToShow.map(field => (
+        <dd
+          key={field}
+          className="field-selector--list-item--selectable"
+          data-testid="field-selector--list-item--selectable"
+          onClick={() => handleSelectField(field)}
+        >
+          <code>{field}</code>
+        </dd>
+      ))
+    }
   }
 
   const handleLoadMore = useCallback(() => {

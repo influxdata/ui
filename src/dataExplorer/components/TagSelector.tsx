@@ -19,6 +19,7 @@ import {
   LOAD_MORE_LIMIT,
 } from 'src/dataExplorer/shared/utils'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \
@@ -63,7 +64,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     getTagValues(selectedBucket, selectedMeasurement, key)
   }
 
-  let list: JSX.Element = null
+  let list: JSX.Element | JSX.Element[] = []
 
   if (loading === RemoteDataState.Error) {
     list = (
@@ -81,14 +82,27 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && valuesToShow.length) {
-    list = (
-      <SelectorList
-        items={valuesToShow}
-        selectedItems={selectedTagValues[tagKey] ?? []}
-        onSelectItem={handleSelectTagValue}
-        multiSelect={true}
-      />
-    )
+    if (isFlagEnabled('schemaComposition')) {
+      list = (
+        <SelectorList
+          items={valuesToShow}
+          selectedItems={selectedTagValues[tagKey] ?? []}
+          onSelectItem={handleSelectTagValue}
+          multiSelect={true}
+        />
+      )
+    } else {
+      list = valuesToShow.map(value => (
+        <dd
+          key={value}
+          className="tag-selector-value--list-item--selectable"
+          onClick={() => handleSelectTagValue(value)}
+          data-testid="tag-selector-value--list-item--selectable"
+        >
+          <code>{value}</code>
+        </dd>
+      ))
+    }
   }
 
   const handleLoadMore = () => {

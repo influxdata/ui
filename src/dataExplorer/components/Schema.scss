@@ -98,6 +98,43 @@
   text-overflow: ellipsis;
 }
 
+.field-selector--list-item--selectable,
+.tag-selector-value--list-item--selectable {
+  padding: $cf-space-2xs;
+  height: $cf-form-xs-height;
+  line-height: $cf-form-xs-height;
+  font-family: $cf-code-font;
+  font-weight: $cf-font-weight--regular;
+  transition-property: background-color 0.25s ease, color 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+
+  > code {
+    font-size: $cf-form-sm-font;
+    border-radius: $cf-radius-sm;
+    padding: 0 $cf-space-2xs;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.25s ease, color 0.25s ease,
+      text-shadow 0.25s ease;
+    color: $cf-grey-85;
+  }
+
+  &:hover {
+    > code {
+      background: $cf-grey-15;
+      color: $c-krypton;
+
+      &:after {
+        content: ' +';
+      }
+    }
+  }
+}
+
 .container-side-bar--fields,
 .container-side-bar--tag-keys,
 .container-side-bar--tag-values {

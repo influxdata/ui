@@ -39,6 +39,8 @@ import {
 
 // Types
 import {AppState, Authorization} from 'src/types'
+import {notify} from 'src/shared/actions/notifications'
+import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 
 // Styles
 import './CliSteps.scss'
@@ -98,7 +100,11 @@ export const InitializeClient: FC<OwnProps> = ({
   }, [bucket, onSelectBucket])
 
   useEffect(() => {
-    dispatch(getAllResources())
+    try {
+      dispatch(getAllResources())
+    } catch (e) {
+      dispatch(notify(getResourcesTokensFailure('all access token')))
+    }
   }, [dispatch])
 
   useEffect(() => {

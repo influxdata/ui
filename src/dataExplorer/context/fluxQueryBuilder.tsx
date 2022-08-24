@@ -154,8 +154,10 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const handleSelectField = (field: string): void => {
     let fields = []
     if (selection.fields?.includes(field)) {
+      // remove the selected field
       fields = selection.fields.filter(item => item !== field)
     } else {
+      // add the selected field
       fields = [...selection.fields, field]
     }
 
@@ -172,32 +174,37 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
+    let nextStateTagValues: string[] = []
+    let sessionTagValues: TagKeyValuePair[] = []
+
     if (selectedTagValues[tagKey]?.includes(tagValue)) {
-      // remove the tag value
-      const newTagValues = selectedTagValues[tagKey].filter(
+      // remove the selected tag value
+      nextStateTagValues = selectedTagValues[tagKey].filter(
         item => item !== tagValue
       )
-      setSelectedTagValues({
-        ...selectedTagValues,
-        [tagKey]: newTagValues,
-      })
+      sessionTagValues = selection.tagValues.filter(
+        item => !(item.key === tagKey && item.value === tagValue)
+      )
     } else {
-      // add the tag value
+      // add the selected tag value
       if (!selectedTagValues[tagKey]) {
         selectedTagValues[tagKey] = [] as string[]
       }
-      setSelectedTagValues({
-        ...selectedTagValues,
-        [tagKey]: [...selectedTagValues[tagKey], tagValue],
-      })
-    }
-
-    setSelection({
-      tagValues: [
+      nextStateTagValues = [...selectedTagValues[tagKey], tagValue]
+      sessionTagValues = [
         ...selection.tagValues,
         {key: tagKey, value: tagValue} as TagKeyValuePair,
-      ],
+      ]
+    }
+
+    // Update React state
+    setSelectedTagValues({
+      ...selectedTagValues,
+      [tagKey]: nextStateTagValues,
     })
+
+    // Update session storage
+    setSelection({tagValues: sessionTagValues})
 
     // Inject tag value
     injectViaLsp(ExecuteCommand.InjectTagValue, {

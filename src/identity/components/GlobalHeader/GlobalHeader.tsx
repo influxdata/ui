@@ -77,14 +77,13 @@ export const GlobalHeader: FC = () => {
     }
   }, [orgsList])
 
-  const shouldLoadDropdowns = !!(activeOrg?.id && activeAccount?.id)
-  const shouldLoadAvatar = !!(
-    user?.firstName &&
-    user?.lastName &&
-    user?.email &&
-    org?.id
+  const shouldLoadDropdowns = Boolean(activeOrg?.id && activeAccount?.id)
+  const shouldLoadAvatar = Boolean(
+    user?.firstName && user?.lastName && user?.email && org?.id
   )
-  const shouldLoadGlobalHeader = !!(shouldLoadDropdowns || shouldLoadAvatar)
+  const shouldLoadGlobalHeader = Boolean(
+    shouldLoadDropdowns || shouldLoadAvatar
+  )
 
   const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
 

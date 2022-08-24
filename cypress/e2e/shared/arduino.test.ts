@@ -10,10 +10,9 @@ describe('Arduino onboarding flow', () => {
   })
 
   describe('Arduino wizard', () => {
-    beforeEach(() => {
-      cy.getByTestID('homepage-wizard-language-tile--arduino').click()
-    })
     it('runs through the arduino wizard pages', function() {
+      cy.getByTestID('homepage-wizard-language-tile--arduino').click()
+
       cy.getByTestID('subway-nav').should('exist')
 
       // first page is overview
@@ -49,6 +48,8 @@ describe('Arduino onboarding flow', () => {
     })
     describe('Subway Nav Bar', () => {
       it('navigates to the correct page when the respective navigation button is clicked', function() {
+        cy.getByTestID('homepage-wizard-language-tile--arduino').click()
+
         cy.get('h1').contains('Hello, Time-Series World!')
 
         cy.getByTestID('arduino-prev-button').should('be.disabled')

@@ -9,6 +9,7 @@ import SelectorList from 'src/timeMachine/components/SelectorList'
 // Contexts
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {TagsContext} from 'src/dataExplorer/context/tags'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -34,6 +35,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
   const {
     selectedBucket,
     selectedMeasurement,
+    selectedTagValues,
     selectTagValue,
     searchTerm,
   } = useContext(FluxQueryBuilderContext)
@@ -83,7 +85,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     list = (
       <SelectorList
         items={valuesToShow}
-        selectedItems={[]}
+        selectedItems={selectedTagValues[tagKey] ?? []}
         onSelectItem={handleSelectTagValue}
         multiSelect={true}
       />
@@ -127,7 +129,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
         </div>
       </Accordion>
     )
-  }, [list])
+  }, [list, selectedTagValues])
 }
 
 const TagSelector: FC = () => {

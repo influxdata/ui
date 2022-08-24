@@ -37,6 +37,10 @@ const debouncer = (action: NOOP): void => {
   }, DEBOUNCE_TIMEOUT)
 }
 
+interface SelectedTagValues {
+  [key: string]: string[]
+}
+
 interface FluxQueryBuilderContextType {
   // Flux Sync
   fluxSync: boolean
@@ -45,6 +49,7 @@ interface FluxQueryBuilderContextType {
   // Schema
   selectedBucket: Bucket
   selectedMeasurement: string
+  selectedTagValues: SelectedTagValues
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void
@@ -61,6 +66,7 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   // Schema
   selectedBucket: null,
   selectedMeasurement: '',
+  selectedTagValues: {} as SelectedTagValues,
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
@@ -79,9 +85,14 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
   const {injectViaLsp} = useContext(EditorContext)
+  const {selection, setSelection} = useContext(PersistanceContext)
 
   // States
-  const {selection, setSelection} = useContext(PersistanceContext)
+  // This state is a restructed PersistanceContext selection.tagValues
+  // for performance reason
+  const [selectedTagValues, setSelectedTagValues] = useState(
+    {} as SelectedTagValues
+  )
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
@@ -90,6 +101,18 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       // a bucket and a measurement are selected,
       // so we should get measurements here
       getMeasurements(selection.bucket)
+
+      // On page refresh, re-contruct the state of selectedTagValues
+      if (!!selection.tagValues) {
+        const _selectedTagValues = {} as SelectedTagValues
+        selection.tagValues.forEach((tag: TagKeyValuePair) => {
+          if (!_selectedTagValues[tag.key]) {
+            _selectedTagValues[tag.key] = []
+          }
+          _selectedTagValues[tag.key].push(tag.value)
+        })
+        setSelectedTagValues(_selectedTagValues)
+      }
     }
   }, [selection.bucket])
 
@@ -150,10 +173,30 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
+    if (selectedTagValues[tagKey]?.includes(tagValue)) {
+      // remove the tag value
+      const newTagValues = selectedTagValues[tagKey].filter(
+        item => item !== tagValue
+      )
+      setSelectedTagValues({
+        ...selectedTagValues,
+        [tagKey]: newTagValues,
+      })
+    } else {
+      // add the tag value
+      if (!selectedTagValues[tagKey]) {
+        selectedTagValues[tagKey] = [] as string[]
+      }
+      setSelectedTagValues({
+        ...selectedTagValues,
+        [tagKey]: [...selectedTagValues[tagKey], tagValue],
+      })
+    }
+
     setSelection({
       tagValues: [
         ...selection.tagValues,
-        {tagKey, tagValue} as TagKeyValuePair,
+        {key: tagKey, value: tagValue} as TagKeyValuePair,
       ],
     })
 
@@ -190,6 +233,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
           // Schema
           selectedBucket: selection.bucket,
           selectedMeasurement: selection.measurement,
+          selectedTagValues,
           searchTerm,
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,

@@ -181,6 +181,6 @@ export enum RemoteDataState {
 }
 
 export interface TagKeyValuePair {
-  tagKey: string
-  tagValue: string
+  key: string
+  value: string
 }

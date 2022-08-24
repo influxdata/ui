@@ -1,15 +1,15 @@
-describe('Arduino onboarding', () => {
+describe('Arduino onboarding flow', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.setFeatureFlags({firstMile: true, onboardArduino: true})
+    cy.setFeatureFlags({onboardArduino: true})
   })
 
   it('should load the main home-page that has the arduino tile', function() {
     cy.getByTestID('home-page--header').should('exist')
   })
 
-  describe('Arduino', () => {
+  describe('Arduino wizard', () => {
     beforeEach(() => {
       cy.getByTestID('homepage-wizard-language-tile--arduino').click()
     })

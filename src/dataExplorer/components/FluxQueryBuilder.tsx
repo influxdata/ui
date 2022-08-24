@@ -1,5 +1,4 @@
-import React, {FC, useContext, useCallback} from 'react'
-import {RemoteDataState} from 'src/types'
+import React, {FC, useState, useContext} from 'react'
 
 // Components
 import {
@@ -11,44 +10,36 @@ import {
   IconFont,
   AlignItems,
   JustifyContent,
+  Overlay,
+  ComponentStatus,
 } from '@influxdata/clockface'
-import {QueryProvider, QueryContext} from 'src/shared/contexts/query'
+import {QueryProvider} from 'src/shared/contexts/query'
 import {EditorProvider} from 'src/shared/contexts/editor'
-import {
-  ResultsProvider,
-  ResultsContext,
-} from 'src/dataExplorer/components/ResultsContext'
+import {ResultsProvider} from 'src/dataExplorer/components/ResultsContext'
 import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
 import {
   PersistanceProvider,
   PersistanceContext,
-  DEFAULT_SCHEMA,
 } from 'src/dataExplorer/context/persistance'
 import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
 import Schema from 'src/dataExplorer/components/Schema'
+import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 
 // Styles
 import './FluxQueryBuilder.scss'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FluxQueryBuilder: FC = () => {
-  const {vertical, setVertical, setQuery, setSelection} = useContext(
-    PersistanceContext
-  )
-  const {cancel} = useContext(QueryContext)
-  const {setStatus, setResult} = useContext(ResultsContext)
-
-  const clear = useCallback(() => {
-    cancel()
-    setStatus(RemoteDataState.NotStarted)
-    setResult(null)
-    setQuery('')
-    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
-  }, [setQuery, setStatus, setResult, setSelection, cancel])
+  const {query, vertical, setVertical} = useContext(PersistanceContext)
+  const [isPromptVisible, setIsPromptVisible] = useState(false)
 
   return (
     <EditorProvider>
       <SidebarProvider>
+        <Overlay visible={isPromptVisible}>
+          <SaveAsScript onClose={() => setIsPromptVisible(false)} />
+        </Overlay>
         <FlexBox
           className="flux-query-builder--container"
           direction={FlexDirection.Column}
@@ -60,10 +51,24 @@ const FluxQueryBuilder: FC = () => {
             data-testid="flux-query-builder--menu"
           >
             <Button
-              onClick={clear}
+              onClick={() => setIsPromptVisible(true)}
               text="New Script"
               icon={IconFont.Plus_New}
+              status={
+                query.length === 0
+                  ? ComponentStatus.Disabled
+                  : ComponentStatus.Default
+              }
             />
+            {isFlagEnabled('saveAsScript') && (
+              <Button
+                onClick={() => {
+                  // TODO(ariel): hook this up
+                }}
+                text="Save Script"
+                icon={IconFont.Save}
+              />
+            )}
           </div>
           <DraggableResizer
             handleOrientation={Orientation.Vertical}

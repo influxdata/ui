@@ -5,6 +5,8 @@ import fetchMock from 'jest-fetch-mock'
 import '@testing-library/jest-dom'
 import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
 import 'setimmediate'
+import registerRequireContextHook from 'babel-plugin-require-context-hook/register';
+
 
 // global vars
 process.env.API_PREFIX = 'http://example.com/'
@@ -24,6 +26,7 @@ window.flushAllPromises = async () => {
 }
 
 // mocks and stuff
+registerRequireContextHook()
 fetchMock.enableMocks()
 jest.mock('src/shared/utils/errors')
 

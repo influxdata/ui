@@ -89,7 +89,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
   // States
   // This state is a restructed PersistanceContext selection.tagValues
-  // for performance reason
+  // for performance reason. selection.tagValues is the source of true
   const [selectedTagValues, setSelectedTagValues] = useState(
     {} as SelectedTagValues
   )

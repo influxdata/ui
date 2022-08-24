@@ -5,8 +5,7 @@ import fetchMock from 'jest-fetch-mock'
 import '@testing-library/jest-dom'
 import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
 import 'setimmediate'
-import registerRequireContextHook from 'babel-plugin-require-context-hook/register';
-
+import registerRequireContextHook from 'babel-plugin-require-context-hook/register'
 
 // global vars
 process.env.API_PREFIX = 'http://example.com/'

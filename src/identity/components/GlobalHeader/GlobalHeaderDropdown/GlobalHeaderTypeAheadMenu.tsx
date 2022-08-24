@@ -40,9 +40,9 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private selectAllTextInInput = (e?: ChangeEvent<HTMLInputElement>) => {
-    if (e) {
-      e.target.select()
+  private selectAllTextInInput = (evt?: ChangeEvent<HTMLInputElement>) => {
+    if (evt) {
+      evt.target.select()
     }
   }
 
@@ -66,8 +66,8 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const filterString = e?.target?.value
+  private handleInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    const filterString = evt?.target?.value
     this.applyFilter(filterString)
   }
 
@@ -94,11 +94,15 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private sendTypeAheadSearchEvent = (e: ChangeEvent<HTMLInputElement>) => {
+  private sendTypeAheadSearchEvent = (evt: ChangeEvent<HTMLInputElement>) => {
     const {typeAheadEventPrefix} = this.props
 
     // No event should be sent if the input field is empty, or just contains whitespace.
-    if (e.target.value.trim().length) {
+
+    if (
+      typeof evt.target.value === 'string' &&
+      evt.target.value.trim().length
+    ) {
       event(`${typeAheadEventPrefix}.searched`, multiOrgTag)
     }
   }

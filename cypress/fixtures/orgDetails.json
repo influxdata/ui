@@ -1,0 +1,12 @@
+{
+  "id": "03b0f952abf7e5ce",
+  "name": "Test Organization",
+  "description": "A test organization for the new org endpoint.",
+  "creationDate": "2019-08-24T14:15:22Z",
+
+  "regionName": "Oregon",
+  "regionCode": "us-west1",
+  "provider": "AWS",
+  "isRegionBeta": false,
+  "clusterHost": "https://us-west1.iamzuora.cloud2.influxdata.com"
+}

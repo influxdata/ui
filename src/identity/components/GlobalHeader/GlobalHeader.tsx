@@ -79,7 +79,7 @@ export const GlobalHeader: FC = () => {
 
   const shouldLoadDropdowns = activeOrg?.id && activeAccount?.id
   const shouldLoadAvatar =
-    user.firstName && user.lastName && user.email && org.id
+    user?.firstName && user?.lastName && user?.email && org?.id
   const shouldLoadGlobalHeader = shouldLoadDropdowns || shouldLoadAvatar
 
   const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}

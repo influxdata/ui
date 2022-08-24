@@ -8,6 +8,7 @@ import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldSelector from 'src/dataExplorer/components/FieldSelector'
 import TagSelector from 'src/dataExplorer/components/TagSelector'
+import SchemaBrowserHeading from 'src/dataExplorer/components/SchemaBrowserHeading'
 
 // Context
 import {
@@ -24,6 +25,7 @@ import {QueryScope} from 'src/shared/contexts/query'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Style
 import './Schema.scss'
@@ -80,6 +82,9 @@ const Schema: FC = () => {
               <div className="scroll--container">
                 <DapperScrollbars>
                   <div className="schema-browser" data-testid="schema-browser">
+                    {isFlagEnabled('schemaComposition') && (
+                      <SchemaBrowserHeading />
+                    )}
                     <BucketSelector />
                     <div className="container-side-bar">
                       <MeasurementSelector />

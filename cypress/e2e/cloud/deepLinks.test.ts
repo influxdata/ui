@@ -51,6 +51,18 @@ describe('Deep linking', () => {
       cy.visit('/me/load-data')
       cy.location('pathname').should('eq', `/orgs/${org.id}/load-data/sources`)
 
+      cy.visit('/me/load-data/subscriptions')
+      cy.location('pathname').should(
+        'eq',
+        `/orgs/${org.id}/load-data/subscriptions`
+      )
+
+      cy.visit('/me/load-data/subscriptions/create')
+      cy.location('pathname').should(
+        'eq',
+        `/orgs/${org.id}/load-data/subscriptions/create`
+      )
+
       cy.visit('/me/nodejsclient')
       cy.location('pathname').should(
         'eq',

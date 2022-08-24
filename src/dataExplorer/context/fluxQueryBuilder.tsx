@@ -38,6 +38,10 @@ const debouncer = (action: NOOP): void => {
 }
 
 interface FluxQueryBuilderContextType {
+  // Flux Sync
+  fluxSync: boolean
+  toggleFluxSync: (synced: boolean) => void
+
   // Schema
   selectedBucket: Bucket
   selectedMeasurement: string
@@ -50,6 +54,10 @@ interface FluxQueryBuilderContextType {
 }
 
 const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
+  // Flux Sync
+  fluxSync: true,
+  toggleFluxSync: _s => {},
+
   // Schema
   selectedBucket: null,
   selectedMeasurement: '',
@@ -84,6 +92,10 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       getMeasurements(selection.bucket)
     }
   }, [selection.bucket])
+
+  const handleToggleFluxSync = (synced: boolean): void => {
+    setSelection({composition: {synced}})
+  }
 
   const handleSelectBucket = (bucket: Bucket): void => {
     setSelection({bucket, measurement: ''})
@@ -155,6 +167,10 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     () => (
       <FluxQueryBuilderContext.Provider
         value={{
+          // Flux Sync
+          fluxSync: selection.composition?.synced,
+          toggleFluxSync: handleToggleFluxSync,
+
           // Schema
           selectedBucket: selection.bucket,
           selectedMeasurement: selection.measurement,
@@ -170,6 +186,9 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       </FluxQueryBuilderContext.Provider>
     ),
     [
+      // Flux Sync
+      selection.composition?.synced,
+
       // Schema
       selection.bucket,
       selection.measurement,

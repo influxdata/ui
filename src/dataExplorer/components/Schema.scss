@@ -24,6 +24,23 @@
   }
 }
 
+.schema-browser-heading {
+  padding-bottom: $cf-space-2xs;
+
+  .schema-browser-heading--text {
+    font-size: 16px;
+    font-weight: $cf-font-weight--bold;
+  }
+
+  .flux-sync--label {
+    padding-left: $cf-space-2xs;
+
+    .selector-title {
+      padding-bottom: 0;
+    }
+  }
+}
+
 .container-side-bar,
 .container-side-bar--fields,
 .container-side-bar--tag-keys,
@@ -35,14 +52,18 @@
 
 .selector-title {
   padding-bottom: $cf-space-2xs;
-}
 
-.selector-title--icon {
-  padding-left: $cf-space-2xs;
-}
+  .selector-title--question-mark {
+    padding-left: $cf-space-2xs;
+  }
 
-.selector-title--icon .cf-question-mark-tooltip {
-  background-color: $cf-grey-35;
+  .selector-title--question-mark .cf-question-mark-tooltip {
+    background-color: $cf-grey-35;
+  }
+
+  .selector-title--icon {
+    padding-right: 2px;
+  }
 }
 
 .field-selector,

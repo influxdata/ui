@@ -41,6 +41,14 @@ class LspConnectionManager {
     schema: RecursivePartial<SchemaSelection>
   ) => void = () => null
 
+  // handle schema composition, on reload.
+  private _firstCompositionInit = false
+  private _insertIntoBuffer = false
+  private _initBufferComposition: [
+    ExecuteCommand,
+    Omit<ExecuteCommandArgument, 'textDocument'>
+  ][] = []
+
   constructor(worker: Worker) {
     this._worker = worker
     // note: LSP handle multiple documents, but does so in alphabetical order
@@ -90,6 +98,10 @@ class LspConnectionManager {
     command: ExecuteCommand,
     data: Omit<ExecuteCommandArgument, 'textDocument'>
   ) {
+    if (this._insertIntoBuffer) {
+      return this._initBufferComposition.push([command, data])
+    }
+
     let msg
     try {
       msg = executeCommand([
@@ -111,10 +123,12 @@ class LspConnectionManager {
 
   _getCompositionBlockLines() {
     const query = this._model.getValue()
+    if (!query.includes(COMPOSITION_YIELD)) {
+      return null
+    }
     const startLine = COMPOSITION_INIT_LINE
     const endLine =
-      (query.split('\n').findIndex(line => line.includes(COMPOSITION_YIELD)) ||
-        0) + 1
+      query.split('\n').findIndex(line => line.includes(COMPOSITION_YIELD)) + 1
     return {startLine, endLine}
   }
 
@@ -126,31 +140,7 @@ class LspConnectionManager {
 
   _setEditorSyncToggle() {
     setTimeout(() => {
-      // elements in monaco-editor. positioned by editor.
-      const syncIcons = document.getElementsByClassName(ICON_SYNC_CLASSNAME)
-
-      // UI elements we control
       const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-      if (!syncIcons.length || !clickableInvisibleDiv) {
-        return
-      }
-
-      const [upperIcon] = syncIcons
-      let [, lowerIcon] = syncIcons
-      if (!lowerIcon) {
-        lowerIcon = upperIcon
-      }
-      const {startLine, endLine} = this._getCompositionBlockLines()
-
-      // move div to match monaco-editor coordinates
-      clickableInvisibleDiv.style.top =
-        ((upperIcon as any).offsetTop || 0) + 'px'
-      const height =
-        ((lowerIcon as any).offsetHeight || 0) * (endLine - startLine + 1) +
-        ((upperIcon as any).offsetTop || 0)
-      clickableInvisibleDiv.style.height = height + 'px'
-      // width size is always the same, defined in classname "sync-bar"
-
       // add listeners
       clickableInvisibleDiv.removeEventListener('click', () =>
         this._setSessionSync(!this._session.composition.synced)
@@ -158,6 +148,8 @@ class LspConnectionManager {
       clickableInvisibleDiv.addEventListener('click', () =>
         this._setSessionSync(!this._session.composition.synced)
       )
+
+      this._alignInvisibleDivToEditorBlock()
     }, 1000)
   }
 
@@ -169,7 +161,11 @@ class LspConnectionManager {
     this._model.onDidChangeContent(e => {
       const {changes} = e
       changes.some(change => {
-        const {startLine, endLine} = this._getCompositionBlockLines()
+        const compositionBlock = this._getCompositionBlockLines()
+        if (!compositionBlock) {
+          return
+        }
+        const {startLine, endLine} = compositionBlock
         if (
           change.range.startLineNumber >= startLine &&
           change.range.endLineNumber <= endLine &&
@@ -185,12 +181,47 @@ class LspConnectionManager {
     })
   }
 
+  _alignInvisibleDivToEditorBlock() {
+    // elements in monaco-editor. positioned by editor.
+    const syncIcons = document.getElementsByClassName(ICON_SYNC_CLASSNAME)
+
+    // UI elements we control
+    const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
+    if (!syncIcons.length || !clickableInvisibleDiv) {
+      return
+    }
+
+    const [upperIcon] = syncIcons
+    let [, lowerIcon] = syncIcons
+    if (!lowerIcon) {
+      lowerIcon = upperIcon
+    }
+    const compositionBlock = this._getCompositionBlockLines()
+    if (!compositionBlock) {
+      return
+    }
+    const {startLine, endLine} = compositionBlock
+
+    // move div to match monaco-editor coordinates
+    clickableInvisibleDiv.style.top = ((upperIcon as any).offsetTop || 0) + 'px'
+    const height =
+      ((lowerIcon as any).offsetHeight || 0) * (endLine - startLine + 1) +
+      ((upperIcon as any).offsetTop || 0)
+    clickableInvisibleDiv.style.height = height + 'px'
+    // width size is always the same, defined in classname "sync-bar"
+  }
+
   _setEditorBlockStyle() {
-    const {startLine, endLine} = this._getCompositionBlockLines()
+    const compositionBlock = this._getCompositionBlockLines()
 
     const startLineStyle = [
       {
-        range: new MonacoTypes.Range(startLine, 1, startLine, 1),
+        range: new MonacoTypes.Range(
+          compositionBlock?.startLine,
+          1,
+          compositionBlock?.startLine,
+          1
+        ),
         options: {
           linesDecorationsClassName: ICON_SYNC_CLASSNAME,
         },
@@ -198,20 +229,27 @@ class LspConnectionManager {
     ]
     const endLineStyle = [
       {
-        range: new MonacoTypes.Range(endLine, 1, endLine, 1),
+        range: new MonacoTypes.Range(
+          compositionBlock?.endLine,
+          1,
+          compositionBlock?.endLine,
+          1
+        ),
         options: {
           linesDecorationsClassName: ICON_SYNC_CLASSNAME,
         },
       },
     ]
 
-    const removeAllStyles = this._session.composition.diverged
+    const removeAllStyles =
+      !compositionBlock && this._session.composition.diverged
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
       removeAllStyles ? [] : startLineStyle.concat(endLineStyle)
     )
 
+    this._alignInvisibleDivToEditorBlock()
     const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
     clickableInvisibleDiv.className = this._session.composition.synced
       ? 'sync-bar sync-bar--on'
@@ -222,27 +260,99 @@ class LspConnectionManager {
     }
   }
 
-  _initLsp(schema: SchemaSelection) {
-    const {bucket, measurement} = schema
-    const payload = {bucket: bucket?.name}
-    if (measurement) {
-      payload['measurement'] = measurement
+  _updateLsp(
+    toAdd: Partial<SchemaSelection>,
+    toRemove: Partial<SchemaSelection> = null
+  ) {
+    if (toAdd.bucket) {
+      const payload = {bucket: toAdd.bucket?.name}
+      this.inject(ExecuteCommand.CompositionInit, payload)
     }
-    // TODO: finish LSP update first
-    // this.inject(ExecuteCommand.CompositionInit, payload)
+    if (toAdd.measurement) {
+      this.inject(ExecuteCommand.CompositionInit, {
+        bucket: this._session.bucket.name,
+        measurement: toAdd.measurement,
+      })
+    }
+    if (toAdd.fields?.length) {
+      toAdd.fields.forEach(value =>
+        this.inject(ExecuteCommand.CompositionAddField, {value})
+      )
+    } else if (toRemove.fields?.length) {
+      toRemove.fields.forEach(value =>
+        this.inject(ExecuteCommand.CompositionRemoveField, {value})
+      )
+    }
+    if (toAdd.tagValues?.length) {
+      toAdd.tagValues.forEach(({key, value}) =>
+        this.inject(ExecuteCommand.CompositionAddTagValue, {tag: key, value})
+      )
+    } else if (toRemove.tagValues?.length) {
+      toRemove.tagValues.forEach(({key, value}) =>
+        this.inject(ExecuteCommand.CompositionRemoveTagValue, {tag: key, value})
+      )
+    }
   }
 
-  _updateLsp(_: SchemaSelection) {
-    // TODO: finish LSP update first
-    // this.inject(ExecuteCommand.Composition<Something>, payload)
-  }
+  _diffSchemaChange(schema: SchemaSelection, previousState: SchemaSelection) {
+    const toAdd: Partial<SchemaSelection> = {}
+    const toRemove: Partial<SchemaSelection> = {}
 
-  _initComposition(schema: SchemaSelection) {
-    if (!schema.composition.synced) {
-      this._setSessionSync(true)
+    if (schema.bucket && previousState.bucket != schema.bucket) {
+      toAdd.bucket = schema.bucket
+    }
+    if (schema.measurement && previousState.measurement != schema.measurement) {
+      toAdd.measurement = schema.measurement
     }
 
-    this._initLsp(schema)
+    if (previousState.fields?.length != schema.fields?.length) {
+      toAdd.fields = [] // preserve order
+      const existingFields = new Set(previousState.fields)
+      schema.fields.forEach(f =>
+        !existingFields.has(f) ? toAdd.fields.push(f) : existingFields.delete(f)
+      )
+      toRemove.fields = Array.from(existingFields)
+    }
+
+    if (previousState.tagValues?.length != schema.tagValues?.length) {
+      toAdd.tagValues = [] // preserve order
+      const existingTagValues = new Set(previousState.tagValues)
+      schema.tagValues.forEach(f =>
+        !existingTagValues.has(f)
+          ? toAdd.tagValues.push(f)
+          : existingTagValues.delete(f)
+      )
+      toRemove.tagValues = Array.from(existingTagValues)
+    }
+
+    return {toAdd, toRemove}
+  }
+
+  _restoreComposition(schema: SchemaSelection) {
+    this._updateLsp(schema, {})
+  }
+
+  private _i = 0
+  private _o = 0
+  _insertBuffer = req => {
+    this._initBufferComposition[this._i % 100] = req
+    this._i++
+  }
+  _consumeInitBuffer = () => {
+    this._insertIntoBuffer = false
+    let msg = this._initBufferComposition[this._o % 100]
+    while (!!msg) {
+      this.inject(...msg)
+      this._o++
+      msg = this._initBufferComposition[this._o % 100]
+    }
+    return
+  }
+
+  _initComposition() {
+    // handle race condition, on page reloads
+    this._insertIntoBuffer = true
+    setTimeout(() => this._consumeInitBuffer(), 2000)
 
     // handlers to trigger end composition
     this._setEditorSyncToggle()
@@ -256,18 +366,15 @@ class LspConnectionManager {
 
     // TODO: for now, set style on init. Eventually use this.onLspMessage()
     this._setEditorBlockStyle()
-  }
 
-  _restoreComposition(schema: SchemaSelection) {
-    this._initLsp(schema)
-    this._updateLsp(schema)
+    this._firstCompositionInit = true
   }
 
   onSchemaSessionChange(schema: SchemaSelection, sessionCb) {
     this._callbackSetSession = sessionCb
     const previousState = {
       ...this._session,
-      composition: {...(this._session?.composition || {})},
+      composition: {...this._session?.composition},
     }
     this._session = {...schema, composition: {...schema.composition}}
 
@@ -279,28 +386,26 @@ class LspConnectionManager {
       return
     }
 
-    if (!previousState.bucket && schema.bucket) {
-      // TODO: if also already have fields and tagValues, then _restoreComposition()
-      const hasFieldsOrTagvalues = false
-      if (hasFieldsOrTagvalues) {
-        return this._restoreComposition(schema)
-      }
-      return this._initComposition(schema)
-    }
-
-    // TODO: decide on tag and tagValues.
-    // Inject on same or different lines? then...how model in session?
-    const tagsDidUpdate = false
-
-    if (
-      previousState.fields?.length != schema.fields?.length ||
-      tagsDidUpdate
-    ) {
-      return this._updateLsp(schema)
-    }
-
+    // always update size of block denoted in the UI styles. Even if it's an unsynced block.
     if (previousState.composition != schema.composition) {
-      return this._setEditorBlockStyle()
+      this._setEditorBlockStyle()
+    }
+
+    if (!schema.composition.synced) {
+      return
+    }
+
+    if (!this._firstCompositionInit) {
+      this._initComposition()
+    }
+
+    if (!previousState.composition.synced && schema.composition.synced) {
+      return this._restoreComposition(schema)
+    }
+
+    const {toAdd, toRemove} = this._diffSchemaChange(schema, previousState)
+    if (Object.keys(toAdd).length || Object.keys(toRemove).length) {
+      this._updateLsp(toAdd, toRemove)
     }
   }
 

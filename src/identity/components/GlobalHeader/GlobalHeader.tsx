@@ -77,14 +77,18 @@ export const GlobalHeader: FC = () => {
     }
   }, [orgsList])
 
-  const shouldLoadDropdowns = !!activeOrg?.id && !!activeAccount?.id
-  const shouldLoadAvatar =
-    !!user?.firstName && !!user?.lastName && !!user?.email && !!org?.id
-  const shouldLoadGlobalHeader = !!shouldLoadDropdowns || !!shouldLoadAvatar
+  const shouldLoadDropdowns = !!(activeOrg?.id && activeAccount?.id)
+  const shouldLoadAvatar = !!(
+    user?.firstName &&
+    user?.lastName &&
+    user?.email &&
+    org?.id
+  )
+  const shouldLoadGlobalHeader = !!(shouldLoadDropdowns || shouldLoadAvatar)
 
   const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
 
-  return !!shouldLoadGlobalHeader ? (
+  return shouldLoadGlobalHeader ? (
     <FlexBox
       className="multiaccountorg--header"
       justifyContent={JustifyContent.SpaceBetween}

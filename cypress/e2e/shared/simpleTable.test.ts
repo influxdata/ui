@@ -8,7 +8,7 @@ describe('simple table interactions', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.setFeatureFlags({multiOrg: true}).then(() => {
+    cy.setFeatureFlags({multiOrg: true, quartzIdentity: true}).then(() => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${orgID}${explorer}`)

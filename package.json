@@ -121,7 +121,7 @@
     "cypress-log-to-output": "^1.1.2",
     "cypress-pipe": "^2.0.0",
     "cypress-plugin-tab": "^1.0.5",
-    "eslint": "^6.6.0",
+    "eslint": "7.32.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-jest": "^23.0.2",
     "eslint-plugin-react": "^7.16.0",

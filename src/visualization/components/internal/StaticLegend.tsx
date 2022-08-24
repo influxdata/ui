@@ -29,7 +29,7 @@ import {VisualizationOptionProps} from 'src/visualization'
 import {
   BandViewProperties,
   LinePlusSingleStatProperties,
-  StaticLegend,
+  StaticLegend as StaticLegendType,
   XYViewProperties,
 } from 'src/types'
 
@@ -75,7 +75,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
       orientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
       show: STATIC_LEGEND_SHOW_DEFAULT,
       widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
-    } as StaticLegend,
+    } as StaticLegendType,
   } = properties
   const {valueAxis} = staticLegend
   const {

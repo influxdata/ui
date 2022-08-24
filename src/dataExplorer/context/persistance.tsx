@@ -1,4 +1,4 @@
-import React, {FC, createContext, useCallback} from 'react'
+import React, {FC, createContext, useCallback, useEffect} from 'react'
 import {TimeRange, RecursivePartial} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
@@ -94,7 +94,7 @@ export const PersistanceProvider: FC = ({children}) => {
         // TODO: how message to user?
         return
       }
-      const nextState = {
+      const nextState: SchemaSelection = {
         ...selection,
         ...schema,
         composition: {

@@ -122,7 +122,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
   const handleSelectBucket = (bucket: Bucket): void => {
     setSelection({bucket, measurement: ''})
-
     // Reset measurement, tags, and fields
     resetFields()
     resetTags()
@@ -154,7 +153,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
   const handleSelectField = (field: string): void => {
     let fields = []
-    if (selection.fields.includes(field)) {
+    if (selection.fields?.includes(field)) {
       fields = selection.fields.filter(item => item !== field)
     } else {
       fields = [...selection.fields, field]

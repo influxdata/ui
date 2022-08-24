@@ -95,7 +95,7 @@ const GetOrganizations: FunctionComponent = () => {
         accountName: account.name,
       })
     }
-  }, [meId, email, org?.id, account.id, account.name])
+  }, [meId, email, org?.id, account?.id, account?.name])
 
   useEffect(() => {
     if (

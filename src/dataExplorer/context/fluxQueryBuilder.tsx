@@ -37,6 +37,7 @@ const debouncer = (action: NOOP): void => {
   }, DEBOUNCE_TIMEOUT)
 }
 
+const DEFAULT_SELECTED_TAG_VALUES: SelectedTagValues = {}
 interface SelectedTagValues {
   [key: string]: string[]
 }
@@ -66,7 +67,7 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   // Schema
   selectedBucket: null,
   selectedMeasurement: '',
-  selectedTagValues: {} as SelectedTagValues,
+  selectedTagValues: DEFAULT_SELECTED_TAG_VALUES,
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
@@ -91,7 +92,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   // This state is a restructed PersistanceContext selection.tagValues
   // for performance reason. selection.tagValues is the source of true
   const [selectedTagValues, setSelectedTagValues] = useState(
-    {} as SelectedTagValues
+    DEFAULT_SELECTED_TAG_VALUES
   )
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -122,11 +123,13 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
   const handleSelectBucket = (bucket: Bucket): void => {
     setSelection({bucket, measurement: '', fields: [], tagValues: []})
-    // Reset measurement, tags, and fields
+
+    // Reset measurement, tags, fields, selected tag values
     resetFields()
     resetTags()
+    setSelectedTagValues(DEFAULT_SELECTED_TAG_VALUES)
 
-    // Get measurement values
+    // Fetch measurement values
     getMeasurements(bucket)
   }
 
@@ -142,11 +145,12 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       name: measurement,
     } as ExecuteCommandInjectMeasurement)
 
-    // Reset fields and tags
+    // Reset fields, tags, selected tag values
     resetFields()
     resetTags()
+    setSelectedTagValues(DEFAULT_SELECTED_TAG_VALUES)
 
-    // Get fields and tags
+    // Fetch fields and tags
     getFields(selection.bucket, measurement)
     getTagKeys(selection.bucket, measurement)
   }

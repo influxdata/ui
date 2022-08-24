@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useMemo, useState} from 'react'
 
 // Components
 import {
@@ -69,7 +69,6 @@ const BrokerFormContent: FC<Props> = ({
     })
   }, [])
 
-  console.log(formContent.authType, formContent.brokerPort)
   return (
     <Grid>
       <Grid.Row>
@@ -234,7 +233,7 @@ const BrokerFormContent: FC<Props> = ({
             </Form.ValidationElement>
             <Form.ValidationElement
               label="Port"
-              value={String(formContent.brokerPort)}
+              value={String(formContent.brokerPort ?? DEFAULT_PORT)}
               required={true}
               validationFunc={() =>
                 handleValidation(
@@ -253,7 +252,7 @@ const BrokerFormContent: FC<Props> = ({
                   }`}
                   name="port"
                   autoFocus={false}
-                  value={formContent.brokerPort}
+                  value={formContent.brokerPort ?? DEFAULT_PORT}
                   onChange={e => {
                     updateForm({
                       ...formContent,
@@ -283,7 +282,9 @@ const BrokerFormContent: FC<Props> = ({
             {/* TODO: update `false` after cert support */}
             {getSchemaFromProtocol(formContent.protocol, false)}
             {formContent.brokerHost ? formContent.brokerHost : '0.0.0.0'}:
-            {formContent.brokerPort ? formContent.brokerPort : '1883'}
+            {formContent.brokerPort
+              ? formContent.brokerPort
+              : `${DEFAULT_PORT}`}
           </Heading>
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve}>

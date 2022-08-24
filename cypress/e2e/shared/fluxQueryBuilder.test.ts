@@ -142,7 +142,7 @@ describe('FluxQueryBuilder', () => {
 
       // more than 8 items, show "Load more" button
       cy.getByTestID('field-selector').within(() => {
-        cy.getByTestID('selector-list *')
+        cy.get('.selector-list--item')
           .should('be.visible')
           .should('have.length', 8)
         cy.getByTestID('field-selector--load-more-button')
@@ -150,7 +150,7 @@ describe('FluxQueryBuilder', () => {
           .trigger('click')
           .then(() => {
             // when load more is chosen, up to 25 additional entries should be shown
-            cy.getByTestID('selector-list *')
+            cy.get('.selector-list--item')
               .should('be.visible')
               .should('have.length.above', 8)
               .and('have.length.at.most', 33) // 8 + 25
@@ -162,7 +162,7 @@ describe('FluxQueryBuilder', () => {
         cy.getByTestID('tag-selector-value--header-wrapper')
           .click()
           .then(() => {
-            cy.getByTestID('selector-list *')
+            cy.get('.selector-list--item')
               .should('be.visible')
               .should('have.length.below', 8)
             cy.getByTestID('tag-selector-value--load-more-button').should(

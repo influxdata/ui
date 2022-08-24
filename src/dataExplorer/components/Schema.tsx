@@ -19,7 +19,6 @@ import {BucketProvider} from 'src/shared/contexts/buckets'
 import {MeasurementsProvider} from 'src/dataExplorer/context/measurements'
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
 import {TagsProvider} from 'src/dataExplorer/context/tags'
-// import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {QueryScope} from 'src/shared/contexts/query'
@@ -38,11 +37,9 @@ const FieldsTags: FC = () => {
     searchTerm,
     setSearchTerm,
   } = useContext(FluxQueryBuilderContext)
-  // const {setSelection} = useContext(PersistanceContext)
 
   useEffect(() => {
     setSearchTerm('')
-    // setSelection({fields: [], tagValues: []})
   }, [selectedBucket, selectedMeasurement])
 
   const handleSearchFieldsTags = (searchTerm: string): void => {

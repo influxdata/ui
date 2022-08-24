@@ -52,7 +52,7 @@ const App: FC = () => {
 
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
-    'multi-org': isFlagEnabled('multiOrg')
+    'multi-org': isFlagEnabled('multiOrg'),
   })
 
   useEffect(() => {

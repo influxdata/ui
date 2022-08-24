@@ -14,6 +14,7 @@ import {
   InputLabel,
   SlideToggle,
 } from '@influxdata/clockface'
+import TemplatePage from 'src/dataExplorer/components/resources/TemplatePage'
 import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
 import GetResources from 'src/resources/components/GetResources'
@@ -67,6 +68,10 @@ const DataExplorerPage: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>
       <Switch>
+        <Route
+          path="/orgs/:orgID/data-explorer/from"
+          component={TemplatePage}
+        />
         <Route
           path="/orgs/:orgID/data-explorer/save"
           component={SaveAsOverlay}

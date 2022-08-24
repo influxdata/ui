@@ -234,6 +234,8 @@ class TasksPage extends PureComponent<Props, State> {
 
     if (isFlagEnabled('createWithFlows')) {
       history.push(`/notebook/from/task`)
+    } else if (isFlagEnabled('createWithDE')) {
+      history.push(`/orgs/${orgID}/data-explorer/from/task`)
     } else {
       history.push(`/orgs/${orgID}/tasks/new`)
     }

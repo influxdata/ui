@@ -22,6 +22,7 @@ import {
 } from 'src/variables/actions/thunks'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {downloadVariableTemplate} from '../apis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
   variable: Variable
@@ -74,6 +75,12 @@ class VariableCard extends PureComponent<
   private handleNameClick = (): void => {
     const {variable, match, history} = this.props
 
+    if (isFlagEnabled('createWithDE')) {
+      history.push(
+        `/orgs/${match.params.orgID}/data-explorer/from/variable/${variable.id}`
+      )
+      return
+    }
     history.push(
       `/orgs/${match.params.orgID}/settings/variables/${variable.id}/edit`
     )

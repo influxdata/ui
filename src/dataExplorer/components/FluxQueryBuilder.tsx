@@ -37,6 +37,7 @@ const FluxQueryBuilder: FC = () => {
   )
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
+  const {save} = useContext(PersistanceContext)
 
   const clear = useCallback(() => {
     cancel()
@@ -64,6 +65,7 @@ const FluxQueryBuilder: FC = () => {
               text="New Script"
               icon={IconFont.Plus_New}
             />
+            <Button onClick={save} text="Save" />
           </div>
           <DraggableResizer
             handleOrientation={Orientation.Vertical}

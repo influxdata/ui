@@ -23,6 +23,7 @@ import {AppState, OverlayState, ResourceType, Variable} from 'src/types'
 import {ComponentSize} from '@influxdata/clockface'
 import {SortTypes} from 'src/shared/utils/sort'
 import {VariableSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps<{orgID: string}> & ReduxProps
@@ -148,6 +149,10 @@ class VariablesTab extends PureComponent<Props, State> {
   private handleOpenCreateOverlay = (): void => {
     const {history, match} = this.props
 
+    if (isFlagEnabled('createWithDE')) {
+      history.push(`/orgs/${match.params.orgID}/data-explorer/from/variable`)
+      return
+    }
     history.push(`/orgs/${match.params.orgID}/settings/variables/new`)
   }
 

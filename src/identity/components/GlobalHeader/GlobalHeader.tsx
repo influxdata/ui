@@ -78,9 +78,11 @@ export const GlobalHeader: FC = () => {
   }, [orgsList])
 
   const shouldLoadDropdowns = Boolean(activeOrg?.id && activeAccount?.id)
-  const shouldLoadAvatar = Boolean(
-    user?.firstName && user?.lastName && user?.email && org?.id
-  )
+
+  const shouldLoadAvatar = Boolean(user?.email && org?.id)
+  const avatarFirstName = user?.firstName ?? ''
+  const avatarLastName = user?.lastName ?? ''
+
   const shouldLoadGlobalHeader = Boolean(
     shouldLoadDropdowns || shouldLoadAvatar
   )
@@ -109,8 +111,8 @@ export const GlobalHeader: FC = () => {
       {shouldLoadAvatar && (
         <IdentityUserAvatar
           email={user.email}
-          firstName={user.firstName}
-          lastName={user.lastName}
+          firstName={avatarFirstName}
+          lastName={avatarLastName}
           orgId={org.id}
         />
       )}

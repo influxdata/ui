@@ -5,18 +5,12 @@ import classnames from 'classnames'
 import {TypeAheadMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
-
-export enum TypeAheadLocation {
-  HeaderNavSearchAccount = 'headerNav.searchAccounts',
-  HeaderNavSearchOrg = 'headerNav.searchOrgs',
-  UserProfileSearchAccount = 'userProfile.defaultAccount',
-  UserProfileSearchOrg = 'userProfile.defaultOrg',
-}
+import {multiOrgEvent} from 'src/identity/events/multiOrgEvent'
+import {TypeAheadEventPrefix} from 'src/identity/events/multiOrgEventNames'
 
 type Props = {
   defaultSelectedItem?: TypeAheadMenuItem
-  dropdownLocation: TypeAheadLocation
+  typeAheadEventPrefix: TypeAheadEventPrefix
   style?: React.CSSProperties
   typeAheadPlaceHolder: string
   typeAheadMenuOptions: TypeAheadMenuItem[]
@@ -42,9 +36,9 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private selectAllTextInInput = (event?: ChangeEvent<HTMLInputElement>) => {
-    if (event) {
-      event.target.select()
+  private selectAllTextInInput = (e?: ChangeEvent<HTMLInputElement>) => {
+    if (e) {
+      e.target.select()
     }
   }
 
@@ -68,8 +62,8 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const filterString = event?.target?.value
+  private handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const filterString = e?.target?.value
     this.applyFilter(filterString)
   }
 
@@ -97,14 +91,12 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
   }
 
   private sendSearchEvent = e => {
-    const {dropdownLocation} = this.props
+    const {typeAheadEventPrefix} = this.props
 
     if (e.target.value.trim().length) {
-      event(
-        `${dropdownLocation}.searched`,
-        {initiative: 'multiOrg'},
-        {searchTerm: e.target.value}
-      )
+      multiOrgEvent(`${typeAheadEventPrefix}.searched`, {
+        searchTerm: e.target.value,
+      })
     }
   }
 

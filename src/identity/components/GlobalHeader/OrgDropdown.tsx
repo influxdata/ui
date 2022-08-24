@@ -12,9 +12,11 @@ import {
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
-import {DropdownName} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 import {OrganizationSummaries} from 'src/client/unityRoutes'
-import {TypeAheadLocation} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
+import {
+  MainMenuEventPrefix,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEventNames'
 
 // Constants
 import {CLOUD_URL} from 'src/shared/constants'
@@ -65,9 +67,9 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   return (
     <div onClick={handleClick}>
       <GlobalHeaderDropdown
-        dropdownLocation={TypeAheadLocation.HeaderNavSearchOrg}
+        typeAheadEventPrefix={TypeAheadEventPrefix.HeaderNavSearchOrg}
         dropdownMenuStyle={menuStyle}
-        entity={DropdownName.HeaderNavChangeOrg}
+        mainMenuEventPrefix={MainMenuEventPrefix.HeaderNavChangeOrg}
         mainMenuHeaderIcon={IconFont.Switch_New}
         mainMenuHeaderText="Switch Organization"
         mainMenuOptions={orgMainMenu}

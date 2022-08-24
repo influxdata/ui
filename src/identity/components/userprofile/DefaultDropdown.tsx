@@ -13,9 +13,11 @@ import {GlobalHeaderDropdown} from 'src/identity/components/GlobalHeader/GlobalH
 
 // Types
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
-import {DropdownName} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
+import {
+  MainMenuEventPrefix,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEventNames'
 type Entity = OrganizationSummaries[number] | UserAccount
-import {TypeAheadLocation} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
 
 export enum EntityLabel {
   DefaultAccount = 'Account',
@@ -46,15 +48,15 @@ export const DefaultDropdown: FC<Props> = ({
   entityLabel,
   headerTestID,
 }) => {
-  const dropdownName =
+  const mainMenuEventName =
     entityLabel === EntityLabel.DefaultAccount
-      ? DropdownName.UserProfileDefaultAccount
-      : DropdownName.UserProfileDefaultOrg
+      ? MainMenuEventPrefix.UserProfileChangeDefaultAccount
+      : MainMenuEventPrefix.UserProfileChangeDefaultOrg
 
-  const dropdownLocation =
+  const typeAheadMenuEventName =
     entityLabel === EntityLabel.DefaultAccount
-      ? TypeAheadLocation.UserProfileSearchAccount
-      : TypeAheadLocation.UserProfileSearchOrg
+      ? TypeAheadEventPrefix.UserProfileSearchAccount
+      : TypeAheadEventPrefix.UserProfileSearchOrg
 
   // Likewise, this is going to end up being a bit excessive, I suspect.
   const handleClick = () => {
@@ -75,9 +77,9 @@ export const DefaultDropdown: FC<Props> = ({
         testID={headerTestID}
       >
         <GlobalHeaderDropdown
-          dropdownLocation={dropdownLocation}
+          typeAheadEventPrefix={typeAheadMenuEventName}
           defaultTestID={defaultTestID}
-          entity={dropdownName}
+          mainMenuEventPrefix={mainMenuEventName}
           mainMenuOptions={[]}
           onlyRenderSubmenu={true}
           style={globalHeaderStyle}

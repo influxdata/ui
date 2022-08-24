@@ -18,26 +18,16 @@ import {
 import './GlobalHeaderDropdown.scss'
 
 // Types
+import {GlobalHeaderTypeAheadMenu} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
 import {
-  GlobalHeaderTypeAheadMenu,
-  TypeAheadLocation,
-} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
-
-interface EventParams {
-  componentName: string
-  action: string
-}
+  MainMenuEventPrefix,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEventNames'
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
+import {multiOrgEvent} from 'src/identity/events/multiOrgEvent'
 
 // Maybe we should have a single file that contains all event names for multiOrg. Make it an enum so we can change to whatever.
-export enum DropdownName {
-  HeaderNavChangeOrg = 'headNav.org',
-  HeaderNavChangeAccount = 'headerNav.account',
-  UserProfileDefaultOrg = 'userProfile.defaultOrg',
-  UserProfileDefaultAccount = 'userProfile.defaultAccount',
-}
 
 export interface MainMenuItem {
   name: string
@@ -55,10 +45,10 @@ export interface Props extends StandardFunctionProps {
   defaultTestID?: string
   dropdownButtonSize?: ComponentSize
   dropdownButtonIcon?: IconFont
-  dropdownLocation: TypeAheadLocation
+  typeAheadEventPrefix: TypeAheadEventPrefix
   dropdownMenuStyle?: React.CSSProperties
   dropdownMenuTheme?: DropdownMenuTheme
-  entity?: DropdownName
+  mainMenuEventPrefix?: MainMenuEventPrefix
   mainMenuHeaderText?: string
   mainMenuHeaderIcon?: IconFont
   mainMenuOptions: MainMenuItem[]
@@ -119,18 +109,17 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     )
   }
 
-  private sendEvent = (eventParams: EventParams) => () => {
-    const {entity} = this.props
-    const {componentName, action} = eventParams
+  private reportEvent = menuItem => () => {
+    const {mainMenuEventPrefix} = this.props
 
-    event(`${entity}${componentName}.${action}`)
+    multiOrgEvent(`${mainMenuEventPrefix}${menuItem}.clicked`)
   }
 
   private toggleShowTypeAheadMenu = () => {
-    const {entity} = this.props
+    const {mainMenuEventPrefix} = this.props
     const {showTypeAheadMenu} = this.state
     if (!showTypeAheadMenu) {
-      event(`${entity}Switch.clicked`)
+      multiOrgEvent(`${mainMenuEventPrefix}Switch.clicked`)
     }
     this.setState({showTypeAheadMenu: !showTypeAheadMenu})
   }
@@ -139,22 +128,22 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     const {mainMenuOptions} = this.props
     return (
       <div>
-        {mainMenuOptions.map(value => {
-          const iconEl = <Icon glyph={value.iconFont} className="button-icon" />
-          const textEl = <span>{value.name}</span>
+        <hr className="line-break" />
+        {mainMenuOptions.map(menuItem => {
+          const iconEl = (
+            <Icon glyph={menuItem.iconFont} className="button-icon" />
+          )
+          const textEl = <span>{menuItem.name}</span>
           return (
             <div
-              onClick={this.sendEvent({
-                componentName: value.name,
-                action: 'clicked',
-              })}
-              key={`eventWrapper.${value.name}`}
+              onClick={this.reportEvent(menuItem.name)}
+              key={`eventWrapper.${menuItem.name}`}
             >
               <Dropdown.HrefItem
-                key={value.name}
-                href={value.href}
+                key={menuItem.name}
+                href={menuItem.href}
                 className="global-header--align-center"
-                testID={`${this.props.mainMenuTestID}-${value.name}`}
+                testID={`${this.props.mainMenuTestID}-${menuItem.name}`}
               >
                 {iconEl}
                 {textEl}
@@ -172,12 +161,12 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     const {
       typeAheadInputPlaceholder,
       typeAheadOnSelectOption,
-      dropdownLocation,
+      typeAheadEventPrefix,
       dropdownMenuStyle,
     } = this.props
     return (
       <GlobalHeaderTypeAheadMenu
-        dropdownLocation={dropdownLocation}
+        typeAheadEventPrefix={typeAheadEventPrefix}
         typeAheadPlaceHolder={typeAheadInputPlaceholder}
         typeAheadMenuOptions={typeAheadMenuOptions}
         onSelectOption={typeAheadOnSelectOption}

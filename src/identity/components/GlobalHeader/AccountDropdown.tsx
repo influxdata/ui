@@ -5,8 +5,10 @@ import {IconFont} from '@influxdata/clockface'
 // Types
 type OrgSummaryItem = OrganizationSummaries[number]
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
-import {DropdownName} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
-import {TypeAheadLocation} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
+import {
+  MainMenuEventPrefix,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEventNames'
 
 interface Props {
   activeOrg: OrgSummaryItem
@@ -15,7 +17,7 @@ interface Props {
 }
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
+import {multiOrgEvent} from 'src/identity/events/multiOrgEvent'
 
 // Styles
 const style = {width: 'auto'}
@@ -55,25 +57,24 @@ export const AccountDropdown: FC<Props> = ({
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: TypeAheadMenuItem) => {
-    event(
-      'headerNav.account.switched',
-      {initiative: 'multiOrg'},
-      {'New Account ID': account.id, 'New Account Name': account.name}
-    )
+    multiOrgEvent('headerNav.account.switched', {
+      'New Account ID': account.id,
+      'New Account Name': account.name,
+    })
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
   const handleClick = () => {
     // This clicking is going to get very busy. Confirm with Amy.
-    event('headerNav.accountDropdown.clicked')
+    multiOrgEvent('headerNav.accountDropdown.clicked')
   }
 
   return (
     <div onClick={handleClick}>
       <GlobalHeaderDropdown
-        dropdownLocation={TypeAheadLocation.HeaderNavSearchAccount}
+        typeAheadEventPrefix={TypeAheadEventPrefix.HeaderNavSearchAccount}
         dropdownMenuStyle={menuStyle}
-        entity={DropdownName.HeaderNavChangeAccount}
+        mainMenuEventPrefix={MainMenuEventPrefix.HeaderNavChangeAccount}
         mainMenuHeaderIcon={IconFont.Switch_New}
         mainMenuHeaderText="Switch Account"
         mainMenuOptions={accountMainMenu}

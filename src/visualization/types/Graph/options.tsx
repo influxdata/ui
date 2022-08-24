@@ -26,8 +26,10 @@ import {
   parseYBounds,
 } from 'src/shared/utils/vis'
 import {generateSeriesToColorHex} from 'src/visualization/utils/colorMappingUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
+import {AdaptiveZoomToggle} from 'src/visualization/components/internal/AdaptiveZoomOption'
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
@@ -147,6 +149,13 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }
             />
           </Form.Element>
+          {isFlagEnabled('zoomRequery') && (
+            <AdaptiveZoomToggle
+              adaptiveZoomHide={properties.adaptiveZoomHide}
+              type={properties.type}
+              update={update}
+            />
+          )}
         </Grid.Column>
         <Grid.Column
           widthXS={Columns.Twelve}

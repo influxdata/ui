@@ -47,8 +47,6 @@ import {useLegendOpacity} from 'src/visualization/utils/useLegendOpacity'
 import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
 import {useZoomQuery} from 'src/visualization/utils/useZoomQuery'
 import {
-  useVisXDomainSettings,
-  useVisYDomainSettings,
   useZoomRequeryXDomainSettings,
   useZoomRequeryYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
@@ -60,11 +58,11 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Annotations
 import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
 import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
-import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 // Selectors
 import {getByID} from 'src/resources/selectors'
@@ -171,55 +169,36 @@ const XYPlot: FC<Props> = ({
     properties.position,
   ])
 
-  let useXDomainSettings = ({storedDomain, parsedResult, timeRange}) =>
-    useVisXDomainSettings(
-      storedDomain,
-      parsedResult.table.getColumn(xColumn, 'number'),
-      timeRange
-    )
-  let useYDomainSettings = options => {
-    const {storedDomain} = options
-    return useVisYDomainSettings(storedDomain, memoizedYColumnData)
-  }
-
   const zoomQuery = useZoomQuery(properties)
-  if (isFlagEnabled('zoomRequery')) {
-    useXDomainSettings = ({storedDomain, parsedResult, timeRange}) =>
-      useZoomRequeryXDomainSettings({
-        data: parsedResult.table.getColumn(xColumn, 'number'),
-        parsedResult,
-        preZoomResult,
-        query: zoomQuery,
-        setPreZoomResult,
-        setRequeryStatus,
-        setResult: setResultState,
-        storedDomain,
-        timeRange,
-      })
-    useYDomainSettings = ({storedDomain, parsedResult}) =>
-      useZoomRequeryYDomainSettings({
-        data: memoizedYColumnData,
-        parsedResult,
-        preZoomResult,
-        query: zoomQuery,
-        setPreZoomResult,
-        setRequeryStatus,
-        setResult: setResultState,
-        storedDomain,
-      })
-  }
 
-  const [xDomain, onSetXDomain, onResetXDomain] = useXDomainSettings({
-    storedDomain: storedXDomain,
-    parsedResult: resultState,
-    timeRange,
-  })
+  const [xDomain, onSetXDomain, onResetXDomain] = useZoomRequeryXDomainSettings(
+    {
+      adaptiveZoomHide: properties.adaptiveZoomHide,
+      data: resultState.table.getColumn(xColumn, 'number'),
+      parsedResult: resultState,
+      preZoomResult,
+      query: zoomQuery,
+      setPreZoomResult,
+      setRequeryStatus,
+      setResult: setResultState,
+      storedDomain: storedXDomain,
+      timeRange,
+    }
+  )
 
-  const [yDomain, onSetYDomain, onResetYDomain] = useYDomainSettings({
-    storedDomain: storedYDomain,
-    parsedResult: resultState,
-    timeRange,
-  })
+  const [yDomain, onSetYDomain, onResetYDomain] = useZoomRequeryYDomainSettings(
+    {
+      adaptiveZoomHide: properties.adaptiveZoomHide,
+      data: memoizedYColumnData,
+      parsedResult: resultState,
+      preZoomResult,
+      query: zoomQuery,
+      setPreZoomResult,
+      setRequeryStatus,
+      setResult: setResultState,
+      storedDomain: storedYDomain,
+    }
+  )
 
   const legendColumns = filterNoisyColumns(
     properties.position === 'stacked'

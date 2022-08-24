@@ -127,7 +127,6 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     const {mainMenuOptions} = this.props
     return (
       <div>
-        <hr className="line-break" />
         {mainMenuOptions.map(menuItem => {
           const iconEl = (
             <Icon glyph={menuItem.iconFont} className="button-icon" />

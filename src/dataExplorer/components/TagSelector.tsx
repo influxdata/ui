@@ -80,16 +80,6 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && valuesToShow.length) {
-    // list = valuesToShow.map(value => (
-    //   <dd
-    //     key={value}
-    //     className="tag-selector-value--list-item--selectable"
-    //     onClick={() => handleSelectTagValue(value)}
-    //     data-testid="tag-selector-value--list-item--selectable"
-    //   >
-    //     <code>{value}</code>
-    //   </dd>
-    // ))
     list = (
       <SelectorList
         items={valuesToShow}

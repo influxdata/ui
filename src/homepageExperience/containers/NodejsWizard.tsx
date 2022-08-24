@@ -19,6 +19,7 @@ import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/Execu
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteAggregateQuery'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {normalizeEventName} from 'src/cloud/utils/reporting'
 
 import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'
 
@@ -74,8 +75,12 @@ export class NodejsWizard extends PureComponent<null, State> {
           'firstMile.nodejsWizard.next.clicked',
           {},
           {
-            clickedButtonAtStep: this.state.currentStep - 1,
-            currentStep: this.state.currentStep,
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 2].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+            ),
           }
         )
       }
@@ -90,8 +95,12 @@ export class NodejsWizard extends PureComponent<null, State> {
           'firstMile.nodejsWizard.previous.clicked',
           {},
           {
-            clickedButtonAtStep: this.state.currentStep + 1,
-            currentStep: this.state.currentStep,
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+            ),
           }
         )
       }
@@ -100,6 +109,15 @@ export class NodejsWizard extends PureComponent<null, State> {
 
   handleNavClick = (clickedStep: number) => {
     this.setState({currentStep: clickedStep})
+    event(
+      'firstMile.nodejsWizard.subNav.clicked',
+      {},
+      {
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[clickedStep - 1].name
+        ),
+      }
+    )
   }
 
   renderStep = () => {
@@ -206,7 +224,7 @@ export class NodejsWizard extends PureComponent<null, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    this.state.currentStep < 8
+                    this.state.currentStep < HOMEPAGE_NAVIGATION_STEPS.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

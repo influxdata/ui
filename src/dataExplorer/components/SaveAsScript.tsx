@@ -1,4 +1,4 @@
-import React, {FC, useContext, useCallback, useState} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import {
   Button,
   ComponentColor,
@@ -15,16 +15,22 @@ import {
 } from 'src/dataExplorer/context/persistance'
 import {RemoteDataState} from 'src/types'
 import './SaveAsScript.scss'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import {getOrg} from 'src/organizations/selectors'
 
 interface Props {
   onClose: () => void
 }
 
 const SaveAsScript: FC<Props> = ({onClose}) => {
-  const {setQuery, setSelection} = useContext(PersistanceContext)
+  const {setQuery, setSelection, resource, setResource, save} = useContext(
+    PersistanceContext
+  )
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
-  const [scriptName, setScriptName] = useState(new Date().toISOString())
+  const history = useHistory()
+  const org = useSelector(getOrg)
 
   const clear = useCallback(() => {
     cancel()
@@ -32,11 +38,21 @@ const SaveAsScript: FC<Props> = ({onClose}) => {
     setResult(null)
     setQuery('')
     setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
+    setResource(null)
     onClose()
+
+    history.replace(`/orgs/${org.id}/data-explorer/from/script`)
   }, [onClose, setQuery, setStatus, setResult, setSelection, cancel])
 
-  const updateScriptName = event => {
-    setScriptName(event.target.value)
+  const handleRename = (name: string) => {
+    resource.data.name = name
+    setResource({
+      ...resource,
+      data: {
+        ...resource.data,
+        name,
+      },
+    })
   }
 
   return (
@@ -47,15 +63,15 @@ const SaveAsScript: FC<Props> = ({onClose}) => {
       />
       <Overlay.Body>
         <div className="save-script-overlay__warning-text">
-          "Untitled Script: {scriptName}" will be overwritten by a new one if
-          you don’t save it.
+          "{resource?.data?.name ?? 'Untitled Script'}" will be overwritten by a
+          new one if you don’t save it.
         </div>
         <InputLabel>Save as</InputLabel>
         <Input
           name="scriptName"
           type={InputType.Text}
-          value={scriptName}
-          onChange={updateScriptName}
+          value={resource?.data?.name ?? ''}
+          onChange={evt => handleRename(evt.target.value)}
         />
       </Overlay.Body>
       <Overlay.Footer>
@@ -74,8 +90,9 @@ const SaveAsScript: FC<Props> = ({onClose}) => {
         <Button
           color={ComponentColor.Primary}
           onClick={() => {
-            alert('this is a WIP and will be connected soon')
-            // TODO(ariel): hook this up
+            save().then(() => {
+              clear()
+            })
           }}
           text="Yes, Save"
           testID="cancel-service-confirmation--button"

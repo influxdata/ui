@@ -4,7 +4,11 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {Bucket} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {RESOURCES} from 'src/dataExplorer/components/resources'
+import {
+  RESOURCES,
+  ResourceConnectedQuery,
+  ResourceTypes,
+} from 'src/dataExplorer/components/resources'
 
 interface SchemaComposition {
   synced: boolean // true == can modify session's schema
@@ -33,7 +37,7 @@ interface ContextType {
   setResource: (val: any) => void
   setSelection: (val: RecursivePartial<SchemaSelection>) => void
 
-  save: () => void
+  save: () => Promise<ResourceConnectedQuery<any>>
 }
 
 export const DEFAULT_SCHEMA = {
@@ -61,7 +65,7 @@ const DEFAULT_CONTEXT = {
   setResource: (_: any) => {},
   setSelection: (_: RecursivePartial<SchemaSelection>) => {},
 
-  save: () => {},
+  save: () => Promise.resolve({type: ResourceTypes.Script, flux: '', data: {}}),
 }
 
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
@@ -118,8 +122,9 @@ export const PersistanceProvider: FC = ({children}) => {
   const save = () => {
     resource.flux = query
 
-    RESOURCES[resource.type].persist(resource).then(data => {
+    return RESOURCES[resource.type].persist(resource).then(data => {
       setResource(data)
+      return data
     })
   }
 

@@ -8,7 +8,7 @@ export enum ResourceTypes {
   'Variable' = 'variable',
 }
 
-interface ResourceConnectedQuery<T> {
+export interface ResourceConnectedQuery<T> {
   type: ResourceTypes
   flux: string
   data: T

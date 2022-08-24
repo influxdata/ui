@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext, useCallback} from 'react'
+import React, {FC, useState, useContext} from 'react'
 
 // Components
 import {
@@ -13,12 +13,11 @@ import {
   Overlay,
   ComponentStatus,
 } from '@influxdata/clockface'
-import {QueryProvider, QueryContext} from 'src/shared/contexts/query'
+import {QueryProvider} from 'src/shared/contexts/query'
 import {EditorProvider} from 'src/shared/contexts/editor'
-import {ResultsProvider, ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {ResultsProvider} from 'src/dataExplorer/components/ResultsContext'
 import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
 import {
-  DEFAULT_SCHEMA,
   PersistanceProvider,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
@@ -30,29 +29,11 @@ import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 // Styles
 import './FluxQueryBuilder.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {RemoteDataState} from 'src/types'
 
 const FluxQueryBuilder: FC = () => {
-  const {vertical, setVertical, query, setQuery, setSelection} = useContext(
-    PersistanceContext
-  )
-  const {cancel} = useContext(QueryContext)
-  const {setStatus, setResult} = useContext(ResultsContext)
+  const {vertical, setVertical, query} = useContext(PersistanceContext)
   const {save} = useContext(PersistanceContext)
   const [isPromptVisible, setIsPromptVisible] = useState(false)
-
-  const clear = useCallback(() => {
-    cancel()
-    setStatus(RemoteDataState.NotStarted)
-    setResult(null)
-    setQuery('')
-    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
-  }, [setQuery, setStatus, setResult, setSelection, cancel])
-
-  // this is to keep tsc errors away until i put that clear somewhere
-  if (false) {
-    clear()
-  }
 
   return (
     <EditorProvider>

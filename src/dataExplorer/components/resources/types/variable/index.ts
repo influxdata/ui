@@ -6,7 +6,6 @@ import {getOrg} from 'src/organizations/selectors'
 export default function variable(register) {
   register({
     type: ResourceTypes.Variable,
-    disabled: true,
     editor,
     init: id => {
       if (!id) {

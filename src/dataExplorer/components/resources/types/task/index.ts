@@ -4,7 +4,6 @@ import editor from './editor'
 export default function task(register: (_: ResourceRegistration) => any) {
   register({
     type: ResourceTypes.Task,
-    disabled: true,
     editor,
     init: id => {
       if (!id) {

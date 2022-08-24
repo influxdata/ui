@@ -4,7 +4,6 @@ import editor from './editor'
 export default function script(register) {
   register({
     type: ResourceTypes.Dashboard,
-    disabled: true,
     editor,
     init: (...args: string[]) => {
       const dashboard = args[0]

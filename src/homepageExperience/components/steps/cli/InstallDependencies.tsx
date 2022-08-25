@@ -220,9 +220,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           <h2 style={headingWithMargin}>Expand the downloaded archive</h2>
           <p>
             Next, run{' '}
-            <SafeBlankLink
-              href="https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.2#with-administrative-privileges-run-as-administrator"
-            >
+            <SafeBlankLink href="https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.2#with-administrative-privileges-run-as-administrator">
               PowerShell
             </SafeBlankLink>{' '}
             in elevated mode (running the PowerShell as Administrator) and

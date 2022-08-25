@@ -86,7 +86,7 @@ export const InitializeClient: FC<OwnProps> = ({
       dispatch(createAuthorization(authorization))
       event(`firstMile.arduinoWizard.tokens.tokenCreated`)
     }
-  }, [dispatch, me.id, org.id, sortedPermissionTypes, tokenValue])
+  }, [dispatch, me?.id, org?.id, sortedPermissionTypes, tokenValue])
 
   // when token generated, save it to the parent component
   useEffect(() => {

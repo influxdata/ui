@@ -29,66 +29,76 @@ import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 // Styles
 import './FluxQueryBuilder.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {ScriptProvider} from 'src/dataExplorer/context/scripts'
+
+export enum OverlayType {
+  NEW = 'new',
+  SAVE = 'save',
+}
 
 const FluxQueryBuilder: FC = () => {
   const {query, vertical, setVertical} = useContext(PersistanceContext)
-  const [isPromptVisible, setIsPromptVisible] = useState(false)
+  const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
 
   return (
     <EditorProvider>
       <SidebarProvider>
-        <Overlay visible={isPromptVisible}>
-          <SaveAsScript onClose={() => setIsPromptVisible(false)} />
-        </Overlay>
-        <FlexBox
-          className="flux-query-builder--container"
-          direction={FlexDirection.Column}
-          justifyContent={JustifyContent.SpaceBetween}
-          alignItems={AlignItems.Stretch}
-        >
-          <div
-            className="flux-query-builder--menu"
-            data-testid="flux-query-builder--menu"
-          >
-            <Button
-              onClick={() => setIsPromptVisible(true)}
-              text="New Script"
-              icon={IconFont.Plus_New}
-              status={
-                query.length === 0
-                  ? ComponentStatus.Disabled
-                  : ComponentStatus.Default
-              }
+        <ScriptProvider>
+          <Overlay visible={overlayType !== null}>
+            <SaveAsScript
+              type={overlayType}
+              onClose={() => setOverlayType(null)}
             />
-            {isFlagEnabled('saveAsScript') && (
-              <Button
-                onClick={() => {
-                  // TODO(ariel): hook this up
-                }}
-                text="Save Script"
-                icon={IconFont.Save}
-              />
-            )}
-          </div>
-          <DraggableResizer
-            handleOrientation={Orientation.Vertical}
-            handlePositions={vertical}
-            onChangePositions={setVertical}
+          </Overlay>
+          <FlexBox
+            className="flux-query-builder--container"
+            direction={FlexDirection.Column}
+            justifyContent={JustifyContent.SpaceBetween}
+            alignItems={AlignItems.Stretch}
           >
-            <DraggableResizer.Panel>
-              <Schema />
-            </DraggableResizer.Panel>
-            <DraggableResizer.Panel
-              testID="flux-query-builder-middle-panel"
-              className="new-data-explorer-rightside"
+            <div
+              className="flux-query-builder--menu"
+              data-testid="flux-query-builder--menu"
             >
-              <ResultsPane />
-            </DraggableResizer.Panel>
-            <DraggableResizer.Panel>
-              <Sidebar />
-            </DraggableResizer.Panel>
-          </DraggableResizer>
-        </FlexBox>
+              <Button
+                onClick={() => setOverlayType(OverlayType.NEW)}
+                text="New Script"
+                icon={IconFont.Plus_New}
+                status={
+                  query.length === 0
+                    ? ComponentStatus.Disabled
+                    : ComponentStatus.Default
+                }
+              />
+              {isFlagEnabled('saveAsScript') && (
+                <Button
+                  className="flux-query-builder__save-button"
+                  onClick={() => setOverlayType(OverlayType.SAVE)}
+                  text="Save Script"
+                  icon={IconFont.Save}
+                />
+              )}
+            </div>
+            <DraggableResizer
+              handleOrientation={Orientation.Vertical}
+              handlePositions={vertical}
+              onChangePositions={setVertical}
+            >
+              <DraggableResizer.Panel>
+                <Schema />
+              </DraggableResizer.Panel>
+              <DraggableResizer.Panel
+                testID="flux-query-builder-middle-panel"
+                className="new-data-explorer-rightside"
+              >
+                <ResultsPane />
+              </DraggableResizer.Panel>
+              <DraggableResizer.Panel>
+                <Sidebar />
+              </DraggableResizer.Panel>
+            </DraggableResizer>
+          </FlexBox>
+        </ScriptProvider>
       </SidebarProvider>
     </EditorProvider>
   )

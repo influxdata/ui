@@ -1,7 +1,9 @@
-import React, {FC, useContext, useCallback, useState} from 'react'
+import React, {FC, useContext, useCallback, useState, ChangeEvent} from 'react'
 import {
   Button,
   ComponentColor,
+  ComponentStatus,
+  Form,
   Input,
   InputLabel,
   InputType,
@@ -15,16 +17,43 @@ import {
 } from 'src/dataExplorer/context/persistance'
 import {RemoteDataState} from 'src/types'
 import './SaveAsScript.scss'
+import {CLOUD} from 'src/shared/constants'
+import {ScriptContext} from 'src/dataExplorer/context/scripts'
+import {OverlayType} from './FluxQueryBuilder'
+import {useDispatch} from 'react-redux'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  scriptSaveFail,
+  scriptSaveSuccess,
+} from 'src/shared/copy/notifications/categories/scripts'
 
 interface Props {
   onClose: () => void
+  type: OverlayType | null
 }
 
-const SaveAsScript: FC<Props> = ({onClose}) => {
+const SaveAsScript: FC<Props> = ({onClose, type}) => {
+  const dispatch = useDispatch()
   const {setQuery, setSelection} = useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
+  const {handleSave} = useContext(ScriptContext)
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
   const {setStatus, setResult} = useContext(ResultsContext)
-  const [scriptName, setScriptName] = useState(new Date().toISOString())
+
+  const handleClose = useCallback(() => {
+    setDescription('')
+    setName(`Untitle Script: ${new Date().toISOString()}`)
+    onClose()
+  }, [onClose, setDescription, setName])
+
+  const handleUpdateDescription = (event: ChangeEvent<HTMLInputElement>) => {
+    setDescription(event.target.value)
+  }
+
+  const handleUpdateName = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+  }
 
   const clear = useCallback(() => {
     cancel()
@@ -32,54 +61,90 @@ const SaveAsScript: FC<Props> = ({onClose}) => {
     setResult(null)
     setQuery('')
     setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
-    onClose()
-  }, [onClose, setQuery, setStatus, setResult, setSelection, cancel])
+    handleClose()
+  }, [handleClose, setQuery, setStatus, setResult, setSelection, cancel])
 
-  const updateScriptName = event => {
-    setScriptName(event.target.value)
+  const handleSaveScript = () => {
+    try {
+      handleSave(name, description)
+
+      dispatch(notify(scriptSaveSuccess(name)))
+
+      if (type === OverlayType.NEW) {
+        clear()
+      }
+    } catch (error) {
+      dispatch(notify(scriptSaveFail(name)))
+      console.error({error})
+    } finally {
+      handleClose()
+    }
+  }
+
+  if (type == null) {
+    return null
+  }
+
+  let overlayTitle = 'Save Script'
+
+  if (type === OverlayType.NEW) {
+    overlayTitle = 'Do you want to save your Script first?'
   }
 
   return (
     <Overlay.Container maxWidth={500}>
-      <Overlay.Header
-        title="Do you want to save your Script first?"
-        onDismiss={onClose}
-      />
+      <Overlay.Header title={overlayTitle} onDismiss={handleClose} />
       <Overlay.Body>
-        <div className="save-script-overlay__warning-text">
-          "Untitled Script: {scriptName}" will be overwritten by a new one if
-          you don’t save it.
-        </div>
-        <InputLabel>Save as</InputLabel>
-        <Input
-          name="scriptName"
-          type={InputType.Text}
-          value={scriptName}
-          onChange={updateScriptName}
-        />
+        {type === OverlayType.NEW && (
+          <div className="save-script-overlay__warning-text">
+            "{name}" will be overwritten by a new one if you don’t save it.
+          </div>
+        )}
+        <Form>
+          <InputLabel>Save as</InputLabel>
+          <Input
+            className="save-script-name__input"
+            name="name"
+            required
+            type={InputType.Text}
+            value={name}
+            onChange={handleUpdateName}
+          />
+          <InputLabel>Description</InputLabel>
+          <Input
+            name="description"
+            required
+            type={InputType.Text}
+            value={description}
+            onChange={handleUpdateDescription}
+          />
+        </Form>
       </Overlay.Body>
       <Overlay.Footer>
         <Button
           color={ComponentColor.Tertiary}
-          onClick={onClose}
+          onClick={handleClose}
           text="Cancel"
-          testID="cancel-service-confirmation--button"
         />
-        <Button
-          color={ComponentColor.Default}
-          onClick={clear}
-          text="No, Delete"
-          testID="cancel-service-confirmation--button"
-        />
-        <Button
-          color={ComponentColor.Primary}
-          onClick={() => {
-            alert('this is a WIP and will be connected soon')
-            // TODO(ariel): hook this up
-          }}
-          text="Yes, Save"
-          testID="cancel-service-confirmation--button"
-        />
+        {type === OverlayType.NEW && (
+          <Button
+            color={ComponentColor.Default}
+            onClick={clear}
+            text="No, Delete"
+          />
+        )}
+        {CLOUD && (
+          <Button
+            color={ComponentColor.Primary}
+            status={
+              name.length === 0 || description.length === 0
+                ? ComponentStatus.Disabled
+                : ComponentStatus.Default
+            }
+            onClick={handleSaveScript}
+            text={type === OverlayType.NEW ? 'Yes, Save' : 'Save'}
+          />
+        )}
       </Overlay.Footer>
     </Overlay.Container>
   )

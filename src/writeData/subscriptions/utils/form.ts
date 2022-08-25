@@ -5,6 +5,7 @@ import {
   StepsStatus,
   Steps,
   SubscriptionNavigationModel,
+  BrokerAuthTypes,
 } from 'src/types/subscriptions'
 import jsonpath from 'jsonpath'
 import {IconFont} from '@influxdata/clockface'
@@ -232,7 +233,7 @@ export const checkRequiredFields = (form: Subscription): boolean => {
 }
 
 const checkNoneSelected = (form: Subscription): boolean =>
-  form.authType === 'none' &&
+  form.authType === BrokerAuthTypes.None &&
   !form.brokerUsername &&
   !form.brokerPassword &&
   !form.brokerCACert &&
@@ -240,10 +241,12 @@ const checkNoneSelected = (form: Subscription): boolean =>
   !form.brokerClientKey
 
 const checkBasicSelected = (form: Subscription): boolean =>
-  form.authType === 'user' && !!form.brokerUsername && !!form.brokerPassword
+  form.authType === BrokerAuthTypes.User &&
+  !!form.brokerUsername &&
+  !!form.brokerPassword
 
 const checkCertificateSelected = (form: Subscription): boolean =>
-  form.authType === 'certificate' &&
+  form.authType === BrokerAuthTypes.Certificate &&
   !!form.brokerCACert &&
   ((!!form.brokerClientCert && !!form.brokerClientKey) ||
     (!form.brokerClientCert && !form.brokerClientKey))

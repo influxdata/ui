@@ -13,7 +13,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {Subscription} from 'src/types/subscriptions'
+import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 import {subscriptionCreateFail} from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -39,7 +39,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     brokerClientCert: '',
     brokerClientKey: '',
     brokerCACert: '',
-    authType: 'none',
+    authType: BrokerAuthTypes.None,
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {

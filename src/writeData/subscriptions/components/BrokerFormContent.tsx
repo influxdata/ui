@@ -32,7 +32,7 @@ import {
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Types
-import {Subscription} from 'src/types/subscriptions'
+import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'
@@ -285,7 +285,7 @@ const BrokerFormContent: FC<Props> = ({
             {getSchemaFromProtocol(
               formContent.protocol,
               isFlagEnabled('subscriptionsCertificateSupport') &&
-                formContent.authType === 'certificate'
+                formContent.authType === BrokerAuthTypes.Certificate
             )}
             {formContent.brokerHost ? formContent.brokerHost : '0.0.0.0'}:
             {formContent.brokerPort
@@ -309,7 +309,7 @@ const BrokerFormContent: FC<Props> = ({
               name="no-security"
               id="none"
               testID={`${className}-broker-form-no-security--button`}
-              active={formContent.authType === 'none'}
+              active={formContent.authType === BrokerAuthTypes.None}
               onClick={() => {
                 event(
                   'broker security toggle',
@@ -318,7 +318,7 @@ const BrokerFormContent: FC<Props> = ({
                 )
                 updateForm({
                   ...formContent,
-                  authType: 'none',
+                  authType: BrokerAuthTypes.None,
                   brokerUsername: null,
                   brokerPassword: null,
                   brokerCACert: null,
@@ -336,7 +336,7 @@ const BrokerFormContent: FC<Props> = ({
               name="user"
               id="user"
               testID={`${className}-broker-form--user--button`}
-              active={formContent.authType === 'user'}
+              active={formContent.authType === BrokerAuthTypes.User}
               onClick={() => {
                 event(
                   'broker security toggle',
@@ -345,7 +345,7 @@ const BrokerFormContent: FC<Props> = ({
                 )
                 updateForm({
                   ...formContent,
-                  authType: 'user',
+                  authType: BrokerAuthTypes.User,
                   brokerCACert: null,
                   brokerClientCert: null,
                   brokerClientKey: null,
@@ -361,7 +361,7 @@ const BrokerFormContent: FC<Props> = ({
               name="certificate"
               id="certificate"
               testID="certificate--button"
-              active={formContent.authType === 'certificate'}
+              active={formContent.authType === BrokerAuthTypes.Certificate}
               onClick={() => {
                 event(
                   'broker security toggle',
@@ -372,7 +372,7 @@ const BrokerFormContent: FC<Props> = ({
                   ...formContent,
                   brokerUsername: null,
                   brokerPassword: null,
-                  authType: 'certificate',
+                  authType: BrokerAuthTypes.Certificate,
                 })
               }}
               value="certificate"
@@ -382,7 +382,7 @@ const BrokerFormContent: FC<Props> = ({
               Certificate
             </SelectGroup.Option>
           </SelectGroup>
-          {formContent.authType === 'user' && (
+          {formContent.authType === BrokerAuthTypes.User && (
             <UserInput
               formContent={formContent}
               updateForm={updateForm}
@@ -390,7 +390,7 @@ const BrokerFormContent: FC<Props> = ({
               edit={edit}
             />
           )}
-          {formContent.authType === 'certificate' && (
+          {formContent.authType === BrokerAuthTypes.Certificate && (
             <CertificateInput
               subscription={formContent}
               updateForm={updateForm}

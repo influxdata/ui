@@ -1,6 +1,10 @@
 import {SubwayNavModel} from '@influxdata/clockface'
 
-export type BrokerAuthType = 'none' | 'user' | 'certificate'
+export enum BrokerAuthTypes {
+  None = 'none',
+  User = 'user',
+  Certificate = 'certificate',
+}
 
 export interface Subscription {
   id?: string
@@ -38,7 +42,7 @@ export interface Subscription {
   brokerClientKey?: string
   brokerClientCert?: string
   brokerCACert?: string
-  authType: BrokerAuthType
+  authType: BrokerAuthTypes
   certProvidedAt?: string
 }
 

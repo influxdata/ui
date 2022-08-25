@@ -37,6 +37,7 @@ import {Subscription} from 'src/types/subscriptions'
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   formContent: Subscription
@@ -54,7 +55,9 @@ const BrokerFormContent: FC<Props> = ({
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
-  const DEFAULT_PORT = formContent.authType === 'certificate' ? 8883 : 1883
+  const DEFAULT_PORT = isFlagEnabled('subscriptionsCertificateSupport')
+    ? 8883
+    : 1883
 
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
@@ -246,13 +249,13 @@ const BrokerFormContent: FC<Props> = ({
                 <Input
                   type={InputType.Number}
                   placeholder={`${
-                    !formContent || isNaN(formContent.brokerPort)
+                    !formContent.brokerPort || isNaN(formContent.brokerPort)
                       ? DEFAULT_PORT
                       : formContent.brokerPort
                   }`}
                   name="port"
                   autoFocus={false}
-                  value={formContent.brokerPort ?? DEFAULT_PORT}
+                  value={formContent.brokerPort}
                   onChange={e => {
                     updateForm({
                       ...formContent,
@@ -279,8 +282,11 @@ const BrokerFormContent: FC<Props> = ({
             weight={FontWeight.Regular}
             className={`${className}-broker-form__example-text`}
           >
-            {/* TODO: update `false` after cert support */}
-            {getSchemaFromProtocol(formContent.protocol, false)}
+            {getSchemaFromProtocol(
+              formContent.protocol,
+              isFlagEnabled('subscriptionsCertificateSupport') &&
+                formContent.authType === 'certificate'
+            )}
             {formContent.brokerHost ? formContent.brokerHost : '0.0.0.0'}:
             {formContent.brokerPort
               ? formContent.brokerPort

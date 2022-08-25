@@ -116,7 +116,7 @@ const RateLimitAlert: FC<Props> = ({
     ? IconFont.AlertTriangle
     : IconFont.Cloud
 
-  if (isFlagEnabled('multiOrg') && !multiOrgFlagForceShow) {
+  if (isFlagEnabled('multiOrg') && !multiOrgFlagForceShow && !alertOnly) {
     return <></>
   }
 

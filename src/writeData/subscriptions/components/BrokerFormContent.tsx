@@ -236,7 +236,7 @@ const BrokerFormContent: FC<Props> = ({
             </Form.ValidationElement>
             <Form.ValidationElement
               label="Port"
-              value={String(formContent.brokerPort ?? DEFAULT_PORT)}
+              value={String(formContent.brokerPort)}
               required={true}
               validationFunc={() =>
                 handleValidation(

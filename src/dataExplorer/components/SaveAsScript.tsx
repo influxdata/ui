@@ -20,6 +20,12 @@ import './SaveAsScript.scss'
 import {CLOUD} from 'src/shared/constants'
 import {ScriptContext} from 'src/dataExplorer/context/scripts'
 import {OverlayType} from './FluxQueryBuilder'
+import {useDispatch} from 'react-redux'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  scriptSaveFail,
+  scriptSaveSuccess,
+} from 'src/shared/copy/notifications/categories/scripts'
 
 interface Props {
   onClose: () => void
@@ -27,6 +33,7 @@ interface Props {
 }
 
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
+  const dispatch = useDispatch()
   const {setQuery, setSelection} = useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
   const {handleSave} = useContext(ScriptContext)
@@ -61,9 +68,14 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
     try {
       handleSave(name, description)
 
+      dispatch(notify(scriptSaveSuccess(name)))
+
       if (type === OverlayType.NEW) {
         clear()
       }
+    } catch (error) {
+      dispatch(notify(scriptSaveFail(name)))
+      console.error({error})
     } finally {
       handleClose()
     }

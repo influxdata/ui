@@ -102,7 +102,7 @@ export const InitializeClient: FC<OwnProps> = ({
   useEffect(() => {
     try {
       dispatch(getAllResources())
-    } catch (e) {
+    } catch (err) {
       dispatch(notify(getResourcesTokensFailure('all access token')))
     }
   }, [dispatch])

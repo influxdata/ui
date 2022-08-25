@@ -66,7 +66,7 @@ export const Tokens: FC<OwnProps> = ({
   useEffect(() => {
     try {
       dispatch(getAllResources())
-    } catch (e) {
+    } catch (err) {
       dispatch(notify(getResourcesTokensFailure('all access token')))
     }
   }, [dispatch])

@@ -149,8 +149,7 @@ class LspConnectionManager {
         ((lowerIcon as any).offsetHeight || 0) * (endLine - startLine + 1) +
         ((upperIcon as any).offsetTop || 0)
       clickableInvisibleDiv.style.height = height + 'px'
-      clickableInvisibleDiv.style.width =
-        ((upperIcon as any).offsetWidth || 0) + 'px'
+      // width size is always the same, defined in classname "sync-bar"
 
       // add listeners
       clickableInvisibleDiv.removeEventListener('click', () =>

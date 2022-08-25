@@ -23,6 +23,7 @@ import SaveAsOverlay from 'src/dataExplorer/components/SaveAsOverlay'
 import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
 import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
 import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
+import TemplatePage from 'src/dataExplorer/components/resources/TemplatePage'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -67,6 +68,10 @@ const DataExplorerPage: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>
       <Switch>
+        <Route
+          path="/orgs/:orgID/data-explorer/from"
+          component={TemplatePage}
+        />
         <Route
           path="/orgs/:orgID/data-explorer/save"
           component={SaveAsOverlay}

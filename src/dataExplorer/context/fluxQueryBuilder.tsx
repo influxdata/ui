@@ -16,7 +16,7 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 import {EditorContext} from 'src/shared/contexts/editor'
 
 // Types
-import {Bucket} from 'src/types'
+import {Bucket, TagKeyValuePair} from 'src/types'
 
 // Utils
 import {ExecuteCommand} from 'src/languageSupport/languages/flux/lsp/utils'
@@ -37,6 +37,11 @@ const debouncer = (action: NOOP): void => {
   }, DEBOUNCE_TIMEOUT)
 }
 
+const DEFAULT_SELECTED_TAG_VALUES: SelectedTagValues = {}
+interface SelectedTagValues {
+  [key: string]: string[]
+}
+
 interface FluxQueryBuilderContextType {
   // Flux Sync
   fluxSync: boolean
@@ -45,6 +50,7 @@ interface FluxQueryBuilderContextType {
   // Schema
   selectedBucket: Bucket
   selectedMeasurement: string
+  selectedTagValues: SelectedTagValues
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void
@@ -61,6 +67,7 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   // Schema
   selectedBucket: null,
   selectedMeasurement: '',
+  selectedTagValues: DEFAULT_SELECTED_TAG_VALUES,
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
@@ -79,9 +86,14 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
   const {injectViaLsp} = useContext(EditorContext)
+  const {selection, setSelection} = useContext(PersistanceContext)
 
   // States
-  const {selection, setSelection} = useContext(PersistanceContext)
+  // This state is a restructed PersistanceContext selection.tagValues
+  // for performance reason. selection.tagValues is the source of true
+  const [selectedTagValues, setSelectedTagValues] = useState(
+    DEFAULT_SELECTED_TAG_VALUES
+  )
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
@@ -90,6 +102,18 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       // a bucket and a measurement are selected,
       // so we should get measurements here
       getMeasurements(selection.bucket)
+
+      // On page refresh, re-contruct the state of selectedTagValues
+      if (!!selection.tagValues) {
+        const _selectedTagValues = {} as SelectedTagValues
+        selection.tagValues.forEach((tag: TagKeyValuePair) => {
+          if (!_selectedTagValues[tag.key]) {
+            _selectedTagValues[tag.key] = []
+          }
+          _selectedTagValues[tag.key].push(tag.value)
+        })
+        setSelectedTagValues(_selectedTagValues)
+      }
     }
   }, [selection.bucket])
 
@@ -98,18 +122,19 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectBucket = (bucket: Bucket): void => {
-    setSelection({bucket, measurement: ''})
+    setSelection({bucket, measurement: '', fields: [], tagValues: []})
 
-    // Reset measurement, tags, and fields
+    // Reset measurement, tags, fields, selected tag values
     resetFields()
     resetTags()
+    setSelectedTagValues(DEFAULT_SELECTED_TAG_VALUES)
 
-    // Get measurement values
+    // Fetch measurement values
     getMeasurements(bucket)
   }
 
   const handleSelectMeasurement = (measurement: string): void => {
-    setSelection({measurement})
+    setSelection({measurement, fields: [], tagValues: []})
 
     // Inject measurement
     injectViaLsp(ExecuteCommand.InjectionMeasurement, {
@@ -120,16 +145,28 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       name: measurement,
     } as ExecuteCommandInjectMeasurement)
 
-    // Reset fields and tags
+    // Reset fields, tags, selected tag values
     resetFields()
     resetTags()
+    setSelectedTagValues(DEFAULT_SELECTED_TAG_VALUES)
 
-    // Get fields and tags
+    // Fetch fields and tags
     getFields(selection.bucket, measurement)
     getTagKeys(selection.bucket, measurement)
   }
 
   const handleSelectField = (field: string): void => {
+    let fields = []
+    if (selection.fields?.includes(field)) {
+      // remove the selected field
+      fields = selection.fields.filter(item => item !== field)
+    } else {
+      // add the selected field
+      fields = [...selection.fields, field]
+    }
+
+    setSelection({fields})
+
     // Inject field
     injectViaLsp(ExecuteCommand.InjectField, {
       bucket:
@@ -141,6 +178,38 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
+    let nextStateTagValues: string[] = []
+    let sessionTagValues: TagKeyValuePair[] = []
+
+    if (selectedTagValues[tagKey]?.includes(tagValue)) {
+      // remove the selected tag value
+      nextStateTagValues = selectedTagValues[tagKey].filter(
+        item => item !== tagValue
+      )
+      sessionTagValues = selection.tagValues.filter(
+        item => !(item.key === tagKey && item.value === tagValue)
+      )
+    } else {
+      // add the selected tag value
+      if (!selectedTagValues[tagKey]) {
+        selectedTagValues[tagKey] = [] as string[]
+      }
+      nextStateTagValues = [...selectedTagValues[tagKey], tagValue]
+      sessionTagValues = [
+        ...selection.tagValues,
+        {key: tagKey, value: tagValue} as TagKeyValuePair,
+      ]
+    }
+
+    // Update React state
+    setSelectedTagValues({
+      ...selectedTagValues,
+      [tagKey]: nextStateTagValues,
+    })
+
+    // Update session storage
+    setSelection({tagValues: sessionTagValues})
+
     // Inject tag value
     injectViaLsp(ExecuteCommand.InjectTagValue, {
       bucket:
@@ -174,6 +243,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
           // Schema
           selectedBucket: selection.bucket,
           selectedMeasurement: selection.measurement,
+          selectedTagValues,
           searchTerm,
           selectBucket: handleSelectBucket,
           selectMeasurement: handleSelectMeasurement,
@@ -190,8 +260,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       selection.composition?.synced,
 
       // Schema
-      selection.bucket,
-      selection.measurement,
+      selection,
       searchTerm,
 
       children,

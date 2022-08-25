@@ -2,7 +2,7 @@ import React, {FC, createContext, useCallback} from 'react'
 import {TimeRange, RecursivePartial} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
-import {Bucket} from 'src/types'
+import {Bucket, TagKeyValuePair} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface SchemaComposition {
@@ -14,6 +14,7 @@ export interface SchemaSelection {
   bucket: Bucket
   measurement: string
   fields: string[]
+  tagValues: TagKeyValuePair[]
   composition: SchemaComposition
 }
 
@@ -31,10 +32,11 @@ interface ContextType {
   setSelection: (val: RecursivePartial<SchemaSelection>) => void
 }
 
-export const DEFAULT_SCHEMA = {
+export const DEFAULT_SCHEMA: SchemaSelection = {
   bucket: null,
   measurement: null,
-  fields: [],
+  fields: [] as string[],
+  tagValues: [] as TagKeyValuePair[],
   composition: {
     synced: false,
     diverged: false,
@@ -92,7 +94,7 @@ export const PersistanceProvider: FC = ({children}) => {
         // TODO: how message to user?
         return
       }
-      const nextState = {
+      const nextState: SchemaSelection = {
         ...selection,
         ...schema,
         composition: {

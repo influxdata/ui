@@ -1,6 +1,6 @@
 import {ResourceType} from 'src/types/resources'
 import editor from './editor'
-import {getScript, patchScript, postScript} from 'src/client/scriptsRoutes.ts'
+import {getScript, patchScript, postScript} from 'src/client/scriptsRoutes'
 
 export default function script(register) {
   register({

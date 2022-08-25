@@ -23,6 +23,7 @@ import {
   normalizeWindowPeriodForZoomRequery,
   normalizeWindowPeriodVariableForZoomRequery,
 } from 'src/variables/utils/getWindowVars'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, InternalFromFluxResult, TimeRange} from 'src/types'
@@ -142,6 +143,7 @@ export const useVisYDomainSettings = (
 }
 
 interface ZoomRequeryArgs {
+  adaptiveZoomHide: boolean
   data: NumericColumnData | string[]
   parsedResult: InternalFromFluxResult
   preZoomResult: InternalFromFluxResult
@@ -158,6 +160,7 @@ const isNotEqual = (firstValue: any, secondValue: any): boolean =>
 
 export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const {
+    adaptiveZoomHide,
     data,
     parsedResult,
     preZoomResult,
@@ -185,7 +188,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
    *   - can be changed by the time range dropdown
    *   - uses one-way state to capture the very first set of values
    */
-  const [preZoomDomain] = useOneWayState(initialDomain)
+  const [preZoomDomain, setPreZoomDomain] = useOneWayState(initialDomain)
 
   /*
    * domain:
@@ -265,6 +268,20 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     }
   }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Suppresses adaptive zoom feature; must come after all hooks
+  if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {
+    const setVisXDomain = (domain: NumericColumnData) => {
+      setPreZoomDomain(domain)
+      event('plot.zoom_in.xAxis', {zoomRequery: 'false'})
+    }
+
+    const resetDomain = () => {
+      setPreZoomDomain(initialDomain)
+      event('plot.zoom_restore.xAxis', {zoomRequery: 'false'})
+    }
+    return [preZoomDomain, setVisXDomain, resetDomain]
+  }
+
   const setZoomDomain = (updatedDomain: number[]) => {
     setRequeryStatus(RemoteDataState.NotStarted)
     if (!preZoomResult) {
@@ -274,7 +291,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     event('plot.zoom_in.xAxis', {zoomRequery: 'true'}, {orgId})
   }
 
-  const resetDomain = () => {
+  const resetZoomDomain = () => {
     setRequeryStatus(RemoteDataState.NotStarted)
     if (preZoomResult) {
       setResult(preZoomResult)
@@ -284,11 +301,12 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     event('plot.zoom_restore.xAxis', {zoomRequery: 'true'}, {orgId})
   }
 
-  return [domain, setZoomDomain, resetDomain]
+  return [domain, setZoomDomain, resetZoomDomain]
 }
 
 export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   const {
+    adaptiveZoomHide,
     data,
     parsedResult,
     preZoomResult,
@@ -321,7 +339,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
    *   - can be changed by the time range dropdown
    *   - uses one-way state to capture the very first set of values
    */
-  const [preZoomDomain] = useOneWayState(initialDomain)
+  const [preZoomDomain, setPreZoomDomain] = useOneWayState(initialDomain)
 
   /*
    * domain:
@@ -400,6 +418,20 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
       setDomain(preZoomDomain)
     }
   }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Suppresses adaptive zoom feature; must come after all hooks
+  if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {
+    const setVisYDomain = (domain: NumericColumnData | string) => {
+      setPreZoomDomain(domain)
+      event('plot.zoom_in.yAxis', {zoomRequery: 'false'})
+    }
+
+    const resetDomain = () => {
+      setPreZoomDomain(initialDomain)
+      event('plot.zoom_restore.yAxis', {zoomRequery: 'false'})
+    }
+    return [preZoomDomain, setVisYDomain, resetDomain]
+  }
 
   const setZoomDomain = (updatedDomain: number[]) => {
     setRequeryStatus(RemoteDataState.NotStarted)

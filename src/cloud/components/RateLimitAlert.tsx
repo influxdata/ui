@@ -117,7 +117,7 @@ const RateLimitAlert: FC<Props> = ({
     : IconFont.Cloud
 
   if (isFlagEnabled('multiOrg') && !multiOrgFlagForceShow && !alertOnly) {
-    return <></>
+    return null
   }
 
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {

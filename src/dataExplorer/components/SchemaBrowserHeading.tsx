@@ -57,7 +57,7 @@ const SchemaBrowserHeading: FC = () => {
         </FlexBox>
       </FlexBox>
     ),
-    [fluxSync]
+    [fluxSync, toggleFluxSync]
   )
 }
 

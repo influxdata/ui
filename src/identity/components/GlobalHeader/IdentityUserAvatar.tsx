@@ -67,7 +67,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
       <>
         <div className="user-popover-header">
           <div className="user-popover-header-name">
-            {firstName} {lastName}
+            {firstName ?? null} {lastName ?? null}
           </div>
           <div className="user-popover-header-email">{email}</div>
           <hr />
@@ -111,6 +111,8 @@ class IdentityUserAvatar extends React.Component<Props, State> {
       'user-popover--open': this.state.isPopoverOpen,
     })
 
+    const avatarInitials = this.getInitials()
+
     const {isPopoverOpen} = this.state
     return (
       <ClickOutside onClickOutside={this.setPopoverStateClosed}>
@@ -118,7 +120,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           {/* Button shape is ButtonShape.Square to make the height and width the same
             so we can use the border radius to make it a circle  */}
           <Button
-            text={this.getInitials()}
+            text={avatarInitials}
             shape={ButtonShape.Square}
             color={
               isPopoverOpen ? ComponentColor.Default : ComponentColor.Tertiary
@@ -126,7 +128,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
             onClick={this.togglePopoverState}
             className={userAvatarButtonClassName}
             testID="global-header--user-avatar"
-            icon={!this.getInitials() ? IconFont.User : null}
+            icon={avatarInitials === '' ? IconFont.User : null}
           />
           <FlexBox
             className={userPopoverClassName}

@@ -44,6 +44,7 @@ import {
 // Utils
 import {resetQueryCache} from 'src/shared/apis/queryCache'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
 import {getByID} from 'src/resources/selectors'
@@ -98,6 +99,12 @@ const DashboardHeader: FC<Props> = ({
   }
 
   const handleAddCell = () => {
+    if (isFlagEnabled('createWithDE')) {
+      history.push(
+        `/orgs/${org.id}/data-explorer/from/dashboard/${dashboard.id}/cell`
+      )
+      return
+    }
     history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/cells/new`)
   }
 

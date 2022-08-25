@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 export const LOAD_MORE_LIMIT_INITIAL = 8
 export const LOAD_MORE_LIMIT = 25
 export const IMPORT_REGEXP = 'import "regexp"\n'
@@ -28,6 +28,7 @@ export const useSessionStorage = (keyName: string, defaultValue: any) => {
         return defaultValue
       }
     } catch (err) {
+      console.error(`Error grabbing [${keyName}]:`, err)
       return defaultValue
     }
   })
@@ -35,9 +36,34 @@ export const useSessionStorage = (keyName: string, defaultValue: any) => {
   const setValue = (newValue: any) => {
     try {
       window.sessionStorage.setItem(keyName, JSON.stringify(newValue))
-    } catch (err) {}
+      window.dispatchEvent(
+        new CustomEvent('same.storage', {
+          detail: {key: keyName, oldValue: storedValue, newValue},
+        })
+      )
+    } catch (err) {
+      console.error(`Error setting [${keyName}]:`, err)
+    }
     setStoredValue(newValue)
   }
+
+  // add psudo storage event to communicate
+  // across implementations that share the same key
+  useEffect(() => {
+    const listen = evt => {
+      if (!evt.detail.key || evt.detail.key !== keyName) {
+        return
+      }
+
+      setStoredValue(evt.detail.newValue)
+    }
+
+    window.addEventListener('same.storage', listen)
+
+    return () => {
+      window.removeEventListener('same.storage', listen)
+    }
+  }, [])
 
   return [storedValue, setValue]
 }

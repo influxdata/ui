@@ -31,7 +31,8 @@ import './FluxQueryBuilder.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FluxQueryBuilder: FC = () => {
-  const {query, vertical, setVertical} = useContext(PersistanceContext)
+  const {vertical, setVertical, query} = useContext(PersistanceContext)
+  const {save} = useContext(PersistanceContext)
   const [isPromptVisible, setIsPromptVisible] = useState(false)
 
   return (
@@ -63,7 +64,7 @@ const FluxQueryBuilder: FC = () => {
             {isFlagEnabled('saveAsScript') && (
               <Button
                 onClick={() => {
-                  // TODO(ariel): hook this up
+                  save()
                 }}
                 text="Save Script"
                 icon={IconFont.Save}

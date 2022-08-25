@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, memo, useRef, RefObject, useState} from 'react'
 import {useHistory, useLocation} from 'react-router-dom'
-import {useDispatch} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {get} from 'lodash'
 import classnames from 'classnames'
 
@@ -25,6 +25,8 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Types
 import {Cell, View} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getOrg} from 'src/organizations/selectors'
 
 interface Props {
   cell: Cell
@@ -44,6 +46,7 @@ const CellContext: FC<Props> = ({
   const history = useHistory()
   const location = useLocation()
   const dispatch = useDispatch()
+  const org = useSelector(getOrg)
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
   const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
@@ -73,8 +76,14 @@ const CellContext: FC<Props> = ({
   }
 
   const handleEditCell = (): void => {
-    history.push(`${location.pathname}/cells/${cell.id}/edit`)
     event('editCell button Click')
+    if (isFlagEnabled('createWithDE')) {
+      history.push(
+        `/orgs/${org.id}/data-explorer/from/dashboard/${cell.dashboardID}/cell/${cell.id}`
+      )
+      return
+    }
+    history.push(`${location.pathname}/cells/${cell.id}/edit`)
   }
 
   const popoverContents = (onHide): JSX.Element => {

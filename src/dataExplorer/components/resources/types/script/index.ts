@@ -1,6 +1,6 @@
 import {ResourceType} from 'src/types/resources'
 import editor from './editor'
-import {getScript, patchScript, postScript} from 'src/client/scriptsRoutes'
+import * as api from 'src/client/scriptsRoutes'
 
 export default function script(register) {
   register({
@@ -18,44 +18,70 @@ export default function script(register) {
         })
       }
 
-      return getScript({
-        scriptID: id,
-      }).then(resp => {
-        return {
-          type: ResourceType.Scripts,
-          flux: resp.script,
-          data: resp,
-        }
-      })
+      return api
+        .getScript({
+          scriptID: id,
+        })
+        .then(resp => {
+          if (resp.status === 200) {
+            return {
+              type: ResourceType.Scripts,
+              flux: resp.data.script,
+              data: resp.data,
+            }
+          }
+
+          return {
+            type: ResourceType.Scripts,
+            flux: '',
+            data: {
+              name: `Untitled Script: ${new Date().toISOString()}`,
+              description: 'default description',
+            },
+          }
+        })
     },
     persist: resource => {
       const data = JSON.parse(JSON.stringify(resource.data))
       data.script = resource.flux
 
       if (data.id) {
-        return patchScript({
-          scriptID: data.id,
-          description: data.description,
-          script: data.script,
-        }).then(() => {
-          return resource
-        })
+        return api
+          .patchScript({
+            scriptID: data.id,
+            data: {
+              name: data.name,
+              description: data.description,
+              script: data.script,
+            },
+          })
+          .then(() => {
+            return resource
+          })
       }
 
-      return postScript({
-        name: data.name,
-        description: data.description,
-        script: data.script,
-        language: 'flux',
-      }).then(resp => {
-        return {
-          ...resource,
+      return api
+        .postScript({
           data: {
-            ...data,
-            id: resp.id,
+            name: data.name,
+            description: data.description,
+            script: data.script,
+            language: 'flux',
           },
-        }
-      })
+        })
+        .then(resp => {
+          if (resp.status === 201) {
+            return {
+              ...resource,
+              data: {
+                ...data,
+                id: resp.data.id,
+              },
+            }
+          }
+
+          return resource
+        })
     },
   })
 }

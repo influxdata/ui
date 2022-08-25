@@ -36,7 +36,10 @@ import {ResourceType} from 'src/types'
 
 import 'src/shared/components/cta.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
-import {PersistanceContext, PersistanceProvider} from 'src/dataExplorer/context/persistance'
+import {
+  PersistanceContext,
+  PersistanceProvider,
+} from 'src/dataExplorer/context/persistance'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 const DataExplorerPageHeader: FC = () => {
@@ -59,7 +62,7 @@ const DataExplorerPageHeader: FC = () => {
   }
 
   let pageTitle = <Page.Title title="Data Explorer" />
-  if (fluxQueryBuilder) {
+  if (fluxQueryBuilder && resource?.data.hasOwnProperty('name')) {
     pageTitle = (
       <RenamablePageTitle
         onRename={handleRename}
@@ -97,11 +100,9 @@ const DataExplorerPageHeader: FC = () => {
 }
 
 const DataExplorerPage: FC = () => {
-  const {
-    flowsCTA,
-    fluxQueryBuilder,
-    setFlowsCTA,
-  } = useContext(AppSettingContext)
+  const {flowsCTA, fluxQueryBuilder, setFlowsCTA} = useContext(
+    AppSettingContext
+  )
   useLoadTimeReporting('DataExplorerPage load start')
 
   const hideFlowsCTA = () => {

@@ -9,6 +9,7 @@ import {
   InputType,
   Overlay,
 } from '@influxdata/clockface'
+import {useHistory} from 'react-router-dom'
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {
@@ -20,12 +21,13 @@ import './SaveAsScript.scss'
 import {CLOUD} from 'src/shared/constants'
 import {ScriptContext} from 'src/dataExplorer/context/scripts'
 import {OverlayType} from './FluxQueryBuilder'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
 import {
   scriptSaveFail,
   scriptSaveSuccess,
 } from 'src/shared/copy/notifications/categories/scripts'
+import {getOrg} from 'src/organizations/selectors'
 
 interface Props {
   onClose: () => void
@@ -34,50 +36,63 @@ interface Props {
 
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const dispatch = useDispatch()
-  const {setQuery, setSelection} = useContext(PersistanceContext)
+  const history = useHistory()
+  const {setQuery, setSelection, resource, setResource, save} = useContext(
+    PersistanceContext
+  )
   const {cancel} = useContext(QueryContext)
   const {handleSave} = useContext(ScriptContext)
+  const {setStatus, setResult} = useContext(ResultsContext)
+  const org = useSelector(getOrg)
+
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const {setStatus, setResult} = useContext(ResultsContext)
 
-  const handleClose = useCallback(() => {
-    setDescription('')
-    setName(`Untitle Script: ${new Date().toISOString()}`)
+  const handleCancel = useCallback(() => {
     onClose()
   }, [onClose, setDescription, setName])
 
   const handleUpdateDescription = (event: ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value)
+    setResource({
+      ...resource,
+      data: {
+        ...(resource.data || {}),
+        description: event.target.value,
+      },
+    })
   }
 
   const handleUpdateName = (event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
+    setResource({
+      ...resource,
+      data: {
+        ...(resource.data || {}),
+        name: event.target.value,
+      },
+    })
   }
 
   const clear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
-    setResult(null)
-    setQuery('')
     setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
-    handleClose()
-  }, [handleClose, setQuery, setStatus, setResult, setSelection, cancel])
+
+    history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+
+    onClose()
+  }, [onClose, setQuery, setStatus, setResult, setSelection, cancel])
 
   const handleSaveScript = () => {
     try {
+      save().then(() => {
+        dispatch(notify(scriptSaveSuccess(name)))
+      })
       handleSave(name, description)
-
-      dispatch(notify(scriptSaveSuccess(name)))
-
-      if (type === OverlayType.NEW) {
-        clear()
-      }
     } catch (error) {
       dispatch(notify(scriptSaveFail(name)))
       console.error({error})
     } finally {
-      handleClose()
+      onClose()
     }
   }
 
@@ -93,11 +108,12 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
 
   return (
     <Overlay.Container maxWidth={500}>
-      <Overlay.Header title={overlayTitle} onDismiss={handleClose} />
+      <Overlay.Header title={overlayTitle} onDismiss={handleCancel} />
       <Overlay.Body>
         {type === OverlayType.NEW && (
           <div className="save-script-overlay__warning-text">
-            "{name}" will be overwritten by a new one if you don’t save it.
+            "{resource?.data?.name}" will be overwritten by a new one if you
+            don’t save it.
           </div>
         )}
         <Form>
@@ -107,7 +123,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
             name="name"
             required
             type={InputType.Text}
-            value={name}
+            value={resource?.data?.name}
             onChange={handleUpdateName}
           />
           <InputLabel>Description</InputLabel>
@@ -115,7 +131,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
             name="description"
             required
             type={InputType.Text}
-            value={description}
+            value={resource?.data?.description}
             onChange={handleUpdateDescription}
           />
         </Form>
@@ -123,7 +139,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
       <Overlay.Footer>
         <Button
           color={ComponentColor.Tertiary}
-          onClick={handleClose}
+          onClick={handleCancel}
           text="Cancel"
         />
         {type === OverlayType.NEW && (
@@ -137,7 +153,8 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
           <Button
             color={ComponentColor.Primary}
             status={
-              name.length === 0 || description.length === 0
+              resource?.data?.name.length === 0 ||
+              resource?.data?.description.length === 0
                 ? ComponentStatus.Disabled
                 : ComponentStatus.Default
             }

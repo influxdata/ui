@@ -1,4 +1,4 @@
-import React, {FC, useContext, useCallback, ChangeEvent} from 'react'
+import React, {FC, useContext, useCallback, useState, ChangeEvent} from 'react'
 import {
   Button,
   ComponentColor,
@@ -29,27 +29,23 @@ interface Props {
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const {setQuery, setSelection} = useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
-  const {
-    name,
-    description,
-    handleSave,
-    updateName,
-    updateDescription,
-  } = useContext(ScriptContext)
+  const {handleSave} = useContext(ScriptContext)
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
   const {setStatus, setResult} = useContext(ResultsContext)
 
   const handleClose = useCallback(() => {
-    updateDescription('')
-    updateName(`Untitle Script: ${new Date().toISOString()}`)
+    setDescription('')
+    setName(`Untitle Script: ${new Date().toISOString()}`)
     onClose()
-  }, [onClose, updateDescription, updateName])
+  }, [onClose, setDescription, setName])
 
   const handleUpdateDescription = (event: ChangeEvent<HTMLInputElement>) => {
-    updateDescription(event.target.value)
+    setDescription(event.target.value)
   }
 
   const handleUpdateName = (event: ChangeEvent<HTMLInputElement>) => {
-    updateName(event.target.value)
+    setName(event.target.value)
   }
 
   const clear = useCallback(() => {
@@ -63,7 +59,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
 
   const handleSaveScript = () => {
     try {
-      handleSave()
+      handleSave(name, description)
 
       if (type === OverlayType.NEW) {
         clear()

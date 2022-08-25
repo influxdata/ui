@@ -43,3 +43,25 @@
     color: #bec2cc;
   }
 }
+
+.sync-bar {
+  z-index: 999;
+  position: absolute;
+
+  .sync-icon {
+    color: #0098F0;
+  }
+}
+
+.sync-bar--on {
+  background: #0098F01A; // blue with 10% opacity
+  border-top: 1px solid #0098F0;
+  border-bottom: 1px solid #0098F0;
+}
+
+.sync-bar--off {
+  opacity: 50%;
+  background-color: $cf-grey-35;
+  border-top: 1px solid $cf-white;
+  border-bottom: 1px solid $cf-white;
+}

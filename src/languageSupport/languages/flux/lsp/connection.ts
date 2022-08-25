@@ -214,9 +214,9 @@ class LspConnectionManager {
     )
 
     const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-    clickableInvisibleDiv.style.background = this._session.composition.synced
-      ? 'blue'
-      : 'grey'
+    clickableInvisibleDiv.className = this._session.composition.synced
+      ? 'sync-bar sync-bar--on'
+      : 'sync-bar sync-bar--off'
 
     if (removeAllStyles) {
       clickableInvisibleDiv.style.display = 'none'

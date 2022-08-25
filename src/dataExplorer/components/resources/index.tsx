@@ -29,15 +29,13 @@ interface Resources {
 }
 
 export const RESOURCES: Resources = {}
-
-const context = require.context(
-  './types',
-  true,
-  /^\.\/([^\/])+\/index\.(ts|tsx)$/
-)
-
-context.keys().forEach(k => {
-  const mod = context(k)
+  // eslint-disable-next-line no-extra-semi
+;[
+  require('./types/variable'),
+  require('./types/task'),
+  require('./types/script'),
+  require('./types/cell'),
+].forEach(mod => {
   mod.default((def: ResourceRegistration) => {
     if (RESOURCES.hasOwnProperty(def.type)) {
       throw new Error(`Pipe of type [${def.type}] has already been registered`)

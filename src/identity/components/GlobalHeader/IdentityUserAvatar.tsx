@@ -1,4 +1,6 @@
+// Libraries
 import React from 'react'
+import {Link} from 'react-router-dom'
 import classnames from 'classnames'
 import {
   Button,
@@ -11,13 +13,17 @@ import {
   IconFont,
 } from '@influxdata/clockface'
 
+// Eventing
+import {HeaderNavEvent, multiOrgTag} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
+
+// Styles
 import './UserPopoverStyles.scss'
-import {Link} from 'react-router-dom'
 
 type Props = {
+  email: string
   firstName: string
   lastName: string
-  email: string
   orgId: string
 }
 
@@ -39,8 +45,14 @@ class IdentityUserAvatar extends React.Component<Props, State> {
     return initials
   }
 
+  private handlePopoverClick = (eventName: string) => () => {
+    event(eventName, multiOrgTag)
+  }
   private togglePopoverState = () => {
     const {isPopoverOpen} = this.state
+    if (!isPopoverOpen) {
+      event(HeaderNavEvent.UserAvatarClick, multiOrgTag)
+    }
     this.setState({isPopoverOpen: !isPopoverOpen})
   }
 
@@ -49,7 +61,7 @@ class IdentityUserAvatar extends React.Component<Props, State> {
   }
 
   private getUserPopoverContents = () => {
-    const {firstName, lastName, email, orgId} = this.props
+    const {email, firstName, lastName, orgId} = this.props
 
     return (
       <>
@@ -64,15 +76,20 @@ class IdentityUserAvatar extends React.Component<Props, State> {
           <Link
             className="user-popover-footer--button"
             to={`/orgs/${orgId}/user/profile`}
+            onClick={this.handlePopoverClick(HeaderNavEvent.UserProfileClick)}
           >
             <Icon
-              glyph={IconFont.User}
               className="user-popover-footer--button-icon"
+              glyph={IconFont.User}
               testID="global-header--user-popover-profile-button"
             />
             Profile
           </Link>
-          <Link className="user-popover-footer--button" to="/logout">
+          <Link
+            className="user-popover-footer--button"
+            onClick={this.handlePopoverClick(HeaderNavEvent.UserLogoutClick)}
+            to="/logout"
+          >
             <Icon
               glyph={IconFont.Logout}
               className="user-popover-footer--button-icon"

@@ -14,9 +14,14 @@ import {OrganizationSummaries} from 'src/client/unityRoutes'
 // Constants
 import {CLOUD_URL} from 'src/shared/constants'
 
-const switchOrg = (org: TypeAheadMenuItem) => {
-  window.location.href = `${CLOUD_URL}/orgs/${org.id}`
-}
+// Eventing
+import {
+  HeaderNavEvent,
+  MainMenuEventPrefix,
+  multiOrgTag,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
 
 type OrgSummaryItem = OrganizationSummaries[number]
 
@@ -26,9 +31,19 @@ interface Props {
 }
 
 const menuStyle = {width: '250px'}
-const style = {width: 'auto'}
+const orgDropdownStyle = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
+  const switchOrg = (org: TypeAheadMenuItem) => {
+    event(HeaderNavEvent.OrgSwitch, multiOrgTag, {
+      oldOrgID: activeOrg.id,
+      oldOrgName: activeOrg.name,
+      newOrgID: org.id,
+      newOrgName: org.name,
+    })
+    window.location.href = `${CLOUD_URL}/orgs/${org.id}`
+  }
+
   const orgMainMenu = [
     {
       name: 'Settings',
@@ -47,20 +62,28 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     },
   ]
 
+  const sendDropdownClickEvent = () => {
+    event(HeaderNavEvent.OrgDropdownClick, multiOrgTag)
+  }
+
   return (
-    <GlobalHeaderDropdown
-      dropdownMenuStyle={menuStyle}
-      mainMenuHeaderIcon={IconFont.Switch_New}
-      mainMenuHeaderText="Switch Organization"
-      mainMenuOptions={orgMainMenu}
-      mainMenuTestID="globalheader--org-dropdown-main"
-      style={style}
-      typeAheadInputPlaceholder="Search Organizations"
-      typeAheadMenuOptions={orgsList}
-      typeAheadOnSelectOption={switchOrg}
-      typeAheadSelectedOption={activeOrg}
-      testID="globalheader--org-dropdown"
-      typeAheadTestID="globalheader--org-dropdown-typeahead"
-    />
+    <div onClick={sendDropdownClickEvent}>
+      <GlobalHeaderDropdown
+        dropdownMenuStyle={menuStyle}
+        mainMenuEventPrefix={MainMenuEventPrefix.SwitchOrg}
+        mainMenuHeaderIcon={IconFont.Switch_New}
+        mainMenuHeaderText="Switch Organization"
+        mainMenuOptions={orgMainMenu}
+        mainMenuTestID="globalheader--org-dropdown-main"
+        style={orgDropdownStyle}
+        testID="globalheader--org-dropdown"
+        typeAheadEventPrefix={TypeAheadEventPrefix.HeaderNavSearchOrg}
+        typeAheadInputPlaceholder="Search Organizations"
+        typeAheadMenuOptions={orgsList}
+        typeAheadOnSelectOption={switchOrg}
+        typeAheadSelectedOption={activeOrg}
+        typeAheadTestID="globalheader--org-dropdown-typeahead"
+      />
+    </div>
   )
 }

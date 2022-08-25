@@ -53,7 +53,6 @@ const adaptiveZoomTooltip = (
 export const AdaptiveZoomToggle: FC<AdaptiveZoomToggleProps> = ({
   adaptiveZoomHide,
   update,
-  testID = 'adaptive-zoom-toggle',
   type,
 }) => {
   const handleSetAdaptiveZoom = () => {
@@ -72,7 +71,7 @@ export const AdaptiveZoomToggle: FC<AdaptiveZoomToggleProps> = ({
       margin={ComponentSize.Medium}
       stretchToFitWidth={true}
       className="adaptive-zoom-toggle"
-      testID={testID}
+      testID="adaptive-zoom-toggle"
     >
       <SlideToggle
         active={!adaptiveZoomHide}

@@ -36,6 +36,7 @@ export enum ResourceType {
   Plugins = 'plugins',
   Scrapers = 'scrapers',
   Secrets = 'secrets',
+  Scripts = 'scripts',
   Tasks = 'tasks',
   Templates = 'templates',
   Telegrafs = 'telegrafs',

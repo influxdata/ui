@@ -4,6 +4,10 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {Bucket, TagKeyValuePair} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  RESOURCES,
+  ResourceConnectedQuery,
+} from 'src/dataExplorer/components/resources'
 
 interface SchemaComposition {
   synced: boolean // true == can modify session's schema
@@ -23,13 +27,17 @@ interface ContextType {
   vertical: number[]
   range: TimeRange
   query: string
+  resource: ResourceConnectedQuery<any>
   selection: SchemaSelection
 
   setHorizontal: (val: number[]) => void
   setVertical: (val: number[]) => void
   setRange: (val: TimeRange) => void
   setQuery: (val: string) => void
+  setResource: (val: ResourceConnectedQuery<any>) => void
   setSelection: (val: RecursivePartial<SchemaSelection>) => void
+
+  save: () => Promise<ResourceConnectedQuery<any>>
 }
 
 export const DEFAULT_SCHEMA: SchemaSelection = {
@@ -48,13 +56,17 @@ const DEFAULT_CONTEXT = {
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,
   query: '',
+  resource: null,
   selection: DEFAULT_SCHEMA,
 
   setHorizontal: (_: number[]) => {},
   setVertical: (_: number[]) => {},
   setRange: (_: TimeRange) => {},
   setQuery: (_: string) => {},
+  setResource: (_: any) => {},
   setSelection: (_: RecursivePartial<SchemaSelection>) => {},
+
+  save: () => Promise.resolve(null),
 }
 
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
@@ -80,6 +92,7 @@ export const PersistanceProvider: FC = ({children}) => {
     'dataExplorer.range',
     DEFAULT_CONTEXT.range
   )
+  const [resource, setResource] = useSessionStorage('dataExplorer.resource', {})
   const [selection, setSelection] = useSessionStorage(
     'dataExplorer.schema',
     JSON.parse(JSON.stringify(DEFAULT_CONTEXT.selection))
@@ -107,6 +120,19 @@ export const PersistanceProvider: FC = ({children}) => {
     [selection, selection.composition, setSelection]
   )
 
+  const save = () => {
+    if (!resource || !RESOURCES[resource.type]) {
+      return Promise.resolve(null)
+    }
+
+    resource.flux = query
+
+    return RESOURCES[resource.type].persist(resource).then(data => {
+      setResource(data)
+      return data
+    })
+  }
+
   return (
     <PersistanceContext.Provider
       value={{
@@ -114,13 +140,17 @@ export const PersistanceProvider: FC = ({children}) => {
         vertical,
         range,
         query,
+        resource,
         selection,
 
         setHorizontal,
         setVertical,
         setRange,
         setQuery,
+        setResource,
         setSelection: setSchemaSelection,
+
+        save,
       }}
     >
       {children}

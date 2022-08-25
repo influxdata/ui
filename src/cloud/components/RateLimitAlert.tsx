@@ -54,9 +54,15 @@ interface Props {
   alertOnly?: boolean
   className?: string
   location?: string
+  multiOrgFlagForceShow?: boolean
 }
 
-const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
+const RateLimitAlert: FC<Props> = ({
+  alertOnly,
+  className,
+  location,
+  multiOrgFlagForceShow,
+}) => {
   const resources = useSelector(extractRateLimitResources)
   const status = useSelector(extractRateLimitStatus)
   const showUpgrade = useSelector(shouldShowUpgradeButton)
@@ -109,6 +115,10 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   const icon = isFlagEnabled('credit250Experiment')
     ? IconFont.AlertTriangle
     : IconFont.Cloud
+
+  if (isFlagEnabled('multiOrg') && !multiOrgFlagForceShow) {
+    return <></>
+  }
 
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
     return (

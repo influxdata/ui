@@ -12,6 +12,7 @@ import {
   QuestionMarkTooltip,
   SlideToggle,
 } from '@influxdata/clockface'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
@@ -29,6 +30,25 @@ const getToggleColor = (toggle: boolean): CSSProperties => {
   }
   return {color: InfluxColors.Grey65}
 }
+
+const adaptiveZoomTooltipStyle = {
+  maxWidth: '40%',
+  padding: '2px 18px',
+}
+
+const adaptiveZoomTooltip = (
+  <div>
+    <p>
+      When enabled, will re-query on the selected domain upon zooming in on the
+      graph. Requires window period set to Auto.
+    </p>
+    <p>
+      <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/visualize-data/variables/#vwindowperiod">
+        Learn about window period
+      </SafeBlankLink>
+    </p>
+  </div>
+)
 
 export const AdaptiveZoomToggle: FC<AdaptiveZoomToggleProps> = ({
   adaptiveZoomHide,
@@ -64,8 +84,8 @@ export const AdaptiveZoomToggle: FC<AdaptiveZoomToggleProps> = ({
       </InputLabel>
       <QuestionMarkTooltip
         diameter={16}
-        tooltipContents="When enabled, will re-query on the selected domain when zooming in on the graph. Requires window period set to Auto."
-        tooltipStyle={{fontSize: '13px', padding: '8px'}}
+        tooltipContents={adaptiveZoomTooltip}
+        tooltipStyle={adaptiveZoomTooltipStyle}
       />
     </FlexBox>
   )

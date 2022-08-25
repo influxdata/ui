@@ -24,6 +24,7 @@ import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
 import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
 import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 import TemplatePage from 'src/dataExplorer/components/resources/TemplatePage'
+import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -35,14 +36,71 @@ import {ResourceType} from 'src/types'
 
 import 'src/shared/components/cta.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {PersistanceContext, PersistanceProvider} from 'src/dataExplorer/context/persistance'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+
+const DataExplorerPageHeader: FC = () => {
+  const {fluxQueryBuilder, setFluxQueryBuilder} = useContext(AppSettingContext)
+  const {resource, setResource} = useContext(PersistanceContext)
+
+  const toggleSlider = () => {
+    event('toggled new query builder', {active: `${!fluxQueryBuilder}`})
+    setFluxQueryBuilder(!fluxQueryBuilder)
+  }
+
+  const handleRename = (name: string) => {
+    setResource({
+      ...resource,
+      data: {
+        ...resource.data,
+        name,
+      },
+    })
+  }
+
+  let pageTitle = <Page.Title title="Data Explorer" />
+  if (fluxQueryBuilder) {
+    pageTitle = (
+      <RenamablePageTitle
+        onRename={handleRename}
+        name={resource?.data?.name || ''}
+        placeholder="Untitled Script"
+        maxLength={100}
+      />
+    )
+  }
+
+  return (
+    <Page.Header
+      fullWidth={true}
+      className={`${
+        fluxQueryBuilder ? 'flux-query-builder' : 'data-explorer'
+      }--header`}
+      testID="data-explorer--header"
+    >
+      {pageTitle}
+      <FlexBox margin={ComponentSize.Large}>
+        <FeatureFlag name="newDataExplorer">
+          <FlexBox margin={ComponentSize.Medium}>
+            <InputLabel>&#10024; Try new Data Explorer</InputLabel>
+            <SlideToggle
+              active={fluxQueryBuilder}
+              onChange={toggleSlider}
+              testID="flux-query-builder-toggle"
+            />
+          </FlexBox>
+        </FeatureFlag>
+        <RateLimitAlert location="data explorer" />
+      </FlexBox>
+    </Page.Header>
+  )
+}
 
 const DataExplorerPage: FC = () => {
   const {
     flowsCTA,
     fluxQueryBuilder,
     setFlowsCTA,
-    setFluxQueryBuilder,
   } = useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
 
@@ -59,11 +117,6 @@ const DataExplorerPage: FC = () => {
       event('Exited Data Explorer')
     }
   }, [])
-
-  const toggleSlider = () => {
-    event('toggled new query builder', {active: `${!fluxQueryBuilder}`})
-    setFluxQueryBuilder(!fluxQueryBuilder)
-  }
 
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>
@@ -86,28 +139,9 @@ const DataExplorerPage: FC = () => {
         />
       </Switch>
       <GetResources resources={[ResourceType.Variables]}>
-        <Page.Header
-          fullWidth={true}
-          className={`${
-            fluxQueryBuilder ? 'flux-query-builder' : 'data-explorer'
-          }--header`}
-          testID="data-explorer--header"
-        >
-          <Page.Title title="Data Explorer" />
-          <FlexBox margin={ComponentSize.Large}>
-            <FeatureFlag name="newDataExplorer">
-              <FlexBox margin={ComponentSize.Medium}>
-                <InputLabel>&#10024; Try new Data Explorer</InputLabel>
-                <SlideToggle
-                  active={fluxQueryBuilder}
-                  onChange={toggleSlider}
-                  testID="flux-query-builder-toggle"
-                />
-              </FlexBox>
-            </FeatureFlag>
-            <RateLimitAlert location="data explorer" />
-          </FlexBox>
-        </Page.Header>
+        <PersistanceProvider>
+          <DataExplorerPageHeader />
+        </PersistanceProvider>
         {flowsCTA.explorer && (
           <FeatureFlag name="flowsCTA">
             <div className="header-cta--de">

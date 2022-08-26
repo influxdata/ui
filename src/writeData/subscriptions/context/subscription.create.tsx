@@ -15,7 +15,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {RemoteDataState} from 'src/types'
 import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 import {subscriptionCreateFail} from 'src/shared/copy/notifications'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export interface SubscriptionCreateContextType {
   create: () => void
@@ -33,7 +32,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     description: '',
     protocol: 'mqtt',
     brokerHost: '',
-    brokerPort: isFlagEnabled('subscriptionsCertificateSupport') ? 8883 : 1883,
+    brokerPort: undefined,
     brokerUsername: '',
     brokerPassword: '',
     brokerClientCert: '',

@@ -55,9 +55,6 @@ const BrokerFormContent: FC<Props> = ({
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
-  const DEFAULT_PORT = isFlagEnabled('subscriptionsCertificateSupport')
-    ? 8883
-    : 1883
 
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
@@ -72,6 +69,9 @@ const BrokerFormContent: FC<Props> = ({
     })
   }, [])
 
+  const showHostPortExampleText =
+    !!formContent.brokerHost ||
+    (!!formContent.brokerPort && !isNaN(formContent.brokerPort))
   return (
     <Grid>
       <Grid.Row>
@@ -189,6 +189,7 @@ const BrokerFormContent: FC<Props> = ({
                 )}
               />
             </div>
+            {/* show this iff brokerHost is populated */}
             <Form.ValidationElement
               label="Hostname or IP Address"
               value={formContent.brokerHost}
@@ -205,7 +206,7 @@ const BrokerFormContent: FC<Props> = ({
               {status => (
                 <Input
                   type={InputType.Text}
-                  placeholder="0.0.0.0"
+                  placeholder="e.g: broker.example.com"
                   name="host"
                   autoFocus={false}
                   value={formContent.brokerHost}
@@ -248,11 +249,7 @@ const BrokerFormContent: FC<Props> = ({
               {status => (
                 <Input
                   type={InputType.Number}
-                  placeholder={`${
-                    !formContent.brokerPort || isNaN(formContent.brokerPort)
-                      ? DEFAULT_PORT
-                      : formContent.brokerPort
-                  }`}
+                  placeholder="Between 1025 - 65535"
                   name="port"
                   autoFocus={false}
                   value={formContent.brokerPort}
@@ -277,21 +274,24 @@ const BrokerFormContent: FC<Props> = ({
               )}
             </Form.ValidationElement>
           </FlexBox>
-          <Heading
-            element={HeadingElement.H5}
-            weight={FontWeight.Regular}
-            className={`${className}-broker-form__example-text`}
-          >
-            {getSchemaFromProtocol(
-              formContent.protocol,
-              isFlagEnabled('subscriptionsCertificateSupport') &&
-                formContent.authType === BrokerAuthTypes.Certificate
-            )}
-            {formContent.brokerHost ? formContent.brokerHost : '0.0.0.0'}:
-            {formContent.brokerPort
-              ? formContent.brokerPort
-              : `${DEFAULT_PORT}`}
-          </Heading>
+          {showHostPortExampleText && (
+            <Heading
+              element={HeadingElement.H5}
+              weight={FontWeight.Regular}
+              className={`${className}-broker-form__example-text`}
+            >
+              {getSchemaFromProtocol(
+                formContent.protocol,
+                isFlagEnabled('subscriptionsCertificateSupport') &&
+                  formContent.authType === BrokerAuthTypes.Certificate
+              )}
+              {`${formContent.brokerHost}:${
+                !!formContent.brokerPort && !isNaN(formContent.brokerPort)
+                  ? formContent.brokerPort
+                  : ''
+              }`}
+            </Heading>
+          )}
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve}>
           <Heading

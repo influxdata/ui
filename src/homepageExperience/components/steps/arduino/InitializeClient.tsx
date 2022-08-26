@@ -69,7 +69,7 @@ export const InitializeClient: FC<OwnProps> = ({
   useEffect(() => {
     dispatch(getBuckets())
     dispatch(getAllResources())
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch])
 
   useEffect(() => {
     onSelectBucket(bucket.name)
@@ -86,14 +86,14 @@ export const InitializeClient: FC<OwnProps> = ({
       dispatch(createAuthorization(authorization))
       event(`firstMile.arduinoWizard.tokens.tokenCreated`)
     }
-  }, [sortedPermissionTypes.length])
+  }, [dispatch, me?.id, org?.id, sortedPermissionTypes, tokenValue])
 
   // when token generated, save it to the parent component
   useEffect(() => {
     if (currentAuth.token) {
       setTokenValue(currentAuth.token)
     }
-  }, [currentAuth.token])
+  }, [currentAuth.token, setTokenValue])
 
   useEffect(() => {
     const fireKeyboardCopyEvent = event => {

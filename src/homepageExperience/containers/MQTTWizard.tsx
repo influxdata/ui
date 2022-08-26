@@ -44,16 +44,8 @@ export class MQTTWizard extends PureComponent<{}, State> {
     finalFeedback: null,
   }
 
-  private handleSelectBucket = (bucketName: string) => {
-    this.setState({selectedBucket: bucketName})
-  }
-
   private handleMarkStepAsCompleted = () => {
     this.setState({finishStepCompleted: true})
-  }
-
-  private setTokenValue = (tokenValue: string) => {
-    this.setState({tokenValue: tokenValue})
   }
 
   private setFinalFeedback = (feedbackValue: number) => {
@@ -130,8 +122,7 @@ export class MQTTWizard extends PureComponent<{}, State> {
         return <SubscribeToTopic />
       }
       case 4: {
-        return (<DefineData />
-        )
+        return <DefineData />
       }
       case 5: {
         return (

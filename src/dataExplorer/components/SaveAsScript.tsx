@@ -12,14 +12,10 @@ import {
 import {useHistory} from 'react-router-dom'
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
-import {
-  PersistanceContext,
-  DEFAULT_SCHEMA,
-} from 'src/dataExplorer/context/persistance'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {RemoteDataState} from 'src/types'
 import './SaveAsScript.scss'
 import {CLOUD} from 'src/shared/constants'
-import {ScriptContext} from 'src/dataExplorer/context/scripts'
 import {OverlayType} from './FluxQueryBuilder'
 import {useDispatch, useSelector} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
@@ -37,20 +33,10 @@ interface Props {
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {setQuery, setSelection, resource, setResource, save} = useContext(
-    PersistanceContext
-  )
+  const {resource, setResource, save} = useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
-  const {handleSave} = useContext(ScriptContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
-
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-
-  const handleCancel = useCallback(() => {
-    onClose()
-  }, [onClose, setDescription, setName])
 
   const handleUpdateDescription = (event: ChangeEvent<HTMLInputElement>) => {
     setResource({
@@ -75,21 +61,27 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const clear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
-    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
+    setResult(null)
 
     history.replace(`/orgs/${org.id}/data-explorer/from/script`)
 
     onClose()
-  }, [onClose, setQuery, setStatus, setResult, setSelection, cancel])
+  }, [onClose, setStatus, setResult, cancel, history, org?.id])
 
   const handleSaveScript = () => {
     try {
       save().then(() => {
-        dispatch(notify(scriptSaveSuccess(name)))
+        dispatch(
+          notify(scriptSaveSuccess(resource?.data?.name ?? 'Untitled Script'))
+        )
+        if (type === OverlayType.NEW) {
+          clear()
+        }
       })
-      handleSave(name, description)
     } catch (error) {
-      dispatch(notify(scriptSaveFail(name)))
+      dispatch(
+        notify(scriptSaveFail(resource?.data?.name ?? 'Untitled Script'))
+      )
       console.error({error})
     } finally {
       onClose()
@@ -108,7 +100,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
 
   return (
     <Overlay.Container maxWidth={500}>
-      <Overlay.Header title={overlayTitle} onDismiss={handleCancel} />
+      <Overlay.Header title={overlayTitle} onDismiss={onClose} />
       <Overlay.Body>
         {type === OverlayType.NEW && (
           <div className="save-script-overlay__warning-text">
@@ -139,7 +131,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
       <Overlay.Footer>
         <Button
           color={ComponentColor.Tertiary}
-          onClick={handleCancel}
+          onClick={onClose}
           text="Cancel"
         />
         {type === OverlayType.NEW && (

@@ -7,7 +7,6 @@ import {
   TaskStatusType,
 } from 'src/client/generatedRoutes'
 import editor from './editor'
-import {CLOUD} from 'src/shared/constants'
 
 export default function task(register: (_: ResourceRegistration) => any) {
   register({
@@ -63,10 +62,6 @@ export default function task(register: (_: ResourceRegistration) => any) {
         every: resource.data.every,
         cron: resource.data.cron,
         offset: resource.data.offset,
-      }
-
-      if (CLOUD) {
-        createData.name = resource.data.name
       }
 
       return postTask({

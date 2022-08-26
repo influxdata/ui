@@ -415,9 +415,12 @@ class LspConnectionManager {
       ...this._session,
       composition: {...this._session?.composition},
     }
-    // always update size of block denoted in the UI styles.
-    // Even if it's an unsynced block. (e.g. we are turning off the sync style)
+
+    // Even when not synced:
+    // 1. update styles (e.g. turn off synced style, if not unsynced)
+    // 2. update block sync toggle state, using this._session.composition.synced
     if (previousState.composition != schema.composition) {
+      this._session.composition = {...schema.composition}
       this._setEditorBlockStyle(schema)
     }
 

@@ -91,7 +91,11 @@ export const PersistanceProvider: FC = ({children}) => {
     'dataExplorer.range',
     DEFAULT_CONTEXT.range
   )
-  const [resource, setResource] = useSessionStorage('dataExplorer.resource', {})
+  const [resource, setResource] = useSessionStorage('dataExplorer.resource', {
+    type: 'scripts',
+    flux: '',
+    data: {},
+  })
   const [selection, setSelection] = useSessionStorage(
     'dataExplorer.schema',
     JSON.parse(JSON.stringify(DEFAULT_CONTEXT.selection))

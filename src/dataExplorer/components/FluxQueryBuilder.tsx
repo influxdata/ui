@@ -29,7 +29,6 @@ import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 // Styles
 import './FluxQueryBuilder.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {ScriptProvider} from 'src/dataExplorer/context/scripts'
 
 export enum OverlayType {
   NEW = 'new',
@@ -43,62 +42,60 @@ const FluxQueryBuilder: FC = () => {
   return (
     <EditorProvider>
       <SidebarProvider>
-        <ScriptProvider>
-          <Overlay visible={overlayType !== null}>
-            <SaveAsScript
-              type={overlayType}
-              onClose={() => setOverlayType(null)}
-            />
-          </Overlay>
-          <FlexBox
-            className="flux-query-builder--container"
-            direction={FlexDirection.Column}
-            justifyContent={JustifyContent.SpaceBetween}
-            alignItems={AlignItems.Stretch}
+        <Overlay visible={overlayType !== null}>
+          <SaveAsScript
+            type={overlayType}
+            onClose={() => setOverlayType(null)}
+          />
+        </Overlay>
+        <FlexBox
+          className="flux-query-builder--container"
+          direction={FlexDirection.Column}
+          justifyContent={JustifyContent.SpaceBetween}
+          alignItems={AlignItems.Stretch}
+        >
+          <div
+            className="flux-query-builder--menu"
+            data-testid="flux-query-builder--menu"
           >
-            <div
-              className="flux-query-builder--menu"
-              data-testid="flux-query-builder--menu"
-            >
+            <Button
+              onClick={() => setOverlayType(OverlayType.NEW)}
+              text="New Script"
+              icon={IconFont.Plus_New}
+              status={
+                query.length === 0
+                  ? ComponentStatus.Disabled
+                  : ComponentStatus.Default
+              }
+            />
+            {isFlagEnabled('saveAsScript') && (
               <Button
-                onClick={() => setOverlayType(OverlayType.NEW)}
-                text="New Script"
-                icon={IconFont.Plus_New}
-                status={
-                  query.length === 0
-                    ? ComponentStatus.Disabled
-                    : ComponentStatus.Default
-                }
+                className="flux-query-builder__save-button"
+                onClick={() => setOverlayType(OverlayType.SAVE)}
+                text="Save Script"
+                icon={IconFont.Save}
               />
-              {isFlagEnabled('saveAsScript') && (
-                <Button
-                  className="flux-query-builder__save-button"
-                  onClick={() => setOverlayType(OverlayType.SAVE)}
-                  text="Save Script"
-                  icon={IconFont.Save}
-                />
-              )}
-            </div>
-            <DraggableResizer
-              handleOrientation={Orientation.Vertical}
-              handlePositions={vertical}
-              onChangePositions={setVertical}
+            )}
+          </div>
+          <DraggableResizer
+            handleOrientation={Orientation.Vertical}
+            handlePositions={vertical}
+            onChangePositions={setVertical}
+          >
+            <DraggableResizer.Panel>
+              <Schema />
+            </DraggableResizer.Panel>
+            <DraggableResizer.Panel
+              testID="flux-query-builder-middle-panel"
+              className="new-data-explorer-rightside"
             >
-              <DraggableResizer.Panel>
-                <Schema />
-              </DraggableResizer.Panel>
-              <DraggableResizer.Panel
-                testID="flux-query-builder-middle-panel"
-                className="new-data-explorer-rightside"
-              >
-                <ResultsPane />
-              </DraggableResizer.Panel>
-              <DraggableResizer.Panel>
-                <Sidebar />
-              </DraggableResizer.Panel>
-            </DraggableResizer>
-          </FlexBox>
-        </ScriptProvider>
+              <ResultsPane />
+            </DraggableResizer.Panel>
+            <DraggableResizer.Panel>
+              <Sidebar />
+            </DraggableResizer.Panel>
+          </DraggableResizer>
+        </FlexBox>
       </SidebarProvider>
     </EditorProvider>
   )

@@ -100,3 +100,26 @@ export const HOMEPAGE_NAVIGATION_STEPS_ARDUINO = [
     glyph: IconFont.StarSmile,
   },
 ]
+
+export const HOMEPAGE_NAVIGATION_STEPS_MQTT = [
+  {
+    name: 'Overview',
+    glyph: IconFont.BookOutline,
+  },
+  {
+    name: 'Connect to Broker',
+    glyph: IconFont.CopperCoin,
+  },
+  {
+    name: 'Subscribe to Topic',
+    glyph: IconFont.CopperCoin,
+  },
+  {
+    name: 'Define Data Parsing\n Rules',
+    glyph: IconFont.CopperCoin,
+  },
+  {
+    name: 'Finish',
+    glyph: IconFont.StarSmile,
+  },
+]

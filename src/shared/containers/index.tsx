@@ -135,6 +135,12 @@ export const CliWizard = lazy(() =>
   }))
 )
 
+export const MQTTWizard = lazy(() =>
+  import('src/homepageExperience/containers/MQTTWizard').then(module => ({
+    default: module.MQTTWizard,
+  }))
+)
+
 export const DetailsSubscriptionPage = lazy(() =>
   import('src/writeData/subscriptions/components/DetailsSubscriptionPage')
 )

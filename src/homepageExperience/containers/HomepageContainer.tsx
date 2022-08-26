@@ -23,6 +23,7 @@ import {
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {
   ArduinoIcon,
+  MQTTIcon,
   CLIIcon,
   GoIcon,
   NodejsIcon,
@@ -61,6 +62,7 @@ export const HomepageContainer: FC = () => {
   const golangLink = `/orgs/${org.id}/new-user-setup/golang`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
   const javaScriptNodeLink = `/orgs/${org.id}/new-user-setup/nodejs`
+  const MQTTWizardLink = `/orgs/${org.id}/new-user-setup/MQTT`
 
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
@@ -98,6 +100,10 @@ export const HomepageContainer: FC = () => {
 
   const logPythonWizardClick = () => {
     event('firstMile.pythonWizard.clicked')
+  }
+
+  const logMQTTWizardClick = () => {
+    event('firstMile.MQTTWizard.clicked')
   }
 
   const logMoreButtonClick = () => {
@@ -210,6 +216,23 @@ export const HomepageContainer: FC = () => {
                                 MORE <Icon glyph={IconFont.ArrowRight_New} />
                               </h5>
                             </span>
+                          </div>
+                        </Link>
+                      </ResourceCard>
+                    )}
+                    {isFlagEnabled('onboardMQTT') && (
+                      <ResourceCard style={cardStyle}>
+                        <Link
+                          to={MQTTWizardLink}
+                          style={linkStyle}
+                          onClick={logMQTTWizardClick}
+                        >
+                          <div
+                            className="homepage-wizard-language-tile"
+                            data-testid="homepage-wizard-language-tile--MQTT"
+                          >
+                            <h5>Native MQTT</h5>
+                            {MQTTIcon}
                           </div>
                         </Link>
                       </ResourceCard>

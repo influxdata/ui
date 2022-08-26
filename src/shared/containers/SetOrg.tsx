@@ -26,6 +26,7 @@ import {
   PythonWizard,
   LabelsIndex,
   MembersIndex,
+  MQTTWizard,
   NotFound,
   OrgProfilePage,
   RouteToDashboardList,
@@ -315,6 +316,14 @@ const SetOrg: FC = () => {
               exact
               path="/orgs/:orgID/new-user-setup/cli"
               component={CliWizard}
+            />
+          )}
+          {isFlagEnabled('onboardMQTT') && (
+            <Route
+              exact
+              path="/orgs/:orgID/new-user-setup/MQTT"
+              key="/MQTT"
+              component={MQTTWizard}
             />
           )}
           {/* User Profile Page */}

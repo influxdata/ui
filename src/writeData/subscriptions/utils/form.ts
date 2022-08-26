@@ -60,9 +60,9 @@ const booleanType = 'Boolean'
 export const dataTypeList = [stringType, intType, floatType, booleanType]
 
 // min port value is 1025
-const MIN_PORT = 1025
+export const MIN_PORT = 1025
 // max port value is 65535 because its a 16-bit unsigned integer
-const MAX_PORT = 65535
+export const MAX_PORT = 65535
 
 export const handleValidation = (
   property: string,

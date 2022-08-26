@@ -28,6 +28,8 @@ import {
   handleValidation,
   handlePortValidation,
   getSchemaFromProtocol,
+  MIN_PORT,
+  MAX_PORT,
 } from 'src/writeData/subscriptions/utils/form'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
@@ -248,7 +250,7 @@ const BrokerFormContent: FC<Props> = ({
               {status => (
                 <Input
                   type={InputType.Number}
-                  placeholder="Between 1025 - 65535"
+                  placeholder={`Between ${MIN_PORT} - ${MAX_PORT}`}
                   name="port"
                   autoFocus={false}
                   value={formContent.brokerPort}

@@ -17,7 +17,7 @@ import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection
 
 // flux language support
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import fluxWorkerUrl from 'worker-plugin/loader!./worker/flux.worker'
 import Fallback from 'src/languageSupport/languages/flux/lsp/worker/flux.fallback'

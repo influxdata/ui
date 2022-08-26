@@ -1,7 +1,13 @@
 import {ResourceType} from 'src/types/resources'
 import {ResourceRegistration} from '../../'
-import {getTask, postTask, patchTask} from 'src/client/generatedRoutes'
+import {
+  getTask,
+  postTask,
+  patchTask,
+  TaskStatusType,
+} from 'src/client/generatedRoutes'
 import editor from './editor'
+import {CLOUD} from 'src/shared/constants'
 
 export default function task(register: (_: ResourceRegistration) => any) {
   register({
@@ -44,27 +50,27 @@ export default function task(register: (_: ResourceRegistration) => any) {
             every: resource.data.every,
             cron: resource.data.cron,
             offset: resource.data.offset,
-
-            scriptID: resource.data.scriptID,
-            scriptParameters: resource.data.scriptParameters,
           },
         }).then(() => resource)
       }
 
+      const createData = {
+        status: 'active' as TaskStatusType,
+        flux: resource.flux,
+        name: resource.data.name,
+        description: resource.data.description,
+
+        every: resource.data.every,
+        cron: resource.data.cron,
+        offset: resource.data.offset,
+      }
+
+      if (CLOUD) {
+        createData.name = resource.data.name
+      }
+
       return postTask({
-        data: {
-          status: 'active',
-          flux: resource.flux,
-          name: resource.data.name,
-          description: resource.data.description,
-
-          every: resource.data.every,
-          cron: resource.data.cron,
-          offset: resource.data.offset,
-
-          scriptID: resource.data.scriptID,
-          scriptParameters: resource.data.scriptParameters,
-        },
+        data: createData,
       }).then(resp => {
         if (resp.status !== 201) {
           return resource

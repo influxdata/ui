@@ -189,7 +189,6 @@ const BrokerFormContent: FC<Props> = ({
                 )}
               />
             </div>
-            {/* show this iff brokerHost is populated */}
             <Form.ValidationElement
               label="Hostname or IP Address"
               value={formContent.brokerHost}

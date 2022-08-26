@@ -87,11 +87,10 @@ const ResultsPane: FC = () => {
     query: text,
     setQuery,
     range,
-    setRange,
-    selection,
+    setRange
   } = useContext(PersistanceContext)
 
-  const submitButtonDisabled = !text || !selection.measurement
+  const submitButtonDisabled = !text
 
   const disabledTitleText = submitButtonDisabled
     ? 'Select measurement before running script'

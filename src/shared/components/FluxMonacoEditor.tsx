@@ -132,9 +132,6 @@ const FluxEditorMonaco: FC<Props> = ({
 
   return (
     <ErrorBoundary>
-      <div id={ICON_SYNC_ID} className="sync-bar">
-        <Icon glyph={IconFont.Switch_New} className="sync-icon" />
-      </div>
       <div className={wrapperClassName} data-testid="flux-editor">
         <MonacoEditor
           language={FLUXLANGID}
@@ -158,6 +155,9 @@ const FluxEditorMonaco: FC<Props> = ({
           }}
           editorDidMount={editorDidMount}
         />
+        <div id={ICON_SYNC_ID} className="sync-bar">
+          <Icon glyph={IconFont.Switch_New} className="sync-icon" />
+        </div>
       </div>
     </ErrorBoundary>
   )

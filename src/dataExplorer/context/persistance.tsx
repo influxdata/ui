@@ -3,7 +3,6 @@ import {TimeRange, RecursivePartial} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {Bucket, TagKeyValuePair} from 'src/types'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   RESOURCES,
   ResourceConnectedQuery,
@@ -100,11 +99,7 @@ export const PersistanceProvider: FC = ({children}) => {
 
   const setSchemaSelection = useCallback(
     schema => {
-      if (
-        isFlagEnabled('schemaComposition') &&
-        selection.composition?.diverged
-      ) {
-        // TODO: how message to user?
+      if (selection.composition?.diverged && schema.composition.synced) {
         return
       }
       const nextState: SchemaSelection = {
@@ -117,7 +112,7 @@ export const PersistanceProvider: FC = ({children}) => {
       }
       setSelection(nextState)
     },
-    [selection, selection.composition, setSelection]
+    [selection.composition, selection.fields, selection.tagValues, setSelection]
   )
 
   const save = () => {

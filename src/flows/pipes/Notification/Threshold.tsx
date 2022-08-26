@@ -54,7 +54,6 @@ const Threshold: FC<Props> = ({readOnly}) => {
       }
 
       threshold.type = type
-      threshold.field = threshold?.field
 
       let updatedThreshold = thresholds
 
@@ -67,7 +66,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
             type: deadmanType,
             deadmanCheckValue: '5s',
             deadmanStopValue: '90s',
-            field: threshold.field || 'Select a numeric field',
+            field: threshold?.field || 'Select a numeric field',
           },
         ]
       } else {

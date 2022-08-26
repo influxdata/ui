@@ -261,6 +261,8 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
       // Schema
       selection,
+      selection.fields,
+      selection.tagValues,
       searchTerm,
 
       children,

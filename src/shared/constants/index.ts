@@ -97,7 +97,7 @@ export const RUDDERSTACK_WRITE_KEY = formatConstant(
   process.env.RUDDERSTACK_WRITE_KEY
 )
 
-export const CLOUD = !!process.env.CLOUD_URL
+export const CLOUD = true
 export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
 export const CLOUD_SIGNOUT_PATHNAME = '/api/v2/signout'
 export const CLOUD_LOGIN_PATHNAME = '/login'

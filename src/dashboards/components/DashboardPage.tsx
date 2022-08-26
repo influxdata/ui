@@ -62,7 +62,7 @@ const SingleDashboardPage: FC<ManualRefreshProps> = ({
   return (
     <>
       <DashboardHeader onManualRefresh={onManualRefresh} />
-      <RateLimitAlert alertOnly={true} location="dashboard page" />
+      <RateLimitAlert showAsNotificationOnly={true} location="dashboard page" />
       <VariablesControlBar />
       <ErrorBoundary>
         <DashboardComponent manualRefresh={manualRefresh} />

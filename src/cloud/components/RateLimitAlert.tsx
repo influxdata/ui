@@ -51,12 +51,12 @@ import {UpgradeContent} from 'src/cloud/components/RateLimitAlertContent'
 import './RateLimitAlert.scss'
 
 interface Props {
-  alertOnly?: boolean
+  showAsNotificationOnly?: boolean
   className?: string
   location?: string
 }
 
-const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
+const RateLimitAlert: FC<Props> = ({className, location}) => {
   const resources = useSelector(extractRateLimitResources)
   const status = useSelector(extractRateLimitStatus)
   const showUpgrade = useSelector(shouldShowUpgradeButton)
@@ -69,7 +69,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   }
 
   useEffect(() => {
-    if (CLOUD && status === 'exceeded' && resources.includes('write')) {
+    if (CLOUD && status === 'exceeded' && resources.includes('write') || true) {
       if (showUpgrade) {
         dispatch(
           notify(
@@ -110,7 +110,9 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
     ? IconFont.AlertTriangle
     : IconFont.Cloud
 
-  if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
+
+  // this is a large panel
+  if (CLOUD && status === 'exceeded' && resources.includes('cardinality') || false) {
     return (
       <FlexBox
         direction={FlexDirection.Column}
@@ -131,7 +133,8 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
     )
   }
 
-  if (CLOUD && !alertOnly) {
+  // this is just the button
+  if (CLOUD && true) {
     return (
       <CloudUpgradeButton
         className="upgrade-payg--button__header"

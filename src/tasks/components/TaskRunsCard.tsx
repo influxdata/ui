@@ -76,6 +76,11 @@ const TaskRunsCard: FC<Props> = ({task, isTaskEditable}) => {
   }, [])
 
   useEffect(() => {
+    if (isFlagEnabled('createWithDE')) {
+      setRoute(`/orgs/${org.id}/data-explorer/from/task/${task.id}`)
+      return
+    }
+
     if (!isFlagEnabled('createWithFlows')) {
       return
     }

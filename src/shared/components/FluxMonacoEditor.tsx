@@ -6,6 +6,7 @@ import classnames from 'classnames'
 // Components
 import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {Icon, IconFont} from '@influxdata/clockface'
 
 // LSP
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
@@ -131,10 +132,9 @@ const FluxEditorMonaco: FC<Props> = ({
 
   return (
     <ErrorBoundary>
-      <div
-        id={ICON_SYNC_ID}
-        style={{zIndex: 999, position: 'absolute', opacity: 0.6}}
-      />
+      <div id={ICON_SYNC_ID} className="sync-bar">
+        <Icon glyph={IconFont.Switch_New} className="sync-icon" />
+      </div>
       <div className={wrapperClassName} data-testid="flux-editor">
         <MonacoEditor
           language={FLUXLANGID}

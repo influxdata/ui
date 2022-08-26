@@ -149,8 +149,7 @@ class LspConnectionManager {
         ((lowerIcon as any).offsetHeight || 0) * (endLine - startLine + 1) +
         ((upperIcon as any).offsetTop || 0)
       clickableInvisibleDiv.style.height = height + 'px'
-      clickableInvisibleDiv.style.width =
-        ((upperIcon as any).offsetWidth || 0) + 'px'
+      // width size is always the same, defined in classname "sync-bar"
 
       // add listeners
       clickableInvisibleDiv.removeEventListener('click', () =>
@@ -214,9 +213,9 @@ class LspConnectionManager {
     )
 
     const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-    clickableInvisibleDiv.style.background = this._session.composition.synced
-      ? 'blue'
-      : 'grey'
+    clickableInvisibleDiv.className = this._session.composition.synced
+      ? 'sync-bar sync-bar--on'
+      : 'sync-bar sync-bar--off'
 
     if (removeAllStyles) {
       clickableInvisibleDiv.style.display = 'none'

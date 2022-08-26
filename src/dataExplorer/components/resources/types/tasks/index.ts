@@ -52,19 +52,21 @@ export default function task(register: (_: ResourceRegistration) => any) {
       }
 
       return postTask({
-        status: 'active',
-        flux: resource.flux,
-        name: resource.data.name,
-        description: resource.data.description,
+        data: {
+          status: 'active',
+          flux: resource.flux,
+          name: resource.data.name,
+          description: resource.data.description,
 
-        every: resource.data.every,
-        cron: resource.data.cron,
-        offset: resource.data.offset,
+          every: resource.data.every,
+          cron: resource.data.cron,
+          offset: resource.data.offset,
 
-        scriptID: resource.data.scriptID,
-        scriptParameters: resource.data.scriptParameters,
+          scriptID: resource.data.scriptID,
+          scriptParameters: resource.data.scriptParameters,
+        },
       }).then(resp => {
-        if (resp.status !== 200) {
+        if (resp.status !== 201) {
           return resource
         }
 

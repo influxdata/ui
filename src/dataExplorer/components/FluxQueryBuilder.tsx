@@ -32,6 +32,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export enum OverlayType {
   NEW = 'new',
+  OPEN = 'open',
   SAVE = 'save',
 }
 
@@ -70,9 +71,22 @@ const FluxQueryBuilder: FC = () => {
             />
             {isFlagEnabled('saveAsScript') && (
               <Button
-                className="flux-query-builder__save-button"
+                className="flux-query-builder__action-button"
+                onClick={() => setOverlayType(OverlayType.OPEN)}
+                text="Open"
+                icon={IconFont.Export_New}
+              />
+            )}
+            {isFlagEnabled('saveAsScript') && (
+              <Button
+                className="flux-query-builder__action-button"
                 onClick={() => setOverlayType(OverlayType.SAVE)}
-                text="Save Script"
+                status={
+                  query.length === 0
+                    ? ComponentStatus.Disabled
+                    : ComponentStatus.Default
+                }
+                text="Save"
                 icon={IconFont.Save}
               />
             )}

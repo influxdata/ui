@@ -21,7 +21,7 @@ import 'src/flows/pipes/Notification/Threshold.scss'
 import {event} from 'src/cloud/utils/reporting'
 import {
   deadmanType,
-  Threshold,
+  Threshold as ThresholdType,
   ThresholdFormat,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Visualization/threshold'
@@ -54,7 +54,6 @@ const Threshold: FC<Props> = ({readOnly}) => {
       }
 
       threshold.type = type
-      threshold.field = threshold?.field
 
       let updatedThreshold = thresholds
 
@@ -67,7 +66,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
             type: deadmanType,
             deadmanCheckValue: '5s',
             deadmanStopValue: '90s',
-            field: threshold.field || 'Select a numeric field',
+            field: threshold?.field || 'Select a numeric field',
           },
         ]
       } else {
@@ -94,7 +93,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
   )
 
   const funcDropdown = useCallback(
-    (threshold: Threshold, index: number) => {
+    (threshold: ThresholdType, index: number) => {
       const menuItems = Object.entries(THRESHOLD_TYPES)
         .filter(([key]) => {
           if (index > 0 && key === deadmanType) {
@@ -137,7 +136,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
   )
 
   const columnDropdown = useCallback(
-    (threshold: Threshold, index: number) => {
+    (threshold: ThresholdType, index: number) => {
       const menuItems = fields.map(key => (
         <Dropdown.Item
           key={key}
@@ -256,7 +255,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
     })
   }
 
-  const thresholdEntry = (threshold: Threshold, index: number) => {
+  const thresholdEntry = (threshold: ThresholdType, index: number) => {
     if (threshold?.type === deadmanType) {
       return (
         <FlexBox
@@ -354,7 +353,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
       testID="component-spacer"
       style={{padding: '24px 0'}}
     >
-      {thresholds.map((threshold: Threshold, index: number) => (
+      {thresholds.map((threshold: ThresholdType, index: number) => (
         <FlexBox
           direction={FlexDirection.Row}
           margin={ComponentSize.Medium}

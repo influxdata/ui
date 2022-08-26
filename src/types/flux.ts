@@ -179,3 +179,8 @@ export enum RemoteDataState {
   Done = 'Done',
   Error = 'Error',
 }
+
+export interface TagKeyValuePair {
+  key: string
+  value: string
+}

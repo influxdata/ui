@@ -42,10 +42,8 @@ import {CLOUD} from 'src/shared/constants'
 import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 import {executeVWO} from 'src/utils/vwo'
 
-if (isFlagEnabled('multiOrg')) {
-  require('./MultiOrgOverrideStyles.scss')
-}
 // Styles
+import './MultiOrgOverrideStyles.scss'
 const fullScreen = {height: '100%', width: '100%'}
 
 const App: FC = () => {
@@ -54,6 +52,7 @@ const App: FC = () => {
 
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
+    'multi-org': isFlagEnabled('multiOrg'),
   })
 
   useEffect(() => {

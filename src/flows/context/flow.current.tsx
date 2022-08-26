@@ -137,7 +137,9 @@ export const FlowProvider: FC = ({children}) => {
       if (!isSynced || !yDoc.current) {
         return
       }
-      const {flowUpdateData} = yDoc.current.getMap('flowUpdateData')?.toJSON()
+      const {flowUpdateData} = yDoc.current.getMap('flowUpdateData')
+        ? yDoc.current.getMap('flowUpdateData').toJSON()
+        : {flowUpdateData: null} // necessary to avoid an error since flowUpdateData is destructured in assignment
       if (!flowUpdateData && currentFlow) {
         yDoc.current
           .getMap('flowUpdateData')

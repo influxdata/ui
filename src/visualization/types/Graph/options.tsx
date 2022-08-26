@@ -26,8 +26,10 @@ import {
   parseYBounds,
 } from 'src/shared/utils/vis'
 import {generateSeriesToColorHex} from 'src/visualization/utils/colorMappingUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
+import {AdaptiveZoomToggle} from 'src/visualization/components/internal/AdaptiveZoomOption'
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
@@ -147,6 +149,20 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }
             />
           </Form.Element>
+          {isFlagEnabled('zoomRequery') && (
+            <AdaptiveZoomToggle
+              adaptiveZoomHide={properties.adaptiveZoomHide}
+              type={properties.type}
+              update={update}
+            />
+          )}
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
+          <h5 className="view-options--header">Options</h5>
           <Form.Element label="Time Format">
             <SelectDropdown
               options={FORMAT_OPTIONS.map(option => option.text)}
@@ -156,13 +172,6 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-        </Grid.Column>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthMD={Columns.Six}
-          widthLG={Columns.Four}
-        >
-          <h5 className="view-options--header">Options</h5>
           {properties.geom && (
             <Form.Element label="Interpolation">
               <Dropdown

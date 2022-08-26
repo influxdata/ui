@@ -158,16 +158,18 @@ describe('FluxQueryBuilder', () => {
       })
 
       // less than 8 items, no "Load more" button
-      cy.getByTestID('tag-selector-value--header-wrapper')
-        .click()
-        .then(() => {
-          cy.getByTestID('tag-selector-value--list-item--selectable')
-            .should('be.visible')
-            .should('have.length.below', 8)
-          cy.getByTestID('tag-selector-value--load-more-button').should(
-            'not.exist'
-          )
-        })
+      cy.getByTestID('tag-selector').within(() => {
+        cy.getByTestID('tag-selector-value--header-wrapper')
+          .click()
+          .then(() => {
+            cy.getByTestID('tag-selector-value--list-item--selectable')
+              .should('be.visible')
+              .should('have.length.below', 8)
+            cy.getByTestID('tag-selector-value--load-more-button').should(
+              'not.exist'
+            )
+          })
+      })
 
       // not recommend to assert for searchTagKey value
       // since it will expand all the tag keys, which triggers

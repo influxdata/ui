@@ -7,13 +7,22 @@ type OrgSummaryItem = OrganizationSummaries[number]
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 
 interface Props {
-  activeOrg: OrgSummaryItem
   activeAccount: UserAccount
   accountsList: UserAccount[]
+  activeOrg: OrgSummaryItem
 }
 
+// Eventing
+import {
+  HeaderNavEvent,
+  MainMenuEventPrefix,
+  multiOrgTag,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
+
 // Styles
-const style = {width: 'auto'}
+const accountDropdownStyle = {width: 'auto'}
 const menuStyle = {width: '250px'}
 
 // Components
@@ -26,9 +35,9 @@ import {
 import {CLOUD_URL} from 'src/shared/constants'
 
 export const AccountDropdown: FC<Props> = ({
-  activeOrg,
-  activeAccount,
   accountsList,
+  activeAccount,
+  activeOrg,
 }) => {
   const selectedAccount = {
     id: activeAccount.id.toString(),
@@ -50,23 +59,35 @@ export const AccountDropdown: FC<Props> = ({
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: TypeAheadMenuItem) => {
+    event(HeaderNavEvent.AccountSwitch, multiOrgTag, {
+      newAccountID: account.id,
+      newAccountName: account.name,
+    })
     window.location.href = `${CLOUD_URL}/accounts/${account.id}`
   }
 
+  const sendDropdownClickEvent = () => {
+    event(HeaderNavEvent.AccountDropdownClick, multiOrgTag)
+  }
+
   return (
-    <GlobalHeaderDropdown
-      dropdownMenuStyle={menuStyle}
-      mainMenuHeaderIcon={IconFont.Switch_New}
-      mainMenuHeaderText="Switch Account"
-      mainMenuOptions={accountMainMenu}
-      mainMenuTestID="globalheader--account-dropdown-main"
-      style={style}
-      testID="globalheader--account-dropdown"
-      typeAheadInputPlaceholder="Search Accounts"
-      typeAheadMenuOptions={accountsList}
-      typeAheadOnSelectOption={switchAccount}
-      typeAheadSelectedOption={selectedAccount}
-      typeAheadTestID="globalheader--account-dropdown-typeahead"
-    />
+    <div onClick={sendDropdownClickEvent}>
+      <GlobalHeaderDropdown
+        dropdownMenuStyle={menuStyle}
+        mainMenuEventPrefix={MainMenuEventPrefix.SwitchAccount}
+        mainMenuHeaderIcon={IconFont.Switch_New}
+        mainMenuHeaderText="Switch Account"
+        mainMenuOptions={accountMainMenu}
+        mainMenuTestID="globalheader--account-dropdown-main"
+        style={accountDropdownStyle}
+        testID="globalheader--account-dropdown"
+        typeAheadEventPrefix={TypeAheadEventPrefix.HeaderNavSearchAccount}
+        typeAheadInputPlaceholder="Search Accounts"
+        typeAheadMenuOptions={accountsList}
+        typeAheadOnSelectOption={switchAccount}
+        typeAheadSelectedOption={selectedAccount}
+        typeAheadTestID="globalheader--account-dropdown-typeahead"
+      />
+    </div>
   )
 }

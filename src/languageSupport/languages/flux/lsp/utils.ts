@@ -71,9 +71,17 @@ export interface ExecuteCommandInjectTagValue extends ExecuteCommandInjectTag {
 
 export type ExecuteCommandInjectField = ExecuteCommandInjectMeasurement
 
-export interface ExecuteCommandCompositionInit {
+export interface CompositionInitParams {
   bucket: string
   measurement?: string
+}
+
+interface CompositionValueParams extends ExecuteCommandParams {
+  value: string
+}
+
+interface CompositionTagValueParams extends CompositionValueParams {
+  tag: string
 }
 
 export type ExecuteCommandArgument =
@@ -81,13 +89,20 @@ export type ExecuteCommandArgument =
   | ExecuteCommandInjectTag
   | ExecuteCommandInjectTagValue
   | ExecuteCommandInjectField
-  | ExecuteCommandCompositionInit
+  | CompositionInitParams
+  | CompositionValueParams
 
 export type ExecuteCommandT =
   | [ExecuteCommand.InjectionMeasurement, ExecuteCommandInjectMeasurement]
   | [ExecuteCommand.InjectTag, ExecuteCommandInjectTag]
   | [ExecuteCommand.InjectTagValue, ExecuteCommandInjectTagValue]
   | [ExecuteCommand.InjectField, ExecuteCommandInjectField]
+  | [ExecuteCommand.CompositionInit, CompositionInitParams]
+  | [ExecuteCommand.CompositionAddMeasurement, CompositionValueParams]
+  | [ExecuteCommand.CompositionAddField, CompositionValueParams]
+  | [ExecuteCommand.CompositionRemoveField, CompositionValueParams]
+  | [ExecuteCommand.CompositionAddTagValue, CompositionTagValueParams]
+  | [ExecuteCommand.CompositionRemoveTagValue, CompositionTagValueParams]
 
 function validateExecuteCommandPayload([command, arg]: ExecuteCommandT):
   | boolean
@@ -113,6 +128,15 @@ function validateExecuteCommandPayload([command, arg]: ExecuteCommandT):
         checkIsString(arg, 'name') &&
         checkIsString(arg, 'value')
       )
+    case ExecuteCommand.CompositionInit:
+      return checkIsString(arg, 'bucket')
+    case ExecuteCommand.CompositionAddMeasurement:
+    case ExecuteCommand.CompositionAddField:
+    case ExecuteCommand.CompositionRemoveField:
+      return checkIsString(arg, 'value')
+    case ExecuteCommand.CompositionAddTagValue:
+    case ExecuteCommand.CompositionRemoveTagValue:
+      return checkIsString(arg, 'tag') && checkIsString(arg, 'value')
     default:
       throw new Error(`unrecognized ExecuteCommand`)
   }
@@ -153,5 +177,10 @@ export enum ExecuteCommand {
   InjectField = 'injectFieldFilter',
   InjectTag = 'injectTagFilter',
   InjectTagValue = 'injectTagValueFilter',
-  CompositionInit = 'composition/initialize',
+  CompositionInit = 'fluxComposition/initialize',
+  CompositionAddMeasurement = 'fluxComposition/addMeasurementFilter',
+  CompositionAddField = 'fluxComposition/addFieldFilter',
+  CompositionRemoveField = 'fluxComposition/removeFieldFilter',
+  CompositionAddTagValue = 'fluxComposition/addTagValueFilter',
+  CompositionRemoveTagValue = 'fluxComposition/removeTagValueFilter',
 }

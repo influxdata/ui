@@ -1,21 +1,30 @@
+// Libraries
 import React, {ChangeEvent} from 'react'
 import {Dropdown, Input} from '@influxdata/clockface'
 import {FixedSizeList as List} from 'react-window'
 import classnames from 'classnames'
 import {TypeAheadMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
+// Eventing
+import {
+  multiOrgTag,
+  TypeAheadEventPrefix,
+} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
+
 type Props = {
   defaultSelectedItem?: TypeAheadMenuItem
-  style?: React.CSSProperties
-  typeAheadPlaceHolder: string
-  typeAheadMenuOptions: TypeAheadMenuItem[]
   onSelectOption: (item: TypeAheadMenuItem) => void
+  style?: React.CSSProperties
   testID: string
+  typeAheadEventPrefix: TypeAheadEventPrefix
+  typeAheadMenuOptions: TypeAheadMenuItem[]
+  typeAheadPlaceHolder: string
 }
 
 type State = {
-  searchTerm: string
   queryResults: TypeAheadMenuItem[]
+  searchTerm: string
   selectedItem: TypeAheadMenuItem
 }
 
@@ -25,15 +34,15 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      searchTerm: '',
       queryResults: this.props.typeAheadMenuOptions,
+      searchTerm: '',
       selectedItem: this.props.defaultSelectedItem,
     }
   }
 
-  private selectAllTextInInput = (event?: ChangeEvent<HTMLInputElement>) => {
-    if (event) {
-      event.target.select()
+  private selectAllTextInInput = (evt?: ChangeEvent<HTMLInputElement>) => {
+    if (evt) {
+      evt.target.select()
     }
   }
 
@@ -57,8 +66,8 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
-  private handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const filterString = event?.target?.value
+  private handleInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    const filterString = evt?.target?.value
     this.applyFilter(filterString)
   }
 
@@ -85,6 +94,19 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
     }
   }
 
+  private sendTypeAheadSearchEvent = (evt: ChangeEvent<HTMLInputElement>) => {
+    const {typeAheadEventPrefix} = this.props
+
+    // No event should be sent if the input field is empty, or just contains whitespace.
+
+    if (
+      typeof evt?.target?.value === 'string' &&
+      evt.target.value.trim().length
+    ) {
+      event(`${typeAheadEventPrefix}.searched`, multiOrgTag)
+    }
+  }
+
   private calculateDropdownHeight = (numberOfItems: number) =>
     Math.min(numberOfItems * this.listItemHeight, this.maxDropdownHeight)
 
@@ -100,6 +122,7 @@ export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
         testID={this.props.testID}
         onClear={this.clearFilter}
         onFocus={this.selectAllTextInInput}
+        onBlur={this.sendTypeAheadSearchEvent}
         className="global-header--typeahead-input"
       />
     )

@@ -77,42 +77,47 @@ export const GlobalHeader: FC = () => {
     }
   }, [orgsList])
 
-  const shouldLoadDropdowns = activeOrg?.id && activeAccount?.id
-  const shouldLoadAvatar =
-    user?.firstName && user?.lastName && user?.email && org?.id
-  const shouldLoadGlobalHeader = shouldLoadDropdowns || shouldLoadAvatar
+  const shouldLoadDropdowns = Boolean(activeOrg?.id && activeAccount?.id)
+
+  const shouldLoadAvatar = Boolean(user?.email && org?.id)
+  const avatarFirstName =
+    typeof user?.firstName === 'string' ? user.firstName.trim() : ''
+  const avatarLastName =
+    typeof user?.lastName === 'string' ? user.lastName.trim() : ''
+
+  const shouldLoadGlobalHeader = Boolean(
+    shouldLoadDropdowns || shouldLoadAvatar
+  )
 
   const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
 
-  return (
-    shouldLoadGlobalHeader && (
-      <FlexBox
-        className="multiaccountorg--header"
-        justifyContent={JustifyContent.SpaceBetween}
-        margin={ComponentSize.Large}
-        testID="global-header--container"
-      >
-        {shouldLoadDropdowns && (
-          <FlexBox margin={ComponentSize.Medium}>
-            <AccountDropdown
-              activeAccount={activeAccount}
-              activeOrg={activeOrg}
-              accountsList={sortedAccounts}
-            />
-            <Icon glyph={IconFont.CaretOutlineRight} style={caretStyle} />
-            <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
-          </FlexBox>
-        )}
-
-        {shouldLoadAvatar && (
-          <IdentityUserAvatar
-            email={user.email}
-            firstName={user.firstName}
-            lastName={user.lastName}
-            orgId={org.id}
+  return shouldLoadGlobalHeader ? (
+    <FlexBox
+      className="multiaccountorg--header"
+      justifyContent={JustifyContent.SpaceBetween}
+      margin={ComponentSize.Large}
+      testID="global-header--container"
+    >
+      {shouldLoadDropdowns && (
+        <FlexBox margin={ComponentSize.Medium}>
+          <AccountDropdown
+            activeAccount={activeAccount}
+            activeOrg={activeOrg}
+            accountsList={sortedAccounts}
           />
-        )}
-      </FlexBox>
-    )
-  )
+          <Icon glyph={IconFont.CaretOutlineRight} style={caretStyle} />
+          <OrgDropdown activeOrg={activeOrg} orgsList={sortedOrgs} />
+        </FlexBox>
+      )}
+
+      {shouldLoadAvatar && (
+        <IdentityUserAvatar
+          email={user.email}
+          firstName={avatarFirstName}
+          lastName={avatarLastName}
+          orgId={org.id}
+        />
+      )}
+    </FlexBox>
+  ) : null
 }

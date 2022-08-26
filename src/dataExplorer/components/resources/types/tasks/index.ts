@@ -12,7 +12,10 @@ export default function task(register: (_: ResourceRegistration) => any) {
         return Promise.resolve({
           type: ResourceType.Tasks,
           flux: '',
-          data: {},
+          data: {
+            name: 'Untitled Task',
+            every: '1h',
+          },
         })
       }
 

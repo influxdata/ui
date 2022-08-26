@@ -23,7 +23,7 @@ interface Resources {
 
 export const RESOURCES: Resources = {}
   // eslint-disable-next-line no-extra-semi
-;[].forEach(mod => {
+;[require('./types/tasks')].forEach(mod => {
   mod.default((def: ResourceRegistration) => {
     if (RESOURCES.hasOwnProperty(def.type)) {
       throw new Error(

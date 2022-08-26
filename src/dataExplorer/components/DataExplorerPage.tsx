@@ -62,7 +62,7 @@ const DataExplorerPageHeader: FC = () => {
   }
 
   let pageTitle = <Page.Title title="Data Explorer" />
-  if (fluxQueryBuilder && resource?.data.hasOwnProperty('name')) {
+  if (fluxQueryBuilder && resource?.data?.hasOwnProperty('name')) {
     pageTitle = (
       <RenamablePageTitle
         onRename={handleRename}

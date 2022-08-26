@@ -56,7 +56,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
     setResource({
       ...resource,
       data: {
-        ...(resource.data || {}),
+        ...(resource?.data ?? {}),
         description: event.target.value,
       },
     })
@@ -66,7 +66,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
     setResource({
       ...resource,
       data: {
-        ...(resource.data || {}),
+        ...(resource?.data ?? {}),
         name: event.target.value,
       },
     })
@@ -112,8 +112,8 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
       <Overlay.Body>
         {type === OverlayType.NEW && (
           <div className="save-script-overlay__warning-text">
-            "{resource?.data?.name}" will be overwritten by a new one if you
-            don’t save it.
+            "{resource?.data?.name ?? 'Untitled Script'}" will be overwritten by
+            a new one if you don’t save it.
           </div>
         )}
         <Form>
@@ -153,8 +153,8 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
           <Button
             color={ComponentColor.Primary}
             status={
-              resource?.data?.name.length === 0 ||
-              resource?.data?.description.length === 0
+              (resource?.data?.name?.length ?? 0) === 0 ||
+              (resource?.data?.description?.length ?? 0) === 0
                 ? ComponentStatus.Disabled
                 : ComponentStatus.Default
             }

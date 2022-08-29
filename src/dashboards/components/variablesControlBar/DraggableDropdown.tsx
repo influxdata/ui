@@ -3,11 +3,8 @@ import React, {FC} from 'react'
 import classnames from 'classnames'
 import {Draggable} from 'react-beautiful-dnd'
 
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 // Components
 import TypeAheadVariableDropdown from 'src/variables/components/TypeAheadVariableDropdown'
-import VariableDropdownReactSelect from 'src/variables/components/VariableDropdownReactSelect'
 
 interface Props {
   id: string
@@ -16,9 +13,6 @@ interface Props {
 }
 
 const DraggableDropdown: FC<Props> = ({id, index, name}) => {
-  const DropdownComponent = isFlagEnabled('reactSelectVariableDropdown')
-    ? VariableDropdownReactSelect
-    : TypeAheadVariableDropdown
 
   return (
     <Draggable index={index} draggableId={id}>
@@ -39,7 +33,7 @@ const DraggableDropdown: FC<Props> = ({id, index, name}) => {
           <div className="variable-dropdown--label">
             <span>{name}</span>
           </div>
-          <DropdownComponent variableID={id} />
+          <TypeAheadVariableDropdown variableID={id} />
         </div>
       )}
     </Draggable>

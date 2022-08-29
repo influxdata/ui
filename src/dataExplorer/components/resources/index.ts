@@ -17,6 +17,7 @@ export interface ResourceRegistration {
   persist: (
     query: ResourceConnectedQuery<any>
   ) => Promise<ResourceConnectedQuery<any>>
+  open?: (query: ResourceConnectedQuery<any>) => void
 }
 
 interface Resources {

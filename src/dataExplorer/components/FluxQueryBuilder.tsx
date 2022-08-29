@@ -21,6 +21,7 @@ import {
   PersistanceProvider,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
+import {ResourceType} from 'src/types/resources'
 import {RESOURCES} from 'src/dataExplorer/components/resources'
 import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
@@ -57,6 +58,12 @@ const FluxQueryBuilder: FC = () => {
     }
   }
 
+  const openResource = () => {
+    if (RESOURCES[resource.type].open) {
+      RESOURCES[resource.type].open(resource)
+    }
+  }
+
   return (
     <EditorProvider>
       <SidebarProvider>
@@ -80,24 +87,37 @@ const FluxQueryBuilder: FC = () => {
             className="flux-query-builder--menu"
             data-testid="flux-query-builder--menu"
           >
-            <Button
-              onClick={() => setOverlayType(OverlayType.NEW)}
-              text="New Script"
-              icon={IconFont.Plus_New}
-              status={
-                query.length === 0
-                  ? ComponentStatus.Disabled
-                  : ComponentStatus.Default
-              }
-            />
-            {isFlagEnabled('saveAsScript') && (
+            {(resource?.type == ResourceType.Scripts || !resource?.type) && (
               <Button
-                className="flux-query-builder__action-button"
-                onClick={() => setOverlayType(OverlayType.OPEN)}
-                text="Open"
-                icon={IconFont.Export_New}
+                onClick={() => setOverlayType(OverlayType.NEW)}
+                text="New Script"
+                icon={IconFont.Plus_New}
+                status={
+                  query.length === 0
+                    ? ComponentStatus.Disabled
+                    : ComponentStatus.Default
+                }
               />
             )}
+            {isFlagEnabled('saveAsScript') &&
+              resource?.type === ResourceType.Scripts && (
+                <Button
+                  className="flux-query-builder__action-button"
+                  onClick={() => setOverlayType(OverlayType.OPEN)}
+                  text="Open"
+                  icon={IconFont.Export_New}
+                />
+              )}
+
+            {isFlagEnabled('saveAsScript') &&
+              resource?.type !== ResourceType.Scripts && (
+                <Button
+                  className="flux-query-builder__action-button"
+                  onClick={() => openResource()}
+                  text="Back"
+                  icon={IconFont.Export_New}
+                />
+              )}
 
             {isFlagEnabled('saveAsScript') && (
               <Button

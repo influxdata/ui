@@ -1,9 +1,13 @@
+import {history} from 'src/store/history'
+import {getStore} from 'src/store/configureStore'
 import {ResourceType} from 'src/types/resources'
 import {
   getDashboardsCellsView,
   patchDashboardsCellsView,
   postDashboardsCell,
 } from 'src/client/generatedRoutes'
+import {ResourceConnectedQuery} from '../..'
+import {getOrg} from 'src/organizations/selectors'
 
 export default function script(register) {
   register({
@@ -127,6 +131,11 @@ export default function script(register) {
           data: _data,
         }))
       })
+    },
+    open: (query: ResourceConnectedQuery<any>) => {
+      const org = getOrg(getStore().getState())
+
+      history.replace(`/orgs/${org.id}/dashboards/${query.data.dashboardID}`)
     },
   })
 }

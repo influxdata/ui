@@ -54,12 +54,12 @@
   }
 
   .sync-bar--on {
-    background: #0098f01a; // blue with 10% opacity
-    border-top: 1px solid #0098f0;
-    border-bottom: 1px solid #0098f0;
+    background: #00a3ff26; // blue with 15% opacity
+    border-top: 1px solid $c-pool;
+    border-bottom: 1px solid $c-pool;
 
     .sync-icon {
-      color: #0098f0;
+      color: $c-pool;
     }
   }
 

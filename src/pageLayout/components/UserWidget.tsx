@@ -18,10 +18,6 @@ import {AppState} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
 import {getNavItemActivation} from '../utils'
 
-// Utils
-import {CLOUD} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
@@ -40,10 +36,6 @@ const UserWidget: FC<Props> = ({
   }
 
   const orgPrefix = `/orgs/${org.id}`
-
-  if (CLOUD && isFlagEnabled('multiOrg')) {
-    return null
-  }
 
   return (
     <TreeNav.User username={me.name} team={org.name} testID="user-nav">

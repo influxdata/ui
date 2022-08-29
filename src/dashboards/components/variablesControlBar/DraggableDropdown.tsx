@@ -13,7 +13,6 @@ interface Props {
 }
 
 const DraggableDropdown: FC<Props> = ({id, index, name}) => {
-
   return (
     <Draggable index={index} draggableId={id}>
       {(provided, snapshot) => (

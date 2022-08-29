@@ -26,6 +26,7 @@ const SchemaBrowserHeading: FC = () => {
   const {selection} = useContext(PersistanceContext)
 
   const disableToggle: boolean = selection.composition?.diverged
+  const disableTooltipText = disableToggle ? FLUX_SYNC_DISABLE_TEXT : ''
 
   const handleFluxSyncToggle = () => {
     toggleFluxSync(!fluxSync)
@@ -45,14 +46,19 @@ const SchemaBrowserHeading: FC = () => {
             onChange={handleFluxSyncToggle}
             testID="flux-sync--toggle"
             disabled={disableToggle}
-            tooltipText={disableToggle ? FLUX_SYNC_DISABLE_TEXT : ''}
+            tooltipText={disableTooltipText}
           />
           <InputLabel className="flux-sync--label">
-            <SelectorTitle
-              title="Flux Sync"
-              info={FLUX_SYNC_TOOLTIP}
-              icon={IconFont.Sync}
-            />
+            <div
+              className={`${disableToggle ? 'disabled' : ''}`}
+              title={disableTooltipText}
+            >
+              <SelectorTitle
+                title="Flux Sync"
+                info={FLUX_SYNC_TOOLTIP}
+                icon={IconFont.Sync}
+              />
+            </div>
           </InputLabel>
         </FlexBox>
       </FlexBox>

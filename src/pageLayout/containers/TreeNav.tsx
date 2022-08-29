@@ -24,6 +24,9 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
 import {AppState} from 'src/types'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import './TreeNav.scss'
 
@@ -90,7 +93,7 @@ const TreeSidebar: FC<ReduxProps> = ({
     <TreeNav
       expanded={navbarMode === 'expanded'}
       headerElement={<NavHeader link={`/orgs/${org.id}`} />}
-      userElement={<UserWidget />}
+      userElement={CLOUD && isFlagEnabled('multiOrg') ? null : <UserWidget />}
       onToggleClick={handleToggleNavExpansion}
     >
       {generateNavItems().map((item: NavItem) => {

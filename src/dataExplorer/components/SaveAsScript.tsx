@@ -34,7 +34,9 @@ interface Props {
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {query, resource, setResource, save} = useContext(PersistanceContext)
+  const {hasChanged, resource, setResource, save} = useContext(
+    PersistanceContext
+  )
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
@@ -102,7 +104,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
     overlayTitle = 'Do you want to save your Script first?'
   }
 
-  if (query.length === 0) {
+  if (!hasChanged && type === OverlayType.OPEN) {
     return <OpenScript onClose={onClose} />
   }
 

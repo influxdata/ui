@@ -37,7 +37,9 @@ export enum OverlayType {
 }
 
 const FluxQueryBuilder: FC = () => {
-  const {query, vertical, setVertical} = useContext(PersistanceContext)
+  const {hasChanged, query, vertical, setVertical} = useContext(
+    PersistanceContext
+  )
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
 
   return (
@@ -82,9 +84,9 @@ const FluxQueryBuilder: FC = () => {
                 className="flux-query-builder__action-button"
                 onClick={() => setOverlayType(OverlayType.SAVE)}
                 status={
-                  query.length === 0
-                    ? ComponentStatus.Disabled
-                    : ComponentStatus.Default
+                  hasChanged
+                    ? ComponentStatus.Default
+                    : ComponentStatus.Disabled
                 }
                 text="Save"
                 icon={IconFont.Save}

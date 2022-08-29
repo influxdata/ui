@@ -13,7 +13,9 @@ import {
 } from 'src/dataExplorer/context/persistance'
 
 const Template: FC = () => {
-  const {setQuery, setResource, setSelection} = useContext(PersistanceContext)
+  const {setQuery, setHasChanged, setResource, setSelection} = useContext(
+    PersistanceContext
+  )
   const params = useParams()[0].split('/')
   const org = useSelector(getOrg)
   const history = useHistory()
@@ -42,6 +44,7 @@ const Template: FC = () => {
       setQuery(data.flux)
       setResource(data)
       history.replace(`/orgs/${org.id}/data-explorer`)
+      setHasChanged(false)
     })
   }, [params])
 

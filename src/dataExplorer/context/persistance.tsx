@@ -46,7 +46,7 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
   fields: [] as string[],
   tagValues: [] as TagKeyValuePair[],
   composition: {
-    synced: false,
+    synced: true,
     diverged: false,
   },
 }

@@ -26,7 +26,7 @@ import TextAreaWithLabel from 'src/writeData/subscriptions/components/TextAreaWi
 import {event} from 'src/cloud/utils/reporting'
 import {useDispatch} from 'react-redux'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
-import {Subscription} from 'src/types'
+import {BrokerAuthTypes, Subscription} from 'src/types'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 interface OwnProps {
@@ -230,7 +230,10 @@ const CertificateDetails: FC<OwnProps> = ({subscription, updateForm, edit}) => {
 }
 
 const CertificateInput: FC<OwnProps> = ({subscription, updateForm, edit}) => {
-  if (subscription.authType === 'certificate' && subscription.certProvidedAt) {
+  if (
+    subscription.authType === BrokerAuthTypes.Certificate &&
+    subscription.certProvidedAt
+  ) {
     return (
       <CertificateDetails
         subscription={subscription}

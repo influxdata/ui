@@ -1,4 +1,4 @@
-import React, {FC, useContext, useCallback, useState, ChangeEvent} from 'react'
+import React, {FC, useContext, useCallback, ChangeEvent} from 'react'
 import {
   Button,
   ComponentColor,
@@ -9,23 +9,22 @@ import {
   InputType,
   Overlay,
 } from '@influxdata/clockface'
+import {useHistory} from 'react-router-dom'
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
-import {
-  PersistanceContext,
-  DEFAULT_SCHEMA,
-} from 'src/dataExplorer/context/persistance'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {RemoteDataState} from 'src/types'
 import './SaveAsScript.scss'
 import {CLOUD} from 'src/shared/constants'
-import {ScriptContext} from 'src/dataExplorer/context/scripts'
 import {OverlayType} from './FluxQueryBuilder'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
 import {
   scriptSaveFail,
   scriptSaveSuccess,
 } from 'src/shared/copy/notifications/categories/scripts'
+import {getOrg} from 'src/organizations/selectors'
+import OpenScript from 'src/dataExplorer/components/OpenScript'
 
 interface Props {
   onClose: () => void
@@ -34,50 +33,62 @@ interface Props {
 
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const dispatch = useDispatch()
-  const {setQuery, setSelection} = useContext(PersistanceContext)
+  const history = useHistory()
+  const {query, resource, setResource, save} = useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
-  const {handleSave} = useContext(ScriptContext)
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
   const {setStatus, setResult} = useContext(ResultsContext)
-
-  const handleClose = useCallback(() => {
-    setDescription('')
-    setName(`Untitle Script: ${new Date().toISOString()}`)
-    onClose()
-  }, [onClose, setDescription, setName])
+  const org = useSelector(getOrg)
 
   const handleUpdateDescription = (event: ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value)
+    setResource({
+      ...resource,
+      data: {
+        ...(resource?.data ?? {}),
+        description: event.target.value,
+      },
+    })
   }
 
   const handleUpdateName = (event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
+    setResource({
+      ...resource,
+      data: {
+        ...(resource?.data ?? {}),
+        name: event.target.value,
+      },
+    })
   }
 
   const clear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
-    setQuery('')
-    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
-    handleClose()
-  }, [handleClose, setQuery, setStatus, setResult, setSelection, cancel])
+
+    history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+    if (type !== OverlayType.OPEN) {
+      onClose()
+    }
+  }, [onClose, setStatus, setResult, cancel, history, org?.id])
 
   const handleSaveScript = () => {
     try {
-      handleSave(name, description)
-
-      dispatch(notify(scriptSaveSuccess(name)))
-
-      if (type === OverlayType.NEW) {
-        clear()
-      }
+      save().then(() => {
+        dispatch(
+          notify(scriptSaveSuccess(resource?.data?.name ?? 'Untitled Script'))
+        )
+        if (type === OverlayType.NEW) {
+          clear()
+        }
+      })
     } catch (error) {
-      dispatch(notify(scriptSaveFail(name)))
+      dispatch(
+        notify(scriptSaveFail(resource?.data?.name ?? 'Untitled Script'))
+      )
       console.error({error})
     } finally {
-      handleClose()
+      if (type !== OverlayType.OPEN) {
+        onClose()
+      }
     }
   }
 
@@ -87,17 +98,22 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
 
   let overlayTitle = 'Save Script'
 
-  if (type === OverlayType.NEW) {
+  if (type !== OverlayType.SAVE) {
     overlayTitle = 'Do you want to save your Script first?'
+  }
+
+  if (query.length === 0) {
+    return <OpenScript onClose={onClose} />
   }
 
   return (
     <Overlay.Container maxWidth={500}>
-      <Overlay.Header title={overlayTitle} onDismiss={handleClose} />
+      <Overlay.Header title={overlayTitle} onDismiss={onClose} />
       <Overlay.Body>
-        {type === OverlayType.NEW && (
+        {type !== OverlayType.SAVE && (
           <div className="save-script-overlay__warning-text">
-            "{name}" will be overwritten by a new one if you don’t save it.
+            "{resource?.data?.name ?? 'Untitled Script'}" will be overwritten by
+            a new one if you don’t save it.
           </div>
         )}
         <Form>
@@ -107,7 +123,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
             name="name"
             required
             type={InputType.Text}
-            value={name}
+            value={resource?.data?.name}
             onChange={handleUpdateName}
           />
           <InputLabel>Description</InputLabel>
@@ -115,7 +131,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
             name="description"
             required
             type={InputType.Text}
-            value={description}
+            value={resource?.data?.description}
             onChange={handleUpdateDescription}
           />
         </Form>
@@ -123,10 +139,10 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
       <Overlay.Footer>
         <Button
           color={ComponentColor.Tertiary}
-          onClick={handleClose}
+          onClick={onClose}
           text="Cancel"
         />
-        {type === OverlayType.NEW && (
+        {type !== OverlayType.SAVE && (
           <Button
             color={ComponentColor.Default}
             onClick={clear}
@@ -137,12 +153,13 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
           <Button
             color={ComponentColor.Primary}
             status={
-              name.length === 0 || description.length === 0
+              (resource?.data?.name?.length ?? 0) === 0 ||
+              (resource?.data?.description?.length ?? 0) === 0
                 ? ComponentStatus.Disabled
                 : ComponentStatus.Default
             }
             onClick={handleSaveScript}
-            text={type === OverlayType.NEW ? 'Yes, Save' : 'Save'}
+            text={type === OverlayType.SAVE ? 'Save' : 'Yes, Save'}
           />
         )}
       </Overlay.Footer>

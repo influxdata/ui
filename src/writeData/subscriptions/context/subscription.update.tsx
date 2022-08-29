@@ -17,7 +17,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {Subscription} from 'src/types/subscriptions'
+import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 import {
   subscriptionUpdateFail,
   subscriptionStatusUpdateFail,
@@ -49,7 +49,7 @@ export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
     brokerPassword: '',
     brokerClientCert: '',
     brokerClientKey: '',
-    authType: 'none',
+    authType: BrokerAuthTypes.None,
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {

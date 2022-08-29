@@ -51,7 +51,7 @@ const SchemaBrowserHeading: FC = () => {
             <SelectorTitle
               title="Flux Sync"
               info={FLUX_SYNC_TOOLTIP}
-              icon={IconFont.Switch_New}
+              icon={IconFont.Sync}
             />
           </InputLabel>
         </FlexBox>

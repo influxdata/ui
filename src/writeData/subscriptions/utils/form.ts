@@ -5,6 +5,7 @@ import {
   StepsStatus,
   Steps,
   SubscriptionNavigationModel,
+  BrokerAuthTypes,
 } from 'src/types/subscriptions'
 import jsonpath from 'jsonpath'
 import {IconFont} from '@influxdata/clockface'
@@ -59,9 +60,9 @@ const booleanType = 'Boolean'
 export const dataTypeList = [stringType, intType, floatType, booleanType]
 
 // min port value is 1025
-const MIN_PORT = 1025
+export const MIN_PORT = 1025
 // max port value is 65535 because its a 16-bit unsigned integer
-const MAX_PORT = 65535
+export const MAX_PORT = 65535
 
 export const handleValidation = (
   property: string,
@@ -232,7 +233,7 @@ export const checkRequiredFields = (form: Subscription): boolean => {
 }
 
 const checkNoneSelected = (form: Subscription): boolean =>
-  form.authType === 'none' &&
+  form.authType === BrokerAuthTypes.None &&
   !form.brokerUsername &&
   !form.brokerPassword &&
   !form.brokerCACert &&
@@ -240,10 +241,12 @@ const checkNoneSelected = (form: Subscription): boolean =>
   !form.brokerClientKey
 
 const checkBasicSelected = (form: Subscription): boolean =>
-  form.authType === 'user' && !!form.brokerUsername && !!form.brokerPassword
+  form.authType === BrokerAuthTypes.User &&
+  !!form.brokerUsername &&
+  !!form.brokerPassword
 
 const checkCertificateSelected = (form: Subscription): boolean =>
-  form.authType === 'certificate' &&
+  form.authType === BrokerAuthTypes.Certificate &&
   !!form.brokerCACert &&
   ((!!form.brokerClientCert && !!form.brokerClientKey) ||
     (!form.brokerClientCert && !form.brokerClientKey))

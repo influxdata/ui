@@ -36,7 +36,7 @@ const SubscriptionForm: FC<Props> = ({
 }) => {
   useEffect(() => {
     updateForm({...formContent, bucket: bucket.name})
-  }, [bucket])
+  }, [bucket, formContent, updateForm])
 
   return (
     formContent &&

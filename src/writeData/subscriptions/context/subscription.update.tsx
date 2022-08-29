@@ -116,7 +116,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
       setCurrentSubscription(current)
       setLoading(RemoteDataState.Done)
     }
-  }, [currentID])
+  }, [currentID, subscriptions])
 
   const [loading, setLoading] = useState(RemoteDataState.Done)
   const history = useHistory()

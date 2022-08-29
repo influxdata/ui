@@ -60,7 +60,7 @@ const BrokerFormContent: FC<Props> = ({
 
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
-  }, [protocol])
+  }, [formContent, protocol, updateForm])
 
   useEffect(() => {
     const numberInput = document.getElementById(
@@ -69,7 +69,7 @@ const BrokerFormContent: FC<Props> = ({
     numberInput?.addEventListener('mousewheel', function(evt) {
       evt.preventDefault()
     })
-  }, [])
+  }, [className])
 
   const showHostPortExampleText =
     !!formContent.brokerHost ||

@@ -35,6 +35,7 @@ interface ContextType {
   setQuery: (val: string) => void
   setResource: (val: ResourceConnectedQuery<any>) => void
   setSelection: (val: RecursivePartial<SchemaSelection>) => void
+  clearSchemaSelection: () => void
 
   save: () => Promise<ResourceConnectedQuery<any>>
 }
@@ -56,7 +57,7 @@ const DEFAULT_CONTEXT = {
   range: DEFAULT_TIME_RANGE,
   query: '',
   resource: null,
-  selection: DEFAULT_SCHEMA,
+  selection: JSON.parse(JSON.stringify(DEFAULT_SCHEMA)),
 
   setHorizontal: (_: number[]) => {},
   setVertical: (_: number[]) => {},
@@ -64,7 +65,7 @@ const DEFAULT_CONTEXT = {
   setQuery: (_: string) => {},
   setResource: (_: any) => {},
   setSelection: (_: RecursivePartial<SchemaSelection>) => {},
-
+  clearSchemaSelection: () => {},
   save: () => Promise.resolve(null),
 }
 
@@ -100,6 +101,10 @@ export const PersistanceProvider: FC = ({children}) => {
     'dataExplorer.schema',
     JSON.parse(JSON.stringify(DEFAULT_CONTEXT.selection))
   )
+
+  const clearSchemaSelection = () => {
+    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
+  }
 
   const setSchemaSelection = useCallback(
     schema => {
@@ -148,6 +153,7 @@ export const PersistanceProvider: FC = ({children}) => {
         setQuery,
         setResource,
         setSelection: setSchemaSelection,
+        clearSchemaSelection,
 
         save,
       }}

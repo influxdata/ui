@@ -90,7 +90,6 @@ const UserWidget: FC<Props> = ({
             <Link className={className} to={`${orgPrefix}/usage`} />
           )}
         />
-        )}
       </CloudOnly>
       <CloudExclude>
         <TreeNav.UserItem

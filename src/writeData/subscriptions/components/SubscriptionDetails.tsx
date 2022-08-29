@@ -39,7 +39,7 @@ const SubscriptionDetails: FC<Props> = ({
     if (edit) {
       updateForm({...currentSubscription, bucket: bucket.name})
     }
-  }, [bucket, currentSubscription, edit, updateForm])
+  }, [bucket])
 
   return (
     buckets && (

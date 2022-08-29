@@ -33,13 +33,20 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export enum OverlayType {
   NEW = 'new',
+  OPEN = 'open',
   SAVE = 'save',
 }
 
 const FluxQueryBuilder: FC = () => {
-  const {query, resource, save, vertical, setVertical} = useContext(
-    PersistanceContext
-  )
+  const {
+    query,
+    resource,
+    save,
+    setQuery,
+    vertical,
+    setVertical,
+    clearSchemaSelection,
+  } = useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
 
   const handleSave = () => {
@@ -57,6 +64,10 @@ const FluxQueryBuilder: FC = () => {
           <SaveAsScript
             type={overlayType}
             onClose={() => setOverlayType(null)}
+            onClear={() => {
+              clearSchemaSelection()
+              setQuery('')
+            }}
           />
         </Overlay>
         <FlexBox
@@ -81,7 +92,16 @@ const FluxQueryBuilder: FC = () => {
             />
             {isFlagEnabled('saveAsScript') && (
               <Button
-                className="flux-query-builder__save-button"
+                className="flux-query-builder__action-button"
+                onClick={() => setOverlayType(OverlayType.OPEN)}
+                text="Open"
+                icon={IconFont.Export_New}
+              />
+            )}
+
+            {isFlagEnabled('saveAsScript') && (
+              <Button
+                className="flux-query-builder__action-button"
                 onClick={handleSave}
                 text={`Save ${
                   resource?.type
@@ -89,7 +109,6 @@ const FluxQueryBuilder: FC = () => {
                       resource.type.slice(1, resource.type.length - 1)
                     : 'Script'
                 }`}
-                icon={IconFont.Save}
               />
             )}
           </div>

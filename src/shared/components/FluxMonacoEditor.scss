@@ -44,25 +44,33 @@
   }
 }
 
-.sync-bar {
-  z-index: 999;
-  position: absolute;
-  width: 48px;
+.flux-editor--monaco {
+  position: relative;
+  overflow: hidden;
 
-  .sync-icon {
-    color: #0098f0;
+  .sync-bar {
+    position: absolute;
+    width: 48px;
   }
-}
 
-.sync-bar--on {
-  background: #0098f01a; // blue with 10% opacity
-  border-top: 1px solid #0098f0;
-  border-bottom: 1px solid #0098f0;
-}
+  .sync-bar--on {
+    background: #00a3ff26; // blue with 15% opacity
+    border-top: 1px solid $c-pool;
+    border-bottom: 1px solid $c-pool;
 
-.sync-bar--off {
-  opacity: 50%;
-  background-color: $cf-grey-35;
-  border-top: 1px solid $cf-white;
-  border-bottom: 1px solid $cf-white;
+    .sync-icon {
+      color: $c-pool;
+    }
+  }
+
+  .sync-bar--off {
+    opacity: 50%;
+    background-color: $cf-grey-35;
+    border-top: 1px solid $cf-white;
+    border-bottom: 1px solid $cf-white;
+
+    .sync-icon {
+      color: $cf-white;
+    }
+  }
 }

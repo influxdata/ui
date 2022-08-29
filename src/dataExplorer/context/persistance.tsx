@@ -47,6 +47,7 @@ interface ContextType {
   save: () => Promise<ResourceConnectedQuery<any>>
 
   setSelection: (val: RecursivePartial<SchemaSelection>) => void
+  clearSchemaSelection: () => void
 }
 
 export const DEFAULT_SCHEMA: SchemaSelection = {
@@ -55,7 +56,7 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
   fields: [] as string[],
   tagValues: [] as TagKeyValuePair[],
   composition: {
-    synced: false,
+    synced: true,
     diverged: false,
   },
 }
@@ -71,7 +72,7 @@ export const DEFAULT_CONTEXT = {
     type: 'simple-table',
     showAll: false,
   } as SimpleTableViewProperties,
-  selection: DEFAULT_SCHEMA,
+  selection: JSON.parse(JSON.stringify(DEFAULT_SCHEMA)),
 
   setHorizontal: (_: number[]) => {},
   setVertical: (_: number[]) => {},
@@ -83,6 +84,7 @@ export const DEFAULT_CONTEXT = {
   save: () => Promise.resolve(null),
 
   setSelection: (_: RecursivePartial<SchemaSelection>) => {},
+  clearSchemaSelection: () => {},
 }
 
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
@@ -108,15 +110,23 @@ export const PersistanceProvider: FC = ({children}) => {
     'dataExplorer.range',
     DEFAULT_CONTEXT.range
   )
-  const [resource, setResource] = useSessionStorage('dataExplorer.resource', {})
   const [visualization, setVisualization] = useSessionStorage(
     'dataExplorer.visual',
     JSON.parse(JSON.stringify(DEFAULT_CONTEXT.visualization))
   )
+  const [resource, setResource] = useSessionStorage('dataExplorer.resource', {
+    type: 'scripts',
+    flux: '',
+    data: {},
+  })
   const [selection, setSelection] = useSessionStorage(
     'dataExplorer.schema',
     JSON.parse(JSON.stringify(DEFAULT_CONTEXT.selection))
   )
+
+  const clearSchemaSelection = () => {
+    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
+  }
 
   const setSchemaSelection = useCallback(
     schema => {
@@ -173,6 +183,7 @@ export const PersistanceProvider: FC = ({children}) => {
         save,
 
         setSelection: setSchemaSelection,
+        clearSchemaSelection,
       }}
     >
       {children}

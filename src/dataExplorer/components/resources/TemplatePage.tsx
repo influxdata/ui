@@ -5,10 +5,7 @@ import {RemoteDataState} from 'src/types'
 
 import {getOrg} from 'src/organizations/selectors'
 
-import {
-  DEFAULT_SCHEMA,
-  DEFAULT_CONTEXT,
-} from 'src/dataExplorer/context/persistance'
+import {DEFAULT_CONTEXT} from 'src/dataExplorer/context/persistance'
 import {RESOURCES} from 'src/dataExplorer/components/resources'
 import {
   PersistanceContext,
@@ -16,9 +13,12 @@ import {
 } from 'src/dataExplorer/context/persistance'
 
 const Template: FC = () => {
-  const {setQuery, setResource, setSelection, setVisualization} = useContext(
-    PersistanceContext
-  )
+  const {
+    setQuery,
+    setResource,
+    setVisualization,
+    clearSchemaSelection,
+  } = useContext(PersistanceContext)
   const params = useParams()[0].split('/')
   const org = useSelector(getOrg)
   const history = useHistory()
@@ -39,7 +39,7 @@ const Template: FC = () => {
     }
 
     setLoading(RemoteDataState.Loading)
-    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
+    clearSchemaSelection()
     setQuery('')
     setResource(null)
     setVisualization(JSON.parse(JSON.stringify(DEFAULT_CONTEXT.visualization)))

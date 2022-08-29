@@ -27,8 +27,8 @@ type OwnProps = {
 export const ExecuteQuery = (props: OwnProps) => {
   const {bucket} = props
   const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
-  const queryMac = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m)' --raw`
-  const queryWindows = `.\\influx query 'from(bucket:\\"${bucketName}\\") |> range(start:-30m)' --raw`
+  const queryMac = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m)'`
+  const queryWindows = `.\\influx query 'from(bucket:\\"${bucketName}\\") |> range(start:-30m)'`
 
   const fluxExample = `from(bucket: “weather-data”)
   |> range(start: -10m)

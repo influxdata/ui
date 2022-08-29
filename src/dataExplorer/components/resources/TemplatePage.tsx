@@ -5,7 +5,10 @@ import {RemoteDataState} from 'src/types'
 
 import {getOrg} from 'src/organizations/selectors'
 
-import {DEFAULT_SCHEMA} from 'src/dataExplorer/context/persistance'
+import {
+  DEFAULT_SCHEMA,
+  DEFAULT_CONTEXT,
+} from 'src/dataExplorer/context/persistance'
 import {RESOURCES} from 'src/dataExplorer/components/resources'
 import {
   PersistanceContext,
@@ -13,7 +16,9 @@ import {
 } from 'src/dataExplorer/context/persistance'
 
 const Template: FC = () => {
-  const {setQuery, setResource, setSelection} = useContext(PersistanceContext)
+  const {setQuery, setResource, setSelection, setVisualization} = useContext(
+    PersistanceContext
+  )
   const params = useParams()[0].split('/')
   const org = useSelector(getOrg)
   const history = useHistory()
@@ -37,9 +42,11 @@ const Template: FC = () => {
     setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
     setQuery('')
     setResource(null)
+    setVisualization(JSON.parse(JSON.stringify(DEFAULT_CONTEXT.visualization)))
 
     RESOURCES[params[0]].init.apply(this, params.slice(1)).then(data => {
       setQuery(data.flux)
+      setVisualization(data.visual)
       setResource(data)
       history.replace(`/orgs/${org.id}/data-explorer`)
     })

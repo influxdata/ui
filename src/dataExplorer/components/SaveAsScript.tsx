@@ -1,12 +1,8 @@
-import React, {FC, useContext, useCallback, ChangeEvent} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import {
   Button,
   ComponentColor,
   ComponentStatus,
-  Form,
-  Input,
-  InputLabel,
-  InputType,
   Overlay,
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
@@ -24,6 +20,7 @@ import {
   scriptSaveSuccess,
 } from 'src/shared/copy/notifications/categories/scripts'
 import {getOrg} from 'src/organizations/selectors'
+import {RESOURCES} from './resources'
 
 interface Props {
   onClose: () => void
@@ -33,30 +30,10 @@ interface Props {
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {resource, setResource, save} = useContext(PersistanceContext)
+  const {resource, save} = useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
-
-  const handleUpdateDescription = (event: ChangeEvent<HTMLInputElement>) => {
-    setResource({
-      ...resource,
-      data: {
-        ...(resource?.data ?? {}),
-        description: event.target.value,
-      },
-    })
-  }
-
-  const handleUpdateName = (event: ChangeEvent<HTMLInputElement>) => {
-    setResource({
-      ...resource,
-      data: {
-        ...(resource?.data ?? {}),
-        name: event.target.value,
-      },
-    })
-  }
 
   const clear = useCallback(() => {
     cancel()
@@ -108,25 +85,9 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
             a new one if you don’t save it.
           </div>
         )}
-        <Form>
-          <InputLabel>Save as</InputLabel>
-          <Input
-            className="save-script-name__input"
-            name="name"
-            required
-            type={InputType.Text}
-            value={resource?.data?.name}
-            onChange={handleUpdateName}
-          />
-          <InputLabel>Description</InputLabel>
-          <Input
-            name="description"
-            required
-            type={InputType.Text}
-            value={resource?.data?.description}
-            onChange={handleUpdateDescription}
-          />
-        </Form>
+        {RESOURCES[resource.type].editor
+          ? React.createElement(RESOURCES[resource.type].editor)
+          : null}
       </Overlay.Body>
       <Overlay.Footer>
         <Button

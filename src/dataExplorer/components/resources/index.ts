@@ -1,16 +1,18 @@
-import {ReactNode} from 'react'
+import {FC} from 'react'
 import {ResourceType} from 'src/types/resources'
+import {ViewProperties} from 'src/types'
 
 export interface ResourceConnectedQuery<T> {
   type: ResourceType
   flux: string
   data: T
+  visual?: ViewProperties
 }
 
 export interface ResourceRegistration {
   type: ResourceType
   disabled?: boolean
-  editor: ReactNode
+  editor?: FC
   init: (...args: string[]) => Promise<ResourceConnectedQuery<any>>
   persist: (
     query: ResourceConnectedQuery<any>
@@ -23,10 +25,7 @@ interface Resources {
 
 export const RESOURCES: Resources = {}
   // eslint-disable-next-line no-extra-semi
-;[
-  require('./types/cell'),
-  require('./types/script'),
-].forEach(mod => {
+;[require('./types/cell'), require('./types/script')].forEach(mod => {
   mod.default((def: ResourceRegistration) => {
     if (RESOURCES.hasOwnProperty(def.type)) {
       throw new Error(

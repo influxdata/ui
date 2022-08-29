@@ -87,7 +87,7 @@ const ResultsPane: FC = () => {
     query: text,
     setQuery,
     range,
-    setRange
+    setRange,
   } = useContext(PersistanceContext)
 
   const submitButtonDisabled = !text

@@ -21,6 +21,7 @@ import {
   PersistanceProvider,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
+import {RESOURCES} from 'src/dataExplorer/components/resources'
 import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
 import Schema from 'src/dataExplorer/components/Schema'
@@ -36,8 +37,18 @@ export enum OverlayType {
 }
 
 const FluxQueryBuilder: FC = () => {
-  const {query, vertical, setVertical} = useContext(PersistanceContext)
+  const {query, resource, save, vertical, setVertical} = useContext(
+    PersistanceContext
+  )
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
+
+  const handleSave = () => {
+    if (RESOURCES[resource.type].editor) {
+      setOverlayType(OverlayType.SAVE)
+    } else {
+      save()
+    }
+  }
 
   return (
     <EditorProvider>
@@ -71,8 +82,13 @@ const FluxQueryBuilder: FC = () => {
             {isFlagEnabled('saveAsScript') && (
               <Button
                 className="flux-query-builder__save-button"
-                onClick={() => setOverlayType(OverlayType.SAVE)}
-                text="Save Script"
+                onClick={handleSave}
+                text={`Save ${
+                  resource?.type
+                    ? resource.type.charAt(0).toUpperCase() +
+                      resource.type.slice(1, resource.type.length - 1)
+                    : 'Script'
+                }`}
                 icon={IconFont.Save}
               />
             )}

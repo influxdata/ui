@@ -4,12 +4,10 @@ import {
   patchDashboardsCellsView,
   postDashboardsCell,
 } from 'src/client/generatedRoutes'
-import editor from './editor'
 
 export default function script(register) {
   register({
     type: ResourceType.Dashboards,
-    editor,
     init: (...args: string[]) => {
       const dashboard = args[0]
       const cell = args[2]
@@ -21,6 +19,10 @@ export default function script(register) {
           data: {
             name: 'Name this Cell',
             dashboardID: dashboard,
+          },
+          visual: {
+            type: 'simple-table',
+            showAll: false,
           },
         })
       }
@@ -37,6 +39,9 @@ export default function script(register) {
               dashboardID: dashboard,
               ...resp.data,
             },
+            visual: {
+              ...resp.data.properties,
+            },
           }
         }
       })
@@ -48,6 +53,7 @@ export default function script(register) {
       delete _data.id
 
       if (id) {
+        _data.properties = resource.visual
         _data.properties.queries = [
           {
             text: resource.flux,
@@ -71,7 +77,12 @@ export default function script(register) {
           data: _data,
         }).then(() => ({
           ...resource,
-          data: _data,
+          data: {
+            id,
+            dashboardID,
+            ..._data,
+          },
+          visual: _data.properties,
         }))
       }
 
@@ -89,12 +100,7 @@ export default function script(register) {
         }
         _data.id = resp.data.id
 
-        // TODO: pass the view in here somehow
-        _data.properties = {
-          type: 'simple-table',
-          showAll: false,
-          shape: 'chronograf-v2',
-        }
+        _data.properties = resource.visual
         _data.properties.queries = [
           {
             text: resource.flux,

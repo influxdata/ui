@@ -1,5 +1,10 @@
 import React, {FC, createContext, useCallback} from 'react'
-import {TimeRange, RecursivePartial} from 'src/types'
+import {
+  TimeRange,
+  RecursivePartial,
+  ViewProperties,
+  SimpleTableViewProperties,
+} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {Bucket, TagKeyValuePair} from 'src/types'
@@ -25,18 +30,23 @@ interface ContextType {
   horizontal: number[]
   vertical: number[]
   range: TimeRange
+
   query: string
   resource: ResourceConnectedQuery<any>
+  visualization: ViewProperties
+
   selection: SchemaSelection
 
   setHorizontal: (val: number[]) => void
   setVertical: (val: number[]) => void
   setRange: (val: TimeRange) => void
+
   setQuery: (val: string) => void
   setResource: (val: ResourceConnectedQuery<any>) => void
-  setSelection: (val: RecursivePartial<SchemaSelection>) => void
-
+  setVisualization: (val: ViewProperties) => void
   save: () => Promise<ResourceConnectedQuery<any>>
+
+  setSelection: (val: RecursivePartial<SchemaSelection>) => void
 }
 
 export const DEFAULT_SCHEMA: SchemaSelection = {
@@ -50,22 +60,29 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
   },
 }
 
-const DEFAULT_CONTEXT = {
+export const DEFAULT_CONTEXT = {
   horizontal: [0.2],
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,
+
   query: '',
   resource: null,
+  visualization: {
+    type: 'simple-table',
+    showAll: false,
+  } as SimpleTableViewProperties,
   selection: DEFAULT_SCHEMA,
 
   setHorizontal: (_: number[]) => {},
   setVertical: (_: number[]) => {},
   setRange: (_: TimeRange) => {},
+
   setQuery: (_: string) => {},
   setResource: (_: any) => {},
-  setSelection: (_: RecursivePartial<SchemaSelection>) => {},
-
+  setVisualization: (_: any) => {},
   save: () => Promise.resolve(null),
+
+  setSelection: (_: RecursivePartial<SchemaSelection>) => {},
 }
 
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
@@ -92,6 +109,10 @@ export const PersistanceProvider: FC = ({children}) => {
     DEFAULT_CONTEXT.range
   )
   const [resource, setResource] = useSessionStorage('dataExplorer.resource', {})
+  const [visualization, setVisualization] = useSessionStorage(
+    'dataExplorer.visual',
+    JSON.parse(JSON.stringify(DEFAULT_CONTEXT.visualization))
+  )
   const [selection, setSelection] = useSessionStorage(
     'dataExplorer.schema',
     JSON.parse(JSON.stringify(DEFAULT_CONTEXT.selection))
@@ -121,6 +142,7 @@ export const PersistanceProvider: FC = ({children}) => {
     }
 
     resource.flux = query
+    resource.visual = visualization
 
     return RESOURCES[resource.type].persist(resource).then(data => {
       setResource(data)
@@ -134,18 +156,23 @@ export const PersistanceProvider: FC = ({children}) => {
         horizontal,
         vertical,
         range,
+
         query,
         resource,
+        visualization,
+
         selection,
 
         setHorizontal,
         setVertical,
         setRange,
+
         setQuery,
         setResource,
-        setSelection: setSchemaSelection,
-
+        setVisualization,
         save,
+
+        setSelection: setSchemaSelection,
       }}
     >
       {children}

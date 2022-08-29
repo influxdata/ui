@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext, useMemo} from 'react'
+import React, {FC, useState, useContext, useMemo, ReactNode} from 'react'
 import {
   FlexBox,
   FlexDirection,
@@ -9,8 +9,9 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 
-import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
+import {RemoteDataState} from 'src/types'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
@@ -64,19 +65,17 @@ const EmptyResults: FC = () => {
 }
 
 const WrappedOptions: FC = () => {
-  const {result, view, setView} = useContext(ResultsContext)
+  const {result} = useContext(ResultsContext)
+  const {visualization, setVisualization} = useContext(PersistanceContext)
 
   return (
     <ViewOptions
-      properties={view.properties}
+      properties={visualization}
       results={result.parsed}
       update={update => {
-        setView({
-          ...view,
-          properties: {
-            ...view.properties,
-            ...update,
-          },
+        setVisualization({
+          ...visualization,
+          ...update,
         })
       }}
     />
@@ -85,10 +84,15 @@ const WrappedOptions: FC = () => {
 
 const Results: FC = () => {
   const [search, setSearch] = useState('')
-  const {result, status, view, setView} = useContext(ResultsContext)
+  const {visualization, setVisualization} = useContext(PersistanceContext)
+  const {result, status} = useContext(ResultsContext)
   const {launch} = useContext(SidebarContext)
   const res = useMemo(() => {
-    if (view.state === 'graph' || !search.trim() || !result?.parsed) {
+    if (
+      visualization?.type !== 'simple-table' ||
+      !search.trim() ||
+      !result?.parsed
+    ) {
       return result?.parsed
     }
 
@@ -135,49 +139,28 @@ const Results: FC = () => {
     dupped.table.length = newLen
 
     return dupped as FluxResult['parsed']
-  }, [search, result?.parsed, view.state])
+  }, [search, result?.parsed, visualization?.type])
 
-  let resultView
+  let resultView: ReactNode
 
   if (status === RemoteDataState.NotStarted) {
     resultView = <EmptyResults />
   } else {
-    if (view.state === 'table') {
-      resultView = (
-        <div className="data-explorer-results--view">
-          <View
-            loading={status}
-            properties={
-              {
-                type: 'simple-table',
-                showAll: false,
-              } as SimpleTableViewProperties
-            }
-            result={res}
-            hideTimer
-          />
-        </div>
-      )
-    } else {
-      resultView = (
-        <div className="data-explorer-results--view">
-          <View
-            loading={status}
-            properties={view.properties}
-            result={res}
-            hideTimer
-          />
-        </div>
-      )
-    }
+    resultView = (
+      <div className="data-explorer-results--view">
+        <View
+          loading={status}
+          properties={visualization}
+          result={res}
+          hideTimer
+        />
+      </div>
+    )
   }
 
   const dataExists = res && Object.entries(res).length
   const updateType = viewType => {
-    setView({
-      state: 'graph',
-      properties: SUPPORTED_VISUALIZATIONS[viewType].initial,
-    })
+    setVisualization(SUPPORTED_VISUALIZATIONS[viewType].initial)
   }
 
   const launcher = () => {
@@ -185,7 +168,7 @@ const Results: FC = () => {
   }
 
   const tableHeader =
-    view.state === 'table' ? (
+    visualization.type === 'simple-table' ? (
       <>
         <div style={{width: '300px'}}>
           <SearchWidget
@@ -204,10 +187,10 @@ const Results: FC = () => {
     ) : null
 
   const vizHeader =
-    view.state === 'graph' ? (
+    visualization?.type !== 'simple-table' ? (
       <>
         <ViewTypeDropdown
-          viewType={view.properties.type}
+          viewType={visualization.type}
           onUpdateType={updateType}
         />
         <Button
@@ -228,15 +211,9 @@ const Results: FC = () => {
 
   const updateViewState = state => {
     if (state === 'graph') {
-      setView({
-        state: 'graph',
-        properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
-      })
+      setVisualization(SUPPORTED_VISUALIZATIONS['xy'].initial)
     } else {
-      setView({
-        state: 'table',
-        properties: SUPPORTED_VISUALIZATIONS['simple-table'].initial,
-      })
+      setVisualization(SUPPORTED_VISUALIZATIONS['simple-table'].initial)
     }
   }
 
@@ -254,7 +231,7 @@ const Results: FC = () => {
                   id="table"
                   name="viz-setting"
                   value="table"
-                  active={view.state === 'table'}
+                  active={visualization.type === 'simple-table'}
                   onClick={updateViewState}
                 >
                   Table
@@ -263,7 +240,7 @@ const Results: FC = () => {
                   id="graph"
                   name="viz-setting"
                   value="graph"
-                  active={view.state === 'graph'}
+                  active={visualization.type !== 'simple-table'}
                   onClick={updateViewState}
                 >
                   Graph

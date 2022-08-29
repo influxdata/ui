@@ -34,8 +34,8 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   |> filter(fn: (r) => r.measurement == "temperature")
   |> mean()`
 
-  const codeSnippetMac = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m) |> mean()' --raw`
-  const codeSnippetWindows = `.\\influx query 'from(bucket:\\"${bucketName}\\") |> range(start:-30m) |> mean()' --raw`
+  const codeSnippetMac = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m) |> mean()'`
+  const codeSnippetWindows = `.\\influx query 'from(bucket:\\"${bucketName}\\") |> range(start:-30m) |> mean()'`
 
   useEffect(() => {
     const fireKeyboardCopyEvent = event => {

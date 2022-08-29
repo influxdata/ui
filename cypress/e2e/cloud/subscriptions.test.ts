@@ -1,5 +1,7 @@
 import {Organization} from '../../../src/types'
 
+const BROKER_PORT = 1883
+
 describe('Subscriptions', () => {
   beforeEach(() =>
     cy.flush().then(() =>
@@ -74,7 +76,7 @@ describe('Subscriptions', () => {
       .contains('MQTT')
       .click()
     cy.getByTestID('create-broker-form--host').type('localhost')
-    cy.getByTestID('create-broker-form--port').type('1883')
+    cy.getByTestID('create-broker-form--port').type(`${BROKER_PORT}`)
     // subscription form
     cy.getByTestID('create-subscription-form--overlay-form').should(
       'be.visible'
@@ -297,7 +299,7 @@ describe('Subscriptions', () => {
       .contains('MQTT')
       .click()
     cy.getByTestID('create-broker-form--host').type('localhost')
-    cy.getByTestID('create-broker-form--port').type('1883')
+    cy.getByTestID('create-broker-form--port').type(`${BROKER_PORT}`)
     // subscription form
     cy.getByTestID('create-subscription-form--overlay-form').should(
       'be.visible'
@@ -490,7 +492,7 @@ describe('Subscriptions', () => {
       .contains('MQTT')
       .click()
     cy.getByTestID('create-broker-form--host').type('localhost')
-    cy.getByTestID('create-broker-form--port').type('1883')
+    cy.getByTestID('create-broker-form--port').type(`${BROKER_PORT}`)
     // subscription form
     cy.getByTestID('create-subscription-form--overlay-form').should(
       'be.visible'
@@ -653,7 +655,7 @@ describe('Subscriptions', () => {
       orgID: '9c9c9c9c9c9c9c9c',
       processGroupID: 'f762b298-0180-1000-0000-000067f29ae1',
       brokerHost: 'localhost',
-      brokerPort: 1883,
+      brokerPort: BROKER_PORT,
       topic: 'datopic',
       dataFormat: 'lineprotocol',
       jsonMeasurementKey: {name: 'measurement', path: '$.', type: 'string'},

@@ -111,9 +111,13 @@ export const GlobalHeader: FC = () => {
         </FlexBox>
       )}
 
-      <FlexBox margin={ComponentSize.Large}>
+      <FlexBox
+        margin={ComponentSize.Large}
+        style={{width: '700px'}}
+        justifyContent={JustifyContent.FlexEnd}
+      >
         <RateLimitAlert
-          location="global header page"
+          location="global header"
           multiOrgFlagForceShow={true}
         />
         {shouldLoadAvatar && (

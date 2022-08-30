@@ -74,6 +74,7 @@ const RateLimitAlert: FC<Props> = ({
     dispatch(showOverlay('write-limit', null, () => dispatch(dismissOverlay)))
   }
 
+  // notification for write limit reached
   useEffect(() => {
     if (CLOUD && status === 'exceeded' && resources.includes('write')) {
       if (showUpgrade) {
@@ -120,7 +121,11 @@ const RateLimitAlert: FC<Props> = ({
     return null
   }
 
-  if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
+  // banner panel for cardinality limit exceeded
+  if (
+    (CLOUD && status === 'exceeded' && resources.includes('cardinality')) ||
+    true
+  ) {
     return (
       <FlexBox
         direction={FlexDirection.Column}
@@ -134,6 +139,7 @@ const RateLimitAlert: FC<Props> = ({
           icon={icon}
           hideMobileIcon={true}
           textColor={InfluxColors.Yeti}
+          style={{border: 'none', borderRadius: '6px'}}
         >
           <RateLimitAlertContent />
         </BannerPanel>
@@ -141,6 +147,7 @@ const RateLimitAlert: FC<Props> = ({
     )
   }
 
+  // upgrade button
   if (CLOUD && !alertOnly) {
     return (
       <CloudUpgradeButton
@@ -165,6 +172,7 @@ const RateLimitAlert: FC<Props> = ({
             }
           )
         }}
+        size={ComponentSize.ExtraSmall}
       />
     )
   }

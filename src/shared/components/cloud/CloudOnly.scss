@@ -12,10 +12,6 @@
   display: inline-flex;
   flex-direction: column;
   font-weight: 500;
-
-  .rate-alert--button {
-    margin-top: $cf-space-2xs;
-  }
 }
 
 .flex-upgrade-content.rate-alert--content__free {
@@ -23,7 +19,7 @@
 }
 
 .upgrade-message {
-  padding: $cf-marg-b;
+  padding-right: $cf-marg-c;
 }
 
 .cf-page--title {

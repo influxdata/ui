@@ -46,6 +46,7 @@ import {
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {isFlagEnabled} from '../../shared/utils/featureFlag'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 
@@ -62,7 +63,7 @@ const SingleDashboardPage: FC<ManualRefreshProps> = ({
   return (
     <>
       <DashboardHeader onManualRefresh={onManualRefresh} />
-      <RateLimitAlert alertOnly={true} location="dashboard page" />
+      {!isFlagEnabled('multiOrg') && <RateLimitAlert alertOnly={true} location="dashboard page" />}
       <VariablesControlBar />
       <ErrorBoundary>
         <DashboardComponent manualRefresh={manualRefresh} />

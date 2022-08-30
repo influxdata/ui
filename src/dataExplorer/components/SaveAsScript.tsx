@@ -44,6 +44,8 @@ const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
 
   const handleClose = () => {
     if (!resource?.data?.id) {
+      // clear out any meta data that's been set by the user prior to saving
+      // if they decide to cancel out of the process and close the modal
       delete resource.data?.name
       delete resource.data?.description
       setResource({

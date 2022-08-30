@@ -25,6 +25,7 @@ const SchemaBrowserHeading: FC = () => {
   const {fluxSync, toggleFluxSync} = useContext(FluxQueryBuilderContext)
   const {selection} = useContext(PersistanceContext)
 
+  // Disable means diverged, used to not allow turning on or off the toggle
   const disableToggle: boolean = selection.composition?.diverged
   const disableTooltipText = disableToggle ? FLUX_SYNC_DISABLE_TEXT : ''
 

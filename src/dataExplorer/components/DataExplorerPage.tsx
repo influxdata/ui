@@ -85,7 +85,7 @@ const DataExplorerPageHeader: FC = () => {
       <FlexBox margin={ComponentSize.Large}>
         <FeatureFlag name="newDataExplorer">
           <FlexBox margin={ComponentSize.Medium}>
-            <InputLabel>&#10024; Try new Data Explorer</InputLabel>
+            <InputLabel>&#10024; Preview New Script Editor</InputLabel>
             <SlideToggle
               active={fluxQueryBuilder}
               onChange={toggleSlider}

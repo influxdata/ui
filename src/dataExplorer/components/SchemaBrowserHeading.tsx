@@ -25,7 +25,9 @@ const SchemaBrowserHeading: FC = () => {
   const {fluxSync, toggleFluxSync} = useContext(FluxQueryBuilderContext)
   const {selection} = useContext(PersistanceContext)
 
+  // Disable means diverged, used to not allow turning on or off the toggle
   const disableToggle: boolean = selection.composition?.diverged
+  const disableTooltipText = disableToggle ? FLUX_SYNC_DISABLE_TEXT : ''
 
   const handleFluxSyncToggle = () => {
     toggleFluxSync(!fluxSync)
@@ -45,19 +47,24 @@ const SchemaBrowserHeading: FC = () => {
             onChange={handleFluxSyncToggle}
             testID="flux-sync--toggle"
             disabled={disableToggle}
-            tooltipText={disableToggle ? FLUX_SYNC_DISABLE_TEXT : ''}
+            tooltipText={disableTooltipText}
           />
           <InputLabel className="flux-sync--label">
-            <SelectorTitle
-              title="Flux Sync"
-              info={FLUX_SYNC_TOOLTIP}
-              icon={IconFont.Switch_New}
-            />
+            <div
+              className={`${disableToggle ? 'disabled' : ''}`}
+              title={disableTooltipText}
+            >
+              <SelectorTitle
+                title="Flux Sync"
+                info={FLUX_SYNC_TOOLTIP}
+                icon={IconFont.Sync}
+              />
+            </div>
           </InputLabel>
         </FlexBox>
       </FlexBox>
     ),
-    [fluxSync]
+    [fluxSync, toggleFluxSync]
   )
 }
 

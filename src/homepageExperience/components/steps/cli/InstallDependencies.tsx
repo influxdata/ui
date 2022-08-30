@@ -219,8 +219,13 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
           </p>
           <h2 style={headingWithMargin}>Expand the downloaded archive</h2>
           <p>
-            Expand the downloaded archive into C:\Program Files\InfluxData\ and
-            rename it if desired
+            Next, run{' '}
+            <SafeBlankLink href="https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.2#with-administrative-privileges-run-as-administrator">
+              PowerShell
+            </SafeBlankLink>{' '}
+            in elevated mode (running the PowerShell as Administrator) and
+            expand the zip archive to a directory - for example if the zip file
+            was added to Downloads folder, the commands are:
           </p>
           <CodeSnippet
             text={windowsCodeSnippet}
@@ -238,8 +243,8 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
             To invoke a command, move into the directory where the CLI package
             is installed and use the following format in the command line:
           </p>
-          <p style={{marginLeft: '40px'}}>.\influx [command]</p>
-          <Table borders={BorderType.All}>
+          <code style={{marginLeft: '40px'}}> .\influx [command]</code>
+          <Table borders={BorderType.All} style={{marginTop: '16px'}}>
             <Table.Body>
               <Table.Row>
                 <Table.Cell>bucket</Table.Cell>

@@ -66,14 +66,14 @@ export const EditorProvider: FC = ({children}) => {
   const injectViaLsp = useCallback(
     (cmd, data: Omit<ExecuteCommandArgument, 'textDocument'>) => {
       try {
-        if (connection.current && !isFlagEnabled('schemaComposition')) {
+        if (connection?.current && !isFlagEnabled('schemaComposition')) {
           connection.current.inject(cmd, data)
         }
       } catch (e) {
         console.error(e)
       }
     },
-    [editor, connection]
+    [editor, connection?.current]
   )
 
   const inject = useCallback(

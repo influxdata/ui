@@ -1,4 +1,5 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
+
 export const LOAD_MORE_LIMIT_INITIAL = 8
 export const LOAD_MORE_LIMIT = 25
 export const IMPORT_REGEXP = 'import "regexp"\n'
@@ -35,9 +36,36 @@ export const useSessionStorage = (keyName: string, defaultValue: any) => {
   const setValue = (newValue: any) => {
     try {
       window.sessionStorage.setItem(keyName, JSON.stringify(newValue))
+      window.dispatchEvent(
+        new CustomEvent('same.storage', {
+          detail: {key: keyName, oldValue: storedValue, newValue},
+        })
+      )
     } catch (err) {}
     setStoredValue(newValue)
   }
+
+  // multiple implementations of the same provider, though they share the same state
+  // in window.sessionStorage, will fall out of sync as their setStoredValue
+  // functions dont know about each other. there's a 'storage' event on window built
+  // to mitigate that issue, but it's only fired across tabs, which session storage
+  // doesn't even operate across. So here we're generating a custom event to keep
+  // all inter-tab invokations of the session storage hook in sync.
+  useEffect(() => {
+    const listen = (evt: CustomEvent) => {
+      if (!evt.detail.key || evt.detail.key !== keyName) {
+        return
+      }
+
+      setStoredValue(evt.detail.newValue)
+    }
+
+    window.addEventListener('same.storage', listen)
+
+    return () => {
+      window.removeEventListener('same.storage', listen)
+    }
+  }, [])
 
   return [storedValue, setValue]
 }

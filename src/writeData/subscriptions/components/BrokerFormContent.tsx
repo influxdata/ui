@@ -28,15 +28,18 @@ import {
   handleValidation,
   handlePortValidation,
   getSchemaFromProtocol,
+  MIN_PORT,
+  MAX_PORT,
 } from 'src/writeData/subscriptions/utils/form'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Types
-import {Subscription} from 'src/types/subscriptions'
+import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   formContent: Subscription
@@ -68,6 +71,9 @@ const BrokerFormContent: FC<Props> = ({
     })
   }, [])
 
+  const showHostPortExampleText =
+    !!formContent.brokerHost ||
+    (!!formContent.brokerPort && !isNaN(formContent.brokerPort))
   return (
     <Grid>
       <Grid.Row>
@@ -201,7 +207,7 @@ const BrokerFormContent: FC<Props> = ({
               {status => (
                 <Input
                   type={InputType.Text}
-                  placeholder="0.0.0.0"
+                  placeholder="e.g: broker.example.com"
                   name="host"
                   autoFocus={false}
                   value={formContent.brokerHost}
@@ -244,7 +250,7 @@ const BrokerFormContent: FC<Props> = ({
               {status => (
                 <Input
                   type={InputType.Number}
-                  placeholder="1883"
+                  placeholder={`Between ${MIN_PORT} - ${MAX_PORT}`}
                   name="port"
                   autoFocus={false}
                   value={formContent.brokerPort}
@@ -269,16 +275,24 @@ const BrokerFormContent: FC<Props> = ({
               )}
             </Form.ValidationElement>
           </FlexBox>
-          <Heading
-            element={HeadingElement.H5}
-            weight={FontWeight.Regular}
-            className={`${className}-broker-form__example-text`}
-          >
-            {/* TODO: update `false` after cert support */}
-            {getSchemaFromProtocol(formContent.protocol, false)}
-            {formContent.brokerHost ? formContent.brokerHost : '0.0.0.0'}:
-            {formContent.brokerPort ? formContent.brokerPort : '1883'}
-          </Heading>
+          {showHostPortExampleText && (
+            <Heading
+              element={HeadingElement.H5}
+              weight={FontWeight.Regular}
+              className={`${className}-broker-form__example-text`}
+            >
+              {getSchemaFromProtocol(
+                formContent.protocol,
+                isFlagEnabled('subscriptionsCertificateSupport') &&
+                  formContent.authType === BrokerAuthTypes.Certificate
+              )}
+              {`${formContent.brokerHost}:${
+                !!formContent.brokerPort && !isNaN(formContent.brokerPort)
+                  ? formContent.brokerPort
+                  : ''
+              }`}
+            </Heading>
+          )}
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve}>
           <Heading
@@ -296,7 +310,7 @@ const BrokerFormContent: FC<Props> = ({
               name="no-security"
               id="none"
               testID={`${className}-broker-form-no-security--button`}
-              active={formContent.authType === 'none'}
+              active={formContent.authType === BrokerAuthTypes.None}
               onClick={() => {
                 event(
                   'broker security toggle',
@@ -305,7 +319,7 @@ const BrokerFormContent: FC<Props> = ({
                 )
                 updateForm({
                   ...formContent,
-                  authType: 'none',
+                  authType: BrokerAuthTypes.None,
                   brokerUsername: null,
                   brokerPassword: null,
                   brokerCACert: null,
@@ -323,7 +337,7 @@ const BrokerFormContent: FC<Props> = ({
               name="user"
               id="user"
               testID={`${className}-broker-form--user--button`}
-              active={formContent.authType === 'user'}
+              active={formContent.authType === BrokerAuthTypes.User}
               onClick={() => {
                 event(
                   'broker security toggle',
@@ -332,7 +346,7 @@ const BrokerFormContent: FC<Props> = ({
                 )
                 updateForm({
                   ...formContent,
-                  authType: 'user',
+                  authType: BrokerAuthTypes.User,
                   brokerCACert: null,
                   brokerClientCert: null,
                   brokerClientKey: null,
@@ -348,7 +362,7 @@ const BrokerFormContent: FC<Props> = ({
               name="certificate"
               id="certificate"
               testID="certificate--button"
-              active={formContent.authType === 'certificate'}
+              active={formContent.authType === BrokerAuthTypes.Certificate}
               onClick={() => {
                 event(
                   'broker security toggle',
@@ -359,7 +373,7 @@ const BrokerFormContent: FC<Props> = ({
                   ...formContent,
                   brokerUsername: null,
                   brokerPassword: null,
-                  authType: 'certificate',
+                  authType: BrokerAuthTypes.Certificate,
                 })
               }}
               value="certificate"
@@ -369,7 +383,7 @@ const BrokerFormContent: FC<Props> = ({
               Certificate
             </SelectGroup.Option>
           </SelectGroup>
-          {formContent.authType === 'user' && (
+          {formContent.authType === BrokerAuthTypes.User && (
             <UserInput
               formContent={formContent}
               updateForm={updateForm}
@@ -377,7 +391,7 @@ const BrokerFormContent: FC<Props> = ({
               edit={edit}
             />
           )}
-          {formContent.authType === 'certificate' && (
+          {formContent.authType === BrokerAuthTypes.Certificate && (
             <CertificateInput
               subscription={formContent}
               updateForm={updateForm}

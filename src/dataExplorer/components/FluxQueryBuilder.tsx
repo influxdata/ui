@@ -30,15 +30,34 @@ import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 import './FluxQueryBuilder.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+export enum OverlayType {
+  NEW = 'new',
+  OPEN = 'open',
+  SAVE = 'save',
+}
+
 const FluxQueryBuilder: FC = () => {
-  const {query, vertical, setVertical} = useContext(PersistanceContext)
-  const [isPromptVisible, setIsPromptVisible] = useState(false)
+  const {
+    query,
+    setQuery,
+    vertical,
+    setVertical,
+    clearSchemaSelection,
+  } = useContext(PersistanceContext)
+  const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
 
   return (
     <EditorProvider>
       <SidebarProvider>
-        <Overlay visible={isPromptVisible}>
-          <SaveAsScript onClose={() => setIsPromptVisible(false)} />
+        <Overlay visible={overlayType !== null}>
+          <SaveAsScript
+            type={overlayType}
+            onClose={() => setOverlayType(null)}
+            onClear={() => {
+              clearSchemaSelection()
+              setQuery('')
+            }}
+          />
         </Overlay>
         <FlexBox
           className="flux-query-builder--container"
@@ -51,7 +70,7 @@ const FluxQueryBuilder: FC = () => {
             data-testid="flux-query-builder--menu"
           >
             <Button
-              onClick={() => setIsPromptVisible(true)}
+              onClick={() => setOverlayType(OverlayType.NEW)}
               text="New Script"
               icon={IconFont.Plus_New}
               status={
@@ -62,10 +81,22 @@ const FluxQueryBuilder: FC = () => {
             />
             {isFlagEnabled('saveAsScript') && (
               <Button
-                onClick={() => {
-                  // TODO(ariel): hook this up
-                }}
-                text="Save Script"
+                className="flux-query-builder__action-button"
+                onClick={() => setOverlayType(OverlayType.OPEN)}
+                text="Open"
+                icon={IconFont.Export_New}
+              />
+            )}
+            {isFlagEnabled('saveAsScript') && (
+              <Button
+                className="flux-query-builder__action-button"
+                onClick={() => setOverlayType(OverlayType.SAVE)}
+                status={
+                  query.length === 0
+                    ? ComponentStatus.Disabled
+                    : ComponentStatus.Default
+                }
+                text="Save"
                 icon={IconFont.Save}
               />
             )}

@@ -14,10 +14,6 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
-const FLUX_SYNC_TOOLTIP = `Flux Sync autopopulates the script editor to help you \
-start a query. You can turn this feature on and off, but typing within this \
-section will disable synchronization.`
-
 const FLUX_SYNC_DISABLE_TEXT = `Schema Sync is no longer available because the \
 code block has been edited.`
 
@@ -30,6 +26,20 @@ const SchemaBrowserHeading: FC = () => {
   const handleFluxSyncToggle = () => {
     toggleFluxSync(!fluxSync)
   }
+
+  const tooltipContents = (
+    <div>
+      <span>
+        Flux Sync autopopulates the script editor to help you start a query.
+      </span>
+      <br />
+      <br />
+      <span>
+        You can turn this feature on and off, but typing within this section
+        will disable synchronization.
+      </span>
+    </div>
+  )
 
   return useMemo(
     () => (
@@ -50,7 +60,7 @@ const SchemaBrowserHeading: FC = () => {
           <InputLabel className="flux-sync--label">
             <SelectorTitle
               label="Flux Sync"
-              tooltipContents={FLUX_SYNC_TOOLTIP}
+              tooltipContents={tooltipContents}
               icon={IconFont.Sync}
             />
           </InputLabel>

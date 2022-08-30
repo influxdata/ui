@@ -81,4 +81,31 @@ describe('Editor+LSP communication', () => {
 
     runTest('time-machine--bottom')
   })
+
+  describe('in Script Editor', () => {
+    before(() => {
+      cy.flush()
+      cy.signin()
+      cy.get('@org').then(({id}: Organization) => {
+        cy.visit(`/orgs/${id}/data-explorer`)
+        cy.getByTestID('tree-nav').should('be.visible')
+        cy.setFeatureFlags({
+          newDataExplorer: true,
+        }).then(() => {
+          cy.wait(1200)
+          cy.getByTestID('flux-query-builder-toggle').then($toggle => {
+            cy.wrap($toggle).should('be.visible')
+            // Switch to Flux Query Builder if not yet
+            if (!$toggle.hasClass('active')) {
+              // hasClass is a jQuery function
+              $toggle.click()
+              cy.getByTestID('flux-query-builder--menu').contains('New Script')
+            }
+          })
+        })
+      })
+    })
+
+    runTest('flux-editor')
+  })
 })

@@ -1,6 +1,8 @@
 // Libraries
 import React from 'react'
 import {fireEvent, render} from '@testing-library/react'
+import {jest} from '@jest/globals'
+
 // Components
 import ScatterOptions from 'src/visualization/types/Scatter/options'
 import {TimeDomainAutoToggle} from 'src/visualization/types/Scatter/TimeAutoToggle'
@@ -9,7 +11,6 @@ import {renderWithRedux} from 'src/mockState'
 import {mockAppState} from 'src/mockAppState'
 import {useVisXDomainSettings} from 'src/visualization/utils/useVisDomainSettings'
 import {defaultXColumn} from 'src/shared/utils/vis'
-import {mocked} from 'ts-jest/utils'
 
 jest.mock('src/shared/utils/vis')
 jest.mock('src/timeMachine/selectors')
@@ -26,7 +27,7 @@ const table = {
 }
 describe('Time Domain Auto Toggle', () => {
   const setup = ({properties = {}, results = {}}) => {
-    const props = {
+    const props: any = {
       properties: {
         fillColumns: ['a', 'b'],
         symbolColumns: ['a'],
@@ -71,8 +72,8 @@ describe('Time Domain Auto Toggle', () => {
       expect(queryByTestId('time-domain-toggle')).toEqual(null)
     })
     it('renders if value of `xColumn` is `_time`', () => {
-      mocked(defaultXColumn).mockReturnValue('_time')
-      mocked(useVisXDomainSettings).mockReturnValue([])
+      jest.mocked(defaultXColumn).mockReturnValue('_time')
+      jest.mocked(useVisXDomainSettings).mockReturnValue([])
       const {queryByTestId} = setup({
         properties: {
           xColumn: '_time',
@@ -87,7 +88,7 @@ describe('Time Domain Auto Toggle', () => {
       jest.clearAllMocks()
     })
     it('is disabled if time domain is not available', () => {
-      mocked(useVisXDomainSettings).mockReturnValue([])
+      jest.mocked(useVisXDomainSettings).mockReturnValue([])
       const setDomainMock = jest.fn()
       const {getByTestId} = render(
         <TimeDomainAutoToggle
@@ -100,7 +101,7 @@ describe('Time Domain Auto Toggle', () => {
       expect(setDomainMock).not.toHaveBeenCalled()
     })
     it('fires setDomain call to set time with range if clicked from off to on, then resets when going from on to off', () => {
-      mocked(useVisXDomainSettings).mockReturnValue([[0, 20]])
+      jest.mocked(useVisXDomainSettings).mockReturnValue([[0, 20]])
       const setDomainMock = jest.fn()
       const {getByTestId} = render(
         <TimeDomainAutoToggle

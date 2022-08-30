@@ -1,8 +1,6 @@
 import React from 'react'
 import {screen, fireEvent, cleanup, waitFor} from '@testing-library/react'
-import {renderWithReduxAndRouter} from 'src/mockState'
-import {Me} from 'src/client/unityRoutes'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 
 // Imported mocks
 import {
@@ -12,24 +10,27 @@ import {
 import TreeNav from 'src/pageLayout/containers/TreeNav'
 import {notify} from 'src/shared/actions/notifications'
 import {supportRequestError} from 'src/shared/copy/notifications'
+import {renderWithReduxAndRouter} from 'src/mockState'
+
+import {Me} from 'src/client/unityRoutes'
 
 jest.mock('src/flows', () => {
   return () => <></>
 })
 jest.mock('src/pageLayout/utils', () => ({
-  ...jest.requireActual('src/templates/api/index.ts'),
   getNavItemActivation: jest.fn(() => {
     return false
   }),
 }))
-jest.mock('src/checks/components/NewThresholdCheckEO.tsx', () => () => null)
-jest.mock('src/checks/components/NewDeadmanCheckEO.tsx', () => () => null)
+jest.mock('src/checks/components/NewThresholdCheckEO', () => () => null)
+jest.mock('src/checks/components/NewDeadmanCheckEO', () => () => null)
+
+const postUiproxySfdcSupportMock: any = jest.fn()
 
 jest.mock(
   'src/client/uiproxydRoutes',
   () => ({
-    postUiproxySfdcSupport: jest
-      .fn()
+    postUiproxySfdcSupport: (jest.fn() as any)
       .mockResolvedValueOnce({
         status: 204,
         headers: {},
@@ -44,8 +45,7 @@ jest.mock(
   {virtual: true}
 )
 
-jest.mock('src/shared/utils/featureFlag.ts', () => ({
-  ...jest.requireActual('src/shared/utils/featureFlag.ts'),
+jest.mock('src/shared/utils/featureFlag', () => ({
   isFlagEnabled: jest.fn(() => true),
 }))
 
@@ -218,7 +218,7 @@ describe('PAYG Contact Support', () => {
       fireEvent.click(submitButton)
     })
 
-    const [notifyCallArguments] = mocked(notify).mock.calls
+    const [notifyCallArguments] = jest.mocked(notify).mock.calls
     const [notifyMessage] = notifyCallArguments
     expect(notifyMessage).toEqual(supportRequestError())
   })

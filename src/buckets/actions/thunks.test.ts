@@ -1,10 +1,12 @@
+import {jest} from '@jest/globals'
+
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {fetchAllBuckets} from 'src/buckets/api'
 import * as api from 'src/client'
 import {getMockAppState} from 'src/mockAppState'
 import {RemoteDataState} from '@influxdata/clockface'
 import {PublishNotificationAction} from 'src/shared/actions/notifications'
-import {mocked} from 'ts-jest/utils'
+
 
 jest.mock('src/client', () => ({
   getBuckets: jest.fn(),
@@ -32,7 +34,7 @@ const mockGetBuckets = (shouldSucess: boolean) => {
             status: 500,
           }
     ) as ReturnType<typeof api.getBuckets>
-  mocked(api.getBuckets).mockImplementationOnce(mock)
+  jest.mocked(api.getBuckets).mockImplementationOnce(mock)
 }
 
 describe('buckets thunks', () => {
@@ -61,7 +63,7 @@ describe('buckets thunks', () => {
 
       await getBuckets()(dispatch, getState)
 
-      const dispatched = dispatch.mock.calls.map(([x]) => x)
+      const dispatched: any = dispatch.mock.calls.map(([x]) => x)
 
       expect(dispatched.length).toBe(2)
       expect(dispatched[0].status).toBe(RemoteDataState.Loading)
@@ -76,7 +78,7 @@ describe('buckets thunks', () => {
 
       await getBuckets()(dispatch, getState)
 
-      const dispatched = dispatch.mock.calls.map(([x]) => x)
+      const dispatched: any = dispatch.mock.calls.map(([x]) => x)
 
       expect(dispatched.length).toBe(3)
       expect(dispatched[0].status).toBe(RemoteDataState.Loading)

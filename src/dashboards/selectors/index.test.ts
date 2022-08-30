@@ -1,5 +1,6 @@
+import {jest} from '@jest/globals'
+
 // Funcs
-import {mocked} from 'ts-jest/utils'
 import {
   getTimeRange,
   getTimeRangeWithTimezone,
@@ -148,7 +149,7 @@ describe('Dashboards.Selector', () => {
       type: 'custom',
     }
     // Offset for PST
-    mocked(getTimezoneOffset).mockImplementation(() => 420)
+    jest.mocked(getTimezoneOffset).mockImplementation(() => 420)
 
     expect(
       untypedGetTimeRangeWithTimeZone({ranges, currentDashboard, app})
@@ -181,7 +182,7 @@ describe('Dashboards.Selector', () => {
       type: 'custom',
     }
     // Offset for CET
-    mocked(getTimezoneOffset).mockImplementation(() => -120)
+    jest.mocked(getTimezoneOffset).mockImplementation(() => -120)
 
     expect(
       untypedGetTimeRangeWithTimeZone({ranges, currentDashboard, app})
@@ -210,7 +211,7 @@ describe('Dashboards.Selector', () => {
 
     const expected = customTimeRangeUTC
 
-    mocked(getTimezoneOffset).mockImplementation(() => 0)
+    jest.mocked(getTimezoneOffset).mockImplementation(() => 0)
 
     expect(
       untypedGetTimeRangeWithTimeZone({ranges, currentDashboard, app})
@@ -243,7 +244,7 @@ describe('Dashboards.Selector', () => {
       type: 'custom',
     }
 
-    mocked(getTimezoneOffset).mockImplementation(() => 0)
+    jest.mocked(getTimezoneOffset).mockImplementation(() => 0)
 
     expect(
       untypedGetTimeRangeWithTimeZone({ranges, currentDashboard, app})
@@ -261,7 +262,7 @@ describe('Dashboards.Selector helper method(s)', () => {
     const expectedUTCTime = '2021-07-04T12:00:00Z'
 
     // mock the time zone offset for GMT-7
-    mocked(getTimezoneOffset).mockImplementation(() => 420)
+    jest.mocked(getTimezoneOffset).mockImplementation(() => 420)
 
     expect(setTimeToUTC(localTimeString)).toEqual(expectedUTCTime)
   })
@@ -275,7 +276,7 @@ describe('Dashboards.Selector helper method(s)', () => {
     const expectedUTCTime = '2021-07-04T12:00:00Z'
 
     // mock the time zone offset for GMT-5
-    mocked(getTimezoneOffset).mockImplementation(() => 300)
+    jest.mocked(getTimezoneOffset).mockImplementation(() => 300)
 
     expect(setTimeToUTC(localTimeString)).toEqual(expectedUTCTime)
   })
@@ -289,7 +290,7 @@ describe('Dashboards.Selector helper method(s)', () => {
     const expectedUTCTime = '2021-07-04T12:00:00Z'
 
     // mock the time zone offset for GMT
-    mocked(getTimezoneOffset).mockImplementation(() => 0)
+    jest.mocked(getTimezoneOffset).mockImplementation(() => 0)
 
     expect(setTimeToUTC(localTimeString)).toEqual(expectedUTCTime)
   })

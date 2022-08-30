@@ -152,7 +152,6 @@
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
     "terser-webpack-plugin": "4.0.0",
-    "ts-jest": "^27.0.7",
     "ts-loader": "^5.3.3",
     "ts-node": "^8.3.0",
     "tslib": "^2.0.3",

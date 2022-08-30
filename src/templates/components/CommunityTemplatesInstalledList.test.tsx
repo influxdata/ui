@@ -2,7 +2,7 @@
 import React from 'react'
 import {createStore} from 'redux'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 
 // Manual mocks
 jest.mock('src/cloud/utils/reporting')
@@ -113,10 +113,10 @@ describe('the Community Templates installed List', () => {
         const deleteButton = getByTitle('Delete')
         fireEvent.click(deleteButton)
       })
-      const [eventCallArguments] = mocked(event).mock.calls
+      const [eventCallArguments] = jest.mocked(event).mock.calls
       const [eventName] = eventCallArguments
       expect(eventName).toBe('template_delete')
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(communityTemplateDeleteSucceeded('github'))
 
@@ -126,7 +126,7 @@ describe('the Community Templates installed List', () => {
     })
 
     it('handles failures in the delete', async () => {
-      mocked(event).mockImplementation(() => {
+      jest.mocked(event).mockImplementation(() => {
         throw new Error('fake error')
       })
 
@@ -161,11 +161,11 @@ describe('the Community Templates installed List', () => {
         const deleteButton = getByTitle('Delete')
         fireEvent.click(deleteButton)
       })
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(communityTemplateDeleteFailed())
 
-      const [honeyBadgerCallArguments] = mocked(
+      const [honeyBadgerCallArguments] = jest.mocked(
         reportErrorThroughHoneyBadger
       ).mock.calls
       expect(honeyBadgerCallArguments[1]).toEqual({

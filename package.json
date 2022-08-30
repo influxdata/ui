@@ -214,7 +214,6 @@
     "react-monaco-editor": "^0.47.0",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
-    "react-select": "^5.2.2",
     "react-syntax-highlighter": "^15.5.0",
     "react-virtualized": "^9.18.5",
     "redux": "^4.0.0",

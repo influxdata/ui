@@ -35,6 +35,10 @@
   .flux-sync--label {
     padding-left: $cf-space-2xs;
 
+    .disabled {
+      opacity: 50%;
+    }
+
     .selector-title {
       padding-bottom: 0;
     }

@@ -51,7 +51,7 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
   },
 }
 
-export const DEFAULT_CONTEXT = {
+const DEFAULT_CONTEXT = {
   horizontal: [0.2],
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,

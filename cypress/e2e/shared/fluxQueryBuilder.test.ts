@@ -1,8 +1,15 @@
 import {Organization} from '../../../src/types'
-import {
-  DEFAULT_SCHEMA,
-  DEFAULT_CONTEXT,
-} from '../../../src/dataExplorer/context/persistance'
+
+const DEFAULT_SCHEMA = {
+  bucket: null,
+  measurement: null,
+  fields: [],
+  tagValues: [],
+  composition: {
+    synced: true,
+    diverged: false,
+  },
+}
 
 describe('Script Builder', () => {
   beforeEach(() => {
@@ -187,7 +194,7 @@ describe('Script Builder', () => {
         'dataExplorer.schema',
         JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
       )
-      window.sessionStorage.setItem('dataExplorer.query', DEFAULT_CONTEXT.query)
+      window.sessionStorage.setItem('dataExplorer.query', '')
 
       cy.setFeatureFlags({
         schemaComposition: true,

@@ -7,7 +7,6 @@ import {getMockAppState} from 'src/mockAppState'
 import {RemoteDataState} from '@influxdata/clockface'
 import {PublishNotificationAction} from 'src/shared/actions/notifications'
 
-
 jest.mock('src/client', () => ({
   getBuckets: jest.fn(),
 }))

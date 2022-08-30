@@ -134,9 +134,9 @@ describe('TokensTab', () => {
       fireEvent.click(screen.getByText('Confirm'))
 
       await waitFor(() => expect(deleteAuthorization).toBeCalled())
-      expect(jest.mocked(deleteAuthorization).mock.calls[0][0]['authID']).toEqual(
-        tokenID
-      )
+      expect(
+        jest.mocked(deleteAuthorization).mock.calls[0][0]['authID']
+      ).toEqual(tokenID)
       expect(ui.store.getState().resources.tokens.byID[tokenID]).toBeFalsy()
       expect(ui.store.getState().resources.tokens.allIDs).not.toContain(tokenID)
     })

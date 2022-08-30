@@ -288,7 +288,9 @@ describe('Tasks.Containers.TasksPage', () => {
 
       await waitFor(() => expect(postTask).toBeCalled())
 
-      expect(jest.mocked(getTask).mock.calls[0][0].taskID).toEqual(InactiveTask.id)
+      expect(jest.mocked(getTask).mock.calls[0][0].taskID).toEqual(
+        InactiveTask.id
+      )
 
       expect(jest.mocked(parse).mock.calls[0][0]).toEqual(sampleScript)
 
@@ -320,7 +322,9 @@ describe('Tasks.Containers.TasksPage', () => {
       fireEvent.click(activateToggle)
       await waitFor(() => expect(patchTask).toBeCalled())
 
-      expect(jest.mocked(patchTask).mock.calls[0][0].data.status).toEqual('active')
+      expect(jest.mocked(patchTask).mock.calls[0][0].data.status).toEqual(
+        'active'
+      )
 
       expect(
         ui.store.getState().resources.tasks.byID[InactiveTask.id].status

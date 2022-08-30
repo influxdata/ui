@@ -4,7 +4,8 @@ import {getStore} from 'src/store/configureStore'
 
 jest.mock('src/store/configureStore')
 
-jest.mocked(getStore)
+jest
+  .mocked(getStore)
   .mockImplementationOnce(() => {
     return {
       getState: jest.fn(() => {

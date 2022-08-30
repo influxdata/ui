@@ -123,7 +123,9 @@ describe('history utils', () => {
       loadStatuses(id, {limit: 100, offset: 0, until: 0})
 
       expect(jest.mocked(runQuery).mock.calls[0][0]).toBe('some-id')
-      expect(jest.mocked(processResponse).mock.calls[0][0]).toBe(runqueryReturnObj)
+      expect(jest.mocked(processResponse).mock.calls[0][0]).toBe(
+        runqueryReturnObj
+      )
     })
 
     it('should use all passed arguments to build query', () => {

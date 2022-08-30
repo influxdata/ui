@@ -1,4 +1,5 @@
 @use 'src/identity/components/GlobalHeader/GlobalHeaderStyle.scss' as gh;
+@import '@influxdata/clockface/dist/variables.scss';
 
 // Reduce size of page headers
 .multi-org .cf-page-header {
@@ -20,4 +21,13 @@
 // Page-specific fix for Data Explorer - New
 .multi-org .flux-query-builder--container {
   height: calc(100% - gh.$globalheader-height);
+}
+
+.cf-notification-container {
+  &.cf-notification__top {
+    top: $cf-space-2xs;
+  }
+  &.cf-notification__right {
+    right: $cf-space-2xs;
+  }
 }

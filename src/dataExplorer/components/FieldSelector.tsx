@@ -132,7 +132,7 @@ const FieldSelector: FC = () => {
         testID="field-selector"
       >
         <Accordion.AccordionHeader className="field-selector--header">
-          <SelectorTitle title="Fields" info={FIELD_TOOLTIP} />
+          <SelectorTitle label="Fields" tooltipContents={FIELD_TOOLTIP} />
         </Accordion.AccordionHeader>
         <div
           className="container-side-bar--fields"

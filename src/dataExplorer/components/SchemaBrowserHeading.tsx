@@ -49,8 +49,8 @@ const SchemaBrowserHeading: FC = () => {
           />
           <InputLabel className="flux-sync--label">
             <SelectorTitle
-              title="Flux Sync"
-              info={FLUX_SYNC_TOOLTIP}
+              label="Flux Sync"
+              tooltipContents={FLUX_SYNC_TOOLTIP}
               icon={IconFont.Sync}
             />
           </InputLabel>

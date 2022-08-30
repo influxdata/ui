@@ -12,7 +12,7 @@ export const executeVWO = () => {
         library_tolerance = 2500,
         use_existing_jquery = false,
         is_spa = 1,
-        hide_element = 'body',
+        hide_element = '',
         /* DO NOT EDIT BELOW THIS LINE */
         f = false,
         d = document,

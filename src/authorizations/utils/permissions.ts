@@ -49,7 +49,7 @@ export const allAccessPermissions = (
   userID: string
 ): Permission[] => {
   const withOrgID = ensureT(orgID, userID)
-  return allPermissionTypes.flatMap(withOrgID)
+  return allPermissionTypes.filter(perm => String(perm) !== "instance").flatMap(withOrgID)
 }
 
 export const formatResources = resourceNames => {

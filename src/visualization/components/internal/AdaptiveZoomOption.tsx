@@ -40,7 +40,8 @@ const adaptiveZoomTooltip = (
   <div>
     <p>
       When enabled, will re-query on the selected domain upon zooming in on the
-      graph. Requires window period set to Auto.
+      graph. The window period will be the auto or custom window period
+      selected.
     </p>
     <p>
       <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/visualize-data/variables/#vwindowperiod">

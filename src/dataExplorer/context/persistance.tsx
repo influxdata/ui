@@ -37,6 +37,7 @@ interface ContextType {
   setQuery: (val: string) => void
   setResource: (val: ResourceConnectedQuery<any>) => void
   setSelection: (val: RecursivePartial<SchemaSelection>) => void
+  clearSchemaSelection: () => void
 
   save: () => Promise<ResourceConnectedQuery<any>>
 }
@@ -47,7 +48,7 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
   fields: [] as string[],
   tagValues: [] as TagKeyValuePair[],
   composition: {
-    synced: false,
+    synced: true,
     diverged: false,
   },
 }
@@ -59,7 +60,7 @@ const DEFAULT_CONTEXT = {
   range: DEFAULT_TIME_RANGE,
   query: '',
   resource: null,
-  selection: DEFAULT_SCHEMA,
+  selection: JSON.parse(JSON.stringify(DEFAULT_SCHEMA)),
 
   setHasChanged: (_: boolean) => {},
   setHorizontal: (_: number[]) => {},
@@ -68,7 +69,7 @@ const DEFAULT_CONTEXT = {
   setQuery: (_: string) => {},
   setResource: (_: any) => {},
   setSelection: (_: RecursivePartial<SchemaSelection>) => {},
-
+  clearSchemaSelection: () => {},
   save: () => Promise.resolve(null),
 }
 
@@ -125,6 +126,10 @@ export const PersistanceProvider: FC = ({children}) => {
     },
     [hasChanged]
   )
+
+  const clearSchemaSelection = () => {
+    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
+  }
 
   const setSchemaSelection = useCallback(
     schema => {
@@ -185,6 +190,7 @@ export const PersistanceProvider: FC = ({children}) => {
         setQuery: handleSetQuery,
         setResource: handleSetResource,
         setSelection: setSchemaSelection,
+        clearSchemaSelection,
 
         save,
       }}

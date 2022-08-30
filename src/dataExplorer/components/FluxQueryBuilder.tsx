@@ -43,10 +43,15 @@ export enum OverlayType {
 }
 
 const FluxQueryBuilder: FC = () => {
-  const {hasChanged, query, vertical, setVertical} = useContext(
-    PersistanceContext
-  )
   const history = useHistory()
+  const {
+    hasChanged,
+    query,
+    setQuery,
+    vertical,
+    setVertical,
+    clearSchemaSelection,
+  } = useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
@@ -71,6 +76,10 @@ const FluxQueryBuilder: FC = () => {
           <SaveAsScript
             type={overlayType}
             onClose={() => setOverlayType(null)}
+            onClear={() => {
+              clearSchemaSelection()
+              setQuery('')
+            }}
           />
         </Overlay>
         <FlexBox

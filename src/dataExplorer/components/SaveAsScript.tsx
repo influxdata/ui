@@ -27,11 +27,12 @@ import {getOrg} from 'src/organizations/selectors'
 import OpenScript from 'src/dataExplorer/components/OpenScript'
 
 interface Props {
+  onClear: () => void
   onClose: () => void
   type: OverlayType | null
 }
 
-const SaveAsScript: FC<Props> = ({onClose, type}) => {
+const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const {hasChanged, resource, setResource, save} = useContext(
@@ -79,6 +80,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
+    onClear()
 
     history.replace(`/orgs/${org.id}/data-explorer/from/script`)
     if (type !== OverlayType.OPEN) {

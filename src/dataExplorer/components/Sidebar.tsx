@@ -76,7 +76,7 @@ const Sidebar: FC = () => {
 
   return (
     <div className="container-right-side-bar">
-      <SelectorTitle title="Flux library" info={TOOLTIP} />
+      <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
       {browser}
     </div>
   )

@@ -83,7 +83,27 @@ const App: FC = () => {
     }
 
     if (CLOUD && isFlagEnabled('vwoAbTesting')) {
-      executeVWO()
+      const removeHideStyleTag = () => {
+        // This id must correspond to the id of the <style> tag set in the VWO script.
+        const hideStyleTag = document.getElementById('_vis_opt_path_hides')
+        if (hideStyleTag) {
+          hideStyleTag.remove()
+        }
+      }
+
+      try {
+        setTimeout(() => {
+          removeHideStyleTag()
+        }, 2000)
+
+        executeVWO()
+      } catch (err) {
+        removeHideStyleTag()
+
+        reportErrorThroughHoneyBadger(err, {
+          name: 'VWO script failed to execute successfully',
+        })
+      }
     }
 
     setAutoFreeze(false)

@@ -1,4 +1,6 @@
 // this code is related to implementing the A/B testing tool VMO: https://vwo.com/
+// Whenever this script is updated, ensure that any changes are reflected in the
+// error handling in App.tsx, especially for any elements that change opacity of the page.
 /* eslint-disable */
 // @ts-nocheck
 export const executeVWO = () => {

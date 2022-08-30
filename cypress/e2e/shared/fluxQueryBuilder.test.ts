@@ -1,6 +1,10 @@
 import {Organization} from '../../../src/types'
+import {
+  DEFAULT_SCHEMA,
+  DEFAULT_CONTEXT,
+} from '../../../src/dataExplorer/context/persistance'
 
-describe('FluxQueryBuilder', () => {
+describe('Script Builder', () => {
   beforeEach(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {
@@ -174,6 +178,163 @@ describe('FluxQueryBuilder', () => {
       // not recommend to assert for searchTagKey value
       // since it will expand all the tag keys, which triggers
       // numbers of API calls that are time consuming and unnecessary
+    })
+  })
+
+  describe('Schema Composition', () => {
+    beforeEach(() => {
+      window.sessionStorage.setItem(
+        'dataExplorer.schema',
+        JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
+      )
+      window.sessionStorage.setItem('dataExplorer.query', DEFAULT_CONTEXT.query)
+
+      cy.setFeatureFlags({
+        schemaComposition: true,
+      }).then(() => {
+        cy.wait(1200).then(() => {
+          cy.reload()
+          cy.getByTestID('flux-sync--toggle')
+        })
+      })
+    })
+
+    const bucketName = 'defbuck'
+    const measurement = 'ndbc'
+
+    const selectSchema = () => {
+      cy.log('select bucket')
+      cy.getByTestID('bucket-selector--dropdown-button').click()
+      cy.getByTestID('bucket-selector--search-bar').type(bucketName)
+      cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
+      cy.getByTestID('bucket-selector--dropdown-button').should(
+        'contain',
+        bucketName
+      )
+
+      cy.log('select measurement')
+      cy.getByTestID('measurement-selector--dropdown-button')
+        .should('be.visible')
+        .should('contain', 'Select measurement')
+        .click()
+      cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
+      cy.getByTestID(`searchable-dropdown--item ${measurement}`)
+        .should('be.visible')
+        .click()
+      cy.getByTestID('measurement-selector--dropdown-button').should(
+        'contain',
+        measurement
+      )
+    }
+
+    const confirmSchemaComposition = () => {
+      cy.getByTestID('flux-editor', {timeout: 30000})
+        // we set a manual delay on page load, for composition initialization
+        .contains(`from(bucket: "${bucketName}")`, {timeout: 30000})
+      cy.getByTestID('flux-editor').contains(
+        `|> filter(fn: (r) => r._measurement == "${measurement}")`
+      )
+      cy.getByTestID('flux-editor').contains(
+        `|> yield(name: "_editor_composition")`
+      )
+    }
+
+    describe('basic ability:', () => {
+      it('can make a composition block', () => {
+        cy.getByTestID('flux-editor', {timeout: 30000})
+
+        cy.log('modify schema browser')
+        selectSchema()
+
+        cy.log('editor text contains the composition')
+        confirmSchemaComposition()
+      })
+    })
+
+    describe('default sync and resetting behavior:', () => {
+      it('sync defaults to on. Can be toggled on/off. And can diverge (be disabled).', () => {
+        cy.log('starts as synced')
+        cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+
+        cy.log('sync toggles on and off')
+        cy.getByTestID('flux-sync--toggle')
+          .should('have.class', 'active')
+          .click()
+          .should('not.have.class', 'active')
+          .click()
+          .should('have.class', 'active')
+
+        cy.log('can diverge from sync')
+        selectSchema()
+        confirmSchemaComposition()
+        cy.getByTestID('flux-editor').monacoType(
+          '{upArrow}{upArrow} // make diverge'
+        )
+
+        cy.log('toggle is now disabled')
+        cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
+      })
+
+      it('should clear the editor text, and schema browser, with a new script', () => {
+        cy.getByTestID('flux-editor', {timeout: 30000})
+
+        cy.log('modify schema browser')
+        selectSchema()
+
+        cy.log('editor text contains the composition')
+        cy.getByTestID('flux-editor').contains(
+          `|> yield(name: "_editor_composition")`
+        )
+
+        cy.log('click new script, and choose to delete current script')
+        cy.getByTestID('flux-query-builder--new-script').click({force: true})
+        cy.getByTestID('overlay--container')
+          .should('be.visible')
+          .within(() => {
+            cy.getByTestID('flux-query-builder--no-save').click()
+          })
+
+        cy.log('editor text is now empty')
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea.inputarea').should('have.value', '')
+        })
+
+        cy.log('schema browser has been cleared')
+        cy.getByTestID('bucket-selector--dropdown-button').contains(
+          'Select bucket'
+        )
+      })
+
+      it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {
+        cy.log('start with empty editor text')
+        cy.getByTestID('flux-editor', {timeout: 30000}).within(() => {
+          cy.get('textarea.inputarea').should('have.value', '')
+        })
+
+        cy.log('turn off sync')
+        cy.getByTestID('flux-sync--toggle')
+          .should('have.class', 'active')
+          .click()
+        cy.getByTestID('flux-sync--toggle').should('not.have.class', 'active')
+
+        cy.log('modify schema browser')
+        selectSchema()
+
+        cy.log('editor text is still empty')
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea.inputarea').should('have.value', '')
+        })
+
+        cy.log('turn on sync')
+        cy.getByTestID('flux-sync--toggle')
+          .should('not.have.class', 'active')
+          .click()
+        cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+
+        cy.log('editor text contains the composition')
+        cy.wait(3000)
+        confirmSchemaComposition()
+      })
     })
   })
 })

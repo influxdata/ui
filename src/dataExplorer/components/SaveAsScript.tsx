@@ -41,6 +41,20 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
 
+  const handleClose = () => {
+    if (!resource?.data?.id) {
+      delete resource.data?.name
+      delete resource.data?.description
+      setResource({
+        ...resource,
+        data: {
+          ...(resource?.data ?? {}),
+        },
+      })
+    }
+    onClose()
+  }
+
   const handleUpdateDescription = (event: ChangeEvent<HTMLInputElement>) => {
     setResource({
       ...resource,
@@ -75,17 +89,13 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const handleSaveScript = () => {
     try {
       save().then(() => {
-        dispatch(
-          notify(scriptSaveSuccess(resource?.data?.name ?? 'Untitled Script'))
-        )
+        dispatch(notify(scriptSaveSuccess(resource?.data?.name ?? '')))
         if (type === OverlayType.NEW) {
           clear()
         }
       })
     } catch (error) {
-      dispatch(
-        notify(scriptSaveFail(resource?.data?.name ?? 'Untitled Script'))
-      )
+      dispatch(notify(scriptSaveFail(resource?.data?.name ?? '')))
       console.error({error})
     } finally {
       if (type !== OverlayType.OPEN) {
@@ -105,14 +115,35 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   }
 
   if (!hasChanged && type === OverlayType.OPEN) {
-    return <OpenScript onClose={onClose} />
+    return <OpenScript onCancel={handleClose} onClose={onClose} />
+  }
+
+  const displayWarning =
+    (type === OverlayType.NEW && !resource?.data?.name) ||
+    (type === OverlayType.OPEN && !resource?.data?.name) ||
+    (type === OverlayType.OPEN && hasChanged && resource?.data?.id)
+
+  let saveText = 'Save'
+
+  if (resource?.data?.id) {
+    if (type === OverlayType.SAVE) {
+      saveText = 'Update'
+    } else {
+      saveText = 'Yes, Update'
+    }
+  } else {
+    if (type === OverlayType.SAVE) {
+      saveText = 'Save'
+    } else {
+      saveText = 'Yes, Save'
+    }
   }
 
   return (
     <Overlay.Container maxWidth={500}>
-      <Overlay.Header title={overlayTitle} onDismiss={onClose} />
+      <Overlay.Header title={overlayTitle} onDismiss={handleClose} />
       <Overlay.Body>
-        {type !== OverlayType.SAVE && (
+        {displayWarning && (
           <div className="save-script-overlay__warning-text">
             "{resource?.data?.name ?? 'Untitled Script'}" will be overwritten by
             a new one if you don’t save it.
@@ -127,6 +158,11 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
             type={InputType.Text}
             value={resource?.data?.name}
             onChange={handleUpdateName}
+            status={
+              resource?.data?.id
+                ? ComponentStatus.Disabled
+                : ComponentStatus.Default
+            }
           />
           <InputLabel>Description</InputLabel>
           <Input
@@ -141,7 +177,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
       <Overlay.Footer>
         <Button
           color={ComponentColor.Tertiary}
-          onClick={onClose}
+          onClick={handleClose}
           text="Cancel"
         />
         {type !== OverlayType.SAVE && (
@@ -161,7 +197,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
                 : ComponentStatus.Default
             }
             onClick={handleSaveScript}
-            text={type === OverlayType.SAVE ? 'Save' : 'Yes, Save'}
+            text={saveText}
           />
         )}
       </Overlay.Footer>

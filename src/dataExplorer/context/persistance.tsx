@@ -109,6 +109,13 @@ export const PersistanceProvider: FC = ({children}) => {
     JSON.parse(JSON.stringify(DEFAULT_CONTEXT.selection))
   )
 
+  const handleSetQuery = text => {
+    if (hasChanged === false) {
+      setHasChanged(true)
+    }
+    setQuery(text)
+  }
+
   const handleSetResource = useCallback(
     (resource: any) => {
       if (hasChanged === false) {
@@ -175,7 +182,7 @@ export const PersistanceProvider: FC = ({children}) => {
         setHorizontal,
         setVertical,
         setRange,
-        setQuery,
+        setQuery: handleSetQuery,
         setResource: handleSetResource,
         setSelection: setSchemaSelection,
 

@@ -1,4 +1,6 @@
 import React, {FC, useState, useContext} from 'react'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -25,10 +27,14 @@ import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
 import Schema from 'src/dataExplorer/components/Schema'
 import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
+import {QueryContext} from 'src/shared/contexts/query'
+import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getOrg} from 'src/organizations/selectors'
+import {RemoteDataState} from 'src/types'
 
 // Styles
 import './FluxQueryBuilder.scss'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export enum OverlayType {
   NEW = 'new',
@@ -40,7 +46,23 @@ const FluxQueryBuilder: FC = () => {
   const {hasChanged, query, vertical, setVertical} = useContext(
     PersistanceContext
   )
+  const history = useHistory()
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
+  const {cancel} = useContext(QueryContext)
+  const {setStatus, setResult} = useContext(ResultsContext)
+  const org = useSelector(getOrg)
+
+  const handleNewScript = () => {
+    if (hasChanged) {
+      setOverlayType(OverlayType.NEW)
+    } else {
+      cancel()
+      setStatus(RemoteDataState.NotStarted)
+      setResult(null)
+
+      history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+    }
+  }
 
   return (
     <EditorProvider>
@@ -62,7 +84,7 @@ const FluxQueryBuilder: FC = () => {
             data-testid="flux-query-builder--menu"
           >
             <Button
-              onClick={() => setOverlayType(OverlayType.NEW)}
+              onClick={handleNewScript}
               text="New Script"
               icon={IconFont.Plus_New}
               status={

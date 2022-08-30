@@ -24,6 +24,7 @@ import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
 import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
 import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 import TemplatePage from 'src/dataExplorer/components/resources/TemplatePage'
+import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -43,17 +44,38 @@ import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 const DataExplorerPageHeader: FC = () => {
   const {fluxQueryBuilder, setFluxQueryBuilder} = useContext(AppSettingContext)
-  const {resource} = useContext(PersistanceContext)
+  const {resource, setResource} = useContext(PersistanceContext)
 
   const toggleSlider = () => {
     event('toggled new query builder', {active: `${!fluxQueryBuilder}`})
     setFluxQueryBuilder(!fluxQueryBuilder)
   }
 
-  let pageTitle = 'Data Explorer'
+  const handleRename = (name: string) => {
+    setResource({
+      ...resource,
+      data: {
+        ...resource.data,
+        name,
+      },
+    })
+  }
+
+  let pageTitle = <Page.Title title="Data Explorer" />
 
   if (fluxQueryBuilder && resource?.data?.hasOwnProperty('name')) {
-    pageTitle = resource?.data?.name ?? ''
+    if (resource?.data?.type === ResourceType.Scripts) {
+      pageTitle = <Page.Title title={resource?.data?.name ?? ''} />
+    } else {
+      pageTitle = (
+        <RenamablePageTitle
+          onRename={handleRename}
+          name={resource?.data?.name || ''}
+          placeholder="Untitled Script"
+          maxLength={100}
+        />
+      )
+    }
   }
 
   return (
@@ -64,7 +86,7 @@ const DataExplorerPageHeader: FC = () => {
       }--header`}
       testID="data-explorer--header"
     >
-      <Page.Title title={pageTitle} />
+      {pageTitle}
       <FlexBox margin={ComponentSize.Large}>
         <FeatureFlag name="newDataExplorer">
           <FlexBox margin={ComponentSize.Medium}>

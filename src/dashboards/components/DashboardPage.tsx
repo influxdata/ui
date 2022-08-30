@@ -63,7 +63,9 @@ const SingleDashboardPage: FC<ManualRefreshProps> = ({
   return (
     <>
       <DashboardHeader onManualRefresh={onManualRefresh} />
-      {!isFlagEnabled('multiOrg') && <RateLimitAlert alertOnly={true} location="dashboard page" />}
+      {!isFlagEnabled('multiOrg') && (
+        <RateLimitAlert alertOnly={true} location="dashboard page" />
+      )}
       <VariablesControlBar />
       <ErrorBoundary>
         <DashboardComponent manualRefresh={manualRefresh} />

@@ -25,8 +25,6 @@ jest.mock('src/pageLayout/utils', () => ({
 jest.mock('src/checks/components/NewThresholdCheckEO', () => () => null)
 jest.mock('src/checks/components/NewDeadmanCheckEO', () => () => null)
 
-const postUiproxySfdcSupportMock: any = jest.fn()
-
 jest.mock(
   'src/client/uiproxydRoutes',
   () => ({

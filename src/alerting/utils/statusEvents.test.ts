@@ -21,7 +21,9 @@ const csv = 'some csv'
 const cancel = jest.fn()
 
 describe('process statuses response', () => {
-  beforeEach(jest.clearAllMocks)
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
 
   const fluxGroupKeyUnion = ['']
   const resultColumnNames = []

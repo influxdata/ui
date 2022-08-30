@@ -31,7 +31,9 @@ const csv = 'some csv'
 const cancel = jest.fn()
 
 describe('history utils', () => {
-  beforeEach(jest.clearAllMocks)
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
 
   const fluxGroupKeyUnion = ['']
   const resultColumnNames = []

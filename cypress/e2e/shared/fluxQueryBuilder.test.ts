@@ -198,7 +198,10 @@ describe('Script Builder', () => {
 
       cy.setFeatureFlags({
         schemaComposition: true,
+        saveAsScript: true,
       }).then(() => {
+        // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+        // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
         cy.wait(1200).then(() => {
           cy.reload()
           cy.getByTestID('flux-sync--toggle')
@@ -237,6 +240,7 @@ describe('Script Builder', () => {
     const confirmSchemaComposition = () => {
       cy.getByTestID('flux-editor', {timeout: 30000})
         // we set a manual delay on page load, for composition initialization
+        // https://github.com/influxdata/ui/blob/e76f934c6af60e24c6356f4e4ce9b067e5a9d0d5/src/languageSupport/languages/flux/lsp/connection.ts#L435-L440
         .contains(`from(bucket: "${bucketName}")`, {timeout: 30000})
       cy.getByTestID('flux-editor').contains(
         `|> filter(fn: (r) => r._measurement == "${measurement}")`
@@ -245,18 +249,6 @@ describe('Script Builder', () => {
         `|> yield(name: "_editor_composition")`
       )
     }
-
-    describe('basic ability:', () => {
-      it('can make a composition block', () => {
-        cy.getByTestID('flux-editor', {timeout: 30000})
-
-        cy.log('modify schema browser')
-        selectSchema()
-
-        cy.log('editor text contains the composition')
-        confirmSchemaComposition()
-      })
-    })
 
     describe('default sync and resetting behavior:', () => {
       it('sync defaults to on. Can be toggled on/off. And can diverge (be disabled).', () => {
@@ -339,6 +331,8 @@ describe('Script Builder', () => {
         cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
 
         cy.log('editor text contains the composition')
+        // we set a manual delay for composition initialization
+        // https://github.com/influxdata/ui/blob/e76f934c6af60e24c6356f4e4ce9b067e5a9d0d5/src/languageSupport/languages/flux/lsp/connection.ts#L435-L440
         cy.wait(3000)
         confirmSchemaComposition()
       })

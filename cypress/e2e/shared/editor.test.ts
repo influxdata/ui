@@ -92,6 +92,8 @@ describe('Editor+LSP communication', () => {
         cy.setFeatureFlags({
           newDataExplorer: true,
         }).then(() => {
+          // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+          // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
           cy.wait(1200)
           cy.getByTestID('flux-query-builder-toggle').then($toggle => {
             cy.wrap($toggle).should('be.visible')

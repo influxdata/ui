@@ -11,7 +11,7 @@ import LimitChecker from 'src/cloud/components/LimitChecker'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const BillingPage: FC = () => {
   return (

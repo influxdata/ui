@@ -34,7 +34,7 @@ import {ResourceIDs} from 'src/checks/reducers'
 import {ResourceType, AlertHistoryType, AppState} from 'src/types'
 import {RouteComponentProps} from 'react-router-dom'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const ResourceIDsContext = createContext<ResourceIDs>(null)
 

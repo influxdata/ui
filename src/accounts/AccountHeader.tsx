@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 import {Page} from '@influxdata/clockface'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import LimitChecker from 'src/cloud/components/LimitChecker'
-import {isFlagEnabled} from '../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type Props = {
   testID?: string

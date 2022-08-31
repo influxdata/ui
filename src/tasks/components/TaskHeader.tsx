@@ -9,7 +9,7 @@ import {
   Page,
 } from '@influxdata/clockface'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   title: string

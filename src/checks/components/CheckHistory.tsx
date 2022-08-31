@@ -28,7 +28,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const CheckHistory: FC = () => {
   const resourceIDs = useSelector((state: AppState) => ({

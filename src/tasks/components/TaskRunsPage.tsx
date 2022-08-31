@@ -24,7 +24,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {SortTypes} from 'src/shared/utils/sort'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {getAll} from 'src/resources/selectors'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{id: string; orgID: string}>

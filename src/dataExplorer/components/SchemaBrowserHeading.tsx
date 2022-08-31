@@ -14,6 +14,9 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 const FLUX_SYNC_DISABLE_TEXT = `Schema Sync is no longer available because the \
 code block has been edited.`
 
@@ -42,6 +45,10 @@ const SchemaBrowserHeading: FC = () => {
       </span>
     </div>
   )
+
+  if (!isFlagEnabled('schemaComposition')) {
+    return null
+  }
 
   return (
     <FlexBox

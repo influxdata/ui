@@ -134,6 +134,7 @@ const FluxQueryBuilder: FC = () => {
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }
+              testID="flux-query-builder--new-script"
             />
             {isFlagEnabled('saveAsScript') && (
               <Button

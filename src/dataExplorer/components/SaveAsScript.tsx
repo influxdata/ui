@@ -187,6 +187,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
             color={ComponentColor.Default}
             onClick={clear}
             text="No, Delete"
+            testID="flux-query-builder--no-save"
           />
         )}
         {CLOUD && (

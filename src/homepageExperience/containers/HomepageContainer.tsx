@@ -123,7 +123,7 @@ export const HomepageContainer: FC = () => {
           >
             Get Started
           </Heading>
-          <RateLimitAlert location="firstMile.homepage" />
+          {!isFlagEnabled('multiOrg') && <RateLimitAlert location="firstMile.homepage" />}
         </Page.Header>
         <Page.Contents scrollable={true} fullWidth={true}>
           <Grid>

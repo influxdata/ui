@@ -28,6 +28,7 @@ import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import {isFlagEnabled} from '../../shared/utils/featureFlag'
 
 interface State {
   currentStep: number
@@ -172,7 +173,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         <Page.Header fullWidth={false}>
           {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-between to justifyContent)*/}
           <div />
-          <RateLimitAlert location="firstMile.homepage" />
+          {!isFlagEnabled('multiOrg') && <RateLimitAlert location="firstMile.homepage" />}
         </Page.Header>
 
         <Page.Contents scrollable={true}>

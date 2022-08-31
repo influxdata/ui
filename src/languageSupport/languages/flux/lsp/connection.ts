@@ -269,6 +269,7 @@ class LspConnectionManager {
   // race conditions occur when:
   // (1) LSP is booting up on page reload,
   // (2) too many executeCommands in a row, too quickly. e.g. re-syncing
+  // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
   private _initDelayBeforeConsume = true
   private _bufferComposition: [
     ExecuteCommand,
@@ -410,6 +411,7 @@ class LspConnectionManager {
 
     // XXX: wiedld (25 Aug 2022) - eventually, this could be from the LSP response.
     // Tie the middleware to LspConnectionManager.onLspMessage()
+    // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
     this._model.onDidChangeContent(e => {
       if (this._session.composition?.synced) {
         this._setEditorBlockStyle()
@@ -462,6 +464,7 @@ class LspConnectionManager {
       setTimeout(() => {
         // XXX: wiedld (25 Aug 2022) - cannot init composition until after didOpen file
         // hardcode a delay for now
+        // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
         this._initDelayBeforeConsume = false
         this._incrementBuffer()
       }, 3000)
@@ -474,7 +477,7 @@ class LspConnectionManager {
   }
 
   onLspMessage(_jsonrpcMiddlewareResponse: unknown) {
-    // TODO: Q4
+    // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
     // 1. middleware detects jsonrpc
     // 2. call this method
     // 3a. update (true-up) session store

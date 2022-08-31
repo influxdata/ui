@@ -14,6 +14,9 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const FLUX_SYNC_DISABLE_TEXT = `Schema Sync is no longer available because the \
 code block has been edited.`
 
@@ -26,6 +29,7 @@ const SchemaBrowserHeading: FC = () => {
   const disableTooltipText = disableToggle ? FLUX_SYNC_DISABLE_TEXT : ''
 
   const handleFluxSyncToggle = () => {
+    event('Toggled Flux Sync in schema browser', {active: `${!fluxSync}`})
     toggleFluxSync(!fluxSync)
   }
 

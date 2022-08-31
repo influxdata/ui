@@ -47,7 +47,7 @@ const DataExplorerPageHeader: FC = () => {
   const {resource, setResource} = useContext(PersistanceContext)
 
   const toggleSlider = () => {
-    event('toggled new query builder', {active: `${!fluxQueryBuilder}`})
+    event('toggled new script editor', {active: `${!fluxQueryBuilder}`})
     setFluxQueryBuilder(!fluxQueryBuilder)
   }
 

@@ -33,6 +33,9 @@ import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
 import IdentityUserAvatar from 'src/identity/components/GlobalHeader/IdentityUserAvatar'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
+const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
+const rightHandContainerStyle = {width: '700px'}
+
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
   const identity = useSelector(selectQuartzIdentity)
@@ -89,9 +92,6 @@ export const GlobalHeader: FC = () => {
   const shouldLoadGlobalHeader = Boolean(
     shouldLoadDropdowns || shouldLoadAvatar
   )
-
-  const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
-  const rightHandContainerStyle = {width: '700px'}
 
   return shouldLoadGlobalHeader ? (
     <FlexBox

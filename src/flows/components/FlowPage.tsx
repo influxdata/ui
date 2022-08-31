@@ -11,6 +11,12 @@ import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsProvider} from 'src/flows/context/results'
 import {SidebarProvider} from 'src/flows/context/sidebar'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Constants
+import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
+
 // Components
 import PipeList from 'src/flows/components/PipeList'
 import {SubSideBar} from 'src/flows/components/Sidebar'
@@ -32,13 +38,19 @@ const RunOnMount = () => {
   return null
 }
 
+const flowPageHeight = {
+  height: isFlagEnabled('multiOrg')
+    ? `calc(100% - ${GLOBAL_HEADER_HEIGHT}px)`
+    : '100%',
+}
+
 export const FlowPage: FC = () => (
   <ResultsProvider>
     <FlowQueryProvider>
       <RunOnMount />
       <FlowKeyboardPreview />
       <SidebarProvider>
-        <Page>
+        <Page style={flowPageHeight}>
           <FlowHeader />
           <Page.Contents
             fullWidth={true}

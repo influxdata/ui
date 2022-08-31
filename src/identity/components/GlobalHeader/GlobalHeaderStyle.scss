@@ -1,10 +1,13 @@
+// If this height is changed also change GLOBAL_HEADER_HEIGHT constant.
+$globalheader-height: 60px;
+
 .multiaccountorg--header {
-  height: 60px;
-  padding-top: 0px;
+  height: $globalheader-height;
+  padding-top: 12px;
   padding-right: 32px;
   padding-bottom: 12px;
   padding-left: 22px;
-  margin-top: 12px;
+  margin-top: 0px;
   margin-right: 0px;
   margin-bottom: 0px;
   margin-left: 0px;

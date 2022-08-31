@@ -91,6 +91,7 @@ export const GlobalHeader: FC = () => {
   )
 
   const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
+  const rightHandContainerStyle = {width: '700px'}
 
   return shouldLoadGlobalHeader ? (
     <FlexBox
@@ -113,7 +114,7 @@ export const GlobalHeader: FC = () => {
 
       <FlexBox
         margin={ComponentSize.Large}
-        style={{width: '700px'}}
+        style={rightHandContainerStyle}
         justifyContent={JustifyContent.FlexEnd}
       >
         <RateLimitAlert location="global header" />

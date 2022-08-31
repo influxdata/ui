@@ -111,6 +111,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
     ? IconFont.AlertTriangle
     : IconFont.Cloud
 
+  const bannerStyle = {border: 'none', borderRadius: '6px'}
   // banner panel for cardinality limit exceeded
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
     return (
@@ -126,7 +127,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
           icon={icon}
           hideMobileIcon={true}
           textColor={InfluxColors.Yeti}
-          style={{border: 'none', borderRadius: '6px'}}
+          style={bannerStyle}
         >
           <RateLimitAlertContent />
         </BannerPanel>

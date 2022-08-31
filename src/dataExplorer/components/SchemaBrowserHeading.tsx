@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {
@@ -13,6 +13,9 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 // Context
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FLUX_SYNC_DISABLE_TEXT = `Schema Sync is no longer available because the \
 code block has been edited.`
@@ -43,38 +46,39 @@ const SchemaBrowserHeading: FC = () => {
     </div>
   )
 
-  return useMemo(
-    () => (
-      <FlexBox
-        className="schema-browser-heading"
-        justifyContent={JustifyContent.SpaceBetween}
-      >
-        <div className="schema-browser-heading--text">Schema Browser</div>
-        <FlexBox className="flux-sync">
-          <SlideToggle
-            className="flux-sync--toggle"
-            active={fluxSync}
-            onChange={handleFluxSyncToggle}
-            testID="flux-sync--toggle"
-            disabled={disableToggle}
-            tooltipText={disableTooltipText}
-          />
-          <InputLabel className="flux-sync--label">
-            <div
-              className={`${disableToggle ? 'disabled' : ''}`}
-              title={disableTooltipText}
-            >
-              <SelectorTitle
-                label="Flux Sync"
-                tooltipContents={tooltipContents}
-                icon={IconFont.Sync}
-              />
-            </div>
-          </InputLabel>
-        </FlexBox>
+  if (!isFlagEnabled('schemaComposition')) {
+    return null
+  }
+
+  return (
+    <FlexBox
+      className="schema-browser-heading"
+      justifyContent={JustifyContent.SpaceBetween}
+    >
+      <div className="schema-browser-heading--text">Schema Browser</div>
+      <FlexBox className="flux-sync">
+        <SlideToggle
+          className="flux-sync--toggle"
+          active={fluxSync}
+          onChange={handleFluxSyncToggle}
+          testID="flux-sync--toggle"
+          disabled={disableToggle}
+          tooltipText={disableTooltipText}
+        />
+        <InputLabel className="flux-sync--label">
+          <div
+            className={`${disableToggle ? 'disabled' : ''}`}
+            title={disableTooltipText}
+          >
+            <SelectorTitle
+              label="Flux Sync"
+              tooltipContents={tooltipContents}
+              icon={IconFont.Sync}
+            />
+          </div>
+        </InputLabel>
       </FlexBox>
-    ),
-    [fluxSync, toggleFluxSync]
+    </FlexBox>
   )
 }
 

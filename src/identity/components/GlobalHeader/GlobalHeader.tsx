@@ -116,7 +116,7 @@ export const GlobalHeader: FC = () => {
         style={{width: '700px'}}
         justifyContent={JustifyContent.FlexEnd}
       >
-        <RateLimitAlert location="global header" multiOrgFlagForceShow={true} />
+        <RateLimitAlert location="global header" />
         {shouldLoadAvatar && (
           <IdentityUserAvatar
             email={user.email}

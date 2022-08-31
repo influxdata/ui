@@ -54,14 +54,12 @@ interface Props {
   alertOnly?: boolean
   className?: string
   location?: string
-  multiOrgFlagForceShow?: boolean
 }
 
 const RateLimitAlert: FC<Props> = ({
   alertOnly,
   className,
   location,
-  multiOrgFlagForceShow,
 }) => {
   const resources = useSelector(extractRateLimitResources)
   const status = useSelector(extractRateLimitStatus)
@@ -117,9 +115,6 @@ const RateLimitAlert: FC<Props> = ({
     ? IconFont.AlertTriangle
     : IconFont.Cloud
 
-  if (isFlagEnabled('multiOrg') && !multiOrgFlagForceShow && !alertOnly) {
-    return null
-  }
 
   // banner panel for cardinality limit exceeded
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {

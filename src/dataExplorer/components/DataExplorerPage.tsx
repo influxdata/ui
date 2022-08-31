@@ -29,7 +29,7 @@ import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event, useLoadTimeReporting} from 'src/cloud/utils/reporting'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {ResourceType} from 'src/types'
@@ -93,7 +93,7 @@ const DataExplorerPageHeader: FC = () => {
             />
           </FlexBox>
         </FeatureFlag>
-        <RateLimitAlert location="data explorer" />
+        {!isFlagEnabled('multiOrg') && <RateLimitAlert location="data explorer" />}
       </FlexBox>
     </Page.Header>
   )

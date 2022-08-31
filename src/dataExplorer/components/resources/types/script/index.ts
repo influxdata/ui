@@ -19,10 +19,7 @@ export default function script(register) {
         return Promise.resolve({
           type: ResourceType.Scripts,
           flux: '',
-          data: {
-            name: `Untitled Script: ${new Date().toISOString()}`,
-            description: 'default description',
-          },
+          data: {},
         })
       }
 
@@ -40,10 +37,7 @@ export default function script(register) {
         return {
           type: ResourceType.Scripts,
           flux: '',
-          data: {
-            name: `Untitled Script: ${new Date().toISOString()}`,
-            description: 'default description',
-          },
+          data: {},
         }
       })
     },

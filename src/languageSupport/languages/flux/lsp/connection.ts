@@ -26,6 +26,9 @@ import {
 // error reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const ICON_SYNC_CLASSNAME = 'composition-sync'
 export const ICON_SYNC_ID = 'schema-composition-sync-icon'
 
@@ -140,9 +143,12 @@ class LspConnectionManager {
       clickableInvisibleDiv.removeEventListener('click', () =>
         this._setSessionSync(!this._session.composition.synced)
       ) // may have existing
-      clickableInvisibleDiv.addEventListener('click', () =>
+      clickableInvisibleDiv.addEventListener('click', () => {
+        event('Toggled Flux Sync in editor', {
+          active: `${!this._session.composition.synced}`,
+        })
         this._setSessionSync(!this._session.composition.synced)
-      )
+      })
 
       this._alignInvisibleDivToEditorBlock()
     }, 1000)
@@ -174,6 +180,7 @@ class LspConnectionManager {
           !this._editorChangeIsFromLsp(change)
       )
       if (shouldDiverge && !this._session.composition.diverged) {
+        event('Schema composition diverged - disable Flux Sync toggle')
         this._callbackSetSession({
           composition: {synced: false, diverged: true},
         })

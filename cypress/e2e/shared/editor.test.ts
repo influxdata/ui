@@ -101,7 +101,7 @@ describe('Editor+LSP communication', () => {
             if (!$toggle.hasClass('active')) {
               // hasClass is a jQuery function
               $toggle.click()
-              cy.getByTestID('flux-query-builder--menu').contains('New Script')
+              cy.getByTestID('flux-query-builder--menu').contains('Clear')
             }
           })
         })

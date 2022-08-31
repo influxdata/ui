@@ -20,7 +20,9 @@ const BillingPage: FC = () => {
         <Page.Header fullWidth={true} testID="billing-page--header">
           <Page.Title title="Account" />
           <LimitChecker>
-            {!isFlagEnabled('multiOrg') && <RateLimitAlert location="billing" />}
+            {!isFlagEnabled('multiOrg') && (
+              <RateLimitAlert location="billing" />
+            )}
           </LimitChecker>
         </Page.Header>
         <AccountTabContainer activeTab="billing">

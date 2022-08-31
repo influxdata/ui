@@ -121,7 +121,9 @@ class DashboardIndex extends PureComponent<Props, State> {
         >
           <Page.Header fullWidth={true}>
             <Page.Title title="Dashboards" />
-            {!isFlagEnabled('multiOrg') && <RateLimitAlert location="dashboards" />}
+            {!isFlagEnabled('multiOrg') && (
+              <RateLimitAlert location="dashboards" />
+            )}
           </Page.Header>
           <Page.ControlBar fullWidth={true}>
             <ErrorBoundary>

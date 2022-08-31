@@ -56,11 +56,7 @@ interface Props {
   location?: string
 }
 
-const RateLimitAlert: FC<Props> = ({
-  alertOnly,
-  className,
-  location,
-}) => {
+const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   const resources = useSelector(extractRateLimitResources)
   const status = useSelector(extractRateLimitStatus)
   const showUpgrade = useSelector(shouldShowUpgradeButton)
@@ -114,7 +110,6 @@ const RateLimitAlert: FC<Props> = ({
   const icon = isFlagEnabled('credit250Experiment')
     ? IconFont.AlertTriangle
     : IconFont.Cloud
-
 
   // banner panel for cardinality limit exceeded
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {

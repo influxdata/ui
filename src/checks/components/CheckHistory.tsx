@@ -58,7 +58,9 @@ const CheckHistory: FC = () => {
                   title="Check Statuses"
                   testID="alert-history-title"
                 />
-                {!isFlagEnabled('multiOrg') && <RateLimitAlert location="check history" />}
+                {!isFlagEnabled('multiOrg') && (
+                  <RateLimitAlert location="check history" />
+                )}
               </Page.Header>
               <Page.ControlBar fullWidth={true}>
                 <Page.ControlBarLeft>

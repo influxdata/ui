@@ -65,7 +65,9 @@ const AlertingIndex: FunctionComponent = () => {
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
           <ErrorBoundary>
-            {!isFlagEnabled('multiOrg') && <RateLimitAlert location="alerting" />}
+            {!isFlagEnabled('multiOrg') && (
+              <RateLimitAlert location="alerting" />
+            )}
           </ErrorBoundary>
         </Page.Header>
         <Page.Contents

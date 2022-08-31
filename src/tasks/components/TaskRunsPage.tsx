@@ -69,7 +69,9 @@ class TaskRunsPage extends PureComponent<Props, State> {
                 },
               ]}
             />
-            {!isFlagEnabled('multiOrg') && <RateLimitAlert location="task runs" />}
+            {!isFlagEnabled('multiOrg') && (
+              <RateLimitAlert location="task runs" />
+            )}
           </Page.Header>
           <Page.ControlBar fullWidth={true}>
             <TaskRunsCard task={currentTask} isTaskEditable={isTaskEditable} />

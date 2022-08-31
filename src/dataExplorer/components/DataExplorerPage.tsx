@@ -93,7 +93,9 @@ const DataExplorerPageHeader: FC = () => {
             />
           </FlexBox>
         </FeatureFlag>
-        {!isFlagEnabled('multiOrg') && <RateLimitAlert location="data explorer" />}
+        {!isFlagEnabled('multiOrg') && (
+          <RateLimitAlert location="data explorer" />
+        )}
       </FlexBox>
     </Page.Header>
   )

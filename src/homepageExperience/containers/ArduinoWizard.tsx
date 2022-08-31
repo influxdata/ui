@@ -174,7 +174,9 @@ export class ArduinoWizard extends PureComponent<{}, State> {
         <Page.Header fullWidth={false}>
           {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-between to justifyContent)*/}
           <div />
-          {!isFlagEnabled('multiOrg') && <RateLimitAlert location="firstMile.arduinoWizard" />}
+          {!isFlagEnabled('multiOrg') && (
+            <RateLimitAlert location="firstMile.arduinoWizard" />
+          )}
         </Page.Header>
         <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">

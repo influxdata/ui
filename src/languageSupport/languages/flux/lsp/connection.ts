@@ -409,7 +409,7 @@ class LspConnectionManager {
     this._setEditorSyncToggle()
     this._setEditorIrreversibleExit()
 
-    // XXX: wiedld (25 Aug 2022) - eventually, this could be from the LSP response.
+    // XXX: wiedld (25 Aug 2022) - eventually, this should be from the LSP response.
     // Tie the middleware to LspConnectionManager.onLspMessage()
     // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
     this._model.onDidChangeContent(e => {

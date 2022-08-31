@@ -27,18 +27,35 @@ import {getOrg} from 'src/organizations/selectors'
 import OpenScript from 'src/dataExplorer/components/OpenScript'
 
 interface Props {
-  onClear: () => void
   onClose: () => void
   type: OverlayType | null
 }
 
-const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
+const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {query, resource, setResource, save} = useContext(PersistanceContext)
+  const {hasChanged, resource, setResource, save} = useContext(
+    PersistanceContext
+  )
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
+
+  const handleClose = () => {
+    if (!resource?.data?.id) {
+      // clear out any meta data that's been set by the user prior to saving
+      // if they decide to cancel out of the process and close the modal
+      delete resource.data?.name
+      delete resource.data?.description
+      setResource({
+        ...resource,
+        data: {
+          ...(resource?.data ?? {}),
+        },
+      })
+    }
+    onClose()
+  }
 
   const handleUpdateDescription = (event: ChangeEvent<HTMLInputElement>) => {
     setResource({
@@ -64,7 +81,6 @@ const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
-    onClear()
 
     history.replace(`/orgs/${org.id}/data-explorer/from/script`)
     if (type !== OverlayType.OPEN) {
@@ -75,17 +91,13 @@ const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
   const handleSaveScript = () => {
     try {
       save().then(() => {
-        dispatch(
-          notify(scriptSaveSuccess(resource?.data?.name ?? 'Untitled Script'))
-        )
+        dispatch(notify(scriptSaveSuccess(resource?.data?.name ?? '')))
         if (type === OverlayType.NEW) {
           clear()
         }
       })
     } catch (error) {
-      dispatch(
-        notify(scriptSaveFail(resource?.data?.name ?? 'Untitled Script'))
-      )
+      dispatch(notify(scriptSaveFail(resource?.data?.name ?? '')))
       console.error({error})
     } finally {
       if (type !== OverlayType.OPEN) {
@@ -104,15 +116,36 @@ const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
     overlayTitle = 'Do you want to save your Script first?'
   }
 
-  if (query.length === 0) {
-    return <OpenScript onClose={onClose} />
+  if (!hasChanged && type === OverlayType.OPEN) {
+    return <OpenScript onCancel={handleClose} onClose={onClose} />
+  }
+
+  const displayWarning =
+    (type === OverlayType.NEW && !resource?.data?.name) ||
+    (type === OverlayType.OPEN && !resource?.data?.name) ||
+    (type === OverlayType.OPEN && hasChanged && resource?.data?.id)
+
+  let saveText = 'Save'
+
+  if (resource?.data?.id) {
+    if (type === OverlayType.SAVE) {
+      saveText = 'Update'
+    } else {
+      saveText = 'Yes, Update'
+    }
+  } else {
+    if (type === OverlayType.SAVE) {
+      saveText = 'Save'
+    } else {
+      saveText = 'Yes, Save'
+    }
   }
 
   return (
     <Overlay.Container maxWidth={500}>
-      <Overlay.Header title={overlayTitle} onDismiss={onClose} />
+      <Overlay.Header title={overlayTitle} onDismiss={handleClose} />
       <Overlay.Body>
-        {type !== OverlayType.SAVE && (
+        {displayWarning && (
           <div className="save-script-overlay__warning-text">
             "{resource?.data?.name ?? 'Untitled Script'}" will be overwritten by
             a new one if you don’t save it.
@@ -127,6 +160,11 @@ const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
             type={InputType.Text}
             value={resource?.data?.name}
             onChange={handleUpdateName}
+            status={
+              resource?.data?.id
+                ? ComponentStatus.Disabled
+                : ComponentStatus.Default
+            }
           />
           <InputLabel>Description</InputLabel>
           <Input
@@ -141,7 +179,7 @@ const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
       <Overlay.Footer>
         <Button
           color={ComponentColor.Tertiary}
-          onClick={onClose}
+          onClick={handleClose}
           text="Cancel"
         />
         {type !== OverlayType.SAVE && (
@@ -149,6 +187,7 @@ const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
             color={ComponentColor.Default}
             onClick={clear}
             text="No, Delete"
+            testID="flux-query-builder--no-save"
           />
         )}
         {CLOUD && (
@@ -161,7 +200,7 @@ const SaveAsScript: FC<Props> = ({onClose, onClear, type}) => {
                 : ComponentStatus.Default
             }
             onClick={handleSaveScript}
-            text={type === OverlayType.SAVE ? 'Save' : 'Yes, Save'}
+            text={saveText}
           />
         )}
       </Overlay.Footer>

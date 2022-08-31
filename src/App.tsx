@@ -83,7 +83,27 @@ const App: FC = () => {
     }
 
     if (CLOUD && isFlagEnabled('vwoAbTesting')) {
-      executeVWO()
+      const removeAntiFlickerStyle = () => {
+        // This id must correspond to the id of the <style> tag set in the VWO script.
+        const antiFlickerStyle = document.getElementById('_vis_opt_path_hides')
+        if (antiFlickerStyle) {
+          antiFlickerStyle.remove()
+        }
+      }
+
+      try {
+        setTimeout(() => {
+          removeAntiFlickerStyle()
+        }, 2000)
+
+        executeVWO()
+      } catch (err) {
+        removeAntiFlickerStyle()
+
+        reportErrorThroughHoneyBadger(err, {
+          name: 'VWO script failed to execute successfully',
+        })
+      }
     }
 
     setAutoFreeze(false)

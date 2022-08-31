@@ -81,4 +81,33 @@ describe('Editor+LSP communication', () => {
 
     runTest('time-machine--bottom')
   })
+
+  describe('in Script Editor', () => {
+    before(() => {
+      cy.flush()
+      cy.signin()
+      cy.get('@org').then(({id}: Organization) => {
+        cy.visit(`/orgs/${id}/data-explorer`)
+        cy.getByTestID('tree-nav').should('be.visible')
+        cy.setFeatureFlags({
+          newDataExplorer: true,
+        }).then(() => {
+          // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+          // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+          cy.wait(1200)
+          cy.getByTestID('flux-query-builder-toggle').then($toggle => {
+            cy.wrap($toggle).should('be.visible')
+            // Switch to Flux Query Builder if not yet
+            if (!$toggle.hasClass('active')) {
+              // hasClass is a jQuery function
+              $toggle.click()
+              cy.getByTestID('flux-query-builder--menu').contains('Clear')
+            }
+          })
+        })
+      })
+    })
+
+    runTest('flux-editor')
+  })
 })

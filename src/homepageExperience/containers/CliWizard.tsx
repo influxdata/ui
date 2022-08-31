@@ -170,7 +170,9 @@ export class CliWizard extends PureComponent<{}, State> {
         <Page.Header fullWidth={false}>
           {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-between to justifyContent)*/}
           <div />
-          {!isFlagEnabled('multiOrg') && <RateLimitAlert location="firstMile.cliWizard" />}
+          {!isFlagEnabled('multiOrg') && (
+            <RateLimitAlert location="firstMile.cliWizard" />
+          )}
         </Page.Header>
         <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">

@@ -34,6 +34,8 @@ import {keyboardCopyTriggered, userSelection} from 'src/utils/crossPlatform'
 // Types
 import {AppState, Authorization} from 'src/types'
 import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
+import {notify} from 'src/shared/actions/notifications'
+import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 
 type OwnProps = {
   setTokenValue: (tokenValue: string) => void
@@ -68,7 +70,14 @@ export const InitializeClient: FC<OwnProps> = ({
 
   useEffect(() => {
     dispatch(getBuckets())
-    dispatch(getAllResources())
+  }, [dispatch])
+
+  useEffect(() => {
+    try {
+      dispatch(getAllResources())
+    } catch (err) {
+      dispatch(notify(getResourcesTokensFailure('all access token')))
+    }
   }, [dispatch])
 
   useEffect(() => {

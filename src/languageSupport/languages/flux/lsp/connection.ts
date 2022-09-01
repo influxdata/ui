@@ -155,8 +155,7 @@ class LspConnectionManager {
   }
 
   _editorChangeIsFromLsp(change) {
-    // heuristic. Not 100% accurate.
-    return !!change.forceMoveMarkers
+    return change.text?.includes('|> yield(name: "_editor_composition")')
   }
 
   _editorChangeIsWithinComposition(change) {

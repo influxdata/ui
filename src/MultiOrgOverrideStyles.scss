@@ -12,7 +12,12 @@
   height: calc(100% - gh.$globalheader-height);
 }
 
-// Page-specific fix for Data Explorer
+// Page-specific fix for Data Explorer - Classic
 .multi-org .data-explorer > .time-machine > .cf-draggable-resizer {
+  height: calc(100% - gh.$globalheader-height);
+}
+
+// Page-specific fix for Data Explorer - New
+.multi-org .flux-query-builder--container {
   height: calc(100% - gh.$globalheader-height);
 }

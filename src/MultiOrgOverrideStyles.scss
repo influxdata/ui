@@ -23,6 +23,8 @@
   height: calc(100% - gh.$globalheader-height);
 }
 
+// When removing multi-org flags, consider whether this override
+// should become a permanent change for all users in Clockface.
 .cf-notification-container {
   &.cf-notification__top {
     top: $cf-space-2xs;

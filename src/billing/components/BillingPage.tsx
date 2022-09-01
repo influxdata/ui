@@ -11,6 +11,7 @@ import LimitChecker from 'src/cloud/components/LimitChecker'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const BillingPage: FC = () => {
   return (
@@ -19,7 +20,9 @@ const BillingPage: FC = () => {
         <Page.Header fullWidth={true} testID="billing-page--header">
           <Page.Title title="Account" />
           <LimitChecker>
-            <RateLimitAlert location="billing" />
+            {!isFlagEnabled('multiOrg') && (
+              <RateLimitAlert location="billing" />
+            )}
           </LimitChecker>
         </Page.Header>
         <AccountTabContainer activeTab="billing">

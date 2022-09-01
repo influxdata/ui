@@ -149,7 +149,7 @@ const FlowsIndex = () => {
             stretchToFitWidth
           >
             <Page.Title title={PROJECT_NAME_PLURAL} />
-            <RateLimitAlert location="flows" />
+            {!isFlagEnabled('multiOrg') && <RateLimitAlert location="flows" />}
           </FlexBox>
         )}
         {showButtonMode &&

@@ -31,6 +31,10 @@ import {
 } from 'src/identity/components/GlobalHeader/DefaultEntities'
 import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
 import IdentityUserAvatar from 'src/identity/components/GlobalHeader/IdentityUserAvatar'
+import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+
+const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
+const rightHandContainerStyle = {width: '700px', marginLeft: 'auto'}
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()
@@ -89,8 +93,6 @@ export const GlobalHeader: FC = () => {
     shouldLoadDropdowns || shouldLoadAvatar
   )
 
-  const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
-
   return shouldLoadGlobalHeader ? (
     <FlexBox
       className="multiaccountorg--header"
@@ -110,14 +112,21 @@ export const GlobalHeader: FC = () => {
         </FlexBox>
       )}
 
-      {shouldLoadAvatar && (
-        <IdentityUserAvatar
-          email={user.email}
-          firstName={avatarFirstName}
-          lastName={avatarLastName}
-          orgId={org.id}
-        />
-      )}
+      <FlexBox
+        margin={ComponentSize.Large}
+        style={rightHandContainerStyle}
+        justifyContent={JustifyContent.FlexEnd}
+      >
+        <RateLimitAlert location="global header" />
+        {shouldLoadAvatar && (
+          <IdentityUserAvatar
+            email={user.email}
+            firstName={avatarFirstName}
+            lastName={avatarLastName}
+            orgId={org.id}
+          />
+        )}
+      </FlexBox>
     </FlexBox>
   ) : null
 }

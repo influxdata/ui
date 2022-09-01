@@ -2,7 +2,7 @@
 import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
 import {normalize} from 'normalizr'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 
 // Manual mocks
 jest.mock('src/cloud/utils/reporting')
@@ -63,7 +63,7 @@ describe('the Community Templates index', () => {
 
       fireEvent.click(templateButton)
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(communityTemplateUnsupportedFormatError())
     })
@@ -99,7 +99,7 @@ describe('the Community Templates index', () => {
 
       fireEvent.click(templateButton)
 
-      const [eventCallArguments] = mocked(event).mock.calls
+      const [eventCallArguments] = jest.mocked(event).mock.calls
       const [eventName, eventMetaData] = eventCallArguments
       expect(eventName).toBe('template_click_lookup')
       expect(eventMetaData).toEqual({templateName: 'fn-template'})
@@ -118,7 +118,7 @@ describe('the Community Templates index', () => {
           'https://github.com/influxdata/community-templates/blob/master/fortnite/fn-template.yml',
       })
 
-      mocked(event).mockImplementation(() => {
+      jest.mocked(event).mockImplementation(() => {
         throw new Error()
       })
 
@@ -126,11 +126,11 @@ describe('the Community Templates index', () => {
 
       fireEvent.click(templateButton)
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(communityTemplateUnsupportedFormatError())
 
-      const [honeyBadgerCallArguments] = mocked(
+      const [honeyBadgerCallArguments] = jest.mocked(
         reportErrorThroughHoneyBadger
       ).mock.calls
       expect(honeyBadgerCallArguments[1]).toEqual({

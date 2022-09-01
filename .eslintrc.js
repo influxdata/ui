@@ -1,7 +1,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.test.json',
+    project: ['./tsconfig.test.json', './cypress/tsconfig.json'],
     tsconfigRootDir: __dirname,
     ecmaFeatures: {
       jsx: true,
@@ -27,6 +27,21 @@ module.exports = {
       version: 'detect',
     },
   },
+  overrides: [
+    {
+      files: [
+        'src/**/*.test.ts',
+        'src/**/*.test.tsx',
+        'cypress/**/*.test.ts',
+        'cypress/e2e/util/*.ts',
+      ],
+      plugins: ['jest'],
+      rules: {
+        '@typescript-eslint/unbound-method': 'off',
+        'jest/unbound-method': 'error',
+      },
+    },
+  ],
   rules: {
     '@typescript-eslint/array-type': 'off',
     '@typescript-eslint/await-thenable': 'off',

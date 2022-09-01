@@ -1,6 +1,6 @@
 // Libraries
 import React from 'react'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 import {fireEvent} from '@testing-library/react'
 
 import {renderWithRedux} from 'src/mockState'
@@ -135,7 +135,7 @@ describe('TimeMachine.Components.SubmitQueryButton', () => {
       signal: new AbortController().signal,
     }
 
-    mocked(fetch).mockImplementation(() => {
+    jest.mocked(fetch).mockImplementation(() => {
       return Promise.resolve(fakeResponse)
     })
     const {getByTitle} = renderWithRedux(<SubmitQueryButton />, s => ({
@@ -147,7 +147,7 @@ describe('TimeMachine.Components.SubmitQueryButton', () => {
     expect(getByTitle('Submit')).toBeTruthy()
     await window.flushAllPromises()
 
-    expect(mocked(fetch)).toHaveBeenCalledWith(
+    expect(jest.mocked(fetch)).toHaveBeenCalledWith(
       'http://example.com/api/v2/query?orgID=orgid',
       expectedMockedFetchCall
     )
@@ -155,7 +155,7 @@ describe('TimeMachine.Components.SubmitQueryButton', () => {
   })
 
   it.skip("cancels the query after submission if the query hasn't finished and resolved", done => {
-    mocked(fetchMock).mockResponse(() => {
+    jest.mocked(fetchMock).mockResponse(() => {
       return new Promise((resolve, _reject) => {
         setTimeout(() => {
           resolve('')
@@ -173,7 +173,7 @@ describe('TimeMachine.Components.SubmitQueryButton', () => {
       const CancelBtn = getByTitle('Cancel')
       fireEvent.click(CancelBtn)
       // await window.flushAllPromises()
-      const {type, value: error} = mocked(fetch).mock.results[0] as any
+      const {type, value: error} = jest.mocked(fetch).mock.results[0] as any
       try {
         expect(type).toBe('throw')
         expect(error.name).toBe('AbortError')

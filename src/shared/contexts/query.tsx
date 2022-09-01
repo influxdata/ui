@@ -1,4 +1,5 @@
 import React, {FC, useEffect, useRef} from 'react'
+import {useDispatch} from 'react-redux'
 import {useSelector} from 'react-redux'
 import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
@@ -18,6 +19,8 @@ import {
   REQUEST_TIMEOUT_STATUS,
 } from 'src/cloud/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {notify} from 'src/shared/actions/notifications'
+import {resultTooLarge} from 'src/shared/copy/notifications'
 
 // Types
 import {CancellationError, File} from 'src/types'
@@ -515,6 +518,7 @@ const updateWindowPeriod = (
 }
 
 export const QueryProvider: FC = ({children}) => {
+  const dispatch = useDispatch()
   const pending = useRef({} as CancelMap)
   const org = useSelector(getOrg)
 
@@ -631,6 +635,10 @@ export const QueryProvider: FC = ({children}) => {
               const json = JSON.parse(text)
               const message = json.message || json.error
               const code = json.code
+
+              if (json.didTruncate) {
+                dispatch(notify(resultTooLarge(json.bytesRead)))
+              }
 
               switch (code) {
                 case REQUEST_TIMEOUT_STATUS:

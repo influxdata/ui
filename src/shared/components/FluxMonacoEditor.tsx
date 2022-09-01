@@ -167,7 +167,7 @@ const FluxEditorMonaco: FC<Props> = ({
         </div>
       </ErrorBoundary>
     ),
-    [onChangeScript, setEditor, useSchemaComposition]
+    [onChangeScript, setEditor, useSchemaComposition, script]
   )
 }
 

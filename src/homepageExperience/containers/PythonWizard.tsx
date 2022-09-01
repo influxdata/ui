@@ -29,7 +29,7 @@ import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface State {
   currentStep: number

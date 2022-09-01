@@ -29,7 +29,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {HOMEPAGE_NAVIGATION_STEPS_ARDUINO} from 'src/homepageExperience/utils'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface State {
   currentStep: number

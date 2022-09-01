@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useRef, useContext} from 'react'
 import {useSelector} from 'react-redux'
+import {useRouteMatch} from 'react-router-dom'
 import classnames from 'classnames'
 
 // Components
@@ -67,6 +68,9 @@ const FluxEditorMonaco: FC<Props> = ({
   const {setEditor} = useContext(EditorContext)
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
+  const {path} = useRouteMatch()
+  const isNewQxBuilder =
+    isFluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
@@ -79,7 +83,7 @@ const FluxEditorMonaco: FC<Props> = ({
   useEffect(() => {
     if (
       connection.current &&
-      isFluxQueryBuilder &&
+      isNewQxBuilder &&
       isFlagEnabled('schemaComposition')
     ) {
       connection.current.onSchemaSessionChange(
@@ -155,9 +159,11 @@ const FluxEditorMonaco: FC<Props> = ({
           }}
           editorDidMount={editorDidMount}
         />
-        <div id={ICON_SYNC_ID} className="sync-bar">
-          <Icon glyph={IconFont.Sync} className="sync-icon" />
-        </div>
+        {isNewQxBuilder && (
+          <div id={ICON_SYNC_ID} className="sync-bar">
+            <Icon glyph={IconFont.Sync} className="sync-icon" />
+          </div>
+        )}
       </div>
     </ErrorBoundary>
   )

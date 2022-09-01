@@ -9,6 +9,7 @@ import {FluxResult} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
+import {FLUX_RESPONSE_BYTES_LIMIT} from 'src/shared/constants'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {
   RATE_LIMIT_ERROR_STATUS,
@@ -57,6 +58,35 @@ interface RequestBody {
   extern?: any
 }
 
+/*
+  Given an arbitrary text chunk of a Flux CSV, trim partial lines off of the end
+  of the text.
+
+  For example, given the following partial Flux response,
+
+            r,baz,3
+      foo,bar,baz,2
+      foo,bar,b
+
+  we want to trim the last incomplete line, so that the result is
+
+            r,baz,3
+      foo,bar,baz,2
+
+*/
+const trimPartialLines = (partialResp: string): string => {
+  let i = partialResp.length - 1
+
+  while (partialResp[i] !== '\n') {
+    if (i <= 0) {
+      return partialResp
+    }
+
+    i -= 1
+  }
+
+  return partialResp.slice(0, i + 1)
+}
 export interface QueryContextType {
   basic: (text: string, override?: QueryScope, options?: QueryOptions) => any
   query: (
@@ -552,7 +582,7 @@ export const QueryProvider: FC = ({children}) => {
 
             let csv = ''
             let bytesRead = 0
-
+            let didTruncate = false
             let read = await reader.read()
 
             while (!read.done) {
@@ -563,8 +593,14 @@ export const QueryProvider: FC = ({children}) => {
 
               bytesRead += read.value.byteLength
 
-              csv += text
-              read = await reader.read()
+              if (bytesRead > FLUX_RESPONSE_BYTES_LIMIT) {
+                csv += trimPartialLines(text)
+                didTruncate = true
+                break
+              } else {
+                csv += text
+                read = await reader.read()
+              }
             }
 
             reader.cancel()
@@ -576,7 +612,7 @@ export const QueryProvider: FC = ({children}) => {
               type: 'SUCCESS',
               csv,
               bytesRead,
-              didTruncate: false,
+              didTruncate,
             }
           }
 

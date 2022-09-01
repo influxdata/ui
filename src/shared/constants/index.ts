@@ -109,7 +109,7 @@ export const CLOUD_USAGE_PATH = '/usage'
 export const CLOUD_LOGOUT_PATH = '/logout'
 
 export const FLUX_RESPONSE_BYTES_LIMIT = CLOUD
-  ? 27 * 1024 * 1024 // 27 MiB  (desa: this was determined by looking at queries responses in the cloud app)
+  ? 47 * 1024 * 1024 // 47 MiB  (ariel: this was determined by looking at browser capacity for large queries)
   : 100 * 1024 * 1024 // 100 MiB
 
 export const VIS_SIG_DIGITS = 4

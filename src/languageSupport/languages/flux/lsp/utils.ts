@@ -74,6 +74,8 @@ export type ExecuteCommandInjectField = ExecuteCommandInjectMeasurement
 export interface CompositionInitParams {
   bucket: string
   measurement?: string
+  fields?: string[]
+  tagValues?: string[]
 }
 
 interface CompositionValueParams extends ExecuteCommandParams {

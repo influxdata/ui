@@ -147,7 +147,7 @@ export const ReplaceCertificateOverlay: FC<ReplaceCertificateModalProps> = () =>
     params: {subscription, updateForm},
   } = useContext(OverlayContext)
   const handleReplaceCert = useCallback(() => {
-    updateForm({...subscription, certProvidedAt: null})
+    updateForm({...subscription, brokerCertCreationDate: null})
     onClose()
   }, [subscription, updateForm, onClose])
   return (
@@ -202,7 +202,7 @@ const CertificateDetails: FC<OwnProps> = ({subscription, updateForm, edit}) => {
             Certificate
           </InputLabel>
           <InputLabel size={ComponentSize.Small}>
-            {subscription.certProvidedAt}
+            {subscription.brokerCertCreationDate}
           </InputLabel>
         </FlexBox>
       </FlexBoxChild>
@@ -232,7 +232,7 @@ const CertificateDetails: FC<OwnProps> = ({subscription, updateForm, edit}) => {
 const CertificateInput: FC<OwnProps> = ({subscription, updateForm, edit}) => {
   if (
     subscription.authType === BrokerAuthTypes.Certificate &&
-    subscription.certProvidedAt
+    subscription.brokerCertCreationDate
   ) {
     return (
       <CertificateDetails

@@ -146,7 +146,17 @@ export const PersistanceProvider: FC = ({children}) => {
       }
       setResource(resource)
     },
-    [hasChanged]
+    [hasChanged, setHasChanged, setResource]
+  )
+
+  const handleSetVisualization = useCallback(
+    (visualization: any) => {
+      if (hasChanged === false) {
+        setHasChanged(true)
+      }
+      setVisualization(visualization)
+    },
+    [hasChanged, setHasChanged, setVisualization]
   )
 
   const clearSchemaSelection = () => {
@@ -216,7 +226,7 @@ export const PersistanceProvider: FC = ({children}) => {
 
         setQuery: handleSetQuery,
         setResource: handleSetResource,
-        setVisualization,
+        setVisualization: handleSetVisualization,
         save,
 
         setSelection: setSchemaSelection,

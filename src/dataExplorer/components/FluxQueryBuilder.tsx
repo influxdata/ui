@@ -142,17 +142,12 @@ const FluxQueryBuilder: FC = () => {
             data-testid="flux-query-builder--menu"
           >
             {(resource?.type == ResourceType.Scripts || !resource?.type) && (
-            <Button
-              onClick={handleNewScript}
-              text={isFlagEnabled('saveAsScript') ? 'New Script' : 'Clear'}
-              icon={IconFont.Plus_New}
-              status={
-                hasChanged
-                  ? ComponentStatus.Default
-                  : ComponentStatus.Disabled
-              }
-              testID="flux-query-builder--new-script"
-            />
+              <Button
+                onClick={handleNewScript}
+                text={isFlagEnabled('saveAsScript') ? 'New Script' : 'Clear'}
+                icon={IconFont.Plus_New}
+                testID="flux-query-builder--new-script"
+              />
             )}
             {isFlagEnabled('saveAsScript') &&
               resource?.type === ResourceType.Scripts && (
@@ -178,12 +173,13 @@ const FluxQueryBuilder: FC = () => {
               <Button
                 className="flux-query-builder__action-button"
                 onClick={handleSave}
-                text={`Save ${
-                  resource?.type
-                    ? resource.type.charAt(0).toUpperCase() +
-                      resource.type.slice(1, resource.type.length - 1)
-                    : 'Script'
-                }`}
+                status={
+                  hasChanged
+                    ? ComponentStatus.Default
+                    : ComponentStatus.Disabled
+                }
+                text="Save"
+                icon={IconFont.Save}
               />
             )}
           </div>

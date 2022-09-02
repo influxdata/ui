@@ -9,9 +9,7 @@ import {
 } from '@influxdata/clockface'
 
 const Editor: FC = () => {
-  const {resource, setResource} = useContext(
-    PersistanceContext
-  )
+  const {resource, setResource} = useContext(PersistanceContext)
 
   const handleUpdateDescription = (event: ChangeEvent<HTMLInputElement>) => {
     setResource({
@@ -34,30 +32,30 @@ const Editor: FC = () => {
   }
 
   return (
-        <Form>
-          <InputLabel>Save as</InputLabel>
-          <Input
-            className="save-script-name__input"
-            name="name"
-            required
-            type={InputType.Text}
-            value={resource?.data?.name}
-            onChange={handleUpdateName}
-            status={
-              resource?.data?.id
-                ? ComponentStatus.Disabled
-                : ComponentStatus.Default
-            }
-          />
-          <InputLabel>Description</InputLabel>
-          <Input
-            name="description"
-            required
-            type={InputType.Text}
-            value={resource?.data?.description}
-            onChange={handleUpdateDescription}
-          />
-        </Form>
+    <Form>
+      <InputLabel>Save as</InputLabel>
+      <Input
+        className="save-script-name__input"
+        name="name"
+        required
+        type={InputType.Text}
+        value={resource?.data?.name}
+        onChange={handleUpdateName}
+        status={
+          resource?.data?.id
+            ? ComponentStatus.Disabled
+            : ComponentStatus.Default
+        }
+      />
+      <InputLabel>Description</InputLabel>
+      <Input
+        name="description"
+        required
+        type={InputType.Text}
+        value={resource?.data?.description}
+        onChange={handleUpdateDescription}
+      />
+    </Form>
   )
 }
 

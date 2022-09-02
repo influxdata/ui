@@ -593,9 +593,6 @@ export const QueryProvider: FC = ({children}) => {
               getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
 
             while (!read.done) {
-              if (!pending.current[id]) {
-                throw new CancellationError()
-              }
               const text = decoder.decode(read.value)
 
               bytesRead += read.value.byteLength
@@ -611,9 +608,6 @@ export const QueryProvider: FC = ({children}) => {
             }
 
             reader.cancel()
-            if (pending.current[id]) {
-              delete pending.current[id]
-            }
 
             return {
               type: 'SUCCESS',
@@ -638,10 +632,6 @@ export const QueryProvider: FC = ({children}) => {
               const json = JSON.parse(text)
               const message = json.message || json.error
               const code = json.code
-
-              if (json.didTruncate) {
-                dispatch(notify(resultTooLarge(json.bytesRead)))
-              }
 
               switch (code) {
                 case REQUEST_TIMEOUT_STATUS:
@@ -712,6 +702,10 @@ export const QueryProvider: FC = ({children}) => {
       .then(raw => {
         if (raw.type !== 'SUCCESS') {
           throw new Error(raw.message)
+        }
+
+        if (raw.didTruncate) {
+          dispatch(notify(resultTooLarge(raw.bytesRead)))
         }
 
         return raw

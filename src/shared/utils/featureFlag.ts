@@ -19,6 +19,16 @@ export const isFlagEnabled = (flagName: string, equals?: string | boolean) => {
   return false
 }
 
+export const getFlagValue = (flagName: string) => {
+  const flags = activeFlags(getStore().getState())
+
+  if (flags.hasOwnProperty(flagName)) {
+    return flags[flagName]
+  }
+
+  return null
+}
+
 // type influx.toggle('myFlag') to disable / enable any feature flag
 export const FeatureFlag: FunctionComponent<{
   name: string

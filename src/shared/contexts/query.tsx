@@ -1,4 +1,5 @@
 import React, {FC, useEffect, useRef} from 'react'
+import {useDispatch} from 'react-redux'
 import {useSelector} from 'react-redux'
 import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
@@ -9,6 +10,7 @@ import {FluxResult} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
+import {FLUX_RESPONSE_BYTES_LIMIT} from 'src/shared/constants'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {
   RATE_LIMIT_ERROR_STATUS,
@@ -16,7 +18,9 @@ import {
   GATEWAY_TIMEOUT_STATUS,
   REQUEST_TIMEOUT_STATUS,
 } from 'src/cloud/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {isFlagEnabled, getFlagValue} from 'src/shared/utils/featureFlag'
+import {notify} from 'src/shared/actions/notifications'
+import {resultTooLarge} from 'src/shared/copy/notifications'
 
 // Types
 import {CancellationError, File} from 'src/types'
@@ -57,6 +61,35 @@ interface RequestBody {
   extern?: any
 }
 
+/*
+  Given an arbitrary text chunk of a Flux CSV, trim partial lines off of the end
+  of the text.
+
+  For example, given the following partial Flux response,
+
+            r,baz,3
+      foo,bar,baz,2
+      foo,bar,b
+
+  we want to trim the last incomplete line, so that the result is
+
+            r,baz,3
+      foo,bar,baz,2
+
+*/
+const trimPartialLines = (partialResp: string): string => {
+  let i = partialResp.length - 1
+
+  while (partialResp[i] !== '\n') {
+    if (i <= 0) {
+      return partialResp
+    }
+
+    i -= 1
+  }
+
+  return partialResp.slice(0, i + 1)
+}
 export interface QueryContextType {
   basic: (text: string, override?: QueryScope, options?: QueryOptions) => any
   query: (
@@ -485,6 +518,7 @@ const updateWindowPeriod = (
 }
 
 export const QueryProvider: FC = ({children}) => {
+  const dispatch = useDispatch()
   const pending = useRef({} as CancelMap)
   const org = useSelector(getOrg)
 
@@ -552,31 +586,34 @@ export const QueryProvider: FC = ({children}) => {
 
             let csv = ''
             let bytesRead = 0
-
+            let didTruncate = false
             let read = await reader.read()
 
+            const BYTE_LIMIT =
+              getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+
             while (!read.done) {
-              if (!pending.current[id]) {
-                throw new CancellationError()
-              }
               const text = decoder.decode(read.value)
 
               bytesRead += read.value.byteLength
 
-              csv += text
-              read = await reader.read()
+              if (bytesRead > BYTE_LIMIT) {
+                csv += trimPartialLines(text)
+                didTruncate = true
+                break
+              } else {
+                csv += text
+                read = await reader.read()
+              }
             }
 
             reader.cancel()
-            if (pending.current[id]) {
-              delete pending.current[id]
-            }
 
             return {
               type: 'SUCCESS',
               csv,
               bytesRead,
-              didTruncate: false,
+              didTruncate,
             }
           }
 
@@ -665,6 +702,10 @@ export const QueryProvider: FC = ({children}) => {
       .then(raw => {
         if (raw.type !== 'SUCCESS') {
           throw new Error(raw.message)
+        }
+
+        if (raw.didTruncate) {
+          dispatch(notify(resultTooLarge(raw.bytesRead)))
         }
 
         return raw

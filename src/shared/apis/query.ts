@@ -11,6 +11,7 @@ import {
 import {CancelBox} from 'src/types/promises'
 import {File, Query, CancellationError} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
+import {getFlagValue} from 'src/shared/utils/featureFlag'
 
 export type RunQueryResult =
   | RunQuerySuccessResult
@@ -103,12 +104,15 @@ const processSuccessResponse = async (
 
   let read = await reader.read()
 
+  const BYTE_LIMIT =
+    getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+
   while (!read.done) {
     const text = decoder.decode(read.value)
 
     bytesRead += read.value.byteLength
 
-    if (bytesRead > FLUX_RESPONSE_BYTES_LIMIT) {
+    if (bytesRead > BYTE_LIMIT) {
       csv += trimPartialLines(text)
       didTruncate = true
       break

@@ -91,7 +91,7 @@ const ResultsPane: FC = () => {
     selection,
   } = useContext(PersistanceContext)
 
-  const submitButtonDisabled = !text || !selection.measurement
+  const submitButtonDisabled = !text && !selection.measurement
 
   const disabledTitleText = submitButtonDisabled
     ? 'Select measurement before running script'

@@ -155,8 +155,7 @@ class LspConnectionManager {
   }
 
   _editorChangeIsFromLsp(change) {
-    // heuristic. Not 100% accurate.
-    return !!change.forceMoveMarkers
+    return change.text?.includes('|> yield(name: "_editor_composition")')
   }
 
   _editorChangeIsWithinComposition(change) {
@@ -311,13 +310,34 @@ class LspConnectionManager {
                     * buffer of executeCommands, send to Lsp at a throttled pace (hack timeouts)  
                   * longterm: middleware? changes in Lsp?
     */
-    if (toAdd.bucket || toAdd.measurement) {
-      const payload = {bucket: toAdd.bucket?.name || this._session.bucket?.name}
-      if (toAdd.measurement) {
-        payload['measurement'] = toAdd.measurement
+    const numFieldChanges =
+      (toAdd.fields?.length || 0) + (toRemove.fields?.length || 0)
+    const numTagValueChanges =
+      (toAdd.tagValues?.length || 0) + (toRemove.tagValues?.length || 0)
+    const reInitBlock =
+      toAdd.bucket ||
+      toAdd.measurement ||
+      numFieldChanges + numTagValueChanges > 1
+
+    if (reInitBlock) {
+      const payload = {
+        bucket: toAdd.bucket?.name || this._session.bucket?.name,
+      }
+      if (toAdd.measurement || this._session.measurement) {
+        payload['measurement'] = toAdd.measurement || this._session.measurement
+      }
+      if (toAdd.fields || this._session.fields) {
+        payload['fields'] = toAdd.fields || this._session.fields
+      }
+      if (toAdd.tagValues || this._session.tagValues) {
+        payload['tagValues'] = (
+          toAdd.tagValues || this._session.tagValues
+        ).map(({key, value}) => [key, value])
       }
       this._insertBuffer([ExecuteCommand.CompositionInit, payload])
+      return // re-initialize full block. no more requests needed.
     }
+
     if (toRemove.fields?.length) {
       toRemove.fields.forEach(value =>
         this._insertBuffer([ExecuteCommand.CompositionRemoveField, {value}])

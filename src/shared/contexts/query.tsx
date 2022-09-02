@@ -18,7 +18,7 @@ import {
   GATEWAY_TIMEOUT_STATUS,
   REQUEST_TIMEOUT_STATUS,
 } from 'src/cloud/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {isFlagEnabled, getFlagValue} from 'src/shared/utils/featureFlag'
 import {notify} from 'src/shared/actions/notifications'
 import {resultTooLarge} from 'src/shared/copy/notifications'
 
@@ -589,6 +589,9 @@ export const QueryProvider: FC = ({children}) => {
             let didTruncate = false
             let read = await reader.read()
 
+            const BYTE_LIMIT =
+              getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+
             while (!read.done) {
               if (!pending.current[id]) {
                 throw new CancellationError()
@@ -597,7 +600,7 @@ export const QueryProvider: FC = ({children}) => {
 
               bytesRead += read.value.byteLength
 
-              if (bytesRead > FLUX_RESPONSE_BYTES_LIMIT) {
+              if (bytesRead > BYTE_LIMIT) {
                 csv += trimPartialLines(text)
                 didTruncate = true
                 break

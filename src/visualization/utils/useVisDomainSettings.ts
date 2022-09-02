@@ -242,10 +242,11 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
         setRequeryStatus(RemoteDataState.Loading)
         runQuery(orgId, query, extern).promise.then(
           (result: RunQueryResult) => {
-            if (result.type === 'SUCCESS') {
+            if (result?.type === 'SUCCESS') {
               setRequeryStatus(RemoteDataState.Done)
-              const parsed = fromFlux(result.csv)
-              setResult(parsed)
+              if (result?.csv?.trim().length > 0) {
+                setResult(fromFlux(result.csv))
+              }
             } else {
               setRequeryStatus(RemoteDataState.Error)
             }
@@ -393,10 +394,11 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
         setRequeryStatus(RemoteDataState.Loading)
         runQuery(orgId, query, extern).promise.then(
           (result: RunQueryResult) => {
-            if (result.type === 'SUCCESS') {
+            if (result?.type === 'SUCCESS') {
               setRequeryStatus(RemoteDataState.Done)
-              const parsed = fromFlux(result.csv)
-              setResult(parsed)
+              if (result?.csv?.trim().length > 0) {
+                setResult(fromFlux(result.csv))
+              }
             } else {
               setRequeryStatus(RemoteDataState.Error)
             }

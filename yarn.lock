@@ -1428,15 +1428,15 @@
     "@types/react-window" "^1.8.5"
     react-window "^1.8.7"
 
-"@influxdata/flux-lsp-browser@0.8.31":
-  version "0.8.31"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.31.tgz#e917fcee9480305b5d3c1319ca1bad82f3bd5252"
-  integrity sha512-uWm8FU4ASgOY5iekH09dSAZJ88eC+m0XH/ufJjBlhX9zv7XLoDqSL5eJc+5pOhqkX3gTqgegThLiqDTGG68tVQ==
+"@influxdata/flux-lsp-browser@0.8.32":
+  version "0.8.32"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.32.tgz#ae60cdb6f1c4ac2cf06bb9d3ed9f3e0548575489"
+  integrity sha512-LUSQMO8mYQmzARdqxP5w/L2MRv5oH8986zn9034YowMEzIZmjMowJujm/kt40jorqOy9t+ier5qxgutUFKmfXA==
 
-"@influxdata/giraffe@^2.33.5":
-  version "2.33.5"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.33.5.tgz#b6b7920765a1e87528ff8af56e59142a29290e53"
-  integrity sha512-8Zw/7iCbpibG+osJdvjlxMa7zyFA4Oym8bMN7PmGocUp71MASHkFRer85KPPcGc9oKJn+tvh9/VxFtw5TXGIuA==
+"@influxdata/giraffe@^2.34.1":
+  version "2.34.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.34.1.tgz#793eaece6137eb976c1fe7b2bac019d66ed30b1f"
+  integrity sha512-prbQyAx+iFOHmpv9UxUB7ipO5f7jcnCn5LwH+ocOjkyFqzFbzXAMraIO3mzydIxw4FNGU2CISC/7T+IpxHH4yg==
   dependencies:
     merge-images "^2.0.0"
 
@@ -1959,12 +1959,20 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@*", "@types/jest@^27.0.2":
+"@types/jest@*":
   version "27.0.3"
   resolved "https://registry.npmjs.org/@types/jest/-/jest-27.0.3.tgz"
   integrity sha512-cmmwv9t7gBYt7hNKH5Spu7Kuu/DotGa+Ff+JGRKZ4db5eh8PnKS4LuebJ3YLUoyOyIHraTGyULn23YtEAm0VSg==
   dependencies:
     jest-diff "^27.0.0"
+    pretty-format "^27.0.0"
+
+"@types/jest@27.5.1":
+  version "27.5.1"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.5.1.tgz#2c8b6dc6ff85c33bcd07d0b62cb3d19ddfdb3ab9"
+  integrity sha512-fUy7YRpT+rHXto1YlL+J9rs0uLGyiqVt3ZOTQR+4ROc47yNl8WLdVLgUloBRhOxP1PZvguHl44T3H0wAWxahYQ==
+  dependencies:
+    jest-matcher-utils "^27.0.0"
     pretty-format "^27.0.0"
 
 "@types/json-schema@^7.0.4", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.8", "@types/json-schema@^7.0.9":
@@ -7457,9 +7465,9 @@ jest-leak-detector@^27.5.1:
     jest-get-type "^27.5.1"
     pretty-format "^27.5.1"
 
-jest-matcher-utils@^27.5.1:
+jest-matcher-utils@^27.0.0, jest-matcher-utils@^27.5.1:
   version "27.5.1"
-  resolved "https://registry.npmjs.org/jest-matcher-utils/-/jest-matcher-utils-27.5.1.tgz"
+  resolved "https://registry.yarnpkg.com/jest-matcher-utils/-/jest-matcher-utils-27.5.1.tgz#9c0cdbda8245bc22d2331729d1091308b40cf8ab"
   integrity sha512-z2uTx/T6LBaCoNWNFWwChLBKYxTMcGBRjAt+2SbP929/Fflb9aa5LGma654Rz8z9HLxsrUaYzxE9T/EFIL/PAw==
   dependencies:
     chalk "^4.0.0"
@@ -7683,9 +7691,9 @@ jest-worker@^27.5.1:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-jest@^27.3.1:
+jest@27.5.1:
   version "27.5.1"
-  resolved "https://registry.npmjs.org/jest/-/jest-27.5.1.tgz"
+  resolved "https://registry.yarnpkg.com/jest/-/jest-27.5.1.tgz#dadf33ba70a779be7a6fc33015843b51494f63fc"
   integrity sha512-Yn0mADZB89zTtjkPJEXwrac3LHudkQMR+Paqa8uxJHCBr9agxztUifWCyiYrjhMPBoUVBjyny0I7XH6ozDr7QQ==
   dependencies:
     "@jest/core" "^27.5.1"
@@ -11956,10 +11964,10 @@ trough@^1.0.0:
   resolved "https://registry.npmjs.org/trough/-/trough-1.0.5.tgz"
   integrity sha512-rvuRbTarPXmMb79SmzEp8aqXNKcK+y0XaB298IXueQ8I2PsrATcPBCSPyK/dDNa2iWOhKlfNnOjdAOTBU/nkFA==
 
-ts-jest@^27.0.7:
-  version "27.1.1"
-  resolved "https://registry.npmjs.org/ts-jest/-/ts-jest-27.1.1.tgz"
-  integrity sha512-Ds0VkB+cB+8g2JUmP/GKWndeZcCKrbe6jzolGrVWdqVUFByY/2KDHqxJ7yBSon7hDB1TA4PXxjfZ+JjzJisvgA==
+ts-jest@27.0.7:
+  version "27.0.7"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-27.0.7.tgz#fb7c8c8cb5526ab371bc1b23d06e745652cca2d0"
+  integrity sha512-O41shibMqzdafpuP+CkrOL7ykbmLh+FqQrXEmV9CydQ5JBk0Sj0uAEF5TNNe94fZWKm3yYvWa/IbyV4Yg1zK2Q==
   dependencies:
     bs-logger "0.x"
     fast-json-stable-stringify "2.x"

@@ -1,7 +1,7 @@
 // Installed libraries
 import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 
 // Items under test
 import TaskRunsPage from './TaskRunsPage'
@@ -359,7 +359,7 @@ describe('Tasks.Components.TaskRunsPage', () => {
   })
 
   it('displays run records', async () => {
-    expect(mocked(Creators.setRuns).mock.calls[1][0].length).toEqual(
+    expect(jest.mocked(Creators.setRuns).mock.calls[1][0].length).toEqual(
       dummyTaskRuns.length
     )
 

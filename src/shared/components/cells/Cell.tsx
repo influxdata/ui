@@ -9,6 +9,7 @@ import CellContext from 'src/shared/components/cells/CellContext'
 import ScrollableMarkdown from 'src/shared/components/views/ScrollableMarkdown'
 import RefreshingView from 'src/shared/components/RefreshingView'
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
@@ -103,12 +104,14 @@ class CellComponent extends Component<Props, State> {
             togglePauseCell={this.handlePauseCell}
           />
         </CellHeader>
-        <div
-          className="cell--view"
-          data-testid={`cell--view-empty ${view?.properties?.type}`}
-        >
-          {this.view}
-        </div>
+        <ErrorBoundary>
+          <div
+            className="cell--view"
+            data-testid={`cell--view-empty ${view?.properties?.type}`}
+          >
+            {this.view}
+          </div>
+        </ErrorBoundary>
       </>
     )
   }

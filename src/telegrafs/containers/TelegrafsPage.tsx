@@ -23,13 +23,6 @@ const TelegrafConfigOverlay = RouteOverlay(
     history.push(`/orgs/${params.orgID}/load-data/telegrafs`)
   }
 )
-const TelegrafOutputOverlay = RouteOverlay(
-  OverlayHandler as any,
-  'telegraf-output',
-  (history, params) => {
-    history.push(`/orgs/${params.orgID}/load-data/telegrafs`)
-  }
-)
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -67,10 +60,6 @@ class TelegrafsPage extends PureComponent {
           <Route
             path={`${telegrafsPath}/:id/instructions`}
             component={TelegrafInstructionsOverlay}
-          />
-          <Route
-            path={`${telegrafsPath}/output`}
-            component={TelegrafOutputOverlay}
           />
           <Route
             path={`${telegrafsPath}/new`}

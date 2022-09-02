@@ -67,7 +67,7 @@ const BucketSelector: FC = () => {
   if (loading !== RemoteDataState.Done) {
     return (
       <div>
-        <SelectorTitle title="Bucket" info={BUCKET_TOOLTIP} />
+        <SelectorTitle label="Bucket" tooltipContents={BUCKET_TOOLTIP} />
         <Dropdown
           button={button}
           menu={onCollapse => (
@@ -131,7 +131,7 @@ const BucketSelector: FC = () => {
 
   return (
     <div>
-      <SelectorTitle title="Bucket" info={BUCKET_TOOLTIP} />
+      <SelectorTitle label="Bucket" tooltipContents={BUCKET_TOOLTIP} />
       <Dropdown
         button={button}
         menu={onCollapse => (

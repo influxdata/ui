@@ -1,7 +1,8 @@
-import * as history from 'src/alerting/utils/history'
-import {fromFlux, Table} from '@influxdata/giraffe'
 import {range, uniq} from 'lodash'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
+import {fromFlux, Table} from '@influxdata/giraffe'
+
+import * as history from 'src/alerting/utils/history'
 import {runQuery} from 'src/shared/apis/query'
 
 jest.mock('@influxdata/giraffe', () => ({
@@ -30,7 +31,9 @@ const csv = 'some csv'
 const cancel = jest.fn()
 
 describe('history utils', () => {
-  beforeEach(jest.clearAllMocks)
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
 
   const fluxGroupKeyUnion = ['']
   const resultColumnNames = []
@@ -49,7 +52,7 @@ describe('history utils', () => {
 
   describe('process response', () => {
     it('process empty table', async () => {
-      mocked(fromFlux).mockImplementationOnce(() => ({
+      jest.mocked(fromFlux).mockImplementationOnce(() => ({
         table: {...table, length: 0},
         fluxGroupKeyUnion,
         resultColumnNames,
@@ -69,7 +72,7 @@ describe('history utils', () => {
     })
 
     it('process single table', async () => {
-      mocked(fromFlux).mockImplementationOnce(() => ({
+      jest.mocked(fromFlux).mockImplementationOnce(() => ({
         table,
         fluxGroupKeyUnion,
         resultColumnNames,
@@ -91,7 +94,7 @@ describe('history utils', () => {
         cancel,
       }).promise
 
-      expect(mocked(fromFlux).mock.calls[0][0]).toBe(csv)
+      expect(jest.mocked(fromFlux).mock.calls[0][0]).toBe(csv)
       expect(actual).toMatchObject(expected)
     })
 
@@ -116,13 +119,15 @@ describe('history utils', () => {
     it('should use processResponse function', () => {
       const id = 'some-id'
       const runqueryReturnObj: any = {}
-      mocked(runQuery).mockImplementationOnce(() => runqueryReturnObj)
-      mocked(history.processResponse).mockReturnValueOnce(undefined)
+      jest.mocked(runQuery).mockImplementationOnce(() => runqueryReturnObj)
+      jest.mocked(history.processResponse).mockReturnValueOnce(undefined)
 
       loadStatuses(id, {limit: 100, offset: 0, until: 0})
 
-      expect(mocked(runQuery).mock.calls[0][0]).toBe('some-id')
-      expect(mocked(processResponse).mock.calls[0][0]).toBe(runqueryReturnObj)
+      expect(jest.mocked(runQuery).mock.calls[0][0]).toBe('some-id')
+      expect(jest.mocked(processResponse).mock.calls[0][0]).toBe(
+        runqueryReturnObj
+      )
     })
 
     it('should use all passed arguments to build query', () => {
@@ -144,14 +149,14 @@ describe('history utils', () => {
         // todo: test filter + renameTagKeys
       ]
 
-      mocked(runQuery).mockReturnValue(undefined)
-      mocked(history.processResponse).mockReturnValue(undefined)
+      jest.mocked(runQuery).mockReturnValue(undefined)
+      jest.mocked(history.processResponse).mockReturnValue(undefined)
 
       argumentSet
         .map(x => ({...defaultArgs, ...x}))
         .forEach(loadStatuses.bind(undefined, ''))
 
-      const queries = mocked(runQuery).mock.calls.map(x => x[1])
+      const queries = jest.mocked(runQuery).mock.calls.map(x => x[1])
       const uniqueQuieries = uniq(queries)
 
       expect(queries.length).toBe(uniqueQuieries.length)

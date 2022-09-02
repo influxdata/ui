@@ -56,6 +56,8 @@ interface Props {
   location?: string
 }
 
+const bannerStyle = {border: 'none', borderRadius: '6px'}
+
 const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   const resources = useSelector(extractRateLimitResources)
   const status = useSelector(extractRateLimitStatus)
@@ -68,6 +70,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
     dispatch(showOverlay('write-limit', null, () => dispatch(dismissOverlay)))
   }
 
+  // notification for write limit reached
   useEffect(() => {
     if (CLOUD && status === 'exceeded' && resources.includes('write')) {
       if (showUpgrade) {
@@ -110,6 +113,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
     ? IconFont.AlertTriangle
     : IconFont.Cloud
 
+  // banner panel for cardinality limit exceeded
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
     return (
       <FlexBox
@@ -124,6 +128,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
           icon={icon}
           hideMobileIcon={true}
           textColor={InfluxColors.Yeti}
+          style={bannerStyle}
         >
           <RateLimitAlertContent />
         </BannerPanel>
@@ -131,6 +136,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
     )
   }
 
+  // upgrade button
   if (CLOUD && !alertOnly) {
     return (
       <CloudUpgradeButton
@@ -155,6 +161,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
             }
           )
         }}
+        size={ComponentSize.ExtraSmall}
       />
     )
   }

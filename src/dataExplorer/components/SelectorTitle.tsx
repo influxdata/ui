@@ -12,20 +12,24 @@ import {
 import './Schema.scss'
 
 interface TitleProps {
-  title: string
-  info?: string
+  label: string
+  tooltipContents?: string | JSX.Element
   icon?: IconFont
 }
 
-const SelectorTitle: FC<TitleProps> = ({title, info = '', icon = null}) => {
+const SelectorTitle: FC<TitleProps> = ({
+  label,
+  tooltipContents = '',
+  icon = null,
+}) => {
   return (
     <FlexBox className="selector-title">
       {icon && <Icon glyph={icon} className="selector-title--icon" />}
-      <div>{title}</div>
-      {info && (
+      <div>{label}</div>
+      {tooltipContents && (
         <div className="selector-title--question-mark">
           <QuestionMarkTooltip
-            tooltipContents={info}
+            tooltipContents={tooltipContents}
             diameter={14}
             tooltipStyle={{width: '300px'}}
           />

@@ -30,6 +30,8 @@ import {
   Icon,
   IconFont,
 } from '@influxdata/clockface'
+import {notify} from 'src/shared/actions/notifications'
+import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 
 type OwnProps = {
   wizardEventName: string
@@ -62,7 +64,11 @@ export const Tokens: FC<OwnProps> = ({
   )
 
   useEffect(() => {
-    dispatch(getAllResources())
+    try {
+      dispatch(getAllResources())
+    } catch (err) {
+      dispatch(notify(getResourcesTokensFailure('all access token')))
+    }
   }, [dispatch])
 
   useEffect(() => {

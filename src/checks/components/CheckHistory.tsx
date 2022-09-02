@@ -28,6 +28,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const CheckHistory: FC = () => {
   const resourceIDs = useSelector((state: AppState) => ({
@@ -57,7 +58,9 @@ const CheckHistory: FC = () => {
                   title="Check Statuses"
                   testID="alert-history-title"
                 />
-                <RateLimitAlert location="check history" />
+                {!isFlagEnabled('multiOrg') && (
+                  <RateLimitAlert location="check history" />
+                )}
               </Page.Header>
               <Page.ControlBar fullWidth={true}>
                 <Page.ControlBarLeft>

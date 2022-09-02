@@ -34,6 +34,7 @@ import {ResourceIDs} from 'src/checks/reducers'
 import {ResourceType, AlertHistoryType, AppState} from 'src/types'
 import {RouteComponentProps} from 'react-router-dom'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const ResourceIDsContext = createContext<ResourceIDs>(null)
 
@@ -82,7 +83,7 @@ const AlertHistoryIndex: FC<Props> = ({
                   title="Check Statuses"
                   testID="alert-history-title"
                 />
-                <RateLimitAlert />
+                {!isFlagEnabled('multiOrg') && <RateLimitAlert />}
               </Page.Header>
               <Page.ControlBar fullWidth={true}>
                 <Page.ControlBarRight>

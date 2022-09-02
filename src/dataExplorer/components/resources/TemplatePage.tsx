@@ -17,6 +17,7 @@ const Template: FC = () => {
     setQuery,
     setResource,
     setVisualization,
+    setHasChanged,
     clearSchemaSelection,
   } = useContext(PersistanceContext)
   const params = useParams()[0].split('/')
@@ -49,6 +50,7 @@ const Template: FC = () => {
       setVisualization(data.visual)
       setResource(data)
       history.replace(`/orgs/${org.id}/data-explorer`)
+      setHasChanged(false)
     })
   }, [params])
 

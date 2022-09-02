@@ -29,7 +29,7 @@ import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event, useLoadTimeReporting} from 'src/cloud/utils/reporting'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {ResourceType} from 'src/types'
@@ -62,15 +62,20 @@ const DataExplorerPageHeader: FC = () => {
   }
 
   let pageTitle = <Page.Title title="Data Explorer" />
+
   if (fluxQueryBuilder && resource?.data?.hasOwnProperty('name')) {
-    pageTitle = (
-      <RenamablePageTitle
-        onRename={handleRename}
-        name={resource?.data?.name || ''}
-        placeholder="Untitled Script"
-        maxLength={100}
-      />
-    )
+    if (resource?.data?.type === ResourceType.Scripts) {
+      pageTitle = <Page.Title title={resource?.data?.name ?? ''} />
+    } else {
+      pageTitle = (
+        <RenamablePageTitle
+          onRename={handleRename}
+          name={resource?.data?.name || ''}
+          placeholder="Untitled Script"
+          maxLength={100}
+        />
+      )
+    }
   }
 
   return (
@@ -85,7 +90,7 @@ const DataExplorerPageHeader: FC = () => {
       <FlexBox margin={ComponentSize.Large}>
         <FeatureFlag name="newDataExplorer">
           <FlexBox margin={ComponentSize.Medium}>
-            <InputLabel>&#10024; Try new Data Explorer</InputLabel>
+            <InputLabel>&#10024; Preview New Script Editor</InputLabel>
             <SlideToggle
               active={fluxQueryBuilder}
               onChange={toggleSlider}
@@ -93,7 +98,9 @@ const DataExplorerPageHeader: FC = () => {
             />
           </FlexBox>
         </FeatureFlag>
-        <RateLimitAlert location="data explorer" />
+        {!isFlagEnabled('multiOrg') && (
+          <RateLimitAlert location="data explorer" />
+        )}
       </FlexBox>
     </Page.Header>
   )

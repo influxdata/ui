@@ -1,10 +1,10 @@
 // Installed libraries
 import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
-import * as api from 'src/client'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 
 // Items under test
+import * as api from 'src/client'
 import TaskPage from './TaskPage'
 import {goToTasks} from '../actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
@@ -51,7 +51,7 @@ const mockNotify = () => {
     return res
   }
 
-  mocked(notify).mockImplementation(mock)
+  jest.mocked(notify).mockImplementation(mock)
 }
 
 const mockPostTask = (succeed = true) => {
@@ -78,7 +78,7 @@ const mockPostTask = (succeed = true) => {
     return res
   }
 
-  mocked(api.postTask).mockImplementation(mock)
+  jest.mocked(api.postTask).mockImplementation(mock)
 }
 
 const sampleChron = '0 */4 * * *'
@@ -240,7 +240,7 @@ describe('Tasks.Components.TaskCard', () => {
       },
     })
 
-    mocked(goToTasks).mockImplementation(() => {
+    jest.mocked(goToTasks).mockImplementation(() => {
       return () => {
         return {type: 'MOCKED'}
       }
@@ -256,7 +256,7 @@ describe('Tasks.Components.TaskCard', () => {
     await fireEvent.click(screen.getByTestId('task-save-btn'))
 
     // assert postTask called
-    await expect(mocked(api.postTask).mock.calls[0][0].data.flux).toEqual(
+    await expect(jest.mocked(api.postTask).mock.calls[0][0].data.flux).toEqual(
       'option task = { \n' +
         '  name: "FOOBAR",\n' +
         '  every: 2h,\n' +
@@ -297,7 +297,7 @@ describe('Tasks.Components.TaskCard', () => {
       },
     })
 
-    mocked(goToTasks).mockImplementation(() => {
+    jest.mocked(goToTasks).mockImplementation(() => {
       return () => {
         return {type: 'MOCKED'}
       }
@@ -311,10 +311,10 @@ describe('Tasks.Components.TaskCard', () => {
 
     await waitFor(() => expect(notify).toHaveBeenCalled())
 
-    expect(mocked(notify).mock.calls[0][0].message).toEqual(
+    expect(jest.mocked(notify).mock.calls[0][0].message).toEqual(
       'Failed to create new task: mocked error'
     )
-    expect(mocked(notify).mock.calls[0][0].icon).toEqual('AlertTriangle')
+    expect(jest.mocked(notify).mock.calls[0][0].icon).toEqual('AlertTriangle')
   })
 
   // ensure clean destruction

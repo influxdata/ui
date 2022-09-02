@@ -109,8 +109,9 @@ export const UpgradeContent: FC<UpgradeProps> = ({
   return (
     <div className={`${className} rate-alert--content__free`}>
       <FlexBox
-        justifyContent={JustifyContent.Center}
+        justifyContent={JustifyContent.SpaceBetween}
         className="rate-alert--button"
+        stretchToFitWidth={true}
       >
         <UpgradeMessage
           {...{isCredit250ExperienceActive, limitText, link, type}}
@@ -138,6 +139,7 @@ export const UpgradeContent: FC<UpgradeProps> = ({
               }
             )
           }}
+          size={ComponentSize.ExtraSmall}
         />
       </FlexBox>
     </div>

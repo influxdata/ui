@@ -47,7 +47,10 @@ const MeasurementSelector: FC = () => {
 
   return (
     <div>
-      <SelectorTitle title="Measurement" info={MEASUREMENT_TOOLTIP} />
+      <SelectorTitle
+        label="Measurement"
+        tooltipContents={MEASUREMENT_TOOLTIP}
+      />
       <SearchableDropdown
         searchTerm={searchTerm}
         searchPlaceholder="Search measurements"

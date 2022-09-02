@@ -49,7 +49,9 @@ export const allAccessPermissions = (
   userID: string
 ): Permission[] => {
   const withOrgID = ensureT(orgID, userID)
-  return allPermissionTypes.flatMap(withOrgID)
+  return allPermissionTypes
+    .filter(perm => String(perm) !== 'instance')
+    .flatMap(withOrgID)
 }
 
 export const formatResources = resourceNames => {
@@ -58,7 +60,9 @@ export const formatResources = resourceNames => {
       item !== ResourceType.Buckets &&
       item !== ResourceType.Telegrafs &&
       // filter out Subsriptions resource type if the UI is not enabled
-      (item !== ResourceType.Subscriptions || isFlagEnabled('subscriptionsUI'))
+      (item !== ResourceType.Subscriptions ||
+        isFlagEnabled('subscriptionsUI')) &&
+      String(item) !== 'instance'
   )
   resources.sort()
   resources.unshift(ResourceType.Telegrafs)

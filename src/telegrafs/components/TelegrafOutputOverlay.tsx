@@ -164,7 +164,7 @@ class TelegrafOutputOverlay extends PureComponent<Props> {
             </Link>
             .
           </p>
-          <p>{bucket_dd}</p>
+          <div style={{marginBottom: '13px'}}>{bucket_dd}</div>
           <div className="output-overlay">
             <TemplateProvider
               variables={{

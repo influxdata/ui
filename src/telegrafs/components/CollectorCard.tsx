@@ -79,7 +79,7 @@ class CollectorRow extends PureComponent<
           <Link
             to={''}
             data-testid="setup-instructions-link"
-            onClick={this.openInstructions}
+            onClick={this.openInstructionsOverlay}
           >
             Setup Instructions
           </Link>
@@ -133,7 +133,7 @@ class CollectorRow extends PureComponent<
     )
   }
 
-  private openInstructions = e => {
+  private openInstructionsOverlay = e => {
     e.preventDefault()
     const {showOverlay, dismissOverlay, collector} = this.props
     return showOverlay(

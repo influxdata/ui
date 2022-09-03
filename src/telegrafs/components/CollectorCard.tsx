@@ -24,6 +24,7 @@ import {
   addTelegrafLabelAsync,
   removeTelegrafLabelAsync,
 } from 'src/telegrafs/actions/thunks'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 import {cloneTelegraf} from 'src/telegrafs/actions/thunks'
 // Selectors
@@ -52,7 +53,7 @@ class CollectorRow extends PureComponent<
   Props & RouteComponentProps<{orgID: string}>
 > {
   public render() {
-    const {collector, org} = this.props
+    const {collector} = this.props
 
     return (
       <ResourceCard
@@ -76,8 +77,9 @@ class CollectorRow extends PureComponent<
         />
         <ResourceCard.Meta>
           <Link
-            to={`/orgs/${org.id}/load-data/telegrafs/${collector.id}/instructions`}
+            to={''}
             data-testid="setup-instructions-link"
+            onClick={this.openInstructions}
           >
             Setup Instructions
           </Link>
@@ -128,6 +130,16 @@ class CollectorRow extends PureComponent<
           triggerRef={settingsRef}
         />
       </FlexBox>
+    )
+  }
+
+  private openInstructions = e => {
+    e.preventDefault()
+    const {showOverlay, dismissOverlay, collector} = this.props
+    return showOverlay(
+      'telegraf-instructions',
+      {collectorId: collector.id},
+      dismissOverlay
     )
   }
 
@@ -199,6 +211,8 @@ const mdtp = {
   cloneTelegraf,
   onAddLabel: addTelegrafLabelAsync,
   onRemoveLabel: removeTelegrafLabelAsync,
+  showOverlay,
+  dismissOverlay,
 }
 
 const connector = connect(mstp, mdtp)

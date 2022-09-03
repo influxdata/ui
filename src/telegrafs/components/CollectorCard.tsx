@@ -77,7 +77,7 @@ class CollectorRow extends PureComponent<
         />
         <ResourceCard.Meta>
           <Link
-            to={''}
+            to=""
             data-testid="setup-instructions-link"
             onClick={this.openInstructionsOverlay}
           >

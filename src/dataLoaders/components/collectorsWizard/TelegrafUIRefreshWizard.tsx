@@ -47,15 +47,18 @@ import {isSystemBucket} from 'src/buckets/constants'
 import {getBucketOverlayWidth} from 'src/buckets/constants'
 const TELEGRAF_UI_REFRESH_OVERLAY_DEFAULT_WIDTH = 1200
 
+interface OwnProps {
+  onClose: () => void
+}
+
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{orgID: string}>
+type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
 
 @ErrorHandling
 class TelegrafUIRefreshWizard extends PureComponent<Props> {
   public state = {
     pluginConfig: '',
     isValidConfiguration: false,
-    isVisible: true,
   }
 
   public componentDidMount() {
@@ -80,31 +83,25 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
     }
 
     return (
-      <Overlay visible={this.state.isVisible}>
-        <Overlay.Container maxWidth={maxWidth}>
-          <Overlay.Header
-            title="Create a Telegraf Configuration"
-            onDismiss={this.handleDismiss}
-          />
-          <Overlay.Body className={overlayBodyClassName}>
-            <TelegrafUIRefreshStepSwitcher stepProps={this.stepProps} />
-          </Overlay.Body>
-          <Footer {...this.stepProps} />
-        </Overlay.Container>
-      </Overlay>
+      <Overlay.Container maxWidth={maxWidth}>
+        <Overlay.Header
+          title="Create a Telegraf Configuration"
+          onDismiss={this.handleDismiss}
+        />
+        <Overlay.Body className={overlayBodyClassName}>
+          <TelegrafUIRefreshStepSwitcher stepProps={this.stepProps} />
+        </Overlay.Body>
+        <Footer {...this.stepProps} />
+      </Overlay.Container>
     )
   }
 
   private handleDismiss = () => {
-    const {history, locationOnDismiss, org} = this.props
+    const {onClose} = this.props
     const {clearDataLoaders, onClearSteps} = this.props
     clearDataLoaders()
     onClearSteps()
-    this.setState({isVisible: false})
-    const location = locationOnDismiss
-      ? locationOnDismiss
-      : `/orgs/${org.id}/load-data/telegrafs`
-    history.push(location)
+    onClose()
   }
 
   private handleSetIsValidConfiguration = (isValid: boolean) => {

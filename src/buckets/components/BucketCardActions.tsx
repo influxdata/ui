@@ -20,6 +20,7 @@ import {
   setDataLoadersType,
   setLocationOnDismiss,
 } from 'src/dataLoaders/actions/dataLoaders'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
@@ -48,6 +49,8 @@ const BucketCardActions: FC<Props> = ({
   onSetDataLoadersBucket,
   onSetDataLoadersType,
   setLocationOnDismiss,
+  showOverlay,
+  dismissOverlay,
 }) => {
   const history = useHistory()
   const {orgID} = useParams<{orgID: string}>()
@@ -80,7 +83,7 @@ const BucketCardActions: FC<Props> = ({
 
     onSetDataLoadersType(DataLoaderType.Streaming)
     setLocationOnDismiss(`/orgs/${orgID}/load-data/buckets`)
-    history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
+    showOverlay('telegraf-wizard', null, dismissOverlay)
   }
 
   const handleAddLineProtocol = () => {
@@ -158,6 +161,8 @@ const mdtp = {
   onSetDataLoadersBucket: setBucketInfo,
   onSetDataLoadersType: setDataLoadersType,
   setLocationOnDismiss,
+  showOverlay,
+  dismissOverlay,
 }
 
 const connector = connect(null, mdtp)

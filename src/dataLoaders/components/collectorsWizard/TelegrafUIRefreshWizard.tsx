@@ -97,11 +97,21 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
   }
 
   private handleDismiss = () => {
-    const {onClose} = this.props
-    const {clearDataLoaders, onClearSteps} = this.props
+    const {
+      clearDataLoaders,
+      onClearSteps,
+      onClose,
+      history,
+      locationOnDismiss,
+    } = this.props
     clearDataLoaders()
     onClearSteps()
-    onClose()
+    if (locationOnDismiss) {
+      onClose()
+      history.push(locationOnDismiss)
+    } else {
+      onClose()
+    }
   }
 
   private handleSetIsValidConfiguration = (isValid: boolean) => {

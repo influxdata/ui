@@ -1,11 +1,9 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {FC, useContext} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {get} from 'lodash'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {ErrorHandling} from 'src/shared/decorators/errors'
 import {Overlay} from '@influxdata/clockface'
 import TelegrafInstructions from 'src/dataLoaders/components/verifyStep/TelegrafInstructions'
 import GetResources from 'src/resources/components/GetResources'
@@ -17,64 +15,53 @@ import {Telegraf, AppState, ResourceType} from 'src/types'
 import {getAll, getToken} from 'src/resources/selectors'
 import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 
+// Contexts
+import {OverlayContext} from 'src/overlays/components/OverlayController'
+
+interface OwnProps {
+  onClose: () => void
+}
+
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{orgID: string; id: string}>
+type Props = OwnProps &
+  ReduxProps &
+  RouteComponentProps<{orgID: string; id: string}>
 
-@ErrorHandling
-export class TelegrafInstructionsOverlay extends PureComponent<Props> {
-  public render() {
-    const {token} = this.props
-    return (
-      <Overlay visible={true}>
-        <Overlay.Container maxWidth={700}>
-          <Overlay.Header
-            title="Telegraf Setup Instructions"
-            onDismiss={this.handleDismiss}
-          />
-          <Overlay.Body>
-            <GetResources resources={[ResourceType.Authorizations]}>
-              <TelegrafInstructions
-                token={token}
-                configID={get(this.collector, 'id', '')}
-              />
-            </GetResources>
-          </Overlay.Body>
-        </Overlay.Container>
-      </Overlay>
-    )
+const TelegrafInstructionsOverlay: FC<Props> = props => {
+  const {token} = props
+  const {params} = useContext(OverlayContext)
+
+  const collector = () => {
+    const {collectors} = props
+    const collector = collectors.find(c => c.id === params.collectorId)
+    return collector.id || ''
   }
 
-  private get collector() {
-    const {
-      match: {
-        params: {id},
-      },
-      collectors,
-    } = this.props
-    return collectors.find(c => c.id === id)
-  }
-
-  private handleDismiss = (): void => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-      onClearDataLoaders,
-    } = this.props
-    this.setState({
-      collectorID: null,
-    })
+  const handleDismiss = (): void => {
+    const {onClearDataLoaders, onClose} = props
     onClearDataLoaders()
-    history.push(`/orgs/${orgID}/load-data/telegrafs/`)
+    onClose()
   }
+
+  return (
+    <Overlay.Container maxWidth={700}>
+      <Overlay.Header
+        title="Telegraf Setup Instructions"
+        onDismiss={handleDismiss}
+      />
+      <Overlay.Body>
+        <GetResources resources={[ResourceType.Authorizations]}>
+          <TelegrafInstructions token={token} configID={collector()} />
+        </GetResources>
+      </Overlay.Body>
+    </Overlay.Container>
+  )
 }
 
 const mstp = (state: AppState) => {
   const {
     me: {name},
   } = state
-
   const token = getToken(state)
   const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
 

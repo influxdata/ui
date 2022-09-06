@@ -9,7 +9,6 @@ import LoadDataHeader from 'src/settings/components/LoadDataHeader'
 import Collectors from 'src/telegrafs/components/Collectors'
 import GetResources from 'src/resources/components/GetResources'
 import LimitChecker from 'src/cloud/components/LimitChecker'
-import TelegrafInstructionsOverlay from 'src/telegrafs/components/TelegrafInstructionsOverlay'
 import TelegrafUIRefreshWizard from 'src/dataLoaders/components/collectorsWizard/TelegrafUIRefreshWizard'
 import {Page} from '@influxdata/clockface'
 import OverlayHandler, {
@@ -56,10 +55,6 @@ class TelegrafsPage extends PureComponent {
           <Route
             path={`${telegrafsPath}/:id/view`}
             component={TelegrafConfigOverlay}
-          />
-          <Route
-            path={`${telegrafsPath}/:id/instructions`}
-            component={TelegrafInstructionsOverlay}
           />
           <Route
             path={`${telegrafsPath}/new`}

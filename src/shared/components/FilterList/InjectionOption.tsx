@@ -78,7 +78,7 @@ const FluxInjectionOption: FC<Props> = ({
           triggerRef={itemRef}
           showEvent={PopoverInteraction.Hover}
           hideEvent={PopoverInteraction.Hover}
-          distanceFromTrigger={8}
+          distanceFromTrigger={4}
           testID="toolbar-popover"
           contents={() => (
             <ToolTipContent

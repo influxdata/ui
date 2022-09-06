@@ -44,7 +44,7 @@ import {executeVWO} from 'src/utils/vwo'
 
 // Styles
 import './MultiOrgOverrideStyles.scss'
-const fullScreen = {height: '100%', width: '100%'}
+import {Page} from '@influxdata/clockface'
 
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
@@ -121,7 +121,7 @@ const App: FC = () => {
       <EngagementLink />
       <TreeNav />
       <Suspense fallback={<PageSpinner />}>
-        <div style={fullScreen}>
+        <Page>
           {CLOUD && isFlagEnabled('multiOrg') && shouldUseQuartzIdentity() && (
             <GlobalHeaderContainer />
           )}
@@ -129,7 +129,7 @@ const App: FC = () => {
             <Route path="/orgs/new" component={CreateOrgOverlay} />
             <Route path="/orgs/:orgID" component={SetOrg} />
           </Switch>
-        </div>
+        </Page>
       </Suspense>
     </AppWrapper>
   )

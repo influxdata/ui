@@ -57,10 +57,6 @@ class TelegrafsPage extends PureComponent {
             component={TelegrafConfigOverlay}
           />
           <Route
-            path={`${telegrafsPath}/output`}
-            component={TelegrafOutputOverlay}
-          />
-          <Route
             path={`${telegrafsPath}/new`}
             component={TelegrafUIRefreshWizard}
           />

@@ -11,17 +11,6 @@ import GetResources from 'src/resources/components/GetResources'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import TelegrafUIRefreshWizard from 'src/dataLoaders/components/collectorsWizard/TelegrafUIRefreshWizard'
 import {Page} from '@influxdata/clockface'
-import OverlayHandler, {
-  RouteOverlay,
-} from 'src/overlays/components/RouteOverlay'
-
-const TelegrafConfigOverlay = RouteOverlay(
-  OverlayHandler as any,
-  'telegraf-config',
-  (history, params) => {
-    history.push(`/orgs/${params.orgID}/load-data/telegrafs`)
-  }
-)
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -52,10 +41,6 @@ class TelegrafsPage extends PureComponent {
           </LimitChecker>
         </Page>
         <Switch>
-          <Route
-            path={`${telegrafsPath}/:id/view`}
-            component={TelegrafConfigOverlay}
-          />
           <Route
             path={`${telegrafsPath}/new`}
             component={TelegrafUIRefreshWizard}

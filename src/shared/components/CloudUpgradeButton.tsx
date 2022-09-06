@@ -77,7 +77,6 @@ const CloudUpgradeButton: FC<OwnProps> = ({
   )
 
   if (showUpgradeButton) {
-    console.log(window.innerWidth)
     if (isFlagEnabled('credit250Experiment') && showPromoMessage) {
       if (isCredit250ExperienceActive) {
         return credit250Experience

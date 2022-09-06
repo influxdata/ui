@@ -74,3 +74,9 @@
     margin-top: 10px;
   }
 }
+
+@media (max-width: 800px) {
+  .user-popover {
+    top: 123px;
+  }
+}

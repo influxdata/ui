@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent, MouseEvent, RefObject, createRef} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps, Link} from 'react-router-dom'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {
@@ -38,6 +38,9 @@ import {AppState, Label, Telegraf} from 'src/types'
 
 // Utils
 import {setCloneName} from 'src/utils/naming'
+
+// Styles
+import './CollectorCard.scss'
 
 interface OwnProps {
   collector: Telegraf
@@ -76,13 +79,13 @@ class CollectorRow extends PureComponent<
           placeholder={`Describe ${collector.name}`}
         />
         <ResourceCard.Meta>
-          <Link
-            to=""
+          <span
+            className="setup-instructions"
             data-testid="setup-instructions-link"
             onClick={this.openInstructionsOverlay}
           >
             Setup Instructions
-          </Link>
+          </span>
         </ResourceCard.Meta>
         {this.labels}
       </ResourceCard>

@@ -87,9 +87,8 @@ const Results: FC = () => {
   const {visualization, setVisualization} = useContext(PersistanceContext)
   const {result, status} = useContext(ResultsContext)
   const {launch} = useContext(SidebarContext)
-  const vizType = visualization?.type ?? 'simple-table'
   const res = useMemo(() => {
-    if (vizType !== 'simple-table' || !search.trim() || !result?.parsed) {
+    if (visualization.type !== 'simple-table' || !search.trim() || !result?.parsed) {
       return result?.parsed
     }
 
@@ -136,7 +135,7 @@ const Results: FC = () => {
     dupped.table.length = newLen
 
     return dupped as FluxResult['parsed']
-  }, [search, result?.parsed, vizType])
+  }, [search, result?.parsed, visualization.type])
 
   let resultView: ReactNode
 
@@ -165,7 +164,7 @@ const Results: FC = () => {
   }
 
   const tableHeader =
-    vizType === 'simple-table' ? (
+    visualization.type === 'simple-table' ? (
       <>
         <div style={{width: '300px'}}>
           <SearchWidget
@@ -184,9 +183,9 @@ const Results: FC = () => {
     ) : null
 
   const vizHeader =
-    vizType !== 'simple-table' ? (
+    visualization.type !== 'simple-table' ? (
       <>
-        <ViewTypeDropdown viewType={vizType} onUpdateType={updateType} />
+        <ViewTypeDropdown viewType={visualization.type} onUpdateType={updateType} />
         <Button
           text="Customize"
           icon={IconFont.CogSolid_New}
@@ -225,7 +224,7 @@ const Results: FC = () => {
                   id="table"
                   name="viz-setting"
                   value="table"
-                  active={vizType === 'simple-table'}
+                  active={visualization.type === 'simple-table'}
                   onClick={updateViewState}
                 >
                   Table
@@ -234,7 +233,7 @@ const Results: FC = () => {
                   id="graph"
                   name="viz-setting"
                   value="graph"
-                  active={vizType !== 'simple-table'}
+                  active={visualization.type !== 'simple-table'}
                   onClick={updateViewState}
                 >
                   Graph

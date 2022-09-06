@@ -73,6 +73,7 @@ export const DEFAULT_CONTEXT = {
   resource: null,
   visualization: {
     type: 'simple-table',
+    shape: 'chronograf-v2',
     showAll: false,
   } as SimpleTableViewProperties,
   selection: JSON.parse(JSON.stringify(DEFAULT_SCHEMA)),

@@ -102,7 +102,6 @@ export default function script(register) {
         if (resp.status !== 201) {
           return
         }
-        _data.id = resp.data.id
 
         _data.properties = resource.visual
         _data.properties.queries = [
@@ -124,11 +123,15 @@ export default function script(register) {
 
         return patchDashboardsCellsView({
           dashboardID,
-          cellID: _data.id,
+          cellID: resp.data.id,
           data: _data,
         }).then(() => ({
           ...resource,
-          data: _data,
+          data: {
+            id: resp.data.id,
+            dashboardID,
+            ..._data
+          },
         }))
       })
     },

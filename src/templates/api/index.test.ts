@@ -1,5 +1,4 @@
-import {mocked} from 'ts-jest/utils'
-jest.mock('src/client')
+import {jest} from '@jest/globals'
 
 import {
   postTemplatesApply as postTemplatesApplyMock,
@@ -17,9 +16,11 @@ import {
   fetchReadMe,
 } from 'src/templates/api/'
 
+jest.mock('src/client')
+
 describe('templates api calls', () => {
   beforeEach(() => {
-    mocked(postTemplatesApplyMock).mockReset()
+    jest.mocked(postTemplatesApplyMock).mockReset()
   })
 
   it('handles reviewing a template successfully', async () => {
@@ -27,7 +28,7 @@ describe('templates api calls', () => {
     const templateUrl =
       'https://github.com/influxdata/community-templates/blob/master/docker/docker.yml'
 
-    mocked(postTemplatesApplyMock).mockImplementation(() => {
+    jest.mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
         data: {} as any,
@@ -36,7 +37,7 @@ describe('templates api calls', () => {
     })
 
     await reviewTemplate(orgID, templateUrl)
-    const [mockArguments] = mocked(postTemplatesApplyMock).mock.calls[0]
+    const [mockArguments] = jest.mocked(postTemplatesApplyMock).mock.calls[0]
 
     expect(mockArguments.data.dryRun).toBeTruthy()
     expect(mockArguments.data.orgID).toBe(orgID)
@@ -47,7 +48,7 @@ describe('templates api calls', () => {
     const orgID = '1234'
     const templateUrl = 'http://example.com'
 
-    mocked(postTemplatesApplyMock).mockImplementation(() => {
+    jest.mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
         status: 500,
         data: {
@@ -67,7 +68,7 @@ describe('templates api calls', () => {
   it('handles installing a template', async () => {
     const orgID = '1234'
     const templateUrl = 'http://example.com'
-    mocked(postTemplatesApplyMock).mockImplementation(() => {
+    jest.mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
         data: {} as any,
@@ -76,7 +77,7 @@ describe('templates api calls', () => {
     })
 
     await installTemplate(orgID, templateUrl, {})
-    const [mockArguments] = mocked(postTemplatesApplyMock).mock.calls[0]
+    const [mockArguments] = jest.mocked(postTemplatesApplyMock).mock.calls[0]
 
     expect(mockArguments.data.dryRun).toBeFalsy()
     expect(mockArguments.data.orgID).toBe(orgID)
@@ -88,7 +89,7 @@ describe('templates api calls', () => {
     const templateUrl =
       'https://github.com/influxdata/community-templates/blob/master/docker/docker.yml'
 
-    mocked(postTemplatesApplyMock).mockImplementation(() => {
+    jest.mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
         status: 500,
         data: {
@@ -107,7 +108,7 @@ describe('templates api calls', () => {
 
   it('fetches installed stacks', async () => {
     const orgID = '90d314b476c1cc67'
-    mocked(getStacksMock).mockImplementation(() => {
+    jest.mocked(getStacksMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
         data: {} as any,
@@ -116,14 +117,14 @@ describe('templates api calls', () => {
     })
 
     await fetchStacks(orgID)
-    const [mockArguments] = mocked(getStacksMock).mock.calls[0]
+    const [mockArguments] = jest.mocked(getStacksMock).mock.calls[0]
 
     expect(mockArguments.query.orgID).toBe(orgID)
   })
 
   it('handles failures while fetching stacks', async () => {
     const orgID = '1234'
-    mocked(getStacksMock).mockImplementation(() => {
+    jest.mocked(getStacksMock).mockImplementation(() => {
       return Promise.resolve({
         status: 500,
         data: {
@@ -143,7 +144,7 @@ describe('templates api calls', () => {
   it('deletes a stack', async () => {
     const orgID = '90d314b476c1cc67'
     const stackID = '063ea6d269ea4000'
-    mocked(deleteStackMock).mockImplementation(() => {
+    jest.mocked(deleteStackMock).mockImplementation(() => {
       return Promise.resolve({
         status: 204,
         data: {} as any,
@@ -152,7 +153,7 @@ describe('templates api calls', () => {
     })
 
     await deleteStack(stackID, orgID)
-    const [mockArguments] = mocked(deleteStackMock).mock.calls[0]
+    const [mockArguments] = jest.mocked(deleteStackMock).mock.calls[0]
 
     expect(mockArguments.query.orgID).toBe(orgID)
     expect(mockArguments.stack_id).toBe(stackID)
@@ -161,7 +162,7 @@ describe('templates api calls', () => {
   it('handles failures to delete stacks', async () => {
     const orgID = '1234'
     const stackID = '63728'
-    mocked(deleteStackMock).mockImplementation(() => {
+    jest.mocked(deleteStackMock).mockImplementation(() => {
       return Promise.resolve({
         status: 500,
         data: {
@@ -181,7 +182,7 @@ describe('templates api calls', () => {
   it('updates the name of a stack', async () => {
     const name = 'test rule'
     const stackID = '063ea6d269ea4000'
-    mocked(patchStackMock).mockImplementation(() => {
+    jest.mocked(patchStackMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
         data: {} as any,
@@ -190,7 +191,7 @@ describe('templates api calls', () => {
     })
 
     await updateStackName(stackID, name)
-    const [mockArguments] = mocked(patchStackMock).mock.calls[0]
+    const [mockArguments] = jest.mocked(patchStackMock).mock.calls[0]
 
     expect(mockArguments.data.name).toBe(name)
     expect(mockArguments.stack_id).toBe(stackID)
@@ -199,7 +200,7 @@ describe('templates api calls', () => {
   it('handles failures when updating a stack name', async () => {
     const name = 'test rule'
     const stackID = '63728'
-    mocked(patchStackMock).mockImplementation(() => {
+    jest.mocked(patchStackMock).mockImplementation(() => {
       return Promise.resolve({
         status: 500,
         data: {
@@ -223,7 +224,7 @@ describe('templates api calls', () => {
     await fetchReadMe(name)
 
     expect(fetchMock).toHaveReturned()
-    expect(mocked(fetchMock).mock.calls[0][0]).toBe(
+    expect(jest.mocked(fetchMock).mock.calls[0][0]).toBe(
       'https://raw.githubusercontent.com/influxdata/community-templates/master/docker/readme.md'
     )
   })

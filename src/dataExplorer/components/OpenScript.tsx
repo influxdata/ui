@@ -25,10 +25,11 @@ if (CLOUD) {
 }
 
 interface Props {
+  onCancel: () => void
   onClose: () => void
 }
 
-const OpenScript: FC<Props> = ({onClose}) => {
+const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   const [scripts, setScripts] = useState([])
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
@@ -123,7 +124,7 @@ const OpenScript: FC<Props> = ({onClose}) => {
     }
     return (
       <Overlay.Container maxWidth={500}>
-        <Overlay.Header title="Open Script" onDismiss={onClose} />
+        <Overlay.Header title="Open Script" onDismiss={onCancel} />
         <Overlay.Body>
           <Input
             className="data-source--search"
@@ -138,14 +139,14 @@ const OpenScript: FC<Props> = ({onClose}) => {
         <Overlay.Footer>
           <Button
             color={ComponentColor.Tertiary}
-            onClick={onClose}
+            onClick={onCancel}
             text="Cancel"
           />
           {CLOUD && (
             <Button
               color={ComponentColor.Primary}
               status={
-                scripts.length === 0
+                scripts.length === 0 || Object.keys(selectedScript).length === 0
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }

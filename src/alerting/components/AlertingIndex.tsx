@@ -24,7 +24,7 @@ import {
   ThresholdCheckOverlay,
   DeadmanCheckOverlay as NewDeadmanCheckEO,
 } from 'src/overlays/components'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -65,7 +65,9 @@ const AlertingIndex: FunctionComponent = () => {
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
           <ErrorBoundary>
-            <RateLimitAlert location="alerting" />
+            {!isFlagEnabled('multiOrg') && (
+              <RateLimitAlert location="alerting" />
+            )}
           </ErrorBoundary>
         </Page.Header>
         <Page.Contents

@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent, MouseEvent, RefObject, createRef} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps, Link} from 'react-router-dom'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {
@@ -24,6 +24,7 @@ import {
   addTelegrafLabelAsync,
   removeTelegrafLabelAsync,
 } from 'src/telegrafs/actions/thunks'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 import {cloneTelegraf} from 'src/telegrafs/actions/thunks'
 // Selectors
@@ -37,6 +38,9 @@ import {AppState, Label, Telegraf} from 'src/types'
 
 // Utils
 import {setCloneName} from 'src/utils/naming'
+
+// Styles
+import './CollectorCard.scss'
 
 interface OwnProps {
   collector: Telegraf
@@ -52,7 +56,7 @@ class CollectorRow extends PureComponent<
   Props & RouteComponentProps<{orgID: string}>
 > {
   public render() {
-    const {collector, org} = this.props
+    const {collector} = this.props
 
     return (
       <ResourceCard
@@ -75,12 +79,13 @@ class CollectorRow extends PureComponent<
           placeholder={`Describe ${collector.name}`}
         />
         <ResourceCard.Meta>
-          <Link
-            to={`/orgs/${org.id}/load-data/telegrafs/${collector.id}/instructions`}
+          <span
+            className="setup-instructions"
             data-testid="setup-instructions-link"
+            onClick={this.openInstructionsOverlay}
           >
             Setup Instructions
-          </Link>
+          </span>
         </ResourceCard.Meta>
         {this.labels}
       </ResourceCard>
@@ -131,6 +136,16 @@ class CollectorRow extends PureComponent<
     )
   }
 
+  private openInstructionsOverlay = e => {
+    e.preventDefault()
+    const {showOverlay, dismissOverlay, collector} = this.props
+    return showOverlay(
+      'telegraf-instructions',
+      {collectorId: collector.id},
+      dismissOverlay
+    )
+  }
+
   private handleUpdateName = (name: string) => {
     const {onUpdate, collector} = this.props
 
@@ -175,8 +190,8 @@ class CollectorRow extends PureComponent<
   }
 
   private handleOpenConfig = (): void => {
-    const {collector, history, org} = this.props
-    history.push(`/orgs/${org.id}/load-data/telegrafs/${collector.id}/view`)
+    const {collector, showOverlay, dismissOverlay} = this.props
+    showOverlay('telegraf-config', {collectorId: collector.id}, dismissOverlay)
   }
 
   private cloneTelegraf = (): void => {
@@ -199,6 +214,8 @@ const mdtp = {
   cloneTelegraf,
   onAddLabel: addTelegrafLabelAsync,
   onRemoveLabel: removeTelegrafLabelAsync,
+  showOverlay,
+  dismissOverlay,
 }
 
 const connector = connect(mstp, mdtp)

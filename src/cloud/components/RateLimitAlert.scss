@@ -2,3 +2,11 @@
   display: flex;
   align-items: center;
 }
+
+.cf-panel--body__xs {
+  padding: 8px;
+}
+
+.cf-banner-panel .cf-panel--body__xs .cf-banner-panel--icon {
+  margin-right: 0;
+}

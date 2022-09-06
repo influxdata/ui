@@ -1,14 +1,9 @@
 // Libraries
-import {
-  Table,
-  LineInterpolation,
-  FromFluxResult,
-  LatLonColumns,
-} from '@influxdata/giraffe'
+import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
 import {S2} from 's2-geometry'
 
 // Types
-import {XYGeom, Axis} from 'src/types'
+import {Axis, LatLonColumns, XYGeom} from 'src/types'
 
 export const HEX_DIGIT_PRECISION = 16
 

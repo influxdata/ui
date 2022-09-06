@@ -22,6 +22,7 @@ export interface SchemaSelection {
 }
 
 interface ContextType {
+  hasChanged: boolean
   horizontal: number[]
   vertical: number[]
   range: TimeRange
@@ -29,6 +30,7 @@ interface ContextType {
   resource: ResourceConnectedQuery<any>
   selection: SchemaSelection
 
+  setHasChanged: (hasChanged: boolean) => void
   setHorizontal: (val: number[]) => void
   setVertical: (val: number[]) => void
   setRange: (val: TimeRange) => void
@@ -52,6 +54,7 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
 }
 
 const DEFAULT_CONTEXT = {
+  hasChanged: false,
   horizontal: [0.2],
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,
@@ -59,6 +62,7 @@ const DEFAULT_CONTEXT = {
   resource: null,
   selection: JSON.parse(JSON.stringify(DEFAULT_SCHEMA)),
 
+  setHasChanged: (_: boolean) => {},
   setHorizontal: (_: number[]) => {},
   setVertical: (_: number[]) => {},
   setRange: (_: TimeRange) => {},
@@ -78,6 +82,10 @@ export const PersistanceProvider: FC = ({children}) => {
   ] = useSessionStorage('dataExplorer.resize.horizontal', [
     ...DEFAULT_CONTEXT.horizontal,
   ])
+  const [hasChanged, setHasChanged] = useSessionStorage(
+    'dataExplorer.hasChanged',
+    DEFAULT_CONTEXT.hasChanged
+  )
   const [
     vertical,
     setVertical,
@@ -102,6 +110,23 @@ export const PersistanceProvider: FC = ({children}) => {
     JSON.parse(JSON.stringify(DEFAULT_CONTEXT.selection))
   )
 
+  const handleSetQuery = text => {
+    if (hasChanged === false) {
+      setHasChanged(true)
+    }
+    setQuery(text)
+  }
+
+  const handleSetResource = useCallback(
+    (resource: any) => {
+      if (hasChanged === false) {
+        setHasChanged(true)
+      }
+      setResource(resource)
+    },
+    [hasChanged]
+  )
+
   const clearSchemaSelection = () => {
     setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
   }
@@ -119,9 +144,18 @@ export const PersistanceProvider: FC = ({children}) => {
           ...(schema.composition || {}),
         },
       }
+      if (hasChanged === false) {
+        setHasChanged(true)
+      }
       setSelection(nextState)
     },
-    [selection.composition, selection.fields, selection.tagValues, setSelection]
+    [
+      hasChanged,
+      selection.composition,
+      selection.fields,
+      selection.tagValues,
+      setSelection,
+    ]
   )
 
   const save = () => {
@@ -132,7 +166,8 @@ export const PersistanceProvider: FC = ({children}) => {
     resource.flux = query
 
     return RESOURCES[resource.type].persist(resource).then(data => {
-      setResource(data)
+      handleSetResource(data)
+      setHasChanged(false)
       return data
     })
   }
@@ -140,6 +175,7 @@ export const PersistanceProvider: FC = ({children}) => {
   return (
     <PersistanceContext.Provider
       value={{
+        hasChanged,
         horizontal,
         vertical,
         range,
@@ -147,11 +183,12 @@ export const PersistanceProvider: FC = ({children}) => {
         resource,
         selection,
 
+        setHasChanged,
         setHorizontal,
         setVertical,
         setRange,
-        setQuery,
-        setResource,
+        setQuery: handleSetQuery,
+        setResource: handleSetResource,
         setSelection: setSchemaSelection,
         clearSchemaSelection,
 

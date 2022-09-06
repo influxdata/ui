@@ -3,7 +3,7 @@ import React from 'react'
 import {createStore} from 'redux'
 import {cleanup, fireEvent, screen, waitFor} from '@testing-library/react'
 import {normalize} from 'normalizr'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 
 // Manual mocks
 jest.mock('src/cloud/utils/reporting')
@@ -131,11 +131,11 @@ describe('the Community Templates Install Overlay', () => {
 
       fireEvent.click(templateButton)
 
-      const [templateClickEventCallArguments] = mocked(event).mock.calls
+      const [templateClickEventCallArguments] = jest.mocked(event).mock.calls
       const [eventName] = templateClickEventCallArguments
       expect(eventName).toBe('template_click_lookup')
 
-      mocked(updateStackName).mockImplementationOnce(() => {
+      jest.mocked(updateStackName).mockImplementationOnce(() => {
         throw new Error()
       })
 
@@ -149,11 +149,11 @@ describe('the Community Templates Install Overlay', () => {
         fireEvent.click(installButton)
       })
 
-      const [, , installEventCallArguments] = mocked(event).mock.calls
+      const [, , installEventCallArguments] = jest.mocked(event).mock.calls
       const [eventName2] = installEventCallArguments
       expect(eventName2).toBe('community_template.install.failure')
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(communityTemplateRenameFailed())
     })
@@ -163,11 +163,11 @@ describe('the Community Templates Install Overlay', () => {
 
       fireEvent.click(templateButton)
 
-      const [templateClickEventCallArguments] = mocked(event).mock.calls
+      const [templateClickEventCallArguments] = jest.mocked(event).mock.calls
       const [eventName] = templateClickEventCallArguments
       expect(eventName).toBe('template_click_lookup')
 
-      mocked(event).mockImplementationOnce(() => {
+      jest.mocked(event).mockImplementationOnce(() => {
         throw new Error()
       })
 
@@ -181,7 +181,7 @@ describe('the Community Templates Install Overlay', () => {
         fireEvent.click(installButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(communityTemplateInstallFailed())
 
@@ -192,7 +192,7 @@ describe('the Community Templates Install Overlay', () => {
 
       fireEvent.click(templateButton)
 
-      const [templateClickEventCallArguments] = mocked(event).mock.calls
+      const [templateClickEventCallArguments] = jest.mocked(event).mock.calls
       const [eventName] = templateClickEventCallArguments
       expect(eventName).toBe('template_click_lookup')
       await waitFor(() => {
@@ -207,23 +207,23 @@ describe('the Community Templates Install Overlay', () => {
 
       expect(installTemplate).toHaveBeenCalled()
 
-      const [, installEventCallArguments] = mocked(event).mock.calls
+      const [, installEventCallArguments] = jest.mocked(event).mock.calls
       const [eventName2] = installEventCallArguments
       expect(eventName2).toBe('template_install.success')
 
       expect(updateStackName).toHaveBeenCalled()
 
-      const [, , renameEventCallArguments] = mocked(event).mock.calls
+      const [, , renameEventCallArguments] = jest.mocked(event).mock.calls
       const [eventName3] = renameEventCallArguments
       expect(eventName3).toBe('template_rename')
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(
         communityTemplateInstallSucceeded('fn-template')
       )
 
-      const [, , , ctInstallEventCallArguments] = mocked(event).mock.calls
+      const [, , , ctInstallEventCallArguments] = jest.mocked(event).mock.calls
       const [eventName4] = ctInstallEventCallArguments
       expect(eventName4).toBe('community_template.install.success')
     })

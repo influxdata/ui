@@ -1,5 +1,35 @@
+@use 'src/identity/components/GlobalHeader/GlobalHeaderStyle.scss' as gh;
+@import '@influxdata/clockface/dist/variables.scss';
+
+// Reduce size of page headers
 .multi-org .cf-page-header {
-  height: 45px !important;
-  flex: 0 0 45px !important;
-  margin-bottom: 12px !important;
+  height: 46px !important;
+  flex: 0 0 46px !important;
+  margin-bottom: 14px !important;
+}
+
+// Adjust most pages for multi-org by changing the size of the Dapper Scroll Bar wrapper.
+.multi-org .cf-page-contents > .ScrollbarsCustom-Wrapper {
+  height: calc(100% - gh.$globalheader-height);
+}
+
+// Page-specific fix for Data Explorer - Classic
+.multi-org .data-explorer > .time-machine > .cf-draggable-resizer {
+  height: calc(100% - gh.$globalheader-height);
+}
+
+// Page-specific fix for Data Explorer - New
+.multi-org .flux-query-builder--container {
+  height: calc(100% - gh.$globalheader-height);
+}
+
+// When removing multi-org flags, consider whether this override
+// should become a permanent change for all users in Clockface.
+.cf-notification-container {
+  &.cf-notification__top {
+    top: $cf-space-2xs;
+  }
+  &.cf-notification__right {
+    right: $cf-space-2xs;
+  }
 }

@@ -21,7 +21,7 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {setSearchTerm as setSearchTermAction} from 'src/tasks/actions/creators'
@@ -83,7 +83,7 @@ const TasksHeader: FC<Props> = ({
     <>
       <Page.Header fullWidth={true} testID="tasks-page--header">
         <Page.Title title="Tasks" />
-        <RateLimitAlert location="task list" />
+        {!isFlagEnabled('multiOrg') && <RateLimitAlert location="task list" />}
       </Page.Header>
       {flowsCTA.tasks && (
         <FeatureFlag name="flowsCTA">

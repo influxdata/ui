@@ -156,12 +156,15 @@ class TelegrafOutputOverlay extends PureComponent<Props> {
         <Overlay.Body>
           <p style={{marginTop: '-18px'}}>
             The $INFLUX_TOKEN can be generated on the
-            <Link to={`/orgs/${orgID}/load-data/tokens`}>
+            <Link
+              to={`/orgs/${orgID}/load-data/tokens`}
+              onClick={this.handleDismiss}
+            >
               &nbsp;API Tokens tab
             </Link>
             .
           </p>
-          <p>{bucket_dd}</p>
+          <div style={{marginBottom: '13px'}}>{bucket_dd}</div>
           <div className="output-overlay">
             <TemplateProvider
               variables={{

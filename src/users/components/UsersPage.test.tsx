@@ -1,11 +1,11 @@
 import React from 'react'
 import {fireEvent, waitFor} from '@testing-library/react'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 import {act} from 'react-dom/test-utils'
 
 import {renderWithReduxAndRouter} from 'src/mockState'
-import {UsersProvider} from '../context/users'
-import UsersPage from './UsersPage'
+import {UsersProvider} from 'src/users/context/users'
+import UsersPage from 'src/users/components/UsersPage'
 
 jest.mock(
   'src/client/unityRoutes',
@@ -85,7 +85,7 @@ describe('Inviting Users to an Organization', () => {
 
     const newUserEmail = 'new+user@example.com'
 
-    mocked(postOrgsInvite).mockImplementation(() =>
+    jest.mocked(postOrgsInvite).mockImplementation(() =>
       Promise.resolve({
         status: 201,
         headers: {} as Headers,
@@ -119,7 +119,7 @@ describe('Inviting Users to an Organization', () => {
 
     const existingEmail = 'existing+user@example.com'
 
-    mocked(postOrgsInvite).mockImplementation(() =>
+    jest.mocked(postOrgsInvite).mockImplementation(() =>
       Promise.resolve({
         status: 200,
         headers: {} as Headers,

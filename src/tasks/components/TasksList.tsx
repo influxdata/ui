@@ -35,6 +35,9 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {notify} from 'src/shared/actions/notifications'
 
+// Constants
+import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
+
 import {PaginationNav} from '@influxdata/clockface'
 
 import {
@@ -135,7 +138,10 @@ class TasksList extends PureComponent<Props, State> implements Pageable {
     const heightWithPagination =
       this.paginationRef?.current?.clientHeight ||
       DEFAULT_PAGINATION_CONTROL_HEIGHT
-    const height = this.props.pageHeight - heightWithPagination
+    const height =
+      this.props.pageHeight -
+      heightWithPagination -
+      (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 0)
 
     this.totalPages = Math.max(
       Math.ceil(this.props.tasks.length / this.rowsPerPage),

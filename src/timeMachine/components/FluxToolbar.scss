@@ -156,7 +156,7 @@ $flux-toolbar--gap: $cf-space-2xs;
     cursor: pointer;
     background: none;
     font-weight: $cf-font-weight--regular;
-    padding: $cf-space-2xs;
+    padding: $cf-space-2xs 0;
 
     > code {
       color: $cf-grey-85;
@@ -177,7 +177,7 @@ $flux-toolbar--gap: $cf-space-2xs;
 }
 
 .flux-toolbar--heading {
-  padding: $cf-space-2xs $cf-space-s;
+  padding: $cf-space-2xs;
   padding-bottom: $cf-space-2xs + $cf-space-3xs;
   font-weight: $cf-font-weight--medium;
   color: $cf-grey-85;

@@ -7,14 +7,11 @@ import {AutoSizer} from 'react-virtualized'
 
 // Components
 import {
-  BannerPanel,
   ComponentColor,
   ComponentSize,
   ConfirmationButton,
   EmptyState,
-  Gradients,
   IconFont,
-  InfluxColors,
   InputToggleType,
   Sort,
   Toggle,
@@ -25,7 +22,6 @@ import FilterList from 'src/shared/components/FilterList'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
-import PostDeploymentTokensBanner from 'src/authorizations/components/PostDeploymentTokensBanner'
 
 // Types
 import {AppState, Authorization, ResourceType} from 'src/types'
@@ -40,6 +36,9 @@ import {bulkDeleteAuthorizations} from 'src/authorizations/actions/thunks'
 import './TokensTabStyles.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
+
+// Constants
+import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
 
 enum AuthSearchKeys {
   Description = 'description',
@@ -67,8 +66,7 @@ interface DispatchProps {
 }
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
-const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
-const DEFAULT_ALERT_HEIGHT = 100
+const DEFAULT_TAB_NAVIGATION_HEIGHT = 85
 
 type SortKey = keyof Authorization
 
@@ -181,94 +179,77 @@ class TokensTab extends PureComponent<Props, State> {
 
     const rightHeaderItems = <GenerateTokenDropdown />
 
-    const tokensBanner = () => {
-      return (
-        <>
-          <BannerPanel
-            size={ComponentSize.ExtraSmall}
-            gradient={Gradients.PolarExpress}
-            icon={IconFont.Bell}
-            hideMobileIcon={true}
-            textColor={InfluxColors.Yeti}
-          >
-            <PostDeploymentTokensBanner />
-          </BannerPanel>
-        </>
-      )
-    }
-
     return (
-      <>
-        {tokensBanner()}
-        <AutoSizer>
-          {({width, height}) => {
-            const heightWithPagination =
-              this.paginationRef?.current?.clientHeight +
-                DEFAULT_TAB_NAVIGATION_HEIGHT ||
-              DEFAULT_PAGINATION_CONTROL_HEIGHT +
-                DEFAULT_TAB_NAVIGATION_HEIGHT +
-                DEFAULT_ALERT_HEIGHT
+      <AutoSizer>
+        {({width, height}) => {
+          const heightWithPagination =
+            this.paginationRef?.current?.clientHeight +
+              DEFAULT_TAB_NAVIGATION_HEIGHT ||
+            DEFAULT_PAGINATION_CONTROL_HEIGHT + DEFAULT_TAB_NAVIGATION_HEIGHT
 
-            const adjustedHeight = height - heightWithPagination
-            return (
-              <>
-                <div style={{margin: '10px 0px'}}>
-                  <TabbedPageHeader
-                    childrenLeft={leftHeaderItems}
-                    childrenRight={rightHeaderItems}
-                    width={width}
-                  />
-                  <FilterAuthorizations
-                    list={tokens}
-                    searchTerm={searchTerm}
-                    searchKeys={this.searchKeys}
-                  >
-                    {filteredAuths =>
-                      isFlagEnabled('bulkActionDeleteTokens') ? (
-                        <TokenList
-                          tokenCount={tokens.length}
-                          auths={filteredAuths}
-                          emptyState={this.emptyState}
-                          pageWidth={width}
-                          pageHeight={adjustedHeight}
-                          searchTerm={searchTerm}
-                          sortKey={sortKey}
-                          sortDirection={sortDirection}
-                          sortType={sortType}
-                          onClickColumn={this.handleClickColumn}
-                          setAllTokens={allTokens =>
-                            this.setState({allTokens: allTokens})
-                          }
-                          setTokensOnCurrentPage={tokensOnPage =>
-                            this.setState({tokensOnCurrentPage: tokensOnPage})
-                          }
-                          tokensSelectedForBatchOperation={
-                            tokensSelectedForBatchOperation
-                          }
-                          toggleTokenSelection={this.updateSelectedTokensList}
-                        />
-                      ) : (
-                        <TokenList
-                          tokenCount={tokens.length}
-                          auths={filteredAuths}
-                          emptyState={this.emptyState}
-                          pageWidth={width}
-                          pageHeight={adjustedHeight}
-                          searchTerm={searchTerm}
-                          sortKey={sortKey}
-                          sortDirection={sortDirection}
-                          sortType={sortType}
-                          onClickColumn={this.handleClickColumn}
-                        />
-                      )
-                    }
-                  </FilterAuthorizations>
-                </div>
-              </>
-            )
-          }}
-        </AutoSizer>
-      </>
+          const adjustedHeight =
+            height -
+            heightWithPagination -
+            (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 0)
+
+          return (
+            <>
+              <div style={{margin: '10px 0px'}}>
+                <TabbedPageHeader
+                  childrenLeft={leftHeaderItems}
+                  childrenRight={rightHeaderItems}
+                  width={width}
+                />
+                <FilterAuthorizations
+                  list={tokens}
+                  searchTerm={searchTerm}
+                  searchKeys={this.searchKeys}
+                >
+                  {filteredAuths =>
+                    isFlagEnabled('bulkActionDeleteTokens') ? (
+                      <TokenList
+                        tokenCount={tokens.length}
+                        auths={filteredAuths}
+                        emptyState={this.emptyState}
+                        pageWidth={width}
+                        pageHeight={adjustedHeight}
+                        searchTerm={searchTerm}
+                        sortKey={sortKey}
+                        sortDirection={sortDirection}
+                        sortType={sortType}
+                        onClickColumn={this.handleClickColumn}
+                        setAllTokens={allTokens =>
+                          this.setState({allTokens: allTokens})
+                        }
+                        setTokensOnCurrentPage={tokensOnPage =>
+                          this.setState({tokensOnCurrentPage: tokensOnPage})
+                        }
+                        tokensSelectedForBatchOperation={
+                          tokensSelectedForBatchOperation
+                        }
+                        toggleTokenSelection={this.updateSelectedTokensList}
+                      />
+                    ) : (
+                      <TokenList
+                        tokenCount={tokens.length}
+                        auths={filteredAuths}
+                        emptyState={this.emptyState}
+                        pageWidth={width}
+                        pageHeight={adjustedHeight}
+                        searchTerm={searchTerm}
+                        sortKey={sortKey}
+                        sortDirection={sortDirection}
+                        sortType={sortType}
+                        onClickColumn={this.handleClickColumn}
+                      />
+                    )
+                  }
+                </FilterAuthorizations>
+              </div>
+            </>
+          )
+        }}
+      </AutoSizer>
     )
   }
 

@@ -80,12 +80,14 @@ export type ExecuteCommandInjectField = ExecuteCommandInjectMeasurement
  * @typedef {object} CompositionInitParams
  * @property {string} CompositionInitParams.bucket - bucket name,
  * @property {string} CompositionInitParams.measurement - measurement name,
+ * @property {string[]} CompositionInitParams.fields - optional prop, an array field names,
+ * @property {string[][]} CompositionInitParams.fields - optional prop, an array of tag key+value pairs
  */
 export interface CompositionInitParams extends ExecuteCommandParams {
   bucket: string
   measurement?: string
   fields?: string[]
-  tagValues?: string[]
+  tagValues?: string[][]
 }
 
 /**

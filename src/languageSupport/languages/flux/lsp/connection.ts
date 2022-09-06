@@ -12,6 +12,7 @@ import {
   DEFAULT_SCHEMA,
   SchemaSelection,
 } from 'src/dataExplorer/context/persistance'
+import {CompositionInitParams} from 'src/languageSupport/languages/flux/lsp/utils'
 
 // LSP methods
 import {
@@ -321,7 +322,7 @@ class LspConnectionManager {
       numFieldChanges + numTagValueChanges > 1
 
     if (reInitBlock) {
-      const payload = {
+      const payload: Partial<CompositionInitParams> = {
         bucket: toAdd.bucket?.name || this._session.bucket?.name,
       }
       if (toAdd.measurement || this._session.measurement) {

@@ -41,8 +41,8 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(
+  () => import('src/shared/components/FluxMonacoEditor')
 )
 
 const fakeNotify = notify
@@ -101,7 +101,7 @@ const ResultsPane: FC = () => {
     event('CSV Download Initiated')
     basic(text, {
       vars: rangeToParam(range),
-    }).promise.then(response => {
+    }).promise.then((response) => {
       if (response.type !== 'SUCCESS') {
         return
       }
@@ -115,14 +115,14 @@ const ResultsPane: FC = () => {
     query(text, {
       vars: rangeToParam(range),
     })
-      .then(r => {
+      .then((r) => {
         event('resultReceived', {
           status: r.parsed.table.length === 0 ? 'empty' : 'good',
         })
         setResult(r)
         setStatus(RemoteDataState.Done)
       })
-      .catch(e => {
+      .catch((e) => {
         setResult({
           source: text,
           parsed: null,

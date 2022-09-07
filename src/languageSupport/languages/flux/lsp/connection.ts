@@ -264,7 +264,9 @@ class LspConnectionManager {
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
-      removeAllStyles ? [] : [...startLineStyle, ...middleLinesStyle, ...endLineStyle]
+      removeAllStyles
+        ? []
+        : [...startLineStyle, ...middleLinesStyle, ...endLineStyle]
     )
 
     // this._alignInvisibleDivToEditorBlock()

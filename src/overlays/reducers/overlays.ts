@@ -15,6 +15,8 @@ export type OverlayID =
   | 'add-token'
   | 'telegraf-config'
   | 'telegraf-output'
+  | 'telegraf-instructions'
+  | 'telegraf-wizard'
   | 'switch-organizations'
   | 'create-bucket'
   | 'asset-limit'

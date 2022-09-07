@@ -47,15 +47,15 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       event('flux.function.searched', {searchTerm: eventSearchTerm})
       setTermRecorded(eventSearchTerm)
     }
-    setTooltipPopup(false)
-    if (tooltipPopup) {
-      const recordedFunction = hoveredFunctions.has(hoveredFunction)
-      if (!recordedFunction) {
-        event('flux.function.hover', {function: hoveredFunction})
-      }
-      hoveredFunctions.add(hoveredFunction)
+  }, [eventSearchTerm])
+
+  useEffect(() => {
+    const recordedFunction = hoveredFunctions.has(hoveredFunction)
+    if (!recordedFunction) {
+      event('flux.function.hover', {function: hoveredFunction})
     }
-  }, [hoveredFunction, tooltipPopup, eventSearchTerm])
+    hoveredFunctions.add(hoveredFunction)
+  }, [hoveredFunction])
 
   const handleSelectItem = useCallback(
     (func: FluxFunction) => {

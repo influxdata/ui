@@ -169,6 +169,7 @@ const ResultsPane: FC = () => {
                   variables={variables}
                   script={text}
                   onChangeScript={setQuery}
+                  onSubmitScript={submit}
                 />
               </Suspense>
             </div>

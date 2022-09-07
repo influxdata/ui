@@ -27,6 +27,7 @@ import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
+import NewDatePicker from 'src/shared/components/NewDatePicker'
 
 // Types
 import {TimeRange} from 'src/types'
@@ -40,6 +41,7 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
@@ -197,10 +199,14 @@ const ResultsPane: FC = () => {
                   text ? ComponentStatus.Default : ComponentStatus.Disabled
                 }
               />
-              <TimeRangeDropdown
-                timeRange={range}
-                onSetTimeRange={(range: TimeRange) => setRange(range)}
-              />
+              {/* {isFlagEnabled('newTimeRangeComponent') ? ( */}
+              <NewDatePicker />
+              {/* ) : (
+                <TimeRangeDropdown
+                  timeRange={range}
+                  onSetTimeRange={(range: TimeRange) => setRange(range)}
+                />
+              )} */}
               <SubmitQueryButton
                 className="submit-btn"
                 text="Run"

@@ -9,6 +9,7 @@ import {
   FlexBox,
   FlexDirection,
   Input,
+  List,
 } from '@influxdata/clockface'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 import WaitingText from 'src/shared/components/WaitingText'
@@ -26,6 +27,8 @@ import {
   selectTagKey,
   selectTagValue,
 } from 'src/timeMachine/actions/queryBuilderThunks'
+import {setBuilderTagValuesSelection} from 'src/timeMachine/actions/queryBuilder'
+
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {
@@ -95,7 +98,7 @@ class TagSelector extends PureComponent<Props> {
       index === 0 &&
       (selectedKey === '' || selectedKey === '_measurement') &&
       aggregateFunctionType !== 'group' &&
-      selectedValues.length <= 1
+      (isFlagEnabled('measurementMultiselect') || selectedValues.length <= 1)
     )
   }
 
@@ -206,6 +209,16 @@ class TagSelector extends PureComponent<Props> {
     )
   }
 
+  private toggleSelectAll() {
+    const {selectedValues, onSetBuilderTagValuesSelection} = this.props
+
+    if (selectedValues.length === 1 && selectedValues[0] === '_all') {
+      onSetBuilderTagValuesSelection(0, [])
+    } else {
+      onSetBuilderTagValuesSelection(0, ['_all'])
+    }
+  }
+
   private get values() {
     const {selectedKey, values, valuesStatus, selectedValues} = this.props
 
@@ -236,13 +249,37 @@ class TagSelector extends PureComponent<Props> {
       )
     }
 
+    // underscore values are not allowed for user data
+    // so there shouldn't be collisions
+    const selectedAll =
+      selectedValues.length === 1 && selectedValues[0] === '_all'
+
     return (
       <SelectorList
         items={values}
         selectedItems={selectedValues}
         onSelectItem={this.handleSelectValue}
-        multiSelect={!this.props.isInCheckOverlay || this.isCompliant}
-      />
+        multiSelect={
+          !this.props.isInCheckOverlay ||
+          (this.isCompliant && isFlagEnabled('measurementMultiselect'))
+        }
+        disabled={selectedAll}
+      >
+        {this.isCompliant && isFlagEnabled('measurementMultiselect') && (
+          <List.Item
+            className="selector-list--item select-all"
+            testID="selector-list --select-all"
+            key="_all"
+            value="_all"
+            onClick={() => this.toggleSelectAll()}
+            title="Select All"
+            selected={selectedAll}
+            size={ComponentSize.ExtraSmall}
+          >
+            Select All
+          </List.Item>
+        )}
+      </SelectorList>
     )
   }
 
@@ -379,6 +416,7 @@ const mdtp = {
   onSetBuilderAggregateFunctionType: setBuilderAggregateFunctionType,
   onSetKeysSearchTerm: setKeysSearchTerm,
   onSetValuesSearchTerm: setValuesSearchTerm,
+  onSetBuilderTagValuesSelection: setBuilderTagValuesSelection,
 }
 
 const connector = connect(mstp, mdtp)

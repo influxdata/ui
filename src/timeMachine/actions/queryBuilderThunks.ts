@@ -323,7 +323,11 @@ export const selectTagValue = (index: number, value: string) => (
     currentTag.key === '_field'
   ) {
     newValues = [value]
-  } else if (isFlagEnabled('newQueryBuilder') && index === 0) {
+  } else if (
+    isFlagEnabled('newQueryBuilder') &&
+    index === 0 &&
+    !isFlagEnabled('measurementMultiselect')
+  ) {
     newValues = [value]
   } else {
     newValues = [...values, value]

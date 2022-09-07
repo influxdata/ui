@@ -63,8 +63,10 @@ export const PrepareIde = () => {
           <ol style={listStyle}>
             <li>Open the Arduino Preferences (Arduino &rarr; Preferences) </li>
             <li>
-              Look for "Additional Boards Manager URLs" input box and paste
-              "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
+              Look for "Additional Boards Manager URLs" input box and paste{' '}
+              <code className="homepage-wizard--code-highlight">
+                http://arduino.esp8266.com/stable/package_esp8266com_index.json
+              </code>{' '}
               in it.
             </li>
             <li>Click OK.</li>
@@ -82,8 +84,10 @@ export const PrepareIde = () => {
           <ol style={listStyle}>
             <li>Open the Arduino Preferences (Arduino &rarr; Preferences) </li>
             <li>
-              Look for "Additional Boards Manager URLs" input box and paste
-              "https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json"
+              Look for "Additional Boards Manager URLs" input box and paste{' '}
+              <code className="homepage-wizard--code-highlight">
+                https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+              </code>{' '}
               in it.
             </li>
             <li>Click OK.</li>

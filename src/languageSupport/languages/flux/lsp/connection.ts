@@ -217,56 +217,48 @@ class LspConnectionManager {
     // width size is always the same, defined in classname "sync-bar"
   }
 
+  _compositionSyncStyle(startLine: number, endLine: number, synced: boolean) {
+    const classNamePrefix = synced
+      ? 'composition-sync--on'
+      : 'composition-sync--off'
+
+    // Customize the full width of margin using `marginClassName`
+    // https://github.com/microsoft/monaco-editor/blob/35eb0ef/website/typedoc/monaco.d.ts#L1533
+    const startLineStyle = {
+      range: new MonacoTypes.Range(startLine, 1, startLine, 1),
+      options: {
+        marginClassName: `${classNamePrefix}--first`,
+      },
+    }
+    const middleLinesStyle = {
+      range: new MonacoTypes.Range(startLine, 1, endLine, 1),
+      options: {
+        marginClassName: classNamePrefix,
+      },
+    }
+    const endLineStyle = {
+      range: new MonacoTypes.Range(endLine, 1, endLine, 1),
+      options: {
+        marginClassName: `${classNamePrefix}--last`,
+      },
+    }
+    return [startLineStyle, middleLinesStyle, endLineStyle]
+  }
+
   _setEditorBlockStyle(schema: SchemaSelection = this._session) {
     const compositionBlock = this._getCompositionBlockLines()
 
-    const startLineStyle = [
-      {
-        range: new MonacoTypes.Range(
-          compositionBlock?.startLine,
-          1,
-          compositionBlock?.startLine,
-          1
-        ),
-        options: {
-          marginClassName: `composition-sync--on--first`,
-        },
-      },
-    ]
-    const middleLinesStyle = [
-      {
-        range: new MonacoTypes.Range(
-          compositionBlock?.startLine,
-          1,
-          compositionBlock?.endLine,
-          1
-        ),
-        options: {
-          marginClassName: `composition-sync--on`,
-        },
-      },
-    ]
-    const endLineStyle = [
-      {
-        range: new MonacoTypes.Range(
-          compositionBlock?.endLine,
-          1,
-          compositionBlock?.endLine,
-          1
-        ),
-        options: {
-          marginClassName: `composition-sync--on--last`,
-        },
-      },
-    ]
-
     const removeAllStyles = !compositionBlock && schema.composition.diverged
+
+    const compositionSyncStyle = this._compositionSyncStyle(
+      compositionBlock?.startLine,
+      compositionBlock?.endLine,
+      schema.composition.synced
+    )
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
-      removeAllStyles
-        ? []
-        : [...startLineStyle, ...middleLinesStyle, ...endLineStyle]
+      removeAllStyles ? [] : compositionSyncStyle
     )
 
     // this._alignInvisibleDivToEditorBlock()

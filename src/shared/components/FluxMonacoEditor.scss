@@ -93,11 +93,13 @@
     background-color: $cf-grey-35;
   }
 
-  .composition-sync-first--off {
+  .composition-sync--off--first {
+    opacity: 50%;
     border-top: 1px solid $cf-white;
   }
 
-  .composition-sync-last---off {
+  .composition-sync--off--last {
+    opacity: 50%;
     border-bottom: 1px solid $cf-white;
   }
 }

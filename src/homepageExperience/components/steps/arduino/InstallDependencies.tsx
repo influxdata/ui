@@ -13,8 +13,18 @@ export const InstallDependencies: FC = () => {
         <li>
           Under Sketch &rarr; Include Libraries, click on Manage Libraries.
         </li>
-        <li>Search for 'influxdb' in the search box.</li>
-        <li>Install 'InfluxDB Client for Arduino' library.</li>
+        <li>
+          Search for{' '}
+          <code className="homepage-wizard--code-highlight">'influxdb'</code> in
+          the search box.
+        </li>
+        <li>
+          Install{' '}
+          <code className="homepage-wizard--code-highlight">
+            'InfluxDB Client for Arduino'
+          </code>{' '}
+          library.
+        </li>
       </ol>
       <p>
         You'll need to have{' '}

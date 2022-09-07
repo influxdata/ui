@@ -177,10 +177,7 @@ export class CliWizard extends PureComponent<{}, State> {
         <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
             <aside className="homepage-wizard-container--subway">
-              <div
-                className="homepage-wizard-container--subway-inner"
-                data-testid="subway-nav"
-              >
+              <div style={{width: '100%'}} data-testid="subway-nav">
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}

@@ -181,7 +181,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
             <aside className="homepage-wizard-container--subway">
-              <div className="homepage-wizard-container--subway-inner">
+              <div style={{width: '100%'}}>
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}

@@ -223,7 +223,7 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
           variable: vari,
           variableType: vari.arguments.type,
           normalizedVariable: vals,
-          variableLenth: vari.selected.length,
+          variableLength: vari.selected.length,
           normalizedVariableLength: vals.length,
         },
       })

@@ -218,12 +218,13 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
       reportErrorThroughHoneyBadger(err, {
         name: 'Failed to set selected variable to default, zero-indexed value',
         context: {
+          identityState: state.identity,
+          resourceState: state.resources,
           variable: vari,
           variableType: vari.arguments.type,
           normalizedVariable: vals,
           variableLenth: vari.selected.length,
           normalizedVariableLength: vals.length,
-          appState: state,
         },
       })
     }

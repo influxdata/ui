@@ -21,11 +21,13 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Actions
 import {
-  removeTagSelector,
+  addTagSelector,
   searchTagKeys,
   searchTagValues,
   selectTagKey,
   selectTagValue,
+  loadTagSelector,
+  removeTagSelector,
 } from 'src/timeMachine/actions/queryBuilderThunks'
 import {setBuilderTagValuesSelection} from 'src/timeMachine/actions/queryBuilder'
 
@@ -210,12 +212,31 @@ class TagSelector extends PureComponent<Props> {
   }
 
   private toggleSelectAll() {
-    const {selectedValues, onSetBuilderTagValuesSelection} = this.props
+    const {
+      selectedValues,
+      onSetBuilderTagValuesSelection,
+      onAddTagSelector,
+      onRemoveTagSelector,
+      index,
+      isLast,
+      shouldClearLast,
+      onLoadTagSelector,
+    } = this.props
 
     if (selectedValues.length === 1 && selectedValues[0] === '_all') {
       onSetBuilderTagValuesSelection(0, [])
+
+      if (shouldClearLast) {
+        onRemoveTagSelector(index + 1)
+      }
     } else {
       onSetBuilderTagValuesSelection(0, ['_all'])
+
+      if (isLast) {
+        onAddTagSelector()
+      } else {
+        onLoadTagSelector(index + 1)
+      }
     }
   }
 
@@ -256,7 +277,7 @@ class TagSelector extends PureComponent<Props> {
 
     return (
       <SelectorList
-        items={values}
+        items={values.filter(t => t !== '_all')}
         selectedItems={selectedValues}
         onSelectItem={this.handleSelectValue}
         multiSelect={
@@ -391,6 +412,9 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
     values = [...ADDITIONAL_GROUP_BY_COLUMNS, ...tags.map(tag => tag.key)]
   }
   const isInCheckOverlay = getIsInCheckOverlay(state)
+  const isLast = ownProps.index === tags.length - 1
+  const shouldClearLast =
+    ownProps.index === tags.length - 2 && !tags[tags.length - 1].values.length
 
   return {
     aggregateFunctionType,
@@ -404,6 +428,8 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
     valuesSearchTerm,
     keysSearchTerm,
     isInCheckOverlay,
+    isLast,
+    shouldClearLast,
   }
 }
 
@@ -417,6 +443,8 @@ const mdtp = {
   onSetKeysSearchTerm: setKeysSearchTerm,
   onSetValuesSearchTerm: setValuesSearchTerm,
   onSetBuilderTagValuesSelection: setBuilderTagValuesSelection,
+  onAddTagSelector: addTagSelector,
+  onLoadTagSelector: loadTagSelector,
 }
 
 const connector = connect(mstp, mdtp)

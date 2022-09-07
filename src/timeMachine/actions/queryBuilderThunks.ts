@@ -77,7 +77,14 @@ const loadTagSelectorValues = (index: number) => async (
 
   const state = getState()
   const {buckets, tags} = getActiveQuery(state).builderConfig
-  const tagsSelections = tags.slice(0, index)
+  const tagsSelections = tags
+    .slice(0, index)
+    .filter(
+      t =>
+        t.key !== '_measurement' ||
+        t.values.length !== 1 ||
+        t.values[0] !== '_all'
+    )
 
   if (!buckets[0]) {
     return
@@ -152,7 +159,14 @@ export const loadTagSelector = (index: number) => async (
   dispatch(setBuilderTagKeysStatus(index, RemoteDataState.Loading))
 
   const state = getState()
-  const tagsSelections = tags.slice(0, index)
+  const tagsSelections = tags
+    .slice(0, index)
+    .filter(
+      t =>
+        t.key !== '_measurement' ||
+        t.values.length !== 1 ||
+        t.values[0] !== '_all'
+    )
 
   const bucket = buckets[0]
 

@@ -83,11 +83,17 @@ export class VerifyCollectorStep extends PureComponent<Props> {
     const {
       match: {
         params: {orgID},
+        url,
       },
+      onExit,
       onClearDataLoaders,
     } = this.props
     onClearDataLoaders()
-    this.props.history.push(`/orgs/${orgID}/load-data/telegrafs`)
+    if (url.includes('telegraf-plugins')) {
+      this.props.history.push(`/orgs/${orgID}/load-data/telegrafs`)
+    } else {
+      onExit()
+    }
   }
 }
 

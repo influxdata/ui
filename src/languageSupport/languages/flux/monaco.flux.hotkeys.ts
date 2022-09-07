@@ -32,7 +32,7 @@ export function comments(editor: EditorType) {
         // if any of the lines in the selection is uncommented then toggle commenting on
         isTogglingCommentingOn = values
           .slice(startLineNumber - 1, endLineNumber)
-          .some(v => !(v === '') && !isCommented(v)),
+          .some(v => !(v.trim() === '') && !isCommented(v)),
         updatedValues = values.map((v, i) => {
           if (i < startLineNumber - 1 || i > endLineNumber - 1) {
             return v

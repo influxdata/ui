@@ -19,6 +19,7 @@ import AllAccessTokenOverlay from 'src/authorizations/components/AllAccessTokenO
 import TelegrafConfigOverlay from 'src/telegrafs/components/TelegrafConfigOverlay'
 import TelegrafOutputOverlay from 'src/telegrafs/components/TelegrafOutputOverlay'
 import TelegrafInstructionsOverlay from 'src/telegrafs/components/TelegrafInstructionsOverlay'
+import TelegrafUIRefreshWizard from 'src/dataLoaders/components/collectorsWizard/TelegrafUIRefreshWizard'
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
 import CreateBucketOverlay from 'src/buckets/components/createBucketForm/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
@@ -100,6 +101,9 @@ export const OverlayController: FunctionComponent = () => {
         activeOverlay.current = (
           <TelegrafInstructionsOverlay onClose={onClose} />
         )
+        break
+      case 'telegraf-wizard':
+        activeOverlay.current = <TelegrafUIRefreshWizard onClose={onClose} />
         break
       case 'switch-organizations':
         activeOverlay.current = <OrgSwitcherOverlay onClose={onClose} />

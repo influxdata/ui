@@ -229,7 +229,20 @@ class LspConnectionManager {
           1
         ),
         options: {
-          linesDecorationsClassName: ICON_SYNC_CLASSNAME,
+          marginClassName: `composition-sync--on--first`,
+        },
+      },
+    ]
+    const middleLinesStyle = [
+      {
+        range: new MonacoTypes.Range(
+          compositionBlock?.startLine,
+          1,
+          compositionBlock?.endLine,
+          1
+        ),
+        options: {
+          marginClassName: `composition-sync--on`,
         },
       },
     ]
@@ -242,7 +255,7 @@ class LspConnectionManager {
           1
         ),
         options: {
-          linesDecorationsClassName: ICON_SYNC_CLASSNAME,
+          marginClassName: `composition-sync--on--last`,
         },
       },
     ]
@@ -251,18 +264,18 @@ class LspConnectionManager {
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
-      removeAllStyles ? [] : startLineStyle.concat(endLineStyle)
+      removeAllStyles ? [] : [...startLineStyle, ...middleLinesStyle, ...endLineStyle]
     )
 
-    this._alignInvisibleDivToEditorBlock()
-    const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-    clickableInvisibleDiv.className = schema.composition.synced
-      ? 'sync-bar sync-bar--on'
-      : 'sync-bar sync-bar--off'
+    // this._alignInvisibleDivToEditorBlock()
+    // const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
+    // clickableInvisibleDiv.className = schema.composition.synced
+    //   ? 'sync-bar sync-bar--on'
+    //   : 'sync-bar sync-bar--off'
 
-    if (removeAllStyles) {
-      clickableInvisibleDiv.style.display = 'none'
-    }
+    // if (removeAllStyles) {
+    //   clickableInvisibleDiv.style.display = 'none'
+    // }
   }
 
   // XXX: wiedld (25 Aug 2022) - handling the absence of a middleware listener

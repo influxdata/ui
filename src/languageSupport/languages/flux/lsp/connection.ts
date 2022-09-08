@@ -334,9 +334,9 @@ class LspConnectionManager {
         payload['fields'] = toAdd.fields || this._session.fields
       }
       if (toAdd.tagValues || this._session.tagValues) {
-        payload['tagValues'] = (
-          toAdd.tagValues || this._session.tagValues
-        ).map(({key, value}) => [key, value])
+        payload['tagValues'] = (toAdd.tagValues || this._session.tagValues).map(
+          ({key, value}) => [key, value]
+        )
       }
       this._insertBuffer([ExecuteCommand.CompositionInit, payload])
       return // re-initialize full block. no more requests needed.

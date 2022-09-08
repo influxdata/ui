@@ -87,7 +87,8 @@ const Card: FC<Props> = ({idx}) => {
 
   const _update = (fnType: BuilderAggregateFunctionType): void => {
     update(idx, {
-      aggregateFunctionType: fnType.toLowerCase() as BuilderAggregateFunctionType,
+      aggregateFunctionType:
+        fnType.toLowerCase() as BuilderAggregateFunctionType,
     })
   }
 

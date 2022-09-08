@@ -427,9 +427,7 @@ describe('Legends', () => {
       const cellName = 'anti-crash test not subbmited dashboard add cell'
       cy.writeData(points(100))
 
-      cy.getByTestID('add-resource-dropdown--button')
-        .first()
-        .click()
+      cy.getByTestID('add-resource-dropdown--button').first().click()
       cy.getByTestID('add-resource-dropdown--new').click()
 
       cy.getByTestID('dashboard-page').should('exist')
@@ -490,9 +488,7 @@ describe('Legends', () => {
       const cellName = 'anti-crash test pre-submitted dashboard add cell'
       cy.writeData(points(100))
 
-      cy.getByTestID('add-resource-dropdown--button')
-        .first()
-        .click()
+      cy.getByTestID('add-resource-dropdown--button').first().click()
       cy.getByTestID('add-resource-dropdown--new').click()
 
       cy.getByTestID('dashboard-page').should('exist')
@@ -541,9 +537,7 @@ describe('Legends', () => {
           cy.getByTestID('static-legend-opacity-slider').should('exist')
           cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
 
-          cy.getByTestID('page-header')
-            .click()
-            .type(cellName)
+          cy.getByTestID('page-header').click().type(cellName)
 
           // Save it to a dashboard
           cy.getByTestID('save-cell--button').click()
@@ -572,39 +566,29 @@ describe('Legends', () => {
       cy.writeData(points(100))
       const bucketName = 'defbuck'
 
-      cy.getByTestID('preset-new')
-        .first()
-        .click()
+      cy.getByTestID('preset-new').first().click()
 
       cy.getByTestID('time-machine-submit-button').should('be.visible')
 
       // Delete 2 panels and leave "Visualize the Result"
-      cy.getByTestID('sidebar-button')
-        .first()
-        .click()
+      cy.getByTestID('sidebar-button').first().click()
       cy.getByTestID('Delete--list-item').click()
       cy.wait('@updateNotebook')
 
-      cy.getByTestID('sidebar-button')
-        .first()
-        .click()
+      cy.getByTestID('sidebar-button').first().click()
       cy.getByTestID('Delete--list-item').click()
       cy.wait('@updateNotebook')
 
       cy.get('.flow-panel__visible').should('have.length', 1)
 
       // Add the Query Builder
-      cy.get('.flow-divider--button')
-        .first()
-        .click()
+      cy.get('.flow-divider--button').first().click()
 
       // Opening the menu adds another Query Builder button
       cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
       // Click the newest Query Builder button
-      cy.getByTestID('add-flow-btn--queryBuilder')
-        .last()
-        .click()
+      cy.getByTestID('add-flow-btn--queryBuilder').last().click()
       cy.wait('@updateNotebook')
 
       cy.getByTestID('bucket-selector').within(() => {

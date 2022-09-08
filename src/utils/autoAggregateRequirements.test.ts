@@ -12,8 +12,7 @@ const autoAggregateableBuilderConfig = {
   properties: {
     queries: [
       {
-        text:
-          'from(bucket: "asdf")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r["_measurement"] == "cpu")\n  |> filter(fn: (r) => r["_field"] == "usage_user")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)\n  |> yield(name: "mean")',
+        text: 'from(bucket: "asdf")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r["_measurement"] == "cpu")\n  |> filter(fn: (r) => r["_field"] == "usage_user")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)\n  |> yield(name: "mean")',
         editMode: 'builder' as 'builder',
         builderConfig: {
           buckets: ['asdf'],

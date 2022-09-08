@@ -86,8 +86,9 @@ export const cellCloneSuccess = (
 ): Notification => ({
   ...defaultSuccessNotification,
   icon: IconFont.DashH,
-  message: `Cell ${cellName ??
-    ''} successfully ${operationType} to dashboard with id ${destinationDashboardID}`,
+  message: `Cell ${
+    cellName ?? ''
+  } successfully ${operationType} to dashboard with id ${destinationDashboardID}`,
 })
 
 export const cellCopyFailed = (err?: string): Notification => ({

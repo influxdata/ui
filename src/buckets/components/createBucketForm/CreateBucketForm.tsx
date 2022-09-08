@@ -32,8 +32,8 @@ let SchemaType = null,
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
-  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
-    .MeasurementSchemaCreateRequest
+  MeasurementSchemaCreateRequest =
+    require('src/client/generatedRoutes').MeasurementSchemaCreateRequest
 }
 
 interface CreateBucketFormProps {
@@ -63,10 +63,8 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     initialBucketState(isRetentionLimitEnforced, org.id)
   )
 
-  const [
-    newMeasurementSchemaRequests,
-    setNewMeasurementSchemaRequests,
-  ] = useState(null)
+  const [newMeasurementSchemaRequests, setNewMeasurementSchemaRequests] =
+    useState(null)
   const [showSchemaValidation, setShowSchemaValidation] = useState(false)
 
   const retentionRule = state.retentionRules?.find(

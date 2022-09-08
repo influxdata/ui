@@ -230,7 +230,7 @@ export const updateCampaignInfo = (query: string) => {
     const allowedUtmKeys = ['campaign', 'term', 'source', 'medium', 'content']
     const queryParams = new URLSearchParams(query)
     const info = {}
-    queryParams.forEach(function(value, key) {
+    queryParams.forEach(function (value, key) {
       if (key.startsWith('utm_')) {
         let param = key.substr(4)
         if (allowedUtmKeys.includes(param)) {

@@ -75,12 +75,8 @@ class SaveAsCellForm extends PureComponent<Props, State> {
 
   public render() {
     const {dismiss, dashboards} = this.props
-    const {
-      cellName,
-      isNameDashVisible,
-      targetDashboardIDs,
-      newDashboardName,
-    } = this.state
+    const {cellName, isNameDashVisible, targetDashboardIDs, newDashboardName} =
+      this.state
     return (
       <Form onSubmit={this.handleSubmit}>
         <Grid>

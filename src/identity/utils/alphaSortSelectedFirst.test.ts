@@ -1,13 +1,13 @@
 import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
 
-describe('GlobalHeader alphaSortSelectedFirst function', function() {
-  it('should return an empty array when the array of items is empty', function() {
+describe('GlobalHeader alphaSortSelectedFirst function', function () {
+  it('should return an empty array when the array of items is empty', function () {
     expect(
       alphaSortSelectedFirst([], {id: '3490824', name: 'Zote'})
     ).toStrictEqual([])
   })
 
-  it('should sort the array without mutatating the original array', function() {
+  it('should sort the array without mutatating the original array', function () {
     const inputArray = [
       {id: '456', name: 'Millibelle'},
       {id: '789', name: 'Tuk'},
@@ -27,7 +27,7 @@ describe('GlobalHeader alphaSortSelectedFirst function', function() {
     expect(expectedResult).not.toEqual(inputArray)
   })
 
-  it('should return an array sorted alphabetically, case-insensitive, with the selected item at the top', function() {
+  it('should return an array sorted alphabetically, case-insensitive, with the selected item at the top', function () {
     const inputArray = [
       {id: '234592', name: 'salubra'},
       {id: '900389203', name: 'Jiji 20'},

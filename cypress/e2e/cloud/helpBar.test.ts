@@ -59,15 +59,11 @@ describe('Help bar support for PAYG users', () => {
       .click({force: true})
     cy.getByTestID('payg-support-overlay-header').should('exist')
 
-    cy.getByTestID('contact-support-subject-input')
-      .clear()
-      .type(subject)
+    cy.getByTestID('contact-support-subject-input').clear().type(subject)
     cy.getByTestID('dropdown--button').click()
     cy.getByTitle('1 - Critical').click()
 
-    cy.getByTestID('support-description--textarea')
-      .clear()
-      .type(description)
+    cy.getByTestID('support-description--textarea').clear().type(description)
     cy.getByTestID('payg-contact-support--submit').should('not.be.disabled')
   })
 })

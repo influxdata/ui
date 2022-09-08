@@ -72,9 +72,8 @@ const useLocalStorageState = createLocalStorageStateHook(
   DEFAULT_CONTEXT.flows
 )
 
-export const FlowListContext = React.createContext<FlowListContextType>(
-  DEFAULT_CONTEXT
-)
+export const FlowListContext =
+  React.createContext<FlowListContextType>(DEFAULT_CONTEXT)
 
 export function serialize(flow: Flow) {
   const apiFlow: any = {

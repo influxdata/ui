@@ -37,9 +37,8 @@ export const DEFAULT_CONTEXT: CsvUploaderContextType = {
   uploadState: RemoteDataState.NotStarted,
 }
 
-export const CsvUploaderContext = React.createContext<CsvUploaderContextType>(
-  DEFAULT_CONTEXT
-)
+export const CsvUploaderContext =
+  React.createContext<CsvUploaderContextType>(DEFAULT_CONTEXT)
 
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)

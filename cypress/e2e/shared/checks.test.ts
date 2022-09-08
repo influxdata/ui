@@ -87,9 +87,7 @@ describe('Checks', () => {
           cy.log(
             'Change "Schedule Every" parameter and assert its change in "Window Period" placeholder'
           )
-          cy.getByTestID('schedule-check')
-            .clear()
-            .type('135s')
+          cy.getByTestID('schedule-check').clear().type('135s')
           cy.getByTestID('select-group--option').click()
           cy.get('.duration-input').within(() => {
             cy.getByTitle('This input is disabled').should(
@@ -100,9 +98,7 @@ describe('Checks', () => {
 
           cy.log('Name the check; save')
           cy.getByTestID('overlay--children').within(() => {
-            cy.getByTestID('page-title')
-              .contains('Name this Check')
-              .click()
+            cy.getByTestID('page-title').contains('Name this Check').click()
             cy.getByTestID('renamable-page-title--input')
               .clear()
               .type('Threshold check test{enter}')
@@ -141,9 +137,7 @@ describe('Checks', () => {
       })
       cy.reload()
       cy.intercept('PUT', '**/checks/*').as('putCheck')
-      cy.getByTestID('check-card--name')
-        .eq(0)
-        .click()
+      cy.getByTestID('check-card--name').eq(0).click()
       cy.getByTestID('overlay').should('be.visible')
       // Properties
       // Scheduler properties
@@ -159,12 +153,8 @@ describe('Checks', () => {
 
       testTags.forEach((tag, index) => {
         cy.getByTestID('dashed-button').click()
-        cy.getByTestID('tag-rule-key--input')
-          .eq(index)
-          .type(tag.key)
-        cy.getByTestID('tag-rule-value--input')
-          .eq(index)
-          .type(tag.value)
+        cy.getByTestID('tag-rule-key--input').eq(index).type(tag.key)
+        cy.getByTestID('tag-rule-value--input').eq(index).type(tag.value)
       })
 
       // Status Message Template
@@ -195,17 +185,13 @@ describe('Checks', () => {
           .clear()
           // seem to be encountering cypress issue here https://github.com/cypress-io/cypress/issues/3817
           .type(` ${rangeBtm}{del}`) // workaround
-        cy.getByTestID('input-field')
-          .eq(0)
-          .should('have.value', rangeBtm)
+        cy.getByTestID('input-field').eq(0).should('have.value', rangeBtm)
         cy.getByTestID('input-field')
           .eq(1)
           .clear()
           // seem to be encountering cypress issue here https://github.com/cypress-io/cypress/issues/3817
           .type(` ${rangeTop}{del}`) // workaround
-        cy.getByTestID('input-field')
-          .eq(1)
-          .should('have.value', rangeTop)
+        cy.getByTestID('input-field').eq(1).should('have.value', rangeTop)
       })
       // change value of one threshold
       cy.getByTestID('panel-WARN').within(() => {
@@ -269,9 +255,7 @@ describe('Checks', () => {
 
           cy.log('name the check; save')
           cy.getByTestID('overlay').within(() => {
-            cy.getByTestID('page-title')
-              .contains('Name this Check')
-              .click()
+            cy.getByTestID('page-title').contains('Name this Check').click()
             cy.getByTestID('renamable-page-title--input')
               .clear()
               .type('Alpha{enter}')
@@ -310,9 +294,7 @@ describe('Checks', () => {
 
           cy.log('name the check; save')
           cy.getByTestID('overlay').within(() => {
-            cy.getByTestID('page-title')
-              .contains('Name this Check')
-              .click()
+            cy.getByTestID('page-title').contains('Name this Check').click()
             cy.getByTestID('renamable-page-title--input')
               .clear()
               .type('Beta{enter}')
@@ -384,18 +366,14 @@ describe('Checks', () => {
             .within(() => {
               cy.getByTestID('duration-input--for').click()
               cy.get('.duration-input--menu').should('exist')
-              cy.getByTestID('duration-input--for')
-                .clear()
-                .type('60s')
+              cy.getByTestID('duration-input--for').clear().type('60s')
 
               cy.getByTestID('builder-card--header').click()
               cy.get('.duration-input--menu').should('not.exist')
 
               cy.getByTestID('duration-input--stop').click()
               cy.get('.duration-input--menu').should('exist')
-              cy.getByTestID('duration-input--stop')
-                .clear()
-                .type('660s')
+              cy.getByTestID('duration-input--stop').clear().type('660s')
               cy.getByTestID('builder-card--header').click()
               cy.get('.duration-input--menu').should('not.exist')
 
@@ -410,9 +388,7 @@ describe('Checks', () => {
 
           // name the check; save
           cy.getByTestID('overlay').within(() => {
-            cy.getByTestID('page-title')
-              .contains('Name this Check')
-              .click()
+            cy.getByTestID('page-title').contains('Name this Check').click()
             cy.getByTestID('renamable-page-title--input')
               .clear()
               .type('Deadman check test{enter}')
@@ -460,9 +436,7 @@ describe('Checks', () => {
           cy.getByTestID('empty-graph--no-queries')
           cy.getByTestID('time-machine-submit-button').click()
 
-          cy.wait('@query')
-            .its('response.statusCode')
-            .should('eq', 200)
+          cy.wait('@query').its('response.statusCode').should('eq', 200)
           // check for table
           cy.getByTestID('simple-table').should('exist')
           cy.getByTestID('raw-data--toggle').should('not.exist')
@@ -507,9 +481,7 @@ describe('Checks', () => {
 
       cy.reload()
       cy.intercept('PUT', '**/checks/*').as('putCheck')
-      cy.getByTestID('check-card--name')
-        .eq(0)
-        .click()
+      cy.getByTestID('check-card--name').eq(0).click()
       cy.getByTestID('overlay').should('be.visible')
 
       // Tags, properties and message already covered in threshold check
@@ -540,18 +512,12 @@ describe('Checks', () => {
       })
 
       // Now modify criteria by typing
-      cy.getByTestID('check-card--name')
-        .eq(0)
-        .click()
+      cy.getByTestID('check-card--name').eq(0).click()
       cy.getByTestID('overlay').should('be.visible')
 
-      cy.getByTestID('duration-input--for')
-        .clear()
-        .type(tmSinceText)
+      cy.getByTestID('duration-input--for').clear().type(tmSinceText)
 
-      cy.getByTestID('duration-input--stop')
-        .clear()
-        .type(tmStaleText)
+      cy.getByTestID('duration-input--stop').clear().type(tmStaleText)
 
       cy.getByTestID('save-cell--button').click()
 
@@ -589,22 +555,16 @@ describe('Checks', () => {
           // TODO: refactor into a request
           cy.getByTestID('create-check').click()
           cy.getByTestID('create-threshold-check').click()
-          cy.getByTestID(defaultBucketListSelector)
-            .wait(1200)
-            .click()
+          cy.getByTestID(defaultBucketListSelector).wait(1200).click()
           cy.getByTestID(`selector-list ${measurement}`).click()
           cy.getByTestID('save-cell--button').should('be.disabled')
           cy.getByTestID(`selector-list ${field}`).click()
           cy.getByTestID('save-cell--button').should('be.disabled')
           cy.getByTestID('checkeo--header alerting-tab').click()
           cy.getByTestID('add-threshold-condition-WARN').click()
-          cy.getByTestID('input-field-WARN')
-            .clear()
-            .type('5s')
+          cy.getByTestID('input-field-WARN').clear().type('5s')
           cy.getByTestID('add-threshold-condition-CRIT').click()
-          cy.getByTestID('input-field-CRIT')
-            .clear()
-            .type('0')
+          cy.getByTestID('input-field-CRIT').clear().type('0')
           cy.getByTestID('save-cell--button').click()
           cy.getByTestIDHead('check-card ').should('have.length', 1)
           cy.getByTestID('notification-error').should('not.exist')
@@ -645,33 +605,23 @@ describe('Checks', () => {
 
           cy.getByTestID('filter--input checks').should('have.focus')
 
-          cy.getByTestID('alerting-tab--endpoints')
-            .click()
-            .focus()
+          cy.getByTestID('alerting-tab--endpoints').click().focus()
           cy.get('body').tab()
           cy.getByTestID('filter--input endpoints').should('have.focus')
 
-          cy.getByTestID('alerting-tab--rules')
-            .click()
-            .focus()
+          cy.getByTestID('alerting-tab--rules').click().focus()
           cy.get('body').tab()
           cy.getByTestID('filter--input rules').should('have.focus')
         } else {
-          cy.get('body')
-            .tab()
-            .tab()
+          cy.get('body').tab().tab()
 
           cy.getByTestID('filter--input checks').should('have.focus')
 
-          cy.getByTestID('alerting-tab--endpoints')
-            .click()
-            .focus()
+          cy.getByTestID('alerting-tab--endpoints').click().focus()
           cy.focused().tab()
           cy.getByTestID('filter--input endpoints').should('have.focus')
 
-          cy.getByTestID('alerting-tab--rules')
-            .click()
-            .focus()
+          cy.getByTestID('alerting-tab--rules').click().focus()
           cy.focused().tab()
           cy.getByTestID('filter--input rules').should('have.focus')
         }
@@ -706,9 +656,7 @@ describe('Checks', () => {
         .clear()
         .type('0')
       // renames the check
-      cy.getByTestID('page-title')
-        .contains('Name this Check')
-        .type(checkName)
+      cy.getByTestID('page-title').contains('Name this Check').type(checkName)
       cy.getByTestID('save-cell--button').click()
       // checks that the values persisted
       cy.getByTestID('check-card--name').contains(checkName)
@@ -739,10 +687,7 @@ describe('Checks', () => {
 
       // implicitly verify id value while setting up intercept
       cy.getByTestID('copy-resource-id').then(elem => {
-        const checkID = elem
-          .text()
-          .replace(/^\D+/g, '')
-          .substring(0, 16)
+        const checkID = elem.text().replace(/^\D+/g, '').substring(0, 16)
         return cy
           .intercept('PATCH', `/api/v2/checks/${checkID}*`)
           .as('patchCheck')
@@ -817,10 +762,7 @@ describe('Checks', () => {
       // So for now just assert a notification with the correct ID was fired
       // even if the notification is failure to copy
       cy.getByTestID('copy-task-id').then(elem => {
-        const taskID = elem
-          .text()
-          .replace(/^\D+/g, '')
-          .substring(0, 16)
+        const taskID = elem.text().replace(/^\D+/g, '').substring(0, 16)
         elem.click()
         cy.getByTestIDHead('notification-').should('contain', taskID)
       })
@@ -902,8 +844,7 @@ describe('Checks', () => {
     orgID: '',
     query: {
       name: '',
-      text:
-        'from(bucket: "%BUCKETNAME%")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r["_measurement"] == "wumpus")\n  |> filter(fn: (r) => r["_field"] == "mag")\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
+      text: 'from(bucket: "%BUCKETNAME%")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r["_measurement"] == "wumpus")\n  |> filter(fn: (r) => r["_field"] == "mag")\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
       editMode: 'builder',
       builderConfig: {
         buckets: [],
@@ -1005,12 +946,8 @@ describe('Checks', () => {
       initCheck(deadmanCheck)
       cy.reload()
       cy.getByTestID('tree-nav')
-      cy.getByTestID('copy-resource-id')
-        .invoke('text')
-        .wrap('checkIDOrig')
-      cy.getByTestID('copy-task-id')
-        .invoke('text')
-        .wrap('taskIDOrig')
+      cy.getByTestID('copy-resource-id').invoke('text').wrap('checkIDOrig')
+      cy.getByTestID('copy-task-id').invoke('text').wrap('taskIDOrig')
       // 2. Clone
       cy.getByTestID('context-menu-task').click()
       cy.getByTestID('context-clone-task').click()
@@ -1073,9 +1010,7 @@ describe('Checks', () => {
       )
       cy.getByTestID('selector-list bar').should('be.visible')
       cy.getByTestID('giraffe-layer-line').should('be.visible')
-      cy.getByTestID('square-button')
-        .eq(0)
-        .click()
+      cy.getByTestID('square-button').eq(0).click()
       cy.getByTestIDHead(`check-card ${cloneNamePrefix}`).within(() => {
         cy.getByTestID('context-delete-task--button').click()
       })

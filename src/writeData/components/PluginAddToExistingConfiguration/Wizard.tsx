@@ -77,9 +77,8 @@ const Wizard: FC<Props> = props => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [pluginConfig, setPluginConfig] = useState<string>('')
-  const [isValidConfiguration, setIsValidConfiguration] = useState<boolean>(
-    false
-  )
+  const [isValidConfiguration, setIsValidConfiguration] =
+    useState<boolean>(false)
   const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const handleDismiss = () => {

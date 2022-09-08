@@ -103,12 +103,8 @@ export default class InlineLabelPopover extends PureComponent<Props> {
   }
 
   private handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
-    const {
-      selectedItemID,
-      onAddLabel,
-      onStartCreatingLabel,
-      onEscapePress,
-    } = this.props
+    const {selectedItemID, onAddLabel, onStartCreatingLabel, onEscapePress} =
+      this.props
 
     switch (e.key) {
       case 'Enter':

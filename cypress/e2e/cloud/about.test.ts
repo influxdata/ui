@@ -19,9 +19,7 @@ describe.skip('About Page for free users with only 1 user', () => {
   )
 
   it('should allow the delete account functionality', () => {
-    cy.getByTestID('delete-org--button')
-      .should('exist')
-      .click()
+    cy.getByTestID('delete-org--button').should('exist').click()
 
     cy.getByTestID('notification-warning').should('not.exist')
 
@@ -64,9 +62,7 @@ describe('About Page for free users with multiple users', () => {
     )
   )
   it('should display the warning and allow users to navigate to the users page when trying to delete when the user has multiple users', () => {
-    cy.getByTestID('delete-org--button')
-      .should('exist')
-      .click()
+    cy.getByTestID('delete-org--button').should('exist').click()
 
     cy.getByTestID('notification-warning')
       .should('exist')

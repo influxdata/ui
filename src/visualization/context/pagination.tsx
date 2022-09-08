@@ -36,9 +36,8 @@ const DEFAULT_CONTEXT: PaginationContextType = {
   setTotalPages: (_totalPages: number) => {},
 }
 
-export const PaginationContext = createContext<PaginationContextType>(
-  DEFAULT_CONTEXT
-)
+export const PaginationContext =
+  createContext<PaginationContextType>(DEFAULT_CONTEXT)
 
 interface PaginationProviderProps {
   total?: number

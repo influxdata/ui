@@ -83,9 +83,8 @@ type Props = OwnProps & ReduxProps
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 
 class TasksList extends PureComponent<Props, State> implements Pageable {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
-  )
+  private memGetSortedResources =
+    memoizeOne<typeof getSortedResources>(getSortedResources)
 
   private isComponentMounted: boolean
   private paginationRef: RefObject<HTMLDivElement>

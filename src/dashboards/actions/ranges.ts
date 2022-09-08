@@ -98,34 +98,36 @@ export const updateQueryVars = varsObj => {
   })
 }
 
-export const updateTimeRangeFromQueryParams = (dashboardID: string) => (
-  dispatch: Dispatch<Action | NotifyAction | RouterAction>,
-  getState
-): void => {
-  const {ranges} = getState()
-  const params = new URLSearchParams(window.location.search)
+export const updateTimeRangeFromQueryParams =
+  (dashboardID: string) =>
+  (
+    dispatch: Dispatch<Action | NotifyAction | RouterAction>,
+    getState
+  ): void => {
+    const {ranges} = getState()
+    const params = new URLSearchParams(window.location.search)
 
-  const validatedTimeRangeFromQuery = validateAndTypeRange({
-    lower: params.get('lower'),
-    upper: params.get('upper'),
-  })
-
-  const validatedTimeRange =
-    validatedTimeRangeFromQuery || ranges[dashboardID] || DEFAULT_TIME_RANGE
-
-  if (
-    (params.get('lower') || params.get('upper')) &&
-    !validatedTimeRangeFromQuery
-  ) {
-    dispatch(notify(copy.invalidTimeRangeValueInURLQuery()))
-  }
-
-  dispatch(setDashboardTimeRange(dashboardID, validatedTimeRange))
-
-  dispatch(
-    updateQueryParams({
-      lower: validatedTimeRange.lower,
-      upper: validatedTimeRange.upper,
+    const validatedTimeRangeFromQuery = validateAndTypeRange({
+      lower: params.get('lower'),
+      upper: params.get('upper'),
     })
-  )
-}
+
+    const validatedTimeRange =
+      validatedTimeRangeFromQuery || ranges[dashboardID] || DEFAULT_TIME_RANGE
+
+    if (
+      (params.get('lower') || params.get('upper')) &&
+      !validatedTimeRangeFromQuery
+    ) {
+      dispatch(notify(copy.invalidTimeRangeValueInURLQuery()))
+    }
+
+    dispatch(setDashboardTimeRange(dashboardID, validatedTimeRange))
+
+    dispatch(
+      updateQueryParams({
+        lower: validatedTimeRange.lower,
+        upper: validatedTimeRange.upper,
+      })
+    )
+  }

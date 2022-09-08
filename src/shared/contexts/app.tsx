@@ -63,9 +63,8 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   setSubscriptionsCertificateInterest: () => {},
 }
 
-export const AppSettingContext = React.createContext<AppSettingContextType>(
-  DEFAULT_CONTEXT
-)
+export const AppSettingContext =
+  React.createContext<AppSettingContextType>(DEFAULT_CONTEXT)
 
 export const AppSettingProvider: FC = ({children}) => {
   const {
@@ -83,9 +82,8 @@ export const AppSettingProvider: FC = ({children}) => {
     fluxQueryBuilder: fluxQueryBuilderFromState(state),
     navbarMode: navbarModeFromState(state),
     flowsCTA: getFlowsCTA(state),
-    subscriptionsCertificateInterest: getSubscriptionsCertificateInterest(
-      state
-    ),
+    subscriptionsCertificateInterest:
+      getSubscriptionsCertificateInterest(state),
   }))
   const dispatch = useDispatch()
 

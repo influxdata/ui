@@ -49,45 +49,129 @@ import {
 import {getNewDashboardCell} from 'src/dashboards/utils/cellGetters'
 import {getByID} from 'src/resources/selectors'
 
-export const deleteCellAndView = (
-  dashboardID: string,
-  cellID: string,
-  viewID: string
-) => async (dispatch): Promise<void> => {
-  try {
-    await Promise.all([
-      deleteDashboardsCell({dashboardID: dashboardID, cellID: cellID}),
-    ])
+export const deleteCellAndView =
+  (dashboardID: string, cellID: string, viewID: string) =>
+  async (dispatch): Promise<void> => {
+    try {
+      await Promise.all([
+        deleteDashboardsCell({dashboardID: dashboardID, cellID: cellID}),
+      ])
 
-    dispatch(removeView(viewID))
-    dispatch(removeCell({dashboardID, id: cellID}))
-    dispatch(notify(copy.cellDeleted()))
-  } catch (error) {
-    console.error(error)
+      dispatch(removeView(viewID))
+      dispatch(removeCell({dashboardID, id: cellID}))
+      dispatch(notify(copy.cellDeleted()))
+    } catch (error) {
+      console.error(error)
+    }
   }
-}
 
-export const createCellWithView = (
-  dashboardID: string,
-  view: NewView,
-  clonedCell?: Cell,
-  redirect?: (destinationId: string) => void,
-  timeRange?: TimeRange,
-  differentDashboard?: boolean
-) => async (dispatch, getState: GetState): Promise<void> => {
-  const state = getState()
-  let workingView = view
+export const createCellWithView =
+  (
+    dashboardID: string,
+    view: NewView,
+    clonedCell?: Cell,
+    redirect?: (destinationId: string) => void,
+    timeRange?: TimeRange,
+    differentDashboard?: boolean
+  ) =>
+  async (dispatch, getState: GetState): Promise<void> => {
+    const state = getState()
+    let workingView = view
 
-  let dashboard = getByID<Dashboard>(
-    state,
-    ResourceType.Dashboards,
-    dashboardID
-  )
+    let dashboard = getByID<Dashboard>(
+      state,
+      ResourceType.Dashboards,
+      dashboardID
+    )
 
-  try {
-    if (!dashboard) {
-      const resp = await getDashboard({dashboardID})
-      if (resp.status !== 200) {
+    try {
+      if (!dashboard) {
+        const resp = await getDashboard({dashboardID})
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        const normDash = normalize<Dashboard, DashboardEntities, string>(
+          resp.data,
+          dashboardSchema
+        )
+        const {entities, result} = normDash
+
+        dashboard = entities.dashboards[result]
+
+        if (!differentDashboard) {
+          dispatch(setDashboard(resp.data.id, RemoteDataState.Done, normDash))
+        }
+      }
+
+      const cell: NewCell = getNewDashboardCell(
+        state,
+        dashboard,
+        clonedCell,
+        view?.properties
+      )
+
+      // Create the cell
+      const cellResp = await postDashboardsCell({dashboardID, data: cell})
+
+      if (cellResp.status !== 201) {
+        throw new Error(cellResp.data.message)
+      }
+
+      const cellID = cellResp.data.id
+
+      if (clonedCell && !differentDashboard) {
+        workingView = {...workingView, name: `${view.name} (Clone)`}
+      }
+
+      if (timeRange) {
+        dispatch(setDashboardTimeRange(dashboardID, timeRange))
+      }
+      // Create the view and associate it with the cell
+      const newView = await updateView(dashboardID, cellID, workingView)
+
+      const normCell = normalize<Cell, CellEntities, string>(
+        {...cellResp.data, dashboardID},
+        cellSchema
+      )
+
+      // Refresh variables in use on dashboard
+      const normView = normalize<View, ViewEntities, string>(
+        newView,
+        viewSchema
+      )
+
+      dispatch(setCell(cellID, RemoteDataState.Done, normCell))
+      dispatch(setView(cellID, RemoteDataState.Done, normView))
+
+      if (redirect) {
+        redirect(dashboardID)
+      }
+    } catch (error) {
+      dispatch(notify(copy.cellAddFailed(error.message)))
+      throw error
+    }
+  }
+
+export const createDashboardWithView =
+  (
+    orgID: string,
+    dashboardName: string,
+    view: View,
+    redirect?: (destinationId: string) => void,
+    timeRange?: TimeRange
+  ) =>
+  async (dispatch): Promise<void> => {
+    try {
+      const newDashboard = {
+        orgID,
+        name: dashboardName,
+        cells: [],
+      }
+
+      const resp = await postDashboard({data: newDashboard})
+
+      if (resp.status !== 201) {
         throw new Error(resp.data.message)
       }
 
@@ -95,125 +179,46 @@ export const createCellWithView = (
         resp.data,
         dashboardSchema
       )
-      const {entities, result} = normDash
 
-      dashboard = entities.dashboards[result]
+      await dispatch(setDashboard(resp.data.id, RemoteDataState.Done, normDash))
 
-      if (!differentDashboard) {
-        dispatch(setDashboard(resp.data.id, RemoteDataState.Done, normDash))
+      await dispatch(
+        createCellWithView(resp.data.id, view, null, null, timeRange)
+      )
+      dispatch(notify(copy.dashboardCreateSuccess()))
+      if (redirect) {
+        redirect(resp.data.id)
       }
+    } catch (error) {
+      console.error(error)
+      dispatch(notify(copy.cellAddFailed(error.message)))
+      throw error
     }
-
-    const cell: NewCell = getNewDashboardCell(
-      state,
-      dashboard,
-      clonedCell,
-      view?.properties
-    )
-
-    // Create the cell
-    const cellResp = await postDashboardsCell({dashboardID, data: cell})
-
-    if (cellResp.status !== 201) {
-      throw new Error(cellResp.data.message)
-    }
-
-    const cellID = cellResp.data.id
-
-    if (clonedCell && !differentDashboard) {
-      workingView = {...workingView, name: `${view.name} (Clone)`}
-    }
-
-    if (timeRange) {
-      dispatch(setDashboardTimeRange(dashboardID, timeRange))
-    }
-    // Create the view and associate it with the cell
-    const newView = await updateView(dashboardID, cellID, workingView)
-
-    const normCell = normalize<Cell, CellEntities, string>(
-      {...cellResp.data, dashboardID},
-      cellSchema
-    )
-
-    // Refresh variables in use on dashboard
-    const normView = normalize<View, ViewEntities, string>(newView, viewSchema)
-
-    dispatch(setCell(cellID, RemoteDataState.Done, normCell))
-    dispatch(setView(cellID, RemoteDataState.Done, normView))
-
-    if (redirect) {
-      redirect(dashboardID)
-    }
-  } catch (error) {
-    dispatch(notify(copy.cellAddFailed(error.message)))
-    throw error
   }
-}
 
-export const createDashboardWithView = (
-  orgID: string,
-  dashboardName: string,
-  view: View,
-  redirect?: (destinationId: string) => void,
-  timeRange?: TimeRange
-) => async (dispatch): Promise<void> => {
-  try {
-    const newDashboard = {
-      orgID,
-      name: dashboardName,
-      cells: [],
+export const updateCells =
+  (dashboardID: string, cells: Cell[]) =>
+  async (dispatch): Promise<void> => {
+    try {
+      const resp = await putDashboardsCells({
+        dashboardID,
+        data: cells,
+      })
+
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
+
+      const updatedCells = cells.map(c => ({...c, dashboardID}))
+
+      const normCells = normalize<Dashboard, DashboardEntities, string[]>(
+        updatedCells,
+        arrayOfCells
+      )
+
+      dispatch(setCells(dashboardID, RemoteDataState.Done, normCells))
+    } catch (error) {
+      dispatch(notify(copy.cellUpdateFailed()))
+      console.error(error)
     }
-
-    const resp = await postDashboard({data: newDashboard})
-
-    if (resp.status !== 201) {
-      throw new Error(resp.data.message)
-    }
-
-    const normDash = normalize<Dashboard, DashboardEntities, string>(
-      resp.data,
-      dashboardSchema
-    )
-
-    await dispatch(setDashboard(resp.data.id, RemoteDataState.Done, normDash))
-
-    await dispatch(
-      createCellWithView(resp.data.id, view, null, null, timeRange)
-    )
-    dispatch(notify(copy.dashboardCreateSuccess()))
-    if (redirect) {
-      redirect(resp.data.id)
-    }
-  } catch (error) {
-    console.error(error)
-    dispatch(notify(copy.cellAddFailed(error.message)))
-    throw error
   }
-}
-
-export const updateCells = (dashboardID: string, cells: Cell[]) => async (
-  dispatch
-): Promise<void> => {
-  try {
-    const resp = await putDashboardsCells({
-      dashboardID,
-      data: cells,
-    })
-
-    if (resp.status !== 201) {
-      throw new Error(resp.data.message)
-    }
-
-    const updatedCells = cells.map(c => ({...c, dashboardID}))
-
-    const normCells = normalize<Dashboard, DashboardEntities, string[]>(
-      updatedCells,
-      arrayOfCells
-    )
-
-    dispatch(setCells(dashboardID, RemoteDataState.Done, normCells))
-  } catch (error) {
-    dispatch(notify(copy.cellUpdateFailed()))
-    console.error(error)
-  }
-}

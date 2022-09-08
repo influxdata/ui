@@ -4,9 +4,8 @@ import {SelectDropdown, ComponentColor} from '@influxdata/clockface'
 import {UsageContext} from 'src/usage/context/usage'
 
 const UsageDropdown: FC = () => {
-  const {usageVectors, selectedUsage, handleSetSelectedUsage} = useContext(
-    UsageContext
-  )
+  const {usageVectors, selectedUsage, handleSetSelectedUsage} =
+    useContext(UsageContext)
 
   const vectorNames = usageVectors?.map(vector => vector.name)
 

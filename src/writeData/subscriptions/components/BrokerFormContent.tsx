@@ -66,7 +66,7 @@ const BrokerFormContent: FC<Props> = ({
     const numberInput = document.getElementById(
       `${className}-broker-form--port`
     )
-    numberInput?.addEventListener('mousewheel', function(evt) {
+    numberInput?.addEventListener('mousewheel', function (evt) {
       evt.preventDefault()
     })
   }, [])

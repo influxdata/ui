@@ -134,9 +134,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     const newPermValue = newPerm[name][permission]
     if (newPerm[name].sublevelPermissions) {
       Object.keys(newPerm[name].sublevelPermissions).forEach(key => {
-        newPerm[name].sublevelPermissions[key].permissions[
-          permission
-        ] = !newPermValue
+        newPerm[name].sublevelPermissions[key].permissions[permission] =
+          !newPermValue
       })
     }
     if (name === 'otherResources') {
@@ -164,9 +163,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       permissions[resourceName].sublevelPermissions[id].permissions[permission]
 
     const newPerm = {...permissions}
-    newPerm[resourceName].sublevelPermissions[id].permissions[
-      permission
-    ] = !permValue
+    newPerm[resourceName].sublevelPermissions[id].permissions[permission] =
+      !permValue
 
     setPermissions(newPerm)
     isSubPermSelected(newPerm)

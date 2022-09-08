@@ -30,12 +30,8 @@ import {getOrg} from 'src/organizations/selectors'
 import './Schema.scss'
 
 const FieldsTags: FC = () => {
-  const {
-    selectedBucket,
-    selectedMeasurement,
-    searchTerm,
-    setSearchTerm,
-  } = useContext(FluxQueryBuilderContext)
+  const {selectedBucket, selectedMeasurement, searchTerm, setSearchTerm} =
+    useContext(FluxQueryBuilderContext)
 
   useEffect(() => {
     setSearchTerm('')

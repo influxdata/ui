@@ -9,9 +9,8 @@ type Props = {
 }
 
 const BillingWrapper: FC<Props> = ({children}) => {
-  const {handleGetBillingSettings, billingSettingsStatus} = useContext(
-    BillingContext
-  )
+  const {handleGetBillingSettings, billingSettingsStatus} =
+    useContext(BillingContext)
 
   useEffect(() => {
     handleGetBillingSettings()

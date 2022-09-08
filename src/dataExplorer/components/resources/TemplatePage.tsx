@@ -12,12 +12,8 @@ import {
 } from 'src/dataExplorer/context/persistance'
 
 const Template: FC = () => {
-  const {
-    setQuery,
-    setHasChanged,
-    setResource,
-    clearSchemaSelection,
-  } = useContext(PersistanceContext)
+  const {setQuery, setHasChanged, setResource, clearSchemaSelection} =
+    useContext(PersistanceContext)
   const params = useParams()[0].split('/')
   const org = useSelector(getOrg)
   const history = useHistory()

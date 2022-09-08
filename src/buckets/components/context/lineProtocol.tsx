@@ -44,9 +44,8 @@ export const DEFAULT_CONTEXT: LineProtocolContextType = {
   writeStatus: RemoteDataState.NotStarted,
 }
 
-export const LineProtocolContext = React.createContext<LineProtocolContextType>(
-  DEFAULT_CONTEXT
-)
+export const LineProtocolContext =
+  React.createContext<LineProtocolContextType>(DEFAULT_CONTEXT)
 
 export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
   const [body, setBody] = useState('')

@@ -6,7 +6,7 @@ import {Base, TimeZone} from '../../types'
 const timestamp = 426196800000
 
 describe('getFormatter', () => {
-  it("should format correctly for base 10 and 'number' columntype", function() {
+  it("should format correctly for base 10 and 'number' columntype", function () {
     const formatterOptions = {
       prefix: 'prefix ',
       suffix: ' suffix',
@@ -20,7 +20,7 @@ describe('getFormatter', () => {
     expect(formattedValue).toBe('prefix 100k suffix')
   })
 
-  it("should format correctly for base '' 'number' columntype", function() {
+  it("should format correctly for base '' 'number' columntype", function () {
     const formatterOptions = {
       prefix: 'prefix ',
       suffix: ' suffix',
@@ -34,7 +34,7 @@ describe('getFormatter', () => {
     expect(formattedValue).toBe('prefix 100000 suffix')
   })
 
-  it("should format correctly for base 2 'number' columntype", function() {
+  it("should format correctly for base 2 'number' columntype", function () {
     const formatterOptions = {
       prefix: 'prefix ',
       suffix: ' suffix',

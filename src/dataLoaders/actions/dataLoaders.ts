@@ -348,166 +348,163 @@ export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
   )
 }
 
-export const addTelegrafPluginAsBundle = (
-  plugin: TelegrafPlugin
-) => dispatch => {
-  dispatch(replaceBundleWithPlugin(plugin))
-}
-
-export const removePluginBundleWithPlugins = (
-  bundle: BundleName
-) => dispatch => {
-  dispatch(removePluginBundle(bundle))
-  dispatch(removeBundlePlugins(bundle))
-}
-
-export const createOrUpdateTelegrafConfigAsync = () => async (
-  dispatch,
-  getState: GetState
-) => {
-  const {
-    telegrafPlugins,
-    telegrafConfigID,
-    telegrafConfigName,
-    telegrafConfigDescription,
-  } = getDataLoaders(getState())
-  const {name} = getOrg(getState())
-  const {bucket} = getSteps(getState())
-
-  const influxDB2Out = {
-    name: 'influxdb_v2',
-    type: 'output',
-    config: {
-      urls: [`${window.location.origin}`],
-      token: '$INFLUX_TOKEN',
-      organization: name,
-      bucket,
-    },
+export const addTelegrafPluginAsBundle =
+  (plugin: TelegrafPlugin) => dispatch => {
+    dispatch(replaceBundleWithPlugin(plugin))
   }
 
-  // Consider to convert the type 'any' into a generic type
-  // https://github.com/influxdata/ui/issues/3433
-  const plugins: any = telegrafPlugins.reduce(
-    (acc, tp) => {
-      if (tp.configured === ConfigurationState.Configured) {
-        return [...acc, tp.plugin || createNewPlugin(tp)]
-      }
+export const removePluginBundleWithPlugins =
+  (bundle: BundleName) => dispatch => {
+    dispatch(removePluginBundle(bundle))
+    dispatch(removeBundlePlugins(bundle))
+  }
 
-      return acc
-    },
-    [influxDB2Out]
-  )
+export const createOrUpdateTelegrafConfigAsync =
+  () => async (dispatch, getState: GetState) => {
+    const {
+      telegrafPlugins,
+      telegrafConfigID,
+      telegrafConfigName,
+      telegrafConfigDescription,
+    } = getDataLoaders(getState())
+    const {name} = getOrg(getState())
+    const {bucket} = getSteps(getState())
 
-  if (telegrafConfigID) {
-    const response = await putTelegraf({
-      telegrafID: telegrafConfigID,
-      data: {
-        name: telegrafConfigName,
-        description: telegrafConfigDescription,
-        plugins,
+    const influxDB2Out = {
+      name: 'influxdb_v2',
+      type: 'output',
+      config: {
+        urls: [`${window.location.origin}`],
+        token: '$INFLUX_TOKEN',
+        organization: name,
+        bucket,
       },
-    })
-
-    if (response.status !== 200) {
-      throw new Error(response.data.message)
     }
 
-    const telegraf = response.data
-    const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
-      telegraf,
-      telegrafSchema
+    // Consider to convert the type 'any' into a generic type
+    // https://github.com/influxdata/ui/issues/3433
+    const plugins: any = telegrafPlugins.reduce(
+      (acc, tp) => {
+        if (tp.configured === ConfigurationState.Configured) {
+          return [...acc, tp.plugin || createNewPlugin(tp)]
+        }
+
+        return acc
+      },
+      [influxDB2Out]
     )
 
-    dispatch(editTelegraf(normTelegraf))
-    dispatch(setTelegrafConfigID(telegrafConfigID))
-    event(`telegraf.config.edit.success`, {
-      id: telegraf?.id,
-      name: normalizeEventName(telegrafConfigName),
-    })
-    return
-  }
-
-  createTelegraf(dispatch, getState, plugins)
-}
-
-export const generateTelegrafToken = (configID: string) => async (
-  dispatch,
-  getState: GetState
-) => {
-  let telegrafName: string = ''
-  let bucketName: string = ''
-  try {
-    const state = getState()
-    const orgID = getOrg(state).id
-    const telegraf = getByID<Telegraf>(state, ResourceType.Telegrafs, configID)
-    telegrafName = telegraf.name
-    bucketName = get(telegraf, 'metadata.buckets[0]', '')
-
-    if (bucketName === '') {
-      throw new Error(
-        'An API token cannot be generated without a corresponding bucket; no buckets are assigned'
-      )
-    }
-
-    const bucket = getBucketByName(state, bucketName)
-
-    if (!bucket || !bucket.id) {
-      throw new Error(`there is no bucket present with name ${bucketName}`)
-    }
-    const permissions = [
-      {
-        action: 'write',
-        resource: {
-          type: 'buckets',
-          id: bucket.id,
-          orgID,
+    if (telegrafConfigID) {
+      const response = await putTelegraf({
+        telegrafID: telegrafConfigID,
+        data: {
+          name: telegrafConfigName,
+          description: telegrafConfigDescription,
+          plugins,
         },
-      },
-      {
-        action: 'read',
-        resource: {
-          type: 'telegrafs',
-          id: configID,
-          orgID,
-        },
-      },
-    ]
+      })
 
-    const token = {
-      name: `${telegraf.name} token`,
-      orgID,
-      description: `WRITE ${bucketName} bucket / READ ${telegraf.name} telegraf config`,
-      permissions,
-    }
-
-    // create token
-    const createdToken = await createAuthorization(token)
-    event('token.create.success', {name: telegrafName, bucket: bucketName})
-    // add token to data loader state
-    dispatch(setToken(createdToken.token))
-  } catch (error) {
-    console.error(error)
-    event('token.create.failure', {name: telegrafName, bucket: bucketName})
-    if (error.message) {
-      const customNotification = {
-        ...TokenCreationError,
-        message: `${TokenCreationError.message}: ${error.message}`,
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
       }
-      dispatch(notify(customNotification))
-    } else {
-      dispatch(notify(TokenCreationError))
+
+      const telegraf = response.data
+      const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
+        telegraf,
+        telegrafSchema
+      )
+
+      dispatch(editTelegraf(normTelegraf))
+      dispatch(setTelegrafConfigID(telegrafConfigID))
+      event(`telegraf.config.edit.success`, {
+        id: telegraf?.id,
+        name: normalizeEventName(telegrafConfigName),
+      })
+      return
+    }
+
+    createTelegraf(dispatch, getState, plugins)
+  }
+
+export const generateTelegrafToken =
+  (configID: string) => async (dispatch, getState: GetState) => {
+    let telegrafName: string = ''
+    let bucketName: string = ''
+    try {
+      const state = getState()
+      const orgID = getOrg(state).id
+      const telegraf = getByID<Telegraf>(
+        state,
+        ResourceType.Telegrafs,
+        configID
+      )
+      telegrafName = telegraf.name
+      bucketName = get(telegraf, 'metadata.buckets[0]', '')
+
+      if (bucketName === '') {
+        throw new Error(
+          'An API token cannot be generated without a corresponding bucket; no buckets are assigned'
+        )
+      }
+
+      const bucket = getBucketByName(state, bucketName)
+
+      if (!bucket || !bucket.id) {
+        throw new Error(`there is no bucket present with name ${bucketName}`)
+      }
+      const permissions = [
+        {
+          action: 'write',
+          resource: {
+            type: 'buckets',
+            id: bucket.id,
+            orgID,
+          },
+        },
+        {
+          action: 'read',
+          resource: {
+            type: 'telegrafs',
+            id: configID,
+            orgID,
+          },
+        },
+      ]
+
+      const token = {
+        name: `${telegraf.name} token`,
+        orgID,
+        description: `WRITE ${bucketName} bucket / READ ${telegraf.name} telegraf config`,
+        permissions,
+      }
+
+      // create token
+      const createdToken = await createAuthorization(token)
+      event('token.create.success', {name: telegrafName, bucket: bucketName})
+      // add token to data loader state
+      dispatch(setToken(createdToken.token))
+    } catch (error) {
+      console.error(error)
+      event('token.create.failure', {name: telegrafName, bucket: bucketName})
+      if (error.message) {
+        const customNotification = {
+          ...TokenCreationError,
+          message: `${TokenCreationError.message}: ${error.message}`,
+        }
+        dispatch(notify(customNotification))
+      } else {
+        dispatch(notify(TokenCreationError))
+      }
     }
   }
-}
 
 const createTelegraf = async (dispatch, getState: GetState, plugins) => {
   let configName = ''
   let bucketName = ''
   try {
     const state = getState()
-    const {telegrafConfigName, telegrafConfigDescription} = getDataLoaders(
-      state
-    )
+    const {telegrafConfigName, telegrafConfigDescription} =
+      getDataLoaders(state)
     configName = telegrafConfigName
     const {bucket, bucketID} = getSteps(state)
     bucketName = bucket
@@ -617,47 +614,45 @@ export const setPluginConfiguration = (
   payload: {telegrafPlugin},
 })
 
-export const saveScraperTarget = () => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-) => {
-  const {
-    dataLoading: {
-      dataLoaders: {
-        scraperTarget: {url, id, name},
-      },
-      steps: {bucketID, orgID},
-    },
-  } = getState()
-
-  try {
-    if (id) {
-      await patchScraper({
-        scraperTargetID: id,
-        data: {url, bucketID},
-      })
-    } else {
-      const resp = await postScraper({
-        data: {
-          name,
-          type: 'prometheus',
-          url,
-          bucketID,
-          orgID,
+export const saveScraperTarget =
+  () => async (dispatch: Dispatch<Action>, getState: GetState) => {
+    const {
+      dataLoading: {
+        dataLoaders: {
+          scraperTarget: {url, id, name},
         },
-      })
+        steps: {bucketID, orgID},
+      },
+    } = getState()
 
-      if (resp.status !== 201) {
-        throw new Error(resp.data.message)
+    try {
+      if (id) {
+        await patchScraper({
+          scraperTargetID: id,
+          data: {url, bucketID},
+        })
+      } else {
+        const resp = await postScraper({
+          data: {
+            name,
+            type: 'prometheus',
+            url,
+            bucketID,
+            orgID,
+          },
+        })
+
+        if (resp.status !== 201) {
+          throw new Error(resp.data.message)
+        }
+
+        const scraper = resp.data
+        dispatch(setScraperTargetID(scraper.id))
       }
-
-      const scraper = resp.data
-      dispatch(setScraperTargetID(scraper.id))
+    } catch (error) {
+      console.error()
     }
-  } catch (error) {
-    console.error()
   }
-}
 
 interface SetLocationOnDismiss {
   type: 'SET_LOCATION_ON_DISMISS'

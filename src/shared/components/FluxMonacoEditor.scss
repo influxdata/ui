@@ -44,38 +44,28 @@
   }
 }
 
-// .flux-editor--monaco {
-//   position: relative;
-//   overflow: hidden;
-
-//   .sync-bar {
-//     position: absolute;
-//     width: 48px;
-//   }
-
-//   .sync-bar--on {
-//     background: #00a3ff26; // blue with 15% opacity
-//     border-top: 1px solid $c-pool;
-//     border-bottom: 1px solid $c-pool;
-
-//     .sync-icon {
-//       color: $c-pool;
-//     }
-//   }
-
-//   .sync-bar--off {
-//     opacity: 50%;
-//     background-color: $cf-grey-35;
-//     border-top: 1px solid $cf-white;
-//     border-bottom: 1px solid $cf-white;
-
-//     .sync-icon {
-//       color: $cf-white;
-//     }
-//   }
-// }
-
 .flux-editor--monaco {
+  position: relative;
+  overflow: hidden;
+
+  #schema-composition-sync-icon {
+    position: absolute;
+    top: 0px;
+  }
+
+  .sync-icon--on {
+    > .cf-icon {
+      color: $c-pool;
+    }
+  }
+
+  .sync-icon--off {
+    > .cf-icon {
+      color: $cf-white;
+      opacity: 50%;
+    }
+  }
+
   .composition-sync--on {
     background: #00a3ff26; // blue with 15% opacity
   }

@@ -29,7 +29,6 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-const ICON_SYNC_CLASSNAME = 'composition-sync'
 export const ICON_SYNC_ID = 'schema-composition-sync-icon'
 
 // hardcoded in LSP
@@ -149,8 +148,6 @@ class LspConnectionManager {
         })
         this._setSessionSync(!this._session.composition.synced)
       })
-
-      this._alignInvisibleDivToEditorBlock()
     }, 1000)
   }
 
@@ -185,36 +182,6 @@ class LspConnectionManager {
         })
       }
     })
-  }
-
-  _alignInvisibleDivToEditorBlock() {
-    // elements in monaco-editor. positioned by editor.
-    const syncIcons = document.getElementsByClassName(ICON_SYNC_CLASSNAME)
-
-    // UI elements we control
-    const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-    if (!syncIcons.length || !clickableInvisibleDiv) {
-      return
-    }
-
-    const [upperIcon] = syncIcons
-    let [, lowerIcon] = syncIcons
-    if (!lowerIcon) {
-      lowerIcon = upperIcon
-    }
-    const compositionBlock = this._getCompositionBlockLines()
-    if (!compositionBlock) {
-      return
-    }
-    const {startLine, endLine} = compositionBlock
-
-    // move div to match monaco-editor coordinates
-    clickableInvisibleDiv.style.top = ((upperIcon as any).offsetTop || 0) + 'px'
-    const height =
-      ((lowerIcon as any).offsetHeight || 0) * (endLine - startLine + 1) +
-      ((upperIcon as any).offsetTop || 0)
-    clickableInvisibleDiv.style.height = height + 'px'
-    // width size is always the same, defined in classname "sync-bar"
   }
 
   _compositionSyncStyle(startLine: number, endLine: number, synced: boolean) {
@@ -261,15 +228,14 @@ class LspConnectionManager {
       removeAllStyles ? [] : compositionSyncStyle
     )
 
-    // this._alignInvisibleDivToEditorBlock()
-    // const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-    // clickableInvisibleDiv.className = schema.composition.synced
-    //   ? 'sync-bar sync-bar--on'
-    //   : 'sync-bar sync-bar--off'
+    const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
+    clickableInvisibleDiv.className = schema.composition.synced
+      ? 'sync-icon--on'
+      : 'sync-icon--off'
 
-    // if (removeAllStyles) {
-    //   clickableInvisibleDiv.style.display = 'none'
-    // }
+    if (removeAllStyles) {
+      clickableInvisibleDiv.style.display = 'none'
+    }
   }
 
   // XXX: wiedld (25 Aug 2022) - handling the absence of a middleware listener

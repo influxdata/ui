@@ -155,8 +155,8 @@ const FluxEditorMonaco: FC<Props> = ({
           }}
           editorDidMount={editorDidMount}
         />
-        <div id={ICON_SYNC_ID} className="sync-bar">
-          <Icon glyph={IconFont.Sync} className="sync-icon" />
+        <div id={ICON_SYNC_ID}>
+          <Icon glyph={IconFont.Sync} />
         </div>
       </div>
     </ErrorBoundary>

@@ -45,6 +45,7 @@ import {isSystemBucket} from 'src/buckets/constants'
 
 // Constants
 import {getBucketOverlayWidth} from 'src/buckets/constants'
+
 const TELEGRAF_UI_REFRESH_OVERLAY_DEFAULT_WIDTH = 1200
 
 interface OwnProps {
@@ -79,7 +80,7 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
       (currentStepIndex === 0 && substepIndex === 1) ||
       currentStepIndex === 1
     ) {
-      overlayBodyClassName = ''
+      overlayBodyClassName = 'configuration-overlay--body'
     }
 
     return (

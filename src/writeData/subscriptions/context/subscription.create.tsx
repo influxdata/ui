@@ -81,9 +81,8 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
   loading: RemoteDataState.NotStarted,
 } as SubscriptionCreateContextType
 
-export const SubscriptionCreateContext = React.createContext<
-  SubscriptionCreateContextType
->(DEFAULT_CONTEXT)
+export const SubscriptionCreateContext =
+  React.createContext<SubscriptionCreateContextType>(DEFAULT_CONTEXT)
 
 export const SubscriptionCreateProvider: FC = ({children}) => {
   const [formContent, setFormContent] = useState(DEFAULT_CONTEXT.formContent)

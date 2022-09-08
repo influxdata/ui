@@ -8,8 +8,8 @@ import {identify} from 'rudder-sdk-js'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {CheckoutPage, OperatorPage} from 'src/shared/containers'
 const NoOrgsPage = lazy(() => import('src/organizations/containers/NoOrgsPage'))
-const NotebookTemplates = lazy(() =>
-  import('src/flows/components/FromTemplatePage')
+const NotebookTemplates = lazy(
+  () => import('src/flows/components/FromTemplatePage')
 )
 const App = lazy(() => import('src/App'))
 const NotFound = lazy(() => import('src/shared/components/NotFound'))

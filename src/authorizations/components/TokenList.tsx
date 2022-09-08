@@ -45,9 +45,8 @@ interface State {
 }
 
 export default class TokenList extends PureComponent<Props, State> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
-  )
+  private memGetSortedResources =
+    memoizeOne<typeof getSortedResources>(getSortedResources)
 
   private paginationRef: RefObject<HTMLDivElement>
   public rowsPerPage: number = 10

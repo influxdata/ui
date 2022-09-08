@@ -7,14 +7,8 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 type Props = FormElementProps & InputProps
 
 const FormInput: FC<Props> = ({label, required, id, ...args}) => {
-  const {
-    errors,
-    handleSetInputs,
-    handleSetError,
-    inputs,
-    isDirty,
-    setIsDirty,
-  } = useContext(CheckoutContext)
+  const {errors, handleSetInputs, handleSetError, inputs, isDirty, setIsDirty} =
+    useContext(CheckoutContext)
 
   const [requiredMessage, setRequiredMessage] = useState(
     'This is a required field'

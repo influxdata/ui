@@ -142,9 +142,9 @@ export const loginViaDex = (username: string, password: string) => {
     )
 }
 
-export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Response<
-  any
->> => {
+export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<
+  Cypress.Response<any>
+> => {
   return cy
     .request({
       method: 'GET',
@@ -831,9 +831,7 @@ export const getByTestIDAndSetInputValue = (
 ): Cypress.Chainable => {
   const val = `${value}`
   cy.getByTestID(testId).clear()
-  cy.getByTestID(testId)
-    .focus()
-    .type(val)
+  cy.getByTestID(testId).focus().type(val)
 
   return cy.getByTestID(testId).should('have.value', val)
 }
@@ -1058,9 +1056,7 @@ export const createTaskFromEmpty = (
   force: boolean = true,
   delay: number = 0
 ) => {
-  cy.getByTestID('create-task--button')
-    .first()
-    .click()
+  cy.getByTestID('create-task--button').first().click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
     cy.getByTestID('flux-editor').monacoType(flux(bucket), force, delay)

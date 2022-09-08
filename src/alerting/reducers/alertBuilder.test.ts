@@ -33,13 +33,13 @@ import {
 const noopAction: Action = {type: undefined}
 
 const check_1 = {
-  ...((CHECK_FIXTURE_1 as any) as ThresholdCheck),
+  ...(CHECK_FIXTURE_1 as any as ThresholdCheck),
   activeStatus: 'inactive' as TaskStatusType,
   status: RemoteDataState.Done,
 }
 
 const check_3 = {
-  ...((CHECK_FIXTURE_3 as any) as DeadmanCheck),
+  ...(CHECK_FIXTURE_3 as any as DeadmanCheck),
   activeStatus: 'active' as TaskStatusType,
   status: RemoteDataState.Done,
 }

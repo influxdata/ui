@@ -19,9 +19,10 @@ type Props = {
 const FunctionDropdown: FC<Props> = ({threshold, index}) => {
   const {data, update} = useContext(PipeContext)
 
-  const errorThresholds = useMemo(() => data?.errorThresholds ?? [], [
-    data?.errorThresholds,
-  ])
+  const errorThresholds = useMemo(
+    () => data?.errorThresholds ?? [],
+    [data?.errorThresholds]
+  )
 
   const setThresholdType = useCallback(
     (type, index) => {

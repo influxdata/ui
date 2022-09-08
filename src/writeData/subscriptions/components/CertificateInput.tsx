@@ -141,7 +141,9 @@ const CertificatePlaceholders = {
 interface ReplaceCertificateModalProps {
   onClose: () => void
 }
-export const ReplaceCertificateOverlay: FC<ReplaceCertificateModalProps> = () => {
+export const ReplaceCertificateOverlay: FC<
+  ReplaceCertificateModalProps
+> = () => {
   const {
     onClose,
     params: {subscription, updateForm},

@@ -14,9 +14,8 @@ const listStyle = {
 
 export const PrepareIde = () => {
   type CurrentBoardSelection = 'ESP8266' | 'ESP32'
-  const [currentSelection, setCurrentSelection] = useState<
-    CurrentBoardSelection
-  >('ESP8266')
+  const [currentSelection, setCurrentSelection] =
+    useState<CurrentBoardSelection>('ESP8266')
   return (
     <>
       <h1>Prepare Arduino IDE</h1>

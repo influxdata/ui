@@ -28,7 +28,7 @@ describe('parseYBounds', () => {
 })
 
 describe('getting default columns', () => {
-  const table = ({
+  const table = {
     getColumn() {
       return [0, 0, 1000000]
     },
@@ -58,7 +58,7 @@ describe('getting default columns', () => {
       '_time',
     ],
     length: 3,
-  } as unknown) as Table
+  } as unknown as Table
 
   it('returns _time for the default x column', () => {
     expect(defaultXColumn(table)).toBe('_time')

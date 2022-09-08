@@ -62,82 +62,88 @@ import {labelSchema} from 'src/schemas/labels'
 
 import {LIMIT} from 'src/resources/constants'
 
-export const getChecks = () => async (
-  dispatch: Dispatch<
-    Action | NotificationAction | ReturnType<typeof checkChecksLimits>
-  >,
-  getState: GetState
-) => {
-  try {
-    const state = getState()
-    if (getStatus(state, ResourceType.Checks) === RemoteDataState.NotStarted) {
-      dispatch(setChecks(RemoteDataState.Loading))
+export const getChecks =
+  () =>
+  async (
+    dispatch: Dispatch<
+      Action | NotificationAction | ReturnType<typeof checkChecksLimits>
+    >,
+    getState: GetState
+  ) => {
+    try {
+      const state = getState()
+      if (
+        getStatus(state, ResourceType.Checks) === RemoteDataState.NotStarted
+      ) {
+        dispatch(setChecks(RemoteDataState.Loading))
+      }
+      const {id: orgID} = getOrg(state)
+
+      // bump the limit up to the max. see idpe 6592
+      // TODO: https://github.com/influxdata/influxdb/issues/17541
+      const resp = await api.getChecks({query: {orgID, limit: LIMIT}})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const checks = normalize<Check, CheckEntities, string[]>(
+        resp.data.checks,
+        arrayOfChecks
+      )
+
+      dispatch(setChecks(RemoteDataState.Done, checks))
+      dispatch(checkChecksLimits())
+    } catch (e) {
+      console.error(e)
+      dispatch(setChecks(RemoteDataState.Error))
+      dispatch(notify(copy.getChecksFailed(e.message)))
     }
-    const {id: orgID} = getOrg(state)
-
-    // bump the limit up to the max. see idpe 6592
-    // TODO: https://github.com/influxdata/influxdb/issues/17541
-    const resp = await api.getChecks({query: {orgID, limit: LIMIT}})
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    const checks = normalize<Check, CheckEntities, string[]>(
-      resp.data.checks,
-      arrayOfChecks
-    )
-
-    dispatch(setChecks(RemoteDataState.Done, checks))
-    dispatch(checkChecksLimits())
-  } catch (e) {
-    console.error(e)
-    dispatch(setChecks(RemoteDataState.Error))
-    dispatch(notify(copy.getChecksFailed(e.message)))
   }
-}
 
-export const getCheckForTimeMachine = (checkID: string) => async (
-  dispatch: Dispatch<
-    TimeMachineAction | NotificationAction | AlertBuilderAction | RouterAction
-  >,
-  getState: GetState
-) => {
-  const org = getOrg(getState())
-  try {
-    dispatch(setAlertBuilderCheckStatus(RemoteDataState.Loading))
+export const getCheckForTimeMachine =
+  (checkID: string) =>
+  async (
+    dispatch: Dispatch<
+      TimeMachineAction | NotificationAction | AlertBuilderAction | RouterAction
+    >,
+    getState: GetState
+  ) => {
+    const org = getOrg(getState())
+    try {
+      dispatch(setAlertBuilderCheckStatus(RemoteDataState.Loading))
 
-    const resp = await api.getCheck({checkID})
+      const resp = await api.getCheck({checkID})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const normCheck = normalize<Check, CheckEntities, string>(
+        resp.data,
+        checkSchema
+      )
+      const builderCheck = normCheck.entities.checks[normCheck.result]
+
+      const view = createView<CheckViewProperties>(builderCheck.type)
+
+      view.properties.queries = [builderCheck.query]
+
+      dispatch(
+        setActiveTimeMachine('alerting', {
+          view,
+          activeTab: 'alerting',
+        })
+      )
+
+      dispatch(setAlertBuilderCheck(builderCheck))
+    } catch (error) {
+      console.error(error)
+      dispatch(push(`/orgs/${org.id}/alerting`))
+      dispatch(setAlertBuilderCheckStatus(RemoteDataState.Error))
+      dispatch(notify(copy.getCheckFailed(error.message)))
     }
-
-    const normCheck = normalize<Check, CheckEntities, string>(
-      resp.data,
-      checkSchema
-    )
-    const builderCheck = normCheck.entities.checks[normCheck.result]
-
-    const view = createView<CheckViewProperties>(builderCheck.type)
-
-    view.properties.queries = [builderCheck.query]
-
-    dispatch(
-      setActiveTimeMachine('alerting', {
-        view,
-        activeTab: 'alerting',
-      })
-    )
-
-    dispatch(setAlertBuilderCheck(builderCheck))
-  } catch (error) {
-    console.error(error)
-    dispatch(push(`/orgs/${org.id}/alerting`))
-    dispatch(setAlertBuilderCheckStatus(RemoteDataState.Error))
-    dispatch(notify(copy.getCheckFailed(error.message)))
   }
-}
 
 type SendToTimeMachineAction =
   | ReturnType<typeof checkChecksLimits>
@@ -145,193 +151,202 @@ type SendToTimeMachineAction =
   | ReturnType<typeof resetAlertBuilder>
   | NotificationAction
 
-export const createCheckFromTimeMachine = () => async (
-  dispatch: Dispatch<Action | SendToTimeMachineAction | RouterAction>,
-  getState: GetState
-): Promise<void> => {
-  const rename = 'Please rename the check before saving'
-  try {
+export const createCheckFromTimeMachine =
+  () =>
+  async (
+    dispatch: Dispatch<Action | SendToTimeMachineAction | RouterAction>,
+    getState: GetState
+  ): Promise<void> => {
+    const rename = 'Please rename the check before saving'
+    try {
+      const state = getState()
+      const check = builderToPostCheck(state)
+      const resp = await api.postCheck({data: check})
+      if (resp.status !== 201) {
+        if (resp.data.code.includes('conflict')) {
+          throw new Error(
+            `A check named ${check.name} already exists. ${rename}`
+          )
+        }
+        throw new Error(resp.data.message)
+      }
+
+      const normCheck = normalize<Check, CheckEntities, string>(
+        resp.data,
+        checkSchema
+      )
+
+      dispatch(setCheck(resp.data.id, RemoteDataState.Done, normCheck))
+      dispatch(checkChecksLimits())
+
+      dispatch(push(`/orgs/${check.orgID}/alerting`))
+      dispatch(resetAlertBuilder())
+    } catch (error) {
+      console.error(error)
+      const message = getErrorMessage(error)
+      dispatch(notify(copy.createCheckFailed(message)))
+      if (!message.includes(rename)) {
+        reportErrorThroughHoneyBadger(error, {
+          context: {state: getState()},
+          name: 'saveCheckFromTimeMachine function',
+        })
+      }
+    }
+  }
+
+export const updateCheckFromTimeMachine =
+  () =>
+  async (
+    dispatch: Dispatch<Action | SendToTimeMachineAction | RouterAction>,
+    getState: GetState
+  ) => {
     const state = getState()
     const check = builderToPostCheck(state)
-    const resp = await api.postCheck({data: check})
-    if (resp.status !== 201) {
-      if (resp.data.code.includes('conflict')) {
-        throw new Error(`A check named ${check.name} already exists. ${rename}`)
+    // todo: refactor after https://github.com/influxdata/influxdb/issues/16317
+    try {
+      const getCheckResponse = await api.getCheck({checkID: check.id})
+
+      if (getCheckResponse.status !== 200) {
+        throw new Error(getCheckResponse.data.message)
       }
-      throw new Error(resp.data.message)
-    }
 
-    const normCheck = normalize<Check, CheckEntities, string>(
-      resp.data,
-      checkSchema
-    )
+      const resp = await api.putCheck({
+        checkID: check.id,
+        data: {...check, ownerID: getCheckResponse.data.ownerID},
+      })
 
-    dispatch(setCheck(resp.data.id, RemoteDataState.Done, normCheck))
-    dispatch(checkChecksLimits())
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
 
-    dispatch(push(`/orgs/${check.orgID}/alerting`))
-    dispatch(resetAlertBuilder())
-  } catch (error) {
-    console.error(error)
-    const message = getErrorMessage(error)
-    dispatch(notify(copy.createCheckFailed(message)))
-    if (!message.includes(rename)) {
+      const normCheck = normalize<Check, CheckEntities, string>(
+        resp.data,
+        checkSchema
+      )
+
+      dispatch(setCheck(resp.data.id, RemoteDataState.Done, normCheck))
+      dispatch(checkChecksLimits())
+
+      dispatch(push(`/orgs/${check.orgID}/alerting`))
+      dispatch(resetAlertBuilder())
+    } catch (error) {
+      console.error(error)
+      dispatch(notify(copy.updateCheckFailed(error.message)))
       reportErrorThroughHoneyBadger(error, {
         context: {state: getState()},
         name: 'saveCheckFromTimeMachine function',
       })
     }
   }
-}
 
-export const updateCheckFromTimeMachine = () => async (
-  dispatch: Dispatch<Action | SendToTimeMachineAction | RouterAction>,
-  getState: GetState
-) => {
-  const state = getState()
-  const check = builderToPostCheck(state)
-  // todo: refactor after https://github.com/influxdata/influxdb/issues/16317
-  try {
-    const getCheckResponse = await api.getCheck({checkID: check.id})
+export const updateCheckDisplayProperties =
+  (checkID: string, update: CheckPatch) =>
+  async (dispatch: Dispatch<Action | NotificationAction>) => {
+    try {
+      const resp = await api.patchCheck({checkID, data: update})
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
 
-    if (getCheckResponse.status !== 200) {
-      throw new Error(getCheckResponse.data.message)
+      const check = normalize<Check, CheckEntities, string>(
+        resp.data,
+        checkSchema
+      )
+
+      dispatch(setCheck(checkID, RemoteDataState.Done, check))
+    } catch (error) {
+      console.error(error)
     }
-
-    const resp = await api.putCheck({
-      checkID: check.id,
-      data: {...check, ownerID: getCheckResponse.data.ownerID},
-    })
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    const normCheck = normalize<Check, CheckEntities, string>(
-      resp.data,
-      checkSchema
-    )
-
-    dispatch(setCheck(resp.data.id, RemoteDataState.Done, normCheck))
-    dispatch(checkChecksLimits())
-
-    dispatch(push(`/orgs/${check.orgID}/alerting`))
-    dispatch(resetAlertBuilder())
-  } catch (error) {
-    console.error(error)
-    dispatch(notify(copy.updateCheckFailed(error.message)))
-    reportErrorThroughHoneyBadger(error, {
-      context: {state: getState()},
-      name: 'saveCheckFromTimeMachine function',
-    })
   }
-}
 
-export const updateCheckDisplayProperties = (
-  checkID: string,
-  update: CheckPatch
-) => async (dispatch: Dispatch<Action | NotificationAction>) => {
-  try {
-    const resp = await api.patchCheck({checkID, data: update})
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+export const deleteCheck =
+  (checkID: string) => async (dispatch: Dispatch<any>) => {
+    try {
+      const resp = await api.deleteCheck({checkID})
+
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+
+      dispatch(removeCheck(checkID))
+      dispatch(checkChecksLimits())
+    } catch (error) {
+      console.error(error)
+      dispatch(notify(copy.deleteCheckFailed(error.message)))
     }
-
-    const check = normalize<Check, CheckEntities, string>(
-      resp.data,
-      checkSchema
-    )
-
-    dispatch(setCheck(checkID, RemoteDataState.Done, check))
-  } catch (error) {
-    console.error(error)
   }
-}
 
-export const deleteCheck = (checkID: string) => async (
-  dispatch: Dispatch<any>
-) => {
-  try {
-    const resp = await api.deleteCheck({checkID})
+export const addCheckLabel =
+  (checkID: string, label: Label) =>
+  async (dispatch: Dispatch<Action | NotificationAction>) => {
+    try {
+      const resp = await api.postChecksLabel({
+        checkID,
+        data: {labelID: label.id},
+      })
 
-    if (resp.status !== 204) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
+
+      const normLabel = normalize<Label, LabelEntities>(
+        resp.data.label,
+        labelSchema
+      )
+
+      dispatch(setLabelOnResource(checkID, normLabel))
+    } catch (error) {
+      console.error(error)
     }
-
-    dispatch(removeCheck(checkID))
-    dispatch(checkChecksLimits())
-  } catch (error) {
-    console.error(error)
-    dispatch(notify(copy.deleteCheckFailed(error.message)))
   }
-}
 
-export const addCheckLabel = (checkID: string, label: Label) => async (
-  dispatch: Dispatch<Action | NotificationAction>
-) => {
-  try {
-    const resp = await api.postChecksLabel({checkID, data: {labelID: label.id}})
+export const deleteCheckLabel =
+  (checkID: string, labelID: string) =>
+  async (dispatch: Dispatch<Action | NotificationAction>) => {
+    try {
+      const resp = await api.deleteChecksLabel({
+        checkID,
+        labelID,
+      })
 
-    if (resp.status !== 201) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+
+      dispatch(removeLabelFromCheck(checkID, labelID))
+    } catch (error) {
+      console.error(error)
     }
-
-    const normLabel = normalize<Label, LabelEntities>(
-      resp.data.label,
-      labelSchema
-    )
-
-    dispatch(setLabelOnResource(checkID, normLabel))
-  } catch (error) {
-    console.error(error)
   }
-}
 
-export const deleteCheckLabel = (checkID: string, labelID: string) => async (
-  dispatch: Dispatch<Action | NotificationAction>
-) => {
-  try {
-    const resp = await api.deleteChecksLabel({
-      checkID,
-      labelID,
-    })
+export const cloneCheck =
+  (check: Check) =>
+  async (
+    dispatch: Dispatch<
+      Action | NotificationAction | ReturnType<typeof checkChecksLimits>
+    >
+  ): Promise<void> => {
+    try {
+      const data = toPostCheck({
+        ...check,
+        name: setCloneName(check.name),
+      })
 
-    if (resp.status !== 204) {
-      throw new Error(resp.data.message)
+      const resp = await api.postCheck({data})
+
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
+
+      const normCheck = normalize<Check, CheckEntities, string>(
+        resp.data,
+        checkSchema
+      )
+
+      dispatch(setCheck(resp.data.id, RemoteDataState.Done, normCheck))
+      dispatch(checkChecksLimits())
+    } catch (error) {
+      console.error(error)
+      dispatch(notify(copy.createCheckFailed(error.message)))
     }
-
-    dispatch(removeLabelFromCheck(checkID, labelID))
-  } catch (error) {
-    console.error(error)
   }
-}
-
-export const cloneCheck = (check: Check) => async (
-  dispatch: Dispatch<
-    Action | NotificationAction | ReturnType<typeof checkChecksLimits>
-  >
-): Promise<void> => {
-  try {
-    const data = toPostCheck({
-      ...check,
-      name: setCloneName(check.name),
-    })
-
-    const resp = await api.postCheck({data})
-
-    if (resp.status !== 201) {
-      throw new Error(resp.data.message)
-    }
-
-    const normCheck = normalize<Check, CheckEntities, string>(
-      resp.data,
-      checkSchema
-    )
-
-    dispatch(setCheck(resp.data.id, RemoteDataState.Done, normCheck))
-    dispatch(checkChecksLimits())
-  } catch (error) {
-    console.error(error)
-    dispatch(notify(copy.createCheckFailed(error.message)))
-  }
-}

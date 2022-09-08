@@ -26,11 +26,8 @@ interface Props {
 function InviteListContextMenu({invite}: Props) {
   const [isHover, setHover] = useState(true)
 
-  const {
-    handleResendInvite,
-    handleWithdrawInvite,
-    removeInviteStatus,
-  } = useContext(UsersContext)
+  const {handleResendInvite, handleWithdrawInvite, removeInviteStatus} =
+    useContext(UsersContext)
 
   const handleRemove = () => {
     handleWithdrawInvite(invite.id)

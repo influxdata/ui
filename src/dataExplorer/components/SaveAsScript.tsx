@@ -34,9 +34,8 @@ interface Props {
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {hasChanged, resource, setResource, save} = useContext(
-    PersistanceContext
-  )
+  const {hasChanged, resource, setResource, save} =
+    useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)

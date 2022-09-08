@@ -91,13 +91,8 @@ export default (
       }
 
       if (action.payload.check.type === 'threshold') {
-        const {
-          every,
-          offset,
-          statusMessageTemplate,
-          tags,
-          thresholds,
-        } = action.payload.check
+        const {every, offset, statusMessageTemplate, tags, thresholds} =
+          action.payload.check
         return {
           ...newState,
           every,

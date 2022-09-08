@@ -325,12 +325,14 @@ export const normalizeWindowPeriodVariableForZoomRequery = (
     MINIMUM_WINDOW_PERIOD
   )
 
-  const init = (variableAssignment?.[0]?.init
-    ? variableAssignment?.[0]?.init
-    : {
-        values: [{magnitude: assignedWindowPeriod, unit: 'ms'}],
-        type: 'DurationLiteral',
-      }) as DurationLiteral
+  const init = (
+    variableAssignment?.[0]?.init
+      ? variableAssignment?.[0]?.init
+      : {
+          values: [{magnitude: assignedWindowPeriod, unit: 'ms'}],
+          type: 'DurationLiteral',
+        }
+  ) as DurationLiteral
 
   const magnitude = init?.values?.[0]?.magnitude
   if (magnitude && Math.abs(magnitude) !== Infinity) {

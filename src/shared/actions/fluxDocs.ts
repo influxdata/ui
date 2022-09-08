@@ -23,20 +23,19 @@ export const setFluxFunc = (data: FluxdocsArray) => ({
   },
 })
 
-export const getFluxPackages = () => async (
-  dispatch: Dispatch<Action | NotificationAction>
-) => {
-  try {
-    const resp = await getFluxdocs({})
+export const getFluxPackages =
+  () => async (dispatch: Dispatch<Action | NotificationAction>) => {
+    try {
+      const resp = await getFluxdocs({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      dispatch(setFluxFunc(resp.data))
+    } catch (error) {
+      console.error(error)
+      const message = get(error, 'response.data.message', '')
+      dispatch(notify(getFluxPackagesFailed(message)))
     }
-
-    dispatch(setFluxFunc(resp.data))
-  } catch (error) {
-    console.error(error)
-    const message = get(error, 'response.data.message', '')
-    dispatch(notify(getFluxPackagesFailed(message)))
   }
-}

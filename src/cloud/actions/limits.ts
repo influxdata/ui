@@ -34,8 +34,8 @@ let getOrgsLimitsStatus = null
 
 if (CLOUD) {
   getOrgsLimits = require('src/client/cloudPrivRoutes').getOrgsLimits
-  getOrgsLimitsStatus = require('src/client/cloudPrivRoutes')
-    .getOrgsLimitsStatus
+  getOrgsLimitsStatus =
+    require('src/client/cloudPrivRoutes').getOrgsLimitsStatus
 }
 
 export interface LimitStatus extends GenLimitStatus {}
@@ -244,46 +244,44 @@ export const setLimitsStatus = (status: RemoteDataState): SetLimitsStatus => {
   }
 }
 
-export const getReadWriteCardinalityLimits = () => async (
-  dispatch,
-  getState: GetState
-) => {
-  if (!CLOUD) {
-    return
+export const getReadWriteCardinalityLimits =
+  () => async (dispatch, getState: GetState) => {
+    if (!CLOUD) {
+      return
+    }
+    try {
+      const org = getOrg(getState())
+
+      const resp = await getOrgsLimitsStatus({orgID: org.id})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const limits = resp.data
+
+      if (limits.read.status === 'exceeded') {
+        dispatch(notify(readLimitReached()))
+        dispatch(setReadRateLimitStatus('exceeded'))
+      } else {
+        dispatch(setReadRateLimitStatus('ok'))
+      }
+
+      if (limits.write.status === 'exceeded') {
+        dispatch(setWriteRateLimitStatus('exceeded'))
+      } else {
+        dispatch(setWriteRateLimitStatus('ok'))
+      }
+
+      if (limits.cardinality.status === 'exceeded') {
+        dispatch(setCardinalityLimitStatus('exceeded'))
+      } else {
+        dispatch(setCardinalityLimitStatus('ok'))
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
-  try {
-    const org = getOrg(getState())
-
-    const resp = await getOrgsLimitsStatus({orgID: org.id})
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    const limits = resp.data
-
-    if (limits.read.status === 'exceeded') {
-      dispatch(notify(readLimitReached()))
-      dispatch(setReadRateLimitStatus('exceeded'))
-    } else {
-      dispatch(setReadRateLimitStatus('ok'))
-    }
-
-    if (limits.write.status === 'exceeded') {
-      dispatch(setWriteRateLimitStatus('exceeded'))
-    } else {
-      dispatch(setWriteRateLimitStatus('ok'))
-    }
-
-    if (limits.cardinality.status === 'exceeded') {
-      dispatch(setCardinalityLimitStatus('exceeded'))
-    } else {
-      dispatch(setCardinalityLimitStatus('ok'))
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 export const getAssetLimits = () => async (dispatch, getState: GetState) => {
   if (!CLOUD) {

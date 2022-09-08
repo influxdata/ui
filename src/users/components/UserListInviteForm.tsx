@@ -28,9 +28,8 @@ interface InviteErrors {
 
 const UserListInviteForm: FC = () => {
   const [errors, setErrors] = useState<InviteErrors>({})
-  const {draftInvite, handleEditDraftInvite, handleInviteUser} = useContext(
-    UsersContext
-  )
+  const {draftInvite, handleEditDraftInvite, handleInviteUser} =
+    useContext(UsersContext)
 
   const onInviteUser = () => {
     handleInviteUser()

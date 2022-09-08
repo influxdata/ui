@@ -7,8 +7,7 @@ export default register => {
     type: 'aws',
     name: 'AWS SES Email',
     data: {
-      url:
-        'https://email.your-aws-region.amazonaws.com/sendemail/v2/email/outbound-emails',
+      url: 'https://email.your-aws-region.amazonaws.com/sendemail/v2/email/outbound-emails',
       authAlgo: '',
       accessKey: '',
       credScope: '',

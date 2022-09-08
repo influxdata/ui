@@ -11,8 +11,8 @@ let MeasurementSchemaList = null,
 
 if (CLOUD) {
   MeasurementSchema = require('src/client/generatedRoutes').MeasurementSchema
-  MeasurementSchemaList = require('src/client/generatedRoutes')
-    .MeasurementSchemaList
+  MeasurementSchemaList =
+    require('src/client/generatedRoutes').MeasurementSchemaList
 }
 
 interface Props {

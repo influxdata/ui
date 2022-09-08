@@ -26,9 +26,7 @@ describe('Dashboard', () => {
     const newName = 'new 🅱️ashboard'
 
     cy.get('.renamable-page-title').click()
-    cy.get('.cf-input-field')
-      .type(newName)
-      .type('{enter}')
+    cy.get('.cf-input-field').type(newName).type('{enter}')
 
     cy.fixture('routes').then(({orgs}) => {
       cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
@@ -53,9 +51,7 @@ describe('Dashboard', () => {
     // Create View cell
     cy.getByTestID('add-cell--button').click()
     cy.getByTestID('save-cell--button').click()
-    cy.getByTestID('cell-context--toggle')
-      .last()
-      .click()
+    cy.getByTestID('cell-context--toggle').last().click()
     cy.getByTestID('cell-context--configure').click()
 
     // Rename View cell
@@ -157,9 +153,7 @@ describe('Dashboard', () => {
     })
 
     // Edit note cell
-    cy.getByTestID('cell-context--toggle')
-      .last()
-      .click()
+    cy.getByTestID('cell-context--toggle').last().click()
     cy.getByTestID('cell-context--note').click()
 
     // Note cell
@@ -184,35 +178,27 @@ describe('Dashboard', () => {
     cy.getByTestID('cell Name this Cell').should('contain', noteText2)
 
     // Remove Note cell
-    cy.getByTestID('cell-context--toggle')
-      .last()
-      .click()
+    cy.getByTestID('cell-context--toggle').last().click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
     cy.getByTestID('notification-primary').should('be.visible')
     cy.get('.cf-notification--dismiss').click()
 
     // Clone View cell
-    cy.getByTestID('cell-context--toggle')
-      .last()
-      .click()
+    cy.getByTestID('cell-context--toggle').last().click()
     cy.getByTestID('cell-context--clone').click()
 
     // Ensure that the clone exists
     cy.getByTestID('cell Line Graph (Clone)').should('exist')
 
     // Remove View cells
-    cy.getByTestID('cell-context--toggle')
-      .first()
-      .click()
+    cy.getByTestID('cell-context--toggle').first().click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
     cy.getByTestID('notification-primary').should('be.visible')
     cy.get('.cf-notification--dismiss').click()
 
-    cy.getByTestID('cell-context--toggle')
-      .last()
-      .click()
+    cy.getByTestID('cell-context--toggle').last().click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
     cy.getByTestID('notification-primary').should('be.visible')
@@ -243,9 +229,7 @@ describe('Dashboard', () => {
         // cellContent is yielded as a cutesy phrase from src/shared/copy/cell
 
         // open Cell Editor Overlay
-        cy.getByTestID('cell-context--toggle')
-          .last()
-          .click()
+        cy.getByTestID('cell-context--toggle').last().click()
         cy.getByTestID('cell-context--configure').click()
 
         // Cancel edit
@@ -280,14 +264,10 @@ describe('Dashboard', () => {
 
     cy.getByTestID('add-cell--button').click()
     cy.get('.view-options').should('not.exist')
-    cy.getByTestID('cog-cell--button')
-      .should('have.length', 1)
-      .click()
+    cy.getByTestID('cog-cell--button').should('have.length', 1).click()
     // should toggle the view options
     cy.get('.view-options').should('exist')
-    cy.getByTestID('dropdown--button')
-      .contains('Graph')
-      .click()
+    cy.getByTestID('dropdown--button').contains('Graph').click()
     cy.getByTestID('view-type--table')
       .contains('Table')
       .should('have.length', 1)
@@ -331,12 +311,8 @@ describe('Dashboard', () => {
     cy.getByTestID(`cell-context--toggle`).click()
     cy.getByTestID(`cell-context--configure`).click()
     cy.getByTestID('dropdown--button').should('contain', timeFormatOriginal)
-    cy.getByTestID('dropdown--button')
-      .contains(timeFormatOriginal)
-      .click()
-    cy.getByTestID('dropdown-item')
-      .contains(timeFormatNew)
-      .click()
+    cy.getByTestID('dropdown--button').contains(timeFormatOriginal).click()
+    cy.getByTestID('dropdown-item').contains(timeFormatNew).click()
     cy.getByTestID('dropdown--button').should('contain', timeFormatNew)
     cy.getByTestID(`save-cell--button`).click()
 
@@ -521,13 +497,9 @@ describe('Dashboard', () => {
 |> filter(fn: (r) => r["container_name"] == "cool")`
       cy.getByTestID('flux-editor').monacoType(`{selectall}{del}${query1}`)
       cy.getByTestID('page-title').click()
-      cy.getByTestID('renamable-page-title--input')
-        .clear()
-        .type('blah{enter}')
+      cy.getByTestID('renamable-page-title--input').clear().type('blah{enter}')
       cy.getByTestID('save-cell--button').click()
-      cy.getByTestID('cell-context--toggle')
-        .first()
-        .click()
+      cy.getByTestID('cell-context--toggle').first().click()
       cy.getByTestID('cell-context--copy').click()
     })
 

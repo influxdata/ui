@@ -41,9 +41,8 @@ interface Props {
 const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
   const [notebookName, setNotebookName] = useState('')
   const orgID = useSelector(getOrg).id
-  const {draftQueries, autoRefresh, timeRange, activeQueryIndex} = useSelector(
-    getActiveTimeMachine
-  )
+  const {draftQueries, autoRefresh, timeRange, activeQueryIndex} =
+    useSelector(getActiveTimeMachine)
   const {properties} = useSelector(getSaveableView)
   let allUsedBuckets: string[] = []
 

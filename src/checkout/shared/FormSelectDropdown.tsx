@@ -13,9 +13,8 @@ type Props = FormElementProps &
   Omit<SelectDropdownProps, 'onSelect' | 'selectedOption'>
 
 const FormSelectDropdown: FC<Props> = ({label, required, id, options}) => {
-  const {inputs, handleSetInputs, isDirty, setIsDirty} = useContext(
-    CheckoutContext
-  )
+  const {inputs, handleSetInputs, isDirty, setIsDirty} =
+    useContext(CheckoutContext)
 
   const handleSelect = (value: string): void => {
     if (isDirty === false) {

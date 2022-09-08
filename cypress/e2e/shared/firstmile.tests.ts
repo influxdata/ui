@@ -4,7 +4,7 @@ describe('First mile experience', () => {
     cy.signin()
   })
 
-  it('should load the main home-page that has the language tiles', function() {
+  it('should load the main home-page that has the language tiles', function () {
     cy.getByTestID('home-page--header').should('exist')
   })
 
@@ -12,7 +12,7 @@ describe('First mile experience', () => {
     beforeEach(() => {
       cy.getByTestID('homepage-wizard-language-tile--python').click()
     })
-    it("runs through the python's wizard pages", function() {
+    it("runs through the python's wizard pages", function () {
       cy.getByTestID('subway-nav').should('exist')
 
       // first page is overview
@@ -48,7 +48,7 @@ describe('First mile experience', () => {
     })
 
     describe('Subway Nav Bar', () => {
-      it('navigates to the correct page when the respective navigation button is clicked', function() {
+      it('navigates to the correct page when the respective navigation button is clicked', function () {
         cy.get('h1').contains('Hello, Time-Series World!')
 
         cy.getByTestID('python-prev-button').should('be.disabled')

@@ -45,9 +45,8 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
       ? initialTickOptionValue
       : ''
   )
-  const [tickOptionInputStatus, setTickOptionInputStatus] = useState<
-    ComponentStatus
-  >(ComponentStatus.Default)
+  const [tickOptionInputStatus, setTickOptionInputStatus] =
+    useState<ComponentStatus>(ComponentStatus.Default)
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     setTickOptionInput(event.target.value)

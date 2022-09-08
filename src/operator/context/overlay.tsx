@@ -49,9 +49,8 @@ export const DEFAULT_CONTEXT: OverlayContextType = {
   updateLimitStatus: RemoteDataState.NotStarted,
 }
 
-export const OverlayContext = React.createContext<OverlayContextType>(
-  DEFAULT_CONTEXT
-)
+export const OverlayContext =
+  React.createContext<OverlayContextType>(DEFAULT_CONTEXT)
 
 export const OverlayProvider: FC<Props> = React.memo(({children}) => {
   const [limits, setLimits] = useState(null)

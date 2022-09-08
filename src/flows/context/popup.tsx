@@ -14,9 +14,8 @@ const DEFAULT_CONTEXT: PopupContextType = {
   closeFn: () => {},
 }
 
-export const PopupContext = React.createContext<PopupContextType>(
-  DEFAULT_CONTEXT
-)
+export const PopupContext =
+  React.createContext<PopupContextType>(DEFAULT_CONTEXT)
 
 export const PopupDrawer: FC = () => {
   const {element} = useContext(PopupContext)

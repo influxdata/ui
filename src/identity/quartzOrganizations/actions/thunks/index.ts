@@ -49,59 +49,54 @@ export class DefaultOrgNetworkError extends Error {
 }
 
 // Thunks
-export const getQuartzOrganizationsThunk = (accountId: number) => async (
-  dispatch: Dispatch<Actions>,
-  getState: GetState
-) => {
-  try {
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
+export const getQuartzOrganizationsThunk =
+  (accountId: number) =>
+  async (dispatch: Dispatch<Actions>, getState: GetState) => {
+    try {
+      dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
 
-    const quartzOrganizations = await fetchOrgsByAccountID(accountId)
+      const quartzOrganizations = await fetchOrgsByAccountID(accountId)
 
-    dispatch(setQuartzOrganizations(quartzOrganizations))
-  } catch (err) {
-    reportErrorThroughHoneyBadger(err, {
-      name: 'Failed to fetch /quartz/orgs/',
-      context: {state: getState()},
-    })
-  }
-}
-
-export const updateDefaultOrgThunk = ({
-  accountId,
-  newDefaultOrg,
-}: UpdateOrgParams): AppThunk<Promise<void>> => async (
-  dispatch: Dispatch<Actions>,
-  getState: GetState
-): Promise<void> => {
-  try {
-    dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
-
-    await updateDefaultOrgByAccountID({
-      accountNum: accountId,
-      orgId: newDefaultOrg.id,
-    })
-
-    dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
-
-    const state = getState()
-    const orgStatus = state.identity.currentIdentity.status
-
-    if (orgStatus === RemoteDataState.Error) {
-      throw new DefaultOrgStateError(
-        OrganizationThunkErrors.DefaultOrgStateError
-      )
+      dispatch(setQuartzOrganizations(quartzOrganizations))
+    } catch (err) {
+      reportErrorThroughHoneyBadger(err, {
+        name: 'Failed to fetch /quartz/orgs/',
+        context: {state: getState()},
+      })
     }
-  } catch (err) {
-    reportErrorThroughHoneyBadger(err, {
-      name: err.name,
-      context: {
-        message: err.message,
-        org: newDefaultOrg,
-        state: getState(),
-      },
-    })
-
-    throw Error(err)
   }
-}
+
+export const updateDefaultOrgThunk =
+  ({accountId, newDefaultOrg}: UpdateOrgParams): AppThunk<Promise<void>> =>
+  async (dispatch: Dispatch<Actions>, getState: GetState): Promise<void> => {
+    try {
+      dispatch(setQuartzOrganizationsStatus(RemoteDataState.Loading))
+
+      await updateDefaultOrgByAccountID({
+        accountNum: accountId,
+        orgId: newDefaultOrg.id,
+      })
+
+      dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
+
+      const state = getState()
+      const orgStatus = state.identity.currentIdentity.status
+
+      if (orgStatus === RemoteDataState.Error) {
+        throw new DefaultOrgStateError(
+          OrganizationThunkErrors.DefaultOrgStateError
+        )
+      }
+    } catch (err) {
+      reportErrorThroughHoneyBadger(err, {
+        name: err.name,
+        context: {
+          message: err.message,
+          org: newDefaultOrg,
+          state: getState(),
+        },
+      })
+
+      throw Error(err)
+    }
+  }

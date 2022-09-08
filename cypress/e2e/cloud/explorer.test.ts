@@ -29,9 +29,7 @@ describe('DataExplorer', () => {
 
   describe('Script Editor', () => {
     beforeEach(() => {
-      cy.getByTestID('switch-to-script-editor')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('switch-to-script-editor').should('be.visible').click()
     })
 
     it('can use the dynamic flux function selector to build a query', () => {
@@ -72,9 +70,7 @@ describe('DataExplorer', () => {
       }).then(() => {
         cy.get('.view-line').should('be.visible')
 
-        cy.getByTestID('flux-toolbar-search--input')
-          .click()
-          .type('filter')
+        cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
         cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
         cy.getByTestID('flux--filter').contains('filter')
@@ -89,9 +85,7 @@ describe('DataExplorer', () => {
             expect(value).to.equal('')
           })
 
-        cy.getByTestID('flux-toolbar-search--input')
-          .click()
-          .type('array')
+        cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
         cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
         cy.getByTestID('flux--filter').contains('filter')

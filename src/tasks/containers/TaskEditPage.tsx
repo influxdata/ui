@@ -33,8 +33,8 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(
+  () => import('src/shared/components/FluxMonacoEditor')
 )
 
 type ReduxProps = ConnectedProps<typeof connector>

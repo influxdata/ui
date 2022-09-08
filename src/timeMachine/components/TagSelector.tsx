@@ -297,7 +297,8 @@ class TagSelector extends PureComponent<Props> {
             selected={selectedAll}
             size={ComponentSize.ExtraSmall}
           >
-            Select All
+            <List.Indicator type="checkbox" />
+            All Measurements
           </List.Item>
         )}
       </SelectorList>

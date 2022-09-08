@@ -248,7 +248,7 @@ class LspConnectionManager {
       },
     ]
 
-    const removeAllStyles = schema.composition.diverged
+    const removeAllStyles = !compositionBlock || schema.composition.diverged
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,

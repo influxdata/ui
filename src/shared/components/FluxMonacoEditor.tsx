@@ -1,6 +1,7 @@
 // Libraries
-import React, {FC, useEffect, useRef, useContext} from 'react'
+import React, {FC, useEffect, useRef, useContext, useMemo} from 'react'
 import {useSelector} from 'react-redux'
+import {useRouteMatch} from 'react-router-dom'
 import classnames from 'classnames'
 
 // Components
@@ -67,6 +68,9 @@ const FluxEditorMonaco: FC<Props> = ({
   const {setEditor} = useContext(EditorContext)
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
+  const {path} = useRouteMatch()
+  const isNewQxBuilder =
+    isFluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
@@ -79,7 +83,7 @@ const FluxEditorMonaco: FC<Props> = ({
   useEffect(() => {
     if (
       connection.current &&
-      isFluxQueryBuilder &&
+      isNewQxBuilder &&
       isFlagEnabled('schemaComposition')
     ) {
       connection.current.onSchemaSessionChange(
@@ -130,36 +134,41 @@ const FluxEditorMonaco: FC<Props> = ({
     onChangeScript(text)
   }
 
-  return (
-    <ErrorBoundary>
-      <div className={wrapperClassName} data-testid="flux-editor">
-        <MonacoEditor
-          language={FLUXLANGID}
-          theme={THEME_NAME}
-          value={script}
-          onChange={onChange}
-          options={{
-            fontSize: 13,
-            fontFamily: '"IBMPlexMono", monospace',
-            cursorWidth: 2,
-            lineNumbersMinChars: 4,
-            lineDecorationsWidth: 0,
-            minimap: {
-              renderCharacters: false,
-            },
-            overviewRulerBorder: false,
-            automaticLayout: true,
-            readOnly: readOnly || false,
-            wordWrap: wrapLines ?? 'off',
-            scrollBeyondLastLine: false,
-          }}
-          editorDidMount={editorDidMount}
-        />
-        <div id={ICON_SYNC_ID}>
-          <Icon glyph={IconFont.Sync} />
+  return useMemo(
+    () => (
+      <ErrorBoundary>
+        <div className={wrapperClassName} data-testid="flux-editor">
+          <MonacoEditor
+            language={FLUXLANGID}
+            theme={THEME_NAME}
+            value={script}
+            onChange={onChange}
+            options={{
+              fontSize: 13,
+              fontFamily: '"IBMPlexMono", monospace',
+              cursorWidth: 2,
+              lineNumbersMinChars: 4,
+              lineDecorationsWidth: 0,
+              minimap: {
+                renderCharacters: false,
+              },
+              overviewRulerBorder: false,
+              automaticLayout: true,
+              readOnly: readOnly || false,
+              wordWrap: wrapLines ?? 'off',
+              scrollBeyondLastLine: false,
+            }}
+            editorDidMount={editorDidMount}
+          />
+          {isNewQxBuilder && (
+            <div id={ICON_SYNC_ID}>
+              <Icon glyph={IconFont.Sync} />
+            </div>
+          )}
         </div>
-      </div>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    ),
+    [onChangeScript, setEditor]
   )
 }
 

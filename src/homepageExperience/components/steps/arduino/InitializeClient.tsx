@@ -176,7 +176,9 @@ export const InitializeClient: FC<OwnProps> = ({
       Serial.print("InfluxDB connection failed: ");
       Serial.println(client.getLastErrorMessage());
     }
-  }`
+  }
+  void loop() {}
+`
 
   // Events log handling
   const logCopyCodeSnippet = () => {

@@ -1,5 +1,6 @@
 @use 'src/identity/components/GlobalHeader/GlobalHeaderStyle.scss' as gh;
 @import '@influxdata/clockface/dist/variables.scss';
+@import 'src/style/_variables.scss';
 
 // These are custom per-page adjustments to certain styles that are currently
 // necessary to accomodate the space taken up by the multi-org header in Cloud2.
@@ -59,4 +60,10 @@
   &.cf-notification__right {
     right: $cf-space-2xs;
   }
+}
+
+/* Tasks */
+// TaskForm.scss deducts #{$ix-marg-d} from page height, so the multi-org style must do so too.
+.multi-org .task-form {
+  height: calc(100% - #{gh.$globalheader-height} - #{$ix-marg-d}) !important;
 }

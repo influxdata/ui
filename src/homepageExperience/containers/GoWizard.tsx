@@ -180,7 +180,7 @@ export class GoWizard extends PureComponent<null, State> {
         <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
             <aside className="homepage-wizard-container--subway">
-              <div style={{width: '100%'}}>
+              <div className="homepage-wizard-container--subway-inner">
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}

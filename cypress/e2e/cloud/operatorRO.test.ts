@@ -61,9 +61,7 @@ describe('Operator Page', () => {
       .should('contain.text', 'Account Name')
 
     // make sure there is a name column with data:
-    cy.getByTestID('name')
-      .first()
-      .should('contain.text', 'operator1')
+    cy.getByTestID('name').first().should('contain.text', 'operator1')
 
     cy.getByTestID('account-id')
       .first()

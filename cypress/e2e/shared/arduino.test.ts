@@ -5,12 +5,12 @@ describe('Arduino onboarding flow', () => {
     cy.setFeatureFlags({onboardArduino: true})
   })
 
-  it('should load the main home-page that has the arduino tile', function() {
+  it('should load the main home-page that has the arduino tile', function () {
     cy.getByTestID('home-page--header').should('exist')
   })
 
   describe('Arduino wizard', () => {
-    it('runs through the arduino wizard pages', function() {
+    it('runs through the arduino wizard pages', function () {
       cy.getByTestID('homepage-wizard-language-tile--arduino').click()
 
       cy.getByTestID('subway-nav').should('exist')
@@ -47,7 +47,7 @@ describe('Arduino onboarding flow', () => {
       cy.contains('Congrats!')
     })
     describe('Subway Nav Bar', () => {
-      it('navigates to the correct page when the respective navigation button is clicked', function() {
+      it('navigates to the correct page when the respective navigation button is clicked', function () {
         cy.getByTestID('homepage-wizard-language-tile--arduino').click()
 
         cy.get('h1').contains('Hello, Time-Series World!')

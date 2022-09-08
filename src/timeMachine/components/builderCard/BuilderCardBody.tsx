@@ -23,13 +23,8 @@ export default class BuilderCardBody extends PureComponent<Props> {
   }
 
   public render() {
-    const {
-      scrollable,
-      testID,
-      autoHideScrollbars,
-      style,
-      className,
-    } = this.props
+    const {scrollable, testID, autoHideScrollbars, style, className} =
+      this.props
 
     if (scrollable) {
       const scrollbarStyles = {maxWidth: '100%', maxHeight: '100%', ...style}

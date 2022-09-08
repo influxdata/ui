@@ -51,15 +51,9 @@ describe('Dashboard refresh', () => {
         )
         cy.get('.time-machine-queries--new').click()
         // switch between tabs
-        cy.get('.query-tab')
-          .first()
-          .click()
-        cy.get('.query-tab')
-          .last()
-          .click()
-        cy.get('.query-tab--close')
-          .last()
-          .click()
+        cy.get('.query-tab').first().click()
+        cy.get('.query-tab').last().click()
+        cy.get('.query-tab--close').last().click()
         cy.getByTestID('view-type--dropdown').click()
         cy.getByTestID('view-type--gauge').click()
         cy.getByTestID('raw-data--toggle').click()
@@ -84,9 +78,7 @@ describe('Dashboard refresh', () => {
           req.alias = 'refreshQuery'
         })
         cy.getByTestID('enable-auto-refresh-button').click()
-        cy.getByTestID('auto-refresh-input')
-          .clear()
-          .type('2s', {force: true})
+        cy.getByTestID('auto-refresh-input').clear().type('2s', {force: true})
         cy.getByTestID('refresh-form-activate-button').click({force: true})
         cy.wait('@refreshQuery')
         cy.getByTestID('enable-auto-refresh-button').click()
@@ -154,9 +146,7 @@ describe('Dashboard refresh', () => {
 
         cy.wait('@refreshQuery')
 
-        cy.getByTestID('cell-context--toggle')
-          .last()
-          .click()
+        cy.getByTestID('cell-context--toggle').last().click()
         cy.getByTestID('cell-context--configure').click()
 
         cy.wait(5000)
@@ -166,16 +156,18 @@ describe('Dashboard refresh', () => {
         cy.visit(routeToReturnTo)
         cy.wait('@refreshQuery')
         cy.wait(5000)
-        cy.getByTestID(
-          'enable-auto-refresh-button'
-        ).contains('SET AUTO REFRESH', {matchCase: false})
+        cy.getByTestID('enable-auto-refresh-button').contains(
+          'SET AUTO REFRESH',
+          {matchCase: false}
+        )
       })
     })
     it('can timeout on a preset inactivity timeout', done => {
       cy.get<Organization>('@org').then((org: Organization) => {
-        cy.getByTestID(
-          'enable-auto-refresh-button'
-        ).contains('SET AUTO REFRESH', {matchCase: false})
+        cy.getByTestID('enable-auto-refresh-button').contains(
+          'SET AUTO REFRESH',
+          {matchCase: false}
+        )
 
         cy.getByTestID('enable-auto-refresh-button').click()
         cy.getByTestID('auto-refresh-input')
@@ -208,9 +200,10 @@ describe('Dashboard refresh', () => {
           })
 
         cy.wait(3100)
-        cy.getByTestID(
-          'enable-auto-refresh-button'
-        ).contains('SET AUTO REFRESH', {matchCase: false})
+        cy.getByTestID('enable-auto-refresh-button').contains(
+          'SET AUTO REFRESH',
+          {matchCase: false}
+        )
 
         cy.wait('@refreshQuery')
         cy.wait('@refreshQuery')
@@ -289,16 +282,12 @@ describe('Dashboard refresh', () => {
         })
         cy.getByTestID('cell blah').within(() => {
           cy.getByTestID('giraffe-inner-plot')
-          cy.getByTestID('cell-context--toggle')
-            .last()
-            .click()
+          cy.getByTestID('cell-context--toggle').last().click()
         })
         cy.getByTestID('cell-context--pause').click()
 
         cy.getByTestID('enable-auto-refresh-button').click()
-        cy.getByTestID('auto-refresh-input')
-          .clear()
-          .type('2s', {force: true})
+        cy.getByTestID('auto-refresh-input').clear().type('2s', {force: true})
         cy.getByTestID('refresh-form-activate-button').click({force: true})
         cy.wait('@secondCellQuery')
         cy.wait('@firstCellQuery')
@@ -375,24 +364,18 @@ describe('Dashboard refresh', () => {
         })
         cy.getByTestID('cell blah').within(() => {
           cy.getByTestID('giraffe-inner-plot')
-          cy.getByTestID('cell-context--toggle')
-            .last()
-            .click()
+          cy.getByTestID('cell-context--toggle').last().click()
         })
         cy.getByTestID('cell-context--pause').click()
 
         cy.getByTestID('enable-auto-refresh-button').click()
-        cy.getByTestID('auto-refresh-input')
-          .clear()
-          .type('2s', {force: true})
+        cy.getByTestID('auto-refresh-input').clear().type('2s', {force: true})
         cy.getByTestID('refresh-form-activate-button').click({force: true})
 
         cy.wait('@secondCellQuery')
         cy.getByTestID('cell blah').within(() => {
           cy.getByTestID('giraffe-inner-plot')
-          cy.getByTestID('cell-context--toggle')
-            .last()
-            .click()
+          cy.getByTestID('cell-context--toggle').last().click()
         })
         cy.getByTestID('cell-context--pause').click()
       })
@@ -468,9 +451,7 @@ describe('Dashboard refresh', () => {
         })
         cy.getByTestID('cell blah').within(() => {
           cy.getByTestID('giraffe-inner-plot')
-          cy.getByTestID('cell-context--toggle')
-            .last()
-            .click()
+          cy.getByTestID('cell-context--toggle').last().click()
         })
         cy.getByTestID('cell-context--refresh').click()
         cy.wait('@refreshCellQuery')

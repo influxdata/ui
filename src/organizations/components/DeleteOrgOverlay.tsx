@@ -40,12 +40,8 @@ const DeleteOrgOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const dispatch = useDispatch()
-  const {
-    reason,
-    shortSuggestion,
-    suggestions,
-    getRedirectLocation,
-  } = useContext(DeleteOrgContext)
+  const {reason, shortSuggestion, suggestions, getRedirectLocation} =
+    useContext(DeleteOrgContext)
   const quartzMe = useSelector(getQuartzMe)
   const org = useSelector(getOrg)
 

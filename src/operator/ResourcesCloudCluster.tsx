@@ -8,13 +8,8 @@ import {OperatorContext} from './context/operator'
 import {getRegions} from './utils'
 
 const ResourcesCloudCluster: FC = () => {
-  const {
-    providerInfo,
-    providers,
-    regions,
-    setProviders,
-    setRegions,
-  } = useContext(OperatorContext)
+  const {providerInfo, providers, regions, setProviders, setRegions} =
+    useContext(OperatorContext)
 
   const hasSelectedProvider = providers.length > 0
 

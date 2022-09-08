@@ -32,9 +32,8 @@ type Props = {
 }
 
 const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
-  const {billingSettings, handleUpdateBillingSettings} = useContext(
-    BillingContext
-  )
+  const {billingSettings, handleUpdateBillingSettings} =
+    useContext(BillingContext)
   const [isNotifyActive, setIsNotifyActive] = useState<boolean>(
     billingSettings.isNotify
   )

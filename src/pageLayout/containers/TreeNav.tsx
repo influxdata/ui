@@ -37,9 +37,8 @@ const TreeSidebar: FC<ReduxProps> = ({
   dismissOverlay,
   quartzMe,
 }) => {
-  const {presentationMode, navbarMode, setNavbarMode} = useContext(
-    AppSettingContext
-  )
+  const {presentationMode, navbarMode, setNavbarMode} =
+    useContext(AppSettingContext)
   const org = useSelector(getOrg)
   const location = useLocation()
   useEffect(() => {

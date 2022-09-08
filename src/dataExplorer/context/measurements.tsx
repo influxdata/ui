@@ -35,9 +35,8 @@ const DEFAULT_CONTEXT: MeasurementsContextType = {
   getMeasurements: (_: Bucket) => {},
 }
 
-export const MeasurementsContext = createContext<MeasurementsContextType>(
-  DEFAULT_CONTEXT
-)
+export const MeasurementsContext =
+  createContext<MeasurementsContextType>(DEFAULT_CONTEXT)
 
 interface Prop {
   scope: QueryScope

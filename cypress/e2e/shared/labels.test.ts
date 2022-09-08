@@ -42,9 +42,7 @@ describe('labels', () => {
         .contains('Create Label')
         .should('be.visible')
       // dismiss
-      cy.getByTestID('overlay--header')
-        .children('button')
-        .click()
+      cy.getByTestID('overlay--header').children('button').click()
     })
 
     // open create 2 - by standard button
@@ -78,23 +76,17 @@ describe('labels', () => {
       .invoke('attr', 'value')
       .should('contain', '#326BBA')
     cy.getByTestID('color-picker--swatch').should('have.length', 50)
-    cy.getByTestID('color-picker--swatch')
-      .eq(23)
-      .trigger('mouseover')
+    cy.getByTestID('color-picker--swatch').eq(23).trigger('mouseover')
     cy.getByTestID('color-picker--swatch')
       .eq(23)
       .invoke('attr', 'title')
       .should('contain', 'Honeydew')
-    cy.getByTestID('color-picker--swatch')
-      .eq(33)
-      .trigger('mouseover')
+    cy.getByTestID('color-picker--swatch').eq(33).trigger('mouseover')
     cy.getByTestID('color-picker--swatch')
       .eq(33)
       .invoke('attr', 'title')
       .should('contain', 'Thunder')
-    cy.getByTestID('color-picker--swatch')
-      .eq(33)
-      .click()
+    cy.getByTestID('color-picker--swatch').eq(33).click()
     cy.getByTestID('color-picker--input')
       .invoke('attr', 'value')
       .should('equal', '#FFD255')
@@ -203,9 +195,7 @@ describe('labels', () => {
         .invoke('attr', 'style')
         .should('contain', hex2BgColor(oldLabelColor))
 
-      cy.getByTestID('label-card')
-        .contains(oldLabelName)
-        .click()
+      cy.getByTestID('label-card').contains(oldLabelName).click()
 
       cy.getByTestID('overlay--header')
         .children('div')
@@ -213,24 +203,16 @@ describe('labels', () => {
         .should('equal', 'Edit Label')
 
       // dismiss
-      cy.getByTestID('overlay--header')
-        .children('button')
-        .click()
+      cy.getByTestID('overlay--header').children('button').click()
 
       // modify
-      cy.getByTestID('label-card')
-        .contains(oldLabelName)
-        .click()
+      cy.getByTestID('label-card').contains(oldLabelName).click()
       cy.getByTestID('overlay--container').should('be.visible')
-      cy.getByTestID('create-label-form--name')
-        .clear()
-        .type(newLabelName)
+      cy.getByTestID('create-label-form--name').clear().type(newLabelName)
       cy.getByTestID('create-label-form--description')
         .clear()
         .type(newLabelDescription)
-      cy.getByTestID('color-picker--input')
-        .clear()
-        .type(newLabelColor)
+      cy.getByTestID('color-picker--input').clear().type(newLabelColor)
       cy.getByTestID('create-label-form--submit').click()
 
       // verify name, descr, color
@@ -389,23 +371,17 @@ describe('labels', () => {
     cy.reload()
 
     // input the search for titles check
-    cy.getByTestID('search-widget')
-      .clear()
-      .type('Apfel')
+    cy.getByTestID('search-widget').clear().type('Apfel')
 
     cy.getByTestID('label-card').should('have.length', 2)
 
     // input the search for description check
-    cy.getByTestID('search-widget')
-      .clear()
-      .type('sandwich')
+    cy.getByTestID('search-widget').clear().type('sandwich')
 
     cy.getByTestID('label-card').should('have.length', 2)
 
     // input the search for checking both name and description
-    cy.getByTestID('search-widget')
-      .clear()
-      .type('bread')
+    cy.getByTestID('search-widget').clear().type('bread')
 
     cy.getByTestID('label-card').should('have.length', 2)
   })

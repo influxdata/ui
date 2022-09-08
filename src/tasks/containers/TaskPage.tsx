@@ -35,8 +35,8 @@ import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(
+  () => import('src/shared/components/FluxMonacoEditor')
 )
 
 class TaskPage extends PureComponent<Props> {

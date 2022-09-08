@@ -1,39 +1,38 @@
 import {Organization, AppState, Dashboard} from '../../../src/types'
 import {points} from '../../support/commands'
 
-const getSelectedVariable = (contextID: string, index: number) => (
-  win: any
-) => {
-  const state = win.store.getState() as AppState
-  const defaultVarOrder = state.resources.variables.allIDs
-  const defaultVarDawg =
-    state.resources.variables.byID[defaultVarOrder[index]] || {}
-  const filledVarDawg =
-    (state.resources.variables.values[contextID] || {values: {}}).values[
-      defaultVarOrder[index]
-    ] || {}
+const getSelectedVariable =
+  (contextID: string, index: number) => (win: any) => {
+    const state = win.store.getState() as AppState
+    const defaultVarOrder = state.resources.variables.allIDs
+    const defaultVarDawg =
+      state.resources.variables.byID[defaultVarOrder[index]] || {}
+    const filledVarDawg =
+      (state.resources.variables.values[contextID] || {values: {}}).values[
+        defaultVarOrder[index]
+      ] || {}
 
-  const hydratedVarDawg = {
-    ...defaultVarDawg,
-    ...filledVarDawg,
-  }
-
-  if (hydratedVarDawg.arguments.type === 'map') {
-    if (!hydratedVarDawg.selected) {
-      hydratedVarDawg.selected = [
-        Object.keys(hydratedVarDawg.arguments.values)[0],
-      ]
+    const hydratedVarDawg = {
+      ...defaultVarDawg,
+      ...filledVarDawg,
     }
 
-    return hydratedVarDawg.arguments.values[hydratedVarDawg.selected[0]]
-  }
+    if (hydratedVarDawg.arguments.type === 'map') {
+      if (!hydratedVarDawg.selected) {
+        hydratedVarDawg.selected = [
+          Object.keys(hydratedVarDawg.arguments.values)[0],
+        ]
+      }
 
-  if (!hydratedVarDawg.selected) {
-    hydratedVarDawg.selected = [hydratedVarDawg.arguments.values[0]]
-  }
+      return hydratedVarDawg.arguments.values[hydratedVarDawg.selected[0]]
+    }
 
-  return hydratedVarDawg.selected[0]
-}
+    if (!hydratedVarDawg.selected) {
+      hydratedVarDawg.selected = [hydratedVarDawg.arguments.values[0]]
+    }
+
+    return hydratedVarDawg.selected[0]
+  }
 
 describe('Dashboard - variable interactions', () => {
   beforeEach(() => {
@@ -94,20 +93,14 @@ describe('Dashboard - variable interactions', () => {
 
     // create query with variable
     cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('popover--contents')
-      .contains('Configure')
-      .click()
-    cy.getByTestID('buckets-list')
-      .contains('defbuck')
-      .click()
+    cy.getByTestID('popover--contents').contains('Configure').click()
+    cy.getByTestID('buckets-list').contains('defbuck').click()
     cy.getByTestID('selector-list m').click()
     cy.getByTestID('selector-list v').click()
     cy.getByTestID('selector-list tv1').click()
     cy.getByTestID('switch-to-script-editor').click()
     cy.getByTestID('flux-editor').should('be.visible')
-    cy.get('[class="view-line"]')
-      .last()
-      .type('v.CSVVar')
+    cy.get('[class="view-line"]').last().type('v.CSVVar')
     cy.getByTestID('save-cell--button').click()
 
     // With variables
@@ -207,9 +200,7 @@ describe('Dashboard - variable interactions', () => {
           cy.location('search').should('eq', '?lower=now%28%29+-+1h')
 
           // select 3rd value in dashboard
-          cy.getByTestID('typeAhead-dropdown--button')
-            .first()
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').first().click()
           cy.get(`#${bucketThree}`).click()
 
           // selected value in dashboard is 3rd value
@@ -228,9 +219,7 @@ describe('Dashboard - variable interactions', () => {
           )
 
           // select 2nd value in dashboard
-          cy.getByTestID('typeAhead-dropdown--button')
-            .first()
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').first().click()
           cy.get(`#${defaultBucket}`).click()
 
           // and that it updates the variable in the URL without breaking stuff
@@ -298,9 +287,7 @@ describe('Dashboard - variable interactions', () => {
           ).should('have.value', 'randomBucket')
 
           // open VEO
-          cy.getByTestID('cell-context--toggle')
-            .last()
-            .click()
+          cy.getByTestID('cell-context--toggle').last().click()
           cy.getByTestID('cell-context--configure').click()
 
           // selected value in cell context is 2nd value (making sure it reverts back!)
@@ -309,16 +296,12 @@ describe('Dashboard - variable interactions', () => {
             .should('equal', bucket5)
 
           cy.getByTestID('toolbar-tab').click()
-          cy.get('.flux-toolbar--list-item')
-            .first()
-            .trigger('mouseover')
+          cy.get('.flux-toolbar--list-item').first().trigger('mouseover')
           // toggle the variable dropdown in the VEO cell dashboard
           cy.getByTestID('toolbar-popover--contents').within(() => {
             cy.getByTestID('variable-dropdown--button').click()
             // select 1st value in cell
-            cy.getByTestID('variable-dropdown--item')
-              .first()
-              .click()
+            cy.getByTestID('variable-dropdown--item').first().click()
           })
           // injecting mapTypeVar into query
           cy.get('.flux-toolbar--list-item')
@@ -353,9 +336,7 @@ describe('Dashboard - variable interactions', () => {
             .should('equal', 'v1')
 
           // select 2nd value in dashboard
-          cy.getByTestID('typeAhead-dropdown--button')
-            .eq(1)
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').eq(1).click()
           cy.get(`#k2`).click()
 
           // selected value in dashboard is 2nd value
@@ -367,9 +348,7 @@ describe('Dashboard - variable interactions', () => {
             .should('equal', 'v2')
 
           // open VEO
-          cy.getByTestID('cell-context--toggle')
-            .last()
-            .click()
+          cy.getByTestID('cell-context--toggle').last().click()
           cy.getByTestID('cell-context--configure').click()
           cy.getByTestID('toolbar-tab').should('be.visible')
 
@@ -379,16 +358,12 @@ describe('Dashboard - variable interactions', () => {
             .should('equal', 'v2')
 
           cy.getByTestID('toolbar-tab').click()
-          cy.get('.flux-toolbar--list-item')
-            .eq(2)
-            .trigger('mouseover')
+          cy.get('.flux-toolbar--list-item').eq(2).trigger('mouseover')
           // toggle the variable dropdown in the VEO cell dashboard
           cy.getByTestID('toolbar-popover--contents').within(() => {
             cy.getByTestID('variable-dropdown--button').click()
             // select 1st value in cell
-            cy.getByTestID('variable-dropdown--item')
-              .first()
-              .click()
+            cy.getByTestID('variable-dropdown--item').first().click()
           })
           // save cell
           cy.getByTestID('save-cell--button').click()
@@ -406,9 +381,7 @@ describe('Dashboard - variable interactions', () => {
             .pipe(getSelectedVariable(dashboard.id || '', 2))
             .should('equal', 'v1')
 
-          cy.getByTestID('cell-context--toggle')
-            .last()
-            .click()
+          cy.getByTestID('cell-context--toggle').last().click()
           cy.getByTestID('cell-context--delete').click()
           cy.getByTestID('cell-context--delete-confirm').click()
           cy.getByTestID('notification-primary').should('be.visible')
@@ -434,9 +407,7 @@ describe('Dashboard - variable interactions', () => {
           cy.getByTestID('empty-graph-error').contains(`${bucketOne}`)
 
           // select default bucket that has data
-          cy.getByTestID('typeAhead-dropdown--button')
-            .eq(0)
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').eq(0).click()
           cy.get(`#${defaultBucket}`).click()
 
           // assert visualization appears
@@ -561,9 +532,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             .type('b3789')
 
           // now click away
-          cy.getByTestID('typeAhead-dropdown--button')
-            .eq(1)
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').eq(1).click()
 
           cy.getByTestID(
             `variable-dropdown--${bucketVarName}--typeAhead-input`
@@ -575,9 +544,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             .type('b3')
 
           // now click away
-          cy.getByTestID('typeAhead-dropdown--button')
-            .eq(1)
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').eq(1).click()
 
           cy.getByTestID(
             `variable-dropdown--${bucketVarName}--typeAhead-input`
@@ -603,9 +570,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
           // click the dropdownbutton:
           // select 2nd value in dashboard
-          cy.getByTestID('typeAhead-dropdown--button')
-            .eq(1)
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').eq(1).click()
 
           // verify they are all there and with no active class:
           cy.get(`#hello`).should('not.have.class', 'active')
@@ -728,9 +693,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestIDSubStr('cell--view-empty').should('be.visible')
 
           // But selecting a nonempty bucket should load some data
-          cy.getByTestID('typeAhead-dropdown--button')
-            .first()
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').first().click()
           cy.get(`#${defaultBucket}`).click()
 
           // default select the first result
@@ -743,17 +706,13 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           ).should('have.value', 'beans')
 
           // updating the third variable should update the second
-          cy.getByTestID('typeAhead-dropdown--button')
-            .last()
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').last().click()
           cy.get(`#cool`).click()
           cy.getByTestID(
             'variable-dropdown--dependent--typeAhead-input'
           ).should('have.value', 'cool')
 
-          cy.getByTestID('typeAhead-dropdown--button')
-            .last()
-            .click()
+          cy.getByTestID('typeAhead-dropdown--button').last().click()
           cy.get(`#beans`).click()
           cy.getByTestID('variable-dropdown--build--typeAhead-input').should(
             'have.value',
@@ -855,9 +814,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('giraffe-layer-line').should('not.exist')
 
       // But selecting a nonempty bucket should load some data
-      cy.getByTestID('typeAhead-dropdown--button')
-        .first()
-        .click()
+      cy.getByTestID('typeAhead-dropdown--button').first().click()
       cy.get(`#${defaultBucket}`).click()
 
       // default select the first result
@@ -868,9 +825,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('giraffe-layer-line').should('be.visible')
 
       // and also load the second result
-      cy.getByTestID('typeAhead-dropdown--button')
-        .last()
-        .click()
+      cy.getByTestID('typeAhead-dropdown--button').last().click()
       cy.get(`#cool`).click()
       cy.getByTestID('giraffe-layer-line').should('be.visible')
     })

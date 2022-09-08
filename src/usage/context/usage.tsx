@@ -75,9 +75,8 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   paygCreditEnabled: false,
 }
 
-export const UsageContext = React.createContext<UsageContextType>(
-  DEFAULT_CONTEXT
-)
+export const UsageContext =
+  React.createContext<UsageContextType>(DEFAULT_CONTEXT)
 
 export const calculateCreditDaysUsed = (creditStartDate: string): number => {
   if (!creditStartDate) {

@@ -83,12 +83,8 @@ class TagSelector extends PureComponent<Props> {
   }
 
   private get isCompliant() {
-    const {
-      index,
-      selectedKey,
-      selectedValues,
-      aggregateFunctionType,
-    } = this.props
+    const {index, selectedKey, selectedValues, aggregateFunctionType} =
+      this.props
 
     return (
       isFlagEnabled('newQueryBuilder') &&

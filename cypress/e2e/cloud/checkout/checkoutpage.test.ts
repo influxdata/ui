@@ -1,24 +1,12 @@
 import {Organization} from '../../../../src/types'
 
 const resetInputs = () => {
-  cy.getByTestID('notifyEmail--input')
-    .clear()
-    .should('have.value', '')
-  cy.getByTestID('balanceThreshold--input')
-    .clear()
-    .should('have.value', '')
-  cy.getByTestID('city--input')
-    .clear()
-    .should('have.value', '')
-  cy.getByTestID('postalCode--input')
-    .clear()
-    .should('have.value', '')
-  cy.getByTestID('street1--input')
-    .clear()
-    .should('have.value', '')
-  cy.getByTestID('street2--input')
-    .clear()
-    .should('have.value', '')
+  cy.getByTestID('notifyEmail--input').clear().should('have.value', '')
+  cy.getByTestID('balanceThreshold--input').clear().should('have.value', '')
+  cy.getByTestID('city--input').clear().should('have.value', '')
+  cy.getByTestID('postalCode--input').clear().should('have.value', '')
+  cy.getByTestID('street1--input').clear().should('have.value', '')
+  cy.getByTestID('street2--input').clear().should('have.value', '')
 }
 
 describe('Checkout Page Works', () => {
@@ -61,17 +49,11 @@ describe('Checkout Page Works', () => {
     cy.getByTestID('notifyEmail--form-element-error').contains(genericError)
 
     // Check balance threshold specific error should exist
-    cy.getByTestID('balanceThreshold--input')
-      .clear()
-      .type('0')
+    cy.getByTestID('balanceThreshold--input').clear().type('0')
     cy.getByTestID('balanceThreshold--form-element-error').contains(numberError)
 
-    cy.getByTestID('notifyEmail--input')
-      .clear()
-      .type(email)
-    cy.getByTestID('balanceThreshold--input')
-      .clear()
-      .type(`${limit}`)
+    cy.getByTestID('notifyEmail--input').clear().type(email)
+    cy.getByTestID('balanceThreshold--input').clear().type(`${limit}`)
 
     // Check all errors are gone
     cy.getByTestID('balanceThreshold--form-element-error').should('not.exist')
@@ -151,9 +133,7 @@ describe('Checkout Page Works', () => {
       cy.getByTestID('city--form-element-error').should('be.visible')
       cy.getByTestID('city--form-element-error').contains(error)
 
-      cy.getByTestID('city--input')
-        .type(city)
-        .should('have.value', city)
+      cy.getByTestID('city--input').type(city).should('have.value', city)
 
       // Click Upgrade Button
       cy.getByTestID('checkout-upgrade--button').click()

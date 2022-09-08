@@ -10,7 +10,7 @@ import {fireEvent} from '@testing-library/react'
 
 jest.useFakeTimers().setSystemTime(new Date('2022-03-10 20:00:00').getTime())
 
-describe('Date Range Picker', function() {
+describe('Date Range Picker', function () {
   it('should have input values in the correct format after user changes the date selection', () => {
     const {getAllByText} = renderWithReduxAndRouter(
       <DateRangePicker

@@ -43,8 +43,8 @@ import {
 import {SidebarContext} from 'src/flows/context/sidebar'
 import ExportTask from 'src/flows/pipes/Notification/ExportTask'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-const NotificationMonacoEditor = lazy(() =>
-  import('src/flows/pipes/Notification/NotificationMonacoEditor')
+const NotificationMonacoEditor = lazy(
+  () => import('src/flows/pipes/Notification/NotificationMonacoEditor')
 )
 
 // Types

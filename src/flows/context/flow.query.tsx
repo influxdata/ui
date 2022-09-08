@@ -61,9 +61,8 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   status: RemoteDataState.NotStarted,
 }
 
-export const FlowQueryContext = React.createContext<FlowQueryContextType>(
-  DEFAULT_CONTEXT
-)
+export const FlowQueryContext =
+  React.createContext<FlowQueryContextType>(DEFAULT_CONTEXT)
 
 export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)

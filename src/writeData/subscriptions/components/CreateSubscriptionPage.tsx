@@ -65,9 +65,8 @@ const CreateSubscriptionPage: FC = () => {
   const [completedSteps, setCompletedSteps] = useState<CompletedSteps>(
     DEFAULT_COMPLETED_STEPS
   )
-  const [stepsStatus, setStepsStatus] = useState<StepsStatus>(
-    DEFAULT_STEPS_STATUS
-  )
+  const [stepsStatus, setStepsStatus] =
+    useState<StepsStatus>(DEFAULT_STEPS_STATUS)
 
   useEffect(() => {
     setCompletedSteps({

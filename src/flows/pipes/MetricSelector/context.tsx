@@ -56,9 +56,8 @@ const DEFAULT_CONTEXT: SchemaContextType = {
   setSearchTerm: (_: string) => {},
 }
 
-export const SchemaContext = React.createContext<SchemaContextType>(
-  DEFAULT_CONTEXT
-)
+export const SchemaContext =
+  React.createContext<SchemaContextType>(DEFAULT_CONTEXT)
 
 const parsedResultToSchema = (parsed: FromFluxResult): unknown => {
   let ni, no
@@ -263,11 +262,10 @@ export const SchemaProvider: FC = React.memo(({children}) => {
       })
   }, [data?.bucket?.name, range]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const normalized = useMemo(() => normalizeSchema(schema, data, searchTerm), [
-    data,
-    schema,
-    searchTerm,
-  ])
+  const normalized = useMemo(
+    () => normalizeSchema(schema, data, searchTerm),
+    [data, schema, searchTerm]
+  )
 
   return (
     <SchemaContext.Provider

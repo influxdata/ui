@@ -79,12 +79,14 @@ const SingleStatWithLine: FC<Props> = ({
   const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
   const dispatch = useDispatch()
 
-  const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
-    properties.axes.x.bounds,
-  ])
-  const storedYDomain = useMemo(() => parseYBounds(properties.axes.y.bounds), [
-    properties.axes.y.bounds,
-  ])
+  const storedXDomain = useMemo(
+    () => parseXBounds(properties.axes.x.bounds),
+    [properties.axes.x.bounds]
+  )
+  const storedYDomain = useMemo(
+    () => parseYBounds(properties.axes.y.bounds),
+    [properties.axes.y.bounds]
+  )
   const xColumn = properties.xColumn || defaultXColumn(result.table, '_time')
   const yColumn =
     (result.table.columnKeys.includes(properties.yColumn) &&
@@ -109,9 +111,10 @@ const SingleStatWithLine: FC<Props> = ({
 
   const interpolation = geomToInterpolation('line')
 
-  const groupKey = useMemo(() => [...result.fluxGroupKeyUnion, 'result'], [
-    result,
-  ])
+  const groupKey = useMemo(
+    () => [...result.fluxGroupKeyUnion, 'result'],
+    [result]
+  )
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,

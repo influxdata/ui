@@ -38,9 +38,7 @@ const FilterList: FC<Props> = ({
   }
   const list = useMemo(() => {
     const filtered = items.filter(i =>
-      extractor(i)
-        .toLowerCase()
-        .includes(search.toLowerCase())
+      extractor(i).toLowerCase().includes(search.toLowerCase())
     )
 
     if (!filtered.length) {

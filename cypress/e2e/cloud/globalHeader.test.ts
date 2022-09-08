@@ -134,9 +134,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the org usage page', () => {
-        cy.getByTestID('globalheader--org-dropdown')
-          .should('exist')
-          .click()
+        cy.getByTestID('globalheader--org-dropdown').should('exist').click()
 
         cy.getByTestID('globalheader--org-dropdown-main').should('be.visible')
         cy.getByTestID('globalheader--org-dropdown-main-Usage')
@@ -150,9 +148,7 @@ describe('change-account change-org global header', () => {
 
       it('can change change the active org', () => {
         makeQuartzUseIDPEOrgID()
-        cy.getByTestID('globalheader--org-dropdown')
-          .should('exist')
-          .click()
+        cy.getByTestID('globalheader--org-dropdown').should('exist').click()
 
         cy.getByTestID('globalheader--org-dropdown-main').should('be.visible')
         cy.getByTestID('dropdown-item')
@@ -188,9 +184,7 @@ describe('change-account change-org global header', () => {
 
       it('navigates to the account settings page', () => {
         makeQuartzUseIDPEOrgID()
-        cy.getByTestID('globalheader--account-dropdown')
-          .should('exist')
-          .click()
+        cy.getByTestID('globalheader--account-dropdown').should('exist').click()
 
         cy.getByTestID('globalheader--account-dropdown-main').should(
           'be.visible'
@@ -205,9 +199,7 @@ describe('change-account change-org global header', () => {
 
       it('navigates to the account billing page', () => {
         makeQuartzUseIDPEOrgID()
-        cy.getByTestID('globalheader--account-dropdown')
-          .should('exist')
-          .click()
+        cy.getByTestID('globalheader--account-dropdown').should('exist').click()
 
         cy.getByTestID('globalheader--account-dropdown-main').should(
           'be.visible'
@@ -224,9 +216,7 @@ describe('change-account change-org global header', () => {
 
       it('can change change the active account', () => {
         makeQuartzUseIDPEOrgID()
-        cy.getByTestID('globalheader--account-dropdown')
-          .should('exist')
-          .click()
+        cy.getByTestID('globalheader--account-dropdown').should('exist').click()
 
         cy.getByTestID('globalheader--account-dropdown-main').should(
           'be.visible'
@@ -255,9 +245,7 @@ describe('change-account change-org global header', () => {
   describe('user profile avatar', {scrollBehavior: false}, () => {
     it('navigates to the `user profile` page', () => {
       makeQuartzUseIDPEOrgID()
-      cy.getByTestID('global-header--user-avatar')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('global-header--user-avatar').should('be.visible').click()
 
       cy.getByTestID('global-header--user-popover-profile-button')
         .should('be.visible')
@@ -265,16 +253,12 @@ describe('change-account change-org global header', () => {
 
       cy.getByTestID('user-profile--page').should('be.visible')
 
-      cy.getByTestID('global-header--user-avatar')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('global-header--user-avatar').should('be.visible').click()
     })
 
     it('allows the user to log out', () => {
       makeQuartzUseIDPEOrgID()
-      cy.getByTestID('global-header--user-avatar')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('global-header--user-avatar').should('be.visible').click()
 
       // Logout can't be handled in the test, and redirects to a 404 that
       // Firefox doesn't recognize as a new page. Instead, just check if the

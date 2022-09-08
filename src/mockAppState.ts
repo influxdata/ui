@@ -3,7 +3,8 @@ import {RemoteDataState, ResourceType} from 'src/types'
 export const getMockAppState = (query?: string, variables?: []) => {
   const newAppState = Object.assign({}, mockAppState)
   if (query) {
-    newAppState.timeMachines.timeMachines.de.view.properties.queries[0].text = query
+    newAppState.timeMachines.timeMachines.de.view.properties.queries[0].text =
+      query
     newAppState.timeMachines.timeMachines.de.draftQueries[0].text = query
   }
   if (variables && variables.length > 0) {
@@ -148,8 +149,7 @@ export const mockAppState = {
             queries: [
               {
                 name: '',
-                text:
-                  'from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r["_measurement"] == "cpu")\n  |> filter(fn: (r) => r["_field"] == "usage_user")',
+                text: 'from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r["_measurement"] == "cpu")\n  |> filter(fn: (r) => r["_field"] == "usage_user")',
                 editMode: 'builder',
                 builderConfig: {
                   buckets: ['Homeward Bound'],
@@ -230,8 +230,7 @@ export const mockAppState = {
         },
         draftQueries: [
           {
-            text:
-              'from(bucket: "v.bucket")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r["_measurement"] == "cpu")\n  |> filter(fn: (r) => r["_field"] == "usage_user")',
+            text: 'from(bucket: "v.bucket")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r["_measurement"] == "cpu")\n  |> filter(fn: (r) => r["_field"] == "usage_user")',
           },
         ],
         activeTab: 'queries',

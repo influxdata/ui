@@ -356,9 +356,10 @@ interface SetBackgroundThresholdColoringAction {
   type: 'SET_BACKGROUND_THRESHOLD_COLORING'
 }
 
-export const setBackgroundThresholdColoring = (): SetBackgroundThresholdColoringAction => ({
-  type: 'SET_BACKGROUND_THRESHOLD_COLORING',
-})
+export const setBackgroundThresholdColoring =
+  (): SetBackgroundThresholdColoringAction => ({
+    type: 'SET_BACKGROUND_THRESHOLD_COLORING',
+  })
 
 interface SetTextThresholdColoringAction {
   type: 'SET_TEXT_THRESHOLD_COLORING'
@@ -372,9 +373,10 @@ interface EditActiveQueryWithBuilderAction {
   type: 'EDIT_ACTIVE_QUERY_WITH_BUILDER'
 }
 
-export const editActiveQueryWithBuilderSync = (): EditActiveQueryWithBuilderAction => ({
-  type: 'EDIT_ACTIVE_QUERY_WITH_BUILDER',
-})
+export const editActiveQueryWithBuilderSync =
+  (): EditActiveQueryWithBuilderAction => ({
+    type: 'EDIT_ACTIVE_QUERY_WITH_BUILDER',
+  })
 
 export const editActiveQueryWithBuilder = () => dispatch => {
   dispatch(editActiveQueryWithBuilderSync())
@@ -414,12 +416,12 @@ export const setActiveQueryIndexSync = (
   payload: {activeQueryIndex},
 })
 
-export const setActiveQueryIndex = (activeQueryIndex: number) => (
-  dispatch: Dispatch<Action | ExternalActions>
-) => {
-  dispatch(setActiveQueryIndexSync(activeQueryIndex))
-  dispatch(loadBuckets())
-}
+export const setActiveQueryIndex =
+  (activeQueryIndex: number) =>
+  (dispatch: Dispatch<Action | ExternalActions>) => {
+    dispatch(setActiveQueryIndexSync(activeQueryIndex))
+    dispatch(loadBuckets())
+  }
 
 interface AddQueryAction {
   type: 'ADD_QUERY'
@@ -429,12 +431,11 @@ export const addQuerySync = (): AddQueryAction => ({
   type: 'ADD_QUERY',
 })
 
-export const addQuery = () => (
-  dispatch: Dispatch<Action | ExternalActions>
-) => {
-  dispatch(addQuerySync())
-  dispatch(loadBuckets())
-}
+export const addQuery =
+  () => (dispatch: Dispatch<Action | ExternalActions>) => {
+    dispatch(addQuerySync())
+    dispatch(loadBuckets())
+  }
 
 interface RemoveQueryAction {
   type: 'REMOVE_QUERY'
@@ -456,20 +457,18 @@ export const toggleQuerySync = (queryIndex: number): ToggleQueryAction => ({
   payload: {queryIndex},
 })
 
-export const removeQuery = (queryIndex: number) => (
-  dispatch: Dispatch<Action | ExternalActions>
-) => {
-  dispatch(removeQuerySync(queryIndex))
-  dispatch(loadBuckets())
-  dispatch(saveAndExecuteQueries())
-}
+export const removeQuery =
+  (queryIndex: number) => (dispatch: Dispatch<Action | ExternalActions>) => {
+    dispatch(removeQuerySync(queryIndex))
+    dispatch(loadBuckets())
+    dispatch(saveAndExecuteQueries())
+  }
 
-export const toggleQuery = (queryIndex: number) => (
-  dispatch: Dispatch<Action | ExternalActions>
-) => {
-  dispatch(toggleQuerySync(queryIndex))
-  dispatch(saveAndExecuteQueries())
-}
+export const toggleQuery =
+  (queryIndex: number) => (dispatch: Dispatch<Action | ExternalActions>) => {
+    dispatch(toggleQuerySync(queryIndex))
+    dispatch(saveAndExecuteQueries())
+  }
 
 interface UpdateActiveQueryNameAction {
   type: 'UPDATE_ACTIVE_QUERY_NAME'
@@ -804,12 +803,12 @@ export const setViewProperties = (properties: ViewProperties) =>
     payload: {properties},
   } as const)
 
-export const loadNewVEO = () => (
-  dispatch: Dispatch<Action | ExternalActions>
-): void => {
-  dispatch(
-    setActiveTimeMachine('veo', {
-      view: createView<XYViewProperties>('xy'),
-    })
-  )
-}
+export const loadNewVEO =
+  () =>
+  (dispatch: Dispatch<Action | ExternalActions>): void => {
+    dispatch(
+      setActiveTimeMachine('veo', {
+        view: createView<XYViewProperties>('xy'),
+      })
+    )
+  }

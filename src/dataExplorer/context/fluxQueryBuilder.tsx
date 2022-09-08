@@ -76,9 +76,8 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   setSearchTerm: (_s: string) => {},
 }
 
-export const FluxQueryBuilderContext = createContext<
-  FluxQueryBuilderContextType
->(DEFAULT_CONTEXT)
+export const FluxQueryBuilderContext =
+  createContext<FluxQueryBuilderContextType>(DEFAULT_CONTEXT)
 
 export const FluxQueryBuilderProvider: FC = ({children}) => {
   // Contexts

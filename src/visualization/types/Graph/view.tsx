@@ -80,9 +80,8 @@ const XYPlot: FC<Props> = ({
   cellID,
 }) => {
   const [resultState, setResultState] = useState(result)
-  const [preZoomResult, setPreZoomResult] = useState<InternalFromFluxResult>(
-    null
-  )
+  const [preZoomResult, setPreZoomResult] =
+    useState<InternalFromFluxResult>(null)
   const [requeryStatus, setRequeryStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -113,12 +112,14 @@ const XYPlot: FC<Props> = ({
   // which are currently global values, not per dashboard
   const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
 
-  const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
-    properties.axes.x.bounds,
-  ])
-  const storedYDomain = useMemo(() => parseYBounds(properties.axes.y.bounds), [
-    properties.axes.y.bounds,
-  ])
+  const storedXDomain = useMemo(
+    () => parseXBounds(properties.axes.x.bounds),
+    [properties.axes.x.bounds]
+  )
+  const storedYDomain = useMemo(
+    () => parseYBounds(properties.axes.y.bounds),
+    [properties.axes.y.bounds]
+  )
   const columnKeys = Object.keys(resultState.table.columns)
   const xColumn =
     properties.xColumn || defaultXColumn(resultState.table, '_time')
@@ -141,9 +142,10 @@ const XYPlot: FC<Props> = ({
 
   const interpolation = geomToInterpolation(properties.geom)
 
-  const groupKey = useMemo(() => [...resultState.fluxGroupKeyUnion, 'result'], [
-    resultState,
-  ])
+  const groupKey = useMemo(
+    () => [...resultState.fluxGroupKeyUnion, 'result'],
+    [resultState]
+  )
 
   const memoizedYColumnData = useMemo(() => {
     if (properties.position === 'stacked') {
@@ -237,11 +239,8 @@ const XYPlot: FC<Props> = ({
 
   const memoizedGetColorMappingObjects = memoizeOne(getColorMappingObjects)
   const [, fillColumnMap] = createGroupIDColumn(resultState.table, groupKey)
-  const {
-    colorMappingForGiraffe,
-    colorMappingForIDPE,
-    needsToSaveToIDPE,
-  } = memoizedGetColorMappingObjects(fillColumnMap, properties)
+  const {colorMappingForGiraffe, colorMappingForIDPE, needsToSaveToIDPE} =
+    memoizedGetColorMappingObjects(fillColumnMap, properties)
   const colorMapping = colorMappingForGiraffe
 
   // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.

@@ -3,10 +3,10 @@ import {CLOUD} from 'src/shared/constants'
 let postUiproxySfdcSupport
 let PostUiproxySfdcSupportParams
 if (CLOUD) {
-  postUiproxySfdcSupport = require('src/client/uiproxydRoutes')
-    .postUiproxySfdcSupport
-  PostUiproxySfdcSupportParams = require('src/client/uiproxydRoutes')
-    .PostUiproxySfdcSupportParams
+  postUiproxySfdcSupport =
+    require('src/client/uiproxydRoutes').postUiproxySfdcSupport
+  PostUiproxySfdcSupportParams =
+    require('src/client/uiproxydRoutes').PostUiproxySfdcSupportParams
 }
 
 export const createSfdcSupportCase = async (

@@ -10,7 +10,7 @@ export const EDIT_RANGE_ANNOTATION_TEXT =
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
     cy.signin().then(() =>
-      cy.get('@org').then(({id: orgID}: Organization) =>
+      cy.get('@org').then(({id: orgID, name}: Organization) =>
         cy.createDashboard(orgID).then(({body}) =>
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)

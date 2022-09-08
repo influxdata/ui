@@ -69,38 +69,38 @@ export const setBucketID = (bucketID: string): SetBucketID => ({
   payload: {bucketID},
 })
 
-export const setupAdmin = (
-  params: OnboardingRequest
-): AppThunk<Promise<boolean>> => async dispatch => {
-  try {
-    dispatch(setSetupParams(params))
-    const response = await api.postSetup({data: params})
+export const setupAdmin =
+  (params: OnboardingRequest): AppThunk<Promise<boolean>> =>
+  async dispatch => {
+    try {
+      dispatch(setSetupParams(params))
+      const response = await api.postSetup({data: params})
 
-    if (response.status !== 201) {
-      throw new Error(response.data.message)
+      if (response.status !== 201) {
+        throw new Error(response.data.message)
+      }
+
+      const {id: orgID} = response.data.org
+      const {id: bucketID} = response.data.bucket
+
+      dispatch(setOrganizationID(orgID))
+      dispatch(setBucketID(bucketID))
+
+      const {username, password} = params
+
+      const resp = await api.postSignin({auth: {username, password}})
+
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+
+      dispatch(notify(SetupSuccess))
+      dispatch(setStepStatus(1, StepStatus.Complete))
+      return true
+    } catch (err) {
+      console.error(err)
+      const message = get(err, 'response.data.message', '')
+      dispatch(notify(SetupError(message)))
+      dispatch(setStepStatus(1, StepStatus.Error))
     }
-
-    const {id: orgID} = response.data.org
-    const {id: bucketID} = response.data.bucket
-
-    dispatch(setOrganizationID(orgID))
-    dispatch(setBucketID(bucketID))
-
-    const {username, password} = params
-
-    const resp = await api.postSignin({auth: {username, password}})
-
-    if (resp.status !== 204) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(notify(SetupSuccess))
-    dispatch(setStepStatus(1, StepStatus.Complete))
-    return true
-  } catch (err) {
-    console.error(err)
-    const message = get(err, 'response.data.message', '')
-    dispatch(notify(SetupError(message)))
-    dispatch(setStepStatus(1, StepStatus.Error))
   }
-}

@@ -228,10 +228,11 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
       setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable = normalizeWindowPeriodVariableForZoomRequery(
-          getWindowVarsFromVariables(query, variables),
-          updatedWindowPeriod
-        )
+        const zoomQueryWindowVariable =
+          normalizeWindowPeriodVariableForZoomRequery(
+            getWindowVarsFromVariables(query, variables),
+            updatedWindowPeriod
+          )
 
         const extern = buildUsedVarsOption(
           query,
@@ -380,10 +381,11 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
       setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable = normalizeWindowPeriodVariableForZoomRequery(
-          getWindowVarsFromVariables(query, variables),
-          updatedWindowPeriod
-        )
+        const zoomQueryWindowVariable =
+          normalizeWindowPeriodVariableForZoomRequery(
+            getWindowVarsFromVariables(query, variables),
+            updatedWindowPeriod
+          )
 
         const extern = buildUsedVarsOption(
           query,

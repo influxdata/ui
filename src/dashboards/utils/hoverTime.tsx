@@ -18,10 +18,11 @@ export class HoverTimeProvider extends PureComponent<{}, InjectedHoverProps> {
   }
 }
 
-export const withHoverTime = <P extends {}>(
-  Component: React.ComponentType<P & InjectedHoverProps>
-) => (props: P) => (
-  <Consumer>
-    {hoverTimeProps => <Component {...props} {...hoverTimeProps} />}
-  </Consumer>
-)
+export const withHoverTime =
+  <P extends {}>(Component: React.ComponentType<P & InjectedHoverProps>) =>
+  (props: P) =>
+    (
+      <Consumer>
+        {hoverTimeProps => <Component {...props} {...hoverTimeProps} />}
+      </Consumer>
+    )

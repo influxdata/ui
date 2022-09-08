@@ -32,9 +32,8 @@ const GettingStarted: FunctionComponent = () => {
     setLoadDataAnimation(false)
   }
 
-  const [dashboardingAnimating, setDashboardingAnimation] = useState<boolean>(
-    false
-  )
+  const [dashboardingAnimating, setDashboardingAnimation] =
+    useState<boolean>(false)
   const handleDashboardsClick = (): void => {
     history.push(`/orgs/${orgID}/dashboards`)
   }

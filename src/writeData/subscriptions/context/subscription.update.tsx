@@ -100,9 +100,8 @@ export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
   setStatus: () => {},
 } as SubscriptionUpdateContextType
 
-export const SubscriptionUpdateContext = React.createContext<
-  SubscriptionUpdateContextType
->(DEFAULT_CONTEXT)
+export const SubscriptionUpdateContext =
+  React.createContext<SubscriptionUpdateContextType>(DEFAULT_CONTEXT)
 
 export const SubscriptionUpdateProvider: FC = ({children}) => {
   const {subscriptions, currentID} = useContext(SubscriptionListContext)

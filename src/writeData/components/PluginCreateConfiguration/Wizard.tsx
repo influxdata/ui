@@ -80,9 +80,8 @@ const Wizard: FC<Props> = props => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [pluginConfig, setPluginConfig] = useState<string>('')
-  const [isValidConfiguration, setIsValidConfiguration] = useState<boolean>(
-    false
-  )
+  const [isValidConfiguration, setIsValidConfiguration] =
+    useState<boolean>(false)
   const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const handleDismiss = () => {
@@ -112,6 +111,7 @@ const Wizard: FC<Props> = props => {
   }
 
   let title = 'Configuration Options'
+
   if (currentStepIndex === 0 && substepIndex === 1) {
     title = 'Create Bucket'
   } else if (currentStepIndex !== 0) {
@@ -129,8 +129,11 @@ const Wizard: FC<Props> = props => {
 
   let overlayBodyClassName = 'data-loading--overlay'
 
-  if (currentStepIndex === 0 || currentStepIndex === 1) {
+  if (currentStepIndex === 0 || substepIndex === 1) {
     overlayBodyClassName = ''
+  }
+  if (currentStepIndex === 1) {
+    overlayBodyClassName = 'configuration-overlay--body'
   }
 
   return (

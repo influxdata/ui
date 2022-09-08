@@ -29,8 +29,8 @@ import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
 import {GlobalHeaderContainer} from 'src/identity/components/GlobalHeaderContainer'
 
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
-const CreateOrgOverlay = lazy(() =>
-  import('src/organizations/components/CreateOrgOverlay')
+const CreateOrgOverlay = lazy(
+  () => import('src/organizations/components/CreateOrgOverlay')
 )
 
 // Types

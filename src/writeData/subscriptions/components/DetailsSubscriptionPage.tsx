@@ -59,13 +59,8 @@ import {
 
 const DetailsSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
-  const {
-    currentSubscription,
-    loading,
-    saveForm,
-    updateForm,
-    setStatus,
-  } = useContext(SubscriptionUpdateContext)
+  const {currentSubscription, loading, saveForm, updateForm, setStatus} =
+    useContext(SubscriptionUpdateContext)
   const {change} = useContext(SubscriptionListContext)
   const {id} = useParams<{id: string}>()
   const buckets = useSelector((state: AppState) =>
@@ -75,9 +70,8 @@ const DetailsSubscriptionPage: FC = () => {
   const [completedSteps, setCompletedSteps] = useState<CompletedSteps>(
     DEFAULT_COMPLETED_STEPS
   )
-  const [stepsStatus, setStepsStatus] = useState<StepsStatus>(
-    DEFAULT_STEPS_STATUS
-  )
+  const [stepsStatus, setStepsStatus] =
+    useState<StepsStatus>(DEFAULT_STEPS_STATUS)
 
   const stepsWithIsCompletedStatus = SUBSCRIPTION_NAVIGATION_STEPS.map(step => {
     return {...step, isComplete: completedSteps[step.type]}

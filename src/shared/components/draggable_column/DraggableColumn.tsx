@@ -128,12 +128,8 @@ export default class DraggableColumn extends Component<Props> {
     this.handleToggleVisible = this.handleToggleVisible.bind(this)
   }
   public render(): JSX.Element | null {
-    const {
-      internalName,
-      displayName,
-      connectDragPreview,
-      connectDropTarget,
-    } = this.props
+    const {internalName, displayName, connectDragPreview, connectDropTarget} =
+      this.props
 
     return connectDragPreview(
       connectDropTarget(

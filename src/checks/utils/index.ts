@@ -79,14 +79,8 @@ const toThresholdPostCheck = (
   alertBuilder: AlertBuilder,
   check: ThresholdCheck
 ): PostCheck => {
-  const {
-    activeStatus,
-    every,
-    offset,
-    statusMessageTemplate,
-    tags,
-    thresholds,
-  } = alertBuilder
+  const {activeStatus, every, offset, statusMessageTemplate, tags, thresholds} =
+    alertBuilder
 
   checkThresholdsValid(thresholds)
 

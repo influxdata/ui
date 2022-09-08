@@ -48,14 +48,9 @@ describe('Variables', () => {
 
     cy.get('textarea').type('1,2,3,4,5,6')
 
-    cy.getByTestID('csv-value-select-dropdown')
-      .click()
-      .contains('6')
-      .click()
+    cy.getByTestID('csv-value-select-dropdown').click().contains('6').click()
 
-    cy.get('form')
-      .contains('Create')
-      .click()
+    cy.get('form').contains('Create').click()
 
     cy.getByTestID(`variable-card--name ${variableName}`).click()
     cy.getByTestID('notification-success--dismiss').should('exist')
@@ -127,9 +122,7 @@ describe('Variables', () => {
       .contains('LittleVariable')
 
     // Rename the variable
-    cy.getByTestID('context-menu-variable')
-      .last()
-      .click({force: true})
+    cy.getByTestID('context-menu-variable').last().click({force: true})
 
     cy.getByTestID('context-rename-variable').click({force: true})
 
@@ -160,14 +153,9 @@ describe('Variables', () => {
     cy.get('textarea').type(`Astrophel Chaudhary,"bDhZbuVj5RV94NcFXZPm"
       Ochieng Benes,"YIhg6SoMKRUH8FMlHs3V"`)
 
-    cy.getByTestID('map-variable-dropdown--button')
-      .click()
-      .last()
-      .click()
+    cy.getByTestID('map-variable-dropdown--button').click().last().click()
 
-    cy.get('form')
-      .contains('Create')
-      .click()
+    cy.get('form').contains('Create').click()
 
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
@@ -191,9 +179,7 @@ describe('Variables', () => {
       'filter(fn: (r) => r._field == "cpu")'
     )
 
-    cy.get('form')
-      .contains('Create')
-      .click()
+    cy.get('form').contains('Create').click()
 
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
@@ -218,17 +204,12 @@ describe('Variables', () => {
 
     cy.get('textarea').type('1,2,3,4,5,6')
 
-    cy.getByTestID('csv-value-select-dropdown')
-      .click()
-      .contains('6')
-      .click()
+    cy.getByTestID('csv-value-select-dropdown').click().contains('6').click()
 
     cy.getByInputName('name').type('bad name')
     cy.getByTestID('variable-form-save').should('be.disabled')
 
-    cy.getByInputName('name')
-      .clear()
-      .type('bad-name')
+    cy.getByInputName('name').clear().type('bad-name')
     cy.getByTestID('variable-form-save').should('be.disabled')
 
     // Prevent creation of a Query variable with hyphens or spaces
@@ -239,14 +220,10 @@ describe('Variables', () => {
       'filter(fn: (r) => r._field == "cpu")'
     )
 
-    cy.getByInputName('name')
-      .clear()
-      .type('bad name')
+    cy.getByInputName('name').clear().type('bad name')
     cy.getByTestID('variable-form-save').should('be.disabled')
 
-    cy.getByInputName('name')
-      .clear()
-      .type('bad-name')
+    cy.getByInputName('name').clear().type('bad-name')
     cy.getByTestID('variable-form-save').should('be.disabled')
 
     // Prevent creation of a Map variable with hyphens or spaces
@@ -262,14 +239,10 @@ describe('Variables', () => {
     cy.getByTestID('map-variable-dropdown--button').click()
     cy.contains(lastMapItem).click()
 
-    cy.getByInputName('name')
-      .clear()
-      .type('bad name')
+    cy.getByInputName('name').clear().type('bad name')
     cy.getByTestID('variable-form-save').should('be.disabled')
 
-    cy.getByInputName('name')
-      .clear()
-      .type('bad-name')
+    cy.getByInputName('name').clear().type('bad-name')
     cy.getByTestID('variable-form-save').should('be.disabled')
   })
 
@@ -307,14 +280,9 @@ describe('Variables', () => {
 
     cy.get('textarea').type('1,2,3,4,5,6')
 
-    cy.getByTestID('csv-value-select-dropdown')
-      .click()
-      .contains('6')
-      .click()
+    cy.getByTestID('csv-value-select-dropdown').click().contains('6').click()
 
-    cy.get('form')
-      .contains('Create')
-      .click()
+    cy.get('form').contains('Create').click()
 
     // Delete the label
     cy.getByTestID(`label--pill--delete ${labelName}`).click({force: true})
@@ -322,16 +290,12 @@ describe('Variables', () => {
     cy.getByTestID('search-widget').clear()
     cy.getByTestID('inline-labels--empty').should('exist')
 
-    cy.getByTestID('resource-card variable')
-      .last()
-      .contains(variableName)
+    cy.getByTestID('resource-card variable').last().contains(variableName)
 
     cy.getByTestID('resource-sorter--button').click()
     cy.getByTestID('resource-sorter--name-desc').click()
 
-    cy.getByTestID('resource-card variable')
-      .first()
-      .contains(variableName)
+    cy.getByTestID('resource-card variable').first().contains(variableName)
   })
 
   it('can filter by variable or label name', () => {
@@ -353,9 +317,7 @@ describe('Variables', () => {
     )
     cy.getByInputName('name').type(secondVariableName)
 
-    cy.get('form')
-      .contains('Create')
-      .click()
+    cy.get('form').contains('Create').click()
 
     // Create a CSV variable
     const thirdVariableName = 'ThirdVariable'
@@ -367,14 +329,9 @@ describe('Variables', () => {
 
     cy.getByInputName('name').type(thirdVariableName)
     cy.get('textarea').type('1,2,3,4,5,6')
-    cy.getByTestID('csv-value-select-dropdown')
-      .click()
-      .contains('6')
-      .click()
+    cy.getByTestID('csv-value-select-dropdown').click().contains('6').click()
 
-    cy.get('form')
-      .contains('Create')
-      .click()
+    cy.get('form').contains('Create').click()
 
     // Ensure we have three variables and three buttons to add labels
     cy.getByTestID('resource-card variable').should('have.length', 3)
@@ -382,9 +339,7 @@ describe('Variables', () => {
 
     // Create the labels
     const firstLabelName = 'little'
-    cy.get('button.inline-labels--add')
-      .first()
-      .clickAttached()
+    cy.get('button.inline-labels--add').first().clickAttached()
     cy.getByTestID('inline-labels--popover-field').type(firstLabelName)
     cy.getByTestID('inline-labels--create-new').click()
     cy.getByTestID('create-label-form--submit')
@@ -393,9 +348,7 @@ describe('Variables', () => {
     cy.getByTestID('create-label-form--submit').click()
 
     const secondLabelName = 'query'
-    cy.get('button.inline-labels--add')
-      .eq(1)
-      .clickAttached()
+    cy.get('button.inline-labels--add').eq(1).clickAttached()
     cy.getByTestID('inline-labels--popover-field').type(secondLabelName)
     cy.getByTestID('inline-labels--create-new').click()
     cy.getByTestID('create-label-form--submit')
@@ -404,9 +357,7 @@ describe('Variables', () => {
     cy.getByTestID('create-label-form--submit').click()
 
     const thirdLabelName = 'csv'
-    cy.get('button.inline-labels--add')
-      .last()
-      .clickAttached()
+    cy.get('button.inline-labels--add').last().clickAttached()
     cy.getByTestID('inline-labels--popover-field').type(thirdLabelName)
     cy.getByTestID('inline-labels--create-new').click()
     cy.getByTestID('create-label-form--submit')
@@ -423,16 +374,12 @@ describe('Variables', () => {
       .should('have.length', 1)
       .contains(firstVariableName)
 
-    cy.getByTestID('search-widget')
-      .clear()
-      .type(secondVariableName)
+    cy.getByTestID('search-widget').clear().type(secondVariableName)
     cy.getByTestID('resource-card variable')
       .should('have.length', 1)
       .contains(secondVariableName)
 
-    cy.getByTestID('search-widget')
-      .clear()
-      .type(thirdVariableName)
+    cy.getByTestID('search-widget').clear().type(thirdVariableName)
     cy.getByTestID('resource-card variable')
       .should('have.length', 1)
       .contains(thirdVariableName)
@@ -447,16 +394,12 @@ describe('Variables', () => {
       .should('have.length', 1)
       .contains(firstVariableName)
 
-    cy.getByTestID('search-widget')
-      .clear()
-      .type(secondLabelName)
+    cy.getByTestID('search-widget').clear().type(secondLabelName)
     cy.getByTestID('resource-card variable')
       .should('have.length', 1)
       .contains(secondVariableName)
 
-    cy.getByTestID('search-widget')
-      .clear()
-      .type(thirdLabelName)
+    cy.getByTestID('search-widget').clear().type(thirdLabelName)
     cy.getByTestID('resource-card variable')
       .should('have.length', 1)
       .contains(thirdVariableName)

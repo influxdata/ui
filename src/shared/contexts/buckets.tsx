@@ -29,8 +29,8 @@ import {PipeContext} from 'src/flows/context/pipe'
 
 let MeasurementSchemaCreateRequest = null
 if (CLOUD) {
-  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
-    .MeasurementSchemaCreateRequest
+  MeasurementSchemaCreateRequest =
+    require('src/client/generatedRoutes').MeasurementSchemaCreateRequest
 }
 
 export interface ExtendedBucket extends Bucket {

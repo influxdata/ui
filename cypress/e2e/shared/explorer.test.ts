@@ -86,9 +86,7 @@ describe('DataExplorer', () => {
     it('should not have the input field in error status when input becomes valid', () => {
       cy.get('.view-options').within(() => {
         cy.getByTestID('auto-input').within(() => {
-          cy.getByTestID('input-field')
-            .clear()
-            .type('3')
+          cy.getByTestID('input-field').clear().type('3')
           cy.getByTestID('input-field--error').should('have.length', 0)
         })
       })
@@ -388,9 +386,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('input-error').should('not.exist')
 
         // type incomplete input
-        cy.get('input[title="Start"]')
-          .clear()
-          .type('2019-10')
+        cy.get('input[title="Start"]').clear().type('2019-10')
 
         // invalid date errors
         cy.getByTestID('form--element-error').should('exist')
@@ -402,9 +398,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('input-error').should('not.exist')
 
         // type invalid stop date
-        cy.get('input[title="Stop"]')
-          .clear()
-          .type('2019-10-')
+        cy.get('input[title="Stop"]').clear().type('2019-10-')
 
         // invalid date errors
         cy.getByTestID('form--element-error').should('exist')
@@ -413,9 +407,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
 
         // Validate that ISO String formatted texts are valid
-        cy.get('input[title="Stop"]')
-          .clear()
-          .type('2019-10-29T08:00:00.000Z')
+        cy.get('input[title="Stop"]').clear().type('2019-10-29T08:00:00.000Z')
 
         // button should not be disabled
         cy.getByTestID('daterange--apply-btn').should('not.be.disabled')
@@ -425,9 +417,7 @@ describe('DataExplorer', () => {
 
   describe('raw script editing', () => {
     beforeEach(() => {
-      cy.getByTestID('switch-to-script-editor')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('switch-to-script-editor').should('be.visible').click()
     })
 
     it('shows the proper query button state', () => {
@@ -474,9 +464,7 @@ describe('DataExplorer', () => {
       // wait for monaco to load so focus is not taken from flux-toolbar-search--input
       cy.get('.view-line').should('be.visible')
 
-      cy.getByTestID('flux-toolbar-search--input')
-        .clear()
-        .type('covarianced') // purposefully misspell "covariance" so all functions are filtered out
+      cy.getByTestID('flux-toolbar-search--input').clear().type('covarianced') // purposefully misspell "covariance" so all functions are filtered out
 
       cy.getByTestID('flux-toolbar--list').within(() => {
         cy.getByTestID('empty-state').should('be.visible')
@@ -555,9 +543,7 @@ describe('DataExplorer', () => {
       cy.getByTestID('task-form-schedule-input').type('4h')
       cy.getByTestID('task-form-save').click()
 
-      cy.getByTestID(`task-card`)
-        .should('exist')
-        .should('contain', taskName)
+      cy.getByTestID(`task-card`).should('exist').should('contain', taskName)
     })
 
     it('injects variables into flux-editor', () => {
@@ -566,9 +552,7 @@ describe('DataExplorer', () => {
         '  |>range(start: , stop: )',
       ]
 
-      cy.get('.view-line')
-        .last()
-        .type(fluxQuery.join('{enter}'))
+      cy.get('.view-line').last().type(fluxQuery.join('{enter}'))
 
       // Searches for non-existent variable
       cy.getByTestID('toolbar-tab').click()
@@ -587,9 +571,7 @@ describe('DataExplorer', () => {
       })
 
       // Searches for timeRange variables
-      cy.getByTestID('flux-toolbar-search--input')
-        .clear()
-        .type('timeRange')
+      cy.getByTestID('flux-toolbar-search--input').clear().type('timeRange')
 
       cy.get('.flux-toolbar--list').within(() => {
         cy.get('.flux-toolbar--list-item')
@@ -673,14 +655,10 @@ describe('DataExplorer', () => {
       )
 
       // rename the first tab
-      cy.get('.query-tab')
-        .first()
-        .trigger('contextmenu', {force: true})
+      cy.get('.query-tab').first().trigger('contextmenu', {force: true})
       cy.getByTestID('right-click--edit-tab').click()
       cy.getByTestID('edit-query-name').type('NewName{enter}')
-      cy.get('.query-tab')
-        .first()
-        .contains('NewName')
+      cy.get('.query-tab').first().contains('NewName')
 
       // Fire a click outside of the right click menu to dismiss it because
       // it is obscuring the + button
@@ -690,9 +668,7 @@ describe('DataExplorer', () => {
       cy.get('.time-machine-queries--new').click()
       cy.get('.query-tab').should('have.length', 2)
 
-      cy.get('.query-tab')
-        .first()
-        .trigger('contextmenu')
+      cy.get('.query-tab').first().trigger('contextmenu')
       cy.getByTestID('right-click--remove-tab').click()
 
       cy.get('.query-tab').should('have.length', 1)
@@ -826,9 +802,7 @@ describe('DataExplorer', () => {
           /^(?=.*dashboards)(?:(?!cell).)+$/
         )
 
-        cy.getByTestID(`cell--draggable ${cellName}`)
-          .should('exist')
-          .click()
+        cy.getByTestID(`cell--draggable ${cellName}`).should('exist').click()
         cy.getByTestID(`cell ${cellName}`).should('exist')
       })
     })
@@ -937,18 +911,14 @@ describe('DataExplorer', () => {
         fillForm('every', {time: timeEvery, taskName})
 
         cy.getByTestID('task-options-bucket-dropdown--button').click()
-        cy.getByTestID('dropdown-item')
-          .contains(bucketName)
-          .click()
+        cy.getByTestID('dropdown-item').contains(bucketName).click()
         cy.getByTestID('task-options-bucket-dropdown--button')
           .contains(bucketName)
           .should('exist')
 
         cy.getByTestID('task-options-bucket-dropdown--button').click()
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-          cy.getByTestID('dropdown-item')
-            .contains(defaultBucket)
-            .click()
+          cy.getByTestID('dropdown-item').contains(defaultBucket).click()
           cy.getByTestID('task-options-bucket-dropdown--button')
             .contains(defaultBucket)
             .should('exist')
@@ -1017,9 +987,7 @@ describe('DataExplorer', () => {
           cy.getByTestID('variable-name-input').type('bad name')
           cy.getByTestID('variable-form-save').should('be.disabled')
 
-          cy.getByTestID('variable-name-input')
-            .clear()
-            .type('bad-name')
+          cy.getByTestID('variable-name-input').clear().type('bad-name')
           cy.getByTestID('variable-form-save').should('be.disabled')
           cy.get('.cf-overlay--dismiss').click()
         })

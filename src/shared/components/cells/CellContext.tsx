@@ -46,9 +46,8 @@ const CellContext: FC<Props> = ({
   const dispatch = useDispatch()
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
-  const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
-    null
-  )
+  const triggerRef: RefObject<HTMLButtonElement> =
+    useRef<HTMLButtonElement>(null)
   const buttonClass = classnames('cell--context', {
     'cell--context__active': popoverVisible,
   })

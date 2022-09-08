@@ -45,9 +45,8 @@ export enum OverlayType {
 
 const FluxQueryBuilder: FC = () => {
   const history = useHistory()
-  const {hasChanged, query, vertical, setVertical} = useContext(
-    PersistanceContext
-  )
+  const {hasChanged, query, vertical, setVertical} =
+    useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
   const {cancel} = useContext(QueryContext)

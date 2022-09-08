@@ -53,17 +53,14 @@ export const DEFAULT_CONTEXT: AccountContextType = {
   deleteOverlayVisible: false,
 }
 
-export const AccountContext = React.createContext<AccountContextType>(
-  DEFAULT_CONTEXT
-)
+export const AccountContext =
+  React.createContext<AccountContextType>(DEFAULT_CONTEXT)
 
 export const AccountProvider: FC<Props> = React.memo(({children}) => {
   const [account, setAccount] = useState<OperatorAccount>(null)
   const [organizations, setOrganizations] = useState<OperatorOrg[]>(null)
-  const [
-    convertToContractOverlayVisible,
-    setConvertToContractOverlayVisible,
-  ] = useState(false)
+  const [convertToContractOverlayVisible, setConvertToContractOverlayVisible] =
+    useState(false)
   const [deleteOverlayVisible, setDeleteOverlayVisible] = useState(false)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [convertStatus, setConvertStatus] = useState(RemoteDataState.NotStarted)

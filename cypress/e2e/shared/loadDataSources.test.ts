@@ -15,9 +15,7 @@ describe('Load Data Sources', () => {
   it('navigate to Client Library details view and render it with essentials', () => {
     cy.getByTestID('write-data--section client-libraries').within(() => {
       cy.getByTestID('square-grid').within(() => {
-        cy.getByTestIDSubStr('load-data-item')
-          .first()
-          .click()
+        cy.getByTestIDSubStr('load-data-item').first().click()
       })
     })
 
@@ -32,9 +30,7 @@ describe('Load Data Sources', () => {
   it('navigate to Telegraf Plugin details view and render it with essentials', () => {
     cy.getByTestID('write-data--section telegraf-plugins').within(() => {
       cy.getByTestID('square-grid').within(() => {
-        cy.getByTestIDSubStr('load-data-item')
-          .first()
-          .click()
+        cy.getByTestIDSubStr('load-data-item').first().click()
       })
     })
 

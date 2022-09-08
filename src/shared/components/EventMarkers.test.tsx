@@ -62,8 +62,8 @@ describe('EventMarkers', () => {
       return divFunction
     })
 
-    const EventMarkers = require('src/shared/components/EventMarkers.tsx')
-      .default
+    const EventMarkers =
+      require('src/shared/components/EventMarkers.tsx').default
 
     const {getByTestId, getAllByTestId, queryByTestId} = render(
       <EventMarkers

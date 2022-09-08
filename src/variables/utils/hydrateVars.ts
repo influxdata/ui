@@ -480,7 +480,7 @@ export const hydrateVars = (
     deferred.reject(new CancellationError())
   }
 
-  const on = (function() {
+  const on = (function () {
     const callbacks = {}
     const ret = (evt, cb) => {
       if (!callbacks.hasOwnProperty(evt)) {

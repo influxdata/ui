@@ -46,15 +46,13 @@ const leaveBtnStyle = {
 }
 
 const AccountAboutPage: FC = () => {
-  const {userAccounts, handleRenameActiveAccount} = useContext(
-    UserAccountContext
-  )
+  const {userAccounts, handleRenameActiveAccount} =
+    useContext(UserAccountContext)
   const {users, handleRemoveUser} = useContext(UsersContext)
 
   const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
-  const [isDeactivateAccountVisible, setDeactivateAccountVisible] = useState(
-    false
-  )
+  const [isDeactivateAccountVisible, setDeactivateAccountVisible] =
+    useState(false)
 
   /**
    * confirmed with @Grace and @distortia that there is guaranteed

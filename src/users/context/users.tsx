@@ -72,9 +72,8 @@ export const DEFAULT_CONTEXT: UsersContextType = {
   users: [],
 }
 
-export const UsersContext = React.createContext<UsersContextType>(
-  DEFAULT_CONTEXT
-)
+export const UsersContext =
+  React.createContext<UsersContextType>(DEFAULT_CONTEXT)
 
 export const UsersProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()

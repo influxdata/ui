@@ -59,6 +59,13 @@ export const TelegrafInstructionsOverlay = RouteOverlay(
     history.push(`/orgs/${params.orgID}/load-data/telegrafs`)
   }
 )
+export const TelegrafUIRefreshWizard = RouteOverlay(
+  OverlayHandler,
+  'telegraf-wizard',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/load-data/telegrafs`)
+  }
+)
 
 export const AddAnnotationDEOverlay = RouteOverlay(
   OverlayHandler,

@@ -40,9 +40,7 @@ describe('Billing Page Free Users', () => {
     })
 
     cy.getByTestID('payg-grid--container').scrollIntoView()
-    cy.getByTestID('payg-button--upgrade')
-      .should('be.visible')
-      .click()
+    cy.getByTestID('payg-button--upgrade').should('be.visible').click()
 
     cy.location().should(loc => {
       expect(loc.pathname).to.eq('/checkout')
@@ -74,9 +72,7 @@ describe('Billing Page PAYG Users', () => {
 
   it('should display the free billing page for PAYG users', () => {
     // The implication here is that there is no Upgrade Now button
-    cy.get('.cf-page-header--fluid')
-      .children()
-      .should('have.length', 1)
+    cy.get('.cf-page-header--fluid').children().should('have.length', 1)
 
     // PAYG section
     cy.getByTestID('payg-plan--header').contains('Pay As You Go')
@@ -102,17 +98,11 @@ describe('Billing Page PAYG Users', () => {
     cy.getByTestID('invoice-history--name')
       .last()
       .contains('December 2020 Invoice')
-    cy.getByTestID('invoice-history--amount')
-      .last()
-      .contains('$100.00')
-    cy.getByTestID('invoice-history--status')
-      .last()
-      .contains('unpaid')
+    cy.getByTestID('invoice-history--amount').last().contains('$100.00')
+    cy.getByTestID('invoice-history--status').last().contains('unpaid')
 
     // Sort by date
-    cy.getByTestID('invoice-date--sorter')
-      .contains('Invoice Date')
-      .click()
+    cy.getByTestID('invoice-date--sorter').contains('Invoice Date').click()
 
     // Should now be the first item
     cy.getByTestID('invoice-history--name')
@@ -120,21 +110,13 @@ describe('Billing Page PAYG Users', () => {
       .contains('December 2020 Invoice')
 
     // Sort by amount
-    cy.getByTestID('invoice-amount--sorter')
-      .contains('Amount')
-      .click()
+    cy.getByTestID('invoice-amount--sorter').contains('Amount').click()
 
-    cy.getByTestID('invoice-history--amount')
-      .first()
-      .contains('$10.00')
+    cy.getByTestID('invoice-history--amount').first().contains('$10.00')
 
-    cy.getByTestID('invoice-status--sorter')
-      .contains('Status')
-      .click()
+    cy.getByTestID('invoice-status--sorter').contains('Status').click()
 
-    cy.getByTestID('invoice-history--status')
-      .first()
-      .contains('paid')
+    cy.getByTestID('invoice-history--status').first().contains('paid')
 
     // Payment Method Section
     cy.getByTestID('payment-method--header').contains('Payment Method')
@@ -172,24 +154,14 @@ describe('Billing Page PAYG Users', () => {
     cy.getByTestID('contact-info--90001').contains('90001')
 
     // Click the edit information button
-    cy.getByTestID('edit-contact--button')
-      .contains('Edit Information')
-      .click()
-    cy.getByTestID('form-input--firstname')
-      .clear()
-      .type('Salt')
-    cy.getByTestID('form-input--lastname')
-      .clear()
-      .type('Bae')
+    cy.getByTestID('edit-contact--button').contains('Edit Information').click()
+    cy.getByTestID('form-input--firstname').clear().type('Salt')
+    cy.getByTestID('form-input--lastname').clear().type('Bae')
     cy.getByTestID('save-contact--button').click()
 
     // Validate that the first and last name are updated
-    cy.getByTestID('contact-info--Salt')
-      .contains('Salt')
-      .and('not.be', 'Test')
-    cy.getByTestID('contact-info--Bae')
-      .contains('Bae')
-      .and('not.be', 'PAYG')
+    cy.getByTestID('contact-info--Salt').contains('Salt').and('not.be', 'Test')
+    cy.getByTestID('contact-info--Bae').contains('Bae').and('not.be', 'PAYG')
 
     // Notification Settings Section
     cy.getByTestID('notification-settings--header').contains(

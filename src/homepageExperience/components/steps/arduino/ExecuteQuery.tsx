@@ -26,12 +26,12 @@ export const ExecuteQuery = (props: OwnProps) => {
     // ... code from Write Data step 
     
     // Query will find the RSSI values for last minute for each connected WiFi network with this device
-     String query = "from(bucket: \"${bucketName}\")\n\
-   |> range(start: -1m)\n\
-   |> filter(fn: (r) => r._measurement == \"wifi_status\" and r._field == \"rssi\")";
+     String query = "from(bucket: \\"${bucketName}\\")\\n\\
+   |> range(start: -1m)\\n\\
+   |> filter(fn: (r) => r._measurement == \\"wifi_status\\" and r._field == \\"rssi\\")";
    
      // Print composed query
-     Serial.println("Querying for RSSI values written to the \"${bucketName}\" bucket in the last 1 min... ");
+     Serial.println("Querying for RSSI values written to the \\"${bucketName}\\" bucket in the last 1 min... ");
      Serial.println(query);
    
      // Send query to the server and get result

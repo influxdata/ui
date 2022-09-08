@@ -282,9 +282,7 @@ describe('Notification Endpoints', () => {
     if (!t) {
       throw `Element text: "${elem.text()}" contains no value`
     }
-    expect(parseInt(t[0]))
-      .to.be.at.least(min)
-      .and.to.be.at.most(max)
+    expect(parseInt(t[0])).to.be.at.least(min).and.to.be.at.most(max)
   }
 
   it('can change endpoint status', () => {
@@ -470,9 +468,7 @@ describe('Notification Endpoints', () => {
       })
       // Filter no match
       const nmFilter = names.filter(name => name.match(/.*zzz.*/))
-      cy.getByTestID('filter--input endpoints')
-        .clear()
-        .type('zzz')
+      cy.getByTestID('filter--input endpoints').clear().type('zzz')
       cy.get('[data-testid^="endpoint-card--name "]').should(cardNames => {
         const cnsText = cardNames.toArray().map(cn => cn.innerText)
         expect(cnsText).to.deep.eq(nmFilter)

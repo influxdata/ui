@@ -16,9 +16,8 @@ import {AppState, Bucket, ResourceType} from 'src/types'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
 const TabBody: FC = () => {
-  const {body, handleSetBody, tab, writeLineProtocol} = useContext(
-    LineProtocolContext
-  )
+  const {body, handleSetBody, tab, writeLineProtocol} =
+    useContext(LineProtocolContext)
 
   const {bucket: chosenUploadBucket} = useContext(WriteDataDetailsContext)
 

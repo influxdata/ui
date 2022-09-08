@@ -56,9 +56,10 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
     return columnType === 'time' || columnType === 'number'
   })
 
-  const groupKey = useMemo(() => [...results.fluxGroupKeyUnion, 'result'], [
-    results,
-  ])
+  const groupKey = useMemo(
+    () => [...results.fluxGroupKeyUnion, 'result'],
+    [results]
+  )
 
   const xColumn = defaultXColumn(results?.table, properties.xColumn)
   const yColumn = defaultYColumn(results?.table, properties.yColumn)

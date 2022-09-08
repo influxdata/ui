@@ -41,8 +41,8 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(
+  () => import('src/shared/components/FluxMonacoEditor')
 )
 
 const fakeNotify = notify
@@ -169,6 +169,7 @@ const ResultsPane: FC = () => {
                   variables={variables}
                   script={text}
                   onChangeScript={setQuery}
+                  onSubmitScript={submit}
                 />
               </Suspense>
             </div>

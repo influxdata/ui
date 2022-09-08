@@ -74,9 +74,7 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next').contains('CONTINUE', {matchCase: false})
 
-    cy.getByTestID('next')
-      .should('be.enabled')
-      .click()
+    cy.getByTestID('next').should('be.enabled').click()
 
     cy.wait('@orgSetup')
 
@@ -199,13 +197,9 @@ describe('Onboarding', () => {
       'Passwords do not match'
     )
 
-    cy.getByTestID('input-field--password')
-      .clear()
-      .type('p1')
+    cy.getByTestID('input-field--password').clear().type('p1')
 
-    cy.getByTestID('input-field--password-chk')
-      .clear()
-      .type('p1')
+    cy.getByTestID('input-field--password-chk').clear().type('p1')
 
     // check password too short
     cy.getByTestID('form--element-error').should('contain.text', '8')
@@ -225,9 +219,7 @@ describe('Onboarding', () => {
         .contains('CONTINUE', {matchCase: false})
 
       cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
-        cy.getByTestID('input-field--password')
-          .clear()
-          .type(defaultPassword)
+        cy.getByTestID('input-field--password').clear().type(defaultPassword)
         cy.getByTestID('input-field--password-chk')
           .clear()
           .type(defaultPassword)
@@ -267,9 +259,7 @@ describe('Onboarding', () => {
         .contains('CONTINUE', {matchCase: false})
 
       cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
-        cy.getByTestID('input-field--password')
-          .clear()
-          .type(defaultPassword)
+        cy.getByTestID('input-field--password').clear().type(defaultPassword)
 
         cy.getByTestID('input-field--password-chk')
           .clear()

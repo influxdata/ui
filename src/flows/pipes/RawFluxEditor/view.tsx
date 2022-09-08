@@ -96,7 +96,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [id, inject])
 
   const updateText = useCallback(
-    (text) => {
+    text => {
       const _queries = [...queries]
       _queries[activeQuery] = {
         ...queries[activeQuery],

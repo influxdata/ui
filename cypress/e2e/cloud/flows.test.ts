@@ -119,7 +119,7 @@ describe('Flows', () => {
     // Validates that the selected clone is the clone
     cy.getByTestID('page-title')
       .first()
-      .then((cloneNameElement) => {
+      .then(cloneNameElement => {
         const cloneName = cloneNameElement.text()
         const cloneTime = cloneName.slice(
           flowCloneNamePrefix.length,
@@ -158,7 +158,7 @@ describe('Flows', () => {
     cy.wait('@updateNotebook')
     cy.getByTestID('page-title')
       .first()
-      .then((cloneNameElement) => {
+      .then(cloneNameElement => {
         const cloneName = cloneNameElement.text()
         const cloneTime = cloneName.slice(
           flowCloneNamePrefix.length,
@@ -188,8 +188,8 @@ describe('Flows', () => {
 
     cy.get('button[title="Function Reference"]').click()
 
-      // search for a function
-      cy.getByTestID('flux-toolbar-search--input').click().type('microsecondd') // purposefully misspell "microsecond" so all functions are filtered out
+    // search for a function
+    cy.getByTestID('flux-toolbar-search--input').click().type('microsecondd') // purposefully misspell "microsecond" so all functions are filtered out
 
     cy.getByTestID('flux-toolbar--list').within(() => {
       cy.getByTestID('empty-state').should('be.visible')
@@ -220,7 +220,7 @@ describe('Flows', () => {
 
     cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
-      cy.getByTestID('flux-toolbar-search--input').click().type('filter')
+    cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
     cy.get('.flux-toolbar--search').within(() => {
       cy.getByTestID('dismiss-button').click()
@@ -228,13 +228,13 @@ describe('Flows', () => {
 
     cy.getByTestID('flux-toolbar-search--input')
       .invoke('val')
-      .then((value) => {
+      .then(value => {
         expect(value).to.equal('')
       })
 
     cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
-      cy.getByTestID('flux-toolbar-search--input').click().type('array')
+    cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
     cy.get('.flux-toolbar--search').within(() => {
       cy.getByTestID('dismiss-button').click()
@@ -242,7 +242,7 @@ describe('Flows', () => {
 
     cy.getByTestID('flux-toolbar-search--input')
       .invoke('val')
-      .then((value) => {
+      .then(value => {
         expect(value).to.equal('')
       })
   })
@@ -369,7 +369,7 @@ describe('Flows with newQueryBuilder flag on', () => {
     // Validates that the selected clone is the clone
     cy.getByTestID('page-title')
       .first()
-      .then((cloneNameElement) => {
+      .then(cloneNameElement => {
         const cloneName = cloneNameElement.text()
         const cloneTime = cloneName.slice(
           flowCloneNamePrefix.length,
@@ -408,7 +408,7 @@ describe('Flows with newQueryBuilder flag on', () => {
     cy.wait('@updateNotebook')
     cy.getByTestID('page-title')
       .first()
-      .then((cloneNameElement) => {
+      .then(cloneNameElement => {
         const cloneName = cloneNameElement.text()
         const cloneTime = cloneName.slice(
           flowCloneNamePrefix.length,

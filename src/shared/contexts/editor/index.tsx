@@ -43,8 +43,8 @@ export interface EditorContextType {
 
 const DEFAULT_CONTEXT: EditorContextType = {
   editor: null,
-  setEditor: (_) => {},
-  inject: (_) => {},
+  setEditor: _ => {},
+  inject: _ => {},
   injectFunction: (_, __) => {},
   injectVariable: (_, __) => {},
   injectViaLsp: (_, __) => {},

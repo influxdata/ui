@@ -52,7 +52,7 @@ describe('DataExplorer', () => {
       // inject function into script editor
       cy.getByTestID('flux--microsecond--inject').click()
 
-      getTimeMachineText().then((text) => {
+      getTimeMachineText().then(text => {
         const expected = 'import "date"  date.microsecond(t: )'
         cy.fluxEqual(text, expected).should('be.true')
       })
@@ -63,7 +63,7 @@ describe('DataExplorer', () => {
 
       cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
-        cy.getByTestID('flux-toolbar-search--input').click().type('filter')
+      cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
       cy.get('.flux-toolbar--search').within(() => {
         cy.getByTestID('dismiss-button').click()
@@ -71,13 +71,13 @@ describe('DataExplorer', () => {
 
       cy.getByTestID('flux-toolbar-search--input')
         .invoke('val')
-        .then((value) => {
+        .then(value => {
           expect(value).to.equal('')
         })
 
       cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
-        cy.getByTestID('flux-toolbar-search--input').click().type('array')
+      cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
       cy.get('.flux-toolbar--search').within(() => {
         cy.getByTestID('dismiss-button').click()
@@ -85,7 +85,7 @@ describe('DataExplorer', () => {
 
       cy.getByTestID('flux-toolbar-search--input')
         .invoke('val')
-        .then((value) => {
+        .then(value => {
           expect(value).to.equal('')
         })
     })

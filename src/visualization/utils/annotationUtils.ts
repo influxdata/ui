@@ -24,7 +24,7 @@ import {
 
 const makeCreateMethod = (
   dispatch: Dispatch<any>,
-  cellID: string,
+  streamName: string,
   eventPrefix = 'xyplot'
 ) => {
   const createAnnotation = async userModifiedAnnotation => {
@@ -37,7 +37,7 @@ const makeCreateMethod = (
         writeThenFetchAndSetAnnotations([
           {
             summary,
-            stream: cellID,
+            stream: streamName,
             startTime: new Date(startTime).getTime(),
             endTime: new Date(actualEndTime).getTime(),
           },
@@ -63,10 +63,10 @@ const makeCreateMethod = (
 // (initially, the user can then change to a range once the dialog is up)
 const makeAnnotationClickListener = (
   dispatch: Dispatch<any>,
-  cellID: string,
+  streamName: string,
   eventPrefix = 'xyplot'
 ) => {
-  const createAnnotation = makeCreateMethod(dispatch, cellID, eventPrefix)
+  const createAnnotation = makeCreateMethod(dispatch, streamName, eventPrefix)
 
   const singleClickHandler = (plotInteraction: InteractionHandlerArguments) => {
     event(`annotations.create_annotation.show_overlay`, {prefix: eventPrefix})
@@ -78,7 +78,7 @@ const makeAnnotationClickListener = (
           createAnnotation,
           startTime: plotInteraction?.clampedValueX ?? plotInteraction.valueX,
           eventPrefix,
-          cellID,
+          streamName,
         },
         () => {
           dismissOverlay()
@@ -92,10 +92,10 @@ const makeAnnotationClickListener = (
 
 const makeAnnotationRangeListener = (
   dispatch: Dispatch<any>,
-  cellID: string,
+  streamName: string,
   eventPrefix = 'xyplot'
 ) => {
-  const createAnnotation = makeCreateMethod(dispatch, cellID, eventPrefix)
+  const createAnnotation = makeCreateMethod(dispatch, streamName, eventPrefix)
 
   const rangeHandler = (start: number | string, end: number | string) => {
     event(`annotations.create_range_annotation.show_overlay`, {
@@ -110,7 +110,7 @@ const makeAnnotationRangeListener = (
           endTime: end,
           range: true,
           eventPrefix,
-          cellID,
+          streamName,
         },
         () => {
           dismissOverlay()
@@ -134,13 +134,13 @@ const makeAnnotationRangeListener = (
  *  so just need one handler for both types of annotations
  * */
 const makeAnnotationClickHandler = (
-  cellID: string,
+  streamName: string,
   dispatch: Dispatch<any>,
   annotations: AnnotationsList,
   eventPrefix = 'xyplot'
 ) => {
   const clickHandler = (id: string) => {
-    const annotationToEdit = annotations[cellID].find(
+    const annotationToEdit = annotations[streamName].find(
       annotation => annotation.id === id
     )
     if (annotationToEdit) {
@@ -153,10 +153,10 @@ const makeAnnotationClickHandler = (
           {
             clickedAnnotation: {
               ...annotationToEdit,
-              stream: cellID,
+              stream: streamName,
               eventPrefix,
             },
-            cellID,
+            streamName,
           },
           () => {
             dismissOverlay()
@@ -182,7 +182,7 @@ export const sortAnnotations = (anno1, anno2) => {
   return anno1Value - anno2Value
 }
 const makeAnnotationLayer = (
-  cellID: string,
+  streamName: string,
   xColumn: string,
   yColumn: string,
   groupKey: string[],
@@ -191,7 +191,7 @@ const makeAnnotationLayer = (
   dispatch: Dispatch<any>,
   eventPrefix = 'xyplot'
 ) => {
-  const cellAnnotations = annotations ? annotations[cellID] ?? [] : []
+  const cellAnnotations = annotations ? annotations[streamName] ?? [] : []
 
   const annotationsToRender: any[] = cellAnnotations
     .sort(sortAnnotations)
@@ -203,7 +203,7 @@ const makeAnnotationLayer = (
     })
 
   const handleAnnotationClick = makeAnnotationClickHandler(
-    cellID,
+    streamName,
     dispatch,
     annotations,
     eventPrefix
@@ -238,7 +238,7 @@ const makeAnnotationLayer = (
 export const addAnnotationLayer = (
   config: Config,
   inAnnotationMode: boolean,
-  cellID: string,
+  streamName: string,
   xColumn: string,
   yColumn: string,
   groupKey: string[],
@@ -246,23 +246,23 @@ export const addAnnotationLayer = (
   dispatch: Dispatch<any>,
   eventPrefix = 'xyplot'
 ) => {
-  if (inAnnotationMode && cellID) {
+  if (inAnnotationMode && streamName) {
     config.interactionHandlers = {
       singleShiftClick: makeAnnotationClickListener(
         dispatch,
-        cellID,
+        streamName,
         eventPrefix
       ),
     }
     config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
       dispatch,
-      cellID,
+      streamName,
       eventPrefix
     )
   }
 
   const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(
-    cellID,
+    streamName,
     xColumn,
     yColumn,
     groupKey,

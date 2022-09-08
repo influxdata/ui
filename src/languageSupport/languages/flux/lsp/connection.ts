@@ -248,7 +248,7 @@ class LspConnectionManager {
       },
     ]
 
-    const removeAllStyles = !compositionBlock && schema.composition.diverged
+    const removeAllStyles = schema.composition.diverged
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
@@ -263,6 +263,8 @@ class LspConnectionManager {
 
     if (removeAllStyles) {
       clickableInvisibleDiv.style.display = 'none'
+    } else {
+      clickableInvisibleDiv.style.display = 'block'
     }
   }
 

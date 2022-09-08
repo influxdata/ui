@@ -117,10 +117,10 @@ export class Setup extends PureComponent<Props, State> {
                 component={OnboardingWizardPage}
               />
               <Route path="/share/:accessID" component={ReadOnlyNotebook} />
-              <Route path={LOGIN} component={LoginPage} />
-              <Route path={SIGNIN} component={SigninPage} />
-              <Route path={LOGOUT} component={Logout} />
-              <Route component={Signin} />
+              {/*<Route path={LOGIN} component={LoginPage} />*/}
+              {/*<Route path={SIGNIN} component={SigninPage} />*/}
+              {/*<Route path={LOGOUT} component={Logout} />*/}
+              <Route component={LoginPage} />
             </Switch>
           )}
         </Suspense>

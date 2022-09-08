@@ -17,10 +17,12 @@ import {fetchLegacyIdentity} from 'src/identity/apis/auth'
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
+import {CLOUD, CLOUD_LOGIN_PATHNAME} from 'src/shared/constants'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
 export const LoginPage: FC = () => {
+  console.log('LoginPage')
   const [hasValidSession, setHasValidSession] = useState(false)
 
   const getSessionValidity = useCallback(async () => {
@@ -47,6 +49,17 @@ export const LoginPage: FC = () => {
     }
     return null
   }
+  else {
+    if (CLOUD) {
+      const url = new URL(
+        `${window.location.origin}${CLOUD_LOGIN_PATHNAME}`
+      ).href
+
+      window.location.href = url
+      return
+    }
+  }
+
 
   return (
     <ErrorBoundary>

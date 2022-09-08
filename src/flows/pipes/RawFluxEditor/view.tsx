@@ -96,7 +96,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [id, inject])
 
   const updateText = useCallback(
-    text => {
+    (text) => {
       const _queries = [...queries]
       _queries[activeQuery] = {
         ...queries[activeQuery],
@@ -122,7 +122,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     } else {
       event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
-      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
+      if (CLOUD) {
         showSub(<DynamicFunctions onSelect={injectIntoEditor} />)
       } else {
         showSub(<Functions onSelect={injectIntoEditor} />)

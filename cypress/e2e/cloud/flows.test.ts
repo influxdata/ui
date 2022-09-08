@@ -119,7 +119,7 @@ describe('Flows', () => {
     // Validates that the selected clone is the clone
     cy.getByTestID('page-title')
       .first()
-      .then(cloneNameElement => {
+      .then((cloneNameElement) => {
         const cloneName = cloneNameElement.text()
         const cloneTime = cloneName.slice(
           flowCloneNamePrefix.length,
@@ -158,7 +158,7 @@ describe('Flows', () => {
     cy.wait('@updateNotebook')
     cy.getByTestID('page-title')
       .first()
-      .then(cloneNameElement => {
+      .then((cloneNameElement) => {
         const cloneName = cloneNameElement.text()
         const cloneTime = cloneName.slice(
           flowCloneNamePrefix.length,
@@ -182,79 +182,69 @@ describe('Flows', () => {
   })
 
   it('can use the dynamic flux function selector to build a query', () => {
-    cy.setFeatureFlags({
-      fluxDynamicDocs: true,
-    }).then(() => {
-      cy.getByTestID('preset-script').first().click()
+    cy.getByTestID('preset-script').first().click()
 
-      cy.get('.view-line').should('be.visible')
+    cy.get('.view-line').should('be.visible')
 
-      cy.get('button[title="Function Reference"]').click()
+    cy.get('button[title="Function Reference"]').click()
 
       // search for a function
       cy.getByTestID('flux-toolbar-search--input').click().type('microsecondd') // purposefully misspell "microsecond" so all functions are filtered out
 
-      cy.getByTestID('flux-toolbar--list').within(() => {
-        cy.getByTestID('empty-state').should('be.visible')
-      })
-      cy.getByTestID('flux-toolbar-search--input').type('{backspace}')
-
-      cy.get('.flux-toolbar--list-item').should('contain', 'microsecond')
-      cy.get('.flux-toolbar--list-item').should('have.length', 1)
-
-      // hovers over function and see a tooltip
-      cy.get('.flux-toolbar--list-item').trigger('mouseover')
-      cy.getByTestID('flux-docs--microsecond').should('be.visible')
-
-      // inject function into script editor
-      cy.getByTestID('flux--microsecond--inject').click({force: true})
-
-      // At minimium two lines: import and a function call
-      cy.get('.view-line').should('have.length.at.least', 2)
-      cy.get('.view-line').last().contains('microsecond')
+    cy.getByTestID('flux-toolbar--list').within(() => {
+      cy.getByTestID('empty-state').should('be.visible')
     })
+    cy.getByTestID('flux-toolbar-search--input').type('{backspace}')
+
+    cy.get('.flux-toolbar--list-item').should('contain', 'microsecond')
+    cy.get('.flux-toolbar--list-item').should('have.length', 1)
+
+    // hovers over function and see a tooltip
+    cy.get('.flux-toolbar--list-item').trigger('mouseover')
+    cy.getByTestID('flux-docs--microsecond').should('be.visible')
+
+    // inject function into script editor
+    cy.getByTestID('flux--microsecond--inject').click({force: true})
+
+    // At minimium two lines: import and a function call
+    cy.get('.view-line').should('have.length.at.least', 2)
+    cy.get('.view-line').last().contains('microsecond')
   })
 
   it('can use the dynamic flux function search bar to search by package or function name', () => {
-    cy.setFeatureFlags({
-      fluxDynamicDocs: true,
-    }).then(() => {
-      cy.getByTestID('preset-script').first().click()
+    cy.getByTestID('preset-script').first().click()
 
-      cy.get('.view-line').should('be.visible')
+    cy.get('.view-line').should('be.visible')
 
-      cy.get('button[title="Function Reference"]').click()
+    cy.get('button[title="Function Reference"]').click()
+
+    cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
       cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
-      cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
-      cy.getByTestID('flux--filter').contains('filter')
+    cy.get('.flux-toolbar--search').within(() => {
+      cy.getByTestID('dismiss-button').click()
+    })
 
-      cy.get('.flux-toolbar--search').within(() => {
-        cy.getByTestID('dismiss-button').click()
+    cy.getByTestID('flux-toolbar-search--input')
+      .invoke('val')
+      .then((value) => {
+        expect(value).to.equal('')
       })
 
-      cy.getByTestID('flux-toolbar-search--input')
-        .invoke('val')
-        .then(value => {
-          expect(value).to.equal('')
-        })
+    cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
       cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
-      cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
-      cy.getByTestID('flux--filter').contains('filter')
-
-      cy.get('.flux-toolbar--search').within(() => {
-        cy.getByTestID('dismiss-button').click()
-      })
-
-      cy.getByTestID('flux-toolbar-search--input')
-        .invoke('val')
-        .then(value => {
-          expect(value).to.equal('')
-        })
+    cy.get('.flux-toolbar--search').within(() => {
+      cy.getByTestID('dismiss-button').click()
     })
+
+    cy.getByTestID('flux-toolbar-search--input')
+      .invoke('val')
+      .then((value) => {
+        expect(value).to.equal('')
+      })
   })
 })
 
@@ -379,7 +369,7 @@ describe('Flows with newQueryBuilder flag on', () => {
     // Validates that the selected clone is the clone
     cy.getByTestID('page-title')
       .first()
-      .then(cloneNameElement => {
+      .then((cloneNameElement) => {
         const cloneName = cloneNameElement.text()
         const cloneTime = cloneName.slice(
           flowCloneNamePrefix.length,
@@ -418,7 +408,7 @@ describe('Flows with newQueryBuilder flag on', () => {
     cy.wait('@updateNotebook')
     cy.getByTestID('page-title')
       .first()
-      .then(cloneNameElement => {
+      .then((cloneNameElement) => {
         const cloneName = cloneNameElement.text()
         const cloneTime = cloneName.slice(
           flowCloneNamePrefix.length,

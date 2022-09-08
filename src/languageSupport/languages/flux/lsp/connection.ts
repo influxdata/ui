@@ -190,7 +190,7 @@ class LspConnectionManager {
       ? 'composition-sync--on'
       : 'composition-sync--off'
 
-    // Customize the full width of margin using `marginClassName`
+    // Customize the full width of Monaco editor margin using API `marginClassName`
     // https://github.com/microsoft/monaco-editor/blob/35eb0ef/website/typedoc/monaco.d.ts#L1533
     const startLineStyle = {
       range: new MonacoTypes.Range(startLine, 1, startLine, 1),

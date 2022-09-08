@@ -12931,10 +12931,10 @@ y-protocols@^1.0.5:
   dependencies:
     lib0 "^0.2.42"
 
-y-websocket@^1.4.3:
-  version "1.4.3"
-  resolved "https://registry.npmjs.org/y-websocket/-/y-websocket-1.4.3.tgz"
-  integrity sha512-VobyJaAoyWIETETNZragnTpL7kcJr8a/CIUQP6DfXcQ4v0UmZUuANdsPsbmMjDsEeUECVFRhHauxpDtRhYqkaQ==
+y-websocket@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/y-websocket/-/y-websocket-1.4.4.tgz#d1750b6395fbe2f99cdabac97d3cd8d8de3fee6f"
+  integrity sha512-5G6FyqHosiiUBm2kMllOK5SP3uoyxgca9uq67iVPE44SW1sx66/fbU5S9RxhHBvn/WZh3rTf7GE7gr0h4rQb3Q==
   dependencies:
     lib0 "^0.2.42"
     lodash.debounce "^4.0.8"

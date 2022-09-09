@@ -79,20 +79,18 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [id])
 
   useEffect(() => {
-    if (isFlagEnabled('fluxInjectSecrets')) {
-      register(id, [
-        {
-          title: 'RawFluxEditor actions',
-          actions: [
-            {
-              title: 'Inject Secret',
-              disable: () => false,
-              menu: <SecretsList inject={inject} cbOnInject={updateText} />,
-            },
-          ],
-        },
-      ])
-    }
+    register(id, [
+      {
+        title: 'RawFluxEditor actions',
+        actions: [
+          {
+            title: 'Inject Secret',
+            disable: () => false,
+            menu: <SecretsList inject={inject} cbOnInject={updateText} />,
+          },
+        ],
+      },
+    ])
   }, [id, inject])
 
   const updateText = useCallback(

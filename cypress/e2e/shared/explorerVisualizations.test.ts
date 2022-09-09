@@ -77,10 +77,10 @@ describe('visualizations', () => {
 
           cy.log('can revert back to query builder mode (with confirmation)')
           cy.getByTestID('switch-to-script-editor').should('be.visible').click()
-          cy.getByTestID('flux--mean--inject').first().click()
+          cy.getByTestID('flux--bottom--inject').click()
 
-          cy.log('check to see if new mean is at the bottom')
-          cy.get('.view-line').last().contains('mean')
+          cy.log('check to see if new flux function is at the bottom')
+          cy.get('.view-line').last().prev().contains('bottom')
           cy.getByTestID('flux-editor').should('exist')
           cy.getByTestID('flux-editor').monacoType(`yoyoyoyoyo`)
 

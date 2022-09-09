@@ -40,6 +40,9 @@ import {
   TimeRange,
 } from 'src/types'
 
+// Constants
+import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
+
 export const getActiveTimeMachine = (state: AppState) => {
   if (!state.timeMachines) {
     return null
@@ -434,3 +437,13 @@ export const getSaveableView = (state: AppState): QueryView & {id?: string} => {
 
   return saveableView
 }
+
+export const getWindowPeriodFromQueryBuilder = (
+  state: AppState,
+  viewId: string
+): string =>
+  get(
+    state,
+    `resources.views.byID.[${viewId}].properties.queries.[0].builderConfig.aggregateWindow.period`,
+    AGG_WINDOW_AUTO
+  )

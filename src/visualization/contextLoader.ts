@@ -12,9 +12,10 @@ export interface VisualizationOptionProps {
 export interface VisualizationProps {
   properties: ViewProperties | SimpleTableViewProperties
   result: FluxResult['parsed']
-  timeRange?: TimeRange
   annotations?: AnnotationsList
   cellID?: string
+  timeRange?: TimeRange
+  transmitWindowPeriod?: (windowPeriod: number | string) => void
 }
 
 export interface Visualization {

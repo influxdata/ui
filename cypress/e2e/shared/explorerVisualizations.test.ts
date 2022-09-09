@@ -77,13 +77,13 @@ describe('visualizations', () => {
 
           cy.log('can revert back to query builder mode (with confirmation)')
           cy.getByTestID('switch-to-script-editor').should('be.visible').click()
-          cy.getByTestID('flux--rate--inject').click()
+          cy.getByTestID('flux--mean--inject').first().click()
 
           cy.log('check to see if import is defaulted to the top')
           cy.get('.view-line').first().contains('import')
 
-          cy.log('check to see if new aggregate rate is at the bottom')
-          cy.get('.view-line').last().prev().contains('aggregate.')
+          cy.log('check to see if new aggregate mean is at the bottom')
+          cy.get('.view-line').last().contains('aggregate.')
           cy.getByTestID('flux-editor').should('exist')
           cy.getByTestID('flux-editor').monacoType(`yoyoyoyoyo`)
 

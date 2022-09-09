@@ -79,11 +79,8 @@ describe('visualizations', () => {
           cy.getByTestID('switch-to-script-editor').should('be.visible').click()
           cy.getByTestID('flux--mean--inject').first().click()
 
-          cy.log('check to see if import is defaulted to the top')
-          cy.get('.view-line').first().contains('import')
-
-          cy.log('check to see if new aggregate mean is at the bottom')
-          cy.get('.view-line').last().contains('aggregate.')
+          cy.log('check to see if new mean is at the bottom')
+          cy.get('.view-line').last().contains('mean')
           cy.getByTestID('flux-editor').should('exist')
           cy.getByTestID('flux-editor').monacoType(`yoyoyoyoyo`)
 

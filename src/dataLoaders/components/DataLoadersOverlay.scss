@@ -43,6 +43,12 @@
   padding: $ix-marg-d;
 }
 
+.configuration-overlay--body {
+  padding: 45px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
 /*
   Telegraf Instructions Overlay
   ------------------------------------------------------------------------------

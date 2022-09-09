@@ -91,16 +91,18 @@ export const BucketProvider: FC<Props> = ({
 
   // keep the redux store in sync
   useEffect(() => {
-    dispatch(
-      setBuckets(
-        RemoteDataState.Done,
-        normalize<Bucket, BucketEntities, string[]>(
-          buckets.filter(b => b.type !== 'sample'),
-          arrayOfBuckets
+    if (loading === RemoteDataState.Done) {
+      dispatch(
+        setBuckets(
+          RemoteDataState.Done,
+          normalize<Bucket, BucketEntities, string[]>(
+            buckets.filter(b => b.type !== 'sample'),
+            arrayOfBuckets
+          )
         )
       )
-    )
-  }, [buckets])
+    }
+  }, [buckets, loading])
 
   // TODO: load bucket creation limits on org change
   // expose limits to frontend

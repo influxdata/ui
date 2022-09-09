@@ -123,9 +123,6 @@ describe('Secrets', () => {
   describe('usage in notebooks', () => {
     beforeEach(() => {
       cy.flush()
-      cy.setFeatureFlags({
-        fluxInjectSecrets: true,
-      })
       cy.signin()
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {

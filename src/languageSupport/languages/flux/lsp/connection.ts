@@ -216,7 +216,7 @@ class LspConnectionManager {
   _setEditorBlockStyle(schema: SchemaSelection = this._session) {
     const compositionBlock = this._getCompositionBlockLines()
 
-    const removeAllStyles = !compositionBlock && schema.composition.diverged
+    const removeAllStyles = !compositionBlock || schema.composition.diverged
 
     const compositionSyncStyle = this._compositionSyncStyle(
       compositionBlock?.startLine,
@@ -236,6 +236,8 @@ class LspConnectionManager {
 
     if (removeAllStyles) {
       clickableInvisibleDiv.style.display = 'none'
+    } else {
+      clickableInvisibleDiv.style.display = 'block'
     }
   }
 

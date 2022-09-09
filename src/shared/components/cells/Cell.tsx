@@ -132,7 +132,7 @@ class CellComponent extends Component<Props, State> {
     return (
       <>
         <CellHeader name={this.viewName} note={this.viewNote}>
-          <span>window period: {this.windowPeriod}</span>
+          {this.windowPeriod}
           <CellContext
             cell={cell}
             view={view}
@@ -205,10 +205,23 @@ class CellComponent extends Component<Props, State> {
     )
   }
 
-  private get windowPeriod(): string {
-    return this.props.windowPeriodFromQueryBuilder === AGG_WINDOW_AUTO
-      ? `${this.state.windowPeriod}`
-      : this.props.windowPeriodFromQueryBuilder
+  private get windowPeriod(): JSX.Element {
+    const type = this.props.view?.properties?.type
+
+    switch (type) {
+      case 'xy':
+      case 'line-plus-single-stat':
+      case 'band': {
+        if (this.props.windowPeriodFromQueryBuilder === AGG_WINDOW_AUTO) {
+          return <span>window period: {this.state.windowPeriod}</span>
+        }
+        return (
+          <span>window period: {this.props.windowPeriodFromQueryBuilder}</span>
+        )
+      }
+      default:
+        return null
+    }
   }
 }
 

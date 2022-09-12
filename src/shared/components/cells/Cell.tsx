@@ -213,10 +213,16 @@ class CellComponent extends Component<Props, State> {
       case 'line-plus-single-stat':
       case 'band': {
         if (this.props.windowPeriodFromQueryBuilder === AGG_WINDOW_AUTO) {
-          return <span>window period: {this.state.windowPeriod}</span>
+          return (
+            <span className="cell--window-period">
+              window period: {this.state.windowPeriod}
+            </span>
+          )
         }
         return (
-          <span>window period: {this.props.windowPeriodFromQueryBuilder}</span>
+          <span className="cell--window-period">
+            window period: {this.props.windowPeriodFromQueryBuilder}
+          </span>
         )
       }
       default:

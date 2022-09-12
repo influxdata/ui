@@ -102,7 +102,7 @@ export const BucketProvider: FC<Props> = ({
         )
       )
     }
-  }, [buckets, loading])
+  }, [buckets, dispatch, loading])
 
   // TODO: load bucket creation limits on org change
   // expose limits to frontend

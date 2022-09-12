@@ -210,7 +210,6 @@ class LspConnectionManager {
       this._compositionStyle,
       removeAllStyles ? [] : compositionSyncStyle
     )
-
   }
 
   // XXX: wiedld (25 Aug 2022) - handling the absence of a middleware listener

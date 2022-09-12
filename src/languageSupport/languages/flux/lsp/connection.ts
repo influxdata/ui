@@ -30,8 +30,6 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-export const ICON_SYNC_ID = 'schema-composition-sync-icon'
-
 // hardcoded in LSP
 const COMPOSITION_YIELD = '_editor_composition'
 const COMPOSITION_INIT_LINE = 1
@@ -136,22 +134,6 @@ class LspConnectionManager {
     })
   }
 
-  _setEditorSyncToggle() {
-    setTimeout(() => {
-      const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-      // add listeners
-      clickableInvisibleDiv.removeEventListener('click', () =>
-        this._setSessionSync(!this._session.composition.synced)
-      ) // may have existing
-      clickableInvisibleDiv.addEventListener('click', () => {
-        event('Toggled Flux Sync in editor', {
-          active: `${!this._session.composition.synced}`,
-        })
-        this._setSessionSync(!this._session.composition.synced)
-      })
-    }, 1000)
-  }
-
   _editorChangeIsFromLsp(change) {
     return change.text?.includes('|> yield(name: "_editor_composition")')
   }
@@ -229,16 +211,6 @@ class LspConnectionManager {
       removeAllStyles ? [] : compositionSyncStyle
     )
 
-    const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-    clickableInvisibleDiv.className = schema.composition.synced
-      ? 'sync-icon--on'
-      : 'sync-icon--off'
-
-    if (removeAllStyles) {
-      clickableInvisibleDiv.style.display = 'none'
-    } else {
-      clickableInvisibleDiv.style.display = 'block'
-    }
   }
 
   // XXX: wiedld (25 Aug 2022) - handling the absence of a middleware listener
@@ -382,7 +354,6 @@ class LspConnectionManager {
 
   _initCompositionHandlers() {
     // handlers to trigger end composition
-    this._setEditorSyncToggle()
     this._setEditorIrreversibleExit()
 
     // XXX: wiedld (25 Aug 2022) - eventually, this should be from the LSP response.

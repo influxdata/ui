@@ -7,7 +7,6 @@ import classnames from 'classnames'
 // Components
 import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {Icon, IconFont} from '@influxdata/clockface'
 
 // LSP
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
@@ -18,9 +17,7 @@ import {
   submit,
 } from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
-import ConnectionManager, {
-  ICON_SYNC_ID,
-} from 'src/languageSupport/languages/flux/lsp/connection'
+import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
 
 // Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'
@@ -160,11 +157,6 @@ const FluxEditorMonaco: FC<Props> = ({
             }}
             editorDidMount={editorDidMount}
           />
-          {isNewQxBuilder && (
-            <div id={ICON_SYNC_ID}>
-              <Icon glyph={IconFont.Sync} />
-            </div>
-          )}
         </div>
       </ErrorBoundary>
     ),

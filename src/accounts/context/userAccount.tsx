@@ -15,7 +15,7 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Utils
-import {getAccounts, patchAccount} from 'src/client/unityRoutes'
+import {patchAccount} from 'src/client/unityRoutes'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
@@ -26,7 +26,10 @@ import {setMe} from 'src/me/actions/creators'
 import {MeState} from 'src/me/reducers'
 
 // API
-import {updateDefaultQuartzAccount} from 'src/identity/apis/auth'
+import {
+  getUserAccounts,
+  updateDefaultQuartzAccount,
+} from 'src/identity/apis/auth'
 
 export type Props = {
   children: JSX.Element
@@ -83,32 +86,28 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   const handleGetAccounts = useCallback(async () => {
     try {
-      const resp = await getAccounts({})
-      if (resp.status !== 200) {
-        // set user account status to error;...TODO
-        throw new Error(resp.data.message)
+      console.log('getting accounts')
+      const accounts = await getUserAccounts()
+      console.log('getting accounts', {accounts})
+      setUserAccounts(accounts)
+
+      const defaultAcctArray = accounts.filter(line => line.isDefault)
+      if (defaultAcctArray && defaultAcctArray.length === 1) {
+        const defaultId = defaultAcctArray[0].id
+        setDefaultAccountId(defaultId)
       }
-      const {data} = resp
-      if (Array.isArray(data)) {
-        setUserAccounts(data)
 
-        const defaultAcctArray = data.filter(line => line.isDefault)
-        if (defaultAcctArray && defaultAcctArray.length === 1) {
-          const defaultId = defaultAcctArray[0].id
-          setDefaultAccountId(defaultId)
-        }
-
-        // isActive: true is for the currently logged in/active account
-        const activeAcctArray = data.filter(line => line.isActive)
-        if (activeAcctArray && activeAcctArray.length === 1) {
-          const activeId = activeAcctArray[0].id
-          setActiveAccountId(activeId)
-        }
+      // isActive: true is for the currently logged in/active account
+      const activeAcctArray = accounts.filter(line => line.isActive)
+      if (activeAcctArray && activeAcctArray.length === 1) {
+        const activeId = activeAcctArray[0].id
+        setActiveAccountId(activeId)
       }
     } catch (error) {
       event('multiAccount.retrieveAccounts.error', {error})
+      throw error
     }
-  }, [dispatch, defaultAccountId])
+  }, [activeAccountId, defaultAccountId])
 
   async function handleSetDefaultAccount(
     newDefaultAcctId: number,

@@ -15,6 +15,7 @@ import {
   Me as MeQuartz,
   Organization,
   OrganizationSummaries,
+  UserAccount,
 } from 'src/client/unityRoutes'
 
 import {
@@ -311,5 +312,26 @@ export const getDefaultAccountDefaultOrg = async (): Promise<
       return defaultQuartzOrg
     }
     throw new GenericError('No default account found')
+  }
+}
+
+export const getUserAccounts = async (): Promise<UserAccount[]> => {
+  try {
+    const response = await getAccounts({})
+
+    if (response.status === 401) {
+      throw new UnauthorizedError(response.data.message)
+    }
+    if (response.status === 500) {
+      throw new ServerError(response.data.message)
+    }
+
+    if (!Array.isArray(response.data)) {
+      throw new GenericError('No account found')
+    }
+
+    return response.data
+  } catch (error) {
+    throw new ServerError('Error fetching accounts')
   }
 }

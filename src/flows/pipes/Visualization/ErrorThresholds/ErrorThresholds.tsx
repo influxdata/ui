@@ -29,9 +29,10 @@ const ErrorThresholds: FC = () => {
     new Set(results.parsed.table.columns['_field']?.data as string[])
   )
 
-  const errorThresholds = useMemo(() => data?.errorThresholds ?? [], [
-    data?.errorThresholds,
-  ])
+  const errorThresholds = useMemo(
+    () => data?.errorThresholds ?? [],
+    [data?.errorThresholds]
+  )
 
   const handleAddThreshold = () => {
     event('Error Threshold Added to Visualization Panel')

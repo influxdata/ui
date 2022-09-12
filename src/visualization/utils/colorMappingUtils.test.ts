@@ -340,16 +340,13 @@ const expectedData = {
   },
 }
 
-describe('color mapping utils', function() {
-  it('should generate a color mapping when view properties from the IDPE do not have colorMapping', function() {
-    const {
-      colorMappingForGiraffe,
-      colorMappingForIDPE,
-      needsToSaveToIDPE,
-    } = getColorMappingObjects(
-      dataFromIDPE_noColorMapping.columnGroup,
-      dataFromIDPE_noColorMapping.properties as XYViewProperties
-    )
+describe('color mapping utils', function () {
+  it('should generate a color mapping when view properties from the IDPE do not have colorMapping', function () {
+    const {colorMappingForGiraffe, colorMappingForIDPE, needsToSaveToIDPE} =
+      getColorMappingObjects(
+        dataFromIDPE_noColorMapping.columnGroup,
+        dataFromIDPE_noColorMapping.properties as XYViewProperties
+      )
 
     expect(colorMappingForGiraffe).toStrictEqual(
       expectedData.threeSeries.mappingForGiraffe
@@ -360,15 +357,12 @@ describe('color mapping utils', function() {
     )
   })
 
-  it('should return the IDPE mapping when the mappings are the same and need not be re-generated', function() {
-    const {
-      colorMappingForGiraffe,
-      colorMappingForIDPE,
-      needsToSaveToIDPE,
-    } = getColorMappingObjects(
-      dataFromIDPE_sameColorMapping.columnGroup,
-      dataFromIDPE_sameColorMapping.properties as XYViewProperties
-    )
+  it('should return the IDPE mapping when the mappings are the same and need not be re-generated', function () {
+    const {colorMappingForGiraffe, colorMappingForIDPE, needsToSaveToIDPE} =
+      getColorMappingObjects(
+        dataFromIDPE_sameColorMapping.columnGroup,
+        dataFromIDPE_sameColorMapping.properties as XYViewProperties
+      )
 
     expect(colorMappingForGiraffe).toStrictEqual(
       expectedData.threeSeries.mappingForGiraffe
@@ -379,15 +373,12 @@ describe('color mapping utils', function() {
     expect(colorMappingForIDPE).toStrictEqual(undefined)
   })
 
-  it('should generate a color mapping when view properties from the IDPE do not have colorMapping and there are more series than the number of colors in the color array (5 series, 3 colors)', function() {
-    const {
-      colorMappingForGiraffe,
-      colorMappingForIDPE,
-      needsToSaveToIDPE,
-    } = getColorMappingObjects(
-      dataFromIDPE_fiveSeries.columnGroup,
-      dataFromIDPE_fiveSeries.properties as XYViewProperties
-    )
+  it('should generate a color mapping when view properties from the IDPE do not have colorMapping and there are more series than the number of colors in the color array (5 series, 3 colors)', function () {
+    const {colorMappingForGiraffe, colorMappingForIDPE, needsToSaveToIDPE} =
+      getColorMappingObjects(
+        dataFromIDPE_fiveSeries.columnGroup,
+        dataFromIDPE_fiveSeries.properties as XYViewProperties
+      )
 
     expect(colorMappingForGiraffe).toStrictEqual(
       expectedData.fiveSeries.mappingForGiraffe

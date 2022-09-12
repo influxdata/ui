@@ -8,8 +8,8 @@ describe('If in cloud', () => {
 
   it('CloudOnly renders children', async () => {
     jest.mock('src/shared/constants', () => ({CLOUD: true}))
-    const CloudOnly = require('src/shared/components/cloud/CloudOnly.tsx')
-      .default
+    const CloudOnly =
+      require('src/shared/components/cloud/CloudOnly.tsx').default
     renderWithReduxAndRouter(<CloudOnly>{Childish}</CloudOnly>)
     const elm = await screen.getByTestId('moo')
     expect(elm).toBeVisible()
@@ -17,8 +17,8 @@ describe('If in cloud', () => {
 
   it('CloudExclude does not render chilren', async () => {
     jest.mock('src/shared/constants', () => ({CLOUD: true}))
-    const CloudExclude = require('src/shared/components/cloud/CloudExclude.tsx')
-      .default
+    const CloudExclude =
+      require('src/shared/components/cloud/CloudExclude.tsx').default
     renderWithReduxAndRouter(<CloudExclude>{Childish}</CloudExclude>)
     const elm = await screen.queryByTestId('moo')
     expect(elm).toBeNull()

@@ -5,7 +5,7 @@ describe('Influx CLI onboarding', () => {
     cy.setFeatureFlags({onboardCLI: true})
   })
 
-  it('should load the main home-page that has the cli tile', function() {
+  it('should load the main home-page that has the cli tile', function () {
     cy.getByTestID('home-page--header').should('exist')
   })
 
@@ -13,7 +13,7 @@ describe('Influx CLI onboarding', () => {
     beforeEach(() => {
       cy.getByTestID('homepage-wizard-tile--cli').click()
     })
-    it('runs through the cli wizard pages', function() {
+    it('runs through the cli wizard pages', function () {
       cy.getByTestID('subway-nav').should('exist')
 
       // first page is overview
@@ -44,7 +44,7 @@ describe('Influx CLI onboarding', () => {
       cy.contains('Congrats!')
     })
     describe('Subway Nav Bar', () => {
-      it('navigates to the correct page when the respective navigation button is clicked', function() {
+      it('navigates to the correct page when the respective navigation button is clicked', function () {
         cy.get('h1').contains('Hello, Time-Series World!')
 
         cy.getByTestID('cli-prev-button').should('be.disabled')

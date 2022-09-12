@@ -51,9 +51,8 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
   public rowsPerPage: number = 12
   public totalPages: number
 
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
-  )
+  private memGetSortedResources =
+    memoizeOne<typeof getSortedResources>(getSortedResources)
   constructor(props) {
     super(props)
     this.paginationRef = createRef<HTMLDivElement>()
@@ -116,13 +115,8 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
   }
 
   public render() {
-    const {
-      searchTerm,
-      status,
-      dashboards,
-      onFilterChange,
-      onCreateDashboard,
-    } = this.props
+    const {searchTerm, status, dashboards, onFilterChange, onCreateDashboard} =
+      this.props
 
     const heightWithPagination =
       this.paginationRef?.current?.clientHeight ||

@@ -17,28 +17,28 @@ let getBrokerSubsStatuses = null
 
 if (CLOUD) {
   getBrokerSub = require('src/client/subscriptionsRoutes').getBrokerSub
-  GetBrokerSubParams = require('src/client/subscriptionsRoutes')
-    .GetBrokerSubParams
+  GetBrokerSubParams =
+    require('src/client/subscriptionsRoutes').GetBrokerSubParams
   getBrokerSubs = require('src/client/subscriptionsRoutes').getBrokerSubs
   postBrokerSub = require('src/client/subscriptionsRoutes').postBrokerSub
-  PostBrokerSubParams = require('src/client/subscriptionsRoutes')
-    .PostBrokerSubParams
+  PostBrokerSubParams =
+    require('src/client/subscriptionsRoutes').PostBrokerSubParams
   putBrokerSub = require('src/client/subscriptionsRoutes').putBrokerSub
-  PutBrokerSubParams = require('src/client/subscriptionsRoutes')
-    .PutBrokerSubParams
+  PutBrokerSubParams =
+    require('src/client/subscriptionsRoutes').PutBrokerSubParams
   deleteBrokerSub = require('src/client/subscriptionsRoutes').deleteBrokerSub
-  DeleteBrokerSubParams = require('src/client/subscriptionsRoutes')
-    .DeleteBrokerSubParams
-  getBrokerSubsStatus = require('src/client/subscriptionsRoutes')
-    .getBrokerSubsStatus
-  GetBrokerSubsStatusParams = require('src/client/subscriptionsRoutes')
-    .GetBrokerSubsStatusParams
-  putBrokerSubsStatus = require('src/client/subscriptionsRoutes')
-    .putBrokerSubsStatus
-  PutBrokerSubsStatusParams = require('src/client/subscriptionsRoutes')
-    .PutBrokerSubsStatusParams
-  getBrokerSubsStatuses = require('src/client/subscriptionsRoutes')
-    .getBrokerSubsStatuses
+  DeleteBrokerSubParams =
+    require('src/client/subscriptionsRoutes').DeleteBrokerSubParams
+  getBrokerSubsStatus =
+    require('src/client/subscriptionsRoutes').getBrokerSubsStatus
+  GetBrokerSubsStatusParams =
+    require('src/client/subscriptionsRoutes').GetBrokerSubsStatusParams
+  putBrokerSubsStatus =
+    require('src/client/subscriptionsRoutes').putBrokerSubsStatus
+  PutBrokerSubsStatusParams =
+    require('src/client/subscriptionsRoutes').PutBrokerSubsStatusParams
+  getBrokerSubsStatuses =
+    require('src/client/subscriptionsRoutes').getBrokerSubsStatuses
 }
 
 export const createAPI = async (subscription: typeof PostBrokerSubParams) => {

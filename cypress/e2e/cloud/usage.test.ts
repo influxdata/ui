@@ -26,9 +26,7 @@ describe('Usage Page Free User No Data', () => {
 
   it('should display the usage page common features', () => {
     // Display the upgrade button when the user is a free user
-    cy.get('.cf-page-header--fluid')
-      .children()
-      .should('have.length', 2)
+    cy.get('.cf-page-header--fluid').children().should('have.length', 2)
     cy.getByTestID('cloud-upgrade--button').should('be.visible')
 
     // Check that the stat headers render correctly
@@ -72,19 +70,13 @@ describe('Usage Page Free User No Data', () => {
       })
 
     // Usage Stats Graph Header
-    cy.getByTestID('usage-xy-graph--header')
-      .first()
-      .contains(statHeaders[0])
+    cy.getByTestID('usage-xy-graph--header').first().contains(statHeaders[0])
 
     // Rate Limit Graph Header
-    cy.getByTestID('usage-xy-graph--header')
-      .last()
-      .contains('Limit Events')
+    cy.getByTestID('usage-xy-graph--header').last().contains('Limit Events')
 
     // The usage page dropdown
-    cy.getByTestID('usage-page--dropdown')
-      .contains('Data In')
-      .click()
+    cy.getByTestID('usage-page--dropdown').contains('Data In').click()
     cy.getByTestID('dropdown-item')
       .should('have.length', 4)
       .last()
@@ -93,14 +85,10 @@ describe('Usage Page Free User No Data', () => {
 
     cy.getByTestID('usage-page--dropdown').contains('Data Out')
     // Make sure that the Usage Stats Header changed
-    cy.getByTestID('usage-xy-graph--header')
-      .first()
-      .contains(statHeaders[3])
+    cy.getByTestID('usage-xy-graph--header').first().contains(statHeaders[3])
 
     // Make sure the Rate Limit Graph Header stays the same
-    cy.getByTestID('usage-xy-graph--header')
-      .last()
-      .contains('Limit Events')
+    cy.getByTestID('usage-xy-graph--header').last().contains('Limit Events')
 
     // Check that the rate limits header also reflects the selected timerange
     cy.getByTestID('rate-limits-header--timerange')
@@ -128,9 +116,7 @@ describe('Usage Page PAYG With Data', () => {
 
   it('should display the usage page with data for a PAYG user', () => {
     // The implication here is that there is no Upgrade Now button
-    cy.get('.cf-page-header--fluid')
-      .children()
-      .should('have.length', 1)
+    cy.get('.cf-page-header--fluid').children().should('have.length', 1)
 
     const stats = ['0.78 MB', '32,424', '2.06 GB-hr', '0.01 GB']
 

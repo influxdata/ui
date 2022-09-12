@@ -107,9 +107,8 @@ export const DEFAULT_CONTEXT: QueryContextType = {
   cancel: (_?: string) => {},
 }
 
-export const QueryContext = React.createContext<QueryContextType>(
-  DEFAULT_CONTEXT
-)
+export const QueryContext =
+  React.createContext<QueryContextType>(DEFAULT_CONTEXT)
 
 const DESIRED_POINTS_PER_GRAPH = 360
 const FALLBACK_WINDOW_PERIOD = 15000
@@ -539,8 +538,9 @@ export const QueryProvider: FC = ({children}) => {
 
     const orgID = override?.org || org.id
 
-    const url = `${override?.region ||
-      window.location.origin}/api/v2/query?${new URLSearchParams({orgID})}`
+    const url = `${
+      override?.region || window.location.origin
+    }/api/v2/query?${new URLSearchParams({orgID})}`
 
     const headers = {
       'Content-Type': 'application/json',
@@ -578,82 +578,80 @@ export const QueryProvider: FC = ({children}) => {
       body: JSON.stringify(body),
       signal: controller.signal,
     })
-      .then(
-        async (response: Response): Promise<RunQueryResult> => {
-          if (response.status === 200) {
-            const reader = response.body.getReader()
-            const decoder = new TextDecoder()
+      .then(async (response: Response): Promise<RunQueryResult> => {
+        if (response.status === 200) {
+          const reader = response.body.getReader()
+          const decoder = new TextDecoder()
 
-            let csv = ''
-            let bytesRead = 0
-            let didTruncate = false
-            let read = await reader.read()
+          let csv = ''
+          let bytesRead = 0
+          let didTruncate = false
+          let read = await reader.read()
 
-            const BYTE_LIMIT =
-              getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+          const BYTE_LIMIT =
+            getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
 
-            while (!read.done) {
-              const text = decoder.decode(read.value)
+          while (!read.done) {
+            const text = decoder.decode(read.value)
 
-              bytesRead += read.value.byteLength
+            bytesRead += read.value.byteLength
 
-              if (bytesRead > BYTE_LIMIT) {
-                csv += trimPartialLines(text)
-                didTruncate = true
-                break
-              } else {
-                csv += text
-                read = await reader.read()
-              }
-            }
-
-            reader.cancel()
-
-            return {
-              type: 'SUCCESS',
-              csv,
-              bytesRead,
-              didTruncate,
+            if (bytesRead > BYTE_LIMIT) {
+              csv += trimPartialLines(text)
+              didTruncate = true
+              break
+            } else {
+              csv += text
+              read = await reader.read()
             }
           }
 
-          if (response.status === RATE_LIMIT_ERROR_STATUS) {
-            const retryAfter = response.headers.get('Retry-After')
+          reader.cancel()
 
-            return Promise.resolve({
-              type: 'RATE_LIMIT_ERROR',
-              retryAfter: retryAfter ? parseInt(retryAfter) : null,
-              message: RATE_LIMIT_ERROR_TEXT,
-            })
+          return {
+            type: 'SUCCESS',
+            csv,
+            bytesRead,
+            didTruncate,
           }
+        }
 
-          return response.text().then(text => {
-            try {
-              const json = JSON.parse(text)
-              const message = json.message || json.error
-              const code = json.code
+        if (response.status === RATE_LIMIT_ERROR_STATUS) {
+          const retryAfter = response.headers.get('Retry-After')
 
-              switch (code) {
-                case REQUEST_TIMEOUT_STATUS:
-                  event('query timeout')
-                  break
-                case GATEWAY_TIMEOUT_STATUS:
-                  event('gateway timeout')
-                  break
-                default:
-                  event('query error')
-              }
-
-              return {type: 'UNKNOWN_ERROR', message, code}
-            } catch {
-              return {
-                type: 'UNKNOWN_ERROR',
-                message: 'Failed to execute Flux query',
-              }
-            }
+          return Promise.resolve({
+            type: 'RATE_LIMIT_ERROR',
+            retryAfter: retryAfter ? parseInt(retryAfter) : null,
+            message: RATE_LIMIT_ERROR_TEXT,
           })
         }
-      )
+
+        return response.text().then(text => {
+          try {
+            const json = JSON.parse(text)
+            const message = json.message || json.error
+            const code = json.code
+
+            switch (code) {
+              case REQUEST_TIMEOUT_STATUS:
+                event('query timeout')
+                break
+              case GATEWAY_TIMEOUT_STATUS:
+                event('gateway timeout')
+                break
+              default:
+                event('query error')
+            }
+
+            return {type: 'UNKNOWN_ERROR', message, code}
+          } catch {
+            return {
+              type: 'UNKNOWN_ERROR',
+              message: 'Failed to execute Flux query',
+            }
+          }
+        })
+      })
       .catch(e => {
         if (e.name === 'AbortError') {
           return Promise.reject(new CancellationError())

@@ -4,15 +4,11 @@ describe('flows alert panel', () => {
   const selectAlertMeasurementAndField = () => {
     cy.log('Select alert measurement')
     cy.getByTestID('dropdown--measurements').click()
-    cy.getByTestID('dropdown-item--measurement')
-      .first()
-      .click()
+    cy.getByTestID('dropdown-item--measurement').first().click()
 
     cy.log('Select alert threshold field')
     cy.getByTestID('dropdown--threshold-fields').click()
-    cy.getByTestID('dropdown-item--threshold-field')
-      .first()
-      .click()
+    cy.getByTestID('dropdown-item--threshold-field').first().click()
   }
 
   beforeEach(() =>
@@ -55,32 +51,22 @@ describe('flows alert panel', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
+    cy.getByTestID('sidebar-button').first().click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.get('.flow-divider--button')
-      .first()
-      .click()
+    cy.get('.flow-divider--button').first().click()
 
     // opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
     // click the newest Query Builder button
-    cy.getByTestID('add-flow-btn--queryBuilder')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--queryBuilder').last().click()
 
     // select our bucket, measurement, field and tag
     cy.getByTestID('bucket-selector').within(() => {
@@ -106,15 +92,11 @@ describe('flows alert panel', () => {
       })
 
     // add an alert cell using the last flow panel
-    cy.get('.flow-divider--button')
-      .last()
-      .click()
+    cy.get('.flow-divider--button').last().click()
 
     // there are 2 Alert buttons, click the newest from menu that opened
     cy.getByTestID('add-flow-btn--notification').should('have.length', 2)
-    cy.getByTestID('add-flow-btn--notification')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--notification').last().click()
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('notification-exp-button').scrollIntoView()
     cy.getByTestID('text-editor').should('be.visible')
@@ -170,33 +152,23 @@ describe('flows alert panel', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket, measurement, field and tag
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
+    cy.getByTestID('sidebar-button').first().click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.get('.flow-divider--button')
-      .first()
-      .click()
+    cy.get('.flow-divider--button').first().click()
 
     // opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
     // click the newest Query Builder button
-    cy.getByTestID('add-flow-btn--queryBuilder')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--queryBuilder').last().click()
 
     cy.getByTestID('bucket-selector').within(() => {
       cy.getByTestID(`selector-list ${newBucketName}`).click()
@@ -221,15 +193,11 @@ describe('flows alert panel', () => {
       })
 
     // add an alert cell using the last flow panel
-    cy.get('.flow-divider--button')
-      .last()
-      .click()
+    cy.get('.flow-divider--button').last().click()
 
     // there are 2 Alert buttons, click the newest from menu that opened
     cy.getByTestID('add-flow-btn--notification').should('have.length', 2)
-    cy.getByTestID('add-flow-btn--notification')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--notification').last().click()
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('notification-exp-button').scrollIntoView()
     cy.getByTestID('text-editor').should('be.visible')

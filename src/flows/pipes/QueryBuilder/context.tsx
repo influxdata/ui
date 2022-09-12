@@ -87,9 +87,8 @@ export const DEFAULT_CONTEXT: QueryBuilderContextType = {
   loadValues: (_idx: number, _search?: string) => {},
 }
 
-export const QueryBuilderContext = createContext<QueryBuilderContextType>(
-  DEFAULT_CONTEXT
-)
+export const QueryBuilderContext =
+  createContext<QueryBuilderContextType>(DEFAULT_CONTEXT)
 
 const toBuilderConfig = (card: QueryBuilderCard): BuilderTagsType => ({
   key: (card.keys.selected || [])[0],

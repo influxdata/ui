@@ -54,9 +54,8 @@ export const EditorContext = createContext<EditorContextType>(DEFAULT_CONTEXT)
 
 export const EditorProvider: FC = ({children}) => {
   const [editor, setEditorOnState] = useState<EditorType>(null)
-  const [connection, setConnection] = useState<
-    React.MutableRefObject<LspConnectionManager>
-  >(null)
+  const [connection, setConnection] =
+    useState<React.MutableRefObject<LspConnectionManager>>(null)
 
   const setEditor = (ed, conn) => {
     setEditorOnState(ed)
@@ -114,12 +113,7 @@ export const EditorProvider: FC = ({children}) => {
         },
       ]
 
-      const addHeader =
-        header &&
-        !editor
-          .getModel()
-          .getValue()
-          .includes(header)
+      const addHeader = header && !editor.getModel().getValue().includes(header)
       if (addHeader) {
         edits.unshift({
           range: new monaco.Range(1, 1, 1, 1),

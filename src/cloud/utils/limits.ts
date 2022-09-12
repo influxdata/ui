@@ -103,7 +103,7 @@ export const extractEndpointsLimits = (
   state: AppState
 ): LimitStatus['status'] => {
   if (!CLOUD) {
-    'ok'
+    ;('ok')
   }
   return state.cloud?.limits?.endpoints?.limitStatus
 }

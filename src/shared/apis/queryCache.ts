@@ -261,8 +261,7 @@ export const getCachedResultsOrRunQuery = (
   return results as CancelBox<RunQueryResult>
 }
 
-export const getCachedResultsThunk = (orgID: string, query: string) => (
-  _,
-  getState: GetState
-): CancelBox<RunQueryResult> =>
-  getCachedResultsOrRunQuery(orgID, query, getAllVariables(getState()))
+export const getCachedResultsThunk =
+  (orgID: string, query: string) =>
+  (_, getState: GetState): CancelBox<RunQueryResult> =>
+    getCachedResultsOrRunQuery(orgID, query, getAllVariables(getState()))

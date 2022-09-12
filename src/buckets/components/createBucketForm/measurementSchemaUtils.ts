@@ -160,10 +160,10 @@ export const csvToObjectArray = (contents: string, delimiter = ',') => {
 
   const rows = contents.slice(contents.indexOf('\n') + 1).split('\n')
 
-  return rows.map(function(row) {
+  return rows.map(function (row) {
     const values = row.split(delimiter)
 
-    return headers.reduce(function(object, header, index) {
+    return headers.reduce(function (object, header, index) {
       const val = values[index]
       if (val) {
         object[header] = val.trim()

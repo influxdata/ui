@@ -49,9 +49,8 @@ const FlowPanel: FC<Props> = ({
   children,
 }) => {
   const {flow, updateMeta} = useContext(FlowContext)
-  const {printMap, queryDependents, getPanelQueries} = useContext(
-    FlowQueryContext
-  )
+  const {printMap, queryDependents, getPanelQueries} =
+    useContext(FlowQueryContext)
   const {id: focused} = useContext(SidebarContext)
 
   const isVisible = flow.meta.byID[id]?.visible
@@ -142,10 +141,10 @@ const FlowPanel: FC<Props> = ({
     <div className="flow-panel--editable-title">Error</div>
   )
 
-  const showPreviewButton = useMemo(() => !!getPanelQueries(id)?.visual, [
-    getPanelQueries,
-    id,
-  ])
+  const showPreviewButton = useMemo(
+    () => !!getPanelQueries(id)?.visual,
+    [getPanelQueries, id]
+  )
 
   if (
     flow.readOnly &&

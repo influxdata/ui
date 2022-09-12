@@ -7,7 +7,7 @@ import {
 } from 'src/variables/selectors'
 import {AppState} from 'src/types'
 
-const MOCKSTATE = ({
+const MOCKSTATE = {
   app: {
     persisted: {
       timeZone: 'UTC',
@@ -56,7 +56,7 @@ const MOCKSTATE = ({
       },
     },
   },
-} as any) as AppState
+} as any as AppState
 
 describe('VariableSelectors', () => {
   describe('sortVariablesByName', () => {
@@ -170,7 +170,7 @@ describe('VariableSelectors', () => {
 
     it('should respect chaos', () => {
       const vars = getUserVariableNames(
-        ({
+        {
           currentDashboard: {
             id: 'qwerty',
           },
@@ -184,7 +184,7 @@ describe('VariableSelectors', () => {
               },
             },
           },
-        } as any) as AppState,
+        } as any as AppState,
         'qwerty'
       )
 
@@ -198,7 +198,7 @@ describe('VariableSelectors', () => {
     // to be done for the ast parser
     it.skip('should dynamically load in the windowPeriod', () => {
       const vars = getAllVariables(
-        ({
+        {
           ...MOCKSTATE,
           ...{
             timeMachines: {
@@ -223,7 +223,7 @@ from(bucket: "project")
               },
             },
           },
-        } as any) as AppState,
+        } as any as AppState,
         ''
       )
 

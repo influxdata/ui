@@ -75,12 +75,14 @@ const BandPlot: FC<Props> = ({
   const tooltipColorize = properties.legendColorizeRows
   const tooltipHide = properties.legendHide
 
-  const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
-    properties.axes.x.bounds,
-  ])
-  const storedYDomain = useMemo(() => parseYBounds(properties.axes.y.bounds), [
-    properties.axes.y.bounds,
-  ])
+  const storedXDomain = useMemo(
+    () => parseXBounds(properties.axes.x.bounds),
+    [properties.axes.x.bounds]
+  )
+  const storedYDomain = useMemo(
+    () => parseYBounds(properties.axes.y.bounds),
+    [properties.axes.y.bounds]
+  )
   const xColumn = properties.xColumn || defaultXColumn(result.table, '_time')
   const yColumn =
     (result.table.columnKeys.includes(properties.yColumn) &&

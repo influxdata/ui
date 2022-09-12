@@ -6,7 +6,7 @@
 export const executeVWO = () => {
   window._vwo_code =
     window._vwo_code ||
-    (function() {
+    (function () {
       var account_id = 634566,
         settings_tolerance = 2000,
         library_tolerance = 2500,
@@ -17,34 +17,34 @@ export const executeVWO = () => {
         f = false,
         d = document,
         code = {
-          use_existing_jquery: function() {
+          use_existing_jquery: function () {
             return use_existing_jquery
           },
-          library_tolerance: function() {
+          library_tolerance: function () {
             return library_tolerance
           },
-          finish: function() {
+          finish: function () {
             if (!f) {
               f = true
               var a = d.getElementById('_vis_opt_path_hides')
               if (a) a.parentNode.removeChild(a)
             }
           },
-          finished: function() {
+          finished: function () {
             return f
           },
-          load: function(a) {
+          load: function (a) {
             var b = d.createElement('script')
             b.src = a
             b.type = 'text/javascript'
             b.innerText
-            b.onerror = function() {
+            b.onerror = function () {
               window._vwo_code.finish()
             }
             d.getElementsByTagName('head')[0].appendChild(b)
           },
-          init: function() {
-            window.settings_timer = setTimeout(function() {
+          init: function () {
+            window.settings_timer = setTimeout(function () {
               window._vwo_code.finish()
             }, settings_tolerance)
             var a = d.createElement('style'),

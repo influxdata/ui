@@ -104,9 +104,8 @@ export const DEFAULT_CONTEXT: BillingContextType = {
   zuoraParamsStatus: RemoteDataState.NotStarted,
 }
 
-export const BillingContext = React.createContext<BillingContextType>(
-  DEFAULT_CONTEXT
-)
+export const BillingContext =
+  React.createContext<BillingContextType>(DEFAULT_CONTEXT)
 
 export const BillingProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
@@ -114,9 +113,8 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
   const [zuoraParamsStatus, setZuoraParamsStatus] = useState(
     RemoteDataState.NotStarted
   )
-  const [zuoraParams, setZuoraParams] = useState<CreditCardParams>(
-    EMPTY_ZUORA_PARAMS
-  )
+  const [zuoraParams, setZuoraParams] =
+    useState<CreditCardParams>(EMPTY_ZUORA_PARAMS)
 
   const me = useSelector(getQuartzMe)
   const [billingSettings, setBillingSettings] = useState({

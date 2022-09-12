@@ -32,49 +32,51 @@ export const fetchAndSetAnnotationStreams = async (
   dispatch(setAnnotationStreams(annotationStreams))
 }
 
-export const fetchAndSetAnnotations = () => async (
-  dispatch: Dispatch<AnnotationAction>,
-  getState: GetState
-): Promise<void> => {
-  const org = getOrg(getState())
-  const annotations = await getAnnotations(org.id)
+export const fetchAndSetAnnotations =
+  () =>
+  async (
+    dispatch: Dispatch<AnnotationAction>,
+    getState: GetState
+  ): Promise<void> => {
+    const org = getOrg(getState())
+    const annotations = await getAnnotations(org.id)
 
-  dispatch(setAnnotations(annotations))
-}
-
-export const writeThenFetchAndSetAnnotations = (
-  annotations: Annotation[]
-) => async (
-  dispatch: Dispatch<AnnotationAction | NotificationAction>,
-  getState: GetState
-): Promise<void> => {
-  const org = getOrg(getState())
-  await writeAnnotation(annotations, org.id)
-
-  fetchAndSetAnnotations()(dispatch, getState)
-}
-
-export const deleteAnnotations = annotation => async (
-  dispatch: Dispatch<AnnotationAction | NotificationAction>
-) => {
-  await deleteAnnotation({
-    ...annotation,
-    endTime: annotation.startTime,
-  })
-  dispatch(deleteAnnotationAction(annotation))
-}
-
-export const editAnnotation = annotation => async (
-  dispatch: Dispatch<AnnotationAction | NotificationAction>
-) => {
-  let {endTime} = annotation
-  if (annotation.type === 'point') {
-    endTime = annotation.startTime
+    dispatch(setAnnotations(annotations))
   }
 
-  const updatedAnnotation = await updateAnnotation({
-    ...annotation,
-    endTime,
-  })
-  dispatch(editAnnotationAction(updatedAnnotation))
-}
+export const writeThenFetchAndSetAnnotations =
+  (annotations: Annotation[]) =>
+  async (
+    dispatch: Dispatch<AnnotationAction | NotificationAction>,
+    getState: GetState
+  ): Promise<void> => {
+    const org = getOrg(getState())
+    await writeAnnotation(annotations, org.id)
+
+    fetchAndSetAnnotations()(dispatch, getState)
+  }
+
+export const deleteAnnotations =
+  annotation =>
+  async (dispatch: Dispatch<AnnotationAction | NotificationAction>) => {
+    await deleteAnnotation({
+      ...annotation,
+      endTime: annotation.startTime,
+    })
+    dispatch(deleteAnnotationAction(annotation))
+  }
+
+export const editAnnotation =
+  annotation =>
+  async (dispatch: Dispatch<AnnotationAction | NotificationAction>) => {
+    let {endTime} = annotation
+    if (annotation.type === 'point') {
+      endTime = annotation.startTime
+    }
+
+    const updatedAnnotation = await updateAnnotation({
+      ...annotation,
+      endTime,
+    })
+    dispatch(editAnnotationAction(updatedAnnotation))
+  }

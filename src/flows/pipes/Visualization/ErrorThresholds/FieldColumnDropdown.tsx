@@ -19,9 +19,10 @@ const FieldColumnDropdown: FC<Props> = ({threshold, index}) => {
     new Set(results.parsed.table.columns['_field']?.data as string[])
   )
 
-  const errorThresholds = useMemo(() => data?.errorThresholds ?? [], [
-    data?.errorThresholds,
-  ])
+  const errorThresholds = useMemo(
+    () => data?.errorThresholds ?? [],
+    [data?.errorThresholds]
+  )
 
   const setColumn = useCallback(
     (column: string, index: number) => {

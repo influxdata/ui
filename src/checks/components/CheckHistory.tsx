@@ -38,9 +38,10 @@ const CheckHistory: FC = () => {
   }))
   const org = useSelector(getOrg)
   const {checkID} = useParams()
-  const loadRows = useMemo(() => options => loadStatuses(org.id, options), [
-    org.id,
-  ])
+  const loadRows = useMemo(
+    () => options => loadStatuses(org.id, options),
+    [org.id]
+  )
   const historyType = 'statuses'
   const fields = STATUS_FIELDS
 

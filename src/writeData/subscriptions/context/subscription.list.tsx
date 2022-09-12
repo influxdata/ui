@@ -42,9 +42,8 @@ export const DEFAULT_CONTEXT: SubscriptionListContextType = {
   bulletins: {},
 } as SubscriptionListContextType
 
-export const SubscriptionListContext = React.createContext<
-  SubscriptionListContextType
->(DEFAULT_CONTEXT)
+export const SubscriptionListContext =
+  React.createContext<SubscriptionListContextType>(DEFAULT_CONTEXT)
 
 export interface Bulletin {
   timestamp: number

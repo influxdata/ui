@@ -23,12 +23,8 @@ export function comments(editor: EditorType) {
     run: function run(ed) {
       const values = ed.getValue().split('\n'),
         selection = ed.getSelection(),
-        {
-          startLineNumber,
-          endLineNumber,
-          positionColumn,
-          selectionStartColumn,
-        } = selection,
+        {startLineNumber, endLineNumber, positionColumn, selectionStartColumn} =
+          selection,
         // if any of the lines in the selection is uncommented then toggle commenting on
         isTogglingCommentingOn = values
           .slice(startLineNumber - 1, endLineNumber)

@@ -27,15 +27,11 @@ describe('Flows', () => {
       ],
       'defbuck'
     )
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
     cy.getByTestID('renamable-page-title--input')
       .clear()
       .type('My Flow {enter}')
@@ -45,29 +41,19 @@ describe('Flows', () => {
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 1)
 
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
+    cy.getByTestID('sidebar-button').first().click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.get('.flow-divider--button')
-      .first()
-      .click()
+    cy.get('.flow-divider--button').first().click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
     // Click the newest Query Builder button
-    cy.getByTestID('add-flow-btn--queryBuilder')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--queryBuilder').last().click()
 
-    cy.getByTestID('selector-list defbuck')
-      .first()
-      .click()
-    cy.getByTestID('selector-list test')
-      .first()
-      .click()
+    cy.getByTestID('selector-list defbuck').first().click()
+    cy.getByTestID('selector-list test').first().click()
 
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('simple-table').should('have.length', 1)
@@ -92,14 +78,10 @@ describe('Flows', () => {
       newBucketName
     )
 
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
     cy.getByTestID('renamable-page-title--input')
       .clear()
       .type('My Flow {enter}')
@@ -110,22 +92,16 @@ describe('Flows', () => {
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 1)
 
     // Delete the first panel
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
+    cy.getByTestID('sidebar-button').first().click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.get('.flow-divider--button')
-      .first()
-      .click()
+    cy.get('.flow-divider--button').first().click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
     // Click the newest Query Builder button
-    cy.getByTestID('add-flow-btn--queryBuilder')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--queryBuilder').last().click()
 
     // select our bucket
     cy.getByTestID('bucket-selector').within(() => {
@@ -154,9 +130,7 @@ describe('Flows', () => {
 
     // we should only see beans in the table
     cy.getByTestID('simple-table').should('be.visible')
-    cy.getByTestID('table-cell beans')
-      .first()
-      .should('be.visible')
+    cy.getByTestID('table-cell beans').first().should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
     // change tag to cool and click preview
@@ -169,9 +143,7 @@ describe('Flows', () => {
 
     // we should only see cool in the table
     cy.getByTestID('simple-table').should('be.visible')
-    cy.getByTestID('table-cell cool')
-      .first()
-      .should('be.visible')
+    cy.getByTestID('table-cell cool').first().should('be.visible')
   })
 
   it('can create and delete a flow from the list page', () => {
@@ -194,15 +166,11 @@ describe('Flows', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
 
     cy.getByTestID('renamable-page-title--input')
       .clear()
@@ -211,23 +179,17 @@ describe('Flows', () => {
 
     cy.getByTestID('page-title').contains(flowName)
 
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
+    cy.getByTestID('sidebar-button').first().click()
     cy.getByTestID('Delete--list-item').click()
     cy.wait('@updateNotebook')
 
-    cy.get('.flow-divider--button')
-      .first()
-      .click()
+    cy.get('.flow-divider--button').first().click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
     // Click the newest Query Builder button
-    cy.getByTestID('add-flow-btn--queryBuilder')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--queryBuilder').last().click()
     cy.wait('@updateNotebook')
 
     // select our bucket
@@ -263,9 +225,7 @@ describe('Flows', () => {
 
     // we should only see beans in the table
     cy.getByTestID('simple-table').should('be.visible')
-    cy.getByTestID('table-cell beans')
-      .first()
-      .should('be.visible')
+    cy.getByTestID('table-cell beans').first().should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
     // This is a random validator that the autorefresh option doesn't pop up
@@ -304,14 +264,10 @@ describe('Flows', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
     cy.getByTestID('renamable-page-title--input')
       .clear()
       .type(`${flowName}{enter}`)
@@ -321,22 +277,16 @@ describe('Flows', () => {
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 1)
 
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
+    cy.getByTestID('sidebar-button').first().click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.get('.flow-divider--button')
-      .first()
-      .click()
+    cy.get('.flow-divider--button').first().click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
     // Click the newest Query Builder button
-    cy.getByTestID('add-flow-btn--queryBuilder')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--queryBuilder').last().click()
 
     // select our bucket
     cy.getByTestID('bucket-selector').within(() => {
@@ -365,9 +315,7 @@ describe('Flows', () => {
 
     // we should only see beans in the table
     cy.getByTestID('simple-table').should('be.visible')
-    cy.getByTestID('table-cell beans')
-      .first()
-      .should('be.visible')
+    cy.getByTestID('table-cell beans').first().should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
     // there are exactly 3 Flow panels
@@ -408,14 +356,10 @@ describe('Flows', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
     cy.getByTestID('renamable-page-title--input')
       .clear()
       .type(`${flowName}{enter}`)
@@ -425,22 +369,16 @@ describe('Flows', () => {
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 1)
 
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
+    cy.getByTestID('sidebar-button').first().click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.get('.flow-divider--button')
-      .first()
-      .click()
+    cy.get('.flow-divider--button').first().click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
     // Click the newest Query Builder button
-    cy.getByTestID('add-flow-btn--queryBuilder')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--queryBuilder').last().click()
 
     // select our bucket
     cy.getByTestID('bucket-selector').within(() => {
@@ -469,9 +407,7 @@ describe('Flows', () => {
 
     // we should only see beans in the table
     cy.getByTestID('simple-table').should('be.visible')
-    cy.getByTestID('table-cell beans')
-      .first()
-      .should('be.visible')
+    cy.getByTestID('table-cell beans').first().should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
     // there are exactly 3 Flow panels before turning on presentation mode
@@ -497,9 +433,7 @@ describe('Flows', () => {
   })
 
   it('should have certain dropdown menu items', () => {
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
     const defaultMenuItems = ['Delete', 'Duplicate', 'Hide Panel']
@@ -551,9 +485,7 @@ describe('Flows', () => {
     cy.intercept('/api/v2/orgs/*/secrets').as('fetchSecrets')
 
     items.forEach(item => {
-      cy.get('.flow-divider--button')
-        .first()
-        .click()
+      cy.get('.flow-divider--button').first().click()
 
       // "Add Another Panel" menu is present and there is a duplicate of each button
       cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
@@ -561,17 +493,13 @@ describe('Flows', () => {
 
       // Click the newest button from opening the panel button
       cy.get('.insert-cell-menu.always-on').within(() => {
-        cy.getByTestID(`add-flow-btn--${item.panel}`)
-          .last()
-          .click()
+        cy.getByTestID(`add-flow-btn--${item.panel}`).last().click()
         if (item.panel === 'notification') {
           cy.wait('@fetchSecrets')
         }
       })
 
-      cy.getByTestID('sidebar-button')
-        .last()
-        .click()
+      cy.getByTestID('sidebar-button').last().click()
       cy.getByTestID('dropdown-menu').should('be.visible')
       cy.getByTestID('dropdown-menu--contents')
         .find('.flow-sidebar--dropdownmenu-container')
@@ -602,14 +530,10 @@ describe('Flows', () => {
       newBucketName
     )
 
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
     cy.getByTestID('renamable-page-title--input').type(
       'I am not afraid of Band Plot {enter}'
     )
@@ -635,9 +559,7 @@ describe('Flows', () => {
     cy.get('input.flow-panel--title-input')
       .eq(1)
       .should('have.value', 'Validate the Data')
-    cy.getByTestID('sidebar-button')
-      .eq(1)
-      .click()
+    cy.getByTestID('sidebar-button').eq(1).click()
 
     cy.get('button.cf-dropdown-item[title="Delete"]')
       .should('be.visible')

@@ -107,9 +107,8 @@ const DataExplorerPageHeader: FC = () => {
 }
 
 const DataExplorerPage: FC = () => {
-  const {flowsCTA, fluxQueryBuilder, setFlowsCTA} = useContext(
-    AppSettingContext
-  )
+  const {flowsCTA, fluxQueryBuilder, setFlowsCTA} =
+    useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
 
   const hideFlowsCTA = () => {

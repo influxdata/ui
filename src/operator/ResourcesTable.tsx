@@ -32,9 +32,8 @@ import ResourcesAccountType from './ResourcesAccountType'
 import ResourcesCloudCluster from './ResourcesCloudCluster'
 
 const ResourcesTable: FC = () => {
-  const {accounts, organizations, pathname, status} = useContext(
-    OperatorContext
-  )
+  const {accounts, organizations, pathname, status} =
+    useContext(OperatorContext)
 
   const isOrgsTab = pathname.includes(OperatorRoutes.organizations)
 

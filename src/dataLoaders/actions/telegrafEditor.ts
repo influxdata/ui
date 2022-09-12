@@ -18,27 +18,26 @@ export type PluginResourceAction =
   | ReturnType<typeof setPlugins>
   | ReturnType<typeof setPluginLoadingState>
 
-export const getPlugins = () => async (
-  dispatch: Dispatch<PluginResourceAction>,
-  getState: GetState
-) => {
-  const state = getState()
-  if (getStatus(state, ResourceType.Plugins) === RemoteDataState.NotStarted) {
+export const getPlugins =
+  () =>
+  async (dispatch: Dispatch<PluginResourceAction>, getState: GetState) => {
+    const state = getState()
+    if (getStatus(state, ResourceType.Plugins) === RemoteDataState.NotStarted) {
+      dispatch(setPluginLoadingState(RemoteDataState.Loading))
+    }
+
     dispatch(setPluginLoadingState(RemoteDataState.Loading))
+
+    const result = await getTelegrafPlugins({}, {})
+
+    if (result.status === 200) {
+      const plugins = result.data.plugins as TelegrafEditorBasicPlugin[]
+
+      dispatch(setPlugins(plugins))
+    }
+
+    dispatch(setPluginLoadingState(RemoteDataState.Done))
   }
-
-  dispatch(setPluginLoadingState(RemoteDataState.Loading))
-
-  const result = await getTelegrafPlugins({}, {})
-
-  if (result.status === 200) {
-    const plugins = result.data.plugins as TelegrafEditorBasicPlugin[]
-
-    dispatch(setPlugins(plugins))
-  }
-
-  dispatch(setPluginLoadingState(RemoteDataState.Done))
-}
 
 export const setPluginLoadingState = (state: RemoteDataState) => ({
   type: 'SET_TELEGRAF_EDITOR_PLUGINS_LOADING_STATE' as 'SET_TELEGRAF_EDITOR_PLUGINS_LOADING_STATE',

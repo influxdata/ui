@@ -40,15 +40,19 @@ import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {buildQuery} from 'src/timeMachine/utils/queryBuilder'
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(
+  () => import('src/shared/components/FluxMonacoEditor')
 )
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
-  const {hideSub, id: showId, show, showSub, register} = useContext(
-    SidebarContext
-  )
+  const {
+    hideSub,
+    id: showId,
+    show,
+    showSub,
+    register,
+  } = useContext(SidebarContext)
   const editorContext = useContext(EditorContext)
   const {inject, injectFunction} = editorContext
   const {queries, activeQuery} = data
@@ -75,20 +79,18 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [id])
 
   useEffect(() => {
-    if (isFlagEnabled('fluxInjectSecrets')) {
-      register(id, [
-        {
-          title: 'RawFluxEditor actions',
-          actions: [
-            {
-              title: 'Inject Secret',
-              disable: () => false,
-              menu: <SecretsList inject={inject} cbOnInject={updateText} />,
-            },
-          ],
-        },
-      ])
-    }
+    register(id, [
+      {
+        title: 'RawFluxEditor actions',
+        actions: [
+          {
+            title: 'Inject Secret',
+            disable: () => false,
+            menu: <SecretsList inject={inject} cbOnInject={updateText} />,
+          },
+        ],
+      },
+    ])
   }, [id, inject])
 
   const updateText = useCallback(

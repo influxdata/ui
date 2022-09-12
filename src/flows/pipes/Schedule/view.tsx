@@ -329,9 +329,8 @@ const Schedule: FC<PipeProp> = ({Context}) => {
                 taskID: latestTask.id,
                 data: _data,
               }).then(() => {
-                data.task.find(
-                  t => t.id === latestTask.id
-                ).flux = generateTask()
+                data.task.find(t => t.id === latestTask.id).flux =
+                  generateTask()
                 update({task: [...data.task]})
               })
             },
@@ -369,7 +368,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
           <Form.Element
             label="Every"
             helpText={
-              ((
+              (
                 <>
                   Supports{' '}
                   <SafeBlankLink href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax">
@@ -380,7 +379,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
                     cron intervals
                   </SafeBlankLink>
                 </>
-              ) as unknown) as string
+              ) as unknown as string
             }
             required={true}
             errorMessage={intervalError}
@@ -403,14 +402,14 @@ const Schedule: FC<PipeProp> = ({Context}) => {
           <Form.Element
             label="Offset"
             helpText={
-              ((
+              (
                 <>
                   Supports{' '}
                   <SafeBlankLink href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax">
                     flux durations
                   </SafeBlankLink>
                 </>
-              ) as unknown) as string
+              ) as unknown as string
             }
             required={false}
             errorMessage={offsetError}

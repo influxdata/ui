@@ -248,7 +248,7 @@ class LspConnectionManager {
       },
     ]
 
-    const removeAllStyles = !compositionBlock && schema.composition.diverged
+    const removeAllStyles = !compositionBlock || schema.composition.diverged
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
@@ -263,6 +263,8 @@ class LspConnectionManager {
 
     if (removeAllStyles) {
       clickableInvisibleDiv.style.display = 'none'
+    } else {
+      clickableInvisibleDiv.style.display = 'block'
     }
   }
 
@@ -332,9 +334,9 @@ class LspConnectionManager {
         payload['fields'] = toAdd.fields || this._session.fields
       }
       if (toAdd.tagValues || this._session.tagValues) {
-        payload['tagValues'] = (
-          toAdd.tagValues || this._session.tagValues
-        ).map(({key, value}) => [key, value])
+        payload['tagValues'] = (toAdd.tagValues || this._session.tagValues).map(
+          ({key, value}) => [key, value]
+        )
       }
       this._insertBuffer([ExecuteCommand.CompositionInit, payload])
       return // re-initialize full block. no more requests needed.

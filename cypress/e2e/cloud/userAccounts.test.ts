@@ -42,9 +42,7 @@ describe('Account Page tests', () => {
 
       // rename the current account
       const name = '4-accounts-test'
-      cy.getByTestID('input--active-account-name')
-        .clear()
-        .type(name)
+      cy.getByTestID('input--active-account-name').clear().type(name)
       cy.getByTestID('rename-account--button').click()
 
       cy.getByTestID('notification-success').should('be.visible')
@@ -58,9 +56,7 @@ describe('Account Page tests', () => {
       cy.get('.cf-toggle--visual-input')
         .contains(defaultMarker)
         .should('have.length', 1)
-      cy.get('.cf-toggle--visual-input')
-        .contains(defaultMarker)
-        .click()
+      cy.get('.cf-toggle--visual-input').contains(defaultMarker).click()
       cy.getByTestID('switch-default-account--btn').should('be.disabled')
       cy.get('.cf-toggle--visual-input').not(`:contains(${name}`)
 
@@ -85,9 +81,7 @@ describe('Account Page tests', () => {
       cy.getByTestID('switch-default-account--btn').should('be.enabled')
 
       // select our renamed account as the default
-      cy.get('.cf-toggle--visual-input')
-        .contains(name)
-        .click()
+      cy.get('.cf-toggle--visual-input').contains(name).click()
       cy.getByTestID('switch-default-account--btn').click()
 
       cy.getByTestID('notification-success').should('be.visible')
@@ -132,9 +126,7 @@ describe('Account Page tests', () => {
 
       // rename the current account
       const name = 'Bruno-no-no-no'
-      cy.getByTestID('input--active-account-name')
-        .clear()
-        .type(name)
+      cy.getByTestID('input--active-account-name').clear().type(name)
       cy.getByTestID('rename-account--button').click()
 
       cy.getByTestID('notification-success').should('be.visible')
@@ -151,9 +143,7 @@ describe('Account Page tests', () => {
       // then, rename it again
       const newName = 'Bruno-yes-yes-yes'
       cy.getByTestID('input--active-account-name').should('be.visible')
-      cy.getByTestID('input--active-account-name')
-        .clear()
-        .type(newName)
+      cy.getByTestID('input--active-account-name').clear().type(newName)
       cy.getByTestID('rename-account--button').click()
 
       cy.getByTestID('notification-success').should('be.visible')

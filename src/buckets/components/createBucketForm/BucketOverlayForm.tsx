@@ -32,10 +32,10 @@ let MeasurementSchemaList = null,
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
-  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
-    .MeasurementSchemaCreateRequest
-  MeasurementSchemaList = require('src/client/generatedRoutes')
-    .MeasurementSchemaList
+  MeasurementSchemaCreateRequest =
+    require('src/client/generatedRoutes').MeasurementSchemaCreateRequest
+  MeasurementSchemaList =
+    require('src/client/generatedRoutes').MeasurementSchemaList
 }
 /** for schemas, if (isEditing) is true, then
  * need the schemaType that is already set;

@@ -76,7 +76,7 @@ export function renderWithRedux(ui, initialState = s => s) {
 
 export function renderWithReduxAndRouter(ui, initialState?) {
   const templatesStore = createStore(templatesReducer)
-  const defaultInitialState = function() {
+  const defaultInitialState = function () {
     const appState = {...mockAppState} as any
     appState.resources.templates = templatesStore.getState()
     return appState

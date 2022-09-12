@@ -11,25 +11,25 @@ if (CLOUD) {
   getCloudPublicFlags = require('src/client/cloudPrivRoutes').getFlags
 }
 
-export const getFlags = () => async (
-  dispatch: Dispatch<Actions>
-): Promise<FlagMap> => {
-  try {
-    dispatch(setFlags(RemoteDataState.Loading))
-    const resp = await getFlagsRequest({})
+export const getFlags =
+  () =>
+  async (dispatch: Dispatch<Actions>): Promise<FlagMap> => {
+    try {
+      dispatch(setFlags(RemoteDataState.Loading))
+      const resp = await getFlagsRequest({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      dispatch(setFlags(RemoteDataState.Done, resp.data))
+
+      return resp.data
+    } catch (error) {
+      console.error(error)
+      dispatch(setFlags(RemoteDataState.Error, null))
     }
-
-    dispatch(setFlags(RemoteDataState.Done, resp.data))
-
-    return resp.data
-  } catch (error) {
-    console.error(error)
-    dispatch(setFlags(RemoteDataState.Error, null))
   }
-}
 
 export const getPublicFlags = () => async (dispatch: Dispatch<Actions>) => {
   if (!CLOUD) {

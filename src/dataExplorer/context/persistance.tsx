@@ -76,22 +76,18 @@ const DEFAULT_CONTEXT = {
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
 export const PersistanceProvider: FC = ({children}) => {
-  const [
-    horizontal,
-    setHorizontal,
-  ] = useSessionStorage('dataExplorer.resize.horizontal', [
-    ...DEFAULT_CONTEXT.horizontal,
-  ])
+  const [horizontal, setHorizontal] = useSessionStorage(
+    'dataExplorer.resize.horizontal',
+    [...DEFAULT_CONTEXT.horizontal]
+  )
   const [hasChanged, setHasChanged] = useSessionStorage(
     'dataExplorer.hasChanged',
     DEFAULT_CONTEXT.hasChanged
   )
-  const [
-    vertical,
-    setVertical,
-  ] = useSessionStorage('dataExplorer.resize.vertical', [
-    ...DEFAULT_CONTEXT.vertical,
-  ])
+  const [vertical, setVertical] = useSessionStorage(
+    'dataExplorer.resize.vertical',
+    [...DEFAULT_CONTEXT.vertical]
+  )
   const [query, setQuery] = useSessionStorage(
     'dataExplorer.query',
     DEFAULT_CONTEXT.query

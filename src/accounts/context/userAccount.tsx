@@ -57,9 +57,8 @@ export const DEFAULT_CONTEXT: UserAccountContextType = {
   handleRenameActiveAccount: () => {},
 }
 
-export const UserAccountContext = React.createContext<UserAccountContextType>(
-  DEFAULT_CONTEXT
-)
+export const UserAccountContext =
+  React.createContext<UserAccountContextType>(DEFAULT_CONTEXT)
 
 export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(null)

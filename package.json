@@ -225,7 +225,7 @@
     "use-local-storage-state": "^9.0.2",
     "vscode-languageserver-protocol": "^3.16.0",
     "worker-plugin": "^5.0.1",
-    "y-websocket": "^1.4.3",
+    "y-websocket": "^1.4.4",
     "yjs": "^13.5.36"
   },
   "resolutions": {

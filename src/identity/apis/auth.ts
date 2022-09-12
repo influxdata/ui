@@ -285,7 +285,9 @@ export const updateDefaultOrgByAccountID = async ({
 }
 
 // fetch user default account's default org
-export const getDefaultAccountDefaultOrg = async (): Promise<OrganizationSummaries[number]> => {
+export const getDefaultAccountDefaultOrg = async (): Promise<
+  OrganizationSummaries[number]
+> => {
   const response = await getAccounts({})
 
   if (response.status === 401) {

@@ -255,9 +255,11 @@ class TimeSeries extends Component<Props, State> {
         if (!this.hashMapMutex[queryID]) {
           this.hashMapMutex[queryID] = RunQueryPromiseMutex<RunQueryResult>()
         }
-        return this.hashMapMutex[queryID].run(orgID, text, extern) as CancelBox<
-          RunQueryResult
-        >
+        return this.hashMapMutex[queryID].run(
+          orgID,
+          text,
+          extern
+        ) as CancelBox<RunQueryResult>
       })
 
       // Wait for new queries to complete

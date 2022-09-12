@@ -245,8 +245,9 @@ describe('Tasks.Containers.TasksPage', () => {
         taskCard.querySelector("[data-testid='task-card--name']").textContent
       ).toContain('Dead Beetle')
 
-      const cardName = taskCard.querySelector("[data-testid='task-card--name']")
-        .textContent
+      const cardName = taskCard.querySelector(
+        "[data-testid='task-card--name']"
+      ).textContent
       const deleteMenu = taskCard.querySelector(
         `[data-testid='context-delete-menu ${cardName}--button']`
       )
@@ -282,8 +283,9 @@ describe('Tasks.Containers.TasksPage', () => {
       fireEvent.click(menuButton)
       fireEvent.click(screen.getByText('Clone'))
 
-      const name = taskCard.querySelector("[data-testid='task-card--name']")
-        .textContent
+      const name = taskCard.querySelector(
+        "[data-testid='task-card--name']"
+      ).textContent
       expect(name).toContain(InactiveTask.name)
 
       await waitFor(() => expect(postTask).toBeCalled())

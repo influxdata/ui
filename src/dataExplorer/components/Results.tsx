@@ -46,8 +46,9 @@ const QueryStat: FC = () => {
   return (
     <div className="query-stat">
       <span className="query-stat--bold">{`${tableNum} tables`}</span>
-      <span className="query-stat--bold">{`${result?.parsed?.table?.length ||
-        0} rows`}</span>
+      <span className="query-stat--bold">{`${
+        result?.parsed?.table?.length || 0
+      } rows`}</span>
     </div>
   )
 }

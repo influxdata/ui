@@ -271,13 +271,8 @@ class MultiGrid extends React.PureComponent<PropsMultiGrid, State> {
   }
 
   public render() {
-    const {
-      onScroll,
-      onSectionRendered,
-      scrollToRow,
-      scrollToColumn,
-      ...rest
-    } = this.props
+    const {onScroll, onSectionRendered, scrollToRow, scrollToColumn, ...rest} =
+      this.props
 
     this.prepareForRender()
 

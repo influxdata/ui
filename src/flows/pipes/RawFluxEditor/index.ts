@@ -17,8 +17,7 @@ export default register => {
       activeQuery: 0,
       queries: [
         {
-          text:
-            '// Uncomment the following line to continue building from the previous cell\n// __PREVIOUS_RESULT__\n',
+          text: '// Uncomment the following line to continue building from the previous cell\n// __PREVIOUS_RESULT__\n',
           editMode: 'advanced',
           builderConfig: {
             buckets: [],

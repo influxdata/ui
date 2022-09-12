@@ -51,189 +51,190 @@ import {
   GetState,
 } from 'src/types'
 
-export const getOrganizations = () => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-): Promise<Organization[]> => {
-  try {
-    dispatch(setOrgs(RemoteDataState.Loading))
+export const getOrganizations =
+  () =>
+  async (
+    dispatch: Dispatch<Action>,
+    getState: GetState
+  ): Promise<Organization[]> => {
+    try {
+      dispatch(setOrgs(RemoteDataState.Loading))
 
-    const resp = await api.getOrgs({})
+      const resp = await api.getOrgs({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const {orgs} = resp.data
+
+      const organizations = normalize<Organization, OrgEntities, string[]>(
+        orgs,
+        arrayOfOrgs
+      )
+
+      gaEvent('cloudAppOrgIdReady', {
+        identity: {
+          organizationIds: organizations.result,
+        },
+      })
+
+      dispatch(setOrgs(RemoteDataState.Done, organizations))
+
+      return orgs
+    } catch (error) {
+      console.error(error)
+      if (
+        getOrg(getState())?.id &&
+        error.message === 'organization not found'
+      ) {
+        // if we have an org in state but the API says it's not found, remove it from state
+        dispatch(removeOrg(getOrg(getState()).id))
+      }
+      dispatch(setOrgs(RemoteDataState.Error, null))
     }
-
-    const {orgs} = resp.data
-
-    const organizations = normalize<Organization, OrgEntities, string[]>(
-      orgs,
-      arrayOfOrgs
-    )
-
-    gaEvent('cloudAppOrgIdReady', {
-      identity: {
-        organizationIds: organizations.result,
-      },
-    })
-
-    dispatch(setOrgs(RemoteDataState.Done, organizations))
-
-    return orgs
-  } catch (error) {
-    console.error(error)
-    if (getOrg(getState())?.id && error.message === 'organization not found') {
-      // if we have an org in state but the API says it's not found, remove it from state
-      dispatch(removeOrg(getOrg(getState()).id))
-    }
-    dispatch(setOrgs(RemoteDataState.Error, null))
   }
-}
 
-export const createOrgWithBucket = (
-  org: Organization,
-  bucket: Bucket
-): AppThunk<Promise<void>> => async (
-  dispatch: Dispatch<Action | RouterAction | NotificationAction>
-) => {
-  let createdOrg: Organization
+export const createOrgWithBucket =
+  (org: Organization, bucket: Bucket): AppThunk<Promise<void>> =>
+  async (dispatch: Dispatch<Action | RouterAction | NotificationAction>) => {
+    let createdOrg: Organization
 
-  try {
-    const orgResp = await api.postOrg({data: org})
-    if (orgResp.status !== 201) {
-      throw new Error(orgResp.data.message)
+    try {
+      const orgResp = await api.postOrg({data: org})
+      if (orgResp.status !== 201) {
+        throw new Error(orgResp.data.message)
+      }
+
+      createdOrg = orgResp.data
+
+      dispatch(notify(orgCreateSuccess()))
+
+      const normOrg = normalize<Organization, OrgEntities, string>(
+        createdOrg,
+        orgSchema
+      )
+
+      dispatch(addOrg(normOrg))
+      dispatch(push(`/orgs/${createdOrg.id}`))
+
+      const bucketResp = await api.postBucket({
+        data: {...bucket, orgID: createdOrg.id},
+      })
+
+      if (bucketResp.status !== 201) {
+        throw new Error(bucketResp.data.message)
+      }
+
+      dispatch(notify(bucketCreateSuccess()))
+    } catch (error) {
+      console.error(error)
+
+      if (!createdOrg) {
+        dispatch(notify(orgCreateFailed()))
+      }
+      const message = getErrorMessage(error)
+      dispatch(notify(bucketCreateFailed(message)))
     }
+  }
 
-    createdOrg = orgResp.data
+export const createOrg =
+  (org: Organization) =>
+  async (
+    dispatch: Dispatch<Action | RouterAction | NotificationAction>
+  ): Promise<void> => {
+    try {
+      const resp = await api.postOrg({data: org})
 
-    dispatch(notify(orgCreateSuccess()))
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
 
-    const normOrg = normalize<Organization, OrgEntities, string>(
-      createdOrg,
-      orgSchema
-    )
+      const createdOrg = resp.data
+      const normOrg = normalize<Organization, OrgEntities, string>(
+        createdOrg,
+        orgSchema
+      )
 
-    dispatch(addOrg(normOrg))
-    dispatch(push(`/orgs/${createdOrg.id}`))
+      dispatch(addOrg(normOrg))
+      dispatch(push(`/orgs/${createdOrg.id}`))
 
-    const bucketResp = await api.postBucket({
-      data: {...bucket, orgID: createdOrg.id},
-    })
-
-    if (bucketResp.status !== 201) {
-      throw new Error(bucketResp.data.message)
-    }
-
-    dispatch(notify(bucketCreateSuccess()))
-  } catch (error) {
-    console.error(error)
-
-    if (!createdOrg) {
+      dispatch(notify(orgCreateSuccess()))
+    } catch (e) {
+      console.error(e)
       dispatch(notify(orgCreateFailed()))
     }
-    const message = getErrorMessage(error)
-    dispatch(notify(bucketCreateFailed(message)))
   }
-}
 
-export const createOrg = (org: Organization) => async (
-  dispatch: Dispatch<Action | RouterAction | NotificationAction>
-): Promise<void> => {
-  try {
-    const resp = await api.postOrg({data: org})
+export const deleteOrg =
+  (org: Organization) =>
+  async (dispatch: Dispatch<Action>): Promise<void> => {
+    try {
+      const resp = await api.deleteOrg({orgID: org.id})
 
-    if (resp.status !== 201) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+
+      dispatch(removeOrg(org.id))
+    } catch (e) {
+      console.error(e)
     }
-
-    const createdOrg = resp.data
-    const normOrg = normalize<Organization, OrgEntities, string>(
-      createdOrg,
-      orgSchema
-    )
-
-    dispatch(addOrg(normOrg))
-    dispatch(push(`/orgs/${createdOrg.id}`))
-
-    dispatch(notify(orgCreateSuccess()))
-  } catch (e) {
-    console.error(e)
-    dispatch(notify(orgCreateFailed()))
   }
-}
 
-export const deleteOrg = (org: Organization) => async (
-  dispatch: Dispatch<Action>
-): Promise<void> => {
-  try {
-    const resp = await api.deleteOrg({orgID: org.id})
+export const updateOrg =
+  (org: Organization) =>
+  async (dispatch: Dispatch<Action | NotificationAction>) => {
+    try {
+      const resp = await api.patchOrg({orgID: org.id, data: org})
 
-    if (resp.status !== 204) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const updatedOrg = resp.data
+      const normOrg = normalize<Organization, OrgEntities, string>(
+        updatedOrg,
+        orgSchema
+      )
+
+      dispatch(editOrg(normOrg))
+
+      dispatch(notify(orgEditSuccess()))
+    } catch (error) {
+      dispatch(notify(orgEditFailed()))
+      console.error(error)
     }
-
-    dispatch(removeOrg(org.id))
-  } catch (e) {
-    console.error(e)
   }
-}
 
-export const updateOrg = (org: Organization) => async (
-  dispatch: Dispatch<Action | NotificationAction>
-) => {
-  try {
-    const resp = await api.patchOrg({orgID: org.id, data: org})
+export const renameOrg =
+  (originalName: string, org: Organization): AppThunk<Promise<void>> =>
+  async (dispatch: Dispatch<Action | NotificationAction>) => {
+    try {
+      const resp = CLOUD
+        ? await patchOrg({
+            orgId: org.id,
+            data: {name: org.name, description: org.description},
+          })
+        : await api.patchOrg({
+            orgID: org.id,
+            data: org,
+          })
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+      const updatedOrg = resp.data
+
+      const normOrg = normalize<Organization, OrgEntities, string>(
+        updatedOrg,
+        orgSchema
+      )
+
+      dispatch(editOrg(normOrg))
+      dispatch(notify(orgRenameSuccess(updatedOrg.name)))
+    } catch (error) {
+      dispatch(notify(orgRenameFailed(originalName)))
+      console.error(error)
     }
-
-    const updatedOrg = resp.data
-    const normOrg = normalize<Organization, OrgEntities, string>(
-      updatedOrg,
-      orgSchema
-    )
-
-    dispatch(editOrg(normOrg))
-
-    dispatch(notify(orgEditSuccess()))
-  } catch (error) {
-    dispatch(notify(orgEditFailed()))
-    console.error(error)
   }
-}
-
-export const renameOrg = (
-  originalName: string,
-  org: Organization
-): AppThunk<Promise<void>> => async (
-  dispatch: Dispatch<Action | NotificationAction>
-) => {
-  try {
-    const resp = CLOUD
-      ? await patchOrg({
-          orgId: org.id,
-          data: {name: org.name, description: org.description},
-        })
-      : await api.patchOrg({
-          orgID: org.id,
-          data: org,
-        })
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-    const updatedOrg = resp.data
-
-    const normOrg = normalize<Organization, OrgEntities, string>(
-      updatedOrg,
-      orgSchema
-    )
-
-    dispatch(editOrg(normOrg))
-    dispatch(notify(orgRenameSuccess(updatedOrg.name)))
-  } catch (error) {
-    dispatch(notify(orgRenameFailed(originalName)))
-    console.error(error)
-  }
-}

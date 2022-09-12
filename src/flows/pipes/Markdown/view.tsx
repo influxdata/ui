@@ -14,8 +14,8 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {PipeProp} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 
-const MarkdownMonacoEditor = lazy(() =>
-  import('src/shared/components/MarkdownMonacoEditor')
+const MarkdownMonacoEditor = lazy(
+  () => import('src/shared/components/MarkdownMonacoEditor')
 )
 
 const MarkdownPanel: FC<PipeProp> = ({Context}) => {

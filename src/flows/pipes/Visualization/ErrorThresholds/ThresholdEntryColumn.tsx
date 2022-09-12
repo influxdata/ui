@@ -27,9 +27,10 @@ type Props = {
 const ThresholdEntryColumn: FC<Props> = ({threshold, index}) => {
   const {data, update} = useContext(PipeContext)
 
-  const errorThresholds = useMemo(() => data?.errorThresholds ?? [], [
-    data?.errorThresholds,
-  ])
+  const errorThresholds = useMemo(
+    () => data?.errorThresholds ?? [],
+    [data?.errorThresholds]
+  )
 
   const updateMin = (event: ChangeEvent<HTMLInputElement>, index: number) => {
     const threshold = errorThresholds.find((_, i) => index === i)

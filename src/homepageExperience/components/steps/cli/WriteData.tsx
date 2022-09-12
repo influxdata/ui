@@ -51,9 +51,8 @@ export const WriteDataComponent = (props: OwnProps) => {
   const writeDataCodeUrlMac = `influx write --bucket ${bucketName} --url ${sampleDataUrl}`
   const writeDataCodeUrlWindows = `.\\influx write --bucket ${bucketName} --url ${sampleDataUrl}`
 
-  const [currentDataSelection, setCurrentDataSelection] = useState<
-    CurrentDataSelection
-  >('URL')
+  const [currentDataSelection, setCurrentDataSelection] =
+    useState<CurrentDataSelection>('URL')
 
   useEffect(() => {
     const fireKeyboardCopyEvent = event => {

@@ -20,17 +20,13 @@ describe('Buckets', () => {
       cy.getByTestID('Create Bucket').click()
       cy.getByTestID('overlay--container').within(() => {
         cy.getByInputName('name').type(newBucket)
-        cy.get('.cf-button')
-          .contains('Create')
-          .click()
+        cy.get('.cf-button').contains('Create').click()
       })
 
       cy.getByTestID(`bucket--card--name ${newBucket}`).should('exist')
 
       // Add a label
-      cy.getByTestID('inline-labels--add')
-        .first()
-        .click()
+      cy.getByTestID('inline-labels--add').first().click()
 
       const labelName = 'l1'
       cy.getByTestID('inline-labels--popover--contents').type(labelName)
@@ -177,14 +173,10 @@ describe('Buckets', () => {
       cy.getByTestID('Create Bucket').click()
       cy.getByTestID('overlay--container').within(() => {
         cy.getByInputName('name').type(newBucket)
-        cy.get('.cf-button')
-          .contains('Create')
-          .click()
+        cy.get('.cf-button').contains('Create').click()
       })
 
-      cy.getByTestID(`bucket--card--name ${newBucket}`)
-        .should('exist')
-        .click()
+      cy.getByTestID(`bucket--card--name ${newBucket}`).should('exist').click()
 
       cy.getByTestID('page-title').contains(newBucket)
     })
@@ -195,9 +187,7 @@ describe('Buckets', () => {
       cy.getByTestID('Create Bucket').click()
       cy.getByTestID('overlay--container').within(() => {
         cy.getByInputName('name').type(newBucket)
-        cy.get('.cf-button')
-          .contains('Create')
-          .click()
+        cy.get('.cf-button').contains('Create').click()
       })
 
       cy.getByTestID(`bucket--card--name ${newBucket}`).should('exist')
@@ -329,7 +319,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe('uploading a csv', function() {
+  describe('uploading a csv', function () {
     it('writes a properly annotated csv', () => {
       // Navigate to csv uploader
       cy.getByTestID('add-data--button').click()

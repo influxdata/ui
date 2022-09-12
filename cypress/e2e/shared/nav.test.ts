@@ -176,9 +176,7 @@ describe('navigation', () => {
         cy.clickNavBarItem('nav-item-load-data')
       }
 
-      cy.getByTestID(`nav-subitem-${navItem}`)
-        .last()
-        .click()
+      cy.getByTestID(`nav-subitem-${navItem}`).last().click()
       cy.url().should('contain', navItem)
     })
 

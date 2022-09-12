@@ -107,9 +107,8 @@ const AutoRefreshOverlay: FC = () => {
   } as CustomTimeRange)
   const [infiniteDuration, setInfiniteDuration] = useState(false)
   const [inactivityTimeout, setInactivityTimeout] = useState('1')
-  const [inactivityTimeoutCategory, setInactivityTimeoutCategory] = useState(
-    'Hours'
-  )
+  const [inactivityTimeoutCategory, setInactivityTimeoutCategory] =
+    useState('Hours')
 
   const refreshOptions = [
     {

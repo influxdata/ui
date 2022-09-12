@@ -77,16 +77,13 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
     getInitialTimeTick(initialTickOptionValue, timeZone)
   )
 
-  const [tickOptionInputStatus, setTickOptionInputStatus] = useState<
-    ComponentStatus
-  >(ComponentStatus.Default)
+  const [tickOptionInputStatus, setTickOptionInputStatus] =
+    useState<ComponentStatus>(ComponentStatus.Default)
 
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false)
 
-  const [
-    isOnClickOutsideHandlerActive,
-    setIsOnClickOutsideHandlerActive,
-  ] = useState<boolean>(true)
+  const [isOnClickOutsideHandlerActive, setIsOnClickOutsideHandlerActive] =
+    useState<boolean>(true)
 
   const triggerRef: RefObject<ButtonRef> = createRef()
 

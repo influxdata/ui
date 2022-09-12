@@ -66,12 +66,8 @@ export const isCheckSaveable = (
   checkType: CheckType,
   thresholds: Threshold[]
 ): boolean => {
-  const {
-    oneQuery,
-    builderMode,
-    singleAggregateFunc,
-    singleField,
-  } = isDraftQueryAlertable(draftQueries)
+  const {oneQuery, builderMode, singleAggregateFunc, singleField} =
+    isDraftQueryAlertable(draftQueries)
 
   if (checkType === 'custom') {
     return true
@@ -149,39 +145,38 @@ export function formatFunctionCall(
   }")`
 }
 
-const convertTagsToFluxFunctionString = function convertTagsToFluxFunctionString(
-  tag: BuilderTagsType
-) {
-  if (!tag.key) {
+const convertTagsToFluxFunctionString =
+  function convertTagsToFluxFunctionString(tag: BuilderTagsType) {
+    if (!tag.key) {
+      return ''
+    }
+
+    if (tag.aggregateFunctionType === 'filter') {
+      if (!tag.values.length) {
+        return ''
+      }
+
+      return `\n  |> filter(fn: (r) => ${tagToFlux(tag)})`
+    }
+
+    if (tag.aggregateFunctionType === 'group') {
+      // if group is selected, but there are no values, don't return anything.
+      // same behavior as when 'filter' is selected but no values are chosen
+      if (!tag.values.length) {
+        return ''
+      }
+
+      const quotedValues = tag.values.map(value => `"${value}"`) // wrap the value in double quotes
+
+      if (quotedValues.length) {
+        return `\n  |> group(columns: [${quotedValues.join(', ')}])` // join with a comma (e.g. "foo","bar","baz")
+      }
+
+      return '\n  |> group()'
+    }
+
     return ''
   }
-
-  if (tag.aggregateFunctionType === 'filter') {
-    if (!tag.values.length) {
-      return ''
-    }
-
-    return `\n  |> filter(fn: (r) => ${tagToFlux(tag)})`
-  }
-
-  if (tag.aggregateFunctionType === 'group') {
-    // if group is selected, but there are no values, don't return anything.
-    // same behavior as when 'filter' is selected but no values are chosen
-    if (!tag.values.length) {
-      return ''
-    }
-
-    const quotedValues = tag.values.map(value => `"${value}"`) // wrap the value in double quotes
-
-    if (quotedValues.length) {
-      return `\n  |> group(columns: [${quotedValues.join(', ')}])` // join with a comma (e.g. "foo","bar","baz")
-    }
-
-    return '\n  |> group()'
-  }
-
-  return ''
-}
 
 export const tagToFlux = function tagToFlux(tag: BuilderTagsType) {
   return tag.values

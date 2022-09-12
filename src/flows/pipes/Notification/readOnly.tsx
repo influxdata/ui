@@ -21,8 +21,8 @@ import Threshold from 'src/flows/pipes/Notification/Threshold'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {ENDPOINT_DEFINITIONS} from 'src/flows/pipes/Notification/endpoints'
-const NotificationMonacoEditor = lazy(() =>
-  import('src/flows/pipes/Notification/NotificationMonacoEditor')
+const NotificationMonacoEditor = lazy(
+  () => import('src/flows/pipes/Notification/NotificationMonacoEditor')
 )
 
 // Types

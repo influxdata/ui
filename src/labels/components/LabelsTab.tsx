@@ -62,13 +62,8 @@ class Labels extends PureComponent<Props, State> {
 
   public render() {
     const {labels} = this.props
-    const {
-      searchTerm,
-      isOverlayVisible,
-      sortKey,
-      sortDirection,
-      sortType,
-    } = this.state
+    const {searchTerm, isOverlayVisible, sortKey, sortDirection, sortType} =
+      this.state
 
     const leftHeaderItems = (
       <>

@@ -86,16 +86,14 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
   isPaygCreditActive: false,
 }
 
-export const CheckoutContext = React.createContext<CheckoutContextType>(
-  DEFAULT_CONTEXT
-)
+export const CheckoutContext =
+  React.createContext<CheckoutContextType>(DEFAULT_CONTEXT)
 
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
-  const [zuoraParams, setZuoraParams] = useState<CreditCardParams>(
-    EMPTY_ZUORA_PARAMS
-  )
+  const [zuoraParams, setZuoraParams] =
+    useState<CreditCardParams>(EMPTY_ZUORA_PARAMS)
   const [isDirty, setIsDirty] = useState(false)
   const me = useSelector(getQuartzMe)
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)

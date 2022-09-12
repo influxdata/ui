@@ -110,9 +110,7 @@ describe('User profile page', () => {
       .contains('User Details')
       .should('be.visible')
 
-    cy.getByTestID('user-profile--email')
-      .contains('Email')
-      .should('be.visible')
+    cy.getByTestID('user-profile--email').contains('Email').should('be.visible')
     cy.getByTestID('user-profile--email-input').should(
       'have.attr',
       'value',
@@ -178,9 +176,7 @@ describe('User profile page', () => {
         )
       })
 
-      cy.getByTestID('user-profile--save-button')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('user-profile--save-button').should('be.visible').click()
 
       cy.wait('@putQuartzDefaultAccount').then(() => {
         // Force-clicks on notifications are work-arounds to ensure they're visible in cypress.
@@ -222,9 +218,7 @@ describe('User profile page', () => {
           )
         })
 
-        cy.getByTestID('user-profile--save-button')
-          .should('be.visible')
-          .click()
+        cy.getByTestID('user-profile--save-button').should('be.visible').click()
 
         cy.wait('@putQuartzDefaultAccount').then(() => {
           cy.getByTestID('notification-success')
@@ -280,9 +274,7 @@ describe('User profile page', () => {
         .should('be.visible')
         .click()
 
-      cy.getByTestID('user-profile--save-button')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('user-profile--save-button').should('be.visible').click()
 
       cy.wait('@putQuartzDefaultOrg').then(() => {
         cy.getByTestID('notification-success')

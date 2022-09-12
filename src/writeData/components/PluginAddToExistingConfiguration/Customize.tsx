@@ -138,11 +138,8 @@ const CustomizeComponent: FC<Props> = props => {
 }
 
 const mstp = (state: AppState) => {
-  const {
-    telegrafConfigDescription,
-    telegrafConfigID,
-    telegrafConfigName,
-  } = getDataLoaders(state)
+  const {telegrafConfigDescription, telegrafConfigID, telegrafConfigName} =
+    getDataLoaders(state)
   const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
 
   const selectedTelegraf = telegrafs?.find(

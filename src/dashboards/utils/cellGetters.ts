@@ -59,10 +59,12 @@ export const getNewDashboardCell = (
     y: 0,
     h:
       isStaticLegendType &&
-      (viewProperties as
-        | XYViewProperties
-        | LinePlusSingleStatProperties
-        | BandViewProperties)?.staticLegend?.show
+      (
+        viewProperties as
+          | XYViewProperties
+          | LinePlusSingleStatProperties
+          | BandViewProperties
+      )?.staticLegend?.show
         ? STATIC_LEGEND_CELL_HEIGHT_DEFAULT
         : 4,
     w: 4,

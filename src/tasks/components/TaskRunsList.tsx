@@ -26,9 +26,8 @@ interface Props {
 type SortKey = keyof Run
 
 export default class TaskRunsList extends PureComponent<Props> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
-  )
+  private memGetSortedResources =
+    memoizeOne<typeof getSortedResources>(getSortedResources)
 
   public render() {
     const {sortKey, sortDirection, onClickColumn} = this.props

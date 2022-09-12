@@ -76,9 +76,8 @@ export const DEFAULT_CONTEXT: OperatorContextType = {
   hasWritePermissions: false,
 }
 
-export const OperatorContext = React.createContext<OperatorContextType>(
-  DEFAULT_CONTEXT
-)
+export const OperatorContext =
+  React.createContext<OperatorContextType>(DEFAULT_CONTEXT)
 
 export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [accounts, setAccounts] = useState<OperatorAccount[]>([])

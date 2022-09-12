@@ -45,8 +45,7 @@ const supportLinks = [
     eventName: 'Community',
   },
   {
-    link:
-      'https://github.com/influxdata/influxdb/issues/new?template=feature_request.md',
+    link: 'https://github.com/influxdata/influxdb/issues/new?template=feature_request.md',
     title: 'Feature Requests',
     eventName: 'FeatureRequest',
   },

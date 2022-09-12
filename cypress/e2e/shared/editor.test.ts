@@ -45,18 +45,12 @@ describe('Editor+LSP communication', () => {
       cy.getByTestID('nav-item-flows').should('be.visible')
       cy.getByTestID('nav-item-flows').click()
 
-      cy.getByTestID('preset-new')
-        .first()
-        .click()
+      cy.getByTestID('preset-new').first().click()
       cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-      cy.get('.flow-divider--button')
-        .first()
-        .click()
+      cy.get('.flow-divider--button').first().click()
       cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
-      cy.getByTestID('add-flow-btn--rawFluxEditor')
-        .last()
-        .click()
+      cy.getByTestID('add-flow-btn--rawFluxEditor').last().click()
       cy.getByTestID('flux-editor').should('be.visible')
     })
 
@@ -74,9 +68,7 @@ describe('Editor+LSP communication', () => {
           cy.getByTestID('tree-nav').should('be.visible')
         })
       })
-      cy.getByTestID('switch-to-script-editor')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('switch-to-script-editor').should('be.visible').click()
     })
 
     runTest('time-machine--bottom')

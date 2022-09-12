@@ -57,14 +57,8 @@ class RefreshingView extends PureComponent<Props> {
   }
 
   public render() {
-    const {
-      id,
-      ranges,
-      properties,
-      manualRefresh,
-      annotations,
-      submitToken,
-    } = this.props
+    const {id, ranges, properties, manualRefresh, annotations, submitToken} =
+      this.props
 
     // DO NOT REMOVE the CellEvent component.  it gathers metrics for performance that management requires.
 

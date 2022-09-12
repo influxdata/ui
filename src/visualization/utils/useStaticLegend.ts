@@ -95,9 +95,8 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
   }
 
   return useMemo(() => {
-    const {
-      legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
-    } = properties
+    const {legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT} =
+      properties
 
     const {
       staticLegend = {

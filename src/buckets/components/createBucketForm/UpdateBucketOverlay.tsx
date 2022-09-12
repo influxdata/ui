@@ -55,8 +55,8 @@ let SchemaType = null,
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
-  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
-    .MeasurementSchemaCreateRequest
+  MeasurementSchemaCreateRequest =
+    require('src/client/generatedRoutes').MeasurementSchemaCreateRequest
 }
 
 const UpdateBucketOverlay: FunctionComponent = () => {
@@ -72,10 +72,8 @@ const UpdateBucketOverlay: FunctionComponent = () => {
 
   const [schemaType, setSchemaType] = useState('implicit')
   const [measurementSchemaList, setMeasurementSchemaList] = useState(null)
-  const [
-    newMeasurementSchemaRequests,
-    setNewMeasurementSchemaRequests,
-  ] = useState(null)
+  const [newMeasurementSchemaRequests, setNewMeasurementSchemaRequests] =
+    useState(null)
 
   const [measurementSchemaUpdates, setMeasurementSchemaUpdates] = useState(null)
 

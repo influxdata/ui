@@ -36,13 +36,8 @@ describe('Sources > Telegraf Plugins', () => {
       'be.visible'
     )
     cy.getByTestID('bucket-form-submit').should('be.disabled')
-    cy.getByTestID('bucket-form-name')
-      .click()
-      .clear()
-      .type(bucketName)
-    cy.getByTestID('bucket-form-submit')
-      .should('not.be.disabled')
-      .click()
+    cy.getByTestID('bucket-form-name').click().clear().type(bucketName)
+    cy.getByTestID('bucket-form-submit').should('not.be.disabled').click()
     cy.getByTestID('plugin-create-configuration-options--select-bucket').within(
       () => {
         cy.get('span.cf-dropdown--selected').contains(bucketName)
@@ -211,9 +206,7 @@ describe('Sources > Telegraf Plugins', () => {
     // Navigate back to Data > Sources to select another plugin
     cy.clickNavBarItem('nav-item-load-data')
 
-    cy.getByTestID(`load-data-item ${plugin2}`)
-      .should('exist')
-      .click()
+    cy.getByTestID(`load-data-item ${plugin2}`).should('exist').click()
 
     // Add plugin2 to the config that was created
     cy.getByTestID('add-plugin-to-configuration--dropdown')

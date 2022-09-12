@@ -46,10 +46,10 @@ let MeasurementSchemaList = null,
 
 if (CLOUD) {
   MeasurementSchema = require('src/client/generatedRoutes').MeasurementSchema
-  MeasurementSchemaList = require('src/client/generatedRoutes')
-    .MeasurementSchemaList
-  MeasurementSchemaColumn = require('src/client/generatedRoutes')
-    .MeasurementSchemaColumn
+  MeasurementSchemaList =
+    require('src/client/generatedRoutes').MeasurementSchemaList
+  MeasurementSchemaColumn =
+    require('src/client/generatedRoutes').MeasurementSchemaColumn
 }
 
 /**
@@ -616,10 +616,10 @@ export const MeasurementSchemaSection: FC<Props> = ({
   // this fixes that by only remaking panels when one is deleted or added.
   // only re-making them when one is added or removed removes the need for debouncing the update
   // (it was debounced to prevent re-renderings with each keystroke when the name was being entered)
-  const addPanels = useMemo(() => makeAddPanels(), [
-    newSchemas.length,
-    showSchemaValidation,
-  ])
+  const addPanels = useMemo(
+    () => makeAddPanels(),
+    [newSchemas.length, showSchemaValidation]
+  )
 
   return (
     <FlexBox

@@ -86,10 +86,8 @@ export const limitsReducer = (
         }
 
         if (limits.notificationRule) {
-          const {
-            maxNotifications,
-            blockedNotificationRules,
-          } = limits.notificationRule
+          const {maxNotifications, blockedNotificationRules} =
+            limits.notificationRule
           draftState.rules.maxAllowed = maxNotifications
           draftState.rules.blocked = blockedNotificationRules
             .split(',')

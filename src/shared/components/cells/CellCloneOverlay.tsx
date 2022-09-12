@@ -64,12 +64,10 @@ const CellCloneOverlay: FC = () => {
 
   const {view, cell} = useSelector(getOverlayParams)
 
-  const [destinationDashboardID, setDestinationDashboardID] = useState<string>(
-    ''
-  )
-  const [removeFromCurrentBoard, setRemoveFromCurrentBoard] = useState<boolean>(
-    false
-  )
+  const [destinationDashboardID, setDestinationDashboardID] =
+    useState<string>('')
+  const [removeFromCurrentBoard, setRemoveFromCurrentBoard] =
+    useState<boolean>(false)
 
   const handleDeleteCell = (): void => {
     dispatch(deleteCellAndView(currentDashboardID, cell.id, view.id))

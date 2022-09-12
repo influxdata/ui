@@ -179,11 +179,11 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     // Credit usage: $250 - (
     //   (sum of 30-day writes * $0.002) +
     //   (sum of 30-day query count * $0.01 / 100) +
-    //   (sum of 30-day query storage * $0.02) +
+    //   (sum of 30-day query storage * $0.002) +
     //   (sum of 30-day data out * $0.09)
     //  )
     const vectors = {
-      storage_gb: v => v * 0.02,
+      storage_gb: v => v * 0.002,
       writes_mb: v => v * 0.002,
       reads_gb: v => v * 0.09,
       query_count: v => (v * 0.01) / 100,

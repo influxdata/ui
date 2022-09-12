@@ -12,7 +12,10 @@ import {
 import {useHistory} from 'react-router-dom'
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {
+  DEFAULT_EDITOR_TEXT,
+  PersistanceContext,
+} from 'src/dataExplorer/context/persistance'
 import {RemoteDataState} from 'src/types'
 import './SaveAsScript.scss'
 import {CLOUD} from 'src/shared/constants'
@@ -34,8 +37,14 @@ interface Props {
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {hasChanged, resource, setResource, save} =
-    useContext(PersistanceContext)
+  const {
+    hasChanged,
+    resource,
+    setResource,
+    setQuery,
+    clearSchemaSelection,
+    save,
+  } = useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
@@ -79,6 +88,8 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const clear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
+    clearSchemaSelection()
+    setQuery(DEFAULT_EDITOR_TEXT)
     setResult(null)
 
     history.replace(`/orgs/${org.id}/data-explorer/from/script`)

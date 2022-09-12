@@ -246,6 +246,13 @@ describe('Script Builder', () => {
       cy.getByTestID('flux-editor').contains(
         `|> yield(name: "_editor_composition")`
       )
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('#schema-composition-sync-icon', {timeout: 3000}).should(
+          'have.length',
+          1
+        )
+        cy.get('.composition-sync').should('have.length', 2)
+      })
     }
 
     describe('default sync and resetting behavior:', () => {

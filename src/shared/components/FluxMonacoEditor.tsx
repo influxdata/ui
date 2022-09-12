@@ -69,8 +69,10 @@ const FluxEditorMonaco: FC<Props> = ({
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
   const {path} = useRouteMatch()
-  const isNewQxBuilder =
-    isFluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
+  const useSchemaComposition =
+    isFluxQueryBuilder &&
+    path === '/orgs/:orgID/data-explorer' &&
+    isFlagEnabled('schemaComposition')
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
@@ -81,17 +83,14 @@ const FluxEditorMonaco: FC<Props> = ({
   }, [variables])
 
   useEffect(() => {
-    if (
-      connection.current &&
-      isNewQxBuilder &&
-      isFlagEnabled('schemaComposition')
-    ) {
+    if (connection.current && useSchemaComposition) {
       connection.current.onSchemaSessionChange(
         sessionStore.selection,
         sessionStore.setSelection
       )
     }
   }, [
+    useSchemaComposition,
     connection.current,
     sessionStore?.selection,
     sessionStore?.selection.composition || null,
@@ -160,7 +159,7 @@ const FluxEditorMonaco: FC<Props> = ({
             }}
             editorDidMount={editorDidMount}
           />
-          {isNewQxBuilder && (
+          {useSchemaComposition && (
             <div id={ICON_SYNC_ID} className="sync-bar">
               <Icon glyph={IconFont.Sync} className="sync-icon" />
             </div>
@@ -168,7 +167,7 @@ const FluxEditorMonaco: FC<Props> = ({
         </div>
       </ErrorBoundary>
     ),
-    [onChangeScript, setEditor]
+    [onChangeScript, setEditor, useSchemaComposition]
   )
 }
 

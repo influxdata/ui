@@ -30,6 +30,15 @@ describe('Editor+LSP communication', () => {
           .monacoType(`{selectall}{del}`)
       })
     })
+
+    it('does not have a composition block', () => {
+      cy.getByTestID(editorSelector).then(() => {
+        cy.getByTestID('flux-editor', {timeout: 30000}).within(() => {
+          cy.get('#schema-composition-sync-icon').should('have.length', 0)
+          cy.get('.composition-sync').should('have.length', 0)
+        })
+      })
+    })
   }
 
   describe('in Flows:', () => {
@@ -83,6 +92,7 @@ describe('Editor+LSP communication', () => {
         cy.getByTestID('tree-nav').should('be.visible')
         cy.setFeatureFlags({
           newDataExplorer: true,
+          schemaComposition: false,
         }).then(() => {
           // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
           // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).

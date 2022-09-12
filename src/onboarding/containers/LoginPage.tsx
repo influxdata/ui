@@ -49,10 +49,9 @@ export const LoginPage: FC = () => {
     }
     return null
   } else {
-    if (isFlagEnabled('universalLogin')){
+    if (isFlagEnabled('universalLogin')) {
       if (CLOUD) {
-        const url = new URL(`${CLOUD_QUARTZ_URL}`)
-          .href
+        const url = new URL(`${CLOUD_QUARTZ_URL}`).href
 
         console.warn('Redirect to cloud url: ', url)
         window.location.replace(url)

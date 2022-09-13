@@ -86,11 +86,9 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   const handleGetAccounts = useCallback(async () => {
     try {
-      console.log('getting accounts')
       const accounts = await getUserAccounts()
-      console.log('getting accounts', {accounts})
-      setUserAccounts(accounts)
 
+      setUserAccounts(accounts)
       const defaultAcctArray = accounts.filter(line => line.isDefault)
       if (defaultAcctArray && defaultAcctArray.length === 1) {
         const defaultId = defaultAcctArray[0].id
@@ -107,7 +105,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       event('multiAccount.retrieveAccounts.error', {error})
       throw error
     }
-  }, [activeAccountId, defaultAccountId])
+  }, [setActiveAccountId, setDefaultAccountId])
 
   async function handleSetDefaultAccount(
     newDefaultAcctId: number,

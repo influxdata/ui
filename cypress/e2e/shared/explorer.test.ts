@@ -5,6 +5,13 @@ describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
+    // Double check that the new schemaComposition flag does not interfere.
+    cy.setFeatureFlags({
+      schemaComposition: true,
+    })
+    // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+    // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+    cy.wait(1200)
     cy.get('@org').then(({id}: Organization) => {
       cy.createMapVariable(id)
       cy.fixture('routes').then(({orgs, explorer}) => {

@@ -24,10 +24,11 @@ import {
 
 interface OwnProps {
   id: string
+  incrementSubmitToken: () => void
   manualRefresh: number
   properties: QueryViewProperties
-  incrementSubmitToken: () => void
   submitToken: number
+  transmitWindowPeriod?: (windowPeriod: number | string) => void
 }
 
 interface StateProps {
@@ -57,8 +58,15 @@ class RefreshingView extends PureComponent<Props> {
   }
 
   public render() {
-    const {id, ranges, properties, manualRefresh, annotations, submitToken} =
-      this.props
+    const {
+      id,
+      ranges,
+      properties,
+      manualRefresh,
+      annotations,
+      submitToken,
+      transmitWindowPeriod,
+    } = this.props
 
     // DO NOT REMOVE the CellEvent component.  it gathers metrics for performance that management requires.
 
@@ -81,6 +89,7 @@ class RefreshingView extends PureComponent<Props> {
               timeRange={ranges}
               annotations={annotations}
               cellID={id}
+              transmitWindowPeriod={transmitWindowPeriod}
             />
           </React.Fragment>
         )}

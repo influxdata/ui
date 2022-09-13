@@ -26,11 +26,19 @@ import {
   ResourceType,
   Variable,
 } from 'src/types'
+
+// Selectors
 import {getAllVariables} from 'src/variables/selectors'
+import {getWindowPeriodFromQueryBuilder} from 'src/timeMachine/selectors'
+
+// Constants
+import {FALLBACK_WINDOW_PERIOD} from 'src/variables/utils/getWindowVars'
+import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
 
 interface StateProps {
-  view: View
   variables: Variable[]
+  view: View
+  windowPeriodFromQueryBuilder: string
 }
 
 interface OwnProps {
@@ -41,6 +49,7 @@ interface OwnProps {
 interface State {
   submitToken: number
   isPaused: boolean
+  windowPeriod: string
 }
 
 type Props = StateProps & OwnProps
@@ -50,6 +59,7 @@ class CellComponent extends Component<Props, State> {
   state = {
     submitToken: 0,
     isPaused: false,
+    windowPeriod: `${FALLBACK_WINDOW_PERIOD}ms`,
   }
 
   public componentDidMount() {
@@ -57,6 +67,25 @@ class CellComponent extends Component<Props, State> {
     if (view) {
       event(`dashboard.cell.view`, {
         type: normalizeEventName(chartTypeName(view?.properties?.type)),
+      })
+    }
+
+    if (this.props.windowPeriodFromQueryBuilder !== AGG_WINDOW_AUTO) {
+      this.setState({
+        ...this.state,
+        windowPeriod: this.props.windowPeriodFromQueryBuilder,
+      })
+    }
+  }
+
+  public componentDidUpdate(prevProps) {
+    if (
+      this.props.windowPeriodFromQueryBuilder !== AGG_WINDOW_AUTO &&
+      prevProps.windowPeriodFromQueryBuilder !==
+        this.props.windowPeriodFromQueryBuilder
+    ) {
+      this.setState({
+        windowPeriod: this.props.windowPeriodFromQueryBuilder,
       })
     }
   }
@@ -89,12 +118,44 @@ class CellComponent extends Component<Props, State> {
     }))
   }
 
+  private handleWindowPeriod = (windowPeriod: number) => {
+    this.setState({
+      windowPeriod: `${windowPeriod}ms`,
+    })
+  }
+
+  public renderWindowPeriod(): JSX.Element {
+    const type = this.props.view?.properties?.type
+
+    switch (type) {
+      case 'xy':
+      case 'line-plus-single-stat':
+      case 'band': {
+        if (this.props.windowPeriodFromQueryBuilder === AGG_WINDOW_AUTO) {
+          return (
+            <span className="cell--window-period">
+              window period: {this.state.windowPeriod}
+            </span>
+          )
+        }
+        return (
+          <span className="cell--window-period">
+            window period: {this.props.windowPeriodFromQueryBuilder}
+          </span>
+        )
+      }
+      default:
+        return null
+    }
+  }
+
   public render() {
     const {cell, view} = this.props
 
     return (
       <>
         <CellHeader name={this.viewName} note={this.viewNote}>
+          {this.renderWindowPeriod()}
           <CellContext
             cell={cell}
             view={view}
@@ -162,6 +223,7 @@ class CellComponent extends Component<Props, State> {
         manualRefresh={manualRefresh}
         incrementSubmitToken={this.handleIncrementToken}
         submitToken={this.state.submitToken}
+        transmitWindowPeriod={this.handleWindowPeriod}
       />
     )
   }
@@ -169,8 +231,12 @@ class CellComponent extends Component<Props, State> {
 
 const mstp = (state: AppState, ownProps: OwnProps) => {
   const view = getByID<View>(state, ResourceType.Views, ownProps.cell.id)
+  const windowPeriodFromQueryBuilder = getWindowPeriodFromQueryBuilder(
+    state,
+    view?.id
+  )
   const variables = getAllVariables(state)
-  return {view, variables}
+  return {variables, view, windowPeriodFromQueryBuilder}
 }
 
 export default connect<StateProps, {}, OwnProps>(mstp)(CellComponent)

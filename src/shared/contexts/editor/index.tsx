@@ -124,7 +124,7 @@ export const EditorProvider: FC = ({children}) => {
       editor.executeEdits('', edits)
       cbParentOnUpdateText(editor.getValue())
 
-      if (isFlagEnabled('fluxDynamicDocs') && triggerSuggest) {
+      if (triggerSuggest) {
         moveCursorAndTriggerSuggest(
           editor,
           injectionPosition,
@@ -141,10 +141,9 @@ export const EditorProvider: FC = ({children}) => {
       rawFn: FluxToolbarFunction | FluxFunction,
       cbParentOnUpdateText: (t: string) => void
     ): void => {
-      const fn =
-        CLOUD && isFlagEnabled('fluxDynamicDocs')
-          ? getFluxExample(rawFn as FluxFunction)
-          : (rawFn as FluxFunction)
+      const fn = CLOUD
+        ? getFluxExample(rawFn as FluxFunction)
+        : (rawFn as FluxFunction)
 
       const text = isPipeTransformation(fn)
         ? `  |> ${fn.example.trimRight()}`

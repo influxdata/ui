@@ -120,7 +120,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     } else {
       event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
-      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
+      if (CLOUD) {
         showSub(<DynamicFunctions onSelect={injectIntoEditor} />)
       } else {
         showSub(<Functions onSelect={injectIntoEditor} />)

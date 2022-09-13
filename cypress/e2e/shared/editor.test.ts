@@ -50,6 +50,13 @@ describe('Editor+LSP communication', () => {
           cy.visit(`${orgs}/${id}`)
         })
       )
+      // Double check that the new schemaComposition flag does not interfere.
+      cy.setFeatureFlags({
+        schemaComposition: true,
+      })
+      // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+      // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+      cy.wait(1200)
       cy.getByTestID('version-info')
       cy.getByTestID('nav-item-flows').should('be.visible')
       cy.getByTestID('nav-item-flows').click()
@@ -77,6 +84,13 @@ describe('Editor+LSP communication', () => {
           cy.getByTestID('tree-nav').should('be.visible')
         })
       })
+      // Double check that the new schemaComposition flag does not interfere.
+      cy.setFeatureFlags({
+        schemaComposition: true,
+      })
+      // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+      // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+      cy.wait(1200)
       cy.getByTestID('switch-to-script-editor').should('be.visible').click()
     })
 

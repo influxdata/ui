@@ -18,14 +18,12 @@ describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin().then(() => {
-      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
-    })
-
-    cy.get('@org').then(({id}: Organization) => {
-      cy.createMapVariable(id)
-      cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
-        cy.getByTestID('tree-nav').should('be.visible')
+      cy.get('@org').then(({id}: Organization) => {
+        cy.createMapVariable(id)
+        cy.fixture('routes').then(({orgs, explorer}) => {
+          cy.visit(`${orgs}/${id}${explorer}`)
+          cy.getByTestID('tree-nav').should('be.visible')
+        })
       })
     })
   })
@@ -79,7 +77,8 @@ describe('DataExplorer', () => {
 
         cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
-        cy.getByTestID('flux-toolbar-search--input').click().type('filter')
+        cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
+        cy.getByTestID('flux--filter').contains('filter')
 
         cy.get('.flux-toolbar--search').within(() => {
           cy.getByTestID('dismiss-button').click()
@@ -93,7 +92,29 @@ describe('DataExplorer', () => {
 
         cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
+        cy.get('.flux-toolbar--search').within(() => {
+          cy.getByTestID('dismiss-button').click()
+        })
+
+        cy.getByTestID('flux-toolbar-search--input')
+          .invoke('val')
+          .then(value => {
+            expect(value).to.equal('')
+          })
+
+        cy.getByTestID('flux-toolbar-search--input')
+          .invoke('val')
+          .then(value => {
+            expect(value).to.equal('')
+          })
+
         cy.getByTestID('flux-toolbar-search--input').click().type('array')
+
+        cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
+        cy.getByTestID('flux--filter').contains('filter')
+
+        cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
+        cy.getByTestID('flux--filter').contains('filter')
 
         cy.get('.flux-toolbar--search').within(() => {
           cy.getByTestID('dismiss-button').click()

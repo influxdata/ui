@@ -4,14 +4,14 @@ describe('Flows', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin().then(() => {
-      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
-    })
-    cy.get('@org').then(({id}: Organization) => {
-      cy.fixture('routes').then(({orgs}) => {
-        cy.visit(`${orgs}/${id}`)
-        cy.getByTestID('version-info').should('be.visible')
-        cy.getByTestID('nav-item-flows').should('be.visible')
-        cy.getByTestID('nav-item-flows').click()
+      cy.get('@org').then(({id}: Organization) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}`)
+          cy.getByTestID('version-info').should('be.visible')
+          cy.getByTestID('nav-item-flows').should('be.visible')
+          cy.getByTestID('nav-item-flows').click()
+          cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+        })
       })
     })
   })

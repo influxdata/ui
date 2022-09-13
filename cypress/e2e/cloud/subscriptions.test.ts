@@ -12,11 +12,7 @@ describe('Subscriptions', () => {
               accountType: 'pay_as_you_go',
             }).then(() => {
               cy.visit(`${orgs}/${id}/load-data/sources`)
-              cy.setFeatureFlags({
-                subscriptionsUI: true,
-                multiOrg: true,
-                quartzIdentity: true,
-              })
+
               cy.getByTestID('subscriptions--tab').should('be.visible')
               cy.intercept('POST', `/api/v2private/broker/subs*`).as(
                 'CreateSubscription'
@@ -30,6 +26,12 @@ describe('Subscriptions', () => {
               cy.intercept('GET', '/api/v2private/broker/subs/statuses', []).as(
                 'GetStatuses'
               )
+
+              cy.setFeatureFlags({
+                subscriptionsUI: true,
+                multiOrg: true,
+                quartzIdentity: true,
+              })
             })
           })
         })

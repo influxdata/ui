@@ -2,11 +2,11 @@ describe('Dashboard', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() =>
-        cy.setFeatureFlags({quartzIdentity: true, multiOrg: true}).then(() => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.get('@org').then(({id: orgID}: any) => {
-              cy.visit(`${orgs}/${orgID}/dashboards-list`)
-              cy.getByTestID('tree-nav')
+        cy.fixture('routes').then(({orgs}) => {
+          cy.get('@org').then(({id: orgID}: any) => {
+            cy.visit(`${orgs}/${orgID}/dashboards-list`)
+            cy.getByTestID('tree-nav').then(() => {
+              cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
             })
           })
         })

@@ -11,15 +11,14 @@ describe('Usage Page Free User No Data', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.setFeatureFlags({quartzIdentity: true, multiOrg: true}).then(() => {
-          cy.get('@org').then(({id}: Organization) => {
-            cy.quartzProvision({
-              hasData: false,
-              accountType: 'free',
-            }).then(() => {
-              cy.visit(`/orgs/${id}/usage`)
-              cy.getByTestID('usage-page--header').should('be.visible')
-            })
+        cy.get('@org').then(({id}: Organization) => {
+          cy.quartzProvision({
+            hasData: false,
+            accountType: 'free',
+          }).then(() => {
+            cy.visit(`/orgs/${id}/usage`)
+            cy.getByTestID('usage-page--header').should('be.visible')
+            cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
           })
         })
       })
@@ -28,7 +27,7 @@ describe('Usage Page Free User No Data', () => {
 
   it('should display the usage page common features', () => {
     // Display the upgrade button when the user is a free user
-    cy.get('.cf-page-header--fluid').children().should('have.length', 2)
+    cy.get('.cf-page-header--fluid').children().should('have.length', 1)
     cy.getByTestID('cloud-upgrade--button').should('be.visible')
 
     // Check that the stat headers render correctly
@@ -110,6 +109,7 @@ describe('Usage Page PAYG With Data', () => {
           }).then(() => {
             cy.visit(`/orgs/${id}/usage`)
             cy.getByTestID('usage-page--header').should('be.visible')
+            cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
           })
         })
       })
@@ -117,9 +117,6 @@ describe('Usage Page PAYG With Data', () => {
   })
 
   it('should display the usage page with data for a PAYG user', () => {
-    // The implication here is that there is no Upgrade Now button
-    cy.get('.cf-page-header--fluid').children().should('have.length', 1)
-
     const stats = ['0.78 MB', '32,424', '2.06 GB-hr', '0.01 GB']
 
     // Check that the stats are returned and rendered for a user with data

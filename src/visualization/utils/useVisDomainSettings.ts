@@ -153,6 +153,7 @@ interface ZoomRequeryArgs {
   setResult: Function
   storedDomain: number[]
   timeRange?: TimeRange
+  transmitWindowPeriod?: (windowPeriod: number | string) => void
 }
 
 const isNotEqual = (firstValue: any, secondValue: any): boolean =>
@@ -170,6 +171,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     setResult,
     storedDomain,
     timeRange = null,
+    transmitWindowPeriod,
   } = args
 
   const {type: timeRangeType} = timeRange ? timeRange : {type: 'duration'}
@@ -270,6 +272,12 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     }
   }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (timeRange) {
+      transmitWindowPeriod(windowPeriod)
+    }
+  }, [timeRange, transmitWindowPeriod, windowPeriod])
+
   // Suppresses adaptive zoom feature; must come after all hooks
   if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {
     const setVisXDomain = (domain: NumericColumnData) => {
@@ -318,6 +326,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
     setResult,
     storedDomain,
     timeRange = null,
+    transmitWindowPeriod,
   } = args
 
   const {type: timeRangeType} = timeRange ? timeRange : {type: 'duration'}
@@ -422,6 +431,12 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
       setDomain(preZoomDomain)
     }
   }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (timeRange) {
+      transmitWindowPeriod(windowPeriod)
+    }
+  }, [timeRange, transmitWindowPeriod, windowPeriod])
 
   // Suppresses adaptive zoom feature; must come after all hooks
   if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {

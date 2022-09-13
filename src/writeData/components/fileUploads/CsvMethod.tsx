@@ -36,52 +36,9 @@ import {
 // Types
 import {RemoteDataState} from 'src/types'
 
-export type Props = {
-  children: JSX.Element
-}
-
-export interface CsvUploaderContextType {
-  resetUploadState: () => void
-  uploadCsv: (csv: string, bucket: string) => void
-  uploadError: string
-  uploadState: RemoteDataState
-}
-
-export const DEFAULT_CONTEXT: CsvUploaderContextType = {
-  resetUploadState: () => {},
-  uploadCsv: (_: string, __: string) => {},
-  uploadError: '',
-  uploadState: RemoteDataState.NotStarted,
-}
-
-
-
-
 const CsvMethod: FC = () => {
-  // TODO: move state and functions from csv uploader context into here 
+  // TODO: move state and functions from csv uploader context into here
 
-  // const CsvUploaderNotContext = () => {
-  //   const csvUploaderObject = {};
-  
-  //   const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
-  //   const [uploadError, setUploadError] = useState('')
-  
-  //   const dispatch = useDispatch()
-  
-  //   const org = useSelector(getOrg)
-  
-  //   const controller = useRef<AbortController>(null)
-  
-  //   const resetUploadState = (): void => {
-  //     setUploadState(RemoteDataState.NotStarted)
-  //     controller.current.abort()
-  //   }
-  
-    
-   
-  // }
-
-  // const {uploadState, resetUploadState} = useContext(CsvUploaderContext)
   const {bucket} = useContext(WriteDataDetailsContext)
   const orgId = useSelector(getOrg)?.id
   const history = useHistory()
@@ -175,7 +132,7 @@ const CsvMethod: FC = () => {
       history.push(`/orgs/${orgId}/data-explorer?bucket=${bucket.name}`)
     }
   }
-  
+
   let buttonText = 'Close'
 
   if (uploadState === RemoteDataState.Loading) {
@@ -189,14 +146,13 @@ const CsvMethod: FC = () => {
     buttonText = 'Clear Error'
   }
 
-  let body = <CsvUploaderBody bucket={bucket.name} uploadCsv={uploadCsv}/>
+  let body = <CsvUploaderBody bucket={bucket.name} uploadCsv={uploadCsv} />
 
   if (uploadState !== RemoteDataState.NotStarted) {
-    body = <StatusIndicator uploadError={uploadError} uploadState={uploadState}/>
+    body = (
+      <StatusIndicator uploadError={uploadError} uploadState={uploadState} />
+    )
   }
-
-  
-
 
   return (
     <Panel>

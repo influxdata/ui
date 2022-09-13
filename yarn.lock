@@ -11571,13 +11571,13 @@ strip-json-comments@^3.1.0, strip-json-comments@^3.1.1:
   resolved "https://registry.npmjs.org/strip-json-comments/-/strip-json-comments-3.1.1.tgz"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
 
-style-loader@^0.23.1:
-  version "0.23.1"
-  resolved "https://registry.npmjs.org/style-loader/-/style-loader-0.23.1.tgz"
-  integrity sha512-XK+uv9kWwhZMZ1y7mysB+zoihsEj4wneFWAS5qoiLwzW0WzSqMrrsIy+a3zkQJq0ipFtBpX5W3MqyRIBF/WFGg==
+style-loader@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-2.0.0.tgz#9669602fd4690740eaaec137799a03addbbc393c"
+  integrity sha512-Z0gYUJmzZ6ZdRUqpg1r8GsaFKypE+3xAzuFeMuoHgjc9KZv3wMyCRjQIWEbhoFSq7+7yoHXySDJyyWQaPajeiQ==
   dependencies:
-    loader-utils "^1.1.0"
-    schema-utils "^1.0.0"
+    loader-utils "^2.0.0"
+    schema-utils "^3.0.0"
 
 style-to-object@^0.3.0:
   version "0.3.0"

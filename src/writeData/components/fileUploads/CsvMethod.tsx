@@ -11,7 +11,6 @@ import {useHistory} from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-// import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
 import StatusIndicator from 'src/buckets/components/csvUploader/StatusIndicator'
@@ -26,7 +25,6 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {getErrorMessage} from 'src/utils/api'
 
 // Selectors
-// import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
 import {
   csvUploadCancelled,
@@ -37,18 +35,15 @@ import {
 import {RemoteDataState} from 'src/types'
 
 const CsvMethod: FC = () => {
-  // TODO: move state and functions from csv uploader context into here
+  const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
+  const [uploadError, setUploadError] = useState('')
 
   const {bucket} = useContext(WriteDataDetailsContext)
   const orgId = useSelector(getOrg)?.id
   const history = useHistory()
-
-  const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
-  const [uploadError, setUploadError] = useState('')
+  const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
-
-  const org = useSelector(getOrg)
 
   const controller = useRef<AbortController>(null)
 

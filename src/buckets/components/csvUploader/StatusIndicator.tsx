@@ -4,7 +4,6 @@ import cn from 'classnames'
 
 // Components
 import {SparkleSpinner} from '@influxdata/clockface'
-// import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -45,9 +44,6 @@ interface Props {
   uploadState: RemoteDataState
 }
 const StatusIndicator: FC<Props> = ({uploadError, uploadState}) => {
-  // const {uploadError, uploadState} = useContext(CsvUploaderContext)
-  console.log('Upload Error: ' + uploadError)
-
   let testID = ''
 
   switch (uploadState) {

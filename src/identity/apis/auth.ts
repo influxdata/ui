@@ -16,6 +16,7 @@ import {
   Organization,
   OrganizationSummaries,
   UserAccount,
+  patchAccount,
 } from 'src/client/unityRoutes'
 
 import {
@@ -334,4 +335,14 @@ export const getUserAccounts = async (): Promise<UserAccount[]> => {
   } catch (error) {
     throw new ServerError('Error fetching accounts')
   }
+}
+
+export const updateQuartzAccount = async (accountId, name) => {
+  const resp = await patchAccount({accountId, data: {name}})
+
+  if (resp.status !== 200) {
+    throw new Error(`Account rename update failed`)
+  }
+
+  return resp.data
 }

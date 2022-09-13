@@ -15,7 +15,6 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Utils
-import {patchAccount} from 'src/client/unityRoutes'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
@@ -29,6 +28,7 @@ import {MeState} from 'src/me/reducers'
 import {
   getUserAccounts,
   updateDefaultQuartzAccount,
+  updateQuartzAccount,
 } from 'src/identity/apis/auth'
 
 export type Props = {
@@ -135,24 +135,19 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     const oldName = userAccounts[activeIndex].name
 
     try {
-      const resp = await patchAccount({accountId, data: {name: newName}})
+      console.log('shnkdhjskdj', newName, accountId)
+      const accountData = await updateQuartzAccount(accountId, newName)
+      console.log('acc data', accountData)
+      event('multiAccount.renameAccount')
+      dispatch(notify(accountRenameSuccess(oldName, newName)))
+      // change the name, and reset the active accts:
+      userAccounts[activeIndex].name = newName
+      setUserAccounts(userAccounts)
 
-      if (resp.status !== 200) {
-        dispatch(notify(accountRenameError(oldName)))
-      } else {
-        dispatch(notify(accountRenameSuccess(oldName, newName)))
-        event('multiAccount.renameAccount')
-
-        // change the name, and reset the active accts:
-        userAccounts[activeIndex].name = newName
-        setUserAccounts(userAccounts)
-
-        if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-          const name = resp.data.name
-          const id = resp.data.id.toString()
-          // update the state
-          dispatch(setMe({name, id} as MeState))
-        }
+      if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
+        const name = accountData.name
+        const id = accountData.id.toString()
+        dispatch(setMe({name, id} as MeState))
       }
     } catch (error) {
       dispatch(notify(accountRenameError(oldName)))

@@ -4,12 +4,14 @@ describe('Community Templates', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${id}/settings/templates`)
-            cy.getByTestID('tree-nav')
-          })
-        )
+        cy.setFeatureFlags({quartzIdentity: true, multiOrg: true}).then(() => {
+          cy.get('@org').then(({id}: Organization) =>
+            cy.fixture('routes').then(({orgs}) => {
+              cy.visit(`${orgs}/${id}/settings/templates`)
+              cy.getByTestID('tree-nav')
+            })
+          )
+        })
       })
     )
   )

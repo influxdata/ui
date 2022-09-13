@@ -4,12 +4,17 @@ describe('Billing Page Free Users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.quartzProvision({
-            accountType: 'free',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/billing`)
-            cy.getByTestID('billing-page--header').should('be.visible')
+        cy.setFeatureFlags({
+          quartzIdentity: true,
+          multiOrg: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
+            cy.quartzProvision({
+              accountType: 'free',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/billing`)
+              cy.getByTestID('billing-page--header').should('be.visible')
+            })
           })
         })
       })
@@ -52,18 +57,23 @@ describe('Billing Page PAYG Users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.quartzProvision({
-            accountType: 'pay_as_you_go',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/billing`)
+        cy.setFeatureFlags({
+          quartzIdentity: true,
+          multiOrg: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
+            cy.quartzProvision({
+              accountType: 'pay_as_you_go',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/billing`)
 
-            cy.getByTestID('billing-page--header').should('be.visible')
-            cy.getByTestID('accounts-billing-tab').should('be.visible')
-            cy.getByTestID('accounts-billing-tab').should(
-              'have.class',
-              'cf-tabs--tab__active'
-            )
+              cy.getByTestID('billing-page--header').should('be.visible')
+              cy.getByTestID('accounts-billing-tab').should('be.visible')
+              cy.getByTestID('accounts-billing-tab').should(
+                'have.class',
+                'cf-tabs--tab__active'
+              )
+            })
           })
         })
       })

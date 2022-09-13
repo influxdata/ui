@@ -6,6 +6,8 @@ const doSetup = (cy, numAccounts: number) => {
       cy.get('@org').then(({id}: Organization) => {
         cy.setFeatureFlags({
           multiAccount: true,
+          multiOrg: true,
+          quartzIdentity: true,
         }).then(() => {
           cy.quartzProvision({
             accountType: 'free',

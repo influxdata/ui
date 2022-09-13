@@ -13,13 +13,18 @@ describe('Checkout Page Works', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(() => {
-          cy.getByTestID('home-page--header').should('be.visible')
-          cy.quartzProvision({
-            accountType: 'free',
-          }).then(() => {
-            cy.visit(`/checkout`)
-            cy.getByTestID('checkout-page--header').should('be.visible')
+        cy.setFeatureFlags({
+          quartzIdentity: true,
+          multiOrg: true,
+        }).then(() => {
+          cy.get('@org').then(() => {
+            cy.getByTestID('home-page--header').should('be.visible')
+            cy.quartzProvision({
+              accountType: 'free',
+            }).then(() => {
+              cy.visit(`/checkout`)
+              cy.getByTestID('checkout-page--header').should('be.visible')
+            })
           })
         })
       })

@@ -14,6 +14,8 @@ describe('Subscriptions', () => {
               cy.visit(`${orgs}/${id}/load-data/sources`)
               cy.setFeatureFlags({
                 subscriptionsUI: true,
+                multiOrg: true,
+                quartzIdentity: true,
               })
               cy.getByTestID('subscriptions--tab').should('be.visible')
               cy.intercept('POST', `/api/v2private/broker/subs*`).as(

@@ -11,13 +11,15 @@ describe('Usage Page Free User No Data', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.quartzProvision({
-            hasData: false,
-            accountType: 'free',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/usage`)
-            cy.getByTestID('usage-page--header').should('be.visible')
+        cy.setFeatureFlags({quartzIdentity: true, multiOrg: true}).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
+            cy.quartzProvision({
+              hasData: false,
+              accountType: 'free',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/usage`)
+              cy.getByTestID('usage-page--header').should('be.visible')
+            })
           })
         })
       })

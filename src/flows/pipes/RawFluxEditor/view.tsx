@@ -37,7 +37,6 @@ import 'src/flows/pipes/RawFluxEditor/style.scss'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {buildQuery} from 'src/timeMachine/utils/queryBuilder'
 
 const FluxMonacoEditor = lazy(

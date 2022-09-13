@@ -16,7 +16,6 @@ import {FluxFunction, FluxToolbarFunction} from 'src/types'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import './Sidebar.scss'
 
@@ -41,7 +40,7 @@ const Sidebar: FC = () => {
 
   let browser = <Functions onSelect={inject} />
 
-  if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
+  if (CLOUD) {
     browser = <DynamicFunctions onSelect={inject} />
   }
 

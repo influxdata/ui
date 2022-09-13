@@ -78,14 +78,13 @@ class CellComponent extends Component<Props, State> {
     }
   }
 
-  public componentDidUpdate(prevProps, prevState) {
+  public componentDidUpdate(prevProps) {
     if (
       this.props.windowPeriodFromQueryBuilder !== AGG_WINDOW_AUTO &&
       prevProps.windowPeriodFromQueryBuilder !==
         this.props.windowPeriodFromQueryBuilder
     ) {
       this.setState({
-        ...prevState,
         windowPeriod: this.props.windowPeriodFromQueryBuilder,
       })
     }
@@ -120,10 +119,34 @@ class CellComponent extends Component<Props, State> {
   }
 
   private handleWindowPeriod = (windowPeriod: number) => {
-    this.setState(prevState => ({
-      ...prevState,
+    this.setState({
       windowPeriod: `${windowPeriod}ms`,
-    }))
+    })
+  }
+
+  public renderWindowPeriod(): JSX.Element {
+    const type = this.props.view?.properties?.type
+
+    switch (type) {
+      case 'xy':
+      case 'line-plus-single-stat':
+      case 'band': {
+        if (this.props.windowPeriodFromQueryBuilder === AGG_WINDOW_AUTO) {
+          return (
+            <span className="cell--window-period">
+              window period: {this.state.windowPeriod}
+            </span>
+          )
+        }
+        return (
+          <span className="cell--window-period">
+            window period: {this.props.windowPeriodFromQueryBuilder}
+          </span>
+        )
+      }
+      default:
+        return null
+    }
   }
 
   public render() {
@@ -132,7 +155,7 @@ class CellComponent extends Component<Props, State> {
     return (
       <>
         <CellHeader name={this.viewName} note={this.viewNote}>
-          {this.windowPeriod}
+          {this.renderWindowPeriod()}
           <CellContext
             cell={cell}
             view={view}
@@ -203,31 +226,6 @@ class CellComponent extends Component<Props, State> {
         transmitWindowPeriod={this.handleWindowPeriod}
       />
     )
-  }
-
-  private get windowPeriod(): JSX.Element {
-    const type = this.props.view?.properties?.type
-
-    switch (type) {
-      case 'xy':
-      case 'line-plus-single-stat':
-      case 'band': {
-        if (this.props.windowPeriodFromQueryBuilder === AGG_WINDOW_AUTO) {
-          return (
-            <span className="cell--window-period">
-              window period: {this.state.windowPeriod}
-            </span>
-          )
-        }
-        return (
-          <span className="cell--window-period">
-            window period: {this.props.windowPeriodFromQueryBuilder}
-          </span>
-        )
-      }
-      default:
-        return null
-    }
   }
 }
 

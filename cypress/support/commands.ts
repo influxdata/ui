@@ -1048,6 +1048,14 @@ export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
   })
 }
 
+export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
+  // use in lieu of setFeatureFlags when no left nav bar is expected.
+  return cy.window().then(win => {
+    // eslint-disable-next-line no-extra-semi
+    ;(win as any).store.dispatch(setOverrides(flags))
+  })
+}
+
 export const createTaskFromEmpty = (
   name: string,
   flux: (bucket: Bucket) => string,
@@ -1164,5 +1172,6 @@ Cypress.Commands.add(
 )
 Cypress.Commands.add('getByTestIDAndSetInputValue', getByTestIDAndSetInputValue)
 Cypress.Commands.add('setFeatureFlags', setFeatureFlags)
+Cypress.Commands.add('setFeatureFlagsNoNav', setFeatureFlagsNoNav)
 Cypress.Commands.add('createTaskFromEmpty', createTaskFromEmpty)
 /* eslint-enable */

@@ -27,7 +27,10 @@ describe('Checkout Page Works', () => {
   )
 
   it('should render the checkout page and allow for pointing and clicking', () => {
-    cy.setFeatureFlags({quartzIdentity: true, multiOrg: true}).then(() => {
+    cy.setFeatureFlagsNoNav({
+      quartzIdentity: true,
+      multiOrg: true,
+    }).then(() => {
       const email = 'asalem@influxdata.com'
       const limit = 10
       const numberError = 'Please enter a value of 1 or greater'

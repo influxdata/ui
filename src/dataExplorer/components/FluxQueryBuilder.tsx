@@ -158,6 +158,7 @@ const FluxQueryBuilder: FC = () => {
             )}
           </div>
           <DraggableResizer
+            className="draggable-resizer--collapsible"
             handleOrientation={Orientation.Vertical}
             handlePositions={vertical}
             onChangePositions={setVertical}

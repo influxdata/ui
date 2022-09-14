@@ -37,3 +37,10 @@
 .save-script-name__input {
   margin-bottom: $cf-space-s;
 }
+
+.draggable-resizer--collapsible {
+  .cf-draggable-resizer-handle-container--vertical {
+    border-left: 2px solid $cf-grey-15;
+    border-right: 2px solid $cf-grey-15;
+  }
+}

@@ -185,7 +185,6 @@ describe('Flows', () => {
 
   it('can use the dynamic flux function selector to build a query', () => {
     cy.setFeatureFlags({
-      fluxDynamicDocs: true,
       quartzIdentity: true,
       multiOrg: true,
     }).then(() => {
@@ -221,7 +220,6 @@ describe('Flows', () => {
 
   it('can use the dynamic flux function search bar to search by package or function name', () => {
     cy.setFeatureFlags({
-      fluxDynamicDocs: true,
       quartzIdentity: true,
       multiOrg: true,
     }).then(() => {

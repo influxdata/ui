@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-const doSetup = (cy, numAccounts: number) => {
+const doSetup = cy => {
   cy.flush().then(() => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
@@ -31,7 +31,7 @@ describe('Account Page tests', () => {
           {id: 415, isActive: false, isDefault: true, name: 'Veganomicon'},
         ],
       })
-      doSetup(cy, 2)
+      doSetup(cy)
     })
 
     it('can get to the account page and rename the active account', () => {

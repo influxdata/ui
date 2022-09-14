@@ -162,7 +162,7 @@ const FluxQueryBuilder: FC = () => {
             handlePositions={vertical}
             onChangePositions={setVertical}
           >
-            <DraggableResizer.Panel>
+            <DraggableResizer.Panel isCollapsible={true}>
               <Schema />
             </DraggableResizer.Panel>
             <DraggableResizer.Panel
@@ -171,7 +171,7 @@ const FluxQueryBuilder: FC = () => {
             >
               <ResultsPane />
             </DraggableResizer.Panel>
-            <DraggableResizer.Panel>
+            <DraggableResizer.Panel isCollapsible={true}>
               <Sidebar />
             </DraggableResizer.Panel>
           </DraggableResizer>

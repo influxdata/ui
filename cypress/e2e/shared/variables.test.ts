@@ -9,6 +9,13 @@ describe('Variables', () => {
       cy.visit(`orgs/${id}/settings/variables`)
       cy.getByTestID('tree-nav')
     })
+    // Double check that the new schemaComposition flag does not interfere.
+    cy.setFeatureFlags({
+      schemaComposition: true,
+    })
+    // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+    // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+    cy.wait(1200)
     cy.location('pathname').should('match', /\/variables$/)
   })
 

@@ -17,25 +17,27 @@ import {
 
 interface Props {
   properties: ViewProperties
-  result?: FromFluxResult
-  loading?: RemoteDataState
-  error?: string
-  isInitial?: boolean
-  timeRange?: TimeRange
   annotations?: AnnotationsList
   cellID?: string
+  error?: string
   hideTimer?: boolean
+  isInitial?: boolean
+  loading?: RemoteDataState
+  result?: FromFluxResult
+  timeRange?: TimeRange
+  transmitWindowPeriod?: (windowPeriod: number | string) => void
 }
 
 const InnerView: FC<Props> = ({
   properties,
-  result,
-  loading,
-  error,
-  isInitial,
-  timeRange,
   annotations,
   cellID,
+  error,
+  isInitial,
+  loading,
+  result,
+  timeRange,
+  transmitWindowPeriod,
 }) => {
   if (!SUPPORTED_VISUALIZATIONS[properties.type]?.component) {
     throw new Error('Unknown view type in <View /> ')
@@ -57,11 +59,12 @@ const InnerView: FC<Props> = ({
       fallbackNote={fallbackNote}
     >
       {createElement(SUPPORTED_VISUALIZATIONS[properties.type].component, {
-        result: result,
-        properties: properties,
-        timeRange: timeRange || DEFAULT_TIME_RANGE,
         annotations: annotations,
         cellID: cellID,
+        properties: properties,
+        result: result,
+        timeRange: timeRange || DEFAULT_TIME_RANGE,
+        transmitWindowPeriod: transmitWindowPeriod || (() => {}),
       })}
     </EmptyQueryView>
   )

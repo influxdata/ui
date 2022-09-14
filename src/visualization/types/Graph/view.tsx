@@ -74,10 +74,11 @@ interface Props extends VisualizationProps {
 
 const XYPlot: FC<Props> = ({
   properties,
-  result,
-  timeRange,
   annotations,
   cellID,
+  result,
+  timeRange,
+  transmitWindowPeriod,
 }) => {
   const [resultState, setResultState] = useState(result)
   const [preZoomResult, setPreZoomResult] =
@@ -185,6 +186,7 @@ const XYPlot: FC<Props> = ({
       setResult: setResultState,
       storedDomain: storedXDomain,
       timeRange,
+      transmitWindowPeriod,
     }
   )
 
@@ -199,6 +201,7 @@ const XYPlot: FC<Props> = ({
       setRequeryStatus,
       setResult: setResultState,
       storedDomain: storedYDomain,
+      transmitWindowPeriod,
     }
   )
 

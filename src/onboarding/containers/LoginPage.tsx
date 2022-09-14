@@ -17,6 +17,8 @@ import {fetchLegacyIdentity} from 'src/identity/apis/auth'
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
+import {CLOUD, CLOUD_QUARTZ_URL} from 'src/shared/constants'
+import {isFlagEnabled} from '../../shared/utils/featureFlag'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
@@ -46,6 +48,16 @@ export const LoginPage: FC = () => {
       history.goBack()
     }
     return null
+  } else {
+    if (isFlagEnabled('universalLogin')) {
+      if (CLOUD) {
+        const url = new URL(`${CLOUD_QUARTZ_URL}`).href
+
+        console.warn('Redirect to cloud url: ', url)
+        window.location.replace(url)
+        return
+      }
+    }
   }
 
   return (

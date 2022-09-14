@@ -1,33 +1,17 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
-import {
-  FROM,
-  RANGE,
-  MEAN,
-  MATH_ABS,
-  MATH_FLOOR,
-  STRINGS_TITLE,
-  STRINGS_TRIM,
-} from '../../../src/shared/constants/fluxFunctions'
-
-function getTimeMachineText() {
-  return cy
-    .wrap({
-      text: () => {
-        const store = cy.state().window.store.getState().timeMachines
-        const timeMachine = store.timeMachines[store.activeTimeMachineID]
-        const query =
-          timeMachine.draftQueries[timeMachine.activeQueryIndex].text
-        return query
-      },
-    })
-    .invoke('text')
-}
 
 describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
+    // Double check that the new schemaComposition flag does not interfere.
+    cy.setFeatureFlags({
+      schemaComposition: true,
+    })
+    // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+    // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+    cy.wait(1200)
     cy.get('@org').then(({id}: Organization) => {
       cy.createMapVariable(id)
       cy.fixture('routes').then(({orgs, explorer}) => {
@@ -431,75 +415,6 @@ describe('DataExplorer', () => {
 
       cy.getByTestID('time-machine-submit-button').should('not.be.disabled')
       cy.getByTestID('flux-editor').monacoType('{selectall}{del}')
-    })
-
-    it('imports the appropriate packages to build a query', () => {
-      cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
-      cy.getByTestID('functions-toolbar-contents--functions').should('exist')
-      cy.getByTestID('flux--from--inject').click({force: true})
-      cy.getByTestID('flux--range--inject').click({force: true})
-      cy.getByTestID('flux--math.abs--inject').click({force: true})
-      cy.getByTestID('flux--math.floor--inject').click({force: true})
-      cy.getByTestID('flux--strings.title--inject').click({force: true})
-      cy.getByTestID('flux--strings.trim--inject').click({force: true})
-
-      cy.wait(100)
-
-      getTimeMachineText().then(text => {
-        const expected = `
-        import"${STRINGS_TITLE.package}"
-        import"${MATH_ABS.package}"
-        ${FROM.example}|>
-        ${RANGE.example}|>
-        ${MATH_ABS.example}|>
-        ${MATH_FLOOR.example}|>
-        ${STRINGS_TITLE.example}|>
-        ${STRINGS_TRIM.example}`
-
-        cy.fluxEqual(text, expected).should('be.true')
-      })
-    })
-
-    it('can use the function selector to build a query', () => {
-      // wait for monaco to load so focus is not taken from flux-toolbar-search--input
-      cy.get('.view-line').should('be.visible')
-
-      cy.getByTestID('flux-toolbar-search--input').clear().type('covarianced') // purposefully misspell "covariance" so all functions are filtered out
-
-      cy.getByTestID('flux-toolbar--list').within(() => {
-        cy.getByTestID('empty-state').should('be.visible')
-      })
-
-      cy.getByTestID('flux-toolbar-search--input').type('{backspace}')
-
-      cy.get('.flux-toolbar--list-item').should('contain', 'covariance')
-      cy.get('.flux-toolbar--list-item').should('have.length', 1)
-
-      cy.getByTestID('flux-toolbar-search--input').clear()
-
-      cy.getByTestID('flux--from--inject').click()
-
-      getTimeMachineText().then(text => {
-        const expected = FROM.example
-
-        cy.fluxEqual(text, expected).should('be.true')
-      })
-
-      cy.getByTestID('flux--range--inject').click()
-
-      getTimeMachineText().then(text => {
-        const expected = `${FROM.example}|>${RANGE.example}`
-
-        cy.fluxEqual(text, expected).should('be.true')
-      })
-
-      cy.getByTestID('flux--mean--inject').click()
-
-      getTimeMachineText().then(text => {
-        const expected = `${FROM.example}|>${RANGE.example}|>${MEAN.example}`
-
-        cy.fluxEqual(text, expected).should('be.true')
-      })
     })
 
     it('shows the empty state when the query returns no results', () => {

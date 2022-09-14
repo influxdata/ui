@@ -12,7 +12,7 @@ import Notifications from 'src/shared/components/notifications/Notifications'
 import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
 // APIs
-import {fetchLegacyIdentity} from 'src/identity/apis/auth'
+import {fetchIdentity, fetchLegacyIdentity} from 'src/identity/apis/auth'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -27,7 +27,12 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      await fetchLegacyIdentity()
+      if (isFlagEnabled('quartzSession')) {
+        await fetchIdentity()
+      } else {
+        await fetchLegacyIdentity()
+      }
+
       setHasValidSession(true)
     } catch {
       setHasValidSession(false)

@@ -55,7 +55,7 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
 
 const DEFAULT_CONTEXT = {
   hasChanged: false,
-  horizontal: [0.2],
+  horizontal: [0.5],
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,
   query: '',

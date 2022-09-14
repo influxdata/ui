@@ -23,7 +23,6 @@ import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
 import {
   PersistanceProvider,
   PersistanceContext,
-  DEFAULT_EDITOR_TEXT,
 } from 'src/dataExplorer/context/persistance'
 import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
@@ -46,7 +45,7 @@ export enum OverlayType {
 
 const FluxQueryBuilder: FC = () => {
   const history = useHistory()
-  const {hasChanged, query, setQuery, vertical, setVertical} =
+  const {hasChanged, query, vertical, setVertical} =
     useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
@@ -57,7 +56,6 @@ const FluxQueryBuilder: FC = () => {
   const handleClear = () => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
-    setQuery(DEFAULT_EDITOR_TEXT)
     setResult(null)
 
     history.replace(`/orgs/${org.id}/data-explorer/from/script`)

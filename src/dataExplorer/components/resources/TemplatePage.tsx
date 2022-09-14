@@ -9,7 +9,6 @@ import {RESOURCES} from 'src/dataExplorer/components/resources'
 import {
   PersistanceContext,
   PersistanceProvider,
-  DEFAULT_EDITOR_TEXT,
 } from 'src/dataExplorer/context/persistance'
 
 const Template: FC = () => {
@@ -36,7 +35,6 @@ const Template: FC = () => {
 
     setLoading(RemoteDataState.Loading)
     clearSchemaSelection()
-    setQuery(DEFAULT_EDITOR_TEXT)
     setResource(null)
 
     RESOURCES[params[0]].init.apply(this, params.slice(1)).then(data => {

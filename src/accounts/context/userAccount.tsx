@@ -140,16 +140,8 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         event('multiAccount.renameAccount')
         dispatch(notify(accountRenameSuccess(activeAccount.name, newName)))
 
-        // change the name, and reset the active accts:
-        const updatedAccounts = userAccounts.map(acct => {
-          const account = {...acct}
-          if (acct.id === activeAccount.id) {
-            account.name = accountData.name
-          }
-
-          return account
-        })
-        setUserAccounts(updatedAccounts)
+        activeAccount.name = newName
+        setUserAccounts(userAccounts)
 
         if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
           const name = accountData.name

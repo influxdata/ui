@@ -215,17 +215,11 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
       vari.selected.push(vals[0])
     } catch (err) {
       // Temporary measure to resolve errors relating to pushing into non-extensible object.
-      reportErrorThroughHoneyBadger(err, {
+      console.error({
         name: 'Failed to set selected variable to default, zero-indexed value',
-        context: {
-          identityState: state.identity,
-          resourceState: state.resources,
-          variable: vari,
-          variableType: vari.arguments.type,
-          normalizedVariable: vals,
-          variableLength: vari.selected.length,
-          normalizedVariableLength: vals.length,
-        },
+        error: err,
+        variable: vari,
+        variableType: vari.arguments.type,
       })
     }
   }

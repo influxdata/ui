@@ -21,7 +21,6 @@ import {useHistory} from 'react-router-dom'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getOrg} from 'src/organizations/selectors'
-import {deletePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {downloadImage} from 'src/shared/utils/download'
 
 // Constants
@@ -66,7 +65,6 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
       event('delete_notebook', {
         context: 'notebook',
       })
-      await deletePinnedItemByParam(flow.id)
       await deleteNotebook()
       setLoading(RemoteDataState.Done)
       history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)

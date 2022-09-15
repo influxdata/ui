@@ -97,7 +97,9 @@ const testSchemaFiles = (
 
 describe('Explicit Buckets', () => {
   beforeEach(() => {
-    setup(cy)
+    setup(cy).then(() => {
+      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+    })
   })
 
   it('can create a bucket with an explicit schema', () => {
@@ -413,7 +415,9 @@ fsRead,field,float`
 
 describe('Buckets', () => {
   beforeEach(() => {
-    setup(cy)
+    setup(cy).then(() => {
+      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+    })
   })
 
   it('can sort by name and retention', () => {

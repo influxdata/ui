@@ -4,12 +4,18 @@ describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.createMapVariable(id)
-          cy.fixture('routes').then(({orgs, explorer}) => {
-            cy.visit(`${orgs}/${id}${explorer}`)
+        cy.signin()
+          .then(() => {
+            cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
           })
-        })
+          .then(() => {
+            cy.get('@org').then(({id}: Organization) => {
+              cy.createMapVariable(id)
+              cy.fixture('routes').then(({orgs, explorer}) => {
+                cy.visit(`${orgs}/${id}${explorer}`)
+              })
+            })
+          })
       })
     )
   )

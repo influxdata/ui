@@ -4,13 +4,14 @@ describe('Operator Page', () => {
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.getByTestID('home-page--header').should('be.visible')
-
           cy.quartzProvision({
             isOperator: true,
             operatorRole: 'read-only',
           }).then(() => {
             cy.reload()
             cy.setFeatureFlags({
+              multiOrg: true,
+              quartzIdentity: true,
               operatorRole: true,
             }).then(() => {
               cy.getByTestID('nav-item--operator').click()

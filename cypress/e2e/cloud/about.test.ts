@@ -5,13 +5,18 @@ describe.skip('About Page for free users with only 1 user', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.quartzProvision({
-            accountType: 'free',
-            hasUsers: false,
-          }).then(() => {
-            cy.visit(`/orgs/${id}/org-settings`)
-            cy.getByTestID('about-page--header').should('be.visible')
+        cy.setFeatureFlags({
+          quartzIdentity: true,
+          multiOrg: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
+            cy.quartzProvision({
+              accountType: 'free',
+              hasUsers: false,
+            }).then(() => {
+              cy.visit(`/orgs/${id}/org-settings`)
+              cy.getByTestID('about-page--header').should('be.visible')
+            })
           })
         })
       })
@@ -49,13 +54,18 @@ describe('About Page for free users with multiple users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.quartzProvision({
-            accountType: 'free',
-            hasUsers: true,
-          }).then(() => {
-            cy.visit(`/orgs/${id}/org-settings`)
-            cy.getByTestID('about-page--header').should('be.visible')
+        cy.setFeatureFlags({
+          quartzIdentity: true,
+          multiOrg: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
+            cy.quartzProvision({
+              accountType: 'free',
+              hasUsers: true,
+            }).then(() => {
+              cy.visit(`/orgs/${id}/org-settings`)
+              cy.getByTestID('about-page--header').should('be.visible')
+            })
           })
         })
       })
@@ -80,12 +90,17 @@ describe('About Page for PAYG users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.quartzProvision({
-            accountType: 'pay_as_you_go',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/org-settings`)
-            cy.getByTestID('about-page--header').should('be.visible')
+        cy.setFeatureFlags({
+          quartzIdentity: true,
+          multiOrg: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
+            cy.quartzProvision({
+              accountType: 'pay_as_you_go',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/org-settings`)
+              cy.getByTestID('about-page--header').should('be.visible')
+            })
           })
         })
       })

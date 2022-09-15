@@ -14,6 +14,8 @@ describe.skip('Pinned Items', () => {
       orgID = id
       cy.setFeatureFlags({
         pinnedItems: true,
+        multiOrg: true,
+        quartzIdentity: true,
       })
       cy.getByTestID('tree-nav')
     })
@@ -31,9 +33,12 @@ describe.skip('Pinned Items', () => {
       cy.createDashboard(orgID)
       cy.setFeatureFlags({
         pinnedItems: true,
+        multiOrg: true,
+        quartzIdentity: true,
+      }).then(() => {
+        cy.getByTestID('nav-item-dashboards').should('be.visible')
+        cy.getByTestID('nav-item-dashboards').click()
       })
-      cy.getByTestID('nav-item-dashboards').should('be.visible')
-      cy.getByTestID('nav-item-dashboards').click()
     })
     it('pins a dashboard to the homepage for easy access as a pinned item', () => {
       cy.getByTestID('dashboard-card')
@@ -127,20 +132,25 @@ describe.skip('Pinned Items', () => {
     beforeEach(() => {
       cy.flush()
       cy.signin()
-      cy.get('@org').then(({id: orgID}: Organization) =>
-        cy
-          .createToken(orgID, 'test token', 'active', [
-            {action: 'write', resource: {type: 'views', orgID}},
-            {action: 'write', resource: {type: 'documents', orgID}},
-            {action: 'write', resource: {type: 'tasks', orgID}},
-          ])
-          .then(({body}) => {
-            cy.wrap(body.token).as('token')
-            cy.getByTestID('tree-nav')
-            cy.visit(`/orgs/${orgID}/tasks`)
-            cy.getByTestID('tree-nav')
-          })
-      )
+        .then(() => {
+          cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+        })
+        .then(() => {
+          cy.get('@org').then(({id: orgID}: Organization) =>
+            cy
+              .createToken(orgID, 'test token', 'active', [
+                {action: 'write', resource: {type: 'views', orgID}},
+                {action: 'write', resource: {type: 'documents', orgID}},
+                {action: 'write', resource: {type: 'tasks', orgID}},
+              ])
+              .then(({body}) => {
+                cy.wrap(body.token).as('token')
+                cy.getByTestID('tree-nav')
+                cy.visit(`/orgs/${orgID}/tasks`)
+                cy.getByTestID('tree-nav')
+              })
+          )
+        })
 
       taskName = 'Task'
       cy.log('Using autocomplete for closing syntax.')
@@ -214,6 +224,8 @@ from(bucket: "${name}"{rightarrow}
     beforeEach(() => {
       cy.setFeatureFlags({
         pinnedItems: true,
+        multiOrg: true,
+        quartzIdentity: true,
       })
       cy.intercept('GET', '/api/v2private/notebooks*').as('getNotebooks')
       cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')

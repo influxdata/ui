@@ -7,6 +7,8 @@ describe('Billing Page Free Users', () => {
         cy.get('@org').then(() => {
           cy.setFeatureFlags({
             quartzZuoraDisabled: true,
+            quartzIdentity: true,
+            multiOrg: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'free',
@@ -30,11 +32,13 @@ describe('Billing Page PAYG Users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({
-            quartzZuoraDisabled: true,
+          cy.quartzProvision({
+            accountType: 'pay_as_you_go',
           }).then(() => {
-            cy.quartzProvision({
-              accountType: 'pay_as_you_go',
+            cy.setFeatureFlags({
+              quartzZuoraDisabled: true,
+              quartzIdentity: true,
+              multiOrg: true,
             }).then(() => {
               cy.wait(1000)
               cy.visit(`/orgs/${id}/billing`)

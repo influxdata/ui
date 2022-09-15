@@ -11,8 +11,10 @@ import React, {
 // Context
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
-import {DEFAULT_EDITOR_TEXT} from 'src/dataExplorer/components/resources/types/script'
+import {
+  PersistanceContext,
+  DEFAULT_EDITOR_TEXT,
+} from 'src/dataExplorer/context/persistance'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 import {EditorContext} from 'src/shared/contexts/editor'
 

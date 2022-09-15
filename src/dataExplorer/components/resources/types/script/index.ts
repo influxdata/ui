@@ -1,9 +1,7 @@
 import {ResourceType} from 'src/types/resources'
 import editor from './editor'
 import {CLOUD} from 'src/shared/constants'
-
-export const DEFAULT_EDITOR_TEXT =
-  '// Start by selecting data from the schema browser or typing flux here'
+import {DEFAULT_EDITOR_TEXT} from 'src/dataExplorer/context/persistance'
 
 const {getScript, patchScript, postScript} = CLOUD
   ? require('src/client/scriptsRoutes')

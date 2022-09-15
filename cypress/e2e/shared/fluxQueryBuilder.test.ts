@@ -195,7 +195,7 @@ describe('Script Builder', () => {
         'dataExplorer.schema',
         JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
       )
-      window.sessionStorage.setItem('dataExplorer.query', '')
+      window.sessionStorage.setItem('dataExplorer.query', DEFAULT_EDITOR_TEXT)
 
       cy.setFeatureFlags({
         schemaComposition: true,

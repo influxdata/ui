@@ -53,12 +53,15 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
   },
 }
 
+export const DEFAULT_EDITOR_TEXT =
+  '// Start by selecting data from the schema browser or typing flux here'
+
 const DEFAULT_CONTEXT = {
   hasChanged: false,
   horizontal: [0.5],
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,
-  query: '',
+  query: DEFAULT_EDITOR_TEXT,
   resource: null,
   selection: JSON.parse(JSON.stringify(DEFAULT_SCHEMA)),
 

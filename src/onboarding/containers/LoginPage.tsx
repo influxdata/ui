@@ -12,13 +12,13 @@ import Notifications from 'src/shared/components/notifications/Notifications'
 import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
 // APIs
-import {fetchLegacyIdentity} from 'src/identity/apis/auth'
+import {fetchIdentity, fetchLegacyIdentity} from 'src/identity/apis/auth'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
 import {CLOUD, CLOUD_QUARTZ_URL} from 'src/shared/constants'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
@@ -27,7 +27,12 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      await fetchLegacyIdentity()
+      if (isFlagEnabled('quartzSession')) {
+        await fetchIdentity()
+      } else {
+        await fetchLegacyIdentity()
+      }
+
       setHasValidSession(true)
     } catch {
       setHasValidSession(false)

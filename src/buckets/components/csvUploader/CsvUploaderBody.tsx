@@ -9,7 +9,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 type Props = {
   bucket: string
-  uploadCsv: (csv: string, bucket: any) => void
+  uploadCsv: (csv: string, bucket: string) => void
 }
 
 const CsvUploaderBody: FC<Props> = ({bucket, uploadCsv}) => {

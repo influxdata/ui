@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useContext, useState, useRef} from 'react'
+import React, {FC, useCallback, useContext, useRef, useState} from 'react'
 import {
   Button,
   ButtonType,
@@ -8,7 +8,7 @@ import {
   Panel,
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
-import {useSelector, useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
@@ -17,19 +17,19 @@ import StatusIndicator from 'src/buckets/components/csvUploader/StatusIndicator'
 import {PROJECT_NAME} from 'src/flows'
 
 // Utils
+import {event} from 'src/cloud/utils/reporting'
+import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {runQuery} from 'src/shared/apis/query'
-import {event} from 'src/cloud/utils/reporting'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
-import {getErrorMessage} from 'src/utils/api'
+import {runQuery} from 'src/shared/apis/query'
 
 // Selectors
-import {notify} from 'src/shared/actions/notifications'
 import {
   csvUploadCancelled,
   csvUploaderErrorNotification,
 } from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'

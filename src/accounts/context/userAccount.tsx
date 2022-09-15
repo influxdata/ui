@@ -26,7 +26,11 @@ import {setMe} from 'src/me/actions/creators'
 import {MeState} from 'src/me/reducers'
 
 // API
-import {updateDefaultQuartzAccount} from 'src/identity/apis/auth'
+import {
+  getUserAccounts,
+  updateDefaultQuartzAccount,
+  updateQuartzAccount,
+} from 'src/identity/apis/auth'
 
 export type Props = {
   children: JSX.Element
@@ -83,32 +87,25 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   const handleGetAccounts = useCallback(async () => {
     try {
-      const resp = await getAccounts({})
-      if (resp.status !== 200) {
-        // set user account status to error;...TODO
-        throw new Error(resp.data.message)
+      const accounts = await getUserAccounts()
+
+      setUserAccounts(accounts)
+      const defaultAcctArray = accounts.filter(line => line.isDefault)
+      if (defaultAcctArray && defaultAcctArray.length === 1) {
+        const defaultId = defaultAcctArray[0].id
+        setDefaultAccountId(defaultId)
       }
-      const {data} = resp
-      if (Array.isArray(data)) {
-        setUserAccounts(data)
 
-        const defaultAcctArray = data.filter(line => line.isDefault)
-        if (defaultAcctArray && defaultAcctArray.length === 1) {
-          const defaultId = defaultAcctArray[0].id
-          setDefaultAccountId(defaultId)
-        }
-
-        // isActive: true is for the currently logged in/active account
-        const activeAcctArray = data.filter(line => line.isActive)
-        if (activeAcctArray && activeAcctArray.length === 1) {
-          const activeId = activeAcctArray[0].id
-          setActiveAccountId(activeId)
-        }
+      // isActive: true is for the currently logged in/active account
+      const activeAcctArray = accounts.filter(line => line.isActive)
+      if (activeAcctArray && activeAcctArray.length === 1) {
+        const activeId = activeAcctArray[0].id
+        setActiveAccountId(activeId)
       }
     } catch (error) {
       event('multiAccount.retrieveAccounts.error', {error})
     }
-  }, [dispatch, defaultAccountId])
+  }, [setActiveAccountId, setDefaultAccountId])
 
   async function handleSetDefaultAccount(
     newDefaultAcctId: number,
@@ -132,35 +129,39 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }
 
-  async function handleRenameActiveAccount(accountId, newName) {
-    const isActiveAcct = acct => acct.isActive
-    const activeIndex = userAccounts.findIndex(isActiveAcct)
-    const oldName = userAccounts[activeIndex].name
+  const handleRenameActiveAccount = useCallback(
+    async (accountId, newName) => {
+      const isActiveAcct = acct => acct.isActive
+      const activeIndex = userAccounts.findIndex(isActiveAcct)
+      const oldName = userAccounts[activeIndex].name
 
-    try {
-      const resp = await patchAccount({accountId, data: {name: newName}})
-
-      if (resp.status !== 200) {
-        dispatch(notify(accountRenameError(oldName)))
-      } else {
-        dispatch(notify(accountRenameSuccess(oldName, newName)))
+      try {
+        const accountData = await updateQuartzAccount(accountId, newName)
         event('multiAccount.renameAccount')
+        dispatch(notify(accountRenameSuccess(oldName, newName)))
 
         // change the name, and reset the active accts:
-        userAccounts[activeIndex].name = newName
-        setUserAccounts(userAccounts)
+        const updatedAccounts = userAccounts.map((account, idx) => {
+          const acct = {...account}
+          if (idx === activeIndex) {
+            acct.name = accountData.name
+          }
+
+          return acct
+        })
+        setUserAccounts(updatedAccounts)
 
         if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-          const name = resp.data.name
-          const id = resp.data.id.toString()
-          // update the state
+          const name = accountData.name
+          const id = accountData.id.toString()
           dispatch(setMe({name, id} as MeState))
         }
+      } catch (error) {
+        dispatch(notify(accountRenameError(oldName)))
       }
-    } catch (error) {
-      dispatch(notify(accountRenameError(oldName)))
-    }
-  }
+    },
+    [dispatch, userAccounts, setUserAccounts]
+  )
 
   useEffect(() => {
     handleGetAccounts()

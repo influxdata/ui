@@ -15,6 +15,8 @@ import {
   Me as MeQuartz,
   Organization,
   OrganizationSummaries,
+  UserAccount,
+  patchAccount,
 } from 'src/client/unityRoutes'
 
 import {
@@ -312,4 +314,30 @@ export const getDefaultAccountDefaultOrg = async (): Promise<
     }
     throw new GenericError('No default account found')
   }
+}
+
+export const getUserAccounts = async (): Promise<UserAccount[]> => {
+  const response = await getAccounts({})
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+  if (!Array.isArray(response.data)) {
+    throw new GenericError('No account found')
+  }
+
+  return response.data
+}
+
+export const updateQuartzAccount = async (accountId, name) => {
+  const resp = await patchAccount({accountId, data: {name}})
+
+  if (resp.status !== 200) {
+    throw new Error(`Account rename update failed`)
+  }
+
+  return resp.data
 }

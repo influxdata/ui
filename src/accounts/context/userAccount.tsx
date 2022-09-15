@@ -149,7 +149,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
           return acct
         })
-        console.log('Changing...', userAccounts[activeIndex])
         setUserAccounts(updatedAccounts)
 
         if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {

@@ -139,7 +139,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         event('multiAccount.renameAccount')
         dispatch(notify(accountRenameSuccess(activeAccount.name, newName)))
 
-        activeAccount.name = newName
         const updatedAccounts = userAccounts.map(acct => {
           if (acct.id === activeAccount.id) {
             return {...acct, name: accountData.name}

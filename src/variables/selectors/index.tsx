@@ -28,7 +28,6 @@ import {AppState, VariableArgumentType, Variable} from 'src/types'
 
 // Utils
 import {filterUnusedVars} from 'src/shared/utils/filterUnusedVars'
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export const extractVariableEditorName = (state: AppState): string => {
   return state.variableEditor.name

@@ -18,7 +18,7 @@ import {fetchIdentity, fetchLegacyIdentity} from 'src/identity/apis/auth'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
 import {CLOUD, CLOUD_QUARTZ_URL} from 'src/shared/constants'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 

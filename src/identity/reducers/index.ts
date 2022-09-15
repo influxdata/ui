@@ -34,6 +34,7 @@ export const initialState: CurrentIdentity = {
     type: 'free',
     accountCreatedAt: '',
     paygCreditStartDate: '',
+    isUpgradeable: false,
   },
   status: RemoteDataState.NotStarted,
 }
@@ -47,6 +48,7 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
         // Store account information from /identity in state.
         draftState.account.accountCreatedAt = account.accountCreatedAt
         draftState.account.id = account.id
+        draftState.account.isUpgradeable = account.isUpgradeable
         draftState.account.name = account.name
         draftState.account.paygCreditStartDate = account.paygCreditStartDate
         draftState.account.type = account.type

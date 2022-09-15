@@ -1,11 +1,7 @@
 import React, {FC} from 'react'
-import {UserAccountProvider} from 'src/accounts/context/userAccount'
 import {GlobalHeader} from 'src/identity/components/GlobalHeader/GlobalHeader'
 
+// TODO: Remove this component, if first this solution sounds good in pre-review
 export const GlobalHeaderContainer: FC = () => {
-  return (
-    <UserAccountProvider>
-      <GlobalHeader />
-    </UserAccountProvider>
-  )
+  return <GlobalHeader />
 }

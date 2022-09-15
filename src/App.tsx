@@ -28,6 +28,9 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
 import {GlobalHeaderContainer} from 'src/identity/components/GlobalHeaderContainer'
 
+// Providers
+import {UserAccountProvider} from './accounts/context/userAccount'
+
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(
   () => import('src/organizations/components/CreateOrgOverlay')
@@ -44,6 +47,7 @@ import {executeVWO} from 'src/utils/vwo'
 
 // Styles
 import './MultiOrgOverrideStyles.scss'
+
 const fullScreen = {height: '100%', width: '100%'}
 
 const App: FC = () => {
@@ -110,28 +114,33 @@ const App: FC = () => {
   }, [])
 
   return (
-    <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>
-      {CLOUD && <GlobalSearch />}
-      <Notifications />
-      <TooltipPortal />
-      <NotesPortal />
-      <OverlayProviderComp>
-        <OverlayController />
-      </OverlayProviderComp>
-      <EngagementLink />
-      <TreeNav />
-      <Suspense fallback={<PageSpinner />}>
-        <div style={fullScreen}>
-          {CLOUD && isFlagEnabled('multiOrg') && shouldUseQuartzIdentity() && (
-            <GlobalHeaderContainer />
-          )}
-          <Switch>
-            <Route path="/orgs/new" component={CreateOrgOverlay} />
-            <Route path="/orgs/:orgID" component={SetOrg} />
-          </Switch>
-        </div>
-      </Suspense>
-    </AppWrapper>
+    <UserAccountProvider>
+      <AppWrapper
+        presentationMode={presentationMode}
+        className={appWrapperClass}
+      >
+        {CLOUD && <GlobalSearch />}
+        <Notifications />
+        <TooltipPortal />
+        <NotesPortal />
+        <OverlayProviderComp>
+          <OverlayController />
+        </OverlayProviderComp>
+        <EngagementLink />
+        <TreeNav />
+        <Suspense fallback={<PageSpinner />}>
+          <div style={fullScreen}>
+            {CLOUD &&
+              isFlagEnabled('multiOrg') &&
+              shouldUseQuartzIdentity() && <GlobalHeaderContainer />}
+            <Switch>
+              <Route path="/orgs/new" component={CreateOrgOverlay} />
+              <Route path="/orgs/:orgID" component={SetOrg} />
+            </Switch>
+          </div>
+        </Suspense>
+      </AppWrapper>
+    </UserAccountProvider>
   )
 }
 

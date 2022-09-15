@@ -129,30 +129,40 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }
 
-  async function handleRenameActiveAccount(accountId, newName) {
-    const isActiveAcct = acct => acct.isActive
-    const activeIndex = userAccounts.findIndex(isActiveAcct)
-    const oldName = userAccounts[activeIndex].name
+  const handleRenameActiveAccount = useCallback(
+    async (accountId, newName) => {
+      const isActiveAcct = acct => acct.isActive
+      const activeIndex = userAccounts.findIndex(isActiveAcct)
+      const oldName = userAccounts[activeIndex].name
 
-    try {
-      console.log('shnkdhjskdj', newName, accountId)
-      const accountData = await updateQuartzAccount(accountId, newName)
-      console.log('acc data', accountData)
-      event('multiAccount.renameAccount')
-      dispatch(notify(accountRenameSuccess(oldName, newName)))
-      // change the name, and reset the active accts:
-      userAccounts[activeIndex].name = newName
-      setUserAccounts(userAccounts)
+      try {
+        const accountData = await updateQuartzAccount(accountId, newName)
+        event('multiAccount.renameAccount')
+        dispatch(notify(accountRenameSuccess(oldName, newName)))
 
-      if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-        const name = accountData.name
-        const id = accountData.id.toString()
-        dispatch(setMe({name, id} as MeState))
+        // change the name, and reset the active accts:
+        const updatedAccounts = userAccounts.map((account, idx) => {
+          const acct = {...account}
+          if (idx === activeIndex) {
+            acct.name = accountData.name
+          }
+
+          return acct
+        })
+        console.log('Changing...', userAccounts[activeIndex])
+        setUserAccounts(updatedAccounts)
+
+        if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
+          const name = accountData.name
+          const id = accountData.id.toString()
+          dispatch(setMe({name, id} as MeState))
+        }
+      } catch (error) {
+        dispatch(notify(accountRenameError(oldName)))
       }
-    } catch (error) {
-      dispatch(notify(accountRenameError(oldName)))
-    }
-  }
+    },
+    [dispatch, userAccounts, setUserAccounts]
+  )
 
   useEffect(() => {
     handleGetAccounts()

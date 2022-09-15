@@ -210,9 +210,7 @@ const AccountPage: FC = () => {
     <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
       <AccountHeader testID="account-page--header" />
       <UsersProvider>
-        <UserAccountProvider>
-          <AccountAboutPage />
-        </UserAccountProvider>
+        <AccountAboutPage />
       </UsersProvider>
     </Page>
   )

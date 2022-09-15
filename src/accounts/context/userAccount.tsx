@@ -29,7 +29,7 @@ import {MeState} from 'src/me/reducers'
 import {
   getUserAccounts,
   updateDefaultQuartzAccount,
-  updateQuartzAccount,
+  updateUserAccount,
 } from 'src/identity/apis/auth'
 
 export type Props = {
@@ -136,7 +136,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       const oldName = userAccounts[activeIndex].name
 
       try {
-        const accountData = await updateQuartzAccount(accountId, newName)
+        const accountData = await updateUserAccount(accountId, newName)
         event('multiAccount.renameAccount')
         dispatch(notify(accountRenameSuccess(oldName, newName)))
 

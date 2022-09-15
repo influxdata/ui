@@ -332,7 +332,7 @@ export const getUserAccounts = async (): Promise<UserAccount[]> => {
   return response.data
 }
 
-export const updateQuartzAccount = async (accountId, name) => {
+export const updateUserAccount = async (accountId, name) => {
   const resp = await patchAccount({accountId, data: {name}})
 
   if (resp.status !== 200) {

@@ -27,6 +27,9 @@ import {isOnboardingURL} from 'src/onboarding/utils'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {CLOUD} from './shared/constants'
+import {getPublicFlags} from './shared/thunks/flags'
+import {connect, ConnectedProps} from 'react-redux'
 
 interface State {
   loading: RemoteDataState
@@ -37,7 +40,8 @@ interface OwnProps {
   children: ReactElement<any>
 }
 
-type Props = RouteComponentProps & OwnProps
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = RouteComponentProps & OwnProps & ReduxProps
 
 @ErrorHandling
 export class Setup extends PureComponent<Props, State> {
@@ -52,6 +56,10 @@ export class Setup extends PureComponent<Props, State> {
 
   public async componentDidMount() {
     const {history} = this.props
+
+    if (CLOUD) {
+      await this.props.onGetPublicFlags()
+    }
 
     if (isOnboardingURL()) {
       this.setState({
@@ -129,4 +137,9 @@ export class Setup extends PureComponent<Props, State> {
   }
 }
 
-export default Setup
+const mdtp = {
+  onGetPublicFlags: getPublicFlags,
+}
+const connector = connect(null, mdtp)
+
+export default connector(Setup)

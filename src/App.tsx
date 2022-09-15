@@ -14,7 +14,7 @@ import {load} from 'rudder-sdk-js'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Components
-import {AppWrapper} from '@influxdata/clockface'
+import {AppWrapper, Page} from '@influxdata/clockface'
 import TreeNav from 'src/pageLayout/containers/TreeNav'
 import TooltipPortal from 'src/portals/TooltipPortal'
 import NotesPortal from 'src/portals/NotesPortal'
@@ -26,7 +26,7 @@ import {
 } from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
-import {GlobalHeaderContainer} from 'src/identity/components/GlobalHeaderContainer'
+import {GlobalHeader} from 'src/identity/components/GlobalHeader/GlobalHeader'
 
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(
@@ -43,7 +43,9 @@ import {executeVWO} from 'src/utils/vwo'
 
 // Styles
 import './MultiOrgOverrideStyles.scss'
-import {Page} from '@influxdata/clockface'
+
+// Providers
+import {UserAccountProvider} from 'src/accounts/context/userAccount'
 
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
@@ -121,7 +123,7 @@ const App: FC = () => {
       <TreeNav />
       <Suspense fallback={<PageSpinner />}>
         <Page>
-          {CLOUD && isFlagEnabled('multiOrg') && <GlobalHeaderContainer />}
+          {CLOUD && isFlagEnabled('multiOrg') && <GlobalHeader />}
           <Switch>
             <Route path="/orgs/new" component={CreateOrgOverlay} />
             <Route path="/orgs/:orgID" component={SetOrg} />
@@ -134,6 +136,12 @@ const App: FC = () => {
 
 export default () => (
   <AppSettingProvider>
-    <App />
+    {CLOUD ? (
+      <UserAccountProvider>
+        <App />
+      </UserAccountProvider>
+    ) : (
+      <App />
+    )}
   </AppSettingProvider>
 )

@@ -87,7 +87,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const handleGetAccounts = useCallback(async () => {
     try {
       const accounts = await getUserAccounts()
-
       setUserAccounts(accounts)
       const defaultAcctArray = accounts.find(acct => acct.isDefault)
       if (defaultAcctArray) {
@@ -141,7 +140,14 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         dispatch(notify(accountRenameSuccess(activeAccount.name, newName)))
 
         activeAccount.name = newName
-        setUserAccounts(userAccounts)
+        const updatedAccounts = userAccounts.map(acct => {
+          if (acct.id === activeAccount.id) {
+            return {...acct, name: accountData.name}
+          }
+
+          return acct
+        })
+        setUserAccounts(updatedAccounts)
 
         if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
           const name = accountData.name

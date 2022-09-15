@@ -347,9 +347,6 @@ export const updateUserAccount = async (accountId, name) => {
   if (response.status !== 200) {
     throw new Error(`Account rename update failed`)
   }
-  if (!Array.isArray(response.data)) {
-    throw new GenericError('No account found')
-  }
 
   return response.data
 }

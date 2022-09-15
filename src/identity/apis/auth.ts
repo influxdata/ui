@@ -333,11 +333,23 @@ export const getUserAccounts = async (): Promise<UserAccount[]> => {
 }
 
 export const updateUserAccount = async (accountId, name) => {
-  const resp = await patchAccount({accountId, data: {name}})
+  const response = await patchAccount({accountId, data: {name}})
 
-  if (resp.status !== 200) {
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+  if (response.status === 422) {
+    throw new UnprocessableEntityError(response.data.message)
+  }
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+  if (response.status !== 200) {
     throw new Error(`Account rename update failed`)
   }
+  if (!Array.isArray(response.data)) {
+    throw new GenericError('No account found')
+  }
 
-  return resp.data
+  return response.data
 }

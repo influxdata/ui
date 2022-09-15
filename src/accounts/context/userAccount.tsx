@@ -89,14 +89,14 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       const accounts = await getUserAccounts()
 
       setUserAccounts(accounts)
-      const defaultAcctArray = accounts.find(line => line.isDefault)
+      const defaultAcctArray = accounts.find(acct => acct.isDefault)
       if (defaultAcctArray) {
         const defaultId = defaultAcctArray[0].id
         setDefaultAccountId(defaultId)
       }
 
       // isActive: true is for the currently logged in/active account
-      const activeAcctArray = accounts.find(line => line.isActive)
+      const activeAcctArray = accounts.find(acct => acct.isActive)
       if (activeAcctArray) {
         const activeId = activeAcctArray[0].id
         setActiveAccountId(activeId)

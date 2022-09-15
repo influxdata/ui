@@ -22,33 +22,15 @@ import {getSortedResources} from 'src/shared/utils/sort'
 import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
-// Contexts
-import {
-  addPinnedItem,
-  deletePinnedItemByParam,
-  PinnedItemTypes,
-} from 'src/shared/contexts/pinneditems'
-
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {CLOUD} from 'src/shared/constants'
 import {notify} from 'src/shared/actions/notifications'
 
 // Constants
 import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
 
 import {PaginationNav} from '@influxdata/clockface'
-
-import {
-  pinnedItemFailure,
-  pinnedItemSuccess,
-} from 'src/shared/copy/notifications'
-
-let getPinnedItems
-if (CLOUD) {
-  getPinnedItems = require('src/shared/contexts/pinneditems').getPinnedItems
-}
 
 interface OwnProps {
   pageHeight: number
@@ -74,7 +56,6 @@ interface OwnProps {
 interface State {
   taskLabelsEdit: Task
   isEditingTaskLabels: boolean
-  pinnedItems: any[]
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -86,7 +67,6 @@ class TasksList extends PureComponent<Props, State> implements Pageable {
   private memGetSortedResources =
     memoizeOne<typeof getSortedResources>(getSortedResources)
 
-  private isComponentMounted: boolean
   private paginationRef: RefObject<HTMLDivElement>
 
   public currentPage: number = 1
@@ -98,14 +78,12 @@ class TasksList extends PureComponent<Props, State> implements Pageable {
     this.state = {
       taskLabelsEdit: null,
       isEditingTaskLabels: false,
-      pinnedItems: [],
     }
 
     this.paginationRef = createRef<HTMLDivElement>()
   }
 
   public componentDidMount() {
-    this.isComponentMounted = true
     const params = new URLSearchParams(window.location.search)
     const urlPageNumber = parseInt(params.get('page'), 10)
 
@@ -116,9 +94,6 @@ class TasksList extends PureComponent<Props, State> implements Pageable {
     }
 
     this.props.checkTaskLimits()
-    if (CLOUD && isFlagEnabled('pinnedItems')) {
-      this.updatePinnedItems()
-    }
   }
 
   public componentDidUpdate() {
@@ -127,10 +102,6 @@ class TasksList extends PureComponent<Props, State> implements Pageable {
     if (this.currentPage > this.totalPages) {
       this.paginate(this.totalPages)
     }
-  }
-
-  public componentWillUnmount() {
-    this.isComponentMounted = false
   }
 
   public render() {
@@ -173,48 +144,6 @@ class TasksList extends PureComponent<Props, State> implements Pageable {
         />
       </>
     )
-  }
-
-  public updatePinnedItems = () => {
-    getPinnedItems()
-      .then(res => {
-        if (this.isComponentMounted) {
-          this.setState(prev => ({...prev, pinnedItems: res}))
-        }
-      })
-      .catch(err => console.error(err))
-  }
-
-  public handlePinTask = async (taskID: string, name: string) => {
-    const {org, me} = this.props
-
-    // add to pinned item list
-    try {
-      await addPinnedItem({
-        orgID: org.id,
-        userID: me.id,
-        metadata: {
-          taskID,
-          name,
-        },
-        type: PinnedItemTypes.Task,
-      })
-      this.props.sendNotification(pinnedItemSuccess('task', 'added'))
-      this.updatePinnedItems()
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
-    }
-  }
-
-  public handleUnpinTask = async (taskID: string) => {
-    // delete from pinned item list
-    try {
-      await deletePinnedItemByParam(taskID)
-      this.props.sendNotification(pinnedItemSuccess('task', 'deleted'))
-      this.updatePinnedItems()
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
-    }
   }
 
   public paginate = page => {
@@ -260,14 +189,6 @@ class TasksList extends PureComponent<Props, State> implements Pageable {
             onUpdate={this.props.onUpdate}
             onRunTask={this.props.onRunTask}
             onFilterChange={this.props.onFilterChange}
-            onPinTask={this.handlePinTask}
-            onUnpinTask={this.handleUnpinTask}
-            isPinned={
-              this.state.pinnedItems?.length &&
-              !!this.state.pinnedItems.find(
-                item => item?.metadata.taskID === task.id
-              )
-            }
           />
         )
       }

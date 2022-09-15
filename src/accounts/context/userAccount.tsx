@@ -15,7 +15,6 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Utils
-import {getAccounts, patchAccount} from 'src/client/unityRoutes'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'

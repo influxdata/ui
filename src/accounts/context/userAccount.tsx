@@ -130,23 +130,24 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   const handleRenameActiveAccount = useCallback(
     async (accountId, newName) => {
-      const isActiveAcct = acct => acct.isActive
-      const activeIndex = userAccounts.findIndex(isActiveAcct)
-      const oldName = userAccounts[activeIndex].name
+      const activeAccount = userAccounts.find(acct => acct.isActive)
+      if (!activeAccount) {
+        return
+      }
 
       try {
         const accountData = await updateUserAccount(accountId, newName)
         event('multiAccount.renameAccount')
-        dispatch(notify(accountRenameSuccess(oldName, newName)))
+        dispatch(notify(accountRenameSuccess(activeAccount.name, newName)))
 
         // change the name, and reset the active accts:
-        const updatedAccounts = userAccounts.map((account, idx) => {
-          const acct = {...account}
-          if (idx === activeIndex) {
-            acct.name = accountData.name
+        const updatedAccounts = userAccounts.map(acct => {
+          const account = {...acct}
+          if (acct.id === activeAccount.id) {
+            account.name = accountData.name
           }
 
-          return acct
+          return account
         })
         setUserAccounts(updatedAccounts)
 
@@ -156,7 +157,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
           dispatch(setMe({name, id} as MeState))
         }
       } catch (error) {
-        dispatch(notify(accountRenameError(oldName)))
+        dispatch(notify(accountRenameError(activeAccount.name)))
       }
     },
     [dispatch, userAccounts, setUserAccounts]

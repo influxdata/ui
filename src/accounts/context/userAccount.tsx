@@ -19,11 +19,6 @@ import {getAccounts, patchAccount} from 'src/client/unityRoutes'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Actions
-import {setMe} from 'src/me/actions/creators'
-import {MeState} from 'src/me/reducers'
 
 // API
 import {updateDefaultQuartzAccount} from 'src/identity/apis/auth'

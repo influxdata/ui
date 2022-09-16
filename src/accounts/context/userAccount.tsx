@@ -12,7 +12,6 @@ import {
   accountDefaultSettingSuccess,
   accountRenameError,
   accountRenameSuccess,
-  defaultAccountNotFoundError,
 } from 'src/shared/copy/notifications'
 
 // Utils

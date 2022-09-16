@@ -8809,18 +8809,23 @@ monaco-editor-webpack-plugin@^7.0.1:
   dependencies:
     loader-utils "^2.0.2"
 
-monaco-editor@^0.34.0, monaco-editor@~0.34.0:
+monaco-editor@^0.33.0:
+  version "0.33.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.33.0.tgz#842e244f3750a2482f8a29c676b5684e75ff34af"
+  integrity sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw==
+
+monaco-editor@~0.34.0:
   version "0.34.0"
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.34.0.tgz#b1749870a1f795dbfc4dc03d8e9b646ddcbeefa7"
   integrity sha512-VF+S5zG8wxfinLKLrWcl4WUizMx+LeJrG4PM/M78OhcwocpV0jiyhX/pG6Q9jIOhrb/ckYi6nHnaR5OojlOZCQ==
 
-monaco-languageclient@~3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/monaco-languageclient/-/monaco-languageclient-3.0.1.tgz#7663cb530c798c19d5bd41bbd81a3526f82276c7"
-  integrity sha512-1+UEilymH3c+eRr40yIac+meC8Ngx6uF9IZfbRkvW/tVO6TZ6/ORgEUf5WoayHWs35akmih8xzD7Ku3wfJ7Z3w==
+monaco-languageclient@~2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/monaco-languageclient/-/monaco-languageclient-2.1.0.tgz#4c69eeafb31003c9a2a5a5a0481e8cdae4a1c591"
+  integrity sha512-Ps+G97MH8p/T7dk7NqJnDgub6x2+SiAmFR6rjUyJ2qdSGUNgg310bPD521rEPUTNKGfP7VwBggFjcnoGGCi0vg==
   dependencies:
     glob-to-regexp "0.4.1"
-    vscode "npm:@codingame/monaco-vscode-api@~1.69.9"
+    vscode "npm:@codingame/monaco-vscode-api@~1.67.20"
     vscode-jsonrpc "8.0.2"
     vscode-languageclient "8.0.2"
     vscode-languageserver-textdocument "1.0.5"
@@ -12568,12 +12573,12 @@ vscode-uri@3.0.3:
   resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-3.0.3.tgz#a95c1ce2e6f41b7549f86279d19f47951e4f4d84"
   integrity sha512-EcswR2S8bpR7fD0YPeS7r2xXExrScVMxg4MedACaWHEtx9ftCF/qHG1xGkolzTPcEmjTavCQgbVzHUIdTMzFGA==
 
-"vscode@npm:@codingame/monaco-vscode-api@~1.69.9":
-  version "1.69.10"
-  resolved "https://registry.yarnpkg.com/@codingame/monaco-vscode-api/-/monaco-vscode-api-1.69.10.tgz#abba116463fc19e6a87e9eb64d709474c8a9805d"
-  integrity sha512-FHiuKdu+iE9MsFdzz9IYXsYU3IvoTL+NmXuyXUkOenpdSBpVk9yK5EDUQUAmzlzInUBzbgkIfKO5WRytQYLK8g==
+"vscode@npm:@codingame/monaco-vscode-api@~1.67.20":
+  version "1.67.20"
+  resolved "https://registry.yarnpkg.com/@codingame/monaco-vscode-api/-/monaco-vscode-api-1.67.20.tgz#5ea5da5cf6da0ba6c14212f52bad25e8d6479b6b"
+  integrity sha512-3+swJLtpNWmn2hsnVFv/qbLuQLt+FlaDLgcK0PgYwWVIJn2FjO48a0+ke8ZYS/tiqZxJgJSk+y6hdohgZo7n0g==
   dependencies:
-    monaco-editor "^0.34.0"
+    monaco-editor "^0.33.0"
 
 w3c-hr-time@^1.0.2:
   version "1.0.2"

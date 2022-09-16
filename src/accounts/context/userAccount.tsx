@@ -149,13 +149,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         // change the name, and reset the active accts:
         userAccounts[activeIndex].name = newName
         setUserAccounts(userAccounts)
-
-        if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-          const name = resp.data.name
-          const id = resp.data.id.toString()
-          // update the state
-          dispatch(setMe({name, id} as MeState))
-        }
       }
     } catch (error) {
       dispatch(notify(accountRenameError(oldName)))

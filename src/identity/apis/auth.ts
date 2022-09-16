@@ -344,9 +344,6 @@ export const updateUserAccount = async (accountId, name) => {
   if (response.status === 500) {
     throw new ServerError(response.data.message)
   }
-  if (response.status !== 200) {
-    throw new Error(`Account rename update failed`)
-  }
 
   return response.data
 }

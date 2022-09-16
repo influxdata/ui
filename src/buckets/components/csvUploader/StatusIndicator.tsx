@@ -1,10 +1,9 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC} from 'react'
 import cn from 'classnames'
 
 // Components
 import {SparkleSpinner} from '@influxdata/clockface'
-import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -40,9 +39,11 @@ const className = status =>
     error: status === RemoteDataState.Error,
   })
 
-const StatusIndicator: FC = () => {
-  const {uploadError, uploadState} = useContext(CsvUploaderContext)
-
+interface Props {
+  uploadError: string
+  uploadState: RemoteDataState
+}
+const StatusIndicator: FC<Props> = ({uploadError, uploadState}) => {
   let testID = ''
 
   switch (uploadState) {

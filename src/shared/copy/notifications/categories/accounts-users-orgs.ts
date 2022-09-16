@@ -4,11 +4,6 @@ import {
   defaultSuccessNotification,
 } from 'src/shared/copy/notifications'
 
-export const defaultAccountNotFoundError = (): Notification => ({
-  ...defaultErrorNotification,
-  message: `No default account found.`,
-})
-
 export const accountDefaultSettingError = (
   accountName: string
 ): Notification => ({

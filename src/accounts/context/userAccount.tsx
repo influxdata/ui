@@ -12,6 +12,7 @@ import {
   accountDefaultSettingSuccess,
   accountRenameError,
   accountRenameSuccess,
+  defaultAccountNotFoundError,
 } from 'src/shared/copy/notifications'
 
 // Utils
@@ -130,10 +131,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const handleRenameActiveAccount = useCallback(
     async (accountId, newName) => {
       const activeAccount = userAccounts.find(acct => acct.isActive)
-      if (!activeAccount) {
-        return
-      }
-
       try {
         const accountData = await updateUserAccount(accountId, newName)
         event('multiAccount.renameAccount')

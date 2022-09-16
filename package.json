@@ -194,7 +194,7 @@
     "monaco-editor": "~0.34.0",
     "monaco-editor-textmate": "^3.0.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
-    "monaco-languageclient": "~2.1.0",
+    "monaco-languageclient": "~0.18.1",
     "monaco-textmate": "^3.0.1",
     "nanoid": "^3.2.0",
     "normalizr": "^3.4.1",

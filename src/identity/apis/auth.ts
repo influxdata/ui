@@ -118,7 +118,7 @@ export const fetchIdentity = async () => {
   if (!CLOUD) {
     return fetchLegacyIdentity()
   }
-  // if we make it to this line we are in cloud and ui unification flag is on
+
   if (isFlagEnabled('quartzIdentity')) {
     return fetchQuartzIdentity()
   }
@@ -285,7 +285,9 @@ export const updateDefaultOrgByAccountID = async ({
 }
 
 // fetch user default account's default org
-export const getDefaultAccountDefaultOrg = async (): Promise<OrganizationSummaries[number]> => {
+export const getDefaultAccountDefaultOrg = async (): Promise<
+  OrganizationSummaries[number]
+> => {
   const response = await getAccounts({})
 
   if (response.status === 401) {

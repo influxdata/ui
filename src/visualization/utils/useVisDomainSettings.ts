@@ -153,6 +153,7 @@ interface ZoomRequeryArgs {
   setResult: Function
   storedDomain: number[]
   timeRange?: TimeRange
+  transmitWindowPeriod?: (windowPeriod: number | string) => void
 }
 
 const isNotEqual = (firstValue: any, secondValue: any): boolean =>
@@ -170,6 +171,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     setResult,
     storedDomain,
     timeRange = null,
+    transmitWindowPeriod,
   } = args
 
   const {type: timeRangeType} = timeRange ? timeRange : {type: 'duration'}
@@ -228,10 +230,11 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
       setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable = normalizeWindowPeriodVariableForZoomRequery(
-          getWindowVarsFromVariables(query, variables),
-          updatedWindowPeriod
-        )
+        const zoomQueryWindowVariable =
+          normalizeWindowPeriodVariableForZoomRequery(
+            getWindowVarsFromVariables(query, variables),
+            updatedWindowPeriod
+          )
 
         const extern = buildUsedVarsOption(
           query,
@@ -268,6 +271,12 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
       setDomain(preZoomDomain)
     }
   }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (timeRange) {
+      transmitWindowPeriod(windowPeriod)
+    }
+  }, [timeRange, transmitWindowPeriod, windowPeriod])
 
   // Suppresses adaptive zoom feature; must come after all hooks
   if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {
@@ -317,6 +326,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
     setResult,
     storedDomain,
     timeRange = null,
+    transmitWindowPeriod,
   } = args
 
   const {type: timeRangeType} = timeRange ? timeRange : {type: 'duration'}
@@ -380,10 +390,11 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
       setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable = normalizeWindowPeriodVariableForZoomRequery(
-          getWindowVarsFromVariables(query, variables),
-          updatedWindowPeriod
-        )
+        const zoomQueryWindowVariable =
+          normalizeWindowPeriodVariableForZoomRequery(
+            getWindowVarsFromVariables(query, variables),
+            updatedWindowPeriod
+          )
 
         const extern = buildUsedVarsOption(
           query,
@@ -420,6 +431,12 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
       setDomain(preZoomDomain)
     }
   }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (timeRange) {
+      transmitWindowPeriod(windowPeriod)
+    }
+  }, [timeRange, transmitWindowPeriod, windowPeriod])
 
   // Suppresses adaptive zoom feature; must come after all hooks
   if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {

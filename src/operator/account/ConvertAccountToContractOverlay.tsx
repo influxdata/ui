@@ -68,10 +68,8 @@ const ConvertAccountToContractOverlay: FC = () => {
 
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false)
 
-  const [
-    isOnClickOutsideHandlerActive,
-    setIsOnClickOutsideHandlerActive,
-  ] = useState<boolean>(true)
+  const [isOnClickOutsideHandlerActive, setIsOnClickOutsideHandlerActive] =
+    useState<boolean>(true)
 
   const triggerRef: RefObject<ButtonRef> = createRef()
 

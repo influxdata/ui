@@ -14,6 +14,8 @@ describe.skip('Pinned Items', () => {
       orgID = id
       cy.setFeatureFlags({
         pinnedItems: true,
+        multiOrg: true,
+        quartzIdentity: true,
       })
       cy.getByTestID('tree-nav')
     })
@@ -31,9 +33,12 @@ describe.skip('Pinned Items', () => {
       cy.createDashboard(orgID)
       cy.setFeatureFlags({
         pinnedItems: true,
+        multiOrg: true,
+        quartzIdentity: true,
+      }).then(() => {
+        cy.getByTestID('nav-item-dashboards').should('be.visible')
+        cy.getByTestID('nav-item-dashboards').click()
       })
-      cy.getByTestID('nav-item-dashboards').should('be.visible')
-      cy.getByTestID('nav-item-dashboards').click()
     })
     it('pins a dashboard to the homepage for easy access as a pinned item', () => {
       cy.getByTestID('dashboard-card')
@@ -61,18 +66,12 @@ describe.skip('Pinned Items', () => {
       cy.getByTestID('context-pin-dashboard').click()
 
       cy.getByTestID('dashboard-card').within(() => {
-        cy.getByTestID('dashboard-card--name')
-          .first()
-          .trigger('mouseover')
+        cy.getByTestID('dashboard-card--name').first().trigger('mouseover')
 
-        cy.getByTestID('dashboard-card--name-button')
-          .first()
-          .click()
+        cy.getByTestID('dashboard-card--name-button').first().click()
 
         cy.intercept('PUT', '**/pinned/*').as('updatePinned')
-        cy.get('.cf-input-field')
-          .type('Bucks In Six')
-          .type('{enter}')
+        cy.get('.cf-input-field').type('Bucks In Six').type('{enter}')
       })
       cy.wait('@updatePinned')
       cy.visit('/')
@@ -101,9 +100,7 @@ describe.skip('Pinned Items', () => {
       cy.getByTestID('pinneditems--container')
         .should('be.visible')
         .within(() => {
-          cy.getByTestID('pinneditems--card')
-            .first()
-            .trigger('mouseover')
+          cy.getByTestID('pinneditems--card').first().trigger('mouseover')
         })
       cy.getByTestID('pinneditems-delete--menu--button').click()
       cy.getByTestID('pinneditems-delete--menu--confirm-button').click()
@@ -135,20 +132,25 @@ describe.skip('Pinned Items', () => {
     beforeEach(() => {
       cy.flush()
       cy.signin()
-      cy.get('@org').then(({id: orgID}: Organization) =>
-        cy
-          .createToken(orgID, 'test token', 'active', [
-            {action: 'write', resource: {type: 'views', orgID}},
-            {action: 'write', resource: {type: 'documents', orgID}},
-            {action: 'write', resource: {type: 'tasks', orgID}},
-          ])
-          .then(({body}) => {
-            cy.wrap(body.token).as('token')
-            cy.getByTestID('tree-nav')
-            cy.visit(`/orgs/${orgID}/tasks`)
-            cy.getByTestID('tree-nav')
-          })
-      )
+        .then(() => {
+          cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+        })
+        .then(() => {
+          cy.get('@org').then(({id: orgID}: Organization) =>
+            cy
+              .createToken(orgID, 'test token', 'active', [
+                {action: 'write', resource: {type: 'views', orgID}},
+                {action: 'write', resource: {type: 'documents', orgID}},
+                {action: 'write', resource: {type: 'tasks', orgID}},
+              ])
+              .then(({body}) => {
+                cy.wrap(body.token).as('token')
+                cy.getByTestID('tree-nav')
+                cy.visit(`/orgs/${orgID}/tasks`)
+                cy.getByTestID('tree-nav')
+              })
+          )
+        })
 
       taskName = 'Task'
       cy.log('Using autocomplete for closing syntax.')
@@ -170,9 +172,7 @@ from(bucket: "${name}"{rightarrow}
 
       cy.getByTestID('notification-success--dismiss').click()
 
-      cy.getByTestID('task-card')
-        .first()
-        .trigger('mouseover')
+      cy.getByTestID('task-card').first().trigger('mouseover')
       cy.getByTestID('context-menu-task').click()
       cy.getByTestID('context-pin-task').click()
     })
@@ -187,18 +187,12 @@ from(bucket: "${name}"{rightarrow}
 
     it('reflects an update to the task name in the pinned task link', () => {
       cy.getByTestID('task-card').within(() => {
-        cy.getByTestID('task-card--name')
-          .first()
-          .trigger('mouseover')
+        cy.getByTestID('task-card--name').first().trigger('mouseover')
 
-        cy.getByTestID('task-card--name-button')
-          .first()
-          .click()
+        cy.getByTestID('task-card--name-button').first().click()
 
         cy.intercept('PUT', '**/pinned/*').as('updatePinned')
-        cy.get('.cf-input-field')
-          .type('Bucks In Six')
-          .type('{enter}')
+        cy.get('.cf-input-field').type('Bucks In Six').type('{enter}')
       })
       cy.wait('@updatePinned')
       cy.visit('/')
@@ -230,6 +224,8 @@ from(bucket: "${name}"{rightarrow}
     beforeEach(() => {
       cy.setFeatureFlags({
         pinnedItems: true,
+        multiOrg: true,
+        quartzIdentity: true,
       })
       cy.intercept('GET', '/api/v2private/notebooks*').as('getNotebooks')
       cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
@@ -248,18 +244,12 @@ from(bucket: "${name}"{rightarrow}
       cy.clickNavBarItem('nav-item-flows')
       cy.wait('@getNotebooks')
 
-      cy.getByTestID('preset-new')
-        .first()
-        .click()
+      cy.getByTestID('preset-new').first().click()
       cy.wait('@getNotebooks')
       cy.wait('@updateNotebook')
 
-      cy.getByTestID('page-title')
-        .first()
-        .click()
-      cy.getByTestID('renamable-page-title--input')
-        .clear()
-        .type('Flow{enter}')
+      cy.getByTestID('page-title').first().click()
+      cy.getByTestID('renamable-page-title--input').clear().type('Flow{enter}')
       cy.wait('@updateNotebook')
 
       cy.getByTestID('time-machine-submit-button')
@@ -272,9 +262,7 @@ from(bucket: "${name}"{rightarrow}
         .should('be.visible')
         .within(() => {
           cy.getByTestID('dropdown-item').should('have.length.gte', 2)
-          cy.getByTestID('dropdown-item')
-            .last()
-            .click()
+          cy.getByTestID('dropdown-item').last().click()
         })
       cy.visit(`/orgs/${orgID}/notebooks`)
       cy.wait('@getNotebooks')
@@ -307,17 +295,11 @@ from(bucket: "${name}"{rightarrow}
       cy.intercept('PUT', '**/pinned/*').as('updatePinned')
       const updatedName = 'Bucks in Six'
 
-      cy.getByTestID('resource-editable-name')
-        .first()
-        .trigger('mouseover')
+      cy.getByTestID('resource-editable-name').first().trigger('mouseover')
 
-      cy.getByTestID('flow-card--name-button')
-        .first()
-        .click()
+      cy.getByTestID('flow-card--name-button').first().click()
 
-      cy.get('.cf-input-field')
-        .last()
-        .type(`${updatedName}{enter}`)
+      cy.get('.cf-input-field').last().type(`${updatedName}{enter}`)
 
       cy.getByTestID('notification-success').should('be.visible')
       cy.wait('@updatePinned')

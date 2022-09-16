@@ -210,7 +210,9 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
   }
 
   if (!vari.selected.length && vals.length) {
-    vari.selected.push(vals[0])
+    if (Object.isExtensible(vari.selected)) {
+      vari.selected.push(vals[0])
+    }
   }
 
   return vari

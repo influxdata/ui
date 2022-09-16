@@ -22,7 +22,7 @@ interface Resources {
 }
 
 export const RESOURCES: Resources = {}
-  // eslint-disable-next-line no-extra-semi
+// eslint-disable-next-line no-extra-semi
 ;[require('./types/script')].forEach(mod => {
   mod.default((def: ResourceRegistration) => {
     if (RESOURCES.hasOwnProperty(def.type)) {

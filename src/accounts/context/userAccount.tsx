@@ -19,11 +19,6 @@ import {getAccounts, patchAccount} from 'src/client/unityRoutes'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Actions
-import {setMe} from 'src/me/actions/creators'
-import {MeState} from 'src/me/reducers'
 
 // API
 import {updateDefaultQuartzAccount} from 'src/identity/apis/auth'
@@ -57,9 +52,8 @@ export const DEFAULT_CONTEXT: UserAccountContextType = {
   handleRenameActiveAccount: () => {},
 }
 
-export const UserAccountContext = React.createContext<UserAccountContextType>(
-  DEFAULT_CONTEXT
-)
+export const UserAccountContext =
+  React.createContext<UserAccountContextType>(DEFAULT_CONTEXT)
 
 export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(null)
@@ -150,13 +144,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         // change the name, and reset the active accts:
         userAccounts[activeIndex].name = newName
         setUserAccounts(userAccounts)
-
-        if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-          const name = resp.data.name
-          const id = resp.data.id.toString()
-          // update the state
-          dispatch(setMe({name, id} as MeState))
-        }
       }
     } catch (error) {
       dispatch(notify(accountRenameError(oldName)))

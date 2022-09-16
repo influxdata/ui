@@ -12,6 +12,7 @@ import {
   DEFAULT_SCHEMA,
   SchemaSelection,
 } from 'src/dataExplorer/context/persistance'
+import {CompositionInitParams} from 'src/languageSupport/languages/flux/lsp/utils'
 
 // LSP methods
 import {
@@ -28,9 +29,6 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-
-const ICON_SYNC_CLASSNAME = 'composition-sync'
-export const ICON_SYNC_ID = 'schema-composition-sync-icon'
 
 // hardcoded in LSP
 const COMPOSITION_YIELD = '_editor_composition'
@@ -136,24 +134,6 @@ class LspConnectionManager {
     })
   }
 
-  _setEditorSyncToggle() {
-    setTimeout(() => {
-      const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-      // add listeners
-      clickableInvisibleDiv.removeEventListener('click', () =>
-        this._setSessionSync(!this._session.composition.synced)
-      ) // may have existing
-      clickableInvisibleDiv.addEventListener('click', () => {
-        event('Toggled Flux Sync in editor', {
-          active: `${!this._session.composition.synced}`,
-        })
-        this._setSessionSync(!this._session.composition.synced)
-      })
-
-      this._alignInvisibleDivToEditorBlock()
-    }, 1000)
-  }
-
   _editorChangeIsFromLsp(change) {
     return change.text?.includes('|> yield(name: "_editor_composition")')
   }
@@ -187,88 +167,56 @@ class LspConnectionManager {
     })
   }
 
-  _alignInvisibleDivToEditorBlock() {
-    // elements in monaco-editor. positioned by editor.
-    const syncIcons = document.getElementsByClassName(ICON_SYNC_CLASSNAME)
+  _compositionSyncStyle(startLine: number, endLine: number, synced: boolean) {
+    const classNamePrefix = synced
+      ? 'composition-sync--on'
+      : 'composition-sync--off'
 
-    // UI elements we control
-    const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-    if (!syncIcons.length || !clickableInvisibleDiv) {
-      return
+    // Customize the full width of Monaco editor margin using API `marginClassName`
+    // https://github.com/microsoft/monaco-editor/blob/35eb0ef/website/typedoc/monaco.d.ts#L1533
+    const startLineStyle = {
+      range: new MonacoTypes.Range(startLine, 1, startLine, 1),
+      options: {
+        marginClassName: `${classNamePrefix}--first`,
+      },
     }
-
-    const [upperIcon] = syncIcons
-    let [, lowerIcon] = syncIcons
-    if (!lowerIcon) {
-      lowerIcon = upperIcon
+    const middleLinesStyle = {
+      range: new MonacoTypes.Range(startLine, 1, endLine, 1),
+      options: {
+        marginClassName: classNamePrefix,
+      },
     }
-    const compositionBlock = this._getCompositionBlockLines()
-    if (!compositionBlock) {
-      return
+    const endLineStyle = {
+      range: new MonacoTypes.Range(endLine, 1, endLine, 1),
+      options: {
+        marginClassName: `${classNamePrefix}--last`,
+      },
     }
-    const {startLine, endLine} = compositionBlock
-
-    // move div to match monaco-editor coordinates
-    clickableInvisibleDiv.style.top = ((upperIcon as any).offsetTop || 0) + 'px'
-    const height =
-      ((lowerIcon as any).offsetHeight || 0) * (endLine - startLine + 1) +
-      ((upperIcon as any).offsetTop || 0)
-    clickableInvisibleDiv.style.height = height + 'px'
-    // width size is always the same, defined in classname "sync-bar"
+    return [startLineStyle, middleLinesStyle, endLineStyle]
   }
 
   _setEditorBlockStyle(schema: SchemaSelection = this._session) {
     const compositionBlock = this._getCompositionBlockLines()
 
-    const startLineStyle = [
-      {
-        range: new MonacoTypes.Range(
-          compositionBlock?.startLine,
-          1,
-          compositionBlock?.startLine,
-          1
-        ),
-        options: {
-          linesDecorationsClassName: ICON_SYNC_CLASSNAME,
-        },
-      },
-    ]
-    const endLineStyle = [
-      {
-        range: new MonacoTypes.Range(
-          compositionBlock?.endLine,
-          1,
-          compositionBlock?.endLine,
-          1
-        ),
-        options: {
-          linesDecorationsClassName: ICON_SYNC_CLASSNAME,
-        },
-      },
-    ]
+    const removeAllStyles = !compositionBlock || schema.composition.diverged
 
-    const removeAllStyles = !compositionBlock && schema.composition.diverged
+    const compositionSyncStyle = this._compositionSyncStyle(
+      compositionBlock?.startLine,
+      compositionBlock?.endLine,
+      schema.composition.synced
+    )
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
-      removeAllStyles ? [] : startLineStyle.concat(endLineStyle)
+      removeAllStyles ? [] : compositionSyncStyle
     )
-
-    this._alignInvisibleDivToEditorBlock()
-    const clickableInvisibleDiv = document.getElementById(ICON_SYNC_ID)
-    clickableInvisibleDiv.className = schema.composition.synced
-      ? 'sync-bar sync-bar--on'
-      : 'sync-bar sync-bar--off'
-
-    if (removeAllStyles) {
-      clickableInvisibleDiv.style.display = 'none'
-    }
   }
 
   // XXX: wiedld (25 Aug 2022) - handling the absence of a middleware listener
   // race conditions occur when:
   // (1) LSP is booting up on page reload,
   // (2) too many executeCommands in a row, too quickly. e.g. re-syncing
+  // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
   private _initDelayBeforeConsume = true
   private _bufferComposition: [
     ExecuteCommand,
@@ -320,7 +268,7 @@ class LspConnectionManager {
       numFieldChanges + numTagValueChanges > 1
 
     if (reInitBlock) {
-      const payload = {
+      const payload: Partial<CompositionInitParams> = {
         bucket: toAdd.bucket?.name || this._session.bucket?.name,
       }
       if (toAdd.measurement || this._session.measurement) {
@@ -330,9 +278,9 @@ class LspConnectionManager {
         payload['fields'] = toAdd.fields || this._session.fields
       }
       if (toAdd.tagValues || this._session.tagValues) {
-        payload['tagValues'] = (
-          toAdd.tagValues || this._session.tagValues
-        ).map(({key, value}) => [key, value])
+        payload['tagValues'] = (toAdd.tagValues || this._session.tagValues).map(
+          ({key, value}) => [key, value]
+        )
       }
       this._insertBuffer([ExecuteCommand.CompositionInit, payload])
       return // re-initialize full block. no more requests needed.
@@ -405,11 +353,11 @@ class LspConnectionManager {
 
   _initCompositionHandlers() {
     // handlers to trigger end composition
-    this._setEditorSyncToggle()
     this._setEditorIrreversibleExit()
 
-    // XXX: wiedld (25 Aug 2022) - eventually, this could be from the LSP response.
+    // XXX: wiedld (25 Aug 2022) - eventually, this should be from the LSP response.
     // Tie the middleware to LspConnectionManager.onLspMessage()
+    // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
     this._model.onDidChangeContent(e => {
       if (this._session.composition?.synced) {
         this._setEditorBlockStyle()
@@ -462,6 +410,7 @@ class LspConnectionManager {
       setTimeout(() => {
         // XXX: wiedld (25 Aug 2022) - cannot init composition until after didOpen file
         // hardcode a delay for now
+        // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
         this._initDelayBeforeConsume = false
         this._incrementBuffer()
       }, 3000)
@@ -474,7 +423,7 @@ class LspConnectionManager {
   }
 
   onLspMessage(_jsonrpcMiddlewareResponse: unknown) {
-    // TODO: Q4
+    // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
     // 1. middleware detects jsonrpc
     // 2. call this method
     // 3a. update (true-up) session store

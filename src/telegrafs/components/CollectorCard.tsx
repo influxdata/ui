@@ -190,8 +190,8 @@ class CollectorRow extends PureComponent<
   }
 
   private handleOpenConfig = (): void => {
-    const {collector, history, org} = this.props
-    history.push(`/orgs/${org.id}/load-data/telegrafs/${collector.id}/view`)
+    const {collector, showOverlay, dismissOverlay} = this.props
+    showOverlay('telegraf-config', {collectorId: collector.id}, dismissOverlay)
   }
 
   private cloneTelegraf = (): void => {

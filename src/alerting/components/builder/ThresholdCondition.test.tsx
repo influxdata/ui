@@ -14,7 +14,7 @@ describe('ThresholdCondition Builder', () => {
     it('should default to the middle of the graph', () => {
       const onUpdateThreshold = jest.fn()
       const onRemoveThreshold = jest.fn()
-      const table = ({
+      const table = {
         getColumn() {
           return [0, 0, 1000000]
         },
@@ -23,7 +23,7 @@ describe('ThresholdCondition Builder', () => {
         addColumn: jest.fn(),
         columnKeys: [],
         length: 3,
-      } as unknown) as Table
+      } as unknown as Table
       const props = {
         onUpdateThreshold,
         onRemoveThreshold,

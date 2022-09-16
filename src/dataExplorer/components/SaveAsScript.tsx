@@ -34,9 +34,8 @@ interface Props {
 const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {hasChanged, resource, setResource, save} = useContext(
-    PersistanceContext
-  )
+  const {hasChanged, resource, setResource, clearSchemaSelection, save} =
+    useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
@@ -80,6 +79,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const clear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
+    clearSchemaSelection()
     setResult(null)
 
     history.replace(`/orgs/${org.id}/data-explorer/from/script`)

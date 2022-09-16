@@ -1,28 +1,3 @@
-// Utility Functions
-export const setupProfile = (): Promise<any> => {
-  return Cypress.Promise.resolve(
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(() => {
-          cy.request({
-            method: 'PUT',
-            url: 'api/v2/quartz/accounts/resetAllAccountOrgs',
-          })
-          cy.visit('/')
-          cy.getByTestID('home-page--header').should('be.visible')
-          cy.setFeatureFlags(userProfileFeatureFlags).then(() => {
-            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-            cy.wait(1200).then(() => {
-              cy.visit('/me/profile')
-            })
-          })
-        })
-      })
-    )
-  )
-}
-
 // Constants
 const userProfileFeatureFlags = {
   quartzIdentity: true,
@@ -77,6 +52,31 @@ export const multipleOrgs = [
   },
 ]
 
+// Utility Functions
+export const setupProfile = (): Promise<any> => {
+  return Cypress.Promise.resolve(
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(() => {
+          cy.request({
+            method: 'PUT',
+            url: 'api/v2/quartz/accounts/resetAllAccountOrgs',
+          })
+          cy.visit('/')
+          cy.getByTestID('home-page--header').should('be.visible')
+          cy.setFeatureFlags(userProfileFeatureFlags).then(() => {
+            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+            cy.wait(1200).then(() => {
+              cy.visit('/me/profile')
+            })
+          })
+        })
+      })
+    )
+  )
+}
+
 // Tests
 describe('User profile page', () => {
   before(() => {
@@ -110,9 +110,7 @@ describe('User profile page', () => {
       .contains('User Details')
       .should('be.visible')
 
-    cy.getByTestID('user-profile--email')
-      .contains('Email')
-      .should('be.visible')
+    cy.getByTestID('user-profile--email').contains('Email').should('be.visible')
     cy.getByTestID('user-profile--email-input').should(
       'have.attr',
       'value',
@@ -178,9 +176,7 @@ describe('User profile page', () => {
         )
       })
 
-      cy.getByTestID('user-profile--save-button')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('user-profile--save-button').should('be.visible').click()
 
       cy.wait('@putQuartzDefaultAccount').then(() => {
         // Force-clicks on notifications are work-arounds to ensure they're visible in cypress.
@@ -222,9 +218,7 @@ describe('User profile page', () => {
           )
         })
 
-        cy.getByTestID('user-profile--save-button')
-          .should('be.visible')
-          .click()
+        cy.getByTestID('user-profile--save-button').should('be.visible').click()
 
         cy.wait('@putQuartzDefaultAccount').then(() => {
           cy.getByTestID('notification-success')
@@ -280,9 +274,7 @@ describe('User profile page', () => {
         .should('be.visible')
         .click()
 
-      cy.getByTestID('user-profile--save-button')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('user-profile--save-button').should('be.visible').click()
 
       cy.wait('@putQuartzDefaultOrg').then(() => {
         cy.getByTestID('notification-success')

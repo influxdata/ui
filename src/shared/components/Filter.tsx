@@ -93,9 +93,7 @@ export default class FilterList<T extends Resource> extends PureComponent<
           return this.checkIndex(searchIndex, formattedSearchTerm)
         }
 
-        return String(value)
-          .toLocaleLowerCase()
-          .includes(formattedSearchTerm)
+        return String(value).toLocaleLowerCase().includes(formattedSearchTerm)
       })
 
       return isInList

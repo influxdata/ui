@@ -32,7 +32,10 @@ type OwnProps = {
 
 type Props = EventViewerChildProps & OwnProps
 
-const rowLoadedFn = state => ({index}) => !!state.rows[index]
+const rowLoadedFn =
+  state =>
+  ({index}) =>
+    !!state.rows[index]
 
 const EventTable: FC<Props> = ({state, dispatch, loadRows, fields}) => {
   const rowCount = getRowCount(state)

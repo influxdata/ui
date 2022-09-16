@@ -35,33 +35,33 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
     // ... code from Write Data step
     
     // Query will find the min RSSI value for last minute for each connected WiFi network with this device
-      String query = "from(bucket: \"${bucketName}\")\n\
-    |> range(start: -1m)\n\
-    |> filter(fn: (r) => r._measurement == \"wifi_status\")\n\
+      String aggregate_query = "from(bucket: \\"${bucketName}\\")\\n\\
+    |> range(start: -1m)\\n\\
+    |> filter(fn: (r) => r._measurement == \\"wifi_status\\")\\n\\
     |> min()";
     
       // Print composed query
-      Serial.println("Querying for the mean RSSI value written to the \"${bucketName}\" bucket in the last 1 min... ");
-      Serial.println(query);
+      Serial.println("Querying for the mean RSSI value written to the \\"${bucketName}\\" bucket in the last 1 min... ");
+      Serial.println(aggregate_query);
     
       // Send query to the server and get result
-      FluxQueryResult result = client.query(query);
+      FluxQueryResult aggregate_result = client.query(aggregate_query);
     
       Serial.println("Result : ");
       // Iterate over rows.
-      while (result.next()) {
+      while (aggregate_result.next()) {
         // Get converted value for flux result column 'SSID'
-        String ssid = result.getValueByName("SSID").getString();
+        String ssid = aggregate_result.getValueByName("SSID").getString();
         Serial.print("SSID '");
         Serial.print(ssid);
     
         Serial.print("' with RSSI ");
         // Get value of column named '_value'
-        long value = result.getValueByName("_value").getLong();
+        long value = aggregate_result.getValueByName("_value").getLong();
         Serial.print(value);
     
         // Get value for the _time column
-        FluxDateTime time = result.getValueByName("_time").getDateTime();
+        FluxDateTime time = aggregate_result.getValueByName("_time").getDateTime();
     
         String timeStr = time.format("%F %T");
     
@@ -72,13 +72,13 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
       }
     
       // Report any error
-      if (result.getError() != "") {
+      if (aggregate_result.getError() != "") {
         Serial.print("Query result error: ");
-        Serial.println(result.getError());
+        Serial.println(aggregate_result.getError());
       }
     
       // Close the result
-      result.close();
+      aggregate_result.close();
     
       Serial.println("==========");
     

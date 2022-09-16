@@ -24,9 +24,8 @@ const DEFAULT_CONTEXT: ResultsContextType = {
   setStatuses: _ => {},
 }
 
-export const ResultsContext = React.createContext<ResultsContextType>(
-  DEFAULT_CONTEXT
-)
+export const ResultsContext =
+  React.createContext<ResultsContextType>(DEFAULT_CONTEXT)
 
 export const ResultsProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)

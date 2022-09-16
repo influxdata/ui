@@ -63,7 +63,6 @@ export interface Props extends StandardFunctionProps {
 
 type State = {
   showTypeAheadMenu: boolean
-  selectedItem?: TypeAheadMenuItem
 }
 
 export class GlobalHeaderDropdown extends React.Component<Props, State> {
@@ -71,18 +70,8 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     super(props)
     this.state = {
       showTypeAheadMenu: this.props.onlyRenderSubmenu ?? false,
-      selectedItem: this.props.typeAheadSelectedOption || null,
     }
   }
-
-  componentDidUpdate() {
-    if (this.props.typeAheadSelectedOption !== this.state.selectedItem) {
-      this.setState({
-        selectedItem: this.props.typeAheadSelectedOption,
-      })
-    }
-  }
-
   private dropdownButton = (
     active: boolean,
     onClick: (e: MouseEvent<HTMLElement>) => void
@@ -92,8 +81,8 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       defaultTestID,
       dropdownButtonIcon,
       dropdownButtonSize,
+      typeAheadSelectedOption,
     } = this.props
-    const {selectedItem} = this.state
     return (
       <Dropdown.Button
         active={active}
@@ -103,7 +92,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         testID={defaultTestID}
         trailingIcon={dropdownButtonIcon || IconFont.DoubleCaretVertical}
       >
-        {selectedItem?.name || defaultButtonText}
+        {typeAheadSelectedOption?.name || defaultButtonText}
       </Dropdown.Button>
     )
   }
@@ -154,17 +143,17 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
   }
 
   private renderTypeAheadMenu = () => {
-    const {typeAheadMenuOptions} = this.props
-    const {selectedItem} = this.state
     const {
       dropdownMenuStyle,
+      typeAheadMenuOptions,
+      typeAheadSelectedOption,
       typeAheadEventPrefix,
       typeAheadInputPlaceholder,
       typeAheadOnSelectOption,
     } = this.props
     return (
       <GlobalHeaderTypeAheadMenu
-        defaultSelectedItem={selectedItem}
+        defaultSelectedItem={typeAheadSelectedOption ?? null}
         onSelectOption={typeAheadOnSelectOption}
         style={dropdownMenuStyle}
         testID={this.props.typeAheadTestID}

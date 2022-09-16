@@ -142,9 +142,9 @@ export const loginViaDex = (username: string, password: string) => {
     )
 }
 
-export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Response<
-  any
->> => {
+export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<
+  Cypress.Response<any>
+> => {
   return cy
     .request({
       method: 'GET',
@@ -831,9 +831,7 @@ export const getByTestIDAndSetInputValue = (
 ): Cypress.Chainable => {
   const val = `${value}`
   cy.getByTestID(testId).clear()
-  cy.getByTestID(testId)
-    .focus()
-    .type(val)
+  cy.getByTestID(testId).focus().type(val)
 
   return cy.getByTestID(testId).should('have.value', val)
 }
@@ -1044,9 +1042,17 @@ export const makeGraphSnapshot = (() => {
 export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
   // make sure the app is loaded before dispatching
   cy.getByTestID('tree-nav')
-  return cy.window().then(win => {
+  return cy.window().then((win: any) => {
     // eslint-disable-next-line no-extra-semi
-    ;(win as any).store.dispatch(setOverrides(flags))
+    win.store.dispatch(setOverrides(flags))
+  })
+}
+
+export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
+  // use in lieu of setFeatureFlags when no left nav bar is expected.
+  return cy.window().then((win: any) => {
+    // eslint-disable-next-line no-extra-semi
+    win.store.dispatch(setOverrides(flags))
   })
 }
 
@@ -1058,9 +1064,7 @@ export const createTaskFromEmpty = (
   force: boolean = true,
   delay: number = 0
 ) => {
-  cy.getByTestID('create-task--button')
-    .first()
-    .click()
+  cy.getByTestID('create-task--button').first().click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
     cy.getByTestID('flux-editor').monacoType(flux(bucket), force, delay)
@@ -1168,5 +1172,6 @@ Cypress.Commands.add(
 )
 Cypress.Commands.add('getByTestIDAndSetInputValue', getByTestIDAndSetInputValue)
 Cypress.Commands.add('setFeatureFlags', setFeatureFlags)
+Cypress.Commands.add('setFeatureFlagsNoNav', setFeatureFlagsNoNav)
 Cypress.Commands.add('createTaskFromEmpty', createTaskFromEmpty)
 /* eslint-enable */

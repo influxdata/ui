@@ -14,9 +14,8 @@ interface Props {
 }
 
 const PaymentPanelBody: FC<Props> = ({isEditing, onSubmit}) => {
-  const {handleGetZuoraParams, zuoraParams, zuoraParamsStatus} = useContext(
-    BillingContext
-  )
+  const {handleGetZuoraParams, zuoraParams, zuoraParamsStatus} =
+    useContext(BillingContext)
 
   useEffect(() => {
     handleGetZuoraParams()

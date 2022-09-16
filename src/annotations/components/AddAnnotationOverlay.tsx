@@ -15,14 +15,8 @@ import {AppState} from 'src/types'
 
 export const AddAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  const {
-    createAnnotation,
-    startTime,
-    endTime,
-    range,
-    eventPrefix,
-    cellID,
-  } = useSelector(getOverlayParams)
+  const {createAnnotation, startTime, endTime, range, eventPrefix, cellID} =
+    useSelector(getOverlayParams)
 
   const timeFormat = useSelector((state: AppState) =>
     getTimeFormatForView(state, cellID)

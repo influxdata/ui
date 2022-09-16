@@ -1,30 +1,58 @@
 @use 'src/identity/components/GlobalHeader/GlobalHeaderStyle.scss' as gh;
 @import '@influxdata/clockface/dist/variables.scss';
+@import 'src/style/_variables.scss';
 
-// Reduce size of page headers
+// These are custom per-page adjustments to certain styles that are currently
+// necessary to accomodate the space taken up by the multi-org header in Cloud2.
+
+/* Page Headers Generally */
 .multi-org .cf-page-header {
   height: 46px !important;
   flex: 0 0 46px !important;
   margin-bottom: 14px !important;
 }
 
-// Adjust most pages for multi-org by changing the size of the Dapper Scroll Bar wrapper.
+/* Page Size Generally */
+// Adjusts Dapper Scrollbars height.
 .multi-org .cf-page-contents > .ScrollbarsCustom-Wrapper {
   height: calc(100% - gh.$globalheader-height);
 }
 
-// Page-specific fix for Data Explorer - Classic
+// Data Explorer - Classic
 .multi-org .data-explorer > .time-machine > .cf-draggable-resizer {
   height: calc(100% - gh.$globalheader-height);
 }
 
-// Page-specific fix for Data Explorer - New
+// Data Explorer - New
 .multi-org .flux-query-builder--container {
   height: calc(100% - gh.$globalheader-height);
 }
 
+/* Notebooks */
+// Browser
+.multi-org .cf-page.flows-index {
+  height: calc(100% - gh.$globalheader-height);
+}
+
+// Page Title
+.multi-org
+  .flows-index
+  > .cf-page-header
+  > .cf-page-header--fixed
+  > .cf-flex-box {
+  height: 32px !important;
+  margin-bottom: 10px !important;
+}
+
+// Header Block
+.multi-org .cf-page-header.withButtonHeader {
+  height: 140px !important;
+}
+
+/* Notifications */
 // When removing multi-org flags, consider whether this override
 // should become a permanent change for all users in Clockface.
+
 .cf-notification-container {
   &.cf-notification__top {
     top: $cf-space-2xs;
@@ -32,4 +60,10 @@
   &.cf-notification__right {
     right: $cf-space-2xs;
   }
+}
+
+/* Tasks */
+// TaskForm.scss deducts #{$ix-marg-d} from page height, so the multi-org style must do so too.
+.multi-org .task-form {
+  height: calc(100% - #{gh.$globalheader-height} - #{$ix-marg-d}) !important;
 }

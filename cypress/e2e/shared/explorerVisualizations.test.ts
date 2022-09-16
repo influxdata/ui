@@ -76,21 +76,11 @@ describe('visualizations', () => {
           cy.getByTestID('query-builder').should('be.visible')
 
           cy.log('can revert back to query builder mode (with confirmation)')
-          cy.getByTestID('switch-to-script-editor')
-            .should('be.visible')
-            .click()
-          cy.getByTestID('flux--aggregate.rate--inject').click()
+          cy.getByTestID('switch-to-script-editor').should('be.visible').click()
+          cy.getByTestID('flux--bottom--inject').click()
 
-          cy.log('check to see if import is defaulted to the top')
-          cy.get('.view-line')
-            .first()
-            .contains('import')
-
-          cy.log('check to see if new aggregate rate is at the bottom')
-          cy.get('.view-line')
-            .last()
-            .prev()
-            .contains('aggregate.')
+          cy.log('check to see if new flux function is at the bottom')
+          cy.get('.view-line').last().prev().contains('bottom')
           cy.getByTestID('flux-editor').should('exist')
           cy.getByTestID('flux-editor').monacoType(`yoyoyoyoyo`)
 
@@ -170,23 +160,15 @@ describe('visualizations', () => {
 
       cy.getByTestID('time-machine-submit-button').click()
       cy.getByTestID('cog-cell--button').click()
-      cy.get('.auto-domain-input')
-        .contains('Custom')
-        .click()
-      cy.getByTestID('auto-domain--min')
-        .type('-100')
-        .blur()
+      cy.get('.auto-domain-input').contains('Custom').click()
+      cy.getByTestID('auto-domain--min').type('-100').blur()
 
       cy.getByTestID('form--element-error').should('not.exist')
       // find no errors
-      cy.getByTestID('auto-domain--max')
-        .type('450')
-        .blur()
+      cy.getByTestID('auto-domain--max').type('450').blur()
       // find no errors
       cy.getByTestID('form--element-error').should('not.exist')
-      cy.getByTestID('auto-domain--min')
-        .clear()
-        .blur()
+      cy.getByTestID('auto-domain--min').clear().blur()
       cy.getByTestID('form--element-error').should('not.exist')
     })
 

@@ -15,7 +15,6 @@ import {FluxFunction, FluxToolbarFunction} from 'src/types'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type FluxToolbarTabs = 'functions' | 'variables' | 'none'
 
@@ -45,7 +44,7 @@ const FluxToolbar: FC = () => {
   }
 
   if (activeTab === 'functions') {
-    if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
+    if (CLOUD) {
       activeToolbar = <DynamicFunctions onSelect={onInsertFluxFunction} />
     } else {
       activeToolbar = <Functions onSelect={onInsertFluxFunction} />

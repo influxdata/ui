@@ -1,6 +1,7 @@
 import {ResourceType} from 'src/types/resources'
 import editor from './editor'
 import {CLOUD} from 'src/shared/constants'
+import {DEFAULT_EDITOR_TEXT} from 'src/dataExplorer/context/persistance'
 
 const {getScript, patchScript, postScript} = CLOUD
   ? require('src/client/scriptsRoutes')
@@ -18,7 +19,7 @@ export default function script(register) {
       if (!id || !CLOUD) {
         return Promise.resolve({
           type: ResourceType.Scripts,
-          flux: '',
+          flux: DEFAULT_EDITOR_TEXT,
           data: {},
         })
       }
@@ -36,7 +37,7 @@ export default function script(register) {
 
         return {
           type: ResourceType.Scripts,
-          flux: '',
+          flux: DEFAULT_EDITOR_TEXT,
           data: {},
         }
       })

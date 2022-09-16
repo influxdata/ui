@@ -21,8 +21,8 @@ describe('the NoteEditor markdown renderer', () => {
           CLOUD: true,
           MARKDOWN_UNSUPPORTED_IMAGE: markdownImageWarning,
         }))
-        const NoteEditorPreview = require('src/dashboards/components/NoteEditorPreview.tsx')
-          .default
+        const NoteEditorPreview =
+          require('src/dashboards/components/NoteEditorPreview.tsx').default
 
         const {getByText} = render(
           <NoteEditorPreview note={note} scrollTop={0} onScroll={() => {}} />
@@ -34,8 +34,8 @@ describe('the NoteEditor markdown renderer', () => {
     describe('in oss contexts', () => {
       it('renders the image', () => {
         jest.mock('src/shared/constants', () => ({CLOUD: false}))
-        const NoteEditorPreview = require('src/dashboards/components/NoteEditorPreview.tsx')
-          .default
+        const NoteEditorPreview =
+          require('src/dashboards/components/NoteEditorPreview.tsx').default
         const {container} = render(
           <NoteEditorPreview note={note} scrollTop={0} onScroll={() => {}} />
         )

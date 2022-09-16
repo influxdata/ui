@@ -72,8 +72,9 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
   }
 
   public render() {
-    const templateName = getTemplateNameFromUrl(this.props.stagedTemplateUrl)
-      .name
+    const templateName = getTemplateNameFromUrl(
+      this.props.stagedTemplateUrl
+    ).name
 
     return (
       <CommunityTemplateOverlay

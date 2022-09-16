@@ -194,14 +194,8 @@ export class Collectors extends PureComponent<Props, State> {
   }
 
   private handleAddCollector = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
-
-    history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
+    const {showOverlay, dismissOverlay} = this.props
+    showOverlay('telegraf-wizard', null, dismissOverlay)
     event('load_data.telegrafs.create_new_configuration.clicked')
   }
 

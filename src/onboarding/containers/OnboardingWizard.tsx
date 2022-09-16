@@ -68,13 +68,8 @@ class OnboardingWizard extends PureComponent<Props> {
   }
 
   public render() {
-    const {
-      currentStepIndex,
-      orgID,
-      bucketID,
-      setupParams,
-      onSetupAdmin,
-    } = this.props
+    const {currentStepIndex, orgID, bucketID, setupParams, onSetupAdmin} =
+      this.props
 
     return (
       <WizardFullScreen>

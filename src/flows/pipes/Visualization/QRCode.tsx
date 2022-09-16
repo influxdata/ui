@@ -25,8 +25,7 @@ const QRComponent: FC<Props> = ({url}) => {
         fgColor={InfluxColors.Fire}
         bgColor={InfluxColors.White}
         imageSettings={{
-          src:
-            'https://www.influxdata.com/wp-content/uploads/Favicon-blue-200x200.png',
+          src: 'https://www.influxdata.com/wp-content/uploads/Favicon-blue-200x200.png',
           width: size * 0.2,
           height: size * 0.2,
           excavate: true,

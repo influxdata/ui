@@ -18,14 +18,8 @@ interface Props extends VisualizationProps {
 }
 
 const GaugeChart: FC<Props> = ({result, properties}) => {
-  const {
-    colors,
-    prefix,
-    tickPrefix,
-    suffix,
-    tickSuffix,
-    decimalPlaces,
-  } = properties
+  const {colors, prefix, tickPrefix, suffix, tickSuffix, decimalPlaces} =
+    properties
 
   const config: Config = {
     table: result.table,

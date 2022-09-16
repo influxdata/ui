@@ -53,12 +53,15 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
   },
 }
 
+export const DEFAULT_EDITOR_TEXT =
+  '// Start by selecting data from the schema browser or typing flux here'
+
 const DEFAULT_CONTEXT = {
   hasChanged: false,
-  horizontal: [0.2],
+  horizontal: [0.5],
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,
-  query: '',
+  query: DEFAULT_EDITOR_TEXT,
   resource: null,
   selection: JSON.parse(JSON.stringify(DEFAULT_SCHEMA)),
 
@@ -76,22 +79,18 @@ const DEFAULT_CONTEXT = {
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
 export const PersistanceProvider: FC = ({children}) => {
-  const [
-    horizontal,
-    setHorizontal,
-  ] = useSessionStorage('dataExplorer.resize.horizontal', [
-    ...DEFAULT_CONTEXT.horizontal,
-  ])
+  const [horizontal, setHorizontal] = useSessionStorage(
+    'dataExplorer.resize.horizontal',
+    [...DEFAULT_CONTEXT.horizontal]
+  )
   const [hasChanged, setHasChanged] = useSessionStorage(
     'dataExplorer.hasChanged',
     DEFAULT_CONTEXT.hasChanged
   )
-  const [
-    vertical,
-    setVertical,
-  ] = useSessionStorage('dataExplorer.resize.vertical', [
-    ...DEFAULT_CONTEXT.vertical,
-  ])
+  const [vertical, setVertical] = useSessionStorage(
+    'dataExplorer.resize.vertical',
+    [...DEFAULT_CONTEXT.vertical]
+  )
   const [query, setQuery] = useSessionStorage(
     'dataExplorer.query',
     DEFAULT_CONTEXT.query

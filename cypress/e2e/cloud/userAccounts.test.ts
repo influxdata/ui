@@ -1,171 +1,90 @@
 import {Organization} from '../../../src/types'
 
-const doSetup = (cy, numAccounts: number) => {
+const doSetup = cy => {
   cy.flush().then(() => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
+        cy.visit(`/orgs/${id}/accounts/settings`)
         cy.setFeatureFlags({
+          quartzIdentity: true,
           multiAccount: true,
+          multiOrg: true,
         }).then(() => {
-          cy.quartzProvision({
-            accountType: 'free',
-            numAccounts,
-          }).then(() => {
-            cy.visit(`/orgs/${id}/accounts/settings`)
-          })
+          cy.wait(300)
         })
       })
     })
   })
 }
 
-const prefix = 'accountSwitch-toggle-choice'
-
 describe('Account Page tests', () => {
-  describe('User with 4 accounts', () => {
-    beforeEach(() => doSetup(cy, 4))
+  describe('User with more than one account', () => {
+    before(() => {
+      // For this test, intercept all GET and POST requests to the accounts API
+      // Otherwise, attempts to revise quartz-mock cause flaking issues in other tests
+      // that presume the current account name has not changed.
 
-    it('can change the default account', () => {
-      const defaultMarker = '(default)'
-
-      // first ensure that we get 4 accounts from Quartz
-      cy.getByTestID('account-settings--header').should('be.visible')
-      cy.getByTestID('input--active-account-name').should('be.visible')
-      cy.getByTestID('user-account-switch-btn').click()
-      cy.getByTestID('switch-account--dialog').should('be.visible')
-      cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
-      cy.getByTestID(`${prefix}-1-ID`).should('be.visible')
-      cy.getByTestID(`${prefix}-2-ID`).should('be.visible')
-      cy.getByTestID(`${prefix}-3-ID`).should('be.visible')
-      cy.getByTestID('multi-account-switch-cancel').click()
-      cy.getByTestID('switch-account--dialog').should('not.exist')
-
-      // rename the current account
-      const name = '4-accounts-test'
-      cy.getByTestID('input--active-account-name')
-        .clear()
-        .type(name)
-      cy.getByTestID('rename-account--button').click()
-
-      cy.getByTestID('notification-success').should('be.visible')
-
-      // active name is our input and "Switch" starts as disabled
-      cy.getByTestID('user-account-switch-btn').click()
-      cy.getByTestID('switch-account--dialog').should('be.visible')
-      cy.getByTestID('actually-switch-account--btn').should('be.disabled')
-
-      // Only one "(default)", which cannot be set again, and not our renamed account
-      cy.get('.cf-toggle--visual-input')
-        .contains(defaultMarker)
-        .should('have.length', 1)
-      cy.get('.cf-toggle--visual-input')
-        .contains(defaultMarker)
-        .click()
-      cy.getByTestID('switch-default-account--btn').should('be.disabled')
-      cy.get('.cf-toggle--visual-input').not(`:contains(${name}`)
-
-      // Three non-default that can be selected as default
-      cy.get('.cf-toggle--visual-input')
-        .not(`:contains(${defaultMarker}`)
-        .should('have.length', 3)
-      cy.get('.cf-toggle--visual-input')
-        .not(`:contains(${defaultMarker}`)
-        .eq(0)
-        .click()
-      cy.getByTestID('switch-default-account--btn').should('be.enabled')
-      cy.get('.cf-toggle--visual-input')
-        .not(`:contains(${defaultMarker}`)
-        .eq(1)
-        .click()
-      cy.getByTestID('switch-default-account--btn').should('be.enabled')
-      cy.get('.cf-toggle--visual-input')
-        .not(`:contains(${defaultMarker}`)
-        .eq(2)
-        .click()
-      cy.getByTestID('switch-default-account--btn').should('be.enabled')
-
-      // select our renamed account as the default
-      cy.get('.cf-toggle--visual-input')
-        .contains(name)
-        .click()
-      cy.getByTestID('switch-default-account--btn').click()
-
-      cy.getByTestID('notification-success').should('be.visible')
-      cy.getByTestID('switch-account--dialog').should('not.exist')
-
-      // open the "Switch Account" modal again, our renamed account should be default
-      cy.getByTestID('user-account-switch-btn').click()
-      cy.getByTestID('switch-account--dialog').should('be.visible')
-      cy.get('.cf-toggle--visual-input').contains(`${name} ${defaultMarker}`)
-
-      // close the modal
-      cy.getByTestID('multi-account-switch-cancel').click()
-      cy.getByTestID('switch-account--dialog').should('not.exist')
+      cy.intercept('GET', '/api/v2/quartz/accounts', {
+        statusCode: 200,
+        body: [
+          {id: 416, isActive: true, isDefault: false, name: 'Influx'},
+          {id: 415, isActive: false, isDefault: true, name: 'Veganomicon'},
+        ],
+      })
+      doSetup(cy)
     })
-  })
-
-  describe('User with one account', () => {
-    beforeEach(() => doSetup(cy, 1))
-
-    it('can get to the page and get the accounts, and the switch button is NOT showing', () => {
-      cy.getByTestID('account-settings--header').should('be.visible')
-      cy.getByTestID('input--active-account-name')
-        .invoke('val')
-        .should('have.length.greaterThan', 0)
-      cy.getByTestID('user-account-switch-btn').should('not.exist')
-    })
-  })
-
-  describe('User with two accounts', () => {
-    beforeEach(() => doSetup(cy, 2))
 
     it('can get to the account page and rename the active account', () => {
       // first ensure that we get 2 accounts from Quartz
       cy.getByTestID('account-settings--header').should('be.visible')
       cy.getByTestID('input--active-account-name').should('be.visible')
-      cy.getByTestID('user-account-switch-btn').click()
-      cy.getByTestID('switch-account--dialog').should('be.visible')
-      cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
-      cy.getByTestID(`${prefix}-1-ID`).should('be.visible')
-      cy.getByTestID('multi-account-switch-cancel').click()
-      cy.getByTestID('switch-account--dialog').should('not.exist')
 
       // rename the current account
-      const name = 'Bruno-no-no-no'
+      const firstNewAccountName = 'Bruno-no-no-no'
+      const newAccountProps = {
+        id: 416,
+        isActive: true,
+        isDefault: false,
+        name: firstNewAccountName,
+      }
+
+      cy.intercept('PATCH', '/api/v2/quartz/accounts/416', {
+        statusCode: 200,
+        body: newAccountProps,
+      })
+
+      cy.intercept('GET', '/api/v2/quartz/accounts', {
+        statusCode: 200,
+        body: newAccountProps,
+      })
+
       cy.getByTestID('input--active-account-name')
         .clear()
-        .type(name)
+        .type(firstNewAccountName)
       cy.getByTestID('rename-account--button').click()
-
       cy.getByTestID('notification-success').should('be.visible')
+      cy.contains(firstNewAccountName)
 
-      // active name should be our input
-      cy.getByTestID('user-account-switch-btn').click()
-      cy.getByTestID('switch-account--dialog').should('be.visible')
-      cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
-      cy.getByTestID(`${prefix}-0-ID`).contains(name)
-      cy.getByTestID(`${prefix}-0-ID--input`).should('be.checked')
-      cy.getByTestID('multi-account-switch-cancel').click()
-      cy.getByTestID('switch-account--dialog').should('not.exist')
+      // rename it again
+      const secondNewAccountName = 'Bruno-yes-yes-yes'
+      newAccountProps.name = secondNewAccountName
 
-      // then, rename it again
-      const newName = 'Bruno-yes-yes-yes'
+      cy.intercept('PATCH', '/api/v2/quartz/accounts/416', {
+        statusCode: 200,
+        body: newAccountProps,
+      })
+      cy.intercept('GET', '/api/v2/quartz/accounts', {
+        statusCode: 200,
+        body: newAccountProps,
+      })
+
       cy.getByTestID('input--active-account-name').should('be.visible')
       cy.getByTestID('input--active-account-name')
         .clear()
-        .type(newName)
+        .type(secondNewAccountName)
       cy.getByTestID('rename-account--button').click()
-
       cy.getByTestID('notification-success').should('be.visible')
-
-      // active name should be our new name
-      cy.getByTestID('user-account-switch-btn').click()
-      cy.getByTestID('switch-account--dialog').should('be.visible')
-      cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
-      cy.getByTestID(`${prefix}-0-ID`).contains(newName)
-      cy.getByTestID(`${prefix}-0-ID--input`).should('be.checked')
-      cy.getByTestID('multi-account-switch-cancel').click()
-      cy.getByTestID('switch-account--dialog').should('not.exist')
+      cy.contains(secondNewAccountName)
     })
   })
 })

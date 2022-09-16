@@ -97,7 +97,9 @@ const testSchemaFiles = (
 
 describe('Explicit Buckets', () => {
   beforeEach(() => {
-    setup(cy)
+    setup(cy).then(() => {
+      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+    })
   })
 
   it('can create a bucket with an explicit schema', () => {
@@ -200,7 +202,7 @@ describe('Explicit Buckets', () => {
     })
   })
 
-  it('should be able to create an explicit bucket using one schema file', function() {
+  it('should be able to create an explicit bucket using one schema file', function () {
     const schemaName = 'only one schema'
     const filename = 'validSchema1.json'
 
@@ -253,7 +255,7 @@ describe('Explicit Buckets', () => {
       })
   })
 
-  it('should be able to create an explicit bucket and add json schema file during editing', function() {
+  it('should be able to create an explicit bucket and add json schema file during editing', function () {
     const origFileContents = `[{"name":"time","type":"timestamp"},
         {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
@@ -281,7 +283,7 @@ describe('Explicit Buckets', () => {
     )
   })
 
-  it('should be able to create an explicit bucket and add csv schema file during editing', function() {
+  it('should be able to create an explicit bucket and add csv schema file during editing', function () {
     const origFileContents = `name,type,dataType
 time,timestamp,
 host,tag,
@@ -304,7 +306,7 @@ fsRead,field,float`
     )
   })
 
-  it('should be able to create an explicit bucket and update the existing schema file during editing', function() {
+  it('should be able to create an explicit bucket and update the existing schema file during editing', function () {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('create-bucket-form').should('be.visible')
     cy.getByTestID('bucket-form-name').type(bucketName)
@@ -413,7 +415,9 @@ fsRead,field,float`
 
 describe('Buckets', () => {
   beforeEach(() => {
-    setup(cy)
+    setup(cy).then(() => {
+      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+    })
   })
 
   it('can sort by name and retention', () => {

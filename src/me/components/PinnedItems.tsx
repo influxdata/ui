@@ -55,9 +55,8 @@ const PinnedItems: FC = () => {
     [history]
   )
 
-  const {pinnedItems, deletePinnedItemsHelper, pinnedItemsError} = useContext(
-    PinnedItemsContext
-  )
+  const {pinnedItems, deletePinnedItemsHelper, pinnedItemsError} =
+    useContext(PinnedItemsContext)
 
   const handleDeletePinnedItem = async (itemId: string) => {
     await deletePinnedItemsHelper(itemId)

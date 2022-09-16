@@ -96,13 +96,8 @@ class LoginPageContents extends PureComponent<Props> {
   }
 
   render() {
-    const {
-      buttonStatus,
-      email,
-      emailError,
-      password,
-      passwordError,
-    } = this.state
+    const {buttonStatus, email, emailError, password, passwordError} =
+      this.state
 
     return (
       <form

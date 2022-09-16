@@ -2,14 +2,16 @@ describe('Operator Page', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(() => {
-          cy.getByTestID('home-page--header').should('be.visible')
-          cy.quartzProvision({
-            isOperator: true,
-            operatorRole: 'read-write',
-          }).then(() => {
-            cy.visit(`/operator`)
-            cy.getByTestID('operator-page--title').contains('2.0 Resources')
+        cy.setFeatureFlags({quartzIdentity: true, multiOrg: true}).then(() => {
+          cy.get('@org').then(() => {
+            cy.getByTestID('home-page--header').should('be.visible')
+            cy.quartzProvision({
+              isOperator: true,
+              operatorRole: 'read-write',
+            }).then(() => {
+              cy.visit(`/operator`)
+              cy.getByTestID('operator-page--title').contains('2.0 Resources')
+            })
           })
         })
       })
@@ -177,9 +179,7 @@ describe('Operator Page', () => {
     cy.getByTestID('overlay--container').should('be.visible')
     cy.getByTestID('overlay--header').contains('678')
 
-    cy.getByTestID('limits-rate.readKBs--input')
-      .clear()
-      .type('666')
+    cy.getByTestID('limits-rate.readKBs--input').clear().type('666')
 
     cy.getByTestID('org-overlay--submit-button').click()
 

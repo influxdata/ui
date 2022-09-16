@@ -17,26 +17,26 @@ function getTimeMachineText() {
 describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
-    cy.signin()
-    cy.get('@org').then(({id}: Organization) => {
-      cy.createMapVariable(id)
-      cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
-        cy.getByTestID('tree-nav').should('be.visible')
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) => {
+        cy.createMapVariable(id)
+        cy.fixture('routes').then(({orgs, explorer}) => {
+          cy.visit(`${orgs}/${id}${explorer}`)
+          cy.getByTestID('tree-nav').should('be.visible')
+        })
       })
     })
   })
 
   describe('Script Editor', () => {
     beforeEach(() => {
-      cy.getByTestID('switch-to-script-editor')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('switch-to-script-editor').should('be.visible').click()
     })
 
     it('can use the dynamic flux function selector to build a query', () => {
       cy.setFeatureFlags({
-        fluxDynamicDocs: true,
+        quartzIdentity: true,
+        multiOrg: true,
       }).then(() => {
         cy.get('.view-line').should('be.visible')
 
@@ -68,16 +68,14 @@ describe('DataExplorer', () => {
 
     it('can use the dynamic flux function search bar to search by package or function name', () => {
       cy.setFeatureFlags({
-        fluxDynamicDocs: true,
+        quartzIdentity: true,
+        multiOrg: true,
       }).then(() => {
         cy.get('.view-line').should('be.visible')
 
-        cy.getByTestID('flux-toolbar-search--input')
-          .click()
-          .type('filter')
+        cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
-        cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
-        cy.getByTestID('flux--filter').contains('filter')
+        cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
         cy.get('.flux-toolbar--search').within(() => {
           cy.getByTestID('dismiss-button').click()
@@ -89,12 +87,9 @@ describe('DataExplorer', () => {
             expect(value).to.equal('')
           })
 
-        cy.getByTestID('flux-toolbar-search--input')
-          .click()
-          .type('array')
+        cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
-        cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
-        cy.getByTestID('flux--filter').contains('filter')
+        cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
         cy.get('.flux-toolbar--search').within(() => {
           cy.getByTestID('dismiss-button').click()

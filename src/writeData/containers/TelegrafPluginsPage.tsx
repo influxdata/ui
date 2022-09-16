@@ -40,8 +40,12 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
     },
   } = props
   const {contentID} = useParams<ParamsType>()
-  const {name = '', markdown = '', image = '', style = {}} =
-    WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}
+  const {
+    name = '',
+    markdown = '',
+    image = '',
+    style = {},
+  } = WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}
 
   const eventName = normalizeEventName(name)
   useEffect(() => {

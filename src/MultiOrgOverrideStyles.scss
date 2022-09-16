@@ -12,22 +12,6 @@
   margin-bottom: 14px !important;
 }
 
-/* Page Size Generally */
-// Adjusts Dapper Scrollbars height.
-.multi-org .cf-page-contents > .ScrollbarsCustom-Wrapper {
-  height: calc(100% - gh.$globalheader-height);
-}
-
-// Data Explorer - Classic
-.multi-org .data-explorer > .time-machine > .cf-draggable-resizer {
-  height: calc(100% - gh.$globalheader-height);
-}
-
-// Data Explorer - New
-.multi-org .flux-query-builder--container {
-  height: calc(100% - gh.$globalheader-height);
-}
-
 /* Notebooks */
 // Browser
 .multi-org .cf-page.flows-index {
@@ -60,10 +44,4 @@
   &.cf-notification__right {
     right: $cf-space-2xs;
   }
-}
-
-/* Tasks */
-// TaskForm.scss deducts #{$ix-marg-d} from page height, so the multi-org style must do so too.
-.multi-org .task-form {
-  height: calc(100% - #{gh.$globalheader-height} - #{$ix-marg-d}) !important;
 }

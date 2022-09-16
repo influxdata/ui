@@ -180,7 +180,7 @@ const ResultsPane: FC = () => {
               <pre>{result.error}</pre>
             </div>
           )}
-          <div style={{width: '100%'}}>
+          <div className="data-explorer--control">
             <FlexBox
               direction={FlexDirection.Row}
               justifyContent={JustifyContent.FlexEnd}

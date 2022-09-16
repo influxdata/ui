@@ -24,6 +24,9 @@ import {
   updateUserAccount,
 } from 'src/identity/apis/auth'
 
+// Utils
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+
 export type Props = {
   children: JSX.Element
 }
@@ -94,7 +97,12 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         setActiveAccountId(activeId)
       }
     } catch (error) {
-      event('multiAccount.retrieveAccounts.error', {error})
+      reportErrorThroughHoneyBadger(error, {
+        name: 'UserAccount',
+        context: {
+          message: 'error fetching user accounts',
+        },
+      })
     }
   }, [setActiveAccountId, setDefaultAccountId])
 
@@ -138,6 +146,12 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         setUserAccounts(updatedAccounts)
       } catch (error) {
         dispatch(notify(accountRenameError(activeAccount.name)))
+        reportErrorThroughHoneyBadger(error, {
+          name: 'UserAccount',
+          context: {
+            message: 'error renaming user account',
+          },
+        })
       }
     },
     [dispatch, userAccounts, setUserAccounts]

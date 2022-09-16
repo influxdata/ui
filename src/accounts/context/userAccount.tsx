@@ -14,15 +14,8 @@ import {
   accountRenameSuccess,
 } from 'src/shared/copy/notifications'
 
-// Utils
-
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Actions
-import {setMe} from 'src/me/actions/creators'
-import {MeState} from 'src/me/reducers'
 
 // API
 import {
@@ -143,12 +136,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
           return acct
         })
         setUserAccounts(updatedAccounts)
-
-        if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-          const name = accountData.name
-          const id = accountData.id.toString()
-          dispatch(setMe({name, id} as MeState))
-        }
       } catch (error) {
         dispatch(notify(accountRenameError(activeAccount.name)))
       }

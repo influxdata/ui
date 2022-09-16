@@ -120,7 +120,7 @@ export const fetchIdentity = async () => {
   if (!CLOUD) {
     return fetchLegacyIdentity()
   }
-  // if we make it to this line we are in cloud and ui unification flag is on
+
   if (isFlagEnabled('quartzIdentity')) {
     return fetchQuartzIdentity()
   }

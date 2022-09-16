@@ -28,7 +28,6 @@ import {AppState, VariableArgumentType, Variable} from 'src/types'
 
 // Utils
 import {filterUnusedVars} from 'src/shared/utils/filterUnusedVars'
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export const extractVariableEditorName = (state: AppState): string => {
   return state.variableEditor.name
@@ -211,22 +210,8 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
   }
 
   if (!vari.selected.length && vals.length) {
-    try {
+    if (Object.isExtensible(vari.selected)) {
       vari.selected.push(vals[0])
-    } catch (err) {
-      // Temporary measure to resolve errors relating to pushing into non-extensible object.
-      reportErrorThroughHoneyBadger(err, {
-        name: 'Failed to set selected variable to default, zero-indexed value',
-        context: {
-          identityState: state.identity,
-          resourceState: state.resources,
-          variable: vari,
-          variableType: vari.arguments.type,
-          normalizedVariable: vals,
-          variableLength: vari.selected.length,
-          normalizedVariableLength: vals.length,
-        },
-      })
     }
   }
 

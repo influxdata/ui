@@ -30,7 +30,6 @@ const setup = (override = {}) => {
     labels: [], // all labels
     onPinTask: jest.fn(),
     onUnpinTask: jest.fn(),
-    isPinned: false,
     org: {id: 'BUCKSINSIX', name: 'Milwaukee Bucks'},
     me: {
       id: 'FORTHECULTURE',

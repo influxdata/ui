@@ -23,8 +23,9 @@ import fluxWorkerUrl from 'worker-plugin/loader!./worker/flux.worker'
 import Fallback from 'src/languageSupport/languages/flux/lsp/worker/flux.fallback'
 import {EditorType} from 'src/types'
 
-// error notification
+// utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {event} from 'src/cloud/utils/reporting'
 
 // install Monaco language client services
 MonacoServices.install(monaco)
@@ -71,8 +72,10 @@ export function initLspWorker() {
     return
   }
   if (window.Worker) {
+    event('Used LSP worker.')
     worker = new Worker(fluxWorkerUrl)
   } else {
+    event('Used LSP fallback worker.')
     worker = new Fallback()
   }
   worker.onerror = (err: ErrorEvent) => {

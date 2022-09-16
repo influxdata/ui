@@ -32,7 +32,7 @@ import {
 import {RemoteDataState} from 'src/types'
 
 // APIs
-import {fetchLegacyIdentity} from './identity/apis/auth'
+import {fetchIdentity, fetchLegacyIdentity} from './identity/apis/auth'
 
 interface State {
   loading: RemoteDataState
@@ -96,7 +96,12 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      await fetchLegacyIdentity()
+      if (isFlagEnabled('quartzSession')) {
+        await fetchIdentity()
+      } else {
+        await fetchLegacyIdentity()
+      }
+
       this.setState({auth: true})
       const redirectIsSet = !!getFromLocalStorage('redirectTo')
       if (redirectIsSet) {

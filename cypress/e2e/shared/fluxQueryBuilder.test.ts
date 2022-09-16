@@ -187,12 +187,15 @@ describe('Script Builder', () => {
   })
 
   describe('Schema Composition', () => {
+    const DEFAULT_EDITOR_TEXT =
+      '// Start by selecting data from the schema browser or typing flux here'
+
     beforeEach(() => {
       window.sessionStorage.setItem(
         'dataExplorer.schema',
         JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
       )
-      window.sessionStorage.setItem('dataExplorer.query', '')
+      window.sessionStorage.setItem('dataExplorer.query', DEFAULT_EDITOR_TEXT)
 
       cy.setFeatureFlags({
         schemaComposition: true,
@@ -247,11 +250,7 @@ describe('Script Builder', () => {
         `|> yield(name: "_editor_composition")`
       )
       cy.getByTestID('flux-editor').within(() => {
-        cy.get('#schema-composition-sync-icon', {timeout: 3000}).should(
-          'have.length',
-          1
-        )
-        cy.get('.composition-sync').should('have.length', 2)
+        cy.get('.composition-sync--on').should('have.length', 4) // four lines
       })
     }
 
@@ -300,7 +299,7 @@ describe('Script Builder', () => {
 
         cy.log('editor text is now empty')
         cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should('have.value', '')
+          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
         })
 
         cy.log('schema browser has been cleared')
@@ -312,7 +311,7 @@ describe('Script Builder', () => {
       it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {
         cy.log('start with empty editor text')
         cy.getByTestID('flux-editor', {timeout: 30000}).within(() => {
-          cy.get('textarea.inputarea').should('have.value', '')
+          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
         })
 
         cy.log('turn off sync')
@@ -326,6 +325,7 @@ describe('Script Builder', () => {
 
         cy.log('editor text is still empty')
         cy.getByTestID('flux-editor').within(() => {
+          // selecting bucket will empty the editor text
           cy.get('textarea.inputarea').should('have.value', '')
         })
 

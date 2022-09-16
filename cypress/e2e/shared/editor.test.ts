@@ -9,6 +9,7 @@ describe('Editor+LSP communication', () => {
       cy.getByTestID(editorSelector).then(() => {
         cy.getByTestID('flux-editor', {timeout: 30000})
           .should('be.visible')
+          .monacoType('{selectall} {backspace}')
           .monacoType('foo |> bar')
           .within(() => {
             cy.get('.squiggly-error', {timeout: 30000}).should('be.visible')

@@ -1,7 +1,8 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .container-right-side-bar {
-  margin-left: $cf-space-s;
+  margin-left: $cf-space-xs;
+  padding-top: $cf-space-2xs;
   width: inherit;
   overflow-x: hidden;
   height: 100%;
@@ -10,6 +11,10 @@
 
   .flux-toolbar {
     flex-direction: column;
+  }
+
+  .flux-toolbar--search {
+    padding: 0;
   }
 }
 

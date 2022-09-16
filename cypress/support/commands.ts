@@ -1042,9 +1042,17 @@ export const makeGraphSnapshot = (() => {
 export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
   // make sure the app is loaded before dispatching
   cy.getByTestID('tree-nav')
-  return cy.window().then(win => {
+  return cy.window().then((win: any) => {
     // eslint-disable-next-line no-extra-semi
-    ;(win as any).store.dispatch(setOverrides(flags))
+    win.store.dispatch(setOverrides(flags))
+  })
+}
+
+export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
+  // use in lieu of setFeatureFlags when no left nav bar is expected.
+  return cy.window().then((win: any) => {
+    // eslint-disable-next-line no-extra-semi
+    win.store.dispatch(setOverrides(flags))
   })
 }
 
@@ -1164,5 +1172,6 @@ Cypress.Commands.add(
 )
 Cypress.Commands.add('getByTestIDAndSetInputValue', getByTestIDAndSetInputValue)
 Cypress.Commands.add('setFeatureFlags', setFeatureFlags)
+Cypress.Commands.add('setFeatureFlagsNoNav', setFeatureFlagsNoNav)
 Cypress.Commands.add('createTaskFromEmpty', createTaskFromEmpty)
 /* eslint-enable */

@@ -7,7 +7,6 @@ import classnames from 'classnames'
 // Components
 import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {Icon, IconFont} from '@influxdata/clockface'
 
 // LSP
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
@@ -18,9 +17,7 @@ import {
   submit,
 } from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
-import ConnectionManager, {
-  ICON_SYNC_ID,
-} from 'src/languageSupport/languages/flux/lsp/connection'
+import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
 
 // Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'
@@ -69,8 +66,10 @@ const FluxEditorMonaco: FC<Props> = ({
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
   const {path} = useRouteMatch()
-  const isNewQxBuilder =
-    isFluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
+  const useSchemaComposition =
+    isFluxQueryBuilder &&
+    path === '/orgs/:orgID/data-explorer' &&
+    isFlagEnabled('schemaComposition')
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
@@ -81,17 +80,14 @@ const FluxEditorMonaco: FC<Props> = ({
   }, [variables])
 
   useEffect(() => {
-    if (
-      connection.current &&
-      isNewQxBuilder &&
-      isFlagEnabled('schemaComposition')
-    ) {
+    if (connection.current && useSchemaComposition) {
       connection.current.onSchemaSessionChange(
         sessionStore.selection,
         sessionStore.setSelection
       )
     }
   }, [
+    useSchemaComposition,
     connection.current,
     sessionStore?.selection,
     sessionStore?.selection.composition || null,
@@ -160,15 +156,10 @@ const FluxEditorMonaco: FC<Props> = ({
             }}
             editorDidMount={editorDidMount}
           />
-          {isNewQxBuilder && (
-            <div id={ICON_SYNC_ID} className="sync-bar">
-              <Icon glyph={IconFont.Sync} className="sync-icon" />
-            </div>
-          )}
         </div>
       </ErrorBoundary>
     ),
-    [onChangeScript, setEditor]
+    [onChangeScript, setEditor, useSchemaComposition, script]
   )
 }
 

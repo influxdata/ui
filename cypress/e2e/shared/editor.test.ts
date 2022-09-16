@@ -9,6 +9,7 @@ describe('Editor+LSP communication', () => {
       cy.getByTestID(editorSelector).then(() => {
         cy.getByTestID('flux-editor', {timeout: 30000})
           .should('be.visible')
+          .monacoType('{selectall} {backspace}')
           .monacoType('foo |> bar')
           .within(() => {
             cy.get('.squiggly-error', {timeout: 30000}).should('be.visible')
@@ -30,6 +31,15 @@ describe('Editor+LSP communication', () => {
           .monacoType(`{selectall}{del}`)
       })
     })
+
+    it('does not have a composition block', () => {
+      cy.getByTestID(editorSelector).then(() => {
+        cy.getByTestID('flux-editor', {timeout: 30000}).within(() => {
+          cy.get('#schema-composition-sync-icon').should('have.length', 0)
+          cy.get('.composition-sync').should('have.length', 0)
+        })
+      })
+    })
   }
 
   describe('in Flows:', () => {
@@ -41,6 +51,13 @@ describe('Editor+LSP communication', () => {
           cy.visit(`${orgs}/${id}`)
         })
       )
+      // Double check that the new schemaComposition flag does not interfere.
+      cy.setFeatureFlags({
+        schemaComposition: true,
+      })
+      // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+      // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+      cy.wait(1200)
       cy.getByTestID('version-info')
       cy.getByTestID('nav-item-flows').should('be.visible')
       cy.getByTestID('nav-item-flows').click()
@@ -68,6 +85,13 @@ describe('Editor+LSP communication', () => {
           cy.getByTestID('tree-nav').should('be.visible')
         })
       })
+      // Double check that the new schemaComposition flag does not interfere.
+      cy.setFeatureFlags({
+        schemaComposition: true,
+      })
+      // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+      // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+      cy.wait(1200)
       cy.getByTestID('switch-to-script-editor').should('be.visible').click()
     })
 
@@ -83,6 +107,7 @@ describe('Editor+LSP communication', () => {
         cy.getByTestID('tree-nav').should('be.visible')
         cy.setFeatureFlags({
           newDataExplorer: true,
+          schemaComposition: false,
         }).then(() => {
           // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
           // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).

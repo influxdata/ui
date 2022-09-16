@@ -4,12 +4,14 @@ describe('Users Page', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.quartzProvision({
-            hasUsers: true,
-          }).then(() => {
-            cy.visit(`/orgs/${id}/members`)
-            cy.getByTestID('users-page--header').should('be.visible')
+        cy.setFeatureFlags({quartzIdentity: true, multiOrg: true}).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
+            cy.quartzProvision({
+              hasUsers: true,
+            }).then(() => {
+              cy.visit(`/orgs/${id}/members`)
+              cy.getByTestID('users-page--header').should('be.visible')
+            })
           })
         })
       })

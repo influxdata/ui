@@ -210,16 +210,8 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
   }
 
   if (!vari.selected.length && vals.length) {
-    try {
+    if (Object.isExtensible(vari.selected)) {
       vari.selected.push(vals[0])
-    } catch (err) {
-      // Temporary measure to resolve errors relating to pushing into non-extensible object.
-      console.error({
-        name: 'Failed to set selected variable to default, zero-indexed value',
-        error: err,
-        variable: vari,
-        variableType: vari.arguments.type,
-      })
     }
   }
 

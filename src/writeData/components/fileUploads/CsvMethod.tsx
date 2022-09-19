@@ -20,9 +20,9 @@ import {PROJECT_NAME} from 'src/flows'
 import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
+import {handleRunQuery} from 'src/writeData/apis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
-import {runQuery} from 'src/shared/apis/query'
 
 // Selectors
 import {
@@ -83,7 +83,7 @@ const CsvMethod: FC = () => {
   )
 
   const uploadCsv = useCallback(
-    async (csv: string, bucket: string) => {
+    (csv: string, bucket: string) => {
       setUploadState(RemoteDataState.Loading)
       controller.current = new AbortController()
       try {
@@ -91,26 +91,14 @@ const CsvMethod: FC = () => {
           csv.from(csv: ${JSON.stringify(csv)})
           |> to(bucket: "${bucket}")`
 
-        const resp = await runQuery(
+        handleRunQuery(
           org?.id,
           query,
           undefined,
-          controller.current
-        ).promise
-
-        if (resp.type === 'SUCCESS') {
-          setUploadState(RemoteDataState.Done)
-          return
-        }
-        if (resp.type === 'RATE_LIMIT_ERROR') {
-          setUploadState(RemoteDataState.Error)
-          setUploadError('Failed due to plan limits: read cardinality reached')
-          return
-        }
-        if (resp.type === 'UNKNOWN_ERROR') {
-          const error = getErrorMessage(resp)
-          throw new Error(error)
-        }
+          controller.current,
+          setUploadState,
+          setUploadError
+        )
       } catch (error) {
         handleError(error)
       }

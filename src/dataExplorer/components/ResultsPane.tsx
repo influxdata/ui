@@ -27,7 +27,7 @@ import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
-import NewDatePicker from 'src/shared/components/NewDatePicker'
+import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
 
 // Types
 import {TimeRange} from 'src/types'
@@ -199,14 +199,14 @@ const ResultsPane: FC = () => {
                   text ? ComponentStatus.Default : ComponentStatus.Disabled
                 }
               />
-              {/* {isFlagEnabled('newTimeRangeComponent') ? ( */}
-              <NewDatePicker />
-              {/* ) : (
+              {isFlagEnabled('newTimeRangeComponent') ? (
+                <NewDatePicker />
+              ) : (
                 <TimeRangeDropdown
                   timeRange={range}
                   onSetTimeRange={(range: TimeRange) => setRange(range)}
                 />
-              )} */}
+              )}
               <SubmitQueryButton
                 className="submit-btn"
                 text="Run"

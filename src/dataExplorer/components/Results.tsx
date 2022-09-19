@@ -24,6 +24,7 @@ import {
 import {FluxResult} from 'src/types/flows'
 
 import './Results.scss'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // simplified version migrated from src/flows/pipes/Table/view.tsx
 const QueryStat: FC = () => {
@@ -249,7 +250,9 @@ const Results: FC = () => {
             {tableHeader}
             {vizHeader}
             <div className="data-explorer-results--timezone">
-              <TimeZoneDropdown />
+              {isFlagEnabled('newTimeRangeComponent') ? null : (
+                <TimeZoneDropdown />
+              )}
               <SelectGroup style={{marginRight: 12}}>
                 <SelectGroup.Option
                   id="table"

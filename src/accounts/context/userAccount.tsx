@@ -98,10 +98,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       }
     } catch (error) {
       reportErrorThroughHoneyBadger(error, {
-        name: 'UserAccount',
-        context: {
-          message: 'error fetching user accounts',
-        },
+        name: 'failed to retrieve user account data',
       })
     }
   }, [setActiveAccountId, setDefaultAccountId])
@@ -147,9 +144,10 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       } catch (error) {
         dispatch(notify(accountRenameError(activeAccount.name)))
         reportErrorThroughHoneyBadger(error, {
-          name: 'UserAccount',
+          name: 'error renaming user account',
           context: {
-            message: 'error renaming user account',
+            accountID: activeAccount.id,
+            accountName: activeAccount.name,
           },
         })
       }

@@ -84,14 +84,14 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     try {
       const accounts = await getUserAccounts()
       setUserAccounts(accounts)
-      const defaultAcctArray = accounts.find(acct => acct.isDefault)
+      const defaultAcctArray = accounts.find(acct => acct.isDefault === true)
       if (defaultAcctArray) {
         const defaultId = defaultAcctArray[0].id
         setDefaultAccountId(defaultId)
       }
 
       // isActive: true is for the currently logged in/active account
-      const activeAcctArray = accounts.find(acct => acct.isActive)
+      const activeAcctArray = accounts.find(acct => acct.isActive === true)
       if (activeAcctArray) {
         const activeId = activeAcctArray[0].id
         setActiveAccountId(activeId)
@@ -127,7 +127,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   const handleRenameActiveAccount = useCallback(
     async (accountId, newName) => {
-      const activeAccount = userAccounts.find(acct => acct.isActive)
+      const activeAccount = userAccounts.find(acct => acct.isActive === true)
       try {
         const accountData = await updateUserAccount(accountId, newName)
         event('multiAccount.renameAccount')

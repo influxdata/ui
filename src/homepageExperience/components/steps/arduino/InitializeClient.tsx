@@ -219,7 +219,7 @@ export const InitializeClient: FC<OwnProps> = ({
         onCopy={logCopyCodeSnippet}
         language="arduino"
       />
-      <p style={{fontSize: '14px', marginTop: '8px', marginBottom: '48px'}}>
+      <p style={{marginBottom: '48px'}}>
         Note: you will need to set the{' '}
         <code className="homepage-wizard--code-highlight">WIFI_SSID</code> and{' '}
         <code className="homepage-wizard--code-highlight">WIFI_PASSWORD</code>{' '}

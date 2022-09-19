@@ -1,6 +1,5 @@
 import React, {FC, useContext} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
-import {useDispatch} from 'react-redux'
 
 // Components
 import {ResourceCard} from '@influxdata/clockface'
@@ -9,29 +8,19 @@ import {DEFAULT_PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 import {FlowListContext} from 'src/flows/context/flow.list'
 
 // Utils
-import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {CLOUD} from 'src/shared/constants'
-import {
-  pinnedItemFailure,
-  pinnedItemSuccess,
-} from 'src/shared/copy/notifications'
-import {notify} from 'src/shared/actions/notifications'
 import {shouldOpenLinkInNewTab} from 'src/utils/crossPlatform'
 import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 interface Props {
   id: string
-  isPinned: boolean
 }
 
-const FlowCard: FC<Props> = ({id, isPinned}) => {
+const FlowCard: FC<Props> = ({id}) => {
   const {update, flows} = useContext(FlowListContext)
   const flow = flows[id]
   const {orgID} = useParams<{orgID: string}>()
 
   const history = useHistory()
-  const dispatch = useDispatch()
 
   const flowUrl = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
 
@@ -43,21 +32,11 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
     }
   }
 
-  const contextMenu = (
-    <FlowContextMenu id={id} name={flow.name} isPinned={isPinned} />
-  )
+  const contextMenu = <FlowContextMenu id={id} name={flow.name} />
 
   const handleRenameNotebook = async (name: string) => {
     flow.name = name
     await update(id, flow)
-    if (isFlagEnabled('pinnedItems') && CLOUD && isPinned) {
-      try {
-        updatePinnedItemByParam(id, {name})
-        dispatch(notify(pinnedItemSuccess('notebook', 'updated')))
-      } catch (err) {
-        dispatch(notify(pinnedItemFailure(err.message, 'update')))
-      }
-    }
   }
 
   const meta = []

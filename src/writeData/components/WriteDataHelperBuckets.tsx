@@ -40,14 +40,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
 
   const filteredBuckets = buckets
     .filter(b => b.type === 'user')
-    // sort by selected and then by name
     .sort((a, b) => {
-      if (isSelected(a.id)) {
-        return -1
-      }
-      if (isSelected(b.id)) {
-        return 1
-      }
       return a.name.localeCompare(b.name)
     })
 
@@ -73,6 +66,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
         style={{height: '200px'}}
         maxHeight="200px"
         testID="buckets--list"
+        scrollToSelected={true}
       >
         {filteredBuckets.map(b => (
           <List.Item

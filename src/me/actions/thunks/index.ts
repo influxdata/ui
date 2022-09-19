@@ -4,11 +4,9 @@ import {Dispatch} from 'react'
 
 // Functions making API calls
 import {getMe as getIdpeMe} from 'src/client'
-import {getAccounts} from 'src/client/unityRoutes'
 
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {
@@ -28,23 +26,12 @@ import {fetchQuartzMe} from 'src/identity/apis/auth'
 
 export const getIdpeMeThunk = () => async (dispatch: Dispatch<Actions>) => {
   try {
-    let user
+    const resp = await getIdpeMe({})
 
-    if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
-      const resp = await getAccounts({})
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-      user = resp.data.find(account => account.isActive)
-    } else {
-      const resp = await getIdpeMe({})
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-      user = resp.data
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
     }
+    const user = resp.data
 
     updateReportingContext({userID: user.id, userEmail: user.name})
 

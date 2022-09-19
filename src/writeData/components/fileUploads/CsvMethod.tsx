@@ -83,7 +83,7 @@ const CsvMethod: FC = () => {
   )
 
   const uploadCsv = useCallback(
-    (csv: string, bucket: string) => {
+    async (csv: string, bucket: string) => {
       setUploadState(RemoteDataState.Loading)
       controller.current = new AbortController()
       try {
@@ -91,7 +91,7 @@ const CsvMethod: FC = () => {
           csv.from(csv: ${JSON.stringify(csv)})
           |> to(bucket: "${bucket}")`
 
-        handleRunQuery(
+        await handleRunQuery(
           org?.id,
           query,
           undefined,

@@ -132,7 +132,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "27.5.1",
     "jest-fetch-mock": "^3.0.3",
-    "jest-junit": "^10.0.0",
+    "jest-junit": "^14.0.1",
     "jsdom": "^18.1.0",
     "junit-viewer": "^4.11.1",
     "log-symbols": "^5.0.0",

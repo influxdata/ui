@@ -135,7 +135,7 @@ const OldCertificateInput: FC = () => {
 const CertificatePlaceholders = {
   caCert: `-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----`,
   clientCert: `-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----`,
-  clientKey: `-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----`,
+  clientKey: `-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----`,
 }
 
 interface ReplaceCertificateModalProps {

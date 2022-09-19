@@ -168,9 +168,14 @@ const FluxQueryBuilder: FC = () => {
                   />
                 )}
               </div>
-              <button className="userpilot-feedback" onClick={handleUserpilot}>
-                Provide Feedback
-              </button>
+              {isFlagEnabled('userFeedback') && (
+                <button
+                  className="userpilot-feedback"
+                  onClick={handleUserpilot}
+                >
+                  Provide Feedback
+                </button>
+              )}
             </FlexBox>
           </div>
           <DraggableResizer

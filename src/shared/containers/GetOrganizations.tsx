@@ -32,7 +32,6 @@ import {CLOUD} from 'src/shared/constants'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
-import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 import {updateReportingContext} from 'src/cloud/utils/reporting'
 
 // Types
@@ -41,13 +40,10 @@ import {PROJECT_NAME} from 'src/flows'
 import {RemoteDataState} from 'src/types'
 
 // Thunks
-import {
-  getCurrentOrgDetailsThunk,
-  getQuartzIdentityThunk,
-} from 'src/identity/actions/thunks'
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 const canAccessCheckout = (me: Me): boolean => {
-  if (!!me?.isRegionBeta) {
+  if (Boolean(me?.isRegionBeta)) {
     return false
   }
   return me?.accountType !== 'pay_as_you_go' && me?.accountType !== 'contract'
@@ -63,14 +59,6 @@ const GetOrganizations: FunctionComponent = () => {
   const {account} = identity.currentIdentity
 
   const dispatch = useDispatch()
-
-  const identityOrgId = identity.currentIdentity.org.id
-
-  useEffect(() => {
-    if (identityOrgId && shouldUseQuartzIdentity() && !quartzMe?.isRegionBeta) {
-      dispatch(getCurrentOrgDetailsThunk(identityOrgId))
-    }
-  }, [identityOrgId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // This doesn't require another API call.
   useEffect(() => {

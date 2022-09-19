@@ -107,7 +107,12 @@ function buildQueryFromConfig(
 ): string {
   const [bucket] = builderConfig.buckets
 
-  const tags = Array.from(builderConfig.tags)
+  const tags = Array.from(builderConfig.tags).filter(
+    t =>
+      t.key !== '_measurement' ||
+      t.values.length !== 1 ||
+      t.values[0] !== '_all'
+  )
 
   // todo: (bucky) - check to see if we can combine filter calls
   // https://github.com/influxdata/influxdb/issues/16076

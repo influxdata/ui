@@ -16,18 +16,9 @@ import {
   DEFAULT_EDITOR_TEXT,
 } from 'src/dataExplorer/context/persistance'
 import {TagsContext} from 'src/dataExplorer/context/tags'
-import {EditorContext} from 'src/shared/contexts/editor'
 
 // Types
 import {Bucket, TagKeyValuePair} from 'src/types'
-
-// Utils
-import {ExecuteCommand} from 'src/languageSupport/languages/flux/lsp/utils'
-import {
-  ExecuteCommandInjectMeasurement,
-  ExecuteCommandInjectTagValue,
-  ExecuteCommandInjectField,
-} from 'src/languageSupport/languages/flux/lsp/utils'
 
 const DEBOUNCE_TIMEOUT = 500
 let timer: ReturnType<typeof setTimeout>
@@ -87,7 +78,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
-  const {injectViaLsp} = useContext(EditorContext)
   const {query, setQuery, selection, setSelection} =
     useContext(PersistanceContext)
 
@@ -142,16 +132,8 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectMeasurement = (measurement: string): void => {
+    // schema composition
     setSelection({measurement, fields: [], tagValues: []})
-
-    // Inject measurement
-    injectViaLsp(ExecuteCommand.InjectionMeasurement, {
-      bucket:
-        selection.bucket.type === 'sample'
-          ? selection.bucket.id
-          : selection.bucket.name,
-      name: measurement,
-    } as ExecuteCommandInjectMeasurement)
 
     // Reset fields, tags, selected tag values
     resetFields()
@@ -173,16 +155,8 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       fields = [...selection.fields, field]
     }
 
+    // schema composition
     setSelection({fields})
-
-    // Inject field
-    injectViaLsp(ExecuteCommand.InjectField, {
-      bucket:
-        selection.bucket.type === 'sample'
-          ? selection.bucket.id
-          : selection.bucket.name,
-      name: field,
-    } as ExecuteCommandInjectField)
   }
 
   const handleSelectTagValue = (tagKey: string, tagValue: string): void => {
@@ -215,18 +189,8 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
       [tagKey]: nextStateTagValues,
     })
 
-    // Update session storage
+    // Update session storage & schema composition
     setSelection({tagValues: sessionTagValues})
-
-    // Inject tag value
-    injectViaLsp(ExecuteCommand.InjectTagValue, {
-      bucket:
-        selection.bucket.type === 'sample'
-          ? selection.bucket.id
-          : selection.bucket.name,
-      name: tagKey,
-      value: tagValue,
-    } as ExecuteCommandInjectTagValue)
   }
 
   const handleSearchTerm = useCallback(

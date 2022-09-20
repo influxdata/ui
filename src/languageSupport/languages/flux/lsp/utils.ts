@@ -74,8 +74,6 @@ export interface ExecuteCommandInjectTagValue extends ExecuteCommandInjectTag {
   value: string
 }
 
-export type ExecuteCommandInjectField = ExecuteCommandInjectMeasurement
-
 /**
  * @typedef {object} CompositionInitParams
  * @property {string} CompositionInitParams.bucket - bucket name,
@@ -111,7 +109,6 @@ export type ExecuteCommandArgument =
   | ExecuteCommandInjectMeasurement
   | ExecuteCommandInjectTag
   | ExecuteCommandInjectTagValue
-  | ExecuteCommandInjectField
   | CompositionInitParams
   | CompositionValueParams
 
@@ -125,7 +122,6 @@ export type ExecuteCommandT =
   | [ExecuteCommand.InjectionMeasurement, ExecuteCommandInjectMeasurement]
   | [ExecuteCommand.InjectTag, ExecuteCommandInjectTag]
   | [ExecuteCommand.InjectTagValue, ExecuteCommandInjectTagValue]
-  | [ExecuteCommand.InjectField, ExecuteCommandInjectField]
   | [ExecuteCommand.CompositionInit, CompositionInitParams]
   | [ExecuteCommand.CompositionAddMeasurement, CompositionValueParams]
   | [ExecuteCommand.CompositionAddField, CompositionValueParams]

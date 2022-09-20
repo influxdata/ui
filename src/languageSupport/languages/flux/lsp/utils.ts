@@ -68,12 +68,6 @@ export interface ExecuteCommandInjectMeasurement extends ExecuteCommandParams {
   bucket: string
 }
 
-export type ExecuteCommandInjectTag = ExecuteCommandInjectMeasurement
-
-export interface ExecuteCommandInjectTagValue extends ExecuteCommandInjectTag {
-  value: string
-}
-
 /**
  * @typedef {object} CompositionInitParams
  * @property {string} CompositionInitParams.bucket - bucket name,
@@ -107,8 +101,6 @@ interface CompositionTagValueParams extends CompositionValueParams {
 
 export type ExecuteCommandArgument =
   | ExecuteCommandInjectMeasurement
-  | ExecuteCommandInjectTag
-  | ExecuteCommandInjectTagValue
   | CompositionInitParams
   | CompositionValueParams
 
@@ -120,8 +112,6 @@ export type ExecuteCommandArgument =
  */
 export type ExecuteCommandT =
   | [ExecuteCommand.InjectionMeasurement, ExecuteCommandInjectMeasurement]
-  | [ExecuteCommand.InjectTag, ExecuteCommandInjectTag]
-  | [ExecuteCommand.InjectTagValue, ExecuteCommandInjectTagValue]
   | [ExecuteCommand.CompositionInit, CompositionInitParams]
   | [ExecuteCommand.CompositionAddMeasurement, CompositionValueParams]
   | [ExecuteCommand.CompositionAddField, CompositionValueParams]
@@ -144,14 +134,6 @@ function validateExecuteCommandPayload([command, arg]: ExecuteCommandT):
   switch (command) {
     case ExecuteCommand.InjectionMeasurement:
       return checkIsString(arg, 'bucket')
-    case ExecuteCommand.InjectTag:
-      return checkIsString(arg, 'bucket') && checkIsString(arg, 'name')
-    case ExecuteCommand.InjectTagValue:
-      return (
-        checkIsString(arg, 'bucket') &&
-        checkIsString(arg, 'name') &&
-        checkIsString(arg, 'value')
-      )
     case ExecuteCommand.CompositionInit:
       return checkIsString(arg, 'bucket')
     case ExecuteCommand.CompositionAddMeasurement:
@@ -216,8 +198,6 @@ export enum Methods {
  */
 export enum ExecuteCommand {
   InjectionMeasurement = 'injectMeasurementFilter',
-  InjectTag = 'injectTagFilter',
-  InjectTagValue = 'injectTagValueFilter',
   CompositionInit = 'fluxComposition/initialize',
   CompositionAddMeasurement = 'fluxComposition/addMeasurementFilter',
   CompositionAddField = 'fluxComposition/addFieldFilter',

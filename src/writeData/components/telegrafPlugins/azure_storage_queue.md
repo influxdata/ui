@@ -4,8 +4,8 @@ This plugin gathers sizes of Azure Storage Queues.
 
 ## Configuration
 
-```toml
-# Description
+```toml @sample.conf
+# Gather Azure Storage Queue metrics
 [[inputs.azure_storage_queue]]
   ## Required Azure Storage Account name
   account_name = "mystorageaccount"
@@ -25,8 +25,9 @@ This plugin gathers sizes of Azure Storage Queues.
     - account
   - fields:
     - size (integer, count)
-    - oldest_message_age_ns (integer, nanoseconds) Age of message at the head of the queue.
-      Requires `peek_oldest_message_age` to be configured to `true`.
+    - oldest_message_age_ns (integer, nanoseconds) Age of message at the head
+      of the queue. Requires `peek_oldest_message_age` to be configured
+      to `true`.
 
 ## Example Output
 

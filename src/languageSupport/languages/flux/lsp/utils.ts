@@ -145,7 +145,6 @@ function validateExecuteCommandPayload([command, arg]: ExecuteCommandT):
     case ExecuteCommand.InjectionMeasurement:
       return checkIsString(arg, 'bucket')
     case ExecuteCommand.InjectTag:
-    case ExecuteCommand.InjectField:
       return checkIsString(arg, 'bucket') && checkIsString(arg, 'name')
     case ExecuteCommand.InjectTagValue:
       return (
@@ -217,7 +216,6 @@ export enum Methods {
  */
 export enum ExecuteCommand {
   InjectionMeasurement = 'injectMeasurementFilter',
-  InjectField = 'injectFieldFilter',
   InjectTag = 'injectTagFilter',
   InjectTagValue = 'injectTagValueFilter',
   CompositionInit = 'fluxComposition/initialize',

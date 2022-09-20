@@ -57,28 +57,18 @@ class DataListening extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const {bucket} = this.props
-    if (
-      (bucket !== '<BUCKET>' && this.state.previousBucket !== bucket) ||
-      this.state.retry
-    ) {
-      // clear timer when bucket changes
-      clearInterval(this.intervalID)
-      clearInterval(this.timer)
-      this.setState({
-        timePassedInSeconds: 0,
-        secondsLeft: this.TIMEOUT_SECONDS,
-      })
-      this.startListeningForData()
-      this.setState({previousBucket: bucket, retry: false})
-    }
+    this.reinitializeListening()
   }
 
   componentDidUpdate() {
+    this.reinitializeListening()
+  }
+
+  private reinitializeListening() {
     const {bucket} = this.props
     if (
-      (bucket !== '<BUCKET>' && this.state.previousBucket !== bucket) ||
-      this.state.retry
+      this.state.retry === true ||
+      (bucket !== '<BUCKET>' && this.state.previousBucket !== bucket)
     ) {
       // clear timer when bucket changes
       clearInterval(this.intervalID)

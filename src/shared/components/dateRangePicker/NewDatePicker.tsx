@@ -1,5 +1,6 @@
 import React, {FC, useState, useContext, useEffect, useCallback} from 'react'
 import {
+  AlignItems,
   Button,
   ComponentColor,
   ComponentSize,
@@ -7,127 +8,23 @@ import {
   Dropdown,
   FlexBox,
   FlexDirection,
+  Form,
   Input,
   IconFont,
   InputLabel,
   InputType,
-  AlignItems,
-  InfluxColors,
-  Form,
+  QuestionMarkTooltip,
 } from '@influxdata/clockface'
 import ReactDatePicker from 'react-datepicker'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Utils
 import {getTimeRangeLabel} from 'src/shared/utils/duration'
-import {SELECTABLE_TIME_RANGES as REDUX_SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
+import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {useSelector} from 'react-redux'
 import {getTimeZone} from 'src/dashboards/selectors'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import {SelectableDurationTimeRange} from 'src/types'
 import {isValidDatepickerFormat} from 'src/shared/components/dateRangePicker/utils'
-
-const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
-  {
-    seconds: 60,
-    lower: 'now() - 1m',
-    upper: null,
-    label: 'Past 1 minute',
-    duration: '1m',
-    type: 'selectable-duration',
-    windowPeriod: 1000, // 1s
-  },
-  {
-    seconds: 300,
-    lower: 'now() - 5m',
-    upper: null,
-    label: 'Past 5 minutes',
-    duration: '5m',
-    type: 'selectable-duration',
-    windowPeriod: 10000, // 10s
-  },
-  {
-    seconds: 900,
-    lower: 'now() - 15m',
-    upper: null,
-    label: 'Past 15 minutes',
-    duration: '15m',
-    type: 'selectable-duration',
-    windowPeriod: 10000, // 10s
-  },
-  {
-    seconds: 3600,
-    lower: 'now() - 1h',
-    upper: null,
-    label: 'Past 1 hour',
-    duration: '1h',
-    type: 'selectable-duration',
-    windowPeriod: 10000, // 10s
-  },
-  {
-    seconds: 10800,
-    lower: 'now() - 3h',
-    upper: null,
-    label: 'Past 3 hours',
-    duration: '3h',
-    type: 'selectable-duration',
-    windowPeriod: 60000, // 1m
-  },
-  {
-    seconds: 21600,
-    lower: 'now() - 6h',
-    upper: null,
-    label: 'Past 6 hours',
-    duration: '6h',
-    type: 'selectable-duration',
-    windowPeriod: 60000, // 1m
-  },
-  {
-    seconds: 43200,
-    lower: 'now() - 12h',
-    upper: null,
-    label: 'Past 12 hours',
-    duration: '12h',
-    type: 'selectable-duration',
-    windowPeriod: 120000, // 2m
-  },
-  {
-    seconds: 86400,
-    lower: 'now() - 24h',
-    upper: null,
-    label: 'Past 24 hours',
-    duration: '24h',
-    type: 'selectable-duration',
-    windowPeriod: 240000, // 4m
-  },
-  {
-    seconds: 172800,
-    lower: 'now() - 2d',
-    upper: null,
-    label: 'Past 2 days',
-    duration: '2d',
-    type: 'selectable-duration',
-    windowPeriod: 600000, // 10m
-  },
-  {
-    seconds: 604800,
-    lower: 'now() - 7d',
-    upper: null,
-    label: 'Past 7 days',
-    duration: '7d',
-    type: 'selectable-duration',
-    windowPeriod: 1800000, // 30 min
-  },
-  {
-    seconds: 2592000,
-    lower: 'now() - 30d',
-    upper: null,
-    label: 'Past 30 days',
-    duration: '30d',
-    type: 'selectable-duration',
-    windowPeriod: 3600000, // 1h
-  },
-]
 
 const NBSP = '\u00a0\u00a0'
 
@@ -143,16 +40,13 @@ const DatePicker: FC = () => {
   const [inputEndErrorMessage, setInputEndErrorMessage] = useState(NBSP)
 
   const handleSetTimeRange = useCallback(() => {
-    /**
-     * NOTE: this is a hack to sync state between the old selectable time ranges format
-     * and the new selectable time ranges format.
-     */
     let matchingRange = range
     if (range.type === 'selectable-duration') {
       matchingRange = SELECTABLE_TIME_RANGES.find(r => {
         return r.seconds === range.seconds
       })
       setInputStartDate(`-${matchingRange.lower.split(' - ')[1]}`)
+      setInputEndDate('now()')
     }
     setTimeRange(matchingRange)
   }, [range])
@@ -171,18 +65,20 @@ const DatePicker: FC = () => {
     setInputEndDate(null)
   }
 
-  const handleClickDropdownItem = (seconds, collapse) => {
-    const selectedTimeRange = REDUX_SELECTABLE_TIME_RANGES.find(
-      t => t.seconds === seconds
-    )
+  const handleClickDropdownItem = (selectedTimeRange, collapse) => {
     resetCalendar()
     setRange(selectedTimeRange)
     collapse()
   }
 
   const validateInput = value => {
-    const durationRegExp = /^(-([0-9]+)(h|s|m|d))+$/g
-    return isValidDatepickerFormat(value) || !!value.match(durationRegExp)
+    const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
+    return (
+      isValidDatepickerFormat(value) ||
+      !!value.match(durationRegExp) ||
+      value === 'now()' ||
+      isNaN(Number(value)) === false
+    )
   }
 
   const handleSetStartDate = event => {
@@ -282,6 +178,16 @@ const DatePicker: FC = () => {
     if (inputStartDate == null && inputEndDate == null) {
       setInputStartErrorMessage('from field required')
     }
+    if (validateInput(inputStartDate) && inputEndDate == null) {
+      setRange({
+        lower: inputStartDate,
+        upper: 'now()',
+        type: 'custom',
+      })
+      resetCalendar()
+      collapse()
+      return
+    }
     // valid start date, valid end date
     if (validateInput(inputStartDate) && validateInput(inputEndDate)) {
       setRange({
@@ -289,16 +195,7 @@ const DatePicker: FC = () => {
         upper: inputEndDate,
         type: 'custom',
       })
-      collapse()
-      return
-    }
-    // valid start date with no end date
-    if (validateInput(inputStartDate) && inputEndDate == null) {
-      setRange({
-        lower: inputStartDate,
-        upper: null,
-        type: 'custom',
-      })
+      resetCalendar()
       collapse()
       return
     }
@@ -339,12 +236,9 @@ const DatePicker: FC = () => {
       menu={onCollapse => (
         <Dropdown.Menu
           style={{
-            background: '#f1f1f31a',
             width: isDatePickerOpen ? 669 : 400,
-            position: 'absolute',
-            right: 0,
-            padding: '0 8px 0 0',
           }}
+          className="date-picker--menu"
           maxHeight={367}
         >
           <FlexBox
@@ -353,19 +247,12 @@ const DatePicker: FC = () => {
           >
             {isDatePickerOpen && (
               <Dropdown.Item
-                className="react-datepicker-ignore-onclickoutside"
+                className="react-datepicker-ignore-onclickoutside date-picker--calendar-dropdown"
                 selected={false}
-                style={{
-                  background: 'transparent',
-                  borderRight: '2px solid rgba(255,255,255,.2)',
-                  display: 'flex',
-                  alignItems: 'stretch',
-                  padding: 8,
-                }}
               >
                 <div className="date-picker__select-date-picker range-picker--date-pickers">
                   <InputLabel className="date-picker--label__calendar">
-                    Date Picker
+                    Calendar
                   </InputLabel>
                   <ReactDatePicker
                     calendarClassName="range-picker--calendar"
@@ -385,18 +272,26 @@ const DatePicker: FC = () => {
               </Dropdown.Item>
             )}
             <Dropdown.Item
+              className="date-picker--calendar-dropdown"
               selected={false}
-              style={{
-                borderRight: '2px solid rgba(255,255,255,.2)',
-                display: 'flex',
-                alignItems: 'stretch',
-                background: 'transparent',
-                padding: 8,
-              }}
             >
               <div className="date-picker__select-time-range">
                 <InputLabel className="date-picker--label">
                   Select time range
+                  <QuestionMarkTooltip
+                    className="date-picker--question-mark"
+                    diameter={18}
+                    color={ComponentColor.Primary}
+                    tooltipContents={
+                      <>
+                        Use a relative duration (now(), -1h, -5m),{'\n'}
+                        absolute time (2022-08-28 14:26:00),{'\n'}
+                        or integer (Unix timestamp in seconds,{'\n'}
+                        like 1567029600).&nbsp;
+                      </>
+                    }
+                    tooltipStyle={{maxWidth: 285}}
+                  />
                 </InputLabel>
                 <Form.Element
                   label="From"
@@ -415,15 +310,10 @@ const DatePicker: FC = () => {
                     value={inputStartDate}
                   >
                     <Button
+                      className="date-picker--calendar-icon"
                       onClick={handleOpenCalendar}
                       icon={IconFont.Calendar}
                       size={ComponentSize.Small}
-                      style={{
-                        background: InfluxColors.Grey35,
-                        top: 2,
-                        right: 1,
-                        borderRadius: '0 !important',
-                      }}
                     />
                   </Input>
                 </Form.Element>
@@ -440,15 +330,10 @@ const DatePicker: FC = () => {
                     value={inputEndDate}
                   >
                     <Button
+                      className="date-picker--calendar-icon"
                       onClick={handleOpenCalendar}
                       icon={IconFont.Calendar}
                       size={ComponentSize.Small}
-                      style={{
-                        background: InfluxColors.Grey35,
-                        top: 2,
-                        right: 1,
-                        borderRadius: '0 !important',
-                      }}
                     />
                   </Input>
                 </Form.Element>
@@ -493,9 +378,7 @@ const DatePicker: FC = () => {
                     testID={`dropdown-item-${testID}`}
                     selected={label === timeRangeLabel}
                     style={{width: 135}}
-                    onClick={() =>
-                      handleClickDropdownItem(range.seconds, onCollapse)
-                    }
+                    onClick={() => handleClickDropdownItem(range, onCollapse)}
                   >
                     {label}
                   </Dropdown.Item>

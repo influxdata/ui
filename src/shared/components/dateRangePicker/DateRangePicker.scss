@@ -292,6 +292,7 @@
 
 .date-picker--label__options {
   margin-bottom: $ix-marg-a;
+  margin-top: $ix-marg-b;
 }
 
 .date-picker--label__timezone {
@@ -301,4 +302,34 @@
 .date-picker--label__calendar {
   align-self: flex-start;
   margin-bottom: $ix-marg-b;
+  margin-top: $ix-marg-a;
+}
+
+.cf-dropdown-menu.date-picker--menu {
+  background: #f1f1f31a;
+  position: absolute;
+  right: 0;
+  padding: 0 8px 0 0;
+}
+
+.cf-dropdown-menu--contents {
+  .date-picker--calendar-dropdown,
+  .date-picker--calendar-dropdown:hover {
+    background-color: transparent !important;
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: stretch;
+    padding: 8px;
+  }
+}
+
+.cf-button-sm.cf-button-default.cf-button.date-picker--calendar-icon {
+  background: $cf-grey-35;
+  top: 1px;
+  right: 1px;
+  border-radius: 0;
+}
+
+.date-picker--question-mark {
+  margin-left: $ix-marg-b;
 }

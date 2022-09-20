@@ -13,7 +13,7 @@ import {
   continuouslyCheckForData,
   TIMEOUT_MILLISECONDS,
 } from 'src/shared/utils/dataListening'
-import {DEFAULT_BUCKET} from '../../writeData/components/WriteDataDetailsContext'
+import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 
 interface OwnProps {
   bucket: string

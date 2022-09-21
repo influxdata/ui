@@ -243,7 +243,7 @@ const checkNoneSelected = (form: Subscription): boolean =>
 const checkBasicSelected = (form: Subscription): boolean =>
   form.authType === BrokerAuthTypes.User &&
   !!form.brokerUsername &&
-  !!form.brokerPassword
+  (!!form.id || !!form.brokerPassword) // only require a password when a subscription is being created, not edited.
 
 const checkCertificateSelected = (form: Subscription): boolean =>
   form.authType === BrokerAuthTypes.Certificate &&

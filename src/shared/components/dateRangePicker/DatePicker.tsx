@@ -28,6 +28,7 @@ import {
   isValidStrictly,
 } from 'src/utils/datetime/validator'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
+import {isValidDatepickerFormat} from 'src/shared/components/dateRangePicker/utils'
 
 interface Props {
   label: string
@@ -42,16 +43,6 @@ interface Props {
 interface State {
   inputValue: string
   inputFormat: string
-}
-
-const isValidDatepickerFormat = (d: string): boolean => {
-  return (
-    isValidStrictly(d, 'YYYY-MM-DD HH:mm') ||
-    isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss') ||
-    isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss.sss') ||
-    isValidStrictly(d, 'YYYY-MM-DD') ||
-    isISODate(d)
-  )
 }
 
 const getFormat = (d: string): string => {

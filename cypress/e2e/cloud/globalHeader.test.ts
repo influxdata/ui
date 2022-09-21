@@ -118,7 +118,6 @@ describe('change-account change-org global header', () => {
 
       it('navigates to the org members page', () => {
         makeQuartzUseIDPEOrgID()
-        makeQuartzUseIDPEOrgID()
         cy.getByTestID('globalheader--org-dropdown')
           .should('be.visible')
           .click()
@@ -243,6 +242,12 @@ describe('change-account change-org global header', () => {
   })
 
   describe('user profile avatar', {scrollBehavior: false}, () => {
+    before(() => {
+      makeQuartzUseIDPEOrgID()
+      cy.setFeatureFlags(globalHeaderFeatureFlags)
+      cy.visit('/')
+    })
+
     it('navigates to the `user profile` page', () => {
       makeQuartzUseIDPEOrgID()
       cy.getByTestID('global-header--user-avatar').should('be.visible').click()

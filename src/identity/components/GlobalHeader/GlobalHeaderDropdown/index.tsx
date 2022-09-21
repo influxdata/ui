@@ -1,5 +1,6 @@
 // Libraries
 import React, {MouseEvent} from 'react'
+import {Link} from 'react-router-dom'
 
 // Components
 import {
@@ -112,7 +113,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     this.setState({showTypeAheadMenu: !showTypeAheadMenu})
   }
 
-  private renderMainMenuOptions = () => {
+  private renderMainMenuOptions = (onCollapse: VoidFunction) => {
     const {mainMenuOptions} = this.props
     return (
       <div>
@@ -126,15 +127,21 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
               onClick={this.sendMainMenuEvent(menuItem.name)}
               key={`eventWrapper.${menuItem.name}`}
             >
-              <Dropdown.HrefItem
-                className="global-header--align-center"
+              <Dropdown.LinkItem
+                className="global-header--main-dropdown-item"
                 key={menuItem.name}
-                href={menuItem.href}
                 testID={`${this.props.mainMenuTestID}-${menuItem.name}`}
+                selected={false}
               >
-                {iconEl}
-                {textEl}
-              </Dropdown.HrefItem>
+                <Link
+                  to={menuItem.href}
+                  className="global-header--main-dropdown-item-link"
+                  onClick={onCollapse}
+                >
+                  {iconEl}
+                  {textEl}
+                </Link>
+              </Dropdown.LinkItem>
             </div>
           )
         })}
@@ -164,7 +171,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     )
   }
 
-  private renderMenu = () => {
+  private renderMenu = (onCollapse: VoidFunction) => {
     const {
       dropdownMenuStyle,
       dropdownMenuTheme = DropdownMenuTheme.None,
@@ -216,7 +223,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         )}
         {showTypeAheadMenu
           ? this.renderTypeAheadMenu()
-          : this.renderMainMenuOptions()}
+          : this.renderMainMenuOptions(onCollapse)}
       </Dropdown.Menu>
     )
   }
@@ -230,7 +237,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         {...dropdownProps}
         button={this.dropdownButton}
         disableAutoFocus
-        menu={this.renderMenu}
+        menu={onCollapse => this.renderMenu(onCollapse)}
         testID={this.props.testID}
       />
     )

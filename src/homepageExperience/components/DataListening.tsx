@@ -7,12 +7,13 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import ConnectionInformation, {
   LoadingState,
 } from 'src/shared/components/DataListening/ConnectionInformation'
-import {Button} from '@influxdata/clockface'
+import {Button, FlexBox, JustifyContent} from '@influxdata/clockface'
 
 import {
   continuouslyCheckForData,
   TIMEOUT_MILLISECONDS,
 } from 'src/shared/utils/dataListening'
+import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 
 interface OwnProps {
   bucket: string
@@ -55,11 +56,19 @@ class DataListening extends PureComponent<Props, State> {
     })
   }
 
+  componentDidMount() {
+    this.reinitializeListening()
+  }
+
   componentDidUpdate() {
+    this.reinitializeListening()
+  }
+
+  private reinitializeListening() {
     const {bucket} = this.props
     if (
-      (bucket !== '<BUCKET>' && this.state.previousBucket !== bucket) ||
-      this.state.retry
+      this.state.retry === true ||
+      (bucket !== '<BUCKET>' && this.state.previousBucket !== bucket)
     ) {
       // clear timer when bucket changes
       clearInterval(this.intervalID)
@@ -78,6 +87,16 @@ class DataListening extends PureComponent<Props, State> {
   }
 
   public render() {
+    if (
+      this.props.bucket === 'sample-bucket' ||
+      this.props.bucket === DEFAULT_BUCKET
+    ) {
+      return (
+        <FlexBox justifyContent={JustifyContent.Center}>
+          <h4>Please select a bucket to listen to</h4>
+        </FlexBox>
+      )
+    }
     return (
       <div className="wizard-step--body-streaming" data-testid="streaming">
         {this.connectionInfo}

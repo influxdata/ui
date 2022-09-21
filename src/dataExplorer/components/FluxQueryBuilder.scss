@@ -28,6 +28,11 @@
   padding: $cf-space-xs 0;
   border-top: 2px solid $cf-grey-15;
   border-bottom: 2px solid $cf-grey-15;
+
+  .userpilot-feedback {
+    color: $c-pool;
+    cursor: pointer;
+  }
 }
 
 .flux-query-builder__action-button {

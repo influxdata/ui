@@ -32,7 +32,6 @@ import MenuButton from 'src/flows/components/header/MenuButton'
 import {getNotebooksShare, postNotebooksShare} from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {serialize} from 'src/flows/context/flow.list'
-import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
 import {showOverlay} from 'src/overlays/actions/overlays'
 
@@ -86,11 +85,6 @@ const FlowHeader: FC = () => {
 
   const handleRename = (name: string) => {
     updateOther({name})
-    try {
-      updatePinnedItemByParam(flow.id, {name})
-    } catch (err) {
-      console.error(err)
-    }
   }
 
   const generateLink = async () => {

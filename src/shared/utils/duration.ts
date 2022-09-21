@@ -164,6 +164,7 @@ export const getTimeRangeLabel = (
   timeZone?: TimeZone,
   singleDirection?: TimeRangeDirection
 ): string => {
+  const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)/g
   if (timeRange.type === 'selectable-duration') {
     return timeRange.label
   }
@@ -172,13 +173,19 @@ export const getTimeRangeLabel = (
   }
   if (timeRange.type === 'custom') {
     const formatter = createDateTimeFormatter(TIME_RANGE_FORMAT, timeZone)
-    const lower = formatter.format(new Date(timeRange.lower))
-    const upper = formatter.format(new Date(timeRange.upper))
+    let lower = timeRange.lower
+    let upper = timeRange.upper
+    if (!lower?.match(durationRegExp) && lower !== 'now()') {
+      lower = formatter.format(new Date(timeRange.lower))
+    }
+    if (!upper?.match(durationRegExp) && upper !== 'now()') {
+      upper = formatter.format(new Date(timeRange.upper))
+    }
     if (singleDirection === TimeRangeDirection.Upper) {
       return upper
     } else if (singleDirection === TimeRangeDirection.Lower) {
       return lower
     }
-    return `${lower} - ${upper}`
+    return `${lower} to ${upper}`
   }
 }

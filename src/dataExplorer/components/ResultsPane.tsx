@@ -27,6 +27,7 @@ import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
+import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
 
 // Types
 import {TimeRange} from 'src/types'
@@ -40,6 +41,7 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
@@ -49,6 +51,7 @@ const fakeNotify = notify
 
 const rangeToParam = (timeRange: TimeRange) => {
   let timeRangeStart: string, timeRangeStop: string
+  const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
 
   if (!timeRange) {
     timeRangeStart = timeRangeStop = null
@@ -57,6 +60,10 @@ const rangeToParam = (timeRange: TimeRange) => {
       timeRangeStart = '-' + timeRange.duration
     } else if (timeRange.type === 'duration') {
       timeRangeStart = '-' + timeRange.lower
+    } else if (!isNaN(Number(timeRange.lower)) || timeRange.lower === 'now()') {
+      timeRangeStart = timeRange.lower
+    } else if (!!timeRange?.lower?.match(durationRegExp)) {
+      timeRangeStart = timeRange.lower
     } else if (isNaN(Date.parse(timeRange.lower))) {
       timeRangeStart = null
     } else {
@@ -65,6 +72,10 @@ const rangeToParam = (timeRange: TimeRange) => {
 
     if (!timeRange.upper) {
       timeRangeStop = 'now()'
+    } else if (!isNaN(Number(timeRange.upper)) || timeRange.upper === 'now()') {
+      timeRangeStop = timeRange.upper
+    } else if (!!timeRange?.upper?.match(durationRegExp)) {
+      timeRangeStop = timeRange.upper
     } else if (isNaN(Date.parse(timeRange.upper))) {
       timeRangeStop = null
     } else {
@@ -197,10 +208,14 @@ const ResultsPane: FC = () => {
                   text ? ComponentStatus.Default : ComponentStatus.Disabled
                 }
               />
-              <TimeRangeDropdown
-                timeRange={range}
-                onSetTimeRange={(range: TimeRange) => setRange(range)}
-              />
+              {isFlagEnabled('newTimeRangeComponent') ? (
+                <NewDatePicker />
+              ) : (
+                <TimeRangeDropdown
+                  timeRange={range}
+                  onSetTimeRange={(range: TimeRange) => setRange(range)}
+                />
+              )}
               <SubmitQueryButton
                 className="submit-btn"
                 text="Run"

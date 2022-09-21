@@ -20,11 +20,14 @@ export const convertIdentityToMe = (
     accountType: account.type,
     paygCreditStartDate: account.paygCreditStartDate,
     billingProvider: account.billingProvider ? account.billingProvider : null,
+    // isRegionBeta in quartz/me has the opposite value of isUpgradeable.
+    isRegionBeta: account.isUpgradeable
+      ? !Boolean(account.isUpgradeable)
+      : true,
 
     // Organization Data
     clusterHost: org.clusterHost,
     regionCode: org.regionCode ? org.regionCode : null,
-    isRegionBeta: org.isRegionBeta ? org.isRegionBeta : null,
     regionName: org.regionName ? org.regionName : null,
   }
 }

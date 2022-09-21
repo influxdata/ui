@@ -99,6 +99,12 @@ button.upgrade-payg--button {
   margin: $cf-marg-c;
 }
 
+@media (max-width: 668px) {
+  .credit-250-experiment-upgrade-button--text {
+    display: none;
+  }
+}
+
 @media screen and (min-width: $cf-nav-menu--breakpoint) {
   .rate-alert {
     margin-left: $cf-space-l;

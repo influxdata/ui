@@ -33,6 +33,7 @@ const inputPluginsList = [
   'cloud_pubsub',
   'cloud_pubsub_push',
   'cloudwatch',
+  'cloudwatch_metric_streams',
   'conntrack',
   'consul',
   'consul_agent',
@@ -92,7 +93,8 @@ const inputPluginsList = [
   'ipvs',
   'jenkins',
   'jolokia',
-  'jolokia2',
+  'jolokia2_agent',
+  'jolokia2_proxy',
   'jti_openconfig_telemetry',
   'kafka_consumer',
   'kafka_consumer_legacy',
@@ -106,6 +108,7 @@ const inputPluginsList = [
   'kubernetes',
   'lanz',
   'leofs',
+  'linux_cpu',
   'linux_sysctl_fs',
   'logparser',
   'logstash',
@@ -181,6 +184,7 @@ const inputPluginsList = [
   'salesforce',
   'sensors',
   'sflow',
+  'slab',
   'smart',
   'snmp',
   'snmp_legacy',
@@ -192,6 +196,7 @@ const inputPluginsList = [
   'sqlserver',
   'stackdriver',
   'statsd',
+  'supervisor',
   'suricata',
   'swap',
   'synproxy',
@@ -209,6 +214,7 @@ const inputPluginsList = [
   'twemproxy',
   'udp_listener',
   'unbound',
+  'upsd',
   'uwsgi',
   'varnish',
   'vault',
@@ -231,11 +237,7 @@ const inputPluginsList = [
     - already included in another plugin, or
     - deprecated
 */
-const inputPluginsExceptions = [
-  'jolokia2_agent',
-  'jolokia2_proxy',
-  'http_listener',
-]
+const inputPluginsExceptions = ['http_listener']
 
 const formatConfigurationText = configurationText => {
   const configurationLines = configurationText.split('\n')
@@ -619,8 +621,9 @@ getVersion.then(version => {
     }
     console.log(
       logSymbols.success + ' \x1b[32m%s\x1b[0m',
-      `${updateStatuses.length -
-        failedStatuses.length} README files were successfully checked`
+      `${
+        updateStatuses.length - failedStatuses.length
+      } README files were successfully checked`
     )
     console.log(
       failedStatuses.length

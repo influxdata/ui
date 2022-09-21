@@ -60,19 +60,6 @@ jest.mock('src/languageSupport/languages/flux/parser', () => ({
   format_from_js_file: jest.fn(),
 }))
 
-jest.mock('src/shared/contexts/pinneditems', () => ({
-  getPinnedItems: jest.fn(() =>
-    Promise.resolve({
-      json: () => Promise.resolve([]),
-    })
-  ),
-  PinnedItemTypes: {Task: 'task'},
-  addPinnedItem: jest.fn(() => {
-    return new Promise(resolve => resolve())
-  }),
-  deletePinnedItemByParam: jest.fn(() => Promise.resolve()),
-}))
-
 jest.mock('src/client', () => ({
   getTasks: jest.fn(() => {
     return {

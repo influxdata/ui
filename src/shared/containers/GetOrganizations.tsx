@@ -20,7 +20,7 @@ import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
 import {getAllOrgs} from 'src/resources/selectors'
-import {getMe, getQuartzMe, getQuartzMeStatus} from 'src/me/selectors'
+import {getMe} from 'src/me/selectors'
 import {
   selectQuartzIdentity,
   selectQuartzIdentityStatus,
@@ -35,108 +35,95 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 import {updateReportingContext} from 'src/cloud/utils/reporting'
 
 // Types
-import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
 import {RemoteDataState} from 'src/types'
 
 // Thunks
 import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
-const canAccessCheckout = (me: Me): boolean => {
-  if (Boolean(me?.isRegionBeta)) {
+const canAccessCheckout = (account): boolean => {
+  if (!account.isUpgradeable) {
     return false
   }
-  return me?.accountType !== 'pay_as_you_go' && me?.accountType !== 'contract'
+  return account.type !== 'pay_as_you_go' && account.type !== 'contract'
 }
 
 const GetOrganizations: FunctionComponent = () => {
-  const {status, org} = useSelector(getAllOrgs)
+  const {status: orgLoadingStatus, org} = useSelector(getAllOrgs)
   const identity = useSelector(selectQuartzIdentity)
-  const quartzMeStatus = useSelector(getQuartzMeStatus)
-  const quartzMe = useSelector(getQuartzMe)
-  const quartzIdentityStatus = useSelector(selectQuartzIdentityStatus)
+  const {account, user, org: currentOrg} = identity.currentIdentity
+  const identityStatus = useSelector(selectQuartzIdentityStatus)
   const {id: meId = '', name: email = ''} = useSelector(getMe)
-  const {account} = identity.currentIdentity
 
   const dispatch = useDispatch()
 
   // This doesn't require another API call.
   useEffect(() => {
-    if (status === RemoteDataState.NotStarted) {
+    if (orgLoadingStatus === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
     }
-  }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (
       CLOUD &&
-      email &&
-      org?.id &&
-      account?.id &&
-      account?.name &&
+      user.email &&
+      currentOrg.id &&
+      account.id &&
+      account.name &&
       isFlagEnabled('rudderstackReporting')
     ) {
       identify(meId, {
-        email,
-        orgID: org.id,
+        email: user.email,
+        orgID: currentOrg.id,
         accountID: account.id,
         accountName: account.name,
       })
     }
-  }, [meId, email, org?.id, account?.id, account?.name])
+  }, [meId, user.email, currentOrg.id, account.id, account.name])
 
   useEffect(() => {
-    if (
-      CLOUD &&
-      quartzMeStatus === RemoteDataState.NotStarted &&
-      quartzIdentityStatus === RemoteDataState.NotStarted
-    ) {
+    if (CLOUD && identityStatus === RemoteDataState.NotStarted) {
       dispatch(getQuartzIdentityThunk())
     }
-  }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, identityStatus])
 
   // This doesn't require another API call.
   useEffect(() => {
     if (
       isFlagEnabled('credit250Experiment') &&
-      quartzMeStatus === RemoteDataState.Done &&
-      status === RemoteDataState.Done
+      orgLoadingStatus === RemoteDataState.Done
     ) {
-      const {
-        accountType: account_type,
-        accountCreatedAt: account_created_at = '',
-      } = quartzMe
       const orgId = org?.id ?? ''
       window.dataLayer = window.dataLayer ?? []
       window.dataLayer.push({
         identity: {
-          account_type,
-          account_created_at: convertStringToEpoch(account_created_at),
+          account_type: account.type,
+          account_created_at: convertStringToEpoch(account.accountCreatedAt),
           id: meId,
           email,
           organization_id: orgId,
         },
       })
     }
-  }, [quartzMeStatus, status]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const isRegionBeta = quartzMe?.isRegionBeta ?? false
-  const accountType = quartzMe?.accountType ?? 'free'
+  }, [identityStatus, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (CLOUD) {
       updateReportingContext({
-        'org (hide_upgrade_cta)': `${accountType === 'free' && !isRegionBeta}`,
-        'org (account_type)': accountType,
+        'org (hide_upgrade_cta)': `${
+          account.type === 'free' && account.isUpgradeable
+        }`,
+        'org (account_type)': account.type,
       })
     }
-  }, [accountType, isRegionBeta])
+  }, [account.type, account.isUpgradeable])
 
   return (
-    <PageSpinner loading={status}>
+    <PageSpinner loading={orgLoadingStatus}>
       <Suspense fallback={<PageSpinner />}>
         {CLOUD ? (
-          <PageSpinner loading={quartzMeStatus}>
+          <PageSpinner loading={identityStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />
               <Route
@@ -145,10 +132,10 @@ const GetOrganizations: FunctionComponent = () => {
               />
               <Route path="/orgs" component={App} />
               <Route exact path="/" component={RouteToOrg} />
-              {CLOUD && canAccessCheckout(quartzMe) && (
+              {CLOUD && canAccessCheckout(account) && (
                 <Route path="/checkout" component={CheckoutPage} />
               )}
-              {CLOUD && quartzMe?.isOperator && (
+              {CLOUD && user.operatorRole && (
                 <Route path="/operator" component={OperatorPage} />
               )}
               <Route component={NotFound} />

@@ -183,7 +183,7 @@
     "honeybadger-js": "^1.0.2",
     "html2canvas": "^1.4.1",
     "immer": "^9.0.15",
-    "intersection-observer": "^0.7.0",
+    "intersection-observer": "^0.12.2",
     "jsonlint-mod": "^1.7.5",
     "jsonpath": "^1.1.1",
     "jspdf": "2.5.1",

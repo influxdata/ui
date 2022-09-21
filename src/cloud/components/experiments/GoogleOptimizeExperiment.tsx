@@ -36,7 +36,7 @@ export const GoogleOptimizeExperiment: FC<Props> = ({
       getExperimentVariantId(experimentID, activationEvent)
     )
 
-    if (variantID) {
+    if (org && me && variantID) {
       event(
         'optimize.user_variant',
         {},
@@ -48,7 +48,7 @@ export const GoogleOptimizeExperiment: FC<Props> = ({
         }
       )
     }
-  })
+  }, [org, me])
 
   if (variantID) {
     return [original, ...variants][variantID] || original

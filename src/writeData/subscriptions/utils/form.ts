@@ -258,8 +258,8 @@ const checkCreatingCertificate = (form: Subscription): boolean =>
 export const checkSecurityFields = (form: Subscription): boolean =>
   checkNoneSelected(form) ||
   checkBasicSelected(form) ||
-  (!checkCreatingCertificate(form) ||
-  checkCertificateRequiredFields(form))
+  !checkCreatingCertificate(form) ||
+  checkCertificateRequiredFields(form)
 
 export const checkRequiredStringFields = (form: Subscription): boolean => {
   if (form.dataFormat !== 'string') {

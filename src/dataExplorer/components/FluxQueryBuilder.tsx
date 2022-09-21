@@ -81,6 +81,12 @@ const FluxQueryBuilder: FC = () => {
     }
   }
 
+  const handleUserpilot = () => {
+    if (window.userpilot) {
+      window.userpilot.trigger('1663269889fDfn2554')
+    }
+  }
+
   return (
     <EditorProvider>
       <SidebarProvider>
@@ -124,38 +130,53 @@ const FluxQueryBuilder: FC = () => {
             className="flux-query-builder--menu"
             data-testid="flux-query-builder--menu"
           >
-            <Button
-              onClick={handleNewScript}
-              text={isFlagEnabled('saveAsScript') ? 'New Script' : 'Clear'}
-              icon={IconFont.Plus_New}
-              status={
-                query.length === 0
-                  ? ComponentStatus.Disabled
-                  : ComponentStatus.Default
-              }
-              testID="flux-query-builder--new-script"
-            />
-            {isFlagEnabled('saveAsScript') && (
-              <Button
-                className="flux-query-builder__action-button"
-                onClick={() => setOverlayType(OverlayType.OPEN)}
-                text="Open"
-                icon={IconFont.Export_New}
-              />
-            )}
-            {isFlagEnabled('saveAsScript') && (
-              <Button
-                className="flux-query-builder__action-button"
-                onClick={() => setOverlayType(OverlayType.SAVE)}
-                status={
-                  hasChanged
-                    ? ComponentStatus.Default
-                    : ComponentStatus.Disabled
-                }
-                text="Save"
-                icon={IconFont.Save}
-              />
-            )}
+            <FlexBox
+              direction={FlexDirection.Row}
+              justifyContent={JustifyContent.SpaceBetween}
+            >
+              <div>
+                <Button
+                  onClick={handleNewScript}
+                  text={isFlagEnabled('saveAsScript') ? 'New Script' : 'Clear'}
+                  icon={IconFont.Plus_New}
+                  status={
+                    query.length === 0
+                      ? ComponentStatus.Disabled
+                      : ComponentStatus.Default
+                  }
+                  testID="flux-query-builder--new-script"
+                />
+                {isFlagEnabled('saveAsScript') && (
+                  <Button
+                    className="flux-query-builder__action-button"
+                    onClick={() => setOverlayType(OverlayType.OPEN)}
+                    text="Open"
+                    icon={IconFont.Export_New}
+                  />
+                )}
+                {isFlagEnabled('saveAsScript') && (
+                  <Button
+                    className="flux-query-builder__action-button"
+                    onClick={() => setOverlayType(OverlayType.SAVE)}
+                    status={
+                      hasChanged
+                        ? ComponentStatus.Default
+                        : ComponentStatus.Disabled
+                    }
+                    text="Save"
+                    icon={IconFont.Save}
+                  />
+                )}
+              </div>
+              {isFlagEnabled('userFeedback') && (
+                <button
+                  className="userpilot-feedback"
+                  onClick={handleUserpilot}
+                >
+                  Provide Feedback
+                </button>
+              )}
+            </FlexBox>
           </div>
           <DraggableResizer
             handleOrientation={Orientation.Vertical}

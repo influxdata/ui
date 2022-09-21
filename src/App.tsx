@@ -51,7 +51,7 @@ const App: FC = () => {
   const currentPage = useSelector((state: AppState) => state.currentPage)
 
   // eslint-disable-next-line no-console
-  console.log("ENV VAR TEST", process.env.TEST_VAR, process.env)
+  console.log('ENV VAR TEST', process.env.TEST_VAR, process.env)
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
     'multi-org': isFlagEnabled('multiOrg'),

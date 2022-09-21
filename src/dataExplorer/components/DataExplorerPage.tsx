@@ -88,7 +88,7 @@ const DataExplorerPageHeader: FC = () => {
     >
       {pageTitle}
       <FlexBox margin={ComponentSize.Large}>
-        <FeatureFlag name="newDataExplorer">
+        {(isFlagEnabled('newDataExplorer') || fluxQueryBuilder) && (
           <FlexBox margin={ComponentSize.Medium}>
             <InputLabel>&#10024; Preview New Script Editor</InputLabel>
             <SlideToggle
@@ -97,7 +97,7 @@ const DataExplorerPageHeader: FC = () => {
               testID="flux-query-builder-toggle"
             />
           </FlexBox>
-        </FeatureFlag>
+        )}
         {!isFlagEnabled('multiOrg') && (
           <RateLimitAlert location="data explorer" />
         )}

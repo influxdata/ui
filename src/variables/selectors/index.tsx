@@ -204,7 +204,7 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
   // Now validate that the selected value makes sense for
   // the current situation
   const vals = normalizeValues(vari)
-  // we need to deep clone, the object from immer is shallow copied, and it throws errors when trying to push to it
+
   vari = cloneDeep(vari)
 
   if (!vari.selected) {

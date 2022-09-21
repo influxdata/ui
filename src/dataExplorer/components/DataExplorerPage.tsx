@@ -61,9 +61,11 @@ const DataExplorerPageHeader: FC = () => {
     })
   }
 
+  const showNewExplorer = fluxQueryBuilder && isFlagEnabled('newDataExplorer')
+
   let pageTitle = <Page.Title title="Data Explorer" />
 
-  if (fluxQueryBuilder && resource?.data?.hasOwnProperty('name')) {
+  if (showNewExplorer && resource?.data?.hasOwnProperty('name')) {
     if (resource?.data?.type === ResourceType.Scripts) {
       pageTitle = <Page.Title title={resource?.data?.name ?? ''} />
     } else {
@@ -82,13 +84,13 @@ const DataExplorerPageHeader: FC = () => {
     <Page.Header
       fullWidth={true}
       className={`${
-        fluxQueryBuilder ? 'flux-query-builder' : 'data-explorer'
+        showNewExplorer ? 'flux-query-builder' : 'data-explorer'
       }--header`}
       testID="data-explorer--header"
     >
       {pageTitle}
       <FlexBox margin={ComponentSize.Large}>
-        {(isFlagEnabled('newDataExplorer') || fluxQueryBuilder) && (
+        {isFlagEnabled('newDataExplorer') && (
           <FlexBox margin={ComponentSize.Medium}>
             <InputLabel>&#10024; Preview New Script Editor</InputLabel>
             <SlideToggle
@@ -110,6 +112,7 @@ const DataExplorerPage: FC = () => {
   const {flowsCTA, fluxQueryBuilder, setFlowsCTA} =
     useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
+  const showNewExplorer = fluxQueryBuilder && isFlagEnabled('newDataExplorer')
 
   const hideFlowsCTA = () => {
     setFlowsCTA({explorer: false})
@@ -169,7 +172,7 @@ const DataExplorerPage: FC = () => {
             </div>
           </FeatureFlag>
         )}
-        {!fluxQueryBuilder && (
+        {!showNewExplorer && (
           <Page.ControlBar fullWidth={true}>
             <Page.ControlBarLeft>
               <ViewTypeDropdown />
@@ -182,8 +185,8 @@ const DataExplorerPage: FC = () => {
           </Page.ControlBar>
         )}
         <Page.Contents fullWidth={true} scrollable={false}>
-          {!fluxQueryBuilder && <DataExplorer />}
-          {fluxQueryBuilder && <FluxQueryBuilder />}
+          {!showNewExplorer && <DataExplorer />}
+          {showNewExplorer && <FluxQueryBuilder />}
         </Page.Contents>
       </GetResources>
     </Page>

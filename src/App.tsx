@@ -39,7 +39,6 @@ import {AppState} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 import {executeVWO} from 'src/utils/vwo'
 
 // Styles
@@ -122,9 +121,7 @@ const App: FC = () => {
       <TreeNav />
       <Suspense fallback={<PageSpinner />}>
         <Page>
-          {CLOUD && isFlagEnabled('multiOrg') && shouldUseQuartzIdentity() && (
-            <GlobalHeaderContainer />
-          )}
+          {CLOUD && isFlagEnabled('multiOrg') && <GlobalHeaderContainer />}
           <Switch>
             <Route path="/orgs/new" component={CreateOrgOverlay} />
             <Route path="/orgs/:orgID" component={SetOrg} />

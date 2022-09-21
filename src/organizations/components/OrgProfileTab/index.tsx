@@ -17,7 +17,6 @@ import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
 
 // Utils
 import {CLOUD} from 'src/shared/constants'
-import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 // Selectors
 import {getMe} from 'src/me/selectors'
@@ -40,7 +39,7 @@ const OrgProfileTab: FC = () => {
   const identityOrgId = identity.currentIdentity.org.id
 
   useEffect(() => {
-    if (identityOrgId && shouldUseQuartzIdentity()) {
+    if (identityOrgId && CLOUD) {
       if (
         !me.quartzMe.regionCode ||
         !me.quartzMe.regionName ||

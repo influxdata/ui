@@ -181,7 +181,7 @@
     "fix-date": "^1.1.6",
     "history": "^4.7.2",
     "honeybadger-js": "^1.0.2",
-    "html2canvas": "^1.3.2",
+    "html2canvas": "^1.4.1",
     "immer": "^9.0.15",
     "intersection-observer": "^0.7.0",
     "jsonlint-mod": "^1.7.5",

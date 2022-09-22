@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, ReactNode} from 'react'
 import ReactMarkdown from 'react-markdown'
-import remarkExternalLinks from 'remark-external-links'
+import rehypeExternalLinks from 'rehype-external-links'
 
 import {CLOUD, MARKDOWN_UNSUPPORTED_IMAGE} from 'src/shared/constants/index'
 
@@ -34,7 +34,7 @@ const allowedImageRenderer: FC<ImageProps> = ({src, alt}) => {
   )
 }
 
-const remarkPlugins = [remarkExternalLinks]
+const rehypePlugins = [rehypeExternalLinks]
 
 export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
   // don't parse images in cloud environments to prevent arbitrary script execution via images
@@ -44,7 +44,7 @@ export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
         className={className}
         components={{img: disallowedImageRenderer}}
         linkTarget="_blank"
-        remarkPlugins={remarkPlugins}
+        rehypePlugins={rehypePlugins}
       >
         {text}
       </ReactMarkdown>

@@ -21,7 +21,6 @@ import {getOrg as fetchOrg} from 'src/organizations/apis'
 // Utils
 import {buildDeepLinkingMap} from 'src/utils/deepLinks'
 import {event} from 'src/cloud/utils/reporting'
-import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 // Components
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
@@ -140,7 +139,7 @@ const NotFound: FC = () => {
 
   const handleDeepLink = useCallback(async () => {
     if (!org.current) {
-      if (shouldUseQuartzIdentity()) {
+      if (CLOUD) {
         try {
           setIsFetchingOrg(true)
           const defaultQuartzOrg = await getDefaultAccountDefaultOrg()

@@ -22,21 +22,12 @@ import {
   fetchOrgDetails,
 } from 'src/identity/apis/auth'
 import {convertIdentityToMe} from 'src/identity/utils/convertIdentityToMe'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Thunks
-import {getQuartzMeThunk} from 'src/me/actions/thunks'
 
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export const getQuartzIdentityThunk =
   () => async (dispatch: Dispatch<any>, getState: GetState) => {
-    if (!isFlagEnabled('quartzIdentity')) {
-      dispatch(getQuartzMeThunk())
-      return
-    }
-
     try {
       dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
 

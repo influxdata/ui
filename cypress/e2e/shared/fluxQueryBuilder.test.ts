@@ -28,6 +28,7 @@ describe('Script Builder', () => {
               )
             }
             cy.writeData(writeData, 'defbuck')
+            cy.writeData(writeData, 'defbuck2')
             cy.wait(100)
             cy.getByTestID('flux-query-builder-toggle').then($toggle => {
               cy.wrap($toggle).should('be.visible')
@@ -277,6 +278,15 @@ describe('Script Builder', () => {
 
         cy.log('toggle is now disabled')
         cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
+
+        cy.log('can still browse schema while diverged')
+        cy.getByTestID('bucket-selector--dropdown-button').click()
+        cy.getByTestID('bucket-selector--search-bar').type('defbuck2')
+        cy.getByTestID(`bucket-selector--dropdown--defbuck2`).click()
+        cy.getByTestID('bucket-selector--dropdown-button').should(
+          'contain',
+          'defbuck2'
+        )
       })
 
       it('should clear the editor text, and schema browser, with a new script', () => {

@@ -132,7 +132,8 @@ export const PersistanceProvider: FC = ({children}) => {
 
   const setSchemaSelection = useCallback(
     schema => {
-      if (selection.composition?.diverged && schema.composition.synced) {
+      if (selection.composition?.diverged && schema.composition?.synced) {
+        // cannot re-sync if diverged
         return
       }
       const nextState: SchemaSelection = {

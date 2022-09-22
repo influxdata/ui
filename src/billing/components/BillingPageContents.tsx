@@ -15,7 +15,6 @@ import {getQuartzMe} from 'src/me/selectors'
 
 // Thunks
 import {getBillingProviderThunk} from 'src/identity/actions/thunks'
-import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 const BillingPageContents: FC = () => {
   const dispatch = useDispatch()
@@ -26,7 +25,7 @@ const BillingPageContents: FC = () => {
       return
     }
 
-    if (shouldUseQuartzIdentity() && !quartzMe.billingProvider) {
+    if (!quartzMe.billingProvider) {
       dispatch(getBillingProviderThunk())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

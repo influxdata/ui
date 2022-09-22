@@ -4,7 +4,6 @@ import {
   getAccounts,
   getAccountsOrgs,
   getIdentity,
-  getMe as getMeQuartz,
   getOrg,
   putAccountsDefault,
   putAccountsOrgsDefault,
@@ -12,7 +11,6 @@ import {
   Identity,
   IdentityAccount,
   IdentityUser,
-  Me as MeQuartz,
   Organization,
   OrganizationSummaries,
   UserAccount,
@@ -24,9 +22,6 @@ import {
   Error as IdpeError,
   UserResponse as UserResponseIdpe,
 } from 'src/client'
-
-// Feature Flag Check
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -121,11 +116,7 @@ export const fetchIdentity = async () => {
     return fetchLegacyIdentity()
   }
 
-  if (isFlagEnabled('quartzIdentity')) {
-    return fetchQuartzIdentity()
-  }
-
-  return fetchQuartzMe()
+  return fetchQuartzIdentity()
 }
 
 // fetch user identity from /quartz/identity.
@@ -134,26 +125,6 @@ export const fetchQuartzIdentity = async (): Promise<Identity> => {
 
   if (response.status === 401) {
     throw new UnauthorizedError(response.data.message)
-  }
-
-  if (response.status === 500) {
-    throw new ServerError(response.data.message)
-  }
-
-  const user = response.data
-  return user
-}
-
-// fetch user identity from /quartz/me.
-export const fetchQuartzMe = async (): Promise<MeQuartz> => {
-  const response = await getMeQuartz({})
-
-  if (response.status === 401) {
-    throw new UnauthorizedError(response.data.message)
-  }
-
-  if (response.status === 404) {
-    throw new NotFoundError(response.data.message)
   }
 
   if (response.status === 500) {

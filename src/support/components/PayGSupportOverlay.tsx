@@ -26,13 +26,10 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Selectors
-import {getOrg} from 'src/organizations/selectors'
-import {getQuartzMe} from 'src/me/selectors'
 import {selectQuartzIdentity} from 'src/identity/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {shouldUseQuartzIdentity} from 'src/identity/utils/shouldUseQuartzIdentity'
 
 // API
 import {createSfdcSupportCase} from 'src/shared/apis/sfdc'
@@ -68,9 +65,6 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   const quartzIdentity = useSelector(selectQuartzIdentity)
   const {user: identityUser, org: identityOrg} = quartzIdentity.currentIdentity
 
-  const quartzMe = useSelector(getQuartzMe)
-  const quartzOrg = useSelector(getOrg)
-
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('3 - Standard')
   const [description, setDescription] = useState('')
@@ -100,20 +94,10 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   }
 
   const handleSubmit = async () => {
-    let userID: string, userEmail: string, orgName: string, orgID: string
-
-    if (shouldUseQuartzIdentity()) {
-      userID = identityUser.id
-      userEmail = identityUser.email
-      orgName = identityOrg.name
-      orgID = identityOrg.id
-    } else {
-      // Optional chaining operator needed because quartzMe's initial reducer state is null.
-      userID = quartzMe?.id
-      userEmail = quartzMe?.email
-      orgName = quartzOrg?.name
-      orgID = quartzOrg?.id
-    }
+    const userID = identityUser.id
+    const userEmail = identityUser.email
+    const orgName = identityOrg.name
+    const orgID = identityOrg.id
 
     const descriptionWithOrgId = `${description} \n\n [Org Name: ${orgName}] [Org Id: ${orgID}]`
     const translatedSeverity = translateSeverityLevelForSfdc(severity)

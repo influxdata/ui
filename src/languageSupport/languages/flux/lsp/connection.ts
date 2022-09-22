@@ -144,11 +144,25 @@ class LspConnectionManager {
       return false
     }
     const {startLine, endLine} = compositionBlock
-    return (
+
+    const changeInBlock =
       change.range.startLineNumber >= startLine &&
-      (change.range.endLineNumber <= endLine ||
-        change.text.includes(COMPOSITION_YIELD))
-    )
+      change.range.endLineNumber <= endLine
+
+    const changeWithCompositionIdentifier =
+      change.text.includes(COMPOSITION_YIELD)
+
+    const isDeletion = change.text == ''
+    let deletionFromBlock = false
+    if (isDeletion) {
+      const linesDeleted =
+        change.range.endLineNumber - change.range.startLineNumber
+      deletionFromBlock =
+        change.range.startLineNumber >= startLine &&
+        change.range.endLineNumber <= endLine + linesDeleted
+    }
+
+    return changeInBlock || changeWithCompositionIdentifier || deletionFromBlock
   }
 
   _setEditorIrreversibleExit() {

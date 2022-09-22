@@ -109,7 +109,6 @@ class BucketsTab extends PureComponent<Props, State> {
   public render() {
     const {buckets, limitStatus} = this.props
     const {searchTerm, sortKey, sortDirection, sortType} = this.state
-
     const leftHeaderItems = (
       <>
         <SearchWidget
@@ -145,7 +144,8 @@ class BucketsTab extends PureComponent<Props, State> {
           const adjustedHeight =
             height -
             heightWithPagination -
-            (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 0)
+            (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 60) -
+            (limitStatus === 'exceeded' ? 100 : 0)
 
           return (
             <>

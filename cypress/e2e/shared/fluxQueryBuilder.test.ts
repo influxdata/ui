@@ -12,23 +12,22 @@ const DEFAULT_SCHEMA = {
 }
 
 describe('Script Builder', () => {
+  const writeData: string[] = []
+  for (let i = 0; i < 30; i++) {
+    writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
+  }
+
   beforeEach(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get('@org').then(({id, name}: Organization) => {
           cy.visit(`/orgs/${id}/data-explorer`)
           cy.getByTestID('tree-nav').should('be.visible')
           cy.setFeatureFlags({
             newDataExplorer: true,
           }).then(() => {
-            const writeData = []
-            for (let i = 0; i < 30; i++) {
-              writeData.push(
-                `ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`
-              )
-            }
+            cy.createBucket(id, name, 'defbuck2')
             cy.writeData(writeData, 'defbuck')
-            cy.writeData(writeData, 'defbuck2')
             cy.wait(100)
             cy.getByTestID('flux-query-builder-toggle').then($toggle => {
               cy.wrap($toggle).should('be.visible')
@@ -192,6 +191,8 @@ describe('Script Builder', () => {
       '// Start by selecting data from the schema browser or typing flux here'
 
     beforeEach(() => {
+      cy.writeData(writeData, 'defbuck2')
+
       window.sessionStorage.setItem(
         'dataExplorer.schema',
         JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
@@ -281,7 +282,6 @@ describe('Script Builder', () => {
 
         cy.log('can still browse schema while diverged')
         cy.getByTestID('bucket-selector--dropdown-button').click()
-        cy.getByTestID('bucket-selector--search-bar').type('defbuck2')
         cy.getByTestID(`bucket-selector--dropdown--defbuck2`).click()
         cy.getByTestID('bucket-selector--dropdown-button').should(
           'contain',

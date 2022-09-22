@@ -113,17 +113,16 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   let overlayTitle = 'Save Script'
 
   if (type !== OverlayType.SAVE) {
-    overlayTitle = 'Do you want to save your Script first?'
+    if (resource?.data?.id && hasChanged) {
+      overlayTitle = 'Do you want to save your changes first?'
+    } else {
+      overlayTitle = 'Do you want to save your script first?'
+    }
   }
 
   if (!hasChanged && type === OverlayType.OPEN) {
     return <OpenScript onCancel={handleClose} onClose={onClose} />
   }
-
-  const displayWarning =
-    (type === OverlayType.NEW && !resource?.data?.name) ||
-    (type === OverlayType.OPEN && !resource?.data?.name) ||
-    (type === OverlayType.OPEN && hasChanged && resource?.data?.id)
 
   let saveText = 'Save'
 
@@ -142,15 +141,9 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   }
 
   return (
-    <Overlay.Container maxWidth={500}>
+    <Overlay.Container maxWidth={540}>
       <Overlay.Header title={overlayTitle} onDismiss={handleClose} />
       <Overlay.Body>
-        {displayWarning && (
-          <div className="save-script-overlay__warning-text">
-            "{resource?.data?.name ?? 'Untitled Script'}" will be overwritten by
-            a new one if you don’t save it.
-          </div>
-        )}
         <Form>
           <InputLabel>Save as</InputLabel>
           <Input

@@ -200,6 +200,7 @@ describe('Script Builder', () => {
       cy.setFeatureFlags({
         schemaComposition: true,
         saveAsScript: true,
+        newDataExplorer: true,
       }).then(() => {
         // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
         // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).

@@ -1429,10 +1429,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@influxdata/clockface@^6.3.5":
-  version "6.3.5"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-6.3.5.tgz#052a7b6022fc8800d65b98576b2d3cade1d3b3e9"
-  integrity sha512-ronbXnqhv00YHiQvHTLWMAy6fduaugv8XPiZveUYWQKhtWDN8OLVjNrdLlN6cyI1jR3v0tRV/G63I0G8/UstPg==
+"@influxdata/clockface@^6.3.6":
+  version "6.3.6"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-6.3.6.tgz#11f38e694190f303ecce1217f3474c5c73802ecc"
+  integrity sha512-kBZKNMSKdY8BvYFY0Usu/TSnfd+KWK4Wgy83SAd3np27TrXOiCW+ey1s0VEIZd0CF3bsErxY8yGm8voqH/Zu5Q==
   dependencies:
     "@types/react-window" "^1.8.5"
     react-window "^1.8.7"

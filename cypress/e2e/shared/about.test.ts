@@ -21,7 +21,7 @@ describe('About Page', () => {
     })
 
     cy.getByTestID('organization-profile--panel').within(() => {
-      cy.getByTestID('rename-org--button').click()
+      cy.getByTestID('rename-org--button').should('exist').click()
     })
 
     cy.getByTestID('danger-confirmation--button').click()

@@ -1,16 +1,3 @@
-import {
-  ProtocolRequestType,
-  ProtocolNotificationType,
-} from 'vscode-languageserver-protocol'
-
-export const makeRequestType = (method: string) => {
-  return new ProtocolRequestType<any, any, any, any, any>(method)
-}
-
-export const makeNotificationType = (method: string) => {
-  return new ProtocolNotificationType<any, any>(method)
-}
-
 const JSONRPC = '2.0',
   FLUXLANGID = 'flux'
 

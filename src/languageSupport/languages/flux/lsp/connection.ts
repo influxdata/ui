@@ -41,11 +41,11 @@ const findLastIndex = (arr, fn) =>
     .filter(([i, val]) => fn(val, i, arr))
     .pop() || [-1])[0]
 
-class LspConnectionManager {
-  private _worker: Worker
+export class LspConnectionManager {
   private _editor: EditorType
   private _model: MonacoTypes.editor.IModel
   private _snapshot: MonacoTypes.editor.ITextSnapshot
+  // We use a prelude file to provide all the runtime provided variables to the lsp.
   private _preludeModel: MonacoTypes.editor.IModel
   private _variables: Variable[] = []
   private _compositionStyle: string[] = []
@@ -59,10 +59,7 @@ class LspConnectionManager {
   // only add handlers on first page load.
   private _compositionHandlersSet = false
 
-  constructor(worker: Worker) {
-    this._worker = worker
-    // note: LSP handle multiple documents, but does so in alphabetical order
-    // create this model/uri first
+  constructor(private worker: Worker) {
     this._preludeModel = monaco.editor.createModel('', 'flux-prelude')
   }
 
@@ -70,6 +67,13 @@ class LspConnectionManager {
     this._variables = variables
     const previousValue = this._preludeModel.getValue()
 
+    if (this._model == undefined) {
+      // XXX: rockstar (22 Sep 2022) - The lsp isn't ready yet. The initialization hasn't
+      // occurred. This shouldn't be called yet, but the untangling of these dependencies
+      // is more entailed than can be contained in one patch. This check ensures that the
+      // lack of a model doesn't prevent the lsp from recovering and working again.
+      return
+    }
     try {
       const file = buildUsedVarsOption(this._model.getValue(), variables)
       const query = format_from_js_file(file)
@@ -77,7 +81,7 @@ class LspConnectionManager {
       this._preludeModel.setValue(query)
       if (query != previousValue) {
         this._preludeModel.setValue(query)
-        this._worker.postMessage(
+        this.worker.postMessage(
           didChange(
             this._preludeModel.uri.toString(),
             query,
@@ -95,7 +99,7 @@ class LspConnectionManager {
     this._model = editor.getModel()
 
     this._model.onDidChangeContent(() => this.updatePreludeModel())
-    this._worker.postMessage(
+    this.worker.postMessage(
       didOpen(
         this._preludeModel.uri.toString(),
         this._preludeModel.getValue(),
@@ -124,7 +128,7 @@ class LspConnectionManager {
       })
       return
     }
-    this._worker.postMessage(msg)
+    this.worker.postMessage(msg)
   }
 
   _getCompositionBlockLines(query) {
@@ -507,5 +511,3 @@ class LspConnectionManager {
     this._model.onDidChangeContent(null)
   }
 }
-
-export default LspConnectionManager

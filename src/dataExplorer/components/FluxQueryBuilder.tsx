@@ -151,7 +151,7 @@ const FluxQueryBuilder: FC = () => {
                     className="flux-query-builder__action-button"
                     onClick={() => setOverlayType(OverlayType.OPEN)}
                     text="Open"
-                    icon={IconFont.Export_New}
+                    icon={IconFont.FolderOpen}
                   />
                 )}
                 {isFlagEnabled('saveAsScript') && (
@@ -164,7 +164,7 @@ const FluxQueryBuilder: FC = () => {
                         : ComponentStatus.Disabled
                     }
                     text="Save"
-                    icon={IconFont.Save}
+                    icon={IconFont.SaveOutline}
                   />
                 )}
               </div>

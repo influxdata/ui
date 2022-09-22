@@ -50,7 +50,9 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
   const {query: queryAPI} = useContext(QueryContext)
 
   // States
-  const [fields, setFields] = useState<Array<string>>(INITIAL_FIELDS)
+  const [fields, setFields] = useState<Array<string>>(
+    JSON.parse(JSON.stringify(INITIAL_FIELDS))
+  )
   const [loading, setLoading] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -121,7 +123,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
   }
 
   const resetFields = () => {
-    setFields(INITIAL_FIELDS)
+    setFields(JSON.parse(JSON.stringify(INITIAL_FIELDS)))
     setLoading(RemoteDataState.NotStarted)
   }
 

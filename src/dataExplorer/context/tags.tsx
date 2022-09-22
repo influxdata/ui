@@ -61,7 +61,9 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
   const {query: queryAPI} = useContext(QueryContext)
 
   // States
-  const [tags, setTags] = useState<Tags>(INITIAL_TAGS)
+  const [tags, setTags] = useState<Tags>(
+    JSON.parse(JSON.stringify(INITIAL_TAGS))
+  )
   const [loadingTagKeys, setLoadingTagKeys] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -222,7 +224,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
   }
 
   const resetTags = () => {
-    setTags(INITIAL_TAGS)
+    setTags(JSON.parse(JSON.stringify(INITIAL_TAGS)))
     setLoadingTagKeys(RemoteDataState.NotStarted)
     setLoadingTagValues(INITIAL_LOADING_TAG_VALUES)
   }

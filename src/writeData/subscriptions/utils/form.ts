@@ -237,7 +237,7 @@ const checkNoneSelected = (form: Subscription): boolean =>
   !form.brokerUsername &&
   !form.brokerPassword &&
   !form.brokerCACert &&
-  !form.brokerCACert &&
+  !form.brokerClientCert &&
   !form.brokerClientKey
 
 const checkBasicSelected = (form: Subscription): boolean =>
@@ -245,16 +245,21 @@ const checkBasicSelected = (form: Subscription): boolean =>
   !!form.brokerUsername &&
   (!!form.id || !!form.brokerPassword) // only require a password when a subscription is being created, not edited.
 
-const checkCertificateSelected = (form: Subscription): boolean =>
+const checkCertificateRequiredFields = (form: Subscription): boolean =>
   form.authType === BrokerAuthTypes.Certificate &&
   !!form.brokerCACert &&
+  // you either need to provide both or neither
   ((!!form.brokerClientCert && !!form.brokerClientKey) ||
     (!form.brokerClientCert && !form.brokerClientKey))
+
+const checkCreatingCertificate = (form: Subscription): boolean =>
+  form.authType === BrokerAuthTypes.Certificate && !form.brokerCertCreationDate
 
 export const checkSecurityFields = (form: Subscription): boolean =>
   checkNoneSelected(form) ||
   checkBasicSelected(form) ||
-  checkCertificateSelected(form)
+  !checkCreatingCertificate(form) ||
+  checkCertificateRequiredFields(form)
 
 export const checkRequiredStringFields = (form: Subscription): boolean => {
   if (form.dataFormat !== 'string') {

@@ -21,7 +21,7 @@ import {CLOUD} from 'src/shared/constants'
 // Selectors
 import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
-import {selectQuartzIdentity} from 'src/identity/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Thunks
 import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
@@ -32,7 +32,8 @@ import 'src/organizations/components/OrgProfileTab/style.scss'
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
-  const identity = useSelector(selectQuartzIdentity)
+  const currentIdentity = useSelector(selectCurrentIdentity)
+  const {org: quartzOrg} = currentIdentity
 
   const dispatch = useDispatch()
 
@@ -40,22 +41,16 @@ const OrgProfileTab: FC = () => {
 
   useEffect(() => {
     if (identityOrgId && CLOUD) {
-      if (
-        !me.quartzMe.regionCode ||
-        !me.quartzMe.regionName ||
-        !identity.currentIdentity.org.provider
-      ) {
+      if (quartzOrg.regionCode || quartzOrg.regionName || quartzOrg.provider) {
         dispatch(getCurrentOrgDetailsThunk(identityOrgId))
       }
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const hasSomeQuartzOrgData =
-    identity.currentIdentity.org?.provider ||
-    me.quartzMe?.regionCode ||
-    me.quartzMe?.regionName
+  const hasIdentityData =
+    quartzOrg.provider || quartzOrg.regionCode || quartzOrg.regionName
 
-  const orgProviderExists = !!identity.currentIdentity.org?.provider
+  const orgProviderExists = !!quartzOrg.provider
 
   const OrgProfile = () => (
     <FlexBox.Child
@@ -69,7 +64,7 @@ const OrgProfileTab: FC = () => {
         src={org.name}
         isRenameableOrg={true}
       />
-      {CLOUD && hasSomeQuartzOrgData && (
+      {CLOUD && hasIdentityData && (
         <>
           <FlexBox
             direction={FlexDirection.Row}
@@ -79,23 +74,20 @@ const OrgProfileTab: FC = () => {
             style={orgProviderExists ? {width: '85%'} : {width: '48%'}}
           >
             {orgProviderExists && (
-              <LabeledData
-                label="Cloud Provider"
-                src={identity.currentIdentity.org.provider}
-              />
+              <LabeledData label="Cloud Provider" src={quartzOrg.provider} />
             )}
-            {me.quartzMe?.regionCode && (
-              <LabeledData label="Region" src={me.quartzMe.regionCode} />
+            {quartzOrg.regionCode && (
+              <LabeledData label="Region" src={quartzOrg.regionCode} />
             )}
-            {me.quartzMe?.regionName && (
-              <LabeledData label="Location" src={me.quartzMe.regionName} />
+            {quartzOrg.regionName && (
+              <LabeledData label="Location" src={quartzOrg.regionName} />
             )}
           </FlexBox>
-          {CLOUD && me.quartzMe?.clusterHost && (
+          {CLOUD && quartzOrg.clusterHost && (
             <CopyableLabeledData
               id="clusterUrl"
               label="Cluster URL (Host Name)"
-              src={me.quartzMe.clusterHost}
+              src={quartzOrg.clusterHost}
             />
           )}
         </>

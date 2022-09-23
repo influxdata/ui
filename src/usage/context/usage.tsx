@@ -17,13 +17,15 @@ import {PAYG_CREDIT_DAYS} from 'src/shared/constants'
 import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {MILLISECONDS_IN_ONE_DAY} from 'src/utils/datetime/constants'
 
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
+
 // Types
 import {
   RemoteDataState,
   SelectableDurationTimeRange,
   UsageVector,
 } from 'src/types'
-import {getMe} from 'src/me/selectors'
 
 export type Props = {
   children: JSX.Element
@@ -109,9 +111,11 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [timeRange, setTimeRange] = useState<SelectableDurationTimeRange>(
     DEFAULT_USAGE_TIME_RANGE
   )
-  const {quartzMe} = useSelector(getMe)
 
-  const paygCreditStartDate = quartzMe?.paygCreditStartDate ?? ''
+  const currentIdentity = useSelector(selectCurrentIdentity)
+  const {account} = currentIdentity
+
+  const paygCreditStartDate = account.paygCreditStartDate ?? ''
 
   const creditDaysUsed = useMemo(
     () => calculateCreditDaysUsed(paygCreditStartDate),

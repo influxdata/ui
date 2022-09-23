@@ -19,13 +19,14 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
-import {getQuartzMe} from 'src/me/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 import {NotificationButtonElement} from 'src/types'
 
 import 'src/organizations/components/OrgProfileTab/style.scss'
 
 const DeletePanel: FC = () => {
-  const quartzMe = useSelector(getQuartzMe)
+  const currentIdentity = useSelector(selectCurrentIdentity)
+  const {user, account} = currentIdentity
   const org = useSelector(getOrg)
   const history = useHistory()
   const {status, users} = useContext(UsersContext)
@@ -34,8 +35,8 @@ const DeletePanel: FC = () => {
   const handleShowDeleteOverlay = () => {
     const payload = {
       org: org.id,
-      tier: quartzMe?.accountType,
-      email: quartzMe?.email,
+      tier: account.type,
+      email: user.email,
     }
     event('DeleteOrgInitiation Event', payload)
 
@@ -61,7 +62,7 @@ const DeletePanel: FC = () => {
   return (
     <PageSpinner loading={status}>
       <>
-        {CLOUD && quartzMe?.accountType === 'free' && (
+        {CLOUD && account.type === 'free' && (
           <>
             <FlexBox.Child>
               <h4>Delete Organization</h4>

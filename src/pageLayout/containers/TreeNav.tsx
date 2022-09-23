@@ -35,7 +35,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 const TreeSidebar: FC<ReduxProps> = ({
   showOverlay,
   dismissOverlay,
-  quartzMe,
+  identity,
 }) => {
   const {presentationMode, navbarMode, setNavbarMode} =
     useContext(AppSettingContext)
@@ -77,7 +77,7 @@ const TreeSidebar: FC<ReduxProps> = ({
     evt: MouseEvent<HTMLAnchorElement>
   ): void => {
     evt.preventDefault()
-    const accountType = quartzMe?.accountType ?? 'free'
+    const accountType = identity.account.type ?? 'free'
     const isPayGCustomer = accountType !== 'free'
 
     if (isPayGCustomer) {
@@ -263,7 +263,7 @@ const TreeSidebar: FC<ReduxProps> = ({
 }
 
 const mstp = (state: AppState) => {
-  return {quartzMe: state.me.quartzMe}
+  return {identity: state.identity.currentIdentity}
 }
 
 const mdtp = {

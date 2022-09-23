@@ -4,17 +4,18 @@ import {useSelector} from 'react-redux'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 
-import {getMe} from 'src/me/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.goWizard.initializeClient.code.copied')
 }
 
 export const InitializeClient = () => {
-  const me = useSelector(getMe)
+  const currentIdentity = useSelector(selectCurrentIdentity)
+  const {org} = currentIdentity
 
   const url =
-    me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
+    org.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
 
   const codeSnippet = `package main
 

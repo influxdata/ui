@@ -5,7 +5,7 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 
 import {getOrg} from 'src/organizations/selectors'
-import {getMe} from 'src/me/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.initializeClient.code.copied')
@@ -13,10 +13,11 @@ const logCopyCodeSnippet = () => {
 
 export const InitializeClient = () => {
   const org = useSelector(getOrg)
-  const me = useSelector(getMe)
+  const currentIdentity = useSelector(selectCurrentIdentity)
+  const {org: quartzOrg} = currentIdentity
 
   const url =
-    me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
+    quartzOrg.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
 
   const pythonCode = `import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision

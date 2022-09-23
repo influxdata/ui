@@ -36,7 +36,7 @@ export interface NavItem {
 export const generateNavItems = (): NavItem[] => {
   const state: AppState = getStore().getState()
   const orgID = state?.resources?.orgs?.org?.id ?? ''
-  const quartzMe = state?.me?.quartzMe ?? null
+  const identity = state?.identity.currentIdentity ?? null
 
   const orgPrefix = `/orgs/${orgID}`
 
@@ -194,7 +194,10 @@ export const generateNavItems = (): NavItem[] => {
     },
     {
       id: 'operator',
-      enabled: () => CLOUD && quartzMe?.isOperator === true,
+      enabled: () =>
+        CLOUD &&
+        (identity.user.operatorRole === 'read-write' ||
+          identity.user.operatorRole === 'read-only'),
       testID: 'nav-item--operator',
       icon: IconFont.Shield,
       label: 'Operator',

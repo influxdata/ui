@@ -63,19 +63,6 @@ interface ExecuteCommandParams {
   }
 }
 
-export interface ExecuteCommandInjectMeasurement extends ExecuteCommandParams {
-  name: string
-  bucket: string
-}
-
-export type ExecuteCommandInjectTag = ExecuteCommandInjectMeasurement
-
-export interface ExecuteCommandInjectTagValue extends ExecuteCommandInjectTag {
-  value: string
-}
-
-export type ExecuteCommandInjectField = ExecuteCommandInjectMeasurement
-
 /**
  * @typedef {object} CompositionInitParams
  * @property {string} CompositionInitParams.bucket - bucket name,
@@ -108,10 +95,6 @@ interface CompositionTagValueParams extends CompositionValueParams {
 }
 
 export type ExecuteCommandArgument =
-  | ExecuteCommandInjectMeasurement
-  | ExecuteCommandInjectTag
-  | ExecuteCommandInjectTagValue
-  | ExecuteCommandInjectField
   | CompositionInitParams
   | CompositionValueParams
 
@@ -122,10 +105,6 @@ export type ExecuteCommandArgument =
  *     https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#executeCommandParams
  */
 export type ExecuteCommandT =
-  | [ExecuteCommand.InjectionMeasurement, ExecuteCommandInjectMeasurement]
-  | [ExecuteCommand.InjectTag, ExecuteCommandInjectTag]
-  | [ExecuteCommand.InjectTagValue, ExecuteCommandInjectTagValue]
-  | [ExecuteCommand.InjectField, ExecuteCommandInjectField]
   | [ExecuteCommand.CompositionInit, CompositionInitParams]
   | [ExecuteCommand.CompositionAddMeasurement, CompositionValueParams]
   | [ExecuteCommand.CompositionAddField, CompositionValueParams]
@@ -146,17 +125,6 @@ function validateExecuteCommandPayload([command, arg]: ExecuteCommandT):
   }
 
   switch (command) {
-    case ExecuteCommand.InjectionMeasurement:
-      return checkIsString(arg, 'bucket')
-    case ExecuteCommand.InjectTag:
-    case ExecuteCommand.InjectField:
-      return checkIsString(arg, 'bucket') && checkIsString(arg, 'name')
-    case ExecuteCommand.InjectTagValue:
-      return (
-        checkIsString(arg, 'bucket') &&
-        checkIsString(arg, 'name') &&
-        checkIsString(arg, 'value')
-      )
     case ExecuteCommand.CompositionInit:
       return checkIsString(arg, 'bucket')
     case ExecuteCommand.CompositionAddMeasurement:
@@ -220,10 +188,6 @@ export enum Methods {
  *         * https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_executeCommand
  */
 export enum ExecuteCommand {
-  InjectionMeasurement = 'injectMeasurementFilter',
-  InjectField = 'injectFieldFilter',
-  InjectTag = 'injectTagFilter',
-  InjectTagValue = 'injectTagValueFilter',
   CompositionInit = 'fluxComposition/initialize',
   CompositionAddMeasurement = 'fluxComposition/addMeasurementFilter',
   CompositionAddField = 'fluxComposition/addFieldFilter',

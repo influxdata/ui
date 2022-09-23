@@ -58,8 +58,7 @@ export const InitializeClient: FC<OwnProps> = ({
 
   const allPermissionTypes = useSelector(getAllTokensResources)
   const dispatch = useDispatch()
-  const url =
-    quartzOrg.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
+  const url = quartzOrg.clusterHost || window.location.origin
   const currentAuth = useSelector((state: AppState) => {
     return state.resources.tokens.currentAuth.item
   })

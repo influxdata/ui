@@ -14,22 +14,21 @@ export const InitializeClient = () => {
   const currentIdentity = useSelector(selectCurrentIdentity)
   const {org} = currentIdentity
 
-  const url =
-    org.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
+  const url = org.clusterHost || window.location.origin
 
   const codeSnippet = `package main
 
 import (
-	"os"
+  "os"
 
-	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
-	"github.com/influxdata/influxdb-client-go/v2/api/write"
+  influxdb2 "github.com/influxdata/influxdb-client-go/v2"
+  "github.com/influxdata/influxdb-client-go/v2/api/write"
 )
 
 func main() {
-	token := os.Getenv("INFLUXDB_TOKEN")
-	url := "${url}"
-	client := influxdb2.NewClient(url, token)
+  token := os.Getenv("INFLUXDB_TOKEN")
+  url := "${url}"
+  client := influxdb2.NewClient(url, token)
 }`
 
   return (

@@ -37,7 +37,8 @@ client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
       </p>
       <CodeSnippet text="python3" language="properties" />
       <p style={{marginTop: '40px'}}>
-        Paste the following code after the prompt (&gt&gt&gt) and press Enter.
+        Paste the following code after the prompt (&gt;&gt;&gt;) and press
+        Enter.
       </p>
       <CodeSnippet
         text={pythonCode}

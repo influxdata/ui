@@ -225,7 +225,7 @@
     "vscode-languageserver-protocol": "^3.16.0",
     "worker-plugin": "^5.0.1",
     "y-websocket": "^1.4.4",
-    "yjs": "13.5.40"
+    "yjs": "13.5.39"
   },
   "resolutions": {
     "mocha/**/minimist": "^0.0.8",

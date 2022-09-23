@@ -23,10 +23,7 @@ import {UsersContext, UsersProvider} from 'src/users/context/users'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {
-  UserAccountContext,
-  UserAccountProvider,
-} from 'src/accounts/context/userAccount'
+import {UserAccountContext} from 'src/accounts/context/userAccount'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
 import AccountHeader from 'src/accounts/AccountHeader'
 
@@ -210,9 +207,7 @@ const AccountPage: FC = () => {
     <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
       <AccountHeader testID="account-page--header" />
       <UsersProvider>
-        <UserAccountProvider>
-          <AccountAboutPage />
-        </UserAccountProvider>
+        <AccountAboutPage />
       </UsersProvider>
     </Page>
   )

@@ -26,6 +26,7 @@ import {
 
 // Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {setCurrentIdentityAccountName} from 'src/identity/actions/creators'
 
 export type Props = {
   children: JSX.Element
@@ -131,6 +132,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       try {
         const accountData = await updateUserAccount(accountId, newName)
         event('multiAccount.renameAccount')
+        dispatch(setCurrentIdentityAccountName(accountData))
         dispatch(notify(accountRenameSuccess(activeAccount.name, newName)))
 
         const updatedAccounts = userAccounts.map(acct => {

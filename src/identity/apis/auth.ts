@@ -316,5 +316,9 @@ export const updateUserAccount = async (accountId, name) => {
     throw new ServerError(response.data.message)
   }
 
-  return response.data
+  // TODO: Remove the following line of code when this PR(https://github.com/influxdata/quartz/issues/6846) is done
+  //       Instead return response.data.
+  const data = {...response.data, id: Number(response.data.id)}
+
+  return data
 }

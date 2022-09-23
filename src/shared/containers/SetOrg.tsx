@@ -276,10 +276,12 @@ const SetOrg: FC = () => {
             component={OrgProfilePage}
           />
           {/* account settings page */}
-          <Route
-            path={`${orgPath}/accounts/settings`}
-            component={UserAccountPage}
-          />
+          {CLOUD && (
+            <Route
+              path={`${orgPath}/accounts/settings`}
+              component={UserAccountPage}
+            />
+          )}
           {/* Homepage / First Mile */}
           <Route exact path="/orgs/:orgID" component={HomepageContainer} />
           <Route

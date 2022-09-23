@@ -12983,10 +12983,10 @@ yauzl@^2.10.0:
     buffer-crc32 "~0.2.3"
     fd-slicer "~1.1.0"
 
-yjs@^13.5.41:
-  version "13.5.41"
-  resolved "https://registry.yarnpkg.com/yjs/-/yjs-13.5.41.tgz#105041cd56bdef154704441c381d80723e072bbe"
-  integrity sha512-4eSTrrs8OeI0heXKKioRY4ag7V5Bk85Z4MeniUyown3o3y0G7G4JpAZWrZWfTp7pzw2b53GkAQWKqHsHi9j9JA==
+yjs@13.5.40:
+  version "13.5.40"
+  resolved "https://registry.yarnpkg.com/yjs/-/yjs-13.5.40.tgz#a07f2c929053a3b43338d18bbd969aacc38583ec"
+  integrity sha512-N12Jjd01vKW1iT9YMTmk387LWLLFf2IFnRgU8fbAG7CTey/TDTXmhjRKItnICjLFB5ua9LNZ5rh1rg4/Nbuj5Q==
   dependencies:
     lib0 "^0.2.49"
 

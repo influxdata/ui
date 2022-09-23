@@ -1,8 +1,7 @@
 // Libraries
-import React, {FC, useContext, useEffect, MouseEvent} from 'react'
+import React, {FC, MouseEvent, useContext, useEffect} from 'react'
 import {Link, useLocation} from 'react-router-dom'
-import {useSelector} from 'react-redux'
-import {connect, ConnectedProps} from 'react-redux'
+import {connect, ConnectedProps, useSelector} from 'react-redux'
 
 // Components
 import {Icon, IconFont, PopoverPosition, TreeNav} from '@influxdata/clockface'
@@ -10,7 +9,12 @@ import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
 
 // Constants
-import {generateNavItems} from 'src/pageLayout/constants/navigationHierarchy'
+// Types
+import {
+  generateNavItems,
+  NavItem,
+  NavSubItem,
+} from 'src/pageLayout/constants/navigationHierarchy'
 import {CLOUD} from 'src/shared/constants'
 
 // Utils
@@ -19,15 +23,12 @@ import {getOrg} from 'src/organizations/selectors'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-
-// Types
-import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
 import {AppState} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 import './TreeNav.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -119,6 +120,7 @@ const TreeSidebar: FC<ReduxProps> = ({
               location.pathname
             )}
             linkElement={linkElement}
+            isTreeNavCollapsed={navbarMode !== 'expanded'}
           >
             {Boolean(item.menu) && (
               <TreeNav.SubMenu>

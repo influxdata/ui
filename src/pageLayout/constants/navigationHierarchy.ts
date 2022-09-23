@@ -124,7 +124,7 @@ export const generateNavItems = (): NavItem[] => {
       testID: 'nav-item-dashboards',
       icon: IconFont.DashH,
       label: 'Dashboards',
-      shortLabel: 'Boards',
+      shortLabel: 'Dashboards',
       link: `${orgPrefix}/dashboards-list`,
       activeKeywords: ['dashboards', 'dashboards-list'],
     },
@@ -133,6 +133,7 @@ export const generateNavItems = (): NavItem[] => {
       testID: 'nav-item-tasks',
       icon: IconFont.Calendar,
       label: 'Tasks',
+      shortLabel: 'Tasks',
       link: `${orgPrefix}/tasks`,
       activeKeywords: ['tasks'],
     },
@@ -141,6 +142,7 @@ export const generateNavItems = (): NavItem[] => {
       testID: 'nav-item-alerting',
       icon: IconFont.Bell,
       label: 'Alerts',
+      shortLabel: 'Alerts',
       link: `${orgPrefix}/alerting`,
       activeKeywords: ['alerting', 'alert-history'],
       menu: [
@@ -163,6 +165,7 @@ export const generateNavItems = (): NavItem[] => {
       testID: 'nav-item-settings',
       icon: IconFont.CogOutline_New,
       label: 'Settings',
+      shortLabel: 'Settings',
       link: `${orgPrefix}/settings/variables`,
       activeKeywords: ['settings'],
       menu: [

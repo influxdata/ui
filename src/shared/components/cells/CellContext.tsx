@@ -7,6 +7,11 @@ import classnames from 'classnames'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {copy} from 'src/shared/components/CopyToClipboard'
+import {
+  copyQuerySuccess,
+  copyQueryFailure,
+} from 'src/shared/copy/notifications/categories/dashboard'
 
 // Components
 import {
@@ -22,6 +27,7 @@ import CellContextDangerItem from 'src/shared/components/cells/CellContextDanger
 // Actions
 import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {Cell, View} from 'src/types'
@@ -74,6 +80,20 @@ const CellContext: FC<Props> = ({
   const handleEditCell = (): void => {
     history.push(`${location.pathname}/cells/${cell.id}/edit`)
     event('editCell button Click')
+  }
+
+  const handleCopyQuery = async () => {
+    let result = false
+    // this 'in' check satisfies TypeScript saying `property queries does not exist in ViewProperties` (which is a lie)
+    if ('queries' in view.properties) {
+      result = await copy(view.properties.queries?.[0]?.text)
+    }
+
+    if (!result) {
+      dispatch(notify(copyQueryFailure(cell.name)))
+      return
+    }
+    dispatch(notify(copyQuerySuccess(cell.name)))
   }
 
   const popoverContents = (onHide): JSX.Element => {
@@ -185,6 +205,15 @@ const CellContext: FC<Props> = ({
           onHide={onHide}
           testID="cell-context--copy"
         />
+        {view.properties?.queries?.length && (
+          <CellContextItem
+            label="Copy Query"
+            onClick={handleCopyQuery}
+            icon={IconFont.Clipboard_New}
+            onHide={onHide}
+            testID="cell-context--copy-query"
+          />
+        )}
       </div>
     )
   }

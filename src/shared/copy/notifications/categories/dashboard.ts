@@ -117,3 +117,26 @@ export const removedDashboardLabelFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to remove label from dashboard',
 })
+
+export const copyQuerySuccess = (cellName?: string): Notification => {
+  let fromCellName = ''
+  if (cellName) {
+    fromCellName = ` from '${cellName}'`
+  }
+  return {
+    ...defaultSuccessNotification,
+    icon: IconFont.DashH,
+    message: `The query${fromCellName} was copied to your clipboard.`,
+  }
+}
+
+export const copyQueryFailure = (cellName: string = ''): Notification => {
+  let fromCellName = '.'
+  if (cellName) {
+    fromCellName = ` from '${cellName}.'`
+  }
+  return {
+    ...defaultErrorNotification,
+    message: `There was an error copying the query${fromCellName}. Please try again.`,
+  }
+}

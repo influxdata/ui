@@ -36,6 +36,7 @@ export type BuilderConfigAggregateWindow = BuilderConfig['aggregateWindow']
 export interface Cell extends GenCell {
   dashboardID: string
   status: RemoteDataState
+  name?: string
   minH?: number
   minW?: number
   maxW?: number

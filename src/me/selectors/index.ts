@@ -1,5 +1,5 @@
 // Types
-import {AppState, Me} from 'src/types'
+import {AppState} from 'src/types'
 
 // Utils
 import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'

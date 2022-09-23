@@ -37,7 +37,7 @@ const OrgProfileTab: FC = () => {
 
   const dispatch = useDispatch()
 
-  const identityOrgId = identity.currentIdentity.org.id
+  const identityOrgId = currentIdentity.org.id
 
   useEffect(() => {
     if (identityOrgId && CLOUD) {

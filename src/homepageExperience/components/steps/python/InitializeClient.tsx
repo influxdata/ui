@@ -16,8 +16,7 @@ export const InitializeClient = () => {
   const currentIdentity = useSelector(selectCurrentIdentity)
   const {org: quartzOrg} = currentIdentity
 
-  const url =
-    quartzOrg.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
+  const url = quartzOrg.clusterHost || window.location.origin
 
   const pythonCode = `import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
@@ -38,7 +37,7 @@ client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
       </p>
       <CodeSnippet text="python3" language="properties" />
       <p style={{marginTop: '40px'}}>
-        Paste the following code after the prompt (>>>) and press Enter.
+        Paste the following code after the prompt (&gt&gt&gt) and press Enter.
       </p>
       <CodeSnippet
         text={pythonCode}

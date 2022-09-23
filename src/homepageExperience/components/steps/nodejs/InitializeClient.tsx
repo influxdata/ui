@@ -14,8 +14,7 @@ export const InitializeClient = () => {
   const currentIdentity = useSelector(selectCurrentIdentity)
   const {org} = currentIdentity
 
-  const url =
-    org.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
+  const url = org.clusterHost || window.location.origin
 
   const codeSnippet = `repl.repl.ignoreUndefined=true
 
@@ -34,7 +33,7 @@ const client = new InfluxDB({url, token})`
       </p>
       <CodeSnippet text="node" language="properties" />
       <p style={{marginTop: '40px'}}>
-        Paste the following code after the prompt (>) and press Enter.
+        Paste the following code after the prompt (&gt) and press Enter.
       </p>
       <CodeSnippet
         text={codeSnippet}

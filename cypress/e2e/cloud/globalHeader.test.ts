@@ -21,6 +21,7 @@ describe('change-account change-org global header', () => {
 
     cy.fixture('multiOrgIdentity').then(quartzIdentity => {
       quartzIdentity.org.id = idpeOrgID
+
       cy.intercept('GET', 'api/v2/quartz/identity', quartzIdentity).as(
         'getQuartzIdentity'
       )
@@ -63,6 +64,7 @@ describe('change-account change-org global header', () => {
           method: 'GET',
           url: 'api/v2/orgs',
         }).then(res => {
+          makeQuartzUseIDPEOrgID()
           // Store the IDPE org ID so that it can be cloned when intercepting quartz.
           if (res.body.orgs) {
             idpeOrgID = res.body.orgs[0].id
@@ -74,6 +76,7 @@ describe('change-account change-org global header', () => {
 
   beforeEach(() => {
     // Preserve one session throughout.
+    makeQuartzUseIDPEOrgID()
     Cypress.Cookies.preserveOnce('sid')
     cy.setFeatureFlags(globalHeaderFeatureFlags)
   })
@@ -133,8 +136,9 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the org usage page', () => {
-        cy.getByTestID('globalheader--org-dropdown').should('exist').click()
+        makeQuartzUseIDPEOrgID()
 
+        cy.getByTestID('globalheader--org-dropdown').should('exist').click()
         cy.getByTestID('globalheader--org-dropdown-main').should('be.visible')
         cy.getByTestID('globalheader--org-dropdown-main-Usage')
           .should('be.visible')
@@ -178,6 +182,7 @@ describe('change-account change-org global header', () => {
       })
 
       before(() => {
+        makeQuartzUseIDPEOrgID()
         cy.visit('/')
       })
 

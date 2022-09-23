@@ -14,7 +14,6 @@ import {
   putSettingsNotifications,
   putBillingContact,
 } from 'src/client/unityRoutes'
-import {getQuartzMe} from 'src/me/selectors'
 import {
   getBillingInfoError,
   getBillingSettingsError,
@@ -43,6 +42,9 @@ import {
 } from 'src/types'
 import {CreditCardParams} from 'src/types/billing'
 import {getErrorMessage} from 'src/utils/api'
+
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 export type Props = {
   children: JSX.Element
@@ -110,15 +112,16 @@ export const BillingContext =
 export const BillingProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
+  const {user} = useSelector(selectCurrentIdentity)
+
   const [zuoraParamsStatus, setZuoraParamsStatus] = useState(
     RemoteDataState.NotStarted
   )
   const [zuoraParams, setZuoraParams] =
     useState<CreditCardParams>(EMPTY_ZUORA_PARAMS)
 
-  const me = useSelector(getQuartzMe)
   const [billingSettings, setBillingSettings] = useState({
-    notifyEmail: me?.email ?? '', // sets the default to the user's registered email
+    notifyEmail: user.email, // sets the default to the user's registered email
     balanceThreshold: BALANCE_THRESHOLD_DEFAULT, // set the default to the minimum balance threshold
     isNotify: true,
   })

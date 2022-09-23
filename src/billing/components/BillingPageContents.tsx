@@ -11,34 +11,34 @@ import BillingPayAsYouGo from 'src/billing/components/PayAsYouGo/PayAsYouGo'
 import MarketplaceBilling from 'src/billing/components/marketplace/MarketplaceBilling'
 
 // Utils
-import {getQuartzMe} from 'src/me/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Thunks
 import {getBillingProviderThunk} from 'src/identity/actions/thunks'
 
 const BillingPageContents: FC = () => {
   const dispatch = useDispatch()
-  const quartzMe = useSelector(getQuartzMe)
+  const {account} = useSelector(selectCurrentIdentity)
 
   useEffect(() => {
     if (!CLOUD) {
       return
     }
 
-    if (!quartzMe.billingProvider) {
+    if (!account.billingProvider) {
       dispatch(getBillingProviderThunk())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (quartzMe?.billingProvider === null) {
+  if (account?.billingProvider === null) {
     return <BillingFree />
   }
 
-  if (quartzMe?.billingProvider !== 'zuora') {
+  if (account?.billingProvider !== 'zuora') {
     return <MarketplaceBilling />
   }
 
-  if (quartzMe?.accountType === 'pay_as_you_go') {
+  if (account?.type === 'pay_as_you_go') {
     return <BillingPayAsYouGo />
   }
 

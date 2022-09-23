@@ -13,7 +13,6 @@ import {
   getSettingsNotifications,
   postCheckout,
 } from 'src/client/unityRoutes'
-import {getQuartzMe, shouldGetCredit250Experience} from 'src/me/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
@@ -35,6 +34,10 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Thunks
 import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
+
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
+import {shouldGetCredit250Experience} from 'src/me/selectors'
 
 export type Props = {
   children: JSX.Element
@@ -92,16 +95,17 @@ export const CheckoutContext =
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
+  const {user} = useSelector(selectCurrentIdentity)
+
   const [zuoraParams, setZuoraParams] =
     useState<CreditCardParams>(EMPTY_ZUORA_PARAMS)
   const [isDirty, setIsDirty] = useState(false)
-  const me = useSelector(getQuartzMe)
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
     paymentMethodId: null,
-    notifyEmail: me?.email ?? '', // sets the default to the user's registered email
+    notifyEmail: user.email, // sets the default to the user's registered email
     balanceThreshold: BALANCE_THRESHOLD_DEFAULT, // set the default to the minimum balance threshold
     shouldNotify: true,
     street1: '',
@@ -213,7 +217,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
     const {shouldNotify} = inputs
     if (!shouldNotify) {
-      fields.notifyEmail = me?.email ?? '' // sets the default to the user's registered email
+      fields.notifyEmail = user.email // sets the default to the user's registered email
       fields.balanceThreshold = BALANCE_THRESHOLD_DEFAULT // set the default to the minimum balance threshold
     }
 
@@ -243,7 +247,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       }
       return false
     })
-  }, [me?.email, inputs])
+  }, [user.email, inputs])
 
   const handleFormValidation = (): number => {
     const errs = getInvalidFields()
@@ -319,7 +323,14 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         setIsSubmitting(false)
       }
     },
-    [dispatch, getInvalidFields, handleSetErrors, inputs, isDirty]
+    [
+      dispatch,
+      getInvalidFields,
+      handleSetErrors,
+      inputs,
+      isDirty,
+      isPaygCreditActive,
+    ]
   )
 
   const history = useHistory()

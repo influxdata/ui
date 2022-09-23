@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext, useMemo, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   Overlay,
   Alert,
@@ -16,17 +17,23 @@ import {
   CancelServiceContext,
   VariableItems,
 } from 'src/billing/components/PayAsYouGo/CancelServiceContext'
-import {track} from 'rudder-sdk-js'
-import {event} from 'src/cloud/utils/reporting'
-import {useDispatch, useSelector} from 'react-redux'
-import {getQuartzMe} from 'src/me/selectors'
-import {getOrg} from 'src/organizations/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {postSignout} from 'src/client'
-import {postCancel} from 'src/client/unityRoutes'
-import {getErrorMessage} from 'src/utils/api'
+
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
+
+// Notifications
 import {accountCancellationError} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+import {getErrorMessage} from 'src/utils/api'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {track} from 'rudder-sdk-js'
+
+// Routes
+import {postSignout} from 'src/client'
+import {postCancel} from 'src/client/unityRoutes'
 
 interface Props {
   onHideOverlay: () => void
@@ -42,9 +49,9 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     shortSuggestion,
     getRedirectLocation,
   } = useContext(CancelServiceContext)
-  const quartzMe = useSelector(getQuartzMe)
-  const org = useSelector(getOrg)
   const dispatch = useDispatch()
+
+  const {user, account, org} = useSelector(selectCurrentIdentity)
 
   const handleCancelAccount = async () => {
     try {
@@ -69,8 +76,8 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
 
     const payload = {
       org: org.id,
-      tier: quartzMe?.accountType,
-      email: quartzMe?.email,
+      tier: account.type,
+      email: user.email,
       alternativeProduct: shortSuggestion,
       suggestions,
       reason: VariableItems[reason],
@@ -97,8 +104,8 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   const handleDismiss = () => {
     const payload = {
       org: org.id,
-      tier: quartzMe?.accountType,
-      email: quartzMe?.email,
+      tier: account.type,
+      email: user.email,
     }
     event('CancelServiceDismissed Event', payload)
 

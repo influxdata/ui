@@ -20,9 +20,9 @@ describe('About Page', () => {
       cy.getByTestID('copy-btn--orgid').should('not.be.disabled')
     })
 
-    cy.getByTestID('organization-profile--panel').within(() => {
-      cy.getByTestID('rename-org--button').click()
-    })
+    cy.wait(500)
+
+    cy.getByTestID('rename-org--button').click()
 
     cy.getByTestID('danger-confirmation--button').click()
     cy.getByTestID('form--element-error').should('not.exist')

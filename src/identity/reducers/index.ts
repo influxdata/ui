@@ -11,6 +11,7 @@ import {
   SET_QUARTZ_IDENTITY_STATUS,
   SET_CURRENT_BILLING_PROVIDER,
   SET_CURRENT_ORG_DETAILS,
+  SET_CURRENT_IDENTITY_ACCOUNT_NAME,
 } from 'src/identity/actions/creators'
 
 export const initialState: CurrentIdentity = {
@@ -81,6 +82,12 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
       }
       case SET_CURRENT_ORG_DETAILS: {
         draftState.org = action.org
+        return
+      }
+      case SET_CURRENT_IDENTITY_ACCOUNT_NAME: {
+        if (draftState.account.id === action.account.id) {
+          draftState.account.name = action.account.name
+        }
         return
       }
     }

@@ -45,7 +45,7 @@ export const GlobalHeader: FC = () => {
   const orgsList = identity.quartzOrganizations.orgs
   const {userAccounts} = useContext(UserAccountContext)
 
-  const accountsList = userAccounts ? userAccounts : [emptyAccount] // eslint-disable-line react-hooks/exhaustive-deps
+  const accountsList = userAccounts?.length > 0 ? userAccounts : [emptyAccount] // eslint-disable-line react-hooks/exhaustive-deps
 
   const [sortedOrgs, setSortedOrgs] = useState([emptyOrg])
   const [sortedAccounts, setSortedAccts] = useState([emptyAccount])

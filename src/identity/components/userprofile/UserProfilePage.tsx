@@ -6,7 +6,6 @@ import {Page} from '@influxdata/clockface'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Components
-import {UserAccountProvider} from 'src/accounts/context/userAccount'
 import {UserDefaults} from 'src/identity/components/userprofile/UserDefaults'
 import {UserDetails} from 'src/identity/components/userprofile/UserDetails'
 
@@ -21,10 +20,7 @@ export const UserProfilePage: FC = () => {
       </Page.Header>
       <Page.Contents fullWidth={true}>
         <UserDetails />
-
-        <UserAccountProvider>
-          <UserDefaults />
-        </UserAccountProvider>
+        <UserDefaults />
       </Page.Contents>
     </Page>
   )

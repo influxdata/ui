@@ -49,7 +49,7 @@ class VEOHeader extends PureComponent<Props> {
             <VisOptionsButton />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
-            <TimeZoneDropdown/>
+            <TimeZoneDropdown />
             <SquareButton
               icon={IconFont.Remove_New}
               onClick={onCancel}

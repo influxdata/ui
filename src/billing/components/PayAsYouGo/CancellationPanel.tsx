@@ -14,21 +14,19 @@ import CancellationOverlay from 'src/billing/components/PayAsYouGo/CancellationO
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {useSelector} from 'react-redux'
-import {getQuartzMe} from 'src/me/selectors'
-import {getOrg} from 'src/organizations/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import CancelServiceProvider from './CancelServiceContext'
 
 const CancellationPanel: FC = () => {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
-  const quartzMe = useSelector(getQuartzMe)
-  const org = useSelector(getOrg)
+  const {account, org, user} = useSelector(selectCurrentIdentity)
 
   const handleCancelService = () => {
     const payload = {
       org: org.id,
-      tier: quartzMe?.accountType,
-      email: quartzMe?.email,
+      tier: account.type,
+      email: user.email,
     }
     event('CancelServiceInitiation Event', payload)
 

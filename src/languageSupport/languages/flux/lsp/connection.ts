@@ -13,6 +13,7 @@ import {
   SchemaSelection,
 } from 'src/dataExplorer/context/persistance'
 import {CompositionInitParams} from 'src/languageSupport/languages/flux/lsp/utils'
+import {comments} from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 
 // LSP methods
 import {
@@ -174,6 +175,22 @@ class LspConnectionManager {
       )
       if (shouldDiverge && !this._session.composition.diverged) {
         event('Schema composition diverged - disable Flux Sync toggle')
+        this._callbackSetSession({
+          composition: {synced: false, diverged: true},
+        })
+      }
+    })
+
+    comments(this._editor, selection => {
+      const compositionBlock = this._getCompositionBlockLines()
+      if (!compositionBlock) {
+        return
+      }
+      const {startLine, endLine} = compositionBlock
+      if (
+        selection.startLineNumber >= startLine &&
+        selection.endLineNumber <= endLine
+      ) {
         this._callbackSetSession({
           composition: {synced: false, diverged: true},
         })

@@ -4,17 +4,16 @@ import {useSelector} from 'react-redux'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 
-import {getMe} from 'src/me/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.nodejsWizard.initializeClient.code.copied')
 }
 
 export const InitializeClient = () => {
-  const me = useSelector(getMe)
+  const {org} = useSelector(selectCurrentIdentity)
 
-  const url =
-    me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
+  const url = org.clusterHost || window.location.origin
 
   const codeSnippet = `repl.repl.ignoreUndefined=true
 
@@ -33,7 +32,7 @@ const client = new InfluxDB({url, token})`
       </p>
       <CodeSnippet text="node" language="properties" />
       <p style={{marginTop: '40px'}}>
-        Paste the following code after the prompt (>) and press Enter.
+        Paste the following code after the prompt (&gt;) and press Enter.
       </p>
       <CodeSnippet
         text={codeSnippet}

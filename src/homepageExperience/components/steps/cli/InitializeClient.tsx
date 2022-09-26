@@ -11,6 +11,7 @@ import {
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 import {getAllTokensResources} from 'src/resources/selectors'
 
 // Thunks
@@ -60,10 +61,11 @@ export const InitializeClient: FC<OwnProps> = ({
 }) => {
   const org = useSelector(getOrg)
   const me = useSelector(getMe)
+  const {org: quartzOrg} = useSelector(selectCurrentIdentity)
+
   const allPermissionTypes = useSelector(getAllTokensResources)
   const dispatch = useDispatch()
-  const url =
-    me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
+  const url = quartzOrg.clusterHost || window.location.origin
   const currentAuth = useSelector((state: AppState) => {
     return state.resources.tokens.currentAuth.item
   })

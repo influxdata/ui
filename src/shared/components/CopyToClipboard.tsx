@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, ChangeEvent} from 'react'
 
-const copy = async (text: string): Promise<boolean> => {
+export const copy = async (text: string): Promise<boolean> => {
   let result: boolean
   try {
     if (navigator.clipboard) {

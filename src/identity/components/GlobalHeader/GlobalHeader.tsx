@@ -34,7 +34,7 @@ import IdentityUserAvatar from 'src/identity/components/GlobalHeader/IdentityUse
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
-const rightHandContainerStyle = {width: '700px', marginLeft: 'auto'}
+const rightHandContainerStyle = {marginLeft: 'auto'}
 
 export const GlobalHeader: FC = () => {
   const dispatch = useDispatch()

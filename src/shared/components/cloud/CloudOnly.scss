@@ -99,9 +99,17 @@ button.upgrade-payg--button {
   margin: $cf-marg-c;
 }
 
-@media (max-width: 668px) {
+@media (max-width: 850px) {
   .credit-250-experiment-upgrade-button--text {
     display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .upgrade-payg--button {
+    .CrownSolid_New {
+      display: none;
+    }
   }
 }
 

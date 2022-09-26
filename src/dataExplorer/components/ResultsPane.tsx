@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useContext} from 'react'
+import React, {FC, lazy, Suspense, useContext, useCallback} from 'react'
 import {
   DraggableResizer,
   Orientation,
@@ -121,7 +121,7 @@ const ResultsPane: FC = () => {
     })
   }
 
-  const submit = () => {
+  const submit = useCallback(() => {
     setStatus(RemoteDataState.Loading)
     query(text, {
       vars: rangeToParam(range),
@@ -142,7 +142,7 @@ const ResultsPane: FC = () => {
         event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)
       })
-  }
+  }, [text])
 
   const timeVars = [
     getRangeVariable(TIME_RANGE_START, range),

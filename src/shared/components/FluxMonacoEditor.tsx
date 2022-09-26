@@ -62,7 +62,7 @@ const FluxEditorMonaco: FC<Props> = ({
   variables,
 }) => {
   const connection = useRef<ConnectionManager>(null)
-  const {setEditor} = useContext(EditorContext)
+  const {editor, setEditor} = useContext(EditorContext)
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
   const {path} = useRouteMatch()
@@ -94,6 +94,17 @@ const FluxEditorMonaco: FC<Props> = ({
     sessionStore?.setSelection,
   ])
 
+  useEffect(() => {
+    if (!editor) {
+      return
+    }
+    submit(editor, () => {
+      if (onSubmitScript) {
+        onSubmitScript()
+      }
+    })
+  }, [editor, onSubmitScript])
+
   const editorDidMount = (editor: EditorType) => {
     connection.current = setupForReactMonacoEditor(editor)
     connection.current.updatePreludeModel(variables)
@@ -104,11 +115,6 @@ const FluxEditorMonaco: FC<Props> = ({
     }
 
     comments(editor)
-    submit(editor, () => {
-      if (onSubmitScript) {
-        onSubmitScript()
-      }
-    })
 
     if (autogrow) {
       registerAutogrow(editor)

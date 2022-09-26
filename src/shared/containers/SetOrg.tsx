@@ -311,13 +311,11 @@ const SetOrg: FC = () => {
             />
           )}
           ,
-          {isFlagEnabled('onboardCLI') && (
-            <Route
-              exact
-              path="/orgs/:orgID/new-user-setup/cli"
-              component={CliWizard}
-            />
-          )}
+          <Route
+            exact
+            path="/orgs/:orgID/new-user-setup/cli"
+            component={CliWizard}
+          />
           {/* User Profile Page */}
           {CLOUD && isFlagEnabled('multiOrg') && (
             <Route

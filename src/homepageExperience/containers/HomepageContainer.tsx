@@ -53,9 +53,7 @@ export const HomepageContainer: FC = () => {
   const telegrafs = useSelector(getAllTelegrafs)
   const arduinoLink = `/orgs/${org.id}/new-user-setup/arduino`
   const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
-  const cliPageLink = isFlagEnabled('onboardCLI')
-    ? `/orgs/${org.id}/new-user-setup/cli`
-    : `/orgs/${org.id}/load-data/file-upload/csv`
+  const cliPageLink = `/orgs/${org.id}/new-user-setup/cli`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
   const newTelegrafPageLink = `/orgs/${org.id}/load-data/telegrafs/new`
   const golangLink = `/orgs/${org.id}/new-user-setup/golang`

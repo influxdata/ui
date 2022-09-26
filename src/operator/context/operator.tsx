@@ -12,7 +12,7 @@ import {
   OperatorProvidersResponse,
 } from 'src/client/unityRoutes'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
-import {getQuartzMe} from 'src/me/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Types
 import {
@@ -91,7 +91,8 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     DEFAULT_CONTEXT.providerInfo
   )
   const dispatch = useDispatch()
-  const quartzMe = useSelector(getQuartzMe)
+  const currentIdentity = useSelector(selectCurrentIdentity)
+  const {user} = currentIdentity
 
   const [organizations, setOrganizations] = useState<OperatorOrg[]>([])
 
@@ -188,8 +189,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     status = RemoteDataState.Loading
   }
 
-  const hasWritePermissions =
-    quartzMe.isOperator && quartzMe?.operatorRole === 'read-write'
+  const hasWritePermissions = user.operatorRole === 'read-write'
 
   return (
     <OperatorContext.Provider

@@ -75,7 +75,7 @@ describe('Subscriptions', () => {
     cy.getByTestID('create-broker-form--name').type(name)
     cy.getByTestID('create-broker-form--description').type('My Description')
     cy.getByTestID('dropdown').contains('MQTT').click()
-    cy.getByTestID('create-broker-form--host').type('localhost')
+    cy.getByTestID('create-broker-form--host').type('broker.hivemq.com')
     cy.getByTestID('create-broker-form--port').type(`${BROKER_PORT}`)
     // subscription form
     cy.getByTestID('create-subscription-form--overlay-form').should(
@@ -203,8 +203,7 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-broker-form--description')
       .clear()
       .type('Edited Description')
-    cy.getByTestID('update-broker-form--host').clear().type('local.host')
-    cy.getByTestID('update-broker-form--port').clear().type('1884')
+    cy.getByTestID('update-broker-form--host').clear().type('broker.hivemq.com')
     cy.getByTestID('update-broker-form--user--button').click()
     cy.getByTestID('update-broker-form--username').clear().type('username')
     cy.getByTestID('update-broker-form--password').clear().type('password')
@@ -262,7 +261,7 @@ describe('Subscriptions', () => {
     cy.getByTestID('create-broker-form--name').type(subscription)
     cy.getByTestID('create-broker-form--description').type('My Description')
     cy.getByTestID('dropdown').contains('MQTT').click()
-    cy.getByTestID('create-broker-form--host').type('localhost')
+    cy.getByTestID('create-broker-form--host').type('broker.hivemq.com')
     cy.getByTestID('create-broker-form--port').type(`${BROKER_PORT}`)
     // subscription form
     cy.getByTestID('create-subscription-form--overlay-form').should(
@@ -401,7 +400,7 @@ describe('Subscriptions', () => {
     cy.getByTestID('create-broker-form--name').type(subscription)
     cy.getByTestID('create-broker-form--description').type('My Description')
     cy.getByTestID('dropdown').contains('MQTT').click()
-    cy.getByTestID('create-broker-form--host').type('localhost')
+    cy.getByTestID('create-broker-form--host').type('broker.hivemq.com')
     cy.getByTestID('create-broker-form--port').type(`${BROKER_PORT}`)
     // subscription form
     cy.getByTestID('create-subscription-form--overlay-form').should(
@@ -526,7 +525,7 @@ describe('Subscriptions', () => {
       id: '603dd8ae88aee000',
       orgID: '9c9c9c9c9c9c9c9c',
       processGroupID: 'f762b298-0180-1000-0000-000067f29ae1',
-      brokerHost: 'localhost',
+      brokerHost: 'broker.hivemq.com',
       brokerPort: BROKER_PORT,
       topic: 'datopic',
       dataFormat: 'lineprotocol',
@@ -571,8 +570,7 @@ describe('Subscriptions', () => {
     cy.getByTestID('update-broker-form--description')
       .clear()
       .type('Edited Description')
-    cy.getByTestID('update-broker-form--host').clear().type('local.host')
-    cy.getByTestID('update-broker-form--port').clear().type('1884')
+    cy.getByTestID('update-broker-form--host').clear().type('broker.hivemq.com')
     cy.getByTestID('update-broker-form--user--button').click()
     cy.getByTestID('update-broker-form--username').clear().type('username')
     cy.getByTestID('update-broker-form--password').clear().type('password')

@@ -7,6 +7,7 @@
   border: 2px solid transparent;
   background-color: $cf-grey-15;
   padding: $cf-space-2xs;
+  overflow: hidden;
 }
 
 .data-explorer-results--timezone {
@@ -81,6 +82,11 @@
     font-family: $cf-code-font;
     white-space: pre-line;
   }
+}
+
+.data-explorer--control {
+  width: 100%;
+  padding: 0 $cf-space-2xs $cf-space-3xs $cf-space-2xs;
 }
 
 .query-stat {

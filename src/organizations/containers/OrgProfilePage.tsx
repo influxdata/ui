@@ -13,14 +13,14 @@ import DeleteOrgOverlay from 'src/organizations/components/DeleteOrgOverlay'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {getQuartzMe} from 'src/me/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 import DeleteOrgProvider from 'src/organizations/components/DeleteOrgContext'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
 const OrgProfilePage: FC = () => {
-  const quartzMe = useSelector(getQuartzMe)
+  const {account} = useSelector(selectCurrentIdentity)
 
   return (
     <>
@@ -35,7 +35,7 @@ const OrgProfilePage: FC = () => {
           path="/orgs/:orgID/org-settings/rename"
           component={RenameOrgOverlay}
         />
-        {CLOUD && quartzMe?.accountType === 'free' && (
+        {CLOUD && account.type === 'free' && (
           <DeleteOrgProvider>
             <Route
               path="/orgs/:orgID/org-settings/delete"

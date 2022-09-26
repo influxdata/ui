@@ -30,15 +30,19 @@ const BillingPageContents: FC = () => {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (account?.billingProvider === null) {
+  if (account.billingProvider === undefined) {
+    return null
+  }
+
+  if (account.billingProvider === null) {
     return <BillingFree />
   }
 
-  if (account?.billingProvider !== 'zuora') {
+  if (account.billingProvider !== 'zuora') {
     return <MarketplaceBilling />
   }
 
-  if (account?.type === 'pay_as_you_go') {
+  if (account.type === 'pay_as_you_go') {
     return <BillingPayAsYouGo />
   }
 

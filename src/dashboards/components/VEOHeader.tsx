@@ -12,13 +12,13 @@ import {
 } from '@influxdata/clockface'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
 import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
+import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 
 // Constants
 import {
   DEFAULT_CELL_NAME,
   CELL_NAME_MAX_LENGTH,
 } from 'src/dashboards/constants/index'
-import TimeZoneDropdown from '../../shared/components/TimeZoneDropdown'
 
 interface Props {
   name: string

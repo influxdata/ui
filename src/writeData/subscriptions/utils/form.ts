@@ -247,10 +247,7 @@ const checkBasicSelected = (form: Subscription): boolean =>
 
 const checkCertificateRequiredFields = (form: Subscription): boolean =>
   form.authType === BrokerAuthTypes.Certificate &&
-  !!form.brokerCACert &&
-  // you either need to provide both or neither
-  ((!!form.brokerClientCert && !!form.brokerClientKey) ||
-    (!form.brokerClientCert && !form.brokerClientKey))
+  (!!form.brokerCACert && !!form.brokerClientCert && !!form.brokerClientKey)
 
 const checkCreatingCertificate = (form: Subscription): boolean =>
   form.authType === BrokerAuthTypes.Certificate && !form.brokerCertCreationDate

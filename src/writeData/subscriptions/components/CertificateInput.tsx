@@ -83,6 +83,7 @@ const NewCertificateInput: FC<OwnProps> = ({updateForm, subscription}) => {
         placeholder={CertificatePlaceholders.clientKey}
         value={subscription?.brokerClientKey ?? ''}
         rows={4}
+        required
       />
       <TextAreaWithLabel
         name="CertificateAuthority"
@@ -91,6 +92,7 @@ const NewCertificateInput: FC<OwnProps> = ({updateForm, subscription}) => {
         value={subscription?.brokerClientCert ?? ''}
         placeholder={CertificatePlaceholders.clientCert}
         rows={4}
+        required
       />
     </FlexBox>
   )

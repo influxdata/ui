@@ -18,6 +18,7 @@ import {
   DEFAULT_CELL_NAME,
   CELL_NAME_MAX_LENGTH,
 } from 'src/dashboards/constants/index'
+import TimeZoneDropdown from '../../shared/components/TimeZoneDropdown'
 
 interface Props {
   name: string
@@ -48,6 +49,7 @@ class VEOHeader extends PureComponent<Props> {
             <VisOptionsButton />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
+            <TimeZoneDropdown/>
             <SquareButton
               icon={IconFont.Remove_New}
               onClick={onCancel}

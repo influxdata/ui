@@ -26,6 +26,9 @@ import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetails
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
 import {AppSettingProvider} from 'src/shared/contexts/app'
 
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
+
 // Types
 import {
   AppState,
@@ -38,7 +41,7 @@ import {
 
 // Utils
 import {getAll} from 'src/resources/selectors'
-import {getQuartzMe, shouldShowUpgradeButton} from 'src/me/selectors'
+import {shouldShowUpgradeButton} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {
   DEFAULT_COMPLETED_STEPS,
@@ -57,7 +60,8 @@ const CreateSubscriptionPage: FC = () => {
   const {formContent, saveForm, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
-  const quartzMe = useSelector(getQuartzMe)
+  const {account} = useSelector(selectCurrentIdentity)
+
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
@@ -88,10 +92,10 @@ const CreateSubscriptionPage: FC = () => {
   useEffect(() => {
     event(
       'visited creation page',
-      {userAccountType: quartzMe?.accountType ?? 'unknown'},
+      {userAccountType: account.type ?? 'unknown'},
       {feature: 'subscriptions'}
     )
-  }, [quartzMe?.accountType])
+  }, [account.type])
 
   const handleClick = (step: number) => {
     event(

@@ -24,7 +24,7 @@ const OperatorNav: FC = () => {
       hideEvent={PopoverInteraction.Click}
       contents={() => (
         <>
-          <p>{user.email ?? ''}</p>
+          <p>{user.email}</p>
           <Link to="/logout" data-testid="logout-button">
             Logout
           </Link>

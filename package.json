@@ -165,7 +165,7 @@
     "@codingame/monaco-jsonrpc": "^0.3.1",
     "@docsearch/react": "^3.0.0-alpha.37",
     "@influxdata/clockface": "^6.3.7",
-    "@influxdata/flux-lsp-browser": "0.8.34",
+    "@influxdata/flux-lsp-browser": "0.8.35",
     "@influxdata/giraffe": "^2.36.0",
     "@influxdata/influxdb-templates": "0.9.0",
     "@influxdata/react-custom-scrollbars": "4.3.8",

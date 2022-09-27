@@ -23,7 +23,8 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 let getQuartzLoginUrl
 
 if (CLOUD) {
-  getQuartzLoginUrl = require('src/client/uiproxydRoutes').getUiproxyQuartzLoginUrl
+  getQuartzLoginUrl =
+    require('src/client/uiproxydRoutes').getUiproxyQuartzLoginUrl
 }
 
 const EMPTY_HISTORY_STACK_LENGTH = 2

@@ -50,29 +50,18 @@ const GetOrganizations: FunctionComponent = () => {
 
   const dispatch = useDispatch()
 
-  // This doesn't require another API call.
-  useEffect(() => {
-    if (orgLoadingStatus === RemoteDataState.NotStarted) {
-      dispatch(getOrganizations())
-    }
-  }, [dispatch, orgLoadingStatus])
-
   useEffect(() => {
     if (CLOUD && identityLoadingStatus === RemoteDataState.NotStarted) {
       dispatch(getQuartzIdentityThunk())
     }
   }, [dispatch, identityLoadingStatus])
 
+  // This doesn't require another API call.
   useEffect(() => {
-    if (CLOUD) {
-      updateReportingContext({
-        'org (hide_upgrade_cta)': `${
-          account.type === 'free' && account.isUpgradeable
-        }`,
-        'org (account_type)': account.type,
-      })
+    if (orgLoadingStatus === RemoteDataState.NotStarted) {
+      dispatch(getOrganizations())
     }
-  }, [account.type, account.isUpgradeable])
+  }, [dispatch, orgLoadingStatus])
 
   useEffect(() => {
     if (
@@ -112,6 +101,17 @@ const GetOrganizations: FunctionComponent = () => {
       })
     }
   }, [identityLoadingStatus, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (CLOUD) {
+      updateReportingContext({
+        'org (hide_upgrade_cta)': `${
+          account.type === 'free' && account.isUpgradeable
+        }`,
+        'org (account_type)': account.type,
+      })
+    }
+  }, [account.type, account.isUpgradeable])
 
   return (
     <PageSpinner loading={orgLoadingStatus}>

@@ -46,7 +46,7 @@ const GetOrganizations: FunctionComponent = () => {
 
   // These two selectors are CLOUD-only. They have empty string or null values in OSS.
   const {account, user, org} = useSelector(selectCurrentIdentity)
-  const cloudIdentityLoadingStatus = useSelector(selectQuartzIdentityStatus)
+  const identityLoadingStatus = useSelector(selectQuartzIdentityStatus)
 
   const dispatch = useDispatch()
 
@@ -58,10 +58,10 @@ const GetOrganizations: FunctionComponent = () => {
   }, [dispatch, orgLoadingStatus])
 
   useEffect(() => {
-    if (CLOUD && cloudIdentityLoadingStatus === RemoteDataState.NotStarted) {
+    if (CLOUD && identityLoadingStatus === RemoteDataState.NotStarted) {
       dispatch(getQuartzIdentityThunk())
     }
-  }, [dispatch, cloudIdentityLoadingStatus])
+  }, [dispatch, identityLoadingStatus])
 
   useEffect(() => {
     if (
@@ -86,7 +86,7 @@ const GetOrganizations: FunctionComponent = () => {
     if (
       CLOUD &&
       isFlagEnabled('credit250Experiment') &&
-      cloudIdentityLoadingStatus === RemoteDataState.Done &&
+      identityLoadingStatus === RemoteDataState.Done &&
       orgLoadingStatus === RemoteDataState.Done
     ) {
       window.dataLayer = window.dataLayer ?? []
@@ -100,7 +100,7 @@ const GetOrganizations: FunctionComponent = () => {
         },
       })
     }
-  }, [cloudIdentityLoadingStatus, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [identityLoadingStatus, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (CLOUD) {
@@ -117,7 +117,7 @@ const GetOrganizations: FunctionComponent = () => {
     <PageSpinner loading={orgLoadingStatus}>
       <Suspense fallback={<PageSpinner />}>
         {CLOUD ? (
-          <PageSpinner loading={cloudIdentityLoadingStatus}>
+          <PageSpinner loading={identityLoadingStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />
               <Route

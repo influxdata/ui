@@ -17,8 +17,15 @@ import {fetchIdentity, fetchLegacyIdentity} from 'src/identity/apis/auth'
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
-import {CLOUD, CLOUD_QUARTZ_URL} from 'src/shared/constants'
+import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+let getQuartzLoginUrl
+
+if (CLOUD) {
+  getQuartzLoginUrl =
+    require('src/client/uiproxydRoutes').getUiproxyQuartzLoginUrl
+}
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
@@ -56,10 +63,13 @@ export const LoginPage: FC = () => {
   } else {
     if (isFlagEnabled('universalLogin')) {
       if (CLOUD) {
-        const url = new URL(`${CLOUD_QUARTZ_URL}`).href
-
-        console.warn('Redirect to cloud url: ', url)
-        window.location.replace(url)
+        getQuartzLoginUrl({})
+          .then(response => {
+            const redirectUrl = response.data
+            console.warn('Redirect to cloud url: ', redirectUrl)
+            window.location.replace(redirectUrl)
+          })
+          .catch(error => console.error(error))
         return
       }
     }

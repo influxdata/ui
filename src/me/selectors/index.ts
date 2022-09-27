@@ -1,6 +1,5 @@
 // Types
-import {AppState, Me} from 'src/types'
-import {RemoteDataState} from '@influxdata/clockface'
+import {AppState} from 'src/types'
 
 // Utils
 import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
@@ -12,13 +11,10 @@ export const getMe = (state: AppState): AppState['me'] => {
   return state.me
 }
 
-export const getQuartzMe = (state: AppState): Me => state?.me?.quartzMe
-export const getQuartzMeStatus = (state: AppState): RemoteDataState =>
-  state?.me?.quartzMeStatus
-
 export const shouldGetCredit250Experience = (state: AppState): boolean => {
-  const accountType = state.me.quartzMe?.accountType ?? ''
-  const accountCreatedAt = state.me.quartzMe?.accountCreatedAt ?? ''
+  const accountType = state.identity.currentIdentity.account.type
+  const accountCreatedAt =
+    state.identity.currentIdentity.account.accountCreatedAt
 
   const accountCreatedAtEpoch = convertStringToEpoch(accountCreatedAt)
 
@@ -32,8 +28,5 @@ export const shouldGetCredit250Experience = (state: AppState): boolean => {
 }
 
 export const shouldShowUpgradeButton = (state: AppState): boolean => {
-  const {quartzMe} = state.me
-  const isRegionBeta = quartzMe?.isRegionBeta ?? false
-  const accountType = quartzMe?.accountType ?? 'free'
-  return accountType === 'free' && isRegionBeta === false
+  return state.identity.currentIdentity.account.isUpgradeable === true
 }

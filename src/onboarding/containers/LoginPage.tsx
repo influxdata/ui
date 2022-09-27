@@ -57,11 +57,13 @@ export const LoginPage: FC = () => {
   } else {
     if (isFlagEnabled('universalLogin')) {
       if (CLOUD) {
-        getUiproxyQuartzLoginUrl({}).then(response => {
-          const redirectUrl = response.data
-          console.warn('Redirect to cloud url: ', redirectUrl)
-          window.location.replace(redirectUrl)
-        })
+        getUiproxyQuartzLoginUrl({})
+          .then(response => {
+            const redirectUrl = response.data
+            console.warn('Redirect to cloud url: ', redirectUrl)
+            window.location.replace(redirectUrl)
+          })
+          .catch(error => console.error(error))
         return
       }
     }

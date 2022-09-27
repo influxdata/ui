@@ -42,11 +42,11 @@ import {RemoteDataState} from 'src/types'
 import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 const GetOrganizations: FunctionComponent = () => {
+  const {status: orgLoadingStatus} = useSelector(getAllOrgs)
+
   // These two selectors are CLOUD-only. They have empty string or null values in OSS.
   const {account, user, org} = useSelector(selectCurrentIdentity)
-  const identityLoadingStatus = useSelector(selectQuartzIdentityStatus)
-
-  const {status: orgLoadingStatus} = useSelector(getAllOrgs)
+  const cloudIdentityLoadingStatus = useSelector(selectQuartzIdentityStatus)
 
   const dispatch = useDispatch()
 
@@ -58,10 +58,10 @@ const GetOrganizations: FunctionComponent = () => {
   }, [dispatch, orgLoadingStatus])
 
   useEffect(() => {
-    if (CLOUD && identityLoadingStatus === RemoteDataState.NotStarted) {
+    if (CLOUD && cloudIdentityLoadingStatus === RemoteDataState.NotStarted) {
       dispatch(getQuartzIdentityThunk())
     }
-  }, [dispatch, identityLoadingStatus])
+  }, [dispatch, cloudIdentityLoadingStatus])
 
   useEffect(() => {
     if (
@@ -86,7 +86,7 @@ const GetOrganizations: FunctionComponent = () => {
     if (
       CLOUD &&
       isFlagEnabled('credit250Experiment') &&
-      identityLoadingStatus === RemoteDataState.Done &&
+      cloudIdentityLoadingStatus === RemoteDataState.Done &&
       orgLoadingStatus === RemoteDataState.Done
     ) {
       window.dataLayer = window.dataLayer ?? []
@@ -100,7 +100,7 @@ const GetOrganizations: FunctionComponent = () => {
         },
       })
     }
-  }, [identityLoadingStatus, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [cloudIdentityLoadingStatus, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (CLOUD) {
@@ -117,7 +117,7 @@ const GetOrganizations: FunctionComponent = () => {
     <PageSpinner loading={orgLoadingStatus}>
       <Suspense fallback={<PageSpinner />}>
         {CLOUD ? (
-          <PageSpinner loading={identityLoadingStatus}>
+          <PageSpinner loading={cloudIdentityLoadingStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />
               <Route

@@ -50,18 +50,18 @@ const GetOrganizations: FunctionComponent = () => {
 
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (CLOUD && identityLoadingStatus === RemoteDataState.NotStarted) {
-      dispatch(getQuartzIdentityThunk())
-    }
-  }, [dispatch, identityLoadingStatus])
-
   // This doesn't require another API call.
   useEffect(() => {
     if (orgLoadingStatus === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
     }
   }, [dispatch, orgLoadingStatus])
+
+  useEffect(() => {
+    if (CLOUD && identityLoadingStatus === RemoteDataState.NotStarted) {
+      dispatch(getQuartzIdentityThunk())
+    }
+  }, [dispatch, identityLoadingStatus])
 
   useEffect(() => {
     if (

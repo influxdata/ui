@@ -135,9 +135,11 @@ const GetOrganizations: FunctionComponent = () => {
               {CLOUD && account.isUpgradeable === true && (
                 <Route path="/checkout" component={CheckoutPage} />
               )}
-              {CLOUD && user.operatorRole && (
-                <Route path="/operator" component={OperatorPage} />
-              )}
+              {CLOUD &&
+                (user.operatorRole === 'read-only' ||
+                  user.operatorRole === 'read-write') && (
+                  <Route path="/operator" component={OperatorPage} />
+                )}
               <Route component={NotFound} />
             </Switch>
           </PageSpinner>

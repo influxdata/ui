@@ -19,8 +19,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Selectors
-import {selectCurrentIdentity} from 'src/identity/selectors'
 import {getOrg} from 'src/organizations/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
@@ -28,7 +28,10 @@ import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+// Overlays
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
+// Styles
 import './TreeNav.scss'
 
 const TreeSidebar: FC = () => {

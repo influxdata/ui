@@ -20,7 +20,7 @@ import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
 import {getAllOrgs} from 'src/resources/selectors'
-import {getMe} from 'src/me/selectors'
+
 import {
   selectCurrentIdentity,
   selectQuartzIdentityStatus,
@@ -42,71 +42,24 @@ import {RemoteDataState} from 'src/types'
 import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 const GetOrganizations: FunctionComponent = () => {
-  const {id: meId = '', name: email = ''} = useSelector(getMe)
   const {account, user, org: quartzOrg} = useSelector(selectCurrentIdentity)
   const identityLoadingStatus = useSelector(selectQuartzIdentityStatus)
-  const {status: orgLoadingStatus, org} = useSelector(getAllOrgs)
-
-  const shouldLoadIdentity =
-    identityLoadingStatus === RemoteDataState.NotStarted
-  const identityFinishedLoading = identityLoadingStatus === RemoteDataState.Done
-
-  const shouldLoadOrg = orgLoadingStatus === RemoteDataState.NotStarted
-  const orgFinishedLoading = orgLoadingStatus === RemoteDataState.Done
+  const {status: orgLoadingStatus} = useSelector(getAllOrgs)
 
   const dispatch = useDispatch()
 
   // This doesn't require another API call.
   useEffect(() => {
-    if (shouldLoadOrg) {
+    if (orgLoadingStatus === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
     }
-  }, [dispatch, shouldLoadOrg])
+  }, [dispatch, orgLoadingStatus])
 
   useEffect(() => {
-    if (
-      CLOUD &&
-      user.email &&
-      quartzOrg.id &&
-      account.id &&
-      account.name &&
-      isFlagEnabled('rudderstackReporting')
-    ) {
-      identify(meId, {
-        email: user.email,
-        orgID: quartzOrg.id,
-        accountID: account.id,
-        accountName: account.name,
-      })
-    }
-  }, [meId, user.email, quartzOrg.id, account.id, account.name])
-
-  useEffect(() => {
-    if (CLOUD && shouldLoadIdentity) {
+    if (CLOUD && identityLoadingStatus === RemoteDataState.NotStarted) {
       dispatch(getQuartzIdentityThunk())
     }
-  }, [dispatch, shouldLoadIdentity])
-
-  // This doesn't require another API call.
-  useEffect(() => {
-    if (
-      isFlagEnabled('credit250Experiment') &&
-      identityFinishedLoading &&
-      orgFinishedLoading
-    ) {
-      const orgId = org?.id ?? ''
-      window.dataLayer = window.dataLayer ?? []
-      window.dataLayer.push({
-        identity: {
-          account_type: account.type,
-          account_created_at: convertStringToEpoch(account.accountCreatedAt),
-          id: meId,
-          email,
-          organization_id: orgId,
-        },
-      })
-    }
-  }, [identityFinishedLoading, orgFinishedLoading]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, identityLoadingStatus])
 
   useEffect(() => {
     if (CLOUD) {
@@ -118,6 +71,45 @@ const GetOrganizations: FunctionComponent = () => {
       })
     }
   }, [account.type, account.isUpgradeable])
+
+  useEffect(() => {
+    if (
+      CLOUD &&
+      user.email &&
+      quartzOrg.id &&
+      account.id &&
+      account.name &&
+      isFlagEnabled('rudderstackReporting')
+    ) {
+      identify(user.id, {
+        email: user.email,
+        orgID: quartzOrg.id,
+        accountID: account.id,
+        accountName: account.name,
+      })
+    }
+  }, [user.id, user.email, quartzOrg.id, account.id, account.name])
+
+  // This doesn't require another API call.
+  useEffect(() => {
+    if (
+      CLOUD &&
+      isFlagEnabled('credit250Experiment') &&
+      identityLoadingStatus === RemoteDataState.Done &&
+      orgLoadingStatus === RemoteDataState.Done
+    ) {
+      window.dataLayer = window.dataLayer ?? []
+      window.dataLayer.push({
+        identity: {
+          account_type: account.type,
+          account_created_at: convertStringToEpoch(account.accountCreatedAt),
+          id: user.id,
+          email: user.email,
+          organization_id: quartzOrg.id,
+        },
+      })
+    }
+  }, [identityLoadingStatus, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <PageSpinner loading={orgLoadingStatus}>

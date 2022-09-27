@@ -42,8 +42,10 @@ import {RemoteDataState} from 'src/types'
 import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 const GetOrganizations: FunctionComponent = () => {
-  const {account, user, org: quartzOrg} = useSelector(selectCurrentIdentity)
+  // These two selectors are CLOUD-only. They have empty string or null values in OSS.
+  const {account, user, org} = useSelector(selectCurrentIdentity)
   const identityLoadingStatus = useSelector(selectQuartzIdentityStatus)
+
   const {status: orgLoadingStatus} = useSelector(getAllOrgs)
 
   const dispatch = useDispatch()
@@ -76,19 +78,19 @@ const GetOrganizations: FunctionComponent = () => {
     if (
       CLOUD &&
       user.email &&
-      quartzOrg.id &&
+      org.id &&
       account.id &&
       account.name &&
       isFlagEnabled('rudderstackReporting')
     ) {
       identify(user.id, {
         email: user.email,
-        orgID: quartzOrg.id,
+        orgID: org.id,
         accountID: account.id,
         accountName: account.name,
       })
     }
-  }, [user.id, user.email, quartzOrg.id, account.id, account.name])
+  }, [user.id, user.email, org.id, account.id, account.name])
 
   // This doesn't require another API call.
   useEffect(() => {
@@ -105,7 +107,7 @@ const GetOrganizations: FunctionComponent = () => {
           account_created_at: convertStringToEpoch(account.accountCreatedAt),
           id: user.id,
           email: user.email,
-          organization_id: quartzOrg.id,
+          organization_id: org.id,
         },
       })
     }

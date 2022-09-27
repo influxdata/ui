@@ -20,8 +20,11 @@ import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
 import {getAllOrgs} from 'src/resources/selectors'
-
-import {selectCurrentIdentity} from 'src/identity/selectors'
+import {getMe, getQuartzMe, getQuartzMeStatus} from 'src/me/selectors'
+import {
+  selectQuartzIdentity,
+  selectQuartzIdentityStatus,
+} from 'src/identity/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -32,93 +35,108 @@ import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 import {updateReportingContext} from 'src/cloud/utils/reporting'
 
 // Types
+import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
 import {RemoteDataState} from 'src/types'
 
 // Thunks
 import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
-const GetOrganizations: FunctionComponent = () => {
-  const {status: orgLoadingStatus} = useSelector(getAllOrgs)
+const canAccessCheckout = (me: Me): boolean => {
+  if (Boolean(me?.isRegionBeta)) {
+    return false
+  }
+  return me?.accountType !== 'pay_as_you_go' && me?.accountType !== 'contract'
+}
 
-  // This selector is CLOUD-only. It has default empty values in OSS.
-  const {
-    user,
-    account,
-    org,
-    status: identityLoadingStatus,
-  } = useSelector(selectCurrentIdentity)
+const GetOrganizations: FunctionComponent = () => {
+  const {status, org} = useSelector(getAllOrgs)
+  const identity = useSelector(selectQuartzIdentity)
+  const quartzMeStatus = useSelector(getQuartzMeStatus)
+  const quartzMe = useSelector(getQuartzMe)
+  const quartzIdentityStatus = useSelector(selectQuartzIdentityStatus)
+  const {id: meId = '', name: email = ''} = useSelector(getMe)
+  const {account} = identity.currentIdentity
 
   const dispatch = useDispatch()
 
   // This doesn't require another API call.
   useEffect(() => {
-    if (orgLoadingStatus === RemoteDataState.NotStarted) {
+    if (status === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
     }
-  }, [dispatch, orgLoadingStatus])
-
-  useEffect(() => {
-    if (CLOUD && identityLoadingStatus === RemoteDataState.NotStarted) {
-      dispatch(getQuartzIdentityThunk())
-    }
-  }, [dispatch, identityLoadingStatus])
+  }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (
       CLOUD &&
-      user.email &&
-      org.id &&
-      account.id &&
-      account.name &&
+      email &&
+      org?.id &&
+      account?.id &&
+      account?.name &&
       isFlagEnabled('rudderstackReporting')
     ) {
-      identify(user.id, {
-        email: user.email,
+      identify(meId, {
+        email,
         orgID: org.id,
         accountID: account.id,
         accountName: account.name,
       })
     }
-  }, [user.id, user.email, org.id, account.id, account.name])
+  }, [meId, email, org?.id, account?.id, account?.name])
+
+  useEffect(() => {
+    if (
+      CLOUD &&
+      quartzMeStatus === RemoteDataState.NotStarted &&
+      quartzIdentityStatus === RemoteDataState.NotStarted
+    ) {
+      dispatch(getQuartzIdentityThunk())
+    }
+  }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // This doesn't require another API call.
   useEffect(() => {
     if (
-      CLOUD &&
       isFlagEnabled('credit250Experiment') &&
-      identityLoadingStatus === RemoteDataState.Done &&
-      orgLoadingStatus === RemoteDataState.Done
+      quartzMeStatus === RemoteDataState.Done &&
+      status === RemoteDataState.Done
     ) {
+      const {
+        accountType: account_type,
+        accountCreatedAt: account_created_at = '',
+      } = quartzMe
+      const orgId = org?.id ?? ''
       window.dataLayer = window.dataLayer ?? []
       window.dataLayer.push({
         identity: {
-          account_type: account.type,
-          account_created_at: convertStringToEpoch(account.accountCreatedAt),
-          id: user.id,
-          email: user.email,
-          organization_id: org.id,
+          account_type,
+          account_created_at: convertStringToEpoch(account_created_at),
+          id: meId,
+          email,
+          organization_id: orgId,
         },
       })
     }
-  }, [identityLoadingStatus, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [quartzMeStatus, status]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const isRegionBeta = quartzMe?.isRegionBeta ?? false
+  const accountType = quartzMe?.accountType ?? 'free'
 
   useEffect(() => {
     if (CLOUD) {
       updateReportingContext({
-        'org (hide_upgrade_cta)': `${
-          account.type === 'free' && account.isUpgradeable
-        }`,
-        'org (account_type)': account.type,
+        'org (hide_upgrade_cta)': `${accountType === 'free' && !isRegionBeta}`,
+        'org (account_type)': accountType,
       })
     }
-  }, [account.type, account.isUpgradeable])
+  }, [accountType, isRegionBeta])
 
   return (
-    <PageSpinner loading={orgLoadingStatus}>
+    <PageSpinner loading={status}>
       <Suspense fallback={<PageSpinner />}>
         {CLOUD ? (
-          <PageSpinner loading={identityLoadingStatus}>
+          <PageSpinner loading={quartzMeStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />
               <Route
@@ -127,14 +145,12 @@ const GetOrganizations: FunctionComponent = () => {
               />
               <Route path="/orgs" component={App} />
               <Route exact path="/" component={RouteToOrg} />
-              {CLOUD && account.isUpgradeable === true && (
+              {CLOUD && canAccessCheckout(quartzMe) && (
                 <Route path="/checkout" component={CheckoutPage} />
               )}
-              {CLOUD &&
-                (user.operatorRole === 'read-only' ||
-                  user.operatorRole === 'read-write') && (
-                  <Route path="/operator" component={OperatorPage} />
-                )}
+              {CLOUD && quartzMe?.isOperator && (
+                <Route path="/operator" component={OperatorPage} />
+              )}
               <Route component={NotFound} />
             </Switch>
           </PageSpinner>

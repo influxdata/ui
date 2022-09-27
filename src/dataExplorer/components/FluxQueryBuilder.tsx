@@ -45,8 +45,7 @@ export enum OverlayType {
 
 const FluxQueryBuilder: FC = () => {
   const history = useHistory()
-  const {hasChanged, query, vertical, setVertical} =
-    useContext(PersistanceContext)
+  const {hasChanged, vertical, setVertical} = useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
   const {cancel} = useContext(QueryContext)
@@ -139,11 +138,6 @@ const FluxQueryBuilder: FC = () => {
                   onClick={handleNewScript}
                   text={isFlagEnabled('saveAsScript') ? 'New Script' : 'Clear'}
                   icon={IconFont.Plus_New}
-                  status={
-                    query.length === 0
-                      ? ComponentStatus.Disabled
-                      : ComponentStatus.Default
-                  }
                   testID="flux-query-builder--new-script"
                 />
                 {isFlagEnabled('saveAsScript') && (

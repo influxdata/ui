@@ -205,7 +205,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
                 justifyContent={JustifyContent.SpaceBetween}
                 alignItems={AlignItems.Center}
               >
-                <span className="global-header--align-center">
+                <span className="global-header--main-dropdown-item">
                   {iconEl}
                   {textEl}
                 </span>

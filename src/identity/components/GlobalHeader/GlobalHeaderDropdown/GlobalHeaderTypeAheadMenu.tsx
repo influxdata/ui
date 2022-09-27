@@ -29,7 +29,7 @@ type State = {
 }
 
 export class GlobalHeaderTypeAheadMenu extends React.Component<Props, State> {
-  private listItemHeight = 50
+  private listItemHeight = 52
   private maxDropdownHeight = 150
   constructor(props: Props) {
     super(props)

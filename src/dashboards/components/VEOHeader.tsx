@@ -12,6 +12,7 @@ import {
 } from '@influxdata/clockface'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
 import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
+import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 
 // Constants
 import {
@@ -48,6 +49,7 @@ class VEOHeader extends PureComponent<Props> {
             <VisOptionsButton />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
+            <TimeZoneDropdown />
             <SquareButton
               icon={IconFont.Remove_New}
               onClick={onCancel}

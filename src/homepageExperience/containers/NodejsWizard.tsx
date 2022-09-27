@@ -23,12 +23,14 @@ import {normalizeEventName} from 'src/cloud/utils/reporting'
 
 import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'
 
-import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
-
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  scrollNextPageIntoView,
+  HOMEPAGE_NAVIGATION_STEPS,
+} from 'src/homepageExperience/utils'
 
 interface State {
   currentStep: number
@@ -84,6 +86,7 @@ export class NodejsWizard extends PureComponent<null, State> {
             ),
           }
         )
+        scrollNextPageIntoView()
       }
     )
   }
@@ -104,6 +107,7 @@ export class NodejsWizard extends PureComponent<null, State> {
             ),
           }
         )
+        scrollNextPageIntoView()
       }
     )
   }
@@ -119,6 +123,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         ),
       }
     )
+    scrollNextPageIntoView()
   }
 
   renderStep = () => {

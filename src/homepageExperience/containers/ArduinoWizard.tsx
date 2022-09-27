@@ -26,7 +26,10 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {HOMEPAGE_NAVIGATION_STEPS_ARDUINO} from 'src/homepageExperience/utils'
+import {
+  scrollNextPageIntoView,
+  HOMEPAGE_NAVIGATION_STEPS_ARDUINO,
+} from 'src/homepageExperience/utils'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -85,6 +88,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
             ),
           }
         )
+        scrollNextPageIntoView()
       }
     )
   }
@@ -105,6 +109,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
             ),
           }
         )
+        scrollNextPageIntoView()
       }
     )
   }
@@ -120,6 +125,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
         ),
       }
     )
+    scrollNextPageIntoView()
   }
 
   renderStep = () => {

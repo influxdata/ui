@@ -142,7 +142,7 @@ const ResultsPane: FC = () => {
         event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)
       })
-  }, [text])
+  }, [text, range])
 
   const timeVars = [
     getRangeVariable(TIME_RANGE_START, range),

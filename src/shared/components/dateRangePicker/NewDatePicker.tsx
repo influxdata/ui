@@ -360,7 +360,6 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
             const testID = label.toLowerCase().replace(/\s/g, '')
             return (
               <Dropdown.Item
-                className="date-picker--dropdown-items"
                 key={label}
                 value={label}
                 id={label}

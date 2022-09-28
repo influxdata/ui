@@ -292,7 +292,6 @@
 
 .date-picker--label__options {
   margin-bottom: $ix-marg-a;
-  margin-left: $ix-marg-b;
   margin-top: $ix-marg-b;
 }
 
@@ -335,10 +334,6 @@
 
 .date-picker--question-mark {
   margin-left: $ix-marg-b;
-}
-
-.date-picker--dropdown-items {
-  position: absolute;
 }
 
 .date-picker--form {

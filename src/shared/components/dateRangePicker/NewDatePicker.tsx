@@ -14,6 +14,7 @@ import {
   InputLabel,
   InputType,
   QuestionMarkTooltip,
+  Icon,
 } from '@influxdata/clockface'
 import ReactDatePicker from 'react-datepicker'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
@@ -25,36 +26,41 @@ import {useSelector} from 'react-redux'
 import {getTimeZone} from 'src/dashboards/selectors'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {isValidDatepickerFormat} from 'src/shared/components/dateRangePicker/utils'
+import {TimeRange} from 'src/types'
 
 const NBSP = '\u00a0\u00a0'
+const MAX_WIDTH_FOR_CUSTOM_TIMES = 325
 
-const DatePicker: FC = () => {
+interface Props {
+  onCollapse: () => void
+  timeRange: TimeRange
+  timeRangeLabel: string
+}
+
+const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   const timeZone = useSelector(getTimeZone)
-  const {range, setRange} = useContext(PersistanceContext)
+  const {setRange} = useContext(PersistanceContext)
 
-  const [timeRange, setTimeRange] = useState(range)
   const [inputStartDate, setInputStartDate] = useState(timeRange?.lower)
   const [inputEndDate, setInputEndDate] = useState(timeRange?.upper)
   const [inputStartErrorMessage, setInputStartErrorMessage] = useState(NBSP)
   const [inputEndErrorMessage, setInputEndErrorMessage] = useState(NBSP)
 
   const handleSetTimeRange = useCallback(() => {
-    let matchingRange = range
-    if (range.type === 'selectable-duration') {
+    let matchingRange = timeRange
+    if (timeRange.type === 'selectable-duration') {
       matchingRange = SELECTABLE_TIME_RANGES.find(r => {
-        return r.seconds === range.seconds
+        return r.seconds === timeRange.seconds
       })
       setInputStartDate(`-${matchingRange.lower.split(' - ')[1]}`)
       setInputEndDate('now()')
     }
-    setTimeRange(matchingRange)
-  }, [range])
+  }, [timeRange])
 
   useEffect(() => {
     handleSetTimeRange()
-  }, [handleSetTimeRange, range.lower, range.upper])
-  const timeRangeLabel = getTimeRangeLabel(timeRange, timeZone)
+  }, [handleSetTimeRange, timeRange.lower, timeRange.upper])
 
   const [dateRange, setDateRange] = useState([null, null])
   const [startDate, endDate] = dateRange
@@ -138,14 +144,17 @@ const DatePicker: FC = () => {
       startInput = `${dateParts} ${timeParts}`
     }
     if (endInput instanceof Date) {
+      const endDate = new Date(endInput)
+      // this sets the time to the end of the selected end day
+      endDate.setMinutes(endDate.getMinutes() - 1)
       const dateParts = [
-        endInput.getFullYear(),
-        endInput.getMonth() + 1,
-        endInput.getDate(),
+        endDate.getFullYear(),
+        endDate.getMonth() + 1,
+        endDate.getDate() + 1,
       ]
         .map(pad)
         .join('-')
-      const timeParts = [endInput.getHours(), endInput.getMinutes()]
+      const timeParts = [endDate.getHours(), endDate.getMinutes()]
         .map(pad)
         .join(':')
       endInput = `${dateParts} ${timeParts}`
@@ -221,8 +230,186 @@ const DatePicker: FC = () => {
   }
 
   return (
+    <Dropdown.Menu
+      style={{
+        width: isDatePickerOpen ? 669 : 400,
+      }}
+      className="date-picker--menu"
+      maxHeight={367}
+    >
+      <FlexBox direction={FlexDirection.Row} alignItems={AlignItems.Stretch}>
+        {isDatePickerOpen && (
+          <div className="react-datepicker-ignore-onclickoutside date-picker--calendar-dropdown">
+            <div className="date-picker__select-date-picker range-picker--date-pickers">
+              <InputLabel className="date-picker--label__calendar">
+                Calendar
+              </InputLabel>
+              <ReactDatePicker
+                calendarClassName="range-picker--calendar"
+                dateFormat="yyyy-MM-dd HH:mm"
+                dayClassName={dayClassName}
+                disabledKeyboardNavigation
+                fixedHeight
+                inline
+                selectsRange
+                shouldCloseOnSelect={false}
+                startOpen
+                startDate={startDate}
+                endDate={endDate}
+                onChange={handleSelectDate}
+              />
+            </div>
+          </div>
+        )}
+        <div className="date-picker--calendar-dropdown">
+          <div className="date-picker__select-time-range">
+            <InputLabel className="date-picker--label">
+              Select time range
+              <QuestionMarkTooltip
+                className="date-picker--question-mark"
+                diameter={18}
+                color={ComponentColor.Primary}
+                tooltipContents={
+                  <>
+                    Use a relative duration (now(), -1h, -5m),{'\n'}
+                    absolute time (2022-08-28 14:26:00),{'\n'}
+                    or integer (Unix timestamp in seconds,{'\n'}
+                    like 1567029600).&nbsp;
+                  </>
+                }
+                tooltipStyle={{maxWidth: 285}}
+              />
+            </InputLabel>
+            <Form.Element
+              className="date-picker--form"
+              label="From"
+              errorMessage={inputStartErrorMessage}
+              required
+            >
+              <Input
+                className="date-picker__input"
+                onChange={handleSetStartDate}
+                status={
+                  inputStartErrorMessage === NBSP
+                    ? ComponentStatus.Default
+                    : ComponentStatus.Error
+                }
+                type={InputType.Text}
+                value={inputStartDate ?? ''}
+              >
+                <div
+                  className="date-picker--calendar-icon"
+                  onClick={handleOpenCalendar}
+                >
+                  <Icon glyph={IconFont.Calendar} />
+                </div>
+              </Input>
+            </Form.Element>
+            <Form.Element label="To" errorMessage={inputEndErrorMessage}>
+              <Input
+                className="date-picker__input"
+                onChange={handleSetEndDate}
+                status={
+                  inputEndErrorMessage === NBSP
+                    ? ComponentStatus.Default
+                    : ComponentStatus.Error
+                }
+                type={InputType.Text}
+                value={inputEndDate ?? ''}
+              >
+                <div
+                  className="date-picker--calendar-icon"
+                  onClick={handleOpenCalendar}
+                >
+                  <Icon glyph={IconFont.Calendar} />
+                </div>
+              </Input>
+            </Form.Element>
+            <InputLabel className="date-picker--label__timezone">
+              Time Zone
+            </InputLabel>
+            <div className="date-picker--timezone-container">
+              <TimeZoneDropdown />
+            </div>
+            <Button
+              className="date-picker__apply-time-range"
+              color={ComponentColor.Primary}
+              size={ComponentSize.Small}
+              onClick={() => handleApplyTimeRange(onCollapse)}
+              text="Apply Time Range"
+              testID="daterange--apply-btn"
+              status={
+                inputStartDate != null &&
+                inputStartErrorMessage === NBSP &&
+                inputEndErrorMessage === NBSP
+                  ? ComponentStatus.Default
+                  : ComponentStatus.Disabled
+              }
+            />
+          </div>
+        </div>
+        <div style={{height: '100%', display: 'flex', flexDirection: 'column'}}>
+          <InputLabel
+            className="date-picker--label__options"
+            style={{flex: '0 0 auto'}}
+          >
+            Time range options
+          </InputLabel>
+          <div
+            style={{
+              background: 'transparent',
+              flex: '1 1 auto',
+            }}
+          >
+            {SELECTABLE_TIME_RANGES.map(range => {
+              const {label} = range
+              const testID = label.toLowerCase().replace(/\s/g, '')
+              return (
+                <Dropdown.Item
+                  className="date-picker--dropdown-items"
+                  key={label}
+                  value={label}
+                  id={label}
+                  testID={`dropdown-item-${testID}`}
+                  selected={label === timeRangeLabel}
+                  style={{width: 135}}
+                  onClick={() => handleClickDropdownItem(range, onCollapse)}
+                >
+                  {label}
+                </Dropdown.Item>
+              )
+            })}
+          </div>
+        </div>
+      </FlexBox>
+    </Dropdown.Menu>
+  )
+}
+
+const DatePicker: FC = () => {
+  const timeZone = useSelector(getTimeZone)
+  const {range} = useContext(PersistanceContext)
+
+  const [timeRange, setTimeRange] = useState(range)
+
+  const handleSetTimeRange = useCallback(() => {
+    let matchingRange = range
+    if (range.type === 'selectable-duration') {
+      matchingRange = SELECTABLE_TIME_RANGES.find(r => {
+        return r.seconds === range.seconds
+      })
+    }
+    setTimeRange(matchingRange)
+  }, [range])
+
+  useEffect(() => {
+    handleSetTimeRange()
+  }, [handleSetTimeRange, range.lower, range.upper])
+  const timeRangeLabel = getTimeRangeLabel(timeRange, timeZone)
+
+  return (
     <Dropdown
-      style={{width: 159}}
+      style={{minWidth: 159, maxWidth: MAX_WIDTH_FOR_CUSTOM_TIMES}}
       testID="timerange-dropdown"
       button={(active, onClick) => (
         <Dropdown.Button
@@ -234,159 +421,11 @@ const DatePicker: FC = () => {
         </Dropdown.Button>
       )}
       menu={onCollapse => (
-        <Dropdown.Menu
-          style={{
-            width: isDatePickerOpen ? 669 : 400,
-          }}
-          className="date-picker--menu"
-          maxHeight={367}
-        >
-          <FlexBox
-            direction={FlexDirection.Row}
-            alignItems={AlignItems.Stretch}
-          >
-            {isDatePickerOpen && (
-              <Dropdown.Item
-                className="react-datepicker-ignore-onclickoutside date-picker--calendar-dropdown"
-                selected={false}
-              >
-                <div className="date-picker__select-date-picker range-picker--date-pickers">
-                  <InputLabel className="date-picker--label__calendar">
-                    Calendar
-                  </InputLabel>
-                  <ReactDatePicker
-                    calendarClassName="range-picker--calendar"
-                    dateFormat="yyyy-MM-dd HH:mm"
-                    dayClassName={dayClassName}
-                    disabledKeyboardNavigation
-                    fixedHeight
-                    inline
-                    selectsRange
-                    shouldCloseOnSelect={false}
-                    startOpen
-                    startDate={startDate}
-                    endDate={endDate}
-                    onChange={handleSelectDate}
-                  />
-                </div>
-              </Dropdown.Item>
-            )}
-            <Dropdown.Item
-              className="date-picker--calendar-dropdown"
-              selected={false}
-            >
-              <div className="date-picker__select-time-range">
-                <InputLabel className="date-picker--label">
-                  Select time range
-                  <QuestionMarkTooltip
-                    className="date-picker--question-mark"
-                    diameter={18}
-                    color={ComponentColor.Primary}
-                    tooltipContents={
-                      <>
-                        Use a relative duration (now(), -1h, -5m),{'\n'}
-                        absolute time (2022-08-28 14:26:00),{'\n'}
-                        or integer (Unix timestamp in seconds,{'\n'}
-                        like 1567029600).&nbsp;
-                      </>
-                    }
-                    tooltipStyle={{maxWidth: 285}}
-                  />
-                </InputLabel>
-                <Form.Element
-                  label="From"
-                  errorMessage={inputStartErrorMessage}
-                  required
-                >
-                  <Input
-                    className="date-picker__input"
-                    onChange={handleSetStartDate}
-                    status={
-                      inputStartErrorMessage === NBSP
-                        ? ComponentStatus.Default
-                        : ComponentStatus.Error
-                    }
-                    type={InputType.Text}
-                    value={inputStartDate}
-                  >
-                    <Button
-                      className="date-picker--calendar-icon"
-                      onClick={handleOpenCalendar}
-                      icon={IconFont.Calendar}
-                      size={ComponentSize.Small}
-                    />
-                  </Input>
-                </Form.Element>
-                <Form.Element label="To" errorMessage={inputEndErrorMessage}>
-                  <Input
-                    className="date-picker__input"
-                    onChange={handleSetEndDate}
-                    status={
-                      inputEndErrorMessage === NBSP
-                        ? ComponentStatus.Default
-                        : ComponentStatus.Error
-                    }
-                    type={InputType.Text}
-                    value={inputEndDate}
-                  >
-                    <Button
-                      className="date-picker--calendar-icon"
-                      onClick={handleOpenCalendar}
-                      icon={IconFont.Calendar}
-                      size={ComponentSize.Small}
-                    />
-                  </Input>
-                </Form.Element>
-                <InputLabel className="date-picker--label__timezone">
-                  Time Zone
-                </InputLabel>
-                <div className="date-picker--timezone-container">
-                  <TimeZoneDropdown />
-                </div>
-                <Button
-                  className="date-picker__apply-time-range"
-                  color={ComponentColor.Primary}
-                  size={ComponentSize.Small}
-                  onClick={() => handleApplyTimeRange(onCollapse)}
-                  text="Apply Time Range"
-                  testID="daterange--apply-btn"
-                  status={
-                    inputStartDate != null &&
-                    inputStartErrorMessage === NBSP &&
-                    inputEndErrorMessage === NBSP
-                      ? ComponentStatus.Default
-                      : ComponentStatus.Disabled
-                  }
-                />
-              </div>
-            </Dropdown.Item>
-            <FlexBox
-              direction={FlexDirection.Column}
-              style={{background: 'transparent'}}
-            >
-              <InputLabel className="date-picker--label__options">
-                Time range options
-              </InputLabel>
-              {SELECTABLE_TIME_RANGES.map(range => {
-                const {label} = range
-                const testID = label.toLowerCase().replace(/\s/g, '')
-                return (
-                  <Dropdown.Item
-                    key={label}
-                    value={label}
-                    id={label}
-                    testID={`dropdown-item-${testID}`}
-                    selected={label === timeRangeLabel}
-                    style={{width: 135}}
-                    onClick={() => handleClickDropdownItem(range, onCollapse)}
-                  >
-                    {label}
-                  </Dropdown.Item>
-                )
-              })}
-            </FlexBox>
-          </FlexBox>
-        </Dropdown.Menu>
+        <DatePickerMenu
+          onCollapse={onCollapse}
+          timeRange={timeRange}
+          timeRangeLabel={timeRangeLabel}
+        />
       )}
     />
   )

@@ -275,7 +275,7 @@
 }
 
 .date-picker--timezone-container {
-  margin-bottom: $ix-marg-b;
+  margin-bottom: 24px;
   button {
     background: $cf-grey-35;
   }
@@ -292,6 +292,7 @@
 
 .date-picker--label__options {
   margin-bottom: $ix-marg-a;
+  margin-left: $ix-marg-b;
   margin-top: $ix-marg-b;
 }
 
@@ -323,13 +324,26 @@
   }
 }
 
-.cf-button-sm.cf-button-default.cf-button.date-picker--calendar-icon {
-  background: $cf-grey-35;
-  top: 1px;
-  right: 1px;
-  border-radius: 0;
+.date-picker--calendar-icon {
+  display: inline-flex;
+  padding: 0 12px;
+  background: #4d4d60;
+  height: 100%;
+  align-items: center;
+  position: absolute;
 }
 
 .date-picker--question-mark {
   margin-left: $ix-marg-b;
+}
+
+.date-picker--dropdown-items {
+  position: absolute;
+}
+
+.date-picker--form {
+  .cf-form--label,
+  .cf-form--element-error {
+    font-size: 14px;
+  }
 }

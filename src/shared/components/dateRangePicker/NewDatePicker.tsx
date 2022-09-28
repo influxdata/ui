@@ -348,39 +348,32 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
             />
           </div>
         </div>
-        <div style={{height: '100%', display: 'flex', flexDirection: 'column'}}>
-          <InputLabel
-            className="date-picker--label__options"
-            style={{flex: '0 0 auto'}}
-          >
+        <FlexBox
+          direction={FlexDirection.Column}
+          style={{background: 'transparent'}}
+        >
+          <InputLabel className="date-picker--label__options">
             Time range options
           </InputLabel>
-          <div
-            style={{
-              background: 'transparent',
-              flex: '1 1 auto',
-            }}
-          >
-            {SELECTABLE_TIME_RANGES.map(range => {
-              const {label} = range
-              const testID = label.toLowerCase().replace(/\s/g, '')
-              return (
-                <Dropdown.Item
-                  className="date-picker--dropdown-items"
-                  key={label}
-                  value={label}
-                  id={label}
-                  testID={`dropdown-item-${testID}`}
-                  selected={label === timeRangeLabel}
-                  style={{width: 135}}
-                  onClick={() => handleClickDropdownItem(range, onCollapse)}
-                >
-                  {label}
-                </Dropdown.Item>
-              )
-            })}
-          </div>
-        </div>
+          {SELECTABLE_TIME_RANGES.map(range => {
+            const {label} = range
+            const testID = label.toLowerCase().replace(/\s/g, '')
+            return (
+              <Dropdown.Item
+                className="date-picker--dropdown-items"
+                key={label}
+                value={label}
+                id={label}
+                testID={`dropdown-item-${testID}`}
+                selected={label === timeRangeLabel}
+                style={{width: 135}}
+                onClick={() => handleClickDropdownItem(range, onCollapse)}
+              >
+                {label}
+              </Dropdown.Item>
+            )
+          })}
+        </FlexBox>
       </FlexBox>
     </Dropdown.Menu>
   )

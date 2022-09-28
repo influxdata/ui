@@ -1,6 +1,7 @@
 // Libraries
 import React, {MouseEvent} from 'react'
 import {Link} from 'react-router-dom'
+import classNames from 'classnames'
 
 // Components
 import {
@@ -14,12 +15,12 @@ import {
   JustifyContent,
   StandardFunctionProps,
 } from '@influxdata/clockface'
+import GlobalHeaderTypeAheadMenu from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
 
 // Styles
-import './GlobalHeaderDropdown.scss'
+import 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderDropdown.scss'
 
 // Types
-import GlobalHeaderTypeAheadMenu from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
 
 // Eventing
 import {
@@ -33,6 +34,7 @@ export interface MainMenuItem {
   name: string
   iconFont: string
   href: string
+  className?: string
 }
 
 export interface TypeAheadMenuItem {
@@ -60,6 +62,7 @@ export interface Props extends StandardFunctionProps {
   typeAheadOnSelectOption?: (item: TypeAheadMenuItem | null) => void
   typeAheadSelectedOption?: TypeAheadMenuItem
   typeAheadTestID?: string
+  additionalHeaderItems?: JSX.Element[]
 }
 
 type State = {
@@ -122,13 +125,17 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
             <Icon glyph={menuItem.iconFont} className="button-icon" />
           )
           const textEl = <span>{menuItem.name}</span>
+          const addMoreOrgsClassNames = classNames(
+            'global-header--main-dropdown-item',
+            menuItem.className ?? ''
+          )
           return (
             <div
               onClick={this.sendMainMenuEvent(menuItem.name)}
               key={`eventWrapper.${menuItem.name}`}
             >
               <Dropdown.LinkItem
-                className="global-header--main-dropdown-item"
+                className={addMoreOrgsClassNames}
                 key={menuItem.name}
                 testID={`${this.props.mainMenuTestID}-${menuItem.name}`}
                 selected={false}
@@ -178,6 +185,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       mainMenuHeaderText,
       onlyRenderSubmenu = false,
       typeAheadMenuOptions,
+      additionalHeaderItems = [],
     } = this.props
     const {showTypeAheadMenu} = this.state
 
@@ -188,6 +196,14 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         className="button-icon"
       />
     )
+    const showSwitchOrgItem =
+      !onlyRenderSubmenu && typeAheadMenuOptions.length > 1
+    const showAdditionalHeaderItems =
+      !onlyRenderSubmenu &&
+      !showTypeAheadMenu &&
+      additionalHeaderItems.length > 0
+    const showDivider = showSwitchOrgItem || showAdditionalHeaderItems
+
     return (
       <Dropdown.Menu
         style={dropdownMenuStyle}
@@ -195,8 +211,8 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
         testID={this.props.mainMenuTestID}
       >
         {/* Multi-org UI tickets #4051 and #4047, when user only has 1 account or 1 org, switch button is disabled */}
-        {!onlyRenderSubmenu && typeAheadMenuOptions.length > 1 && (
-          <>
+        <>
+          {showSwitchOrgItem && (
             <Dropdown.Item
               onClick={this.toggleShowTypeAheadMenu}
               className="global-header--switch-button"
@@ -218,9 +234,10 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
                 )}
               </FlexBox>
             </Dropdown.Item>
-            <hr className="line-break" />
-          </>
-        )}
+          )}
+          {showAdditionalHeaderItems && additionalHeaderItems}
+          {showDivider && <hr className="line-break" />}
+        </>
         {showTypeAheadMenu
           ? this.renderTypeAheadMenu()
           : this.renderMainMenuOptions(onCollapse)}

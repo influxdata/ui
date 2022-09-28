@@ -135,6 +135,10 @@ class LspConnectionManager {
     })
   }
 
+  /// XXX: wiedld (27 Sep 2022) -- This heuristic is wrong.
+  /// We currently have no way to detect when a change is due to an applyEdit from the LSP.
+  /// versus other changes in the same range, with the same `|> yield(name: "_editor_composition")` included.
+  /// one example is the undo [cmd+z], which "looks" exactly like the previous applyEdit.
   _editorChangeIsFromLsp(change) {
     return change.text?.includes('|> yield(name: "_editor_composition")')
   }

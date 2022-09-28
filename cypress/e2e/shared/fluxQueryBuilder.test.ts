@@ -15,6 +15,7 @@ describe('Script Builder', () => {
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
+    writeData.push(`ndbc2,air_temp_degc=70_degrees station_id_${i}=${i}`)
   }
 
   const bucketName = 'defbuck'
@@ -312,7 +313,7 @@ describe('Script Builder', () => {
       })
     })
 
-    describe('default sync and resetting behavior:', () => {
+    describe('sync and resetting behavior:', () => {
       it('sync defaults to on. Can be toggled on/off. And can diverge (be disabled).', () => {
         cy.log('starts as synced')
         cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
@@ -344,7 +345,110 @@ describe('Script Builder', () => {
         )
       })
 
-      it('should clear the editor text, and schema browser, with a new script', () => {
+      describe('conditions for divergence:', () => {
+        it('diverges when typing in composition block', () => {
+          cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+          cy.getByTestID('flux-editor', {timeout: 30000})
+          selectSchema()
+          confirmSchemaComposition()
+
+          cy.log('does not diverge when outside block')
+          cy.getByTestID('flux-editor').monacoType('// will not diverge')
+          cy.getByTestID('flux-sync--toggle').should(
+            'not.have.class',
+            'disabled'
+          )
+
+          cy.log('does diverge, within block')
+          cy.getByTestID('flux-editor').monacoType(
+            '{enter}{upArrow}{upArrow}{upArrow} // make diverge'
+          )
+          cy.log('toggle is now disabled')
+          cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
+        })
+
+        it('deleting the entire composition block, does NOT diverge; still able to create next composition', () => {
+          cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+          cy.getByTestID('flux-editor', {timeout: 30000})
+          selectSchema()
+          confirmSchemaComposition()
+          cy.getByTestID('flux-editor').monacoType('{selectall}{backspace}')
+
+          cy.log('sync is still active')
+          cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+        })
+
+        describe('using hotkeys:', () => {
+          const runTest = (hotKeyCombo: string) => {
+            cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+            cy.getByTestID('flux-editor', {timeout: 30000})
+            selectSchema()
+            confirmSchemaComposition()
+
+            cy.log('does not diverge when outside block')
+            cy.getByTestID('flux-editor').monacoType(`foo ${hotKeyCombo}`)
+            cy.getByTestID('flux-sync--toggle').should(
+              'not.have.class',
+              'disabled'
+            )
+
+            cy.log('does diverge, within block')
+            cy.getByTestID('flux-editor').monacoType(
+              `{upArrow}{upArrow}{upArrow} ${hotKeyCombo}`
+            )
+            cy.log('toggle is now disabled')
+            cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
+          }
+
+          it('diverges when commenting line', () => {
+            runTest('{cmd}/')
+          })
+
+          it('diverges when adding lines', () => {
+            runTest('{shift+alt+downArrow}')
+          })
+
+          it('diverges when removing lines', () => {
+            runTest('{cmd+x}')
+          })
+
+          it('diverges when moving lines', () => {
+            runTest('{alt+downArrow}')
+          })
+
+          /// XXX: wiedld (27 Sep 2022) -- we have no way to delineate btwn the LSP applyEdit,
+          /// and the undo action applyEdit.
+          /// Either we disable the undo/redo hotkeys, or accept this edge case bug.
+          it.skip('diverges when using undo hotkeys, to undo composition block change', () => {
+            cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+            cy.getByTestID('flux-editor', {timeout: 30000})
+            selectSchema()
+            confirmSchemaComposition()
+
+            cy.log('make a change, via schema composition')
+            const newMeasurement = 'ndbc2'
+            cy.getByTestID('measurement-selector--dropdown-button').click()
+            cy.getByTestID(`searchable-dropdown--item ${newMeasurement}`)
+              .should('be.visible')
+              .click()
+            cy.getByTestID('measurement-selector--dropdown-button').should(
+              'contain',
+              newMeasurement
+            )
+            cy.getByTestID('flux-editor').contains(
+              `|> filter(fn: (r) => r._measurement == "${newMeasurement}")`
+            )
+
+            cy.log('use undo hotkey')
+            cy.getByTestID('flux-editor').monacoType('{cmd+z}')
+
+            cy.log('toggle is now disabled')
+            cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
+          })
+        })
+      })
+
+      it('should clear the editor text and schema browser, with a new script', () => {
         cy.getByTestID('flux-editor', {timeout: 30000})
 
         cy.log('modify schema browser')

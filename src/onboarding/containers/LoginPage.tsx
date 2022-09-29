@@ -56,15 +56,23 @@ export const LoginPage: FC = () => {
   } else {
     if (isFlagEnabled('universalLogin')) {
       if (CLOUD) {
-        fetch('/api/env/quartz-login-url').then(response => {
-          response.text().then((response) => {
-            const redirectUrl = response
-            console.warn('Redirect to cloud url: ', redirectUrl)
-            window.location.replace(redirectUrl)
-          }).catch(error => {
-            console.error("Failed to fetch /api/env/quartz-login-url", error)
+        fetch('/api/env/quartz-login-url')
+          .then(response => {
+            response
+              .text()
+              .then(response => {
+                const redirectUrl = response
+                console.warn('Redirect to cloud url: ', redirectUrl)
+                window.location.replace(redirectUrl)
+              })
+              .catch(error => {
+                console.error(
+                  'Failed to fetch /api/env/quartz-login-url',
+                  error
+                )
+              })
           })
-        }).catch(error => console.error(error))
+          .catch(error => console.error(error))
         return
       }
     }

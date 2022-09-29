@@ -227,15 +227,6 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Aggregate Functions</h5>
-          <Form.Element label="Time Format">
-            <SelectDropdown
-              options={FORMAT_OPTIONS.map(option => option.text)}
-              selectedOption={resolveTimeFormat(properties.timeFormat)}
-              onSelect={(format: string) => {
-                update({timeFormat: format})
-              }}
-            />
-          </Form.Element>
           <Form.Element label="Upper Column">
             <Dropdown
               button={(active, onClick) => {
@@ -342,6 +333,15 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Options</h5>
+          <Form.Element label="Time Format">
+            <SelectDropdown
+              options={FORMAT_OPTIONS.map(option => option.text)}
+              selectedOption={resolveTimeFormat(properties.timeFormat)}
+              onSelect={(format: string) => {
+                update({timeFormat: format})
+              }}
+            />
+          </Form.Element>
           {properties.geom && (
             <Form.Element label="Interpolation">
               <Dropdown

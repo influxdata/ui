@@ -1,5 +1,5 @@
+// Libraries
 import React, {FC, useEffect} from 'react'
-
 import {
   ButtonShape,
   Columns,
@@ -14,8 +14,7 @@ import {
   SelectGroup,
 } from '@influxdata/clockface'
 
-import AutoDomainInput from 'src/shared/components/AutoDomainInput'
-import {AXES_SCALE_OPTIONS} from 'src/visualization/constants'
+// Utils
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
@@ -25,13 +24,22 @@ import {
   defaultYColumn,
   parseYBounds,
 } from 'src/shared/utils/vis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Components
+import {AdaptiveZoomToggle} from 'src/visualization/components/internal/AdaptiveZoomOption'
+import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 
+// Types
 import {BandViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
+
+// Constants
+import {AXES_SCALE_OPTIONS} from 'src/visualization/constants'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 const REMOVE_COLUMN = '(none)'
@@ -205,6 +213,20 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
               }
             />
           </Form.Element>
+          {isFlagEnabled('zoomRequery') && (
+            <AdaptiveZoomToggle
+              adaptiveZoomHide={properties.adaptiveZoomHide}
+              type={properties.type}
+              update={update}
+            />
+          )}
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
+          <h5 className="view-options--header">Aggregate Functions</h5>
           <Form.Element label="Time Format">
             <SelectDropdown
               options={FORMAT_OPTIONS.map(option => option.text)}
@@ -214,13 +236,6 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-        </Grid.Column>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthMD={Columns.Six}
-          widthLG={Columns.Four}
-        >
-          <h5 className="view-options--header">Aggregate Functions</h5>
           <Form.Element label="Upper Column">
             <Dropdown
               button={(active, onClick) => {

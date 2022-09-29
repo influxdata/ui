@@ -367,17 +367,6 @@ describe('Script Builder', () => {
           cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
         })
 
-        it('deleting the entire composition block, does NOT diverge; still able to create next composition', () => {
-          cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-          cy.getByTestID('flux-editor', {timeout: 30000})
-          selectSchema()
-          confirmSchemaComposition()
-          cy.getByTestID('flux-editor').monacoType('{selectall}{backspace}')
-
-          cy.log('sync is still active')
-          cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-        })
-
         describe('using hotkeys:', () => {
           const runTest = (hotKeyCombo: string) => {
             cy.getByTestID('flux-sync--toggle').should('have.class', 'active')

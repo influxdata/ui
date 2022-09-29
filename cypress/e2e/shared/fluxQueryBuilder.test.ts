@@ -62,7 +62,7 @@ describe('Script Builder', () => {
     })
   }
 
-  before(() => {
+  beforeEach(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {
         cy.get('@org').then(({id, name}: Organization) => {

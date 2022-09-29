@@ -58,7 +58,11 @@ export default function script(register) {
             description: data.description,
             script: data.script,
           },
-        }).then(() => {
+        }).then(resp => {
+          if (resp.status !== 201) {
+            throw new Error(resp.data.message)
+          }
+
           return resource
         })
       }
@@ -71,17 +75,17 @@ export default function script(register) {
           language: 'flux',
         },
       }).then(resp => {
-        if (resp.status === 201) {
-          return {
-            ...resource,
-            data: {
-              ...data,
-              id: resp.data.id,
-            },
-          }
+        if (resp.status !== 201) {
+          throw new Error(resp.data.message)
         }
 
-        return resource
+        return {
+          ...resource,
+          data: {
+            ...data,
+            id: resp.data.id,
+          },
+        }
       })
     },
   })

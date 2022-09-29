@@ -1,4 +1,4 @@
-import React, {FC, useContext, useCallback, ChangeEvent} from 'react'
+import React, {FC, useContext, useCallback, ChangeEvent, useState} from 'react'
 import {
   Button,
   ComponentColor,
@@ -38,6 +38,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
     useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
+  const [error, setError] = useState<string>()
   const org = useSelector(getOrg)
 
   const handleClose = () => {
@@ -89,21 +90,22 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   }, [onClose, setStatus, setResult, cancel, history, org?.id])
 
   const handleSaveScript = () => {
-    try {
-      save().then(() => {
+    save()
+      .then(() => {
+        setError(null)
         dispatch(notify(scriptSaveSuccess(resource?.data?.name ?? '')))
+        if (type !== OverlayType.OPEN) {
+          onClose()
+        }
+
         if (type === OverlayType.NEW) {
           clear()
         }
       })
-    } catch (error) {
-      dispatch(notify(scriptSaveFail(resource?.data?.name ?? '')))
-      console.error({error})
-    } finally {
-      if (type !== OverlayType.OPEN) {
-        onClose()
-      }
-    }
+      .catch(error => {
+        dispatch(notify(scriptSaveFail(resource?.data?.name ?? '')))
+        setError(error.message)
+      })
   }
 
   if (type == null) {
@@ -153,12 +155,13 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
             type={InputType.Text}
             value={resource?.data?.name}
             onChange={handleUpdateName}
-            status={
-              resource?.data?.id
-                ? ComponentStatus.Disabled
-                : ComponentStatus.Default
-            }
+            status={error ? ComponentStatus.Error : ComponentStatus.Default}
           />
+          {error && (
+            <div className="cf-form--element-error save-script--error">
+              {error}
+            </div>
+          )}
           <InputLabel>Description</InputLabel>
           <Input
             name="description"
@@ -179,7 +182,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
           <Button
             color={ComponentColor.Default}
             onClick={clear}
-            text="No, Delete"
+            text="No, Discard"
             testID="flux-query-builder--no-save"
           />
         )}

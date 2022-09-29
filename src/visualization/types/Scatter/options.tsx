@@ -1,5 +1,5 @@
+// Libraries
 import React, {FC} from 'react'
-
 import {
   Input,
   Grid,
@@ -10,21 +10,28 @@ import {
   MultiSelectDropdown,
 } from '@influxdata/clockface'
 
+// Components
+import {AdaptiveZoomToggle} from 'src/visualization/components/internal/AdaptiveZoomOption'
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/visualization/components/internal/HexColorSchemeDropdown'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
-import {TimeDomainAutoToggle} from 'src/visualization/types/Scatter/TimeAutoToggle'
+
+// Utils
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
 } from 'src/visualization/utils/timeFormat'
-import {GIRAFFE_COLOR_SCHEMES} from 'src/shared/constants'
-
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Types
 import {ScatterViewProperties} from 'src/types'
+import {TimeDomainAutoToggle} from 'src/visualization/types/Scatter/TimeAutoToggle'
 import {VisualizationOptionProps} from 'src/visualization'
 
+// Constants
+import {GIRAFFE_COLOR_SCHEMES} from 'src/shared/constants'
 interface Props extends VisualizationOptionProps {
   properties: ScatterViewProperties
 }
@@ -167,6 +174,14 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               }
             />
           </Form.Element>
+          {isFlagEnabled('zoomRequery') && (
+            <AdaptiveZoomToggle
+              adaptiveZoomHide={properties.adaptiveZoomHide}
+              type={properties.type}
+              update={update}
+            />
+          )}
+          <h5 className="view-options--header">Options</h5>
           <Form.Element label="Time Format">
             <SelectDropdown
               options={FORMAT_OPTIONS.map(option => option.text)}
@@ -185,7 +200,6 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               />
             </Form.Element>
           )}
-          <h5 className="view-options--header">Options</h5>
           <Form.Element label="Color Scheme">
             <HexColorSchemeDropdown
               colorSchemes={GIRAFFE_COLOR_SCHEMES}

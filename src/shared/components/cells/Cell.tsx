@@ -130,7 +130,8 @@ class CellComponent extends Component<Props, State> {
     switch (type) {
       case 'xy':
       case 'line-plus-single-stat':
-      case 'band': {
+      case 'band':
+      case 'scatter': {
         if (this.props.windowPeriodFromQueryBuilder === AGG_WINDOW_AUTO) {
           return (
             <span className="cell--window-period">

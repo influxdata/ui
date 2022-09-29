@@ -20,13 +20,6 @@ import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-let getQuartzLoginUrl
-
-if (CLOUD) {
-  getQuartzLoginUrl =
-    require('src/client/uiproxydRoutes').getUiproxyQuartzLoginUrl
-}
-
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
 export const LoginPage: FC = () => {
@@ -63,13 +56,15 @@ export const LoginPage: FC = () => {
   } else {
     if (isFlagEnabled('universalLogin')) {
       if (CLOUD) {
-        getQuartzLoginUrl({})
-          .then(response => {
-            const redirectUrl = response.data
+        fetch('/api/env/quartz-login-url').then(response => {
+          response.text().then((response) => {
+            const redirectUrl = response
             console.warn('Redirect to cloud url: ', redirectUrl)
             window.location.replace(redirectUrl)
+          }).catch(error => {
+            console.error("Failed to fetch /api/env/quartz-login-url", error)
           })
-          .catch(error => console.error(error))
+        }).catch(error => console.error(error))
         return
       }
     }

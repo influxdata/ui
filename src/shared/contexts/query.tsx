@@ -1,49 +1,114 @@
 import React, {FC, useEffect, useRef} from 'react'
+import {useDispatch} from 'react-redux'
 import {useSelector} from 'react-redux'
 import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 import {getOrg} from 'src/organizations/selectors'
-import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
-import {
-  FluxResult,
-  QueryScope,
-  InternalFromFluxResult,
-  Column,
-} from 'src/types/flows'
+import {fromFlux} from '@influxdata/giraffe'
+import {FluxResult} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
+import {FLUX_RESPONSE_BYTES_LIMIT} from 'src/shared/constants'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
+  GATEWAY_TIMEOUT_STATUS,
+  REQUEST_TIMEOUT_STATUS,
 } from 'src/cloud/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {isFlagEnabled, getFlagValue} from 'src/shared/utils/featureFlag'
+import {notify} from 'src/shared/actions/notifications'
+import {resultTooLarge} from 'src/shared/copy/notifications'
 
 // Types
 import {CancellationError, File} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
+import {event} from 'src/cloud/utils/reporting'
 
 interface CancelMap {
   [key: string]: () => void
 }
 
+export enum OverrideMechanism {
+  Inline,
+  AST,
+  JSON,
+}
+
+export interface QueryOptions {
+  overrideMechanism: OverrideMechanism
+}
+
+export interface QueryScope {
+  region?: string
+  org?: string
+  token?: string
+  vars?: Record<string, string>
+  params?: Record<string, string>
+  task?: Record<string, string>
+}
+
+interface RequestDialect {
+  annotations: string[]
+}
+
+interface RequestBody {
+  query: string
+  dialect?: RequestDialect
+  options?: Record<string, any>
+  extern?: any
+}
+
+/*
+  Given an arbitrary text chunk of a Flux CSV, trim partial lines off of the end
+  of the text.
+
+  For example, given the following partial Flux response,
+
+            r,baz,3
+      foo,bar,baz,2
+      foo,bar,b
+
+  we want to trim the last incomplete line, so that the result is
+
+            r,baz,3
+      foo,bar,baz,2
+
+*/
+const trimPartialLines = (partialResp: string): string => {
+  let i = partialResp.length - 1
+
+  while (partialResp[i] !== '\n') {
+    if (i <= 0) {
+      return partialResp
+    }
+
+    i -= 1
+  }
+
+  return partialResp.slice(0, i + 1)
+}
 export interface QueryContextType {
-  basic: (text: string, override?: QueryScope) => any
-  query: (text: string, override?: QueryScope) => Promise<FluxResult>
+  basic: (text: string, override?: QueryScope, options?: QueryOptions) => any
+  query: (
+    text: string,
+    override?: QueryScope,
+    options?: QueryOptions
+  ) => Promise<FluxResult>
   cancel: (id?: string) => void
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
-  basic: (_: string, __?: QueryScope) => {},
-  query: (_: string, __?: QueryScope) => Promise.resolve({} as FluxResult),
+  basic: (_: string, __: QueryScope, ___: QueryOptions) => {},
+  query: (_: string, __: QueryScope, ___: QueryOptions) =>
+    Promise.resolve({} as FluxResult),
   cancel: (_?: string) => {},
 }
 
-export const QueryContext = React.createContext<QueryContextType>(
-  DEFAULT_CONTEXT
-)
+export const QueryContext =
+  React.createContext<QueryContextType>(DEFAULT_CONTEXT)
 
 const DESIRED_POINTS_PER_GRAPH = 360
 const FALLBACK_WINDOW_PERIOD = 15000
@@ -110,8 +175,8 @@ const _addWindowPeriod = (ast, optionAST): void => {
     ast,
     node =>
       node?.callee?.type === 'Identifier' && node?.callee?.name === 'range'
-  ).map(node =>
-    (node.arguments[0]?.properties || []).reduce(
+  ).map(node => {
+    return (node.arguments[0]?.properties || []).reduce(
       (acc, curr) => {
         if (curr.key.name === 'start') {
           acc.start = propertyTime(ast, curr.value, NOW)
@@ -128,12 +193,13 @@ const _addWindowPeriod = (ast, optionAST): void => {
         stop: NOW,
       }
     )
-  )
+  })
 
   const windowPeriod = find(
     optionAST,
     node => node?.type === 'Property' && node?.key?.name === 'windowPeriod'
   )
+
   if (!queryRanges.length) {
     windowPeriod.forEach(node => {
       node.value = {
@@ -183,9 +249,50 @@ const _addWindowPeriod = (ast, optionAST): void => {
   })
 }
 
-export const simplify = (text, vars = {}) => {
+const joinOption = (
+  ast: any,
+  optionName: string,
+  defaults: Record<string, string> = {}
+) => {
+  // remove and join duplicate options declared in the query
+  const joinedOption = remove(
+    ast,
+    node =>
+      node.type === 'OptionStatement' && node.assignment.id.name === optionName
+  ).reduce((acc, curr) => {
+    // eslint-disable-next-line no-extra-semi
+    ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+      if (_curr.key?.name && _curr.value?.location?.source) {
+        _acc[_curr.key.name] = _curr.value.location.source
+      }
+
+      return _acc
+    }, acc)
+
+    return acc
+  }, defaults)
+
+  const optionVals = Object.entries(joinedOption)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(',\n')
+  if (!optionVals.length) {
+    return null
+  }
+
+  return isFlagEnabled('fastFlows')
+    ? parseQuery(`option ${optionName} = {\n${optionVals}\n}\n`)
+    : parse(`option ${optionName} = {\n${optionVals}\n}\n`)
+}
+
+export const simplify = (text, vars = {}, params = {}) => {
   try {
     const ast = isFlagEnabled('fastFlows') ? parseQuery(text) : parse(text)
+
+    // find all `v.varname` references and apply
+    // their default value from `vars`
+    // filtering this way prevents flooding the query with all
+    // variable definitions on accident and simplifies the filtering
+    // logic required to support that by centralizing it here
     const referencedVars = find(
       ast,
       node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
@@ -196,75 +303,39 @@ export const simplify = (text, vars = {}) => {
         return acc
       }, {})
 
-    // Grab all variables that are defined in the query while removing the old definition from the AST
-    const queryDefinedVars = remove(
-      ast,
-      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
+    const variableOption = joinOption(ast, 'v', referencedVars)
 
-        return _acc
-      }, acc)
-
-      return acc
-    }, {})
-
-    // Merge the two variable maps, allowing for any user defined variables to override
-    // global system variables
-    Object.keys(queryDefinedVars).forEach(vari => {
-      if (referencedVars.hasOwnProperty(vari)) {
-        referencedVars[vari] = queryDefinedVars[vari]
-      }
-    })
-
-    const varVals = Object.entries(referencedVars)
-      .map(([k, v]) => `${k}: ${v}`)
-      .join(',\n')
-    const optionAST = isFlagEnabled('fastFlows')
-      ? parseQuery(`option v = {\n${varVals}\n}\n`)
-      : parse(`option v = {\n${varVals}\n}\n`)
-
-    if (varVals.length) {
-      ast.body.unshift(optionAST.body[0])
+    if (variableOption) {
+      ast.body.unshift(variableOption.body[0])
     }
 
     // load in windowPeriod at the last second, because it needs to self reference all the things
     if (referencedVars.hasOwnProperty('windowPeriod')) {
-      _addWindowPeriod(ast, optionAST)
+      _addWindowPeriod(ast, variableOption)
     }
 
-    // Join together any duplicate task options
-    const taskParams = remove(
+    // give the same treatment to parameters
+    const referencedParams = find(
       ast,
       node =>
-        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
+        node?.type === 'MemberExpression' && node?.object?.name === 'param'
     )
-      .reverse()
+      .map(node => node.property.name)
       .reduce((acc, curr) => {
-        // eslint-disable-next-line no-extra-semi
-        ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-          if (_curr.key?.name && _curr.value?.location?.source) {
-            _acc[_curr.key.name] = _curr.value.location.source
-          }
-
-          return _acc
-        }, acc)
-
+        acc[curr] = params[curr]
         return acc
       }, {})
 
-    if (Object.keys(taskParams).length) {
-      const taskVals = Object.entries(taskParams)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join(',\n')
-      const taskAST = isFlagEnabled('fastFlows')
-        ? parseQuery(`option task = {\n${taskVals}\n}\n`)
-        : parse(`option task = {\n${taskVals}\n}\n`)
-      ast.body.unshift(taskAST.body[0])
+    const paramOption = joinOption(ast, 'param', referencedParams)
+
+    if (paramOption) {
+      ast.body.unshift(paramOption.body[0])
+    }
+
+    // Join together any duplicate task options
+    const taskOption = joinOption(ast, 'task')
+    if (taskOption) {
+      ast.body.unshift(taskOption.body[0])
     }
 
     // turn it back into a query
@@ -273,118 +344,6 @@ export const simplify = (text, vars = {}) => {
     return ''
   }
 }
-
-const parseCSV = (() => {
-  const worker = new Worker('./csv.worker', {type: 'module'})
-  const queue = {}
-  let counter = 0
-
-  worker.onmessage = msg => {
-    const idx = msg.data[0]
-    const data = msg.data[1] as InternalFromFluxResult
-
-    if (!queue[idx]) {
-      return
-    }
-
-    // NOTE Only POJOs survive the jump between webworkers and the main thread, so here
-    // we have to rewrap the response to mimic the giraffe fromFlux interface
-
-    Object.defineProperty(data.table, 'length', {
-      get: () =>
-        (Object.values(data?.table?.columns ?? {})[0]?.data ?? []).length || 0,
-    })
-    Object.defineProperty(data.table, 'columnKeys', {
-      get: () => Object.keys(data.table.columns),
-    })
-    data.table.getColumn = (
-      columnKey: string,
-      columnType?: string
-    ): any[] | null => {
-      const column = data.table.columns[columnKey]
-
-      if (!column) {
-        return null
-      }
-
-      // Allow time columns to be retrieved as number columns
-      const isWideningTimeType =
-        columnType === 'number' && column.type === 'time'
-
-      if (columnType && columnType !== column.type && !isWideningTimeType) {
-        return null
-      }
-
-      switch (columnType) {
-        case 'number':
-          return column.data as number[]
-        case 'time':
-          return column.data as number[]
-        case 'string':
-          return column.data as string[]
-        case 'boolean':
-          return column.data as boolean[]
-        default:
-          return column.data as any[]
-      }
-    }
-
-    data.table.addColumn = (
-      columnKey: string,
-      fluxDataType: string,
-      type: string,
-      _data: any[],
-      name?: string
-    ) => {
-      data.table.columns[columnKey] = {
-        name: name || columnKey,
-        fluxDataType,
-        type,
-        data: _data,
-      } as Column
-
-      return data.table
-    }
-
-    data.table.getColumnName = (columnKey: string): string => {
-      const column = data.table.columns[columnKey]
-
-      if (!column) {
-        return null
-      }
-
-      return column.name
-    }
-
-    data.table.getColumnType = (columnKey: string) => {
-      const column = data.table.columns[columnKey]
-
-      if (!column) {
-        return null
-      }
-
-      return column.type
-    }
-
-    data.table.getOriginalColumnType = (columnKey: string) => {
-      const column = data.table.columns[columnKey]
-
-      if (!column) {
-        return null
-      }
-
-      return column.fluxDataType
-    }
-
-    queue[idx](data)
-  }
-
-  return (csv: string) =>
-    new Promise<InternalFromFluxResult>(resolve => {
-      queue[++counter] = resolve
-      worker.postMessage([counter, csv])
-    })
-})()
 
 export const parseQuery = (() => {
   const qs = {}
@@ -399,7 +358,166 @@ export const parseQuery = (() => {
   }
 })()
 
+const updateWindowPeriod = (
+  query: string,
+  override: QueryScope = {},
+  mode: 'json' | 'ast' = 'ast'
+) => {
+  const options: Record<string, any> = {}
+
+  if (Object.keys(override?.vars ?? {}).length) {
+    options.v = override.vars
+  }
+  if (Object.keys(override?.params ?? {}).length) {
+    options.params = override.params
+  }
+  if (Object.keys(override?.task ?? {}).length) {
+    options.task = override.task
+  }
+
+  const optionTexts = Object.entries(options)
+    .map(([k, v]) => {
+      const vals = Object.entries(v).map(([_k, _v]) => `  ${_k}: ${_v}`)
+      return `option ${k} =  {${vals.join(',\n')}}`
+    })
+    .join('\n\n')
+
+  const queryAST = parse(query)
+  let optionAST = parse(optionTexts)
+
+  // only run this if the query need a windowPeriod
+  if (
+    !find(
+      queryAST,
+      node =>
+        node?.type === 'MemberExpression' &&
+        node?.object?.name === 'v' &&
+        node?.property?.name === 'windowPeriod'
+    ).length
+  ) {
+    if (mode === 'ast') {
+      return optionAST
+    }
+
+    return options
+  } else if (isFlagEnabled('dontSolveWindowPeriod')) {
+    if (options?.v?.timeRangeStart && options?.v?.timeRangeStop) {
+      const NOW = Date.now()
+      const range = find(
+        optionAST,
+        node =>
+          node?.type === 'OptionStatement' && node?.assignment?.id?.name === 'v'
+      ).reduce(
+        (acc, curr) => {
+          acc.start =
+            find(
+              curr,
+              n => n.type === 'Property' && n?.key?.name === 'timeRangeStart'
+            )[0]?.value ?? acc.start
+
+          acc.stop =
+            find(
+              curr,
+              n => n.type === 'Property' && n?.key?.name === 'timeRangeStop'
+            )[0]?.value ?? acc.stop
+
+          return acc
+        },
+        {
+          start: null,
+          stop: null,
+        }
+      )
+      const duration =
+        propertyTime(queryAST, range.stop, NOW) -
+        propertyTime(queryAST, range.start, NOW)
+      const foundDuration = SELECTABLE_TIME_RANGES.find(
+        tr => tr.seconds * 1000 === duration
+      )
+
+      if (foundDuration) {
+        options.v.windowPeriod = `${foundDuration.windowPeriod} ms`
+      } else {
+        options.v.windowPeriod = `${Math.round(
+          duration / DESIRED_POINTS_PER_GRAPH
+        )} ms`
+      }
+    } else {
+      options.v.windowPeriod = `${FALLBACK_WINDOW_PERIOD} ms`
+    }
+
+    // write the mutations back out into the AST
+    optionAST = parse(
+      Object.entries(options)
+        .map(([k, v]) => {
+          const vals = Object.entries(v).map(([_k, _v]) => `  ${_k}: ${_v}`)
+          return `option ${k} =  {${vals.join(',\n')}}`
+        })
+        .join('\n\n')
+    )
+  }
+
+  try {
+    const _optionAST = JSON.parse(JSON.stringify(optionAST))
+    // make sure there's a variable in there named windowPeriod so later logic doesnt bail
+    find(
+      _optionAST,
+      node =>
+        node?.type === 'OptionStatement' && node?.assignment?.id?.name === 'v'
+    ).forEach(node => {
+      if (
+        find(
+          node,
+          n => n.type === 'Property' && n?.key?.name === 'windowPeriod'
+        ).length
+      ) {
+        return
+      }
+
+      if (isFlagEnabled('dontSolveWindowPeriod')) {
+        throw new Error('v.windowPeriod is used and not defined')
+      }
+
+      node.assignment.init.properties.push({
+        type: 'Property',
+        key: {
+          type: 'Identifier',
+          name: 'windowPeriod',
+        },
+        value: {
+          type: 'DurationLiteral',
+          values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
+        },
+      })
+    })
+
+    const substitutedAST = {
+      package: '',
+      type: 'Package',
+      files: [queryAST, _optionAST],
+    }
+
+    // use the whole query to get that option set by reference
+    _addWindowPeriod(substitutedAST, _optionAST)
+
+    if (mode === 'ast') {
+      return _optionAST
+    }
+
+    // TODO write window period back out to json object
+    return options
+  } catch (e) {
+    // there's a bunch of weird errors until we replace windowPeriod
+    console.error(e)
+    if (mode === 'ast') {
+      return optionAST
+    }
+    return options
+  }
+}
+
 export const QueryProvider: FC = ({children}) => {
+  const dispatch = useDispatch()
   const pending = useRef({} as CancelMap)
   const org = useSelector(getOrg)
 
@@ -411,13 +529,18 @@ export const QueryProvider: FC = ({children}) => {
     }
   }, [])
 
-  const basic = (text: string, override?: QueryScope) => {
-    const query = simplify(text, override?.vars || {})
+  const basic = (text: string, override: QueryScope, options: QueryOptions) => {
+    const mechanism = options?.overrideMechanism ?? OverrideMechanism.AST
+    const query =
+      mechanism === OverrideMechanism.Inline
+        ? simplify(text, override?.vars ?? {}, override?.params ?? {})
+        : text
 
     const orgID = override?.org || org.id
 
-    const url = `${override?.region ||
-      window.location.origin}/api/v2/query?${new URLSearchParams({orgID})}`
+    const url = `${
+      override?.region || window.location.origin
+    }/api/v2/query?${new URLSearchParams({orgID})}`
 
     const headers = {
       'Content-Type': 'application/json',
@@ -428,9 +551,22 @@ export const QueryProvider: FC = ({children}) => {
       headers['Authorization'] = `Token ${override.token}`
     }
 
-    const body = {
+    const body: RequestBody = {
       query,
       dialect: {annotations: ['group', 'datatype', 'default']},
+    }
+
+    if (mechanism === OverrideMechanism.AST) {
+      const options = updateWindowPeriod(query, override, 'ast')
+      if (options && Object.keys(options).length) {
+        body.extern = options
+      }
+    }
+    if (mechanism === OverrideMechanism.JSON) {
+      const options = updateWindowPeriod(query, override, 'json')
+      if (options && Object.keys(options).length) {
+        body.options = options
+      }
     }
 
     const controller = new AbortController()
@@ -442,49 +578,80 @@ export const QueryProvider: FC = ({children}) => {
       body: JSON.stringify(body),
       signal: controller.signal,
     })
-      .then(
-        (response: Response): Promise<RunQueryResult> => {
-          if (response.status === 200) {
-            return response.text().then(csv => {
-              if (pending.current[id]) {
-                delete pending.current[id]
-              }
+      .then(async (response: Response): Promise<RunQueryResult> => {
+        if (response.status === 200) {
+          const reader = response.body.getReader()
+          const decoder = new TextDecoder()
 
-              return {
-                type: 'SUCCESS',
-                csv,
-                bytesRead: csv.length,
-                didTruncate: false,
-              }
-            })
-          }
+          let csv = ''
+          let bytesRead = 0
+          let didTruncate = false
+          let read = await reader.read()
 
-          if (response.status === RATE_LIMIT_ERROR_STATUS) {
-            const retryAfter = response.headers.get('Retry-After')
+          const BYTE_LIMIT =
+            getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
 
-            return Promise.resolve({
-              type: 'RATE_LIMIT_ERROR',
-              retryAfter: retryAfter ? parseInt(retryAfter) : null,
-              message: RATE_LIMIT_ERROR_TEXT,
-            })
-          }
+          while (!read.done) {
+            const text = decoder.decode(read.value)
 
-          return response.text().then(text => {
-            try {
-              const json = JSON.parse(text)
-              const message = json.message || json.error
-              const code = json.code
+            bytesRead += read.value.byteLength
 
-              return {type: 'UNKNOWN_ERROR', message, code}
-            } catch {
-              return {
-                type: 'UNKNOWN_ERROR',
-                message: 'Failed to execute Flux query',
-              }
+            if (bytesRead > BYTE_LIMIT) {
+              csv += trimPartialLines(text)
+              didTruncate = true
+              break
+            } else {
+              csv += text
+              read = await reader.read()
             }
+          }
+
+          reader.cancel()
+
+          return {
+            type: 'SUCCESS',
+            csv,
+            bytesRead,
+            didTruncate,
+          }
+        }
+
+        if (response.status === RATE_LIMIT_ERROR_STATUS) {
+          const retryAfter = response.headers.get('Retry-After')
+
+          return Promise.resolve({
+            type: 'RATE_LIMIT_ERROR',
+            retryAfter: retryAfter ? parseInt(retryAfter) : null,
+            message: RATE_LIMIT_ERROR_TEXT,
           })
         }
-      )
+
+        return response.text().then(text => {
+          try {
+            const json = JSON.parse(text)
+            const message = json.message || json.error
+            const code = json.code
+
+            switch (code) {
+              case REQUEST_TIMEOUT_STATUS:
+                event('query timeout')
+                break
+              case GATEWAY_TIMEOUT_STATUS:
+                event('gateway timeout')
+                break
+              default:
+                event('query error')
+            }
+
+            return {type: 'UNKNOWN_ERROR', message, code}
+          } catch {
+            return {
+              type: 'UNKNOWN_ERROR',
+              message: 'Failed to execute Flux query',
+            }
+          }
+        })
+      })
       .catch(e => {
         if (e.name === 'AbortError') {
           return Promise.reject(new CancellationError())
@@ -522,8 +689,12 @@ export const QueryProvider: FC = ({children}) => {
     delete pending.current[queryID]
   }
 
-  const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
-    const result = basic(text, override)
+  const query = (
+    text: string,
+    override: QueryScope,
+    options: QueryOptions
+  ): Promise<FluxResult> => {
+    const result = basic(text, override, options)
 
     const promise: any = result.promise
       .then(raw => {
@@ -531,17 +702,13 @@ export const QueryProvider: FC = ({children}) => {
           throw new Error(raw.message)
         }
 
+        if (raw.didTruncate) {
+          dispatch(notify(resultTooLarge(raw.bytesRead)))
+        }
+
         return raw
       })
-      .then(raw => {
-        if (isFlagEnabled('fastFlows')) {
-          return parseCSV(raw.csv)
-        }
-        if (isFlagEnabled('fastFromFlux')) {
-          return fastFromFlux(raw.csv)
-        }
-        return fromFlux(raw.csv)
-      })
+      .then(raw => fromFlux(raw.csv))
       .then(
         parsed =>
           ({

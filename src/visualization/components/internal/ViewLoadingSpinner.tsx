@@ -8,6 +8,8 @@ import {RemoteDataState} from 'src/types'
 // Components
 import {TechnoSpinner, ComponentSize} from '@influxdata/clockface'
 
+const VISUALIZATION_LOADING_SPINNER_DIAMETER = 66
+
 interface Props {
   loading: RemoteDataState
 }
@@ -50,9 +52,13 @@ const ViewLoadingSpinner: FunctionComponent<Props> = ({loading}) => {
   if (loading === RemoteDataState.Loading) {
     return (
       <div className="view-loading-spinner">
-        <TechnoSpinner diameterPixels={66} strokeWidth={ComponentSize.Medium} />
-        <div className={timerElementClass}>{`${Math.round(seconds * 10) /
-          10}s`}</div>
+        <TechnoSpinner
+          diameterPixels={VISUALIZATION_LOADING_SPINNER_DIAMETER}
+          strokeWidth={ComponentSize.Medium}
+        />
+        <div className={timerElementClass}>{`${
+          Math.round(seconds * 10) / 10
+        }s`}</div>
       </div>
     )
   }

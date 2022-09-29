@@ -1,7 +1,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.test.json',
+    project: ['./tsconfig.test.json', './cypress/tsconfig.json'],
     tsconfigRootDir: __dirname,
     ecmaFeatures: {
       jsx: true,
@@ -20,17 +20,32 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:react-hooks/recommended',
     'plugin:react/recommended',
-    'prettier/@typescript-eslint',
-    'prettier/react',
+    'prettier',
   ],
   settings: {
     react: {
       version: 'detect',
     },
   },
+  overrides: [
+    {
+      files: [
+        'src/**/*.test.ts',
+        'src/**/*.test.tsx',
+        'cypress/**/*.test.ts',
+        'cypress/e2e/util/*.ts',
+      ],
+      plugins: ['jest'],
+      rules: {
+        '@typescript-eslint/unbound-method': 'off',
+        'jest/unbound-method': 'error',
+      },
+    },
+  ],
   rules: {
     '@typescript-eslint/array-type': 'off',
     '@typescript-eslint/await-thenable': 'off',
+    '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
@@ -38,18 +53,28 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-floating-promises': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
+    '@typescript-eslint/no-misused-promises': 'off',
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-object-literal-type-assertion': 'off',
+    '@typescript-eslint/no-unsafe-argument': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {varsIgnorePattern: '^_', argsIgnorePattern: '^_'},
     ],
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/prefer-as-const': 'off',
     '@typescript-eslint/prefer-interface': 'off',
     '@typescript-eslint/prefer-regexp-exec': 'off',
     '@typescript-eslint/prefer-string-starts-ends-with': 'off',
+    '@typescript-eslint/restrict-plus-operands': 'off',
+    '@typescript-eslint/restrict-template-expressions': 'off',
     curly: ['error', 'all'],
     'getter-return': 'off',
     'jest/no-focused-tests': ['error'],

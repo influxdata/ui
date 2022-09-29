@@ -1,0 +1,56 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.flux-query-builder--container {
+  height: 100%;
+}
+
+.new-data-explorer-rightside {
+  .cf-draggable-resizer--handle > .cf-draggable-resizer--handle-pill1,
+  .cf-draggable-resizer--handle > .cf-draggable-resizer--handle-pill2,
+  .cf-draggable-resizer--handle > .cf-draggable-resizer--gradient1,
+  .cf-draggable-resizer--handle > .cf-draggable-resizer--gradient2 {
+    width: 32px;
+    height: 2px;
+  }
+
+  .cf-draggable-resizer--handle-dragging > .cf-draggable-resizer--gradient1,
+  .cf-draggable-resizer--handle-dragging > .cf-draggable-resizer--gradient2 {
+    min-height: auto;
+    width: calc(25% - 60px);
+  }
+}
+
+.flux-query-builder--header {
+  margin-bottom: 0;
+}
+
+.flux-query-builder--menu {
+  padding: $cf-space-xs 0;
+  border-top: 2px solid $cf-grey-15;
+  border-bottom: 2px solid $cf-grey-15;
+
+  .userpilot-feedback {
+    color: $c-pool;
+    cursor: pointer;
+  }
+}
+
+.flux-query-builder__action-button {
+  margin-left: $cf-space-s;
+}
+
+.save-script-name__input {
+  margin-bottom: $cf-space-s;
+}
+
+.draggable-resizer--collapsible {
+  .cf-draggable-resizer-handle-container--vertical {
+    border-left: 2px solid $cf-grey-15;
+    border-right: 2px solid $cf-grey-15;
+  }
+
+  .cf-draggable-resizer-handle-container--horizontal {
+    border-top: 2px solid $cf-grey-15;
+    border-bottom: 2px solid $cf-grey-15;
+  }
+}

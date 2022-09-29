@@ -4,44 +4,44 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export type PermissionTypes = Permission['resource']['type']
 
-const ensureT = (orgID: string, userID: string) => (
-  t: PermissionTypes
-): Permission[] => {
-  if (t === 'orgs') {
-    // 'orgs' used to only have read permissions so that's all we'll give again.
-    // In production, orgs with an orgID returns a permissions error.
-    return [
-      {
-        action: 'read' as 'read',
-        resource: {type: t, id: orgID},
-      },
-    ]
-  }
+const ensureT =
+  (orgID: string, userID: string) =>
+  (t: PermissionTypes): Permission[] => {
+    if (t === 'orgs') {
+      // 'orgs' used to only have read permissions so that's all we'll give again.
+      // In production, orgs with an orgID returns a permissions error.
+      return [
+        {
+          action: 'read' as 'read',
+          resource: {type: t, id: orgID},
+        },
+      ]
+    }
 
-  if (t === 'users') {
+    if (t === 'users') {
+      return [
+        {
+          action: 'read' as 'read',
+          resource: {type: t, id: userID},
+        },
+        {
+          action: 'write' as 'write',
+          resource: {type: t, id: userID},
+        },
+      ]
+    }
+
     return [
       {
         action: 'read' as 'read',
-        resource: {type: t, id: userID},
+        resource: {type: t, orgID},
       },
       {
         action: 'write' as 'write',
-        resource: {type: t, id: userID},
+        resource: {type: t, orgID},
       },
     ]
   }
-
-  return [
-    {
-      action: 'read' as 'read',
-      resource: {type: t, orgID},
-    },
-    {
-      action: 'write' as 'write',
-      resource: {type: t, orgID},
-    },
-  ]
-}
 
 export const allAccessPermissions = (
   allPermissionTypes: PermissionTypes[],
@@ -49,7 +49,9 @@ export const allAccessPermissions = (
   userID: string
 ): Permission[] => {
   const withOrgID = ensureT(orgID, userID)
-  return allPermissionTypes.flatMap(withOrgID)
+  return allPermissionTypes
+    .filter(perm => String(perm) !== 'instance')
+    .flatMap(withOrgID)
 }
 
 export const formatResources = resourceNames => {
@@ -58,7 +60,9 @@ export const formatResources = resourceNames => {
       item !== ResourceType.Buckets &&
       item !== ResourceType.Telegrafs &&
       // filter out Subsriptions resource type if the UI is not enabled
-      (item !== ResourceType.Subscriptions || isFlagEnabled('subscriptionsUI'))
+      (item !== ResourceType.Subscriptions ||
+        isFlagEnabled('subscriptionsUI')) &&
+      String(item) !== 'instance'
   )
   resources.sort()
   resources.unshift(ResourceType.Telegrafs)

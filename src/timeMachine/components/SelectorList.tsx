@@ -12,6 +12,7 @@ interface Props {
   children?: JSX.Element | JSX.Element[]
   testID?: string
   wrapText?: boolean
+  disabled?: boolean
 }
 
 const SelectorList: FC<Props> = props => {
@@ -23,6 +24,7 @@ const SelectorList: FC<Props> = props => {
     children,
     testID,
     wrapText,
+    disabled,
   } = props
 
   return (
@@ -48,6 +50,7 @@ const SelectorList: FC<Props> = props => {
             selected={selected}
             size={ComponentSize.ExtraSmall}
             wrapText={wrapText}
+            disabled={disabled}
           >
             {indicator}
             {item}

@@ -46,6 +46,7 @@ import {
   clickAttached,
   upsertSecret,
   setFeatureFlags,
+  setFeatureFlagsNoNav,
   quartzProvision,
   createTaskFromEmpty,
   createAlertGroup,
@@ -102,6 +103,7 @@ declare global {
       createCheck: typeof createCheck
       createAlertGroup: typeof createAlertGroup
       setFeatureFlags: typeof setFeatureFlags
+      setFeatureFlagsNoNav: typeof setFeatureFlags
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision
       createTaskFromEmpty: typeof createTaskFromEmpty

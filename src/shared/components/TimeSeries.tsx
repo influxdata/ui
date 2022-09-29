@@ -3,7 +3,7 @@ import React, {Component, RefObject, CSSProperties} from 'react'
 import {isEqual} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {fromFlux, fastFromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 
 // API
 import {RunQueryResult, RunQuerySuccessResult} from 'src/shared/apis/query'
@@ -32,7 +32,6 @@ import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 // Actions & Selectors
 import {getAll} from 'src/resources/selectors'
 import {notify as notifyAction} from 'src/shared/actions/notifications'
-import {hasUpdatedTimeRangeInVEO} from 'src/shared/selectors/app'
 import {setCellMount as setCellMountAction} from 'src/perf/actions'
 
 // Types
@@ -47,7 +46,6 @@ import {
   CancelBox,
 } from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from '../utils/featureFlag'
 
 interface QueriesState {
   files: string[] | null
@@ -257,9 +255,11 @@ class TimeSeries extends Component<Props, State> {
         if (!this.hashMapMutex[queryID]) {
           this.hashMapMutex[queryID] = RunQueryPromiseMutex<RunQueryResult>()
         }
-        return this.hashMapMutex[queryID].run(orgID, text, extern) as CancelBox<
-          RunQueryResult
-        >
+        return this.hashMapMutex[queryID].run(
+          orgID,
+          text,
+          extern
+        ) as CancelBox<RunQueryResult>
       })
 
       // Wait for new queries to complete
@@ -300,8 +300,7 @@ class TimeSeries extends Component<Props, State> {
       }
 
       const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
-      const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
-      const giraffeResult = parser(files.join('\n\n'))
+      const giraffeResult = fromFlux(files.join('\n\n'))
 
       this.pendingReload = false
       // this check prevents a memory leak https://github.com/influxdata/ui/issues/2137
@@ -334,13 +333,20 @@ class TimeSeries extends Component<Props, State> {
   }
 
   private shouldReload(prevProps: Props) {
-    if (this.props.hasUpdatedTimeRangeInVEO) {
+    if (
+      this.props.location.pathname.includes('cells') &&
+      this.props.location.pathname.includes('edit')
+    ) {
       return false
     }
 
     if (
-      prevProps.hasUpdatedTimeRangeInVEO &&
-      !this.props.hasUpdatedTimeRangeInVEO
+      prevProps.location.pathname.includes('cells') &&
+      prevProps.location.pathname.includes('edit') &&
+      !(
+        this.props.location.pathname.includes('cells') &&
+        this.props.location.pathname.includes('edit')
+      )
     ) {
       return true
     }
@@ -390,9 +396,7 @@ const mstp = (state: AppState, props: OwnProps) => {
   ]
 
   return {
-    hasUpdatedTimeRangeInVEO: hasUpdatedTimeRangeInVEO(state),
     isCurrentPageDashboard: isCurrentPageDashboardSelector(state),
-    queryLink: '/api/v2/query',
     buckets: getAll<Bucket>(state, ResourceType.Buckets),
     variables,
   }

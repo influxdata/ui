@@ -5,7 +5,10 @@ import {get} from 'lodash'
 import {getActiveQuery} from 'src/timeMachine/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {getTimeRange, getTimeRangeWithTimezone} from 'src/dashboards/selectors'
-import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+import {
+  getVariableForZoomRequery,
+  getWindowPeriodVariableFromVariables,
+} from 'src/variables/utils/getWindowVars'
 import {
   TIME_RANGE_START,
   TIME_RANGE_STOP,
@@ -134,6 +137,25 @@ export const getAllVariables = (
   return vars
 }
 
+export const getAllVariablesForZoomRequery = (
+  state: AppState,
+  domain: number[],
+  timeRangeType: string,
+  contextID?: string
+): Variable[] => {
+  const vars = getUserVariableNames(state, contextID || currentContext(state))
+    .concat([TIME_RANGE_START, TIME_RANGE_STOP])
+    .map(variableID => {
+      if (domain?.length) {
+        return getVariableForZoomRequery(variableID, domain, timeRangeType)
+      }
+      return getVariable(state, variableID)
+    })
+    .filter(v => !!v)
+
+  return vars
+}
+
 export const sortVariablesByName = (variables: Variable[]): Variable[] =>
   variables.sort((a, b) =>
     a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
@@ -188,7 +210,9 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
   }
 
   if (!vari.selected.length && vals.length) {
-    vari.selected.push(vals[0])
+    if (Object.isExtensible(vari.selected)) {
+      vari.selected.push(vals[0])
+    }
   }
 
   return vari

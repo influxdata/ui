@@ -41,7 +41,10 @@ import {notify} from 'src/shared/actions/notifications'
 import {writeLimitReached} from 'src/shared/copy/notifications'
 
 // Selectors
-import {shouldShowUpgradeButton} from 'src/me/selectors'
+import {
+  shouldGetCredit250Experience,
+  shouldShowUpgradeButton,
+} from 'src/me/selectors'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 import {UpgradeContent} from 'src/cloud/components/RateLimitAlertContent'
 
@@ -53,16 +56,21 @@ interface Props {
   location?: string
 }
 
+const bannerStyle = {border: 'none', borderRadius: '6px'}
+
 const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   const resources = useSelector(extractRateLimitResources)
   const status = useSelector(extractRateLimitStatus)
   const showUpgrade = useSelector(shouldShowUpgradeButton)
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
+
   const dispatch = useDispatch()
 
   const appearOverlay = () => {
     dispatch(showOverlay('write-limit', null, () => dispatch(dismissOverlay)))
   }
 
+  // notification for write limit reached
   useEffect(() => {
     if (CLOUD && status === 'exceeded' && resources.includes('write')) {
       if (showUpgrade) {
@@ -102,9 +110,10 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   })
 
   const icon = isFlagEnabled('credit250Experiment')
-    ? IconFont.Stop
+    ? IconFont.AlertTriangle
     : IconFont.Cloud
 
+  // banner panel for cardinality limit exceeded
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
     return (
       <FlexBox
@@ -119,6 +128,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
           icon={icon}
           hideMobileIcon={true}
           textColor={InfluxColors.Yeti}
+          style={bannerStyle}
         >
           <RateLimitAlertContent />
         </BannerPanel>
@@ -126,6 +136,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
     )
   }
 
+  // upgrade button
   if (CLOUD && !alertOnly) {
     return (
       <CloudUpgradeButton
@@ -136,17 +147,21 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
           )
           const identity = getDataLayerIdentity()
           event(
-            isFlagEnabled('credit250Experiment') && experimentVariantId === '1'
+            isFlagEnabled('credit250Experiment') &&
+              (experimentVariantId === '1' || isCredit250ExperienceActive)
               ? `${location}.alert.credit-250.upgrade`
               : `${location}.alert.upgrade`,
             {
               location,
               ...identity,
               experimentId: CREDIT_250_EXPERIMENT_ID,
-              experimentVariantId,
+              experimentVariantId: isCredit250ExperienceActive
+                ? '2'
+                : experimentVariantId,
             }
           )
         }}
+        size={ComponentSize.ExtraSmall}
       />
     )
   }

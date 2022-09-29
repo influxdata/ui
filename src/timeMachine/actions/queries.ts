@@ -81,26 +81,28 @@ export const getOrgIDFromBuckets = (
   text: string,
   allBuckets: Bucket[]
 ): string | null => {
-  const ast = parse(text)
-  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
-    get(node, 'arguments.0.properties.0.value.value', '')
-  )
+  try {
+    const ast = parse(text)
+    const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
+      get(node, 'arguments.0.properties.0.value.value', '')
+    )
 
-  // if there are buckets from multiple orgs in a query, query will error, and user will receive error from query
-  const bucketMatch = allBuckets.find(a => bucketsInQuery.includes(a.name))
+    // if there are buckets from multiple orgs in a query, query will error, and user will receive error from query
+    const bucketMatch = allBuckets.find(a => bucketsInQuery.includes(a.name))
 
-  return get(bucketMatch, 'orgID', null)
+    return get(bucketMatch, 'orgID', null)
+  } catch (e) {
+    console.error(e)
+    return null
+  }
 }
 
 // We only need a minimum of one bucket, function, and tag,
 export const getQueryFromFlux = (text: string) => {
   const ast = parse(text)
 
-  const aggregateWindowQuery: string[] = findNodes(
-    ast,
-    isFromFunction
-  ).map(node =>
-    get(node, 'arguments.0.properties.0.value.values.0.magnitude', '')
+  const aggregateWindowQuery: string[] = findNodes(ast, isFromFunction).map(
+    node => get(node, 'arguments.0.properties.0.value.values.0.magnitude', '')
   )
 
   const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
@@ -242,126 +244,131 @@ export const setQueryByHashID = (queryID: string, result: any): void => {
     })
 }
 
-export const executeQueries = (abortController?: AbortController) => async (
-  dispatch,
-  getState: GetState
-) => {
-  const executeQueriesStartTime = Date.now()
+export const executeQueries =
+  (abortController?: AbortController) =>
+  async (dispatch, getState: GetState) => {
+    const executeQueriesStartTime = Date.now()
 
-  const state = getState()
+    const state = getState()
 
-  const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
+    const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
 
-  const activeTimeMachine = getActiveTimeMachine(state)
-  const queries = activeTimeMachine.view.properties.queries.filter(
-    ({text}) => !!text.trim()
-  )
+    const activeTimeMachine = getActiveTimeMachine(state)
+    const queries = activeTimeMachine.view.properties.queries.filter(
+      ({text}) => !!text.trim()
+    )
 
-  if (!queries.length) {
-    dispatch(setQueryResults(RemoteDataState.Done, [], null))
-  }
+    if (!queries.length) {
+      dispatch(setQueryResults(RemoteDataState.Done, [], null))
+    }
 
-  try {
-    // Cancel pending queries before issuing new ones
-    cancelAllRunningQueries()
+    try {
+      // Cancel pending queries before issuing new ones
+      cancelAllRunningQueries()
 
-    dispatch(setQueryResults(RemoteDataState.Loading, [], null))
+      dispatch(setQueryResults(RemoteDataState.Loading, [], null))
 
-    await dispatch(hydrateVariables())
+      await dispatch(hydrateVariables())
 
-    const allVariables = getAllVariables(state)
-    const startTime = window.performance.now()
-    const startDate = Date.now()
+      const allVariables = getAllVariables(state)
+      const startTime = window.performance.now()
+      const startDate = Date.now()
 
-    const pendingResults = queries.map(({text}) => {
-      event('executeQueries query', {}, {query: text})
-      const orgID = getOrgIDFromBuckets(text, allBuckets) || getOrg(state).id
+      const pendingResults = queries.map(({text}) => {
+        event('executeQueries query', {}, {query: text})
+        const orgID = getOrgIDFromBuckets(text, allBuckets) || getOrg(state).id
 
-      if (getOrg(state).id === orgID) {
-        event('orgData_queried')
-      }
+        if (getOrg(state).id === orgID) {
+          event('orgData_queried')
+        }
 
-      const extern = buildUsedVarsOption(text, allVariables)
+        const extern = buildUsedVarsOption(text, allVariables)
 
-      event('runQuery', {context: 'timeMachine'})
+        event('runQuery', {context: 'timeMachine'})
 
-      const queryID = generateHashedQueryID(text, allVariables, orgID)
-      if (isCurrentPageDashboard(state)) {
-        // reset any existing matching query in the cache
-        resetQueryCacheByQuery(text, getAllVariables(state))
-        const result = getCachedResultsOrRunQuery(
-          orgID,
-          text,
-          getAllVariables(state)
-        )
+        const queryID = generateHashedQueryID(text, allVariables, orgID)
+        if (isCurrentPageDashboard(state)) {
+          // reset any existing matching query in the cache
+          resetQueryCacheByQuery(text, getAllVariables(state))
+          const result = getCachedResultsOrRunQuery(
+            orgID,
+            text,
+            getAllVariables(state)
+          )
+          setQueryByHashID(queryID, result)
+
+          return result
+        }
+        const result = runQuery(orgID, text, extern, abortController)
         setQueryByHashID(queryID, result)
-
         return result
+      })
+      const results = await Promise.all(pendingResults.map(r => r.promise))
+
+      const duration = window.performance.now() - startTime
+
+      event('executeQueries querying', {time: startDate}, {duration})
+
+      let statuses = [[]] as StatusRow[][]
+      const {
+        alertBuilder: {id: checkID},
+      } = state
+
+      if (checkID) {
+        const extern = buildUsedVarsOption(
+          queries.map(query => query.text),
+          allVariables
+        )
+        pendingCheckStatuses = runStatusesQuery(
+          getOrg(state).id,
+          checkID,
+          extern
+        )
+        statuses = await pendingCheckStatuses.promise
       }
-      const result = runQuery(orgID, text, extern, abortController)
-      setQueryByHashID(queryID, result)
-      return result
-    })
-    const results = await Promise.all(pendingResults.map(r => r.promise))
 
-    const duration = window.performance.now() - startTime
+      for (const result of results) {
+        if (result.type === 'UNKNOWN_ERROR') {
+          throw new Error(result.message)
+        }
 
-    event('executeQueries querying', {time: startDate}, {duration})
+        if (result.type === 'RATE_LIMIT_ERROR') {
+          dispatch(notify(rateLimitReached(result.retryAfter)))
 
-    let statuses = [[]] as StatusRow[][]
-    const {
-      alertBuilder: {id: checkID},
-    } = state
+          throw new Error(result.message)
+        }
 
-    if (checkID) {
-      const extern = buildUsedVarsOption(
-        queries.map(query => query.text),
-        allVariables
+        if (result.didTruncate) {
+          dispatch(notify(resultTooLarge(result.bytesRead)))
+        }
+      }
+
+      const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
+      dispatch(
+        setQueryResults(RemoteDataState.Done, files, duration, null, statuses)
       )
-      pendingCheckStatuses = runStatusesQuery(getOrg(state).id, checkID, extern)
-      statuses = await pendingCheckStatuses.promise
-    }
 
-    for (const result of results) {
-      if (result.type === 'UNKNOWN_ERROR') {
-        throw new Error(result.message)
+      event(
+        'executeQueries function',
+        {
+          time: executeQueriesStartTime,
+        },
+        {duration: Date.now() - executeQueriesStartTime}
+      )
+
+      return results
+    } catch (error) {
+      if (error.name === 'CancellationError' || error.name === 'AbortError') {
+        dispatch(setQueryResults(RemoteDataState.Done, null, null))
+        return
       }
 
-      if (result.type === 'RATE_LIMIT_ERROR') {
-        dispatch(notify(rateLimitReached(result.retryAfter)))
-
-        throw new Error(result.message)
-      }
-
-      if (result.didTruncate) {
-        dispatch(notify(resultTooLarge(result.bytesRead)))
-      }
+      console.error(error)
+      dispatch(
+        setQueryResults(RemoteDataState.Error, null, null, error.message)
+      )
     }
-
-    const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
-    dispatch(
-      setQueryResults(RemoteDataState.Done, files, duration, null, statuses)
-    )
-
-    event(
-      'executeQueries function',
-      {
-        time: executeQueriesStartTime,
-      },
-      {duration: Date.now() - executeQueriesStartTime}
-    )
-
-    return results
-  } catch (error) {
-    if (error.name === 'CancellationError' || error.name === 'AbortError') {
-      dispatch(setQueryResults(RemoteDataState.Done, null, null))
-      return
-    }
-
-    console.error(error)
-    dispatch(setQueryResults(RemoteDataState.Error, null, null, error.message))
   }
-}
 
 interface SaveDraftQueriesAction {
   type: 'SAVE_DRAFT_QUERIES'
@@ -371,13 +378,12 @@ const saveDraftQueries = (): SaveDraftQueriesAction => ({
   type: 'SAVE_DRAFT_QUERIES',
 })
 
-export const saveAndExecuteQueries = (
-  abortController?: AbortController
-) => dispatch => {
-  dispatch(saveDraftQueries())
-  dispatch(setQueryResults(RemoteDataState.Loading, [], null))
-  dispatch(executeQueries(abortController))
-}
+export const saveAndExecuteQueries =
+  (abortController?: AbortController) => dispatch => {
+    dispatch(saveDraftQueries())
+    dispatch(setQueryResults(RemoteDataState.Loading, [], null))
+    dispatch(executeQueries(abortController))
+  }
 
 export const executeCheckQuery = () => async (dispatch, getState: GetState) => {
   const state = getState()

@@ -58,5 +58,5 @@ export const convertStringToEpoch = (date: string): number => {
   if (convertedDate.toDateString() === 'Invalid Date') {
     return NaN
   }
-  return convertedDate.valueOf()
+  return convertedDate.getTime()
 }

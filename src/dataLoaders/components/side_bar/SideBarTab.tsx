@@ -54,7 +54,7 @@ class SideBarTab extends Component<Props> {
     switch (status) {
       case TabStatus.Pending:
       case TabStatus.Success:
-        return <Icon glyph={IconFont.Checkmark_New} />
+        return <Icon glyph={IconFont.CheckMark_New} />
       case TabStatus.Error:
         return <Icon glyph={IconFont.Remove_New} />
       default:

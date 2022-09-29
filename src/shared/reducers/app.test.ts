@@ -14,17 +14,17 @@ describe('Shared.Reducers.appReducer', () => {
   const initialState: AppPresentationState = {
     ephemeral: {
       inPresentationMode: false,
-      hasUpdatedTimeRangeInVEO: false,
     },
     persisted: {
       autoRefresh: 0,
       showTemplateControlBar: false,
       navBarState: 'expanded',
-      newDataExplorer: false,
+      fluxQueryBuilder: false,
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
       versionInfo: {version: '', commit: ''},
       flowsCTA: {explorer: true, tasks: true, alerts: true},
+      subscriptionsCertificateInterest: false,
     },
   }
 

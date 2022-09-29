@@ -1,13 +1,13 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-$cf-radius-lg: $cf-radius + 4px;
-
 .data-explorer-results {
   height: 100%;
-  border-radius: $cf-radius-lg;
+  width: 100%;
+  position: absolute;
   border: 2px solid transparent;
   background-color: $cf-grey-15;
   padding: $cf-space-2xs;
+  overflow: hidden;
 }
 
 .data-explorer-results--timezone {
@@ -25,6 +25,21 @@ $cf-radius-lg: $cf-radius + 4px;
   display: flex;
 }
 
+.data-explorer-results--view {
+  height: 100%;
+  width: 100%;
+  padding: 12;
+
+  .visualization--simple-table--results {
+    margin-top: $cf-space-s;
+  }
+
+  table,
+  .giraffe-plot {
+    background-color: black;
+  }
+}
+
 .data-explorer-results--empty-header {
   align-self: center;
   text-align: center;
@@ -37,6 +52,41 @@ $cf-radius-lg: $cf-radius + 4px;
   p {
     margin: 0;
   }
+}
+
+.data-explorer--monaco-outer {
+  flex-grow: 1;
+  position: relative;
+  width: 100%;
+}
+
+.data-explorer--monaco-wrap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.data-explorer--error-gutter {
+  color: $c-fire;
+  background-color: $cf-grey-15;
+  width: 100%;
+  display: flex;
+
+  .cf-icon {
+    padding: $cf-space-2xs $cf-space-s;
+    font-size: $cf-text-base-2;
+  }
+
+  pre {
+    padding: $cf-space-2xs 0;
+    font-family: $cf-code-font;
+    white-space: pre-line;
+  }
+}
+
+.data-explorer--control {
+  width: 100%;
+  padding: 0 $cf-space-2xs $cf-space-3xs $cf-space-2xs;
 }
 
 .query-stat {
@@ -53,4 +103,8 @@ $cf-radius-lg: $cf-radius + 4px;
 .query-stat--normal {
   color: $cf-grey-55;
   padding: 0 $cf-space-2xs;
+}
+
+.de-config-visualization-button {
+  margin-left: $cf-space-2xs;
 }

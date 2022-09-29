@@ -24,7 +24,7 @@ import {
   ThresholdCheckOverlay,
   DeadmanCheckOverlay as NewDeadmanCheckEO,
 } from 'src/overlays/components'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -37,7 +37,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 const alertsPath = '/orgs/:orgID/alerting'
 import {AppSettingContext} from 'src/shared/contexts/app'
-import {PROJECT_NAME} from 'src/flows'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 type ActiveColumn = 'checks' | 'endpoints' | 'rules'
 
@@ -65,7 +65,9 @@ const AlertingIndex: FunctionComponent = () => {
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
           <ErrorBoundary>
-            <RateLimitAlert location="alerting" />
+            {!isFlagEnabled('multiOrg') && (
+              <RateLimitAlert location="alerting" />
+            )}
           </ErrorBoundary>
         </Page.Header>
         <Page.Contents
@@ -76,9 +78,9 @@ const AlertingIndex: FunctionComponent = () => {
           {flowsCTA.alerts && (
             <FeatureFlag name="flowsCTA">
               <div className="header-cta">
-                <Icon glyph={IconFont.BookPencil} />
-                Now you can use Notebooks to explore your data while building an
-                alert
+                <Icon glyph={IconFont.Pencil} />
+                Now you can use {PROJECT_NAME_PLURAL} to explore your data while
+                building an alert
                 <Link
                   to={`/${PROJECT_NAME.toLowerCase()}/from/notification`}
                   onClick={recordClick}

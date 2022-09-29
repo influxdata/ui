@@ -69,9 +69,7 @@ describe('Collectors', () => {
 
           cy.getByTestID('bucket-dropdown').within(() => {
             cy.getByTestID('bucket-dropdown--button').click()
-            cy.getByTestID('dropdown-item')
-              .eq(2)
-              .click()
+            cy.getByTestID('dropdown-item').eq(2).click()
           })
 
           cy.get('code').should($el => {
@@ -106,12 +104,8 @@ describe('Collectors', () => {
       it('can update configuration name', () => {
         const newConfigName = 'This is new name'
 
-        cy.getByTestID('collector-card--name')
-          .first()
-          .trigger('mouseover')
-        cy.getByTestID('collector-card--name-button')
-          .first()
-          .click()
+        cy.getByTestID('collector-card--name').first().trigger('mouseover')
+        cy.getByTestID('collector-card--name-button').first().click()
         cy.getByTestID('collector-card--input')
           .type(newConfigName)
           .type('{enter}')
@@ -127,9 +121,7 @@ describe('Collectors', () => {
 
         cy.getByTestID('setup-instructions').should('exist')
 
-        cy.getByTestID('overlay--header')
-          .find('button')
-          .click()
+        cy.getByTestID('overlay--header').find('button').click()
 
         cy.getByTestID('setup-instructions').should('not.exist')
 
@@ -235,27 +227,19 @@ describe('Collectors', () => {
         cy.getByTestID('resource-card').should('have.length', 1)
         cy.getByTestID('resource-card').should('contain', firstTelegraf)
 
-        cy.getByTestID('search-widget')
-          .clear()
-          .type(secondTelegraf)
+        cy.getByTestID('search-widget').clear().type(secondTelegraf)
         cy.getByTestID('resource-card').should('have.length', 1)
         cy.getByTestID('resource-card').should('contain', secondTelegraf)
 
-        cy.getByTestID('search-widget')
-          .clear()
-          .type(thirdTelegraf)
+        cy.getByTestID('search-widget').clear().type(thirdTelegraf)
         cy.getByTestID('resource-card').should('have.length', 1)
         cy.getByTestID('resource-card').should('contain', thirdTelegraf)
 
-        cy.getByTestID('search-widget')
-          .clear()
-          .type('should have no results')
+        cy.getByTestID('search-widget').clear().type('should have no results')
         cy.getByTestID('resource-card').should('have.length', 0)
         cy.getByTestID('empty-state').should('exist')
 
-        cy.getByTestID('search-widget')
-          .clear()
-          .type('a')
+        cy.getByTestID('search-widget').clear().type('a')
         cy.getByTestID('resource-card').should('have.length', 2)
         cy.getByTestID('resource-card').should('contain', firstTelegraf)
         cy.getByTestID('resource-card').should('contain', secondTelegraf)
@@ -283,10 +267,7 @@ describe('Collectors', () => {
           .click()
           .then(() => {
             // NOTE: this then is just here to let me scope this variable (alex)
-            const teletubbies = telegrafs
-              .slice(0)
-              .sort()
-              .reverse()
+            const teletubbies = telegrafs.slice(0).sort().reverse()
             cy.getByTestID('collector-card--name').each((val, index) => {
               expect(val.text()).to.include(teletubbies[index])
             })
@@ -312,10 +293,7 @@ describe('Collectors', () => {
       cy.getByTestID('create-label-form--submit').click()
       cy.getByTestID('label--pill zoe').should('exist')
       // search by label
-      cy.getByTestID('search-widget')
-        .should('be.visible')
-        .clear()
-        .type('zoe')
+      cy.getByTestID('search-widget').should('be.visible').clear().type('zoe')
 
       cy.getByTestID('resource-card').should('have.length', 1)
       cy.getByTestID('resource-card').should('contain', 'newteleg')

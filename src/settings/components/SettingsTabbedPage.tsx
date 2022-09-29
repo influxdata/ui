@@ -19,7 +19,7 @@ class SettingsTabbedPage extends PureComponent<Props> {
 
     return (
       <Page.Contents
-        fullWidth={false}
+        fullWidth={true}
         scrollable={true}
         scrollbarSize={ComponentSize.Large}
         autoHideScrollbar={true}

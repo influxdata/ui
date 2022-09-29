@@ -30,16 +30,16 @@ const AccountTabs: FC<Props> = ({activeTab}) => {
 
   const tabs: AccountPageTab[] = [
     {
-      text: 'Billing',
-      id: Tab.Billing,
-      testID: 'accounts-billing-tab',
-      link: `/orgs/${orgID}/billing`,
-    },
-    {
       text: 'Settings',
       id: Tab.About,
       testID: 'accounts-setting-tab',
       link: `/orgs/${orgID}/accounts/settings`,
+    },
+    {
+      text: 'Billing',
+      id: Tab.Billing,
+      testID: 'accounts-billing-tab',
+      link: `/orgs/${orgID}/billing`,
     },
   ]
 

@@ -41,20 +41,8 @@ import {DEFAULT_DASHBOARD_NAME} from 'src/dashboards/constants'
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {shouldOpenLinkInNewTab} from 'src/utils/crossPlatform'
 import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
-
-import {
-  pinnedItemFailure,
-  pinnedItemSuccess,
-} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
-
-import {
-  deletePinnedItemByParam,
-  updatePinnedItemByParam,
-} from 'src/shared/contexts/pinneditems'
-
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {CLOUD} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
 
 interface OwnProps {
@@ -64,13 +52,6 @@ interface OwnProps {
   updatedAt: string
   labels: string[]
   onFilterChange: (searchTerm: string) => void
-  onPinDashboard: (
-    dashboardID: string,
-    name: string,
-    description: string
-  ) => void
-  onUnpinDashboard: (DashboardID: string) => void
-  isPinned: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -137,30 +118,12 @@ class DashboardCard extends PureComponent<Props> {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {name})
-
-    if (isFlagEnabled('pinnedItems') && CLOUD && this.props.isPinned) {
-      try {
-        updatePinnedItemByParam(id, {name})
-        this.props.sendNotification(pinnedItemSuccess('dashboard', 'updated'))
-      } catch (err) {
-        this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
-      }
-    }
   }
 
   private handleCloneDashboard = () => {
     const {id, name, onCloneDashboard} = this.props
 
     onCloneDashboard(id, name)
-  }
-
-  private handlePinDashboard = () => {
-    const {id, name, description, isPinned} = this.props
-    if (isPinned) {
-      this.props.onUnpinDashboard(id)
-    } else {
-      this.props.onPinDashboard(id, name, description)
-    }
   }
 
   private get contextMenu(): JSX.Element {
@@ -189,7 +152,7 @@ class DashboardCard extends PureComponent<Props> {
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
           style={minWidth}
-          contents={onHide => (
+          contents={_ => (
             <List>
               <List.Item
                 onClick={this.handleExport}
@@ -207,19 +170,6 @@ class DashboardCard extends PureComponent<Props> {
               >
                 Clone
               </List.Item>
-              {isFlagEnabled('pinnedItems') && CLOUD && (
-                <List.Item
-                  onClick={() => {
-                    this.handlePinDashboard()
-                    onHide()
-                  }}
-                  size={ComponentSize.Small}
-                  style={fontWeight}
-                  testID="context-pin-dashboard"
-                >
-                  {this.props.isPinned ? 'Unpin' : 'Pin'}
-                </List.Item>
-              )}
             </List>
           )}
           triggerRef={settingsRef}
@@ -231,7 +181,6 @@ class DashboardCard extends PureComponent<Props> {
   private handleDeleteDashboard = () => {
     const {id, name, onDeleteDashboard} = this.props
     onDeleteDashboard(id, name)
-    deletePinnedItemByParam(id)
   }
 
   private handleClickDashboard = event => {
@@ -263,13 +212,6 @@ class DashboardCard extends PureComponent<Props> {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {description})
-    if (isFlagEnabled('pinnedItems') && CLOUD && this.props.isPinned) {
-      try {
-        updatePinnedItemByParam(id, {description})
-      } catch (err) {
-        this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
-      }
-    }
   }
 
   private handleAddLabel = (label: Label) => {

@@ -1,6 +1,6 @@
-import {mocked} from 'ts-jest/utils'
-import {runQuery} from 'src/shared/apis/query'
+import {jest} from '@jest/globals'
 
+import {runQuery} from 'src/shared/apis/query'
 import {RunQuerySuccessResult} from 'src/shared/apis/query'
 import {Variable, RemoteDataState} from 'src/types'
 import {
@@ -82,7 +82,7 @@ describe('query', () => {
 
     it('calls runQuery when there is no matching query in the cache & returns cached results when an unexpired match is found', done => {
       // returns a mock runQuery
-      mocked(runQuery).mockImplementation(() => ({
+      jest.mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
@@ -101,7 +101,7 @@ describe('query', () => {
     })
 
     it('clears the cache by queryText', done => {
-      mocked(runQuery).mockImplementation(() => ({
+      jest.mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
@@ -121,7 +121,7 @@ describe('query', () => {
     })
     // Skip this until we can update the TIME_INVALIDATION
     it.skip('invalidates the cached results after the time invalidation constant', done => {
-      mocked(runQuery).mockImplementation(() => ({
+      jest.mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
@@ -139,7 +139,7 @@ describe('query', () => {
       }, TIME_INVALIDATION + 100)
     }, 6000)
     it('returns the cached results when an unexpired match with the same variable is found', done => {
-      mocked(runQuery).mockImplementation(() => ({
+      jest.mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
@@ -157,7 +157,7 @@ describe('query', () => {
       })
     })
     it('deduplicates variables and returns the cached results when an unexpired match with the same variable is found', done => {
-      mocked(runQuery).mockImplementation(() => ({
+      jest.mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
@@ -176,7 +176,7 @@ describe('query', () => {
       })
     })
     it('deduplicates windowPeriod variables and returns the cached results when an unexpired match with the same variable is found', done => {
-      mocked(runQuery).mockImplementation(() => ({
+      jest.mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
@@ -196,7 +196,7 @@ describe('query', () => {
       })
     })
     it('resets the matching query if the variables do not match and reruns the query', done => {
-      mocked(runQuery).mockImplementation(() => ({
+      jest.mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
@@ -230,7 +230,7 @@ describe('query', () => {
         })
     })
     it('resets the matching query if the selected variables do not match and reruns the query', done => {
-      mocked(runQuery).mockImplementation(() => ({
+      jest.mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
@@ -264,7 +264,7 @@ describe('query', () => {
         })
     })
     it('returns cached results even when variables irrelevant to a query are toggled', done => {
-      mocked(runQuery).mockImplementation(() => ({
+      jest.mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))

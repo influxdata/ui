@@ -20,7 +20,6 @@ interface Props {
 export class TelegrafConfig extends PureComponent<Props> {
   public render() {
     const {config, onChangeConfig} = this.props
-
     return (
       <Suspense
         fallback={

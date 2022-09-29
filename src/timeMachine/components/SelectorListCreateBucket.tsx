@@ -83,7 +83,7 @@ const SelectorListCreateBucket: FC<Props> = ({
     buttonDisabled = true
   }
 
-  const retentionRule = state.retentionRules.find(r => r.type === 'expire')
+  const retentionRule = state.retentionRules?.find(r => r.type === 'expire')
   const retentionSeconds = retentionRule ? retentionRule.everySeconds : 3600
 
   const handleChangeRuleType = (ruleType: RuleType): void => {
@@ -106,14 +106,14 @@ const SelectorListCreateBucket: FC<Props> = ({
     dispatch({type: 'updateRetentionRules', payload: retentionRules})
   }
 
-  const handleSubmit = (onHide: () => void) => (
-    e: FormEvent<HTMLFormElement>
-  ): void => {
-    e.preventDefault()
+  const handleSubmit =
+    (onHide: () => void) =>
+    (e: FormEvent<HTMLFormElement>): void => {
+      e.preventDefault()
 
-    createBucket(state)
-    onHide()
-  }
+      createBucket(state)
+      onHide()
+    }
   const handleChangeSchemaType = (schemaType: SchemaType): void => {
     dispatch({type: 'updateSchema', payload: schemaType})
   }

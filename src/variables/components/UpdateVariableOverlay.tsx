@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent, FormEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {
@@ -44,9 +43,7 @@ interface State {
   hasValidArgs: boolean
 }
 
-type RouterProps = RouteComponentProps<{orgID: string; id: string}>
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = RouterProps & ReduxProps
+type Props = ConnectedProps<typeof connector>
 
 class UpdateVariableOverlay extends PureComponent<Props, State> {
   public state: State = {
@@ -274,4 +271,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default withRouter(connector(UpdateVariableOverlay))
+export default connector(UpdateVariableOverlay)

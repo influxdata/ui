@@ -1,7 +1,7 @@
 // Libraries
-import React, {Component} from 'react'
+import React, {FC, Component} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, useRouteMatch} from 'react-router-dom'
 
 // Components
 import {Page} from '@influxdata/clockface'
@@ -13,8 +13,8 @@ import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import VariablesControlBar from 'src/dashboards/components/variablesControlBar/VariablesControlBar'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import EditVEO from 'src/dashboards/components/EditVEO'
-import NewVEO from 'src/dashboards/components/NewVEO'
+import {EditViewVEO} from 'src/dashboards/components/EditVEO'
+import {NewViewVEO} from 'src/dashboards/components/NewVEO'
 import {
   AddNoteOverlay,
   EditNoteOverlay,
@@ -46,8 +46,33 @@ import {
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
+
+const SingleDashboardPage: FC<ManualRefreshProps> = ({
+  manualRefresh,
+  onManualRefresh,
+}) => {
+  const {isExact} = useRouteMatch(dashRoute)
+
+  if (!isExact) {
+    return null
+  }
+
+  return (
+    <>
+      <DashboardHeader onManualRefresh={onManualRefresh} />
+      {!isFlagEnabled('multiOrg') && (
+        <RateLimitAlert alertOnly={true} location="dashboard page" />
+      )}
+      <VariablesControlBar />
+      <ErrorBoundary>
+        <DashboardComponent manualRefresh={manualRefresh} />
+      </ErrorBoundary>
+    </>
+  )
+}
 
 @ErrorHandling
 class DashboardPage extends Component<Props> {
@@ -72,31 +97,35 @@ class DashboardPage extends Component<Props> {
           <Page titleTag={this.pageTitle} testID="dashboard-page">
             <LimitChecker>
               <HoverTimeProvider>
-                <DashboardHeader onManualRefresh={onManualRefresh} />
-                <RateLimitAlert alertOnly={true} location="dashboard page" />
-                <VariablesControlBar />
-                <ErrorBoundary>
-                  <DashboardComponent manualRefresh={manualRefresh} />
-                </ErrorBoundary>
+                <SingleDashboardPage
+                  manualRefresh={manualRefresh}
+                  onManualRefresh={onManualRefresh}
+                />
+                <Switch>
+                  <Route
+                    path={`${dashRoute}/cells/new`}
+                    component={NewViewVEO}
+                  />
+                  <Route
+                    path={`${dashRoute}/cells/:cellID/edit`}
+                    component={EditViewVEO}
+                  />
+                  <Route
+                    path={`${dashRoute}/notes/new`}
+                    component={AddNoteOverlay}
+                  />
+                  <Route
+                    path={`${dashRoute}/notes/:cellID/edit`}
+                    component={EditNoteOverlay}
+                  />
+                  <Route
+                    path={`${dashRoute}/edit-annotation`}
+                    component={EditAnnotationDashboardOverlay}
+                  />
+                </Switch>
               </HoverTimeProvider>
             </LimitChecker>
           </Page>
-          <Switch>
-            <Route path={`${dashRoute}/cells/new`} component={NewVEO} />
-            <Route
-              path={`${dashRoute}/cells/:cellID/edit`}
-              component={EditVEO}
-            />
-            <Route path={`${dashRoute}/notes/new`} component={AddNoteOverlay} />
-            <Route
-              path={`${dashRoute}/notes/:cellID/edit`}
-              component={EditNoteOverlay}
-            />
-            <Route
-              path={`${dashRoute}/edit-annotation`}
-              component={EditAnnotationDashboardOverlay}
-            />
-          </Switch>
         </ErrorBoundary>
       </>
     )

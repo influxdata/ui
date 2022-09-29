@@ -27,6 +27,7 @@ import {
   SubscriptionListContext,
   SubscriptionListProvider,
 } from 'src/writeData/subscriptions/context/subscription.list'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -51,15 +52,30 @@ const SubscriptionsLanding: FC = () => {
     sortType: SortTypes.String,
     sortDirection: Sort.Ascending,
   })
+  const [filteredSubscriptions, setFilteredSubscriptions] = useState([])
+
   useEffect(() => {
     event('visited subscriptions page', {}, {feature: 'subscriptions'})
   }, [])
-  const filteredSubscriptions =
-    subscriptions && search
-      ? subscriptions.filter(
-          s => s.name.toLowerCase() === search.toLowerCase().trim()
-        )
-      : subscriptions
+
+  useEffect(() => {
+    if (!subscriptions || !subscriptions.length) {
+      setFilteredSubscriptions([])
+      return
+    }
+
+    const lowerCaseSearch = search.toLowerCase().trim()
+    if (!lowerCaseSearch) {
+      setFilteredSubscriptions(subscriptions)
+      return
+    }
+
+    const filtered = subscriptions.filter(s =>
+      s.name.toLowerCase().includes(lowerCaseSearch)
+    )
+    setFilteredSubscriptions(filtered)
+  }, [subscriptions, search])
+
   const handleSort = (subscriptions: Subscription[]): Subscription[] => {
     let sortedSubscriptions
     if (sortOptions.sortDirection === Sort.Ascending) {
@@ -93,7 +109,7 @@ const SubscriptionsLanding: FC = () => {
   return (
     <Page
       className="subscriptions-landing"
-      titleTag={pageTitleSuffixer(['Cloud Native Subscriptions', 'Load Data'])}
+      titleTag={pageTitleSuffixer(['Native Subscriptions', 'Load Data'])}
     >
       <LoadDataHeader />
       <LoadDataTabbedPage activeTab="subscriptions">
@@ -153,7 +169,9 @@ const SubscriptionsLanding: FC = () => {
 SubscriptionsLanding
 
 export default () => (
-  <SubscriptionListProvider>
-    <SubscriptionsLanding />
-  </SubscriptionListProvider>
+  <AppSettingProvider>
+    <SubscriptionListProvider>
+      <SubscriptionsLanding />
+    </SubscriptionListProvider>
+  </AppSettingProvider>
 )

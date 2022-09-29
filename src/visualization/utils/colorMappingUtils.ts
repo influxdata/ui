@@ -155,9 +155,9 @@ export const generateSeriesToColorHex = (
   columnGroupMap,
   properties: XYViewProperties
 ) => {
+  const cache = {}
   const seriesToColorHex = {}
-  const cgMap = {...columnGroupMap}
-  cgMap.mappings.forEach((graphLine, colorIndex) => {
+  columnGroupMap.mappings.forEach((graphLine, colorIndex) => {
     const id = getSeriesId(graphLine, columnGroupMap.columnKeys)
     let colors
     if (Array.isArray(properties.colors) && properties.colors.length) {
@@ -168,9 +168,21 @@ export const generateSeriesToColorHex = (
       colors = DEFAULT_LINE_COLORS
     }
     const colorsHexArray = colors.map(value => value.hex)
-    const fillScale = getNominalColorScale(columnGroupMap, colorsHexArray)
+    const key = colorsHexArray.join('')
+    let fillScale
+    if (cache[key]) {
+      fillScale = cache[key]
+    } else {
+      /**
+       * this is an expensive operation to perform, so we want to cache the result and use the returned function
+       * Since the size of the columnGroupMap is the same in the context of each function, we can rely upon the
+       * colorsHexArray as our unique key identifier and rely upon that for caching the reuslts
+       */
+      fillScale = getNominalColorScale(columnGroupMap, colorsHexArray)
+      cache[key] = fillScale
+    }
     seriesToColorHex[id] = fillScale(colorIndex)
   })
 
-  return {...seriesToColorHex}
+  return seriesToColorHex
 }

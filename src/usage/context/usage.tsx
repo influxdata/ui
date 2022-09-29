@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
-import {fromFlux, fastFromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 import {useSelector} from 'react-redux'
 
 // Utils
@@ -11,12 +11,14 @@ import {
   getUsageVectors,
   getUsageRateLimits,
 } from 'src/client/unityRoutes'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {PAYG_CREDIT_DAYS} from 'src/shared/constants'
 import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {MILLISECONDS_IN_ONE_DAY} from 'src/utils/datetime/constants'
+
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Types
 import {
@@ -24,7 +26,6 @@ import {
   SelectableDurationTimeRange,
   UsageVector,
 } from 'src/types'
-import {getMe} from 'src/me/selectors'
 
 export type Props = {
   children: JSX.Element
@@ -76,9 +77,8 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   paygCreditEnabled: false,
 }
 
-export const UsageContext = React.createContext<UsageContextType>(
-  DEFAULT_CONTEXT
-)
+export const UsageContext =
+  React.createContext<UsageContextType>(DEFAULT_CONTEXT)
 
 export const calculateCreditDaysUsed = (creditStartDate: string): number => {
   if (!creditStartDate) {
@@ -111,10 +111,10 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [timeRange, setTimeRange] = useState<SelectableDurationTimeRange>(
     DEFAULT_USAGE_TIME_RANGE
   )
-  const {quartzMe} = useSelector(getMe)
-  const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
 
-  const paygCreditStartDate = quartzMe?.paygCreditStartDate ?? ''
+  const {account} = useSelector(selectCurrentIdentity)
+
+  const paygCreditStartDate = account.paygCreditStartDate ?? ''
 
   const creditDaysUsed = useMemo(
     () => calculateCreditDaysUsed(paygCreditStartDate),
@@ -182,17 +182,17 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     // Credit usage: $250 - (
     //   (sum of 30-day writes * $0.002) +
     //   (sum of 30-day query count * $0.01 / 100) +
-    //   (sum of 30-day query storage * $0.02) +
+    //   (sum of 30-day query storage * $0.002) +
     //   (sum of 30-day data out * $0.09)
     //  )
     const vectors = {
-      storage_gb: v => v * 0.02,
+      storage_gb: v => v * 0.002,
       writes_mb: v => v * 0.002,
       reads_gb: v => v * 0.09,
       query_count: v => (v * 0.01) / 100,
     }
 
-    const values = parser(csvData).table.getColumn(vector_name) as Array<any>
+    const values = fromFlux(csvData).table.getColumn(vector_name) as Array<any>
     if (!values) {
       return 0
     }
@@ -258,7 +258,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
       const csv = resp.data?.trim().replace(/\r\n/g, '\n')
 
-      const csvs = csv.split('\n\n').map(c => parser(c))
+      const csvs = csv.split('\n\n').map(c => fromFlux(c))
 
       setBillingStatsStatus(RemoteDataState.Done)
       setBillingStats(csvs)
@@ -319,7 +319,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
-      const fromFluxResult = parser(resp.data)
+      const fromFluxResult = fromFlux(resp.data)
 
       setRateLimits(fromFluxResult)
       setRateLimitsStatus(RemoteDataState.Done)

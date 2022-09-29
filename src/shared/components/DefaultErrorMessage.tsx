@@ -4,6 +4,8 @@ import React from 'react'
 // Types
 import {ErrorMessageComponent} from 'src/types'
 
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+
 const DefaultErrorMessage: ErrorMessageComponent = () => {
   return (
     <p
@@ -11,9 +13,9 @@ const DefaultErrorMessage: ErrorMessageComponent = () => {
       style={{display: 'flex', placeContent: 'center'}}
     >
       An InfluxDB error has occurred. Please report the issue&nbsp;
-      <a href="https://github.com/influxdata/ui/issues/new?template=bug_report.md">
+      <SafeBlankLink href="https://github.com/influxdata/ui/issues/new?template=bug_report.md">
         here
-      </a>
+      </SafeBlankLink>
       .
     </p>
   )

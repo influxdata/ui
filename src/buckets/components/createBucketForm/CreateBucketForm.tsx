@@ -18,7 +18,7 @@ import {
   initialBucketState,
   DEFAULT_RULES,
 } from 'src/buckets/reducers/createBucket'
-import {AppState, Bucket, RetentionRule} from 'src/types'
+import {AppState, Bucket, OwnBucket, RetentionRule} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
 // Selectors
@@ -32,14 +32,15 @@ let SchemaType = null,
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
-  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
-    .MeasurementSchemaCreateRequest
+  MeasurementSchemaCreateRequest =
+    require('src/client/generatedRoutes').MeasurementSchemaCreateRequest
 }
 
 interface CreateBucketFormProps {
   onClose: () => void
   testID?: string
   useSimplifiedBucketForm?: boolean
+  callbackAfterBucketCreation?: (bucket: OwnBucket) => void
 }
 
 export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
@@ -62,13 +63,11 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     initialBucketState(isRetentionLimitEnforced, org.id)
   )
 
-  const [
-    newMeasurementSchemaRequests,
-    setNewMeasurementSchemaRequests,
-  ] = useState(null)
+  const [newMeasurementSchemaRequests, setNewMeasurementSchemaRequests] =
+    useState(null)
   const [showSchemaValidation, setShowSchemaValidation] = useState(false)
 
-  const retentionRule = state.retentionRules.find(
+  const retentionRule = state.retentionRules?.find(
     (rule: RetentionRule) => rule.type === 'expire'
   )
   const retentionSeconds = retentionRule ? retentionRule.everySeconds : 3600
@@ -144,6 +143,10 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   const handleUpdateBucket = (bucket: Bucket): void => {
     if (overlayParams?.onUpdateBucket) {
       overlayParams.onUpdateBucket(bucket)
+    }
+
+    if (props.callbackAfterBucketCreation) {
+      props.callbackAfterBucketCreation(bucket)
     }
   }
 

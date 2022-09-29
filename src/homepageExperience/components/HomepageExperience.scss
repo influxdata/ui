@@ -1,4 +1,5 @@
 @import '@influxdata/clockface/dist/variables.scss';
+@import '../../style/modules';
 
 $pool-fill: #00a3ff;
 
@@ -11,6 +12,12 @@ h1#first-mile--header {
   display: flex;
   height: 100%;
   width: 100%;
+}
+
+.homepage-wizard-container--subway-inner {
+  width: 100%;
+  position: sticky;
+  top: 0;
 }
 
 .homepage-wizard-container--subway {
@@ -31,7 +38,7 @@ h1#first-mile--header {
 .homepage-wizard-container--main-wrapper {
   h1 {
     margin-top: 0;
-    font-weight: normal;
+    font-weight: 600;
   }
 
   p {
@@ -109,4 +116,44 @@ h1#first-mile--header {
 
 .homepage-wizard--code-highlight {
   color: #b7b8ff;
+}
+
+/*
+ * Styles copied from the removed MePage.scss
+ */
+
+.recent-dashboards {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  font-size: 1.25em;
+}
+
+.recent-dashboards--item {
+  margin-bottom: $cf-space-2xs;
+  white-space: nowrap;
+  word-break: break-all;
+  padding-right: $cf-space-s;
+}
+
+.recent-dashboards--filter {
+  margin-bottom: $cf-space-2xs;
+}
+
+.docslinks-list,
+.useful-links {
+  padding: 0;
+  list-style: none;
+
+  h4 {
+    color: $cf-grey-95;
+  }
+}
+
+.docslinks-list > li {
+  font-size: 1.25em;
+  background-color: transparent;
+  border-radius: $radius;
+  padding: 0;
+  margin-bottom: $ix-marg-c;
 }

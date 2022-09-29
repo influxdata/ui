@@ -1,0 +1,29 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.flux-toolbar--minimal-list-item {
+  padding: 2px 8px;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  .cf-text-block {
+    width: fit-content;
+    font-size: $cf-form-sm-font;
+    font-family: $cf-code-font;
+    font-style: normal;
+    font-weight: 400;
+    background-color: inherit;
+    color: #f2f1f3;
+    transition-property: color;
+    &:hover {
+      background: rgba(241, 241, 243, 0.1);
+      /* Note: backdrop-filter has minimal browser support */
+      backdrop-filter: blur(42px);
+      border-radius: 2px;
+      color: $c-galaxy;
+      &:after {
+        content: '+';
+        padding-left: 10px;
+      }
+    }
+  }
+}

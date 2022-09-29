@@ -29,6 +29,7 @@ import {generateSeriesToColorHex} from 'src/visualization/utils/colorMappingUtil
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
+import {AdaptiveZoomToggle} from 'src/visualization/components/internal/AdaptiveZoomOption'
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
@@ -55,9 +56,10 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
     return columnType === 'time' || columnType === 'number'
   })
 
-  const groupKey = useMemo(() => [...results.fluxGroupKeyUnion, 'result'], [
-    results,
-  ])
+  const groupKey = useMemo(
+    () => [...results.fluxGroupKeyUnion, 'result'],
+    [results]
+  )
 
   const xColumn = defaultXColumn(results?.table, properties.xColumn)
   const yColumn = defaultYColumn(results?.table, properties.yColumn)
@@ -148,6 +150,20 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }
             />
           </Form.Element>
+          {isFlagEnabled('zoomRequery') && (
+            <AdaptiveZoomToggle
+              adaptiveZoomHide={properties.adaptiveZoomHide}
+              type={properties.type}
+              update={update}
+            />
+          )}
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
+          <h5 className="view-options--header">Options</h5>
           <Form.Element label="Time Format">
             <SelectDropdown
               options={FORMAT_OPTIONS.map(option => option.text)}
@@ -157,13 +173,6 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-        </Grid.Column>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthMD={Columns.Six}
-          widthLG={Columns.Four}
-        >
-          <h5 className="view-options--header">Options</h5>
           {properties.geom && (
             <Form.Element label="Interpolation">
               <Dropdown
@@ -228,20 +237,19 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
             <ColorSchemeDropdown
               value={properties.colors?.filter(c => c.type === 'scale') ?? []}
               onChange={colors => {
-                if (isFlagEnabled('graphColorMapping')) {
-                  const [, fillColumnMap] = createGroupIDColumn(
-                    results.table,
-                    groupKey
-                  )
-                  const colorMapping = generateSeriesToColorHex(
-                    fillColumnMap,
-                    properties
-                  )
+                const [, fillColumnMap] = createGroupIDColumn(
+                  results.table,
+                  groupKey
+                )
+                // the properties that we use to calculate the colors are updated in the next render cycle so we need
+                // to make a new object and override the colors
+                const newProperties = {...properties, colors}
+                const colorMapping = generateSeriesToColorHex(
+                  fillColumnMap,
+                  newProperties
+                )
 
-                  update({colors, colorMapping})
-                } else {
-                  update({colors})
-                }
+                update({colors, colorMapping})
               }}
             />
           </Form.Element>

@@ -1,5 +1,5 @@
 // Libraries
-import React, {ChangeEvent, FC, useContext} from 'react'
+import React, {ChangeEvent, FC, useContext, useState, useRef} from 'react'
 import {Input, IconFont} from '@influxdata/clockface'
 import {OperatorContext} from 'src/operator/context/operator'
 import {debounce} from 'lodash'
@@ -8,12 +8,14 @@ import {debounce} from 'lodash'
 import {OperatorRoutes} from 'src/operator/constants'
 
 const ResourcesSearchbar: FC = () => {
-  const {pathname, searchTerm, setSearchTerm} = useContext(OperatorContext)
+  const {pathname, setSearchTerm} = useContext(OperatorContext)
+  const [searchText, setSearchText] = useState('')
 
-  const debounceFunc = debounce(setSearchTerm, 50)
+  const debounceFunc = useRef(debounce(setSearchTerm, 300))
 
   const changeSearchTerm = (event: ChangeEvent<HTMLInputElement>) => {
-    debounceFunc(event.target.value)
+    setSearchText(event.target.value)
+    debounceFunc.current(event.target.value)
   }
 
   const isOrgsTab = pathname.includes(OperatorRoutes.organizations)
@@ -27,7 +29,7 @@ const ResourcesSearchbar: FC = () => {
         isOrgsTab === 'organizations' ? 'id' : 'email'
       } ...`}
       inputStyle={{width: '500px'}}
-      value={searchTerm}
+      value={searchText}
       onChange={changeSearchTerm}
       testID="operator-resource--searchbar"
     />

@@ -23,26 +23,24 @@ interface Props {
   isDeletable: boolean
 }
 
-// TODO: add back in once https://github.com/influxdata/quartz/issues/2389 back-filling of names is complete
+const formatName = (firstName: string | null, lastName: string | null) => {
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`
+  }
 
-// const formatName = (firstName: string | null, lastName: string | null) => {
-//   if (firstName && lastName) {
-//     return `${firstName} ${lastName}`
-//   }
-//
-//   if (firstName) {
-//     return firstName
-//   }
-//
-//   if (lastName) {
-//     return lastName
-//   }
-//
-//   return ''
-// }
+  if (firstName) {
+    return firstName
+  }
+
+  if (lastName) {
+    return lastName
+  }
+
+  return ''
+}
 
 const UserListItem: FC<Props> = ({user, isDeletable}) => {
-  const {email, role} = user
+  const {email, firstName, lastName, role} = user
   const {handleRemoveUser, removeUserStatus} = useContext(UsersContext)
 
   const [revealOnHover, toggleRevealOnHover] = useState(true)
@@ -73,12 +71,11 @@ const UserListItem: FC<Props> = ({user, isDeletable}) => {
       <IndexList.Cell>
         <span className="user-list-email">{email}</span>
       </IndexList.Cell>
-      {/* TODO: add back in once https://github.com/influxdata/quartz/issues/2389 back-filling of names is complete */}
-      {/* <IndexList.Cell>
+      <IndexList.Cell>
         <span className="user-list-name">
           {formatName(firstName, lastName)}
         </span>
-      </IndexList.Cell>*/}
+      </IndexList.Cell>
       <IndexList.Cell className="user-list-cell-role">
         {capitalize(role)}
       </IndexList.Cell>

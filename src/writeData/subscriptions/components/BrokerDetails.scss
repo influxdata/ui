@@ -2,6 +2,32 @@
 .update-broker-form {
   float: right;
   width: 75%;
+
+  &__fixed {
+    position: fixed;
+    background-color: $cf-grey-5;
+    background-attachment: fixed;
+    z-index: 10;
+    padding-bottom: 20px;
+
+    &__broker-buttons {
+      padding-top: 46px;
+      padding-left: 24px;
+      padding-right: 24px;
+
+      button {
+        margin-left: 8px;
+      }
+    }
+  }
+
+  &__link {
+    margin-bottom: 24px;
+  }
+
+  .cf-overlay--body {
+    padding-top: 50px;
+  }
   button {
     margin-left: 4px;
   }
@@ -24,21 +50,6 @@
   input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
-  }
-  &__premium-container {
-    margin-left: $cf-space-s;
-    .cf-icon {
-      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    &__text {
-      margin-left: $cf-space-s;
-      text-transform: uppercase;
-      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
   }
   &__header {
     text-transform: uppercase;
@@ -80,14 +91,5 @@
     margin-bottom: 60px;
     margin-left: 12px;
     margin-right: 12px;
-  }
-
-  &__broker-buttons {
-    padding-top: 46px;
-    padding-right: 19px;
-
-    button {
-      margin-left: 8px;
-    }
   }
 }

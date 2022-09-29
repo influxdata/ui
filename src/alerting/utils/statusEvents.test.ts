@@ -1,11 +1,11 @@
-import {processStatusesResponse} from 'src/alerting/utils/statusEvents'
-import {fromFlux, Table} from '@influxdata/giraffe'
 import {range} from 'lodash'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
+import {fromFlux, Table} from '@influxdata/giraffe'
+
+import {processStatusesResponse} from 'src/alerting/utils/statusEvents'
 
 jest.mock('@influxdata/giraffe', () => ({
   fromFlux: jest.fn(),
-  fastFromFlux: jest.fn(),
   // todo: test will fails on binaryPrefixFormatter not a function in src/shared/copy/notifications.ts:22:24 this mock can be removed after this will be fixed
   binaryPrefixFormatter: jest.fn(),
 }))
@@ -21,7 +21,9 @@ const csv = 'some csv'
 const cancel = jest.fn()
 
 describe('process statuses response', () => {
-  beforeEach(jest.clearAllMocks)
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
 
   const fluxGroupKeyUnion = ['']
   const resultColumnNames = []
@@ -39,7 +41,7 @@ describe('process statuses response', () => {
   }
 
   it('process empty table', async () => {
-    mocked(fromFlux).mockImplementationOnce(() => ({
+    jest.mocked(fromFlux).mockImplementationOnce(() => ({
       table: {...table, length: 0},
       fluxGroupKeyUnion,
       resultColumnNames,
@@ -60,7 +62,7 @@ describe('process statuses response', () => {
   })
 
   it('process single table', async () => {
-    mocked(fromFlux).mockImplementationOnce(() => ({
+    jest.mocked(fromFlux).mockImplementationOnce(() => ({
       table,
       fluxGroupKeyUnion,
       resultColumnNames,
@@ -82,7 +84,7 @@ describe('process statuses response', () => {
       cancel,
     }).promise
 
-    expect(mocked(fromFlux).mock.calls[0][0]).toBe(csv)
+    expect(jest.mocked(fromFlux).mock.calls[0][0]).toBe(csv)
     expect(actual.length).toBe(1)
     expect(actual[0]).toMatchObject(expected)
   })

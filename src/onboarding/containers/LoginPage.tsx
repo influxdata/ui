@@ -11,12 +11,21 @@ import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
 import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
-// Types
-import {getMe} from 'src/client'
+// APIs
+import {fetchIdentity, fetchLegacyIdentity} from 'src/identity/apis/auth'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
+import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+let getQuartzLoginUrl
+
+if (CLOUD) {
+  getQuartzLoginUrl =
+    require('src/client/uiproxydRoutes').getUiproxyQuartzLoginUrl
+}
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
@@ -25,10 +34,10 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      const resp = await getMe({})
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
+      if (isFlagEnabled('quartzSession')) {
+        await fetchIdentity()
+      } else {
+        await fetchLegacyIdentity()
       }
 
       setHasValidSession(true)
@@ -51,6 +60,19 @@ export const LoginPage: FC = () => {
       history.goBack()
     }
     return null
+  } else {
+    if (isFlagEnabled('universalLogin')) {
+      if (CLOUD) {
+        getQuartzLoginUrl({})
+          .then(response => {
+            const redirectUrl = response.data
+            console.warn('Redirect to cloud url: ', redirectUrl)
+            window.location.replace(redirectUrl)
+          })
+          .catch(error => console.error(error))
+        return
+      }
+    }
   }
 
   return (

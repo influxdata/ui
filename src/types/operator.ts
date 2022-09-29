@@ -4,8 +4,10 @@ export {
   OperatorOrgLimits,
   OperatorOrganization as OperatorOrg,
   OperatorOrganizations as OperatorOrgs,
+  OperatorProviders,
+  OperatorRegions,
   OrgLimits,
-  User as OperatorUser,
+  OperatorUser,
 } from 'src/client/unityRoutes'
 
 export interface CellInfo {

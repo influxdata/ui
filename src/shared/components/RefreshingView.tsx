@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect} from 'react-redux'
 
 // Components
@@ -25,10 +24,11 @@ import {
 
 interface OwnProps {
   id: string
+  incrementSubmitToken: () => void
   manualRefresh: number
   properties: QueryViewProperties
-  incrementSubmitToken: () => void
   submitToken: number
+  transmitWindowPeriod?: (windowPeriod: number | string) => void
 }
 
 interface StateProps {
@@ -37,7 +37,7 @@ interface StateProps {
   ranges: TimeRange | null
 }
 
-type Props = OwnProps & StateProps & RouteComponentProps<{orgID: string}>
+type Props = OwnProps & StateProps
 
 class RefreshingView extends PureComponent<Props> {
   public static defaultProps = {
@@ -65,6 +65,7 @@ class RefreshingView extends PureComponent<Props> {
       manualRefresh,
       annotations,
       submitToken,
+      transmitWindowPeriod,
     } = this.props
 
     // DO NOT REMOVE the CellEvent component.  it gathers metrics for performance that management requires.
@@ -88,6 +89,7 @@ class RefreshingView extends PureComponent<Props> {
               timeRange={ranges}
               annotations={annotations}
               cellID={id}
+              transmitWindowPeriod={transmitWindowPeriod}
             />
           </React.Fragment>
         )}
@@ -116,6 +118,4 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
   return {ranges, timeRange, annotations}
 }
 
-export default connect<StateProps, {}, OwnProps>(mstp)(
-  withRouter(RefreshingView)
-)
+export default connect<StateProps, {}, OwnProps>(mstp)(RefreshingView)

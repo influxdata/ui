@@ -18,8 +18,17 @@ import {AccountContext} from 'src/operator/context/account'
 import {OperatorContext} from 'src/operator/context/operator'
 
 const AccountViewHeader: FC = () => {
-  const {account, setVisible, visible} = useContext(AccountContext)
+  const {
+    account,
+    setConvertToContractOverlayVisible,
+    convertToContractOverlayVisible,
+    setDeleteOverlayVisible,
+    deleteOverlayVisible,
+  } = useContext(AccountContext)
   const {hasWritePermissions} = useContext(OperatorContext)
+  const canConvertToContract =
+    account.type === 'free' ||
+    (account.type === 'pay_as_you_go' && account.zuoraAccountId !== null)
 
   return (
     <FlexBox
@@ -35,9 +44,26 @@ const AccountViewHeader: FC = () => {
       </FlexBox.Child>
       {hasWritePermissions && (
         <ButtonBase
+          color={ComponentColor.Primary}
+          shape={ButtonShape.Default}
+          onClick={() =>
+            setConvertToContractOverlayVisible(!convertToContractOverlayVisible)
+          }
+          status={
+            canConvertToContract
+              ? ComponentStatus.Default
+              : ComponentStatus.Disabled
+          }
+          testID="account-convert-to-contract--button"
+        >
+          Convert to Contract
+        </ButtonBase>
+      )}
+      {hasWritePermissions && (
+        <ButtonBase
           color={ComponentColor.Danger}
           shape={ButtonShape.Default}
-          onClick={_e => setVisible(!visible)}
+          onClick={() => setDeleteOverlayVisible(!deleteOverlayVisible)}
           status={
             account?.deletable
               ? ComponentStatus.Default

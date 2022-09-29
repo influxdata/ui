@@ -7,7 +7,6 @@
   border-radius: $cf-radius;
   overflow: hidden;
   border: $cf-border solid $cf-grey-15;
-  background-color: $cf-grey-15;
   margin-bottom: $cf-space-2xs;
 }
 
@@ -48,6 +47,7 @@
   justify-content: space-between;
   padding: $cf-space-2xs $cf-space-s;
   border-top: $cf-border solid $cf-grey-15;
+  background-color: $cf-grey-15;
 }
 
 .code-snippet--label {

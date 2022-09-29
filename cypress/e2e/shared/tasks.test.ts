@@ -34,7 +34,7 @@ describe('Tasks', () => {
   it('can create a task', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `import "influxdata/influxdb/v1"{esc}
+      return `import "influxdata/influxdb/v1"
 v1.tagValues(bucket: "${name}", tag: "_field")
 from(bucket: "${name}")
    |> range(start: -2m)`
@@ -52,7 +52,7 @@ from(bucket: "${name}")
   it('can create a task using http.post', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, () => {
-      return `import "http"
+      return `import "http" {enter}
 http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
 
@@ -76,10 +76,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       .click()
       .clear()
       .type('0 4 8-14 * *')
-    cy.getByTestID('task-form-offset-input')
-      .click()
-      .clear()
-      .type('10m')
+    cy.getByTestID('task-form-offset-input').click().clear().type('10m')
     cy.getByTestID('task-form-offset-input').should('have.value', '10m')
 
     cy.getByTestID('task-save-btn').click()
@@ -118,14 +115,8 @@ from(bucket: "defbuck")
       .click()
       .type('Option Test')
       .then(() => {
-        cy.getByTestID('task-form-schedule-input')
-          .click()
-          .clear()
-          .type('24h')
-        cy.getByTestID('task-form-offset-input')
-          .click()
-          .clear()
-          .type('20m')
+        cy.getByTestID('task-form-schedule-input').click().clear().type('24h')
+        cy.getByTestID('task-form-offset-input').click().clear().type('20m')
       })
 
     cy.getByTestID('task-save-btn').click()
@@ -166,9 +157,7 @@ from(bucket: "defbuck")
           cy.getByTestID('task-card--name-button')
             .click()
             .then(() => {
-              cy.getByTestID('task-card--input')
-                .type(newName)
-                .type('{enter}')
+              cy.getByTestID('task-card--input').type(newName).type('{enter}')
             })
 
           cy.getByTestID('notification-success').should('exist')
@@ -246,9 +235,7 @@ from(bucket: "defbuck")
       cy.getByTestID('task-card--slide-toggle')
         .eq(0)
         .should('have.class', 'active')
-      cy.getByTestID('task-card--slide-toggle')
-        .eq(0)
-        .click()
+      cy.getByTestID('task-card--slide-toggle').eq(0).click()
 
       // only the clone should be active
       cy.getByTestID('task-card--slide-toggle')
@@ -261,9 +248,7 @@ from(bucket: "defbuck")
       const cloneNamePrefix = '🦄ask (cloned at '
       cy.getByTestID('task-card').then(() => {
         cy.getByTestID('context-menu-task').click()
-        cy.getByTestID('context-clone-task')
-          .click()
-          .type('{esc}')
+        cy.getByTestID('context-clone-task').click().type('{esc}')
       })
 
       cy.getByTestID('task-card').should('have.length', 2)
@@ -272,9 +257,7 @@ from(bucket: "defbuck")
       cy.getByTestIDHead('task-card--name').contains(cloneNamePrefix)
 
       cy.getByTestID('task-card').then(() => {
-        cy.getByTestID('context-menu-task')
-          .eq(1)
-          .click()
+        cy.getByTestID('context-menu-task').eq(1).click()
         cy.intercept('GET', '/api/v2/tasks/*').as('clonedTask')
         cy.getByTestID('context-edit-task').click()
       })
@@ -296,24 +279,15 @@ from(bucket: "defbuck")
           expect(cloneTimeAsDate.valueOf()).to.equal(cloneTimeAsDate.valueOf())
         })
 
-      cy.getByTestID('task-form-name')
-        .focus()
-        .clear()
-        .type('Copy task test')
+      cy.getByTestID('task-form-name').focus().clear().type('Copy task test')
       cy.getByTestID('task-form-name').should('have.value', 'Copy task test')
 
       cy.getByTestID('task-form-schedule-input').should('have.value', '24h')
-      cy.getByTestID('task-form-schedule-input')
-        .focus()
-        .clear()
-        .type('12h')
+      cy.getByTestID('task-form-schedule-input').focus().clear().type('12h')
       cy.getByTestID('task-form-schedule-input').should('have.value', '12h')
 
       cy.getByTestID('task-form-offset-input').should('have.value', '20m')
-      cy.getByTestID('task-form-offset-input')
-        .focus()
-        .clear()
-        .type('10m')
+      cy.getByTestID('task-form-offset-input').focus().clear().type('10m')
       cy.getByTestID('task-form-offset-input').should('have.value', '10m')
 
       cy.getByTestID('task-save-btn').click()
@@ -326,9 +300,7 @@ from(bucket: "defbuck")
     // IDPE: https://github.com/influxdata/idpe/issues/10368
     // UI: https://github.com/influxdata/ui/issues/97
     it.skip('can add a comment into a task', () => {
-      cy.getByTestID('task-card--name')
-        .first()
-        .click()
+      cy.getByTestID('task-card--name').first().click()
 
       // assert textarea and write a comment
       cy.getByTestID('flux-editor').within(() => {
@@ -370,9 +342,7 @@ from(bucket: "defbuck")
           )
         })
 
-      cy.getByTestID('task-card--name')
-        .first()
-        .click()
+      cy.getByTestID('task-card--name').first().click()
 
       // assert the comment
       cy.getByTestID('flux-editor').within(() => {
@@ -535,9 +505,7 @@ from(bucket: "defbuck")
       cy.getByTestID('task-card')
         .eq(secondIndex)
         .then(() => {
-          cy.getByTestID('context-menu-task')
-            .eq(secondIndex)
-            .click()
+          cy.getByTestID('context-menu-task').eq(secondIndex).click()
           cy.getByTestID('context-edit-task').click()
         })
       // verify that it is the correct data
@@ -553,9 +521,7 @@ from(bucket: "defbuck")
       cy.getByTestID('task-card')
         .eq(firstIndex)
         .then(() => {
-          cy.getByTestID('context-menu-task')
-            .eq(firstIndex)
-            .click()
+          cy.getByTestID('context-menu-task').eq(firstIndex).click()
           cy.getByTestID('context-edit-task').click()
         })
       // verify that it is the correct data
@@ -569,9 +535,7 @@ from(bucket: "defbuck")
       cy.getByTestID('task-card')
         .eq(secondIndex)
         .then(() => {
-          cy.getByTestID('context-menu-task')
-            .eq(secondIndex)
-            .click()
+          cy.getByTestID('context-menu-task').eq(secondIndex).click()
           cy.getByTestID('context-edit-task').click()
         })
 
@@ -585,9 +549,7 @@ from(bucket: "defbuck")
       cy.getByTestID('task-card')
         .eq(firstIndex)
         .then(() => {
-          cy.getByTestID('context-menu-task')
-            .eq(firstIndex)
-            .click()
+          cy.getByTestID('context-menu-task').eq(firstIndex).click()
           cy.getByTestID('context-edit-task').click()
         })
       // verify that it is the correct data
@@ -602,9 +564,7 @@ from(bucket: "defbuck")
       cy.getByTestID('task-card')
         .eq(secondIndex)
         .then(() => {
-          cy.getByTestID('context-menu-task')
-            .eq(secondIndex)
-            .click()
+          cy.getByTestID('context-menu-task').eq(secondIndex).click()
           cy.getByTestID('context-edit-task').click()
         })
       // verify that it is the correct data
@@ -617,9 +577,7 @@ from(bucket: "defbuck")
       cy.getByTestID('task-card')
         .eq(firstIndex)
         .then(() => {
-          cy.getByTestID('context-menu-task')
-            .eq(firstIndex)
-            .click()
+          cy.getByTestID('context-menu-task').eq(firstIndex).click()
           cy.getByTestID('context-edit-task').click()
         })
       // verify that it is the correct data
@@ -669,24 +627,18 @@ from(bucket: "defbuck")
       // Search for a task
       const name = task.name.slice(-4)
       cy.getByTestIDAndSetInputValue('search-widget', name)
-      cy.getByTestID('resource-list--body')
-        .children()
-        .should('have.length', 1)
+      cy.getByTestID('resource-list--body').children().should('have.length', 1)
       cy.getByTestID('resource-list--body')
         .children()
         .getByTestID('task-card--name')
         .click()
 
       // Navigate away from current page back to Tasks List page
-      cy.get('.bread-crumb-title')
-        .first()
-        .click()
+      cy.get('.bread-crumb-title').first().click()
       cy.getByTestID('search-widget').should('have.value', name)
 
       // Validate that the list has correct search results
-      cy.getByTestID('resource-list--body')
-        .children()
-        .should('have.length', 1)
+      cy.getByTestID('resource-list--body').children().should('have.length', 1)
       cy.getByTestID('resource-list--body')
         .children()
         .getByTestID('task-card--name')
@@ -698,9 +650,7 @@ from(bucket: "defbuck")
       // Search for a task
       const name = task.name.slice(-4)
       cy.getByTestIDAndSetInputValue('search-widget', name)
-      cy.getByTestID('resource-list--body')
-        .children()
-        .should('have.length', 1)
+      cy.getByTestID('resource-list--body').children().should('have.length', 1)
       cy.getByTestID('resource-list--body')
         .children()
         .getByTestID('task-card--name')
@@ -711,9 +661,7 @@ from(bucket: "defbuck")
       cy.getByTestID('search-widget').should('have.value', name)
 
       // Validate that the list has correct search results
-      cy.getByTestID('resource-list--body')
-        .children()
-        .should('have.length', 1)
+      cy.getByTestID('resource-list--body').children().should('have.length', 1)
       cy.getByTestID('resource-list--body')
         .children()
         .getByTestID('task-card--name')

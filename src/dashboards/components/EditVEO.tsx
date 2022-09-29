@@ -1,41 +1,42 @@
 // Libraries
-import React, {FunctionComponent, useEffect} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {get} from 'lodash'
+import React, {FC, useEffect} from 'react'
+import {useParams, useHistory} from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import {
+  Overlay,
+  Page,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import VEOHeader from 'src/dashboards/components/VEOHeader'
 
 // Actions
-import {disableUpdatedTimeRangeInVEO} from 'src/shared/actions/app'
 import {setName} from 'src/timeMachine/actions'
 import {saveVEOView} from 'src/dashboards/actions/thunks'
 import {getViewAndResultsForVEO} from 'src/views/actions/thunks'
 
 // Utils
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {AppState, RemoteDataState} from 'src/types'
+import {AppState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps &
-  RouteComponentProps<{orgID: string; cellID: string; dashboardID: string}>
+const EditViewVEO: FC = () => {
+  const {dashboardID, cellID} = useParams<{
+    dashboardID: string
+    cellID: string
+  }>()
 
-const EditViewVEO: FunctionComponent<Props> = ({
-  activeTimeMachineID,
-  onSaveView,
-  onSetName,
-  match: {
-    params: {orgID, cellID, dashboardID},
-  },
-  history,
-  view,
-}) => {
+  const org = useSelector(getOrg)
+  const {view} = useSelector((state: AppState) => getActiveTimeMachine(state))
+
   const dispatch = useDispatch()
+  const history = useHistory()
+
   useEffect(() => {
     // TODO split this up into "loadView" "setActiveTimeMachine"
     // and something to tell the component to pull from the context
@@ -44,59 +45,41 @@ const EditViewVEO: FunctionComponent<Props> = ({
   }, [dispatch, dashboardID, cellID])
 
   const handleClose = () => {
-    history.push(`/orgs/${orgID}/dashboards/${dashboardID}`)
-    dispatch(disableUpdatedTimeRangeInVEO())
+    history.push(`/orgs/${org.id}/dashboards/${dashboardID}`)
   }
 
   const handleSave = () => {
     try {
-      onSaveView(dashboardID)
+      dispatch(saveVEOView(dashboardID))
       handleClose()
     } catch (e) {}
   }
 
-  const viewMatchesRoute = get(view, 'id', null) === cellID
-
-  let loadingState = RemoteDataState.Loading
-  if (activeTimeMachineID === 'veo' && viewMatchesRoute) {
-    loadingState = RemoteDataState.Done
-  }
-
   return (
-    <Overlay visible={true} className="veo-overlay">
-      <div className="veo">
-        <SpinnerContainer
-          spinnerComponent={<TechnoSpinner />}
-          loading={loadingState}
-        >
-          <VEOHeader
-            key={view && view.name}
-            name={view && view.name}
-            onSetName={onSetName}
-            onCancel={handleClose}
-            onSave={handleSave}
-          />
-          <div className="veo-contents">
-            <TimeMachine />
-          </div>
-        </SpinnerContainer>
-      </div>
-    </Overlay>
+    <Page>
+      <SpinnerContainer
+        spinnerComponent={<TechnoSpinner />}
+        loading={view.status}
+      >
+        <VEOHeader
+          key={view && view.name}
+          name={view && view.name}
+          onSetName={(name: string) => dispatch(setName(name))}
+          onCancel={handleClose}
+          onSave={handleSave}
+        />
+        <div className="veo-contents">
+          <TimeMachine />
+        </div>
+      </SpinnerContainer>
+    </Page>
   )
 }
 
-const mstp = (state: AppState) => {
-  const {activeTimeMachineID} = state.timeMachines
-  const {view} = getActiveTimeMachine(state)
+export {EditViewVEO}
 
-  return {view, activeTimeMachineID}
-}
-
-const mdtp = {
-  onSetName: setName,
-  onSaveView: saveVEOView,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(EditViewVEO))
+export default () => (
+  <Overlay visible={true} className="veo-overlay">
+    <EditViewVEO />
+  </Overlay>
+)

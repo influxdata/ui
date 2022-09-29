@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, Component, ComponentClass, useEffect} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useParams, useHistory} from 'react-router-dom'
+import {History} from 'history'
 import {useDispatch} from 'react-redux'
 import {OverlayID} from 'src/overlays/reducers/overlays'
 
@@ -11,8 +12,8 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 // but it doesn't include params on an injected router upon route resolution
 
 export type OverlayDismissalWithRoute = (
-  history: RouteComponentProps['history'],
-  params: {[x: string]: string}
+  history: History,
+  params: Record<string, string>
 ) => void
 
 interface OwnProps {
@@ -20,18 +21,20 @@ interface OwnProps {
   onClose: OverlayDismissalWithRoute
 }
 
-type OverlayHandlerProps = OwnProps & RouteComponentProps
+type OverlayHandlerProps = OwnProps
 
 const OverlayHandler: FC<OverlayHandlerProps> = props => {
-  const {overlayID, onClose, match, history} = props
+  const {overlayID, onClose} = props
+  const history = useHistory()
+  const params = useParams()
   const dispatch = useDispatch()
 
   useEffect(() => {
     const closer = () => {
-      onClose(history, match.params)
+      onClose(history, params)
     }
 
-    dispatch(showOverlay(overlayID, match.params, closer))
+    dispatch(showOverlay(overlayID, params, closer))
 
     return () => {
       dispatch(dismissOverlay())
@@ -41,7 +44,7 @@ const OverlayHandler: FC<OverlayHandlerProps> = props => {
   return null
 }
 
-const routedComponent = withRouter(OverlayHandler)
+const routedComponent = OverlayHandler
 
 export default routedComponent
 

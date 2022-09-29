@@ -1,5 +1,5 @@
 // Libraries
-import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
+import {fromFlux} from '@influxdata/giraffe'
 
 // APIs
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
@@ -14,6 +14,7 @@ import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
+import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Types
 import {TimeRange, BuilderConfig} from 'src/types'
@@ -21,8 +22,6 @@ import {CancelBox} from 'src/types/promises'
 import {pastThirtyDaysTimeRange} from 'src/shared/constants/timeRanges'
 
 const DEFAULT_TIME_RANGE: TimeRange = pastThirtyDaysTimeRange
-const DEFAULT_LIMIT = 200
-const EXTENDED_LIMIT = 500
 
 export interface FindKeysOptions {
   url: string
@@ -51,10 +50,6 @@ export function findKeys({
     ? ''
     : `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
 
-  const adjustedLimit = isFlagEnabled('increasedMeasurmentTagLimit')
-    ? EXTENDED_LIMIT
-    : limit
-
   // TODO: Use the `v1.tagKeys` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
   let query = `import "regexp"
@@ -67,7 +62,7 @@ export function findKeys({
   |> distinct()${searchFilter}${previousKeyFilter}
   |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
   |> sort()
-  |> limit(n: ${adjustedLimit})`
+  |> limit(n: ${limit})`
 
   if (bucket !== 'sample' && isFlagEnabled('newQueryBuilder')) {
     query = `import "regexp"
@@ -119,10 +114,6 @@ export function findValues({
     ? ''
     : `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
 
-  const adjustedLimit = isFlagEnabled('increasedMeasurmentTagLimit')
-    ? EXTENDED_LIMIT
-    : limit
-
   // TODO: Use the `v1.tagValues` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
   let query = `import "regexp"
@@ -133,7 +124,7 @@ export function findValues({
   |> keep(columns: ["${key}"])
   |> group()
   |> distinct(column: "${key}")${searchFilter}
-  |> limit(n: ${adjustedLimit})
+  |> limit(n: ${limit})
   |> sort()`
 
   if (bucket !== 'sample' && isFlagEnabled('newQueryBuilder')) {
@@ -175,9 +166,7 @@ export function extractBoxedCol(
 }
 
 export function extractCol(csv: string, colName: string): string[] {
-  const {table} = isFlagEnabled('fastFromFlux')
-    ? fastFromFlux(csv)
-    : fromFlux(csv)
+  const {table} = fromFlux(csv)
   return table.getColumn(colName, 'string') || []
 }
 

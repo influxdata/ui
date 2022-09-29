@@ -31,6 +31,12 @@ const EmptyGraphError: FunctionComponent<Props> = ({message, testID}) => {
   return (
     <div className="cell--view-empty" data-testid={testID}>
       <div className="empty-graph-error" data-testid="empty-graph-error">
+        <DapperScrollbars className="empty-graph-error--scroll" autoHide={true}>
+          <pre>
+            <Icon glyph={IconFont.AlertTriangle} />
+            <code className="cell--error-message"> {message}</code>
+          </pre>
+        </DapperScrollbars>
         <CopyToClipboard text={message}>
           <Button
             size={ComponentSize.ExtraSmall}
@@ -41,12 +47,6 @@ const EmptyGraphError: FunctionComponent<Props> = ({message, testID}) => {
             className="empty-graph-error--copy"
           />
         </CopyToClipboard>
-        <DapperScrollbars className="empty-graph-error--scroll" autoHide={true}>
-          <pre>
-            <Icon glyph={IconFont.AlertTriangle} />
-            <code className="cell--error-message"> {message}</code>
-          </pre>
-        </DapperScrollbars>
       </div>
     </div>
   )

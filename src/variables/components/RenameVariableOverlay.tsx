@@ -1,6 +1,5 @@
 // Libraries
 import React, {useContext, FC, memo} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Components
@@ -15,9 +14,7 @@ const effectedItems = (): string[] => {
   return ['Queries', 'Dashboards', 'Telegraf Configurations', 'Templates']
 }
 
-const RenameVariableOverlay: FC<RouteComponentProps<{
-  orgID: string
-}>> = () => {
+const RenameVariableOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
 
   return (
@@ -33,4 +30,4 @@ const RenameVariableOverlay: FC<RouteComponentProps<{
   )
 }
 
-export default withRouter(memo(RenameVariableOverlay))
+export default memo(RenameVariableOverlay)

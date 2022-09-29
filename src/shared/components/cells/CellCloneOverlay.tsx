@@ -64,12 +64,10 @@ const CellCloneOverlay: FC = () => {
 
   const {view, cell} = useSelector(getOverlayParams)
 
-  const [destinationDashboardID, setDestinationDashboardID] = useState<string>(
-    ''
-  )
-  const [removeFromCurrentBoard, setRemoveFromCurrentBoard] = useState<boolean>(
-    false
-  )
+  const [destinationDashboardID, setDestinationDashboardID] =
+    useState<string>('')
+  const [removeFromCurrentBoard, setRemoveFromCurrentBoard] =
+    useState<boolean>(false)
 
   const handleDeleteCell = (): void => {
     dispatch(deleteCellAndView(currentDashboardID, cell.id, view.id))
@@ -145,8 +143,6 @@ const CellCloneOverlay: FC = () => {
     <TypeAheadDropDown
       items={dashItems}
       onSelect={onDashSelection}
-      buttonTestId="clone-to-other-dashboard"
-      menuTestID="copy-dashboard-cell--dropdown-menu"
       itemTestIdPrefix="other-dashboard"
       sortNames={true}
       selectedOption={selectedDashboard as SelectableItem}

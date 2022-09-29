@@ -9,6 +9,7 @@ import {
   FlexBox,
   FlexDirection,
   Input,
+  List,
 } from '@influxdata/clockface'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 import WaitingText from 'src/shared/components/WaitingText'
@@ -20,12 +21,16 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Actions
 import {
-  removeTagSelector,
+  addTagSelector,
   searchTagKeys,
   searchTagValues,
   selectTagKey,
   selectTagValue,
+  loadTagSelector,
+  removeTagSelector,
 } from 'src/timeMachine/actions/queryBuilderThunks'
+import {setBuilderTagValuesSelection} from 'src/timeMachine/actions/queryBuilder'
+
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {
@@ -42,6 +47,7 @@ import {
   getActiveTimeMachine,
   getIsInCheckOverlay,
 } from 'src/timeMachine/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {
@@ -82,19 +88,15 @@ class TagSelector extends PureComponent<Props> {
   }
 
   private get isCompliant() {
-    const {
-      index,
-      selectedKey,
-      selectedValues,
-      aggregateFunctionType,
-    } = this.props
+    const {index, selectedKey, selectedValues, aggregateFunctionType} =
+      this.props
 
     return (
       isFlagEnabled('newQueryBuilder') &&
       index === 0 &&
       (selectedKey === '' || selectedKey === '_measurement') &&
       aggregateFunctionType !== 'group' &&
-      selectedValues.length <= 1
+      (isFlagEnabled('measurementMultiselect') || selectedValues.length <= 1)
     )
   }
 
@@ -132,10 +134,21 @@ class TagSelector extends PureComponent<Props> {
       tag = '_measurement'
     }
 
+    let placeholderValue = `${tag} tag values`
+
+    if (isFlagEnabled('newQueryBuilder')) {
+      if (tag === '_measurement') {
+        placeholderValue = 'measurements'
+      } else if (tag === '_field') {
+        placeholderValue = 'fields'
+      }
+    }
+
     const placeholderText =
       aggregateFunctionType === 'group'
         ? 'Search group column values'
-        : `Search ${tag} tag values`
+        : `Search ${placeholderValue}`
+
     return (
       <>
         {!this.isCompliant && (
@@ -164,7 +177,7 @@ class TagSelector extends PureComponent<Props> {
                       <SearchableDropdown
                         searchTerm={keysSearchTerm}
                         emptyText="No Tags Found"
-                        searchPlaceholder="Search keys..."
+                        searchPlaceholder="Search keys"
                         buttonStatus={toComponentStatus(keysStatus)}
                         selectedOption={selectedKey}
                         onSelect={this.handleSelectTag}
@@ -192,6 +205,35 @@ class TagSelector extends PureComponent<Props> {
         {this.values}
       </>
     )
+  }
+
+  private toggleSelectAll() {
+    const {
+      selectedValues,
+      onSetBuilderTagValuesSelection,
+      onAddTagSelector,
+      onRemoveTagSelector,
+      index,
+      isLast,
+      shouldClearLast,
+      onLoadTagSelector,
+    } = this.props
+
+    if (selectedValues.length === 1 && selectedValues[0] === '_all') {
+      onSetBuilderTagValuesSelection(0, [])
+
+      if (shouldClearLast) {
+        onRemoveTagSelector(index + 1)
+      }
+    } else {
+      onSetBuilderTagValuesSelection(0, ['_all'])
+
+      if (isLast) {
+        onAddTagSelector()
+      } else {
+        onLoadTagSelector(index + 1)
+      }
+    }
   }
 
   private get values() {
@@ -224,13 +266,38 @@ class TagSelector extends PureComponent<Props> {
       )
     }
 
+    // underscore values are not allowed for user data
+    // so there shouldn't be collisions
+    const selectedAll =
+      selectedValues.length === 1 && selectedValues[0] === '_all'
+
     return (
       <SelectorList
-        items={values}
+        items={values.filter(t => t !== '_all')}
         selectedItems={selectedValues}
         onSelectItem={this.handleSelectValue}
-        multiSelect={!this.props.isInCheckOverlay || this.isCompliant}
-      />
+        multiSelect={
+          !this.props.isInCheckOverlay ||
+          (this.isCompliant && isFlagEnabled('measurementMultiselect'))
+        }
+        disabled={selectedAll}
+      >
+        {this.isCompliant && isFlagEnabled('measurementMultiselect') && (
+          <List.Item
+            className="selector-list--item select-all"
+            testID="selector-list --select-all"
+            key="_all"
+            value="_all"
+            onClick={() => this.toggleSelectAll()}
+            title="Select All"
+            selected={selectedAll}
+            size={ComponentSize.ExtraSmall}
+          >
+            <List.Indicator type="checkbox" />
+            All Measurements
+          </List.Item>
+        )}
+      </SelectorList>
     )
   }
 
@@ -243,19 +310,22 @@ class TagSelector extends PureComponent<Props> {
   }
 
   private handleSelectTag = (tag: string): void => {
-    const {index, onSelectTag} = this.props
+    const {index, keysSearchTerm, onSelectTag} = this.props
+    event('handleSelectTag', {searchTerm: keysSearchTerm.length})
 
     onSelectTag(index, tag)
   }
 
   private handleSelectValue = (value: string): void => {
-    const {index, onSelectValue} = this.props
+    const {index, valuesSearchTerm, onSelectValue} = this.props
+    event('handleSelectValue', {searchTerm: valuesSearchTerm.length})
 
     onSelectValue(index, value)
   }
 
   private handleRemoveTagSelector = (): void => {
     const {index, onRemoveTagSelector} = this.props
+    event('tagKeyRemoved')
 
     onRemoveTagSelector(index)
   }
@@ -339,6 +409,9 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
     values = [...ADDITIONAL_GROUP_BY_COLUMNS, ...tags.map(tag => tag.key)]
   }
   const isInCheckOverlay = getIsInCheckOverlay(state)
+  const isLast = ownProps.index === tags.length - 1
+  const shouldClearLast =
+    ownProps.index === tags.length - 2 && !tags[tags.length - 1].values.length
 
   return {
     aggregateFunctionType,
@@ -352,6 +425,8 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
     valuesSearchTerm,
     keysSearchTerm,
     isInCheckOverlay,
+    isLast,
+    shouldClearLast,
   }
 }
 
@@ -364,6 +439,9 @@ const mdtp = {
   onSetBuilderAggregateFunctionType: setBuilderAggregateFunctionType,
   onSetKeysSearchTerm: setKeysSearchTerm,
   onSetValuesSearchTerm: setValuesSearchTerm,
+  onSetBuilderTagValuesSelection: setBuilderTagValuesSelection,
+  onAddTagSelector: addTagSelector,
+  onLoadTagSelector: loadTagSelector,
 }
 
 const connector = connect(mstp, mdtp)

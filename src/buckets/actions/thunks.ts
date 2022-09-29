@@ -67,117 +67,121 @@ let getBucketsSchemaMeasurements = null,
   patchBucketsSchemaMeasurement = null
 
 if (CLOUD) {
-  getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
-    .getBucketsSchemaMeasurements
-  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
-    .MeasurementSchemaCreateRequest
-  MeasurementSchemaUpdateRequest = require('src/client/generatedRoutes')
-    .MeasurementSchemaUpdateRequest
-  postBucketsSchemaMeasurement = require('src/client/generatedRoutes')
-    .postBucketsSchemaMeasurement
-  patchBucketsSchemaMeasurement = require('src/client/generatedRoutes')
-    .patchBucketsSchemaMeasurement
+  getBucketsSchemaMeasurements =
+    require('src/client/generatedRoutes').getBucketsSchemaMeasurements
+  MeasurementSchemaCreateRequest =
+    require('src/client/generatedRoutes').MeasurementSchemaCreateRequest
+  MeasurementSchemaUpdateRequest =
+    require('src/client/generatedRoutes').MeasurementSchemaUpdateRequest
+  postBucketsSchemaMeasurement =
+    require('src/client/generatedRoutes').postBucketsSchemaMeasurement
+  patchBucketsSchemaMeasurement =
+    require('src/client/generatedRoutes').patchBucketsSchemaMeasurement
 }
 
-export const getBuckets = () => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-) => {
-  try {
-    const state = getState()
-    if (getStatus(state, ResourceType.Buckets) === RemoteDataState.NotStarted) {
-      dispatch(setBuckets(RemoteDataState.Loading))
-    }
-    const org = getOrg(state)
+export const getBuckets =
+  () => async (dispatch: Dispatch<Action>, getState: GetState) => {
+    try {
+      const state = getState()
+      if (
+        getStatus(state, ResourceType.Buckets) === RemoteDataState.NotStarted
+      ) {
+        dispatch(setBuckets(RemoteDataState.Loading))
+      }
+      const org = getOrg(state)
 
-    let bucketsResponse
-    if (CLOUD) {
-      // a limit of -1 means fetch all buckets for this org
-      bucketsResponse = await fetchAllBuckets(org.id, -1)
-    } else {
-      bucketsResponse = await fetchAllBuckets(org.id)
-    }
+      let bucketsResponse
+      if (CLOUD) {
+        // a limit of -1 means fetch all buckets for this org
+        bucketsResponse = await fetchAllBuckets(org.id, -1)
+      } else {
+        bucketsResponse = await fetchAllBuckets(org.id)
+      }
 
-    dispatch(
-      setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)
-    )
-  } catch (error) {
-    dispatch(setBuckets(RemoteDataState.Error))
-    dispatch(notify(getBucketsFailed()))
+      dispatch(
+        setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)
+      )
+    } catch (error) {
+      dispatch(setBuckets(RemoteDataState.Error))
+      dispatch(notify(getBucketsFailed()))
+    }
   }
-}
 
-export const createBucket = (bucket: OwnBucket) => async (
-  dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
-  getState: GetState
-) => {
-  try {
-    const org = getOrg(getState())
+export const createBucket =
+  (bucket: OwnBucket) =>
+  async (
+    dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
+    getState: GetState
+  ) => {
+    try {
+      const org = getOrg(getState())
 
-    const resp = await api.postBucket({data: {...bucket, orgID: org.id}})
+      const resp = await api.postBucket({data: {...bucket, orgID: org.id}})
 
-    if (resp.status !== 201) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
+      const newBucket = normalize<Bucket, BucketEntities, string>(
+        resp.data,
+        bucketSchema
+      )
+
+      dispatch(addBucket(newBucket))
+      dispatch(checkBucketLimits())
+    } catch (error) {
+      console.error(error)
+      const message = getErrorMessage(error)
+      dispatch(notify(bucketCreateFailed(message)))
     }
-    const newBucket = normalize<Bucket, BucketEntities, string>(
-      resp.data,
-      bucketSchema
-    )
-
-    dispatch(addBucket(newBucket))
-    dispatch(checkBucketLimits())
-  } catch (error) {
-    console.error(error)
-    const message = getErrorMessage(error)
-    dispatch(notify(bucketCreateFailed(message)))
   }
-}
 
-export const createBucketAndUpdate = (
-  bucket: OwnBucket,
-  update: (bucket: Bucket) => void,
-  schemas: typeof MeasurementSchemaCreateRequest[]
-) => async (
-  dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
-  getState: GetState
-) => {
-  try {
-    const org = getOrg(getState())
+export const createBucketAndUpdate =
+  (
+    bucket: OwnBucket,
+    update: (bucket: Bucket) => void,
+    schemas: typeof MeasurementSchemaCreateRequest[]
+  ) =>
+  async (
+    dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
+    getState: GetState
+  ) => {
+    try {
+      const org = getOrg(getState())
 
-    const resp = await api.postBucket({data: {...bucket, orgID: org.id}})
+      const resp = await api.postBucket({data: {...bucket, orgID: org.id}})
 
-    if (resp.status !== 201) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
+
+      const newBucket = normalize<Bucket, BucketEntities, string>(
+        resp.data,
+        bucketSchema
+      )
+
+      // just created the bucket, now add any schemas that might be there:
+      dispatch(addBucket(newBucket))
+      dispatch(checkBucketLimits())
+
+      if (schemas && schemas.length) {
+        schemas.forEach(mschemaCreateRequest => {
+          addMeasurementSchemaToBucketInternal(
+            resp.data.id,
+            mschemaCreateRequest,
+            org.id,
+            resp.data.name,
+            dispatch
+          )
+        })
+      }
+
+      update(newBucket.entities.buckets[resp.data.id])
+    } catch (error) {
+      console.error(error)
+      const message = getErrorMessage(error)
+      dispatch(notify(bucketCreateFailed(message)))
     }
-
-    const newBucket = normalize<Bucket, BucketEntities, string>(
-      resp.data,
-      bucketSchema
-    )
-
-    // just created the bucket, now add any schemas that might be there:
-    dispatch(addBucket(newBucket))
-    dispatch(checkBucketLimits())
-
-    if (schemas && schemas.length) {
-      schemas.forEach(mschemaCreateRequest => {
-        addMeasurementSchemaToBucketInternal(
-          resp.data.id,
-          mschemaCreateRequest,
-          org.id,
-          resp.data.name,
-          dispatch
-        )
-      })
-    }
-
-    update(newBucket.entities.buckets[resp.data.id])
-  } catch (error) {
-    console.error(error)
-    const message = getErrorMessage(error)
-    dispatch(notify(bucketCreateFailed(message)))
   }
-}
 
 // should only be called if in a cloud instance!  not available for OSS!
 // everything that calls this should use the if (CLOUD) as a guard
@@ -199,145 +203,151 @@ export const getBucketSchema = (bucketID: string) => async () => {
   }
 }
 
-export const updateBucket = (bucket: OwnBucket) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-) => {
-  try {
-    const state = getState()
-    const data = denormalizeBucket(state, bucket)
+export const updateBucket =
+  (bucket: OwnBucket) =>
+  async (dispatch: Dispatch<Action>, getState: GetState) => {
+    try {
+      const state = getState()
+      const data = denormalizeBucket(state, bucket)
 
-    const resp = await api.patchBucket({
-      bucketID: bucket.id,
-      data,
-    })
+      const resp = await api.patchBucket({
+        bucketID: bucket.id,
+        data,
+      })
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const labelsResponse = await api.getBucketsLabels({
+        bucketID: bucket.id,
+      })
+
+      if (labelsResponse.status !== 200) {
+        throw new Error(labelsResponse.data.message)
+      }
+
+      const newBucket = normalize<Bucket, BucketEntities, string>(
+        Object.assign(resp.data, {labels: labelsResponse.data.labels || []}),
+        bucketSchema
+      )
+
+      dispatch(editBucket(newBucket))
+      dispatch(notify(bucketUpdateSuccess(bucket.name)))
+    } catch (error) {
+      console.error(error)
+      const message = getErrorMessage(error)
+      dispatch(notify(bucketUpdateFailed(message)))
     }
-
-    const newBucket = normalize<Bucket, BucketEntities, string>(
-      resp.data,
-      bucketSchema
-    )
-
-    dispatch(editBucket(newBucket))
-    dispatch(notify(bucketUpdateSuccess(bucket.name)))
-  } catch (error) {
-    console.error(error)
-    const message = getErrorMessage(error)
-    dispatch(notify(bucketUpdateFailed(message)))
   }
-}
 
-export const renameBucket = (originalName: string, bucket: OwnBucket) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-) => {
-  try {
-    const state = getState()
-    const data = denormalizeBucket(state, bucket)
+export const renameBucket =
+  (originalName: string, bucket: OwnBucket) =>
+  async (dispatch: Dispatch<Action>, getState: GetState) => {
+    try {
+      const state = getState()
+      const data = denormalizeBucket(state, bucket)
 
-    const resp = await api.patchBucket({
-      bucketID: bucket.id,
-      data,
-    })
+      const resp = await api.patchBucket({
+        bucketID: bucket.id,
+        data,
+      })
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const newBucket = normalize<Bucket, BucketEntities, string>(
+        resp.data,
+        bucketSchema
+      )
+
+      dispatch(editBucket(newBucket))
+      dispatch(notify(bucketRenameSuccess(bucket.name)))
+    } catch (error) {
+      console.error(error)
+      dispatch(notify(bucketRenameFailed(originalName)))
     }
-
-    const newBucket = normalize<Bucket, BucketEntities, string>(
-      resp.data,
-      bucketSchema
-    )
-
-    dispatch(editBucket(newBucket))
-    dispatch(notify(bucketRenameSuccess(bucket.name)))
-  } catch (error) {
-    console.error(error)
-    dispatch(notify(bucketRenameFailed(originalName)))
   }
-}
 
-export const deleteBucket = (id: string, name: string) => async (
-  dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>
-) => {
-  try {
-    const resp = await api.deleteBucket({bucketID: id})
+export const deleteBucket =
+  (id: string, name: string) =>
+  async (dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>) => {
+    try {
+      const resp = await api.deleteBucket({bucketID: id})
 
-    if (resp.status !== 204) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+
+      dispatch(removeBucket(id))
+      dispatch(checkBucketLimits())
+      dispatch(notify(bucketDeleteSuccess()))
+    } catch (error) {
+      console.error(error)
+      dispatch(notify(bucketDeleteFailed(name)))
     }
-
-    dispatch(removeBucket(id))
-    dispatch(checkBucketLimits())
-    dispatch(notify(bucketDeleteSuccess()))
-  } catch (error) {
-    console.error(error)
-    dispatch(notify(bucketDeleteFailed(name)))
   }
-}
 
-export const addBucketLabel = (bucketID: string, label: Label) => async (
-  dispatch: Dispatch<Action>
-): Promise<void> => {
-  try {
-    const postResp = await api.postBucketsLabel({
-      bucketID,
-      data: {labelID: label.id},
-    })
+export const addBucketLabel =
+  (bucketID: string, label: Label) =>
+  async (dispatch: Dispatch<Action>): Promise<void> => {
+    try {
+      const postResp = await api.postBucketsLabel({
+        bucketID,
+        data: {labelID: label.id},
+      })
 
-    if (postResp.status !== 201) {
-      throw new Error(postResp.data.message)
+      if (postResp.status !== 201) {
+        throw new Error(postResp.data.message)
+      }
+
+      const resp = await api.getBucket({bucketID})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const newBucket = normalize<Bucket, BucketEntities, string>(
+        resp.data,
+        bucketSchema
+      )
+
+      dispatch(editBucket(newBucket))
+    } catch (error) {
+      console.error(error)
+      dispatch(notify(addBucketLabelFailed()))
     }
-
-    const resp = await api.getBucket({bucketID})
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    const newBucket = normalize<Bucket, BucketEntities, string>(
-      resp.data,
-      bucketSchema
-    )
-
-    dispatch(editBucket(newBucket))
-  } catch (error) {
-    console.error(error)
-    dispatch(notify(addBucketLabelFailed()))
   }
-}
 
-export const deleteBucketLabel = (bucketID: string, label: Label) => async (
-  dispatch: Dispatch<Action>
-): Promise<void> => {
-  try {
-    const deleteResp = await api.deleteBucketsLabel({
-      bucketID,
-      labelID: label.id,
-    })
-    if (deleteResp.status !== 204) {
-      throw new Error(deleteResp.data.message)
+export const deleteBucketLabel =
+  (bucketID: string, label: Label) =>
+  async (dispatch: Dispatch<Action>): Promise<void> => {
+    try {
+      const deleteResp = await api.deleteBucketsLabel({
+        bucketID,
+        labelID: label.id,
+      })
+      if (deleteResp.status !== 204) {
+        throw new Error(deleteResp.data.message)
+      }
+
+      const resp = await api.getBucket({bucketID})
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const newBucket = normalize<Bucket, BucketEntities, string>(
+        resp.data,
+        bucketSchema
+      )
+
+      dispatch(editBucket(newBucket))
+    } catch (error) {
+      console.error(error)
+      dispatch(notify(removeBucketLabelFailed()))
     }
-
-    const resp = await api.getBucket({bucketID})
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    const newBucket = normalize<Bucket, BucketEntities, string>(
-      resp.data,
-      bucketSchema
-    )
-
-    dispatch(editBucket(newBucket))
-  } catch (error) {
-    console.error(error)
-    dispatch(notify(removeBucketLabelFailed()))
   }
-}
 
 async function addMeasurementSchemaToBucketInternal(
   bucketID: string,
@@ -371,52 +381,56 @@ async function addMeasurementSchemaToBucketInternal(
   }
 }
 
-export const addSchemaToBucket = (
-  bucketID: string,
-  orgID: string,
-  bucketName: string,
-  schema: typeof MeasurementSchemaCreateRequest
-) => (dispatch: Dispatch<Action>) => {
-  addMeasurementSchemaToBucketInternal(
-    bucketID,
-    schema,
-    orgID,
-    bucketName,
-    dispatch
-  )
-}
-
-export const updateMeasurementSchema = (
-  bucketID: string,
-  measurementID: string,
-  measurementName: string,
-  schema: typeof MeasurementSchemaUpdateRequest,
-  orgID: string
-) => async (dispatch: Dispatch<Action>) => {
-  const params = {
-    bucketID,
-    measurementID,
-    data: schema,
-    query: {orgID},
+export const addSchemaToBucket =
+  (
+    bucketID: string,
+    orgID: string,
+    bucketName: string,
+    schema: typeof MeasurementSchemaCreateRequest
+  ) =>
+  (dispatch: Dispatch<Action>) => {
+    addMeasurementSchemaToBucketInternal(
+      bucketID,
+      schema,
+      orgID,
+      bucketName,
+      dispatch
+    )
   }
 
-  try {
-    const resp = await patchBucketsSchemaMeasurement(params)
-    if (resp.status !== 200) {
-      const msg = resp?.data?.message
-      throw new Error(msg)
+export const updateMeasurementSchema =
+  (
+    bucketID: string,
+    measurementID: string,
+    measurementName: string,
+    schema: typeof MeasurementSchemaUpdateRequest,
+    orgID: string
+  ) =>
+  async (dispatch: Dispatch<Action>) => {
+    const params = {
+      bucketID,
+      measurementID,
+      data: schema,
+      query: {orgID},
     }
-    dispatch(notify(measurementSchemaUpdateSuccessful(measurementName)))
-  } catch (error) {
-    const message = getErrorMessage(error)
-    dispatch(notify(measurementSchemaUpdateFailed(measurementName, message)))
+
+    try {
+      const resp = await patchBucketsSchemaMeasurement(params)
+      if (resp.status !== 200) {
+        const msg = resp?.data?.message
+        throw new Error(msg)
+      }
+      dispatch(notify(measurementSchemaUpdateSuccessful(measurementName)))
+    } catch (error) {
+      const message = getErrorMessage(error)
+      dispatch(notify(measurementSchemaUpdateFailed(measurementName, message)))
+    }
   }
-}
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {
   const labels = getLabels(state, bucket.labels)
   return {
     ...bucket,
     labels,
-  }
+  } as GenBucket
 }

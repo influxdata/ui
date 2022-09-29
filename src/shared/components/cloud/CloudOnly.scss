@@ -12,10 +12,6 @@
   display: inline-flex;
   flex-direction: column;
   font-weight: 500;
-
-  .rate-alert--button {
-    margin-top: $cf-space-2xs;
-  }
 }
 
 .flex-upgrade-content.rate-alert--content__free {
@@ -23,7 +19,7 @@
 }
 
 .upgrade-message {
-  padding: $cf-marg-b;
+  padding-right: $cf-marg-c;
 }
 
 .cf-page--title {
@@ -101,6 +97,20 @@ button.upgrade-payg--button {
 
 .credit-250-experiment-upgrade-button--text {
   margin: $cf-marg-c;
+}
+
+@media (max-width: 850px) {
+  .credit-250-experiment-upgrade-button--text {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .upgrade-payg--button {
+    .CrownSolid_New {
+      display: none;
+    }
+  }
 }
 
 @media screen and (min-width: $cf-nav-menu--breakpoint) {

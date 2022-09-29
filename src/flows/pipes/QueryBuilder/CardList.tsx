@@ -87,7 +87,8 @@ const Card: FC<Props> = ({idx}) => {
 
   const _update = (fnType: BuilderAggregateFunctionType): void => {
     update(idx, {
-      aggregateFunctionType: fnType.toLowerCase() as BuilderAggregateFunctionType,
+      aggregateFunctionType:
+        fnType.toLowerCase() as BuilderAggregateFunctionType,
     })
   }
 
@@ -272,6 +273,16 @@ const Card: FC<Props> = ({idx}) => {
     )
   }
 
+  let placeholderValue = `${card.keys.selected[0]} tag values`
+
+  if (isFlagEnabled('newQueryBuilder')) {
+    if (card.keys.selected[0] === '_measurement') {
+      placeholderValue = 'measurements'
+    } else if (card.keys.selected[0] === '_field') {
+      placeholderValue = 'fields'
+    }
+  }
+
   if (card.aggregateFunctionType === 'group') {
     return (
       <BuilderCard>
@@ -284,7 +295,7 @@ const Card: FC<Props> = ({idx}) => {
         <BuilderCard.Menu>
           <Input
             value={valueSearches[idx] || ''}
-            placeholder={`Search ${card.keys.selected[0]} tag values`}
+            placeholder={`Search ${placeholderValue}`}
             className="tag-selector--search"
             onChange={evt => {
               valueSearch(evt.target.value)
@@ -319,7 +330,7 @@ const Card: FC<Props> = ({idx}) => {
               <SearchableDropdown
                 searchTerm={keySearches[idx] || ''}
                 emptyText="No Tags Found"
-                searchPlaceholder="Search keys..."
+                searchPlaceholder="Search keys"
                 selectedOption={card.keys.selected[0]}
                 onSelect={keySelect}
                 buttonStatus={toComponentStatus(card.keys.loading)}
@@ -337,7 +348,7 @@ const Card: FC<Props> = ({idx}) => {
         )}
         <Input
           value={valueSearches[idx] || ''}
-          placeholder={`Search ${card.keys.selected[0]} tag values`}
+          placeholder={`Search ${placeholderValue}`}
           className="tag-selector--search"
           onChange={evt => {
             valueSearch(evt.target.value)

@@ -41,9 +41,8 @@ interface Props {
 const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
   const [notebookName, setNotebookName] = useState('')
   const orgID = useSelector(getOrg).id
-  const {draftQueries, autoRefresh, timeRange} = useSelector(
-    getActiveTimeMachine
-  )
+  const {draftQueries, autoRefresh, timeRange, activeQueryIndex} =
+    useSelector(getActiveTimeMachine)
   const {properties} = useSelector(getSaveableView)
   let allUsedBuckets: string[] = []
 
@@ -73,7 +72,7 @@ const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
       const pipes: any = []
 
       for (let i = 0; i < draftQueries.length; i++) {
-        const draftQuery = draftQueries[i]
+        const draftQuery = JSON.parse(JSON.stringify(draftQueries[i]))
         let pipe: any = {
           id: `local_${nanoid()}`,
           visible: !draftQuery.hidden,
@@ -89,23 +88,29 @@ const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
             buckets: bucket,
           }
         } else {
-          pipe.title = 'Query to Run'
-          pipe.queries = draftQuery.builderConfig
-          pipe.activeQuery = 0
-          pipe.type = 'rawFluxEditor'
+          pipe = {
+            ...pipe,
+            title: 'Query to Run',
+            queries: [draftQuery],
+            activeQuery: 0,
+            type: 'rawFluxEditor',
+          }
         }
 
         pipes.push(pipe)
-        pipes.push({
-          id: `local_${nanoid()}`,
-          properties: {
-            ...properties,
-            builderConfig: draftQuery.builderConfig,
-          },
-          title: `Visualize the Result ${i + 1}`,
-          type: 'visualization',
-          visible: true,
-        })
+
+        if (i === activeQueryIndex) {
+          pipes.push({
+            id: `local_${nanoid()}`,
+            properties: {
+              ...properties,
+              builderConfig: draftQuery.builderConfig,
+            },
+            title: `Visualize the Result ${i + 1}`,
+            type: 'visualization',
+            visible: true,
+          })
+        }
       }
 
       const flow = hydrate({

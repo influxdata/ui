@@ -14,7 +14,7 @@ import {load} from 'rudder-sdk-js'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Components
-import {AppWrapper} from '@influxdata/clockface'
+import {AppWrapper, Page} from '@influxdata/clockface'
 import TreeNav from 'src/pageLayout/containers/TreeNav'
 import TooltipPortal from 'src/portals/TooltipPortal'
 import NotesPortal from 'src/portals/NotesPortal'
@@ -26,9 +26,11 @@ import {
 } from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
+import {GlobalHeader} from 'src/identity/components/GlobalHeader/GlobalHeader'
+
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
-const CreateOrgOverlay = lazy(() =>
-  import('src/organizations/components/CreateOrgOverlay')
+const CreateOrgOverlay = lazy(
+  () => import('src/organizations/components/CreateOrgOverlay')
 )
 
 // Types
@@ -37,6 +39,13 @@ import {AppState} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {executeVWO} from 'src/utils/vwo'
+
+// Styles
+import './MultiOrgOverrideStyles.scss'
+
+// Providers
+import {UserAccountProvider} from 'src/accounts/context/userAccount'
 
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
@@ -44,6 +53,7 @@ const App: FC = () => {
 
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
+    'multi-org': isFlagEnabled('multiOrg'),
   })
 
   useEffect(() => {
@@ -72,6 +82,31 @@ const App: FC = () => {
         document.body.removeChild(script)
       }
     }
+
+    if (CLOUD && isFlagEnabled('vwoAbTesting')) {
+      const removeAntiFlickerStyle = () => {
+        // This id must correspond to the id of the <style> tag set in the VWO script.
+        const antiFlickerStyle = document.getElementById('_vis_opt_path_hides')
+        if (antiFlickerStyle) {
+          antiFlickerStyle.remove()
+        }
+      }
+
+      try {
+        setTimeout(() => {
+          removeAntiFlickerStyle()
+        }, 2000)
+
+        executeVWO()
+      } catch (err) {
+        removeAntiFlickerStyle()
+
+        reportErrorThroughHoneyBadger(err, {
+          name: 'VWO script failed to execute successfully',
+        })
+      }
+    }
+
     setAutoFreeze(false)
   }, [])
 
@@ -87,10 +122,13 @@ const App: FC = () => {
       <EngagementLink />
       <TreeNav />
       <Suspense fallback={<PageSpinner />}>
-        <Switch>
-          <Route path="/orgs/new" component={CreateOrgOverlay} />
-          <Route path="/orgs/:orgID" component={SetOrg} />
-        </Switch>
+        <Page>
+          {CLOUD && isFlagEnabled('multiOrg') && <GlobalHeader />}
+          <Switch>
+            <Route path="/orgs/new" component={CreateOrgOverlay} />
+            <Route path="/orgs/:orgID" component={SetOrg} />
+          </Switch>
+        </Page>
       </Suspense>
     </AppWrapper>
   )
@@ -98,6 +136,12 @@ const App: FC = () => {
 
 export default () => (
   <AppSettingProvider>
-    <App />
+    {CLOUD ? (
+      <UserAccountProvider>
+        <App />
+      </UserAccountProvider>
+    ) : (
+      <App />
+    )}
   </AppSettingProvider>
 )

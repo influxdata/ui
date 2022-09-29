@@ -26,6 +26,7 @@ import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/R
 
 // Actions
 import {updateTelegraf, deleteTelegraf} from 'src/telegrafs/actions/thunks'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -42,9 +43,6 @@ import {getAll} from 'src/resources/selectors'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{orgID: string}>
-
 interface State {
   dataLoaderOverlay: OverlayState
   searchTerm: string
@@ -54,7 +52,12 @@ interface State {
   sortDirection: Sort
   sortType: SortTypes
 }
+interface DispatchProps {
+  showOverlay: (arg1: string, arg2: any, any) => {}
+}
 
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = ReduxProps & RouteComponentProps<{orgID: string}> & DispatchProps
 @ErrorHandling
 export class Collectors extends PureComponent<Props, State> {
   constructor(props: Props) {
@@ -96,7 +99,7 @@ export class Collectors extends PureComponent<Props, State> {
       <>
         <Button
           text="InfluxDB Output Plugin"
-          icon={IconFont.Eye_New}
+          icon={IconFont.EyeOpen}
           color={ComponentColor.Secondary}
           onClick={this.handleJustTheOutput}
           titleText="Output section of telegraf.conf for V2"
@@ -191,26 +194,14 @@ export class Collectors extends PureComponent<Props, State> {
   }
 
   private handleAddCollector = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
-
-    history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
+    const {showOverlay, dismissOverlay} = this.props
+    showOverlay('telegraf-wizard', null, dismissOverlay)
     event('load_data.telegrafs.create_new_configuration.clicked')
   }
 
   private handleJustTheOutput = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
-
-    history.push(`/orgs/${orgID}/load-data/telegrafs/output`)
+    const {showOverlay, dismissOverlay} = this.props
+    showOverlay('telegraf-output', null, () => dismissOverlay())
     event('load_data.telegrafs.influxdb_output_plugin_button.clicked')
   }
 
@@ -270,6 +261,8 @@ const mstp = (state: AppState) => {
 const mdtp = {
   onUpdateTelegraf: updateTelegraf,
   onDeleteTelegraf: deleteTelegraf,
+  showOverlay,
+  dismissOverlay,
 }
 
 const connector = connect(mstp, mdtp)

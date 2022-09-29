@@ -1,0 +1,30 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.query-status {
+  flex-grow: 1;
+  margin-top: 14px;
+
+  .status {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: $g10-wolf;
+
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: -2px;
+
+    &.loading {
+      background: $c-rainforest;
+      filter: drop-shadow(0 0 4px $c-rainforest);
+    }
+
+    &.error {
+      background: $c-fire;
+    }
+
+    &.done {
+      background: $c-rainforest;
+    }
+  }
+}

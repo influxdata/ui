@@ -55,6 +55,8 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 
 let GENERATOR_INDEX = 0
 
+const WEBSOCKET_AUTH_FAILED = 4000
+
 export const FlowProvider: FC = ({children}) => {
   const dispatch = useDispatch()
   const {id, orgID} = useParams<{id: string; orgID: string}>()
@@ -135,7 +137,9 @@ export const FlowProvider: FC = ({children}) => {
       if (!isSynced || !yDoc.current) {
         return
       }
-      const {flowUpdateData} = yDoc.current.getMap('flowUpdateData')?.toJSON()
+      const {flowUpdateData} = yDoc.current.getMap('flowUpdateData')
+        ? yDoc.current.getMap('flowUpdateData').toJSON()
+        : {flowUpdateData: null} // necessary to avoid an error since flowUpdateData is destructured in assignment
       if (!flowUpdateData && currentFlow) {
         yDoc.current
           .getMap('flowUpdateData')
@@ -144,6 +148,12 @@ export const FlowProvider: FC = ({children}) => {
     },
     [currentFlow]
   )
+
+  const closeFunc = useCallback(event => {
+    if (event.code === WEBSOCKET_AUTH_FAILED) {
+      provider.current.disconnect()
+    }
+  }, [])
 
   useEffect(() => {
     const doc = yDoc.current
@@ -155,6 +165,7 @@ export const FlowProvider: FC = ({children}) => {
       )
 
       provider.current.on('sync', syncFunc)
+      provider.current.on('connection-close', closeFunc)
     }
 
     const onUpdate = () => {

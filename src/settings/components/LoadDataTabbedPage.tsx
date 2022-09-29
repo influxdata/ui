@@ -1,31 +1,20 @@
 // Libraries
 import React, {FC, ReactNode} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoadDataNavigation from 'src/settings/components/LoadDataNavigation'
 import {ComponentSize, Orientation, Page, Tabs} from '@influxdata/clockface'
 
-// Utils
-import {getOrg} from 'src/organizations/selectors'
-
-// Types
-import {AppState} from 'src/types'
-
-interface ComponentProps {
+interface Props {
   activeTab: string
   children?: ReactNode
 }
 
-type StateProps = ConnectedProps<typeof connector>
-
-type Props = ComponentProps & StateProps
-
-const LoadDataTabbedPage: FC<Props> = ({activeTab, orgID, children}) => {
+const LoadDataTabbedPage: FC<Props> = ({activeTab, children}) => {
   return (
     <Page.Contents
-      fullWidth={false}
+      fullWidth={true}
       scrollable={shouldPageBeScrollable(activeTab)}
       scrollbarSize={ComponentSize.Large}
       autoHideScrollbar={true}
@@ -34,7 +23,7 @@ const LoadDataTabbedPage: FC<Props> = ({activeTab, orgID, children}) => {
         orientation={Orientation.Horizontal}
         stretchToFitHeight={true}
       >
-        <LoadDataNavigation activeTab={activeTab} orgID={orgID} />
+        <LoadDataNavigation activeTab={activeTab} />
         <ErrorBoundary>
           <Tabs.TabContents>{children}</Tabs.TabContents>
         </ErrorBoundary>
@@ -58,12 +47,4 @@ const shouldPageBeScrollable = (activeTab: string): boolean => {
   return true
 }
 
-const mstp = (state: AppState) => {
-  const org = getOrg(state)
-
-  return {orgID: org.id}
-}
-
-const connector = connect(mstp)
-
-export default connector(LoadDataTabbedPage)
+export default LoadDataTabbedPage

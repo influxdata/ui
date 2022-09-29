@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useCallback, useContext} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import AutoRefreshDropdown from 'src/shared/components/dropdown_auto_refresh/AutoRefreshDropdown'
@@ -43,7 +43,7 @@ import {
 
 // Utils
 import {resetQueryCache} from 'src/shared/apis/queryCache'
-import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
+
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
 import {getByID} from 'src/resources/selectors'
@@ -74,7 +74,7 @@ interface OwnProps {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
+type Props = OwnProps & ReduxProps
 
 const DashboardHeader: FC<Props> = ({
   dashboard,
@@ -86,13 +86,13 @@ const DashboardHeader: FC<Props> = ({
   updateDashboard,
   updateQueryParams,
   setDashboardTimeRange,
-  history,
   org,
   autoRefresh,
   resetAutoRefresh,
   showOverlay,
   dismissOverlay,
 }) => {
+  const history = useHistory()
   const handleAddNote = () => {
     history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/notes/new`)
   }
@@ -103,7 +103,6 @@ const DashboardHeader: FC<Props> = ({
 
   const handleRenameDashboard = (name: string) => {
     updateDashboard(dashboard.id, {name})
-    updatePinnedItemByParam(dashboard.id, {name})
   }
 
   const handleChooseTimeRange = (timeRange: TimeRange) => {
@@ -320,4 +319,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(withRouter(DashboardHeader))
+export default connector(DashboardHeader)

@@ -13,8 +13,7 @@ import {
   getSettingsNotifications,
   postCheckout,
 } from 'src/client/unityRoutes'
-import {getQuartzMe} from 'src/me/selectors'
-import {getQuartzMe as getQuartzMeThunk} from 'src/me/actions/thunks'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {states} from 'src/billing/constants'
@@ -32,6 +31,13 @@ import {
 import {CreditCardParams, RemoteDataState} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
 import {event} from 'src/cloud/utils/reporting'
+
+// Thunks
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
+
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
+import {shouldGetCredit250Experience} from 'src/me/selectors'
 
 export type Props = {
   children: JSX.Element
@@ -83,23 +89,23 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
   isPaygCreditActive: false,
 }
 
-export const CheckoutContext = React.createContext<CheckoutContextType>(
-  DEFAULT_CONTEXT
-)
+export const CheckoutContext =
+  React.createContext<CheckoutContextType>(DEFAULT_CONTEXT)
 
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
-  const [zuoraParams, setZuoraParams] = useState<CreditCardParams>(
-    EMPTY_ZUORA_PARAMS
-  )
+  const {user} = useSelector(selectCurrentIdentity)
+
+  const [zuoraParams, setZuoraParams] =
+    useState<CreditCardParams>(EMPTY_ZUORA_PARAMS)
   const [isDirty, setIsDirty] = useState(false)
-  const me = useSelector(getQuartzMe)
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
     paymentMethodId: null,
-    notifyEmail: me?.email ?? '', // sets the default to the user's registered email
+    notifyEmail: user.email, // sets the default to the user's registered email
     balanceThreshold: BALANCE_THRESHOLD_DEFAULT, // set the default to the minimum balance threshold
     shouldNotify: true,
     street1: '',
@@ -158,10 +164,9 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   useEffect(() => {
     getBillingSettings()
     return () => {
-      // Call the `quartz/me` endpoint to update the existing user metadata
-      dispatch(getQuartzMeThunk())
+      dispatch(getQuartzIdentityThunk())
     }
-  }, [dispatch, getBillingSettings])
+  }, [getBillingSettings]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [errors, setErrors] = useState({
     notifyEmail: false,
@@ -212,7 +217,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
     const {shouldNotify} = inputs
     if (!shouldNotify) {
-      fields.notifyEmail = me?.email ?? '' // sets the default to the user's registered email
+      fields.notifyEmail = user.email // sets the default to the user's registered email
       fields.balanceThreshold = BALANCE_THRESHOLD_DEFAULT // set the default to the minimum balance threshold
     }
 
@@ -242,7 +247,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       }
       return false
     })
-  }, [me?.email, inputs])
+  }, [user.email, inputs])
 
   const handleFormValidation = (): number => {
     const errs = getInvalidFields()
@@ -257,7 +262,9 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   }
 
   const isPaygCreditActive =
-    getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
+    isFlagEnabled('credit250Experiment') &&
+    (getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1' ||
+      isCredit250ExperienceActive)
 
   const handleSubmit = useCallback(
     async (paymentMethodId: string) => {
@@ -316,7 +323,14 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         setIsSubmitting(false)
       }
     },
-    [dispatch, getInvalidFields, handleSetErrors, inputs, isDirty]
+    [
+      dispatch,
+      getInvalidFields,
+      handleSetErrors,
+      inputs,
+      isDirty,
+      isPaygCreditActive,
+    ]
   )
 
   const history = useHistory()

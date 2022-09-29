@@ -1,11 +1,13 @@
 import {
-  Config,
-  NINETEEN_EIGHTY_FOUR,
   ATLANTIS,
-  DO_ANDROIDS_DREAM,
-  DELOREAN,
+  COLOR_BLIND_FRIENDLY_DARK,
+  COLOR_BLIND_FRIENDLY_LIGHT,
   CTHULHU,
+  Config,
+  DELOREAN,
+  DO_ANDROIDS_DREAM,
   ECTOPLASM,
+  NINETEEN_EIGHTY_FOUR,
   T_MAX_400_FILM,
 } from '@influxdata/giraffe'
 import {InfluxColors} from '@influxdata/clockface'
@@ -100,11 +102,11 @@ export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
 export const CLOUD_SIGNOUT_PATHNAME = '/api/v2/signout'
 export const CLOUD_LOGIN_PATHNAME = '/login'
 export const CLOUD_URL = formatConstant(process.env.CLOUD_URL)
+export const CLOUD_QUARTZ_URL = 'https://cloud2.influxdata.com/login'
 export const CLOUD_CHECKOUT_PATH = '/checkout'
 export const CLOUD_BILLING_PATH = '/billing'
 export const CLOUD_USAGE_PATH = '/usage'
 export const CLOUD_LOGOUT_PATH = '/logout'
-export const CLOUD_USERS_PATH = '/users'
 
 export const FLUX_RESPONSE_BYTES_LIMIT = CLOUD
   ? 27 * 1024 * 1024 // 27 MiB  (desa: this was determined by looking at queries responses in the cloud app)
@@ -116,9 +118,9 @@ export const VIS_THEME: Partial<Config> = {
   axisColor: InfluxColors.Grey35,
   gridColor: InfluxColors.Grey35,
   gridOpacity: 1,
-  tickFont: '500 11px Rubik',
+  tickFont: '700 12px Proxima Nova',
   tickFontColor: InfluxColors.Grey75,
-  legendFont: '12px Rubik',
+  legendFont: '12px Proxima Nova',
   legendFontColor: InfluxColors.Grey55,
   legendFontBrightColor: InfluxColors.Grey75,
   legendBackgroundColor: InfluxColors.Grey5,
@@ -130,9 +132,9 @@ export const VIS_THEME_LIGHT: Partial<Config> = {
   axisColor: InfluxColors.Grey95,
   gridColor: InfluxColors.Grey95,
   gridOpacity: 1,
-  tickFont: '500 11px Rubik',
+  tickFont: '700 12px Proxima Nova',
   tickFontColor: InfluxColors.Grey45,
-  legendFont: '12px Rubik',
+  legendFont: '12px Proxima Nova',
   legendFontColor: InfluxColors.Grey35,
   legendFontBrightColor: InfluxColors.Grey65,
   legendBackgroundColor: InfluxColors.Grey95,
@@ -145,6 +147,8 @@ export const GIRAFFE_COLOR_SCHEMES = [
   {name: 'Atlantis', colors: ATLANTIS},
   {name: 'Do Androids Dream of Electric Sheep?', colors: DO_ANDROIDS_DREAM},
   {name: 'Delorean', colors: DELOREAN},
+  {name: 'Color Blind Friendly - Light', colors: COLOR_BLIND_FRIENDLY_LIGHT},
+  {name: 'Color Blind Friendly - Dark', colors: COLOR_BLIND_FRIENDLY_DARK},
   {name: 'Cthulhu', colors: CTHULHU},
   {name: 'Ectoplasm', colors: ECTOPLASM},
   {name: 'T-MAX 400 Film', colors: T_MAX_400_FILM},
@@ -166,4 +170,12 @@ export const GLOBALSEARCH_API_KEY = formatConstant(
 export const PAYG_CREDIT_DAYS = 30
 export const PAYG_MAX_CREDIT = 250
 export const PAYG_CREDIT_EXPERIMENT_ID = process.env.PAYG_CREDIT_EXPERIMENT_ID
-export const CREDIT_250_EXPERIMENT_ID = 'JVfGg-umSiSk-JVpeh4hGA'
+export const CREDIT_250_EXPERIMENT_ID = 'M12DrPq9TGO-Pkx4PuOHwA'
+export const CREDIT_250_EXPERIENCE_CUTOFF_EPOCH = 1654585200000 // 7 June 2022, 7:00:00 AM GMT
+
+export const INFLUXDATA_SUPPORT_CONTACT_UK = '+44 808-196-6148'
+export const INFLUXDATA_SUPPORT_CONTACT_UK_TELEPHONE_LINK = 'tel:+448081966148'
+export const INFLUXDATA_SUPPORT_CONTACT_US = '+1 855-958-1047'
+export const INFLUXDATA_SUPPORT_CONTACT_US_TELEPHONE_LINK = 'tel:+18559581047'
+
+export const TOOLS_URL = 'https://us-east-1-2.aws.cloud2.influxdata.com/'

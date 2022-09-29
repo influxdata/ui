@@ -4,16 +4,17 @@ import React, {FC} from 'react'
 import {Page} from '@influxdata/clockface'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import LimitChecker from 'src/cloud/components/LimitChecker'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type Props = {
   testID?: string
 }
 
 const AccountHeader: FC<Props> = ({testID = 'member-page--header'}) => (
-  <Page.Header fullWidth={false} testID={testID}>
+  <Page.Header fullWidth={true} testID={testID}>
     <Page.Title title="Account" />
     <LimitChecker>
-      <RateLimitAlert location="account" />
+      {!isFlagEnabled('multiOrg') && <RateLimitAlert location="account" />}
     </LimitChecker>
   </Page.Header>
 )

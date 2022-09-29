@@ -11,7 +11,7 @@ export default register => {
     component: View,
     readOnlyComponent: ReadOnly,
     button: 'Metric Selector',
-    featureFlag: 'flow-panel--metric-selector',
+    // featureFlag: 'flow-panel--metric-selector',
     initial: {
       field: '',
       measurement: '',
@@ -28,7 +28,13 @@ export default register => {
         return ''
       }
 
-      let text = `from(bucket: "${bucket.name}")\n\t|> range(start: v.timeRangeStart, stop: v.timeRangeStop)`
+      let from = `from(bucket: "${bucket.name}")`
+      if (bucket.type === 'sample') {
+        from = `import "influxdata/influxdb/sample"
+        sample.data(set: "${bucket.id}")`
+      }
+
+      let text = `${from}\n\t|> range(start: v.timeRangeStart, stop: v.timeRangeStop)`
       if (measurement) {
         text += ` |> filter(fn: (r) => r["_measurement"] == "${measurement}")`
       }

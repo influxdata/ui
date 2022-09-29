@@ -18,6 +18,7 @@ import {loadLocalStorage} from 'src/localStorage'
 
 // v2 reducers
 import meReducer from 'src/me/reducers'
+import identityReducer from 'src/identity/reducers'
 import flagReducer from 'src/shared/reducers/flags'
 import currentDashboardReducer from 'src/shared/reducers/currentDashboard'
 import currentExplorerReducer from 'src/shared/reducers/currentExplorer'
@@ -58,6 +59,7 @@ import {
 } from 'src/dataLoaders/reducers/telegrafEditor'
 import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
 import perfReducer from 'src/perf/reducers'
+import quartzOrganizationReducer from 'src/identity/quartzOrganizations/reducers'
 
 // Types
 import {AppState, LocalStorage} from 'src/types'
@@ -87,6 +89,10 @@ export const rootReducer = (history: History) => (state, action) => {
     fluxDocs: fluxDocsReducer,
     dataLoading: dataLoadingReducer,
     me: meReducer,
+    identity: combineReducers({
+      currentIdentity: identityReducer,
+      quartzOrganizations: quartzOrganizationReducer,
+    }),
     flags: flagReducer,
     noteEditor: noteEditorReducer,
     onboarding: onboardingReducer,

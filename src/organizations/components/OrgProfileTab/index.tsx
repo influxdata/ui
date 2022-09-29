@@ -1,20 +1,13 @@
 // Libraries
-import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
+import React, {FC, useEffect} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {
-  Button,
-  IconFont,
   FlexBox,
   AlignItems,
   FlexDirection,
   ComponentSize,
-  Input,
-  Heading,
-  HeadingElement,
-  FontWeight,
   JustifyContent,
 } from '@influxdata/clockface'
 import UsersProvider from 'src/users/context/users'
@@ -23,30 +16,44 @@ import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/Copy
 import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
 
 // Utils
-import {getOrg} from 'src/organizations/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
-// Types
+// Selectors
 import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
+// Thunks
+import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
+
+// Styles
 import 'src/organizations/components/OrgProfileTab/style.scss'
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
-  const history = useHistory()
+  const {org: quartzOrg} = useSelector(selectCurrentIdentity)
 
-  const handleShowEditOverlay = () => {
-    history.push(`/orgs/${org.id}/about/rename`)
-  }
+  const dispatch = useDispatch()
 
-  const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
+  const identityOrgId = quartzOrg.id
 
-  const hasSomeQuartzOrgData =
-    me.quartzMe?.billingProvider ||
-    me.quartzMe?.regionCode ||
-    me.quartzMe?.regionName
+  useEffect(() => {
+    if (identityOrgId && CLOUD) {
+      if (
+        !quartzOrg.regionCode ||
+        !quartzOrg.regionName ||
+        !quartzOrg.provider
+      ) {
+        dispatch(getCurrentOrgDetailsThunk(identityOrgId))
+      }
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const hasIdentityData =
+    quartzOrg.provider || quartzOrg.regionCode || quartzOrg.regionName
+
+  const orgProviderExists = !!quartzOrg.provider
 
   const OrgProfile = () => (
     <FlexBox.Child
@@ -54,52 +61,36 @@ const OrgProfileTab: FC = () => {
       testID="org-profile--panel"
     >
       <h4>Organization Profile</h4>
-      <Heading
-        className="org-profile-tab--heading"
-        element={HeadingElement.H4}
-        weight={FontWeight.Regular}
-      >
-        Name
-      </Heading>
-      <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
-        <Input
-          value={org.name}
-          onChange={() => {}}
-          style={{width: 'max-content'}}
-          data-testid="danger-zone--org-name"
-          testID="danger-zone--org-name"
-        ></Input>
-        <Button
-          testID="rename-org--button"
-          text="Rename"
-          icon={IconFont.Pencil}
-          onClick={handleShowEditOverlay}
-        />
-      </FlexBox>
-      {expectQuartzData && hasSomeQuartzOrgData && (
+      <CopyableLabeledData
+        id="orgName"
+        label="Name"
+        src={org.name}
+        isRenameableOrg={true}
+      />
+      {CLOUD && hasIdentityData && (
         <>
           <FlexBox
             direction={FlexDirection.Row}
             margin={ComponentSize.Medium}
             justifyContent={JustifyContent.SpaceBetween}
             stretchToFitWidth={true}
-            style={{width: '85%'}}
+            style={orgProviderExists ? {width: '85%'} : {width: '48%'}}
           >
-            {me.quartzMe?.billingProvider && (
-              <LabeledData label="Provider" src={me.quartzMe.billingProvider} />
+            {orgProviderExists && (
+              <LabeledData label="Cloud Provider" src={quartzOrg.provider} />
             )}
-            {me.quartzMe?.regionCode && (
-              <LabeledData label="Region" src={me.quartzMe.regionCode} />
+            {quartzOrg.regionCode && (
+              <LabeledData label="Region" src={quartzOrg.regionCode} />
             )}
-            {me.quartzMe?.regionName && (
-              <LabeledData label="Location" src={me.quartzMe.regionName} />
+            {quartzOrg.regionName && (
+              <LabeledData label="Location" src={quartzOrg.regionName} />
             )}
           </FlexBox>
-          {expectQuartzData && me.quartzMe?.clusterHost && (
+          {CLOUD && quartzOrg.clusterHost && (
             <CopyableLabeledData
               id="clusterUrl"
-              label="Cluster URL"
-              src={me.quartzMe.clusterHost}
+              label="Cluster URL (Host Name)"
+              src={quartzOrg.clusterHost}
             />
           )}
         </>
@@ -144,7 +135,7 @@ const OrgProfileTab: FC = () => {
         <CommonIds />
       </FlexBox>
 
-      {expectQuartzData && (
+      {CLOUD && (
         <FlexBox.Child className="org-profile-tab--section">
           <UsersProvider>
             <DeletePanel />

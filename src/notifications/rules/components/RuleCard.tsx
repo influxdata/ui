@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {connect, ConnectedProps, useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {
@@ -46,13 +46,14 @@ import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampForm
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getOrg} from 'src/organizations/selectors'
 
 interface OwnProps {
   rule: NotificationRuleDraft
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & RouteComponentProps<{orgID: string}> & ReduxProps
+type Props = OwnProps & ReduxProps
 
 const RuleCard: FC<Props> = ({
   rule,
@@ -62,10 +63,6 @@ const RuleCard: FC<Props> = ({
   onNotify,
   onAddRuleLabel,
   onRemoveRuleLabel,
-  match: {
-    params: {orgID},
-  },
-  history,
 }) => {
   const {
     activeStatus,
@@ -77,6 +74,8 @@ const RuleCard: FC<Props> = ({
     name,
     taskID,
   } = rule
+  const history = useHistory()
+  const orgID = useSelector(getOrg).id
 
   const onUpdateName = (name: string) => {
     onUpdateRuleProperties(id, {name})
@@ -222,4 +221,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export default connector(withRouter(RuleCard))
+export default connector(RuleCard)

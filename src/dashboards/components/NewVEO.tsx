@@ -1,11 +1,15 @@
 // Libraries
-import React, {FunctionComponent, useEffect} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {get} from 'lodash'
+import React, {FC, useEffect} from 'react'
+import {useParams, useHistory} from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import {
+  Overlay,
+  Page,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import VEOHeader from 'src/dashboards/components/VEOHeader'
 
@@ -16,83 +20,62 @@ import {saveVEOView} from 'src/dashboards/actions/thunks'
 
 // Utils
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {AppState, RemoteDataState} from 'src/types'
+import {AppState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps &
-  RouteComponentProps<{orgID: string; dashboardID: string}>
+const NewViewVEO: FC = () => {
+  const {dashboardID} = useParams<{dashboardID: string}>()
 
-const NewViewVEO: FunctionComponent<Props> = ({
-  activeTimeMachineID,
-  onSaveView,
-  onSetName,
-  match: {
-    params: {orgID, dashboardID},
-  },
-  history,
-  view,
-}) => {
+  const org = useSelector(getOrg)
+  const {view} = useSelector((state: AppState) => getActiveTimeMachine(state))
+
   const dispatch = useDispatch()
+  const history = useHistory()
+
   useEffect(() => {
     dispatch(loadNewVEO())
   }, [dispatch, dashboardID])
 
   const handleClose = () => {
-    history.push(`/orgs/${orgID}/dashboards/${dashboardID}`)
+    history.push(`/orgs/${org.id}/dashboards/${dashboardID}`)
   }
 
   const handleSave = () => {
     try {
-      onSaveView(dashboardID)
+      dispatch(saveVEOView(dashboardID))
       handleClose()
     } catch (error) {
       console.error(error)
     }
   }
 
-  let loadingState = RemoteDataState.Loading
-  const viewIsNew = !get(view, 'id', null)
-  if (activeTimeMachineID === 'veo' && viewIsNew) {
-    loadingState = RemoteDataState.Done
-  }
-
   return (
-    <Overlay visible={true} className="veo-overlay">
-      <div className="veo">
-        <SpinnerContainer
-          spinnerComponent={<TechnoSpinner />}
-          loading={loadingState}
-        >
-          <VEOHeader
-            key={view && view.name}
-            name={view && view.name}
-            onSetName={onSetName}
-            onCancel={handleClose}
-            onSave={handleSave}
-          />
-          <div className="veo-contents">
-            <TimeMachine />
-          </div>
-        </SpinnerContainer>
-      </div>
-    </Overlay>
+    <Page>
+      <SpinnerContainer
+        spinnerComponent={<TechnoSpinner />}
+        loading={view.status}
+      >
+        <VEOHeader
+          key={view && view.name}
+          name={view && view.name}
+          onSetName={(name: string) => dispatch(setName(name))}
+          onCancel={handleClose}
+          onSave={handleSave}
+        />
+        <div className="veo-contents">
+          <TimeMachine />
+        </div>
+      </SpinnerContainer>
+    </Page>
   )
 }
 
-const mstp = (state: AppState) => {
-  const {activeTimeMachineID} = state.timeMachines
-  const {view} = getActiveTimeMachine(state)
+export {NewViewVEO}
 
-  return {view, activeTimeMachineID}
-}
-
-const mdtp = {
-  onSetName: setName,
-  onSaveView: saveVEOView,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(NewViewVEO))
+export default () => (
+  <Overlay visible={true} className="veo-overlay">
+    <NewViewVEO />
+  </Overlay>
+)

@@ -17,32 +17,27 @@ export const FROM: FluxToolbarFunction = {
     },
     {
       name: 'host',
-      desc:
-        'URL of the InfluxDB instance to query (only required when querying a different organization or remote InfluxDB instance).',
+      desc: 'URL of the InfluxDB instance to query (only required when querying a different organization or remote InfluxDB instance).',
       type: 'String',
     },
     {
       name: 'org',
-      desc:
-        'Organization name (only required when querying a different organization or remote InfluxDB instance).',
+      desc: 'Organization name (only required when querying a different organization or remote InfluxDB instance).',
       type: 'String',
     },
     {
       name: 'orgID',
-      desc:
-        'String-encoded organization ID (only required when querying a different organization or remote InfluxDB instance).',
+      desc: 'String-encoded organization ID (only required when querying a different organization or remote InfluxDB instance).',
       type: 'String',
     },
     {
       name: 'token',
-      desc:
-        'InfluxDB authentication token (only required when querying a different organization or remote InfluxDB instance).',
+      desc: 'InfluxDB authentication token (only required when querying a different organization or remote InfluxDB instance).',
       type: 'String',
     },
   ],
   package: '',
-  desc:
-    'Used to retrieve data from an InfluxDB data source. It returns a stream of tables from the specified bucket. Each unique series is contained within its own table. Each record in the table represents a single point in the series.',
+  desc: 'Used to retrieve data from an InfluxDB data source. It returns a stream of tables from the specified bucket. Each unique series is contained within its own table. Each record in the table represents a single point in the series.',
   example: 'from(bucket: "example-bucket")',
   category: 'Inputs',
   link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/inputs/from/`,
@@ -63,8 +58,7 @@ export const RANGE: FluxToolbarFunction = {
     },
   ],
   package: '',
-  desc:
-    "Filters records based on time bounds. Each input table's records are filtered to contain only records that exist within the time bounds. Each input table's group key value is modified to fit within the time bounds. Tables where all records exists outside the time bounds are filtered entirely.",
+  desc: "Filters records based on time bounds. Each input table's records are filtered to contain only records that exist within the time bounds. Each input table's group key value is modified to fit within the time bounds. Tables where all records exists outside the time bounds are filtered entirely.",
   example: 'range(start: -15m, stop: now())',
   category: 'Transformations',
   link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/range/`,
@@ -91,14 +85,12 @@ export const UNION: FluxToolbarFunction = {
   args: [
     {
       name: 'tables',
-      desc:
-        'Specifies the streams to union together. There must be at least two streams.',
+      desc: 'Specifies the streams to union together. There must be at least two streams.',
       type: 'Array of Strings',
     },
   ],
   package: '',
-  desc:
-    'Concatenates two or more input streams into a single output stream. The output schemas of the `union()` function is the union of all input schemas. A sort operation may be added if a specific sort order is needed.',
+  desc: 'Concatenates two or more input streams into a single output stream. The output schemas of the `union()` function is the union of all input schemas. A sort operation may be added if a specific sort order is needed.',
   example: 'union(tables: [table1, table2])',
   category: 'Transformations',
   link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/union/`,
@@ -162,8 +154,7 @@ export const STRINGS_TRIM: FluxToolbarFunction = {
     },
     {
       name: 'cutset',
-      desc:
-        'The leading and trailing characters to trim from the string value. Only characters that match exactly are trimmed.',
+      desc: 'The leading and trailing characters to trim from the string value. Only characters that match exactly are trimmed.',
       type: 'String',
     },
   ],
@@ -190,8 +181,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'unit',
-        desc:
-          'Time duration to use when calculating the rate. Defaults to `1s`.',
+        desc: 'Time duration to use when calculating the rate. Defaults to `1s`.',
         type: 'Duration',
       },
     ],
@@ -221,20 +211,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'timeSrc',
-        desc:
-          'The "time source" column from which time is copied for the aggregate record. Defaults to `"_stop"`.',
+        desc: 'The "time source" column from which time is copied for the aggregate record. Defaults to `"_stop"`.',
         type: 'String',
       },
       {
         name: 'timeDst',
-        desc:
-          'The "time destination" column to which time is copied for the aggregate record. Defaults to `"_time"`.',
+        desc: 'The "time destination" column to which time is copied for the aggregate record. Defaults to `"_time"`.',
         type: 'String',
       },
       {
         name: 'createEmpty',
-        desc:
-          'For windows without data, this will create an empty window and fill it with a `null` aggregate value.',
+        desc: 'For windows without data, this will create an empty window and fill it with a `null` aggregate value.',
         type: 'Boolean',
       },
     ],
@@ -269,8 +256,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'environment',
-        desc:
-          'Alert environment. Default is `""`. Valid values are `""`, `"Production"`, or `"Development"`.',
+        desc: 'Alert environment. Default is `""`. Valid values are `""`, `"Production"`, or `"Development"`.',
         type: 'String',
       },
       {
@@ -361,8 +347,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'environment',
-        desc:
-          'Alert environment. Default is `""`. Valid values are `""`, `"Production"`, or `"Development"`.',
+        desc: 'Alert environment. Default is `""`. Valid values are `""`, `"Production"`, or `"Development"`.',
         type: 'String',
       },
       {
@@ -372,8 +357,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/bonitoo-io/alerta',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = alerta.endpoint(
     url: "https://alerta.io:8080/alert",
     apiKey: apiKey,
@@ -404,8 +388,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'BigPanda alerts API URL. Default is the value of the `bigpanda.defaultURL` option.',
+        desc: 'BigPanda alerts API URL. Default is the value of the `bigpanda.defaultURL` option.',
         type: 'String',
       },
       {
@@ -420,8 +403,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/rhajek/bigpanda',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = bigpanda.endpoint(
     token: token,
     appKey: "example-app-key"
@@ -434,8 +416,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'BigPanda alerts API URL. Default is the value of the `bigpanda.defaultURL` option.',
+        desc: 'BigPanda alerts API URL. Default is the value of the `bigpanda.defaultURL` option.',
         type: 'String',
       },
       {
@@ -450,8 +431,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'status',
-        desc:
-          'BigPanda alert status. Supported statuses are `"ok"`, `"critical"`, `"warning"`, `"acknowledged"`.',
+        desc: 'BigPanda alert status. Supported statuses are `"ok"`, `"critical"`, `"warning"`, `"acknowledged"`.',
         type: 'String',
       },
       {
@@ -492,20 +472,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'token',
-        desc:
-          'The Google Cloud IAM token to use to access the Cloud Bigtable database.',
+        desc: 'The Google Cloud IAM token to use to access the Cloud Bigtable database.',
         type: 'String',
       },
       {
         name: 'project',
-        desc:
-          'The project ID of the Cloud Bigtable project to retrieve data from.',
+        desc: 'The project ID of the Cloud Bigtable project to retrieve data from.',
         type: 'String',
       },
       {
         name: 'instance',
-        desc:
-          'The instance ID of the Cloud Bigtable instance to retrieve data from.',
+        desc: 'The instance ID of the Cloud Bigtable instance to retrieve data from.',
         type: 'String',
       },
       {
@@ -546,8 +523,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'columns',
-        desc:
-          'List of columns by which to sort. Sort precedence is determined by list order (left to right) .Default is `["_value"]`',
+        desc: 'List of columns by which to sort. Sort precedence is determined by list order (left to right) .Default is `["_value"]`',
         type: 'Array of Strings',
       },
     ],
@@ -596,8 +572,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Applies the technical momentum indicator developed by Tushar Chande.',
+    desc: 'Applies the technical momentum indicator developed by Tushar Chande.',
     example: 'chandeMomentumOscillator(n: 10)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/chandemomentumoscillator/`,
@@ -607,8 +582,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'column',
-        desc:
-          'The name of the output column in which to store the column labels.',
+        desc: 'The name of the output column in which to store the column labels.',
         type: 'String',
       },
     ],
@@ -673,14 +647,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'pearsonr',
-        desc:
-          'Indicates whether the result should be normalized to be the Pearson R coefficient',
+        desc: 'Indicates whether the result should be normalized to be the Pearson R coefficient',
         type: 'Boolean',
       },
     ],
     package: '',
-    desc:
-      'Computes the covariance between two streams by first joining the streams, then performing the covariance operation.',
+    desc: 'Computes the covariance between two streams by first joining the streams, then performing the covariance operation.',
     example:
       'cov(x: table1, y: table2, on: ["_time", "_field"], pearsonr: false)',
     category: 'Transformations',
@@ -691,20 +663,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'columns',
-        desc:
-          'A list of columns on which to operate. Exactly two columns must be provided.',
+        desc: 'A list of columns on which to operate. Exactly two columns must be provided.',
         type: 'Array of Strings',
       },
       {
         name: 'pearsonr',
-        desc:
-          'Indicates whether the result should be normalized to be the Pearson R coefficient',
+        desc: 'Indicates whether the result should be normalized to be the Pearson R coefficient',
         type: 'Boolean',
       },
       {
         name: 'valueDst',
-        desc:
-          'The column into which the result will be placed. Defaults to `"_value"`.',
+        desc: 'The column into which the result will be placed. Defaults to `"_value"`.',
         type: 'String',
       },
     ],
@@ -725,8 +694,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'csv',
-        desc:
-          'Raw CSV-formatted text. CSV data must be in the CSV format produced by the Flux HTTP response standard.',
+        desc: 'Raw CSV-formatted text. CSV data must be in the CSV format produced by the Flux HTTP response standard.',
         type: 'String',
       },
     ],
@@ -756,14 +724,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'columns',
-        desc:
-          'A list of columns on which to operate. Defaults to `["_value"]`.',
+        desc: 'A list of columns on which to operate. Defaults to `["_value"]`.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      'Computes a running sum for non-null records in the table. The output table schema will be the same as the input table.',
+    desc: 'Computes a running sum for non-null records in the table. The output table schema will be the same as the input table.',
     example: 'cumulativeSum(columns: ["_value"])',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/cumulativesum/`,
@@ -793,8 +759,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the microsecond of a specified time. Results range from `[1-999999]`.',
+    desc: 'Returns the microsecond of a specified time. Results range from `[1-999999]`.',
     example: 'date.microsecond(t: 2019-07-17T12:05:21.012934584Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/microsecond/`,
@@ -809,8 +774,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the millisecond of a specified time. Results range from `[1-999]`.',
+    desc: 'Returns the millisecond of a specified time. Results range from `[1-999]`.',
     example: 'date.millisecond(t: 2019-07-17T12:05:21.012934584Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/millisecond/`,
@@ -825,8 +789,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the minute of a specified time. Results range from `[0-59]`.',
+    desc: 'Returns the minute of a specified time. Results range from `[0-59]`.',
     example: 'date.minute(t: 2019-07-17T12:05:21.012Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/minute/`,
@@ -856,8 +819,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the day of the month for a specified time. Results range from `[1-31]`.',
+    desc: 'Returns the day of the month for a specified time. Results range from `[1-31]`.',
     example: 'date.monthDay(t: 2019-07-17T12:05:21.012Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/monthday/`,
@@ -872,8 +834,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the nanosecond of a specified time. Results range from `[1-999999999]`.',
+    desc: 'Returns the nanosecond of a specified time. Results range from `[1-999999999]`.',
     example: 'date.nanosecond(t: 2019-07-17T12:05:21.012934584Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/nanosecond/`,
@@ -888,8 +849,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the quarter of the year for a specified time. Results range from `[1-4]`.',
+    desc: 'Returns the quarter of the year for a specified time. Results range from `[1-4]`.',
     example: 'date.quarter(t: 2019-07-17T12:05:21.012Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/quarter/`,
@@ -904,8 +864,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the second of a specified time. Results range from `[0-59]`.',
+    desc: 'Returns the second of a specified time. Results range from `[0-59]`.',
     example: 'date.second(t: 2019-07-17T12:05:21.012Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/second/`,
@@ -920,14 +879,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'unit',
-        desc:
-          'The unit time to truncate to. Only use `1` and the unit of time to specify the `unit`. For example, `1s`, `1m`, `1h`.',
+        desc: 'The unit time to truncate to. Only use `1` and the unit of time to specify the `unit`. For example, `1s`, `1m`, `1h`.',
         type: 'Duration',
       },
     ],
     package: 'date',
-    desc:
-      'Truncates the time to a specified unit. Results range from `[0-59]`.',
+    desc: 'Truncates the time to a specified unit. Results range from `[0-59]`.',
     example: 'date.truncate(t: 2019-07-17T12:05:21.012Z, unit: 1s)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/truncate/`,
@@ -942,8 +899,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the ISO week of the year for a specified time. Results range from `[1-53]`.',
+    desc: 'Returns the ISO week of the year for a specified time. Results range from `[1-53]`.',
     example: 'date.week(t: 2019-07-17T12:05:21.012Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/week/`,
@@ -958,8 +914,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the day of the week for a specified time. Results range from `[0-6]`.',
+    desc: 'Returns the day of the week for a specified time. Results range from `[0-6]`.',
     example: 'date.weekDay(t: 2019-07-17T12:05:21.012Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/weekday/`,
@@ -989,8 +944,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'date',
-    desc:
-      'Returns the day of the year for a specified time. Results include leap days and range from `[1-366]`.',
+    desc: 'Returns the day of the year for a specified time. Results include leap days and range from `[1-366]`.',
     example: 'date.yearDay(t: 2019-07-17T12:05:21.012Z)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/date/yearday/`,
@@ -1005,14 +959,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'nonNegative',
-        desc:
-          'Indicates if the derivative is allowed to be negative. When set to `true`, if a value is less than the previous value, it is assumed the previous value should have been a zero.',
+        desc: 'Indicates if the derivative is allowed to be negative. When set to `true`, if a value is less than the previous value, it is assumed the previous value should have been a zero.',
         type: 'Boolean',
       },
       {
         name: 'columns',
-        desc:
-          'A list of columns on which to operate. Defaults to `["_value"]`.',
+        desc: 'A list of columns on which to operate. Defaults to `["_value"]`.',
         type: 'Array of Strings',
       },
       {
@@ -1022,8 +974,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Computes the rate of change per unit of time between subsequent non-null records. The output table schema will be the same as the input table.',
+    desc: 'Computes the rate of change per unit of time between subsequent non-null records. The output table schema will be the same as the input table.',
     example:
       'derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")',
     category: 'Transformations',
@@ -1039,8 +990,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'dict',
-    desc:
-      'Creates a dictionary from a list of records with `key` and `value` properties.',
+    desc: 'Creates a dictionary from a list of records with `key` and `value` properties.',
     example: `dict.fromList(
     pairs: [
         {key: 1, value: "foo"},
@@ -1065,14 +1015,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'default',
-        desc:
-          'Default value to return if the key does not exist in the dictionary. Must be the same type as values in the dictionary.',
+        desc: 'Default value to return if the key does not exist in the dictionary. Must be the same type as values in the dictionary.',
         type: 'String | Boolean | Integer | Uinteger | Float | Time | Bytes',
       },
     ],
     package: 'dict',
-    desc:
-      'Returns the value of a specified key in a dictionary or a default value if the key does not exist.',
+    desc: 'Returns the value of a specified key in a dictionary or a default value if the key does not exist.',
     example: `dict.get(
     dict: [1: "foo", 2: "bar"],
     key: 1,
@@ -1091,20 +1039,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'key',
-        desc:
-          'Key to insert into the dictionary. Must be the same type as existing keys in the dictionary.',
+        desc: 'Key to insert into the dictionary. Must be the same type as existing keys in the dictionary.',
         type: 'String | Boolean | Integer | Uinteger | Float | Time | Bytes',
       },
       {
         name: 'default',
-        desc:
-          'Value to insert into the dictionary. Must be the same type as existing values in the dictionary.',
+        desc: 'Value to insert into the dictionary. Must be the same type as existing values in the dictionary.',
         type: 'String | Boolean | Integer | Uinteger | Float | Time | Bytes',
       },
     ],
     package: 'dict',
-    desc:
-      'Inserts a key value pair into a dictionary and returns a new, updated dictionary. If the key already exists in the dictionary, the function overwrites the existing value.',
+    desc: 'Inserts a key value pair into a dictionary and returns a new, updated dictionary. If the key already exists in the dictionary, the function overwrites the existing value.',
     example: `dict.insert(
     dict: [1: "foo", 2: "bar"],
     key: 3,
@@ -1123,14 +1068,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'key',
-        desc:
-          'Key to remove from the dictionary. Must be the same type as existing keys in the dictionary.',
+        desc: 'Key to remove from the dictionary. Must be the same type as existing keys in the dictionary.',
         type: 'String | Boolean | Integer | Uinteger | Float | Time | Bytes',
       },
     ],
     package: 'dict',
-    desc:
-      'Removes a key value pair from a dictionary and returns an updated dictionary.',
+    desc: 'Removes a key value pair from a dictionary and returns an updated dictionary.',
     example: `dict.remove(
     dict: [1: "foo", 2: "bar"],
     key: 1
@@ -1143,26 +1086,22 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'nonNegative',
-        desc:
-          'Indicates if the derivative is allowed to be negative. When set to `true`, if a value is less than the previous value, it is assumed the previous value should have been a zero.',
+        desc: 'Indicates if the derivative is allowed to be negative. When set to `true`, if a value is less than the previous value, it is assumed the previous value should have been a zero.',
         type: 'Boolean',
       },
       {
         name: 'columns',
-        desc:
-          'The columns to use to compute the difference. Defaults to `"_value"`.',
+        desc: 'The columns to use to compute the difference. Defaults to `"_value"`.',
         type: 'Array of Strings',
       },
       {
         name: 'keepFirst',
-        desc:
-          'Indicates the first row should be kept. If `true`, the difference will be `null`. Defaults to `false`.',
+        desc: 'Indicates the first row should be kept. If `true`, the difference will be `null`. Defaults to `false`.',
         type: 'Boolean',
       },
     ],
     package: '',
-    desc:
-      'Computes the difference between subsequent non-null records in the specified columns.',
+    desc: 'Computes the difference between subsequent non-null records in the specified columns.',
     example: 'difference(nonNegative: false, columns: ["_value"])',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/difference/`,
@@ -1192,8 +1131,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/chobbs/discord',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = telegram.endpoint(
     webhookToken: discordToken,
     webhookID: "123456789",
@@ -1232,8 +1170,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/chobbs/discord',
-    desc:
-      'Sends a single message to a Discord channel using a Discord webhook.',
+    desc: 'Sends a single message to a Discord channel using a Discord webhook.',
     example: `discord.send(
     webhookToken: "mySuPerSecRetTokEn",
     webhookID: "123456789",
@@ -1269,8 +1206,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Calculates the exponential moving average of values in the `_value` column grouped into `n` number of points, giving more weight to recent data at double the rate of `exponentialMovingAverage()`.',
+    desc: 'Calculates the exponential moving average of values in the `_value` column grouped into `n` number of points, giving more weight to recent data at double the rate of `exponentialMovingAverage()`.',
     example: 'doubleEMA(n: 5)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/doubleema/`,
@@ -1280,20 +1216,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'columns',
-        desc:
-          'A list of columns to be removed from the table. Cannot be used with `fn`.',
+        desc: 'A list of columns to be removed from the table. Cannot be used with `fn`.',
         type: 'Array of Strings',
       },
       {
         name: 'fn',
-        desc:
-          'A function which takes a column name as a parameter and returns a boolean indicating whether or not the column should be removed from the table. Cannot be used with `columns`.',
+        desc: 'A function which takes a column name as a parameter and returns a boolean indicating whether or not the column should be removed from the table. Cannot be used with `columns`.',
         type: 'Function',
       },
     ],
     package: '',
-    desc:
-      'Removes specified columns from a table. Columns can be specified either through a list or a predicate function. When a dropped column is part of the group key, it will be removed from the key.',
+    desc: 'Removes specified columns from a table. Columns can be specified either through a list or a predicate function. When a dropped column is part of the group key, it will be removed from the key.',
     example: 'drop(columns: ["col1", "col2"])',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/drop/`,
@@ -1343,8 +1276,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'timeColumn',
-        desc:
-          'The column to use to compute the elapsed time. Defaults to `"_time"`.',
+        desc: 'The column to use to compute the elapsed time. Defaults to `"_time"`.',
         type: 'String`',
       },
       {
@@ -1364,8 +1296,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'unit',
-        desc:
-          'Duration unit of the calculated state duration. Default is `1ns`.',
+        desc: 'Duration unit of the calculated state duration. Default is `1ns`.',
         type: 'Duration',
       },
       {
@@ -1385,14 +1316,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'stop',
-        desc:
-          'The latest time to use when calculating results. If provided, `stop` overrides the time value in the `stopColumn`.',
+        desc: 'The latest time to use when calculating results. If provided, `stop` overrides the time value in the `stopColumn`.',
         type: 'Time',
       },
     ],
     package: 'contrib/tomhollingworth/events',
-    desc:
-      'Calculates the duration of events. The function determines the time between a record and the subsequent record and associates the duration with the first record (start of the event).',
+    desc: 'Calculates the duration of events. The function determines the time between a record and the subsequent record and associates the duration with the first record (start of the event).',
     example: `events.duration(
     unit: 1ns,
     columnName: "duration",
@@ -1418,8 +1347,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental',
-    desc:
-      'Adds a duration to a time value and returns the resulting time value.',
+    desc: 'Adds a duration to a time value and returns the resulting time value.',
     example: 'experimental.addDuration(d: 12h, to: now())',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/addduration/`,
@@ -1454,8 +1382,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental',
-    desc:
-      'Executes two queries sequentially rather than in parallel and outputs the results of the second query.',
+    desc: 'Executes two queries sequentially rather than in parallel and outputs the results of the second query.',
     example: 'experimental.chain(first: query1, second: query2)',
     category: 'Inputs',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/chain/`,
@@ -1464,8 +1391,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.count',
     args: [],
     package: 'experimental',
-    desc:
-      'Outputs the number of records in each input table and returns the count in the `_value` column. This function counts both null and non-null records.',
+    desc: 'Outputs the number of records in each input table and returns the count in the `_value` column. This function counts both null and non-null records.',
     example: 'experimental.count()',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/count/`,
@@ -1474,8 +1400,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.distinct',
     args: [],
     package: 'experimental',
-    desc:
-      'Returns unique values from the `_value` column. The `_value` of each output record is set to a distinct value in the specified column. `null` is considered a distinct value.',
+    desc: 'Returns unique values from the `_value` column. The `_value` of each output record is set to a distinct value in the specified column. `null` is considered a distinct value.',
     example: 'experimental.distinct()',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/distinct/`,
@@ -1485,20 +1410,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'value',
-        desc:
-          'Value to replace null values with. Data type must match the type of the `_value` column.',
+        desc: 'Value to replace null values with. Data type must match the type of the `_value` column.',
         type: 'Boolean | Integer | UInteger | Float | String | Time | Duration',
       },
       {
         name: 'usePrevious',
-        desc:
-          'When `true`, replaces null values with the value of the previous non-null row.',
+        desc: 'When `true`, replaces null values with the value of the previous non-null row.',
         type: 'Boolean',
       },
     ],
     package: 'experimental',
-    desc:
-      'Replaces all null values in the `_value` column with a non-null value.',
+    desc: 'Replaces all null values in the `_value` column with a non-null value.',
     example: 'experimental.fill(value: 0.0)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/fill/`,
@@ -1507,8 +1429,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.first',
     args: [],
     package: 'experimental',
-    desc:
-      'Returns the first record with a non-null value in the `_value` column.',
+    desc: 'Returns the first record with a non-null value in the `_value` column.',
     example: 'experimental.first()',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/first/`,
@@ -1518,14 +1439,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'columns',
-        desc:
-          'List of columns to use in the grouping operation. Defaults to `[]`.',
+        desc: 'List of columns to use in the grouping operation. Defaults to `[]`.',
         type: 'Array of Strings',
       },
       {
         name: 'mode',
-        desc:
-          'The mode used to group columns. Only the `extend` mode is available with this function.',
+        desc: 'The mode used to group columns. Only the `extend` mode is available with this function.',
         type: 'String',
       },
     ],
@@ -1541,20 +1460,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'bins',
-        desc:
-          'A list of upper bounds to use when computing the histogram frequencies, including the maximum value of the data set. This value can be set to positive infinity if no maximum is known.',
+        desc: 'A list of upper bounds to use when computing the histogram frequencies, including the maximum value of the data set. This value can be set to positive infinity if no maximum is known.',
         type: 'Array of floats',
       },
       {
         name: 'normalize',
-        desc:
-          'Convert count values into frequency values between 0 and 1. Default is `false`.',
+        desc: 'Convert count values into frequency values between 0 and 1. Default is `false`.',
         type: 'Boolean',
       },
     ],
     package: 'experimental',
-    desc:
-      'Approximates the cumulative distribution of a dataset by counting data frequencies for a list of bins.',
+    desc: 'Approximates the cumulative distribution of a dataset by counting data frequencies for a list of bins.',
     example: `experimental.histogram(
     bins: [50.0, 75.0, 90.0],
     normalize: false
@@ -1567,8 +1483,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'quantile',
-        desc:
-          'A value between 0 and 1 indicating the desired quantile to compute.',
+        desc: 'A value between 0 and 1 indicating the desired quantile to compute.',
         type: 'Float',
       },
       {
@@ -1578,8 +1493,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental',
-    desc:
-      'Approximates a quantile given a histogram with the cumulative distribution of the dataset.',
+    desc: 'Approximates a quantile given a histogram with the cumulative distribution of the dataset.',
     example: `experimental.histogramQuantile(
     quantile: 0.5,
     minValue: 0.0
@@ -1602,8 +1516,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental',
-    desc:
-      'Computes the area under the curve per `unit` of time of subsequent non-null records.',
+    desc: 'Computes the area under the curve per `unit` of time of subsequent non-null records.',
     example: `integral(
     unit: 10s,
     interpolate: ""
@@ -1626,14 +1539,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'fn',
-        desc:
-          'A function that maps new output rows using left and right input rows.',
+        desc: 'A function that maps new output rows using left and right input rows.',
         type: 'Function',
       },
     ],
     package: 'experimental',
-    desc:
-      'Joins two streams of tables on the group key and _time column. Use the fn parameter to map output tables.',
+    desc: 'Joins two streams of tables on the group key and _time column. Use the fn parameter to map output tables.',
     example:
       'experimental.join(left: left, right: right, fn: (left, right) => ({left with lv: left._value, rv: right._value }))',
     category: 'Transformations',
@@ -1649,8 +1560,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental',
-    desc:
-      'Calculates the Kaufman’s Adaptive Moving Average (KAMA) of input tables using the `_value` column in each table.',
+    desc: 'Calculates the Kaufman’s Adaptive Moving Average (KAMA) of input tables using the `_value` column in each table.',
     example: 'experimental.kaufmansAMA(n: 10)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/kaufmansama/`,
@@ -1659,8 +1569,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.last',
     args: [],
     package: 'experimental',
-    desc:
-      'Returns the last record with a non-null value in the `_value` column.',
+    desc: 'Returns the last record with a non-null value in the `_value` column.',
     example: 'experimental.last()',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/last/`,
@@ -1669,8 +1578,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.max',
     args: [],
     package: 'experimental',
-    desc:
-      'Returns the record with the highest value in the `_value` column for each input table.',
+    desc: 'Returns the record with the highest value in the `_value` column for each input table.',
     example: 'experimental.max()',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/max/`,
@@ -1679,8 +1587,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.mean',
     args: [],
     package: 'experimental',
-    desc:
-      'Computes the mean or average of non-null values in the `_value` column of each input table.',
+    desc: 'Computes the mean or average of non-null values in the `_value` column of each input table.',
     example: 'experimental.mean()',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/mean/`,
@@ -1689,8 +1596,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.min',
     args: [],
     package: 'experimental',
-    desc:
-      'Returns the record with the lowest value in the `_value` column for each input table.',
+    desc: 'Returns the record with the lowest value in the `_value` column for each input table.',
     example: 'experimental.min()',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/min/`,
@@ -1699,8 +1605,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.mode',
     args: [],
     package: 'experimental',
-    desc:
-      'Computes the mode or value that occurs most often in the `_value` column in each input table.',
+    desc: 'Computes the mode or value that occurs most often in the `_value` column in each input table.',
     example: 'experimental.mode()',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/mode/`,
@@ -1730,20 +1635,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'method',
-        desc:
-          'Computation method. Default is `estimate_tdigest`. Available options are `estimate_tdigest`, `exact_mean`, or `exact_selector`.',
+        desc: 'Computation method. Default is `estimate_tdigest`. Available options are `estimate_tdigest`, `exact_mean`, or `exact_selector`.',
         type: 'String',
       },
       {
         name: 'compression',
-        desc:
-          'Indicates how many centroids to use when compressing the dataset.',
+        desc: 'Indicates how many centroids to use when compressing the dataset.',
         type: 'Float',
       },
     ],
     package: 'experimental',
-    desc:
-      'Outputs non-null records with values in the `_value` column that fall within the specified quantile or represent the specified quantile.',
+    desc: 'Outputs non-null records with values in the `_value` column that fall within the specified quantile or represent the specified quantile.',
     example: `experimental.quantile(
     q: 0.99,
     method: "estimate_tdigest",
@@ -1771,8 +1673,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.skew',
     args: [],
     package: 'experimental',
-    desc:
-      'Outputs the skew of non-null values in the `_value` column for each input table as a float.',
+    desc: 'Outputs the skew of non-null values in the `_value` column for each input table as a float.',
     example: 'experimental.skew()',
     category: 'Transformation',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/skew/`,
@@ -1781,8 +1682,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.spread',
     args: [],
     package: 'experimental',
-    desc:
-      'Outputs the difference between the minimum and maximum values in the `_value` column for each input table.',
+    desc: 'Outputs the difference between the minimum and maximum values in the `_value` column for each input table.',
     example: 'experimental.spread()',
     category: 'Transformation',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/spread/`,
@@ -1792,14 +1692,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'mode',
-        desc:
-          'The standard deviation mode or type of standard deviation to calculate. Defaults to `"sample"`. Available options are `sample` and `population`.',
+        desc: 'The standard deviation mode or type of standard deviation to calculate. Defaults to `"sample"`. Available options are `sample` and `population`.',
         type: 'String',
       },
     ],
     package: 'experimental',
-    desc:
-      'Computes the standard deviation of non-null values in the `_value` column for each input table.',
+    desc: 'Computes the standard deviation of non-null values in the `_value` column for each input table.',
     example: 'experimental.stddev(mode: "sample")',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/stddev/`,
@@ -1819,8 +1717,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental',
-    desc:
-      'Subtracts a duration from a time value and returns the resulting time value.',
+    desc: 'Subtracts a duration from a time value and returns the resulting time value.',
     example: 'experimental.subDuration(d: 12h, from: now())',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/subduration/`,
@@ -1829,8 +1726,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'experimental.sum',
     args: [],
     package: 'experimental',
-    desc:
-      'Computes the sum of non-null values in the `_value` column for each input table.',
+    desc: 'Computes the sum of non-null values in the `_value` column for each input table.',
     example: 'experimental.sum()',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/sum/`,
@@ -1840,32 +1736,27 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'bucket',
-        desc:
-          'The bucket to write data to. `bucket` and `bucketID` are mutually exclusive.',
+        desc: 'The bucket to write data to. `bucket` and `bucketID` are mutually exclusive.',
         type: 'String',
       },
       {
         name: 'bucketID',
-        desc:
-          'The ID of the bucket to write data to. `bucketID` and `bucket` are mutually exclusive.',
+        desc: 'The ID of the bucket to write data to. `bucketID` and `bucket` are mutually exclusive.',
         type: 'String',
       },
       {
         name: 'org',
-        desc:
-          'The organization name of the specified bucket. `org` and `orgID` are mutually exclusive.',
+        desc: 'The organization name of the specified bucket. `org` and `orgID` are mutually exclusive.',
         type: 'String',
       },
       {
         name: 'orgID',
-        desc:
-          'The organization ID of the specified bucket. `orgID` and `org` are mutually exclusive.',
+        desc: 'The organization ID of the specified bucket. `orgID` and `org` are mutually exclusive.',
         type: 'String',
       },
     ],
     package: 'experimental',
-    desc:
-      'Writes data to an InfluxDB v2.0 bucket, but in a different structure than the built-in `to()` function.',
+    desc: 'Writes data to an InfluxDB v2.0 bucket, but in a different structure than the built-in `to()` function.',
     example: 'experimental.to(bucket: "example-bucket", org: "example-org")',
     category: 'Outputs',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/to/`,
@@ -1880,8 +1771,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Calculates the exponential moving average of values in the `_value` column grouped into `n` number of points, giving more weight to recent data.',
+    desc: 'Calculates the exponential moving average of values in the `_value` column grouped into `n` number of points, giving more weight to recent data.',
     example: 'exponentialMovingAverage(n: 5)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/exponentialmovingaverage/`,
@@ -1891,8 +1781,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'column',
-        desc:
-          'The column in which to replace null values. Defaults to `"_value"`.',
+        desc: 'The column in which to replace null values. Defaults to `"_value"`.',
         type: 'String',
       },
       {
@@ -1902,14 +1791,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'usePrevious',
-        desc:
-          'When `true`, assigns the value set in the previous non-null row.',
+        desc: 'When `true`, assigns the value set in the previous non-null row.',
         type: 'Boolean',
       },
     ],
     package: '',
-    desc:
-      'Replaces all null values in an input stream and replace them with a non-null value.',
+    desc: 'Replaces all null values in an input stream and replace them with a non-null value.',
     example: 'fill(column: "_value", usePrevious: true)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/fill/`,
@@ -1919,20 +1806,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'fn',
-        desc:
-          'A single argument function that evaluates true or false. Records are passed to the function. Those that evaluate to true are included in the output tables.',
+        desc: 'A single argument function that evaluates true or false. Records are passed to the function. Those that evaluate to true are included in the output tables.',
         type: 'Function',
       },
       {
         name: 'onEmpty',
-        desc:
-          'Defines the behavior for empty tables. Potential values are `keep` and `drop`. Defaults to `drop`.',
+        desc: 'Defines the behavior for empty tables. Potential values are `keep` and `drop`. Defaults to `drop`.',
         type: 'String',
       },
     ],
     package: '',
-    desc:
-      'Filters data based on conditions defined in the function. The output tables have the same schema as the corresponding input tables.',
+    desc: 'Filters data based on conditions defined in the function. The output tables have the same schema as the corresponding input tables.',
     example: 'filter(fn: (r) => r._measurement == "cpu")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/filter/`,
@@ -1952,8 +1836,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Returns an array of values in a specified column from the first table in a stream of tables where the group key values match the specified predicate.',
+    desc: 'Returns an array of values in a specified column from the first table in a stream of tables where the group key values match the specified predicate.',
     example: 'findColumn(fn: (key) => key.host == "host1", column: "_value")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/stream-table/findcolumn/`,
@@ -1973,8 +1856,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Returns a record at a specified index from the first table in a stream of tables where the group key values match the specified predicate.',
+    desc: 'Returns a record at a specified index from the first table in a stream of tables where the group key values match the specified predicate.',
     example: 'findRecord(fn: (key) => key.host == "host1", idx: 0)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/stream-table/findrecord/`,
@@ -2019,8 +1901,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/geo',
-    desc:
-      'Groups geo-temporal data into tracks (sequential, related data points).',
+    desc: 'Groups geo-temporal data into tracks (sequential, related data points).',
     example: 'geo.asTracks(groupBy: ["id","tid"], orderBy: ["_time"])',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/geo/astracks/`,
@@ -2035,14 +1916,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'minSize',
-        desc:
-          'Minimum number of cells that cover the specified region. Default is `24`',
+        desc: 'Minimum number of cells that cover the specified region. Default is `24`',
         type: 'Integer',
       },
       {
         name: 'maxSize',
-        desc:
-          'Maximum number of cells that cover the specified region. Default is `-1`.',
+        desc: 'Maximum number of cells that cover the specified region. Default is `-1`.',
         type: 'Object',
       },
       {
@@ -2062,8 +1941,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/geo',
-    desc:
-      'Filters data by a specified geographic region with the option of strict filtering.',
+    desc: 'Filters data by a specified geographic region with the option of strict filtering.',
     example:
       'geo.filterRows(region: {lat: 37.7858229, lon: -122.4058124, radius: 20.0}, strict: true)',
     category: 'Transformations',
@@ -2079,14 +1957,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'minSize',
-        desc:
-          'Minimum number of cells that cover the specified region. Default is `24`',
+        desc: 'Minimum number of cells that cover the specified region. Default is `24`',
         type: 'Integer',
       },
       {
         name: 'maxSize',
-        desc:
-          'Maximum number of cells that cover the specified region. Default is `-1`.',
+        desc: 'Maximum number of cells that cover the specified region. Default is `-1`.',
         type: 'Object',
       },
       {
@@ -2101,8 +1977,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/geo',
-    desc:
-      'Filters data by a specified geographic region using S2 geometry grid cells.',
+    desc: 'Filters data by a specified geographic region using S2 geometry grid cells.',
     example:
       'geo.gridFilter(region: {lat: 37.7858229, lon: -122.4058124, radius: 20.0})',
     category: 'Transformations',
@@ -2113,14 +1988,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'newColumn',
-        desc:
-          'Name of the new column that stores the unique identifier for a geographic area.',
+        desc: 'Name of the new column that stores the unique identifier for a geographic area.',
         type: 'String',
       },
       {
         name: 'level',
-        desc:
-          'S2 Cell level used to determine the size of each geographic area.',
+        desc: 'S2 Cell level used to determine the size of each geographic area.',
         type: 'Integer',
       },
       {
@@ -2140,8 +2013,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'point',
-        desc:
-          'Longitude and latitude in decimal degrees (WGS 84) to use when generating the S2 cell ID token. Object must contain `lat` and `lon` properties.',
+        desc: 'Longitude and latitude in decimal degrees (WGS 84) to use when generating the S2 cell ID token. Object must contain `lat` and `lon` properties.',
         type: 'Object',
       },
       {
@@ -2197,8 +2069,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/geo',
-    desc:
-      'Renames existing latitude and longitude fields to `lat` and `lon` and adds an `s2_cell_id` tag.',
+    desc: 'Renames existing latitude and longitude fields to `lat` and `lon` and adds an `s2_cell_id` tag.',
     example:
       'geo.shapeData(latField: "latitude", lonField: "longitude", level: 10)',
     category: 'Transformations',
@@ -2214,8 +2085,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'geometry',
-        desc:
-          'GIS geometry to test. Can be either point or linestring geometry.',
+        desc: 'GIS geometry to test. Can be either point or linestring geometry.',
         type: 'Object',
       },
     ],
@@ -2236,8 +2106,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'geometry',
-        desc:
-          'GIS geometry to test. Can be either point or linestring geometry.',
+        desc: 'GIS geometry to test. Can be either point or linestring geometry.',
         type: 'Object',
       },
     ],
@@ -2258,8 +2127,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'geometry',
-        desc:
-          'GIS geometry to test. Can be either point or linestring geometry.',
+        desc: 'GIS geometry to test. Can be either point or linestring geometry.',
         type: 'Object',
       },
       {
@@ -2285,8 +2153,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'geometry',
-        desc:
-          'GIS geometry to test. Can be either point or linestring geometry.',
+        desc: 'GIS geometry to test. Can be either point or linestring geometry.',
         type: 'Object',
       },
     ],
@@ -2302,8 +2169,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'geometry',
-        desc:
-          'GIS geometry to test. Can be either point or linestring geometry.',
+        desc: 'GIS geometry to test. Can be either point or linestring geometry.',
         type: 'Object',
       },
     ],
@@ -2343,8 +2209,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'geo.toRows',
     args: [],
     package: 'experimental/geo',
-    desc:
-      'Pivots geo-temporal data into row-wise sets based on time and other correlation columns.',
+    desc: 'Pivots geo-temporal data into row-wise sets based on time and other correlation columns.',
     example: 'geo.toRows()',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/geo/torows/`,
@@ -2359,8 +2224,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Extracts a column from a table given its label. If the label is not present in the set of columns, the function errors.',
+    desc: 'Extracts a column from a table given its label. If the label is not present in the set of columns, the function errors.',
     example: 'getColumn(column: "_value")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/stream-table/getcolumn/`,
@@ -2375,8 +2239,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Extracts a record from a table given the record’s index. If the index is out of bounds, the function errors.',
+    desc: 'Extracts a record from a table given the record’s index. If the index is out of bounds, the function errors.',
     example: 'getRecord(idx: 0)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/stream-table/getrecord/`,
@@ -2386,20 +2249,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'columns',
-        desc:
-          'List of columns to use in the grouping operation. Defaults to `[]`.',
+        desc: 'List of columns to use in the grouping operation. Defaults to `[]`.',
         type: 'Array of Strings',
       },
       {
         name: 'mode',
-        desc:
-          'The mode used to group columns. The following options are available: by, except. Defaults to `"by"`.',
+        desc: 'The mode used to group columns. The following options are available: by, except. Defaults to `"by"`.',
         type: 'String',
       },
     ],
     package: '',
-    desc:
-      'Groups records based on their values for specific columns. It produces tables with new group keys based on provided properties.',
+    desc: 'Groups records based on their values for specific columns. It produces tables with new group keys based on provided properties.',
     example: 'group(columns: ["host", "_measurement"], mode:"by")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/group/`,
@@ -2419,14 +2279,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'groupColumns',
-        desc:
-          'The columns on which to group before performing the aggregation. Default is `[]`.',
+        desc: 'The columns on which to group before performing the aggregation. Default is `[]`.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      'Returns the top `n` records from all groups using the average of each group.',
+    desc: 'Returns the top `n` records from all groups using the average of each group.',
     example: 'highestAverage(n:10, groupColumns: ["host"])',
     category: 'Selectors',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/selectors/highestaverage/`,
@@ -2446,14 +2304,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'groupColumns',
-        desc:
-          'The columns on which to group before performing the aggregation. Default is `[]`.',
+        desc: 'The columns on which to group before performing the aggregation. Default is `[]`.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      'Returns the top `n` records from all groups using the last value of each group.',
+    desc: 'Returns the top `n` records from all groups using the last value of each group.',
     example: 'highestCurrent(n:10, groupColumns: ["host"])',
     category: 'Selectors',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/selectors/highestcurrent/`,
@@ -2473,14 +2329,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'groupColumns',
-        desc:
-          'The columns on which to group before performing the aggregation. Default is `[]`.',
+        desc: 'The columns on which to group before performing the aggregation. Default is `[]`.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      'Returns the top `n` records from all groups using the maximum of each group.',
+    desc: 'Returns the top `n` records from all groups using the maximum of each group.',
     example: 'highestMax(n:10, groupColumns: ["host"])',
     category: 'Selectors',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/selectors/highestmax/`,
@@ -2490,38 +2344,32 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'column',
-        desc:
-          'The name of a column containing input data values. The column type must be float. Defaults to `"_value"`.',
+        desc: 'The name of a column containing input data values. The column type must be float. Defaults to `"_value"`.',
         type: 'Strings',
       },
       {
         name: 'upperBoundColumn',
-        desc:
-          'The name of the column in which to store the histogram\'s upper bounds. Defaults to `"le"`.',
+        desc: 'The name of the column in which to store the histogram\'s upper bounds. Defaults to `"le"`.',
         type: 'String',
       },
       {
         name: 'countColumn',
-        desc:
-          'The name of the column in which to store the histogram counts. Defaults to `"_value"`.',
+        desc: 'The name of the column in which to store the histogram counts. Defaults to `"_value"`.',
         type: 'String',
       },
       {
         name: 'bins',
-        desc:
-          'A list of upper bounds to use when computing the histogram frequencies. Each element in the array should contain a float value that represents the maximum value for a bin.',
+        desc: 'A list of upper bounds to use when computing the histogram frequencies. Each element in the array should contain a float value that represents the maximum value for a bin.',
         type: 'Array of Floats',
       },
       {
         name: 'normalize',
-        desc:
-          'When `true`, will convert the counts into frequency values between 0 and 1. Defaults to `false`.',
+        desc: 'When `true`, will convert the counts into frequency values between 0 and 1. Defaults to `false`.',
         type: 'Boolean',
       },
     ],
     package: '',
-    desc:
-      'Approximates the cumulative distribution function of a dataset by counting data frequencies for a list of buckets.',
+    desc: 'Approximates the cumulative distribution function of a dataset by counting data frequencies for a list of buckets.',
     example:
       'histogram(column: "_value", upperBoundColumn: "le", countColumn: "_value", bins: [50.0, 75.0, 90.0], normalize: false)',
     category: 'Transformations',
@@ -2532,38 +2380,32 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'quantile',
-        desc:
-          'A value between 0 and 1 indicating the desired quantile to compute.',
+        desc: 'A value between 0 and 1 indicating the desired quantile to compute.',
         type: 'Float',
       },
       {
         name: 'countColumn',
-        desc:
-          'The name of the column in which to store the histogram counts. The count column type must be float. Defaults to `"_value"`.',
+        desc: 'The name of the column in which to store the histogram counts. The count column type must be float. Defaults to `"_value"`.',
         type: 'String',
       },
       {
         name: 'upperBoundColumn',
-        desc:
-          'The name of the column in which to store the histogram\'s upper bounds. The count column type must be float. Defaults to `"le"`.',
+        desc: 'The name of the column in which to store the histogram\'s upper bounds. The count column type must be float. Defaults to `"le"`.',
         type: 'String',
       },
       {
         name: 'valueColumn',
-        desc:
-          'The name of the output column which will contain the computed quantile. Defaults to `"_value"`.',
+        desc: 'The name of the output column which will contain the computed quantile. Defaults to `"_value"`.',
         type: 'String',
       },
       {
         name: 'minValue',
-        desc:
-          'The assumed minimum value of the dataset. When the quantile falls below the lowest upper bound, interpolation is performed between `minValue` and the lowest upper bound. When `minValue` is equal to negative infinity, the lowest upper bound is used. Defaults to `0`.',
+        desc: 'The assumed minimum value of the dataset. When the quantile falls below the lowest upper bound, interpolation is performed between `minValue` and the lowest upper bound. When `minValue` is equal to negative infinity, the lowest upper bound is used. Defaults to `0`.',
         type: 'Float',
       },
     ],
     package: '',
-    desc:
-      'Approximates a quantile given a histogram that approximates the cumulative distribution of the dataset.',
+    desc: 'Approximates a quantile given a histogram that approximates the cumulative distribution of the dataset.',
     example:
       'histogramQuantile(quantile: 0.5, countColumn: "_value", upperBoundColumn: "le", valueColumn: "_value", minValue: 0.0)',
     category: 'Aggregates',
@@ -2589,8 +2431,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'withFit',
-        desc:
-          'Returns "fitted" data points in results when `withFit` is set to `true`. Defaults to `false`.',
+        desc: 'Returns "fitted" data points in results when `withFit` is set to `true`. Defaults to `false`.',
         type: 'Boolean',
       },
       {
@@ -2605,8 +2446,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Applies the Holt-Winters forecasting method to input tables. The Holt-Winters method predicts `n` seasonally-adjusted values for the specified `column` at the specified `interval`.',
+    desc: 'Applies the Holt-Winters forecasting method to input tables. The Holt-Winters method predicts `n` seasonally-adjusted values for the specified `column` at the specified `interval`.',
     example: 'holtWinters(n: 10, interval: 1d)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/holtwinters/`,
@@ -2616,14 +2456,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'start',
-        desc:
-          'The first hour of the hour range (inclusive). Hours range from `[0-23]`',
+        desc: 'The first hour of the hour range (inclusive). Hours range from `[0-23]`',
         type: 'Integer',
       },
       {
         name: 'stop',
-        desc:
-          'The last hour of the hour range (inclusive). Hours range from `[0-23]`.',
+        desc: 'The last hour of the hour range (inclusive). Hours range from `[0-23]`.',
         type: 'Integer`',
       },
       {
@@ -2633,8 +2471,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Retains all rows with time values in a specified hour range. Hours are specified in military time.',
+    desc: 'Retains all rows with time values in a specified hour range. Hours are specified in military time.',
     example: 'hourSelection(start: 9, stop: 17)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/hourselection/`,
@@ -2654,8 +2491,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'http',
-    desc:
-      'Returns a Base64-encoded basic authentication header using a specified username and password combination.',
+    desc: 'Returns a Base64-encoded basic authentication header using a specified username and password combination.',
     example: `http.basicAuth(
     u: "username",
     p: "passw0rd"
@@ -2673,8 +2509,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'http',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = http.endpoint(
     url: "http://localhost:1234/"
 )`,
@@ -2701,8 +2536,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/http',
-    desc:
-      'Submits an HTTP GET request to the specified URL and returns the HTTP status code, response body, and response headers.',
+    desc: 'Submits an HTTP GET request to the specified URL and returns the HTTP status code, response body, and response headers.',
     example:
       'http.get(url: "https://docs.influxdata.com/influxdb/v2.0/", headers: {foo: "bar"})',
     category: 'Miscellaneous',
@@ -2718,8 +2552,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'http',
-    desc:
-      'Escapes special characters in a string and replaces non-ASCII characters with hexadecimal representations (%XX).',
+    desc: 'Escapes special characters in a string and replaces non-ASCII characters with hexadecimal representations (%XX).',
     example: 'http.pathEscape(inputString: "/this/is/an/example-path.html")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/http/pathescape/`,
@@ -2744,8 +2577,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'http',
-    desc:
-      'Submits an HTTP POST request to the specified URL with headers and data and returns the HTTP status code.',
+    desc: 'Submits an HTTP POST request to the specified URL with headers and data and returns the HTTP status code.',
     example:
       'http.post(url: "http://localhost:8086/", headers: {x:"a", y:"b"}, data: bytes(v: "body"))',
     category: 'Transformations',
@@ -2756,14 +2588,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'columns',
-        desc:
-          'List of columns to use in the operation. Defaults to `["_value"]`.',
+        desc: 'List of columns to use in the operation. Defaults to `["_value"]`.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      'Computes the total non-negative difference between values in a table.',
+    desc: 'Computes the total non-negative difference between values in a table.',
     example: 'increase(columns: ["_value"])',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/increase/`,
@@ -2783,14 +2613,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'host',
-        desc:
-          'InfluxDB host URL (Required when executed outside of InfluxDB). Default is `""`.',
+        desc: 'InfluxDB host URL (Required when executed outside of InfluxDB). Default is `""`.',
         type: 'String',
       },
       {
         name: 'token',
-        desc:
-          'InfluxDB host URL (Required when executed outside of InfluxDB). Default is `""`.',
+        desc: 'InfluxDB host URL (Required when executed outside of InfluxDB). Default is `""`.',
         type: 'String',
       },
       {
@@ -2815,8 +2643,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/influxdb',
-    desc:
-      'Submits an HTTP request to the specified InfluxDB API path and returns a record containing the HTTP status code, response headers, and response body as a byte array.',
+    desc: 'Submits an HTTP request to the specified InfluxDB API path and returns a record containing the HTTP status code, response headers, and response body as a byte array.',
     example: `influxdb.api(
     method: "get",
     path: "/example",
@@ -2875,8 +2702,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'predicate',
-        desc:
-          'Predicate function that filters records. Default is `(r) => true.`',
+        desc: 'Predicate function that filters records. Default is `(r) => true.`',
         type: 'Function',
       },
     ],
@@ -2896,14 +2722,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'start',
-        desc:
-          'Earliest time to include in results. Results include points that match the specified start time.',
+        desc: 'Earliest time to include in results. Results include points that match the specified start time.',
         type: 'Duration | Time | Integer',
       },
       {
         name: 'stop',
-        desc:
-          'Latest time to include in results. Results exclude points that match the specified stop time.',
+        desc: 'Latest time to include in results. Results exclude points that match the specified stop time.',
         type: 'Duration | Time | Integer',
       },
       {
@@ -2913,14 +2737,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'fields',
-        desc:
-          'List of fields to query. Returns all fields when list is empty or unspecified. Defaults to `[]`.',
+        desc: 'List of fields to query. Returns all fields when list is empty or unspecified. Defaults to `[]`.',
         type: 'Array of Strings',
       },
       {
         name: 'where',
-        desc:
-          'A single argument predicate function that evaluates true or false and filters results based on tag values. Defaults to `(r) => true`.',
+        desc: 'A single argument predicate function that evaluates true or false and filters results based on tag values. Defaults to `(r) => true`.',
         type: 'Function',
       },
       {
@@ -2940,8 +2762,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/jsternberg/influxdb',
-    desc:
-      'an alternate implementation of `from()`, `range()`, `filter()` and `pivot()` that returns pivoted query results and masks the `_measurement`, `_start`, and `_stop` columns.',
+    desc: 'an alternate implementation of `from()`, `range()`, `filter()` and `pivot()` that returns pivoted query results and masks the `_measurement`, `_start`, and `_stop` columns.',
     example: `influxdb.select(
     from: "example-bucket",
     start: -1d,
@@ -2986,8 +2807,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'timeColumn',
-        desc:
-          'Column that contains time values to use in the operation. Defaults to `"_time"`.',
+        desc: 'Column that contains time values to use in the operation. Defaults to `"_time"`.',
         type: 'String',
       },
       {
@@ -2997,8 +2817,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Computes the area under the curve per unit of time of subsequent non-null records. The curve is defined using `_time` as the domain and record values as the range.',
+    desc: 'Computes the area under the curve per unit of time of subsequent non-null records. The curve is defined using `_time` as the domain and record values as the range.',
     example: 'integral(unit: 10s, column: "_value")',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/aggregates/integral/`,
@@ -3013,8 +2832,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'interpolate',
-    desc:
-      'Inserts rows at regular intervals using linear interpolation to determine values for inserted rows.',
+    desc: 'Inserts rows at regular intervals using linear interpolation to determine values for inserted rows.',
     example: 'interpolate.linear(every: 1m)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/interpolate/linear/`,
@@ -3034,14 +2852,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'method',
-        desc:
-          'The method used to join. Possible values are: `inner`, `cross`, `left`, `right`, or `full`. Defaults to `"inner"`.',
+        desc: 'The method used to join. Possible values are: `inner`, `cross`, `left`, `right`, or `full`. Defaults to `"inner"`.',
         type: 'String',
       },
     ],
     package: '',
-    desc:
-      'Merges two or more input streams, whose values are equal on a set of common columns, into a single output stream. The resulting schema is the union of the input schemas. The resulting group key is the union of the input group keys.',
+    desc: 'Merges two or more input streams, whose values are equal on a set of common columns, into a single output stream. The resulting schema is the union of the input schemas. The resulting group key is the union of the input group keys.',
     example:
       'join(tables: {key1: table1, key2: table2}, on: ["_time", "_field"], method: "inner")',
     category: 'Transformations',
@@ -3092,8 +2908,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Calculates Kaufman’s Adaptive Moving Average (KAMA) using values in an input table.',
+    desc: 'Calculates Kaufman’s Adaptive Moving Average (KAMA) using values in an input table.',
     example: 'kaufmansAMA(n: 5)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/kaufmansama/`,
@@ -3108,8 +2923,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Calculates the Kaufman’s Efficiency Ratio (KER) using values in an input table.',
+    desc: 'Calculates the Kaufman’s Efficiency Ratio (KER) using values in an input table.',
     example: 'kaufmansER(n: 5)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/kaufmanser/`,
@@ -3119,20 +2933,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'columns',
-        desc:
-          'Columns that should be included in the resulting table. Cannot be used with `fn`.',
+        desc: 'Columns that should be included in the resulting table. Cannot be used with `fn`.',
         type: 'Array of Strings',
       },
       {
         name: 'fn',
-        desc:
-          'A predicate function which takes a column name as a parameter and returns a boolean indicating whether or not the column should be removed from the table. Cannot be used with `columns`.',
+        desc: 'A predicate function which takes a column name as a parameter and returns a boolean indicating whether or not the column should be removed from the table. Cannot be used with `columns`.',
         type: 'Function',
       },
     ],
     package: '',
-    desc:
-      'Returns a table containing only the specified columns, ignoring all others. Only columns in the group key that are also specified in the `keep()` function will be kept in the resulting group key. It is the inverse of `drop`.',
+    desc: 'Returns a table containing only the specified columns, ignoring all others. Only columns in the group key that are also specified in the `keep()` function will be kept in the resulting group key. It is the inverse of `drop`.',
     example: 'keep(columns: ["col1", "col2"])',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/keep/`,
@@ -3142,14 +2953,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'column',
-        desc:
-          'Column is the name of the output column to store the group key labels. Defaults to `_value`.',
+        desc: 'Column is the name of the output column to store the group key labels. Defaults to `_value`.',
         type: 'String',
       },
     ],
     package: '',
-    desc:
-      "Outputs the group key of input tables. For each input table, it outputs a table with the same group key columns, plus a _value column containing the labels of the input table's group key.",
+    desc: "Outputs the group key of input tables. For each input table, it outputs a table with the same group key columns, plus a _value column containing the labels of the input table's group key.",
     example: 'keys(column: "_value")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/keys/`,
@@ -3159,14 +2968,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'keyColumns',
-        desc:
-          'A list of columns from which values are extracted. All columns indicated must be of the same type.',
+        desc: 'A list of columns from which values are extracted. All columns indicated must be of the same type.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      "Returns a table with the input table's group key plus two columns, `_key` and `_value`, that correspond to unique column + value pairs from the input table.",
+    desc: "Returns a table with the input table's group key plus two columns, `_key` and `_value`, that correspond to unique column + value pairs from the input table.",
     example: 'keyValues(keyColumns: ["usage_idle", "usage_user"])',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/keyvalues/`,
@@ -3205,14 +3012,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'offset',
-        desc:
-          'The number of records to skip at the beginning of a table before limiting to `n`. Defaults to `0`.',
+        desc: 'The number of records to skip at the beginning of a table before limiting to `n`. Defaults to `0`.',
         type: 'Integer',
       },
     ],
     package: '',
-    desc:
-      'Limits each output table to the first `n` records, excluding the offset.',
+    desc: 'Limits each output table to the first `n` records, excluding the offset.',
     example: 'limit(n:10, offset: 0)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/limit/`,
@@ -3237,8 +3042,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'infinity',
-        desc:
-          'When `true`, adds an additional bin with a value of positive infinity. Defaults to `true`.',
+        desc: 'When `true`, adds an additional bin with a value of positive infinity. Defaults to `true`.',
         type: 'Boolean',
       },
     ],
@@ -3268,8 +3072,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'infinity',
-        desc:
-          'When `true`, adds an additional bin with a value of positive infinity. Defaults to `true`.',
+        desc: 'When `true`, adds an additional bin with a value of positive infinity. Defaults to `true`.',
         type: 'Boolean',
       },
     ],
@@ -3295,14 +3098,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'groupColumns',
-        desc:
-          'The columns on which to group before performing the aggregation. Default is `[]`.',
+        desc: 'The columns on which to group before performing the aggregation. Default is `[]`.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      'Returns the bottom `n` records from all groups using the average of each group.',
+    desc: 'Returns the bottom `n` records from all groups using the average of each group.',
     example: 'lowestAverage(n:10, groupColumns: ["host"])',
     category: 'Selectors',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/selectors/lowestaverage/`,
@@ -3322,14 +3123,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'groupColumns',
-        desc:
-          'The columns on which to group before performing the aggregation. Default is `[]`.',
+        desc: 'The columns on which to group before performing the aggregation. Default is `[]`.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      'Returns the bottom `n` records from all groups using the last value of each group.',
+    desc: 'Returns the bottom `n` records from all groups using the last value of each group.',
     example: 'lowestCurrent(n:10, groupColumns: ["host"])',
     category: 'Selectors',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/selectors/lowestcurrent/`,
@@ -3349,14 +3148,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'groupColumns',
-        desc:
-          'The columns on which to group before performing the aggregation. Default is `[]`.',
+        desc: 'The columns on which to group before performing the aggregation. Default is `[]`.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      'Returns the bottom `n` records from all groups using the maximum of each group.',
+    desc: 'Returns the bottom `n` records from all groups using the maximum of each group.',
     example: 'lowestMin(n:10, groupColumns: ["host"])',
     category: 'Selectors',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/selectors/lowestmin/`,
@@ -3366,8 +3163,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'fn',
-        desc:
-          'A single argument function that to apply to each record. The return value must be an object.',
+        desc: 'A single argument function that to apply to each record. The return value must be an object.',
         type: 'Function',
       },
     ],
@@ -3413,8 +3209,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'x',
-        desc:
-          'The value used in the operation. Should be greater than -1 and less than 1.',
+        desc: 'The value used in the operation. Should be greater than -1 and less than 1.',
         type: 'Float',
       },
     ],
@@ -3469,8 +3264,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'math',
-    desc:
-      'Returns the arc tangent of y/x, using the signs of the two to determine the quadrant of the return value.',
+    desc: 'Returns the arc tangent of y/x, using the signs of the two to determine the quadrant of the return value.',
     example: 'math.atan2(y: r.y_coord, x: r.x_coord)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/math/atan2/`,
@@ -3480,8 +3274,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'x',
-        desc:
-          'The value used in the operation. Should be greater than -1 and less than 1.',
+        desc: 'The value used in the operation. Should be greater than -1 and less than 1.',
         type: 'Float',
       },
     ],
@@ -3626,8 +3419,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'x',
-        desc:
-          'The value used in the operation. Should be greater than 0 and less than 2.',
+        desc: 'The value used in the operation. Should be greater than 0 and less than 2.',
         type: 'Float',
       },
     ],
@@ -3642,8 +3434,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'x',
-        desc:
-          'The value used in the operation. Should be greater than -1 and less than 1.',
+        desc: 'The value used in the operation. Should be greater than -1 and less than 1.',
         type: 'Float',
       },
     ],
@@ -3708,8 +3499,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'math',
-    desc:
-      'Returns the IEEE 754 binary representation of f, with the sign bit of f and the result in the same bit position.',
+    desc: 'Returns the IEEE 754 binary representation of f, with the sign bit of f and the result in the same bit position.',
     example: 'math.float64bits(f: r._value)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/math/float64bits/`,
@@ -3760,8 +3550,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'math',
-    desc:
-      'Returns the square root of `p*p + q*q`, taking care to avoid overflow and underflow.',
+    desc: 'Returns the square root of `p*p + q*q`, taking care to avoid overflow and underflow.',
     example: 'math.hypot(p: r.opp, p: r.adj)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/math/hypot/`,
@@ -3896,8 +3685,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'math',
-    desc:
-      'Returns the natural logarithm and sign (-1 or +1) of `math.gamma(x:x)`.',
+    desc: 'Returns the natural logarithm and sign (-1 or +1) of `math.gamma(x:x)`.',
     example: 'math.lgamma(x: r._value)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/math/lgamma/`,
@@ -3987,8 +3775,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'math',
-    desc:
-      'Returns positive infinity if `sign >= 0`, negative infinity if `sign < 0`.',
+    desc: 'Returns positive infinity if `sign >= 0`, negative infinity if `sign < 0`.',
     example: 'math.mInf(sign: r._value)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/math/minf/`,
@@ -4063,8 +3850,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'math',
-    desc:
-      'Returns integer and fractional floating-point numbers that sum to f. Both values have the same sign as f.',
+    desc: 'Returns integer and fractional floating-point numbers that sum to f. Both values have the same sign as f.',
     example: 'math.modf(f: r._value)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/math/modf/`,
@@ -4379,8 +4165,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Returns the median `_value` of an input table. The `median()` function can only be used with float value types.',
+    desc: 'Returns the median `_value` of an input table. The `median()` function can only be used with float value types.',
     example: 'median(column: "_value")',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/aggregates/median/`,
@@ -4410,8 +4195,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Computes the mode or value that occurs most often in a specified column.',
+    desc: 'Computes the mode or value that occurs most often in a specified column.',
     example: 'mode(column: "_value")',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/aggregates/mode/`,
@@ -4421,32 +4205,27 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'crit',
-        desc:
-          'Predicate function that determines `crit` status. Default is `(r) => false`.',
+        desc: 'Predicate function that determines `crit` status. Default is `(r) => false`.',
         type: 'Function',
       },
       {
         name: 'warn',
-        desc:
-          'Predicate function that determines `warn` status. Default is `(r) => false`.',
+        desc: 'Predicate function that determines `warn` status. Default is `(r) => false`.',
         type: 'Function',
       },
       {
         name: 'info',
-        desc:
-          'Predicate function that determines `info` status. Default is `(r) => false`.',
+        desc: 'Predicate function that determines `info` status. Default is `(r) => false`.',
         type: 'Function',
       },
       {
         name: 'ok',
-        desc:
-          'Predicate function that determines `ok` status. Default is `(r) => false`.',
+        desc: 'Predicate function that determines `ok` status. Default is `(r) => false`.',
         type: 'Function',
       },
       {
         name: 'messageFn',
-        desc:
-          'A function that constructs a message to append to each row. The message is stored in the `_message` column.',
+        desc: 'A function that constructs a message to append to each row. The message is stored in the `_message` column.',
         type: 'Function',
       },
       {
@@ -4456,8 +4235,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'influxdata/influxdb/monitor',
-    desc:
-      'Checks input data and assigns a level (`ok`, `info`, `warn`, or `crit`) to each row based on predicate functions.',
+    desc: 'Checks input data and assigns a level (`ok`, `info`, `warn`, or `crit`) to each row based on predicate functions.',
     example: `monitor.check(
     crit: (r) => r._value > 90.0,
     warn: (r) => r._value > 80.0,
@@ -4479,8 +4257,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'influxdata/influxdb/monitor',
-    desc:
-      'Detects when a group stops reporting data. It takes a stream of tables and reports if groups have been observed since time `t`.',
+    desc: 'Detects when a group stops reporting data. It takes a stream of tables and reports if groups have been observed since time `t`.',
     example: `monitor.deadman(t: 2019-08-30T12:30:00Z)`,
     category: 'Transformation',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/monitor/deadman/`,
@@ -4500,14 +4277,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'fn',
-        desc:
-          'A single argument predicate function that evaluates `true` or `false`.',
+        desc: 'A single argument predicate function that evaluates `true` or `false`.',
         type: 'Function',
       },
     ],
     package: 'influxdata/influxdb/monitor',
-    desc:
-      'Detects when a group stops reporting data. It takes a stream of tables and reports if groups have been observed since time `t`.',
+    desc: 'Detects when a group stops reporting data. It takes a stream of tables and reports if groups have been observed since time `t`.',
     example: `monitor.from(
     start: -1h,
     stop: now(),
@@ -4531,14 +4306,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'fn',
-        desc:
-          'A single argument predicate function that evaluates `true` or `false`.',
+        desc: 'A single argument predicate function that evaluates `true` or `false`.',
         type: 'Function',
       },
     ],
     package: 'influxdata/influxdb/monitor',
-    desc:
-      'Retrieves notification events stored in the notifications measurement in the `_monitoring` bucket.',
+    desc: 'Retrieves notification events stored in the notifications measurement in the `_monitoring` bucket.',
     example: `monitor.from(
     start: -1h,
     stop: now(),
@@ -4552,8 +4325,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'endpoint',
-        desc:
-          'A function that constructs and sends the notification to an endpoint.',
+        desc: 'A function that constructs and sends the notification to an endpoint.',
         type: 'Function',
       },
       {
@@ -4563,8 +4335,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'influxdata/influxdb/monitor',
-    desc:
-      'Sends a notification to an endpoint and logs it in the notifications measurement in the `_monitoring` bucket.',
+    desc: 'Sends a notification to an endpoint and logs it in the notifications measurement in the `_monitoring` bucket.',
     example: `monitor.notify(
     endpoint: endpoint,
     data: {}
@@ -4582,14 +4353,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'toLevel',
-        desc:
-          'The level to detect a change to. The function output records that change to this level. Defaults to `"any"`.',
+        desc: 'The level to detect a change to. The function output records that change to this level. Defaults to `"any"`.',
         type: 'String',
       },
     ],
     package: 'influxdata/influxdb/monitor',
-    desc:
-      'Detects state changes in a stream of data with a `_level` column and outputs records that change from `fromLevel` to `toLevel`.',
+    desc: 'Detects state changes in a stream of data with a `_level` column and outputs records that change from `fromLevel` to `toLevel`.',
     example: `monitor.stateChanges(
     fromLevel: "any",
     toLevel: "any"
@@ -4601,8 +4370,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'monitor.stateChangesOnly',
     args: [],
     package: 'influxdata/influxdb/monitor',
-    desc:
-      'Takes a stream of tables that contains a `_level` column and returns a stream of tables where each record represents a state change.',
+    desc: 'Takes a stream of tables that contains a `_level` column and returns a stream of tables where each record represents a state change.',
     example: `monitor.stateChangesOnly()`,
     category: 'Transformation',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/monitor/statechangesonly/`,
@@ -4637,14 +4405,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'message',
-        desc:
-          'The message or payload to send to the MQTT broker. The default payload is an output table.',
+        desc: 'The message or payload to send to the MQTT broker. The default payload is an output table.',
         type: 'String',
       },
       {
         name: 'qos',
-        desc:
-          'The MQTT Quality of Service (QoS) level. Values range from 0-2. Default is 0.',
+        desc: 'The MQTT Quality of Service (QoS) level. Values range from 0-2. Default is 0.',
         type: 'Integer',
       },
       {
@@ -4674,20 +4440,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'timeColumn',
-        desc:
-          'The column to use as time values in the output line protocol. Default is `"_time"`.',
+        desc: 'The column to use as time values in the output line protocol. Default is `"_time"`.',
         type: 'String',
       },
       {
         name: 'tagColumns',
-        desc:
-          'The columns to use as tag sets in the output line protocol. Default is `[]`.',
+        desc: 'The columns to use as tag sets in the output line protocol. Default is `[]`.',
         type: 'Array of Strings',
       },
       {
         name: 'valueColumns',
-        desc:
-          'The columns to use as field values in the output line protocol. Default is `["_value"]`.',
+        desc: 'The columns to use as field values in the output line protocol. Default is `["_value"]`.',
         type: 'Array of Strings',
       },
     ],
@@ -4702,8 +4465,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'now',
     args: [],
     package: '',
-    desc:
-      'Returns the current time (UTC) or the time defined in the `now` option.',
+    desc: 'Returns the current time (UTC) or the time defined in the `now` option.',
     example: 'now()',
     category: 'Miscellaneous',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/misc/now/`,
@@ -4728,8 +4490,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/oee',
-    desc:
-      'Computes availability, performance, quality (APQ) and overall equipment effectiveness (OEE) in producing parts.',
+    desc: 'Computes availability, performance, quality (APQ) and overall equipment effectiveness (OEE) in producing parts.',
     example: `oee.APQ(
     runningState: "running",
     plannedTime: 8h,
@@ -4743,14 +4504,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'productionEvents',
-        desc:
-          'Production events stream that contains the production state or start and stop events.',
+        desc: 'Production events stream that contains the production state or start and stop events.',
         type: 'Stream of Tables',
       },
       {
         name: 'partEvents',
-        desc:
-          'Part events that contains the running totals of parts produced and parts that do not meet quality standards.',
+        desc: 'Part events that contains the running totals of parts produced and parts that do not meet quality standards.',
         type: 'Stream of Tables',
       },
       {
@@ -4770,8 +4529,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/oee',
-    desc:
-      'Computes availability, performance, and quality (APQ) and overall equipment effectiveness (OEE) using two separate input streams—production events and part events.',
+    desc: 'Computes availability, performance, and quality (APQ) and overall equipment effectiveness (OEE) using two separate input streams—production events and part events.',
     example: `oee.computeAPQ(
     productionEvents: exampleProductionScheme,
     partEvents: examplePartsStream,
@@ -4787,8 +4545,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'Opsgenie API URL. Defaults to `https://api.opsgenie.com/v2/alerts`.',
+        desc: 'Opsgenie API URL. Defaults to `https://api.opsgenie.com/v2/alerts`.',
         type: 'String',
       },
       {
@@ -4803,8 +4560,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/sranka/opsgenie',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = opsgenie.endpoint(
     url: "https://api.opsgenie.com/v2/alerts",
     apiKey: "YoUrSup3R5ecR37AuThK3y",
@@ -4818,8 +4574,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'Opsgenie API URL. Defaults to `https://api.opsgenie.com/v2/alerts`.',
+        desc: 'Opsgenie API URL. Defaults to `https://api.opsgenie.com/v2/alerts`.',
         type: 'String',
       },
       {
@@ -4834,8 +4589,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'alias',
-        desc:
-          'Opsgenie alias usee to de-deduplicate alerts. 250 characters or less. Defaults to `message`.',
+        desc: 'Opsgenie alias usee to de-deduplicate alerts. 250 characters or less. Defaults to `message`.',
         type: 'String',
       },
       {
@@ -4845,14 +4599,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'priority',
-        desc:
-          'Opsgenie alert priority. Valid values include: P1, P2, P3 (default), P4, and P5.',
+        desc: 'Opsgenie alert priority. Valid values include: P1, P2, P3 (default), P4, and P5.',
         type: 'String',
       },
       {
         name: 'responders',
-        desc:
-          'List of responder teams or users. Use the `user:` prefix for users and `teams:` prefix for teams.',
+        desc: 'List of responder teams or users. Use the `user:` prefix for users and `teams:` prefix for teams.',
         type: 'Array of Strings',
       },
       {
@@ -4872,14 +4624,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'details',
-        desc:
-          'Additional alert details. Must be a JSON-encoded map of key-value string pairs.',
+        desc: 'Additional alert details. Must be a JSON-encoded map of key-value string pairs.',
         type: 'String',
       },
       {
         name: 'visibleTo',
-        desc:
-          'List of teams and users the alert will be visible to without sending notifications. Use the `user:` prefix for users and `teams:` prefix for teams.',
+        desc: 'List of teams and users the alert will be visible to without sending notifications. Use the `user:` prefix for users and `teams:` prefix for teams.',
         type: 'Array of strings',
       },
     ],
@@ -4912,8 +4662,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'pagerduty',
-    desc:
-      'Converts a severity to a PagerDuty action. `ok` converts to `resolve`. All other severities convert to `trigger`.',
+    desc: 'Converts a severity to a PagerDuty action. `ok` converts to `resolve`. All other severities convert to `trigger`.',
     example: 'pagerduty.actionFromSeverity(severity: "ok")',
     category: 'Alerting',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/pagerduty/actionfromseverity/`,
@@ -4922,8 +4671,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     name: 'pagerduty.dedupKey',
     args: [],
     package: 'pagerduty',
-    desc:
-      'uses the group key of an input table to generate and store a deduplication key in the `_pagerdutyDedupKey` column.',
+    desc: 'uses the group key of an input table to generate and store a deduplication key in the `_pagerdutyDedupKey` column.',
     example: 'pagerduty.dedupKey()',
     category: 'Alerting',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/pagerduty/dedupkey/`,
@@ -4933,14 +4681,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'The PagerDuty v2 Events API URL. Defaults to `https://events.pagerduty.com/v2/enqueue`.',
+        desc: 'The PagerDuty v2 Events API URL. Defaults to `https://events.pagerduty.com/v2/enqueue`.',
         type: 'String',
       },
     ],
     package: 'pagerduty',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = pagerduty.endpoint(
     url: "https://events.pagerduty.com/v2/enqueue"
 )`,
@@ -4952,8 +4698,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'pagerdutyURL',
-        desc:
-          'The URL of the PagerDuty endpoint. Defaults to `https://events.pagerduty.com/v2/enqueue`.',
+        desc: 'The URL of the PagerDuty endpoint. Defaults to `https://events.pagerduty.com/v2/enqueue`.',
         type: 'String',
       },
       {
@@ -4973,8 +4718,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'dedupkey',
-        desc:
-          'A per-alert ID that acts as deduplication key and allows you to acknowledge or change the severity of previous messages. Supports a maximum of 255 characters.',
+        desc: 'A per-alert ID that acts as deduplication key and allows you to acknowledge or change the severity of previous messages. Supports a maximum of 255 characters.',
         type: 'String',
       },
       {
@@ -4989,26 +4733,22 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'severity',
-        desc:
-          'The severity of the event. Supported severities are `"critical"`, `"error"`, `"warning"`, `"info"`.',
+        desc: 'The severity of the event. Supported severities are `"critical"`, `"error"`, `"warning"`, `"info"`.',
         type: 'String',
       },
       {
         name: 'eventAction',
-        desc:
-          'Event type to send to PagerDuty. Valid values include `"trigger"`, `"resolve"`, `"acknowledge"`.',
+        desc: 'Event type to send to PagerDuty. Valid values include `"trigger"`, `"resolve"`, `"acknowledge"`.',
         type: 'String',
       },
       {
         name: 'source',
-        desc:
-          'The unique location of the affected system. For example, the hostname or fully qualified domain name (FQDN).',
+        desc: 'The unique location of the affected system. For example, the hostname or fully qualified domain name (FQDN).',
         type: 'String',
       },
       {
         name: 'summary',
-        desc:
-          'A brief text summary of the event used as the summaries or titles of associated alerts. The maximum permitted length is 1024 characters.',
+        desc: 'A brief text summary of the event used as the summaries or titles of associated alerts. The maximum permitted length is 1024 characters.',
         type: 'String',
       },
       {
@@ -5071,8 +4811,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Computes the Pearson R correlation coefficient between two streams by first joining the streams, then performing the covariance operation normalized to compute R.',
+    desc: 'Computes the Pearson R correlation coefficient between two streams by first joining the streams, then performing the covariance operation normalized to compute R.',
     example: 'pearsonr(x: table1, y: table2, on: ["_time", "_field"])',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/pearsonr/`,
@@ -5087,20 +4826,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'columnKey',
-        desc:
-          'List of columns used to pivot values onto each row identified by the rowKey.',
+        desc: 'List of columns used to pivot values onto each row identified by the rowKey.',
         type: 'Array of Strings',
       },
       {
         name: 'valueColumn',
-        desc:
-          'The single column that contains the value to be moved around the pivot.',
+        desc: 'The single column that contains the value to be moved around the pivot.',
         type: 'String',
       },
     ],
     package: '',
-    desc:
-      'Collects values stored vertically (column-wise) in a table and aligns them horizontally (row-wise) into logical sets.',
+    desc: 'Collects values stored vertically (column-wise) in a table and aligns them horizontally (row-wise) into logical sets.',
     example:
       'pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")',
     category: 'Transformations',
@@ -5116,8 +4852,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/prometheus',
-    desc:
-      'Calculates quantiles on a set of values assuming the histogram data is scraped or read from a Prometheus data source.',
+    desc: 'Calculates quantiles on a set of values assuming the histogram data is scraped or read from a Prometheus data source.',
     example: 'prometheus.histogramQuantile(quantile: 0.99)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/prometheus/histogramquantile/`,
@@ -5142,20 +4877,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'Pushbullet API URL. Defaults to `https://api.pushbullet.com/v2/pushes`.',
+        desc: 'Pushbullet API URL. Defaults to `https://api.pushbullet.com/v2/pushes`.',
         type: 'String',
       },
       {
         name: 'token',
-        desc:
-          'Pushbullet API token to use when interacting with Pushbullet. Defaults to `""`.',
+        desc: 'Pushbullet API token to use when interacting with Pushbullet. Defaults to `""`.',
         type: 'String',
       },
     ],
     package: 'pushbullet',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = pushbullet.endpoint(
     url: "https://api.pushbullet.com/v2/pushes",
     token: ""
@@ -5168,20 +4900,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'Pushbullet API URL. Defaults to `https://api.pushbullet.com/v2/pushes`.',
+        desc: 'Pushbullet API URL. Defaults to `https://api.pushbullet.com/v2/pushes`.',
         type: 'String',
       },
       {
         name: 'token',
-        desc:
-          'Pushbullet API token to use when interacting with Pushbullet. Defaults to `""`.',
+        desc: 'Pushbullet API token to use when interacting with Pushbullet. Defaults to `""`.',
         type: 'String',
       },
       {
         name: 'data',
-        desc:
-          'Data to send to the Pushbullet API. The function JSON-encodes data before sending it to Pushbullet.',
+        desc: 'Data to send to the Pushbullet API. The function JSON-encodes data before sending it to Pushbullet.',
         type: 'Record',
       },
     ],
@@ -5205,14 +4934,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'Pushbullet API URL. Defaults to `https://api.pushbullet.com/v2/pushes`.',
+        desc: 'Pushbullet API URL. Defaults to `https://api.pushbullet.com/v2/pushes`.',
         type: 'String',
       },
       {
         name: 'token',
-        desc:
-          'Pushbullet API token to use when interacting with Pushbullet. Defaults to `""`.',
+        desc: 'Pushbullet API token to use when interacting with Pushbullet. Defaults to `""`.',
         type: 'String',
       },
       {
@@ -5242,8 +4969,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'column',
-        desc:
-          'The column on which to compute the quantile. Defaults to `"_value"`.',
+        desc: 'The column on which to compute the quantile. Defaults to `"_value"`.',
         type: 'String',
       },
       {
@@ -5253,20 +4979,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'method',
-        desc:
-          'Defines the method of computation. The available options are: `estimate_tdigest`, `exact_mean`, or `exact_selector`.',
+        desc: 'Defines the method of computation. The available options are: `estimate_tdigest`, `exact_mean`, or `exact_selector`.',
         type: 'String',
       },
       {
         name: 'compression',
-        desc:
-          'Indicates how many centroids to use when compressing the dataset. A larger number produces a more accurate result at the cost of increased memory requirements. Defaults to 1000.',
+        desc: 'Indicates how many centroids to use when compressing the dataset. A larger number produces a more accurate result at the cost of increased memory requirements. Defaults to 1000.',
         type: 'Float',
       },
     ],
     package: '',
-    desc:
-      'This is both an aggregate and selector function depending on the `method` used. When using the `estimate_tdigest` or `exact_mean` methods, it outputs non-null records with values that fall within the specified quantile. When using the `exact_selector` method, it outputs the non-null record with the value that represents the specified quantile.',
+    desc: 'This is both an aggregate and selector function depending on the `method` used. When using the `estimate_tdigest` or `exact_mean` methods, it outputs non-null records with values that fall within the specified quantile. When using the `exact_selector` method, it outputs the non-null record with the value that represents the specified quantile.',
     example:
       'quantile(column: "_value", q: 0.99, method: "estimate_tdigest", compression: 1000.0)',
     category: 'Aggregates',
@@ -5363,8 +5086,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'experimental/query',
-    desc:
-      'Queries data from a specified bucket within given time bounds, filters data by measurement, field, and optional predicate expressions.',
+    desc: 'Queries data from a specified bucket within given time bounds, filters data by measurement, field, and optional predicate expressions.',
     example:
       'query.inBucket(bucket: "example-bucket", start: v.timeRangeStart, measurement: "measurement_name", fields: ["field_name"], predicate: (r) => r.host == "host1")',
     category: 'Inputs',
@@ -5376,14 +5098,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'fn',
-        desc:
-          'Function to apply to each record with a reducer object. The function expects two objects: `r` and `accumulator`.',
+        desc: 'Function to apply to each record with a reducer object. The function expects two objects: `r` and `accumulator`.',
         type: 'Function',
       },
       {
         name: 'identity',
-        desc:
-          'Defines the reducer object and provides initial values to use when creating a reducer.',
+        desc: 'Defines the reducer object and provides initial values to use when creating a reducer.',
         type: 'Object',
       },
     ],
@@ -5404,8 +5124,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'regexp',
-    desc:
-      'Parses a string into a regular expression and returns a regexp object.',
+    desc: 'Parses a string into a regular expression and returns a regexp object.',
     example: 'regexp.compile(v: "[a-zA-Z]")',
     category: 'Type Conversions',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/regexp/compile/`,
@@ -5445,8 +5164,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'regexp',
-    desc:
-      'Returns a two-element array of integers defining the beginning and ending indexes of the left-most regular expression match in a string.',
+    desc: 'Returns a two-element array of integers defining the beginning and ending indexes of the left-most regular expression match in a string.',
     example: 'regexp.findStringIndex(r: /ab?/, v: "tablet")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/regexp/findstringindex/`,
@@ -5491,8 +5209,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'v',
-        desc:
-          'String value containing regular expression metacharacters to escape.',
+        desc: 'String value containing regular expression metacharacters to escape.',
         type: 'String',
       },
     ],
@@ -5522,8 +5239,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'regexp',
-    desc:
-      'Replaces all regular expression matches in a string with a specified replacement.',
+    desc: 'Replaces all regular expression matches in a string with a specified replacement.',
     example: 'regexp.replaceAllString(r: /a(x*)b/, v: "-ab-axxb-", t: "T")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/regexp/replaceallstring/`,
@@ -5548,8 +5264,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'regexp',
-    desc:
-      'Splits a string into substrings separated by regular expression matches and returns an array of `i` substrings between matches.',
+    desc: 'Splits a string into substrings separated by regular expression matches and returns an array of `i` substrings between matches.',
     example: 'regexp.splitRegexp(r: /a*/, v: "abaabaccadaaae", i: 5)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/regexp/splitregexp/`,
@@ -5559,8 +5274,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'n',
-        desc:
-          'The number of values to use to calculate the relative strength index (RSI).',
+        desc: 'The number of values to use to calculate the relative strength index (RSI).',
         type: 'Integer',
       },
       {
@@ -5580,20 +5294,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'columns',
-        desc:
-          'A map of columns to rename and their corresponding new names. Cannot be used with `fn`.',
+        desc: 'A map of columns to rename and their corresponding new names. Cannot be used with `fn`.',
         type: 'Object',
       },
       {
         name: 'fn',
-        desc:
-          'A function mapping between old and new column names. Cannot be used with `columns`.',
+        desc: 'A function mapping between old and new column names. Cannot be used with `columns`.',
         type: 'Function',
       },
     ],
     package: '',
-    desc:
-      'Renames specified columns in a table. If a column is renamed and is part of the group key, the column name in the group key will be updated.',
+    desc: 'Renames specified columns in a table. If a column is renamed and is part of the group key, the column name in the group key will be updated.',
     example: 'rename(columns: {host: "server", _field: "my_field"})',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/rename/`,
@@ -5603,14 +5314,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'fn',
-        desc:
-          'A single argument function to apply to each record. The return value must be a record.',
+        desc: 'A single argument function to apply to each record. The return value must be a record.',
         type: 'Function',
       },
     ],
     package: 'contrib/jsternberg/rows',
-    desc:
-      'An alternate implementation of `map()` that is faster, but more limited than `map()`.',
+    desc: 'An alternate implementation of `map()` that is faster, but more limited than `map()`.',
     example: 'rows.map( fn: (r) => ({_value: r._value * 100.0}))',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/contrib/rows/map/`,
@@ -5634,8 +5343,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'pos',
-        desc:
-          'The position offset from the start of results where sampling begins. `pos` must be less than `n`. If `pos` is less than 0, a random offset is used. Defaults to `-1` (random offset).',
+        desc: 'The position offset from the start of results where sampling begins. `pos` must be less than `n`. If `pos` is less than 0, a random offset is used. Defaults to `-1` (random offset).',
         type: 'Integer',
       },
     ],
@@ -5679,8 +5387,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'predicate',
-        desc:
-          'Predicate function that filters field keys. Defaults is (r) => true.',
+        desc: 'Predicate function that filters field keys. Defaults is (r) => true.',
         type: 'Function',
       },
       {
@@ -5750,8 +5457,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'bucket',
-        desc:
-          'The bucket from which to return tag keys for a specific measurement.',
+        desc: 'The bucket from which to return tag keys for a specific measurement.',
         type: 'String',
       },
       {
@@ -5772,8 +5478,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'bucket',
-        desc:
-          'The bucket from which to return tag keys for a specific measurement.',
+        desc: 'The bucket from which to return tag keys for a specific measurement.',
         type: 'String',
       },
       {
@@ -5804,14 +5509,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'predicate',
-        desc:
-          'The predicate function that filters tag keys. Defaults to `(r) => true.`',
+        desc: 'The predicate function that filters tag keys. Defaults to `(r) => true.`',
         type: 'Function',
       },
       {
         name: 'start',
-        desc:
-          'Specifies the oldest time to be included in the results. Defaults to `-30d`.',
+        desc: 'Specifies the oldest time to be included in the results. Defaults to `-30d`.',
         type: 'Duration | Time',
       },
     ],
@@ -5836,14 +5539,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'predicate',
-        desc:
-          'The predicate function that filters tag values. Defaults to `(r) => true.`',
+        desc: 'The predicate function that filters tag values. Defaults to `(r) => true.`',
         type: 'Function',
       },
       {
         name: 'start',
-        desc:
-          'Specifies the oldest time to be included in the results. Defaults to `-30d`.',
+        desc: 'Specifies the oldest time to be included in the results. Defaults to `-30d`.',
         type: 'Duration | Time',
       },
     ],
@@ -5873,8 +5574,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'Base URL of Sensu API without a trailing slash. Example: `http://localhost:8080`.',
+        desc: 'Base URL of Sensu API without a trailing slash. Example: `http://localhost:8080`.',
         type: 'String',
       },
       {
@@ -5894,14 +5594,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'entityName',
-        desc:
-          'Event source. Use alphanumeric characters, underscores (`_`), periods (`.`), and hyphens (`-`).',
+        desc: 'Event source. Use alphanumeric characters, underscores (`_`), periods (`.`), and hyphens (`-`).',
         type: 'String',
       },
     ],
     package: 'contrib/sranka/sensu',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = sensu.endpoint(
     url: "http://localhost:8080",
     apiKey: "mYSuP3rs3cREtApIK3Y",
@@ -5917,8 +5615,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'Base URL of Sensu API without a trailing slash. Example: `http://localhost:8080`.',
+        desc: 'Base URL of Sensu API without a trailing slash. Example: `http://localhost:8080`.',
         type: 'String',
       },
       {
@@ -5928,8 +5625,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'checkName',
-        desc:
-          'Check name. Use alphanumeric characters, underscores (`_`), periods (`.`), and hyphens (`-`).',
+        desc: 'Check name. Use alphanumeric characters, underscores (`_`), periods (`.`), and hyphens (`-`).',
         type: 'String',
       },
       {
@@ -5949,8 +5645,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'state',
-        desc:
-          'Event state. Default is "passing" for 0 status and "failing" for other statuses.',
+        desc: 'Event state. Default is "passing" for 0 status and "failing" for other statuses.',
         type: 'String',
       },
       {
@@ -5960,8 +5655,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'entityName',
-        desc:
-          'Event source. Use alphanumeric characters, underscores (`_`), periods (`.`), and hyphens (`-`).',
+        desc: 'Event source. Use alphanumeric characters, underscores (`_`), periods (`.`), and hyphens (`-`).',
         type: 'String',
       },
     ],
@@ -5996,8 +5690,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Assigns a static value to each record in the input table. The key may modify an existing column or add a new column to the tables. If the modified column is part of the group key, the output tables are regrouped as needed.',
+    desc: 'Assigns a static value to each record in the input table. The key may modify an existing column or add a new column to the tables. If the modified column is part of the group key, the output tables are regrouped as needed.',
     example: 'set(key: "_field", value: "my_field")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/set/`,
@@ -6022,20 +5715,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'The Slack API URL. Defaults to `https://slack.com/api/chat.postMessage`.',
+        desc: 'The Slack API URL. Defaults to `https://slack.com/api/chat.postMessage`.',
         type: 'String',
       },
       {
         name: 'token',
-        desc:
-          'The Slack API token used to interact with Slack. Defaults to `""`.',
+        desc: 'The Slack API token used to interact with Slack. Defaults to `""`.',
         type: 'String',
       },
     ],
     package: 'slack',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = slack.endpoint(
     url: "https://slack.com/api/chat.postMessage",
     token: "mySuPerSecRetTokEn"
@@ -6048,14 +5738,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'The Slack API URL. Defaults to `https://slack.com/api/chat.postMessage`.',
+        desc: 'The Slack API URL. Defaults to `https://slack.com/api/chat.postMessage`.',
         type: 'String',
       },
       {
         name: 'token',
-        desc:
-          'The Slack API token used to interact with Slack. Defaults to `""`.',
+        desc: 'The Slack API token used to interact with Slack. Defaults to `""`.',
         type: 'String',
       },
       {
@@ -6111,8 +5799,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'columns',
-        desc:
-          'List of columns by which to sort. Sort precedence is determined by list order (left to right). Default is `["_value"]`.',
+        desc: 'List of columns by which to sort. Sort precedence is determined by list order (left to right). Default is `["_value"]`.',
         type: 'Array of Strings',
       },
       {
@@ -6122,8 +5809,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Orders the records within each table. One output table is produced for each input table. The output tables will have the same schema as their corresponding input tables.',
+    desc: 'Orders the records within each table. One output table is produced for each input table. The output tables will have the same schema as their corresponding input tables.',
     example: 'sort(columns: ["_value"], desc: false)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/sort/`,
@@ -6138,8 +5824,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Outputs the difference between the minimum and maximum values in the specified column. Only `uint`, `int`, and `float` column types can be used.',
+    desc: 'Outputs the difference between the minimum and maximum values in the specified column. Only `uint`, `int`, and `float` column types can be used.',
     example: 'spread(column: "_value")',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/aggregates/spread/`,
@@ -6154,8 +5839,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'dataSourceName',
-        desc:
-          'The connection string used to connect to the SQL database. The string’s form and structure depend on the driver.',
+        desc: 'The connection string used to connect to the SQL database. The string’s form and structure depend on the driver.',
         type: 'String',
       },
       {
@@ -6181,8 +5865,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'dataSourceName',
-        desc:
-          'The connection string used to connect to the SQL database. The string’s form and structure depend on the driver.',
+        desc: 'The connection string used to connect to the SQL database. The string’s form and structure depend on the driver.',
         type: 'String',
       },
       {
@@ -6192,8 +5875,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'batchSize',
-        desc:
-          'The number of parameters or columns that can be queued within each call to `Exec`. Defaults to `10000`.',
+        desc: 'The number of parameters or columns that can be queued within each call to `Exec`. Defaults to `10000`.',
         type: 'Integer',
       },
     ],
@@ -6209,20 +5891,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'fn',
-        desc:
-          'A single argument function that evaluates true or false to identify the state of the record.',
+        desc: 'A single argument function that evaluates true or false to identify the state of the record.',
         type: 'Function',
       },
       {
         name: 'column',
-        desc:
-          'The name of the column added to each record that contains the incremented state count.',
+        desc: 'The name of the column added to each record that contains the incremented state count.',
         type: 'String',
       },
     ],
     package: '',
-    desc:
-      'Computes the number of consecutive records in a given state and stores the increment in a new column.',
+    desc: 'Computes the number of consecutive records in a given state and stores the increment in a new column.',
     example: 'stateCount(fn: (r) => r._field == "state", column: "stateCount")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/statecount/`,
@@ -6232,14 +5911,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'fn',
-        desc:
-          'A single argument function that evaluates true or false to identify the state of the record.',
+        desc: 'A single argument function that evaluates true or false to identify the state of the record.',
         type: 'Function',
       },
       {
         name: 'column',
-        desc:
-          'Name of the column added to each record that contains the incremented state duration.',
+        desc: 'Name of the column added to each record that contains the incremented state duration.',
         type: 'String',
       },
       {
@@ -6249,8 +5926,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Computes the duration of a given state and stores the increment in a new column.',
+    desc: 'Computes the duration of a given state and stores the increment in a new column.',
     example:
       'stateDuration(fn: (r) => r._measurement == "state", column: "stateDuration", unit: 1s)',
     category: 'Transformations',
@@ -6266,14 +5942,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'mode',
-        desc:
-          'The standard deviation mode (sample or population). Defaults to `"sample"`.',
+        desc: 'The standard deviation mode (sample or population). Defaults to `"sample"`.',
         type: 'String',
       },
     ],
     package: '',
-    desc:
-      'Computes the standard deviation of non-null records in specified column.',
+    desc: 'Computes the standard deviation of non-null records in specified column.',
     example: 'stddev(column: "_value", mode: "sample")',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/aggregates/stddev/`,
@@ -6328,8 +6002,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Reports whether a specified string contains characters from another string.',
+    desc: 'Reports whether a specified string contains characters from another string.',
     example: 'strings.containsAny(v: "abc", chars: "and")',
     category: 'Tests',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/containsany/`,
@@ -6369,8 +6042,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Counts the number of non-overlapping instances of a substring appears in a string.',
+    desc: 'Counts the number of non-overlapping instances of a substring appears in a string.',
     example: 'strings.countStr(v: "Hello mellow fellow", substr: "ello")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/countstr/`,
@@ -6390,8 +6062,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Reports whether two UTF-8 strings are equal under Unicode case-folding.',
+    desc: 'Reports whether two UTF-8 strings are equal under Unicode case-folding.',
     example: 'strings.equalFold(v: "Go", t: "go")',
     category: 'Tests',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/equalfold/`,
@@ -6451,8 +6122,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Returns the index of the first instance of a substring in a string. If the substring is not present, it returns `-1`.',
+    desc: 'Returns the index of the first instance of a substring in a string. If the substring is not present, it returns `-1`.',
     example: 'strings.index(v: "go gopher", substr: "go")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/index-func/`,
@@ -6472,8 +6142,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Returns the index of the first instance of specified characters in a string. If none of the specified characters are present, it returns -1.',
+    desc: 'Returns the index of the first instance of specified characters in a string. If none of the specified characters are present, it returns -1.',
     example: 'strings.indexAny(v: "chicken", chars: "aeiouy")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/indexany/`,
@@ -6553,8 +6222,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Concatenates elements of a string array into a single string using a specified separator.',
+    desc: 'Concatenates elements of a string array into a single string using a specified separator.',
     example: 'strings.joinStr(arr: ["a", "b", "c"], v: ",")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/joinstr/`,
@@ -6574,8 +6242,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Returns the index of the last instance of a substring in a string. If the substring is not present, the function returns -1.',
+    desc: 'Returns the index of the last instance of a substring in a string. If the substring is not present, the function returns -1.',
     example: 'strings.lastIndex(v: "go gopher", substr: "go")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/lastindex/`,
@@ -6595,8 +6262,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Returns the index of the last instance of any specified characters in a string. If none of the specified characters are present, the function returns -1.',
+    desc: 'Returns the index of the last instance of any specified characters in a string. If none of the specified characters are present, the function returns -1.',
     example: 'strings.lastIndexAny(v: "chicken", chars: "aeiouy")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/lastindexany/`,
@@ -6646,8 +6312,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Replaces the first `i` non-overlapping instances of a substring with a specified replacement.',
+    desc: 'Replaces the first `i` non-overlapping instances of a substring with a specified replacement.',
     example: 'strings.replace(v: "oink oink oink", t: "oink", u: "moo", i: 2)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/replace/`,
@@ -6672,8 +6337,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Replaces all non-overlapping instances of a substring with a specified replacement.',
+    desc: 'Replaces all non-overlapping instances of a substring with a specified replacement.',
     example: 'strings.replaceAll(v: "oink oink oink", t: "oink", u: "moo")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/replaceall/`,
@@ -6693,8 +6357,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Splits a string on a specified separator and returns an array of substrings.',
+    desc: 'Splits a string on a specified separator and returns an array of substrings.',
     example: 'strings.split(v: "a flux of foxes", t: " ")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/split/`,
@@ -6714,8 +6377,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Splits a string after a specified separator and returns an array of substrings.',
+    desc: 'Splits a string after a specified separator and returns an array of substrings.',
     example: 'strings.splitAfter(v: "a flux of foxes", t: " ")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/splitafter/`,
@@ -6740,8 +6402,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Splits a string after a specified separator and returns an array of `i` substrings.',
+    desc: 'Splits a string after a specified separator and returns an array of `i` substrings.',
     example: 'strings.splitAfterN(v: "a flux of foxes", t: " ", i: 2)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/splitaftern/`,
@@ -6766,8 +6427,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Splits a string on a specified separator and returns an array of `i` substrings.',
+    desc: 'Splits a string on a specified separator and returns an array of `i` substrings.',
     example: 'strings.splitN(v: "a flux of foxes", t: " ", i: 2)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/splitn/`,
@@ -6894,8 +6554,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Removes a prefix from a string. Strings that do not start with the prefix are returned unchanged.',
+    desc: 'Removes a prefix from a string. Strings that do not start with the prefix are returned unchanged.',
     example: 'strings.trimPrefix(v: r._value, prefix: "abc_")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/trimprefix/`,
@@ -6950,8 +6609,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'strings',
-    desc:
-      'Removes a suffix from a string. Strings that do not end with the suffix are returned unchanged.',
+    desc: 'Removes a suffix from a string. Strings that do not end with the suffix are returned unchanged.',
     example: 'strings.trimSuffix(v: r._value, suffix: "_123")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/strings/trimsuffix/`,
@@ -6999,8 +6657,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Extracts the first table in a stream of tables whose group key values match a predicate. If no table is found, the function errors.',
+    desc: 'Extracts the first table in a stream of tables whose group key values match a predicate. If no table is found, the function errors.',
     example: 'tableFind(fn: (key) => key._field == "fieldName")',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/stream-table/tablefind/`,
@@ -7015,14 +6672,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'offset',
-        desc:
-          'The number of records to skip at the end of a table before limiting to `n`. Defaults to `0`.',
+        desc: 'The number of records to skip at the end of a table before limiting to `n`. Defaults to `0`.',
         type: 'Integer',
       },
     ],
     package: '',
-    desc:
-      'Limits each output table to the last `n` records, excluding the offset.',
+    desc: 'Limits each output table to the last `n` records, excluding the offset.',
     example: 'tail(n: 10)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/tail/`,
@@ -7032,14 +6687,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'orTime',
-        desc:
-          'Default time value returned if the task has never successfully run.',
+        desc: 'Default time value returned if the task has never successfully run.',
         type: 'Time',
       },
     ],
     package: 'influxdata/influxdb/tasks',
-    desc:
-      'Returns the time of last successful run of an InfluxDB task or the value of the `orTime` parameter if the task has never successfully run.',
+    desc: 'Returns the time of last successful run of an InfluxDB task or the value of the `orTime` parameter if the task has never successfully run.',
     example: 'tasks.lastSuccess(orTime: 2020-10-01T00:00:00Z)',
     category: 'Miscellaneous',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/influxdb-tasks/lastsuccess/`,
@@ -7054,8 +6707,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/sranka/teams',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = teams.endpoint(
     url: "https://outlook.office.com/webhook/example-webhook"
 )`,
@@ -7082,14 +6734,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'summary',
-        desc:
-          'Message card summary. Default is `""`. If no summary is provided, Flux generates the summary from the message text.',
+        desc: 'Message card summary. Default is `""`. If no summary is provided, Flux generates the summary from the message text.',
         type: 'String',
       },
     ],
     package: 'contrib/sranka/teams',
-    desc:
-      'Sends a single message to a Microsoft Teams channel using an incoming webhook.',
+    desc: 'Sends a single message to a Microsoft Teams channel using an incoming webhook.',
     example: `teams.message(
     url: "https://outlook.office.com/webhook/example-webhook",
     title: "Example message title",
@@ -7104,8 +6754,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'URL of the Telegram bot endpoint. Default is `https://api.telegram.org/bot`.',
+        desc: 'URL of the Telegram bot endpoint. Default is `https://api.telegram.org/bot`.',
         type: 'String',
       },
       {
@@ -7120,14 +6769,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'disableWebPagePreview',
-        desc:
-          'Disable preview of web links in the sent message. Default is `false`.',
+        desc: 'Disable preview of web links in the sent message. Default is `false`.',
         type: 'Boolean',
       },
     ],
     package: 'contrib/sranka/telegram',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = telegram.endpoint(
     url: "https://api.telegram.org/bot",
     token: "S3crEtTel3gRamT0k3n",
@@ -7142,8 +6789,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'url',
-        desc:
-          'URL of the Telegram bot endpoint. Default is `https://api.telegram.org/bot`.',
+        desc: 'URL of the Telegram bot endpoint. Default is `https://api.telegram.org/bot`.',
         type: 'String',
       },
       {
@@ -7168,8 +6814,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'disableWebPagePreview',
-        desc:
-          'Disable preview of web links in the sent message. Default is `false`.',
+        desc: 'Disable preview of web links in the sent message. Default is `false`.',
         type: 'Boolean',
       },
       {
@@ -7179,8 +6824,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/sranka/telegram',
-    desc:
-      'Sends a single message to a Telegram channel using the sendMessage method of the Telegram Bot API.',
+    desc: 'Sends a single message to a Telegram channel using the sendMessage method of the Telegram Bot API.',
     example: `telegram.message(
     url: "https://api.telegram.org/bot",
     token: "S3crEtTel3gRamT0k3n",
@@ -7237,8 +6881,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'testing',
-    desc:
-      'Executes a test case without comparing test output with the expected test output.',
+    desc: 'Executes a test case without comparing test output with the expected test output.',
     example: 'testing.benchmark(case: exampleTestCase)',
     category: 'Tests',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/testing/benchmark/`,
@@ -7258,8 +6901,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'epsilon',
-        desc:
-          'How far apart two float values can be, but still considered equal. Defaults to `0.000000001`.',
+        desc: 'How far apart two float values can be, but still considered equal. Defaults to `0.000000001`.',
         type: 'Float',
       },
     ],
@@ -7303,8 +6945,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'testing',
-    desc:
-      'Loads annotated CSV test data from memory to emulate query results returned by Flux.',
+    desc: 'Loads annotated CSV test data from memory to emulate query results returned by Flux.',
     example: 'testing.loadMem(csv: csvData)',
     category: 'Tests',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/testing/loadmem/`,
@@ -7349,44 +6990,37 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'id',
-        desc:
-          'Function that returns the InfluxDB check ID provided by the check record. Default is `(r) => "${r._check_id}"`.',
+        desc: 'Function that returns the InfluxDB check ID provided by the check record. Default is `(r) => "${r._check_id}"`.',
         type: 'Function',
       },
       {
         name: 'details',
-        desc:
-          'Function to return the InfluxDB check details using data from input rows. Default is `(r) => ""`.',
+        desc: 'Function to return the InfluxDB check details using data from input rows. Default is `(r) => ""`.',
         type: 'Function',
       },
       {
         name: 'message',
-        desc:
-          'Function to return the InfluxDB check message using data from input rows. Default is `(r) => "Threshold Check: ${r._check_name} is: ${r._level}"`.',
+        desc: 'Function to return the InfluxDB check message using data from input rows. Default is `(r) => "Threshold Check: ${r._check_name} is: ${r._level}"`.',
         type: 'Function',
       },
       {
         name: 'crit',
-        desc:
-          'Predicate function to determine crit status. Default is `(r) => false`.',
+        desc: 'Predicate function to determine crit status. Default is `(r) => false`.',
         type: 'Function',
       },
       {
         name: 'warn',
-        desc:
-          'Predicate function to determine warn status. Default is `(r) => false`.',
+        desc: 'Predicate function to determine warn status. Default is `(r) => false`.',
         type: 'Function',
       },
       {
         name: 'info',
-        desc:
-          'Predicate function to determine info status. Default is `(r) => false`.',
+        desc: 'Predicate function to determine info status. Default is `(r) => false`.',
         type: 'Function',
       },
       {
         name: 'ok',
-        desc:
-          'Predicate function to determine ok status. Default is `(r) => false`.',
+        desc: 'Predicate function to determine ok status. Default is `(r) => false`.',
         type: 'Function',
       },
       {
@@ -7396,8 +7030,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/bonitoo-io/tickscript',
-    desc:
-      'Identifies events of varying severity levels and writes them to the statuses measurement in the InfluxDB `_monitoring` system bucket.',
+    desc: 'Identifies events of varying severity levels and writes them to the statuses measurement in the InfluxDB `_monitoring` system bucket.',
     example: `tickscript.alert(
     check,
     id: (r) => "\${r._check_id}",
@@ -7432,8 +7065,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/bonitoo-io/tickscript',
-    desc:
-      'An alias for `tickscript.select()` that changes a column’s name and optionally applies an aggregate or selector function.',
+    desc: 'An alias for `tickscript.select()` that changes a column’s name and optionally applies an aggregate or selector function.',
     example: `tickscript.compute(
     column: "_value",
     fn: sum,
@@ -7457,20 +7089,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'threshold',
-        desc:
-          'Count threshold. The function assigns a `crit` status to input tables with a number of rows less than or equal to the threshold. Default is `0`.',
+        desc: 'Count threshold. The function assigns a `crit` status to input tables with a number of rows less than or equal to the threshold. Default is `0`.',
         type: 'Integer',
       },
       {
         name: 'id',
-        desc:
-          'Function that returns the InfluxDB check ID provided by the check record. Default is `(r) => "${r._check_id}"`.',
+        desc: 'Function that returns the InfluxDB check ID provided by the check record. Default is `(r) => "${r._check_id}"`.',
         type: 'Function',
       },
       {
         name: 'message',
-        desc:
-          'Function that returns the InfluxDB check message using data from input rows. Default is `(r) => "Deadman Check: ${r._check_name} is: " + (if r.dead then "dead" else "alive")`.',
+        desc: 'Function that returns the InfluxDB check message using data from input rows. Default is `(r) => "Deadman Check: ${r._check_name} is: " + (if r.dead then "dead" else "alive")`.',
         type: 'Function',
       },
       {
@@ -7480,8 +7109,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/bonitoo-io/tickscript',
-    desc:
-      'Detects low data throughput and writes a point with a critical status to the InfluxDB `_monitoring` system bucket.',
+    desc: 'Detects low data throughput and writes a point with a critical status to the InfluxDB `_monitoring` system bucket.',
     example: `tickscript.deadman(
     check: {},
     measurement: "example-measurement",
@@ -7508,14 +7136,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'type',
-        desc:
-          'InfluxDB check type. Default is `custom`. Valid types are `thresold`, `deadman`, and `custom`.',
+        desc: 'InfluxDB check type. Default is `custom`. Valid types are `thresold`, `deadman`, and `custom`.',
         type: 'String',
       },
     ],
     package: 'contrib/bonitoo-io/tickscript',
-    desc:
-      'Creates and returns a record with custom check data required by `tickscript.alert()` and `tickscript.deadman()`.',
+    desc: 'Creates and returns a record with custom check data required by `tickscript.alert()` and `tickscript.deadman()`.',
     example: `tickscript.defineCheck(
     id: "000000000000",
     name: "Example check name",
@@ -7534,8 +7160,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/bonitoo-io/tickscript',
-    desc:
-      'Groups results by the _measurement column and other specified columns.',
+    desc: 'Groups results by the _measurement column and other specified columns.',
     example: `tickscript.groupBy(
     columns: ["exampleColumn"]
 )`,
@@ -7562,8 +7187,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/bonitoo-io/tickscript',
-    desc:
-      'Merges two input streams into a single output stream based on specified columns with equal values and appends a new measurement name.',
+    desc: 'Merges two input streams into a single output stream based on specified columns with equal values and appends a new measurement name.',
     example: `tickscript.join(
     tables: {t1: example1, t2: example2},
     on: ["_time"],
@@ -7592,8 +7216,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/bonitoo-io/tickscript',
-    desc:
-      'Changes a column’s name and optionally applies an aggregate or selector function to values in the column.',
+    desc: 'Changes a column’s name and optionally applies an aggregate or selector function to values in the column.',
     example: `tickscript.select(
     column: "_value",
     fn: sum,
@@ -7627,14 +7250,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'defaultValue',
-        desc:
-          'Default fill value for null values in `column`. Must be the same data type as `column`.',
+        desc: 'Default fill value for null values in `column`. Must be the same data type as `column`.',
         type: 'String | Boolean | Float | Integer | Uinteger | Bytes',
       },
     ],
     package: 'contrib/bonitoo-io/tickscript',
-    desc:
-      'Changes a column’s name, windows rows by time, and applies an aggregate or selector function the specified column for each window of time.',
+    desc: 'Changes a column’s name, windows rows by time, and applies an aggregate or selector function the specified column for each window of time.',
     example: `tickscript.selectWindow(
     column: "_value",
     fn: sum,
@@ -7675,14 +7296,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'column',
-        desc:
-          'The column on which to compute the moving average. Defaults to `"_value"`',
+        desc: 'The column on which to compute the moving average. Defaults to `"_value"`',
         type: 'String',
       },
     ],
     package: '',
-    desc:
-      'Calculates the mean of values in a defined time range at a specified frequency.',
+    desc: 'Calculates the mean of values in a defined time range at a specified frequency.',
     example: 'timedMovingAverage(every: 1d, period: 5d)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/timedmovingaverage/`,
@@ -7692,20 +7311,17 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'duration',
-        desc:
-          'The amount of time to add to each time value. May be a negative duration.',
+        desc: 'The amount of time to add to each time value. May be a negative duration.',
         type: 'String',
       },
       {
         name: 'columns',
-        desc:
-          'The list of all columns to be shifted. Defaults to `["_start", "_stop", "_time"]`.',
+        desc: 'The list of all columns to be shifted. Defaults to `["_start", "_stop", "_time"]`.',
         type: 'Array of Strings',
       },
     ],
     package: '',
-    desc:
-      'Adds a fixed duration to time columns. The output table schema is the same as the input table.',
+    desc: 'Adds a fixed duration to time columns. The output table schema is the same as the input table.',
     example: 'timeShift(duration: 10h, columns: ["_start", "_stop", "_time"])',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/timeshift/`,
@@ -7715,14 +7331,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'unit',
-        desc:
-          'The time duration used when computing the time-weighted average.',
+        desc: 'The time duration used when computing the time-weighted average.',
         type: 'Duration',
       },
     ],
     package: '',
-    desc:
-      'Computes the time-weighted average of non-null records in a table using linear interpolation.',
+    desc: 'Computes the time-weighted average of non-null records in a table using linear interpolation.',
     example: 'timeWeightedAvg(unit: 1m)',
     category: 'Aggregates',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/aggregates/timeweightedavg/`,
@@ -7732,38 +7346,32 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'bucket',
-        desc:
-          'The bucket to which data is written. Mutually exclusive with `bucketID`.',
+        desc: 'The bucket to which data is written. Mutually exclusive with `bucketID`.',
         type: 'String',
       },
       {
         name: 'bucketID',
-        desc:
-          'The ID of the bucket to which data is written. Mutually exclusive with `bucket`.',
+        desc: 'The ID of the bucket to which data is written. Mutually exclusive with `bucket`.',
         type: 'String',
       },
       {
         name: 'org',
-        desc:
-          'The organization name of the specified `bucket`. Only required when writing to a remote host. Mutually exclusive with `orgID`.',
+        desc: 'The organization name of the specified `bucket`. Only required when writing to a remote host. Mutually exclusive with `orgID`.',
         type: 'String',
       },
       {
         name: 'orgID',
-        desc:
-          'The organization ID of the specified `bucket`. Only required when writing to a remote host. Mutually exclusive with `org`.',
+        desc: 'The organization ID of the specified `bucket`. Only required when writing to a remote host. Mutually exclusive with `org`.',
         type: 'String',
       },
       {
         name: 'host',
-        desc:
-          'The remote InfluxDB host to which to write. If specified, a `token` is required.',
+        desc: 'The remote InfluxDB host to which to write. If specified, a `token` is required.',
         type: 'String',
       },
       {
         name: 'token',
-        desc:
-          'The authorization token to use when writing to a remote host. Required when a `host` is specified.',
+        desc: 'The authorization token to use when writing to a remote host. Required when a `host` is specified.',
         type: 'String',
       },
       {
@@ -7773,14 +7381,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'tagColumns',
-        desc:
-          'The tag columns of the output. Defaults to all columns with type `string`, excluding all value columns and the `_field` column if present.',
+        desc: 'The tag columns of the output. Defaults to all columns with type `string`, excluding all value columns and the `_field` column if present.',
         type: 'Array of Strings',
       },
       {
         name: 'fieldFn',
-        desc:
-          'Function that takes a record from the input table and returns an object. For each record from the input table, `fieldFn` returns an object that maps output the field key to the output value. Default is `(r) => ({ [r._field]: r._value })`',
+        desc: 'Function that takes a record from the input table and returns an object. For each record from the input table, `fieldFn` returns an object that maps output the field key to the output value. Default is `(r) => ({ [r._field]: r._value })`',
         type: 'Function',
       },
     ],
@@ -7836,8 +7442,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'columns',
-        desc:
-          'List of columns by which to sort. Sort precedence is determined by list order (left to right). Default is `["_value"]`.',
+        desc: 'List of columns by which to sort. Sort precedence is determined by list order (left to right). Default is `["_value"]`.',
         type: 'Array of Strings',
       },
     ],
@@ -7884,8 +7489,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Calculates the exponential moving average of values in the `_value` column grouped into `n` number of points, giving more weight to recent data at triple the rate of `exponentialMovingAverage()`.',
+    desc: 'Calculates the exponential moving average of values in the `_value` column grouped into `n` number of points, giving more weight to recent data at triple the rate of `exponentialMovingAverage()`.',
     example: 'tripleEMA(n: 5)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/tripleema/`,
@@ -7900,8 +7504,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Calculates a triple exponential derivative (TRIX) of input tables using n points.',
+    desc: 'Calculates a triple exponential derivative (TRIX) of input tables using n points.',
     example: 'tripleExponentialDerivative(n: 5)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/tripleexponentialderivative/`,
@@ -7967,26 +7570,22 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'host',
-        desc:
-          'InfluxDB Cloud region URL (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
+        desc: 'InfluxDB Cloud region URL (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
         type: 'String',
       },
       {
         name: 'orgID',
-        desc:
-          'InfluxDB Cloud organization ID (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
+        desc: 'InfluxDB Cloud organization ID (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
         type: 'String',
       },
       {
         name: 'token',
-        desc:
-          'InfluxDB Cloud authentication token (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
+        desc: 'InfluxDB Cloud authentication token (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
         type: 'String',
       },
       {
         name: 'raw',
-        desc:
-          'Return raw, high resolution usage data instead of downsampled usage data. Default is `false`.',
+        desc: 'Return raw, high resolution usage data instead of downsampled usage data. Default is `false`.',
         type: 'Boolean',
       },
     ],
@@ -8008,26 +7607,22 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'host',
-        desc:
-          'InfluxDB Cloud region URL (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
+        desc: 'InfluxDB Cloud region URL (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
         type: 'String',
       },
       {
         name: 'orgID',
-        desc:
-          'InfluxDB Cloud organization ID (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
+        desc: 'InfluxDB Cloud organization ID (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
         type: 'String',
       },
       {
         name: 'token',
-        desc:
-          'InfluxDB Cloud authentication token (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
+        desc: 'InfluxDB Cloud authentication token (Required if executed outside of your InfluxDB Cloud organization or region). Default is `""`.',
         type: 'String',
       },
     ],
     package: 'experimental/usage',
-    desc:
-      'Returns a record containing usage limits for an InfluxDB Cloud organization.',
+    desc: 'Returns a record containing usage limits for an InfluxDB Cloud organization.',
     example: `usage.limits(
     host: "",
     orgID: "",
@@ -8046,8 +7641,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/bonitoo-io/victorops',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = victorops.endpoint(
     url: "https://alert.victorops.com/integrations/generic/00000000/alert\${apiKey}/\${routingKey}",
 )`,
@@ -8069,8 +7663,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'messageType',
-        desc:
-          'VictorOps message type (alert behavior). Valid values are `CRITICAL`, `WARNING`, and `INFO`.',
+        desc: 'VictorOps message type (alert behavior). Valid values are `CRITICAL`, `WARNING`, and `INFO`.',
         type: 'String',
       },
       {
@@ -8118,14 +7711,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'period',
-        desc:
-          'Duration of the window. Period is the length of each interval. It can be negative, indicating the start and stop boundaries are reversed. Defaults to `every` value.',
+        desc: 'Duration of the window. Period is the length of each interval. It can be negative, indicating the start and stop boundaries are reversed. Defaults to `every` value.',
         type: 'Duration',
       },
       {
         name: 'offset',
-        desc:
-          'The offset duration relative to the `location` offset. It can be negative, indicating that the offset goes backwards in time. The default aligns the window boundaries with `now`.',
+        desc: 'The offset duration relative to the `location` offset. It can be negative, indicating that the offset goes backwards in time. The default aligns the window boundaries with `now`.',
         type: 'Duration',
       },
       {
@@ -8135,26 +7726,22 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'startColumn',
-        desc:
-          'The column containing the window start time. Defaults to `"_start"`.',
+        desc: 'The column containing the window start time. Defaults to `"_start"`.',
         type: 'String',
       },
       {
         name: 'stopColumn',
-        desc:
-          'The column containing the window stop time. Defaults to `"_stop"`.',
+        desc: 'The column containing the window stop time. Defaults to `"_stop"`.',
         type: 'String',
       },
       {
         name: 'createEmpty',
-        desc:
-          'Specifies whether empty tables should be created. Defaults to `false`.',
+        desc: 'Specifies whether empty tables should be created. Defaults to `false`.',
         type: 'Boolean',
       },
     ],
     package: '',
-    desc:
-      'Groups records based on a time value. New columns are added to uniquely identify each window. Those columns are added to the group key of the output tables. A single input record will be placed into zero or more output tables, depending on the specific windowing function.',
+    desc: 'Groups records based on a time value. New columns are added to uniquely identify each window. Those columns are added to the group key of the output tables. A single input record will be placed into zero or more output tables, depending on the specific windowing function.',
     example: 'window(every: v.windowPeriod)',
     category: 'Transformations',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/window/`,
@@ -8169,8 +7756,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: '',
-    desc:
-      'Indicates the input tables received should be delivered as a result of the query. Yield outputs the input stream unmodified. A query may have multiple results, each identified by the name provided to the `yield()` function.',
+    desc: 'Indicates the input tables received should be delivered as a result of the query. Yield outputs the input stream unmodified. A query may have multiple results, each identified by the name provided to the `yield()` function.',
     example: 'yield(name: "custom-name")',
     category: 'Outputs',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/outputs/yield/`,
@@ -8185,14 +7771,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'username',
-        desc:
-          'Zenoss username to use for HTTP BASIC authentication. Default is "" (no authentication).',
+        desc: 'Zenoss username to use for HTTP BASIC authentication. Default is "" (no authentication).',
         type: 'String',
       },
       {
         name: 'password',
-        desc:
-          'Zenoss password to use for HTTP BASIC authentication. Default is "" (no authentication).',
+        desc: 'Zenoss password to use for HTTP BASIC authentication. Default is "" (no authentication).',
         type: 'String',
       },
       {
@@ -8217,8 +7801,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
     ],
     package: 'contrib/bonitoo-io/zenoss',
-    desc:
-      'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
+    desc: 'A factory function that outputs another function. The output function requires a `mapFn` parameter. See the documentation link for a full example.',
     example: `endpoint = zenoss.endpoint(
     url: "https://example.zenoss.io:8080/zport/dmd/evconsole_router",
     username: "example-user",
@@ -8241,14 +7824,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'username',
-        desc:
-          'Zenoss username to use for HTTP BASIC authentication. Default is "" (no authentication).',
+        desc: 'Zenoss username to use for HTTP BASIC authentication. Default is "" (no authentication).',
         type: 'String',
       },
       {
         name: 'password',
-        desc:
-          'Zenoss password to use for HTTP BASIC authentication. Default is "" (no authentication).',
+        desc: 'Zenoss password to use for HTTP BASIC authentication. Default is "" (no authentication).',
         type: 'String',
       },
       {
@@ -8288,8 +7869,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       },
       {
         name: 'severity',
-        desc:
-          'Event severity level. Supported values are `Critical`, `Warning`, `Info`, and `Clear`.',
+        desc: 'Event severity level. Supported values are `Critical`, `Warning`, `Info`, and `Clear`.',
         type: 'String',
       },
       {

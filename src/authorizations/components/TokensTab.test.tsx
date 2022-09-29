@@ -3,8 +3,7 @@ import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
 import {renderWithReduxAndRouter} from 'src/mockState'
 import {mockAppState} from 'src/mockAppState'
-
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 
 import {createAuthorization} from 'src/authorizations/apis'
 import TokensTab from './TokensTab'
@@ -135,9 +134,9 @@ describe('TokensTab', () => {
       fireEvent.click(screen.getByText('Confirm'))
 
       await waitFor(() => expect(deleteAuthorization).toBeCalled())
-      expect(mocked(deleteAuthorization).mock.calls[0][0]['authID']).toEqual(
-        tokenID
-      )
+      expect(
+        jest.mocked(deleteAuthorization).mock.calls[0][0]['authID']
+      ).toEqual(tokenID)
       expect(ui.store.getState().resources.tokens.byID[tokenID]).toBeFalsy()
       expect(ui.store.getState().resources.tokens.allIDs).not.toContain(tokenID)
     })

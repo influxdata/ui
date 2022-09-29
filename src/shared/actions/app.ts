@@ -3,30 +3,28 @@ import {TimeZone, Theme, NavBarState, VersionInfo, FlowsCTA} from 'src/types'
 export enum ActionTypes {
   EnablePresentationMode = 'ENABLE_PRESENTATION_MODE',
   DisablePresentationMode = 'DISABLE_PRESENTATION_MODE',
-  EnableUpdatedTimeRangeInVEO = 'ENABLE_UPDATED_TIMERANGE_IN_VEO',
-  DisableUpdatedTimeRangeInVEO = 'DISABLE_UPDATED_TIMERANGE_IN_VEO',
   SetNavBarState = 'SET_NAV_BAR_STATE',
-  SetNewDataExplorer = 'SET_NEW_DATA_EXPLORER',
+  SetFluxQueryBuilder = 'SET_FLUX_QUERY_BUILDER',
   SetAutoRefresh = 'SET_AUTOREFRESH',
   SetTimeZone = 'SET_APP_TIME_ZONE',
   SetVersionInfo = 'SET_VERSION_INFO',
   TemplateControlBarVisibilityToggled = 'TemplateControlBarVisibilityToggledAction',
   SetFlowsCTA = 'SET_FLOWS_CTA',
   Noop = 'NOOP',
+  SetSubscriptionsCertificateInterest = 'SET_SUB_CERT_INTEREST',
 }
 
 export type Action =
   | ReturnType<typeof enablePresentationMode>
   | ReturnType<typeof disablePresentationMode>
-  | ReturnType<typeof enableUpdatedTimeRangeInVEO>
-  | ReturnType<typeof disableUpdatedTimeRangeInVEO>
-  | ReturnType<typeof setNewDataExplorer>
+  | ReturnType<typeof setFluxQueryBuilder>
   | ReturnType<typeof setNavBarState>
   | ReturnType<typeof setAutoRefresh>
   | ReturnType<typeof setTimeZone>
   | ReturnType<typeof setTheme>
   | ReturnType<typeof setVersionInfo>
   | ReturnType<typeof setFlowsCTA>
+  | ReturnType<typeof setSubscriptionsCertificateInterest>
 
 // ephemeral state action creators
 
@@ -40,23 +38,13 @@ export const disablePresentationMode = () =>
     type: ActionTypes.DisablePresentationMode,
   } as const)
 
-export const enableUpdatedTimeRangeInVEO = () =>
-  ({
-    type: ActionTypes.EnableUpdatedTimeRangeInVEO,
-  } as const)
-
-export const disableUpdatedTimeRangeInVEO = () =>
-  ({
-    type: ActionTypes.DisableUpdatedTimeRangeInVEO,
-  } as const)
-
 // persistent state action creators
 
 export const setTheme = (theme: Theme) => ({type: 'SET_THEME', theme} as const)
 
-export const setNewDataExplorer = (active: boolean) =>
+export const setFluxQueryBuilder = (active: boolean) =>
   ({
-    type: ActionTypes.SetNewDataExplorer,
+    type: ActionTypes.SetFluxQueryBuilder,
     active,
   } as const)
 
@@ -90,4 +78,9 @@ export const setFlowsCTA = (flowsCTA: FlowsCTA) =>
   ({
     type: ActionTypes.SetFlowsCTA,
     payload: {flowsCTA},
+  } as const)
+
+export const setSubscriptionsCertificateInterest = () =>
+  ({
+    type: ActionTypes.SetSubscriptionsCertificateInterest,
   } as const)

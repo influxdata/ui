@@ -2,8 +2,6 @@
 import React, {FC} from 'react'
 import {connect} from 'react-redux'
 import {get} from 'lodash'
-
-// Components
 import {
   OverlayContainer,
   Overlay,
@@ -12,6 +10,8 @@ import {
   Gradients,
   InfluxColors,
 } from '@influxdata/clockface'
+
+// Components
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
@@ -20,13 +20,14 @@ import {
   getDataLayerIdentity,
   getExperimentVariantId,
 } from 'src/cloud/utils/experiments'
+import {event} from 'src/cloud/utils/reporting'
+import {shouldGetCredit250Experience} from 'src/me/selectors'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Types
 import {AppState} from 'src/types'
-import {event} from 'src/cloud/utils/reporting'
 
 interface OwnProps {
   onClose: () => void
@@ -34,9 +35,14 @@ interface OwnProps {
 
 interface StateProps {
   assetName: string
+  isCredit250ExperienceActive: boolean
 }
 
-const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
+const AssetLimitOverlay: FC<OwnProps & StateProps> = ({
+  assetName,
+  isCredit250ExperienceActive,
+  onClose,
+}) => {
   return (
     <OverlayContainer
       maxWidth={600}
@@ -75,14 +81,16 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
                 const identity = getDataLayerIdentity()
                 event(
                   isFlagEnabled('credit250Experiment') &&
-                    experimentVariantId === '1'
+                    (experimentVariantId === '1' || isCredit250ExperienceActive)
                     ? `${assetName}.overlay.limit.credit-250.upgrade`
                     : `${assetName}.overlay.limit.upgrade`,
                   {
                     asset: assetName,
                     ...identity,
                     experimentId: CREDIT_250_EXPERIMENT_ID,
-                    experimentVariantId,
+                    experimentVariantId: isCredit250ExperienceActive
+                      ? '2'
+                      : experimentVariantId,
                   }
                 )
               }}
@@ -97,6 +105,7 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
 const mstp = (state: AppState) => {
   return {
     assetName: get(state, 'overlays.params.asset', ''),
+    isCredit250ExperienceActive: shouldGetCredit250Experience(state),
   }
 }
 

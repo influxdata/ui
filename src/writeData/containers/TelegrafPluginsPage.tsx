@@ -40,16 +40,20 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
     },
   } = props
   const {contentID} = useParams<ParamsType>()
-  const {name = '', markdown = '', image = '', style = {}} =
-    WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}
+  const {
+    name = '',
+    markdown = '',
+    image = '',
+    style = {},
+  } = WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}
 
   const eventName = normalizeEventName(name)
   useEffect(() => {
-    event(`telegraf_tile.${eventName}.config_viewed`, {id: contentID, name})
+    event('telegraf_tile.config_viewed', {id: contentID, name, eventName})
   }, [eventName, contentID, name])
 
   const onCopy = () => {
-    event(`telegraf_tile.${eventName}.config_copied`, {id: contentID, name})
+    event('telegraf_tile.config_copied', {id: contentID, name, eventName})
   }
   const codeRenderer: any = (props: any): any => (
     <CodeSnippet text={props.value} label={props.language} onCopy={onCopy} />
@@ -88,10 +92,10 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
               'Load Data',
             ])}
           >
-            <Page.Header fullWidth={false}>
+            <Page.Header fullWidth={true}>
               <Page.Title title={name} />
             </Page.Header>
-            <Page.Contents fullWidth={false} scrollable={true}>
+            <Page.Contents fullWidth={true} scrollable={true}>
               <AddPluginToConfigurationCTA
                 contentID={contentID}
                 history={history}

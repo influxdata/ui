@@ -1,8 +1,11 @@
-jest.mock('src/store/configureStore')
-import {getStore} from 'src/store/configureStore'
-import {mocked} from 'ts-jest/utils'
+import {jest} from '@jest/globals'
 
-mocked(getStore)
+import {getStore} from 'src/store/configureStore'
+
+jest.mock('src/store/configureStore')
+
+jest
+  .mocked(getStore)
   .mockImplementationOnce(() => {
     return {
       getState: jest.fn(() => {

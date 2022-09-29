@@ -3,13 +3,15 @@ import {Organization} from '../../../src/types'
 describe('Flows', () => {
   beforeEach(() => {
     cy.flush()
-    cy.signin()
-    cy.get('@org').then(({id}: Organization) => {
-      cy.fixture('routes').then(({orgs}) => {
-        cy.visit(`${orgs}/${id}`)
-        cy.getByTestID('version-info').should('be.visible')
-        cy.getByTestID('nav-item-flows').should('be.visible')
-        cy.getByTestID('nav-item-flows').click()
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}`)
+          cy.getByTestID('version-info').should('be.visible')
+          cy.getByTestID('nav-item-flows').should('be.visible')
+          cy.getByTestID('nav-item-flows').click()
+          cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+        })
       })
     })
   })
@@ -35,38 +37,30 @@ describe('Flows', () => {
     const flowName = 'Flowbooks'
     const flowCloneNamePrefix = `${flowName} (cloned at `
 
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
 
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
+    cy.getByTestID('renamable-page-title--input').type(
+      `{backspace}${flowName}{enter}`
+    )
     cy.wait('@updateNotebook')
 
     cy.getByTestID('page-title').contains(flowName)
 
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
+    cy.getByTestID('sidebar-button').first().click()
     cy.getByTestID('Delete--list-item').click()
     cy.wait('@updateNotebook')
 
-    cy.get('.flow-divider--button')
-      .first()
-      .click()
+    cy.get('.flow-divider--button').first().click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
     // Click the newest Query Builder button
-    cy.getByTestID('add-flow-btn--queryBuilder')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--queryBuilder').last().click()
     cy.wait('@updateNotebook')
 
     // select our bucket
@@ -102,9 +96,7 @@ describe('Flows', () => {
 
     // we should only see beans in the table
     cy.getByTestID('simple-table').should('be.visible')
-    cy.getByTestID('table-cell beans')
-      .first()
-      .should('be.visible')
+    cy.getByTestID('table-cell beans').first().should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
     // This is a random validator that the autorefresh option doesn't pop up
@@ -143,9 +135,7 @@ describe('Flows', () => {
     cy.clickNavBarItem('nav-item-flows')
 
     cy.get('.cf-resource-card').should('have.length', 2)
-    cy.get('.cf-resource-editable-name')
-      .first()
-      .contains(flowCloneNamePrefix)
+    cy.get('.cf-resource-editable-name').first().contains(flowCloneNamePrefix)
 
     // Delete the cloned flow
     cy.getByTestIDHead(`flow-card--${flowCloneNamePrefix}`).within(() => {
@@ -195,20 +185,17 @@ describe('Flows', () => {
 
   it('can use the dynamic flux function selector to build a query', () => {
     cy.setFeatureFlags({
-      fluxDynamicDocs: true,
+      quartzIdentity: true,
+      multiOrg: true,
     }).then(() => {
-      cy.getByTestID('preset-script')
-        .first()
-        .click()
+      cy.getByTestID('preset-script').first().click()
 
       cy.get('.view-line').should('be.visible')
 
       cy.get('button[title="Function Reference"]').click()
 
       // search for a function
-      cy.getByTestID('flux-toolbar-search--input')
-        .click()
-        .type('microsecondd') // purposefully misspell "microsecond" so all functions are filtered out
+      cy.getByTestID('flux-toolbar-search--input').click().type('microsecondd') // purposefully misspell "microsecond" so all functions are filtered out
 
       cy.getByTestID('flux-toolbar--list').within(() => {
         cy.getByTestID('empty-state').should('be.visible')
@@ -227,30 +214,24 @@ describe('Flows', () => {
 
       // At minimium two lines: import and a function call
       cy.get('.view-line').should('have.length.at.least', 2)
-      cy.get('.view-line')
-        .last()
-        .contains('microsecond')
+      cy.get('.view-line').last().contains('microsecond')
     })
   })
 
   it('can use the dynamic flux function search bar to search by package or function name', () => {
     cy.setFeatureFlags({
-      fluxDynamicDocs: true,
+      quartzIdentity: true,
+      multiOrg: true,
     }).then(() => {
-      cy.getByTestID('preset-script')
-        .first()
-        .click()
+      cy.getByTestID('preset-script').first().click()
 
       cy.get('.view-line').should('be.visible')
 
       cy.get('button[title="Function Reference"]').click()
 
-      cy.getByTestID('flux-toolbar-search--input')
-        .click()
-        .type('filter')
+      cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
-      cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
-      cy.getByTestID('flux--filter').contains('filter')
+      cy.getByTestID('flux-toolbar-search--input').click().type('filter')
 
       cy.get('.flux-toolbar--search').within(() => {
         cy.getByTestID('dismiss-button').click()
@@ -262,12 +243,9 @@ describe('Flows', () => {
           expect(value).to.equal('')
         })
 
-      cy.getByTestID('flux-toolbar-search--input')
-        .click()
-        .type('array')
+      cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
-      cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
-      cy.getByTestID('flux--filter').contains('filter')
+      cy.getByTestID('flux-toolbar-search--input').click().type('array')
 
       cy.get('.flux-toolbar--search').within(() => {
         cy.getByTestID('dismiss-button').click()
@@ -288,7 +266,11 @@ describe('Flows with newQueryBuilder flag on', () => {
     cy.signin()
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
-        cy.setFeatureFlags({newQueryBuilder: true}).then(() => {
+        cy.setFeatureFlags({
+          multiOrg: true,
+          quartzIdentity: true,
+          newQueryBuilder: true,
+        }).then(() => {
           cy.visit(`${orgs}/${id}`)
         })
       })
@@ -319,38 +301,28 @@ describe('Flows with newQueryBuilder flag on', () => {
     const flowName = 'Flowbooks'
     const flowCloneNamePrefix = `${flowName} (cloned at `
 
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
+    cy.getByTestID('preset-new').first().click()
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title')
-      .first()
-      .click()
+    cy.getByTestID('page-title').first().click()
 
     cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
     cy.wait('@updateNotebook')
 
     cy.getByTestID('page-title').contains(flowName)
 
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
+    cy.getByTestID('sidebar-button').first().click()
     cy.getByTestID('Delete--list-item').click()
     cy.wait('@updateNotebook')
 
-    cy.get('.flow-divider--button')
-      .first()
-      .click()
+    cy.get('.flow-divider--button').first().click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
 
     // Click the newest Query Builder button
-    cy.getByTestID('add-flow-btn--queryBuilder')
-      .last()
-      .click()
+    cy.getByTestID('add-flow-btn--queryBuilder').last().click()
     cy.wait('@updateNotebook')
 
     // select our bucket
@@ -386,9 +358,7 @@ describe('Flows with newQueryBuilder flag on', () => {
 
     // we should only see beans in the table
     cy.getByTestID('simple-table').should('be.visible')
-    cy.getByTestID('table-cell beans')
-      .first()
-      .should('be.visible')
+    cy.getByTestID('table-cell beans').first().should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
     // This is a random validator that the autorefresh option doesn't pop up
@@ -427,9 +397,7 @@ describe('Flows with newQueryBuilder flag on', () => {
     cy.clickNavBarItem('nav-item-flows')
 
     cy.get('.cf-resource-card').should('have.length', 2)
-    cy.get('.cf-resource-editable-name')
-      .first()
-      .contains(flowCloneNamePrefix)
+    cy.get('.cf-resource-editable-name').first().contains(flowCloneNamePrefix)
 
     // Delete the cloned flow
     cy.getByTestIDHead(`flow-card--${flowCloneNamePrefix}`).within(() => {

@@ -1,5 +1,5 @@
-import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
+import React, {CSSProperties, FC, useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 
 import {
@@ -14,14 +14,15 @@ import {
   Icon,
   IconFont,
   InfluxColors,
+  JustifyContent,
   Page,
   ResourceCard,
   SquareGrid,
 } from '@influxdata/clockface'
 
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {getOrg} from 'src/organizations/selectors'
 import {
+  ArduinoIcon,
   CLIIcon,
   GoIcon,
   NodejsIcon,
@@ -38,11 +39,23 @@ import UsageProvider from 'src/usage/context/usage'
 import Resources from 'src/me/components/Resources'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {getAllTelegrafs} from 'src/resources/selectors'
+
+// Thunks
+import {getTelegrafs} from 'src/telegrafs/actions/thunks'
+import {CLOUD} from 'src/shared/constants'
+
 export const HomepageContainer: FC = () => {
+  const dispatch = useDispatch()
   const org = useSelector(getOrg)
+  const telegrafs = useSelector(getAllTelegrafs)
+  const arduinoLink = `/orgs/${org.id}/new-user-setup/arduino`
   const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
-  const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
+  const cliPageLink = `/orgs/${org.id}/new-user-setup/cli`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
+  const newTelegrafPageLink = `/orgs/${org.id}/load-data/telegrafs/new`
   const golangLink = `/orgs/${org.id}/new-user-setup/golang`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
   const javaScriptNodeLink = `/orgs/${org.id}/new-user-setup/nodejs`
@@ -50,10 +63,29 @@ export const HomepageContainer: FC = () => {
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
   const moreStyle = {height: '100%', ...linkStyle}
+  // checks for
+  const inlineViewMoreStyle = {
+    marginTop: '8px',
+    visibility: isFlagEnabled('onboardArduino') ? 'visible' : 'hidden',
+  } as CSSProperties
 
   const squareGridCardSize = '200px'
 
+  useEffect(() => {
+    dispatch(getTelegrafs)
+  }, [telegrafs]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const telegrafLink = () => {
+    if (!telegrafs.length) {
+      return newTelegrafPageLink
+    }
+    return telegrafPageLink
+  }
+
   // events handling
+  const logArduinoWizardClick = () => {
+    event('firstMile.arduinoWizard.clicked')
+  }
   const logGoWizardClick = () => {
     event('firstMile.goWizard.clicked')
   }
@@ -81,7 +113,7 @@ export const HomepageContainer: FC = () => {
   return (
     <>
       <Page titleTag={pageTitleSuffixer(['Get Started'])}>
-        <Page.Header fullWidth={false}>
+        <Page.Header fullWidth={true}>
           <Heading
             id="first-mile--header"
             element={HeadingElement.H1}
@@ -89,9 +121,11 @@ export const HomepageContainer: FC = () => {
           >
             Get Started
           </Heading>
-          <RateLimitAlert location="firstMile.homepage" />
+          {!isFlagEnabled('multiOrg') && (
+            <RateLimitAlert location="firstMile.homepage" />
+          )}
         </Page.Header>
-        <Page.Contents scrollable={true} fullWidth={false}>
+        <Page.Contents scrollable={true} fullWidth={true}>
           <Grid>
             <Grid.Row>
               <Grid.Column widthSM={Columns.Eight} widthMD={Columns.Nine}>
@@ -146,36 +180,67 @@ export const HomepageContainer: FC = () => {
                         </div>
                       </Link>
                     </ResourceCard>
-                    <ResourceCard style={cardStyle}>
-                      <Link
-                        to={loadDataSourcesLink}
-                        style={moreStyle}
-                        onClick={logMoreButtonClick}
-                      >
-                        <div className="homepage-wizard-language-tile">
-                          <span>
-                            <h5>
-                              MORE <Icon glyph={IconFont.ArrowRight_New} />
-                            </h5>
-                          </span>
-                        </div>
-                      </Link>
-                    </ResourceCard>
+                    {isFlagEnabled('onboardArduino') && (
+                      <ResourceCard style={cardStyle}>
+                        <Link
+                          to={arduinoLink}
+                          style={linkStyle}
+                          onClick={logArduinoWizardClick}
+                        >
+                          <div
+                            className="homepage-wizard-language-tile"
+                            data-testid="homepage-wizard-language-tile--arduino"
+                          >
+                            <h5>Arduino</h5>
+                            {ArduinoIcon}
+                          </div>
+                        </Link>
+                      </ResourceCard>
+                    )}
+                    {!isFlagEnabled('onboardArduino') && (
+                      <ResourceCard style={cardStyle}>
+                        <Link
+                          to={loadDataSourcesLink}
+                          style={moreStyle}
+                          onClick={logMoreButtonClick}
+                        >
+                          <div className="homepage-wizard-language-tile">
+                            <span>
+                              <h5>
+                                MORE <Icon glyph={IconFont.ArrowRight_New} />
+                              </h5>
+                            </span>
+                          </div>
+                        </Link>
+                      </ResourceCard>
+                    )}
                   </SquareGrid>
-                  <hr style={{marginTop: '32px'}} />
+                  <FlexBox justifyContent={JustifyContent.FlexStart}>
+                    <Link
+                      to={loadDataSourcesLink}
+                      onClick={logMoreButtonClick}
+                      style={inlineViewMoreStyle}
+                    >
+                      View more
+                    </Link>
+                  </FlexBox>
+                  <hr style={{marginTop: '8px'}} />
                   <Link
                     to={cliPageLink}
                     style={linkStyle}
                     onClick={logCLIButtonClick}
                   >
-                    <div className="homepage-write-data-tile">
+                    <div
+                      className="homepage-write-data-tile"
+                      data-testid="homepage-wizard-tile--cli"
+                    >
                       <div className="tile-icon-text-wrapper">
                         <div className="icon">{CLIIcon}</div>
                         <div>
-                          <h4>CLI</h4>
+                          <h4>InfluxDB CLI</h4>
                           <h6>
-                            Write and query data using the Command Line
-                            Interface
+                            Write and query data using the InfluxDB Command Line
+                            Interface. Supports CSV and Line Protocol.
                           </h6>
                         </div>
                       </div>
@@ -187,7 +252,7 @@ export const HomepageContainer: FC = () => {
                     </div>
                   </Link>
                   <Link
-                    to={telegrafPageLink}
+                    to={telegrafLink}
                     style={linkStyle}
                     onClick={logTelegrafButtonClick}
                   >
@@ -216,12 +281,22 @@ export const HomepageContainer: FC = () => {
                 widthMD={Columns.Three}
                 style={{marginTop: '-8px'}}
               >
-                {isFlagEnabled('uiUnificationFlag') ? (
+                {CLOUD ? (
                   <UsageProvider>
-                    <Resources style={{backgroundColor: InfluxColors.Grey5}} />
+                    <Resources
+                      style={{
+                        backgroundColor: InfluxColors.Grey5,
+                        paddingRight: 0,
+                      }}
+                    />
                   </UsageProvider>
                 ) : (
-                  <Resources style={{backgroundColor: InfluxColors.Grey5}} />
+                  <Resources
+                    style={{
+                      backgroundColor: InfluxColors.Grey5,
+                      paddingRight: 0,
+                    }}
+                  />
                 )}
               </Grid.Column>
             </Grid.Row>

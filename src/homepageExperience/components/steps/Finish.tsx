@@ -3,6 +3,7 @@ import {
   AlignItems,
   ComponentSize,
   FlexBox,
+  FlexDirection,
   ResourceCard,
 } from '@influxdata/clockface'
 
@@ -16,6 +17,7 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 import {event} from 'src/cloud/utils/reporting'
 import FeedbackBar from 'src/homepageExperience/components/FeedbackBar'
+import SampleAppCard from 'src/homepageExperience/components/steps/SampleAppCard'
 
 type OwnProps = {
   wizardEventName: string
@@ -67,73 +69,95 @@ const handleNextStepEvent = (wizardEventName: string, nextStepName: string) => {
   event(`firstMile.${wizardEventName}.nextSteps.${nextStepName}.clicked`)
 }
 
+const marginTopStyle = {marginTop: '80px'}
+
 export const Finish = (props: OwnProps) => {
+  const {
+    finalFeedback,
+    finishStepCompleted,
+    markStepAsCompleted,
+    setFinalFeedback,
+    wizardEventName,
+  } = props
+
   useEffect(() => {
     // if the finish step was opened during the session,
     // this check prevents from multiple logging of finish events
     // in case user navigates back and forth
-    if (!props.finishStepCompleted) {
-      event(`firstMile.${props.wizardEventName}.finished`)
-      props.markStepAsCompleted()
+    if (!finishStepCompleted) {
+      event(`firstMile.${wizardEventName}.finished`)
+      markStepAsCompleted()
       fireConfetti()
     }
-  }, [])
+  }, [finishStepCompleted, markStepAsCompleted, wizardEventName])
 
-  const showSampleApp = props.wizardEventName === 'pythonWizard'
   return (
     <>
       <h1>Congrats!</h1>
       <p>You completed setting up, writing, and querying data.</p>
       <FeedbackBar
-        wizardEventName={props.wizardEventName}
-        selectedFeedback={props.finalFeedback}
-        onFeedbackSelection={props.setFinalFeedback}
+        wizardEventName={wizardEventName}
+        selectedFeedback={finalFeedback}
+        onFeedbackSelection={setFinalFeedback}
       />
-      <p style={{marginTop: '80px'}}>
-        Curious to learn more? Try these next steps!
-      </p>
-      <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.Stretch}>
-        {showSampleApp && (
-          <ResourceCard
-            className="homepage-wizard-next-steps"
-            onClick={() =>
-              handleNextStepEvent(props.wizardEventName, 'sampleApp')
-            }
-          >
-            <SafeBlankLink href="https://github.com/InfluxCommunity/sample-flask/blob/main/app.py">
-              <h4>{CodeTerminalIcon}Sample App</h4>
+      <p style={marginTopStyle}>Curious to learn more? Try these next steps!</p>
+      <FlexBox
+        margin={ComponentSize.Large}
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.FlexStart}
+      >
+        <FlexBox
+          margin={ComponentSize.Large}
+          alignItems={AlignItems.Stretch}
+          direction={FlexDirection.Row}
+        >
+          <ResourceCard className="homepage-wizard-next-steps">
+            <SafeBlankLink
+              href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/"
+              onClick={() =>
+                handleNextStepEvent(wizardEventName, 'keyConcepts')
+              }
+            >
+              <h4>{BookIcon}Key Concepts</h4>
+            </SafeBlankLink>
+            <p>Learn about important concepts for writing time-series data.</p>
+          </ResourceCard>
+          <ResourceCard className="homepage-wizard-next-steps">
+            <SafeBlankLink
+              href="https://university.influxdata.com/"
+              onClick={() =>
+                handleNextStepEvent(wizardEventName, 'influxUniversity')
+              }
+            >
+              <h4>{CodeTerminalIcon}InfluxDB University</h4>
             </SafeBlankLink>
             <p>
-              Play around with our template code of sample app to streamline
-              your own data into InfluxData.
+              Our free hands-on courses teach you the technical skills and best
+              practices to get the most out of your real-time data with
+              InfluxDB.
             </p>
           </ResourceCard>
-        )}
-        <ResourceCard
-          className="homepage-wizard-next-steps"
-          onClick={() =>
-            handleNextStepEvent(props.wizardEventName, 'keyConcepts')
-          }
-        >
-          <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
-            <h4>{BookIcon}Key Concepts</h4>
-          </SafeBlankLink>
-          <p>Learn about important concepts for writing time-series data.</p>
-        </ResourceCard>
-        <ResourceCard
-          className="homepage-wizard-next-steps"
-          onClick={() =>
-            handleNextStepEvent(props.wizardEventName, 'influxUniversity')
-          }
-        >
-          <SafeBlankLink href="https://influxdbu.com/">
-            <h4>{CodeTerminalIcon}InfluxDB University</h4>
-          </SafeBlankLink>
-          <p>
-            Our free hands-on courses teach you the technical skills and best
-            practices to get the most out of your real-time data with InfluxDB.
-          </p>
-        </ResourceCard>
+          {props.wizardEventName === 'cliWizard' && (
+            <ResourceCard className="homepage-wizard-next-steps">
+              <SafeBlankLink
+                href="https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/"
+                onClick={() =>
+                  handleNextStepEvent(props.wizardEventName, 'cliCommands')
+                }
+              >
+                <h4>{BookIcon}CLI Commands</h4>
+              </SafeBlankLink>
+              <p>See the full list of CLI commands and how to use them.</p>
+            </ResourceCard>
+          )}
+        </FlexBox>
+        {props.wizardEventName !== 'cliWizard' &&
+        props.wizardEventName !== 'arduinoWizard' ? (
+          <SampleAppCard
+            handleNextStepEvent={handleNextStepEvent}
+            wizardEventName={props.wizardEventName}
+          />
+        ) : null}
       </FlexBox>
     </>
   )

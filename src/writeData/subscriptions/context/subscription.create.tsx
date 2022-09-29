@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useCallback} from 'react'
+import React, {FC, useState, useCallback, useEffect} from 'react'
 import {createAPI} from 'src/writeData/subscriptions/context/api'
 import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
@@ -7,12 +7,13 @@ import {useDispatch, useSelector} from 'react-redux'
 // Utils
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {getOrg} from 'src/organizations/selectors'
-import {sanitizeForm} from '../utils/form'
+import {sanitizeForm} from 'src/writeData/subscriptions/utils/form'
 import {notify} from 'src/shared/actions/notifications'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {Subscription} from 'src/types/subscriptions'
+import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 import {subscriptionCreateFail} from 'src/shared/copy/notifications'
 
 export interface SubscriptionCreateContextType {
@@ -34,12 +35,14 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     brokerPort: undefined,
     brokerUsername: '',
     brokerPassword: '',
-    brokerCert: '',
-    brokerKey: '',
+    brokerClientCert: '',
+    brokerClientKey: '',
+    brokerCACert: '',
+    authType: BrokerAuthTypes.None,
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
-      name: 'measurement',
+      name: '',
       path: '',
       type: 'string',
     },
@@ -50,13 +53,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
         type: 'string',
       },
     ],
-    jsonTagKeys: [
-      {
-        name: '',
-        path: '',
-        type: 'string',
-      },
-    ],
+    jsonTagKeys: [],
     jsonTimestamp: {
       name: 'timestamp',
       path: '',
@@ -64,7 +61,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     },
     stringMeasurement: {
       pattern: '',
-      name: 'measurement',
+      name: '',
     },
     stringFields: [
       {
@@ -72,26 +69,20 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
         name: '',
       },
     ],
-    stringTags: [
-      {
-        pattern: '',
-        name: '',
-      },
-    ],
+    stringTags: [],
     stringTimestamp: {
       pattern: '',
       name: '',
     },
     bucket: 'nifi',
-    qos: 0,
+    timestampPrecision: 'NS',
   },
   updateForm: () => {},
   loading: RemoteDataState.NotStarted,
 } as SubscriptionCreateContextType
 
-export const SubscriptionCreateContext = React.createContext<
-  SubscriptionCreateContextType
->(DEFAULT_CONTEXT)
+export const SubscriptionCreateContext =
+  React.createContext<SubscriptionCreateContextType>(DEFAULT_CONTEXT)
 
 export const SubscriptionCreateProvider: FC = ({children}) => {
   const [formContent, setFormContent] = useState(DEFAULT_CONTEXT.formContent)
@@ -101,16 +92,38 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
   const dispatch = useDispatch()
   const create = (formContent?: Subscription): any => {
     setLoading(RemoteDataState.Loading)
-    createAPI({data: formContent})
+    const sanitizedForm = {...formContent} as Subscription
+    createAPI({data: sanitizedForm})
       .then(() => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+        event(
+          'subscription creation successful',
+          {},
+          {feature: 'subscriptions'}
+        )
       })
-      .catch(() => {
+      .catch(err => {
         setLoading(RemoteDataState.Done)
-        dispatch(notify(subscriptionCreateFail()))
+        dispatch(notify(subscriptionCreateFail(err.message)))
+        event(
+          'subscription creation failure',
+          {err: err.message},
+          {feature: 'subscriptions'}
+        )
+      })
+      .finally(() => {
+        event('subscription creation attempt', {}, {feature: 'subscriptions'})
       })
   }
+
+  useEffect(() => {
+    setFormContent(prev => ({
+      ...prev,
+      brokerUsername: null,
+      brokerPassword: null,
+    }))
+  }, [setFormContent])
 
   const updateForm = useCallback(
     formContent => {

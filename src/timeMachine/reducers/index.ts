@@ -285,13 +285,8 @@ export const timeMachineReducer = (
 
     case 'SET_QUERY_RESULTS': {
       return produce(state, draftState => {
-        const {
-          status,
-          files,
-          fetchDuration,
-          errorMessage,
-          statuses,
-        } = action.payload
+        const {status, files, fetchDuration, errorMessage, statuses} =
+          action.payload
 
         draftState.queryResults.status = status
         draftState.queryResults.errorMessage = errorMessage
@@ -840,9 +835,20 @@ export const timeMachineReducer = (
           // we want to clear out any previously selected values
           draftQuery.builderConfig.tags[index].values = []
 
-          draftQuery.builderConfig.tags[
-            index
-          ].aggregateFunctionType = builderAggregateFunctionType
+          // but for the group aggregate, want to set default values
+          if (builderAggregateFunctionType === 'group') {
+            const initValues = draftQuery.builderConfig.tags
+              .map(t => t.key)
+              .filter(x => !!x)
+
+            draftQuery.builderConfig.tags[index].values = initValues
+            draftState.queryBuilder.tags[index].values = initValues
+          }
+
+          draftQuery.builderConfig.tags[index].aggregateFunctionType =
+            builderAggregateFunctionType
+
+          buildActiveQuery(draftState)
         }
       })
     }
@@ -855,8 +861,8 @@ export const timeMachineReducer = (
         builderConfig.buckets = [action.payload.bucket]
 
         if (action.payload.resetSelections) {
-          const defaultAggregateFunctionType = initialStateHelper().queryBuilder
-            .tags[0].aggregateFunctionType
+          const defaultAggregateFunctionType =
+            initialStateHelper().queryBuilder.tags[0].aggregateFunctionType
 
           builderConfig.tags = [
             {
@@ -1036,9 +1042,8 @@ export const timeMachineReducer = (
         const {activeQueryIndex, draftQueries} = draftState
         const {period} = action.payload
 
-        draftQueries[
-          activeQueryIndex
-        ].builderConfig.aggregateWindow.period = period
+        draftQueries[activeQueryIndex].builderConfig.aggregateWindow.period =
+          period
         buildActiveQuery(draftState)
       })
     }

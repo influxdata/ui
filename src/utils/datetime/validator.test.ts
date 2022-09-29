@@ -1,7 +1,7 @@
 import {isValid, isValidRFC3339, isValidStrictly} from './validator'
 
 describe('the datetime validator', () => {
-  it('should return true on valid date formats', function() {
+  it('should return true on valid date formats', function () {
     expect(isValid('1999-02-09 23:00:00', 'YYYY-MM-DD HH:mm:ss')).toBeTruthy()
     expect(isValid('1999-02-09', 'YYYY-MM-DD')).toBeTruthy()
     expect(isValid('1999-02-09 23:00', 'YYYY-MM-DD HH:mm')).toBeTruthy()
@@ -56,7 +56,7 @@ describe('the datetime validator', () => {
     ).toBeTruthy()
   })
 
-  it('should return false on invalid date formats', function() {
+  it('should return false on invalid date formats', function () {
     expect(isValid('1999-02-09 23:00', 'YYYY-MM-DD HH:mm:ss')).toBeFalsy()
     expect(
       isValid('1999-02-09 12:00:00 PM', 'YYYY-MM-DD hh:mm:ss a ZZ')
@@ -100,7 +100,7 @@ describe('the datetime validator', () => {
     ).toBeFalsy()
   })
 
-  it('should be strict on date formats', function() {
+  it('should be strict on date formats', function () {
     expect(
       isValidStrictly('1999-02-09 23:00:0', 'YYYY-MM-DD HH:mm:ss')
     ).toBeFalsy()

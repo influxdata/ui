@@ -1,10 +1,7 @@
 import {Organization} from 'src/types'
 
 const openCopyAs = () => {
-  cy.getByTestID('sidebar-button')
-    .first()
-    .scrollIntoView()
-    .click()
+  cy.getByTestID('sidebar-button').first().scrollIntoView().click()
   cy.getByTestID('Export to Client Library--list-item').click()
 }
 
@@ -17,50 +14,31 @@ const addFluxQueryInNotebook = (query: string) => {
    *   - do not use .monacoType
    *   - must select the first visible line
    */
-  cy.get('.monaco-editor .view-line:first').should('be.visible')
-  cy.get('.monaco-editor .view-line:first').type(
+  cy.get('.monaco-editor .view-line:first').click()
+  cy.get('textarea.inputarea.monaco-mouse-cursor-text').type(
     `{downarrow}{downarrow}${query}`
   )
 }
 
 const createEmptyNotebook = () => {
-  cy.getByTestID('preset-new')
-    .first()
-    .click()
+  cy.getByTestID('preset-new').first().click()
   cy.wait('@NotebooksPatchRequest')
-  cy.getByTestID('sidebar-button')
-    .first()
-    .scrollIntoView()
-    .click()
+  cy.getByTestID('sidebar-button').first().scrollIntoView().click()
   cy.getByTestID('Delete--list-item').click()
   cy.wait('@NotebooksPatchRequest')
-  cy.getByTestID('sidebar-button')
-    .first()
-    .scrollIntoView()
-    .click()
+  cy.getByTestID('sidebar-button').first().scrollIntoView().click()
   cy.getByTestID('Delete--list-item').click()
   cy.wait('@NotebooksPatchRequest')
-  cy.getByTestID('sidebar-button')
-    .first()
-    .scrollIntoView()
-    .click()
+  cy.getByTestID('sidebar-button').first().scrollIntoView().click()
   cy.getByTestID('Delete--list-item').click()
   cy.wait('@NotebooksPatchRequest')
 }
 
 const verifyClientCode = (client: any) => {
-  cy.getByTestID(`load-data-item ${client.name}`)
-    .scrollIntoView()
-    .click()
+  cy.getByTestID(`load-data-item ${client.name}`).scrollIntoView().click()
 
-  cy.getByTestID('code-snippet')
-    .children()
-    .find('code')
-    .contains(client.org)
-  cy.getByTestID('code-snippet')
-    .children()
-    .find('code')
-    .contains(client.query)
+  cy.getByTestID('code-snippet').children().find('code').contains(client.org)
+  cy.getByTestID('code-snippet').children().find('code').contains(client.query)
 
   cy.get('.cf-overlay--header .cf-overlay--dismiss').click()
 }

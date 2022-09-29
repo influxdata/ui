@@ -2,8 +2,6 @@
 import React, {FC} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import classnames from 'classnames'
-
-// Components
 import {
   Button,
   FlexBox,
@@ -11,23 +9,26 @@ import {
   JustifyContent,
   ComponentColor,
 } from '@influxdata/clockface'
+
+// Components
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-import {shouldShowUpgradeButton} from 'src/me/selectors'
-
-// reporting
-import {event} from 'src/cloud/utils/reporting'
 
 // Utils
+import {
+  shouldGetCredit250Experience,
+  shouldShowUpgradeButton,
+} from 'src/me/selectors'
+import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 import {
   getDataLayerIdentity,
   getExperimentVariantId,
 } from 'src/cloud/utils/experiments'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
@@ -46,12 +47,18 @@ interface UpgradeProps {
 }
 
 interface UpgradeMessageProps {
+  isCredit250ExperienceActive: boolean
   limitText: string
   link: string
   type: string
 }
 
-const UpgradeMessage: FC<UpgradeMessageProps> = ({limitText, link, type}) => {
+const UpgradeMessage: FC<UpgradeMessageProps> = ({
+  isCredit250ExperienceActive,
+  limitText,
+  link,
+  type,
+}) => {
   const original = (
     <span className="upgrade-message">
       Oh no! You hit the{' '}
@@ -63,23 +70,27 @@ const UpgradeMessage: FC<UpgradeMessageProps> = ({limitText, link, type}) => {
     </span>
   )
 
+  const credit250Experience = (
+    <span className="upgrade-message" key="1">
+      You hit the{' '}
+      <SafeBlankLink href={link}>
+        {type === 'series cardinality' ? 'series cardinality' : 'query write'}
+      </SafeBlankLink>{' '}
+      limit {limitText ?? ''} and your data stopped writing. Upgrade to get a
+      free $250 credit for the first 30 days.
+    </span>
+  )
+
   if (isFlagEnabled('credit250Experiment')) {
+    if (isCredit250ExperienceActive) {
+      return credit250Experience
+    }
+
     return (
       <GoogleOptimizeExperiment
         experimentID={CREDIT_250_EXPERIMENT_ID}
         original={original}
-        variants={[
-          <span className="upgrade-message" key="1">
-            You hit the{' '}
-            <SafeBlankLink href={link}>
-              {type === 'series cardinality'
-                ? 'series cardinality'
-                : 'query write'}
-            </SafeBlankLink>{' '}
-            limit {limitText ?? ''} and your data stopped writing. Upgrade to
-            get a free $250 credit for the first 30 days.
-          </span>,
-        ]}
+        variants={[credit250Experience]}
       />
     )
   }
@@ -87,19 +98,24 @@ const UpgradeMessage: FC<UpgradeMessageProps> = ({limitText, link, type}) => {
 }
 
 export const UpgradeContent: FC<UpgradeProps> = ({
-  type,
-  link,
   className,
   limitText,
+  link,
   location,
+  type,
 }) => {
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
+
   return (
     <div className={`${className} rate-alert--content__free`}>
       <FlexBox
-        justifyContent={JustifyContent.Center}
+        justifyContent={JustifyContent.SpaceBetween}
         className="rate-alert--button"
+        stretchToFitWidth={true}
       >
-        <UpgradeMessage {...{limitText, link, type}} />
+        <UpgradeMessage
+          {...{isCredit250ExperienceActive, limitText, link, type}}
+        />
         <CloudUpgradeButton
           className="upgrade-payg--button__rate-alert"
           showPromoMessage={false}
@@ -110,17 +126,20 @@ export const UpgradeContent: FC<UpgradeProps> = ({
             const identity = getDataLayerIdentity()
             event(
               isFlagEnabled('credit250Experiment') &&
-                experimentVariantId === '1'
+                (experimentVariantId === '1' || isCredit250ExperienceActive)
                 ? `user.limits.${type}.credit-250.upgrade`
                 : `user.limits.${type}.upgrade`,
               {
                 location,
                 ...identity,
                 experimentId: CREDIT_250_EXPERIMENT_ID,
-                experimentVariantId,
+                experimentVariantId: isCredit250ExperienceActive
+                  ? '2'
+                  : experimentVariantId,
               }
             )
           }}
+          size={ComponentSize.ExtraSmall}
         />
       </FlexBox>
     </div>

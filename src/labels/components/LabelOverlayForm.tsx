@@ -23,8 +23,7 @@ import {
 } from '@influxdata/clockface'
 
 // Constants
-import {INPUT_ERROR_COLOR} from 'src/labels/constants'
-const MAX_LABEL_CHARS = 50
+import {INPUT_ERROR_COLOR, LABEL_NAME_MAX_LENGTH} from 'src/labels/constants'
 
 // Utils
 import {validateHexCode} from 'src/labels/utils/'
@@ -98,7 +97,7 @@ export default class LabelOverlayForm extends PureComponent<Props> {
                       value={name}
                       onChange={onInputChange}
                       status={status}
-                      maxLength={MAX_LABEL_CHARS}
+                      maxLength={LABEL_NAME_MAX_LENGTH}
                       testID="create-label-form--name"
                     />
                   )}

@@ -13,13 +13,8 @@ import UsageXYGraph from 'src/usage/UsageXYGraph'
 import {UsageContext} from 'src/usage/context/usage'
 
 const UsageResults: FC = () => {
-  const {
-    selectedUsage,
-    usageStats,
-    usageStatsStatus,
-    usageVectors,
-    timeRange,
-  } = useContext(UsageContext)
+  const {selectedUsage, usageStats, usageStatsStatus, usageVectors, timeRange} =
+    useContext(UsageContext)
 
   const usage = usageVectors.find(vector => selectedUsage === vector.name)
   let graph = null

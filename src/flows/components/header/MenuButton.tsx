@@ -21,7 +21,6 @@ import {useHistory} from 'react-router-dom'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getOrg} from 'src/organizations/selectors'
-import {deletePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {downloadImage} from 'src/shared/utils/download'
 
 // Constants
@@ -36,7 +35,7 @@ type Props = {
 
 const MenuButton: FC<Props> = ({handleResetShare}) => {
   const {flow, cloneNotebook, deleteNotebook} = useContext(FlowContext)
-  const {handlePublish, versions} = useContext(VersionPublishContext)
+  const {versions} = useContext(VersionPublishContext)
   const {id: orgID} = useSelector(getOrg)
   const [loading, setLoading] = useState(RemoteDataState.Done)
 
@@ -66,7 +65,6 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
       event('delete_notebook', {
         context: 'notebook',
       })
-      deletePinnedItemByParam(flow.id)
       await deleteNotebook()
       setLoading(RemoteDataState.Done)
       history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
@@ -173,12 +171,6 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   }
 
   const menuItems: any[] = [
-    {
-      type: 'menuitem',
-      title: 'Save to version history',
-      onClick: handlePublish,
-      icon: IconFont.Save,
-    },
     {
       type: 'menuitem',
       title: 'Version history',

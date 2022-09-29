@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import TaskForm from 'src/tasks/components/TaskForm'
@@ -35,9 +34,7 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-class SaveAsTaskForm extends PureComponent<
-  Props & RouteComponentProps<{orgID: string}>
-> {
+class SaveAsTaskForm extends PureComponent<Props> {
   public componentDidMount() {
     const {setTaskOption, setNewScript} = this.props
 
@@ -157,4 +154,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(withRouter(SaveAsTaskForm))
+export default connector(SaveAsTaskForm)

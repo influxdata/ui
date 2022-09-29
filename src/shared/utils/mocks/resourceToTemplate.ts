@@ -96,8 +96,7 @@ export const myfavelabel: Label = {
 export const myfavetask: Task = {
   authorizationID: '037b084ed9abc000',
   every: '24h0m0s',
-  flux:
-    'option task = {name: "lala", every: 24h0m0s, offset: 1m0s}\n\nfrom(bucket: "defnuck")\n\t|> range(start: -task.every)',
+  flux: 'option task = {name: "lala", every: 24h0m0s, offset: 1m0s}\n\nfrom(bucket: "defnuck")\n\t|> range(start: -task.every)',
   id: '037b0877b359a000',
   labels: [myfavelabel.id],
   name: 'lala',

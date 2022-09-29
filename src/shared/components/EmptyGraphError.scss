@@ -1,6 +1,8 @@
 .empty-graph-error {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: space-between;
   border-radius: $cf-radius;
   background-color: $cf-grey-5;
   color: $c-dreamsicle;
@@ -25,5 +27,6 @@
 }
 
 .empty-graph-error--scroll {
+  width: 90% !important;
   margin-top: $cf-space-s;
 }

@@ -9,6 +9,7 @@ import {
   ComponentSize,
   DropdownMenuTheme,
   ComponentColor,
+  IconFont,
 } from '@influxdata/clockface'
 
 interface Props {
@@ -53,7 +54,7 @@ const SearchableDropdown: FC<Props> = ({
   )
 
   let body: JSX.Element | JSX.Element[] = (
-    <div className="searchable-dropdown--empty">{emptyText}</div>
+    <Dropdown.ItemEmpty>{emptyText}</Dropdown.ItemEmpty>
   )
 
   if (filteredOptions.length) {
@@ -101,6 +102,7 @@ const SearchableDropdown: FC<Props> = ({
         >
           <div className="searchable-dropdown--input-container">
             <Input
+              icon={IconFont.Search_New}
               onFocus={() => setIsSearchActive(true)}
               onChange={handleChange}
               onBlur={() => setIsSearchActive(false)}

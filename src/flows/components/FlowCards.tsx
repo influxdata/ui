@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC} from 'react'
 
 import {
   ResourceList,
@@ -12,12 +12,6 @@ import FlowCard from 'src/flows/components/FlowCard'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {FlowList} from 'src/types/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {CLOUD} from 'src/shared/constants'
-
-let getPinnedItems
-if (CLOUD) {
-  getPinnedItems = require('src/shared/contexts/pinneditems').getPinnedItems
-}
 
 interface Props {
   flows: FlowList
@@ -33,29 +27,13 @@ const NoMatches = () => {
 }
 
 const FlowCards: FC<Props> = ({flows, search}) => {
-  const [pinnedItems, setPinnedItems] = useState([])
-
-  useEffect(() => {
-    if (isFlagEnabled('pinnedItems') && CLOUD) {
-      getPinnedItems()
-        .then(res => setPinnedItems(res))
-        .catch(err => {
-          console.error(err.message)
-        })
-    }
-  }, [flows])
-
   const body = (
     <ResourceList>
       <ResourceList.Body
         emptyState={!!search ? <NoMatches /> : <FlowsIndexEmpty />}
       >
         {Object.keys(flows.flows).map(id => (
-          <FlowCard
-            key={id}
-            id={id}
-            isPinned={!!pinnedItems.find(item => item?.metadata.flowID === id)}
-          />
+          <FlowCard key={id} id={id} />
         ))}
       </ResourceList.Body>
     </ResourceList>

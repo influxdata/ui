@@ -18,6 +18,8 @@ import NoteEditorOverlay from 'src/dashboards/components/NoteEditorOverlay'
 import AllAccessTokenOverlay from 'src/authorizations/components/AllAccessTokenOverlay'
 import TelegrafConfigOverlay from 'src/telegrafs/components/TelegrafConfigOverlay'
 import TelegrafOutputOverlay from 'src/telegrafs/components/TelegrafOutputOverlay'
+import TelegrafInstructionsOverlay from 'src/telegrafs/components/TelegrafInstructionsOverlay'
+import TelegrafUIRefreshWizard from 'src/dataLoaders/components/collectorsWizard/TelegrafUIRefreshWizard'
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
 import CreateBucketOverlay from 'src/buckets/components/createBucketForm/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
@@ -42,9 +44,11 @@ import ShareOverlay from 'src/flows/components/ShareOverlay'
 import PayGSupportOverlay from 'src/support/components/PayGSupportOverlay'
 import FreeAccountSupportOverlay from 'src/support/components/FreeAccountSupportOverlay'
 import FeedbackQuestionsOverlay from 'src/support/components/FeedbackQuestionsOverlay'
+import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
+import {ReplaceCertificateOverlay} from 'src/writeData/subscriptions/components/CertificateInput'
 
 export interface OverlayContextType {
   onClose: () => void
@@ -92,6 +96,14 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'telegraf-output':
         activeOverlay.current = <TelegrafOutputOverlay onClose={onClose} />
+        break
+      case 'telegraf-instructions':
+        activeOverlay.current = (
+          <TelegrafInstructionsOverlay onClose={onClose} />
+        )
+        break
+      case 'telegraf-wizard':
+        activeOverlay.current = <TelegrafUIRefreshWizard onClose={onClose} />
         break
       case 'switch-organizations':
         activeOverlay.current = <OrgSwitcherOverlay onClose={onClose} />
@@ -158,6 +170,12 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'feedback-questions':
         activeOverlay.current = <FeedbackQuestionsOverlay onClose={onClose} />
+        break
+      case 'help-bar-confirmation':
+        activeOverlay.current = <ConfirmationOverlay onClose={onClose} />
+        break
+      case 'subscription-replace-certificate':
+        activeOverlay.current = <ReplaceCertificateOverlay onClose={onClose} />
         break
       default:
         activeOverlay.current = null

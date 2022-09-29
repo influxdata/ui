@@ -22,7 +22,6 @@ export const localState: LocalStorage = {
   app: {
     ephemeral: {
       inPresentationMode: false,
-      hasUpdatedTimeRangeInVEO: false,
     },
     persisted: {
       autoRefresh: 0,
@@ -30,12 +29,13 @@ export const localState: LocalStorage = {
       navBarState: 'expanded',
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
-      newDataExplorer: false,
+      fluxQueryBuilder: false,
       versionInfo: {
         version: '',
         commit: '',
       },
       flowsCTA: {alerts: true, explorer: true, tasks: true},
+      subscriptionsCertificateInterest: false,
     },
   },
   flags: {
@@ -76,7 +76,7 @@ export function renderWithRedux(ui, initialState = s => s) {
 
 export function renderWithReduxAndRouter(ui, initialState?) {
   const templatesStore = createStore(templatesReducer)
-  const defaultInitialState = function() {
+  const defaultInitialState = function () {
     const appState = {...mockAppState} as any
     appState.resources.templates = templatesStore.getState()
     return appState

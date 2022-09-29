@@ -50,18 +50,21 @@ const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {
       changeQuery(def.query)
       return
     }
-
-    const ast = parse(clientQuery)
-    const queryBucket = getBucketsFromAST(ast)[0]
-    if (queryBucket) {
-      changeBucket({name: queryBucket} as Bucket)
+    try {
+      const ast = parse(clientQuery)
+      const queryBucket = getBucketsFromAST(ast)[0]
+      if (queryBucket) {
+        changeBucket({name: queryBucket} as Bucket)
+      }
+      updateBucketInAST(ast, '<%= bucket %>')
+      let query = format_from_js_file(ast)
+      if (def.querySanitize) {
+        query = def.querySanitize(query)
+      }
+      changeQuery(query)
+    } catch (e) {
+      console.error(e)
     }
-    updateBucketInAST(ast, '<%= bucket %>')
-    let query = format_from_js_file(ast)
-    if (def.querySanitize) {
-      query = def.querySanitize(query)
-    }
-    changeQuery(query)
   }, [clientQuery, def.query, changeBucket, changeQuery])
 
   return null

@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {CommunityTemplateReadme} from 'src/templates/components/CommunityTemplateReadme'
-import {Overlay, Button, IconFont, ComponentSize} from '@influxdata/clockface'
+import {Overlay, Button, ComponentSize} from '@influxdata/clockface'
 
 interface Props {
   url: string
@@ -22,7 +22,6 @@ export class CommunityTemplateReadMeOverlay extends PureComponent<
       <React.Fragment>
         <Button
           text="View Readme"
-          icon={IconFont.GitHub}
           size={ComponentSize.Small}
           onClick={this.showOverlay}
           testID="community-template-readme-overlay-button"

@@ -12,11 +12,12 @@ import {useDispatch, useSelector} from 'react-redux'
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
-import {sanitizeUpdateForm} from '../utils/form'
+import {sanitizeUpdateForm} from 'src/writeData/subscriptions/utils/form'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {Subscription} from 'src/types/subscriptions'
+import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 import {
   subscriptionUpdateFail,
   subscriptionStatusUpdateFail,
@@ -46,8 +47,9 @@ export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
     brokerPort: 0,
     brokerUsername: '',
     brokerPassword: '',
-    brokerCert: '',
-    brokerKey: '',
+    brokerClientCert: '',
+    brokerClientKey: '',
+    authType: BrokerAuthTypes.None,
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
@@ -91,16 +93,15 @@ export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
       name: '',
     },
     bucket: 'nifi',
-    qos: 0,
+    timestampPrecision: 'NS',
   },
   updateForm: () => {},
   loading: RemoteDataState.NotStarted,
   setStatus: () => {},
 } as SubscriptionUpdateContextType
 
-export const SubscriptionUpdateContext = React.createContext<
-  SubscriptionUpdateContextType
->(DEFAULT_CONTEXT)
+export const SubscriptionUpdateContext =
+  React.createContext<SubscriptionUpdateContextType>(DEFAULT_CONTEXT)
 
 export const SubscriptionUpdateProvider: FC = ({children}) => {
   const {subscriptions, currentID} = useContext(SubscriptionListContext)
@@ -129,9 +130,9 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
       })
-      .catch(() => {
+      .catch(err => {
         setLoading(RemoteDataState.Done)
-        dispatch(notify(subscriptionUpdateFail()))
+        dispatch(notify(subscriptionUpdateFail(err.message)))
       })
   }
 
@@ -156,10 +157,19 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
     updateStatusAPI(params)
       .then(() => {
         getSubscription()
+        event('subscription update success', {}, {feature: 'subscriptions'})
       })
-      .catch(() => {
+      .catch(err => {
         setLoading(RemoteDataState.Done)
-        dispatch(notify(subscriptionStatusUpdateFail()))
+        dispatch(notify(subscriptionStatusUpdateFail(err.message)))
+        event(
+          'subscription update failure',
+          {err: err.message},
+          {feature: 'subscriptions'}
+        )
+      })
+      .finally(() => {
+        event('subscription update attempt', {}, {feature: 'subscriptions'})
       })
   }
 

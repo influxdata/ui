@@ -32,9 +32,8 @@ type Props = {
 }
 
 const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
-  const {billingSettings, handleUpdateBillingSettings} = useContext(
-    BillingContext
-  )
+  const {billingSettings, handleUpdateBillingSettings} =
+    useContext(BillingContext)
   const [isNotifyActive, setIsNotifyActive] = useState<boolean>(
     billingSettings.isNotify
   )
@@ -127,7 +126,7 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
                   }
                 >
                   <Input
-                    icon={IconFont.CurrencyUSD}
+                    icon={IconFont.CurrencyDollar}
                     type={InputType.Number}
                     min={10}
                     value={balanceThreshold}

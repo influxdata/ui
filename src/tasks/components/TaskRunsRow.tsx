@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent, ReactElement} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {Overlay, IndexList, FlexBox} from '@influxdata/clockface'
@@ -22,7 +21,7 @@ interface OwnProps {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
+type Props = OwnProps & ReduxProps
 
 interface State {
   isImportOverlayVisible: boolean
@@ -95,13 +94,14 @@ class TaskRunsRow extends PureComponent<Props, State> {
 
   private get renderLogOverlay(): JSX.Element {
     const {isImportOverlayVisible} = this.state
-    const {logs} = this.props
+    const {logs, run} = this.props
 
     return (
       <Overlay visible={isImportOverlayVisible}>
         <RunLogsOverlay
           onDismissOverlay={this.handleToggleOverlay}
           logs={logs}
+          run={run}
         />
       </Overlay>
     )
@@ -118,4 +118,4 @@ const mstp = (state: AppState) => {
 const mdtp = {getLogs: getLogs, retryTask: retryTask, getRuns}
 
 const connector = connect(mstp, mdtp)
-export default connector(withRouter(TaskRunsRow))
+export default connector(TaskRunsRow)

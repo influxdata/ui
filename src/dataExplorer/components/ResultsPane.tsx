@@ -1,4 +1,5 @@
-import React, {FC, lazy, Suspense, useState, useContext} from 'react'
+// Libraries
+import React, {FC, lazy, Suspense, useContext, useCallback} from 'react'
 import {
   DraggableResizer,
   Orientation,
@@ -12,43 +13,106 @@ import {
   FlexBox,
   FlexDirection,
   JustifyContent,
+  AlignItems,
+  Icon,
 } from '@influxdata/clockface'
 
+// Contexts
+import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {QueryContext} from 'src/shared/contexts/query'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+
+// Components
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
-import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
-import {TimeRange} from 'src/types'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
+import QueryTime from 'src/dataExplorer/components/QueryTime'
+import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
+
+// Types
+import {TimeRange} from 'src/types'
+
+// Utils
+import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {downloadTextFile} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
-import {QueryContext} from 'src/shared/contexts/query'
 import {notify} from 'src/shared/actions/notifications'
-import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
-import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 
-import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+// Constants
+import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(
+  () => import('src/shared/components/FluxMonacoEditor')
 )
 
-const INITIAL_HORIZ_RESIZER_HANDLE = 0.2
 const fakeNotify = notify
 
-const ResultsPane: FC = () => {
-  const [horizDragPosition, setHorizDragPosition] = useState([
-    INITIAL_HORIZ_RESIZER_HANDLE,
-  ])
-  const {basic, query} = useContext(QueryContext)
-  const {status, setStatus, setResult, setTime} = useContext(ResultsContext)
+const rangeToParam = (timeRange: TimeRange) => {
+  let timeRangeStart: string, timeRangeStop: string
+  const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
 
-  const [text, setText] = useState('')
-  const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
+  if (!timeRange) {
+    timeRangeStart = timeRangeStop = null
+  } else {
+    if (timeRange.type === 'selectable-duration') {
+      timeRangeStart = '-' + timeRange.duration
+    } else if (timeRange.type === 'duration') {
+      timeRangeStart = '-' + timeRange.lower
+    } else if (!isNaN(Number(timeRange.lower)) || timeRange.lower === 'now()') {
+      timeRangeStart = timeRange.lower
+    } else if (!!timeRange?.lower?.match(durationRegExp)) {
+      timeRangeStart = timeRange.lower
+    } else if (isNaN(Date.parse(timeRange.lower))) {
+      timeRangeStart = null
+    } else {
+      timeRangeStart = new Date(timeRange.lower).toISOString()
+    }
+
+    if (!timeRange.upper) {
+      timeRangeStop = 'now()'
+    } else if (!isNaN(Number(timeRange.upper)) || timeRange.upper === 'now()') {
+      timeRangeStop = timeRange.upper
+    } else if (!!timeRange?.upper?.match(durationRegExp)) {
+      timeRangeStop = timeRange.upper
+    } else if (isNaN(Date.parse(timeRange.upper))) {
+      timeRangeStop = null
+    } else {
+      timeRangeStop = new Date(timeRange.upper).toISOString()
+    }
+  }
+
+  return {
+    timeRangeStart,
+    timeRangeStop,
+  }
+}
+
+const ResultsPane: FC = () => {
+  const {basic, query, cancel} = useContext(QueryContext)
+  const {status, result, setStatus, setResult} = useContext(ResultsContext)
+  const {
+    horizontal,
+    setHorizontal,
+    query: text,
+    setQuery,
+    range,
+    setRange,
+    selection,
+  } = useContext(PersistanceContext)
+
+  const submitButtonDisabled = !text && !selection.measurement
+
+  const disabledTitleText = submitButtonDisabled
+    ? 'Select measurement before running script'
+    : ''
 
   const download = () => {
     event('CSV Download Initiated')
-    basic(text).promise.then(response => {
+    basic(text, {
+      vars: rangeToParam(range),
+    }).promise.then(response => {
       if (response.type !== 'SUCCESS') {
         return
       }
@@ -57,53 +121,32 @@ const ResultsPane: FC = () => {
     })
   }
 
-  const submit = () => {
-    let timeRangeStart, timeRangeStop
-
-    if (!timeRange) {
-      timeRangeStart = timeRangeStop = null
-    } else {
-      if (timeRange.type === 'selectable-duration') {
-        timeRangeStart = '-' + timeRange.duration
-      } else if (timeRange.type === 'duration') {
-        timeRangeStart = '-' + timeRange.lower
-      } else if (isNaN(Date.parse(timeRange.lower))) {
-        timeRangeStart = null
-      } else {
-        timeRangeStart = new Date(timeRange.lower).toISOString()
-      }
-
-      if (!timeRange.upper) {
-        timeRangeStop = 'now()'
-      } else if (isNaN(Date.parse(timeRange.upper))) {
-        timeRangeStop = null
-      } else {
-        timeRangeStop = new Date(timeRange.upper).toISOString()
-      }
-    }
-
+  const submit = useCallback(() => {
     setStatus(RemoteDataState.Loading)
-    const time = Date.now()
     query(text, {
-      vars: {
-        timeRangeStart,
-        timeRangeStop,
-      },
+      vars: rangeToParam(range),
     })
       .then(r => {
+        event('resultReceived', {
+          status: r.parsed.table.length === 0 ? 'empty' : 'good',
+        })
         setResult(r)
         setStatus(RemoteDataState.Done)
-        setTime(Date.now() - time)
       })
-      .catch(() => {
+      .catch(e => {
+        setResult({
+          source: text,
+          parsed: null,
+          error: e.message,
+        })
+        event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)
-        setTime(0)
       })
-  }
+  }, [text, range])
 
   const timeVars = [
-    getRangeVariable(TIME_RANGE_START, timeRange),
-    getRangeVariable(TIME_RANGE_STOP, timeRange),
+    getRangeVariable(TIME_RANGE_START, range),
+    getRangeVariable(TIME_RANGE_STOP, range),
   ]
 
   const variables = timeVars.concat(
@@ -113,8 +156,8 @@ const ResultsPane: FC = () => {
   return (
     <DraggableResizer
       handleOrientation={Orientation.Horizontal}
-      handlePositions={horizDragPosition}
-      onChangePositions={setHorizDragPosition}
+      handlePositions={horizontal}
+      onChangePositions={setHorizontal}
     >
       <DraggableResizer.Panel>
         <FlexBox
@@ -123,28 +166,39 @@ const ResultsPane: FC = () => {
           margin={ComponentSize.Small}
           style={{height: '100%'}}
         >
-          <div style={{height: '100%', width: '100%', position: 'relative'}}>
-            <Suspense
-              fallback={
-                <SpinnerContainer
-                  loading={RemoteDataState.Loading}
-                  spinnerComponent={<TechnoSpinner />}
+          <div className="data-explorer--monaco-outer">
+            <div className="data-explorer--monaco-wrap">
+              <Suspense
+                fallback={
+                  <SpinnerContainer
+                    loading={RemoteDataState.Loading}
+                    spinnerComponent={<TechnoSpinner />}
+                  />
+                }
+              >
+                <FluxMonacoEditor
+                  variables={variables}
+                  script={text}
+                  onChangeScript={setQuery}
+                  onSubmitScript={submit}
                 />
-              }
-            >
-              <FluxMonacoEditor
-                variables={variables}
-                script={text}
-                onChangeScript={setText}
-              />
-            </Suspense>
+              </Suspense>
+            </div>
           </div>
-          <div style={{width: '100%'}}>
+          {status === RemoteDataState.Error && (
+            <div className="data-explorer--error-gutter">
+              <Icon glyph={IconFont.AlertTriangle} />
+              <pre>{result.error}</pre>
+            </div>
+          )}
+          <div className="data-explorer--control">
             <FlexBox
               direction={FlexDirection.Row}
               justifyContent={JustifyContent.FlexEnd}
+              alignItems={AlignItems.FlexStart}
               margin={ComponentSize.Small}
             >
+              <QueryTime />
               <Button
                 titleText="Download query results as a .CSV file"
                 text="CSV"
@@ -154,20 +208,27 @@ const ResultsPane: FC = () => {
                   text ? ComponentStatus.Default : ComponentStatus.Disabled
                 }
               />
-              <TimeRangeDropdown
-                timeRange={timeRange}
-                onSetTimeRange={(range: TimeRange) => setTimeRange(range)}
-              />
+              {isFlagEnabled('newTimeRangeComponent') ? (
+                <NewDatePicker />
+              ) : (
+                <TimeRangeDropdown
+                  timeRange={range}
+                  onSetTimeRange={(range: TimeRange) => setRange(range)}
+                />
+              )}
               <SubmitQueryButton
                 className="submit-btn"
                 text="Run"
                 icon={IconFont.Play}
-                submitButtonDisabled={!text}
+                submitButtonDisabled={submitButtonDisabled}
+                disabledTitleText={disabledTitleText}
                 queryStatus={status}
                 onSubmit={submit}
                 onNotify={fakeNotify}
                 queryID=""
-                cancelAllRunningQueries={() => {}}
+                cancelAllRunningQueries={() => {
+                  cancel()
+                }}
               />
             </FlexBox>
           </div>

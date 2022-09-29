@@ -2,7 +2,7 @@
 import React, {FC, memo, useEffect} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import classnames from 'classnames'
-import {createGroupIDColumn, fromFlux, fastFromFlux} from '@influxdata/giraffe'
+import {createGroupIDColumn, fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // Components
@@ -25,7 +25,6 @@ import {
   getYSeriesColumns,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
 
 // Types
@@ -96,10 +95,7 @@ const TimeMachineVis: FC<Props> = ({
       !!giraffeResult.table.length)
 
   useEffect(() => {
-    if (
-      isFlagEnabled('graphColorMapping') &&
-      viewProperties.hasOwnProperty('colors')
-    ) {
+    if (viewProperties.hasOwnProperty('colors')) {
       const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
       const [, fillColumnMap] = createGroupIDColumn(
         giraffeResult.table,
@@ -123,8 +119,7 @@ const TimeMachineVis: FC<Props> = ({
 
   // Handles deadman check edge case to allow non-numeric values
   if (viewRawData && files && files?.length) {
-    const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
-    const [parsedResults] = files.flatMap(parser)
+    const [parsedResults] = files.flatMap(fromFlux)
     return (
       <div className={timeMachineViewClassName}>
         <ErrorBoundary>

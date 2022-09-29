@@ -3,11 +3,6 @@ import React, {PureComponent, RefObject, createRef} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
-import {
-  deletePinnedItemByParam,
-  updatePinnedItemByParam,
-} from 'src/shared/contexts/pinneditems'
-
 // Components
 import {
   SlideToggle,
@@ -40,12 +35,8 @@ import {Task, Label} from 'src/types'
 // Constants
 import {DEFAULT_TASK_NAME} from 'src/dashboards/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {CLOUD} from 'src/shared/constants'
 
-import {
-  pinnedItemFailure,
-  pinnedItemSuccess,
-} from 'src/shared/copy/notifications'
+// Utils
 import {notify} from 'src/shared/actions/notifications'
 import {downloadTaskTemplate} from 'src/tasks/apis'
 import {event} from 'src/cloud/utils/reporting'
@@ -60,9 +51,6 @@ interface PassedProps {
   onRunTask: (taskID: string) => void
   onUpdate: (name: string, taskID: string) => void
   onFilterChange: (searchTerm: string) => void
-  onPinTask: (taskID: string, name: string) => void
-  onUnpinTask: (taskID: string) => void
-  isPinned: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -147,22 +135,12 @@ export class TaskCard extends PureComponent<
     )
   }
 
-  private handlePinTask = () => {
-    const {task, isPinned} = this.props
-
-    if (isPinned) {
-      this.props.onUnpinTask(task.id)
-    } else {
-      this.props.onPinTask(task.id, task.name)
-    }
-  }
-
   private handleOnDelete = task => {
     this.props.onDelete(task)
-    deletePinnedItemByParam(task.id)
   }
+
   private get contextMenu(): JSX.Element {
-    const {task, onClone, isPinned} = this.props
+    const {task, onClone} = this.props
     const settingsRef: RefObject<HTMLButtonElement> = createRef()
 
     return (
@@ -190,7 +168,7 @@ export class TaskCard extends PureComponent<
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
           style={{minWidth: '112px'}}
-          contents={onHide => (
+          contents={_ => (
             <List>
               <List.Item
                 onClick={this.handleExport}
@@ -226,19 +204,6 @@ export class TaskCard extends PureComponent<
               >
                 Clone
               </List.Item>
-              {isFlagEnabled('pinnedItems') && CLOUD && (
-                <List.Item
-                  onClick={() => {
-                    this.handlePinTask()
-                    onHide()
-                  }}
-                  size={ComponentSize.Small}
-                  style={{fontWeight: 500}}
-                  testID="context-pin-task"
-                >
-                  {isPinned ? 'Unpin' : 'Pin'}
-                </List.Item>
-              )}
             </List>
           )}
           triggerRef={settingsRef}
@@ -298,14 +263,6 @@ export class TaskCard extends PureComponent<
       task: {id},
     } = this.props
     onUpdate(name, id)
-    if (isFlagEnabled('pinnedItems') && CLOUD && this.props.isPinned) {
-      try {
-        updatePinnedItemByParam(id, {name})
-        this.props.sendNotification(pinnedItemSuccess('task', 'updated'))
-      } catch (err) {
-        this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
-      }
-    }
   }
 
   private handleExport = () => {

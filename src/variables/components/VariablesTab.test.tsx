@@ -1,5 +1,30 @@
 // Installed libraries
 import React from 'react'
+import {jest} from '@jest/globals'
+
+// Mock State
+import {renderWithReduxAndRouter} from 'src/mockState'
+import {withRouterProps} from 'mocks/dummyData'
+import {mockAppState} from 'src/mockAppState'
+
+// Redux
+import VariablesIndex from 'src/variables/containers/VariablesIndex'
+import {normalize} from 'normalizr'
+import {Organization} from 'src/client'
+import {OrgEntities, RemoteDataState} from 'src/types'
+import {arrayOfOrgs} from 'src/schemas'
+import {fireEvent, cleanup, screen, waitFor} from '@testing-library/react'
+import {
+  OverlayController,
+  OverlayProviderComp,
+} from 'src/overlays/components/OverlayController'
+
+import {notify} from 'src/shared/actions/notifications'
+import {
+  createVariableSuccess,
+  deleteVariableSuccess,
+  updateVariableSuccess,
+} from 'src/shared/copy/notifications'
 
 jest.mock('src/shared/components/FluxMonacoEditor', () => {
   return () => <></>
@@ -13,8 +38,8 @@ jest.mock('src/flows', () => {
   return () => <></>
 })
 
-jest.mock('src/client/generatedRoutes.ts', () => ({
-  ...jest.requireActual('src/client/generatedRoutes.ts'),
+jest.mock('src/client/generatedRoutes', () => ({
+  ...(jest.requireActual('src/client/generatedRoutes') as object),
   postVariable: jest.fn(() => {
     return {
       status: 201,
@@ -68,12 +93,12 @@ jest.mock('src/client/generatedRoutes.ts', () => ({
   }),
 }))
 
-jest.mock('src/client/index.ts')
+jest.mock('src/client/index')
 jest.mock('src/shared/actions/notifications')
 jest.mock('src/resources/components/GetResources')
-jest.mock('src/checks/components/NewThresholdCheckEO.tsx', () => () => null)
-jest.mock('src/checks/components/NewDeadmanCheckEO.tsx', () => () => null)
-jest.mock('src/resources/selectors/index.ts', () => {
+jest.mock('src/checks/components/NewThresholdCheckEO', () => () => null)
+jest.mock('src/checks/components/NewDeadmanCheckEO', () => () => null)
+jest.mock('src/resources/selectors/index', () => {
   return {
     getAll: jest.fn(() => {
       return []
@@ -87,8 +112,8 @@ jest.mock('src/resources/selectors/index.ts', () => {
   }
 })
 
-jest.mock('src/templates/api/index.ts', () => ({
-  ...jest.requireActual('src/templates/api/index.ts'),
+jest.mock('src/templates/api/index', () => ({
+  ...(jest.requireActual('src/templates/api/index') as object),
   createVariableFromTemplate: jest.fn(() => {
     return {
       id: 'test_variable_id',
@@ -106,31 +131,6 @@ jest.mock('src/templates/api/index.ts', () => ({
     }
   }),
 }))
-
-// Mock State
-import {renderWithReduxAndRouter} from 'src/mockState'
-import {withRouterProps} from 'mocks/dummyData'
-import {mockAppState} from 'src/mockAppState'
-
-// Redux
-import VariablesIndex from '../containers/VariablesIndex'
-import {normalize} from 'normalizr'
-import {Organization} from '../../client'
-import {OrgEntities, RemoteDataState} from '../../types'
-import {arrayOfOrgs} from '../../schemas'
-import {fireEvent, cleanup, screen, waitFor} from '@testing-library/react'
-import {
-  OverlayController,
-  OverlayProviderComp,
-} from '../../overlays/components/OverlayController'
-
-import {mocked} from 'ts-jest/utils'
-import {notify} from 'src/shared/actions/notifications'
-import {
-  createVariableSuccess,
-  deleteVariableSuccess,
-  updateVariableSuccess,
-} from '../../shared/copy/notifications'
 
 const defaultProps: any = {
   ...withRouterProps,
@@ -228,7 +228,7 @@ describe('the variables ui functionality', () => {
         fireEvent.click(createButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('TestVariableName'))
     })
@@ -273,7 +273,7 @@ describe('the variables ui functionality', () => {
         fireEvent.click(createButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('TestVariableName'))
     })
@@ -315,7 +315,7 @@ describe('the variables ui functionality', () => {
         fireEvent.click(createButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('TestVariableName'))
     })
@@ -349,7 +349,7 @@ describe('the variables ui functionality', () => {
         fireEvent.click(submitButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
@@ -380,7 +380,7 @@ describe('the variables ui functionality', () => {
         fireEvent.click(submitButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
@@ -409,7 +409,7 @@ describe('the variables ui functionality', () => {
         fireEvent.click(submitButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
@@ -426,7 +426,7 @@ describe('the variables ui functionality', () => {
         fireEvent.click(confirmButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })
@@ -443,7 +443,7 @@ describe('the variables ui functionality', () => {
         fireEvent.click(confirmButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })
@@ -460,7 +460,7 @@ describe('the variables ui functionality', () => {
         fireEvent.click(confirmButton)
       })
 
-      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyCallArguments] = jest.mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })

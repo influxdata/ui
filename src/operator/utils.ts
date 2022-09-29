@@ -6,7 +6,7 @@ import {
 } from 'src/billing/utils/timeHelpers'
 
 // Types
-import {OperatorOrgLimits} from 'src/types'
+import {OperatorOrgLimits, OperatorRegions} from 'src/types'
 
 const updateMaxRetentionWithCallback = (
   limits: OperatorOrgLimits,
@@ -42,4 +42,24 @@ export const fromDisplayLimits = (
 ): OperatorOrgLimits => {
   const newLimits = updateMaxRetentionWithCallback(displayLimits, hoursToNs)
   return updateQueryTimeWithCallback(newLimits, secondsToNs)
+}
+
+export const getRegions = (
+  provider: string,
+  regions: {
+    Azure?: OperatorRegions
+    AWS?: OperatorRegions
+    GCP?: OperatorRegions
+  }
+) => {
+  switch (provider) {
+    case 'Azure':
+      return regions.Azure
+    case 'AWS':
+      return regions.AWS
+    case 'GCP':
+      return regions.GCP
+    default:
+      return []
+  }
 }

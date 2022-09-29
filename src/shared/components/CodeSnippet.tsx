@@ -34,6 +34,10 @@ export const Context = createContext<TemplateContextType>(
 )
 
 export const transform = (text: string, vars: VariableMap) => {
+  // based off of this: https://johnresig.com/blog/javascript-micro-templating/
+  // see the previous implementation (search for TemplatedCodeSnippet)
+  // removed in this PR for more context: https://github.com/influxdata/ui/pull/1346/files
+  // eslint-disable-next-line @typescript-eslint/no-implied-eval
   const output = new Function(
     'vars',
     'var output=' +
@@ -130,10 +134,12 @@ const CodeSnippet: FC<Props> = ({
           )}
         </div>
       </DapperScrollbars>
-      <div className="code-snippet--footer">
-        {showCopyControl && <CopyButton text={_text} onCopy={handleCopy} />}
-        {label && <label className="code-snippet--label">{label}</label>}
-      </div>
+      {(showCopyControl || label) && (
+        <div className="code-snippet--footer">
+          {showCopyControl && <CopyButton text={_text} onCopy={handleCopy} />}
+          {label && <label className="code-snippet--label">{label}</label>}
+        </div>
+      )}
     </div>
   )
 }

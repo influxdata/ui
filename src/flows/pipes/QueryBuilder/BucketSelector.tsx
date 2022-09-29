@@ -25,14 +25,10 @@ const BucketSelector: FC = () => {
       return
     }
     const allBuckets = new Set(buckets.map(b => b.name))
-    data.buckets
-      .filter(b => !allBuckets.has(b.name))
-      .forEach(b => {
-        addBucket({
-          name: b.name,
-          type: b.type,
-        } as Bucket)
-      })
+    const missingBuckets = data.buckets.filter(b => !allBuckets.has(b.name))
+    missingBuckets.forEach(b => {
+      addBucket(b as Bucket)
+    })
   }, [loading, buckets, data.buckets])
 
   if (loading === RemoteDataState.Done && !buckets.length) {
@@ -64,7 +60,7 @@ const BucketSelector: FC = () => {
         <BuilderCard.Menu>
           <Input
             value={search}
-            placeholder="Search for a bucket"
+            placeholder="Search buckets"
             className="tag-selector--search"
             onChange={e => setSearch(e.target.value)}
           />
@@ -113,7 +109,7 @@ const BucketSelector: FC = () => {
       <BuilderCard.Menu>
         <Input
           value={search}
-          placeholder="Search for a bucket"
+          placeholder="Search buckets"
           className="tag-selector--search"
           onChange={e => setSearch(e.target.value)}
           onClear={() => setSearch('')}

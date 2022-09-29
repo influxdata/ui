@@ -12,6 +12,7 @@ import InlineLabelsList from 'src/shared/components/inlineLabels/InlineLabelsLis
 
 // Constants
 import {ADD_NEW_LABEL_ITEM_ID} from 'src/shared/components/inlineLabels/InlineLabelsEditor'
+import {LABEL_NAME_MAX_LENGTH} from 'src/labels/constants'
 
 // Types
 import {Label} from 'src/types'
@@ -84,7 +85,7 @@ export default class InlineLabelPopover extends PureComponent<Props> {
               autoFocus={true}
               onBlur={this.handleRefocusInput}
               testID="inline-labels--popover-field"
-              maxLength={30}
+              maxLength={LABEL_NAME_MAX_LENGTH}
             />
             <InlineLabelsList
               searchTerm={searchTerm}
@@ -102,12 +103,8 @@ export default class InlineLabelPopover extends PureComponent<Props> {
   }
 
   private handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
-    const {
-      selectedItemID,
-      onAddLabel,
-      onStartCreatingLabel,
-      onEscapePress,
-    } = this.props
+    const {selectedItemID, onAddLabel, onStartCreatingLabel, onEscapePress} =
+      this.props
 
     switch (e.key) {
       case 'Enter':

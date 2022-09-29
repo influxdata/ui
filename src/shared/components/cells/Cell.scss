@@ -204,13 +204,17 @@ $cell--header-button-active-color: $c-pool;
   }
 }
 
-.cell--name {
+.cell--name,
+.cell--window-period {
   flex: 1 0 0;
   font-size: $ix-text-base;
   line-height: $ix-text-base;
   font-weight: 600;
   padding-right: $ix-marg-b;
   pointer-events: none;
+}
+.cell--window-period {
+  text-align: right;
 }
 
 .cell--note-indicator {

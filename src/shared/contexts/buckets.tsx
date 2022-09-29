@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, createContext, useEffect, useMemo, useRef} from 'react'
+import React, {
+  FC,
+  createContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useContext,
+} from 'react'
 import {useDispatch} from 'react-redux'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 import {normalize} from 'normalizr'
@@ -17,12 +24,13 @@ import {
 
 // Types
 import {Bucket, BucketEntities, RemoteDataState} from 'src/types'
-import {QueryScope} from 'src/types/flows'
+import {QueryScope} from 'src/shared/contexts/query'
+import {PipeContext} from 'src/flows/context/pipe'
 
 let MeasurementSchemaCreateRequest = null
 if (CLOUD) {
-  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
-    .MeasurementSchemaCreateRequest
+  MeasurementSchemaCreateRequest =
+    require('src/client/generatedRoutes').MeasurementSchemaCreateRequest
 }
 
 export interface ExtendedBucket extends Bucket {
@@ -50,12 +58,18 @@ export const BucketContext = createContext<BucketContextType>(DEFAULT_CONTEXT)
 const useLocalStorageState = createLocalStorageStateHook('buckets', {})
 
 interface Props {
+  omitSampleData?: boolean
   scope: QueryScope
 }
 
-export const BucketProvider: FC<Props> = ({children, scope}) => {
+export const BucketProvider: FC<Props> = ({
+  children,
+  omitSampleData = false,
+  scope,
+}) => {
   const cacheKey = `${scope.region};;<${scope.org}>`
   const [bucketCache, setBucketCache] = useLocalStorageState()
+  const {data} = useContext(PipeContext)
   const dispatch = useDispatch()
   const buckets = bucketCache[cacheKey]?.buckets ?? []
   const lastFetch = bucketCache[cacheKey]?.lastFetch ?? 0
@@ -77,16 +91,18 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
 
   // keep the redux store in sync
   useEffect(() => {
-    dispatch(
-      setBuckets(
-        RemoteDataState.Done,
-        normalize<Bucket, BucketEntities, string[]>(
-          buckets.filter(b => b.type !== 'sample'),
-          arrayOfBuckets
+    if (loading === RemoteDataState.Done) {
+      dispatch(
+        setBuckets(
+          RemoteDataState.Done,
+          normalize<Bucket, BucketEntities, string[]>(
+            buckets.filter(b => b.type !== 'sample'),
+            arrayOfBuckets
+          )
         )
       )
-    )
-  }, [buckets])
+    }
+  }, [buckets, dispatch, loading])
 
   // TODO: load bucket creation limits on org change
   // expose limits to frontend
@@ -137,42 +153,19 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
       })
       .then(response => {
         controller.current = null
-        const bucks = response.buckets.reduce(
-          (acc, curr) => {
-            if (curr.type === 'system') {
-              acc.system.push(curr)
-            } else {
-              acc.user.push(curr)
-            }
-            return acc
-          },
-          {
-            system: [],
-            user: [],
-            sample: [
-              {
-                type: 'sample',
-                name: 'Air Sensor Data',
-                id: 'airSensor',
-              },
-              {
-                type: 'sample',
-                name: 'Coinbase bitcoin price',
-                id: 'bitcoin',
-              },
-              {
-                type: 'sample',
-                name: 'NOAA National Buoy Data',
-                id: 'noaa',
-              },
-              {
-                type: 'sample',
-                name: 'USGS Earthquakes',
-                id: 'usgs',
-              },
-            ],
+        const base: any = {
+          system: [],
+          user: [],
+        }
+
+        const bucks = response.buckets.reduce((acc, curr) => {
+          if (curr.type === 'system') {
+            acc.system.push(curr)
+          } else {
+            acc.user.push(curr)
           }
-        )
+          return acc
+        }, base)
 
         bucks.system.sort((a, b) =>
           `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
@@ -180,16 +173,14 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
         bucks.user.sort((a, b) =>
           `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
         )
-        bucks.sample.sort((a, b) =>
-          `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
-        )
         updateCache({
           loading: RemoteDataState.Done,
           lastFetch: Date.now(),
-          buckets: [...bucks.user, ...bucks.system, ...bucks.sample],
+          buckets: [...bucks.user, ...bucks.system],
         })
       })
-      .catch(() => {
+      .catch(error => {
+        console.error({error})
         controller.current = null
         updateCache({
           loading: RemoteDataState.Error,
@@ -288,27 +279,56 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
     bucks.user.sort((a, b) =>
       `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
     )
-    bucks.sample.sort((a, b) =>
-      `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
-    )
 
     updateCache({
-      buckets: [...bucks.user, ...bucks.system, ...bucks.sample],
+      buckets: [...bucks.user, ...bucks.system],
     })
   }
 
   const refresh = () => {
     fetchBuckets()
   }
+  const outBuckets = useMemo(
+    () =>
+      buckets
+        .filter(b => b.type !== 'sample')
+        .concat(
+          omitSampleData
+            ? []
+            : [
+                {
+                  type: 'sample',
+                  name: 'Air Sensor Data',
+                  id: 'airSensor',
+                },
+                {
+                  type: 'sample',
+                  name: 'Coinbase bitcoin price',
+                  id: 'bitcoin',
+                },
+                {
+                  type: 'sample',
+                  name: 'NOAA National Buoy Data',
+                  id: 'noaa',
+                },
+                {
+                  type: 'sample',
+                  name: 'USGS Earthquakes',
+                  id: 'usgs',
+                },
+              ]
+        ),
+    [buckets]
+  )
 
   return useMemo(
     () => (
       <BucketContext.Provider
-        value={{loading, buckets, createBucket, addBucket, refresh}}
+        value={{loading, buckets: outBuckets, createBucket, addBucket, refresh}}
       >
         {children}
       </BucketContext.Provider>
     ),
-    [loading, buckets]
+    [data.bucket, loading, outBuckets]
   )
 }

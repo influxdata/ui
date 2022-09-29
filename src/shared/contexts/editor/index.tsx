@@ -15,13 +15,18 @@ import {
 } from 'src/shared/utils/fluxFunctions'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
 
+// LSP
+import LspConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
 export interface EditorContextType {
   editor: EditorType | null
-  setEditor: (editor: EditorType) => void
+  setEditor: (
+    editor: EditorType,
+    conn: React.MutableRefObject<LspConnectionManager>
+  ) => void
   inject: (options: InjectionOptions) => void
   injectFunction: (fn, cbToParent) => void
   injectVariable: (variableName, cbToParent) => void
@@ -38,7 +43,11 @@ const DEFAULT_CONTEXT: EditorContextType = {
 export const EditorContext = createContext<EditorContextType>(DEFAULT_CONTEXT)
 
 export const EditorProvider: FC = ({children}) => {
-  const [editor, setEditor] = useState<EditorType>(null)
+  const [editor, setEditorOnState] = useState<EditorType>(null)
+
+  const setEditor = ed => {
+    setEditorOnState(ed)
+  }
 
   const inject = useCallback(
     (options: InjectionOptions) => {
@@ -78,12 +87,7 @@ export const EditorProvider: FC = ({children}) => {
         },
       ]
 
-      const addHeader =
-        header &&
-        !editor
-          .getModel()
-          .getValue()
-          .includes(header)
+      const addHeader = header && !editor.getModel().getValue().includes(header)
       if (addHeader) {
         edits.unshift({
           range: new monaco.Range(1, 1, 1, 1),
@@ -94,7 +98,7 @@ export const EditorProvider: FC = ({children}) => {
       editor.executeEdits('', edits)
       cbParentOnUpdateText(editor.getValue())
 
-      if (isFlagEnabled('fluxDynamicDocs') && triggerSuggest) {
+      if (triggerSuggest) {
         moveCursorAndTriggerSuggest(
           editor,
           injectionPosition,
@@ -111,10 +115,9 @@ export const EditorProvider: FC = ({children}) => {
       rawFn: FluxToolbarFunction | FluxFunction,
       cbParentOnUpdateText: (t: string) => void
     ): void => {
-      const fn =
-        CLOUD && isFlagEnabled('fluxDynamicDocs')
-          ? getFluxExample(rawFn as FluxFunction)
-          : (rawFn as FluxFunction)
+      const fn = CLOUD
+        ? getFluxExample(rawFn as FluxFunction)
+        : (rawFn as FluxFunction)
 
       const text = isPipeTransformation(fn)
         ? `  |> ${fn.example.trimRight()}`
@@ -136,7 +139,7 @@ export const EditorProvider: FC = ({children}) => {
       }
       inject(options)
     },
-    [inject]
+    [inject, editor]
   )
 
   const injectVariable = useCallback(

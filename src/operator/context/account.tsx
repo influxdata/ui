@@ -5,13 +5,14 @@ import {useDispatch} from 'react-redux'
 
 // Utils
 import {
+  patchOperatorAccountsConvert,
   deleteOperatorAccount,
   getOperatorAccount,
-  deleteOperatorAccountsUser,
 } from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
   getAccountError,
+  convertAccountError,
   deleteAccountError,
 } from 'src/shared/copy/notifications'
 
@@ -25,36 +26,44 @@ export type Props = {
 export interface AccountContextType {
   account: OperatorAccount
   accountStatus: RemoteDataState
+  convertStatus: RemoteDataState
   deleteStatus: RemoteDataState
+  handleConvertAccountToContract: (contractStartDate: string) => void
   handleDeleteAccount: () => void
   handleGetAccount: () => void
-  handleRemoveUserFromAccount: (id: string) => void
   organizations: OperatorOrg[]
-  setVisible: (vis: boolean) => void
-  visible: boolean
+  setConvertToContractOverlayVisible: (vis: boolean) => void
+  convertToContractOverlayVisible: boolean
+  setDeleteOverlayVisible: (vis: boolean) => void
+  deleteOverlayVisible: boolean
 }
 
 export const DEFAULT_CONTEXT: AccountContextType = {
   account: null,
   accountStatus: RemoteDataState.NotStarted,
+  convertStatus: RemoteDataState.NotStarted,
   deleteStatus: RemoteDataState.NotStarted,
+  handleConvertAccountToContract: () => {},
   handleDeleteAccount: () => {},
   handleGetAccount: () => {},
-  handleRemoveUserFromAccount: (_: string) => {},
   organizations: null,
-  setVisible: (_: boolean) => {},
-  visible: false,
+  setConvertToContractOverlayVisible: (_: boolean) => {},
+  convertToContractOverlayVisible: false,
+  setDeleteOverlayVisible: (_: boolean) => {},
+  deleteOverlayVisible: false,
 }
 
-export const AccountContext = React.createContext<AccountContextType>(
-  DEFAULT_CONTEXT
-)
+export const AccountContext =
+  React.createContext<AccountContextType>(DEFAULT_CONTEXT)
 
 export const AccountProvider: FC<Props> = React.memo(({children}) => {
   const [account, setAccount] = useState<OperatorAccount>(null)
   const [organizations, setOrganizations] = useState<OperatorOrg[]>(null)
-  const [visible, setVisible] = useState(false)
+  const [convertToContractOverlayVisible, setConvertToContractOverlayVisible] =
+    useState(false)
+  const [deleteOverlayVisible, setDeleteOverlayVisible] = useState(false)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
+  const [convertStatus, setConvertStatus] = useState(RemoteDataState.NotStarted)
   const [deleteStatus, setDeleteStatus] = useState(RemoteDataState.NotStarted)
 
   const {accountID} = useParams<{accountID: string}>()
@@ -87,6 +96,28 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
     handleGetAccount()
   }, [handleGetAccount, accountID])
 
+  const handleConvertAccountToContract = useCallback(
+    async contractStartDate => {
+      try {
+        setConvertStatus(RemoteDataState.Loading)
+        const resp = await patchOperatorAccountsConvert({
+          accountId: accountID,
+          data: {contractStartDate},
+        })
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+        setConvertStatus(RemoteDataState.Done)
+      } catch {
+        setConvertStatus(RemoteDataState.Error)
+        dispatch(notify(convertAccountError(accountID)))
+      } finally {
+        await handleGetAccount()
+      }
+    },
+    [dispatch, handleGetAccount, accountID]
+  )
+
   const handleDeleteAccount = useCallback(async () => {
     try {
       setDeleteStatus(RemoteDataState.Loading)
@@ -102,40 +133,21 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }, [dispatch, history, accountID])
 
-  const handleRemoveUserFromAccount = useCallback(
-    async (userID: string) => {
-      try {
-        setDeleteStatus(RemoteDataState.Loading)
-        const resp = await deleteOperatorAccountsUser({
-          accountId: accountID,
-          userId: userID,
-        })
-        if (resp.status !== 204) {
-          throw new Error(resp.data.message)
-        }
-        setDeleteStatus(RemoteDataState.Done)
-      } catch (error) {
-        console.error({error})
-        dispatch(notify(deleteAccountError(accountID)))
-      } finally {
-        await handleGetAccount()
-      }
-    },
-    [dispatch, handleGetAccount, accountID]
-  )
-
   return (
     <AccountContext.Provider
       value={{
         account,
         accountStatus,
+        convertStatus,
         deleteStatus,
+        handleConvertAccountToContract,
         handleDeleteAccount,
         handleGetAccount,
-        handleRemoveUserFromAccount,
         organizations,
-        setVisible,
-        visible,
+        setConvertToContractOverlayVisible,
+        convertToContractOverlayVisible,
+        setDeleteOverlayVisible,
+        deleteOverlayVisible,
       }}
     >
       {children}

@@ -2,9 +2,12 @@ export {Bucket as GenBucket} from 'src/client'
 
 import {Bucket as GenBucket} from 'src/client'
 
-export interface OwnBucket extends Omit<GenBucket, 'labels'> {
+export interface OwnBucket extends Omit<GenBucket, 'labels' | 'type'> {
   labels?: string[]
   readableRetention: string
+  // bucket type 'sample' is hardcoded in the frontend:
+  // src/shared/contexts/buckets.tsx
+  readonly type?: 'user' | 'system' | 'sample'
 }
 
 export type Bucket = OwnBucket

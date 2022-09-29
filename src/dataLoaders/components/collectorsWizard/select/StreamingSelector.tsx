@@ -109,7 +109,7 @@ class StreamingSelector extends PureComponent<Props, State> {
                       testID={`telegraf-plugins--${b}`}
                       selected={this.isCardChecked(b)}
                       onClick={this.handleToggle}
-                      icon={IconFont.Checkmark_New}
+                      icon={IconFont.CheckMark_New}
                     >
                       {createElement(BUNDLE_LOGOS[b])}
                     </SelectableCard>

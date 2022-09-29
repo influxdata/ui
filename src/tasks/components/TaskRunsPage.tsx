@@ -24,6 +24,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {SortTypes} from 'src/shared/utils/sort'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {getAll} from 'src/resources/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{id: string; orgID: string}>
@@ -56,7 +57,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
         spinnerComponent={<TechnoSpinner />}
       >
         <Page titleTag={pageTitleSuffixer(['Task Runs'])}>
-          <Page.Header fullWidth={false}>
+          <Page.Header fullWidth={true}>
             <PageBreadcrumbs
               pages={[
                 {
@@ -68,17 +69,19 @@ class TaskRunsPage extends PureComponent<Props, State> {
                 },
               ]}
             />
-            <RateLimitAlert location="task runs" />
+            {!isFlagEnabled('multiOrg') && (
+              <RateLimitAlert location="task runs" />
+            )}
           </Page.Header>
-          <Page.ControlBar fullWidth={false}>
+          <Page.ControlBar fullWidth={true}>
             <TaskRunsCard task={currentTask} isTaskEditable={isTaskEditable} />
           </Page.ControlBar>
-          <Page.ControlBar fullWidth={false}>
+          <Page.ControlBar fullWidth={true}>
             <Page.ControlBarRight>
               <TimeZoneDropdown />
             </Page.ControlBarRight>
           </Page.ControlBar>
-          <Page.Contents fullWidth={false} scrollable={true}>
+          <Page.Contents fullWidth={true} scrollable={true}>
             <TaskRunsList
               taskID={match.params.id}
               runs={runs}

@@ -3,10 +3,8 @@ import React, {FC, useState, useEffect} from 'react'
 
 // Components
 import {
-  Input,
   Grid,
   Form,
-  InputType,
   Dropdown,
   Icon,
   IconFont,
@@ -18,21 +16,28 @@ import {
   FlexDirection,
   FlexBox,
   ComponentStatus,
+  SlideToggle,
+  InputLabel,
 } from '@influxdata/clockface'
 import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
 // Types
-import {Subscription} from 'src/types/subscriptions'
+import {Subscription, PrecisionTypes} from 'src/types/subscriptions'
 
 // Utils
 import {
   sanitizeType,
   handleValidation,
+  handleJsonPathValidation,
+  JSON_TOOLTIP,
+  dataTypeList,
+  handleAvroValidation,
 } from 'src/writeData/subscriptions/utils/form'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
-import {event} from 'src/cloud/utils/reporting'
+import ValidationInputWithTooltip from './ValidationInputWithTooltip'
 
 interface Props {
   formContent: Subscription
@@ -41,10 +46,10 @@ interface Props {
 }
 
 const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
-  const stringType = 'String'
-  const numberType = 'Number'
-  const dataTypeList = [stringType, numberType]
-  const [dataTypeM, setDataTypeM] = useState(stringType)
+  const [dataTypeM, setDataTypeM] = useState(dataTypeList[0])
+  const [useStaticMeasurement, setUseStaticMeasurement] = useState(
+    !!formContent.jsonMeasurementKey.name
+  )
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
   const defaultJsonFieldTag = {
@@ -71,47 +76,147 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   return (
     <div className="json-parsing-form">
       <Grid.Column>
-        <Form.Label label="JSON Path to Timestamp" />
-        <Input
-          type={InputType.Text}
-          placeholder="eg. $.myJSON.myObject[0].timestampKey"
-          name="timestamp"
-          autoFocus={true}
-          value={formContent.jsonTimestamp.path}
-          onChange={e => {
-            updateForm({
-              ...formContent,
-              jsonTimestamp: {
-                ...formContent.jsonTimestamp,
-                path: e.target.value,
-              },
-            })
-          }}
-          onBlur={() =>
-            event(
-              'completed form field',
-              {formField: 'jsonTimestamp.path'},
-              {feature: 'subscriptions'}
-            )
-          }
-          testID="timestamp-json-parsing"
-          status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
-        />
-      </Grid.Column>
-      <Grid.Column>
+        {edit && (
+          <p className="json-parsing-form__link">
+            See our{' '}
+            <a
+              href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=JSON#define-parsing-rules"
+              target="_blank"
+              rel="noreferrer"
+            >
+              parsing documentation
+            </a>{' '}
+            for examples, or validate your parsing rules using{' '}
+            <a href="https://jsonpath.com/" target="_blank" rel="noreferrer">
+              JSONPath.
+            </a>{' '}
+          </p>
+        )}
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className="json-parsing-form__header"
+        >
+          Timestamp
+        </Heading>
         <FlexBox
-          alignItems={AlignItems.Center}
+          alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}
           margin={ComponentSize.Large}
-          className="json-parsing-form__header-wrap"
+          className="json-parsing-form__container"
         >
-          <Heading
-            element={HeadingElement.H3}
-            weight={FontWeight.Bold}
-            className="json-parsing-form__header-wrap__header"
-          >
-            Measurement
-          </Heading>
+          <ValidationInputWithTooltip
+            label="JSON Path to Timestamp"
+            value={formContent.jsonTimestamp?.path}
+            required={false}
+            validationFunc={() =>
+              !!formContent.jsonTimestamp?.path
+                ? handleJsonPathValidation(formContent.jsonTimestamp?.path)
+                : null
+            }
+            placeholder="eg. $.myJSON.myObject[0].timestampKey"
+            name="timestamp"
+            onChange={e => {
+              updateForm({
+                ...formContent,
+                jsonTimestamp: {
+                  ...formContent.jsonTimestamp,
+                  path: e.target.value,
+                },
+              })
+            }}
+            onBlur={() =>
+              event(
+                'completed form field',
+                {formField: 'jsonTimestamp.path'},
+                {feature: 'subscriptions'}
+              )
+            }
+            testID="timestamp-json-parsing"
+            edit={edit}
+            tooltip={JSON_TOOLTIP}
+            width="75%"
+          />
+          <div className="json-parsing-form__container__dropdown">
+            <Form.Label label="Timestamp precision" />
+            <Dropdown
+              button={(active, onClick) => (
+                <Dropdown.Button
+                  active={active}
+                  onClick={onClick}
+                  testID="json-timestamp-precision"
+                  status={
+                    edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                  }
+                >
+                  {Object.keys(PrecisionTypes).find(
+                    k => PrecisionTypes[k] === formContent.timestampPrecision
+                  )}
+                </Dropdown.Button>
+              )}
+              menu={onCollapse => (
+                <Dropdown.Menu onCollapse={onCollapse}>
+                  {Object.keys(PrecisionTypes).map(key => (
+                    <Dropdown.Item
+                      key={key}
+                      id={key}
+                      value={key}
+                      onClick={() => {
+                        event(
+                          'completed form field',
+                          {
+                            formField: 'timestampPrecision',
+                            selected: PrecisionTypes[key],
+                          },
+                          {feature: 'subscriptions'}
+                        )
+                        formContent.timestampPrecision = PrecisionTypes[key]
+                      }}
+                      selected={
+                        formContent.timestampPrecision === PrecisionTypes[key]
+                      }
+                      testID={`json-timestamp-precision-${key}`}
+                    >
+                      {key}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              )}
+            />
+          </div>
+        </FlexBox>
+      </Grid.Column>
+      <Grid.Column>
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className="json-parsing-form__header"
+        >
+          Measurement
+        </Heading>
+        <FlexBox
+          direction={FlexDirection.Row}
+          alignItems={AlignItems.Center}
+          margin={ComponentSize.Medium}
+          className="static-toggle"
+        >
+          <InputLabel>JSON Path</InputLabel>
+          <SlideToggle
+            active={useStaticMeasurement}
+            onChange={() => {
+              setUseStaticMeasurement(!useStaticMeasurement)
+              updateForm({
+                ...formContent,
+                jsonMeasurementKey: {
+                  ...formContent.jsonMeasurementKey,
+                  name: '',
+                  path: '',
+                },
+              })
+            }}
+            disabled={!edit}
+          />
+          <InputLabel>Name</InputLabel>
         </FlexBox>
         <FlexBox
           alignItems={AlignItems.FlexStart}
@@ -119,45 +224,82 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           margin={ComponentSize.Large}
           className="json-parsing-form__container"
         >
-          <Form.ValidationElement
-            label="JSON Path"
-            value={formContent.jsonMeasurementKey.path}
-            required={true}
-            validationFunc={() =>
-              handleValidation(
-                'Measurement Path',
-                formContent.jsonMeasurementKey.path
-              )
-            }
-          >
-            {status => (
-              <Input
-                type={InputType.Text}
-                placeholder="eg. $.myJSON.myObject[0].myKey"
-                name="jsonpath"
-                autoFocus={true}
-                value={formContent.jsonMeasurementKey.path}
-                onChange={e => {
-                  updateForm({
-                    ...formContent,
-                    jsonMeasurementKey: {
-                      ...formContent.jsonMeasurementKey,
-                      path: e.target.value,
-                    },
-                  })
-                }}
-                onBlur={() =>
-                  event(
-                    'completed form field',
-                    {formField: 'jsonMeasurementKey.path'},
-                    {feature: 'subscriptions'}
+          {useStaticMeasurement ? (
+            <ValidationInputWithTooltip
+              label="Name"
+              value={formContent.jsonMeasurementKey.name}
+              required={true}
+              validationFunc={() => {
+                return (
+                  handleValidation(
+                    'Measurement Name',
+                    formContent.jsonMeasurementKey.name
+                  ) ??
+                  handleAvroValidation(
+                    'measurement',
+                    formContent.jsonMeasurementKey.name
                   )
-                }
-                status={edit ? status : ComponentStatus.Disabled}
-                testID="measurement-json-parsing-path"
-              />
-            )}
-          </Form.ValidationElement>
+                )
+              }}
+              placeholder="measurement_name"
+              name="name"
+              onChange={e => {
+                updateForm({
+                  ...formContent,
+                  jsonMeasurementKey: {
+                    ...formContent.jsonMeasurementKey,
+                    name: e.target.value,
+                  },
+                })
+              }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {formField: 'jsonMeasurementKey.name'},
+                  {feature: 'subscriptions'}
+                )
+              }
+              edit={edit}
+              testID="measurement-json-parsing-name"
+              tooltip="Provide a static measurement for your messages."
+              width="75%"
+            />
+          ) : (
+            <ValidationInputWithTooltip
+              label="JSON Path"
+              value={formContent.jsonMeasurementKey.path}
+              required={true}
+              validationFunc={() => {
+                const path = formContent.jsonMeasurementKey.path
+                return (
+                  handleValidation('Measurement Path', path) ??
+                  handleJsonPathValidation(path)
+                )
+              }}
+              placeholder="eg. $.myJSON.myObject[0].myKey"
+              name="jsonpath"
+              onChange={e => {
+                updateForm({
+                  ...formContent,
+                  jsonMeasurementKey: {
+                    ...formContent.jsonMeasurementKey,
+                    path: e.target.value,
+                  },
+                })
+              }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {formField: 'jsonMeasurementKey.path'},
+                  {feature: 'subscriptions'}
+                )
+              }
+              edit={edit}
+              testID="measurement-json-parsing-path"
+              tooltip={JSON_TOOLTIP}
+              width="75%"
+            />
+          )}
           <div className="json-parsing-form__container__dropdown">
             <Form.Label label="Data Type" />
             <Dropdown
@@ -167,7 +309,9 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                   onClick={onClick}
                   testID="measurement-json-parsing-type"
                   status={
-                    edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                    edit && !useStaticMeasurement
+                      ? ComponentStatus.Default
+                      : ComponentStatus.Disabled
                   }
                 >
                   {sanitizeType(formContent.jsonMeasurementKey.type) ??
@@ -234,7 +378,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               testID="json-parsing-add-rule"
               status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
             >
-              <Icon glyph={IconFont.Plus} /> Add Rule
+              <Icon glyph={IconFont.Plus_New} /> Add Rule
             </Dropdown.Button>
           )}
           menu={onCollapse => (

@@ -4,15 +4,15 @@ describe('Operator Page', () => {
       cy.signin().then(() => {
         cy.get('@org').then(() => {
           cy.getByTestID('home-page--header').should('be.visible')
-
           cy.quartzProvision({
             isOperator: true,
             operatorRole: 'read-only',
           }).then(() => {
             cy.reload()
             cy.setFeatureFlags({
+              multiOrg: true,
+              quartzIdentity: true,
               operatorRole: true,
-              uiUnificationFlag: true,
             }).then(() => {
               cy.getByTestID('nav-item--operator').click()
               cy.getByTestID('operator-page--title').contains('2.0 Resources')
@@ -62,9 +62,7 @@ describe('Operator Page', () => {
       .should('contain.text', 'Account Name')
 
     // make sure there is a name column with data:
-    cy.getByTestID('name')
-      .first()
-      .should('contain.text', 'operator1')
+    cy.getByTestID('name').first().should('contain.text', 'operator1')
 
     cy.getByTestID('account-id')
       .first()
@@ -78,6 +76,7 @@ describe('Operator Page', () => {
 
     // make sure the buttons don't exist on the page
     cy.getByTestID('account-delete--button').should('not.exist')
+    cy.getByTestID('account-convert-to-contract--button').should('not.exist')
     cy.getByTestID('remove-user--button').should('not.exist')
     cy.getByTestID('page-title').should('contain.text', 'operator1 (1)')
 
@@ -87,7 +86,7 @@ describe('Operator Page', () => {
     cy.getByTestID('orgTab').click()
     cy.getByTestID('operator-resource--searchbar').type('678', {
       force: true,
-      delay: 50,
+      delay: 300,
     })
 
     cy.getByTestID('table-body').within(() => {

@@ -35,7 +35,7 @@ class VariableDropdown extends PureComponent<Props> {
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
 
     const longestItemWidth = Math.floor(
-      values.reduce(function(a, b) {
+      values.reduce(function (a, b) {
         return a.length > b.length ? a : b
       }, '').length * 9.5
     )

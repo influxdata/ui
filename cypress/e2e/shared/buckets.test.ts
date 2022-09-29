@@ -20,17 +20,13 @@ describe('Buckets', () => {
       cy.getByTestID('Create Bucket').click()
       cy.getByTestID('overlay--container').within(() => {
         cy.getByInputName('name').type(newBucket)
-        cy.get('.cf-button')
-          .contains('Create')
-          .click()
+        cy.get('.cf-button').contains('Create').click()
       })
 
       cy.getByTestID(`bucket--card--name ${newBucket}`).should('exist')
 
       // Add a label
-      cy.getByTestID('inline-labels--add')
-        .first()
-        .click()
+      cy.getByTestID('inline-labels--add').first().click()
 
       const labelName = 'l1'
       cy.getByTestID('inline-labels--popover--contents').type(labelName)
@@ -164,6 +160,66 @@ describe('Buckets', () => {
     })
   })
 
+  describe('explore a newly created bucket', () => {
+    beforeEach(() => {
+      cy.setFeatureFlags({
+        exploreWithFlows: true,
+      })
+    })
+    it('with redirect to notebooks', () => {
+      const newBucket = 'Bucket for templating'
+      cy.getByTestID(`bucket--card--name ${newBucket}`).should('not.exist')
+
+      cy.getByTestID('Create Bucket').click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByInputName('name').type(newBucket)
+        cy.get('.cf-button').contains('Create').click()
+      })
+
+      cy.getByTestID(`bucket--card--name ${newBucket}`).should('exist').click()
+
+      cy.getByTestID('page-title').contains(newBucket)
+    })
+    it('with notebooks using the bucket crud object', () => {
+      const newBucket = 'Bucket for templating 1'
+      cy.getByTestID(`bucket--card--name ${newBucket}`).should('not.exist')
+
+      cy.getByTestID('Create Bucket').click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByInputName('name').type(newBucket)
+        cy.get('.cf-button').contains('Create').click()
+      })
+
+      cy.getByTestID(`bucket--card--name ${newBucket}`).should('exist')
+      cy.log('Bucket created')
+
+      cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
+      cy.getByTestID(`bucket--card--name ${newBucket}`)
+        .parent()
+        .parent()
+        .within(() => {
+          cy.get('.copy-bucket-id')
+            .invoke('text')
+            .then(text => {
+              const bucketId = text.split('ID:')[0].trim()
+              cy.getByTestID(`bucket--card--name ${newBucket}`)
+                .should('exist')
+                .click()
+
+              cy.wait('@updateNotebook').then(interception => {
+                expect(JSON.stringify(interception.response?.body)).to.include(
+                  newBucket
+                )
+                expect(JSON.stringify(interception.response?.body)).to.include(
+                  bucketId
+                )
+              })
+            })
+        })
+    })
+  })
+
   describe('routing directly to the edit overlay', () => {
     it('reroutes to buckets view if bucket does not exist', () => {
       cy.get('@org').then(({id}: Organization) => {
@@ -260,13 +316,10 @@ describe('Buckets', () => {
         'contain',
         'This is a telegraf description'
       )
-      cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-        cy.getByTestID('bucket-name').should('contain', defaultBucket)
-      })
     })
   })
 
-  describe('uploading a csv', function() {
+  describe('uploading a csv', function () {
     it('writes a properly annotated csv', () => {
       // Navigate to csv uploader
       cy.getByTestID('add-data--button').click()

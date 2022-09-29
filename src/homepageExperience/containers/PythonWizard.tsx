@@ -15,19 +15,23 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
-import {InitalizeClient} from 'src/homepageExperience/components/steps/python/InitalizeClient'
+import {InitializeClient} from 'src/homepageExperience/components/steps/python/InitializeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuery'
+import {normalizeEventName} from 'src/cloud/utils/reporting'
 
 import {PythonIcon} from 'src/homepageExperience/components/HomepageIcons'
-
-import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  scrollNextPageIntoView,
+  HOMEPAGE_NAVIGATION_STEPS,
+} from 'src/homepageExperience/utils'
 
 interface State {
   currentStep: number
@@ -71,7 +75,19 @@ export class PythonWizard extends PureComponent<null, State> {
         ),
       },
       () => {
-        event('firstMile.pythonWizard.next.clicked')
+        event(
+          'firstMile.pythonWizard.next.clicked',
+          {},
+          {
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 2].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+            ),
+          }
+        )
+        scrollNextPageIntoView()
       }
     )
   }
@@ -80,19 +96,41 @@ export class PythonWizard extends PureComponent<null, State> {
     this.setState(
       {currentStep: Math.max(this.state.currentStep - 1, 1)},
       () => {
-        event('firstMile.pythonWizard.previous.clicked')
+        event(
+          'firstMile.pythonWizard.previous.clicked',
+          {},
+          {
+            clickedButtonAtStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep].name
+            ),
+            currentStep: normalizeEventName(
+              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+            ),
+          }
+        )
+        scrollNextPageIntoView()
       }
     )
   }
 
   handleNavClick = (clickedStep: number) => {
     this.setState({currentStep: clickedStep})
+    event(
+      'firstMile.pythonWizard.subNav.clicked',
+      {},
+      {
+        currentStep: normalizeEventName(
+          HOMEPAGE_NAVIGATION_STEPS[clickedStep - 1].name
+        ),
+      }
+    )
+    scrollNextPageIntoView()
   }
 
   renderStep = () => {
     switch (this.state.currentStep) {
       case 1: {
-        return <Overview />
+        return <Overview wizard="pythonWizard" />
       }
       case 2: {
         return <InstallDependencies />
@@ -107,7 +145,7 @@ export class PythonWizard extends PureComponent<null, State> {
         )
       }
       case 4: {
-        return <InitalizeClient />
+        return <InitializeClient />
       }
       case 5: {
         return <WriteData onSelectBucket={this.handleSelectBucket} />
@@ -130,7 +168,7 @@ export class PythonWizard extends PureComponent<null, State> {
         )
       }
       default: {
-        return <Overview />
+        return <Overview wizard="pythonWizard" />
       }
     }
   }
@@ -143,12 +181,17 @@ export class PythonWizard extends PureComponent<null, State> {
         <Page.Header fullWidth={false}>
           {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-between to justifyContent)*/}
           <div />
-          <RateLimitAlert location="firstMile.homepage" />
+          {!isFlagEnabled('multiOrg') && (
+            <RateLimitAlert location="firstMile.homepage" />
+          )}
         </Page.Header>
         <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
             <aside className="homepage-wizard-container--subway">
-              <div style={{width: '100%'}} data-testid="subway-nav">
+              <div
+                className="homepage-wizard-container--subway-inner"
+                data-testid="subway-nav"
+              >
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
@@ -187,6 +230,7 @@ export class PythonWizard extends PureComponent<null, State> {
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
+                  testID="python-prev-button"
                 />
                 <Button
                   onClick={this.handleNextClick}
@@ -194,10 +238,11 @@ export class PythonWizard extends PureComponent<null, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    currentStep < 8
+                    currentStep < HOMEPAGE_NAVIGATION_STEPS.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }
+                  testID="python-next-button"
                 />
               </div>
             </div>

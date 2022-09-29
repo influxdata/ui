@@ -10,11 +10,13 @@ import {
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
 
-// Utils
-import {getQuartzMe} from 'src/me/selectors'
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 const OperatorNav: FC = () => {
-  const operator = useSelector(getQuartzMe)
+  const currentIdentity = useSelector(selectCurrentIdentity)
+  const {user} = currentIdentity
+
   return (
     <ReflessPopover
       position={PopoverPosition.ToTheLeft}
@@ -22,7 +24,7 @@ const OperatorNav: FC = () => {
       hideEvent={PopoverInteraction.Click}
       contents={() => (
         <>
-          <p>{operator?.email ?? ''}</p>
+          <p>{user.email}</p>
           <Link to="/logout" data-testid="logout-button">
             Logout
           </Link>

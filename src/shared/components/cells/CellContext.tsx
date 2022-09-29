@@ -1,12 +1,17 @@
 // Libraries
-import React, {FC, useRef, RefObject, useState} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, memo, useRef, RefObject, useState} from 'react'
+import {useHistory, useLocation} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 import {get} from 'lodash'
 import classnames from 'classnames'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {copy} from 'src/shared/components/CopyToClipboard'
+import {
+  copyQuerySuccess,
+  copyQueryFailure,
+} from 'src/shared/copy/notifications/categories/dashboard'
 
 // Components
 import {
@@ -22,56 +27,46 @@ import CellContextDangerItem from 'src/shared/components/cells/CellContextDanger
 // Actions
 import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-
-// Selectors
-import {getAllVariables} from 'src/variables/selectors'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
-import {Cell, View, AppState} from 'src/types'
+import {Cell, View} from 'src/types'
 
-interface OwnProps {
+interface Props {
   cell: Cell
   view: View
   onRefresh: () => void
-  variables: string
   isPaused: boolean
   togglePauseCell: () => void
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
-
 const CellContext: FC<Props> = ({
   view,
-  history,
-  location,
   cell,
-  onCloneCell,
-  onDeleteCell,
   onRefresh,
   isPaused,
   togglePauseCell,
-  onShowOverlay,
-  onDismissOverlay,
 }) => {
+  const history = useHistory()
+  const location = useLocation()
+  const dispatch = useDispatch()
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
-  const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
-    null
-  )
+  const triggerRef: RefObject<HTMLButtonElement> =
+    useRef<HTMLButtonElement>(null)
   const buttonClass = classnames('cell--context', {
     'cell--context__active': popoverVisible,
   })
 
   const handleCloneCell = () => {
-    onCloneCell(cell.dashboardID, view, cell)
+    dispatch(createCellWithView(cell.dashboardID, view, cell))
   }
 
   const handleDeleteCell = (): void => {
     const viewID = view.id
     const {dashboardID, id} = cell
 
-    onDeleteCell(dashboardID, id, viewID)
+    dispatch(deleteCellAndView(dashboardID, id, viewID))
   }
 
   const handleEditNote = () => {
@@ -85,6 +80,20 @@ const CellContext: FC<Props> = ({
   const handleEditCell = (): void => {
     history.push(`${location.pathname}/cells/${cell.id}/edit`)
     event('editCell button Click')
+  }
+
+  const handleCopyQuery = async () => {
+    let result = false
+    // this 'in' check satisfies TypeScript saying `property queries does not exist in ViewProperties` (which is a lie)
+    if ('queries' in view.properties) {
+      result = await copy(view.properties.queries?.[0]?.text)
+    }
+
+    if (!result) {
+      dispatch(notify(copyQueryFailure(cell.name)))
+      return
+    }
+    dispatch(notify(copyQuerySuccess(cell.name)))
   }
 
   const popoverContents = (onHide): JSX.Element => {
@@ -108,13 +117,15 @@ const CellContext: FC<Props> = ({
           <CellContextItem
             label="Move"
             onClick={() =>
-              onShowOverlay(
-                'cell-copy-overlay',
-                {
-                  view,
-                  cell,
-                },
-                onDismissOverlay
+              dispatch(
+                showOverlay(
+                  'cell-copy-overlay',
+                  {
+                    view,
+                    cell,
+                  },
+                  () => dispatch(dismissOverlay())
+                )
               )
             }
             icon={IconFont.Export_New}
@@ -151,7 +162,7 @@ const CellContext: FC<Props> = ({
         <CellContextItem
           label="Clone"
           onClick={handleCloneCell}
-          icon={IconFont.Duplicate}
+          icon={IconFont.Duplicate_New}
           onHide={onHide}
           testID="cell-context--clone"
         />
@@ -179,19 +190,30 @@ const CellContext: FC<Props> = ({
         <CellContextItem
           label="Move"
           onClick={() =>
-            onShowOverlay(
-              'cell-copy-overlay',
-              {
-                view,
-                cell,
-              },
-              onDismissOverlay
+            dispatch(
+              showOverlay(
+                'cell-copy-overlay',
+                {
+                  view,
+                  cell,
+                },
+                () => dispatch(dismissOverlay())
+              )
             )
           }
           icon={IconFont.Export_New}
           onHide={onHide}
           testID="cell-context--copy"
         />
+        {view.properties?.queries?.length && (
+          <CellContextItem
+            label="Copy Query"
+            onClick={handleCopyQuery}
+            icon={IconFont.Clipboard_New}
+            onHide={onHide}
+            testID="cell-context--copy-query"
+          />
+        )}
       </div>
     )
   }
@@ -232,16 +254,4 @@ const CellContext: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => ({
-  variables: getAllVariables(state),
-})
-const mdtp = {
-  onDeleteCell: deleteCellAndView,
-  onCloneCell: createCellWithView,
-  onShowOverlay: showOverlay,
-  onDismissOverlay: dismissOverlay,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default withRouter(connector(CellContext))
+export default memo(CellContext)

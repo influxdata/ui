@@ -65,7 +65,7 @@ export default (
       }
 
       case CLEAR_TASK: {
-        draftState.taskOptions = defaultOptions
+        draftState.taskOptions = {...defaultOptions}
         draftState.currentScript = ''
         draftState.newScript = ''
 

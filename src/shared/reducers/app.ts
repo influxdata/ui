@@ -8,24 +8,23 @@ import {TimeZone, NavBarState, Theme, VersionInfo, FlowsCTA} from 'src/types'
 export interface AppState {
   ephemeral: {
     inPresentationMode: boolean
-    hasUpdatedTimeRangeInVEO: boolean
   }
   persisted: {
     autoRefresh: number
     showTemplateControlBar: boolean
     timeZone: TimeZone
     navBarState: NavBarState
-    newDataExplorer: boolean
+    fluxQueryBuilder: boolean
     theme: Theme
     versionInfo: VersionInfo
     flowsCTA: FlowsCTA
+    subscriptionsCertificateInterest: boolean
   }
 }
 
 const initialState: AppState = {
   ephemeral: {
     inPresentationMode: false,
-    hasUpdatedTimeRangeInVEO: false,
   },
   persisted: {
     theme: 'dark',
@@ -33,9 +32,10 @@ const initialState: AppState = {
     showTemplateControlBar: false,
     timeZone: 'Local',
     navBarState: 'collapsed',
-    newDataExplorer: false,
+    fluxQueryBuilder: false,
     versionInfo: {version: '', commit: ''},
     flowsCTA: {explorer: true, tasks: true, alerts: true},
+    subscriptionsCertificateInterest: false,
   },
 }
 
@@ -60,20 +60,6 @@ const appEphemeralReducer = (
       return {
         ...state,
         inPresentationMode: false,
-      }
-    }
-
-    case ActionTypes.EnableUpdatedTimeRangeInVEO: {
-      return {
-        ...state,
-        hasUpdatedTimeRangeInVEO: true,
-      }
-    }
-
-    case ActionTypes.DisableUpdatedTimeRangeInVEO: {
-      return {
-        ...state,
-        hasUpdatedTimeRangeInVEO: false,
       }
     }
 
@@ -111,8 +97,8 @@ const appPersistedReducer = (
       return {...state, timeZone}
     }
 
-    case ActionTypes.SetNewDataExplorer: {
-      return {...state, newDataExplorer: action.active}
+    case ActionTypes.SetFluxQueryBuilder: {
+      return {...state, fluxQueryBuilder: action.active}
     }
 
     case ActionTypes.SetNavBarState: {
@@ -130,6 +116,13 @@ const appPersistedReducer = (
           ...state.flowsCTA,
           ...action.payload.flowsCTA,
         },
+      }
+    }
+
+    case ActionTypes.SetSubscriptionsCertificateInterest: {
+      return {
+        ...state,
+        subscriptionsCertificateInterest: true,
       }
     }
 

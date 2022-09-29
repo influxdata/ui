@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {ResourceCard} from '@influxdata/clockface'
@@ -26,19 +26,19 @@ interface Props {
   onFilterChange: (searchTerm: string) => void
 }
 
-const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
+const BucketCard: FC<Props> = ({
   bucket,
   onDeleteBucket,
   onFilterChange,
   onGetBucketSchema,
-  history,
-  match: {
-    params: {orgID},
-  },
 }) => {
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
   const handleNameClick = () => {
     if (isFlagEnabled('exploreWithFlows')) {
-      history.push(`/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}`)
+      history.push(
+        `/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}/${bucket.id}`
+      )
     } else {
       history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
     }
@@ -61,7 +61,6 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
       <BucketCardMeta bucket={bucket} />
       <BucketCardActions
         bucket={bucket}
-        orgID={orgID}
         bucketType={bucket.type}
         onFilterChange={onFilterChange}
         onGetSchema={onGetBucketSchema}
@@ -70,4 +69,4 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
   )
 }
 
-export default withRouter(BucketCard)
+export default BucketCard

@@ -21,21 +21,29 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import UserInput from 'src/writeData/subscriptions/components/UserInput'
+import CertificateInput from 'src/writeData/subscriptions/components/CertificateInput'
 
 // Utils
-import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {
+  handleValidation,
+  handlePortValidation,
+  getSchemaFromProtocol,
+  MIN_PORT,
+  MAX_PORT,
+} from 'src/writeData/subscriptions/utils/form'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Types
-import {Subscription} from 'src/types/subscriptions'
+import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   formContent: Subscription
-  updateForm: (any) => void
+  updateForm: (any: Subscription) => void
   className: string
   edit: boolean
 }
@@ -49,10 +57,23 @@ const BrokerFormContent: FC<Props> = ({
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
-  const [security, setSecurity] = useState('none')
+
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
   }, [protocol])
+
+  useEffect(() => {
+    const numberInput = document.getElementById(
+      `${className}-broker-form--port`
+    )
+    numberInput?.addEventListener('mousewheel', function (evt) {
+      evt.preventDefault()
+    })
+  }, [])
+
+  const showHostPortExampleText =
+    !!formContent.brokerHost ||
+    (!!formContent.brokerPort && !isNaN(formContent.brokerPort))
   return (
     <Grid>
       <Grid.Row>
@@ -88,6 +109,7 @@ const BrokerFormContent: FC<Props> = ({
                 }
                 status={edit ? status : ComponentStatus.Disabled}
                 testID={`${className}-broker-form--name`}
+                maxLength={255}
               />
             )}
           </Form.ValidationElement>
@@ -98,7 +120,7 @@ const BrokerFormContent: FC<Props> = ({
               type={InputType.Text}
               placeholder="Describe this connection"
               name="description"
-              value={formContent.description}
+              value={formContent.description ?? ''}
               onChange={e =>
                 updateForm({
                   ...formContent,
@@ -114,6 +136,7 @@ const BrokerFormContent: FC<Props> = ({
               }
               testID={`${className}-broker-form--description`}
               status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
+              maxLength={255}
             />
           </Form.Element>
         </Grid.Column>
@@ -175,18 +198,29 @@ const BrokerFormContent: FC<Props> = ({
               validationFunc={() =>
                 handleValidation('Broker Host', formContent.brokerHost)
               }
+              helpText={
+                className !== 'create' && edit
+                  ? 'Changing the hostname will require you to provide your security credentials again.'
+                  : ''
+              }
             >
               {status => (
                 <Input
                   type={InputType.Text}
-                  placeholder="0.0.0.0"
+                  placeholder="e.g: broker.example.com"
                   name="host"
-                  autoFocus={true}
+                  autoFocus={false}
                   value={formContent.brokerHost}
                   onChange={e => {
                     updateForm({
                       ...formContent,
-                      brokerHost: e.target.value,
+                      // remove any provided schemas from hostname
+                      brokerHost: e.target.value.replace(/.*:\/\//, ''),
+                      // clear the password field if broker host is edited
+                      brokerPassword:
+                        className === 'create'
+                          ? formContent?.brokerPassword
+                          : '',
                     })
                   }}
                   onBlur={() =>
@@ -198,6 +232,7 @@ const BrokerFormContent: FC<Props> = ({
                   }
                   status={edit ? status : ComponentStatus.Disabled}
                   testID={`${className}-broker-form--host`}
+                  maxLength={255}
                 />
               )}
             </Form.ValidationElement>
@@ -206,15 +241,18 @@ const BrokerFormContent: FC<Props> = ({
               value={String(formContent.brokerPort)}
               required={true}
               validationFunc={() =>
-                handleValidation('Broker Port', String(formContent.brokerPort))
+                handleValidation(
+                  'Broker Port',
+                  String(formContent.brokerPort)
+                ) ?? handlePortValidation(formContent.brokerPort)
               }
             >
               {status => (
                 <Input
                   type={InputType.Number}
-                  placeholder="1883"
+                  placeholder={`Between ${MIN_PORT} - ${MAX_PORT}`}
                   name="port"
-                  autoFocus={true}
+                  autoFocus={false}
                   value={formContent.brokerPort}
                   onChange={e => {
                     updateForm({
@@ -232,20 +270,29 @@ const BrokerFormContent: FC<Props> = ({
                   status={edit ? status : ComponentStatus.Disabled}
                   maxLength={5}
                   testID={`${className}-broker-form--port`}
+                  id={`${className}-broker-form--port`}
                 />
               )}
             </Form.ValidationElement>
           </FlexBox>
-          <Heading
-            element={HeadingElement.H5}
-            weight={FontWeight.Regular}
-            className={`${className}-broker-form__example-text`}
-          >
-            TCP://
-            {formContent.protocol ? formContent.protocol : 'MQTT'}:
-            {formContent.brokerHost ? formContent.brokerHost : '0.0.0.0'}:
-            {formContent.brokerPort ? formContent.brokerPort : '1883'}
-          </Heading>
+          {showHostPortExampleText && (
+            <Heading
+              element={HeadingElement.H5}
+              weight={FontWeight.Regular}
+              className={`${className}-broker-form__example-text`}
+            >
+              {getSchemaFromProtocol(
+                formContent.protocol,
+                isFlagEnabled('subscriptionsCertificateSupport') &&
+                  formContent.authType === BrokerAuthTypes.Certificate
+              )}
+              {`${formContent.brokerHost}:${
+                !!formContent.brokerPort && !isNaN(formContent.brokerPort)
+                  ? formContent.brokerPort
+                  : ''
+              }`}
+            </Heading>
+          )}
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve}>
           <Heading
@@ -263,14 +310,22 @@ const BrokerFormContent: FC<Props> = ({
               name="no-security"
               id="none"
               testID={`${className}-broker-form-no-security--button`}
-              active={security === 'none'}
+              active={formContent.authType === BrokerAuthTypes.None}
               onClick={() => {
                 event(
                   'broker security toggle',
                   {method: 'none', step: 'broker'},
                   {feature: 'subscriptions'}
                 )
-                setSecurity('none')
+                updateForm({
+                  ...formContent,
+                  authType: BrokerAuthTypes.None,
+                  brokerUsername: null,
+                  brokerPassword: null,
+                  brokerCACert: null,
+                  brokerClientCert: null,
+                  brokerClientKey: null,
+                })
               }}
               value="none"
               titleText="None"
@@ -282,43 +337,64 @@ const BrokerFormContent: FC<Props> = ({
               name="user"
               id="user"
               testID={`${className}-broker-form--user--button`}
-              active={security === 'user'}
+              active={formContent.authType === BrokerAuthTypes.User}
               onClick={() => {
                 event(
                   'broker security toggle',
                   {method: 'user', step: 'broker'},
                   {feature: 'subscriptions'}
                 )
-                setSecurity('user')
+                updateForm({
+                  ...formContent,
+                  authType: BrokerAuthTypes.User,
+                  brokerCACert: null,
+                  brokerClientCert: null,
+                  brokerClientKey: null,
+                })
               }}
               value="user"
               titleText="User"
               disabled={!edit}
             >
-              User
+              Basic
             </SelectGroup.Option>
-            {/* For a later iteration */}
-            {/* <SelectGroup.Option
-            name="user"
-            id="user"
-            testID="user--button"
-            active={security === 'certificate'}
-            onClick={() => {
-              event('broker security toggle', {method: 'certificate'}, {feature: 'subscriptions'})
-              setSecurity('certificate')
-            }}
-            value={'certificate'}
-            titleText="Certificate"
-            disabled={false}
-          >
-            Certificate
-          </SelectGroup.Option> */}
+            <SelectGroup.Option
+              name="certificate"
+              id="certificate"
+              testID="certificate--button"
+              active={formContent.authType === BrokerAuthTypes.Certificate}
+              onClick={() => {
+                event(
+                  'broker security toggle',
+                  {method: 'certificate', step: 'broker'},
+                  {feature: 'subscriptions'}
+                )
+                updateForm({
+                  ...formContent,
+                  brokerUsername: null,
+                  brokerPassword: null,
+                  authType: BrokerAuthTypes.Certificate,
+                })
+              }}
+              value="certificate"
+              titleText="Certificate"
+              disabled={!edit}
+            >
+              Certificate
+            </SelectGroup.Option>
           </SelectGroup>
-          {security === 'user' && (
+          {formContent.authType === BrokerAuthTypes.User && (
             <UserInput
               formContent={formContent}
               updateForm={updateForm}
               className={className}
+              edit={edit}
+            />
+          )}
+          {formContent.authType === BrokerAuthTypes.Certificate && (
+            <CertificateInput
+              subscription={formContent}
+              updateForm={updateForm}
               edit={edit}
             />
           )}

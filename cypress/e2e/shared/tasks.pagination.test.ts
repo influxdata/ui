@@ -54,35 +54,23 @@ describe('Paginating tasks', () => {
   it('can paginate between pages of 10 tasks', () => {
     cy.getByTestID('task-card').should('have.length', 10)
 
-    cy.getByTestID('pagination-direction-item')
-      .last()
-      .click()
+    cy.getByTestID('pagination-direction-item').last().click()
     cy.getByTestID('task-card').should('have.length', 10)
 
-    cy.getByTestID('pagination-direction-item')
-      .last()
-      .click()
-    cy.getByTestID('task-card')
-      .should('have.length', 1)
-      .contains('Task 21')
+    cy.getByTestID('pagination-direction-item').last().click()
+    cy.getByTestID('task-card').should('have.length', 1).contains('Task 21')
 
     // reloading should put us on the last page we were on
     cy.reload()
-    cy.getByTestID('task-card')
-      .should('have.length', 1)
-      .contains('Task 21')
+    cy.getByTestID('task-card').should('have.length', 1).contains('Task 21')
 
     cy.getByTestID('search-widget').type('task 1')
 
     // filtering should reduce the page count from 3 to 2 and put us on the last page
     cy.getByTestID('pagination-item').should('have.length', 2)
-    cy.getByTestID('task-card')
-      .should('have.length', 1)
-      .contains('Task 19')
+    cy.getByTestID('task-card').should('have.length', 1).contains('Task 19')
 
-    cy.getByTestID('pagination-direction-item')
-      .first()
-      .click()
+    cy.getByTestID('pagination-direction-item').first().click()
     cy.getByTestID('task-card').should('have.length', 10)
 
     cy.getByTestID('task-card').contains('Task 1')

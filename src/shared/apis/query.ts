@@ -3,11 +3,15 @@ import {FLUX_RESPONSE_BYTES_LIMIT, API_BASE_PATH} from 'src/shared/constants'
 import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
+  GATEWAY_TIMEOUT_STATUS,
+  REQUEST_TIMEOUT_STATUS,
 } from 'src/cloud/constants'
 
 // Types
 import {CancelBox} from 'src/types/promises'
 import {File, Query, CancellationError} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
+import {getFlagValue} from 'src/shared/utils/featureFlag'
 
 export type RunQueryResult =
   | RunQuerySuccessResult
@@ -100,12 +104,15 @@ const processSuccessResponse = async (
 
   let read = await reader.read()
 
+  const BYTE_LIMIT =
+    getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+
   while (!read.done) {
     const text = decoder.decode(read.value)
 
     bytesRead += read.value.byteLength
 
-    if (bytesRead > FLUX_RESPONSE_BYTES_LIMIT) {
+    if (bytesRead > BYTE_LIMIT) {
       csv += trimPartialLines(text)
       didTruncate = true
       break
@@ -143,6 +150,17 @@ const processErrorResponse = async (
     const json = JSON.parse(body)
     const message = json.message || json.error
     const code = json.code
+
+    switch (code) {
+      case REQUEST_TIMEOUT_STATUS:
+        event('shared query timeout')
+        break
+      case GATEWAY_TIMEOUT_STATUS:
+        event('shared gateway timeout')
+        break
+      default:
+        event('shared query error')
+    }
 
     return {type: 'UNKNOWN_ERROR', message, code}
   } catch {

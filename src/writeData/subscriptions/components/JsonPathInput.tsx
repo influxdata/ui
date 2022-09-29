@@ -3,10 +3,8 @@ import React, {FC, useState} from 'react'
 
 // Components
 import {
-  Input,
   Grid,
   Form,
-  InputType,
   Dropdown,
   ButtonShape,
   IconFont,
@@ -27,10 +25,15 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Utils
 import {
+  handleJsonPathValidation,
   handleValidation,
+  JSON_TOOLTIP,
   sanitizeType,
+  dataTypeList,
+  handleAvroValidation,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
+import ValidationInputWithTooltip from './ValidationInputWithTooltip'
 
 interface Props {
   name: string
@@ -47,56 +50,53 @@ const JsonPathInput: FC<Props> = ({
   itemNum,
   edit,
 }) => {
-  const dataTypeList = ['String', 'Number']
   const [dataType, setDataType] = useState(dataTypeList[0])
   const tagType = name === 'Tag'
   return (
     <div>
       <Grid.Column>
-        <div className="json-parsing-form__header-wrap">
-          <Heading
-            element={HeadingElement.H3}
-            weight={FontWeight.Bold}
-            className="json-parsing-form__header-wrap__header"
-          >
-            {name}
-          </Heading>
-          {(tagType
-            ? !(formContent.jsonTagKeys.length === 1)
-            : !(formContent.jsonFieldKeys.length === 1)) && (
-            <ConfirmationButton
-              color={ComponentColor.Colorless}
-              icon={IconFont.Trash_New}
-              shape={ButtonShape.Square}
-              size={ComponentSize.ExtraSmall}
-              confirmationLabel={`Yes, delete this ${name}`}
-              onConfirm={() => {
-                event(
-                  'removed json parsing rule',
-                  {
-                    ruleType: tagType ? 'tag' : 'field',
-                  },
-                  {feature: 'subscriptions'}
-                )
-                if (tagType) {
-                  formContent.jsonTagKeys.splice(itemNum, 1)
-                } else {
-                  formContent.jsonFieldKeys.splice(itemNum, 1)
-                }
-                updateForm({...formContent})
-              }}
-              confirmationButtonText="Confirm"
-              testID={`${tagType}-json-delete-label`}
-            />
-          )}
-        </div>
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className="json-parsing-form__header"
+        >
+          {name}
+        </Heading>
+        {(tagType
+          ? !(formContent.jsonTagKeys.length === 0)
+          : !(formContent.jsonFieldKeys.length === 1)) && (
+          <ConfirmationButton
+            color={ComponentColor.Colorless}
+            icon={IconFont.Trash_New}
+            shape={ButtonShape.Square}
+            size={ComponentSize.ExtraSmall}
+            confirmationLabel={`Yes, delete this ${name}`}
+            onConfirm={() => {
+              event(
+                'removed json parsing rule',
+                {
+                  ruleType: tagType ? 'tag' : 'field',
+                },
+                {feature: 'subscriptions'}
+              )
+              if (tagType) {
+                formContent.jsonTagKeys.splice(itemNum, 1)
+              } else {
+                formContent.jsonFieldKeys.splice(itemNum, 1)
+              }
+              updateForm({...formContent})
+            }}
+            confirmationButtonText="Confirm"
+            testID={`${tagType}-json-delete-label`}
+          />
+        )}
         <FlexBox
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}
           margin={ComponentSize.Large}
           className="json-parsing-form__container"
         >
-          <Form.ValidationElement
+          <ValidationInputWithTooltip
             label="Name"
             value={
               tagType
@@ -104,62 +104,55 @@ const JsonPathInput: FC<Props> = ({
                 : formContent.jsonFieldKeys[itemNum].name
             }
             required={true}
-            validationFunc={() =>
-              handleValidation(
-                `${name}`,
-                tagType
-                  ? formContent.jsonTagKeys[itemNum].name
-                  : formContent.jsonFieldKeys[itemNum].name
+            validationFunc={() => {
+              const value = tagType
+                ? formContent.jsonTagKeys[itemNum].name
+                : formContent.jsonFieldKeys[itemNum].name
+              return (
+                handleValidation(name, value) ??
+                handleAvroValidation(name, value)
+              )
+            }}
+            placeholder={`${name}_name`.toLowerCase()}
+            name={`${name}=name`}
+            onChange={e => {
+              let newArr
+              if (tagType) {
+                newArr = Object.assign([...formContent.jsonTagKeys], {
+                  [itemNum]: {
+                    ...formContent.jsonTagKeys[itemNum],
+                    name: e.target.value,
+                  },
+                })
+                updateForm({...formContent, jsonTagKeys: newArr})
+              } else {
+                newArr = Object.assign([...formContent.jsonFieldKeys], {
+                  [itemNum]: {
+                    ...formContent.jsonFieldKeys[itemNum],
+                    name: e.target.value,
+                  },
+                })
+                updateForm({...formContent, jsonFieldKeys: newArr})
+              }
+            }}
+            onBlur={() =>
+              event(
+                'completed form field',
+                {
+                  formField: `${
+                    tagType ? 'jsonTagKeys' : 'jsonFieldKeys'
+                  }.name`,
+                },
+                {feature: 'subscriptions'}
               )
             }
-          >
-            {status => (
-              <Input
-                type={InputType.Text}
-                placeholder="nonDescriptName"
-                name={`${name}=name`}
-                autoFocus={true}
-                value={
-                  tagType
-                    ? formContent.jsonTagKeys[itemNum].name
-                    : formContent.jsonFieldKeys[itemNum].name
-                }
-                onChange={e => {
-                  let newArr
-                  if (tagType) {
-                    newArr = Object.assign([...formContent.jsonTagKeys], {
-                      [itemNum]: {
-                        ...formContent.jsonTagKeys[itemNum],
-                        name: e.target.value,
-                      },
-                    })
-                    updateForm({...formContent, jsonTagKeys: newArr})
-                  } else {
-                    newArr = Object.assign([...formContent.jsonFieldKeys], {
-                      [itemNum]: {
-                        ...formContent.jsonFieldKeys[itemNum],
-                        name: e.target.value,
-                      },
-                    })
-                    updateForm({...formContent, jsonFieldKeys: newArr})
-                  }
-                }}
-                onBlur={() =>
-                  event(
-                    'completed form field',
-                    {
-                      formField: `${
-                        tagType ? 'jsonTagKeys' : 'jsonFieldKeys'
-                      }.name`,
-                    },
-                    {feature: 'subscriptions'}
-                  )
-                }
-                status={edit ? status : ComponentStatus.Disabled}
-                testID={`${tagType}-json-parsing-name`}
-              />
-            )}
-          </Form.ValidationElement>
+            edit={edit}
+            testID={`${tagType}-json-parsing-name`}
+            tooltip={`This will become the the ${
+              tagType ? 'tag' : 'field'
+            }'s key`}
+            width="75%"
+          />
           <div className="json-parsing-form__container__dropdown">
             <Form.Label label="Data Type" />
             <Dropdown
@@ -199,12 +192,10 @@ const JsonPathInput: FC<Props> = ({
                         )
                         setDataType(d)
                         tagType
-                          ? (formContent.jsonTagKeys[
-                              itemNum
-                            ].type = d.toLowerCase())
-                          : (formContent.jsonFieldKeys[
-                              itemNum
-                            ].type = d.toLowerCase())
+                          ? (formContent.jsonTagKeys[itemNum].type =
+                              d.toLowerCase())
+                          : (formContent.jsonFieldKeys[itemNum].type =
+                              d.toLowerCase())
                       }}
                       selected={dataType === d}
                       testID={`${tagType}-json-parsing-type-${key}`}
@@ -219,7 +210,7 @@ const JsonPathInput: FC<Props> = ({
         </FlexBox>
       </Grid.Column>
       <Grid.Column>
-        <Form.ValidationElement
+        <ValidationInputWithTooltip
           label="JSON Path"
           value={
             tagType
@@ -227,62 +218,50 @@ const JsonPathInput: FC<Props> = ({
               : formContent.jsonFieldKeys[itemNum].path
           }
           required={true}
-          validationFunc={() =>
-            handleValidation(
-              `${name} Path`,
-              tagType
-                ? formContent.jsonTagKeys[itemNum].path
-                : formContent.jsonFieldKeys[itemNum].path
+          validationFunc={() => {
+            const path = tagType
+              ? formContent.jsonTagKeys[itemNum].path
+              : formContent.jsonFieldKeys[itemNum].path
+            return (
+              handleValidation(`${name} Path`, path) ??
+              handleJsonPathValidation(path)
+            )
+          }}
+          placeholder="eg. $.myJSON.myObject[0].myKey"
+          name="jsonpath"
+          onChange={e => {
+            let newArr
+            if (tagType) {
+              newArr = Object.assign([...formContent.jsonTagKeys], {
+                [itemNum]: {
+                  ...formContent.jsonTagKeys[itemNum],
+                  path: e.target.value,
+                },
+              })
+              updateForm({...formContent, jsonTagKeys: newArr})
+            } else {
+              newArr = Object.assign([...formContent.jsonFieldKeys], {
+                [itemNum]: {
+                  ...formContent.jsonFieldKeys[itemNum],
+                  path: e.target.value,
+                },
+              })
+              updateForm({...formContent, jsonFieldKeys: newArr})
+            }
+          }}
+          onBlur={() =>
+            event(
+              'completed form field',
+              {
+                formField: `${tagType ? 'jsonTagKeys' : 'jsonFieldKeys'}.path`,
+              },
+              {feature: 'subscriptions'}
             )
           }
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. $.myJSON.myObject[0].myKey"
-              name="jsonpath"
-              autoFocus={true}
-              value={
-                tagType
-                  ? formContent.jsonTagKeys[itemNum].path
-                  : formContent.jsonFieldKeys[itemNum].path
-              }
-              onChange={e => {
-                let newArr
-                if (tagType) {
-                  newArr = Object.assign([...formContent.jsonTagKeys], {
-                    [itemNum]: {
-                      ...formContent.jsonTagKeys[itemNum],
-                      path: e.target.value,
-                    },
-                  })
-                  updateForm({...formContent, jsonTagKeys: newArr})
-                } else {
-                  newArr = Object.assign([...formContent.jsonFieldKeys], {
-                    [itemNum]: {
-                      ...formContent.jsonFieldKeys[itemNum],
-                      path: e.target.value,
-                    },
-                  })
-                  updateForm({...formContent, jsonFieldKeys: newArr})
-                }
-              }}
-              onBlur={() =>
-                event(
-                  'completed form field',
-                  {
-                    formField: `${
-                      tagType ? 'jsonTagKeys' : 'jsonFieldKeys'
-                    }.path`,
-                  },
-                  {feature: 'subscriptions'}
-                )
-              }
-              status={edit ? status : ComponentStatus.Disabled}
-              testID={`${tagType}-json-parsing-path`}
-            />
-          )}
-        </Form.ValidationElement>
+          edit={edit}
+          testID={`${tagType}-json-parsing-path`}
+          tooltip={JSON_TOOLTIP}
+        />
         <div className="line"></div>
       </Grid.Column>
     </div>

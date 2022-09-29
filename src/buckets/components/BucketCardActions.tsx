@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {
@@ -20,6 +20,7 @@ import {
   setDataLoadersType,
   setLocationOnDismiss,
 } from 'src/dataLoaders/actions/dataLoaders'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
@@ -30,29 +31,30 @@ import {CLOUD} from 'src/shared/constants'
 
 interface OwnProps {
   bucket: OwnBucket
-  bucketType: 'user' | 'system'
-  orgID: string
+  bucketType: OwnBucket['type']
   onFilterChange: (searchTerm: string) => void
   onGetSchema: (b: OwnBucket) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{orgID: string}>
-type Props = OwnProps & ReduxProps & RouterProps
+type Props = OwnProps & ReduxProps
 
 const BucketCardActions: FC<Props> = ({
   bucket,
   bucketType,
-  orgID,
   onFilterChange,
   onGetSchema,
   onAddBucketLabel,
   onDeleteBucketLabel,
-  history,
   onSetDataLoadersBucket,
   onSetDataLoadersType,
   setLocationOnDismiss,
+  showOverlay,
+  dismissOverlay,
 }) => {
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
+
   if (bucketType === 'system') {
     return null
   }
@@ -81,7 +83,7 @@ const BucketCardActions: FC<Props> = ({
 
     onSetDataLoadersType(DataLoaderType.Streaming)
     setLocationOnDismiss(`/orgs/${orgID}/load-data/buckets`)
-    history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
+    showOverlay('telegraf-wizard', null, dismissOverlay)
   }
 
   const handleAddLineProtocol = () => {
@@ -159,8 +161,10 @@ const mdtp = {
   onSetDataLoadersBucket: setBucketInfo,
   onSetDataLoadersType: setDataLoadersType,
   setLocationOnDismiss,
+  showOverlay,
+  dismissOverlay,
 }
 
 const connector = connect(null, mdtp)
 
-export default connector(withRouter(BucketCardActions))
+export default connector(BucketCardActions)

@@ -33,27 +33,23 @@ import {
   DeleteOrgContext,
   VariableItems,
 } from 'src/organizations/components/DeleteOrgContext'
-import {getQuartzMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 const DeleteOrgOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const dispatch = useDispatch()
-  const {
-    reason,
-    shortSuggestion,
-    suggestions,
-    getRedirectLocation,
-  } = useContext(DeleteOrgContext)
-  const quartzMe = useSelector(getQuartzMe)
+  const {reason, shortSuggestion, suggestions, getRedirectLocation} =
+    useContext(DeleteOrgContext)
+  const {user, account} = useSelector(selectCurrentIdentity)
   const org = useSelector(getOrg)
 
   const handleClose = () => {
     const payload = {
       org: org.id,
-      tier: quartzMe?.accountType,
-      email: quartzMe?.email,
+      tier: account.type,
+      email: user.email,
     }
     event('DeleteOrgDismissed Event', payload)
 
@@ -75,8 +71,8 @@ const DeleteOrgOverlay: FC = () => {
   const handleDeleteAccount = async () => {
     const payload = {
       org: org.id,
-      tier: quartzMe?.accountType,
-      email: quartzMe?.email,
+      tier: account.type,
+      email: user.email,
       alternativeProduct: shortSuggestion,
       suggestions,
       reason: VariableItems[reason],

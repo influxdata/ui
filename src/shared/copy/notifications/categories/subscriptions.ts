@@ -1,25 +1,37 @@
 import {Notification} from 'src/types'
 import {defaultErrorNotification} from 'src/shared/copy/notifications'
 
-// Subscriptions
-export const subscriptionCreateFail = (): Notification => ({
+export const subscriptionCreateFail = (message?: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to create Subscription, please try again.`,
+  message: message
+    ? message
+    : `Failed to create Subscription, please try again.`,
 })
 
-export const subscriptionUpdateFail = (): Notification => ({
+export const subscriptionUpdateFail = (message?: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to update Subscription, please try again.`,
+  message: message
+    ? message
+    : `Failed to update Subscription, please try again.`,
 })
 
-export const subscriptionStatusUpdateFail = (): Notification => ({
+export const subscriptionStatusUpdateFail = (
+  message?: string
+): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to update Subscription status, please try again.`,
+  message: message
+    ? message
+    : `Failed to update Subscription status, please try again.`,
 })
 
 export const subscriptionsGetFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to get Subscriptions, please try again.`,
+})
+
+export const subscriptionStatusesGetFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to get Subscription Statuses, please try again.`,
 })
 
 export const subscriptionsDeleteFail = (): Notification => ({

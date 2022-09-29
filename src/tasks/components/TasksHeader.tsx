@@ -21,7 +21,7 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {setSearchTerm as setSearchTermAction} from 'src/tasks/actions/creators'
@@ -81,15 +81,15 @@ const TasksHeader: FC<Props> = ({
   }
   return (
     <>
-      <Page.Header fullWidth={false} testID="tasks-page--header">
+      <Page.Header fullWidth={true} testID="tasks-page--header">
         <Page.Title title="Tasks" />
-        <RateLimitAlert location="task list" />
+        {!isFlagEnabled('multiOrg') && <RateLimitAlert location="task list" />}
       </Page.Header>
       {flowsCTA.tasks && (
         <FeatureFlag name="flowsCTA">
           <div className="header-cta--tasks">
             <div className="header-cta">
-              <Icon glyph={IconFont.BookPencil} />
+              <Icon glyph={IconFont.Pencil} />
               Now you can use Notebooks to explore your data while building a
               task
               <Link to="/notebook/from/task" onClick={recordClick}>
@@ -102,7 +102,7 @@ const TasksHeader: FC<Props> = ({
           </div>
         </FeatureFlag>
       )}
-      <Page.ControlBar fullWidth={false}>
+      <Page.ControlBar fullWidth={true}>
         <Page.ControlBarLeft>
           <SearchWidget
             placeholderText="Filter tasks..."

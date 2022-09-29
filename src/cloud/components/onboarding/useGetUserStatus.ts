@@ -1,4 +1,4 @@
-import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
+import {fromFlux} from '@influxdata/giraffe'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Table} from '@influxdata/giraffe'
@@ -92,8 +92,7 @@ export const queryUsage = async (orgID: string, range?: string) => {
     csvToParse = usageStatsCsv
   }
 
-  const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
-  const {table} = parser(csvToParse)
+  const {table} = fromFlux(csvToParse)
   return table
 }
 

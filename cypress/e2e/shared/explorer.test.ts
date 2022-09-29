@@ -1,33 +1,17 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
-import {
-  FROM,
-  RANGE,
-  MEAN,
-  MATH_ABS,
-  MATH_FLOOR,
-  STRINGS_TITLE,
-  STRINGS_TRIM,
-} from '../../../src/shared/constants/fluxFunctions'
-
-function getTimeMachineText() {
-  return cy
-    .wrap({
-      text: () => {
-        const store = cy.state().window.store.getState().timeMachines
-        const timeMachine = store.timeMachines[store.activeTimeMachineID]
-        const query =
-          timeMachine.draftQueries[timeMachine.activeQueryIndex].text
-        return query
-      },
-    })
-    .invoke('text')
-}
 
 describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
+    // Double check that the new schemaComposition flag does not interfere.
+    cy.setFeatureFlags({
+      schemaComposition: true,
+    })
+    // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+    // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+    cy.wait(1200)
     cy.get('@org').then(({id}: Organization) => {
       cy.createMapVariable(id)
       cy.fixture('routes').then(({orgs, explorer}) => {
@@ -86,9 +70,7 @@ describe('DataExplorer', () => {
     it('should not have the input field in error status when input becomes valid', () => {
       cy.get('.view-options').within(() => {
         cy.getByTestID('auto-input').within(() => {
-          cy.getByTestID('input-field')
-            .clear()
-            .type('3')
+          cy.getByTestID('input-field').clear().type('3')
           cy.getByTestID('input-field--error').should('have.length', 0)
         })
       })
@@ -388,9 +370,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('input-error').should('not.exist')
 
         // type incomplete input
-        cy.get('input[title="Start"]')
-          .clear()
-          .type('2019-10')
+        cy.get('input[title="Start"]').clear().type('2019-10')
 
         // invalid date errors
         cy.getByTestID('form--element-error').should('exist')
@@ -402,9 +382,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('input-error').should('not.exist')
 
         // type invalid stop date
-        cy.get('input[title="Stop"]')
-          .clear()
-          .type('2019-10-')
+        cy.get('input[title="Stop"]').clear().type('2019-10-')
 
         // invalid date errors
         cy.getByTestID('form--element-error').should('exist')
@@ -413,9 +391,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
 
         // Validate that ISO String formatted texts are valid
-        cy.get('input[title="Stop"]')
-          .clear()
-          .type('2019-10-29T08:00:00.000Z')
+        cy.get('input[title="Stop"]').clear().type('2019-10-29T08:00:00.000Z')
 
         // button should not be disabled
         cy.getByTestID('daterange--apply-btn').should('not.be.disabled')
@@ -425,9 +401,7 @@ describe('DataExplorer', () => {
 
   describe('raw script editing', () => {
     beforeEach(() => {
-      cy.getByTestID('switch-to-script-editor')
-        .should('be.visible')
-        .click()
+      cy.getByTestID('switch-to-script-editor').should('be.visible').click()
     })
 
     it('shows the proper query button state', () => {
@@ -441,77 +415,6 @@ describe('DataExplorer', () => {
 
       cy.getByTestID('time-machine-submit-button').should('not.be.disabled')
       cy.getByTestID('flux-editor').monacoType('{selectall}{del}')
-    })
-
-    it('imports the appropriate packages to build a query', () => {
-      cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
-      cy.getByTestID('functions-toolbar-contents--functions').should('exist')
-      cy.getByTestID('flux--from--inject').click({force: true})
-      cy.getByTestID('flux--range--inject').click({force: true})
-      cy.getByTestID('flux--math.abs--inject').click({force: true})
-      cy.getByTestID('flux--math.floor--inject').click({force: true})
-      cy.getByTestID('flux--strings.title--inject').click({force: true})
-      cy.getByTestID('flux--strings.trim--inject').click({force: true})
-
-      cy.wait(100)
-
-      getTimeMachineText().then(text => {
-        const expected = `
-        import"${STRINGS_TITLE.package}"
-        import"${MATH_ABS.package}"
-        ${FROM.example}|>
-        ${RANGE.example}|>
-        ${MATH_ABS.example}|>
-        ${MATH_FLOOR.example}|>
-        ${STRINGS_TITLE.example}|>
-        ${STRINGS_TRIM.example}`
-
-        cy.fluxEqual(text, expected).should('be.true')
-      })
-    })
-
-    it('can use the function selector to build a query', () => {
-      // wait for monaco to load so focus is not taken from flux-toolbar-search--input
-      cy.get('.view-line').should('be.visible')
-
-      cy.getByTestID('flux-toolbar-search--input')
-        .clear()
-        .type('covarianced') // purposefully misspell "covariance" so all functions are filtered out
-
-      cy.getByTestID('flux-toolbar--list').within(() => {
-        cy.getByTestID('empty-state').should('be.visible')
-      })
-
-      cy.getByTestID('flux-toolbar-search--input').type('{backspace}')
-
-      cy.get('.flux-toolbar--list-item').should('contain', 'covariance')
-      cy.get('.flux-toolbar--list-item').should('have.length', 1)
-
-      cy.getByTestID('flux-toolbar-search--input').clear()
-
-      cy.getByTestID('flux--from--inject').click()
-
-      getTimeMachineText().then(text => {
-        const expected = FROM.example
-
-        cy.fluxEqual(text, expected).should('be.true')
-      })
-
-      cy.getByTestID('flux--range--inject').click()
-
-      getTimeMachineText().then(text => {
-        const expected = `${FROM.example}|>${RANGE.example}`
-
-        cy.fluxEqual(text, expected).should('be.true')
-      })
-
-      cy.getByTestID('flux--mean--inject').click()
-
-      getTimeMachineText().then(text => {
-        const expected = `${FROM.example}|>${RANGE.example}|>${MEAN.example}`
-
-        cy.fluxEqual(text, expected).should('be.true')
-      })
     })
 
     it('shows the empty state when the query returns no results', () => {
@@ -555,9 +458,7 @@ describe('DataExplorer', () => {
       cy.getByTestID('task-form-schedule-input').type('4h')
       cy.getByTestID('task-form-save').click()
 
-      cy.getByTestID(`task-card`)
-        .should('exist')
-        .should('contain', taskName)
+      cy.getByTestID(`task-card`).should('exist').should('contain', taskName)
     })
 
     it('injects variables into flux-editor', () => {
@@ -566,9 +467,7 @@ describe('DataExplorer', () => {
         '  |>range(start: , stop: )',
       ]
 
-      cy.get('.view-line')
-        .last()
-        .type(fluxQuery.join('{enter}'))
+      cy.get('.view-line').last().type(fluxQuery.join('{enter}'))
 
       // Searches for non-existent variable
       cy.getByTestID('toolbar-tab').click()
@@ -587,9 +486,7 @@ describe('DataExplorer', () => {
       })
 
       // Searches for timeRange variables
-      cy.getByTestID('flux-toolbar-search--input')
-        .clear()
-        .type('timeRange')
+      cy.getByTestID('flux-toolbar-search--input').clear().type('timeRange')
 
       cy.get('.flux-toolbar--list').within(() => {
         cy.get('.flux-toolbar--list-item')
@@ -673,14 +570,10 @@ describe('DataExplorer', () => {
       )
 
       // rename the first tab
-      cy.get('.query-tab')
-        .first()
-        .trigger('contextmenu', {force: true})
+      cy.get('.query-tab').first().trigger('contextmenu', {force: true})
       cy.getByTestID('right-click--edit-tab').click()
       cy.getByTestID('edit-query-name').type('NewName{enter}')
-      cy.get('.query-tab')
-        .first()
-        .contains('NewName')
+      cy.get('.query-tab').first().contains('NewName')
 
       // Fire a click outside of the right click menu to dismiss it because
       // it is obscuring the + button
@@ -690,9 +583,7 @@ describe('DataExplorer', () => {
       cy.get('.time-machine-queries--new').click()
       cy.get('.query-tab').should('have.length', 2)
 
-      cy.get('.query-tab')
-        .first()
-        .trigger('contextmenu')
+      cy.get('.query-tab').first().trigger('contextmenu')
       cy.getByTestID('right-click--remove-tab').click()
 
       cy.get('.query-tab').should('have.length', 1)
@@ -826,9 +717,7 @@ describe('DataExplorer', () => {
           /^(?=.*dashboards)(?:(?!cell).)+$/
         )
 
-        cy.getByTestID(`cell--draggable ${cellName}`)
-          .should('exist')
-          .click()
+        cy.getByTestID(`cell--draggable ${cellName}`).should('exist').click()
         cy.getByTestID(`cell ${cellName}`).should('exist')
       })
     })
@@ -937,18 +826,14 @@ describe('DataExplorer', () => {
         fillForm('every', {time: timeEvery, taskName})
 
         cy.getByTestID('task-options-bucket-dropdown--button').click()
-        cy.getByTestID('dropdown-item')
-          .contains(bucketName)
-          .click()
+        cy.getByTestID('dropdown-item').contains(bucketName).click()
         cy.getByTestID('task-options-bucket-dropdown--button')
           .contains(bucketName)
           .should('exist')
 
         cy.getByTestID('task-options-bucket-dropdown--button').click()
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-          cy.getByTestID('dropdown-item')
-            .contains(defaultBucket)
-            .click()
+          cy.getByTestID('dropdown-item').contains(defaultBucket).click()
           cy.getByTestID('task-options-bucket-dropdown--button')
             .contains(defaultBucket)
             .should('exist')
@@ -1017,9 +902,7 @@ describe('DataExplorer', () => {
           cy.getByTestID('variable-name-input').type('bad name')
           cy.getByTestID('variable-form-save').should('be.disabled')
 
-          cy.getByTestID('variable-name-input')
-            .clear()
-            .type('bad-name')
+          cy.getByTestID('variable-name-input').clear().type('bad-name')
           cy.getByTestID('variable-form-save').should('be.disabled')
           cy.get('.cf-overlay--dismiss').click()
         })

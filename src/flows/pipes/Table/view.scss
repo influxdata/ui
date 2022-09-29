@@ -1,7 +1,14 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
+.flow-visualization--header {
+  .search-widget-input {
+    flex: 0 1 500px;
+  }
+}
+
 .query-stat {
   padding: $cf-space-2xs 0;
+  white-space: nowrap;
 }
 
 .query-stat--bold {

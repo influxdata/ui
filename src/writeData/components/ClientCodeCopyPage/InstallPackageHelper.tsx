@@ -37,7 +37,7 @@ const InstallPackageHelper: FC<Props> = ({text, codeRenderer}) => {
         onClick={handleToggleClick}
       >
         <Icon
-          glyph={IconFont.CaretRight}
+          glyph={IconFont.CaretRight_New}
           className="install-package-helper--caret"
         />
         <Heading

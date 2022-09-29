@@ -17,6 +17,18 @@ $flux-toolbar--gap: $cf-space-2xs;
   width: $cf-form-md-height;
   flex: 0 0 $cf-form-md-height;
 }
+.flux-toolbar--path {
+  color: $cf-grey-55;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border-radius: 1px;
+  border-bottom: 2px solid $cf-grey-15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  padding: $cf-space-2xs $cf-space-xs;
+}
 
 .flux-toolbar--tab {
   border-radius: $cf-radius;
@@ -62,6 +74,11 @@ $flux-toolbar--gap: $cf-space-2xs;
   border-radius: $cf-radius;
   overflow: hidden;
   margin-right: $flux-toolbar--gap;
+
+  .flux-toolbar {
+    flex-direction: column;
+    padding: $cf-space-2xs 0;
+  }
 }
 
 .flux-toolbar--search {
@@ -81,6 +98,7 @@ $flux-toolbar--gap: $cf-space-2xs;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  flex-grow: 1;
 }
 
 .flux-toolbar--list-item,
@@ -133,10 +151,33 @@ $flux-toolbar--gap: $cf-space-2xs;
       opacity: 1;
     }
   }
+
+  &.flux-toolbar--new-style {
+    cursor: pointer;
+    background: none;
+    font-weight: $cf-font-weight--regular;
+    padding: $cf-space-2xs 0;
+
+    > code {
+      color: $cf-grey-85;
+      background-color: none;
+    }
+
+    &:hover {
+      > code {
+        background-color: $cf-grey-15;
+        color: $c-galaxy;
+
+        &:after {
+          content: ' +';
+        }
+      }
+    }
+  }
 }
 
 .flux-toolbar--heading {
-  padding: $cf-space-2xs $cf-space-s;
+  padding: $cf-space-2xs;
   padding-bottom: $cf-space-2xs + $cf-space-3xs;
   font-weight: $cf-font-weight--medium;
   color: $cf-grey-85;
@@ -169,4 +210,53 @@ $flux-toolbar--gap: $cf-space-2xs;
 .flux-toolbar--popover {
   font-size: 13px;
   padding: $cf-space-s + $cf-space-3xs;
+}
+
+@import 'src/style/modules';
+
+.flux-function-docs {
+  width: 420px;
+  height: 330px;
+}
+
+.flux-function-docs--heading {
+  font-weight: $cf-font-weight--bold;
+  margin-top: $cf-space-2xs;
+  margin-bottom: $cf-space-2xs;
+  display: inline-block;
+  width: 100%;
+
+  article:first-child & {
+    margin-top: 0;
+  }
+}
+
+.flux-function-docs--snippet {
+  background-color: $cf-grey-5;
+  border-radius: $cf-radius;
+  margin: $cf-space-3xs 0;
+  padding: $cf-space-2xs;
+  font-family: $cf-code-font;
+}
+
+.flux-function-docs--arguments {
+  span:first-child {
+    font-weight: $cf-font-weight--bold;
+    color: $c-pool;
+    margin-right: $cf-space-3xs;
+  }
+
+  span:nth-child(2) {
+    color: $c-pool;
+    font-style: italic;
+    margin-right: $cf-border;
+
+    &.isRequired {
+      color: $c-fire;
+    }
+  }
+
+  div {
+    margin: $cf-space-3xs 0 $cf-space-s 0;
+  }
 }

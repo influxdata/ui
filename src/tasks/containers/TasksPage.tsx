@@ -67,10 +67,6 @@ class TasksPage extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    if (!props.showInactive) {
-      props.setShowInactive()
-    }
-
     this.state = {
       isImporting: false,
       taskLabelsEdit: null,
@@ -147,7 +143,7 @@ class TasksPage extends PureComponent<Props, State> {
             sortType={sortType}
             onSort={this.handleSort}
           />
-          <Page.Contents fullWidth={false} scrollable={false}>
+          <Page.Contents fullWidth={true} scrollable={false}>
             <AutoSizer>
               {({width, height}) => {
                 return (

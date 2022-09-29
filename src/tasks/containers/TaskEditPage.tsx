@@ -33,8 +33,8 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(
+  () => import('src/shared/components/FluxMonacoEditor')
 )
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -60,8 +60,50 @@ class TaskEditPage extends PureComponent<Props> {
   }
 
   public render(): JSX.Element {
-    const {currentScript, taskOptions} = this.props
+    const {currentScript, currentTask, taskOptions} = this.props
 
+    if (currentTask?.scriptID != null) {
+      return (
+        <Page titleTag={pageTitleSuffixer([`Edit ${taskOptions.name}`])}>
+          <TaskHeader
+            title="Scripted Task"
+            canSubmit={false}
+            onCancel={this.handleCancel}
+            onSave={() => {}}
+          />
+          <Page.Contents fullWidth={true} scrollable={false}>
+            <div className="task-form">
+              <div className="task-form--options">
+                <TaskForm
+                  canSubmit={false}
+                  taskOptions={taskOptions}
+                  onChangeInput={this.handleChangeInput}
+                  onChangeScheduleType={this.handleChangeScheduleType}
+                />
+              </div>
+              <div className="task-form--editor">
+                <Suspense
+                  fallback={
+                    <SpinnerContainer
+                      loading={RemoteDataState.Loading}
+                      spinnerComponent={<TechnoSpinner />}
+                    />
+                  }
+                >
+                  <FluxMonacoEditor
+                    // Fill with a comment to avoid the syntax highlighting on the `or`
+                    script="// You may not modify or save this task while it is using a script. Please use the API directly."
+                    variables={null}
+                    onChangeScript={this.handleChangeScript}
+                    autofocus
+                  />
+                </Suspense>
+              </div>
+            </div>
+          </Page.Contents>
+        </Page>
+      )
+    }
     return (
       <Page titleTag={pageTitleSuffixer([`Edit ${taskOptions.name}`])}>
         <TaskHeader

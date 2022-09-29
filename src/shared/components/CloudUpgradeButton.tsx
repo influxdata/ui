@@ -12,14 +12,18 @@ import {
   ButtonShape,
 } from '@influxdata/clockface'
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Utils
-import {shouldShowUpgradeButton} from 'src/me/selectors'
+import {
+  shouldGetCredit250Experience,
+  shouldShowUpgradeButton,
+} from 'src/me/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Constants
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
+
 interface OwnProps {
   buttonText?: string
   className?: string
@@ -36,6 +40,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
   size = ComponentSize.Small,
 }) => {
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
   const cloudUpgradeButtonClass = classnames('upgrade-payg--button', {
     [`${className}`]: className,
@@ -62,21 +67,27 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     />
   )
 
+  const credit250Experience = (
+    <span key="1">
+      <span className="credit-250-experiment-upgrade-button--text">
+        Get $250 free credit
+      </span>
+      {original}
+    </span>
+  )
+
   if (showUpgradeButton) {
     if (isFlagEnabled('credit250Experiment') && showPromoMessage) {
+      if (isCredit250ExperienceActive) {
+        return credit250Experience
+      }
+
       return (
         <CloudOnly>
           <GoogleOptimizeExperiment
             experimentID={CREDIT_250_EXPERIMENT_ID}
             original={original}
-            variants={[
-              <span key="1">
-                <span className="credit-250-experiment-upgrade-button--text">
-                  Get $250 free credit
-                </span>
-                {original}
-              </span>,
-            ]}
+            variants={[credit250Experience]}
           />
         </CloudOnly>
       )

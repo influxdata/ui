@@ -42,14 +42,6 @@ const UserWidget: FC<Props> = ({
       <CloudOnly>
         <TreeNav.SubHeading label="Account" />
         <TreeNav.UserItem
-          id="billing"
-          label="Billing"
-          testID="user-nav-item-billing"
-          linkElement={className => (
-            <Link className={className} to={`${orgPrefix}/billing`} />
-          )}
-        />
-        <TreeNav.UserItem
           id="account"
           label="Settings"
           testID="user-account-switching-page"
@@ -57,21 +49,29 @@ const UserWidget: FC<Props> = ({
             <Link className={className} to={`${orgPrefix}/accounts/settings`} />
           )}
         />
-        <TreeNav.SubHeading label="Organization" />
         <TreeNav.UserItem
-          id="users"
-          label="Members"
-          testID="user-nav-item-users"
+          id="billing"
+          label="Billing"
+          testID="user-nav-item-billing"
           linkElement={className => (
-            <Link className={className} to={`${orgPrefix}/users`} />
+            <Link className={className} to={`${orgPrefix}/billing`} />
           )}
         />
+        <TreeNav.SubHeading label="Organization" />
         <TreeNav.UserItem
           id="about"
           label="Settings"
           testID="user-nav-item-about"
           linkElement={className => (
-            <Link className={className} to={`${orgPrefix}/about`} />
+            <Link className={className} to={`${orgPrefix}/org-settings`} />
+          )}
+        />
+        <TreeNav.UserItem
+          id="users"
+          label="Members"
+          testID="user-nav-item-users"
+          linkElement={className => (
+            <Link className={className} to={`${orgPrefix}/members`} />
           )}
         />
         <TreeNav.UserItem

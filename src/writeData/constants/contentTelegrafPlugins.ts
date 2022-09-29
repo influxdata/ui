@@ -20,9 +20,10 @@ import cgroupMarkdown from 'src/writeData/components/telegrafPlugins/cgroup.md'
 import chronyMarkdown from 'src/writeData/components/telegrafPlugins/chrony.md'
 import cisco_telemetry_mdtMarkdown from 'src/writeData/components/telegrafPlugins/cisco_telemetry_mdt.md'
 import clickhouseMarkdown from 'src/writeData/components/telegrafPlugins/clickhouse.md'
-import cloud_pubsub_pushMarkdown from 'src/writeData/components/telegrafPlugins/cloud_pubsub_push.md'
 import cloud_pubsubMarkdown from 'src/writeData/components/telegrafPlugins/cloud_pubsub.md'
+import cloud_pubsub_pushMarkdown from 'src/writeData/components/telegrafPlugins/cloud_pubsub_push.md'
 import cloudwatchMarkdown from 'src/writeData/components/telegrafPlugins/cloudwatch.md'
+import cloudwatch_metric_streamsMarkdown from 'src/writeData/components/telegrafPlugins/cloudwatch_metric_streams.md'
 import conntrackMarkdown from 'src/writeData/components/telegrafPlugins/conntrack.md'
 import consulMarkdown from 'src/writeData/components/telegrafPlugins/consul.md'
 import consul_agentMarkdown from 'src/writeData/components/telegrafPlugins/consul_agent.md'
@@ -32,26 +33,26 @@ import cpuMarkdown from 'src/writeData/components/telegrafPlugins/cpu.md'
 import csgoMarkdown from 'src/writeData/components/telegrafPlugins/csgo.md'
 import dcosMarkdown from 'src/writeData/components/telegrafPlugins/dcos.md'
 import directory_monitorMarkdown from 'src/writeData/components/telegrafPlugins/directory_monitor.md'
-import diskioMarkdown from 'src/writeData/components/telegrafPlugins/diskio.md'
 import diskMarkdown from 'src/writeData/components/telegrafPlugins/disk.md'
+import diskioMarkdown from 'src/writeData/components/telegrafPlugins/diskio.md'
 import disqueMarkdown from 'src/writeData/components/telegrafPlugins/disque.md'
 import dmcacheMarkdown from 'src/writeData/components/telegrafPlugins/dmcache.md'
 import dns_queryMarkdown from 'src/writeData/components/telegrafPlugins/dns_query.md'
-import docker_logMarkdown from 'src/writeData/components/telegrafPlugins/docker_log.md'
 import dockerMarkdown from 'src/writeData/components/telegrafPlugins/docker.md'
+import docker_logMarkdown from 'src/writeData/components/telegrafPlugins/docker_log.md'
 import dovecotMarkdown from 'src/writeData/components/telegrafPlugins/dovecot.md'
 import dpdkMarkdown from 'src/writeData/components/telegrafPlugins/dpdk.md'
 import ecsMarkdown from 'src/writeData/components/telegrafPlugins/ecs.md'
-import elasticsearch_queryMarkdown from 'src/writeData/components/telegrafPlugins/elasticsearch_query.md'
 import elasticsearchMarkdown from 'src/writeData/components/telegrafPlugins/elasticsearch.md'
+import elasticsearch_queryMarkdown from 'src/writeData/components/telegrafPlugins/elasticsearch_query.md'
 import ethtoolMarkdown from 'src/writeData/components/telegrafPlugins/ethtool.md'
 import eventhub_consumerMarkdown from 'src/writeData/components/telegrafPlugins/eventhub_consumer.md'
-import execdMarkdown from 'src/writeData/components/telegrafPlugins/execd.md'
 import execMarkdown from 'src/writeData/components/telegrafPlugins/exec.md'
+import execdMarkdown from 'src/writeData/components/telegrafPlugins/execd.md'
 import fail2banMarkdown from 'src/writeData/components/telegrafPlugins/fail2ban.md'
 import fibaroMarkdown from 'src/writeData/components/telegrafPlugins/fibaro.md'
-import filecountMarkdown from 'src/writeData/components/telegrafPlugins/filecount.md'
 import fileMarkdown from 'src/writeData/components/telegrafPlugins/file.md'
+import filecountMarkdown from 'src/writeData/components/telegrafPlugins/filecount.md'
 import filestatMarkdown from 'src/writeData/components/telegrafPlugins/filestat.md'
 import fireboardMarkdown from 'src/writeData/components/telegrafPlugins/fireboard.md'
 import fluentdMarkdown from 'src/writeData/components/telegrafPlugins/fluentd.md'
@@ -60,19 +61,19 @@ import gnmiMarkdown from 'src/writeData/components/telegrafPlugins/gnmi.md'
 import graylogMarkdown from 'src/writeData/components/telegrafPlugins/graylog.md'
 import haproxyMarkdown from 'src/writeData/components/telegrafPlugins/haproxy.md'
 import hddtempMarkdown from 'src/writeData/components/telegrafPlugins/hddtemp.md'
+import httpMarkdown from 'src/writeData/components/telegrafPlugins/http.md'
 import http_listener_v2Markdown from 'src/writeData/components/telegrafPlugins/http_listener_v2.md'
 import http_responseMarkdown from 'src/writeData/components/telegrafPlugins/http_response.md'
 import httpjsonMarkdown from 'src/writeData/components/telegrafPlugins/httpjson.md'
-import httpMarkdown from 'src/writeData/components/telegrafPlugins/http.md'
 import hugepagesMarkdown from 'src/writeData/components/telegrafPlugins/hugepages.md'
 import icinga2Markdown from 'src/writeData/components/telegrafPlugins/icinga2.md'
 import infinibandMarkdown from 'src/writeData/components/telegrafPlugins/infiniband.md'
+import influxdbMarkdown from 'src/writeData/components/telegrafPlugins/influxdb.md'
 import influxdb_listenerMarkdown from 'src/writeData/components/telegrafPlugins/influxdb_listener.md'
 import influxdb_v2_listenerMarkdown from 'src/writeData/components/telegrafPlugins/influxdb_v2_listener.md'
 import intel_pmuMarkdown from 'src/writeData/components/telegrafPlugins/intel_pmu.md'
 import intel_powerstatMarkdown from 'src/writeData/components/telegrafPlugins/intel_powerstat.md'
 import intel_rdtMarkdown from 'src/writeData/components/telegrafPlugins/intel_rdt.md'
-import influxdbMarkdown from 'src/writeData/components/telegrafPlugins/influxdb.md'
 import internalMarkdown from 'src/writeData/components/telegrafPlugins/internal.md'
 import internet_speedMarkdown from 'src/writeData/components/telegrafPlugins/internet_speed.md'
 import interruptsMarkdown from 'src/writeData/components/telegrafPlugins/interrupts.md'
@@ -81,14 +82,15 @@ import ipsetMarkdown from 'src/writeData/components/telegrafPlugins/ipset.md'
 import iptablesMarkdown from 'src/writeData/components/telegrafPlugins/iptables.md'
 import ipvsMarkdown from 'src/writeData/components/telegrafPlugins/ipvs.md'
 import jenkinsMarkdown from 'src/writeData/components/telegrafPlugins/jenkins.md'
-import jolokia2Markdown from 'src/writeData/components/telegrafPlugins/jolokia2.md'
+import jolokia2_agentMarkdown from 'src/writeData/components/telegrafPlugins/jolokia2_agent.md'
+import jolokia2_proxyMarkdown from 'src/writeData/components/telegrafPlugins/jolokia2_proxy.md'
 import jolokiaMarkdown from 'src/writeData/components/telegrafPlugins/jolokia.md'
 import jti_openconfig_telemetryMarkdown from 'src/writeData/components/telegrafPlugins/jti_openconfig_telemetry.md'
-import kafka_consumer_legacyMarkdown from 'src/writeData/components/telegrafPlugins/kafka_consumer_legacy.md'
 import kafka_consumerMarkdown from 'src/writeData/components/telegrafPlugins/kafka_consumer.md'
+import kafka_consumer_legacyMarkdown from 'src/writeData/components/telegrafPlugins/kafka_consumer_legacy.md'
 import kapacitorMarkdown from 'src/writeData/components/telegrafPlugins/kapacitor.md'
-import kernel_vmstatMarkdown from 'src/writeData/components/telegrafPlugins/kernel_vmstat.md'
 import kernelMarkdown from 'src/writeData/components/telegrafPlugins/kernel.md'
+import kernel_vmstatMarkdown from 'src/writeData/components/telegrafPlugins/kernel_vmstat.md'
 import kibanaMarkdown from 'src/writeData/components/telegrafPlugins/kibana.md'
 import kinesis_consumerMarkdown from 'src/writeData/components/telegrafPlugins/kinesis_consumer.md'
 import knx_listenerMarkdown from 'src/writeData/components/telegrafPlugins/knx_listener.md'
@@ -96,6 +98,7 @@ import kube_inventoryMarkdown from 'src/writeData/components/telegrafPlugins/kub
 import kubernetesMarkdown from 'src/writeData/components/telegrafPlugins/kubernetes.md'
 import lanzMarkdown from 'src/writeData/components/telegrafPlugins/lanz.md'
 import leofsMarkdown from 'src/writeData/components/telegrafPlugins/leofs.md'
+import linux_cpuMarkdown from 'src/writeData/components/telegrafPlugins/linux_cpu.md'
 import linux_sysctl_fsMarkdown from 'src/writeData/components/telegrafPlugins/linux_sysctl_fs.md'
 import logparserMarkdown from 'src/writeData/components/telegrafPlugins/logparser.md'
 import logstashMarkdown from 'src/writeData/components/telegrafPlugins/logstash.md'
@@ -105,8 +108,8 @@ import mailchimpMarkdown from 'src/writeData/components/telegrafPlugins/mailchim
 import marklogicMarkdown from 'src/writeData/components/telegrafPlugins/marklogic.md'
 import mcrouterMarkdown from 'src/writeData/components/telegrafPlugins/mcrouter.md'
 import mdstatMarkdown from 'src/writeData/components/telegrafPlugins/mdstat.md'
-import memcachedMarkdown from 'src/writeData/components/telegrafPlugins/memcached.md'
 import memMarkdown from 'src/writeData/components/telegrafPlugins/mem.md'
+import memcachedMarkdown from 'src/writeData/components/telegrafPlugins/memcached.md'
 import mesosMarkdown from 'src/writeData/components/telegrafPlugins/mesos.md'
 import minecraftMarkdown from 'src/writeData/components/telegrafPlugins/minecraft.md'
 import mockMarkdown from 'src/writeData/components/telegrafPlugins/mock.md'
@@ -116,23 +119,23 @@ import monitMarkdown from 'src/writeData/components/telegrafPlugins/monit.md'
 import mqtt_consumerMarkdown from 'src/writeData/components/telegrafPlugins/mqtt_consumer.md'
 import multifileMarkdown from 'src/writeData/components/telegrafPlugins/multifile.md'
 import mysqlMarkdown from 'src/writeData/components/telegrafPlugins/mysql.md'
-import nats_consumerMarkdown from 'src/writeData/components/telegrafPlugins/nats_consumer.md'
 import natsMarkdown from 'src/writeData/components/telegrafPlugins/nats.md'
+import nats_consumerMarkdown from 'src/writeData/components/telegrafPlugins/nats_consumer.md'
 import neptune_apexMarkdown from 'src/writeData/components/telegrafPlugins/neptune_apex.md'
+import netMarkdown from 'src/writeData/components/telegrafPlugins/net.md'
 import net_responseMarkdown from 'src/writeData/components/telegrafPlugins/net_response.md'
 import netstatMarkdown from 'src/writeData/components/telegrafPlugins/netstat.md'
-import netMarkdown from 'src/writeData/components/telegrafPlugins/net.md'
 import nfsclientMarkdown from 'src/writeData/components/telegrafPlugins/nfsclient.md'
-import nginx_plus_apiMarkdown from 'src/writeData/components/telegrafPlugins/nginx_plus_api.md'
+import nginxMarkdown from 'src/writeData/components/telegrafPlugins/nginx.md'
 import nginx_plusMarkdown from 'src/writeData/components/telegrafPlugins/nginx_plus.md'
+import nginx_plus_apiMarkdown from 'src/writeData/components/telegrafPlugins/nginx_plus_api.md'
 import nginx_stsMarkdown from 'src/writeData/components/telegrafPlugins/nginx_sts.md'
 import nginx_upstream_checkMarkdown from 'src/writeData/components/telegrafPlugins/nginx_upstream_check.md'
 import nginx_vtsMarkdown from 'src/writeData/components/telegrafPlugins/nginx_vts.md'
-import nsdMarkdown from 'src/writeData/components/telegrafPlugins/nsd.md'
-import nginxMarkdown from 'src/writeData/components/telegrafPlugins/nginx.md'
 import nomadMarkdown from 'src/writeData/components/telegrafPlugins/nomad.md'
-import nsq_consumerMarkdown from 'src/writeData/components/telegrafPlugins/nsq_consumer.md'
+import nsdMarkdown from 'src/writeData/components/telegrafPlugins/nsd.md'
 import nsqMarkdown from 'src/writeData/components/telegrafPlugins/nsq.md'
+import nsq_consumerMarkdown from 'src/writeData/components/telegrafPlugins/nsq_consumer.md'
 import nstatMarkdown from 'src/writeData/components/telegrafPlugins/nstat.md'
 import ntpqMarkdown from 'src/writeData/components/telegrafPlugins/ntpq.md'
 import nvidia_smiMarkdown from 'src/writeData/components/telegrafPlugins/nvidia_smi.md'
@@ -149,10 +152,10 @@ import pgbouncerMarkdown from 'src/writeData/components/telegrafPlugins/pgbounce
 import phpfpmMarkdown from 'src/writeData/components/telegrafPlugins/phpfpm.md'
 import pingMarkdown from 'src/writeData/components/telegrafPlugins/ping.md'
 import postfixMarkdown from 'src/writeData/components/telegrafPlugins/postfix.md'
-import postgresql_extensibleMarkdown from 'src/writeData/components/telegrafPlugins/postgresql_extensible.md'
 import postgresqlMarkdown from 'src/writeData/components/telegrafPlugins/postgresql.md'
-import powerdns_recursorMarkdown from 'src/writeData/components/telegrafPlugins/powerdns_recursor.md'
+import postgresql_extensibleMarkdown from 'src/writeData/components/telegrafPlugins/postgresql_extensible.md'
 import powerdnsMarkdown from 'src/writeData/components/telegrafPlugins/powerdns.md'
+import powerdns_recursorMarkdown from 'src/writeData/components/telegrafPlugins/powerdns_recursor.md'
 import processesMarkdown from 'src/writeData/components/telegrafPlugins/processes.md'
 import procstatMarkdown from 'src/writeData/components/telegrafPlugins/procstat.md'
 import prometheusMarkdown from 'src/writeData/components/telegrafPlugins/prometheus.md'
@@ -171,24 +174,26 @@ import riemann_listenerMarkdown from 'src/writeData/components/telegrafPlugins/r
 import salesforceMarkdown from 'src/writeData/components/telegrafPlugins/salesforce.md'
 import sensorsMarkdown from 'src/writeData/components/telegrafPlugins/sensors.md'
 import sflowMarkdown from 'src/writeData/components/telegrafPlugins/sflow.md'
+import slabMarkdown from 'src/writeData/components/telegrafPlugins/slab.md'
 import smartMarkdown from 'src/writeData/components/telegrafPlugins/smart.md'
+import snmpMarkdown from 'src/writeData/components/telegrafPlugins/snmp.md'
 import snmp_legacyMarkdown from 'src/writeData/components/telegrafPlugins/snmp_legacy.md'
 import snmp_trapMarkdown from 'src/writeData/components/telegrafPlugins/snmp_trap.md'
-import snmpMarkdown from 'src/writeData/components/telegrafPlugins/snmp.md'
 import socket_listenerMarkdown from 'src/writeData/components/telegrafPlugins/socket_listener.md'
+import socketstatMarkdown from 'src/writeData/components/telegrafPlugins/socketstat.md'
 import solrMarkdown from 'src/writeData/components/telegrafPlugins/solr.md'
 import sqlMarkdown from 'src/writeData/components/telegrafPlugins/sql.md'
 import sqlserverMarkdown from 'src/writeData/components/telegrafPlugins/sqlserver.md'
-import socketstatMarkdown from 'src/writeData/components/telegrafPlugins/socketstat.md'
 import stackdriverMarkdown from 'src/writeData/components/telegrafPlugins/stackdriver.md'
 import statsdMarkdown from 'src/writeData/components/telegrafPlugins/statsd.md'
+import supervisorMarkdown from 'src/writeData/components/telegrafPlugins/supervisor.md'
 import suricataMarkdown from 'src/writeData/components/telegrafPlugins/suricata.md'
 import swapMarkdown from 'src/writeData/components/telegrafPlugins/swap.md'
 import synproxyMarkdown from 'src/writeData/components/telegrafPlugins/synproxy.md'
 import syslogMarkdown from 'src/writeData/components/telegrafPlugins/syslog.md'
 import sysstatMarkdown from 'src/writeData/components/telegrafPlugins/sysstat.md'
-import systemd_unitsMarkdown from 'src/writeData/components/telegrafPlugins/systemd_units.md'
 import systemMarkdown from 'src/writeData/components/telegrafPlugins/system.md'
+import systemd_unitsMarkdown from 'src/writeData/components/telegrafPlugins/systemd_units.md'
 import tailMarkdown from 'src/writeData/components/telegrafPlugins/tail.md'
 import tcp_listenerMarkdown from 'src/writeData/components/telegrafPlugins/tcp_listener.md'
 import teamspeakMarkdown from 'src/writeData/components/telegrafPlugins/teamspeak.md'
@@ -199,6 +204,7 @@ import trigMarkdown from 'src/writeData/components/telegrafPlugins/trig.md'
 import twemproxyMarkdown from 'src/writeData/components/telegrafPlugins/twemproxy.md'
 import udp_listenerMarkdown from 'src/writeData/components/telegrafPlugins/udp_listener.md'
 import unboundMarkdown from 'src/writeData/components/telegrafPlugins/unbound.md'
+import upsdMarkdown from 'src/writeData/components/telegrafPlugins/upsd.md'
 import uwsgiMarkdown from 'src/writeData/components/telegrafPlugins/uwsgi.md'
 import varnishMarkdown from 'src/writeData/components/telegrafPlugins/varnish.md'
 import vaultMarkdown from 'src/writeData/components/telegrafPlugins/vault.md'
@@ -510,6 +516,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'cloudwatch',
     name: 'Amazon CloudWatch Statistics',
     markdown: cloudwatchMarkdown,
+    image: cloudwatchLogo,
+  },
+  {
+    id: 'cloudwatch_metric_streams',
+    name: 'Amazon CloudWatch Metric Streams',
+    markdown: cloudwatch_metric_streamsMarkdown,
     image: cloudwatchLogo,
   },
   {
@@ -868,9 +880,15 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: jolokiaLogo,
   },
   {
-    id: 'jolokia2',
-    name: 'Jolokia2',
-    markdown: jolokia2Markdown,
+    id: 'jolokia2_agent',
+    name: 'Jolokia2 Agent',
+    markdown: jolokia2_agentMarkdown,
+    image: jolokiaLogo,
+  },
+  {
+    id: 'jolokia2_proxy',
+    name: 'Jolokia2 Proxy',
+    markdown: jolokia2_proxyMarkdown,
     image: jolokiaLogo,
   },
   {
@@ -950,6 +968,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'LeoFS',
     markdown: leofsMarkdown,
     image: leofsLogo,
+  },
+  {
+    id: 'linux_cpu',
+    name: 'Linux CPU',
+    markdown: linux_cpuMarkdown,
+    image: linuxLogo,
   },
   {
     id: 'linux_sysctl_fs',
@@ -1404,6 +1428,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: sflowLogo,
   },
   {
+    id: 'slab',
+    name: 'Slab',
+    markdown: slabMarkdown,
+    image: linuxLogo,
+  },
+  {
     id: 'smart',
     name: 'S.M.A.R.T.',
     markdown: smartMarkdown,
@@ -1467,6 +1497,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'statsd',
     name: 'StatsD',
     markdown: statsdMarkdown,
+    image: magnifying_glass_sinusLogo,
+  },
+  {
+    id: 'supervisor',
+    name: 'Supervisor',
+    markdown: supervisorMarkdown,
     image: magnifying_glass_sinusLogo,
   },
   {
@@ -1570,6 +1606,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'Unbound',
     markdown: unboundMarkdown,
     image: unboundLogo,
+  },
+  {
+    id: 'upsd',
+    name: 'UPSD',
+    markdown: upsdMarkdown,
+    image: speedometerLogo,
   },
   {
     id: 'uwsgi',

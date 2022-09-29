@@ -38,10 +38,14 @@ import {checkBucketLimits as checkBucketLimitsAction} from 'src/cloud/actions/li
 import {getBucketLimitStatus} from 'src/cloud/utils/limits'
 import {getAll} from 'src/resources/selectors'
 import {SortTypes} from 'src/shared/utils/sort'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, Bucket, OwnBucket, ResourceType} from 'src/types'
 import {BucketSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
+
+// Constants
+import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
 
 interface State {
   searchTerm: string
@@ -105,7 +109,6 @@ class BucketsTab extends PureComponent<Props, State> {
   public render() {
     const {buckets, limitStatus} = this.props
     const {searchTerm, sortKey, sortDirection, sortType} = this.state
-
     const leftHeaderItems = (
       <>
         <SearchWidget
@@ -138,7 +141,12 @@ class BucketsTab extends PureComponent<Props, State> {
               DEFAULT_TAB_NAVIGATION_HEIGHT ||
             DEFAULT_PAGINATION_CONTROL_HEIGHT + DEFAULT_TAB_NAVIGATION_HEIGHT
 
-          const adjustedHeight = height - heightWithPagination
+          const adjustedHeight =
+            height -
+            heightWithPagination -
+            (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 60) -
+            (limitStatus === 'exceeded' ? 100 : 0)
+
           return (
             <>
               <TabbedPageHeader

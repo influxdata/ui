@@ -1,12 +1,14 @@
 // Libraries
-import React, {FC, useEffect, useRef} from 'react'
+import React, {FC, useEffect, useRef, useContext, useMemo} from 'react'
+import {useSelector} from 'react-redux'
+import {useRouteMatch} from 'react-router-dom'
 import classnames from 'classnames'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
-// Utils
+// LSP
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
 import {setupForReactMonacoEditor} from 'src/languageSupport/languages/flux/lsp/monaco.flux.lsp'
@@ -15,7 +17,12 @@ import {
   submit,
 } from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
-import Prelude from 'src/languageSupport/languages/flux/lsp/prelude'
+import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+
+// Contexts and State
+import {EditorContext} from 'src/shared/contexts/editor'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {fluxQueryBuilder} from 'src/shared/selectors/app'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
@@ -23,6 +30,7 @@ import {EditorType, Variable} from 'src/types'
 import {editor as monacoEditor} from 'monaco-editor'
 
 import './FluxMonacoEditor.scss'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export interface EditorProps {
   script: string
@@ -35,7 +43,10 @@ export interface EditorProps {
 }
 
 interface Props extends EditorProps {
-  setEditorInstance?: (editor: EditorType) => void
+  setEditorInstance?: (
+    editor: EditorType,
+    connection: React.MutableRefObject<ConnectionManager>
+  ) => void
   variables: Variable[]
 }
 
@@ -50,29 +61,60 @@ const FluxEditorMonaco: FC<Props> = ({
   wrapLines,
   variables,
 }) => {
-  const prelude = useRef<Prelude>(null)
+  const connection = useRef<ConnectionManager>(null)
+  const {editor, setEditor} = useContext(EditorContext)
+  const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
+  const sessionStore = useContext(PersistanceContext)
+  const {path} = useRouteMatch()
+  const useSchemaComposition =
+    isFluxQueryBuilder &&
+    path === '/orgs/:orgID/data-explorer' &&
+    isFlagEnabled('schemaComposition')
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
   })
 
   useEffect(() => {
-    prelude.current.updatePreludeModel(variables)
+    connection.current.updatePreludeModel(variables)
   }, [variables])
 
-  const editorDidMount = (editor: EditorType) => {
-    prelude.current = setupForReactMonacoEditor(editor)
-    prelude.current.updatePreludeModel(variables)
-    if (setEditorInstance) {
-      setEditorInstance(editor)
+  useEffect(() => {
+    if (connection.current && useSchemaComposition) {
+      connection.current.onSchemaSessionChange(
+        sessionStore.selection,
+        sessionStore.setSelection
+      )
     }
+  }, [
+    useSchemaComposition,
+    connection.current,
+    sessionStore?.selection,
+    sessionStore?.selection.composition || null,
+    sessionStore?.setSelection,
+  ])
 
-    comments(editor)
+  useEffect(() => {
+    if (!editor) {
+      return
+    }
     submit(editor, () => {
       if (onSubmitScript) {
         onSubmitScript()
       }
     })
+  }, [editor, onSubmitScript])
+
+  const editorDidMount = (editor: EditorType) => {
+    connection.current = setupForReactMonacoEditor(editor)
+    connection.current.updatePreludeModel(variables)
+
+    setEditor(editor, connection)
+    if (setEditorInstance) {
+      setEditorInstance(editor, connection)
+    }
+
+    comments(editor)
 
     if (autogrow) {
       registerAutogrow(editor)
@@ -94,33 +136,36 @@ const FluxEditorMonaco: FC<Props> = ({
     onChangeScript(text)
   }
 
-  return (
-    <ErrorBoundary>
-      <div className={wrapperClassName} data-testid="flux-editor">
-        <MonacoEditor
-          language={FLUXLANGID}
-          theme={THEME_NAME}
-          value={script}
-          onChange={onChange}
-          options={{
-            fontSize: 13,
-            fontFamily: '"IBMPlexMono", monospace',
-            cursorWidth: 2,
-            lineNumbersMinChars: 4,
-            lineDecorationsWidth: 0,
-            minimap: {
-              renderCharacters: false,
-            },
-            overviewRulerBorder: false,
-            automaticLayout: true,
-            readOnly: readOnly || false,
-            wordWrap: wrapLines ?? 'off',
-            scrollBeyondLastLine: false,
-          }}
-          editorDidMount={editorDidMount}
-        />
-      </div>
-    </ErrorBoundary>
+  return useMemo(
+    () => (
+      <ErrorBoundary>
+        <div className={wrapperClassName} data-testid="flux-editor">
+          <MonacoEditor
+            language={FLUXLANGID}
+            theme={THEME_NAME}
+            value={script}
+            onChange={onChange}
+            options={{
+              fontSize: 13,
+              fontFamily: '"IBMPlexMono", monospace',
+              cursorWidth: 2,
+              lineNumbersMinChars: 4,
+              lineDecorationsWidth: 0,
+              minimap: {
+                renderCharacters: false,
+              },
+              overviewRulerBorder: false,
+              automaticLayout: true,
+              readOnly: readOnly || false,
+              wordWrap: wrapLines ?? 'off',
+              scrollBeyondLastLine: false,
+            }}
+            editorDidMount={editorDidMount}
+          />
+        </div>
+      </ErrorBoundary>
+    ),
+    [onChangeScript, setEditor, useSchemaComposition, script]
   )
 }
 

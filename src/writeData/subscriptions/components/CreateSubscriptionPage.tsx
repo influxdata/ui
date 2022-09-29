@@ -4,20 +4,14 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {
-  AlignItems,
-  FlexBox,
-  IconFont,
-  JustifyContent,
   Page,
   SpinnerContainer,
   SubwayNav,
-  SubwayNavModel,
   TechnoSpinner,
 } from '@influxdata/clockface'
 import BrokerForm from 'src/writeData/subscriptions/components/BrokerForm'
 import ParsingForm from 'src/writeData/subscriptions/components/ParsingForm'
 import SubscriptionForm from 'src/writeData/subscriptions/components/SubscriptionForm'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import GetResources from 'src/resources/components/GetResources'
 
 // Graphics
@@ -30,126 +24,98 @@ import {
 } from 'src/writeData/subscriptions/context/subscription.create'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Types
-import {AppState, ResourceType, Bucket} from 'src/types'
+import {
+  AppState,
+  ResourceType,
+  Bucket,
+  Steps,
+  CompletedSteps,
+  StepsStatus,
+} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
+import {getQuartzMe, shouldShowUpgradeButton} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
-  getDataLayerIdentity,
-  getExperimentVariantId,
-} from 'src/cloud/utils/experiments'
-
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
-
-// Actions
-import {shouldShowUpgradeButton, getQuartzMe} from 'src/me/selectors'
+  DEFAULT_COMPLETED_STEPS,
+  DEFAULT_STEPS_STATUS,
+  getActiveStep,
+  getFormStatus,
+  SUBSCRIPTION_NAVIGATION_STEPS,
+} from 'src/writeData/subscriptions/utils/form'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
-
-interface SubscriptionNavigationModel extends SubwayNavModel {
-  type: string
-}
-
-enum Steps {
-  BrokerForm = 'broker',
-  SubscriptionForm = 'subscription',
-  ParsingForm = 'parsing',
-}
-
-const navigationSteps: SubscriptionNavigationModel[] = [
-  {
-    glyph: IconFont.UploadOutline,
-    name: 'Connect \n to Broker',
-    type: Steps.BrokerForm,
-  },
-  {
-    glyph: IconFont.Subscribe,
-    name: 'Subscribe \n to Topic',
-    type: Steps.SubscriptionForm,
-  },
-  {
-    glyph: IconFont.Braces,
-    name: 'Define Data \n Parsing Rules',
-    type: Steps.ParsingForm,
-  },
-]
 
 const CreateSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
   const {formContent, saveForm, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
-  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
-  const {accountType} = useSelector(getQuartzMe)
+  const quartzMe = useSelector(getQuartzMe)
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
   const {bucket} = useContext(WriteDataDetailsContext)
+  const [completedSteps, setCompletedSteps] = useState<CompletedSteps>(
+    DEFAULT_COMPLETED_STEPS
+  )
+  const [stepsStatus, setStepsStatus] =
+    useState<StepsStatus>(DEFAULT_STEPS_STATUS)
+
+  useEffect(() => {
+    setCompletedSteps({
+      [Steps.BrokerForm]: stepsStatus.brokerStepCompleted === 'true',
+      [Steps.SubscriptionForm]:
+        stepsStatus.subscriptionStepCompleted === 'true',
+      [Steps.ParsingForm]: stepsStatus.parsingStepCompleted === 'true',
+    })
+  }, [stepsStatus])
+
+  useEffect(() => {
+    setStepsStatus(getFormStatus(active, formContent))
+  }, [formContent, active])
+
+  const stepsWithIsCompletedStatus = SUBSCRIPTION_NAVIGATION_STEPS.map(step => {
+    return {...step, isComplete: completedSteps[step.type]}
+  })
 
   useEffect(() => {
     event(
       'visited creation page',
-      {userAccountType: accountType},
+      {userAccountType: quartzMe?.accountType ?? 'unknown'},
       {feature: 'subscriptions'}
     )
-  }, [])
-
-  const isParsingFormCompleted = (): boolean => {
-    if (formContent.dataFormat === 'json') {
-      return (
-        formContent.jsonMeasurementKey.path &&
-        formContent.jsonFieldKeys.length &&
-        formContent.jsonFieldKeys[0].name &&
-        !!formContent.jsonFieldKeys[0].path
-      )
-    } else if (formContent.dataFormat === 'string') {
-      return (
-        formContent.stringMeasurement.pattern &&
-        formContent.stringFields.length &&
-        formContent.stringFields[0].name &&
-        !!formContent.stringFields[0].pattern
-      )
-    } else {
-      return true
-    }
-  }
+  }, [quartzMe?.accountType])
 
   const handleClick = (step: number) => {
     event(
       'subway navigation clicked',
-      {
-        currentStep: active,
-        clickedStep: navigationSteps[step - 1].type,
-        brokerStepCompleted:
-          formContent.name && formContent.brokerHost && formContent.brokerPort
-            ? 'true'
-            : 'false',
-        subscriptionStepCompleted:
-          formContent.topic && formContent.bucket ? 'true' : 'false',
-        parsingStepCompleted:
-          formContent.dataFormat && isParsingFormCompleted() ? 'true' : 'false',
-        dataFormat: formContent.dataFormat ?? 'not chosen yet',
-      },
+      {...stepsStatus},
       {feature: 'subscriptions'}
     )
-    setFormActive(navigationSteps[step - 1].type as Steps)
+    document
+      .getElementById(SUBSCRIPTION_NAVIGATION_STEPS[step - 1].type)
+      ?.scrollIntoView({behavior: 'smooth', block: 'center'})
+    setFormActive(SUBSCRIPTION_NAVIGATION_STEPS[step - 1].type as Steps)
+    setCompletedSteps({
+      [Steps.BrokerForm]: stepsStatus.brokerStepCompleted === 'true',
+      [Steps.SubscriptionForm]:
+        stepsStatus.subscriptionStepCompleted === 'true',
+      [Steps.ParsingForm]: stepsStatus.parsingStepCompleted === 'true',
+    })
   }
 
-  const getActiveStep = activeForm => {
-    let currentStep = 1
-    navigationSteps.forEach((step, index) => {
-      if (step.type === activeForm) {
-        currentStep = index + 1
-      }
-    })
-    return currentStep
-  }
+  // enabled for PAYG accounts and specific free accounts where a flag is enabled
+  const showUpgradeButton =
+    useSelector(shouldShowUpgradeButton) &&
+    !isFlagEnabled('enableFreeSubscriptions')
+
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>
@@ -162,70 +128,37 @@ const CreateSubscriptionPage: FC = () => {
             scrollable={true}
             className="create-subscription-page"
           >
-            {showUpgradeButton && (
-              <FlexBox
-                justifyContent={JustifyContent.FlexEnd}
-                alignItems={AlignItems.FlexEnd}
-                stretchToFitHeight={true}
-              >
-                <CloudUpgradeButton
-                  metric={() => {
-                    const experimentVariantId = getExperimentVariantId(
-                      CREDIT_250_EXPERIMENT_ID
-                    )
-                    const identity = getDataLayerIdentity()
-                    event(
-                      isFlagEnabled('credit250Experiment') &&
-                        experimentVariantId === '1'
-                        ? `subscriptions.create.credit-250.upgrade`
-                        : `subscriptions.create.upgrade`,
-                      {
-                        location: 'subscriptions create',
-                        ...identity,
-                        experimentId: CREDIT_250_EXPERIMENT_ID,
-                        experimentVariantId,
-                      }
-                    )
-                  }}
-                />
-              </FlexBox>
-            )}
             <div className="create-subscription-page__progress">
               <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
-                navigationSteps={navigationSteps}
+                navigationSteps={stepsWithIsCompletedStatus}
                 settingUpIcon={FormLogo}
-                settingUpText="MQTT Connector"
+                settingUpText="Native MQTT"
+                showCheckmark={true}
               />
             </div>
-            {active === Steps.BrokerForm && (
-              <BrokerForm
-                setFormActive={setFormActive}
-                formContent={formContent}
-                updateForm={updateForm}
-                showUpgradeButton={showUpgradeButton}
-              />
-            )}
-            {active === Steps.SubscriptionForm && (
-              <SubscriptionForm
-                setFormActive={setFormActive}
-                formContent={formContent}
-                updateForm={updateForm}
-                showUpgradeButton={showUpgradeButton}
-                buckets={buckets}
-                bucket={bucket}
-              />
-            )}
-            {active === Steps.ParsingForm && (
-              <ParsingForm
-                setFormActive={setFormActive}
-                formContent={formContent}
-                updateForm={updateForm}
-                saveForm={saveForm}
-                showUpgradeButton={showUpgradeButton}
-              />
-            )}
+            <BrokerForm
+              formContent={formContent}
+              updateForm={updateForm}
+              saveForm={saveForm}
+              onFocus={() => setFormActive(Steps.BrokerForm)}
+              showUpgradeButton={showUpgradeButton}
+            />
+            <SubscriptionForm
+              formContent={formContent}
+              updateForm={updateForm}
+              buckets={buckets}
+              bucket={bucket}
+              onFocus={() => setFormActive(Steps.SubscriptionForm)}
+              showUpgradeButton={showUpgradeButton}
+            />
+            <ParsingForm
+              formContent={formContent}
+              updateForm={updateForm}
+              onFocus={() => setFormActive(Steps.ParsingForm)}
+              showUpgradeButton={showUpgradeButton}
+            />
           </Page.Contents>
         </SpinnerContainer>
       </Page>
@@ -234,9 +167,11 @@ const CreateSubscriptionPage: FC = () => {
 }
 
 export default () => (
-  <SubscriptionCreateProvider>
-    <WriteDataDetailsProvider>
-      <CreateSubscriptionPage />
-    </WriteDataDetailsProvider>
-  </SubscriptionCreateProvider>
+  <AppSettingProvider>
+    <SubscriptionCreateProvider>
+      <WriteDataDetailsProvider>
+        <CreateSubscriptionPage />
+      </WriteDataDetailsProvider>
+    </SubscriptionCreateProvider>
+  </AppSettingProvider>
 )

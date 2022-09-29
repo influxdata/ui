@@ -181,11 +181,8 @@ const FooterComponent: FC<Props> = props => {
 }
 
 const mstp = (state: AppState) => {
-  const {
-    telegrafConfigDescription,
-    telegrafConfigID,
-    telegrafConfigName,
-  } = getDataLoaders(state)
+  const {telegrafConfigDescription, telegrafConfigID, telegrafConfigName} =
+    getDataLoaders(state)
 
   let telegrafConfig = null
   if (telegrafConfigID) {

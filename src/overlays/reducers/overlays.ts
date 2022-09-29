@@ -15,6 +15,8 @@ export type OverlayID =
   | 'add-token'
   | 'telegraf-config'
   | 'telegraf-output'
+  | 'telegraf-instructions'
+  | 'telegraf-wizard'
   | 'switch-organizations'
   | 'create-bucket'
   | 'asset-limit'
@@ -33,6 +35,8 @@ export type OverlayID =
   | 'payg-support'
   | 'free-account-support'
   | 'feedback-questions'
+  | 'help-bar-confirmation'
+  | 'subscription-replace-certificate'
 
 export interface OverlayState {
   id: OverlayID | null

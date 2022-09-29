@@ -1,0 +1,42 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.container-right-side-bar {
+  margin-left: $cf-space-xs;
+  padding-top: $cf-space-2xs;
+  width: inherit;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  // make sure DraggableResizer collapses correctly
+  // and DapperScrollbars shows up
+  position: absolute;
+  overflow-x: hidden;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .flux-toolbar {
+    flex-direction: column;
+  }
+
+  .flux-toolbar--search {
+    padding: 0;
+  }
+}
+
+.flux-builder-sidebar--buttons {
+  text-align: right;
+}
+
+.flux-builder-sidebar--menu {
+  padding-top: $cf-space-2xs;
+  height: calc(
+    100% - 30px
+  ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
+}
+
+.flux-builder-sidebar--menu-wrapper {
+  width: calc(100% - 16px);
+  padding-bottom: 20px;
+}

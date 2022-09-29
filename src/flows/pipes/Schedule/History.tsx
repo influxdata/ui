@@ -7,7 +7,7 @@ import {
   postTasksRun,
   getTasksRunsLogs,
   Task,
-  Run,
+  Run as RunType,
 } from 'src/client/generatedRoutes'
 import {
   EmptyState,
@@ -41,7 +41,7 @@ interface LogProps {
 
 interface RunProps {
   task: Task
-  run: Run
+  run: RunType
 }
 
 const duration = (start: string, finish: string): string => {
@@ -125,7 +125,7 @@ const UPDATE_INTERVAL = 3 * 1000
 const Run: FC<RunProps> = ({task, run}) => {
   const {launch} = useContext(PopupContext)
   const timer = useRef<ReturnType<typeof setInterval>>()
-  const [runOverride, setRunOverride] = useState<Partial<Run>>({})
+  const [runOverride, setRunOverride] = useState<Partial<RunType>>({})
   const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
   const viewLogs = () => {
     launch(<RunLogs taskID={task.id} runID={run.id} />, {})

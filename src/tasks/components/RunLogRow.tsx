@@ -12,7 +12,7 @@ import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 interface Props {
-  log: LogEvent
+  log?: LogEvent
 }
 
 class RunLogRow extends PureComponent<Props> {

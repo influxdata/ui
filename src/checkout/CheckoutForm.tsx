@@ -1,4 +1,6 @@
+// Libraries
 import React, {FC, useContext} from 'react'
+import {useSelector} from 'react-redux'
 import {
   AlignItems,
   AppWrapper,
@@ -21,16 +23,14 @@ import {
   JustifyContent,
   Panel,
 } from '@influxdata/clockface'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Components
-import ContactForm from 'src/checkout/utils/ContactForm'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 import CancelButton from 'src/checkout/CancelButton'
 import NotificationSettingsForm from 'src/checkout/NotificationSettingsForm'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import PoweredByStripeLogo from 'src/checkout/PoweredByStripeLogo'
 import CreditCardForm from 'src/shared/components/CreditCardForm'
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Context
 import {CheckoutContext} from 'src/checkout/context/checkout'
@@ -42,9 +42,14 @@ import {event} from 'src/cloud/utils/reporting'
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Utils
+import {shouldGetCredit250Experience} from 'src/me/selectors'
+import ContactForm from 'src/checkout/utils/ContactForm'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 const CheckoutForm: FC = () => {
+  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
+
   const {
     handleFormValidation,
     zuoraParams,
@@ -68,6 +73,39 @@ const CheckoutForm: FC = () => {
     }
   }
 
+  const credit250Experience = (
+    <BannerPanel
+      key="credit-250-banner"
+      gradient={Gradients.Info}
+      size={ComponentSize.Small}
+      textColor={InfluxColors.White}
+    >
+      <span className="checkout-credit-250--banner">
+        <Icon
+          className="checkout-credit-250--banner-icon"
+          glyph={IconFont.Star}
+        />
+        <span className="checkout-credit-250--banner-message">
+          Get free $250 credit for the first 30 days once you upgrade
+        </span>
+      </span>
+    </BannerPanel>
+  )
+
+  let creditBanner = null
+  if (isFlagEnabled('credit250Experiment')) {
+    if (isCredit250ExperienceActive) {
+      creditBanner = credit250Experience
+    } else {
+      creditBanner = (
+        <GoogleOptimizeExperiment
+          experimentID={CREDIT_250_EXPERIMENT_ID}
+          variants={[credit250Experience]}
+        />
+      )
+    }
+  }
+
   return (
     <Form onSubmit={onSubmit}>
       <AppWrapper type="funnel">
@@ -78,30 +116,7 @@ const CheckoutForm: FC = () => {
           >
             Upgrade to Usage-Based Account
           </h1>
-          {isFlagEnabled('credit250Experiment') && (
-            <GoogleOptimizeExperiment
-              experimentID={CREDIT_250_EXPERIMENT_ID}
-              variants={[
-                <BannerPanel
-                  key="credit-250-banner"
-                  gradient={Gradients.Info}
-                  size={ComponentSize.Small}
-                  textColor={InfluxColors.White}
-                >
-                  <span className="checkout-credit-250--banner">
-                    <Icon
-                      className="checkout-credit-250--banner-icon"
-                      glyph={IconFont.Star}
-                    />
-                    <span className="checkout-credit-250--banner-message">
-                      Get free $250 credit for the first 30 days once you
-                      upgrade
-                    </span>
-                  </span>
-                </BannerPanel>,
-              ]}
-            />
-          )}
+          {creditBanner}
           <Panel
             gradient={Gradients.BeijingEclipse}
             className="checkout--panel"

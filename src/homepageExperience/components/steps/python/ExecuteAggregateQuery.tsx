@@ -43,15 +43,15 @@ for table in tables:
     <>
       <h1>Execute an Aggregate Query</h1>
       <p>
-        An{' '}
         <SafeBlankLink
           href="https://docs.influxdata.com/flux/v0.x/function-types/#aggregates"
           onClick={logDocsOpened}
         >
-          aggregate
+          Aggregate functions
         </SafeBlankLink>{' '}
-        function is a powerful method for returning combined, summarized data
-        about a set of time-series data.
+        take the values of all rows in a table and use them to perform an
+        aggregate operation. The result is output as a new value in a single-row
+        table.
       </p>
       <CodeSnippet
         text={fromBucketSnippet}

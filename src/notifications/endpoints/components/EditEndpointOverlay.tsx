@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Constants
 import {getEndpointFailed} from 'src/shared/copy/notifications'
@@ -20,30 +20,33 @@ import {NotificationEndpoint, AppState, ResourceType} from 'src/types'
 
 // Utils
 import {getByID} from 'src/resources/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{orgID: string; endpointID: string}>
-type Props = RouterProps & ReduxProps
+const EditEndpointOverlay: FC = () => {
+  const dispatch = useDispatch()
+  const {endpointID} = useParams<{endpointID: string}>()
+  const endpoint = useSelector((state: AppState) => {
+    return getByID<NotificationEndpoint>(
+      state,
+      ResourceType.NotificationEndpoints,
+      endpointID
+    )
+  })
 
-const EditEndpointOverlay: FC<Props> = ({
-  match,
-  history,
-  onUpdateEndpoint,
-  onNotify,
-  endpoint,
-}) => {
+  const orgID = useSelector(getOrg).id
+  const history = useHistory()
   const handleDismiss = () => {
-    history.push(`/orgs/${match.params.orgID}/alerting`)
+    history.push(`/orgs/${orgID}/alerting`)
   }
 
   if (!endpoint) {
-    onNotify(getEndpointFailed(match.params.endpointID))
+    dispatch(notify(getEndpointFailed(endpointID)))
     handleDismiss()
     return null
   }
 
   const handleEditEndpoint = (endpoint: NotificationEndpoint) => {
-    onUpdateEndpoint(endpoint)
+    dispatch(updateEndpoint(endpoint))
 
     handleDismiss()
   }
@@ -68,21 +71,4 @@ const EditEndpointOverlay: FC<Props> = ({
   )
 }
 
-const mdtp = {
-  onUpdateEndpoint: updateEndpoint,
-  onNotify: notify,
-}
-
-const mstp = (state: AppState, {match}: RouterProps) => {
-  const endpoint = getByID<NotificationEndpoint>(
-    state,
-    ResourceType.NotificationEndpoints,
-    match.params.endpointID
-  )
-
-  return {endpoint}
-}
-
-const connector = connect(mstp, mdtp)
-
-export default withRouter(connector(EditEndpointOverlay))
+export default EditEndpointOverlay

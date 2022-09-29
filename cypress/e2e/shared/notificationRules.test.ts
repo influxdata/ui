@@ -252,16 +252,12 @@ describe('NotificationRules', () => {
     // Filter for the new rule
     cy.getByTestID('filter--input rules').type(ruleName)
 
-    cy.getByTestID('rule-card--name')
-      .contains(ruleName)
-      .click()
+    cy.getByTestID('rule-card--name').contains(ruleName).click()
 
     const editedName = ruleName + '!'
 
     // Edit the rule
-    cy.getByTestID('rule-name--input')
-      .clear()
-      .type(editedName)
+    cy.getByTestID('rule-name--input').clear().type(editedName)
 
     cy.getByTestID('rule-schedule-every--input')
       .clear()
@@ -276,14 +272,10 @@ describe('NotificationRules', () => {
     cy.getByTestID('rule-overlay-save--button').click()
 
     // Open overlay
-    cy.getByTestID('rule-card--name')
-      .contains(editedName)
-      .click()
+    cy.getByTestID('rule-card--name').contains(editedName).click()
 
     // Close overlay
-    cy.getByTestID('dismiss-overlay')
-      .find('button')
-      .click()
+    cy.getByTestID('dismiss-overlay').find('button').click()
 
     // Delete the rule
     cy.getByTestID('rules--column').within(() => {
@@ -651,9 +643,7 @@ describe('NotificationRules', () => {
       cy.getByTestID('check-status-dropdown').should('be.visible')
 
       // Filter level == crit
-      cy.getByTestID('check-status-input')
-        .clear()
-        .type('"level" == "crit"')
+      cy.getByTestID('check-status-input').clear().type('"level" == "crit"')
       cy.get('.event-row').should('have.length', 1)
       //    ...verify row
       cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
@@ -661,9 +651,7 @@ describe('NotificationRules', () => {
         cy.get('.sent-table-field--sent').should('be.visible')
       })
       // Filter level != info
-      cy.getByTestID('check-status-input')
-        .clear()
-        .type('"level" != "info"')
+      cy.getByTestID('check-status-input').clear().type('"level" != "info"')
       cy.get('[data-testid^="event-row "]')
         .should('have.length', 3)
         .then(rows => {
@@ -732,9 +720,7 @@ describe('NotificationRules', () => {
       })
 
       // Switch to UTC
-      cy.getByTestID('dropdown--button')
-        .should('have.text', 'Local')
-        .click()
+      cy.getByTestID('dropdown--button').should('have.text', 'Local').click()
       cy.getByTitle('UTC').click()
       cy.getByTestID('dropdown--button').should('have.text', 'UTC')
 
@@ -871,10 +857,7 @@ describe('NotificationRules', () => {
           cy.getByTestID('rule-card--name').should('have.text', Rules[1].name)
           cy.getByTestID('copy-resource-id').then(elem => {
             cy.wrap(
-              elem
-                .text()
-                .replace('ID: ', '')
-                .replace('Copy to Clipboard', '')
+              elem.text().replace('ID: ', '').replace('Copy to Clipboard', '')
             ).as('TargetRuleID')
           })
 
@@ -960,16 +943,12 @@ describe('NotificationRules', () => {
         .click()
       cy.getByTestID('notification-error').should('not.exist')
       cy.get('.cf-resource-card__disabled').should('have.length', 1)
-      cy.getByTestID('rule-card--slide-toggle')
-        .eq(2)
-        .click()
+      cy.getByTestID('rule-card--slide-toggle').eq(2).click()
       cy.getByTestID('notification-error').should('not.exist')
       cy.get('.cf-resource-card__disabled').should('not.exist')
 
       cy.log('=== verify status')
-      cy.getByTestID('last-run-status--icon')
-        .eq(1)
-        .trigger('mouseover')
+      cy.getByTestID('last-run-status--icon').eq(1).trigger('mouseover')
       cy.getByTestID('popover--contents')
         .should('be.visible')
         .should(dialog => {
@@ -1051,10 +1030,7 @@ describe('NotificationRules', () => {
       cy.getByTestIDHead(`rule-card ${cloneNamePrefix}`).within(() => {
         cy.getByTestID('copy-resource-id').then(elem => {
           cy.wrap(
-            elem
-              .text()
-              .replace('ID: ', '')
-              .replace('Copy to Clipboard', '')
+            elem.text().replace('ID: ', '').replace('Copy to Clipboard', '')
           ).as('TargetRuleID')
         })
 
@@ -1084,9 +1060,7 @@ describe('NotificationRules', () => {
           expect(cloneTimeAsDate.valueOf()).to.equal(cloneTimeAsDate.valueOf())
         })
 
-      cy.getByTestID('rule-name--input')
-        .clear()
-        .type(newName)
+      cy.getByTestID('rule-name--input').clear().type(newName)
 
       cy.getByTestID('rule-schedule-every--input').should(
         'have.value',

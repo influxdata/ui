@@ -7,19 +7,17 @@ import React, {
   useState,
   useRef,
 } from 'react'
-
-// Styles
-import './view.scss'
+import {Icon, IconFont} from '@influxdata/clockface'
 
 // Components
-import {Icon, IconFont} from '@influxdata/clockface'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Utilities
 import {View} from 'src/visualization'
 
 // Types
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
-import {PipeProp} from 'src/types/flows'
+import {PipeProp, FluxResult} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -30,6 +28,9 @@ import {downloadTextFile} from 'src/shared/utils/download'
 
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
+
+// Styles
+import './view.scss'
 
 const QueryStat: FC = () => {
   const {loading, results} = useContext(PipeContext)
@@ -93,6 +94,7 @@ const Table: FC<PipeProp> = ({Context}) => {
   const {id, data, range, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
+  const [search, setSearch] = useState('')
 
   const dataExists = !!(results?.parsed?.table || []).length
 
@@ -107,6 +109,56 @@ const Table: FC<PipeProp> = ({Context}) => {
       downloadTextFile(response.csv, 'influx.data', '.csv', 'text/csv')
     })
   }
+
+  const res = useMemo(() => {
+    if (!search.trim() || !results?.parsed) {
+      return results?.parsed
+    }
+
+    const dupped = {
+      fluxGroupKeyUnion: [...results.parsed.fluxGroupKeyUnion],
+      resultColumnNames: [...results.parsed.resultColumnNames],
+      table: {
+        length: 0,
+        columns: Object.entries(results.parsed.table.columns).reduce(
+          (acc, [k, v]) => {
+            acc[k] = {...v, data: []}
+            return acc
+          },
+          {}
+        ),
+      },
+    }
+
+    const len = results.parsed.table.length
+    const keys = Object.keys(results.parsed.table.columns)
+    let newLen = 0,
+      ni = 0
+
+    const _search = search.toLocaleLowerCase()
+    const oldCols = results.parsed.table.columns
+    const newCols = dupped.table.columns
+
+    for (; ni < len; ni++) {
+      if (
+        !keys.reduce(
+          (acc, curr) =>
+            acc ||
+            ('' + oldCols[curr].data[ni]).toLocaleLowerCase().includes(_search),
+          false
+        )
+      ) {
+        continue
+      }
+
+      keys.forEach(k => (newCols[k].data[newLen] = oldCols[k].data[ni]))
+      newLen++
+    }
+
+    dupped.table.length = newLen
+
+    return dupped as FluxResult['parsed']
+  }, [search, results?.parsed])
 
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
@@ -161,7 +213,7 @@ const Table: FC<PipeProp> = ({Context}) => {
         <div className="panel-resizer panel-resizer__visible" id={id}>
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
             <Icon
-              glyph={IconFont.BarChart}
+              glyph={IconFont.BarChart_New}
               className="panel-resizer--vis-toggle"
             />
           </div>
@@ -182,8 +234,15 @@ const Table: FC<PipeProp> = ({Context}) => {
   return (
     <Context resizes controls={caveat}>
       <div className="flow-visualization" id={id}>
-        <div className="flow-visualization--view">
+        <div className="flow-visualization--header">
+          <SearchWidget
+            placeholderText="Search results..."
+            onSearch={setSearch}
+            searchTerm={search}
+          />
           <QueryStat />
+        </div>
+        <div className="flow-visualization--view">
           <View
             loading={loading}
             properties={
@@ -192,7 +251,7 @@ const Table: FC<PipeProp> = ({Context}) => {
                 showAll: false,
               } as SimpleTableViewProperties
             }
-            result={results.parsed}
+            result={res}
             timeRange={range}
           />
         </div>

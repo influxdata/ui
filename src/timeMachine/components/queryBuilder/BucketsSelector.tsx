@@ -16,6 +16,7 @@ import {selectBucket} from 'src/timeMachine/actions/queryBuilderThunks'
 import {getActiveQuery} from 'src/timeMachine/selectors'
 import {getStatus} from 'src/resources/selectors'
 import {getSortedBuckets} from 'src/buckets/selectors/index'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
@@ -38,6 +39,7 @@ const BucketSelector: FunctionComponent<Props> = ({
   const list = sortedBucketNames.filter(fb(searchTerm))
 
   const onSelect = (bucket: string) => {
+    event('selected bucket in old query builder')
     onSelectBucket(bucket, true)
   }
 
@@ -62,7 +64,7 @@ const BucketSelector: FunctionComponent<Props> = ({
       <BuilderCard.Menu>
         <Input
           value={searchTerm}
-          placeholder="Search for a bucket"
+          placeholder="Search buckets"
           className="tag-selector--search"
           onChange={e => setSearchTerm(e.target.value)}
           onClear={() => setSearchTerm('')}

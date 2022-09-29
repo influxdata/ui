@@ -2,8 +2,7 @@
 import React, {FC, useContext, useEffect} from 'react'
 import {AppWrapper, DapperScrollbars, Page} from '@influxdata/clockface'
 import {useParams} from 'react-router'
-import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {fromFlux} from '@influxdata/giraffe'
 
 // Contexts
 import {FlowProvider} from 'src/flows/context/shared'
@@ -48,9 +47,7 @@ const RunPipeResults: FC = () => {
         .then(res =>
           res.text().then(resp => {
             if (res.status == 200) {
-              const csv = isFlagEnabled('fastFromFlux')
-                ? fastFromFlux(resp)
-                : fromFlux(resp)
+              const csv = fromFlux(resp)
               setResult(id, {parsed: csv, source: ''})
               setStatuses({[id]: RemoteDataState.Done})
             } else {

@@ -2,9 +2,14 @@ import React, {FC, useContext, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
-import {QueryContext, simplify} from 'src/shared/contexts/query'
+import {
+  QueryContext,
+  QueryScope,
+  OverrideMechanism,
+  simplify,
+} from 'src/shared/contexts/query'
 import {event} from 'src/cloud/utils/reporting'
-import {FluxResult, QueryScope} from 'src/types/flows'
+import {FluxResult} from 'src/types/flows'
 import {PIPE_DEFINITIONS, PROJECT_NAME} from 'src/flows'
 import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -46,16 +51,18 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   queryDependents: () => {},
   getPanelQueries: _ => ({
     id: '',
-    scope: {},
+    scope: {
+      region: '',
+      org: '',
+    },
     source: '',
     visual: '',
   }),
   status: RemoteDataState.NotStarted,
 }
 
-export const FlowQueryContext = React.createContext<FlowQueryContextType>(
-  DEFAULT_CONTEXT
-)
+export const FlowQueryContext =
+  React.createContext<FlowQueryContextType>(DEFAULT_CONTEXT)
 
 export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
@@ -244,7 +251,9 @@ export const FlowQueryProvider: FC = ({children}) => {
       ...(override || {}),
     }
 
-    return queryAPI(text, _override)
+    return queryAPI(text, _override, {
+      overrideMechanism: OverrideMechanism.Inline,
+    })
   }
 
   const basic = (text: string, override?: QueryScope): Promise<FluxResult> => {
@@ -254,7 +263,9 @@ export const FlowQueryProvider: FC = ({children}) => {
       ...(override || {}),
     }
 
-    return basicAPI(text, _override)
+    return basicAPI(text, _override, {
+      overrideMechanism: OverrideMechanism.Inline,
+    })
   }
 
   const stati = Object.values(statuses)

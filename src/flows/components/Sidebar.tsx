@@ -51,13 +51,7 @@ export const SubSideBar: FC = () => {
         ></button>
       </div>
       <div className="flow-sidebar--submenu">
-        <DapperScrollbars
-          noScrollX={true}
-          thumbStopColor="gray"
-          thumbStartColor="gray"
-        >
-          <div className="flow-sidebar--submenu-wrapper">{submenu}</div>
-        </DapperScrollbars>
+        <div className="flow-sidebar--submenu-wrapper">{submenu}</div>
       </div>
     </div>
   )
@@ -132,197 +126,209 @@ const Sidebar: FC = () => {
   const dispatch = useDispatch()
   const {source, visual} = getPanelQueries(id)
 
-  const sections = ([
-    {
-      title: '',
-      actions: [
-        {
-          title: 'Delete',
-          action: () => {
-            const {type} = flow.data.byID[id]
-            event('notebook_delete_cell', {notebooksCellType: type})
+  const sections = (
+    [
+      {
+        title: '',
+        actions: [
+          {
+            title: 'Delete',
+            action: () => {
+              const {type} = flow.data.byID[id]
+              event('notebook_delete_cell', {notebooksCellType: type})
 
-            remove(id)
+              remove(id)
+            },
           },
-        },
-        {
-          title: 'Duplicate',
-          action: () => {
-            const data = flow.data.byID[id]
-            const meta = flow.meta.byID[id]
+          {
+            title: 'Duplicate',
+            action: () => {
+              const data = flow.data.byID[id]
+              const meta = flow.meta.byID[id]
 
-            data.title = meta.title
+              data.title = meta.title
 
-            event('Notebook Panel Cloned', {notebooksCellType: data.type})
+              event('Notebook Panel Cloned', {notebooksCellType: data.type})
 
-            add(data, flow.data.allIDs.indexOf(id))
+              add(data, flow.data.allIDs.indexOf(id))
+            },
           },
-        },
-        {
-          title: () => {
-            if (!flow.meta.allIDs.includes(id)) {
-              return 'Hide Panel'
-            }
+          {
+            title: () => {
+              if (!flow.meta.allIDs.includes(id)) {
+                return 'Hide Panel'
+              }
 
-            if (flow.meta.byID[id].visible) {
-              return 'Hide Panel'
-            }
-            return 'Show Panel'
+              if (flow.meta.byID[id].visible) {
+                return 'Hide Panel'
+              }
+              return 'Show Panel'
+            },
+            action: () => {
+              event('Panel Visibility Toggled', {
+                state: !flow.meta.byID[id].visible ? 'true' : 'false',
+              })
+
+              updateMeta(id, {
+                visible: !flow.meta.byID[id].visible,
+              })
+            },
           },
-          action: () => {
-            event('Panel Visibility Toggled', {
-              state: !flow.meta.byID[id].visible ? 'true' : 'false',
-            })
+          {
+            title: 'Convert to |> Flux',
+            disable: () => {
+              return !source
+            },
+            hidden: () => {
+              if (!flow.data.allIDs.includes(id)) {
+                return true
+              }
 
-            updateMeta(id, {
-              visible: !flow.meta.byID[id].visible,
-            })
+              const {type} = flow.data.byID[id]
+
+              if (type === 'rawFluxEditor') {
+                return true
+              }
+
+              if (
+                !/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)
+              ) {
+                return true
+              }
+
+              return false
+            },
+            action: () => {
+              const {type} = flow.data.byID[id]
+              const {title} = flow.meta.byID[id]
+
+              event('Convert Cell To Flux', {from: type})
+
+              const init = JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)
+              )
+              init.queries[0].text =
+                type === 'visualization' && visual ? visual : source
+              init.title = title
+              init.type = 'rawFluxEditor'
+
+              add(init, flow.data.allIDs.indexOf(id))
+              remove(id)
+            },
           },
-        },
-        {
-          title: 'Convert to |> Flux',
-          disable: () => {
-            return !source
+          {
+            title: 'Export to Client Library',
+            menu: (
+              <DapperScrollbars>
+                <ClientList />
+              </DapperScrollbars>
+            ),
+            disable: () => {
+              return !source
+            },
+            hidden: () => {
+              if (!flow.data.allIDs.includes(id)) {
+                return true
+              }
+
+              const {type} = flow.data.byID[id]
+
+              if (!/^(inputs)$/.test(PIPE_DEFINITIONS[type]?.family)) {
+                return true
+              }
+
+              return false
+            },
           },
-          hidden: () => {
-            if (!flow.data.allIDs.includes(id)) {
-              return true
-            }
-
-            const {type} = flow.data.byID[id]
-
-            if (type === 'rawFluxEditor') {
-              return true
-            }
-
-            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
-              return true
-            }
-
-            return false
+          {
+            title: 'Link to Panel',
+            action: () => {
+              const {type} = flow.data.byID[id]
+              event('notebook_share_panel', {notebooksCellType: type})
+              const url = new URL(
+                `${window.location.origin}${window.location.pathname}?panel=${id}`
+              ).toString()
+              try {
+                navigator.clipboard.writeText(url)
+                event('panel_share_success', {notebooksCellType: type})
+                dispatch(notify(panelCopyLinkSuccess()))
+              } catch {
+                event('panel_share_failure', {notebooksCellType: type})
+                dispatch(notify(panelCopyLinkFail()))
+              }
+            },
           },
-          action: () => {
-            const {type} = flow.data.byID[id]
-            const {title} = flow.meta.byID[id]
+          {
+            title: 'Link to Source',
+            disable: () => {
+              return !source
+            },
+            hidden: () => {
+              if (!flow.data.allIDs.includes(id)) {
+                return true
+              }
+              const {type} = flow.data.byID[id]
 
-            event('Convert Cell To Flux', {from: type})
+              if (
+                !/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)
+              ) {
+                return true
+              }
 
-            const init = JSON.parse(
-              JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)
-            )
-            init.queries[0].text =
-              type === 'visualization' && visual ? visual : source
-            init.title = title
-            init.type = 'rawFluxEditor'
-
-            add(init, flow.data.allIDs.indexOf(id))
-            remove(id)
+              return false
+            },
+            action: () => {
+              const {type} = flow.data.byID[id]
+              event('notebook source link', {notebooksCellType: type})
+              const url = new URL(
+                `${window.location.origin}/api/v2private/notebooks/${flow.id}/query/${id}`
+              ).toString()
+              try {
+                navigator.clipboard.writeText(url)
+                dispatch(notify(panelCopyLinkSuccess()))
+              } catch {
+                dispatch(notify(panelCopyLinkFail()))
+              }
+            },
           },
-        },
-        {
-          title: 'Export to Client Library',
-          menu: <ClientList />,
-          disable: () => {
-            return !source
-          },
-          hidden: () => {
-            if (!flow.data.allIDs.includes(id)) {
-              return true
-            }
+          {
+            title: 'Link to Results',
+            disable: () => {
+              return !source
+            },
+            hidden: () => {
+              if (!flow.data.allIDs.includes(id)) {
+                return true
+              }
 
-            const {type} = flow.data.byID[id]
+              const {type} = flow.data.byID[id]
 
-            if (!/^(inputs)$/.test(PIPE_DEFINITIONS[type]?.family)) {
-              return true
-            }
+              if (
+                !/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)
+              ) {
+                return true
+              }
 
-            return false
+              return false
+            },
+            action: () => {
+              const {type} = flow.data.byID[id]
+              event('notebook result link', {notebooksCellType: type})
+              const url = new URL(
+                `${window.location.origin}/api/v2private/notebooks/${flow.id}/run/${id}`
+              ).toString()
+              try {
+                navigator.clipboard.writeText(url)
+                dispatch(notify(panelCopyLinkSuccess()))
+              } catch {
+                dispatch(notify(panelCopyLinkFail()))
+              }
+            },
           },
-        },
-        {
-          title: 'Link to Panel',
-          action: () => {
-            const {type} = flow.data.byID[id]
-            event('notebook_share_panel', {notebooksCellType: type})
-            const url = new URL(
-              `${window.location.origin}${window.location.pathname}?panel=${id}`
-            ).toString()
-            try {
-              navigator.clipboard.writeText(url)
-              event('panel_share_success', {notebooksCellType: type})
-              dispatch(notify(panelCopyLinkSuccess()))
-            } catch {
-              event('panel_share_failure', {notebooksCellType: type})
-              dispatch(notify(panelCopyLinkFail()))
-            }
-          },
-        },
-        {
-          title: 'Link to Source',
-          disable: () => {
-            return !source
-          },
-          hidden: () => {
-            if (!flow.data.allIDs.includes(id)) {
-              return true
-            }
-            const {type} = flow.data.byID[id]
-
-            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
-              return true
-            }
-
-            return false
-          },
-          action: () => {
-            const {type} = flow.data.byID[id]
-            event('notebook source link', {notebooksCellType: type})
-            const url = new URL(
-              `${window.location.origin}/api/v2private/notebooks/${flow.id}/query/${id}`
-            ).toString()
-            try {
-              navigator.clipboard.writeText(url)
-              dispatch(notify(panelCopyLinkSuccess()))
-            } catch {
-              dispatch(notify(panelCopyLinkFail()))
-            }
-          },
-        },
-        {
-          title: 'Link to Results',
-          disable: () => {
-            return !source
-          },
-          hidden: () => {
-            if (!flow.data.allIDs.includes(id)) {
-              return true
-            }
-
-            const {type} = flow.data.byID[id]
-
-            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
-              return true
-            }
-
-            return false
-          },
-          action: () => {
-            const {type} = flow.data.byID[id]
-            event('notebook result link', {notebooksCellType: type})
-            const url = new URL(
-              `${window.location.origin}/api/v2private/notebooks/${flow.id}/run/${id}`
-            ).toString()
-            try {
-              navigator.clipboard.writeText(url)
-              dispatch(notify(panelCopyLinkSuccess()))
-            } catch {
-              dispatch(notify(panelCopyLinkFail()))
-            }
-          },
-        },
-      ],
-    },
-  ] as ControlSection[])
+        ],
+      },
+    ] as ControlSection[]
+  )
     .concat(menu)
     .map(section => {
       const links = section.actions

@@ -13,15 +13,19 @@ import {
   BrowserMessageWriter,
   createMessageConnection,
 } from 'vscode-jsonrpc/browser'
-import Prelude from 'src/languageSupport/languages/flux/lsp/prelude'
+import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
 
 // flux language support
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import fluxWorkerUrl from 'worker-plugin/loader!./worker/flux.worker'
 import Fallback from 'src/languageSupport/languages/flux/lsp/worker/flux.fallback'
 import {EditorType} from 'src/types'
+
+// utils
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {event} from 'src/cloud/utils/reporting'
 
 // install Monaco language client services
 MonacoServices.install(monaco)
@@ -50,32 +54,51 @@ function createLanguageClient(
   })
 }
 
-let worker: Worker, messageReader, messageWriter, prelude
+let worker: Worker, messageReader, messageWriter, manager
+
+const handleConnectionClose = () => {
+  reportErrorThroughHoneyBadger(new Error('LSP connection closed.'), {
+    name: 'LSP worker',
+  })
+}
+
+const handleConnectionError = ([error, ,]: [Error, unknown, number]) => {
+  // LSP worker will not be stopped. Is only an unhandled error.
+  reportErrorThroughHoneyBadger(error, {name: 'LSP worker'})
+}
 
 export function initLspWorker() {
   if (worker) {
     return
   }
   if (window.Worker) {
+    event('Used LSP worker.')
     worker = new Worker(fluxWorkerUrl)
   } else {
+    event('Used LSP fallback worker.')
     worker = new Fallback()
   }
-  prelude = new Prelude(worker)
+  worker.onerror = (err: ErrorEvent) => {
+    const error: Error = {...err, name: 'worker.onerror'}
+    reportErrorThroughHoneyBadger(error, {name: 'LSP worker'})
+  }
+  manager = new ConnectionManager(worker)
 
   messageReader = new BrowserMessageReader(worker)
   messageWriter = new BrowserMessageWriter(worker)
   const connection = createMessageConnection(messageReader, messageWriter)
   const languageClient = createLanguageClient(connection)
   const disposable = languageClient.start()
+  connection.onError(e => handleConnectionError(e))
   connection.onClose(() => {
     disposable.dispose()
-    prelude.dispose()
+    manager.dispose()
+    handleConnectionClose()
   })
 }
 initLspWorker()
 
 export function setupForReactMonacoEditor(editor: EditorType) {
-  prelude.subscribeToModel(editor)
-  return prelude
+  manager.subscribeToModel(editor)
+  return manager
 }

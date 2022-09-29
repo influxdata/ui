@@ -1,6 +1,7 @@
 // Installed libraries
 import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
+import {jest} from '@jest/globals'
 
 // Constants
 import {tasks, orgs, withRouterProps, labels} from 'mocks/dummyData'
@@ -13,7 +14,7 @@ import {createMemoryHistory} from 'history'
 import TasksPage from './TasksPage'
 import {deleteTask, patchTask, postTask, getTask} from 'src/client'
 import {parse} from 'src/languageSupport/languages/flux/parser'
-import {mocked} from 'ts-jest/utils'
+import {initialState} from 'src/tasks/reducers/helpers'
 
 const sampleScript =
   'option task = {\n  name: "beetle",\n  every: 1h,\n}\n' +
@@ -57,19 +58,6 @@ jest.mock('src/languageSupport/languages/flux/parser', () => ({
     }
   }),
   format_from_js_file: jest.fn(),
-}))
-
-jest.mock('src/shared/contexts/pinneditems', () => ({
-  getPinnedItems: jest.fn(() =>
-    Promise.resolve({
-      json: () => Promise.resolve([]),
-    })
-  ),
-  PinnedItemTypes: {Task: 'task'},
-  addPinnedItem: jest.fn(() => {
-    return new Promise(resolve => resolve())
-  }),
-  deletePinnedItemByParam: jest.fn(() => Promise.resolve()),
 }))
 
 jest.mock('src/client', () => ({
@@ -118,7 +106,7 @@ jest.mock('src/client', () => ({
     return {
       headers: {},
       status: 200,
-      data: {...InactiveTask, status: args.data.status},
+      data: {...InactiveTask, status: (args as any).data.status},
     }
   }),
   deleteTask: jest.fn(() => ({
@@ -151,6 +139,7 @@ const setup = (override = {}) => {
         status: RemoteDataState.Done,
       },
       tasks: {
+        ...initialState(),
         byID: {
           [localTasks[0].id]: localTasks[0],
           [localTasks[1].id]: localTasks[1],
@@ -243,8 +232,9 @@ describe('Tasks.Containers.TasksPage', () => {
         taskCard.querySelector("[data-testid='task-card--name']").textContent
       ).toContain('Dead Beetle')
 
-      const cardName = taskCard.querySelector("[data-testid='task-card--name']")
-        .textContent
+      const cardName = taskCard.querySelector(
+        "[data-testid='task-card--name']"
+      ).textContent
       const deleteMenu = taskCard.querySelector(
         `[data-testid='context-delete-menu ${cardName}--button']`
       )
@@ -263,7 +253,7 @@ describe('Tasks.Containers.TasksPage', () => {
 
       await waitFor(() => expect(deleteTask).toBeCalled())
 
-      expect(mocked(deleteTask).mock.calls[0][0]['taskID']).toEqual(taskID)
+      expect(jest.mocked(deleteTask).mock.calls[0][0]['taskID']).toEqual(taskID)
       expect(ui.store.getState().resources.tasks.byID[taskID]).toBeFalsy()
       expect(ui.store.getState().resources.tasks.allIDs).not.toContain(taskID)
     })
@@ -280,17 +270,20 @@ describe('Tasks.Containers.TasksPage', () => {
       fireEvent.click(menuButton)
       fireEvent.click(screen.getByText('Clone'))
 
-      const name = taskCard.querySelector("[data-testid='task-card--name']")
-        .textContent
+      const name = taskCard.querySelector(
+        "[data-testid='task-card--name']"
+      ).textContent
       expect(name).toContain(InactiveTask.name)
 
       await waitFor(() => expect(postTask).toBeCalled())
 
-      expect(mocked(getTask).mock.calls[0][0].taskID).toEqual(InactiveTask.id)
+      expect(jest.mocked(getTask).mock.calls[0][0].taskID).toEqual(
+        InactiveTask.id
+      )
 
-      expect(mocked(parse).mock.calls[0][0]).toEqual(sampleScript)
+      expect(jest.mocked(parse).mock.calls[0][0]).toEqual(sampleScript)
 
-      expect(mocked(postTask).mock.calls[0][0].data.status).toEqual(
+      expect(jest.mocked(postTask).mock.calls[0][0].data.status).toEqual(
         InactiveTask.status
       )
 
@@ -318,7 +311,9 @@ describe('Tasks.Containers.TasksPage', () => {
       fireEvent.click(activateToggle)
       await waitFor(() => expect(patchTask).toBeCalled())
 
-      expect(mocked(patchTask).mock.calls[0][0].data.status).toEqual('active')
+      expect(jest.mocked(patchTask).mock.calls[0][0].data.status).toEqual(
+        'active'
+      )
 
       expect(
         ui.store.getState().resources.tasks.byID[InactiveTask.id].status
@@ -327,7 +322,7 @@ describe('Tasks.Containers.TasksPage', () => {
       fireEvent.click(activateToggle)
       await waitFor(() => expect(patchTask).toBeCalledTimes(2))
 
-      await expect(mocked(patchTask).mock.calls[1][0].data.status).toEqual(
+      await expect(jest.mocked(patchTask).mock.calls[1][0].data.status).toEqual(
         'inactive'
       )
 

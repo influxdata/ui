@@ -40,7 +40,7 @@ describe('Dashboards', () => {
     const newName = 'new 🅱️ashboard'
     // Create from empty state
     cy.getByTestID('empty-dashboards-list').within(() => {
-      cy.getByTestID('add-resource-dropdown--button').click()
+      cy.getByTestID('add-resource-dropdown--button').first().click()
     })
 
     cy.getByTestID('add-resource-dropdown--new').click()
@@ -58,17 +58,11 @@ describe('Dashboards', () => {
     })
 
     cy.getByTestID('dashboard-card').within(() => {
-      cy.getByTestID('dashboard-card--name')
-        .first()
-        .trigger('mouseover')
+      cy.getByTestID('dashboard-card--name').first().trigger('mouseover')
 
-      cy.getByTestID('dashboard-card--name-button')
-        .first()
-        .click()
+      cy.getByTestID('dashboard-card--name-button').first().click()
 
-      cy.get('.cf-input-field')
-        .type(newName)
-        .type('{enter}')
+      cy.get('.cf-input-field').type(newName).type('{enter}')
     })
 
     cy.getByTestID('dashboard-card').should('contain', newName)
@@ -227,9 +221,7 @@ describe('Dashboards', () => {
       // i.e. that they are fully decoupled
       // change variable N.B. final assert is waiting on fix for #3287 see below
       cy.getByTestID('variable-dropdown-input-typeAhead--Power').click()
-      cy.getByTestID('variable-dropdown--item')
-        .eq(4)
-        .click()
+      cy.getByTestID('variable-dropdown--item').eq(4).click()
       // const viewGraphCopy = makeGraphSnapshot()
       cy.getByTestID('cell Name this Cell').within(() => {
         cy.getByTestID('cell-context--toggle').click()
@@ -367,9 +359,7 @@ describe('Dashboards', () => {
         cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id)
           cy.reload()
-          cy.getByTestID(`inline-labels--add`)
-            .first()
-            .click()
+          cy.getByTestID(`inline-labels--add`).first().click()
 
           cy.getByTestID(`label--pill ${labelName}`).click()
 
@@ -383,9 +373,7 @@ describe('Dashboards', () => {
         cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id)
           cy.reload()
-          cy.getByTestID(`inline-labels--add`)
-            .first()
-            .click()
+          cy.getByTestID(`inline-labels--add`).first().click()
 
           cy.getByTestID(`label--pill ${labelName}`).click()
 
@@ -403,9 +391,7 @@ describe('Dashboards', () => {
         cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id)
           cy.reload()
-          cy.getByTestID(`inline-labels--add`)
-            .first()
-            .click()
+          cy.getByTestID(`inline-labels--add`).first().click()
 
           cy.getByTestID(`inline-labels--popover-field`).type(labelName)
 
@@ -417,9 +403,7 @@ describe('Dashboards', () => {
       it('typing a new label name and pressing ENTER starts label creation flow, closes popover', () => {
         const labelName = 'choco'
 
-        cy.getByTestID(`inline-labels--add`)
-          .first()
-          .click()
+        cy.getByTestID(`inline-labels--add`).first().click()
 
         cy.getByTestID('inline-labels--popover--contents').should('be.visible')
         cy.getByTestID(`inline-labels--popover-field`)
@@ -433,9 +417,7 @@ describe('Dashboards', () => {
         // https://github.com/influxdata/influxdb/issues/17964
         const labelName = 'the new new'
 
-        cy.getByTestID(`inline-labels--add`)
-          .first()
-          .click()
+        cy.getByTestID(`inline-labels--add`).first().click()
 
         cy.getByTestID('inline-labels--popover--contents').should('be.visible')
 
@@ -449,9 +431,7 @@ describe('Dashboards', () => {
 
       it('can create a label and add to a dashboard', () => {
         const label = 'plerps'
-        cy.getByTestID(`inline-labels--add`)
-          .first()
-          .click()
+        cy.getByTestID(`inline-labels--add`).first().click()
 
         cy.getByTestID('inline-labels--popover-field').type(label)
         cy.getByTestID('inline-labels--create-new').click()
@@ -711,15 +691,9 @@ describe('Dashboards', () => {
     cy.getByTestID('dropdown-item-customtimerange').click()
     cy.getByTestID('timerange-popover--dialog').should('be.visible')
 
-    cy.getByTestID('timerange--input')
-      .first()
-      .clear()
-      .type(past)
+    cy.getByTestID('timerange--input').first().clear().type(past)
 
-    cy.getByTestID('timerange--input')
-      .last()
-      .clear()
-      .type(now)
+    cy.getByTestID('timerange--input').last().clear().type(now)
 
     cy.getByTestID('daterange--apply-btn').click()
     cy.wait('@loadQuery')

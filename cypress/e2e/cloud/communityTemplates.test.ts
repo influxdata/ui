@@ -7,7 +7,9 @@ describe('Community Templates', () => {
         cy.get('@org').then(({id}: Organization) =>
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${id}/settings/templates`)
-            cy.getByTestID('tree-nav')
+            cy.getByTestID('tree-nav').then(() => {
+              cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+            })
           })
         )
       })
@@ -220,17 +222,13 @@ describe('Community Templates', () => {
 
       cy.getByTestID('template-resource-link').click({multiple: true})
       // dashboard
-      cy.get('.community-templates--resources-table')
-        .contains('dash-1')
-        .click()
+      cy.get('.community-templates--resources-table').contains('dash-1').click()
       cy.url().should('include', 'dashboards')
       cy.go('back')
 
       cy.getByTestID('template-resource-link').click({multiple: true})
       // telegraf
-      cy.get('.community-templates--resources-table')
-        .contains('tele-2')
-        .click()
+      cy.get('.community-templates--resources-table').contains('tele-2').click()
       cy.url().should(
         'match',
         /.*\/load-data\/telegrafs\/[\w\d]+\/instructions/

@@ -46,6 +46,9 @@ const Template: FC = () => {
       })
       .then(data => {
         add(data).then(id => {
+          if (TEMPLATES[params[0]].callback) {
+            TEMPLATES[params[0]].callback.apply(this, [params.slice(1), id])
+          }
           history.replace(
             `/orgs/${org.id}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
           )

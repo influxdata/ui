@@ -1,8 +1,8 @@
+import {jest} from '@jest/globals'
+
 import * as thunks from './thunks'
 import * as api from 'src/client'
 import {getMockAppState} from 'src/mockAppState'
-
-import {mocked} from 'ts-jest/utils'
 import {RemoteDataState} from '../../types'
 import {taskUpdateSuccess} from 'src/shared/copy/notifications'
 
@@ -54,7 +54,7 @@ const mockGetTasks = (succeed = true) => {
     return res
   }
 
-  mocked(api.getTasks).mockImplementationOnce(mock)
+  jest.mocked(api.getTasks).mockImplementationOnce(mock)
 }
 
 const mockPatchTasks = (succeed = true) => {
@@ -76,14 +76,14 @@ const mockPatchTasks = (succeed = true) => {
     )
     return res
   }
-  mocked(api.patchTask).mockImplementationOnce(mock)
+  jest.mocked(api.patchTask).mockImplementationOnce(mock)
 }
 
 describe('Tasks.Actions.Thunks', () => {
   it('calls getTasks', async () => {
     await mockGetTasks()
 
-    const dispatch = jest.fn()
+    const dispatch: any = jest.fn()
 
     const getState: any = jest.fn(getMockAppStateWTask)
 
@@ -99,7 +99,7 @@ describe('Tasks.Actions.Thunks', () => {
   it('calls updateTaskStatus', async () => {
     mockPatchTasks()
 
-    const dispatch = jest.fn()
+    const dispatch: any = jest.fn()
 
     await thunks.updateTaskStatus({...sampleTask, status: 'active'})(dispatch)
 
@@ -116,7 +116,7 @@ describe('Tasks.Actions.Thunks', () => {
 
     expect(dispatch.mock.calls[2][0].type).toBe('PUBLISH_NOTIFICATION')
     expect(dispatch.mock.calls[2][0].payload.notification).toEqual(
-      taskUpdateSuccess()
+      taskUpdateSuccess(sampleTask.name)
     )
   })
 })

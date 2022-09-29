@@ -5,9 +5,14 @@ import {useLocation} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
-import {getOperatorAccounts, getOperatorOrgs} from 'src/client/unityRoutes'
+import {
+  getOperatorAccounts,
+  getOperatorOrgs,
+  getOperatorProviders,
+  OperatorProvidersResponse,
+} from 'src/client/unityRoutes'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
-import {getQuartzMe} from 'src/me/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Types
 import {
@@ -32,9 +37,17 @@ export interface OperatorContextType {
   ) => void
   handleGetAccounts: () => void
   handleGetOrgs: () => void
+  handleGetProviders: () => void
   organizations: OperatorOrg[]
   pathname: string
+  providerInfo: OperatorProvidersResponse
   searchTerm: string
+  providers: string[]
+  setProviders: (
+    providers: string[] | ((prevState: string[]) => string[])
+  ) => void
+  regions: string[]
+  setRegions: (regions: string[] | ((prevState: string[]) => string[])) => void
   setSearchTerm: (searchTerm?: string) => void
   status: RemoteDataState
   hasWritePermissions: boolean
@@ -46,17 +59,25 @@ export const DEFAULT_CONTEXT: OperatorContextType = {
   setAccountTypes: () => {},
   handleGetAccounts: () => {},
   handleGetOrgs: () => {},
+  handleGetProviders: () => {},
   organizations: [],
   pathname: OperatorRoutes.default,
+  providerInfo: {
+    providers: [],
+    regions: {},
+  },
   searchTerm: '',
+  providers: [],
+  setProviders: () => {},
+  regions: [],
+  setRegions: () => {},
   setSearchTerm: () => {},
   status: RemoteDataState.NotStarted,
   hasWritePermissions: false,
 }
 
-export const OperatorContext = React.createContext<OperatorContextType>(
-  DEFAULT_CONTEXT
-)
+export const OperatorContext =
+  React.createContext<OperatorContextType>(DEFAULT_CONTEXT)
 
 export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [accounts, setAccounts] = useState<OperatorAccount[]>([])
@@ -64,8 +85,14 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
   const [accountTypes, setAccountTypes] = useState<AccountType[]>([])
+  const [providers, setProviders] = useState<string[]>([])
+  const [regions, setRegions] = useState<string[]>([])
+  const [providerInfo, setProviderInfo] = useState<OperatorProvidersResponse>(
+    DEFAULT_CONTEXT.providerInfo
+  )
   const dispatch = useDispatch()
-  const quartzMe = useSelector(getQuartzMe)
+  const currentIdentity = useSelector(selectCurrentIdentity)
+  const {user} = currentIdentity
 
   const [organizations, setOrganizations] = useState<OperatorOrg[]>([])
 
@@ -96,7 +123,12 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     try {
       setOrgsStatus(RemoteDataState.Loading)
       const resp = await getOperatorOrgs({
-        query: {query: searchTerm, accountTypes},
+        query: {
+          query: searchTerm,
+          accountTypes,
+          providers,
+          regions,
+        },
       })
 
       if (resp.status !== 200) {
@@ -110,7 +142,21 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       setOrgsStatus(RemoteDataState.Error)
       dispatch(notify(getOrgsError()))
     }
-  }, [accountTypes, searchTerm, dispatch])
+  }, [accountTypes, searchTerm, providers, regions, dispatch])
+
+  const handleGetProviders = useCallback(async () => {
+    try {
+      const resp = await getOperatorProviders({})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      setProviderInfo(resp.data)
+    } catch (error) {
+      console.error({error})
+    }
+  }, [])
 
   const {pathname} = useLocation()
 
@@ -123,12 +169,13 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
         handleGetAccounts()
         break
       case OperatorRoutes.organizations:
+        handleGetProviders()
         handleGetOrgs()
         break
       default:
         return
     }
-  }, [pathname, handleGetAccounts, handleGetOrgs])
+  }, [pathname, handleGetAccounts, handleGetOrgs, handleGetProviders])
 
   let status = RemoteDataState.Done
 
@@ -142,8 +189,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     status = RemoteDataState.Loading
   }
 
-  const hasWritePermissions =
-    quartzMe.isOperator && quartzMe?.operatorRole === 'read-write'
+  const hasWritePermissions = user.operatorRole === 'read-write'
 
   return (
     <OperatorContext.Provider
@@ -153,10 +199,16 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
         setAccountTypes,
         handleGetAccounts,
         handleGetOrgs,
+        handleGetProviders,
         organizations,
         pathname,
+        providerInfo,
         searchTerm,
         setSearchTerm,
+        providers,
+        setProviders,
+        regions,
+        setRegions,
         status,
         hasWritePermissions,
       }}

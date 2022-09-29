@@ -15,6 +15,7 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type SortKey = keyof Authorization
 
@@ -29,20 +30,25 @@ interface Props {
   sortType: SortTypes
   tokenCount: number
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
+  // bulk action props
+  setAllTokens?: (sortedAuths: Authorization[]) => void
+  setTokensOnCurrentPage?: (tokens: Authorization[]) => void
+  tokensSelectedForBatchOperation?: Authorization[]
+  toggleTokenSelection?: (token: Authorization) => void
 }
 
 interface State {
   isTokenOverlayVisible: boolean
   authInView: Authorization
+
+  currentPage: number
 }
 
 export default class TokenList extends PureComponent<Props, State> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
-  )
+  private memGetSortedResources =
+    memoizeOne<typeof getSortedResources>(getSortedResources)
 
   private paginationRef: RefObject<HTMLDivElement>
-  public currentPage: number = 1
   public rowsPerPage: number = 10
   public totalPages: number
 
@@ -51,6 +57,7 @@ export default class TokenList extends PureComponent<Props, State> {
     this.state = {
       isTokenOverlayVisible: false,
       authInView: null,
+      currentPage: 1,
     }
   }
 
@@ -62,14 +69,19 @@ export default class TokenList extends PureComponent<Props, State> {
       urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber > 0
 
     if (passedInPageIsValid) {
-      this.currentPage = urlPageNumber
+      this.setState({currentPage: urlPageNumber})
+    }
+
+    // send the tokens info up once when the component finishes mounting
+    if (isFlagEnabled('bulkActionDeleteTokens')) {
+      this.passTokensInformationToParent()
     }
   }
 
-  public componentDidUpdate(prevProps) {
+  public componentDidUpdate(prevProps, prevState) {
     // if the user filters the list while on a page that is
     // outside the new filtered list put them on the last page of the new list
-    if (this.currentPage > this.totalPages) {
+    if (this.state.currentPage > this.totalPages) {
       this.paginate(this.totalPages)
     }
 
@@ -81,7 +93,45 @@ export default class TokenList extends PureComponent<Props, State> {
         auth => auth.id === this.state.authInView?.id
       )
       this.setState({authInView})
+
+      // send the tokens info up when new tokens are passed as props (e.g: search filter was used by the user)
+      if (isFlagEnabled('bulkActionDeleteTokens')) {
+        this.passTokensInformationToParent()
+      }
     }
+
+    const {currentPage: prevPage} = prevState
+    const {currentPage: nextPage} = this.state
+
+    if (!isEqual(prevPage, nextPage)) {
+      // send the tokens info up when a new page is selected from the pagination
+      if (isFlagEnabled('bulkActionDeleteTokens')) {
+        this.passTokensInformationToParent()
+      }
+    }
+  }
+
+  private passTokensInformationToParent() {
+    const {auths, sortDirection, sortKey, sortType} = this.props
+    const sortedAuths = this.memGetSortedResources(
+      auths,
+      sortKey,
+      sortDirection,
+      sortType
+    )
+
+    // send sorted tokens to parent
+    this.props.setAllTokens(sortedAuths)
+
+    // send tokens on the current page
+    const startIndex =
+      this.rowsPerPage * Math.max(this.state.currentPage - 1, 0)
+    const endIndex = Math.min(
+      startIndex + this.rowsPerPage,
+      this.props.tokenCount
+    )
+
+    this.props.setTokensOnCurrentPage(sortedAuths.slice(startIndex, endIndex))
   }
 
   public render() {
@@ -110,7 +160,7 @@ export default class TokenList extends PureComponent<Props, State> {
           ref={this.paginationRef}
           style={{width: this.props.pageWidth}}
           totalPages={this.totalPages}
-          currentPage={this.currentPage}
+          currentPage={this.state.currentPage}
           pageRangeOffset={1}
           onChange={this.paginate}
         />
@@ -125,7 +175,7 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   public paginate = page => {
-    this.currentPage = page
+    this.setState({currentPage: page})
     const url = new URL(location.href)
     url.searchParams.set('page', page)
     history.replaceState(null, '', url.toString())
@@ -133,7 +183,13 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   private get rows(): JSX.Element[] {
-    const {auths, sortDirection, sortKey, sortType} = this.props
+    const {
+      auths,
+      sortDirection,
+      sortKey,
+      sortType,
+      tokensSelectedForBatchOperation,
+    } = this.props
     const sortedAuths = this.memGetSortedResources(
       auths,
       sortKey,
@@ -141,7 +197,8 @@ export default class TokenList extends PureComponent<Props, State> {
       sortType
     )
 
-    const startIndex = this.rowsPerPage * Math.max(this.currentPage - 1, 0)
+    const startIndex =
+      this.rowsPerPage * Math.max(this.state.currentPage - 1, 0)
     const endIndex = Math.min(
       startIndex + this.rowsPerPage,
       this.props.tokenCount
@@ -153,16 +210,31 @@ export default class TokenList extends PureComponent<Props, State> {
 
       if (auth) {
         paginatedAuths.push(
-          <TokenRow
-            key={auth.id}
-            auth={auth}
-            onClickDescription={this.handleClickDescription}
-          />
+          isFlagEnabled('bulkActionDeleteTokens') ? (
+            <TokenRow
+              key={auth.id}
+              auth={auth}
+              onClickDescription={this.handleClickDescription}
+              tokenIsSelected={tokensSelectedForBatchOperation.includes(auth)}
+              onSelectForBulkAction={this.handleTokenCardCheckboxClick}
+            />
+          ) : (
+            <TokenRow
+              key={auth.id}
+              auth={auth}
+              onClickDescription={this.handleClickDescription}
+            />
+          )
         )
       }
     }
 
     return paginatedAuths
+  }
+
+  // adds or removes the token from the tokensSelectedForBatchOperation list based on whether the token already exists in the list
+  private handleTokenCardCheckboxClick = (token: Authorization) => {
+    this.props.toggleTokenSelection(token)
   }
 
   private handleDismissOverlay = () => {

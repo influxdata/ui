@@ -26,7 +26,7 @@ const EmptySubscriptionState: FC = () => {
     <EmptyState size={ComponentSize.Medium} testID="subscriptions-empty-state">
       <EmptyState.Text>
         Collect data from an external cloud source with a{' '}
-        <b>Cloud Native Subscription</b>.
+        <b>Native Subscription</b>.
       </EmptyState.Text>
       <Button
         text="Create Subscription"

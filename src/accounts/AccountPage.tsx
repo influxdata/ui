@@ -23,10 +23,7 @@ import {UsersContext, UsersProvider} from 'src/users/context/users'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {
-  UserAccountContext,
-  UserAccountProvider,
-} from 'src/accounts/context/userAccount'
+import {UserAccountContext} from 'src/accounts/context/userAccount'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
 import AccountHeader from 'src/accounts/AccountHeader'
 
@@ -46,15 +43,13 @@ const leaveBtnStyle = {
 }
 
 const AccountAboutPage: FC = () => {
-  const {userAccounts, handleRenameActiveAccount} = useContext(
-    UserAccountContext
-  )
+  const {userAccounts, handleRenameActiveAccount} =
+    useContext(UserAccountContext)
   const {users, handleRemoveUser} = useContext(UsersContext)
 
   const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
-  const [isDeactivateAccountVisible, setDeactivateAccountVisible] = useState(
-    false
-  )
+  const [isDeactivateAccountVisible, setDeactivateAccountVisible] =
+    useState(false)
 
   /**
    * confirmed with @Grace and @distortia that there is guaranteed
@@ -133,17 +128,19 @@ const AccountAboutPage: FC = () => {
   return (
     <AccountTabContainer activeTab="about">
       <>
-        {userAccounts && userAccounts.length >= 2 && (
-          <div>
-            <Button
-              text="Switch Account"
-              icon={IconFont.Switch_New}
-              onClick={showSwitchAccountDialog}
-              testID="user-account-switch-btn"
-            />
-            <hr style={dividerStyle} />
-          </div>
-        )}
+        {userAccounts &&
+          userAccounts.length >= 2 &&
+          !isFlagEnabled('multiOrg') && (
+            <div>
+              <Button
+                text="Switch Account"
+                icon={IconFont.Switch_New}
+                onClick={showSwitchAccountDialog}
+                testID="user-account-switch-btn"
+              />
+              <hr style={dividerStyle} />
+            </div>
+          )}
 
         <h4
           data-testid="account-settings--header"
@@ -210,9 +207,7 @@ const AccountPage: FC = () => {
     <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
       <AccountHeader testID="account-page--header" />
       <UsersProvider>
-        <UserAccountProvider>
-          <AccountAboutPage />
-        </UserAccountProvider>
+        <AccountAboutPage />
       </UsersProvider>
     </Page>
   )

@@ -14,8 +14,8 @@ import {RemoteDataState, TableViewProperties} from 'src/types'
 describe('the Time Machine reducer', () => {
   describe('setting the default aggregateFunctionType', () => {
     const store = createStore(timeMachinesReducer, initialState())
-    const expectedAggregateFunctionType = initialStateHelper().queryBuilder
-      .tags[0].aggregateFunctionType
+    const expectedAggregateFunctionType =
+      initialStateHelper().queryBuilder.tags[0].aggregateFunctionType
 
     it('is set when setting a builder bucket selection', () => {
       store.dispatch({
@@ -135,9 +135,8 @@ describe('the Time Machine reducer', () => {
         hidden: false,
       }
 
-      draftState.draftQueries[
-        draftState.activeQueryIndex
-      ] = invalidDraftQueryWithoutText
+      draftState.draftQueries[draftState.activeQueryIndex] =
+        invalidDraftQueryWithoutText
       buildActiveQuery(draftState)
       expect(draftState.draftQueries[draftState.activeQueryIndex].text).toEqual(
         ''
@@ -146,8 +145,7 @@ describe('the Time Machine reducer', () => {
 
     it("retains text of valid queries that weren't built with the query builder", () => {
       const invalidDraftQueryWithText = {
-        text:
-          'from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r["_measurement"] == "system")\n  |> filter(fn: (r) => r["_field"] == "load1" or r["_field"] == "load5" or r["_field"] == "load15")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
+        text: 'from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r["_measurement"] == "system")\n  |> filter(fn: (r) => r["_field"] == "load1" or r["_field"] == "load5" or r["_field"] == "load15")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
         editMode: 'advanced',
         name: '',
         builderConfig: {
@@ -166,9 +164,8 @@ describe('the Time Machine reducer', () => {
         hidden: false,
       }
 
-      draftState.draftQueries[
-        draftState.activeQueryIndex
-      ] = invalidDraftQueryWithText
+      draftState.draftQueries[draftState.activeQueryIndex] =
+        invalidDraftQueryWithText
       buildActiveQuery(draftState)
       expect(draftState.draftQueries[draftState.activeQueryIndex].text).toEqual(
         draftState.draftQueries[draftState.activeQueryIndex].text
@@ -197,9 +194,9 @@ describe('the Time Machine reducer', () => {
 
     it('does not set the activeQueryIndex when the value is greater than the length of draftQueries', () => {
       const activeQueryIndex = 5
-      const originalActiveQueryIndex = store.getState().timeMachines[
-        store.getState().activeTimeMachineID
-      ].activeQueryIndex
+      const originalActiveQueryIndex =
+        store.getState().timeMachines[store.getState().activeTimeMachineID]
+          .activeQueryIndex
       store.dispatch({
         type: 'SET_ACTIVE_QUERY_INDEX',
         payload: {activeQueryIndex},
@@ -239,8 +236,10 @@ describe('the Time Machine reducer', () => {
 
       const endState = store.getState()
       expect(
-        (endState.timeMachines[endState.activeTimeMachineID].view
-          .properties as TableViewProperties).fieldOptions[0].displayName
+        (
+          endState.timeMachines[endState.activeTimeMachineID].view
+            .properties as TableViewProperties
+        ).fieldOptions[0].displayName
       ).toBe(tableViewProperties.fieldOptions[0].displayName)
     })
   })

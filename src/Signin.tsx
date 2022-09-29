@@ -25,12 +25,14 @@ import {sessionTimedOut} from 'src/shared/copy/notifications'
 import {
   CLOUD,
   CLOUD_LOGIN_PATHNAME,
-  CLOUD_SIGNIN_PATHNAME,
+  CLOUD_QUARTZ_URL,
 } from 'src/shared/constants'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {getMe} from 'src/client'
+
+// APIs
+import {fetchIdentity, fetchLegacyIdentity} from './identity/apis/auth'
 
 interface State {
   loading: RemoteDataState
@@ -94,10 +96,10 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      const resp = await getMe({})
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
+      if (isFlagEnabled('quartzSession')) {
+        await fetchIdentity()
+      } else {
+        await fetchLegacyIdentity()
       }
 
       this.setState({auth: true})
@@ -112,22 +114,19 @@ export class Signin extends PureComponent<Props, State> {
       } = this.props
 
       clearInterval(this.intervalID)
-      /**
-       * We'll need this authSessionCookieOn flag off for tools until
-       * Quartz is integrated into that environment
-       */
-      if (CLOUD && isFlagEnabled('authSessionCookieOn')) {
-        const url = new URL(
-          `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`
-        )
-        setToLocalStorage('redirectTo', window.location.href)
-        window.location.href = url.href
-        throw error
-      }
 
       if (CLOUD) {
+        if (
+          isFlagEnabled('useQuartzLogin') &&
+          process.env.NODE_ENV &&
+          process.env.NODE_ENV !== 'development'
+        ) {
+          window.location.href = CLOUD_QUARTZ_URL
+          return
+        }
+
         const url = new URL(
-          `${window.location.origin}${CLOUD_SIGNIN_PATHNAME}?redirectTo=${window.location.href}`
+          `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`
         )
         setToLocalStorage('redirectTo', window.location.href)
         window.location.href = url.href

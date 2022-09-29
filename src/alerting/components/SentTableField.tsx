@@ -18,7 +18,7 @@ const SentTableField: FC<Props> = ({row: {sent}}) => {
       data-testid={`sent-table-field ${modifier}`}
     >
       {sent === 'true' ? (
-        <Icon glyph={IconFont.Checkmark_New} />
+        <Icon glyph={IconFont.CheckMark_New} />
       ) : (
         <Icon glyph={IconFont.AlertTriangle} />
       )}

@@ -2,28 +2,29 @@
 import React, {useEffect, FunctionComponent, lazy, Suspense} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {Route, Switch} from 'react-router-dom'
+import {identify} from 'rudder-sdk-js'
 
 // Components
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {CheckoutPage, OperatorPage} from 'src/shared/containers'
 const NoOrgsPage = lazy(() => import('src/organizations/containers/NoOrgsPage'))
-const NotebookTemplates = lazy(() =>
-  import('src/flows/components/FromTemplatePage')
+const NotebookTemplates = lazy(
+  () => import('src/flows/components/FromTemplatePage')
 )
 const App = lazy(() => import('src/App'))
 const NotFound = lazy(() => import('src/shared/components/NotFound'))
 
-// Types
-import {RemoteDataState, AppState} from 'src/types'
-
 // Actions
 import {getOrganizations} from 'src/organizations/actions/thunks'
-import {getQuartzMe as apiGetQuartzMe} from 'src/me/actions/thunks'
 import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
 import {getAllOrgs} from 'src/resources/selectors'
-import {getMe, getQuartzMe} from 'src/me/selectors'
+import {getMe, getQuartzMe, getQuartzMeStatus} from 'src/me/selectors'
+import {
+  selectQuartzIdentity,
+  selectQuartzIdentityStatus,
+} from 'src/identity/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -31,13 +32,18 @@ import {CLOUD} from 'src/shared/constants'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
+import {updateReportingContext} from 'src/cloud/utils/reporting'
 
 // Types
 import {Me} from 'src/client/unityRoutes'
 import {PROJECT_NAME} from 'src/flows'
+import {RemoteDataState} from 'src/types'
+
+// Thunks
+import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 const canAccessCheckout = (me: Me): boolean => {
-  if (!!me?.isRegionBeta) {
+  if (Boolean(me?.isRegionBeta)) {
     return false
   }
   return me?.accountType !== 'pay_as_you_go' && me?.accountType !== 'contract'
@@ -45,28 +51,51 @@ const canAccessCheckout = (me: Me): boolean => {
 
 const GetOrganizations: FunctionComponent = () => {
   const {status, org} = useSelector(getAllOrgs)
-  const quartzMeStatus = useSelector(
-    (state: AppState) => state.me.quartzMeStatus
-  )
+  const identity = useSelector(selectQuartzIdentity)
+  const quartzMeStatus = useSelector(getQuartzMeStatus)
   const quartzMe = useSelector(getQuartzMe)
+  const quartzIdentityStatus = useSelector(selectQuartzIdentityStatus)
   const {id: meId = '', name: email = ''} = useSelector(getMe)
+  const {account} = identity.currentIdentity
+
   const dispatch = useDispatch()
 
+  // This doesn't require another API call.
   useEffect(() => {
     if (status === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
     }
-  }, [dispatch, status])
+  }, [dispatch, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (
-      isFlagEnabled('uiUnificationFlag') &&
-      quartzMeStatus === RemoteDataState.NotStarted
+      CLOUD &&
+      email &&
+      org?.id &&
+      account?.id &&
+      account?.name &&
+      isFlagEnabled('rudderstackReporting')
     ) {
-      dispatch(apiGetQuartzMe())
+      identify(meId, {
+        email,
+        orgID: org.id,
+        accountID: account.id,
+        accountName: account.name,
+      })
     }
-  }, [dispatch, quartzMeStatus])
+  }, [meId, email, org?.id, account?.id, account?.name])
 
+  useEffect(() => {
+    if (
+      CLOUD &&
+      quartzMeStatus === RemoteDataState.NotStarted &&
+      quartzIdentityStatus === RemoteDataState.NotStarted
+    ) {
+      dispatch(getQuartzIdentityThunk())
+    }
+  }, [quartzMeStatus, quartzIdentityStatus]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // This doesn't require another API call.
   useEffect(() => {
     if (
       isFlagEnabled('credit250Experiment') &&
@@ -91,14 +120,22 @@ const GetOrganizations: FunctionComponent = () => {
     }
   }, [quartzMeStatus, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const isRegionBeta = quartzMe?.isRegionBeta ?? false
+  const accountType = quartzMe?.accountType ?? 'free'
+
+  useEffect(() => {
+    if (CLOUD) {
+      updateReportingContext({
+        'org (hide_upgrade_cta)': `${accountType === 'free' && !isRegionBeta}`,
+        'org (account_type)': accountType,
+      })
+    }
+  }, [accountType, isRegionBeta])
+
   return (
     <PageSpinner loading={status}>
       <Suspense fallback={<PageSpinner />}>
-        {/*
-          NOTE: We'll need this here until Tools gets Quartz integrated
-          Since the API request will fail in a tools environment.
-        */}
-        {isFlagEnabled('uiUnificationFlag') ? (
+        {CLOUD ? (
           <PageSpinner loading={quartzMeStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />

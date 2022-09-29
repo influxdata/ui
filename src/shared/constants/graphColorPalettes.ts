@@ -315,6 +315,124 @@ export const LINE_COLORS_SOLID_WHITE = [
   },
 ]
 
+export const LINE_COLORS_BLIND_DARK = [
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#000000',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Dark',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#E69F00',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Dark',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#56B4E9',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Dark',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#009E73',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Dark',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#F0E442',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Dark',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#0072B2',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Dark',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#D55E00',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Dark',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#CC79A7',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Dark',
+    value: 0,
+  },
+]
+
+export const LINE_COLORS_BLIND_LIGHT = [
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#FFFFFF',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Light',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#E69F00',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Light',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#56B4E9',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Light',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#009E73',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Light',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#F0E442',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Light',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#0072B2',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Light',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#D55E00',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Light',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#CC79A7',
+    id: nanoid(),
+    name: 'Color Blind Friendly - Light',
+    value: 0,
+  },
+]
+
 export const DEFAULT_LINE_COLORS = LINE_COLORS_A
 
 export const LINE_COLOR_SCALES = [
@@ -322,6 +440,8 @@ export const LINE_COLOR_SCALES = [
   LINE_COLORS_B,
   LINE_COLORS_C,
   LINE_COLORS_D,
+  LINE_COLORS_BLIND_LIGHT,
+  LINE_COLORS_BLIND_DARK,
   LINE_COLORS_E,
   LINE_COLORS_F,
   LINE_COLORS_G,

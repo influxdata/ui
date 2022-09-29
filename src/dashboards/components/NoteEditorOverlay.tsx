@@ -152,13 +152,8 @@ class NoteEditorOverlay extends PureComponent<Props, State> {
   }
 
   private handleSave = () => {
-    const {
-      cellID,
-      dashboardID,
-      onCreateNoteCell,
-      onUpdateViewNote,
-      onNotify,
-    } = this.props
+    const {cellID, dashboardID, onCreateNoteCell, onUpdateViewNote, onNotify} =
+      this.props
 
     this.setState({savingStatus: RemoteDataState.Loading})
 

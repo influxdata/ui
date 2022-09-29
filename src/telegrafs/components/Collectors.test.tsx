@@ -18,6 +18,8 @@ const setup = (override = {}) => {
     buckets: [],
     onUpdateTelegraf: jest.fn(),
     onDeleteTelegraf: jest.fn(),
+    showOverlay: jest.fn(),
+    dismissOverlay: jest.fn(),
     ...override,
   }
 

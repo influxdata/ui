@@ -17,9 +17,8 @@ const DEFAULT_CONTEXT: VariablesContextType = {
   variables: [],
 }
 
-export const VariablesContext = React.createContext<VariablesContextType>(
-  DEFAULT_CONTEXT
-)
+export const VariablesContext =
+  React.createContext<VariablesContextType>(DEFAULT_CONTEXT)
 
 export const VariablesProvider: FC = ({children}) => {
   const {id, range: pipeRange} = useContext(PipeContext)

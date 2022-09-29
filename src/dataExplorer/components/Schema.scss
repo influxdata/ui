@@ -1,0 +1,158 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.scroll--container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.schema-browser {
+  padding-right: $cf-space-xs;
+  padding-top: $cf-space-2xs;
+
+  .cf-dropdown-divider {
+    color: $cf-grey-55;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    border-radius: 1px;
+    border-bottom: 2px solid $cf-grey-25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
+}
+
+.schema-browser-heading {
+  padding-bottom: $cf-space-2xs;
+
+  .schema-browser-heading--text {
+    font-size: 16px;
+    font-weight: $cf-font-weight--bold;
+  }
+
+  .flux-sync--label {
+    padding-left: $cf-space-2xs;
+
+    .disabled {
+      opacity: 50%;
+    }
+
+    .selector-title {
+      padding-bottom: 0;
+    }
+  }
+}
+
+.container-side-bar,
+.container-side-bar--fields,
+.container-side-bar--tag-keys,
+.container-side-bar--tag-values {
+  border-left: 1px solid $cf-grey-25;
+  padding-left: $cf-space-2xs;
+  margin-top: $cf-space-xs;
+}
+
+.selector-title {
+  padding-bottom: $cf-space-2xs;
+
+  .selector-title--question-mark {
+    padding-left: $cf-space-2xs;
+  }
+
+  .selector-title--question-mark .cf-question-mark-tooltip {
+    background-color: $cf-grey-35;
+  }
+
+  .selector-title--icon {
+    padding-right: 2px;
+  }
+}
+
+.field-selector,
+.tag-selector {
+  padding-top: $cf-space-2xs;
+}
+
+.field-selector .cf-accordion--icon,
+.tag-selector .cf-accordion--icon,
+.tag-selector-value .cf-accordion--icon {
+  color: gray;
+}
+
+.field-selector--header,
+.tag-selector--header,
+.tag-selector-value--header {
+  background-color: transparent;
+  min-height: 0;
+  padding: 0;
+
+  .selector-title {
+    padding: $cf-space-2xs 0;
+  }
+}
+
+.field-selector--list-item,
+.tag-selector--list-item,
+.tag-selector-value--list-item {
+  padding: $cf-space-2xs 0 $cf-space-2xs $cf-space-2xs;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.field-selector--list-item--selectable,
+.tag-selector-value--list-item--selectable {
+  padding: $cf-space-2xs;
+  height: $cf-form-xs-height;
+  line-height: $cf-form-xs-height;
+  font-family: $cf-code-font;
+  font-weight: $cf-font-weight--regular;
+  transition-property: background-color 0.25s ease, color 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+
+  > code {
+    font-size: $cf-form-sm-font;
+    border-radius: $cf-radius-sm;
+    padding: 0 $cf-space-2xs;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.25s ease, color 0.25s ease,
+      text-shadow 0.25s ease;
+    color: $cf-grey-85;
+  }
+
+  &:hover {
+    > code {
+      background: $cf-grey-15;
+      color: $c-krypton;
+
+      &:after {
+        content: ' +';
+      }
+    }
+  }
+}
+
+.container-side-bar--fields,
+.container-side-bar--tag-keys,
+.container-side-bar--tag-values {
+  margin-top: 0;
+}
+
+.field-selector--load-more-button,
+.tag-selector-value--load-more-button {
+  color: $c-pool;
+  cursor: pointer;
+  padding: $cf-space-2xs 0 $cf-space-xs $cf-space-xs;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

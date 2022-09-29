@@ -1,52 +1,43 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {FC} from 'react'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import DangerConfirmationOverlay from 'src/shared/components/dangerConfirmation/DangerConfirmationOverlay'
 import RenameBucketForm from 'src/buckets/components/RenameBucketForm'
 
 // Decorators
-import {ErrorHandling} from 'src/shared/decorators/errors'
 import {Overlay} from '@influxdata/clockface'
-@ErrorHandling
-class RenameBucketOverlay extends PureComponent<
-  RouteComponentProps<{orgID: string}>
-> {
-  public render() {
-    return (
-      <Overlay visible={true}>
-        <DangerConfirmationOverlay
-          title="Rename Bucket"
-          message={this.message}
-          effectedItems={this.effectedItems}
-          onClose={this.handleClose}
-          confirmButtonText="I understand, let's rename my Bucket"
-        >
-          <RenameBucketForm />
-        </DangerConfirmationOverlay>
-      </Overlay>
-    )
+import {useSelector} from 'react-redux'
+import {getOrg} from 'src/organizations/selectors'
+
+const RenameBucketOverlay: FC = () => {
+  const orgID = useSelector(getOrg).id
+  const history = useHistory()
+
+  const handleClose = () => {
+    history.push(`/orgs/${orgID}/load-data/buckets`)
   }
 
-  private get message(): string {
-    return 'Updating the name of a Bucket can have unintended consequences. Anything that references this Bucket by name will stop working including:'
-  }
-
-  private get effectedItems(): string[] {
-    return [
-      'Queries',
-      'Dashboards',
-      'Tasks',
-      'Telegraf Configurations',
-      'Templates',
-    ]
-  }
-
-  private handleClose = () => {
-    const {history, match} = this.props
-    history.push(`/orgs/${match.params.orgID}/load-data/buckets`)
-  }
+  return (
+    <Overlay visible={true}>
+      <DangerConfirmationOverlay
+        title="Rename Bucket"
+        message="Updating the name of a Bucket can have unintended consequences. Anything that references this Bucket by name will stop working including:"
+        effectedItems={[
+          'Queries',
+          'Dashboards',
+          'Tasks',
+          'Telegraf Configurations',
+          'Templates',
+        ]}
+        onClose={handleClose}
+        confirmButtonText="I understand, let's rename my Bucket"
+      >
+        <RenameBucketForm />
+      </DangerConfirmationOverlay>
+    </Overlay>
+  )
 }
 
-export default withRouter(RenameBucketOverlay)
+export default RenameBucketOverlay

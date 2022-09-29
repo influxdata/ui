@@ -10,7 +10,7 @@ export const EDIT_RANGE_ANNOTATION_TEXT =
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
     cy.signin().then(() =>
-      cy.get('@org').then(({id: orgID}: Organization) =>
+      cy.get('@org').then(({id: orgID, name}: Organization) =>
         cy.createDashboard(orgID).then(({body}) =>
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -58,13 +58,11 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
 
               cy.getByTestID('time-machine-submit-button').click()
 
-              cy.getByTestID('overlay').within(() => {
-                cy.getByTestID('page-title').click()
-                cy.getByTestID('renamable-page-title--input')
-                  .clear()
-                  .type('blah{enter}')
-                cy.getByTestID('save-cell--button').click()
-              })
+              cy.getByTestID('page-title').click()
+              cy.getByTestID('renamable-page-title--input')
+                .clear()
+                .type('blah{enter}')
+              cy.getByTestID('save-cell--button').click()
 
               cy.getByTestID('toggle-annotations-controls').click()
             })
@@ -92,6 +90,7 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
         .should($el => {
           expect($el).to.have.length(1)
           expect(Cypress.dom.isDetached($el)).to.be.false
+          // eslint-disable-next-line jest/unbound-method
           expect($el).not.to.be.disabled
         })
         .click()
@@ -175,6 +174,7 @@ export const addRangeAnnotation = (
         .should($el => {
           expect($el).to.have.length(1)
           expect(Cypress.dom.isDetached($el)).to.be.false
+          // eslint-disable-next-line jest/unbound-method
           expect($el).not.to.be.disabled
         })
         .click()
@@ -208,6 +208,7 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
         .should($el => {
           expect($el).to.have.length(1)
           expect(Cypress.dom.isDetached($el)).to.be.false
+          // eslint-disable-next-line jest/unbound-method
           expect($el).not.to.be.disabled
         })
         .click()
@@ -251,6 +252,7 @@ export const testEditRangeAnnotation = (
                 .should($el => {
                   expect($el).to.have.length(1)
                   expect(Cypress.dom.isDetached($el)).to.be.false
+                  // eslint-disable-next-line jest/unbound-method
                   expect($el).not.to.be.disabled
                 })
                 .click()

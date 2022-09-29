@@ -5,15 +5,16 @@ describe.skip('About Page for free users with only 1 user', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({
-            uiUnificationFlag: true,
-          }).then(() => {
+        cy.setFeatureFlags({
+          quartzIdentity: true,
+          multiOrg: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
             cy.quartzProvision({
               accountType: 'free',
               hasUsers: false,
             }).then(() => {
-              cy.visit(`/orgs/${id}/about`)
+              cy.visit(`/orgs/${id}/org-settings`)
               cy.getByTestID('about-page--header').should('be.visible')
             })
           })
@@ -23,15 +24,13 @@ describe.skip('About Page for free users with only 1 user', () => {
   )
 
   it('should allow the delete account functionality', () => {
-    cy.getByTestID('delete-org--button')
-      .should('exist')
-      .click()
+    cy.getByTestID('delete-org--button').should('exist').click()
 
     cy.getByTestID('notification-warning').should('not.exist')
 
     cy.location()
       .should(loc => {
-        expect(loc.pathname).to.include(`/about/delete`)
+        expect(loc.pathname).to.include(`/org-settings/delete`)
       })
       .then(() => {
         cy.getByTestID('delete-org--overlay').should('exist')
@@ -55,15 +54,16 @@ describe('About Page for free users with multiple users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({
-            uiUnificationFlag: true,
-          }).then(() => {
+        cy.setFeatureFlags({
+          quartzIdentity: true,
+          multiOrg: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
             cy.quartzProvision({
               accountType: 'free',
               hasUsers: true,
             }).then(() => {
-              cy.visit(`/orgs/${id}/about`)
+              cy.visit(`/orgs/${id}/org-settings`)
               cy.getByTestID('about-page--header').should('be.visible')
             })
           })
@@ -72,9 +72,7 @@ describe('About Page for free users with multiple users', () => {
     )
   )
   it('should display the warning and allow users to navigate to the users page when trying to delete when the user has multiple users', () => {
-    cy.getByTestID('delete-org--button')
-      .should('exist')
-      .click()
+    cy.getByTestID('delete-org--button').should('exist').click()
 
     cy.getByTestID('notification-warning')
       .should('exist')
@@ -83,7 +81,7 @@ describe('About Page for free users with multiple users', () => {
       })
 
     cy.location().should(loc => {
-      expect(loc.pathname).to.include(`/users`)
+      expect(loc.pathname).to.include(`/members`)
     })
   })
 })
@@ -92,14 +90,15 @@ describe('About Page for PAYG users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({
-            uiUnificationFlag: true,
-          }).then(() => {
+        cy.setFeatureFlags({
+          quartzIdentity: true,
+          multiOrg: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',
             }).then(() => {
-              cy.visit(`/orgs/${id}/about`)
+              cy.visit(`/orgs/${id}/org-settings`)
               cy.getByTestID('about-page--header').should('be.visible')
             })
           })

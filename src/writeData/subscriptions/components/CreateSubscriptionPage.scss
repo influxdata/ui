@@ -1,18 +1,14 @@
 @import '@influxdata/clockface/dist/variables.scss';
 .create-subscription-page {
-  display: flex;
-  background: linear-gradient(
-    45deg,
-    rgba(33, 173, 246, 0.13) 0%,
-    rgba(147, 148, 255, 0.13) 100%
-  );
+  background-color: $cf-grey-5;
   .cf-flex-box.cf-flex-box__stretch-h {
     padding-top: $cf-space-m;
   }
   &__progress {
     float: left;
-    width: 25%;
+    width: 20%;
     margin-top: $cf-space-l;
+    position: fixed;
 
     .subway-navigation-title {
       margin-bottom: $cf-space-3xl;

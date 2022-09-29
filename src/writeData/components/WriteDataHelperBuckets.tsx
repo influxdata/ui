@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 
 // Contexts
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
@@ -8,9 +7,6 @@ import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 
 // Constants
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
-
-// Utils
-import {getAll} from 'src/resources/selectors'
 
 // Components
 import {
@@ -23,22 +19,30 @@ import {
   EmptyState,
 } from '@influxdata/clockface'
 
-// Types
-import {AppState, ResourceType, Bucket} from 'src/types'
-
 interface Props {
   className?: string
   useSimplifiedBucketForm?: boolean
+  disabled?: boolean
 }
 
 const WriteDataHelperBuckets: FC<Props> = ({
   className = 'write-data--details-widget-title',
   useSimplifiedBucketForm = false,
+  disabled = false,
 }) => {
-  const buckets = useSelector((state: AppState) =>
-    getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
-  )
-  const {bucket, changeBucket} = useContext(WriteDataDetailsContext)
+  const {bucket, buckets, changeBucket} = useContext(WriteDataDetailsContext)
+  const isSelected = (bucketID: string): boolean => {
+    if (!bucket) {
+      return false
+    }
+    return bucketID === bucket.id
+  }
+
+  const filteredBuckets = buckets
+    .filter(b => b.type === 'user')
+    .sort((a, b) => {
+      return a.name.localeCompare(b.name)
+    })
 
   let body = (
     <EmptyState className="write-data--details-empty-state">
@@ -55,23 +59,18 @@ const WriteDataHelperBuckets: FC<Props> = ({
     </EmptyState>
   )
 
-  const isSelected = (bucketID: string): boolean => {
-    if (!bucket) {
-      return false
-    }
-
-    return bucketID === bucket.id
-  }
-
-  if (buckets.length) {
+  if (filteredBuckets.length) {
     body = (
       <List
         backgroundColor={InfluxColors.Grey5}
         style={{height: '200px'}}
         maxHeight="200px"
+        testID="buckets--list"
+        scrollToSelected={true}
       >
-        {buckets.map(b => (
+        {filteredBuckets.map(b => (
           <List.Item
+            disabled={disabled}
             size={ComponentSize.Small}
             key={b.id}
             selected={isSelected(b.id)}
@@ -91,7 +90,11 @@ const WriteDataHelperBuckets: FC<Props> = ({
     <>
       <Heading element={HeadingElement.H6} className={className}>
         Bucket
-        <CreateBucketButton useSimplifiedBucketForm={useSimplifiedBucketForm} />
+        <CreateBucketButton
+          useSimplifiedBucketForm={useSimplifiedBucketForm}
+          callbackAfterBucketCreation={changeBucket}
+          disabled={disabled}
+        />
       </Heading>
       {body}
     </>

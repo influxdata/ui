@@ -12,8 +12,8 @@ import {LoginPage} from 'src/onboarding/containers/LoginPage'
 // lazy loading the signin component causes wasm issues
 import Signin from 'src/Signin'
 
-const OnboardingWizardPage = lazy(() =>
-  import('src/onboarding/containers/OnboardingWizardPage')
+const OnboardingWizardPage = lazy(
+  () => import('src/onboarding/containers/OnboardingWizardPage')
 )
 const SigninPage = lazy(() => import('src/onboarding/containers/SigninPage'))
 const Logout = lazy(() => import('src/Logout'))

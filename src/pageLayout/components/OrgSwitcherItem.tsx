@@ -1,34 +1,26 @@
 // Libraries
 import React, {FC} from 'react'
-import classnames from 'classnames'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {IconFont, Icon} from '@influxdata/clockface'
 
-interface ComponentProps {
+interface Props {
   orgName: string
   orgID: string
   selected: boolean
   onDismiss: () => void
 }
 
-type Props = ComponentProps & RouteComponentProps
-
-const OrgSwitcherItem: FC<Props> = ({
-  orgName,
-  selected,
-  onDismiss,
-  orgID,
-  history,
-}) => {
-  const orgSwitcherItemClass = classnames('org-switcher--item', {
-    'org-switcher--item__selected': selected,
-  })
+const OrgSwitcherItem: FC<Props> = ({orgName, selected, onDismiss, orgID}) => {
+  const history = useHistory()
+  const orgSwitcherItemClass = `org-switcher--item ${
+    selected ? 'org-switcher--item__selected' : ''
+  }`
 
   const orgSwitcherIcon = selected
-    ? IconFont.Checkmark_New
-    : IconFont.CaretRight
+    ? IconFont.CheckMark_New
+    : IconFont.CaretRight_New
 
   const handleClick = (): void => {
     onDismiss()
@@ -50,4 +42,4 @@ const OrgSwitcherItem: FC<Props> = ({
   )
 }
 
-export default withRouter(OrgSwitcherItem)
+export default OrgSwitcherItem

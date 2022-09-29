@@ -21,10 +21,11 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
 const DEFAULT_TOKEN = '<INFLUX_TOKEN>'
-const DEFAULT_BUCKET = '<BUCKET>'
+export const DEFAULT_BUCKET = '<BUCKET>'
 
 interface WriteDataDetailsContextType {
   bucket: Bucket
+  buckets: Bucket[]
   changeBucket: (bucket: Bucket) => void
   query: string
   changeQuery: (query: string) => void
@@ -32,13 +33,13 @@ interface WriteDataDetailsContextType {
 
 export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
   bucket: null,
+  buckets: [],
   changeBucket: () => {},
   query: null,
   changeQuery: () => {},
 }
-export const WriteDataDetailsContext = createContext<
-  WriteDataDetailsContextType
->(DEFAULT_WRITE_DATA_DETAILS_CONTEXT)
+export const WriteDataDetailsContext =
+  createContext<WriteDataDetailsContextType>(DEFAULT_WRITE_DATA_DETAILS_CONTEXT)
 const WriteDataDetailsProvider: FC = ({children}) => {
   const {variables, update} = useContext(TemplateContext)
   const buckets = useSelector((state: AppState) =>
@@ -119,6 +120,7 @@ const WriteDataDetailsProvider: FC = ({children}) => {
     <WriteDataDetailsContext.Provider
       value={{
         bucket,
+        buckets,
         changeBucket,
         query,
         changeQuery,

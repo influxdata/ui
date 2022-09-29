@@ -136,11 +136,18 @@ class LspConnectionManager {
   }
 
   /// XXX: wiedld (27 Sep 2022) -- This heuristic is wrong.
-  /// We currently have no way to detect when a change is due to an applyEdit from the LSP.
-  /// versus other changes in the same range, with the same `|> yield(name: "_editor_composition")` included.
-  /// one example is the undo [cmd+z], which "looks" exactly like the previous applyEdit.
+  /// Currently, the only way we detect monaco-editor apply changes is with the change object.
+  /// The change object only includes the replacement text, the position, and a little bit of editor-specific metadata.
+  /// The change object does NOT include anything which states whether or not the change is from an LSP-request,
+  /// (via the LSP applyEdit command).
+  /// As a result, we guess that any edit which is replacing the composition block is coming from an LSP request.
+  /// However, this heuristic fails for certain user-triggered events.
+  /// Such as a hotkey "undo" [cmd+z] of the last LSP applyEdit,
+  /// which generates a change object that looks exactly like an older applyEdit change.
   _editorChangeIsFromLsp(change) {
-    return change.text?.includes('|> yield(name: "_editor_composition")')
+    return /^(from)(.|\n)*(\|> yield\(name: "_editor_composition"\)\n)$/.test(
+      change.text
+    )
   }
 
   _editorChangeIsWithinComposition(change) {

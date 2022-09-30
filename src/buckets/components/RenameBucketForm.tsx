@@ -4,7 +4,7 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {ComponentStatus} from 'src/clockface'
+import {ComponentStatus} from '@influxdata/clockface'
 import {
   Form,
   Input,

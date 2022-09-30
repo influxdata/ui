@@ -33,7 +33,7 @@ import {
 // Styles
 import 'src/writeData/subscriptions/components/StringParsingForm.scss'
 import {event} from 'src/cloud/utils/reporting'
-import {ComponentStatus} from 'src/clockface'
+import {ComponentStatus} from '@influxdata/clockface'
 import ValidationInputWithTooltip from './ValidationInputWithTooltip'
 
 interface Props {

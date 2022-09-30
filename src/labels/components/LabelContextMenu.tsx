@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {ButtonShape} from 'src/clockface'
+import {ButtonShape} from '@influxdata/clockface'
 import {
   IconFont,
   ComponentColor,

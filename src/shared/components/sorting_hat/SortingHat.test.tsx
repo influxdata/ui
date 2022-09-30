@@ -6,8 +6,6 @@ import {screen} from '@testing-library/react'
 import SortingHat from 'src/shared/components/sorting_hat/SortingHat'
 
 // Types
-import {Sort} from 'src/clockface/types'
-
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 const users = [
@@ -22,7 +20,7 @@ const setup = (override?) => {
   const props = {
     list: users,
     sortKey: 'user.name',
-    direction: Sort.Ascending,
+    direction: 'ascending',
     children,
     ...override,
   }
@@ -44,7 +42,7 @@ describe('SortingHat', () => {
   describe('sorting', () => {
     it('can sort a nested object by sort key', () => {
       const sortKey = 'user.name'
-      const direction = Sort.Ascending
+      const direction = 'ascending'
       const expected = [
         {user: {name: 'barney'}, age: 34},
         {user: {name: 'barney'}, age: 36},

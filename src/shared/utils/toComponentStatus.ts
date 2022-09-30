@@ -1,4 +1,4 @@
-import {ComponentStatus} from 'src/clockface'
+import {ComponentStatus} from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 
 export const toComponentStatus = (status: RemoteDataState): ComponentStatus => {

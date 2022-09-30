@@ -41,7 +41,6 @@ import {
 } from 'src/shared/constants/thresholds'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
-import Checkbox from 'src/shared/components/Checkbox'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'

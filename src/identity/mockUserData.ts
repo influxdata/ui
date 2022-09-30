@@ -1,5 +1,5 @@
 import {CurrentIdentity, CurrentOrg} from 'src/identity/apis/auth'
-import {BillingProvider} from 'src/types'
+import {BillingProvider, RemoteDataState} from 'src/types'
 
 export const mockBillingProviders: BillingProvider[] = [
   'zuora',
@@ -16,6 +16,7 @@ export const mockIdentities: CurrentIdentity[] = [
       name: 'TestCo',
       paygCreditStartDate: null,
       type: 'free',
+      isUpgradeable: true,
     },
     org: {
       clusterHost: 'https://fakehost.fakehost.fake',
@@ -31,6 +32,11 @@ export const mockIdentities: CurrentIdentity[] = [
       operatorRole: null,
       orgCount: 1,
     },
+    loadingStatus: {
+      identityStatus: RemoteDataState.NotStarted,
+      billingStatus: RemoteDataState.NotStarted,
+      orgDetailsStatus: RemoteDataState.NotStarted,
+    },
   },
   {
     account: {
@@ -39,6 +45,7 @@ export const mockIdentities: CurrentIdentity[] = [
       name: 'TestCo 2',
       paygCreditStartDate: null,
       type: 'contract',
+      isUpgradeable: false,
     },
     org: {
       clusterHost: 'https://newhost.newhost.new',
@@ -54,6 +61,11 @@ export const mockIdentities: CurrentIdentity[] = [
       operatorRole: null,
       orgCount: 3,
     },
+    loadingStatus: {
+      identityStatus: RemoteDataState.NotStarted,
+      billingStatus: RemoteDataState.NotStarted,
+      orgDetailsStatus: RemoteDataState.NotStarted,
+    },
   },
   {
     account: {
@@ -62,6 +74,7 @@ export const mockIdentities: CurrentIdentity[] = [
       name: 'Test Name 3',
       paygCreditStartDate: null,
       type: 'pay_as_you_go',
+      isUpgradeable: false,
     },
     org: {
       clusterHost: 'https://testdomain.testdomain.org',
@@ -76,6 +89,11 @@ export const mockIdentities: CurrentIdentity[] = [
       lastName: 'Email',
       operatorRole: null,
       orgCount: 5,
+    },
+    loadingStatus: {
+      identityStatus: RemoteDataState.NotStarted,
+      billingStatus: RemoteDataState.NotStarted,
+      orgDetailsStatus: RemoteDataState.NotStarted,
     },
   },
 ]

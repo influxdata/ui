@@ -5,6 +5,8 @@ import {
   setCurrentBillingProvider,
   setQuartzIdentity,
   setQuartzIdentityStatus,
+  setCurrentBillingProviderStatus,
+  setCurrentOrgDetailsStatus,
 } from 'src/identity/actions/creators'
 
 // Types
@@ -34,6 +36,7 @@ export const getQuartzIdentityThunk =
       const quartzIdentity = await fetchQuartzIdentity()
 
       dispatch(setQuartzIdentity(quartzIdentity))
+
       dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
 
       const legacyMe = convertIdentityToMe(quartzIdentity)
@@ -53,7 +56,7 @@ export const getQuartzIdentityThunk =
 export const getBillingProviderThunk =
   () => async (dispatch: Dispatch<ActionTypes>, getState: GetState) => {
     try {
-      dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
+      dispatch(setCurrentBillingProviderStatus(RemoteDataState.Loading))
 
       const currentState = getState()
       const accountId = currentState.identity.currentIdentity.account.id
@@ -61,7 +64,7 @@ export const getBillingProviderThunk =
       const accountDetails = await fetchAccountDetails(accountId)
 
       dispatch(setCurrentBillingProvider(accountDetails.billingProvider))
-      dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
+      dispatch(setCurrentBillingProviderStatus(RemoteDataState.Done))
       const updatedState = getState()
       const legacyMe = convertIdentityToMe(
         updatedState.identity.currentIdentity
@@ -69,7 +72,7 @@ export const getBillingProviderThunk =
       dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
       dispatch(setQuartzMeStatus(RemoteDataState.Done))
     } catch (err) {
-      dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
+      dispatch(setCurrentBillingProviderStatus(RemoteDataState.Error))
       dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
       reportErrorThroughHoneyBadger(err, {
@@ -82,12 +85,12 @@ export const getBillingProviderThunk =
 export const getCurrentOrgDetailsThunk =
   (orgId: string) => async (dispatch: any, getState: GetState) => {
     try {
-      dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
+      dispatch(setCurrentOrgDetailsStatus(RemoteDataState.Loading))
 
       const orgDetails = await fetchOrgDetails(orgId)
 
       dispatch(setCurrentOrgDetails(orgDetails))
-      dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
+      dispatch(setCurrentOrgDetailsStatus(RemoteDataState.Done))
 
       const updatedState = getState()
       const legacyMe = convertIdentityToMe(
@@ -96,7 +99,7 @@ export const getCurrentOrgDetailsThunk =
       dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
       dispatch(setQuartzMeStatus(RemoteDataState.Done))
     } catch (err) {
-      dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
+      dispatch(setCurrentOrgDetailsStatus(RemoteDataState.Error))
       dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
       reportErrorThroughHoneyBadger(err, {

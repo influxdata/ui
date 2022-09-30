@@ -23,8 +23,6 @@ export default (state = initialState, action: Actions): QuartzOrganizations =>
     switch (action.type) {
       case SET_QUARTZ_ORGANIZATIONS: {
         draftState.orgs = action.quartzOrganizations
-        draftState.status = RemoteDataState.Done
-
         return
       }
 

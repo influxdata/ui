@@ -6,6 +6,7 @@ import {initialState} from 'src/identity/quartzOrganizations/reducers'
 import {
   setQuartzDefaultOrg,
   setQuartzOrganizations,
+  setQuartzOrganizationsStatus,
 } from 'src/identity/quartzOrganizations/actions/creators'
 
 // Mocks
@@ -36,10 +37,14 @@ describe('identity reducer for quartz organizations', () => {
       expect(oldState.orgs).toStrictEqual(mockOrgData)
     })
 
-    it('sets a `Done` state when the organization array is loaded into state', () => {
+    it('sets a `Done` state after the organization array is loaded into state', () => {
       const newState = reducer(undefined, setQuartzOrganizations(mockOrgData))
+      const newStateWithUpdatedStatus = reducer(
+        newState,
+        setQuartzOrganizationsStatus(RemoteDataState.Done)
+      )
 
-      expect(newState.status).toEqual(RemoteDataState.Done)
+      expect(newStateWithUpdatedStatus.status).toEqual(RemoteDataState.Done)
     })
   })
 

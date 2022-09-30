@@ -7,7 +7,7 @@ import ContextMenu from 'src/clockface/components/context_menu/ContextMenu'
 import ContextMenuItem from 'src/clockface/components/context_menu/ContextMenuItem'
 
 // Types
-import {Alignment} from 'src/clockface/types'
+import {Alignment} from '@influxdata/clockface'
 
 import {ErrorHandling} from 'src/shared/decorators/errors'
 

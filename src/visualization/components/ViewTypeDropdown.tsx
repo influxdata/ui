@@ -3,7 +3,7 @@ import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
 // Components
 import {Dropdown, DropdownMenuTheme} from '@influxdata/clockface'
-import {ComponentStatus} from 'src/clockface'
+import {ComponentStatus} from '@influxdata/clockface'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'

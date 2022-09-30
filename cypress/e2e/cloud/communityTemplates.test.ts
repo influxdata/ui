@@ -8,7 +8,7 @@ describe('Community Templates', () => {
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${id}/settings/templates`)
             cy.getByTestID('tree-nav').then(() => {
-              cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+              cy.setFeatureFlags({multiOrg: true})
             })
           })
         )

@@ -10,7 +10,7 @@ describe('Flows', () => {
           cy.getByTestID('version-info').should('be.visible')
           cy.getByTestID('nav-item-flows').should('be.visible')
           cy.getByTestID('nav-item-flows').click()
-          cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+          cy.setFeatureFlags({multiOrg: true})
         })
       })
     })
@@ -185,7 +185,6 @@ describe('Flows', () => {
 
   it('can use the dynamic flux function selector to build a query', () => {
     cy.setFeatureFlags({
-      quartzIdentity: true,
       multiOrg: true,
     }).then(() => {
       cy.getByTestID('preset-script').first().click()
@@ -220,7 +219,6 @@ describe('Flows', () => {
 
   it('can use the dynamic flux function search bar to search by package or function name', () => {
     cy.setFeatureFlags({
-      quartzIdentity: true,
       multiOrg: true,
     }).then(() => {
       cy.getByTestID('preset-script').first().click()
@@ -268,7 +266,6 @@ describe('Flows with newQueryBuilder flag on', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.setFeatureFlags({
           multiOrg: true,
-          quartzIdentity: true,
           newQueryBuilder: true,
         }).then(() => {
           cy.visit(`${orgs}/${id}`)

@@ -3,7 +3,6 @@ describe('Checkout Page should not be accessible for non-free users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.setFeatureFlags({
-          quartzIdentity: true,
           multiOrg: true,
         }).then(() => {
           cy.get('@org').then(() => {

@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react'
 import {connect} from 'react-redux'
 
 // Components
-import {SelectGroup, ButtonShape} from '@influxdata/clockface'
+import {SelectGroup, ButtonShape, Input, Dropdown} from '@influxdata/clockface'
 import DurationSelector, {
   DurationOption,
 } from 'src/shared/components/DurationSelector'

@@ -28,6 +28,10 @@ const adaptiveZoomTooltipStyle = {
   padding: '2px 18px',
 }
 
+const adaptiveZoomContainerStyle = {
+  marginBottom: '16px',
+}
+
 const adaptiveZoomTooltip = (
   <div>
     <p>
@@ -65,7 +69,7 @@ export const AdaptiveZoomToggle: FC<AdaptiveZoomToggleProps> = ({
       stretchToFitWidth={true}
       className="adaptive-zoom-toggle"
       testID="adaptive-zoom-toggle"
-      style={{marginBottom: '16px'}}
+      style={adaptiveZoomContainerStyle}
     >
       <SlideToggle
         active={!adaptiveZoomHide}

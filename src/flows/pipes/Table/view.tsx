@@ -36,19 +36,6 @@ const QueryStat: FC = () => {
   const {loading, results} = useContext(PipeContext)
   const queryStart = useRef(0)
   const [processTime, setProcessTime] = useState(0)
-  let tableNum = 0
-
-  const tableColumn = results.parsed.table?.getColumn('table') || []
-  const lastTableValue = tableColumn[tableColumn.length - 1]
-
-  if (typeof lastTableValue === 'string') {
-    tableNum = parseInt(lastTableValue) + 1
-  } else if (typeof lastTableValue === 'boolean') {
-    tableNum = lastTableValue ? 1 : 0
-  } else {
-    // number
-    tableNum = lastTableValue + 1
-  }
 
   useEffect(() => {
     if (loading === RemoteDataState.Loading) {
@@ -71,21 +58,35 @@ const QueryStat: FC = () => {
     setProcessTime(0)
   }, [loading])
 
-  const queryStat = {
-    tableNum,
-    rowNum: results.parsed.table?.length || 0,
-    processTime, // ms
-  }
-
   if (loading !== RemoteDataState.Done) {
     return null
   }
 
+  let tableNum = 0
+
+  const tableColumn = results.parsed.table?.getColumn('table') || []
+  const lastTableValue = tableColumn[tableColumn.length - 1]
+
+  if (typeof lastTableValue === 'string') {
+    tableNum = parseInt(lastTableValue) + 1
+  } else if (typeof lastTableValue === 'boolean') {
+    tableNum = lastTableValue ? 1 : 0
+  } else {
+    // number
+    tableNum = lastTableValue + 1
+  }
+
+  if (results.parsed.table?.length > 0 && tableNum === 0) {
+    tableNum = 1
+  }
+
   return (
     <div className="query-stat">
-      <span className="query-stat--bold">{`${queryStat.tableNum} tables`}</span>
-      <span className="query-stat--bold">{`${queryStat.rowNum} rows`}</span>
-      <span className="query-stat--normal">{`${queryStat.processTime} ms`}</span>
+      <span className="query-stat--bold">{`${tableNum} tables`}</span>
+      <span className="query-stat--bold">{`${
+        results.parsed.table?.length || 0
+      } rows`}</span>
+      <span className="query-stat--normal">{`${processTime} ms`}</span>
     </div>
   )
 }

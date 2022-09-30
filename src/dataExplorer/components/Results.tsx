@@ -44,6 +44,10 @@ const QueryStat: FC = () => {
     tableNum = lastTableValue + 1
   }
 
+  if (result.parsed.table?.length > 0 && tableNum === 0) {
+    tableNum = 1
+  }
+
   return (
     <div className="query-stat">
       <span className="query-stat--bold">{`${tableNum} tables`}</span>

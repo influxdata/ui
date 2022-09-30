@@ -20,8 +20,10 @@
   }
 }
 
-.view-options-container:first-child {
-  margin-top: 0;
+.view-options-container {
+  h5:first-child {
+    margin-top: 0;
+  }
 }
 
 .view-options--header {

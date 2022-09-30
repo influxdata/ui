@@ -275,7 +275,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
               )}
             />
           </Form.Element>
-          <Form.Element label={''}>
+          <Form.Element label="">
             <FlexBox margin={ComponentSize.Medium}>
               <SlideToggle
                 active={!!properties.shadeBelow}

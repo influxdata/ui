@@ -218,17 +218,6 @@ const SingleStatWithLineOptions: FC<Props> = ({
               onChange={setColors}
             />
           </Form.Element>
-          <Form.Element label={''}>
-            <FlexBox margin={ComponentSize.Medium}>
-              <SlideToggle
-                active={!!properties.shadeBelow}
-                onChange={() => {
-                  update({shadeBelow: !properties.shadeBelow})
-                }}
-              />
-              <InputLabel>Shade area below graph</InputLabel>
-            </FlexBox>
-          </Form.Element>
           <Form.Element label="Hover Dimension">
             <Dropdown
               button={(active, onClick) => (
@@ -281,6 +270,17 @@ const SingleStatWithLineOptions: FC<Props> = ({
                 </Dropdown.Menu>
               )}
             />
+          </Form.Element>
+          <Form.Element label={''}>
+            <FlexBox margin={ComponentSize.Medium}>
+              <SlideToggle
+                active={!!properties.shadeBelow}
+                onChange={() => {
+                  update({shadeBelow: !properties.shadeBelow})
+                }}
+              />
+              <InputLabel>Shade area below graph</InputLabel>
+            </FlexBox>
           </Form.Element>
         </Grid.Column>
         <Grid.Column>

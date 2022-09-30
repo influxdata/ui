@@ -194,7 +194,7 @@ const SingleStatWithLine: FC<Props> = ({
     cellType: 'single-stat',
   })
 
-  console.log(textColor)
+
   const config: Config = {
     ...currentTheme,
     table: result.table,

@@ -1,15 +1,19 @@
 // Libraries
 import React, {FC, useMemo} from 'react'
 import {
-  Input,
-  Grid,
+  ButtonShape,
   Columns,
+  ComponentSize,
+  ComponentStatus,
+  Dropdown,
+  FlexBox,
   Form,
+  Grid,
+  Input,
+  InputLabel,
   SelectDropdown,
   SelectGroup,
-  Dropdown,
-  ComponentStatus,
-  ButtonShape,
+  SlideToggle,
 } from '@influxdata/clockface'
 import {createGroupIDColumn} from '@influxdata/giraffe'
 
@@ -35,7 +39,6 @@ import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSche
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
-import Checkbox from 'src/shared/components/Checkbox'
 import {XYViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
 
@@ -119,7 +122,9 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header">Data</h5>
+          <h5 className="view-options--header" style={{marginTop: '0'}}>
+            Data
+          </h5>
           <Form.Element label="X Column">
             <SelectDropdown
               options={numericColumns}
@@ -253,15 +258,6 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-
-          <Checkbox
-            label="Shade Area Below Lines"
-            checked={!!properties.shadeBelow}
-            onSetChecked={shadeBelow => {
-              update({shadeBelow})
-            }}
-          />
-          <br />
           <Form.Element label="Hover Dimension">
             <Dropdown
               button={(active, onClick) => (
@@ -314,6 +310,17 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
                 </Dropdown.Menu>
               )}
             />
+          </Form.Element>
+          <Form.Element label={''}>
+            <FlexBox margin={ComponentSize.Medium}>
+              <SlideToggle
+                active={!!properties.shadeBelow}
+                onChange={() => {
+                  update({shadeBelow: !properties.shadeBelow})
+                }}
+              />
+              <InputLabel>Shade area below graph</InputLabel>
+            </FlexBox>
           </Form.Element>
         </Grid.Column>
         <Grid.Column>

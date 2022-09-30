@@ -1,5 +1,5 @@
 // Libraries
-import React, {CSSProperties, FC} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import {
@@ -7,7 +7,6 @@ import {
   ComponentSize,
   FlexBox,
   FlexDirection,
-  InfluxColors,
   InputLabel,
   QuestionMarkTooltip,
   SlideToggle,
@@ -22,13 +21,6 @@ interface AdaptiveZoomToggleProps {
   update: (obj: any) => void
   testID?: string
   type: string
-}
-
-const getToggleColor = (toggle: boolean): CSSProperties => {
-  if (toggle) {
-    return {color: InfluxColors.Grey95}
-  }
-  return {color: InfluxColors.Grey65}
 }
 
 const adaptiveZoomTooltipStyle = {
@@ -73,15 +65,14 @@ export const AdaptiveZoomToggle: FC<AdaptiveZoomToggleProps> = ({
       stretchToFitWidth={true}
       className="adaptive-zoom-toggle"
       testID="adaptive-zoom-toggle"
+      style={{marginBottom: '16px'}}
     >
       <SlideToggle
         active={!adaptiveZoomHide}
         size={ComponentSize.ExtraSmall}
         onChange={handleSetAdaptiveZoom}
       />
-      <InputLabel style={getToggleColor(adaptiveZoomHide)}>
-        Adaptive Zoom
-      </InputLabel>
+      <InputLabel>Adaptive Zoom</InputLabel>
       <QuestionMarkTooltip
         diameter={16}
         tooltipContents={adaptiveZoomTooltip}

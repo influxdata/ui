@@ -173,6 +173,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           widthXS={Columns.Twelve}
           widthMD={Columns.Six}
           widthLG={Columns.Four}
+          className="view-options-container"
         >
           <h5 className="view-options--header">Data</h5>
           <Form.Element label="X Column">
@@ -377,8 +378,6 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-
-          <br />
           <Form.Element label="Hover Dimension">
             <Dropdown
               button={(active, onClick) => (

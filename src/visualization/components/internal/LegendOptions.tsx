@@ -1,5 +1,5 @@
 // Libraries
-import React, {ChangeEvent, CSSProperties, FC} from 'react'
+import React, {ChangeEvent, FC} from 'react'
 
 // Components
 import {
@@ -10,7 +10,6 @@ import {
   FlexBox,
   FlexDirection,
   Form,
-  InfluxColors,
   InputLabel,
   InputToggleType,
   RangeSlider,
@@ -55,13 +54,6 @@ interface ColorizeRowsToggleProps {
   testID?: string
 }
 
-const getToggleColor = (toggle: boolean): CSSProperties => {
-  if (toggle) {
-    return {color: InfluxColors.Grey95}
-  }
-  return {color: InfluxColors.Grey65}
-}
-
 export const OrientationToggle: FC<OrientationToggleProps> = ({
   eventName,
   graphType,
@@ -88,47 +80,52 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
       className="legend-orientation-toggle"
       testID={testID}
     >
-      <InputLabel className="legend-orientation-label">Orientation</InputLabel>
-      <Toggle
-        tabIndex={1}
-        value="horizontal"
-        className="legend-orientation--horizontal"
-        id={`${parentName}-orientation--horizontal`}
-        name={`${parentName}-orientation--horizontal`}
-        checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
-        onChange={setOrientation}
-        type={InputToggleType.Radio}
-        size={ComponentSize.ExtraSmall}
-        color={ComponentColor.Primary}
-        appearance={Appearance.Outline}
-      >
-        <InputLabel
-          active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
-          htmlFor={`${parentName}-orientation--horizontal`}
+      <Form.Element label="Orientation">
+        <Toggle
+          tabIndex={1}
+          value="horizontal"
+          className="legend-orientation--horizontal"
+          id={`${parentName}-orientation--horizontal`}
+          name={`${parentName}-orientation--horizontal`}
+          checked={
+            legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+          }
+          onChange={setOrientation}
+          type={InputToggleType.Radio}
+          size={ComponentSize.ExtraSmall}
+          color={ComponentColor.Primary}
+          appearance={Appearance.Outline}
         >
-          Horizontal
-        </InputLabel>
-      </Toggle>
-      <Toggle
-        tabIndex={2}
-        value="vertical"
-        className="legend-orientation--vertical"
-        id={`${parentName}-orientation--vertical`}
-        name={`${parentName}-orientation--vertical`}
-        checked={legendOrientation <= 0}
-        onChange={setOrientation}
-        type={InputToggleType.Radio}
-        size={ComponentSize.ExtraSmall}
-        color={ComponentColor.Primary}
-        appearance={Appearance.Outline}
-      >
-        <InputLabel
-          active={legendOrientation <= 0}
-          htmlFor={`${parentName}-orientation--vertical`}
+          <InputLabel
+            active={
+              legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+            }
+            htmlFor={`${parentName}-orientation--horizontal`}
+          >
+            Horizontal
+          </InputLabel>
+        </Toggle>
+        <Toggle
+          tabIndex={2}
+          value="vertical"
+          className="legend-orientation--vertical"
+          id={`${parentName}-orientation--vertical`}
+          name={`${parentName}-orientation--vertical`}
+          checked={legendOrientation <= 0}
+          onChange={setOrientation}
+          type={InputToggleType.Radio}
+          size={ComponentSize.ExtraSmall}
+          color={ComponentColor.Primary}
+          appearance={Appearance.Outline}
         >
-          Vertical
-        </InputLabel>
-      </Toggle>
+          <InputLabel
+            active={legendOrientation <= 0}
+            htmlFor={`${parentName}-orientation--vertical`}
+          >
+            Vertical
+          </InputLabel>
+        </Toggle>
+      </Form.Element>
     </FlexBox>
   )
 }
@@ -186,9 +183,7 @@ export const ColorizeRowsToggle: FC<ColorizeRowsToggleProps> = ({
         size={ComponentSize.ExtraSmall}
         onChange={handleSetColorization}
       />
-      <InputLabel style={getToggleColor(legendColorizeRows)}>
-        Colorize Rows
-      </InputLabel>
+      <InputLabel>Colorize Rows</InputLabel>
     </FlexBox>
   )
 }

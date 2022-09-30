@@ -13,6 +13,10 @@ import {
   ButtonShape,
   AutoInput,
   AutoInputMode,
+  FlexBox,
+  ComponentSize,
+  SlideToggle,
+  InputLabel,
 } from '@influxdata/clockface'
 
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
@@ -37,7 +41,6 @@ import {
 } from 'src/shared/constants/thresholds'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
-import Checkbox from 'src/shared/components/Checkbox'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
@@ -164,6 +167,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
           widthXS={Columns.Twelve}
           widthMD={Columns.Six}
           widthLG={Columns.Four}
+          className="view-options-container"
         >
           <h5 className="view-options--header">Data</h5>
           <Form.Element label="X Column">
@@ -218,15 +222,6 @@ const SingleStatWithLineOptions: FC<Props> = ({
               onChange={setColors}
             />
           </Form.Element>
-
-          <Checkbox
-            label="Shade Area Below Lines"
-            checked={!!properties.shadeBelow}
-            onSetChecked={shadeBelow => {
-              update({shadeBelow})
-            }}
-          />
-          <br />
           <Form.Element label="Hover Dimension">
             <Dropdown
               button={(active, onClick) => (
@@ -279,6 +274,17 @@ const SingleStatWithLineOptions: FC<Props> = ({
                 </Dropdown.Menu>
               )}
             />
+          </Form.Element>
+          <Form.Element label="">
+            <FlexBox margin={ComponentSize.Medium}>
+              <SlideToggle
+                active={!!properties.shadeBelow}
+                onChange={() => {
+                  update({shadeBelow: !properties.shadeBelow})
+                }}
+              />
+              <InputLabel>Shade area below graph</InputLabel>
+            </FlexBox>
           </Form.Element>
         </Grid.Column>
         <Grid.Column>

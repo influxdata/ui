@@ -244,41 +244,46 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                 handleSetColorization={handleSetColorization}
                 testID="static-legend-colorize-rows-toggle"
               />
-              <InputLabel className="latest-axis-label">
-                Displayed Value
-              </InputLabel>
-              <Toggle
-                tabIndex={1}
-                value="y"
-                id="latest-y-axis"
-                className="latest-y-axis"
-                name="valueAxis"
-                checked={valueAxis !== 'x'}
-                onChange={handleSetValueAxis}
-                type={InputToggleType.Radio}
-                size={ComponentSize.ExtraSmall}
-                appearance={Appearance.Outline}
-              >
-                <InputLabel active={valueAxis !== 'x'} htmlFor="latest-y-axis">
-                  Latest Y Axis
-                </InputLabel>
-              </Toggle>
-              <Toggle
-                tabIndex={2}
-                value="x"
-                id="latest-x-axis"
-                className="latest-x-axis"
-                name="valueAxis"
-                checked={valueAxis === 'x'}
-                onChange={handleSetValueAxis}
-                type={InputToggleType.Radio}
-                size={ComponentSize.ExtraSmall}
-                appearance={Appearance.Outline}
-              >
-                <InputLabel active={valueAxis === 'x'} htmlFor="latest-x-axis">
-                  Latest X Axis
-                </InputLabel>
-              </Toggle>
+              <Form.Element label="Displayed Value">
+                <Toggle
+                  tabIndex={1}
+                  value="y"
+                  id="latest-y-axis"
+                  className="latest-y-axis"
+                  name="valueAxis"
+                  checked={valueAxis !== 'x'}
+                  onChange={handleSetValueAxis}
+                  type={InputToggleType.Radio}
+                  size={ComponentSize.ExtraSmall}
+                  appearance={Appearance.Outline}
+                >
+                  <InputLabel
+                    active={valueAxis !== 'x'}
+                    htmlFor="latest-y-axis"
+                  >
+                    Latest Y Axis
+                  </InputLabel>
+                </Toggle>
+                <Toggle
+                  tabIndex={2}
+                  value="x"
+                  id="latest-x-axis"
+                  className="latest-x-axis"
+                  name="valueAxis"
+                  checked={valueAxis === 'x'}
+                  onChange={handleSetValueAxis}
+                  type={InputToggleType.Radio}
+                  size={ComponentSize.ExtraSmall}
+                  appearance={Appearance.Outline}
+                >
+                  <InputLabel
+                    active={valueAxis === 'x'}
+                    htmlFor="latest-x-axis"
+                  >
+                    Latest X Axis
+                  </InputLabel>
+                </Toggle>
+              </Form.Element>
               <Form.Element
                 className="static-legend-height-slider"
                 label={convertHeightRatioToPercentage(heightRatio)}

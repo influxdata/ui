@@ -244,7 +244,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                 handleSetColorization={handleSetColorization}
                 testID="static-legend-colorize-rows-toggle"
               />
-              <Form.Element label={'Displayed Value'}>
+              <Form.Element label="Displayed Value">
                 <Toggle
                   tabIndex={1}
                   value="y"

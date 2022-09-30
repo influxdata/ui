@@ -20,6 +20,10 @@
   }
 }
 
+.view-options-container:first-child {
+  border: 5px solid red;
+}
+
 .view-options--header {
   @include no-user-select();
   font-weight: 500;

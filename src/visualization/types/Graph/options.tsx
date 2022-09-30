@@ -121,10 +121,9 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
           widthXS={Columns.Twelve}
           widthMD={Columns.Six}
           widthLG={Columns.Four}
+          className="view-options-container"
         >
-          <h5 className="view-options--header" style={{marginTop: '0'}}>
-            Data
-          </h5>
+          <h5 className="view-options--header">Data</h5>
           <Form.Element label="X Column">
             <SelectDropdown
               options={numericColumns}

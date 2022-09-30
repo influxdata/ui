@@ -1,4 +1,4 @@
-import {EditorType} from 'src/types'
+import {EditorType, MonacoSelectionRange} from 'src/types'
 
 export const toggleCommenting = (s: string, isTogglingOn: boolean) => {
   if (isTogglingOn) {
@@ -9,7 +9,10 @@ export const toggleCommenting = (s: string, isTogglingOn: boolean) => {
 
 export const isCommented = (s: string) => !!s.match(/^\s*(\/\/(.*)$)/g)
 
-export function comments(editor: EditorType) {
+export function comments(
+  editor: EditorType,
+  cb: (x: MonacoSelectionRange) => void = _ => {}
+) {
   editor.addAction({
     // An unique identifier of the contributed action.
     id: 'toggle-comment',
@@ -48,6 +51,8 @@ export function comments(editor: EditorType) {
           ? positionColumn + 3
           : positionColumn - 3,
       })
+
+      cb(selection)
 
       return null
     },

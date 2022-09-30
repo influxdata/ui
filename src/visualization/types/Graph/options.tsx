@@ -310,7 +310,7 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               )}
             />
           </Form.Element>
-          <Form.Element label={''}>
+          <Form.Element label="">
             <FlexBox margin={ComponentSize.Medium}>
               <SlideToggle
                 active={!!properties.shadeBelow}

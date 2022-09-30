@@ -12,7 +12,11 @@ import {
   ComponentStatus,
   ButtonShape,
   AutoInput,
-  AutoInputMode, FlexBox, ComponentSize, SlideToggle, InputLabel,
+  AutoInputMode,
+  FlexBox,
+  ComponentSize,
+  SlideToggle,
+  InputLabel,
 } from '@influxdata/clockface'
 
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
@@ -165,7 +169,9 @@ const SingleStatWithLineOptions: FC<Props> = ({
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header" style={{marginTop: 0}}>Data</h5>
+          <h5 className="view-options--header" style={{marginTop: 0}}>
+            Data
+          </h5>
           <Form.Element label="X Column">
             <SelectDropdown
               options={numericColumns}

@@ -140,7 +140,9 @@ const MosaicOptions: FC<Props> = props => {
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header" style={{marginTop: 0}}>Data</h5>
+          <h5 className="view-options--header" style={{marginTop: 0}}>
+            Data
+          </h5>
           <Form.Element label="Fill Column">
             <SelectDropdown
               options={stringColumns}

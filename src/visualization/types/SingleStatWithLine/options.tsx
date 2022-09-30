@@ -12,7 +12,7 @@ import {
   ComponentStatus,
   ButtonShape,
   AutoInput,
-  AutoInputMode,
+  AutoInputMode, FlexBox, ComponentSize, SlideToggle, InputLabel,
 } from '@influxdata/clockface'
 
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
@@ -165,7 +165,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header">Data</h5>
+          <h5 className="view-options--header" style={{marginTop: 0}}>Data</h5>
           <Form.Element label="X Column">
             <SelectDropdown
               options={numericColumns}
@@ -218,15 +218,17 @@ const SingleStatWithLineOptions: FC<Props> = ({
               onChange={setColors}
             />
           </Form.Element>
-
-          <Checkbox
-            label="Shade Area Below Lines"
-            checked={!!properties.shadeBelow}
-            onSetChecked={shadeBelow => {
-              update({shadeBelow})
-            }}
-          />
-          <br />
+          <Form.Element label={''}>
+            <FlexBox margin={ComponentSize.Medium}>
+              <SlideToggle
+                active={!!properties.shadeBelow}
+                onChange={() => {
+                  update({shadeBelow: !properties.shadeBelow})
+                }}
+              />
+              <InputLabel>Shade area below graph</InputLabel>
+            </FlexBox>
+          </Form.Element>
           <Form.Element label="Hover Dimension">
             <Dropdown
               button={(active, onClick) => (

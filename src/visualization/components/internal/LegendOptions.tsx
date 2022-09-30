@@ -80,7 +80,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
       className="legend-orientation-toggle"
       testID={testID}
     >
-      <Form.Element label={'Orientation'}>
+      <Form.Element label="Orientation">
         <Toggle
           tabIndex={1}
           value="horizontal"

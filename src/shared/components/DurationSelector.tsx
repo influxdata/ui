@@ -1,8 +1,17 @@
 // Libraries
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent, useEffect, useState} from 'react'
 
 // Components
-import {ComponentStatus, Dropdown, FlexBox, FlexDirection, JustifyContent, TimeInput} from '@influxdata/clockface'
+import {
+  ComponentSize,
+  ComponentStatus,
+  Dropdown,
+  FlexBox,
+  FlexDirection,
+  InfluxColors,
+  JustifyContent,
+  TimeInput,
+} from '@influxdata/clockface'
 
 // Utils
 import {areDurationsEqual} from 'src/shared/utils/duration'
@@ -19,7 +28,7 @@ interface Props {
   disabled?: boolean
 }
 
-const durationUnits = ['d', 'm', 'y']
+const durationUnits = ['d', 'mo', 'y']
 
 const DurationSelector: FunctionComponent<Props> = ({
   selectedDuration,
@@ -40,18 +49,27 @@ const DurationSelector: FunctionComponent<Props> = ({
   }
 
   const [customDurationClicked, setCustomDurationClicked] = useState(false)
-  const [durationUnit, setDurationUnit] = useState<string>(durationUnits[0])
+  const [customDurationUnit, setCustomDurationUnit] = useState<string>(
+    durationUnits[0]
+  )
   const [customDurationValue, setCustomDurationValue] = useState<number>(2)
 
+  useEffect(() => {
+    if (customDurationClicked) {
+      onSelectDuration(
+        getCustomDurationString(customDurationValue, customDurationUnit)
+      )
+    }
+  }, [customDurationValue, customDurationUnit, customDurationClicked])
+
+  const getCustomDurationString = (
+    durationValue: number,
+    durationUnit: string
+  ) => {
+    return `${durationValue}${durationUnit}`
+  }
   return (
-    <FlexBox
-      style={
-        customDurationClicked
-          ? {border: 'dashed grey 1px', borderRadius: '4px', padding: '5px'}
-          : {}
-      }
-      direction={FlexDirection.Column}
-    >
+    <FlexBox direction={FlexDirection.Column}>
       <Dropdown
         testID="duration-selector"
         button={(active, onClick) => (
@@ -68,14 +86,32 @@ const DurationSelector: FunctionComponent<Props> = ({
           <Dropdown.Menu
             onCollapse={onCollapse}
             testID="duration-selector--menu"
+            scrollToSelected={false}
           >
+            <Dropdown.Item
+              value={'Custom'}
+              selected={customDurationClicked}
+              onClick={() => {
+                setCustomDurationClicked(true)
+                onSelectDuration(
+                  getCustomDurationString(
+                    customDurationValue,
+                    customDurationUnit
+                  )
+                )
+              }}
+            >
+              Custom duration
+            </Dropdown.Item>
             {resolvedDurations.map(({duration, displayText}) => (
               <Dropdown.Item
                 id={duration}
                 key={duration}
                 value={duration}
                 testID={`duration-selector--${duration}`}
-                selected={duration === selectedDuration}
+                selected={
+                  duration === selectedDuration && !customDurationClicked
+                }
                 onClick={duration => {
                   onSelectDuration(duration)
                   setCustomDurationClicked(false)
@@ -84,15 +120,6 @@ const DurationSelector: FunctionComponent<Props> = ({
                 {displayText}
               </Dropdown.Item>
             ))}
-            <Dropdown.Item
-              value={'Custom'}
-              selected={customDurationClicked}
-              onClick={() => {
-                setCustomDurationClicked(true)
-              }}
-            >
-              Custom duration
-            </Dropdown.Item>
           </Dropdown.Menu>
         )}
       />
@@ -103,19 +130,19 @@ const DurationSelector: FunctionComponent<Props> = ({
           stretchToFitWidth={true}
           style={{marginTop: '8px'}}
         >
-          <p style={{marginLeft: '12px'}}>
-          Enter your custom time duration:</p>
+          <p style={{marginLeft: '12px'}}>Enter your custom time duration:</p>
           <TimeInput
             style={{width: '150px'}}
-            onChange={durationValue =>
+            onChange={durationValue => {
               setCustomDurationValue(Number(durationValue))
-            }
-            value={'2'}
-            onSelectUnit={unit => {
-              setDurationUnit(unit)
             }}
-            selectedUnit={durationUnit}
-          ></TimeInput>
+            value={customDurationValue.toString()}
+            onSelectUnit={unit => {
+              setCustomDurationUnit(unit)
+            }}
+            selectedUnit={customDurationUnit}
+            units={durationUnits}
+          />
         </FlexBox>
       )}
     </FlexBox>

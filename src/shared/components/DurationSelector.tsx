@@ -128,7 +128,7 @@ const DurationSelector: FunctionComponent<Props> = ({
           stretchToFitWidth={true}
           style={{marginTop: '8px'}}
         >
-          <p style={{marginLeft: '12px'}}>Enter your custom time duration:</p>
+          <p style={{marginLeft: '12px'}}>Enter your custom retention duration:</p>
           <TimeInput
             style={{width: '150px'}}
             onChange={durationValue => {

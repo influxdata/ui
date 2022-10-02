@@ -3,12 +3,10 @@ import React, {FunctionComponent, useEffect, useState} from 'react'
 
 // Components
 import {
-  ComponentSize,
   ComponentStatus,
   Dropdown,
   FlexBox,
   FlexDirection,
-  InfluxColors,
   JustifyContent,
   TimeInput,
 } from '@influxdata/clockface'

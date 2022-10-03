@@ -62,7 +62,6 @@ export const HomepageContainer: FC = () => {
 
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
-  const moreStyle = {height: '100%', ...linkStyle}
   // checks for
   const inlineViewMoreStyle = {
     marginTop: '8px',

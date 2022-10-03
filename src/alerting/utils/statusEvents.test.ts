@@ -53,6 +53,7 @@ describe('process statuses response', () => {
         csv,
         bytesRead: 0,
         didTruncate: false,
+        tableCnt: 1,
       }),
       cancel,
     }).promise
@@ -80,6 +81,7 @@ describe('process statuses response', () => {
         csv,
         bytesRead: 0,
         didTruncate: false,
+        tableCnt: 1,
       }),
       cancel,
     }).promise
@@ -98,6 +100,7 @@ describe('process statuses response', () => {
         csv: '',
         bytesRead: 0,
         didTruncate: false,
+        tableCnt: 0,
       }),
       cancel,
     })

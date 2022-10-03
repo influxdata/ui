@@ -32,6 +32,7 @@ const promise = Promise.resolve({
   csv: 'wooooo',
   didTruncate: true,
   bytesRead: 1,
+  tableCnt: 0,
 } as RunQuerySuccessResult)
 
 const variables: Variable[] = [

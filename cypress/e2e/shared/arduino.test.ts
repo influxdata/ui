@@ -2,7 +2,6 @@ describe('Arduino onboarding flow', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.setFeatureFlags({onboardArduino: true})
   })
 
   it('should load the main home-page that has the arduino tile', function () {

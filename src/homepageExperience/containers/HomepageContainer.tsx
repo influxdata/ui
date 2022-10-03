@@ -66,7 +66,6 @@ export const HomepageContainer: FC = () => {
   // checks for
   const inlineViewMoreStyle = {
     marginTop: '8px',
-    visibility: isFlagEnabled('onboardArduino') ? 'visible' : 'hidden',
   } as CSSProperties
 
   const squareGridCardSize = '200px'
@@ -180,40 +179,21 @@ export const HomepageContainer: FC = () => {
                         </div>
                       </Link>
                     </ResourceCard>
-                    {isFlagEnabled('onboardArduino') && (
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={arduinoLink}
-                          style={linkStyle}
-                          onClick={logArduinoWizardClick}
+                    <ResourceCard style={cardStyle}>
+                      <Link
+                        to={arduinoLink}
+                        style={linkStyle}
+                        onClick={logArduinoWizardClick}
+                      >
+                        <div
+                          className="homepage-wizard-language-tile"
+                          data-testid="homepage-wizard-language-tile--arduino"
                         >
-                          <div
-                            className="homepage-wizard-language-tile"
-                            data-testid="homepage-wizard-language-tile--arduino"
-                          >
-                            <h5>Arduino</h5>
-                            {ArduinoIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                    )}
-                    {!isFlagEnabled('onboardArduino') && (
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={loadDataSourcesLink}
-                          style={moreStyle}
-                          onClick={logMoreButtonClick}
-                        >
-                          <div className="homepage-wizard-language-tile">
-                            <span>
-                              <h5>
-                                MORE <Icon glyph={IconFont.ArrowRight_New} />
-                              </h5>
-                            </span>
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                    )}
+                          <h5>Arduino</h5>
+                          {ArduinoIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
                   </SquareGrid>
                   <FlexBox justifyContent={JustifyContent.FlexStart}>
                     <Link

@@ -302,15 +302,12 @@ const SetOrg: FC = () => {
             key="/golang"
             component={GoWizard}
           />
-          {isFlagEnabled('onboardArduino') && (
-            <Route
-              exact
-              path="/orgs/:orgID/new-user-setup/arduino"
-              key="/arduino"
-              component={ArduinoWizard}
-            />
-          )}
-          ,
+          <Route
+            exact
+            path="/orgs/:orgID/new-user-setup/arduino"
+            key="/arduino"
+            component={ArduinoWizard}
+          />
           <Route
             exact
             path="/orgs/:orgID/new-user-setup/cli"

@@ -1,8 +1,7 @@
 // Libraries
 import React, {FC, useContext, useEffect, MouseEvent} from 'react'
 import {Link, useLocation} from 'react-router-dom'
-import {useSelector} from 'react-redux'
-import {connect, ConnectedProps} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {Icon, IconFont, PopoverPosition, TreeNav} from '@influxdata/clockface'
@@ -15,31 +14,38 @@ import {CLOUD} from 'src/shared/constants'
 
 // Utils
 import {getNavItemActivation} from 'src/pageLayout/utils'
-import {getOrg} from 'src/organizations/selectors'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {
+  selectCurrentAccountType,
+  selectOperatorRole,
+} from 'src/identity/selectors'
+
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
-import {AppState} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+// Overlays
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
+// Styles
 import './TreeNav.scss'
 
-type ReduxProps = ConnectedProps<typeof connector>
-
-const TreeSidebar: FC<ReduxProps> = ({
-  showOverlay,
-  dismissOverlay,
-  quartzMe,
-}) => {
+const TreeSidebar: FC = () => {
   const {presentationMode, navbarMode, setNavbarMode} =
     useContext(AppSettingContext)
   const org = useSelector(getOrg)
+  const accountType = useSelector(selectCurrentAccountType)
+  const operatorRole = useSelector(selectOperatorRole)
+
+  const dispatch = useDispatch()
+
   const location = useLocation()
   useEffect(() => {
     const helpBarMenu = document.querySelectorAll<HTMLElement>(
@@ -77,14 +83,13 @@ const TreeSidebar: FC<ReduxProps> = ({
     evt: MouseEvent<HTMLAnchorElement>
   ): void => {
     evt.preventDefault()
-    const accountType = quartzMe?.accountType ?? 'free'
     const isPayGCustomer = accountType !== 'free'
 
     if (isPayGCustomer) {
-      showOverlay('payg-support', null, dismissOverlay)
+      dispatch(showOverlay('payg-support', null, dismissOverlay))
       event('helpBar.paygSupportRequest.overlay.shown')
     } else {
-      showOverlay('free-account-support', null, dismissOverlay)
+      dispatch(showOverlay('free-account-support', null, dismissOverlay))
     }
   }
 
@@ -95,7 +100,7 @@ const TreeSidebar: FC<ReduxProps> = ({
       userElement={CLOUD && isFlagEnabled('multiOrg') ? null : <UserWidget />}
       onToggleClick={handleToggleNavExpansion}
     >
-      {generateNavItems().map((item: NavItem) => {
+      {generateNavItems(org.id, operatorRole).map((item: NavItem) => {
         const linkElement = (className: string): JSX.Element => (
           <Link
             to={item.link}
@@ -262,15 +267,4 @@ const TreeSidebar: FC<ReduxProps> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  return {quartzMe: state.me.quartzMe}
-}
-
-const mdtp = {
-  showOverlay,
-  dismissOverlay,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(TreeSidebar)
+export default TreeSidebar

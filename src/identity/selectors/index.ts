@@ -18,6 +18,12 @@ export const selectCurrentAccountType = (
   return state.identity.currentIdentity.account.type
 }
 
+export const selectOperatorRole = (
+  state: AppState
+): AppState['identity']['currentIdentity']['user']['operatorRole'] => {
+  return state.identity.currentIdentity.user.operatorRole
+}
+
 export const selectQuartzIdentityStatus = (state: AppState): RemoteDataState =>
   state.identity.currentIdentity.loadingStatus.identityStatus
 

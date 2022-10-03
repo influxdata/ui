@@ -24,7 +24,6 @@ import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginTo
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
-import {getQuartzMe} from 'src/me/selectors'
 
 // Utils
 import {CLOUD} from 'src/shared/constants'
@@ -163,7 +162,7 @@ const mstp = (state: AppState) => {
       steps: {orgID},
     },
   } = state
-  const accountType = getQuartzMe(state)?.accountType ?? 'free'
+  const accountType = state?.identity?.currentIdentity?.account?.type ?? 'free'
   let telegrafConfig = null
   if (telegrafConfigID) {
     const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)

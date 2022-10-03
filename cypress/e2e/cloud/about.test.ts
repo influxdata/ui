@@ -6,7 +6,6 @@ describe.skip('About Page for free users with only 1 user', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.setFeatureFlags({
-          quartzIdentity: true,
           multiOrg: true,
         }).then(() => {
           cy.get('@org').then(({id}: Organization) => {
@@ -55,7 +54,6 @@ describe('About Page for free users with multiple users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.setFeatureFlags({
-          quartzIdentity: true,
           multiOrg: true,
         }).then(() => {
           cy.get('@org').then(({id}: Organization) => {
@@ -91,7 +89,6 @@ describe('About Page for PAYG users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.setFeatureFlags({
-          quartzIdentity: true,
           multiOrg: true,
         }).then(() => {
           cy.get('@org').then(({id}: Organization) => {

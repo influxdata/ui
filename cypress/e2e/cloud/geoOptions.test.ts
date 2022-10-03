@@ -6,7 +6,7 @@ describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
       cy.signin().then(() => {
         cy.signin()
           .then(() => {
-            cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+            cy.setFeatureFlags({multiOrg: true})
           })
           .then(() => {
             cy.get('@org').then(({id}: Organization) => {

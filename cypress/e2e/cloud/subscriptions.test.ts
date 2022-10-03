@@ -16,7 +16,6 @@ describe('Subscriptions', () => {
               cy.setFeatureFlags({
                 subscriptionsUI: true,
                 multiOrg: true,
-                quartzIdentity: true,
               })
 
               cy.getByTestID('subscriptions--tab').should('be.visible')

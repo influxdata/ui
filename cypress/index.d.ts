@@ -103,7 +103,7 @@ declare global {
       createCheck: typeof createCheck
       createAlertGroup: typeof createAlertGroup
       setFeatureFlags: typeof setFeatureFlags
-      setFeatureFlagsNoNav: typeof setFeatureFlags
+      setFeatureFlagsNoNav: typeof setFeatureFlagsNoNav
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision
       createTaskFromEmpty: typeof createTaskFromEmpty

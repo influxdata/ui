@@ -18,7 +18,6 @@ describe('Billing Page Free Users', () => {
 
   it('should display the free billing page for free users', () => {
     cy.setFeatureFlags({
-      quartzIdentity: true,
       multiOrg: true,
     }).then(() => {
       cy.getByTestID('cloud-upgrade--button').should('be.visible')
@@ -58,7 +57,6 @@ describe('Billing Page PAYG Users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.setFeatureFlags({
-          quartzIdentity: true,
           multiOrg: true,
         }).then(() => {
           cy.get('@org').then(({id}: Organization) => {
@@ -82,7 +80,6 @@ describe('Billing Page PAYG Users', () => {
 
   it('should display the free billing page for PAYG users', () => {
     cy.setFeatureFlags({
-      quartzIdentity: true,
       multiOrg: true,
     }).then(() => {
       // The implication here is that there is no Upgrade Now button

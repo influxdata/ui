@@ -18,7 +18,7 @@ describe('Usage Page Free User No Data', () => {
           }).then(() => {
             cy.visit(`/orgs/${id}/usage`)
             cy.getByTestID('usage-page--header').should('be.visible')
-            cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+            cy.setFeatureFlags({multiOrg: true})
           })
         })
       })
@@ -109,7 +109,7 @@ describe('Usage Page PAYG With Data', () => {
           }).then(() => {
             cy.visit(`/orgs/${id}/usage`)
             cy.getByTestID('usage-page--header').should('be.visible')
-            cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+            cy.setFeatureFlags({multiOrg: true})
           })
         })
       })

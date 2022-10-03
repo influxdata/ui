@@ -98,7 +98,7 @@ const testSchemaFiles = (
 describe('Explicit Buckets', () => {
   beforeEach(() => {
     setup(cy).then(() => {
-      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+      cy.setFeatureFlags({multiOrg: true})
     })
   })
 
@@ -416,7 +416,7 @@ fsRead,field,float`
 describe('Buckets', () => {
   beforeEach(() => {
     setup(cy).then(() => {
-      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+      cy.setFeatureFlags({multiOrg: true})
     })
   })
 

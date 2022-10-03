@@ -4,7 +4,7 @@ describe('Deep linking', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin().then(() => {
-      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
+      cy.setFeatureFlags({multiOrg: true})
     })
   })
 

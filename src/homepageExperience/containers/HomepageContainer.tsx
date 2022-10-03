@@ -25,6 +25,7 @@ import {
   ArduinoIcon,
   CLIIcon,
   GoIcon,
+  MQTTIcon,
   NodejsIcon,
   PythonIcon,
   TelegrafIcon,
@@ -54,6 +55,7 @@ export const HomepageContainer: FC = () => {
   const arduinoLink = `/orgs/${org.id}/new-user-setup/arduino`
   const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
   const cliPageLink = `/orgs/${org.id}/new-user-setup/cli`
+  const mqttPageLink = `/orgs/${org.id}/load-data/subscriptions/create`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
   const newTelegrafPageLink = `/orgs/${org.id}/load-data/telegrafs/new`
   const golangLink = `/orgs/${org.id}/new-user-setup/golang`
@@ -104,6 +106,10 @@ export const HomepageContainer: FC = () => {
 
   const logCLIButtonClick = () => {
     event('firstMile.CLIButton.clicked')
+  }
+
+  const logMQTTButtonClick = () => {
+    event('firstMile.MQTTButton.clicked')
   }
 
   const logTelegrafButtonClick = () => {
@@ -225,6 +231,31 @@ export const HomepageContainer: FC = () => {
                     </Link>
                   </FlexBox>
                   <hr style={{marginTop: '8px'}} />
+                  <Link
+                    to={mqttPageLink}
+                    style={linkStyle}
+                    onClick={logMQTTButtonClick}
+                  >
+                    <div
+                      className="homepage-write-data-tile"
+                      data-testid="homepage-wizard-tile--mqtt"
+                    >
+                      <div className="tile-icon-text-wrapper">
+                        <div className="icon">{MQTTIcon}</div>
+                        <div>
+                          <h4>Native MQTT</h4>
+                          <h6>
+                            Connect to your MQTT subscription in the cloud.
+                          </h6>
+                        </div>
+                      </div>
+
+                      <Icon
+                        glyph={IconFont.ArrowRight_New}
+                        className="arrow-button"
+                      />
+                    </div>
+                  </Link>
                   <Link
                     to={cliPageLink}
                     style={linkStyle}

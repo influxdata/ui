@@ -483,6 +483,86 @@ export const CLIIcon = (
   </svg>
 )
 
+export const MQTTIcon = (
+  <svg
+    width="60"
+    height="60"
+    viewBox="0 0 60 60"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g filter="url(#filter0_b_1_823)">
+      <circle cx="30" cy="30" r="30" fill="#F1F1F3" fillOpacity="0.1" />
+      <g filter="url(#filter1_d_1_823)">
+        <path
+          d="M17.1408 31.31L17.0633 31.3104L17.1059 40.8879C17.109 41.579 17.7063 42.1441 18.4304 42.1409L28.7613 42.0948C28.6441 36.1093 23.4765 31.2818 17.1408 31.31V31.31ZM17.1056 23.4111L17.0281 23.4114L17.0462 27.4843C25.5671 27.4834 32.5267 33.9938 32.6532 42.0775L37.0752 42.0578C36.9515 31.7154 28.0313 23.3624 17.1056 23.4111ZM43.3406 40.7833L43.3021 32.1314C40.2711 25.1345 34.2082 19.6198 26.6844 17.0738L18.3188 17.1111C17.5948 17.1143 17.0025 17.6847 17.0056 18.3758L17.0111 19.5977C30.1221 19.5763 40.8341 29.6123 40.9671 42.0528L42.0274 42.048C42.7643 42.0324 43.3437 41.4744 43.3406 40.7833V40.7833ZM39.7979 20.5082C41.0185 21.663 42.2663 23.1261 43.2677 24.4176L43.2402 18.2466C43.24 18.0827 43.2058 17.9206 43.1397 17.7694C43.0736 17.6182 42.9768 17.4811 42.8549 17.3657C42.733 17.2504 42.5884 17.1593 42.4295 17.0975C42.2705 17.0357 42.1003 17.0046 41.9287 17.0058L35.2698 17.0355C36.826 18.053 38.4345 19.2184 39.7979 20.5082Z"
+          fill="white"
+        />
+      </g>
+    </g>
+    <defs>
+      <filter
+        id="filter0_b_1_823"
+        x="-10"
+        y="-10"
+        width="80"
+        height="80"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feGaussianBlur in="BackgroundImageFix" stdDeviation="5" />
+        <feComposite
+          in2="SourceAlpha"
+          operator="in"
+          result="effect1_backgroundBlur_1_823"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_backgroundBlur_1_823"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter1_d_1_823"
+        x="-4"
+        y="0"
+        width="68"
+        height="68"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dy="4" />
+        <feGaussianBlur stdDeviation="2" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_1_823"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_1_823"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+)
+
 export const TelegrafIcon = (
   <svg
     width="60"

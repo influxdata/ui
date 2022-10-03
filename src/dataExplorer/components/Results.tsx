@@ -30,26 +30,18 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 const QueryStat: FC = () => {
   const {result} = useContext(ResultsContext)
 
-  const tableColumn = result?.parsed?.table?.getColumn('table') || []
-  const lastTableValue = tableColumn[tableColumn.length - 1] || -1
+  let rowCounter = `${result?.parsed?.table?.length || 0} rows`
 
-  let tableNum = 0
-
-  if (typeof lastTableValue === 'string') {
-    tableNum = parseInt(lastTableValue) + 1
-  } else if (typeof lastTableValue === 'boolean') {
-    tableNum = lastTableValue ? 1 : 0
-  } else {
-    // number
-    tableNum = lastTableValue + 1
+  if (result?.truncated) {
+    rowCounter = `Truncated to ${rowCounter}.`
   }
 
   return (
     <div className="query-stat">
-      <span className="query-stat--bold">{`${tableNum} tables`}</span>
       <span className="query-stat--bold">{`${
-        result?.parsed?.table?.length || 0
-      } rows`}</span>
+        result.tableCnt || 0
+      } tables`}</span>
+      <span className="query-stat--bold">{rowCounter}</span>
     </div>
   )
 }

@@ -36,19 +36,7 @@ const QueryStat: FC = () => {
   const {loading, results} = useContext(PipeContext)
   const queryStart = useRef(0)
   const [processTime, setProcessTime] = useState(0)
-  let tableNum = 0
-
-  const tableColumn = results.parsed.table?.getColumn('table') || []
-  const lastTableValue = tableColumn[tableColumn.length - 1]
-
-  if (typeof lastTableValue === 'string') {
-    tableNum = parseInt(lastTableValue) + 1
-  } else if (typeof lastTableValue === 'boolean') {
-    tableNum = lastTableValue ? 1 : 0
-  } else {
-    // number
-    tableNum = lastTableValue + 1
-  }
+  const tableNum = results?.tableCnt || 0
 
   useEffect(() => {
     if (loading === RemoteDataState.Loading) {

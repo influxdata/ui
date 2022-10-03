@@ -25,8 +25,11 @@ import {resultTooLarge} from 'src/shared/copy/notifications'
 // Types
 import {CancellationError, File} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
+
+// Utils
 import {event} from 'src/cloud/utils/reporting'
 import {PROJECT_NAME} from 'src/flows'
+import {extractTableId} from 'src/shared/utils/fluxData'
 
 interface CancelMap {
   [key: string]: () => void
@@ -91,6 +94,7 @@ const trimPartialLines = (partialResp: string): string => {
 
   return partialResp.slice(0, i + 1)
 }
+
 export interface QueryContextType {
   basic: (text: string, override?: QueryScope, options?: QueryOptions) => any
   query: (
@@ -586,6 +590,7 @@ export const QueryProvider: FC = ({children}) => {
 
           let csv = ''
           let bytesRead = 0
+          let maxTableIdx = null
           let didTruncate = false
           let read = await reader.read()
 
@@ -597,19 +602,23 @@ export const QueryProvider: FC = ({children}) => {
               getFlagValue('dataExplorerCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
           }
 
+          let text
           while (!read.done) {
-            const text = decoder.decode(read.value)
+            text = decoder.decode(read.value)
+            const tableNum = extractTableId(text)
+            if (Number.isInteger(tableNum)) {
+              maxTableIdx = Math.max(maxTableIdx, tableNum)
+            }
 
             bytesRead += read.value.byteLength
-
-            if (bytesRead > BYTE_LIMIT) {
+            if (didTruncate) {
+            } else if (bytesRead > BYTE_LIMIT) {
               csv += trimPartialLines(text)
               didTruncate = true
-              break
             } else {
               csv += text
-              read = await reader.read()
             }
+            read = await reader.read()
           }
 
           reader.cancel()
@@ -619,6 +628,7 @@ export const QueryProvider: FC = ({children}) => {
             csv,
             bytesRead,
             didTruncate,
+            tableCnt: maxTableIdx != null ? maxTableIdx + 1 : 0,
           }
         }
 
@@ -702,27 +712,23 @@ export const QueryProvider: FC = ({children}) => {
   ): Promise<FluxResult> => {
     const result = basic(text, override, options)
 
-    const promise: any = result.promise
-      .then(raw => {
-        if (raw.type !== 'SUCCESS') {
-          throw new Error(raw.message)
-        }
+    const promise: any = result.promise.then(async raw => {
+      if (raw.type !== 'SUCCESS') {
+        throw new Error(raw.message)
+      }
+      if (raw.didTruncate) {
+        dispatch(notify(resultTooLarge(raw.bytesRead)))
+      }
+      const parsed = await fromFlux(raw.csv)
 
-        if (raw.didTruncate) {
-          dispatch(notify(resultTooLarge(raw.bytesRead)))
-        }
-
-        return raw
-      })
-      .then(raw => fromFlux(raw.csv))
-      .then(
-        parsed =>
-          ({
-            source: text,
-            parsed,
-            error: null,
-          } as FluxResult)
-      )
+      return {
+        source: text,
+        parsed,
+        error: null,
+        tableCnt: raw.tableCnt,
+        truncated: raw.didTruncate,
+      } as FluxResult
+    })
 
     promise.cancel = result.cancel
     return promise

@@ -79,7 +79,7 @@ export const ResultsProvider: FC = ({children}) => {
           source: '',
           parsed: null,
           ...result,
-        }
+        } as FluxResult
         setResults({...results})
 
         return

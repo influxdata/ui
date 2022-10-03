@@ -10,8 +10,11 @@ import {
 // Types
 import {CancelBox} from 'src/types/promises'
 import {File, Query, CancellationError} from 'src/types'
+
+// Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getFlagValue} from 'src/shared/utils/featureFlag'
+import {extractTableId} from 'src/shared/utils/fluxData'
 
 export type RunQueryResult =
   | RunQuerySuccessResult
@@ -23,6 +26,7 @@ export interface RunQuerySuccessResult {
   csv: string
   didTruncate: boolean
   bytesRead: number
+  tableCnt: number
 }
 
 export interface RunQueryLimitResult {
@@ -100,26 +104,30 @@ const processSuccessResponse = async (
 
   let csv = ''
   let bytesRead = 0
+  let maxTableIdx = null
   let didTruncate = false
-
   let read = await reader.read()
 
   const BYTE_LIMIT =
     getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
 
+  let text
   while (!read.done) {
-    const text = decoder.decode(read.value)
+    text = decoder.decode(read.value)
+    const tableNum = extractTableId(text)
+    if (Number.isInteger(tableNum)) {
+      maxTableIdx = Math.max(maxTableIdx, tableNum)
+    }
 
     bytesRead += read.value.byteLength
-
-    if (bytesRead > BYTE_LIMIT) {
+    if (didTruncate) {
+    } else if (bytesRead > BYTE_LIMIT) {
       csv += trimPartialLines(text)
       didTruncate = true
-      break
     } else {
       csv += text
-      read = await reader.read()
     }
+    read = await reader.read()
   }
 
   reader.cancel()
@@ -129,6 +137,7 @@ const processSuccessResponse = async (
     csv,
     bytesRead,
     didTruncate,
+    tableCnt: maxTableIdx != null ? maxTableIdx + 1 : 0,
   }
 }
 

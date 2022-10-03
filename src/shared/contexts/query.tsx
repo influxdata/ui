@@ -26,6 +26,7 @@ import {resultTooLarge} from 'src/shared/copy/notifications'
 import {CancellationError, File} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 import {event} from 'src/cloud/utils/reporting'
+import {PROJECT_NAME} from 'src/flows'
 
 interface CancelMap {
   [key: string]: () => void
@@ -588,8 +589,13 @@ export const QueryProvider: FC = ({children}) => {
           let didTruncate = false
           let read = await reader.read()
 
-          const BYTE_LIMIT =
+          let BYTE_LIMIT =
             getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+
+          if (!window.location.pathname.includes(PROJECT_NAME.toLowerCase())) {
+            BYTE_LIMIT =
+              getFlagValue('dataExplorerCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+          }
 
           while (!read.done) {
             const text = decoder.decode(read.value)

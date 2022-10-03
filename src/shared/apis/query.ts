@@ -105,7 +105,7 @@ const processSuccessResponse = async (
   let read = await reader.read()
 
   const BYTE_LIMIT =
-    getFlagValue('dataExplorerCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+    getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
 
   while (!read.done) {
     const text = decoder.decode(read.value)

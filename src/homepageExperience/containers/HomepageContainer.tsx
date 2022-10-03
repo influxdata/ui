@@ -24,7 +24,8 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {
   ArduinoIcon,
   CLIIcon,
-  GoIcon, MQTTIcon,
+  GoIcon,
+  MQTTIcon,
   NodejsIcon,
   PythonIcon,
   TelegrafIcon,

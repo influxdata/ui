@@ -238,7 +238,7 @@ export const HomepageContainer: FC = () => {
                   >
                     <div
                       className="homepage-write-data-tile"
-                      data-testid="homepage-wizard-tile--cli"
+                      data-testid="homepage-wizard-tile--mqtt"
                     >
                       <div className="tile-icon-text-wrapper">
                         <div className="icon">{MQTTIcon}</div>

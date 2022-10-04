@@ -98,6 +98,7 @@ module.exports = {
             ? MiniCssExtractPlugin.loader
             : 'style-loader',
           'css-loader',
+          'css-unicode-loader',
           {
             loader: 'sass-loader',
             options: {

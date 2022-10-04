@@ -25,6 +25,7 @@ interface Props {
   onSelectDuration: (duration: string) => any
   durations: DurationOption[]
   disabled?: boolean
+  status?: ComponentStatus
 }
 
 const durationUnits = ['day', 'month', 'year']
@@ -43,6 +44,7 @@ const DurationSelector: FunctionComponent<Props> = ({
   onSelectDuration,
   durations,
   disabled = false,
+  status = ComponentStatus.Default,
 }) => {
   let resolvedDurations = durations
   let selected: DurationOption = durations.find(
@@ -85,7 +87,7 @@ const DurationSelector: FunctionComponent<Props> = ({
   ) => {
     return `${durationValue}${durationUnit}`
   }
-  const timeInputComponentStyle = {width: '160px'}
+  const timeInputComponentStyle = {width: '175px'}
   const customDurationContainerStyle = {marginTop: '16px'}
   return (
     <FlexBox direction={FlexDirection.Column}>
@@ -157,7 +159,7 @@ const DurationSelector: FunctionComponent<Props> = ({
           <TimeInput
             style={timeInputComponentStyle}
             onChange={durationValue => {
-              const zeroNotAllowed = Number(durationValue) || 1
+              const zeroNotAllowed = Number(durationValue)
               setCustomDurationValue(zeroNotAllowed)
             }}
             value={customDurationValue.toString()}
@@ -169,6 +171,11 @@ const DurationSelector: FunctionComponent<Props> = ({
               customDurationValue
             )}
             units={durationUnits}
+            status={
+              status === ComponentStatus.Valid
+                ? ComponentStatus.Default
+                : status // No need to show checkmark when input is valid.
+            }
           />
         </FlexBox>
       )}

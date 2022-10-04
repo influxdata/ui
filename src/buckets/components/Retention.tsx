@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react'
 import {connect} from 'react-redux'
 
 // Components
-import {SelectGroup, ButtonShape} from '@influxdata/clockface'
+import {SelectGroup, ButtonShape, ComponentStatus} from '@influxdata/clockface'
 import DurationSelector, {
   DurationOption,
 } from 'src/shared/components/DurationSelector'
@@ -43,6 +43,7 @@ interface OwnProps {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (type: 'expire' | null) => void
   useSimplifiedForm?: boolean
+  status?: ComponentStatus
 }
 
 type Props = OwnProps & StateProps
@@ -54,6 +55,7 @@ class Retention extends PureComponent<Props> {
       maxRetentionSeconds,
       type,
       useSimplifiedForm = false,
+      status,
     } = this.props
 
     return (
@@ -91,6 +93,7 @@ class Retention extends PureComponent<Props> {
             selectedDurationInSeconds={`${retentionSeconds}s`}
             onSelectDuration={this.handleSelectDuration}
             durations={this.durations}
+            status={status}
           />
         )}
       </>

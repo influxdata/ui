@@ -197,21 +197,26 @@ export default class BucketOverlayForm extends PureComponent<Props> {
               />
             )}
           </Form.ValidationElement>
-          <Form.Element
+          <Form.ValidationElement
             label={
               useSimplifiedBucketForm
                 ? 'Data Retention Preferences'
                 : 'Delete Data'
             }
+            value={retentionSeconds.toString()}
+            validationFunc={this.handleRetentionSecondsValidation}
           >
-            <Retention
-              type={ruleType}
-              retentionSeconds={retentionSeconds}
-              onChangeRuleType={onChangeRuleType}
-              onChangeRetentionRule={onChangeRetentionRule}
-              useSimplifiedForm={useSimplifiedBucketForm}
-            />
-          </Form.Element>
+            {status => (
+              <Retention
+                type={ruleType}
+                retentionSeconds={retentionSeconds}
+                onChangeRuleType={onChangeRuleType}
+                onChangeRetentionRule={onChangeRetentionRule}
+                useSimplifiedForm={useSimplifiedBucketForm}
+                status={status}
+              />
+            )}
+          </Form.ValidationElement>
           {useSimplifiedBucketForm ? null : makeAdvancedSection()}
         </Overlay.Body>
         <Overlay.Footer>
@@ -259,6 +264,13 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     return null
   }
 
+  private handleRetentionSecondsValidation = (value: string): string | null => {
+    if (Number(value) <= 0) {
+      return ` `
+    }
+
+    return null
+  }
   private get nameHelpText(): string {
     if (this.props.isEditing) {
       return 'To rename bucket use the RENAME button below'
@@ -278,10 +290,13 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   }
 
   private get submitButtonStatus(): ComponentStatus {
-    const {name} = this.props
+    const {name, retentionSeconds} = this.props
     const nameHasErrors = this.handleNameValidation(name)
+    const durationHasErrors = this.handleRetentionSecondsValidation(
+      retentionSeconds.toString()
+    )
 
-    if (nameHasErrors) {
+    if (nameHasErrors || durationHasErrors) {
       return ComponentStatus.Disabled
     }
 

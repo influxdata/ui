@@ -1,11 +1,10 @@
 // Libraries
-import React, {FC, useMemo, useContext} from 'react'
-
+import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 import {Config, Plot} from '@influxdata/giraffe'
+import {RemoteDataState} from '@influxdata/clockface'
 
 // Redux
 import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
-
 import {useDispatch, useSelector} from 'react-redux'
 
 // Annotations
@@ -13,6 +12,7 @@ import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
+import ViewLoadingSpinner from 'src/visualization/components/internal/ViewLoadingSpinner'
 
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
@@ -20,9 +20,10 @@ import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {useMainColumn} from 'src/visualization/utils/useBandColumns'
 import {useLegendOpacity} from 'src/visualization/utils/useLegendOpacity'
 import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
+import {useZoomQuery} from 'src/visualization/utils/useZoomQuery'
 import {
-  useVisXDomainSettings,
-  useVisYDomainSettings,
+  useZoomRequeryXDomainSettings,
+  useZoomRequeryYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
 import {
   geomToInterpolation,
@@ -32,6 +33,11 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Types
+import {BandViewProperties, InternalFromFluxResult} from 'src/types'
+import {VisualizationProps} from 'src/visualization'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -44,10 +50,6 @@ import {
 } from 'src/visualization/constants'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
-// Types
-import {BandViewProperties} from 'src/types'
-import {VisualizationProps} from 'src/visualization'
-
 interface Props extends VisualizationProps {
   properties: BandViewProperties
 }
@@ -58,7 +60,19 @@ const BandPlot: FC<Props> = ({
   annotations,
   cellID,
   timeRange,
+  transmitWindowPeriod,
 }) => {
+  const [resultState, setResultState] = useState(result)
+  const [preZoomResult, setPreZoomResult] =
+    useState<InternalFromFluxResult>(null)
+  const [requeryStatus, setRequeryStatus] = useState<RemoteDataState>(
+    RemoteDataState.NotStarted
+  )
+
+  useEffect(() => {
+    setResultState(result)
+  }, [result])
+
   const mainColumnName = useMainColumn(
     properties.mainColumn,
     result.resultColumnNames
@@ -106,20 +120,42 @@ const BandPlot: FC<Props> = ({
 
   const groupKey = [...result.fluxGroupKeyUnion, 'result']
 
-  const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
-    storedXDomain,
-    result.table.getColumn(xColumn, 'number'),
-    timeRange
-  )
-
   const memoizedYColumnData = useMemo(
     () => result.table.getColumn(yColumn, 'number'),
     [result.table, yColumn]
   )
 
-  const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
-    storedYDomain,
-    memoizedYColumnData
+  const zoomQuery = useZoomQuery(properties)
+
+  const [xDomain, onSetXDomain, onResetXDomain] = useZoomRequeryXDomainSettings(
+    {
+      adaptiveZoomHide: properties.adaptiveZoomHide,
+      data: resultState.table.getColumn(xColumn, 'number'),
+      parsedResult: resultState,
+      preZoomResult,
+      query: zoomQuery,
+      setPreZoomResult,
+      setRequeryStatus,
+      setResult: setResultState,
+      storedDomain: storedXDomain,
+      timeRange,
+      transmitWindowPeriod,
+    }
+  )
+
+  const [yDomain, onSetYDomain, onResetYDomain] = useZoomRequeryYDomainSettings(
+    {
+      adaptiveZoomHide: properties.adaptiveZoomHide,
+      data: memoizedYColumnData,
+      parsedResult: resultState,
+      preZoomResult,
+      query: zoomQuery,
+      setPreZoomResult,
+      setRequeryStatus,
+      setResult: setResultState,
+      storedDomain: storedYDomain,
+      transmitWindowPeriod,
+    }
   )
 
   const legendColumns = filterNoisyColumns(
@@ -208,7 +244,14 @@ const BandPlot: FC<Props> = ({
     'band'
   )
 
-  return <Plot config={config} />
+  return (
+    <>
+      {isFlagEnabled('zoomRequery') && (
+        <ViewLoadingSpinner loading={requeryStatus} />
+      )}
+      <Plot config={config} />
+    </>
+  )
 }
 
 export default BandPlot

@@ -44,7 +44,7 @@ const pluralizeUnitIfNeeded = (unit: string, value: number) => {
 }
 const timeInputComponentStyle = {width: '175px'}
 const customDurationContainerStyle = {marginTop: '16px'}
-let customRetentionLabelStyle = {marginLeft: '12px'}
+const customRetentionLabelStyle = {marginLeft: '12px'}
 
 const durationToSeconds = (duration: string): number => {
   const seconds = durationToMilliseconds(parseDuration(duration)) / 1000

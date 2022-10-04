@@ -12,6 +12,12 @@ export const selectCurrentIdentity = (
   return state.identity.currentIdentity
 }
 
+export const selectCurrentAccountType = (
+  state: AppState
+): AppState['identity']['currentIdentity']['account']['type'] => {
+  return state.identity.currentIdentity.account.type
+}
+
 export const selectQuartzIdentityStatus = (state: AppState): RemoteDataState =>
   state.identity.currentIdentity.loadingStatus.identityStatus
 

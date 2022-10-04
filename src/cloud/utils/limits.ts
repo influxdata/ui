@@ -27,7 +27,6 @@ export const extractBucketMax = (state: AppState): number => {
 }
 
 export const extractBucketMaxRetentionSeconds = (state: AppState): number => {
-  return 2592000
   if (!CLOUD) {
     return null
   }

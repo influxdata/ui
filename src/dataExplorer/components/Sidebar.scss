@@ -33,6 +33,21 @@
 
 .result-options--flex-child {
   width: 100%;
+
+  .toggle-with-label-tooltip {
+    padding-top: $cf-space-s;
+  }
+
+  .toggle-with-label-tooltip--label {
+    padding-left: $cf-space-2xs;
+    .selector-title {
+      padding-bottom: 0;
+    }
+  }
+
+  .divider {
+    border-bottom: 2px solid $cf-grey-25;
+  }
 }
 
 .result-options--header,

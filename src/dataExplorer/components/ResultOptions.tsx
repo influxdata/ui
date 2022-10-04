@@ -32,9 +32,9 @@ const ToggleWithLabelToolTip: FC<ToggleWithLabelToolTipProps> = ({
   tooltipContents = '',
 }) => {
   return (
-    <FlexBox>
+    <FlexBox className="toggle-with-label-tooltip">
       <SlideToggle active={active} onChange={onChange} />
-      <InputLabel>
+      <InputLabel className="toggle-with-label-tooltip--label">
         <SelectorTitle label={label} tooltipContents={tooltipContents} />
       </InputLabel>
     </FlexBox>
@@ -81,6 +81,7 @@ const ResultOptions: FC = () => {
       {fieldsAsColumns}
       {group}
       {aggregate}
+      <hr className="divider" />
     </Accordion>
   )
 }

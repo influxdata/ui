@@ -16,20 +16,6 @@
   left: 0;
   right: 0;
 
-  .result-options {
-    padding-top: $cf-space-2xs;
-
-    .result-options--header {
-      background-color: transparent;
-      min-height: 0;
-      padding: 0;
-    }
-  }
-
-  .result-options .cf-accordion--icon {
-    color: gray;
-  }
-
   .flux-library-original {
     height: calc(
       100% - 30px
@@ -43,6 +29,18 @@
       padding: 0;
     }
   }
+}
+
+.result-options--header,
+.flux-library--header {
+  background-color: transparent;
+  min-height: 0;
+  padding: 0;
+}
+
+.result-options .cf-accordion--icon,
+.flux-library .cf-accordion--icon {
+  color: gray;
 }
 
 .flux-builder-sidebar--buttons {

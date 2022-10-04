@@ -75,6 +75,12 @@ const Sidebar: FC = () => {
     )
   }
 
+  const resultOptions = isFlagEnabled('resultOptions') ? (
+    <FlexBox.Child>
+      <ResultOptions />
+    </FlexBox.Child>
+  ) : null
+
   let browser = <Functions onSelect={inject} />
 
   if (CLOUD) {
@@ -84,7 +90,7 @@ const Sidebar: FC = () => {
   const fluxLibrary = isFlagEnabled('resultOptions') ? (
     <FlexBox.Child>
       <Accordion className="flux-library" expanded={true}>
-        <Accordion.AccordionHeader>
+        <Accordion.AccordionHeader className="flux-library--header">
           <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
         </Accordion.AccordionHeader>
         {browser}
@@ -98,12 +104,6 @@ const Sidebar: FC = () => {
       </div>
     </FlexBox.Child>
   )
-
-  const resultOptions = isFlagEnabled('resultOptions') ? (
-    <FlexBox.Child>
-      <ResultOptions />
-    </FlexBox.Child>
-  ) : null
 
   return (
     <FlexBox

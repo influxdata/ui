@@ -1,8 +1,8 @@
 export interface Duration {
-  day: number
-  hour: number
-  minute: number
-  second: number
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
 }
 
 const secondsToDuration = (seconds: number): Duration => {
@@ -14,10 +14,10 @@ const secondsToDuration = (seconds: number): Duration => {
   hours = hours % 24
 
   return {
-    day: days,
-    hour: hours,
-    minute: minutes,
-    second: seconds,
+    days,
+    hours,
+    minutes,
+    seconds,
   }
 }
 
@@ -28,14 +28,14 @@ export const ruleToString = (seconds: number): string => {
       return acc
     }
 
-    const plural = v > 1 ? `${k}s` : k
-    return `${acc} ${v} ${plural}`
+    // removes the trailing plural 's' if magnitude is singular
+    const k_singular_or_plural = v <= 1 ? k.slice(0, -1) : k
+    return `${acc} ${v} ${k_singular_or_plural}`
   }, '')
 
   if (!rpString) {
     return 'forever'
   }
 
-  console.log(rpString.trim())
   return rpString.trim()
 }

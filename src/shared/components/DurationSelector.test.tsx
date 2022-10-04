@@ -6,7 +6,7 @@ describe('DurationSelector', () => {
   test('should match selected duration to duration option', () => {
     const {getByTestId} = render(
       <DurationSelector
-        selectedDuration="1h"
+        selectedDurationInSeconds="1h"
         onSelectDuration={() => {}}
         durations={[
           {duration: '1d', displayText: '1 Day'},
@@ -23,7 +23,7 @@ describe('DurationSelector', () => {
   test('should match selected duration to equivalent duration option', () => {
     const {getByTestId} = render(
       <DurationSelector
-        selectedDuration="1h"
+        selectedDurationInSeconds="1h"
         onSelectDuration={() => {}}
         durations={[
           {duration: '1d', displayText: '1 Day'},
@@ -40,7 +40,7 @@ describe('DurationSelector', () => {
   test('should be able to display any selected duration even if not passed as option', () => {
     const {getByTestId} = render(
       <DurationSelector
-        selectedDuration="1h"
+        selectedDurationInSeconds="1h"
         onSelectDuration={() => {}}
         durations={[{duration: '1d', displayText: '1 Day'}]}
       />

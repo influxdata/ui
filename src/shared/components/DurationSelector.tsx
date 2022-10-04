@@ -13,6 +13,7 @@ import {
 
 // Utils
 import {areDurationsEqual} from 'src/shared/utils/duration'
+import {ruleToString} from 'src/utils/formatting'
 
 export interface DurationOption {
   duration: string
@@ -20,7 +21,7 @@ export interface DurationOption {
 }
 
 interface Props {
-  selectedDuration: string
+  selectedDurationInSeconds: string
   onSelectDuration: (duration: string) => any
   durations: DurationOption[]
   disabled?: boolean
@@ -38,7 +39,7 @@ const pluralizeUnitIfNeeded = (unit: string, value: number) => {
 }
 
 const DurationSelector: FunctionComponent<Props> = ({
-  selectedDuration,
+  selectedDurationInSeconds,
   onSelectDuration,
   durations,
   disabled = false,
@@ -46,12 +47,17 @@ const DurationSelector: FunctionComponent<Props> = ({
   let resolvedDurations = durations
   let selected: DurationOption = durations.find(
     d =>
-      selectedDuration === d.duration ||
-      areDurationsEqual(selectedDuration, d.duration)
+      selectedDurationInSeconds === d.duration ||
+      areDurationsEqual(selectedDurationInSeconds, d.duration)
   )
 
+  const selectedDurationMagnitude =
+    Number(selectedDurationInSeconds.slice(0, -1)) || 0
   if (!selected) {
-    selected = {duration: selectedDuration, displayText: selectedDuration}
+    selected = {
+      duration: selectedDurationInSeconds,
+      displayText: ruleToString(selectedDurationMagnitude),
+    }
     resolvedDurations = [selected, ...resolvedDurations]
   }
 
@@ -123,7 +129,9 @@ const DurationSelector: FunctionComponent<Props> = ({
                 value={duration}
                 testID={`duration-selector--${duration}`}
                 selected={
-                  duration === selectedDuration && !customDurationClicked
+                  (selectedDurationInSeconds === duration ||
+                    areDurationsEqual(selectedDurationInSeconds, duration)) &&
+                  !customDurationClicked
                 }
                 onClick={duration => {
                   onSelectDuration(duration)

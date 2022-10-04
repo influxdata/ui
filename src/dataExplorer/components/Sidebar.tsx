@@ -1,10 +1,16 @@
 import React, {FC, useContext, useCallback} from 'react'
-import {DapperScrollbars} from '@influxdata/clockface'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import Functions from 'src/shared/components/GroupedFunctionsList'
 import DynamicFunctions from 'src/shared/components/DynamicFunctionsList'
+import {ResultOptions} from 'src/dataExplorer/components/ResultOptions'
+import {
+  DapperScrollbars,
+  FlexBox,
+  FlexDirection,
+  JustifyContent,
+} from '@influxdata/clockface'
 
 // Contexts
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
@@ -16,6 +22,7 @@ import {FluxFunction, FluxToolbarFunction} from 'src/types'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import './Sidebar.scss'
 
@@ -74,13 +81,30 @@ const Sidebar: FC = () => {
   }
 
   const fluxLibrary = (
-    <div className="container-flux-library">
-      <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
-      {browser}
-    </div>
+    <FlexBox.Child>
+      <div className="container-flux-library">
+        <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
+        {browser}
+      </div>
+    </FlexBox.Child>
   )
 
-  return <div className="container-right-side-bar">{fluxLibrary}</div>
+  const resultOptions = isFlagEnabled('resultOptions') ? (
+    <FlexBox.Child>
+      <ResultOptions />
+    </FlexBox.Child>
+  ) : null
+
+  return (
+    <FlexBox
+      direction={FlexDirection.Column}
+      justifyContent={JustifyContent.FlexStart}
+      className="container-right-side-bar"
+    >
+      {resultOptions}
+      {fluxLibrary}
+    </FlexBox>
+  )
 }
 
 export default Sidebar

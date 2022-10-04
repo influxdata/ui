@@ -34,10 +34,10 @@ import {
   MeasurementSchemaSection,
   SchemaUpdateInfo,
 } from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
-import {extractBucketMaxRetentionSeconds} from '../../../cloud/utils/limits'
-import {AppState} from '../../../types'
+import {extractBucketMaxRetentionSeconds} from 'src/cloud/utils/limits'
+import {AppState} from 'src/types'
 import {connect} from 'react-redux'
-import CloudUpgradeButton from '../../../shared/components/CloudUpgradeButton'
+import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 let MeasurementSchemaList = null,
   MeasurementSchemaCreateRequest = null,

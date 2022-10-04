@@ -104,9 +104,9 @@ describe('Script Builder', () => {
         cy.wait(1200).then(() => {
           cy.reload()
           cy.getByTestID('flux-sync--toggle')
+          cy.getByTestID('flux-editor', {timeout: 30000})
         })
       })
-
       cy.get('@org').then(({id}: Organization) => {
         cy.intercept('POST', `/api/v2/query?orgID=${id}`, req => {
           const {extern} = req.body
@@ -126,7 +126,6 @@ describe('Script Builder', () => {
     })
 
     it('will allow querying of different data ranges', () => {
-      cy.getByTestID('flux-editor', {timeout: 30000})
       selectSchema()
       confirmSchemaComposition()
 
@@ -141,6 +140,93 @@ describe('Script Builder', () => {
       cy.getByTestID('dropdown-item-past15m').should('exist').click()
       cy.getByTestID('time-machine-submit-button').should('exist').click()
       cy.wait('@query -15m')
+    })
+
+    describe('data completeness', () => {
+      const runTest = (
+        tableCnt: number,
+        rowCnt: number,
+        truncated: boolean
+      ) => {
+        cy.log('confirm on 1hr')
+        cy.getByTestID('timerange-dropdown').within(() => {
+          cy.getByTestID('dropdown--button').should('exist').click()
+        })
+        cy.getByTestID('dropdown-item-past1h').should('exist').click()
+        cy.getByTestID('time-machine-submit-button').should('exist').click()
+
+        cy.log('run query')
+        cy.getByTestID('time-machine-submit-button').should('exist').click()
+        cy.wait('@query -1h')
+        cy.wait(1000)
+
+        cy.log('table metadata displayed to user is correct')
+        cy.getByTestID('query-stat--counts').contains(`${tableCnt} tables`)
+        if (truncated) {
+          cy.getByTestID('query-stat--counts').should('contain', 'Truncated')
+        } else {
+          cy.getByTestID('query-stat--counts')
+            .should('not.contain', 'Truncated')
+            .contains(`${rowCnt} rows`)
+        }
+
+        cy.log('csv download contains complete dataset')
+        // FIXME TODO
+      }
+
+      it('will return the complete dataset for smaller payloads', () => {
+        cy.log('select smaller dataset')
+        selectSchema()
+        confirmSchemaComposition()
+
+        runTest(30, 30, false)
+      })
+
+      describe('for larger payloads', () => {
+        beforeEach(() => {
+          const writeData: string[] = []
+          for (let i = 0; i < 500; i++) {
+            writeData.push(
+              `ndbc3,air_temp_degc=70_degrees station_id_${i}=${i}`
+            )
+            writeData.push(
+              `ndbc4,air_temp_degc=70_degrees station_id_${i}=${i}`
+            )
+            writeData.push(
+              `ndbc5,air_temp_degc=70_degrees station_id_${i}=${i}`
+            )
+            writeData.push(`ndbc6,air_temp_degc=70_degrees station_id=${i}`)
+            writeData.push(`ndbc7,air_temp_degc=70_degrees station_id=${i}`)
+          }
+          cy.writeData(writeData, 'defbuck2')
+          cy.setFeatureFlags({
+            newDataExplorer: true,
+            schemaComposition: true,
+            dataExplorerCsvLimit: 10000 as any,
+          }).then(() => {
+            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+            cy.wait(1200)
+          })
+        })
+
+        it('will return a truncated dataset rows', () => {
+          cy.log('select larger dataset')
+          cy.log('select bucket')
+          cy.getByTestID('bucket-selector--dropdown-button').click()
+          cy.getByTestID('bucket-selector--search-bar').type('defbuck2')
+          cy.getByTestID(`bucket-selector--dropdown--defbuck2`).click()
+          cy.getByTestID('bucket-selector--dropdown-button').should(
+            'contain',
+            'defbuck2'
+          )
+          cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck2")`, {
+            timeout: 30000,
+          })
+
+          runTest(3 * 500 + 2, 5 * 500, true)
+        })
+      })
     })
   })
 
@@ -309,6 +395,7 @@ describe('Script Builder', () => {
         cy.wait(1200).then(() => {
           cy.reload()
           cy.getByTestID('flux-sync--toggle')
+          cy.getByTestID('flux-editor', {timeout: 30000})
         })
       })
     })
@@ -348,7 +435,6 @@ describe('Script Builder', () => {
       describe('conditions for divergence:', () => {
         it('diverges when typing in composition block', () => {
           cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-          cy.getByTestID('flux-editor', {timeout: 30000})
           selectSchema()
           confirmSchemaComposition()
 
@@ -370,7 +456,6 @@ describe('Script Builder', () => {
         describe('using hotkeys:', () => {
           const runTest = (hotKeyCombo: string) => {
             cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-            cy.getByTestID('flux-editor', {timeout: 30000})
             selectSchema()
             confirmSchemaComposition()
 
@@ -438,10 +523,9 @@ describe('Script Builder', () => {
       })
 
       it('should clear the editor text and schema browser, with a new script', () => {
-        cy.getByTestID('flux-editor', {timeout: 30000})
-
         cy.log('modify schema browser')
         selectSchema()
+        confirmSchemaComposition()
 
         cy.log('editor text contains the composition')
         cy.getByTestID('flux-editor').contains(
@@ -453,7 +537,9 @@ describe('Script Builder', () => {
         cy.getByTestID('overlay--container')
           .should('be.visible')
           .within(() => {
-            cy.getByTestID('flux-query-builder--no-save').click()
+            cy.getByTestID('flux-query-builder--no-save')
+              .should('be.visible')
+              .click()
           })
 
         cy.log('editor text is now empty')
@@ -469,7 +555,7 @@ describe('Script Builder', () => {
 
       it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {
         cy.log('start with empty editor text')
-        cy.getByTestID('flux-editor', {timeout: 30000}).within(() => {
+        cy.getByTestID('flux-editor').within(() => {
           cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
         })
 

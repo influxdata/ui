@@ -37,9 +37,9 @@ const QueryStat: FC = () => {
   }
 
   return (
-    <div className="query-stat">
+    <div className="query-stat" data-testid="query-stat--counts">
       <span className="query-stat--bold">{`${
-        result.tableCnt || 0
+        result?.tableCnt || 0
       } tables`}</span>
       <span className="query-stat--bold">{rowCounter}</span>
     </div>

@@ -10,10 +10,7 @@ const tests: [Duration, string][] = [
     {days: 8, hours: 12, minutes: 4, seconds: 36},
     '8 days 12 hours 4 minutes 36 seconds',
   ],
-  [
-    {days: 12, hours: 3, minutes: 23, seconds: 0},
-    '12 days 3 hours 23 minutes',
-  ],
+  [{days: 12, hours: 3, minutes: 23, seconds: 0}, '12 days 3 hours 23 minutes'],
 ]
 
 const durationToSeconds = ({days, hours, minutes, seconds}: Duration) =>

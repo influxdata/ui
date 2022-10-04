@@ -82,7 +82,7 @@ const Sidebar: FC = () => {
   }
 
   const resultOptions = isFlagEnabled('resultOptions') ? (
-    <FlexBox.Child>
+    <FlexBox.Child className="result-options--flex-child">
       <ResultOptions />
     </FlexBox.Child>
   ) : null

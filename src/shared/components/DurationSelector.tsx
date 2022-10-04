@@ -12,7 +12,11 @@ import {
 } from '@influxdata/clockface'
 
 // Utils
-import {areDurationsEqual} from 'src/shared/utils/duration'
+import {
+  areDurationsEqual,
+  durationToMilliseconds,
+  parseDuration,
+} from 'src/shared/utils/duration'
 import {ruleToString} from 'src/utils/formatting'
 
 export interface DurationOption {
@@ -21,7 +25,7 @@ export interface DurationOption {
 }
 
 interface Props {
-  selectedDurationInSeconds: string
+  selectedDuration: string
   onSelectDuration: (duration: string) => any
   durations: DurationOption[]
   disabled?: boolean
@@ -39,8 +43,12 @@ const pluralizeUnitIfNeeded = (unit: string, value: number) => {
   return unit
 }
 
+const durationToSeconds = (duration: string): number => {
+  const seconds = durationToMilliseconds(parseDuration(duration)) / 1000
+  return seconds
+}
 const DurationSelector: FunctionComponent<Props> = ({
-  selectedDurationInSeconds,
+  selectedDuration,
   onSelectDuration,
   durations,
   disabled = false,
@@ -49,16 +57,14 @@ const DurationSelector: FunctionComponent<Props> = ({
   let resolvedDurations = durations
   let selected: DurationOption = durations.find(
     d =>
-      selectedDurationInSeconds === d.duration ||
-      areDurationsEqual(selectedDurationInSeconds, d.duration)
+      selectedDuration === d.duration ||
+      areDurationsEqual(selectedDuration, d.duration)
   )
 
-  const selectedDurationMagnitude =
-    Number(selectedDurationInSeconds.slice(0, -1)) || 0
   if (!selected) {
     selected = {
-      duration: selectedDurationInSeconds,
-      displayText: ruleToString(selectedDurationMagnitude),
+      duration: selectedDuration,
+      displayText: ruleToString(durationToSeconds(selectedDuration)),
     }
     resolvedDurations = [selected, ...resolvedDurations]
   }
@@ -131,8 +137,8 @@ const DurationSelector: FunctionComponent<Props> = ({
                 value={duration}
                 testID={`duration-selector--${duration}`}
                 selected={
-                  (selectedDurationInSeconds === duration ||
-                    areDurationsEqual(selectedDurationInSeconds, duration)) &&
+                  (selectedDuration === duration ||
+                    areDurationsEqual(selectedDuration, duration)) &&
                   !customDurationClicked
                 }
                 onClick={duration => {

@@ -174,7 +174,7 @@ const CreateBucketOverlay: FC<Props> = ({onCreate, onCancel}) => {
           </SelectGroup>
           {retentionType === 'expire' && (
             <DurationSelector
-              selectedDurationInSeconds={`${retention[0].everySeconds}s`}
+              selectedDuration={`${retention[0].everySeconds}s`}
               onSelectDuration={setRetentionDuration}
               durations={DURATION_OPTIONS}
             />

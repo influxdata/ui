@@ -90,7 +90,7 @@ class Retention extends PureComponent<Props> {
         </SelectGroup>
         {type === 'expire' && (
           <DurationSelector
-            selectedDurationInSeconds={`${retentionSeconds}s`}
+            selectedDuration={`${retentionSeconds}s`}
             onSelectDuration={this.handleSelectDuration}
             durations={this.durations}
             status={status}

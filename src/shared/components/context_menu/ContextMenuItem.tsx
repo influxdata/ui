@@ -12,7 +12,7 @@ interface Props {
   onCollapseMenu?: () => void
 }
 
-class ContextMenuItem extends Component<Props> {
+export class ContextMenuItem extends Component<Props> {
   public static defaultProps = {
     description: '',
     testID: 'context-menu-item',
@@ -59,5 +59,3 @@ class ContextMenuItem extends Component<Props> {
     }
   }
 }
-
-export default ContextMenuItem

@@ -3,30 +3,29 @@ import React from 'react'
 import {screen} from '@testing-library/react'
 
 // Components
-import Row from './Row'
+import {Rows} from 'src/shared/components/MultipleRows'
 
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
     confirmText: '',
-    item: {},
     onDeleteTag: jest.fn(),
-    onSetConfigArrayValue: jest.fn(),
     fieldName: '',
+    tags: [],
+    onSetConfigArrayValue: jest.fn(),
     telegrafPluginName: 'cpu',
-    index: 0,
     ...override,
   }
 
-  renderWithReduxAndRouter(<Row {...props} />)
+  renderWithReduxAndRouter(<Rows {...props} />)
 }
 
-describe('Onboarding.Components.ConfigureStep.Streaming.ArrayFormElement', () => {
+describe('Clockface.Components.MultipleRows', () => {
   it('renders', async () => {
     const fieldName = 'yo'
     setup({fieldName})
-    const elm = await screen.findByTestId('index-list')
+    const elm = await screen.findByTestId('multiple-rows')
     expect(elm).toBeVisible()
   })
 })

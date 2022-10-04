@@ -1,11 +1,11 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC} from 'react'
 
 interface Props {
   children: any
 }
 
-const WizardFullScreen: SFC<Props> = (props: Props) => {
+export const WizardFullScreen: FC<Props> = (props: Props) => {
   return (
     <>
       <div className="wizard--full-screen">
@@ -25,5 +25,3 @@ const WizardFullScreen: SFC<Props> = (props: Props) => {
     </>
   )
 }
-
-export default WizardFullScreen

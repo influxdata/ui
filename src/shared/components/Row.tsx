@@ -29,7 +29,7 @@ interface RowProps {
 }
 
 @ErrorHandling
-class Row extends PureComponent<RowProps> {
+export class Row extends PureComponent<RowProps> {
   public static defaultProps: Partial<RowProps> = {
     confirmText: 'Delete',
   }
@@ -77,5 +77,3 @@ class Row extends PureComponent<RowProps> {
     onChange(index, value)
   }
 }
-
-export default Row

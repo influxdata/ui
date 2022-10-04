@@ -3,8 +3,8 @@ import React, {PureComponent} from 'react'
 import classnames from 'classnames'
 
 // Components
-import ContextMenu from 'src/clockface/components/context_menu/ContextMenu'
-import ContextMenuItem from 'src/clockface/components/context_menu/ContextMenuItem'
+import {ContextMenu} from 'src/shared/components/context_menu/ContextMenu'
+import {ContextMenuItem} from 'src/shared/components/context_menu/ContextMenuItem'
 
 // Types
 import {Alignment} from '@influxdata/clockface'
@@ -22,7 +22,7 @@ interface State {
 }
 
 @ErrorHandling
-class Context extends PureComponent<Props, State> {
+export class Context extends PureComponent<Props, State> {
   public static defaultProps = {
     align: Alignment.Right,
   }
@@ -75,5 +75,3 @@ class Context extends PureComponent<Props, State> {
     })
   }
 }
-
-export default Context

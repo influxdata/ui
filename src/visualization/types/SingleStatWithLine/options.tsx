@@ -1,5 +1,5 @@
+// Libraries
 import React, {FC, useCallback} from 'react'
-
 import {
   Input,
   InputType,
@@ -19,12 +19,7 @@ import {
   InputLabel,
 } from '@influxdata/clockface'
 
-import AutoDomainInput from 'src/shared/components/AutoDomainInput'
-import {
-  AXES_SCALE_OPTIONS,
-  MIN_DECIMAL_PLACES,
-  MAX_DECIMAL_PLACES,
-} from 'src/visualization/constants'
+// Utils
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import {
   FORMAT_OPTIONS,
@@ -35,10 +30,10 @@ import {
   defaultYColumn,
   parseYBounds,
 } from 'src/shared/utils/vis'
-import {
-  THRESHOLD_TYPE_TEXT,
-  THRESHOLD_TYPE_BG,
-} from 'src/shared/constants/thresholds'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Components
+import {AdaptiveZoomToggle} from 'src/visualization/components/internal/AdaptiveZoomOption'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
@@ -46,6 +41,18 @@ import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
 import {LinePlusSingleStatProperties, Color} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
+
+// Constants
+import AutoDomainInput from 'src/shared/components/AutoDomainInput'
+import {
+  AXES_SCALE_OPTIONS,
+  MIN_DECIMAL_PLACES,
+  MAX_DECIMAL_PLACES,
+} from 'src/visualization/constants'
+import {
+  THRESHOLD_TYPE_TEXT,
+  THRESHOLD_TYPE_BG,
+} from 'src/shared/constants/thresholds'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 
@@ -200,6 +207,20 @@ const SingleStatWithLineOptions: FC<Props> = ({
               }
             />
           </Form.Element>
+          {isFlagEnabled('zoomRequery') && (
+            <AdaptiveZoomToggle
+              adaptiveZoomHide={properties.adaptiveZoomHide}
+              type={properties.type}
+              update={update}
+            />
+          )}
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
+          <h5 className="view-options--header">Options</h5>
           <Form.Element label="Time Format">
             <SelectDropdown
               options={FORMAT_OPTIONS.map(option => option.text)}
@@ -209,13 +230,6 @@ const SingleStatWithLineOptions: FC<Props> = ({
               }}
             />
           </Form.Element>
-        </Grid.Column>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthMD={Columns.Six}
-          widthLG={Columns.Four}
-        >
-          <h5 className="view-options--header">Options</h5>
           <Form.Element label="Line Colors">
             <ColorSchemeDropdown
               value={properties.colors.filter(c => c.type === 'scale')}

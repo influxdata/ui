@@ -1,10 +1,11 @@
 // Libraries
-import React, {FC, useMemo, useContext} from 'react'
+import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 import {
   Config,
   DomainLabel,
   LINE_COUNT,
   Plot,
+  SINGLE_STAT_SVG_NO_USER_SELECT,
   STACKED_LINE_CUMULATIVE,
   SingleStatLayerConfig,
   createGroupIDColumn,
@@ -12,21 +13,27 @@ import {
   getLatestValues,
   lineTransform,
 } from '@influxdata/giraffe'
+import {RemoteDataState} from '@influxdata/clockface'
 
 // Redux
 import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 // Component
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
+import ViewLoadingSpinner from 'src/visualization/components/internal/ViewLoadingSpinner'
+
+// Context
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {useLegendOpacity} from 'src/visualization/utils/useLegendOpacity'
 import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
+import {useZoomQuery} from 'src/visualization/utils/useZoomQuery'
 import {
-  useVisXDomainSettings,
-  useVisYDomainSettings,
+  useZoomRequeryXDomainSettings,
+  useZoomRequeryYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
 import {
   geomToInterpolation,
@@ -36,16 +43,16 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
-import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
-import {AppSettingContext} from 'src/shared/contexts/app'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
+import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 
 // Types
-import {LinePlusSingleStatProperties} from 'src/types'
+import {LinePlusSingleStatProperties, InternalFromFluxResult} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Annotations
@@ -63,7 +70,19 @@ const SingleStatWithLine: FC<Props> = ({
   timeRange,
   annotations,
   cellID,
+  transmitWindowPeriod,
 }) => {
+  const [resultState, setResultState] = useState(result)
+  const [preZoomResult, setPreZoomResult] =
+    useState<InternalFromFluxResult>(null)
+  const [requeryStatus, setRequeryStatus] = useState<RemoteDataState>(
+    RemoteDataState.NotStarted
+  )
+
+  useEffect(() => {
+    setResultState(result)
+  }, [result])
+
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
@@ -116,12 +135,6 @@ const SingleStatWithLine: FC<Props> = ({
     [result]
   )
 
-  const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
-    storedXDomain,
-    result.table.getColumn(xColumn, 'number'),
-    timeRange
-  )
-
   const memoizedYColumnData = useMemo(() => {
     if (properties.position === 'stacked') {
       const {lineData} = lineTransform(
@@ -145,9 +158,37 @@ const SingleStatWithLine: FC<Props> = ({
     properties.position,
   ])
 
-  const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
-    storedYDomain,
-    memoizedYColumnData
+  const zoomQuery = useZoomQuery(properties)
+
+  const [xDomain, onSetXDomain, onResetXDomain] = useZoomRequeryXDomainSettings(
+    {
+      adaptiveZoomHide: properties.adaptiveZoomHide,
+      data: resultState.table.getColumn(xColumn, 'number'),
+      parsedResult: resultState,
+      preZoomResult,
+      query: zoomQuery,
+      setPreZoomResult,
+      setRequeryStatus,
+      setResult: setResultState,
+      storedDomain: storedXDomain,
+      timeRange,
+      transmitWindowPeriod,
+    }
+  )
+
+  const [yDomain, onSetYDomain, onResetYDomain] = useZoomRequeryYDomainSettings(
+    {
+      adaptiveZoomHide: properties.adaptiveZoomHide,
+      data: memoizedYColumnData,
+      parsedResult: resultState,
+      preZoomResult,
+      query: zoomQuery,
+      setPreZoomResult,
+      setRequeryStatus,
+      setResult: setResultState,
+      storedDomain: storedYDomain,
+      transmitWindowPeriod,
+    }
   )
 
   const legendColumns = filterNoisyColumns(
@@ -250,6 +291,7 @@ const SingleStatWithLine: FC<Props> = ({
     svgTextAttributes: {
       'data-testid': 'single-stat--text',
     },
+    svgStyle: SINGLE_STAT_SVG_NO_USER_SELECT,
   }
 
   config.layers.push(statLayer)
@@ -270,7 +312,14 @@ const SingleStatWithLine: FC<Props> = ({
     'singleStatWline'
   )
 
-  return <Plot config={config} />
+  return (
+    <>
+      {isFlagEnabled('zoomRequery') && (
+        <ViewLoadingSpinner loading={requeryStatus} />
+      )}
+      <Plot config={config} />
+    </>
+  )
 }
 
 export default SingleStatWithLine

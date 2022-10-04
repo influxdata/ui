@@ -110,7 +110,7 @@ const DurationSelector: FunctionComponent<Props> = ({
             scrollToSelected={false}
           >
             <Dropdown.Item
-              value={'Custom'}
+              value="Custom"
               selected={customDurationClicked}
               onClick={() => {
                 setCustomDurationClicked(true)
@@ -174,7 +174,7 @@ const DurationSelector: FunctionComponent<Props> = ({
             status={
               status === ComponentStatus.Valid
                 ? ComponentStatus.Default
-                : status // No need to show checkmark when input is valid.
+                : status
             }
           />
         </FlexBox>

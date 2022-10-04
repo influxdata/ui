@@ -720,9 +720,9 @@ describe('NotificationRules', () => {
       })
 
       // Switch to UTC
-      cy.getByTestID('dropdown--button').should('have.text', 'Local').click()
+      cy.getByTestID('timezone-dropdown').should('have.text', 'Local').click()
       cy.getByTitle('UTC').click()
-      cy.getByTestID('dropdown--button').should('have.text', 'UTC')
+      cy.getByTestID('timezone-dropdown').should('have.text', 'UTC')
 
       // compare UTC values
       cy.getByTestID('event-row--field time').then(timestamps => {
@@ -733,9 +733,9 @@ describe('NotificationRules', () => {
       })
 
       // Switch back to Local
-      cy.getByTestID('dropdown--button').click()
+      cy.getByTestID('timezone-dropdown').click()
       cy.getByTitle('Local').click()
-      cy.getByTestID('dropdown--button').should('have.text', 'Local')
+      cy.getByTestID('timezone-dropdown').should('have.text', 'Local')
 
       cy.getByTestID('event-row--field time').then(timestamps => {
         const CurrHours = timestamps

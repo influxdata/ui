@@ -47,18 +47,12 @@ const ResultOptions: FC = () => {
   const [aggregateActive, setAggregateActive] = useState(false)
 
   const fieldsAsColumns = (
-    <FlexBox>
-      <SlideToggle
-        active={fieldsAsColumnsActive}
-        onChange={() => setFieldsAsColumnsActive(current => !current)}
-      />
-      <InputLabel>
-        <SelectorTitle
-          label="Fields as Columns"
-          tooltipContents={TOOLTIP_CONTENT.FIELDS_AS_COLUMNS}
-        />
-      </InputLabel>
-    </FlexBox>
+    <ToggleWithLabelToolTip
+      label="Fields as Columns"
+      active={fieldsAsColumnsActive}
+      onChange={() => setFieldsAsColumnsActive(current => !current)}
+      tooltipContents={TOOLTIP_CONTENT.FIELDS_AS_COLUMNS}
+    />
   )
 
   const group = (

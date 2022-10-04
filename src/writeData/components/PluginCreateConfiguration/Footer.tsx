@@ -24,6 +24,7 @@ import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginTo
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import {selectCurrentAccountType} from 'src/identity/selectors'
 
 // Utils
 import {CLOUD} from 'src/shared/constants'
@@ -162,7 +163,8 @@ const mstp = (state: AppState) => {
       steps: {orgID},
     },
   } = state
-  const accountType = state?.identity?.currentIdentity?.account?.type ?? 'free'
+  const accountType = selectCurrentAccountType(state)
+
   let telegrafConfig = null
   if (telegrafConfigID) {
     const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)

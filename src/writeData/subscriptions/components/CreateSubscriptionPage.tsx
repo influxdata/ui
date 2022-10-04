@@ -39,7 +39,7 @@ import {
 // Selectors
 import {getAll} from 'src/resources/selectors'
 import {shouldShowUpgradeButton} from 'src/me/selectors'
-import {selectCurrentIdentity} from 'src/identity/selectors'
+import {selectCurrentAccountType} from 'src/identity/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -60,7 +60,7 @@ const CreateSubscriptionPage: FC = () => {
   const {formContent, saveForm, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
-  const identity = useSelector(selectCurrentIdentity)
+  const accountType = useSelector(selectCurrentAccountType)
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
@@ -91,10 +91,10 @@ const CreateSubscriptionPage: FC = () => {
   useEffect(() => {
     event(
       'visited creation page',
-      {userAccountType: identity.account.type || 'unknown'},
+      {userAccountType: accountType},
       {feature: 'subscriptions'}
     )
-  }, [identity.account.type])
+  }, [accountType])
 
   const handleClick = (step: number) => {
     event(

@@ -26,7 +26,20 @@ interface Props {
   disabled?: boolean
 }
 
-const durationUnits = ['d', 'mo', 'y']
+const durationUnits = ['day', 'month', 'year']
+
+// returns plural version of the unit if value is greater than 1
+// 1 day
+// 1 month
+// 12 days
+// 30 years
+const pluralizeUnitIfNeeded = (unit: string, value: number) => {
+  console.log(unit, value)
+  if (value > 1) {
+    return `${unit}s`
+  }
+  return unit
+}
 
 const DurationSelector: FunctionComponent<Props> = ({
   selectedDuration,
@@ -46,11 +59,15 @@ const DurationSelector: FunctionComponent<Props> = ({
     resolvedDurations = [selected, ...resolvedDurations]
   }
 
+  const defaultCustomDurationValue = 2
+  const defaultCustomDurationUnit = durationUnits[0] // day(s)
   const [customDurationClicked, setCustomDurationClicked] = useState(false)
   const [customDurationUnit, setCustomDurationUnit] = useState<string>(
-    durationUnits[0]
+    defaultCustomDurationUnit
   )
-  const [customDurationValue, setCustomDurationValue] = useState<number>(2)
+  const [customDurationValue, setCustomDurationValue] = useState<number>(
+    defaultCustomDurationValue
+  )
 
   useEffect(() => {
     if (customDurationClicked) {
@@ -128,7 +145,9 @@ const DurationSelector: FunctionComponent<Props> = ({
           stretchToFitWidth={true}
           style={{marginTop: '8px'}}
         >
-          <p style={{marginLeft: '12px'}}>Enter your custom retention duration:</p>
+          <p style={{marginLeft: '12px'}}>
+            Enter your custom retention duration:
+          </p>
           <TimeInput
             style={{width: '150px'}}
             onChange={durationValue => {
@@ -138,7 +157,7 @@ const DurationSelector: FunctionComponent<Props> = ({
             onSelectUnit={unit => {
               setCustomDurationUnit(unit)
             }}
-            selectedUnit={customDurationUnit}
+            selectedUnit={pluralizeUnitIfNeeded(customDurationUnit, customDurationValue)}
             units={durationUnits}
           />
         </FlexBox>

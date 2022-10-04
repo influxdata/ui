@@ -16,7 +16,21 @@
   left: 0;
   right: 0;
 
-  .container-flux-library {
+  .result-options {
+    padding-top: $cf-space-2xs;
+
+    .result-options--header {
+      background-color: transparent;
+      min-height: 0;
+      padding: 0;
+    }
+  }
+
+  .result-options .cf-accordion--icon {
+    color: gray;
+  }
+
+  .flux-library-original {
     height: calc(
       100% - 30px
     ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474

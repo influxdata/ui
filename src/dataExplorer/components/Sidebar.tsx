@@ -6,6 +6,7 @@ import Functions from 'src/shared/components/GroupedFunctionsList'
 import DynamicFunctions from 'src/shared/components/DynamicFunctionsList'
 import {ResultOptions} from 'src/dataExplorer/components/ResultOptions'
 import {
+  Accordion,
   DapperScrollbars,
   FlexBox,
   FlexDirection,
@@ -45,12 +46,6 @@ const Sidebar: FC = () => {
     [injectFunction]
   )
 
-  let browser = <Functions onSelect={inject} />
-
-  if (CLOUD) {
-    browser = <DynamicFunctions onSelect={inject} />
-  }
-
   if (!visible && !menu) {
     return null
   }
@@ -80,9 +75,24 @@ const Sidebar: FC = () => {
     )
   }
 
-  const fluxLibrary = (
+  let browser = <Functions onSelect={inject} />
+
+  if (CLOUD) {
+    browser = <DynamicFunctions onSelect={inject} />
+  }
+
+  const fluxLibrary = isFlagEnabled('resultOptions') ? (
     <FlexBox.Child>
-      <div className="container-flux-library">
+      <Accordion className="flux-library" expanded={true}>
+        <Accordion.AccordionHeader>
+          <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
+        </Accordion.AccordionHeader>
+        {browser}
+      </Accordion>
+    </FlexBox.Child>
+  ) : (
+    <FlexBox.Child>
+      <div className="flux-library-original">
         <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
         {browser}
       </div>

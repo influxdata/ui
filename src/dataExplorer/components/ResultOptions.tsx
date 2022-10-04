@@ -15,19 +15,20 @@ import './Sidebar.scss'
 const TOOLTIP_CONTENT = {
   FIELDS_AS_COLUMNS: `test`,
   GROUP: `test`,
+  AGGREGATE: `test`,
 }
 
 interface ToggleWithLabelToolTipProps {
+  label: string
   active: boolean
   onChange: () => void
-  label: string
   tooltipContents?: string | JSX.Element
 }
 
 const ToggleWithLabelToolTip: FC<ToggleWithLabelToolTipProps> = ({
+  label,
   active,
   onChange,
-  label,
   tooltipContents = '',
 }) => {
   return (
@@ -43,6 +44,7 @@ const ToggleWithLabelToolTip: FC<ToggleWithLabelToolTipProps> = ({
 const ResultOptions: FC = () => {
   const [fieldsAsColumnsActive, setFieldsAsColumnsActive] = useState(false)
   const [groupActive, setGroupActive] = useState(false)
+  const [aggregateActive, setAggregateActive] = useState(false)
 
   const fieldsAsColumns = (
     <FlexBox>
@@ -61,10 +63,19 @@ const ResultOptions: FC = () => {
 
   const group = (
     <ToggleWithLabelToolTip
+      label="Group"
       active={groupActive}
       onChange={() => setGroupActive(current => !current)}
-      label="Group"
       tooltipContents={TOOLTIP_CONTENT.GROUP}
+    />
+  )
+
+  const aggregate = (
+    <ToggleWithLabelToolTip
+      label="Aggregate"
+      active={aggregateActive}
+      onChange={() => setAggregateActive(current => !current)}
+      tooltipContents={TOOLTIP_CONTENT.AGGREGATE}
     />
   )
 
@@ -75,6 +86,7 @@ const ResultOptions: FC = () => {
       </Accordion.AccordionHeader>
       {fieldsAsColumns}
       {group}
+      {aggregate}
     </Accordion>
   )
 }

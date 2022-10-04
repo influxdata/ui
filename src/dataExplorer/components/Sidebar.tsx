@@ -46,6 +46,12 @@ const Sidebar: FC = () => {
     [injectFunction]
   )
 
+  let browser = <Functions onSelect={inject} />
+
+  if (CLOUD) {
+    browser = <DynamicFunctions onSelect={inject} />
+  }
+
   if (!visible && !menu) {
     return null
   }
@@ -80,12 +86,6 @@ const Sidebar: FC = () => {
       <ResultOptions />
     </FlexBox.Child>
   ) : null
-
-  let browser = <Functions onSelect={inject} />
-
-  if (CLOUD) {
-    browser = <DynamicFunctions onSelect={inject} />
-  }
 
   const fluxLibrary = isFlagEnabled('resultOptions') ? (
     <FlexBox.Child>

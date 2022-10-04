@@ -1,8 +1,8 @@
 export interface Duration {
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
+  day: number
+  hour: number
+  minute: number
+  second: number
 }
 
 const secondsToDuration = (seconds: number): Duration => {
@@ -14,10 +14,10 @@ const secondsToDuration = (seconds: number): Duration => {
   hours = hours % 24
 
   return {
-    days,
-    hours,
-    minutes,
-    seconds,
+    day: days,
+    hour: hours,
+    minute: minutes,
+    second: seconds,
   }
 }
 
@@ -28,12 +28,14 @@ export const ruleToString = (seconds: number): string => {
       return acc
     }
 
-    return `${acc} ${v} ${k}`
+    const plural = v > 1 ? `${k}s` : k
+    return `${acc} ${v} ${plural}`
   }, '')
 
   if (!rpString) {
     return 'forever'
   }
 
-  return rpString
+  console.log(rpString.trim())
+  return rpString.trim()
 }

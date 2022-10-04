@@ -228,7 +228,7 @@ class BucketOverlayForm extends PureComponent<Props> {
             }
             value={retentionSeconds.toString()}
             validationFunc={this.handleRetentionSecondsValidation}
-            className={'retention--dropdown'}
+            className="retention--dropdown"
           >
             {status => (
               <Retention

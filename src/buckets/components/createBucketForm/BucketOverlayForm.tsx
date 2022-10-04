@@ -38,6 +38,7 @@ import {extractBucketMaxRetentionSeconds} from 'src/cloud/utils/limits'
 import {AppState} from 'src/types'
 import {connect} from 'react-redux'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import './BucketOverlayFormStyles.scss'
 
 let MeasurementSchemaList = null,
   MeasurementSchemaCreateRequest = null,
@@ -227,6 +228,7 @@ class BucketOverlayForm extends PureComponent<Props> {
             }
             value={retentionSeconds.toString()}
             validationFunc={this.handleRetentionSecondsValidation}
+            className={'retention--dropdown'}
           >
             {status => (
               <Retention

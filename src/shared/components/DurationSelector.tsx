@@ -86,7 +86,7 @@ const DurationSelector: FunctionComponent<Props> = ({
     return `${durationValue}${durationUnit}`
   }
   const timeInputComponentStyle = {width: '160px'}
-  const customDurationContainerStyle = {marginTop: '8px'}
+  const customDurationContainerStyle = {marginTop: '16px'}
   return (
     <FlexBox direction={FlexDirection.Column}>
       <Dropdown

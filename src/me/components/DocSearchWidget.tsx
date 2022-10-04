@@ -15,6 +15,11 @@ import 'src/me/components/DocSearchWidget.scss'
 
 const supportLinks = [
   {
+    link: 'https://university.influxdata.com',
+    title: 'InfluxDB University',
+    eventName: 'InfluxDBUniversity',
+  },
+  {
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/query-data/get-started/`,
     title: 'Get Started with Flux',
     eventName: 'QueryData',

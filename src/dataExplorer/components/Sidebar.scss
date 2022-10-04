@@ -1,5 +1,15 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
+@mixin transparent-accordion {
+  background-color: transparent;
+  min-height: 0;
+  padding: 0;
+
+  .cf-accordion--icon {
+    color: grey;
+  }
+}
+
 .container-right-side-bar {
   margin-left: $cf-space-xs;
   padding-top: $cf-space-2xs;
@@ -31,8 +41,15 @@
   }
 }
 
-.result-options--flex-child {
+.result-options--container {
   width: 100%;
+}
+
+.result-options {
+  .result-options--header {
+    @include transparent-accordion;
+    padding: $cf-space-2xs 0;
+  }
 
   .toggle-with-label-tooltip {
     padding-top: $cf-space-s;
@@ -50,16 +67,13 @@
   }
 }
 
-.result-options--header,
-.flux-library--header {
-  background-color: transparent;
-  min-height: 0;
-  padding: 0;
-}
-
-.result-options .cf-accordion--icon,
-.flux-library .cf-accordion--icon {
-  color: gray;
+.flux-library {
+  .flux-library--header {
+    @include transparent-accordion;
+    .selector-title {
+      padding: $cf-space-2xs 0;
+    }
+  }
 }
 
 .flux-builder-sidebar--buttons {

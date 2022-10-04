@@ -1,10 +1,12 @@
 import {Organization} from '../../../src/types'
+const CLOUD = Cypress.env('dexUrl') === 'OSS' ? false : true
 
 describe('navigation', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
     cy.visit('/')
+    cy.getByTestID('home-page--header').should('be.visible')
   })
 
   it('can navigate to each page from left nav', () => {
@@ -46,13 +48,14 @@ describe('navigation', () => {
     cy.getByTestID('not-found').should('exist')
     cy.visit('/')
 
-    cy.getByTestID('user-nav').should('exist')
-    cy.get<Organization>('@org').then(({id}: Organization) => {
-      cy.visit(`/orgs/${id}/not-a-route`)
-      cy.getByTestID('not-found').should('exist')
-    })
+    if (!CLOUD) {
+      cy.getByTestID('user-nav').should('exist')
+      cy.get<Organization>('@org').then(({id}: Organization) => {
+        cy.visit(`/orgs/${id}/not-a-route`)
+        cy.getByTestID('not-found').should('exist')
+      })
 
-    /** \
+      /** \
 
      OSS Only Feature
      // User Nav -- Members
@@ -63,14 +66,14 @@ describe('navigation', () => {
 
      \**/
 
-    // User Nav -- Settings
-    cy.getByTestID('user-nav').click()
-    cy.getByTestID('user-nav-item-about').click()
-    cy.getByTestID('about-page--header').should('exist')
-    const url = Cypress.env('dexUrl') === 'OSS' ? 'about' : 'org-settings'
-    cy.url().should('contain', url)
+      // User Nav -- Settings
+      cy.getByTestID('user-nav').click()
+      cy.getByTestID('user-nav-item-about').click()
+      cy.getByTestID('about-page--header').should('exist')
+      const url = Cypress.env('dexUrl') === 'OSS' ? 'about' : 'org-settings'
+      cy.url().should('contain', url)
 
-    /** \
+      /** \
 
      OSS Only Feature
      // User Nav -- Switch Orgs
@@ -81,7 +84,7 @@ describe('navigation', () => {
 
      \**/
 
-    /** \
+      /** \
 
      OSS Only Feature
      // User Nav -- Create Orgs
@@ -92,7 +95,7 @@ describe('navigation', () => {
 
      \**/
 
-    /** \
+      /** \
 
      OSS Only Feature
      // User Nav -- Log Out
@@ -101,6 +104,7 @@ describe('navigation', () => {
      cy.getByTestID('signin-page').should('exist')
 
      \**/
+    }
   })
 
   it('can navigate in tabs of data page', () => {
@@ -133,17 +137,19 @@ describe('navigation', () => {
 
   const exploreTabs = (tabs: string[]) => {
     tabs.forEach(tab => {
-      cy.getByTestID(`${tab}--tab`).click()
+      cy.getByTestID(`${tab}--tab`).should('be.visible').click()
       cy.url().should('contain', tab)
     })
   }
 
   it('can navigate in tabs of settings page', () => {
+    cy.getByTestID('nav-item-settings').should('be.visible')
     cy.clickNavBarItem('nav-item-settings')
     exploreTabs(['templates', 'labels', 'variables'])
   })
 
   it('can navigate in tabs of collapsed alerts page', () => {
+    cy.getByTestID('nav-item-alerting').should('be.visible')
     cy.clickNavBarItem('nav-item-alerting')
     ;['checks', 'endpoints', 'rules'].forEach(tab => {
       cy.getByTestID(`alerting-tab--${tab}`).click()

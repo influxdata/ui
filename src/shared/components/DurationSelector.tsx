@@ -42,6 +42,9 @@ const pluralizeUnitIfNeeded = (unit: string, value: number) => {
   }
   return unit
 }
+const timeInputComponentStyle = {width: '175px'}
+const customDurationContainerStyle = {marginTop: '16px'}
+let customRetentionLabelStyle = {marginLeft: '12px'}
 
 const durationToSeconds = (duration: string): number => {
   const seconds = durationToMilliseconds(parseDuration(duration)) / 1000
@@ -93,8 +96,6 @@ const DurationSelector: FunctionComponent<Props> = ({
   ) => {
     return `${durationValue}${durationUnit}`
   }
-  const timeInputComponentStyle = {width: '175px'}
-  const customDurationContainerStyle = {marginTop: '16px'}
   return (
     <FlexBox direction={FlexDirection.Column}>
       <Dropdown
@@ -159,7 +160,7 @@ const DurationSelector: FunctionComponent<Props> = ({
           stretchToFitWidth={true}
           style={customDurationContainerStyle}
         >
-          <p style={{marginLeft: '12px'}}>
+          <p style={customRetentionLabelStyle}>
             Enter your custom retention duration:
           </p>
           <TimeInput

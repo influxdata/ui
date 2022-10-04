@@ -29,8 +29,8 @@ export const ruleToString = (seconds: number): string => {
     }
 
     // removes the trailing plural 's' if magnitude is singular
-    const k_singular_or_plural = v <= 1 ? k.slice(0, -1) : k
-    return `${acc} ${v} ${k_singular_or_plural}`
+    const kSingularOrPlural = v <= 1 ? k.slice(0, -1) : k
+    return `${acc} ${v} ${kSingularOrPlural}`
   }, '')
 
   if (!rpString) {

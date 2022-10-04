@@ -155,7 +155,10 @@ const DurationSelector: FunctionComponent<Props> = ({
             onSelectUnit={unit => {
               setCustomDurationUnit(unit)
             }}
-            selectedUnit={pluralizeUnitIfNeeded(customDurationUnit, customDurationValue)}
+            selectedUnit={pluralizeUnitIfNeeded(
+              customDurationUnit,
+              customDurationValue
+            )}
             units={durationUnits}
           />
         </FlexBox>

@@ -157,7 +157,8 @@ const DurationSelector: FunctionComponent<Props> = ({
           <TimeInput
             style={timeInputComponentStyle}
             onChange={durationValue => {
-              setCustomDurationValue(Number(durationValue))
+              const zeroNotAllowed = Number(durationValue) || 1
+              setCustomDurationValue(zeroNotAllowed)
             }}
             value={customDurationValue.toString()}
             onSelectUnit={unit => {

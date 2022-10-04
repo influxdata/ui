@@ -29,12 +29,8 @@ interface Props {
 const durationUnits = ['day', 'month', 'year']
 
 // returns plural version of the unit if value is greater than 1
-// 1 day
-// 1 month
-// 12 days
-// 30 years
+// Examples: 1 day, 1 month, 12 days, 30 years
 const pluralizeUnitIfNeeded = (unit: string, value: number) => {
-  console.log(unit, value)
   if (value > 1) {
     return `${unit}s`
   }
@@ -83,6 +79,8 @@ const DurationSelector: FunctionComponent<Props> = ({
   ) => {
     return `${durationValue}${durationUnit}`
   }
+  const timeInputComponentStyle = {width: '160px'}
+  const customDurationContainerStyle = {marginTop: '8px'}
   return (
     <FlexBox direction={FlexDirection.Column}>
       <Dropdown
@@ -143,13 +141,13 @@ const DurationSelector: FunctionComponent<Props> = ({
           direction={FlexDirection.Row}
           justifyContent={JustifyContent.SpaceBetween}
           stretchToFitWidth={true}
-          style={{marginTop: '8px'}}
+          style={customDurationContainerStyle}
         >
           <p style={{marginLeft: '12px'}}>
             Enter your custom retention duration:
           </p>
           <TimeInput
-            style={{width: '150px'}}
+            style={timeInputComponentStyle}
             onChange={durationValue => {
               setCustomDurationValue(Number(durationValue))
             }}

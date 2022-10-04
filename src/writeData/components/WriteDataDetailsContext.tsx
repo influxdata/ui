@@ -40,7 +40,7 @@ export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
 }
 export const WriteDataDetailsContext =
   createContext<WriteDataDetailsContextType>(DEFAULT_WRITE_DATA_DETAILS_CONTEXT)
-const WriteDataDetailsProvider: FC = ({children}) => {
+export const WriteDataDetailsProvider: FC = ({children}) => {
   const {variables, update} = useContext(TemplateContext)
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
@@ -130,4 +130,3 @@ const WriteDataDetailsProvider: FC = ({children}) => {
     </WriteDataDetailsContext.Provider>
   )
 }
-export default WriteDataDetailsProvider

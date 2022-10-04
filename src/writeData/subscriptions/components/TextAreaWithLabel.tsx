@@ -26,7 +26,7 @@ type Props = OwnProps & TextAreaProps
 
 const DEFAULT_VALIDATION_FUNC: ValidationFunction = _ => ''
 
-const TextAreaWithLabel: FC<Props> = ({
+export const TextAreaWithLabel: FC<Props> = ({
   label,
   description,
   value,
@@ -82,5 +82,3 @@ const TextAreaWithLabel: FC<Props> = ({
     </FlexBox>
   )
 }
-
-export default TextAreaWithLabel

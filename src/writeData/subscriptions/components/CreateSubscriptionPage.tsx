@@ -9,9 +9,9 @@ import {
   SubwayNav,
   TechnoSpinner,
 } from '@influxdata/clockface'
-import BrokerForm from 'src/writeData/subscriptions/components/BrokerForm'
-import ParsingForm from 'src/writeData/subscriptions/components/ParsingForm'
-import SubscriptionForm from 'src/writeData/subscriptions/components/SubscriptionForm'
+import {BrokerForm} from 'src/writeData/subscriptions/components/BrokerForm'
+import {ParsingForm} from 'src/writeData/subscriptions/components/ParsingForm'
+import {SubscriptionForm} from 'src/writeData/subscriptions/components/SubscriptionForm'
 import GetResources from 'src/resources/components/GetResources'
 
 // Graphics
@@ -23,7 +23,7 @@ import {
   SubscriptionCreateProvider,
 } from 'src/writeData/subscriptions/context/subscription.create'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
-import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsProvider} from 'src/writeData/components/WriteDataDetailsContext'
 import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Types

@@ -31,7 +31,7 @@ interface Props {
   width?: string
 }
 
-const ValidationInputWithTooltip: FC<Props> = ({
+export const ValidationInputWithTooltip: FC<Props> = ({
   label,
   value,
   required,
@@ -84,5 +84,3 @@ const ValidationInputWithTooltip: FC<Props> = ({
     </Form.ValidationElement>
   </div>
 )
-
-export default ValidationInputWithTooltip

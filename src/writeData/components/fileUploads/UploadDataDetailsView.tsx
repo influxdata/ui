@@ -6,7 +6,7 @@ import {Panel, InfluxColors, ComponentSize} from '@influxdata/clockface'
 // Components
 import {Page} from '@influxdata/clockface'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsProvider as WriteDataDetailsContextProvider} from 'src/writeData/components/WriteDataDetailsContext'
 import CodeSnippet, {
   Provider as TemplateProvider,
 } from 'src/shared/components/CodeSnippet'

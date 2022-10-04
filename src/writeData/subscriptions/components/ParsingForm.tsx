@@ -11,7 +11,7 @@ import {
   FontWeight,
 } from '@influxdata/clockface'
 import ParsingDetailsEdit from 'src/writeData/subscriptions/components/ParsingDetailsEdit'
-import StringParsingForm from 'src/writeData/subscriptions/components/StringParsingForm'
+import {StringParsingForm} from 'src/writeData/subscriptions/components/StringParsingForm'
 import JsonParsingForm from 'src/writeData/subscriptions/components/JsonParsingForm'
 import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtocolForm'
 
@@ -28,7 +28,7 @@ interface Props {
   showUpgradeButton: boolean
 }
 
-const ParsingForm: FC<Props> = ({
+export const ParsingForm: FC<Props> = ({
   formContent,
   updateForm,
   onFocus,
@@ -90,4 +90,3 @@ const ParsingForm: FC<Props> = ({
       </Form>
     </div>
   )
-export default ParsingForm

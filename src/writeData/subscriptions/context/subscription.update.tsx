@@ -198,5 +198,3 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
     </SubscriptionUpdateContext.Provider>
   )
 }
-
-export default SubscriptionUpdateProvider

@@ -22,7 +22,7 @@ import {InstallDependencies} from 'src/homepageExperience/components/steps/ardui
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {PrepareIde} from 'src/homepageExperience/components/steps/arduino/PrepareIde'
 import {WriteData} from 'src/homepageExperience/components/steps/arduino/WriteData'
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsProvider as WriteDataDetailsContextProvider} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'

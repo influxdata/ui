@@ -10,7 +10,7 @@ import {
   SubwayNav,
 } from '@influxdata/clockface'
 
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsProvider as WriteDataDetailsContextProvider} from 'src/writeData/components/WriteDataDetailsContext'
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'

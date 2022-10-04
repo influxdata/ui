@@ -20,7 +20,7 @@ import {
   FlexDirection,
   ComponentStatus,
 } from '@influxdata/clockface'
-import UserInput from 'src/writeData/subscriptions/components/UserInput'
+import {UserInput} from 'src/writeData/subscriptions/components/UserInput'
 import CertificateInput from 'src/writeData/subscriptions/components/CertificateInput'
 
 // Utils
@@ -48,7 +48,7 @@ interface Props {
   edit: boolean
 }
 
-const BrokerFormContent: FC<Props> = ({
+export const BrokerFormContent: FC<Props> = ({
   updateForm,
   formContent,
   className,
@@ -403,5 +403,3 @@ const BrokerFormContent: FC<Props> = ({
     </Grid>
   )
 }
-
-export default BrokerFormContent

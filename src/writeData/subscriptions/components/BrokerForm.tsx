@@ -19,8 +19,8 @@ import {
   FlexDirection,
   JustifyContent,
 } from '@influxdata/clockface'
-import BrokerFormContent from 'src/writeData/subscriptions/components/BrokerFormContent'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {BrokerFormContent} from 'src/writeData/subscriptions/components/BrokerFormContent'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -52,7 +52,7 @@ interface Props {
   showUpgradeButton: boolean
 }
 
-const BrokerForm: FC<Props> = ({
+export const BrokerForm: FC<Props> = ({
   formContent,
   updateForm,
   saveForm,
@@ -201,4 +201,3 @@ const BrokerForm: FC<Props> = ({
     )
   )
 }
-export default BrokerForm

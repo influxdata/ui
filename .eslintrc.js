@@ -7,7 +7,7 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ['@typescript-eslint', 'react', 'jest'],
+  plugins: ['@typescript-eslint', 'react', 'jest', 'import'],
   env: {
     browser: true,
     es6: true,
@@ -77,6 +77,7 @@ module.exports = {
     '@typescript-eslint/restrict-template-expressions': 'off',
     curly: ['error', 'all'],
     'getter-return': 'off',
+    'import/no-default-export': ['error'],
     'jest/no-focused-tests': ['error'],
     'jest/no-large-snapshots': ['error', {maxSize: 0}], // no shapshots please
     'no-case-declarations': 'off',

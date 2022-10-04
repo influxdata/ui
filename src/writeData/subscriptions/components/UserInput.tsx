@@ -23,7 +23,12 @@ interface Props {
   edit: boolean
 }
 
-const UserInput: FC<Props> = ({formContent, updateForm, className, edit}) => (
+export const UserInput: FC<Props> = ({
+  formContent,
+  updateForm,
+  className,
+  edit,
+}) => (
   <FlexBox
     alignItems={AlignItems.FlexStart}
     direction={FlexDirection.Row}
@@ -73,4 +78,3 @@ const UserInput: FC<Props> = ({formContent, updateForm, className, edit}) => (
     </Form.Element>
   </FlexBox>
 )
-export default UserInput

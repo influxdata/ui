@@ -26,7 +26,7 @@ interface Props {
   showUpgradeButton: boolean
 }
 
-const SubscriptionForm: FC<Props> = ({
+export const SubscriptionForm: FC<Props> = ({
   formContent,
   updateForm,
   buckets,
@@ -74,5 +74,3 @@ const SubscriptionForm: FC<Props> = ({
     )
   )
 }
-
-export default SubscriptionForm

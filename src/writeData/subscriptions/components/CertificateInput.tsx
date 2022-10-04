@@ -22,7 +22,7 @@ import {
   ClickOutside,
 } from '@influxdata/clockface'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import TextAreaWithLabel from 'src/writeData/subscriptions/components/TextAreaWithLabel'
+import {TextAreaWithLabel} from 'src/writeData/subscriptions/components/TextAreaWithLabel'
 import {event} from 'src/cloud/utils/reporting'
 import {useDispatch} from 'react-redux'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'

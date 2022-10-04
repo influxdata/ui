@@ -19,7 +19,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 
-const EmptySubscriptionState: FC = () => {
+export const EmptySubscriptionState: FC = () => {
   const org = useSelector(getOrg)
   const history = useHistory()
   return (
@@ -42,5 +42,3 @@ const EmptySubscriptionState: FC = () => {
     </EmptyState>
   )
 }
-
-export default EmptySubscriptionState

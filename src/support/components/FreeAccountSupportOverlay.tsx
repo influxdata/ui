@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {Icon, IconFont, List, Overlay} from '@influxdata/clockface'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'

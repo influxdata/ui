@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 // Components
 import {Grid, Form, Overlay} from '@influxdata/clockface'
 import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtocolForm'
-import StringParsingForm from 'src/writeData/subscriptions/components/StringParsingForm'
+import {StringParsingForm} from 'src/writeData/subscriptions/components/StringParsingForm'
 import JsonParsingForm from 'src/writeData/subscriptions/components/JsonParsingForm'
 import ParsingDetailsEdit from 'src/writeData/subscriptions/components/ParsingDetailsEdit'
 import ParsingDetailsReadOnly from 'src/writeData/subscriptions/components/ParsingDetailsReadOnly'

@@ -41,7 +41,7 @@ const getBucketsFromAST = (ast: File) => {
   ).map(node => node?.arguments[0]?.properties[0]?.value.value)
 }
 
-const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {
+export const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {
   const def = CLIENT_DEFINITIONS[contentID]
   const {changeBucket, changeQuery} = useContext(WriteDataDetailsContext)
 
@@ -69,5 +69,3 @@ const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {
 
   return null
 }
-
-export default ClientCodeQueryHelper

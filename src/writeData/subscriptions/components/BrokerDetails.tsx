@@ -21,8 +21,8 @@ import {
   ComponentSize,
   JustifyContent,
 } from '@influxdata/clockface'
-import StatusHeader from 'src/writeData/subscriptions/components/StatusHeader'
-import BrokerFormContent from 'src/writeData/subscriptions/components/BrokerFormContent'
+import {StatusHeader} from 'src/writeData/subscriptions/components/StatusHeader'
+import {BrokerFormContent} from 'src/writeData/subscriptions/components/BrokerFormContent'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'

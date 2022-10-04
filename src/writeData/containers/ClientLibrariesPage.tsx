@@ -18,7 +18,7 @@ import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import GetResources from 'src/resources/components/GetResources'
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsProvider as WriteDataDetailsContextProvider} from 'src/writeData/components/WriteDataDetailsContext'
 import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
 import CodeSnippet, {
   Provider as TemplateProvider,
@@ -26,7 +26,7 @@ import CodeSnippet, {
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
-import ClientCodeQueryHelper from '../components/ClientCodeQueryHelper'
+import {ClientCodeQueryHelper} from '../components/ClientCodeQueryHelper'
 
 const codeRenderer: any = (props: any): any => (
   <CodeSnippet text={props.value} label={props.language} />

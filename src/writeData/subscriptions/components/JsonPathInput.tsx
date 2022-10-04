@@ -33,7 +33,7 @@ import {
   handleAvroValidation,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
-import ValidationInputWithTooltip from './ValidationInputWithTooltip'
+import {ValidationInputWithTooltip} from './ValidationInputWithTooltip'
 
 interface Props {
   name: string

@@ -28,7 +28,7 @@ interface Props {
   setStatus: (any) => void
 }
 
-const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => {
+export const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => {
   const {bulletins: allBulletins} = useContext(SubscriptionListContext)
   const bulletins = allBulletins?.[currentSubscription.id] ?? []
   const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(false)
@@ -127,5 +127,3 @@ const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => {
     </>
   )
 }
-
-export default StatusHeader

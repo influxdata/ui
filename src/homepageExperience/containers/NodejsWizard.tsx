@@ -18,7 +18,7 @@ import {WriteData} from 'src/homepageExperience/components/steps/nodejs/WriteDat
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteAggregateQuery'
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsProvider as WriteDataDetailsContextProvider} from 'src/writeData/components/WriteDataDetailsContext'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
 
 import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'

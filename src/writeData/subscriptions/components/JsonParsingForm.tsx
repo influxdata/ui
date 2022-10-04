@@ -37,7 +37,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
-import ValidationInputWithTooltip from './ValidationInputWithTooltip'
+import {ValidationInputWithTooltip} from './ValidationInputWithTooltip'
 
 interface Props {
   formContent: Subscription

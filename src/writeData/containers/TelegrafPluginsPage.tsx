@@ -7,7 +7,7 @@ import {Page} from '@influxdata/clockface'
 import CodeSnippet, {
   Provider as TemplateProvider,
 } from 'src/shared/components/CodeSnippet'
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsProvider as WriteDataDetailsContextProvider} from 'src/writeData/components/WriteDataDetailsContext'
 import {AddPluginToConfigurationCTA} from 'src/writeData/components/AddPluginToConfiguration'
 import GetResources from 'src/resources/components/GetResources'
 

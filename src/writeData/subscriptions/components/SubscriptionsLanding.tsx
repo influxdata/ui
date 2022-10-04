@@ -14,8 +14,8 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
-import EmptySubscriptionState from 'src/writeData/subscriptions/components/EmptySubscriptionState'
-import SubscriptionsList from 'src/writeData/subscriptions/components/SubscriptionsList'
+import {EmptySubscriptionState} from 'src/writeData/subscriptions/components/EmptySubscriptionState'
+import {SubscriptionsList} from 'src/writeData/subscriptions/components/SubscriptionsList'
 import LoadDataHeader from 'src/settings/components/LoadDataHeader'
 import {SortTypes} from 'src/shared/utils/sort'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'

@@ -24,7 +24,7 @@ import {
   REGEX_TOOLTIP,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
-import ValidationInputWithTooltip from './ValidationInputWithTooltip'
+import {ValidationInputWithTooltip} from './ValidationInputWithTooltip'
 
 interface Props {
   name: string
@@ -34,7 +34,7 @@ interface Props {
   edit: boolean
 }
 
-const StringPatternInput: FC<Props> = ({
+export const StringPatternInput: FC<Props> = ({
   name,
   formContent,
   updateForm,
@@ -192,5 +192,3 @@ const StringPatternInput: FC<Props> = ({
     </div>
   )
 }
-
-export default StringPatternInput

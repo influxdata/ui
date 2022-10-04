@@ -18,7 +18,7 @@ import {
   InputLabel,
   SlideToggle,
 } from '@influxdata/clockface'
-import StringPatternInput from 'src/writeData/subscriptions/components/StringPatternInput'
+import {StringPatternInput} from 'src/writeData/subscriptions/components/StringPatternInput'
 
 // Types
 import {Subscription, PrecisionTypes} from 'src/types/subscriptions'
@@ -34,7 +34,7 @@ import {
 import 'src/writeData/subscriptions/components/StringParsingForm.scss'
 import {event} from 'src/cloud/utils/reporting'
 import {ComponentStatus} from '@influxdata/clockface'
-import ValidationInputWithTooltip from './ValidationInputWithTooltip'
+import {ValidationInputWithTooltip} from './ValidationInputWithTooltip'
 
 interface Props {
   formContent: Subscription
@@ -42,7 +42,11 @@ interface Props {
   edit: boolean
 }
 
-const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
+export const StringParsingForm: FC<Props> = ({
+  formContent,
+  updateForm,
+  edit,
+}) => {
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
   const [useStaticMeasurement, setUseStaticMeasurement] = useState(
@@ -370,5 +374,3 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
     </div>
   )
 }
-
-export default StringParsingForm

@@ -21,7 +21,7 @@ import {
   SubscriptionUpdateContext,
 } from 'src/writeData/subscriptions/context/subscription.update'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
-import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsProvider} from 'src/writeData/components/WriteDataDetailsContext'
 import {
   SubscriptionListContext,
   SubscriptionListProvider,

@@ -9,8 +9,8 @@ import ClientCodeCopyPage from 'src/writeData/components/ClientCodeCopyPage'
 import {CLIENT_DEFINITIONS} from 'src/writeData'
 
 // Utils
-import ClientCodeQueryHelper from 'src/writeData/components/ClientCodeQueryHelper'
-import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {ClientCodeQueryHelper} from 'src/writeData/components/ClientCodeQueryHelper'
+import {WriteDataDetailsProvider} from 'src/writeData/components/WriteDataDetailsContext'
 import {Provider as TemplateProvider} from 'src/shared/components/CodeSnippet'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {PopupContext} from 'src/flows/context/popup'

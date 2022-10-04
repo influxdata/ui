@@ -153,5 +153,3 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
     </SubscriptionCreateContext.Provider>
   )
 }
-
-export default SubscriptionCreateProvider

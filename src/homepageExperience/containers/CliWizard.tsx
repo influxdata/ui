@@ -21,7 +21,7 @@ import {InitializeClient} from 'src/homepageExperience/components/steps/cli/Init
 import {InstallDependencies} from 'src/homepageExperience/components/steps/cli/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {WriteData} from 'src/homepageExperience/components/steps/cli/WriteData'
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsProvider as WriteDataDetailsContextProvider} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'

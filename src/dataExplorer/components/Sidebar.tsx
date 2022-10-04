@@ -73,12 +73,14 @@ const Sidebar: FC = () => {
     )
   }
 
-  return (
-    <div className="container-right-side-bar">
+  const fluxLibrary = (
+    <div className="container-flux-library">
       <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
       {browser}
     </div>
   )
+
+  return <div className="container-right-side-bar">{fluxLibrary}</div>
 }
 
 export default Sidebar

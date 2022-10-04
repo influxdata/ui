@@ -16,12 +16,18 @@
   left: 0;
   right: 0;
 
-  .flux-toolbar {
-    flex-direction: column;
-  }
+  .container-flux-library {
+    height: calc(
+      100% - 30px
+    ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
 
-  .flux-toolbar--search {
-    padding: 0;
+    .flux-toolbar {
+      flex-direction: column;
+    }
+
+    .flux-toolbar--search {
+      padding: 0;
+    }
   }
 }
 

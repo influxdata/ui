@@ -10,23 +10,33 @@ import {
 // Types
 import {CancelBox} from 'src/types/promises'
 import {File, Query, CancellationError} from 'src/types'
+import {getFlagValue} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {getFlagValue} from 'src/shared/utils/featureFlag'
-import {extractTableId} from 'src/shared/utils/fluxData'
+import {trimPartialLines} from 'src/shared/utils/fluxData'
 
 export type RunQueryResult =
   | RunQuerySuccessResult
   | RunQueryLimitResult
   | RunQueryErrorResult
 
-export interface RunQuerySuccessResult {
-  type: 'SUCCESS'
+export interface FluxResult {
   csv: string
   didTruncate: boolean
   bytesRead: number
+}
+
+export interface FluxResultMetadata {
   tableCnt: number
+}
+
+export interface FluxResultComplete extends FluxResult {
+  metadata: FluxResultMetadata
+}
+
+export interface RunQuerySuccessResult extends FluxResult {
+  type: 'SUCCESS'
 }
 
 export interface RunQueryLimitResult {
@@ -104,30 +114,26 @@ const processSuccessResponse = async (
 
   let csv = ''
   let bytesRead = 0
-  let maxTableIdx = null
   let didTruncate = false
+
   let read = await reader.read()
 
   const BYTE_LIMIT =
     getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
 
-  let text
   while (!read.done) {
-    text = decoder.decode(read.value)
-    const tableNum = extractTableId(text)
-    if (Number.isInteger(tableNum)) {
-      maxTableIdx = Math.max(maxTableIdx, tableNum)
-    }
+    const text = decoder.decode(read.value)
 
     bytesRead += read.value.byteLength
-    if (didTruncate) {
-    } else if (bytesRead > BYTE_LIMIT) {
+
+    if (bytesRead > BYTE_LIMIT) {
       csv += trimPartialLines(text)
       didTruncate = true
+      break
     } else {
       csv += text
+      read = await reader.read()
     }
-    read = await reader.read()
   }
 
   reader.cancel()
@@ -137,7 +143,6 @@ const processSuccessResponse = async (
     csv,
     bytesRead,
     didTruncate,
-    tableCnt: maxTableIdx != null ? maxTableIdx + 1 : 0,
   }
 }
 
@@ -175,34 +180,4 @@ const processErrorResponse = async (
   } catch {
     return {type: 'UNKNOWN_ERROR', message: 'Failed to execute Flux query'}
   }
-}
-
-/*
-  Given an arbitrary text chunk of a Flux CSV, trim partial lines off of the end
-  of the text.
-
-  For example, given the following partial Flux response,
-
-            r,baz,3
-      foo,bar,baz,2
-      foo,bar,b
-
-  we want to trim the last incomplete line, so that the result is
-
-            r,baz,3
-      foo,bar,baz,2
-
-*/
-const trimPartialLines = (partialResp: string): string => {
-  let i = partialResp.length - 1
-
-  while (partialResp[i] !== '\n') {
-    if (i <= 0) {
-      return partialResp
-    }
-
-    i -= 1
-  }
-
-  return partialResp.slice(0, i + 1)
 }

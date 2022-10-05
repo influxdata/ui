@@ -2,6 +2,7 @@ import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {AutoRefresh, TimeRange, Variable, Secret} from 'src/types'
 import {QueryScope} from 'src/shared/contexts/query'
+import {FluxResultMetadata} from 'src/shared/apis/query'
 
 export interface ControlAction {
   title: string | (() => string)
@@ -87,8 +88,8 @@ export interface FluxResult {
   source: string // the query that was used to generate the flux
   parsed: InternalFromFluxResult // the parsed result
   error?: string // any error that might have happend while fetching
-  tableCnt: number
   truncated: boolean
+  metadata: Promise<FluxResultMetadata>
 }
 
 interface DataLookup<T> {

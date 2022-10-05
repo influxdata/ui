@@ -18,6 +18,7 @@ import {View} from 'src/visualization'
 // Types
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
 import {PipeProp, FluxResult} from 'src/types/flows'
+import {FluxResultMetadata} from 'src/shared/apis/query'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -32,11 +33,29 @@ import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 // Styles
 import './view.scss'
 
+const DEFAULT_METADATA = {
+  tableCnt: 'Calculating...',
+} as unknown as FluxResultMetadata
+
 const QueryStat: FC = () => {
   const {loading, results} = useContext(PipeContext)
   const queryStart = useRef(0)
   const [processTime, setProcessTime] = useState(0)
-  const tableNum = results?.tableCnt || 0
+  const [metadata, setMetadata] = useState(DEFAULT_METADATA)
+
+  useEffect(() => {
+    if (results?.metadata) {
+      results.metadata.then(newMetadata => setMetadata(newMetadata))
+    } else {
+      setMetadata(DEFAULT_METADATA)
+    }
+  }, [results?.metadata])
+
+  useEffect(() => {
+    if (loading == RemoteDataState.Loading) {
+      setMetadata(DEFAULT_METADATA)
+    }
+  }, [loading])
 
   useEffect(() => {
     if (loading === RemoteDataState.Loading) {
@@ -60,7 +79,7 @@ const QueryStat: FC = () => {
   }, [loading])
 
   const queryStat = {
-    tableNum,
+    tableNum: metadata.tableCnt,
     rowNum: results.parsed.table?.length || 0,
     processTime, // ms
   }

@@ -64,7 +64,6 @@ describe('history utils', () => {
           csv,
           bytesRead: 0,
           didTruncate: false,
-          tableCnt: 1,
         }),
         cancel,
       }).promise
@@ -91,7 +90,6 @@ describe('history utils', () => {
           csv,
           bytesRead: 0,
           didTruncate: false,
-          tableCnt: 1,
         }),
         cancel,
       }).promise

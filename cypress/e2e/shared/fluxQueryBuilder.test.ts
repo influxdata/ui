@@ -169,9 +169,6 @@ describe('Script Builder', () => {
             .should('not.contain', 'Truncated')
             .contains(`${rowCnt} rows`)
         }
-
-        cy.log('csv download contains complete dataset')
-        // FIXME TODO
       }
 
       it('will return the complete dataset for smaller payloads', () => {

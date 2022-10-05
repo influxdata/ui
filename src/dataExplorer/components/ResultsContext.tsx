@@ -1,4 +1,11 @@
-import React, {FC, createContext, useState, useRef, useEffect} from 'react'
+import React, {
+  FC,
+  createContext,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+} from 'react'
 
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {FluxResult} from 'src/types/flows'
@@ -58,6 +65,16 @@ export const ResultsProvider: FC = ({children}) => {
     } as SimpleTableViewProperties,
   })
 
+  const handleSetResult = useCallback(
+    (newResult: Partial<FluxResult>) => {
+      setResult({
+        ...result,
+        ...newResult,
+      })
+    },
+    [result]
+  )
+
   useEffect(() => {
     let running = false
     const check = () => {
@@ -99,7 +116,7 @@ export const ResultsProvider: FC = ({children}) => {
         view,
 
         setStatus,
-        setResult,
+        setResult: handleSetResult,
         setView,
       }}
     >

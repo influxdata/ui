@@ -139,7 +139,9 @@ const ResultsPane: FC = () => {
           parsed: null,
           error: e.message,
           truncated: false,
-          tableCnt: 0,
+          metadata: Promise.resolve({
+            tableCnt: 0,
+          }),
         })
         event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)

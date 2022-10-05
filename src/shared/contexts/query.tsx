@@ -10,7 +10,6 @@ import {FluxResult} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
-import {FLUX_RESPONSE_BYTES_LIMIT} from 'src/shared/constants'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {
   RATE_LIMIT_ERROR_STATUS,
@@ -18,18 +17,22 @@ import {
   GATEWAY_TIMEOUT_STATUS,
   REQUEST_TIMEOUT_STATUS,
 } from 'src/cloud/constants'
-import {isFlagEnabled, getFlagValue} from 'src/shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {notify} from 'src/shared/actions/notifications'
 import {resultTooLarge} from 'src/shared/copy/notifications'
 
 // Types
 import {CancellationError, File} from 'src/types'
-import {RunQueryResult} from 'src/shared/apis/query'
+import {
+  RunQueryLimitResult,
+  RunQueryErrorResult,
+  FluxResult as RawFluxResult,
+  FluxResultComplete,
+} from 'src/shared/apis/query'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {PROJECT_NAME} from 'src/flows'
-import {extractTableId} from 'src/shared/utils/fluxData'
+import {fluxDataReader} from 'src/shared/utils/fluxData'
 
 interface CancelMap {
   [key: string]: () => void
@@ -65,35 +68,15 @@ interface RequestBody {
   extern?: any
 }
 
-/*
-  Given an arbitrary text chunk of a Flux CSV, trim partial lines off of the end
-  of the text.
-
-  For example, given the following partial Flux response,
-
-            r,baz,3
-      foo,bar,baz,2
-      foo,bar,b
-
-  we want to trim the last incomplete line, so that the result is
-
-            r,baz,3
-      foo,bar,baz,2
-
-*/
-const trimPartialLines = (partialResp: string): string => {
-  let i = partialResp.length - 1
-
-  while (partialResp[i] !== '\n') {
-    if (i <= 0) {
-      return partialResp
-    }
-
-    i -= 1
-  }
-
-  return partialResp.slice(0, i + 1)
+interface RunQuerySuccessResult {
+  type: 'SUCCESS'
+  data: AsyncGenerator<RawFluxResult, FluxResultComplete>
 }
+
+type RunQueryResult =
+  | RunQuerySuccessResult
+  | RunQueryLimitResult
+  | RunQueryErrorResult
 
 export interface QueryContextType {
   basic: (text: string, override?: QueryScope, options?: QueryOptions) => any
@@ -585,51 +568,10 @@ export const QueryProvider: FC = ({children}) => {
     })
       .then(async (response: Response): Promise<RunQueryResult> => {
         if (response.status === 200) {
-          const reader = response.body.getReader()
-          const decoder = new TextDecoder()
-
-          let csv = ''
-          let bytesRead = 0
-          let maxTableIdx = null
-          let didTruncate = false
-          let read = await reader.read()
-
-          let BYTE_LIMIT =
-            getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
-
-          if (!window.location.pathname.includes(PROJECT_NAME.toLowerCase())) {
-            BYTE_LIMIT =
-              getFlagValue('dataExplorerCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
-          }
-
-          let text
-          while (!read.done) {
-            text = decoder.decode(read.value)
-            const tableNum = extractTableId(text)
-            if (Number.isInteger(tableNum)) {
-              maxTableIdx = Math.max(maxTableIdx, tableNum)
-            }
-
-            bytesRead += read.value.byteLength
-            if (didTruncate) {
-            } else if (bytesRead > BYTE_LIMIT) {
-              csv += trimPartialLines(text)
-              didTruncate = true
-            } else {
-              csv += text
-            }
-            read = await reader.read()
-          }
-
-          reader.cancel()
-
-          return {
+          return Promise.resolve({
             type: 'SUCCESS',
-            csv,
-            bytesRead,
-            didTruncate,
-            tableCnt: maxTableIdx != null ? maxTableIdx + 1 : 0,
-          }
+            data: fluxDataReader(response.body),
+          })
         }
 
         if (response.status === RATE_LIMIT_ERROR_STATUS) {
@@ -712,10 +654,11 @@ export const QueryProvider: FC = ({children}) => {
   ): Promise<FluxResult> => {
     const result = basic(text, override, options)
 
-    const promise: any = result.promise.then(async raw => {
-      if (raw.type !== 'SUCCESS') {
-        throw new Error(raw.message)
+    const promise: any = result.promise.then(async res => {
+      if (res.type !== 'SUCCESS') {
+        throw new Error(res.message)
       }
+      const raw = (await res.data.next()).value as unknown as RawFluxResult
       if (raw.didTruncate) {
         dispatch(notify(resultTooLarge(raw.bytesRead)))
       }
@@ -725,8 +668,12 @@ export const QueryProvider: FC = ({children}) => {
         source: text,
         parsed,
         error: null,
-        tableCnt: raw.tableCnt,
         truncated: raw.didTruncate,
+        metadata: (raw as unknown as FluxResultComplete).metadata
+          ? Promise.resolve((raw as unknown as FluxResultComplete).metadata)
+          : res.data
+              .next()
+              .then(iter => (iter.value as FluxResultComplete).metadata),
       } as FluxResult
     })
 

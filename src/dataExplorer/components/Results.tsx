@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext, useMemo} from 'react'
+import React, {FC, useState, useContext, useMemo, useEffect} from 'react'
 import {
   FlexBox,
   FlexDirection,
@@ -25,10 +25,28 @@ import {FluxResult} from 'src/types/flows'
 
 import './Results.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {FluxResultMetadata} from 'src/shared/apis/query'
+
+const DEFAULT_METADATA = {
+  tableCnt: 'Calculating...',
+} as unknown as FluxResultMetadata
 
 // simplified version migrated from src/flows/pipes/Table/view.tsx
 const QueryStat: FC = () => {
-  const {result} = useContext(ResultsContext)
+  const {result, status} = useContext(ResultsContext)
+  const [metadata, setMetadata] = useState(DEFAULT_METADATA)
+
+  useEffect(() => {
+    if (result?.metadata) {
+      result.metadata.then(newMetadata => setMetadata(newMetadata))
+    }
+  }, [result?.metadata])
+
+  useEffect(() => {
+    if (status == RemoteDataState.Loading) {
+      setMetadata(DEFAULT_METADATA)
+    }
+  }, [status])
 
   let rowCounter = `${result?.parsed?.table?.length || 0} rows`
 
@@ -39,7 +57,7 @@ const QueryStat: FC = () => {
   return (
     <div className="query-stat" data-testid="query-stat--counts">
       <span className="query-stat--bold">{`${
-        result?.tableCnt || 0
+        !result?.metadata ? 0 : metadata.tableCnt
       } tables`}</span>
       <span className="query-stat--bold">{rowCounter}</span>
     </div>

@@ -1,6 +1,6 @@
 import icon from './icon'
 import properties from './properties'
-import options from './options'
+import {SingleStatOptions} from './options'
 import view from './view'
 
 export default register => {
@@ -10,6 +10,6 @@ export default register => {
     graphic: icon,
     component: view,
     initial: properties,
-    options,
+    options: SingleStatOptions,
   })
 }

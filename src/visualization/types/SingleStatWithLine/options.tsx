@@ -1,26 +1,23 @@
 // Libraries
 import React, {FC, useCallback} from 'react'
 import {
-  Input,
-  InputType,
-  Grid,
+  ButtonShape,
   Columns,
+  ComponentSize,
+  ComponentStatus,
+  Dropdown,
+  FlexBox,
   Form,
+  Grid,
+  Input,
+  InputLabel,
   SelectDropdown,
   SelectGroup,
-  Dropdown,
-  ComponentStatus,
-  ButtonShape,
-  AutoInput,
-  AutoInputMode,
-  FlexBox,
-  ComponentSize,
   SlideToggle,
-  InputLabel,
 } from '@influxdata/clockface'
+import {DecimalPlaces} from 'src/visualization/components/internal/DecimalPlaces'
 
 // Utils
-import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
@@ -44,11 +41,7 @@ import {VisualizationOptionProps} from 'src/visualization'
 
 // Constants
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
-import {
-  AXES_SCALE_OPTIONS,
-  MIN_DECIMAL_PLACES,
-  MAX_DECIMAL_PLACES,
-} from 'src/visualization/constants'
+import {AXES_SCALE_OPTIONS} from 'src/visualization/constants'
 import {
   THRESHOLD_TYPE_TEXT,
   THRESHOLD_TYPE_BG,
@@ -60,7 +53,7 @@ interface Props extends VisualizationOptionProps {
   properties: LinePlusSingleStatProperties
 }
 
-const SingleStatWithLineOptions: FC<Props> = ({
+export const SingleStatWithLineOptions: FC<Props> = ({
   properties,
   results,
   update,
@@ -110,21 +103,6 @@ const SingleStatWithLineOptions: FC<Props> = ({
     updateAxis('y', {bounds})
   }
 
-  const setDigits = (digits: number | null) => {
-    update({
-      decimalPlaces: {
-        ...properties.decimalPlaces,
-        digits,
-      },
-    })
-  }
-  const handleChangeMode = (mode: AutoInputMode): void => {
-    if (mode === AutoInputMode.Auto) {
-      setDigits(null)
-    } else {
-      setDigits(2)
-    }
-  }
   const setColors = (colors: Color[]): void => {
     if (colors[0]?.type === 'scale') {
       update({
@@ -460,29 +438,16 @@ const SingleStatWithLineOptions: FC<Props> = ({
           </Grid.Row>
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve} widthMD={Columns.Six}>
-          <Form.Element label="Decimal Places">
-            <AutoInput
-              mode={
-                typeof properties.decimalPlaces.digits === 'number'
-                  ? AutoInputMode.Custom
-                  : AutoInputMode.Auto
-              }
-              onChangeMode={handleChangeMode}
-              inputComponent={
-                <Input
-                  name="decimal-places"
-                  placeholder="Enter a number"
-                  onChange={evt => {
-                    setDigits(convertUserInputToNumOrNaN(evt))
-                  }}
-                  value={properties.decimalPlaces.digits}
-                  min={MIN_DECIMAL_PLACES}
-                  max={MAX_DECIMAL_PLACES}
-                  type={InputType.Number}
-                />
-              }
-            />
-          </Form.Element>
+          <DecimalPlaces
+            isEnforced={properties?.decimalPlaces?.isEnforced === true}
+            digits={
+              typeof properties?.decimalPlaces?.digits === 'number' ||
+              properties?.decimalPlaces?.digits === null
+                ? properties.decimalPlaces.digits
+                : NaN
+            }
+            update={update}
+          />
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve} widthMD={Columns.Six}>
           <Form.Element label="Colorized Thresholds">
@@ -538,5 +503,3 @@ const SingleStatWithLineOptions: FC<Props> = ({
     </Grid>
   )
 }
-
-export default SingleStatWithLineOptions

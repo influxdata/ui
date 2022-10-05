@@ -1,53 +1,53 @@
+// Libraries
 import React, {FC, useMemo, useCallback} from 'react'
 import HTML5Backend from 'react-dnd-html5-backend'
 import {DndProvider} from 'react-dnd'
-
 import {
-  Input,
-  InputType,
-  InputLabel,
-  Grid,
-  Columns,
-  Dropdown,
-  Form,
-  SelectGroup,
-  SelectDropdown,
   ButtonShape,
+  Columns,
+  ComponentSize,
+  Dropdown,
+  EmptyState,
   FlexBox,
   FlexDirection,
-  ComponentSize,
+  Form,
+  Grid,
+  InputLabel,
+  SelectDropdown,
+  SelectGroup,
   SlideToggle,
-  AutoInput,
-  AutoInputMode,
-  EmptyState,
 } from '@influxdata/clockface'
 
+// Components
+import DraggableColumn from 'src/shared/components/draggable_column/DraggableColumn'
+import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
+import {DecimalPlaces} from 'src/visualization/components/internal/DecimalPlaces'
+
+// Utils
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
 } from 'src/visualization/utils/timeFormat'
+import {move} from 'src/shared/utils/move'
+
+// Constants
 import {
   THRESHOLD_TYPE_TEXT,
   THRESHOLD_TYPE_BG,
 } from 'src/shared/constants/thresholds'
-import DraggableColumn from 'src/shared/components/draggable_column/DraggableColumn'
+
+// Types
 import {TableViewProperties, FieldOption} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
-import {
-  MIN_DECIMAL_PLACES,
-  MAX_DECIMAL_PLACES,
-} from 'src/visualization/constants'
-import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
-import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
-import {move} from 'src/shared/utils/move'
 
+// Styles
 import './options.scss'
 
 interface Props extends VisualizationOptionProps {
   properties: TableViewProperties
 }
 
-const TableViewOptions: FC<Props> = ({properties, results, update}) => {
+export const TableViewOptions: FC<Props> = ({properties, results, update}) => {
   const existing = (properties.fieldOptions || []).reduce((prev, curr) => {
     prev[curr.internalName] = curr
     return prev
@@ -64,29 +64,6 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
       }
     })
   const fieldOptions = Object.keys(existing).map(e => existing[e])
-
-  const setDigits = useCallback(
-    (digits: number | null) => {
-      update({
-        decimalPlaces: {
-          ...properties.decimalPlaces,
-          digits,
-        },
-      })
-    },
-    [update, properties.decimalPlaces]
-  )
-
-  const handleChangeMode = useCallback(
-    (mode: AutoInputMode): void => {
-      if (mode === AutoInputMode.Auto) {
-        setDigits(null)
-      } else {
-        setDigits(2)
-      }
-    },
-    [setDigits]
-  )
 
   const updateTableOptions = useCallback(
     tableOptions => {
@@ -244,29 +221,16 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-          <Form.Element label="Decimal Places">
-            <AutoInput
-              mode={
-                typeof properties.decimalPlaces.digits === 'number'
-                  ? AutoInputMode.Custom
-                  : AutoInputMode.Auto
-              }
-              onChangeMode={handleChangeMode}
-              inputComponent={
-                <Input
-                  name="decimal-places"
-                  placeholder="Enter a number"
-                  onChange={evt => {
-                    setDigits(convertUserInputToNumOrNaN(evt))
-                  }}
-                  value={properties.decimalPlaces.digits}
-                  min={MIN_DECIMAL_PLACES}
-                  max={MAX_DECIMAL_PLACES}
-                  type={InputType.Number}
-                />
-              }
-            />
-          </Form.Element>
+          <DecimalPlaces
+            isEnforced={properties?.decimalPlaces?.isEnforced === true}
+            digits={
+              typeof properties?.decimalPlaces?.digits === 'number' ||
+              properties?.decimalPlaces?.digits === null
+                ? properties.decimalPlaces.digits
+                : NaN
+            }
+            update={update}
+          />
           <h5 className="view-options--header">Colorized Thresholds</h5>
           <ThresholdsSettings
             thresholds={properties.colors}
@@ -343,5 +307,3 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
     </Grid>
   )
 }
-
-export default TableViewOptions

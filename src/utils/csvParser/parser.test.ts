@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-loss-of-precision */
 import {expect, use} from 'chai'
 import chaiAsPromised = require('chai-as-promised')
 import {CSVParser} from './parser'

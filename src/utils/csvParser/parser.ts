@@ -164,28 +164,28 @@ export class CSVParser {
   // InitFromConfig
   constructor(config?: Partial<ParserConfig>) {
     this.config = new Config(
-      config?.columnNames!,
-      config?.columnTypes!,
-      config?.comment!,
-      config?.defaultTags!,
-      config?.delimiter!,
-      config?.headerRowCount!,
-      config?.measurementColumn!,
-      config?.metricName!,
-      config?.skipColumns!,
-      config?.skipRows!,
-      config?.tagColumns!,
-      config?.timestampColumn!,
-      config?.timestampFormat!,
-      config?.timezone!,
-      config?.trimSpace!,
-      config?.skipValues!,
-      config?.skipErrors!,
-      config?.metadataRows!,
-      config?.metadataSeparators!,
-      config?.metadataTrimSet!,
-      config?.resetMode!,
-      config?.timeFunc!
+      config?.columnNames,
+      config?.columnTypes,
+      config?.comment,
+      config?.defaultTags,
+      config?.delimiter,
+      config?.headerRowCount,
+      config?.measurementColumn,
+      config?.metricName,
+      config?.skipColumns,
+      config?.skipRows,
+      config?.tagColumns,
+      config?.timestampColumn,
+      config?.timestampFormat,
+      config?.timezone,
+      config?.trimSpace,
+      config?.skipValues,
+      config?.skipErrors,
+      config?.metadataRows,
+      config?.metadataSeparators,
+      config?.metadataTrimSet,
+      config?.resetMode,
+      config?.timeFunc
     )
 
     this.gotInitialColumnNames = !!this.config.columnNames.length
@@ -243,7 +243,9 @@ export class CSVParser {
   }
 
   private initializeMetadataSeparator() {
-    if (this.config.metadataRows <= 0) return
+    if (this.config.metadataRows <= 0) {
+      return
+    }
 
     if (this.config.metadataSeparators.length === 0) {
       throw new Error(
@@ -269,20 +271,20 @@ export class CSVParser {
 
     // Skip first rows
     while (this.remainingSkipRows > 0) {
-      let {text} = this.readLine(localFile)
+      const {text} = this.readLine(localFile)
       localFile = text
       this.remainingSkipRows--
     }
 
     // Parse metadata
     while (this.remainingMetadataRows > 0) {
-      let {line, text} = this.readLine(localFile)
+      const {line, text} = this.readLine(localFile)
       localFile = text
       this.remainingMetadataRows--
 
       const metadata = this.parseMetadataRow(line)
       for (const key in metadata) {
-        this.metadataTags[key] = metadata[key]!
+        this.metadataTags[key] = metadata[key]
       }
     }
 
@@ -307,7 +309,7 @@ export class CSVParser {
       }
 
       // Concatenate header names
-      for (let [i, header] of headers.entries()) {
+      for (const [i, header] of headers.entries()) {
         const name = this.config.trimSpace ? header.trim() : header
         if (this.config.columnNames.length <= i) {
           this.config.columnNames.push(name)
@@ -353,9 +355,9 @@ export class CSVParser {
         continue
       }
       metadata[1] = metadata.slice(1).join(needle)
-      const key = this.trim(metadata[0]!, this.config.metadataTrimSet)
+      const key = this.trim(metadata[0], this.config.metadataTrimSet)
       if (key) {
-        const value = this.trim(metadata[1]!, this.config.metadataTrimSet)
+        const value = this.trim(metadata[1], this.config.metadataTrimSet)
         return {[key]: value}
       }
     }
@@ -374,8 +376,8 @@ export class CSVParser {
     outer: for (const [i, fieldName] of this.config.columnNames.entries()) {
       if (i < slicedRecord.length) {
         const trimmedRecord = this.config.trimSpace
-          ? slicedRecord[i]!.trim()
-          : slicedRecord[i]!
+          ? slicedRecord[i].trim()
+          : slicedRecord[i]
 
         // Don't record fields where the trimmedRecord matches a skip value
         for (const skipValue of this.config.skipValues) {
@@ -448,12 +450,12 @@ export class CSVParser {
 
     // Add metadata tags
     for (const key in this.metadataTags) {
-      tags[key] = this.metadataTags[key]!
+      tags[key] = this.metadataTags[key]
     }
 
     // Add default tags
     for (const key in this.config.defaultTags) {
-      tags[key] = this.config.defaultTags[key]!
+      tags[key] = this.config.defaultTags[key]
     }
 
     // Will default to plugin name
@@ -494,7 +496,7 @@ export class CSVParser {
 
     const lines = text.split('\n')
     const firstLine = lines.shift()
-    return {line: firstLine!, text: lines.join('\n')}
+    return {line: firstLine, text: lines.join('\n')}
   }
 
   private trim(s: string, cutset: string) {

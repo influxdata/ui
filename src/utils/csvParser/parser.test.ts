@@ -33,7 +33,7 @@ class Metric {
 
 describe('CSVParser', () => {
   const date = '2020-04-13T18:09:12.451Z'
-  beforeEach(async () => {
+  beforeEach(() => {
     use(chaiAsPromised)
     set(date) // Any request to Date will return this date
   })
@@ -127,7 +127,7 @@ describe('CSVParser', () => {
 measurement,cpu,time_user,time_system,time_idle,time
 cpu,cpu0,42,42,42,2018-09-13T13:03:28Z`
     const metrics = await parser.parse(file)
-    expect(Object.keys(metrics[0]?.tags!)).deep.equal([
+    expect(Object.keys(metrics[0]?.tags)).deep.equal([
       'Version',
       'File Created',
     ])
@@ -714,21 +714,17 @@ corrupted_line
     )
   })
 
-  it('parses with metadata separators', async () => {
-    let parser
-
+  it('parses with metadata separators', () => {
     expect(() => {
-      parser = new CSVParser({
+      new CSVParser({
         columnNames: ['a', 'b'],
         metadataRows: 0,
         metadataSeparators: [],
       })
     }).to.not.throw(Error)
 
-    let parser2
-
     expect(() => {
-      parser2 = new CSVParser({
+      new CSVParser({
         columnNames: ['a', 'b'],
         metadataRows: 1,
         metadataSeparators: [],
@@ -738,29 +734,29 @@ corrupted_line
       'metadataSeparators required when specifying metadataRows'
     )
 
-    const parser3 = new CSVParser({
+    const parser = new CSVParser({
       columnNames: ['a', 'b'],
       metadataRows: 1,
       metadataSeparators: [',', '=', ',', ':', '=', ':='],
     })
 
-    expect(parser3.metadataSeparatorList.length).to.equal(4)
-    expect(parser3.config.metadataTrimSet.length).to.equal(0)
-    expect(parser3.metadataSeparatorList).deep.equal([':=', ',', '=', ':'])
+    expect(parser.metadataSeparatorList.length).to.equal(4)
+    expect(parser.config.metadataTrimSet.length).to.equal(0)
+    expect(parser.metadataSeparatorList).deep.equal([':=', ',', '=', ':'])
 
-    const parser4 = new CSVParser({
+    const parser2 = new CSVParser({
       columnNames: ['a', 'b'],
       metadataRows: 1,
       metadataSeparators: [',', ':', '=', ':='],
       metadataTrimSet: " #'",
     })
 
-    expect(parser4.metadataSeparatorList.length).to.equal(4)
-    expect(parser4.config.metadataTrimSet.length).to.equal(3)
-    expect(parser4.metadataSeparatorList).deep.equal([':=', ',', ':', '='])
+    expect(parser2.metadataSeparatorList.length).to.equal(4)
+    expect(parser2.config.metadataTrimSet.length).to.equal(3)
+    expect(parser2.metadataSeparatorList).deep.equal([':=', ',', ':', '='])
   })
 
-  it('parses metadata rows', async () => {
+  it('parses metadata rows', () => {
     const parser = new CSVParser({
       columnNames: ['a', 'b'],
       metadataRows: 5,
@@ -803,7 +799,7 @@ corrupted_line
 
     expect(Object.keys(parser2.metadataTags).length).to.equal(0)
 
-    let parseMetadata2 = parser2.parseMetadataRow(
+    const parseMetadata2 = parser2.parseMetadataRow(
       '# this is a not matching string'
     )
     expect(parseMetadata2).to.be.empty
@@ -913,25 +909,25 @@ timestamp,type,name,status
     let rowIndex = 0
     for (; rowIndex < 6; rowIndex++) {
       try {
-        await parser.parseLine(rows[rowIndex]!)
+        await parser.parseLine(rows[rowIndex])
       } catch (error) {
         expect(error).to.be.deep.equal(EOFError)
       }
     }
 
-    let metric = await parser.parseLine(rows[rowIndex]!)
+    let metric = await parser.parseLine(rows[rowIndex])
     rowIndex++
 
-    metric = await parser.parseLine(rows[rowIndex]!)
+    metric = await parser.parseLine(rows[rowIndex])
     expect(expectedFields[0]).to.deep.equal(metric?.fields)
     expect(expectedTags[0]).to.deep.equal(metric?.tags)
     rowIndex++
 
-    metric = await parser.parseLine(rows[rowIndex]!)
+    metric = await parser.parseLine(rows[rowIndex])
     expect(metric).to.be.null
     rowIndex++
 
-    metric = await parser.parseLine(rows[rowIndex]!)
+    metric = await parser.parseLine(rows[rowIndex])
     expect(expectedFields[1]).to.deep.equal(metric?.fields)
     expect(expectedTags[1]).to.deep.equal(metric?.tags)
   })
@@ -965,7 +961,7 @@ timestamp,type,name,status
     expect(metrics?.fields).to.deep.equal(expectedFields[0])
   })
 
-  it('throws an error on CSVs with invalid reset modes', async () => {
+  it('throws an error on CSVs with invalid reset modes', () => {
     expect(
       () =>
         new CSVParser({
@@ -1141,11 +1137,11 @@ timestamp,type,name,status
     // Set default Tags
     parser.setDefaultTags({test: 'tag'})
 
-    const metrics = []
+    const metrics: any = []
 
     for (const [i, line] of testCSV.entries()) {
       try {
-        let metric = await parser.parseLine(line)
+        const metric = await parser.parseLine(line)
         if (metric !== null) {
           metrics.push(metric)
         }
@@ -1385,11 +1381,11 @@ timestamp,category,id,flag
 
     parser.setDefaultTags({test: 'tag'})
 
-    let metrics = []
+    const metrics: any = []
 
     for (const [i, line] of testCSV.entries()) {
       try {
-        let metric = await parser.parseLine(line)
+        const metric = await parser.parseLine(line)
         if (metric !== null) {
           metrics.push(metric)
         }

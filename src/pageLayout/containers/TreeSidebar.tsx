@@ -35,9 +35,9 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Styles
-import './TreeNav.scss'
+import './TreeSidebar.scss'
 
-const TreeSidebar: FC = () => {
+export const TreeSidebar: FC = () => {
   const {presentationMode, navbarMode, setNavbarMode} =
     useContext(AppSettingContext)
   const org = useSelector(getOrg)
@@ -266,5 +266,3 @@ const TreeSidebar: FC = () => {
     </TreeNav>
   )
 }
-
-export default TreeSidebar

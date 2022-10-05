@@ -2,7 +2,7 @@ describe('Operator Page', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.setFeatureFlags({quartzIdentity: true, multiOrg: true}).then(() => {
+        cy.setFeatureFlags({multiOrg: true}).then(() => {
           cy.get('@org').then(() => {
             cy.getByTestID('home-page--header').should('be.visible')
             cy.quartzProvision({

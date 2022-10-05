@@ -1,7 +1,7 @@
 // Libraries
 import produce from 'immer'
 
-import {CurrentIdentity} from '../apis/auth'
+import {CurrentIdentity} from 'src/identity/apis/auth'
 import {RemoteDataState} from 'src/types'
 
 // Actions
@@ -10,7 +10,9 @@ import {
   SET_QUARTZ_IDENTITY,
   SET_QUARTZ_IDENTITY_STATUS,
   SET_CURRENT_BILLING_PROVIDER,
+  SET_CURRENT_BILLING_PROVIDER_STATUS,
   SET_CURRENT_ORG_DETAILS,
+  SET_CURRENT_ORG_DETAILS_STATUS,
   SET_CURRENT_IDENTITY_ACCOUNT_NAME,
 } from 'src/identity/actions/creators'
 
@@ -37,7 +39,11 @@ export const initialState: CurrentIdentity = {
     paygCreditStartDate: '',
     isUpgradeable: false,
   },
-  status: RemoteDataState.NotStarted,
+  loadingStatus: {
+    identityStatus: RemoteDataState.NotStarted,
+    billingStatus: RemoteDataState.NotStarted,
+    orgDetailsStatus: RemoteDataState.NotStarted,
+  },
 }
 
 export default (state = initialState, action: Actions): CurrentIdentity =>
@@ -67,23 +73,33 @@ export default (state = initialState, action: Actions): CurrentIdentity =>
         draftState.user.lastName = user.lastName
         draftState.user.operatorRole = user.operatorRole
         draftState.user.orgCount = user.orgCount
-
-        draftState = action.identity
-        draftState.status = RemoteDataState.Done
         return
       }
+
       case SET_QUARTZ_IDENTITY_STATUS: {
-        draftState.status = action.status
+        draftState.loadingStatus.identityStatus = action.status
         return
       }
       case SET_CURRENT_BILLING_PROVIDER: {
         draftState.account.billingProvider = action.billingProvider
         return
       }
+
+      case SET_CURRENT_BILLING_PROVIDER_STATUS: {
+        draftState.loadingStatus.billingStatus = action.status
+        return
+      }
+
       case SET_CURRENT_ORG_DETAILS: {
         draftState.org = action.org
         return
       }
+
+      case SET_CURRENT_ORG_DETAILS_STATUS: {
+        draftState.loadingStatus.orgDetailsStatus = action.status
+        return
+      }
+
       case SET_CURRENT_IDENTITY_ACCOUNT_NAME: {
         if (draftState.account.id === action.account.id) {
           draftState.account.name = action.account.name

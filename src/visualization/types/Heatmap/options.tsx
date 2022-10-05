@@ -102,6 +102,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
           widthXS={Columns.Twelve}
           widthMD={Columns.Six}
           widthLG={Columns.Four}
+          className="view-options-container"
         >
           <h5 className="view-options--header">Data</h5>
           <Form.Element label="X Column">

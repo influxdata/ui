@@ -6,7 +6,6 @@ const doSetup = cy => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/accounts/settings`)
         cy.setFeatureFlags({
-          quartzIdentity: true,
           multiAccount: true,
           multiOrg: true,
         }).then(() => {

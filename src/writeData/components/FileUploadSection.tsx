@@ -50,7 +50,7 @@ const FileUploadSection = () => {
         weight={FontWeight.Regular}
         style={{marginBottom: '24px'}}
       >
-        Upload line protocol or Annotated CSVs
+        Upload CSV or a line protocol file
       </Heading>
       <SquareGrid cardSize="170px" gutter={ComponentSize.Small}>
         {items.map(item => {

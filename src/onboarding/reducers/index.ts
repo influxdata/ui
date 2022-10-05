@@ -1,5 +1,5 @@
 // Constants
-import {StepStatus} from 'src/clockface/constants/wizard'
+import {StepStatus} from 'src/shared/constants/wizard'
 
 // Types
 import {Action} from 'src/onboarding/actions'

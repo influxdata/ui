@@ -2,7 +2,7 @@
 import {get} from 'lodash'
 
 // Constants
-import {StepStatus} from 'src/clockface/constants/wizard'
+import {StepStatus} from 'src/shared/constants/wizard'
 import {SetupSuccess, SetupError} from 'src/shared/copy/notifications'
 
 // Actions

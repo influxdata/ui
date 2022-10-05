@@ -57,11 +57,17 @@ export type QuartzOrganizations = {
   status?: RemoteDataState
 }
 
+export interface IdentityLoadingStatus {
+  identityStatus: RemoteDataState
+  billingStatus: RemoteDataState
+  orgDetailsStatus: RemoteDataState
+}
+
 export interface CurrentIdentity {
   user: IdentityUser
   account: CurrentAccount
   org: CurrentOrg
-  status?: RemoteDataState
+  loadingStatus?: IdentityLoadingStatus
 }
 
 export enum NetworkErrorTypes {

@@ -1,6 +1,5 @@
 describe('change-account change-org global header', () => {
   const globalHeaderFeatureFlags = {
-    quartzIdentity: true,
     multiOrg: true,
   }
 

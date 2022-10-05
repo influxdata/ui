@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react'
 
 // Components
 import {Member} from 'src/types'
-import {Context} from 'src/clockface'
+import {Context} from 'src/shared/components/context_menu/Context'
 
 import CloudExclude from 'src/shared/components/cloud/CloudExclude'
 import {IconFont, ComponentColor} from '@influxdata/clockface'

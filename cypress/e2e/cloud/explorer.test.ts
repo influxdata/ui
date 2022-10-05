@@ -35,7 +35,6 @@ describe('DataExplorer', () => {
 
     it('can use the dynamic flux function selector to build a query', () => {
       cy.setFeatureFlags({
-        quartzIdentity: true,
         multiOrg: true,
       }).then(() => {
         cy.get('.view-line').should('be.visible')
@@ -68,7 +67,6 @@ describe('DataExplorer', () => {
 
     it('can use the dynamic flux function search bar to search by package or function name', () => {
       cy.setFeatureFlags({
-        quartzIdentity: true,
         multiOrg: true,
       }).then(() => {
         cy.get('.view-line').should('be.visible')

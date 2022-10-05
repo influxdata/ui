@@ -1449,10 +1449,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.35.tgz#ed92117d46f297bacf6aec7e7ace451d55bdff79"
   integrity sha512-d/zlUAx+O67aTBVNIr0XznuDl2jkGELlahRL2OIPOawfnAkNNREuC8iMhov8dq+Bw9d5w+mT041UKzhxZXl1Kg==
 
-"@influxdata/giraffe@^2.36.0":
-  version "2.36.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.36.0.tgz#8dcffa66a8cc497c3bc5d0c9e001d745244cb899"
-  integrity sha512-AMBtb9lOc9VXiTc8JBlbFe+PwyRBX8X+SvS9NRMSzrttWB6Anddy6H2mL34swbpCGreNhuElNT5GPj5ePwDFqw==
+"@influxdata/giraffe@^2.37.0":
+  version "2.37.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.37.0.tgz#a4e06aed4d10dc85067feb79830ff31037175161"
+  integrity sha512-XTGC9fo6g70pbwgD9XV0Yvi1JHMGypI8CR3UAg7nJGq5MgbCgo9nzLaxvilKdcvngrQGCzARvw+ixawfIUHrJg==
   dependencies:
     merge-images "^2.0.0"
 
@@ -4464,6 +4464,11 @@ css-tree@^1.1.2, css-tree@^1.1.3:
   dependencies:
     mdn-data "2.0.14"
     source-map "^0.6.1"
+
+css-unicode-loader@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/css-unicode-loader/-/css-unicode-loader-1.0.3.tgz#2420a7fc562b95e7f6811c6275436a328593a97a"
+  integrity sha512-mszxqB0LCBO2ixbaz/tAH17iEAXmytUv0j/YXtPxhOi8D8Teh+mOXqmz+DZRtDil5tFx7ltbgw16dUptEw4jOg==
 
 css-what@^5.0.0:
   version "5.1.0"

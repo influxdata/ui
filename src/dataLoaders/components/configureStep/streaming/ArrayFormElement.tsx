@@ -2,7 +2,10 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {MultipleInput, MultiInputType} from 'src/clockface'
+import {
+  MultipleInput,
+  MultiInputType,
+} from 'src/shared/components/MultipleInput'
 
 // Actions
 import {setConfigArrayValue} from 'src/dataLoaders/actions/dataLoaders'

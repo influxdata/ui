@@ -12,8 +12,22 @@ export const selectCurrentIdentity = (
   return state.identity.currentIdentity
 }
 
+export const selectCurrentAccountType = (
+  state: AppState
+): AppState['identity']['currentIdentity']['account']['type'] => {
+  return state.identity.currentIdentity.account.type
+}
+
 export const selectQuartzIdentityStatus = (state: AppState): RemoteDataState =>
-  state.identity.currentIdentity.status
+  state.identity.currentIdentity.loadingStatus.identityStatus
+
+export const selectQuartzBillingStatus = (state: AppState): RemoteDataState =>
+  state.identity.currentIdentity.loadingStatus.billingStatus
+
+export const selectQuartzOrgDetailsStatus = (
+  state: AppState
+): RemoteDataState =>
+  state.identity.currentIdentity.loadingStatus.orgDetailsStatus
 
 export const selectQuartzOrgs = (
   state: AppState

@@ -73,7 +73,7 @@ export const LoginPage: FC = () => {
               })
           })
           .catch(error => console.error(error))
-        return
+        return null
       }
     }
   }

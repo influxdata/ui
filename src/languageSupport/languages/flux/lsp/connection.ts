@@ -13,6 +13,7 @@ import {
   SchemaSelection,
 } from 'src/dataExplorer/context/persistance'
 import {CompositionInitParams} from 'src/languageSupport/languages/flux/lsp/utils'
+import {comments} from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 
 // LSP methods
 import {
@@ -134,8 +135,19 @@ class LspConnectionManager {
     })
   }
 
+  /// XXX: wiedld (27 Sep 2022) -- This heuristic is wrong.
+  /// Currently, the only way we detect monaco-editor apply changes is with the change object.
+  /// The change object only includes the replacement text, the position, and a little bit of editor-specific metadata.
+  /// The change object does NOT include anything which states whether or not the change is from an LSP-request,
+  /// (via the LSP applyEdit command).
+  /// As a result, we guess that any edit which is replacing the composition block is coming from an LSP request.
+  /// However, this heuristic fails for certain user-triggered events.
+  /// Such as a hotkey "undo" [cmd+z] of the last LSP applyEdit,
+  /// which generates a change object that looks exactly like an older applyEdit change.
   _editorChangeIsFromLsp(change) {
-    return change.text?.includes('|> yield(name: "_editor_composition")')
+    return /^(from)(.|\n)*(\|> yield\(name: "_editor_composition"\)\n)$/.test(
+      change.text
+    )
   }
 
   _editorChangeIsWithinComposition(change) {
@@ -174,6 +186,22 @@ class LspConnectionManager {
       )
       if (shouldDiverge && !this._session.composition.diverged) {
         event('Schema composition diverged - disable Flux Sync toggle')
+        this._callbackSetSession({
+          composition: {synced: false, diverged: true},
+        })
+      }
+    })
+
+    comments(this._editor, selection => {
+      const compositionBlock = this._getCompositionBlockLines()
+      if (!compositionBlock) {
+        return
+      }
+      const {startLine, endLine} = compositionBlock
+      if (
+        selection.startLineNumber >= startLine &&
+        selection.endLineNumber <= endLine
+      ) {
         this._callbackSetSession({
           composition: {synced: false, diverged: true},
         })

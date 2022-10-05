@@ -1,6 +1,5 @@
 // Constants
 const userProfileFeatureFlags = {
-  quartzIdentity: true,
   multiOrg: true,
 }
 

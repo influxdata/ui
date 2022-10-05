@@ -7,6 +7,12 @@ import {
 
 // Types
 import {OperatorOrgLimits, OperatorRegions} from 'src/types'
+import {IdentityUser} from 'src/client/unityRoutes'
+
+type OperatorRole = IdentityUser['operatorRole'] | null
+
+export const isUserOperator = (operatorRole: OperatorRole): boolean =>
+  operatorRole === 'read-only' || operatorRole === 'read-write'
 
 const updateMaxRetentionWithCallback = (
   limits: OperatorOrgLimits,

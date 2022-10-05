@@ -13,7 +13,7 @@ import {
   TechnoSpinner,
   SpinnerContainer,
 } from '@influxdata/clockface'
-import {WizardFullScreen} from 'src/clockface'
+import {WizardFullScreen} from 'src/shared/components/wizard/WizardFullScreen'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import OnboardingWizard from 'src/onboarding/containers/OnboardingWizard'
 import Notifications from 'src/shared/components/notifications/Notifications'

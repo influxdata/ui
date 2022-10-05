@@ -4,20 +4,18 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {ErrorHandling} from 'src/shared/decorators/errors'
-import {
-  WizardFullScreen,
-  WizardProgressHeader,
-  ProgressBar,
-} from 'src/clockface'
 import OnboardingStepSwitcher from 'src/onboarding/components/OnboardingStepSwitcher'
+import {ErrorHandling} from 'src/shared/decorators/errors'
+import {ProgressBar} from 'src/shared/components/wizard/ProgressBar'
+import {WizardFullScreen} from 'src/shared/components/wizard/WizardFullScreen'
+import {WizardProgressHeader} from 'src/shared/components/wizard/WizardProgressHeader'
 
 // Actions
 import {notify as notifyAction} from 'src/shared/actions/notifications'
 import {setSetupParams, setStepStatus, setupAdmin} from 'src/onboarding/actions'
 
 // Constants
-import {StepStatus} from 'src/clockface/constants/wizard'
+import {StepStatus} from 'src/shared/constants/wizard'
 
 // Types
 import {OnboardingRequest} from 'src/client'

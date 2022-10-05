@@ -15,7 +15,7 @@ interface Props {
 }
 
 @ErrorHandling
-class WizardOverlay extends PureComponent<Props> {
+export class WizardOverlay extends PureComponent<Props> {
   public static defaultProps = {
     maxWidth: 1200,
   }
@@ -36,5 +36,3 @@ class WizardOverlay extends PureComponent<Props> {
     )
   }
 }
-
-export default WizardOverlay

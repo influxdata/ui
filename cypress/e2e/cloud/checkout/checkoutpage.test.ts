@@ -28,7 +28,6 @@ describe('Checkout Page Works', () => {
 
   it('should render the checkout page and allow for pointing and clicking', () => {
     cy.setFeatureFlagsNoNav({
-      quartzIdentity: true,
       multiOrg: true,
     }).then(() => {
       const email = 'asalem@influxdata.com'

@@ -60,7 +60,7 @@ const LoadDataNavigation: FC<Props> = ({activeTab}) => {
       id: 'subscriptions',
       cloudExclude: false,
       cloudOnly: true,
-      featureFlag: 'subscriptionsUI',
+      featureFlag: null,
     },
     {
       text: 'API Tokens',

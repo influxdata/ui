@@ -194,7 +194,11 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
   return (
     <Grid>
       <Grid.Row>
-        <Grid.Column widthXS={Columns.Twelve} widthMD={Columns.Six}>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          className="view-options-container"
+        >
           <h5 className="view-options--header">Formatting</h5>
           <Form.Element label="Default Sort Field">
             <Dropdown

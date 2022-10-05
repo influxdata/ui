@@ -3,5 +3,5 @@ For more detailed and up to date information check out the [GitHub Repository](h
 ##### Install via Composer
 
 ```
-composer require influxdata/influxdb-client-php
+composer require influxdata/influxdb-client-php guzzlehttp/guzzle
 ```

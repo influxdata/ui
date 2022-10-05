@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import classnames from 'classnames'
 
 // Components
-import ContextMenuItem from 'src/clockface/components/context_menu/ContextMenuItem'
+import {ContextMenuItem} from 'src/shared/components/context_menu/ContextMenuItem'
 import {ClickOutside} from 'src/shared/components/ClickOutside'
 import {Button} from '@influxdata/clockface'
 
@@ -34,7 +34,7 @@ interface State {
 }
 
 @ErrorHandling
-class ContextMenu extends Component<Props, State> {
+export class ContextMenu extends Component<Props, State> {
   public static defaultProps = {
     color: ComponentColor.Primary,
     shape: ButtonShape.Square,
@@ -141,5 +141,3 @@ class ContextMenu extends Component<Props, State> {
     })
   }
 }
-
-export default ContextMenu

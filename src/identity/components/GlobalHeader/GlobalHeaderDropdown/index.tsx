@@ -151,20 +151,17 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
 
   private renderMainMenuOptions = (onCollapse: VoidFunction) => {
     const {mainMenuOptions} = this.props
-    return (
-      <div>
-        {mainMenuOptions.reduce((prev, curr) => {
-          if (curr?.showDivider) {
-            prev.push(
-              <hr key={`SectionBreak ${curr.name}`} className="section-break" />
-            )
-          }
-          prev.push(this.getMainMenuOption(curr, onCollapse))
+    const options = []
+    mainMenuOptions.forEach(option => {
+      if (option.showDivider) {
+        options.push(
+          <hr key={`SectionBreak ${option.name}`} className="line-break" />
+        )
+      }
+      options.push(this.getMainMenuOption(option, onCollapse))
+    })
 
-          return prev
-        }, [])}
-      </div>
-    )
+    return options
   }
 
   private renderTypeAheadMenu = () => {

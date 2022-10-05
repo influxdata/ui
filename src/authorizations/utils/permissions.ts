@@ -59,9 +59,7 @@ export const formatResources = resourceNames => {
     item =>
       item !== ResourceType.Buckets &&
       item !== ResourceType.Telegrafs &&
-      // filter out Subsriptions resource type if the UI is not enabled
-      (item !== ResourceType.Subscriptions ||
-        isFlagEnabled('subscriptionsUI')) &&
+      item !== ResourceType.Subscriptions &&
       String(item) !== 'instance'
   )
   resources.sort()

@@ -14,7 +14,6 @@ describe('Subscriptions', () => {
               cy.visit(`${orgs}/${id}/load-data/sources`)
 
               cy.setFeatureFlags({
-                subscriptionsUI: true,
                 multiOrg: true,
               })
 

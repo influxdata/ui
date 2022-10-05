@@ -13,10 +13,13 @@ import {
   Panel,
 } from '@influxdata/clockface'
 import React, {useState, FC, useCallback, useEffect, useRef} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory, useLocation} from 'react-router-dom'
 import {getOrg} from 'src/organizations/selectors'
 import {getOrg as fetchOrg} from 'src/organizations/apis'
+
+// Actions
+import {setCurrentPage} from 'src/shared/reducers/currentPage'
 
 // Utils
 import {buildDeepLinkingMap} from 'src/utils/deepLinks'
@@ -135,6 +138,8 @@ const NotFound: FC = () => {
   const location = useLocation()
   const history = useHistory()
   const reduxOrg = useSelector(getOrg)
+  const dispatch = useDispatch()
+
   const org = useRef<Organization>(reduxOrg)
 
   const handleDeepLink = useCallback(async () => {
@@ -168,6 +173,13 @@ const NotFound: FC = () => {
       handleDeepLink()
     }
   }, [handleDeepLink])
+
+  useEffect(() => {
+    dispatch(setCurrentPage('not found'))
+    return () => {
+      dispatch(setCurrentPage('not set'))
+    }
+  }, [dispatch])
 
   if (isFetchingOrg) {
     // don't render anything if this component is actively fetching org id

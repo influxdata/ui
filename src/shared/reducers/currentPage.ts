@@ -1,4 +1,4 @@
-export type CurrentPage = 'dashboard' | 'not set'
+export type CurrentPage = 'dashboard' | 'not found' | 'not set'
 
 export type Action = ReturnType<typeof setCurrentPage>
 

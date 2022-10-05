@@ -50,6 +50,8 @@ import {UserAccountProvider} from 'src/accounts/context/userAccount'
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
   const currentPage = useSelector((state: AppState) => state.currentPage)
+  const shouldShowCloudHeader =
+    CLOUD && isFlagEnabled('multiOrg') && currentPage !== 'not found'
 
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
@@ -123,7 +125,7 @@ const App: FC = () => {
       <TreeSidebar />
       <Suspense fallback={<PageSpinner />}>
         <Page>
-          {CLOUD && isFlagEnabled('multiOrg') && <GlobalHeader />}
+          {shouldShowCloudHeader && <GlobalHeader />}
           <Switch>
             <Route path="/orgs/new" component={CreateOrgOverlay} />
             <Route path="/orgs/:orgID" component={SetOrg} />

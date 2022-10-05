@@ -1,5 +1,4 @@
 // Actions
-import {setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 import {
   setCurrentOrgDetails,
   setCurrentBillingProvider,
@@ -11,11 +10,10 @@ import {
 
 // Types
 import {RemoteDataState, GetState, NotificationAction} from 'src/types'
-import {Actions as MeActions} from 'src/me/actions/creators'
 import {Actions as IdentityActions} from 'src/identity/actions/creators'
 import {Dispatch} from 'redux'
 
-type ActionTypes = IdentityActions | MeActions | NotificationAction
+type ActionTypes = IdentityActions | NotificationAction
 
 // Utilities
 import {
@@ -23,7 +21,6 @@ import {
   fetchAccountDetails,
   fetchOrgDetails,
 } from 'src/identity/apis/auth'
-import {convertIdentityToMe} from 'src/identity/utils/convertIdentityToMe'
 
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
@@ -38,13 +35,8 @@ export const getQuartzIdentityThunk =
       dispatch(setQuartzIdentity(quartzIdentity))
 
       dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
-
-      const legacyMe = convertIdentityToMe(quartzIdentity)
-      dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
-      dispatch(setQuartzMeStatus(RemoteDataState.Done))
     } catch (err) {
       dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
-      dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
       reportErrorThroughHoneyBadger(err, {
         name: 'Failed to fetch /quartz/identity',
@@ -65,15 +57,8 @@ export const getBillingProviderThunk =
 
       dispatch(setCurrentBillingProvider(accountDetails.billingProvider))
       dispatch(setCurrentBillingProviderStatus(RemoteDataState.Done))
-      const updatedState = getState()
-      const legacyMe = convertIdentityToMe(
-        updatedState.identity.currentIdentity
-      )
-      dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
-      dispatch(setQuartzMeStatus(RemoteDataState.Done))
     } catch (err) {
       dispatch(setCurrentBillingProviderStatus(RemoteDataState.Error))
-      dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
       reportErrorThroughHoneyBadger(err, {
         name: 'Failed to fetch /quartz/accounts/',
@@ -91,16 +76,8 @@ export const getCurrentOrgDetailsThunk =
 
       dispatch(setCurrentOrgDetails(orgDetails))
       dispatch(setCurrentOrgDetailsStatus(RemoteDataState.Done))
-
-      const updatedState = getState()
-      const legacyMe = convertIdentityToMe(
-        updatedState.identity.currentIdentity
-      )
-      dispatch(setQuartzMe(legacyMe, RemoteDataState.Done))
-      dispatch(setQuartzMeStatus(RemoteDataState.Done))
     } catch (err) {
       dispatch(setCurrentOrgDetailsStatus(RemoteDataState.Error))
-      dispatch(setQuartzMeStatus(RemoteDataState.Error))
 
       reportErrorThroughHoneyBadger(err, {
         name: 'Failed to fetch /quartz/orgs/:orgId',

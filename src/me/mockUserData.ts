@@ -1,5 +1,5 @@
 // Types
-import {AppState, RemoteDataState} from 'src/types'
+import {AppState} from 'src/types'
 
 const LeroysTokens = [
   {
@@ -21,8 +21,6 @@ export const me: AppState['me'] = {
     self: '/api/v2/users/id-of-groot',
     log: '/api/v2/users/id-of-groot/log',
   },
-  quartzMeStatus: RemoteDataState.NotStarted,
-  quartzMe: null,
 }
 
 export const LeroyJenkins = {

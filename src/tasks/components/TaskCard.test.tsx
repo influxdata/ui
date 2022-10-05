@@ -7,7 +7,6 @@ import {TaskCard} from 'src/tasks/components/TaskCard'
 
 // Constants
 import {tasks, withRouterProps, labels} from 'mocks/dummyData'
-import {RemoteDataState} from '@influxdata/clockface'
 
 const task = tasks[1] // The 2nd task mock has labels on it
 
@@ -38,7 +37,6 @@ const setup = (override = {}) => {
         self: '',
         log: '',
       },
-      quartzMeStatus: RemoteDataState.NotStarted,
     },
     ...override,
   }

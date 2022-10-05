@@ -39,7 +39,7 @@ interface Props {
   orgsList: OrganizationSummaries
 }
 
-const menuStyle = {width: '250px'}
+const menuStyle = {width: '250px', padding: '16px'}
 const orgDropdownStyle = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {

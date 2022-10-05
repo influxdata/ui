@@ -18,14 +18,16 @@ export const CreateOrganizationMenuItem: FC = () => {
     //       Add create organization functionality with modal, error handling and redirect to new organization
   }
 
+  const title = 'Create Organization'
   return (
     <Dropdown.Item
       onClick={handleCreateOrg}
       className="global-header--create-org-button"
+      testID={`global-header--main-dropdown-item-${title}`}
     >
       <FlexBox alignItems={AlignItems.Center}>
         <Icon glyph={IconFont.Plus_New} className="button-icon" />
-        <span>Create Organization</span>
+        <span>{title}</span>
       </FlexBox>
     </Dropdown.Item>
   )

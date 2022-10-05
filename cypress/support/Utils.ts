@@ -180,6 +180,10 @@ export const makeQuartzUseIDPEOrgID = (
   if (accountType === 'pay_as_you_go') {
     fixtureName = 'multiOrgIdentityPAYG'
   }
+  if (accountType === 'contract') {
+    fixtureName = 'multiOrgIdentityContract'
+  }
+
   cy.fixture(fixtureName).then(quartzIdentity => {
     quartzIdentity.org.id = idpeOrgID
 

@@ -10,6 +10,13 @@
   }
 }
 
+@mixin accordion-header-uppercase {
+  .cf-accordion--header--content {
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+
 .container-right-side-bar {
   margin-left: $cf-space-xs;
   padding-top: $cf-space-2xs;
@@ -27,9 +34,7 @@
   right: 0;
 
   .flux-library-original {
-    height: calc(
-      100% - 30px
-    ); // remove the ugly white scroll bar
+    height: calc(100% - 30px); // remove the ugly white scroll bar
 
     .flux-toolbar {
       flex-direction: column;
@@ -54,6 +59,7 @@
 .result-options {
   .result-options--header {
     @include transparent-accordion;
+    @include accordion-header-uppercase;
     padding: $cf-space-2xs 0;
   }
 
@@ -72,20 +78,21 @@
 .flux-library--container {
   width: 100%;
 }
+
 .flux-library {
   height: 100%;
 
   .flux-library--header {
     @include transparent-accordion;
+    @include accordion-header-uppercase;
+
     .selector-title {
       padding: $cf-space-2xs 0;
     }
   }
 
   .cf-accordion--body-container {
-    height: calc(
-      100% - 40px
-    ); // remove the ugly white scroll bar
+    height: calc(100% - 40px); // remove the ugly white scroll bar
   }
 
   .flux-toolbar {

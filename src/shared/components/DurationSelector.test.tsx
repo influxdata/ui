@@ -47,7 +47,7 @@ describe('DurationSelector', () => {
     )
 
     expect(
-      getByText(getByTestId('duration-selector--button'), '1h')
+      getByText(getByTestId('duration-selector--button'), '1 hour')
     ).toBeDefined()
   })
 })

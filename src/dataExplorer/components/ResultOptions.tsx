@@ -3,29 +3,21 @@ import React, {FC, useState} from 'react'
 // Components
 import {Accordion} from '@influxdata/clockface'
 import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabelTooltip'
+import {FieldsAsColumns} from 'src/dataExplorer/components/FieldsAsColumns'
 
 // Style
 import './Sidebar.scss'
 
 const TOOLTIP_CONTENT = {
-  FIELDS_AS_COLUMNS: `test`,
   GROUP: `test`,
   AGGREGATE: `test`,
 }
 
 const ResultOptions: FC = () => {
-  const [fieldsAsColumnsActive, setFieldsAsColumnsActive] = useState(false)
   const [groupActive, setGroupActive] = useState(false)
   const [aggregateActive, setAggregateActive] = useState(false)
 
-  const fieldsAsColumns = (
-    <ToggleWithLabelTooltip
-      label="Fields as Columns"
-      active={fieldsAsColumnsActive}
-      onChange={() => setFieldsAsColumnsActive(current => !current)}
-      tooltipContents={TOOLTIP_CONTENT.FIELDS_AS_COLUMNS}
-    />
-  )
+  const fieldsAsColumns = <FieldsAsColumns />
 
   const group = (
     <ToggleWithLabelTooltip

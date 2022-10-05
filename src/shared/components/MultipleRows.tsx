@@ -1,9 +1,9 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC} from 'react'
 import {nanoid} from 'nanoid'
 
 // Components
-import Row from 'src/clockface/components/inputs/multipleInput/Row'
+import {Row} from 'src/shared/components/Row'
 
 interface Item {
   text?: string
@@ -17,7 +17,7 @@ interface RowsProps {
   onChange?: (index: number, value: string) => void
 }
 
-const Rows: SFC<RowsProps> = ({tags, onDeleteTag, onChange}) => {
+export const Rows: FC<RowsProps> = ({tags, onDeleteTag, onChange}) => {
   return (
     <div className="input-tag-list" data-testid="multiple-rows">
       {tags.map(item => {
@@ -34,5 +34,3 @@ const Rows: SFC<RowsProps> = ({tags, onDeleteTag, onChange}) => {
     </div>
   )
 }
-
-export default Rows

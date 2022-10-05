@@ -3,32 +3,30 @@ import React from 'react'
 import {screen} from '@testing-library/react'
 
 // Components
-import MultipleInput from './MultipleInput'
+import {Row} from 'src/shared/components/Row'
 
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
-    title: '',
-    helpText: '',
-    onAddRow: jest.fn(),
-    onDeleteRow: jest.fn(),
-    onEditRow: jest.fn(),
-    autoFocus: true,
-    tags: [],
+    confirmText: '',
+    item: {},
+    onDeleteTag: jest.fn(),
     onSetConfigArrayValue: jest.fn(),
+    fieldName: '',
     telegrafPluginName: 'cpu',
+    index: 0,
     ...override,
   }
 
-  renderWithReduxAndRouter(<MultipleInput {...props} />)
+  renderWithReduxAndRouter(<Row {...props} />)
 }
 
-describe('Clockface.Components.MultipleInput', () => {
+describe('Onboarding.Components.ConfigureStep.Streaming.ArrayFormElement', () => {
   it('renders', async () => {
     const fieldName = 'yo'
     setup({fieldName})
-    const elm = await screen.findByTestId('grid')
+    const elm = await screen.findByTestId('index-list')
     expect(elm).toBeVisible()
   })
 })

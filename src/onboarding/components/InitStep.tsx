@@ -4,7 +4,7 @@ import React, {PureComponent} from 'react'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Types
-import {StepStatus} from 'src/clockface/constants/wizard'
+import {StepStatus} from 'src/shared/constants/wizard'
 import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 import {OnboardingStepProps} from 'src/onboarding/containers/OnboardingWizard'
 

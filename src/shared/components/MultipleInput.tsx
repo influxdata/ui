@@ -4,7 +4,7 @@ import {debounce, isEmpty} from 'lodash'
 
 // Components
 import {Button, Form, Input, Grid} from '@influxdata/clockface'
-import Rows from 'src/clockface/components/inputs/multipleInput/MultipleRows'
+import {Rows} from 'src/shared/components/MultipleRows'
 
 // Utils
 import {validateURI} from 'src/shared/utils/validateURI'
@@ -52,7 +52,7 @@ interface State {
 }
 
 @ErrorHandling
-class MultipleInput extends PureComponent<Props, State> {
+export class MultipleInput extends PureComponent<Props, State> {
   private debouncedValidate: (value: string) => void
   private inputRef
 
@@ -171,5 +171,3 @@ class MultipleInput extends PureComponent<Props, State> {
     }
   }
 }
-
-export default MultipleInput

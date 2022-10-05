@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {Context} from 'src/clockface'
+import {Context} from 'src/shared/components/context_menu/Context'
 import {ResourceCard} from '@influxdata/clockface'
 import {Scraper} from 'src/types'
 

@@ -5,7 +5,13 @@ import React, {PureComponent} from 'react'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // constants
-import {StepStatus, ConnectorState} from 'src/clockface/constants/wizard'
+import {StepStatus} from 'src/shared/constants/wizard'
+
+enum ConnectorState {
+  None = 'none',
+  Some = 'some',
+  Full = 'full',
+}
 
 interface Props {
   currentStepIndex: number
@@ -18,7 +24,7 @@ interface Props {
 }
 
 @ErrorHandling
-class ProgressBar extends PureComponent<Props, null> {
+export class ProgressBar extends PureComponent<Props, null> {
   public render() {
     return <div className="wizard--progress-bar">{this.WizardProgress}</div>
   }
@@ -140,5 +146,3 @@ class ProgressBar extends PureComponent<Props, null> {
     return progressBar
   }
 }
-
-export default ProgressBar

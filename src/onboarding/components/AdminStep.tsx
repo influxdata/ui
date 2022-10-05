@@ -19,7 +19,7 @@ import {
   ComponentStatus,
   ComponentColor,
 } from '@influxdata/clockface'
-import {StepStatus} from 'src/clockface/constants/wizard'
+import {StepStatus} from 'src/shared/constants/wizard'
 import {OnboardingStepProps} from 'src/onboarding/containers/OnboardingWizard'
 
 // Decorators

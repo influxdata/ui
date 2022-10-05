@@ -72,6 +72,11 @@
   background-color: rgba(241, 241, 243, 0.1);
 }
 
+.section-break {
+  margin: 10px 0;
+  background-color: rgba(241, 241, 243, 0.1);
+}
+
 .upgrade-payg-add-org--button {
   @include gradient-diag-up($c-rainforest, $c-pool);
 

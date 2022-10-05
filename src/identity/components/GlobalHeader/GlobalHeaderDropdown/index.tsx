@@ -33,6 +33,7 @@ export interface MainMenuItem {
   iconFont: string
   href: string
   className?: string
+  showDivider?: boolean
 }
 
 export interface TypeAheadMenuItem {
@@ -114,42 +115,54 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
     this.setState({showTypeAheadMenu: !showTypeAheadMenu})
   }
 
+  private getMainMenuOption = (
+    menuItem: MainMenuItem,
+    onCollapse: VoidFunction
+  ) => {
+    const iconEl = <Icon glyph={menuItem.iconFont} className="button-icon" />
+    const textEl = <span>{menuItem.name}</span>
+    const addMoreOrgsClassNames = classNames(
+      'global-header--main-dropdown-item',
+      menuItem.className ?? ''
+    )
+    return (
+      <div
+        onClick={this.sendMainMenuEvent(menuItem.name)}
+        key={`eventWrapper.${menuItem.name}`}
+      >
+        <Dropdown.LinkItem
+          className={addMoreOrgsClassNames}
+          key={menuItem.name}
+          testID={`${this.props.mainMenuTestID}-${menuItem.name}`}
+          selected={false}
+        >
+          <Link
+            to={menuItem.href}
+            className="global-header--main-dropdown-item-link"
+            onClick={onCollapse}
+          >
+            {iconEl}
+            {textEl}
+          </Link>
+        </Dropdown.LinkItem>
+      </div>
+    )
+  }
+
   private renderMainMenuOptions = (onCollapse: VoidFunction) => {
     const {mainMenuOptions} = this.props
     return (
       <div>
-        {mainMenuOptions.map(menuItem => {
-          const iconEl = (
-            <Icon glyph={menuItem.iconFont} className="button-icon" />
-          )
-          const textEl = <span>{menuItem.name}</span>
-          const addMoreOrgsClassNames = classNames(
-            'global-header--main-dropdown-item',
-            menuItem.className ?? ''
-          )
-          return (
-            <div
-              onClick={this.sendMainMenuEvent(menuItem.name)}
-              key={`eventWrapper.${menuItem.name}`}
-            >
-              <Dropdown.LinkItem
-                className={addMoreOrgsClassNames}
-                key={menuItem.name}
-                testID={`${this.props.mainMenuTestID}-${menuItem.name}`}
-                selected={false}
-              >
-                <Link
-                  to={menuItem.href}
-                  className="global-header--main-dropdown-item-link"
-                  onClick={onCollapse}
-                >
-                  {iconEl}
-                  {textEl}
-                </Link>
-              </Dropdown.LinkItem>
-            </div>
-          )
-        })}
+        {mainMenuOptions.reduce((prev, curr) => {
+          if (curr?.showDivider) {
+            prev.push(
+              <hr key={`SectionBreak ${curr.name}`} className="section-break" />
+            )
+          }
+          prev.push(this.getMainMenuOption(curr, onCollapse))
+
+          return prev
+        }, [])}
       </div>
     )
   }

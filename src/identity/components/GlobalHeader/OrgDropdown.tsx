@@ -78,6 +78,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
       iconFont: IconFont.CrownSolid_New,
       href: '/checkout',
       className: 'upgrade-payg-add-org--button',
+      showDivider: true,
     })
   }
 

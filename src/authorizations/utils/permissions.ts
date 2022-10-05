@@ -1,6 +1,5 @@
 import {Permission, ResourceType} from 'src/types'
 import {capitalize} from 'lodash'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export type PermissionTypes = Permission['resource']['type']
 
@@ -59,9 +58,7 @@ export const formatResources = resourceNames => {
     item =>
       item !== ResourceType.Buckets &&
       item !== ResourceType.Telegrafs &&
-      // filter out Subsriptions resource type if the UI is not enabled
-      (item !== ResourceType.Subscriptions ||
-        isFlagEnabled('subscriptionsUI')) &&
+      item !== ResourceType.Subscriptions &&
       String(item) !== 'instance'
   )
   resources.sort()

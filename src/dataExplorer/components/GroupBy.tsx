@@ -9,13 +9,13 @@ import './Sidebar.scss'
 const GROUP_TOOLTIP = `test`
 
 const GroupBy: FC = () => {
-  const [groupActive, setGroupActive] = useState(false)
+  const [group, setGroup] = useState(false)
 
   return (
     <ToggleWithLabelTooltip
       label="Group"
-      active={groupActive}
-      onChange={() => setGroupActive(current => !current)}
+      active={group}
+      onChange={() => setGroup(current => !current)}
       tooltipContents={GROUP_TOOLTIP}
     />
   )

@@ -30,7 +30,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Selectors
 import {useSelector} from 'react-redux'
 import {selectCurrentAccountType} from 'src/identity/selectors'
-import CreateOrganizationMenuItem from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/MenuItem'
+import {CreateOrganizationMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/MenuItem'
 
 type OrgSummaryItem = OrganizationSummaries[number]
 

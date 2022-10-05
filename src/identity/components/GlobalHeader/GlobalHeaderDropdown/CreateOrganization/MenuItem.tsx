@@ -10,7 +10,7 @@ import {
   IconFont,
 } from '@influxdata/clockface'
 
-const CreateOrganizationMenuItem: FC = () => {
+export const CreateOrganizationMenuItem: FC = () => {
   const handleCreateOrg = () => {
     // TODO: Enable this when #5899 is worked on
     // event('globalheader_createOrg_menuItem_clicked')
@@ -30,4 +30,3 @@ const CreateOrganizationMenuItem: FC = () => {
     </Dropdown.Item>
   )
 }
-export default CreateOrganizationMenuItem

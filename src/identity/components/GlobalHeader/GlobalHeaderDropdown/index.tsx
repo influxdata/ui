@@ -18,7 +18,7 @@ import {
 import GlobalHeaderTypeAheadMenu from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderTypeAheadMenu'
 
 // Styles
-import 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/GlobalHeaderDropdown.scss'
+import './GlobalHeaderDropdown.scss'
 
 // Types
 

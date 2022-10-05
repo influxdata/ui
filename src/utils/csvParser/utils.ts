@@ -1,3 +1,3 @@
-export const EOFError = new Error("EOF");
+export const EOFError = new Error('EOF')
 
-export type LocalFile = File | string;
+export type LocalFile = File | string

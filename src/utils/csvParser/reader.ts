@@ -1,43 +1,43 @@
-import Papa from "papaparse";
-import { EOFError, LocalFile } from "./utils";
+import Papa from 'papaparse'
+import {EOFError, LocalFile} from './utils'
 
 interface ReaderConfig {
-  delimiter: string;
-  comment: string;
-  trimSpace: boolean;
-  file: LocalFile;
+  delimiter: string
+  comment: string
+  trimSpace: boolean
+  file: LocalFile
 }
 
 export class CSVReader {
-  records: string[][] = [];
-  constructor({ delimiter, comment, file }: Partial<ReaderConfig>) {
-    const records: string[][] = [];
+  records: string[][] = []
+  constructor({delimiter, comment, file}: Partial<ReaderConfig>) {
+    const records: string[][] = []
     Papa.parse<any[]>(file!, {
       delimiter,
       comments: comment,
       skipEmptyLines: true,
-      
-      // step: callback function to help parse large files by streaming. results are sent 
+
+      // step: callback function to help parse large files by streaming. results are sent
       // to the step callback function row by row.
-      step({ data: csvRow }, _) {
-        records.push(csvRow.filter((column) => column !== ""));
+      step({data: csvRow}, _) {
+        records.push(csvRow.filter(column => column !== ''))
       },
-    });
-    this.records = records;
+    })
+    this.records = records
   }
 
-  read() { 
-    const record = this.records.shift();
+  read() {
+    const record = this.records.shift()
     if (!record) {
-      throw EOFError;
+      throw EOFError
     }
 
-    return record;
+    return record
   }
 
   readAll() {
-    const records = this.records;
-    this.records = [];
-    return records;
+    const records = this.records
+    this.records = []
+    return records
   }
 }

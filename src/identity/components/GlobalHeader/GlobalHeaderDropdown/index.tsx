@@ -20,8 +20,6 @@ import GlobalHeaderTypeAheadMenu from 'src/identity/components/GlobalHeader/Glob
 // Styles
 import './GlobalHeaderDropdown.scss'
 
-// Types
-
 // Eventing
 import {
   MainMenuEventPrefix,

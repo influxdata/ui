@@ -91,7 +91,7 @@ const Sidebar: FC = () => {
   ) : null
 
   const fluxLibrary = isFlagEnabled('resultOptions') ? (
-    <FlexBox.Child>
+    <FlexBox.Child className="flux-library--container">
       <Accordion className="flux-library" expanded={true}>
         <Accordion.AccordionHeader className="flux-library--header">
           <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
@@ -100,7 +100,7 @@ const Sidebar: FC = () => {
       </Accordion>
     </FlexBox.Child>
   ) : (
-    <FlexBox.Child>
+    <FlexBox.Child className="flux-library--container">
       <div className="flux-library-original">
         <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
         {browser}

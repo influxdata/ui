@@ -29,7 +29,7 @@
   .flux-library-original {
     height: calc(
       100% - 30px
-    ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
+    ); // remove the ugly white scroll bar
 
     .flux-toolbar {
       flex-direction: column;
@@ -69,12 +69,31 @@
   }
 }
 
+.flux-library--container {
+  width: 100%;
+}
 .flux-library {
+  height: 100%;
+
   .flux-library--header {
     @include transparent-accordion;
     .selector-title {
       padding: $cf-space-2xs 0;
     }
+  }
+
+  .cf-accordion--body-container {
+    height: calc(
+      100% - 40px
+    ); // remove the ugly white scroll bar
+  }
+
+  .flux-toolbar {
+    flex-direction: column;
+  }
+
+  .flux-toolbar--search {
+    padding: 0;
   }
 }
 

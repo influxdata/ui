@@ -12,7 +12,7 @@ export class CSVReader {
   records: string[][] = []
   constructor({delimiter, comment, file}: Partial<ReaderConfig>) {
     const records: string[][] = []
-    Papa.parse<any[]>(file!, {
+    Papa.parse(file, {
       delimiter,
       comments: comment,
       skipEmptyLines: true,

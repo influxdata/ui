@@ -43,6 +43,12 @@
 
 .result-options--container {
   width: 100%;
+  border-bottom: 2px solid $cf-grey-25;
+  margin-bottom: $cf-space-2xs;
+
+  .cf-accordion {
+    margin-bottom: $cf-space-2xs;
+  }
 }
 
 .result-options {
@@ -60,10 +66,6 @@
     .selector-title {
       padding-bottom: 0;
     }
-  }
-
-  .divider {
-    border-bottom: 2px solid $cf-grey-25;
   }
 }
 

@@ -81,7 +81,6 @@ const ResultOptions: FC = () => {
       {fieldsAsColumns}
       {group}
       {aggregate}
-      <hr className="divider" />
     </Accordion>
   )
 }

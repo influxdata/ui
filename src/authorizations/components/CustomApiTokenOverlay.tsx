@@ -47,7 +47,6 @@ import {
   generateDescription,
 } from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 interface OwnProps {

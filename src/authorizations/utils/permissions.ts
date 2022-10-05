@@ -1,6 +1,5 @@
 import {Permission, ResourceType} from 'src/types'
 import {capitalize} from 'lodash'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export type PermissionTypes = Permission['resource']['type']
 

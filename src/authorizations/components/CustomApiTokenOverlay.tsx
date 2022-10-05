@@ -47,7 +47,6 @@ import {
   generateDescription,
 } from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 interface OwnProps {
@@ -89,12 +88,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         otherResources: {read: false, write: false},
       }
       props.allResources
-        // filter out Subsriptions resource type if the UI is not enabled
         .filter(
-          p =>
-            (p !== ResourceType.Subscriptions ||
-              isFlagEnabled('subscriptionsUI')) &&
-            String(p) !== 'instance'
+          p => p !== ResourceType.Subscriptions && String(p) !== 'instance'
         )
         .forEach(resource => {
           if (resource === ResourceType.Telegrafs) {

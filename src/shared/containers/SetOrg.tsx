@@ -212,19 +212,19 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
             component={BucketsIndex}
           />
-          {CLOUD && isFlagEnabled('subscriptionsUI') && (
+          {CLOUD && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/create`}
               component={CreateSubscriptionForm}
             />
           )}
-          {CLOUD && isFlagEnabled('subscriptionsUI') && (
+          {CLOUD && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
               component={DetailsSubscriptionPage}
             />
           )}
-          {CLOUD && isFlagEnabled('subscriptionsUI') && (
+          {CLOUD && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
               component={SubscriptionsLanding}

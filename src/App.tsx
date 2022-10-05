@@ -15,7 +15,7 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Components
 import {AppWrapper, Page} from '@influxdata/clockface'
-import TreeNav from 'src/pageLayout/containers/TreeNav'
+import {TreeSidebar} from 'src/pageLayout/containers/TreeSidebar'
 import TooltipPortal from 'src/portals/TooltipPortal'
 import NotesPortal from 'src/portals/NotesPortal'
 import Notifications from 'src/shared/components/notifications/Notifications'
@@ -120,7 +120,7 @@ const App: FC = () => {
         <OverlayController />
       </OverlayProviderComp>
       <EngagementLink />
-      <TreeNav />
+      <TreeSidebar />
       <Suspense fallback={<PageSpinner />}>
         <Page>
           {CLOUD && isFlagEnabled('multiOrg') && <GlobalHeader />}

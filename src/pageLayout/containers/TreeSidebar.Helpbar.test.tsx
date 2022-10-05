@@ -2,17 +2,46 @@ import React from 'react'
 import {screen, fireEvent, cleanup, waitFor} from '@testing-library/react'
 import {jest} from '@jest/globals'
 
+// Mocks
+const identityMock = {
+  user: {
+    id: '03b0f952abf7e5ce',
+    email: 'test@influxdata.com',
+    firstName: 'Marty',
+    lastName: 'McFly',
+    operatorRole: null,
+    accountCount: 1,
+    orgCount: 1,
+  },
+
+  org: {
+    id: 'a12eb3c74e6c3azc',
+    name: 'Test Organization',
+    clusterHost: 'https://us-west1.iamzuora.cloud2.influxdata.com',
+  },
+
+  account: {
+    id: 416,
+    name: 'Influx',
+    type: 'free',
+    accountCreatedAt:
+      'Tue Jun 01 2022 08:49:14 GMT-0400 (Eastern Daylight Time)',
+    isUpgradeable: false,
+  },
+}
+
 // Imported mocks
 import {
   OverlayController,
   OverlayProviderComp,
-} from '../../overlays/components/OverlayController'
-import TreeNav from 'src/pageLayout/containers/TreeNav'
+} from 'src/overlays/components/OverlayController'
+import {TreeSidebar} from 'src/pageLayout/containers/TreeSidebar'
 import {notify} from 'src/shared/actions/notifications'
 import {supportRequestError} from 'src/shared/copy/notifications'
 import {renderWithReduxAndRouter} from 'src/mockState'
 
-import {Me} from 'src/client/unityRoutes'
+// Utils
+import {cloneDeep} from 'lodash'
 
 jest.mock('src/flows', () => {
   return () => <></>
@@ -54,10 +83,10 @@ jest.mock('src/cloud/utils/reporting', () => ({
 jest.mock('src/shared/actions/notifications')
 jest.mock('src/shared/constants', () => ({CLOUD: true}))
 
-const setup = (quartzMe: Me) => {
+const setup = currentIdentity => {
   const newState = {
-    me: {
-      quartzMe,
+    identity: {
+      currentIdentity,
     },
   }
 
@@ -66,7 +95,7 @@ const setup = (quartzMe: Me) => {
       <OverlayProviderComp>
         <OverlayController />
       </OverlayProviderComp>
-      <TreeNav />
+      <TreeSidebar />
     </>,
     defaultState => ({
       ...defaultState,
@@ -80,20 +109,10 @@ describe('Free Account Contact Support', () => {
     cleanup()
   })
 
+  const freeAccountMock = cloneDeep(identityMock)
+
   it('opens support overlay for free account users', async () => {
-    const fakeAccount: Me = {
-      id: '',
-      email: '',
-      accountType: 'free',
-      billingProvider: 'zuora',
-      clusterHost: 'string',
-      isRegionBeta: true,
-      regionCode: 'string',
-      regionName: 'string',
-      isOperator: false,
-      accountCreatedAt: 'string',
-    }
-    const {getByTestId} = setup(fakeAccount)
+    const {getByTestId} = setup(freeAccountMock)
 
     expect(getByTestId('nav-item-support')).toBeVisible()
 
@@ -111,19 +130,10 @@ describe('Free Account Contact Support', () => {
 
 describe('PAYG Contact Support', () => {
   it('can submit a support request from payg account', async () => {
-    const fakeAccount: Me = {
-      id: '',
-      email: '',
-      accountType: 'pay_as_you_go',
-      billingProvider: 'zuora',
-      clusterHost: 'string',
-      isRegionBeta: true,
-      regionCode: 'string',
-      regionName: 'string',
-      isOperator: false,
-      accountCreatedAt: 'string',
-    }
-    const {getByTestId} = setup(fakeAccount)
+    const paygMock = cloneDeep(identityMock)
+    paygMock.account.type = 'pay_as_you_go'
+
+    const {getByTestId} = setup(paygMock)
 
     expect(getByTestId('nav-item-support')).toBeVisible()
 
@@ -166,19 +176,9 @@ describe('PAYG Contact Support', () => {
   })
 
   it('notifies user when support request has not been successfully submitted', async () => {
-    const fakeAccount: Me = {
-      id: '',
-      email: '',
-      accountType: 'pay_as_you_go',
-      billingProvider: 'zuora',
-      clusterHost: 'string',
-      isRegionBeta: true,
-      regionCode: 'string',
-      regionName: 'string',
-      isOperator: false,
-      accountCreatedAt: 'string',
-    }
-    const {getByTestId} = setup(fakeAccount)
+    const paygMock = cloneDeep(identityMock)
+    paygMock.account.type = 'pay_as_you_go'
+    const {getByTestId} = setup(paygMock)
 
     expect(getByTestId('nav-item-support')).toBeVisible()
 

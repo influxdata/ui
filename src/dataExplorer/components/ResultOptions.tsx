@@ -4,29 +4,17 @@ import React, {FC, useState} from 'react'
 import {Accordion} from '@influxdata/clockface'
 import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabelTooltip'
 import {FieldsAsColumns} from 'src/dataExplorer/components/FieldsAsColumns'
+import {GroupBy} from 'src/dataExplorer/components/GroupBy'
 
 // Style
 import './Sidebar.scss'
 
 const TOOLTIP_CONTENT = {
-  GROUP: `test`,
   AGGREGATE: `test`,
 }
 
 const ResultOptions: FC = () => {
-  const [groupActive, setGroupActive] = useState(false)
   const [aggregateActive, setAggregateActive] = useState(false)
-
-  const fieldsAsColumns = <FieldsAsColumns />
-
-  const group = (
-    <ToggleWithLabelTooltip
-      label="Group"
-      active={groupActive}
-      onChange={() => setGroupActive(current => !current)}
-      tooltipContents={TOOLTIP_CONTENT.GROUP}
-    />
-  )
 
   const aggregate = (
     <ToggleWithLabelTooltip
@@ -42,8 +30,8 @@ const ResultOptions: FC = () => {
       <Accordion.AccordionHeader className="result-options--header">
         Result Options
       </Accordion.AccordionHeader>
-      {fieldsAsColumns}
-      {group}
+      <FieldsAsColumns />
+      <GroupBy />
       {aggregate}
     </Accordion>
   )

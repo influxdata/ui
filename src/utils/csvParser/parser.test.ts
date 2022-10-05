@@ -588,6 +588,104 @@ corrupted_line
     expect(metrics3.length).to.be.eql(2)
   })
 
+  it('parses CSV files with timestamps', async () => {
+    const parser = new CSVParser({
+      headerRowCount: 1,
+      columnNames: ['first', 'second', 'third'],
+      measurementColumn: 'third',
+      timestampColumn: 'first',
+      timestampFormat: 'DD/MM/YY HH:mm:ss A',
+    })
+
+    const testCSV = `line1,line2,line3
+23/05/09 04:05:06 PM,70,test_name
+07/11/09 04:05:06 PM,80,test_name2`
+
+    const metrics = await parser.parse(testCSV)
+    expect(() => metrics).to.not.throw(Error)
+
+    expect(metrics[0]?.time).to.deep.equal(dayjs(1243094706000).toDate())
+    expect(metrics[1]?.time).to.deep.equal(dayjs(1257609906000).toDate())
+  })
+
+  it('throws error when parsing CSV files with no timestamps', async () => {
+    const parser = new CSVParser({
+      headerRowCount: 1,
+      columnNames: ['first', 'second', 'third'],
+      measurementColumn: 'third',
+      timestampColumn: 'first',
+    })
+
+    const testCSV = `line1,line2,line3
+  23/05/09 04:05:06 PM,70,test_name
+  07/11/09 04:05:06 PM,80,test_name2`
+
+    await expect(parser.parse(testCSV)).to.be.rejectedWith(
+      Error,
+      'Timestamp format must be specified'
+    )
+  })
+
+  it('parses CSV files with YYYYMMDDHHmm timestamp', async () => {
+    const parser = new CSVParser({
+      headerRowCount: 1,
+      columnNames: ['first', 'second', 'third'],
+      measurementColumn: 'third',
+      timestampColumn: 'first',
+      timestampFormat: 'YYYYMMDDHHmm',
+    })
+
+    const testCSV = `line1,line2,line3
+200905231605,70,test_name
+200907111605,80,test_name2`
+
+    const metrics = await parser.parse(testCSV)
+    expect(() => metrics).to.not.throw(Error)
+
+    expect(metrics[0]?.time).to.deep.equal(dayjs(1243094700000).toDate())
+    expect(metrics[1]?.time).to.deep.equal(dayjs(1247328300000).toDate())
+  })
+
+  it('parses CSV files with unix timestampFormat', async () => {
+    const parser = new CSVParser({
+      headerRowCount: 1,
+      columnNames: ['first', 'second', 'third'],
+      measurementColumn: 'third',
+      timestampColumn: 'first',
+      timestampFormat: 'unix',
+    })
+
+    const testCSV = `line1,line2,line3
+  1243094706,70,test_name
+  1257609906,80,test_name2`
+
+    const metrics = await parser.parse(testCSV)
+    expect(() => metrics).to.not.throw(Error)
+
+    expect(metrics[0]?.time).to.deep.equal(dayjs(1243094706000).toDate())
+    expect(metrics[1]?.time).to.deep.equal(dayjs(1257609906000).toDate())
+  })
+
+  it('parses CSV files with unix_ms timestampFormat', async () => {
+    const parser = new CSVParser({
+      headerRowCount: 1,
+      columnNames: ['first', 'second', 'third'],
+      measurementColumn: 'third',
+      timestampColumn: 'first',
+      timestampFormat: 'unix_ms',
+    })
+
+    const testCSV = `line1,line2,line3
+  1243094706123,70,test_name
+  1257609906123,80,test_name2`
+
+    const metrics = await parser.parse(testCSV)
+    expect(() => metrics).to.not.throw(Error)
+
+    expect(metrics[0]?.time).to.deep.equal(dayjs(1243094706123).toDate())
+    expect(metrics[1]?.time).to.deep.equal(dayjs(1257609906123).toDate())
+  })
+
   it('handles timestamps with unix float precision', async () => {
     const parser = new CSVParser({
       metricName: 'csv',

@@ -254,7 +254,10 @@ class BucketOverlayForm extends PureComponent<Props> {
                 stretchToFitWidth={true}
               >
                 <h6>Need retention period more than 30 days?</h6>
-                <CloudUpgradeButton size={ComponentSize.ExtraSmall} />
+                <CloudUpgradeButton
+                  size={ComponentSize.ExtraSmall}
+                  showPromoMessage={false}
+                />
               </FlexBox>
             </BannerPanel>
           )}

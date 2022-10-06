@@ -2,7 +2,6 @@
 import React, {Component} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
-import {get} from 'lodash'
 
 import {
   Page,
@@ -21,8 +20,7 @@ import DashboardEmpty from 'src/dashboards/components/dashboard_empty/DashboardE
 // Actions
 import {updateCells} from 'src/cells/actions/thunks'
 
-// Utils
-import {fastMap} from 'src/utils/fast'
+// Selectors
 import {getCells} from 'src/cells/selectors'
 
 // Constants
@@ -43,7 +41,7 @@ type Props = OwnProps & ReduxProps
 @ErrorHandling
 class DashboardCellsUnconnected extends Component<Props> {
   public render() {
-    const {cells, manualRefresh, status, views} = this.props
+    const {cells, status} = this.props
 
     return (
       <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>
@@ -65,16 +63,7 @@ class DashboardCellsUnconnected extends Component<Props> {
                 isDraggable
                 isResizable
               >
-                {fastMap(cells, cell => (
-                  <div
-                    key={cell.id}
-                    className="cell"
-                    data-testid={`cell ${views[cell.id]?.name}`}
-                  >
-                    <CellComponent cell={cell} manualRefresh={manualRefresh} />
-                    <GradientBorder />
-                  </div>
-                ))}
+                {this.renderCells()}
               </Grid>
             </>
           )}
@@ -85,64 +74,77 @@ class DashboardCellsUnconnected extends Component<Props> {
     )
   }
 
+  private renderCells = () => {
+    const renderedCells = new Array(this.props.cells.length)
+    for (let i = 0; i < this.props.cells.length; i++) {
+      const cell = this.props.cells[i]
+
+      renderedCells[i] = (
+        <div
+          key={cell.id}
+          className="cell"
+          data-testid={`cell ${this.props.views[cell.id]?.name}`}
+        >
+          <CellComponent cell={cell} manualRefresh={this.props.manualRefresh} />
+          <GradientBorder />
+        </div>
+      )
+    }
+    return renderedCells
+  }
+
   private get cells(): Layout[] {
-    const {views} = this.props
-    return this.props.cells
-      .filter(c => c.status === RemoteDataState.Done)
-      .map(c => {
-        const view = views[c.id]
-        const cell = {
-          ...c,
-          x: c.x,
-          y: c.y,
-          h: c.h,
-          w: c.w,
-          i: c.id,
-        }
-        if (get(view, 'properties.type') === 'gauge') {
-          cell.minW = 2.5
-          cell.minH = 2.5
-          cell.maxW = 20
-        }
-        if (get(view, 'properties.type') === 'simple table') {
-          cell.minW = 5
-          cell.minH = 5
-        }
-        return cell
-      })
+    const layoutCells = []
+    for (let i = 0; i < this.props.cells.length; i++) {
+      const cell = this.props.cells[i] as any
+
+      if (cell.status !== RemoteDataState.Done) {
+        continue
+      }
+
+      cell.i = cell.id
+
+      const view = this.props.views[cell.id]
+      if (view?.properties?.type === 'gauge') {
+        cell.minW = 2.5
+        cell.minH = 2.5
+        cell.maxW = 20
+      }
+      if (view?.properties?.type === 'simple-table') {
+        cell.minW = 5
+        cell.minH = 5
+      }
+
+      layoutCells.push(cell)
+    }
+    return layoutCells
   }
 
   private handleLayoutChange = grid => {
     const {cells} = this.props
 
-    let changed = false
+    let cellLayoutChanged = false
 
     const newCells = cells.map(cell => {
-      const l = grid.find(ly => ly.i === cell.id)
-
+      const newCellLayout = grid.find(layoutCell => layoutCell.i === cell.id)
       if (
-        cell.x !== l.x ||
-        cell.y !== l.y ||
-        cell.h !== l.h ||
-        cell.w !== l.w
+        cell.x !== newCellLayout.x ||
+        cell.y !== newCellLayout.y ||
+        cell.h !== newCellLayout.h ||
+        cell.w !== newCellLayout.w
       ) {
-        changed = true
+        cellLayoutChanged = true
+
+        cell.x = newCellLayout.x
+        cell.y = newCellLayout.y
+        cell.h = newCellLayout.h
+        cell.w = newCellLayout.w
       }
 
-      const newCell = {
-        x: l.x,
-        y: l.y,
-        h: l.h,
-        w: l.w,
-      }
-
-      return {
-        ...cell,
-        ...newCell,
-      }
+      return cell
     })
 
-    if (changed) {
+    if (cellLayoutChanged) {
       this.handlePositionChange(newCells)
     }
   }

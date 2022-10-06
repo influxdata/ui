@@ -1172,6 +1172,9 @@ timestamp,type,name,status
     expect(JSON.stringify(metrics2[0]?.time)).to.deep.equal(
       JSON.stringify(additionalExpected[0]?.time)
     )
+
+    // This should fail when not resetting but reading again due to the header etc
+    await expect(parser.parseLine(testCSV)).to.be.rejectedWith(Error,'parsing time garbage nonsense that needs be skipped as iso8601: cannot parse garbage nonsense that needs be skipped as iso8601')
   })
 
   it("parses array CSVs with reset mode set to 'none'", async () => {
@@ -1288,6 +1291,9 @@ timestamp,type,name,status
     expect(JSON.stringify(metrics2?.time)).to.deep.equal(
       JSON.stringify(additionalExpected[0]?.time)
     )
+    // This should fail when not resetting but reading again due to the header etc
+    await expect(parser.parseLine(testCSV[0])).to.be.rejectedWith(Error,'parsing time garbage nonsense that needs be skipped as iso8601: cannot parse garbage nonsense that needs be skipped as iso8601')
+
   })
 
   it("parses string CSVs with reset mode set to 'always'", async () => {
@@ -1535,5 +1541,8 @@ timestamp,category,id,flag
     expect(JSON.stringify(metrics2?.time)).to.deep.equal(
       JSON.stringify(additionalExpected[0]?.time)
     )
+
+    // This should fail when not resetting but reading again due to the header etc
+    await expect(parser.parseLine(testCSV[0])).to.be.rejectedWith(Error,'parsing time garbage nonsense that needs be skipped as iso8601: cannot parse garbage nonsense that needs be skipped as iso8601')
   })
 })

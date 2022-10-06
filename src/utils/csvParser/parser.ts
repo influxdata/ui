@@ -554,6 +554,12 @@ function parseTimestamp({
       throw new Error(`Timestamp column: ${timestampColumn} could not be found`)
     }
 
+    const timestamp = new Date(recordFields[timestampColumn])
+
+    if(timestamp instanceof Date && isNaN(timestamp)) {
+        throw new Error(`parsing time ${recordFields[timestampColumn]} as ${timestampFormat}: cannot parse ${recordFields[timestampColumn]} as ${timestampFormat}`)
+    }
+
     switch (timestampFormat) {
       case '':
         throw new Error('Timestamp format must be specified')

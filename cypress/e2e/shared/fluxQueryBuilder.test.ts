@@ -21,8 +21,7 @@ describe('Script Builder', () => {
   const bucketName = 'defbuck'
   const measurement = 'ndbc'
 
-  const selectSchema = () => {
-    cy.log('select bucket')
+  const selectBucket = (bucketName: string) => {
     cy.getByTestID('bucket-selector--dropdown-button').click()
     cy.getByTestID('bucket-selector--search-bar').type(bucketName)
     cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
@@ -30,6 +29,11 @@ describe('Script Builder', () => {
       'contain',
       bucketName
     )
+  }
+
+  const selectSchema = () => {
+    cy.log('select bucket')
+    selectBucket(bucketName)
 
     cy.log('select measurement')
     cy.getByTestID('measurement-selector--dropdown-button')
@@ -62,6 +66,17 @@ describe('Script Builder', () => {
     })
   }
 
+  const DEFAULT_EDITOR_TEXT =
+    '// Start by selecting data from the schema browser or typing flux here'
+
+  const resetSession = () => {
+    window.sessionStorage.setItem(
+      'dataExplorer.schema',
+      JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
+    )
+    window.sessionStorage.setItem('dataExplorer.query', DEFAULT_EDITOR_TEXT)
+  }
+
   beforeEach(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {
@@ -72,6 +87,8 @@ describe('Script Builder', () => {
             newDataExplorer: true,
           }).then(() => {
             cy.createBucket(id, name, 'defbuck2')
+            cy.createBucket(id, name, 'defbuck3')
+            cy.createBucket(id, name, 'defbuck4')
             cy.writeData(writeData, 'defbuck')
             cy.wait(100)
             cy.getByTestID('flux-query-builder-toggle').then($toggle => {
@@ -91,10 +108,7 @@ describe('Script Builder', () => {
 
   describe('Results display', () => {
     beforeEach(() => {
-      window.sessionStorage.setItem(
-        'dataExplorer.schema',
-        JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
-      )
+      resetSession()
       cy.setFeatureFlags({
         schemaComposition: true,
         newDataExplorer: true,
@@ -141,6 +155,117 @@ describe('Script Builder', () => {
       cy.getByTestID('dropdown-item-past15m').should('exist').click()
       cy.getByTestID('time-machine-submit-button').should('exist').click()
       cy.wait('@query -15m')
+    })
+
+    describe('data completeness', () => {
+      const runTest = (
+        tableCnt: number,
+        rowCnt: number,
+        truncated: boolean
+      ) => {
+        cy.log('confirm on 1hr')
+        cy.getByTestID('timerange-dropdown').within(() => {
+          cy.getByTestID('dropdown--button').should('exist').click()
+        })
+        cy.getByTestID('dropdown-item-past1h').should('exist').click()
+        cy.getByTestID('time-machine-submit-button').should('exist').click()
+
+        cy.log('run query')
+        cy.getByTestID('time-machine-submit-button').should('exist').click()
+        cy.wait('@query -1h')
+        cy.wait(1000)
+
+        cy.log('table metadata displayed to user is correct')
+        if (truncated) {
+          cy.getByTestID('query-stat')
+            .should(
+              'contain',
+              'Maximum Display Limit Exceeded, result truncated to'
+            )
+            .should('not.contain', 'rows')
+            .should('not.contain', 'tables')
+        } else {
+          cy.getByTestID('query-stat')
+            .should('not.contain', 'truncated')
+            .contains(`${tableCnt} tables`)
+          cy.getByTestID('query-stat').contains(`${rowCnt} rows`)
+        }
+      }
+
+      it('will return 0 tables and 0 rows, for an empty dataset', () => {
+        cy.log('select empty dataset')
+        selectBucket('defbuck3')
+        cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck3")`, {
+          timeout: 30000,
+        })
+
+        runTest(0, 0, false)
+      })
+
+      describe('will return 1 table', () => {
+        beforeEach(() => {
+          const writeData: string[] = []
+          for (let i = 0; i < 30; i++) {
+            writeData.push(`ndbc3,air_temp_degc=70_degrees station_id_=${i}`)
+          }
+          cy.writeData(writeData, 'defbuck4')
+          cy.wait(1200)
+        })
+
+        it('for a dataset with only 1 table', () => {
+          cy.log('select dataset with 1 table')
+          selectBucket('defbuck4')
+
+          runTest(1, 30, false)
+        })
+      })
+
+      it('will return the complete dataset for smaller payloads', () => {
+        cy.log('select smaller dataset')
+        selectSchema()
+        confirmSchemaComposition()
+
+        runTest(30, 30, false)
+      })
+
+      describe('for larger payloads', () => {
+        beforeEach(() => {
+          const writeData: string[] = []
+          for (let i = 0; i < 500; i++) {
+            writeData.push(
+              `ndbc3,air_temp_degc=70_degrees station_id_${i}=${i}`
+            )
+            writeData.push(
+              `ndbc4,air_temp_degc=70_degrees station_id_${i}=${i}`
+            )
+            writeData.push(
+              `ndbc5,air_temp_degc=70_degrees station_id_${i}=${i}`
+            )
+            writeData.push(`ndbc6,air_temp_degc=70_degrees station_id=${i}`)
+            writeData.push(`ndbc7,air_temp_degc=70_degrees station_id=${i}`)
+          }
+          cy.writeData(writeData, 'defbuck2')
+          cy.setFeatureFlags({
+            newDataExplorer: true,
+            schemaComposition: true,
+            dataExplorerCsvLimit: 10000 as any,
+          }).then(() => {
+            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+            cy.wait(1200)
+          })
+        })
+
+        it('will return a truncated dataset rows', () => {
+          cy.log('select larger dataset')
+          selectBucket('defbuck2')
+          cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck2")`, {
+            timeout: 30000,
+          })
+
+          runTest(3 * 500 + 2, 5 * 500, true)
+        })
+      })
     })
   })
 
@@ -287,17 +412,9 @@ describe('Script Builder', () => {
   })
 
   describe('Schema Composition', () => {
-    const DEFAULT_EDITOR_TEXT =
-      '// Start by selecting data from the schema browser or typing flux here'
-
     beforeEach(() => {
       cy.writeData(writeData, 'defbuck2')
-
-      window.sessionStorage.setItem(
-        'dataExplorer.schema',
-        JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
-      )
-      window.sessionStorage.setItem('dataExplorer.query', DEFAULT_EDITOR_TEXT)
+      resetSession()
 
       cy.setFeatureFlags({
         schemaComposition: true,
@@ -337,12 +454,7 @@ describe('Script Builder', () => {
         cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
 
         cy.log('can still browse schema while diverged')
-        cy.getByTestID('bucket-selector--dropdown-button').click()
-        cy.getByTestID(`bucket-selector--dropdown--defbuck2`).click()
-        cy.getByTestID('bucket-selector--dropdown-button').should(
-          'contain',
-          'defbuck2'
-        )
+        selectBucket('defbuck2')
       })
 
       describe('conditions for divergence:', () => {

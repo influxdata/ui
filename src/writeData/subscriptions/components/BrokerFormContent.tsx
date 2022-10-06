@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useRef, useState} from 'react'
+import {v4 as uuidv4} from 'uuid'
 
 // Components
 import {
@@ -19,6 +20,9 @@ import {
   AlignItems,
   FlexDirection,
   ComponentStatus,
+  Toggle,
+  InputToggleType,
+  InputLabel,
 } from '@influxdata/clockface'
 import UserInput from 'src/writeData/subscriptions/components/UserInput'
 import CertificateInput from 'src/writeData/subscriptions/components/CertificateInput'
@@ -57,6 +61,10 @@ const BrokerFormContent: FC<Props> = ({
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
+  const [useCustomClientID, setUseCustomClientID] = useState(
+    !!formContent.clientID || false
+  )
+  const randomClientID = useRef(uuidv4())
 
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
@@ -292,6 +300,69 @@ const BrokerFormContent: FC<Props> = ({
                   : ''
               }`}
             </Heading>
+          )}
+          {isFlagEnabled('subscriptionsClientId') && (
+            <>
+              <Form.ValidationElement
+                label="Client ID"
+                value={formContent.brokerHost}
+                required={useCustomClientID}
+                validationFunc={() =>
+                  useCustomClientID &&
+                  handleValidation('Client ID', formContent.clientID)
+                }
+                helpText="We will generate a Client ID for you, but some providers require you use their Client ID. If your provider requires a specific Client ID, the connection will fail without it. Check your provider’s documentation to verify whether you need to use their Client ID."
+                className="no-margin-bottom"
+              >
+                {status => (
+                  <Input
+                    type={InputType.Text}
+                    placeholder={
+                      useCustomClientID
+                        ? 'Enter a client id'
+                        : randomClientID.current
+                    }
+                    name="clientid"
+                    autoFocus={false}
+                    value={formContent.clientID}
+                    onChange={e => {
+                      updateForm({
+                        ...formContent,
+                        clientID: e.target.value,
+                      })
+                    }}
+                    onBlur={() =>
+                      event(
+                        'completed form field',
+                        {formField: 'clientid', step: 'broker'},
+                        {feature: 'subscriptions'}
+                      )
+                    }
+                    status={
+                      edit && useCustomClientID
+                        ? status
+                        : ComponentStatus.Disabled
+                    }
+                    testID={`${className}-broker-form--clientid`}
+                    maxLength={255}
+                  />
+                )}
+              </Form.ValidationElement>
+              <Toggle
+                type={InputToggleType.Checkbox}
+                checked={useCustomClientID}
+                id="clientid-toggle"
+                size={ComponentSize.Small}
+                titleText="Use Custom Client ID"
+                onChange={() => {
+                  setUseCustomClientID(!useCustomClientID)
+                  updateForm({...formContent, clientID: ''})
+                }}
+                disabled={!edit}
+              >
+                <InputLabel>Use Custom Client ID</InputLabel>
+              </Toggle>
+            </>
           )}
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve}>

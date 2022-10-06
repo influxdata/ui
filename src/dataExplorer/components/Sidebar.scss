@@ -27,14 +27,14 @@
   // make sure DraggableResizer collapses correctly
   // and DapperScrollbars shows up
   position: absolute;
-  overflow-x: hidden;
+  overflow: hidden;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
 
   .flux-library-original {
-    height: calc(100% - 30px); // remove the ugly white scroll bar
+    height: 100%; // show flux function list
 
     .flux-toolbar {
       flex-direction: column;
@@ -92,7 +92,7 @@
   }
 
   .cf-accordion--body-container {
-    height: calc(100% - 40px); // remove the ugly white scroll bar
+    height: 100%; // show flux function list
   }
 
   .flux-toolbar {

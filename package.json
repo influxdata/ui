@@ -222,6 +222,7 @@
     "s2-geometry": "^1.2.10",
     "ts-jest": "27.0.7",
     "use-local-storage-state": "^9.0.2",
+    "uuid": "^9.0.0",
     "vscode-languageserver-protocol": "^3.16.0",
     "worker-plugin": "^5.0.1",
     "y-websocket": "^1.4.4",

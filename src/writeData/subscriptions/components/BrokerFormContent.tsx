@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useRef, useState} from 'react'
+import {v4 as uuidv4} from 'uuid'
 
 // Components
 import {
@@ -63,7 +64,7 @@ const BrokerFormContent: FC<Props> = ({
   const [useCustomClientID, setUseCustomClientID] = useState(
     !!formContent.clientID || false
   )
-  const randomClientID = useRef(crypto.randomUUID())
+  const randomClientID = useRef(uuidv4())
 
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})

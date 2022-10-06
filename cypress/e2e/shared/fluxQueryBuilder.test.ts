@@ -442,6 +442,7 @@ describe('Script Builder', () => {
 
         cy.log('modify schema browser')
         selectSchema()
+        confirmSchemaComposition()
 
         cy.log('editor text contains the composition')
         cy.getByTestID('flux-editor').contains(
@@ -453,7 +454,9 @@ describe('Script Builder', () => {
         cy.getByTestID('overlay--container')
           .should('be.visible')
           .within(() => {
-            cy.getByTestID('flux-query-builder--no-save').click()
+            cy.getByTestID('flux-query-builder--no-save')
+              .should('be.visible')
+              .click()
           })
 
         cy.log('editor text is now empty')

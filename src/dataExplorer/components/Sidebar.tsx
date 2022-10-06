@@ -1,10 +1,17 @@
 import React, {FC, useContext, useCallback} from 'react'
-import {DapperScrollbars} from '@influxdata/clockface'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import Functions from 'src/shared/components/GroupedFunctionsList'
 import DynamicFunctions from 'src/shared/components/DynamicFunctionsList'
+import {ResultOptions} from 'src/dataExplorer/components/ResultOptions'
+import {
+  Accordion,
+  DapperScrollbars,
+  FlexBox,
+  FlexDirection,
+  JustifyContent,
+} from '@influxdata/clockface'
 
 // Contexts
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
@@ -16,6 +23,7 @@ import {FluxFunction, FluxToolbarFunction} from 'src/types'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import './Sidebar.scss'
 
@@ -73,11 +81,42 @@ const Sidebar: FC = () => {
     )
   }
 
+  const resultOptions = isFlagEnabled('resultOptions') ? (
+    <FlexBox.Child
+      className="result-options--container"
+      style={{flex: '0 0 0px'}}
+    >
+      <ResultOptions />
+    </FlexBox.Child>
+  ) : null
+
+  const fluxLibrary = isFlagEnabled('resultOptions') ? (
+    <FlexBox.Child className="flux-library--container">
+      <Accordion className="flux-library" expanded={true}>
+        <Accordion.AccordionHeader className="flux-library--header">
+          <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
+        </Accordion.AccordionHeader>
+        {browser}
+      </Accordion>
+    </FlexBox.Child>
+  ) : (
+    <FlexBox.Child className="flux-library--container">
+      <div className="flux-library-original">
+        <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
+        {browser}
+      </div>
+    </FlexBox.Child>
+  )
+
   return (
-    <div className="container-right-side-bar">
-      <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
-      {browser}
-    </div>
+    <FlexBox
+      direction={FlexDirection.Column}
+      justifyContent={JustifyContent.FlexStart}
+      className="container-right-side-bar"
+    >
+      {resultOptions}
+      {fluxLibrary}
+    </FlexBox>
   )
 }
 

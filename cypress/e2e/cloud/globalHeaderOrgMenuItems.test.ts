@@ -19,6 +19,8 @@ describe('FREE: global header menu items test', () => {
           if (res.body.orgs) {
             idpeOrgID = res.body.orgs[0].id
           }
+
+          cy.setFeatureFlags(createOrgsFeatureFlags)
         })
       })
     )
@@ -27,9 +29,11 @@ describe('FREE: global header menu items test', () => {
   beforeEach(() => {
     // Preserve one session throughout.
     Cypress.Cookies.preserveOnce('sid')
-    cy.setFeatureFlags(createOrgsFeatureFlags)
+
     makeQuartzUseIDPEOrgID(idpeOrgID)
-    cy.visit('/')
+    cy.visit('/').then(() => {
+      cy.setFeatureFlags(createOrgsFeatureFlags)
+    })
   })
 
   it('has add more organizations in menu items', () => {
@@ -66,7 +70,9 @@ describe('PAYG: global header menu items test', () => {
 
   beforeEach(() => {
     makeQuartzUseIDPEOrgID(idpeOrgID, 'pay_as_you_go')
-    cy.visit('/')
+    cy.visit('/').then(() => {
+      cy.setFeatureFlags(createOrgsFeatureFlags)
+    })
   })
 
   it('PAYG: can check create organization menu item exists', () => {
@@ -103,7 +109,9 @@ describe('Contract: global header menu items test', () => {
 
   beforeEach(() => {
     makeQuartzUseIDPEOrgID(idpeOrgID, 'contract')
-    cy.visit('/')
+    cy.visit('/').then(() => {
+      cy.setFeatureFlags(createOrgsFeatureFlags)
+    })
   })
 
   it('Contract: can check create organization menu item exists', () => {

@@ -5,6 +5,7 @@ import {IconFont} from '@influxdata/clockface'
 // Components
 import {
   GlobalHeaderDropdown,
+  MainMenuItem,
   TypeAheadMenuItem,
 } from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown'
 
@@ -23,6 +24,14 @@ import {
 } from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Selectors
+import {useSelector} from 'react-redux'
+import {selectCurrentAccountType} from 'src/identity/selectors'
+import {CreateOrganizationMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/MenuItem'
+
 type OrgSummaryItem = OrganizationSummaries[number]
 
 interface Props {
@@ -30,10 +39,11 @@ interface Props {
   orgsList: OrganizationSummaries
 }
 
-const menuStyle = {width: '250px'}
+const menuStyle = {width: '250px', padding: '16px'}
 const orgDropdownStyle = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
+  const accountType = useSelector(selectCurrentAccountType)
   const switchOrg = (org: TypeAheadMenuItem) => {
     event(HeaderNavEvent.OrgSwitch, multiOrgTag, {
       oldOrgID: activeOrg.id,
@@ -44,7 +54,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     window.location.href = `${CLOUD_URL}/orgs/${org.id}`
   }
 
-  const orgMainMenu = [
+  const orgMainMenu: MainMenuItem[] = [
     {
       name: 'Settings',
       iconFont: IconFont.CogSolid_New,
@@ -62,8 +72,28 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     },
   ]
 
+  if (isFlagEnabled('createDeleteOrgs') && accountType === 'free') {
+    orgMainMenu.push({
+      name: 'Add More Organizations',
+      iconFont: IconFont.CrownSolid_New,
+      href: '/checkout',
+      className: 'upgrade-payg-add-org--button',
+      showDivider: true,
+    })
+  }
+
   const sendDropdownClickEvent = () => {
     event(HeaderNavEvent.OrgDropdownClick, multiOrgTag)
+  }
+
+  const additionalHeaderItems = []
+  if (
+    isFlagEnabled('createDeleteOrgs') &&
+    (accountType === 'contract' || accountType === 'pay_as_you_go')
+  ) {
+    additionalHeaderItems.push(
+      <CreateOrganizationMenuItem key="CreateOrgMenuItem" />
+    )
   }
 
   return (
@@ -83,6 +113,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
         typeAheadOnSelectOption={switchOrg}
         typeAheadSelectedOption={activeOrg}
         typeAheadTestID="globalheader--org-dropdown-typeahead"
+        additionalHeaderItems={additionalHeaderItems}
       />
     </div>
   )

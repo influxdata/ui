@@ -165,3 +165,45 @@ export function genCurve(args: CurveArgs): string[] {
 
   return result
 }
+
+export const makeQuartzUseIDPEOrgID = (
+  idpeOrgID: string,
+  accountType = 'free'
+) => {
+  cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
+    cy.intercept('GET', 'api/v2/quartz/accounts', quartzAccounts).as(
+      'getQuartzAccounts'
+    )
+  })
+
+  let fixtureName = 'multiOrgIdentity'
+  if (accountType === 'pay_as_you_go') {
+    fixtureName = 'multiOrgIdentityPAYG'
+  }
+  if (accountType === 'contract') {
+    fixtureName = 'multiOrgIdentityContract'
+  }
+
+  cy.fixture(fixtureName).then(quartzIdentity => {
+    quartzIdentity.org.id = idpeOrgID
+
+    cy.intercept('GET', 'api/v2/quartz/identity', quartzIdentity).as(
+      'getQuartzIdentity'
+    )
+  })
+
+  cy.fixture('multiOrgOrgs1').then(quartzOrgs => {
+    quartzOrgs[0].id = idpeOrgID
+
+    cy.intercept('GET', 'api/v2/quartz/accounts/**/orgs', quartzOrgs).as(
+      'getQuartzOrgs'
+    )
+  })
+
+  cy.fixture('orgDetails').then(quartzOrgDetails => {
+    quartzOrgDetails.id = idpeOrgID
+    cy.intercept('GET', 'api/v2/quartz/orgs/*', quartzOrgDetails).as(
+      'getQuartzOrgDetails'
+    )
+  })
+}

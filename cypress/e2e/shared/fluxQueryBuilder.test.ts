@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+const path = require('path')
 
 const DEFAULT_SCHEMA = {
   bucket: null,
@@ -169,6 +170,14 @@ describe('Script Builder', () => {
             .should('not.contain', 'Truncated')
             .contains(`${rowCnt} rows`)
         }
+
+        cy.log('can download csv data')
+        cy.getByTestID('data-explorer--csv-download').should('exist').click()
+        const downloadsFolder = Cypress.config('downloadsFolder')
+        const filename = path.join(downloadsFolder, 'influx.data.csv')
+        cy.readFile(filename, {timeout: 15000}).should('have.length.gt', 500)
+        /// TODO: wiedld (5 Oct 2022) -- check for entire dataset is download.
+        /// after fix this: https://github.com/influxdata/ui/issues/5994
       }
 
       it('will return the complete dataset for smaller payloads', () => {

@@ -31,6 +31,7 @@ import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
 
 // Types
 import {TimeRange} from 'src/types'
+import {FluxResultComplete} from 'src/shared/apis/query'
 
 // Utils
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
@@ -112,12 +113,14 @@ const ResultsPane: FC = () => {
     event('CSV Download Initiated')
     basic(text, {
       vars: rangeToParam(range),
-    }).promise.then(response => {
+    }).promise.then(async response => {
       if (response.type !== 'SUCCESS') {
         return
       }
+      const data = (await response.data.next())
+        .value as unknown as FluxResultComplete
 
-      downloadTextFile(response.csv, 'influx.data', '.csv', 'text/csv')
+      downloadTextFile(data.csv, 'influx.data', '.csv', 'text/csv')
     })
   }
 
@@ -211,6 +214,7 @@ const ResultsPane: FC = () => {
                 status={
                   text ? ComponentStatus.Default : ComponentStatus.Disabled
                 }
+                testID="data-explorer--csv-download"
               />
               {isFlagEnabled('newTimeRangeComponent') ? (
                 <NewDatePicker />

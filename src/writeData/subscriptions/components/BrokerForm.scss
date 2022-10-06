@@ -1,4 +1,8 @@
 @import '@influxdata/clockface/dist/variables.scss';
+
+.no-margin-bottom {
+  margin-bottom: $cf-space-s !important;
+}
 .create-broker-form {
   float: right;
   width: 75%;
@@ -72,6 +76,7 @@
   &__example-text {
     font-style: italic;
     color: $cf-grey-55;
+    margin-bottom: $cf-space-m;
   }
   &__creds {
     .cf-form--element {

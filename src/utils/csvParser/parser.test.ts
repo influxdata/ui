@@ -5,15 +5,6 @@ import {CSVParser} from './parser'
 import {EOFError} from './utils'
 import {set, reset} from 'mockdate'
 
-import dayjs from 'dayjs'
-import dayjsCustomParseFormat from 'dayjs/plugin/customParseFormat'
-import dayjsUTC from 'dayjs/plugin/utc'
-import dayjsTimezone from 'dayjs/plugin/timezone'
-
-dayjs.extend(dayjsCustomParseFormat)
-dayjs.extend(dayjsUTC)
-dayjs.extend(dayjsTimezone)
-
 interface Metric {
   name: any
   tags: Record<string, any>
@@ -386,7 +377,7 @@ trash,80,test_name`
     const expected: Metric = {
       name: 'csv',
       fields: {id: 1, value: 5},
-      time: dayjs.unix(1551129661.954561233).toDate(),
+      time: new Date(1551129661.954561233 * 1000),
       tags: {},
     }
 
@@ -456,7 +447,7 @@ trash,80,test_name`
       headerRowCount: 1,
       timestampColumn: 'date',
       measurementColumn: 'third',
-      timestampFormat: 'DD/MM/YY hh:mm:ss A',
+      timestampFormat: '02/01/06 03:04:05 PM',
       skipErrors: true,
     })
 
@@ -594,7 +585,7 @@ corrupted_line
       columnNames: ['first', 'second', 'third'],
       measurementColumn: 'third',
       timestampColumn: 'first',
-      timestampFormat: 'DD/MM/YY HH:mm:ss A',
+      timestampFormat: '02/01/06 03:04:05 PM',
     })
 
     const testCSV = `line1,line2,line3
@@ -604,8 +595,8 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(dayjs(1243094706000).toDate())
-    expect(metrics[1]?.time).to.deep.equal(dayjs(1257609906000).toDate())
+    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:06.000Z'))
+    expect(metrics[1]?.time).to.deep.equal(new Date('2009-11-07T16:05:06.000Z'))
   })
 
   it('throws error when parsing CSV files with no timestamps', async () => {
@@ -632,7 +623,7 @@ corrupted_line
       columnNames: ['first', 'second', 'third'],
       measurementColumn: 'third',
       timestampColumn: 'first',
-      timestampFormat: 'YYYYMMDDHHmm',
+      timestampFormat: '200601021504',
     })
 
     const testCSV = `line1,line2,line3
@@ -642,8 +633,8 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(dayjs(1243094700000).toDate())
-    expect(metrics[1]?.time).to.deep.equal(dayjs(1247328300000).toDate())
+    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:00.000Z'))
+    expect(metrics[1]?.time).to.deep.equal(new Date('2009-07-11T16:05:00.000Z'))
   })
 
   it('parses CSV files with unix timestampFormat', async () => {
@@ -662,8 +653,8 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(dayjs(1243094706000).toDate())
-    expect(metrics[1]?.time).to.deep.equal(dayjs(1257609906000).toDate())
+    expect(metrics[0]?.time).to.deep.equal(new Date(1243094706000))
+    expect(metrics[1]?.time).to.deep.equal(new Date(1257609906000))
   })
 
   it('parses CSV files with unix_ms timestampFormat', async () => {
@@ -682,8 +673,8 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(dayjs(1243094706123).toDate())
-    expect(metrics[1]?.time).to.deep.equal(dayjs(1257609906123).toDate())
+    expect(metrics[0]?.time).to.deep.equal(new Date(1243094706123))
+    expect(metrics[1]?.time).to.deep.equal(new Date(1257609906123))
   })
 
   it('handles timestamps with unix float precision', async () => {
@@ -699,7 +690,7 @@ corrupted_line
     const expected: Metric = {
       name: 'csv',
       fields: {value: 42},
-      time: dayjs.unix(1551129661.954561233).toDate(),
+      time: new Date(1551129661.954561233 * 1000),
       tags: {},
     }
 
@@ -712,7 +703,7 @@ corrupted_line
       columnNames: ['first', 'second', 'third'],
       measurementColumn: 'third',
       timestampColumn: 'first',
-      timestampFormat: 'DD/MM/YY hh:mm:ss A',
+      timestampFormat: '02/01/06 03:04:05 PM',
       timezone: 'Asia/Jakarta',
     })
 
@@ -721,8 +712,8 @@ corrupted_line
   07/11/09 11:05:06 PM,80,test_name2`
 
     const metrics = await parser.parse(testCSV)
-    expect(metrics[0]?.time).to.deep.equal(dayjs.unix(1243094706).toDate())
-    expect(metrics[1]?.time).to.deep.equal(dayjs.unix(1257609906).toDate())
+    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:06.000Z'))
+    expect(metrics[1]?.time).to.deep.equal(new Date('2009-11-07T16:05:06.000Z'))
   })
 
   it('can handle empty measurement name', async () => {
@@ -1294,6 +1285,7 @@ timestamp,type,name,status
     expect(JSON.stringify(metrics2?.time)).to.deep.equal(
       JSON.stringify(additionalExpected[0]?.time)
     )
+
     // This should fail when not resetting but reading again due to the header etc
     await expect(parser.parseLine(testCSV[0])).to.be.rejectedWith(
       Error,

@@ -1,13 +1,9 @@
-import dayjs from 'dayjs'
-import dayjsCustomParseFormat from 'dayjs/plugin/customParseFormat'
-import dayjsUTC from 'dayjs/plugin/utc'
-import dayjsTimezone from 'dayjs/plugin/timezone'
-dayjs.extend(dayjsCustomParseFormat)
-dayjs.extend(dayjsUTC)
-dayjs.extend(dayjsTimezone)
-
+import {DateTime} from 'luxon'
 import {EOFError, LocalFile} from './utils'
 import {CSVReader} from './reader'
+
+// Utils
+import {getLuxonFormatString} from 'src/utils/datetime/validator'
 
 interface Metric {
   name: string
@@ -554,14 +550,6 @@ function parseTimestamp({
       throw new Error(`Timestamp column: ${timestampColumn} could not be found`)
     }
 
-    const timestamp = new Date(recordFields[timestampColumn])
-
-    if (timestamp instanceof Date && isNaN(timestamp)) {
-      throw new Error(
-        `parsing time ${recordFields[timestampColumn]} as ${timestampFormat}: cannot parse ${recordFields[timestampColumn]} as ${timestampFormat}`
-      )
-    }
-
     switch (timestampFormat) {
       case '':
         throw new Error('Timestamp format must be specified')
@@ -584,13 +572,19 @@ export function formatTimestamp(
 ) {
   switch (format.toLowerCase()) {
     case 'unix':
-      return dayjs(timestamp, 'X').toDate()
+      return new Date(timestamp * 1000)
     case 'unix_ms':
     case 'unix_us':
     case 'unix_ns':
-      return dayjs(timestamp, 'x').toDate()
+      return new Date(parseInt(timestamp, 10))
     case 'iso8601':
-      return dayjs(timestamp).toDate()
+      const formattedDate = new Date(timestamp)
+      if (formattedDate instanceof Date && !isFinite(formattedDate.getTime())) {
+        throw new Error(
+          `parsing time ${timestamp} as ${format}: cannot parse ${timestamp} as ${format}`
+        )
+      }
+      return formattedDate
     default:
       if (!timezone) {
         timezone = 'UTC'
@@ -598,6 +592,18 @@ export function formatTimestamp(
       if (typeof timestamp !== 'string') {
         throw new Error('Unsupported timestamp type')
       }
-      return dayjs.tz(timestamp, format, timezone).toDate()
+
+      const parsedDate = DateTime.fromFormat(
+        timestamp,
+        getLuxonFormatString(format),
+        {zone: timezone}
+      ).toISO()
+      if (parsedDate) {
+        return new Date(parsedDate)
+      } else {
+        throw new Error(
+          `parsing time ${timestamp} as ${format}: cannot parse ${timestamp} as ${format} `
+        )
+      }
   }
 }

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense} from 'react'
+import React, {FC, lazy, Suspense, useState} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {
   RemoteDataState,
@@ -29,10 +29,18 @@ const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 const TMFluxEditor: FC<{variables: Variable[]}> = props => {
   const dispatch = useDispatch()
   const activeQueryText = useSelector(getActiveQuery).text
+  const [monacoInput, setMonacoInput] = useState(activeQueryText)
+  let userIdleTimer
 
   const handleSetActiveQueryText = React.useCallback(
     (text: string) => {
-      dispatch(setActiveQueryText(text))
+      setMonacoInput(text)
+
+      // only send to redux when the user hasn't typed for one second.
+      clearTimeout(userIdleTimer)
+      userIdleTimer = setTimeout(() => {
+        dispatch(setActiveQueryText(text))
+      }, 1000)
     },
     [dispatch]
   )
@@ -73,7 +81,7 @@ const TMFluxEditor: FC<{variables: Variable[]}> = props => {
           }
         >
           <FluxEditor
-            script={activeQueryText}
+            script={monacoInput}
             variables={props.variables}
             onChangeScript={handleActiveQuery}
             onSubmitScript={handleSubmitQueries}

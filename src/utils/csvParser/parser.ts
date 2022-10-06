@@ -556,8 +556,10 @@ function parseTimestamp({
 
     const timestamp = new Date(recordFields[timestampColumn])
 
-    if(timestamp instanceof Date && isNaN(timestamp)) {
-        throw new Error(`parsing time ${recordFields[timestampColumn]} as ${timestampFormat}: cannot parse ${recordFields[timestampColumn]} as ${timestampFormat}`)
+    if (timestamp instanceof Date && isNaN(timestamp)) {
+      throw new Error(
+        `parsing time ${recordFields[timestampColumn]} as ${timestampFormat}: cannot parse ${recordFields[timestampColumn]} as ${timestampFormat}`
+      )
     }
 
     switch (timestampFormat) {

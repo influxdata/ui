@@ -25,6 +25,7 @@ import {FluxResult} from 'src/types/flows'
 
 import './Results.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {bytesFormatter} from 'src/shared/copy/notifications'
 
 // simplified version migrated from src/flows/pipes/Table/view.tsx
 const QueryStat: FC = () => {
@@ -44,11 +45,19 @@ const QueryStat: FC = () => {
   }
 
   return (
-    <div className="query-stat">
-      <span className="query-stat--bold">{`${tableNum} tables`}</span>
-      <span className="query-stat--bold">{`${
-        result?.parsed?.table?.length || 0
-      } rows`}</span>
+    <div className="query-stat" data-testid="query-stat">
+      {result.truncated ? (
+        <span className="query-stat--bold">{` Maximum Display Limit Exceeded, result truncated to ${bytesFormatter(
+          result.bytes
+        )}`}</span>
+      ) : (
+        <>
+          <span className="query-stat--bold">{`${tableNum} tables`}</span>
+          <span className="query-stat--bold">{`${
+            result?.parsed?.table?.length || 0
+          } rows`}</span>
+        </>
+      )}
     </div>
   )
 }

@@ -14,6 +14,7 @@ import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Utilities
 import {View} from 'src/visualization'
+import {bytesFormatter} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
@@ -81,10 +82,18 @@ const QueryStat: FC = () => {
   }
 
   return (
-    <div className="query-stat">
-      <span className="query-stat--bold">{`${queryStat.tableNum} tables`}</span>
-      <span className="query-stat--bold">{`${queryStat.rowNum} rows`}</span>
-      <span className="query-stat--normal">{`${queryStat.processTime} ms`}</span>
+    <div className="query-stat" data-testid="query-stat">
+      {results.truncated ? (
+        <span className="query-stat--bold">{` Maximum Display Limit Exceeded, result truncated to ${bytesFormatter(
+          results.bytes
+        )}`}</span>
+      ) : (
+        <>
+          <span className="query-stat--bold">{`${queryStat.tableNum} tables`}</span>
+          <span className="query-stat--bold">{`${queryStat.rowNum} rows`}</span>
+          <span className="query-stat--normal">{`${queryStat.processTime} ms`}</span>
+        </>
+      )}
     </div>
   )
 }

@@ -23,7 +23,6 @@ describe('Script Builder', () => {
 
   const selectBucket = (bucketName: string) => {
     cy.getByTestID('bucket-selector--dropdown-button').click()
-    cy.getByTestID('bucket-selector--search-bar').type(bucketName)
     cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
     cy.getByTestID('bucket-selector--dropdown-button').should(
       'contain',
@@ -118,6 +117,7 @@ describe('Script Builder', () => {
         cy.wait(1200).then(() => {
           cy.reload()
           cy.getByTestID('flux-sync--toggle')
+          cy.getByTestID('flux-editor', {timeout: 30000})
         })
       })
 
@@ -140,7 +140,6 @@ describe('Script Builder', () => {
     })
 
     it('will allow querying of different data ranges', () => {
-      cy.getByTestID('flux-editor', {timeout: 30000})
       selectSchema()
       confirmSchemaComposition()
 
@@ -205,9 +204,7 @@ describe('Script Builder', () => {
       describe('will return 1 table', () => {
         beforeEach(() => {
           const writeData: string[] = []
-          for (let i = 0; i < 30; i++) {
-            writeData.push(`ndbc3,air_temp_degc=70_degrees station_id_=${i}`)
-          }
+          writeData.push(`ndbc3,air_temp_degc=70_degrees station_id=${i}`)
           cy.writeData(writeData, 'defbuck4')
           cy.wait(1200)
         })
@@ -216,7 +213,7 @@ describe('Script Builder', () => {
           cy.log('select dataset with 1 table')
           selectBucket('defbuck4')
 
-          runTest(1, 30, false)
+          runTest(1, 1, false)
         })
       })
 
@@ -554,7 +551,6 @@ describe('Script Builder', () => {
 
         cy.log('modify schema browser')
         selectSchema()
-        confirmSchemaComposition()
 
         cy.log('editor text contains the composition')
         cy.getByTestID('flux-editor').contains(
@@ -562,7 +558,9 @@ describe('Script Builder', () => {
         )
 
         cy.log('click new script, and choose to delete current script')
-        cy.getByTestID('flux-query-builder--new-script').click({force: true})
+        cy.getByTestID('flux-query-builder--new-script')
+          .should('be.visible')
+          .click()
         cy.getByTestID('overlay--container')
           .should('be.visible')
           .within(() => {

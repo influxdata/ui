@@ -702,27 +702,23 @@ export const QueryProvider: FC = ({children}) => {
   ): Promise<FluxResult> => {
     const result = basic(text, override, options)
 
-    const promise: any = result.promise
-      .then(raw => {
-        if (raw.type !== 'SUCCESS') {
-          throw new Error(raw.message)
-        }
+    const promise: any = result.promise.then(async raw => {
+      if (raw.type !== 'SUCCESS') {
+        throw new Error(raw.message)
+      }
+      if (raw.didTruncate) {
+        dispatch(notify(resultTooLarge(raw.bytesRead)))
+      }
+      const parsed = await fromFlux(raw.csv)
 
-        if (raw.didTruncate) {
-          dispatch(notify(resultTooLarge(raw.bytesRead)))
-        }
-
-        return raw
-      })
-      .then(raw => fromFlux(raw.csv))
-      .then(
-        parsed =>
-          ({
-            source: text,
-            parsed,
-            error: null,
-          } as FluxResult)
-      )
+      return {
+        source: text,
+        parsed,
+        error: null,
+        truncated: raw.didTruncate,
+        bytes: raw.bytesRead,
+      } as FluxResult
+    })
 
     promise.cancel = result.cancel
     return promise

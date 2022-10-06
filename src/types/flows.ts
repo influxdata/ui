@@ -87,6 +87,8 @@ export interface FluxResult {
   source: string // the query that was used to generate the flux
   parsed: InternalFromFluxResult // the parsed result
   error?: string // any error that might have happend while fetching
+  truncated: boolean // if parsed data is truncated
+  bytes: number
 }
 
 interface DataLookup<T> {

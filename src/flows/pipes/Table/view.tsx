@@ -44,9 +44,8 @@ const QueryStat: FC = () => {
   if (typeof lastTableValue === 'string') {
     tableNum = parseInt(lastTableValue) + 1
   } else if (typeof lastTableValue === 'boolean') {
-    tableNum = lastTableValue ? 1 : 0
-  } else {
-    // number
+    console.error('Cannot extract tableId. Check parsed csv output.')
+  } else if (typeof lastTableValue === 'number') {
     tableNum = lastTableValue + 1
   }
 

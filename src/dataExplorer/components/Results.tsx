@@ -31,16 +31,15 @@ const QueryStat: FC = () => {
   const {result} = useContext(ResultsContext)
 
   const tableColumn = result?.parsed?.table?.getColumn('table') || []
-  const lastTableValue = tableColumn[tableColumn.length - 1] || -1
+  const lastTableValue = tableColumn[tableColumn.length - 1]
 
   let tableNum = 0
 
   if (typeof lastTableValue === 'string') {
     tableNum = parseInt(lastTableValue) + 1
   } else if (typeof lastTableValue === 'boolean') {
-    tableNum = lastTableValue ? 1 : 0
-  } else {
-    // number
+    console.error('Cannot extract tableId. Check parsed csv output.')
+  } else if (typeof lastTableValue === 'number') {
     tableNum = lastTableValue + 1
   }
 

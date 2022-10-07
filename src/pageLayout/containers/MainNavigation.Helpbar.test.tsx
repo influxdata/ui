@@ -35,7 +35,7 @@ import {
   OverlayController,
   OverlayProviderComp,
 } from 'src/overlays/components/OverlayController'
-import {TreeSidebar} from 'src/pageLayout/containers/TreeSidebar'
+import {MainNavigation} from 'src/pageLayout/containers/MainNavigation'
 import {notify} from 'src/shared/actions/notifications'
 import {supportRequestError} from 'src/shared/copy/notifications'
 import {renderWithReduxAndRouter} from 'src/mockState'
@@ -95,7 +95,7 @@ const setup = currentIdentity => {
       <OverlayProviderComp>
         <OverlayController />
       </OverlayProviderComp>
-      <TreeSidebar />
+      <MainNavigation />
     </>,
     defaultState => ({
       ...defaultState,

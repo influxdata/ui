@@ -20,25 +20,31 @@ const GroupBy: FC = () => {
     GroupOptions.Default
   )
 
+  const groupOptionsButtons = (
+    <SelectGroup>
+      {(Object.keys(GroupOptions) as (keyof typeof GroupOptions)[]).map(key => (
+        <SelectGroup.Option
+          key={key}
+          id={key}
+          active={selectedGroupOption === GroupOptions[key]}
+          value={GroupOptions[key]}
+          onClick={setSelectedGroupOption}
+        >
+          {GroupOptions[key]}
+        </SelectGroup.Option>
+      ))}
+    </SelectGroup>
+  )
+
+  const groupBySelector =
+    selectedGroupOption === GroupOptions.GroupBy ? <div>dropdown</div> : null
+
   return useMemo(() => {
     return (
       <div className="result-options--item">
         <SelectorTitle label="Group" tooltipContents={GROUP_TOOLTIP} />
-        <SelectGroup>
-          {(Object.keys(GroupOptions) as (keyof typeof GroupOptions)[]).map(
-            key => (
-              <SelectGroup.Option
-                key={key}
-                id={key}
-                active={selectedGroupOption === GroupOptions[key]}
-                value={GroupOptions[key]}
-                onClick={setSelectedGroupOption}
-              >
-                {GroupOptions[key]}
-              </SelectGroup.Option>
-            )
-          )}
-        </SelectGroup>
+        {groupOptionsButtons}
+        {groupBySelector}
       </div>
     )
   }, [selectedGroupOption])

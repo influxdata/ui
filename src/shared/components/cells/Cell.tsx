@@ -28,7 +28,7 @@ import {
 } from 'src/types'
 
 // Selectors
-import {getAllVariables} from 'src/variables/selectors'
+import {getAllVariablesMemoized} from 'src/variables/selectors'
 import {getWindowPeriodFromQueryBuilder} from 'src/timeMachine/selectors'
 
 // Constants
@@ -235,7 +235,8 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
     state,
     view?.id
   )
-  const variables = getAllVariables(state)
+  const variables = getAllVariablesMemoized(state)
+
   return {variables, view, windowPeriodFromQueryBuilder}
 }
 

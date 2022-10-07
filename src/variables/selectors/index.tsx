@@ -1,5 +1,6 @@
 // Libraries
 import {get} from 'lodash'
+import {createSelector} from 'reselect'
 
 // Utils
 import {getActiveQuery} from 'src/timeMachine/selectors'
@@ -15,6 +16,7 @@ import {
   WINDOW_PERIOD,
 } from 'src/variables/constants'
 import {currentContext} from 'src/shared/selectors/currentContext'
+import {getCurrentDashboardId} from 'src/dashboards/selectors/'
 
 // Types
 import {
@@ -136,6 +138,34 @@ export const getAllVariables = (
     .filter(v => !!v)
   return vars
 }
+
+const getAllVariableIds = createSelector(
+  state => state,
+  getCurrentDashboardId,
+  (state, currentDashboardId) => {
+    return getUserVariableNames(state, currentDashboardId).concat([
+      TIME_RANGE_START,
+      TIME_RANGE_STOP,
+      WINDOW_PERIOD,
+    ])
+  }
+)
+
+export const getAllVariablesMemoized = createSelector(
+  state => state,
+  getAllVariableIds,
+  (state, allVariableIds) => {
+    const variables = []
+    for (const variableId of allVariableIds) {
+      const variable = getVariable(state, variableId)
+      if (variable) {
+        variables.push(variable)
+      }
+    }
+
+    return variables
+  }
+)
 
 export const getAllVariablesForZoomRequery = (
   state: AppState,

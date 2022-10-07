@@ -177,10 +177,7 @@ describe('Script Builder', () => {
         cy.log('table metadata displayed to user is correct')
         if (truncated) {
           cy.getByTestID('query-stat')
-            .should(
-              'contain',
-              'Maximum Display Limit Exceeded, result truncated to'
-            )
+            .should('contain', 'truncated')
             .should('not.contain', 'rows')
             .should('not.contain', 'tables')
         } else {
@@ -546,10 +543,7 @@ describe('Script Builder', () => {
         })
       })
 
-      /// This test is flaky.
-      /// We are getting the black screen of death in CI tests.
-      /// After clicking either: (1) New Script button, or (2) NoSave button.
-      it.skip('should clear the editor text and schema browser, with a new script', () => {
+      it('should clear the editor text and schema browser, with a new script', () => {
         cy.getByTestID('flux-editor', {timeout: 30000})
 
         cy.log('modify schema browser')

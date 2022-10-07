@@ -46,10 +46,10 @@ const QueryStat: FC = () => {
 
   return (
     <div className="query-stat" data-testid="query-stat">
-      {result.truncated ? (
-        <span className="query-stat--bold">{` Maximum Display Limit Exceeded, result truncated to ${bytesFormatter(
+      {result?.truncated ? (
+        <span className="query-stat--bold">{`Max. display limit exceeded. Result truncated to ${bytesFormatter(
           result.bytes
-        )}`}</span>
+        )}.`}</span>
       ) : (
         <>
           <span className="query-stat--bold">{`${tableNum} tables`}</span>

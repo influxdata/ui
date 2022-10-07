@@ -37,18 +37,7 @@ const QueryStat: FC = () => {
   const {loading, results} = useContext(PipeContext)
   const queryStart = useRef(0)
   const [processTime, setProcessTime] = useState(0)
-  let tableNum = 0
-
-  const tableColumn = results.parsed.table?.getColumn('table') || []
-  const lastTableValue = tableColumn[tableColumn.length - 1]
-
-  if (typeof lastTableValue === 'string') {
-    tableNum = parseInt(lastTableValue) + 1
-  } else if (typeof lastTableValue === 'boolean') {
-    console.error('Cannot extract tableId. Check parsed csv output.')
-  } else if (typeof lastTableValue === 'number') {
-    tableNum = lastTableValue + 1
-  }
+  const [tableNum, setTableNum] = useState(0)
 
   useEffect(() => {
     if (loading === RemoteDataState.Loading) {
@@ -71,6 +60,23 @@ const QueryStat: FC = () => {
     setProcessTime(0)
   }, [loading])
 
+  useEffect(() => {
+    if (loading === RemoteDataState.Loading) {
+      return
+    }
+
+    const tableColumn = results.parsed.table?.getColumn('table') || []
+    const lastTableValue = tableColumn[tableColumn.length - 1]
+
+    if (typeof lastTableValue === 'string') {
+      setTableNum(parseInt(lastTableValue) + 1)
+    } else if (typeof lastTableValue === 'boolean') {
+      console.error('Cannot extract tableId. Check parsed csv output.')
+    } else if (typeof lastTableValue === 'number') {
+      setTableNum(lastTableValue + 1)
+    }
+  }, [loading, results?.parsed])
+
   const queryStat = {
     tableNum,
     rowNum: results.parsed.table?.length || 0,
@@ -83,10 +89,10 @@ const QueryStat: FC = () => {
 
   return (
     <div className="query-stat" data-testid="query-stat">
-      {results.truncated ? (
-        <span className="query-stat--bold">{` Maximum Display Limit Exceeded, result truncated to ${bytesFormatter(
+      {results?.truncated ? (
+        <span className="query-stat--bold">{`Max. display limit exceeded. Result truncated to ${bytesFormatter(
           results.bytes
-        )}`}</span>
+        )}.`}</span>
       ) : (
         <>
           <span className="query-stat--bold">{`${queryStat.tableNum} tables`}</span>

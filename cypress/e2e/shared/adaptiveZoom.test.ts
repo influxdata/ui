@@ -5,7 +5,7 @@ const setupData = (cy: Cypress.Chainable) =>
   cy.flush().then(() =>
     cy.signin().then(() => {
       cy.setFeatureFlags({zoomRequery: true})
-      cy.get('@org').then(({id: orgID, name}: Organization) =>
+      return cy.get('@org').then(({id: orgID, name}: Organization) =>
         cy.createDashboard(orgID).then(({body}) =>
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)

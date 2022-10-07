@@ -78,6 +78,8 @@ export const ResultsProvider: FC = ({children}) => {
         results[id] = {
           source: '',
           parsed: null,
+          truncated: false,
+          bytes: 0,
           ...result,
         }
         setResults({...results})

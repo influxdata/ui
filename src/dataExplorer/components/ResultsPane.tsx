@@ -138,6 +138,8 @@ const ResultsPane: FC = () => {
           source: text,
           parsed: null,
           error: e.message,
+          truncated: false,
+          bytes: 0,
         })
         event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)

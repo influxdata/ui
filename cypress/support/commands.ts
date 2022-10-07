@@ -1040,7 +1040,8 @@ export const makeGraphSnapshot = (() => {
 })()
 
 export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
-  return cy.setFeatureFlagsNoNav(flags).getByTestID('tree-nav')
+  // Need to refresh page so that flags responses can be overwritten
+  return cy.setFeatureFlagsNoNav(flags).visit('/').getByTestID('tree-nav')
 }
 
 export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
@@ -1051,7 +1052,7 @@ export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
       req.continue(res => {
         res.send({...res.body, ...flags})
       })
-    }).as('getFFs')
+    }).as('setFeatureFlagsResponse')
   })
 
   return cy.wait(0)

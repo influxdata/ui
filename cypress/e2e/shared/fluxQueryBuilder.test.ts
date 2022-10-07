@@ -546,7 +546,10 @@ describe('Script Builder', () => {
         })
       })
 
-      it('should clear the editor text and schema browser, with a new script', () => {
+      /// This test is flaky.
+      /// We are getting the black screen of death in CI tests.
+      /// After clicking either: (1) New Script button, or (2) NoSave button.
+      it.skip('should clear the editor text and schema browser, with a new script', () => {
         cy.getByTestID('flux-editor', {timeout: 30000})
 
         cy.log('modify schema browser')

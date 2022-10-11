@@ -59,11 +59,10 @@ describe('change-account change-org global header', () => {
     it('does not render when API requests to quartz fail', () => {
       mockQuartzOutage()
       interceptPageReload()
-      cy.setFeatureFlags(globalHeaderFeatureFlags).then(() => {
-        cy.visit('/')
-        cy.wait('@getQuartzAccounts')
-        cy.getByTestID('global-header--container').should('not.exist')
-      })
+      cy.setFeatureFlags(globalHeaderFeatureFlags)
+      cy.visit('/')
+      cy.wait('@getQuartzAccounts')
+      cy.getByTestID('global-header--container').should('not.exist')
     })
 
     describe('change org dropdown', () => {

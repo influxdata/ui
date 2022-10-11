@@ -55,7 +55,7 @@ export default function script(register) {
           scriptID: data.id,
           data: {
             name: data.name,
-            description: data.description,
+            description: data?.description || ' ',
             script: data.script,
           },
         }).then(resp => {
@@ -70,7 +70,7 @@ export default function script(register) {
       return postScript({
         data: {
           name: data.name,
-          description: data.description,
+          description: data?.description || ' ',
           script: data.script,
           language: 'flux',
         },

@@ -51,6 +51,10 @@
     padding: $cf-space-2xs 0;
   }
 
+  .cf-accordion--body-container--expanded {
+    opacity: 1 !important;
+  }
+
   .result-options--item {
     padding: $cf-space-2xs 0;
   }

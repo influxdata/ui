@@ -1,8 +1,8 @@
-import React, {FC, useState, useMemo} from 'react'
+import React, {FC, useState, useMemo, useCallback} from 'react'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
-import {SelectGroup} from '@influxdata/clockface'
+import {SelectGroup, MultiSelectDropdown} from '@influxdata/clockface'
 
 // Styles
 import './Sidebar.scss'
@@ -19,25 +19,53 @@ const GroupBy: FC = () => {
   const [selectedGroupOption, setSelectedGroupOption] = useState<GroupOptions>(
     GroupOptions.Default
   )
+  const [selectedGroupKeys, setSelectedGroupKeys] = useState([])
 
-  const groupOptionsButtons = (
-    <SelectGroup>
-      {(Object.keys(GroupOptions) as (keyof typeof GroupOptions)[]).map(key => (
-        <SelectGroup.Option
-          key={key}
-          id={key}
-          active={selectedGroupOption === GroupOptions[key]}
-          value={GroupOptions[key]}
-          onClick={setSelectedGroupOption}
-        >
-          {GroupOptions[key]}
-        </SelectGroup.Option>
-      ))}
-    </SelectGroup>
+  const groupOptionsButtons = useMemo(
+    () => (
+      <SelectGroup>
+        {(Object.keys(GroupOptions) as (keyof typeof GroupOptions)[]).map(
+          key => (
+            <SelectGroup.Option
+              key={key}
+              id={key}
+              active={selectedGroupOption === GroupOptions[key]}
+              value={GroupOptions[key]}
+              onClick={setSelectedGroupOption}
+            >
+              {GroupOptions[key]}
+            </SelectGroup.Option>
+          )
+        )}
+      </SelectGroup>
+    ),
+    [selectedGroupOption]
   )
 
-  const groupBySelector =
-    selectedGroupOption === GroupOptions.GroupBy ? <div>dropdown</div> : null
+  const handleSelectGroupKey = useCallback(
+    (option: string): void => {
+      let selected = []
+      if (selectedGroupKeys.includes(option)) {
+        // de-select
+        selected = selectedGroupKeys.filter(item => item !== option)
+      } else {
+        selected = [...selectedGroupKeys, option]
+      }
+      setSelectedGroupKeys(selected)
+    },
+    [selectedGroupKeys]
+  )
+
+  const groupBySelector = useMemo(() => {
+    return selectedGroupOption === GroupOptions.GroupBy ? (
+      <MultiSelectDropdown
+        options={['opt1', 'opt2', 'opt3', 'opt4']}
+        selectedOptions={selectedGroupKeys}
+        onSelect={handleSelectGroupKey}
+        emptyText="Select group column values"
+      />
+    ) : null
+  }, [selectedGroupKeys, handleSelectGroupKey, selectedGroupOption])
 
   return useMemo(() => {
     return (
@@ -47,7 +75,7 @@ const GroupBy: FC = () => {
         {groupBySelector}
       </div>
     )
-  }, [selectedGroupOption])
+  }, [groupOptionsButtons, groupBySelector])
 }
 
 export {GroupBy}

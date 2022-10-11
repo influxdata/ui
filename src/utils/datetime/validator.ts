@@ -86,7 +86,7 @@ const formatToLuxonMap = {
     format: 'dd/MM/yy hh:mm:ss a',
   },
   '2006-01-02T15:04:05Z07:00': {
-    format: 'dd/MM/yy h:mm:ss a',
+    format: 'dd/MM/yy hh:mm:ss a',
   },
 }
 

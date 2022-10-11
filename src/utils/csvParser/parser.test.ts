@@ -228,11 +228,11 @@ cpu,cpu0,42,42,42,2018-09-13T13:03:28Z`
       fourth: 'hello',
     }
     const metrics = await parser.parse(testCSV)
-    const expectedMetric = new Metric('test_value', {}, date, expectedFields)
+    const expectedMetric = new Metric('test_value', {}, new Date(date).getTime() *  1000000, expectedFields)
     const returnedMetric = new Metric(
       metrics[0]?.name,
       metrics[0]?.tags,
-      date,
+      metrics[0]?.time,
       metrics[0]?.fields
     )
 
@@ -251,7 +251,7 @@ cpu,cpu0,42,42,42,2018-09-13T13:03:28Z`
     const returnedMetric2 = new Metric(
       metrics2[0]?.name,
       metrics2[0]?.tags,
-      date,
+      metrics2[0]?.time,
       metrics2[0]?.fields
     )
     expect(expectedMetric.fields).deep.equal(returnedMetric2.fields)
@@ -377,7 +377,7 @@ trash,80,test_name`
     const expected: Metric = {
       name: 'csv',
       fields: {id: 1, value: 5},
-      time: new Date(1551129661.954561233 * 1000),
+      time: new Date(1551129661.954561233 * 1000).getTime() * 1000000,
       tags: {},
     }
 
@@ -403,7 +403,7 @@ trash,80,test_name`
       fields: {
         a: 1,
       },
-      time: date,
+      time: new Date(date).getTime() * 1000000
     }
     expect(expected.name).to.be.eql(metrics[0]?.name)
     expect(expected.tags).to.be.eql(metrics[0]?.tags)
@@ -432,7 +432,7 @@ trash,80,test_name`
       fields: {
         a: 1,
       },
-      time: date,
+      time: new Date(date).getTime() * 1000000,
     }
     expect(expected.name).to.be.eql(metrics[0]?.name)
     expect(expected.tags).to.be.eql(metrics[0]?.tags)
@@ -518,7 +518,7 @@ corrupted_line
           b: 2,
           c: 3,
         },
-        time: date,
+        time: new Date(date).getTime() * 1000000,
       },
     ]
 
@@ -554,7 +554,7 @@ corrupted_line
           b: 2,
           c: 3,
         },
-        time: date,
+        time: new Date(date).getTime() * 1000000,
       },
     ]
 
@@ -595,8 +595,8 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:06.000Z'))
-    expect(metrics[1]?.time).to.deep.equal(new Date('2009-11-07T16:05:06.000Z'))
+    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:06.000Z').getTime() * 1000000)
+    expect(metrics[1]?.time).to.deep.equal(new Date('2009-11-07T16:05:06.000Z').getTime() * 1000000)
   })
 
   it('throws error when parsing CSV files with no timestamps', async () => {
@@ -633,8 +633,8 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:00.000Z'))
-    expect(metrics[1]?.time).to.deep.equal(new Date('2009-07-11T16:05:00.000Z'))
+    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:00.000Z').getTime() * 1000000)
+    expect(metrics[1]?.time).to.deep.equal(new Date('2009-07-11T16:05:00.000Z').getTime() * 1000000)
   })
 
   it('parses CSV files with unix timestampFormat', async () => {
@@ -653,8 +653,8 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(new Date(1243094706000))
-    expect(metrics[1]?.time).to.deep.equal(new Date(1257609906000))
+    expect(metrics[0]?.time).to.deep.equal(new Date(1243094706000).getTime() * 1000000)
+    expect(metrics[1]?.time).to.deep.equal(new Date(1257609906000).getTime() * 1000000)
   })
 
   it('parses CSV files with unix_ms timestampFormat', async () => {
@@ -673,8 +673,8 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(new Date(1243094706123))
-    expect(metrics[1]?.time).to.deep.equal(new Date(1257609906123))
+    expect(metrics[0]?.time).to.deep.equal(1243094706123000000)
+    expect(metrics[1]?.time).to.deep.equal(1257609906123000000)
   })
 
   it('handles timestamps with unix float precision', async () => {
@@ -690,7 +690,7 @@ corrupted_line
     const expected: Metric = {
       name: 'csv',
       fields: {value: 42},
-      time: new Date(1551129661.954561233 * 1000),
+      time: 1551129661954000000,
       tags: {},
     }
 
@@ -712,8 +712,8 @@ corrupted_line
   07/11/09 11:05:06 PM,80,test_name2`
 
     const metrics = await parser.parse(testCSV)
-    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:06.000Z'))
-    expect(metrics[1]?.time).to.deep.equal(new Date('2009-11-07T16:05:06.000Z'))
+    expect(metrics[0]?.time).to.deep.equal(1243094706000000000)
+    expect(metrics[1]?.time).to.deep.equal(1257609906000000000)
   })
 
   it('can handle empty measurement name', async () => {
@@ -735,7 +735,7 @@ corrupted_line
       fields: {
         b: 2,
       },
-      time: date,
+      time: new Date(date).getTime() * 1000000
     }
     expect(expected.name).to.be.eql(metrics[0]?.name)
     expect(expected.tags).to.be.eql(metrics[0]?.tags)
@@ -764,7 +764,7 @@ corrupted_line
       fields: {
         b: 2,
       },
-      time: date,
+      time: new Date(date).getTime() * 1000000,
     }
 
     expect(expected.name).to.be.eql(metrics[0]?.name)
@@ -794,7 +794,7 @@ corrupted_line
         a: 1,
         b: 2,
       },
-      time: date,
+      time: new Date(date).getTime() * 1000000,
     }
     expect(expected.name).to.be.eql(metrics[0]?.name)
     expect(expected.tags).to.be.eql(metrics[0]?.tags)
@@ -1089,7 +1089,7 @@ timestamp,type,name,status
           name: 'R002',
           status: 1,
         },
-        time: '2020-11-23T08:19:27.000Z',
+        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
         name: '',
@@ -1103,7 +1103,7 @@ timestamp,type,name,status
           name: 'C001',
           status: 0,
         },
-        time: '2020-11-04T13:29:47.000Z',
+        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1150,7 +1150,7 @@ timestamp,type,name,status
           name: 'R009',
           status: 5,
         },
-        time: '2021-12-01T19:01:00.000Z',
+        time: new Date('2021-12-01T19:01:00.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1198,7 +1198,7 @@ timestamp,type,name,status
           name: 'R002',
           status: 1,
         },
-        time: '2020-11-23T08:19:27.000Z',
+        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
         name: '',
@@ -1212,7 +1212,7 @@ timestamp,type,name,status
           name: 'C001',
           status: 0,
         },
-        time: '2020-11-04T13:29:47.000Z',
+        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1272,7 +1272,7 @@ timestamp,type,name,status
           name: 'R009',
           status: 5,
         },
-        time: '2021-12-01T19:01:00.000Z',
+        time: new Date('2021-12-01T19:01:00.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1318,7 +1318,7 @@ timestamp,type,name,status
           name: 'R002',
           status: 1,
         },
-        time: '2020-11-23T08:19:27.000Z',
+        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
         name: '',
@@ -1332,7 +1332,7 @@ timestamp,type,name,status
           name: 'C001',
           status: 0,
         },
-        time: '2020-11-04T13:29:47.000Z',
+        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1391,7 +1391,7 @@ timestamp,category,id,flag
           id: 'R002',
           flag: 1,
         },
-        time: '2020-11-23T08:19:27.000Z',
+        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
         name: '',
@@ -1405,7 +1405,7 @@ timestamp,category,id,flag
           id: 'C001',
           flag: 0,
         },
-        time: '2020-11-04T13:29:47.000Z',
+        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1450,7 +1450,7 @@ timestamp,category,id,flag
           name: 'R002',
           status: 1,
         },
-        time: '2020-11-23T08:19:27.000Z',
+        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
         name: '',
@@ -1464,7 +1464,7 @@ timestamp,category,id,flag
           name: 'C001',
           status: 0,
         },
-        time: '2020-11-04T13:29:47.000Z',
+        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1524,7 +1524,7 @@ timestamp,category,id,flag
           name: 'R009',
           status: 5,
         },
-        time: '2021-12-01T19:01:00.000Z',
+        time: new Date('2021-12-01T19:01:00.000Z').getTime() * 1000000,
       },
     ]
 

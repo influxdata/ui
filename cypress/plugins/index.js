@@ -1,4 +1,6 @@
 const clipboardy = require('clipboardy')
+const path = require('path')
+const fs = require('fs')
 
 module.exports = on => {
   on('before:browser:launch', (browser = {}, launchOptions) => {
@@ -36,6 +38,19 @@ module.exports = on => {
     on('task', {
       getClipboard: () => {
         return clipboardy.readSync()
+      },
+      deleteDownloads({dirPath}) {
+        fs.readdir(dirPath, (err, files) => {
+          if (!files) {
+            return
+          }
+          for (const file of files) {
+            fs.unlink(path.join(dirPath, file), err => {
+              console.log('Removed ' + file)
+            })
+          }
+        })
+        return null
       },
     })
 }

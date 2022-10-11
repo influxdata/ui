@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+const path = require('path')
 
 const DEFAULT_SCHEMA = {
   bucket: null,
@@ -106,6 +107,8 @@ describe('Script Builder', () => {
   })
 
   describe('Results display', () => {
+    const downloadsDirectory = Cypress.config('downloadsFolder')
+
     beforeEach(() => {
       resetSession()
       cy.setFeatureFlags({
@@ -137,6 +140,8 @@ describe('Script Builder', () => {
           }
         })
       })
+      cy.log('empty downloads directory')
+      cy.task('deleteDownloads', {dirPath: downloadsDirectory})
     })
 
     it('will allow querying of different data ranges', () => {
@@ -157,6 +162,14 @@ describe('Script Builder', () => {
     })
 
     describe('data completeness', () => {
+      const validateCsv = (csv: string, tableCnt: number) => {
+        cy.wrap(csv)
+          .then(doc => doc.trim().split('\n'))
+          .then(list => {
+            expect(list[list.length - 1]).contains(`,${tableCnt - 1},`)
+          })
+      }
+
       const runTest = (
         tableCnt: number,
         rowCnt: number,
@@ -185,6 +198,19 @@ describe('Script Builder', () => {
             .should('not.contain', 'truncated')
             .contains(`${tableCnt} tables`)
           cy.getByTestID('query-stat').contains(`${rowCnt} rows`)
+        }
+
+        cy.log('will download complete csv data')
+        cy.getByTestID('data-explorer--csv-download').should('exist').click()
+        const filename = path.join(downloadsDirectory, 'influx.data.csv')
+        if (tableCnt == 0) {
+          cy.readFile(filename, {timeout: 15000})
+            .should('have.length.lt', 50)
+            .then(csv => csv.trim() == '')
+        } else {
+          cy.readFile(filename, {timeout: 15000})
+            .should('have.length.gt', 50)
+            .then(csv => validateCsv(csv, tableCnt))
         }
       }
 

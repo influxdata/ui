@@ -43,7 +43,8 @@ export enum OverrideMechanism {
 }
 
 export interface QueryOptions {
-  overrideMechanism: OverrideMechanism
+  overrideMechanism?: OverrideMechanism
+  rawBlob?: boolean
 }
 
 export interface QueryScope {
@@ -223,7 +224,7 @@ export const QueryProvider: FC = ({children}) => {
   }
 
   const basic = (text: string, override: QueryScope, options: QueryOptions) => {
-    const handleSuccess = async response => {
+    const handleUiParsing = async response => {
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
 
@@ -265,9 +266,21 @@ export const QueryProvider: FC = ({children}) => {
       }
     }
 
+    const handleRawBlob = async response => {
+      const data = await response.blob()
+      return {
+        type: 'SUCCESS',
+        csv: data,
+        bytesRead: data.size,
+        didTruncate: false,
+      }
+    }
+
+    const returnRaw = options?.rawBlob ?? false
+
     return runQuery(
       buildQueryRequest(org, text, override, options),
-      handleSuccess
+      returnRaw ? handleRawBlob : handleUiParsing
     )
   }
 

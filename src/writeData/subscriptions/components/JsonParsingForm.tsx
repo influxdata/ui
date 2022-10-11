@@ -80,7 +80,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           <p className="json-parsing-form__link">
             See our{' '}
             <a
-              href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=JSON#define-parsing-rules"
+              href="https://docs.influxdata.com/influxdb/cloud/reference/json-parsing"
               target="_blank"
               rel="noreferrer"
             >

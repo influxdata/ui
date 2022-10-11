@@ -1,8 +1,22 @@
-import React, {FC, useState, useMemo, useCallback} from 'react'
+import React, {
+  FC,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {SelectGroup, MultiSelectDropdown} from '@influxdata/clockface'
+
+// Contexts
+import {FieldsContext} from 'src/dataExplorer/context/fields'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+
+// Utilies
+import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
 
 // Styles
 import './Sidebar.scss'
@@ -16,10 +30,22 @@ enum GroupOptions {
 }
 
 const GroupBy: FC = () => {
+  const {fields, loading, getFields} = useContext(FieldsContext)
+  const {selection} = useContext(PersistanceContext)
   const [selectedGroupOption, setSelectedGroupOption] = useState<GroupOptions>(
     GroupOptions.Default
   )
   const [selectedGroupKeys, setSelectedGroupKeys] = useState([])
+
+  useEffect(
+    () => {
+      if (selectedGroupOption === GroupOptions.GroupBy) {
+        getFields(selection.bucket, selection.measurement)
+      }
+    },
+    // getFields is not included to avoid infinite loop
+    [selection.bucket, selection.measurement, selectedGroupOption]
+  )
 
   const groupOptionsButtons = useMemo(
     () => (
@@ -62,14 +88,21 @@ const GroupBy: FC = () => {
     return selectedGroupOption === GroupOptions.GroupBy ? (
       <div className="result-options--item--row">
         <MultiSelectDropdown
-          options={['opt1', 'opt2', 'opt3', 'opt4']}
+          options={fields}
           selectedOptions={selectedGroupKeys}
           onSelect={handleSelectGroupKey}
           emptyText="Select group column values"
+          buttonStatus={toComponentStatus(loading)}
         />
       </div>
     ) : null
-  }, [selectedGroupKeys, handleSelectGroupKey, selectedGroupOption])
+  }, [
+    fields,
+    loading,
+    selectedGroupKeys,
+    handleSelectGroupKey,
+    selectedGroupOption,
+  ])
 
   return useMemo(() => {
     return (

@@ -10,7 +10,6 @@ import {
   ConfirmationButton,
   FlexBox,
   FlexDirection,
-  IconFont,
   Input,
   InputType,
   Overlay,
@@ -75,10 +74,6 @@ const AccountAboutPage: FC = () => {
     setActiveAcctName(evt.target.value)
   }
 
-  const showSwitchAccountDialog = () => {
-    setSwitchAccountVisible(true)
-  }
-
   const closeSwitchAccountDialog = () => {
     setSwitchAccountVisible(false)
   }
@@ -128,20 +123,6 @@ const AccountAboutPage: FC = () => {
   return (
     <AccountTabContainer activeTab="about">
       <>
-        {userAccounts &&
-          userAccounts.length >= 2 &&
-          !isFlagEnabled('multiOrg') && (
-            <div>
-              <Button
-                text="Switch Account"
-                icon={IconFont.Switch_New}
-                onClick={showSwitchAccountDialog}
-                testID="user-account-switch-btn"
-              />
-              <hr style={dividerStyle} />
-            </div>
-          )}
-
         <h4
           data-testid="account-settings--header"
           className="account-settings--header"

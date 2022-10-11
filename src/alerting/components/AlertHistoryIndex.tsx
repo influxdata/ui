@@ -9,7 +9,6 @@ import EventTable from 'src/eventViewer/components/EventTable'
 import AlertHistoryControls from 'src/alerting/components/AlertHistoryControls'
 import AlertHistoryQueryParams from 'src/alerting/components/AlertHistoryQueryParams'
 import GetResources from 'src/resources/components/GetResources'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 // Constants
 import {
@@ -34,7 +33,6 @@ import {ResourceIDs} from 'src/checks/reducers'
 import {ResourceType, AlertHistoryType, AppState} from 'src/types'
 import {RouteComponentProps} from 'react-router-dom'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const ResourceIDsContext = createContext<ResourceIDs>(null)
 
@@ -83,7 +81,6 @@ const AlertHistoryIndex: FC<Props> = ({
                   title="Check Statuses"
                   testID="alert-history-title"
                 />
-                {!isFlagEnabled('multiOrg') && <RateLimitAlert />}
               </Page.Header>
               <Page.ControlBar fullWidth={true}>
                 <Page.ControlBarRight>

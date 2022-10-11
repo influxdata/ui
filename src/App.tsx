@@ -41,21 +41,17 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {executeVWO} from 'src/utils/vwo'
 
-// Styles
-import './MultiOrgOverrideStyles.scss'
-
 // Providers
 import {UserAccountProvider} from 'src/accounts/context/userAccount'
 
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
   const currentPage = useSelector((state: AppState) => state.currentPage)
-  const shouldShowCloudHeader =
-    CLOUD && isFlagEnabled('multiOrg') && currentPage !== 'not found'
+  const shouldShowCloudHeader = CLOUD && currentPage !== 'not found'
 
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
-    'multi-org': isFlagEnabled('multiOrg'),
+    'multi-org': CLOUD,
   })
 
   useEffect(() => {

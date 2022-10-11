@@ -38,6 +38,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 // Constants
+import {CLOUD} from 'src/shared/constants'
 import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
 
 enum AuthSearchKeys {
@@ -188,9 +189,7 @@ class TokensTab extends PureComponent<Props, State> {
             DEFAULT_PAGINATION_CONTROL_HEIGHT + DEFAULT_TAB_NAVIGATION_HEIGHT
 
           const adjustedHeight =
-            height -
-            heightWithPagination -
-            (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 0)
+            height - heightWithPagination - (CLOUD ? GLOBAL_HEADER_HEIGHT : 0)
 
           return (
             <>

@@ -35,7 +35,7 @@ interface State {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps & ReduxProps
 @ErrorHandling
-class SigninPage extends PureComponent<Props, State> {
+class OSSLoginPage extends PureComponent<Props, State> {
   constructor(props) {
     super(props)
 
@@ -101,4 +101,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export default connector(withRouter(SigninPage))
+export default connector(withRouter(OSSLoginPage))

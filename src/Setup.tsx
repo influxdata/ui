@@ -8,19 +8,18 @@ import {getSetup} from 'src/client'
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import PageSpinner from 'src/perf/components/PageSpinner'
-import {LoginPage} from 'src/onboarding/containers/LoginPage'
+import {CloudLoginPage} from 'src/onboarding/containers/CloudLoginPage'
 // lazy loading the signin component causes wasm issues
 import Signin from 'src/Signin'
 
 const OnboardingWizardPage = lazy(
   () => import('src/onboarding/containers/OnboardingWizardPage')
 )
-const SigninPage = lazy(() => import('src/onboarding/containers/SigninPage'))
+const OSSLoginPage = lazy(
+  () => import('src/onboarding/containers/OSSLoginPage')
+)
 const Logout = lazy(() => import('src/Logout'))
 const ReadOnlyNotebook = lazy(() => import('src/flows/components/ReadOnly'))
-
-// Constants
-import {LOGIN, SIGNIN, LOGOUT} from 'src/shared/constants/routes'
 
 // Utils
 import {isOnboardingURL} from 'src/onboarding/utils'
@@ -30,7 +29,7 @@ import {RemoteDataState} from 'src/types'
 
 interface State {
   loading: RemoteDataState
-  allowed: boolean
+  shouldShowOnboarding: boolean
 }
 
 interface OwnProps {
@@ -46,7 +45,7 @@ export class Setup extends PureComponent<Props, State> {
 
     this.state = {
       loading: RemoteDataState.NotStarted,
-      allowed: false,
+      shouldShowOnboarding: false,
     }
   }
 
@@ -66,22 +65,21 @@ export class Setup extends PureComponent<Props, State> {
       throw new Error('There was an error onboarding')
     }
 
-    const {allowed} = resp.data
+    const shouldShowOnboarding = resp.data.allowed
 
     this.setState({
       loading: RemoteDataState.Done,
-      allowed,
+      shouldShowOnboarding,
     })
 
-    if (!allowed) {
+    if (shouldShowOnboarding) {
+      history.push('/onboarding/0')
       return
     }
-
-    history.push('/onboarding/0')
   }
 
   async componentDidUpdate(prevProps: Props, prevState: State) {
-    if (!prevState.allowed) {
+    if (!prevState.shouldShowOnboarding) {
       return
     }
 
@@ -93,33 +91,32 @@ export class Setup extends PureComponent<Props, State> {
         throw new Error('There was an error onboarding')
       }
 
-      const {allowed} = resp.data
-      this.setState({allowed, loading: RemoteDataState.Done})
+      const shouldShowOnboarding = resp.data.allowed
+      this.setState({shouldShowOnboarding, loading: RemoteDataState.Done})
     }
   }
 
   public render() {
-    const {loading, allowed} = this.state
+    const {loading, shouldShowOnboarding} = this.state
 
     return (
       <PageSpinner loading={loading}>
         <Suspense fallback={<PageSpinner />}>
-          {allowed && (
+          {shouldShowOnboarding ? (
             <Route
               path="/onboarding/:stepID"
               component={OnboardingWizardPage}
             />
-          )}
-          {!allowed && (
+          ) : (
             <Switch>
               <Route
                 path="/onboarding/:stepID"
                 component={OnboardingWizardPage}
               />
               <Route path="/share/:accessID" component={ReadOnlyNotebook} />
-              <Route path={LOGIN} component={LoginPage} />
-              <Route path={SIGNIN} component={SigninPage} />
-              <Route path={LOGOUT} component={Logout} />
+              <Route path="/login" component={CloudLoginPage} />
+              <Route path="/signin" component={OSSLoginPage} />
+              <Route path="/logout" component={Logout} />
               <Route component={Signin} />
             </Switch>
           )}

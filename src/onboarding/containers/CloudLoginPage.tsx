@@ -22,7 +22,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const EMPTY_HISTORY_STACK_LENGTH = 2
 
-export const LoginPage: FC = () => {
+export const CloudLoginPage: FC = () => {
   const [hasValidSession, setHasValidSession] = useState(false)
 
   const getSessionValidity = useCallback(async () => {

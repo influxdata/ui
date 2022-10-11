@@ -228,7 +228,12 @@ cpu,cpu0,42,42,42,2018-09-13T13:03:28Z`
       fourth: 'hello',
     }
     const metrics = await parser.parse(testCSV)
-    const expectedMetric = new Metric('test_value', {}, new Date(date).getTime() *  1000000, expectedFields)
+    const expectedMetric = new Metric(
+      'test_value',
+      {},
+      new Date(date).getTime() * 1000000,
+      expectedFields
+    )
     const returnedMetric = new Metric(
       metrics[0]?.name,
       metrics[0]?.tags,
@@ -403,7 +408,7 @@ trash,80,test_name`
       fields: {
         a: 1,
       },
-      time: new Date(date).getTime() * 1000000
+      time: new Date(date).getTime() * 1000000,
     }
     expect(expected.name).to.be.eql(metrics[0]?.name)
     expect(expected.tags).to.be.eql(metrics[0]?.tags)
@@ -595,8 +600,12 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:06.000Z').getTime() * 1000000)
-    expect(metrics[1]?.time).to.deep.equal(new Date('2009-11-07T16:05:06.000Z').getTime() * 1000000)
+    expect(metrics[0]?.time).to.deep.equal(
+      new Date('2009-05-23T16:05:06.000Z').getTime() * 1000000
+    )
+    expect(metrics[1]?.time).to.deep.equal(
+      new Date('2009-11-07T16:05:06.000Z').getTime() * 1000000
+    )
   })
 
   it('throws error when parsing CSV files with no timestamps', async () => {
@@ -633,8 +642,12 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(new Date('2009-05-23T16:05:00.000Z').getTime() * 1000000)
-    expect(metrics[1]?.time).to.deep.equal(new Date('2009-07-11T16:05:00.000Z').getTime() * 1000000)
+    expect(metrics[0]?.time).to.deep.equal(
+      new Date('2009-05-23T16:05:00.000Z').getTime() * 1000000
+    )
+    expect(metrics[1]?.time).to.deep.equal(
+      new Date('2009-07-11T16:05:00.000Z').getTime() * 1000000
+    )
   })
 
   it('parses CSV files with unix timestampFormat', async () => {
@@ -653,8 +666,12 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).to.not.throw(Error)
 
-    expect(metrics[0]?.time).to.deep.equal(new Date(1243094706000).getTime() * 1000000)
-    expect(metrics[1]?.time).to.deep.equal(new Date(1257609906000).getTime() * 1000000)
+    expect(metrics[0]?.time).to.deep.equal(
+      new Date(1243094706000).getTime() * 1000000
+    )
+    expect(metrics[1]?.time).to.deep.equal(
+      new Date(1257609906000).getTime() * 1000000
+    )
   })
 
   it('parses CSV files with unix_ms timestampFormat', async () => {
@@ -735,7 +752,7 @@ corrupted_line
       fields: {
         b: 2,
       },
-      time: new Date(date).getTime() * 1000000
+      time: new Date(date).getTime() * 1000000,
     }
     expect(expected.name).to.be.eql(metrics[0]?.name)
     expect(expected.tags).to.be.eql(metrics[0]?.tags)

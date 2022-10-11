@@ -573,22 +573,21 @@ export function formatTimestamp(
   switch (format.toLowerCase()) {
     case 'unix':
       return new Date(timestamp * 1000).getTime() * 1000000
-      case 'unix_ms':
-        return new Date(parseInt(timestamp, 10)).getTime() * 1000000
-      case 'unix_us':
-        return new Date(parseInt(timestamp, 10)).getTime() * 1000
-      case 'unix_ns':
-        return new Date(parseInt(timestamp, 10)).getTime()
-      case 'iso8601':
-        const formattedDate = new Date(timestamp)
-        if (formattedDate instanceof Date && !isFinite(formattedDate.getTime())) {
-          throw new Error(
-            `parsing time ${timestamp} as ${format}: cannot parse ${timestamp} as ${format}`
-          )
-        } 
-          return  formattedDate.getTime() * 1000000
-      default:
-        
+    case 'unix_ms':
+      return new Date(parseInt(timestamp, 10)).getTime() * 1000000
+    case 'unix_us':
+      return new Date(parseInt(timestamp, 10)).getTime() * 1000
+    case 'unix_ns':
+      return new Date(parseInt(timestamp, 10)).getTime()
+    case 'iso8601':
+      const formattedDate = new Date(timestamp)
+      if (formattedDate instanceof Date && !isFinite(formattedDate.getTime())) {
+        throw new Error(
+          `parsing time ${timestamp} as ${format}: cannot parse ${timestamp} as ${format}`
+        )
+      }
+      return formattedDate.getTime() * 1000000
+    default:
       if (!timezone) {
         timezone = 'UTC'
       }
@@ -596,16 +595,17 @@ export function formatTimestamp(
         throw new Error('Unsupported timestamp type')
       }
 
-      const parsedDate =  DateTime.fromFormat(
+      const parsedDate = DateTime.fromFormat(
         timestamp,
         getLuxonFormatString(format),
         {zone: timezone}
       ).toISO()
-      if(parsedDate) {
+      if (parsedDate) {
         return new Date(parsedDate).getTime() * 1000000
-      }
-      else {
-        throw new Error(`parsing time ${timestamp} as ${format}: cannot parse ${timestamp} as ${format} `)
+      } else {
+        throw new Error(
+          `parsing time ${timestamp} as ${format}: cannot parse ${timestamp} as ${format} `
+        )
       }
   }
 }

@@ -23,21 +23,23 @@ const GroupBy: FC = () => {
 
   const groupOptionsButtons = useMemo(
     () => (
-      <SelectGroup>
-        {(Object.keys(GroupOptions) as (keyof typeof GroupOptions)[]).map(
-          key => (
-            <SelectGroup.Option
-              key={key}
-              id={key}
-              active={selectedGroupOption === GroupOptions[key]}
-              value={GroupOptions[key]}
-              onClick={setSelectedGroupOption}
-            >
-              {GroupOptions[key]}
-            </SelectGroup.Option>
-          )
-        )}
-      </SelectGroup>
+      <div className="result-options--item--row">
+        <SelectGroup>
+          {(Object.keys(GroupOptions) as (keyof typeof GroupOptions)[]).map(
+            key => (
+              <SelectGroup.Option
+                key={key}
+                id={key}
+                active={selectedGroupOption === GroupOptions[key]}
+                value={GroupOptions[key]}
+                onClick={setSelectedGroupOption}
+              >
+                {GroupOptions[key]}
+              </SelectGroup.Option>
+            )
+          )}
+        </SelectGroup>
+      </div>
     ),
     [selectedGroupOption]
   )
@@ -58,12 +60,14 @@ const GroupBy: FC = () => {
 
   const groupBySelector = useMemo(() => {
     return selectedGroupOption === GroupOptions.GroupBy ? (
-      <MultiSelectDropdown
-        options={['opt1', 'opt2', 'opt3', 'opt4']}
-        selectedOptions={selectedGroupKeys}
-        onSelect={handleSelectGroupKey}
-        emptyText="Select group column values"
-      />
+      <div className="result-options--item--row">
+        <MultiSelectDropdown
+          options={['opt1', 'opt2', 'opt3', 'opt4']}
+          selectedOptions={selectedGroupKeys}
+          onSelect={handleSelectGroupKey}
+          emptyText="Select group column values"
+        />
+      </div>
     ) : null
   }, [selectedGroupKeys, handleSelectGroupKey, selectedGroupOption])
 

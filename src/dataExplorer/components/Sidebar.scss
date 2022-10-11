@@ -57,6 +57,10 @@
 
   .result-options--item {
     padding: $cf-space-2xs 0;
+
+    .result-options--item--row {
+      padding: $cf-space-2xs 0;
+    }
   }
 
   .toggle-with-label-tooltip {

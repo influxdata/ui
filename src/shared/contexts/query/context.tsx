@@ -86,6 +86,95 @@ export const DEFAULT_CONTEXT: QueryContextType = {
 export const QueryContext =
   React.createContext<QueryContextType>(DEFAULT_CONTEXT)
 
+const buildQueryRequest = (
+  org,
+  text: string,
+  override: QueryScope,
+  options?: QueryOptions
+) => {
+  const mechanism = options?.overrideMechanism ?? OverrideMechanism.AST
+  const query =
+    mechanism === OverrideMechanism.Inline
+      ? simplify(text, override?.vars ?? {}, override?.params ?? {})
+      : text
+
+  const orgID = override?.org || org.id
+
+  const url = `${
+    override?.region || window.location.origin
+  }/api/v2/query?${new URLSearchParams({orgID})}`
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept-Encoding': 'gzip',
+  }
+
+  if (override?.token) {
+    headers['Authorization'] = `Token ${override.token}`
+  }
+
+  const body: RequestBody = {
+    query,
+    dialect: {annotations: ['group', 'datatype', 'default']},
+  }
+
+  if (mechanism === OverrideMechanism.AST) {
+    const options = updateWindowPeriod(query, override, 'ast')
+    if (options && Object.keys(options).length) {
+      body.extern = options
+    }
+  }
+  if (mechanism === OverrideMechanism.JSON) {
+    const options = updateWindowPeriod(query, override, 'json')
+    if (options && Object.keys(options).length) {
+      body.options = options
+    }
+  }
+
+  return {url, body, headers}
+}
+
+const handleQueryResponse = (response, cb) => {
+  if (response.status === 200) {
+    return cb(response)
+  }
+  if (response.status === RATE_LIMIT_ERROR_STATUS) {
+    const retryAfter = response.headers.get('Retry-After')
+
+    return Promise.resolve({
+      type: 'RATE_LIMIT_ERROR',
+      retryAfter: retryAfter ? parseInt(retryAfter) : null,
+      message: RATE_LIMIT_ERROR_TEXT,
+    })
+  }
+
+  return response.text().then(text => {
+    try {
+      const json = JSON.parse(text)
+      const message = json.message || json.error
+      const code = json.code
+
+      switch (code) {
+        case REQUEST_TIMEOUT_STATUS:
+          event('query timeout')
+          break
+        case GATEWAY_TIMEOUT_STATUS:
+          event('gateway timeout')
+          break
+        default:
+          event('query error')
+      }
+
+      return {type: 'UNKNOWN_ERROR', message, code}
+    } catch {
+      return {
+        type: 'UNKNOWN_ERROR',
+        message: 'Failed to execute Flux query',
+      }
+    }
+  })
+}
+
 export const QueryProvider: FC = ({children}) => {
   const dispatch = useDispatch()
   const pending = useRef({} as CancelMap)
@@ -99,133 +188,18 @@ export const QueryProvider: FC = ({children}) => {
     }
   }, [])
 
-  const basic = (text: string, override: QueryScope, options: QueryOptions) => {
-    const mechanism = options?.overrideMechanism ?? OverrideMechanism.AST
-    const query =
-      mechanism === OverrideMechanism.Inline
-        ? simplify(text, override?.vars ?? {}, override?.params ?? {})
-        : text
-
-    const orgID = override?.org || org.id
-
-    const url = `${
-      override?.region || window.location.origin
-    }/api/v2/query?${new URLSearchParams({orgID})}`
-
-    const headers = {
-      'Content-Type': 'application/json',
-      'Accept-Encoding': 'gzip',
-    }
-
-    if (override?.token) {
-      headers['Authorization'] = `Token ${override.token}`
-    }
-
-    const body: RequestBody = {
-      query,
-      dialect: {annotations: ['group', 'datatype', 'default']},
-    }
-
-    if (mechanism === OverrideMechanism.AST) {
-      const options = updateWindowPeriod(query, override, 'ast')
-      if (options && Object.keys(options).length) {
-        body.extern = options
-      }
-    }
-    if (mechanism === OverrideMechanism.JSON) {
-      const options = updateWindowPeriod(query, override, 'json')
-      if (options && Object.keys(options).length) {
-        body.options = options
-      }
-    }
-
+  const runQuery = ({url, headers, body}, handleSuccess) => {
+    const id = nanoid()
     const controller = new AbortController()
 
-    const id = nanoid()
     const promise = fetch(url, {
       method: 'POST',
       headers,
       body: JSON.stringify(body),
       signal: controller.signal,
     })
-      .then(async (response: Response): Promise<RunQueryResult> => {
-        if (response.status === 200) {
-          const reader = response.body.getReader()
-          const decoder = new TextDecoder()
-
-          let csv = ''
-          let bytesRead = 0
-          let didTruncate = false
-          let read = await reader.read()
-
-          let BYTE_LIMIT =
-            getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
-
-          if (!window.location.pathname.includes(PROJECT_NAME.toLowerCase())) {
-            BYTE_LIMIT =
-              getFlagValue('dataExplorerCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
-          }
-
-          while (!read.done) {
-            const text = decoder.decode(read.value)
-
-            bytesRead += read.value.byteLength
-
-            if (bytesRead > BYTE_LIMIT) {
-              csv += trimPartialLines(text)
-              didTruncate = true
-              break
-            } else {
-              csv += text
-              read = await reader.read()
-            }
-          }
-
-          reader.cancel()
-
-          return {
-            type: 'SUCCESS',
-            csv,
-            bytesRead,
-            didTruncate,
-          }
-        }
-
-        if (response.status === RATE_LIMIT_ERROR_STATUS) {
-          const retryAfter = response.headers.get('Retry-After')
-
-          return Promise.resolve({
-            type: 'RATE_LIMIT_ERROR',
-            retryAfter: retryAfter ? parseInt(retryAfter) : null,
-            message: RATE_LIMIT_ERROR_TEXT,
-          })
-        }
-
-        return response.text().then(text => {
-          try {
-            const json = JSON.parse(text)
-            const message = json.message || json.error
-            const code = json.code
-
-            switch (code) {
-              case REQUEST_TIMEOUT_STATUS:
-                event('query timeout')
-                break
-              case GATEWAY_TIMEOUT_STATUS:
-                event('gateway timeout')
-                break
-              default:
-                event('query error')
-            }
-
-            return {type: 'UNKNOWN_ERROR', message, code}
-          } catch {
-            return {
-              type: 'UNKNOWN_ERROR',
-              message: 'Failed to execute Flux query',
-            }
-          }
-        })
+      .then((res: Response): Promise<RunQueryResult> => {
+        return handleQueryResponse(res, handleSuccess)
       })
       .catch(e => {
         if (e.name === 'AbortError') {
@@ -246,6 +220,55 @@ export const QueryProvider: FC = ({children}) => {
         cancel(id)
       },
     }
+  }
+
+  const basic = (text: string, override: QueryScope, options: QueryOptions) => {
+    const handleSuccess = async response => {
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+
+      let csv = ''
+      let bytesRead = 0
+      let didTruncate = false
+      let read = await reader.read()
+
+      let BYTE_LIMIT =
+        getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+
+      if (!window.location.pathname.includes(PROJECT_NAME.toLowerCase())) {
+        BYTE_LIMIT =
+          getFlagValue('dataExplorerCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+      }
+
+      while (!read.done) {
+        const text = decoder.decode(read.value)
+
+        bytesRead += read.value.byteLength
+
+        if (bytesRead > BYTE_LIMIT) {
+          csv += trimPartialLines(text)
+          didTruncate = true
+          break
+        } else {
+          csv += text
+          read = await reader.read()
+        }
+      }
+
+      reader.cancel()
+
+      return {
+        type: 'SUCCESS',
+        csv,
+        bytesRead,
+        didTruncate,
+      }
+    }
+
+    return runQuery(
+      buildQueryRequest(org, text, override, options),
+      handleSuccess
+    )
   }
 
   const cancel = (queryID?: string) => {

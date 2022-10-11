@@ -30,6 +30,7 @@ describe('change-account change-org global header', () => {
   before(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
+        cy.setFeatureFlagsNoNav(globalHeaderFeatureFlags)
         cy.request({
           method: 'GET',
           url: 'api/v2/orgs',
@@ -48,7 +49,6 @@ describe('change-account change-org global header', () => {
     // Preserve one session throughout.
     makeQuartzUseIDPEOrgID(idpeOrgID)
     Cypress.Cookies.preserveOnce('sid')
-    cy.setFeatureFlags(globalHeaderFeatureFlags)
   })
 
   afterEach(() => {
@@ -59,7 +59,6 @@ describe('change-account change-org global header', () => {
     it('does not render when API requests to quartz fail', () => {
       mockQuartzOutage()
       interceptPageReload()
-      cy.setFeatureFlags(globalHeaderFeatureFlags)
       cy.visit('/')
       cy.wait('@getQuartzAccounts')
       cy.getByTestID('global-header--container').should('not.exist')
@@ -68,7 +67,6 @@ describe('change-account change-org global header', () => {
     describe('change org dropdown', () => {
       before(() => {
         makeQuartzUseIDPEOrgID(idpeOrgID)
-        cy.setFeatureFlags(globalHeaderFeatureFlags)
         cy.visit('/')
       })
 
@@ -147,7 +145,6 @@ describe('change-account change-org global header', () => {
     describe('change account dropdown', () => {
       beforeEach(() => {
         makeQuartzUseIDPEOrgID(idpeOrgID)
-        cy.setFeatureFlags(globalHeaderFeatureFlags)
       })
 
       before(() => {
@@ -218,7 +215,6 @@ describe('change-account change-org global header', () => {
   describe('user profile avatar', {scrollBehavior: false}, () => {
     before(() => {
       makeQuartzUseIDPEOrgID(idpeOrgID)
-      cy.setFeatureFlags(globalHeaderFeatureFlags)
       cy.visit('/')
     })
 

@@ -155,18 +155,18 @@ export const PersistanceProvider: FC = ({children}) => {
   }
 
   const setCompositionSelection = useCallback(
-    schema => {
-      if (selection.composition?.diverged && schema.composition?.synced) {
+    newSelection => {
+      if (selection.composition?.diverged && newSelection.composition?.synced) {
         // cannot re-sync if diverged
         return
       }
       const nextState: CompositionSelection = {
         ...selection,
-        ...schema,
+        ...newSelection,
         composition: {
           ...(selection.composition || {}),
-          ...(schema.composition || {}),
-        },
+          ...(newSelection.composition || {}),
+        } as CompositionStatus,
       }
       if (hasChanged === false) {
         setHasChanged(true)

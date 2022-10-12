@@ -9,8 +9,8 @@ import {getSetup} from 'src/client'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {CloudLoginPage} from 'src/onboarding/containers/CloudLoginPage'
-// lazy loading the signin component causes wasm issues
-import Signin from 'src/Signin'
+// lazy loading the Authenticate component causes wasm issues
+import {Authenticate} from 'src/Authenticate'
 
 const OnboardingWizardPage = lazy(
   () => import('src/onboarding/containers/OnboardingWizardPage')
@@ -117,7 +117,7 @@ export class Setup extends PureComponent<Props, State> {
               <Route path="/login" component={CloudLoginPage} />
               <Route path="/signin" component={OSSLoginPage} />
               <Route path="/logout" component={Logout} />
-              <Route component={Signin} />
+              <Route component={Authenticate} />
             </Switch>
           )}
         </Suspense>

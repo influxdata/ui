@@ -17,7 +17,7 @@ import {getFlags} from 'src/shared/thunks/flags'
 import {activeFlags, getFlagStatus} from 'src/shared/selectors/flags'
 import {updateReportingContext} from 'src/cloud/utils/reporting'
 
-const GetFlags: FC = () => {
+export const GetFlags: FC = () => {
   const dispatch = useDispatch()
   const flags = useSelector(activeFlags)
   const status = useSelector(getFlagStatus)
@@ -46,5 +46,3 @@ const GetFlags: FC = () => {
     </SpinnerContainer>
   )
 }
-
-export default GetFlags

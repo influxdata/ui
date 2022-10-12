@@ -29,7 +29,7 @@ export interface ResultOptions {
   group: GroupOption
 }
 
-export interface SchemaSelection {
+export interface CompositionSelection {
   bucket: Bucket
   measurement: string
   fields: string[]
@@ -45,7 +45,7 @@ interface ContextType {
   range: TimeRange
   query: string
   resource: ResourceConnectedQuery<any>
-  selection: SchemaSelection
+  selection: CompositionSelection
 
   setHasChanged: (hasChanged: boolean) => void
   setHorizontal: (val: number[]) => void
@@ -53,13 +53,13 @@ interface ContextType {
   setRange: (val: TimeRange) => void
   setQuery: (val: string) => void
   setResource: (val: ResourceConnectedQuery<any>) => void
-  setSelection: (val: RecursivePartial<SchemaSelection>) => void
-  clearSchemaSelection: () => void
+  setSelection: (val: RecursivePartial<CompositionSelection>) => void
+  clearCompositionSelection: () => void
 
   save: () => Promise<ResourceConnectedQuery<any>>
 }
 
-export const DEFAULT_SCHEMA: SchemaSelection = {
+export const DEFAULT_SELECTION: CompositionSelection = {
   bucket: null,
   measurement: null,
   fields: [] as string[],
@@ -87,7 +87,7 @@ const DEFAULT_CONTEXT = {
   range: DEFAULT_TIME_RANGE,
   query: DEFAULT_EDITOR_TEXT,
   resource: null,
-  selection: JSON.parse(JSON.stringify(DEFAULT_SCHEMA)),
+  selection: JSON.parse(JSON.stringify(DEFAULT_SELECTION)),
 
   setHasChanged: (_: boolean) => {},
   setHorizontal: (_: number[]) => {},
@@ -95,8 +95,8 @@ const DEFAULT_CONTEXT = {
   setRange: (_: TimeRange) => {},
   setQuery: (_: string) => {},
   setResource: (_: any) => {},
-  setSelection: (_: RecursivePartial<SchemaSelection>) => {},
-  clearSchemaSelection: () => {},
+  setSelection: (_: RecursivePartial<CompositionSelection>) => {},
+  clearCompositionSelection: () => {},
   save: () => Promise.resolve(null),
 }
 
@@ -150,17 +150,17 @@ export const PersistanceProvider: FC = ({children}) => {
     [hasChanged]
   )
 
-  const clearSchemaSelection = () => {
-    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
+  const clearCompositionSelection = () => {
+    setSelection(JSON.parse(JSON.stringify(DEFAULT_SELECTION)))
   }
 
-  const setSchemaSelection = useCallback(
+  const setCompositionSelection = useCallback(
     schema => {
       if (selection.composition?.diverged && schema.composition?.synced) {
         // cannot re-sync if diverged
         return
       }
-      const nextState: SchemaSelection = {
+      const nextState: CompositionSelection = {
         ...selection,
         ...schema,
         composition: {
@@ -213,8 +213,8 @@ export const PersistanceProvider: FC = ({children}) => {
         setRange,
         setQuery: handleSetQuery,
         setResource: handleSetResource,
-        setSelection: setSchemaSelection,
-        clearSchemaSelection,
+        setSelection: setCompositionSelection,
+        clearCompositionSelection,
 
         save,
       }}

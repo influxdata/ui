@@ -42,7 +42,9 @@ class LspConnectionManager {
   private _preludeModel: MonacoTypes.editor.IModel
   private _variables: Variable[] = []
   private _compositionStyle: string[] = []
-  private _session: CompositionSelection = JSON.parse(JSON.stringify(DEFAULT_SELECTION))
+  private _session: CompositionSelection = JSON.parse(
+    JSON.stringify(DEFAULT_SELECTION)
+  )
   private _callbackSetSession: (
     schema: RecursivePartial<CompositionSelection>
   ) => void = () => null
@@ -367,7 +369,10 @@ class LspConnectionManager {
     }
   }
 
-  _diffSchemaChange(schema: CompositionSelection, previousState: CompositionSelection) {
+  _diffSchemaChange(
+    schema: CompositionSelection,
+    previousState: CompositionSelection
+  ) {
     const toAdd: Partial<CompositionSelection> = {}
     const toRemove: Partial<CompositionSelection> = {}
 

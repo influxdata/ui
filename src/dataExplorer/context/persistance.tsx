@@ -13,12 +13,29 @@ interface SchemaComposition {
   diverged: boolean // true == cannot re-sync. (e.g. user has typed in the composition block)
 }
 
+export enum GroupType {
+  Default = 'Default',
+  GroupBy = 'Group By',
+  Ungroup = 'Ungroup',
+}
+
+export interface GroupOption {
+  type: GroupType
+  columns: string[]
+}
+
+export interface ResultOptions {
+  fieldsAsColumn: boolean
+  group: GroupOption
+}
+
 export interface SchemaSelection {
   bucket: Bucket
   measurement: string
   fields: string[]
   tagValues: TagKeyValuePair[]
   composition: SchemaComposition
+  resultOptions: ResultOptions
 }
 
 interface ContextType {
@@ -50,7 +67,14 @@ export const DEFAULT_SCHEMA: SchemaSelection = {
   composition: {
     synced: true,
     diverged: false,
-  },
+  } as SchemaComposition,
+  resultOptions: {
+    fieldsAsColumn: false,
+    group: {
+      type: GroupType.Default,
+      columns: [] as string[],
+    } as GroupOption,
+  } as ResultOptions,
 }
 
 export const DEFAULT_EDITOR_TEXT =

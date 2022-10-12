@@ -12,7 +12,7 @@ import {
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
-
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {
@@ -95,6 +95,7 @@ const WrappedOptions: FC = () => {
 
 const Results: FC = () => {
   const [search, setSearch] = useState('')
+  const {range} = useContext(PersistanceContext)
   const {result, status, view, setView} = useContext(ResultsContext)
   const {launch} = useContext(SidebarContext)
   const res = useMemo(() => {
@@ -164,6 +165,7 @@ const Results: FC = () => {
               } as SimpleTableViewProperties
             }
             result={res}
+            timeRange={range}
             hideTimer
           />
         </div>
@@ -175,6 +177,7 @@ const Results: FC = () => {
             loading={status}
             properties={view.properties}
             result={res}
+            timeRange={range}
             hideTimer
           />
         </div>

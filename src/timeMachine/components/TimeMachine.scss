@@ -44,14 +44,6 @@
   height: 100%;
   position: absolute;
   padding: 16px;
-
-  > .single-stat {
-    border-radius: $radius;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-  }
 }
 
 .time-machine--view__empty {

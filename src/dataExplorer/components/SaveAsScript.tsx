@@ -190,8 +190,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
           <Button
             color={ComponentColor.Primary}
             status={
-              (resource?.data?.name?.length ?? 0) === 0 ||
-              (resource?.data?.description?.length ?? 0) === 0
+              (resource?.data?.name?.length ?? 0) === 0
                 ? ComponentStatus.Disabled
                 : ComponentStatus.Default
             }

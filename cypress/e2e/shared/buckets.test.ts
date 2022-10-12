@@ -165,6 +165,11 @@ describe('Buckets', () => {
       cy.setFeatureFlags({
         exploreWithFlows: true,
       })
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs, buckets}) => {
+          cy.visit(`${orgs}/${id}${buckets}`)
+        })
+      )
     })
     it('with redirect to notebooks', () => {
       const newBucket = 'Bucket for templating'

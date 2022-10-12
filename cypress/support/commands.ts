@@ -8,7 +8,7 @@ import {
   Secret,
 } from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
-import {setOverrides, FlagMap} from 'src/shared/actions/flags'
+import {FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
 import 'cypress-file-upload'
 
@@ -1040,20 +1040,22 @@ export const makeGraphSnapshot = (() => {
 })()
 
 export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
-  // make sure the app is loaded before dispatching
-  cy.getByTestID('tree-nav')
-  return cy.window().then((win: any) => {
-    // eslint-disable-next-line no-extra-semi
-    win.store.dispatch(setOverrides(flags))
-  })
+  // Need to refresh page so that flags responses can be overwritten
+  return cy.setFeatureFlagsNoNav(flags).reload().getByTestID('tree-nav')
 }
 
 export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
   // use in lieu of setFeatureFlags when no left nav bar is expected.
-  return cy.window().then((win: any) => {
-    // eslint-disable-next-line no-extra-semi
-    win.store.dispatch(setOverrides(flags))
+  const flagsURIs = ['/api/v2private/flags', '/api/v2/flags']
+  flagsURIs.forEach(url => {
+    cy.intercept(url, req => {
+      req.continue(res => {
+        res.send({...res.body, ...flags})
+      })
+    }).as('setFeatureFlagsResponse')
   })
+
+  return cy.wait(0)
 }
 
 export const createTaskFromEmpty = (

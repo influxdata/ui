@@ -17,11 +17,10 @@ import {
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
 import {setSearchTerm as setSearchTermAction} from 'src/tasks/actions/creators'
@@ -83,7 +82,6 @@ const TasksHeader: FC<Props> = ({
     <>
       <Page.Header fullWidth={true} testID="tasks-page--header">
         <Page.Title title="Tasks" />
-        {!isFlagEnabled('multiOrg') && <RateLimitAlert location="task list" />}
       </Page.Header>
       {flowsCTA.tasks && (
         <FeatureFlag name="flowsCTA">

@@ -80,7 +80,6 @@ import {setOrg} from 'src/organizations/actions/creators'
 
 // Utils
 import {updateReportingContext} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Decorators
 import {RemoteDataState} from '@influxdata/clockface'
@@ -314,7 +313,7 @@ const SetOrg: FC = () => {
             component={CliWizard}
           />
           {/* User Profile Page */}
-          {CLOUD && isFlagEnabled('multiOrg') && (
+          {CLOUD && (
             <Route
               exact
               path="/orgs/:orgId/user/profile"

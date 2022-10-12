@@ -38,11 +38,11 @@ import {checkBucketLimits as checkBucketLimitsAction} from 'src/cloud/actions/li
 import {getBucketLimitStatus} from 'src/cloud/utils/limits'
 import {getAll} from 'src/resources/selectors'
 import {SortTypes} from 'src/shared/utils/sort'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, Bucket, OwnBucket, ResourceType} from 'src/types'
 import {BucketSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
+import {CLOUD} from 'src/shared/constants'
 
 // Constants
 import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
@@ -144,7 +144,7 @@ class BucketsTab extends PureComponent<Props, State> {
           const adjustedHeight =
             height -
             heightWithPagination -
-            (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 60) -
+            (CLOUD ? GLOBAL_HEADER_HEIGHT : 60) -
             (limitStatus === 'exceeded' ? 100 : 0)
 
           return (

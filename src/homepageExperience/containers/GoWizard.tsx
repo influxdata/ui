@@ -25,8 +25,6 @@ import {GoIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
@@ -175,13 +173,7 @@ export class GoWizard extends PureComponent<null, State> {
   render() {
     return (
       <Page>
-        <Page.Header fullWidth={false}>
-          {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-between to justifyContent)*/}
-          <div />
-          {!isFlagEnabled('multiOrg') && (
-            <RateLimitAlert location="firstMile.homepage" />
-          )}
-        </Page.Header>
+        <Page.Header fullWidth={false} />
         <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
             <aside className="homepage-wizard-container--subway">

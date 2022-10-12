@@ -12,7 +12,6 @@ import ManualRefresh from 'src/shared/components/ManualRefresh'
 import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import VariablesControlBar from 'src/dashboards/components/variablesControlBar/VariablesControlBar'
 import LimitChecker from 'src/cloud/components/LimitChecker'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import {EditViewVEO} from 'src/dashboards/components/EditVEO'
 import {NewViewVEO} from 'src/dashboards/components/NewVEO'
 import {
@@ -46,7 +45,6 @@ import {
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 
@@ -63,9 +61,6 @@ const SingleDashboardPage: FC<ManualRefreshProps> = ({
   return (
     <>
       <DashboardHeader onManualRefresh={onManualRefresh} />
-      {!isFlagEnabled('multiOrg') && (
-        <RateLimitAlert alertOnly={true} location="dashboard page" />
-      )}
       <VariablesControlBar />
       <ErrorBoundary>
         <DashboardCells manualRefresh={manualRefresh} />

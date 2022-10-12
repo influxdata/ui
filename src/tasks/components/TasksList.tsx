@@ -22,9 +22,11 @@ import {getSortedResources} from 'src/shared/utils/sort'
 import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
+// Types
+import {CLOUD} from 'src/shared/constants'
+
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {notify} from 'src/shared/actions/notifications'
 
 // Constants
@@ -111,7 +113,7 @@ class TasksList extends PureComponent<Props, State> implements Pageable {
     const height =
       this.props.pageHeight -
       heightWithPagination -
-      (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 0)
+      (CLOUD ? GLOBAL_HEADER_HEIGHT : 0)
 
     this.totalPages = Math.max(
       Math.ceil(this.props.tasks.length / this.rowsPerPage),

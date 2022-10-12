@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {ChangeEvent, FC, useContext, useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 
 import {
@@ -10,7 +10,6 @@ import {
   ConfirmationButton,
   FlexBox,
   FlexDirection,
-  IconFont,
   Input,
   InputType,
   Overlay,
@@ -27,7 +26,6 @@ import {UserAccountContext} from 'src/accounts/context/userAccount'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
 import AccountHeader from 'src/accounts/AccountHeader'
 
-import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
 import CancellationOverlay from './CancellationOverlay'
 import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServiceContext'
 
@@ -47,21 +45,9 @@ const AccountAboutPage: FC = () => {
     useContext(UserAccountContext)
   const {users, handleRemoveUser} = useContext(UsersContext)
 
-  const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
   const [isDeactivateAccountVisible, setDeactivateAccountVisible] =
     useState(false)
 
-  /**
-   * confirmed with @Grace and @distortia that there is guaranteed
-   * to be at least one account (since the user has to be logged in
-   * to get to this call); and each account is guaranteed to have a name.
-   *
-   * and one of the accounts has to be active (the one that the user currently
-   * is logged in as)
-   *
-   * but note that at first load, the accounts may not be loaded yet.  hence, the useEffect
-   * to re-initialize the activeAcctName
-   */
   const activeAccount =
     userAccounts && userAccounts.filter(acct => acct.isActive)[0]
   const [activeAcctName, setActiveAcctName] = useState(activeAccount?.name)
@@ -71,17 +57,10 @@ const AccountAboutPage: FC = () => {
     setActiveAcctName(activeAccount?.name)
   }, [activeAccount])
 
-  const updateAcctName = evt => {
+  const updateAcctName = (evt: ChangeEvent<HTMLInputElement>) => {
     setActiveAcctName(evt.target.value)
   }
 
-  const showSwitchAccountDialog = () => {
-    setSwitchAccountVisible(true)
-  }
-
-  const closeSwitchAccountDialog = () => {
-    setSwitchAccountVisible(false)
-  }
   const currentUserId = useSelector(getMe)?.id
 
   const handleRemove = () => {
@@ -128,20 +107,6 @@ const AccountAboutPage: FC = () => {
   return (
     <AccountTabContainer activeTab="about">
       <>
-        {userAccounts &&
-          userAccounts.length >= 2 &&
-          !isFlagEnabled('multiOrg') && (
-            <div>
-              <Button
-                text="Switch Account"
-                icon={IconFont.Switch_New}
-                onClick={showSwitchAccountDialog}
-                testID="user-account-switch-btn"
-              />
-              <hr style={dividerStyle} />
-            </div>
-          )}
-
         <h4
           data-testid="account-settings--header"
           className="account-settings--header"
@@ -189,9 +154,6 @@ const AccountAboutPage: FC = () => {
             </FlexBox>
           </>
         )}
-        <Overlay visible={isSwitchAccountVisible}>
-          <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
-        </Overlay>
         <CancelServiceProvider>
           <Overlay visible={isDeactivateAccountVisible}>
             <CancellationOverlay onHideOverlay={hideDeactivateAccountOverlay} />

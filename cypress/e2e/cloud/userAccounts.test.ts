@@ -5,12 +5,7 @@ const doSetup = cy => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/accounts/settings`)
-        cy.setFeatureFlags({
-          multiAccount: true,
-          multiOrg: true,
-        }).then(() => {
-          cy.wait(300)
-        })
+        cy.wait(300)
       })
     })
   })

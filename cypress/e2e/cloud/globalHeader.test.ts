@@ -1,10 +1,6 @@
 import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
 
 describe('change-account change-org global header', () => {
-  const globalHeaderFeatureFlags = {
-    multiOrg: true,
-  }
-
   let idpeOrgID: string
 
   const interceptPageReload = () => {
@@ -30,7 +26,6 @@ describe('change-account change-org global header', () => {
   before(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.setFeatureFlagsNoNav(globalHeaderFeatureFlags)
         cy.request({
           method: 'GET',
           url: 'api/v2/orgs',

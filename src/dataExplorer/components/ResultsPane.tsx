@@ -45,6 +45,7 @@ import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {downloadBlob} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
+import {bytesFormatter} from 'src/shared/copy/notifications/common'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 
 // Constants
@@ -134,6 +135,8 @@ const ResultsPane: FC = () => {
     }
     setCancelId(null)
     downloadBlob(response.csv, 'influx.data', '.csv')
+    event('CSV size', {size: bytesFormatter(response.bytesRead)})
+    event('CSV Download End')
   }
 
   const submit = useCallback(() => {

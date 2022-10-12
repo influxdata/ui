@@ -1,23 +1,6 @@
 let query = """
             <%= query %>"""
 
-client.queryAPI.query(query: query, org: org) { response, error in
-  // Error response
-  if let error = error {
-    print("Error:\n\n\(error)")
-  }
-
-  // Success response
-  if let response = response {
-
-    print("\nSuccess response...\n")
-    do {
-      try response.forEach { record in
-        print("\t\(record.values["_field"]!): \(record.values["_value"]!)")
-      }
-    } catch {
-       print("Error:\n\n\(error)")
-    }
-  }
-}
+let records = try await client.queryAPI.query(query: query, org: org)
+try records.forEach { print(" > \($0.values["_field"]!): \($0.values["_value"]!)") }
 

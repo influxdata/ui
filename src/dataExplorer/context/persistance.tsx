@@ -8,7 +8,7 @@ import {
   ResourceConnectedQuery,
 } from 'src/dataExplorer/components/resources'
 
-interface SchemaComposition {
+interface CompositionStatus {
   synced: boolean // true == can modify session's schema
   diverged: boolean // true == cannot re-sync. (e.g. user has typed in the composition block)
 }
@@ -34,7 +34,7 @@ export interface CompositionSelection {
   measurement: string
   fields: string[]
   tagValues: TagKeyValuePair[]
-  composition: SchemaComposition
+  composition: CompositionStatus
   resultOptions: ResultOptions
 }
 
@@ -67,7 +67,7 @@ export const DEFAULT_SELECTION: CompositionSelection = {
   composition: {
     synced: true,
     diverged: false,
-  } as SchemaComposition,
+  } as CompositionStatus,
   resultOptions: {
     fieldsAsColumn: false,
     group: {

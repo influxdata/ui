@@ -1,8 +1,3 @@
-// Constants
-const userProfileFeatureFlags = {
-  multiOrg: true,
-}
-
 export const singleAccount = [
   {
     id: 1,
@@ -63,12 +58,10 @@ export const setupProfile = (): Promise<any> => {
           })
           cy.visit('/')
           cy.getByTestID('home-page--header').should('be.visible')
-          cy.setFeatureFlags(userProfileFeatureFlags).then(() => {
-            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-            cy.wait(1200).then(() => {
-              cy.visit('/me/profile')
-            })
+          // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+          // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+          cy.wait(1200).then(() => {
+            cy.visit('/me/profile')
           })
         })
       })

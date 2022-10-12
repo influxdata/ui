@@ -30,9 +30,6 @@ describe('DataExplorer', () => {
 
   describe('Script Editor', () => {
     beforeEach(() => {
-      cy.setFeatureFlags({
-        multiOrg: true,
-      })
       cy.getByTestID('switch-to-script-editor').should('be.visible').click()
     })
 

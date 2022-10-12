@@ -1,7 +1,6 @@
 import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
 
 const createOrgsFeatureFlags = {
-  multiOrg: true,
   createDeleteOrgs: true,
 }
 

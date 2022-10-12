@@ -1,8 +1,8 @@
 import React, {FC} from 'react'
-import LimitChecker from 'src/cloud/components/LimitChecker'
 
 // Components
 import {Page} from '@influxdata/clockface'
+import LimitChecker from 'src/cloud/components/LimitChecker'
 
 type Props = {
   testID?: string

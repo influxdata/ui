@@ -35,10 +35,8 @@ import './HomepageContainer.scss'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import UsageProvider from 'src/usage/context/usage'
 import Resources from 'src/me/components/Resources'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -125,9 +123,6 @@ export const HomepageContainer: FC = () => {
           >
             Get Started
           </Heading>
-          {!isFlagEnabled('multiOrg') && (
-            <RateLimitAlert location="firstMile.homepage" />
-          )}
         </Page.Header>
         <Page.Contents scrollable={true} fullWidth={true}>
           <Grid>

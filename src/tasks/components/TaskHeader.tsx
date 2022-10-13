@@ -8,8 +8,6 @@ import {
   ComponentStatus,
   Page,
 } from '@influxdata/clockface'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   title: string
@@ -25,7 +23,6 @@ export default class TaskHeader extends PureComponent<Props> {
       <>
         <Page.Header fullWidth={true}>
           <Page.Title title={title} />
-          {!isFlagEnabled('multiOrg') && <RateLimitAlert location="tasks" />}
         </Page.Header>
         <Page.ControlBar fullWidth={true}>
           <Page.ControlBarRight>

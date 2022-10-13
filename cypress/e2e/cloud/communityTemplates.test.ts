@@ -7,9 +7,7 @@ describe('Community Templates', () => {
         cy.get('@org').then(({id}: Organization) =>
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${id}/settings/templates`)
-            cy.getByTestID('tree-nav').then(() => {
-              cy.setFeatureFlags({multiOrg: true})
-            })
+            cy.getByTestID('tree-nav')
           })
         )
       })

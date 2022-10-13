@@ -7,7 +7,7 @@ import {CLOUD} from 'src/shared/constants'
 import {getReadWriteCardinalityLimits as getReadWriteCardinalityLimitsAction} from 'src/cloud/actions/limits'
 
 interface OwnProps {
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -21,7 +21,10 @@ class LimitChecker extends PureComponent<Props> {
   }
 
   public render() {
-    return this.props.children
+    if (this.props.children) {
+      return this.props.children
+    }
+    return null
   }
 }
 

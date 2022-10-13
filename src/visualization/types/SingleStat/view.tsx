@@ -12,8 +12,6 @@ import {VisualizationProps} from 'src/visualization'
 
 import {Config, Plot, getLatestValues} from '@influxdata/giraffe'
 
-import './style.scss'
-
 // Selectors
 import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 

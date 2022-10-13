@@ -10,7 +10,6 @@ describe('Operator Page', () => {
           }).then(() => {
             cy.reload()
             cy.setFeatureFlags({
-              multiOrg: true,
               operatorRole: true,
             }).then(() => {
               cy.getByTestID('nav-item--operator').click()

@@ -27,12 +27,12 @@ interface State {
 }
 
 class CSVExportButton extends PureComponent<Props, State> {
-  private _controller: AbortController
+  private controller: AbortController
 
   constructor(props) {
     super(props)
-    this._controller = new AbortController()
-    this._controller.signal.addEventListener(DOWNLOAD_EVENT_COMPLETE, () => {
+    this.controller = new AbortController()
+    this.controller.signal.addEventListener(DOWNLOAD_EVENT_COMPLETE, () => {
       this.setState({state: RemoteDataState.Done})
     })
     this.state = {state: RemoteDataState.NotStarted}
@@ -44,8 +44,8 @@ class CSVExportButton extends PureComponent<Props, State> {
         <Button
           text="Cancel"
           onClick={() => {
-            this._controller.abort()
-            this._controller.signal.dispatchEvent(
+            this.controller.abort()
+            this.controller.signal.dispatchEvent(
               new Event(DOWNLOAD_EVENT_COMPLETE)
             )
           }}
@@ -82,7 +82,7 @@ class CSVExportButton extends PureComponent<Props, State> {
 
   private handleClick = () => {
     this.setState({state: RemoteDataState.Loading})
-    this.props.download(this._controller)
+    this.props.download(this.controller)
   }
 }
 

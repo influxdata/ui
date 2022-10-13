@@ -19,7 +19,7 @@ import {
 import {UserProfileInput} from 'src/identity/components/userprofile/UserProfileInput'
 
 // Types
-import {CurrentAccount} from 'src/identity/apis/auth'
+import {CurrentAccount} from 'src/identity/apis/account'
 import {OrganizationSummaries, UserAccount} from 'src/client/unityRoutes'
 
 interface Props {

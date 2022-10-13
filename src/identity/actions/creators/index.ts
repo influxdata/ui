@@ -1,5 +1,6 @@
 import {Account} from 'src/client/unityRoutes'
-import {CurrentIdentity, CurrentOrg} from 'src/identity/apis/auth'
+import {CurrentIdentity} from 'src/identity/apis/auth'
+import {CurrentOrg} from 'src/identity/apis/org'
 import {BillingProvider, RemoteDataState} from 'src/types'
 
 export const SET_QUARTZ_IDENTITY = 'SET_QUARTZ_IDENTITY'

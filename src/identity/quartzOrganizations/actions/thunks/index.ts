@@ -4,7 +4,7 @@ import {Dispatch} from 'react'
 import {
   fetchOrgsByAccountID,
   updateDefaultOrgByAccountID,
-} from 'src/identity/apis/auth'
+} from 'src/identity/apis/org'
 
 // Actions
 import {

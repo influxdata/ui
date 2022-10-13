@@ -1,4 +1,4 @@
-import {QuartzOrganizations} from 'src/identity/apis/auth'
+import {QuartzOrganizations} from 'src/identity/apis/org'
 import {
   Actions,
   SET_QUARTZ_ORGANIZATIONS,

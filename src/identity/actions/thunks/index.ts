@@ -25,16 +25,23 @@ import {
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
+// This function, which lets the caller handle the error
+// is used by the authentication flow in the top of the app
+export const getQuartzIdentityThunkNoErrorHandling =
+  () => async (dispatch: Dispatch<any>) => {
+    dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
+
+    const quartzIdentity = await fetchQuartzIdentity()
+
+    dispatch(setQuartzIdentity(quartzIdentity))
+    dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
+  }
+
 export const getQuartzIdentityThunk =
   () => async (dispatch: Dispatch<any>, getState: GetState) => {
     try {
-      dispatch(setQuartzIdentityStatus(RemoteDataState.Loading))
-
-      const quartzIdentity = await fetchQuartzIdentity()
-
-      dispatch(setQuartzIdentity(quartzIdentity))
-
-      dispatch(setQuartzIdentityStatus(RemoteDataState.Done))
+      const identityThunk = getQuartzIdentityThunkNoErrorHandling()
+      await identityThunk(dispatch)
     } catch (err) {
       dispatch(setQuartzIdentityStatus(RemoteDataState.Error))
 

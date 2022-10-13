@@ -104,6 +104,9 @@ class AuthenticateUnconnected extends PureComponent<Props, State> {
     try {
       if (isFlagEnabled('quartzSession')) {
         await this.props.getQuartzIdentityThunkNoErrorHandling()
+        // TODO: completing https://github.com/influxdata/ui/issues/5826 will make this
+        // line unnecessary
+        await this.props.getIdpeMeThunk()
       } else {
         await this.props.getIdpeMeThunk()
       }

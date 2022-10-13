@@ -7,6 +7,8 @@ export const IMPORT_STRINGS = 'import "strings"\n'
 export const IMPORT_INFLUX_SCHEMA = 'import "influxdata/influxdb/schema"\n'
 export const IMPORT_SAMPLE = 'import "influxdata/influxdb/sample"\n'
 
+export const FROM_SAMPLE_DATA = (bucketID: string) => `sample.data(set: "${bucketID}")`
+
 // Sample data always has bucket id. Here is the code for sample bucket list
 //  Src/shared/contexts/buckets.tsx
 export const IMPORT_SAMPLE_DATA_SET = (bucketID: string) =>

@@ -12,8 +12,8 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {SelectGroup, MultiSelectDropdown} from '@influxdata/clockface'
 
 // Contexts
-import {FieldsContext} from 'src/dataExplorer/context/fields'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {GroupKeysContext} from 'src/dataExplorer/context/groupKeys'
 
 // Utilies
 import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
@@ -30,7 +30,7 @@ enum GroupOptions {
 }
 
 const GroupBy: FC = () => {
-  const {fields, loading, getFields} = useContext(FieldsContext)
+  const {groupKeys, getGroupKeys, loading} = useContext(GroupKeysContext)
   const {selection} = useContext(PersistanceContext)
   const [selectedGroupOption, setSelectedGroupOption] = useState<GroupOptions>(
     GroupOptions.Default
@@ -39,11 +39,17 @@ const GroupBy: FC = () => {
 
   useEffect(
     () => {
-      if (selectedGroupOption === GroupOptions.GroupBy) {
-        getFields(selection.bucket, selection.measurement)
+      if (
+        !selection.bucket ||
+        !selection.measurement ||
+        selectedGroupOption !== GroupOptions.GroupBy
+      ) {
+        return
       }
+
+      getGroupKeys(selection.bucket, selection.measurement)
     },
-    // getFields is not included to avoid infinite loop
+    // getGroupKeys() is not included to avoid infinite loop
     [selection.bucket, selection.measurement, selectedGroupOption]
   )
 
@@ -88,7 +94,7 @@ const GroupBy: FC = () => {
     return selectedGroupOption === GroupOptions.GroupBy ? (
       <div className="result-options--item--row">
         <MultiSelectDropdown
-          options={fields}
+          options={groupKeys}
           selectedOptions={selectedGroupKeys}
           onSelect={handleSelectGroupKey}
           emptyText="Select group column values"
@@ -97,7 +103,7 @@ const GroupBy: FC = () => {
       </div>
     ) : null
   }, [
-    fields,
+    groupKeys,
     loading,
     selectedGroupKeys,
     handleSelectGroupKey,

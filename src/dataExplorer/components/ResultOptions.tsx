@@ -10,6 +10,7 @@ import {Aggregate} from 'src/dataExplorer/components/Aggregate'
 // Context
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
 import {TagsProvider} from 'src/dataExplorer/context/tags'
+import {GroupKeysProvider} from 'src/dataExplorer/context/groupKeys'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -28,18 +29,16 @@ const ResultOptions: FC = () => {
   } as QueryScope
 
   return (
-    <FieldsProvider scope={scope}>
-      <TagsProvider scope={scope}>
-        <Accordion className="result-options" expanded={true}>
-          <Accordion.AccordionHeader className="result-options--header">
-            Result Options
-          </Accordion.AccordionHeader>
-          <FieldsAsColumns />
-          <GroupBy />
-          <Aggregate />
-        </Accordion>
-      </TagsProvider>
-    </FieldsProvider>
+    <GroupKeysProvider scope={scope}>
+      <Accordion className="result-options" expanded={true}>
+        <Accordion.AccordionHeader className="result-options--header">
+          Result Options
+        </Accordion.AccordionHeader>
+        <FieldsAsColumns />
+        <GroupBy />
+        <Aggregate />
+      </Accordion>
+    </GroupKeysProvider>
   )
 }
 

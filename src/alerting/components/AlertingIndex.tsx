@@ -14,7 +14,6 @@ import ChecksColumn from 'src/checks/components/ChecksColumn'
 import RulesColumn from 'src/notifications/rules/components/RulesColumn'
 import EndpointsColumn from 'src/notifications/endpoints/components/EndpointsColumn'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import GetResources from 'src/resources/components/GetResources'
 import EditCheckEO from 'src/checks/components/EditCheckEO'
 import EditRuleOverlay from 'src/notifications/rules/components/EditRuleOverlay'
@@ -24,7 +23,7 @@ import {
   ThresholdCheckOverlay,
   DeadmanCheckOverlay as NewDeadmanCheckEO,
 } from 'src/overlays/components'
-import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -64,11 +63,6 @@ const AlertingIndex: FunctionComponent = () => {
       <Page titleTag={pageTitleSuffixer(['Alerts'])}>
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
-          <ErrorBoundary>
-            {!isFlagEnabled('multiOrg') && (
-              <RateLimitAlert location="alerting" />
-            )}
-          </ErrorBoundary>
         </Page.Header>
         <Page.Contents
           fullWidth={true}

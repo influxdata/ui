@@ -18,7 +18,6 @@ import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
 import GetResources from 'src/resources/components/GetResources'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import SaveAsOverlay from 'src/dataExplorer/components/SaveAsOverlay'
 import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
 import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
@@ -99,9 +98,6 @@ const DataExplorerPageHeader: FC = () => {
               testID="flux-query-builder-toggle"
             />
           </FlexBox>
-        )}
-        {!isFlagEnabled('multiOrg') && (
-          <RateLimitAlert location="data explorer" />
         )}
       </FlexBox>
     </Page.Header>

@@ -5,16 +5,14 @@ import {DapperScrollbars} from '@influxdata/clockface'
 
 // Contexts
 import CurrentFlowProvider, {FlowContext} from 'src/flows/context/flow.current'
-import QueryProvider from 'src/shared/contexts/query'
+import {QueryProvider} from 'src/shared/contexts/query'
 import {FlowQueryProvider, FlowQueryContext} from 'src/flows/context/flow.query'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsProvider} from 'src/flows/context/results'
 import {SidebarProvider} from 'src/flows/context/sidebar'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 // Constants
+import {CLOUD} from 'src/shared/constants'
 import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
 
 // Components
@@ -39,9 +37,7 @@ const RunOnMount = () => {
 }
 
 const flowPageHeight = {
-  height: isFlagEnabled('multiOrg')
-    ? `calc(100% - ${GLOBAL_HEADER_HEIGHT}px)`
-    : '100%',
+  height: CLOUD ? `calc(100% - ${GLOBAL_HEADER_HEIGHT}px)` : '100%',
 }
 
 export const FlowPage: FC = () => (

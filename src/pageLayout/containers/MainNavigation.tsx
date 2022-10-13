@@ -28,9 +28,6 @@ import {
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 // Overlays
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
@@ -97,7 +94,7 @@ export const MainNavigation: FC = () => {
     <TreeNav
       expanded={navbarMode === 'expanded'}
       headerElement={<NavHeader link={`/orgs/${org.id}`} />}
-      userElement={CLOUD && isFlagEnabled('multiOrg') ? null : <UserWidget />}
+      userElement={CLOUD ? null : <UserWidget />}
       onToggleClick={handleToggleNavExpansion}
     >
       {generateNavItems(org.id, operatorRole).map((item: NavItem) => {

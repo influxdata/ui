@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, lazy, Suspense, useContext, useCallback} from 'react'
+import React, {
+  FC,
+  lazy,
+  Suspense,
+  useContext,
+  useCallback,
+  useState,
+} from 'react'
 import {
   DraggableResizer,
   Orientation,
@@ -15,6 +22,7 @@ import {
   JustifyContent,
   AlignItems,
   Icon,
+  ComponentColor,
 } from '@influxdata/clockface'
 
 // Contexts
@@ -34,9 +42,10 @@ import {TimeRange} from 'src/types'
 
 // Utils
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
-import {downloadTextFile} from 'src/shared/utils/download'
+import {downloadBlob} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
+import {bytesFormatter} from 'src/shared/copy/notifications/common'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 
 // Constants
@@ -101,6 +110,7 @@ const ResultsPane: FC = () => {
     setRange,
     selection,
   } = useContext(PersistanceContext)
+  const [csvDownloadCancelID, setCancelId] = useState(null)
 
   const submitButtonDisabled = !text && !selection.measurement
 
@@ -108,17 +118,25 @@ const ResultsPane: FC = () => {
     ? 'Select measurement before running script'
     : ''
 
-  const download = () => {
+  const download = async () => {
     event('CSV Download Initiated')
-    basic(text, {
-      vars: rangeToParam(range),
-    }).promise.then(response => {
-      if (response.type !== 'SUCCESS') {
-        return
-      }
+    const promise = basic(
+      text,
+      {
+        vars: rangeToParam(range),
+      },
+      {rawBlob: true}
+    )
+    setCancelId(promise.id)
 
-      downloadTextFile(response.csv, 'influx.data', '.csv', 'text/csv')
-    })
+    const response = await promise.promise
+    if (response.type !== 'SUCCESS') {
+      return
+    }
+    setCancelId(null)
+    downloadBlob(response.csv, 'influx.data', '.csv')
+    event('CSV size', {size: bytesFormatter(response.bytesRead)})
+    event('CSV Download End')
   }
 
   const submit = useCallback(() => {
@@ -201,15 +219,27 @@ const ResultsPane: FC = () => {
               margin={ComponentSize.Small}
             >
               <QueryTime />
-              <Button
-                titleText="Download query results as a .CSV file"
-                text="CSV"
-                icon={IconFont.Download_New}
-                onClick={download}
-                status={
-                  text ? ComponentStatus.Default : ComponentStatus.Disabled
-                }
-              />
+              {csvDownloadCancelID == null ? (
+                <Button
+                  titleText="Download query results as a .CSV file"
+                  text="CSV"
+                  icon={IconFont.Download_New}
+                  onClick={download}
+                  status={
+                    text ? ComponentStatus.Default : ComponentStatus.Disabled
+                  }
+                  testID="data-explorer--csv-download"
+                />
+              ) : (
+                <Button
+                  text="Cancel"
+                  onClick={() => {
+                    cancel(csvDownloadCancelID)
+                    setCancelId(null)
+                  }}
+                  color={ComponentColor.Danger}
+                />
+              )}
               {isFlagEnabled('newTimeRangeComponent') ? (
                 <NewDatePicker />
               ) : (

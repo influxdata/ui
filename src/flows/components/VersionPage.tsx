@@ -6,7 +6,7 @@ import {useParams} from 'react-router'
 // Contexts
 import {VersionFlowProvider} from 'src/flows/context/version.read'
 import {FlowQueryProvider} from 'src/flows/context/flow.query'
-import QueryProvider from 'src/shared/contexts/query'
+import {QueryProvider} from 'src/shared/contexts/query'
 import {ResultsProvider} from 'src/flows/context/results'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {FlowContext} from 'src/flows/context/flow.current'

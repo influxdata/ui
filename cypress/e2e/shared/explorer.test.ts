@@ -1,5 +1,6 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
+const path = require('path')
 
 describe('DataExplorer', () => {
   beforeEach(() => {
@@ -905,6 +906,43 @@ describe('DataExplorer', () => {
           cy.getByTestID('variable-name-input').clear().type('bad-name')
           cy.getByTestID('variable-form-save').should('be.disabled')
           cy.get('.cf-overlay--dismiss').click()
+        })
+      })
+    })
+  })
+
+  describe('download csv', () => {
+    const downloadsDirectory = Cypress.config('downloadsFolder')
+
+    beforeEach(() => {
+      cy.writeData(points(20))
+      cy.task('deleteDownloads', {dirPath: downloadsDirectory})
+      cy.getByTestID('switch-to-script-editor').should('be.visible').click()
+    })
+
+    it('can download a file', () => {
+      cy.intercept('POST', '/api/v2/query?*').as('query')
+
+      cy.getByTestID('time-machine--bottom').within(() => {
+        cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
+          .monacoType(`from(bucket: "defbuck")
+  |> range(start: -10h)`)
+        cy.getByTestID('time-machine--download-csv')
+          .should('be.visible')
+          .click()
+      })
+
+      cy.wait('@query')
+      cy.wait(1200)
+
+      cy.task('getDownloads', {dirPath: downloadsDirectory}).should(files => {
+        ;(files as string[]).forEach(filename => {
+          expect(filename).contains('influxdb_data.csv')
+          const fullPathFile = path.join(downloadsDirectory, filename)
+          cy.readFile(fullPathFile, {timeout: 15000}).should(
+            'have.length.gt',
+            50
+          )
         })
       })
     })

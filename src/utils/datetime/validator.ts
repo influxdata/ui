@@ -79,6 +79,15 @@ const formatToLuxonMap = {
     format: 'EEEE, LLLL d, yyyy h:mm:ss a',
     regex: /[a-zA-Z]+, [a-zA-Z]+ \d{1,2}, \d{4} \d{2}:\d{2}:\d{2} \w{2}/,
   },
+  '200601021504': {
+    format: 'yyyyMMddhhmm',
+  },
+  '02/01/06 03:04:05 PM': {
+    format: 'dd/MM/yy hh:mm:ss a',
+  },
+  '2006-01-02T15:04:05Z07:00': {
+    format: 'dd/MM/yy hh:mm:ss a',
+  },
 }
 
 export const getLuxonFormatString = (format: string): string => {

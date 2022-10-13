@@ -1,4 +1,5 @@
-import {CurrentIdentity, CurrentOrg} from 'src/identity/apis/auth'
+import {CurrentIdentity} from 'src/identity/apis/auth'
+import {CurrentOrg} from 'src/identity/apis/org'
 import {BillingProvider, RemoteDataState} from 'src/types'
 
 export const mockBillingProviders: BillingProvider[] = [
@@ -103,7 +104,6 @@ export const mockOrgDetailsArr: CurrentOrg[] = [
     clusterHost: 'https://fakehost.fakehost.fake',
     creationDate: '2022-06-08T16:59:44.827046Z',
     description: null,
-    isRegionBeta: false,
     id: '89d20c01076ba140',
     name: 'fakeemail@influxdata.com',
     provider: 'Azure',
@@ -114,7 +114,6 @@ export const mockOrgDetailsArr: CurrentOrg[] = [
     clusterHost: 'https://newhost.new.new',
     creationDate: '2022-06-10T16:59:44.827046Z',
     description: null,
-    isRegionBeta: true,
     id: '72d20c01076ba120',
     name: 'newemail@influxdata.com',
     provider: 'AWS',
@@ -125,7 +124,6 @@ export const mockOrgDetailsArr: CurrentOrg[] = [
     clusterHost: 'https://oldhost.oldhost.old',
     creationDate: '2022-06-04T16:59:44.827046Z',
     description: null,
-    isRegionBeta: false,
     id: '59d20c01076be140',
     name: 'newemail@influxdata.com',
     provider: 'GCP',
@@ -136,7 +134,6 @@ export const mockOrgDetailsArr: CurrentOrg[] = [
     clusterHost: 'https://temphost.temphost.temp',
     creationDate: '2022-06-02T16:59:44.827046Z',
     description: null,
-    isRegionBeta: true,
     id: '64d20c01076be140',
     name: 'newemail@influxdata.com',
     provider: 'AWS',

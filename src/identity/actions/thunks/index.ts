@@ -16,11 +16,9 @@ import {Dispatch} from 'redux'
 type ActionTypes = IdentityActions | NotificationAction
 
 // Utilities
-import {
-  fetchQuartzIdentity,
-  fetchAccountDetails,
-  fetchOrgDetails,
-} from 'src/identity/apis/auth'
+import {fetchQuartzIdentity} from 'src/identity/apis/auth'
+import {fetchAccountDetails} from 'src/identity/apis/account'
+import {fetchOrgDetails} from 'src/identity/apis/org'
 
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'

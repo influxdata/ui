@@ -27,7 +27,8 @@ import {omit} from 'lodash'
 
 // Types
 import {BillingProvider} from 'src/types'
-import {CurrentIdentity, CurrentOrg} from 'src/identity/apis/auth'
+import {CurrentIdentity} from 'src/identity/apis/auth'
+import {CurrentOrg} from 'src/identity/apis/org'
 
 describe('identity reducer', () => {
   it('can initialize a default state', () => {

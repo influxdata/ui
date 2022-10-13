@@ -34,7 +34,7 @@ import {Organization} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 
 // API
-import {getDefaultAccountDefaultOrg} from 'src/identity/apis/auth'
+import {getDefaultAccountDefaultOrg} from 'src/identity/apis/org'
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">

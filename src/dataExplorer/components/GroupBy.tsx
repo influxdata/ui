@@ -32,7 +32,7 @@ enum GroupType {
 const GroupBy: FC = () => {
   const {groupKeys, getGroupKeys, loading} = useContext(GroupKeysContext)
   const {selection} = useContext(PersistanceContext)
-  const [selectedGroupOption, setSelectedGroupOption] = useState<GroupType>(
+  const [selectedGroupType, setSelectedGroupType] = useState<GroupType>(
     GroupType.Default
   )
   const [selectedGroupKeys, setSelectedGroupKeys] = useState([])
@@ -42,7 +42,7 @@ const GroupBy: FC = () => {
       if (
         !selection.bucket ||
         !selection.measurement ||
-        selectedGroupOption !== GroupType.GroupBy
+        selectedGroupType !== GroupType.GroupBy
       ) {
         return
       }
@@ -50,32 +50,35 @@ const GroupBy: FC = () => {
       getGroupKeys(selection.bucket, selection.measurement)
     },
     // getGroupKeys() is not included to avoid infinite loop
-    [selection.bucket, selection.measurement, selectedGroupOption]
+    [selection.bucket, selection.measurement, selectedGroupType]
   )
 
   const handleSelectGroupType = (type: GroupType) => {
-    setSelectedGroupOption(type)
+    setSelectedGroupType(type)
   }
 
   const groupOptionsButtons = useMemo(
     () => (
       <div className="result-options--item--row">
         <SelectGroup>
-          {(Object.keys(GroupType) as (keyof typeof GroupType)[]).map(key => (
-            <SelectGroup.Option
-              key={key}
-              id={key}
-              active={selectedGroupOption === GroupType[key]}
-              value={GroupType[key]}
-              onClick={handleSelectGroupType}
-            >
-              {GroupType[key]}
-            </SelectGroup.Option>
-          ))}
+          {(Object.keys(GroupType) as (keyof typeof GroupType)[]).map(key => {
+            const type: GroupType = GroupType[key]
+            return (
+              <SelectGroup.Option
+                key={key}
+                id={key}
+                active={selectedGroupType === type}
+                value={type}
+                onClick={handleSelectGroupType}
+              >
+                {type}
+              </SelectGroup.Option>
+            )
+          })}
         </SelectGroup>
       </div>
     ),
-    [selectedGroupOption]
+    [selectedGroupType]
   )
 
   const handleSelectGroupKey = useCallback(
@@ -93,7 +96,7 @@ const GroupBy: FC = () => {
   )
 
   const groupBySelector = useMemo(() => {
-    return selectedGroupOption === GroupType.GroupBy ? (
+    return selectedGroupType === GroupType.GroupBy ? (
       <div className="result-options--item--row">
         <MultiSelectDropdown
           options={groupKeys}
@@ -109,7 +112,7 @@ const GroupBy: FC = () => {
     loading,
     selectedGroupKeys,
     handleSelectGroupKey,
-    selectedGroupOption,
+    selectedGroupType,
   ])
 
   return useMemo(() => {

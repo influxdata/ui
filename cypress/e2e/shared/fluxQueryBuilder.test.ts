@@ -491,6 +491,18 @@ describe('Script Builder', () => {
             'disabled'
           )
 
+          cy.log(
+            'does not diverge, when adding import statement outside of block'
+          )
+          cy.getByTestID('flux-toolbar-search--input')
+            .should('exist')
+            .type('schema')
+          cy.getByTestID('flux--fieldsAsCols').should('exist').click()
+          cy.getByTestID('flux-sync--toggle').should(
+            'not.have.class',
+            'disabled'
+          )
+
           cy.log('does diverge, within block')
           cy.getByTestID('flux-editor').monacoType(
             '{enter}{upArrow}{upArrow}{upArrow} // make diverge'

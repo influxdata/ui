@@ -109,7 +109,7 @@ export const GroupKeysProvider: FC<Prop> = ({children, scope}) => {
       |> keys()
       |> keep(columns: ["_value"])
       |> distinct()
-      |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
+      |> filter(fn: (r) => r._value != "_measurement")
       |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
       ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
 
@@ -136,7 +136,7 @@ export const GroupKeysProvider: FC<Prop> = ({children, scope}) => {
         start: ${CACHING_REQUIRED_START_DATE},
         stop: ${CACHING_REQUIRED_END_DATE},
       )
-      |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
+      |> filter(fn: (r) => r._value != "_measurement")
       |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
       ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
 

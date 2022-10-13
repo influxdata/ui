@@ -41,12 +41,14 @@ interface GroupKeysContextType {
     measurement: string,
     searchTerm?: string
   ) => void
+  resetGroupKeys: () => void
 }
 
 const DEFAULT_CONTEXT: GroupKeysContextType = {
   groupKeys: [],
   loading: RemoteDataState.NotStarted,
   getGroupKeys: (_b: Bucket, _m: string, _s: string) => {},
+  resetGroupKeys: () => {},
 }
 
 export const GroupKeysContext =
@@ -165,9 +167,16 @@ export const GroupKeysProvider: FC<Prop> = ({children, scope}) => {
     [queryAPI, scope]
   )
 
+  const resetGroupKeys = () => {
+    setGroupKeys(JSON.parse(JSON.stringify(INITIAL_GROUP_KEYS)))
+    setLoading(RemoteDataState.NotStarted)
+  }
+
   return useMemo(
     () => (
-      <GroupKeysContext.Provider value={{groupKeys, loading, getGroupKeys}}>
+      <GroupKeysContext.Provider
+        value={{groupKeys, loading, getGroupKeys, resetGroupKeys}}
+      >
         {children}
       </GroupKeysContext.Provider>
     ),

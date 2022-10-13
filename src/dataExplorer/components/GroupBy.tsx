@@ -30,7 +30,8 @@ enum GroupType {
 }
 
 const GroupBy: FC = () => {
-  const {groupKeys, getGroupKeys, loading} = useContext(GroupKeysContext)
+  const {groupKeys, loading, getGroupKeys, resetGroupKeys} =
+    useContext(GroupKeysContext)
   const {selection} = useContext(PersistanceContext)
   const [selectedGroupType, setSelectedGroupType] = useState<GroupType>(
     GroupType.Default
@@ -39,18 +40,15 @@ const GroupBy: FC = () => {
 
   useEffect(
     () => {
-      if (
-        !selection.bucket ||
-        !selection.measurement ||
-        selectedGroupType !== GroupType.GroupBy
-      ) {
+      if (!selection.bucket || !selection.measurement) {
+        resetGroupKeys()
         return
       }
 
       getGroupKeys(selection.bucket, selection.measurement)
     },
-    // getGroupKeys() is not included to avoid infinite loop
-    [selection.bucket, selection.measurement, selectedGroupType]
+    // not including resetGroupKeys() and getGroupKeys() to avoid infinite loop
+    [selection.bucket, selection.measurement]
   )
 
   const handleSelectGroupType = (type: GroupType) => {

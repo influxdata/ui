@@ -259,18 +259,19 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // sync preZoomDomain and domain
-  //   - when query results change to refit the graph
-  //   - when it is the time axis, then only if the timeRange has changed
+  // sync preZoomDomain and domain only when not zoomed in
+  //   - if they are different, or
+  //   - if it is the time axis and the time range has changed
   useEffect(() => {
     if (
-      (!timeRange || isNotEqual(timeRange, selectedTimeRange)) &&
-      isNotEqual(preZoomDomain, domain)
+      !preZoomResult &&
+      (isNotEqual(preZoomDomain, domain) ||
+        (timeRange && isNotEqual(timeRange, selectedTimeRange)))
     ) {
       setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)
     }
-  }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [domain, preZoomDomain, preZoomResult, selectedTimeRange, timeRange])
 
   useEffect(() => {
     if (timeRange) {
@@ -419,18 +420,19 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // sync preZoomDomain and domain
-  //   - when query results change to refit the graph
-  //   - when it is the time axis, then only if the timeRange has changed
+  // sync preZoomDomain and domain only when not zoomed in
+  //   - if they are different, or
+  //   - if it is the time axis and the time range has changed
   useEffect(() => {
     if (
-      (!timeRange || isNotEqual(timeRange, selectedTimeRange)) &&
-      isNotEqual(preZoomDomain, domain)
+      !preZoomResult &&
+      (isNotEqual(preZoomDomain, domain) ||
+        (timeRange && isNotEqual(timeRange, selectedTimeRange)))
     ) {
       setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)
     }
-  }, [preZoomDomain]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [domain, preZoomDomain, preZoomResult, selectedTimeRange, timeRange])
 
   useEffect(() => {
     if (timeRange) {

@@ -9,8 +9,8 @@ import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 // handling schema composition
 import {RecursivePartial} from 'src/types'
 import {
-  DEFAULT_SCHEMA,
-  SchemaSelection,
+  DEFAULT_SELECTION,
+  CompositionSelection,
 } from 'src/dataExplorer/context/persistance'
 import {CompositionInitParams} from 'src/languageSupport/languages/flux/lsp/utils'
 import {comments} from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
@@ -42,9 +42,11 @@ class LspConnectionManager {
   private _preludeModel: MonacoTypes.editor.IModel
   private _variables: Variable[] = []
   private _compositionStyle: string[] = []
-  private _session: SchemaSelection = JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
+  private _session: CompositionSelection = JSON.parse(
+    JSON.stringify(DEFAULT_SELECTION)
+  )
   private _callbackSetSession: (
-    schema: RecursivePartial<SchemaSelection>
+    schema: RecursivePartial<CompositionSelection>
   ) => void = () => null
 
   // only add handlers on first page load.
@@ -237,7 +239,7 @@ class LspConnectionManager {
     return [startLineStyle, middleLinesStyle, endLineStyle]
   }
 
-  _setEditorBlockStyle(schema: SchemaSelection = this._session) {
+  _setEditorBlockStyle(schema: CompositionSelection = this._session) {
     const compositionBlock = this._getCompositionBlockLines()
 
     const removeAllStyles = !compositionBlock || schema.composition.diverged
@@ -280,8 +282,8 @@ class LspConnectionManager {
   }
 
   _addUpdatesToBuffer(
-    toAdd: Partial<SchemaSelection>,
-    toRemove: Partial<SchemaSelection>
+    toAdd: Partial<CompositionSelection>,
+    toRemove: Partial<CompositionSelection>
   ) {
     /* order is important. This ordering must occur on several levels:
         (1) bucket & measurement changes must be applied first.
@@ -357,8 +359,8 @@ class LspConnectionManager {
   }
 
   _updateLsp(
-    toAdd: Partial<SchemaSelection>,
-    toRemove: Partial<SchemaSelection> = null
+    toAdd: Partial<CompositionSelection>,
+    toRemove: Partial<CompositionSelection> = null
   ) {
     this._addUpdatesToBuffer(toAdd, toRemove)
 
@@ -367,9 +369,12 @@ class LspConnectionManager {
     }
   }
 
-  _diffSchemaChange(schema: SchemaSelection, previousState: SchemaSelection) {
-    const toAdd: Partial<SchemaSelection> = {}
-    const toRemove: Partial<SchemaSelection> = {}
+  _diffSchemaChange(
+    schema: CompositionSelection,
+    previousState: CompositionSelection
+  ) {
+    const toAdd: Partial<CompositionSelection> = {}
+    const toRemove: Partial<CompositionSelection> = {}
 
     if (schema.bucket && previousState.bucket != schema.bucket) {
       toAdd.bucket = schema.bucket
@@ -418,7 +423,7 @@ class LspConnectionManager {
     this._compositionHandlersSet = true
   }
 
-  onSchemaSessionChange(schema: SchemaSelection, sessionCb) {
+  onSchemaSessionChange(schema: CompositionSelection, sessionCb) {
     if (!schema.composition) {
       // FIXME: message to user, to create a new script
       console.error(

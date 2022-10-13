@@ -13,7 +13,7 @@ import {
 } from 'src/dataExplorer/context/persistance'
 
 const Template: FC = () => {
-  const {setQuery, setHasChanged, setResource, clearSchemaSelection} =
+  const {setQuery, setHasChanged, setResource, clearCompositionSelection} =
     useContext(PersistanceContext)
   const params = useParams()[0].split('/')
   const org = useSelector(getOrg)
@@ -35,7 +35,7 @@ const Template: FC = () => {
     }
 
     setLoading(RemoteDataState.Loading)
-    clearSchemaSelection()
+    clearCompositionSelection()
     setQuery(DEFAULT_EDITOR_TEXT)
     setResource(null)
 

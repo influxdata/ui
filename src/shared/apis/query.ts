@@ -41,7 +41,8 @@ export const runQuery = (
   orgID: string,
   query: string,
   extern?: File,
-  abortController?: AbortController
+  abortController?: AbortController,
+  transformResponse = processResponse
 ): CancelBox<RunQueryResult> => {
   const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
 
@@ -66,7 +67,7 @@ export const runQuery = (
   })
 
   const promise = request
-    .then(processResponse)
+    .then(transformResponse)
     .catch(e =>
       e.name === 'AbortError'
         ? Promise.reject(new CancellationError())
@@ -85,6 +86,25 @@ export const processResponse = async (
   switch (response.status) {
     case 200:
       return processSuccessResponse(response)
+    case RATE_LIMIT_ERROR_STATUS:
+      return processRateLimitResponse(response)
+    default:
+      return processErrorResponse(response)
+  }
+}
+
+export const processResponseBlob = async (
+  response: Response
+): Promise<RunQueryResult> => {
+  switch (response.status) {
+    case 200:
+      const blob = await response.blob()
+      return {
+        type: 'SUCCESS',
+        csv: blob as unknown as string,
+        bytesRead: blob.size,
+        didTruncate: false,
+      }
     case RATE_LIMIT_ERROR_STATUS:
       return processRateLimitResponse(response)
     default:

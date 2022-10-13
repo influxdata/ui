@@ -13,7 +13,7 @@ describe('Notification Endpoints', () => {
     description: 'interrupt everyone at work',
     status: 'active',
     type: 'slack',
-    url: 'insert.slack.url.here',
+    url: 'http://api.slack.com',
     token: 'plerps',
   }
 
@@ -371,7 +371,7 @@ describe('Notification Endpoints', () => {
           'В литературе, как, впрочем, и других областях искусства, есть статисты, классики и бунтари.',
         status: 'active',
         type: 'slack',
-        url: 'insert.slack.url.here',
+        url: 'http://api.slack.com',
         token: 'plerps',
       },
       {

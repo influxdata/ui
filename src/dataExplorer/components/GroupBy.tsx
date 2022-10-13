@@ -23,7 +23,7 @@ import './Sidebar.scss'
 
 const GROUP_TOOLTIP = `test`
 
-enum GroupOptions {
+enum GroupType {
   Default = 'Default',
   GroupBy = 'Group By',
   Ungroup = 'Ungroup',
@@ -32,8 +32,8 @@ enum GroupOptions {
 const GroupBy: FC = () => {
   const {groupKeys, getGroupKeys, loading} = useContext(GroupKeysContext)
   const {selection} = useContext(PersistanceContext)
-  const [selectedGroupOption, setSelectedGroupOption] = useState<GroupOptions>(
-    GroupOptions.Default
+  const [selectedGroupOption, setSelectedGroupOption] = useState<GroupType>(
+    GroupType.Default
   )
   const [selectedGroupKeys, setSelectedGroupKeys] = useState([])
 
@@ -42,7 +42,7 @@ const GroupBy: FC = () => {
       if (
         !selection.bucket ||
         !selection.measurement ||
-        selectedGroupOption !== GroupOptions.GroupBy
+        selectedGroupOption !== GroupType.GroupBy
       ) {
         return
       }
@@ -53,23 +53,25 @@ const GroupBy: FC = () => {
     [selection.bucket, selection.measurement, selectedGroupOption]
   )
 
+  const handleSelectGroupType = (type: GroupType) => {
+    setSelectedGroupOption(type)
+  }
+
   const groupOptionsButtons = useMemo(
     () => (
       <div className="result-options--item--row">
         <SelectGroup>
-          {(Object.keys(GroupOptions) as (keyof typeof GroupOptions)[]).map(
-            key => (
-              <SelectGroup.Option
-                key={key}
-                id={key}
-                active={selectedGroupOption === GroupOptions[key]}
-                value={GroupOptions[key]}
-                onClick={setSelectedGroupOption}
-              >
-                {GroupOptions[key]}
-              </SelectGroup.Option>
-            )
-          )}
+          {(Object.keys(GroupType) as (keyof typeof GroupType)[]).map(key => (
+            <SelectGroup.Option
+              key={key}
+              id={key}
+              active={selectedGroupOption === GroupType[key]}
+              value={GroupType[key]}
+              onClick={handleSelectGroupType}
+            >
+              {GroupType[key]}
+            </SelectGroup.Option>
+          ))}
         </SelectGroup>
       </div>
     ),
@@ -91,7 +93,7 @@ const GroupBy: FC = () => {
   )
 
   const groupBySelector = useMemo(() => {
-    return selectedGroupOption === GroupOptions.GroupBy ? (
+    return selectedGroupOption === GroupType.GroupBy ? (
       <div className="result-options--item--row">
         <MultiSelectDropdown
           options={groupKeys}

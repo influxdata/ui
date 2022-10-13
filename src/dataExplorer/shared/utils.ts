@@ -5,10 +5,11 @@ export const LOAD_MORE_LIMIT = 25
 export const IMPORT_REGEXP = 'import "regexp"\n'
 export const IMPORT_STRINGS = 'import "strings"\n'
 export const IMPORT_INFLUX_SCHEMA = 'import "influxdata/influxdb/schema"\n'
+export const IMPORT_SAMPLE = 'import "influxdata/influxdb/sample"\n'
 
 // Sample data always has bucket id. Here is the code for sample bucket list
 //  Src/shared/contexts/buckets.tsx
-export const SAMPLE_DATA_SET = (bucketID: string) =>
+export const IMPORT_SAMPLE_DATA_SET = (bucketID: string) =>
   `import "influxdata/influxdb/sample"\nsample.data(set: "${bucketID}")`
 
 export const FROM_BUCKET = (bucketName: string) =>

@@ -18,7 +18,7 @@ import {
   IMPORT_REGEXP,
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
-  SAMPLE_DATA_SET,
+  IMPORT_SAMPLE_DATA_SET,
   FROM_BUCKET,
   SEARCH_STRING,
 } from 'src/dataExplorer/shared/utils'
@@ -77,7 +77,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     //   That is why _source and query script for sample data is different
     let _source = IMPORT_REGEXP
     if (bucket.type === 'sample') {
-      _source += SAMPLE_DATA_SET(bucket.id)
+      _source += IMPORT_SAMPLE_DATA_SET(bucket.id)
     } else {
       _source += FROM_BUCKET(bucket.name)
     }

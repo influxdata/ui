@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-loss-of-precision */
 import {CSVParser} from './parser'
 import {EOFError} from './utils'
 
@@ -371,6 +370,7 @@ trash,80,test_name`
       measurement: 'csv',
       fields: {id: 1, value: 5},
       tags: {},
+      // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
       timestamp: new Date(1551129661.954561233 * 1000).getTime() * 1000000,
     }
 

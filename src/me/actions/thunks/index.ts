@@ -18,29 +18,25 @@ import {MeState} from 'src/me/reducers'
 import {Actions} from 'src/me/actions/creators'
 
 export const getIdpeMeThunk = () => async (dispatch: Dispatch<Actions>) => {
-  try {
-    const resp = await getIdpeMe({})
+  const resp = await getIdpeMe({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-    const user = resp.data
-
-    updateReportingContext({userID: user.id, userEmail: user.name})
-
-    gaEvent('cloudAppUserDataReady', {
-      identity: {
-        id: user.id,
-        email: user.name,
-      },
-    })
-
-    HoneyBadger.setContext({
-      user_id: user.id,
-    })
-
-    dispatch(setMe(user as MeState))
-  } catch (error) {
-    console.error(error)
+  if (resp.status !== 200) {
+    throw new Error(resp.data.message)
   }
+  const user = resp.data
+
+  updateReportingContext({userID: user.id, userEmail: user.name})
+
+  gaEvent('cloudAppUserDataReady', {
+    identity: {
+      id: user.id,
+      email: user.name,
+    },
+  })
+
+  HoneyBadger.setContext({
+    user_id: user.id,
+  })
+
+  dispatch(setMe(user as MeState))
 }

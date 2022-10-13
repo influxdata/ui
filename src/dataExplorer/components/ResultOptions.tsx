@@ -8,8 +8,6 @@ import {GroupBy} from 'src/dataExplorer/components/GroupBy'
 import {Aggregate} from 'src/dataExplorer/components/Aggregate'
 
 // Context
-import {FieldsProvider} from 'src/dataExplorer/context/fields'
-import {TagsProvider} from 'src/dataExplorer/context/tags'
 import {GroupKeysProvider} from 'src/dataExplorer/context/groupKeys'
 
 // Utils

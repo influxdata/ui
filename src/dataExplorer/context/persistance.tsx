@@ -167,6 +167,10 @@ export const PersistanceProvider: FC = ({children}) => {
           ...(selection.composition || {}),
           ...(newSelection.composition || {}),
         } as CompositionStatus,
+        resultOptions: {
+          ...(selection.resultOptions || {}),
+          ...(newSelection.resultOptions || {}),
+        } as ResultOptions,
       }
       if (hasChanged === false) {
         setHasChanged(true)
@@ -176,6 +180,7 @@ export const PersistanceProvider: FC = ({children}) => {
     [
       hasChanged,
       selection.composition,
+      selection.resultOptions,
       selection.fields,
       selection.tagValues,
       setSelection,

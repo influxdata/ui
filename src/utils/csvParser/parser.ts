@@ -4,13 +4,7 @@ import {CSVReader} from './reader'
 
 // Utils
 import {getLuxonFormatString} from 'src/utils/datetime/validator'
-
-interface Metric {
-  name: string
-  tags: Record<string, any>
-  time: Number
-  fields: Record<string, any>
-}
+import {Point as Metric} from 'src/cloud/apis/reporting'
 
 interface ParserConfig {
   columnNames: string[]
@@ -157,7 +151,6 @@ export class CSVParser {
   public metadataSeparatorList: string[] = []
   config: Config
 
-  // InitFromConfig
   constructor(config?: Partial<ParserConfig>) {
     this.config = new Config(
       config?.columnNames,
@@ -211,7 +204,7 @@ export class CSVParser {
       }
     }
 
-    const metrics = await this.parseCSV(line)
+    const metrics: Metric[] = await this.parseCSV(line)
     if (metrics.length === 1) {
       return metrics[0]
     }
@@ -477,10 +470,10 @@ export class CSVParser {
     delete recordFields[this.config.timestampColumn]
 
     return {
-      name: measurementName,
-      tags,
+      measurement: measurementName,
       fields: recordFields,
-      time: metricTime,
+      tags,
+      timestamp: metricTime,
     }
   }
 

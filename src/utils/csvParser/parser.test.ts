@@ -1,23 +1,20 @@
-/* eslint-disable @typescript-eslint/no-loss-of-precision */
-import {expect, jest} from '@jest/globals'
 import {CSVParser} from './parser'
 import {EOFError} from './utils'
 
-interface Metric {
-  name: any
-  tags: Record<string, any>
-  time: any
-  fields: Record<string, any>
-}
+import {Point as ParserMetric} from 'src/cloud/apis/reporting'
 
-const metric: Metric[] = []
+const metric: ParserMetric[] = []
 
 class Metric {
-  constructor(name: any, tags: any, time: any, fields: any) {
-    this.name = name
-    this.tags = tags
-    this.time = time
+  measurement: string
+  fields: any
+  tags: any
+  timestamp: any
+  constructor(measurement: string, fields: any, tags: any, timestamp: any) {
+    this.measurement = measurement
     this.fields = fields
+    this.tags = tags
+    this.timestamp = timestamp
   }
 }
 
@@ -43,7 +40,7 @@ describe('CSVParser', () => {
   1,2,3
   3.4,70,test_name`
     const metrics = await parser.parse(file)
-    expect(metrics[0]?.name).toEqual('test_name')
+    expect(metrics[0]?.measurement).toEqual('test_name')
   })
 
   it('parses a CSV with a headerRowCount and columnNames specified', async () => {
@@ -62,7 +59,7 @@ describe('CSVParser', () => {
     }
 
     const metrics = await parser.parse(testCSV)
-    expect(metrics[0]?.name).toEqual('test_name')
+    expect(metrics[0]?.measurement).toEqual('test_name')
     expect(metrics[0]?.fields).toEqual(expectedFields)
 
     const testCSVRows: any = ['line1,line2,line3\r\n', '3.4,70,test_name\r\n']
@@ -77,7 +74,7 @@ describe('CSVParser', () => {
     expect(metrics2).toEqual(metric)
 
     const metrics3 = await parser2.parseLine(testCSVRows[1])
-    expect(metrics3?.name).toEqual('test_name')
+    expect(metrics3?.measurement).toEqual('test_name')
     expect(metrics3?.fields).toEqual(expectedFields)
   })
 
@@ -92,7 +89,7 @@ describe('CSVParser', () => {
     const file = `measurement,cpu,time_user,time_system,time_idle,time
     cpu,cpu0,42,42,42,2018-09-13T13:03:28Z`
     const metrics = await parser.parse(file)
-    expect(metrics[0]?.name).toEqual('cpu')
+    expect(metrics[0]?.measurement).toEqual('cpu')
   })
 
   it('parses an annotated CSV', async () => {
@@ -218,15 +215,15 @@ cpu,cpu0,42,42,42,2018-09-13T13:03:28Z`
     const metrics = await parser.parse(testCSV)
     const expectedMetric = new Metric(
       'test_value',
+      expectedFields,
       {},
-      new Date(mockDate).getTime() * 1000000,
-      expectedFields
+      new Date(mockDate).getTime() * 1000000
     )
     const returnedMetric = new Metric(
-      metrics[0]?.name,
+      metrics[0]?.measurement,
+      metrics[0]?.fields,
       metrics[0]?.tags,
-      metrics[0]?.time,
-      metrics[0]?.fields
+      metrics[0]?.timestamp
     )
 
     expect(expectedMetric).toEqual(returnedMetric)
@@ -242,10 +239,10 @@ cpu,cpu0,42,42,42,2018-09-13T13:03:28Z`
 
     const metrics2 = await parser2.parse(testCSV)
     const returnedMetric2 = new Metric(
-      metrics2[0]?.name,
+      metrics2[0]?.measurement,
+      metrics2[0]?.fields,
       metrics2[0]?.tags,
-      metrics2[0]?.time,
-      metrics2[0]?.fields
+      metrics2[0]?.timestamp
     )
     expect(expectedMetric.fields).toEqual(returnedMetric2.fields)
   })
@@ -293,7 +290,7 @@ hello,80,test_name2`
     }
 
     const metrics = await parser.parse(testCSV)
-    expect('test_name2').toEqual(metrics[0]?.name)
+    expect('test_name2').toEqual(metrics[0]?.measurement)
     expect(expectedFields).toEqual(metrics[0]?.fields)
     expect(expectedTags).toEqual(metrics[0]?.tags)
 
@@ -316,7 +313,7 @@ hello,80,test_name2`
     await expect(() => parser2.parse(testCSVRows[2])).not.toThrow()
 
     const metrics2 = await parser2.parse(testCSVRows[2])
-    expect('test_name2').toEqual(metrics2[0]?.name)
+    expect('test_name2').toEqual(metrics2[0]?.measurement)
     expect(expectedFields).toEqual(metrics2[0]?.fields)
     expect(expectedTags).toEqual(metrics2[0]?.tags)
   })
@@ -370,10 +367,11 @@ trash,80,test_name`
     1,5,1551129661.954561233`
     const metrics = await parser.parse(file)
     const expected: Metric = {
-      name: 'csv',
+      measurement: 'csv',
       fields: {id: 1, value: 5},
-      time: new Date(1551129661.954561233 * 1000).getTime() * 1000000,
+      // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
       tags: {},
+      timestamp: new Date(1551129661.954561233 * 1000).getTime() * 1000000,
     }
 
     expect(metrics[0]).toEqual(expected)
@@ -393,18 +391,18 @@ trash,80,test_name`
     const metrics = await parser.parse(testCSV)
 
     const expected = {
-      name: 'csv',
-      tags: {},
+      measurement: 'csv',
       fields: {
         a: 1,
       },
-      time: new Date(mockDate).getTime() * 1000000,
+      tags: {},
+      timestamp: new Date(mockDate).getTime() * 1000000,
     }
-    expect(expected.name).toEqual(metrics[0]?.name)
+    expect(expected.measurement).toEqual(metrics[0]?.measurement)
     expect(expected.tags).toEqual(metrics[0]?.tags)
     expect(expected.fields).toEqual(metrics[0]?.fields)
-    expect(JSON.stringify(expected.time)).toEqual(
-      JSON.stringify(metrics[0]?.time)
+    expect(JSON.stringify(expected.timestamp)).toEqual(
+      JSON.stringify(metrics[0]?.timestamp)
     )
   })
 
@@ -422,18 +420,18 @@ trash,80,test_name`
     const metrics = await parser.parse(testCSV)
 
     const expected = {
-      name: 'csv',
-      tags: {},
+      measurement: 'csv',
       fields: {
         a: 1,
       },
-      time: new Date(mockDate).getTime() * 1000000,
+      tags: {},
+      timestamp: new Date(mockDate).getTime() * 1000000,
     }
-    expect(expected.name).toEqual(metrics[0]?.name)
+    expect(expected.measurement).toEqual(metrics[0]?.measurement)
     expect(expected.tags).toEqual(metrics[0]?.tags)
     expect(expected.fields).toEqual(metrics[0]?.fields)
-    expect(JSON.stringify(expected.time)).toEqual(
-      JSON.stringify(metrics[0]?.time)
+    expect(JSON.stringify(expected.timestamp)).toEqual(
+      JSON.stringify(metrics[0]?.timestamp)
     )
   })
 
@@ -506,14 +504,14 @@ corrupted_line
 
     const expected = [
       {
-        name: 'csv',
-        tags: {},
+        measurement: 'csv',
         fields: {
           a: 1,
           b: 2,
           c: 3,
         },
-        time: new Date(mockDate).getTime() * 1000000,
+        tags: {},
+        timestamp: new Date(mockDate).getTime() * 1000000,
       },
     ]
 
@@ -522,11 +520,11 @@ corrupted_line
 
     const metrics2 = await parser.parseLine(csvBody)
 
-    expect(metrics2?.name).toEqual(expected[0]?.name)
+    expect(metrics2?.measurement).toEqual(expected[0]?.measurement)
     expect(metrics2?.fields).toEqual(expected[0]?.fields)
     expect(metrics2?.tags).toEqual(expected[0]?.tags)
-    expect(JSON.stringify(metrics2?.time)).toEqual(
-      JSON.stringify(expected[0]?.time)
+    expect(JSON.stringify(metrics2?.timestamp)).toEqual(
+      JSON.stringify(expected[0]?.timestamp)
     )
   })
 
@@ -542,14 +540,14 @@ corrupted_line
 
     const expected = [
       {
-        name: 'csv',
-        tags: {},
+        measurement: 'csv',
         fields: {
           a: 1,
           b: 2,
           c: 3,
         },
-        time: new Date(mockDate).getTime() * 1000000,
+        tags: {},
+        timestamp: new Date(mockDate).getTime() * 1000000,
       },
     ]
 
@@ -558,11 +556,11 @@ corrupted_line
 
     const metrics2: any = await parser.parseLine(csvOneRow)
 
-    expect(metrics2?.name).toEqual(expected[0]?.name)
+    expect(metrics2?.measurement).toEqual(expected[0]?.measurement)
     expect(metrics2?.fields).toEqual(expected[0]?.fields)
     expect(metrics2?.tags).toEqual(expected[0]?.tags)
-    expect(JSON.stringify(metrics2?.time)).toEqual(
-      JSON.stringify(expected[0]?.time)
+    expect(JSON.stringify(metrics2?.timestamp)).toEqual(
+      JSON.stringify(expected[0]?.timestamp)
     )
 
     await expect(parser.parseLine(csvTwoRows)).rejects.toThrowError(
@@ -589,10 +587,10 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).not.toThrow(Error)
 
-    expect(metrics[0]?.time).toEqual(
+    expect(metrics[0]?.timestamp).toEqual(
       new Date('2009-05-23T16:05:06.000Z').getTime() * 1000000
     )
-    expect(metrics[1]?.time).toEqual(
+    expect(metrics[1]?.timestamp).toEqual(
       new Date('2009-11-07T16:05:06.000Z').getTime() * 1000000
     )
   })
@@ -630,10 +628,10 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).not.toThrow(Error)
 
-    expect(metrics[0]?.time).toEqual(
+    expect(metrics[0]?.timestamp).toEqual(
       new Date('2009-05-23T16:05:00.000Z').getTime() * 1000000
     )
-    expect(metrics[1]?.time).toEqual(
+    expect(metrics[1]?.timestamp).toEqual(
       new Date('2009-07-11T16:05:00.000Z').getTime() * 1000000
     )
   })
@@ -654,10 +652,10 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).not.toThrow(Error)
 
-    expect(metrics[0]?.time).toEqual(
+    expect(metrics[0]?.timestamp).toEqual(
       new Date(1243094706000).getTime() * 1000000
     )
-    expect(metrics[1]?.time).toEqual(
+    expect(metrics[1]?.timestamp).toEqual(
       new Date(1257609906000).getTime() * 1000000
     )
   })
@@ -678,8 +676,8 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
     expect(() => metrics).not.toThrow(Error)
 
-    expect(metrics[0]?.time).toEqual(1243094706123000000)
-    expect(metrics[1]?.time).toEqual(1257609906123000000)
+    expect(metrics[0]?.timestamp).toEqual(1243094706123000000)
+    expect(metrics[1]?.timestamp).toEqual(1257609906123000000)
   })
 
   it('handles timestamps with unix float precision', async () => {
@@ -693,10 +691,10 @@ corrupted_line
     const file = `1551129661.95456123352050781250,42`
     const metrics = await parser.parse(file)
     const expected: Metric = {
-      name: 'csv',
+      measurement: 'csv',
       fields: {value: 42},
-      time: 1551129661954000000,
       tags: {},
+      timestamp: 1551129661954000000,
     }
 
     expect(metrics[0]).toEqual(expected)
@@ -717,8 +715,8 @@ corrupted_line
 07/11/09 11:05:06 PM,80,test_name2`
 
     const metrics = await parser.parse(testCSV)
-    expect(metrics[0]?.time).toEqual(1243094706000000000)
-    expect(metrics[1]?.time).toEqual(1257609906000000000)
+    expect(metrics[0]?.timestamp).toEqual(1243094706000000000)
+    expect(metrics[1]?.timestamp).toEqual(1257609906000000000)
   })
 
   it('can handle empty measurement name', async () => {
@@ -735,18 +733,18 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
 
     const expected = {
-      name: 'csv',
-      tags: {},
+      measurement: 'csv',
       fields: {
         b: 2,
       },
-      time: new Date(mockDate).getTime() * 1000000,
+      tags: {},
+      timestamp: new Date(mockDate).getTime() * 1000000,
     }
-    expect(expected.name).toEqual(metrics[0]?.name)
+    expect(expected.measurement).toEqual(metrics[0]?.measurement)
     expect(expected.tags).toEqual(metrics[0]?.tags)
     expect(expected.fields).toEqual(metrics[0]?.fields)
-    expect(JSON.stringify(expected.time)).toEqual(
-      JSON.stringify(metrics[0]?.time)
+    expect(JSON.stringify(expected.timestamp)).toEqual(
+      JSON.stringify(metrics[0]?.timestamp)
     )
   })
 
@@ -764,19 +762,19 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
 
     const expected = {
-      name: '1',
-      tags: {},
+      measurement: '1',
       fields: {
         b: 2,
       },
-      time: new Date(mockDate).getTime() * 1000000,
+      tags: {},
+      timestamp: new Date(mockDate).getTime() * 1000000,
     }
 
-    expect(expected.name).toEqual(metrics[0]?.name)
+    expect(expected.measurement).toEqual(metrics[0]?.measurement)
     expect(expected.tags).toEqual(metrics[0]?.tags)
     expect(expected.fields).toEqual(metrics[0]?.fields)
-    expect(JSON.stringify(expected.time)).toEqual(
-      JSON.stringify(metrics[0]?.time)
+    expect(JSON.stringify(expected.timestamp)).toEqual(
+      JSON.stringify(metrics[0]?.timestamp)
     )
   })
 
@@ -793,19 +791,19 @@ corrupted_line
     const metrics = await parser.parse(testCSV)
 
     const expected = {
-      name: 'csv',
-      tags: {},
+      measurement: 'csv',
       fields: {
         a: 1,
         b: 2,
       },
-      time: new Date(mockDate).getTime() * 1000000,
+      tags: {},
+      timestamp: new Date(mockDate).getTime() * 1000000,
     }
-    expect(expected.name).toEqual(metrics[0]?.name)
+    expect(expected.measurement).toEqual(metrics[0]?.measurement)
     expect(expected.tags).toEqual(metrics[0]?.tags)
     expect(expected.fields).toEqual(metrics[0]?.fields)
-    expect(JSON.stringify(expected.time)).toEqual(
-      JSON.stringify(metrics[0]?.time)
+    expect(JSON.stringify(expected.timestamp)).toEqual(
+      JSON.stringify(metrics[0]?.timestamp)
     )
   })
 
@@ -1077,32 +1075,32 @@ timestamp,type,name,status
 
     const expected = [
       {
-        name: '',
+        measurement: '',
+        fields: {
+          name: 'R002',
+          status: 1,
+        },
         tags: {
           type: 'Reader',
           version: '1.0',
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
         },
-        fields: {
-          name: 'R002',
-          status: 1,
-        },
-        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
-        name: '',
+        measurement: '',
+        fields: {
+          name: 'C001',
+          status: 0,
+        },
         tags: {
           type: 'Coordinator',
           version: '1.0',
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
         },
-        fields: {
-          name: 'C001',
-          status: 0,
-        },
-        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1126,11 +1124,11 @@ timestamp,type,name,status
     const metrics = await parser.parse(testCSV)
 
     metrics.forEach((metric, i) => {
-      expect(metric.name).toEqual(expected[i]?.name)
+      expect(metric.measurement).toEqual(expected[i]?.measurement)
       expect(metric.fields).toEqual(expected[i]?.fields)
       expect(metric.tags).toEqual(expected[i]?.tags)
-      expect(JSON.stringify(metric.time)).toEqual(
-        JSON.stringify(expected[i]?.time)
+      expect(JSON.stringify(metric.timestamp)).toEqual(
+        JSON.stringify(expected[i]?.timestamp)
       )
     })
 
@@ -1138,29 +1136,29 @@ timestamp,type,name,status
     const additionalCSV = '2021-12-01T19:01:00+00:00,Reader,R009,5\r\n'
     const additionalExpected = [
       {
-        name: '',
+        measurement: '',
+        fields: {
+          name: 'R009',
+          status: 5,
+        },
         tags: {
           type: 'Reader',
           version: '1.0',
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
         },
-        fields: {
-          name: 'R009',
-          status: 5,
-        },
-        time: new Date('2021-12-01T19:01:00.000Z').getTime() * 1000000,
+        timestamp: new Date('2021-12-01T19:01:00.000Z').getTime() * 1000000,
       },
     ]
 
     const metrics2 = await parser.parse(additionalCSV)
     expect(() => metrics2).not.toThrow(Error)
 
-    expect(metrics2[0]?.name).toEqual(additionalExpected[0]?.name)
+    expect(metrics2[0]?.measurement).toEqual(additionalExpected[0]?.measurement)
     expect(metrics2[0]?.fields).toEqual(additionalExpected[0]?.fields)
     expect(metrics2[0]?.tags).toEqual(additionalExpected[0]?.tags)
-    expect(JSON.stringify(metrics2[0]?.time)).toEqual(
-      JSON.stringify(additionalExpected[0]?.time)
+    expect(JSON.stringify(metrics2[0]?.timestamp)).toEqual(
+      JSON.stringify(additionalExpected[0]?.timestamp)
     )
 
     // This should fail when not resetting but reading again due to the header etc
@@ -1185,7 +1183,7 @@ timestamp,type,name,status
 
     const expected = [
       {
-        name: '',
+        measurement: '',
         tags: {
           type: 'Reader',
           version: '1.0',
@@ -1196,10 +1194,10 @@ timestamp,type,name,status
           name: 'R002',
           status: 1,
         },
-        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
-        name: '',
+        measurement: '',
         tags: {
           type: 'Coordinator',
           version: '1.0',
@@ -1210,7 +1208,7 @@ timestamp,type,name,status
           name: 'C001',
           status: 0,
         },
-        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1247,11 +1245,11 @@ timestamp,type,name,status
     }
 
     metrics.forEach((metric, i) => {
-      expect(metric.name).toEqual(expected[i]?.name)
+      expect(metric.measurement).toEqual(expected[i]?.measurement)
       expect(metric.fields).toEqual(expected[i]?.fields)
       expect(metric.tags).toEqual(expected[i]?.tags)
-      expect(JSON.stringify(metric.time)).toEqual(
-        JSON.stringify(expected[i]?.time)
+      expect(JSON.stringify(metric.timestamp)).toEqual(
+        JSON.stringify(expected[i]?.timestamp)
       )
     })
 
@@ -1259,7 +1257,7 @@ timestamp,type,name,status
     const additionalCSV = '2021-12-01T19:01:00+00:00,Reader,R009,5\r\n'
     const additionalExpected = [
       {
-        name: '',
+        measurement: '',
         tags: {
           type: 'Reader',
           version: '1.0',
@@ -1270,18 +1268,18 @@ timestamp,type,name,status
           name: 'R009',
           status: 5,
         },
-        time: new Date('2021-12-01T19:01:00.000Z').getTime() * 1000000,
+        timestamp: new Date('2021-12-01T19:01:00.000Z').getTime() * 1000000,
       },
     ]
 
     const metrics2 = await parser.parseLine(additionalCSV)
     expect(() => metrics2).not.toThrow(Error)
 
-    expect(metrics2?.name).toEqual(additionalExpected[0]?.name)
+    expect(metrics2?.measurement).toEqual(additionalExpected[0]?.measurement)
     expect(metrics2?.fields).toEqual(additionalExpected[0]?.fields)
     expect(metrics2?.tags).toEqual(additionalExpected[0]?.tags)
-    expect(JSON.stringify(metrics2?.time)).toEqual(
-      JSON.stringify(additionalExpected[0]?.time)
+    expect(JSON.stringify(metrics2?.timestamp)).toEqual(
+      JSON.stringify(additionalExpected[0]?.timestamp)
     )
 
     // This should fail when not resetting but reading again due to the header etc
@@ -1304,7 +1302,7 @@ timestamp,type,name,status
 
     const expected = [
       {
-        name: '',
+        measurement: '',
         tags: {
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
@@ -1315,10 +1313,10 @@ timestamp,type,name,status
           name: 'R002',
           status: 1,
         },
-        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
-        name: '',
+        measurement: '',
         tags: {
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
@@ -1329,7 +1327,7 @@ timestamp,type,name,status
           name: 'C001',
           status: 0,
         },
-        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1351,11 +1349,11 @@ timestamp,type,name,status
     const metrics = await parser.parse(testCSV)
 
     metrics.forEach((metric, i) => {
-      expect(metric.name).toEqual(expected[i]?.name)
+      expect(metric.measurement).toEqual(expected[i]?.measurement)
       expect(metric.fields).toEqual(expected[i]?.fields)
       expect(metric.tags).toEqual(expected[i]?.tags)
-      expect(JSON.stringify(metric.time)).toEqual(
-        JSON.stringify(expected[i]?.time)
+      expect(JSON.stringify(metric.timestamp)).toEqual(
+        JSON.stringify(expected[i]?.timestamp)
       )
     })
 
@@ -1377,7 +1375,7 @@ timestamp,category,id,flag
 
     const expected2 = [
       {
-        name: '',
+        measurement: '',
         tags: {
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
@@ -1388,10 +1386,10 @@ timestamp,category,id,flag
           id: 'R002',
           flag: 1,
         },
-        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
-        name: '',
+        measurement: '',
         tags: {
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
@@ -1402,7 +1400,7 @@ timestamp,category,id,flag
           id: 'C001',
           flag: 0,
         },
-        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1411,11 +1409,11 @@ timestamp,category,id,flag
     expect(() => metrics2).not.toThrow(Error)
 
     metrics2.forEach((metric, i) => {
-      expect(metric.name).toEqual(expected2[i]?.name)
+      expect(metric.measurement).toEqual(expected2[i]?.measurement)
       expect(metric.fields).toEqual(expected2[i]?.fields)
       expect(metric.tags).toEqual(expected2[i]?.tags)
-      expect(JSON.stringify(metric.time)).toEqual(
-        JSON.stringify(expected2[i]?.time)
+      expect(JSON.stringify(metric.timestamp)).toEqual(
+        JSON.stringify(expected2[i]?.timestamp)
       )
     })
   })
@@ -1436,7 +1434,7 @@ timestamp,category,id,flag
 
     const expected = [
       {
-        name: '',
+        measurement: '',
         tags: {
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
@@ -1447,10 +1445,10 @@ timestamp,category,id,flag
           name: 'R002',
           status: 1,
         },
-        time: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-23T08:19:27.000Z').getTime() * 1000000,
       },
       {
-        name: '',
+        measurement: '',
         tags: {
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
@@ -1461,7 +1459,7 @@ timestamp,category,id,flag
           name: 'C001',
           status: 0,
         },
-        time: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
+        timestamp: new Date('2020-11-04T13:29:47.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1496,11 +1494,11 @@ timestamp,category,id,flag
     }
 
     metrics.forEach((metric, i) => {
-      expect(metric.name).toEqual(expected[i]?.name)
+      expect(metric.measurement).toEqual(expected[i]?.measurement)
       expect(metric.fields).toEqual(expected[i]?.fields)
       expect(metric.tags).toEqual(expected[i]?.tags)
-      expect(JSON.stringify(metric.time)).toEqual(
-        JSON.stringify(expected[i]?.time)
+      expect(JSON.stringify(metric.timestamp)).toEqual(
+        JSON.stringify(expected[i]?.timestamp)
       )
     })
 
@@ -1510,7 +1508,7 @@ timestamp,category,id,flag
 
     const additionalExpected = [
       {
-        name: '',
+        measurement: '',
         tags: {
           'file created': '2021-10-08T12:34:18+10:00',
           test: 'tag',
@@ -1521,7 +1519,7 @@ timestamp,category,id,flag
           name: 'R009',
           status: 5,
         },
-        time: new Date('2021-12-01T19:01:00.000Z').getTime() * 1000000,
+        timestamp: new Date('2021-12-01T19:01:00.000Z').getTime() * 1000000,
       },
     ]
 
@@ -1529,11 +1527,11 @@ timestamp,category,id,flag
 
     expect(() => metrics2).not.toThrow(Error)
 
-    expect(metrics2?.name).toEqual(additionalExpected[0]?.name)
+    expect(metrics2?.measurement).toEqual(additionalExpected[0]?.measurement)
     expect(metrics2?.fields).toEqual(additionalExpected[0]?.fields)
     expect(metrics2?.tags).toEqual(additionalExpected[0]?.tags)
-    expect(JSON.stringify(metrics2?.time)).toEqual(
-      JSON.stringify(additionalExpected[0]?.time)
+    expect(JSON.stringify(metrics2?.timestamp)).toEqual(
+      JSON.stringify(additionalExpected[0]?.timestamp)
     )
 
     // This should fail when not resetting but reading again due to the header etc

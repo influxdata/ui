@@ -54,6 +54,10 @@ const GroupBy: FC = () => {
   )
 
   const handleSelectGroupType = (type: GroupType) => {
+    if (type !== GroupType.GroupBy) {
+      setSelectedGroupKeys([])
+    }
+
     setSelectedGroupType(type)
   }
 

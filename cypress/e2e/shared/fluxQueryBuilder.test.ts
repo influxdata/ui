@@ -496,8 +496,9 @@ describe('Script Builder', () => {
           )
           cy.getByTestID('flux-toolbar-search--input')
             .should('exist')
-            .type('schema')
-          cy.getByTestID('flux--fieldsAsCols').should('exist').click()
+            .type('fieldsAsCols')
+          cy.get('.flux-toolbar--list-item').first().click()
+          cy.getByTestID('flux-editor').contains('import')
           cy.getByTestID('flux-sync--toggle').should(
             'not.have.class',
             'disabled'

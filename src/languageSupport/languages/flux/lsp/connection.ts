@@ -263,15 +263,15 @@ class LspConnectionManager {
 
     const removeAllStyles = !compositionBlock || schema.composition.diverged
 
-    const compositionSyncStyle = this._compositionSyncStyle(
-      compositionBlock?.startLine,
-      compositionBlock?.endLine,
-      schema.composition.synced
-    )
-
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
-      removeAllStyles ? [] : compositionSyncStyle
+      removeAllStyles
+        ? []
+        : this._compositionSyncStyle(
+            compositionBlock?.startLine,
+            compositionBlock?.endLine,
+            schema.composition.synced
+          )
     )
   }
 

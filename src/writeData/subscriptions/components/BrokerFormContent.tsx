@@ -284,7 +284,7 @@ const BrokerFormContent: FC<Props> = ({
               )}
             </Form.ValidationElement>
           </FlexBox>
-          {isFlagEnabled('subscriptionsClientId') && (
+          {isFlagEnabled('subscriptionsSSLSupport') && (
             <FlexBox
               direction={FlexDirection.Row}
               alignItems={AlignItems.Center}

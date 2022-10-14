@@ -13,7 +13,7 @@ interface CompositionStatus {
   diverged: boolean // true == cannot re-sync. (e.g. user has typed in the composition block)
 }
 
-enum GroupType {
+export enum GroupType {
   Default = 'Default',
   GroupBy = 'Group By',
   Ungroup = 'Ungroup',

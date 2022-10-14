@@ -12,7 +12,10 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {SelectGroup, MultiSelectDropdown} from '@influxdata/clockface'
 
 // Contexts
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {
+  GroupType,
+  PersistanceContext,
+} from 'src/dataExplorer/context/persistance'
 import {GroupKeysContext} from 'src/dataExplorer/context/groupKeys'
 
 // Utilies
@@ -22,12 +25,6 @@ import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
 import './Sidebar.scss'
 
 const GROUP_TOOLTIP = `test`
-
-enum GroupType {
-  Default = 'Default',
-  GroupBy = 'Group By',
-  Ungroup = 'Ungroup',
-}
 
 const GroupBy: FC = () => {
   const {groupKeys, loading, getGroupKeys, resetGroupKeys} =

@@ -19,7 +19,7 @@ import {
 
 // Types
 import {Subscription} from 'src/types/subscriptions'
-import {SubscriptionListContext} from '../context/subscription.list'
+import {SubscriptionListContext} from 'src/writeData/subscriptions/context/subscription.list'
 import {LOAD_DATA, SUBSCRIPTIONS} from 'src/shared/constants/routes'
 
 // Utils
@@ -125,9 +125,7 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
         }}
         testID="subscription-name"
       />
-      <ResourceCard.Description
-        description={`${subscription.brokerHost}:${subscription.brokerPort}/${subscription.topic}`}
-      />
+      <ResourceCard.Description description={`${subscription.description}`} />
       <ResourceCard.Meta>
         {!!bulletins.length ? (
           <Label
@@ -154,7 +152,11 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
           />
         )}
         <>{subscription.status}</>
+        <>{`${subscription.brokerHost}:${subscription.brokerPort}/${subscription.topic}`}</>
         <>Last Modified: {timeSince}</>
+        <>
+          Last Modified By: {subscription.updatedBy ?? subscription.createdBy}
+        </>
         {subscriptionID}
       </ResourceCard.Meta>
     </ResourceCard>

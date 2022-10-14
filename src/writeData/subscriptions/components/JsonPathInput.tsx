@@ -34,7 +34,7 @@ import {
   handleDuplicateFieldTagName,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
-import ValidationInputWithTooltip from './ValidationInputWithTooltip'
+import ValidationInputWithTooltip from 'src/writeData/subscriptions/components/ValidationInputWithTooltip'
 
 interface Props {
   name: string

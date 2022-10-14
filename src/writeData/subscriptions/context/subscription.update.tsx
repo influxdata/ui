@@ -94,6 +94,7 @@ export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
     },
     bucket: 'nifi',
     timestampPrecision: 'NS',
+    useSSL: false,
   },
   updateForm: () => {},
   loading: RemoteDataState.NotStarted,

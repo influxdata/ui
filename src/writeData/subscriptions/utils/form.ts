@@ -10,6 +10,7 @@ import {
 import jsonpath from 'jsonpath'
 import {IconFont} from '@influxdata/clockface'
 import {Bulletin} from '../context/subscription.list'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const DEFAULT_COMPLETED_STEPS = {
   [Steps.BrokerForm]: false,
@@ -468,10 +469,18 @@ export const handleAvroValidation = (property: string, value: string) => {
     : null
 }
 
-export const getSchemaFromProtocol = (protocol: string, isSecure: boolean) => {
+export const getSchemaFromProtocol = (
+  protocol: string,
+  formContent: Subscription
+) => {
+  const usingCertAuth =
+    isFlagEnabled('subscriptionsCertificateSupport') &&
+    formContent.authType === BrokerAuthTypes.Certificate
+  const usingSSL =
+    isFlagEnabled('subscriptionsSSLSupport') && formContent.useSSL
   switch (protocol.toLowerCase()) {
     case 'mqtt': {
-      return `mqtt${isSecure ? 's' : ''}://`
+      return `mqtt${usingCertAuth || usingSSL ? 's' : ''}://`
     }
     default: {
       return 'tcp://'

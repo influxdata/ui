@@ -45,6 +45,7 @@ export interface Subscription {
   authType: BrokerAuthTypes
   brokerCertCreationDate?: string
   clientID?: string
+  useSSL: boolean
 }
 
 export interface SubscriptionStatus {

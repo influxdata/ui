@@ -186,11 +186,20 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
   }
 
   const handleApplyTimeRange = collapse => {
-    if (
-      !inputStartDate.match(durationRegExp) &&
-      !isNaN(Number(inputStartDate))
-    ) {
-      setInputStartDate(`${inputStartDate}ms`)
+    const isInputStartDateDuration =
+      !inputStartDate.match(durationRegExp) && !isNaN(Number(inputStartDate))
+    const isInputEndDateDuration =
+      inputEndDate &&
+      !inputEndDate.match(durationRegExp) &&
+      !isNaN(Number(inputEndDate))
+
+    if (isInputStartDateDuration || isInputEndDateDuration) {
+      if (isInputStartDateDuration) {
+        setInputStartDate(`${inputStartDate}ms`)
+      }
+      if (isInputEndDateDuration) {
+        setInputEndDate(`${inputEndDate}ms`)
+      }
     } else if (validateInput(inputStartDate)) {
       if (!inputEndDate) {
         setRange({

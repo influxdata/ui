@@ -91,6 +91,7 @@ const FluxEditorMonaco: FC<Props> = ({
     connection.current,
     sessionStore?.selection,
     sessionStore?.selection.composition || null,
+    sessionStore?.selection.resultOptions || null,
     sessionStore?.setSelection,
   ])
 

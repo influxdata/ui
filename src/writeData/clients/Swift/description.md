@@ -10,6 +10,10 @@ import PackageDescription
 
 let package = Package(
     name: "MyPackage",
+    platforms: [
+        .macOS(.v12),
+        .iOS(.v15)
+    ],
     dependencies: [
         .package(name: "influxdb-client-swift", url: "https://github.com/influxdata/influxdb-client-swift", from: "1.4.0"),
     ],

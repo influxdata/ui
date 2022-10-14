@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 const path = require('path')
 
-const DEFAULT_SCHEMA = {
+const DEFAULT_SELECTION = {
   bucket: null,
   measurement: null,
   fields: [],
@@ -72,7 +72,7 @@ describe('Script Builder', () => {
   const resetSession = () => {
     window.sessionStorage.setItem(
       'dataExplorer.schema',
-      JSON.parse(JSON.stringify(DEFAULT_SCHEMA))
+      JSON.parse(JSON.stringify(DEFAULT_SELECTION))
     )
     window.sessionStorage.setItem('dataExplorer.query', DEFAULT_EDITOR_TEXT)
   }

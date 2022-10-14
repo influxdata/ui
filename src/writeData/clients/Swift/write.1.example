@@ -4,15 +4,5 @@ let recordPoint = InfluxDBClient
         .addField(key: "value", value: .int(2))
         .time(time: .date(Date()))
 
-client.makeWriteAPI().write(bucket: bucket, org: org, points: [recordPoint]) { result, error in
-    // For handle error
-    if let error = error {
-        print("Error:\n\n\(error)")
-    }
-
-    // For Success write
-    if result != nil {
-        print("Successfully written data:\n\n\([recordPoint])")
-    }
-}
+try await client.makeWriteAPI().write(bucket: bucket, org: org, points: [recordPoint])
 

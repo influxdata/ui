@@ -1,14 +1,4 @@
 let recordString = "demo,type=string value=1i"
 
-client.makeWriteAPI().write(bucket: bucket, org: org, record: recordString) { result, error in
-    // For handle error
-    if let error = error {
-        print("Error:\n\n\(error)")
-    }
-
-    // For Success write
-    if result != nil {
-        print("Successfully written data:\n\n\(recordString)")
-    }
-}
+try await client.makeWriteAPI().write(bucket: bucket, org: org, record: recordString)
 

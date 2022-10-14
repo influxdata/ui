@@ -65,13 +65,16 @@ describe('TimeMachine.Selectors.Index', () => {
 
   describe('handleCustomTime', () => {
     const now = new Date()
+    const threeDays = 1000 * 60 * 60 * 24 * 3
+    const twentyFourHours = 1000 * 60 * 60 * 24
+    const fifteenMinutes = 1000 * 60 * 15
+    const oneMillisecond = 1
 
     it('can parse just "now"', () => {
       expect(handleCustomTime('now()', now)).toEqual(now.getTime())
     })
 
     it('can parse now() and a duration', () => {
-      const threeDays = 1000 * 60 * 60 * 24 * 3
       expect(handleCustomTime('now() - 3d', now)).toEqual(
         now.getTime() - threeDays
       )
@@ -79,7 +82,6 @@ describe('TimeMachine.Selectors.Index', () => {
         now.getTime() + threeDays
       )
 
-      const twentyFourHours = 1000 * 60 * 60 * 24
       expect(handleCustomTime('now() - 24h', now)).toEqual(
         now.getTime() - twentyFourHours
       )
@@ -87,7 +89,6 @@ describe('TimeMachine.Selectors.Index', () => {
         now.getTime() + twentyFourHours
       )
 
-      const fifteenMinutes = 1000 * 60 * 15
       expect(handleCustomTime('now() - 15m', now)).toEqual(
         now.getTime() - fifteenMinutes
       )
@@ -95,7 +96,6 @@ describe('TimeMachine.Selectors.Index', () => {
         now.getTime() + fifteenMinutes
       )
 
-      const oneMillisecond = 1
       expect(handleCustomTime('now() - 1ms', now)).toEqual(
         now.getTime() - oneMillisecond
       )
@@ -105,11 +105,9 @@ describe('TimeMachine.Selectors.Index', () => {
     })
 
     it('can parse a duration without now()', () => {
-      const threeDays = 1000 * 60 * 60 * 24 * 3
       expect(handleCustomTime('-3d', now)).toEqual(now.getTime() - threeDays)
       expect(handleCustomTime('+3d', now)).toEqual(now.getTime() + threeDays)
 
-      const twentyFourHours = 1000 * 60 * 60 * 24
       expect(handleCustomTime('-24h', now)).toEqual(
         now.getTime() - twentyFourHours
       )
@@ -117,7 +115,6 @@ describe('TimeMachine.Selectors.Index', () => {
         now.getTime() + twentyFourHours
       )
 
-      const fifteenMinutes = 1000 * 60 * 15
       expect(handleCustomTime('-15m', now)).toEqual(
         now.getTime() - fifteenMinutes
       )
@@ -125,7 +122,6 @@ describe('TimeMachine.Selectors.Index', () => {
         now.getTime() + fifteenMinutes
       )
 
-      const oneMillisecond = 1
       expect(handleCustomTime('-1ms', now)).toEqual(
         now.getTime() - oneMillisecond
       )
@@ -139,7 +135,6 @@ describe('TimeMachine.Selectors.Index', () => {
       expect(handleCustomTime('now() ', now)).toEqual(now.getTime())
       expect(handleCustomTime('        now()  ', now)).toEqual(now.getTime())
 
-      const threeDays = 1000 * 60 * 60 * 24 * 3
       expect(handleCustomTime(' now() -   3d', now)).toEqual(
         now.getTime() - threeDays
       )
@@ -147,7 +142,6 @@ describe('TimeMachine.Selectors.Index', () => {
         now.getTime() + threeDays
       )
 
-      const twentyFourHours = 1000 * 60 * 60 * 24
       expect(handleCustomTime('-   24h', now)).toEqual(
         now.getTime() - twentyFourHours
       )
@@ -155,7 +149,6 @@ describe('TimeMachine.Selectors.Index', () => {
         now.getTime() + twentyFourHours
       )
 
-      const fifteenMinutes = 1000 * 60 * 15
       expect(handleCustomTime(' 15m', now)).toEqual(
         now.getTime() + fifteenMinutes
       )

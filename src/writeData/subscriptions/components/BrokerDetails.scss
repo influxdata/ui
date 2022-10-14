@@ -73,6 +73,13 @@
     color: $cf-grey-55;
     margin-bottom: $cf-space-m;
   }
+  &__clientid-text {
+    color: $cf-grey-55;
+    margin-bottom: $cf-space-s;
+  }
+  &__clientid-textbox {
+    margin-bottom: $cf-space-s !important;
+  }
   &__creds {
     .cf-form--element {
       &:nth-last-of-type(1) {

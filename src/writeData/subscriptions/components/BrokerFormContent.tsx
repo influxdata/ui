@@ -311,41 +311,53 @@ const BrokerFormContent: FC<Props> = ({
                   useCustomClientID &&
                   handleValidation('Client ID', formContent.clientID)
                 }
-                helpText="We will generate a Client ID for you, but some providers require you use their Client ID. If your provider requires a specific Client ID, the connection will fail without it. Check your provider’s documentation to verify whether you need to use their Client ID."
-                className="no-margin-bottom"
+                className={`${className}-broker-form__clientid-textbox`}
               >
                 {status => (
-                  <Input
-                    type={InputType.Text}
-                    placeholder={
-                      useCustomClientID
-                        ? 'Enter a client id'
-                        : randomClientID.current
-                    }
-                    name="clientid"
-                    autoFocus={false}
-                    value={formContent.clientID}
-                    onChange={e => {
-                      updateForm({
-                        ...formContent,
-                        clientID: e.target.value,
-                      })
-                    }}
-                    onBlur={() =>
-                      event(
-                        'completed form field',
-                        {formField: 'clientid', step: 'broker'},
-                        {feature: 'subscriptions'}
-                      )
-                    }
-                    status={
-                      edit && useCustomClientID
-                        ? status
-                        : ComponentStatus.Disabled
-                    }
-                    testID={`${className}-broker-form--clientid`}
-                    maxLength={255}
-                  />
+                  <>
+                    <Heading
+                      element={HeadingElement.H5}
+                      weight={FontWeight.Regular}
+                      className={`${className}-broker-form__clientid-text`}
+                    >
+                      We will generate a Client ID for you, but some providers
+                      require you use their Client ID. If your provider requires
+                      a specific Client ID, the connection will fail without it.
+                      Check your provider’s documentation to verify whether you
+                      need to use their Client ID.
+                    </Heading>
+                    <Input
+                      type={InputType.Text}
+                      placeholder={
+                        useCustomClientID
+                          ? 'Enter a client id'
+                          : randomClientID.current
+                      }
+                      name="clientid"
+                      autoFocus={false}
+                      value={formContent.clientID}
+                      onChange={e => {
+                        updateForm({
+                          ...formContent,
+                          clientID: e.target.value,
+                        })
+                      }}
+                      onBlur={() =>
+                        event(
+                          'completed form field',
+                          {formField: 'clientid', step: 'broker'},
+                          {feature: 'subscriptions'}
+                        )
+                      }
+                      status={
+                        edit && useCustomClientID
+                          ? status
+                          : ComponentStatus.Disabled
+                      }
+                      testID={`${className}-broker-form--clientid`}
+                      maxLength={255}
+                    />
+                  </>
                 )}
               </Form.ValidationElement>
               <Toggle

@@ -3,7 +3,7 @@ import InfluxDBSwift
 
 @main
 class Example {
-    static func main() {
+    static func main() async throws {
 
         let url = "<%= server %>"
         let token = "<%= token %>"
@@ -15,29 +15,15 @@ class Example {
                     <%= query %>
                     """
 
-        client.queryAPI.query(query: query, org: org) { response, error in
-          // Error response
-          if let error = error {
-            print("Error:\n\n\(error)")
-          }
-
-          // Success response
-          if let response = response {
-
-            do {
-              try response.forEach { record in
-                let time = record.values["_time"]!
-                let measurement = record.values["_measurement"]!
-                let field = record.values["_field"]!
-                let value = record.values["_value"]!
-                return print("\(time) \(measurement): \(field)=\(value)")
-              }
-            } catch {
-               print("Error:\n\n\(error)")
-            }
-          }
-
-          client.close()
+        let records = try await client.queryAPI.query(query: query, org: org)
+        try records.forEach {
+          let time = $0.values["_time"]!
+          let measurement = $0.values["_measurement"]!
+          let field = $0.values["_field"]!
+          let value = $0.values["_value"]!
+          print("\(time) \(measurement): \(field)=\(value)")
         }
+
+        client.close()
     }
 }

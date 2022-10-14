@@ -16,7 +16,7 @@ import JsonParsingForm from 'src/writeData/subscriptions/components/JsonParsingF
 import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtocolForm'
 
 // Types
-import {Subscription} from 'src/types/subscriptions'
+import {DataFormatTypes, Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/ParsingForm.scss'
@@ -63,20 +63,20 @@ const ParsingForm: FC<Props> = ({
                 updateForm={updateForm}
                 className="create"
               />
-              {formContent.dataFormat === 'lineprotocol' && (
+              {formContent.dataFormat === DataFormatTypes.LineProtocol && (
                 <LineProtocolForm
                   edit={showUpgradeButton ? false : true}
                   formContent={formContent}
                 />
               )}
-              {formContent.dataFormat === 'json' && (
+              {formContent.dataFormat === DataFormatTypes.JSON && (
                 <JsonParsingForm
                   formContent={formContent}
                   updateForm={updateForm}
                   edit={showUpgradeButton ? false : true}
                 />
               )}
-              {formContent.dataFormat === 'string' && (
+              {formContent.dataFormat === DataFormatTypes.String && (
                 <StringParsingForm
                   formContent={formContent}
                   updateForm={updateForm}

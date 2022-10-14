@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useContext,
-  useState,
-  useMemo,
-  useCallback,
-  useEffect,
-} from 'react'
+import React, {FC, useContext, useMemo, useCallback, useEffect} from 'react'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
@@ -14,6 +7,7 @@ import {SelectGroup, MultiSelectDropdown} from '@influxdata/clockface'
 // Contexts
 import {
   GroupType,
+  GroupOptions,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
 import {GroupKeysContext} from 'src/dataExplorer/context/groupKeys'
@@ -29,16 +23,17 @@ const GROUP_TOOLTIP = `test`
 const GroupBy: FC = () => {
   const {groupKeys, loading, getGroupKeys, resetGroupKeys} =
     useContext(GroupKeysContext)
-  const {selection} = useContext(PersistanceContext)
-  const [selectedGroupType, setSelectedGroupType] = useState<GroupType>(
-    GroupType.Default
-  )
-  const [selectedGroupKeys, setSelectedGroupKeys] = useState([])
+  const {selection, setSelection} = useContext(PersistanceContext)
+  const {type: selectedGroupType, columns: selectedGroupKeys}: GroupOptions =
+    selection.resultOptions.group
 
   useEffect(
     () => {
       if (!selection.bucket || !selection.measurement) {
         resetGroupKeys()
+        setSelection({
+          resultOptions: {group: {type: GroupType.Default, columns: []}},
+        })
         return
       }
 
@@ -48,13 +43,16 @@ const GroupBy: FC = () => {
     [selection.bucket, selection.measurement]
   )
 
-  const handleSelectGroupType = (type: GroupType) => {
-    if (type !== GroupType.GroupBy) {
-      setSelectedGroupKeys([])
-    }
-
-    setSelectedGroupType(type)
-  }
+  const handleSelectGroupType = useCallback(
+    (type: GroupType) => {
+      if (type === GroupType.GroupBy) {
+        setSelection({resultOptions: {group: {type, columns: []}}})
+      } else {
+        setSelection({resultOptions: {group: {type}}})
+      }
+    },
+    [setSelection]
+  )
 
   const groupOptionsButtons = useMemo(
     () => (
@@ -77,7 +75,7 @@ const GroupBy: FC = () => {
         </SelectGroup>
       </div>
     ),
-    [selectedGroupType]
+    [selectedGroupType, handleSelectGroupType]
   )
 
   const handleSelectGroupKey = useCallback(
@@ -89,9 +87,11 @@ const GroupBy: FC = () => {
       } else {
         selected = [...selectedGroupKeys, option]
       }
-      setSelectedGroupKeys(selected)
+      setSelection({
+        resultOptions: {group: {type: selectedGroupType, columns: selected}},
+      })
     },
-    [selectedGroupKeys]
+    [selectedGroupType, selectedGroupKeys, setSelection]
   )
 
   const groupBySelector = useMemo(() => {

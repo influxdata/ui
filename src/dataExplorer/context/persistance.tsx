@@ -19,7 +19,7 @@ export enum GroupType {
   Ungroup = 'Ungroup',
 }
 
-interface GroupOptions {
+export interface GroupOptions {
   type: GroupType
   columns: string[]
 }

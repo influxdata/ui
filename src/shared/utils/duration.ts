@@ -8,9 +8,6 @@ import {Duration, DurationUnit} from 'src/types/ast'
 import {TIME_RANGE_FORMAT} from 'src/shared/constants/timeRanges'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
-export const removeSpacesAndNow = (input: string): string =>
-  input.replace(/\s/g, '').replace(/now\(\)/, '')
-
 export const removeSpacesNowAndMinus = (input: string): string =>
   input.replace(/\s/g, '').replace(/now\(\)-/, '')
 

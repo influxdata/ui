@@ -24,7 +24,6 @@ import {
   isDurationWithNowParseable,
   millisecondsToDuration,
   parseDuration,
-  removeSpacesAndNow,
   timeRangeToDuration,
 } from 'src/shared/utils/duration'
 
@@ -280,7 +279,7 @@ export const handleCustomTime = (input: string, now: Date): number => {
   }
 
   if (isDurationWithNowParseable(timeInput)) {
-    timeInput = removeSpacesAndNow(timeInput)
+    timeInput = timeInput.replace(/\s/g, '').replace(/now\(\)/, '')
   }
 
   if (timeInput[0] === '-' || timeInput[0] === '+') {

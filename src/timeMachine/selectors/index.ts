@@ -268,8 +268,7 @@ export const getSymbolColumnsSelection = (state: AppState): string[] => {
   There are 2 types of custom time:
   I. Flux duration, including signed and unsigned durations
      examples: -15m, -24h, +3d, 5mo
-  II. JavaScript time: any valid string argument to the `new Date()` constructor
-     examples: '2022-10-14T20:33:01.433Z', '2022/07/04', '2022-10-06 00:00'
+  II. RFC 3339 date format as a string
  */
 export const handleCustomTime = (input: string, now: Date): number => {
   // Flux duration
@@ -295,7 +294,7 @@ export const handleCustomTime = (input: string, now: Date): number => {
     return now.getTime() + durationToMilliseconds(parseDuration(timeInput))
   }
 
-  // JavaScript time stamp for the `new Date()` constructor
+  // RFC 3339 date format as a string
   const timeInputDate = new Date(timeInput)
   if (timeInputDate.toTimeString() === 'Invalid Date') {
     throw new Error(`Unknown custom time: ${timeInput}`)

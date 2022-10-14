@@ -37,6 +37,9 @@ const GroupBy: FC = () => {
         return
       }
 
+      setSelection({
+        resultOptions: {group: {type: selectedGroupType, columns: []}},
+      })
       getGroupKeys(selection.bucket, selection.measurement)
     },
     // not including resetGroupKeys() and getGroupKeys() to avoid infinite loop

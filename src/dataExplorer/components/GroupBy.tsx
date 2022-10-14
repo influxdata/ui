@@ -57,7 +57,7 @@ const GroupBy: FC = () => {
     [setSelection]
   )
 
-  const groupOptionsButtons = useMemo(
+  const groupTypesButtons = useMemo(
     () => (
       <div className="result-options--item--row">
         <SelectGroup>
@@ -121,11 +121,11 @@ const GroupBy: FC = () => {
     return (
       <div className="result-options--item">
         <SelectorTitle label="Group" tooltipContents={GROUP_TOOLTIP} />
-        {groupOptionsButtons}
+        {groupTypesButtons}
         {groupBySelector}
       </div>
     )
-  }, [groupOptionsButtons, groupBySelector])
+  }, [groupTypesButtons, groupBySelector])
 }
 
 export {GroupBy}

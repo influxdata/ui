@@ -95,57 +95,32 @@ export const GroupKeysProvider: FC<Prop> = ({children, scope}) => {
       }
 
       let queryText = `${_imports}
-      fields = ${_from}
-      |> range(start: -100y, stop: now())
-      |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
-      |> keep(columns: ["_field"])
-      |> group()
-      |> distinct(column: "_field")
-      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
-
-      tagKeys = ${_from}
-      |> range(start: -100y, stop: now())
-      |> filter(fn: (r) => true)
-      |> keys()
-      |> keep(columns: ["_value"])
-      |> distinct()
-      |> filter(fn: (r) => r._value != "_measurement")
-      |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
-      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
-
-      union(tables: [fields, tagKeys])
-      |> group()
-      |> sort()
-      |> limit(n: ${DEFAULT_LIMIT})
-    `
+        ${_from}
+        |> range(start: -100y, stop: now())
+        |> filter(fn: (r) => true)
+        |> keys()
+        |> keep(columns: ["_value"])
+        |> distinct()
+        |> filter(fn: (r) => r._value != "_time" and r._value != "_value")
+        ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
+        |> sort()
+        |> limit(n: ${DEFAULT_LIMIT})
+      `
 
       if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
         _imports = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
         queryText = `${_imports}
-      fields = schema.measurementFieldKeys(
-        bucket: "${bucket.name}",
-        measurement: "${measurement}",
-        start: ${CACHING_REQUIRED_START_DATE},
-        stop: ${CACHING_REQUIRED_END_DATE},
-      )
-      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
-
-      tagKeys = schema.measurementTagKeys(
-        bucket: "${bucket.name}",
-        measurement: "${measurement}",
-        start: ${CACHING_REQUIRED_START_DATE},
-        stop: ${CACHING_REQUIRED_END_DATE},
-      )
-      |> filter(fn: (r) => r._value != "_measurement")
-      |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
-      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
-
-      union(tables: [fields, tagKeys])
-      |> group()
-      |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
-      |> sort(columns: ["lowercase"])
-      |> limit(n: ${DEFAULT_LIMIT})
-    `
+          schema.measurementTagKeys(
+            bucket: "${bucket.name}",
+            measurement: "${measurement}",
+            start: ${CACHING_REQUIRED_START_DATE},
+            stop: ${CACHING_REQUIRED_END_DATE},
+          )
+          ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
+          |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
+          |> sort(columns: ["lowercase"])
+          |> limit(n: ${DEFAULT_LIMIT})
+        `
       }
 
       try {

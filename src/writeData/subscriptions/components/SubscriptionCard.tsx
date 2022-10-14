@@ -54,6 +54,12 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
     )
   }, [history, org?.id, subscription?.id])
 
+  const goToSubscriptionDetailsNotifications = useCallback(() => {
+    history.push(
+      `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}/notifications`
+    )
+  }, [history, org?.id, subscription?.id])
+
   const handleCopyAttempt = (
     copiedText: string,
     isSuccessful: boolean
@@ -140,7 +146,7 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
             description={`${bulletins.length} Notification${
               bulletins.length === 1 ? '' : 's'
             }`}
-            onClick={goToSubscriptionDetails}
+            onClick={goToSubscriptionDetailsNotifications}
             testID="subscription-notifications--label"
           />
         ) : (

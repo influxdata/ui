@@ -219,6 +219,14 @@ const SetOrg: FC = () => {
           )}
           {CLOUD && (
             <Route
+              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id/notifications`}
+              render={props => (
+                <DetailsSubscriptionPage {...props} showNotifications={true} />
+              )}
+            />
+          )}
+          {CLOUD && (
+            <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
               component={DetailsSubscriptionPage}
             />

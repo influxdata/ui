@@ -47,6 +47,7 @@ interface Props {
   saveForm: (any) => void
   setStatus: (any) => void
   onFocus?: () => void
+  showNotifications: boolean
 }
 
 const BrokerDetails: FC<Props> = ({
@@ -58,6 +59,7 @@ const BrokerDetails: FC<Props> = ({
   saveForm,
   setStatus,
   onFocus,
+  showNotifications,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -89,6 +91,7 @@ const BrokerDetails: FC<Props> = ({
               <StatusHeader
                 currentSubscription={currentSubscription}
                 setStatus={setStatus}
+                showOnLoad={showNotifications}
               />
               <div>
                 <Button

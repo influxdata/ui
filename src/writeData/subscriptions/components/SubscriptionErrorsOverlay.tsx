@@ -30,9 +30,9 @@ const SubscriptionErrorsOverlay: FC<Props> = ({bulletins, handleClose}) => {
     handleClose()
   }
 
-  let title = `${bulletins.length} Errors Found`
+  let title = `${bulletins.length} Notifications Found`
   if (bulletins.length === 1) {
-    title = `1 Error Found`
+    title = `1 Notifications Found`
   }
 
   return (

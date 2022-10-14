@@ -124,13 +124,10 @@ export const SubscriptionListProvider: FC = ({children}) => {
     }
   }
   const change = useCallback(
-    async (id: string): Promise<void> => {
-      setLoading(RemoteDataState.Loading)
-      if (!subscriptions) {
-        await getAll()
+    (id: string) => {
+      if (subscriptions) {
+        setCurrentID(id)
       }
-      setCurrentID(id)
-      setLoading(RemoteDataState.Done)
     },
     [setCurrentID, subscriptions]
   )

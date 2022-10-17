@@ -18,7 +18,7 @@ import {
   IMPORT_REGEXP,
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
-  IMPORT_SAMPLE_DATA_SET,
+  SAMPLE_DATA_SET,
   FROM_BUCKET,
   SEARCH_STRING,
 } from 'src/dataExplorer/shared/utils'
@@ -86,7 +86,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     //   src/flows/pipes/QueryBuilder/context.tsx
     let _source = IMPORT_REGEXP
     if (bucket.type === 'sample') {
-      _source += IMPORT_SAMPLE_DATA_SET(bucket.id)
+      _source += SAMPLE_DATA_SET(bucket.id)
     } else {
       _source += FROM_BUCKET(bucket.name)
     }
@@ -170,7 +170,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     //   src/flows/pipes/QueryBuilder/context.tsx
     let _source = ''
     if (bucket.type === 'sample') {
-      _source += IMPORT_SAMPLE_DATA_SET(bucket.id)
+      _source += SAMPLE_DATA_SET(bucket.id)
     } else {
       _source += FROM_BUCKET(bucket.name)
     }

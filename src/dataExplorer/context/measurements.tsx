@@ -19,7 +19,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
-  IMPORT_SAMPLE_DATA_SET,
+  SAMPLE_DATA_SET,
   FROM_BUCKET,
 } from 'src/dataExplorer/shared/utils'
 
@@ -61,7 +61,7 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
     //   src/flows/pipes/QueryBuilder/context.tsx
     let _source = ''
     if (bucket.type === 'sample') {
-      _source += IMPORT_SAMPLE_DATA_SET(bucket.id)
+      _source += SAMPLE_DATA_SET(bucket.id)
     } else {
       _source += FROM_BUCKET(bucket.name)
     }

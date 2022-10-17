@@ -27,8 +27,7 @@ import {
   IMPORT_REGEXP,
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
-  IMPORT_SAMPLE,
-  FROM_SAMPLE_DATA,
+  SAMPLE_DATA_SET,
   FROM_BUCKET,
   SEARCH_STRING,
 } from 'src/dataExplorer/shared/utils'
@@ -85,17 +84,14 @@ export const GroupKeysProvider: FC<Prop> = ({children, scope}) => {
       //   Here is the source code for handling sample data:
       //   https://github.com/influxdata/flux/blob/master/stdlib/influxdata/influxdb/sample/sample.flux
       //   That is why _source and query script for sample data is different
-      let _imports = IMPORT_REGEXP
-      let _from = ''
+      let _source = IMPORT_REGEXP
       if (bucket.type === 'sample') {
-        _imports += IMPORT_SAMPLE
-        _from += FROM_SAMPLE_DATA(bucket.id)
+        _source += SAMPLE_DATA_SET(bucket.id)
       } else {
-        _from += FROM_BUCKET(bucket.name)
+        _source += FROM_BUCKET(bucket.name)
       }
 
-      let queryText = `${_imports}
-        ${_from}
+      let queryText = `${_source}
         |> range(start: -100y, stop: now())
         |> filter(fn: (r) => true)
         |> keys()
@@ -108,8 +104,8 @@ export const GroupKeysProvider: FC<Prop> = ({children, scope}) => {
       `
 
       if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-        _imports = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
-        queryText = `${_imports}
+        _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
+        queryText = `${_source}
           schema.measurementTagKeys(
             bucket: "${bucket.name}",
             measurement: "${measurement}",

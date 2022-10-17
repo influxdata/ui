@@ -23,6 +23,7 @@ import {
   Toggle,
   InputToggleType,
   InputLabel,
+  SlideToggle,
 } from '@influxdata/clockface'
 import UserInput from 'src/writeData/subscriptions/components/UserInput'
 import CertificateInput from 'src/writeData/subscriptions/components/CertificateInput'
@@ -283,17 +284,40 @@ const BrokerFormContent: FC<Props> = ({
               )}
             </Form.ValidationElement>
           </FlexBox>
+          {isFlagEnabled('subscriptionsSSLSupport') && (
+            <FlexBox
+              direction={FlexDirection.Row}
+              alignItems={AlignItems.Center}
+              margin={ComponentSize.Medium}
+              className="static-toggle"
+            >
+              <SlideToggle
+                active={formContent.useSSL}
+                onChange={() => {
+                  updateForm({
+                    ...formContent,
+                    useSSL: !formContent.useSSL,
+                  })
+                }}
+                disabled={!edit}
+                size={ComponentSize.Medium}
+              />
+              <Heading
+                element={HeadingElement.H4}
+                weight={FontWeight.Regular}
+                className={`${className}-broker-form__ssl-text`}
+              >
+                Enable SSL
+              </Heading>
+            </FlexBox>
+          )}
           {showHostPortExampleText && (
             <Heading
               element={HeadingElement.H5}
               weight={FontWeight.Regular}
               className={`${className}-broker-form__example-text`}
             >
-              {getSchemaFromProtocol(
-                formContent.protocol,
-                isFlagEnabled('subscriptionsCertificateSupport') &&
-                  formContent.authType === BrokerAuthTypes.Certificate
-              )}
+              {getSchemaFromProtocol(formContent.protocol, formContent)}
               {`${formContent.brokerHost}:${
                 !!formContent.brokerPort && !isNaN(formContent.brokerPort)
                   ? formContent.brokerPort
@@ -457,6 +481,7 @@ const BrokerFormContent: FC<Props> = ({
                   brokerUsername: null,
                   brokerPassword: null,
                   authType: BrokerAuthTypes.Certificate,
+                  useSSL: true,
                 })
               }}
               value="certificate"

@@ -24,6 +24,13 @@ export interface GroupOptions {
   columns: string[]
 }
 
+export const DEFAULT_COLUMNS: string[] = ['_measurement', '_field']
+
+export const DEFAULT_GROUP_OPTIONS: GroupOptions = {
+  type: GroupType.Default,
+  columns: DEFAULT_COLUMNS,
+}
+
 interface ResultOptions {
   fieldsAsColumn: boolean
   group: GroupOptions
@@ -70,10 +77,7 @@ export const DEFAULT_SELECTION: CompositionSelection = {
   } as CompositionStatus,
   resultOptions: {
     fieldsAsColumn: false,
-    group: {
-      type: GroupType.Default,
-      columns: [] as string[],
-    } as GroupOptions,
+    group: DEFAULT_GROUP_OPTIONS,
   } as ResultOptions,
 }
 

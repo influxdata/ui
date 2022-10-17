@@ -6,6 +6,8 @@ import {SelectGroup, MultiSelectDropdown} from '@influxdata/clockface'
 
 // Contexts
 import {
+  DEFAULT_COLUMNS,
+  DEFAULT_GROUP_OPTIONS,
   GroupType,
   GroupOptions,
   PersistanceContext,
@@ -32,13 +34,15 @@ const GroupBy: FC = () => {
       if (!selection.bucket || !selection.measurement) {
         resetGroupKeys()
         setSelection({
-          resultOptions: {group: {type: GroupType.Default, columns: []}},
+          resultOptions: {group: DEFAULT_GROUP_OPTIONS},
         })
         return
       }
 
       setSelection({
-        resultOptions: {group: {type: selectedGroupType, columns: []}},
+        resultOptions: {
+          group: {type: selectedGroupType, columns: DEFAULT_COLUMNS},
+        },
       })
       getGroupKeys(selection.bucket, selection.measurement)
     },
@@ -49,7 +53,7 @@ const GroupBy: FC = () => {
   const handleSelectGroupType = useCallback(
     (type: GroupType) => {
       if (type === GroupType.GroupBy) {
-        setSelection({resultOptions: {group: {type, columns: []}}})
+        setSelection({resultOptions: {group: {type, columns: DEFAULT_COLUMNS}}})
       } else {
         setSelection({resultOptions: {group: {type}}})
       }

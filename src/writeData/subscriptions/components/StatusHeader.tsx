@@ -26,12 +26,17 @@ import SubscriptionErrorsOverlay from './SubscriptionErrorsOverlay'
 interface Props {
   currentSubscription: Subscription
   setStatus: (any) => void
+  showOnLoad: boolean
 }
 
-const StatusHeader: FC<Props> = ({currentSubscription, setStatus}) => {
+const StatusHeader: FC<Props> = ({
+  currentSubscription,
+  setStatus,
+  showOnLoad,
+}) => {
   const {bulletins: allBulletins} = useContext(SubscriptionListContext)
   const bulletins = allBulletins?.[currentSubscription.id] ?? []
-  const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(false)
+  const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(showOnLoad)
 
   const handleShowNotifications = useCallback(() => {
     setIsOverlayVisible(true)

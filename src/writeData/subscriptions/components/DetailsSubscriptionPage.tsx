@@ -57,7 +57,11 @@ import {
 
 // Contexts
 
-const DetailsSubscriptionPage: FC = () => {
+interface Props {
+  showNotifications: boolean
+}
+
+const DetailsSubscriptionPage: FC<Props> = ({showNotifications}) => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
   const {currentSubscription, loading, saveForm, updateForm, setStatus} =
     useContext(SubscriptionUpdateContext)
@@ -145,6 +149,7 @@ const DetailsSubscriptionPage: FC = () => {
               setStatus={setStatus}
               saveForm={saveForm}
               onFocus={() => setFormActive(Steps.BrokerForm)}
+              showNotifications={showNotifications}
             />
             <SubscriptionDetails
               currentSubscription={currentSubscription}
@@ -167,14 +172,18 @@ const DetailsSubscriptionPage: FC = () => {
   )
 }
 
-export default () => (
+const DetailsSubscriptionPageWrapper: FC<Props> = ({showNotifications}) => (
   <AppSettingProvider>
     <SubscriptionListProvider>
       <SubscriptionUpdateProvider>
         <WriteDataDetailsProvider>
-          <DetailsSubscriptionPage />
+          <DetailsSubscriptionPage
+            showNotifications={showNotifications ?? false}
+          />
         </WriteDataDetailsProvider>
       </SubscriptionUpdateProvider>
     </SubscriptionListProvider>
   </AppSettingProvider>
 )
+
+export default DetailsSubscriptionPageWrapper

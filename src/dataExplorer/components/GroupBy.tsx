@@ -34,14 +34,19 @@ const GroupBy: FC = () => {
       if (!selection.bucket || !selection.measurement) {
         resetGroupKeys()
         setSelection({
-          resultOptions: {group: DEFAULT_GROUP_OPTIONS},
+          resultOptions: {
+            group: JSON.parse(JSON.stringify(DEFAULT_GROUP_OPTIONS)),
+          },
         })
         return
       }
 
       setSelection({
         resultOptions: {
-          group: {type: selectedGroupType, columns: DEFAULT_COLUMNS},
+          group: {
+            type: selectedGroupType,
+            columns: JSON.parse(JSON.stringify(DEFAULT_COLUMNS)),
+          },
         },
       })
       getGroupKeys(selection.bucket, selection.measurement)
@@ -52,11 +57,11 @@ const GroupBy: FC = () => {
 
   const handleSelectGroupType = useCallback(
     (type: GroupType) => {
-      if (type === GroupType.GroupBy) {
-        setSelection({resultOptions: {group: {type, columns: DEFAULT_COLUMNS}}})
-      } else {
-        setSelection({resultOptions: {group: {type}}})
-      }
+      setSelection({
+        resultOptions: {
+          group: {type, columns: JSON.parse(JSON.stringify(DEFAULT_COLUMNS))},
+        },
+      })
     },
     [setSelection]
   )
@@ -87,7 +92,7 @@ const GroupBy: FC = () => {
 
   const handleSelectGroupKey = useCallback(
     (option: string): void => {
-      let selected = []
+      let selected: string[] = []
       if (selectedGroupKeys.includes(option)) {
         // de-select
         selected = selectedGroupKeys.filter(item => item !== option)

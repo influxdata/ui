@@ -77,8 +77,9 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
     collapse()
   }
 
+  const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
+
   const validateInput = value => {
-    const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
     return (
       isValidDatepickerFormat(value) ||
       !!value.match(durationRegExp) ||
@@ -89,7 +90,9 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
 
   const handleSetStartDate = event => {
     const value = event.target.value
-    if (validateInput(value)) {
+    if (!value) {
+      setInputStartErrorMessage('from field required')
+    } else if (validateInput(value)) {
       if (inputStartErrorMessage !== NBSP) {
         setInputStartErrorMessage(NBSP)
       }
@@ -183,45 +186,45 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
   }
 
   const handleApplyTimeRange = collapse => {
-    // no start or end date
-    if (inputStartDate == null && inputEndDate == null) {
-      setInputStartErrorMessage('from field required')
+    const isInputStartDateDuration =
+      !inputStartDate.match(durationRegExp) && !isNaN(Number(inputStartDate))
+    const isInputEndDateDuration =
+      inputEndDate &&
+      !inputEndDate.match(durationRegExp) &&
+      !isNaN(Number(inputEndDate))
+
+    if (isInputStartDateDuration || isInputEndDateDuration) {
+      if (isInputStartDateDuration) {
+        setInputStartDate(`${inputStartDate}ms`)
+      }
+      if (isInputEndDateDuration) {
+        setInputEndDate(`${inputEndDate}ms`)
+      }
+    } else if (validateInput(inputStartDate)) {
+      if (!inputEndDate) {
+        setRange({
+          lower: inputStartDate,
+          upper: 'now()',
+          type: 'custom',
+        })
+        resetCalendar()
+        collapse()
+      } else if (validateInput(inputEndDate)) {
+        setRange({
+          lower: inputStartDate,
+          upper: inputEndDate,
+          type: 'custom',
+        })
+        resetCalendar()
+        collapse()
+      }
     }
-    if (validateInput(inputStartDate) && inputEndDate == null) {
-      setRange({
-        lower: inputStartDate,
-        upper: 'now()',
-        type: 'custom',
-      })
-      resetCalendar()
-      collapse()
-      return
-    }
-    // valid start date, valid end date
-    if (validateInput(inputStartDate) && validateInput(inputEndDate)) {
-      setRange({
-        lower: inputStartDate,
-        upper: inputEndDate,
-        type: 'custom',
-      })
-      resetCalendar()
-      collapse()
-      return
-    }
-    // valid start date, invalid end date
-    if (validateInput(inputStartDate) && !validateInput(inputEndDate)) {
-      setInputEndErrorMessage('Invalid Format')
-      return
-    }
-    // invalid start date, valid end date
-    if (!validateInput(inputStartDate) && validateInput(inputEndDate)) {
+
+    if (!validateInput(inputStartDate)) {
       setInputStartErrorMessage('Invalid Format')
-      return
     }
-    if (!validateInput(inputStartDate) && !validateInput(inputEndDate)) {
-      setInputStartErrorMessage('Invalid Format')
+    if (!validateInput(inputEndDate)) {
       setInputEndErrorMessage('Invalid Format')
-      return
     }
   }
 
@@ -272,12 +275,10 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                 tooltipContents={
                   <>
                     Use a relative duration (now(), -1h, -5m),{'\n'}
-                    absolute time (2022-08-28 14:26:00),{'\n'}
-                    or integer (Unix timestamp in seconds,{'\n'}
-                    like 1567029600).&nbsp;
+                    or absolute time (2022-08-28 14:26:00).
                   </>
                 }
-                tooltipStyle={{maxWidth: 285}}
+                tooltipStyle={{maxWidth: 290}}
               />
             </InputLabel>
             <Form.Element

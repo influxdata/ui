@@ -176,5 +176,16 @@ describe('TimeMachine.Selectors.Index', () => {
         new Date(specificTimeString).getTime()
       )
     })
+
+    it('rejects numbers as invalid time', () => {
+      let numberString = '1666029415'
+      expect(() => handleCustomTime(numberString, now)).toThrowError()
+
+      numberString = '0'
+      expect(() => handleCustomTime(numberString, now)).toThrowError()
+
+      numberString = '-4'
+      expect(() => handleCustomTime(numberString, now)).toThrowError()
+    })
   })
 })

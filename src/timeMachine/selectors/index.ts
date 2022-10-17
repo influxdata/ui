@@ -269,9 +269,9 @@ export const getSymbolColumnsSelection = (state: AppState): string[] => {
      examples: -15m, -24h, +3d, 5mo
   II. RFC 3339 date format as a string
  */
-export const handleCustomTime = (input: string, now: Date): number => {
+export const handleCustomTime = (input: string = '', now: Date): number => {
   // Flux duration
-  let timeInput = input ? input.trim() : ''
+  let timeInput = input.trim()
   let isNegativeDuration = false
 
   if (timeInput === 'now()') {
@@ -291,6 +291,11 @@ export const handleCustomTime = (input: string, now: Date): number => {
       return now.getTime() - durationToMilliseconds(parseDuration(timeInput))
     }
     return now.getTime() + durationToMilliseconds(parseDuration(timeInput))
+  }
+
+  // Explicitly reject numbers because Flux's Unix timestamp will be deprecated
+  if (!Number.isNaN(Number(timeInput))) {
+    throw new Error(`Numbered timestamp: ${timeInput} is not supported`)
   }
 
   // RFC 3339 date format as a string

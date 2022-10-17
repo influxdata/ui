@@ -275,12 +275,10 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                 tooltipContents={
                   <>
                     Use a relative duration (now(), -1h, -5m),{'\n'}
-                    absolute time (2022-08-28 14:26:00),{'\n'}
-                    or integer (Unix timestamp in seconds,{'\n'}
-                    like 1567029600).&nbsp;
+                    or absolute time (2022-08-28 14:26:00).
                   </>
                 }
-                tooltipStyle={{maxWidth: 285}}
+                tooltipStyle={{maxWidth: 290}}
               />
             </InputLabel>
             <Form.Element

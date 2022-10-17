@@ -2,7 +2,11 @@ import React, {FC, useContext, useMemo, useCallback, useEffect} from 'react'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
-import {SelectGroup, MultiSelectDropdown} from '@influxdata/clockface'
+import {
+  ButtonShape,
+  SelectGroup,
+  MultiSelectDropdown,
+} from '@influxdata/clockface'
 
 // Contexts
 import {
@@ -69,7 +73,7 @@ const GroupBy: FC = () => {
   const groupTypesButtons = useMemo(
     () => (
       <div className="result-options--item--row">
-        <SelectGroup>
+        <SelectGroup shape={ButtonShape.StretchToFit}>
           {(Object.keys(GroupType) as (keyof typeof GroupType)[]).map(key => {
             const type: GroupType = GroupType[key]
             return (

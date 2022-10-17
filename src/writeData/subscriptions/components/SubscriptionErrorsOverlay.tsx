@@ -16,7 +16,7 @@ import {
 // Styles
 import 'src/writeData/subscriptions/components/SubscriptionErrorsOverlay.scss'
 import {event} from 'src/cloud/utils/reporting'
-import {Bulletin} from '../context/subscription.list'
+import {Bulletin} from 'src/writeData/subscriptions/context/subscription.list'
 
 interface Props {
   bulletins: Bulletin[]

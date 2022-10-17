@@ -10,8 +10,8 @@ import {
 } from 'src/types/subscriptions'
 import jsonpath from 'jsonpath'
 import {IconFont} from '@influxdata/clockface'
-import {Bulletin} from '../context/subscription.list'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {Bulletin} from 'src/writeData/subscriptions/context/subscription.list'
 
 export const DEFAULT_COMPLETED_STEPS = {
   [Steps.BrokerForm]: false,
@@ -262,7 +262,7 @@ export const checkRequiredFields = (form: Subscription): boolean => {
     form.brokerPort &&
     form.topic &&
     form.dataFormat &&
-    form.bucket &&
+    hasBucketSelected(form.bucket) &&
     checkRequiredStringFields(form) &&
     checkRequiredJsonFields(form) &&
     checkSecurityFields(form)
@@ -395,6 +395,9 @@ export const getActiveStep = activeForm => {
   return currentStep
 }
 
+const hasBucketSelected = (bucketName: string | undefined) =>
+  !!bucketName && bucketName !== '<BUCKET>'
+
 export const getFormStatus = (active: Steps, form: Subscription) => {
   return {
     currentStep: active,
@@ -402,9 +405,7 @@ export const getFormStatus = (active: Steps, form: Subscription) => {
     brokerStepCompleted:
       form.name && form.brokerHost && form.brokerPort ? 'true' : 'false',
     subscriptionStepCompleted:
-      form.topic && form.bucket && form.bucket !== '<BUCKET>'
-        ? 'true'
-        : 'false',
+      form.topic && hasBucketSelected(form.bucket) ? 'true' : 'false',
     parsingStepCompleted:
       form.dataFormat &&
       checkRequiredJsonFields(form) &&

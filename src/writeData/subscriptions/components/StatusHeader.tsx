@@ -20,8 +20,8 @@ import {
 
 // Types
 import {Subscription} from 'src/types/subscriptions'
-import {SubscriptionListContext} from '../context/subscription.list'
-import SubscriptionErrorsOverlay from './SubscriptionErrorsOverlay'
+import {SubscriptionListContext} from 'src/writeData/subscriptions/context/subscription.list'
+import SubscriptionErrorsOverlay from 'src/writeData/subscriptions/components/SubscriptionErrorsOverlay'
 
 interface Props {
   currentSubscription: Subscription

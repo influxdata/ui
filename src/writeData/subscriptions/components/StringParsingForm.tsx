@@ -34,7 +34,7 @@ import {
 import 'src/writeData/subscriptions/components/StringParsingForm.scss'
 import {event} from 'src/cloud/utils/reporting'
 import {ComponentStatus} from '@influxdata/clockface'
-import ValidationInputWithTooltip from './ValidationInputWithTooltip'
+import ValidationInputWithTooltip from 'src/writeData/subscriptions/components/ValidationInputWithTooltip'
 
 interface Props {
   formContent: Subscription

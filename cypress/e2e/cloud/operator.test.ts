@@ -1,3 +1,5 @@
+import {Organization} from '../../../src/types'
+
 describe('Operator Page', () => {
   beforeEach(() =>
     cy.flush().then(() =>
@@ -239,12 +241,14 @@ describe('Operator Page should not be accessible for non-operator users', () => 
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(() => {
-          cy.getByTestID('home-page--header').should('be.visible')
-          cy.quartzProvision({
-            isOperator: false,
-          }).then(() => {
-            cy.visit(`/operator`)
+        cy.get('@org').then(({id}: Organization) => {
+          cy.fixture('routes').then(({orgs}) => {
+            cy.getByTestID('home-page--header').should('be.visible')
+            cy.quartzProvision({
+              isOperator: false,
+            }).then(() => {
+              cy.visit(`${orgs}/${id}/operator`)
+            })
           })
         })
       })

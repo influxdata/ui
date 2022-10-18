@@ -74,6 +74,11 @@ describe('Script Builder', () => {
     })
   }
 
+  Cypress.on('uncaught:exception', (err, _) => {
+    console.error(err)
+    return false
+  })
+
   const loginWithFlags = flags => {
     return cy.signinWithoutUserReprovision().then(() => {
       cy.get('@org').then(({id}: Organization) => {

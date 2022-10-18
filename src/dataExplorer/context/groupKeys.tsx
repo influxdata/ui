@@ -22,7 +22,6 @@ import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 import {Bucket, RemoteDataState} from 'src/types'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_REGEXP,
   IMPORT_STRINGS,

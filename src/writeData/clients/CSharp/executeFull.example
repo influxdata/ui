@@ -13,7 +13,7 @@ namespace Examples
       const string token = "<%= token %>";
       const string org = "<%= org %>";
 
-      using var client = InfluxDBClientFactory.Create("<%= server %>", token);
+      using var client = new InfluxDBClient("<%= server %>", token);
 
       const string query = @"
       <%= query %>

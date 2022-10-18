@@ -255,5 +255,6 @@ describe('Operator Page should not be accessible for non-operator users', () => 
     cy.getByTestID('not-found').should('exist')
     cy.visit('/')
     cy.getByTestID('nav-item--operator').should('not.exist')
+    cy.log('testing')
   })
 })

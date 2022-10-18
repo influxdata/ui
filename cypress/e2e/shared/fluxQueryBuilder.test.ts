@@ -70,14 +70,12 @@ describe('Script Builder', () => {
         cy.getByTestID('overlay--container').within(() => {
           cy.getByTestID('flux-query-builder--no-save').click({force: true})
         })
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
+        })
       }
     })
   }
-
-  Cypress.on('uncaught:exception', (err, _) => {
-    console.error(err)
-    return false
-  })
 
   const loginWithFlags = flags => {
     return cy.signinWithoutUserReprovision().then(() => {
@@ -220,6 +218,9 @@ describe('Script Builder', () => {
       it('will return 0 tables and 0 rows, for an empty dataset', () => {
         cy.log('select empty dataset')
         selectBucket('defbuck3')
+        cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck3")`, {
+          timeout: 3000,
+        })
 
         runTest(0, 0, false)
       })
@@ -235,6 +236,9 @@ describe('Script Builder', () => {
         it('for a dataset with only 1 table', () => {
           cy.log('select dataset with 1 table')
           selectBucket('defbuck4')
+          cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
+            timeout: 3000,
+          })
 
           runTest(1, 1, false)
         })
@@ -268,6 +272,7 @@ describe('Script Builder', () => {
           cy.setFeatureFlags({
             newDataExplorer: true,
             schemaComposition: true,
+            saveAsScript: true,
             dataExplorerCsvLimit: 10000 as any,
           }).then(() => {
             // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
@@ -280,7 +285,7 @@ describe('Script Builder', () => {
           cy.log('select larger dataset')
           selectBucket('defbuck2')
           cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck2")`, {
-            timeout: 30000,
+            timeout: 3000,
           })
 
           runTest(3 * 500 + 2 + 60, 5 * 500 + 60, true)
@@ -628,7 +633,7 @@ describe('Script Builder', () => {
         cy.log('editor text is still empty')
         cy.getByTestID('flux-editor').within(() => {
           // selecting bucket will empty the editor text
-          cy.get('textarea.inputarea').should('have.value', '')
+          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
         })
 
         cy.log('turn on sync')

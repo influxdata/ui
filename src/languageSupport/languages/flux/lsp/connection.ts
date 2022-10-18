@@ -10,6 +10,7 @@ import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {RecursivePartial} from 'src/types'
 import {
   DEFAULT_SELECTION,
+  DEFAULT_EDITOR_TEXT,
   CompositionSelection,
 } from 'src/dataExplorer/context/persistance'
 import {CompositionInitParams} from 'src/languageSupport/languages/flux/lsp/utils'
@@ -378,6 +379,10 @@ class LspConnectionManager {
 
     if (schema.bucket && previousState.bucket != schema.bucket) {
       toAdd.bucket = schema.bucket
+    }
+    if (toAdd.bucket && this._model.getValue() == DEFAULT_EDITOR_TEXT) {
+      // first time selecting bucket --> remove if default message
+      this._model.setValue('')
     }
     if (schema.measurement && previousState.measurement != schema.measurement) {
       toAdd.measurement = schema.measurement

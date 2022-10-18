@@ -24,11 +24,9 @@ export interface GroupOptions {
   columns: string[]
 }
 
-export const DEFAULT_COLUMNS: string[] = ['_measurement', '_field']
-
 export const DEFAULT_GROUP_OPTIONS: GroupOptions = {
   type: GroupType.Default,
-  columns: DEFAULT_COLUMNS,
+  columns: [],
 }
 
 interface ResultOptions {

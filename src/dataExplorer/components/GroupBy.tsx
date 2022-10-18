@@ -10,7 +10,6 @@ import {
 
 // Contexts
 import {
-  DEFAULT_COLUMNS,
   DEFAULT_GROUP_OPTIONS,
   GroupType,
   GroupOptions,
@@ -25,6 +24,7 @@ import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
 import './Sidebar.scss'
 
 const GROUP_TOOLTIP = `test`
+const DEFAULT_COLUMNS: string[] = ['_measurement', '_field'] // only use this when the GroupType.GroupBy is selected
 
 const GroupBy: FC = () => {
   const {groupKeys, loading, getGroupKeys, resetGroupKeys} =
@@ -36,34 +36,32 @@ const GroupBy: FC = () => {
   useEffect(
     () => {
       if (!selection.bucket || !selection.measurement) {
+        // empty the group keys list
         resetGroupKeys()
-        setSelection({
-          resultOptions: {
-            group: JSON.parse(JSON.stringify(DEFAULT_GROUP_OPTIONS)),
-          },
-        })
-        return
+      } else {
+        // update the group keys list whenever the selected measurement changes
+        getGroupKeys(selection.bucket, selection.measurement)
       }
 
       setSelection({
         resultOptions: {
-          group: {
-            type: selectedGroupType,
-            columns: JSON.parse(JSON.stringify(DEFAULT_COLUMNS)),
-          },
+          group: JSON.parse(JSON.stringify(DEFAULT_GROUP_OPTIONS)),
         },
       })
-      getGroupKeys(selection.bucket, selection.measurement)
     },
-    // not including and getGroupKeys() to avoid infinite loop
+    // not including getGroupKeys() and setSelection() to avoid infinite loop
     [selection.bucket, selection.measurement, resetGroupKeys]
   )
 
   const handleSelectGroupType = useCallback(
     (type: GroupType) => {
+      const columns: string[] =
+        type === GroupType.GroupBy
+          ? JSON.parse(JSON.stringify(DEFAULT_COLUMNS))
+          : []
       setSelection({
         resultOptions: {
-          group: {type, columns: JSON.parse(JSON.stringify(DEFAULT_COLUMNS))},
+          group: {type, columns},
         },
       })
     },
@@ -112,7 +110,9 @@ const GroupBy: FC = () => {
       <div className="result-options--item--row">
         <MultiSelectDropdown
           options={groupKeys}
-          selectedOptions={selectedGroupKeys}
+          selectedOptions={
+            !selection.bucket || !selection.measurement ? [] : selectedGroupKeys
+          }
           onSelect={handleSelectGroupKey}
           emptyText="Select group column values"
           buttonStatus={toComponentStatus(loading)}
@@ -120,11 +120,13 @@ const GroupBy: FC = () => {
       </div>
     ) : null
   }, [
+    selectedGroupType,
     groupKeys,
     loading,
     selectedGroupKeys,
+    selection.bucket,
+    selection.measurement,
     handleSelectGroupKey,
-    selectedGroupType,
   ])
 
   return useMemo(() => {

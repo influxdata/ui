@@ -1,6 +1,7 @@
 export enum NetworkErrorTypes {
   UnauthorizedError = 'UnauthorizedError', // 401
   NotFoundError = 'NotFoundError', // 404
+  OrgNameConflictError = 'OrgNameConflictError', // 409
   UnprocessableEntityError = 'UnprocessableEntity', // 422
   ServerError = 'ServerError', // 500
   GenericError = 'GenericError',
@@ -19,6 +20,14 @@ export class NotFoundError extends Error {
   constructor(message) {
     super(message)
     this.name = 'NotFoundError'
+  }
+}
+
+// 409 Error
+export class OrgNameConflictError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'OrgNameConflictError'
   }
 }
 

@@ -34,7 +34,7 @@ import {Organization} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 
 // API
-import {getDefaultAccountDefaultOrg} from 'src/identity/apis/org'
+import {fetchDefaultAccountDefaultOrg} from 'src/identity/apis/org'
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">
@@ -147,7 +147,7 @@ const NotFound: FC = () => {
       if (CLOUD) {
         try {
           setIsFetchingOrg(true)
-          const defaultQuartzOrg = await getDefaultAccountDefaultOrg()
+          const defaultQuartzOrg = await fetchDefaultAccountDefaultOrg()
           org.current = defaultQuartzOrg
         } catch {
           history.push(`/no-orgs`)

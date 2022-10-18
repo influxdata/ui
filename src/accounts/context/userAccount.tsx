@@ -19,7 +19,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 // API
 import {
-  getUserAccounts,
+  fetchUserAccounts,
   updateDefaultQuartzAccount,
   updateUserAccount,
 } from 'src/identity/apis/account'
@@ -83,7 +83,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   const handleGetAccounts = useCallback(async () => {
     try {
-      const accounts = await getUserAccounts()
+      const accounts = await fetchUserAccounts()
       setUserAccounts(accounts)
       const defaultAcct = accounts.find(acct => acct.isDefault === true)
       if (typeof defaultAcct === 'object' && defaultAcct.hasOwnProperty('id')) {

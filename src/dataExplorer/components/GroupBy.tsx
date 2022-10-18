@@ -74,20 +74,17 @@ const GroupBy: FC = () => {
     () => (
       <div className="result-options--item--row">
         <SelectGroup shape={ButtonShape.StretchToFit}>
-          {(Object.keys(GroupType) as (keyof typeof GroupType)[]).map(key => {
-            const type: GroupType = GroupType[key]
-            return (
-              <SelectGroup.Option
-                key={key}
-                id={key}
-                active={selectedGroupType === type}
-                value={type}
-                onClick={handleSelectGroupType}
-              >
-                {type}
-              </SelectGroup.Option>
-            )
-          })}
+          {Object.entries(GroupType).map(([key, type]) => (
+            <SelectGroup.Option
+              key={key}
+              id={key}
+              active={selectedGroupType === type}
+              value={type}
+              onClick={handleSelectGroupType}
+            >
+              {type}
+            </SelectGroup.Option>
+          ))}
         </SelectGroup>
       </div>
     ),

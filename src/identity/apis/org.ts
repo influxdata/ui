@@ -2,9 +2,12 @@
 import {
   getAccounts,
   getAccountsOrgs,
+  getClusters,
   getOrg,
+  postOrg,
   putAccountsOrgsDefault,
   Organization,
+  OrganizationCreateRequest,
 } from 'src/client/unityRoutes'
 
 // Types
@@ -12,6 +15,7 @@ import {RemoteDataState} from 'src/types'
 import {
   GenericError,
   NotFoundError,
+  OrgNameConflictError,
   ServerError,
   UnauthorizedError,
   UnprocessableEntityError,
@@ -34,8 +38,57 @@ export type QuartzOrganizations = {
   status?: RemoteDataState
 }
 
+// create a new organization
+export const createNewOrg = async (
+  organizationCreateRequest: OrganizationCreateRequest
+) => {
+  const {orgName, provider, region} = organizationCreateRequest
+
+  const response = await postOrg({
+    data: {
+      orgName,
+      provider,
+      region,
+    },
+  })
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 409) {
+    throw new OrgNameConflictError(response.data.message)
+  }
+
+  if (response.status === 422) {
+    throw new UnprocessableEntityError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  // Status code in response when successfully creating an org is 201.
+  return response.data
+}
+
+// fetch the list of clusters in which an org can be created
+export const fetchClusterList = async () => {
+  const response = await getClusters({})
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
+}
+
 // fetch the default org for the default account
-export const getDefaultAccountDefaultOrg = async (): Promise<
+export const fetchDefaultAccountDefaultOrg = async (): Promise<
   OrganizationSummaries[number]
 > => {
   const response = await getAccounts({})

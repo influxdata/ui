@@ -22,7 +22,7 @@ export interface CurrentAccount extends IdentityAccount {
 }
 
 // get a list of the user's accounts
-export const getUserAccounts = async (): Promise<UserAccount[]> => {
+export const fetchUserAccounts = async (): Promise<UserAccount[]> => {
   const response = await getAccounts({})
 
   if (response.status === 401) {

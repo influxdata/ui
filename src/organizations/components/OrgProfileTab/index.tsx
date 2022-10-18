@@ -80,7 +80,7 @@ const OrgProfileTab: FC = () => {
             justifyContent={JustifyContent.SpaceBetween}
             stretchToFitWidth={true}
             style={orgProviderExists ? {width: '85%'} : {width: '48%'}}
-            testID="org-profile--labeled_data"
+            testID="org-profile--labeled-data"
           >
             {orgProviderExists && (
               <LabeledData label="Cloud Provider" src={quartzOrg.provider} />

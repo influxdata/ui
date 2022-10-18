@@ -17,7 +17,7 @@ namespace Examples
       const string bucket = "<%= bucket %>";
       const string org = "<%= org %>";
 
-      using var client = InfluxDBClientFactory.Create("<%= server %>", token);
+      using var client = new InfluxDBClient("<%= server %>", token);
     }
   }
 }

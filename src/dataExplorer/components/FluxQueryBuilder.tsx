@@ -158,6 +158,7 @@ const FluxQueryBuilder: FC = () => {
                         : ComponentStatus.Disabled
                     }
                     text="Save"
+                    testID="flux-query-builder--save-script"
                     icon={IconFont.SaveOutline}
                   />
                 )}

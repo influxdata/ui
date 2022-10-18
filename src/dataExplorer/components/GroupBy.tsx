@@ -55,8 +55,8 @@ const GroupBy: FC = () => {
       })
       getGroupKeys(selection.bucket, selection.measurement)
     },
-    // not including resetGroupKeys() and getGroupKeys() to avoid infinite loop
-    [selection.bucket, selection.measurement]
+    // not including and getGroupKeys() to avoid infinite loop
+    [selection.bucket, selection.measurement, resetGroupKeys]
   )
 
   const handleSelectGroupType = useCallback(

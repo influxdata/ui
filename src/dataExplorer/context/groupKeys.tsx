@@ -137,10 +137,10 @@ export const GroupKeysProvider: FC<Prop> = ({children, scope}) => {
     [queryAPI, scope]
   )
 
-  const resetGroupKeys = () => {
+  const resetGroupKeys = useCallback(() => {
     setGroupKeys(JSON.parse(JSON.stringify(INITIAL_GROUP_KEYS)))
     setLoading(RemoteDataState.NotStarted)
-  }
+  }, [])
 
   return useMemo(
     () => (
@@ -150,6 +150,6 @@ export const GroupKeysProvider: FC<Prop> = ({children, scope}) => {
         {children}
       </GroupKeysContext.Provider>
     ),
-    [groupKeys, loading, children, getGroupKeys]
+    [groupKeys, loading, children, getGroupKeys, resetGroupKeys]
   )
 }

@@ -22,7 +22,7 @@ import {
   getUserAccounts,
   updateDefaultQuartzAccount,
   updateUserAccount,
-} from 'src/identity/apis/auth'
+} from 'src/identity/apis/account'
 
 // Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'

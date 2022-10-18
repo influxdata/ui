@@ -32,7 +32,7 @@ describe('About Page', () => {
     cy.getByTestID('copy-btn--orgid').should('not.be.disabled')
 
     if (CLOUD) {
-      cy.getByTestID('org-profile--panel').contains('Cloud Provider')
+      cy.getByTestID('org-profile--labeled-data').contains('Cloud Provider')
     }
 
     cy.getByTestID('rename-org--button').should('be.visible').click()

@@ -19,6 +19,7 @@ import {GroupKeysContext} from 'src/dataExplorer/context/groupKeys'
 
 // Utilies
 import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import './Sidebar.scss'
@@ -55,6 +56,7 @@ const GroupBy: FC = () => {
 
   const handleSelectGroupType = useCallback(
     (type: GroupType) => {
+      event('Select a group type', {groupType: type})
       const columns: string[] =
         type === GroupType.GroupBy
           ? JSON.parse(JSON.stringify(DEFAULT_COLUMNS))
@@ -93,10 +95,11 @@ const GroupBy: FC = () => {
     (option: string): void => {
       let selected: string[] = []
       if (selectedGroupKeys.includes(option)) {
-        // de-select
         selected = selectedGroupKeys.filter(item => item !== option)
+        event('Deselect a group key', {selectedGroupKeyLength: selected.length})
       } else {
         selected = [...selectedGroupKeys, option]
+        event('Select a group key', {selectedGroupKeyLength: selected.length})
       }
       setSelection({
         resultOptions: {group: {type: selectedGroupType, columns: selected}},

@@ -15,3 +15,8 @@ export const scriptSaveSuccess = (scriptName: string): Notification => ({
   ...defaultSuccessNotification,
   message: `${scriptName} has been saved`,
 })
+
+export const deleteScriptFail = (scriptName: string): Notification => ({
+  ...defaultErrorNotification,
+  message: `${scriptName} failed to delete`,
+})

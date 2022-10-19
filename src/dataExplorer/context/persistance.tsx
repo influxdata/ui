@@ -13,15 +13,20 @@ interface CompositionStatus {
   diverged: boolean // true == cannot re-sync. (e.g. user has typed in the composition block)
 }
 
-enum GroupType {
+export enum GroupType {
   Default = 'Default',
   GroupBy = 'Group By',
   Ungroup = 'Ungroup',
 }
 
-interface GroupOptions {
+export interface GroupOptions {
   type: GroupType
   columns: string[]
+}
+
+export const DEFAULT_GROUP_OPTIONS: GroupOptions = {
+  type: GroupType.Default,
+  columns: [],
 }
 
 interface ResultOptions {
@@ -70,10 +75,7 @@ export const DEFAULT_SELECTION: CompositionSelection = {
   } as CompositionStatus,
   resultOptions: {
     fieldsAsColumn: false,
-    group: {
-      type: GroupType.Default,
-      columns: [] as string[],
-    } as GroupOptions,
+    group: DEFAULT_GROUP_OPTIONS,
   } as ResultOptions,
 }
 

@@ -11,10 +11,7 @@ import React, {
 // Context
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
-import {
-  PersistanceContext,
-  DEFAULT_EDITOR_TEXT,
-} from 'src/dataExplorer/context/persistance'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
@@ -78,8 +75,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
-  const {query, setQuery, selection, setSelection} =
-    useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistanceContext)
 
   // States
   // This state is a restructed PersistanceContext selection.tagValues
@@ -115,11 +111,6 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   }
 
   const handleSelectBucket = (bucket: Bucket): void => {
-    // first time selecting bucket --> remove if default message
-    if (query == DEFAULT_EDITOR_TEXT) {
-      setQuery('')
-    }
-
     setSelection({bucket, measurement: '', fields: [], tagValues: []})
 
     // Reset measurement, tags, fields, selected tag values

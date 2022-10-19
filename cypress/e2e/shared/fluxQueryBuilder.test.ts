@@ -1,18 +1,12 @@
 import {Organization} from '../../../src/types'
 const path = require('path')
 
-const DEFAULT_SELECTION = {
-  bucket: null,
-  measurement: null,
-  fields: [],
-  tagValues: [],
-  composition: {
-    synced: true,
-    diverged: false,
-  },
-}
+const DEFAULT_EDITOR_TEXT =
+  '// Start by selecting data from the schema browser or typing flux here'
 
 describe('Script Builder', () => {
+  const downloadsDirectory = Cypress.config('downloadsFolder')
+
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
@@ -66,79 +60,86 @@ describe('Script Builder', () => {
     })
   }
 
-  const DEFAULT_EDITOR_TEXT =
-    '// Start by selecting data from the schema browser or typing flux here'
-
-  const resetSession = () => {
-    window.sessionStorage.setItem(
-      'dataExplorer.schema',
-      JSON.parse(JSON.stringify(DEFAULT_SELECTION))
-    )
-    window.sessionStorage.setItem('dataExplorer.query', DEFAULT_EDITOR_TEXT)
+  const clearSession = () => {
+    cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
+      if (!$saveButton.is(':disabled')) {
+        cy.log('clearing session')
+        cy.getByTestID('flux-query-builder--new-script')
+          .should('be.visible')
+          .click()
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('flux-query-builder--no-save').click({force: true})
+        })
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
+        })
+      }
+    })
   }
 
-  beforeEach(() => {
+  const loginWithFlags = flags => {
+    return cy.signinWithoutUserReprovision().then(() => {
+      cy.get('@org').then(({id}: Organization) => {
+        cy.visit(`/orgs/${id}/data-explorer`)
+        cy.setFeatureFlags(flags).then(() => {
+          // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+          // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+          cy.wait(1200)
+          cy.getByTestID('flux-query-builder-toggle').then($toggle => {
+            cy.wrap($toggle).should('be.visible')
+            // Switch to Flux Query Builder if not yet
+            if (!$toggle.hasClass('active')) {
+              // hasClass is a jQuery function
+              $toggle.click()
+            }
+          })
+        })
+      })
+    })
+  }
+
+  before(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {
         cy.get('@org').then(({id, name}: Organization) => {
-          cy.visit(`/orgs/${id}/data-explorer`)
-          cy.getByTestID('tree-nav').should('be.visible')
-          cy.setFeatureFlags({
-            newDataExplorer: true,
-          }).then(() => {
-            cy.createBucket(id, name, 'defbuck2')
-            cy.createBucket(id, name, 'defbuck3')
-            cy.createBucket(id, name, 'defbuck4')
-            cy.writeData(writeData, 'defbuck')
-            cy.wait(100)
-            cy.getByTestID('flux-query-builder-toggle').then($toggle => {
-              cy.wrap($toggle).should('be.visible')
-              // Switch to Flux Query Builder if not yet
-              if (!$toggle.hasClass('active')) {
-                // hasClass is a jQuery function
-                $toggle.click()
-                cy.getByTestID('flux-query-builder--menu').contains('Clear')
-              }
-            })
-          })
+          cy.log('add mock data')
+          cy.createBucket(id, name, 'defbuck2')
+          cy.createBucket(id, name, 'defbuck3')
+          cy.createBucket(id, name, 'defbuck4')
+          cy.writeData(writeData, 'defbuck')
+          cy.writeData(writeData, 'defbuck2')
         })
       })
     })
   })
 
   describe('Results display', () => {
-    const downloadsDirectory = Cypress.config('downloadsFolder')
-
     beforeEach(() => {
-      resetSession()
-      cy.setFeatureFlags({
+      loginWithFlags({
         schemaComposition: true,
+        saveAsScript: true,
         newDataExplorer: true,
       }).then(() => {
-        // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-        // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-        cy.wait(1200).then(() => {
-          cy.reload()
-          cy.getByTestID('flux-sync--toggle')
-          cy.getByTestID('flux-editor', {timeout: 30000})
+        cy.get('@org').then(({id}: Organization) => {
+          cy.intercept('POST', `/api/v2/query?orgID=${id}`, req => {
+            const {extern} = req.body
+            if (
+              extern?.body[0]?.location?.source ==
+              `option v =  {  timeRangeStart: -1h,\n  timeRangeStop: now()}`
+            ) {
+              req.alias = 'query -1h'
+            } else if (
+              extern?.body[0]?.location?.source ==
+              `option v =  {  timeRangeStart: -15m,\n  timeRangeStop: now()}`
+            ) {
+              req.alias = 'query -15m'
+            }
+          })
         })
-      })
 
-      cy.get('@org').then(({id}: Organization) => {
-        cy.intercept('POST', `/api/v2/query?orgID=${id}`, req => {
-          const {extern} = req.body
-          if (
-            extern?.body[0]?.location?.source ==
-            `option v =  {  timeRangeStart: -1h,\n  timeRangeStop: now()}`
-          ) {
-            req.alias = 'query -1h'
-          } else if (
-            extern?.body[0]?.location?.source ==
-            `option v =  {  timeRangeStart: -15m,\n  timeRangeStop: now()}`
-          ) {
-            req.alias = 'query -15m'
-          }
-        })
+        clearSession()
+        cy.getByTestID('flux-sync--toggle')
+        cy.getByTestID('flux-editor', {timeout: 30000})
       })
       cy.log('empty downloads directory')
       cy.task('deleteDownloads', {dirPath: downloadsDirectory})
@@ -218,7 +219,7 @@ describe('Script Builder', () => {
         cy.log('select empty dataset')
         selectBucket('defbuck3')
         cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck3")`, {
-          timeout: 30000,
+          timeout: 3000,
         })
 
         runTest(0, 0, false)
@@ -235,6 +236,9 @@ describe('Script Builder', () => {
         it('for a dataset with only 1 table', () => {
           cy.log('select dataset with 1 table')
           selectBucket('defbuck4')
+          cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
+            timeout: 3000,
+          })
 
           runTest(1, 1, false)
         })
@@ -268,6 +272,7 @@ describe('Script Builder', () => {
           cy.setFeatureFlags({
             newDataExplorer: true,
             schemaComposition: true,
+            saveAsScript: true,
             dataExplorerCsvLimit: 10000 as any,
           }).then(() => {
             // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
@@ -280,16 +285,30 @@ describe('Script Builder', () => {
           cy.log('select larger dataset')
           selectBucket('defbuck2')
           cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck2")`, {
-            timeout: 30000,
+            timeout: 3000,
           })
 
-          runTest(3 * 500 + 2, 5 * 500, true)
+          runTest(3 * 500 + 2 + 60, 5 * 500 + 60, true)
         })
       })
     })
   })
 
-  describe('Schema browser', () => {
+  describe('Schema browser, without composition or saveAsScript', () => {
+    beforeEach(() => {
+      loginWithFlags({
+        schemaComposition: false,
+        newDataExplorer: true,
+        saveAsScript: false,
+      }).then(() => {
+        // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+        // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+        cy.wait(1200)
+        cy.getByTestID('flux-sync--toggle').should('not.exist')
+        cy.getByTestID('flux-query-builder--menu').contains('Clear')
+      })
+    })
+
     const bucketName = 'defbuck'
     const measurement = 'ndbc'
     const searchTagKey = 'air_temp_degc'
@@ -433,20 +452,14 @@ describe('Script Builder', () => {
 
   describe('Schema Composition', () => {
     beforeEach(() => {
-      cy.writeData(writeData, 'defbuck2')
-      resetSession()
-
-      cy.setFeatureFlags({
+      loginWithFlags({
         schemaComposition: true,
         saveAsScript: true,
         newDataExplorer: true,
       }).then(() => {
-        // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-        // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-        cy.wait(1200).then(() => {
-          cy.reload()
-          cy.getByTestID('flux-sync--toggle')
-        })
+        clearSession()
+        cy.getByTestID('flux-sync--toggle')
+        cy.getByTestID('flux-editor', {timeout: 30000})
       })
     })
 
@@ -499,7 +512,7 @@ describe('Script Builder', () => {
           cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
         })
 
-        describe('using hotkeys:', () => {
+        it('using hotkeys:', () => {
           const runTest = (hotKeyCombo: string) => {
             cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
             cy.getByTestID('flux-editor', {timeout: 30000})
@@ -519,53 +532,52 @@ describe('Script Builder', () => {
             )
             cy.log('toggle is now disabled')
             cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
+
+            cy.log('clear session')
+            clearSession()
           }
 
-          it('diverges when commenting line', () => {
-            runTest('{cmd}/')
-          })
+          cy.log('diverges when commenting line')
+          runTest('{cmd}/')
 
-          it('diverges when adding lines', () => {
-            runTest('{shift+alt+downArrow}')
-          })
+          cy.log('diverges when adding lines')
+          runTest('{shift+alt+downArrow}')
 
-          it('diverges when removing lines', () => {
-            runTest('{cmd+x}')
-          })
+          cy.log('diverges when removing lines')
+          runTest('{cmd+x}')
 
-          it('diverges when moving lines', () => {
-            runTest('{alt+downArrow}')
-          })
+          cy.log('diverges when moving lines')
+          runTest('{alt+downArrow}')
+        })
 
-          /// XXX: wiedld (27 Sep 2022) -- we have no way to delineate btwn the LSP applyEdit,
-          /// and the undo action applyEdit.
-          /// Either we disable the undo/redo hotkeys, or accept this edge case bug.
-          it.skip('diverges when using undo hotkeys, to undo composition block change', () => {
-            cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-            cy.getByTestID('flux-editor', {timeout: 30000})
-            selectSchema()
-            confirmSchemaComposition()
+        /// XXX: wiedld (27 Sep 2022) -- we have no way to delineate btwn the LSP applyEdit,
+        /// and the undo action applyEdit.
+        /// Either we disable the undo/redo hotkeys, or accept this edge case bug.
+        it.skip('diverges when using undo hotkeys, to undo composition block change', () => {
+          cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+          cy.getByTestID('flux-editor', {timeout: 30000})
+          selectSchema()
+          confirmSchemaComposition()
 
-            cy.log('make a change, via schema composition')
-            const newMeasurement = 'ndbc2'
-            cy.getByTestID('measurement-selector--dropdown-button').click()
-            cy.getByTestID(`searchable-dropdown--item ${newMeasurement}`)
-              .should('be.visible')
-              .click()
-            cy.getByTestID('measurement-selector--dropdown-button').should(
-              'contain',
-              newMeasurement
-            )
-            cy.getByTestID('flux-editor').contains(
-              `|> filter(fn: (r) => r._measurement == "${newMeasurement}")`
-            )
+          cy.log('make a change, via schema composition')
+          const newMeasurement = 'ndbc2'
+          cy.getByTestID('measurement-selector--dropdown-button').click()
+          cy.getByTestID(`searchable-dropdown--item ${newMeasurement}`)
+            .should('be.visible')
+            .click()
+          cy.getByTestID('measurement-selector--dropdown-button').should(
+            'contain',
+            newMeasurement
+          )
+          cy.getByTestID('flux-editor').contains(
+            `|> filter(fn: (r) => r._measurement == "${newMeasurement}")`
+          )
 
-            cy.log('use undo hotkey')
-            cy.getByTestID('flux-editor').monacoType('{cmd+z}')
+          cy.log('use undo hotkey')
+          cy.getByTestID('flux-editor').monacoType('{cmd+z}')
 
-            cy.log('toggle is now disabled')
-            cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
-          })
+          cy.log('toggle is now disabled')
+          cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
         })
       })
 
@@ -621,7 +633,7 @@ describe('Script Builder', () => {
         cy.log('editor text is still empty')
         cy.getByTestID('flux-editor').within(() => {
           // selecting bucket will empty the editor text
-          cy.get('textarea.inputarea').should('have.value', '')
+          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
         })
 
         cy.log('turn on sync')

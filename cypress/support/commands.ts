@@ -62,6 +62,29 @@ export const signin = (): Cypress.Chainable<Cypress.Response<any>> => {
   })
 }
 
+export const signinWithoutUserReprovision = () => {
+  return wrapDefaultUser()
+    .then(() => wrapDefaultPassword())
+    .then(() => {
+      const username = Cypress.env('defaultUser')
+      cy.wrap(username)
+        .as('defaultUser')
+        .then(() => {
+          cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
+            if (Cypress.env(DEX_URL_VAR) === 'OSS') {
+              return loginViaOSS(username, defaultPassword)
+            } else if (Cypress.env(DEX_URL_VAR) === 'CLOUD') {
+              return loginViaDexUI(username, defaultPassword)
+            } else {
+              return loginViaDex(username, defaultPassword)
+            }
+          })
+        })
+        .then(() => cy.location('pathname').should('not.eq', '/signin'))
+        .then(() => wrapEnvironmentVariablesForCloud())
+    })
+}
+
 export const loginViaDexUI = (username: string, password: string) => {
   cy.visit('/')
   cy.get('#login').type(username)
@@ -1100,6 +1123,10 @@ Cypress.Commands.add('getByTestIDHead', getByTestIDHead)
 
 // auth flow
 Cypress.Commands.add('signin', signin)
+Cypress.Commands.add(
+  'signinWithoutUserReprovision',
+  signinWithoutUserReprovision
+)
 
 // setup
 Cypress.Commands.add('setupUser', setupUser)

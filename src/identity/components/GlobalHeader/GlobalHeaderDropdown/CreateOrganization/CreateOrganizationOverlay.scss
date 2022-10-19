@@ -1,0 +1,8 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.create-org-overlay-container {
+  background-color: $cf-grey-15;
+  .create-org-overlay-body {
+    // background-color: red;
+  }
+}

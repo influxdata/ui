@@ -37,6 +37,7 @@ export type OverlayID =
   | 'feedback-questions'
   | 'help-bar-confirmation'
   | 'subscription-replace-certificate'
+  | 'create-organization'
 
 export interface OverlayState {
   id: OverlayID | null

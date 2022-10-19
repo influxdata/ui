@@ -1,0 +1,50 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.cluster-box.hoverable {
+  border: 2px solid $cf-grey-25;
+
+  &:hover {
+    border-color: $c-laser;
+    > .cluster-box-title {
+      background-color: $c-laser;
+    }
+  }
+
+  > .cluster-box-logo {
+    justify-content: center;
+  }
+}
+
+.cluster-box {
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  max-width: 300px;
+
+  &.selected {
+    border-color: $c-laser;
+    > .cluster-box-title {
+      background-color: $c-laser;
+    }
+  }
+
+  > .cluster-box-title {
+    width: 100%;
+    background-color: $cf-grey-25;
+    color: $cf-white;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0px;
+  }
+
+  > .cluster-box-logo {
+    display: flex;
+    align-items: center;
+    height: 120px;
+    width: 100%;
+  }
+}

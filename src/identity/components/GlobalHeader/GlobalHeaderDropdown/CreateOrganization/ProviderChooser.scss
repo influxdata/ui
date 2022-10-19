@@ -1,0 +1,18 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.provider-and-region-chooser {
+  margin: 40px 0px;
+
+  > .prc-title {
+    font-size: $cf-text-base-1;
+    margin: 0px !important;
+  }
+
+  > .prc-description {
+    color: $cf-grey-65 !important;
+    margin: 5px 0 !important;
+  }
+
+  .prc-cluster-boxes {
+  }
+}

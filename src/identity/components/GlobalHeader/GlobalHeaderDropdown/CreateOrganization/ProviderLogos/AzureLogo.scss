@@ -1,0 +1,16 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.azure-logo {
+  .st0 {
+    fill: #0089d6;
+  }
+}
+
+.azure-logo-with-text {
+  width: inherit;
+  height: inherit;
+
+  .st0 {
+    fill: #0089d6;
+  }
+}

@@ -165,16 +165,11 @@ const FluxQueryBuilder: FC = () => {
                     icon={IconFont.SaveOutline}
                   />
                 )}
-                {isFlagEnabled('saveAsScript') && (
+                {isFlagEnabled('saveAsScript') && resource?.data?.id && (
                   <Button
                     className="flux-query-builder__action-button"
                     onClick={() => setOverlayType(OverlayType.EDIT)}
-                    status={
-                      // TODO(ariel): check to see if it's saved
-                      resource?.data?.id
-                        ? ComponentStatus.Default
-                        : ComponentStatus.Disabled
-                    }
+                    status={ComponentStatus.Default}
                     text="Edit"
                     icon={IconFont.Pencil}
                   />

@@ -20,7 +20,7 @@ interface Props {
   onClose: () => void
 }
 
-const OpenScript: FC<Props> = ({onBack, onClose}) => {
+const DeleteScript: FC<Props> = ({onBack, onClose}) => {
   const {resource} = useContext(PersistanceContext)
   const history = useHistory()
   const dispatch = useDispatch()
@@ -49,7 +49,8 @@ const OpenScript: FC<Props> = ({onBack, onClose}) => {
         onDismiss={onClose}
       />
       <Overlay.Body>
-        "{resource.data?.name}" will be deleted and cannot be undone.
+        "{resource.data?.name}" will be deleted. Once deleted, this action
+        cannot be undone.
       </Overlay.Body>
       <Overlay.Footer>
         <Button
@@ -69,4 +70,4 @@ const OpenScript: FC<Props> = ({onBack, onClose}) => {
   )
 }
 
-export default OpenScript
+export {DeleteScript}

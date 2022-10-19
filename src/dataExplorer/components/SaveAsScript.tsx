@@ -26,7 +26,7 @@ import {
 } from 'src/shared/copy/notifications/categories/scripts'
 import {getOrg} from 'src/organizations/selectors'
 import OpenScript from 'src/dataExplorer/components/OpenScript'
-import DeleteScript from 'src/dataExplorer/components/DeleteScript'
+import {DeleteScript} from 'src/dataExplorer/components/DeleteScript'
 
 interface Props {
   onClose: () => void
@@ -133,7 +133,6 @@ const SaveAsScript: FC<Props> = ({onClose, setOverlayType, type}) => {
     }
   }
   if (type === OverlayType.EDIT) {
-    // TODO(ariel): figure out if we need to build out a scenario for unsaved scripts
     overlayTitle = 'Edit Script Details'
   }
 
@@ -147,7 +146,6 @@ const SaveAsScript: FC<Props> = ({onClose, setOverlayType, type}) => {
 
   let saveText = 'Save'
 
-  // TODO(ariel): figure out what to do here for editing a script
   if (resource?.data?.id) {
     if (type === OverlayType.SAVE) {
       saveText = 'Update'
@@ -162,7 +160,7 @@ const SaveAsScript: FC<Props> = ({onClose, setOverlayType, type}) => {
     }
   }
   if (type === OverlayType.EDIT) {
-    saveText = 'Save'
+    saveText = 'Update'
   }
 
   return (

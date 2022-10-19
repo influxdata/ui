@@ -1,0 +1,21 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.gcp-logo-with-text {
+  margin: $cf-marg-d auto;
+
+  .st0 {
+    fill: #ea4335;
+  }
+  .st1 {
+    fill: #4285f4;
+  }
+  .st2 {
+    fill: #34a853;
+  }
+  .st3 {
+    fill: #fbbc05;
+  }
+  .st4 {
+    fill: #5f6368;
+  }
+}

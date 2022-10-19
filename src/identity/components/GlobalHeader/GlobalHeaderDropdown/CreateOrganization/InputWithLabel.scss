@@ -1,0 +1,28 @@
+@import '@influxdata/clockface/dist/variables.scss';
+.inputwithlabel-label {
+  > label > div > div.cf-form--label-text {
+    font-size: $cf-text-base-1;
+  }
+
+  > .cf-form--element > .cf-form--label {
+    margin: 5px 0 !important;
+  }
+
+  input::-webkit-input-placeholder {
+    font-style: italic;
+    font-weight: normal !important;
+  }
+
+  > .error-field-hack {
+    height: 28px;
+    width: 200px;
+  }
+
+  .inputwithlabel-element {
+    margin-bottom: 5px;
+
+    > .inputwithlabel-description {
+      margin-bottom: 5px !important;
+    }
+  }
+}

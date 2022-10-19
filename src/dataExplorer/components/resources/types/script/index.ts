@@ -72,7 +72,7 @@ export default function script(register) {
           name: data.name,
           description: data?.description || ' ',
           script: data.script,
-          language: 'flux',
+          language: data?.language ?? 'flux',
         },
       }).then(resp => {
         if (resp.status !== 201) {

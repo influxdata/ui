@@ -4,6 +4,7 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {Bucket, TagKeyValuePair} from 'src/types'
 import {
+  LanguageType,
   RESOURCES,
   ResourceConnectedQuery,
 } from 'src/dataExplorer/components/resources'
@@ -128,6 +129,7 @@ export const PersistanceProvider: FC = ({children}) => {
   const [resource, setResource] = useSessionStorage('dataExplorer.resource', {
     type: 'scripts',
     flux: '',
+    language: LanguageType.FLUX,
     data: {},
   })
   const [selection, setSelection] = useSessionStorage(

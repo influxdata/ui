@@ -25,13 +25,19 @@ const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \
 similar to an indexed column and value.`
 
-interface Prop {
+interface TagValuesProps {
   loading: RemoteDataState
   tagKey: string
   tagValues: string[]
+  readOnly?: boolean
 }
 
-const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
+const TagValues: FC<TagValuesProps> = ({
+  loading,
+  tagKey,
+  tagValues,
+  readOnly = false,
+}) => {
   const {
     selectedBucket,
     selectedMeasurement,
@@ -82,7 +88,17 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && valuesToShow.length) {
-    if (isFlagEnabled('schemaComposition')) {
+    if (readOnly) {
+      list = valuesToShow.map(value => (
+        <dd
+          key={value}
+          className="tag-selector-value--list-item--readonly"
+          data-testid="tag-selector-value--list-item--readonly"
+        >
+          <code>{value}</code>
+        </dd>
+      ))
+    } else if (isFlagEnabled('schemaComposition')) {
       list = (
         <SelectorList
           items={valuesToShow}
@@ -145,7 +161,11 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
   }, [list, selectedTagValues])
 }
 
-const TagSelector: FC = () => {
+interface TagSelectorProps {
+  readOnly?: boolean
+}
+
+const TagSelector: FC<TagSelectorProps> = ({readOnly = false}) => {
   const {tags, loadingTagKeys, loadingTagValues} = useContext(TagsContext)
 
   const tagKeys: string[] = Object.keys(tags)
@@ -169,6 +189,7 @@ const TagSelector: FC = () => {
             tagKey={key}
             tagValues={tags[key]}
             loading={loadingTagValues[key]}
+            readOnly={readOnly}
           />
         </div>
       )

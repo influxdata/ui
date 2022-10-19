@@ -36,7 +36,11 @@ const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
 key values pairs within a measurement. For SQL users, this is \
 conceptually similar to a non-indexed column and value.`
 
-const FieldSelector: FC = () => {
+interface Props {
+  readOnly?: boolean
+}
+
+const FieldSelector: FC<Props> = ({readOnly = false}) => {
   const {fields, loading} = useContext(FieldsContext)
   const {selectField, searchTerm} = useContext(FluxQueryBuilderContext)
   const {selection} = useContext(PersistanceContext)
@@ -83,7 +87,17 @@ const FieldSelector: FC = () => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
-    if (isFlagEnabled('schemaComposition')) {
+    if (readOnly) {
+      list = fieldsToShow.map(field => (
+        <dd
+          key={field}
+          className="field-selector--list-item--readonly"
+          data-testid="field-selector--list-item--readonly"
+        >
+          <code>{field}</code>
+        </dd>
+      ))
+    } else if (isFlagEnabled('schemaComposition')) {
       list = (
         <SelectorList
           items={fieldsToShow}

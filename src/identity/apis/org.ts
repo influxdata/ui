@@ -2,6 +2,7 @@
 import {
   getAccounts,
   getAccountsOrgs,
+  getAllowancesOrgsCreate,
   getClusters,
   getOrg,
   postOrg,
@@ -115,6 +116,19 @@ export const fetchDefaultAccountDefaultOrg = async (): Promise<
     }
     throw new GenericError('No default account found')
   }
+}
+
+// fetch data regarding whether the user can create new orgs, and associated upgrade options.
+export const fetchOrgCreationAllowance = async () => {
+  const response = await getAllowancesOrgsCreate({})
+
+  if (response.status !== 200) {
+    throw new GenericError(
+      'Failed to determine whether this user can create a new organization.'
+    )
+  }
+
+  return response.data
 }
 
 // fetch the list of organizations associated with a given account ID

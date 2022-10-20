@@ -37,7 +37,7 @@ interface Props {
 const SaveAsScript: FC<Props> = ({onClose, setOverlayType, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {hasChanged, resource, setResource, clearCompositionSelection, save} =
+  const {hasChanged, resource, setResource, save} =
     useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
@@ -87,14 +87,13 @@ const SaveAsScript: FC<Props> = ({onClose, setOverlayType, type}) => {
   const clear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
-    clearCompositionSelection()
     setResult(null)
 
     history.replace(`/orgs/${org.id}/data-explorer/from/script`)
     if (type !== OverlayType.OPEN) {
       onClose()
     }
-  }, [onClose, setStatus, setResult, cancel, history, org?.id])
+  }, [onClose, setStatus, setResult, cancel, history, org?.id, type])
 
   const handleSaveScript = () => {
     save()

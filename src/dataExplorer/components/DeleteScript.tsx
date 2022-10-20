@@ -8,6 +8,9 @@ import {useSelector, useDispatch} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
 import {deleteScriptFail} from 'src/shared/copy/notifications/categories/scripts'
+import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {RemoteDataState} from 'src/types'
+import {QueryContext} from 'src/shared/contexts/query'
 
 let deleteScript
 
@@ -22,6 +25,8 @@ interface Props {
 
 const DeleteScript: FC<Props> = ({onBack, onClose}) => {
   const {resource} = useContext(PersistanceContext)
+  const {cancel} = useContext(QueryContext)
+  const {setStatus, setResult} = useContext(ResultsContext)
   const history = useHistory()
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
@@ -35,6 +40,9 @@ const DeleteScript: FC<Props> = ({onBack, onClose}) => {
           throw new Error(resp.data.message)
         }
 
+        setStatus(RemoteDataState.NotStarted)
+        setResult(null)
+        cancel()
         history.replace(`/orgs/${org.id}/data-explorer/from/script/`)
         onClose()
       } catch (error) {

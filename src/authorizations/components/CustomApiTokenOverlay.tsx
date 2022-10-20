@@ -77,25 +77,34 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   const [searchTerm, setSearchTerm] = useState('')
   const [status, setStatus] = useState(ComponentStatus.Disabled)
 
-  useEffect(() => {
-    props.getBuckets()
-    props.getTelegrafs()
-  }, [])
+  const {
+    allResources,
+    bucketPermissions,
+    getBuckets,
+    getTelegrafs,
+    remoteDataState,
+    telegrafPermissions,
+  } = props
 
   useEffect(() => {
-    if (!isEmpty(props.bucketPermissions.sublevelPermissions)) {
+    getBuckets()
+    getTelegrafs()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!isEmpty(bucketPermissions.sublevelPermissions)) {
       const perms = {
         otherResources: {read: false, write: false},
       }
-      props.allResources
+      allResources
         .filter(
           p => p !== ResourceType.Subscriptions && String(p) !== 'instance'
         )
         .forEach(resource => {
           if (resource === ResourceType.Telegrafs) {
-            perms[resource] = props.telegrafPermissions
+            perms[resource] = telegrafPermissions
           } else if (resource === ResourceType.Buckets) {
-            perms[resource] = props.bucketPermissions
+            perms[resource] = bucketPermissions
           } else {
             perms[resource] = {read: false, write: false}
           }
@@ -106,10 +115,10 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     // BUT, code inside the hook won't run until remoteDataState is 'Done'.
     // Only then will props.bucketPermissions.sublevelPermissions will have value.
     // Consequently, we update the permissions state.
-  }, [props.remoteDataState])
+  }, [remoteDataState]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDismiss = () => {
-    props.onClose()
+    onClose()
   }
 
   const handleChangeSearchTerm = (searchTerm: string): void => {
@@ -319,7 +328,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
                 </FlexBox.Child>
               </FlexBox>
               <ResourceAccordion
-                resources={formatResources(props.allResources)}
+                resources={formatResources(allResources)}
                 permissions={permissions}
                 onToggleAll={handleToggleAll}
                 onIndividualToggle={handleIndividualToggle}

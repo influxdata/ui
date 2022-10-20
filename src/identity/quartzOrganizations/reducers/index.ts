@@ -9,7 +9,6 @@ import {emptyOrg} from 'src/identity/components/GlobalHeader/DefaultEntities'
 import produce from 'immer'
 
 // Types
-
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 

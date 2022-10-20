@@ -9,9 +9,11 @@ import SelectorList from 'src/timeMachine/components/SelectorList'
 // Contexts
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {TagsContext} from 'src/dataExplorer/context/tags'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
 import {
@@ -29,15 +31,9 @@ interface TagValuesProps {
   loading: RemoteDataState
   tagKey: string
   tagValues: string[]
-  readOnly?: boolean
 }
 
-const TagValues: FC<TagValuesProps> = ({
-  loading,
-  tagKey,
-  tagValues,
-  readOnly = false,
-}) => {
+const TagValues: FC<TagValuesProps> = ({loading, tagKey, tagValues}) => {
   const {
     selectedBucket,
     selectedMeasurement,
@@ -45,6 +41,7 @@ const TagValues: FC<TagValuesProps> = ({
     selectTagValue,
     searchTerm,
   } = useContext(FluxQueryBuilderContext)
+  const {resource} = useContext(PersistanceContext)
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])
 
@@ -88,7 +85,8 @@ const TagValues: FC<TagValuesProps> = ({
       </div>
     )
   } else if (loading === RemoteDataState.Done && valuesToShow.length) {
-    if (readOnly) {
+    if (resource?.data?.language === LanguageType.SQL) {
+      // readOnly
       list = valuesToShow.map(value => (
         <dd
           key={value}
@@ -161,11 +159,7 @@ const TagValues: FC<TagValuesProps> = ({
   }, [list, selectedTagValues])
 }
 
-interface TagSelectorProps {
-  readOnly?: boolean
-}
-
-const TagSelector: FC<TagSelectorProps> = ({readOnly = false}) => {
+const TagSelector: FC = () => {
   const {tags, loadingTagKeys, loadingTagValues} = useContext(TagsContext)
 
   const tagKeys: string[] = Object.keys(tags)
@@ -189,7 +183,6 @@ const TagSelector: FC<TagSelectorProps> = ({readOnly = false}) => {
             tagKey={key}
             tagValues={tags[key]}
             loading={loadingTagValues[key]}
-            readOnly={readOnly}
           />
         </div>
       )

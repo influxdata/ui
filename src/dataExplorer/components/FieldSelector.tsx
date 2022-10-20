@@ -20,6 +20,7 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Syles
 import './Schema.scss'
@@ -36,14 +37,10 @@ const FIELD_TOOLTIP = `Fields and Field Values are non-indexed \
 key values pairs within a measurement. For SQL users, this is \
 conceptually similar to a non-indexed column and value.`
 
-interface Props {
-  readOnly?: boolean
-}
-
-const FieldSelector: FC<Props> = ({readOnly = false}) => {
+const FieldSelector: FC = () => {
   const {fields, loading} = useContext(FieldsContext)
   const {selectField, searchTerm} = useContext(FluxQueryBuilderContext)
-  const {selection} = useContext(PersistanceContext)
+  const {selection, resource} = useContext(PersistanceContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
 
   const handleSelectField = (field: string) => {
@@ -87,7 +84,8 @@ const FieldSelector: FC<Props> = ({readOnly = false}) => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
-    if (readOnly) {
+    if (resource?.data?.language === LanguageType.SQL) {
+      // readOnly
       list = fieldsToShow.map(field => (
         <dd
           key={field}

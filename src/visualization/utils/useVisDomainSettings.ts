@@ -214,7 +214,10 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
     normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
+      getWindowPeriodFromVariables(
+        activeQueryIndex >= 0 ? queries[activeQueryIndex] : '',
+        variables
+      ),
       timeRange,
       domain,
       data
@@ -222,45 +225,47 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   )
 
   useEffect(() => {
-    const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
-      timeRange,
-      domain,
-      data
-    )
+    if (queries.length && activeQueryIndex >= 0) {
+      const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
+        getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
+        timeRange,
+        domain,
+        data
+      )
 
-    if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
-      setWindowPeriod(updatedWindowPeriod)
+      if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
+        setWindowPeriod(updatedWindowPeriod)
 
-      if (isNotEqual(preZoomDomain, domain)) {
-        setRequeryStatus(RemoteDataState.Loading)
-        Promise.all(
-          queries.map(query => {
-            resetQueryCacheByQuery(query, variables)
-            return getCachedResultsOrRunQuery(
-              orgId,
-              query,
-              variables,
-              isFlagEnabled('zoomRequery') && !adaptiveZoomHide,
-              updatedWindowPeriod
-            ).promise.then((result: RunQueryResult) => {
-              if (result.type === 'SUCCESS') {
-                return result.csv?.trim()
-              } else {
-                return ''
-              }
+        if (isNotEqual(preZoomDomain, domain)) {
+          setRequeryStatus(RemoteDataState.Loading)
+          Promise.all(
+            queries.map(query => {
+              resetQueryCacheByQuery(query, variables)
+              return getCachedResultsOrRunQuery(
+                orgId,
+                query,
+                variables,
+                isFlagEnabled('zoomRequery') && !adaptiveZoomHide,
+                updatedWindowPeriod
+              ).promise.then((result: RunQueryResult) => {
+                if (result.type === 'SUCCESS') {
+                  return result.csv ?? ''
+                } else {
+                  return ''
+                }
+              })
             })
-          })
-        ).then(
-          pendingResults => {
-            const combinedResults = pendingResults.join('\n\n')
-            if (combinedResults.trim().length > 0) {
-              setResult(fromFlux(combinedResults))
-            }
-            setRequeryStatus(RemoteDataState.Done)
-          },
-          () => setRequeryStatus(RemoteDataState.Error)
-        )
+          ).then(
+            pendingResults => {
+              const combinedResults = pendingResults.join('\n\n')
+              if (combinedResults.trim().length > 0) {
+                setResult(fromFlux(combinedResults))
+              }
+              setRequeryStatus(RemoteDataState.Done)
+            },
+            () => setRequeryStatus(RemoteDataState.Error)
+          )
+        }
       }
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -286,7 +291,12 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   }, [timeRange, transmitWindowPeriod, windowPeriod])
 
   // Suppresses adaptive zoom feature; must come after all hooks
-  if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {
+  if (
+    !isFlagEnabled('zoomRequery') ||
+    adaptiveZoomHide ||
+    queries.length === 0 ||
+    activeQueryIndex < 0
+  ) {
     const setVisXDomain = (domain: NumericColumnData) => {
       setPreZoomDomain(domain)
       event('plot.zoom_in.xAxis', {zoomRequery: 'false'})
@@ -379,7 +389,10 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
     normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
+      getWindowPeriodFromVariables(
+        activeQueryIndex >= 0 ? queries[activeQueryIndex] : '',
+        variables
+      ),
       timeRange,
       domain,
       data
@@ -387,45 +400,47 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   )
 
   useEffect(() => {
-    const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
-      timeRange,
-      domain,
-      data
-    )
+    if (queries.length && activeQueryIndex >= 0) {
+      const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
+        getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
+        timeRange,
+        domain,
+        data
+      )
 
-    if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
-      setWindowPeriod(updatedWindowPeriod)
+      if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
+        setWindowPeriod(updatedWindowPeriod)
 
-      if (isNotEqual(preZoomDomain, domain)) {
-        setRequeryStatus(RemoteDataState.Loading)
-        Promise.all(
-          queries.map(query => {
-            resetQueryCacheByQuery(query, variables)
-            return getCachedResultsOrRunQuery(
-              orgId,
-              query,
-              variables,
-              isFlagEnabled('zoomRequery') && !adaptiveZoomHide,
-              updatedWindowPeriod
-            ).promise.then((result: RunQueryResult) => {
-              if (result.type === 'SUCCESS') {
-                return result.csv?.trim()
-              } else {
-                return ''
-              }
+        if (isNotEqual(preZoomDomain, domain)) {
+          setRequeryStatus(RemoteDataState.Loading)
+          Promise.all(
+            queries.map(query => {
+              resetQueryCacheByQuery(query, variables)
+              return getCachedResultsOrRunQuery(
+                orgId,
+                query,
+                variables,
+                isFlagEnabled('zoomRequery') && !adaptiveZoomHide,
+                updatedWindowPeriod
+              ).promise.then((result: RunQueryResult) => {
+                if (result.type === 'SUCCESS') {
+                  return result.csv ?? ''
+                } else {
+                  return ''
+                }
+              })
             })
-          })
-        ).then(
-          pendingResults => {
-            const combinedResults = pendingResults.join('\n\n')
-            if (combinedResults.trim().length > 0) {
-              setResult(fromFlux(combinedResults))
-            }
-            setRequeryStatus(RemoteDataState.Done)
-          },
-          () => setRequeryStatus(RemoteDataState.Error)
-        )
+          ).then(
+            pendingResults => {
+              const combinedResults = pendingResults.join('\n\n')
+              if (combinedResults.trim().length > 0) {
+                setResult(fromFlux(combinedResults))
+              }
+              setRequeryStatus(RemoteDataState.Done)
+            },
+            () => setRequeryStatus(RemoteDataState.Error)
+          )
+        }
       }
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -451,7 +466,12 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   }, [timeRange, transmitWindowPeriod, windowPeriod])
 
   // Suppresses adaptive zoom feature; must come after all hooks
-  if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {
+  if (
+    !isFlagEnabled('zoomRequery') ||
+    adaptiveZoomHide ||
+    queries.length === 0 ||
+    activeQueryIndex < 0
+  ) {
     const setVisYDomain = (domain: NumericColumnData | string) => {
       setPreZoomDomain(domain)
       event('plot.zoom_in.yAxis', {zoomRequery: 'false'})

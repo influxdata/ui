@@ -8,7 +8,10 @@ import {DashboardQuery} from 'src/types'
 // Context
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {
+  DEFAULT_EDITOR_TEXT,
+  PersistanceContext,
+} from 'src/dataExplorer/context/persistance'
 
 // Selector
 import {getActiveQueryIndex} from 'src/timeMachine/selectors'
@@ -23,25 +26,38 @@ export const useZoomQuery = (queries: DashboardQuery[] = []): ZoomQueries => {
   const {query} = useContext(PersistanceContext)
   const {id} = useContext(PipeContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
-  const queryTexts = queries.map(query => `${query.text}`) ?? ['']
+  const queryTexts = queries.map(query => `${query.text}`)
+  const isQueryTextsEmpty =
+    queryTexts.length === 0 ||
+    queryTexts.every(query => query.trim().length === 0)
 
+  // Notebooks
   if (id) {
-    // Notebooks
     return {
       activeQueryIndex: 0,
       queries: [getPanelQueries(id)?.visual ?? ''],
     }
   }
-  if (queryTexts) {
-    // Old Data Explorer & Dashboard Cells
+
+  // Old Data Explorer & Dashboard Cells
+  if (!isQueryTextsEmpty) {
     return {
       activeQueryIndex,
       queries: queryTexts,
     }
   }
+
   // New Data Explorer
+  if (query.trim() !== DEFAULT_EDITOR_TEXT) {
+    return {
+      activeQueryIndex: 0,
+      queries: [query],
+    }
+  }
+
+  // Default - no queries found
   return {
-    activeQueryIndex: 0,
-    queries: [query],
+    activeQueryIndex: -1,
+    queries: [],
   }
 }

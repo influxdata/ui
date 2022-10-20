@@ -11,6 +11,7 @@ import TagSelector from 'src/dataExplorer/components/TagSelector'
 import SchemaBrowserHeading from 'src/dataExplorer/components/SchemaBrowserHeading'
 
 // Context
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {
   FluxQueryBuilderContext,
   FluxQueryBuilderProvider,
@@ -22,6 +23,7 @@ import {TagsProvider} from 'src/dataExplorer/context/tags'
 
 // Types
 import {QueryScope} from 'src/shared/contexts/query'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -30,6 +32,7 @@ import {getOrg} from 'src/organizations/selectors'
 import './Schema.scss'
 
 const FieldsTags: FC = () => {
+  const {resource} = useContext(PersistanceContext)
   const {selectedBucket, selectedMeasurement, searchTerm, setSearchTerm} =
     useContext(FluxQueryBuilderContext)
 
@@ -54,8 +57,10 @@ const FieldsTags: FC = () => {
           searchTerm={searchTerm}
           testID="field-tag-key-search-bar"
         />
-        <FieldSelector />
-        <TagSelector />
+        <FieldSelector
+          readOnly={resource?.data?.language === LanguageType.SQL}
+        />
+        <TagSelector readOnly={resource?.data?.language === LanguageType.SQL} />
       </div>
     )
   }, [selectedBucket, selectedMeasurement, searchTerm])

@@ -3,55 +3,44 @@ import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {
-  Button,
-  ComponentStatus,
-  ComponentColor,
-  IconFont,
-} from '@influxdata/clockface'
+import {Button, ComponentStatus, IconFont} from '@influxdata/clockface'
 
 // Selectors and Actions
 import {getActiveQuery} from 'src/timeMachine/selectors'
-import {
-  runDownloadQuery,
-  DOWNLOAD_EVENT_COMPLETE,
-} from 'src/timeMachine/actions/queries'
+import {runDownloadQuery} from 'src/timeMachine/actions/queries'
 
 // Types
-import {AppState, RemoteDataState} from 'src/types'
+import {AppState} from 'src/types'
+
+// Worker
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import downloadWorker from 'worker-plugin/loader!../workers/downloadHelper'
 
 type Props = ConnectedProps<typeof connector>
 
 interface State {
-  state: RemoteDataState
+  isEnabled: boolean
 }
 
 class CSVExportButton extends PureComponent<Props, State> {
-  private controller: AbortController
-
   constructor(props) {
     super(props)
-    this.controller = new AbortController()
-    this.controller.signal.addEventListener(DOWNLOAD_EVENT_COMPLETE, () => {
-      this.setState({state: RemoteDataState.Done})
-    })
-    this.state = {state: RemoteDataState.NotStarted}
+    this.state = {isEnabled: false}
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register(downloadWorker).then(
+        () => this.setState({isEnabled: true}),
+        function (err) {
+          console.error('ServiceWorker registration failed: ', err)
+        }
+      )
+    }
   }
 
   public render() {
-    if (this.state.state == RemoteDataState.Loading) {
-      return (
-        <Button
-          text="Cancel"
-          onClick={() => {
-            this.controller.abort()
-            this.controller.signal.dispatchEvent(
-              new Event(DOWNLOAD_EVENT_COMPLETE)
-            )
-          }}
-          color={ComponentColor.Danger}
-        />
-      )
+    if (!this.state.isEnabled) {
+      return null
     }
 
     return (
@@ -81,8 +70,13 @@ class CSVExportButton extends PureComponent<Props, State> {
   }
 
   private handleClick = () => {
-    this.setState({state: RemoteDataState.Loading})
-    this.props.download(this.controller)
+    // Known cypress issue with form submit for file download
+    // Cypress automatically expects a redirect for any form submission
+    if ((window as any).Cypress) {
+      setTimeout(() => location.reload(), 3000)
+    }
+
+    this.props.download()
   }
 }
 

@@ -5,8 +5,6 @@ import {get, sortBy} from 'lodash'
 // API
 import {
   runQuery,
-  processResponse,
-  processResponseBlob,
   RunQueryResult,
   RunQuerySuccessResult,
 } from 'src/shared/apis/query'
@@ -22,6 +20,7 @@ import {hydrateVariables} from 'src/variables/actions/thunks'
 
 // Constants
 import {rateLimitReached, resultTooLarge} from 'src/shared/copy/notifications'
+import {API_BASE_PATH} from 'src/shared/constants'
 
 // Utils
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
@@ -29,8 +28,6 @@ import {findNodes} from 'src/shared/utils/ast'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {downloadBlob} from 'src/shared/utils/download'
-import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -277,8 +274,7 @@ export const timeMachineQueryErrorNotification = (
 export const runTimeMachineQuery = (
   queryText: string,
   state: AppState,
-  abortController: AbortController,
-  processor = processResponse
+  abortController: AbortController
 ) => {
   const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
   const allVariables = getAllVariables(state)
@@ -292,7 +288,7 @@ export const runTimeMachineQuery = (
 
   const extern = buildUsedVarsOption(queryText, allVariables)
   event('runQuery', {context: 'timeMachine'})
-  return runQuery(orgID, queryText, extern, abortController, processor)
+  return runQuery(orgID, queryText, extern, abortController)
 }
 
 export const executeQueries =
@@ -389,35 +385,51 @@ export const executeQueries =
     }
   }
 
-export const DOWNLOAD_EVENT_COMPLETE = 'Download Complete'
-export const runDownloadQuery =
-  (abortController?: AbortController) =>
-  async (dispatch, getState: GetState) => {
-    const state = getState()
-    const activeQueryText = getActiveQuery(state).text
+export const runDownloadQuery = () => async (dispatch, getState: GetState) => {
+  const state = getState()
+  const queryText = getActiveQuery(state).text
 
-    try {
-      await dispatch(hydrateVariables())
+  try {
+    await dispatch(hydrateVariables())
 
-      const result = await runTimeMachineQuery(
-        activeQueryText,
-        state,
-        abortController,
-        processResponseBlob
-      ).promise
-      if (result.type !== 'SUCCESS') {
-        return timeMachineQueryErrorNotification([result], dispatch)
-      }
+    const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
+    const allVariables = getAllVariables(state)
 
-      const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm')
-      const now = formatter.format(new Date()).replace(/[:\s]+/gi, '_')
-      const filename = `${now} InfluxDB Data`
-      downloadBlob(result.csv as unknown as Blob, filename, '.csv')
-    } catch (error) {
-      console.error(error)
+    event('executeQueries query', {}, {query: queryText})
+
+    const orgID = getOrgIDFromBuckets(queryText, allBuckets) || getOrg(state).id
+    if (getOrg(state).id === orgID) {
+      event('orgData_queried')
     }
-    abortController.signal.dispatchEvent(new Event(DOWNLOAD_EVENT_COMPLETE))
+
+    const extern = buildUsedVarsOption(queryText, allVariables)
+    const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
+    event('runQuery', {context: 'timeMachine'})
+
+    const hiddenForm = document.createElement('form')
+    hiddenForm.setAttribute('id', 'downloadDiv')
+    hiddenForm.setAttribute('style', 'display: none;')
+    hiddenForm.setAttribute('method', 'post')
+    hiddenForm.setAttribute('action', url)
+
+    const input = document.createElement('input')
+    input.setAttribute('name', 'data')
+    input.setAttribute(
+      'value',
+      JSON.stringify({
+        query: queryText,
+        extern,
+        dialect: {annotations: ['group', 'datatype', 'default']},
+      })
+    )
+    hiddenForm.appendChild(input)
+    document.body.appendChild(hiddenForm)
+
+    hiddenForm.submit()
+  } catch (error) {
+    console.error(error)
   }
+}
 
 interface SaveDraftQueriesAction {
   type: 'SAVE_DRAFT_QUERIES'

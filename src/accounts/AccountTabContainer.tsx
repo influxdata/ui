@@ -9,6 +9,9 @@ import {Tabs, Orientation, Page} from '@influxdata/clockface'
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
+// Style
+import './AccountTabContainer.scss'
+
 interface Props {
   activeTab: string
 }
@@ -22,7 +25,9 @@ class AccountTabContainer extends PureComponent<Props> {
       <Page.Contents fullWidth={true} scrollable={true}>
         <Tabs.Container orientation={Orientation.Horizontal}>
           <AccountTabs activeTab={activeTab} />
-          <Tabs.TabContents>{children}</Tabs.TabContents>
+          <Tabs.TabContents className="account-page--tab-contents">
+            {children}
+          </Tabs.TabContents>
         </Tabs.Container>
       </Page.Contents>
     )

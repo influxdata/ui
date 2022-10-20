@@ -76,7 +76,7 @@ class SearchWidget extends Component<Props, State> {
           onChange={this.handleChange}
           onBlur={this.handleBlur}
           testID={testID}
-          className="search-widget-input"
+          className="search-widget-input "
           tabIndex={tabIndex}
           onClear={this.clear}
           autoFocus={autoFocus}

@@ -10,7 +10,7 @@ import React, {
 import {Icon, IconFont} from '@influxdata/clockface'
 
 // Components
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 
 // Utilities
 import {View} from 'src/visualization'

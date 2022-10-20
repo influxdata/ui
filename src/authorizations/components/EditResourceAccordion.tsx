@@ -8,7 +8,7 @@ import {ResourceAccordionHeader} from 'src/authorizations/components/ResourceAcc
 import {IndividualAccordionBody} from 'src/authorizations/components/IndividualAccordionBody'
 import {AllAccordionBody} from './AllAccordionBody'
 import {formatResources} from 'src/authorizations/utils/permissions'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 
 // Types
 import {Resource} from 'src/client'
@@ -17,7 +17,7 @@ interface Props {
   searchTerm: string
 }
 
-const Filter = FilterList<Resource>()
+const Filter = FilterListContainer<Resource>()
 export class EditResourceAccordion extends Component<Props> {
   public render() {
     const {permissions} = this.props

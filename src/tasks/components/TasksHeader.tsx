@@ -15,7 +15,7 @@ import {
   IconFont,
 } from '@influxdata/clockface'
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 
 // Utils

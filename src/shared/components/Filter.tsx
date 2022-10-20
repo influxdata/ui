@@ -35,9 +35,7 @@ const EMPTY_ARRAY_BRACKETS = /\[\]?\./
  *  "user.name" (exact) or "authors[].name" (inexact)
  *
  */
-export default class FilterList<T extends Resource> extends PureComponent<
-  Props<T>
-> {
+export class FilterList<T extends Resource> extends PureComponent<Props<T>> {
   private collator: Intl.Collator
 
   public constructor(props) {

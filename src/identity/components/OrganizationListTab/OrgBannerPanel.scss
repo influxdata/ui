@@ -1,0 +1,27 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.account-settings-page-org-tab--upgrade-banner {
+  .account-settings-page-org-tab--upgrade-banner-text {
+    font-weight: 700;
+    font-size: $cf-text-base-0;
+    padding: $cf-space-3xs;
+  }
+
+  .account-settings-page-org-tab--quota-limit-link {
+    text-decoration: underline;
+    color: $cf-white;
+  }
+
+  .cf-banner-panel--icon {
+    display: flex;
+    width: $cf-space-m;
+  }
+
+  .cf-icon.Info_New:before {
+    font-size: $cf-space-s;
+  }
+
+  .cf-panel {
+    border-radius: 4px;
+  }
+}

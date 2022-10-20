@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {renderWithRedux} from 'src/mockState'
 
-import FilterList from 'src/shared/components/FilterList'
+import {FilterList} from 'src/shared/components/FilterList'
 
 const resources = {resources: {labels: {byID: {}, allIDs: []}}}
 

@@ -3,7 +3,7 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldSelector from 'src/dataExplorer/components/FieldSelector'

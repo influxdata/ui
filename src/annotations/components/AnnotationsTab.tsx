@@ -10,9 +10,9 @@ import {
   Grid,
   Sort,
 } from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
-import Filter from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import GetResources from 'src/resources/components/GetResources'
 
 import {AnnotationsList} from 'src/annotations/components/AnnotationsList'
@@ -28,7 +28,7 @@ import {SortTypes} from 'src/shared/utils/sort'
 // Thunks
 import {fetchAndSetAnnotationStreams} from 'src/annotations/actions/thunks'
 
-const FilterList = Filter<AnnotationStream>()
+const FilterList = FilterListContainer<AnnotationStream>()
 
 interface AnnotationsTabEmptyStateProps {
   searchTerm?: string

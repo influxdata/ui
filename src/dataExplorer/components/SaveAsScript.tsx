@@ -4,6 +4,7 @@ import {
   ComponentColor,
   ComponentStatus,
   Form,
+  IconFont,
   Input,
   InputLabel,
   InputType,
@@ -25,16 +26,18 @@ import {
 } from 'src/shared/copy/notifications/categories/scripts'
 import {getOrg} from 'src/organizations/selectors'
 import OpenScript from 'src/dataExplorer/components/OpenScript'
+import {DeleteScript} from 'src/dataExplorer/components/DeleteScript'
 
 interface Props {
   onClose: () => void
+  setOverlayType: (type: OverlayType) => void
   type: OverlayType | null
 }
 
-const SaveAsScript: FC<Props> = ({onClose, type}) => {
+const SaveAsScript: FC<Props> = ({onClose, setOverlayType, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {hasChanged, resource, setResource, clearCompositionSelection, save} =
+  const {hasChanged, resource, setResource, save} =
     useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
@@ -67,6 +70,10 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
     })
   }
 
+  const handleBackClick = () => {
+    setOverlayType(OverlayType.EDIT)
+  }
+
   const handleUpdateName = (event: ChangeEvent<HTMLInputElement>) => {
     setResource({
       ...resource,
@@ -80,14 +87,13 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
   const clear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
-    clearCompositionSelection()
     setResult(null)
 
     history.replace(`/orgs/${org.id}/data-explorer/from/script`)
     if (type !== OverlayType.OPEN) {
       onClose()
     }
-  }, [onClose, setStatus, setResult, cancel, history, org?.id])
+  }, [onClose, setStatus, setResult, cancel, history, org?.id, type])
 
   const handleSaveScript = () => {
     save()
@@ -108,6 +114,10 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
       })
   }
 
+  const handleDeleteScript = () => {
+    setOverlayType(OverlayType.DELETE)
+  }
+
   if (type == null) {
     return null
   }
@@ -120,6 +130,13 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
     } else {
       overlayTitle = 'Do you want to save your script first?'
     }
+  }
+  if (type === OverlayType.EDIT) {
+    overlayTitle = 'Edit Script Details'
+  }
+
+  if (type === OverlayType.DELETE) {
+    return <DeleteScript onBack={handleBackClick} onClose={onClose} />
   }
 
   if (!hasChanged && type === OverlayType.OPEN) {
@@ -140,6 +157,9 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
     } else {
       saveText = 'Yes, Save'
     }
+  }
+  if (type === OverlayType.EDIT) {
+    saveText = 'Update'
   }
 
   return (
@@ -170,6 +190,16 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
             value={resource?.data?.description}
             onChange={handleUpdateDescription}
           />
+          {type === OverlayType.EDIT && (
+            <Button
+              icon={IconFont.Trash_New}
+              className="edit-overlay__delete-script"
+              color={ComponentColor.Danger}
+              onClick={handleDeleteScript}
+              text="Delete Script"
+              testID="flux-query-builder--no-save"
+            />
+          )}
         </Form>
       </Overlay.Body>
       <Overlay.Footer>
@@ -178,7 +208,7 @@ const SaveAsScript: FC<Props> = ({onClose, type}) => {
           onClick={handleClose}
           text="Cancel"
         />
-        {type !== OverlayType.SAVE && (
+        {(type === OverlayType.NEW || type === OverlayType.OPEN) && (
           <Button
             color={ComponentColor.Default}
             onClick={clear}

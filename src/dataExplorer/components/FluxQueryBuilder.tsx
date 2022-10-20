@@ -38,6 +38,8 @@ import {RemoteDataState} from 'src/types'
 import './FluxQueryBuilder.scss'
 
 export enum OverlayType {
+  DELETE = 'delete',
+  EDIT = 'edit',
   NEW = 'new',
   OPEN = 'open',
   SAVE = 'save',
@@ -45,7 +47,8 @@ export enum OverlayType {
 
 const FluxQueryBuilder: FC = () => {
   const history = useHistory()
-  const {hasChanged, vertical, setVertical} = useContext(PersistanceContext)
+  const {hasChanged, resource, vertical, setVertical} =
+    useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
   const {cancel} = useContext(QueryContext)
@@ -93,6 +96,7 @@ const FluxQueryBuilder: FC = () => {
           <Overlay visible={overlayType !== null}>
             <SaveAsScript
               type={overlayType}
+              setOverlayType={setOverlayType}
               onClose={() => setOverlayType(null)}
             />
           </Overlay>
@@ -160,6 +164,15 @@ const FluxQueryBuilder: FC = () => {
                     text="Save"
                     testID="flux-query-builder--save-script"
                     icon={IconFont.SaveOutline}
+                  />
+                )}
+                {isFlagEnabled('saveAsScript') && resource?.data?.id && (
+                  <Button
+                    className="flux-query-builder__action-button"
+                    onClick={() => setOverlayType(OverlayType.EDIT)}
+                    status={ComponentStatus.Default}
+                    text="Edit"
+                    icon={IconFont.Pencil}
                   />
                 )}
               </div>

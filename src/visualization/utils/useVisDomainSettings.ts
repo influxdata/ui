@@ -5,7 +5,10 @@ import {NumericColumnData, fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // API
-import {runQuery, RunQueryResult} from 'src/shared/apis/query'
+import {
+  getCachedResultsOrRunQuery,
+  resetQueryCacheByQuery,
+} from 'src/shared/apis/queryCache'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -15,18 +18,16 @@ import {getAllVariablesForZoomRequery} from 'src/variables/selectors'
 // Utils
 import {useOneWayState} from 'src/shared/utils/useOneWayState'
 import {extent} from 'src/shared/utils/vis'
-import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
 import {
   getWindowPeriodFromVariables,
-  getWindowVarsFromVariables,
   normalizeWindowPeriodForZoomRequery,
-  normalizeWindowPeriodVariableForZoomRequery,
 } from 'src/variables/utils/getWindowVars'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, InternalFromFluxResult, TimeRange} from 'src/types'
+import {RunQueryResult} from 'src/shared/apis/query'
 import {RemoteDataState} from '@influxdata/clockface'
 
 /*
@@ -143,11 +144,12 @@ export const useVisYDomainSettings = (
 }
 
 interface ZoomRequeryArgs {
+  activeQueryIndex: number
   adaptiveZoomHide: boolean
   data: NumericColumnData | string[]
   parsedResult: InternalFromFluxResult
   preZoomResult: InternalFromFluxResult
-  query: string
+  queries: string[]
   setPreZoomResult: Function
   setRequeryStatus: Function
   setResult: Function
@@ -161,11 +163,12 @@ const isNotEqual = (firstValue: any, secondValue: any): boolean =>
 
 export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const {
+    activeQueryIndex,
     adaptiveZoomHide,
     data,
     parsedResult,
     preZoomResult,
-    query,
+    queries,
     setPreZoomResult,
     setRequeryStatus,
     setResult,
@@ -211,7 +214,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
     normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(query, variables),
+      getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
       timeRange,
       domain,
       data
@@ -220,7 +223,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
 
   useEffect(() => {
     const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(query, variables),
+      getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
       timeRange,
       domain,
       data
@@ -230,30 +233,33 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
       setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable =
-          normalizeWindowPeriodVariableForZoomRequery(
-            getWindowVarsFromVariables(query, variables),
-            updatedWindowPeriod
-          )
-
-        const extern = buildUsedVarsOption(
-          query,
-          variables,
-          zoomQueryWindowVariable
-        )
-
         setRequeryStatus(RemoteDataState.Loading)
-        runQuery(orgId, query, extern).promise.then(
-          (result: RunQueryResult) => {
-            if (result?.type === 'SUCCESS') {
-              setRequeryStatus(RemoteDataState.Done)
-              if (result?.csv?.trim().length > 0) {
-                setResult(fromFlux(result.csv))
+        Promise.all(
+          queries.map(query => {
+            resetQueryCacheByQuery(query, variables)
+            return getCachedResultsOrRunQuery(
+              orgId,
+              query,
+              variables,
+              isFlagEnabled('zoomRequery') && !adaptiveZoomHide,
+              updatedWindowPeriod
+            ).promise.then((result: RunQueryResult) => {
+              if (result.type === 'SUCCESS') {
+                return result.csv?.trim()
+              } else {
+                return ''
               }
-            } else {
-              setRequeryStatus(RemoteDataState.Error)
+            })
+          })
+        ).then(
+          pendingResults => {
+            const combinedResults = pendingResults.join('\n\n')
+            if (combinedResults.trim().length > 0) {
+              setResult(fromFlux(combinedResults))
             }
-          }
+            setRequeryStatus(RemoteDataState.Done)
+          },
+          () => setRequeryStatus(RemoteDataState.Error)
         )
       }
     }
@@ -317,11 +323,12 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
 
 export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   const {
+    activeQueryIndex,
     adaptiveZoomHide,
     data,
     parsedResult,
     preZoomResult,
-    query,
+    queries,
     setPreZoomResult,
     setRequeryStatus,
     setResult,
@@ -372,7 +379,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
     normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(query, variables),
+      getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
       timeRange,
       domain,
       data
@@ -381,7 +388,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
 
   useEffect(() => {
     const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(query, variables),
+      getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
       timeRange,
       domain,
       data
@@ -391,30 +398,33 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
       setWindowPeriod(updatedWindowPeriod)
 
       if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable =
-          normalizeWindowPeriodVariableForZoomRequery(
-            getWindowVarsFromVariables(query, variables),
-            updatedWindowPeriod
-          )
-
-        const extern = buildUsedVarsOption(
-          query,
-          variables,
-          zoomQueryWindowVariable
-        )
-
         setRequeryStatus(RemoteDataState.Loading)
-        runQuery(orgId, query, extern).promise.then(
-          (result: RunQueryResult) => {
-            if (result?.type === 'SUCCESS') {
-              setRequeryStatus(RemoteDataState.Done)
-              if (result?.csv?.trim().length > 0) {
-                setResult(fromFlux(result.csv))
+        Promise.all(
+          queries.map(query => {
+            resetQueryCacheByQuery(query, variables)
+            return getCachedResultsOrRunQuery(
+              orgId,
+              query,
+              variables,
+              isFlagEnabled('zoomRequery') && !adaptiveZoomHide,
+              updatedWindowPeriod
+            ).promise.then((result: RunQueryResult) => {
+              if (result.type === 'SUCCESS') {
+                return result.csv?.trim()
+              } else {
+                return ''
               }
-            } else {
-              setRequeryStatus(RemoteDataState.Error)
+            })
+          })
+        ).then(
+          pendingResults => {
+            const combinedResults = pendingResults.join('\n\n')
+            if (combinedResults.trim().length > 0) {
+              setResult(fromFlux(combinedResults))
             }
-          }
+            setRequeryStatus(RemoteDataState.Done)
+          },
+          () => setRequeryStatus(RemoteDataState.Error)
         )
       }
     }

@@ -125,15 +125,18 @@ const BandPlot: FC<Props> = ({
     [result.table, yColumn]
   )
 
-  const zoomQuery = useZoomQuery(properties)
+  const {activeQueryIndex, queries: zoomQueries} = useZoomQuery(
+    properties.queries
+  )
 
   const [xDomain, onSetXDomain, onResetXDomain] = useZoomRequeryXDomainSettings(
     {
+      activeQueryIndex,
       adaptiveZoomHide: properties.adaptiveZoomHide,
       data: resultState.table.getColumn(xColumn, 'number'),
       parsedResult: resultState,
       preZoomResult,
-      query: zoomQuery,
+      queries: zoomQueries,
       setPreZoomResult,
       setRequeryStatus,
       setResult: setResultState,
@@ -145,11 +148,12 @@ const BandPlot: FC<Props> = ({
 
   const [yDomain, onSetYDomain, onResetYDomain] = useZoomRequeryYDomainSettings(
     {
+      activeQueryIndex,
       adaptiveZoomHide: properties.adaptiveZoomHide,
       data: memoizedYColumnData,
       parsedResult: resultState,
       preZoomResult,
-      query: zoomQuery,
+      queries: zoomQueries,
       setPreZoomResult,
       setRequeryStatus,
       setResult: setResultState,

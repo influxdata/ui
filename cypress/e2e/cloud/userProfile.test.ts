@@ -28,6 +28,9 @@ export const singleOrg = [
     name: 'single org',
     isDefault: true,
     isActive: true,
+    provider: 'AWS',
+    regionCode: 'us-east-1',
+    regionName: 'US East (N. Virginia)',
   },
 ]
 
@@ -37,12 +40,18 @@ export const multipleOrgs = [
     name: 'org 1 of 2',
     isDefault: true,
     isActive: true,
+    provider: 'Azure',
+    regionCode: 'westeurope',
+    regionName: 'Amsterdam',
   },
   {
     id: '2',
     name: 'org 2 of 2',
     isDefault: false,
     isActive: false,
+    provider: 'AWS', // Azure, AWS, GCP
+    regionCode: 'us-east-1',
+    regionName: 'US East (N. Virginia)',
   },
 ]
 

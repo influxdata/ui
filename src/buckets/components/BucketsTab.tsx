@@ -13,9 +13,9 @@ import {
   Grid,
   Sort,
 } from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import BucketList from 'src/buckets/components/BucketList'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import BucketExplainer from 'src/buckets/components/BucketExplainer'
@@ -60,7 +60,7 @@ type Props = ReduxProps
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
 
-const FilterBuckets = FilterList<Bucket>()
+const FilterBuckets = FilterListContainer<Bucket>()
 
 @ErrorHandling
 class BucketsTab extends PureComponent<Props, State> {

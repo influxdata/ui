@@ -6,11 +6,11 @@ import {isEmpty} from 'lodash'
 
 // Components
 import {Button, EmptyState, Sort} from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import ScraperList from 'src/scrapers/components/ScraperList'
 import NoBucketsWarning from 'src/buckets/components/NoBucketsWarning'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 
 // Actions
@@ -44,7 +44,7 @@ interface State {
   sortType: SortTypes
 }
 
-const FilterScrapers = FilterList<Scraper>()
+const FilterScrapers = FilterListContainer<Scraper>()
 
 @ErrorHandling
 class Scrapers extends PureComponent<Props, State> {

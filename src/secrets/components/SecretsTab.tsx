@@ -11,10 +11,10 @@ import {
   IconFont,
   Sort,
 } from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import SecretsList from 'src/secrets/components/SecretsList'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import GetResources from 'src/resources/components/GetResources'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
@@ -38,7 +38,7 @@ const SecretsTab: FC = () => {
   const dispatch = useDispatch()
 
   const secrets = useSelector(getAllSecrets)
-  const FilterSecrets = FilterList<Secret>()
+  const FilterSecrets = FilterListContainer<Secret>()
 
   const handleFilterChange = (searchTerm: string) => {
     setSearchTerm(searchTerm)

@@ -51,6 +51,11 @@ export const AccountDropdown: FC<Props> = ({
       href: `/orgs/${activeOrg.id}/accounts/settings`,
     },
     {
+      name: 'Organizations',
+      iconFont: IconFont.Group,
+      href: `/orgs/{activeOrg.id}/accounts/orgslist`,
+    },
+    {
       name: 'Billing',
       iconFont: IconFont.Bill,
       href: `/orgs/${activeOrg.id}/billing`,

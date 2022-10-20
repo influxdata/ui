@@ -12,6 +12,12 @@ export const selectCurrentIdentity = (
   return state.identity.currentIdentity
 }
 
+export const selectCurrentAccountId = (
+  state: AppState
+): AppState['identity']['currentIdentity']['account']['id'] => {
+  return state.identity.currentIdentity.account.id
+}
+
 export const selectCurrentAccountType = (
   state: AppState
 ): AppState['identity']['currentIdentity']['account']['type'] => {
@@ -39,4 +45,16 @@ export const selectQuartzOrgs = (
   state: AppState
 ): AppState['identity']['quartzOrganizations'] => {
   return state.identity.quartzOrganizations
+}
+
+export const selectQuartzOrgsContents = (
+  state: AppState
+): AppState['identity']['quartzOrganizations']['orgs'] => {
+  return state.identity.quartzOrganizations.orgs
+}
+
+export const selectQuartzOrgsStatus = (
+  state: AppState
+): AppState['identity']['quartzOrganizations']['status'] => {
+  return state.identity.quartzOrganizations.status
 }

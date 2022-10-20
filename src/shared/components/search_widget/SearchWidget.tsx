@@ -28,7 +28,7 @@ interface State {
 }
 
 @ErrorHandling
-class SearchWidget extends Component<Props, State> {
+export class SearchWidget extends Component<Props, State> {
   public static defaultProps = {
     widthPixels: 440,
     placeholderText: 'Search...',
@@ -76,7 +76,7 @@ class SearchWidget extends Component<Props, State> {
           onChange={this.handleChange}
           onBlur={this.handleBlur}
           testID={testID}
-          className="search-widget-input"
+          className="search-widget-input "
           tabIndex={tabIndex}
           onClear={this.clear}
           autoFocus={autoFocus}
@@ -102,5 +102,3 @@ class SearchWidget extends Component<Props, State> {
     this.setState({searchTerm: ''}, this.handleSearch)
   }
 }
-
-export default SearchWidget

@@ -3,10 +3,10 @@ import {useDispatch, useSelector} from 'react-redux'
 import {DapperScrollbars} from '@influxdata/clockface'
 
 // Components
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import {FluxFunction} from 'src/types/shared'
 import Fn from 'src/shared/components/FilterList/InjectionOption'
-import FilterList from 'src/shared/components/FilterList/FilterList'
+import {FilterList} from 'src/shared/components/FilterList/FilterList'
 import FluxDocsTooltipContent from 'src/shared/components/functions/perFunction/FluxDocsTooltipContent'
 
 // Actions

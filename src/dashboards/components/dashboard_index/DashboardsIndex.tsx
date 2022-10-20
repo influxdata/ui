@@ -16,8 +16,8 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
-import FilterList from 'src/shared/components/FilterList'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {FilterListContainer} from 'src/shared/components/FilterList'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
@@ -51,7 +51,7 @@ interface State {
   searchTerm: string
 }
 
-const FilterDashboards = FilterList<Dashboard>()
+const FilterDashboards = FilterListContainer<Dashboard>()
 
 @ErrorHandling
 class DashboardIndex extends PureComponent<Props, State> {

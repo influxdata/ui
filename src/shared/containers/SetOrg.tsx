@@ -6,6 +6,7 @@ import {Route, Switch, useHistory, useParams} from 'react-router-dom'
 // Components
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 import PageSpinner from 'src/perf/components/PageSpinner'
+
 import {
   AlertHistoryIndex,
   AlertingIndex,
@@ -50,7 +51,12 @@ import {
   DetailsSubscriptionPage,
   GoWizard,
 } from 'src/shared/containers'
+import {OrganizationList} from 'src/cloud/containers'
+
 import {UserProfilePage} from 'src/identity/components/userprofile/UserProfilePage'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
@@ -287,6 +293,13 @@ const SetOrg: FC = () => {
             <Route
               path={`${orgPath}/accounts/settings`}
               component={UserAccountPage}
+            />
+          )}
+          {/* list of organizations in the user's current CLOUD account */}
+          {CLOUD && isFlagEnabled('createDeleteOrgs') && (
+            <Route
+              path={`${orgPath}/accounts/orglist`}
+              component={OrganizationList}
             />
           )}
           {/* Homepage / First Mile */}

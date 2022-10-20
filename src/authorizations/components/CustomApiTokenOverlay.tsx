@@ -25,7 +25,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import ResourceAccordion from 'src/authorizations/components/ResourceAccordion'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'

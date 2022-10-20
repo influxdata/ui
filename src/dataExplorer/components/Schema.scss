@@ -104,6 +104,28 @@
   text-overflow: ellipsis;
 }
 
+.field-selector--list-item--readonly,
+.tag-selector-value--list-item--readonly {
+  padding: $cf-space-2xs;
+  height: $cf-form-xs-height;
+  line-height: $cf-form-xs-height;
+  font-family: $cf-code-font;
+  font-weight: $cf-font-weight--regular;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  > code {
+    font-size: $cf-form-sm-font;
+    border-radius: $cf-radius-sm;
+    padding: 0 $cf-space-2xs;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: $cf-grey-85;
+  }
+}
+
 .field-selector--list-item--selectable,
 .tag-selector-value--list-item--selectable {
   padding: $cf-space-2xs;

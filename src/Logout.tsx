@@ -21,10 +21,16 @@ const Logout: FC = () => {
   const history = useHistory()
   const dispatch = useDispatch()
 
+  let universalLoginFlagValue = false
+  useEffect(() => {
+    universalLoginFlagValue = isFlagEnabled('universalLogin')
+  }, [])
+
   useEffect(() => {
     const handleSignOut = async () => {
       if (CLOUD) {
-        if (isFlagEnabled('universalLogin')) {
+        console.warn('universalLoginFlagValue: ', universalLoginFlagValue)
+        if (universalLoginFlagValue) {
           fetch('/api/env/quartz-login-url')
             .then(async response => {
               const quartzUrl = await response.text()

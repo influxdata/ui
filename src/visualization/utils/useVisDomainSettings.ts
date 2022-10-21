@@ -215,7 +215,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const [windowPeriod, setWindowPeriod] = useState<number>(
     normalizeWindowPeriodForZoomRequery(
       getWindowPeriodFromVariables(
-        activeQueryIndex >= 0 ? queries[activeQueryIndex] : '',
+        queries?.[activeQueryIndex] ?? '',
         variables
       ),
       timeRange,
@@ -390,7 +390,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   const [windowPeriod, setWindowPeriod] = useState<number>(
     normalizeWindowPeriodForZoomRequery(
       getWindowPeriodFromVariables(
-        activeQueryIndex >= 0 ? queries[activeQueryIndex] : '',
+        queries?.[activeQueryIndex] ?? '',
         variables
       ),
       timeRange,

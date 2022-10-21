@@ -113,7 +113,7 @@ export const fetchDefaultAccountDefaultOrg = async (): Promise<
 
     return defaultQuartzOrg
   }
-  throw new GenericError('cannot find user accounts')
+  throw new GenericError('no accounts found')
 }
 
 // fetch data regarding whether the user can create new orgs, and associated upgrade options.

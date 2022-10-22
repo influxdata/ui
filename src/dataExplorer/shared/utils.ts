@@ -21,7 +21,7 @@ export const SEARCH_STRING = (searchTerm: string): string =>
 export const getLanguage = () => {
   const urlSearchParams = new URLSearchParams(window.location.search)
   const urlParams = Object.fromEntries(urlSearchParams.entries())
-  return urlParams?.language ?? LanguageType.FLUX
+  return (urlParams?.language as LanguageType) ?? LanguageType.FLUX
 }
 
 export const useSessionStorage = (keyName: string, defaultValue: any) => {

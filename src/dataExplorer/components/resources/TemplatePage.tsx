@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState, useContext} from 'react'
 import {useSelector} from 'react-redux'
 import {Switch, Route, useHistory, useParams} from 'react-router-dom'
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, ResourceType} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
 
 import {RESOURCES} from 'src/dataExplorer/components/resources'
@@ -46,7 +46,12 @@ const Template: FC = () => {
     setLoading(RemoteDataState.Loading)
     clearCompositionSelection()
     setQuery(flux)
-    setResource(null)
+    setResource({
+      type: ResourceType.Scripts,
+      flux,
+      language,
+      data: {},
+    })
 
     RESOURCES[params[0]].init.apply(this, params.slice(1)).then(data => {
       setQuery(data.flux)

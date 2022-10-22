@@ -53,7 +53,6 @@ const FluxQueryBuilder: FC = () => {
   const {resource, hasChanged, vertical, setVertical, setHasChanged} =
     useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
-  // TODO(ariel): this might have to do with the way it was generated
   const [selectedLanguage, setSelectedLanguage] = useState(
     resource?.language ?? LanguageType.FLUX
   )

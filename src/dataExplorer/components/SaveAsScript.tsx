@@ -94,7 +94,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
 
     if (isFlagEnabled('uiSqlSupport')) {
       history.replace(
-        `/orgs/${org.id}/data-explorer/from/script?language=${selectedLanguage}`
+        `/orgs/${org.id}/data-explorer/from/script?language=${language}`
       )
     } else {
       history.replace(`/orgs/${org.id}/data-explorer/from/script`)

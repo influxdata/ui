@@ -41,8 +41,3 @@ export const RESOURCES: Resources = {}
     }
   })
 })
-
-export enum LanguageType {
-  FLUX = 'flux',
-  SQL = 'sql',
-}

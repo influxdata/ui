@@ -62,7 +62,7 @@ interface ContextType {
   setSelection: (val: RecursivePartial<CompositionSelection>) => void
   clearCompositionSelection: () => void
 
-  save: () => Promise<ResourceConnectedQuery<any>>
+  save: (language: LanguageType) => Promise<ResourceConnectedQuery<any>>
 }
 
 export const DEFAULT_SELECTION: CompositionSelection = {
@@ -80,15 +80,16 @@ export const DEFAULT_SELECTION: CompositionSelection = {
   } as ResultOptions,
 }
 
-export const DEFAULT_EDITOR_TEXT =
+export const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
+export const DEFAULT_SQL_EDITOR_TEXT = '/* Start by typing SQL here */'
 
 const DEFAULT_CONTEXT = {
   hasChanged: false,
   horizontal: [0.5],
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,
-  query: DEFAULT_EDITOR_TEXT,
+  query: DEFAULT_FLUX_EDITOR_TEXT,
   resource: null,
   selection: JSON.parse(JSON.stringify(DEFAULT_SELECTION)),
 
@@ -100,7 +101,7 @@ const DEFAULT_CONTEXT = {
   setResource: (_: any) => {},
   setSelection: (_: RecursivePartial<CompositionSelection>) => {},
   clearCompositionSelection: () => {},
-  save: () => Promise.resolve(null),
+  save: (_: LanguageType) => Promise.resolve(null),
 }
 
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
@@ -191,12 +192,13 @@ export const PersistanceProvider: FC = ({children}) => {
     ]
   )
 
-  const save = () => {
+  const save = (language: LanguageType = LanguageType.FLUX) => {
     if (!resource || !RESOURCES[resource.type]) {
       return Promise.resolve(null)
     }
 
     resource.flux = query
+    resource.language = language
 
     return RESOURCES[resource.type].persist(resource).then(data => {
       handleSetResource(data)

@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useCallback, useState, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -50,14 +50,8 @@ export enum OverlayType {
 
 const FluxQueryBuilder: FC = () => {
   const history = useHistory()
-  const {
-    resource,
-    setResource,
-    hasChanged,
-    vertical,
-    setVertical,
-    setHasChanged,
-  } = useContext(PersistanceContext)
+  const {resource, hasChanged, vertical, setVertical, setHasChanged} =
+    useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
   // TODO(ariel): this might have to do with the way it was generated
   const [selectedLanguage, setSelectedLanguage] = useState(
@@ -68,30 +62,32 @@ const FluxQueryBuilder: FC = () => {
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
 
-    history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+    if (isFlagEnabled('uiSqlSupport')) {
+      history.replace(
+        `/orgs/${org.id}/data-explorer/from/script?language=${selectedLanguage}`
+      )
+    } else {
+      history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+    }
 
     if (!isFlagEnabled('saveAsScript')) {
       setIsOverlayVisible(false)
     }
-  }
+  }, [cancel, org.id, history, setResult, setStatus, selectedLanguage])
 
   const handleSelectDropdown = (language: LanguageType) => {
-    if (language !== resource?.language) {
-      setResource({
-        ...resource,
-        language,
-      })
-      setHasChanged(true)
-    }
-    handleNewScript()
+    // set the language in the state until we can confirm the selection
+    setSelectedLanguage(language)
+    setHasChanged(true)
+    setOverlayType(OverlayType.NEW)
   }
 
-  const handleNewScript = () => {
+  const handleNewScript = useCallback(() => {
     if (isFlagEnabled('saveAsScript')) {
       if (hasChanged) {
         setOverlayType(OverlayType.NEW)
@@ -105,7 +101,7 @@ const FluxQueryBuilder: FC = () => {
         handleClear()
       }
     }
-  }
+  }, [handleClear, hasChanged])
 
   const handleUserpilot = () => {
     if (window.userpilot) {
@@ -119,6 +115,7 @@ const FluxQueryBuilder: FC = () => {
         {isFlagEnabled('saveAsScript') ? (
           <Overlay visible={overlayType !== null}>
             <SaveAsScript
+              language={selectedLanguage}
               type={overlayType}
               setOverlayType={setOverlayType}
               onClose={() => setOverlayType(null)}
@@ -168,6 +165,7 @@ const FluxQueryBuilder: FC = () => {
                       <Dropdown.Menu onCollapse={onCollapse}>
                         {[LanguageType.FLUX, LanguageType.SQL].map(option => (
                           <Dropdown.Item
+                            className={`script-dropdown__${option}`}
                             key={option}
                             onClick={() => handleSelectDropdown(option)}
                             selected={resource?.language === option}

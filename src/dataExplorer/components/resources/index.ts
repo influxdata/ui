@@ -2,8 +2,8 @@ import {ReactNode} from 'react'
 import {ResourceType} from 'src/types/resources'
 
 export enum LanguageType {
-  FLUX = 'Flux',
-  SQL = 'SQL',
+  FLUX = 'flux',
+  SQL = 'sql',
 }
 export interface ResourceConnectedQuery<T> {
   type: ResourceType

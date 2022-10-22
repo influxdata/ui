@@ -54,3 +54,10 @@
     border-bottom: 2px solid $cf-grey-15;
   }
 }
+
+.script-dropdown__flux {
+  text-transform: capitalize;
+}
+.script-dropdown__sql {
+  text-transform: uppercase;
+}

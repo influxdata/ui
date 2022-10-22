@@ -17,13 +17,14 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 const FLUX_SYNC_DISABLE_TEXT = `Schema Sync is no longer available because the \
 code block has been edited.`
 
 const SchemaBrowserHeading: FC = () => {
   const {fluxSync, toggleFluxSync} = useContext(FluxQueryBuilderContext)
-  const {selection} = useContext(PersistanceContext)
+  const {resource, selection} = useContext(PersistanceContext)
 
   // Disable means diverged, used to not allow turning on or off the toggle
   const disableToggle: boolean = selection.composition?.diverged
@@ -49,6 +50,10 @@ const SchemaBrowserHeading: FC = () => {
   )
 
   if (!isFlagEnabled('schemaComposition')) {
+    return null
+  }
+
+  if (resource?.language === LanguageType.SQL) {
     return null
   }
 

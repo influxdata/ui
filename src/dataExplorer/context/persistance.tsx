@@ -165,13 +165,18 @@ export const PersistanceProvider: FC = ({children}) => {
         // cannot re-sync if diverged
         return
       }
+      const composition: CompositionStatus = {
+        ...(selection.composition || {}),
+        ...(newSelection.composition || {}),
+      }
+      if (resource?.language === LanguageType.SQL) {
+        // cannot sync for sql support
+        composition.synced = false
+      }
       const nextState: CompositionSelection = {
         ...selection,
         ...newSelection,
-        composition: {
-          ...(selection.composition || {}),
-          ...(newSelection.composition || {}),
-        } as CompositionStatus,
+        composition,
         resultOptions: {
           ...(selection.resultOptions || {}),
           ...(newSelection.resultOptions || {}),
@@ -184,6 +189,7 @@ export const PersistanceProvider: FC = ({children}) => {
     },
     [
       hasChanged,
+      resource?.language,
       selection.composition,
       selection.resultOptions,
       selection.fields,

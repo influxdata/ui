@@ -58,7 +58,7 @@ export default function script(register) {
       })
     },
     persist: resource => {
-      const language = resource.language
+      const language = resource?.language
       const data = JSON.parse(JSON.stringify(resource.data))
       data.script = resource.flux
 

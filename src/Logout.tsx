@@ -21,12 +21,8 @@ const Logout: FC = () => {
   const history = useHistory()
   const dispatch = useDispatch()
 
-  let universalLoginFlagValue = false
   useEffect(() => {
-    universalLoginFlagValue = isFlagEnabled('universalLogin')
-  }, [])
-
-  useEffect(() => {
+    const universalLoginFlagValue = isFlagEnabled('universalLogin') ?? false
     const handleSignOut = async () => {
       if (CLOUD) {
         console.warn('universalLoginFlagValue: ', universalLoginFlagValue)

@@ -100,16 +100,16 @@ export const fetchDefaultAccountDefaultOrg = async (): Promise<
   if (response.status === 500) {
     throw new ServerError(response.data.message)
   }
-  const {data: accounts} = response
+  const accounts = response.data
 
   if (Array.isArray(accounts) && accounts.length) {
     // if no default Account, reference the 0-indexed account
     const defaultAccount =
-      accounts.find(account => account.isDefault) || accounts[0]
+      accounts.find(account => account.isDefault) ?? accounts[0]
     const quartzOrg = await fetchOrgsByAccountID(defaultAccount.id)
 
     const defaultQuartzOrg =
-      quartzOrg.find(org => org.isDefault) || quartzOrg[0]
+      quartzOrg.find(org => org.isDefault) ?? quartzOrg[0]
 
     return defaultQuartzOrg
   }

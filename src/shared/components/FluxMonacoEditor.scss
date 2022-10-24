@@ -1,9 +1,25 @@
 @import '~src/style/modules';
 
+.monaco-editor__language {
+  -webkit-user-select: none;
+  user-select: none;
+  position: absolute;
+  bottom: 0;
+  right: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: $cf-grey-35;
+  font-family: 'Proxima Nova';
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  height: 18px;
+  line-height: 14px;
+}
 // the specificity here is important to override the dynamic
 // base theme that monaco loads in at runtime
 .react-monaco-editor-container > .monaco-editor {
   -webkit-user-select: text;
+  user-select: text;
   font-family: $cf-code-font;
   font-weight: 500;
   font-size: 13px;

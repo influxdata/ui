@@ -9,7 +9,6 @@ import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // LSP
-import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
 import {setupForReactMonacoEditor} from 'src/languageSupport/languages/flux/lsp/monaco.flux.lsp'
 import {
@@ -31,9 +30,11 @@ import {editor as monacoEditor} from 'monaco-editor'
 
 import './FluxMonacoEditor.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 export interface EditorProps {
-  script: string
+  script?: string
+  language?: LanguageType
   onChangeScript: OnChangeScript
   onSubmitScript?: () => void
   autogrow?: boolean
@@ -51,6 +52,7 @@ interface Props extends EditorProps {
 }
 
 const FluxEditorMonaco: FC<Props> = ({
+  language = LanguageType.FLUX,
   script,
   onChangeScript,
   onSubmitScript,
@@ -66,10 +68,10 @@ const FluxEditorMonaco: FC<Props> = ({
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
   const {path} = useRouteMatch()
+  const isInFluxQueryBuilder =
+    isFluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
   const useSchemaComposition =
-    isFluxQueryBuilder &&
-    path === '/orgs/:orgID/data-explorer' &&
-    isFlagEnabled('schemaComposition')
+    isInFluxQueryBuilder && isFlagEnabled('schemaComposition')
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
@@ -142,7 +144,7 @@ const FluxEditorMonaco: FC<Props> = ({
       <ErrorBoundary>
         <div className={wrapperClassName} data-testid="flux-editor">
           <MonacoEditor
-            language={FLUXLANGID}
+            language={language}
             theme={THEME_NAME}
             value={script}
             onChange={onChange}
@@ -163,10 +165,13 @@ const FluxEditorMonaco: FC<Props> = ({
             }}
             editorDidMount={editorDidMount}
           />
+          {isFlagEnabled('uiSqlSupport') && isInFluxQueryBuilder && (
+            <div className="monaco-editor__language">{language}</div>
+          )}
         </div>
       </ErrorBoundary>
     ),
-    [onChangeScript, setEditor, useSchemaComposition, script]
+    [language, onChangeScript, setEditor, useSchemaComposition, script]
   )
 }
 

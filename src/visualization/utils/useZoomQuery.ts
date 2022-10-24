@@ -9,7 +9,7 @@ import {DashboardQuery} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {
-  DEFAULT_EDITOR_TEXT,
+  DEFAULT_FLUX_EDITOR_TEXT,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
 
@@ -48,7 +48,7 @@ export const useZoomQuery = (queries: DashboardQuery[] = []): ZoomQueries => {
   }
 
   // New Data Explorer
-  if (query.trim() !== DEFAULT_EDITOR_TEXT) {
+  if (query.trim() !== DEFAULT_FLUX_EDITOR_TEXT) {
     return {
       activeQueryIndex: 0,
       queries: [query],

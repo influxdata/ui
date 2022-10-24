@@ -5,7 +5,10 @@ import {NumericColumnData, fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // API
-import {runQuery, RunQueryResult} from 'src/shared/apis/query'
+import {
+  getCachedResultsOrRunQuery,
+  resetQueryCacheByQuery,
+} from 'src/shared/apis/queryCache'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -15,18 +18,16 @@ import {getAllVariablesForZoomRequery} from 'src/variables/selectors'
 // Utils
 import {useOneWayState} from 'src/shared/utils/useOneWayState'
 import {extent} from 'src/shared/utils/vis'
-import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
 import {
   getWindowPeriodFromVariables,
-  getWindowVarsFromVariables,
   normalizeWindowPeriodForZoomRequery,
-  normalizeWindowPeriodVariableForZoomRequery,
 } from 'src/variables/utils/getWindowVars'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, InternalFromFluxResult, TimeRange} from 'src/types'
+import {RunQueryResult} from 'src/shared/apis/query'
 import {RemoteDataState} from '@influxdata/clockface'
 
 /*
@@ -143,11 +144,12 @@ export const useVisYDomainSettings = (
 }
 
 interface ZoomRequeryArgs {
+  activeQueryIndex: number
   adaptiveZoomHide: boolean
   data: NumericColumnData | string[]
   parsedResult: InternalFromFluxResult
   preZoomResult: InternalFromFluxResult
-  query: string
+  queries: string[]
   setPreZoomResult: Function
   setRequeryStatus: Function
   setResult: Function
@@ -161,11 +163,12 @@ const isNotEqual = (firstValue: any, secondValue: any): boolean =>
 
 export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   const {
+    activeQueryIndex,
     adaptiveZoomHide,
     data,
     parsedResult,
     preZoomResult,
-    query,
+    queries,
     setPreZoomResult,
     setRequeryStatus,
     setResult,
@@ -211,7 +214,10 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
     normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(query, variables),
+      getWindowPeriodFromVariables(
+        queries?.[activeQueryIndex] ?? '',
+        variables
+      ),
       timeRange,
       domain,
       data
@@ -219,54 +225,62 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   )
 
   useEffect(() => {
-    const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(query, variables),
-      timeRange,
-      domain,
-      data
-    )
+    if (queries.length && activeQueryIndex >= 0) {
+      const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
+        getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
+        timeRange,
+        domain,
+        data
+      )
 
-    if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
-      setWindowPeriod(updatedWindowPeriod)
+      if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
+        setWindowPeriod(updatedWindowPeriod)
 
-      if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable =
-          normalizeWindowPeriodVariableForZoomRequery(
-            getWindowVarsFromVariables(query, variables),
-            updatedWindowPeriod
-          )
-
-        const extern = buildUsedVarsOption(
-          query,
-          variables,
-          zoomQueryWindowVariable
-        )
-
-        setRequeryStatus(RemoteDataState.Loading)
-        runQuery(orgId, query, extern).promise.then(
-          (result: RunQueryResult) => {
-            if (result?.type === 'SUCCESS') {
-              setRequeryStatus(RemoteDataState.Done)
-              if (result?.csv?.trim().length > 0) {
-                setResult(fromFlux(result.csv))
+        if (isNotEqual(preZoomDomain, domain)) {
+          setRequeryStatus(RemoteDataState.Loading)
+          Promise.all(
+            queries.map(query => {
+              resetQueryCacheByQuery(query, variables)
+              return getCachedResultsOrRunQuery(
+                orgId,
+                query,
+                variables,
+                isFlagEnabled('zoomRequery') && !adaptiveZoomHide,
+                updatedWindowPeriod
+              ).promise.then((result: RunQueryResult) => {
+                if (result.type === 'SUCCESS') {
+                  return result.csv ?? ''
+                } else {
+                  return ''
+                }
+              })
+            })
+          ).then(
+            pendingResults => {
+              const combinedResults = pendingResults.join('\n\n')
+              if (combinedResults.trim().length > 0) {
+                setResult(fromFlux(combinedResults))
               }
-            } else {
-              setRequeryStatus(RemoteDataState.Error)
-            }
-          }
-        )
+              setRequeryStatus(RemoteDataState.Done)
+            },
+            () => setRequeryStatus(RemoteDataState.Error)
+          )
+        }
       }
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // sync preZoomDomain and domain only when not zoomed in
-  //   - if they are different, or
-  //   - if it is the time axis and the time range has changed
+  // sync preZoomDomain and domain:
+  //   if it is the value axis (not time), or
+  //   if it is the time axis only when not zoomed in, and
+  //      - they are different, or
+  //      - the time range has changed
   useEffect(() => {
     if (
-      !preZoomResult &&
-      (isNotEqual(preZoomDomain, domain) ||
-        (timeRange && isNotEqual(timeRange, selectedTimeRange)))
+      !timeRange ||
+      (!preZoomResult &&
+        (isNotEqual(preZoomDomain, domain) ||
+          (timeRange && isNotEqual(timeRange, selectedTimeRange))))
     ) {
       setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)
@@ -280,7 +294,12 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   }, [timeRange, transmitWindowPeriod, windowPeriod])
 
   // Suppresses adaptive zoom feature; must come after all hooks
-  if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {
+  if (
+    !isFlagEnabled('zoomRequery') ||
+    adaptiveZoomHide ||
+    queries.length === 0 ||
+    activeQueryIndex < 0
+  ) {
     const setVisXDomain = (domain: NumericColumnData) => {
       setPreZoomDomain(domain)
       event('plot.zoom_in.xAxis', {zoomRequery: 'false'})
@@ -317,11 +336,12 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
 
 export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   const {
+    activeQueryIndex,
     adaptiveZoomHide,
     data,
     parsedResult,
     preZoomResult,
-    query,
+    queries,
     setPreZoomResult,
     setRequeryStatus,
     setResult,
@@ -372,7 +392,10 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
 
   const [windowPeriod, setWindowPeriod] = useState<number>(
     normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(query, variables),
+      getWindowPeriodFromVariables(
+        queries?.[activeQueryIndex] ?? '',
+        variables
+      ),
       timeRange,
       domain,
       data
@@ -380,54 +403,62 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   )
 
   useEffect(() => {
-    const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
-      getWindowPeriodFromVariables(query, variables),
-      timeRange,
-      domain,
-      data
-    )
+    if (queries.length && activeQueryIndex >= 0) {
+      const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
+        getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
+        timeRange,
+        domain,
+        data
+      )
 
-    if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
-      setWindowPeriod(updatedWindowPeriod)
+      if (isNotEqual(windowPeriod, updatedWindowPeriod)) {
+        setWindowPeriod(updatedWindowPeriod)
 
-      if (isNotEqual(preZoomDomain, domain)) {
-        const zoomQueryWindowVariable =
-          normalizeWindowPeriodVariableForZoomRequery(
-            getWindowVarsFromVariables(query, variables),
-            updatedWindowPeriod
-          )
-
-        const extern = buildUsedVarsOption(
-          query,
-          variables,
-          zoomQueryWindowVariable
-        )
-
-        setRequeryStatus(RemoteDataState.Loading)
-        runQuery(orgId, query, extern).promise.then(
-          (result: RunQueryResult) => {
-            if (result?.type === 'SUCCESS') {
-              setRequeryStatus(RemoteDataState.Done)
-              if (result?.csv?.trim().length > 0) {
-                setResult(fromFlux(result.csv))
+        if (isNotEqual(preZoomDomain, domain)) {
+          setRequeryStatus(RemoteDataState.Loading)
+          Promise.all(
+            queries.map(query => {
+              resetQueryCacheByQuery(query, variables)
+              return getCachedResultsOrRunQuery(
+                orgId,
+                query,
+                variables,
+                isFlagEnabled('zoomRequery') && !adaptiveZoomHide,
+                updatedWindowPeriod
+              ).promise.then((result: RunQueryResult) => {
+                if (result.type === 'SUCCESS') {
+                  return result.csv ?? ''
+                } else {
+                  return ''
+                }
+              })
+            })
+          ).then(
+            pendingResults => {
+              const combinedResults = pendingResults.join('\n\n')
+              if (combinedResults.trim().length > 0) {
+                setResult(fromFlux(combinedResults))
               }
-            } else {
-              setRequeryStatus(RemoteDataState.Error)
-            }
-          }
-        )
+              setRequeryStatus(RemoteDataState.Done)
+            },
+            () => setRequeryStatus(RemoteDataState.Error)
+          )
+        }
       }
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // sync preZoomDomain and domain only when not zoomed in
-  //   - if they are different, or
-  //   - if it is the time axis and the time range has changed
+  // sync preZoomDomain and domain:
+  //   if it is the value axis (not time), or
+  //   if it is the time axis only when not zoomed in, and
+  //      - they are different, or
+  //      - the time range has changed
   useEffect(() => {
     if (
-      !preZoomResult &&
-      (isNotEqual(preZoomDomain, domain) ||
-        (timeRange && isNotEqual(timeRange, selectedTimeRange)))
+      !timeRange ||
+      (!preZoomResult &&
+        (isNotEqual(preZoomDomain, domain) ||
+          (timeRange && isNotEqual(timeRange, selectedTimeRange))))
     ) {
       setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)
@@ -441,7 +472,12 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   }, [timeRange, transmitWindowPeriod, windowPeriod])
 
   // Suppresses adaptive zoom feature; must come after all hooks
-  if (!isFlagEnabled('zoomRequery') || adaptiveZoomHide) {
+  if (
+    !isFlagEnabled('zoomRequery') ||
+    adaptiveZoomHide ||
+    queries.length === 0 ||
+    activeQueryIndex < 0
+  ) {
     const setVisYDomain = (domain: NumericColumnData | string) => {
       setPreZoomDomain(domain)
       event('plot.zoom_in.yAxis', {zoomRequery: 'false'})

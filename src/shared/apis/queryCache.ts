@@ -5,7 +5,10 @@ import {sortBy} from 'lodash'
 import {asAssignment, getAllVariables} from 'src/variables/selectors'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {getWindowVarsFromVariables} from 'src/variables/utils/getWindowVars'
+import {
+  getWindowVarsFromVariables,
+  normalizeWindowPeriodVariableForZoomRequery,
+} from 'src/variables/utils/getWindowVars'
 
 // Types
 import {
@@ -210,7 +213,9 @@ const hasWindowVars = (variables: VariableAssignment[]): boolean =>
 export const getCachedResultsOrRunQuery = (
   orgID: string,
   query: string,
-  allVars: Variable[]
+  allVars: Variable[],
+  isAdaptiveZoom: boolean = false,
+  adaptiveWindowPeriod: number = 0
 ): CancelBox<RunQueryResult> => {
   const {queryID, variables, hashedVariables} = calculateHashedVariables(
     allVars,
@@ -236,7 +241,12 @@ export const getCachedResultsOrRunQuery = (
   let windowVars = []
 
   if (hasWindowVars(variableAssignments) === false) {
-    windowVars = getWindowVarsFromVariables(query, variables)
+    windowVars = isAdaptiveZoom
+      ? normalizeWindowPeriodVariableForZoomRequery(
+          getWindowVarsFromVariables(query, variables),
+          adaptiveWindowPeriod
+        )
+      : getWindowVarsFromVariables(query, variables)
   }
 
   // otherwise query & set results

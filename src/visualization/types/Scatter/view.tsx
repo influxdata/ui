@@ -70,15 +70,18 @@ const ScatterPlot: FunctionComponent<Props> = ({
   const tooltipColorize = properties.legendColorizeRows
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
 
-  const zoomQuery = useZoomQuery(properties)
+  const {activeQueryIndex, queries: zoomQueries} = useZoomQuery(
+    properties.queries
+  )
 
   const [xDomain, onSetXDomain, onResetXDomain] = useZoomRequeryXDomainSettings(
     {
+      activeQueryIndex,
       adaptiveZoomHide: properties.adaptiveZoomHide,
       data: resultState.table.getColumn(xColumn, 'number'),
       parsedResult: resultState,
       preZoomResult,
-      query: zoomQuery,
+      queries: zoomQueries,
       setPreZoomResult,
       setRequeryStatus,
       setResult: setResultState,
@@ -90,11 +93,12 @@ const ScatterPlot: FunctionComponent<Props> = ({
 
   const [yDomain, onSetYDomain, onResetYDomain] = useZoomRequeryYDomainSettings(
     {
+      activeQueryIndex,
       adaptiveZoomHide: properties.adaptiveZoomHide,
       data: resultState.table.getColumn(yColumn, 'number'),
       parsedResult: resultState,
       preZoomResult,
-      query: zoomQuery,
+      queries: zoomQueries,
       setPreZoomResult,
       setRequeryStatus,
       setResult: setResultState,

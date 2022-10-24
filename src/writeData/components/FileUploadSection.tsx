@@ -56,7 +56,10 @@ const FileUploadSection = () => {
         {items.map(item => {
           const goto = () => {
             event('Load data file upload clicked', {type: item.name})
-            history.push(
+            if (item.id === 'csv') {
+              return history.push(`/${ORGS}/${org.id}/new-user-setup/cli`)
+            }
+            return history.push(
               `/${ORGS}/${org.id}/load-data/${FILE_UPLOAD}/${item.id}`
             )
           }

@@ -30,9 +30,10 @@ const ClientLibrarySection = () => {
   const org = useSelector(getOrg)
 
   const onBoardingItems = {
-    python: 'python',
-    'javascript-node': 'nodejs',
+    arduino: 'arduino',
     go: 'golang',
+    'javascript-node': 'nodejs',
+    python: 'python',
   }
 
   if (!items.length) {

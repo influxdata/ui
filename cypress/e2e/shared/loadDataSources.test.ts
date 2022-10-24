@@ -12,10 +12,10 @@ describe('Load Data Sources', () => {
     )
   })
 
-  it('navigate to Client Library details view and render it with essentials', () => {
+  it('navigates to Client Library details view and renders details without a wizard', () => {
     cy.getByTestID('write-data--section client-libraries').within(() => {
       cy.getByTestID('square-grid').within(() => {
-        cy.getByTestIDSubStr('load-data-item').first().click()
+        cy.getByTestIDSubStr('load-data-item csharp').first().click()
       })
     })
 
@@ -27,7 +27,25 @@ describe('Load Data Sources', () => {
     logoElement.should('exist')
   })
 
-  it('navigate to Telegraf Plugin details view and render it with essentials', () => {
+  it('navigates to Client Library details view and renders a wizard', () => {
+    const libaryWithWizard = 'Arduino'
+    cy.getByTestID('write-data--section client-libraries').within(() => {
+      cy.getByTestID('square-grid').within(() => {
+        cy.getByTestIDSubStr(`load-data-item ${libaryWithWizard.toLowerCase()}`)
+          .first()
+          .click()
+      })
+    })
+
+    const contentNav = cy.getByTestID('subway-nav')
+    contentNav.should('exist')
+    contentNav.children().should('exist')
+
+    const titleElement = cy.get('.subway-navigation-title-text')
+    titleElement.contains(libaryWithWizard)
+  })
+
+  it('navigates to Telegraf Plugin details view and render it with essentials', () => {
     cy.getByTestID('write-data--section telegraf-plugins').within(() => {
       cy.getByTestID('square-grid').within(() => {
         cy.getByTestIDSubStr('load-data-item').first().click()
@@ -42,7 +60,7 @@ describe('Load Data Sources', () => {
     logoElement.should('exist')
   })
 
-  it('let you search things', () => {
+  it('lets you search things', () => {
     cy.getByTestID('write-data--search').type('diskio')
 
     cy.getByTestID('write-data--section telegraf-plugins').should('exist')

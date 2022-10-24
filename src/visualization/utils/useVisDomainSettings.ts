@@ -270,14 +270,17 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // sync preZoomDomain and domain only when not zoomed in
-  //   - if they are different, or
-  //   - if it is the time axis and the time range has changed
+  // sync preZoomDomain and domain:
+  //   if it is the value axis (not time)
+  //   only when not zoomed in
+  //     - if they are different, or
+  //     - if it is the time axis and the time range has changed
   useEffect(() => {
     if (
-      !preZoomResult &&
-      (isNotEqual(preZoomDomain, domain) ||
-        (timeRange && isNotEqual(timeRange, selectedTimeRange)))
+      !timeRange ||
+      (!preZoomResult &&
+        (isNotEqual(preZoomDomain, domain) ||
+          (timeRange && isNotEqual(timeRange, selectedTimeRange))))
     ) {
       setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)
@@ -445,14 +448,17 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
     }
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // sync preZoomDomain and domain only when not zoomed in
-  //   - if they are different, or
-  //   - if it is the time axis and the time range has changed
+  // sync preZoomDomain and domain:
+  //   if it is the value axis (not time)
+  //   only when not zoomed in
+  //     - if they are different, or
+  //     - if it is the time axis and the time range has changed
   useEffect(() => {
     if (
-      !preZoomResult &&
-      (isNotEqual(preZoomDomain, domain) ||
-        (timeRange && isNotEqual(timeRange, selectedTimeRange)))
+      !timeRange ||
+      (!preZoomResult &&
+        (isNotEqual(preZoomDomain, domain) ||
+          (timeRange && isNotEqual(timeRange, selectedTimeRange))))
     ) {
       setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)

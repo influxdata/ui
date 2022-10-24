@@ -271,10 +271,10 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // sync preZoomDomain and domain:
-  //   if it is the value axis (not time)
-  //   only when not zoomed in
-  //     - if they are different, or
-  //     - if it is the time axis and the time range has changed
+  //   if it is the value axis (not time), or
+  //   if it is the time axis only when not zoomed in, and
+  //      - they are different, or
+  //      - the time range has changed
   useEffect(() => {
     if (
       !timeRange ||
@@ -449,10 +449,10 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   }, [domain]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // sync preZoomDomain and domain:
-  //   if it is the value axis (not time)
-  //   only when not zoomed in
-  //     - if they are different, or
-  //     - if it is the time axis and the time range has changed
+  //   if it is the value axis (not time), or
+  //   if it is the time axis only when not zoomed in, and
+  //      - they are different, or
+  //      - the time range has changed
   useEffect(() => {
     if (
       !timeRange ||

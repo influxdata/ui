@@ -109,6 +109,7 @@ const ResultsPane: FC = () => {
     range,
     setRange,
     selection,
+    resource,
   } = useContext(PersistanceContext)
   const [csvDownloadCancelID, setCancelId] = useState(null)
 
@@ -197,6 +198,7 @@ const ResultsPane: FC = () => {
                 }
               >
                 <FluxMonacoEditor
+                  language={resource?.language}
                   variables={variables}
                   script={text}
                   onChangeScript={setQuery}

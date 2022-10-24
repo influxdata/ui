@@ -84,7 +84,7 @@ const FieldSelector: FC = () => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
-    if (resource?.data?.language === LanguageType.SQL) {
+    if (resource?.language === LanguageType.SQL) {
       // readOnly
       list = fieldsToShow.map(field => (
         <dd

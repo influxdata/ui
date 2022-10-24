@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 const path = require('path')
 
-const DEFAULT_EDITOR_TEXT =
+const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
 
 describe('Script Builder', () => {
@@ -71,7 +71,10 @@ describe('Script Builder', () => {
           cy.getByTestID('flux-query-builder--no-save').click({force: true})
         })
         cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
+          cy.get('textarea.inputarea').should(
+            'have.value',
+            DEFAULT_FLUX_EDITOR_TEXT
+          )
         })
       }
     })
@@ -606,7 +609,10 @@ describe('Script Builder', () => {
 
         cy.log('editor text is now empty')
         cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
+          cy.get('textarea.inputarea').should(
+            'have.value',
+            DEFAULT_FLUX_EDITOR_TEXT
+          )
         })
 
         cy.log('schema browser has been cleared')
@@ -618,7 +624,10 @@ describe('Script Builder', () => {
       it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {
         cy.log('start with empty editor text')
         cy.getByTestID('flux-editor', {timeout: 30000}).within(() => {
-          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
+          cy.get('textarea.inputarea').should(
+            'have.value',
+            DEFAULT_FLUX_EDITOR_TEXT
+          )
         })
 
         cy.log('turn off sync')
@@ -633,7 +642,10 @@ describe('Script Builder', () => {
         cy.log('editor text is still empty')
         cy.getByTestID('flux-editor').within(() => {
           // selecting bucket will empty the editor text
-          cy.get('textarea.inputarea').should('have.value', DEFAULT_EDITOR_TEXT)
+          cy.get('textarea.inputarea').should(
+            'have.value',
+            DEFAULT_FLUX_EDITOR_TEXT
+          )
         })
 
         cy.log('turn on sync')

@@ -1,9 +1,14 @@
 import {ReactNode} from 'react'
 import {ResourceType} from 'src/types/resources'
 
+export enum LanguageType {
+  FLUX = 'flux',
+  SQL = 'sql',
+}
 export interface ResourceConnectedQuery<T> {
   type: ResourceType
   flux: string
+  language: LanguageType
   data: T
 }
 
@@ -36,8 +41,3 @@ export const RESOURCES: Resources = {}
     }
   })
 })
-
-export enum LanguageType {
-  FLUX = 'flux',
-  SQL = 'sql',
-}

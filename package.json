@@ -52,7 +52,7 @@
     "cy": "CYPRESS_dexUrl=https://$INGRESS_HOST:$PORT_HTTPS CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_dexUrl=CLOUD CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_dexUrl=OSS CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "export SHA=a570a0fa2a9fea8698250f5436f6eccb89c9061c && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
+    "generate": "export SHA=b561645e05716036f071a43df0bf2a81ad32be90 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-local-cloud": "export REMOTE=../openapi/ && yarn generate-meta-cloud",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",

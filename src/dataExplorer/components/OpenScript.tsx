@@ -1,4 +1,4 @@
-import React, {FC, useState, useCallback, useEffect} from 'react'
+import React, {FC, useContext, useState, useCallback, useEffect} from 'react'
 import {
   Button,
   ComponentColor,
@@ -17,6 +17,8 @@ import {CLOUD} from 'src/shared/constants'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
+import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {QueryContext} from 'src/shared/contexts/query'
 
 let getScripts
 
@@ -33,6 +35,8 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   const [scripts, setScripts] = useState([])
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
+  const {setStatus, setResult} = useContext(ResultsContext)
+  const {cancel} = useContext(QueryContext)
   const [selectedScript, setSelectedScript] = useState<any>({})
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -59,6 +63,9 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   }, [getScripts])
 
   const handleOpenScript = () => {
+    setStatus(RemoteDataState.NotStarted)
+    setResult(null)
+    cancel()
     history.replace(
       `/orgs/${org.id}/data-explorer/from/script/${selectedScript.id}`
     )
@@ -67,7 +74,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
 
   useEffect(() => {
     handleGetScripts()
-  }, [])
+  }, [handleGetScripts])
 
   if (
     loading === RemoteDataState.NotStarted ||

@@ -10,7 +10,7 @@ import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {RecursivePartial} from 'src/types'
 import {
   DEFAULT_SELECTION,
-  DEFAULT_EDITOR_TEXT,
+  DEFAULT_FLUX_EDITOR_TEXT,
   CompositionSelection,
 } from 'src/dataExplorer/context/persistance'
 import {CompositionInitParams} from 'src/languageSupport/languages/flux/lsp/utils'
@@ -300,7 +300,7 @@ class LspConnectionManager {
                   * therefore, each addField returns an applyEdit for 1 field
               * solution:
                   * short term:
-                    * buffer of executeCommands, send to Lsp at a throttled pace (hack timeouts)  
+                    * buffer of executeCommands, send to Lsp at a throttled pace (hack timeouts)
                   * longterm: middleware? changes in Lsp?
     */
     const numFieldChanges =
@@ -380,7 +380,7 @@ class LspConnectionManager {
     if (schema.bucket && previousState.bucket != schema.bucket) {
       toAdd.bucket = schema.bucket
     }
-    if (toAdd.bucket && this._model.getValue() == DEFAULT_EDITOR_TEXT) {
+    if (toAdd.bucket && this._model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
       // first time selecting bucket --> remove if default message
       this._model.setValue('')
     }

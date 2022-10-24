@@ -27,14 +27,17 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import OpenScript from 'src/dataExplorer/components/OpenScript'
 import {DeleteScript} from 'src/dataExplorer/components/DeleteScript'
+import {LanguageType} from 'src/dataExplorer/components/resources'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
+  language: LanguageType
   onClose: () => void
   setOverlayType: (type: OverlayType) => void
   type: OverlayType | null
 }
 
-const SaveAsScript: FC<Props> = ({onClose, setOverlayType, type}) => {
+const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const {hasChanged, resource, setResource, save} =
@@ -89,14 +92,20 @@ const SaveAsScript: FC<Props> = ({onClose, setOverlayType, type}) => {
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
 
-    history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+    if (isFlagEnabled('uiSqlSupport')) {
+      history.replace(
+        `/orgs/${org.id}/data-explorer/from/script?language=${language}`
+      )
+    } else {
+      history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+    }
     if (type !== OverlayType.OPEN) {
       onClose()
     }
   }, [onClose, setStatus, setResult, cancel, history, org?.id, type])
 
   const handleSaveScript = () => {
-    save()
+    save(language)
       .then(() => {
         setError(null)
         dispatch(notify(scriptSaveSuccess(resource?.data?.name ?? '')))

@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useCallback, useState, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -6,10 +6,12 @@ import {useSelector} from 'react-redux'
 import {
   ComponentColor,
   DraggableResizer,
+  Dropdown,
   FlexBox,
   FlexDirection,
   Orientation,
   Button,
+  Icon,
   IconFont,
   AlignItems,
   JustifyContent,
@@ -24,6 +26,7 @@ import {
   PersistanceProvider,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 import ResultsPane from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
 import Schema from 'src/dataExplorer/components/Schema'
@@ -47,27 +50,43 @@ export enum OverlayType {
 
 const FluxQueryBuilder: FC = () => {
   const history = useHistory()
-  const {hasChanged, resource, vertical, setVertical} =
+  const {resource, hasChanged, vertical, setVertical, setHasChanged} =
     useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    resource?.language ?? LanguageType.FLUX
+  )
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
 
-    history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+    if (isFlagEnabled('uiSqlSupport')) {
+      history.replace(
+        `/orgs/${org.id}/data-explorer/from/script?language=${selectedLanguage}`
+      )
+    } else {
+      history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+    }
 
     if (!isFlagEnabled('saveAsScript')) {
       setIsOverlayVisible(false)
     }
+  }, [cancel, org.id, history, setResult, setStatus, selectedLanguage])
+
+  const handleSelectDropdown = (language: LanguageType) => {
+    // set the language in the state until we can confirm the selection
+    setSelectedLanguage(language)
+    setHasChanged(true)
+    setOverlayType(OverlayType.NEW)
   }
 
-  const handleNewScript = () => {
+  const handleNewScript = useCallback(() => {
     if (isFlagEnabled('saveAsScript')) {
       if (hasChanged) {
         setOverlayType(OverlayType.NEW)
@@ -81,7 +100,7 @@ const FluxQueryBuilder: FC = () => {
         handleClear()
       }
     }
-  }
+  }, [handleClear, hasChanged])
 
   const handleUserpilot = () => {
     if (window.userpilot) {
@@ -95,6 +114,7 @@ const FluxQueryBuilder: FC = () => {
         {isFlagEnabled('saveAsScript') ? (
           <Overlay visible={overlayType !== null}>
             <SaveAsScript
+              language={selectedLanguage}
               type={overlayType}
               setOverlayType={setOverlayType}
               onClose={() => setOverlayType(null)}
@@ -137,13 +157,43 @@ const FluxQueryBuilder: FC = () => {
               direction={FlexDirection.Row}
               justifyContent={JustifyContent.SpaceBetween}
             >
-              <div>
-                <Button
-                  onClick={handleNewScript}
-                  text={isFlagEnabled('saveAsScript') ? 'New Script' : 'Clear'}
-                  icon={IconFont.Plus_New}
-                  testID="flux-query-builder--new-script"
-                />
+              <div style={{display: 'flex'}}>
+                {isFlagEnabled('uiSqlSupport') ? (
+                  <Dropdown
+                    menu={onCollapse => (
+                      <Dropdown.Menu onCollapse={onCollapse}>
+                        {[LanguageType.FLUX, LanguageType.SQL].map(option => (
+                          <Dropdown.Item
+                            className={`script-dropdown__${option}`}
+                            key={option}
+                            onClick={() => handleSelectDropdown(option)}
+                            selected={resource?.language === option}
+                          >
+                            {option}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    )}
+                    button={(active, onClick) => (
+                      <Dropdown.Button active={active} onClick={onClick}>
+                        <>
+                          <Icon glyph={IconFont.Plus_New} />
+                          &nbsp;New Script
+                        </>
+                      </Dropdown.Button>
+                    )}
+                    testID="select-option-dropdown"
+                  />
+                ) : (
+                  <Button
+                    onClick={handleNewScript}
+                    text={
+                      isFlagEnabled('saveAsScript') ? 'New Script' : 'Clear'
+                    }
+                    icon={IconFont.Plus_New}
+                    testID="flux-query-builder--new-script"
+                  />
+                )}
                 {isFlagEnabled('saveAsScript') && (
                   <Button
                     className="flux-query-builder__action-button"

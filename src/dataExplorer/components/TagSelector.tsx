@@ -85,7 +85,7 @@ const TagValues: FC<TagValuesProps> = ({loading, tagKey, tagValues}) => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && valuesToShow.length) {
-    if (resource?.data?.language === LanguageType.SQL) {
+    if (resource?.language === LanguageType.SQL) {
       // readOnly
       list = valuesToShow.map(value => (
         <dd

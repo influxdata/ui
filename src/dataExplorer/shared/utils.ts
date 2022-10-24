@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 export const LOAD_MORE_LIMIT_INITIAL = 8
 export const LOAD_MORE_LIMIT = 25
@@ -16,6 +17,12 @@ export const FROM_BUCKET = (bucketName: string) =>
 
 export const SEARCH_STRING = (searchTerm: string): string =>
   `|> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
+
+export const getLanguage = () => {
+  const urlSearchParams = new URLSearchParams(window.location.search)
+  const urlParams = Object.fromEntries(urlSearchParams.entries())
+  return (urlParams?.language as LanguageType) ?? LanguageType.FLUX
+}
 
 export const useSessionStorage = (keyName: string, defaultValue: any) => {
   const [storedValue, setStoredValue] = useState(() => {

@@ -1,16 +1,18 @@
 import React, {FC, useEffect, useState, useContext} from 'react'
 import {useSelector} from 'react-redux'
 import {Switch, Route, useHistory, useParams} from 'react-router-dom'
-import {RemoteDataState} from 'src/types'
-
+import {RemoteDataState, ResourceType} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
 
 import {RESOURCES} from 'src/dataExplorer/components/resources'
 import {
   PersistanceContext,
   PersistanceProvider,
-  DEFAULT_EDITOR_TEXT,
+  DEFAULT_FLUX_EDITOR_TEXT,
+  DEFAULT_SQL_EDITOR_TEXT,
 } from 'src/dataExplorer/context/persistance'
+import {LanguageType} from 'src/dataExplorer/components/resources'
+import {getLanguage} from 'src/dataExplorer/shared/utils'
 
 const Template: FC = () => {
   const {setQuery, setHasChanged, setResource, clearCompositionSelection} =
@@ -34,10 +36,22 @@ const Template: FC = () => {
       return
     }
 
+    const language = getLanguage()
+    let flux = DEFAULT_FLUX_EDITOR_TEXT
+
+    if (language === LanguageType.SQL) {
+      flux = DEFAULT_SQL_EDITOR_TEXT
+    }
+
     setLoading(RemoteDataState.Loading)
     clearCompositionSelection()
-    setQuery(DEFAULT_EDITOR_TEXT)
-    setResource(null)
+    setQuery(flux)
+    setResource({
+      type: ResourceType.Scripts,
+      flux,
+      language,
+      data: {},
+    })
 
     RESOURCES[params[0]].init.apply(this, params.slice(1)).then(data => {
       setQuery(data.flux)

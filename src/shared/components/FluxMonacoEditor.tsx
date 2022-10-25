@@ -30,7 +30,7 @@ import {OnChangeScript} from 'src/types/flux'
 import {EditorType, Variable} from 'src/types'
 import {editor as monacoEditor} from 'monaco-editor'
 
-import './FluxMonacoEditor.scss'
+import './MonacoEditor.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 export interface EditorProps {
   script?: string
@@ -72,8 +72,8 @@ const FluxEditorMonaco: FC<Props> = ({
   const useSchemaComposition =
     isInFluxQueryBuilder && isFlagEnabled('schemaComposition')
 
-  const wrapperClassName = classnames('flux-editor--monaco', {
-    'flux-editor--monaco__autogrow': autogrow,
+  const wrapperClassName = classnames('qx-editor--monaco', {
+    'qx-editor--monaco__autogrow': autogrow,
   })
 
   useEffect(() => {

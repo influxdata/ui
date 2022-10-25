@@ -17,8 +17,7 @@ import {OnChangeScript} from 'src/types/flux'
 import {EditorType} from 'src/types'
 import {editor as monacoEditor} from 'monaco-editor'
 
-// DLW FIXME: need another styling
-import './FluxMonacoEditor.scss'
+import './MonacoEditor.scss'
 
 export interface Props {
   script?: string
@@ -40,8 +39,8 @@ const SqlEditorMonaco: FC<Props> = ({
   wrapLines,
 }) => {
   const [editor, setEditor] = useState(null)
-  const wrapperClassName = classnames('flux-editor--monaco', {
-    'flux-editor--monaco__autogrow': autogrow,
+  const wrapperClassName = classnames('qx-editor--monaco', {
+    'qx-editor--monaco__autogrow': autogrow,
   })
 
   useEffect(() => {

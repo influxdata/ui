@@ -88,7 +88,6 @@ export const fetchClusterList = async () => {
   return response.data
 }
 
-// fetch the default org for the default account
 export const fetchDefaultAccountDefaultOrg = async (): Promise<
   OrganizationSummaries[number]
 > => {
@@ -101,21 +100,20 @@ export const fetchDefaultAccountDefaultOrg = async (): Promise<
   if (response.status === 500) {
     throw new ServerError(response.data.message)
   }
-  const {data} = response
+  const accounts = response.data
 
-  if (Array.isArray(data) && data.length) {
-    const defaultAccount = data.find(account => account.isDefault)
+  if (Array.isArray(accounts) && accounts.length) {
+    // if no default Account, reference the 0-indexed account
+    const defaultAccount =
+      accounts.find(account => account.isDefault) ?? accounts[0]
+    const quartzOrg = await fetchOrgsByAccountID(defaultAccount.id)
 
-    // fetch default org
-    if (defaultAccount) {
-      const quartzOrg = await fetchOrgsByAccountID(defaultAccount.id)
-      const defaultQuartzOrg =
-        quartzOrg.find(org => org.isDefault) || quartzOrg[0]
+    const defaultQuartzOrg =
+      quartzOrg.find(org => org.isDefault) ?? quartzOrg[0]
 
-      return defaultQuartzOrg
-    }
-    throw new GenericError('No default account found')
+    return defaultQuartzOrg
   }
+  throw new GenericError('No accounts found')
 }
 
 // fetch data regarding whether the user can create new orgs, and associated upgrade options.

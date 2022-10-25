@@ -24,7 +24,7 @@ import {
   scriptSaveFail,
   scriptSaveSuccess,
 } from 'src/shared/copy/notifications/categories/scripts'
-import {getOrg} from 'src/organizations/selectors'
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import OpenScript from 'src/dataExplorer/components/OpenScript'
 import {DeleteScript} from 'src/dataExplorer/components/DeleteScript'
 import {LanguageType} from 'src/dataExplorer/components/resources'
@@ -42,6 +42,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
   const history = useHistory()
   const {hasChanged, resource, setResource, save} =
     useContext(PersistanceContext)
+  const isIoxOrg = useSelector(isOrgIOx)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const [error, setError] = useState<string>()
@@ -92,7 +93,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
 
-    if (isFlagEnabled('uiSqlSupport')) {
+    if (isFlagEnabled('uiSqlSupport') && isIoxOrg) {
       history.replace(
         `/orgs/${org.id}/data-explorer/from/script?language=${language}`
       )

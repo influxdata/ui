@@ -34,7 +34,7 @@ import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getOrg} from 'src/organizations/selectors'
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {RemoteDataState} from 'src/types'
 
 // Styles
@@ -56,6 +56,7 @@ const FluxQueryBuilder: FC = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(
     resource?.language ?? LanguageType.FLUX
   )
+  const isIoxOrg = useSelector(isOrgIOx)
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
@@ -66,7 +67,7 @@ const FluxQueryBuilder: FC = () => {
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
 
-    if (isFlagEnabled('uiSqlSupport')) {
+    if (isFlagEnabled('uiSqlSupport') && isIoxOrg) {
       history.replace(
         `/orgs/${org.id}/data-explorer/from/script?language=${selectedLanguage}`
       )
@@ -158,7 +159,7 @@ const FluxQueryBuilder: FC = () => {
               justifyContent={JustifyContent.SpaceBetween}
             >
               <div style={{display: 'flex'}}>
-                {isFlagEnabled('uiSqlSupport') ? (
+                {isFlagEnabled('uiSqlSupport') && isIoxOrg ? (
                   <Dropdown
                     menu={onCollapse => (
                       <Dropdown.Menu onCollapse={onCollapse}>

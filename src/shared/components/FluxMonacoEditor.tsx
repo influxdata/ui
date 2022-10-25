@@ -22,6 +22,7 @@ import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection
 import {EditorContext} from 'src/shared/contexts/editor'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {fluxQueryBuilder} from 'src/shared/selectors/app'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
@@ -67,6 +68,7 @@ const FluxEditorMonaco: FC<Props> = ({
   const {editor, setEditor} = useContext(EditorContext)
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
+  const isIoxOrg = useSelector(isOrgIOx)
   const {path} = useRouteMatch()
   const isInFluxQueryBuilder =
     isFluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
@@ -165,13 +167,22 @@ const FluxEditorMonaco: FC<Props> = ({
             }}
             editorDidMount={editorDidMount}
           />
-          {isFlagEnabled('uiSqlSupport') && isInFluxQueryBuilder && (
-            <div className="monaco-editor__language">{language}</div>
-          )}
+          {isFlagEnabled('uiSqlSupport') &&
+            isIoxOrg &&
+            isInFluxQueryBuilder && (
+              <div className="monaco-editor__language">{language}</div>
+            )}
         </div>
       </ErrorBoundary>
     ),
-    [language, onChangeScript, setEditor, useSchemaComposition, script]
+    [
+      isIoxOrg,
+      language,
+      onChangeScript,
+      setEditor,
+      useSchemaComposition,
+      script,
+    ]
   )
 }
 

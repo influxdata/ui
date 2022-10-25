@@ -13,7 +13,7 @@ import {getStore} from 'src/store/configureStore'
 import {history} from 'src/store/history'
 
 // Components
-import Setup from 'src/Setup'
+import {Setup} from 'src/Setup'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
 // Utilities

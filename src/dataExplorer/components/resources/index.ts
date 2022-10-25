@@ -1,6 +1,8 @@
 import {ReactNode} from 'react'
 import {ResourceType} from 'src/types/resources'
 
+export const SCRIPT_EDITOR_PARAMS = '?fluxScriptEditor'
+
 export enum LanguageType {
   FLUX = 'flux',
   SQL = 'sql',

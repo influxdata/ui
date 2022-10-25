@@ -29,6 +29,7 @@ import OpenScript from 'src/dataExplorer/components/OpenScript'
 import {DeleteScript} from 'src/dataExplorer/components/DeleteScript'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 interface Props {
   language: LanguageType
@@ -95,10 +96,12 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
 
     if (isFlagEnabled('uiSqlSupport') && isIoxOrg) {
       history.replace(
-        `/orgs/${org.id}/data-explorer/from/script?language=${language}`
+        `/orgs/${org.id}/data-explorer/from/script?language=${language}&${SCRIPT_EDITOR_PARAMS}`
       )
     } else {
-      history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+      history.replace(
+        `/orgs/${org.id}/data-explorer/from/script${SCRIPT_EDITOR_PARAMS}`
+      )
     }
     if (type !== OverlayType.OPEN) {
       onClose()

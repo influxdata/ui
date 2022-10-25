@@ -11,6 +11,7 @@ import {deleteScriptFail} from 'src/shared/copy/notifications/categories/scripts
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {RemoteDataState} from 'src/types'
 import {QueryContext} from 'src/shared/contexts/query'
+import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 let deleteScript
 
@@ -43,7 +44,9 @@ const DeleteScript: FC<Props> = ({onBack, onClose}) => {
         setStatus(RemoteDataState.NotStarted)
         setResult(null)
         cancel()
-        history.replace(`/orgs/${org.id}/data-explorer/from/script/`)
+        history.replace(
+          `/orgs/${org.id}/data-explorer/from/script${SCRIPT_EDITOR_PARAMS}`
+        )
         onClose()
       } catch (error) {
         dispatch(notify(deleteScriptFail(resource.data?.name)))

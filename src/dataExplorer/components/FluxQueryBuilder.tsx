@@ -36,6 +36,7 @@ import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {RemoteDataState} from 'src/types'
+import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 // Styles
 import './FluxQueryBuilder.scss'
@@ -69,10 +70,12 @@ const FluxQueryBuilder: FC = () => {
 
     if (isFlagEnabled('uiSqlSupport') && isIoxOrg) {
       history.replace(
-        `/orgs/${org.id}/data-explorer/from/script?language=${selectedLanguage}`
+        `/orgs/${org.id}/data-explorer/from/script?language=${selectedLanguage}&${SCRIPT_EDITOR_PARAMS}`
       )
     } else {
-      history.replace(`/orgs/${org.id}/data-explorer/from/script`)
+      history.replace(
+        `/orgs/${org.id}/data-explorer/from/script${SCRIPT_EDITOR_PARAMS}`
+      )
     }
 
     if (!isFlagEnabled('saveAsScript')) {
@@ -252,9 +255,14 @@ const FluxQueryBuilder: FC = () => {
             >
               <ResultsPane />
             </DraggableResizer.Panel>
-            <DraggableResizer.Panel isCollapsible={true}>
-              <Sidebar />
-            </DraggableResizer.Panel>
+            <>
+              {isFlagEnabled('uiSqlSupport') &&
+              resource?.language === LanguageType.SQL ? null : (
+                <DraggableResizer.Panel isCollapsible={true}>
+                  <Sidebar />
+                </DraggableResizer.Panel>
+              )}
+            </>
           </DraggableResizer>
         </FlexBox>
       </SidebarProvider>

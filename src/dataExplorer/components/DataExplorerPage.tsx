@@ -40,7 +40,7 @@ import {
   PersistanceProvider,
 } from 'src/dataExplorer/context/persistance'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
-const SCRIPT_EDITOR_PARAMS = '?fluxScriptEditor'
+import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 const DataExplorerPageHeader: FC = () => {
   const {fluxQueryBuilder, setFluxQueryBuilder} = useContext(AppSettingContext)

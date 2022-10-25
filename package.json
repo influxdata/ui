@@ -109,7 +109,7 @@
     "@types/webpack": "^4.4.35",
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^5.35.1",
-    "@typescript-eslint/parser": "^5.35.1",
+    "@typescript-eslint/parser": "^5.41.0",
     "babel-loader": "^8.2.5",
     "clean-webpack-plugin": "^3.0.0",
     "clipboardy": "^2.3.0",

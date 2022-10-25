@@ -71,4 +71,4 @@ function addTheme(monaco: MonacoType) {
 
 addTheme(monaco)
 
-export default THEME_NAME
+export {THEME_NAME}

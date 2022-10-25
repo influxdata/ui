@@ -7,8 +7,8 @@ import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // LSP
-import SQLLANGID from 'src/languageSupport/languages/sql/monaco.sql.syntax'
-import THEME_NAME from 'src/languageSupport/languages/sql/monaco.sql.theme'
+import {LANGID as SQLLANGID} from 'src/languageSupport/languages/sql/monaco.sql.syntax'
+import {THEME_NAME} from 'src/languageSupport/languages/sql/monaco.sql.theme'
 import {submit} from 'src/languageSupport/languages/sql/monaco.sql.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
 

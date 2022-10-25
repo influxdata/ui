@@ -20,4 +20,4 @@ function addSyntax() {
 
 addSyntax()
 
-export default LANGID
+export {LANGID}

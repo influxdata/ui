@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext, useEffect} from 'react'
-import {Switch, Route, Link} from 'react-router-dom'
+import {Switch, Route, Link, useHistory} from 'react-router-dom'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
@@ -40,13 +40,22 @@ import {
   PersistanceProvider,
 } from 'src/dataExplorer/context/persistance'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 const DataExplorerPageHeader: FC = () => {
   const {fluxQueryBuilder, setFluxQueryBuilder} = useContext(AppSettingContext)
   const {resource, setResource} = useContext(PersistanceContext)
+  const history = useHistory()
 
   const toggleSlider = () => {
     event('toggled new query builder', {active: `${!fluxQueryBuilder}`})
+    if (!fluxQueryBuilder) {
+      history.push({
+        search: SCRIPT_EDITOR_PARAMS,
+      })
+    } else {
+      history.push({search: null})
+    }
     setFluxQueryBuilder(!fluxQueryBuilder)
   }
 
@@ -109,6 +118,7 @@ const DataExplorerPage: FC = () => {
     useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
   const showNewExplorer = fluxQueryBuilder && isFlagEnabled('newDataExplorer')
+  const history = useHistory()
 
   const hideFlowsCTA = () => {
     setFlowsCTA({explorer: false})
@@ -119,10 +129,19 @@ const DataExplorerPage: FC = () => {
   }
 
   useEffect(() => {
+    if (fluxQueryBuilder) {
+      history.push({
+        search: SCRIPT_EDITOR_PARAMS,
+      })
+    } else {
+      history.push({
+        search: null,
+      })
+    }
     return () => {
       event('Exited Data Explorer')
     }
-  }, [])
+  }, [fluxQueryBuilder, history])
 
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>

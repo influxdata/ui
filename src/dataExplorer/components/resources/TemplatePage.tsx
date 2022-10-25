@@ -4,7 +4,10 @@ import {Switch, Route, useHistory, useParams} from 'react-router-dom'
 import {RemoteDataState, ResourceType} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
 
-import {RESOURCES} from 'src/dataExplorer/components/resources'
+import {
+  RESOURCES,
+  SCRIPT_EDITOR_PARAMS,
+} from 'src/dataExplorer/components/resources'
 import {
   PersistanceContext,
   PersistanceProvider,
@@ -56,7 +59,7 @@ const Template: FC = () => {
     RESOURCES[params[0]].init.apply(this, params.slice(1)).then(data => {
       setQuery(data.flux)
       setResource(data)
-      history.replace(`/orgs/${org.id}/data-explorer`)
+      history.replace(`/orgs/${org.id}/data-explorer${SCRIPT_EDITOR_PARAMS}`)
       setHasChanged(false)
     })
   }, [params])

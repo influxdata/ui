@@ -255,14 +255,12 @@ const FluxQueryBuilder: FC = () => {
             >
               <ResultsPane />
             </DraggableResizer.Panel>
-            <>
+            <DraggableResizer.Panel isCollapsible={true}>
               {isFlagEnabled('uiSqlSupport') &&
               resource?.language === LanguageType.SQL ? null : (
-                <DraggableResizer.Panel isCollapsible={true}>
-                  <Sidebar />
-                </DraggableResizer.Panel>
+                <Sidebar />
               )}
-            </>
+            </DraggableResizer.Panel>
           </DraggableResizer>
         </FlexBox>
       </SidebarProvider>

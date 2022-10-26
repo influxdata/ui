@@ -52,7 +52,7 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import SqlEditorMonaco from 'src/shared/components/SqlMonacoEditor'
+import {SqlEditorMonaco} from 'src/shared/components/SqlMonacoEditor'
 
 const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')

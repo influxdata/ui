@@ -111,4 +111,4 @@ const SqlEditorMonaco: FC<Props> = ({
   )
 }
 
-export default SqlEditorMonaco
+export {SqlEditorMonaco}

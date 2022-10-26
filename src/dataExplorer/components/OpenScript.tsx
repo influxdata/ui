@@ -6,7 +6,7 @@ import {
   ComponentStatus,
   IconFont,
   Input,
-  List,
+  Dropdown,
   TechnoSpinner,
   Overlay,
   EmptyState,
@@ -45,7 +45,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     try {
       if (getScripts) {
         setLoading(RemoteDataState.Loading)
-        const resp = await getScripts({})
+        const resp = await getScripts({query: {limit: 250}})
 
         if (resp.status !== 200) {
           throw new Error(resp.data.message)
@@ -101,20 +101,18 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     )
 
     let list = (
-      <List>
+      <>
         {filteredScripts.map(script => (
-          <List.Item
+          <Dropdown.Item
             key={script.id}
             value={script.name}
             onClick={() => setSelectedScript(script)}
             selected={script.name === selectedScript?.name}
-            title={script}
-            wrapText={true}
           >
             {script.name}
-          </List.Item>
+          </Dropdown.Item>
         ))}
-      </List>
+      </>
     )
     if (filteredScripts.length === 0 && searchTerm) {
       list = (
@@ -140,8 +138,11 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
             value={searchTerm}
             placeholder="Search Scripts"
             onChange={evt => setSearchTerm(evt.target.value)}
+            // TODO: we should totally throttle this as a network request
           />
-          <List>{list}</List>
+          <Dropdown.Menu className="open-script__menu-items" maxHeight={300}>
+            {list}
+          </Dropdown.Menu>
         </Overlay.Body>
         <Overlay.Footer>
           <Button

@@ -89,21 +89,6 @@ export const BucketProvider: FC<Props> = ({
     }
   }, [controller])
 
-  // keep the redux store in sync
-  useEffect(() => {
-    if (loading === RemoteDataState.Done) {
-      dispatch(
-        setBuckets(
-          RemoteDataState.Done,
-          normalize<Bucket, BucketEntities, string[]>(
-            buckets.filter(b => b.type !== 'sample'),
-            arrayOfBuckets
-          )
-        )
-      )
-    }
-  }, [buckets, dispatch, loading])
-
   // TODO: load bucket creation limits on org change
   // expose limits to frontend
 
@@ -145,7 +130,7 @@ export const BucketProvider: FC<Props> = ({
       {
         method: 'GET',
         headers,
-        signal: controller.current.signal,
+        signal: controller.current?.signal,
       }
     )
       .then(response => {
@@ -173,11 +158,24 @@ export const BucketProvider: FC<Props> = ({
         bucks.user.sort((a, b) =>
           `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
         )
+
+        const _buckets = [...bucks.user, ...bucks.system]
         updateCache({
           loading: RemoteDataState.Done,
           lastFetch: Date.now(),
-          buckets: [...bucks.user, ...bucks.system],
+          buckets: _buckets,
         })
+
+        // keep the redux store in sync
+        dispatch(
+          setBuckets(
+            RemoteDataState.Done,
+            normalize<Bucket, BucketEntities, string[]>(
+              _buckets.filter(b => b.type !== 'sample'),
+              arrayOfBuckets
+            )
+          )
+        )
       })
       .catch(error => {
         console.error({error})
@@ -194,6 +192,13 @@ export const BucketProvider: FC<Props> = ({
       fetchBuckets()
     } else if (loading === RemoteDataState.NotStarted) {
       fetchBuckets()
+    }
+
+    return () => {
+      // reset the lastFetch to trigger a fresh fetch on mount
+      updateCache({
+        lastFetch: 0,
+      })
     }
   }, [])
 
@@ -283,11 +288,14 @@ export const BucketProvider: FC<Props> = ({
     updateCache({
       buckets: [...bucks.user, ...bucks.system],
     })
+
+    refresh()
   }
 
   const refresh = () => {
     fetchBuckets()
   }
+
   const outBuckets = useMemo(
     () =>
       buckets

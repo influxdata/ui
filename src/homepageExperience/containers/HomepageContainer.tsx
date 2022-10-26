@@ -162,7 +162,7 @@ export const HomepageContainer: FC = () => {
                         onClick={logNodeJSWizardClick}
                       >
                         <div className="homepage-wizard-language-tile">
-                          <h5>JavaScript/Node.js</h5>
+                          <h5>JavaScript</h5>
                           {NodejsIcon}
                         </div>
                       </Link>

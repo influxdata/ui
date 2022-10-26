@@ -9,7 +9,7 @@ import executeFull from 'src/writeData/clients/Javascript/executeFull.example'
 export default register =>
   register({
     id: 'javascript-node',
-    name: 'JavaScript/Node.js',
+    name: 'JavaScript',
     description,
     logo,
     initialize,

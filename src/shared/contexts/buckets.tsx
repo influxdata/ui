@@ -196,9 +196,7 @@ export const BucketProvider: FC<Props> = ({
 
     return () => {
       // reset the lastFetch to trigger a fresh fetch on mount
-      updateCache({
-        lastFetch: 0,
-      })
+      window.localStorage.setItem('buckets', JSON.stringify({}))
     }
   }, [])
 

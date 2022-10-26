@@ -33,7 +33,7 @@ interface Props extends VisualizationProps {
   properties: HeatmapViewProperties
 }
 
-const HeatmapPlot: FunctionComponent<Props> = ({
+export const Heatmap: FunctionComponent<Props> = ({
   result,
   properties,
   timeRange,
@@ -141,5 +141,3 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 
   return <Plot config={config} />
 }
-
-export default HeatmapPlot

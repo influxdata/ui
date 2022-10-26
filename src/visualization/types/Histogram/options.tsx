@@ -26,7 +26,7 @@ interface Props extends VisualizationOptionProps {
   properties: HistogramViewProperties
 }
 
-const HistogramOptions: FC<Props> = ({properties, results, update}) => {
+export const HistogramOptions: FC<Props> = ({properties, results, update}) => {
   const availableGroupColumns = results.table.columnKeys.filter(
     name => !['_value', '_time', 'table'].includes(name)
   )
@@ -234,5 +234,3 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
     </Grid>
   )
 }
-
-export default HistogramOptions

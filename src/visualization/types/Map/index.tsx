@@ -1,18 +1,15 @@
-import icon from 'src/visualization/types/Map/icon'
-import properties from 'src/visualization/types/Map/properties'
-import view from 'src/visualization/types/Map/view'
-import {GeoOptions as options} from 'src/visualization/types/Map/GeoOptions'
 import {CLOUD} from 'src/shared/constants'
+import {GeoIcon} from 'src/visualization/types/Map/icon'
+import {GeoOptions} from 'src/visualization/types/Map/GeoOptions'
+import {GeoProperties} from 'src/visualization/types/Map/properties'
+import {Geo} from 'src/visualization/types/Map/view'
 
-export default register => {
-  register({
-    type: 'geo',
-    name: 'Map',
-    graphic: icon,
-    initial: properties,
-    component: view,
-    options,
-    // Maps are not supported on OSS
-    disabled: !CLOUD,
-  })
+export const view = {
+  type: 'geo',
+  name: 'Map',
+  graphic: GeoIcon,
+  initial: GeoProperties,
+  component: Geo,
+  options: GeoOptions,
+  disabled: !CLOUD, // Maps are not supported on OSS
 }

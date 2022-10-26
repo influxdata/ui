@@ -1,15 +1,13 @@
-import icon from './icon'
-import properties from './properties'
-import options from './options'
-import view from './view'
+import {HistogramIcon} from './icon'
+import {HistogramOptions} from './options'
+import {HistogramProperties} from './properties'
+import {Histogram} from './view'
 
-export default register => {
-  register({
-    type: 'histogram',
-    name: 'Histogram',
-    graphic: icon,
-    initial: properties,
-    component: view,
-    options,
-  })
+export const view = {
+  type: 'histogram',
+  name: 'Histogram',
+  graphic: HistogramIcon,
+  initial: HistogramProperties,
+  component: Histogram,
+  options: HistogramOptions,
 }

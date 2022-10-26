@@ -15,7 +15,7 @@ import {
   STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
 
-export default {
+export const BandProperties = {
   type: 'band',
   shape: 'chronograf-v2',
   geom: 'line',

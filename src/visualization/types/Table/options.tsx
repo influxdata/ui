@@ -47,7 +47,7 @@ interface Props extends VisualizationOptionProps {
   properties: TableViewProperties
 }
 
-export const TableViewOptions: FC<Props> = ({properties, results, update}) => {
+export const TableOptions: FC<Props> = ({properties, results, update}) => {
   const existing = (properties.fieldOptions || []).reduce((prev, curr) => {
     prev[curr.internalName] = curr
     return prev

@@ -15,7 +15,7 @@ import {
 
 import {Axis, Base, Color, LinePlusSingleStatProperties} from 'src/types'
 
-export default {
+export const SingleStatPlusLineProperties = {
   type: 'line-plus-single-stat',
   shape: 'chronograf-v2',
   xColumn: null,

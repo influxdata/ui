@@ -1,15 +1,13 @@
-import icon from './icon'
-import properties from './properties'
-import {TableViewOptions} from './options'
-import view from './view'
+import {TableIcon} from './icon'
+import {TableOptions} from './options'
+import {TableProperties} from './properties'
+import {Table} from './view'
 
-export default register => {
-  register({
-    type: 'table',
-    name: 'Table',
-    graphic: icon,
-    initial: properties,
-    component: view,
-    options: TableViewOptions,
-  })
+export const view = {
+  type: 'table',
+  name: 'Table',
+  graphic: TableIcon,
+  initial: TableProperties,
+  component: Table,
+  options: TableOptions,
 }

@@ -29,7 +29,7 @@ interface Props extends VisualizationProps {
   properties: HistogramViewProperties
 }
 
-const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
+export const Histogram: FunctionComponent<Props> = ({result, properties}) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const columnKeys = result.table.columnKeys
   const fillColumns = properties.fillColumns || result.fluxGroupKeyUnion
@@ -100,5 +100,3 @@ const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
 
   return <Plot config={config} />
 }
-
-export default HistogramPlot

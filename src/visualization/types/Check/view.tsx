@@ -33,7 +33,7 @@ interface Props extends VisualizationProps {
 const X_COLUMN = '_time'
 const Y_COLUMN = '_value'
 
-const CheckPlot: FC<Props> = ({properties, result}) => {
+export const Check: FC<Props> = ({properties, result}) => {
   const {statuses, thresholds, updateThresholds} = useContext(CheckContext)
   const {theme, timeZone} = useContext(AppSettingContext)
 
@@ -136,5 +136,3 @@ const CheckPlot: FC<Props> = ({properties, result}) => {
     </div>
   )
 }
-
-export default CheckPlot

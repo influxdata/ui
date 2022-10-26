@@ -1,6 +1,6 @@
 import React from 'react'
 
-const icon = (
+export const GraphIcon = (
   <div className="vis-graphic" data-testid="vis-graphic--xy">
     <svg
       width="100%"
@@ -39,5 +39,3 @@ const icon = (
     </svg>
   </div>
 )
-
-export default icon

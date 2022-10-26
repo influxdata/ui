@@ -5,7 +5,7 @@ import React, {FC, useContext} from 'react'
 import TimeSeries from 'src/shared/components/TimeSeries'
 import {View, SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {CheckContext} from 'src/checks/utils/context'
-import SimpleTable from 'src/visualization/types/SimpleTable/view'
+import {SimpleTable} from 'src/visualization/types/SimpleTable/view'
 import {SimpleTableViewProperties} from 'src/types'
 
 const CheckHistoryVisualization: FC = () => {

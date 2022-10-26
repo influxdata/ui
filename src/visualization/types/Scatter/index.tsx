@@ -1,15 +1,13 @@
-import icon from './icon'
-import properties from './properties'
-import options from './options'
-import view from './view'
+import {ScatterIcon} from './icon'
+import {ScatterOptions} from './options'
+import {ScatterProperties} from './properties'
+import {Scatter} from './view'
 
-export default register => {
-  register({
-    type: 'scatter',
-    name: 'Scatter',
-    graphic: icon,
-    initial: properties,
-    component: view,
-    options,
-  })
+export const view = {
+  type: 'scatter',
+  name: 'Scatter',
+  graphic: ScatterIcon,
+  initial: ScatterProperties,
+  component: Scatter,
+  options: ScatterOptions,
 }

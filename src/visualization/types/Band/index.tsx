@@ -1,15 +1,13 @@
-import icon from './icon'
-import properties from './properties'
-import options from './options'
-import view from './view'
+import {BandIcon} from './icon'
+import {BandOptions} from './options'
+import {BandProperties} from './properties'
+import {Band} from './view'
 
-export default register => {
-  register({
-    type: 'band',
-    name: 'Band',
-    graphic: icon,
-    initial: properties,
-    component: view,
-    options,
-  })
+export const view = {
+  type: 'band',
+  name: 'Band',
+  graphic: BandIcon,
+  initial: BandProperties,
+  component: Band,
+  options: BandOptions,
 }

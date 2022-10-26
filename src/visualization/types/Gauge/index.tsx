@@ -1,15 +1,13 @@
-import icon from './icon'
-import properties from './properties'
+import {GaugeIcon} from './icon'
 import {GaugeOptions} from './options'
-import view from './view'
+import {GaugeProperties} from './properties'
+import {Gauge} from './view'
 
-export default register => {
-  register({
-    type: 'gauge',
-    name: 'Gauge',
-    graphic: icon,
-    initial: properties,
-    component: view,
-    options: GaugeOptions,
-  })
+export const view = {
+  type: 'gauge',
+  name: 'Gauge',
+  graphic: GaugeIcon,
+  initial: GaugeProperties,
+  component: Gauge,
+  options: GaugeOptions,
 }

@@ -26,30 +26,37 @@ interface ClientLookup {
   [id: string]: ClientRegistration
 }
 
-export const CLIENT_DEFINITIONS: ClientLookup = {}
+import {Client as Arduino} from './clients/Arduino'
+import {Client as CSharp} from './clients/CSharp'
+import {Client as Dart} from './clients/Dart'
+import {Client as Go} from './clients/Go'
+import {Client as Java} from './clients/Java'
+import {Client as NodeJS} from './clients/Javascript'
+import {Client as Kotlin} from './clients/Kotlin'
+import {Client as PHP} from './clients/PHP'
+import {Client as Python} from './clients/Python'
+import {Client as R} from './clients/R'
+import {Client as Ruby} from './clients/Ruby'
+import {Client as Scala} from './clients/Scala'
+import {Client as Swift} from './clients/Swift'
+
+export const CLIENT_DEFINITIONS: ClientLookup = {
+  arduino: new Arduino(),
+  csharp: new CSharp(),
+  dart: new Dart(),
+  go: new Go(),
+  java: new Java(),
+  'javascript-node': new NodeJS(),
+  kotlin: new Kotlin(),
+  php: new PHP(),
+  python: new Python(),
+  r: new R(),
+  ruby: new Ruby(),
+  scala: new Scala(),
+  swift: new Swift(),
+}
+
 export const searchClients = (term: string): ClientRegistration[] =>
   Object.values(CLIENT_DEFINITIONS)
     .filter(item => item.name.toLowerCase().includes(term.toLowerCase()))
     .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-
-const context = require.context(
-  './clients',
-  true,
-  /^\.\/([^\/])+\/index\.(ts|tsx)$/
-)
-context.keys().forEach(key => {
-  const module = context(key)
-
-  module.default((definition: ClientRegistration) => {
-    if (CLIENT_DEFINITIONS.hasOwnProperty(definition.id)) {
-      // NOTE: this only happens at compile time, check your webpack confs
-      throw new Error(
-        `Client of type [${definition.id}] has already been registered`
-      )
-    }
-
-    CLIENT_DEFINITIONS[definition.id] = {
-      ...definition,
-    }
-  })
-})

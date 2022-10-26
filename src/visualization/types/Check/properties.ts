@@ -6,7 +6,7 @@ import {
 
 import {Axis, Base, Color, CheckViewProperties} from 'src/types'
 
-export default {
+export const CheckProperties = {
   type: 'check',
   shape: 'chronograf-v2',
   checkID: '',

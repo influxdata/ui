@@ -6,7 +6,7 @@ import {
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 } from 'src/visualization/constants'
 
-export default {
+export const HeatmapProperties = {
   queries: [],
   type: 'heatmap',
   shape: 'chronograf-v2',

@@ -70,7 +70,7 @@ const InnerView: FC<Props> = ({
   )
 }
 
-const View: FC<Props> = props => (
+export const View: FC<Props> = props => (
   <ErrorBoundary>
     {!props.hideTimer && (
       <ViewLoadingSpinner loading={props.loading || RemoteDataState.Done} />
@@ -78,5 +78,3 @@ const View: FC<Props> = props => (
     <InnerView {...props} />
   </ErrorBoundary>
 )
-
-export default View

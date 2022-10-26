@@ -27,7 +27,7 @@ type GeoCoordinates = {
   lon: number
 }
 
-const GeoPlot: FC<Props> = ({result, properties}) => {
+export const Geo: FC<Props> = ({result, properties}) => {
   const {
     layers,
     zoom,
@@ -198,5 +198,3 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
 
   return <Plot config={config} />
 }
-
-export default GeoPlot

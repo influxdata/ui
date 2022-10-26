@@ -32,7 +32,7 @@ interface Props extends VisualizationOptionProps {
   properties: MosaicViewProperties
 }
 
-const MosaicOptions: FC<Props> = props => {
+export const MosaicOptions: FC<Props> = props => {
   const {properties, results, update} = props
   let fillColumns = []
   const stringColumns = results.table.columnKeys.filter(k => {
@@ -259,5 +259,3 @@ const MosaicOptions: FC<Props> = props => {
     </Grid>
   )
 }
-
-export default MosaicOptions

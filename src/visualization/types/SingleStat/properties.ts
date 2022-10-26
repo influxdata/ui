@@ -5,7 +5,7 @@ import {
 import {DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/shared/constants/thresholds'
 import {Color, SingleStatViewProperties} from 'src/types'
 
-export default {
+export const SingleStatProperties = {
   type: 'single-stat',
   shape: 'chronograf-v2',
 

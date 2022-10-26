@@ -48,7 +48,7 @@ interface Props extends VisualizationOptionProps {
   properties: HeatmapViewProperties
 }
 
-const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
+export const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
   const [binInputStatus, setBinInputStatus] = useState(ComponentStatus.Default)
   const [binInput, setBinInput] = useState(properties.binSize)
 
@@ -264,5 +264,3 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
     </Grid>
   )
 }
-
-export default HeatmapOptions

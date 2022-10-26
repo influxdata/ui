@@ -14,7 +14,11 @@ export interface Props {
   filter?: string[]
 }
 
-const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType, filter = []}) => {
+export const ViewTypeDropdown: FC<Props> = ({
+  viewType,
+  onUpdateType,
+  filter = [],
+}) => {
   const items = Object.values(SUPPORTED_VISUALIZATIONS)
     .filter(def => !filter.includes(def.type))
     .filter(def => !def.disabled)
@@ -65,5 +69,3 @@ const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType, filter = []}) => {
     />
   )
 }
-
-export default ViewTypeDropdown

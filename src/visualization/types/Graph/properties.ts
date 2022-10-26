@@ -14,7 +14,7 @@ import {
   STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
 
-export default {
+export const GraphProperties = {
   type: 'xy',
   shape: 'chronograf-v2',
   geom: 'line',

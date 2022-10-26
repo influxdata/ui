@@ -12,7 +12,7 @@ interface Props extends VisualizationProps {
   result: FluxResult['parsed']
 }
 
-const SimpleTable: FC<Props> = ({properties, result}) => {
+export const SimpleTable: FC<Props> = ({properties, result}) => {
   const config: Config = {
     fromFluxResult: result,
     layers: [
@@ -24,5 +24,3 @@ const SimpleTable: FC<Props> = ({properties, result}) => {
   }
   return <Plot config={config} />
 }
-
-export default SimpleTable

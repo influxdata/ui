@@ -7,7 +7,7 @@ import THEME_NAME from 'src/languageSupport/languages/toml/monaco.toml.theme'
 import TOMLLANGID from 'src/languageSupport/languages/toml/monaco.toml.syntax'
 import {OnChangeScript, EditorType, CursorEvent, KeyboardEvent} from 'src/types'
 
-import './FluxMonacoEditor.scss'
+import './MonacoEditor.scss'
 
 interface Position {
   line: number

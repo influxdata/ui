@@ -7,3 +7,7 @@ export type CursorEvent = allMonaco.editor.ICursorPositionChangedEvent
 export type KeyboardEvent = allMonaco.IKeyboardEvent
 export type MonacoRange = allMonaco.Range
 export type MonacoSelectionRange = allMonaco.Selection
+export interface MonacoBasicLanguage {
+  conf: allMonaco.languages.LanguageConfiguration
+  language: allMonaco.languages.IMonarchLanguage
+}

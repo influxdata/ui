@@ -39,6 +39,7 @@ import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
 
 // Types
 import {TimeRange} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
@@ -51,6 +52,7 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {SqlEditorMonaco} from 'src/shared/components/SqlMonacoEditor'
 
 const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
@@ -197,13 +199,20 @@ const ResultsPane: FC = () => {
                   />
                 }
               >
-                <FluxMonacoEditor
-                  language={resource?.language}
-                  variables={variables}
-                  script={text}
-                  onChangeScript={setQuery}
-                  onSubmitScript={submit}
-                />
+                {resource?.language == LanguageType.SQL ? (
+                  <SqlEditorMonaco
+                    script={text}
+                    onChangeScript={setQuery}
+                    onSubmitScript={submit}
+                  />
+                ) : (
+                  <FluxMonacoEditor
+                    variables={variables}
+                    script={text}
+                    onChangeScript={setQuery}
+                    onSubmitScript={submit}
+                  />
+                )}
               </Suspense>
             </div>
           </div>

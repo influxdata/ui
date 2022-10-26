@@ -12,7 +12,7 @@ import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
 // Types
 import {EditorType} from 'src/types'
 
-import './FluxMonacoEditor.scss'
+import './MonacoEditor.scss'
 
 import {EditorProps} from 'src/shared/components/FluxMonacoEditor'
 

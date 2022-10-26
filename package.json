@@ -105,7 +105,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-virtualized": "^9.18.3",
     "@types/resize-observer-browser": "^0.1.5",
-    "@types/text-encoding": "^0.0.32",
+    "@types/text-encoding": "^0.0.36",
     "@types/webpack": "^4.4.35",
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^5.35.1",

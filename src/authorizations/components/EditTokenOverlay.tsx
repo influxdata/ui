@@ -61,7 +61,7 @@ const EditTokenOverlay: FC<Props> = props => {
     if (_.isEmpty(permissions)) {
       formatPermissions()
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatPermissions = async () => {
     const {

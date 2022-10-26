@@ -38,34 +38,34 @@ export interface Visualizations {
   [visualizationType: string]: Visualization
 }
 
-import {view as Band} from 'src/visualization/types/Band'
-import {view as Check} from 'src/visualization/types/Check'
-import {view as Gauge} from 'src/visualization/types/Gauge'
-import {view as Graph} from 'src/visualization/types/Graph'
-import {view as Heatmap} from 'src/visualization/types/Heatmap'
-import {view as Histogram} from 'src/visualization/types/Histogram'
-import {view as Map} from 'src/visualization/types/Map'
-import {view as Mosaic} from 'src/visualization/types/Mosaic'
-import {view as Scatter} from 'src/visualization/types/Scatter'
-import {view as SimpleTable} from 'src/visualization/types/SimpleTable'
-import {view as SingleStat} from 'src/visualization/types/SingleStat'
-import {view as SingleStatPlusLine} from 'src/visualization/types/SingleStatPlusLine'
-import {view as Table} from 'src/visualization/types/Table'
+import {View as Band} from 'src/visualization/types/Band'
+import {View as Check} from 'src/visualization/types/Check'
+import {View as Gauge} from 'src/visualization/types/Gauge'
+import {View as Graph} from 'src/visualization/types/Graph'
+import {View as Heatmap} from 'src/visualization/types/Heatmap'
+import {View as Histogram} from 'src/visualization/types/Histogram'
+import {View as Map} from 'src/visualization/types/Map'
+import {View as Mosaic} from 'src/visualization/types/Mosaic'
+import {View as Scatter} from 'src/visualization/types/Scatter'
+import {View as SimpleTable} from 'src/visualization/types/SimpleTable'
+import {View as SingleStat} from 'src/visualization/types/SingleStat'
+import {View as SingleStatPlusLine} from 'src/visualization/types/SingleStatPlusLine'
+import {View as Table} from 'src/visualization/types/Table'
 
 export const SUPPORTED_VISUALIZATIONS: Visualizations = {
-  band: Band,
-  check: Check,
-  gauge: Gauge,
-  geo: Map,
-  heatmap: Heatmap,
-  histogram: Histogram,
-  'line-plus-single-stat': SingleStatPlusLine,
-  mosaic: Mosaic,
-  scatter: Scatter,
-  'simple-table': SimpleTable,
-  'single-stat': SingleStat,
-  table: Table,
-  xy: Graph,
+  band: new Band(),
+  check: new Check(),
+  gauge: new Gauge(),
+  geo: new Map(),
+  heatmap: new Heatmap(),
+  histogram: new Histogram(),
+  'line-plus-single-stat': new SingleStatPlusLine(),
+  mosaic: new Mosaic(),
+  scatter: new Scatter(),
+  'simple-table': new SimpleTable(),
+  'single-stat': new SingleStat(),
+  table: new Table(),
+  xy: new Graph(),
 }
 
 export {View} from 'src/visualization/components/View'

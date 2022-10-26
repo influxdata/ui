@@ -28,7 +28,7 @@ import {isOnboardingURL} from 'src/onboarding/utils'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import { CLOUD } from './shared/constants'
+import {CLOUD} from 'src/shared/constants'
 
 interface State {
   loading: RemoteDataState

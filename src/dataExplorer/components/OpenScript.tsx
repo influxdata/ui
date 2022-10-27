@@ -19,6 +19,7 @@ import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {QueryContext} from 'src/shared/contexts/query'
+import {debouncer} from 'src/dataExplorer/shared/utils'
 
 let getScripts
 
@@ -41,11 +42,11 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
 
-  const handleGetScripts = useCallback(async () => {
+  const handleGetScripts = useCallback(async (name: string = '') => {
     try {
       if (getScripts) {
         setLoading(RemoteDataState.Loading)
-        const resp = await getScripts({query: {limit: 250}})
+        const resp = await getScripts({query: {limit: 250, name}})
 
         if (resp.status !== 200) {
           throw new Error(resp.data.message)
@@ -60,7 +61,17 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
       setLoading(RemoteDataState.Error)
       console.error({error})
     }
-  }, [getScripts])
+  }, [])
+
+  const handleSearchTerm = useCallback(
+    (name: string) => {
+      setSearchTerm(name)
+      debouncer(() => {
+        handleGetScripts(name)
+      })
+    },
+    [handleGetScripts]
+  )
 
   const handleOpenScript = () => {
     setStatus(RemoteDataState.NotStarted)
@@ -96,13 +107,9 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   }
 
   if (loading === RemoteDataState.Done) {
-    const filteredScripts = scripts.filter(script =>
-      script.name.includes(searchTerm)
-    )
-
     let list = (
       <>
-        {filteredScripts.map(script => (
+        {scripts.map(script => (
           <Dropdown.Item
             key={script.id}
             value={script.name}
@@ -114,13 +121,13 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
         ))}
       </>
     )
-    if (filteredScripts.length === 0 && searchTerm) {
+    if (scripts.length === 0 && searchTerm) {
       list = (
         <EmptyState className="data-source--list__no-results">
           <p>{`No Scripts match "${searchTerm}"`}</p>
         </EmptyState>
       )
-    } else if (filteredScripts.length === 0 && !searchTerm) {
+    } else if (scripts.length === 0 && !searchTerm) {
       list = (
         <EmptyState className="data-source--list__no-results">
           <p>No Scripts found</p>
@@ -137,8 +144,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
             size={ComponentSize.Medium}
             value={searchTerm}
             placeholder="Search Scripts"
-            onChange={evt => setSearchTerm(evt.target.value)}
-            // TODO: we should totally throttle this as a network request
+            onChange={evt => handleSearchTerm(evt.target.value)}
           />
           <Dropdown.Menu className="open-script__menu-items" maxHeight={300}>
             {list}

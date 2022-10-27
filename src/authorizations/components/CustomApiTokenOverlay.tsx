@@ -89,10 +89,14 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   useEffect(() => {
     getBuckets()
     getTelegrafs()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [getBuckets, getTelegrafs])
 
   useEffect(() => {
-    if (!isEmpty(bucketPermissions.sublevelPermissions)) {
+    if (
+      remoteDataState === RemoteDataState.Done &&
+      !isEmpty(bucketPermissions.sublevelPermissions) &&
+      isEmpty(permissions)
+    ) {
       const perms = {
         otherResources: {read: false, write: false},
       }
@@ -111,11 +115,13 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         })
       setPermissions(perms)
     }
-    // Each time remoteDataState changes, the useEffect hook will be called.
-    // BUT, code inside the hook won't run until remoteDataState is 'Done'.
-    // Only then will props.bucketPermissions.sublevelPermissions will have value.
-    // Consequently, we update the permissions state.
-  }, [remoteDataState]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [
+    allResources,
+    bucketPermissions,
+    permissions,
+    remoteDataState,
+    telegrafPermissions,
+  ])
 
   const handleDismiss = () => {
     onClose()

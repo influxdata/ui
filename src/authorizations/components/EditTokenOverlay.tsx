@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
@@ -57,13 +57,7 @@ const EditTokenOverlay: FC<Props> = props => {
   const [permissions, setPermissions] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
 
-  useEffect(() => {
-    if (_.isEmpty(permissions)) {
-      formatPermissions()
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const formatPermissions = async () => {
+  const formatPermissions = useCallback(async () => {
     const {
       auth: {permissions},
     } = props
@@ -99,7 +93,13 @@ const EditTokenOverlay: FC<Props> = props => {
     }
 
     setPermissions(newPerms)
-  }
+  }, [props])
+
+  useEffect(() => {
+    if (_.isEmpty(permissions)) {
+      formatPermissions()
+    }
+  }, [permissions, formatPermissions])
 
   const handleInputChange = event => {
     setDescription(event.target.value)

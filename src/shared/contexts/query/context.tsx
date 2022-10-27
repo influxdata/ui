@@ -11,6 +11,7 @@ import {FluxResult} from 'src/types/flows'
 import {
   simplify,
   updateWindowPeriod,
+  sqlAsFlux,
 } from 'src/shared/contexts/query/preprocessing'
 import {trimPartialLines} from 'src/shared/contexts/query/postprocessing'
 
@@ -27,23 +28,26 @@ import {notify} from 'src/shared/actions/notifications'
 import {resultTooLarge} from 'src/shared/copy/notifications'
 
 // Types
-import {CancellationError} from 'src/types'
+import {CancellationError, OwnBucket} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 import {event} from 'src/cloud/utils/reporting'
 import {PROJECT_NAME} from 'src/flows'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 interface CancelMap {
   [key: string]: () => void
 }
 
 export enum OverrideMechanism {
-  Inline,
-  AST,
-  JSON,
+  Inline = 'inject-variables-into-script',
+  Extern = 'AST',
+  Params = 'JSON', // TODO: code is incorrect & will need debugging
 }
 
 export interface QueryOptions {
   overrideMechanism?: OverrideMechanism
+  language?: LanguageType
+  bucket?: OwnBucket
   rawBlob?: boolean
 }
 
@@ -93,11 +97,15 @@ const buildQueryRequest = (
   override: QueryScope,
   options?: QueryOptions
 ) => {
-  const mechanism = options?.overrideMechanism ?? OverrideMechanism.AST
-  const query =
-    mechanism === OverrideMechanism.Inline
-      ? simplify(text, override?.vars ?? {}, override?.params ?? {})
-      : text
+  const mechanism = options?.overrideMechanism ?? OverrideMechanism.Extern
+  const language = options?.language ?? LanguageType.FLUX
+
+  let query = text
+  if (language == LanguageType.SQL) {
+    query = sqlAsFlux(text, options?.bucket)
+  } else if (mechanism === OverrideMechanism.Inline) {
+    query = simplify(text, override?.vars ?? {}, override?.params ?? {})
+  }
 
   const orgID = override?.org || org.id
 
@@ -119,13 +127,13 @@ const buildQueryRequest = (
     dialect: {annotations: ['group', 'datatype', 'default']},
   }
 
-  if (mechanism === OverrideMechanism.AST) {
+  if (mechanism === OverrideMechanism.Extern) {
     const options = updateWindowPeriod(query, override, 'ast')
     if (options && Object.keys(options).length) {
       body.extern = options
     }
   }
-  if (mechanism === OverrideMechanism.JSON) {
+  if (mechanism === OverrideMechanism.Params) {
     const options = updateWindowPeriod(query, override, 'json')
     if (options && Object.keys(options).length) {
       body.options = options

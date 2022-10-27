@@ -9,6 +9,7 @@ import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // LSP
+import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
 import {setupForReactMonacoEditor} from 'src/languageSupport/languages/flux/lsp/monaco.flux.lsp'
 import {
@@ -29,13 +30,10 @@ import {OnChangeScript} from 'src/types/flux'
 import {EditorType, Variable} from 'src/types'
 import {editor as monacoEditor} from 'monaco-editor'
 
-import './FluxMonacoEditor.scss'
+import './MonacoEditor.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {LanguageType} from 'src/dataExplorer/components/resources'
-
 export interface EditorProps {
   script?: string
-  language?: LanguageType
   onChangeScript: OnChangeScript
   onSubmitScript?: () => void
   autogrow?: boolean
@@ -53,7 +51,6 @@ interface Props extends EditorProps {
 }
 
 const FluxEditorMonaco: FC<Props> = ({
-  language = LanguageType.FLUX,
   script,
   onChangeScript,
   onSubmitScript,
@@ -75,8 +72,8 @@ const FluxEditorMonaco: FC<Props> = ({
   const useSchemaComposition =
     isInFluxQueryBuilder && isFlagEnabled('schemaComposition')
 
-  const wrapperClassName = classnames('flux-editor--monaco', {
-    'flux-editor--monaco__autogrow': autogrow,
+  const wrapperClassName = classnames('qx-editor--monaco', {
+    'qx-editor--monaco__autogrow': autogrow,
   })
 
   useEffect(() => {
@@ -146,7 +143,7 @@ const FluxEditorMonaco: FC<Props> = ({
       <ErrorBoundary>
         <div className={wrapperClassName} data-testid="flux-editor">
           <MonacoEditor
-            language={language}
+            language={FLUXLANGID}
             theme={THEME_NAME}
             value={script}
             onChange={onChange}
@@ -170,19 +167,12 @@ const FluxEditorMonaco: FC<Props> = ({
           {isFlagEnabled('uiSqlSupport') &&
             isIoxOrg &&
             isInFluxQueryBuilder && (
-              <div className="monaco-editor__language">{language}</div>
+              <div className="monaco-editor__language">{FLUXLANGID}</div>
             )}
         </div>
       </ErrorBoundary>
     ),
-    [
-      isIoxOrg,
-      language,
-      onChangeScript,
-      setEditor,
-      useSchemaComposition,
-      script,
-    ]
+    [isIoxOrg, onChangeScript, setEditor, useSchemaComposition, script]
   )
 }
 

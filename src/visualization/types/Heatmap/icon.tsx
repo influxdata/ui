@@ -1,6 +1,6 @@
 import React from 'react'
 
-const icon = (
+export const HeatmapIcon = (
   <div className="vis-graphic" data-testid="vis-graphic--heatmap">
     <svg
       width="100%"
@@ -237,5 +237,3 @@ const icon = (
     </svg>
   </div>
 )
-
-export default icon

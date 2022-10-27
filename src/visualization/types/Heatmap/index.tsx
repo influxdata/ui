@@ -1,15 +1,14 @@
-import icon from './icon'
-import properties from './properties'
-import options from './options'
-import view from './view'
+import {Visualization} from 'src/visualization'
+import {HeatmapIcon} from './icon'
+import {HeatmapOptions} from './options'
+import {HeatmapProperties} from './properties'
+import {Heatmap} from './view'
 
-export default register => {
-  register({
-    type: 'heatmap',
-    name: 'Heatmap',
-    graphic: icon,
-    initial: properties,
-    component: view,
-    options,
-  })
+export class View implements Visualization {
+  type = 'heatmap'
+  name = 'Heatmap'
+  graphic = HeatmapIcon
+  initial = HeatmapProperties
+  component = Heatmap
+  options = HeatmapOptions
 }

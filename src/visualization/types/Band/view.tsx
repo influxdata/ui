@@ -54,7 +54,7 @@ interface Props extends VisualizationProps {
   properties: BandViewProperties
 }
 
-const BandPlot: FC<Props> = ({
+export const Band: FC<Props> = ({
   properties,
   result,
   annotations,
@@ -257,5 +257,3 @@ const BandPlot: FC<Props> = ({
     </>
   )
 }
-
-export default BandPlot

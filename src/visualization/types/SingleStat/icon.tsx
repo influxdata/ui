@@ -1,6 +1,6 @@
 import React from 'react'
 
-const icon = (
+export const SingleStatIcon = (
   <div className="vis-graphic" data-testid="vis-graphic--single-stat">
     <svg
       width="100%"
@@ -39,5 +39,3 @@ const icon = (
     </svg>
   </div>
 )
-
-export default icon

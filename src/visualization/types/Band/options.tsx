@@ -55,7 +55,7 @@ interface Props extends VisualizationOptionProps {
   properties: BandViewProperties
 }
 
-const BandViewOptions: FC<Props> = ({properties, results, update}) => {
+export const BandOptions: FC<Props> = ({properties, results, update}) => {
   useEffect(() => {
     const {mainColumn} = properties
     if (!mainColumn) {
@@ -568,5 +568,3 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
     </Grid>
   )
 }
-
-export default BandViewOptions

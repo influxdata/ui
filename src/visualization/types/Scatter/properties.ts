@@ -10,7 +10,7 @@ import {
 } from 'src/visualization/constants'
 import {ScatterViewProperties} from 'src/types'
 
-export default {
+export const ScatterProperties = {
   type: 'scatter',
   shape: 'chronograf-v2',
 

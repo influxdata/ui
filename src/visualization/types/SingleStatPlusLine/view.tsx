@@ -64,7 +64,7 @@ interface Props extends VisualizationProps {
   properties: LinePlusSingleStatProperties
 }
 
-const SingleStatWithLine: FC<Props> = ({
+export const SingleStatPlusLine: FC<Props> = ({
   properties,
   result,
   timeRange,
@@ -325,5 +325,3 @@ const SingleStatWithLine: FC<Props> = ({
     </>
   )
 }
-
-export default SingleStatWithLine

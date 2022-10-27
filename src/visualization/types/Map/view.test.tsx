@@ -24,8 +24,8 @@ jest.mock(
 
 import React from 'react'
 import {render} from '@testing-library/react'
-import GeoPlot from './view'
-import properties from './properties'
+import {Geo} from './view'
+import {GeoProperties} from './properties'
 import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 
 const table = {
@@ -41,7 +41,7 @@ const table = {
 
 const setup = () => {
   const props = {
-    properties: properties,
+    properties: GeoProperties,
     result: {
       table,
       fluxGroupKeyUnion: ['', ''],
@@ -50,7 +50,7 @@ const setup = () => {
     },
   }
 
-  return render(<GeoPlot {...props} />)
+  return render(<Geo {...props} />)
 }
 
 jest.mock('src/shared/constants/index', () => ({
@@ -73,10 +73,14 @@ describe('Map component renders', () => {
 
 describe('Map color layers', () => {
   it('has autofilled', () => {
-    expect(properties.layers[0].colors).toEqual(DEFAULT_THRESHOLDS_GEO_COLORS)
+    expect(GeoProperties.layers[0].colors).toEqual(
+      DEFAULT_THRESHOLDS_GEO_COLORS
+    )
   })
   it('can be overwritten', () => {
-    expect(properties.layers[0].colors).toEqual(DEFAULT_THRESHOLDS_GEO_COLORS)
+    expect(GeoProperties.layers[0].colors).toEqual(
+      DEFAULT_THRESHOLDS_GEO_COLORS
+    )
     const newcolors = [
       {
         type: 'min',
@@ -86,7 +90,7 @@ describe('Map color layers', () => {
         name: 'comet',
       },
     ]
-    properties.layers[0].colors = newcolors
-    expect(properties.layers[0].colors).toEqual(newcolors)
+    GeoProperties.layers[0].colors = newcolors
+    expect(GeoProperties.layers[0].colors).toEqual(newcolors)
   })
 })

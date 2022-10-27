@@ -17,7 +17,7 @@ interface Props extends VisualizationProps {
   properties: GaugeViewProperties
 }
 
-const GaugeChart: FC<Props> = ({result, properties}) => {
+export const Gauge: FC<Props> = ({result, properties}) => {
   const {colors, prefix, tickPrefix, suffix, tickSuffix, decimalPlaces} =
     properties
 
@@ -42,5 +42,3 @@ const GaugeChart: FC<Props> = ({result, properties}) => {
   }
   return <Plot config={config} />
 }
-
-export default GaugeChart

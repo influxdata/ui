@@ -48,7 +48,7 @@ interface Props extends VisualizationOptionProps {
   properties: XYViewProperties
 }
 
-const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
+export const GraphOptions: FC<Props> = ({properties, results, update}) => {
   const numericColumns = (results?.table?.columnKeys || []).filter(key => {
     if (key === 'result' || key === 'table') {
       return false
@@ -476,5 +476,3 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
     </Grid>
   )
 }
-
-export default GraphViewOptions

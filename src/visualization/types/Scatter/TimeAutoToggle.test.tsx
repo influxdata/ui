@@ -4,7 +4,7 @@ import {fireEvent, render} from '@testing-library/react'
 import {jest} from '@jest/globals'
 
 // Components
-import ScatterOptions from 'src/visualization/types/Scatter/options'
+import {ScatterOptions} from 'src/visualization/types/Scatter/options'
 import {TimeDomainAutoToggle} from 'src/visualization/types/Scatter/TimeAutoToggle'
 // Utilities
 import {renderWithRedux} from 'src/mockState'

@@ -53,7 +53,7 @@ interface Props extends VisualizationOptionProps {
   properties: LinePlusSingleStatProperties
 }
 
-export const SingleStatWithLineOptions: FC<Props> = ({
+export const SingleStatPlusLineOptions: FC<Props> = ({
   properties,
   results,
   update,

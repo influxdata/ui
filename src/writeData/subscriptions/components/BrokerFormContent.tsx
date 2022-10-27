@@ -44,7 +44,6 @@ import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   formContent: Subscription
@@ -284,33 +283,31 @@ const BrokerFormContent: FC<Props> = ({
               )}
             </Form.ValidationElement>
           </FlexBox>
-          {isFlagEnabled('subscriptionsSSLSupport') && (
-            <FlexBox
-              direction={FlexDirection.Row}
-              alignItems={AlignItems.Center}
-              margin={ComponentSize.Medium}
-              className="static-toggle"
+          <FlexBox
+            direction={FlexDirection.Row}
+            alignItems={AlignItems.Center}
+            margin={ComponentSize.Medium}
+            className="static-toggle"
+          >
+            <SlideToggle
+              active={formContent.useSSL}
+              onChange={() => {
+                updateForm({
+                  ...formContent,
+                  useSSL: !formContent.useSSL,
+                })
+              }}
+              disabled={!edit}
+              size={ComponentSize.Medium}
+            />
+            <Heading
+              element={HeadingElement.H4}
+              weight={FontWeight.Regular}
+              className={`${className}-broker-form__ssl-text`}
             >
-              <SlideToggle
-                active={formContent.useSSL}
-                onChange={() => {
-                  updateForm({
-                    ...formContent,
-                    useSSL: !formContent.useSSL,
-                  })
-                }}
-                disabled={!edit}
-                size={ComponentSize.Medium}
-              />
-              <Heading
-                element={HeadingElement.H4}
-                weight={FontWeight.Regular}
-                className={`${className}-broker-form__ssl-text`}
-              >
-                Enable SSL
-              </Heading>
-            </FlexBox>
-          )}
+              Enable SSL
+            </Heading>
+          </FlexBox>
           {showHostPortExampleText && (
             <Heading
               element={HeadingElement.H5}
@@ -325,81 +322,77 @@ const BrokerFormContent: FC<Props> = ({
               }`}
             </Heading>
           )}
-          {isFlagEnabled('subscriptionsClientId') && (
-            <>
-              <Form.ValidationElement
-                label="Client ID"
-                value={formContent.brokerHost}
-                required={useCustomClientID}
-                validationFunc={() =>
-                  useCustomClientID &&
-                  handleValidation('Client ID', formContent.clientID)
-                }
-                className={`${className}-broker-form__clientid-textbox`}
-              >
-                {status => (
-                  <>
-                    <Heading
-                      element={HeadingElement.H5}
-                      weight={FontWeight.Regular}
-                      className={`${className}-broker-form__clientid-text`}
-                    >
-                      We will generate a Client ID for you, but some providers
-                      require you use their Client ID. If your provider requires
-                      a specific Client ID, the connection will fail without it.
-                      Check your provider’s documentation to verify whether you
-                      need to use their Client ID.
-                    </Heading>
-                    <Input
-                      type={InputType.Text}
-                      placeholder={
-                        useCustomClientID
-                          ? 'Enter a client id'
-                          : randomClientID.current
-                      }
-                      name="clientid"
-                      autoFocus={false}
-                      value={formContent.clientID}
-                      onChange={e => {
-                        updateForm({
-                          ...formContent,
-                          clientID: e.target.value,
-                        })
-                      }}
-                      onBlur={() =>
-                        event(
-                          'completed form field',
-                          {formField: 'clientid', step: 'broker'},
-                          {feature: 'subscriptions'}
-                        )
-                      }
-                      status={
-                        edit && useCustomClientID
-                          ? status
-                          : ComponentStatus.Disabled
-                      }
-                      testID={`${className}-broker-form--clientid`}
-                      maxLength={255}
-                    />
-                  </>
-                )}
-              </Form.ValidationElement>
-              <Toggle
-                type={InputToggleType.Checkbox}
-                checked={useCustomClientID}
-                id="clientid-toggle"
-                size={ComponentSize.Small}
-                titleText="Use Custom Client ID"
-                onChange={() => {
-                  setUseCustomClientID(!useCustomClientID)
-                  updateForm({...formContent, clientID: ''})
-                }}
-                disabled={!edit}
-              >
-                <InputLabel>Use Custom Client ID</InputLabel>
-              </Toggle>
-            </>
-          )}
+          <Form.ValidationElement
+            label="Client ID"
+            value={formContent.brokerHost}
+            required={useCustomClientID}
+            validationFunc={() =>
+              useCustomClientID &&
+              handleValidation('Client ID', formContent.clientID)
+            }
+            className={`${className}-broker-form__clientid-textbox`}
+          >
+            {status => (
+              <>
+                <Heading
+                  element={HeadingElement.H5}
+                  weight={FontWeight.Regular}
+                  className={`${className}-broker-form__clientid-text`}
+                >
+                  We will generate a Client ID for you, but some providers
+                  require you use their Client ID. If your provider requires a
+                  specific Client ID, the connection will fail without it. Check
+                  your provider’s documentation to verify whether you need to
+                  use their Client ID.
+                </Heading>
+                <Input
+                  type={InputType.Text}
+                  placeholder={
+                    useCustomClientID
+                      ? 'Enter a client id'
+                      : randomClientID.current
+                  }
+                  name="clientid"
+                  autoFocus={false}
+                  value={formContent.clientID}
+                  onChange={e => {
+                    updateForm({
+                      ...formContent,
+                      clientID: e.target.value,
+                    })
+                  }}
+                  onBlur={() =>
+                    event(
+                      'completed form field',
+                      {formField: 'clientid', step: 'broker'},
+                      {feature: 'subscriptions'}
+                    )
+                  }
+                  status={
+                    edit && useCustomClientID
+                      ? status
+                      : ComponentStatus.Disabled
+                  }
+                  testID={`${className}-broker-form--clientid`}
+                  maxLength={255}
+                />
+              </>
+            )}
+          </Form.ValidationElement>
+          <Toggle
+            type={InputToggleType.Checkbox}
+            checked={useCustomClientID}
+            id="clientid-toggle"
+            size={ComponentSize.Small}
+            titleText="Use Custom Client ID"
+            onChange={() => {
+              setUseCustomClientID(!useCustomClientID)
+              updateForm({...formContent, clientID: ''})
+            }}
+            disabled={!edit}
+          >
+            <InputLabel>Use Custom Client ID</InputLabel>
+          </Toggle>
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve}>
           <Heading

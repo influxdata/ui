@@ -1,5 +1,5 @@
 # from node lts alpine
-FROM node:lts-alpine AS repo
+FROM node:lts-alpine3.14 AS repo
 
 # env vars to configure the system
 

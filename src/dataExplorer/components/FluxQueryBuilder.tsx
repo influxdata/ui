@@ -217,7 +217,7 @@ const FluxQueryBuilder: FC = () => {
                     }
                     text="Save"
                     testID="flux-query-builder--save-script"
-                    icon={IconFont.SaveOutline}
+                    icon={IconFont.Save}
                   />
                 )}
                 {isFlagEnabled('saveAsScript') && resource?.data?.id && (

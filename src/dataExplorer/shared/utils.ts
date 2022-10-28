@@ -76,3 +76,14 @@ export const useSessionStorage = (keyName: string, defaultValue: any) => {
 
   return [storedValue, setValue]
 }
+
+const DEBOUNCE_TIMEOUT = 500
+let timer: ReturnType<typeof setTimeout>
+type NOOP = () => void
+export const debouncer = (action: NOOP): void => {
+  clearTimeout(timer)
+  timer = setTimeout(() => {
+    action()
+    timer = null
+  }, DEBOUNCE_TIMEOUT)
+}

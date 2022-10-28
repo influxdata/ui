@@ -13,20 +13,9 @@ import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {TagsContext} from 'src/dataExplorer/context/tags'
-
+import {debouncer} from 'src/dataExplorer/shared/utils'
 // Types
 import {Bucket, TagKeyValuePair} from 'src/types'
-
-const DEBOUNCE_TIMEOUT = 500
-let timer: ReturnType<typeof setTimeout>
-type NOOP = () => void
-const debouncer = (action: NOOP): void => {
-  clearTimeout(timer)
-  timer = setTimeout(() => {
-    action()
-    timer = null
-  }, DEBOUNCE_TIMEOUT)
-}
 
 const DEFAULT_SELECTED_TAG_VALUES: SelectedTagValues = {}
 interface SelectedTagValues {

@@ -618,6 +618,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
   // (it was debounced to prevent re-renderings with each keystroke when the name was being entered)
   const addPanels = useMemo(
     () => makeAddPanels(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [newSchemas.length, showSchemaValidation]
   )
 

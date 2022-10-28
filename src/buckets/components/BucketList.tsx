@@ -63,23 +63,27 @@ const BucketList: FC<Props> = ({
     1
   )
 
-  const paginate = useCallback((page: number) => {
-    const url = new URL(location.href)
-    history.replace(`${url.pathname}?page=${page}`, null)
-    setCurrentPage(page)
-  }, [])
+  const paginate = useCallback(
+    (page: number) => {
+      const url = new URL(location.href)
+      history.replace(`${url.pathname}?page=${page}`, null)
+      setCurrentPage(page)
+    },
+    [history]
+  )
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
+
     const urlPageNumber = parseInt(params.get('page'), 10)
 
     const passedInPageIsValid =
       urlPageNumber && urlPageNumber <= totalPages && urlPageNumber > 0
 
-    if (passedInPageIsValid) {
+    if (passedInPageIsValid && urlPageNumber !== currentPage) {
       setCurrentPage(urlPageNumber)
     }
-  }, [])
+  }, [totalPages, currentPage])
 
   useEffect(() => {
     // serve as componentDidUpdate()

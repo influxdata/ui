@@ -306,7 +306,7 @@ describe('Script Builder', () => {
         // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
         cy.wait(1200)
         cy.getByTestID('flux-sync--toggle').should('not.exist')
-        cy.getByTestID('flux-query-builder--menu').contains('Clear')
+        cy.getByTestID('flux-query-builder--menu').contains('New Script')
       })
     })
 

@@ -13,7 +13,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {getOrg} from 'src/organizations/selectors'
 import {EndpointProps} from 'src/types'
 
-const View: FC<EndpointProps> = () => {
+export const PagerDuty: FC<EndpointProps> = () => {
   const {data, update} = useContext(PipeContext)
   const org = useSelector(getOrg)
 
@@ -62,5 +62,3 @@ const View: FC<EndpointProps> = () => {
     </FlexBox>
   )
 }
-
-export default View

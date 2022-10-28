@@ -13,7 +13,7 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const ReadOnly: FC = () => {
+export const HTTPReadOnly: FC = () => {
   const {data} = useContext(PipeContext)
 
   let submenu
@@ -119,5 +119,3 @@ const ReadOnly: FC = () => {
     </>
   )
 }
-
-export default ReadOnly

@@ -17,7 +17,7 @@ import {EndpointProps} from 'src/types'
  */
 const suggestedColors = ['#DC4E58', '#FFB94A', '#2FA74D', '#0098F0', '#8E1FC3']
 
-const View: FC<EndpointProps> = () => {
+export const Slack: FC<EndpointProps> = () => {
   const {data, update} = useContext(PipeContext)
 
   const updateUrl = evt => {
@@ -90,5 +90,3 @@ const View: FC<EndpointProps> = () => {
     </div>
   )
 }
-
-export default View

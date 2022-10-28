@@ -11,7 +11,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {EndpointProps} from 'src/types'
 import SecretsDropdown from 'src/secrets/components/SecretsDropdown'
 
-const View: FC<EndpointProps> = ({createSecret, secrets}) => {
+export const AWS: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
 
   const updateURL = evt => {
@@ -156,5 +156,3 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
     </div>
   )
 }
-
-export default View

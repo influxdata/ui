@@ -8,7 +8,7 @@ import {
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 
-const ReadOnly: FC = () => {
+export const ZenossReadOnly: FC = () => {
   const {data} = useContext(PipeContext)
 
   return (
@@ -66,5 +66,3 @@ const ReadOnly: FC = () => {
     </div>
   )
 }
-
-export default ReadOnly

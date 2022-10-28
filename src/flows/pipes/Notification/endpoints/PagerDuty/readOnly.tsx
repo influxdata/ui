@@ -11,7 +11,7 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const ReadOnly: FC = () => {
+export const PagerDutyReadOnly: FC = () => {
   const {data} = useContext(PipeContext)
 
   return (
@@ -37,5 +37,3 @@ const ReadOnly: FC = () => {
     </FlexBox>
   )
 }
-
-export default ReadOnly

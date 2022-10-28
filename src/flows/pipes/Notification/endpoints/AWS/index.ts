@@ -1,43 +1,46 @@
+import {AWSReadOnly} from './readOnly'
+import {AWS} from './view'
+import {EndpointTypeRegistration} from 'src/types'
 import {TEST_NOTIFICATION} from 'src/flows/pipes/Notification/endpoints'
-import View from './view'
-import ReadOnly from './readOnly'
 
-export default register => {
-  register({
-    type: 'aws',
-    name: 'AWS SES Email',
-    data: {
-      url: 'https://email.your-aws-region.amazonaws.com/sendemail/v2/email/outbound-emails',
-      authAlgo: '',
-      accessKey: '',
-      credScope: '',
-      signedHeaders: '',
-      calcSignature: '',
-      email: '',
-    },
-    component: View,
-    readOnlyComponent: ReadOnly,
-    generateImports: () =>
-      ['http', 'influxdata/influxdb/secrets']
-        .map(i => `import "${i}"`)
-        .join('\n'),
-    generateTestImports: () =>
-      ['array', 'http', 'influxdata/influxdb/secrets']
-        .map(i => `import "${i}"`)
-        .join('\n'),
-    generateQuery: (data, measurement) => `task_data
-	|> schema["fieldsAsCols"]()
+export class Endpoint implements EndpointTypeRegistration {
+  type = 'aws'
+  name = 'AWS SES Email'
+  data = {
+    url: 'https://email.your-aws-region.amazonaws.com/sendemail/v2/email/outbound-emails',
+    authAlgo: '',
+    accessKey: '',
+    credScope: '',
+    signedHeaders: '',
+    calcSignature: '',
+    email: '',
+  }
+  component = AWS
+  readOnlyComponent = AWSReadOnly
+  generateImports() {
+    return ['http', 'influxdata/influxdb/secrets']
+      .map(i => `import "${i}"`)
+      .join('\n')
+  }
+  generateTestImports() {
+    return ['array', 'http', 'influxdata/influxdb/secrets']
+      .map(i => `import "${i}"`)
+      .join('\n')
+  }
+  generateQuery(data, measurement) {
+    return `task_data
+  |> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
   |> filter(fn: ${measurement})
-	|> monitor["check"](
-		data: check,
-		messageFn: messageFn,
-		crit: trigger,
-	)
+  |> monitor["check"](
+    data: check,
+    messageFn: messageFn,
+    crit: trigger,
+  )
   |> filter(fn: trigger)
   |> keep(columns: ["_value", "_time", "_measurement"])
   |> limit(n: 1, offset: 0)
-	|> monitor["notify"](
+  |> monitor["notify"](
     data: notification,
     endpoint: ((r) => {
         authAlgo = secrets.get(key: "${data.authAlgo}")
@@ -73,8 +76,10 @@ export default register => {
               }
             }"))
     })
-  )`,
-    generateTestQuery: data => `
+  )`
+  }
+  generateTestQuery(data) {
+    return `
     authAlgo = secrets.get(key: "${data.authAlgo}")
     accessKey = secrets.get(key: "${data.accessKey}")
     credScope = secrets.get(key: "${data.credScope}")
@@ -109,6 +114,6 @@ export default register => {
       }"))
 
     array.from(rows: [{value: 0}])
-        |> yield(name: "ignore")`,
-  })
+      |> yield(name: "ignore")`
+  }
 }

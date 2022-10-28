@@ -9,7 +9,7 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const ReadOnly: FC = () => {
+export const MailgunReadOnly: FC = () => {
   const {data} = useContext(PipeContext)
 
   return (
@@ -44,5 +44,3 @@ const ReadOnly: FC = () => {
     </div>
   )
 }
-
-export default ReadOnly

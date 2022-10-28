@@ -5,7 +5,29 @@ export const TEST_NOTIFICATION = 'This is a test notification'
 export interface TypeLookup {
   [key: string]: EndpointTypeRegistration
 }
-export const ENDPOINT_DEFINITIONS: TypeLookup = {}
+
+import {Endpoint as AWS} from './endpoints/AWS'
+import {Endpoint as HTTP} from './endpoints/HTTP'
+import {Endpoint as Mailgun} from './endpoints/Mailgun'
+import {Endpoint as Mailjet} from './endpoints/Mailjet'
+import {Endpoint as PagerDuty} from './endpoints/PagerDuty'
+import {Endpoint as SendGrid} from './endpoints/SendGrid'
+import {Endpoint as Slack} from './endpoints/Slack'
+import {Endpoint as Telegram} from './endpoints/Telegram'
+import {Endpoint as Zenoss} from './endpoints/Zenoss'
+
+export const ENDPOINT_DEFINITIONS: TypeLookup = {
+  aws: new AWS(),
+  http: new HTTP(),
+  mailgun: new Mailgun(),
+  mailjet: new Mailjet(),
+  pagerduty: new PagerDuty(),
+  sendgrid: new SendGrid(),
+  slack: new Slack(),
+  telegram: new Telegram(),
+  zenoss: new Zenoss(),
+}
+
 export const ENDPOINT_ORDER = [
   'slack',
   'http',
@@ -22,25 +44,3 @@ export const ENDPOINT_ORDER = [
   'sensu',
   'zenoss',
 ]
-
-// NOTE: this loads in all the modules under the current directory
-// to make it easier to add new types
-const context = require.context(
-  './endpoints',
-  true,
-  /^\.\/([^\/])+\/index\.(ts|tsx)$/
-)
-context.keys().forEach(key => {
-  const module = context(key)
-  module.default((definition: EndpointTypeRegistration) => {
-    if (ENDPOINT_DEFINITIONS.hasOwnProperty(definition.type)) {
-      throw new Error(
-        `Endpoint of type [${definition.type}] has already been registered`
-      )
-    }
-
-    ENDPOINT_DEFINITIONS[definition.type] = {
-      ...definition,
-    }
-  })
-})

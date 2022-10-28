@@ -4,7 +4,7 @@ import SecretsDropdown from 'src/secrets/components/SecretsDropdown'
 import {PipeContext} from 'src/flows/context/pipe'
 import {EndpointProps} from 'src/types'
 
-const View: FC<EndpointProps> = ({createSecret, secrets}) => {
+export const Mailjet: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
 
   const updateAPIKey = val => {
@@ -86,5 +86,3 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
     </div>
   )
 }
-
-export default View

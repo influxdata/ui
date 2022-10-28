@@ -14,7 +14,7 @@ import SecretsDropdown from 'src/secrets/components/SecretsDropdown'
 import {PipeContext} from 'src/flows/context/pipe'
 import {EndpointProps} from 'src/types'
 
-const View: FC<EndpointProps> = ({createSecret, secrets}) => {
+export const HTTP: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
 
   const updater = (field, value) => {
@@ -150,5 +150,3 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
     </>
   )
 }
-
-export default View

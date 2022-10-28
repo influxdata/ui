@@ -28,7 +28,11 @@ import {
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {QueryContext} from 'src/shared/contexts/query'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {
+  PersistanceContext,
+  DEFAULT_FLUX_EDITOR_TEXT,
+  DEFAULT_SQL_EDITOR_TEXT,
+} from 'src/dataExplorer/context/persistance'
 
 // Components
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
@@ -36,6 +40,7 @@ import Results from 'src/dataExplorer/components/Results'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
 import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
+import {SqlEditorMonaco} from 'src/shared/components/SqlMonacoEditor'
 
 // Types
 import {TimeRange} from 'src/types'
@@ -52,7 +57,6 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {SqlEditorMonaco} from 'src/shared/components/SqlMonacoEditor'
 
 const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
@@ -100,6 +104,10 @@ const rangeToParam = (timeRange: TimeRange) => {
   }
 }
 
+const isDefaultText = text => {
+  return text == DEFAULT_FLUX_EDITOR_TEXT || text == DEFAULT_SQL_EDITOR_TEXT
+}
+
 const ResultsPane: FC = () => {
   const {basic, query, cancel} = useContext(QueryContext)
   const {status, result, setStatus, setResult} = useContext(ResultsContext)
@@ -114,12 +122,25 @@ const ResultsPane: FC = () => {
     resource,
   } = useContext(PersistanceContext)
   const [csvDownloadCancelID, setCancelId] = useState(null)
+  const language = resource?.language ?? LanguageType.FLUX
 
-  const submitButtonDisabled = !text && !selection.measurement
-
-  const disabledTitleText = submitButtonDisabled
-    ? 'Select measurement before running script'
-    : ''
+  let submitButtonDisabled = false
+  let disabledTitleText = ''
+  if (!text || isDefaultText(text)) {
+    submitButtonDisabled = true
+    disabledTitleText = 'Write a query before running script'
+  } else if (language == LanguageType.SQL && !selection.bucket) {
+    submitButtonDisabled = true
+    disabledTitleText = 'Select a bucket before running script'
+  } else if (
+    language == LanguageType.FLUX &&
+    selection.composition.synced && // using composition
+    selection.bucket &&
+    !selection.measurement
+  ) {
+    submitButtonDisabled = true
+    disabledTitleText = 'Select a measurement before running script'
+  }
 
   const download = async () => {
     event('CSV Download Initiated')
@@ -128,7 +149,11 @@ const ResultsPane: FC = () => {
       {
         vars: rangeToParam(range),
       },
-      {rawBlob: true}
+      {
+        rawBlob: true,
+        language,
+        bucket: selection.bucket,
+      }
     )
     setCancelId(promise.id)
 
@@ -144,9 +169,16 @@ const ResultsPane: FC = () => {
 
   const submit = useCallback(() => {
     setStatus(RemoteDataState.Loading)
-    query(text, {
-      vars: rangeToParam(range),
-    })
+    query(
+      text,
+      {
+        vars: rangeToParam(range),
+      },
+      {
+        language,
+        bucket: selection.bucket,
+      }
+    )
       .then(r => {
         event('resultReceived', {
           status: r.parsed.table.length === 0 ? 'empty' : 'good',
@@ -165,7 +197,7 @@ const ResultsPane: FC = () => {
         event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)
       })
-  }, [text, range])
+  }, [text, range, resource?.language, selection.bucket])
 
   const timeVars = [
     getRangeVariable(TIME_RANGE_START, range),
@@ -175,6 +207,16 @@ const ResultsPane: FC = () => {
   const variables = timeVars.concat(
     getWindowPeriodVariableFromVariables(text, timeVars) || []
   )
+
+  const TimeRangePicker = () =>
+    isFlagEnabled('newTimeRangeComponent') ? (
+      <NewDatePicker />
+    ) : (
+      <TimeRangeDropdown
+        timeRange={range}
+        onSetTimeRange={(range: TimeRange) => setRange(range)}
+      />
+    )
 
   return (
     <DraggableResizer
@@ -237,7 +279,9 @@ const ResultsPane: FC = () => {
                   icon={IconFont.Download_New}
                   onClick={download}
                   status={
-                    text ? ComponentStatus.Default : ComponentStatus.Disabled
+                    !submitButtonDisabled
+                      ? ComponentStatus.Default
+                      : ComponentStatus.Disabled
                   }
                   testID="data-explorer--csv-download"
                 />
@@ -251,13 +295,9 @@ const ResultsPane: FC = () => {
                   color={ComponentColor.Danger}
                 />
               )}
-              {isFlagEnabled('newTimeRangeComponent') ? (
-                <NewDatePicker />
-              ) : (
-                <TimeRangeDropdown
-                  timeRange={range}
-                  onSetTimeRange={(range: TimeRange) => setRange(range)}
-                />
+              {isFlagEnabled('uiSqlSupport') &&
+              resource?.language === LanguageType.SQL ? null : (
+                <TimeRangePicker />
               )}
               <SubmitQueryButton
                 className="submit-btn"

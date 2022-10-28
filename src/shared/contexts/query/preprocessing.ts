@@ -5,7 +5,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types and Constants
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
-import {File} from 'src/types'
+import {File, OwnBucket} from 'src/types'
 import {QueryScope} from 'src/shared/contexts/query'
 
 const DESIRED_POINTS_PER_GRAPH = 360
@@ -412,4 +412,11 @@ export const updateWindowPeriod = (
     }
     return options
   }
+}
+
+export const sqlAsFlux = (text: string, bucket: OwnBucket) => {
+  return `import "experimental/iox"
+
+iox.sql(bucket: "${bucket.name}", query: ${JSON.stringify(text)})
+  `
 }

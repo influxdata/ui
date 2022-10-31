@@ -35,31 +35,31 @@ export const InputWithLabel: FC<Props> = ({
   showError = false,
   ...args
 }) => {
-  const [isDirty, setIsDirty] = useState(false)
+  const [isInputFormTouched, setIsInputFormTouched] = useState(false)
   const [inputVal, setInputVal] = useState(value)
   const [hasError, setHasError] = useState(showError)
 
   const handleChange = useCallback(
     e => {
-      const val = e.target.value
-      if (val !== inputVal) {
-        setIsDirty(true)
+      const newValue = e.target.value
+      if (newValue !== inputVal) {
+        setIsInputFormTouched(true)
       }
 
-      setInputVal(val)
+      setInputVal(newValue)
       onChange && onChange(e)
     },
     [inputVal, onChange]
   )
 
   useEffect(() => {
-    if (!isDirty || !!inputVal) {
+    if (!isInputFormTouched || !!inputVal) {
       setHasError(false)
       return
     }
 
     required && setHasError(true)
-  }, [inputVal, isDirty, required])
+  }, [inputVal, isInputFormTouched, required])
 
   useEffect(() => {
     if (showError) {

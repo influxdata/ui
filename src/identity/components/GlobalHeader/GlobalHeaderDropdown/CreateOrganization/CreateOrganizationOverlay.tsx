@@ -50,6 +50,8 @@ const CreateOrgOverlay: FC = () => {
 
   const handleCreateOrg = useCallback(() => {
     if (orgName.trim() === '') {
+      setShowError(true)
+      setErrorMessage(DEFAULT_ERROR_MESSAGE)
       return
     }
 

@@ -7,13 +7,15 @@ import React, {
   useEffect,
   useCallback,
 } from 'react'
+
+// Components
 import {Cluster} from 'src/client/unityRoutes'
-import {createNewOrg, fetchClusterList} from 'src/identity/apis/org'
-import {RemoteDataState} from 'src/types'
 
 // Types
+import {RemoteDataState} from 'src/types'
 
 // Utils
+import {createNewOrg, fetchClusterList} from 'src/identity/apis/org'
 
 interface Props {
   children: ReactChild
@@ -22,29 +24,29 @@ interface Props {
 export type ProviderID = 'AWS' | 'GCP' | 'Azure'
 
 export interface CreateOrgContextType {
-  orgName: string
+  changeCreateOrgLoadingStatus: (_: RemoteDataState) => void
+  changeCurrentProvider: (_: ProviderID) => void
+  changeCurrentRegion: (_: string) => void
   changeOrgName: (_: string) => void
   clusters: ClusterMap
-  currentProvider: ProviderID
-  changeCurrentProvider: (_: ProviderID) => void
-  currentRegion: string
-  changeCurrentRegion: (_: string) => void
-  createOrgLoadingStatus: RemoteDataState
-  changeCreateOrgLoadingStatus: (_: RemoteDataState) => void
   createOrg: () => Promise<void>
+  createOrgLoadingStatus: RemoteDataState
+  currentRegion: string
+  currentProvider: ProviderID
+  orgName: string
 }
 
 export const DEFAULT_CREATE_ORG_CONTEXT: CreateOrgContextType = {
-  orgName: '',
+  changeCreateOrgLoadingStatus: (_: RemoteDataState) => null,
+  changeCurrentProvider: (_: ProviderID) => null,
+  changeCurrentRegion: (_: string) => null,
   changeOrgName: (_: string) => null,
   clusters: {},
-  currentProvider: null,
-  changeCurrentProvider: (_: ProviderID) => null,
-  currentRegion: '',
-  changeCurrentRegion: (_: string) => null,
-  createOrgLoadingStatus: RemoteDataState.NotStarted,
-  changeCreateOrgLoadingStatus: (_: RemoteDataState) => null,
   createOrg: () => null,
+  createOrgLoadingStatus: RemoteDataState.NotStarted,
+  currentRegion: '',
+  currentProvider: null,
+  orgName: '',
 }
 
 export const CreateOrgContext = createContext<CreateOrgContextType>(
@@ -52,149 +54,8 @@ export const CreateOrgContext = createContext<CreateOrgContextType>(
 )
 
 interface ClusterMap {
-  // TODO(Subir): This is requiring me to use string. One option is to make it an enum and change all the InstallDependencies.
-  // The other option is to keep it a string and cast it as ProviderID in 1 place
   [providerId: string]: Cluster[]
 }
-
-// TODO(Subir): Remove this before committing
-// const FAKE_AWS: Cluster[] = [
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 2,
-//     providerId: 'AWS',
-//     providerName: 'Amazon Web Services',
-//     regionId: 'ap-southeast-2',
-//     regionName: 'Asia Pacific (Australia)',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 4,
-//     providerId: 'AWS',
-//     providerName: 'Amazon Web Services',
-//     regionId: 'eu-central-1',
-//     regionName: 'EU Frankfurt',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 1,
-//     providerId: 'AWS',
-//     providerName: 'Amazon Web Services',
-//     regionId: 'us-east-1',
-//     regionName: 'US East (N. Virginia)',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: false,
-//     priority: 2,
-//     providerId: 'AWS',
-//     providerName: 'Amazon Web Services',
-//     regionId: 'us-east-1-2',
-//     regionName: 'US East (N. Virginia) 2',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: false,
-//     priority: 1,
-//     providerId: 'AWS',
-//     providerName: 'Amazon Web Services',
-//     regionId: 'us-east-2',
-//     regionName: 'US East (Ohio)',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: false,
-//     priority: 3,
-//     providerId: 'AWS',
-//     providerName: 'Amazon Web Services',
-//     regionId: 'us-west-2',
-//     regionName: 'US West (Oregon)',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 3,
-//     providerId: 'AWS',
-//     providerName: 'Amazon Web Services',
-//     regionId: 'us-west-2-2',
-//     regionName: 'US West (Oregon)',
-//   },
-// ]
-// const FAKE_AZURE: Cluster[] = [
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 1,
-//     providerId: 'Azure',
-//     providerName: 'Microsoft Azure',
-//     regionId: 'eastus',
-//     regionName: 'Virginia',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 2,
-//     providerId: 'Azure',
-//     providerName: 'Microsoft Azure',
-//     regionId: 'westeurope',
-//     regionName: 'Amsterdam',
-//   },
-// ]
-// const FAKE_GCP: Cluster[] = [
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 1,
-//     providerId: 'GCP',
-//     providerName: 'Google Cloud',
-//     regionId: 'eu-west1',
-//     regionName: 'Belgium',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 2,
-//     providerId: 'GCP',
-//     providerName: 'Google Cloud',
-//     regionId: 'us-central1',
-//     regionName: 'Iowa',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 98,
-//     providerId: 'GCP',
-//     providerName: 'Google Cloud',
-//     regionId: 'us-central1-2',
-//     regionName: 'Iowa 2',
-//   },
-//   {
-//     isBeta: false,
-//     isProviderAvailable: true,
-//     isRegionAvailable: true,
-//     priority: 99,
-//     providerId: 'GCP',
-//     providerName: 'Google Cloud',
-//     regionId: 'us-west1',
-//     regionName: 'Oregon',
-//   },
-// ]
-// const FAKE_CLUSTERS: Cluster[] = [...FAKE_AWS, ...FAKE_AZURE, ...FAKE_GCP]
 
 export const CreateOrgProvider: FC<Props> = ({children}) => {
   const [orgName, setOrgName] = useState(DEFAULT_CREATE_ORG_CONTEXT.orgName)
@@ -254,19 +115,15 @@ export const CreateOrgProvider: FC<Props> = ({children}) => {
 
   useEffect(() => {
     fetchClusterList().then(clusterData => {
-      // setClusters(r?.data)
-      // r
-      // let clusterData = r.data
-      // clusterData = FAKE_CLUSTERS
-
-      const clusterMap = clusterData.reduce((acc, curr) => {
-        if (!acc?.[curr.providerId]) {
-          acc[curr.providerId] = []
+      const initialMap: ClusterMap = {}
+      const clusterMap = clusterData.reduce((previousMap, currentItem) => {
+        if (!previousMap?.[currentItem.providerId]) {
+          previousMap[currentItem.providerId] = []
         }
-        acc[curr.providerId].push(curr)
+        previousMap[currentItem.providerId].push(currentItem)
 
-        return acc
-      }, {} as ClusterMap)
+        return previousMap
+      }, initialMap)
       const providers = Object.keys(clusterMap)
       providers.forEach(providerId => {
         clusterMap[providerId] = clusterMap[providerId].sort(
@@ -291,16 +148,16 @@ export const CreateOrgProvider: FC<Props> = ({children}) => {
   return (
     <CreateOrgContext.Provider
       value={{
-        orgName,
+        changeCreateOrgLoadingStatus,
+        changeCurrentProvider,
+        changeCurrentRegion,
         changeOrgName,
         clusters,
-        currentProvider,
-        changeCurrentProvider,
-        currentRegion,
-        changeCurrentRegion,
-        createOrgLoadingStatus,
-        changeCreateOrgLoadingStatus,
         createOrg,
+        createOrgLoadingStatus,
+        currentRegion,
+        currentProvider,
+        orgName,
       }}
     >
       {children}

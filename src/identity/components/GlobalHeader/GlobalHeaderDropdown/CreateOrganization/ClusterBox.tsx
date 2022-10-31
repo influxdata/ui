@@ -42,10 +42,10 @@ export const ClusterBox: FC<Props> = ({
   showLogoWithText,
 }) => {
   const {
-    clusters,
-    currentProvider,
     changeCurrentProvider,
     changeCurrentRegion,
+    clusters,
+    currentProvider,
   } = useContext(CreateOrgContext)
   const classes = classnames('cluster-box', {
     selected: currentProvider === providerId && !showLogoWithText,
@@ -63,11 +63,11 @@ export const ClusterBox: FC<Props> = ({
     changeCurrentProvider(providerId as ProviderID)
     changeCurrentRegion(clusters?.[providerId]?.[0]?.regionId)
   }, [
+    changeCurrentProvider,
+    changeCurrentRegion,
     clusters,
     currentProvider,
     providerId,
-    changeCurrentProvider,
-    changeCurrentRegion,
   ])
 
   return (

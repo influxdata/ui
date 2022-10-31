@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
@@ -31,7 +31,7 @@ import {getBucketSchema} from 'src/buckets/actions/thunks'
 
 // Utills
 import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
-import _ from 'lodash'
+import {isEmpty} from 'lodash'
 import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   auth: Authorization
@@ -57,38 +57,31 @@ const EditTokenOverlay: FC<Props> = props => {
   const [permissions, setPermissions] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
 
-  useEffect(() => {
-    if (_.isEmpty(permissions)) {
-      formatPermissions()
-    }
-  }, [])
+  const {auth, getTelegraf, getBucketSchema} = props
 
-  const formatPermissions = async () => {
-    const {
-      auth: {permissions},
-    } = props
-    const newPerms = permissions
+  const formatPermissions = useCallback(async () => {
+    const newPerms = auth.permissions
 
-    for (let i = 0; i < permissions.length; i++) {
-      const name = permissions[i].resource.name
+    for (let i = 0; i < auth.permissions.length; i++) {
+      const name = auth.permissions[i].resource.name
       if (!name) {
         if (
-          permissions[i].resource.type === ResourceType.Telegrafs &&
-          permissions[i].resource.id
+          auth.permissions[i].resource.type === ResourceType.Telegrafs &&
+          auth.permissions[i].resource.id
         ) {
           try {
-            const telegraf = await props.getTelegraf(permissions[i].resource.id)
+            const telegraf = await getTelegraf(auth.permissions[i].resource.id)
             newPerms[i].resource.name = telegraf
           } catch (e) {
             newPerms[i].resource.name = 'Resource deleted'
           }
         } else if (
-          permissions[i].resource.type === ResourceType.Buckets &&
-          permissions[i].resource.id
+          auth.permissions[i].resource.type === ResourceType.Buckets &&
+          auth.permissions[i].resource.id
         ) {
           try {
-            const bucket = await props.getBucketSchema(
-              permissions[i].resource.id
+            const bucket = await getBucketSchema(
+              auth.permissions[i].resource.id
             )
             newPerms[i].resource.name = bucket.name
           } catch (e) {
@@ -99,7 +92,13 @@ const EditTokenOverlay: FC<Props> = props => {
     }
 
     setPermissions(newPerms)
-  }
+  }, [auth.permissions, getBucketSchema, getTelegraf])
+
+  useEffect(() => {
+    if (isEmpty(permissions)) {
+      formatPermissions()
+    }
+  }, [permissions, formatPermissions])
 
   const handleInputChange = event => {
     setDescription(event.target.value)

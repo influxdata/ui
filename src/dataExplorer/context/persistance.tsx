@@ -30,7 +30,7 @@ export const DEFAULT_GROUP_OPTIONS: GroupOptions = {
   columns: [],
 }
 
-interface AggregateWindow {
+export interface AggregateWindow {
   isOn: boolean
   every: string // TODO: check if there is a duration type
   fn: string // TODO: check if there is a enum fn list
@@ -38,8 +38,8 @@ interface AggregateWindow {
   createEmpty: boolean
 }
 
-const DEFAULT_AGGREGATE: AggregateWindow = {
-  isOn: true,
+export const DEFAULT_AGGREGATE_WINDOW: AggregateWindow = {
+  isOn: false,
   every: '10s',
   fn: '',
   column: '',
@@ -49,7 +49,7 @@ const DEFAULT_AGGREGATE: AggregateWindow = {
 interface ResultOptions {
   fieldsAsColumn: boolean
   group: GroupOptions
-  aggregate: AggregateWindow
+  aggregateWindow: AggregateWindow
 }
 
 export interface CompositionSelection {
@@ -94,7 +94,7 @@ export const DEFAULT_SELECTION: CompositionSelection = {
   resultOptions: {
     fieldsAsColumn: false,
     group: DEFAULT_GROUP_OPTIONS,
-    aggregate: DEFAULT_AGGREGATE,
+    aggregateWindow: DEFAULT_AGGREGATE_WINDOW,
   } as ResultOptions,
 }
 

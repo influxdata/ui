@@ -120,7 +120,6 @@ describe('Script Builder', () => {
     beforeEach(() => {
       loginWithFlags({
         schemaComposition: true,
-        saveAsScript: true,
         newDataExplorer: true,
       }).then(() => {
         cy.get('@org').then(({id}: Organization) => {
@@ -276,7 +275,6 @@ describe('Script Builder', () => {
           cy.setFeatureFlags({
             newDataExplorer: true,
             schemaComposition: true,
-            saveAsScript: true,
             dataExplorerCsvLimit: 10000 as any,
           }).then(() => {
             // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
@@ -303,13 +301,12 @@ describe('Script Builder', () => {
       loginWithFlags({
         schemaComposition: false,
         newDataExplorer: true,
-        saveAsScript: false,
       }).then(() => {
         // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
         // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
         cy.wait(1200)
         cy.getByTestID('flux-sync--toggle').should('not.exist')
-        cy.getByTestID('flux-query-builder--menu').contains('Clear')
+        cy.getByTestID('flux-query-builder--menu').contains('New Script')
       })
     })
 
@@ -458,7 +455,6 @@ describe('Script Builder', () => {
     beforeEach(() => {
       loginWithFlags({
         schemaComposition: true,
-        saveAsScript: true,
         newDataExplorer: true,
       }).then(() => {
         clearSession()

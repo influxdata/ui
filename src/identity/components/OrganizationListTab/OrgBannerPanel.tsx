@@ -26,7 +26,7 @@ export const OrgBannerPanel: FC<Props> = (isAtOrgLimit, availableUpgrade) => {
   let upgradePage: string
 
   if (availableUpgrade === 'pay_as_you_go') {
-    upgradePage = `${CLOUD_URL}/orgs/${orgId}`
+    upgradePage = `${CLOUD_URL}/orgs/${orgId}/checkout`
   } else {
     // If availableUpgrade is contract, need to use marketo form once complete. See https://github.com/influxdata/ui/issues/6206.
     upgradePage = '/'

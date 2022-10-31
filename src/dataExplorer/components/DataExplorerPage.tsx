@@ -100,7 +100,7 @@ const DataExplorerPageHeader: FC = () => {
       <FlexBox margin={ComponentSize.Large}>
         {isFlagEnabled('newDataExplorer') && (
           <FlexBox margin={ComponentSize.Medium}>
-            <InputLabel>&#10024; Preview New Script Editor</InputLabel>
+            <InputLabel>&#10024; Try New Script Editor</InputLabel>
             <SlideToggle
               active={fluxQueryBuilder}
               onChange={toggleSlider}

@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux'
 import {Accordion} from '@influxdata/clockface'
 import {FieldsAsColumns} from 'src/dataExplorer/components/FieldsAsColumns'
 import {GroupBy} from 'src/dataExplorer/components/GroupBy'
-import {Aggregate} from 'src/dataExplorer/components/Aggregate'
+import {AggregateWindow} from 'src/dataExplorer/components/AggregateWindow'
 
 // Context
 import {GroupKeysProvider} from 'src/dataExplorer/context/groupKeys'
@@ -34,7 +34,7 @@ const ResultOptions: FC = () => {
         </Accordion.AccordionHeader>
         <FieldsAsColumns />
         <GroupBy />
-        <Aggregate />
+        <AggregateWindow />
       </Accordion>
     </GroupKeysProvider>
   )

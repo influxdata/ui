@@ -504,9 +504,27 @@ describe('Script Builder', () => {
             'disabled'
           )
 
+          cy.log(
+            'does not diverge, when adding import statement outside of block'
+          )
+          cy.getByTestID('flux-toolbar-search--input')
+            .should('exist')
+            .type('fieldsAsCols')
+          cy.get('.flux-toolbar--list-item').first().click()
+          cy.getByTestID('flux-editor').contains('import')
+          cy.getByTestID('flux-sync--toggle').should(
+            'not.have.class',
+            'disabled'
+          )
+
+          /// FIXME: Does not work yet, since the LSP response for applyEdit starts at line 0
+          // cy.log(
+          //   'does not diverge, when further modifying block (with imports at top)'
+          // )
+
           cy.log('does diverge, within block')
           cy.getByTestID('flux-editor').monacoType(
-            '{enter}{upArrow}{upArrow}{upArrow} // make diverge'
+            '{enter}{upArrow}{upArrow}{upArrow}{upArrow} // make diverge'
           )
           cy.log('toggle is now disabled')
           cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')

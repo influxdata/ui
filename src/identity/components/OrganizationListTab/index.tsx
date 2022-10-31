@@ -18,6 +18,7 @@ import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 // API
 import {fetchOrgCreationAllowance} from 'src/identity/apis/org'
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
+import {OrgAllowanceResponse} from 'src/identity/apis/org'
 
 // Selectors
 import {
@@ -49,8 +50,14 @@ interface Props {
   pageHeight: number
 }
 
-const defaultOrgAllowance = {
-  canUpgrade: false,
+interface OrgAllowance {
+  availableUpgrade: OrgAllowanceResponse['availableUpgrade']
+  isAtOrgLimit: OrgAllowanceResponse['allowed']
+  status: RemoteDataState
+}
+
+const defaultOrgAllowance: OrgAllowance = {
+  availableUpgrade: 'none',
   isAtOrgLimit: false,
   status: RemoteDataState.NotStarted,
 }
@@ -125,10 +132,10 @@ export const OrganizationListTab: FC<Props> = ({pageHeight}) => {
   useEffect(() => {
     const checkOrgCreationAllowance = async () => {
       try {
-        const {allowed, upgradesAvailable} = await fetchOrgCreationAllowance()
+        const {allowed, availableUpgrade} = await fetchOrgCreationAllowance()
 
         const newOrgAllowance = {
-          canUpgrade: upgradesAvailable,
+          availableUpgrade: availableUpgrade,
           isAtOrgLimit: !allowed,
           status: RemoteDataState.Done,
         }
@@ -204,7 +211,7 @@ export const OrganizationListTab: FC<Props> = ({pageHeight}) => {
       {orgAllowance.isAtOrgLimit && (
         <OrgBannerPanel
           isAtOrgLimit={orgAllowance.isAtOrgLimit}
-          canUpgrade={orgAllowance.canUpgrade}
+          availableUpgrade={orgAllowance.availableUpgrade}
         />
       )}
       <ResourceList>

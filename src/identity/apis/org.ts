@@ -49,6 +49,11 @@ export type QuartzOrganizations = {
   status?: RemoteDataState
 }
 
+export interface OrgAllowanceResponse {
+  allowed: boolean
+  availableUpgrade: 'contract' | 'none' | 'pay_as_you_go'
+}
+
 // create a new organization
 export const createNewOrg = async (
   organizationCreateRequest: OrganizationCreateRequest

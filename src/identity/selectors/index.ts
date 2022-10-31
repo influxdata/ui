@@ -30,6 +30,12 @@ export const selectOperatorRole = (
   return state.identity.currentIdentity.user.operatorRole
 }
 
+export const selectOrgId = (
+  state: AppState
+): AppState['identity']['currentIdentity']['org']['id'] => {
+  return state.identity.currentIdentity.org.id
+}
+
 export const selectQuartzIdentityStatus = (state: AppState): RemoteDataState =>
   state.identity.currentIdentity.loadingStatus.identityStatus
 

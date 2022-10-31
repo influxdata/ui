@@ -8,17 +8,17 @@ import './Sidebar.scss'
 
 const AGGREGATE_TOOLTIP = `test`
 
-const Aggregate: FC = () => {
-  const [aggregate, setAggregate] = useState(false)
+const AggregateWindow: FC = () => {
+  const [aggregateWindow, setAggregateWindow] = useState(false)
 
   return (
     <ToggleWithLabelTooltip
       label="Aggregate"
-      active={aggregate}
-      onChange={() => setAggregate(current => !current)}
+      active={aggregateWindow}
+      onChange={() => setAggregateWindow(current => !current)}
       tooltipContents={AGGREGATE_TOOLTIP}
     />
   )
 }
 
-export {Aggregate}
+export {AggregateWindow}

@@ -14,10 +14,11 @@ import {Page} from '@influxdata/clockface'
 import {OrganizationListTab} from 'src/identity/components/OrganizationListTab'
 
 const autoSizerStyle = {height: '100%', width: '100%'}
+const titleTag = pageTitleSuffixer(['Account Organization List Page'])
 
 export const OrganizationListTabContainer: FC = () => {
   return (
-    <Page titleTag={pageTitleSuffixer(['Account Organization List Page'])}>
+    <Page titleTag={titleTag}>
       <AutoSizer style={autoSizerStyle}>
         {({height}) => {
           return (

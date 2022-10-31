@@ -13,23 +13,18 @@ import {CLOUD_URL} from 'src/shared/constants'
 import {selectOrgId} from 'src/identity/selectors'
 
 // Types
-import {OrgAllowanceResponse} from 'src/identity/apis/org'
+import {OrgAllowance} from 'src/identity/components/OrganizationListTab'
 
-interface Props {
-  isAtOrgLimit: OrgAllowanceResponse['allowed']
-  availableUpgrade: OrgAllowanceResponse['availableUpgrade']
-}
-
-export const OrgBannerPanel: FC<Props> = (isAtOrgLimit, availableUpgrade) => {
+export const OrgBannerPanel: FC<OrgAllowance> = ({
+  availableUpgrade,
+  isAtOrgLimit,
+}) => {
   const orgId = useSelector(selectOrgId)
 
-  let upgradePage: string
+  let upgradePage = '/'
 
   if (availableUpgrade === 'pay_as_you_go') {
     upgradePage = `${CLOUD_URL}/orgs/${orgId}/checkout`
-  } else {
-    // If availableUpgrade is contract, need to use marketo form once complete. See https://github.com/influxdata/ui/issues/6206.
-    upgradePage = '/'
   }
 
   return (

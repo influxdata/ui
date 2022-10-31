@@ -34,11 +34,6 @@ export interface CurrentOrg {
   regionName?: string
 }
 
-export interface OrgAllowanceResponse {
-  allowed: boolean
-  availableUpgrade: 'contract' | 'none' | 'pay_as_you_go'
-}
-
 export interface QuartzOrganization {
   id: string
   name: string

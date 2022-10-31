@@ -18,7 +18,6 @@ import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 // API
 import {fetchOrgCreationAllowance} from 'src/identity/apis/org'
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
-import {OrgAllowanceResponse} from 'src/identity/apis/org'
 
 // Selectors
 import {
@@ -46,14 +45,14 @@ const searchKeys = ['name']
 
 const FilterOrgs = FilterListContainer<QuartzOrganization>()
 
-interface Props {
-  pageHeight: number
+export interface OrgAllowance {
+  availableUpgrade: string
+  isAtOrgLimit: boolean
+  status?: RemoteDataState
 }
 
-interface OrgAllowance {
-  availableUpgrade: OrgAllowanceResponse['availableUpgrade']
-  isAtOrgLimit: OrgAllowanceResponse['allowed']
-  status: RemoteDataState
+interface Props {
+  pageHeight: number
 }
 
 const defaultOrgAllowance: OrgAllowance = {
@@ -191,14 +190,14 @@ export const OrganizationListTab: FC<Props> = ({pageHeight}) => {
   return (
     <>
       <FlexBox direction={FlexDirection.Row}>
-        <FlexBox className="account-settings-page-org-tab--searchwidget-container">
+        <FlexBox.Child className="account-settings-page-org-tab--searchwidget-container">
           <SearchWidget
             placeholderText="Search organizations"
             onSearch={handleFilterOrgs}
             searchTerm={searchTerm}
           ></SearchWidget>
-        </FlexBox>
-        <FlexBox className="account-settings-page-org-tab--sort-dropdown-container">
+        </FlexBox.Child>
+        <FlexBox.Child className="account-settings-page-org-tab--sort-dropdown-container">
           <ResourceSortDropdown
             resourceType={ResourceType.Orgs}
             sortDirection={sortMethod.sortDirection}
@@ -206,7 +205,7 @@ export const OrganizationListTab: FC<Props> = ({pageHeight}) => {
             sortType={SortTypes.String}
             onSelect={handleSortOrgs}
           />
-        </FlexBox>
+        </FlexBox.Child>
       </FlexBox>
       {orgAllowance.isAtOrgLimit && (
         <OrgBannerPanel

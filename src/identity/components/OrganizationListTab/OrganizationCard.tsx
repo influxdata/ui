@@ -28,15 +28,15 @@ export const OrganizationCard: FC<OrgCardProps> = ({
         className="account--organizations-tab-orgs-card-orgname"
       ></ResourceCard.Name>
       <ResourceCard.Meta>
-        <FlexBox.Child className="account--organizations-tab-orgs-card-cluster-data">
+        <FlexBox className="account--organizations-tab-orgs-card-cluster-data">
           Cloud Provider: {provider}
-        </FlexBox.Child>
-        <FlexBox.Child className="account--organizations-tab-orgs-card-cluster-data">
+        </FlexBox>
+        <FlexBox className="account--organizations-tab-orgs-card-cluster-data">
           Region: {regionCode}
-        </FlexBox.Child>
-        <FlexBox.Child className="account-organizations-tab-orgs-card-location-data">
+        </FlexBox>
+        <FlexBox className="account-organizations-tab-orgs-card-location-data">
           Location: {regionName}
-        </FlexBox.Child>
+        </FlexBox>
       </ResourceCard.Meta>
     </ResourceCard>
   )

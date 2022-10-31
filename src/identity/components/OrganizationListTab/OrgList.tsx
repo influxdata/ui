@@ -8,6 +8,12 @@ import {OrganizationCard} from 'src/identity/components/OrganizationListTab/Orga
 
 // Constants
 import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
+const DEFAULT_BANNER_HEIGHT = 60
+const DEFAULT_ORG_CARD_HEIGHT = 105
+const DEFAULT_PAGINATION_NAV_HEIGHT = 72
+const DEFAULT_SEARCH_WIDGET_HEIGHT = 60
+const DEFAULT_TABS_HEIGHT = 40
+const DEFAULT_TOTAL_MARGIN_HEIGHT = 60
 
 // Utils
 import {getSortedResources, SortTypes} from 'src/shared/utils/sort'
@@ -46,26 +52,28 @@ export const OrgList: FC<Props> = ({
   )
 
   // Org List Pagination Calculations
-  const tabsHeight = document.querySelector('cf-tabs')?.clientHeight ?? 40
+  const tabsHeight =
+    document.querySelector('cf-tabs')?.clientHeight ?? DEFAULT_TABS_HEIGHT
 
   const quotaBannerHeight = isAtOrgLimit
     ? document.querySelector('.account-settings-page-org-tab--upgrade-banner')
-        ?.clientHeight || 60
+        ?.clientHeight || DEFAULT_BANNER_HEIGHT
     : 0
 
   const searchWidgetHeight =
     document.querySelector(
       '.account-settings-page-org-tab--sort-dropdown-container'
-    )?.clientHeight ?? 60
+    )?.clientHeight ?? DEFAULT_SEARCH_WIDGET_HEIGHT
 
   const orgCardHeight =
     document.querySelector('.account--organizations-tab-orgs-card')
-      ?.clientHeight ?? 105
+      ?.clientHeight ?? DEFAULT_ORG_CARD_HEIGHT
 
   const paginationNavHeight =
-    document.querySelector('.cf-pagination')?.clientHeight ?? 72
+    document.querySelector('.cf-pagination')?.clientHeight ??
+    DEFAULT_PAGINATION_NAV_HEIGHT
 
-  const marginHeight = 60
+  const marginHeight = DEFAULT_TOTAL_MARGIN_HEIGHT
 
   const orgCardsContainerHeight =
     pageHeight -
@@ -80,8 +88,8 @@ export const OrgList: FC<Props> = ({
     Math.floor(orgCardsContainerHeight / orgCardHeight),
     1
   )
-  const firstOrgOnPage = totalOrgsPerPage * (currentPage - 1)
-  const lastOrgOnPage = totalOrgsPerPage * currentPage
+  const firstOrgOnPage = (currentPage - 1) * totalOrgsPerPage
+  const lastOrgOnPage = totalOrgsPerPage * currentPage - 1
 
   useEffect(() => {
     const totalPages = Math.ceil(sortedOrgs.length / totalOrgsPerPage) || 1
@@ -89,7 +97,7 @@ export const OrgList: FC<Props> = ({
     setTotalPages(totalPages)
   }, [sortedOrgs.length, setTotalPages, totalOrgsPerPage])
 
-  const paginatedOrgs = sortedOrgs.slice(firstOrgOnPage, lastOrgOnPage)
+  const paginatedOrgs = sortedOrgs.slice(firstOrgOnPage, lastOrgOnPage + 1)
 
   if (paginatedOrgs.length === 0) {
     return <NoOrgsState />

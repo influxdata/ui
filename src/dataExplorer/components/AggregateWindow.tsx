@@ -21,8 +21,11 @@ const AGGREGATE_WINDOW_TOOLTIP = `test`
 
 const AggregateWindow: FC = () => {
   const {selection, setSelection} = useContext(PersistanceContext)
-  const {isOn, column: selectedColumn}: AggregateWindow =
-    selection.resultOptions.aggregateWindow
+  const {
+    isOn,
+    fn: selectedFunction,
+    column: selectedColumn,
+  }: AggregateWindow = selection.resultOptions.aggregateWindow
 
   const handleToggleAggregateWindow = useCallback(
     (isOn: boolean) => {
@@ -71,6 +74,37 @@ const AggregateWindow: FC = () => {
     )
   }, [isOn, selectedColumn, handleSelectColumn])
 
+  const handleSelectFunction = useCallback(
+    (fn: string) => {
+      const aggregateWindow: AggregateWindow =
+        selection.resultOptions.aggregateWindow
+      aggregateWindow.fn = fn
+      setSelection({
+        resultOptions: {
+          aggregateWindow,
+        },
+      })
+    },
+    [selection.resultOptions.aggregateWindow, setSelection]
+  )
+
+  const functionSelector = useMemo(() => {
+    return (
+      isOn && (
+        <SearchableDropdown
+          options={['fn1', 'fn2', 'fn3', 'fn4']} // TODO: get aggregate functions from backend
+          selectedOption={selectedFunction || 'Select aggregate function'}
+          onSelect={handleSelectFunction}
+          buttonStatus={ComponentStatus.Default} // TODO: use toComponentStatus
+          testID="aggregate-window--function--dropdown"
+          buttonTestID="aggregate-window--function--dropdown-button"
+          menuTestID="aggregate-window--function--dropdown-menu"
+          emptyText="No functions find. Refresh the page and retry." // TODO: re-phrase it
+        />
+      )
+    )
+  }, [isOn, selectedFunction, handleSelectFunction])
+
   return useMemo(() => {
     return (
       <div className="result-options--item">
@@ -81,12 +115,12 @@ const AggregateWindow: FC = () => {
           tooltipContents={AGGREGATE_WINDOW_TOOLTIP}
         />
         {columnSelector}
-        {/* {functionSelector}
-        {durationForm}
+        {functionSelector}
+        {/* {durationForm}
         {createEmptyToggle} */}
       </div>
     )
-  }, [isOn, handleToggleAggregateWindow, columnSelector])
+  }, [isOn, columnSelector, functionSelector, handleToggleAggregateWindow])
 }
 
 export {AggregateWindow}

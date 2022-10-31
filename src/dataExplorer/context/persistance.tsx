@@ -32,6 +32,7 @@ export const DEFAULT_GROUP_OPTIONS: GroupOptions = {
 
 export interface AggregateWindow {
   isOn: boolean
+  isAutoWindowPeriod: boolean
   every: string // TODO: check if there is a duration type
   fn: string // TODO: check if there is a enum fn list
   column: string
@@ -40,6 +41,7 @@ export interface AggregateWindow {
 
 export const DEFAULT_AGGREGATE_WINDOW: AggregateWindow = {
   isOn: false,
+  isAutoWindowPeriod: true,
   every: '10s',
   fn: '',
   column: '',

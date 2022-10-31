@@ -3,6 +3,8 @@ import React, {FC, useCallback, useContext, useMemo} from 'react'
 // Components
 import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabelTooltip'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
+import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
+import DurationInput from 'src/shared/components/DurationInput'
 
 // Contexts
 import {
@@ -11,6 +13,12 @@ import {
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
 
+// Constants
+import {
+  AGG_WINDOW_AUTO,
+  DURATIONS,
+} from 'src/timeMachine/constants/queryBuilder'
+
 // Utilities
 import {ComponentStatus} from '@influxdata/clockface'
 
@@ -18,11 +26,14 @@ import {ComponentStatus} from '@influxdata/clockface'
 import './Sidebar.scss'
 
 const AGGREGATE_WINDOW_TOOLTIP = `test`
+const WINDOW_PERIOD_TOOLTIP = `test`
 
 const AggregateWindow: FC = () => {
   const {selection, setSelection} = useContext(PersistanceContext)
   const {
     isOn,
+    isAutoWindowPeriod,
+    every: duration,
     fn: selectedFunction,
     column: selectedColumn,
   }: AggregateWindow = selection.resultOptions.aggregateWindow
@@ -105,6 +116,74 @@ const AggregateWindow: FC = () => {
     )
   }, [isOn, selectedFunction, handleSelectFunction])
 
+  const handleToggleAutoWindowPeriod = useCallback(
+    isAutoWindowPeriod => {
+      const aggregateWindow: AggregateWindow =
+        selection.resultOptions.aggregateWindow
+      aggregateWindow.isAutoWindowPeriod = !isAutoWindowPeriod
+      aggregateWindow.every = '10s' // TODO: use duration type
+      setSelection({
+        resultOptions: {
+          aggregateWindow,
+        },
+      })
+    },
+    [selection.resultOptions.aggregateWindow, setSelection]
+  )
+
+  const handleSetDuration = useCallback(
+    (duration: string) => {
+      const aggregateWindow: AggregateWindow =
+        selection.resultOptions.aggregateWindow
+      aggregateWindow.every = duration
+      setSelection({
+        resultOptions: {
+          aggregateWindow,
+        },
+      })
+    },
+    [selection.resultOptions.aggregateWindow, setSelection]
+  )
+
+  const windowPeriodForm = useMemo(() => {
+    const durationInputStatus = isAutoWindowPeriod
+      ? ComponentStatus.Disabled
+      : ComponentStatus.Default
+
+    const durationDisplay = isAutoWindowPeriod
+      ? `(${AGG_WINDOW_AUTO}) ${duration}`
+      : `${duration}`
+
+    return (
+      isOn && (
+        <div>
+          <SelectorTitle
+            label="Window Period"
+            tooltipContents={WINDOW_PERIOD_TOOLTIP}
+          />
+          <ToggleWithLabelTooltip
+            label="Auto window period"
+            active={isAutoWindowPeriod}
+            onChange={() => handleToggleAutoWindowPeriod(isAutoWindowPeriod)}
+          />
+          <DurationInput
+            suggestions={DURATIONS}
+            onSubmit={handleSetDuration}
+            value={durationDisplay}
+            submitInvalid={false}
+            status={durationInputStatus}
+          />
+        </div>
+      )
+    )
+  }, [
+    isOn,
+    isAutoWindowPeriod,
+    duration,
+    handleSetDuration,
+    handleToggleAutoWindowPeriod,
+  ])
+
   return useMemo(() => {
     return (
       <div className="result-options--item">
@@ -116,11 +195,17 @@ const AggregateWindow: FC = () => {
         />
         {columnSelector}
         {functionSelector}
-        {/* {durationForm}
-        {createEmptyToggle} */}
+        {windowPeriodForm}
+        {/* {createEmptyToggle} */}
       </div>
     )
-  }, [isOn, columnSelector, functionSelector, handleToggleAggregateWindow])
+  }, [
+    isOn,
+    columnSelector,
+    functionSelector,
+    windowPeriodForm,
+    handleToggleAggregateWindow,
+  ])
 }
 
 export {AggregateWindow}

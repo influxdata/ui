@@ -53,13 +53,12 @@ const AggregateWindow: FC = () => {
 
   const handleSelectColumn = useCallback(
     (column: string) => {
-      const aggregateWindow: AggregateWindow =
-        selection.resultOptions.aggregateWindow
-      aggregateWindow.column = column
       setSelection({
         resultOptions: {
-          // TODO: what if the user wants to not have column?
-          aggregateWindow,
+          aggregateWindow: {
+            ...selection?.resultOptions?.aggregateWindow,
+            column,
+          },
         },
       })
     },
@@ -67,6 +66,7 @@ const AggregateWindow: FC = () => {
   )
 
   const columnSelector = useMemo(() => {
+    // TODO: what if the user wants to not have column?
     return (
       isOn && (
         <SearchableDropdown

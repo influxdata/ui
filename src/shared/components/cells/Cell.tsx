@@ -139,11 +139,14 @@ class CellComponent extends Component<Props, State> {
             </span>
           )
         }
-        return (
-          <span className="cell--window-period">
-            window period: {this.props.windowPeriodFromQueryBuilder}
-          </span>
-        )
+        if (this.props.windowPeriodFromQueryBuilder.length) {
+          return (
+            <span className="cell--window-period">
+              window period: {this.props.windowPeriodFromQueryBuilder}
+            </span>
+          )
+        }
+        return null
       }
       default:
         return null

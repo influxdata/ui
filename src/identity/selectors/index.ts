@@ -24,16 +24,16 @@ export const selectCurrentAccountType = (
   return state.identity.currentIdentity.account.type
 }
 
+export const selectCurrentOrgId = (
+  state: AppState
+): AppState['identity']['currentIdentity']['org']['id'] => {
+  return state.identity.currentIdentity.org.id
+}
+
 export const selectOperatorRole = (
   state: AppState
 ): AppState['identity']['currentIdentity']['user']['operatorRole'] => {
   return state.identity.currentIdentity.user.operatorRole
-}
-
-export const selectOrgId = (
-  state: AppState
-): AppState['identity']['currentIdentity']['org']['id'] => {
-  return state.identity.currentIdentity.org.id
 }
 
 export const selectQuartzIdentityStatus = (state: AppState): RemoteDataState =>

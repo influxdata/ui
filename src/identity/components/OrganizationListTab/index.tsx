@@ -4,8 +4,8 @@ import {useDispatch, useSelector} from 'react-redux'
 import {
   FlexBox,
   FlexDirection,
-  ResourceList,
   PaginationNav,
+  ResourceList,
   Sort,
 } from '@influxdata/clockface'
 

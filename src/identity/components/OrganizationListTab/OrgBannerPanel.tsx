@@ -10,7 +10,7 @@ import './OrgBannerPanel.scss'
 import {CLOUD_URL} from 'src/shared/constants'
 
 // Selectors
-import {selectOrgId} from 'src/identity/selectors'
+import {selectCurrentOrgId} from 'src/identity/selectors'
 
 // Types
 import {OrgAllowance} from 'src/identity/components/OrganizationListTab'
@@ -19,7 +19,7 @@ export const OrgBannerPanel: FC<OrgAllowance> = ({
   availableUpgrade,
   isAtOrgLimit,
 }) => {
-  const orgId = useSelector(selectOrgId)
+  const orgId = useSelector(selectCurrentOrgId)
 
   let upgradePage = '/'
 

@@ -40,20 +40,16 @@ const AggregateWindow: FC = () => {
   }: AggregateWindow = selection?.resultOptions?.aggregateWindow ||
   DEFAULT_AGGREGATE_WINDOW
 
-  const handleToggleAggregateWindow = useCallback(
-    (isOn: boolean) => {
-      const aggregateWindow: AggregateWindow = JSON.parse(
-        JSON.stringify(DEFAULT_AGGREGATE_WINDOW)
-      )
-      aggregateWindow.isOn = !isOn
-      setSelection({
-        resultOptions: {
-          aggregateWindow,
+  const handleToggleAggregateWindow = useCallback(() => {
+    setSelection({
+      resultOptions: {
+        aggregateWindow: {
+          ...JSON.parse(JSON.stringify(DEFAULT_AGGREGATE_WINDOW)),
+          isOn: !selection?.resultOptions?.aggregateWindow?.isOn,
         },
-      })
-    },
-    [setSelection]
-  )
+      },
+    })
+  }, [selection.resultOptions.aggregateWindow, setSelection])
 
   const handleSelectColumn = useCallback(
     (column: string) => {
@@ -216,7 +212,7 @@ const AggregateWindow: FC = () => {
         <ToggleWithLabelTooltip
           label="Aggregate"
           active={isOn}
-          onChange={() => handleToggleAggregateWindow(isOn)}
+          onChange={handleToggleAggregateWindow}
           tooltipContents={AGGREGATE_WINDOW_TOOLTIP}
         />
         {columnSelector}

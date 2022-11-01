@@ -36,7 +36,9 @@ const AggregateWindow: FC = () => {
     every: duration,
     fn: selectedFunction,
     column: selectedColumn,
-  }: AggregateWindow = selection.resultOptions.aggregateWindow
+    createEmpty,
+  }: AggregateWindow = selection?.resultOptions?.aggregateWindow ||
+  DEFAULT_AGGREGATE_WINDOW
 
   const handleToggleAggregateWindow = useCallback(
     (isOn: boolean) => {
@@ -184,6 +186,30 @@ const AggregateWindow: FC = () => {
     handleToggleAutoWindowPeriod,
   ])
 
+  const handleToggleCreateEmpty = useCallback(() => {
+    const createEmpty = !selection?.resultOptions?.aggregateWindow?.createEmpty
+    setSelection({
+      resultOptions: {
+        aggregateWindow: {
+          ...selection.resultOptions.aggregateWindow,
+          createEmpty,
+        },
+      },
+    })
+  }, [selection.resultOptions.aggregateWindow, setSelection])
+
+  const createEmptyToggle = useMemo(() => {
+    return (
+      isOn && (
+        <ToggleWithLabelTooltip
+          label="Fill missing values"
+          active={createEmpty}
+          onChange={handleToggleCreateEmpty}
+        />
+      )
+    )
+  }, [isOn, createEmpty, handleToggleCreateEmpty])
+
   return useMemo(() => {
     return (
       <div className="result-options--item">
@@ -196,7 +222,7 @@ const AggregateWindow: FC = () => {
         {columnSelector}
         {functionSelector}
         {windowPeriodForm}
-        {/* {createEmptyToggle} */}
+        {createEmptyToggle}
       </div>
     )
   }, [
@@ -204,6 +230,7 @@ const AggregateWindow: FC = () => {
     columnSelector,
     functionSelector,
     windowPeriodForm,
+    createEmptyToggle,
     handleToggleAggregateWindow,
   ])
 }

@@ -45,7 +45,7 @@ export const DEFAULT_AGGREGATE_WINDOW: AggregateWindow = {
   every: '10s',
   fn: '',
   column: '',
-  createEmpty: false,
+  createEmpty: true,
 }
 
 interface ResultOptions {

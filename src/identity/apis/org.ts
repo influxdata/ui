@@ -34,6 +34,16 @@ export interface CurrentOrg {
   regionName?: string
 }
 
+export interface QuartzOrganization {
+  id: string
+  name: string
+  isActive: boolean
+  isDefault: boolean
+  provider?: string
+  regionCode?: string
+  regionName?: string
+}
+
 export type QuartzOrganizations = {
   orgs: OrganizationSummaries
   status?: RemoteDataState

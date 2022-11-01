@@ -19,7 +19,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {EditResourceAccordion} from 'src/authorizations/components/EditResourceAccordion'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 
 // Types
 import {Authorization, ResourceType} from 'src/types'

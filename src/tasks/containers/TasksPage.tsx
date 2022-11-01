@@ -9,7 +9,7 @@ import {Page, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import TasksHeader from 'src/tasks/components/TasksHeader'
 import TasksList from 'src/tasks/components/TasksList'
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 
@@ -60,7 +60,7 @@ interface State {
   sortType: SortTypes
 }
 
-const Filter = FilterList<Task>()
+const Filter = FilterListContainer<Task>()
 
 @ErrorHandling
 class TasksPage extends PureComponent<Props, State> {

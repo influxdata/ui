@@ -6,7 +6,7 @@ import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
 
 // Components
 import {ComponentSize} from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 
 const WriteDataSearchBar: FC = () => {
   const {searchTerm, setSearchTerm} = useContext(WriteDataSearchContext)

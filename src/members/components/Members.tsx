@@ -7,9 +7,9 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import {EmptyState, Sort} from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import MemberList from 'src/members/components/MemberList'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 
 // Actions
 import {deleteMember} from 'src/members/actions/thunks'
@@ -34,7 +34,7 @@ interface State {
 
 type SortKey = keyof Member
 
-const FilterMembers = FilterList<Member>()
+const FilterMembers = FilterListContainer<Member>()
 
 class Members extends PureComponent<Props, State> {
   constructor(props) {

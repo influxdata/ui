@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useMemo} from 'react'
 import {IconFont} from '@influxdata/clockface'
 
 // Types
@@ -34,6 +34,9 @@ import {
 // Constants
 import {CLOUD_URL} from 'src/shared/constants'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 export const AccountDropdown: FC<Props> = ({
   accountsList,
   activeAccount,
@@ -44,18 +47,32 @@ export const AccountDropdown: FC<Props> = ({
     name: activeAccount.name,
   }
 
-  const accountMainMenu = [
-    {
-      name: 'Settings',
-      iconFont: IconFont.CogSolid_New,
-      href: `/orgs/${activeOrg.id}/accounts/settings`,
-    },
-    {
-      name: 'Billing',
-      iconFont: IconFont.Bill,
-      href: `/orgs/${activeOrg.id}/billing`,
-    },
-  ]
+  const isCreateDeleteFlagOn = isFlagEnabled('createDeleteOrgs')
+
+  const accountMainMenu = useMemo(
+    () =>
+      [
+        {
+          name: 'Settings',
+          iconFont: IconFont.CogSolid_New,
+          href: `/orgs/${activeOrg.id}/accounts/settings`,
+          enabled: true,
+        },
+        {
+          name: 'Organizations',
+          iconFont: IconFont.Group,
+          href: `/orgs/${activeOrg.id}/accounts/orglist`,
+          enabled: isCreateDeleteFlagOn,
+        },
+        {
+          name: 'Billing',
+          iconFont: IconFont.Bill,
+          href: `/orgs/${activeOrg.id}/billing`,
+          enabled: true,
+        },
+      ].filter(menuOption => menuOption.enabled),
+    [activeOrg.id, isCreateDeleteFlagOn]
+  )
 
   // Quartz handles switching accounts by having the user hit this URL.
   const switchAccount = (account: TypeAheadMenuItem) => {

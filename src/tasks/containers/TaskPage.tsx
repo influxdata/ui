@@ -1,8 +1,19 @@
 // Libraries
-import React, {lazy, Suspense, PureComponent, ChangeEvent} from 'react'
+import React, {
+  FC,
+  lazy,
+  Suspense,
+  useContext,
+  useEffect,
+  ChangeEvent,
+} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {
+  ComponentSize,
+  FlexBox,
+  InputLabel,
   RemoteDataState,
+  SlideToggle,
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
@@ -10,6 +21,7 @@ import {
 // Components
 import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
+import NewTasksPage from 'src/tasks/containers/NewTasksPage'
 import {Page} from '@influxdata/clockface'
 
 // Actions and Selectors
@@ -28,9 +40,11 @@ import {
 } from 'src/utils/taskOptionsToFluxScript'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -39,86 +53,42 @@ const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
 )
 
-class TaskPage extends PureComponent<Props> {
-  constructor(props) {
-    super(props)
-  }
+const TaskPage: FC<Props> = props => {
+  const {newScript, taskOptions, setTaskOption, clearTask} = props
+  const {newTasksUI, setNewTasksUI} = useContext(AppSettingContext)
+  const showNewTasks = newTasksUI && isFlagEnabled('tasksUiEnhancements')
 
-  public componentDidMount() {
-    this.props.setTaskOption({
+  useEffect(() => {
+    setTaskOption({
       key: 'taskScheduleType',
       value: TaskSchedule.interval,
     })
-  }
+  }, [setTaskOption])
 
-  public componentWillUnmount() {
-    this.props.clearTask()
-  }
+  useEffect(() => {
+    clearTask()
+  }, [clearTask])
 
-  public render(): JSX.Element {
-    const {newScript, taskOptions} = this.props
-
-    return (
-      <Page titleTag={pageTitleSuffixer(['Create Task'])}>
-        <TaskHeader
-          title="Create Task"
-          canSubmit={this.isFormValid}
-          onCancel={this.handleCancel}
-          onSave={this.handleSave}
-        />
-        <Page.Contents fullWidth={true} scrollable={false}>
-          <div className="task-form">
-            <div className="task-form--options">
-              <TaskForm
-                taskOptions={taskOptions}
-                canSubmit={this.isFormValid}
-                onChangeInput={this.handleChangeInput}
-                onChangeScheduleType={this.handleChangeScheduleType}
-              />
-            </div>
-            <div className="task-form--editor">
-              <Suspense
-                fallback={
-                  <SpinnerContainer
-                    loading={RemoteDataState.Loading}
-                    spinnerComponent={<TechnoSpinner />}
-                  />
-                }
-              >
-                <FluxMonacoEditor
-                  script={newScript}
-                  variables={this.props.variables}
-                  onChangeScript={this.handleChangeScript}
-                  autofocus
-                />
-              </Suspense>
-            </div>
-          </div>
-        </Page.Contents>
-      </Page>
-    )
-  }
-
-  private get isFormValid(): boolean {
+  const isFormValid = () => {
     const {
       taskOptions: {name, cron, interval},
       newScript,
-    } = this.props
+    } = props
 
     const hasSchedule = !!cron || !!interval
     return hasSchedule && !!name && !!newScript
   }
 
-  private handleChangeScript = (script: string) => {
-    this.props.setNewScript(script)
+  const handleChangeScript = (script: string) => {
+    props.setNewScript(script)
   }
 
-  private handleChangeScheduleType = (value: TaskSchedule) => {
-    this.props.setTaskOption({key: 'taskScheduleType', value})
+  const handleChangeScheduleType = (value: TaskSchedule) => {
+    props.setTaskOption({key: 'taskScheduleType', value})
   }
 
-  private handleSave = () => {
-    const {newScript, taskOptions} = this.props
+  const handleSave = () => {
+    const {newScript, taskOptions} = props
 
     const taskOption: string = taskOptionsToFluxScript(taskOptions)
     let script: string = addDestinationToFluxScript(newScript, taskOptions)
@@ -130,21 +100,85 @@ class TaskPage extends PureComponent<Props> {
     script = script.replace(new RegExp('option\\s+task\\s+=\\s+{(.|\\s)*}'), '')
 
     event('Valid Task Form Submitted')
-    this.props.saveNewScript(script, preamble).then(() => {
-      this.props.goToTasks()
+    props.saveNewScript(script, preamble).then(() => {
+      props.goToTasks()
     })
   }
 
-  private handleCancel = () => {
-    this.props.cancel()
+  const handleCancel = () => {
+    props.cancel()
   }
 
-  private handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target
     const key = name as TaskOptionKeys
 
-    this.props.setTaskOption({key, value})
+    props.setTaskOption({key, value})
   }
+
+  const toggleSlider = () => {
+    setNewTasksUI(!newTasksUI)
+  }
+
+  return (
+    <Page titleTag={pageTitleSuffixer(['Create Task'])}>
+      <Page.Header fullWidth={true}>
+        <FlexBox margin={ComponentSize.Small}>
+          {isFlagEnabled('tasksUiEnhancements') && (
+            <FlexBox margin={ComponentSize.Medium}>
+              <InputLabel>&#10024; Preview New Tasks</InputLabel>
+              <SlideToggle
+                active={newTasksUI}
+                onChange={toggleSlider}
+                testID="flux-query-builder-toggle"
+              />
+            </FlexBox>
+          )}
+        </FlexBox>
+      </Page.Header>
+      {showNewTasks ? (
+        <NewTasksPage />
+      ) : (
+        <>
+          <TaskHeader
+            title="Create Task"
+            canSubmit={isFormValid()}
+            onCancel={handleCancel}
+            onSave={handleSave}
+          />
+          <Page.Contents fullWidth={true} scrollable={false}>
+            <div className="task-form">
+              <div className="task-form--options">
+                <TaskForm
+                  taskOptions={taskOptions}
+                  canSubmit={isFormValid()}
+                  onChangeInput={handleChangeInput}
+                  onChangeScheduleType={handleChangeScheduleType}
+                />
+              </div>
+              <div className="task-form--editor">
+                <Suspense
+                  fallback={
+                    <SpinnerContainer
+                      loading={RemoteDataState.Loading}
+                      spinnerComponent={<TechnoSpinner />}
+                    />
+                  }
+                >
+                  <FluxMonacoEditor
+                    script={newScript}
+                    variables={props.variables}
+                    onChangeScript={handleChangeScript}
+                    autofocus
+                  />
+                </Suspense>
+              </div>
+            </div>
+          </Page.Contents>
+        </>
+      )}
+    </Page>
+  )
 }
 
 const mstp = (state: AppState) => {

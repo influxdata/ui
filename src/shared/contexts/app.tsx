@@ -6,6 +6,7 @@ import {
   setTheme as setThemeAction,
   setNavBarState as setNavbarModeAction,
   setFluxQueryBuilder as setFluxQueryBuilderAction,
+  setNewTasksUI as setNewTasksUIAction,
   enablePresentationMode,
   disablePresentationMode,
   setFlowsCTA as setFlowsCTAAction,
@@ -17,6 +18,7 @@ import {
   getPresentationMode as presentationModeFromState,
   fluxQueryBuilder as fluxQueryBuilderFromState,
   navbarMode as navbarModeFromState,
+  newTasksUI as newTasksUIFromState,
   getFlowsCTA,
   getSubscriptionsCertificateInterest,
 } from 'src/shared/selectors/app'
@@ -32,6 +34,7 @@ interface AppSettingContextType {
   theme: Theme
   presentationMode: boolean
   fluxQueryBuilder: boolean
+  newTasksUI: boolean
   navbarMode: NavBarState
   flowsCTA: FlowsCTA
   subscriptionsCertificateInterest: boolean
@@ -40,6 +43,7 @@ interface AppSettingContextType {
   setTheme: (theme: Theme) => void
   setPresentationMode: (active: boolean) => void
   setFluxQueryBuilder: (active: boolean) => void
+  setNewTasksUI: (active: boolean) => void
   setNavbarMode: (mode: NavBarState) => void
   setFlowsCTA: (flowsCTA: FlowsCTA) => void
   setSubscriptionsCertificateInterest: () => void
@@ -50,6 +54,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   theme: 'dark' as Theme,
   presentationMode: false,
   fluxQueryBuilder: false,
+  newTasksUI: true,
   navbarMode: 'collapsed' as NavBarState,
   flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
   subscriptionsCertificateInterest: false,
@@ -58,6 +63,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   setTheme: (_theme: Theme) => {},
   setPresentationMode: (_active: boolean) => {},
   setFluxQueryBuilder: (_active: boolean) => {},
+  setNewTasksUI: (_active: boolean) => {},
   setNavbarMode: (_mode: NavBarState) => {},
   setFlowsCTA: (_flowsCTA: FlowsCTA) => {},
   setSubscriptionsCertificateInterest: () => {},
@@ -72,6 +78,7 @@ export const AppSettingProvider: FC = ({children}) => {
     theme,
     presentationMode,
     fluxQueryBuilder,
+    newTasksUI,
     navbarMode,
     flowsCTA,
     subscriptionsCertificateInterest,
@@ -80,6 +87,7 @@ export const AppSettingProvider: FC = ({children}) => {
     theme: themeFromState(state),
     presentationMode: presentationModeFromState(state),
     fluxQueryBuilder: fluxQueryBuilderFromState(state),
+    newTasksUI: newTasksUIFromState(state),
     navbarMode: navbarModeFromState(state),
     flowsCTA: getFlowsCTA(state),
     subscriptionsCertificateInterest:
@@ -118,6 +126,12 @@ export const AppSettingProvider: FC = ({children}) => {
     },
     [dispatch]
   )
+  const setNewTasksUI = useCallback(
+    (_active: boolean) => {
+      dispatch(setNewTasksUIAction(_active))
+    },
+    [dispatch]
+  )
   const setNavbarMode = useCallback(
     (_mode: NavBarState) => {
       dispatch(setNavbarModeAction(_mode))
@@ -142,6 +156,7 @@ export const AppSettingProvider: FC = ({children}) => {
         theme,
         presentationMode,
         fluxQueryBuilder,
+        newTasksUI,
         navbarMode,
         flowsCTA,
         subscriptionsCertificateInterest,
@@ -150,6 +165,7 @@ export const AppSettingProvider: FC = ({children}) => {
         setTheme,
         setPresentationMode,
         setFluxQueryBuilder,
+        setNewTasksUI,
         setNavbarMode,
         setFlowsCTA,
         setSubscriptionsCertificateInterest,

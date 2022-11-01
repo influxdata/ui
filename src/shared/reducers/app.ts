@@ -15,6 +15,7 @@ export interface AppState {
     timeZone: TimeZone
     navBarState: NavBarState
     fluxQueryBuilder: boolean
+    newTasksUI: boolean
     theme: Theme
     versionInfo: VersionInfo
     flowsCTA: FlowsCTA
@@ -33,6 +34,7 @@ const initialState: AppState = {
     timeZone: 'Local',
     navBarState: 'collapsed',
     fluxQueryBuilder: false,
+    newTasksUI: true,
     versionInfo: {version: '', commit: ''},
     flowsCTA: {explorer: true, tasks: true, alerts: true},
     subscriptionsCertificateInterest: false,
@@ -107,6 +109,10 @@ const appPersistedReducer = (
         ...state,
         navBarState,
       }
+    }
+
+    case ActionTypes.SetNewTasksUI: {
+      return {...state, newTasksUI: action.active}
     }
 
     case ActionTypes.SetFlowsCTA: {

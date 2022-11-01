@@ -35,7 +35,6 @@ interface OwnProps {
 
 type Props = OwnProps & Cluster
 
-// TODO(Subir): Please suggest a better name
 export const ClusterBox: FC<Props> = ({
   providerId,
   providerName,

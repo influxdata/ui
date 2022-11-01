@@ -116,29 +116,28 @@ const AggregateWindow: FC = () => {
     )
   }, [isOn, selectedFunction, handleSelectFunction])
 
-  const handleToggleAutoWindowPeriod = useCallback(
-    isAutoWindowPeriod => {
-      const aggregateWindow: AggregateWindow =
-        selection.resultOptions.aggregateWindow
-      aggregateWindow.isAutoWindowPeriod = !isAutoWindowPeriod
-      aggregateWindow.every = '10s' // TODO: use duration type
-      setSelection({
-        resultOptions: {
-          aggregateWindow,
+  const handleToggleAutoWindowPeriod = useCallback(() => {
+    const isAutoWindowPeriod =
+      !selection?.resultOptions?.aggregateWindow?.isAutoWindowPeriod
+    setSelection({
+      resultOptions: {
+        aggregateWindow: {
+          ...selection?.resultOptions?.aggregateWindow,
+          isAutoWindowPeriod,
+          every: '10s', // TODO: use duration type, any enum?
         },
-      })
-    },
-    [selection.resultOptions.aggregateWindow, setSelection]
-  )
+      },
+    })
+  }, [selection.resultOptions.aggregateWindow, setSelection])
 
   const handleSetDuration = useCallback(
     (duration: string) => {
-      const aggregateWindow: AggregateWindow =
-        selection.resultOptions.aggregateWindow
-      aggregateWindow.every = duration
       setSelection({
         resultOptions: {
-          aggregateWindow,
+          aggregateWindow: {
+            ...selection?.resultOptions?.aggregateWindow,
+            every: duration,
+          },
         },
       })
     },
@@ -164,7 +163,7 @@ const AggregateWindow: FC = () => {
           <ToggleWithLabelTooltip
             label="Auto window period"
             active={isAutoWindowPeriod}
-            onChange={() => handleToggleAutoWindowPeriod(isAutoWindowPeriod)}
+            onChange={handleToggleAutoWindowPeriod}
           />
           <DurationInput
             suggestions={DURATIONS}

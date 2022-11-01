@@ -70,6 +70,7 @@ const AggregateWindow: FC = () => {
     return (
       isOn && (
         <SearchableDropdown
+          // TODO: searchTerm
           options={['column1', 'column2', 'column3']} // TODO: get column from backend
           selectedOption={selectedColumn || 'Select column'}
           onSelect={handleSelectColumn}
@@ -85,12 +86,12 @@ const AggregateWindow: FC = () => {
 
   const handleSelectFunction = useCallback(
     (fn: string) => {
-      const aggregateWindow: AggregateWindow =
-        selection.resultOptions.aggregateWindow
-      aggregateWindow.fn = fn
       setSelection({
         resultOptions: {
-          aggregateWindow,
+          aggregateWindow: {
+            ...selection?.resultOptions?.aggregateWindow,
+            fn,
+          },
         },
       })
     },
@@ -101,6 +102,7 @@ const AggregateWindow: FC = () => {
     return (
       isOn && (
         <SearchableDropdown
+          // TODO: searchTerm
           options={['fn1', 'fn2', 'fn3', 'fn4']} // TODO: get aggregate functions from backend
           selectedOption={selectedFunction || 'Select aggregate function'}
           onSelect={handleSelectFunction}

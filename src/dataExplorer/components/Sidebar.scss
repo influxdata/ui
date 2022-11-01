@@ -52,8 +52,9 @@
   }
 
   .cf-accordion--body-container--expanded {
-    opacity: 1 !important; // to avoid dropdown background become transparent https://github.com/influxdata/clockface/issues/877
-  }
+    opacity: 1 !important;
+    animation: forwards;
+  } // to avoid dropdown background become transparent https://github.com/influxdata/clockface/issues/877
 
   .result-options--item {
     padding: $cf-space-2xs 0;

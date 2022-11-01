@@ -71,7 +71,14 @@ const AggregateWindow: FC = () => {
       isOn && (
         <SearchableDropdown
           // TODO: searchTerm
-          options={['column1', 'column2', 'column3']} // TODO: get column from backend
+          options={[
+            'column1',
+            'column2',
+            'column3',
+            'column4',
+            'column5',
+            'column6',
+          ]} // TODO: get column from backend
           selectedOption={selectedColumn || 'Select column'}
           onSelect={handleSelectColumn}
           buttonStatus={ComponentStatus.Default} // TODO: use toComponentStatus

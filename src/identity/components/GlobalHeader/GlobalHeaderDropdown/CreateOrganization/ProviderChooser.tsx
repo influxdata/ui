@@ -23,11 +23,11 @@ export const ProviderChooser: FC = () => {
   return (
     <FlexBox
       alignItems={AlignItems.FlexStart}
-      justifyContent={JustifyContent.Center}
+      className="provider-and-region-chooser"
       direction={FlexDirection.Column}
+      justifyContent={JustifyContent.Center}
       margin={ComponentSize.Large}
       stretchToFitWidth={true}
-      className="provider-and-region-chooser"
     >
       <InputLabel className="prc-title">Provider & Region</InputLabel>
       <InputLabel className="prc-description" size={ComponentSize.Small}>

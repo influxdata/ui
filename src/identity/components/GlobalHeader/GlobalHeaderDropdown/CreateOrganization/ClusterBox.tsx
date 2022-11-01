@@ -7,14 +7,14 @@ import {FlexBox, FlexDirection} from '@influxdata/clockface'
 import './ClusterBox.scss'
 
 // Components
-import {CreateOrgContext, ProviderID} from './CreateOrganizationContext'
-import {Cluster} from 'src/client/unityRoutes'
 import {AWSLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AWSLogo'
-import {AzureLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AzureLogo'
-import {GCPLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogo'
-import {AzureLogoWithText} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AzureLogoWithText'
-import {GCPLogoWithText} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogoWithText'
 import {AWSLogoColor} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AWSLogoColor'
+import {AzureLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AzureLogo'
+import {AzureLogoWithText} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AzureLogoWithText'
+import {Cluster} from 'src/client/unityRoutes'
+import {CreateOrgContext, ProviderID} from './CreateOrganizationContext'
+import {GCPLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogo'
+import {GCPLogoWithText} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogoWithText'
 
 const LOGOS = {
   AWS: (showLogoWithText: Boolean) =>

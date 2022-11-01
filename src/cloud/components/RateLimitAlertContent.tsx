@@ -12,7 +12,6 @@ import {
 
 // Components
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
@@ -23,15 +22,8 @@ import {
   shouldShowUpgradeButton,
 } from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  getDataLayerIdentity,
-  getExperimentVariantId,
-} from 'src/cloud/utils/experiments'
+import {getDataLayerIdentity} from 'src/cloud/utils/experiments'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 interface Props {
   className?: string
@@ -53,49 +45,16 @@ interface UpgradeMessageProps {
   type: string
 }
 
-const UpgradeMessage: FC<UpgradeMessageProps> = ({
-  isCredit250ExperienceActive,
-  limitText,
-  link,
-  type,
-}) => {
-  const original = (
-    <span className="upgrade-message">
-      Oh no! You hit the{' '}
-      <SafeBlankLink href={link}>
-        {type === 'series cardinality' ? 'series cardinality' : 'query write'}
-      </SafeBlankLink>{' '}
-      limit {limitText ?? ''} and your data stopped writing. Don't lose
-      important metrics.
-    </span>
-  )
-
-  const credit250Experience = (
-    <span className="upgrade-message" key="1">
-      You hit the{' '}
-      <SafeBlankLink href={link}>
-        {type === 'series cardinality' ? 'series cardinality' : 'query write'}
-      </SafeBlankLink>{' '}
-      limit {limitText ?? ''} and your data stopped writing. Upgrade to get a
-      free $250 credit for the first 30 days.
-    </span>
-  )
-
-  if (isFlagEnabled('credit250Experiment')) {
-    if (isCredit250ExperienceActive) {
-      return credit250Experience
-    }
-
-    return (
-      <GoogleOptimizeExperiment
-        experimentID={CREDIT_250_EXPERIMENT_ID}
-        original={original}
-        variants={[credit250Experience]}
-      />
-    )
-  }
-  return original
-}
+const UpgradeMessage: FC<UpgradeMessageProps> = ({limitText, link, type}) => (
+  <span className="upgrade-message" key="1">
+    You hit the{' '}
+    <SafeBlankLink href={link}>
+      {type === 'series cardinality' ? 'series cardinality' : 'query write'}
+    </SafeBlankLink>{' '}
+    limit {limitText ?? ''} and your data stopped writing. Upgrade to get a free
+    $250 credit for the first 30 days.
+  </span>
+)
 
 export const UpgradeContent: FC<UpgradeProps> = ({
   className,
@@ -120,24 +79,11 @@ export const UpgradeContent: FC<UpgradeProps> = ({
           className="upgrade-payg--button__rate-alert"
           showPromoMessage={false}
           metric={() => {
-            const experimentVariantId = getExperimentVariantId(
-              CREDIT_250_EXPERIMENT_ID
-            )
             const identity = getDataLayerIdentity()
-            event(
-              isFlagEnabled('credit250Experiment') &&
-                (experimentVariantId === '1' || isCredit250ExperienceActive)
-                ? `user.limits.${type}.credit-250.upgrade`
-                : `user.limits.${type}.upgrade`,
-              {
-                location,
-                ...identity,
-                experimentId: CREDIT_250_EXPERIMENT_ID,
-                experimentVariantId: isCredit250ExperienceActive
-                  ? '2'
-                  : experimentVariantId,
-              }
-            )
+            event(`user.limits.${type}.credit-250.upgrade`, {
+              location,
+              ...identity,
+            })
           }}
           size={ComponentSize.ExtraSmall}
         />

@@ -86,7 +86,6 @@ const GetOrganizations: FunctionComponent = () => {
   useEffect(() => {
     if (
       CLOUD &&
-      isFlagEnabled('credit250Experiment') &&
       identityLoadingStatus === RemoteDataState.Done &&
       orgLoadingStatus === RemoteDataState.Done
     ) {

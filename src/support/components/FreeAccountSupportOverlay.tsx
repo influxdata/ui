@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 
 // Components
 import {Icon, IconFont, List, Overlay} from '@influxdata/clockface'
@@ -11,16 +10,8 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  getDataLayerIdentity,
-  getExperimentVariantId,
-} from 'src/cloud/utils/experiments'
+import {getDataLayerIdentity} from 'src/cloud/utils/experiments'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {shouldGetCredit250Experience} from 'src/me/selectors'
-
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 import './ContactSupport.scss'
 
@@ -30,7 +21,6 @@ interface OwnProps {
 
 const FreeAccountSupportOverlay: FC<OwnProps> = () => {
   const {onClose} = useContext(OverlayContext)
-  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
   return (
     <Overlay.Container maxWidth={550} testID="overlay--container">
@@ -74,24 +64,11 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
       <Overlay.Footer>
         <CloudUpgradeButton
           metric={() => {
-            const experimentVariantId = getExperimentVariantId(
-              CREDIT_250_EXPERIMENT_ID
-            )
             const identity = getDataLayerIdentity()
-            event(
-              isFlagEnabled('credit250Experiment') &&
-                (experimentVariantId === '1' || isCredit250ExperienceActive)
-                ? `help-bar.overlay.free-account.credit-250.upgrade`
-                : `help-bar.overlay.free-account.upgrade`,
-              {
-                location: 'help bar',
-                ...identity,
-                experimentId: CREDIT_250_EXPERIMENT_ID,
-                experimentVariantId: isCredit250ExperienceActive
-                  ? '2'
-                  : experimentVariantId,
-              }
-            )
+            event(`help-bar.overlay.free-account.credit-250.upgrade`, {
+              location: 'help bar',
+              ...identity,
+            })
           }}
         />
       </Overlay.Footer>

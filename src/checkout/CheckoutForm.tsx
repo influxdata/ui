@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 import {
   AlignItems,
   AppWrapper,
@@ -25,7 +24,6 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 import CancelButton from 'src/checkout/CancelButton'
 import NotificationSettingsForm from 'src/checkout/NotificationSettingsForm'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
@@ -38,18 +36,11 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 // Events
 import {event} from 'src/cloud/utils/reporting'
 
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
-
 // Utils
-import {shouldGetCredit250Experience} from 'src/me/selectors'
 import ContactForm from 'src/checkout/utils/ContactForm'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 const CheckoutForm: FC = () => {
-  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
-
   const {
     handleFormValidation,
     zuoraParams,
@@ -73,7 +64,7 @@ const CheckoutForm: FC = () => {
     }
   }
 
-  const credit250Experience = (
+  const creditBanner = (
     <BannerPanel
       key="credit-250-banner"
       gradient={Gradients.Info}
@@ -91,20 +82,6 @@ const CheckoutForm: FC = () => {
       </span>
     </BannerPanel>
   )
-
-  let creditBanner = null
-  if (isFlagEnabled('credit250Experiment')) {
-    if (isCredit250ExperienceActive) {
-      creditBanner = credit250Experience
-    } else {
-      creditBanner = (
-        <GoogleOptimizeExperiment
-          experimentID={CREDIT_250_EXPERIMENT_ID}
-          variants={[credit250Experience]}
-        />
-      )
-    }
-  }
 
   return (
     <Form onSubmit={onSubmit}>

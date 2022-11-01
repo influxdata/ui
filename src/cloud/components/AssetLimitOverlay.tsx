@@ -15,16 +15,9 @@ import {
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  getDataLayerIdentity,
-  getExperimentVariantId,
-} from 'src/cloud/utils/experiments'
+import {getDataLayerIdentity} from 'src/cloud/utils/experiments'
 import {event} from 'src/cloud/utils/reporting'
 import {shouldGetCredit250Experience} from 'src/me/selectors'
-
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Types
 import {AppState} from 'src/types'
@@ -38,11 +31,7 @@ interface StateProps {
   isCredit250ExperienceActive: boolean
 }
 
-const AssetLimitOverlay: FC<OwnProps & StateProps> = ({
-  assetName,
-  isCredit250ExperienceActive,
-  onClose,
-}) => {
+const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
   return (
     <OverlayContainer
       maxWidth={600}
@@ -75,24 +64,11 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({
               size={ComponentSize.Large}
               className="upgrade-payg--button__asset-create"
               metric={() => {
-                const experimentVariantId = getExperimentVariantId(
-                  CREDIT_250_EXPERIMENT_ID
-                )
                 const identity = getDataLayerIdentity()
-                event(
-                  isFlagEnabled('credit250Experiment') &&
-                    (experimentVariantId === '1' || isCredit250ExperienceActive)
-                    ? `${assetName}.overlay.limit.credit-250.upgrade`
-                    : `${assetName}.overlay.limit.upgrade`,
-                  {
-                    asset: assetName,
-                    ...identity,
-                    experimentId: CREDIT_250_EXPERIMENT_ID,
-                    experimentVariantId: isCredit250ExperienceActive
-                      ? '2'
-                      : experimentVariantId,
-                  }
-                )
+                event(`${assetName}.overlay.limit.credit-250.upgrade`, {
+                  asset: assetName,
+                  ...identity,
+                })
               }}
             />
           </Overlay.Footer>

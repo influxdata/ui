@@ -24,18 +24,10 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
-import {shouldGetCredit250Experience} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
-import {
-  getDataLayerIdentity,
-  getExperimentVariantId,
-} from 'src/cloud/utils/experiments'
+import {getDataLayerIdentity} from 'src/cloud/utils/experiments'
 import {AppSettingContext} from 'src/shared/contexts/app'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -61,7 +53,6 @@ const BrokerForm: FC<Props> = ({
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
-  const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
   const requiredFields = checkRequiredFields(formContent)
   const {navbarMode} = useContext(AppSettingContext)
   const navbarOpen = navbarMode === 'expanded'
@@ -104,25 +95,11 @@ const BrokerForm: FC<Props> = ({
               {showUpgradeButton ? (
                 <CloudUpgradeButton
                   metric={() => {
-                    const experimentVariantId = getExperimentVariantId(
-                      CREDIT_250_EXPERIMENT_ID
-                    )
                     const identity = getDataLayerIdentity()
-                    event(
-                      isFlagEnabled('credit250Experiment') &&
-                        (experimentVariantId === '1' ||
-                          isCredit250ExperienceActive)
-                        ? `subscriptions.parsing-form.credit-250.upgrade`
-                        : `subscriptions.parsing-form.upgrade`,
-                      {
-                        location: 'subscriptions parsing form',
-                        ...identity,
-                        experimentId: CREDIT_250_EXPERIMENT_ID,
-                        experimentVariantId: isCredit250ExperienceActive
-                          ? '2'
-                          : experimentVariantId,
-                      }
-                    )
+                    event(`subscriptions.parsing-form.credit-250.upgrade`, {
+                      location: 'subscriptions parsing form',
+                      ...identity,
+                    })
                   }}
                 />
               ) : (

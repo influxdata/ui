@@ -44,14 +44,19 @@ const AggregateWindow: FC = () => {
   DEFAULT_AGGREGATE_WINDOW
 
   const handleToggleAggregateWindow = useCallback(() => {
+    const toBeOn = !selection?.resultOptions?.aggregateWindow?.isOn
     setSelection({
       resultOptions: {
         aggregateWindow: {
           ...JSON.parse(JSON.stringify(DEFAULT_AGGREGATE_WINDOW)),
-          isOn: !selection?.resultOptions?.aggregateWindow?.isOn,
+          isOn: toBeOn,
         },
       },
     })
+    if (!toBeOn) {
+      setColumnSearchTerm('')
+      setFunctionSearchTerm('')
+    }
   }, [selection.resultOptions.aggregateWindow, setSelection])
 
   const handleSelectColumn = useCallback(
@@ -64,6 +69,7 @@ const AggregateWindow: FC = () => {
           },
         },
       })
+      setColumnSearchTerm('')
     },
     [selection.resultOptions.aggregateWindow, setSelection]
   )
@@ -106,6 +112,7 @@ const AggregateWindow: FC = () => {
           },
         },
       })
+      setFunctionSearchTerm('')
     },
     [selection.resultOptions.aggregateWindow, setSelection]
   )
@@ -121,7 +128,7 @@ const AggregateWindow: FC = () => {
           searchTerm={functionSearchTerm}
           onChangeSearchTerm={setFunctionSearchTerm}
           emptyText="No functions found"
-          buttonStatus={ComponentStatus.Default} // TODO: use toComponentStatus
+          buttonStatus={ComponentStatus.Default}
           testID="aggregate-window--function--dropdown"
           buttonTestID="aggregate-window--function--dropdown-button"
           menuTestID="aggregate-window--function--dropdown-menu"

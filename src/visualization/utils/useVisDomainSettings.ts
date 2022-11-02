@@ -227,7 +227,7 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   useEffect(() => {
     if (
       isFlagEnabled('zoomRequery') &&
-      adaptiveZoomHide === false &&
+      !adaptiveZoomHide &&
       queries.length &&
       activeQueryIndex >= 0
     ) {
@@ -413,7 +413,7 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   useEffect(() => {
     if (
       isFlagEnabled('zoomRequery') &&
-      adaptiveZoomHide === false &&
+      !adaptiveZoomHide &&
       queries.length &&
       activeQueryIndex >= 0
     ) {

@@ -1,5 +1,5 @@
 kind: Project
-name: idpe
+name: ui
 environments:
   - name: dev
     variables:

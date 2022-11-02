@@ -31,7 +31,6 @@ import {CLOUD} from 'src/shared/constants'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {isUserOperator} from 'src/operator/utils'
-import {convertStringToEpoch} from 'src/shared/utils/dateTimeUtils'
 import {updateReportingContext} from 'src/cloud/utils/reporting'
 
 // Types
@@ -81,27 +80,6 @@ const GetOrganizations: FunctionComponent = () => {
       })
     }
   }, [user.id, user.email, org.id, account.id, account.name])
-
-  // This doesn't require another API call.
-  useEffect(() => {
-    if (
-      CLOUD &&
-      isFlagEnabled('credit250Experiment') &&
-      identityLoadingStatus === RemoteDataState.Done &&
-      orgLoadingStatus === RemoteDataState.Done
-    ) {
-      window.dataLayer = window.dataLayer ?? []
-      window.dataLayer.push({
-        identity: {
-          account_type: account.type,
-          account_created_at: convertStringToEpoch(account.accountCreatedAt),
-          id: user.id,
-          email: user.email,
-          organization_id: org.id,
-        },
-      })
-    }
-  }, [identityLoadingStatus, orgLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (CLOUD) {

@@ -10,14 +10,9 @@ import {PAYGConversion} from 'src/billing/components/Free/PAYGConversion'
 
 // Components
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Utils
 import {shouldGetCredit250Experience} from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 const BillingFree: FC = () => {
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
@@ -47,18 +42,8 @@ const BillingFree: FC = () => {
     </Grid>
   )
 
-  if (isFlagEnabled('credit250Experiment')) {
-    if (isCredit250ExperienceActive) {
-      return credit250Experience
-    }
-
-    return (
-      <GoogleOptimizeExperiment
-        experimentID={CREDIT_250_EXPERIMENT_ID}
-        original={original}
-        variants={[credit250Experience]}
-      />
-    )
+  if (isCredit250ExperienceActive) {
+    return credit250Experience
   }
   return original
 }

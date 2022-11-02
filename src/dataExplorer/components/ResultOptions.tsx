@@ -9,6 +9,7 @@ import {AggregateWindow} from 'src/dataExplorer/components/AggregateWindow'
 
 // Context
 import {GroupKeysProvider} from 'src/dataExplorer/context/groupKeys'
+import {ColumnsProvider} from 'src/dataExplorer/context/columns'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -28,14 +29,16 @@ const ResultOptions: FC = () => {
 
   return (
     <GroupKeysProvider scope={scope}>
-      <Accordion className="result-options" expanded={true}>
-        <Accordion.AccordionHeader className="result-options--header">
-          Result Options
-        </Accordion.AccordionHeader>
-        <FieldsAsColumns />
-        <GroupBy />
-        <AggregateWindow />
-      </Accordion>
+      <ColumnsProvider scope={scope}>
+        <Accordion className="result-options" expanded={true}>
+          <Accordion.AccordionHeader className="result-options--header">
+            Result Options
+          </Accordion.AccordionHeader>
+          <FieldsAsColumns />
+          <GroupBy />
+          <AggregateWindow />
+        </Accordion>
+      </ColumnsProvider>
     </GroupKeysProvider>
   )
 }

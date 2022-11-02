@@ -1,4 +1,11 @@
-import React, {FC, useCallback, useContext, useMemo, useState} from 'react'
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 
 // Components
 import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabelTooltip'
@@ -12,6 +19,7 @@ import {
   DEFAULT_AGGREGATE_WINDOW,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
+import {ColumnsContext} from 'src/dataExplorer/context/columns'
 
 // Constants
 import {
@@ -22,6 +30,7 @@ import {
 
 // Utilities
 import {ComponentStatus} from '@influxdata/clockface'
+import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
 
 // Styles
 import './Sidebar.scss'
@@ -30,7 +39,16 @@ const AGGREGATE_WINDOW_TOOLTIP = `test`
 const WINDOW_PERIOD_TOOLTIP = `test`
 
 const AggregateWindow: FC = () => {
+  // Contexts
   const {selection, setSelection} = useContext(PersistanceContext)
+  const {
+    columns,
+    loading: loadingColumns,
+    getColumns,
+    resetColumns,
+  } = useContext(ColumnsContext)
+
+  // States
   const [columnSearchTerm, setColumnSearchTerm] = useState('')
   const [functionSearchTerm, setFunctionSearchTerm] = useState('')
   const {
@@ -42,6 +60,23 @@ const AggregateWindow: FC = () => {
     createEmpty,
   }: AggregateWindow = selection?.resultOptions?.aggregateWindow ||
   DEFAULT_AGGREGATE_WINDOW
+
+  useEffect(() => {
+    if (!selection.bucket || !selection.measurement) {
+      resetColumns()
+    } else {
+      getColumns(selection.bucket, selection.measurement)
+    }
+
+    setSelection({
+      resultOptions: {
+        aggregateWindow: JSON.parse(JSON.stringify(DEFAULT_AGGREGATE_WINDOW)),
+      },
+    })
+
+    setColumnSearchTerm('')
+    setFunctionSearchTerm('')
+  }, [selection.bucket, selection.measurement])
 
   const handleToggleAggregateWindow = useCallback(() => {
     const toBeOn = !selection?.resultOptions?.aggregateWindow?.isOn
@@ -79,28 +114,28 @@ const AggregateWindow: FC = () => {
     return (
       isOn && (
         <SearchableDropdown
-          options={[
-            'column1',
-            'column2',
-            'column3',
-            'column4',
-            'column5',
-            'column6',
-          ]} // TODO: get column from backend
+          options={columns}
           selectedOption={selectedColumn || 'Select column'}
           onSelect={handleSelectColumn}
           searchPlaceholder="Search columns"
           searchTerm={columnSearchTerm}
           onChangeSearchTerm={setColumnSearchTerm}
           emptyText="No columns found"
-          buttonStatus={ComponentStatus.Default} // TODO: use toComponentStatus
+          buttonStatus={toComponentStatus(loadingColumns)}
           testID="aggregate-window--column--dropdown"
           buttonTestID="aggregate-window--column--dropdown-button"
           menuTestID="aggregate-window--column--dropdown-menu"
         />
       )
     )
-  }, [isOn, selectedColumn, columnSearchTerm, handleSelectColumn])
+  }, [
+    isOn,
+    columns,
+    loadingColumns,
+    selectedColumn,
+    columnSearchTerm,
+    handleSelectColumn,
+  ])
 
   const handleSelectFunction = useCallback(
     (fn: string) => {

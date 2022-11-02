@@ -6,7 +6,7 @@ import React, {FC, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import BillingFree from 'src/billing/components/Free/Free'
+import {BillingFree} from 'src/billing/components/Free/Free'
 import BillingPayAsYouGo from 'src/billing/components/PayAsYouGo/PayAsYouGo'
 import MarketplaceBilling from 'src/billing/components/marketplace/MarketplaceBilling'
 

@@ -39,8 +39,8 @@ describe('Billing Page Free Users', () => {
       expect(child.text().trim()).to.equal(categoryHeaders[index])
     })
 
-    cy.getByTestID('payg-grid--container').scrollIntoView()
-    cy.getByTestID('payg-button--upgrade').should('be.visible').click()
+    cy.get('.credit-250-conversion-upgrade--button').should('be.visible')
+    cy.get('.credit-250-conversion-upgrade--button').click()
 
     cy.location().should(loc => {
       expect(loc.pathname).to.eq('/checkout')

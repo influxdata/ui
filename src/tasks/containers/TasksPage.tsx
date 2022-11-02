@@ -11,7 +11,7 @@ import TasksList from 'src/tasks/components/TasksList'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {FilterListContainer} from 'src/shared/components/FilterList'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
-import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
+import {AssetLimitAlert} from 'src/cloud/components/AssetLimitAlert'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'

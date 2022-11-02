@@ -25,7 +25,7 @@ import {ColumnsContext} from 'src/dataExplorer/context/columns'
 import {
   AGG_WINDOW_AUTO,
   DURATIONS,
-  FUNCTIONS,
+  AGGREGATE_FUNCTIONS,
 } from 'src/timeMachine/constants/queryBuilder'
 
 // Utilities
@@ -162,7 +162,7 @@ const AggregateWindow: FC = () => {
       isOn && (
         <div className="result-options--item--row">
           <SearchableDropdown
-            options={FUNCTIONS.map(f => f.name)}
+            options={AGGREGATE_FUNCTIONS.map(f => f.name)}
             selectedOption={selectedFunction || 'Select aggregate function'}
             onSelect={handleSelectFunction}
             searchPlaceholder="Search aggregate function"

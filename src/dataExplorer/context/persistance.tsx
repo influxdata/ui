@@ -42,7 +42,7 @@ export interface AggregateWindow {
 export const DEFAULT_AGGREGATE_WINDOW: AggregateWindow = {
   isOn: false,
   isAutoWindowPeriod: true,
-  every: '10s',
+  every: '1m',
   fn: '',
   column: '',
   createEmpty: true,

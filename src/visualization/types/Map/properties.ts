@@ -5,7 +5,7 @@ import {
 import {GeoViewProperties} from 'src/types'
 import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 
-export default {
+export const GeoProperties = {
   type: 'geo',
   queries: [
     {

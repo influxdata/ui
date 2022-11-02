@@ -72,7 +72,7 @@ interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
 
-const XYPlot: FC<Props> = ({
+export const Graph: FC<Props> = ({
   properties,
   annotations,
   cellID,
@@ -324,5 +324,3 @@ const XYPlot: FC<Props> = ({
     </>
   )
 }
-
-export default XYPlot

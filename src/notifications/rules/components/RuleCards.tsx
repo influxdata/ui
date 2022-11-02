@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 // Components
 import NotificationRuleCard from 'src/notifications/rules/components/RuleCard'
 import {EmptyState, ResourceList} from '@influxdata/clockface'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 
 // Types
 import {NotificationRuleDraft} from 'src/types'
@@ -15,7 +15,7 @@ interface Props {
   searchTerm: string
 }
 
-const FilterRules = FilterList<NotificationRuleDraft>()
+const FilterRules = FilterListContainer<NotificationRuleDraft>()
 
 const NotificationRuleCards: FC<Props> = ({rules, searchTerm}) => {
   const cards = rules =>

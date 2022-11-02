@@ -36,7 +36,7 @@ interface Props extends VisualizationOptionProps {
   properties: ScatterViewProperties
 }
 
-const ScatterOptions: FC<Props> = ({properties, results, update}) => {
+export const ScatterOptions: FC<Props> = ({properties, results, update}) => {
   const availableGroupColumns = results.table.columnKeys.filter(
     name => !['_value', '_time', 'table'].includes(name)
   )
@@ -308,5 +308,3 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
     </Grid>
   )
 }
-
-export default ScatterOptions

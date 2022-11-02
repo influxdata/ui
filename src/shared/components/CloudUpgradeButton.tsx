@@ -12,17 +12,12 @@ import {
   ButtonShape,
 } from '@influxdata/clockface'
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Utils
 import {
   shouldGetCredit250Experience,
   shouldShowUpgradeButton,
 } from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 interface OwnProps {
   buttonText?: string
@@ -32,7 +27,7 @@ interface OwnProps {
   size?: ComponentSize
 }
 
-const CloudUpgradeButton: FC<OwnProps> = ({
+export const CloudUpgradeButton: FC<OwnProps> = ({
   buttonText = 'Upgrade Now',
   className,
   metric,
@@ -77,24 +72,10 @@ const CloudUpgradeButton: FC<OwnProps> = ({
   )
 
   if (showUpgradeButton) {
-    if (isFlagEnabled('credit250Experiment') && showPromoMessage) {
-      if (isCredit250ExperienceActive) {
-        return credit250Experience
-      }
-
-      return (
-        <CloudOnly>
-          <GoogleOptimizeExperiment
-            experimentID={CREDIT_250_EXPERIMENT_ID}
-            original={original}
-            variants={[credit250Experience]}
-          />
-        </CloudOnly>
-      )
+    if (showPromoMessage && isCredit250ExperienceActive) {
+      return credit250Experience
     }
     return <CloudOnly>{original}</CloudOnly>
   }
   return null
 }
-
-export default CloudUpgradeButton

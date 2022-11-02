@@ -14,7 +14,7 @@ interface Props extends VisualizationProps {
   properties: TableViewProperties
 }
 
-const TableGraphs: FC<Props> = ({properties, result}) => {
+export const Table: FC<Props> = ({properties, result}) => {
   const {theme} = useContext(AppSettingContext)
 
   const {timeZone} = useContext(AppSettingContext)
@@ -37,5 +37,3 @@ const TableGraphs: FC<Props> = ({properties, result}) => {
     </HoverTimeProvider>
   )
 }
-
-export default TableGraphs

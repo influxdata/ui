@@ -4,11 +4,11 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {Button, EmptyState} from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import CreateLabelOverlay from 'src/labels/components/CreateLabelOverlay'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import LabelList from 'src/labels/components/LabelList'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 
 // Actions
@@ -45,7 +45,7 @@ interface State {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-const FilterLabels = FilterList<Label>()
+const FilterLabels = FilterListContainer<Label>()
 @ErrorHandling
 class Labels extends PureComponent<Props, State> {
   constructor(props) {

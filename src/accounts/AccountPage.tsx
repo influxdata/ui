@@ -105,7 +105,7 @@ const AccountAboutPage: FC = () => {
   const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
 
   return (
-    <AccountTabContainer activeTab="about">
+    <AccountTabContainer activeTab="settings">
       <>
         <h4
           data-testid="account-settings--header"

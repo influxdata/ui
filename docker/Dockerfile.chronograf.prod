@@ -1,5 +1,9 @@
 # from node lts alpine
-FROM node:lts-alpine AS repo
+# [jdstrand] lts-alpine breaks webpack 4 so temporarily choose a currently
+# supported node alpine release. When we migrate to webpack 5, move back to
+# node:lts-alpine
+#FROM node:lts-alpine AS repo
+FROM node:16-alpine3.16 AS repo
 
 # env vars to configure the system
 

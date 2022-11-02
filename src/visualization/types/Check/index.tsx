@@ -1,14 +1,13 @@
-import icon from './icon'
-import properties from './properties'
-import view from './view'
+import {Visualization} from 'src/visualization'
+import {CheckIcon} from './icon'
+import {CheckProperties} from './properties'
+import {Check} from './view'
 
-export default register => {
-  register({
-    type: 'check',
-    name: 'Check',
-    disabled: true,
-    graphic: icon,
-    component: view,
-    initial: properties,
-  })
+export class View implements Visualization {
+  type = 'check'
+  name = 'Check'
+  disabled = true
+  graphic = CheckIcon
+  component = Check
+  initial = CheckProperties
 }

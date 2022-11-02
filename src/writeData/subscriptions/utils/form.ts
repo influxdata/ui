@@ -513,11 +513,9 @@ export const getSchemaFromProtocol = (
   const usingCertAuth =
     isFlagEnabled('subscriptionsCertificateSupport') &&
     formContent.authType === BrokerAuthTypes.Certificate
-  const usingSSL =
-    isFlagEnabled('subscriptionsSSLSupport') && formContent.useSSL
   switch (protocol.toLowerCase()) {
     case 'mqtt': {
-      return `mqtt${usingCertAuth || usingSSL ? 's' : ''}://`
+      return `mqtt${usingCertAuth || formContent.useSSL ? 's' : ''}://`
     }
     default: {
       return 'tcp://'

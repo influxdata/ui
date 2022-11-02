@@ -5,7 +5,7 @@ import {
 import {TableViewProperties} from 'src/types'
 import {DEFAULT_TABLE_COLORS} from '@influxdata/giraffe'
 
-export default {
+export const TableProperties = {
   type: 'table',
   shape: 'chronograf-v2',
   queries: [

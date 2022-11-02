@@ -34,12 +34,18 @@ import {event} from 'src/cloud/utils/reporting'
 
 // hardcoded in LSP
 const COMPOSITION_YIELD = '_editor_composition'
-const COMPOSITION_INIT_LINE = 1
+
+const findLastIndex = (arr, fn) =>
+  (arr
+    .map((val, i) => [i, val])
+    .filter(([i, val]) => fn(val, i, arr))
+    .pop() || [-1])[0]
 
 class LspConnectionManager {
   private _worker: Worker
   private _editor: EditorType
   private _model: MonacoTypes.editor.IModel
+  private _snapshot: MonacoTypes.editor.ITextSnapshot
   private _preludeModel: MonacoTypes.editor.IModel
   private _variables: Variable[] = []
   private _compositionStyle: string[] = []
@@ -121,14 +127,19 @@ class LspConnectionManager {
     this._worker.postMessage(msg)
   }
 
-  _getCompositionBlockLines() {
-    const query = this._model.getValue()
-    if (!query.includes(COMPOSITION_YIELD)) {
+  _getCompositionBlockLines(query) {
+    if (!query || !query.includes(COMPOSITION_YIELD)) {
       return null
     }
-    const startLine = COMPOSITION_INIT_LINE
+    const lines = query.split('\n')
+    // monacoEditor line indexing starts at 1..n
     const endLine =
-      query.split('\n').findIndex(line => line.includes(COMPOSITION_YIELD)) + 1
+      lines.findIndex(line => line.includes(COMPOSITION_YIELD)) + 1
+    const startLine =
+      findLastIndex(lines.slice(0, endLine - 1), line =>
+        line.includes('from(')
+      ) + 1
+
     return {startLine, endLine}
   }
 
@@ -154,7 +165,11 @@ class LspConnectionManager {
   }
 
   _editorChangeIsWithinComposition(change) {
-    const compositionBlock = this._getCompositionBlockLines()
+    const compositionBlock = this._getCompositionBlockLines(
+      this._snapshot.read()
+    )
+    this._snapshot = this._model.createSnapshot()
+
     if (!compositionBlock) {
       return false
     }
@@ -196,7 +211,9 @@ class LspConnectionManager {
     })
 
     comments(this._editor, selection => {
-      const compositionBlock = this._getCompositionBlockLines()
+      const compositionBlock = this._getCompositionBlockLines(
+        this._model.getValue()
+      )
       if (!compositionBlock) {
         return
       }
@@ -241,19 +258,21 @@ class LspConnectionManager {
   }
 
   _setEditorBlockStyle(schema: CompositionSelection = this._session) {
-    const compositionBlock = this._getCompositionBlockLines()
+    const compositionBlock = this._getCompositionBlockLines(
+      this._model.getValue()
+    )
 
     const removeAllStyles = !compositionBlock || schema.composition.diverged
 
-    const compositionSyncStyle = this._compositionSyncStyle(
-      compositionBlock?.startLine,
-      compositionBlock?.endLine,
-      schema.composition.synced
-    )
-
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
-      removeAllStyles ? [] : compositionSyncStyle
+      removeAllStyles
+        ? []
+        : this._compositionSyncStyle(
+            compositionBlock?.startLine,
+            compositionBlock?.endLine,
+            schema.composition.synced
+          )
     )
   }
 
@@ -404,6 +423,8 @@ class LspConnectionManager {
   }
 
   _initCompositionHandlers() {
+    this._snapshot = this._model.createSnapshot()
+
     // handlers to trigger end composition
     this._setEditorIrreversibleExit()
 

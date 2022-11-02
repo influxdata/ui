@@ -25,8 +25,7 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
-import CancelButton from 'src/checkout/CancelButton'
+import {CancelButton} from 'src/checkout/CancelButton'
 import NotificationSettingsForm from 'src/checkout/NotificationSettingsForm'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import PoweredByStripeLogo from 'src/checkout/PoweredByStripeLogo'
@@ -38,16 +37,12 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 // Events
 import {event} from 'src/cloud/utils/reporting'
 
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
-
 // Utils
 import {shouldGetCredit250Experience} from 'src/me/selectors'
 import ContactForm from 'src/checkout/utils/ContactForm'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
-const CheckoutForm: FC = () => {
+export const CheckoutForm: FC = () => {
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
   const {
@@ -93,17 +88,8 @@ const CheckoutForm: FC = () => {
   )
 
   let creditBanner = null
-  if (isFlagEnabled('credit250Experiment')) {
-    if (isCredit250ExperienceActive) {
-      creditBanner = credit250Experience
-    } else {
-      creditBanner = (
-        <GoogleOptimizeExperiment
-          experimentID={CREDIT_250_EXPERIMENT_ID}
-          variants={[credit250Experience]}
-        />
-      )
-    }
+  if (isCredit250ExperienceActive) {
+    creditBanner = credit250Experience
   }
 
   return (
@@ -226,5 +212,3 @@ const CheckoutForm: FC = () => {
     </Form>
   )
 }
-
-export default CheckoutForm

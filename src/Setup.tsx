@@ -1,5 +1,6 @@
 // Libraries
 import React, {ReactElement, PureComponent, Suspense, lazy} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 import {Switch, Route, RouteComponentProps} from 'react-router-dom'
 
 // APIs
@@ -7,6 +8,7 @@ import {getSetup} from 'src/client'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import {getPublicFlags} from 'src/shared/thunks/flags'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {CloudLoginPage} from 'src/onboarding/containers/CloudLoginPage'
 // lazy loading the Authenticate component causes wasm issues
@@ -26,6 +28,7 @@ import {isOnboardingURL} from 'src/onboarding/utils'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {CLOUD} from 'src/shared/constants'
 
 interface State {
   loading: RemoteDataState
@@ -36,10 +39,11 @@ interface OwnProps {
   children: ReactElement<any>
 }
 
-type Props = RouteComponentProps & OwnProps
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = OwnProps & RouteComponentProps & ReduxProps
 
 @ErrorHandling
-export class Setup extends PureComponent<Props, State> {
+export class SetupUnconnected extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
@@ -51,6 +55,10 @@ export class Setup extends PureComponent<Props, State> {
 
   public async componentDidMount() {
     const {history} = this.props
+
+    if (CLOUD) {
+      await this.props.getPublicFlags()
+    }
 
     if (isOnboardingURL()) {
       this.setState({
@@ -126,4 +134,10 @@ export class Setup extends PureComponent<Props, State> {
   }
 }
 
-export default Setup
+const mdtp = {
+  getPublicFlags: getPublicFlags,
+}
+
+const connector = connect(null, mdtp)
+
+export const Setup = connector(SetupUnconnected)

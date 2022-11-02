@@ -1,3 +1,18 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.data-source--list__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  color: $cf-grey-45;
+  height: 300px;
+}
+
+.open-script__menu-items {
+  background-color: #000;
+}
+
 .save-script-overlay__warning-text {
   margin-bottom: 25px;
 }

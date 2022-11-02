@@ -38,7 +38,7 @@ interface Props extends VisualizationProps {
   properties: ScatterViewProperties
 }
 
-const ScatterPlot: FunctionComponent<Props> = ({
+export const Scatter: FunctionComponent<Props> = ({
   properties,
   result,
   timeRange,
@@ -191,5 +191,3 @@ const ScatterPlot: FunctionComponent<Props> = ({
     </>
   )
 }
-
-export default ScatterPlot

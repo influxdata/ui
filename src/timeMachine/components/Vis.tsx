@@ -10,7 +10,7 @@ import {View} from 'src/visualization'
 import {SimpleTableViewProperties, XYViewProperties} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import SimpleTable from 'src/visualization/types/SimpleTable/view'
+import {SimpleTable} from 'src/visualization/types/SimpleTable/view'
 
 // Utils
 import {

@@ -34,7 +34,7 @@ interface Props extends VisualizationProps {
   properties: MosaicViewProperties
 }
 
-const MosaicPlot: FunctionComponent<Props> = ({
+export const Mosaic: FunctionComponent<Props> = ({
   properties,
   result,
   timeRange,
@@ -127,4 +127,3 @@ const MosaicPlot: FunctionComponent<Props> = ({
   }
   return <Plot config={config} />
 }
-export default MosaicPlot

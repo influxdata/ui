@@ -1444,15 +1444,15 @@
     "@types/react-window" "^1.8.5"
     react-window "^1.8.7"
 
-"@influxdata/flux-lsp-browser@0.8.35":
-  version "0.8.35"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.35.tgz#ed92117d46f297bacf6aec7e7ace451d55bdff79"
-  integrity sha512-d/zlUAx+O67aTBVNIr0XznuDl2jkGELlahRL2OIPOawfnAkNNREuC8iMhov8dq+Bw9d5w+mT041UKzhxZXl1Kg==
+"@influxdata/flux-lsp-browser@0.8.36":
+  version "0.8.36"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.36.tgz#953b09f0d6ac027c6b1e834735d48f78af616b73"
+  integrity sha512-jp9jJYQBoaGKX2Z4foPzSEHQHOtBoB/SHfnnLDpmPgN3B80jSq5md1mjgav4if4fnVuzEc+693/hw/CDH3Pbtw==
 
-"@influxdata/giraffe@^2.38.0":
-  version "2.38.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.38.0.tgz#e375c0bb9e359430335e259bc586dff4b9bb081e"
-  integrity sha512-ADyjVyjxigX+E77ozTqGB2rXq9gK63yp8aNpawe1UIeArupXXwkNP50xbPxmA3yrKU0R5vp6AXbBMGZ8J1oDBw==
+"@influxdata/giraffe@^2.38.1":
+  version "2.38.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.38.1.tgz#9cfea756d704b357564b73d4137fed0ddae6adaf"
+  integrity sha512-pk6K4dwkKK6aAxrN+HRpOmk5ObTmEy+0QD+Z/cV5aTE0zcOTgsoTMfwh70JwpIxjDhgDEETlbqULyZx740K0Pg==
   dependencies:
     merge-images "^2.0.0"
 
@@ -2260,10 +2260,10 @@
   dependencies:
     "@types/jest" "*"
 
-"@types/text-encoding@^0.0.32":
-  version "0.0.32"
-  resolved "https://registry.npmjs.org/@types/text-encoding/-/text-encoding-0.0.32.tgz"
-  integrity sha512-kQ79aFmYcD/DR3QKo6wXyvNrKi7PunY0KYTBUhHjHl0SXwWuLRl9Leh73YtnsSJMBi9qSiK+fxWhdJNQPbhc9A==
+"@types/text-encoding@^0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@types/text-encoding/-/text-encoding-0.0.36.tgz#c1343e35188cb8f8d5f9ada4ff5b72829b29ea19"
+  integrity sha512-LfATA7bH+MtAPlOshYgQ1M3n2r0TSB6Ns5ESvKYlVugkKErQg5oFbR2qO7XrKtNsrtzedDvTeqQfyTjdPJH7jw==
 
 "@types/uglify-js@*":
   version "3.13.1"

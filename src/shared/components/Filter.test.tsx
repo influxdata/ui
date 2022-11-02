@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {renderWithRedux} from 'src/mockState'
 
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 
 const resources = {resources: {labels: {byID: {}, allIDs: []}}}
 
@@ -14,7 +14,7 @@ function setup<T>(override?, stateOverride = resources) {
     ...override,
   }
 
-  const Filter = FilterList<T>()
+  const Filter = FilterListContainer<T>()
 
   return renderWithRedux(
     <Filter {...props}>

@@ -36,7 +36,7 @@ const BucketSelector: FC<Props> = ({
   testID = 'flow-bucket-selector',
   style = {},
 }) => {
-  const {buckets, loading} = useContext(BucketContext)
+  const {buckets, loading, refresh} = useContext(BucketContext)
   let buttonText = 'Loading buckets...'
 
   useEffect(() => {
@@ -50,6 +50,11 @@ const BucketSelector: FC<Props> = ({
 
     onSelect(null)
   }, [buckets, onSelect])
+
+  const addBucket = (bucket: Bucket) => {
+    refresh()
+    onSelect(bucket)
+  }
 
   let menuItems = (
     <Dropdown.ItemEmpty>
@@ -99,7 +104,7 @@ const BucketSelector: FC<Props> = ({
     menuItems = (
       <>
         <CreateBucketDropdownItem
-          onUpdateBucket={onSelect}
+          onUpdateBucket={addBucket}
           testID={`${testID}--create`}
         />
         <Dropdown.Divider />

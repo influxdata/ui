@@ -1,15 +1,14 @@
-import icon from './icon'
-import properties from './properties'
-import options from './options'
-import view from './view'
+import {Visualization} from 'src/visualization'
+import {GraphIcon} from './icon'
+import {GraphOptions} from './options'
+import {GraphProperties} from './properties'
+import {Graph} from './view'
 
-export default register => {
-  register({
-    type: 'xy',
-    name: 'Graph',
-    graphic: icon,
-    component: view,
-    initial: properties,
-    options,
-  })
+export class View implements Visualization {
+  type = 'xy'
+  name = 'Graph'
+  graphic = GraphIcon
+  component = Graph
+  initial = GraphProperties
+  options = GraphOptions
 }

@@ -25,7 +25,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import ResourceAccordion from 'src/authorizations/components/ResourceAccordion'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
@@ -77,39 +77,54 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   const [searchTerm, setSearchTerm] = useState('')
   const [status, setStatus] = useState(ComponentStatus.Disabled)
 
-  useEffect(() => {
-    props.getBuckets()
-    props.getTelegrafs()
-  }, [])
+  const {
+    allResources,
+    bucketPermissions,
+    getBuckets,
+    getTelegrafs,
+    remoteDataState,
+    telegrafPermissions,
+  } = props
 
   useEffect(() => {
-    if (!isEmpty(props.bucketPermissions.sublevelPermissions)) {
+    getBuckets()
+    getTelegrafs()
+  }, [getBuckets, getTelegrafs])
+
+  useEffect(() => {
+    if (
+      remoteDataState === RemoteDataState.Done &&
+      !isEmpty(bucketPermissions.sublevelPermissions) &&
+      isEmpty(permissions)
+    ) {
       const perms = {
         otherResources: {read: false, write: false},
       }
-      props.allResources
+      allResources
         .filter(
           p => p !== ResourceType.Subscriptions && String(p) !== 'instance'
         )
         .forEach(resource => {
           if (resource === ResourceType.Telegrafs) {
-            perms[resource] = props.telegrafPermissions
+            perms[resource] = telegrafPermissions
           } else if (resource === ResourceType.Buckets) {
-            perms[resource] = props.bucketPermissions
+            perms[resource] = bucketPermissions
           } else {
             perms[resource] = {read: false, write: false}
           }
         })
       setPermissions(perms)
     }
-    // Each time remoteDataState changes, the useEffect hook will be called.
-    // BUT, code inside the hook won't run until remoteDataState is 'Done'.
-    // Only then will props.bucketPermissions.sublevelPermissions will have value.
-    // Consequently, we update the permissions state.
-  }, [props.remoteDataState])
+  }, [
+    allResources,
+    bucketPermissions,
+    permissions,
+    remoteDataState,
+    telegrafPermissions,
+  ])
 
   const handleDismiss = () => {
-    props.onClose()
+    onClose()
   }
 
   const handleChangeSearchTerm = (searchTerm: string): void => {
@@ -319,7 +334,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
                 </FlexBox.Child>
               </FlexBox>
               <ResourceAccordion
-                resources={formatResources(props.allResources)}
+                resources={formatResources(allResources)}
                 permissions={permissions}
                 onToggleAll={handleToggleAll}
                 onIndividualToggle={handleIndividualToggle}

@@ -1,28 +1,25 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
-import {Tabs, Orientation, ComponentSize} from '@influxdata/clockface'
+import {ComponentSize, Orientation, Tabs} from '@influxdata/clockface'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   activeTab: string
 }
 
 interface AccountPageTab {
-  text: string
   id: string
+  enabled: boolean
   link: string
   testID: string
-}
-
-enum Tab {
-  Billing = 'billing',
-  About = 'about',
+  text: string
 }
 
 const AccountTabs: FC<Props> = ({activeTab}) => {
@@ -30,37 +27,48 @@ const AccountTabs: FC<Props> = ({activeTab}) => {
 
   const tabs: AccountPageTab[] = [
     {
-      text: 'Settings',
-      id: Tab.About,
-      testID: 'accounts-setting-tab',
+      id: 'settings',
       link: `/orgs/${orgID}/accounts/settings`,
+      enabled: true,
+      testID: 'accounts-setting-tab',
+      text: 'Settings',
     },
     {
-      text: 'Billing',
-      id: Tab.Billing,
-      testID: 'accounts-billing-tab',
+      id: 'organizations',
+      enabled: isFlagEnabled('createDeleteOrgs'),
+      link: `/orgs/${orgID}/accounts/orglist`,
+      testID: 'accounts-orglist-tab',
+      text: 'Organizations',
+    },
+    {
+      id: 'billing',
+      enabled: true,
       link: `/orgs/${orgID}/billing`,
+      testID: 'accounts-billing-tab',
+      text: 'Billing',
     },
   ]
 
   return (
     <Tabs orientation={Orientation.Horizontal} size={ComponentSize.Large}>
-      {tabs.map(tabInfo => {
-        const isActive = tabInfo.id === activeTab
+      {tabs
+        .filter(tab => tab.enabled)
+        .map(tab => {
+          const isActive = tab.id === activeTab
 
-        return (
-          <Tabs.Tab
-            key={tabInfo.id}
-            text={tabInfo.text}
-            id={tabInfo.id}
-            linkElement={className => (
-              <Link to={tabInfo.link} className={className} />
-            )}
-            testID={tabInfo.testID}
-            active={isActive}
-          />
-        )
-      })}
+          return (
+            <Tabs.Tab
+              key={tab.id}
+              text={tab.text}
+              id={tab.id}
+              linkElement={className => (
+                <Link to={tab.link} className={className} />
+              )}
+              testID={tab.testID}
+              active={isActive}
+            />
+          )
+        })}
     </Tabs>
   )
 }

@@ -3,7 +3,7 @@ import React, {FunctionComponent} from 'react'
 
 // Components
 import CheckCard from 'src/checks/components/CheckCard'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import {
   EmptyState,
   ResourceList,
@@ -19,7 +19,7 @@ import {
 import {Check} from 'src/types'
 import {ComponentSize} from '@influxdata/clockface'
 
-const FilterChecks = FilterList<Check>()
+const FilterChecks = FilterListContainer<Check>()
 
 interface Props {
   checks: Check[]

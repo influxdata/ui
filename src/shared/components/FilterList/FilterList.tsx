@@ -5,7 +5,7 @@ import {
   ComponentSize,
   DapperScrollbars,
 } from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 
 type Item = Record<string, any>
 
@@ -19,7 +19,7 @@ interface Props {
   setEventSearchTerm?: (searchTerm: string) => void
 }
 
-const FilterList: FC<Props> = ({
+export const FilterList: FC<Props> = ({
   extractor,
   items,
   placeholder,
@@ -78,5 +78,3 @@ const FilterList: FC<Props> = ({
     [list, setSearch]
   )
 }
-
-export default FilterList

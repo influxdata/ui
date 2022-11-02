@@ -1,6 +1,6 @@
 import React from 'react'
 
-const icon = (
+export const GaugeIcon = (
   <div className="vis-graphic" data-testid="vis-graphic--gauge">
     <svg
       width="100%"
@@ -140,5 +140,3 @@ const icon = (
     </svg>
   </div>
 )
-
-export default icon

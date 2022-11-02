@@ -225,7 +225,12 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   )
 
   useEffect(() => {
-    if (queries.length && activeQueryIndex >= 0) {
+    if (
+      isFlagEnabled('zoomRequery') &&
+      !adaptiveZoomHide &&
+      queries.length &&
+      activeQueryIndex >= 0
+    ) {
       const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
         getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
         timeRange,
@@ -277,21 +282,24 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   //      - the time range has changed
   useEffect(() => {
     if (
-      !timeRange ||
-      (!preZoomResult &&
-        (isNotEqual(preZoomDomain, domain) ||
-          (timeRange && isNotEqual(timeRange, selectedTimeRange))))
+      !preZoomResult &&
+      (isNotEqual(preZoomDomain, domain) ||
+        (timeRange && isNotEqual(timeRange, selectedTimeRange)))
     ) {
       setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)
     }
   }, [domain, preZoomDomain, preZoomResult, selectedTimeRange, timeRange])
 
+  // send back the window period if it is the time axis, otherwise
+  //   cross syncing - time axis zoom changes the limits of the value axis
   useEffect(() => {
     if (timeRange) {
       transmitWindowPeriod(windowPeriod)
+    } else {
+      setDomain(preZoomDomain)
     }
-  }, [timeRange, transmitWindowPeriod, windowPeriod])
+  }, [preZoomDomain, timeRange, transmitWindowPeriod, windowPeriod])
 
   // Suppresses adaptive zoom feature; must come after all hooks
   if (
@@ -403,7 +411,12 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   )
 
   useEffect(() => {
-    if (queries.length && activeQueryIndex >= 0) {
+    if (
+      isFlagEnabled('zoomRequery') &&
+      !adaptiveZoomHide &&
+      queries.length &&
+      activeQueryIndex >= 0
+    ) {
       const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
         getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
         timeRange,
@@ -455,21 +468,24 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   //      - the time range has changed
   useEffect(() => {
     if (
-      !timeRange ||
-      (!preZoomResult &&
-        (isNotEqual(preZoomDomain, domain) ||
-          (timeRange && isNotEqual(timeRange, selectedTimeRange))))
+      !preZoomResult &&
+      (isNotEqual(preZoomDomain, domain) ||
+        (timeRange && isNotEqual(timeRange, selectedTimeRange)))
     ) {
       setSelectedTimeRange(timeRange)
       setDomain(preZoomDomain)
     }
   }, [domain, preZoomDomain, preZoomResult, selectedTimeRange, timeRange])
 
+  // send back the window period if it is the time axis, otherwise
+  //   cross syncing - time axis zoom changes the limits of the value axis
   useEffect(() => {
     if (timeRange) {
       transmitWindowPeriod(windowPeriod)
+    } else {
+      setDomain(preZoomDomain)
     }
-  }, [timeRange, transmitWindowPeriod, windowPeriod])
+  }, [preZoomDomain, timeRange, transmitWindowPeriod, windowPeriod])
 
   // Suppresses adaptive zoom feature; must come after all hooks
   if (

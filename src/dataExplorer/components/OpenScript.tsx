@@ -6,7 +6,7 @@ import {
   ComponentStatus,
   IconFont,
   Input,
-  List,
+  Dropdown,
   TechnoSpinner,
   Overlay,
   EmptyState,
@@ -19,6 +19,7 @@ import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {QueryContext} from 'src/shared/contexts/query'
+import {debouncer} from 'src/dataExplorer/shared/utils'
 
 let getScripts
 
@@ -41,11 +42,11 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
 
-  const handleGetScripts = useCallback(async () => {
+  const handleGetScripts = useCallback(async (name = '') => {
     try {
       if (getScripts) {
         setLoading(RemoteDataState.Loading)
-        const resp = await getScripts({})
+        const resp = await getScripts({query: {limit: 250, name}})
 
         if (resp.status !== 200) {
           throw new Error(resp.data.message)
@@ -60,7 +61,14 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
       setLoading(RemoteDataState.Error)
       console.error({error})
     }
-  }, [getScripts])
+  }, [])
+
+  const handleSearchTerm = (name: string) => {
+    setSearchTerm(name)
+    debouncer(() => {
+      handleGetScripts(name)
+    })
+  }
 
   const handleOpenScript = () => {
     setStatus(RemoteDataState.NotStarted)
@@ -81,48 +89,51 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     loading === RemoteDataState.Loading
   ) {
     return (
-      <div className="data-source--list__empty">
-        <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
-      </div>
+      <Overlay.Container maxWidth={500}>
+        <Overlay.Header title="Open Script" onDismiss={onCancel} />
+        <div className="data-source--list__empty">
+          <TechnoSpinner
+            strokeWidth={ComponentSize.Small}
+            diameterPixels={32}
+          />
+        </div>
+      </Overlay.Container>
     )
   }
 
   if (loading === RemoteDataState.Error) {
     return (
-      <div className="data-source--list__empty">
-        <p>Could not get scripts</p>
-      </div>
+      <Overlay.Container maxWidth={500}>
+        <Overlay.Header title="Open Script" onDismiss={onCancel} />
+        <div className="data-source--list__empty">
+          <p>Could not get scripts</p>
+        </div>
+      </Overlay.Container>
     )
   }
 
   if (loading === RemoteDataState.Done) {
-    const filteredScripts = scripts.filter(script =>
-      script.name.includes(searchTerm)
-    )
-
     let list = (
-      <List>
-        {filteredScripts.map(script => (
-          <List.Item
+      <>
+        {scripts.map(script => (
+          <Dropdown.Item
             key={script.id}
             value={script.name}
             onClick={() => setSelectedScript(script)}
             selected={script.name === selectedScript?.name}
-            title={script}
-            wrapText={true}
           >
             {script.name}
-          </List.Item>
+          </Dropdown.Item>
         ))}
-      </List>
+      </>
     )
-    if (filteredScripts.length === 0 && searchTerm) {
+    if (scripts.length === 0 && searchTerm) {
       list = (
         <EmptyState className="data-source--list__no-results">
           <p>{`No Scripts match "${searchTerm}"`}</p>
         </EmptyState>
       )
-    } else if (filteredScripts.length === 0 && !searchTerm) {
+    } else if (scripts.length === 0 && !searchTerm) {
       list = (
         <EmptyState className="data-source--list__no-results">
           <p>No Scripts found</p>
@@ -139,9 +150,11 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
             size={ComponentSize.Medium}
             value={searchTerm}
             placeholder="Search Scripts"
-            onChange={evt => setSearchTerm(evt.target.value)}
+            onChange={evt => handleSearchTerm(evt.target.value)}
           />
-          <List>{list}</List>
+          <Dropdown.Menu className="open-script__menu-items" maxHeight={300}>
+            {list}
+          </Dropdown.Menu>
         </Overlay.Body>
         <Overlay.Footer>
           <Button

@@ -22,7 +22,7 @@ import TelegrafInstructionsOverlay from 'src/telegrafs/components/TelegrafInstru
 import TelegrafUIRefreshWizard from 'src/dataLoaders/components/collectorsWizard/TelegrafUIRefreshWizard'
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
 import CreateBucketOverlay from 'src/buckets/components/createBucketForm/CreateBucketOverlay'
-import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
+import {AssetLimitOverlay} from 'src/cloud/components/AssetLimitOverlay'
 import RateLimitOverlay from 'src/cloud/components/RateLimitOverlay'
 import WriteLimitOverlay from 'src/cloud/components/WriteLimitOverlay'
 import {AddAnnotationOverlay} from 'src/annotations/components/AddAnnotationOverlay'

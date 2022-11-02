@@ -1,15 +1,14 @@
-import icon from './icon'
-import properties from './properties'
+import {Visualization} from 'src/visualization'
+import {SingleStatIcon} from './icon'
 import {SingleStatOptions} from './options'
-import view from './view'
+import {SingleStatProperties} from './properties'
+import {SingleStat} from './view'
 
-export default register => {
-  register({
-    type: 'single-stat',
-    name: 'Single Stat',
-    graphic: icon,
-    component: view,
-    initial: properties,
-    options: SingleStatOptions,
-  })
+export class View implements Visualization {
+  type = 'single-stat'
+  name = 'Single Stat'
+  graphic = SingleStatIcon
+  component = SingleStat
+  initial = SingleStatProperties
+  options = SingleStatOptions
 }

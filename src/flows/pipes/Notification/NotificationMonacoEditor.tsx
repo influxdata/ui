@@ -12,7 +12,7 @@ import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
 import {EditorType} from 'src/types'
 import {OnChangeScript} from 'src/types/flux'
 
-import 'src/shared/components/FluxMonacoEditor.scss'
+import 'src/shared/components/MonacoEditor.scss'
 
 interface Props {
   setEditorInstance?: (editor: EditorType) => void

@@ -20,7 +20,7 @@ import {
   ComponentColor,
   JustifyContent,
 } from '@influxdata/clockface'
-import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
+import {AssetLimitAlert} from 'src/cloud/components/AssetLimitAlert'
 import AssetLimitButton from 'src/cloud/components/AssetLimitButton'
 
 // Utils

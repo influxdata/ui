@@ -16,7 +16,7 @@ import {
 import {useHistory} from 'react-router-dom'
 
 // Components
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {shouldGetCredit250Experience} from 'src/me/selectors'

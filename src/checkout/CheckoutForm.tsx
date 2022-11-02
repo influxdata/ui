@@ -25,7 +25,7 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import CancelButton from 'src/checkout/CancelButton'
+import {CancelButton} from 'src/checkout/CancelButton'
 import NotificationSettingsForm from 'src/checkout/NotificationSettingsForm'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import PoweredByStripeLogo from 'src/checkout/PoweredByStripeLogo'
@@ -42,7 +42,7 @@ import {shouldGetCredit250Experience} from 'src/me/selectors'
 import ContactForm from 'src/checkout/utils/ContactForm'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
-const CheckoutForm: FC = () => {
+export const CheckoutForm: FC = () => {
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
   const {
@@ -212,5 +212,3 @@ const CheckoutForm: FC = () => {
     </Form>
   )
 }
-
-export default CheckoutForm

@@ -27,7 +27,7 @@ interface OwnProps {
   size?: ComponentSize
 }
 
-const CloudUpgradeButton: FC<OwnProps> = ({
+export const CloudUpgradeButton: FC<OwnProps> = ({
   buttonText = 'Upgrade Now',
   className,
   metric,
@@ -79,5 +79,3 @@ const CloudUpgradeButton: FC<OwnProps> = ({
   }
   return null
 }
-
-export default CloudUpgradeButton

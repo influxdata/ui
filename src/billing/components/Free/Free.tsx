@@ -14,7 +14,7 @@ import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 // Utils
 import {shouldGetCredit250Experience} from 'src/me/selectors'
 
-const BillingFree: FC = () => {
+export const BillingFree: FC = () => {
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
   const original = (
@@ -47,5 +47,3 @@ const BillingFree: FC = () => {
   }
   return original
 }
-
-export default BillingFree

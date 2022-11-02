@@ -16,7 +16,7 @@ import {
   Button,
   ComponentColor,
 } from '@influxdata/clockface'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {
@@ -29,7 +29,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 
 // Types
-import RateLimitAlertContent from 'src/cloud/components/RateLimitAlertContent'
+import {RateLimitAlertContent} from 'src/cloud/components/RateLimitAlertContent'
 
 import {notify} from 'src/shared/actions/notifications'
 import {writeLimitReached} from 'src/shared/copy/notifications'
@@ -52,7 +52,7 @@ interface Props {
 
 const bannerStyle = {border: 'none', borderRadius: '6px'}
 
-const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
+export const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   const resources = useSelector(extractRateLimitResources)
   const status = useSelector(extractRateLimitStatus)
   const showUpgrade = useSelector(shouldShowUpgradeButton)
@@ -146,5 +146,3 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
 
   return null
 }
-
-export default RateLimitAlert

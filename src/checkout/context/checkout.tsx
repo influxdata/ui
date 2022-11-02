@@ -355,5 +355,3 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     </CheckoutContext.Provider>
   )
 })
-
-export default CheckoutProvider

@@ -12,7 +12,7 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -30,7 +30,7 @@ interface StateProps {
   isCredit250ExperienceActive: boolean
 }
 
-const AssetLimitOverlay: FC<OwnProps & StateProps> = ({
+const AssetLimitOverlayComponent: FC<OwnProps & StateProps> = ({
   assetName,
   isCredit250ExperienceActive,
   onClose,
@@ -89,4 +89,4 @@ const mstp = (state: AppState) => {
   }
 }
 
-export default connect(mstp)(AssetLimitOverlay)
+export const AssetLimitOverlay = connect(mstp)(AssetLimitOverlayComponent)

@@ -1,9 +1,9 @@
 import React, {FC} from 'react'
 
 // Components
-import CheckoutForm from 'src/checkout/CheckoutForm'
+import {CheckoutForm} from 'src/checkout/CheckoutForm'
 import SuccessOverlay from 'src/checkout/SuccessOverlay'
-import CheckoutProvider from 'src/checkout/context/checkout'
+import {CheckoutProvider} from 'src/checkout/context/checkout'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import ZuoraOutagePage from 'src/shared/components/zuora/ZuoraOutagePage'
 

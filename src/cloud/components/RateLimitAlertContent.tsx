@@ -11,7 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
@@ -115,7 +115,7 @@ export const UpgradeContent: FC<UpgradeProps> = ({
   )
 }
 
-const RateLimitAlertContent: FC<Props> = ({className, location}) => {
+export const RateLimitAlertContent: FC<Props> = ({className, location}) => {
   const dispatch = useDispatch()
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   const rateLimitAlertContentClass = classnames('rate-alert--content', {
@@ -161,5 +161,3 @@ const RateLimitAlertContent: FC<Props> = ({className, location}) => {
     </div>
   )
 }
-
-export default RateLimitAlertContent

@@ -14,7 +14,7 @@ import {
   HeadingElement,
   AlignItems,
 } from '@influxdata/clockface'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -35,7 +35,7 @@ interface Props {
   style?: CSSProperties
 }
 
-const AssetLimitAlert: FC<Props> = ({
+export const AssetLimitAlert: FC<Props> = ({
   limitStatus,
   resourceName,
   className,
@@ -84,5 +84,3 @@ const AssetLimitAlert: FC<Props> = ({
 
   return null
 }
-
-export default AssetLimitAlert

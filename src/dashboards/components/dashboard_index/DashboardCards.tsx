@@ -4,7 +4,7 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import DashboardCard from 'src/dashboards/components/dashboard_index/DashboardCard'
-import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
+import {AssetLimitAlert} from 'src/cloud/components/AssetLimitAlert'
 import {ResourceCard} from '@influxdata/clockface'
 
 // Types

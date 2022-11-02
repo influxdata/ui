@@ -20,7 +20,7 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 import BrokerFormContent from 'src/writeData/subscriptions/components/BrokerFormContent'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'

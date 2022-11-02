@@ -10,7 +10,7 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 import {shouldGetCredit250Experience} from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
 
-const CancelButton: FC = () => {
+export const CancelButton: FC = () => {
   const {handleCancelClick} = useContext(CheckoutContext)
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
 
@@ -45,5 +45,3 @@ const CancelButton: FC = () => {
   }
   return original
 }
-
-export default CancelButton

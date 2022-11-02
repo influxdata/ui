@@ -42,11 +42,11 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
 
-  const handleGetScripts = useCallback(async (name: string = '') => {
+  const handleGetScripts = useCallback(async () => {
     try {
       if (getScripts) {
         setLoading(RemoteDataState.Loading)
-        const resp = await getScripts({query: {limit: 250, name}})
+        const resp = await getScripts({query: {limit: 250}})
 
         if (resp.status !== 200) {
           throw new Error(resp.data.message)
@@ -63,15 +63,8 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     }
   }, [])
 
-  const handleSearchTerm = useCallback(
-    (name: string) => {
+  const handleSearchTerm = (name: string) => {
       setSearchTerm(name)
-      debouncer(() => {
-        handleGetScripts(name)
-      })
-    },
-    [handleGetScripts]
-  )
 
   const handleOpenScript = () => {
     setStatus(RemoteDataState.NotStarted)
@@ -100,16 +93,23 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
 
   if (loading === RemoteDataState.Error) {
     return (
-      <div className="data-source--list__empty">
-        <p>Could not get scripts</p>
-      </div>
+      <Overlay.Container maxWidth={500}>
+        <Overlay.Header title="Open Script" onDismiss={onCancel} />
+        <div className="data-source--list__empty">
+          <p>Could not get scripts</p>
+        </div>
+      </Overlay.Container>
     )
   }
+
+  let filteredScripts = scripts.filter((script) => {
+    return script.name.toLowerCase().includes(searchTerm.toLowerCase())
+  })
 
   if (loading === RemoteDataState.Done) {
     let list = (
       <>
-        {scripts.map(script => (
+        {filteredScripts.map(script => (
           <Dropdown.Item
             key={script.id}
             value={script.name}
@@ -121,13 +121,13 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
         ))}
       </>
     )
-    if (scripts.length === 0 && searchTerm) {
+    if (filteredScripts.length === 0 && searchTerm) {
       list = (
         <EmptyState className="data-source--list__no-results">
           <p>{`No Scripts match "${searchTerm}"`}</p>
         </EmptyState>
       )
-    } else if (scripts.length === 0 && !searchTerm) {
+    } else if (filteredScripts.length === 0 && !searchTerm) {
       list = (
         <EmptyState className="data-source--list__no-results">
           <p>No Scripts found</p>
@@ -160,7 +160,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
             <Button
               color={ComponentColor.Primary}
               status={
-                scripts.length === 0 || Object.keys(selectedScript).length === 0
+                filteredScripts.length === 0 || Object.keys(selectedScript).length === 0
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }

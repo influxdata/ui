@@ -282,6 +282,7 @@ const AggregateWindow: FC = () => {
           active={isOn}
           onChange={handleToggleAggregateWindow}
           tooltipContents={AGGREGATE_WINDOW_TOOLTIP}
+          disabled={!selection.measurement}
         />
         {columnSelector}
         {functionSelector}
@@ -291,6 +292,7 @@ const AggregateWindow: FC = () => {
     )
   }, [
     isOn,
+    selection.measurement,
     columnSelector,
     functionSelector,
     windowPeriodForm,

@@ -12,6 +12,7 @@ interface ToggleWithLabelTooltipProps {
   active: boolean
   onChange: () => void
   tooltipContents?: string | JSX.Element
+  disabled?: boolean
 }
 
 const ToggleWithLabelTooltip: FC<ToggleWithLabelTooltipProps> = ({
@@ -19,10 +20,11 @@ const ToggleWithLabelTooltip: FC<ToggleWithLabelTooltipProps> = ({
   active,
   onChange,
   tooltipContents = '',
+  disabled = false,
 }) => {
   return (
     <FlexBox className="toggle-with-label-tooltip">
-      <SlideToggle active={active} onChange={onChange} />
+      <SlideToggle active={active} onChange={onChange} disabled={disabled} />
       <InputLabel className="toggle-with-label-tooltip--label">
         <SelectorTitle label={label} tooltipContents={tooltipContents} />
       </InputLabel>

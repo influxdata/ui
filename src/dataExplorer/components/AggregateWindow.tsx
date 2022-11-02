@@ -205,6 +205,7 @@ const AggregateWindow: FC = () => {
   )
 
   const windowPeriodForm = useMemo(() => {
+    console.log('test')
     const durationInputStatus = isAutoWindowPeriod
       ? ComponentStatus.Disabled
       : ComponentStatus.Default
@@ -215,11 +216,13 @@ const AggregateWindow: FC = () => {
 
     return (
       isOn && (
-        <div className="aggregate-window-period">
-          <SelectorTitle
-            label="Window Period"
-            tooltipContents={WINDOW_PERIOD_TOOLTIP}
-          />
+        <div>
+          <div className="aggregate-window-period--title">
+            <SelectorTitle
+              label="Window Period"
+              tooltipContents={WINDOW_PERIOD_TOOLTIP}
+            />
+          </div>
           <ToggleWithLabelTooltip
             label="Auto window period"
             active={isAutoWindowPeriod}

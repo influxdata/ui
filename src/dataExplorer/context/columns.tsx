@@ -115,7 +115,6 @@ export const ColumnsProvider: FC<Props> = ({children, scope}) => {
           c => c.name === '_value' && c.type === 'string'
         )[0]?.data ?? []) as string[]
 
-        console.log({values})
         setColumns(values)
         setLoading(RemoteDataState.Done)
       } catch (err) {

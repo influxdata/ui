@@ -74,6 +74,12 @@
       padding-bottom: 0;
     }
   }
+
+  .aggregate-window-period {
+    .selector-title {
+      padding-top: $cf-space-s;
+    }
+  }
 }
 
 .flux-library--container {

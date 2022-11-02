@@ -113,19 +113,21 @@ const AggregateWindow: FC = () => {
     // TODO: what if the user wants to not have column?
     return (
       isOn && (
-        <SearchableDropdown
-          options={columns}
-          selectedOption={selectedColumn || 'Select column'}
-          onSelect={handleSelectColumn}
-          searchPlaceholder="Search columns"
-          searchTerm={columnSearchTerm}
-          onChangeSearchTerm={setColumnSearchTerm}
-          emptyText="No columns found"
-          buttonStatus={toComponentStatus(loadingColumns)}
-          testID="aggregate-window--column--dropdown"
-          buttonTestID="aggregate-window--column--dropdown-button"
-          menuTestID="aggregate-window--column--dropdown-menu"
-        />
+        <div className="result-options--item--row">
+          <SearchableDropdown
+            options={columns}
+            selectedOption={selectedColumn || 'Select column'}
+            onSelect={handleSelectColumn}
+            searchPlaceholder="Search columns"
+            searchTerm={columnSearchTerm}
+            onChangeSearchTerm={setColumnSearchTerm}
+            emptyText="No columns found"
+            buttonStatus={toComponentStatus(loadingColumns)}
+            testID="aggregate-window--column--dropdown"
+            buttonTestID="aggregate-window--column--dropdown-button"
+            menuTestID="aggregate-window--column--dropdown-menu"
+          />
+        </div>
       )
     )
   }, [
@@ -155,19 +157,21 @@ const AggregateWindow: FC = () => {
   const functionSelector = useMemo(() => {
     return (
       isOn && (
-        <SearchableDropdown
-          options={FUNCTIONS.map(f => f.name)}
-          selectedOption={selectedFunction || 'Select aggregate function'}
-          onSelect={handleSelectFunction}
-          searchPlaceholder="Search aggregate function"
-          searchTerm={functionSearchTerm}
-          onChangeSearchTerm={setFunctionSearchTerm}
-          emptyText="No functions found"
-          buttonStatus={ComponentStatus.Default}
-          testID="aggregate-window--function--dropdown"
-          buttonTestID="aggregate-window--function--dropdown-button"
-          menuTestID="aggregate-window--function--dropdown-menu"
-        />
+        <div className="result-options--item--row">
+          <SearchableDropdown
+            options={FUNCTIONS.map(f => f.name)}
+            selectedOption={selectedFunction || 'Select aggregate function'}
+            onSelect={handleSelectFunction}
+            searchPlaceholder="Search aggregate function"
+            searchTerm={functionSearchTerm}
+            onChangeSearchTerm={setFunctionSearchTerm}
+            emptyText="No functions found"
+            buttonStatus={ComponentStatus.Default}
+            testID="aggregate-window--function--dropdown"
+            buttonTestID="aggregate-window--function--dropdown-button"
+            menuTestID="aggregate-window--function--dropdown-menu"
+          />
+        </div>
       )
     )
   }, [isOn, selectedFunction, functionSearchTerm, handleSelectFunction])
@@ -211,7 +215,7 @@ const AggregateWindow: FC = () => {
 
     return (
       isOn && (
-        <div>
+        <div className="aggregate-window-period">
           <SelectorTitle
             label="Window Period"
             tooltipContents={WINDOW_PERIOD_TOOLTIP}
@@ -221,13 +225,15 @@ const AggregateWindow: FC = () => {
             active={isAutoWindowPeriod}
             onChange={handleToggleAutoWindowPeriod}
           />
-          <DurationInput
-            suggestions={DURATIONS}
-            onSubmit={handleSetDuration}
-            value={durationDisplay}
-            submitInvalid={false}
-            status={durationInputStatus}
-          />
+          <div className="result-options--item--row">
+            <DurationInput
+              suggestions={DURATIONS}
+              onSubmit={handleSetDuration}
+              value={durationDisplay}
+              submitInvalid={false}
+              status={durationInputStatus}
+            />
+          </div>
         </div>
       )
     )
@@ -265,7 +271,7 @@ const AggregateWindow: FC = () => {
 
   return useMemo(() => {
     return (
-      <div className="result-options--item">
+      <div>
         <ToggleWithLabelTooltip
           label="Aggregate"
           active={isOn}

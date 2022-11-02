@@ -19,7 +19,6 @@ import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {QueryContext} from 'src/shared/contexts/query'
-import {debouncer} from 'src/dataExplorer/shared/utils'
 
 let getScripts
 
@@ -46,7 +45,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     try {
       if (getScripts) {
         setLoading(RemoteDataState.Loading)
-        const resp = await getScripts({query: {limit: 250}})
+        const resp = await getScripts({query: {limit: 250, name}})
 
         if (resp.status !== 200) {
           throw new Error(resp.data.message)
@@ -64,7 +63,8 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   }, [])
 
   const handleSearchTerm = (name: string) => {
-      setSearchTerm(name)
+    setSearchTerm(name)
+  }
 
   const handleOpenScript = () => {
     setStatus(RemoteDataState.NotStarted)
@@ -102,7 +102,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     )
   }
 
-  let filteredScripts = scripts.filter((script) => {
+  const filteredScripts = scripts.filter(script => {
     return script.name.toLowerCase().includes(searchTerm.toLowerCase())
   })
 
@@ -127,7 +127,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
           <p>{`No Scripts match "${searchTerm}"`}</p>
         </EmptyState>
       )
-    } else if (filteredScripts.length === 0 && !searchTerm) {
+    } else if (scripts.length === 0 && !searchTerm) {
       list = (
         <EmptyState className="data-source--list__no-results">
           <p>No Scripts found</p>
@@ -160,7 +160,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
             <Button
               color={ComponentColor.Primary}
               status={
-                filteredScripts.length === 0 || Object.keys(selectedScript).length === 0
+                scripts.length === 0 || Object.keys(selectedScript).length === 0
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }

@@ -96,11 +96,15 @@ const AggregateWindow: FC = () => {
 
   const handleSelectColumn = useCallback(
     (column: string) => {
+      let _column = column
+      if (selection?.resultOptions?.aggregateWindow?.column === column) {
+        _column = ''
+      }
       setSelection({
         resultOptions: {
           aggregateWindow: {
             ...selection?.resultOptions?.aggregateWindow,
-            column,
+            column: _column,
           },
         },
       })
@@ -110,7 +114,6 @@ const AggregateWindow: FC = () => {
   )
 
   const columnSelector = useMemo(() => {
-    // TODO: what if the user wants to not have column?
     return (
       isOn && (
         <div className="result-options--item--row">
@@ -184,7 +187,7 @@ const AggregateWindow: FC = () => {
         aggregateWindow: {
           ...selection?.resultOptions?.aggregateWindow,
           isAutoWindowPeriod,
-          every: '10s', // TODO: use duration type, any enum?
+          every: '10s',
         },
       },
     })
@@ -205,7 +208,6 @@ const AggregateWindow: FC = () => {
   )
 
   const windowPeriodForm = useMemo(() => {
-    console.log('test')
     const durationInputStatus = isAutoWindowPeriod
       ? ComponentStatus.Disabled
       : ComponentStatus.Default

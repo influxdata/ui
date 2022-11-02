@@ -60,7 +60,7 @@ export const CloudLoginPage: FC = () => {
           .then(async response => {
             const quartzUrl = await response.text()
             const pathname = window.location.pathname ?? ''
-            const redirectUrl = quartzUrl+pathname
+            const redirectUrl = quartzUrl + pathname
             console.warn('Redirect to cloud url: ', redirectUrl)
             window.location.replace(redirectUrl)
           })

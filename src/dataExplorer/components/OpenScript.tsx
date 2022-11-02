@@ -19,6 +19,7 @@ import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {QueryContext} from 'src/shared/contexts/query'
+import {debouncer} from 'src/dataExplorer/shared/utils'
 
 let getScripts
 
@@ -41,7 +42,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
 
-  const handleGetScripts = useCallback(async () => {
+  const handleGetScripts = useCallback(async (name = '') => {
     try {
       if (getScripts) {
         setLoading(RemoteDataState.Loading)
@@ -64,6 +65,9 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
 
   const handleSearchTerm = (name: string) => {
     setSearchTerm(name)
+    debouncer(() => {
+      handleGetScripts(name)
+    })
   }
 
   const handleOpenScript = () => {
@@ -85,9 +89,15 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     loading === RemoteDataState.Loading
   ) {
     return (
-      <div className="data-source--list__empty">
-        <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
-      </div>
+      <Overlay.Container maxWidth={500}>
+        <Overlay.Header title="Open Script" onDismiss={onCancel} />
+        <div className="data-source--list__empty">
+          <TechnoSpinner
+            strokeWidth={ComponentSize.Small}
+            diameterPixels={32}
+          />
+        </div>
+      </Overlay.Container>
     )
   }
 
@@ -102,14 +112,10 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     )
   }
 
-  const filteredScripts = scripts.filter(script => {
-    return script.name.toLowerCase().includes(searchTerm.toLowerCase())
-  })
-
   if (loading === RemoteDataState.Done) {
     let list = (
       <>
-        {filteredScripts.map(script => (
+        {scripts.map(script => (
           <Dropdown.Item
             key={script.id}
             value={script.name}
@@ -121,7 +127,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
         ))}
       </>
     )
-    if (filteredScripts.length === 0 && searchTerm) {
+    if (scripts.length === 0 && searchTerm) {
       list = (
         <EmptyState className="data-source--list__no-results">
           <p>{`No Scripts match "${searchTerm}"`}</p>

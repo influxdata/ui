@@ -59,8 +59,10 @@ export const CloudLoginPage: FC = () => {
         fetch('/api/env/quartz-login-url')
           .then(async response => {
             const quartzUrl = await response.text()
-            console.warn('Redirect to cloud url: ', quartzUrl)
-            window.location.replace(quartzUrl)
+            const pathname = window.location.pathname ?? ''
+            const redirectUrl = quartzUrl + pathname
+            console.warn('Redirect to cloud url: ', redirectUrl)
+            window.location.replace(redirectUrl)
           })
           .catch(error => console.error(error))
         return null

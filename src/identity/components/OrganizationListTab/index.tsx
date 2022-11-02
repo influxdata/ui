@@ -1,5 +1,11 @@
 // Libraries
-import React, {FC, useCallback, useEffect, useState} from 'react'
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {
   FlexBox,
@@ -40,6 +46,7 @@ import './OrganizationListTab.scss'
 import {BucketSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 import {QuartzOrganization} from 'src/identity/apis/org'
 import {RemoteDataState, ResourceType, SortTypes} from 'src/types'
+import {AutoSizer} from 'react-virtualized'
 
 const searchKeys = ['name']
 
@@ -51,9 +58,9 @@ export interface OrgAllowance {
   status?: RemoteDataState
 }
 
-interface Props {
-  pageHeight: number
-}
+// interface Props {
+//   pageHeight: number
+// }
 
 const defaultOrgAllowance: OrgAllowance = {
   availableUpgrade: 'none',
@@ -67,9 +74,8 @@ const defaultNameSort = {
   sortType: SortTypes.String,
 }
 
-export const OrganizationListTab: FC<Props> = ({pageHeight}) => {
+export const OrganizationListTab: FC = () => {
   const dispatch = useDispatch()
-
   // Selectors
   const currentAccountId = useSelector(selectCurrentAccountId)
   const orgsInAccount = useSelector(selectQuartzOrgsContents)
@@ -186,6 +192,7 @@ export const OrganizationListTab: FC<Props> = ({pageHeight}) => {
       setCurrentPage(Math.min(urlPageNumber, totalPages))
     }
   }, [totalPages])
+  const autoSizerStyle = {height: '100%', width: '100%'}
 
   return (
     <>
@@ -213,24 +220,35 @@ export const OrganizationListTab: FC<Props> = ({pageHeight}) => {
           availableUpgrade={orgAllowance.availableUpgrade}
         />
       )}
-      <ResourceList>
-        <FilterOrgs
-          searchTerm={searchTerm}
-          searchKeys={searchKeys}
-          list={orgsInAccount}
+
+      <ResourceList style={{display: 'flex', flex: 1}}>
+        <AutoSizer
+          style={autoSizerStyle}
+          onResize={info => console.log('here', info)}
         >
-          {filteredOrgs => (
-            <OrgList
-              currentPage={currentPage}
-              isAtOrgLimit={orgAllowance.isAtOrgLimit}
-              filteredOrgs={filteredOrgs}
-              pageHeight={pageHeight}
-              setTotalPages={memoizedSetTotalPages}
-              sortDirection={sortMethod.sortDirection}
-              sortKey={sortMethod.sortKey}
-            />
-          )}
-        </FilterOrgs>
+          {({height}) => {
+            console.log({height})
+            return (
+              <FilterOrgs
+                searchTerm={searchTerm}
+                searchKeys={searchKeys}
+                list={orgsInAccount}
+              >
+                {filteredOrgs => (
+                  <OrgList
+                    currentPage={currentPage}
+                    isAtOrgLimit={orgAllowance.isAtOrgLimit}
+                    filteredOrgs={filteredOrgs}
+                    pageHeight={height}
+                    setTotalPages={memoizedSetTotalPages}
+                    sortDirection={sortMethod.sortDirection}
+                    sortKey={sortMethod.sortKey}
+                  />
+                )}
+              </FilterOrgs>
+            )
+          }}
+        </AutoSizer>
       </ResourceList>
       <PaginationNav.PaginationNav
         currentPage={currentPage}

@@ -22,10 +22,16 @@ class AccountTabContainer extends PureComponent<Props> {
     const {activeTab, children} = this.props
 
     return (
-      <Page.Contents fullWidth={true} scrollable={true}>
-        <Tabs.Container orientation={Orientation.Horizontal}>
+      <Page.Contents fullWidth={true} scrollable={true} className="Subir">
+        <Tabs.Container
+          orientation={Orientation.Horizontal}
+          style={{height: 'inherit', display: 'flex'}}
+        >
           <AccountTabs activeTab={activeTab} />
-          <Tabs.TabContents className="account-page--tab-contents">
+          <Tabs.TabContents
+            className="account-page--tab-contents"
+            style={{display: 'flex', flexDirection: 'column'}}
+          >
             {children}
           </Tabs.TabContents>
         </Tabs.Container>

@@ -75,14 +75,14 @@ export const OrgList: FC<Props> = ({
 
   const marginHeight = DEFAULT_TOTAL_MARGIN_HEIGHT
 
-  const orgCardsContainerHeight =
-    pageHeight -
-    tabsHeight -
-    GLOBAL_HEADER_HEIGHT -
-    quotaBannerHeight -
-    searchWidgetHeight -
-    paginationNavHeight -
-    marginHeight
+  const orgCardsContainerHeight = pageHeight
+  // pageHeight -
+  // tabsHeight -
+  // GLOBAL_HEADER_HEIGHT -
+  // quotaBannerHeight -
+  // searchWidgetHeight -
+  // paginationNavHeight -
+  // marginHeight
 
   const totalOrgsPerPage = Math.max(
     Math.floor(orgCardsContainerHeight / orgCardHeight),
@@ -103,6 +103,7 @@ export const OrgList: FC<Props> = ({
     return <NoOrgsState />
   }
 
+  console.log({pageHeight})
   return (
     <>
       {paginatedOrgs.map(org => (

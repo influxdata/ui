@@ -16,7 +16,7 @@ import {CreateOrgContext, ProviderID} from './CreateOrganizationContext'
 import {GCPLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogo'
 import {GCPLogoWithText} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogoWithText'
 
-const LOGOS = {
+const providerLogos = {
   AWS: (showLogoWithText: Boolean) =>
     showLogoWithText ? (
       <AWSLogoColor className="aws-marketplace" />
@@ -52,7 +52,7 @@ export const ClusterBox: FC<Props> = ({
   })
 
   const logo = useMemo(() => {
-    return LOGOS[providerId](showLogoWithText)
+    return providerLogos[providerId](showLogoWithText)
   }, [providerId, showLogoWithText])
 
   const handleClick = useCallback(() => {

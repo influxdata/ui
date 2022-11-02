@@ -2,6 +2,7 @@
 
 .provider-and-region-chooser {
   margin: 40px 0px;
+  display: flex;
 
   > .prc-title {
     font-size: $cf-text-base-1;

@@ -2,6 +2,7 @@
 
 .cluster-box.hoverable {
   border: 2px solid $cf-grey-25;
+  max-width: none;
 
   &:hover {
     border-color: $c-laser;
@@ -16,10 +17,12 @@
 }
 
 .cluster-box {
+  display: flex;
+  flex: 1;
   margin: 5px;
   border-radius: 5px;
   cursor: pointer;
-  max-width: 300px;
+  max-width: 350px;
 
   &.selected {
     border-color: $c-laser;

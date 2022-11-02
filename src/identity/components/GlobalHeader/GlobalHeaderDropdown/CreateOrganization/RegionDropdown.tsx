@@ -1,12 +1,11 @@
 import React, {FC, useCallback, useContext, useMemo} from 'react'
 import {Dropdown} from '@influxdata/clockface'
 
-// Style
-import './ProviderChooser.scss'
-
 // Components
 import {CreateOrgContext} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
 import {Cluster} from 'src/client/unityRoutes'
+
+const SINGLE_PROVIDER_WIDTH = 375
 
 export const RegionDropdown: FC = () => {
   const {clusters, currentProvider, currentRegion, changeCurrentRegion} =
@@ -21,8 +20,14 @@ export const RegionDropdown: FC = () => {
     return clusters?.[currentProvider]
   }, [clusters, currentProvider])
 
+  const dropdownStyle = {}
+  if (Object.keys(clusters).length === 1) {
+    dropdownStyle['width'] = SINGLE_PROVIDER_WIDTH
+  }
+
   return (
     <Dropdown
+      style={dropdownStyle}
       button={(active, onClick) => (
         <Dropdown.Button
           active={active}

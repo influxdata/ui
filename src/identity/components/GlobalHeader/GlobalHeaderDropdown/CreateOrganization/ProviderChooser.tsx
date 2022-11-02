@@ -36,23 +36,30 @@ export const ProviderChooser: FC = () => {
       </InputLabel>
       <FlexBox
         alignItems={AlignItems.Stretch}
+        className="prc-cluster-boxes-container"
         justifyContent={JustifyContent.FlexStart}
         stretchToFitWidth={true}
-        className="prc-cluster-boxes"
+        direction={FlexDirection.Column}
       >
-        {clusterKeys.map((providerId, i) => {
-          const {providerName} = clusters[providerId][0]
-          return (
-            <ClusterBox
-              providerName={providerName}
-              providerId={providerId}
-              showLogoWithText={clusterKeys.length === 1}
-              key={`${providerId}${i}`}
-            />
-          )
-        })}
+        <FlexBox
+          alignItems={AlignItems.Stretch}
+          className="prc-cluster-boxes"
+          stretchToFitWidth={true}
+        >
+          {clusterKeys.map((providerId, i) => {
+            const {providerName} = clusters[providerId][0]
+            return (
+              <ClusterBox
+                providerName={providerName}
+                providerId={providerId}
+                showLogoWithText={clusterKeys.length === 1}
+                key={`${providerId}${i}`}
+              />
+            )
+          })}
+        </FlexBox>
+        <RegionDropdown />
       </FlexBox>
-      <RegionDropdown />
     </FlexBox>
   )
 }

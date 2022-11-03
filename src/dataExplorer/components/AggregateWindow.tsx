@@ -2,45 +2,28 @@ import React, {FC, useCallback, useContext, useEffect, useMemo} from 'react'
 
 // Components
 import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabelTooltip'
-import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
-import DurationInput from 'src/shared/components/DurationInput'
 import {ColumnSelector} from 'src/dataExplorer/components/ColumnSelector'
 import {AggregateFunctionsSelector} from 'src/dataExplorer/components/AggregateFunctionSelector'
+import {WindowPeriod} from 'src/dataExplorer/components/WindowPeriod'
 
 // Contexts
 import {
   AggregateWindow,
   DEFAULT_AGGREGATE_WINDOW,
-  DEFAULT_WINDOW_PERIOD,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
-
-// Constants
-import {
-  AGG_WINDOW_AUTO,
-  DURATIONS,
-} from 'src/timeMachine/constants/queryBuilder'
-
-// Utilities
-import {ComponentStatus} from '@influxdata/clockface'
 
 // Styles
 import './Sidebar.scss'
 
 const AGGREGATE_WINDOW_TOOLTIP = `test`
-const WINDOW_PERIOD_TOOLTIP = `test`
 
 const AggregateWindow: FC = () => {
   // Contexts
   const {selection, setSelection} = useContext(PersistanceContext)
 
-  const {
-    isOn,
-    isAutoWindowPeriod,
-    every: duration,
-    createEmpty,
-  }: AggregateWindow = selection?.resultOptions?.aggregateWindow ||
-  DEFAULT_AGGREGATE_WINDOW
+  const {isOn, createEmpty}: AggregateWindow =
+    selection?.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
 
   useEffect(() => {
     setSelection({
@@ -61,77 +44,6 @@ const AggregateWindow: FC = () => {
       },
     })
   }, [selection.resultOptions.aggregateWindow, setSelection])
-
-  const handleToggleAutoWindowPeriod = useCallback(() => {
-    const isAutoWindowPeriod =
-      !selection?.resultOptions?.aggregateWindow?.isAutoWindowPeriod
-    setSelection({
-      resultOptions: {
-        aggregateWindow: {
-          ...selection?.resultOptions?.aggregateWindow,
-          isAutoWindowPeriod,
-          every: DEFAULT_WINDOW_PERIOD,
-        },
-      },
-    })
-  }, [selection.resultOptions.aggregateWindow, setSelection])
-
-  const handleSetDuration = useCallback(
-    (duration: string) => {
-      setSelection({
-        resultOptions: {
-          aggregateWindow: {
-            ...selection?.resultOptions?.aggregateWindow,
-            every: duration,
-          },
-        },
-      })
-    },
-    [selection.resultOptions.aggregateWindow, setSelection]
-  )
-
-  const windowPeriodForm = useMemo(() => {
-    const durationInputStatus = isAutoWindowPeriod
-      ? ComponentStatus.Disabled
-      : ComponentStatus.Default
-
-    const durationDisplay = isAutoWindowPeriod
-      ? `(${AGG_WINDOW_AUTO}) ${duration}`
-      : `${duration}`
-
-    return (
-      isOn && (
-        <div>
-          <div className="aggregate-window-period--title">
-            <SelectorTitle
-              label="Window Period"
-              tooltipContents={WINDOW_PERIOD_TOOLTIP}
-            />
-          </div>
-          <ToggleWithLabelTooltip
-            label="Auto window period"
-            active={isAutoWindowPeriod}
-            onChange={handleToggleAutoWindowPeriod}
-          />
-          <div className="result-options--item--row">
-            <DurationInput
-              suggestions={DURATIONS}
-              onSubmit={handleSetDuration}
-              value={durationDisplay}
-              submitInvalid={false}
-              status={durationInputStatus}
-            />
-          </div>
-        </div>
-      )
-    )
-  }, [
-    isOn,
-    isAutoWindowPeriod,
-    duration,
-    handleSetDuration,
-    handleToggleAutoWindowPeriod,
-  ])
 
   const handleToggleCreateEmpty = useCallback(() => {
     const createEmpty = !selection?.resultOptions?.aggregateWindow?.createEmpty
@@ -169,14 +81,13 @@ const AggregateWindow: FC = () => {
         />
         <ColumnSelector />
         <AggregateFunctionsSelector />
-        {windowPeriodForm}
+        <WindowPeriod />
         {createEmptyToggle}
       </div>
     )
   }, [
     isOn,
     selection.measurement,
-    windowPeriodForm,
     createEmptyToggle,
     handleToggleAggregateWindow,
   ])

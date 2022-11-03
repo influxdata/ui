@@ -1,19 +1,8 @@
 // Libraries
-import React, {
-  FC,
-  lazy,
-  Suspense,
-  useContext,
-  useEffect,
-  ChangeEvent,
-} from 'react'
+import React, {FC, lazy, Suspense, useEffect, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {
-  ComponentSize,
-  FlexBox,
-  InputLabel,
   RemoteDataState,
-  SlideToggle,
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
@@ -21,7 +10,7 @@ import {
 // Components
 import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
-import NewTasksPage from 'src/tasks/containers/NewTasksPage'
+import TaskScheduler from 'src/tasks/components/NewTaskScheduler/TaskScheduler'
 import {Page} from '@influxdata/clockface'
 
 // Actions and Selectors
@@ -44,7 +33,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
-import {AppSettingContext} from 'src/shared/contexts/app'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -55,8 +43,7 @@ const FluxMonacoEditor = lazy(
 
 const TaskPage: FC<Props> = props => {
   const {newScript, taskOptions, setTaskOption, clearTask} = props
-  const {newTasksUI, setNewTasksUI} = useContext(AppSettingContext)
-  const showNewTasks = newTasksUI && isFlagEnabled('tasksUiEnhancements')
+  const showNewTasksUI = isFlagEnabled('tasksUiEnhancements')
 
   useEffect(() => {
     setTaskOption({
@@ -116,36 +103,24 @@ const TaskPage: FC<Props> = props => {
     props.setTaskOption({key, value})
   }
 
-  const toggleSlider = () => {
-    setNewTasksUI(!newTasksUI)
-  }
-
   return (
     <Page titleTag={pageTitleSuffixer(['Create Task'])}>
-      <Page.Header fullWidth={true}>
-        <FlexBox margin={ComponentSize.Small}>
-          {isFlagEnabled('tasksUiEnhancements') && (
-            <FlexBox margin={ComponentSize.Medium}>
-              <InputLabel>&#10024; Preview New Tasks</InputLabel>
-              <SlideToggle
-                active={newTasksUI}
-                onChange={toggleSlider}
-                testID="flux-query-builder-toggle"
-              />
-            </FlexBox>
-          )}
-        </FlexBox>
-      </Page.Header>
-      {showNewTasks ? (
-        <NewTasksPage />
-      ) : (
-        <>
-          <TaskHeader
-            title="Create Task"
-            canSubmit={isFormValid()}
-            onCancel={handleCancel}
-            onSave={handleSave}
+      <Page.Header fullWidth={true}></Page.Header>
+      <>
+        <TaskHeader
+          title="Create Task"
+          canSubmit={isFormValid()}
+          onCancel={handleCancel}
+          onSave={handleSave}
+          showNewTasksUI={showNewTasksUI}
+        />
+        {showNewTasksUI ? (
+          <TaskScheduler
+            taskOptions={taskOptions}
+            onChangeScheduleType={handleChangeScheduleType}
+            onChangeInput={handleChangeInput}
           />
+        ) : (
           <Page.Contents fullWidth={true} scrollable={false}>
             <div className="task-form">
               <div className="task-form--options">
@@ -175,8 +150,8 @@ const TaskPage: FC<Props> = props => {
               </div>
             </div>
           </Page.Contents>
-        </>
-      )}
+        )}
+      </>
     </Page>
   )
 }

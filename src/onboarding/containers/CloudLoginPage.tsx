@@ -59,7 +59,18 @@ export const CloudLoginPage: FC = () => {
         fetch('/api/env/quartz-login-url')
           .then(async response => {
             const quartzUrl = await response.text()
-            const pathname = window.location.pathname ?? ''
+            const redirectTo = new URLSearchParams(window.location.search).get(
+              'redirectTo'
+            )
+            let pathname
+            try {
+              // if there is a redirectTo, parse the pathname from redirect location
+              const redirectToUrl = new URL(redirectTo).pathname
+              pathname = redirectToUrl ?? ''
+            } catch {
+              // else, use current location's pathname
+              pathname = window.location.pathname ?? ''
+            }
             const redirectUrl = quartzUrl + pathname
             console.warn('Redirect to cloud url: ', redirectUrl)
             window.location.replace(redirectUrl)

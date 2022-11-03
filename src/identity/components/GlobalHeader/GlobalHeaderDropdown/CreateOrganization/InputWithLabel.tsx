@@ -67,6 +67,11 @@ export const InputWithLabel: FC<Props> = ({
     }
   }, [showError])
 
+  const inputStyle = {}
+  if (required && hasError) {
+    inputStyle['borderColor'] = '#DC4E58'
+  }
+
   return (
     <FlexBox
       alignItems={AlignItems.FlexStart}
@@ -94,6 +99,7 @@ export const InputWithLabel: FC<Props> = ({
           onChange={handleChange}
           value={inputVal}
           {...args}
+          inputStyle={inputStyle}
         />
       </Form.Element>
       {!(required && hasError) && <div className="error-field-hack" />}

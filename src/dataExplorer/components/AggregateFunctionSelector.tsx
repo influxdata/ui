@@ -31,7 +31,7 @@ export const AggregateFunctionsSelector: FC = () => {
   const [functionSearchTerm, setFunctionSearchTerm] = useState('')
 
   const {isOn, fn: selectedFunction}: AggregateWindow =
-    selection?.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
+    selection.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
 
   useEffect(() => {
     setFunctionSearchTerm('')
@@ -48,14 +48,14 @@ export const AggregateFunctionsSelector: FC = () => {
       setSelection({
         resultOptions: {
           aggregateWindow: {
-            ...selection?.resultOptions?.aggregateWindow,
+            ...selection.resultOptions?.aggregateWindow,
             fn,
           },
         },
       })
       setFunctionSearchTerm('')
     },
-    [selection.resultOptions.aggregateWindow, setSelection]
+    [selection.resultOptions?.aggregateWindow, setSelection]
   )
 
   return useMemo(() => {

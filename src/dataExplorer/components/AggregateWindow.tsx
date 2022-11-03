@@ -24,7 +24,7 @@ const AggregateWindow: FC = () => {
   const {selection, setSelection} = useContext(PersistanceContext)
 
   const {isOn}: AggregateWindow =
-    selection?.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
+    selection.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
 
   useEffect(() => {
     setSelection({
@@ -35,7 +35,7 @@ const AggregateWindow: FC = () => {
   }, [selection.bucket, selection.measurement])
 
   const handleToggleAggregateWindow = useCallback(() => {
-    const toBeOn = !selection?.resultOptions?.aggregateWindow?.isOn
+    const toBeOn = !selection.resultOptions?.aggregateWindow?.isOn
     setSelection({
       resultOptions: {
         aggregateWindow: {
@@ -44,7 +44,7 @@ const AggregateWindow: FC = () => {
         },
       },
     })
-  }, [selection.resultOptions.aggregateWindow, setSelection])
+  }, [selection.resultOptions?.aggregateWindow, setSelection])
 
   return useMemo(() => {
     return (

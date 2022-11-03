@@ -16,19 +16,19 @@ import './Sidebar.scss'
 export const FillValuesToggle: FC = () => {
   const {selection, setSelection} = useContext(PersistanceContext)
   const {isOn, createEmpty}: AggregateWindow =
-    selection?.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
+    selection.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
 
   const handleToggleCreateEmpty = useCallback(() => {
-    const createEmpty = !selection?.resultOptions?.aggregateWindow?.createEmpty
+    const createEmpty = !selection.resultOptions?.aggregateWindow?.createEmpty
     setSelection({
       resultOptions: {
         aggregateWindow: {
-          ...selection?.resultOptions?.aggregateWindow,
+          ...selection.resultOptions?.aggregateWindow,
           createEmpty,
         },
       },
     })
-  }, [selection.resultOptions.aggregateWindow, setSelection])
+  }, [selection.resultOptions?.aggregateWindow, setSelection])
 
   return useMemo(() => {
     return (

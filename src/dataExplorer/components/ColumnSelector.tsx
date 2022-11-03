@@ -33,7 +33,7 @@ export const ColumnSelector: FC = () => {
   // States
   const [columnSearchTerm, setColumnSearchTerm] = useState('')
   const {isOn, column: selectedColumn}: AggregateWindow =
-    selection?.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
+    selection.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
 
   useEffect(() => {
     if (!selection.bucket || !selection.measurement) {
@@ -54,20 +54,20 @@ export const ColumnSelector: FC = () => {
   const handleSelectColumn = useCallback(
     (column: string) => {
       let _column = column
-      if (selection?.resultOptions?.aggregateWindow?.column === column) {
+      if (selection.resultOptions?.aggregateWindow?.column === column) {
         _column = ''
       }
       setSelection({
         resultOptions: {
           aggregateWindow: {
-            ...selection?.resultOptions?.aggregateWindow,
+            ...selection.resultOptions?.aggregateWindow,
             column: _column,
           },
         },
       })
       setColumnSearchTerm('')
     },
-    [selection.resultOptions.aggregateWindow, setSelection]
+    [selection.resultOptions?.aggregateWindow, setSelection]
   )
 
   return useMemo(() => {

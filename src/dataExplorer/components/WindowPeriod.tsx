@@ -33,35 +33,35 @@ export const WindowPeriod: FC = () => {
     isOn,
     isAutoWindowPeriod,
     every: duration,
-  }: AggregateWindow = selection?.resultOptions?.aggregateWindow ||
+  }: AggregateWindow = selection.resultOptions?.aggregateWindow ||
   DEFAULT_AGGREGATE_WINDOW
 
   const handleToggleAutoWindowPeriod = useCallback(() => {
     const isAutoWindowPeriod =
-      !selection?.resultOptions?.aggregateWindow?.isAutoWindowPeriod
+      !selection.resultOptions?.aggregateWindow?.isAutoWindowPeriod
     setSelection({
       resultOptions: {
         aggregateWindow: {
-          ...selection?.resultOptions?.aggregateWindow,
+          ...selection.resultOptions?.aggregateWindow,
           isAutoWindowPeriod,
           every: DEFAULT_WINDOW_PERIOD,
         },
       },
     })
-  }, [selection.resultOptions.aggregateWindow, setSelection])
+  }, [selection.resultOptions?.aggregateWindow, setSelection])
 
   const handleSetDuration = useCallback(
     (duration: string) => {
       setSelection({
         resultOptions: {
           aggregateWindow: {
-            ...selection?.resultOptions?.aggregateWindow,
+            ...selection.resultOptions?.aggregateWindow,
             every: duration,
           },
         },
       })
     },
-    [selection.resultOptions.aggregateWindow, setSelection]
+    [selection.resultOptions?.aggregateWindow, setSelection]
   )
 
   return useMemo(() => {

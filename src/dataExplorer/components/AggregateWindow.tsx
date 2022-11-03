@@ -36,12 +36,11 @@ const AggregateWindow: FC = () => {
   }, [selection.bucket, selection.measurement])
 
   const handleToggleAggregateWindow = useCallback(() => {
-    const toBeOn = !selection.resultOptions?.aggregateWindow?.isOn
     setSelection({
       resultOptions: {
         aggregateWindow: {
           ...JSON.parse(JSON.stringify(DEFAULT_AGGREGATE_WINDOW)),
-          isOn: toBeOn,
+          isOn: !selection.resultOptions?.aggregateWindow?.isOn,
         },
       },
     })

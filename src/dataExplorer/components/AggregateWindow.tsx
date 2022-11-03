@@ -17,6 +17,7 @@ import DurationInput from 'src/shared/components/DurationInput'
 import {
   AggregateWindow,
   DEFAULT_AGGREGATE_WINDOW,
+  DEFAULT_WINDOW_PERIOD,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
 import {ColumnsContext} from 'src/dataExplorer/context/columns'
@@ -187,7 +188,7 @@ const AggregateWindow: FC = () => {
         aggregateWindow: {
           ...selection?.resultOptions?.aggregateWindow,
           isAutoWindowPeriod,
-          every: '10s',
+          every: DEFAULT_WINDOW_PERIOD,
         },
       },
     })

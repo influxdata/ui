@@ -39,10 +39,12 @@ export interface AggregateWindow {
   createEmpty: boolean
 }
 
+export const DEFAULT_WINDOW_PERIOD: string = '1m'
+
 export const DEFAULT_AGGREGATE_WINDOW: AggregateWindow = {
   isOn: false,
   isAutoWindowPeriod: true,
-  every: '1m',
+  every: DEFAULT_WINDOW_PERIOD,
   fn: '',
   column: '',
   createEmpty: true,

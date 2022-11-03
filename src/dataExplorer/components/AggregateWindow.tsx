@@ -5,6 +5,7 @@ import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabe
 import {ColumnSelector} from 'src/dataExplorer/components/ColumnSelector'
 import {AggregateFunctionsSelector} from 'src/dataExplorer/components/AggregateFunctionSelector'
 import {WindowPeriod} from 'src/dataExplorer/components/WindowPeriod'
+import {FillValuesToggle} from 'src/dataExplorer/components/FillValuesToggle'
 
 // Contexts
 import {
@@ -22,7 +23,7 @@ const AggregateWindow: FC = () => {
   // Contexts
   const {selection, setSelection} = useContext(PersistanceContext)
 
-  const {isOn, createEmpty}: AggregateWindow =
+  const {isOn}: AggregateWindow =
     selection?.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
 
   useEffect(() => {
@@ -45,30 +46,6 @@ const AggregateWindow: FC = () => {
     })
   }, [selection.resultOptions.aggregateWindow, setSelection])
 
-  const handleToggleCreateEmpty = useCallback(() => {
-    const createEmpty = !selection?.resultOptions?.aggregateWindow?.createEmpty
-    setSelection({
-      resultOptions: {
-        aggregateWindow: {
-          ...selection.resultOptions.aggregateWindow,
-          createEmpty,
-        },
-      },
-    })
-  }, [selection.resultOptions.aggregateWindow, setSelection])
-
-  const createEmptyToggle = useMemo(() => {
-    return (
-      isOn && (
-        <ToggleWithLabelTooltip
-          label="Fill missing values"
-          active={createEmpty}
-          onChange={handleToggleCreateEmpty}
-        />
-      )
-    )
-  }, [isOn, createEmpty, handleToggleCreateEmpty])
-
   return useMemo(() => {
     return (
       <div>
@@ -82,15 +59,10 @@ const AggregateWindow: FC = () => {
         <ColumnSelector />
         <AggregateFunctionsSelector />
         <WindowPeriod />
-        {createEmptyToggle}
+        <FillValuesToggle />
       </div>
     )
-  }, [
-    isOn,
-    selection.measurement,
-    createEmptyToggle,
-    handleToggleAggregateWindow,
-  ])
+  }, [isOn, selection.measurement, handleToggleAggregateWindow])
 }
 
 export {AggregateWindow}

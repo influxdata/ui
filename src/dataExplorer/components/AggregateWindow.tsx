@@ -1,6 +1,7 @@
 import React, {FC, useCallback, useContext, useEffect, useMemo} from 'react'
 
 // Components
+import {ComponentStatus} from '@influxdata/clockface'
 import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabelTooltip'
 import {ColumnSelector} from 'src/dataExplorer/components/ColumnSelector'
 import {AggregateFunctionsSelector} from 'src/dataExplorer/components/AggregateFunctionSelector'
@@ -54,7 +55,11 @@ const AggregateWindow: FC = () => {
           active={isOn}
           onChange={handleToggleAggregateWindow}
           tooltipContents={AGGREGATE_WINDOW_TOOLTIP}
-          disabled={!selection.measurement}
+          status={
+            selection.measurement
+              ? ComponentStatus.Default
+              : ComponentStatus.Disabled
+          }
         />
         <ColumnSelector />
         <AggregateFunctionsSelector />

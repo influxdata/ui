@@ -1,7 +1,12 @@
 import React, {FC} from 'react'
 
 // Components
-import {FlexBox, InputLabel, SlideToggle} from '@influxdata/clockface'
+import {
+  FlexBox,
+  InputLabel,
+  SlideToggle,
+  ComponentStatus,
+} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Styles
@@ -12,7 +17,7 @@ interface ToggleWithLabelTooltipProps {
   active: boolean
   onChange: () => void
   tooltipContents?: string | JSX.Element
-  disabled?: boolean
+  status?: ComponentStatus
 }
 
 const ToggleWithLabelTooltip: FC<ToggleWithLabelTooltipProps> = ({
@@ -20,11 +25,15 @@ const ToggleWithLabelTooltip: FC<ToggleWithLabelTooltipProps> = ({
   active,
   onChange,
   tooltipContents = '',
-  disabled = false,
+  status = ComponentStatus.Default,
 }) => {
   return (
     <FlexBox className="toggle-with-label-tooltip">
-      <SlideToggle active={active} onChange={onChange} disabled={disabled} />
+      <SlideToggle
+        active={active}
+        onChange={onChange}
+        disabled={status === ComponentStatus.Disabled}
+      />
       <InputLabel className="toggle-with-label-tooltip--label">
         <SelectorTitle label={label} tooltipContents={tooltipContents} />
       </InputLabel>

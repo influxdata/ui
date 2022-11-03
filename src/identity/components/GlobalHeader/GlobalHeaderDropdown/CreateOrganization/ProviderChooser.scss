@@ -1,7 +1,7 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .provider-and-region-chooser {
-  margin: 40px 0px;
+  margin: 20px 0px;
   display: flex;
 
   > .prc-title {
@@ -12,5 +12,9 @@
   > .prc-description {
     color: $cf-grey-65 !important;
     margin: 5px 0 !important;
+  }
+
+  > .region-info {
+    margin: 20px 0;
   }
 }

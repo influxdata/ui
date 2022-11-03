@@ -1,5 +1,5 @@
 import React, {FC, useCallback, useContext, useMemo} from 'react'
-import {Dropdown} from '@influxdata/clockface'
+import {ComponentStatus, Dropdown} from '@influxdata/clockface'
 
 // Components
 import {CreateOrgContext} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
@@ -20,8 +20,9 @@ export const RegionDropdown: FC = () => {
     return clusters?.[currentProvider]
   }, [clusters, currentProvider])
 
+  const clustersLength = Object.keys(clusters).length
   const dropdownStyle = {}
-  if (Object.keys(clusters).length === 1) {
+  if (clustersLength === 1) {
     dropdownStyle['width'] = SINGLE_PROVIDER_WIDTH
   }
 
@@ -30,6 +31,11 @@ export const RegionDropdown: FC = () => {
       style={dropdownStyle}
       button={(active, onClick) => (
         <Dropdown.Button
+          status={
+            !!clustersLength
+              ? ComponentStatus.Default
+              : ComponentStatus.Disabled
+          }
           active={active}
           onClick={onClick}
           testID="variable-type-dropdown--button"

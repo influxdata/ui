@@ -15,6 +15,7 @@ import './ProviderChooser.scss'
 import {CreateOrgContext} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
 import {ClusterBox} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ClusterBox'
 import {RegionDropdown} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/RegionDropdown'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 export const ProviderChooser: FC = () => {
   const {clusters} = useContext(CreateOrgContext)
@@ -60,6 +61,13 @@ export const ProviderChooser: FC = () => {
         </FlexBox>
         <RegionDropdown />
       </FlexBox>
+      <div className="region-info">
+        Don't see the region you need?{' '}
+        <SafeBlankLink href="https://www.influxdata.com/influxdb-cloud-2-0-provider-region/">
+          Let us know
+        </SafeBlankLink>
+        .
+      </div>
     </FlexBox>
   )
 }

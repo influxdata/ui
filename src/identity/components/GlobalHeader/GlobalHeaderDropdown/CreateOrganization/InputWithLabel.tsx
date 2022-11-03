@@ -96,6 +96,7 @@ export const InputWithLabel: FC<Props> = ({
           {...args}
         />
       </Form.Element>
+      {!(required && hasError) && <div className="error-field-hack" />}
     </FlexBox>
   )
 }

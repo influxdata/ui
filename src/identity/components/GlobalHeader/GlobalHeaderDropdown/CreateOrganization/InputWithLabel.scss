@@ -12,6 +12,11 @@
     font-style: italic;
     font-weight: normal !important;
   }
+
+  > .error-field-hack {
+    height: 28.5px;
+    width: 200px;
+  }
 }
 
 .inputwithlabel-description {

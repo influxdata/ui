@@ -2,4 +2,12 @@
 
 .create-org-overlay-container {
   background-color: $cf-grey-15;
+
+  .create-org-overlay-body {
+    .alert-error-message {
+      width: 200px !important;
+      background-color: red !important;
+      margin: 50px;
+    }
+  }
 }

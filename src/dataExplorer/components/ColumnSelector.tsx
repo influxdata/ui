@@ -21,6 +21,9 @@ import {ColumnsContext} from 'src/dataExplorer/context/columns'
 // Utilities
 import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
 
+// Styles
+import './Sidebar.scss'
+
 export const ColumnSelector: FC = () => {
   // Contexts
   const {selection, setSelection} = useContext(PersistanceContext)

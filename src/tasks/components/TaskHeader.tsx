@@ -12,7 +12,7 @@ import {
 interface Props {
   title: string
   canSubmit: boolean
-  showNewTasksUI: boolean
+  showNewTasksUI?: boolean
   onCancel: () => void
   onSave: () => void
 }

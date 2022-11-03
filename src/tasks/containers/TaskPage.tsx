@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useEffect, ChangeEvent} from 'react'
+import React, {lazy, Suspense, PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {
   RemoteDataState,
@@ -41,84 +41,40 @@ const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
 )
 
-const TaskPage: FC<Props> = props => {
-  const {newScript, taskOptions, setTaskOption, clearTask} = props
-  const showNewTasksUI = isFlagEnabled('tasksUiEnhancements')
+class TaskPage extends PureComponent<Props> {
+  constructor(props) {
+    super(props)
+  }
 
-  useEffect(() => {
-    setTaskOption({
+  public componentDidMount() {
+    this.props.setTaskOption({
       key: 'taskScheduleType',
       value: TaskSchedule.interval,
     })
-  }, [setTaskOption])
-
-  useEffect(() => {
-    clearTask()
-  }, [clearTask])
-
-  const isFormValid = () => {
-    const {
-      taskOptions: {name, cron, interval},
-      newScript,
-    } = props
-
-    const hasSchedule = !!cron || !!interval
-    return hasSchedule && !!name && !!newScript
   }
 
-  const handleChangeScript = (script: string) => {
-    props.setNewScript(script)
+  public componentWillUnmount() {
+    this.props.clearTask()
   }
 
-  const handleChangeScheduleType = (value: TaskSchedule) => {
-    props.setTaskOption({key: 'taskScheduleType', value})
-  }
+  public render(): JSX.Element {
+    const {newScript, taskOptions} = this.props
+    const showNewTasksUI = isFlagEnabled('tasksUiEnhancements')
 
-  const handleSave = () => {
-    const {newScript, taskOptions} = props
-
-    const taskOption: string = taskOptionsToFluxScript(taskOptions)
-    let script: string = addDestinationToFluxScript(newScript, taskOptions)
-    const preamble = `${taskOption}`
-
-    // if the script has a pre-defined option task = {}
-    // we want the taskOptions to take precedence over what is provided in the script
-    // currently we delete that part of the script
-    script = script.replace(new RegExp('option\\s+task\\s+=\\s+{(.|\\s)*}'), '')
-
-    event('Valid Task Form Submitted')
-    props.saveNewScript(script, preamble).then(() => {
-      props.goToTasks()
-    })
-  }
-
-  const handleCancel = () => {
-    props.cancel()
-  }
-
-  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target
-    const key = name as TaskOptionKeys
-
-    props.setTaskOption({key, value})
-  }
-
-  return (
-    <Page titleTag={pageTitleSuffixer(['Create Task'])}>
-      <Page.Header fullWidth={true}></Page.Header>
-      <>
+    return (
+      <Page titleTag={pageTitleSuffixer(['Create Task'])}>
         <TaskHeader
           title="Create Task"
-          canSubmit={isFormValid()}
-          onCancel={handleCancel}
-          onSave={handleSave}
+          canSubmit={this.isFormValid}
+          onCancel={this.handleCancel}
+          onSave={this.handleSave}
           showNewTasksUI={showNewTasksUI}
         />
         {showNewTasksUI ? (
           <TaskScheduler
             taskOptions={taskOptions}
-            onChangeScheduleType={handleChangeScheduleType}
-            onChangeInput={handleChangeInput}
+            onChangeScheduleType={this.handleChangeScheduleType}
+            onChangeInput={this.handleChangeInput}
           />
         ) : (
           <Page.Contents fullWidth={true} scrollable={false}>
@@ -126,9 +82,9 @@ const TaskPage: FC<Props> = props => {
               <div className="task-form--options">
                 <TaskForm
                   taskOptions={taskOptions}
-                  canSubmit={isFormValid()}
-                  onChangeInput={handleChangeInput}
-                  onChangeScheduleType={handleChangeScheduleType}
+                  canSubmit={this.isFormValid}
+                  onChangeInput={this.handleChangeInput}
+                  onChangeScheduleType={this.handleChangeScheduleType}
                 />
               </div>
               <div className="task-form--editor">
@@ -142,8 +98,8 @@ const TaskPage: FC<Props> = props => {
                 >
                   <FluxMonacoEditor
                     script={newScript}
-                    variables={props.variables}
-                    onChangeScript={handleChangeScript}
+                    variables={this.props.variables}
+                    onChangeScript={this.handleChangeScript}
                     autofocus
                   />
                 </Suspense>
@@ -151,9 +107,55 @@ const TaskPage: FC<Props> = props => {
             </div>
           </Page.Contents>
         )}
-      </>
-    </Page>
-  )
+      </Page>
+    )
+  }
+
+  private get isFormValid(): boolean {
+    const {
+      taskOptions: {name, cron, interval},
+      newScript,
+    } = this.props
+
+    const hasSchedule = !!cron || !!interval
+    return hasSchedule && !!name && !!newScript
+  }
+
+  private handleChangeScript = (script: string) => {
+    this.props.setNewScript(script)
+  }
+
+  private handleChangeScheduleType = (value: TaskSchedule) => {
+    this.props.setTaskOption({key: 'taskScheduleType', value})
+  }
+
+  private handleSave = () => {
+    const {newScript, taskOptions} = this.props
+
+    const taskOption: string = taskOptionsToFluxScript(taskOptions)
+    let script: string = addDestinationToFluxScript(newScript, taskOptions)
+    const preamble = `${taskOption}`
+    // if the script has a pre-defined option task = {}
+    // we want the taskOptions to take precedence over what is provided in the script
+    // currently we delete that part of the script
+    script = script.replace(new RegExp('option\\s+task\\s+=\\s+{(.|\\s)*}'), '')
+
+    event('Valid Task Form Submitted')
+    this.props.saveNewScript(script, preamble).then(() => {
+      this.props.goToTasks()
+    })
+  }
+
+  private handleCancel = () => {
+    this.props.cancel()
+  }
+
+  private handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target
+    const key = name as TaskOptionKeys
+
+    this.props.setTaskOption({key, value})
+  }
 }
 
 const mstp = (state: AppState) => {

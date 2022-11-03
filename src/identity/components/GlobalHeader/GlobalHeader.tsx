@@ -31,7 +31,7 @@ import {
 } from 'src/identity/components/GlobalHeader/DefaultEntities'
 import {alphaSortSelectedFirst} from 'src/identity/utils/alphaSortSelectedFirst'
 import IdentityUserAvatar from 'src/identity/components/GlobalHeader/IdentityUserAvatar'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import {RateLimitAlert} from 'src/cloud/components/RateLimitAlert'
 
 const caretStyle = {fontSize: '18px', color: InfluxColors.Grey65}
 const rightHandContainerStyle = {marginLeft: 'auto'}

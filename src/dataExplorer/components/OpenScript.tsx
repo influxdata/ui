@@ -42,7 +42,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
 
-  const handleGetScripts = useCallback(async (name: string = '') => {
+  const handleGetScripts = useCallback(async (name = '') => {
     try {
       if (getScripts) {
         setLoading(RemoteDataState.Loading)
@@ -63,15 +63,12 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     }
   }, [])
 
-  const handleSearchTerm = useCallback(
-    (name: string) => {
-      setSearchTerm(name)
-      debouncer(() => {
-        handleGetScripts(name)
-      })
-    },
-    [handleGetScripts]
-  )
+  const handleSearchTerm = (name: string) => {
+    setSearchTerm(name)
+    debouncer(() => {
+      handleGetScripts(name)
+    })
+  }
 
   const handleOpenScript = () => {
     setStatus(RemoteDataState.NotStarted)
@@ -92,17 +89,26 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
     loading === RemoteDataState.Loading
   ) {
     return (
-      <div className="data-source--list__empty">
-        <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
-      </div>
+      <Overlay.Container maxWidth={500}>
+        <Overlay.Header title="Open Script" onDismiss={onCancel} />
+        <div className="data-source--list__empty">
+          <TechnoSpinner
+            strokeWidth={ComponentSize.Small}
+            diameterPixels={32}
+          />
+        </div>
+      </Overlay.Container>
     )
   }
 
   if (loading === RemoteDataState.Error) {
     return (
-      <div className="data-source--list__empty">
-        <p>Could not get scripts</p>
-      </div>
+      <Overlay.Container maxWidth={500}>
+        <Overlay.Header title="Open Script" onDismiss={onCancel} />
+        <div className="data-source--list__empty">
+          <p>Could not get scripts</p>
+        </div>
+      </Overlay.Container>
     )
   }
 

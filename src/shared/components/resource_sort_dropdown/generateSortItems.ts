@@ -254,6 +254,59 @@ export const generateSortItems = (
           sortDirection: Sort.Descending,
         },
       ]
+
+    case ResourceType.Orgs:
+      return [
+        {
+          label: 'Name (A ➞ Z)',
+          sortKey: 'name',
+          sortDirection: Sort.Ascending,
+          sortType: SortTypes.String,
+        },
+        {
+          label: 'Name (Z ➞ A)',
+          sortKey: 'name',
+          sortDirection: Sort.Descending,
+          sortType: SortTypes.String,
+        },
+        {
+          label: 'Cloud Provider (A ➞ Z)',
+          sortKey: 'provider',
+          sortDirection: Sort.Ascending,
+          sortType: SortTypes.String,
+        },
+        {
+          label: 'Cloud Provider (Z ➞ A)',
+          sortKey: 'provider',
+          sortDirection: Sort.Descending,
+          sortType: SortTypes.String,
+        },
+        {
+          label: 'Region (A ➞ Z)',
+          sortKey: 'regionCode',
+          sortDirection: Sort.Ascending,
+          sortType: SortTypes.String,
+        },
+        {
+          label: 'Region (Z ➞ A)',
+          sortKey: 'regionCode',
+          sortDirection: Sort.Descending,
+          sortType: SortTypes.String,
+        },
+        {
+          label: 'Location (A ➞ Z)',
+          sortKey: 'regionName',
+          sortDirection: Sort.Ascending,
+          sortType: SortTypes.String,
+        },
+        {
+          label: 'Location (Z ➞ A)',
+          sortKey: 'regionName',
+          sortDirection: Sort.Descending,
+          sortType: SortTypes.String,
+        },
+      ]
+
     case ResourceType.Telegrafs:
       return [
         {

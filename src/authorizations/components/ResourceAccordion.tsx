@@ -10,7 +10,7 @@ import {Accordion, DapperScrollbars} from '@influxdata/clockface'
 import {ResourceAccordionHeader} from 'src/authorizations/components/ResourceAccordionHeader'
 import {AllAccordionBody} from 'src/authorizations/components/AllAccordionBody'
 import {IndividualAccordionBody} from 'src/authorizations/components/IndividualAccordionBody'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 
 // Types
 import {Resource} from 'src/client'
@@ -27,7 +27,7 @@ interface OwnProps {
   searchTerm: string
 }
 
-const Filter = FilterList<Resource>()
+const Filter = FilterListContainer<Resource>()
 
 class ResourceAccordion extends Component<OwnProps> {
   public render() {

@@ -18,7 +18,7 @@ import EmptySubscriptionState from 'src/writeData/subscriptions/components/Empty
 import SubscriptionsList from 'src/writeData/subscriptions/components/SubscriptionsList'
 import LoadDataHeader from 'src/settings/components/LoadDataHeader'
 import {SortTypes} from 'src/shared/utils/sort'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import LoadDataTabbedPage from 'src/settings/components/LoadDataTabbedPage'
 

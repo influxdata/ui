@@ -225,7 +225,12 @@ export const useZoomRequeryXDomainSettings = (args: ZoomRequeryArgs) => {
   )
 
   useEffect(() => {
-    if (queries.length && activeQueryIndex >= 0) {
+    if (
+      isFlagEnabled('zoomRequery') &&
+      !adaptiveZoomHide &&
+      queries.length &&
+      activeQueryIndex >= 0
+    ) {
       const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
         getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
         timeRange,
@@ -406,7 +411,12 @@ export const useZoomRequeryYDomainSettings = (args: ZoomRequeryArgs) => {
   )
 
   useEffect(() => {
-    if (queries.length && activeQueryIndex >= 0) {
+    if (
+      isFlagEnabled('zoomRequery') &&
+      !adaptiveZoomHide &&
+      queries.length &&
+      activeQueryIndex >= 0
+    ) {
       const updatedWindowPeriod = normalizeWindowPeriodForZoomRequery(
         getWindowPeriodFromVariables(queries[activeQueryIndex], variables),
         timeRange,

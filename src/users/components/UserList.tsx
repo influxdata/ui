@@ -8,7 +8,7 @@ import UserListItem from 'src/users/components/UserListItem'
 import InviteListItem from 'src/users/components/InviteListItem'
 
 // Utils
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import {filter} from 'src/users/utils/filter'
 
 const UserList: FC = () => {

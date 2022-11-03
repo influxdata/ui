@@ -11,8 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
@@ -23,15 +22,7 @@ import {
   shouldShowUpgradeButton,
 } from 'src/me/selectors'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  getDataLayerIdentity,
-  getExperimentVariantId,
-} from 'src/cloud/utils/experiments'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-
-// Constants
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 interface Props {
   className?: string
@@ -81,18 +72,8 @@ const UpgradeMessage: FC<UpgradeMessageProps> = ({
     </span>
   )
 
-  if (isFlagEnabled('credit250Experiment')) {
-    if (isCredit250ExperienceActive) {
-      return credit250Experience
-    }
-
-    return (
-      <GoogleOptimizeExperiment
-        experimentID={CREDIT_250_EXPERIMENT_ID}
-        original={original}
-        variants={[credit250Experience]}
-      />
-    )
+  if (isCredit250ExperienceActive) {
+    return credit250Experience
   }
   return original
 }
@@ -120,23 +101,11 @@ export const UpgradeContent: FC<UpgradeProps> = ({
           className="upgrade-payg--button__rate-alert"
           showPromoMessage={false}
           metric={() => {
-            const experimentVariantId = getExperimentVariantId(
-              CREDIT_250_EXPERIMENT_ID
-            )
-            const identity = getDataLayerIdentity()
             event(
-              isFlagEnabled('credit250Experiment') &&
-                (experimentVariantId === '1' || isCredit250ExperienceActive)
+              isCredit250ExperienceActive
                 ? `user.limits.${type}.credit-250.upgrade`
                 : `user.limits.${type}.upgrade`,
-              {
-                location,
-                ...identity,
-                experimentId: CREDIT_250_EXPERIMENT_ID,
-                experimentVariantId: isCredit250ExperienceActive
-                  ? '2'
-                  : experimentVariantId,
-              }
+              {location}
             )
           }}
           size={ComponentSize.ExtraSmall}
@@ -146,7 +115,7 @@ export const UpgradeContent: FC<UpgradeProps> = ({
   )
 }
 
-const RateLimitAlertContent: FC<Props> = ({className, location}) => {
+export const RateLimitAlertContent: FC<Props> = ({className, location}) => {
   const dispatch = useDispatch()
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   const rateLimitAlertContentClass = classnames('rate-alert--content', {
@@ -192,5 +161,3 @@ const RateLimitAlertContent: FC<Props> = ({className, location}) => {
     </div>
   )
 }
-
-export default RateLimitAlertContent

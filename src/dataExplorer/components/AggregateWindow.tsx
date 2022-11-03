@@ -1,18 +1,11 @@
-import React, {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useMemo} from 'react'
 
 // Components
 import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabelTooltip'
-import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import DurationInput from 'src/shared/components/DurationInput'
 import {ColumnSelector} from 'src/dataExplorer/components/ColumnSelector'
+import {AggregateFunctionsSelector} from 'src/dataExplorer/components/AggregateFunctionSelector'
 
 // Contexts
 import {
@@ -26,7 +19,6 @@ import {
 import {
   AGG_WINDOW_AUTO,
   DURATIONS,
-  AGGREGATE_FUNCTIONS,
 } from 'src/timeMachine/constants/queryBuilder'
 
 // Utilities
@@ -42,13 +34,10 @@ const AggregateWindow: FC = () => {
   // Contexts
   const {selection, setSelection} = useContext(PersistanceContext)
 
-  // States
-  const [functionSearchTerm, setFunctionSearchTerm] = useState('')
   const {
     isOn,
     isAutoWindowPeriod,
     every: duration,
-    fn: selectedFunction,
     createEmpty,
   }: AggregateWindow = selection?.resultOptions?.aggregateWindow ||
   DEFAULT_AGGREGATE_WINDOW
@@ -59,8 +48,6 @@ const AggregateWindow: FC = () => {
         aggregateWindow: JSON.parse(JSON.stringify(DEFAULT_AGGREGATE_WINDOW)),
       },
     })
-
-    setFunctionSearchTerm('')
   }, [selection.bucket, selection.measurement])
 
   const handleToggleAggregateWindow = useCallback(() => {
@@ -73,47 +60,7 @@ const AggregateWindow: FC = () => {
         },
       },
     })
-    if (!toBeOn) {
-      setFunctionSearchTerm('')
-    }
   }, [selection.resultOptions.aggregateWindow, setSelection])
-
-  const handleSelectFunction = useCallback(
-    (fn: string) => {
-      setSelection({
-        resultOptions: {
-          aggregateWindow: {
-            ...selection?.resultOptions?.aggregateWindow,
-            fn,
-          },
-        },
-      })
-      setFunctionSearchTerm('')
-    },
-    [selection.resultOptions.aggregateWindow, setSelection]
-  )
-
-  const functionSelector = useMemo(() => {
-    return (
-      isOn && (
-        <div className="result-options--item--row">
-          <SearchableDropdown
-            options={AGGREGATE_FUNCTIONS.map(f => f.name)}
-            selectedOption={selectedFunction || 'Select aggregate function'}
-            onSelect={handleSelectFunction}
-            searchPlaceholder="Search aggregate function"
-            searchTerm={functionSearchTerm}
-            onChangeSearchTerm={setFunctionSearchTerm}
-            emptyText="No functions found"
-            buttonStatus={ComponentStatus.Default}
-            testID="aggregate-window--function--dropdown"
-            buttonTestID="aggregate-window--function--dropdown-button"
-            menuTestID="aggregate-window--function--dropdown-menu"
-          />
-        </div>
-      )
-    )
-  }, [isOn, selectedFunction, functionSearchTerm, handleSelectFunction])
 
   const handleToggleAutoWindowPeriod = useCallback(() => {
     const isAutoWindowPeriod =
@@ -221,7 +168,7 @@ const AggregateWindow: FC = () => {
           disabled={!selection.measurement}
         />
         <ColumnSelector />
-        {functionSelector}
+        <AggregateFunctionsSelector />
         {windowPeriodForm}
         {createEmptyToggle}
       </div>
@@ -229,7 +176,6 @@ const AggregateWindow: FC = () => {
   }, [
     isOn,
     selection.measurement,
-    functionSelector,
     windowPeriodForm,
     createEmptyToggle,
     handleToggleAggregateWindow,

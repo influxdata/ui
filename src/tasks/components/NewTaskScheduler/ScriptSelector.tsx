@@ -15,12 +15,12 @@ import {RemoteDataState} from 'src/types'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 interface Props {
-  loading: any
+  loading: RemoteDataState
   scripts: any
   selectedScript: any
   searchTerm: string
-  setSelectedScript: (script) => void
-  handleSearchTerm: (evt) => void
+  setSelectedScript: (script: string) => void
+  handleSearchTerm: (str: string) => void
 }
 
 const ScriptSelector: FC<Props> = ({

@@ -67,8 +67,7 @@ export const CloudLoginPage: FC = () => {
               // if there is a redirectTo, parse the pathname from redirect location
               const redirectToUrl = new URL(redirectTo).pathname
               pathname = redirectToUrl ?? ''
-            }
-            catch {
+            } catch {
               // else, use current location's pathname
               pathname = window.location.pathname ?? ''
             }

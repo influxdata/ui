@@ -65,7 +65,6 @@ export const WindowPeriod: FC = () => {
   )
 
   return useMemo(() => {
-    console.log('window period')
     const durationInputStatus = isAutoWindowPeriod
       ? ComponentStatus.Disabled
       : ComponentStatus.Default

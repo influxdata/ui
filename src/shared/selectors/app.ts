@@ -20,9 +20,6 @@ export const navbarMode = (state: AppState): NavBarState =>
 export const fluxQueryBuilder = (state: AppState): boolean =>
   state.app.persisted.fluxQueryBuilder || false
 
-export const newTasksUI = (state: AppState): boolean =>
-  state.app.persisted.newTasksUI || false
-
 export const getVersionInfo = (state: AppState): VersionInfo =>
   state.app.persisted.versionInfo || ({} as VersionInfo)
 

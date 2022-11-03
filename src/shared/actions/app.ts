@@ -5,7 +5,6 @@ export enum ActionTypes {
   DisablePresentationMode = 'DISABLE_PRESENTATION_MODE',
   SetNavBarState = 'SET_NAV_BAR_STATE',
   SetFluxQueryBuilder = 'SET_FLUX_QUERY_BUILDER',
-  SetNewTasksUI = 'SET_NEW_TASKS_UI',
   SetAutoRefresh = 'SET_AUTOREFRESH',
   SetTimeZone = 'SET_APP_TIME_ZONE',
   SetVersionInfo = 'SET_VERSION_INFO',
@@ -20,7 +19,6 @@ export type Action =
   | ReturnType<typeof disablePresentationMode>
   | ReturnType<typeof setFluxQueryBuilder>
   | ReturnType<typeof setNavBarState>
-  | ReturnType<typeof setNewTasksUI>
   | ReturnType<typeof setAutoRefresh>
   | ReturnType<typeof setTimeZone>
   | ReturnType<typeof setTheme>
@@ -54,12 +52,6 @@ export const setNavBarState = (navBarState: NavBarState) =>
   ({
     type: ActionTypes.SetNavBarState,
     navBarState,
-  } as const)
-
-export const setNewTasksUI = (active: boolean) =>
-  ({
-    type: ActionTypes.SetNewTasksUI,
-    active,
   } as const)
 
 export const setAutoRefresh = (milliseconds: number) =>

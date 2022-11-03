@@ -11,13 +11,18 @@ import {useDispatch} from 'react-redux'
 
 // Components
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const CreateOrganizationMenuItem: FC = () => {
   const dispatch = useDispatch()
   const handleCreateOrg = () => {
-    dispatch(
-      showOverlay('create-organization', null, () => dispatch(dismissOverlay()))
-    )
+    if (isFlagEnabled('createOrgTempFlag')) {
+      dispatch(
+        showOverlay('create-organization', null, () =>
+          dispatch(dismissOverlay())
+        )
+      )
+    }
   }
 
   const title = 'Create Organization'

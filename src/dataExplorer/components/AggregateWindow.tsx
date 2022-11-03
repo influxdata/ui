@@ -12,6 +12,7 @@ import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabe
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import DurationInput from 'src/shared/components/DurationInput'
+import {ColumnSelector} from 'src/dataExplorer/components/ColumnSelector'
 
 // Contexts
 import {
@@ -20,7 +21,6 @@ import {
   DEFAULT_WINDOW_PERIOD,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
-import {ColumnsContext} from 'src/dataExplorer/context/columns'
 
 // Constants
 import {
@@ -31,7 +31,6 @@ import {
 
 // Utilities
 import {ComponentStatus} from '@influxdata/clockface'
-import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
 
 // Styles
 import './Sidebar.scss'
@@ -42,40 +41,25 @@ const WINDOW_PERIOD_TOOLTIP = `test`
 const AggregateWindow: FC = () => {
   // Contexts
   const {selection, setSelection} = useContext(PersistanceContext)
-  const {
-    columns,
-    loading: loadingColumns,
-    getColumns,
-    resetColumns,
-  } = useContext(ColumnsContext)
 
   // States
-  const [columnSearchTerm, setColumnSearchTerm] = useState('')
   const [functionSearchTerm, setFunctionSearchTerm] = useState('')
   const {
     isOn,
     isAutoWindowPeriod,
     every: duration,
     fn: selectedFunction,
-    column: selectedColumn,
     createEmpty,
   }: AggregateWindow = selection?.resultOptions?.aggregateWindow ||
   DEFAULT_AGGREGATE_WINDOW
 
   useEffect(() => {
-    if (!selection.bucket || !selection.measurement) {
-      resetColumns()
-    } else {
-      getColumns(selection.bucket, selection.measurement)
-    }
-
     setSelection({
       resultOptions: {
         aggregateWindow: JSON.parse(JSON.stringify(DEFAULT_AGGREGATE_WINDOW)),
       },
     })
 
-    setColumnSearchTerm('')
     setFunctionSearchTerm('')
   }, [selection.bucket, selection.measurement])
 
@@ -90,58 +74,9 @@ const AggregateWindow: FC = () => {
       },
     })
     if (!toBeOn) {
-      setColumnSearchTerm('')
       setFunctionSearchTerm('')
     }
   }, [selection.resultOptions.aggregateWindow, setSelection])
-
-  const handleSelectColumn = useCallback(
-    (column: string) => {
-      let _column = column
-      if (selection?.resultOptions?.aggregateWindow?.column === column) {
-        _column = ''
-      }
-      setSelection({
-        resultOptions: {
-          aggregateWindow: {
-            ...selection?.resultOptions?.aggregateWindow,
-            column: _column,
-          },
-        },
-      })
-      setColumnSearchTerm('')
-    },
-    [selection.resultOptions.aggregateWindow, setSelection]
-  )
-
-  const columnSelector = useMemo(() => {
-    return (
-      isOn && (
-        <div className="result-options--item--row">
-          <SearchableDropdown
-            options={columns}
-            selectedOption={selectedColumn || 'Select column'}
-            onSelect={handleSelectColumn}
-            searchPlaceholder="Search columns"
-            searchTerm={columnSearchTerm}
-            onChangeSearchTerm={setColumnSearchTerm}
-            emptyText="No columns found"
-            buttonStatus={toComponentStatus(loadingColumns)}
-            testID="aggregate-window--column--dropdown"
-            buttonTestID="aggregate-window--column--dropdown-button"
-            menuTestID="aggregate-window--column--dropdown-menu"
-          />
-        </div>
-      )
-    )
-  }, [
-    isOn,
-    columns,
-    loadingColumns,
-    selectedColumn,
-    columnSearchTerm,
-    handleSelectColumn,
-  ])
 
   const handleSelectFunction = useCallback(
     (fn: string) => {
@@ -285,7 +220,7 @@ const AggregateWindow: FC = () => {
           tooltipContents={AGGREGATE_WINDOW_TOOLTIP}
           disabled={!selection.measurement}
         />
-        {columnSelector}
+        <ColumnSelector />
         {functionSelector}
         {windowPeriodForm}
         {createEmptyToggle}
@@ -294,7 +229,6 @@ const AggregateWindow: FC = () => {
   }, [
     isOn,
     selection.measurement,
-    columnSelector,
     functionSelector,
     windowPeriodForm,
     createEmptyToggle,

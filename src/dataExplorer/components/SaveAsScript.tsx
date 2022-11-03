@@ -1,7 +1,9 @@
 import React, {FC, useContext, useCallback, ChangeEvent, useState} from 'react'
 import {
   Button,
+  ButtonShape,
   ComponentColor,
+  ComponentSize,
   ComponentStatus,
   Form,
   IconFont,
@@ -9,6 +11,7 @@ import {
   InputLabel,
   InputType,
   Overlay,
+  SquareButton,
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 import {QueryContext} from 'src/shared/contexts/query'
@@ -30,7 +33,11 @@ import {DeleteScript} from 'src/dataExplorer/components/DeleteScript'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
-
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
+import {
+  copyToClipboardFailed,
+  copyToClipboardSuccess,
+} from 'src/shared/copy/notifications'
 interface Props {
   language: LanguageType
   onClose: () => void
@@ -47,6 +54,9 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const [error, setError] = useState<string>()
+  // Setting the name to state rather than persisting it to session storage
+  // so that we can cancel out of a name change if needed
+  const [newName, setNewName] = useState<string>(resource?.data?.name)
   const org = useSelector(getOrg)
 
   const handleClose = () => {
@@ -80,13 +90,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
   }
 
   const handleUpdateName = (event: ChangeEvent<HTMLInputElement>) => {
-    setResource({
-      ...resource,
-      data: {
-        ...(resource?.data ?? {}),
-        name: event.target.value,
-      },
-    })
+    setNewName(event.target.value)
   }
 
   const clear = useCallback(() => {
@@ -109,6 +113,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
   }, [onClose, setStatus, setResult, cancel, history, org?.id, type])
 
   const handleSaveScript = () => {
+    resource.data.name = newName
     save(language)
       .then(() => {
         setError(null)
@@ -129,6 +134,17 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
 
   const handleDeleteScript = () => {
     setOverlayType(OverlayType.DELETE)
+  }
+
+  const handleCopyAttempt = (
+    copiedText: string,
+    isSuccessful: boolean
+  ): void => {
+    if (isSuccessful) {
+      dispatch(notify(copyToClipboardSuccess(copiedText, 'Invokable URL')))
+    } else {
+      dispatch(notify(copyToClipboardFailed(copiedText, 'Invokable URL')))
+    }
   }
 
   if (type == null) {
@@ -186,7 +202,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
             name="name"
             required
             type={InputType.Text}
-            value={resource?.data?.name}
+            value={newName}
             onChange={handleUpdateName}
             status={error ? ComponentStatus.Error : ComponentStatus.Default}
           />
@@ -197,12 +213,37 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
           )}
           <InputLabel>Description</InputLabel>
           <Input
+            className="script-description__input"
             name="description"
             required
             type={InputType.Text}
             value={resource?.data?.description}
             onChange={handleUpdateDescription}
           />
+          {type === OverlayType.EDIT && (
+            <>
+              <InputLabel>Invokable URL</InputLabel>
+              <CopyToClipboard
+                text={`${window.location.origin}/api/v2/scripts/${resource.data.id}`}
+                onCopy={handleCopyAttempt}
+              >
+                <div className="invokable-script__url">
+                  <Input
+                    type={InputType.Text}
+                    value={`${window.location.origin}/api/v2/scripts/${resource.data.id}`}
+                  />
+                  <SquareButton
+                    testID="copy-to-clipboard--script"
+                    size={ComponentSize.Small}
+                    color={ComponentColor.Secondary}
+                    icon={IconFont.Duplicate_New}
+                    shape={ButtonShape.StretchToFit}
+                    titleText="Copy to clipboard"
+                  />
+                </div>
+              </CopyToClipboard>
+            </>
+          )}
           {type === OverlayType.EDIT && (
             <Button
               icon={IconFont.Trash_New}
@@ -233,7 +274,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
           <Button
             color={ComponentColor.Primary}
             status={
-              (resource?.data?.name?.length ?? 0) === 0
+              (newName?.length ?? 0) === 0
                 ? ComponentStatus.Disabled
                 : ComponentStatus.Default
             }

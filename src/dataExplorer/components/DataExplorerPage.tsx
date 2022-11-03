@@ -44,7 +44,7 @@ import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 const DataExplorerPageHeader: FC = () => {
   const {fluxQueryBuilder, setFluxQueryBuilder} = useContext(AppSettingContext)
-  const {resource, setResource} = useContext(PersistanceContext)
+  const {resource, save} = useContext(PersistanceContext)
   const history = useHistory()
 
   const toggleSlider = () => {
@@ -60,13 +60,8 @@ const DataExplorerPageHeader: FC = () => {
   }
 
   const handleRename = (name: string) => {
-    setResource({
-      ...resource,
-      data: {
-        ...resource.data,
-        name,
-      },
-    })
+    resource.data.name = name
+    save(resource?.language)
   }
 
   const showNewExplorer = fluxQueryBuilder && isFlagEnabled('newDataExplorer')
@@ -74,18 +69,14 @@ const DataExplorerPageHeader: FC = () => {
   let pageTitle = <Page.Title title="Data Explorer" />
 
   if (showNewExplorer && resource?.data?.hasOwnProperty('name')) {
-    if (resource?.data?.type === ResourceType.Scripts) {
-      pageTitle = <Page.Title title={resource?.data?.name ?? ''} />
-    } else {
-      pageTitle = (
-        <RenamablePageTitle
-          onRename={handleRename}
-          name={resource?.data?.name || ''}
-          placeholder="Untitled Script"
-          maxLength={100}
-        />
-      )
-    }
+    pageTitle = (
+      <RenamablePageTitle
+        onRename={handleRename}
+        name={resource?.data?.name || ''}
+        placeholder="Untitled Script"
+        maxLength={100}
+      />
+    )
   }
 
   return (

@@ -23,5 +23,22 @@
 }
 
 .edit-overlay__delete-script {
-  margin-top: 16px;
+  margin-top: $cf-space-s;
+}
+
+.invokable-script__url {
+  display: flex;
+  justify-content: space-between;
+
+  input {
+    pointer-events: none;
+  }
+
+  input:hover {
+    cursor: pointer;
+  }
+}
+
+.script-description__input {
+  margin-bottom: $cf-space-s;
 }

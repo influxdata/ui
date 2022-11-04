@@ -1,6 +1,6 @@
 import isEqual from 'lodash/isEqual'
 import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
-import {format_from_js_file} from '@influxdata/flux-lsp-browser'
+import {format_from_js_file} from 'src/languageSupport/languages/flux/parser'
 
 // handling variables
 import {EditorType, Variable} from 'src/types'

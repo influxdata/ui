@@ -8,7 +8,7 @@ import {
         a node environment (this is only for handling tests). If a test requires a specific AST result
         then you will need to mock that out in the test.
 */
-export const parse = (script): File => {
+export const parse = (script: string): File => {
   if (window) {
     return flux_parse(script)
   } else {
@@ -27,10 +27,10 @@ export const parse = (script): File => {
   }
 }
 
-export const format_from_js_file = (script): string => {
+export const format_from_js_file = (script: File): string => {
   if (window) {
     return flux_format_from_js_file(script)
   } else {
-    return script
+    return ''
   }
 }

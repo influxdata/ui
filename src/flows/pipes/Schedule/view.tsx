@@ -10,7 +10,10 @@ import {
   IconFont,
   ComponentSize,
 } from '@influxdata/clockface'
-import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
+import {
+  parse,
+  format_from_js_file,
+} from 'src/languageSupport/languages/flux/parser'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 import {patchTask, TaskUpdateRequest} from 'src/client'
 

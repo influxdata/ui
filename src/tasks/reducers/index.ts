@@ -20,6 +20,7 @@ import {
   EDIT_TASK,
   REMOVE_TASK,
   SET_CURRENT_TASKS_PAGE,
+  SET_SCRIPTS,
 } from 'src/tasks/actions/creators'
 import {ResourceType, ResourceState, TaskSchedule, Task} from 'src/types'
 
@@ -167,6 +168,16 @@ export default (
 
       case SET_CURRENT_TASKS_PAGE: {
         draftState.currentPage = action.tasksPage
+
+        return
+      }
+
+      case SET_SCRIPTS: {
+        draftState.scripts = {
+          ...state.scripts,
+          status: action.status,
+          scripts: action.scripts,
+        }
 
         return
       }

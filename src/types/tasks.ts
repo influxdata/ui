@@ -17,6 +17,11 @@ export interface TaskOptions {
   toBucketName: string
 }
 
+export interface Scripts {
+  status: RemoteDataState
+  scripts: []
+}
+
 export interface TasksState extends NormalizedState<Task> {
   newScript: string
   currentScript: string
@@ -28,6 +33,7 @@ export interface TasksState extends NormalizedState<Task> {
   runStatus: RemoteDataState
   logs: LogEvent[]
   currentPage: string
+  scripts: Scripts
 }
 
 export enum TaskSchedule {

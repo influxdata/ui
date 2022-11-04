@@ -6,6 +6,7 @@ import {normalize} from 'normalizr'
 // APIs
 import * as api from 'src/client'
 import {createResourceFromPkgerTemplate} from 'src/templates/api'
+import * as scriptApi from 'src/client/scriptsRoutes'
 
 // Schemas
 import {taskSchema, arrayOfTasks} from 'src/schemas/tasks'
@@ -23,6 +24,7 @@ import {
   clearTask,
   removeTask,
   setNewScript,
+  setScripts,
   clearCurrentTask,
   TaskPage,
   Action as TaskAction,
@@ -696,3 +698,24 @@ export const runDuration = (finishedAt: Date, startedAt: Date): string => {
 
   return diff + ' ' + timeTag
 }
+
+export const getScripts =
+  () => async (dispatch: Dispatch<Action>, getState: GetState) => {
+    try {
+      const state = getState()
+
+      // if (getStatus(state, ResourceType.Tasks) === RemoteDataState.NotStarted) {
+      //   dispatch(setScripts(RemoteDataState.Loading))
+      // }
+      const response = await scriptApi.getScripts({query: {limit: 250}})
+
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
+      }
+
+      dispatch(setScripts(RemoteDataState.Done, response.data))
+    } catch (error) {
+      dispatch(setScripts(RemoteDataState.Error))
+      console.error({error})
+    }
+  }

@@ -3,6 +3,7 @@ import {
   ResourceState,
   TaskOptions,
   TaskSchedule,
+  Scripts,
 } from 'src/types'
 
 export const initialState = (): ResourceState['tasks'] => ({
@@ -19,6 +20,7 @@ export const initialState = (): ResourceState['tasks'] => ({
   runs: [],
   logs: [],
   currentPage: 'TasksPage',
+  scripts: Script,
 })
 
 export const defaultOptions: TaskOptions = {
@@ -30,4 +32,9 @@ export const defaultOptions: TaskOptions = {
   orgID: '',
   toBucketName: '',
   toOrgName: '',
+}
+
+export const Script: Scripts = {
+  status: RemoteDataState.NotStarted,
+  scripts: [],
 }

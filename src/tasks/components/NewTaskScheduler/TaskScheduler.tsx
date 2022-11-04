@@ -35,7 +35,7 @@ interface Props {
 }
 
 const TaskScheduler: FC<Props> = ({
-  taskOptions: {taskScheduleType, interval, offset, cron},
+  taskOptions,
   onChangeScheduleType,
   onChangeInput,
 }) => {
@@ -90,7 +90,9 @@ const TaskScheduler: FC<Props> = ({
                 A task is a scheduled script that takes a stream of input data,
                 modifies or analyzes it, then writes the modified data back to
                 influxDB or perform other actions.{' '}
-                <SafeBlankLink href="">Learn More.</SafeBlankLink>{' '}
+                <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/process-data/get-started/">
+                  Learn More.
+                </SafeBlankLink>{' '}
               </p>
               <ScriptSelector
                 loading={loading}
@@ -110,7 +112,9 @@ const TaskScheduler: FC<Props> = ({
                   <SelectGroup.Option
                     name="task-schedule"
                     id="every"
-                    active={taskScheduleType === TaskSchedule.interval}
+                    active={
+                      taskOptions.taskScheduleType === TaskSchedule.interval
+                    }
                     value={TaskSchedule.interval}
                     titleText="Run task at regular intervals"
                     onClick={handleChangeScheduleType}
@@ -121,7 +125,7 @@ const TaskScheduler: FC<Props> = ({
                   <SelectGroup.Option
                     name="task-schedule"
                     id="cron"
-                    active={taskScheduleType === TaskSchedule.cron}
+                    active={taskOptions.taskScheduleType === TaskSchedule.cron}
                     value={TaskSchedule.cron}
                     titleText="Use cron syntax for more control over scheduling"
                     onClick={handleChangeScheduleType}
@@ -132,11 +136,8 @@ const TaskScheduler: FC<Props> = ({
                 </SelectGroup>
                 <Grid.Row>
                   <TaskSchedulerFormField
-                    offset={offset}
-                    interval={interval}
-                    cron={cron}
-                    schedule={taskScheduleType}
                     onChangeInput={onChangeInput}
+                    taskOptions={taskOptions}
                   />
                 </Grid.Row>
               </div>

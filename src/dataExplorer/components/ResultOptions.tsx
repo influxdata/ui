@@ -5,10 +5,11 @@ import {useSelector} from 'react-redux'
 import {Accordion} from '@influxdata/clockface'
 import {FieldsAsColumns} from 'src/dataExplorer/components/FieldsAsColumns'
 import {GroupBy} from 'src/dataExplorer/components/GroupBy'
-import {Aggregate} from 'src/dataExplorer/components/Aggregate'
+import {AggregateWindow} from 'src/dataExplorer/components/AggregateWindow'
 
 // Context
 import {GroupKeysProvider} from 'src/dataExplorer/context/groupKeys'
+import {ColumnsProvider} from 'src/dataExplorer/context/columns'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -28,14 +29,16 @@ const ResultOptions: FC = () => {
 
   return (
     <GroupKeysProvider scope={scope}>
-      <Accordion className="result-options" expanded={true}>
-        <Accordion.AccordionHeader className="result-options--header">
-          Result Options
-        </Accordion.AccordionHeader>
-        <FieldsAsColumns />
-        <GroupBy />
-        <Aggregate />
-      </Accordion>
+      <ColumnsProvider scope={scope}>
+        <Accordion className="result-options" expanded={true}>
+          <Accordion.AccordionHeader className="result-options--header">
+            Result Options
+          </Accordion.AccordionHeader>
+          <FieldsAsColumns />
+          <GroupBy />
+          <AggregateWindow />
+        </Accordion>
+      </ColumnsProvider>
     </GroupKeysProvider>
   )
 }

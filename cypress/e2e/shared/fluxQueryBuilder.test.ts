@@ -541,9 +541,11 @@ describe('Script Builder', () => {
           // )
 
           cy.log('does diverge, within block')
-          cy.getByTestID('flux-editor').monacoType(
-            '{enter}{upArrow}{upArrow}{upArrow}{upArrow} // make diverge'
-          )
+          cy.getByTestID('flux-editor')
+            .should('exist')
+            .monacoType(
+              '{enter}{upArrow}{upArrow}{upArrow}{upArrow} // make diverge'
+            )
           cy.log('toggle is now disabled')
           cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
         })

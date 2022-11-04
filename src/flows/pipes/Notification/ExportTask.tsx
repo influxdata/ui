@@ -1,6 +1,9 @@
 import React, {FC, useContext, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
-import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
+import {
+  parse,
+  format_from_js_file,
+} from 'src/languageSupport/languages/flux/parser'
 
 // Components
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
@@ -94,7 +97,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}`)
       }, {})
     ).sort((a: ImportDeclaration, b: ImportDeclaration) =>
       b.path.value.toLowerCase().localeCompare(a.path.value.toLowerCase())
-    )
+    ) as ImportDeclaration[]
 
     ast.imports = []
 
@@ -231,7 +234,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}`)
       }, {})
     ).sort((a: ImportDeclaration, b: ImportDeclaration) =>
       b.path.value.toLowerCase().localeCompare(a.path.value.toLowerCase())
-    )
+    ) as ImportDeclaration[]
 
     ast.imports = []
 

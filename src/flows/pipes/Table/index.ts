@@ -1,5 +1,8 @@
 import View from './view'
-import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
+import {
+  parse,
+  format_from_js_file,
+} from 'src/languageSupport/languages/flux/parser'
 import {parseQuery} from 'src/shared/contexts/query'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 

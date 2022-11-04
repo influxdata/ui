@@ -1,9 +1,11 @@
 // Libraries
 import {FC, useEffect, useContext} from 'react'
-import {format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 // Utils
-import {parse} from 'src/languageSupport/languages/flux/parser'
+import {
+  parse,
+  format_from_js_file,
+} from 'src/languageSupport/languages/flux/parser'
 import {find} from 'src/shared/contexts/query'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 

@@ -1,4 +1,5 @@
 import React, {FC} from 'react'
+import {Link, useParams} from 'react-router-dom'
 import {
   TechnoSpinner,
   ComponentSize,
@@ -11,8 +12,6 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
-
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 interface Props {
   loading: RemoteDataState
@@ -31,6 +30,8 @@ const ScriptSelector: FC<Props> = ({
   handleSearchTerm,
   searchTerm,
 }) => {
+  const {orgID} = useParams<{orgID: string}>()
+
   let list
   if (
     loading === RemoteDataState.NotStarted ||
@@ -115,7 +116,9 @@ const ScriptSelector: FC<Props> = ({
       </Form.Element>
       <p>
         You can create or edit Scripts in the{' '}
-        <SafeBlankLink href="">Script Editor.</SafeBlankLink>{' '}
+        <Link to={`/orgs/${orgID}/data-explorer?fluxScriptEditor`}>
+          Script Editor.
+        </Link>
       </p>
     </div>
   )

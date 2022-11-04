@@ -8,6 +8,10 @@
   position: absolute !important;
 }
 
+.cf-form--element {
+  margin-bottom: 0 !important;
+}
+
 .create-task-titles {
   font-size: 20px;
   font-weight: bold;
@@ -18,7 +22,7 @@
 }
 
 .schedule-task {
-  margin-top: 30px !important;
+  margin-top: 35px !important;
 }
 
 .schedule-task p {
@@ -26,15 +30,15 @@
 }
 
 .name-task {
-  margin-top: 15px !important;
+  margin-top: 35px !important;
 }
 
 .task-name-input {
-  margin-top: 10px !important;
+  margin-top: 15px !important;
 }
 
 .select-script {
-  margin-top: 30px !important;
+  margin-top: 35px !important;
 }
 
 .script-dropdown {
@@ -43,4 +47,12 @@
 
 .task-form-field {
   margin-top: 15px !important;
+}
+
+.task-form-labels {
+  position: relative;
+}
+.schedule-tooltip {
+  position: absolute;
+  left: 22%;
 }

@@ -10,7 +10,7 @@ import {
 // Components
 import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
-import TaskScheduler from 'src/tasks/components/NewTaskScheduler/TaskScheduler'
+import {TaskScheduler} from 'src/tasks/components/NewTaskScheduler/TaskScheduler'
 import {Page} from '@influxdata/clockface'
 
 // Actions and Selectors

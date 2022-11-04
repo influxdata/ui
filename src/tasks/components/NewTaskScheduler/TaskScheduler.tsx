@@ -1,5 +1,5 @@
-import React, {FC, ChangeEvent, useCallback, useEffect, useState} from 'react'
-
+import React, {FC, ChangeEvent, useEffect, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 // Components
 import {
   Button,
@@ -14,19 +14,20 @@ import {
   Page,
   SelectGroup,
 } from '@influxdata/clockface'
-import TaskSchedulerFormField from 'src/tasks/components/NewTaskScheduler/TaskSchedulerFormField'
-import ScriptSelector from 'src/tasks/components/NewTaskScheduler/ScriptSelector'
+import {TaskSchedulerFormField} from 'src/tasks/components/NewTaskScheduler/TaskSchedulerFormField'
+import {ScriptSelector} from 'src/tasks/components/NewTaskScheduler/ScriptSelector'
+
+// Actions
+import {getScripts} from 'src/tasks/actions/thunks'
+import {getAllScripts} from 'src/tasks/selectors'
 
 // Utils
-import {debouncer} from 'src/dataExplorer/shared/utils'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Types
-import {RemoteDataState, TaskOptions, TaskSchedule} from 'src/types'
+import {TaskOptions, TaskSchedule} from 'src/types'
 
 import 'src/tasks/components/NewTaskScheduler/TaskScheduler.scss'
-
-const getScripts = require('src/client/scriptsRoutes').getScripts
 
 interface Props {
   taskOptions: TaskOptions
@@ -34,47 +35,25 @@ interface Props {
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-const TaskScheduler: FC<Props> = ({
+export const TaskScheduler: FC<Props> = ({
   taskOptions,
   onChangeScheduleType,
   onChangeInput,
 }) => {
-  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
-  const [scripts, setScripts] = useState([])
+  const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedScript, setSelectedScript] = useState<any>({})
   const [taskName, setTaskName] = useState('')
 
-  const handleGetScripts = useCallback(async (name: string = '') => {
-    try {
-      setLoading(RemoteDataState.Loading)
-      const resp = await getScripts({query: {limit: 250, name}})
+  const scripts = useSelector(getAllScripts)
 
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-
-      setScripts(resp.data.scripts)
-      setLoading(RemoteDataState.Done)
-    } catch (error) {
-      setLoading(RemoteDataState.Error)
-      console.error({error})
-    }
-  }, [])
-
-  const handleSearchTerm = useCallback(
-    (name: string) => {
-      setSearchTerm(name)
-      debouncer(() => {
-        handleGetScripts(name)
-      })
-    },
-    [handleGetScripts]
-  )
+  const searchForTerm = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value)
+  }
 
   useEffect(() => {
-    handleGetScripts()
-  }, [handleGetScripts])
+    dispatch(getScripts())
+  }, [dispatch])
 
   const handleChangeScheduleType = (schedule: TaskSchedule): void => {
     onChangeScheduleType(schedule)
@@ -95,12 +74,12 @@ const TaskScheduler: FC<Props> = ({
                 </SafeBlankLink>{' '}
               </p>
               <ScriptSelector
-                loading={loading}
-                scripts={scripts}
+                loading={scripts.status}
+                scripts={scripts.scripts}
                 searchTerm={searchTerm}
                 selectedScript={selectedScript}
                 setSelectedScript={setSelectedScript}
-                handleSearchTerm={handleSearchTerm}
+                searchForTerm={searchForTerm}
               />
               <div className="schedule-task">
                 <div className="create-task-titles">Schedule the Task</div>
@@ -177,5 +156,3 @@ const TaskScheduler: FC<Props> = ({
     </Page.Contents>
   )
 }
-
-export default TaskScheduler

@@ -25,7 +25,7 @@ const tooltipContents = {
   cron: 'Cron is an expression that defines the schedule on which the task runs. Cron scheduling is based on system time',
 }
 
-const TaskSchedulerFormField: FC<Props> = props => {
+export const TaskSchedulerFormField: FC<Props> = props => {
   const {
     taskOptions: {taskScheduleType, cron, offset, interval},
     onChangeInput,
@@ -84,5 +84,3 @@ const TaskSchedulerFormField: FC<Props> = props => {
     </div>
   )
 }
-
-export default TaskSchedulerFormField

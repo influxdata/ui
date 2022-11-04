@@ -10,28 +10,22 @@ describe('Home Page Tests', () => {
   })
 
   it('should verify the load data elements when page is loaded', () => {
-    // confirm navigation is open with retries due to flakiness
-    const retries = 5
-    for (let i = 0; i < retries; i++) {
-      cy.get('[data-testid="tree-nav"]').then($el => {
-        // expand the navigation so we don't deal with hover menus
-        if ($el[0].className.includes('cf-tree-nav__collapsed')) {
-          // still collapsed, click the expand button again
-          cy.log(
-            `tree-nav is still collapsed, trying to expand again with ${
-              retries - i
-            } attempts remaining...`
-          )
-          cy.get('.cf-tree-nav--toggle').should('be.visible')
-          cy.get('.cf-tree-nav--toggle').click()
-        } else {
-          // navigation is expanded, exit loop.
-          // we can't use 'break' here because we're inside a callback function.
-          i = retries
-          cy.log('tree-nav is expanded, continuing...')
-        }
-      })
-    }
+    // Tree nav is collapsed, the Icon for opening is visible, Load Data is not visible
+    cy.get('[data-testid="tree-nav"]').should(
+      'have.class',
+      'cf-tree-nav__collapsed'
+    )
+    cy.get('.cf-icon.SidebarOpen').should('be.visible')
+    cy.get('.cf-tree-nav--label').contains('Load Data').should('not.be.visible')
+    cy.get('.cf-icon.SidebarOpen').click()
+
+    // Tree nav is expanded, the Icon for closing is visible, Load Data is visible
+    cy.get('[data-testid="tree-nav"]').should(
+      'not.have.class',
+      'cf-tree-nav__collapsed'
+    )
+    cy.get('.cf-icon.SidebarClose').should('be.visible')
+    cy.get('.cf-tree-nav--label').contains('Load Data').should('be.visible')
 
     // open the Load Data submenu inline
     cy.get('[data-testid="nav-item-load-data"]').should('be.visible')

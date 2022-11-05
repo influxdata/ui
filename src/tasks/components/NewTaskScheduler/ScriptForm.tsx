@@ -14,20 +14,16 @@ export const ScriptForm: FC<Props> = props => {
 
   const paramList = (
     <>
-    {Object.keys(scriptParams).map(param => (
-      <Form.Element
-      label={`param.${param}`}
-      required={true}
-      key={param}
-      >
-        <Input
-          name="name"
-          onChange={() => {}}
-          // value={}
-          testID="script-param-value"
+      {Object.keys(scriptParams).map(param => (
+        <Form.Element label={`param.${param}`} required={true} key={param}>
+          <Input
+            name="name"
+            onChange={() => {}}
+            // value={}
+            testID="script-param-value"
           />
-      </Form.Element>
-    ))}
+        </Form.Element>
+      ))}
     </>
   )
 
@@ -50,9 +46,7 @@ export const ScriptForm: FC<Props> = props => {
           autoSize
           style={{width: '100%', maxWidth: '552px', maxHeight: '400px'}}
         >
-          <div className="script-params-list">
-            {paramList}
-          </div>
+          <div className="script-params-list">{paramList}</div>
         </DapperScrollbars>
       </div>
     </>

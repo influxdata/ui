@@ -160,9 +160,9 @@ export const TaskScheduler: FC<Props> = ({
             </Grid.Column>
             {!isEmpty(scriptParams) && (
               <>
-              <Grid.Column widthXS={Columns.Two}>
-                <div className="form-divider"></div>
-              </Grid.Column>
+                <Grid.Column widthXS={Columns.Two}>
+                  <div className="form-divider"></div>
+                </Grid.Column>
                 <Grid.Column widthXS={Columns.Five}>
                   <ScriptForm
                     selectedScript={selectedScript}

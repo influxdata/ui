@@ -81,17 +81,15 @@ export const ScriptSelector: FC<Props> = ({
     </Dropdown.Item>
   )
 
-  const handleSelectScript = (script) => {
+  const handleSelectScript = script => {
     setSelectedScript(script)
 
     // fetch script params from /api/v2/scripts/{scriptName}/params
-    fetch(`/api/v2/scripts/${script.name}/params`)
-    .then(async response => {
+    fetch(`/api/v2/scripts/${script.name}/params`).then(async response => {
       const params = await response.json()
       // console.log('params', params)
       setScriptParams(params.params)
     })
-
   }
 
   let scriptsList

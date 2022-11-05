@@ -34,6 +34,7 @@ interface Props {
   selectedScript: any
   searchTerm: string
   setSelectedScript: (script: Script) => void
+  setScriptParams: (params) => void
   searchForTerm: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -44,6 +45,7 @@ export const ScriptSelector: FC<Props> = ({
   searchTerm,
   selectedScript,
   setSelectedScript,
+  setScriptParams,
 }) => {
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
@@ -79,6 +81,19 @@ export const ScriptSelector: FC<Props> = ({
     </Dropdown.Item>
   )
 
+  const handleSelectScript = (script) => {
+    setSelectedScript(script)
+
+    // fetch script params from /api/v2/scripts/{scriptName}/params
+    fetch(`/api/v2/scripts/${script.name}/params`)
+    .then(async response => {
+      const params = await response.json()
+      // console.log('params', params)
+      setScriptParams(params.params)
+    })
+
+  }
+
   let scriptsList
 
   if (
@@ -107,7 +122,7 @@ export const ScriptSelector: FC<Props> = ({
           <Dropdown.Item
             key={script.id}
             value={script.name}
-            onClick={() => setSelectedScript(script)}
+            onClick={() => handleSelectScript(script)}
             selected={script.name === selectedScript?.name}
           >
             {script.name}

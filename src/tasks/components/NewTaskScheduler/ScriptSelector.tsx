@@ -1,11 +1,11 @@
-import React, {FC} from 'react'
-import {Link, useParams} from 'react-router-dom'
+import React, {ChangeEvent, FC} from 'react'
+import {useHistory, useParams} from 'react-router-dom'
 import {
   ComponentSize,
   Dropdown,
   EmptyState,
-  IconFont,
   Form,
+  IconFont,
   Input,
   TechnoSpinner,
 } from '@influxdata/clockface'
@@ -13,14 +13,8 @@ import {
 // Types
 import {RemoteDataState} from 'src/types'
 
-interface Props {
-  loading: RemoteDataState
-  scripts: any
-  selectedScript: any
-  searchTerm: string
-  setSelectedScript: (script: string) => void
-  searchForTerm: (searchTerm: string) => void
-}
+// Utils
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 export interface Script {
   readonly id?: string
@@ -34,16 +28,26 @@ export interface Script {
   readonly updatedAt?: string
   labels?: string[]
 }
+interface Props {
+  loading: RemoteDataState
+  scripts: Script[]
+  selectedScript: any
+  searchTerm: string
+  setSelectedScript: (script: Script) => void
+  searchForTerm: (event: ChangeEvent<HTMLInputElement>) => void
+}
 
 export const ScriptSelector: FC<Props> = ({
   loading,
   scripts,
-  selectedScript,
-  setSelectedScript,
   searchForTerm,
   searchTerm,
+  selectedScript,
+  setSelectedScript,
 }) => {
   const {orgID} = useParams<{orgID: string}>()
+  const history = useHistory()
+  const fluxScriptEditorLink = `/orgs/${orgID}/data-explorer?fluxScriptEditor`
 
   const filteredScripts = (): Script[] => {
     return scripts
@@ -65,12 +69,23 @@ export const ScriptSelector: FC<Props> = ({
       )
   }
 
-  let list
+  const openScriptEditor = () => {
+    history.push(`/orgs/${orgID}/data-explorer?fluxScriptEditor`)
+  }
+
+  const createScriptInEditor = (
+    <Dropdown.Item onClick={openScriptEditor}>
+      + Create Script in Editor
+    </Dropdown.Item>
+  )
+
+  let scriptsList
+
   if (
     loading === RemoteDataState.NotStarted ||
     loading === RemoteDataState.Loading
   ) {
-    list = (
+    scriptsList = (
       <div>
         <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
       </div>
@@ -78,7 +93,7 @@ export const ScriptSelector: FC<Props> = ({
   }
 
   if (loading === RemoteDataState.Error) {
-    list = (
+    scriptsList = (
       <div>
         <p>Could not get scripts</p>
       </div>
@@ -86,13 +101,13 @@ export const ScriptSelector: FC<Props> = ({
   }
 
   if (loading === RemoteDataState.Done) {
-    list = (
+    scriptsList = (
       <>
         {filteredScripts().map(script => (
           <Dropdown.Item
             key={script.id}
             value={script.name}
-            onClick={() => setSelectedScript(script.name)}
+            onClick={() => setSelectedScript(script)}
             selected={script.name === selectedScript?.name}
           >
             {script.name}
@@ -101,22 +116,23 @@ export const ScriptSelector: FC<Props> = ({
       </>
     )
     if (!filteredScripts().length && searchTerm) {
-      list = (
+      scriptsList = (
         <EmptyState>
           <p>{`No Scripts match "${searchTerm}"`}</p>
         </EmptyState>
       )
     } else if (!filteredScripts().length && !searchTerm) {
-      list = (
+      scriptsList = (
         <EmptyState>
           <p>No Scripts found</p>
         </EmptyState>
       )
     }
   }
-  let buttonText = 'Select a Script'
+
+  let dropdownButtonText = 'Select a Script'
   if (loading === RemoteDataState.Done && selectedScript?.name) {
-    buttonText = selectedScript.name
+    dropdownButtonText = selectedScript.name
   }
 
   return (
@@ -130,7 +146,7 @@ export const ScriptSelector: FC<Props> = ({
               onClick={onClick}
               testID="variable-type-dropdown--button"
             >
-              {buttonText}
+              {dropdownButtonText}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
@@ -142,16 +158,19 @@ export const ScriptSelector: FC<Props> = ({
                 placeholder="Search Scripts..."
                 onChange={searchForTerm}
               />
-              <Dropdown.Menu onCollapse={onCollapse}>{list}</Dropdown.Menu>
+              <Dropdown.Menu onCollapse={onCollapse}>
+                {createScriptInEditor}
+                {scriptsList}
+              </Dropdown.Menu>
             </>
           )}
         />
       </Form.Element>
       <p>
         You can create or edit Scripts in the{' '}
-        <Link to={`/orgs/${orgID}/data-explorer?fluxScriptEditor`}>
+        <SafeBlankLink href={fluxScriptEditorLink}>
           Script Editor.
-        </Link>
+        </SafeBlankLink>
       </p>
     </div>
   )

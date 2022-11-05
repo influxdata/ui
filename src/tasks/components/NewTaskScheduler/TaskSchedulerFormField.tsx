@@ -14,7 +14,7 @@ import {TaskSchedule, TaskOptions} from 'src/types'
 
 interface Props {
   taskOptions: TaskOptions
-  onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
+  onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 const tooltipContents = {

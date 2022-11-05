@@ -1,5 +1,6 @@
 import React, {FC, ChangeEvent, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
+
 // Components
 import {
   Button,
@@ -14,8 +15,8 @@ import {
   Page,
   SelectGroup,
 } from '@influxdata/clockface'
-import {TaskSchedulerFormField} from 'src/tasks/components/NewTaskScheduler/TaskSchedulerFormField'
 import {ScriptSelector} from 'src/tasks/components/NewTaskScheduler/ScriptSelector'
+import {TaskSchedulerFormField} from 'src/tasks/components/NewTaskScheduler/TaskSchedulerFormField'
 
 // Actions
 import {getScripts} from 'src/tasks/actions/thunks'
@@ -32,7 +33,7 @@ import 'src/tasks/components/NewTaskScheduler/TaskScheduler.scss'
 interface Props {
   taskOptions: TaskOptions
   onChangeScheduleType: (schedule: TaskSchedule) => void
-  onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
+  onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 export const TaskScheduler: FC<Props> = ({
@@ -41,19 +42,18 @@ export const TaskScheduler: FC<Props> = ({
   onChangeInput,
 }) => {
   const dispatch = useDispatch()
+  const scripts = useSelector(getAllScripts)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedScript, setSelectedScript] = useState<any>({})
   const [taskName, setTaskName] = useState('')
 
-  const scripts = useSelector(getAllScripts)
+  useEffect(() => {
+    dispatch(getScripts())
+  }, [dispatch])
 
   const searchForTerm = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value)
   }
-
-  useEffect(() => {
-    dispatch(getScripts())
-  }, [dispatch])
 
   const handleChangeScheduleType = (schedule: TaskSchedule): void => {
     onChangeScheduleType(schedule)

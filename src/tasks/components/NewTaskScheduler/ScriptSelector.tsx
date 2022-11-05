@@ -100,13 +100,13 @@ export const ScriptSelector: FC<Props> = ({
         ))}
       </>
     )
-    if (scripts.length === 0 && searchTerm) {
+    if (!filteredScripts().length && searchTerm) {
       list = (
         <EmptyState>
           <p>{`No Scripts match "${searchTerm}"`}</p>
         </EmptyState>
       )
-    } else if (scripts.length === 0 && !searchTerm) {
+    } else if (!filteredScripts().length && !searchTerm) {
       list = (
         <EmptyState>
           <p>No Scripts found</p>
@@ -135,16 +135,14 @@ export const ScriptSelector: FC<Props> = ({
           )}
           menu={onCollapse => (
             <>
-              <Dropdown.Menu onCollapse={onCollapse}>
-                <Input
-                  size={ComponentSize.Small}
-                  icon={IconFont.Search_New}
-                  value={searchTerm}
-                  placeholder="Search Scripts..."
-                  onChange={searchForTerm}
-                />
-                {list}
-              </Dropdown.Menu>
+              <Input
+                size={ComponentSize.Small}
+                icon={IconFont.Search_New}
+                value={searchTerm}
+                placeholder="Search Scripts..."
+                onChange={searchForTerm}
+              />
+              <Dropdown.Menu onCollapse={onCollapse}>{list}</Dropdown.Menu>
             </>
           )}
         />

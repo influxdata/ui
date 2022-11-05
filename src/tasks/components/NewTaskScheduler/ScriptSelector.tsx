@@ -29,8 +29,8 @@ export interface Script {
   labels?: string[]
 }
 interface Props {
-  loading: RemoteDataState
   scripts: Script[]
+  scriptsLoadingStatus: RemoteDataState
   selectedScript: any
   searchTerm: string
   setSelectedScript: (script: Script) => void
@@ -39,8 +39,8 @@ interface Props {
 }
 
 export const ScriptSelector: FC<Props> = ({
-  loading,
   scripts,
+  scriptsLoadingStatus,
   searchForTerm,
   searchTerm,
   selectedScript,
@@ -95,8 +95,8 @@ export const ScriptSelector: FC<Props> = ({
   let scriptsList
 
   if (
-    loading === RemoteDataState.NotStarted ||
-    loading === RemoteDataState.Loading
+    scriptsLoadingStatus === RemoteDataState.NotStarted ||
+    scriptsLoadingStatus === RemoteDataState.Loading
   ) {
     scriptsList = (
       <div>
@@ -105,7 +105,7 @@ export const ScriptSelector: FC<Props> = ({
     )
   }
 
-  if (loading === RemoteDataState.Error) {
+  if (scriptsLoadingStatus === RemoteDataState.Error) {
     scriptsList = (
       <div>
         <p>Could not get scripts</p>
@@ -113,7 +113,7 @@ export const ScriptSelector: FC<Props> = ({
     )
   }
 
-  if (loading === RemoteDataState.Done) {
+  if (scriptsLoadingStatus === RemoteDataState.Done) {
     scriptsList = (
       <>
         {filteredScripts().map(script => (
@@ -144,7 +144,7 @@ export const ScriptSelector: FC<Props> = ({
   }
 
   let dropdownButtonText = 'Select a Script'
-  if (loading === RemoteDataState.Done && selectedScript?.name) {
+  if (scriptsLoadingStatus === RemoteDataState.Done && selectedScript?.name) {
     dropdownButtonText = selectedScript.name
   }
 

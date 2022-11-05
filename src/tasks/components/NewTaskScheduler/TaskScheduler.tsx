@@ -78,7 +78,7 @@ export const TaskScheduler: FC<Props> = ({
                   </SafeBlankLink>{' '}
                 </p>
                 <ScriptSelector
-                  loading={scripts.status}
+                  scriptsLoadingStatus={scripts.status}
                   scripts={scripts.scripts}
                   searchTerm={searchTerm}
                   selectedScript={selectedScript}
@@ -133,8 +133,8 @@ export const TaskScheduler: FC<Props> = ({
                     <Form.Element label="Name" required={true}>
                       <Input
                         name="name"
-                        onChange={evt => {
-                          setTaskName(evt.target.value)
+                        onChange={event => {
+                          setTaskName(event.target.value)
                         }}
                         value={taskName}
                         testID="task-form-name"

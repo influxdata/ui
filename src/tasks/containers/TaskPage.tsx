@@ -8,9 +8,10 @@ import {
 } from '@influxdata/clockface'
 
 // Components
+import {Page} from '@influxdata/clockface'
 import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
-import {Page} from '@influxdata/clockface'
+import {TaskScheduler} from 'src/tasks/components/TaskScheduler/TaskScheduler'
 
 // Actions and Selectors
 import {
@@ -23,11 +24,12 @@ import {getAllVariables} from 'src/variables/selectors'
 
 // Utils
 import {
-  taskOptionsToFluxScript,
   addDestinationToFluxScript,
+  taskOptionsToFluxScript,
 } from 'src/utils/taskOptionsToFluxScript'
-import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
@@ -57,6 +59,7 @@ class TaskPage extends PureComponent<Props> {
 
   public render(): JSX.Element {
     const {newScript, taskOptions} = this.props
+    const showNewTasksUI = isFlagEnabled('tasksUiEnhancements')
 
     return (
       <Page titleTag={pageTitleSuffixer(['Create Task'])}>
@@ -65,7 +68,15 @@ class TaskPage extends PureComponent<Props> {
           canSubmit={this.isFormValid}
           onCancel={this.handleCancel}
           onSave={this.handleSave}
+          showNewTasksUI={showNewTasksUI}
         />
+        {showNewTasksUI ? (
+          <TaskScheduler
+            taskOptions={taskOptions}
+            onChangeScheduleType={this.handleChangeScheduleType}
+            onChangeInput={this.handleChangeInput}
+          />
+        ) : (
         <Page.Contents fullWidth={true} scrollable={false}>
           <div className="task-form">
             <div className="task-form--options">
@@ -95,6 +106,7 @@ class TaskPage extends PureComponent<Props> {
             </div>
           </div>
         </Page.Contents>
+        )}
       </Page>
     )
   }

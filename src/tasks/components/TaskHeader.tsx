@@ -10,20 +10,22 @@ import {
 } from '@influxdata/clockface'
 
 interface Props {
-  title: string
   canSubmit: boolean
   onCancel: () => void
   onSave: () => void
+  showNewTasksUI?: boolean
+  title: string
 }
 
 export default class TaskHeader extends PureComponent<Props> {
   public render() {
-    const {onCancel, onSave, title} = this.props
+    const {onCancel, onSave, showNewTasksUI, title} = this.props
     return (
       <>
         <Page.Header fullWidth={true}>
           <Page.Title title={title} />
         </Page.Header>
+        {!showNewTasksUI && (
         <Page.ControlBar fullWidth={true}>
           <Page.ControlBarRight>
             <Button
@@ -41,6 +43,7 @@ export default class TaskHeader extends PureComponent<Props> {
             />
           </Page.ControlBarRight>
         </Page.ControlBar>
+        )}
       </>
     )
   }

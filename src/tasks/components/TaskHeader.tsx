@@ -26,23 +26,23 @@ export default class TaskHeader extends PureComponent<Props> {
           <Page.Title title={title} />
         </Page.Header>
         {!showNewTasksUI && (
-        <Page.ControlBar fullWidth={true}>
-          <Page.ControlBarRight>
-            <Button
-              color={ComponentColor.Tertiary}
-              text="Cancel"
-              onClick={onCancel}
-              testID="task-cancel-btn"
-            />
-            <Button
-              color={ComponentColor.Success}
-              text="Save"
-              status={this.status}
-              onClick={onSave}
-              testID="task-save-btn"
-            />
-          </Page.ControlBarRight>
-        </Page.ControlBar>
+          <Page.ControlBar fullWidth={true}>
+            <Page.ControlBarRight>
+              <Button
+                color={ComponentColor.Tertiary}
+                text="Cancel"
+                onClick={onCancel}
+                testID="task-cancel-btn"
+              />
+              <Button
+                color={ComponentColor.Success}
+                text="Save"
+                status={this.status}
+                onClick={onSave}
+                testID="task-save-btn"
+              />
+            </Page.ControlBarRight>
+          </Page.ControlBar>
         )}
       </>
     )

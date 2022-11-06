@@ -38,7 +38,6 @@ export const TaskScheduler: FC<Props> = ({
 }) => {
   const [taskName, setTaskName] = useState('')
 
-
   const handleChangeScheduleType = (schedule: TaskSchedule): void => {
     onChangeScheduleType(schedule)
   }
@@ -58,7 +57,7 @@ export const TaskScheduler: FC<Props> = ({
                     Learn More.
                   </SafeBlankLink>{' '}
                 </p>
-                <ScriptSelector/>
+                <ScriptSelector />
                 <div className="schedule-task">
                   <div className="create-task-titles">Schedule the Task</div>
                   <p>

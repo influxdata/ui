@@ -11,7 +11,6 @@ import {
 // Utils
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
-
 export const ScriptSelector: FC = () => {
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
@@ -48,9 +47,9 @@ export const ScriptSelector: FC = () => {
               <Input
                 size={ComponentSize.Small}
                 icon={IconFont.Search_New}
-                value=''
+                value=""
                 placeholder="Search Scripts..."
-                onChange={()=>{}}
+                onChange={() => {}}
               />
               <Dropdown.Menu onCollapse={onCollapse}>
                 {createScriptInEditor}

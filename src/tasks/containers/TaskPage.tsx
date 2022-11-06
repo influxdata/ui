@@ -77,35 +77,35 @@ class TaskPage extends PureComponent<Props> {
             onChangeInput={this.handleChangeInput}
           />
         ) : (
-        <Page.Contents fullWidth={true} scrollable={false}>
-          <div className="task-form">
-            <div className="task-form--options">
-              <TaskForm
-                taskOptions={taskOptions}
-                canSubmit={this.isFormValid}
-                onChangeInput={this.handleChangeInput}
-                onChangeScheduleType={this.handleChangeScheduleType}
-              />
-            </div>
-            <div className="task-form--editor">
-              <Suspense
-                fallback={
-                  <SpinnerContainer
-                    loading={RemoteDataState.Loading}
-                    spinnerComponent={<TechnoSpinner />}
-                  />
-                }
-              >
-                <FluxMonacoEditor
-                  script={newScript}
-                  variables={this.props.variables}
-                  onChangeScript={this.handleChangeScript}
-                  autofocus
+          <Page.Contents fullWidth={true} scrollable={false}>
+            <div className="task-form">
+              <div className="task-form--options">
+                <TaskForm
+                  taskOptions={taskOptions}
+                  canSubmit={this.isFormValid}
+                  onChangeInput={this.handleChangeInput}
+                  onChangeScheduleType={this.handleChangeScheduleType}
                 />
-              </Suspense>
+              </div>
+              <div className="task-form--editor">
+                <Suspense
+                  fallback={
+                    <SpinnerContainer
+                      loading={RemoteDataState.Loading}
+                      spinnerComponent={<TechnoSpinner />}
+                    />
+                  }
+                >
+                  <FluxMonacoEditor
+                    script={newScript}
+                    variables={this.props.variables}
+                    onChangeScript={this.handleChangeScript}
+                    autofocus
+                  />
+                </Suspense>
+              </div>
             </div>
-          </div>
-        </Page.Contents>
+          </Page.Contents>
         )}
       </Page>
     )

@@ -1,4 +1,4 @@
-import React, {FC, ChangeEvent, useState} from 'react'
+import React, {FC, ChangeEvent} from 'react'
 
 // Components
 import {
@@ -36,8 +36,6 @@ export const TaskScheduler: FC<Props> = ({
   updateInput,
   updateScheduleType,
 }) => {
-  const [taskName, setTaskName] = useState('')
-
   const handleChangeScheduleType = (schedule: TaskSchedule): void => {
     updateScheduleType(schedule)
   }
@@ -105,8 +103,8 @@ export const TaskScheduler: FC<Props> = ({
                     <Form.Element label="Name" required={true}>
                       <Input
                         name="name"
-                        onChange={event => setTaskName(event.target.value)}
-                        value={taskName}
+                        onChange={updateInput}
+                        value={taskOptions.name}
                         testID="task-form-name"
                       />
                     </Form.Element>

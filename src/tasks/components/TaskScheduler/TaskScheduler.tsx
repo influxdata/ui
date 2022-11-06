@@ -27,14 +27,14 @@ import 'src/tasks/components/TaskScheduler/TaskScheduler.scss'
 
 interface Props {
   taskOptions: TaskOptions
-  updateScheduleType: (schedule: TaskSchedule) => void
   updateInput: (event: ChangeEvent<HTMLInputElement>) => void
+  updateScheduleType: (schedule: TaskSchedule) => void
 }
 
 export const TaskScheduler: FC<Props> = ({
   taskOptions,
-  updateScheduleType,
   updateInput,
+  updateScheduleType,
 }) => {
   const [taskName, setTaskName] = useState('')
 

@@ -1,0 +1,47 @@
+.cf-form--footer {
+  position: relative;
+  margin-top: 20%;
+  justify-content: end !important;
+}
+
+.cf-page-contents__fluid {
+  position: absolute !important;
+}
+
+.create-task-titles {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.cf-form--footer > * {
+  margin: 0px !important;
+}
+
+.schedule-task,
+.name-task,
+.select-script {
+  margin-top: 35px;
+}
+
+.schedule-task p {
+  margin-top: 5px;
+}
+
+.task-name-input,
+.script-dropdown,
+.task-form-field {
+  margin-top: 15px;
+}
+
+.task-form-labels {
+  position: relative;
+}
+.schedule-tooltip {
+  position: absolute;
+  left: 22%;
+}
+
+.cf-input-field:focus,
+.cf-input-field:hover {
+  background-color: rgb(0, 0, 0) !important;
+}

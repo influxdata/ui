@@ -14,7 +14,7 @@ import {TaskSchedule, TaskOptions} from 'src/types'
 
 interface Props {
   taskOptions: TaskOptions
-  onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void
+  updateInput: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 const tooltipContents = {
@@ -28,7 +28,7 @@ const tooltipContents = {
 export const TaskIntervalForm: FC<Props> = props => {
   const {
     taskOptions: {taskScheduleType, cron, offset, interval},
-    onChangeInput,
+    updateInput,
   } = props
 
   return (
@@ -53,7 +53,7 @@ export const TaskIntervalForm: FC<Props> = props => {
             placeholder={
               taskScheduleType === TaskSchedule.interval ? '3h30s' : '02***'
             }
-            onChange={onChangeInput}
+            onChange={updateInput}
             testID="task-form-every-input"
           />
         </Form.Element>
@@ -76,7 +76,7 @@ export const TaskIntervalForm: FC<Props> = props => {
             type={InputType.Text}
             value={offset}
             placeholder="20m"
-            onChange={onChangeInput}
+            onChange={updateInput}
             testID="task-form-offset-input"
           />
         </Form.Element>

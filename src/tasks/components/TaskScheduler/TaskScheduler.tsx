@@ -27,19 +27,19 @@ import 'src/tasks/components/TaskScheduler/TaskScheduler.scss'
 
 interface Props {
   taskOptions: TaskOptions
-  onChangeScheduleType: (schedule: TaskSchedule) => void
-  onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void
+  updateScheduleType: (schedule: TaskSchedule) => void
+  updateInput: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 export const TaskScheduler: FC<Props> = ({
   taskOptions,
-  onChangeScheduleType,
-  onChangeInput,
+  updateScheduleType,
+  updateInput,
 }) => {
   const [taskName, setTaskName] = useState('')
 
   const handleChangeScheduleType = (schedule: TaskSchedule): void => {
-    onChangeScheduleType(schedule)
+    updateScheduleType(schedule)
   }
 
   return (
@@ -94,7 +94,7 @@ export const TaskScheduler: FC<Props> = ({
                   </SelectGroup>
                   <Grid.Row>
                     <TaskIntervalForm
-                      onChangeInput={onChangeInput}
+                      updateInput={updateInput}
                       taskOptions={taskOptions}
                     />
                   </Grid.Row>
@@ -105,16 +105,14 @@ export const TaskScheduler: FC<Props> = ({
                     <Form.Element label="Name" required={true}>
                       <Input
                         name="name"
-                        onChange={event => {
-                          setTaskName(event.target.value)
-                        }}
+                        onChange={event => setTaskName(event.target.value)}
                         value={taskName}
                         testID="task-form-name"
                       />
                     </Form.Element>
                   </div>
                 </div>
-                <Form.Footer style={{justifyContent: 'end'}}>
+                <Form.Footer>
                   <Button
                     text="Cancel"
                     color={ComponentColor.Tertiary}

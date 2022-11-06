@@ -73,8 +73,8 @@ class TaskPage extends PureComponent<Props> {
         {showNewTasksUI ? (
           <TaskScheduler
             taskOptions={taskOptions}
-            onChangeScheduleType={this.handleChangeScheduleType}
-            onChangeInput={this.handleChangeInput}
+            updateScheduleType={this.handleChangeScheduleType}
+            updateInput={this.handleChangeInput}
           />
         ) : (
           <Page.Contents fullWidth={true} scrollable={false}>

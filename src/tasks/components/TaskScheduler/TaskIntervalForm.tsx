@@ -39,7 +39,7 @@ export const TaskIntervalForm: FC<Props> = props => {
           required={true}
           className="task-form-labels"
         >
-          <div className="schedule-tooltip">
+          <div className="schedule-tooltip interval">
             <QuestionMarkTooltip
               diameter={15}
               color={ComponentColor.Primary}
@@ -64,7 +64,7 @@ export const TaskIntervalForm: FC<Props> = props => {
           required={true}
           className="task-form-labels"
         >
-          <div className="schedule-tooltip">
+          <div className="schedule-tooltip offset">
             <QuestionMarkTooltip
               diameter={15}
               color={ComponentColor.Primary}

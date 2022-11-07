@@ -68,7 +68,7 @@ class TaskPage extends PureComponent<Props> {
           canSubmit={this.isFormValid}
           onCancel={this.handleCancel}
           onSave={this.handleSave}
-          showNewTasksUI={showNewTasksUI}
+          showControlBar={!showNewTasksUI}
         />
         {showNewTasksUI ? (
           <TaskScheduler

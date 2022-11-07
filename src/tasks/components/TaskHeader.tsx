@@ -13,19 +13,19 @@ interface Props {
   canSubmit: boolean
   onCancel: () => void
   onSave: () => void
-  showNewTasksUI?: boolean
+  showControlBar?: boolean
   title: string
 }
 
 export default class TaskHeader extends PureComponent<Props> {
   public render() {
-    const {onCancel, onSave, showNewTasksUI, title} = this.props
+    const {onCancel, onSave, showControlBar = true, title} = this.props
     return (
       <>
         <Page.Header fullWidth={true}>
           <Page.Title title={title} />
         </Page.Header>
-        {!showNewTasksUI && (
+        {showControlBar && (
           <Page.ControlBar fullWidth={true}>
             <Page.ControlBarRight>
               <Button

@@ -16,9 +16,11 @@ import {
 // Contexts
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 import {EditorContext} from 'src/shared/contexts/editor'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {FluxFunction, FluxToolbarFunction} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -33,6 +35,7 @@ functions, and variables which may be useful when constructing your flux query.`
 const Sidebar: FC = () => {
   const {injectFunction} = useContext(EditorContext)
   const {visible, menu, clear} = useContext(SidebarContext)
+  const {resource} = useContext(PersistanceContext)
 
   const inject = useCallback(
     (fn: FluxFunction | FluxToolbarFunction) => {
@@ -114,8 +117,13 @@ const Sidebar: FC = () => {
       justifyContent={JustifyContent.FlexStart}
       className="container-right-side-bar"
     >
-      {resultOptions}
-      {fluxLibrary}
+      {isFlagEnabled('uiSqlSupport') &&
+      resource?.language === LanguageType.SQL ? null : (
+        <>
+          {resultOptions}
+          {fluxLibrary}
+        </>
+      )}
     </FlexBox>
   )
 }

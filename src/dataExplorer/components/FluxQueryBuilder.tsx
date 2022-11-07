@@ -220,10 +220,7 @@ const FluxQueryBuilder: FC = () => {
               <ResultsPane />
             </DraggableResizer.Panel>
             <DraggableResizer.Panel isCollapsible={true}>
-              {isFlagEnabled('uiSqlSupport') &&
-              resource?.language === LanguageType.SQL ? null : (
-                <Sidebar />
-              )}
+              <Sidebar />
             </DraggableResizer.Panel>
           </DraggableResizer>
         </FlexBox>

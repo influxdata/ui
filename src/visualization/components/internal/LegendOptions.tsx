@@ -134,7 +134,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
   )
 }
 
-export const OpacitySlider: FC<OpacitySliderProps> = (props) => {
+export const OpacitySlider: FC<OpacitySliderProps> = props => {
   let validOpacity = LEGEND_OPACITY_DEFAULT
   if (
     typeof props.legendOpacity === 'number' &&

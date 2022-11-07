@@ -99,7 +99,9 @@ export const GraphOptions: FC<Props> = ({properties, results, update}) => {
     })
   }
 
-  const updateAxisDebounced = useCallback(debounce(updateAxis, 200), [properties])
+  const updateAxisDebounced = useCallback(debounce(updateAxis, 200), [
+    properties,
+  ])
 
   const handleSetYDomain = (yDomain: [number, number]): void => {
     let bounds: [string | null, string | null]

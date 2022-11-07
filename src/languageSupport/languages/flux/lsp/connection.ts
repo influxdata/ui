@@ -42,7 +42,6 @@ const findLastIndex = (arr, fn) =>
     .pop() || [-1])[0]
 
 export class LspConnectionManager {
-  private _worker: Worker
   private _editor: EditorType
   private _model: MonacoTypes.editor.IModel
   private _snapshot: MonacoTypes.editor.ITextSnapshot
@@ -59,8 +58,7 @@ export class LspConnectionManager {
   // only add handlers on first page load.
   private _compositionHandlersSet = false
 
-  constructor(worker: Worker) {
-    this._worker = worker
+  constructor(private worker: Worker) {
     // note: LSP handle multiple documents, but does so in alphabetical order
     // create this model/uri first
     this._preludeModel = monaco.editor.createModel('', 'flux-prelude')
@@ -77,7 +75,7 @@ export class LspConnectionManager {
       this._preludeModel.setValue(query)
       if (query != previousValue) {
         this._preludeModel.setValue(query)
-        this._worker.postMessage(
+        this.worker.postMessage(
           didChange(
             this._preludeModel.uri.toString(),
             query,
@@ -95,7 +93,7 @@ export class LspConnectionManager {
     this._model = editor.getModel()
 
     this._model.onDidChangeContent(() => this.updatePreludeModel())
-    this._worker.postMessage(
+    this.worker.postMessage(
       didOpen(
         this._preludeModel.uri.toString(),
         this._preludeModel.getValue(),
@@ -124,7 +122,7 @@ export class LspConnectionManager {
       })
       return
     }
-    this._worker.postMessage(msg)
+    this.worker.postMessage(msg)
   }
 
   _getCompositionBlockLines(query) {

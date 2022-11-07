@@ -59,7 +59,7 @@ class TaskPage extends PureComponent<Props> {
 
   public render(): JSX.Element {
     const {newScript, taskOptions} = this.props
-    const showNewTasksUI = isFlagEnabled('tasksUiEnhancements')
+    const shouldShowNewTasksUI = isFlagEnabled('tasksUiEnhancements')
 
     return (
       <Page titleTag={pageTitleSuffixer(['Create Task'])}>
@@ -68,9 +68,9 @@ class TaskPage extends PureComponent<Props> {
           canSubmit={this.isFormValid}
           onCancel={this.handleCancel}
           onSave={this.handleSave}
-          showControlBar={!showNewTasksUI}
+          showControlBar={!shouldShowNewTasksUI}
         />
-        {showNewTasksUI ? (
+        {shouldShowNewTasksUI ? (
           <TaskScheduler
             taskOptions={taskOptions}
             updateScheduleType={this.handleChangeScheduleType}

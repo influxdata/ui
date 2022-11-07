@@ -19,7 +19,7 @@ interface Props {
 
 const tooltipContents = {
   interval:
-    'The is the interval at which the task runs. It also determines when the task first starts to run, depending on the specified time (in duration literal)',
+    'This is the interval at which the task runs. It also determines when the task first starts to run, depending on the specified time (in duration literal)',
   offset:
     'Offset delays the execution of the task but preserves the original time range',
   cron: 'Cron is an expression that defines the schedule on which the task runs. Cron scheduling is based on system time',

@@ -8,9 +8,10 @@ import {
 } from '@influxdata/clockface'
 
 // Components
+import {Page} from '@influxdata/clockface'
 import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
-import {Page} from '@influxdata/clockface'
+import {TaskScheduler} from 'src/tasks/components/TaskScheduler/TaskScheduler'
 
 // Actions and Selectors
 import {
@@ -23,11 +24,12 @@ import {getAllVariables} from 'src/variables/selectors'
 
 // Utils
 import {
-  taskOptionsToFluxScript,
   addDestinationToFluxScript,
+  taskOptionsToFluxScript,
 } from 'src/utils/taskOptionsToFluxScript'
-import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
@@ -57,6 +59,7 @@ class TaskPage extends PureComponent<Props> {
 
   public render(): JSX.Element {
     const {newScript, taskOptions} = this.props
+    const shouldShowNewTasksUI = isFlagEnabled('tasksUiEnhancements')
 
     return (
       <Page titleTag={pageTitleSuffixer(['Create Task'])}>
@@ -65,36 +68,45 @@ class TaskPage extends PureComponent<Props> {
           canSubmit={this.isFormValid}
           onCancel={this.handleCancel}
           onSave={this.handleSave}
+          showControlBar={!shouldShowNewTasksUI}
         />
-        <Page.Contents fullWidth={true} scrollable={false}>
-          <div className="task-form">
-            <div className="task-form--options">
-              <TaskForm
-                taskOptions={taskOptions}
-                canSubmit={this.isFormValid}
-                onChangeInput={this.handleChangeInput}
-                onChangeScheduleType={this.handleChangeScheduleType}
-              />
-            </div>
-            <div className="task-form--editor">
-              <Suspense
-                fallback={
-                  <SpinnerContainer
-                    loading={RemoteDataState.Loading}
-                    spinnerComponent={<TechnoSpinner />}
-                  />
-                }
-              >
-                <FluxMonacoEditor
-                  script={newScript}
-                  variables={this.props.variables}
-                  onChangeScript={this.handleChangeScript}
-                  autofocus
+        {shouldShowNewTasksUI ? (
+          <TaskScheduler
+            taskOptions={taskOptions}
+            updateScheduleType={this.handleChangeScheduleType}
+            updateInput={this.handleChangeInput}
+          />
+        ) : (
+          <Page.Contents fullWidth={true} scrollable={false}>
+            <div className="task-form">
+              <div className="task-form--options">
+                <TaskForm
+                  taskOptions={taskOptions}
+                  canSubmit={this.isFormValid}
+                  onChangeInput={this.handleChangeInput}
+                  onChangeScheduleType={this.handleChangeScheduleType}
                 />
-              </Suspense>
+              </div>
+              <div className="task-form--editor">
+                <Suspense
+                  fallback={
+                    <SpinnerContainer
+                      loading={RemoteDataState.Loading}
+                      spinnerComponent={<TechnoSpinner />}
+                    />
+                  }
+                >
+                  <FluxMonacoEditor
+                    script={newScript}
+                    variables={this.props.variables}
+                    onChangeScript={this.handleChangeScript}
+                    autofocus
+                  />
+                </Suspense>
+              </div>
             </div>
-          </div>
-        </Page.Contents>
+          </Page.Contents>
+        )}
       </Page>
     )
   }

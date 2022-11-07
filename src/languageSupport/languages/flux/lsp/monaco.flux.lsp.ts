@@ -27,7 +27,7 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // install Monaco language client services
 MonacoServices.install(monaco)
-
+console.log("lololol")
 function createLanguageClient(
   connection: MessageConnection
 ): MonacoLanguageClient {

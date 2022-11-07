@@ -164,18 +164,8 @@ export const executeCommand = (payload: ExecuteCommandT): object | never => {
 export enum Methods {
   Initialize = 'initialize',
   Initialized = 'initialized',
-  CompletionResolve = 'completionItem/resolve',
-  Completion = 'textDocument/completion',
-  Definition = 'textDocument/definition',
   didChange = 'textDocument/didChange',
   didOpen = 'textDocument/didOpen',
-  didSave = 'textDocument/didSave',
-  Highlight = 'textDocument/documentHighlight',
-  Symbol = 'textDocument/documentSymbol',
-  FoldingRange = 'textDocument/foldingRange',
-  Hover = 'textDocument/hover',
-  References = 'textDocument/references',
-  Rename = 'textDocument/rename',
   ExecuteCommand = 'workspace/executeCommand',
 }
 

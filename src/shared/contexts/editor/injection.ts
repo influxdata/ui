@@ -26,7 +26,11 @@ export function calcInjectionPosition(
   let row = lineNumber
   let column = col
 
-  const queryText = editor.getModel().getValue()
+  const model = editor.getModel()
+  if (model == null) {
+    throw Error("model is null")
+  }
+  const queryText = model.getValue()
   const split = queryText.split('\n')
   const getCurrentLineText = () => {
     // row is not zero indexed in monaco editor. 1..N

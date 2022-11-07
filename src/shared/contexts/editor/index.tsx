@@ -15,18 +15,13 @@ import {
 } from 'src/shared/utils/fluxFunctions'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
 
-// LSP
-import {LspConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
-
 // Utils
 import {CLOUD} from 'src/shared/constants'
+import {LspConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
 
 export interface EditorContextType {
   editor: EditorType | null
-  setEditor: (
-    editor: EditorType,
-    conn: React.MutableRefObject<LspConnectionManager>
-  ) => void
+  setEditor: (editor: EditorType, conn: LspConnectionManager) => void
   inject: (options: InjectionOptions) => void
   injectFunction: (fn, cbToParent) => void
   injectVariable: (variableName, cbToParent) => void

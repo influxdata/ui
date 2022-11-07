@@ -42,8 +42,7 @@ const findLastIndex = (arr, fn) =>
     .pop() || [-1])[0]
 
 export class LspConnectionManager {
-  private _editor: EditorType
-  private _model: MonacoTypes.editor.IModel
+  private model: MonacoTypes.editor.IModel
   private _snapshot: MonacoTypes.editor.ITextSnapshot
   private _preludeModel: MonacoTypes.editor.IModel
   private _variables: Variable[] = []
@@ -58,18 +57,35 @@ export class LspConnectionManager {
   // only add handlers on first page load.
   private _compositionHandlersSet = false
 
-  constructor(private worker: Worker) {
+  constructor(private worker: Worker, private editor: EditorType) {
     // note: LSP handle multiple documents, but does so in alphabetical order
     // create this model/uri first
-    this._preludeModel = monaco.editor.createModel('', 'flux-prelude')
+    this._preludeModel = monaco.editor.createModel('', 'flux')
+
+    this.model = editor.getModel()
+    if (this.model == null) {
+      this.model = monaco.editor.createModel('', 'flux')
+      editor.setModel(this.model)
+    }
+    this.model.onDidChangeContent(() => this.updatePreludeModel())
+    this.worker.postMessage(
+      didOpen(
+        this._preludeModel.uri.toString(),
+        this._preludeModel.getValue(),
+        this._preludeModel.getVersionId()
+      )
+    )
   }
 
+  // XXX: rockstar (4 Nov 2022) - This function needs to be de-bounced more aggressively,
+  // as it parses flux to find the needed variables. Until the parse phrase is done
+  // asynchronously, this has the potential to cause issues in the main thread.
   updatePreludeModel(variables: Variable[] = this._variables) {
     this._variables = variables
     const previousValue = this._preludeModel.getValue()
 
     try {
-      const file = buildUsedVarsOption(this._model.getValue(), variables)
+      const file = buildUsedVarsOption(this.model.getValue(), variables)
       const query = format_from_js_file(file)
 
       this._preludeModel.setValue(query)
@@ -88,20 +104,6 @@ export class LspConnectionManager {
     }
   }
 
-  subscribeToModel(editor: EditorType) {
-    this._editor = editor
-    this._model = editor.getModel()
-
-    this._model.onDidChangeContent(() => this.updatePreludeModel())
-    this.worker.postMessage(
-      didOpen(
-        this._preludeModel.uri.toString(),
-        this._preludeModel.getValue(),
-        this._preludeModel.getVersionId()
-      )
-    )
-  }
-
   inject(
     command: ExecuteCommand,
     data: Omit<ExecuteCommandArgument, 'textDocument'>
@@ -112,7 +114,7 @@ export class LspConnectionManager {
         command,
         {
           ...data,
-          textDocument: {uri: this._model.uri.toString()},
+          textDocument: {uri: this.model.uri.toString()},
         },
       ] as ExecuteCommandT)
     } catch (err) {
@@ -166,7 +168,7 @@ export class LspConnectionManager {
     const compositionBlock = this._getCompositionBlockLines(
       this._snapshot.read()
     )
-    this._snapshot = this._model.createSnapshot()
+    this._snapshot = this.model.createSnapshot()
 
     if (!compositionBlock) {
       return false
@@ -194,7 +196,7 @@ export class LspConnectionManager {
   }
 
   _setEditorIrreversibleExit() {
-    this._model.onDidChangeContent(e => {
+    this.model.onDidChangeContent(e => {
       const shouldDiverge = e.changes.some(
         change =>
           this._editorChangeIsWithinComposition(change) &&
@@ -208,9 +210,9 @@ export class LspConnectionManager {
       }
     })
 
-    comments(this._editor, selection => {
+    comments(this.editor, selection => {
       const compositionBlock = this._getCompositionBlockLines(
-        this._model.getValue()
+        this.model.getValue()
       )
       if (!compositionBlock) {
         return
@@ -257,12 +259,12 @@ export class LspConnectionManager {
 
   _setEditorBlockStyle(schema: CompositionSelection = this._session) {
     const compositionBlock = this._getCompositionBlockLines(
-      this._model.getValue()
+      this.model.getValue()
     )
 
     const removeAllStyles = !compositionBlock || schema.composition.diverged
 
-    this._compositionStyle = this._editor.deltaDecorations(
+    this._compositionStyle = this.editor.deltaDecorations(
       this._compositionStyle,
       removeAllStyles
         ? []
@@ -397,15 +399,15 @@ export class LspConnectionManager {
     if (schema.bucket && previousState.bucket != schema.bucket) {
       toAdd.bucket = schema.bucket
     }
-    if (toAdd.bucket && this._model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
+    if (toAdd.bucket && this.model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
       // first time selecting bucket --> remove if default message
-      this._model.setValue('')
+      this.model.setValue('')
     }
     if (schema.measurement && previousState.measurement != schema.measurement) {
       toAdd.measurement = schema.measurement
     }
 
-    const currText = this._model.getValue()
+    const currText = this.model.getValue()
     if (!isEqual(schema.fields, previousState.fields)) {
       toRemove.fields = previousState.fields.filter(f => currText.includes(f))
       toAdd.fields = schema.fields
@@ -421,7 +423,7 @@ export class LspConnectionManager {
   }
 
   _initCompositionHandlers() {
-    this._snapshot = this._model.createSnapshot()
+    this._snapshot = this.model.createSnapshot()
 
     // handlers to trigger end composition
     this._setEditorIrreversibleExit()
@@ -429,7 +431,7 @@ export class LspConnectionManager {
     // XXX: wiedld (25 Aug 2022) - eventually, this should be from the LSP response.
     // Tie the middleware to LspConnectionManager.onLspMessage()
     // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
-    this._model.onDidChangeContent(e => {
+    this.model.onDidChangeContent(e => {
       if (this._session.composition?.synced) {
         this._setEditorBlockStyle()
 
@@ -499,9 +501,5 @@ export class LspConnectionManager {
     // 2. call this method
     // 3a. update (true-up) session store
     // 3b. this._setEditorBlockStyle()
-  }
-
-  dispose() {
-    this._model.onDidChangeContent(null)
   }
 }

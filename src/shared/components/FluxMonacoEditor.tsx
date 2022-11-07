@@ -1,23 +1,34 @@
 // Libraries
-import React, {FC, useEffect, useRef, useContext, useMemo} from 'react'
+import React, {FC, useEffect, useContext, useMemo, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {useRouteMatch} from 'react-router-dom'
 import classnames from 'classnames'
 
 // Components
-import MonacoEditor from 'react-monaco-editor'
+import MonacoEditor, {monaco} from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {MonacoServices} from 'monaco-languageclient'
 
 // LSP
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
-import {setupForReactMonacoEditor} from 'src/languageSupport/languages/flux/lsp/monaco.flux.lsp'
 import {
   comments,
   submit,
 } from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
 import {LspConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
+import {
+  BrowserMessageReader,
+  BrowserMessageWriter,
+  createMessageConnection,
+} from 'vscode-jsonrpc/browser'
+import {
+  MonacoLanguageClient,
+  CloseAction,
+  ErrorAction,
+  createConnection,
+} from 'monaco-languageclient'
 
 // Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'
@@ -32,6 +43,14 @@ import {editor as monacoEditor} from 'monaco-editor'
 
 import './MonacoEditor.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import fluxWorkerUrl from 'worker-plugin/loader!src/languageSupport/languages/flux/lsp/worker'
+
+MonacoServices.install(monaco)
+
 export interface EditorProps {
   script?: string
   onChangeScript: OnChangeScript
@@ -43,13 +62,11 @@ export interface EditorProps {
 }
 
 interface Props extends EditorProps {
-  setEditorInstance?: (
-    editor: EditorType,
-    connection: React.MutableRefObject<LspConnectionManager>
-  ) => void
+  setEditorInstance?: (editor: EditorType) => void
   variables: Variable[]
 }
 
+// Monaco editor for editing flux
 const FluxEditorMonaco: FC<Props> = ({
   script,
   onChangeScript,
@@ -61,7 +78,7 @@ const FluxEditorMonaco: FC<Props> = ({
   wrapLines,
   variables,
 }) => {
-  const connection = useRef<LspConnectionManager>(null)
+  const connectionManager = useRef<LspConnectionManager>(null)
   const {editor, setEditor} = useContext(EditorContext)
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
@@ -77,19 +94,19 @@ const FluxEditorMonaco: FC<Props> = ({
   })
 
   useEffect(() => {
-    connection.current.updatePreludeModel(variables)
+    connectionManager.current?.updatePreludeModel(variables)
   }, [variables])
 
   useEffect(() => {
-    if (connection.current && useSchemaComposition) {
-      connection.current.onSchemaSessionChange(
+    if (useSchemaComposition) {
+      connectionManager.current?.onSchemaSessionChange(
         sessionStore.selection,
         sessionStore.setSelection
       )
     }
   }, [
     useSchemaComposition,
-    connection.current,
+    connectionManager,
     sessionStore?.selection,
     sessionStore?.selection.composition || null,
     sessionStore?.selection.resultOptions || null,
@@ -107,35 +124,80 @@ const FluxEditorMonaco: FC<Props> = ({
     })
   }, [editor, onSubmitScript])
 
+  // When the editor renders, we can begin connecting dependent resources. For instance,
+  // in this case, we set up the flux lsp's web worker api, initialize some extra state
+  // around other open files, and connect that to the editor.
   const editorDidMount = (editor: EditorType) => {
-    connection.current = setupForReactMonacoEditor(editor)
-    connection.current.updatePreludeModel(variables)
-
-    setEditor(editor, connection)
-    if (setEditorInstance) {
-      setEditorInstance(editor, connection)
+    if (connectionManager.current != null) {
+      console.warn(
+        'editorDidMount called more than once. This may indicate a bug in react-monaco-editor.'
+      )
+      return
     }
-
-    comments(editor)
-
-    if (autogrow) {
-      registerAutogrow(editor)
+    const worker = new Worker(fluxWorkerUrl)
+    worker.onerror = (err: ErrorEvent) => {
+      const error: Error = {...err, name: 'worker.onerror'}
+      reportErrorThroughHoneyBadger(error, {name: 'LSP worker'})
     }
-
-    monacoEditor.remeasureFonts()
-
-    if (autofocus && !readOnly && !editor.hasTextFocus()) {
-      const model = editor.getModel()
-      editor.setPosition({
-        lineNumber: model.getLineCount(),
-        column: model.getLineLength(model.getLineCount()) + 1,
+    worker.onmessage = _ => {
+      // Listen for any message from the worker. That message will
+      // be sent with the worker is ready to accept lsp messages. The
+      // following interactions will replace this event handler entirely.
+      const connection = createMessageConnection(
+        new BrowserMessageReader(worker),
+        new BrowserMessageWriter(worker)
+      )
+      connection.onError(([error, ,]: [Error, unknown, number]) => {
+        reportErrorThroughHoneyBadger(error, {name: 'LSP worker'})
       })
-      editor.focus()
-    }
-  }
 
-  const onChange = (text: string) => {
-    onChangeScript(text)
+      const languageClient = new MonacoLanguageClient({
+        name: FLUXLANGID,
+        clientOptions: {
+          documentSelector: [FLUXLANGID],
+          errorHandler: {
+            error: () => ErrorAction.Continue,
+            closed: () => CloseAction.DoNotRestart,
+          },
+        },
+        connectionProvider: {
+          get: (errorHandler, closeHandler) => {
+            return Promise.resolve(
+              createConnection(connection, errorHandler, closeHandler)
+            )
+          },
+        },
+      })
+      const lspConnectionManager = new LspConnectionManager(worker, editor)
+      connectionManager.current = lspConnectionManager
+      const disposable = languageClient.start()
+      connection.onClose(() => {
+        disposable.dispose()
+      })
+      lspConnectionManager.updatePreludeModel(variables)
+
+      setEditor(editor, lspConnectionManager)
+      if (setEditorInstance) {
+        setEditorInstance(editor)
+      }
+
+      comments(editor)
+
+      if (autogrow) {
+        registerAutogrow(editor)
+      }
+
+      monacoEditor.remeasureFonts()
+
+      if (autofocus && !readOnly && !editor.hasTextFocus()) {
+        const model = editor.getModel()
+        editor.setPosition({
+          lineNumber: model.getLineCount(),
+          column: model.getLineLength(model.getLineCount()) + 1,
+        })
+        editor.focus()
+      }
+    }
   }
 
   return useMemo(
@@ -146,7 +208,7 @@ const FluxEditorMonaco: FC<Props> = ({
             language={FLUXLANGID}
             theme={THEME_NAME}
             value={script}
-            onChange={onChange}
+            onChange={onChangeScript}
             options={{
               fontSize: 13,
               fontFamily: '"IBMPlexMono", monospace',

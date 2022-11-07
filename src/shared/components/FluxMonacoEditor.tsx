@@ -17,7 +17,7 @@ import {
   submit,
 } from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
-import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+import {LspConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
 
 // Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'
@@ -45,7 +45,7 @@ export interface EditorProps {
 interface Props extends EditorProps {
   setEditorInstance?: (
     editor: EditorType,
-    connection: React.MutableRefObject<ConnectionManager>
+    connection: React.MutableRefObject<LspConnectionManager>
   ) => void
   variables: Variable[]
 }
@@ -61,7 +61,7 @@ const FluxEditorMonaco: FC<Props> = ({
   wrapLines,
   variables,
 }) => {
-  const connection = useRef<ConnectionManager>(null)
+  const connection = useRef<LspConnectionManager>(null)
   const {editor, setEditor} = useContext(EditorContext)
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)

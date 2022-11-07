@@ -16,7 +16,7 @@ import {
 import {getFluxExample} from 'src/shared/utils/fluxExample'
 
 // LSP
-import LspConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+import {LspConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
 
 // Utils
 import {CLOUD} from 'src/shared/constants'

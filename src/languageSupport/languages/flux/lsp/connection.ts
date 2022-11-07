@@ -41,7 +41,7 @@ const findLastIndex = (arr, fn) =>
     .filter(([i, val]) => fn(val, i, arr))
     .pop() || [-1])[0]
 
-class LspConnectionManager {
+export class LspConnectionManager {
   private _worker: Worker
   private _editor: EditorType
   private _model: MonacoTypes.editor.IModel
@@ -507,5 +507,3 @@ class LspConnectionManager {
     this._model.onDidChangeContent(null)
   }
 }
-
-export default LspConnectionManager

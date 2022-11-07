@@ -13,7 +13,7 @@ import {
   BrowserMessageWriter,
   createMessageConnection,
 } from 'vscode-jsonrpc/browser'
-import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+import {LspConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
 
 // flux language support
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
@@ -27,7 +27,7 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // install Monaco language client services
 MonacoServices.install(monaco)
-console.log("lololol")
+
 function createLanguageClient(
   connection: MessageConnection
 ): MonacoLanguageClient {
@@ -74,7 +74,7 @@ export function initLspWorker() {
     const error: Error = {...err, name: 'worker.onerror'}
     reportErrorThroughHoneyBadger(error, {name: 'LSP worker'})
   }
-  manager = new ConnectionManager(worker)
+  manager = new LspConnectionManager(worker)
 
   messageReader = new BrowserMessageReader(worker)
   messageWriter = new BrowserMessageWriter(worker)

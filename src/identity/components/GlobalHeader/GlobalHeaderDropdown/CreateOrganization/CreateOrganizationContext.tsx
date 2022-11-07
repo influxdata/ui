@@ -24,13 +24,13 @@ interface Props {
 }
 
 export type ProviderID = 'AWS' | 'GCP' | 'Azure'
-export type CreateOrgError =
-  | null
-  | 'NAME_CONFLICT'
-  | 'UNAUTHORIZED'
-  | 'SERVER_ERROR'
-  | 'CLUSTERS_FETCH_ERROR'
-  | 'GENERIC_ERROR'
+export enum CreateOrgError {
+  NameConflict = 'name-conflict',
+  Unauthorized = 'unauthorized',
+  ServerError = 'server-error',
+  ClustersFetchError = 'clusters-fetch-error',
+  GenericError = 'generic-error',
+}
 
 export interface CreateOrgContextType {
   changeCreateOrgLoadingStatus: (_: RemoteDataState) => void
@@ -128,7 +128,7 @@ export const CreateOrgProvider: FC<Props> = ({children}) => {
       .then(clusterData => {
         if (clusterData.length < 1) {
           setCreateOrgLoadingStatus(RemoteDataState.Error)
-          setError('CLUSTERS_FETCH_ERROR')
+          setError(CreateOrgError.ClustersFetchError)
           return
         }
         const initialMap: ClusterMap = {}
@@ -154,7 +154,7 @@ export const CreateOrgProvider: FC<Props> = ({children}) => {
       })
       .catch(() => {
         setCreateOrgLoadingStatus(RemoteDataState.Error)
-        setError('CLUSTERS_FETCH_ERROR')
+        setError(CreateOrgError.ClustersFetchError)
       })
   }, [])
 
@@ -163,7 +163,7 @@ export const CreateOrgProvider: FC<Props> = ({children}) => {
       setOrgName(name)
       if (quartzOrganizations.orgs.find(org => org.name === name)) {
         setCreateOrgLoadingStatus(RemoteDataState.Error)
-        setError('NAME_CONFLICT')
+        setError(CreateOrgError.NameConflict)
       } else {
         setCreateOrgLoadingStatus(RemoteDataState.NotStarted)
         setError(null)

@@ -2,6 +2,7 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 import {
   AlignItems,
   ComponentSize,
+  ComponentStatus,
   FlexBox,
   FlexDirection,
   Form,
@@ -67,11 +68,6 @@ export const InputWithLabel: FC<Props> = ({
     }
   }, [showError])
 
-  const inputStyle = {}
-  if (required && hasError) {
-    inputStyle['borderColor'] = '#DC4E58'
-  }
-
   return (
     <FlexBox
       alignItems={AlignItems.FlexStart}
@@ -85,21 +81,24 @@ export const InputWithLabel: FC<Props> = ({
         label={label}
         required={required}
         errorMessage={required && hasError && errorMessage}
+        className="inputwithlabel-element"
       >
         {description && (
-          <InputLabel
+          <Form.HelpText
+            text={description}
             className="inputwithlabel-description"
-            size={ComponentSize.Small}
-          >
-            {description}
-          </InputLabel>
+          />
         )}
         <Input
           size={ComponentSize.Medium}
           onChange={handleChange}
           value={inputVal}
           {...args}
-          inputStyle={inputStyle}
+          status={
+            required && hasError
+              ? ComponentStatus.Error
+              : ComponentStatus.Default
+          }
         />
       </Form.Element>
       {!(required && hasError) && <div className="error-field-hack" />}

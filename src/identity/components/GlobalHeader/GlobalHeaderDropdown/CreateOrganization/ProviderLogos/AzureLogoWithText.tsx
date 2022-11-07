@@ -6,7 +6,7 @@ export const AzureLogoWithText: FC = () => {
     <svg
       x="0px"
       y="0px"
-      viewBox="0 -10 220 80"
+      viewBox="0 -10 250 80"
       width="100%"
       height="100%"
       className="azure-logo-with-text"

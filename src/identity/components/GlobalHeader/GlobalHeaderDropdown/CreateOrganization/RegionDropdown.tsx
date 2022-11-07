@@ -2,8 +2,8 @@ import React, {FC, useCallback, useContext, useMemo} from 'react'
 import {ComponentStatus, Dropdown} from '@influxdata/clockface'
 
 // Components
-import {CreateOrgContext} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
 import {Cluster} from 'src/client/unityRoutes'
+import {CreateOrgContext} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
 
 const SINGLE_PROVIDER_WIDTH = 375
 
@@ -48,16 +48,16 @@ export const RegionDropdown: FC = () => {
       )}
       menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse}>
-          {regions?.map((c: Cluster) => (
+          {regions?.map((cluster: Cluster) => (
             <Dropdown.Item
-              key={c.regionId}
-              id={c.regionId}
-              value={c.regionId}
+              key={cluster.regionId}
+              id={cluster.regionId}
+              value={cluster.regionId}
               onClick={handleRegionChange}
-              testID={`variable-type-dropdown-${c.regionId}`}
-              selected={currentRegion === c.regionId}
+              testID={`variable-type-dropdown-${cluster.regionId}`}
+              selected={currentRegion === cluster.regionId}
             >
-              {c.regionName}
+              {cluster.regionName}
             </Dropdown.Item>
           ))}
         </Dropdown.Menu>

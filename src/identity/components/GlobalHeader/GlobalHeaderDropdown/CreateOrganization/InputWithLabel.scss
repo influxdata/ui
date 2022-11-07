@@ -14,12 +14,15 @@
   }
 
   > .error-field-hack {
-    height: 28.5px;
+    height: 28px;
     width: 200px;
   }
-}
 
-.inputwithlabel-description {
-  color: $cf-grey-65 !important;
-  margin-bottom: 5px !important;
+  .inputwithlabel-element {
+    margin-bottom: 5px;
+
+    > .inputwithlabel-description {
+      margin-bottom: 5px !important;
+    }
+  }
 }

@@ -4,17 +4,30 @@
   margin: 20px 0px;
   display: flex;
 
-  > .prc-title {
-    font-size: $cf-text-base-1;
+  > .prc-label {
     margin: 0px !important;
-  }
-
-  > .prc-description {
-    color: $cf-grey-65 !important;
-    margin: 5px 0 !important;
+    > .prc-description {
+      margin: 0px 0 !important;
+    }
   }
 
   > .region-info {
-    margin: 20px 0;
+    margin: 0px;
+  }
+
+  .clusterbox--selectable-card {
+    margin: 15px 5px;
+    height: 200px;
+
+    &:last-child {
+      margin-right: 0px;
+    }
+    &:first-child {
+      margin-left: 0px;
+    }
+
+    &.selected {
+      border-color: red;
+    }
   }
 }

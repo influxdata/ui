@@ -1,9 +1,6 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .aws-logo {
-  width: inherit;
-  height: inherit;
-
   .a {
     opacity: 0;
   }
@@ -13,15 +10,5 @@
   }
   .c {
     fill-rule: evenodd;
-  }
-  .aws-logo-smile {
-    fill-rule: evenodd;
-    clip-rule: evenodd;
-    fill: #ff9900;
-  }
-
-  &.aws-marketplace {
-    width: inherit;
-    margin: $cf-marg-d auto;
   }
 }

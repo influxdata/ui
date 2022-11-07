@@ -1,26 +1,56 @@
-import React, {FC, useContext} from 'react'
+import React, {FC, useCallback, useContext} from 'react'
 import {
   AlignItems,
   ComponentSize,
   FlexBox,
   FlexDirection,
-  InputLabel,
+  Form,
   JustifyContent,
+  SelectableCard,
 } from '@influxdata/clockface'
 
 // Style
 import './ProviderChooser.scss'
 
 // Components
-import {CreateOrgContext} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
+import {AWSLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AWSLogo'
+import {AzureLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AzureLogo'
 import {ClusterBox} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ClusterBox'
+import {
+  CreateOrgContext,
+  ProviderID,
+} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
+import {GCPLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogo'
 import {RegionDropdown} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/RegionDropdown'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
+const providerLogos = {
+  AWS: <AWSLogo />,
+  Azure: <AzureLogo />,
+  GCP: <GCPLogo />,
+}
+
 export const ProviderChooser: FC = () => {
-  const {clusters} = useContext(CreateOrgContext)
+  const {
+    changeCurrentProvider,
+    changeCurrentRegion,
+    clusters,
+    currentProvider,
+  } = useContext(CreateOrgContext)
   const clusterKeys = Object.keys(clusters)
 
+  const handleProviderClick = useCallback(
+    providerId => {
+      if (currentProvider === providerId) {
+        return
+      }
+      changeCurrentProvider(providerId as ProviderID)
+      changeCurrentRegion(clusters?.[providerId]?.[0]?.regionId)
+    },
+    [changeCurrentProvider, changeCurrentRegion, clusters, currentProvider]
+  )
+
+  const label = 'Provider & Region'
   return (
     <FlexBox
       alignItems={AlignItems.FlexStart}
@@ -30,11 +60,12 @@ export const ProviderChooser: FC = () => {
       margin={ComponentSize.Large}
       stretchToFitWidth={true}
     >
-      <InputLabel className="prc-title">Provider & Region</InputLabel>
-      <InputLabel className="prc-description" size={ComponentSize.Small}>
-        Tell us where you would like to store the time series data for this
-        organization.
-      </InputLabel>
+      <Form.Element htmlFor={label} label={label} className="prc-label">
+        <Form.HelpText
+          className="prc-description"
+          text="Tell us where you would like to store the time series data for this organization."
+        />
+      </Form.Element>
       <FlexBox
         alignItems={AlignItems.Stretch}
         className="prc-cluster-boxes-container"
@@ -47,26 +78,41 @@ export const ProviderChooser: FC = () => {
           className="prc-cluster-boxes"
           stretchToFitWidth={true}
         >
-          {clusterKeys.map((providerId, i) => {
-            const {providerName} = clusters[providerId][0]
-            return (
-              <ClusterBox
-                providerName={providerName}
-                providerId={providerId}
-                showLogoWithText={clusterKeys.length === 1}
-                key={`${providerId}${i}`}
-              />
-            )
-          })}
+          {clusterKeys.length === 1 ? (
+            <ClusterBox
+              providerId={clusters[clusterKeys[0]][0].providerId}
+              showLogoWithText={true}
+              key={`${clusters[clusterKeys[0]][0].providerId}`}
+            />
+          ) : (
+            clusterKeys.map((providerId, i) => {
+              const {providerName} = clusters[providerId][0]
+              return (
+                <SelectableCard
+                  fontSize={ComponentSize.ExtraSmall}
+                  className={`clusterbox--selectable-card ${
+                    providerId === currentProvider ? 'selected' : ''
+                  }`}
+                  id={providerId}
+                  key={`${providerId}${i}`}
+                  onClick={providerId => handleProviderClick(providerId)}
+                  label={providerName}
+                  selected={providerId === currentProvider}
+                >
+                  {providerLogos[providerId]}
+                </SelectableCard>
+              )
+            })
+          )}
         </FlexBox>
         <RegionDropdown />
       </FlexBox>
       <div className="region-info">
-        Don't see the region you need?{' '}
+        <Form.HelpText text="Don't see the region you need?"></Form.HelpText>{' '}
         <SafeBlankLink href="https://www.influxdata.com/influxdb-cloud-2-0-provider-region/">
           Let us know
         </SafeBlankLink>
-        .
+        <Form.HelpText text="."></Form.HelpText>
       </div>
     </FlexBox>
   )

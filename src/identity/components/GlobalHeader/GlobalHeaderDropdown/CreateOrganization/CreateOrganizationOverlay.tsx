@@ -13,15 +13,18 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {InputWithLabel} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/InputWithLabel'
+import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {ProviderChooser} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderChooser'
 
 // Styles
 import './CreateOrganizationOverlay.scss'
+
+// Contexts
 import {
   CreateOrgProvider,
   CreateOrgContext,
+  CreateOrgError,
 } from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
 
 // Types
@@ -42,11 +45,12 @@ const errorStyle = {
 }
 
 const errorMap = {
-  SERVER_ERROR: 'Organization creation failed.',
-  NAME_CONFLICT: NAME_CONFLICT_MESSAGE,
-  UNAUTHORIZED: 'Not authorized to create organization.',
-  CLUSTERS_FETCH_ERROR: 'Error fetching cluster information.',
-  GENERIC_ERROR: 'Organization creation failed.',
+  [CreateOrgError.ServerError]: 'Organization creation failed.',
+  [CreateOrgError.NameConflict]: NAME_CONFLICT_MESSAGE,
+  [CreateOrgError.Unauthorized]: 'Not authorized to create organization.',
+  [CreateOrgError.ClustersFetchError]: 'Error fetching cluster information.',
+  [CreateOrgError.GenericError]:
+    'Error creating organization. Please refresh and try again in some time.',
 }
 const CreateOrgOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
@@ -76,7 +80,7 @@ const CreateOrgOverlay: FC = () => {
 
   useEffect(() => {
     if (createOrgLoadingStatus === RemoteDataState.Error) {
-      if (error === 'NAME_CONFLICT') {
+      if (error === CreateOrgError.NameConflict) {
         setShowError(true)
         setInputError(NAME_CONFLICT_MESSAGE)
       } else {
@@ -101,16 +105,16 @@ const CreateOrgOverlay: FC = () => {
       })
       .catch(e => {
         if (e instanceof UnauthorizedError) {
-          setError('UNAUTHORIZED')
+          setError(CreateOrgError.Unauthorized)
         } else if (e instanceof ServerError) {
-          setError('SERVER_ERROR')
+          setError(CreateOrgError.ServerError)
         } else if (e instanceof UnprocessableEntityError) {
           // Even though there can be different meanings/reasons for this issue.
           //  We are deliberately choosing to display this error(Status Code: 422)
           //  as Duplicate Org Name issue.
-          setError('NAME_CONFLICT')
+          setError(CreateOrgError.NameConflict)
         } else {
-          setError('GENERIC_ERROR')
+          setError(CreateOrgError.GenericError)
         }
         changeCreateOrgLoadingStatus(RemoteDataState.Error)
       })
@@ -134,11 +138,12 @@ const CreateOrgOverlay: FC = () => {
     [RemoteDataState.Loading]: ComponentStatus.Loading,
     [RemoteDataState.Error]: ComponentStatus.Disabled,
     [RemoteDataState.Done]: ComponentStatus.Default,
-    [RemoteDataState.NotStarted]: ComponentStatus.Default,
+    [RemoteDataState.NotStarted]:
+      orgName === '' ? ComponentStatus.Disabled : ComponentStatus.Default,
   }
   return (
     <Overlay.Container
-      maxWidth={750}
+      maxWidth={800}
       className="create-org-overlay-container"
       testID="create-org-overlay--container"
     >

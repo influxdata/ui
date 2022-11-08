@@ -73,7 +73,7 @@ const Schema: FC = () => {
       <FieldsProvider scope={scope}>
         <TagsProvider scope={scope}>
           <FluxQueryBuilderProvider>
-            <BucketProvider scope={scope}>
+            <BucketProvider scope={scope} omitSampleData>
               <div className="scroll--container">
                 <DapperScrollbars>
                   <div className="schema-browser" data-testid="schema-browser">

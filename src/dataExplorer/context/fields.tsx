@@ -18,7 +18,6 @@ import {
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
-  FROM_BUCKET,
   SEARCH_STRING,
 } from 'src/dataExplorer/shared/utils'
 

@@ -13,7 +13,6 @@ import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 import {QueryContext, QueryScope} from 'src/shared/contexts/query'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_REGEXP,
   IMPORT_STRINGS,
@@ -93,7 +92,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
       |> limit(n: ${DEFAULT_LIMIT})
     `
 
-    if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
+    if (bucket.type !== 'sample') {
       _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
       queryText = `${_source}
         schema.measurementFieldKeys(

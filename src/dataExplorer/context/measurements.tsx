@@ -15,7 +15,6 @@ import {QueryContext, QueryScope} from 'src/shared/contexts/query'
 import {Bucket, RemoteDataState} from 'src/types'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
@@ -76,7 +75,7 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
       |> limit(n: ${DEFAULT_LIMIT})
     `
 
-    if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
+    if (bucket.type !== 'sample') {
       _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
       queryText = `${_source}
         schema.measurements(

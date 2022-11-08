@@ -116,6 +116,8 @@ const GroupBy: FC = () => {
           selectedOptions={
             !selection.bucket || !selection.measurement ? [] : selectedGroupKeys
           }
+          isSearchable={true}
+          searchbarInputPlaceholder="Search the group keys"
           onSelect={handleSelectGroupKey}
           emptyText="Select group column values"
           buttonStatus={toComponentStatus(loading)}

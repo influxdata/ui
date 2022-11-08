@@ -10,7 +10,7 @@ interface Props {
   selectedScript: any
 }
 
-export const ScriptForm: FC<Props> = ({scriptParams, selectedScript}) => {
+export const ScriptParametersForm: FC<Props> = ({scriptParams, selectedScript}) => {
   const [parameters, setParameters] = useState([])
 
   useEffect(() => {

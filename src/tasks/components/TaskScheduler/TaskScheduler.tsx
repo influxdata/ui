@@ -15,7 +15,7 @@ import {
   SelectGroup,
 } from '@influxdata/clockface'
 import {ScriptSelector} from 'src/tasks/components/TaskScheduler/ScriptSelector'
-import {ScriptForm} from 'src/tasks/components/TaskScheduler/ScriptForm'
+import {ScriptParametersForm} from 'src/tasks/components/TaskScheduler/ScriptParametersForm'
 import {TaskIntervalForm} from 'src/tasks/components/TaskScheduler/TaskIntervalForm'
 
 // Utils
@@ -140,7 +140,7 @@ export const TaskScheduler: FC<Props> = ({
                   <div className="form-divider"></div>
                 </Grid.Column>
                 <Grid.Column widthXS={Columns.Five}>
-                  <ScriptForm
+                  <ScriptParametersForm
                     selectedScript={selectedScript}
                     scriptParams={scriptParams}
                   />

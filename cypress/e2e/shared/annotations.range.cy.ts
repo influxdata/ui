@@ -263,7 +263,7 @@ describe('Annotations, but in a different test suite', () => {
                 .should($el => {
                   expect($el).to.have.length(1)
                   expect(Cypress.dom.isDetached($el)).to.be.false
-                  // eslint-disable-next-line @typescript-eslint/unbound-method
+                  // eslint-disable-next-line jest/unbound-method
                   expect($el).not.to.be.disabled
                 })
                 .click()

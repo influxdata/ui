@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useMemo} from 'react'
+import React, {FC, useCallback, useMemo, useState} from 'react'
+import {debounce} from 'lodash'
 import {
   ButtonShape,
   Columns,
@@ -49,6 +50,15 @@ interface Props extends VisualizationOptionProps {
 }
 
 export const GraphOptions: FC<Props> = ({properties, results, update}) => {
+  const [yAxisLabel, setYAxisLabel] = useState(properties.axes.y.label)
+  const [yAxisPrefix, setYAxisPrefix] = useState(properties.axes.y.prefix)
+  const [yAxisSuffix, setYAxisSuffix] = useState(properties.axes.y.suffix)
+
+  const groupKey = useMemo(
+    () => [...results.fluxGroupKeyUnion, 'result'],
+    [results]
+  )
+
   const numericColumns = (results?.table?.columnKeys || []).filter(key => {
     if (key === 'result' || key === 'table') {
       return false
@@ -58,11 +68,6 @@ export const GraphOptions: FC<Props> = ({properties, results, update}) => {
 
     return columnType === 'time' || columnType === 'number'
   })
-
-  const groupKey = useMemo(
-    () => [...results.fluxGroupKeyUnion, 'result'],
-    [results]
-  )
 
   const xColumn = defaultXColumn(results?.table, properties.xColumn)
   const yColumn = defaultYColumn(results?.table, properties.yColumn)
@@ -93,6 +98,10 @@ export const GraphOptions: FC<Props> = ({properties, results, update}) => {
       },
     })
   }
+
+  const updateAxisDebounced = useCallback(debounce(updateAxis, 200), [
+    properties,
+  ])
 
   const handleSetYDomain = (yDomain: [number, number]): void => {
     let bounds: [string | null, string | null]
@@ -339,9 +348,15 @@ export const GraphOptions: FC<Props> = ({properties, results, update}) => {
           <h5 className="view-options--header">Y-Axis</h5>
           <Form.Element label="Y Axis Label">
             <Input
-              value={properties.axes.y.label}
-              onChange={evt => {
-                updateAxis('y', {label: evt.target.value})
+              value={yAxisLabel}
+              onKeyPress={event => {
+                if (event.code === 'Enter') {
+                  updateAxis('y', {label: yAxisLabel})
+                }
+              }}
+              onChange={event => {
+                setYAxisLabel(event.target.value)
+                updateAxisDebounced('y', {label: event.target.value})
               }}
             />
           </Form.Element>
@@ -389,9 +404,15 @@ export const GraphOptions: FC<Props> = ({properties, results, update}) => {
             <Grid.Column widthXS={Columns.Six}>
               <Form.Element label="Y Axis Prefix">
                 <Input
-                  value={properties.axes.y.prefix}
-                  onChange={evt => {
-                    updateAxis('y', {prefix: evt.target.value})
+                  value={yAxisPrefix}
+                  onKeyPress={event => {
+                    if (event.code === 'Enter') {
+                      updateAxis('y', {prefix: yAxisPrefix})
+                    }
+                  }}
+                  onChange={event => {
+                    setYAxisPrefix(event.target.value)
+                    updateAxisDebounced('y', {prefix: event.target.value})
                   }}
                 />
               </Form.Element>
@@ -399,9 +420,15 @@ export const GraphOptions: FC<Props> = ({properties, results, update}) => {
             <Grid.Column widthXS={Columns.Six}>
               <Form.Element label="Y Axis Suffix">
                 <Input
-                  value={properties.axes.y.suffix}
-                  onChange={evt => {
-                    updateAxis('y', {suffix: evt.target.value})
+                  value={yAxisSuffix}
+                  onKeyPress={event => {
+                    if (event.code === 'Enter') {
+                      updateAxis('y', {suffix: yAxisSuffix})
+                    }
+                  }}
+                  onChange={event => {
+                    setYAxisSuffix(event.target.value)
+                    updateAxisDebounced('y', {suffix: event.target.value})
                   }}
                 />
               </Form.Element>

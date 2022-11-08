@@ -1,8 +1,5 @@
 // Libraries
-import React, {ChangeEvent, FC, useState} from 'react'
-
-// Utils
-import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
+import React, {FC, useState} from 'react'
 
 // Components
 import {
@@ -85,7 +82,7 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
   const {
     handleSetHoverLegendHide,
     handleSetOrientation,
-    handleSetOpacity,
+    setOpacity,
     handleSetColorization,
   } = handlers
 
@@ -145,7 +142,7 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
               />
               <OpacitySlider
                 legendOpacity={legendOpacity}
-                handleSetOpacity={handleSetOpacity}
+                setOpacity={setOpacity}
                 testID="hover-legend-opacity-slider"
               />
               <ColorizeRowsToggle
@@ -199,10 +196,8 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
     // which is less intricate than Giraffe's
   }
 
-  const handleSetOpacity = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = convertUserInputToNumOrNaN(e)
-
-    if (isNaN(value) || value < LEGEND_OPACITY_MINIMUM) {
+  const setOpacity = (opacity: number): void => {
+    if (isNaN(opacity) || opacity < LEGEND_OPACITY_MINIMUM) {
       update({
         legendOpacity: LEGEND_OPACITY_MAXIMUM,
       })
@@ -212,11 +207,11 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
       })
     } else {
       update({
-        legendOpacity: value,
+        legendOpacity: opacity,
       })
       event(`${eventPrefix}.opacity`, {
         type: properties.type,
-        opacity: value,
+        opacity,
       })
     }
   }
@@ -238,7 +233,7 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
       handlers={{
         handleSetHoverLegendHide,
         handleSetOrientation,
-        handleSetOpacity,
+        setOpacity,
         handleSetColorization,
       }}
     />
@@ -254,7 +249,7 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
       />
       <OpacitySlider
         legendOpacity={legendOpacity}
-        handleSetOpacity={handleSetOpacity}
+        setOpacity={setOpacity}
         testID="hover-legend-opacity-slider"
       />
       <ColorizeRowsToggle

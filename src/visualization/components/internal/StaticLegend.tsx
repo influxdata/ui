@@ -1,5 +1,6 @@
 // Libraries
-import React, {ChangeEvent, FC, useState} from 'react'
+import React, {FC, useCallback, useRef, useState} from 'react'
+import {debounce} from 'lodash'
 
 // Utils
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
@@ -80,12 +81,24 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
   const {valueAxis} = staticLegend
   const {
     colorizeRows = false, // undefined is considered false because of omitempty
-    heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+    heightRatio: defaultHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
     opacity = LEGEND_OPACITY_DEFAULT,
     orientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     show,
   } = staticLegend
   const [showOptions, setShowOptions] = useState<boolean>(show)
+  const [heightRatio, setHeightRatio] = useState(defaultHeightRatio)
+  const heightRatioRef = useRef<number>(null)
+  heightRatioRef.current = heightRatio
+
+  React.useEffect(() => {
+    if (
+      heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET &&
+      heightRatio !== defaultHeightRatio
+    ) {
+      setHeightRatio(defaultHeightRatio)
+    }
+  }, [defaultHeightRatio, heightRatio])
 
   const handleChooseStaticLegend = (value: string) => {
     setShowOptions(value === LegendDisplayStatus.SHOW)
@@ -100,10 +113,11 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     })
   }
 
-  const handleSetHeightRatio = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = convertUserInputToNumOrNaN(e)
-
-    if (isNaN(value) || value < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
+  const updateHeightRatio = (heightRatio: number): void => {
+    if (
+      isNaN(heightRatio) ||
+      heightRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM
+    ) {
       update({
         staticLegend: {
           ...staticLegend,
@@ -116,14 +130,19 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
       })
     } else {
       update({
-        staticLegend: {...staticLegend, heightRatio: value},
+        staticLegend: {...staticLegend, heightRatio, show: true},
       })
       event(`${eventPrefix}.heightRatio`, {
         type: properties.type,
-        heightRatio: value,
+        heightRatio: heightRatioRef.current,
       })
     }
   }
+
+  const updateHeightRatioDebounced = useCallback(
+    debounce(updateHeightRatio, 250),
+    []
+  )
 
   const convertHeightRatioToPercentage = (heightRatio: number): string =>
     `Height: ${(heightRatio * 100).toFixed(0)}%`
@@ -153,10 +172,8 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     // which is less intricate than Giraffe's
   }
 
-  const handleSetOpacity = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = convertUserInputToNumOrNaN(e)
-
-    if (isNaN(value) || value < LEGEND_OPACITY_MINIMUM) {
+  const setOpacity = (opacity: number): void => {
+    if (isNaN(opacity) || opacity < LEGEND_OPACITY_MINIMUM) {
       update({
         staticLegend: {...staticLegend, opacity: LEGEND_OPACITY_MAXIMUM},
       })
@@ -166,11 +183,15 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
       })
     } else {
       update({
-        staticLegend: {...staticLegend, opacity: value},
+        staticLegend: {
+          ...staticLegend,
+          opacity,
+          heightRatio: heightRatioRef.current,
+        },
       })
       event(`${eventPrefix}.opacity`, {
         type: properties.type,
-        opacity: value,
+        opacity,
       })
     }
   }
@@ -236,7 +257,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
               />
               <OpacitySlider
                 legendOpacity={opacity}
-                handleSetOpacity={handleSetOpacity}
+                setOpacity={setOpacity}
                 testID="static-legend-opacity-slider"
               />
               <ColorizeRowsToggle
@@ -293,7 +314,11 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                   min={STATIC_LEGEND_HEIGHT_RATIO_MINIMUM}
                   step={STATIC_LEGEND_HEIGHT_RATIO_STEP}
                   value={heightRatio}
-                  onChange={handleSetHeightRatio}
+                  onChange={evt => {
+                    const heightRatio = convertUserInputToNumOrNaN(evt)
+                    setHeightRatio(heightRatio)
+                    updateHeightRatioDebounced(heightRatio)
+                  }}
                   hideLabels={true}
                   testID="static-legend-height-slider"
                 />

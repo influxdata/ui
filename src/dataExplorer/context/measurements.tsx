@@ -19,7 +19,6 @@ import {
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
-  FROM_BUCKET,
 } from 'src/dataExplorer/shared/utils'
 
 interface MeasurementsContextType {
@@ -58,14 +57,9 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
-    let _source = ''
-    if (bucket.type === 'sample') {
-      _source += SAMPLE_DATA_SET(bucket.id)
-    } else {
-      _source += FROM_BUCKET(bucket.name)
-    }
-
-    let queryText = `${_source}
+    const queryText =
+      bucket.type === 'sample'
+        ? `${SAMPLE_DATA_SET(bucket.id)}
       |> range(start: -100y, stop: now())
       |> filter(fn: (r) => true)
       |> keep(columns: ["_measurement"])
@@ -74,20 +68,16 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
       |> sort()
       |> limit(n: ${DEFAULT_LIMIT})
     `
-
-    if (bucket.type !== 'sample') {
-      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
-      queryText = `${_source}
-        schema.measurements(
-          bucket: "${bucket.name}",
-          start: ${CACHING_REQUIRED_START_DATE},
-          stop: ${CACHING_REQUIRED_END_DATE},
-        )
-        |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
-        |> sort(columns: ["lowercase"])
-        |> limit(n: ${DEFAULT_LIMIT})
-      `
-    }
+        : `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}
+      schema.measurements(
+        bucket: "${bucket.name}",
+        start: ${CACHING_REQUIRED_START_DATE},
+        stop: ${CACHING_REQUIRED_END_DATE},
+      )
+      |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
+      |> sort(columns: ["lowercase"])
+      |> limit(n: ${DEFAULT_LIMIT})
+    `
 
     try {
       const resp = await queryAPI(queryText, scope)

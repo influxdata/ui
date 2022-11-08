@@ -8,7 +8,7 @@ import {
   testEditRangeAnnotation,
   testDeleteAnnotation,
   RANGE_ANNOTATION_TEXT,
-} from '../util/annotationsSetup'
+} from '../../util/annotationsSetup'
 
 describe('The Annotations UI functionality, on a graph (xy line) graph type', () => {
   beforeEach(() => setupData(cy))

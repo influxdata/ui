@@ -5,12 +5,25 @@ const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
 
 describe('Script Builder', () => {
-  const downloadsDirectory = Cypress.config('downloadsFolder')
-
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
     writeData.push(`ndbc2,air_temp_degc=70_degrees station_id_${i}=${i}`)
+  }
+  const writeDataMoar: string[] = []
+  for (let i = 0; i < 500; i++) {
+    writeDataMoar.push(
+      `ndbc_big,air_temp_degc=70_degrees station_id_A${i}=${i}`
+    )
+    writeDataMoar.push(
+      `ndbc_big,air_temp_degc=70_degrees station_id_B${i}=${i}`
+    )
+    writeDataMoar.push(
+      `ndbc_big,air_temp_degc=70_degrees station_id_C${i}=${i}`
+    )
+    writeDataMoar.push(
+      `ndbc_big,air_temp_degc=70_degrees station_id_C${i}=${i + 500}`
+    )
   }
 
   const bucketName = 'defbuck'
@@ -25,11 +38,7 @@ describe('Script Builder', () => {
     )
   }
 
-  const selectSchema = () => {
-    cy.log('select bucket')
-    selectBucket(bucketName)
-
-    cy.log('select measurement')
+  const selectMeasurement = (measurement: string) => {
     cy.getByTestID('measurement-selector--dropdown-button')
       .should('be.visible')
       .should('contain', 'Select measurement')
@@ -42,6 +51,14 @@ describe('Script Builder', () => {
       'contain',
       measurement
     )
+  }
+
+  const selectSchema = () => {
+    cy.log('select bucket')
+    selectBucket(bucketName)
+
+    cy.log('select measurement')
+    selectMeasurement(measurement)
   }
 
   const confirmSchemaComposition = () => {
@@ -82,12 +99,9 @@ describe('Script Builder', () => {
 
   const loginWithFlags = flags => {
     return cy.signinWithoutUserReprovision().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      return cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/data-explorer`)
-        cy.setFeatureFlags(flags).then(() => {
-          // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-          // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-          cy.wait(1200)
+        return cy.setFeatureFlags(flags).then(() => {
           cy.getByTestID('flux-query-builder-toggle').then($toggle => {
             cy.wrap($toggle).should('be.visible')
             // Switch to Flux Query Builder if not yet
@@ -103,14 +117,19 @@ describe('Script Builder', () => {
 
   before(() => {
     cy.flush().then(() => {
-      cy.signin().then(() => {
-        cy.get('@org').then(({id, name}: Organization) => {
+      return cy.signin().then(() => {
+        return cy.get('@org').then(({id, name}: Organization) => {
           cy.log('add mock data')
           cy.createBucket(id, name, 'defbuck2')
-          cy.createBucket(id, name, 'defbuck3')
-          cy.createBucket(id, name, 'defbuck4')
+          cy.createBucket(id, name, 'defbuck3') // 0 tables, 0 rows
+          cy.createBucket(id, name, 'defbuck4') // load certain amts of data, per measurement
           cy.writeData(writeData, 'defbuck')
           cy.writeData(writeData, 'defbuck2')
+          cy.writeData(
+            [`ndbc_1table,air_temp_degc=70_degrees station_id=1`],
+            'defbuck4'
+          )
+          cy.writeData(writeDataMoar, 'defbuck4')
         })
       })
     })
@@ -140,11 +159,9 @@ describe('Script Builder', () => {
         })
 
         clearSession()
-        cy.getByTestID('flux-sync--toggle')
+        cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
         cy.getByTestID('flux-editor', {timeout: 30000})
       })
-      cy.log('empty downloads directory')
-      cy.task('deleteDownloads', {dirPath: downloadsDirectory})
     })
 
     it('will allow querying of different data ranges', () => {
@@ -157,15 +174,18 @@ describe('Script Builder', () => {
 
       cy.log('query date range can be adjusted')
       cy.getByTestID('timerange-dropdown').within(() => {
-        cy.getByTestID('dropdown--button').should('exist').click()
+        cy.getByTestID('dropdown--button').should('exist')
+        cy.getByTestID('dropdown--button').clickAttached()
       })
       cy.getByTestID('dropdown-item-past15m').should('exist').click()
       cy.getByTestID('time-machine-submit-button').should('exist').click()
       cy.wait('@query -15m')
     })
 
-    // TODO(wiedld): this test is flaky. Need to debug later.
-    describe.skip('data completeness', () => {
+    describe('data completeness', () => {
+      const downloadsDirectory = Cypress.config('downloadsFolder')
+      const browser = Cypress.config('browser')
+
       const validateCsv = (csv: string, tableCnt: number) => {
         cy.wrap(csv)
           .then(doc => doc.trim().split('\n'))
@@ -181,15 +201,19 @@ describe('Script Builder', () => {
       ) => {
         cy.log('confirm on 1hr')
         cy.getByTestID('timerange-dropdown').within(() => {
-          cy.getByTestID('dropdown--button').should('exist').click()
+          cy.getByTestID('dropdown--button').should('exist')
+          cy.getByTestID('dropdown--button').clickAttached()
         })
-        cy.getByTestID('dropdown-item-past1h').should('exist').click()
-        cy.getByTestID('time-machine-submit-button').should('exist').click()
+        cy.getByTestID('dropdown-item-past1h').should('exist')
+        cy.getByTestID('dropdown-item-past1h').clickAttached()
+        cy.getByTestID('time-machine-submit-button').should('exist')
+        cy.getByTestID('time-machine-submit-button').clickAttached()
 
         cy.log('run query')
-        cy.getByTestID('time-machine-submit-button').should('exist').click()
+        cy.getByTestID('time-machine-submit-button').should('exist')
+        cy.getByTestID('time-machine-submit-button').clickAttached()
         cy.wait('@query -1h')
-        cy.wait(1000)
+        cy.wait(1000) // bit more time for csv parsing
 
         cy.log('table metadata displayed to user is correct')
         if (truncated) {
@@ -205,7 +229,14 @@ describe('Script Builder', () => {
         }
 
         cy.log('will download complete csv data')
-        cy.getByTestID('data-explorer--csv-download').should('exist').click()
+        // TODO: debug intermittent failures which occur 30% of the time
+        // in firefox only, in the CI only, and only when no data is returned
+        if (browser.name.toLowerCase() != 'chrome') {
+          return
+        }
+        cy.getByTestID('data-explorer--csv-download')
+          .should('not.be.disabled')
+          .click()
         const filename = path.join(downloadsDirectory, 'influx.data.csv')
         if (tableCnt == 0) {
           cy.readFile(filename, {timeout: 15000})
@@ -218,33 +249,37 @@ describe('Script Builder', () => {
         }
       }
 
+      beforeEach(() => {
+        cy.log('empty downloads directory')
+        cy.task('deleteDownloads', {dirPath: downloadsDirectory})
+      })
+
       it('will return 0 tables and 0 rows, for an empty dataset', () => {
+        cy.log('turn off composition sync')
+        cy.getByTestID('flux-sync--toggle').click()
+        cy.getByTestID('flux-sync--toggle').should('not.have.class', 'active')
         cy.log('select empty dataset')
-        selectBucket('defbuck3')
-        cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck3")`, {
-          timeout: 3000,
-        })
+        cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
+            from(bucket: "defbuck3") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          `)
+        cy.getByTestID('flux-editor').contains('defbuck3')
 
         runTest(0, 0, false)
       })
 
-      describe('will return 1 table', () => {
-        beforeEach(() => {
-          const writeData: string[] = []
-          writeData.push(`ndbc3,air_temp_degc=70_degrees station_id=${i}`)
-          cy.writeData(writeData, 'defbuck4')
-          cy.wait(1200)
+      it('will return 1 table, for a dataset with only 1 table', () => {
+        cy.log('select dataset with 1 table')
+        selectBucket('defbuck4')
+        cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
+          timeout: 3000,
         })
+        cy.getByTestID('data-explorer--csv-download').should('be.disabled')
+        selectMeasurement('ndbc_1table')
+        cy.getByTestID('flux-editor').contains(
+          `|> filter(fn: (r) => r._measurement == "ndbc_1table")`
+        )
 
-        it('for a dataset with only 1 table', () => {
-          cy.log('select dataset with 1 table')
-          selectBucket('defbuck4')
-          cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
-            timeout: 3000,
-          })
-
-          runTest(1, 1, false)
-        })
+        runTest(1, 1, false)
       })
 
       it('will return the complete dataset for smaller payloads', () => {
@@ -257,40 +292,26 @@ describe('Script Builder', () => {
 
       describe('for larger payloads', () => {
         beforeEach(() => {
-          const writeData: string[] = []
-          for (let i = 0; i < 500; i++) {
-            writeData.push(
-              `ndbc3,air_temp_degc=70_degrees station_id_${i}=${i}`
-            )
-            writeData.push(
-              `ndbc4,air_temp_degc=70_degrees station_id_${i}=${i}`
-            )
-            writeData.push(
-              `ndbc5,air_temp_degc=70_degrees station_id_${i}=${i}`
-            )
-            writeData.push(`ndbc6,air_temp_degc=70_degrees station_id=${i}`)
-            writeData.push(`ndbc7,air_temp_degc=70_degrees station_id=${i}`)
-          }
-          cy.writeData(writeData, 'defbuck2')
           cy.setFeatureFlags({
             newDataExplorer: true,
             schemaComposition: true,
             dataExplorerCsvLimit: 10000 as any,
-          }).then(() => {
-            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-            cy.wait(1200)
           })
         })
 
         it('will return a truncated dataset rows', () => {
           cy.log('select larger dataset')
-          selectBucket('defbuck2')
-          cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck2")`, {
+          selectBucket('defbuck4')
+          cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
             timeout: 3000,
           })
+          cy.getByTestID('data-explorer--csv-download').should('be.disabled')
+          selectMeasurement('ndbc_big')
+          cy.getByTestID('flux-editor').contains(
+            `|> filter(fn: (r) => r._measurement == "ndbc_big")`
+          )
 
-          runTest(3 * 500 + 2 + 60, 5 * 500 + 60, true)
+          runTest(3 * 500, 4 * 500, true)
         })
       })
     })
@@ -302,9 +323,6 @@ describe('Script Builder', () => {
         schemaComposition: false,
         newDataExplorer: true,
       }).then(() => {
-        // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-        // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-        cy.wait(1200)
         cy.getByTestID('flux-sync--toggle').should('not.exist')
         cy.getByTestID('flux-query-builder--menu').contains('New Script')
       })
@@ -523,9 +541,11 @@ describe('Script Builder', () => {
           // )
 
           cy.log('does diverge, within block')
-          cy.getByTestID('flux-editor').monacoType(
-            '{enter}{upArrow}{upArrow}{upArrow}{upArrow} // make diverge'
-          )
+          cy.getByTestID('flux-editor')
+            .should('exist')
+            .monacoType(
+              '{enter}{upArrow}{upArrow}{upArrow}{upArrow} // make diverge'
+            )
           cy.log('toggle is now disabled')
           cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
         })

@@ -229,6 +229,7 @@
     "yjs": "^13.5.36"
   },
   "resolutions": {
-    "minimatch": "^3.0.5"
+    "minimatch": "^3.0.5",
+    "monaco-editor-webpack-plugin/**/loader-utils": "^2.0.3"
   }
 }

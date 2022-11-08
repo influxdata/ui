@@ -73,15 +73,10 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     //   They are fetched dynamically from csv.
     //   Here is the source code for handling sample data:
     //   https://github.com/influxdata/flux/blob/master/stdlib/influxdata/influxdb/sample/sample.flux
-    //   That is why _source and query script for sample data is different
-    let _source = IMPORT_REGEXP
-    if (bucket.type === 'sample') {
-      _source += SAMPLE_DATA_SET(bucket.id)
-    } else {
-      _source += FROM_BUCKET(bucket.name)
-    }
-
-    let queryText = `${_source}
+    //   That is why the source and query script for sample data is different
+    const queryText =
+      bucket.type === 'sample'
+        ? `${IMPORT_REGEXP}${SAMPLE_DATA_SET(bucket.id)}
       |> range(start: -100y, stop: now())
       |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
       |> keep(columns: ["_field"])
@@ -91,22 +86,18 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
       |> sort()
       |> limit(n: ${DEFAULT_LIMIT})
     `
-
-    if (bucket.type !== 'sample') {
-      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
-      queryText = `${_source}
-        schema.measurementFieldKeys(
-          bucket: "${bucket.name}",
-          measurement: "${measurement}",
-          start: ${CACHING_REQUIRED_START_DATE},
-          stop: ${CACHING_REQUIRED_END_DATE},
-        )
-        ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
-        |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
-        |> sort(columns: ["lowercase"])
-        |> limit(n: ${DEFAULT_LIMIT})
-      `
-    }
+        : `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}
+      schema.measurementFieldKeys(
+        bucket: "${bucket.name}",
+        measurement: "${measurement}",
+        start: ${CACHING_REQUIRED_START_DATE},
+        stop: ${CACHING_REQUIRED_END_DATE},
+      )
+      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
+      |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
+      |> sort(columns: ["lowercase"])
+      |> limit(n: ${DEFAULT_LIMIT})
+    `
 
     try {
       const resp = await queryAPI(queryText, scope)

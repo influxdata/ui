@@ -1,4 +1,4 @@
-import React, {FC, ChangeEvent} from 'react'
+import React, {FC, ChangeEvent, useState} from 'react'
 
 // Components
 import {
@@ -15,6 +15,7 @@ import {
   SelectGroup,
 } from '@influxdata/clockface'
 import {ScriptSelector} from 'src/tasks/components/TaskScheduler/ScriptSelector'
+import {ScriptForm} from 'src/tasks/components/TaskScheduler/ScriptForm'
 import {TaskIntervalForm} from 'src/tasks/components/TaskScheduler/TaskIntervalForm'
 
 // Utils
@@ -22,9 +23,9 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Types
 import {TaskOptions, TaskSchedule} from 'src/types'
+import {Script} from 'src/client/scriptsRoutes'
 
 import 'src/tasks/components/TaskScheduler/TaskScheduler.scss'
-
 interface Props {
   taskOptions: TaskOptions
   updateInput: (event: ChangeEvent<HTMLInputElement>) => void
@@ -36,6 +37,9 @@ export const TaskScheduler: FC<Props> = ({
   updateInput,
   updateScheduleType,
 }) => {
+  const [scriptParams, setScriptParams] = useState([])
+  const [selectedScript, setSelectedScript] = useState<Script>()
+
   const handleChangeScheduleType = (schedule: TaskSchedule): void => {
     updateScheduleType(schedule)
   }
@@ -55,7 +59,11 @@ export const TaskScheduler: FC<Props> = ({
                     Learn More.
                   </SafeBlankLink>{' '}
                 </p>
-                <ScriptSelector />
+                <ScriptSelector
+                  selectedScript={selectedScript}
+                  setScriptParams={setScriptParams}
+                  setSelectedScript={setSelectedScript}
+                />
                 <div className="schedule-task">
                   <div className="create-task-titles">Schedule the Task</div>
                   <p>
@@ -126,6 +134,19 @@ export const TaskScheduler: FC<Props> = ({
                 </Form.Footer>
               </div>
             </Grid.Column>
+            {selectedScript?.description.trim() && (
+              <>
+                <Grid.Column widthXS={Columns.Two}>
+                  <div className="form-divider"></div>
+                </Grid.Column>
+                <Grid.Column widthXS={Columns.Five}>
+                  <ScriptForm
+                    selectedScript={selectedScript}
+                    scriptParams={scriptParams}
+                  />
+                </Grid.Column>
+              </>
+            )}
           </Grid.Row>
         </Grid>
       </Form>

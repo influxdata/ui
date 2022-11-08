@@ -1,6 +1,6 @@
 .cf-form--footer {
   position: relative;
-  margin-top: 20%;
+  margin-top: 125px;
   justify-content: end;
 }
 
@@ -58,4 +58,27 @@
 .cf-form--label-text {
   font-weight: 600;
   font-size: 15px;
+}
+
+.form-divider {
+  border-left: 1px solid rgba(220, 220, 220, 0.2);
+  height: 805px;
+}
+
+// adjusting width of form divider grid component
+.cf-col-xs-2 {
+  width: 2%;
+}
+
+.script-params-list {
+  margin-right: 15px;
+}
+
+.script-description {
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.script-name {
+  margin-top: 12px;
 }

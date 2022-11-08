@@ -1,7 +1,7 @@
 # The cypress image used here is a non-standard slim image
 # and its definition and versions are maintained here:
 # https://github.com/influxdata/cypress-slim
-FROM quay.io/influxdb/cypress-slim:10.11.0-bare
+FROM quay.io/influxdb/cypress-slim:10.11.0-included
 
 WORKDIR /repo
 

@@ -90,7 +90,7 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
         .should($el => {
           expect($el).to.have.length(1)
           expect(Cypress.dom.isDetached($el)).to.be.false
-          // eslint-disable-next-line jest/unbound-method
+          // eslint-disable-next-line jest/unbound-method, @typescript-eslint/unbound-method
           expect($el).not.to.be.disabled
         })
         .click()
@@ -174,7 +174,7 @@ export const addRangeAnnotation = (
         .should($el => {
           expect($el).to.have.length(1)
           expect(Cypress.dom.isDetached($el)).to.be.false
-          // eslint-disable-next-line jest/unbound-method
+          // eslint-disable-next-line jest/unbound-method, @typescript-eslint/unbound-method
           expect($el).not.to.be.disabled
         })
         .click()
@@ -208,7 +208,7 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
         .should($el => {
           expect($el).to.have.length(1)
           expect(Cypress.dom.isDetached($el)).to.be.false
-          // eslint-disable-next-line jest/unbound-method
+          // eslint-disable-next-line jest/unbound-method, @typescript-eslint/unbound-method
           expect($el).not.to.be.disabled
         })
         .click()
@@ -252,7 +252,7 @@ export const testEditRangeAnnotation = (
                 .should($el => {
                   expect($el).to.have.length(1)
                   expect(Cypress.dom.isDetached($el)).to.be.false
-                  // eslint-disable-next-line jest/unbound-method
+                  // eslint-disable-next-line jest/unbound-method, @typescript-eslint/unbound-method
                   expect($el).not.to.be.disabled
                 })
                 .click()

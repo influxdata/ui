@@ -13,13 +13,11 @@ import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 import {QueryContext, QueryScope} from 'src/shared/contexts/query'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   IMPORT_REGEXP,
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
-  FROM_BUCKET,
   SEARCH_STRING,
 } from 'src/dataExplorer/shared/utils'
 
@@ -84,14 +82,9 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
-    let _source = IMPORT_REGEXP
-    if (bucket.type === 'sample') {
-      _source += SAMPLE_DATA_SET(bucket.id)
-    } else {
-      _source += FROM_BUCKET(bucket.name)
-    }
-
-    let queryText = `${_source}
+    const queryText =
+      bucket.type === 'sample'
+        ? `${SAMPLE_DATA_SET(bucket.id)}
       |> range(start: -100y, stop: now())
       |> filter(fn: (r) => true)
       |> keys()
@@ -103,24 +96,20 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> sort()
       |> limit(n: ${DEFAULT_LIMIT})
     `
-
-    if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}`
-      queryText = `${_source}
-        schema.measurementTagKeys(
-          bucket: "${bucket.name}",
-          measurement: "${measurement}",
-          start: ${CACHING_REQUIRED_START_DATE},
-          stop: ${CACHING_REQUIRED_END_DATE},
-        )
-        |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
-        |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
-        ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
-        |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
-        |> sort(columns: ["lowercase"])
-        |> limit(n: ${DEFAULT_LIMIT})
-      `
-    }
+        : `${IMPORT_REGEXP}${IMPORT_INFLUX_SCHEMA}${IMPORT_STRINGS}
+      schema.measurementTagKeys(
+        bucket: "${bucket.name}",
+        measurement: "${measurement}",
+        start: ${CACHING_REQUIRED_START_DATE},
+        stop: ${CACHING_REQUIRED_END_DATE},
+      )
+      |> filter(fn: (r) => r._value != "_measurement" and r._value != "_field")
+      |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
+      ${searchTerm ? SEARCH_STRING(searchTerm) : ''}
+      |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
+      |> sort(columns: ["lowercase"])
+      |> limit(n: ${DEFAULT_LIMIT})
+    `
 
     const newTags: Tags = {}
     try {
@@ -168,14 +157,9 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
-    let _source = ''
-    if (bucket.type === 'sample') {
-      _source += SAMPLE_DATA_SET(bucket.id)
-    } else {
-      _source += FROM_BUCKET(bucket.name)
-    }
-
-    let queryText = `${_source}
+    const queryText =
+      bucket.type === 'sample'
+        ? `${SAMPLE_DATA_SET(bucket.id)}
       |> range(start: -100y, stop: now())
       |> filter(fn: (r) => (r["_measurement"] == "${measurement}"))
       |> keep(columns: ["${tagKey}"])
@@ -184,22 +168,18 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       |> sort()
       |> limit(n: ${DEFAULT_LIMIT})
     `
-
-    if (bucket.type !== 'sample' && isFlagEnabled('newQueryBuilder')) {
-      _source = `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}`
-      queryText = `${_source}
-        schema.measurementTagValues(
-          bucket: "${bucket.name}",
-          measurement: "${measurement}",
-          tag: "${tagKey}",
-          start: ${CACHING_REQUIRED_START_DATE},
-          stop: ${CACHING_REQUIRED_END_DATE},
-        )
-        |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
-        |> sort(columns: ["lowercase"])
-        |> limit(n: ${DEFAULT_LIMIT})
-      `
-    }
+        : `${IMPORT_STRINGS}${IMPORT_INFLUX_SCHEMA}
+      schema.measurementTagValues(
+        bucket: "${bucket.name}",
+        measurement: "${measurement}",
+        tag: "${tagKey}",
+        start: ${CACHING_REQUIRED_START_DATE},
+        stop: ${CACHING_REQUIRED_END_DATE},
+      )
+      |> map(fn: (r) => ({r with lowercase: strings.toLower(v: r._value)}))
+      |> sort(columns: ["lowercase"])
+      |> limit(n: ${DEFAULT_LIMIT})
+    `
 
     try {
       const resp = await queryAPI(queryText, scope)

@@ -1,5 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ThreadsPlugin = require('threads-plugin')
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
@@ -179,6 +180,7 @@ module.exports = {
       filename: `${STATIC_DIRECTORY}[name].worker.[contenthash].js`,
       globalAPI: true,
     }),
+    new ThreadsPlugin(),
   ],
   stats: {
     colors: true,

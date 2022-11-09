@@ -13,7 +13,7 @@ import {createMemoryHistory} from 'history'
 // Items under test
 import TasksPage from './TasksPage'
 import {deleteTask, patchTask, postTask, getTask} from 'src/client'
-import {parse} from 'src/languageSupport/languages/flux/parser'
+import {async_parse} from 'src/languageSupport/languages/flux/parser'
 import {initialState} from 'src/tasks/reducers/helpers'
 
 const sampleScript =
@@ -43,20 +43,23 @@ const localHistory = createMemoryHistory({initialEntries: ['/']})
 withRouterProps.match.params.orgID = orgs[0].id
 
 jest.mock('src/languageSupport/languages/flux/parser', () => ({
-  parse: jest.fn(() => {
-    return {
-      type: 'File',
-      package: {
-        name: {
-          name: 'fake',
-          type: 'Identifier',
-        },
-        type: 'PackageClause',
-      },
-      imports: [],
-      body: [],
-    }
-  }),
+  async_parse: jest.fn(
+    () =>
+      new Promise(resolve =>
+        resolve({
+          type: 'File',
+          package: {
+            name: {
+              name: 'fake',
+              type: 'Identifier',
+            },
+            type: 'PackageClause',
+          },
+          imports: [],
+          body: [],
+        })
+      )
+  ),
   format_from_js_file: jest.fn(),
 }))
 
@@ -281,7 +284,7 @@ describe('Tasks.Containers.TasksPage', () => {
         InactiveTask.id
       )
 
-      expect(jest.mocked(parse).mock.calls[0][0]).toEqual(sampleScript)
+      expect(jest.mocked(async_parse).mock.calls[0][0]).toEqual(sampleScript)
 
       expect(jest.mocked(postTask).mock.calls[0][0].data.status).toEqual(
         InactiveTask.status

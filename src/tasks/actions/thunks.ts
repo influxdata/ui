@@ -31,8 +31,8 @@ import {
 // Constants
 import * as copy from 'src/shared/copy/notifications'
 import {
-  parse,
   format_from_js_file,
+  async_parse,
 } from 'src/languageSupport/languages/flux/parser'
 
 // Types
@@ -361,8 +361,6 @@ const refreshTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
 }
 
 export const cloneTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
-  let newTask: Task
-
   try {
     const resp = await api.getTask({taskID: task.id})
 
@@ -374,46 +372,49 @@ export const cloneTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
     const clonedName = setCloneName(taskName)
     const {flux} = resp.data
 
-    const ast = parse(flux)
+    async_parse(flux)
+      .then(ast => {
+        ast.body.map(statement => {
+          if (
+            statement.type === 'OptionStatement' &&
+            statement.assignment.type === 'VariableAssignment' &&
+            statement.assignment.id.name === 'task' &&
+            statement.assignment.init.type === 'ObjectExpression'
+          ) {
+            statement.assignment.init.properties =
+              statement.assignment.init?.properties.map(property => {
+                if (
+                  property.key.type === 'Identifier' &&
+                  property.key.name === 'name' &&
+                  property?.value?.location?.source
+                ) {
+                  property.value.location.source = `"${clonedName}"`
+                }
+                return property
+              })
+          }
+          return statement
+        })
+        const fluxWithNewName = format_from_js_file(ast)
+        return api.postTask({
+          data: {
+            ...resp.data,
+            flux: fluxWithNewName,
+          },
+        })
+      })
+      .then(res => {
+        if (res.status !== 201) {
+          throw new Error(res.data.message)
+        }
+        const newTask = res.data as Task
+        dispatch(checkTaskLimits())
+        // clone the labels
+        cloneTaskLabels(task, newTask)(dispatch)
 
-    ast.body = ast.body.map(statement => {
-      if (
-        statement.type === 'OptionStatement' &&
-        statement.assignment.type === 'VariableAssignment' &&
-        statement.assignment.id.name === 'task' &&
-        statement.assignment.init.type === 'ObjectExpression'
-      ) {
-        statement.assignment.init.properties =
-          statement.assignment.init?.properties.map(property => {
-            if (
-              property.key.type === 'Identifier' &&
-              property.key.name === 'name' &&
-              property?.value?.location?.source
-            ) {
-              property.value.location.source = `"${clonedName}"`
-            }
-            return property
-          })
-      }
-      return statement
-    })
-
-    const fluxWithNewName = format_from_js_file(ast)
-
-    const newTaskResponse = await api.postTask({
-      data: {
-        ...resp.data,
-        flux: fluxWithNewName,
-      },
-    })
-
-    if (newTaskResponse.status !== 201) {
-      throw new Error(newTaskResponse.data.message)
-    }
-
-    newTask = newTaskResponse.data as Task
-
-    dispatch(checkTaskLimits())
+        // get the updated task
+        refreshTask(newTask)(dispatch)
+      })
   } catch (error) {
     console.error(error)
     if (isLimitError(error)) {
@@ -423,12 +424,6 @@ export const cloneTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
       dispatch(notify(copy.taskCloneFailed(task.name, message)))
     }
   }
-
-  // clone the labels
-  cloneTaskLabels(task, newTask)(dispatch)
-
-  // get the updated task
-  refreshTask(newTask)(dispatch)
 }
 
 export const selectTaskByID =

@@ -23,5 +23,6 @@ export const deleteScriptFail = (scriptName: string): Notification => ({
 
 export const getScriptsFail = (): Notification => ({
   ...defaultErrorNotification,
-  message: 'There was an error fetching Scripts. Please try reloading this page',
+  message:
+    'There was an error fetching Scripts. Please try reloading this page',
 })

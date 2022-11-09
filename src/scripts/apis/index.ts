@@ -20,6 +20,6 @@ export const fetchScripts = async (): Promise<Scripts> => {
   if (response.status === 500) {
     throw new ServerError(response.data.message)
   }
-  const scripts = response.data as Scripts
-  return scripts
+
+  return response.data
 }

@@ -1,5 +1,4 @@
 import React, {FC, useState, useEffect} from 'react'
-// import {isEmpty} from 'lodash'
 import {DapperScrollbars, Form, Input} from '@influxdata/clockface'
 
 // Utils
@@ -10,7 +9,10 @@ interface Props {
   selectedScript: any
 }
 
-export const ScriptParametersForm: FC<Props> = ({scriptParams, selectedScript}) => {
+export const ScriptParametersForm: FC<Props> = ({
+  scriptParams,
+  selectedScript,
+}) => {
   const [parameters, setParameters] = useState([])
 
   useEffect(() => {
@@ -19,7 +21,7 @@ export const ScriptParametersForm: FC<Props> = ({scriptParams, selectedScript}) 
   }, [scriptParams])
 
   const UpdateParamValue = (event, paramName) => {
-    let updateparams = [...parameters]
+    let updateparams = [...parameters] // copy parameters into updateParams
 
     updateparams = updateparams.map(param => {
       if (param.name === paramName) {
@@ -39,6 +41,7 @@ export const ScriptParametersForm: FC<Props> = ({scriptParams, selectedScript}) 
           label={`param.${param.name}`}
           required={true}
           key={param.name}
+          className="script-param"
         >
           <Input
             name="name"
@@ -60,6 +63,7 @@ export const ScriptParametersForm: FC<Props> = ({scriptParams, selectedScript}) 
         <div>Description</div>
         <p>{selectedScript.description}</p>
       </div>
+      {/* TODO: scripts with no params are still showing up */}
       {parameters && (
         <div className="script-params">
           <div className="create-task-titles">Set Param Values</div>
@@ -68,11 +72,10 @@ export const ScriptParametersForm: FC<Props> = ({scriptParams, selectedScript}) 
             provide values for params when you invoke a script.{' '}
             <SafeBlankLink href="">Learn More.</SafeBlankLink>
           </p>
-          {/* TODO: scrollbar should only show when list is too long */}
           <DapperScrollbars
-            autoHide={false}
-            autoSize
-            style={{width: '100%', maxWidth: '500px', maxHeight: '500px'}}
+            autoHide={true}
+            autoSize={true}
+            style={{width: '100%', maxWidth: '500px', minHeight: '400px', maxHeight: '570px'}}
           >
             <div className="script-params-list">{paramList}</div>
           </DapperScrollbars>

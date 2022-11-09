@@ -1,4 +1,5 @@
 import React, {FC, useState, useEffect, ChangeEvent} from 'react'
+import {useDispatch} from 'react-redux'
 import {useHistory, useParams} from 'react-router-dom'
 import {
   ComponentSize,
@@ -14,8 +15,12 @@ import {
 // Utils
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
+// Notifications
+import {getScriptFail, getScriptParamsFail} from 'src/shared/copy/notifications/categories/scripts'
+import {notify} from 'src/shared/actions/notifications'
+
 //
-import {fetchScripts} from 'src/scripts/apis'
+import {fetchScripts, fetchScriptParams} from 'src/scripts/apis/index'
 import {Script} from 'src/client/scriptsRoutes'
 
 interface Props {
@@ -34,8 +39,10 @@ export const ScriptSelector: FC<Props> = ({
   const [scriptsLoadingStatus, setScriptsLoadingStatus] = useState(
     RemoteDataState.NotStarted
   )
+  const dispatch = useDispatch()
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
+  
   const fluxScriptEditorLink = `/orgs/${orgID}/data-explorer?fluxScriptEditor`
 
   useEffect(() => {
@@ -43,18 +50,16 @@ export const ScriptSelector: FC<Props> = ({
     const getScripts = async () => {
       try {
         const scripts = await fetchScripts()
-        setScripts(scripts)
+        setScripts(scripts.scripts)
         setScriptsLoadingStatus(RemoteDataState.Done)
       } catch (error) {
         setScriptsLoadingStatus(RemoteDataState.Error)
-        // TODO: how to handle error: honeybadger?
-        // handle error here or in apis file?
+        dispatch(notify(getScriptFail()))
       }
     }
     getScripts()
-  }, [])
-
-  // TODO: change function name
+  }, [dispatch])
+ 
   const filteredScripts = () =>
     scripts.filter(script =>
       script.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
@@ -68,22 +73,28 @@ export const ScriptSelector: FC<Props> = ({
     history.push(`/orgs/${orgID}/data-explorer?fluxScriptEditor`)
   }
 
+  const getScriptParams = async script => {
+    try {
+      const scriptParameters = await fetchScriptParams(script.id) // {params: {mybucket: string, mytelgraf: string}}
+      // const data = [scriptParameters.params] // [{mybucket: string, mytelgraf: string}]
+
+
+      // format the object to make it easier to update each param's value
+      const formatParamsObj = Object.keys(scriptParameters.params).map(key => ({
+        name: key,
+        value: '',
+      }))
+      // formatParamsObj = [{name: mybucket, value: ""}, {name: mytelgraf, value: ""}]
+      setScriptParams(formatParamsObj)
+    } catch (error) {
+      dispatch(notify(getScriptParamsFail()))
+    }
+  }
+
+  // update selected script and then call function to fetch script's params
   const handleSelectScript = script => {
     setSelectedScript(script)
-
-    // fetch script params from /api/v2/scripts/{scriptName}/params
-    fetch(`/api/v2/scripts/${script.name}/params`).then(async response => {
-      const scriptParameters = await response.json() // {params: {mybucket: string}}
-
-      const data = [scriptParameters.params] // [{mybucket: string}]
-  
-      const formatParamsObj = Object.keys(data[0]).map(key => ({
-          name: key,
-          value: ""
-      }))
-      // formatParamsObj = [{name: mybucket, value: ""}]
-        setScriptParams(formatParamsObj)
-      })
+    getScriptParams(script)
   }
 
   let scriptsList

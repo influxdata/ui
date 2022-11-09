@@ -13,6 +13,9 @@ import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
 import {TaskScheduler} from 'src/tasks/components/TaskScheduler/TaskScheduler'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 // Actions and Selectors
 import {
   setNewScript,
@@ -59,7 +62,7 @@ class TaskPage extends PureComponent<Props> {
 
   public render(): JSX.Element {
     const {newScript, taskOptions} = this.props
-    const shouldShowNewTasksUI = isFlagEnabled('tasksUiEnhancements')
+    const shouldShowNewTasksUI = isFlagEnabled('tasksUiEnhancements') && CLOUD
 
     return (
       <Page titleTag={pageTitleSuffixer(['Create Task'])}>

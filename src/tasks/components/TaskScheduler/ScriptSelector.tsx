@@ -63,7 +63,7 @@ export const ScriptSelector: FC<Props> = ({
     getScripts()
   }, [dispatch])
 
-  const filteredScripts = () =>
+  const filterScripts = () =>
     scripts.filter(script =>
       script.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
     )
@@ -102,9 +102,10 @@ export const ScriptSelector: FC<Props> = ({
   }
 
   if (scriptsLoadingStatus === RemoteDataState.Done) {
+    const filteredScripts = filterScripts()
     scriptsList = (
       <>
-        {filteredScripts().map(script => (
+        {filteredScripts.map(script => (
           <Dropdown.Item
             key={script.id}
             value={script.name}
@@ -116,18 +117,20 @@ export const ScriptSelector: FC<Props> = ({
         ))}
       </>
     )
-    if (!filteredScripts().length && searchTerm) {
-      scriptsList = (
-        <EmptyState>
-          <p>{`No Scripts match "${searchTerm}"`}</p>
-        </EmptyState>
-      )
-    } else if (!filteredScripts().length && !searchTerm) {
-      scriptsList = (
-        <EmptyState>
-          <p>No Scripts found</p>
-        </EmptyState>
-      )
+    if (!filteredScripts.length) {
+      if (searchTerm) {
+        scriptsList = (
+          <EmptyState>
+            <p>{`No Scripts match "${searchTerm}"`}</p>
+          </EmptyState>
+        )
+      } else {
+        scriptsList = (
+          <EmptyState>
+            <p>No Scripts found</p>
+          </EmptyState>
+        )
+      }
     }
   }
 

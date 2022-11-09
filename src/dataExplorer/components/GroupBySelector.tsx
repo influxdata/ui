@@ -62,7 +62,6 @@ export const GroupBySelector: FC = () => {
   )
 
   return useMemo(() => {
-    console.log('GroupBySelector')
     return (
       <div className="result-options--item--row">
         <MultiSelectDropdown

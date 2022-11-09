@@ -1,9 +1,8 @@
-// Types
-import {ServerError, UnauthorizedError} from 'src/types/error'
-
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
+// Types
+import {ServerError, UnauthorizedError} from 'src/types/error'
 export interface Scripts {
   scripts?: Script[]
 }

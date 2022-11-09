@@ -1,6 +1,6 @@
 .cf-form--footer {
   position: relative;
-  margin-top: 20%;
+  margin-top: 100px;
   justify-content: end;
 }
 
@@ -42,12 +42,12 @@
   position: absolute;
 }
 
-.interval {
+.task-interval {
   left: 51px;
 }
 
-.offset {
-  left: 55px;
+.task-offset {
+  left: 52px;
 }
 
 .cf-input-field:focus,
@@ -58,6 +58,32 @@
 .cf-form--label-text {
   font-weight: 600;
   font-size: 15px;
+}
+
+.form-divider {
+  border-left: 1px solid rgba(220, 220, 220, 0.2);
+  height: 755px;
+}
+
+.cf-col-xs-2 {
+  width: 2%;
+}
+
+.script-params-list {
+  margin-right: 15px;
+}
+
+.script-description {
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.script-name {
+  margin-top: 12px;
+}
+
+.script-param {
+  margin-top: 5px;
 }
 
 .create-script-btn {

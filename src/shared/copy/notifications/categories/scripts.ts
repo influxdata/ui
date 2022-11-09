@@ -26,3 +26,9 @@ export const getScriptsFail = (): Notification => ({
   message:
     'There was an error fetching Scripts. Please try reloading this page',
 })
+
+export const getScriptParamsFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    'There was an error fetching Script Parameters. Please try reloading this page',
+})

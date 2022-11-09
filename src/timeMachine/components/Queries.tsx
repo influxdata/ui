@@ -1,4 +1,5 @@
 // Libraries
+import {isEqual} from 'lodash'
 import React, {FC} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
@@ -37,7 +38,7 @@ import {
 import {getTimeRange} from 'src/dashboards/selectors'
 
 // Types
-import {TimeRange, AutoRefreshStatus} from 'src/types'
+import {TimeRange, AutoRefreshStatus, Variable} from 'src/types'
 
 type Props = {
   maxHeight: number
@@ -49,7 +50,12 @@ const TimeMachineQueries: FC<Props> = ({maxHeight}) => {
   const {autoRefresh} = useSelector(getActiveTimeMachine)
   const activeQuery = useSelector(getActiveQuery)
   const isInCheckOverlay = useSelector(getIsInCheckOverlay)
-  const variables = useSelector(getAllVariables)
+  // XXX: rockstar (9 Nov 2022) - This provides updates of the exactly the same values, but fails the
+  // === check. This probably indicates a problem higher up the selector chain, but this prevents some
+  // unnecessary re-render activity.
+  const variables = useSelector(getAllVariables, (left: Variable[], right: Variable[]): boolean => {
+    return left.length == right.length && left.every((variable, index) => isEqual(variable, right[index]))
+  })
 
   const handleSetTimeRange = (timeRange: TimeRange) => {
     dispatch(setTimeRange(timeRange))

@@ -57,7 +57,7 @@ class Worker {
   }
 }
 
-window.Worker = Worker
+window.Worker = Worker as any
 
 // cleans up state between @testing-library/react tests
 afterEach(() => {

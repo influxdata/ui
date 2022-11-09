@@ -35,7 +35,7 @@ const CheckHistory: FC = () => {
     ruleIDs: null,
   }))
   const org = useSelector(getOrg)
-  const {checkID} = useParams()
+  const {checkID} = useParams<{checkID: string}>()
   const loadRows = useMemo(
     () => options => loadStatuses(org.id, options),
     [org.id]

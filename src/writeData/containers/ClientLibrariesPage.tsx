@@ -66,7 +66,7 @@ export const CodeSampleBlock: FC<SampleProps> = ({name, sample, onCopy}) => {
 }
 
 const ClientLibrariesPage: FC = () => {
-  const {contentID} = useParams()
+  const {contentID} = useParams<{contentID: string}>()
   const def = CLIENT_DEFINITIONS[contentID]
 
   const thumbnail = (

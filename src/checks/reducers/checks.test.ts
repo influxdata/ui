@@ -154,7 +154,7 @@ describe('checksReducer', () => {
       const id = CHECK_FIXTURE_1.id
 
       initialState.byID[id] = {
-        ...(CHECK_FIXTURE_1 as Check),
+        ...(CHECK_FIXTURE_1 as unknown as Check),
         status: RemoteDataState.Done,
         activeStatus: 'active',
       }

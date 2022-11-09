@@ -29,11 +29,12 @@ const EndpointOptions: FC<Props> = ({
 }) => {
   switch (endpoint.type) {
     case 'slack': {
-      const {url} = endpoint as SlackNotificationEndpoint
+      const {url} = endpoint as unknown as SlackNotificationEndpoint
       return <EndpointOptionsSlack url={url} onChange={onChange} />
     }
     case 'pagerduty': {
-      const {clientURL, routingKey} = endpoint as PagerDutyNotificationEndpoint
+      const {clientURL, routingKey} =
+        endpoint as unknown as PagerDutyNotificationEndpoint
       return (
         <EndpointOptionsPagerDuty
           clientURL={clientURL}
@@ -43,7 +44,8 @@ const EndpointOptions: FC<Props> = ({
       )
     }
     case 'telegram': {
-      const {token, channel} = endpoint as TelegramNotificationEndpoint
+      const {token, channel} =
+        endpoint as unknown as TelegramNotificationEndpoint
       return (
         <EndpointOptionsTelegram
           token={token}
@@ -61,7 +63,7 @@ const EndpointOptions: FC<Props> = ({
         method,
         authMethod,
         contentTemplate,
-      } = endpoint as HTTPNotificationEndpoint
+      } = endpoint as unknown as HTTPNotificationEndpoint
       return (
         <EndpointOptionsHTTP
           onChange={onChange}

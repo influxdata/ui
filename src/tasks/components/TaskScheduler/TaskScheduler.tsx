@@ -1,3 +1,4 @@
+// Libraries
 import React, {FC, ChangeEvent, useState} from 'react'
 
 // Components
@@ -14,6 +15,7 @@ import {
   Page,
   SelectGroup,
 } from '@influxdata/clockface'
+import {ScriptParametersForm} from 'src/tasks/components/TaskScheduler/ScriptParametersForm'
 import {ScriptSelector} from 'src/tasks/components/TaskScheduler/ScriptSelector'
 import {TaskIntervalForm} from 'src/tasks/components/TaskScheduler/TaskIntervalForm'
 
@@ -37,6 +39,7 @@ export const TaskScheduler: FC<Props> = ({
   updateInput,
   updateScheduleType,
 }) => {
+  const [scriptParams, setScriptParams] = useState([])
   const [selectedScript, setSelectedScript] = useState<Script>()
 
   const handleChangeScheduleType = (schedule: TaskSchedule): void => {
@@ -60,6 +63,7 @@ export const TaskScheduler: FC<Props> = ({
                 </p>
                 <ScriptSelector
                   selectedScript={selectedScript}
+                  setScriptParams={setScriptParams}
                   setSelectedScript={setSelectedScript}
                 />
                 <div className="schedule-task">
@@ -132,6 +136,19 @@ export const TaskScheduler: FC<Props> = ({
                 </Form.Footer>
               </div>
             </Grid.Column>
+            {selectedScript?.description.trim() && (
+              <>
+                <Grid.Column widthXS={Columns.Two}>
+                  <div className="form-divider"></div>
+                </Grid.Column>
+                <Grid.Column widthXS={Columns.Five}>
+                  <ScriptParametersForm
+                    selectedScript={selectedScript}
+                    scriptParams={scriptParams}
+                  />
+                </Grid.Column>
+              </>
+            )}
           </Grid.Row>
         </Grid>
       </Form>

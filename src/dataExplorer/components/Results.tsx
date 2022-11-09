@@ -14,7 +14,6 @@ import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
-import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {
   View,
   ViewTypeDropdown,
@@ -24,7 +23,6 @@ import {
 import {FluxResult} from 'src/types/flows'
 
 import './Results.scss'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {bytesFormatter} from 'src/shared/copy/notifications'
 
 // simplified version migrated from src/flows/pipes/Table/view.tsx
@@ -261,9 +259,6 @@ const Results: FC = () => {
             {tableHeader}
             {vizHeader}
             <div className="data-explorer-results--timezone">
-              {isFlagEnabled('newTimeRangeComponent') ? null : (
-                <TimeZoneDropdown />
-              )}
               <SelectGroup style={{marginRight: 12}}>
                 <SelectGroup.Option
                   id="table"

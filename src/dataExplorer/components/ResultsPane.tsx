@@ -35,7 +35,6 @@ import {
 } from 'src/dataExplorer/context/persistance'
 
 // Components
-import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
@@ -117,7 +116,6 @@ const ResultsPane: FC = () => {
     query: text,
     setQuery,
     range,
-    setRange,
     selection,
     resource,
   } = useContext(PersistanceContext)
@@ -208,16 +206,6 @@ const ResultsPane: FC = () => {
     getWindowPeriodVariableFromVariables(text, timeVars) || []
   )
 
-  const TimeRangePicker = () =>
-    isFlagEnabled('newTimeRangeComponent') ? (
-      <NewDatePicker />
-    ) : (
-      <TimeRangeDropdown
-        timeRange={range}
-        onSetTimeRange={(range: TimeRange) => setRange(range)}
-      />
-    )
-
   return (
     <DraggableResizer
       handleOrientation={Orientation.Horizontal}
@@ -297,7 +285,7 @@ const ResultsPane: FC = () => {
               )}
               {isFlagEnabled('uiSqlSupport') &&
               resource?.language === LanguageType.SQL ? null : (
-                <TimeRangePicker />
+                <NewDatePicker />
               )}
               <SubmitQueryButton
                 className="submit-btn"

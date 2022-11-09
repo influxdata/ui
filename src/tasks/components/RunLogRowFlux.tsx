@@ -10,7 +10,7 @@ import {Run} from 'src/types'
 // DateTime
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
-import FluxEditorMonaco from 'src/shared/components/FluxMonacoEditor'
+import {FluxMonacoEditor} from 'src/shared/components/FluxMonacoEditor'
 
 interface Props {
   run: Run
@@ -29,7 +29,7 @@ class RunLogRowFlux extends PureComponent<Props> {
         </IndexList.Cell>
         <IndexList.Cell>
           <span className="run-logs--list-flux">
-            <FluxEditorMonaco
+            <FluxMonacoEditor
               script={run.flux}
               variables={[]}
               onChangeScript={() => {}}

@@ -39,8 +39,10 @@ import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 import {buildQuery} from 'src/timeMachine/utils/queryBuilder'
 
-const FluxMonacoEditor = lazy(
-  () => import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor').then(module => ({
+    default: module.FluxMonacoEditor,
+  }))
 )
 
 const Query: FC<PipeProp> = ({Context}) => {

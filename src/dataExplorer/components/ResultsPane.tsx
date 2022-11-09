@@ -57,8 +57,10 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-const FluxMonacoEditor = lazy(
-  () => import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor').then(module => ({
+    default: module.FluxMonacoEditor,
+  }))
 )
 
 const fakeNotify = notify

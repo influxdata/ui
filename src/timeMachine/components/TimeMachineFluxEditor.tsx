@@ -24,7 +24,11 @@ import {event} from 'src/cloud/utils/reporting'
 // Types
 import {Variable} from 'src/types'
 
-const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor').then(module => ({
+    default: module.FluxMonacoEditor,
+  }))
+)
 
 const TMFluxEditor: FC<{variables: Variable[]}> = props => {
   const dispatch = useDispatch()
@@ -72,7 +76,7 @@ const TMFluxEditor: FC<{variables: Variable[]}> = props => {
             />
           }
         >
-          <FluxEditor
+          <FluxMonacoEditor
             script={activeQueryText}
             variables={props.variables}
             onChangeScript={handleActiveQuery}

@@ -16,8 +16,10 @@ import {PipeContext} from 'src/flows/context/pipe'
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
 
-const FluxMonacoEditor = lazy(
-  () => import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor').then(module => ({
+    default: module.FluxMonacoEditor,
+  }))
 )
 
 const Query: FC<PipeProp> = ({Context}) => {

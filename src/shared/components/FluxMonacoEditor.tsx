@@ -50,7 +50,8 @@ interface Props extends EditorProps {
   variables: Variable[]
 }
 
-const FluxEditorMonaco: FC<Props> = ({
+// Monaco editor for editing flux
+export const FluxMonacoEditor: FC<Props> = ({
   script,
   onChangeScript,
   onSubmitScript,
@@ -175,5 +176,3 @@ const FluxEditorMonaco: FC<Props> = ({
     [isIoxOrg, onChangeScript, setEditor, useSchemaComposition, script]
   )
 }
-
-export default FluxEditorMonaco

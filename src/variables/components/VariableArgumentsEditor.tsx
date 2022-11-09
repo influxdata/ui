@@ -13,8 +13,10 @@ import {Form} from '@influxdata/clockface'
 // Types
 import {KeyValueMap, VariableProperties, Variable} from 'src/types'
 
-const FluxMonacoEditor = lazy(
-  () => import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor').then(module => ({
+    default: module.FluxMonacoEditor,
+  }))
 )
 
 interface Props {

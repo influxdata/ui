@@ -15,3 +15,7 @@ export interface Script {
 }
 
 export type ScriptLanguage = 'flux' | 'sql'
+
+export interface Params {
+  params?: any
+}

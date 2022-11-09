@@ -7,6 +7,7 @@ import {useHistory, useParams} from 'react-router-dom'
 import {
   ComponentSize,
   Dropdown,
+  DropdownMenu,
   EmptyState,
   Form,
   IconFont,
@@ -16,10 +17,13 @@ import {
 } from '@influxdata/clockface'
 
 // APIs
-import {fetchScripts} from 'src/scripts/apis/index'
+import {fetchScripts, fetchScriptParams} from 'src/scripts/apis/index'
 
 // Notifications
-import {getScriptsFail} from 'src/shared/copy/notifications/categories/scripts'
+import {
+  getScriptsFail,
+  getScriptParamsFail,
+} from 'src/shared/copy/notifications/categories/scripts'
 import {notify} from 'src/shared/actions/notifications'
 
 // Types
@@ -31,10 +35,12 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 interface Props {
   selectedScript: Script
   setSelectedScript: (script: Script) => void
+  setScriptParams: (params) => void
 }
 
 export const ScriptSelector: FC<Props> = ({
   selectedScript,
+  setScriptParams,
   setSelectedScript,
 }) => {
   const [scripts, setScripts] = useState<Script[]>([])
@@ -76,8 +82,24 @@ export const ScriptSelector: FC<Props> = ({
     history.push(`/orgs/${orgID}/data-explorer?fluxScriptEditor`)
   }
 
+  const getScriptParams = async script => {
+    try {
+      const scriptParameters = await fetchScriptParams(script.id)
+      // reformat the object to make it easier to update each param's value
+      const formatParamsObj = Object.keys(scriptParameters.params).map(key => ({
+        name: key,
+        value: '',
+      }))
+
+      setScriptParams(formatParamsObj)
+    } catch (error) {
+      dispatch(notify(getScriptParamsFail()))
+    }
+  }
+
   const handleSelectScript = script => {
     setSelectedScript(script)
+    getScriptParams(script)
   }
 
   let scriptsList
@@ -152,13 +174,15 @@ export const ScriptSelector: FC<Props> = ({
           )}
           menu={onCollapse => (
             <>
-              <Input
-                size={ComponentSize.Small}
-                icon={IconFont.Search_New}
-                value={searchTerm}
-                placeholder="Search Scripts..."
-                onChange={searchForTerm}
-              />
+              <DropdownMenu>
+                <Input
+                  size={ComponentSize.Small}
+                  icon={IconFont.Search_New}
+                  value={searchTerm}
+                  placeholder="Search Scripts..."
+                  onChange={searchForTerm}
+                />
+              </DropdownMenu>
               <Dropdown.Menu onCollapse={onCollapse}>
                 <Dropdown.Item
                   onClick={openScriptEditor}

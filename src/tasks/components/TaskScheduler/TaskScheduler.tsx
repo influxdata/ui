@@ -1,4 +1,4 @@
-import React, {FC, ChangeEvent} from 'react'
+import React, {FC, ChangeEvent, useState} from 'react'
 
 // Components
 import {
@@ -19,6 +19,7 @@ import {TaskIntervalForm} from 'src/tasks/components/TaskScheduler/TaskIntervalF
 
 // Utils
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {Script} from 'src/client/scriptsRoutes'
 
 // Types
 import {TaskOptions, TaskSchedule} from 'src/types'
@@ -36,6 +37,8 @@ export const TaskScheduler: FC<Props> = ({
   updateInput,
   updateScheduleType,
 }) => {
+  const [selectedScript, setSelectedScript] = useState<Script>()
+
   const handleChangeScheduleType = (schedule: TaskSchedule): void => {
     updateScheduleType(schedule)
   }
@@ -55,7 +58,10 @@ export const TaskScheduler: FC<Props> = ({
                     Learn More.
                   </SafeBlankLink>{' '}
                 </p>
-                <ScriptSelector />
+                <ScriptSelector
+                  selectedScript={selectedScript}
+                  setSelectedScript={setSelectedScript}
+                />
                 <div className="schedule-task">
                   <div className="create-task-titles">Schedule the Task</div>
                   <p>

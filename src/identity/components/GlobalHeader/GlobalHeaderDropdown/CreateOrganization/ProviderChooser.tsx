@@ -18,7 +18,7 @@ import {AzureLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdo
 import {ClusterBox} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ClusterBox'
 import {
   CreateOrgContext,
-  ProviderID,
+  ProviderIDs,
 } from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
 import {GCPLogo} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogo'
 import {RegionDropdown} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/RegionDropdown'
@@ -40,11 +40,11 @@ export const ProviderChooser: FC = () => {
   const clusterKeys = Object.keys(clusters)
 
   const handleProviderClick = useCallback(
-    providerId => {
+    (providerId: ProviderIDs) => {
       if (currentProvider === providerId) {
         return
       }
-      changeCurrentProvider(providerId as ProviderID)
+      changeCurrentProvider(providerId)
       changeCurrentRegion(clusters?.[providerId]?.[0]?.regionId)
     },
     [changeCurrentProvider, changeCurrentRegion, clusters, currentProvider]
@@ -81,11 +81,10 @@ export const ProviderChooser: FC = () => {
           {clusterKeys.length === 1 ? (
             <ClusterBox
               providerId={clusters[clusterKeys[0]][0].providerId}
-              showLogoWithText={true}
               key={`${clusters[clusterKeys[0]][0].providerId}`}
             />
           ) : (
-            clusterKeys.map((providerId, i) => {
+            clusterKeys.map((providerId: ProviderIDs, i) => {
               const {providerName} = clusters[providerId][0]
               return (
                 <SelectableCard
@@ -95,7 +94,9 @@ export const ProviderChooser: FC = () => {
                   }`}
                   id={providerId}
                   key={`${providerId}${i}`}
-                  onClick={providerId => handleProviderClick(providerId)}
+                  onClick={(providerId: ProviderIDs) =>
+                    handleProviderClick(providerId)
+                  }
                   label={providerName}
                   selected={providerId === currentProvider}
                 >

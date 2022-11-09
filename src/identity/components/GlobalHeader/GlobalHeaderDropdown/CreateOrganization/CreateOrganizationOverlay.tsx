@@ -103,15 +103,20 @@ const CreateOrgOverlay: FC = () => {
         onClose()
         dispatch(notify(orgCreateSuccess()))
       })
-      .catch(e => {
-        if (e instanceof UnauthorizedError) {
+      .catch(err => {
+        if (err instanceof UnauthorizedError) {
           setError(CreateOrgError.Unauthorized)
-        } else if (e instanceof ServerError) {
+        } else if (err instanceof ServerError) {
           setError(CreateOrgError.ServerError)
-        } else if (e instanceof UnprocessableEntityError) {
-          // Even though there can be different meanings/reasons for this issue.
-          //  We are deliberately choosing to display this error(Status Code: 422)
-          //  as Duplicate Org Name issue.
+        } else if (err instanceof UnprocessableEntityError) {
+          /*
+          Quartz responds with a 422 status code if the user-selected org name is a duplicate of an
+          org name in the current account. It may also respond with a 422 for other reasons.
+
+          However, the UI will interpret the 422 as an org name duplicate for purposes of user feedback,
+          since a 422 generated for other reasons is very unlikely, and still means that the user cannot
+          create an organization using the current input values anyway.'
+          */
           setError(CreateOrgError.NameConflict)
         } else {
           setError(CreateOrgError.GenericError)

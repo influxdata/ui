@@ -11,7 +11,7 @@ import {AzureLogoWithText} from 'src/identity/components/GlobalHeader/GlobalHead
 import {Cluster} from 'src/client/unityRoutes'
 import {
   CreateOrgContext,
-  ProviderID,
+  ProviderIDs,
 } from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
 import {GCPLogoWithText} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogoWithText'
 
@@ -22,7 +22,7 @@ const providerLogos = {
 }
 
 interface OwnProps {
-  showLogoWithText: Boolean
+  providerId: ProviderIDs
 }
 
 type Props = OwnProps & Cluster
@@ -39,7 +39,7 @@ export const ClusterBox: FC<Props> = ({providerId}) => {
     if (currentProvider === providerId) {
       return
     }
-    changeCurrentProvider(providerId as ProviderID)
+    changeCurrentProvider(providerId)
     changeCurrentRegion(clusters?.[providerId]?.[0]?.regionId)
   }, [
     changeCurrentProvider,

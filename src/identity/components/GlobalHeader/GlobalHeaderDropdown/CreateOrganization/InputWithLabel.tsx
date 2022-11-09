@@ -8,7 +8,6 @@ import {
   Form,
   FormElementProps,
   Input,
-  InputLabel,
   InputProps,
   JustifyContent,
 } from '@influxdata/clockface'

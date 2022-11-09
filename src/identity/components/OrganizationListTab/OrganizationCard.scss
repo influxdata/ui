@@ -1,8 +1,8 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .account--organizations-tab-orgs-card {
-  margin-top: $cf-space-2xs;
-  margin-bottom: $cf-space-2xs;
+  margin-top: $cf-space-3xs;
+  margin-bottom: $cf-space-3xs;
   background-color: $cf-grey-15;
   border-radius: 2px;
 }
@@ -22,7 +22,9 @@
 }
 
 .account--organizations-tab-orgs-card-orgname {
-  font-size: $cf-text-base-1;
-  color: $cf-white;
-  font-weight: $cf-font-weight--bold;
+  .cf-resource-name--text {
+    font-size: $cf-text-base-1;
+    color: $cf-white;
+    font-weight: $cf-font-weight--bold;
+  }
 }

@@ -1,5 +1,10 @@
 import React, {FC} from 'react'
-import {FlexBox, JustifyContent, ResourceCard} from '@influxdata/clockface'
+import {
+  FlexBox,
+  FlexDirection,
+  JustifyContent,
+  ResourceCard,
+} from '@influxdata/clockface'
 
 // Styles
 import './OrganizationCard.scss'
@@ -20,6 +25,7 @@ export const OrganizationCard: FC<OrgCardProps> = ({
   return (
     <ResourceCard
       className="account--organizations-tab-orgs-card"
+      direction={FlexDirection.Row}
       justifyContent={JustifyContent.SpaceBetween}
       testID="account--organizations-tab-orgs-card"
     >
@@ -29,13 +35,13 @@ export const OrganizationCard: FC<OrgCardProps> = ({
       ></ResourceCard.Name>
       <ResourceCard.Meta>
         <FlexBox className="account--organizations-tab-orgs-card-cluster-data">
-          Cloud Provider: {provider}
+          <b>Cloud Provider:</b> &nbsp;{provider}
         </FlexBox>
         <FlexBox className="account--organizations-tab-orgs-card-cluster-data">
-          Region: {regionCode}
+          <b>Region:</b> &nbsp;{regionCode}
         </FlexBox>
         <FlexBox className="account-organizations-tab-orgs-card-location-data">
-          Location: {regionName}
+          <b>Location:</b> &nbsp;{regionName}
         </FlexBox>
       </ResourceCard.Meta>
     </ResourceCard>

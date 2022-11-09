@@ -41,7 +41,7 @@ import {BucketSortKey} from 'src/shared/components/resource_sort_dropdown/genera
 import {QuartzOrganization} from 'src/identity/apis/org'
 import {RemoteDataState, ResourceType, SortTypes} from 'src/types'
 
-const searchKeys = ['name']
+const searchKeys = ['name', 'provider', 'regionCode', 'regionName']
 
 const FilterOrgs = FilterListContainer<QuartzOrganization>()
 
@@ -232,12 +232,14 @@ export const OrganizationListTab: FC<Props> = ({pageHeight}) => {
           )}
         </FilterOrgs>
       </ResourceList>
-      <PaginationNav.PaginationNav
-        currentPage={currentPage}
-        onChange={handleChangePage}
-        pageRangeOffset={1}
-        totalPages={totalPages}
-      />
+      {totalPages > 1 && (
+        <PaginationNav.PaginationNav
+          currentPage={currentPage}
+          onChange={handleChangePage}
+          pageRangeOffset={1}
+          totalPages={totalPages}
+        />
+      )}
     </>
   )
 }

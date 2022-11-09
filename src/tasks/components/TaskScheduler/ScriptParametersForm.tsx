@@ -78,7 +78,6 @@ export const ScriptParametersForm: FC<Props> = ({
           </p>
           <DapperScrollbars
             autoHide={true}
-            autoSize={false}
             style={{width: '100%', minHeight: '500px'}}
           >
             <div className="script-params-list">{paramList}</div>

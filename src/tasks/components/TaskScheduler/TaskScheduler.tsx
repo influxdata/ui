@@ -143,8 +143,8 @@ export const TaskScheduler: FC<Props> = ({
                 </Grid.Column>
                 <Grid.Column widthXS={Columns.Five}>
                   <ScriptParametersForm
-                    selectedScript={selectedScript}
                     scriptParams={scriptParams}
+                    selectedScript={selectedScript}
                   />
                 </Grid.Column>
               </>

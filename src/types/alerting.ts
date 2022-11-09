@@ -62,7 +62,7 @@ type RuleOverrides = {status: RemoteDataState; activeStatus: TaskStatusType}
 
 // GenRule is the shape of a NotificationRule from the server -- before any UI specific fields are added or modified
 export type GenRule = GRule
-export type NotificationRule = GenRule & RuleOverrides
+export type NotificationRule = Omit<GenRule, 'status'> & RuleOverrides
 
 export type StatusRuleDraft = WithClientID<StatusRule>
 

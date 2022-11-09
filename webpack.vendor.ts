@@ -1,9 +1,8 @@
-export {}
-const webpack = require('webpack')
-const path = require('path')
+const webpackVendor = require('webpack')
+const pathVendor = require('path')
 const {dependencies} = require('./package.json')
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
-const {STATIC_DIRECTORY} = require('./src/utils/env')
+const MonacoWebpackPluginVendor = require('monaco-editor-webpack-plugin')
+const STATIC_DIRECTORY_VENDOR = require('./src/utils/env').STATIC_DIRECTORY
 
 // only dll infrequently updated dependencies
 const vendor = Object.keys(dependencies).filter(
@@ -13,7 +12,10 @@ const vendor = Object.keys(dependencies).filter(
     !d.includes('monaco-editor-webpack-plugin')
 )
 
-const MONACO_DIR = path.resolve(__dirname, './node_modules/monaco-editor')
+const MONACO_DIR_VENDOR = pathVendor.resolve(
+  __dirname,
+  './node_modules/monaco-editor'
+)
 
 module.exports = {
   context: __dirname,
@@ -23,7 +25,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      vscode: path.resolve(
+      vscode: pathVendor.resolve(
         './node_modules/monaco-languageclient/lib/vscode-compatibility'
       ),
     },
@@ -40,7 +42,7 @@ module.exports = {
     setImmediate: true,
   },
   output: {
-    path: path.join(__dirname, 'build'),
+    path: pathVendor.join(__dirname, 'build'),
     filename: '[name].bundle.js',
     library: '[name]',
   },
@@ -48,12 +50,12 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        include: MONACO_DIR,
+        include: MONACO_DIR_VENDOR,
         use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.m?js$/,
-        include: MONACO_DIR,
+        include: MONACO_DIR_VENDOR,
         use: {
           loader: 'babel-loader',
           options: {
@@ -73,13 +75,13 @@ module.exports = {
     ],
   },
   plugins: [
-    new webpack.DllPlugin({
+    new webpackVendor.DllPlugin({
       name: '[name]',
-      path: path.join(__dirname, 'build', '[name]-manifest.json'),
+      path: pathVendor.join(__dirname, 'build', '[name]-manifest.json'),
     }),
-    new MonacoWebpackPlugin({
+    new MonacoWebpackPluginVendor({
       languages: ['json', 'markdown'],
-      filename: `${STATIC_DIRECTORY}[name].worker.[contenthash].js`,
+      filename: `${STATIC_DIRECTORY_VENDOR}[name].worker.[contenthash].js`,
       globalAPI: true,
     }),
   ],

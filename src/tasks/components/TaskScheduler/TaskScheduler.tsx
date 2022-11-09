@@ -19,9 +19,9 @@ import {TaskIntervalForm} from 'src/tasks/components/TaskScheduler/TaskIntervalF
 
 // Utils
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {Script} from 'src/client/scriptsRoutes'
 
 // Types
+import {Script} from 'src/types/scripts'
 import {TaskOptions, TaskSchedule} from 'src/types'
 
 import 'src/tasks/components/TaskScheduler/TaskScheduler.scss'

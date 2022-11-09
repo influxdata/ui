@@ -3,22 +3,7 @@ import {CLOUD} from 'src/shared/constants'
 
 // Types
 import {ServerError, UnauthorizedError} from 'src/types/error'
-export interface Scripts {
-  scripts?: Script[]
-}
-export interface Script {
-  readonly id?: string
-  name: string
-  description?: string
-  orgID: string
-  script: string
-  language?: ScriptLanguage
-  url?: string
-  readonly createdAt?: string
-  readonly updatedAt?: string
-  labels?: string[]
-}
-export type ScriptLanguage = 'flux' | 'sql'
+import {Scripts} from 'src/types/scripts'
 
 let getScripts
 

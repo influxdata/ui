@@ -17,11 +17,13 @@ import {
 
 // APIs
 import {fetchScripts} from 'src/scripts/apis/index'
-import {Script} from 'src/client/scriptsRoutes'
 
 // Notifications
 import {getScriptsFail} from 'src/shared/copy/notifications/categories/scripts'
 import {notify} from 'src/shared/actions/notifications'
+
+// Types
+import {Script} from 'src/types/scripts'
 
 // Utils
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'

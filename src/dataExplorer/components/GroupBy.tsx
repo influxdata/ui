@@ -50,8 +50,7 @@ const GroupBy: FC = () => {
         },
       })
     },
-    // not including getGroupKeys() and setSelection() to avoid infinite loop
-    [selection.bucket, selection.measurement, resetGroupKeys]
+    [selection.bucket, selection.measurement] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const handleSelectGroupType = useCallback(

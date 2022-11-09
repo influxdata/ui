@@ -9,7 +9,10 @@ import './ClusterBox.scss'
 import {AWSLogoColor} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AWSLogoColor'
 import {AzureLogoWithText} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AzureLogoWithText'
 import {Cluster} from 'src/client/unityRoutes'
-import {CreateOrgContext, ProviderID} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
+import {
+  CreateOrgContext,
+  ProviderID,
+} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationContext'
 import {GCPLogoWithText} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogoWithText'
 
 const providerLogos = {

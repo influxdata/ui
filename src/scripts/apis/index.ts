@@ -35,7 +35,6 @@ export const fetchScriptParams = async (scriptID: string): Promise<Params> => {
   if (response.status === 500) {
     throw new ServerError(response.data.message)
   }
-  const scriptParams = response.data as Params
 
-  return scriptParams
+  return response.data
 }

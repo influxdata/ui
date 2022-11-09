@@ -17,12 +17,16 @@ const {
 const MONACO_DIR = path.resolve(__dirname, './node_modules/monaco-editor')
 
 module.exports = {
+  mode: 'development',
   context: __dirname,
   output: {
     path: path.resolve(__dirname, 'build'),
     publicPath: BASE_PATH,
     webassemblyModuleFilename: `${STATIC_DIRECTORY}[modulehash:10].wasm`,
     sourceMapFilename: `${STATIC_DIRECTORY}[file].map[query]`,
+  },
+  optimization: {
+    chunkIds: 'size',
   },
   entry: {
     app: './src/bootstrap.ts',
@@ -39,16 +43,19 @@ module.exports = {
     },
     extensions: ['.tsx', '.ts', '.js', '.wasm'],
   },
+  ignoreWarnings: [/export .* was not found in/, /'.\/locale' in/],
   node: {
-    fs: 'empty',
+    // fs: 'empty',
     global: true,
-    crypto: 'empty',
-    tls: 'empty',
-    net: 'empty',
-    process: true,
-    module: false,
-    clearImmediate: false,
-    setImmediate: true,
+    // crypto: 'empty',
+    // tls: 'empty',
+    // net: 'empty',
+    // module: false,
+    // clearImmediate: false,
+    // setImmediate: true,
+
+    // Buffer: false,
+    // process: false,
   },
   module: {
     rules: [
@@ -138,6 +145,12 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false
+        },
+      },
     ],
   },
   plugins: [
@@ -186,7 +199,6 @@ module.exports = {
     modules: false,
     version: false,
     assetsSort: '!size',
-    warningsFilter: [/export .* was not found in/, /'.\/locale' in/],
     excludeAssets: [/\.(hot-update|woff|eot|ttf|svg|ico|png)/],
   },
   performance: {hints: false},

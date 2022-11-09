@@ -12,10 +12,7 @@ const vendor = Object.keys(dependencies).filter(
     !d.includes('monaco-editor-webpack-plugin')
 )
 
-const MONACO_DIR_VENDOR = pathVendor.resolve(
-  __dirname,
-  './node_modules/monaco-editor'
-)
+const monacoDirectory = path.resolve(__dirname, './node_modules/monaco-editor')
 
 module.exports = {
   context: __dirname,
@@ -49,6 +46,7 @@ module.exports = {
       zlib: false
     },
   },
+  ignoreWarnings: [/export .* was not found in/],
   node: {
     global: true,
   },
@@ -61,12 +59,12 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        include: MONACO_DIR_VENDOR,
+        include: monacoDirectory,
         use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.m?js$/,
-        include: MONACO_DIR_VENDOR,
+        include: monacoDirectory,
         use: {
           loader: 'babel-loader',
           options: {
@@ -97,13 +95,13 @@ module.exports = {
     }),
   ],
   stats: {
-    colors: true,
+    assetsSort: '!size',
     children: false,
+    colors: true,
+    errorDetails: true,
+    excludeAssets: [/\.(hot-update|woff|eot|ttf|svg|ico|png|wasm)/],
     modules: false,
     version: false,
-    assetsSort: '!size',
-    warningsFilter: /export .* was not found in/,
-    excludeAssets: [/\.(hot-update|woff|eot|ttf|svg|ico|png|wasm)/],
   },
   performance: {hints: false},
 }

@@ -8,14 +8,22 @@ const BundleAnalyzerPlugin =
   require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
-const webpackDev = require('webpack')
+// const webpackDev = require('webpack')
 
 module.exports = mergeDev(commonDev, {
   mode: 'development',
-  devtool: 'cheap-inline-source-map',
+  devtool: 'eval-cheap-module-source-map',
   output: {
     path: pathDev.join(__dirname, 'build'),
     filename: '[name].js',
+  },
+  experiments: {
+    asyncWebAssembly: true,
+  },
+  resolve: {
+    fallback: {
+      path: false,
+    },
   },
   watchOptions: {
     aggregateTimeout: 300,
@@ -61,10 +69,10 @@ module.exports = mergeDev(commonDev, {
         devServer: false, // don't block UI compilation on TS errors
       },
     }),
-    new webpackDev.DllReferencePlugin({
-      context: pathDev.join(__dirname, 'build'),
-      manifest: require('./build/vendor-manifest.json'),
-    }),
+    // new webpackDev.DllReferencePlugin({
+    //   context: pathDev.join(__dirname, 'build'),
+    //   manifest: require('./build/vendor-manifest.json'),
+    // }),
     new BundleAnalyzerPlugin({
       analyzerHost: '0.0.0.0',
       analyzerPort: '9997',

@@ -9,11 +9,11 @@ import {OrganizationCard} from 'src/identity/components/OrganizationListTab/Orga
 // Constants
 import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
 const DEFAULT_BANNER_HEIGHT = 60
-const DEFAULT_ORG_CARD_HEIGHT = 105
+const DEFAULT_ORG_CARD_HEIGHT = 72
 const DEFAULT_PAGINATION_NAV_HEIGHT = 72
 const DEFAULT_SEARCH_WIDGET_HEIGHT = 60
 const DEFAULT_TABS_HEIGHT = 40
-const DEFAULT_TOTAL_MARGIN_HEIGHT = 60
+const DEFAULT_TOTAL_MARGIN_HEIGHT = 80
 
 // Utils
 import {getSortedResources, SortTypes} from 'src/shared/utils/sort'

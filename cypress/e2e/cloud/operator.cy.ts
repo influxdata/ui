@@ -236,7 +236,17 @@ describe('Operator Page', () => {
 })
 
 describe('Operator Page should not be accessible for non-operator users', () => {
-  beforeEach(() =>
+  it('should render a 404', () => {
+    /*
+      The following error listener only applies in this test.
+      We have to ignore errors because non-operators
+      attempting to visit the operator page will throw errors in the console,
+      and consequently causes Cypress to fail the test if not handled
+    */
+    cy.on('uncaught:exception', () => {
+      return false
+    })
+
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(() => {
@@ -249,9 +259,6 @@ describe('Operator Page should not be accessible for non-operator users', () => 
         })
       })
     )
-  )
-
-  it('should render a 404', () => {
     cy.getByTestID('not-found').should('exist')
     cy.visit('/')
     cy.getByTestID('nav-item--operator').should('not.exist')

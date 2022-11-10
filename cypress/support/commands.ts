@@ -25,7 +25,8 @@ Cypress.on('uncaught:exception', (err, _) => {
     err.message.includes('The operation was aborted') ||
     err.message.includes('NetworkError') ||
     err.message.includes('path not found') ||
-    err.message.includes('Request aborted')
+    err.message.includes('Request aborted') ||
+    err.message.includes('Loading chunk')
   )
 })
 

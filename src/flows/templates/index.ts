@@ -11,10 +11,11 @@ interface Templates {
 export const TEMPLATES: Templates = {}
 
 const templateDefintionContext = require.context('./types', true, /\.(ts|tsx)$/)
-templateDefintionContext.keys().forEach(templateDefinitionIndexFile => {
-  const templateDefinitionModule = templateDefintionContext(
+templateDefintionContext.keys().forEach(async templateDefinitionIndexFile => {
+  const templateDefinitionModule = await templateDefintionContext(
     templateDefinitionIndexFile
   )
+
   templateDefinitionModule.default((def: Template) => {
     TEMPLATES[def.type] = def
   })

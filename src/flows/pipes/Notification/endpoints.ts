@@ -30,8 +30,8 @@ const context = require.context(
   true,
   /^\.\/([^\/])+\/index\.(ts|tsx)$/
 )
-context.keys().forEach(key => {
-  const module = context(key)
+context.keys().forEach(async key => {
+  const module = await context(key)
   module.default((definition: EndpointTypeRegistration) => {
     if (ENDPOINT_DEFINITIONS.hasOwnProperty(definition.type)) {
       throw new Error(

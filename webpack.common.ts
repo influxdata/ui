@@ -24,9 +24,7 @@ module.exports = {
     publicPath: BASE_PATH,
     webassemblyModuleFilename: `${STATIC_DIRECTORY}[modulehash:10].wasm`,
     sourceMapFilename: `${STATIC_DIRECTORY}[file].map[query]`,
-  },
-  optimization: {
-    chunkIds: 'size',
+    assetModuleFilename: `${STATIC_DIRECTORY}[contenthash:10].[ext]`
   },
   entry: {
     app: './src/bootstrap.ts',
@@ -44,7 +42,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', '.wasm'],
     fallback: {
       path: false,
-    },
+    }
   },
   ignoreWarnings: [/export .* was not found in/, /'.\/locale' in/],
   node: {
@@ -91,15 +89,15 @@ module.exports = {
       },
       {
         test: /\.md$/,
-        use: [{loader: 'raw-loader'}],
+        type: 'asset/source',
       },
       {
         test: /\.conf$/,
-        use: [{loader: 'raw-loader'}],
+        type: 'asset/source',
       },
       {
         test: /\.example$/,
-        use: [{loader: 'raw-loader'}],
+        type: 'asset/source',
       },
       {
         test: /\.s?css$/i,
@@ -120,33 +118,15 @@ module.exports = {
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: `${STATIC_DIRECTORY}[contenthash:10].[ext]`,
-            },
-          },
-        ],
+        type: 'asset/resource',
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: `${STATIC_DIRECTORY}[contenthash:10].[ext]`,
-            },
-          },
-        ],
+        type: 'asset/resource',
       },
       {
         test: /\.csv$/,
-        use: [
-          {
-            loader: 'raw-loader',
-          },
-        ],
+        type: 'asset/source',
       },
       {
         test: /\.m?js$/,
@@ -174,7 +154,7 @@ module.exports = {
       base: BASE_PATH.slice(0, -1),
       header: process.env.INJECT_HEADER || '',
       body: process.env.INJECT_BODY || '',
-      titleAdd: !!process.env.CLOUD_URL ? ' Cloud' : '',
+      title: !!process.env.CLOUD_URL ? ' Cloud' : '',
     }),
     new MiniCssExtractPlugin({
       filename: `${STATIC_DIRECTORY}[contenthash:10].css`,
@@ -194,6 +174,9 @@ module.exports = {
       languages: ['json', 'markdown'],
       filename: `${STATIC_DIRECTORY}[name].worker.[contenthash].js`,
       globalAPI: true,
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
     }),
   ],
   stats: {

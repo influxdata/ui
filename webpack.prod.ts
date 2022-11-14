@@ -16,6 +16,9 @@ module.exports = mergeWebpack(commonWebpack, {
   output: {
     filename: `${DIRECTORY_STATIC}[contenthash:10].js`,
   },
+  experiments: {
+    asyncWebAssembly: true,
+  },
   module: {
     rules: [
       {
@@ -31,11 +34,10 @@ module.exports = mergeWebpack(commonWebpack, {
   },
   optimization: {
     noEmitOnErrors: true,
+    minimize: true,
     minimizer: [
       new TerserJSPlugin({
-        cache: true,
         parallel: 2,
-        sourceMap: true,
       }),
       new OptimizeCSSAssetsPlugin({}),
     ],

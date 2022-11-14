@@ -42,6 +42,9 @@ module.exports = {
       ),
     },
     extensions: ['.tsx', '.ts', '.js', '.wasm'],
+    fallback: {
+      path: false,
+    },
   },
   ignoreWarnings: [/export .* was not found in/, /'.\/locale' in/],
   node: {

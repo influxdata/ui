@@ -1,76 +1,53 @@
-import React, {FC, useCallback, useMemo} from 'react'
-import {ComponentStatus, Dropdown} from '@influxdata/clockface'
+// Libraries
+import React, {FC} from 'react'
+import {Dropdown} from '@influxdata/clockface'
 
-// Components
+// Types
 import {Cluster} from 'src/client/unityRoutes'
 
-const SINGLE_PROVIDER_WIDTH = 375
-
 interface Props {
-  clusters: any
-  currentProvider: any
-  currentRegion: any
-  setCurrentRegion: any
+  regions: Cluster[]
+  currentRegion: string
+  setCurrentRegion: React.SetStateAction<any>
 }
 
 export const RegionDropdown: FC<Props> = ({
-  clusters,
-  currentProvider,
+  regions,
   currentRegion,
   setCurrentRegion,
 }) => {
-  const handleRegionChange = useCallback(
-    region => {
-      setCurrentRegion(region)
-    },
-    [setCurrentRegion]
+  const button = (
+    active: boolean,
+    onClick: (evt: React.MouseEvent<HTMLElement, MouseEvent>) => void
+  ) => (
+    <Dropdown.Button
+      active={active}
+      onClick={onClick}
+      testID="region-list-dropdown--button"
+    >
+      {
+        regions?.find((cluster: Cluster) => cluster.regionId === currentRegion)
+          ?.regionName
+      }
+    </Dropdown.Button>
   )
-  const regions = useMemo(() => {
-    return clusters?.[currentProvider]
-  }, [clusters, currentProvider])
 
-  const clustersLength = Object.keys(clusters).length
-  const dropdownStyle = {}
-  if (clustersLength === 1) {
-    dropdownStyle['width'] = SINGLE_PROVIDER_WIDTH
-  }
-
-  return (
-    <Dropdown
-      style={dropdownStyle}
-      button={(active, onClick) => (
-        <Dropdown.Button
-          status={
-            !!clustersLength
-              ? ComponentStatus.Default
-              : ComponentStatus.Disabled
-          }
-          active={active}
-          onClick={onClick}
-          testID="variable-type-dropdown--button"
+  const menu = (onCollapse: () => void) => (
+    <Dropdown.Menu onCollapse={onCollapse}>
+      {regions.map((cluster: Cluster) => (
+        <Dropdown.Item
+          key={cluster.regionId}
+          id={cluster.regionId}
+          value={cluster.regionId}
+          onClick={setCurrentRegion}
+          testID={`region-list-dropdown--${cluster.regionId}`}
+          selected={currentRegion === cluster.regionId}
         >
-          {
-            regions?.find(region => region.regionId === currentRegion)
-              ?.regionName
-          }
-        </Dropdown.Button>
-      )}
-      menu={onCollapse => (
-        <Dropdown.Menu onCollapse={onCollapse}>
-          {regions?.map((cluster: Cluster) => (
-            <Dropdown.Item
-              key={cluster.regionId}
-              id={cluster.regionId}
-              value={cluster.regionId}
-              onClick={handleRegionChange}
-              testID={`variable-type-dropdown-${cluster.regionId}`}
-              selected={currentRegion === cluster.regionId}
-            >
-              {cluster.regionName}
-            </Dropdown.Item>
-          ))}
-        </Dropdown.Menu>
-      )}
-    />
+          {cluster.regionName}
+        </Dropdown.Item>
+      ))}
+    </Dropdown.Menu>
   )
+
+  return <Dropdown button={button} menu={menu} />
 }

@@ -8,19 +8,21 @@ import {
   ComponentColor,
   ComponentSize,
   ComponentStatus,
-  Dropdown,
   FlexBox,
   FlexDirection,
   Form,
   IconFont,
   JustifyContent,
   Overlay,
-  SelectableCard,
+  SpinnerContainer,
+  TechnoSpinner,
 } from '@influxdata/clockface'
 
 // Components
-import {InputWithLabel} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/InputWithLabel'
+import {CreateOrgInput} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrgInput'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
+import {ProviderCards} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderCards'
+import {RegionDropdown} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/RegionDropdown'
 
 // Styles
 import './CreateOrganizationOverlay.scss'
@@ -29,29 +31,39 @@ import './CreateOrganizationOverlay.scss'
 import {createNewOrg, fetchClusterList} from 'src/identity/apis/org'
 
 // Types
-import {Cluster, OrganizationCreateRequest} from 'src/client/unityRoutes'
+import {OrganizationCreateRequest} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
-import {UnauthorizedError, UnprocessableEntityError} from 'src/types/error'
+import {
+  ForbiddenError,
+  UnauthorizedError,
+  UnprocessableEntityError,
+} from 'src/types/error'
 
-enum OrgOverlayError {
+enum OrgOverlayNetworkError {
   ClusterFetchFailedError = 'Failed to retrieve cluster data. Please try again later.',
   DefaultError = 'Organization creation failed.',
   NameConflictError = 'This organization name already exists. Please choose a different name.',
   None = '',
+  NoClusters = 'There are no available clusters in which a new organization can be created.',
   OrgLimitError = 'You cannot create more organizations without upgrading this account.',
   UnauthorizedError = 'You are not authorized to create this organization.',
 }
 
-// Logos
-import {AWSLogo} from './ProviderLogos/AWSLogo'
-import {AzureLogo} from './ProviderLogos/AzureLogo'
-import {GCPLogo} from './ProviderLogos/GCPLogo'
+export enum OrgOverlayValidationError {
+  NameConflictError = 'This organization name already exists. Please choose a different name.',
+  None = '',
+}
+
+enum ProviderSelectMessage {
+  SingleProvider = 'This account uses the following provider and region to store time series data for this organization.',
+  MultiProvider = 'Tell us where you would like to store the time series data for this organization',
+}
 
 // Selectors
 import {
+  selectCurrentAccountId,
   selectQuartzOrgsContents,
   selectQuartzOrgsStatus,
-  selectCurrentAccountId,
 } from 'src/identity/selectors'
 
 // Notifications
@@ -62,17 +74,8 @@ import {orgCreateSuccess} from 'src/shared/copy/notifications'
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 
 // Utils
+import {generateProviderMap} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/utils/generateProviderMap'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-
-const providerLogos = {
-  AWS: <AWSLogo />,
-  Azure: <AzureLogo />,
-  GCP: <GCPLogo />,
-}
-
-const errorStyle = {
-  margin: '20px 0',
-}
 
 export const CreateOrganizationOverlay: FC = () => {
   const dispatch = useDispatch()
@@ -84,23 +87,34 @@ export const CreateOrganizationOverlay: FC = () => {
   const orgsLoadedStatus = useSelector(selectQuartzOrgsStatus)
 
   // Local State
-  // Overlay Dropdown State
-  const [availableProviders, setAvailableProviders] = useState({})
+  // Dropdown State
+  const [providerMap, setProviderMap] = useState({})
   const [currentProvider, setCurrentProvider] = useState(null)
   const [currentRegion, setCurrentRegion] = useState(null)
   const [newOrgName, setNewOrgName] = useState('')
-
-  const providerNames = Object.keys(availableProviders)
+  const providerNames = Object.keys(providerMap)
   const numProviders = providerNames.length
-  const providersHaveLoaded = numProviders > 0
+  const providerHelpText =
+    numProviders > 1
+      ? ProviderSelectMessage.MultiProvider
+      : ProviderSelectMessage.SingleProvider
 
-  // Error Messaging State
+  // Error Handling State
   const [createOrgButtonStatus, setCreateOrgButtonStatus] = useState(
     ComponentStatus.Disabled
   )
-  const [errorMsg, setErrorMsg] = useState(OrgOverlayError.None)
-  const [validationMsg, setValidationMsg] = useState('')
-  const [showValidationMsg, setShowValidationMsg] = useState(false)
+  const [networkErrorMsg, setNetworkErrorMsg] = useState(
+    OrgOverlayNetworkError.None
+  )
+  const [validationMsg, setValidationMsg] = useState(
+    OrgOverlayValidationError.None
+  )
+
+  // Spinner State
+  const loadingComplete = Boolean(currentProvider) && Boolean(currentRegion)
+  const loadingState = loadingComplete
+    ? RemoteDataState.Done
+    : RemoteDataState.Loading
 
   // Event Handlers
   const handleCreateOrg = async () => {
@@ -114,30 +128,34 @@ export const CreateOrganizationOverlay: FC = () => {
       setCreateOrgButtonStatus(ComponentStatus.Default)
       onClose()
       dispatch(notify(orgCreateSuccess()))
-      // Will make another API call to the allowance endpoint here for this issue.
+      // Will make another API call to the allowance endpoint in PR resolving this issue.
       // https://github.com/influxdata/ui/issues/6267
-
-      // Add in parallel global header change to ensure this is updated simultaneously.
+      // Need a parallel update to global header state to ensure list of orgs remains updated.
       dispatch(getQuartzOrganizationsThunk(currentAccountId))
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
-        // Quartz's 422 unprocessable entity status is interpreted as a name conflict for this overlay.
-        setErrorMsg(OrgOverlayError.NameConflictError)
+        setNetworkErrorMsg(OrgOverlayNetworkError.NameConflictError)
       } else if (err instanceof UnauthorizedError) {
-        setErrorMsg(OrgOverlayError.UnauthorizedError)
+        setNetworkErrorMsg(OrgOverlayNetworkError.UnauthorizedError)
+      } else if (err instanceof ForbiddenError) {
+        setNetworkErrorMsg(OrgOverlayNetworkError.OrgLimitError)
       } else {
-        setErrorMsg(OrgOverlayError.DefaultError)
+        setNetworkErrorMsg(OrgOverlayNetworkError.DefaultError)
       }
-      // Add in Forbidden Error (403) after this change is merged.
-      // https://github.com/influxdata/ui/pull/6311
       setCreateOrgButtonStatus(ComponentStatus.Error)
     }
   }
 
-  const handleValidateOrgName = (evt: any) => {
-    setErrorMsg(OrgOverlayError.None)
+  const handleSelectProvider = (
+    providerID: OrganizationCreateRequest['provider']
+  ) => {
+    setCurrentProvider(providerID)
+    const defaultRegionId = providerMap[providerID][0].regionId
+    setCurrentRegion(defaultRegionId)
+  }
 
-    const proposedOrgName = evt.target.value
+  const handleValidateOrgName = (proposedOrgName: string) => {
+    setNetworkErrorMsg(OrgOverlayNetworkError.None)
     setNewOrgName(proposedOrgName)
 
     if (proposedOrgName.trim() === '') {
@@ -146,22 +164,12 @@ export const CreateOrganizationOverlay: FC = () => {
     }
 
     if (organizations.find(oldOrg => oldOrg.name === proposedOrgName)) {
-      setValidationMsg(OrgOverlayError.NameConflictError)
-      setShowValidationMsg(true)
+      setValidationMsg(OrgOverlayValidationError.NameConflictError)
       setCreateOrgButtonStatus(ComponentStatus.Disabled)
     } else {
-      setValidationMsg(OrgOverlayError.None)
-      setShowValidationMsg(false)
+      setValidationMsg(OrgOverlayValidationError.None)
       setCreateOrgButtonStatus(ComponentStatus.Default)
     }
-  }
-
-  const handleSelectProvider = (
-    providerID: OrganizationCreateRequest['provider']
-  ) => {
-    setCurrentProvider(providerID)
-    const defaultRegion = availableProviders[providerID][0].regionId
-    setCurrentRegion(defaultRegion)
   }
 
   // Ajax requests
@@ -175,34 +183,22 @@ export const CreateOrganizationOverlay: FC = () => {
     const retrieveClusters = async () => {
       try {
         const clusterArr = await fetchClusterList()
+
         if (!clusterArr.length) {
           setCreateOrgButtonStatus(ComponentStatus.Disabled)
+          setNetworkErrorMsg(OrgOverlayNetworkError.NoClusters)
           return
         }
 
-        const availableProviders = {}
+        const currentProviderMap = generateProviderMap(clusterArr)
+        const defaultProvider = Object.keys(currentProviderMap)[0]
+        const defaultRegion = currentProviderMap[defaultProvider][0].regionId
 
-        clusterArr.forEach(cluster => {
-          const {providerId} = cluster
-          if (!availableProviders[providerId]) {
-            availableProviders[providerId] = [cluster]
-          } else {
-            availableProviders[providerId].push(cluster)
-          }
-        })
-        for (const provider in availableProviders) {
-          availableProviders[provider].sort(
-            (a: Cluster, b: Cluster) => a.priority - b.priority
-          )
-        }
-
-        setAvailableProviders(availableProviders)
-
-        const defaultProvider = Object.keys(availableProviders)[0]
-        setCurrentProvider(availableProviders[defaultProvider][0].providerId)
-        setCurrentRegion(availableProviders[defaultProvider][0].regionId)
+        setProviderMap(currentProviderMap)
+        setCurrentProvider(defaultProvider)
+        setCurrentRegion(defaultRegion)
       } catch (err) {
-        setErrorMsg(OrgOverlayError.ClusterFetchFailedError)
+        setNetworkErrorMsg(OrgOverlayNetworkError.ClusterFetchFailedError)
       }
     }
     retrieveClusters()
@@ -211,147 +207,71 @@ export const CreateOrganizationOverlay: FC = () => {
   return (
     <Overlay.Container
       maxWidth={800}
-      className="create-org-overlay-container"
+      className="create-org-overlay--container"
       testID="create-org-overlay--container"
     >
       <Overlay.Header
-        testID="create-org-overlay-header"
+        testID="create-org-overlay--header"
         title="Create an Organization"
         onDismiss={onClose}
       />
-      <Overlay.Body>
-        {errorMsg !== OrgOverlayError.None && (
-          <Alert
-            style={errorStyle}
-            color={ComponentColor.Danger}
-            icon={IconFont.AlertTriangle}
-          >
-            {errorMsg}
-          </Alert>
-        )}
-        <FlexBox
-          direction={FlexDirection.Column}
-          className="create-org-overlay-body"
-        >
-          <InputWithLabel
-            value={newOrgName}
-            required={true}
-            label="Organization Name"
-            onChange={handleValidateOrgName}
-            placeholder="Dev Team, US Eastern Region, Staging"
-            description="You may want to create separate organizations for each team, server region, or dev environment."
-            errorMessage={validationMsg}
-            showError={showValidationMsg}
-            status={
-              providersHaveLoaded
-                ? ComponentStatus.Default
-                : ComponentStatus.Disabled
-            }
+      <SpinnerContainer
+        spinnerComponent={<TechnoSpinner />}
+        loading={loadingState}
+        className="create-org-overlay--loading-spinner"
+      >
+        <Overlay.Body className="create-org-overlay--body">
+          {networkErrorMsg !== OrgOverlayNetworkError.None && (
+            <Alert
+              className="create-org-overlay--network-alert"
+              color={ComponentColor.Danger}
+              icon={IconFont.AlertTriangle}
+            >
+              {networkErrorMsg}
+            </Alert>
+          )}
+          <CreateOrgInput
+            orgName={newOrgName}
+            handleValidateOrgName={handleValidateOrgName}
+            validationMsg={validationMsg}
           />
           <FlexBox
             alignItems={AlignItems.FlexStart}
-            className="provider-and-region-chooser"
+            className="create-org-overlay--provider-and-region-chooser"
             direction={FlexDirection.Column}
             justifyContent={JustifyContent.Center}
             margin={ComponentSize.Large}
             stretchToFitWidth={true}
           >
             <Form.Element
+              className="create-org-overlay--org-name"
               htmlFor="Organization Name"
               label="Organization Name"
-              className="prc-label"
             >
               <Form.HelpText
-                className="prc-description"
-                text="Tell us where you would like to store the time series data for this organization."
+                className="create-org-overlay--help-text"
+                text={providerHelpText}
               />
             </Form.Element>
-            <FlexBox
-              alignItems={AlignItems.Stretch}
-              className="prc-cluster-boxes-container"
-              justifyContent={JustifyContent.FlexStart}
-              stretchToFitWidth={true}
-              direction={FlexDirection.Column}
-            >
-              <FlexBox
-                alignItems={AlignItems.Stretch}
-                className="prc-cluster-boxes"
-                stretchToFitWidth={true}
-              >
-                {numProviders === 1 ? (
-                  <div className="cluster-box-logo">
-                    Need the code for a single cluster box here.
-                  </div>
-                ) : (
-                  providerNames.map((providerId, idx) => {
-                    const {providerName} = availableProviders[providerId][0]
-                    return (
-                      <SelectableCard
-                        fontSize={ComponentSize.ExtraSmall}
-                        className={`clusterbox--selectable-card ${
-                          providerId === currentProvider ? 'selected' : ''
-                        }`}
-                        id={providerId}
-                        key={`${providerId}${idx}`}
-                        onClick={handleSelectProvider}
-                        label={providerName}
-                        selected={providerId === currentProvider}
-                      >
-                        {providerLogos[providerId]}
-                      </SelectableCard>
-                    )
-                  })
-                )}
-              </FlexBox>
-              <Dropdown
-                button={(active, onClick) => (
-                  <Dropdown.Button
-                    status={
-                      providersHaveLoaded
-                        ? ComponentStatus.Default
-                        : ComponentStatus.Disabled
-                    }
-                    active={active}
-                    onClick={onClick}
-                    testID="region-list-dropdown--button"
-                  >
-                    {
-                      availableProviders[currentProvider]?.find(
-                        (cluster: Cluster) => cluster.regionId === currentRegion
-                      )?.regionName
-                    }
-                  </Dropdown.Button>
-                )}
-                menu={onCollapse => (
-                  <Dropdown.Menu onCollapse={onCollapse}>
-                    {availableProviders[currentProvider]?.map(
-                      (cluster: Cluster) => (
-                        <Dropdown.Item
-                          key={cluster.regionId}
-                          id={cluster.regionId}
-                          value={cluster.regionId}
-                          onClick={setCurrentRegion}
-                          testID={`region-list-dropdown--${cluster.regionId}`}
-                          selected={currentRegion === cluster.regionId}
-                        >
-                          {cluster.regionName}
-                        </Dropdown.Item>
-                      )
-                    )}
-                  </Dropdown.Menu>
-                )}
-              />
-            </FlexBox>
-            <div className="region-info">
+            <ProviderCards
+              providerMap={providerMap}
+              currentProvider={currentProvider}
+              handleSelectProvider={handleSelectProvider}
+            />
+            <RegionDropdown
+              regions={providerMap[currentProvider]}
+              currentRegion={currentRegion}
+              setCurrentRegion={setCurrentRegion}
+            />
+            <div className="create-org-overlay--region-info">
               <Form.HelpText text="Don't see the region you need?"></Form.HelpText>{' '}
               <SafeBlankLink href="https://www.influxdata.com/influxdb-cloud-2-0-provider-region/">
-                Let us know
+                Let us know.
               </SafeBlankLink>
-              <Form.HelpText text="."></Form.HelpText>
             </div>
           </FlexBox>
-        </FlexBox>
-      </Overlay.Body>
+        </Overlay.Body>{' '}
+      </SpinnerContainer>
       <Overlay.Footer>
         <Button
           text="Cancel"

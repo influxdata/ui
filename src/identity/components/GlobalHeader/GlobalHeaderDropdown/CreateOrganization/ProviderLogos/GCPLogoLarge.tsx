@@ -1,7 +1,7 @@
 import React, {FC} from 'react'
-import './GCPLogoWithText.scss'
+import './GCPLogoLarge.scss'
 
-export const GCPLogoWithText: FC = () => {
+export const GCPLogoLarge: FC = () => {
   return (
     <svg
       x="0px"

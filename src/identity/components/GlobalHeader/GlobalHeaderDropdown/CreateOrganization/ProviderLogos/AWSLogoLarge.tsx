@@ -1,13 +1,14 @@
 import React, {FC} from 'react'
 import classnames from 'classnames'
-import './AWSLogoColor.scss'
+import './AWSLogoLarge.scss'
 
 interface Props {
   className?: string
 }
 
-export const AWSLogoColor: FC<Props> = ({className}) => {
+export const AWSLogoLarge: FC<Props> = ({className}) => {
   const logoClass = classnames('aws-logo-color', className)
+
   return (
     <svg
       className={logoClass}

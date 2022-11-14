@@ -1,16 +1,6 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-.create-org-overlay-container {
-  .create-org-overlay-body {
-    .alert-error-message {
-      width: 200px !important;
-      background-color: red !important;
-      margin: 50px;
-    }
-  }
-}
-
-.cluster-box {
+.create-org-overlay--provider-box {
   display: flex;
   flex: 1;
   margin: 5px;
@@ -18,7 +8,7 @@
   cursor: pointer;
   max-width: 350px;
 
-  > .cluster-box-logo {
+  > .create-org-overlay--provider-box-logo {
     display: flex;
     align-items: center;
     height: 120px;
@@ -26,22 +16,29 @@
   }
 }
 
-.provider-and-region-chooser {
+.create-org-overlay--network-alert {
   margin: 20px 0px;
+  width: 200px !important;
+  background-color: red;
+  margin: 50px;
+}
+
+.create-org-overlay--provider-and-region-chooser {
+  margin: 8px 0px;
   display: flex;
 
-  > .prc-label {
+  > .create-org-overlay--org-name {
     margin: 0px !important;
-    > .prc-description {
+    > .create-org-overlay--help-text {
       margin: 0px 0 !important;
     }
   }
 
-  > .region-info {
+  > .create-org-overlay--region-info {
     margin: 0px;
   }
 
-  .clusterbox--selectable-card {
+  .create-org-overlay--selectable-provider {
     margin: 15px 5px;
     height: 200px;
 
@@ -56,4 +53,9 @@
       border-color: red;
     }
   }
+}
+
+.create-org-overlay--loading-spinner {
+  width: 800px;
+  height: 50%;
 }

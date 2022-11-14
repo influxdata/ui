@@ -1,7 +1,7 @@
 import React, {FC} from 'react'
-import './AWSLogo.scss'
+import './AWSLogoSmall.scss'
 
-export const AWSLogo: FC = () => (
+export const AWSLogoSmall: FC = () => (
   <svg className="aws-logo" width="90" height="90" viewBox="0 0 70 65">
     <rect className="a" width="90" height="90" />
     <path

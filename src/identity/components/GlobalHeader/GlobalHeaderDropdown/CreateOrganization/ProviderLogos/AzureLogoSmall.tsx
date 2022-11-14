@@ -1,7 +1,7 @@
 import React, {FC} from 'react'
 import './AzureLogo.scss'
 
-export const AzureLogo: FC = () => {
+export const AzureLogoSmall: FC = () => {
   return (
     <svg
       version="1.1"

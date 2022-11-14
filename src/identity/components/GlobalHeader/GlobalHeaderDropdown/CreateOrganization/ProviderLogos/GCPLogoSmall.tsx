@@ -1,12 +1,12 @@
 import React, {FC} from 'react'
 import classnames from 'classnames'
-import './GCPLogo.scss'
+import './GCPLogoSmall.scss'
 
 interface Props {
   className?: string
 }
 
-export const GCPLogo: FC<Props> = ({className}) => {
+export const GCPLogoSmall: FC<Props> = ({className}) => {
   const gcpClassname = classnames('gcp-logo', className)
   return (
     <svg className={gcpClassname} viewBox="0 0 70 70">

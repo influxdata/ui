@@ -14,6 +14,7 @@ import {
 // Types
 import {RemoteDataState} from 'src/types'
 import {
+  ForbiddenError,
   GenericError,
   NotFoundError,
   OrgNameConflictError,
@@ -65,6 +66,10 @@ export const createNewOrg = async (
 
   if (response.status === 401) {
     throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 403) {
+    throw new ForbiddenError(response.data.message)
   }
 
   if (response.status === 409) {

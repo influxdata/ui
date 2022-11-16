@@ -18,13 +18,14 @@ const MONACO_DIR = path.resolve(__dirname, './node_modules/monaco-editor')
 
 module.exports = {
   mode: 'development',
+  target: 'web',
   context: __dirname,
   output: {
     path: path.resolve(__dirname, 'build'),
     publicPath: BASE_PATH,
     webassemblyModuleFilename: `${STATIC_DIRECTORY}[modulehash:10].wasm`,
     sourceMapFilename: `${STATIC_DIRECTORY}[file].map[query]`,
-    assetModuleFilename: `${STATIC_DIRECTORY}[contenthash:10].[ext]`
+    assetModuleFilename: `${STATIC_DIRECTORY}[contenthash:10].[ext]`,
   },
   entry: {
     app: './src/bootstrap.ts',
@@ -42,7 +43,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', '.wasm'],
     fallback: {
       path: false,
-    }
+    },
   },
   ignoreWarnings: [/export .* was not found in/, /'.\/locale' in/],
   node: {
@@ -131,7 +132,7 @@ module.exports = {
       {
         test: /\.m?js$/,
         resolve: {
-          fullySpecified: false
+          fullySpecified: false,
         },
       },
     ],

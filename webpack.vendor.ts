@@ -8,11 +8,13 @@ const STATIC_DIRECTORY_VENDOR = require('./src/utils/env').STATIC_DIRECTORY
 const vendor = Object.keys(dependencies).filter(
   d =>
     !d.includes('@influxdata') &&
-    !d.includes('webpack-bundle-analyzer') &&
     !d.includes('monaco-editor-webpack-plugin')
 )
 
-const monacoDirectory = path.resolve(__dirname, './node_modules/monaco-editor')
+const monacoDirectory = pathVendor.resolve(
+  __dirname,
+  './node_modules/monaco-editor'
+)
 
 module.exports = {
   context: __dirname,
@@ -43,7 +45,7 @@ module.exports = {
       url: false,
       util: false,
       vm: false,
-      zlib: false
+      zlib: false,
     },
   },
   ignoreWarnings: [/export .* was not found in/],
@@ -75,7 +77,7 @@ module.exports = {
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        type: 'asset/resource'
+        type: 'asset/resource',
       },
     ],
   },

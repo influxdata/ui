@@ -1,6 +1,6 @@
 // utils
 const commonWebpack = require('./webpack.common.ts')
-const mergeWebpack = require('webpack-merge')
+const mergeWebpack = require('webpack-merge').merge
 const commonPath = require('path')
 
 // Plugins

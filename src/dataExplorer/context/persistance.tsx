@@ -1,4 +1,8 @@
+// Libraries
 import React, {FC, createContext, useCallback} from 'react'
+import {useSelector} from 'react-redux'
+
+// Types
 import {TimeRange, RecursivePartial} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
@@ -8,6 +12,9 @@ import {
   RESOURCES,
   ResourceConnectedQuery,
 } from 'src/dataExplorer/components/resources'
+
+// Utils
+import {isOrgIOx} from 'src/organizations/selectors'
 
 interface CompositionStatus {
   synced: boolean // true == can modify session's schema
@@ -111,7 +118,7 @@ const DEFAULT_CONTEXT = {
   horizontal: [0.5],
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,
-  query: DEFAULT_FLUX_EDITOR_TEXT,
+  query: '',
   resource: null,
   selection: JSON.parse(JSON.stringify(DEFAULT_SELECTION)),
 
@@ -129,6 +136,8 @@ const DEFAULT_CONTEXT = {
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
 export const PersistanceProvider: FC = ({children}) => {
+  const isIoxOrg = useSelector(isOrgIOx)
+
   const [horizontal, setHorizontal] = useSessionStorage(
     'dataExplorer.resize.horizontal',
     [...DEFAULT_CONTEXT.horizontal]
@@ -143,7 +152,7 @@ export const PersistanceProvider: FC = ({children}) => {
   )
   const [query, setQuery] = useSessionStorage(
     'dataExplorer.query',
-    DEFAULT_CONTEXT.query
+    isIoxOrg ? DEFAULT_SQL_EDITOR_TEXT : DEFAULT_FLUX_EDITOR_TEXT
   )
   const [range, setRange] = useSessionStorage(
     'dataExplorer.range',
@@ -152,7 +161,7 @@ export const PersistanceProvider: FC = ({children}) => {
   const [resource, setResource] = useSessionStorage('dataExplorer.resource', {
     type: 'scripts',
     flux: '',
-    language: LanguageType.FLUX,
+    language: isIoxOrg ? LanguageType.SQL : LanguageType.FLUX,
     data: {},
   })
   const [selection, setSelection] = useSessionStorage(

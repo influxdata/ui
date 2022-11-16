@@ -34,7 +34,6 @@ import {
   DEFAULT_FLUX_EDITOR_TEXT,
   DEFAULT_SQL_EDITOR_TEXT,
 } from 'src/dataExplorer/context/persistance'
-import {isOrgIOx} from 'src/organizations/selectors'
 
 // Components
 import Results from 'src/dataExplorer/components/Results'
@@ -48,6 +47,7 @@ import {TimeRange} from 'src/types'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
+import {isOrgIOx} from 'src/organizations/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {downloadBlob} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'

@@ -24,6 +24,7 @@ import {
   Icon,
   ComponentColor,
 } from '@influxdata/clockface'
+import {useSelector} from 'react-redux'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
@@ -33,6 +34,7 @@ import {
   DEFAULT_FLUX_EDITOR_TEXT,
   DEFAULT_SQL_EDITOR_TEXT,
 } from 'src/dataExplorer/context/persistance'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Components
 import Results from 'src/dataExplorer/components/Results'
@@ -119,6 +121,7 @@ const ResultsPane: FC = () => {
     selection,
     resource,
   } = useContext(PersistanceContext)
+  const isIoxOrg = useSelector(isOrgIOx)
   const [csvDownloadCancelID, setCancelId] = useState(null)
   const language = resource?.language ?? LanguageType.FLUX
 
@@ -283,8 +286,7 @@ const ResultsPane: FC = () => {
                   color={ComponentColor.Danger}
                 />
               )}
-              {isFlagEnabled('uiSqlSupport') &&
-              resource?.language === LanguageType.SQL ? null : (
+              {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
                 <NewDatePicker />
               )}
               <SubmitQueryButton

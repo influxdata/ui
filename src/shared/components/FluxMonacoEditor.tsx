@@ -164,11 +164,9 @@ const FluxEditorMonaco: FC<Props> = ({
             }}
             editorDidMount={editorDidMount}
           />
-          {isFlagEnabled('uiSqlSupport') &&
-            isIoxOrg &&
-            isInFluxQueryBuilder && (
-              <div className="monaco-editor__language">{FLUXLANGID}</div>
-            )}
+          {isIoxOrg && isInFluxQueryBuilder && (
+            <div className="monaco-editor__language">{FLUXLANGID}</div>
+          )}
         </div>
       </ErrorBoundary>
     ),

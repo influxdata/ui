@@ -98,7 +98,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
 
-    if (isFlagEnabled('uiSqlSupport') && isIoxOrg) {
+    if (isIoxOrg) {
       history.replace(
         `/orgs/${org.id}/data-explorer/from/script?language=${language}&${SCRIPT_EDITOR_PARAMS}`
       )

@@ -66,7 +66,7 @@ const FluxQueryBuilder: FC = () => {
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
 
-    if (isFlagEnabled('uiSqlSupport') && isIoxOrg) {
+    if (isIoxOrg) {
       history.replace(
         `/orgs/${org.id}/data-explorer/from/script?language=${selectedLanguage}&${SCRIPT_EDITOR_PARAMS}`
       )
@@ -132,7 +132,7 @@ const FluxQueryBuilder: FC = () => {
               justifyContent={JustifyContent.SpaceBetween}
             >
               <div style={{display: 'flex'}}>
-                {isFlagEnabled('uiSqlSupport') && isIoxOrg ? (
+                {isIoxOrg ? (
                   <Dropdown
                     menu={onCollapse => (
                       <Dropdown.Menu onCollapse={onCollapse}>

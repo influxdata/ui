@@ -6,9 +6,7 @@ const STATIC_DIRECTORY_VENDOR = require('./src/utils/env').STATIC_DIRECTORY
 
 // only dll infrequently updated dependencies
 const vendor = Object.keys(dependencies).filter(
-  d =>
-    !d.includes('@influxdata') &&
-    !d.includes('monaco-editor-webpack-plugin')
+  d => !d.includes('@influxdata') && !d.includes('monaco-editor-webpack-plugin')
 )
 
 const monacoDirectory = pathVendor.resolve(

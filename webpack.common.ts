@@ -47,17 +47,7 @@ module.exports = {
   },
   ignoreWarnings: [/export .* was not found in/, /'.\/locale' in/],
   node: {
-    // fs: 'empty',
     global: true,
-    // crypto: 'empty',
-    // tls: 'empty',
-    // net: 'empty',
-    // module: false,
-    // clearImmediate: false,
-    // setImmediate: true,
-
-    // Buffer: false,
-    // process: false,
   },
   module: {
     rules: [

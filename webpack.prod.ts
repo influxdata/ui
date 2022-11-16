@@ -16,9 +16,6 @@ module.exports = mergeWebpack(commonWebpack, {
   output: {
     filename: `${DIRECTORY_STATIC}[contenthash:10].js`,
   },
-  experiments: {
-    asyncWebAssembly: true,
-  },
   module: {
     rules: [
       {

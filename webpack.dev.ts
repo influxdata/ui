@@ -13,9 +13,6 @@ module.exports = mergeDev(commonDev, {
     path: pathDev.join(__dirname, 'build'),
     filename: '[name].js',
   },
-  experiments: {
-    asyncWebAssembly: true,
-  },
   resolve: {
     fallback: {
       path: false,

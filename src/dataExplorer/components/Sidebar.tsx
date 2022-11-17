@@ -1,4 +1,5 @@
 import React, {FC, useContext, useCallback} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
@@ -17,6 +18,7 @@ import {
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 import {EditorContext} from 'src/shared/contexts/editor'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Types
 import {FluxFunction, FluxToolbarFunction} from 'src/types'
@@ -36,6 +38,7 @@ const Sidebar: FC = () => {
   const {injectFunction} = useContext(EditorContext)
   const {visible, menu, clear} = useContext(SidebarContext)
   const {resource} = useContext(PersistanceContext)
+  const isIoxOrg = useSelector(isOrgIOx)
 
   const inject = useCallback(
     (fn: FluxFunction | FluxToolbarFunction) => {
@@ -117,8 +120,7 @@ const Sidebar: FC = () => {
       justifyContent={JustifyContent.FlexStart}
       className="container-right-side-bar"
     >
-      {isFlagEnabled('uiSqlSupport') &&
-      resource?.language === LanguageType.SQL ? null : (
+      {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
         <>
           {resultOptions}
           {fluxLibrary}

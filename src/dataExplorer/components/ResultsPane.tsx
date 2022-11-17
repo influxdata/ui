@@ -24,6 +24,7 @@ import {
   Icon,
   ComponentColor,
 } from '@influxdata/clockface'
+import {useSelector} from 'react-redux'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
@@ -46,6 +47,7 @@ import {TimeRange} from 'src/types'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
+import {isOrgIOx} from 'src/organizations/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {downloadBlob} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
@@ -55,7 +57,6 @@ import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindo
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
@@ -119,6 +120,7 @@ const ResultsPane: FC = () => {
     selection,
     resource,
   } = useContext(PersistanceContext)
+  const isIoxOrg = useSelector(isOrgIOx)
   const [csvDownloadCancelID, setCancelId] = useState(null)
   const language = resource?.language ?? LanguageType.FLUX
 
@@ -283,8 +285,7 @@ const ResultsPane: FC = () => {
                   color={ComponentColor.Danger}
                 />
               )}
-              {isFlagEnabled('uiSqlSupport') &&
-              resource?.language === LanguageType.SQL ? null : (
+              {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
                 <NewDatePicker />
               )}
               <SubmitQueryButton

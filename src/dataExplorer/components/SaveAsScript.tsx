@@ -31,7 +31,6 @@ import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import OpenScript from 'src/dataExplorer/components/OpenScript'
 import {DeleteScript} from 'src/dataExplorer/components/DeleteScript'
 import {LanguageType} from 'src/dataExplorer/components/resources'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 import {
@@ -98,7 +97,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
 
-    if (isFlagEnabled('uiSqlSupport') && isIoxOrg) {
+    if (isIoxOrg) {
       history.replace(
         `/orgs/${org.id}/data-explorer/from/script?language=${language}&${SCRIPT_EDITOR_PARAMS}`
       )

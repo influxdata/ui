@@ -1,4 +1,4 @@
-import {OrgCreationAllowances} from 'src/identity/apis/org'
+import {OrgCreationAllowance} from 'src/identity/apis/org'
 import {RemoteDataState} from 'src/types'
 
 export const SET_ORG_CREATION_ALLOWANCES = 'SET_ORG_CREATION_ALLOWANCES'
@@ -9,7 +9,7 @@ export type Actions =
   | ReturnType<typeof setOrgCreationAllowances>
   | ReturnType<typeof setOrgCreationAllowancesStatus>
 
-export const setOrgCreationAllowances = (allowances: OrgCreationAllowances) =>
+export const setOrgCreationAllowances = (allowances: OrgCreationAllowance) =>
   ({
     type: SET_ORG_CREATION_ALLOWANCES,
     allowances: allowances,

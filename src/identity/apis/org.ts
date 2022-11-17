@@ -35,6 +35,10 @@ export interface CurrentOrg {
   regionName?: string
 }
 
+export interface OrgCreationAllowance {
+  allowed: boolean
+  availableUpgrade: 'contract' | 'none' | 'pay_as_you_go'
+}
 export interface QuartzOrganization {
   id: string
   name: string
@@ -48,12 +52,6 @@ export interface QuartzOrganization {
 export type QuartzOrganizations = {
   orgs: OrganizationSummaries
   status?: RemoteDataState
-}
-
-export interface OrgCreationAllowances {
-  allowed: boolean
-  availableUpgrade: string
-  loadingStatus?: RemoteDataState
 }
 
 // create a new organization
@@ -139,7 +137,7 @@ export const fetchDefaultAccountDefaultOrg = async (): Promise<
 
 // fetch data regarding whether the user can create new orgs, and associated upgrade options.
 export const fetchOrgCreationAllowance =
-  async (): Promise<OrgCreationAllowances> => {
+  async (): Promise<OrgCreationAllowance> => {
     const response = await getAllowancesOrgsCreate({})
 
     if (response.status !== 200) {

@@ -59,7 +59,10 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (orgCreationAllowancesStatus === RemoteDataState.NotStarted) {
+    if (
+      isFlagEnabled('createDeleteOrgs') &&
+      orgCreationAllowancesStatus === RemoteDataState.NotStarted
+    ) {
       dispatch(getOrgCreationAllowancesThunk())
     }
   }, [dispatch, orgCreationAllowancesStatus])

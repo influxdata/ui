@@ -116,7 +116,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.7",
     "css-unicode-loader": "^1.0.3",
-    "cypress": "^9.5.2",
+    "cypress": "^10.11.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-log-to-output": "^1.1.2",
     "cypress-pipe": "^2.0.0",

@@ -1,7 +1,7 @@
 # The cypress image used here is a non-standard slim image
 # and its definition and versions are maintained here:
 # https://github.com/influxdata/cypress-slim
-FROM quay.io/influxdb/cypress-slim:9.5.2-included
+FROM quay.io/influxdb/cypress-slim:10.11.0-included
 
 WORKDIR /repo
 
@@ -9,7 +9,7 @@ COPY ./package.json .
 
 RUN yarn add cypress-circleci-reporter
 
-COPY ./cypress.json ./cypress.json
+COPY ./cypress.config.ts ./cypress.config.ts
 COPY ./cypress ./cypress
 COPY ./src/types ./src/types
 COPY ./src/timeMachine/constants ./src/timeMachine/constants

@@ -32,7 +32,7 @@ module.exports = {
       files: [
         'src/**/*.test.ts',
         'src/**/*.test.tsx',
-        'cypress/**/*.test.ts',
+        'cypress/**/*.cy.ts',
         'cypress/e2e/util/*.ts',
       ],
       plugins: ['jest'],

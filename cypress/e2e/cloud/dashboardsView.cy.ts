@@ -29,14 +29,13 @@ describe('Dashboard', () => {
       '![](https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png)'
 
     cy.getByTestID('add-note--button').click()
-    cy.getByTestID('note-editor--overlay').within(() => {
-      cy.getByTestID('markdown-editor').within(() => {
-        cy.get('textarea').type(`${noteText}`, {force: true})
-      })
-      cy.getByTestID('note-editor--preview').contains(markdownImageWarning)
-      cy.getByTestID('note-editor--preview').should('not.contain', noteText)
-      cy.getByTestID('save-note--button').click()
-    })
+    cy.getByTestID('note-editor--overlay').should('be.visible')
+    cy.get('.view-line').should('be.visible')
+    cy.get('.view-line').click()
+    cy.get('.view-line').type(`${noteText}`)
+    cy.getByTestID('note-editor--preview').contains(markdownImageWarning)
+    cy.getByTestID('note-editor--preview').should('not.contain', noteText)
+    cy.getByTestID('save-note--button').click()
     cy.getByTestID('cell--view-empty markdown').contains(markdownImageWarning)
   })
 
@@ -55,13 +54,12 @@ describe('Dashboard', () => {
       "<img src='https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png'/>"
 
     cy.getByTestID('add-note--button').click()
-    cy.getByTestID('note-editor--overlay').within(() => {
-      cy.getByTestID('markdown-editor').within(() => {
-        cy.get('textarea').type(`${noteText}`, {force: true})
-      })
-      cy.getByTestID('note-editor--preview').contains(noteText)
-      cy.getByTestID('save-note--button').click()
-    })
+    cy.getByTestID('note-editor--overlay').should('be.visible')
+    cy.get('.view-line').should('be.visible')
+    cy.get('.view-line').click()
+    cy.get('.view-line').type(`${noteText}`)
+    cy.getByTestID('note-editor--preview').contains(noteText)
+    cy.getByTestID('save-note--button').click()
     cy.getByTestID('cell--view-empty markdown').contains(noteText)
   })
 })

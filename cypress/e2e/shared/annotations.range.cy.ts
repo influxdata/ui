@@ -7,7 +7,7 @@ import {
   checkAnnotationText,
   setupData,
   startEditingAnnotation,
-} from '../util/annotationsSetup'
+} from '../../util/annotationsSetup'
 import * as moment from 'moment'
 
 import {DEFAULT_TIME_FORMAT} from '../../../src/utils/datetime/constants'
@@ -263,7 +263,7 @@ describe('Annotations, but in a different test suite', () => {
                 .should($el => {
                   expect($el).to.have.length(1)
                   expect(Cypress.dom.isDetached($el)).to.be.false
-                  // eslint-disable-next-line jest/unbound-method
+                  // eslint-disable-next-line jest/unbound-method, @typescript-eslint/unbound-method
                   expect($el).not.to.be.disabled
                 })
                 .click()

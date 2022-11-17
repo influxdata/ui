@@ -185,6 +185,7 @@ describe('Flows', () => {
   it('can use the dynamic flux function selector to build a query', () => {
     cy.getByTestID('preset-script').first().click()
 
+    cy.getByTestID('flux-editor').should('be.visible')
     cy.get('.view-line').should('be.visible')
 
     cy.get('button[title="Function Reference"]').click()
@@ -215,6 +216,7 @@ describe('Flows', () => {
   it('can use the dynamic flux function search bar to search by package or function name', () => {
     cy.getByTestID('preset-script').first().click()
 
+    cy.getByTestID('flux-editor').should('be.visible')
     cy.get('.view-line').should('be.visible')
 
     cy.get('button[title="Function Reference"]').click()

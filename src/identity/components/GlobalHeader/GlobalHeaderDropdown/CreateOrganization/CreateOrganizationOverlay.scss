@@ -1,0 +1,59 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.create-org-overlay-container {
+  .create-org-overlay-body {
+    .alert-error-message {
+      width: 200px !important;
+      background-color: red !important;
+      margin: 50px;
+    }
+  }
+}
+
+.cluster-box {
+  display: flex;
+  flex: 1;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  max-width: 350px;
+
+  > .cluster-box-logo {
+    display: flex;
+    align-items: center;
+    height: 120px;
+    width: 100%;
+  }
+}
+
+.provider-and-region-chooser {
+  margin: 20px 0px;
+  display: flex;
+
+  > .prc-label {
+    margin: 0px !important;
+    > .prc-description {
+      margin: 0px 0 !important;
+    }
+  }
+
+  > .region-info {
+    margin: 0px;
+  }
+
+  .clusterbox--selectable-card {
+    margin: 15px 5px;
+    height: 200px;
+
+    &:last-child {
+      margin-right: 0px;
+    }
+    &:first-child {
+      margin-left: 0px;
+    }
+
+    &.selected {
+      border-color: red;
+    }
+  }
+}

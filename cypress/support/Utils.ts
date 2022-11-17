@@ -177,11 +177,14 @@ export const makeQuartzUseIDPEOrgID = (
   })
 
   let fixtureName = 'multiOrgIdentity'
+  let allowanceFixtureName = 'createOrgAllowance'
   if (accountType === 'pay_as_you_go') {
     fixtureName = 'multiOrgIdentityPAYG'
+    allowanceFixtureName = 'createOrgAllowancePAYG'
   }
   if (accountType === 'contract') {
     fixtureName = 'multiOrgIdentityContract'
+    allowanceFixtureName = 'createOrgAllowanceContract'
   }
 
   cy.fixture(fixtureName).then(quartzIdentity => {
@@ -205,5 +208,13 @@ export const makeQuartzUseIDPEOrgID = (
     cy.intercept('GET', 'api/v2/quartz/orgs/*', quartzOrgDetails).as(
       'getQuartzOrgDetails'
     )
+  })
+
+  cy.fixture(allowanceFixtureName).then(orgCreationAllowances => {
+    cy.intercept(
+      'GET',
+      'api/v2/quartz/allowances/orgs/create',
+      orgCreationAllowances
+    ).as('getAllowancesOrgsCreate')
   })
 }

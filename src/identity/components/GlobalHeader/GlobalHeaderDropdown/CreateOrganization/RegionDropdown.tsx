@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {Dispatch, FC} from 'react'
 import {Dropdown} from '@influxdata/clockface'
 
 // Types
@@ -8,7 +8,7 @@ import {Cluster} from 'src/client/unityRoutes'
 interface Props {
   regions: Cluster[]
   currentRegion: string
-  setCurrentRegion: React.SetStateAction<any>
+  setCurrentRegion: Dispatch<any>
 }
 
 export const RegionDropdown: FC<Props> = ({

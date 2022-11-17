@@ -9,15 +9,16 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {Cluster} from 'src/client/unityRoutes'
+import {Cluster, OrganizationCreateRequest} from 'src/client/unityRoutes'
 
 // Logos
-import {AWSLogoLarge} from './ProviderLogos/AWSLogoLarge'
-import {AWSLogoSmall} from './ProviderLogos/AWSLogoSmall'
-import {AzureLogoLarge} from './ProviderLogos/AzureLogoLarge'
-import {AzureLogoSmall} from './ProviderLogos/AzureLogoSmall'
-import {GCPLogoLarge} from './ProviderLogos/GCPLogoLarge'
-import {GCPLogoSmall} from './ProviderLogos/GCPLogoSmall'
+import {AWSLogoLarge} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AWSLogoLarge'
+import {AWSLogoSmall} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/AWSLogoSmall'
+import {AzureLogoLarge} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization//ProviderLogos/AzureLogoLarge'
+import {AzureLogoSmall} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization//ProviderLogos/AzureLogoSmall'
+import {GCPLogoLarge} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization//ProviderLogos/GCPLogoLarge'
+import {GCPLogoSmall} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderLogos/GCPLogoSmall'
+import {ProviderMap} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationOverlay'
 
 const providerLogosSmall = {
   AWS: <AWSLogoSmall />,
@@ -32,8 +33,10 @@ const providerLogosLarge = {
 }
 
 interface Props {
-  providerMap: any
-  handleSelectProvider: any
+  providerMap: ProviderMap
+  handleSelectProvider: (
+    providerId: OrganizationCreateRequest['provider']
+  ) => void
   currentProvider: Cluster['providerId']
 }
 

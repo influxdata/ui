@@ -7,7 +7,7 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {OrgOverlayValidationError} from 'src/identity/components/GlobalHeader/GlobalheaderDropdown/CreateOrganization/CreateOrganizationOverlay'
+import {OrgOverlayValidationError} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationOverlay'
 
 // Style
 import './CreateOrgInput.scss'

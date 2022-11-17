@@ -31,7 +31,7 @@ import './CreateOrganizationOverlay.scss'
 import {createNewOrg, fetchClusterList} from 'src/identity/apis/org'
 
 // Types
-import {OrganizationCreateRequest} from 'src/client/unityRoutes'
+import {Cluster, OrganizationCreateRequest} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 import {
   ForbiddenError,
@@ -52,6 +52,10 @@ enum OrgOverlayNetworkError {
 export enum OrgOverlayValidationError {
   NameConflictError = 'This organization name already exists. Please choose a different name.',
   None = '',
+}
+
+export interface ProviderMap {
+  [provider: string]: Cluster[]
 }
 
 enum ProviderSelectMessage {

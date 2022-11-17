@@ -115,6 +115,12 @@ const OrgOverlay: FC = () => {
                     />
                   </Grid.Column>
                 </Grid.Row>
+                <Grid.Row>
+                  <Grid.Column widthMD={Columns.Four}>
+                    <label>Organization State</label>
+                    <p>{organization?.state ?? ''}</p>
+                  </Grid.Column>
+                </Grid.Row>
                 <SpinnerContainer
                   loading={limitsStatus}
                   spinnerComponent={<TechnoSpinner diameterPixels={100} />}

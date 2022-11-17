@@ -4,8 +4,8 @@ import produce from 'immer'
 // Actions
 import {
   Actions,
-  SET_ALLOWANCES,
-  SET_ALLOWANCES_LOADING_STATUS,
+  SET_ORG_CREATION_ALLOWANCES,
+  SET_ORG_CREATION_ALLOWANCES_STATUS,
 } from 'src/identity/allowances/actions/creators'
 
 // Types
@@ -22,7 +22,7 @@ export const initialState = {
 export default (state = initialState, action: Actions) =>
   produce(state, draftState => {
     switch (action.type) {
-      case SET_ALLOWANCES: {
+      case SET_ORG_CREATION_ALLOWANCES: {
         const {allowed, availableUpgrade} = action.allowances
 
         draftState.orgCreation.allowed = allowed
@@ -30,7 +30,7 @@ export default (state = initialState, action: Actions) =>
         return
       }
 
-      case SET_ALLOWANCES_LOADING_STATUS: {
+      case SET_ORG_CREATION_ALLOWANCES_STATUS: {
         draftState.orgCreation.loadingStatus = action.loadingStatus
         return
       }

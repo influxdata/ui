@@ -1,21 +1,24 @@
 // Types
 import {RemoteDataState} from 'src/types'
 
-export const SET_ALLOWANCES = 'SET_ALLOWANCES'
-export const SET_ALLOWANCES_LOADING_STATUS = 'SET_ALLOWANCES_LOADING_STATUS'
+export const SET_ORG_CREATION_ALLOWANCES = 'SET_ORG_CREATION_ALLOWANCES'
+export const SET_ORG_CREATION_ALLOWANCES_STATUS =
+  'SET_ORG_CREATION_ALLOWANCES_STATUS'
 
 export type Actions =
-  | ReturnType<typeof setAllowances>
-  | ReturnType<typeof setAllowancesLoadingStatus>
+  | ReturnType<typeof setOrgCreationAllowances>
+  | ReturnType<typeof setOrgCreationAllowancesStatus>
 
-export const setAllowances = allowances =>
+export const setOrgCreationAllowances = allowances =>
   ({
-    type: SET_ALLOWANCES,
+    type: SET_ORG_CREATION_ALLOWANCES,
     allowances: allowances,
   } as const)
 
-export const setAllowancesLoadingStatus = (loadingStatus: RemoteDataState) =>
+export const setOrgCreationAllowancesStatus = (
+  loadingStatus: RemoteDataState
+) =>
   ({
-    type: SET_ALLOWANCES_LOADING_STATUS,
+    type: SET_ORG_CREATION_ALLOWANCES_STATUS,
     loadingStatus: loadingStatus,
   } as const)

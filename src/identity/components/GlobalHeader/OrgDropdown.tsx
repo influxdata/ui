@@ -1,9 +1,9 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {IconFont, RemoteDataState} from '@influxdata/clockface'
 
 // Components
+import {IconFont, RemoteDataState} from '@influxdata/clockface'
 import {
   GlobalHeaderDropdown,
   MainMenuItem,
@@ -33,8 +33,9 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {
-  selectOrgCreationAllowances,
+  selectOrgCreationAllowance,
   selectOrgCreationAllowancesStatus,
+  selectOrgCreationAvailableUpgrade,
 } from 'src/identity/selectors'
 import {CreateOrganizationMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/MenuItem'
 
@@ -49,18 +50,19 @@ const menuStyle = {width: '250px', padding: '16px'}
 const orgDropdownStyle = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
-  const orgCreationAllowances = useSelector(selectOrgCreationAllowances)
-  const orgCreationAllowanceStatus = useSelector(
+  const orgCreationAllowed = useSelector(selectOrgCreationAllowance)
+  const availableUpgrade = useSelector(selectOrgCreationAvailableUpgrade)
+  const orgCreationAllowancesStatus = useSelector(
     selectOrgCreationAllowancesStatus
   )
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (orgCreationAllowanceStatus === RemoteDataState.NotStarted) {
+    if (orgCreationAllowancesStatus === RemoteDataState.NotStarted) {
       dispatch(getOrgCreationAllowancesThunk())
     }
-  }, [dispatch, orgCreationAllowanceStatus])
+  }, [dispatch, orgCreationAllowancesStatus])
 
   const switchOrg = (org: TypeAheadMenuItem) => {
     event(HeaderNavEvent.OrgSwitch, multiOrgTag, {
@@ -92,8 +94,8 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
 
   if (
     isFlagEnabled('createDeleteOrgs') &&
-    !orgCreationAllowances.allowed &&
-    orgCreationAllowances.availableUpgrade !== 'none'
+    !orgCreationAllowed &&
+    availableUpgrade !== 'none'
   ) {
     orgMainMenu.push({
       name: 'Add More Organizations',
@@ -109,7 +111,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   }
 
   const additionalHeaderItems = []
-  if (isFlagEnabled('createDeleteOrgs') && orgCreationAllowances.allowed) {
+  if (isFlagEnabled('createDeleteOrgs') && orgCreationAllowed) {
     additionalHeaderItems.push(
       <CreateOrganizationMenuItem key="CreateOrgMenuItem" />
     )

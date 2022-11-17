@@ -65,10 +65,16 @@ export const selectQuartzOrgsStatus = (
   return state.identity.quartzOrganizations.status
 }
 
-export const selectOrgCreationAllowances = (
+export const selectOrgCreationAllowance = (
   state: AppState
-): AppState['identity']['allowances']['orgCreation'] => {
-  return state.identity.allowances.orgCreation
+): AppState['identity']['allowances']['orgCreation']['allowed'] => {
+  return state.identity.allowances.orgCreation.allowed
+}
+
+export const selectOrgCreationAvailableUpgrade = (
+  state: AppState
+): AppState['identity']['allowances']['orgCreation']['availableUpgrade'] => {
+  return state.identity.allowances.orgCreation.availableUpgrade
 }
 
 export const selectOrgCreationAllowancesStatus = (

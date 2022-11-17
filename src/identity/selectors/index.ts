@@ -36,6 +36,22 @@ export const selectOperatorRole = (
   return state.identity.currentIdentity.user.operatorRole
 }
 
+export const selectOrgCreationAllowance = (
+  state: AppState
+): AppState['identity']['allowances']['orgCreation']['allowed'] => {
+  return state.identity.allowances.orgCreation.allowed
+}
+
+export const selectOrgCreationAllowanceStatus = (
+  state: AppState
+): RemoteDataState => state.identity.allowances.orgCreation.loadingStatus
+
+export const selectOrgCreationAvailableUpgrade = (
+  state: AppState
+): AppState['identity']['allowances']['orgCreation']['availableUpgrade'] => {
+  return state.identity.allowances.orgCreation.availableUpgrade
+}
+
 export const selectQuartzIdentityStatus = (state: AppState): RemoteDataState =>
   state.identity.currentIdentity.loadingStatus.identityStatus
 
@@ -64,19 +80,3 @@ export const selectQuartzOrgsStatus = (
 ): AppState['identity']['quartzOrganizations']['status'] => {
   return state.identity.quartzOrganizations.status
 }
-
-export const selectOrgCreationAllowance = (
-  state: AppState
-): AppState['identity']['allowances']['orgCreation']['allowed'] => {
-  return state.identity.allowances.orgCreation.allowed
-}
-
-export const selectOrgCreationAvailableUpgrade = (
-  state: AppState
-): AppState['identity']['allowances']['orgCreation']['availableUpgrade'] => {
-  return state.identity.allowances.orgCreation.availableUpgrade
-}
-
-export const selectOrgCreationAllowancesStatus = (
-  state: AppState
-): RemoteDataState => state.identity.allowances.orgCreation.loadingStatus

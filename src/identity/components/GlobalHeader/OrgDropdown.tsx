@@ -34,7 +34,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Selectors
 import {
   selectOrgCreationAllowance,
-  selectOrgCreationAllowancesStatus,
+  selectOrgCreationAllowanceStatus,
   selectOrgCreationAvailableUpgrade,
 } from 'src/identity/selectors'
 import {CreateOrganizationMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/MenuItem'
@@ -52,8 +52,8 @@ const orgDropdownStyle = {width: 'auto'}
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const orgCreationAllowed = useSelector(selectOrgCreationAllowance)
   const availableUpgrade = useSelector(selectOrgCreationAvailableUpgrade)
-  const orgCreationAllowancesStatus = useSelector(
-    selectOrgCreationAllowancesStatus
+  const orgCreationAllowanceStatus = useSelector(
+    selectOrgCreationAllowanceStatus
   )
 
   const dispatch = useDispatch()
@@ -61,11 +61,11 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   useEffect(() => {
     if (
       isFlagEnabled('createDeleteOrgs') &&
-      orgCreationAllowancesStatus === RemoteDataState.NotStarted
+      orgCreationAllowanceStatus === RemoteDataState.NotStarted
     ) {
       dispatch(getOrgCreationAllowancesThunk())
     }
-  }, [dispatch, orgCreationAllowancesStatus])
+  }, [dispatch, orgCreationAllowanceStatus])
 
   const switchOrg = (org: TypeAheadMenuItem) => {
     event(HeaderNavEvent.OrgSwitch, multiOrgTag, {

@@ -4,12 +4,12 @@ const createOrgsFeatureFlags = {
   createDeleteOrgs: true,
 }
 
-const getOrgCreationAllowances = (fixtureName: string) => {
-  cy.fixture(fixtureName).then(orgCreationAllowances => {
+const getOrgCreationAllowance = (fixtureName: string) => {
+  cy.fixture(fixtureName).then(orgCreationAllowance => {
     cy.intercept(
       'GET',
       'api/v2/quartz/allowances/orgs/create',
-      orgCreationAllowances
+      orgCreationAllowance
     ).as('getAllowancesOrgsCreate')
   })
 }
@@ -39,7 +39,7 @@ describe('FREE: global header menu items test', () => {
     Cypress.Cookies.preserveOnce('sid')
 
     makeQuartzUseIDPEOrgID(idpeOrgID)
-    getOrgCreationAllowances('createOrgAllowance')
+    getOrgCreationAllowance('createOrgAllowance')
 
     cy.visit('/')
   })
@@ -78,7 +78,7 @@ describe('PAYG: global header menu items test', () => {
 
   beforeEach(() => {
     makeQuartzUseIDPEOrgID(idpeOrgID, 'pay_as_you_go')
-    getOrgCreationAllowances('createOrgAllowancePAYG')
+    getOrgCreationAllowance('createOrgAllowancePAYG')
 
     cy.visit('/')
   })
@@ -117,7 +117,7 @@ describe('Contract: global header menu items test', () => {
 
   beforeEach(() => {
     makeQuartzUseIDPEOrgID(idpeOrgID, 'contract')
-    getOrgCreationAllowances('createOrgAllowanceContract')
+    getOrgCreationAllowance('createOrgAllowanceContract')
 
     cy.visit('/')
   })

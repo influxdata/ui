@@ -3,9 +3,9 @@ import {Dispatch} from 'react'
 
 // Actions
 import {
-  Actions as OrgCreationAllowancesActions,
-  setOrgCreationAllowances,
-  setOrgCreationAllowancesStatus,
+  OrgCreationAllowanceActions,
+  setOrgCreationAllowance,
+  setOrgCreationAllowanceStatus,
 } from 'src/identity/allowances/actions/creators'
 
 // API
@@ -17,21 +17,23 @@ import {GetState, RemoteDataState} from 'src/types'
 // Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
-type Actions = OrgCreationAllowancesActions
-
 export const getOrgCreationAllowancesThunk =
-  () => async (dispatch: Dispatch<Actions>, getState: GetState) => {
+  () =>
+  async (
+    dispatch: Dispatch<OrgCreationAllowanceActions>,
+    getState: GetState
+  ) => {
     try {
-      dispatch(setOrgCreationAllowancesStatus(RemoteDataState.Loading))
+      dispatch(setOrgCreationAllowanceStatus(RemoteDataState.Loading))
 
       const allowances = await fetchOrgCreationAllowance()
 
-      dispatch(setOrgCreationAllowances(allowances))
+      dispatch(setOrgCreationAllowance(allowances))
 
-      dispatch(setOrgCreationAllowancesStatus(RemoteDataState.Done))
+      dispatch(setOrgCreationAllowanceStatus(RemoteDataState.Done))
     } catch (error) {
       reportErrorThroughHoneyBadger(error, {
-        name: 'Failed to fetch org creation Allowances',
+        name: 'Failed to fetch org creation allowance',
         context: {state: getState().identity},
       })
     }

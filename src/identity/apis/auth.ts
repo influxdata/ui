@@ -7,18 +7,15 @@ import {CLOUD} from 'src/shared/constants'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {OrgCreationAllowanceState} from 'src/identity/allowances/reducers'
 import {Error as IdpeError, UserResponse as UserResponseIdpe} from 'src/client'
 import {ServerError, UnauthorizedError} from 'src/types/error'
 import {CurrentAccount} from 'src/identity/apis/account'
-import {
-  CurrentOrg,
-  OrgCreationAllowances,
-  QuartzOrganizations,
-} from 'src/identity/apis/org'
+import {CurrentOrg, QuartzOrganizations} from 'src/identity/apis/org'
 
 export interface IdentityState {
   allowances: {
-    orgCreation: OrgCreationAllowances
+    orgCreation: OrgCreationAllowanceState
   }
   currentIdentity: CurrentIdentity
   quartzOrganizations: QuartzOrganizations

@@ -39,6 +39,7 @@ export interface OrgCreationAllowance {
   allowed: boolean
   availableUpgrade: 'contract' | 'none' | 'pay_as_you_go'
 }
+
 export interface QuartzOrganization {
   id: string
   name: string

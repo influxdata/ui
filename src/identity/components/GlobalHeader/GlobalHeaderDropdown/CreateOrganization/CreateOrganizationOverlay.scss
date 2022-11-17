@@ -1,0 +1,61 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.create-org-overlay--provider-box {
+  display: flex;
+  flex: 1;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  max-width: 350px;
+
+  > .create-org-overlay--provider-box-logo {
+    display: flex;
+    align-items: center;
+    height: 120px;
+    width: 100%;
+  }
+}
+
+.create-org-overlay--network-alert {
+  margin: 20px 0px;
+  width: 200px !important;
+  background-color: red;
+  margin: 50px;
+}
+
+.create-org-overlay--provider-and-region-chooser {
+  margin: 8px 0px;
+  display: flex;
+
+  > .create-org-overlay--org-name {
+    margin: 0px !important;
+    > .create-org-overlay--help-text {
+      margin: 0px 0 !important;
+    }
+  }
+
+  > .create-org-overlay--region-info {
+    margin: 0px;
+  }
+
+  .create-org-overlay--selectable-provider {
+    margin: 15px 5px;
+    height: 200px;
+
+    &:last-child {
+      margin-right: 0px;
+    }
+    &:first-child {
+      margin-left: 0px;
+    }
+
+    &.selected {
+      border-color: red;
+    }
+  }
+}
+
+.create-org-overlay--loading-spinner {
+  width: 800px;
+  height: 50%;
+}

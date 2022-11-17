@@ -10,13 +10,19 @@ import {RemoteDataState} from 'src/types'
 import {Error as IdpeError, UserResponse as UserResponseIdpe} from 'src/client'
 import {ServerError, UnauthorizedError} from 'src/types/error'
 import {CurrentAccount} from 'src/identity/apis/account'
-import {CurrentOrg, QuartzOrganizations} from 'src/identity/apis/org'
+import {
+  creatOrgAllowances,
+  CurrentOrg,
+  QuartzOrganizations,
+} from 'src/identity/apis/org'
 
 export interface IdentityState {
+  allowances: {
+    orgCreation: creatOrgAllowances
+  }
   currentIdentity: CurrentIdentity
   quartzOrganizations: QuartzOrganizations
 }
-
 export interface IdentityLoadingStatus {
   identityStatus: RemoteDataState
   billingStatus: RemoteDataState

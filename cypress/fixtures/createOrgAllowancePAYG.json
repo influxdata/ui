@@ -1,6 +1,4 @@
 {
-  "orgCreation": {
-    "allowed": true,
-    "availableUpgrade": "contract"
-  }
+  "allowed": true,
+  "availableUpgrade": "contract"
 }

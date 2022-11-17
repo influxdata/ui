@@ -1,6 +1,4 @@
 {
-  "orgCreation": {
-    "allowed": false,
-    "availableUpgrade": "pay_as_you_go"
-  }
+  "allowed": false,
+  "availableUpgrade": "pay_as_you_go"
 }

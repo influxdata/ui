@@ -121,7 +121,7 @@ describe('Flows Copy To Clipboard', () => {
     })
   })
 
-  it('Export to Clipboard as Code', () => {
+  it.skip('Export to Clipboard as Code', () => {
     const query = 'buckets()'
 
     createEmptyNotebook()

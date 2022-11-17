@@ -11,14 +11,14 @@ import {Error as IdpeError, UserResponse as UserResponseIdpe} from 'src/client'
 import {ServerError, UnauthorizedError} from 'src/types/error'
 import {CurrentAccount} from 'src/identity/apis/account'
 import {
-  creatOrgAllowances,
+  orgCreationAllowances,
   CurrentOrg,
   QuartzOrganizations,
 } from 'src/identity/apis/org'
 
 export interface IdentityState {
   allowances: {
-    orgCreation: creatOrgAllowances
+    orgCreation: orgCreationAllowances
   }
   currentIdentity: CurrentIdentity
   quartzOrganizations: QuartzOrganizations

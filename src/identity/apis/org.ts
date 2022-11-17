@@ -50,7 +50,7 @@ export type QuartzOrganizations = {
   status?: RemoteDataState
 }
 
-export interface creatOrgAllowances {
+export interface orgCreationAllowances {
   allowed: boolean
   availableUpgrade: string
   loadingStatus?: RemoteDataState
@@ -139,7 +139,7 @@ export const fetchDefaultAccountDefaultOrg = async (): Promise<
 
 // fetch data regarding whether the user can create new orgs, and associated upgrade options.
 export const fetchOrgCreationAllowance =
-  async (): Promise<creatOrgAllowances> => {
+  async (): Promise<orgCreationAllowances> => {
     const response = await getAllowancesOrgsCreate({})
 
     if (response.status !== 200) {

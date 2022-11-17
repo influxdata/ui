@@ -32,7 +32,7 @@ export const getOrgCreationAllowancesThunk =
     } catch (error) {
       reportErrorThroughHoneyBadger(error, {
         name: 'Failed to fetch org creation Allowances',
-        context: {state: getState()},
+        context: {state: getState().identity},
       })
     }
   }

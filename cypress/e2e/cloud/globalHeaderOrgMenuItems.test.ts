@@ -29,6 +29,16 @@ describe('FREE: global header menu items test', () => {
     Cypress.Cookies.preserveOnce('sid')
 
     makeQuartzUseIDPEOrgID(idpeOrgID)
+
+    const fixtureName = 'createOrgAllowance'
+    cy.fixture(fixtureName).then(orgCreationAllowances => {
+      cy.intercept(
+        'GET',
+        'api/v2/quartz/allowances/orgs/create',
+        orgCreationAllowances
+      ).as('getAllowancesOrgsCreate')
+    })
+
     cy.visit('/')
   })
 
@@ -66,6 +76,16 @@ describe('PAYG: global header menu items test', () => {
 
   beforeEach(() => {
     makeQuartzUseIDPEOrgID(idpeOrgID, 'pay_as_you_go')
+
+    const fixtureName = 'createOrgAllowancePAYG'
+    cy.fixture(fixtureName).then(orgCreationAllowances => {
+      cy.intercept(
+        'GET',
+        'api/v2/quartz/allowances/orgs/create',
+        orgCreationAllowances
+      ).as('getAllowancesOrgsCreate')
+    })
+
     cy.visit('/')
   })
 
@@ -103,6 +123,16 @@ describe('Contract: global header menu items test', () => {
 
   beforeEach(() => {
     makeQuartzUseIDPEOrgID(idpeOrgID, 'contract')
+
+    const fixtureName = 'createOrgAllowanceContract'
+    cy.fixture(fixtureName).then(orgCreationAllowances => {
+      cy.intercept(
+        'GET',
+        'api/v2/quartz/allowances/orgs/create',
+        orgCreationAllowances
+      ).as('getAllowancesOrgsCreate')
+    })
+
     cy.visit('/')
   })
 

@@ -35,6 +35,11 @@ export interface CurrentOrg {
   regionName?: string
 }
 
+export interface OrgCreationAllowance {
+  allowed: boolean
+  availableUpgrade: 'contract' | 'none' | 'pay_as_you_go'
+}
+
 export interface QuartzOrganization {
   id: string
   name: string
@@ -132,17 +137,18 @@ export const fetchDefaultAccountDefaultOrg = async (): Promise<
 }
 
 // fetch data regarding whether the user can create new orgs, and associated upgrade options.
-export const fetchOrgCreationAllowance = async () => {
-  const response = await getAllowancesOrgsCreate({})
+export const fetchOrgCreationAllowance =
+  async (): Promise<OrgCreationAllowance> => {
+    const response = await getAllowancesOrgsCreate({})
 
-  if (response.status !== 200) {
-    throw new GenericError(
-      'Failed to determine whether this user can create a new organization.'
-    )
+    if (response.status !== 200) {
+      throw new GenericError(
+        'Failed to determine whether this user can create a new organization.'
+      )
+    }
+
+    return response.data
   }
-
-  return response.data
-}
 
 // fetch the list of organizations associated with a given account ID
 export const fetchOrgsByAccountID = async (

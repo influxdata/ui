@@ -1,8 +1,9 @@
 // Libraries
-import React, {FC} from 'react'
-import {IconFont} from '@influxdata/clockface'
+import React, {FC, useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
+import {IconFont, RemoteDataState} from '@influxdata/clockface'
 import {
   GlobalHeaderDropdown,
   MainMenuItem,
@@ -24,12 +25,18 @@ import {
 } from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
+// Thunks
+import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thunks'
+
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
-import {useSelector} from 'react-redux'
-import {selectCurrentAccountType} from 'src/identity/selectors'
+import {
+  selectOrgCreationAllowance,
+  selectOrgCreationAllowanceStatus,
+  selectOrgCreationAvailableUpgrade,
+} from 'src/identity/selectors'
 import {CreateOrganizationMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/MenuItem'
 
 type OrgSummaryItem = OrganizationSummaries[number]
@@ -43,7 +50,23 @@ const menuStyle = {width: '250px', padding: '16px'}
 const orgDropdownStyle = {width: 'auto'}
 
 export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
-  const accountType = useSelector(selectCurrentAccountType)
+  const orgCreationAllowed = useSelector(selectOrgCreationAllowance)
+  const availableUpgrade = useSelector(selectOrgCreationAvailableUpgrade)
+  const orgCreationAllowanceStatus = useSelector(
+    selectOrgCreationAllowanceStatus
+  )
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (
+      isFlagEnabled('createDeleteOrgs') &&
+      orgCreationAllowanceStatus === RemoteDataState.NotStarted
+    ) {
+      dispatch(getOrgCreationAllowancesThunk())
+    }
+  }, [dispatch, orgCreationAllowanceStatus])
+
   const switchOrg = (org: TypeAheadMenuItem) => {
     event(HeaderNavEvent.OrgSwitch, multiOrgTag, {
       oldOrgID: activeOrg.id,
@@ -72,7 +95,11 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     },
   ]
 
-  if (isFlagEnabled('createDeleteOrgs') && accountType === 'free') {
+  if (
+    isFlagEnabled('createDeleteOrgs') &&
+    !orgCreationAllowed &&
+    availableUpgrade !== 'none'
+  ) {
     orgMainMenu.push({
       name: 'Add More Organizations',
       iconFont: IconFont.CrownSolid_New,
@@ -87,10 +114,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   }
 
   const additionalHeaderItems = []
-  if (
-    isFlagEnabled('createDeleteOrgs') &&
-    (accountType === 'contract' || accountType === 'pay_as_you_go')
-  ) {
+  if (isFlagEnabled('createDeleteOrgs') && orgCreationAllowed) {
     additionalHeaderItems.push(
       <CreateOrganizationMenuItem key="CreateOrgMenuItem" />
     )

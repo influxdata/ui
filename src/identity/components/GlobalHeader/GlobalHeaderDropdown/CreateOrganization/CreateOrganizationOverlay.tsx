@@ -120,6 +120,38 @@ export const CreateOrganizationOverlay: FC = () => {
     ? RemoteDataState.Done
     : RemoteDataState.Loading
 
+  // Ajax requests
+  useEffect(() => {
+    if (orgsLoadedStatus === RemoteDataState.NotStarted) {
+      dispatch(getQuartzOrganizationsThunk(currentAccountId))
+    }
+  }, [currentAccountId, orgsLoadedStatus, dispatch])
+
+  useEffect(() => {
+    const retrieveClusters = async () => {
+      try {
+        const clusterArr = await fetchClusterList()
+
+        if (!clusterArr.length) {
+          setCreateOrgButtonStatus(ComponentStatus.Disabled)
+          setNetworkErrorMsg(OrgOverlayNetworkError.NoClusters)
+          return
+        }
+
+        const currentProviderMap = generateProviderMap(clusterArr)
+        const defaultProvider = Object.keys(currentProviderMap)[0]
+        const defaultRegion = currentProviderMap[defaultProvider][0].regionId
+
+        setProviderMap(currentProviderMap)
+        setCurrentProvider(defaultProvider)
+        setCurrentRegion(defaultRegion)
+      } catch (err) {
+        setNetworkErrorMsg(OrgOverlayNetworkError.ClusterFetchFailedError)
+      }
+    }
+    retrieveClusters()
+  }, [])
+
   // Event Handlers
   const handleCreateOrg = async () => {
     try {
@@ -175,38 +207,6 @@ export const CreateOrganizationOverlay: FC = () => {
       setCreateOrgButtonStatus(ComponentStatus.Default)
     }
   }
-
-  // Ajax requests
-  useEffect(() => {
-    if (orgsLoadedStatus === RemoteDataState.NotStarted) {
-      dispatch(getQuartzOrganizationsThunk(currentAccountId))
-    }
-  }, [currentAccountId, orgsLoadedStatus, dispatch])
-
-  useEffect(() => {
-    const retrieveClusters = async () => {
-      try {
-        const clusterArr = await fetchClusterList()
-
-        if (!clusterArr.length) {
-          setCreateOrgButtonStatus(ComponentStatus.Disabled)
-          setNetworkErrorMsg(OrgOverlayNetworkError.NoClusters)
-          return
-        }
-
-        const currentProviderMap = generateProviderMap(clusterArr)
-        const defaultProvider = Object.keys(currentProviderMap)[0]
-        const defaultRegion = currentProviderMap[defaultProvider][0].regionId
-
-        setProviderMap(currentProviderMap)
-        setCurrentProvider(defaultProvider)
-        setCurrentRegion(defaultRegion)
-      } catch (err) {
-        setNetworkErrorMsg(OrgOverlayNetworkError.ClusterFetchFailedError)
-      }
-    }
-    retrieveClusters()
-  }, [])
 
   return (
     <Overlay.Container

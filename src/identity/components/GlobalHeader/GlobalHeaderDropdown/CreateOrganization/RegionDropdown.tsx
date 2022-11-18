@@ -1,19 +1,19 @@
 // Libraries
-import React, {Dispatch, FC} from 'react'
+import React, {FC} from 'react'
 import {Dropdown} from '@influxdata/clockface'
 
 // Types
 import {Cluster} from 'src/client/unityRoutes'
 
 interface Props {
-  regions: Cluster[]
   currentRegion: string
-  setCurrentRegion: Dispatch<any>
+  regions: Cluster[]
+  setCurrentRegion: (regionID: string) => void
 }
 
 export const RegionDropdown: FC<Props> = ({
-  regions,
   currentRegion,
+  regions,
   setCurrentRegion,
 }) => {
   const button = (

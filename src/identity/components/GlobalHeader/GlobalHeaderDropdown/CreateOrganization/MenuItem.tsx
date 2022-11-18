@@ -1,7 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-
-// Components
 import {
   AlignItems,
   Dropdown,
@@ -9,13 +7,17 @@ import {
   Icon,
   IconFont,
 } from '@influxdata/clockface'
+import {useDispatch} from 'react-redux'
+
+// Components
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 export const CreateOrganizationMenuItem: FC = () => {
+  const dispatch = useDispatch()
   const handleCreateOrg = () => {
-    // TODO: Enable this when #5899 is worked on
-    // event('globalheader_createOrg_menuItem_clicked')
-    // TODO: Remove this comment when you are working on https://github.com/influxdata/ui/issues/5899
-    //       Add create organization functionality with modal, error handling and redirect to new organization
+    dispatch(
+      showOverlay('create-organization', null, () => dispatch(dismissOverlay()))
+    )
   }
 
   const title = 'Create Organization'

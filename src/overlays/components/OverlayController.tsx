@@ -45,6 +45,7 @@ import PayGSupportOverlay from 'src/support/components/PayGSupportOverlay'
 import FreeAccountSupportOverlay from 'src/support/components/FreeAccountSupportOverlay'
 import FeedbackQuestionsOverlay from 'src/support/components/FeedbackQuestionsOverlay'
 import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
+import {CreateOrganizationOverlay} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -176,6 +177,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'subscription-replace-certificate':
         activeOverlay.current = <ReplaceCertificateOverlay onClose={onClose} />
+        break
+      case 'create-organization':
+        activeOverlay.current = <CreateOrganizationOverlay />
         break
       default:
         activeOverlay.current = null

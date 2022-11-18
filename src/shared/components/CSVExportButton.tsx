@@ -70,12 +70,6 @@ class CSVExportButton extends PureComponent<Props, State> {
   }
 
   private handleClick = () => {
-    // Known cypress issue with form submit for file download
-    // Cypress automatically expects a redirect for any form submission
-    if ((window as any).Cypress) {
-      setTimeout(() => location.reload(), 3000)
-    }
-
     this.props.download()
   }
 }

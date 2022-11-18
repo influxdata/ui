@@ -52,8 +52,5 @@ module.exports = on => {
         })
         return null
       },
-      getDownloads: ({dirPath}) => {
-        return fs.readdirSync(dirPath)
-      },
     })
 }

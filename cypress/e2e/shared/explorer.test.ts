@@ -1,8 +1,9 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
-const path = require('path')
 
 describe('DataExplorer', () => {
+  let route: string
+
   beforeEach(() => {
     cy.flush()
     cy.signin()
@@ -16,7 +17,8 @@ describe('DataExplorer', () => {
     cy.get('@org').then(({id}: Organization) => {
       cy.createMapVariable(id)
       cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
+        route = `${orgs}/${id}${explorer}`
+        cy.visit(route)
         cy.getByTestID('tree-nav').should('be.visible')
       })
     })
@@ -912,6 +914,8 @@ describe('DataExplorer', () => {
   })
 
   describe('download csv', () => {
+    // docs for how to test form submission as file download:
+    // https://github.com/cypress-io/cypress-example-recipes/blob/cc13866e55bd28e1d1323ba6d498d85204f292b5/examples/testing-dom__download/cypress/e2e/form-submission-spec.cy.js
     const downloadsDirectory = Cypress.config('downloadsFolder')
 
     const validateCsv = (csv: string, rowCnt: number) => {
@@ -930,6 +934,10 @@ describe('DataExplorer', () => {
     })
 
     it('can download a file', () => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
+        req.redirect(route)
+      }).as('query')
+
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
           .monacoType(`from(bucket: "defbuck")
@@ -939,15 +947,19 @@ describe('DataExplorer', () => {
           .click()
       })
 
-      cy.task('getDownloads', {dirPath: downloadsDirectory}).should(files => {
-        ;(files as string[]).forEach(filename => {
-          expect(filename).contains('influxdata_')
-          const fullPathFile = path.join(downloadsDirectory, filename)
-          cy.readFile(fullPathFile, {timeout: 15000})
-            .should('have.length.gt', 50)
-            .then(csv => validateCsv(csv, 20))
+      cy.wait('@query')
+        .its('request')
+        .then(req => {
+          cy.request(req)
+            .then(({body, headers}) => {
+              expect(headers).to.have.property(
+                'content-type',
+                'text/csv; charset=utf-8'
+              )
+              return Promise.resolve(body)
+            })
+            .then(csv => validateCsv(csv, 1))
         })
-      })
     })
   })
 })

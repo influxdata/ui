@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
+import {cloneDeep} from 'lodash'
 
 // Types
 import {UserAccount} from 'src/client/unityRoutes'
@@ -114,7 +115,9 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
       await updateDefaultQuartzAccount(newDefaultAcctId)
 
-      userAccounts.forEach(account => {
+      const accountsClone = cloneDeep(userAccounts)
+
+      accountsClone.forEach(account => {
         if (account.id === oldDefaultAcctId) {
           account.isDefault = false
         }
@@ -122,8 +125,8 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
           account.isDefault = true
         }
       })
-
       setDefaultAccountId(newDefaultAcctId)
+      setUserAccounts(accountsClone)
 
       if (!setDefaultAccountOptions?.disablePopUps) {
         dispatch(notify(accountDefaultSettingSuccess(accountName)))

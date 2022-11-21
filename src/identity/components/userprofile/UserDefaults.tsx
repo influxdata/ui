@@ -44,7 +44,7 @@ import 'src/identity/components/userprofile/UserProfile.scss'
 export const UserDefaults: FC = () => {
   const dispatch = useDispatch()
 
-  const {defaultAccountId, userAccounts, handleSetDefaultAccount} =
+  const {defaultAccountId, handleSetDefaultAccount, userAccounts} =
     useContext(UserAccountContext)
   const quartzOrganizations = useSelector(selectQuartzOrgs)
 

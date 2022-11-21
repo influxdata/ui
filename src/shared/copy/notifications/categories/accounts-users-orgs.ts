@@ -1,8 +1,17 @@
-import {Notification} from 'src/types'
+// Libraries
+import {IconFont} from '@influxdata/clockface'
+
+// Constants
+import {FIFTEEN_SECONDS} from 'src/shared/constants'
+
+// Notifications
 import {
   defaultErrorNotification,
   defaultSuccessNotification,
 } from 'src/shared/copy/notifications'
+
+// Types
+import {Notification, NotificationStyle} from 'src/types'
 
 export const accountDefaultSettingError = (
   accountName: string
@@ -99,6 +108,15 @@ export const orgEditFailed = (): Notification => ({
 export const orgEditSuccess = (): Notification => ({
   ...defaultSuccessNotification,
   message: 'Organization was successfully updated',
+})
+
+export const orgQuotaReached = (): Notification => ({
+  ...defaultSuccessNotification,
+  style: NotificationStyle.Primary,
+  styles: {maxWidth: '360px'},
+  icon: IconFont.Info_New,
+  duration: FIFTEEN_SECONDS,
+  message: `You've reached the organization quota for this account. Upgrade to add more organizations.`,
 })
 
 export const orgRenameFailed = (orgName): Notification => ({

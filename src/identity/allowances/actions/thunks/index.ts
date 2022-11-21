@@ -31,10 +31,13 @@ export const getOrgCreationAllowancesThunk =
       dispatch(setOrgCreationAllowance(allowances))
 
       dispatch(setOrgCreationAllowanceStatus(RemoteDataState.Done))
+
+      return allowances.allowed
     } catch (error) {
       reportErrorThroughHoneyBadger(error, {
         name: 'Failed to fetch org creation allowance',
         context: {state: getState().identity},
       })
+      return false
     }
   }

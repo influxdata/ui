@@ -44,7 +44,8 @@ import 'src/identity/components/userprofile/UserProfile.scss'
 export const UserDefaults: FC = () => {
   const dispatch = useDispatch()
 
-  const {userAccounts, handleSetDefaultAccount} = useContext(UserAccountContext)
+  const {defaultAccountId, userAccounts, handleSetDefaultAccount} =
+    useContext(UserAccountContext)
   const quartzOrganizations = useSelector(selectQuartzOrgs)
 
   const identity = useSelector(selectQuartzIdentity)
@@ -58,8 +59,10 @@ export const UserDefaults: FC = () => {
 
   const defaultAccount = useMemo(
     () =>
-      accounts ? accounts.find(el => el.isDefault === true) : emptyAccount,
-    [accounts]
+      accounts
+        ? accounts.find(acct => acct.id === defaultAccountId)
+        : emptyAccount,
+    [accounts, defaultAccountId]
   )
   const defaultOrg = useMemo(
     () => (orgs ? orgs.find(el => el.isDefault === true) : emptyOrg),

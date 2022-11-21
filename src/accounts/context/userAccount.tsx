@@ -91,7 +91,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         setDefaultAccountId(defaultId)
       }
 
-      // isActive: true is for the currently logged in/active account
       const activeAcct = accounts.find(acct => acct.isActive === true)
       if (typeof activeAcct === 'object' && activeAcct.hasOwnProperty('id')) {
         const activeId = activeAcct.id
@@ -111,7 +110,19 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     const accountName = getAccountNameById(newDefaultAcctId)
 
     try {
+      const oldDefaultAcctId = defaultAccountId
+
       await updateDefaultQuartzAccount(newDefaultAcctId)
+
+      userAccounts.forEach(account => {
+        if (account.id === oldDefaultAcctId) {
+          account.isDefault = false
+        }
+        if (account.id === newDefaultAcctId) {
+          account.isDefault = true
+        }
+      })
+
       setDefaultAccountId(newDefaultAcctId)
 
       if (!setDefaultAccountOptions?.disablePopUps) {
@@ -159,7 +170,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   useEffect(() => {
     handleGetAccounts()
-  }, [handleGetAccounts, defaultAccountId, activeAccountId])
+  }, [handleGetAccounts])
 
   return (
     <UserAccountContext.Provider

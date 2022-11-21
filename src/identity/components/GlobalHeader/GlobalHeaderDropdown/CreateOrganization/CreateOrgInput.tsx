@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react'
+import React, {FC} from 'react'
 import {
   ComponentSize,
   ComponentStatus,
@@ -25,12 +25,7 @@ export const CreateOrgInput: FC<Props> = ({
   orgName,
   validationMsg,
 }) => {
-  const [userTouchedFormInput, setUserTouchedFormInput] = useState(false)
-
   const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    if (!userTouchedFormInput) {
-      setUserTouchedFormInput(true)
-    }
     handleValidateOrgName(evt.target.value)
   }
 

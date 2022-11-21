@@ -66,16 +66,19 @@ enum ProviderSelectMessage {
 // Selectors
 import {
   selectCurrentAccountId,
+  selectOrgCreationAllowance,
+  selectOrgCreationAllowanceStatus,
   selectQuartzOrgsContents,
   selectQuartzOrgsStatus,
 } from 'src/identity/selectors'
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
-import {orgCreateSuccess} from 'src/shared/copy/notifications'
+import {orgCreateSuccess, orgQuotaReached} from 'src/shared/copy/notifications'
 
 // Thunks
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
+import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thunks'
 
 // Utils
 import {generateProviderMap} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/utils/generateProviderMap'
@@ -89,6 +92,10 @@ export const CreateOrganizationOverlay: FC = () => {
   const currentAccountId = useSelector(selectCurrentAccountId)
   const organizations = useSelector(selectQuartzOrgsContents)
   const orgsLoadedStatus = useSelector(selectQuartzOrgsStatus)
+  const orgCreationAllowed = useSelector(selectOrgCreationAllowance)
+  const orgCreationAllowanceStatus = useSelector(
+    selectOrgCreationAllowanceStatus
+  )
 
   // Local State
   // Dropdown State
@@ -120,12 +127,30 @@ export const CreateOrganizationOverlay: FC = () => {
     ? RemoteDataState.Done
     : RemoteDataState.Loading
 
-  // Ajax requests
+  // Side effects
   useEffect(() => {
     if (orgsLoadedStatus === RemoteDataState.NotStarted) {
       dispatch(getQuartzOrganizationsThunk(currentAccountId))
     }
   }, [currentAccountId, orgsLoadedStatus, dispatch])
+
+  useEffect(() => {
+    if (orgCreationAllowanceStatus === RemoteDataState.NotStarted) {
+      dispatch(getOrgCreationAllowancesThunk())
+    }
+  }, [dispatch, orgCreationAllowanceStatus])
+
+  useEffect(() => {
+    if (!orgCreationAllowed) {
+      if (createOrgButtonStatus === ComponentStatus.Default) {
+        setCreateOrgButtonStatus(ComponentStatus.Disabled)
+      }
+
+      if (networkErrorMsg !== OrgOverlayNetworkError.OrgLimitError) {
+        setNetworkErrorMsg(OrgOverlayNetworkError.OrgLimitError)
+      }
+    }
+  }, [createOrgButtonStatus, networkErrorMsg, orgCreationAllowed])
 
   useEffect(() => {
     const retrieveClusters = async () => {
@@ -162,12 +187,16 @@ export const CreateOrganizationOverlay: FC = () => {
         region: currentRegion,
       })
       setCreateOrgButtonStatus(ComponentStatus.Default)
-      onClose()
       dispatch(notify(orgCreateSuccess()))
-      // Will make another API call to the allowance endpoint in PR resolving this issue.
-      // https://github.com/influxdata/ui/issues/6267
-      // Need a parallel update to global header state to ensure list of orgs remains updated.
       dispatch(getQuartzOrganizationsThunk(currentAccountId))
+      Promise.resolve(dispatch(getOrgCreationAllowancesThunk())).then(
+        allowed => {
+          if (!allowed) {
+            dispatch(notify(orgQuotaReached()))
+          }
+          onClose()
+        }
+      )
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         setNetworkErrorMsg(OrgOverlayNetworkError.NameConflictError)

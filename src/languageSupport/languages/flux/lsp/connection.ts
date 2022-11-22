@@ -13,7 +13,6 @@ import {
   DEFAULT_FLUX_EDITOR_TEXT,
   CompositionSelection,
 } from 'src/dataExplorer/context/persistance'
-import {CompositionInitParams} from 'src/languageSupport/languages/flux/lsp/utils'
 import {comments} from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 
 // LSP methods
@@ -276,116 +275,39 @@ class LspConnectionManager {
     )
   }
 
-  // XXX: wiedld (25 Aug 2022) - handling the absence of a middleware listener
-  // race conditions occur when:
-  // (1) LSP is booting up on page reload,
-  // (2) too many executeCommands in a row, too quickly. e.g. re-syncing
-  // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
-  private _initDelayBeforeConsume = true
-  private _bufferComposition: [
-    ExecuteCommand,
-    Omit<ExecuteCommandArgument, 'textDocument'>
-  ][] = []
-  private _i = 0
-  private _o = 0
-  _insertBuffer = req => {
-    this._bufferComposition[this._i % 100] = req
-    this._i++
-  }
-  _incrementBuffer = () => {
-    const msg = this._bufferComposition[this._o % 100]
-    if (!!msg) {
-      this.inject(...msg)
-      this._o++
-    }
-    return
-  }
-
-  _addUpdatesToBuffer(
-    toAdd: Partial<CompositionSelection>,
-    toRemove: Partial<CompositionSelection>
-  ) {
-    /* order is important. This ordering must occur on several levels:
-        (1) bucket & measurement changes must be applied first.
-        (2) for array items (fields and tagValues):
-            * remove all, before adding all from current.
-            * such that on re-sync with the session store...it does a full replacement.
-        (3) even if the Lsp received the executeCommands in order, it may not run these in order.
-            * spec is purely atomic operations, without order mattering.
-            * but since we require that the AddField etc has an init composition -- order does matter.
-            * If on page reload:
-                * we don't AddBucket before AddField --> it will fail.
-                * we AddField twice too quickly, each will see the original text as having 0 fields
-                  * therefore, each addField returns an applyEdit for 1 field
-              * solution:
-                  * short term:
-                    * buffer of executeCommands, send to Lsp at a throttled pace (hack timeouts)
-                  * longterm: middleware? changes in Lsp?
-    */
-    const numFieldChanges =
-      (toAdd.fields?.length || 0) + (toRemove.fields?.length || 0)
-    const numTagValueChanges =
-      (toAdd.tagValues?.length || 0) + (toRemove.tagValues?.length || 0)
-    const reInitBlock =
-      toAdd.bucket ||
-      toAdd.measurement ||
-      numFieldChanges + numTagValueChanges > 1
-
-    if (reInitBlock) {
-      const payload: Partial<CompositionInitParams> = {
-        bucket: toAdd.bucket?.name || this._session.bucket?.name,
-      }
-      if (toAdd.measurement || this._session.measurement) {
-        payload['measurement'] = toAdd.measurement || this._session.measurement
-      }
-      if (toAdd.fields || this._session.fields) {
-        payload['fields'] = toAdd.fields || this._session.fields
-      }
-      if (toAdd.tagValues || this._session.tagValues) {
-        payload['tagValues'] = (toAdd.tagValues || this._session.tagValues).map(
-          ({key, value}) => [key, value]
-        )
-      }
-      this._insertBuffer([ExecuteCommand.CompositionInit, payload])
-      return // re-initialize full block. no more requests needed.
-    }
-
-    if (toRemove.fields?.length) {
-      toRemove.fields.forEach(value =>
-        this._insertBuffer([ExecuteCommand.CompositionRemoveField, {value}])
-      )
-    }
-    if (toAdd.fields?.length) {
-      toAdd.fields.forEach(value =>
-        this._insertBuffer([ExecuteCommand.CompositionAddField, {value}])
-      )
-    }
-    if (toRemove.tagValues?.length) {
-      toRemove.tagValues.forEach(({key, value}) =>
-        this._insertBuffer([
-          ExecuteCommand.CompositionRemoveTagValue,
-          {tag: key, value},
-        ])
-      )
-    }
-    if (toAdd.tagValues?.length) {
-      toAdd.tagValues.forEach(({key, value}) =>
-        this._insertBuffer([
-          ExecuteCommand.CompositionAddTagValue,
-          {tag: key, value},
-        ])
-      )
-    }
-  }
-
   _updateLsp(
     toAdd: Partial<CompositionSelection>,
     toRemove: Partial<CompositionSelection> = null
   ) {
-    this._addUpdatesToBuffer(toAdd, toRemove)
+    if (toAdd.bucket) {
+      this.inject(ExecuteCommand.CompositionInit, {bucket: toAdd.bucket?.name})
+    }
 
-    if (!this._initDelayBeforeConsume) {
-      setTimeout(() => this._incrementBuffer(), 0)
+    if (toAdd.measurement) {
+      this.inject(ExecuteCommand.CompositionSetMeasurement, {
+        value: toAdd.measurement,
+      })
+    }
+
+    if (toRemove.fields?.length) {
+      toRemove.fields.forEach(value =>
+        this.inject(ExecuteCommand.CompositionRemoveField, {value})
+      )
+    }
+    if (toAdd.fields?.length) {
+      toAdd.fields.forEach(value =>
+        this.inject(ExecuteCommand.CompositionAddField, {value})
+      )
+    }
+    if (toRemove.tagValues?.length) {
+      toRemove.tagValues.forEach(({key, value}) =>
+        this.inject(ExecuteCommand.CompositionRemoveTagValue, {tag: key, value})
+      )
+    }
+    if (toAdd.tagValues?.length) {
+      toAdd.tagValues.forEach(({key, value}) =>
+        this.inject(ExecuteCommand.CompositionAddTagValue, {tag: key, value})
+      )
     }
   }
 
@@ -398,25 +320,33 @@ class LspConnectionManager {
 
     if (schema.bucket && previousState.bucket != schema.bucket) {
       toAdd.bucket = schema.bucket
-    }
-    if (toAdd.bucket && this._model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
-      // first time selecting bucket --> remove if default message
-      this._model.setValue('')
+      if (this._model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
+        // first time selecting bucket --> remove if default message
+        this._model.setValue('')
+      }
     }
     if (schema.measurement && previousState.measurement != schema.measurement) {
       toAdd.measurement = schema.measurement
     }
-
-    const currText = this._model.getValue()
     if (!isEqual(schema.fields, previousState.fields)) {
-      toRemove.fields = previousState.fields.filter(f => currText.includes(f))
-      toAdd.fields = schema.fields
+      toRemove.fields = previousState.fields.filter(
+        f => !schema.fields.includes(f)
+      )
+      toAdd.fields = schema.fields.filter(
+        f => !previousState.fields.includes(f)
+      )
     }
     if (!isEqual(schema.tagValues, previousState.tagValues)) {
-      toRemove.tagValues = previousState.tagValues.filter(({value}) =>
-        currText.includes(value)
+      toRemove.tagValues = previousState.tagValues.filter(
+        ({key, value}) =>
+          !schema.tagValues.some(pair => pair.value == value && pair.key == key)
       )
-      toAdd.tagValues = schema.tagValues
+      toAdd.tagValues = schema.tagValues.filter(
+        ({key, value}) =>
+          !previousState.tagValues.some(
+            pair => pair.value == value && pair.key == key
+          )
+      )
     }
 
     return {toAdd, toRemove}
@@ -424,28 +354,7 @@ class LspConnectionManager {
 
   _initCompositionHandlers() {
     this._snapshot = this._model.createSnapshot()
-
-    // handlers to trigger end composition
     this._setEditorIrreversibleExit()
-
-    // XXX: wiedld (25 Aug 2022) - eventually, this should be from the LSP response.
-    // Tie the middleware to LspConnectionManager.onLspMessage()
-    // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
-    this._model.onDidChangeContent(e => {
-      if (this._session.composition?.synced) {
-        this._setEditorBlockStyle()
-
-        const isAppliedEdit = e.changes.some(
-          change =>
-            this._editorChangeIsWithinComposition(change) &&
-            this._editorChangeIsFromLsp(change)
-        )
-        if (isAppliedEdit) {
-          setTimeout(() => this._incrementBuffer(), 0)
-        }
-      }
-    })
-
     this._compositionHandlersSet = true
   }
 
@@ -480,18 +389,15 @@ class LspConnectionManager {
 
     if (!this._compositionHandlersSet) {
       this._initCompositionHandlers()
-      setTimeout(() => {
-        // XXX: wiedld (25 Aug 2022) - cannot init composition until after didOpen file
-        // hardcode a delay for now
-        // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
-        this._initDelayBeforeConsume = false
-        this._incrementBuffer()
-      }, 3000)
+      return // do not re-init schema session on reload
     }
 
     const {toAdd, toRemove} = this._diffSchemaChange(schema, previousState)
     if (Object.keys(toAdd).length || Object.keys(toRemove).length) {
-      this._updateLsp(toAdd, toRemove)
+      // since this._diffSchemaChange() can set the model
+      // we need the executeCommand to be issued after the model update
+      const delay = toAdd.bucket ? 1500 : 0
+      setTimeout(() => this._updateLsp(toAdd, toRemove), delay)
     }
   }
 

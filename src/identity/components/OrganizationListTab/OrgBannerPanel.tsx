@@ -9,7 +9,10 @@ import './OrgBannerPanel.scss'
 import {CLOUD_URL} from 'src/shared/constants'
 
 // Types
-import {OrgAllowance} from 'src/identity/components/OrganizationListTab'
+interface OrgAllowance {
+  availableUpgrade: string
+  isAtOrgLimit: boolean
+}
 
 export const OrgBannerPanel: FC<OrgAllowance> = ({
   availableUpgrade,

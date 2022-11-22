@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
+import {cloneDeep} from 'lodash'
 
 // Types
 import {UserAccount} from 'src/client/unityRoutes'
@@ -91,7 +92,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         setDefaultAccountId(defaultId)
       }
 
-      // isActive: true is for the currently logged in/active account
       const activeAcct = accounts.find(acct => acct.isActive === true)
       if (typeof activeAcct === 'object' && activeAcct.hasOwnProperty('id')) {
         const activeId = activeAcct.id
@@ -111,8 +111,22 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     const accountName = getAccountNameById(newDefaultAcctId)
 
     try {
+      const oldDefaultAcctId = defaultAccountId
+
       await updateDefaultQuartzAccount(newDefaultAcctId)
+
+      const accountsClone = cloneDeep(userAccounts)
+
+      accountsClone.forEach(account => {
+        if (account.id === oldDefaultAcctId) {
+          account.isDefault = false
+        }
+        if (account.id === newDefaultAcctId) {
+          account.isDefault = true
+        }
+      })
       setDefaultAccountId(newDefaultAcctId)
+      setUserAccounts(accountsClone)
 
       if (!setDefaultAccountOptions?.disablePopUps) {
         dispatch(notify(accountDefaultSettingSuccess(accountName)))
@@ -159,7 +173,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   useEffect(() => {
     handleGetAccounts()
-  }, [handleGetAccounts, defaultAccountId, activeAccountId])
+  }, [handleGetAccounts])
 
   return (
     <UserAccountContext.Provider

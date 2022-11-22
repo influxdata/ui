@@ -1,4 +1,6 @@
-export const mockOrgData = [
+import {OrganizationSummaries} from 'src/client/unityRoutes'
+
+export const mockOrgData: OrganizationSummaries = [
   {
     id: '9296169091c64567',
     name: 'Test Co. 1',
@@ -7,6 +9,7 @@ export const mockOrgData = [
     provider: 'AWS',
     regionCode: 'us-east-1',
     regionName: 'US East (N. Virginia)',
+    state: 'provisioned',
   },
   {
     id: 'a71ced2b8238902b',
@@ -16,6 +19,7 @@ export const mockOrgData = [
     provider: 'AWS',
     regionCode: 'eu-central-1',
     regionName: 'EU Frankfurt',
+    state: 'provisioned',
   },
   {
     id: 'ac3d3c04b8f1a545',
@@ -25,6 +29,7 @@ export const mockOrgData = [
     provider: 'AWS',
     regionCode: 'us-east-1-2',
     regionName: 'US East (N. Virginia) 2',
+    state: 'provisioned',
   },
   {
     id: 'fc734484afa0fcac',
@@ -34,6 +39,7 @@ export const mockOrgData = [
     provider: 'Azure',
     regionCode: 'us-west-2-2',
     regionName: 'US West (Oregon)',
+    state: 'provisioned',
   },
   {
     id: '62cba0af4760ce02',
@@ -43,5 +49,6 @@ export const mockOrgData = [
     provider: 'Azure',
     regionCode: 'westeurope',
     regionName: 'Amsterdam',
+    state: 'provisioned',
   },
 ]

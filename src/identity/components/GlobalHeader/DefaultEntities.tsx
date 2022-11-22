@@ -17,4 +17,5 @@ export const emptyOrg: OrganizationSummaries[number] = {
   provider: '',
   regionCode: '',
   regionName: '',
+  state: 'provisioned',
 }

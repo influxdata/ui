@@ -68,7 +68,7 @@ import {
   selectCurrentAccountId,
   selectOrgCreationAllowance,
   selectOrgCreationAllowanceStatus,
-  selectQuartzOrgsContents,
+  selectQuartzOrgs,
   selectQuartzOrgsStatus,
 } from 'src/identity/selectors'
 
@@ -90,7 +90,7 @@ export const CreateOrganizationOverlay: FC = () => {
 
   // Selectors
   const currentAccountId = useSelector(selectCurrentAccountId)
-  const organizations = useSelector(selectQuartzOrgsContents)
+  const organizations = useSelector(selectQuartzOrgs)
   const orgsLoadedStatus = useSelector(selectQuartzOrgsStatus)
   const orgCreationAllowed = useSelector(selectOrgCreationAllowance)
   const orgCreationAllowanceStatus = useSelector(

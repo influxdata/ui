@@ -24,7 +24,7 @@ import {
   selectOrgCreationAllowance,
   selectOrgCreationAllowanceStatus,
   selectOrgCreationAvailableUpgrade,
-  selectQuartzOrgsContents,
+  selectQuartzOrgs,
   selectQuartzOrgsStatus,
 } from 'src/identity/selectors'
 
@@ -62,11 +62,11 @@ export const OrganizationListTab: FC<Props> = ({pageHeight}) => {
   const availableUpgrade = useSelector(selectOrgCreationAvailableUpgrade)
   const currentAccountId = useSelector(selectCurrentAccountId)
   const isAtOrgLimit = !useSelector(selectOrgCreationAllowance)
-  const orgsInAccount = useSelector(selectQuartzOrgsContents)
-  const orgsLoadedStatus = useSelector(selectQuartzOrgsStatus)
   const orgCreationAllowanceStatus = useSelector(
     selectOrgCreationAllowanceStatus
   )
+  const orgsInAccount = useSelector(selectQuartzOrgs)
+  const orgsLoadedStatus = useSelector(selectQuartzOrgsStatus)
 
   // Component State
   const [currentPage, setCurrentPage] = useState(1)

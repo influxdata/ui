@@ -226,11 +226,6 @@
     "yjs": "^13.5.36"
   },
   "resolutions": {
-    "minimatch": "^3.0.5",
-    "css-loader/**/loader-utils": "^2.0.4",
-    "mini-css-extract-plugin/**/loader-utils": "^1.4.2",
-    "monaco-editor-webpack-plugin/**/loader-utils": "^2.0.4",
-    "sass-loader/**/loader-utils": "^1.4.2",
-    "ts-loader/**/loader-utils": "^1.4.2"
+    "minimatch": "^3.0.5"
   }
 }

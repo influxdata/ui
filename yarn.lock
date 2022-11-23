@@ -5342,14 +5342,6 @@ file-entry-cache@^6.0.1:
   dependencies:
     flat-cache "^3.0.4"
 
-file-loader@^4.1.0:
-  version "4.3.0"
-  resolved "https://registry.npmjs.org/file-loader/-/file-loader-4.3.0.tgz"
-  integrity sha512-aKrYPYjF1yG3oX0kWRrqrSMfgftm7oJW5M+m4owoldH5C51C0RkIwB++JbRvEW3IU6/ZG5n8UvEcdgwOt2UOWA==
-  dependencies:
-    loader-utils "^1.2.3"
-    schema-utils "^2.5.0"
-
 fill-range@^7.0.1:
   version "7.0.1"
   resolved "https://registry.npmjs.org/fill-range/-/fill-range-7.0.1.tgz"
@@ -7253,6 +7245,11 @@ kleur@^3.0.3:
   resolved "https://registry.npmjs.org/kleur/-/kleur-3.0.3.tgz"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
+klona@^2.0.4:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.5.tgz#d166574d90076395d9963aa7a928fabb8d76afbc"
+  integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
+
 last-call-webpack-plugin@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/last-call-webpack-plugin/-/last-call-webpack-plugin-3.0.0.tgz"
@@ -7417,19 +7414,19 @@ loader-runner@^4.2.0:
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-4.3.0.tgz#c1b4a163b99f614830353b16755e7149ac2314e1"
   integrity sha512-3R/1M+yS3j5ou80Me59j7F9IMs4PXs3VqRrm0TU3AbKPxlmpoY1TNscJV/oGJXo8qCatFGTfDbY6W6ipGOYXfg==
 
-loader-utils@^1.0.1, loader-utils@^1.2.3, loader-utils@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.4.2.tgz#29a957f3a63973883eb684f10ffd3d151fec01a3"
-  integrity sha512-I5d00Pd/jwMD2QCduo657+YM/6L3KZu++pmX9VFncxaxvHcru9jx1lBaFft+r4Mt2jK0Yhp41XlRAihzPxHNCg==
+loader-utils@^1.1.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.4.1.tgz#278ad7006660bccc4d2c0c1578e17c5c78d5c0e0"
+  integrity sha512-1Qo97Y2oKaU+Ro2xnDMR26g1BwMT29jNbem1EvcujW2jqt+j5COXyscjM7bLQkM9HaxI7pkWeW7gnI072yMI9Q==
   dependencies:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
     json5 "^1.0.1"
 
-loader-utils@^1.1.0:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.4.1.tgz#278ad7006660bccc4d2c0c1578e17c5c78d5c0e0"
-  integrity sha512-1Qo97Y2oKaU+Ro2xnDMR26g1BwMT29jNbem1EvcujW2jqt+j5COXyscjM7bLQkM9HaxI7pkWeW7gnI072yMI9Q==
+loader-utils@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.4.2.tgz#29a957f3a63973883eb684f10ffd3d151fec01a3"
+  integrity sha512-I5d00Pd/jwMD2QCduo657+YM/6L3KZu++pmX9VFncxaxvHcru9jx1lBaFft+r4Mt2jK0Yhp41XlRAihzPxHNCg==
   dependencies:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
@@ -8000,7 +7997,7 @@ negotiator@0.6.3:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.3.tgz#58e323a72fedc0d6f9cd4d31fe49f51479590ccd"
   integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
 
-neo-async@^2.5.0, neo-async@^2.6.2:
+neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
@@ -9595,16 +9592,13 @@ safe-buffer@5.2.1, safe-buffer@>=5.1.0, safe-buffer@^5.0.1, safe-buffer@^5.1.0, 
   resolved "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sass-loader@^7.1.0:
-  version "7.3.1"
-  resolved "https://registry.npmjs.org/sass-loader/-/sass-loader-7.3.1.tgz"
-  integrity sha512-tuU7+zm0pTCynKYHpdqaPpe+MMTQ76I9TPZ7i4/5dZsigE350shQWe5EZNl5dBidM49TPET75tNqRbcsUZWeNA==
+sass-loader@^13.2.0:
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-13.2.0.tgz#80195050f58c9aac63b792fa52acb6f5e0f6bdc3"
+  integrity sha512-JWEp48djQA4nbZxmgC02/Wh0eroSUutulROUusYJO9P9zltRbNN80JCBHqRGzjd4cmZCa/r88xgfkjGD0TXsHg==
   dependencies:
-    clone-deep "^4.0.1"
-    loader-utils "^1.0.1"
-    neo-async "^2.5.0"
-    pify "^4.0.1"
-    semver "^6.3.0"
+    klona "^2.0.4"
+    neo-async "^2.6.2"
 
 sass@^1.54.9:
   version "1.54.9"
@@ -9643,15 +9637,6 @@ schema-utils@2.7.0:
     "@types/json-schema" "^7.0.4"
     ajv "^6.12.2"
     ajv-keywords "^3.4.1"
-
-schema-utils@^2.5.0:
-  version "2.7.1"
-  resolved "https://registry.npmjs.org/schema-utils/-/schema-utils-2.7.1.tgz"
-  integrity sha512-SHiNtMOUGWBQJwzISiVYKu82GiV4QYGePp3odlY1tuKO7gPtphAT5R/py0fA6xtbgLL/RvtJZnU9b8s0F1q0Xg==
-  dependencies:
-    "@types/json-schema" "^7.0.5"
-    ajv "^6.12.4"
-    ajv-keywords "^3.5.2"
 
 schema-utils@^3.1.0, schema-utils@^3.1.1:
   version "3.1.1"

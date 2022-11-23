@@ -67,8 +67,7 @@ module.exports = {
       },
       {
         test: /^((?!flux-lsp-browser_bg).)*.wasm$/,
-        loader: 'file-loader',
-        type: 'javascript/auto',
+        type: 'asset/resource',
       },
       {
         test: /\.tsx?$/,
@@ -105,7 +104,6 @@ module.exports = {
             loader: 'sass-loader',
             options: {
               implementation: require('sass'),
-              hmr: true,
             },
           },
         ],

@@ -27,6 +27,9 @@ module.exports = {
     sourceMapFilename: `${STATIC_DIRECTORY}[file].map[query]`,
     assetModuleFilename: `${STATIC_DIRECTORY}[contenthash:10].[ext]`,
   },
+  optimization: {
+    chunkIds: 'size',
+  },
   experiments: {
     asyncWebAssembly: true,
   },

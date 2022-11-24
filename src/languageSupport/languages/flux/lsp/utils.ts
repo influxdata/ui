@@ -195,3 +195,19 @@ export enum ExecuteCommand {
   CompositionAddTagValue = 'fluxComposition/addTagValueFilter',
   CompositionRemoveTagValue = 'fluxComposition/removeTagValueFilter',
 }
+
+/**
+ * @typedef {enum} LspServerEventTitle
+ * LSP server-initiated request, intended for UI response.
+ *    * server request: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#window_showMessageRequest
+ *    * request parameters `ShowMessageRequestParams`:
+ *        * https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#showMessageRequestParams
+ *    * the rust lib extends the `MessageActionItem` with other properties:
+ *        * https://docs.rs/lsp-types/latest/lsp_types/struct.MessageActionItem.html
+ *        * the resulting json-rpc request message is `{title: <string>, ...otherProps}`
+ *    * this enum is the `title` on a given action.
+ *        * intended to switch on the action title => perform UI response
+ */
+export enum LspServerEventTitle {
+  UpdateCompositionRange = 'UpdateCompositionRange',
+}

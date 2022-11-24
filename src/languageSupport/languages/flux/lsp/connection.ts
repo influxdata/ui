@@ -355,6 +355,11 @@ class LspConnectionManager {
   _initCompositionHandlers() {
     this._snapshot = this._model.createSnapshot()
     this._setEditorIrreversibleExit()
+
+    /// OUTCOME: Did not find useful handlers here.
+    // this._editor.<anything>
+    // this._model.<anything>
+
     this._compositionHandlersSet = true
   }
 

@@ -4,16 +4,16 @@ require 'influxdb-client'
 token = '<%= token %>'
 org = '<%= org %>'
 
-client = InfluxDB2::Client.new('<%= server %>', token,
-  precision: InfluxDB2::WritePrecision::NANOSECOND)
+InfluxDB2::Client.use('<%= server %>',
+                      token,
+                      precision: InfluxDB2::WritePrecision::NANOSECOND) do |client|
 
-query = %{<%= query %>}
+    query = %{<%= query %>}
 
-tables = client.create_query_api.query(query: query, org: org)
-tables.each do |_, table|
-  table.records.each do |record|
-    puts "#{record.time} #{record.measurement}: #{record.field}=#{record.value}"
-  end
+    tables = client.create_query_api.query(query: query, org: org)
+    tables.each do |_, table|
+      table.records.each do |record|
+        puts "#{record.time} #{record.measurement}: #{record.field}=#{record.value}"
+      end
+    end
 end
-
-client.close!

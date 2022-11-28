@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
-const WorkerPlugin = require('worker-plugin')
 
 const webpack = require('webpack')
 const {
@@ -29,6 +28,17 @@ module.exports = {
   },
   optimization: {
     chunkIds: 'size',
+    splitChunks: {
+      chunks: 'all',
+      // this may be what we want, just commenting it out for testing purposes
+      // cacheGroups: {
+      //   vendor: {
+      //     test: /[\\/]node_modules[\\/]/,
+      //     name: 'vendors',
+      //     chunks: 'all'
+      //   }
+      // }
+    },
   },
   experiments: {
     asyncWebAssembly: true,
@@ -46,7 +56,7 @@ module.exports = {
         'node_modules/monaco-languageclient/lib/vscode-compatibility'
       ),
     },
-    extensions: ['.tsx', '.ts', '.js', '.wasm'],
+    extensions: ['.tsx', '.ts', '.js', '.wasm', '...'],
     fallback: {
       path: false,
     },
@@ -154,9 +164,6 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: `${STATIC_DIRECTORY}[contenthash:10].css`,
       chunkFilename: `${STATIC_DIRECTORY}[id].[contenthash:10].css`,
-    }),
-    new WorkerPlugin({
-      filename: `${STATIC_DIRECTORY}[name].worker.[contenthash].js`,
     }),
     new webpack.ProgressPlugin(),
     new webpack.EnvironmentPlugin({

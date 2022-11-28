@@ -38,9 +38,6 @@ module.exports = mergeWebpack(commonWebpack, {
       }),
       new OptimizeCSSAssetsPlugin({}),
     ],
-    splitChunks: {
-      chunks: 'all',
-    },
   },
   plugins: [new ForkTsCheckerWebpackPlugin()],
 })

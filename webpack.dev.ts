@@ -23,7 +23,7 @@ module.exports = mergeDev(commonDev, {
     poll: 1000,
   },
   devServer: {
-    hot: true,
+    hot: false,
     historyApiFallback: true,
     proxy: {
       '/api/v2': 'http://localhost:8086',

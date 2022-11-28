@@ -19,7 +19,6 @@ import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import fluxWorkerUrl from 'worker-plugin/loader!./worker/flux.worker'
 import {EditorType} from 'src/types'
 
 // utils
@@ -69,7 +68,7 @@ export function initLspWorker() {
   if (worker) {
     return
   }
-  worker = new Worker(fluxWorkerUrl)
+  worker = new Worker(new URL('./worker/flux.worker.ts', import.meta.url))
   worker.onerror = (err: ErrorEvent) => {
     const error: Error = {...err, name: 'worker.onerror'}
     reportErrorThroughHoneyBadger(error, {name: 'LSP worker'})

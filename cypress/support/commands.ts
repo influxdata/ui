@@ -29,8 +29,10 @@ Cypress.on('uncaught:exception', (err, _) => {
   )
 })
 
-export const signin = (): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.setupUser().then((response: any) => {
+export const signin = (
+  useIox: boolean = false
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.setupUser(useIox).then((response: any) => {
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
       .then(() => {
@@ -592,13 +594,20 @@ export const createToken = (
   })
 }
 
-export const setupUser = (): Cypress.Chainable<any> => {
+export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
+  useIox = Cypress.env('useIox') || useIox
   const defaultUser = Cypress.env('defaultUser')
-  const userParam = defaultUser ? `?user=${defaultUser}` : ''
+  const params = new URLSearchParams()
+  if (defaultUser) {
+    params.set('user', defaultUser)
+  }
+  if (useIox) {
+    params.set('orgSuffix', 'ioxlighthouse')
+  }
   return cy
     .request({
       method: 'GET',
-      url: `/debug/provision${userParam}`,
+      url: `/debug/provision?${params.toString()}`,
     })
     .then(response => {
       if (response.status === 200) {
@@ -616,7 +625,9 @@ export const setupUser = (): Cypress.Chainable<any> => {
         // if for some reason the user wasn't flushed, do it now
         return cy
           .log('retrying the /flush because /provision failed')
-          .then(() => cy.flush().then(_ => cy.setupUser().then(res => res)))
+          .then(() =>
+            cy.flush().then(_ => cy.setupUser(useIox).then(res => res))
+          )
       }
     })
 }

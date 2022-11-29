@@ -34,6 +34,9 @@ import LimitsField from 'src/operator/LimitsField'
 // Constants
 import {TOOLS_URL} from 'src/shared/constants'
 
+const viewUsageButtonStyles = {marginRight: '12px'}
+const reactivateOrgButtonStyles = {marginTop: '8px'}
+
 const OrgOverlay: FC = () => {
   const {
     limits,
@@ -120,7 +123,7 @@ const OrgOverlay: FC = () => {
                       text="View Usage Dashboard"
                       target={LinkTarget.Blank}
                       className="overlay-button--link"
-                      style={{marginRight: '12px'}}
+                      style={viewUsageButtonStyles}
                       href={`${TOOLS_URL}orgs/5d59ccc5163fc318/dashboards/0988da0fd78a7003?vars%5Borgid%5D=${orgID}`}
                     />
                     {canReactivateOrg && (
@@ -129,7 +132,7 @@ const OrgOverlay: FC = () => {
                         shape={ButtonShape.Default}
                         size={ComponentSize.Medium}
                         onClick={reactivateOrg}
-                        style={{marginTop: '8px'}}
+                        style={reactivateOrgButtonStyles}
                         status={
                           reactivateOrgStatus === RemoteDataState.Loading
                             ? ComponentStatus.Disabled

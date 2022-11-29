@@ -24,7 +24,6 @@ import {CreateOrgInput} from 'src/identity/components/GlobalHeader/GlobalHeaderD
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {ProviderCards} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderCards'
 import {RegionDropdown} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/RegionDropdown'
-import {SwitchToNewOrgButton} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/SwitchToNewOrgButton'
 
 // Styles
 import './CreateOrganizationOverlay.scss'
@@ -92,6 +91,24 @@ import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thu
 // Utils
 import {generateProviderMap} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/utils/generateProviderMap'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+
+const switchToNewOrgButtonStyle = {
+  color: 'black',
+  textDecoration: 'underline',
+  cursor: 'pointer',
+}
+
+const SwitchToNewOrgButton = (url: string): JSX.Element => {
+  return (
+    <a
+      href={url}
+      data-testid="go-to-new-org--link"
+      style={switchToNewOrgButtonStyle}
+    >
+      Switch to new org.
+    </a>
+  )
+}
 
 export const CreateOrganizationOverlay: FC = () => {
   const dispatch = useDispatch()

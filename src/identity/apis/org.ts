@@ -61,7 +61,7 @@ export type QuartzOrganizations = {
 // create a new organization
 export const createNewOrg = async (
   organizationCreateRequest: OrganizationCreateRequest
-) => {
+): Promise<CreatedOrg> => {
   const {orgName, provider, region} = organizationCreateRequest
 
   const response = await postOrg({

@@ -82,6 +82,9 @@ import {
   quartzOrgQuotaReached,
 } from 'src/shared/copy/notifications'
 
+// Constants
+import {CLOUD_URL} from 'src/shared/constants'
+
 // Thunks
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
 import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thunks'
@@ -89,7 +92,6 @@ import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thu
 // Utils
 import {generateProviderMap} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/utils/generateProviderMap'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {CLOUD_URL} from 'src/shared/constants'
 
 export const CreateOrganizationOverlay: FC = () => {
   const dispatch = useDispatch()
@@ -189,6 +191,7 @@ export const CreateOrganizationOverlay: FC = () => {
   // Event Handlers
   const createNewOrgPopup = (newOrg: CreatedOrg) => {
     const newOrgUrl = `${CLOUD_URL}/orgs/${newOrg.id}`
+
     const switchToOrgLink =
       newOrg.provisioningStatus === 'provisioned'
         ? () => SwitchToNewOrgButton(newOrgUrl)

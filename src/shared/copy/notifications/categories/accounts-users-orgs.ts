@@ -127,17 +127,19 @@ export const orgRenameSuccess = (orgName: string): Notification => ({
 export const quartzOrgCreateSuccess = (
   orgName: string,
   switchToOrgLink?: NotificationButtonElement
-): Notification => ({
-  ...defaultSuccessNotification,
-  buttonElement: switchToOrgLink,
-  icon: IconFont.CheckMark_New,
-  message: `Organization "${orgName}" created.`,
-  styles: {
-    color: 'black',
-  },
+): Notification => {
+  const notification = {
+    ...defaultSuccessNotification,
+    message: `Organization "${orgName}" created.`,
+    duration: FIFTEEN_SECONDS,
+  }
 
-  duration: FIFTEEN_SECONDS,
-})
+  if (switchToOrgLink) {
+    notification.buttonElement = switchToOrgLink
+  }
+
+  return notification
+}
 
 export const quartzOrgQuotaReached = (): Notification => ({
   ...defaultSuccessNotification,

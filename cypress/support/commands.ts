@@ -595,6 +595,7 @@ export const createToken = (
 }
 
 export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
+  useIox = Cypress.env('useIox') || useIox
   const defaultUser = Cypress.env('defaultUser')
   let params = ''
   if (useIox) {
@@ -602,7 +603,7 @@ export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
       ? `?user=${defaultUser}&orgSuffix=ioxlighthouse`
       : '?orgSuffix=ioxlighthouse'
   } else {
-    params = defaultUser ? `?user=${defaultUser}` : '?'
+    params = defaultUser ? `?user=${defaultUser}` : ''
   }
   return cy
     .request({

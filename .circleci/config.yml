@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   unit:
     docker:
-      - image: circleci/golang:1.15-node
+      - image: circleci/golang:1.17-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:

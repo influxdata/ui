@@ -51,7 +51,7 @@ export interface QuartzOrganization
 
 export type QuartzOrganizations = {
   orgs: QuartzOrganization[]
-  status?: RemoteDataState
+  status: RemoteDataState
 }
 
 // create a new organization

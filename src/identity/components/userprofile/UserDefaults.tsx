@@ -12,7 +12,10 @@ import {
 
 // Selectors and Context
 import {UserAccountContext} from 'src/accounts/context/userAccount'
-import {selectQuartzIdentity, selectQuartzOrgs} from 'src/identity/selectors'
+import {
+  selectQuartzActiveOrgs,
+  selectQuartzIdentity,
+} from 'src/identity/selectors'
 
 // Thunks
 import {updateDefaultOrgThunk} from 'src/identity/quartzOrganizations/actions/thunks'
@@ -46,7 +49,7 @@ export const UserDefaults: FC = () => {
 
   const {defaultAccountId, handleSetDefaultAccount, userAccounts} =
     useContext(UserAccountContext)
-  const quartzOrganizations = useSelector(selectQuartzOrgs)
+  const orgs = useSelector(selectQuartzActiveOrgs)
 
   const identity = useSelector(selectQuartzIdentity)
   const loggedInAccount = identity.currentIdentity.account
@@ -54,8 +57,7 @@ export const UserDefaults: FC = () => {
   const accounts = userAccounts
   const numAccounts = userAccounts ? userAccounts.length : 0
 
-  const orgs = quartzOrganizations.orgs
-  const numOrgs = quartzOrganizations.orgs ? quartzOrganizations.orgs.length : 0
+  const numOrgs = orgs ? orgs.length : 0
 
   const defaultAccount = useMemo(
     () =>
@@ -74,11 +76,11 @@ export const UserDefaults: FC = () => {
 
   useEffect(() => {
     setSelectedAccount(defaultAccount)
-  }, [accounts, defaultAccount])
+  }, [defaultAccount])
 
   useEffect(() => {
     setSelectedOrg(defaultOrg)
-  }, [orgs, defaultOrg])
+  }, [defaultOrg])
 
   const userPickedNewAccount =
     defaultAccount?.id !== selectedAccount?.id && selectedAccount !== null
@@ -141,7 +143,6 @@ export const UserDefaults: FC = () => {
             setSelectedAccount={setSelectedAccount}
           />
         )}
-
         {numOrgs > 1 && (
           <DefaultOrgForm
             accounts={accounts}

@@ -1,3 +1,6 @@
+// Libraries
+import {omit} from 'lodash'
+
 // API Calls
 import {
   getAccounts,
@@ -7,8 +10,10 @@ import {
   getOrg,
   postOrg,
   putAccountsOrgsDefault,
+  state,
   Organization,
   OrganizationCreateRequest,
+  OrganizationSummaries,
 } from 'src/client/unityRoutes'
 
 // Types
@@ -22,7 +27,6 @@ import {
   UnauthorizedError,
   UnprocessableEntityError,
 } from 'src/types/error'
-import {OrganizationSummaries} from 'src/client/unityRoutes'
 
 export interface CurrentOrg {
   id: string
@@ -40,19 +44,14 @@ export interface OrgCreationAllowance {
   availableUpgrade: 'contract' | 'none' | 'pay_as_you_go'
 }
 
-export interface QuartzOrganization {
-  id: string
-  name: string
-  isActive: boolean
-  isDefault: boolean
-  provider?: string
-  regionCode?: string
-  regionName?: string
+export interface QuartzOrganization
+  extends Omit<OrganizationSummaries[number], 'state'> {
+  provisioningStatus?: state
 }
 
 export type QuartzOrganizations = {
-  orgs: OrganizationSummaries
-  status?: RemoteDataState
+  orgs: QuartzOrganization[]
+  status: RemoteDataState
 }
 
 // create a new organization
@@ -168,7 +167,14 @@ export const fetchOrgsByAccountID = async (
     throw new ServerError(response.data.message)
   }
 
-  return response.data
+  // 'state' property in quartz refers to org provisioning status.
+  const orgs = response.data.map(org => {
+    const provisioningStatus = org.state
+    const formattedOrg = {...omit(org, ['state']), provisioningStatus}
+    return formattedOrg
+  })
+
+  return orgs
 }
 
 // fetch details about one of the user's organizations

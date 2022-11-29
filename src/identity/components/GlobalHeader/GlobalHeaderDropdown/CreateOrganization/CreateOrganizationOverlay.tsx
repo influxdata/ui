@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext, useEffect, useState} from 'react'
+import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {
   Alert,
@@ -23,12 +24,13 @@ import {CreateOrgInput} from 'src/identity/components/GlobalHeader/GlobalHeaderD
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {ProviderCards} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/ProviderCards'
 import {RegionDropdown} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/RegionDropdown'
+import {SwitchToNewOrgButton} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/SwitchToNewOrgButton'
 
 // Styles
 import './CreateOrganizationOverlay.scss'
 
 // API
-import {createNewOrg, fetchClusterList} from 'src/identity/apis/org'
+import {CreatedOrg, createNewOrg, fetchClusterList} from 'src/identity/apis/org'
 
 // Types
 import {Cluster, OrganizationCreateRequest} from 'src/client/unityRoutes'
@@ -66,6 +68,7 @@ enum ProviderSelectMessage {
 // Selectors
 import {
   selectCurrentAccountId,
+  selectCurrentOrgId,
   selectOrgCreationAllowance,
   selectOrgCreationAllowanceStatus,
   selectQuartzOrgs,
@@ -74,7 +77,10 @@ import {
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
-import {orgCreateSuccess, orgQuotaReached} from 'src/shared/copy/notifications'
+import {
+  quartzOrgCreateSuccess,
+  quartzOrgQuotaReached,
+} from 'src/shared/copy/notifications'
 
 // Thunks
 import {getQuartzOrganizationsThunk} from 'src/identity/quartzOrganizations/actions/thunks'
@@ -83,14 +89,17 @@ import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thu
 // Utils
 import {generateProviderMap} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/utils/generateProviderMap'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {CLOUD_URL} from 'src/shared/constants'
 
 export const CreateOrganizationOverlay: FC = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const {onClose} = useContext(OverlayContext)
 
   // Selectors
   const currentAccountId = useSelector(selectCurrentAccountId)
   const organizations = useSelector(selectQuartzOrgs)
+  const currentOrgId = useSelector(selectCurrentOrgId)
   const orgsLoadedStatus = useSelector(selectQuartzOrgsStatus)
   const orgCreationAllowed = useSelector(selectOrgCreationAllowance)
   const orgCreationAllowanceStatus = useSelector(
@@ -178,22 +187,40 @@ export const CreateOrganizationOverlay: FC = () => {
   }, [])
 
   // Event Handlers
+  const createNewOrgPopup = (newOrg: CreatedOrg) => {
+    const newOrgUrl = `${CLOUD_URL}/orgs/${newOrg.id}`
+    const switchToOrgLink =
+      newOrg.provisioningStatus === 'provisioned'
+        ? () => SwitchToNewOrgButton(newOrgUrl)
+        : null
+
+    dispatch(notify(quartzOrgCreateSuccess(newOrg.name, switchToOrgLink)))
+  }
+
   const handleCreateOrg = async () => {
     try {
       setCreateOrgButtonStatus(ComponentStatus.Loading)
-      await createNewOrg({
+
+      const newOrg = await createNewOrg({
         orgName: newOrgName,
         provider: currentProvider,
         region: currentRegion,
       })
+
       setCreateOrgButtonStatus(ComponentStatus.Default)
-      dispatch(notify(orgCreateSuccess()))
-      dispatch(getQuartzOrganizationsThunk(currentAccountId))
+
       Promise.resolve(dispatch(getOrgCreationAllowancesThunk())).then(
-        allowed => {
-          if (!allowed) {
-            dispatch(notify(orgQuotaReached()))
+        orgCreationAllowed => {
+          dispatch(getQuartzOrganizationsThunk(currentAccountId))
+
+          createNewOrgPopup(newOrg)
+
+          if (!orgCreationAllowed) {
+            dispatch(notify(quartzOrgQuotaReached()))
           }
+
+          history.push(`/orgs/${currentOrgId}/accounts/orglist`)
+
           onClose()
         }
       )

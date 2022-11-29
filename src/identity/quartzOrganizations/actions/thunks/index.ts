@@ -60,11 +60,15 @@ export const getQuartzOrganizationsThunk =
       dispatch(setQuartzOrganizations(quartzOrganizations))
 
       dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
+
+      return quartzOrganizations
     } catch (err) {
       reportErrorThroughHoneyBadger(err, {
         name: 'Failed to fetch /quartz/orgs/',
         context: {state: getState()},
       })
+
+      return []
     }
   }
 

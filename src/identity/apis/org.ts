@@ -28,6 +28,10 @@ import {
   UnprocessableEntityError,
 } from 'src/types/error'
 
+export interface CreatedOrg extends Omit<Organization, 'state'> {
+  provisioningStatus?: state
+}
+
 export interface CurrentOrg {
   id: string
   clusterHost: string
@@ -88,8 +92,12 @@ export const createNewOrg = async (
     throw new ServerError(response.data.message)
   }
 
-  // Status code in response when successfully creating an org is 201.
-  return response.data
+  // Rename the quartz 'state' property to 'provisioningStatus' for clarity.
+  const newOrg = response.data
+  const provisioningStatus = newOrg.state
+  const formattedNewOrg = {...omit(newOrg, ['state']), provisioningStatus}
+
+  return formattedNewOrg
 }
 
 // fetch the list of clusters in which an org can be created

@@ -607,7 +607,7 @@ export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
   return cy
     .request({
       method: 'GET',
-      url: `/debug/provision${params.toString()}`,
+      url: `/debug/provision?${params.toString()}`,
     })
     .then(response => {
       if (response.status === 200) {

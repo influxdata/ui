@@ -14,7 +14,10 @@ import {cloneDeep} from 'lodash'
 
 const mockState = {
   identity: {
-    quartzOrganizations: {orgs: [emptyOrg], status: RemoteDataState.Done},
+    quartzOrganizations: {
+      orgs: cloneDeep(mockOrgData),
+      status: RemoteDataState.Done,
+    },
   },
 } as AppState
 
@@ -23,7 +26,6 @@ describe('selectQuartzActiveOrgs selector', () => {
 
   beforeEach(() => {
     localState = cloneDeep(mockState)
-    localState.identity.quartzOrganizations.orgs = cloneDeep(mockOrgData)
   })
 
   it('returns an array of length one with the default empty org', () => {
@@ -34,16 +36,16 @@ describe('selectQuartzActiveOrgs selector', () => {
     expect(activeOrgs).toEqual(expect.arrayContaining([emptyOrg]))
   })
 
-  it('returns an array of all orgs a `provisioned` state', () => {
+  it('returns an array of all orgs in a `provisioned` state', () => {
     const activeOrgs = selectQuartzActiveOrgs(localState)
     expect(activeOrgs.length).toBe(5)
     expect(activeOrgs).toEqual(expect.arrayContaining(mockOrgData))
   })
 
   it('returns an array that includes orgs without a state property', () => {
-    localState.identity.quartzOrganizations.orgs[0].state = '' as state // This org should be returned
+    localState.identity.quartzOrganizations.orgs[0].state = '' as state // Return this org
     localState.identity.quartzOrganizations.orgs[1].state =
-      'random property name' as state // This org should not be returned
+      'random new state' as state // Dont return this org
 
     const activeOrgs = selectQuartzActiveOrgs(localState)
 

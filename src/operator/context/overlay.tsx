@@ -6,6 +6,7 @@ import {useDispatch} from 'react-redux'
 import {
   getOperatorOrgsLimits,
   getOperatorOrg,
+  postOperatorOrgsReactivate,
   putOperatorOrgsLimits,
 } from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
@@ -14,6 +15,8 @@ import {
   getLimitsError,
   updateLimitsError,
   updateLimitsSuccess,
+  reactivateOrgError,
+  reactivateOrgSuccess,
 } from 'src/shared/copy/notifications'
 import {toDisplayLimits} from 'src/operator/utils'
 
@@ -30,9 +33,11 @@ export interface OverlayContextType {
   limitsStatus: RemoteDataState
   handleGetLimits: (id: string) => void
   handleGetOrg: (id: string) => void
+  handleReactivateOrg: (id: string) => void
   handleUpdateLimits: (id: string, limits: OperatorOrgLimits) => void
   organization: OperatorOrg
   orgStatus: RemoteDataState
+  reactivateOrgStatus: RemoteDataState
   setLimits: (_: OperatorOrgLimits) => void
   updateLimitStatus: RemoteDataState
 }
@@ -40,11 +45,13 @@ export interface OverlayContextType {
 export const DEFAULT_CONTEXT: OverlayContextType = {
   handleGetLimits: (_: string) => {},
   handleGetOrg: (_: string) => {},
+  handleReactivateOrg: (_id: string) => {},
   handleUpdateLimits: (_id: string, _limits: OperatorOrgLimits) => {},
   limits: null,
   limitsStatus: RemoteDataState.NotStarted,
   organization: null,
   orgStatus: RemoteDataState.NotStarted,
+  reactivateOrgStatus: RemoteDataState.NotStarted,
   setLimits: (_: OperatorOrgLimits) => {},
   updateLimitStatus: RemoteDataState.NotStarted,
 }
@@ -55,6 +62,9 @@ export const OverlayContext =
 export const OverlayProvider: FC<Props> = React.memo(({children}) => {
   const [limits, setLimits] = useState(null)
   const [limitsStatus, setLimitsStatus] = useState(RemoteDataState.NotStarted)
+  const [reactivateOrgStatus, setReactivateOrgStatus] = useState(
+    RemoteDataState.NotStarted
+  )
   const [updateLimitStatus, setUpdateLimitStatus] = useState(
     RemoteDataState.NotStarted
   )
@@ -109,6 +119,21 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     [dispatch]
   )
 
+  const handleReactivateOrg = useCallback(
+    async (id: string) => {
+      try {
+        setReactivateOrgStatus(RemoteDataState.Loading)
+        await postOperatorOrgsReactivate({orgId: id})
+        setReactivateOrgStatus(RemoteDataState.Done)
+        dispatch(notify(reactivateOrgSuccess(id)))
+      } catch (error) {
+        console.error(error)
+        dispatch(notify(reactivateOrgError(id)))
+      }
+    },
+    [dispatch]
+  )
+
   const handleUpdateLimits = useCallback(
     async (id: string, updatedLimits: OperatorOrgLimits) => {
       try {
@@ -129,11 +154,13 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
       value={{
         handleGetLimits,
         handleGetOrg,
+        handleReactivateOrg,
         handleUpdateLimits,
         limits,
         limitsStatus,
         organization,
         orgStatus,
+        reactivateOrgStatus,
         setLimits,
         updateLimitStatus,
       }}

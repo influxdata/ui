@@ -40,9 +40,11 @@ const OrgOverlay: FC = () => {
     limitsStatus,
     handleGetLimits,
     handleGetOrg,
+    handleReactivateOrg,
     handleUpdateLimits,
     organization,
     orgStatus,
+    reactivateOrgStatus,
     setLimits,
     updateLimitStatus,
   } = useContext(OverlayContext)
@@ -50,6 +52,8 @@ const OrgOverlay: FC = () => {
 
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
+  const canReactivateOrg =
+    hasWritePermissions && organization?.state === 'suspended'
 
   useEffect(() => {
     handleGetLimits(orgID)
@@ -69,6 +73,11 @@ const OrgOverlay: FC = () => {
       // If an error occurs the operator will be notified when the API function fails
       return
     }
+  }
+
+  const reactivateOrg = async () => {
+    await handleReactivateOrg(orgID)
+    history.goBack()
   }
 
   return (
@@ -111,8 +120,26 @@ const OrgOverlay: FC = () => {
                       text="View Usage Dashboard"
                       target={LinkTarget.Blank}
                       className="overlay-button--link"
+                      style={{marginRight: '12px'}}
                       href={`${TOOLS_URL}orgs/5d59ccc5163fc318/dashboards/0988da0fd78a7003?vars%5Borgid%5D=${orgID}`}
                     />
+                    {canReactivateOrg && (
+                      <ButtonBase
+                        color={ComponentColor.Primary}
+                        shape={ButtonShape.Default}
+                        size={ComponentSize.Medium}
+                        onClick={reactivateOrg}
+                        style={{marginTop: '8px'}}
+                        status={
+                          reactivateOrgStatus === RemoteDataState.Loading
+                            ? ComponentStatus.Disabled
+                            : ComponentStatus.Default
+                        }
+                        testID="org-overlay-reactivate-organization--button"
+                      >
+                        Reactivate Organization
+                      </ButtonBase>
+                    )}
                   </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>

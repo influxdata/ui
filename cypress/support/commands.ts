@@ -597,18 +597,17 @@ export const createToken = (
 export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
   useIox = Cypress.env('useIox') || useIox
   const defaultUser = Cypress.env('defaultUser')
-  let params = ''
+  const params = new URLSearchParams()
+  if (defaultUser) {
+    params.set('user', defaultUser)
+  }
   if (useIox) {
-    params = defaultUser
-      ? `?user=${defaultUser}&orgSuffix=ioxlighthouse`
-      : '?orgSuffix=ioxlighthouse'
-  } else {
-    params = defaultUser ? `?user=${defaultUser}` : ''
+    params.set('orgSuffix', 'ioxlighthouse')
   }
   return cy
     .request({
       method: 'GET',
-      url: `/debug/provision${params}`,
+      url: `/debug/provision${params.toString()}`,
     })
     .then(response => {
       if (response.status === 200) {

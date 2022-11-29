@@ -52,7 +52,7 @@ export const selectQuartzActiveOrgs = (
   state: AppState
 ): AppState['identity']['quartzOrganizations']['orgs'] => {
   return state.identity.quartzOrganizations.orgs.filter(
-    org => !org.state || org.state === 'provisioned'
+    org => !org.provisioningStatus || org.provisioningStatus === 'provisioned'
   )
 }
 

@@ -43,8 +43,9 @@ describe('selectQuartzActiveOrgs selector', () => {
   })
 
   it('returns an array that includes orgs without a state property', () => {
-    localState.identity.quartzOrganizations.orgs[0].state = '' as state // Return this org
-    localState.identity.quartzOrganizations.orgs[1].state =
+    localState.identity.quartzOrganizations.orgs[0].provisioningStatus =
+      '' as state // Return this org
+    localState.identity.quartzOrganizations.orgs[1].provisioningStatus =
       'random new state' as state // Dont return this org
 
     const activeOrgs = selectQuartzActiveOrgs(localState)
@@ -61,8 +62,10 @@ describe('selectQuartzActiveOrgs selector', () => {
   })
 
   it('does not return orgs that are marked as unprovisioned', () => {
-    localState.identity.quartzOrganizations.orgs[0].state = 'suspended'
-    localState.identity.quartzOrganizations.orgs[1].state = 'pending'
+    localState.identity.quartzOrganizations.orgs[0].provisioningStatus =
+      'suspended'
+    localState.identity.quartzOrganizations.orgs[1].provisioningStatus =
+      'pending'
 
     const activeOrgs = selectQuartzActiveOrgs(localState)
 

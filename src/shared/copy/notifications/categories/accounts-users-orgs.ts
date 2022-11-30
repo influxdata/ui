@@ -11,7 +11,11 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Types
-import {Notification, NotificationStyle} from 'src/types'
+import {
+  Notification,
+  NotificationButtonElement,
+  NotificationStyle,
+} from 'src/types'
 
 export const accountDefaultSettingError = (
   accountName: string
@@ -110,15 +114,6 @@ export const orgEditSuccess = (): Notification => ({
   message: 'Organization was successfully updated',
 })
 
-export const orgQuotaReached = (): Notification => ({
-  ...defaultSuccessNotification,
-  style: NotificationStyle.Primary,
-  styles: {maxWidth: '360px'},
-  icon: IconFont.Info_New,
-  duration: FIFTEEN_SECONDS,
-  message: `You've reached the organization quota for this account. Upgrade to add more organizations.`,
-})
-
 export const orgRenameFailed = (orgName): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to update organization "${orgName}"`,
@@ -127,6 +122,32 @@ export const orgRenameFailed = (orgName): Notification => ({
 export const orgRenameSuccess = (orgName: string): Notification => ({
   ...defaultSuccessNotification,
   message: `Organization was successfully renamed "${orgName}"`,
+})
+
+export const quartzOrgCreateSuccess = (
+  orgName: string,
+  switchToOrgLink?: NotificationButtonElement
+): Notification => {
+  const notification = {
+    ...defaultSuccessNotification,
+    message: `Organization "${orgName}" created.`,
+    duration: FIFTEEN_SECONDS,
+  }
+
+  if (switchToOrgLink) {
+    notification.buttonElement = switchToOrgLink
+  }
+
+  return notification
+}
+
+export const quartzOrgQuotaReached = (): Notification => ({
+  ...defaultSuccessNotification,
+  style: NotificationStyle.Primary,
+  styles: {maxWidth: '360px'},
+  icon: IconFont.Info_New,
+  duration: FIFTEEN_SECONDS,
+  message: `You've reached the organization quota for this account. Upgrade to add more organizations.`,
 })
 
 export const removeUserFailed = (): Notification => ({

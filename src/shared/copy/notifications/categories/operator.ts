@@ -19,6 +19,18 @@ export const getOrgError = (id: string): Notification => ({
   message: `Could not find organization with ID ${id}`,
 })
 
+export const reactivateOrgSuccess = (id: string): Notification => ({
+  ...defaultSuccessNotification,
+  duration: FIVE_SECONDS,
+  message: `Successfully reactivated organization with the ID ${id}`,
+})
+
+export const reactivateOrgError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not reactivate organization with ID ${id}`,
+})
+
 export const getLimitsError = (id: string): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,

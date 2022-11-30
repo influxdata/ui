@@ -1,0 +1,44 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+#mktoForm_2826 {
+  display: none;
+
+  // button {
+  //   opacity: 0;
+  // }
+
+  .mktoLabel {
+    height: 0px;
+    font-weight: 500;
+    color: white;
+    width: 150px !important;
+  }
+
+  .mktoFormRow {
+    width: 300px;
+  }
+
+  .mktoField {
+    border: 0px;
+    font-weight: 400;
+    font-family: 'Proxima Nova', Helvetica, Arial, Tahoma, Verdana, sans-serif;
+    transition: background-color 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
+      border-color 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
+      color 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
+      box-shadow 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
+      color 200ms cubic-bezier(0.18, 0.16, 0.2, 1);
+    outline: none;
+    appearance: none;
+    border-radius: 2px;
+    background-color: #07070e;
+    color: #fff;
+    border: 2px solid #333346;
+  }
+}
+
+.upgrade-to-contract-overlay--body {
+  p {
+    font-size: $cf-text-base-1;
+    margin-block-start: 0px;
+  }
+}

@@ -38,6 +38,7 @@ import {
   selectOrgCreationAvailableUpgrade,
 } from 'src/identity/selectors'
 import {CreateOrganizationMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/MenuItem'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 type OrgSummaryItem = OrganizationSummaries[number]
 
@@ -57,6 +58,14 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   )
 
   const dispatch = useDispatch()
+
+  const openMarketOverlay = () => {
+    dispatch(
+      showOverlay('upgrade-to-contract-overlay', null, () =>
+        dispatch(dismissOverlay())
+      )
+    )
+  }
 
   useEffect(() => {
     if (
@@ -100,13 +109,21 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     !orgCreationAllowed &&
     availableUpgrade !== 'none'
   ) {
-    orgMainMenu.push({
+    // What is value of available upgrade if in contract and need more orgs?
+    const upgradeAccountItem: MainMenuItem = {
       name: 'Add More Organizations',
       iconFont: IconFont.CrownSolid_New,
-      href: '/checkout',
       className: 'upgrade-payg-add-org--button',
       showDivider: true,
-    })
+    }
+
+    if (availableUpgrade === 'pay_as_you_go') {
+      upgradeAccountItem.href = '/checkout'
+    } else {
+      upgradeAccountItem.onClick = openMarketOverlay
+    }
+
+    orgMainMenu.push(upgradeAccountItem)
   }
 
   const sendDropdownClickEvent = () => {

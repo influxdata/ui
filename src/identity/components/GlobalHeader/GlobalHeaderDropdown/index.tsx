@@ -30,8 +30,9 @@ import {event} from 'src/cloud/utils/reporting'
 
 export interface MainMenuItem {
   name: string
+  onClick?: any
   iconFont: string
-  href: string
+  href?: string
   className?: string
   showDivider?: boolean
 }
@@ -125,6 +126,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       'global-header--main-dropdown-item',
       menuItem.className ?? ''
     )
+
     return (
       <div
         onClick={this.sendMainMenuEvent(menuItem.name)}
@@ -137,9 +139,16 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
           selected={false}
         >
           <Link
-            to={menuItem.href}
+            to={menuItem.href ?? '#'}
             className="global-header--main-dropdown-item-link"
-            onClick={onCollapse}
+            onClick={
+              menuItem.onClick
+                ? () => {
+                    menuItem.onClick()
+                    onCollapse()
+                  }
+                : onCollapse
+            }
           >
             {iconEl}
             {textEl}

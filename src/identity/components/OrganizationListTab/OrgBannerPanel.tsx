@@ -1,16 +1,20 @@
 // Libraries
 import React, {FC} from 'react'
+import {useDispatch} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 import {BannerPanel, FlexBox, Gradients, IconFont} from '@influxdata/clockface'
 
 // Styles
 import './OrgBannerPanel.scss'
 
-// Constants
-import {CLOUD_URL} from 'src/shared/constants'
-
 // Types
+import {availableUpgrade} from 'src/client/unityRoutes'
+
+// Utils
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+
 interface OrgAllowance {
-  availableUpgrade: string
+  availableUpgrade: availableUpgrade
   isAtOrgLimit: boolean
 }
 
@@ -18,10 +22,19 @@ export const OrgBannerPanel: FC<OrgAllowance> = ({
   availableUpgrade,
   isAtOrgLimit,
 }) => {
-  let upgradePage = '/'
+  const dispatch = useDispatch()
+  const history = useHistory()
 
-  if (availableUpgrade === 'pay_as_you_go') {
-    upgradePage = `${CLOUD_URL}/checkout`
+  const handleUpgradeAccount = () => {
+    if (availableUpgrade === 'pay_as_you_go') {
+      history.push(`/checkout`)
+    } else {
+      dispatch(
+        showOverlay('upgrade-to-contract-overlay', null, () =>
+          dispatch(dismissOverlay())
+        )
+      )
+    }
   }
 
   return (
@@ -38,8 +51,9 @@ export const OrgBannerPanel: FC<OrgAllowance> = ({
         {isAtOrgLimit && availableUpgrade !== 'none' && (
           <>
             <a
-              href={upgradePage}
+              onClick={handleUpgradeAccount}
               className="account-settings-page-org-tab--quota-limit-link"
+              style={{cursor: 'pointer'}}
             >
               Upgrade
             </a>

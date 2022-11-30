@@ -38,6 +38,7 @@ export type OverlayID =
   | 'help-bar-confirmation'
   | 'subscription-replace-certificate'
   | 'create-organization'
+  | 'upgrade-to-contract-overlay'
 
 export interface OverlayState {
   id: OverlayID | null

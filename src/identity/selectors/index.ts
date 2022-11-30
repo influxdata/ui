@@ -88,3 +88,9 @@ export const selectUser = (
 ): AppState['identity']['currentIdentity']['user'] => {
   return state.identity.currentIdentity.user
 }
+
+export const selectUserId = (
+  state: AppState
+): AppState['identity']['currentIdentity']['user']['id'] => {
+  return state.identity.currentIdentity.user.id
+}

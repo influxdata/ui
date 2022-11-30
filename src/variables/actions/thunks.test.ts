@@ -68,6 +68,7 @@ const baseQueryVariableAction = {
  * properly in a CI environment. It tests that the a thunk dispatches actions properly, but
  * makes no statement on whether the variables were parsed and hydrated correctly, so the value
  * it provides compared to the cost of maintenance is low.
+ * See: https://github.com/influxdata/ui/issues/6351
  **/
 describe.skip('the hydrateVariables thunk', () => {
   it('should call hydrateVars once per query variable', () => {

@@ -30,8 +30,8 @@ self.addEventListener('fetch', function (event: any) {
     contentType == 'application/x-www-form-urlencoded'
   ) {
     const headers = new Headers()
-    for (const pair of event.request.headers) {
-      switch (pair[0]) {
+    for (const [headerType, headerValue] of event.request.headers) {
+      switch (headerType) {
         case 'content-type':
           headers.append('Content-Type', 'application/json')
           break
@@ -39,7 +39,7 @@ self.addEventListener('fetch', function (event: any) {
           headers.append('Accept', '*/*')
           break
         default:
-          headers.append(pair[0], pair[1])
+          headers.append(headerType, headerValue)
       }
     }
     headers.append('Prefer', 'return-download')

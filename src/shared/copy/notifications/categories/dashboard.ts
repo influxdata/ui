@@ -140,3 +140,8 @@ export const copyQueryFailure = (cellName: string = ''): Notification => {
     message: `There was an error copying the query${fromCellName}. Please try again.`,
   }
 }
+
+export const csvDownloadFailure = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Failed to download csv.',
+})

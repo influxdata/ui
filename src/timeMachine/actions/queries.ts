@@ -19,7 +19,11 @@ import {notify} from 'src/shared/actions/notifications'
 import {hydrateVariables} from 'src/variables/actions/thunks'
 
 // Constants
-import {rateLimitReached, resultTooLarge} from 'src/shared/copy/notifications'
+import {
+  csvDownloadFailure,
+  rateLimitReached,
+  resultTooLarge,
+} from 'src/shared/copy/notifications'
 import {API_BASE_PATH} from 'src/shared/constants'
 
 // Utils
@@ -427,7 +431,7 @@ export const runDownloadQuery = () => async (dispatch, getState: GetState) => {
 
     hiddenForm.submit()
   } catch (error) {
-    console.error(error)
+    dispatch(notify(csvDownloadFailure()))
   }
 }
 

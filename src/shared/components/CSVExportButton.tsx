@@ -20,26 +20,29 @@ import downloadWorker from 'worker-plugin/loader!../workers/downloadHelper'
 type Props = ConnectedProps<typeof connector>
 
 interface State {
-  isEnabled: boolean
+  browserSupportsDownload: boolean
 }
 
 class CSVExportButton extends PureComponent<Props, State> {
   constructor(props) {
     super(props)
-    this.state = {isEnabled: false}
+    this.state = {browserSupportsDownload: false}
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register(downloadWorker).then(
-        () => this.setState({isEnabled: true}),
+        () => this.setState({browserSupportsDownload: true}),
         function (err) {
-          console.error('ServiceWorker registration failed: ', err)
+          console.error(
+            'Feature not available, because ServiceWorker registration failed: ',
+            err
+          )
         }
       )
     }
   }
 
   public render() {
-    if (!this.state.isEnabled) {
+    if (!this.state.browserSupportsDownload) {
       return null
     }
 

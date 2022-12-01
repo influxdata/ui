@@ -30,13 +30,6 @@ module.exports = {
     chunkIds: 'size',
     splitChunks: {
       chunks: 'all',
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-        },
-      },
     },
   },
   experiments: {

@@ -30,7 +30,7 @@ export const OrgBannerPanel: FC<OrgAllowance> = ({
       history.push(`/checkout`)
     } else {
       dispatch(
-        showOverlay('upgrade-to-contract-overlay', null, () =>
+        showOverlay('marketo-upgrade-account-overlay', null, () =>
           dispatch(dismissOverlay())
         )
       )

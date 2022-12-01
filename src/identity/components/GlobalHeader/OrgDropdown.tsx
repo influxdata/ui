@@ -59,9 +59,9 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
 
   const dispatch = useDispatch()
 
-  const openMarketOverlay = () => {
+  const openMarketoOverlay = () => {
     dispatch(
-      showOverlay('upgrade-to-contract-overlay', null, () =>
+      showOverlay('marketo-upgrade-account-overlay', null, () =>
         dispatch(dismissOverlay())
       )
     )
@@ -107,10 +107,9 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   if (
     isFlagEnabled('createDeleteOrgs') &&
     !orgCreationAllowed &&
-    availableUpgrade !== 'none'
+    (availableUpgrade === 'pay_as_you_go' || availableUpgrade === 'contract')
   ) {
-    // What is value of available upgrade if in contract and need more orgs?
-    const upgradeAccountItem: MainMenuItem = {
+    const upgradeAccountMenuItem: MainMenuItem = {
       name: 'Add More Organizations',
       iconFont: IconFont.CrownSolid_New,
       className: 'upgrade-payg-add-org--button',
@@ -118,12 +117,12 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
     }
 
     if (availableUpgrade === 'pay_as_you_go') {
-      upgradeAccountItem.href = '/checkout'
+      upgradeAccountMenuItem.href = '/checkout'
     } else {
-      upgradeAccountItem.onClick = openMarketOverlay
+      upgradeAccountMenuItem.onClick = openMarketoOverlay
     }
 
-    orgMainMenu.push(upgradeAccountItem)
+    orgMainMenu.push(upgradeAccountMenuItem)
   }
 
   const sendDropdownClickEvent = () => {

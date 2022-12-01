@@ -127,6 +127,13 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
       menuItem.className ?? ''
     )
 
+    const handleMenuItemClick = () => {
+      if (menuItem.onClick) {
+        menuItem.onClick()
+      }
+      onCollapse()
+    }
+
     return (
       <div
         onClick={this.sendMainMenuEvent(menuItem.name)}
@@ -141,14 +148,7 @@ export class GlobalHeaderDropdown extends React.Component<Props, State> {
           <Link
             to={menuItem.href ?? '#'}
             className="global-header--main-dropdown-item-link"
-            onClick={
-              menuItem.onClick
-                ? () => {
-                    menuItem.onClick()
-                    onCollapse()
-                  }
-                : onCollapse
-            }
+            onClick={handleMenuItemClick}
           >
             {iconEl}
             {textEl}

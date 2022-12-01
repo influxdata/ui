@@ -38,7 +38,7 @@ export type OverlayID =
   | 'help-bar-confirmation'
   | 'subscription-replace-certificate'
   | 'create-organization'
-  | 'upgrade-to-contract-overlay'
+  | 'marketo-upgrade-account-overlay'
 
 export interface OverlayState {
   id: OverlayID | null

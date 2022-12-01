@@ -182,7 +182,7 @@ export const OverlayController: FunctionComponent = () => {
       case 'create-organization':
         activeOverlay.current = <CreateOrganizationOverlay />
         break
-      case 'upgrade-to-contract-overlay':
+      case 'marketo-upgrade-account-overlay':
         activeOverlay.current = <MarketoAccountUpgradeOverlay />
         break
       default:

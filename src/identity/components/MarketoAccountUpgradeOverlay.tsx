@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   Button,
   ComponentColor,
@@ -19,6 +19,8 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Styles
 import './MarketoAccountUpgradeOverlay.scss'
+import {marketoFormSubmitFailure} from 'src/shared/copy/notifications/categories/accounts-users-orgs'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 declare let window: WindowWithMarketo
@@ -32,20 +34,55 @@ interface MarketoScript {
   getForm?: Function
 }
 
+// Constants
+const MARKETO_SERVER_INSTANCE = '//get.influxdata.com'
+const MARKETO_SUBSCRIPTION_ID = '972-GDU-533'
+const MARKETO_FORM_ID = 2826
+const BACKUP_CONTACT_SALES_LINK = 'https://www.influxdata.com/contact-sales-b/'
+
+const SalesFormLink = (): JSX.Element => {
+  return (
+    <a href={BACKUP_CONTACT_SALES_LINK} data-testid="use-sales-form--link">
+      Click here to contact sales.
+    </a>
+  )
+}
+
 export const MarketoAccountUpgradeOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  const accountId = useSelector(selectCurrentAccountId)
+  const dispatch = useDispatch()
+
   const user = useSelector(selectUser)
+  const accountId = useSelector(selectCurrentAccountId)
 
   const [scriptHasLoaded, setScriptHasLoaded] = useState(false)
   const [formHasLoaded, setFormHasLoaded] = useState(false)
 
-  const handleSubmit = () => {
-    window.MktoForms2.getForm(2826).submit()
-    onClose()
+  const handleError = useCallback(
+    (err: Error, message: string) => {
+      dispatch(notify(marketoFormSubmitFailure(SalesFormLink)))
+      reportErrorThroughHoneyBadger(err, {
+        context: {
+          user,
+          accountId,
+        },
+        name: message,
+      })
+    },
+    [accountId, dispatch, user]
+  )
+
+  const handleFormSubmission = () => {
+    try {
+      window.MktoForms2.getForm(MARKETO_FORM_ID).submit()
+      onClose()
+    } catch (err) {
+      handleError(err, 'failed to submit marketo account upgrade form')
+    }
   }
 
   const unloadForm = () => {
+    // Deleting marketo object guards against inconsistent behavior if user closes then re-opens the overlay.
     delete window.MktoForms2
     onClose()
   }
@@ -54,48 +91,29 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
     if (!formHasLoaded) {
       return () => {
         try {
+          // API reference: https://developers.marketo.com/javascript-api/forms/api-reference/
           window.MktoForms2?.loadForm(
-            '//get.influxdata.com',
-            '972-GDU-533',
-            2826,
+            MARKETO_SERVER_INSTANCE,
+            MARKETO_SUBSCRIPTION_ID,
+            MARKETO_FORM_ID,
             () => {
-              const marketoForm = window.MktoForms2?.getForm(2826)
-
-              const marketoElementsToRemove = [
-                '.mktoAsterix',
-                '.mktoOffset',
-                '.mktoGutter',
-                '.mktoButton',
-              ]
-              marketoElementsToRemove.forEach(marketoItem => {
-                document.querySelectorAll(marketoItem).forEach(domNode => {
-                  domNode.remove()
+              const marketoForm = window.MktoForms2
+              if (marketoForm) {
+                marketoForm.getForm(MARKETO_FORM_ID).setValues({
+                  Quartz_User_ID__c: parseInt(user.id),
+                  Quartz_Account_ID__c: accountId,
                 })
-              })
-
-              marketoForm.setValues({
-                Quartz_User_ID__c: parseInt(user.id),
-                Quartz_Account_ID__c: accountId,
-              })
-
-              document.querySelectorAll('input').forEach(input => {
-                input.readOnly = true
-                input.disabled = true
-              })
-
-              setFormHasLoaded(true)
+                setFormHasLoaded(true)
+              }
             }
           )
         } catch (err) {
-          reportErrorThroughHoneyBadger(err, {
-            context: {user, accountId},
-            name: 'failed to load marketo form',
-          })
+          handleError(err, 'failed to load marketo account upgrade form')
         }
       }
     }
     return () => null
-  }, [formHasLoaded, user, accountId])
+  }, [user, accountId, formHasLoaded, handleError])
 
   useEffect(() => {
     if (!scriptHasLoaded) {
@@ -108,27 +126,24 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
 
         setScriptHasLoaded(true)
       } catch (err) {
-        reportErrorThroughHoneyBadger(err, {
-          context: {user},
-          name: 'failed to load marketo script',
-        })
+        handleError(err, 'failed to load marketo account upgrade script')
       }
     }
-  }, [accountId, loadMarketoForm, scriptHasLoaded, user])
+  }, [accountId, handleError, loadMarketoForm, scriptHasLoaded, user])
 
   return (
     <Overlay.Container
       maxWidth={600}
-      className="upgrade-to-contract-overlay--container"
-      testID="upgrade-to-contract-overlay--container"
+      className="marketo-upgrade-account-overlay--container"
+      testID="marketo-upgrade-account-overlay--container"
     >
       <Overlay.Header
-        className="upgrade-to-contract-overlay--header"
-        testID="upgrade-to-contract-overlay--header"
+        className="marketo-upgrade-account-overlay--header"
+        testID="marketo-upgrade-account-overlay--header"
         title="Upgrade Your Account"
         onDismiss={unloadForm}
       />
-      <Overlay.Body className="upgrade-to-contract-overlay--body">
+      <Overlay.Body className="marketo-upgrade-account-overlay--body">
         <p>
           You've reached the organization quota for your current account type.
         </p>
@@ -137,12 +152,12 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
           you.
         </p>
         <br />
-        <form id="mktoForm_2826" />
+        <form id={`mktoForm_${MARKETO_FORM_ID.toString()}`} />
       </Overlay.Body>
       <Overlay.Footer>
         <Button
           text="Cancel"
-          testID="upgrade-to-contract-overlay--cancel-button"
+          testID="marketo-upgrade-account-overlay--cancel-button"
           color={ComponentColor.Default}
           onClick={unloadForm}
         />
@@ -151,7 +166,7 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
           testID="create-org-form-submit"
           color={ComponentColor.Primary}
           status={ComponentStatus.Default}
-          onClick={handleSubmit}
+          onClick={handleFormSubmission}
         />
       </Overlay.Footer>
     </Overlay.Container>

@@ -18,6 +18,10 @@ interface OrgAllowance {
   isAtOrgLimit: boolean
 }
 
+const linkStyle = {
+  cursor: 'pointer',
+}
+
 export const OrgBannerPanel: FC<OrgAllowance> = ({
   availableUpgrade,
   isAtOrgLimit,
@@ -37,30 +41,28 @@ export const OrgBannerPanel: FC<OrgAllowance> = ({
     }
   }
 
-  return (
-    <BannerPanel
-      className="account-settings-page-org-tab--upgrade-banner"
-      gradient={Gradients.PolarExpress}
-      hideMobileIcon={true}
-      icon={IconFont.Info_New}
-    >
-      <FlexBox className="account-settings-page-org-tab--upgrade-banner-text">
-        {isAtOrgLimit && (
+  if (isAtOrgLimit) {
+    return (
+      <BannerPanel
+        className="account-settings-page-org-tab--upgrade-banner"
+        gradient={Gradients.PolarExpress}
+        hideMobileIcon={true}
+        icon={IconFont.Info_New}
+      >
+        <FlexBox className="account-settings-page-org-tab--upgrade-banner-text">
           <>You've reached the organization quota for this account. &nbsp;</>
-        )}
-        {isAtOrgLimit && availableUpgrade !== 'none' && (
-          <>
-            <a
-              onClick={handleUpgradeAccount}
-              className="account-settings-page-org-tab--quota-limit-link"
-              style={{cursor: 'pointer'}}
-            >
-              Upgrade
-            </a>
-            &nbsp;to add more organizations
-          </>
-        )}
-      </FlexBox>
-    </BannerPanel>
-  )
+          <a
+            onClick={handleUpgradeAccount}
+            className="account-settings-page-org-tab--quota-limit-link"
+            style={linkStyle}
+          >
+            Upgrade
+          </a>
+          &nbsp;to add more organizations
+        </FlexBox>
+      </BannerPanel>
+    )
+  }
+
+  return null
 }

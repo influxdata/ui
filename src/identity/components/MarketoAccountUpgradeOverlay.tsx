@@ -27,8 +27,6 @@ import {
 // Utils
 import {notify} from 'src/shared/actions/notifications'
 
-// other one
-
 // Styles
 import './MarketoAccountUpgradeOverlay.scss'
 
@@ -51,16 +49,16 @@ interface MarketoScript {
 }
 
 // Constants
+const BACKUP_CONTACT_SALES_LINK = 'https://www.influxdata.com/contact-sales-b/'
 const MARKETO_SERVER_INSTANCE = '//get.influxdata.com'
 const MARKETO_SUBSCRIPTION_ID = '972-GDU-533'
 const MARKETO_FORM_ID = 2826
-const BACKUP_CONTACT_SALES_LINK = 'https://www.influxdata.com/contact-sales-b/'
 
 // Error Messaging
 enum MarketoError {
   FormLoadingError = 'failed to load marketo account upgrade form',
   FormSubmitError = 'failed to submit marketo account upgrade form',
-  ScriptFetchError = 'failed to fetch marketo script',
+  ScriptFetchError = 'failed to fetch marketo account upgrade script',
   ScriptRuntimeError = 'failed to run marketo account upgrade script',
 }
 
@@ -87,6 +85,12 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
 
   const [scriptHasLoaded, setScriptHasLoaded] = useState(false)
   const [formHasLoaded, setFormHasLoaded] = useState(false)
+
+  const handleCloseOverlay = () => {
+    // Deleting marketo object guards against inconsistent behavior if user closes then re-opens the overlay.
+    delete window.MktoForms2
+    onClose()
+  }
 
   const handleError = useCallback(
     (message: MarketoError, err: Error = new Error(message)) => {
@@ -115,12 +119,6 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
     } catch (err) {
       handleError(MarketoError.FormSubmitError, err)
     }
-  }
-
-  const handleUnloadForm = () => {
-    // Deleting marketo object guards against inconsistent behavior if user closes then re-opens the overlay.
-    delete window.MktoForms2
-    onClose()
   }
 
   const loadMarketoForm = useCallback(() => {
@@ -193,7 +191,7 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
         className="marketo-upgrade-account-overlay--header"
         testID="marketo-upgrade-account-overlay--header"
         title="Upgrade Your Account"
-        onDismiss={handleUnloadForm}
+        onDismiss={handleCloseOverlay}
       />
       <Overlay.Body className="marketo-upgrade-account-overlay--body">
         <p>
@@ -214,7 +212,7 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
           text="Cancel"
           testID="marketo-upgrade-account-overlay--cancel-button"
           color={ComponentColor.Default}
-          onClick={handleUnloadForm}
+          onClick={handleCloseOverlay}
         />
         <Button
           text="Contact Sales"

@@ -65,7 +65,7 @@ const baseQueryVariableAction = {
 
 /**
  * This test is skipped because it fails locally, and it's not clear if this is even being run
- * properly in a CI environment. It tests that the a thunk dispatches actions properly, but
+ * properly in a CI environment. It tests that the thunk dispatches actions properly, but
  * makes no statement on whether the variables were parsed and hydrated correctly, so the value
  * it provides compared to the cost of maintenance is low.
  * See: https://github.com/influxdata/ui/issues/6351

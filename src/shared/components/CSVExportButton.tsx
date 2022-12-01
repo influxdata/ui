@@ -1,49 +1,71 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {connect} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {Button, ComponentStatus, IconFont} from '@influxdata/clockface'
 
-// Utils
-import {downloadTextFile} from 'src/shared/utils/download'
-import {getActiveTimeMachine} from 'src/timeMachine/selectors'
-import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+// Selectors and Actions
+import {getActiveQuery} from 'src/timeMachine/selectors'
+import {runDownloadQuery} from 'src/timeMachine/actions/queries'
 
 // Types
 import {AppState} from 'src/types'
 
-interface StateProps {
-  files: string[] | null
+// Worker
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import downloadWorker from 'worker-plugin/loader!../workers/downloadHelper'
+
+type Props = ConnectedProps<typeof connector>
+
+interface State {
+  browserSupportsDownload: boolean
 }
 
-class CSVExportButton extends PureComponent<StateProps, {}> {
+class CSVExportButton extends PureComponent<Props, State> {
+  constructor(props) {
+    super(props)
+    this.state = {browserSupportsDownload: false}
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register(downloadWorker).then(
+        () => this.setState({browserSupportsDownload: true}),
+        function (err) {
+          console.error(
+            'Feature not available, because ServiceWorker registration failed: ',
+            err
+          )
+        }
+      )
+    }
+  }
+
   public render() {
+    if (!this.state.browserSupportsDownload) {
+      return null
+    }
+
     return (
       <Button
         titleText={this.titleText}
         text="CSV"
         icon={IconFont.Download_New}
         onClick={this.handleClick}
-        status={this.buttonStatus}
+        status={
+          this.props.disabled
+            ? ComponentStatus.Disabled
+            : ComponentStatus.Default
+        }
+        testID="time-machine--download-csv"
       />
     )
   }
 
-  private get buttonStatus(): ComponentStatus {
-    const {files} = this.props
-
-    if (files) {
-      return ComponentStatus.Default
-    }
-
-    return ComponentStatus.Disabled
-  }
-
   private get titleText(): string {
-    const {files} = this.props
+    const {disabled} = this.props
 
-    if (files) {
+    if (!disabled) {
       return 'Download query results as a .CSV file'
     }
 
@@ -51,22 +73,21 @@ class CSVExportButton extends PureComponent<StateProps, {}> {
   }
 
   private handleClick = () => {
-    const {files} = this.props
-    const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm')
-    const csv = files.join('\n\n')
-    const now = formatter.format(new Date()).replace(/[:\s]+/gi, '_')
-    const filename = `${now} InfluxDB Data`
-
-    downloadTextFile(csv, filename, '.csv', 'text/csv')
+    this.props.download()
   }
 }
 
 const mstp = (state: AppState) => {
-  const {
-    queryResults: {files},
-  } = getActiveTimeMachine(state)
+  const activeQueryText = getActiveQuery(state).text
+  const disabled = activeQueryText === ''
 
-  return {files}
+  return {disabled}
 }
 
-export default connect<StateProps>(mstp)(CSVExportButton)
+const mdtp = {
+  download: runDownloadQuery,
+}
+
+const connector = connect(mstp, mdtp)
+
+export default connector(CSVExportButton)

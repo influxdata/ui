@@ -2,6 +2,8 @@ import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
 describe('DataExplorer', () => {
+  let route: string
+
   beforeEach(() => {
     cy.flush()
     cy.signin()
@@ -15,7 +17,8 @@ describe('DataExplorer', () => {
     cy.get('@org').then(({id}: Organization) => {
       cy.createMapVariable(id)
       cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
+        route = `${orgs}/${id}${explorer}`
+        cy.visit(route)
         cy.getByTestID('tree-nav').should('be.visible')
       })
     })
@@ -907,6 +910,56 @@ describe('DataExplorer', () => {
           cy.get('.cf-overlay--dismiss').click()
         })
       })
+    })
+  })
+
+  describe('download csv', () => {
+    // docs for how to test form submission as file download:
+    // https://github.com/cypress-io/cypress-example-recipes/blob/cc13866e55bd28e1d1323ba6d498d85204f292b5/examples/testing-dom__download/cypress/e2e/form-submission-spec.cy.js
+    const downloadsDirectory = Cypress.config('downloadsFolder')
+
+    const validateCsv = (csv: string, rowCnt: number) => {
+      const numHeaderRows = 4
+      cy.wrap(csv)
+        .then(doc => doc.trim().split('\n'))
+        .then(list => {
+          expect(list.length).to.equal(rowCnt + numHeaderRows)
+        })
+    }
+
+    beforeEach(() => {
+      cy.writeData(points(20))
+      cy.task('deleteDownloads', {dirPath: downloadsDirectory})
+      cy.getByTestID('switch-to-script-editor').should('be.visible').click()
+    })
+
+    it('can download a file', () => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
+        req.redirect(route)
+      }).as('query')
+
+      cy.getByTestID('time-machine--bottom').within(() => {
+        cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
+          .monacoType(`from(bucket: "defbuck")
+  |> range(start: -10h)`)
+        cy.getByTestID('time-machine--download-csv')
+          .should('be.visible')
+          .click()
+      })
+
+      cy.wait('@query')
+        .its('request')
+        .then(req => {
+          cy.request(req)
+            .then(({body, headers}) => {
+              expect(headers).to.have.property(
+                'content-type',
+                'text/csv; charset=utf-8'
+              )
+              return Promise.resolve(body)
+            })
+            .then(csv => validateCsv(csv, 1))
+        })
     })
   })
 })

@@ -3,7 +3,11 @@ import {parse} from 'src/languageSupport/languages/flux/parser'
 import {get, sortBy} from 'lodash'
 
 // API
-import {runQuery, RunQuerySuccessResult} from 'src/shared/apis/query'
+import {
+  runQuery,
+  RunQueryResult,
+  RunQuerySuccessResult,
+} from 'src/shared/apis/query'
 import {
   getCachedResultsOrRunQuery,
   resetQueryCacheByQuery,
@@ -15,7 +19,12 @@ import {notify} from 'src/shared/actions/notifications'
 import {hydrateVariables} from 'src/variables/actions/thunks'
 
 // Constants
-import {rateLimitReached, resultTooLarge} from 'src/shared/copy/notifications'
+import {
+  csvDownloadFailure,
+  rateLimitReached,
+  resultTooLarge,
+} from 'src/shared/copy/notifications'
+import {API_BASE_PATH} from 'src/shared/constants'
 
 // Utils
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
@@ -36,6 +45,7 @@ import {
   QueryEditMode,
   BuilderTagsType,
   Variable,
+  AppState,
 } from 'src/types'
 
 // Selectors
@@ -244,14 +254,53 @@ export const setQueryByHashID = (queryID: string, result: any): void => {
     })
 }
 
+export const timeMachineQueryErrorNotification = (
+  results: RunQueryResult[],
+  dispatch
+) => {
+  for (const result of results) {
+    if (result.type === 'UNKNOWN_ERROR') {
+      throw new Error(result.message)
+    }
+
+    if (result.type === 'RATE_LIMIT_ERROR') {
+      dispatch(notify(rateLimitReached(result.retryAfter)))
+
+      throw new Error(result.message)
+    }
+
+    if (result.didTruncate) {
+      dispatch(notify(resultTooLarge(result.bytesRead)))
+    }
+  }
+}
+
+export const runTimeMachineQuery = (
+  queryText: string,
+  state: AppState,
+  abortController: AbortController
+) => {
+  const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
+  const allVariables = getAllVariables(state)
+
+  event('executeQueries query', {}, {query: queryText})
+
+  const orgID = getOrgIDFromBuckets(queryText, allBuckets) || getOrg(state).id
+  if (getOrg(state).id === orgID) {
+    event('orgData_queried')
+  }
+
+  const extern = buildUsedVarsOption(queryText, allVariables)
+  event('runQuery', {context: 'timeMachine'})
+  return runQuery(orgID, queryText, extern, abortController)
+}
+
 export const executeQueries =
   (abortController?: AbortController) =>
   async (dispatch, getState: GetState) => {
     const executeQueriesStartTime = Date.now()
 
     const state = getState()
-
-    const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
 
     const activeTimeMachine = getActiveTimeMachine(state)
     const queries = activeTimeMachine.view.properties.queries.filter(
@@ -269,44 +318,29 @@ export const executeQueries =
       dispatch(setQueryResults(RemoteDataState.Loading, [], null))
 
       await dispatch(hydrateVariables())
-
       const allVariables = getAllVariables(state)
+      const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
+
       const startTime = window.performance.now()
       const startDate = Date.now()
 
       const pendingResults = queries.map(({text}) => {
-        event('executeQueries query', {}, {query: text})
         const orgID = getOrgIDFromBuckets(text, allBuckets) || getOrg(state).id
-
-        if (getOrg(state).id === orgID) {
-          event('orgData_queried')
-        }
-
-        const extern = buildUsedVarsOption(text, allVariables)
-
-        event('runQuery', {context: 'timeMachine'})
 
         const queryID = generateHashedQueryID(text, allVariables, orgID)
         if (isCurrentPageDashboard(state)) {
           // reset any existing matching query in the cache
-          resetQueryCacheByQuery(text, getAllVariables(state))
-          const result = getCachedResultsOrRunQuery(
-            orgID,
-            text,
-            getAllVariables(state)
-          )
+          resetQueryCacheByQuery(text, allVariables)
+          const result = getCachedResultsOrRunQuery(orgID, text, allVariables)
           setQueryByHashID(queryID, result)
 
           return result
         }
-        const result = runQuery(orgID, text, extern, abortController)
-        setQueryByHashID(queryID, result)
-        return result
+        return runTimeMachineQuery(text, state, abortController)
       })
       const results = await Promise.all(pendingResults.map(r => r.promise))
 
       const duration = window.performance.now() - startTime
-
       event('executeQueries querying', {time: startDate}, {duration})
 
       let statuses = [[]] as StatusRow[][]
@@ -326,22 +360,7 @@ export const executeQueries =
         )
         statuses = await pendingCheckStatuses.promise
       }
-
-      for (const result of results) {
-        if (result.type === 'UNKNOWN_ERROR') {
-          throw new Error(result.message)
-        }
-
-        if (result.type === 'RATE_LIMIT_ERROR') {
-          dispatch(notify(rateLimitReached(result.retryAfter)))
-
-          throw new Error(result.message)
-        }
-
-        if (result.didTruncate) {
-          dispatch(notify(resultTooLarge(result.bytesRead)))
-        }
-      }
+      timeMachineQueryErrorNotification(results, dispatch)
 
       const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
       dispatch(
@@ -369,6 +388,52 @@ export const executeQueries =
       )
     }
   }
+
+export const runDownloadQuery = () => async (dispatch, getState: GetState) => {
+  const state = getState()
+  const queryText = getActiveQuery(state).text
+
+  try {
+    await dispatch(hydrateVariables())
+
+    const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
+    const allVariables = getAllVariables(state)
+
+    event('executeQueries query', {}, {query: queryText})
+
+    const orgID = getOrgIDFromBuckets(queryText, allBuckets) || getOrg(state).id
+    if (getOrg(state).id === orgID) {
+      event('orgData_queried')
+    }
+
+    const extern = buildUsedVarsOption(queryText, allVariables)
+    const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
+    event('runQuery', {context: 'timeMachine'})
+
+    const hiddenForm = document.createElement('form')
+    hiddenForm.setAttribute('id', 'downloadDiv')
+    hiddenForm.setAttribute('style', 'display: none;')
+    hiddenForm.setAttribute('method', 'post')
+    hiddenForm.setAttribute('action', url)
+
+    const input = document.createElement('input')
+    input.setAttribute('name', 'data')
+    input.setAttribute(
+      'value',
+      JSON.stringify({
+        query: queryText,
+        extern,
+        dialect: {annotations: ['group', 'datatype', 'default']},
+      })
+    )
+    hiddenForm.appendChild(input)
+    document.body.appendChild(hiddenForm)
+
+    hiddenForm.submit()
+  } catch (error) {
+    dispatch(notify(csvDownloadFailure()))
+  }
+}
 
 interface SaveDraftQueriesAction {
   type: 'SAVE_DRAFT_QUERIES'
@@ -406,18 +471,8 @@ export const executeCheckQuery = () => async (dispatch, getState: GetState) => {
     const result = await runQuery(orgID, text, extern).promise
     const duration = Date.now() - startTime
 
-    if (result.type === 'UNKNOWN_ERROR') {
-      throw new Error(result.message)
-    }
-
-    if (result.type === 'RATE_LIMIT_ERROR') {
-      dispatch(notify(rateLimitReached(result.retryAfter)))
-
-      throw new Error(result.message)
-    }
-
-    if (result.didTruncate) {
-      dispatch(notify(resultTooLarge(result.bytesRead)))
+    if (result.type !== 'SUCCESS') {
+      return timeMachineQueryErrorNotification([result], dispatch)
     }
 
     const file = result.csv

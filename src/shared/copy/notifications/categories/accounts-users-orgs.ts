@@ -74,7 +74,7 @@ export const invitationWithdrawnSuccessful = (): Notification => ({
   message: `Invitation Withdrawn`,
 })
 
-export const marketoFormLoadFailure = (
+export const marketoLoadFailure = (
   buttonElement: NotificationButtonElement
 ): Notification => ({
   ...defaultErrorNotification,
@@ -88,6 +88,11 @@ export const marketoFormSubmitFailure = (
   ...defaultErrorNotification,
   message: 'Submission failed. ',
   buttonElement,
+})
+
+export const marketoFormSubmitSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Your account upgrade inquiry has been submitted.',
 })
 
 export const memberAddFailed = (message: string): Notification => ({

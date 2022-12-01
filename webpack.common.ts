@@ -30,14 +30,13 @@ module.exports = {
     chunkIds: 'size',
     splitChunks: {
       chunks: 'all',
-      // this may be what we want, just commenting it out for testing purposes
-      // cacheGroups: {
-      //   vendor: {
-      //     test: /[\\/]node_modules[\\/]/,
-      //     name: 'vendors',
-      //     chunks: 'all'
-      //   }
-      // }
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
     },
   },
   experiments: {

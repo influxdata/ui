@@ -78,7 +78,7 @@ export const marketoLoadFailure = (
   buttonElement: NotificationButtonElement
 ): Notification => ({
   ...defaultErrorNotification,
-  message: 'Unable to load in-app contact form. ',
+  message: 'Sorry, we were unable to load the in-app contact form. ',
   buttonElement,
 })
 
@@ -86,7 +86,7 @@ export const marketoFormSubmitFailure = (
   buttonElement: NotificationButtonElement
 ): Notification => ({
   ...defaultErrorNotification,
-  message: 'Submission failed. ',
+  message: 'Sorry, we encountered a problem submitting this form. ',
   buttonElement,
 })
 

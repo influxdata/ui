@@ -56,10 +56,10 @@ const MARKETO_FORM_ID = 2826
 
 // Error Messaging
 enum MarketoError {
-  FormLoadingError = 'failed to load marketo account upgrade form',
-  FormSubmitError = 'failed to submit marketo account upgrade form',
-  ScriptFetchError = 'failed to fetch marketo account upgrade script',
-  ScriptRuntimeError = 'failed to run marketo account upgrade script',
+  FormLoadingError = 'FormLoadingError',
+  FormSubmitError = 'FormSubmitError',
+  ScriptFetchError = 'ScriptFetchError',
+  ScriptRuntimeError = 'ScriptRuntimeError',
 }
 
 // If marketo isn't working, still need the user to have some means of contacting sales.
@@ -105,7 +105,7 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
           user,
           accountId,
         },
-        name: message,
+        name: `Marketo account upgrade form ${message}`,
       })
     },
     [accountId, dispatch, user]
@@ -130,7 +130,7 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
           MARKETO_SUBSCRIPTION_ID,
           MARKETO_FORM_ID,
           () => {
-            // Marketo fields should remain hidden from user (CSS display: false)
+            // Marketo fields should remain hidden from user (CSS display: none)
 
             const marketoForm = window.MktoForms2
             if (marketoForm) {
@@ -166,6 +166,7 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
         const marketoScript = document.createElement('script')
         marketoScript.id = 'marketoScript'
         marketoScript.src = `${MARKETO_SERVER_INSTANCE}/js/forms2/js/forms2.min.js`
+        marketoScript.async = true
         marketoScript.onload = loadMarketoForm
         marketoScript.onerror = () => handleError(MarketoError.ScriptFetchError)
         document.body.appendChild(marketoScript)

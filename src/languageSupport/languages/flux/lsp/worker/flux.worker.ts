@@ -17,7 +17,7 @@ const respond = (msg, cb) => {
 /**
  * Reasons for this buffer:
  *    * loading times for the monaco-editor client, versus LSP server
- *    * the required ordering of bootup-messages btwn these two, + the UI messages.
+ *    * the required ordering of bootup-messages between these two, + the UI messages.
  *
  * Details:
  *    * First, the loading of workers:
@@ -36,8 +36,7 @@ const respond = (msg, cb) => {
  *          3. monaco-editor request for didOpen file.
  *                * this is the flux query file.
  *                * triggered on callback after ConnectionManager is instantiated.
- *      * since the LSP worker takes awhile to boot up:
- *            * this buffer ensures that these^^ messages are received by the LSP in order.
+ *      * since the LSP worker takes a while to boot up, this buffer ensures that the messages are received by the LSP in order.
  *
  * If we boot up the LSP server entirely first, before the monaco-editor is loaded, we could hypothetically eliminate this buffer.
  * But it would substantially increase our load time, and trickle into CI test timings and variable parsing (in dashboard) etc.

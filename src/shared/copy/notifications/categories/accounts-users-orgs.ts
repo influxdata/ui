@@ -44,6 +44,19 @@ export const accountRenameSuccess = (
   message: `Account "${oldAccountName}" was successfully renamed to "${newAccountName}"`,
 })
 
+export const deleteOrgFailed = (orgName: string): Notification => ({
+  ...defaultErrorNotification,
+  message: `Sorry, we weren't able to delete ${orgName}. Please try again later.`,
+})
+
+export const deleteOrgSuccess = (
+  orgName: string,
+  accountName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `${orgName} will be deleted from ${accountName}.`,
+})
+
 export const inviteFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `invite failed`,

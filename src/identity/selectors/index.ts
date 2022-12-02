@@ -2,10 +2,22 @@
 import {AppState} from 'src/types'
 import {RemoteDataState} from '@influxdata/clockface'
 
+export const selectCurrentAccount = (
+  state: AppState
+): AppState['identity']['currentIdentity']['account'] => {
+  return state.identity.currentIdentity.account
+}
+
 export const selectCurrentAccountId = (
   state: AppState
 ): AppState['identity']['currentIdentity']['account']['id'] => {
   return state.identity.currentIdentity.account.id
+}
+
+export const selectCurrentAccountName = (
+  state: AppState
+): AppState['identity']['currentIdentity']['account']['name'] => {
+  return state.identity.currentIdentity.account.name
 }
 
 export const selectCurrentAccountType = (
@@ -20,10 +32,20 @@ export const selectCurrentIdentity = (
   return state.identity.currentIdentity
 }
 
+export const selectCurrentOrg = (
+  state: AppState
+): AppState['identity']['currentIdentity']['org'] => {
+  return state.identity.currentIdentity.org
+}
+
 export const selectCurrentOrgId = (
   state: AppState
 ): AppState['identity']['currentIdentity']['org']['id'] => {
   return state.identity.currentIdentity.org.id
+}
+
+export const selectDefaultOrgId = (state: AppState): string => {
+  return state.identity.quartzOrganizations.orgs.find(org => org.isDefault).id
 }
 
 export const selectOperatorRole = (

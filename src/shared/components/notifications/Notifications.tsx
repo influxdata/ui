@@ -1,16 +1,19 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {get} from 'lodash'
 import {ComponentSize, Gradients, Notification} from '@influxdata/clockface'
 
 // Utils
-import {dismissNotification} from 'src/shared/actions/notifications'
+import {dismissNotification, notify} from 'src/shared/actions/notifications'
 
 // Types
 import {NotificationStyle} from 'src/types'
 
 // Selectors
 import {getNotifications} from 'src/shared/selectors/notifications'
+import {selectCurrentAccountName} from 'src/identity/selectors'
+import {getFromLocalStorage, removeFromLocalStorage} from 'src/localStorage'
+import {deleteOrgSuccess} from 'src/shared/copy/notifications'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {
@@ -26,7 +29,21 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
 
 const Notifications: FC = () => {
   const notifications = useSelector(getNotifications)
+  const accountName = useSelector(selectCurrentAccountName)
+  const userJustDeletedAnOrg = Boolean(getFromLocalStorage('justDeletedOrg'))
+
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (
+      userJustDeletedAnOrg &&
+      !window.location.href.includes('org-settings')
+    ) {
+      const deletedOrgName = getFromLocalStorage('justDeletedOrg')
+      removeFromLocalStorage('justDeletedOrg')
+      dispatch(notify(deleteOrgSuccess(deletedOrgName, accountName)))
+    }
+  }, [accountName, dispatch, userJustDeletedAnOrg])
 
   return (
     <>

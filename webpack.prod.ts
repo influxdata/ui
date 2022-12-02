@@ -4,7 +4,7 @@ const mergeWebpack = require('webpack-merge').merge
 const commonPath = require('path')
 
 // Plugins
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
@@ -30,13 +30,13 @@ module.exports = mergeWebpack(commonWebpack, {
     ],
   },
   optimization: {
-    noEmitOnErrors: true,
+    emitOnErrors: false,
     minimize: true,
     minimizer: [
       new TerserJSPlugin({
         parallel: 2,
       }),
-      new OptimizeCSSAssetsPlugin({}),
+      new CssMinimizerPlugin(),
     ],
   },
   plugins: [new ForkTsCheckerWebpackPlugin()],

@@ -74,6 +74,27 @@ export const invitationWithdrawnSuccessful = (): Notification => ({
   message: `Invitation Withdrawn`,
 })
 
+export const marketoLoadFailure = (
+  buttonElement: NotificationButtonElement
+): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Sorry, we were unable to load the in-app contact form. ',
+  buttonElement,
+})
+
+export const marketoFormSubmitFailure = (
+  buttonElement: NotificationButtonElement
+): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Sorry, we encountered a problem submitting this form. ',
+  buttonElement,
+})
+
+export const marketoFormSubmitSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Your account upgrade inquiry has been submitted.',
+})
+
 export const memberAddFailed = (message: string): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to add members: "${message}"`,

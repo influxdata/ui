@@ -1,0 +1,12 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.marketo-account-upgrade--form {
+  display: none;
+}
+
+.marketo-upgrade-account-overlay--body {
+  p {
+    font-size: $cf-text-base-1;
+    margin-block-start: 0px;
+  }
+}

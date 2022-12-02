@@ -46,6 +46,7 @@ import FreeAccountSupportOverlay from 'src/support/components/FreeAccountSupport
 import FeedbackQuestionsOverlay from 'src/support/components/FeedbackQuestionsOverlay'
 import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
 import {CreateOrganizationOverlay} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationOverlay'
+import {MarketoAccountUpgradeOverlay} from 'src/identity/components/MarketoAccountUpgradeOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -180,6 +181,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'create-organization':
         activeOverlay.current = <CreateOrganizationOverlay />
+        break
+      case 'marketo-upgrade-account-overlay':
+        activeOverlay.current = <MarketoAccountUpgradeOverlay />
         break
       default:
         activeOverlay.current = null

@@ -3,6 +3,7 @@ import {omit} from 'lodash'
 
 // API Calls
 import {
+  deleteOrg,
   getAccounts,
   getAccountsOrgs,
   getAllowancesOrgsCreate,
@@ -98,6 +99,28 @@ export const createNewOrg = async (
   const formattedNewOrg = {...omit(newOrg, ['state']), provisioningStatus}
 
   return formattedNewOrg
+}
+
+export const deleteOrganization = async (orgId: string) => {
+  const response = await deleteOrg({orgId})
+
+  if (response.status === 401) {
+    throw new UnauthorizedError(response.data.message)
+  }
+
+  if (response.status === 403) {
+    throw new ForbiddenError(response.data.message)
+  }
+
+  if (response.status === 404) {
+    throw new NotFoundError(response.data.message)
+  }
+
+  if (response.status === 500) {
+    throw new ServerError(response.data.message)
+  }
+
+  return response.data
 }
 
 // fetch the list of clusters in which an org can be created

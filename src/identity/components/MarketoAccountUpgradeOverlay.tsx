@@ -65,8 +65,8 @@ enum MarketoError {
 }
 
 interface MarketoFormElement extends Element {
-  readOnly: boolean
   disabled: boolean
+  readOnly: boolean
 }
 
 // If marketo isn't working, still need the user to have some means of contacting sales.
@@ -238,12 +238,12 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
         />
         Comments
         <Input
-          name="Upgrade Account Comments"
-          placeholder="Please provide any comments for our sales team"
           autoFocus={true}
-          type={InputType.Text}
           className="marketo-account-upgrade-form--userinput"
+          name="Upgrade Account Comments"
           onChange={handleComment}
+          placeholder="Please provide any comments for our sales team"
+          type={InputType.Text}
           value={formComment}
         ></Input>
       </Overlay.Body>

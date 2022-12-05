@@ -5,8 +5,15 @@
 }
 
 .marketo-upgrade-account-overlay--body {
+  font-size: $cf-text-base-1;
+
   p {
     font-size: $cf-text-base-1;
     margin-block-start: 0px;
   }
+}
+
+.marketo-account-upgrade-form--userinput {
+  margin-top: $cf-space-2xs;
+  font-weight: 400;
 }

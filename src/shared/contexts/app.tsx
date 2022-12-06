@@ -1,4 +1,4 @@
-import React, {FC, useCallback} from 'react'
+import React, {FC, useCallback, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 import {
@@ -10,6 +10,7 @@ import {
   disablePresentationMode,
   setFlowsCTA as setFlowsCTAAction,
   setSubscriptionsCertificateInterest as setSubscriptionsCertificateInterestAction,
+  setWorkerRegistration,
 } from 'src/shared/actions/app'
 import {
   timeZone as timeZoneFromState,
@@ -27,6 +28,17 @@ import {presentationMode as presentationModeCopy} from 'src/shared/copy/notifica
 import {AppState, TimeZone, Theme, NavBarState, FlowsCTA} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
+// Worker -- load prior to page load event, in order to intercept fetch in http/2.
+// see service worker life cycle. https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import downloadWorker from 'worker-plugin/loader!../workers/downloadHelper'
+
+let workerRegistration = null
+if ('serviceWorker' in navigator) {
+  workerRegistration = navigator.serviceWorker.register(downloadWorker)
+}
+
 interface AppSettingContextType {
   timeZone: TimeZone
   theme: Theme
@@ -35,6 +47,7 @@ interface AppSettingContextType {
   navbarMode: NavBarState
   flowsCTA: FlowsCTA
   subscriptionsCertificateInterest: boolean
+  workerRegistration: Promise<ServiceWorkerRegistration>
 
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
@@ -53,6 +66,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   navbarMode: 'collapsed' as NavBarState,
   flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
   subscriptionsCertificateInterest: false,
+  workerRegistration,
 
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
@@ -135,6 +149,10 @@ export const AppSettingProvider: FC = ({children}) => {
     dispatch(setSubscriptionsCertificateInterestAction())
   }, [dispatch])
 
+  useEffect(() => {
+    dispatch(setWorkerRegistration(workerRegistration))
+  }, [workerRegistration])
+
   return (
     <AppSettingContext.Provider
       value={{
@@ -145,6 +163,7 @@ export const AppSettingProvider: FC = ({children}) => {
         navbarMode,
         flowsCTA,
         subscriptionsCertificateInterest,
+        workerRegistration,
 
         setTimeZone,
         setTheme,

@@ -12,6 +12,7 @@ export enum ActionTypes {
   SetFlowsCTA = 'SET_FLOWS_CTA',
   Noop = 'NOOP',
   SetSubscriptionsCertificateInterest = 'SET_SUB_CERT_INTEREST',
+  SetWorkerRegistration = 'SET_WORKER_REGISTRATION',
 }
 
 export type Action =
@@ -25,6 +26,7 @@ export type Action =
   | ReturnType<typeof setVersionInfo>
   | ReturnType<typeof setFlowsCTA>
   | ReturnType<typeof setSubscriptionsCertificateInterest>
+  | ReturnType<typeof setWorkerRegistration>
 
 // ephemeral state action creators
 
@@ -83,4 +85,12 @@ export const setFlowsCTA = (flowsCTA: FlowsCTA) =>
 export const setSubscriptionsCertificateInterest = () =>
   ({
     type: ActionTypes.SetSubscriptionsCertificateInterest,
+  } as const)
+
+export const setWorkerRegistration = (
+  workerRegistration: Promise<ServiceWorkerRegistration>
+) =>
+  ({
+    type: ActionTypes.SetWorkerRegistration,
+    payload: {workerRegistration},
   } as const)

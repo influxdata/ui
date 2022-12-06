@@ -115,6 +115,7 @@ describe('Dashboards.Selector', () => {
         versionInfo: {version: '', commit: ''},
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
+        workerRegistration: null,
       },
     }
 
@@ -140,6 +141,7 @@ describe('Dashboards.Selector', () => {
         versionInfo: {version: '', commit: ''},
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
+        workerRegistration: null,
       },
     }
 
@@ -173,6 +175,7 @@ describe('Dashboards.Selector', () => {
         versionInfo: {version: '', commit: ''},
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
+        workerRegistration: null,
       },
     }
 
@@ -206,6 +209,7 @@ describe('Dashboards.Selector', () => {
         versionInfo: {version: '', commit: ''},
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
+        workerRegistration: null,
       },
     }
 
@@ -235,6 +239,7 @@ describe('Dashboards.Selector', () => {
         versionInfo: {version: '', commit: ''},
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
+        workerRegistration: null,
       },
     }
 

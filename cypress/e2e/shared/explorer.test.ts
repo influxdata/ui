@@ -947,8 +947,8 @@ describe('DataExplorer', () => {
           .click()
       })
 
-      cy.wait('@query')
-        .its('request')
+      cy.wait('@query', {timeout: 5000})
+        .its('request', {timeout: 5000})
         .then(req => {
           cy.request(req)
             .then(({body, headers}) => {

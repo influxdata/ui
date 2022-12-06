@@ -19,6 +19,7 @@ export interface AppState {
     versionInfo: VersionInfo
     flowsCTA: FlowsCTA
     subscriptionsCertificateInterest: boolean
+    workerRegistration: Promise<ServiceWorkerRegistration>
   }
 }
 
@@ -36,6 +37,7 @@ const initialState: AppState = {
     versionInfo: {version: '', commit: ''},
     flowsCTA: {explorer: true, tasks: true, alerts: true},
     subscriptionsCertificateInterest: false,
+    workerRegistration: null,
   },
 }
 
@@ -123,6 +125,13 @@ const appPersistedReducer = (
       return {
         ...state,
         subscriptionsCertificateInterest: true,
+      }
+    }
+
+    case ActionTypes.SetWorkerRegistration: {
+      return {
+        ...state,
+        workerRegistration: action.payload.workerRegistration,
       }
     }
 

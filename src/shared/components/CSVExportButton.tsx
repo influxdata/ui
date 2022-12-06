@@ -12,11 +12,6 @@ import {runDownloadQuery} from 'src/timeMachine/actions/queries'
 // Types
 import {AppState} from 'src/types'
 
-// Worker
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import downloadWorker from 'worker-plugin/loader!../workers/downloadHelper'
-
 type Props = ConnectedProps<typeof connector>
 
 interface State {
@@ -28,8 +23,8 @@ class CSVExportButton extends PureComponent<Props, State> {
     super(props)
     this.state = {browserSupportsDownload: false}
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register(downloadWorker).then(
+    if (props.workerRegistration) {
+      ;(props.workerRegistration as Promise<ServiceWorkerRegistration>).then(
         () => this.setState({browserSupportsDownload: true}),
         function (err) {
           console.error(
@@ -81,7 +76,7 @@ const mstp = (state: AppState) => {
   const activeQueryText = getActiveQuery(state).text
   const disabled = activeQueryText === ''
 
-  return {disabled}
+  return {disabled, workerRegistration: state.app.persisted.workerRegistration}
 }
 
 const mdtp = {

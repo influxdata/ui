@@ -33,7 +33,7 @@ self.addEventListener('fetch', function (event: any) {
     for (const [headerType, headerValue] of event.request.headers) {
       switch (headerType) {
         case 'content-type':
-          headers.append('Content-Type', 'application/json')
+          headers.set('Content-Type', 'application/json')
           break
         case 'accept':
           headers.append('Accept', '*/*')

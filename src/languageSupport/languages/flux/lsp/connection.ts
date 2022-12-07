@@ -233,12 +233,20 @@ export class ConnectionManager {
   ) {
     const toAdd: Partial<CompositionSelection> = {}
     const toRemove: Partial<CompositionSelection> = {}
+    let delay = false
+
+    if (this._isNewScript(schema, previousState)) {
+      // no action to take.
+      // `textDocument/didChange` --> will inform LSP to drop composition
+      return {toAdd, toRemove, delay}
+    }
 
     if (schema.bucket && previousState.bucket != schema.bucket) {
       toAdd.bucket = schema.bucket
       if (this._model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
         // first time selecting bucket --> remove if default message
         this._model.setValue('')
+        delay = true
       }
     }
     if (schema.measurement && previousState.measurement != schema.measurement) {
@@ -288,18 +296,25 @@ export class ConnectionManager {
     }
 
     this._session = {...schema, composition: {...schema.composition}}
+    const {toAdd, toRemove, delay} = this._diffSchemaChange(
+      schema,
+      previousState
+    )
 
-    if (!this._compositionHandlersSet) {
-      this._initCompositionHandlers()
-      return // do not re-init schema session on reload
+    if (this._first_load) {
+      this._first_load = false
+      setTimeout(() => this._initLspComposition(toAdd), 3000) // LSP server must come online
+      return
     }
 
-    const {toAdd, toRemove} = this._diffSchemaChange(schema, previousState)
     if (Object.keys(toAdd).length || Object.keys(toRemove).length) {
       // since this._diffSchemaChange() can set the model
       // we need the executeCommand to be issued after the model update
-      const delay = toAdd.bucket ? 1500 : 0
-      setTimeout(() => this._updateLsp(toAdd, toRemove), delay)
+      if (delay) {
+        setTimeout(() => this._updateLsp(toAdd, toRemove), 1500)
+      } else {
+        this._updateLsp(toAdd, toRemove)
+      }
     }
   }
 

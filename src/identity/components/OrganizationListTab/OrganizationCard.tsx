@@ -4,6 +4,7 @@ import {
   FlexDirection,
   JustifyContent,
   ResourceCard,
+  QuestionMarkTooltip,
 } from '@influxdata/clockface'
 
 // Styles
@@ -14,6 +15,7 @@ interface OrgCardProps {
   provider: string
   regionCode: string
   regionName: string
+  provisioningStatus: string
 }
 
 export const OrganizationCard: FC<OrgCardProps> = ({
@@ -21,10 +23,32 @@ export const OrganizationCard: FC<OrgCardProps> = ({
   provider,
   regionCode,
   regionName,
+  provisioningStatus,
 }) => {
+
+  const isOrgSuspended = provisioningStatus === 'suspended'
+
+  const tooltipContent = (
+    <p>
+      Organizations can be reactivated within 7 days. Contact support at{' '}
+      <a
+        href="mailto:support@influxdata.com"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        support@influxdata.com
+      </a>{' '}
+      to reactivate.
+    </p>
+  )
+
   return (
     <ResourceCard
-      className="account--organizations-tab-orgs-card"
+      className={
+        isOrgSuspended
+          ? 'account--organizations-tab-suspended-orgs-card'
+          : 'account--organizations-tab-orgs-card'
+      }
       direction={FlexDirection.Row}
       justifyContent={JustifyContent.SpaceBetween}
       testID="account--organizations-tab-orgs-card"
@@ -42,6 +66,22 @@ export const OrganizationCard: FC<OrgCardProps> = ({
         </FlexBox>
         <FlexBox className="account-organizations-tab-orgs-card-location-data">
           <b>Location:</b> &nbsp;{regionName}
+        </FlexBox>
+        <FlexBox
+          justifyContent={JustifyContent.SpaceBetween}
+          className="account-organizations-tab-orgs-card-org-status"
+        >
+          {isOrgSuspended && (
+            <>
+              <b className="account-organizations-tab-orgs-status--text">
+                Deletion in progress
+              </b>
+              <QuestionMarkTooltip
+                diameter={15}
+                tooltipContents={tooltipContent}
+              />
+            </>
+          )}
         </FlexBox>
       </ResourceCard.Meta>
     </ResourceCard>

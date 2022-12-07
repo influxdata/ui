@@ -13,7 +13,6 @@ import {
   DEFAULT_FLUX_EDITOR_TEXT,
   CompositionSelection,
 } from 'src/dataExplorer/context/persistance'
-import {comments} from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 
 // LSP methods
 import {
@@ -35,20 +34,10 @@ import {
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-// hardcoded in LSP
-const COMPOSITION_YIELD = '_editor_composition'
-
-const findLastIndex = (arr, fn) =>
-  (arr
-    .map((val, i) => [i, val])
-    .filter(([i, val]) => fn(val, i, arr))
-    .pop() || [-1])[0]
-
-class LspConnectionManager {
+export class ConnectionManager {
   private _worker: Worker
   private _editor: EditorType
   private _model: MonacoTypes.editor.IModel
-  private _snapshot: MonacoTypes.editor.ITextSnapshot
   private _preludeModel: MonacoTypes.editor.IModel
   private _variables: Variable[] = []
   private _compositionStyle: string[] = []
@@ -58,9 +47,8 @@ class LspConnectionManager {
   private _callbackSetSession: (
     schema: RecursivePartial<CompositionSelection>
   ) => void = () => null
-
-  // only add handlers on first page load.
-  private _compositionHandlersSet = false
+  private _dispatcher = _ => {}
+  private _first_load = true
 
   constructor(worker: Worker) {
     this._worker = worker
@@ -130,112 +118,14 @@ class LspConnectionManager {
     this._worker.postMessage(msg)
   }
 
-  _getCompositionBlockLines(query) {
-    if (!query || !query.includes(COMPOSITION_YIELD)) {
-      return null
-    }
-    const lines = query.split('\n')
-    // monacoEditor line indexing starts at 1..n
-    const endLine =
-      lines.findIndex(line => line.includes(COMPOSITION_YIELD)) + 1
-    const startLine =
-      findLastIndex(lines.slice(0, endLine - 1), line =>
-        line.includes('from(')
-      ) + 1
-
-    return {startLine, endLine}
-  }
-
   _setSessionSync(synced: boolean) {
     this._callbackSetSession({
       composition: {synced},
     })
   }
 
-  /// XXX: wiedld (27 Sep 2022) -- This heuristic is wrong.
-  /// Currently, the only way we detect monaco-editor apply changes is with the change object.
-  /// The change object only includes the replacement text, the position, and a little bit of editor-specific metadata.
-  /// The change object does NOT include anything which states whether or not the change is from an LSP-request,
-  /// (via the LSP applyEdit command).
-  /// As a result, we guess that any edit which is replacing the composition block is coming from an LSP request.
-  /// However, this heuristic fails for certain user-triggered events.
-  /// Such as a hotkey "undo" [cmd+z] of the last LSP applyEdit,
-  /// which generates a change object that looks exactly like an older applyEdit change.
-  _editorChangeIsFromLsp(change) {
-    return /^(from)(.|\n)*(\|> yield\(name: "_editor_composition"\)\n)$/.test(
-      change.text
-    )
-  }
-
-  _editorChangeIsWithinComposition(change) {
-    const compositionBlock = this._getCompositionBlockLines(
-      this._snapshot.read()
-    )
-    this._snapshot = this._model.createSnapshot()
-
-    if (!compositionBlock) {
-      return false
-    }
-    const {startLine, endLine} = compositionBlock
-
-    const changeInBlock =
-      change.range.startLineNumber >= startLine &&
-      change.range.endLineNumber <= endLine
-
-    const changeWithCompositionIdentifier =
-      change.text.includes(COMPOSITION_YIELD)
-
-    const isDeletion = change.text == ''
-    let deletionFromBlock = false
-    if (isDeletion) {
-      const linesDeleted =
-        change.range.endLineNumber - change.range.startLineNumber
-      deletionFromBlock =
-        change.range.startLineNumber >= startLine &&
-        change.range.endLineNumber <= endLine + linesDeleted
-    }
-
-    return changeInBlock || changeWithCompositionIdentifier || deletionFromBlock
-  }
-
-  _setEditorIrreversibleExit() {
-    this._model.onDidChangeContent(e => {
-      const shouldDiverge = e.changes.some(
-        change =>
-          this._editorChangeIsWithinComposition(change) &&
-          !this._editorChangeIsFromLsp(change)
-      )
-      if (shouldDiverge && !this._session.composition.diverged) {
-        event('Schema composition diverged - disable Flux Sync toggle')
-        this._callbackSetSession({
-          composition: {synced: false, diverged: true},
-        })
-      }
-    })
-
-    comments(this._editor, selection => {
-      const compositionBlock = this._getCompositionBlockLines(
-        this._model.getValue()
-      )
-      if (!compositionBlock) {
-        return
-      }
-      const {startLine, endLine} = compositionBlock
-      if (
-        selection.startLineNumber >= startLine &&
-        selection.endLineNumber <= endLine
-      ) {
-        this._callbackSetSession({
-          composition: {synced: false, diverged: true},
-        })
-      }
-    })
-  }
-
-  _compositionSyncStyle(startLine: number, endLine: number, synced: boolean) {
-    const classNamePrefix = synced
-      ? 'composition-sync--on'
-      : 'composition-sync--off'
+  _compositionSyncStyle(startLine: number, endLine: number) {
+    const classNamePrefix = 'composition-sync--on'
 
     // Customize the full width of Monaco editor margin using API `marginClassName`
     // https://github.com/microsoft/monaco-editor/blob/35eb0ef/website/typedoc/monaco.d.ts#L1533
@@ -260,23 +150,22 @@ class LspConnectionManager {
     return [startLineStyle, middleLinesStyle, endLineStyle]
   }
 
-  _setEditorBlockStyle(schema: CompositionSelection = this._session) {
-    const compositionBlock = this._getCompositionBlockLines(
-      this._model.getValue()
-    )
-
-    const removeAllStyles = !compositionBlock || schema.composition.diverged
+  _setEditorBlockStyle(range: LspRange | null) {
+    const removeAllStyles = range == null
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
       removeAllStyles
         ? []
-        : this._compositionSyncStyle(
-            compositionBlock?.startLine,
-            compositionBlock?.endLine,
-            schema.composition.synced
-          )
+        : this._compositionSyncStyle(range?.start.line, range.end.line)
     )
+  }
+
+  _isNewScript(
+    schema: CompositionSelection,
+    previousState: CompositionSelection
+  ): boolean {
+    return previousState.bucket != null && schema.bucket == null
   }
 
   _updateLsp(
@@ -284,7 +173,9 @@ class LspConnectionManager {
     toRemove: Partial<CompositionSelection> = null
   ) {
     if (toAdd.bucket) {
-      this.inject(ExecuteCommand.CompositionInit, {bucket: toAdd.bucket?.name})
+      this.inject(ExecuteCommand.CompositionInit, {
+        bucket: toAdd.bucket?.name,
+      })
     }
 
     if (toAdd.measurement) {
@@ -312,6 +203,27 @@ class LspConnectionManager {
       toAdd.tagValues.forEach(({key, value}) =>
         this.inject(ExecuteCommand.CompositionAddTagValue, {tag: key, value})
       )
+    }
+  }
+
+  _initLspComposition(toAdd: Partial<CompositionSelection>) {
+    if (toAdd.bucket) {
+      const payload = {
+        bucket: toAdd.bucket?.name,
+      }
+      if (toAdd.measurement) {
+        payload['measurement'] = toAdd.measurement
+      }
+      if (toAdd.fields) {
+        payload['fields'] = toAdd.fields
+      }
+      if (toAdd.tagValues) {
+        payload['tagValues'] = toAdd.tagValues.map(({key, value}) => [
+          key,
+          value,
+        ])
+      }
+      this.inject(ExecuteCommand.CompositionInit, payload)
     }
   }
 
@@ -353,13 +265,7 @@ class LspConnectionManager {
       )
     }
 
-    return {toAdd, toRemove}
-  }
-
-  _initCompositionHandlers() {
-    this._snapshot = this._model.createSnapshot()
-    this._setEditorIrreversibleExit()
-    this._compositionHandlersSet = true
+    return {toAdd, toRemove, delay}
   }
 
   onSchemaSessionChange(schema: CompositionSelection, sessionCb) {
@@ -377,15 +283,7 @@ class LspConnectionManager {
       composition: {...this._session?.composition},
     }
 
-    // Even when not synced:
-    // 1. update styles (e.g. turn off synced style, if not unsynced)
-    // 2. update block sync toggle state, using this._session.composition.synced
-    if (previousState.composition != schema.composition) {
-      this._session.composition = {...schema.composition}
-      this._setEditorBlockStyle(schema)
-    }
-
-    if (schema.composition.diverged || !schema.composition.synced) {
+    if (!schema.composition.synced) {
       return
     }
 

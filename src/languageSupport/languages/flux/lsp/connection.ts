@@ -20,13 +20,17 @@ import {
   didOpen,
   didChange,
   executeCommand,
-  ExecuteCommandArgument,
-  ExecuteCommand,
-  ExecuteCommandT,
 } from 'src/languageSupport/languages/flux/lsp/utils'
-
-// error reporting
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {
+  ExecuteCommand,
+  ExecuteCommandArgument,
+  ExecuteCommandT,
+  LspClientRequest,
+  LspClientCommand,
+  ActionItem,
+  ActionItemCommand,
+  LspRange,
+} from 'src/languageSupport/languages/flux/lsp/types'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'

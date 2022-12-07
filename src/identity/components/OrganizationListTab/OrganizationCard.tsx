@@ -25,7 +25,6 @@ export const OrganizationCard: FC<OrgCardProps> = ({
   regionName,
   provisioningStatus,
 }) => {
-
   const isOrgSuspended = provisioningStatus === 'suspended'
 
   const tooltipContent = (

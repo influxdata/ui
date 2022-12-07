@@ -13,7 +13,7 @@ import {
   BrowserMessageWriter,
   createMessageConnection,
 } from 'vscode-jsonrpc/browser'
-import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+import {ConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
 
 // flux language support
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'

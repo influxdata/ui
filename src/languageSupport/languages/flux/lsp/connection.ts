@@ -417,5 +417,3 @@ class LspConnectionManager {
     this._model.onDidChangeContent(null)
   }
 }
-
-export default LspConnectionManager

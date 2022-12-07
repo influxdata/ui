@@ -17,7 +17,7 @@ import {
   submit,
 } from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
-import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+import {ConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
 
 // Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'

@@ -6,7 +6,8 @@ export const registerServiceWorker = (): Promise<ServiceWorkerRegistration> => {
     workerRegistration = navigator.serviceWorker.register(
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      new URL('../workers/downloadHelper.ts', import.meta.url)
+      new URL('../workers/downloadHelper.ts', import.meta.url),
+      {scope: location.hostname}
     )
   }
 

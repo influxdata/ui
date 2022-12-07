@@ -3,9 +3,12 @@ import {
   FlexBox,
   FlexDirection,
   JustifyContent,
-  ResourceCard,
   QuestionMarkTooltip,
+  ResourceCard,
 } from '@influxdata/clockface'
+
+// Utils
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Styles
 import './OrganizationCard.scss'
@@ -13,33 +16,30 @@ import './OrganizationCard.scss'
 interface OrgCardProps {
   name: string
   provider: string
+  provisioningStatus?: string
   regionCode: string
   regionName: string
-  provisioningStatus: string
 }
+
+const tooltipContent = (
+  <p>
+    Organizations can be reactivated within 7 days of deletion. Contact support
+    at{' '}
+    <SafeBlankLink href="mailto:support@influxdata.com">
+      support@influxdata.com
+    </SafeBlankLink>{' '}
+    to reactivate.
+  </p>
+)
 
 export const OrganizationCard: FC<OrgCardProps> = ({
   name,
   provider,
+  provisioningStatus,
   regionCode,
   regionName,
-  provisioningStatus,
 }) => {
   const isOrgSuspended = provisioningStatus === 'suspended'
-
-  const tooltipContent = (
-    <p>
-      Organizations can be reactivated within 7 days. Contact support at{' '}
-      <a
-        href="mailto:support@influxdata.com"
-        target="_blank"
-        rel="noreferrer noopener"
-      >
-        support@influxdata.com
-      </a>{' '}
-      to reactivate.
-    </p>
-  )
 
   return (
     <ResourceCard

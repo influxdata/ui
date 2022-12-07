@@ -913,7 +913,7 @@ describe('DataExplorer', () => {
     })
   })
 
-  describe('download csv', () => {
+  describe.skip('download csv', () => {
     // docs for how to test form submission as file download:
     // https://github.com/cypress-io/cypress-example-recipes/blob/cc13866e55bd28e1d1323ba6d498d85204f292b5/examples/testing-dom__download/cypress/e2e/form-submission-spec.cy.js
     const downloadsDirectory = Cypress.config('downloadsFolder')

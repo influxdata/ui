@@ -5,6 +5,8 @@ import {
   Button,
   ComponentColor,
   ComponentStatus,
+  Input,
+  InputType,
   Overlay,
 } from '@influxdata/clockface'
 
@@ -62,6 +64,11 @@ enum MarketoError {
   ScriptRuntimeError = 'ScriptRuntimeError',
 }
 
+interface MarketoFormElement extends Element {
+  disabled: boolean
+  readOnly: boolean
+}
+
 // If marketo isn't working, still need the user to have some means of contacting sales.
 const SalesFormLink = (): JSX.Element => {
   return (
@@ -85,11 +92,26 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
 
   const [scriptHasLoaded, setScriptHasLoaded] = useState(false)
   const [formHasLoaded, setFormHasLoaded] = useState(false)
+  const [formComment, setFormComment] = useState('')
 
   const handleCloseOverlay = () => {
     // Deleting marketo object guards against inconsistent behavior if user closes then re-opens the overlay.
     delete window.MktoForms2
     onClose()
+  }
+
+  const handleComment = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    if (window.MktoForms2.getForm) {
+      try {
+        window.MktoForms2.getForm(MARKETO_FORM_ID).setValues({
+          Marketing_Notes__c: evt.target.value,
+        })
+      } catch (err) {
+        // Don't use honeybadger in onChange function - otherwise errors will spam our alerts.
+        console.error('Unable to locate marketo form.')
+      }
+    }
+    setFormComment(evt.target.value)
   }
 
   const handleError = useCallback(
@@ -135,8 +157,9 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
             const marketoForm = window.MktoForms2
             if (marketoForm) {
               // Autofill the form with the current user and account id.
+
               marketoForm.getForm(MARKETO_FORM_ID).setValues({
-                Quartz_User_ID__c: parseInt(user.id),
+                Email: user.email,
                 Quartz_Account_ID__c: accountId,
               })
 
@@ -145,10 +168,17 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
                 form.onSuccess(() => false)
               })
 
-              document.querySelectorAll('input').forEach(input => {
-                input.readOnly = true
-                input.disabled = true
-              })
+              document
+                .querySelectorAll('input, textarea, button')
+                .forEach((input: MarketoFormElement) => {
+                  if (
+                    input.className.includes('mktoField') ||
+                    input.className.includes('mktoButton')
+                  ) {
+                    input.readOnly = true
+                    input.disabled = true
+                  }
+                })
 
               setFormHasLoaded(true)
             }
@@ -202,11 +232,20 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
           Click 'Contact Sales', and an InfluxData team member will reach out to
           you.
         </p>
-        <br />
         <form
           id={`mktoForm_${MARKETO_FORM_ID.toString()}`}
           className="marketo-account-upgrade--form"
         />
+        Comments
+        <Input
+          autoFocus={true}
+          className="marketo-account-upgrade-form--userinput"
+          name="Upgrade Account Comments"
+          onChange={handleComment}
+          placeholder="Please provide any comments for our sales team"
+          type={InputType.Text}
+          value={formComment}
+        ></Input>
       </Overlay.Body>
       <Overlay.Footer>
         <Button

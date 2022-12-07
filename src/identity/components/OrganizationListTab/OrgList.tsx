@@ -20,11 +20,11 @@ import {getSortedResources, SortTypes} from 'src/shared/utils/sort'
 
 // Types
 import {Sort} from '@influxdata/clockface'
-import {OrganizationSummaries} from 'src/client/unityRoutes'
+import {QuartzOrganization} from 'src/identity/apis/org'
 
 interface Props {
   currentPage: number
-  filteredOrgs: OrganizationSummaries
+  filteredOrgs: QuartzOrganization[]
   isAtOrgLimit: boolean
   pageHeight: number
   setTotalPages: (action: SetStateAction<number>) => void
@@ -112,6 +112,7 @@ export const OrgList: FC<Props> = ({
           provider={org.provider}
           regionCode={org.regionCode}
           regionName={org.regionName}
+          provisioningStatus={org.provisioningStatus}
         />
       ))}
     </>

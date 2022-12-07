@@ -8,7 +8,7 @@ import {EditorType, Variable} from 'src/types'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 
 // handling schema composition
-import {RecursivePartial} from 'src/types'
+import {RecursivePartial, TagKeyValuePair} from 'src/types'
 import {
   DEFAULT_SELECTION,
   DEFAULT_FLUX_EDITOR_TEXT,

@@ -1,3 +1,4 @@
+import {MonacoLanguageClient} from 'monaco-languageclient'
 import isEqual from 'lodash/isEqual'
 import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
 import {format_from_js_file} from 'src/languageSupport/languages/flux/parser'
@@ -32,7 +33,9 @@ import {
 } from 'src/languageSupport/languages/flux/lsp/types'
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {notify} from 'src/shared/actions/notifications'
+import {compositionEnded, oldSession} from 'src/shared/copy/notifications'
 
 export class ConnectionManager {
   private _worker: Worker
@@ -93,6 +96,19 @@ export class ConnectionManager {
         this._preludeModel.getVersionId()
       )
     )
+  }
+
+  subscribeToConnection(connection: MonacoLanguageClient) {
+    /// class: https://github.com/microsoft/vscode-languageserver-node/blob/f97bb73dbfb920af4bc8c13ecdcdc16359cdeda6/client/src/browser/main.ts#L13
+    /// extended from class: https://github.com/microsoft/vscode-languageserver-node/blob/d7b0ef6eab79f31f514f6559b6950326b170a691/client/src/common/client.ts#L431
+    connection.onReady().then(() => {
+      connection.onNotification(
+        'window/showMessageRequest',
+        (data: LspClientRequest) => {
+          this.onLspMessage(data)
+        }
+      )
+    })
   }
 
   inject(
@@ -276,15 +292,13 @@ export class ConnectionManager {
     return {toAdd, toRemove, delay}
   }
 
-  onSchemaSessionChange(schema: CompositionSelection, sessionCb) {
+  onSchemaSessionChange(schema: CompositionSelection, sessionCb, dispatch) {
     if (!schema.composition) {
-      // FIXME: message to user, to create a new script
-      console.error(
-        'User has an old session, which does not support schema composition.'
-      )
+      dispatch(notify(oldSession()))
       return
     }
 
+    this._dispatcher = dispatch
     this._callbackSetSession = sessionCb
     const previousState = {
       ...this._session,
@@ -318,12 +332,50 @@ export class ConnectionManager {
     }
   }
 
-  onLspMessage(_jsonrpcMiddlewareResponse: unknown) {
-    // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
-    // 1. middleware detects jsonrpc
-    // 2. call this method
-    // 3a. update (true-up) session store
-    // 3b. this._setEditorBlockStyle()
+  _performActionItems(actions: ActionItem[]) {
+    actions.forEach((action: ActionItem) => {
+      switch (action.title) {
+        case ActionItemCommand.CompositionRange:
+          this._setEditorBlockStyle(action.range)
+          break
+        case ActionItemCommand.CompositionState:
+          if (action.state) {
+            const selection: RecursivePartial<CompositionSelection> = {
+              bucket: action.state.bucket ? this._session.bucket : null,
+              measurement: action.state.measurement ?? null,
+              fields: action.state.fields ?? [],
+              tagValues:
+                action.state.tag_values.map(
+                  ([key, value]) => ({key, value} as TagKeyValuePair)
+                ) ?? [],
+            }
+            this._callbackSetSession(selection)
+          }
+          break
+        default:
+          return
+      }
+    })
+  }
+
+  onLspMessage(requestFromLsp: LspClientRequest) {
+    switch (requestFromLsp.message) {
+      case LspClientCommand.AlreadyInitialized:
+      case LspClientCommand.UpdateComposition:
+        this._performActionItems(requestFromLsp.actions)
+        break
+      case LspClientCommand.CompositionEnded:
+        this._setEditorBlockStyle(null)
+        this._setSessionSync(false)
+        this._dispatcher(notify(compositionEnded()))
+        break
+      case LspClientCommand.CompositionNotFound:
+        // Do nothing.
+        // This can also occur whenever the File fails to parse to AST. (a.k.a. mid-typing syntax)
+        break
+      default:
+        return
+    }
   }
 
   dispose() {

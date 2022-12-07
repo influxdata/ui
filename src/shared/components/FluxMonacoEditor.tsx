@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useRef, useContext, useMemo} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useRouteMatch} from 'react-router-dom'
 import classnames from 'classnames'
 
@@ -61,6 +61,7 @@ const FluxEditorMonaco: FC<Props> = ({
   wrapLines,
   variables,
 }) => {
+  const dispatch = useDispatch()
   const connection = useRef<ConnectionManager>(null)
   const {editor, setEditor} = useContext(EditorContext)
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
@@ -84,7 +85,8 @@ const FluxEditorMonaco: FC<Props> = ({
     if (connection.current && useSchemaComposition) {
       connection.current.onSchemaSessionChange(
         sessionStore.selection,
-        sessionStore.setSelection
+        sessionStore.setSelection,
+        dispatch
       )
     }
   }, [

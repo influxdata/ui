@@ -145,3 +145,13 @@ export const csvDownloadFailure = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to download csv.',
 })
+
+export const oldSession = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Old user session detected. Please create a new script.',
+})
+
+export const compositionEnded = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Composition has ended.',
+})

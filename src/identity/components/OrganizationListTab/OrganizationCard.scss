@@ -7,6 +7,16 @@
   border-radius: 2px;
 }
 
+.account--organizations-tab-suspended-orgs-card  {
+  margin-top: $cf-space-3xs;
+  margin-bottom: $cf-space-3xs;
+  border-radius: 2px;
+  background-color: #0e0e0e;
+  div:not(:last-child) {
+    opacity: 0.5;
+  }
+}
+
 .account--organizations-tab-orgs-card-cluster-data {
   width: 150px;
 }
@@ -18,7 +28,19 @@
 }
 
 .account-organizations-tab-orgs-card-location-data {
-  width: 240px;
+  width: 200px;
+}
+
+.account-organizations-tab-orgs-status--text {
+  color: $cf-white;
+}
+
+.account-organizations-tab-orgs-card-org-status {
+  width: 150px;
+  .cf-question-mark-tooltip {
+    background-color: $cf-white;
+    color: $cf-grey-5;
+  }
 }
 
 .account--organizations-tab-orgs-card-orgname {

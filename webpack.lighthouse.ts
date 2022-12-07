@@ -1,10 +1,10 @@
 // utils
 const commonWebpack = require('./webpack.common.ts')
-const mergeWebpack = require('webpack-merge')
+const mergeWebpack = require('webpack-merge').merge
 const commonPath = require('path')
 
 // Plugins
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
 
 const DIRECTORY_STATIC = require('./src/utils/env').STATIC_DIRECTORY
@@ -31,11 +31,9 @@ module.exports = mergeWebpack(commonWebpack, {
   optimization: {
     minimizer: [
       new TerserJSPlugin({
-        cache: true,
         parallel: 2,
-        sourceMap: true,
       }),
-      new OptimizeCSSAssetsPlugin({}),
+      new CssMinimizerPlugin(),
     ],
     splitChunks: {
       chunks: 'all',

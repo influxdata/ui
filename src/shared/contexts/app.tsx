@@ -28,16 +28,9 @@ import {presentationMode as presentationModeCopy} from 'src/shared/copy/notifica
 import {AppState, TimeZone, Theme, NavBarState, FlowsCTA} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
-// Worker -- load prior to page load event, in order to intercept fetch in http/2.
-// see service worker life cycle. https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import downloadWorker from 'worker-plugin/loader!../workers/downloadHelper'
+import {registerServiceWorker} from 'src/shared/workers/serviceWorker'
 
-let workerRegistration = null
-if ('serviceWorker' in navigator) {
-  workerRegistration = navigator.serviceWorker.register(downloadWorker)
-}
+const workerRegistration = registerServiceWorker()
 
 interface AppSettingContextType {
   timeZone: TimeZone

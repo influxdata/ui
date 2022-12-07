@@ -1,28 +1,29 @@
 const pathDev = require('path')
-const mergeDev = require('webpack-merge')
+const mergeDev = require('webpack-merge').merge
 const commonDev = require('./webpack.common.ts')
 const PORT = parseInt(process.env.PORT, 10) || 8080
 const PUBLIC = process.env.PUBLIC || undefined
 const BASE_PATH_DEV = require('./src/utils/env').BASE_PATH
-const BundleAnalyzerPlugin =
-  require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
-
-const webpackDev = require('webpack')
 
 module.exports = mergeDev(commonDev, {
   mode: 'development',
-  devtool: 'cheap-inline-source-map',
+  devtool: 'eval-cheap-module-source-map',
   output: {
     path: pathDev.join(__dirname, 'build'),
     filename: '[name].js',
+  },
+  resolve: {
+    fallback: {
+      path: false,
+    },
   },
   watchOptions: {
     aggregateTimeout: 300,
     poll: 1000,
   },
   devServer: {
-    hot: true,
+    hot: false,
     historyApiFallback: true,
     proxy: {
       '/api/v2': 'http://localhost:8086',
@@ -60,15 +61,6 @@ module.exports = mergeDev(commonDev, {
       logger: {
         devServer: false, // don't block UI compilation on TS errors
       },
-    }),
-    new webpackDev.DllReferencePlugin({
-      context: pathDev.join(__dirname, 'build'),
-      manifest: require('./build/vendor-manifest.json'),
-    }),
-    new BundleAnalyzerPlugin({
-      analyzerHost: '0.0.0.0',
-      analyzerPort: '9997',
-      openAnalyzer: false,
     }),
   ],
 })

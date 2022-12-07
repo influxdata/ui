@@ -42,7 +42,7 @@ interface Props {
 const SubscriptionCard: FC<Props> = ({subscription}) => {
   const history = useHistory()
   const {deleteSubscription} = useContext(SubscriptionListContext)
-  const timeSince = new DateTime.fromISO(subscription.updatedAt).toRelative()
+  const timeSince = DateTime.fromISO(subscription.updatedAt).toRelative()
   const org = useSelector(getOrg)
   const {bulletins: allBulletins} = useContext(SubscriptionListContext)
   const bulletins = allBulletins?.[subscription.id] ?? []

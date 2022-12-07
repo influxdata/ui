@@ -267,7 +267,10 @@ describe('Subscriptions', () => {
     cy.getByTestID('create-parsing-form-overlay').should('be.visible')
     // json
     cy.getByTestID('create-parsing-form-json--button').click()
-    cy.getByTestID('timestamp-json-parsing').type('$.t')
+    cy.getByTestID('timestamp-json-parsing')
+      .scrollIntoView()
+      .should('be.visible')
+      .type('$.t')
     cy.getByTestID('json-timestamp-precision')
       .scrollIntoView()
       .should('be.visible')

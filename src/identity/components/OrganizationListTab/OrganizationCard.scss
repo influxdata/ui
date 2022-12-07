@@ -1,17 +1,17 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .account--organizations-tab-orgs-card {
-  margin-top: $cf-space-3xs;
-  margin-bottom: $cf-space-3xs;
   background-color: $cf-grey-15;
   border-radius: 2px;
+  margin-bottom: $cf-space-3xs;
+  margin-top: $cf-space-3xs;
 }
 
 .account--organizations-tab-suspended-orgs-card {
-  margin-top: $cf-space-3xs;
-  margin-bottom: $cf-space-3xs;
+  background-color: #11121a;
   border-radius: 2px;
-  background-color: #0e0e0e;
+  margin-bottom: $cf-space-3xs;
+  margin-top: $cf-space-3xs;
   div:not(:last-child) {
     opacity: 0.5;
   }
@@ -46,7 +46,7 @@
 .account--organizations-tab-orgs-card-orgname {
   .cf-resource-name--text {
     font-size: $cf-text-base-1;
-    color: $cf-white;
     font-weight: $cf-font-weight--bold;
+    color: $cf-white;
   }
 }

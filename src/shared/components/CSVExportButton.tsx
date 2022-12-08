@@ -25,7 +25,15 @@ class CSVExportButton extends PureComponent<Props, State> {
 
     if (props.workerRegistration) {
       ;(props.workerRegistration as Promise<ServiceWorkerRegistration>).then(
-        () => this.setState({browserSupportsDownload: true}),
+        registrationResult => {
+          if (registrationResult.active.state == 'activated') {
+            this.setState({browserSupportsDownload: true})
+          } else {
+            console.error(
+              'Feature not available, because ServiceWorker is registered but inactive.'
+            )
+          }
+        },
         function (err) {
           console.error(
             'Feature not available, because ServiceWorker registration failed: ',

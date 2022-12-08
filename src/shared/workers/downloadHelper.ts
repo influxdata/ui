@@ -67,3 +67,10 @@ self.addEventListener('fetch', function (event: any) {
     event.respondWith(fetch(event.request))
   }
 })
+
+/// Have the latest version register (including updated registration settings).
+self.addEventListener('activate', event => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  event.waitUntil(clients.claim())
+})

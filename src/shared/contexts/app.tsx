@@ -28,9 +28,14 @@ import {presentationMode as presentationModeCopy} from 'src/shared/copy/notifica
 import {AppState, TimeZone, Theme, NavBarState, FlowsCTA} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
-import {registerServiceWorker} from 'src/shared/workers/serviceWorker'
-
-const workerRegistration = registerServiceWorker()
+let workerRegistration
+import(
+  /* webpackPreload: true */
+  /* webpackChunkName: "setup-interceptor" */
+  'src/shared/workers/serviceWorker'
+).then(
+  ({registerServiceWorker}) => (workerRegistration = registerServiceWorker())
+)
 
 interface AppSettingContextType {
   timeZone: TimeZone

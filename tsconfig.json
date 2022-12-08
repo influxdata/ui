@@ -14,7 +14,6 @@
     "noImplicitUseStrict": false,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
-    "removeComments": true,
     "importHelpers": true,
     "noLib": false,
     "noEmitHelpers": true,

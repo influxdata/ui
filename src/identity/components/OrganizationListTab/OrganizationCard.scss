@@ -1,10 +1,20 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .account--organizations-tab-orgs-card {
-  margin-top: $cf-space-3xs;
-  margin-bottom: $cf-space-3xs;
   background-color: $cf-grey-15;
   border-radius: 2px;
+  margin-bottom: $cf-space-3xs;
+  margin-top: $cf-space-3xs;
+}
+
+.account--organizations-tab-suspended-orgs-card {
+  background-color: #11121a;
+  border-radius: 2px;
+  margin-bottom: $cf-space-3xs;
+  margin-top: $cf-space-3xs;
+  div:not(:last-child) {
+    opacity: 0.5;
+  }
 }
 
 .account--organizations-tab-orgs-card-cluster-data {
@@ -18,13 +28,25 @@
 }
 
 .account-organizations-tab-orgs-card-location-data {
-  width: 240px;
+  width: 200px;
+}
+
+.account-organizations-tab-orgs-status--text {
+  color: $cf-white;
+}
+
+.account-organizations-tab-orgs-card-org-status {
+  width: 150px;
+  .cf-question-mark-tooltip {
+    background-color: $cf-white;
+    color: $cf-grey-5;
+  }
 }
 
 .account--organizations-tab-orgs-card-orgname {
   .cf-resource-name--text {
     font-size: $cf-text-base-1;
-    color: $cf-white;
     font-weight: $cf-font-weight--bold;
+    color: $cf-white;
   }
 }

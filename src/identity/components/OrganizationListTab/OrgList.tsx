@@ -113,6 +113,7 @@ export const OrgList: FC<Props> = ({
           regionCode={org.regionCode}
           regionName={org.regionName}
           provisioningStatus={org.provisioningStatus}
+          isActive={org.isActive}
         />
       ))}
     </>

@@ -15,6 +15,7 @@ import './OrganizationCard.scss'
 
 interface OrgCardProps {
   name: string
+  isActive: boolean
   provider: string
   provisioningStatus?: string
   regionCode: string
@@ -34,6 +35,7 @@ const tooltipContent = (
 
 export const OrganizationCard: FC<OrgCardProps> = ({
   name,
+  isActive,
   provider,
   provisioningStatus,
   regionCode,
@@ -52,6 +54,9 @@ export const OrganizationCard: FC<OrgCardProps> = ({
       justifyContent={JustifyContent.SpaceBetween}
       testID="account--organizations-tab-orgs-card"
     >
+      {isActive && (
+        <span className="account--organizations-tab-active-org"></span>
+      )}
       <ResourceCard.Name
         name={name}
         className="account--organizations-tab-orgs-card-orgname"

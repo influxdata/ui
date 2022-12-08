@@ -50,3 +50,14 @@
     color: $cf-white;
   }
 }
+
+.account--organizations-tab-active-org {
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 5px;
+  color: $c-rainforest;
+  display: inline-block;
+  left: 14px;
+  margin-top: 6px;
+  position: absolute;
+}

@@ -12,7 +12,7 @@ import {NotificationStyle} from 'src/types'
 
 // Selectors
 import {getNotifications} from 'src/shared/selectors/notifications'
-import {selectCurrentAccountName} from 'src/identity/selectors'
+import {selectCurrentAccount} from 'src/identity/selectors'
 
 // Notifications
 import {deleteOrgSuccess} from 'src/shared/copy/notifications'
@@ -34,7 +34,7 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
 
 const Notifications: FC = () => {
   const notifications = useSelector(getNotifications)
-  const accountName = useSelector(selectCurrentAccountName)
+  const account = useSelector(selectCurrentAccount)
   const userJustDeletedAnOrg = Boolean(getFromLocalStorage('justDeletedOrg'))
 
   const dispatch = useDispatch()
@@ -46,9 +46,9 @@ const Notifications: FC = () => {
     ) {
       const deletedOrgName = getFromLocalStorage('justDeletedOrg')
       removeFromLocalStorage('justDeletedOrg')
-      dispatch(notify(deleteOrgSuccess(deletedOrgName, accountName)))
+      dispatch(notify(deleteOrgSuccess(deletedOrgName, account.name)))
     }
-  }, [accountName, dispatch, userJustDeletedAnOrg])
+  }, [account.name, dispatch, userJustDeletedAnOrg])
 
   return (
     <>

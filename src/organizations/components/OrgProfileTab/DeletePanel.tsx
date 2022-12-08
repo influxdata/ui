@@ -67,10 +67,15 @@ const DeletePanel: FC = () => {
     handleDeleteFreeAccount = handleShowWarning
   }
 
+  const showDeleteButtonInFreeAccount = account.type === 'free'
+  const showDeleteButtonInPaidAccount =
+    isFlagEnabled('createDeleteOrgs') &&
+    (account.type === 'pay_as_you_go' || account.type === 'contract')
+
   return (
     <PageSpinner loading={status}>
       <>
-        {CLOUD && account.type === 'free' && (
+        {CLOUD && showDeleteButtonInFreeAccount && (
           <>
             <FlexBox.Child>
               <h4>Delete Organization</h4>
@@ -89,27 +94,25 @@ const DeletePanel: FC = () => {
             </FlexBox.Child>
           </>
         )}
-        {CLOUD &&
-          isFlagEnabled('createDeleteOrgs') &&
-          (account.type === 'pay_as_you_go' || account.type === 'contract') && (
-            <>
-              <FlexBox.Child>
-                <h4>Delete Organization</h4>
-                <p className="org-profile-tab--heading org-profile-tab--deleteHeading">
-                  Delete the <b>{org.name}</b> organization and remove any data
-                  that you have loaded.
-                </p>
-              </FlexBox.Child>
-              <FlexBox.Child>
-                <Button
-                  testID="delete-org--button"
-                  text="Delete"
-                  icon={IconFont.Trash_New}
-                  onClick={handleDeletePaidAccount}
-                />
-              </FlexBox.Child>
-            </>
-          )}
+        {CLOUD && showDeleteButtonInPaidAccount && (
+          <>
+            <FlexBox.Child>
+              <h4>Delete Organization</h4>
+              <p className="org-profile-tab--heading org-profile-tab--deleteHeading">
+                Delete the <b>{org.name}</b> organization and remove any data
+                that you have loaded.
+              </p>
+            </FlexBox.Child>
+            <FlexBox.Child>
+              <Button
+                testID="delete-org--button"
+                text="Delete"
+                icon={IconFont.Trash_New}
+                onClick={handleDeletePaidAccount}
+              />
+            </FlexBox.Child>
+          </>
+        )}
       </>
     </PageSpinner>
   )

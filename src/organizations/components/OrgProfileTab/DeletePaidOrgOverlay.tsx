@@ -80,10 +80,9 @@ export const DeletePaidOrgOverlay: FC = () => {
       // is a work-around so that it's possible for the user to be notified of org deletion
       // AFTER app reload. See src/components/notifications/Notifications.tsx,
       // which detects the property, and if found, sends a notification then deletes it.
+      onClose()
       setToLocalStorage('justDeletedOrg', org.name)
       window.location.href = `${CLOUD_URL}`
-
-      onClose()
     } catch (err) {
       dispatch(notify(deleteOrgFailed(org.name)))
       reportErrorThroughHoneyBadger(err, {
@@ -132,7 +131,7 @@ export const DeletePaidOrgOverlay: FC = () => {
           </li>
           <li>
             Before continuing, you are responsible for exporting any data or
-            content - including dashboards, tasks and variables - from the user
+            content - including dashboards, tasks, and variables - from the user
             interface.
           </li>
           <li>

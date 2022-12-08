@@ -26,16 +26,13 @@ class CSVExportButton extends PureComponent<Props, State> {
     if (props.workerRegistration) {
       ;(props.workerRegistration as Promise<ServiceWorkerRegistration>).then(
         registrationResult => {
-          // ready() promise never resolves, if main thread does not detect worker.
-          navigator.serviceWorker.ready.then(() => {
-            if (registrationResult.active.state == 'activated') {
-              this.setState({browserSupportsDownload: true})
-            } else {
-              console.error(
-                'Main thread says worker is ready, but the worker itself is reporting not active.'
-              )
-            }
-          })
+          if (registrationResult.active.state == 'activated') {
+            this.setState({browserSupportsDownload: true})
+          } else {
+            console.error(
+              'Feature not available, because ServiceWorker is registered but inactive.'
+            )
+          }
         },
         function (err) {
           console.error(

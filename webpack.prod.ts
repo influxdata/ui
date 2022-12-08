@@ -15,6 +15,11 @@ module.exports = mergeWebpack(commonWebpack, {
   devtool: 'source-map',
   output: {
     filename: `${DIRECTORY_STATIC}[contenthash:10].js`,
+    chunkFilename: pathData => {
+      return ['interceptor', 'setup-interceptor'].includes(pathData.chunk.name)
+        ? '[contenthash:10].js'
+        : `${DIRECTORY_STATIC}[contenthash:10].js`
+    },
   },
   module: {
     rules: [

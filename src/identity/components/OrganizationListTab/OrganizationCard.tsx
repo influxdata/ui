@@ -15,7 +15,7 @@ import './OrganizationCard.scss'
 
 interface OrgCardProps {
   name: string
-  isActive: Boolean
+  isActive: boolean
   provider: string
   provisioningStatus?: string
   regionCode: string

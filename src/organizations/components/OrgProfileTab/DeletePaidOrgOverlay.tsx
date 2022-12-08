@@ -43,20 +43,22 @@ import {setToLocalStorage} from 'src/localStorage'
 import './DeletePaidOrgOverlay.scss'
 
 // Required to avoid unwarranted console errors from clockface <Input /> when type=radio.
-const nullOnChange = () => null
+const noop = () => null
 
 export const DeletePaidOrgOverlay: FC = () => {
   const account = useSelector(selectCurrentAccount)
   const org = useSelector(selectCurrentOrg)
   const user = useSelector(selectUser)
   const dispatch = useDispatch()
-
   const {onClose} = useContext(OverlayContext)
 
   const [deleteButtonStatus, setDeleteButtonStatus] = useState(
     ComponentStatus.Disabled
   )
   const [userAcceptedTerms, setUserAcceptedTerms] = useState(false)
+
+  const orgDeleteInProgress = deleteButtonStatus === ComponentStatus.Loading
+  const onClickCancel = orgDeleteInProgress ? noop : onClose
 
   const toggleAcceptedTerms = () => {
     const currentAcceptanceStatus = !userAcceptedTerms
@@ -107,7 +109,7 @@ export const DeletePaidOrgOverlay: FC = () => {
       <Overlay.Header
         testID="create-org-overlay--header"
         title="Delete Organization"
-        onDismiss={onClose}
+        onDismiss={onClickCancel}
       />
       <Overlay.Body>
         <Alert
@@ -154,7 +156,7 @@ export const DeletePaidOrgOverlay: FC = () => {
             <Input
               checked={userAcceptedTerms}
               className="org-delete-overlay--accept-terms-radio-button"
-              onChange={nullOnChange}
+              onChange={noop}
               size={ComponentSize.ExtraSmall}
               testID="org-delete-overlay--accept-terms-radio-button"
               titleText="I understand and agree to these conditions."
@@ -173,7 +175,7 @@ export const DeletePaidOrgOverlay: FC = () => {
       <Overlay.Footer>
         <Button
           color={ComponentColor.Default}
-          onClick={onClose}
+          onClick={onClickCancel}
           testID="create-org-form-cancel"
           text="Cancel"
         />

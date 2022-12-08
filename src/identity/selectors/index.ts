@@ -44,10 +44,6 @@ export const selectCurrentOrgId = (
   return state.identity.currentIdentity.org.id
 }
 
-export const selectDefaultOrgId = (state: AppState): string => {
-  return state.identity.quartzOrganizations.orgs.find(org => org.isDefault).id
-}
-
 export const selectOperatorRole = (
   state: AppState
 ): AppState['identity']['currentIdentity']['user']['operatorRole'] => {

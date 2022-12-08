@@ -42,7 +42,7 @@ import {setToLocalStorage} from 'src/localStorage'
 // Styles
 import './DeletePaidOrgOverlay.scss'
 
-// This is required to avoid unnecessary console errors thrown by <Input /> when type=radio.
+// Required to avoid unwarranted console errors from clockface <Input /> when type=radio.
 const nullOnChange = () => null
 
 export const DeletePaidOrgOverlay: FC = () => {
@@ -76,6 +76,10 @@ export const DeletePaidOrgOverlay: FC = () => {
       await deleteOrganization(org.id)
 
       setDeleteButtonStatus(ComponentStatus.Default)
+      // Adding (and on reload, removing) this property from local storage
+      // is a work-around so that it's possible for the user to be notified of org deletion
+      // AFTER app reload. See src/components/notifications/Notifications.tsx,
+      // which detects the property, and if found, sends a notification then deletes it.
       setToLocalStorage('justDeletedOrg', org.name)
       window.location.href = `${CLOUD_URL}`
 
@@ -108,9 +112,9 @@ export const DeletePaidOrgOverlay: FC = () => {
       />
       <Overlay.Body>
         <Alert
-          icon={IconFont.AlertTriangle}
-          color={ComponentColor.Danger}
           className="org-delete-overlay--warning-message"
+          color={ComponentColor.Danger}
+          icon={IconFont.AlertTriangle}
         >
           You will be able to recover this organization's data for up to 7 days
           by contacting support. It will be unrecoverable afterwards.
@@ -139,14 +143,14 @@ export const DeletePaidOrgOverlay: FC = () => {
           </li>
         </ul>
         <FlexBox
-          direction={FlexDirection.Row}
           alignItems={AlignItems.FlexStart}
           className="org-delete-overlay--conditions-instruction"
+          direction={FlexDirection.Row}
         >
           <FlexBox
+            data-testid="org-delete-overlay--accept-terms-box"
             direction={FlexDirection.Row}
             onClick={toggleAcceptedTerms}
-            data-testid="org-delete-overlay--accept-terms-box"
           >
             <Input
               checked={userAcceptedTerms}

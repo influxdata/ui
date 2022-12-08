@@ -1,11 +1,5 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-.org-delete-overlay--warning-message {
-  color: #c6cad3;
-  font-size: $cf-text-base-1;
-  font-weight: 500;
-}
-
 .org-delete-overlay {
   color: #c6cad3;
   font-size: $cf-text-base-1;
@@ -27,7 +21,6 @@
 }
 
 .org-delete-overlay--conditions-instruction {
-  // color: $cf-white;
   color: #c6cad3;
   font-size: $cf-text-base-1;
   font-weight: 400;
@@ -36,4 +29,10 @@
     align-items: center;
     align-self: center;
   }
+}
+
+.org-delete-overlay--warning-message {
+  color: #c6cad3;
+  font-size: $cf-text-base-1;
+  font-weight: 500;
 }

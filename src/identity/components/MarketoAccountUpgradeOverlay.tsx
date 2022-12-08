@@ -160,6 +160,8 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
 
               marketoForm.getForm(MARKETO_FORM_ID).setValues({
                 Email: user.email,
+                FirstName: user.firstName,
+                LastName: user.lastName,
                 Quartz_Account_ID__c: accountId,
               })
 

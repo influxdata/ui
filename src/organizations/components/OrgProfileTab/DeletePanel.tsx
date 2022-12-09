@@ -105,10 +105,10 @@ const DeletePanel: FC = () => {
             </FlexBox.Child>
             <FlexBox.Child>
               <Button
-                testID="delete-org--button"
-                text="Delete"
                 icon={IconFont.Trash_New}
                 onClick={handleDeletePaidAccount}
+                testID="delete-org--button"
+                text="Delete"
               />
             </FlexBox.Child>
           </>

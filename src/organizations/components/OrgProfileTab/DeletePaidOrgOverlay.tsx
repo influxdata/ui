@@ -29,19 +29,14 @@ import {deleteOrganization} from 'src/identity/apis/org'
 
 // Constants
 import {CLOUD_URL} from 'src/shared/constants'
-import {
-  DELETED_ORG_ID_LOCALSTORAGE_KEY,
-  DELETED_ORG_NAME_LOCALSTORAGE_KEY,
-} from 'src/cloud/constants'
 
 // Notifications
-import {deleteOrgFailed} from 'src/shared/copy/notifications'
+import {deleteOrgFailed, deleteOrgSuccess} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
-import {setToLocalStorage} from 'src/localStorage'
 
 // Styles
 import './DeletePaidOrgOverlay.scss'
@@ -101,13 +96,12 @@ export const DeletePaidOrgOverlay: FC = () => {
 
       await deleteOrganization(org.id)
 
-      setDeleteButtonStatus(ComponentStatus.Default)
-      // This is a work-around so that it's possible for the user to be notified of org deletion
-      // AFTER app reload via a LocalStorage trigger. See components/notifications/Notifications.tsx,
-      onClose()
-      setToLocalStorage(DELETED_ORG_NAME_LOCALSTORAGE_KEY, org.name)
-      setToLocalStorage(DELETED_ORG_ID_LOCALSTORAGE_KEY, org.id)
-      window.location.href = `${CLOUD_URL}`
+      dispatch(notify(deleteOrgSuccess(org.name, account.name)))
+
+      setTimeout(() => {
+        onClose()
+        window.location.href = CLOUD_URL
+      }, 4000)
     } catch (err) {
       dispatch(notify(deleteOrgFailed(SupportLink, org.name)))
       reportErrorThroughHoneyBadger(err, {
@@ -130,9 +124,9 @@ export const DeletePaidOrgOverlay: FC = () => {
       testID="create-org-overlay--container"
     >
       <Overlay.Header
+        onDismiss={onClickCancel}
         testID="create-org-overlay--header"
         title="Delete Organization"
-        onDismiss={onClickCancel}
       />
       <Overlay.Body>
         <Alert

@@ -10,6 +10,3 @@ export const ASSET_LIMIT_ERROR_TEXT =
 
 export const REQUEST_TIMEOUT_STATUS = 408
 export const GATEWAY_TIMEOUT_STATUS = 504
-
-export const DELETED_ORG_NAME_LOCALSTORAGE_KEY = 'justDeletedOrgName'
-export const DELETED_ORG_ID_LOCALSTORAGE_KEY = 'justDeletedOrgId'

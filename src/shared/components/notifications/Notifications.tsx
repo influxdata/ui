@@ -1,25 +1,16 @@
-// Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 import {get} from 'lodash'
 import {ComponentSize, Gradients, Notification} from '@influxdata/clockface'
-import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
-import {dismissNotification, notify} from 'src/shared/actions/notifications'
+import {dismissNotification} from 'src/shared/actions/notifications'
 
 // Types
 import {NotificationStyle} from 'src/types'
 
 // Selectors
 import {getNotifications} from 'src/shared/selectors/notifications'
-import {selectCurrentAccount} from 'src/identity/selectors'
-
-// Notifications
-import {deleteOrgSuccess} from 'src/shared/copy/notifications'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getNameOfDeletedOrg} from 'src/organizations/utils/getNameOfDeletedOrg'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {
@@ -35,18 +26,7 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
 
 const Notifications: FC = () => {
   const notifications = useSelector(getNotifications)
-  const account = useSelector(selectCurrentAccount)
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (isFlagEnabled('createDeleteOrgs')) {
-      const deletedOrgName = getNameOfDeletedOrg()
-
-      if (deletedOrgName) {
-        dispatch(notify(deleteOrgSuccess(deletedOrgName, account.name)))
-      }
-    }
-  }, [account.name, dispatch])
 
   return (
     <>

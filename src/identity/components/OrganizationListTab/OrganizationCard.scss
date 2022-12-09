@@ -49,6 +49,7 @@
     font-weight: $cf-font-weight--bold;
     color: $cf-white;
   }
+  margin-left: 0 !important;
 }
 
 .account--organizations-tab-active-org {
@@ -57,7 +58,7 @@
   border-width: 5px;
   color: $c-rainforest;
   display: inline-block;
-  left: 14px;
+  left: 9px;
   margin-top: 6px;
   position: absolute;
 }

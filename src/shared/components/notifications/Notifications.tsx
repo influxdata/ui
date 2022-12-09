@@ -19,6 +19,7 @@ import {deleteOrgSuccess} from 'src/shared/copy/notifications'
 
 // Utils
 import {getFromLocalStorage, removeFromLocalStorage} from 'src/localStorage'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {
@@ -35,15 +36,17 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
 const Notifications: FC = () => {
   const notifications = useSelector(getNotifications)
   const account = useSelector(selectCurrentAccount)
-  const userJustDeletedAnOrg = Boolean(getFromLocalStorage('justDeletedOrg'))
+
+  const userJustDeletedAnOrg = Boolean(
+    isFlagEnabled('createDeleteOrgs') &&
+      getFromLocalStorage('justDeletedOrg') &&
+      !window.location.href.includes('org-settings')
+  )
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (
-      userJustDeletedAnOrg &&
-      !window.location.href.includes('org-settings')
-    ) {
+    if (userJustDeletedAnOrg) {
       const deletedOrgName = getFromLocalStorage('justDeletedOrg')
       removeFromLocalStorage('justDeletedOrg')
       dispatch(notify(deleteOrgSuccess(deletedOrgName, account.name)))

@@ -20,6 +20,10 @@ import {deleteOrgSuccess} from 'src/shared/copy/notifications'
 // Utils
 import {getFromLocalStorage, removeFromLocalStorage} from 'src/localStorage'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  DELETED_ORG_ID_LOCALSTORAGE_KEY,
+  DELETED_ORG_NAME_LOCALSTORAGE_KEY,
+} from 'src/cloud/constants'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {
@@ -36,22 +40,32 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
 const Notifications: FC = () => {
   const notifications = useSelector(getNotifications)
   const account = useSelector(selectCurrentAccount)
+  const dispatch = useDispatch()
+
+  /* WorkAround For Notifying User When An Org Is Deleted */
+  // This ensures that a user always receives a notification after deleting an organization.
+  // Since quartz forces a reload to the new org, the notification trigger lives in LocalStorage.
+  const justDeletedOrgName = getFromLocalStorage(
+    DELETED_ORG_NAME_LOCALSTORAGE_KEY
+  )
+  const justDeletedOrgID = getFromLocalStorage(DELETED_ORG_ID_LOCALSTORAGE_KEY)
 
   const userJustDeletedAnOrg = Boolean(
     isFlagEnabled('createDeleteOrgs') &&
-      getFromLocalStorage('justDeletedOrg') &&
-      !window.location.href.includes('org-settings')
+      justDeletedOrgName &&
+      justDeletedOrgID &&
+      !window.location.href.includes(justDeletedOrgID)
   )
-
-  const dispatch = useDispatch()
 
   useEffect(() => {
     if (userJustDeletedAnOrg) {
-      const deletedOrgName = getFromLocalStorage('justDeletedOrg')
-      removeFromLocalStorage('justDeletedOrg')
+      const deletedOrgName = justDeletedOrgName
+      removeFromLocalStorage(DELETED_ORG_NAME_LOCALSTORAGE_KEY)
+      removeFromLocalStorage(DELETED_ORG_ID_LOCALSTORAGE_KEY)
       dispatch(notify(deleteOrgSuccess(deletedOrgName, account.name)))
     }
-  }, [account.name, dispatch, userJustDeletedAnOrg])
+  }, [account.name, dispatch, justDeletedOrgName, userJustDeletedAnOrg])
+  /* End of WorkAround */
 
   return (
     <>

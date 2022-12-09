@@ -29,6 +29,10 @@ import {deleteOrganization} from 'src/identity/apis/org'
 
 // Constants
 import {CLOUD_URL} from 'src/shared/constants'
+import {
+  DELETED_ORG_ID_LOCALSTORAGE_KEY,
+  DELETED_ORG_NAME_LOCALSTORAGE_KEY,
+} from 'src/cloud/constants'
 
 // Notifications
 import {deleteOrgFailed} from 'src/shared/copy/notifications'
@@ -44,6 +48,26 @@ import './DeletePaidOrgOverlay.scss'
 
 // Required to avoid unwarranted console errors from clockface <Input /> when type=radio.
 const noop = () => null
+
+const linkStyle = {
+  color: 'white',
+  textDecoration: 'underline',
+}
+
+const SupportLink = (): JSX.Element => {
+  return (
+    <>
+      <a
+        data-testid="go-to-new-org--link"
+        href="mailto:support@influxdata.com"
+        style={linkStyle}
+      >
+        support@influxdata.com
+      </a>
+      .
+    </>
+  )
+}
 
 export const DeletePaidOrgOverlay: FC = () => {
   const account = useSelector(selectCurrentAccount)
@@ -78,15 +102,14 @@ export const DeletePaidOrgOverlay: FC = () => {
       await deleteOrganization(org.id)
 
       setDeleteButtonStatus(ComponentStatus.Default)
-      // Adding (and on reload, removing) this property from local storage
-      // is a work-around so that it's possible for the user to be notified of org deletion
-      // AFTER app reload. See src/components/notifications/Notifications.tsx,
-      // which detects the property, and if found, sends a notification then deletes it.
+      // This is a work-around so that it's possible for the user to be notified of org deletion
+      // AFTER app reload via a LocalStorage trigger. See components/notifications/Notifications.tsx,
       onClose()
-      setToLocalStorage('justDeletedOrg', org.name)
+      setToLocalStorage(DELETED_ORG_NAME_LOCALSTORAGE_KEY, org.name)
+      setToLocalStorage(DELETED_ORG_ID_LOCALSTORAGE_KEY, org.id)
       window.location.href = `${CLOUD_URL}`
     } catch (err) {
-      dispatch(notify(deleteOrgFailed(org.name)))
+      dispatch(notify(deleteOrgFailed(SupportLink, org.name)))
       reportErrorThroughHoneyBadger(err, {
         name: 'Org deletion failed',
         context: {

@@ -31,7 +31,11 @@ import {deleteOrganization} from 'src/identity/apis/org'
 import {CLOUD_URL} from 'src/shared/constants'
 
 // Notifications
-import {deleteOrgFailed, deleteOrgSuccess} from 'src/shared/copy/notifications'
+import {
+  deleteOrgDelayed,
+  deleteOrgFailed,
+  deleteOrgSuccess,
+} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils
@@ -90,31 +94,39 @@ export const DeletePaidOrgOverlay: FC = () => {
     )
   }
 
-  const handleDeleteOrg = async () => {
-    try {
-      setDeleteButtonStatus(ComponentStatus.Loading)
+  const handleDeleteOrg = () => {
+    setDeleteButtonStatus(ComponentStatus.Loading)
 
-      await deleteOrganization(org.id)
+    const responseTimer = setTimeout(() => {
+      dispatch(notify(deleteOrgDelayed(SupportLink)))
 
-      dispatch(notify(deleteOrgSuccess(org.name, account.name)))
+      toggleAcceptedTerms()
+    }, 5000)
 
-      setTimeout(() => {
-        onClose()
-        window.location.href = CLOUD_URL
-      }, 4000)
-    } catch (err) {
-      dispatch(notify(deleteOrgFailed(SupportLink, org.name)))
-      reportErrorThroughHoneyBadger(err, {
-        name: 'Org deletion failed',
-        context: {
-          user,
-          account,
-          org,
-        },
+    deleteOrganization(org.id)
+      .then(() => {
+        clearTimeout(responseTimer)
+
+        dispatch(notify(deleteOrgSuccess(org.name, account.name)))
+
+        setTimeout(() => {
+          onClose()
+          window.location.href = CLOUD_URL
+        }, 4000)
       })
-      setDeleteButtonStatus(ComponentStatus.Disabled)
-      setUserAcceptedTerms(false)
-    }
+      .catch(err => {
+        dispatch(notify(deleteOrgFailed(SupportLink, org.name)))
+        reportErrorThroughHoneyBadger(err, {
+          name: 'Org deletion failed',
+          context: {
+            user,
+            account,
+            org,
+          },
+        })
+        setDeleteButtonStatus(ComponentStatus.Disabled)
+        setUserAcceptedTerms(false)
+      })
   }
 
   return (

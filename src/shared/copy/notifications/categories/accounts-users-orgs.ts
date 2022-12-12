@@ -48,7 +48,8 @@ export const deleteOrgDelayed = (
   supportLink: NotificationButtonElement
 ): Notification => ({
   ...defaultErrorNotification,
-  message: `Sorry, deleting this org was unexpectedly delayed. Feel free to navigate away, or reach out to `,
+  message:
+    "Sorry, we're experiencing a delay in deleting this org. For support, contact ",
   buttonElement: supportLink,
 })
 

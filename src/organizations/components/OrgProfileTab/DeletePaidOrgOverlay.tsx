@@ -55,16 +55,14 @@ const linkStyle = {
 
 const SupportLink = (): JSX.Element => {
   return (
-    <>
-      <a
-        data-testid="go-to-new-org--link"
-        href="mailto:support@influxdata.com"
-        style={linkStyle}
-      >
-        support@influxdata.com
-      </a>
-      .
-    </>
+    <a
+      data-testid="go-to-new-org--link"
+      href="mailto:support@influxdata.com"
+      style={linkStyle}
+      target="_blank"
+    >
+      support@influxdata.com
+    </a>
   )
 }
 
@@ -106,15 +104,14 @@ export const DeletePaidOrgOverlay: FC = () => {
     deleteOrganization(org.id)
       .then(() => {
         clearTimeout(responseTimer)
-
         dispatch(notify(deleteOrgSuccess(org.name, account.name)))
-
         setTimeout(() => {
           onClose()
           window.location.href = CLOUD_URL
         }, 4000)
       })
       .catch(err => {
+        clearTimeout(responseTimer)
         dispatch(notify(deleteOrgFailed(SupportLink, org.name)))
         reportErrorThroughHoneyBadger(err, {
           name: 'Org deletion failed',

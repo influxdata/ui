@@ -313,4 +313,4 @@ const ResultsPane: FC = () => {
   )
 }
 
-export default ResultsPane
+export {ResultsPane}

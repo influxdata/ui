@@ -361,7 +361,7 @@ export const CreateOrganizationOverlay: FC = () => {
         />
         <Button
           text="Create Organization"
-          testID="create-org-form-submit"
+          testID="create-org-form--submit"
           color={ComponentColor.Primary}
           status={createOrgButtonStatus}
           onClick={handleCreateOrg}

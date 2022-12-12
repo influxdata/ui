@@ -1,0 +1,11 @@
+{
+  "clusterHost": "https://aws-local.aws.cloud2.influxdata.com",
+  "creationDate": "12/12/2022",
+  "description": "",
+  "id": "213901",
+  "name": "A New PAYG Org",
+  "provider": "AWS",
+  "regionCode": "aws-local",
+  "regionName": "aws-local region",
+  "state": "provisioned"
+}

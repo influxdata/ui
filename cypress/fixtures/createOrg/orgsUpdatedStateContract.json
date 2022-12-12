@@ -1,0 +1,43 @@
+[
+  {
+    "id": "9296169091c64567",
+    "name": "E2E Test Organization",
+    "isDefault": true,
+    "isActive": true,
+    "provider": "AWS",
+    "regionCode": "us-east-1",
+    "regionName": "US East (N. Virginia)",
+    "state": "provisioned"
+  },
+  {
+    "id": "1254a0085d2af2cc",
+    "name": "Pending Organization",
+    "isDefault": false,
+    "isActive": false,
+    "provider": "AWS",
+    "regionCode": "us-east-1-2",
+    "regionName": "US East (N. Virginia) 2",
+    "state": "pending"
+  },
+  {
+    "id": "2f4ed71522a4a0ff",
+    "name": "Suspended Organization",
+    "isDefault": false,
+    "isActive": false,
+    "provider": "Azure",
+    "regionCode": "westeurope",
+    "regionName": "Amsterdam",
+    "state": "suspended"
+  },
+  {
+    "clusterHost": "https://aws-local.aws.cloud2.influxdata.com",
+    "creationDate": "12/12/2022",
+    "description": "",
+    "id": "213901",
+    "name": "A New Org",
+    "provider": "Azure",
+    "regionCode": "azure-local",
+    "regionName": "azure-local region",
+    "state": "provisioned"
+  }
+]

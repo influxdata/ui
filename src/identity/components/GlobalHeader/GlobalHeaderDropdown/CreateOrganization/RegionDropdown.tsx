@@ -33,7 +33,7 @@ export const RegionDropdown: FC<Props> = ({
   )
 
   const menu = (onCollapse: () => void) => (
-    <Dropdown.Menu onCollapse={onCollapse}>
+    <Dropdown.Menu onCollapse={onCollapse} testID="region-list-dropdown">
       {regions.map((cluster: Cluster) => (
         <Dropdown.Item
           key={cluster.regionId}

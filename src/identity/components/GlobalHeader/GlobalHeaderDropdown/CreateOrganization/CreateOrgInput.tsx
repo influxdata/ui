@@ -42,12 +42,13 @@ export const CreateOrgInput: FC<Props> = ({
       >
         <Form.HelpText text="You may want to create separate organizations for each team, server region, or dev environment." />
         <Input
-          size={ComponentSize.Medium}
           onChange={handleInputChange}
-          value={orgName}
+          placeholder="Dev Team, US Eastern Region, Staging"
           required={true}
           status={showError ? ComponentStatus.Error : ComponentStatus.Default}
-          placeholder="Dev Team, US Eastern Region, Staging"
+          size={ComponentSize.Medium}
+          testID="create-org-overlay--createorg-input"
+          value={orgName}
         />
       </Form.Element>
       {!showError && (

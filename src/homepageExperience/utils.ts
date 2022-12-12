@@ -1,7 +1,5 @@
 import {IconFont} from '@influxdata/clockface'
 
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 export const HOMEPAGE_NAVIGATION_STEPS = [
   {
     name: 'Overview',
@@ -107,13 +105,11 @@ export const HOMEPAGE_NAVIGATION_STEPS_ARDUINO = [
 // Set a timeout of 0 so that this function call gets run after react has a had a chance to update state and
 // re-render on the main thread.
 export const scrollNextPageIntoView = () => {
-  if (isFlagEnabled('firstMileScrollTop')) {
-    setTimeout(() => {
-      document.querySelector('h1').scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'nearest',
-      })
-    }, 0)
-  }
+  setTimeout(() => {
+    document.querySelector('h1').scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'nearest',
+    })
+  }, 0)
 }

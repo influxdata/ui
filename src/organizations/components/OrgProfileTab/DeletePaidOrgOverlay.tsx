@@ -27,9 +27,6 @@ import {
 // API
 import {deleteOrganization} from 'src/identity/apis/org'
 
-// Constants
-import {CLOUD_URL} from 'src/shared/constants'
-
 // Notifications
 import {
   deleteOrgDelayed,
@@ -44,6 +41,11 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Styles
 import './DeletePaidOrgOverlay.scss'
+
+// Constants
+import {CLOUD_URL} from 'src/shared/constants'
+const WAIT_IN_MS_BEFORE_REDIRECTING_TO_DEFAULT_ORG = 4000
+const WAIT_IN_MS_BEFORE_SHOWING_DELAY_NOTIFICATION = 5000
 
 // Required to avoid unwarranted console errors from clockface <Input /> when type=radio.
 const noop = () => null
@@ -99,7 +101,7 @@ export const DeletePaidOrgOverlay: FC = () => {
       dispatch(notify(deleteOrgDelayed(SupportLink)))
 
       toggleAcceptedTerms()
-    }, 5000)
+    }, WAIT_IN_MS_BEFORE_SHOWING_DELAY_NOTIFICATION)
 
     deleteOrganization(org.id)
       .then(() => {
@@ -108,7 +110,7 @@ export const DeletePaidOrgOverlay: FC = () => {
         setTimeout(() => {
           onClose()
           window.location.href = CLOUD_URL
-        }, 4000)
+        }, WAIT_IN_MS_BEFORE_REDIRECTING_TO_DEFAULT_ORG)
       })
       .catch(err => {
         clearTimeout(responseTimer)

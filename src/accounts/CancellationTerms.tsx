@@ -28,7 +28,7 @@ const CancellationTerms: FC<Props> = ({hasAgreedToTerms, onAgreedToTerms}) => (
       </li>
       <li>
         Before continuing, you are responsible for exporting any data or content
-        (including dashboards, tasks and variables) you wish to keep. (edited)
+        (including dashboards, tasks, and variables) you wish to keep. (edited)
       </li>
     </ul>
     <span onClick={onAgreedToTerms} data-testid="agree-terms--input">

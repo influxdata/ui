@@ -120,8 +120,8 @@ const DeleteOrgOverlay: FC = () => {
             </li>
             <li>
               Before continuing, you are responsible for exporting any data or
-              content - including dashboards, tasks and variable - from the user
-              interface.
+              content - including dashboards, tasks, and variables - from the
+              user interface.
             </li>
           </ul>
           <span

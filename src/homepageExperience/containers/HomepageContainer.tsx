@@ -37,6 +37,7 @@ import './HomepageContainer.scss'
 import {event} from 'src/cloud/utils/reporting'
 import UsageProvider from 'src/usage/context/usage'
 import Resources from 'src/me/components/Resources'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -205,31 +206,33 @@ export const HomepageContainer: FC = () => {
                     </Link>
                   </FlexBox>
                   <hr style={{marginTop: '8px'}} />
-                  <Link
-                    to={mqttPageLink}
-                    style={linkStyle}
-                    onClick={logMQTTButtonClick}
-                  >
-                    <div
-                      className="homepage-write-data-tile"
-                      data-testid="homepage-wizard-tile--mqtt"
+                  {isFlagEnabled('subscriptionsUI') && (
+                    <Link
+                      to={mqttPageLink}
+                      style={linkStyle}
+                      onClick={logMQTTButtonClick}
                     >
-                      <div className="tile-icon-text-wrapper">
-                        <div className="icon">{MQTTIcon}</div>
-                        <div>
-                          <h4>Native MQTT</h4>
-                          <h6>
-                            Connect to your MQTT subscription in the cloud.
-                          </h6>
+                      <div
+                        className="homepage-write-data-tile"
+                        data-testid="homepage-wizard-tile--mqtt"
+                      >
+                        <div className="tile-icon-text-wrapper">
+                          <div className="icon">{MQTTIcon}</div>
+                          <div>
+                            <h4>Native MQTT</h4>
+                            <h6>
+                              Connect to your MQTT subscription in the cloud.
+                            </h6>
+                          </div>
                         </div>
-                      </div>
 
-                      <Icon
-                        glyph={IconFont.ArrowRight_New}
-                        className="arrow-button"
-                      />
-                    </div>
-                  </Link>
+                        <Icon
+                          glyph={IconFont.ArrowRight_New}
+                          className="arrow-button"
+                        />
+                      </div>
+                    </Link>
+                  )}
                   <Link
                     to={cliPageLink}
                     style={linkStyle}

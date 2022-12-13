@@ -24,7 +24,7 @@ import {
   Icon,
   ComponentColor,
 } from '@influxdata/clockface'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
@@ -41,22 +41,27 @@ import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
 import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
 import {SqlEditorMonaco} from 'src/shared/components/SqlMonacoEditor'
+import CSVExportButton from 'src/shared/components/CSVExportButton'
 
 // Types
 import {TimeRange} from 'src/types'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
-import {isOrgIOx} from 'src/organizations/selectors'
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {downloadBlob} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
 import {bytesFormatter} from 'src/shared/copy/notifications/common'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+import {csvDownloadFailure} from 'src/shared/copy/notifications'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
+import {API_BASE_PATH} from 'src/shared/constants'
 
 const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
@@ -120,9 +125,11 @@ const ResultsPane: FC = () => {
     selection,
     resource,
   } = useContext(PersistanceContext)
+  const orgID = useSelector(getOrg).id
   const isIoxOrg = useSelector(isOrgIOx)
   const [csvDownloadCancelID, setCancelId] = useState(null)
   const language = resource?.language ?? LanguageType.FLUX
+  const dispatch = useDispatch()
 
   let submitButtonDisabled = false
   let disabledTitleText = ''
@@ -167,6 +174,38 @@ const ResultsPane: FC = () => {
     event('CSV Download End')
   }
 
+  const downloadByServiceWorker = () => {
+    // TODO: test download SQL query
+    try {
+      event('runQuery', {context: 'query experience'})
+
+      const extern = buildUsedVarsOption(text, timeVars)
+      const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
+
+      const hiddenForm = document.createElement('form')
+      hiddenForm.setAttribute('id', 'downloadDiv')
+      hiddenForm.setAttribute('style', 'display: none;')
+      hiddenForm.setAttribute('method', 'post')
+      hiddenForm.setAttribute('action', url)
+
+      const input = document.createElement('input')
+      input.setAttribute('name', 'data')
+      input.setAttribute(
+        'value',
+        JSON.stringify({
+          query: text,
+          extern,
+          dialect: {annotations: ['group', 'datatype', 'default']},
+        })
+      )
+      hiddenForm.appendChild(input)
+      document.body.appendChild(hiddenForm)
+      hiddenForm.submit()
+    } catch (error) {
+      dispatch(notify(csvDownloadFailure()))
+    }
+  }
+
   const submit = useCallback(() => {
     setStatus(RemoteDataState.Loading)
     query(
@@ -206,6 +245,40 @@ const ResultsPane: FC = () => {
 
   const variables = timeVars.concat(
     getWindowPeriodVariableFromVariables(text, timeVars) || []
+  )
+
+  const csvDownloadByBlob =
+    csvDownloadCancelID == null ? (
+      <Button
+        titleText="Download query results as a .CSV file"
+        text="CSV"
+        icon={IconFont.Download_New}
+        onClick={download}
+        status={
+          !submitButtonDisabled
+            ? ComponentStatus.Default
+            : ComponentStatus.Disabled
+        }
+        testID="data-explorer--csv-download"
+      />
+    ) : (
+      <Button
+        text="Cancel"
+        onClick={() => {
+          cancel(csvDownloadCancelID)
+          setCancelId(null)
+        }}
+        color={ComponentColor.Danger}
+      />
+    )
+
+  const csvDownloadButton = isFlagEnabled('csvServiceWorker') ? (
+    <CSVExportButton
+      disabled={submitButtonDisabled}
+      download={downloadByServiceWorker}
+    />
+  ) : (
+    csvDownloadByBlob
   )
 
   return (
@@ -262,29 +335,7 @@ const ResultsPane: FC = () => {
               margin={ComponentSize.Small}
             >
               <QueryTime />
-              {csvDownloadCancelID == null ? (
-                <Button
-                  titleText="Download query results as a .CSV file"
-                  text="CSV"
-                  icon={IconFont.Download_New}
-                  onClick={download}
-                  status={
-                    !submitButtonDisabled
-                      ? ComponentStatus.Default
-                      : ComponentStatus.Disabled
-                  }
-                  testID="data-explorer--csv-download"
-                />
-              ) : (
-                <Button
-                  text="Cancel"
-                  onClick={() => {
-                    cancel(csvDownloadCancelID)
-                    setCancelId(null)
-                  }}
-                  color={ComponentColor.Danger}
-                />
-              )}
+              {csvDownloadButton}
               {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
                 <NewDatePicker />
               )}

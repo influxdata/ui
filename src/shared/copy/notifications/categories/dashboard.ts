@@ -151,7 +151,13 @@ export const oldSession = (): Notification => ({
   message: 'Old user session detected. Please create a new script.',
 })
 
+export const compositionUpdateFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Composition was not updated. Try again.',
+})
+
 export const compositionEnded = (): Notification => ({
   ...defaultErrorNotification,
-  message: 'Composition has ended.',
+  message:
+    'Composition has ended. Turn on flux sync, to start a new composition.',
 })

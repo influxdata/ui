@@ -35,7 +35,11 @@ import {
 // Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {notify} from 'src/shared/actions/notifications'
-import {compositionEnded, oldSession} from 'src/shared/copy/notifications'
+import {
+  compositionUpdateFailed,
+  compositionEnded,
+  oldSession,
+} from 'src/shared/copy/notifications'
 
 export class ConnectionManager {
   private _worker: Worker
@@ -363,6 +367,9 @@ export class ConnectionManager {
       case LspClientCommand.AlreadyInitialized:
       case LspClientCommand.UpdateComposition:
         this._performActionItems(requestFromLsp.actions)
+        break
+      case LspClientCommand.ExecuteCommandFailed:
+        this._dispatcher(notify(compositionUpdateFailed()))
         break
       case LspClientCommand.CompositionEnded:
         this._setEditorBlockStyle(null)

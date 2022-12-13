@@ -21,6 +21,7 @@ export enum LspClientCommand {
   UpdateComposition = 'fluxComposition/compositionState',
   CompositionEnded = 'fluxComposition/compositionEnded',
   CompositionNotFound = 'fluxComposition/compositionNotFound',
+  ExecuteCommandFailed = 'fluxComposition/executeCommandFailed',
   AlreadyInitialized = 'fluxComposition/alreadyInitialized',
 }
 

@@ -57,7 +57,6 @@ import {bytesFormatter} from 'src/shared/copy/notifications/common'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 import {csvDownloadFailure} from 'src/shared/copy/notifications'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
@@ -247,40 +246,6 @@ const ResultsPane: FC = () => {
     getWindowPeriodVariableFromVariables(text, timeVars) || []
   )
 
-  const csvDownloadByBlob =
-    csvDownloadCancelID == null ? (
-      <Button
-        titleText="Download query results as a .CSV file"
-        text="CSV"
-        icon={IconFont.Download_New}
-        onClick={download}
-        status={
-          !submitButtonDisabled
-            ? ComponentStatus.Default
-            : ComponentStatus.Disabled
-        }
-        testID="data-explorer--csv-download"
-      />
-    ) : (
-      <Button
-        text="Cancel"
-        onClick={() => {
-          cancel(csvDownloadCancelID)
-          setCancelId(null)
-        }}
-        color={ComponentColor.Danger}
-      />
-    )
-
-  const csvDownloadButton = isFlagEnabled('csvServiceWorker') ? (
-    <CSVExportButton
-      disabled={submitButtonDisabled}
-      download={downloadByServiceWorker}
-    />
-  ) : (
-    csvDownloadByBlob
-  )
-
   return (
     <DraggableResizer
       handleOrientation={Orientation.Horizontal}
@@ -335,7 +300,33 @@ const ResultsPane: FC = () => {
               margin={ComponentSize.Small}
             >
               <QueryTime />
-              {csvDownloadButton}
+              {csvDownloadCancelID == null ? (
+                <Button
+                  titleText="Download query results as a .CSV file"
+                  text="CSV old"
+                  icon={IconFont.Download_New}
+                  onClick={download}
+                  status={
+                    !submitButtonDisabled
+                      ? ComponentStatus.Default
+                      : ComponentStatus.Disabled
+                  }
+                  testID="data-explorer--csv-download"
+                />
+              ) : (
+                <Button
+                  text="Cancel"
+                  onClick={() => {
+                    cancel(csvDownloadCancelID)
+                    setCancelId(null)
+                  }}
+                  color={ComponentColor.Danger}
+                />
+              )}
+              <CSVExportButton
+                disabled={submitButtonDisabled}
+                download={downloadByServiceWorker}
+              />
               {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
                 <NewDatePicker />
               )}

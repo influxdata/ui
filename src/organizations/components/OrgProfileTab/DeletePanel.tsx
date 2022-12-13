@@ -23,6 +23,7 @@ import {selectCurrentIdentity} from 'src/identity/selectors'
 import {NotificationButtonElement} from 'src/types'
 
 import 'src/organizations/components/OrgProfileTab/style.scss'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 const DeletePanel: FC = () => {
   const {user, account} = useSelector(selectCurrentIdentity)
@@ -30,6 +31,14 @@ const DeletePanel: FC = () => {
   const history = useHistory()
   const {status, users} = useContext(UsersContext)
   const dispatch = useDispatch()
+
+  const handleDeletePaidAccount = () => {
+    dispatch(
+      showOverlay('delete-org-in-paid-account', null, () =>
+        dispatch(dismissOverlay())
+      )
+    )
+  }
 
   const handleShowDeleteOverlay = () => {
     const payload = {
@@ -52,16 +61,21 @@ const DeletePanel: FC = () => {
     dispatch(notify(deleteAccountWarning(buttonElement)))
   }
 
-  let handleDeleteClick = handleShowDeleteOverlay
+  let handleDeleteFreeAccount = handleShowDeleteOverlay
 
   if (users.length > 1) {
-    handleDeleteClick = handleShowWarning
+    handleDeleteFreeAccount = handleShowWarning
   }
+
+  const showDeleteButtonInFreeAccount = account.type === 'free'
+  const showDeleteButtonInPaidAccount =
+    isFlagEnabled('createDeleteOrgs') &&
+    (account.type === 'pay_as_you_go' || account.type === 'contract')
 
   return (
     <PageSpinner loading={status}>
       <>
-        {CLOUD && account.type === 'free' && (
+        {CLOUD && showDeleteButtonInFreeAccount && (
           <>
             <FlexBox.Child>
               <h4>Delete Organization</h4>
@@ -75,7 +89,26 @@ const DeletePanel: FC = () => {
                 testID="delete-org--button"
                 text="Delete"
                 icon={IconFont.Trash_New}
-                onClick={handleDeleteClick}
+                onClick={handleDeleteFreeAccount}
+              />
+            </FlexBox.Child>
+          </>
+        )}
+        {CLOUD && showDeleteButtonInPaidAccount && (
+          <>
+            <FlexBox.Child>
+              <h4>Delete Organization</h4>
+              <p className="org-profile-tab--heading org-profile-tab--deleteHeading">
+                Delete the <b>{org.name}</b> organization and remove any data
+                that you have loaded.
+              </p>
+            </FlexBox.Child>
+            <FlexBox.Child>
+              <Button
+                icon={IconFont.Trash_New}
+                onClick={handleDeletePaidAccount}
+                testID="delete-org--button"
+                text="Delete"
               />
             </FlexBox.Child>
           </>

@@ -44,6 +44,32 @@ export const accountRenameSuccess = (
   message: `Account "${oldAccountName}" was successfully renamed to "${newAccountName}"`,
 })
 
+export const deleteOrgDelayed = (
+  supportLink: NotificationButtonElement
+): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    "Sorry, we're experiencing a delay in deleting this org. For support, contact ",
+  buttonElement: supportLink,
+})
+
+export const deleteOrgFailed = (
+  supportLink: NotificationButtonElement,
+  orgName: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Sorry, we weren't able to delete ${orgName}. Please reach out to`,
+  buttonElement: supportLink,
+})
+
+export const deleteOrgSuccess = (
+  orgName: string,
+  accountName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `${orgName} will be deleted from ${accountName}.`,
+})
+
 export const inviteFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `invite failed`,

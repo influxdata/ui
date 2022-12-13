@@ -1,0 +1,38 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.org-delete-overlay {
+  color: #c6cad3;
+  font-size: $cf-text-base-1;
+  font-weight: 400;
+  ul {
+    margin-top: 0px;
+    padding-left: $cf-space-m;
+
+    li {
+      color: #c6cad3;
+      font-size: $cf-text-base-1;
+      font-weight: 400;
+    }
+  }
+}
+
+.org-delete-overlay--accept-terms-radio-button {
+  margin-right: $cf-space-xs;
+}
+
+.org-delete-overlay--conditions-instruction {
+  color: #c6cad3;
+  font-size: $cf-text-base-1;
+  font-weight: 400;
+
+  label {
+    align-items: center;
+    align-self: center;
+  }
+}
+
+.org-delete-overlay--warning-message {
+  color: #c6cad3;
+  font-size: $cf-text-base-1;
+  font-weight: 500;
+}

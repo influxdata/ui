@@ -52,7 +52,7 @@
     "cy": "CYPRESS_dexUrl=https://$INGRESS_HOST:$PORT_HTTPS CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_dexUrl=CLOUD CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_dexUrl=OSS CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "export SHA=66183531c4681177eec11759a912c736af2d48e4 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
+    "generate": "export SHA=fe5b50d055054530257b42ad7600eb8b4d247332 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-local-cloud": "export REMOTE=../openapi/ && yarn generate-meta-cloud",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",
@@ -80,7 +80,7 @@
   },
   "author": "",
   "devDependencies": {
-    "@babel/core": "^7.20.2",
+    "@babel/core": "^7.20.5",
     "@babel/plugin-transform-runtime": "^7.19.6",
     "@babel/preset-env": "^7.20.2",
     "@babel/runtime": "^7.20.1",

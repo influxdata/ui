@@ -2,6 +2,12 @@
 import {AppState} from 'src/types'
 import {RemoteDataState} from '@influxdata/clockface'
 
+export const selectCurrentAccount = (
+  state: AppState
+): AppState['identity']['currentIdentity']['account'] => {
+  return state.identity.currentIdentity.account
+}
+
 export const selectCurrentAccountId = (
   state: AppState
 ): AppState['identity']['currentIdentity']['account']['id'] => {
@@ -18,6 +24,12 @@ export const selectCurrentIdentity = (
   state: AppState
 ): AppState['identity']['currentIdentity'] => {
   return state.identity.currentIdentity
+}
+
+export const selectCurrentOrg = (
+  state: AppState
+): AppState['identity']['currentIdentity']['org'] => {
+  return state.identity.currentIdentity.org
 }
 
 export const selectCurrentOrgId = (

@@ -182,7 +182,7 @@ describe('Script Builder', () => {
       cy.wait('@query -15m')
     })
 
-    describe('data completeness', () => {
+    describe.skip('data completeness', () => {
       const downloadsDirectory = Cypress.config('downloadsFolder')
       const browser = Cypress.config('browser')
 

@@ -234,7 +234,7 @@ describe('Script Builder', () => {
         if (browser.name.toLowerCase() != 'chrome') {
           return
         }
-        cy.getByTestID('data-explorer--csv-download')
+        cy.getByTestID('csv-download-button')
           .should('not.be.disabled')
           .click()
         const filename = path.join(downloadsDirectory, 'influx.data.csv')
@@ -273,7 +273,7 @@ describe('Script Builder', () => {
         cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
           timeout: 3000,
         })
-        cy.getByTestID('data-explorer--csv-download').should('be.disabled')
+        cy.getByTestID('csv-download-button').should('be.disabled')
         selectMeasurement('ndbc_1table')
         cy.getByTestID('flux-editor').contains(
           `|> filter(fn: (r) => r._measurement == "ndbc_1table")`
@@ -305,7 +305,7 @@ describe('Script Builder', () => {
           cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
             timeout: 3000,
           })
-          cy.getByTestID('data-explorer--csv-download').should('be.disabled')
+          cy.getByTestID('csv-download-button').should('be.disabled')
           selectMeasurement('ndbc_big')
           cy.getByTestID('flux-editor').contains(
             `|> filter(fn: (r) => r._measurement == "ndbc_big")`

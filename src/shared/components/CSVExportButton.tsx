@@ -64,7 +64,7 @@ class CSVExportButton extends PureComponent<Props, State> {
             ? ComponentStatus.Disabled
             : ComponentStatus.Default
         }
-        testID="time-machine--download-csv"
+        testID="csv-download-button"
       />
     )
   }

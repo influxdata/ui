@@ -234,9 +234,7 @@ describe('Script Builder', () => {
         if (browser.name.toLowerCase() != 'chrome') {
           return
         }
-        cy.getByTestID('csv-download-button')
-          .should('not.be.disabled')
-          .click()
+        cy.getByTestID('csv-download-button').should('not.be.disabled').click()
         const filename = path.join(downloadsDirectory, 'influx.data.csv')
         if (tableCnt == 0) {
           cy.readFile(filename, {timeout: 15000})

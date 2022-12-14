@@ -626,9 +626,7 @@ describe('general Data Explorer functionality', () => {
         cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
           .monacoType(`from(bucket: "defbuck")
   |> range(start: -10h)`)
-        cy.getByTestID('csv-download-button')
-          .should('be.visible')
-          .click()
+        cy.getByTestID('csv-download-button').should('be.visible').click()
       })
 
       cy.wait('@query', {timeout: 5000})

@@ -334,7 +334,7 @@ export class ConnectionManager {
       // since this._diffSchemaChange() can set the model
       // we need the executeCommand to be issued after the model update
       if (shouldDelay) {
-        setTimeout(() => this._updateLsp(toAdd, toRemove), 1500)
+        setTimeout(() => this._updateLsp(toAdd, toRemove), 3000)
       } else {
         this._updateLsp(toAdd, toRemove)
       }
@@ -378,7 +378,10 @@ export class ConnectionManager {
         break
       case LspClientCommand.CompositionEnded:
         this._setEditorBlockStyle(null)
-        this._setSessionSync(false)
+        if (this._model.getValue() != DEFAULT_FLUX_EDITOR_TEXT) {
+          // lost the flux sync. Note: ignore when this occurs during `New Script`.
+          this._setSessionSync(false)
+        }
         this._dispatcher(notify(compositionEnded()))
         break
       case LspClientCommand.CompositionNotFound:

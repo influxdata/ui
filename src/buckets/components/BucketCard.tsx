@@ -10,10 +10,6 @@ import BucketCardActions from 'src/buckets/components/BucketCardActions'
 
 // Constants
 import {isSystemBucket} from 'src/buckets/constants/index'
-import {PROJECT_NAME} from 'src/flows'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {OwnBucket} from 'src/types'
@@ -35,13 +31,7 @@ const BucketCard: FC<Props> = ({
   const history = useHistory()
   const {orgID} = useParams<{orgID: string}>()
   const handleNameClick = () => {
-    if (isFlagEnabled('exploreWithFlows')) {
-      history.push(
-        `/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}/${bucket.id}`
-      )
-    } else {
-      history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
-    }
+    history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
   }
 
   return (

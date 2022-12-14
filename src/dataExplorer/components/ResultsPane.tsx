@@ -56,7 +56,10 @@ import {notify} from 'src/shared/actions/notifications'
 import {bytesFormatter} from 'src/shared/copy/notifications/common'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 import {csvDownloadFailure} from 'src/shared/copy/notifications'
-import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+import {
+  sqlAsFlux,
+  updateWindowPeriod,
+} from 'src/shared/contexts/query/preprocessing'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
@@ -174,25 +177,32 @@ const ResultsPane: FC = () => {
   }
 
   const downloadByServiceWorker = () => {
-    // TODO: test download SQL query
     try {
       event('runQuery', {context: 'query experience'})
 
-      const extern = buildUsedVarsOption(text, timeVars)
       const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
-
       const hiddenForm = document.createElement('form')
       hiddenForm.setAttribute('id', 'downloadDiv')
       hiddenForm.setAttribute('style', 'display: none;')
       hiddenForm.setAttribute('method', 'post')
       hiddenForm.setAttribute('action', url)
 
+      const query =
+        language == LanguageType.SQL ? sqlAsFlux(text, selection.bucket) : text
+      const extern = updateWindowPeriod(
+        query,
+        {
+          vars: rangeToParam(range),
+        },
+        'ast'
+      )
+
       const input = document.createElement('input')
       input.setAttribute('name', 'data')
       input.setAttribute(
         'value',
         JSON.stringify({
-          query: text,
+          query,
           extern,
           dialect: {annotations: ['group', 'datatype', 'default']},
         })

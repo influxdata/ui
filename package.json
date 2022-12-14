@@ -162,7 +162,7 @@
   "dependencies": {
     "@codingame/monaco-jsonrpc": "^0.3.1",
     "@docsearch/react": "^3.0.0-alpha.37",
-    "@influxdata/clockface": "^6.3.9",
+    "@influxdata/clockface": "^6.3.11",
     "@influxdata/flux-lsp-browser": "0.8.36",
     "@influxdata/giraffe": "^2.38.1",
     "@influxdata/influxdb-templates": "0.9.0",

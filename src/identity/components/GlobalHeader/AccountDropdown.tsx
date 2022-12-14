@@ -60,7 +60,7 @@ export const AccountDropdown: FC<Props> = ({
         },
         {
           name: 'Organizations',
-          iconFont: IconFont.Group,
+          iconFont: IconFont.OrganizationChart,
           href: `/orgs/${activeOrg.id}/accounts/orglist`,
           enabled: isCreateDeleteFlagOn,
         },

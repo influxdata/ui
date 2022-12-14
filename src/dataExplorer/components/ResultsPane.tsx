@@ -115,7 +115,7 @@ const ResultsPane: FC = () => {
     selection,
     resource,
   } = useContext(PersistanceContext)
-  const orgID = useSelector(getOrg).id
+  const orgID = useSelector(getOrg)?.id
   const isIoxOrg = useSelector(isOrgIOx)
   const language = resource?.language ?? LanguageType.FLUX
   const dispatch = useDispatch()
@@ -140,7 +140,7 @@ const ResultsPane: FC = () => {
 
   const downloadByServiceWorker = () => {
     try {
-      event('runQuery', {context: 'query experience'})
+      event('runQuery.downloadCSV', {context: 'query experience'})
 
       const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
       const hiddenForm = document.createElement('form')

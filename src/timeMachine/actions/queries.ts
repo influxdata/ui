@@ -408,7 +408,7 @@ export const runDownloadQuery = () => async (dispatch, getState: GetState) => {
 
     const extern = buildUsedVarsOption(queryText, allVariables)
     const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
-    event('runQuery', {context: 'timeMachine'})
+    event('runQuery.downloadCSV', {context: 'timeMachine'})
 
     const hiddenForm = document.createElement('form')
     hiddenForm.setAttribute('id', 'downloadDiv')

@@ -14,6 +14,33 @@ const respond = (msg, cb) => {
   }
 }
 
+/**
+ * Reasons for this buffer:
+ *    * loading times for the monaco-editor client, versus LSP server
+ *    * the required ordering of bootup-messages between these two, + the UI messages.
+ *
+ * Details:
+ *    * First, the loading of workers:
+ *        * we lazy load the monaco-editor, including that lib's own worker, which takes time.
+ *        * concurrently, we also load the LSP server thread, since that takes even longer to come online.
+ *    * Next, these messages must occur in order:
+ *          1. monaco-editor request initializing handshake (a.k.a. mutual capabilities).
+ *          2. UI request for didOpen for variables file (Prelude file).
+ *                * reason for order requirement:
+ *                     * monaco-editor creates new FileID (new model objects) in order
+ *                     * LSP assesses these files in order of the model ID
+ *                     * LSP needs to know variable assignments first. `option v = {foo: bar}` before use of foo.
+ *                * how solved:
+ *                     * after monaco-editor initialize, it calls the ConnectionManager constructor.
+ *                     * constructor() --> make prelude file/model.
+ *          3. monaco-editor request for didOpen file.
+ *                * this is the flux query file.
+ *                * triggered on callback after ConnectionManager is instantiated.
+ *      * since the LSP worker takes a while to boot up, this buffer ensures that the messages are received by the LSP in order.
+ *
+ * If we boot up the LSP server entirely first, before the monaco-editor is loaded, we could hypothetically eliminate this buffer.
+ * But it would substantially increase our load time, and trickle into CI test timings and variable parsing (in dashboard) etc.
+ */
 class Buffer {
   private _i = 0
   private _o = 0

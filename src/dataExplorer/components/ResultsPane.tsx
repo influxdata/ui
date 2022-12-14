@@ -1,28 +1,18 @@
 // Libraries
-import React, {
-  FC,
-  lazy,
-  Suspense,
-  useContext,
-  useCallback,
-  useState,
-} from 'react'
+import React, {FC, lazy, Suspense, useContext, useCallback} from 'react'
 import {
   DraggableResizer,
   Orientation,
   RemoteDataState,
   SpinnerContainer,
   TechnoSpinner,
-  Button,
   IconFont,
-  ComponentStatus,
   ComponentSize,
   FlexBox,
   FlexDirection,
   JustifyContent,
   AlignItems,
   Icon,
-  ComponentColor,
 } from '@influxdata/clockface'
 import {useSelector, useDispatch} from 'react-redux'
 
@@ -50,10 +40,8 @@ import {LanguageType} from 'src/dataExplorer/components/resources'
 // Utils
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
-import {downloadBlob} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
-import {bytesFormatter} from 'src/shared/copy/notifications/common'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 import {csvDownloadFailure} from 'src/shared/copy/notifications'
 import {
@@ -116,7 +104,7 @@ const isDefaultText = text => {
 }
 
 const ResultsPane: FC = () => {
-  const {basic, query, cancel} = useContext(QueryContext)
+  const {query, cancel} = useContext(QueryContext)
   const {status, result, setStatus, setResult} = useContext(ResultsContext)
   const {
     horizontal,
@@ -129,7 +117,6 @@ const ResultsPane: FC = () => {
   } = useContext(PersistanceContext)
   const orgID = useSelector(getOrg).id
   const isIoxOrg = useSelector(isOrgIOx)
-  const [csvDownloadCancelID, setCancelId] = useState(null)
   const language = resource?.language ?? LanguageType.FLUX
   const dispatch = useDispatch()
 
@@ -149,31 +136,6 @@ const ResultsPane: FC = () => {
   ) {
     submitButtonDisabled = true
     disabledTitleText = 'Select a measurement before running script'
-  }
-
-  const download = async () => {
-    event('CSV Download Initiated')
-    const promise = basic(
-      text,
-      {
-        vars: rangeToParam(range),
-      },
-      {
-        rawBlob: true,
-        language,
-        bucket: selection.bucket,
-      }
-    )
-    setCancelId(promise.id)
-
-    const response = await promise.promise
-    if (response.type !== 'SUCCESS') {
-      return
-    }
-    setCancelId(null)
-    downloadBlob(response.csv, 'influx.data', '.csv')
-    event('CSV size', {size: bytesFormatter(response.bytesRead)})
-    event('CSV Download End')
   }
 
   const downloadByServiceWorker = () => {
@@ -310,29 +272,6 @@ const ResultsPane: FC = () => {
               margin={ComponentSize.Small}
             >
               <QueryTime />
-              {csvDownloadCancelID == null ? (
-                <Button
-                  titleText="Download query results as a .CSV file"
-                  text="CSV old"
-                  icon={IconFont.Download_New}
-                  onClick={download}
-                  status={
-                    !submitButtonDisabled
-                      ? ComponentStatus.Default
-                      : ComponentStatus.Disabled
-                  }
-                  testID="data-explorer--csv-download"
-                />
-              ) : (
-                <Button
-                  text="Cancel"
-                  onClick={() => {
-                    cancel(csvDownloadCancelID)
-                    setCancelId(null)
-                  }}
-                  color={ComponentColor.Danger}
-                />
-              )}
               <CSVExportButton
                 disabled={submitButtonDisabled}
                 download={downloadByServiceWorker}

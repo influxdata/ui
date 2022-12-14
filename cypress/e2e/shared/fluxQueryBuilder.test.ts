@@ -558,7 +558,8 @@ describe('Script Builder', () => {
         cy.getByTestID('flux-sync--toggle').should('not.have.class', 'active')
 
         cy.log('modify schema browser')
-        selectSchema()
+        selectBucket(bucketName)
+        selectMeasurement(measurement)
 
         cy.log('editor text is still empty')
         cy.getByTestID('flux-editor').within(() => {

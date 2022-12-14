@@ -321,7 +321,9 @@ export class ConnectionManager {
       previousState
     )
 
-    if (this._first_load) {
+    const multipleItemsToSync =
+      Object.keys(toAdd).length + Object.keys(toRemove).length > 1
+    if (this._first_load || multipleItemsToSync) {
       this._first_load = false
       setTimeout(
         () => this._initLspComposition(toAdd),

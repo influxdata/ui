@@ -1,30 +1,15 @@
-export * from './executeCommand'
-export * from './showMessage'
-
 /**
- * @typedef {enum} Methods
- * What LSP methods are provided per the spec:
- *    * see the `method` in the Request payload:
- *           * https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#requestMessage
- *    * These include the lifecycle methods:
- *           * https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#lifeCycleMessages
- *    * also includes an executeCommand method:
- *           * which is an extensible interface for custom work the server can perform.
+ * "Methods" == per each request sent to the LSP, there is an associated method.
+ *
+ * Special methods:
+ *    * the executeCommand method:
+ *        * we construct this message request in the UI code (not the monaco-editor) --> send to the LSP
+ *        * specific executeCommand structure (per spec) is typed in './executeCommand'
+ *    * the showMessage method:
+ *        * the LSP sends the UI this message request --> UI (not monaco-editor) performs downstream actions.
+ *        * specific showMessage structure (per spec) is typed in './showMessage
  */
-export enum Methods {
-  Initialize = 'initialize',
-  Initialized = 'initialized',
-  CompletionResolve = 'completionItem/resolve',
-  Completion = 'textDocument/completion',
-  Definition = 'textDocument/definition',
-  didChange = 'textDocument/didChange',
-  didOpen = 'textDocument/didOpen',
-  didSave = 'textDocument/didSave',
-  Highlight = 'textDocument/documentHighlight',
-  Symbol = 'textDocument/documentSymbol',
-  FoldingRange = 'textDocument/foldingRange',
-  Hover = 'textDocument/hover',
-  References = 'textDocument/references',
-  Rename = 'textDocument/rename',
-  ExecuteCommand = 'workspace/executeCommand',
-}
+
+export * from './executeCommand'
+export * from './methods'
+export * from './showMessage'

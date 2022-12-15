@@ -41,6 +41,8 @@ import {
   oldSession,
 } from 'src/shared/copy/notifications'
 
+const APPROXIMATE_LSP_STARTUP_DELAY = 3000
+
 export class ConnectionManager {
   private _worker: Worker
   private _editor: EditorType
@@ -103,8 +105,8 @@ export class ConnectionManager {
   }
 
   subscribeToConnection(connection: MonacoLanguageClient) {
-    /// class: https://github.com/microsoft/vscode-languageserver-node/blob/f97bb73dbfb920af4bc8c13ecdcdc16359cdeda6/client/src/browser/main.ts#L13
-    /// extended from class: https://github.com/microsoft/vscode-languageserver-node/blob/d7b0ef6eab79f31f514f6559b6950326b170a691/client/src/common/client.ts#L431
+    // class: https://github.com/microsoft/vscode-languageserver-node/blob/f97bb73dbfb920af4bc8c13ecdcdc16359cdeda6/client/src/browser/main.ts#L13
+    // extended from class: https://github.com/microsoft/vscode-languageserver-node/blob/d7b0ef6eab79f31f514f6559b6950326b170a691/client/src/common/client.ts#L431
     connection.onReady().then(() => {
       connection.onNotification(
         'window/showMessageRequest',
@@ -171,13 +173,13 @@ export class ConnectionManager {
   }
 
   _setEditorBlockStyle(range: LspRange | null) {
-    const removeAllStyles = range == null
+    const shouldRemoveAllStyles = range == null
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
-      removeAllStyles
+      shouldRemoveAllStyles
         ? []
-        : this._compositionSyncStyle(range?.start.line, range.end.line)
+        : this._compositionSyncStyle(range.start.line, range.end.line)
     )
   }
 
@@ -194,7 +196,7 @@ export class ConnectionManager {
   ) {
     if (toAdd.bucket) {
       this.inject(ExecuteCommand.CompositionInit, {
-        bucket: toAdd.bucket?.name,
+        bucket: toAdd.bucket.name,
       })
     }
 
@@ -253,12 +255,12 @@ export class ConnectionManager {
   ) {
     const toAdd: Partial<CompositionSelection> = {}
     const toRemove: Partial<CompositionSelection> = {}
-    let delay = false
+    let shouldDelay = false
 
     if (this._isNewScript(schema, previousState)) {
       // no action to take.
       // `textDocument/didChange` --> will inform LSP to drop composition
-      return {toAdd, toRemove, delay}
+      return {toAdd, toRemove, shouldDelay}
     }
 
     if (schema.bucket && previousState.bucket != schema.bucket) {
@@ -266,7 +268,7 @@ export class ConnectionManager {
       if (this._model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
         // first time selecting bucket --> remove if default message
         this._model.setValue('')
-        delay = true
+        shouldDelay = true
       }
     }
     if (schema.measurement && previousState.measurement != schema.measurement) {
@@ -293,7 +295,7 @@ export class ConnectionManager {
       )
     }
 
-    return {toAdd, toRemove, delay}
+    return {toAdd, toRemove, shouldDelay}
   }
 
   onSchemaSessionChange(schema: CompositionSelection, sessionCb, dispatch) {
@@ -314,21 +316,24 @@ export class ConnectionManager {
     }
 
     this._session = {...schema, composition: {...schema.composition}}
-    const {toAdd, toRemove, delay} = this._diffSchemaChange(
+    const {toAdd, toRemove, shouldDelay} = this._diffSchemaChange(
       schema,
       previousState
     )
 
     if (this._first_load) {
       this._first_load = false
-      setTimeout(() => this._initLspComposition(toAdd), 3000) // LSP server must come online
+      setTimeout(
+        () => this._initLspComposition(toAdd),
+        APPROXIMATE_LSP_STARTUP_DELAY
+      )
       return
     }
 
     if (Object.keys(toAdd).length || Object.keys(toRemove).length) {
       // since this._diffSchemaChange() can set the model
       // we need the executeCommand to be issued after the model update
-      if (delay) {
+      if (shouldDelay) {
         setTimeout(() => this._updateLsp(toAdd, toRemove), 1500)
       } else {
         this._updateLsp(toAdd, toRemove)

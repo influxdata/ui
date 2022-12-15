@@ -46,6 +46,7 @@ export enum ActionItemCommand {
 
 export enum LspClientRequestPriority {
   ERROR = 1,
+  WARN = 2,
   INFO = 3,
 }
 

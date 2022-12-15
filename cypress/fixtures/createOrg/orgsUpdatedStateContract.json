@@ -35,9 +35,9 @@
     "description": "",
     "id": "213901",
     "name": "A New Org",
-    "provider": "Azure",
-    "regionCode": "azure-local",
-    "regionName": "azure-local region",
+    "provider": "AWS",
+    "regionCode": "aws-local",
+    "regionName": "aws-local region",
     "state": "provisioned"
   }
 ]

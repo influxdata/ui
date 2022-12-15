@@ -3,7 +3,7 @@
   "creationDate": "12/12/2022",
   "description": "",
   "id": "213901",
-  "name": "A New PAYG Org",
+  "name": "A New Org",
   "provider": "AWS",
   "regionCode": "aws-local",
   "regionName": "aws-local region",

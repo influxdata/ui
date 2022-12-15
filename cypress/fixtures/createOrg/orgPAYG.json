@@ -3,9 +3,9 @@
   "creationDate": "12/12/2022",
   "description": "",
   "id": "213901",
-  "name": "A New PAYG Org",
-  "provider": "AWS",
-  "regionCode": "aws-local",
-  "regionName": "aws-local region",
+  "name": "A New Org",
+  "provider": "Azure",
+  "regionCode": "azure-local",
+  "regionName": "azure-local region",
   "state": "provisioned"
 }

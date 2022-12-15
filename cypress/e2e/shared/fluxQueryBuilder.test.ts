@@ -4,6 +4,13 @@ const path = require('path')
 const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
 
+// monaco-editor lazy loads + LspServer comes online
+const DELAY_FOR_LSP_SERVER_ONLINE = 30000
+
+const APPROXIMATE_EDITOR_SET_VALUE_DELAY = 3000
+
+const DELAY_FOR_FILE_DOWNLOAD = 15000
+
 describe('Script Builder', () => {
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
@@ -56,8 +63,10 @@ describe('Script Builder', () => {
   const selectSchema = () => {
     cy.log('select bucket')
     selectBucket(bucketName)
-    cy.getByTestID('flux-editor').contains(`from(bucket: "${bucketName}")`, {
-      timeout: 30000,
+    cy.getByTestID('flux-editor', {
+      timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+    }).contains(`from(bucket: "${bucketName}")`, {
+      timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
     })
 
     cy.log('select measurement')
@@ -65,9 +74,11 @@ describe('Script Builder', () => {
   }
 
   const confirmSchemaComposition = () => {
-    cy.getByTestID('flux-editor', {timeout: 30000})
-      // we set a manual delay on page load, for composition initialization
-      .contains(`from(bucket: "${bucketName}")`, {timeout: 30000})
+    cy.getByTestID('flux-editor', {
+      timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+    }).contains(`from(bucket: "${bucketName}")`, {
+      timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
+    })
     cy.getByTestID('flux-editor').contains(
       `|> filter(fn: (r) => r._measurement == "${measurement}")`
     )
@@ -164,7 +175,7 @@ describe('Script Builder', () => {
 
         clearSession()
         cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-        cy.getByTestID('flux-editor', {timeout: 30000})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
       })
     })
 
@@ -243,11 +254,11 @@ describe('Script Builder', () => {
           .click()
         const filename = path.join(downloadsDirectory, 'influx.data.csv')
         if (tableCnt == 0) {
-          cy.readFile(filename, {timeout: 15000})
+          cy.readFile(filename, {timeout: DELAY_FOR_FILE_DOWNLOAD})
             .should('have.length.lt', 50)
             .then(csv => csv.trim() == '')
         } else {
-          cy.readFile(filename, {timeout: 15000})
+          cy.readFile(filename, {timeout: DELAY_FOR_FILE_DOWNLOAD})
             .should('have.length.gt', 50)
             .then(csv => validateCsv(csv, tableCnt))
         }
@@ -275,7 +286,7 @@ describe('Script Builder', () => {
         cy.log('select dataset with 1 table')
         selectBucket('defbuck4')
         cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
-          timeout: 5000,
+          timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
         })
         cy.getByTestID('data-explorer--csv-download').should('be.disabled')
         selectMeasurement('ndbc_1table')
@@ -307,7 +318,7 @@ describe('Script Builder', () => {
           cy.log('select larger dataset')
           selectBucket('defbuck4')
           cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
-            timeout: 5000,
+            timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
           })
           cy.getByTestID('data-explorer--csv-download').should('be.disabled')
           selectMeasurement('ndbc_big')
@@ -481,7 +492,7 @@ describe('Script Builder', () => {
       }).then(() => {
         clearSession()
         cy.getByTestID('flux-sync--toggle')
-        cy.getByTestID('flux-editor', {timeout: 30000})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
       })
     })
 
@@ -508,7 +519,7 @@ describe('Script Builder', () => {
       })
 
       it('should clear the editor text and schema browser, with a new script', () => {
-        cy.getByTestID('flux-editor', {timeout: 30000})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
 
         cy.log('modify schema browser')
         selectSchema()
@@ -544,7 +555,9 @@ describe('Script Builder', () => {
 
       it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {
         cy.log('start with empty editor text')
-        cy.getByTestID('flux-editor', {timeout: 30000}).within(() => {
+        cy.getByTestID('flux-editor', {
+          timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+        }).within(() => {
           cy.get('textarea.inputarea').should(
             'have.value',
             DEFAULT_FLUX_EDITOR_TEXT

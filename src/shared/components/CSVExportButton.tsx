@@ -6,13 +6,17 @@ import {connect, ConnectedProps} from 'react-redux'
 import {Button, ComponentStatus, IconFont} from '@influxdata/clockface'
 
 // Selectors and Actions
-import {getActiveQuery} from 'src/timeMachine/selectors'
 import {runDownloadQuery} from 'src/timeMachine/actions/queries'
 
 // Types
 import {AppState} from 'src/types'
 
-type Props = ConnectedProps<typeof connector>
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+interface Props extends PropsFromRedux {
+  disabled: boolean
+  download?: () => void
+}
 
 interface State {
   browserSupportsDownload: boolean
@@ -60,7 +64,7 @@ class CSVExportButton extends PureComponent<Props, State> {
             ? ComponentStatus.Disabled
             : ComponentStatus.Default
         }
-        testID="time-machine--download-csv"
+        testID="csv-download-button"
       />
     )
   }
@@ -76,19 +80,25 @@ class CSVExportButton extends PureComponent<Props, State> {
   }
 
   private handleClick = () => {
-    this.props.download()
+    if (!!this.props.download) {
+      // csv download from other sources
+      this.props.download()
+      return
+    }
+
+    // csv download from timeMachine
+    this.props.timeMachineDownload()
   }
 }
 
 const mstp = (state: AppState) => {
-  const activeQueryText = getActiveQuery(state).text
-  const disabled = activeQueryText === ''
-
-  return {disabled, workerRegistration: state.app.persisted.workerRegistration}
+  return {
+    workerRegistration: state.app.persisted.workerRegistration,
+  }
 }
 
 const mdtp = {
-  download: runDownloadQuery,
+  timeMachineDownload: runDownloadQuery,
 }
 
 const connector = connect(mstp, mdtp)

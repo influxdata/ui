@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-const path = require('path')
 
 const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
@@ -9,7 +8,7 @@ const DELAY_FOR_LSP_SERVER_ONLINE = 30000
 
 const APPROXIMATE_EDITOR_SET_VALUE_DELAY = 3000
 
-const DELAY_FOR_FILE_DOWNLOAD = 15000
+const DELAY_FOR_FILE_DOWNLOAD = 5000
 
 describe('Script Builder', () => {
   const writeData: string[] = []
@@ -151,12 +150,15 @@ describe('Script Builder', () => {
   })
 
   describe('Results display', () => {
+    let route: string
+
     beforeEach(() => {
       loginWithFlags({
         schemaComposition: true,
         newDataExplorer: true,
       }).then(() => {
         cy.get('@org').then(({id}: Organization) => {
+          route = `/orgs/${id}/data-explorer`
           cy.intercept('POST', `/api/v2/query?orgID=${id}`, req => {
             const {extern} = req.body
             if (
@@ -244,24 +246,37 @@ describe('Script Builder', () => {
         }
 
         cy.log('will download complete csv data')
+        cy.intercept('POST', '/api/v2/query?*', req => {
+          req.redirect(route)
+        }).as('queryDownloadCSV')
+
         // TODO: debug intermittent failures which occur 30% of the time
         // in firefox only, in the CI only, and only when no data is returned
         if (browser.name.toLowerCase() != 'chrome') {
           return
         }
-        cy.getByTestID('data-explorer--csv-download')
-          .should('not.be.disabled')
-          .click()
-        const filename = path.join(downloadsDirectory, 'influx.data.csv')
-        if (tableCnt == 0) {
-          cy.readFile(filename, {timeout: DELAY_FOR_FILE_DOWNLOAD})
-            .should('have.length.lt', 50)
-            .then(csv => csv.trim() == '')
-        } else {
-          cy.readFile(filename, {timeout: DELAY_FOR_FILE_DOWNLOAD})
-            .should('have.length.gt', 50)
-            .then(csv => validateCsv(csv, tableCnt))
-        }
+
+        cy.getByTestID('csv-download-button').should('not.be.disabled').click()
+
+        cy.wait('@queryDownloadCSV', {timeout: DELAY_FOR_FILE_DOWNLOAD})
+          .its('request', {timeout: DELAY_FOR_FILE_DOWNLOAD})
+          .then(req => {
+            cy.request(req)
+              .then(({body, headers}) => {
+                expect(headers).to.have.property(
+                  'content-type',
+                  'text/csv; charset=utf-8'
+                )
+                return Promise.resolve(body)
+              })
+              .then(csv => {
+                if (tableCnt == 0) {
+                  csv.trim() == ''
+                } else {
+                  validateCsv(csv, tableCnt)
+                }
+              })
+          })
       }
 
       beforeEach(() => {
@@ -275,8 +290,8 @@ describe('Script Builder', () => {
         cy.getByTestID('flux-sync--toggle').should('not.have.class', 'active')
         cy.log('select empty dataset')
         cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
-            from(bucket: "defbuck3") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-          `)
+          from(bucket: "defbuck3") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+        `)
         cy.getByTestID('flux-editor').contains('defbuck3')
 
         runTest(0, 0, false)
@@ -284,23 +299,23 @@ describe('Script Builder', () => {
 
       it('will return 1 table, for a dataset with only 1 table', () => {
         cy.log('select dataset with 1 table')
-        selectBucket('defbuck4')
-        cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
-          timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
-        })
-        cy.getByTestID('data-explorer--csv-download').should('be.disabled')
-        selectMeasurement('ndbc_1table')
-        cy.getByTestID('flux-editor').contains(
-          `|> filter(fn: (r) => r._measurement == "ndbc_1table")`
-        )
+        cy.getByTestID('csv-download-button').should('be.disabled')
+        cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
+          from(bucket: "defbuck4") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r._measurement == "ndbc_1table")
+        `)
+        cy.getByTestID('flux-editor').contains('defbuck4')
 
         runTest(1, 1, false)
       })
 
       it('will return the complete dataset for smaller payloads', () => {
         cy.log('select smaller dataset')
-        selectSchema()
-        confirmSchemaComposition()
+        cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
+          from(bucket: "${bucketName}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r._measurement == "${measurement}")
+        `)
+        cy.getByTestID('flux-editor').contains(bucketName)
 
         runTest(30, 30, false)
       })
@@ -316,12 +331,11 @@ describe('Script Builder', () => {
 
         it('will return a truncated dataset rows', () => {
           cy.log('select larger dataset')
-          selectBucket('defbuck4')
-          cy.getByTestID('flux-editor').contains(`from(bucket: "defbuck4")`, {
-            timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
-          })
-          cy.getByTestID('data-explorer--csv-download').should('be.disabled')
-          selectMeasurement('ndbc_big')
+          cy.getByTestID('csv-download-button').should('be.disabled')
+          cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
+            from(bucket: "defbuck4") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+            |> filter(fn: (r) => r._measurement == "ndbc_big")
+          `)
           cy.getByTestID('flux-editor').contains(
             `|> filter(fn: (r) => r._measurement == "ndbc_big")`
           )

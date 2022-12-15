@@ -106,7 +106,7 @@ export type ExecuteCommandArgument =
  */
 export type ExecuteCommandT =
   | [ExecuteCommand.CompositionInit, CompositionInitParams]
-  | [ExecuteCommand.CompositionAddMeasurement, CompositionValueParams]
+  | [ExecuteCommand.CompositionSetMeasurement, CompositionValueParams]
   | [ExecuteCommand.CompositionAddField, CompositionValueParams]
   | [ExecuteCommand.CompositionRemoveField, CompositionValueParams]
   | [ExecuteCommand.CompositionAddTagValue, CompositionTagValueParams]
@@ -127,7 +127,7 @@ function validateExecuteCommandPayload([command, arg]: ExecuteCommandT):
   switch (command) {
     case ExecuteCommand.CompositionInit:
       return checkIsString(arg, 'bucket')
-    case ExecuteCommand.CompositionAddMeasurement:
+    case ExecuteCommand.CompositionSetMeasurement:
     case ExecuteCommand.CompositionAddField:
     case ExecuteCommand.CompositionRemoveField:
       return checkIsString(arg, 'value')
@@ -189,7 +189,7 @@ export enum Methods {
  */
 export enum ExecuteCommand {
   CompositionInit = 'fluxComposition/initialize',
-  CompositionAddMeasurement = 'fluxComposition/addMeasurementFilter',
+  CompositionSetMeasurement = 'fluxComposition/setMeasurementFilter',
   CompositionAddField = 'fluxComposition/addFieldFilter',
   CompositionRemoveField = 'fluxComposition/removeFieldFilter',
   CompositionAddTagValue = 'fluxComposition/addTagValueFilter',

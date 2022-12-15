@@ -1,3 +1,4 @@
+import {MonacoLanguageClient} from 'monaco-languageclient'
 import isEqual from 'lodash/isEqual'
 import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
 import {format_from_js_file} from 'src/languageSupport/languages/flux/parser'
@@ -7,44 +8,45 @@ import {EditorType, Variable} from 'src/types'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 
 // handling schema composition
-import {RecursivePartial} from 'src/types'
+import {RecursivePartial, TagKeyValuePair} from 'src/types'
 import {
   DEFAULT_SELECTION,
   DEFAULT_FLUX_EDITOR_TEXT,
   CompositionSelection,
 } from 'src/dataExplorer/context/persistance'
-import {comments} from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 
 // LSP methods
 import {
   didOpen,
   didChange,
   executeCommand,
-  ExecuteCommandArgument,
-  ExecuteCommand,
-  ExecuteCommandT,
 } from 'src/languageSupport/languages/flux/lsp/utils'
-
-// error reporting
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {
+  ExecuteCommand,
+  ExecuteCommandArgument,
+  ExecuteCommandT,
+  LspClientRequest,
+  LspClientCommand,
+  ActionItem,
+  ActionItemCommand,
+  LspRange,
+} from 'src/languageSupport/languages/flux/lsp/types'
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  compositionUpdateFailed,
+  compositionEnded,
+  oldSession,
+} from 'src/shared/copy/notifications'
 
-// hardcoded in LSP
-const COMPOSITION_YIELD = '_editor_composition'
+const APPROXIMATE_LSP_STARTUP_DELAY = 3000
 
-const findLastIndex = (arr, fn) =>
-  (arr
-    .map((val, i) => [i, val])
-    .filter(([i, val]) => fn(val, i, arr))
-    .pop() || [-1])[0]
-
-class LspConnectionManager {
+export class ConnectionManager {
   private _worker: Worker
   private _editor: EditorType
   private _model: MonacoTypes.editor.IModel
-  private _snapshot: MonacoTypes.editor.ITextSnapshot
   private _preludeModel: MonacoTypes.editor.IModel
   private _variables: Variable[] = []
   private _compositionStyle: string[] = []
@@ -54,9 +56,8 @@ class LspConnectionManager {
   private _callbackSetSession: (
     schema: RecursivePartial<CompositionSelection>
   ) => void = () => null
-
-  // only add handlers on first page load.
-  private _compositionHandlersSet = false
+  private _dispatcher = _ => {}
+  private _first_load = true
 
   constructor(worker: Worker) {
     this._worker = worker
@@ -103,6 +104,19 @@ class LspConnectionManager {
     )
   }
 
+  subscribeToConnection(connection: MonacoLanguageClient) {
+    // class: https://github.com/microsoft/vscode-languageserver-node/blob/f97bb73dbfb920af4bc8c13ecdcdc16359cdeda6/client/src/browser/main.ts#L13
+    // extended from class: https://github.com/microsoft/vscode-languageserver-node/blob/d7b0ef6eab79f31f514f6559b6950326b170a691/client/src/common/client.ts#L431
+    connection.onReady().then(() => {
+      connection.onNotification(
+        'window/showMessageRequest',
+        (data: LspClientRequest) => {
+          this.onLspMessage(data)
+        }
+      )
+    })
+  }
+
   inject(
     command: ExecuteCommand,
     data: Omit<ExecuteCommandArgument, 'textDocument'>
@@ -126,112 +140,14 @@ class LspConnectionManager {
     this._worker.postMessage(msg)
   }
 
-  _getCompositionBlockLines(query) {
-    if (!query || !query.includes(COMPOSITION_YIELD)) {
-      return null
-    }
-    const lines = query.split('\n')
-    // monacoEditor line indexing starts at 1..n
-    const endLine =
-      lines.findIndex(line => line.includes(COMPOSITION_YIELD)) + 1
-    const startLine =
-      findLastIndex(lines.slice(0, endLine - 1), line =>
-        line.includes('from(')
-      ) + 1
-
-    return {startLine, endLine}
-  }
-
   _setSessionSync(synced: boolean) {
     this._callbackSetSession({
       composition: {synced},
     })
   }
 
-  /// XXX: wiedld (27 Sep 2022) -- This heuristic is wrong.
-  /// Currently, the only way we detect monaco-editor apply changes is with the change object.
-  /// The change object only includes the replacement text, the position, and a little bit of editor-specific metadata.
-  /// The change object does NOT include anything which states whether or not the change is from an LSP-request,
-  /// (via the LSP applyEdit command).
-  /// As a result, we guess that any edit which is replacing the composition block is coming from an LSP request.
-  /// However, this heuristic fails for certain user-triggered events.
-  /// Such as a hotkey "undo" [cmd+z] of the last LSP applyEdit,
-  /// which generates a change object that looks exactly like an older applyEdit change.
-  _editorChangeIsFromLsp(change) {
-    return /^(from)(.|\n)*(\|> yield\(name: "_editor_composition"\)\n)$/.test(
-      change.text
-    )
-  }
-
-  _editorChangeIsWithinComposition(change) {
-    const compositionBlock = this._getCompositionBlockLines(
-      this._snapshot.read()
-    )
-    this._snapshot = this._model.createSnapshot()
-
-    if (!compositionBlock) {
-      return false
-    }
-    const {startLine, endLine} = compositionBlock
-
-    const changeInBlock =
-      change.range.startLineNumber >= startLine &&
-      change.range.endLineNumber <= endLine
-
-    const changeWithCompositionIdentifier =
-      change.text.includes(COMPOSITION_YIELD)
-
-    const isDeletion = change.text == ''
-    let deletionFromBlock = false
-    if (isDeletion) {
-      const linesDeleted =
-        change.range.endLineNumber - change.range.startLineNumber
-      deletionFromBlock =
-        change.range.startLineNumber >= startLine &&
-        change.range.endLineNumber <= endLine + linesDeleted
-    }
-
-    return changeInBlock || changeWithCompositionIdentifier || deletionFromBlock
-  }
-
-  _setEditorIrreversibleExit() {
-    this._model.onDidChangeContent(e => {
-      const shouldDiverge = e.changes.some(
-        change =>
-          this._editorChangeIsWithinComposition(change) &&
-          !this._editorChangeIsFromLsp(change)
-      )
-      if (shouldDiverge && !this._session.composition.diverged) {
-        event('Schema composition diverged - disable Flux Sync toggle')
-        this._callbackSetSession({
-          composition: {synced: false, diverged: true},
-        })
-      }
-    })
-
-    comments(this._editor, selection => {
-      const compositionBlock = this._getCompositionBlockLines(
-        this._model.getValue()
-      )
-      if (!compositionBlock) {
-        return
-      }
-      const {startLine, endLine} = compositionBlock
-      if (
-        selection.startLineNumber >= startLine &&
-        selection.endLineNumber <= endLine
-      ) {
-        this._callbackSetSession({
-          composition: {synced: false, diverged: true},
-        })
-      }
-    })
-  }
-
-  _compositionSyncStyle(startLine: number, endLine: number, synced: boolean) {
-    const classNamePrefix = synced
-      ? 'composition-sync--on'
-      : 'composition-sync--off'
+  _compositionSyncStyle(startLine: number, endLine: number) {
+    const classNamePrefix = 'composition-sync--on'
 
     // Customize the full width of Monaco editor margin using API `marginClassName`
     // https://github.com/microsoft/monaco-editor/blob/35eb0ef/website/typedoc/monaco.d.ts#L1533
@@ -256,23 +172,22 @@ class LspConnectionManager {
     return [startLineStyle, middleLinesStyle, endLineStyle]
   }
 
-  _setEditorBlockStyle(schema: CompositionSelection = this._session) {
-    const compositionBlock = this._getCompositionBlockLines(
-      this._model.getValue()
-    )
-
-    const removeAllStyles = !compositionBlock || schema.composition.diverged
+  _setEditorBlockStyle(range: LspRange | null) {
+    const shouldRemoveAllStyles = range == null
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
-      removeAllStyles
+      shouldRemoveAllStyles
         ? []
-        : this._compositionSyncStyle(
-            compositionBlock?.startLine,
-            compositionBlock?.endLine,
-            schema.composition.synced
-          )
+        : this._compositionSyncStyle(range.start.line, range.end.line)
     )
+  }
+
+  _isNewScript(
+    schema: CompositionSelection,
+    previousState: CompositionSelection
+  ): boolean {
+    return previousState.bucket != null && schema.bucket == null
   }
 
   _updateLsp(
@@ -280,7 +195,9 @@ class LspConnectionManager {
     toRemove: Partial<CompositionSelection> = null
   ) {
     if (toAdd.bucket) {
-      this.inject(ExecuteCommand.CompositionInit, {bucket: toAdd.bucket?.name})
+      this.inject(ExecuteCommand.CompositionInit, {
+        bucket: toAdd.bucket.name,
+      })
     }
 
     if (toAdd.measurement) {
@@ -311,18 +228,47 @@ class LspConnectionManager {
     }
   }
 
+  _initLspComposition(toAdd: Partial<CompositionSelection>) {
+    if (toAdd.bucket) {
+      const payload = {
+        bucket: toAdd.bucket?.name,
+      }
+      if (toAdd.measurement) {
+        payload['measurement'] = toAdd.measurement
+      }
+      if (toAdd.fields) {
+        payload['fields'] = toAdd.fields
+      }
+      if (toAdd.tagValues) {
+        payload['tagValues'] = toAdd.tagValues.map(({key, value}) => [
+          key,
+          value,
+        ])
+      }
+      this.inject(ExecuteCommand.CompositionInit, payload)
+    }
+  }
+
   _diffSchemaChange(
     schema: CompositionSelection,
     previousState: CompositionSelection
   ) {
     const toAdd: Partial<CompositionSelection> = {}
     const toRemove: Partial<CompositionSelection> = {}
+    let shouldDelay = false
+
+    if (this._isNewScript(schema, previousState)) {
+      // no action to take.
+      // `textDocument/didChange` --> will inform LSP to drop composition
+      return {toAdd, toRemove, shouldDelay}
+    }
 
     if (schema.bucket && previousState.bucket != schema.bucket) {
       toAdd.bucket = schema.bucket
       if (this._model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
         // first time selecting bucket --> remove if default message
         this._model.setValue('')
+        shouldDelay = true
       }
     }
     if (schema.measurement && previousState.measurement != schema.measurement) {
@@ -349,69 +295,102 @@ class LspConnectionManager {
       )
     }
 
-    return {toAdd, toRemove}
+    return {toAdd, toRemove, shouldDelay}
   }
 
-  _initCompositionHandlers() {
-    this._snapshot = this._model.createSnapshot()
-    this._setEditorIrreversibleExit()
-    this._compositionHandlersSet = true
-  }
-
-  onSchemaSessionChange(schema: CompositionSelection, sessionCb) {
+  onSchemaSessionChange(schema: CompositionSelection, sessionCb, dispatch) {
     if (!schema.composition) {
-      // FIXME: message to user, to create a new script
-      console.error(
-        'User has an old session, which does not support schema composition.'
-      )
+      dispatch(notify(oldSession()))
       return
     }
 
+    this._dispatcher = dispatch
     this._callbackSetSession = sessionCb
     const previousState = {
       ...this._session,
       composition: {...this._session?.composition},
     }
 
-    // Even when not synced:
-    // 1. update styles (e.g. turn off synced style, if not unsynced)
-    // 2. update block sync toggle state, using this._session.composition.synced
-    if (previousState.composition != schema.composition) {
-      this._session.composition = {...schema.composition}
-      this._setEditorBlockStyle(schema)
-    }
-
-    if (schema.composition.diverged || !schema.composition.synced) {
+    if (!schema.composition.synced) {
       return
     }
 
     this._session = {...schema, composition: {...schema.composition}}
+    const {toAdd, toRemove, shouldDelay} = this._diffSchemaChange(
+      schema,
+      previousState
+    )
 
-    if (!this._compositionHandlersSet) {
-      this._initCompositionHandlers()
-      return // do not re-init schema session on reload
+    if (this._first_load) {
+      this._first_load = false
+      setTimeout(
+        () => this._initLspComposition(toAdd),
+        APPROXIMATE_LSP_STARTUP_DELAY
+      )
+      return
     }
 
-    const {toAdd, toRemove} = this._diffSchemaChange(schema, previousState)
     if (Object.keys(toAdd).length || Object.keys(toRemove).length) {
       // since this._diffSchemaChange() can set the model
       // we need the executeCommand to be issued after the model update
-      const delay = toAdd.bucket ? 1500 : 0
-      setTimeout(() => this._updateLsp(toAdd, toRemove), delay)
+      if (shouldDelay) {
+        setTimeout(() => this._updateLsp(toAdd, toRemove), 1500)
+      } else {
+        this._updateLsp(toAdd, toRemove)
+      }
     }
   }
 
-  onLspMessage(_jsonrpcMiddlewareResponse: unknown) {
-    // TODO(wiedld): https://github.com/influxdata/ui/issues/5305
-    // 1. middleware detects jsonrpc
-    // 2. call this method
-    // 3a. update (true-up) session store
-    // 3b. this._setEditorBlockStyle()
+  _performActionItems(actions: ActionItem[]) {
+    actions.forEach((action: ActionItem) => {
+      switch (action.title) {
+        case ActionItemCommand.CompositionRange:
+          this._setEditorBlockStyle(action.range)
+          break
+        case ActionItemCommand.CompositionState:
+          if (action.state) {
+            const selection: RecursivePartial<CompositionSelection> = {
+              bucket: action.state.bucket ? this._session.bucket : null,
+              measurement: action.state.measurement ?? null,
+              fields: action.state.fields ?? [],
+              tagValues:
+                action.state.tag_values.map(
+                  ([key, value]) => ({key, value} as TagKeyValuePair)
+                ) ?? [],
+            }
+            this._callbackSetSession(selection)
+          }
+          break
+        default:
+          return
+      }
+    })
+  }
+
+  onLspMessage(requestFromLsp: LspClientRequest) {
+    switch (requestFromLsp.message) {
+      case LspClientCommand.AlreadyInitialized:
+      case LspClientCommand.UpdateComposition:
+        this._performActionItems(requestFromLsp.actions)
+        break
+      case LspClientCommand.ExecuteCommandFailed:
+        this._dispatcher(notify(compositionUpdateFailed()))
+        break
+      case LspClientCommand.CompositionEnded:
+        this._setEditorBlockStyle(null)
+        this._setSessionSync(false)
+        this._dispatcher(notify(compositionEnded()))
+        break
+      case LspClientCommand.CompositionNotFound:
+        // Do nothing.
+        // This can also occur whenever the File fails to parse to AST. (a.k.a. mid-typing syntax)
+        break
+      default:
+        return
+    }
   }
 
   dispose() {
     this._model.onDidChangeContent(null)
   }
 }
-
-export default LspConnectionManager

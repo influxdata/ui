@@ -1,5 +1,5 @@
 import {Lsp} from '@influxdata/flux-lsp-browser'
-import {Methods} from 'src/languageSupport/languages/flux/lsp/utils'
+import {Methods} from 'src/languageSupport/languages/flux/lsp/types'
 
 const respond = (msg, cb) => {
   try {

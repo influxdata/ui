@@ -245,6 +245,7 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
           name="Upgrade Account Comments"
           onChange={handleComment}
           placeholder="Please provide any comments for our sales team"
+          testID="marketo-account-upgrade-form--userinput"
           type={InputType.Text}
           value={formComment}
         ></Input>

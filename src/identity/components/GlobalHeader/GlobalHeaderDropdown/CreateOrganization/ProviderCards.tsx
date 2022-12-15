@@ -55,6 +55,7 @@ export const ProviderCards: FC<Props> = ({
           direction={FlexDirection.Column}
           stretchToFitWidth={true}
           className="create-org-overlay--provider-box"
+          testID={`create-org-overlay--${currentProvider}`}
         >
           <div className="create-org-overlay--provider-box-logo">
             {providerLogosLarge[currentProvider]}
@@ -75,6 +76,7 @@ export const ProviderCards: FC<Props> = ({
               onClick={handleSelectProvider}
               label={providerName}
               selected={providerId === currentProvider}
+              testID={`create-org-overlay--select-${providerId}-card`}
             >
               {providerLogosSmall[providerId]}
             </SelectableCard>

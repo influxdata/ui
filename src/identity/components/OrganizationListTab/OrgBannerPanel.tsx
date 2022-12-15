@@ -49,7 +49,10 @@ export const OrgBannerPanel: FC<OrgAllowance> = ({
         hideMobileIcon={true}
         icon={IconFont.Info_New}
       >
-        <FlexBox className="account-settings-page-org-tab--upgrade-banner-text">
+        <FlexBox
+          className="account-settings-page-org-tab--upgrade-banner-text"
+          testID="account-settings-page-org-tab--upgrade-banner-text"
+        >
           <>You've reached the organization quota for this account. &nbsp;</>
           <a
             onClick={handleUpgradeAccount}

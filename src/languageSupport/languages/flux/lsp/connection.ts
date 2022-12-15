@@ -276,24 +276,36 @@ export class ConnectionManager {
       toAdd.measurement = schema.measurement
     }
     if (!isEqual(schema.fields, previousState.fields)) {
-      toRemove.fields = previousState.fields.filter(
+      const fieldsToRemove = previousState.fields.filter(
         f => !schema.fields.includes(f)
       )
-      toAdd.fields = schema.fields.filter(
+      if (fieldsToRemove.length) {
+        toRemove.fields = fieldsToRemove
+      }
+      const fieldsToAdd = schema.fields.filter(
         f => !previousState.fields.includes(f)
       )
+      if (fieldsToAdd.length) {
+        toAdd.fields = fieldsToAdd
+      }
     }
     if (!isEqual(schema.tagValues, previousState.tagValues)) {
-      toRemove.tagValues = previousState.tagValues.filter(
+      const tagValuesToRemove = previousState.tagValues.filter(
         ({key, value}) =>
           !schema.tagValues.some(pair => pair.value == value && pair.key == key)
       )
-      toAdd.tagValues = schema.tagValues.filter(
+      if (tagValuesToRemove.length) {
+        toRemove.tagValues = tagValuesToRemove
+      }
+      const tagValuesToAdd = schema.tagValues.filter(
         ({key, value}) =>
           !previousState.tagValues.some(
             pair => pair.value == value && pair.key == key
           )
       )
+      if (tagValuesToAdd.length) {
+        toAdd.tagValues = tagValuesToAdd
+      }
     }
 
     return {toAdd, toRemove, shouldDelay}

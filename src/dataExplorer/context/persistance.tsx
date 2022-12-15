@@ -18,7 +18,6 @@ import {isOrgIOx} from 'src/organizations/selectors'
 
 interface CompositionStatus {
   synced: boolean // true == can modify session's schema
-  diverged: boolean // true == cannot re-sync. (e.g. user has typed in the composition block)
 }
 
 export enum GroupType {
@@ -100,7 +99,6 @@ export const DEFAULT_SELECTION: CompositionSelection = {
   tagValues: [] as TagKeyValuePair[],
   composition: {
     synced: true,
-    diverged: false,
   } as CompositionStatus,
   resultOptions: {
     fieldsAsColumn: false,
@@ -192,10 +190,6 @@ export const PersistanceProvider: FC = ({children}) => {
 
   const setCompositionSelection = useCallback(
     newSelection => {
-      if (selection.composition?.diverged && newSelection.composition?.synced) {
-        // cannot re-sync if diverged
-        return
-      }
       const composition: CompositionStatus = {
         ...(selection.composition || {}),
         ...(newSelection.composition || {}),

@@ -104,7 +104,13 @@ const testProviderCards = () => {
   )
 }
 
-const setupTest = () => {
+interface SetupParams {
+  accountType: string
+  canCreateOrgs: boolean
+  urlToVisit?: string
+}
+
+const setupTest = (setupParams: SetupParams) => {
   cy.flush().then(() =>
     cy.signin().then(() => {
       cy.setFeatureFlags(createOrgsFeatureFlags)
@@ -116,28 +122,51 @@ const setupTest = () => {
         if (res.body.orgs) {
           idpeOrgID = res.body.orgs[0].id
         }
+        const {accountType, canCreateOrgs, urlToVisit} = setupParams
 
+        makeQuartzUseIDPEOrgID(idpeOrgID, accountType)
+
+        // Intercept requests to /clusters and /accounts/:accountId/orgs and replace with a fixture.
         cy.intercept('GET', 'api/v2/quartz/clusters', {
           fixture: 'createOrg/clusters',
         }).as('getClusters')
+
+        cy.intercept('GET', 'api/v2/quartz/accounts/416/orgs', {
+          fixture: 'createOrg/orgsBaseState',
+        }).as('getOrgs')
+
+        let fixtureName: string
+        if (accountType === 'free') {
+          fixtureName = canCreateOrgs
+            ? 'createOrg/allowanceFreeTrue'
+            : 'createOrg/allowanceFreeFalse'
+        } else if (accountType === 'pay_as_you_go') {
+          fixtureName = canCreateOrgs
+            ? 'createOrg/allowancePAYGTrue'
+            : 'createOrg/allowancePAYGFalse'
+        } else {
+          fixtureName = canCreateOrgs
+            ? 'createOrg/allowanceContractTrue'
+            : 'createOrg/allowanceContractFalse'
+        }
+
+        // Replace the current org creation allowance with a fixture.
+        getOrgCreationAllowance(fixtureName)
+
+        // If a url is specified, start the test at that url.
+        if (urlToVisit) {
+          cy.visit(`orgs/${idpeOrgID}/` + urlToVisit)
+        } else {
+          cy.visit('/')
+        }
       })
     })
   )
 }
 
-beforeEach(() => {
-  setupTest()
-})
-
 describe('Free account', () => {
-  beforeEach(() => {
-    makeQuartzUseIDPEOrgID(idpeOrgID, 'free')
-    cy.visit('/')
-  })
-
   it('by default, cant create orgs: displays the `add more organizations` upgrade button, which takes user to checkout', () => {
-    getOrgCreationAllowance('createOrg/allowanceFreeFalse')
-    cy.visit('/')
+    setupTest({accountType: 'free', canCreateOrgs: false})
 
     clickUpgradeButton()
 
@@ -145,8 +174,7 @@ describe('Free account', () => {
   })
 
   it('can create new orgs, if the free account allowance is increased', () => {
-    getOrgCreationAllowance('createOrg/allowanceFreeTrue')
-    cy.visit('/')
+    setupTest({accountType: 'free', canCreateOrgs: true})
 
     clickCreateOrgButton()
 
@@ -199,19 +227,8 @@ describe('Free account', () => {
 })
 
 describe('PAYG account', () => {
-  beforeEach(() => {
-    makeQuartzUseIDPEOrgID(idpeOrgID, 'pay_as_you_go')
-
-    cy.intercept('GET', 'api/v2/quartz/accounts/416/orgs', {
-      fixture: 'createOrg/orgsBaseState',
-    }).as('getOrgs')
-
-    cy.visit('/')
-  })
-
   it('can create new orgs, if there are orgs left in the quota', () => {
-    getOrgCreationAllowance('createOrg/allowancePAYGTrue')
-    cy.visit('/')
+    setupTest({accountType: 'pay_as_you_go', canCreateOrgs: true})
 
     clickCreateOrgButton()
 
@@ -263,8 +280,7 @@ describe('PAYG account', () => {
   })
 
   it('cant create an org with the same name as another org in the account', () => {
-    getOrgCreationAllowance('createOrg/allowancePAYGTrue')
-    cy.visit('/')
+    setupTest({accountType: 'pay_as_you_go', canCreateOrgs: true})
 
     clickCreateOrgButton()
 
@@ -272,8 +288,7 @@ describe('PAYG account', () => {
   })
 
   it('must upgrade the account using the marketo form, if there are no orgs left in the quota', () => {
-    getOrgCreationAllowance('createOrg/allowancePAYGFalse')
-    cy.visit('/')
+    setupTest({accountType: 'pay_as_you_go', canCreateOrgs: false})
 
     clickUpgradeButton()
 
@@ -282,20 +297,8 @@ describe('PAYG account', () => {
 })
 
 describe('CONTRACT account: org creation', () => {
-  beforeEach(() => {
-    makeQuartzUseIDPEOrgID(idpeOrgID, 'contract')
-
-    cy.intercept('GET', 'api/v2/quartz/accounts/416/orgs', {
-      fixture: 'createOrg/orgsBaseState',
-    }).as('getOrgs')
-
-    cy.visit('/')
-  })
-
   it('can create new orgs, if orgs in quota', () => {
-    getOrgCreationAllowance('createOrg/allowanceContractTrue')
-    cy.visit('/')
-
+    setupTest({accountType: 'contract', canCreateOrgs: true})
     clickCreateOrgButton()
 
     cy.getByTestID('create-org-overlay--createorg-input')
@@ -344,19 +347,18 @@ describe('CONTRACT account: org creation', () => {
   })
 
   it('cant create an org with the same name as another org in the account', () => {
-    getOrgCreationAllowance('createOrg/allowanceContractTrue')
-    cy.visit('/')
-
+    setupTest({accountType: 'contract', canCreateOrgs: true})
     clickCreateOrgButton()
 
     tryCreatingDuplicateOrg()
   })
 
   it('must upgrade using marketo form, if no more orgs in quota, which is  accessible only from the organization list page in contract accounts', () => {
-    getOrgCreationAllowance('createOrg/allowanceContractFalse')
-    cy.visit('/')
-
-    cy.visit(`/orgs/${idpeOrgID}/accounts/orglist`)
+    setupTest({
+      accountType: 'contract',
+      canCreateOrgs: false,
+      urlToVisit: 'accounts/orglist',
+    })
 
     cy.getByTestID('globalheader--org-dropdown').should('exist').click()
     cy.getByTestID('globalheader--org-dropdown-main').should('be.visible')

@@ -42,6 +42,7 @@ import {
 } from 'src/shared/copy/notifications'
 
 const APPROXIMATE_LSP_STARTUP_DELAY = 3000
+const APPROXIMATE_EDITOR_SET_VALUE_DELAY = 3000
 
 export class ConnectionManager {
   private _worker: Worker
@@ -321,9 +322,9 @@ export class ConnectionManager {
       previousState
     )
 
-    const multipleItemsToSync =
+    const hasMultipleItemsToSync =
       Object.keys(toAdd).length + Object.keys(toRemove).length > 1
-    if (this._first_load || multipleItemsToSync) {
+    if (this._first_load || hasMultipleItemsToSync) {
       this._first_load = false
       setTimeout(
         () => this._initLspComposition(toAdd),
@@ -336,7 +337,10 @@ export class ConnectionManager {
       // since this._diffSchemaChange() can set the model
       // we need the executeCommand to be issued after the model update
       if (shouldDelay) {
-        setTimeout(() => this._updateLsp(toAdd, toRemove), 3000)
+        setTimeout(
+          () => this._updateLsp(toAdd, toRemove),
+          APPROXIMATE_EDITOR_SET_VALUE_DELAY
+        )
       } else {
         this._updateLsp(toAdd, toRemove)
       }
@@ -380,7 +384,7 @@ export class ConnectionManager {
         break
       case LspClientCommand.CompositionEnded:
         this._setEditorBlockStyle(null)
-        if (this._model.getValue() != DEFAULT_FLUX_EDITOR_TEXT) {
+        if (this._model.getValue() !== DEFAULT_FLUX_EDITOR_TEXT) {
           // lost the flux sync. Note: ignore when this occurs during `New Script`.
           this._setSessionSync(false)
         }

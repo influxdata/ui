@@ -3,7 +3,7 @@ import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
 // Libraries
 import React, {PureComponent, Suspense} from 'react'
-import {render} from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import {Provider} from 'react-redux'
 import {Route} from 'react-router-dom'
 import {ConnectedRouter} from 'connected-react-router'
@@ -90,5 +90,6 @@ class Root extends PureComponent {
 }
 
 if (rootNode) {
-  render(<Root />, rootNode)
+  const root = createRoot(rootNode)
+  root.render(<Root />)
 }

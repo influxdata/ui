@@ -3,6 +3,13 @@ import {Organization} from '../../../src/types'
 const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
 
+// monaco-editor lazy loads + LspServer comes online
+const DELAY_FOR_LSP_SERVER_ONLINE = 30000
+
+const APPROXIMATE_EDITOR_SET_VALUE_DELAY = 3000
+
+const DELAY_FOR_FILE_DOWNLOAD = 5000
+
 describe('Script Builder', () => {
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
@@ -55,24 +62,27 @@ describe('Script Builder', () => {
   const selectSchema = () => {
     cy.log('select bucket')
     selectBucket(bucketName)
+    cy.getByTestID('flux-editor', {
+      timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+    }).contains(`from(bucket: "${bucketName}")`, {
+      timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
+    })
 
     cy.log('select measurement')
     selectMeasurement(measurement)
   }
 
   const confirmSchemaComposition = () => {
-    cy.getByTestID('flux-editor', {timeout: 30000})
-      // we set a manual delay on page load, for composition initialization
-      // https://github.com/influxdata/ui/blob/e76f934c6af60e24c6356f4e4ce9b067e5a9d0d5/src/languageSupport/languages/flux/lsp/connection.ts#L435-L440
-      .contains(`from(bucket: "${bucketName}")`, {timeout: 30000})
+    cy.getByTestID('flux-editor', {
+      timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+    }).contains(`from(bucket: "${bucketName}")`, {
+      timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
+    })
     cy.getByTestID('flux-editor').contains(
       `|> filter(fn: (r) => r._measurement == "${measurement}")`
     )
-    cy.getByTestID('flux-editor').contains(
-      `|> yield(name: "_editor_composition")`
-    )
     cy.getByTestID('flux-editor').within(() => {
-      cy.get('.composition-sync--on').should('have.length', 4) // four lines
+      cy.get('.composition-sync--on').should('have.length', 3) // three lines
     })
   }
 
@@ -92,6 +102,11 @@ describe('Script Builder', () => {
             DEFAULT_FLUX_EDITOR_TEXT
           )
         })
+      }
+    })
+    cy.getByTestID('flux-sync--toggle').then($toggle => {
+      if (!$toggle.hasClass('active')) {
+        $toggle.click()
       }
     })
   }
@@ -162,7 +177,7 @@ describe('Script Builder', () => {
 
         clearSession()
         cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-        cy.getByTestID('flux-editor', {timeout: 30000})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
       })
     })
 
@@ -240,10 +255,11 @@ describe('Script Builder', () => {
         if (browser.name.toLowerCase() != 'chrome') {
           return
         }
+
         cy.getByTestID('csv-download-button').should('not.be.disabled').click()
 
-        cy.wait('@queryDownloadCSV', {timeout: 5000})
-          .its('request', {timeout: 5000})
+        cy.wait('@queryDownloadCSV', {timeout: DELAY_FOR_FILE_DOWNLOAD})
+          .its('request', {timeout: DELAY_FOR_FILE_DOWNLOAD})
           .then(req => {
             cy.request(req)
               .then(({body, headers}) => {
@@ -490,7 +506,7 @@ describe('Script Builder', () => {
       }).then(() => {
         clearSession()
         cy.getByTestID('flux-sync--toggle')
-        cy.getByTestID('flux-editor', {timeout: 30000})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
       })
     })
 
@@ -507,142 +523,23 @@ describe('Script Builder', () => {
           .click()
           .should('have.class', 'active')
 
-        cy.log('can diverge from sync')
-        selectSchema()
-        confirmSchemaComposition()
-        cy.getByTestID('flux-editor').monacoType(
-          '{upArrow}{upArrow} // make diverge'
-        )
+        cy.log('turn off flux sync')
+        cy.getByTestID('flux-sync--toggle')
+          .click()
+          .should('not.have.class', 'active')
 
-        cy.log('toggle is now disabled')
-        cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
-
-        cy.log('can still browse schema while diverged')
+        cy.log('can still browse schema while not synced')
         selectBucket('defbuck2')
       })
 
-      describe('conditions for divergence:', () => {
-        // only flakes in OSS. But skip for now, debug later.
-        it.skip('diverges when typing in composition block', () => {
-          cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-          cy.getByTestID('flux-editor', {timeout: 30000})
-          selectSchema()
-          confirmSchemaComposition()
-
-          cy.log('does not diverge when outside block')
-          cy.getByTestID('flux-editor').monacoType('// will not diverge')
-          cy.getByTestID('flux-sync--toggle').should(
-            'not.have.class',
-            'disabled'
-          )
-
-          cy.log(
-            'does not diverge, when adding import statement outside of block'
-          )
-          cy.getByTestID('flux-toolbar-search--input')
-            .should('exist')
-            .type('fieldsAsCols')
-          cy.get('.flux-toolbar--list-item').first().click()
-          cy.getByTestID('flux-editor').contains('import')
-          cy.getByTestID('flux-sync--toggle').should(
-            'not.have.class',
-            'disabled'
-          )
-
-          /// FIXME: Does not work yet, since the LSP response for applyEdit starts at line 0
-          // cy.log(
-          //   'does not diverge, when further modifying block (with imports at top)'
-          // )
-
-          cy.log('does diverge, within block')
-          cy.getByTestID('flux-editor')
-            .should('exist')
-            .monacoType(
-              '{enter}{upArrow}{upArrow}{upArrow}{upArrow} // make diverge'
-            )
-          cy.log('toggle is now disabled')
-          cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
-        })
-
-        it('using hotkeys:', () => {
-          const runTest = (hotKeyCombo: string) => {
-            cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-            cy.getByTestID('flux-editor', {timeout: 30000})
-            selectSchema()
-            confirmSchemaComposition()
-
-            cy.log('does not diverge when outside block')
-            cy.getByTestID('flux-editor').monacoType(`foo ${hotKeyCombo}`)
-            cy.getByTestID('flux-sync--toggle').should(
-              'not.have.class',
-              'disabled'
-            )
-
-            cy.log('does diverge, within block')
-            cy.getByTestID('flux-editor').monacoType(
-              `{upArrow}{upArrow}{upArrow} ${hotKeyCombo}`
-            )
-            cy.log('toggle is now disabled')
-            cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
-
-            cy.log('clear session')
-            clearSession()
-          }
-
-          cy.log('diverges when commenting line')
-          runTest('{cmd}/')
-
-          cy.log('diverges when adding lines')
-          runTest('{shift+alt+downArrow}')
-
-          cy.log('diverges when removing lines')
-          runTest('{cmd+x}')
-
-          cy.log('diverges when moving lines')
-          runTest('{alt+downArrow}')
-        })
-
-        /// XXX: wiedld (27 Sep 2022) -- we have no way to delineate btwn the LSP applyEdit,
-        /// and the undo action applyEdit.
-        /// Either we disable the undo/redo hotkeys, or accept this edge case bug.
-        it.skip('diverges when using undo hotkeys, to undo composition block change', () => {
-          cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-          cy.getByTestID('flux-editor', {timeout: 30000})
-          selectSchema()
-          confirmSchemaComposition()
-
-          cy.log('make a change, via schema composition')
-          const newMeasurement = 'ndbc2'
-          cy.getByTestID('measurement-selector--dropdown-button').click()
-          cy.getByTestID(`searchable-dropdown--item ${newMeasurement}`)
-            .should('be.visible')
-            .click()
-          cy.getByTestID('measurement-selector--dropdown-button').should(
-            'contain',
-            newMeasurement
-          )
-          cy.getByTestID('flux-editor').contains(
-            `|> filter(fn: (r) => r._measurement == "${newMeasurement}")`
-          )
-
-          cy.log('use undo hotkey')
-          cy.getByTestID('flux-editor').monacoType('{cmd+z}')
-
-          cy.log('toggle is now disabled')
-          cy.getByTestID('flux-sync--toggle').should('have.class', 'disabled')
-        })
-      })
-
       it('should clear the editor text and schema browser, with a new script', () => {
-        cy.getByTestID('flux-editor', {timeout: 30000})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
 
         cy.log('modify schema browser')
         selectSchema()
 
         cy.log('editor text contains the composition')
-        cy.getByTestID('flux-editor').contains(
-          `|> yield(name: "_editor_composition")`
-        )
+        confirmSchemaComposition()
 
         cy.log('click new script, and choose to delete current script')
         cy.getByTestID('flux-query-builder--new-script')
@@ -672,7 +569,9 @@ describe('Script Builder', () => {
 
       it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {
         cy.log('start with empty editor text')
-        cy.getByTestID('flux-editor', {timeout: 30000}).within(() => {
+        cy.getByTestID('flux-editor', {
+          timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+        }).within(() => {
           cy.get('textarea.inputarea').should(
             'have.value',
             DEFAULT_FLUX_EDITOR_TEXT
@@ -686,7 +585,8 @@ describe('Script Builder', () => {
         cy.getByTestID('flux-sync--toggle').should('not.have.class', 'active')
 
         cy.log('modify schema browser')
-        selectSchema()
+        selectBucket(bucketName)
+        selectMeasurement(measurement)
 
         cy.log('editor text is still empty')
         cy.getByTestID('flux-editor').within(() => {

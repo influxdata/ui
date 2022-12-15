@@ -74,6 +74,17 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   )
   const [searchTerm, setSearchTerm] = useState('')
 
+  const transformSessionTagValuesToLocal = tagValues => {
+    const localTagValues = {} as SelectedTagValues
+    tagValues.forEach((tag: TagKeyValuePair) => {
+      if (!localTagValues[tag.key]) {
+        localTagValues[tag.key] = []
+      }
+      localTagValues[tag.key].push(tag.value)
+    })
+    return localTagValues
+  }
+
   useEffect(() => {
     if (selection.bucket && selection.measurement) {
       // On page refresh, measurements become empty even though
@@ -83,17 +94,17 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
       // On page refresh, re-contruct the state of selectedTagValues
       if (!!selection.tagValues) {
-        const _selectedTagValues = {} as SelectedTagValues
-        selection.tagValues.forEach((tag: TagKeyValuePair) => {
-          if (!_selectedTagValues[tag.key]) {
-            _selectedTagValues[tag.key] = []
-          }
-          _selectedTagValues[tag.key].push(tag.value)
-        })
+        const _selectedTagValues = transformSessionTagValuesToLocal(
+          selection.tagValues
+        )
         setSelectedTagValues(_selectedTagValues)
       }
     }
   }, [selection.bucket])
+
+  useEffect(() => {
+    setSelectedTagValues(transformSessionTagValuesToLocal(selection.tagValues))
+  }, [selection.tagValues])
 
   const handleToggleFluxSync = (synced: boolean): void => {
     setSelection({composition: {synced}})

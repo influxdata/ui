@@ -217,13 +217,13 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
             component={BucketsIndex}
           />
-          {CLOUD && (
+          {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/create`}
               component={CreateSubscriptionForm}
             />
           )}
-          {CLOUD && (
+          {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id/notifications`}
               render={props => (
@@ -237,7 +237,7 @@ const SetOrg: FC = () => {
               component={DetailsSubscriptionPage}
             />
           )}
-          {CLOUD && (
+          {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
               component={SubscriptionsLanding}

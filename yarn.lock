@@ -218,7 +218,7 @@
     semver "^6.3.0"
     source-map "^0.5.0"
 
-"@babel/core@^7.20.2":
+"@babel/core@^7.20.5":
   version "7.20.5"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.20.5.tgz#45e2114dc6cd4ab167f81daf7820e8fa1250d113"
   integrity sha512-UdOWmk4pNWTm/4DlPUl/Pt4Gz4rcEMb7CY0Y3eJl5Yz1vI8ZJGmHWaVE55LoxRjdpx0z259GE9U5STA9atUinQ==
@@ -1277,12 +1277,12 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.20.1":
-  version "7.20.1"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.1.tgz#1148bb33ab252b165a06698fde7576092a78b4a9"
-  integrity sha512-mrzLkl6U9YLF8qpqI7TB82PESyEGjm/0Ly91jG575eVxMMlb8fYfOXFZIJ8XfLrJZQbm7dlKry2bJmXBUEkdFg==
+"@babel/runtime@^7.20.6":
+  version "7.20.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.6.tgz#facf4879bfed9b5326326273a64220f099b0fce3"
+  integrity sha512-Q+8MqP7TiHMWzSfwiJwXCjyf4GYA4Dgw3emg/7xmwsdLJOZUp+nMqcOwOzzYheuM1rhDu8FSj2l0aoMygEuXuA==
   dependencies:
-    regenerator-runtime "^0.13.10"
+    regenerator-runtime "^0.13.11"
 
 "@babel/runtime@^7.3.1":
   version "7.17.9"
@@ -1499,18 +1499,18 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@influxdata/clockface@^6.3.9":
-  version "6.3.9"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-6.3.9.tgz#8a2046fc7457e40d50b8a16af8b9eadd4480198d"
-  integrity sha512-n5gZiCBXGPXDHbxwqCQ5VYvaqG5WnsOJscTPxG7p9dgf/erUFOMD4+aHH+qZMU/a9QVsJD8hMX7eUqTRkYhVTQ==
+"@influxdata/clockface@^6.3.11":
+  version "6.3.11"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-6.3.11.tgz#89b3e48526afba1420d7b38f635f5645a5b54e30"
+  integrity sha512-+A/xgPCA6rSyqaWh46cwQbu7AL+149c6kA+sHpQMq36YE+W+H7et1Hks3aOHwbnX7pxKhZFtBs0rZ4Cn+LA8mA==
   dependencies:
     "@types/react-window" "^1.8.5"
     react-window "^1.8.7"
 
-"@influxdata/flux-lsp-browser@0.8.36":
-  version "0.8.36"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.36.tgz#953b09f0d6ac027c6b1e834735d48f78af616b73"
-  integrity sha512-jp9jJYQBoaGKX2Z4foPzSEHQHOtBoB/SHfnnLDpmPgN3B80jSq5md1mjgav4if4fnVuzEc+693/hw/CDH3Pbtw==
+"@influxdata/flux-lsp-browser@0.8.38":
+  version "0.8.38"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.38.tgz#371cf06ab85d722688e3468851b8a289788eeab1"
+  integrity sha512-/vRpbFndYmKXZNnULpOyeWwjdEFYPHkoxuTlApYGip8wc7Vz+pjZYCaB+RFOQCddTjf2S7oikyA/dyL0FE6jsg==
 
 "@influxdata/giraffe@^2.38.1":
   version "2.38.1"
@@ -9152,10 +9152,10 @@ regenerator-runtime@^0.11.0:
   resolved "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
 
-regenerator-runtime@^0.13.10:
-  version "0.13.10"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.10.tgz#ed07b19616bcbec5da6274ebc75ae95634bfc2ee"
-  integrity sha512-KepLsg4dU12hryUO7bp/axHAKvwGOCV0sGloQtpagJ12ai+ojVDqkeGSiRX1zlq+kjIMZ1t7gpze+26QqtdGqw==
+regenerator-runtime@^0.13.11:
+  version "0.13.11"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
+  integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
 
 regenerator-runtime@^0.13.4, regenerator-runtime@^0.13.7:
   version "0.13.9"

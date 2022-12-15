@@ -19,16 +19,9 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
-const FLUX_SYNC_DISABLE_TEXT = `Schema Sync is no longer available because the \
-code block has been edited.`
-
 const SchemaBrowserHeading: FC = () => {
   const {fluxSync, toggleFluxSync} = useContext(FluxQueryBuilderContext)
-  const {resource, selection} = useContext(PersistanceContext)
-
-  // Disable means diverged, used to not allow turning on or off the toggle
-  const disableToggle: boolean = selection.composition?.diverged
-  const disableTooltipText = disableToggle ? FLUX_SYNC_DISABLE_TEXT : ''
+  const {resource} = useContext(PersistanceContext)
 
   const handleFluxSyncToggle = () => {
     event('Toggled Flux Sync in schema browser', {active: `${!fluxSync}`})
@@ -69,20 +62,13 @@ const SchemaBrowserHeading: FC = () => {
           active={fluxSync}
           onChange={handleFluxSyncToggle}
           testID="flux-sync--toggle"
-          disabled={disableToggle}
-          tooltipText={disableTooltipText}
         />
         <InputLabel className="flux-sync--label">
-          <div
-            className={`${disableToggle ? 'disabled' : ''}`}
-            title={disableTooltipText}
-          >
-            <SelectorTitle
-              label="Flux Sync"
-              tooltipContents={tooltipContents}
-              icon={IconFont.Sync}
-            />
-          </div>
+          <SelectorTitle
+            label="Flux Sync"
+            tooltipContents={tooltipContents}
+            icon={IconFont.Sync}
+          />
         </InputLabel>
       </FlexBox>
     </FlexBox>

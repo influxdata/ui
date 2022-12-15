@@ -13,7 +13,7 @@ import {
   BrowserMessageWriter,
   createMessageConnection,
 } from 'vscode-jsonrpc/browser'
-import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+import {ConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
 
 // flux language support
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
@@ -79,6 +79,7 @@ export function initLspWorker() {
   messageWriter = new BrowserMessageWriter(worker)
   const connection = createMessageConnection(messageReader, messageWriter)
   const languageClient = createLanguageClient(connection)
+  manager.subscribeToConnection(languageClient)
   const disposable = languageClient.start()
   connection.onError(e => handleConnectionError(e))
   connection.onClose(() => {

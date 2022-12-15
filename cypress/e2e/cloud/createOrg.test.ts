@@ -186,9 +186,14 @@ describe('Free account', () => {
         .should('be.visible')
         .contains('created')
       cy.url().should('contain', 'orglist')
-      cy.getByTestID('account--organizations-tab-orgs-card').within(() => {
-        cy.contains(newOrgName)
-      })
+      cy.getByTestID('account--organizations-tab-orgs-card')
+        .contains(newOrgName)
+        .parents('[data-testid=account--organizations-tab-orgs-card]')
+        .within(() => {
+          cy.contains('GCP')
+          cy.contains('iowa-local')
+          cy.contains('Iowa')
+        })
     })
   })
 })
@@ -246,9 +251,14 @@ describe('PAYG account', () => {
         .should('be.visible')
         .contains('created')
       cy.url().should('contain', 'orglist')
-      cy.getByTestID('account--organizations-tab-orgs-card').within(() => {
-        cy.contains(newOrgName)
-      })
+      cy.getByTestID('account--organizations-tab-orgs-card')
+        .contains(newOrgName)
+        .parents('[data-testid=account--organizations-tab-orgs-card]')
+        .within(() => {
+          cy.contains('Azure')
+          cy.contains('azure-local')
+          cy.contains('azure-local region')
+        })
     })
   })
 
@@ -298,6 +308,7 @@ describe('CONTRACT account: org creation', () => {
     cy.getByTestID('create-org-overlay--select-AWS-card')
       .should('be.visible')
       .click()
+
     cy.getByTestID('create-org-overlay--select-AWS-card').should(
       'have.class',
       'selected'
@@ -321,9 +332,14 @@ describe('CONTRACT account: org creation', () => {
         .should('be.visible')
         .contains('created')
       cy.url().should('contain', 'orglist')
-      cy.getByTestID('account--organizations-tab-orgs-card').within(() => {
-        cy.contains(newOrgName)
-      })
+      cy.getByTestID('account--organizations-tab-orgs-card')
+        .contains(newOrgName)
+        .parents('[data-testid=account--organizations-tab-orgs-card]')
+        .within(() => {
+          cy.contains('AWS')
+          cy.contains('aws-local')
+          cy.contains('aws-local region')
+        })
     })
   })
 

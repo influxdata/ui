@@ -289,7 +289,7 @@ class LspConnectionManager {
       })
     }
 
-    if (toRemove.fields?.length) {
+    if (toRemove?.fields?.length) {
       toRemove.fields.forEach(value =>
         this.inject(ExecuteCommand.CompositionRemoveField, {value})
       )
@@ -299,7 +299,7 @@ class LspConnectionManager {
         this.inject(ExecuteCommand.CompositionAddField, {value})
       )
     }
-    if (toRemove.tagValues?.length) {
+    if (toRemove?.tagValues?.length) {
       toRemove.tagValues.forEach(({key, value}) =>
         this.inject(ExecuteCommand.CompositionRemoveTagValue, {tag: key, value})
       )

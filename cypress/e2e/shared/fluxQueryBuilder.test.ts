@@ -522,7 +522,7 @@ describe('Script Builder', () => {
     })
 
     describe('basic functionality', () => {
-      it('can contruct a composition with fields', () => {
+      it('can construct a composition with fields', () => {
         cy.log('empty editor text')
         cy.getByTestID('flux-editor').monacoType('{selectAll}{del}')
 
@@ -556,7 +556,7 @@ describe('Script Builder', () => {
         })
       })
 
-      it('can contruct a composition with tagValues', () => {
+      it('can construct a composition with tagValues', () => {
         cy.log('empty editor text')
         cy.getByTestID('flux-editor').monacoType('{selectAll}{del}')
 
@@ -579,6 +579,7 @@ describe('Script Builder', () => {
         )
 
         cy.log('select tagValue --> removes from composition')
+        selectListItem(tagValue, false)
         cy.wait(1000)
         cy.getByTestID('flux-editor').within(() => {
           cy.get('textarea.inputarea').should('not.contain', tagKey)

@@ -3,26 +3,6 @@ import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
 describe('change-account change-org global header', () => {
   let idpeOrgID: string
 
-  const interceptPageReload = () => {
-    cy.intercept('GET', 'api/v2/orgs').as('getOrgs')
-    cy.intercept('GET', 'api/v2/flags').as('getFlags')
-    cy.intercept('GET', 'api/v2/quartz/accounts/**/orgs').as('getQuartzOrgs')
-  }
-
-  const mockQuartzOutage = () => {
-    const quartzFailure = {
-      statusCode: 503,
-      body: 'Service Unavailable',
-    }
-
-    cy.intercept('GET', 'api/v2/quartz/identity', quartzFailure).as(
-      'getQuartzIdentity'
-    )
-    cy.intercept('GET', 'api/v2/quartz/accounts', quartzFailure).as(
-      'getQuartzAccounts'
-    )
-  }
-
   before(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
@@ -51,14 +31,6 @@ describe('change-account change-org global header', () => {
   })
 
   describe('global change-account and change-org header', () => {
-    it('does not render when API requests to quartz fail', () => {
-      mockQuartzOutage()
-      interceptPageReload()
-      cy.visit('/')
-      cy.wait('@getQuartzAccounts')
-      cy.getByTestID('global-header--container').should('not.exist')
-    })
-
     describe('change org dropdown', () => {
       before(() => {
         makeQuartzUseIDPEOrgID(idpeOrgID)

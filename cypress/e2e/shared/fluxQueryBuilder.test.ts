@@ -3,10 +3,10 @@ import {Organization} from '../../../src/types'
 const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
 
-// monaco-editor lazy loads + LspServer comes online
-const DELAY_FOR_LSP_SERVER_ONLINE = 30000
-
-const APPROXIMATE_EDITOR_SET_VALUE_DELAY = 3000
+// These delays are separately loaded in the UI.
+// But cypress checks for them in series...and the LspServer takes longer.
+const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
+const DELAY_FOR_LSP_SERVER_BOOTUP = 30000
 
 const DELAY_FOR_FILE_DOWNLOAD = 5000
 
@@ -63,9 +63,9 @@ describe('Script Builder', () => {
     cy.log('select bucket')
     selectBucket(bucketName)
     cy.getByTestID('flux-editor', {
-      timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+      timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
     }).contains(`from(bucket: "${bucketName}")`, {
-      timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
+      timeout: DELAY_FOR_LSP_SERVER_BOOTUP,
     })
 
     cy.log('select measurement')
@@ -74,9 +74,9 @@ describe('Script Builder', () => {
 
   const confirmSchemaComposition = () => {
     cy.getByTestID('flux-editor', {
-      timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+      timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
     }).contains(`from(bucket: "${bucketName}")`, {
-      timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
+      timeout: DELAY_FOR_LSP_SERVER_BOOTUP,
     })
     cy.getByTestID('flux-editor').contains(
       `|> filter(fn: (r) => r._measurement == "${measurement}")`
@@ -177,7 +177,7 @@ describe('Script Builder', () => {
 
         clearSession()
         cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
       })
     })
 
@@ -533,7 +533,7 @@ describe('Script Builder', () => {
       })
 
       it('should clear the editor text and schema browser, with a new script', () => {
-        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
 
         cy.log('modify schema browser')
         selectSchema()
@@ -604,9 +604,6 @@ describe('Script Builder', () => {
         cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
 
         cy.log('editor text contains the composition')
-        // we set a manual delay for composition initialization
-        // https://github.com/influxdata/ui/blob/e76f934c6af60e24c6356f4e4ce9b067e5a9d0d5/src/languageSupport/languages/flux/lsp/connection.ts#L435-L440
-        cy.wait(3000)
         confirmSchemaComposition()
       })
     })

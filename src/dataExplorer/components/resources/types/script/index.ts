@@ -1,7 +1,12 @@
 import {ResourceType} from 'src/types/resources'
 import editor from './editor'
 import {CLOUD} from 'src/shared/constants'
-import {DEFAULT_EDITOR_TEXT} from 'src/dataExplorer/context/persistance'
+import {
+  DEFAULT_FLUX_EDITOR_TEXT,
+  DEFAULT_SQL_EDITOR_TEXT,
+} from 'src/dataExplorer/context/persistance'
+import {LanguageType} from 'src/dataExplorer/components/resources'
+import {getLanguage} from 'src/dataExplorer/shared/utils'
 
 const {getScript, patchScript, postScript} = CLOUD
   ? require('src/client/scriptsRoutes')
@@ -17,10 +22,18 @@ export default function script(register) {
     editor,
     init: id => {
       if (!id || !CLOUD) {
+        const language = getLanguage()
+        let flux = DEFAULT_FLUX_EDITOR_TEXT
+
+        if (language === LanguageType.SQL) {
+          flux = DEFAULT_SQL_EDITOR_TEXT
+        }
+
         return Promise.resolve({
           type: ResourceType.Scripts,
-          flux: DEFAULT_EDITOR_TEXT,
+          flux,
           data: {},
+          language,
         })
       }
 
@@ -32,17 +45,20 @@ export default function script(register) {
             type: ResourceType.Scripts,
             flux: resp.data.script,
             data: resp.data,
+            language: resp.data.language,
           }
         }
 
         return {
           type: ResourceType.Scripts,
-          flux: DEFAULT_EDITOR_TEXT,
+          flux: DEFAULT_FLUX_EDITOR_TEXT,
           data: {},
+          language: LanguageType.FLUX,
         }
       })
     },
     persist: resource => {
+      const language = resource?.language
       const data = JSON.parse(JSON.stringify(resource.data))
       data.script = resource.flux
 
@@ -55,10 +71,14 @@ export default function script(register) {
           scriptID: data.id,
           data: {
             name: data.name,
-            description: data.description,
+            description: data?.description || ' ',
             script: data.script,
           },
-        }).then(() => {
+        }).then(resp => {
+          if (resp.status !== 200) {
+            throw new Error(resp.data.message)
+          }
+
           return resource
         })
       }
@@ -66,22 +86,22 @@ export default function script(register) {
       return postScript({
         data: {
           name: data.name,
-          description: data.description,
+          description: data?.description || ' ',
           script: data.script,
-          language: 'flux',
+          language: language ?? LanguageType.FLUX,
         },
       }).then(resp => {
-        if (resp.status === 201) {
-          return {
-            ...resource,
-            data: {
-              ...data,
-              id: resp.data.id,
-            },
-          }
+        if (resp.status !== 201) {
+          throw new Error(resp.data.message)
         }
 
-        return resource
+        return {
+          ...resource,
+          data: {
+            ...data,
+            id: resp.data.id,
+          },
+        }
       })
     },
   })

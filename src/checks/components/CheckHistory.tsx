@@ -11,7 +11,6 @@ import CheckHistoryVisualization from 'src/checks/components/CheckHistoryVisuali
 import AlertHistoryQueryParams from 'src/alerting/components/AlertHistoryQueryParams'
 import EventTable from 'src/eventViewer/components/EventTable'
 import GetResources from 'src/resources/components/GetResources'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import CheckProvider from 'src/checks/utils/context'
 
 // Context
@@ -28,7 +27,6 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const CheckHistory: FC = () => {
   const resourceIDs = useSelector((state: AppState) => ({
@@ -37,7 +35,7 @@ const CheckHistory: FC = () => {
     ruleIDs: null,
   }))
   const org = useSelector(getOrg)
-  const {checkID} = useParams()
+  const {checkID} = useParams<{checkID: string}>()
   const loadRows = useMemo(
     () => options => loadStatuses(org.id, options),
     [org.id]
@@ -59,9 +57,6 @@ const CheckHistory: FC = () => {
                   title="Check Statuses"
                   testID="alert-history-title"
                 />
-                {!isFlagEnabled('multiOrg') && (
-                  <RateLimitAlert location="check history" />
-                )}
               </Page.Header>
               <Page.ControlBar fullWidth={true}>
                 <Page.ControlBarLeft>

@@ -10,7 +10,7 @@ import {
 } from 'src/visualization/constants'
 import {MosaicViewProperties} from 'src/types'
 
-export default {
+export const MosaicProperties = {
   type: 'mosaic',
   shape: 'chronograf-v2',
 

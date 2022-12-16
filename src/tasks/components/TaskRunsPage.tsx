@@ -6,7 +6,6 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 // Components
 import {Page, Sort} from '@influxdata/clockface'
 import TaskRunsList from 'src/tasks/components/TaskRunsList'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import {TaskRunsCard} from 'src/tasks/components/TaskRunsCard'
 import {PageBreadcrumbs} from 'src/tasks/components/PageBreadcrumbs'
 
@@ -24,7 +23,6 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {SortTypes} from 'src/shared/utils/sort'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {getAll} from 'src/resources/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{id: string; orgID: string}>
@@ -69,9 +67,6 @@ class TaskRunsPage extends PureComponent<Props, State> {
                 },
               ]}
             />
-            {!isFlagEnabled('multiOrg') && (
-              <RateLimitAlert location="task runs" />
-            )}
           </Page.Header>
           <Page.ControlBar fullWidth={true}>
             <TaskRunsCard task={currentTask} isTaskEditable={isTaskEditable} />

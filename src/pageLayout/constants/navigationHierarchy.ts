@@ -1,17 +1,20 @@
+// Libraries
 import {IconFont} from '@influxdata/clockface'
+
+// Constants
+import {CLOUD} from 'src/shared/constants'
 import {
   PROJECT_NAME,
   PROJECT_NAME_PLURAL,
   PROJECT_NAME_SHORT,
 } from 'src/flows/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getStore} from 'src/store/configureStore'
 
-// Constants
-import {CLOUD} from 'src/shared/constants'
+// Utils
+import {isUserOperator} from 'src/operator/utils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
-import {AppState} from 'src/types'
+import {IdentityUser} from 'src/client/unityRoutes'
 
 export interface NavSubItem {
   id: string
@@ -33,11 +36,10 @@ export interface NavItem {
   activeKeywords: string[]
 }
 
-export const generateNavItems = (): NavItem[] => {
-  const state: AppState = getStore().getState()
-  const orgID = state?.resources?.orgs?.org?.id ?? ''
-  const quartzMe = state?.me?.quartzMe ?? null
-
+export const generateNavItems = (
+  orgID: string,
+  operatorRole: IdentityUser['operatorRole']
+): NavItem[] => {
   const orgPrefix = `/orgs/${orgID}`
 
   let navItems = [
@@ -194,7 +196,7 @@ export const generateNavItems = (): NavItem[] => {
     },
     {
       id: 'operator',
-      enabled: () => CLOUD && quartzMe?.isOperator === true,
+      enabled: () => CLOUD && isUserOperator(operatorRole),
       testID: 'nav-item--operator',
       icon: IconFont.Shield,
       label: 'Operator',

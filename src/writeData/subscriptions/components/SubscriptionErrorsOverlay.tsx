@@ -16,7 +16,7 @@ import {
 // Styles
 import 'src/writeData/subscriptions/components/SubscriptionErrorsOverlay.scss'
 import {event} from 'src/cloud/utils/reporting'
-import {Bulletin} from '../context/subscription.list'
+import {Bulletin} from 'src/writeData/subscriptions/context/subscription.list'
 
 interface Props {
   bulletins: Bulletin[]
@@ -30,9 +30,9 @@ const SubscriptionErrorsOverlay: FC<Props> = ({bulletins, handleClose}) => {
     handleClose()
   }
 
-  let title = `${bulletins.length} Errors Found`
+  let title = `${bulletins.length} Notifications Found`
   if (bulletins.length === 1) {
-    title = `1 Error Found`
+    title = `1 Notifications Found`
   }
 
   return (

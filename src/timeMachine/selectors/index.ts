@@ -19,10 +19,12 @@ import {
   getWindowPeriodFromVariables,
 } from 'src/variables/utils/getWindowVars'
 import {
-  timeRangeToDuration,
-  parseDuration,
   durationToMilliseconds,
+  isDurationParseable,
+  isDurationWithNowParseable,
   millisecondsToDuration,
+  parseDuration,
+  timeRangeToDuration,
 } from 'src/shared/utils/duration'
 
 // Selectors
@@ -261,13 +263,57 @@ export const getSymbolColumnsSelection = (state: AppState): string[] => {
   )
 }
 
+/*
+  There are 2 types of custom time:
+  I. Flux duration, including signed and unsigned durations
+     examples: -15m, -24h, +3d, 5mo
+  II. RFC 3339 date format as a string
+ */
+export const handleCustomTime = (input: string = '', now: Date): number => {
+  // Flux duration
+  let timeInput = input.trim()
+  let isNegativeDuration = false
+
+  if (timeInput === 'now()') {
+    return now.getTime()
+  }
+
+  if (isDurationWithNowParseable(timeInput)) {
+    timeInput = timeInput.replace(/\s/g, '').replace(/now\(\)/, '')
+  }
+
+  if (timeInput[0] === '-' || timeInput[0] === '+') {
+    isNegativeDuration = timeInput[0] === '-'
+    timeInput = timeInput.slice(1).trim()
+  }
+  if (isDurationParseable(timeInput)) {
+    if (isNegativeDuration) {
+      return now.getTime() - durationToMilliseconds(parseDuration(timeInput))
+    }
+    return now.getTime() + durationToMilliseconds(parseDuration(timeInput))
+  }
+
+  // Explicitly reject numbers because Flux's Unix timestamp will be deprecated
+  if (!Number.isNaN(Number(timeInput))) {
+    throw new Error(`Numbered timestamp: ${timeInput} is not supported`)
+  }
+
+  // RFC 3339 date format as a string
+  const timeInputDate = new Date(timeInput)
+  if (timeInputDate.toTimeString() === 'Invalid Date') {
+    throw new Error(`Unknown custom time: ${timeInput}`)
+  }
+  return timeInputDate.getTime()
+}
+
 export const getStartTime = (timeRange: TimeRange) => {
   if (!timeRange) {
     return Infinity
   }
+  const now = new Date()
   switch (timeRange.type) {
     case 'custom':
-      return new Date(timeRange.lower).valueOf()
+      return handleCustomTime(timeRange.lower, now)
     case 'selectable-duration': {
       const startTime = new Date()
       startTime.setSeconds(startTime.getSeconds() - timeRange.seconds)
@@ -294,8 +340,9 @@ export const getEndTime = (timeRange: TimeRange): number => {
   if (!timeRange) {
     return null
   }
+  const now = new Date()
   if (timeRange.type === 'custom') {
-    return new Date(timeRange.upper).valueOf()
+    return handleCustomTime(timeRange.upper, now)
   }
   return new Date().valueOf()
 }

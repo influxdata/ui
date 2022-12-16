@@ -3,7 +3,7 @@ import InfluxDBSwift
 
 @main
 class Example {
-    static func main() {
+    static func main() async throws {
 
         let url = "<%= server %>"
         let token = ProcessInfo.processInfo.environment["INFLUX_TOKEN"]!

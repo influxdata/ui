@@ -1,5 +1,22 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
+@mixin transparent-accordion {
+  background-color: transparent;
+  min-height: 0;
+  padding: 0;
+
+  .cf-accordion--icon {
+    color: grey;
+  }
+}
+
+@mixin accordion-header-uppercase {
+  .cf-accordion--header--content {
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+
 .container-right-side-bar {
   margin-left: $cf-space-xs;
   padding-top: $cf-space-2xs;
@@ -10,11 +27,96 @@
   // make sure DraggableResizer collapses correctly
   // and DapperScrollbars shows up
   position: absolute;
-  overflow-x: hidden;
+  overflow: hidden;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.result-options--container {
+  width: 100%;
+  border-bottom: 2px solid $cf-grey-25;
+  margin-bottom: $cf-space-2xs;
+
+  .cf-accordion {
+    margin-bottom: $cf-space-xs;
+  }
+}
+
+.result-options {
+  .result-options--header {
+    @include transparent-accordion;
+    @include accordion-header-uppercase;
+    padding: $cf-space-2xs 0;
+  }
+
+  .cf-accordion--body-container--expanded {
+    opacity: 1 !important;
+    animation: forwards;
+  } // to avoid dropdown background become transparent https://github.com/influxdata/clockface/issues/877
+
+  .result-options--item {
+    padding: $cf-space-2xs 0;
+  }
+
+  .result-options--item--row {
+    padding: $cf-space-2xs 0;
+  }
+
+  .toggle-with-label-tooltip {
+    padding: $cf-space-2xs 0;
+  }
+
+  .toggle-with-label-tooltip--label {
+    padding-left: $cf-space-2xs;
+    .selector-title {
+      padding-bottom: 0;
+    }
+  }
+
+  .aggregate-window-period--title {
+    .selector-title {
+      padding-top: $cf-space-s;
+    }
+  }
+}
+
+.flux-library--container {
+  width: 100%;
+}
+
+.flux-library {
+  height: 100%;
+
+  .flux-library--header {
+    @include transparent-accordion;
+    @include accordion-header-uppercase;
+
+    .selector-title {
+      padding: $cf-space-2xs 0;
+    }
+  }
+
+  .cf-accordion--body-container {
+    height: calc(
+      100% - 40px
+    ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
+  }
+
+  .flux-toolbar {
+    flex-direction: column;
+  }
+
+  .flux-toolbar--search {
+    padding: 0;
+  }
+}
+
+.flux-library-original {
+  height: calc(
+    100% - 30px
+  ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
 
   .flux-toolbar {
     flex-direction: column;

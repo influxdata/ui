@@ -1,23 +1,32 @@
 // Libraries
-import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
+import React, {ChangeEvent, FormEvent, PureComponent} from 'react'
 
 // Components
-import {Form, Input, Button, Accordion, Overlay} from '@influxdata/clockface'
+// Types
+import {
+  Accordion,
+  BannerPanel,
+  Button,
+  ButtonType,
+  ComponentColor,
+  ComponentSize,
+  ComponentStatus,
+  FlexBox,
+  Form,
+  Gradients,
+  InfluxColors,
+  Input,
+  JustifyContent,
+  Overlay,
+} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
 import {SchemaToggle} from 'src/buckets/components/createBucketForm/SchemaToggle'
 
 // Constants
 import {
-  isSystemBucket,
   BUCKET_NAME_MINIMUM_CHARACTERS,
+  isSystemBucket,
 } from 'src/buckets/constants'
-
-// Types
-import {
-  ButtonType,
-  ComponentColor,
-  ComponentStatus,
-} from '@influxdata/clockface'
 import {RuleType} from 'src/buckets/reducers/createBucket'
 import {CLOUD} from 'src/shared/constants'
 
@@ -25,6 +34,11 @@ import {
   MeasurementSchemaSection,
   SchemaUpdateInfo,
 } from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
+import {extractBucketMaxRetentionSeconds} from 'src/cloud/utils/limits'
+import {AppState} from 'src/types'
+import {connect} from 'react-redux'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
+import './BucketOverlayFormStyles.scss'
 
 let MeasurementSchemaList = null,
   MeasurementSchemaCreateRequest = null,
@@ -41,7 +55,7 @@ if (CLOUD) {
  * need the schemaType that is already set;
  * if !isEditing (it is false)
  * then need the 'onChangeSchemaType' method*/
-interface Props {
+interface OwnProps {
   name: string
   retentionSeconds: number
   ruleType: 'expire'
@@ -66,19 +80,27 @@ interface Props {
   useSimplifiedBucketForm?: boolean
 }
 
+interface StateProps {
+  maxRetentionSeconds: number
+}
+
+type Props = OwnProps & StateProps
+
 interface State {
   showAdvanced: boolean
   schemaType: 'implicit' | 'explicit'
   newMeasurementSchemas: typeof MeasurementSchemaCreateRequest[]
   measurementSchemaUpdates: SchemaUpdateInfo[]
+  retentionPeriodMaxReached: boolean
 }
 
-export default class BucketOverlayForm extends PureComponent<Props> {
+class BucketOverlayForm extends PureComponent<Props> {
   public state: State = {
     showAdvanced: false,
     schemaType: 'implicit',
     newMeasurementSchemas: [],
     measurementSchemaUpdates: [],
+    retentionPeriodMaxReached: false,
   }
 
   onChangeSchemaTypeInternal = (newSchemaType: typeof SchemaType) => {
@@ -97,6 +119,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     this.props.onUpdateMeasurementSchemas(schemas)
     this.setState({measurementSchemaUpdates: schemas})
   }
+  private upgradeBannerStyle = {marginBottom: '28px'}
 
   public render() {
     const {
@@ -197,21 +220,47 @@ export default class BucketOverlayForm extends PureComponent<Props> {
               />
             )}
           </Form.ValidationElement>
-          <Form.Element
+          <Form.ValidationElement
             label={
               useSimplifiedBucketForm
                 ? 'Data Retention Preferences'
                 : 'Delete Data'
             }
+            value={retentionSeconds.toString()}
+            validationFunc={this.handleRetentionSecondsValidation}
+            className="retention--dropdown"
           >
-            <Retention
-              type={ruleType}
-              retentionSeconds={retentionSeconds}
-              onChangeRuleType={onChangeRuleType}
-              onChangeRetentionRule={onChangeRetentionRule}
-              useSimplifiedForm={useSimplifiedBucketForm}
-            />
-          </Form.Element>
+            {status => (
+              <Retention
+                type={ruleType}
+                retentionSeconds={retentionSeconds}
+                onChangeRuleType={onChangeRuleType}
+                onChangeRetentionRule={onChangeRetentionRule}
+                useSimplifiedForm={useSimplifiedBucketForm}
+                status={status}
+              />
+            )}
+          </Form.ValidationElement>
+          {this.state.retentionPeriodMaxReached && (
+            <BannerPanel
+              size={ComponentSize.ExtraSmall}
+              gradient={Gradients.PolarExpress}
+              hideMobileIcon={true}
+              textColor={InfluxColors.Yeti}
+              style={this.upgradeBannerStyle}
+            >
+              <FlexBox
+                justifyContent={JustifyContent.SpaceBetween}
+                stretchToFitWidth={true}
+              >
+                <h6>Need retention period more than 30 days?</h6>
+                <CloudUpgradeButton
+                  size={ComponentSize.ExtraSmall}
+                  showPromoMessage={false}
+                />
+              </FlexBox>
+            </BannerPanel>
+          )}
           {useSimplifiedBucketForm ? null : makeAdvancedSection()}
         </Overlay.Body>
         <Overlay.Footer>
@@ -259,6 +308,19 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     return null
   }
 
+  private handleRetentionSecondsValidation = (value: string): string | null => {
+    const {maxRetentionSeconds} = this.props
+    if (Number(value) <= 0) {
+      return ` `
+    }
+
+    if (maxRetentionSeconds && Number(value) > maxRetentionSeconds) {
+      this.setState({retentionPeriodMaxReached: true})
+      return ' '
+    }
+
+    return null
+  }
   private get nameHelpText(): string {
     if (this.props.isEditing) {
       return 'To rename bucket use the RENAME button below'
@@ -278,13 +340,21 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   }
 
   private get submitButtonStatus(): ComponentStatus {
-    const {name} = this.props
+    const {name, retentionSeconds} = this.props
     const nameHasErrors = this.handleNameValidation(name)
+    const durationHasErrors = this.handleRetentionSecondsValidation(
+      retentionSeconds.toString()
+    )
 
-    if (nameHasErrors) {
+    if (nameHasErrors || durationHasErrors) {
       return ComponentStatus.Disabled
     }
 
     return ComponentStatus.Default
   }
 }
+const mstp = (state: AppState) => ({
+  maxRetentionSeconds: extractBucketMaxRetentionSeconds(state),
+})
+
+export default connect<StateProps, {}, OwnProps>(mstp)(BucketOverlayForm)

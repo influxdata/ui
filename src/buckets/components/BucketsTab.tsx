@@ -13,11 +13,11 @@ import {
   Grid,
   Sort,
 } from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import BucketList from 'src/buckets/components/BucketList'
-import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
+import {AssetLimitAlert} from 'src/cloud/components/AssetLimitAlert'
 import BucketExplainer from 'src/buckets/components/BucketExplainer'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
@@ -38,11 +38,11 @@ import {checkBucketLimits as checkBucketLimitsAction} from 'src/cloud/actions/li
 import {getBucketLimitStatus} from 'src/cloud/utils/limits'
 import {getAll} from 'src/resources/selectors'
 import {SortTypes} from 'src/shared/utils/sort'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, Bucket, OwnBucket, ResourceType} from 'src/types'
 import {BucketSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
+import {CLOUD} from 'src/shared/constants'
 
 // Constants
 import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
@@ -60,7 +60,7 @@ type Props = ReduxProps
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
 
-const FilterBuckets = FilterList<Bucket>()
+const FilterBuckets = FilterListContainer<Bucket>()
 
 @ErrorHandling
 class BucketsTab extends PureComponent<Props, State> {
@@ -144,7 +144,7 @@ class BucketsTab extends PureComponent<Props, State> {
           const adjustedHeight =
             height -
             heightWithPagination -
-            (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 60) -
+            (CLOUD ? GLOBAL_HEADER_HEIGHT : 60) -
             (limitStatus === 'exceeded' ? 100 : 0)
 
           return (

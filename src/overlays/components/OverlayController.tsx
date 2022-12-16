@@ -22,7 +22,7 @@ import TelegrafInstructionsOverlay from 'src/telegrafs/components/TelegrafInstru
 import TelegrafUIRefreshWizard from 'src/dataLoaders/components/collectorsWizard/TelegrafUIRefreshWizard'
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
 import CreateBucketOverlay from 'src/buckets/components/createBucketForm/CreateBucketOverlay'
-import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
+import {AssetLimitOverlay} from 'src/cloud/components/AssetLimitOverlay'
 import RateLimitOverlay from 'src/cloud/components/RateLimitOverlay'
 import WriteLimitOverlay from 'src/cloud/components/WriteLimitOverlay'
 import {AddAnnotationOverlay} from 'src/annotations/components/AddAnnotationOverlay'
@@ -45,6 +45,9 @@ import PayGSupportOverlay from 'src/support/components/PayGSupportOverlay'
 import FreeAccountSupportOverlay from 'src/support/components/FreeAccountSupportOverlay'
 import FeedbackQuestionsOverlay from 'src/support/components/FeedbackQuestionsOverlay'
 import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
+import {CreateOrganizationOverlay} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationOverlay'
+import {MarketoAccountUpgradeOverlay} from 'src/identity/components/MarketoAccountUpgradeOverlay'
+import {DeletePaidOrgOverlay} from 'src/organizations/components/OrgProfileTab/DeletePaidOrgOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -176,6 +179,15 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'subscription-replace-certificate':
         activeOverlay.current = <ReplaceCertificateOverlay onClose={onClose} />
+        break
+      case 'create-organization':
+        activeOverlay.current = <CreateOrganizationOverlay />
+        break
+      case 'marketo-upgrade-account-overlay':
+        activeOverlay.current = <MarketoAccountUpgradeOverlay />
+        break
+      case 'delete-org-in-paid-account':
+        activeOverlay.current = <DeletePaidOrgOverlay />
         break
       default:
         activeOverlay.current = null

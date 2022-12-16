@@ -3,7 +3,7 @@ import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
 // Components
 import {Dropdown, DropdownMenuTheme} from '@influxdata/clockface'
-import {ComponentStatus} from 'src/clockface'
+import {ComponentStatus} from '@influxdata/clockface'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -14,7 +14,11 @@ export interface Props {
   filter?: string[]
 }
 
-const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType, filter = []}) => {
+export const ViewTypeDropdown: FC<Props> = ({
+  viewType,
+  onUpdateType,
+  filter = [],
+}) => {
   const items = Object.values(SUPPORTED_VISUALIZATIONS)
     .filter(def => !filter.includes(def.type))
     .filter(def => !def.disabled)
@@ -65,5 +69,3 @@ const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType, filter = []}) => {
     />
   )
 }
-
-export default ViewTypeDropdown

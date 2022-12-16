@@ -1,32 +1,54 @@
-export const mockOrgData = [
+import {QuartzOrganization} from 'src/identity/apis/org'
+
+export const mockOrgData: QuartzOrganization[] = [
   {
     id: '9296169091c64567',
     name: 'Test Co. 1',
     isDefault: true,
     isActive: true,
+    provider: 'AWS',
+    regionCode: 'us-east-1',
+    regionName: 'US East (N. Virginia)',
+    provisioningStatus: 'provisioned',
   },
   {
     id: 'a71ced2b8238902b',
     name: 'Test Corp. 2',
     isDefault: false,
     isActive: false,
+    provider: 'AWS',
+    regionCode: 'eu-central-1',
+    regionName: 'EU Frankfurt',
+    provisioningStatus: 'provisioned',
   },
   {
     id: 'ac3d3c04b8f1a545',
     name: 'Test GmbH 3',
     isDefault: false,
     isActive: false,
+    provider: 'AWS',
+    regionCode: 'us-east-1-2',
+    regionName: 'US East (N. Virginia) 2',
+    provisioningStatus: 'provisioned',
   },
   {
     id: 'fc734484afa0fcac',
     name: 'Test Inc. 4',
     isDefault: false,
     isActive: false,
+    provider: 'Azure',
+    regionCode: 'us-west-2-2',
+    regionName: 'US West (Oregon)',
+    provisioningStatus: 'provisioned',
   },
   {
     id: '62cba0af4760ce02',
     name: 'Test SA 5',
     isDefault: false,
     isActive: false,
+    provider: 'Azure',
+    regionCode: 'westeurope',
+    regionName: 'Amsterdam',
+    provisioningStatus: 'provisioned',
   },
 ]

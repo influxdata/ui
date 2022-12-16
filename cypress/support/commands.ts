@@ -8,7 +8,7 @@ import {
   Secret,
 } from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
-import {setOverrides, FlagMap} from 'src/shared/actions/flags'
+import {FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
 import 'cypress-file-upload'
 
@@ -29,8 +29,10 @@ Cypress.on('uncaught:exception', (err, _) => {
   )
 })
 
-export const signin = (): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.setupUser().then((response: any) => {
+export const signin = (
+  useIox: boolean = false
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.setupUser(useIox).then((response: any) => {
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
       .then(() => {
@@ -60,6 +62,29 @@ export const signin = (): Cypress.Chainable<Cypress.Response<any>> => {
         })
       })
   })
+}
+
+export const signinWithoutUserReprovision = () => {
+  return wrapDefaultUser()
+    .then(() => wrapDefaultPassword())
+    .then(() => {
+      const username = Cypress.env('defaultUser')
+      cy.wrap(username)
+        .as('defaultUser')
+        .then(() => {
+          cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
+            if (Cypress.env(DEX_URL_VAR) === 'OSS') {
+              return loginViaOSS(username, defaultPassword)
+            } else if (Cypress.env(DEX_URL_VAR) === 'CLOUD') {
+              return loginViaDexUI(username, defaultPassword)
+            } else {
+              return loginViaDex(username, defaultPassword)
+            }
+          })
+        })
+        .then(() => cy.location('pathname').should('not.eq', '/signin'))
+        .then(() => wrapEnvironmentVariablesForCloud())
+    })
 }
 
 export const loginViaDexUI = (username: string, password: string) => {
@@ -569,13 +594,20 @@ export const createToken = (
   })
 }
 
-export const setupUser = (): Cypress.Chainable<any> => {
+export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
+  useIox = Cypress.env('useIox') || useIox
   const defaultUser = Cypress.env('defaultUser')
-  const userParam = defaultUser ? `?user=${defaultUser}` : ''
+  const params = new URLSearchParams()
+  if (defaultUser) {
+    params.set('user', defaultUser)
+  }
+  if (useIox) {
+    params.set('orgSuffix', 'ioxlighthouse')
+  }
   return cy
     .request({
       method: 'GET',
-      url: `/debug/provision${userParam}`,
+      url: `/debug/provision?${params.toString()}`,
     })
     .then(response => {
       if (response.status === 200) {
@@ -593,7 +625,9 @@ export const setupUser = (): Cypress.Chainable<any> => {
         // if for some reason the user wasn't flushed, do it now
         return cy
           .log('retrying the /flush because /provision failed')
-          .then(() => cy.flush().then(_ => cy.setupUser().then(res => res)))
+          .then(() =>
+            cy.flush().then(_ => cy.setupUser(useIox).then(res => res))
+          )
       }
     })
 }
@@ -1040,20 +1074,22 @@ export const makeGraphSnapshot = (() => {
 })()
 
 export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
-  // make sure the app is loaded before dispatching
-  cy.getByTestID('tree-nav')
-  return cy.window().then((win: any) => {
-    // eslint-disable-next-line no-extra-semi
-    win.store.dispatch(setOverrides(flags))
-  })
+  // Need to refresh page so that flags responses can be overwritten
+  return cy.setFeatureFlagsNoNav(flags).reload().getByTestID('tree-nav')
 }
 
 export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
   // use in lieu of setFeatureFlags when no left nav bar is expected.
-  return cy.window().then((win: any) => {
-    // eslint-disable-next-line no-extra-semi
-    win.store.dispatch(setOverrides(flags))
+  const flagsURIs = ['/api/v2private/flags', '/api/v2/flags']
+  flagsURIs.forEach(url => {
+    cy.intercept(url, req => {
+      req.continue(res => {
+        res.send({...res.body, ...flags})
+      })
+    }).as('setFeatureFlagsResponse')
   })
+
+  return cy.wait(0)
 }
 
 export const createTaskFromEmpty = (
@@ -1098,6 +1134,10 @@ Cypress.Commands.add('getByTestIDHead', getByTestIDHead)
 
 // auth flow
 Cypress.Commands.add('signin', signin)
+Cypress.Commands.add(
+  'signinWithoutUserReprovision',
+  signinWithoutUserReprovision
+)
 
 // setup
 Cypress.Commands.add('setupUser', setupUser)

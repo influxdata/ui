@@ -16,11 +16,10 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
-import FilterList from 'src/shared/components/FilterList'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {FilterListContainer} from 'src/shared/components/FilterList'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import DashboardImportOverlay from 'src/dashboards/components/DashboardImportOverlay'
 
@@ -44,7 +43,6 @@ import {SortTypes} from 'src/shared/utils/sort'
 import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>
@@ -53,7 +51,7 @@ interface State {
   searchTerm: string
 }
 
-const FilterDashboards = FilterList<Dashboard>()
+const FilterDashboards = FilterListContainer<Dashboard>()
 
 @ErrorHandling
 class DashboardIndex extends PureComponent<Props, State> {
@@ -121,9 +119,6 @@ class DashboardIndex extends PureComponent<Props, State> {
         >
           <Page.Header fullWidth={true}>
             <Page.Title title="Dashboards" />
-            {!isFlagEnabled('multiOrg') && (
-              <RateLimitAlert location="dashboards" />
-            )}
           </Page.Header>
           <Page.ControlBar fullWidth={true}>
             <ErrorBoundary>

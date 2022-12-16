@@ -10,7 +10,7 @@ import {
   IconFont,
   JustifyContent,
 } from '@influxdata/clockface'
-import FilterList from 'src/shared/components/FilterList/FilterList'
+import {FilterList} from 'src/shared/components/FilterList/FilterList'
 import InjectSecretOption from 'src/shared/components/FilterList/InjectionOption'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 

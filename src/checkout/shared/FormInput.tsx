@@ -51,7 +51,6 @@ const FormInput: FC<Props> = ({label, required, id, ...args}) => {
     >
       <Input
         id={id}
-        required={required}
         value={inputs[id]}
         onChange={handleChange}
         testID={`${id}--input`}

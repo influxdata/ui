@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {ComponentSize} from 'src/clockface'
+import {ComponentSize} from '@influxdata/clockface'
 
 import {
   ButtonShape,

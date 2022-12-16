@@ -6,10 +6,12 @@ import {
   Steps,
   SubscriptionNavigationModel,
   BrokerAuthTypes,
+  DataFormatTypes,
 } from 'src/types/subscriptions'
 import jsonpath from 'jsonpath'
 import {IconFont} from '@influxdata/clockface'
-import {Bulletin} from '../context/subscription.list'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {Bulletin} from 'src/writeData/subscriptions/context/subscription.list'
 
 export const DEFAULT_COMPLETED_STEPS = {
   [Steps.BrokerForm]: false,
@@ -72,6 +74,41 @@ export const handleValidation = (
     return `${property} is required`
   }
   return null
+}
+
+export const handleDuplicateFieldTagName = (
+  formVal: string,
+  form: Subscription
+) => {
+  switch (form.dataFormat) {
+    case DataFormatTypes.LineProtocol: {
+      return null
+    }
+    case DataFormatTypes.JSON: {
+      const numMatchingFieldNames = form.jsonFieldKeys.filter(
+        k => k.name === formVal
+      ).length
+      const numMatchingTagNames = form.jsonTagKeys.filter(
+        k => k.name === formVal
+      ).length
+      // formVal already exists in form so expect there to be exactly one
+      return numMatchingFieldNames + numMatchingTagNames > 1
+        ? `'${formVal}' name has already been used, unique column names are required`
+        : null
+    }
+    case DataFormatTypes.String: {
+      const numMatchingFieldNames = form.stringFields.filter(
+        k => k.name === formVal
+      ).length
+      const numMatchingTagNames = form.stringTags.filter(
+        k => k.name === formVal
+      ).length
+      // formVal already exists in form so expect there to be exactly one
+      return numMatchingFieldNames + numMatchingTagNames > 1
+        ? `'${formVal}' name has already been used, unique column names are required`
+        : null
+    }
+  }
 }
 
 export const handleJsonPathValidation = (formVal: string): string | null => {
@@ -225,7 +262,7 @@ export const checkRequiredFields = (form: Subscription): boolean => {
     form.brokerPort &&
     form.topic &&
     form.dataFormat &&
-    form.bucket &&
+    hasBucketSelected(form.bucket) &&
     checkRequiredStringFields(form) &&
     checkRequiredJsonFields(form) &&
     checkSecurityFields(form)
@@ -358,6 +395,9 @@ export const getActiveStep = activeForm => {
   return currentStep
 }
 
+const hasBucketSelected = (bucketName: string | undefined) =>
+  !!bucketName && bucketName !== '<BUCKET>'
+
 export const getFormStatus = (active: Steps, form: Subscription) => {
   return {
     currentStep: active,
@@ -365,9 +405,7 @@ export const getFormStatus = (active: Steps, form: Subscription) => {
     brokerStepCompleted:
       form.name && form.brokerHost && form.brokerPort ? 'true' : 'false',
     subscriptionStepCompleted:
-      form.topic && form.bucket && form.bucket !== '<BUCKET>'
-        ? 'true'
-        : 'false',
+      form.topic && hasBucketSelected(form.bucket) ? 'true' : 'false',
     parsingStepCompleted:
       form.dataFormat &&
       checkRequiredJsonFields(form) &&
@@ -468,10 +506,16 @@ export const handleAvroValidation = (property: string, value: string) => {
     : null
 }
 
-export const getSchemaFromProtocol = (protocol: string, isSecure: boolean) => {
+export const getSchemaFromProtocol = (
+  protocol: string,
+  formContent: Subscription
+) => {
+  const usingCertAuth =
+    isFlagEnabled('subscriptionsCertificateSupport') &&
+    formContent.authType === BrokerAuthTypes.Certificate
   switch (protocol.toLowerCase()) {
     case 'mqtt': {
-      return `mqtt${isSecure ? 's' : ''}://`
+      return `mqtt${usingCertAuth || formContent.useSSL ? 's' : ''}://`
     }
     default: {
       return 'tcp://'

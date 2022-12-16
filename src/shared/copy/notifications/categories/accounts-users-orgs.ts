@@ -1,8 +1,21 @@
-import {Notification} from 'src/types'
+// Libraries
+import {IconFont} from '@influxdata/clockface'
+
+// Constants
+import {FIFTEEN_SECONDS} from 'src/shared/constants'
+
+// Notifications
 import {
   defaultErrorNotification,
   defaultSuccessNotification,
 } from 'src/shared/copy/notifications'
+
+// Types
+import {
+  Notification,
+  NotificationButtonElement,
+  NotificationStyle,
+} from 'src/types'
 
 export const accountDefaultSettingError = (
   accountName: string
@@ -29,6 +42,32 @@ export const accountRenameSuccess = (
 ): Notification => ({
   ...defaultSuccessNotification,
   message: `Account "${oldAccountName}" was successfully renamed to "${newAccountName}"`,
+})
+
+export const deleteOrgDelayed = (
+  supportLink: NotificationButtonElement
+): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    "Sorry, we're experiencing a delay in deleting this org. For support, contact ",
+  buttonElement: supportLink,
+})
+
+export const deleteOrgFailed = (
+  supportLink: NotificationButtonElement,
+  orgName: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Sorry, we weren't able to delete ${orgName}. Please reach out to`,
+  buttonElement: supportLink,
+})
+
+export const deleteOrgSuccess = (
+  orgName: string,
+  accountName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `${orgName} will be deleted from ${accountName}.`,
 })
 
 export const inviteFailed = (): Notification => ({
@@ -59,6 +98,27 @@ export const invitationWithdrawnFailed = (): Notification => ({
 export const invitationWithdrawnSuccessful = (): Notification => ({
   ...defaultSuccessNotification,
   message: `Invitation Withdrawn`,
+})
+
+export const marketoLoadFailure = (
+  buttonElement: NotificationButtonElement
+): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Sorry, we were unable to load the in-app contact form. ',
+  buttonElement,
+})
+
+export const marketoFormSubmitFailure = (
+  buttonElement: NotificationButtonElement
+): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Sorry, we encountered a problem submitting this form. ',
+  buttonElement,
+})
+
+export const marketoFormSubmitSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Your account upgrade inquiry has been submitted.',
 })
 
 export const memberAddFailed = (message: string): Notification => ({
@@ -109,6 +169,32 @@ export const orgRenameFailed = (orgName): Notification => ({
 export const orgRenameSuccess = (orgName: string): Notification => ({
   ...defaultSuccessNotification,
   message: `Organization was successfully renamed "${orgName}"`,
+})
+
+export const quartzOrgCreateSuccess = (
+  orgName: string,
+  switchToOrgLink?: NotificationButtonElement
+): Notification => {
+  const notification = {
+    ...defaultSuccessNotification,
+    message: `Organization "${orgName}" created.`,
+    duration: FIFTEEN_SECONDS,
+  }
+
+  if (switchToOrgLink) {
+    notification.buttonElement = switchToOrgLink
+  }
+
+  return notification
+}
+
+export const quartzOrgQuotaReached = (): Notification => ({
+  ...defaultSuccessNotification,
+  style: NotificationStyle.Primary,
+  styles: {maxWidth: '360px'},
+  icon: IconFont.Info_New,
+  duration: FIFTEEN_SECONDS,
+  message: `You've reached the organization quota for this account. Upgrade to add more organizations.`,
 })
 
 export const removeUserFailed = (): Notification => ({

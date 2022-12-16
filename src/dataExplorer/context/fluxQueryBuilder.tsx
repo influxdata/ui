@@ -11,25 +11,11 @@ import React, {
 // Context
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
-import {
-  PersistanceContext,
-  DEFAULT_EDITOR_TEXT,
-} from 'src/dataExplorer/context/persistance'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {TagsContext} from 'src/dataExplorer/context/tags'
-
+import {debouncer} from 'src/dataExplorer/shared/utils'
 // Types
 import {Bucket, TagKeyValuePair} from 'src/types'
-
-const DEBOUNCE_TIMEOUT = 500
-let timer: ReturnType<typeof setTimeout>
-type NOOP = () => void
-const debouncer = (action: NOOP): void => {
-  clearTimeout(timer)
-  timer = setTimeout(() => {
-    action()
-    timer = null
-  }, DEBOUNCE_TIMEOUT)
-}
 
 const DEFAULT_SELECTED_TAG_VALUES: SelectedTagValues = {}
 interface SelectedTagValues {
@@ -78,8 +64,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
-  const {query, setQuery, selection, setSelection} =
-    useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistanceContext)
 
   // States
   // This state is a restructed PersistanceContext selection.tagValues
@@ -88,6 +73,17 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     DEFAULT_SELECTED_TAG_VALUES
   )
   const [searchTerm, setSearchTerm] = useState('')
+
+  const transformSessionTagValuesToLocal = tagValues => {
+    const localTagValues = {} as SelectedTagValues
+    tagValues.forEach((tag: TagKeyValuePair) => {
+      if (!localTagValues[tag.key]) {
+        localTagValues[tag.key] = []
+      }
+      localTagValues[tag.key].push(tag.value)
+    })
+    return localTagValues
+  }
 
   useEffect(() => {
     if (selection.bucket && selection.measurement) {
@@ -98,28 +94,23 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
       // On page refresh, re-contruct the state of selectedTagValues
       if (!!selection.tagValues) {
-        const _selectedTagValues = {} as SelectedTagValues
-        selection.tagValues.forEach((tag: TagKeyValuePair) => {
-          if (!_selectedTagValues[tag.key]) {
-            _selectedTagValues[tag.key] = []
-          }
-          _selectedTagValues[tag.key].push(tag.value)
-        })
+        const _selectedTagValues = transformSessionTagValuesToLocal(
+          selection.tagValues
+        )
         setSelectedTagValues(_selectedTagValues)
       }
     }
   }, [selection.bucket])
+
+  useEffect(() => {
+    setSelectedTagValues(transformSessionTagValuesToLocal(selection.tagValues))
+  }, [selection.tagValues])
 
   const handleToggleFluxSync = (synced: boolean): void => {
     setSelection({composition: {synced}})
   }
 
   const handleSelectBucket = (bucket: Bucket): void => {
-    // first time selecting bucket --> remove if default message
-    if (query == DEFAULT_EDITOR_TEXT) {
-      setQuery('')
-    }
-
     setSelection({bucket, measurement: '', fields: [], tagValues: []})
 
     // Reset measurement, tags, fields, selected tag values

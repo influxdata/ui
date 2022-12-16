@@ -31,8 +31,6 @@ import {
   HOMEPAGE_NAVIGATION_STEPS_ARDUINO,
 } from 'src/homepageExperience/utils'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface State {
   currentStep: number
@@ -177,13 +175,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
   render() {
     return (
       <Page>
-        <Page.Header fullWidth={false}>
-          {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-between to justifyContent)*/}
-          <div />
-          {!isFlagEnabled('multiOrg') && (
-            <RateLimitAlert location="firstMile.arduinoWizard" />
-          )}
-        </Page.Header>
+        <Page.Header fullWidth={false} />
         <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
             <aside className="homepage-wizard-container--subway">

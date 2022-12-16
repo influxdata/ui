@@ -1,0 +1,13 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.create-org-overlay--createorg-input-element {
+  input::-webkit-input-placeholder {
+    font-style: italic;
+    font-weight: normal !important;
+  }
+}
+
+.create-org-overlay--validation-field-placeholder {
+  height: 20px;
+  width: 200px;
+}

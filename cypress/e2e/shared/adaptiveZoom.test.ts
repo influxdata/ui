@@ -3,8 +3,9 @@ import {points} from '../../support/commands'
 
 const setupData = (cy: Cypress.Chainable) =>
   cy.flush().then(() =>
-    cy.signin().then(() =>
-      cy.get('@org').then(({id: orgID, name}: Organization) =>
+    cy.signin().then(() => {
+      cy.setFeatureFlags({zoomRequery: true})
+      return cy.get('@org').then(({id: orgID, name}: Organization) =>
         cy.createDashboard(orgID).then(({body}) =>
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -68,37 +69,33 @@ const setupData = (cy: Cypress.Chainable) =>
           })
         )
       )
-    )
+    })
   )
 
 describe('Adaptive Zoom', () => {
   beforeEach(() => setupData(cy))
 
   it('makes a query when zooming in', () => {
-    cy.setFeatureFlags({
-      zoomRequery: true,
-    }).then(() => {
-      cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
-          const {offsetWidth, offsetHeight} = canvas
-          const {x, y} = canvas.getBoundingClientRect()
-          cy.wrap(canvas).trigger('mousedown', {
-            pageX: x + offsetWidth / 4,
-            pageY: y + offsetHeight / 2,
-            force: true,
-            shiftKey: true,
-          })
-          cy.wrap(canvas).trigger('mousemove', {
-            pageX: x + (offsetWidth * 3) / 4,
-            pageY: y + offsetHeight / 2,
-            force: true,
-            shiftKey: true,
-          })
-          cy.wrap(canvas).trigger('mouseup', {force: true, shiftKey: true})
-          cy.wait('@makeQuery')
-            .its('response.body')
-            .should('have.length.greaterThan', 2) // we need more than just a carriage return and newline
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
+        const {offsetWidth, offsetHeight} = canvas
+        const {x, y} = canvas.getBoundingClientRect()
+        cy.wrap(canvas).trigger('mousedown', {
+          pageX: x + offsetWidth / 4,
+          pageY: y + offsetHeight / 2,
+          force: true,
+          shiftKey: true,
         })
+        cy.wrap(canvas).trigger('mousemove', {
+          pageX: x + (offsetWidth * 3) / 4,
+          pageY: y + offsetHeight / 2,
+          force: true,
+          shiftKey: true,
+        })
+        cy.wrap(canvas).trigger('mouseup', {force: true, shiftKey: true})
+        cy.wait('@makeQuery')
+          .its('response.body')
+          .should('have.length.greaterThan', 2) // we need more than just a carriage return and newline
       })
     })
   })

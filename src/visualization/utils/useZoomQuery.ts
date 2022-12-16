@@ -1,26 +1,63 @@
 // Libraries
 import {useContext} from 'react'
+import {useSelector} from 'react-redux'
+
+// Types
+import {DashboardQuery} from 'src/types'
 
 // Context
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {
+  DEFAULT_FLUX_EDITOR_TEXT,
+  PersistanceContext,
+} from 'src/dataExplorer/context/persistance'
 
-export const useZoomQuery = (properties): string => {
+// Selector
+import {getActiveQueryIndex} from 'src/timeMachine/selectors'
+
+interface ZoomQueries {
+  activeQueryIndex: number
+  queries: string[]
+}
+
+export const useZoomQuery = (queries: DashboardQuery[] = []): ZoomQueries => {
+  const activeQueryIndex = useSelector(getActiveQueryIndex)
   const {query} = useContext(PersistanceContext)
   const {id} = useContext(PipeContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
-  const queryTextFromProperties = properties?.queries?.[0]?.text ?? ''
+  const queryTexts = queries.map(query => `${query.text}`)
+  const isQueryTextsEmpty =
+    queryTexts.length === 0 ||
+    queryTexts.every(query => query.trim().length === 0)
 
-  let zoomQuery = ''
-
+  // Notebooks
   if (id) {
-    zoomQuery = getPanelQueries(id)?.visual ?? ''
-  } else if (queryTextFromProperties) {
-    zoomQuery = queryTextFromProperties
-  } else {
-    zoomQuery = query
+    return {
+      activeQueryIndex: 0,
+      queries: [getPanelQueries(id)?.visual ?? ''],
+    }
   }
 
-  return zoomQuery
+  // Old Data Explorer & Dashboard Cells
+  if (!isQueryTextsEmpty) {
+    return {
+      activeQueryIndex,
+      queries: queryTexts,
+    }
+  }
+
+  // New Data Explorer
+  if (query.trim() !== DEFAULT_FLUX_EDITOR_TEXT) {
+    return {
+      activeQueryIndex: 0,
+      queries: [query],
+    }
+  }
+
+  // Default - no queries found
+  return {
+    activeQueryIndex: -1,
+    queries: [],
+  }
 }

@@ -15,13 +15,19 @@ import LabeledData from 'src/organizations/components/OrgProfileTab/LabeledData'
 import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/CopyableLabeledData'
 import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
 
+// Types
+import {RemoteDataState} from 'src/types'
+
 // Utils
 import {CLOUD} from 'src/shared/constants'
 
 // Selectors
 import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
-import {selectCurrentIdentity} from 'src/identity/selectors'
+import {
+  selectCurrentIdentity,
+  selectQuartzOrgDetailsStatus,
+} from 'src/identity/selectors'
 
 // Thunks
 import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
@@ -33,22 +39,21 @@ const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
   const {org: quartzOrg} = useSelector(selectCurrentIdentity)
+  const orgDetailsStatus = useSelector(selectQuartzOrgDetailsStatus)
 
   const dispatch = useDispatch()
 
   const identityOrgId = quartzOrg.id
 
   useEffect(() => {
-    if (identityOrgId && CLOUD) {
-      if (
-        !quartzOrg.regionCode ||
-        !quartzOrg.regionName ||
-        !quartzOrg.provider
-      ) {
-        dispatch(getCurrentOrgDetailsThunk(identityOrgId))
-      }
+    if (!CLOUD) {
+      return
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+    if (orgDetailsStatus === RemoteDataState.NotStarted) {
+      dispatch(getCurrentOrgDetailsThunk(identityOrgId))
+    }
+  }, [dispatch, orgDetailsStatus, identityOrgId])
 
   const hasIdentityData =
     quartzOrg.provider || quartzOrg.regionCode || quartzOrg.regionName
@@ -75,6 +80,7 @@ const OrgProfileTab: FC = () => {
             justifyContent={JustifyContent.SpaceBetween}
             stretchToFitWidth={true}
             style={orgProviderExists ? {width: '85%'} : {width: '48%'}}
+            testID="org-profile--labeled-data"
           >
             {orgProviderExists && (
               <LabeledData label="Cloud Provider" src={quartzOrg.provider} />

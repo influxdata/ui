@@ -9,10 +9,10 @@ import {getVariables} from 'src/variables/selectors'
 
 // Components
 import {EmptyState} from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import VariableList from 'src/variables/components/VariableList'
-import Filter from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import GetResources from 'src/resources/components/GetResources'
@@ -35,7 +35,7 @@ interface State {
   sortType: SortTypes
 }
 
-const FilterList = Filter<Variable>()
+const FilterList = FilterListContainer<Variable>()
 
 class VariablesTab extends PureComponent<Props, State> {
   public state: State = {

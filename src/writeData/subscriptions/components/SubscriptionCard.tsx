@@ -19,7 +19,7 @@ import {
 
 // Types
 import {Subscription} from 'src/types/subscriptions'
-import {SubscriptionListContext} from '../context/subscription.list'
+import {SubscriptionListContext} from 'src/writeData/subscriptions/context/subscription.list'
 import {LOAD_DATA, SUBSCRIPTIONS} from 'src/shared/constants/routes'
 
 // Utils
@@ -42,7 +42,7 @@ interface Props {
 const SubscriptionCard: FC<Props> = ({subscription}) => {
   const history = useHistory()
   const {deleteSubscription} = useContext(SubscriptionListContext)
-  const timeSince = new DateTime.fromISO(subscription.updatedAt).toRelative()
+  const timeSince = DateTime.fromISO(subscription.updatedAt).toRelative()
   const org = useSelector(getOrg)
   const {bulletins: allBulletins} = useContext(SubscriptionListContext)
   const bulletins = allBulletins?.[subscription.id] ?? []
@@ -51,6 +51,12 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
   const goToSubscriptionDetails = useCallback(() => {
     history.push(
       `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}`
+    )
+  }, [history, org?.id, subscription?.id])
+
+  const goToSubscriptionDetailsNotifications = useCallback(() => {
+    history.push(
+      `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}/notifications`
     )
   }, [history, org?.id, subscription?.id])
 
@@ -125,9 +131,7 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
         }}
         testID="subscription-name"
       />
-      <ResourceCard.Description
-        description={`${subscription.brokerHost}:${subscription.brokerPort}/${subscription.topic}`}
-      />
+      <ResourceCard.Description description={`${subscription.description}`} />
       <ResourceCard.Meta>
         {!!bulletins.length ? (
           <Label
@@ -140,7 +144,7 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
             description={`${bulletins.length} Notification${
               bulletins.length === 1 ? '' : 's'
             }`}
-            onClick={goToSubscriptionDetails}
+            onClick={goToSubscriptionDetailsNotifications}
             testID="subscription-notifications--label"
           />
         ) : (
@@ -154,7 +158,11 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
           />
         )}
         <>{subscription.status}</>
+        <>{`${subscription.brokerHost}:${subscription.brokerPort}/${subscription.topic}`}</>
         <>Last Modified: {timeSince}</>
+        <>
+          Last Modified By: {subscription.updatedBy ?? subscription.createdBy}
+        </>
         {subscriptionID}
       </ResourceCard.Meta>
     </ResourceCard>

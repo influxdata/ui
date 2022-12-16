@@ -9,9 +9,11 @@ import SelectorList from 'src/timeMachine/components/SelectorList'
 // Contexts
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {TagsContext} from 'src/dataExplorer/context/tags'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
 import {
@@ -25,13 +27,13 @@ const TAG_KEYS_TOOLTIP = `Tags and Tag Values are indexed key values \
 pairs within a measurement. For SQL users, this is conceptually \
 similar to an indexed column and value.`
 
-interface Prop {
+interface TagValuesProps {
   loading: RemoteDataState
   tagKey: string
   tagValues: string[]
 }
 
-const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
+const TagValues: FC<TagValuesProps> = ({loading, tagKey, tagValues}) => {
   const {
     selectedBucket,
     selectedMeasurement,
@@ -39,6 +41,7 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
     selectTagValue,
     searchTerm,
   } = useContext(FluxQueryBuilderContext)
+  const {resource} = useContext(PersistanceContext)
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])
 
@@ -82,7 +85,18 @@ const TagValues: FC<Prop> = ({loading, tagKey, tagValues}) => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && valuesToShow.length) {
-    if (isFlagEnabled('schemaComposition')) {
+    if (resource?.language === LanguageType.SQL) {
+      // readOnly
+      list = valuesToShow.map(value => (
+        <dd
+          key={value}
+          className="tag-selector-value--list-item--readonly"
+          data-testid="tag-selector-value--list-item--readonly"
+        >
+          <code>{value}</code>
+        </dd>
+      ))
+    } else if (isFlagEnabled('schemaComposition')) {
       list = (
         <SelectorList
           items={valuesToShow}

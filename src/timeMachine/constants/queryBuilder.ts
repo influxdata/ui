@@ -146,3 +146,30 @@ export const FUNCTIONS: QueryFn[] = [
     flux: (period, fillValues) => genFlux('sort', period, fillValues),
   },
 ]
+
+// the list is requested in https://github.com/influxdata/ui/issues/5759
+export const AGGREGATE_FUNCTIONS: QueryFn[] = [
+  AUTO_FUNCTIONS[0],
+  AUTO_FUNCTIONS[1],
+  {
+    name: 'max',
+    flux: (period, fillValues) => genFlux('max', period, fillValues),
+  },
+  {
+    name: 'min',
+    flux: (period, fillValues) => genFlux('min', period, fillValues),
+  },
+  {
+    name: 'sum',
+    flux: (period, fillValues) => genFlux('sum', period, fillValues),
+  },
+  {
+    name: 'stddev',
+    flux: (period, fillValues) => genFlux('stddev', period, fillValues),
+  },
+  {
+    name: 'first',
+    flux: (period, fillValues) => genFlux('first', period, fillValues),
+  },
+  AUTO_FUNCTIONS[2],
+]

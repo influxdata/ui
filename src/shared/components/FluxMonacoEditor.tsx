@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useRef, useContext, useMemo} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useRouteMatch} from 'react-router-dom'
 import classnames from 'classnames'
 
@@ -17,23 +17,23 @@ import {
   submit,
 } from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
-import ConnectionManager from 'src/languageSupport/languages/flux/lsp/connection'
+import {ConnectionManager} from 'src/languageSupport/languages/flux/lsp/connection'
 
 // Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {fluxQueryBuilder} from 'src/shared/selectors/app'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
 import {EditorType, Variable} from 'src/types'
 import {editor as monacoEditor} from 'monaco-editor'
 
-import './FluxMonacoEditor.scss'
+import './MonacoEditor.scss'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 export interface EditorProps {
-  script: string
+  script?: string
   onChangeScript: OnChangeScript
   onSubmitScript?: () => void
   autogrow?: boolean
@@ -61,18 +61,20 @@ const FluxEditorMonaco: FC<Props> = ({
   wrapLines,
   variables,
 }) => {
+  const dispatch = useDispatch()
   const connection = useRef<ConnectionManager>(null)
   const {editor, setEditor} = useContext(EditorContext)
   const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
+  const isIoxOrg = useSelector(isOrgIOx)
   const {path} = useRouteMatch()
+  const isInFluxQueryBuilder =
+    isFluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
   const useSchemaComposition =
-    isFluxQueryBuilder &&
-    path === '/orgs/:orgID/data-explorer' &&
-    isFlagEnabled('schemaComposition')
+    isInFluxQueryBuilder && isFlagEnabled('schemaComposition')
 
-  const wrapperClassName = classnames('flux-editor--monaco', {
-    'flux-editor--monaco__autogrow': autogrow,
+  const wrapperClassName = classnames('qx-editor--monaco', {
+    'qx-editor--monaco__autogrow': autogrow,
   })
 
   useEffect(() => {
@@ -83,7 +85,8 @@ const FluxEditorMonaco: FC<Props> = ({
     if (connection.current && useSchemaComposition) {
       connection.current.onSchemaSessionChange(
         sessionStore.selection,
-        sessionStore.setSelection
+        sessionStore.setSelection,
+        dispatch
       )
     }
   }, [
@@ -91,6 +94,7 @@ const FluxEditorMonaco: FC<Props> = ({
     connection.current,
     sessionStore?.selection,
     sessionStore?.selection.composition || null,
+    sessionStore?.selection.resultOptions || null,
     sessionStore?.setSelection,
   ])
 
@@ -162,10 +166,13 @@ const FluxEditorMonaco: FC<Props> = ({
             }}
             editorDidMount={editorDidMount}
           />
+          {isIoxOrg && isInFluxQueryBuilder && (
+            <div className="monaco-editor__language">{FLUXLANGID}</div>
+          )}
         </div>
       </ErrorBoundary>
     ),
-    [onChangeScript, setEditor, useSchemaComposition, script]
+    [isIoxOrg, onChangeScript, setEditor, useSchemaComposition, script]
   )
 }
 

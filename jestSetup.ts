@@ -37,6 +37,10 @@ jest.mock('src/languageSupport/languages/flux/parser', () => ({
   format_from_js_file: jest.fn(),
 }))
 
+jest.mock('src/shared/workers/serviceWorker', () => ({
+  registerServiceWorker: jest.fn(),
+}))
+
 class Worker {
   public url = ''
 
@@ -57,7 +61,7 @@ class Worker {
   }
 }
 
-window.Worker = Worker
+window.Worker = Worker as any
 
 // cleans up state between @testing-library/react tests
 afterEach(() => {

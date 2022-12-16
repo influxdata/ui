@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useRef, useState} from 'react'
+import {v4 as uuidv4} from 'uuid'
 
 // Components
 import {
@@ -19,6 +20,10 @@ import {
   AlignItems,
   FlexDirection,
   ComponentStatus,
+  Toggle,
+  InputToggleType,
+  InputLabel,
+  SlideToggle,
 } from '@influxdata/clockface'
 import UserInput from 'src/writeData/subscriptions/components/UserInput'
 import CertificateInput from 'src/writeData/subscriptions/components/CertificateInput'
@@ -39,7 +44,6 @@ import {BrokerAuthTypes, Subscription} from 'src/types/subscriptions'
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   formContent: Subscription
@@ -57,6 +61,10 @@ const BrokerFormContent: FC<Props> = ({
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
+  const [useCustomClientID, setUseCustomClientID] = useState(
+    !!formContent.clientID || false
+  )
+  const randomClientID = useRef(uuidv4())
 
   useEffect(() => {
     updateForm({...formContent, protocol: protocol.toLowerCase()})
@@ -275,17 +283,38 @@ const BrokerFormContent: FC<Props> = ({
               )}
             </Form.ValidationElement>
           </FlexBox>
+          <FlexBox
+            direction={FlexDirection.Row}
+            alignItems={AlignItems.Center}
+            margin={ComponentSize.Medium}
+            className="static-toggle"
+          >
+            <SlideToggle
+              active={formContent.useSSL}
+              onChange={() => {
+                updateForm({
+                  ...formContent,
+                  useSSL: !formContent.useSSL,
+                })
+              }}
+              disabled={!edit}
+              size={ComponentSize.Medium}
+            />
+            <Heading
+              element={HeadingElement.H4}
+              weight={FontWeight.Regular}
+              className={`${className}-broker-form__ssl-text`}
+            >
+              Enable SSL
+            </Heading>
+          </FlexBox>
           {showHostPortExampleText && (
             <Heading
               element={HeadingElement.H5}
               weight={FontWeight.Regular}
               className={`${className}-broker-form__example-text`}
             >
-              {getSchemaFromProtocol(
-                formContent.protocol,
-                isFlagEnabled('subscriptionsCertificateSupport') &&
-                  formContent.authType === BrokerAuthTypes.Certificate
-              )}
+              {getSchemaFromProtocol(formContent.protocol, formContent)}
               {`${formContent.brokerHost}:${
                 !!formContent.brokerPort && !isNaN(formContent.brokerPort)
                   ? formContent.brokerPort
@@ -293,6 +322,77 @@ const BrokerFormContent: FC<Props> = ({
               }`}
             </Heading>
           )}
+          <Form.ValidationElement
+            label="Client ID"
+            value={formContent.brokerHost}
+            required={useCustomClientID}
+            validationFunc={() =>
+              useCustomClientID &&
+              handleValidation('Client ID', formContent.clientID)
+            }
+            className={`${className}-broker-form__clientid-textbox`}
+          >
+            {status => (
+              <>
+                <Heading
+                  element={HeadingElement.H5}
+                  weight={FontWeight.Regular}
+                  className={`${className}-broker-form__clientid-text`}
+                >
+                  We will generate a Client ID for you, but some providers
+                  require you use their Client ID. If your provider requires a
+                  specific Client ID, the connection will fail without it. Check
+                  your provider’s documentation to verify whether you need to
+                  use their Client ID.
+                </Heading>
+                <Input
+                  type={InputType.Text}
+                  placeholder={
+                    useCustomClientID
+                      ? 'Enter a client id'
+                      : randomClientID.current
+                  }
+                  name="clientid"
+                  autoFocus={false}
+                  value={formContent.clientID}
+                  onChange={e => {
+                    updateForm({
+                      ...formContent,
+                      clientID: e.target.value,
+                    })
+                  }}
+                  onBlur={() =>
+                    event(
+                      'completed form field',
+                      {formField: 'clientid', step: 'broker'},
+                      {feature: 'subscriptions'}
+                    )
+                  }
+                  status={
+                    edit && useCustomClientID
+                      ? status
+                      : ComponentStatus.Disabled
+                  }
+                  testID={`${className}-broker-form--clientid`}
+                  maxLength={255}
+                />
+              </>
+            )}
+          </Form.ValidationElement>
+          <Toggle
+            type={InputToggleType.Checkbox}
+            checked={useCustomClientID}
+            id="clientid-toggle"
+            size={ComponentSize.Small}
+            titleText="Use Custom Client ID"
+            onChange={() => {
+              setUseCustomClientID(!useCustomClientID)
+              updateForm({...formContent, clientID: ''})
+            }}
+            disabled={!edit}
+          >
+            <InputLabel>Use Custom Client ID</InputLabel>
+          </Toggle>
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve}>
           <Heading
@@ -374,6 +474,7 @@ const BrokerFormContent: FC<Props> = ({
                   brokerUsername: null,
                   brokerPassword: null,
                   authType: BrokerAuthTypes.Certificate,
+                  useSSL: true,
                 })
               }}
               value="certificate"

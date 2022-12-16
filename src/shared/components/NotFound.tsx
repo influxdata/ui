@@ -13,10 +13,13 @@ import {
   Panel,
 } from '@influxdata/clockface'
 import React, {useState, FC, useCallback, useEffect, useRef} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory, useLocation} from 'react-router-dom'
 import {getOrg} from 'src/organizations/selectors'
 import {getOrg as fetchOrg} from 'src/organizations/apis'
+
+// Actions
+import {setCurrentPage} from 'src/shared/reducers/currentPage'
 
 // Utils
 import {buildDeepLinkingMap} from 'src/utils/deepLinks'
@@ -31,7 +34,7 @@ import {Organization} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 
 // API
-import {getDefaultAccountDefaultOrg} from 'src/identity/apis/auth'
+import {fetchDefaultAccountDefaultOrg} from 'src/identity/apis/org'
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">
@@ -135,6 +138,8 @@ const NotFound: FC = () => {
   const location = useLocation()
   const history = useHistory()
   const reduxOrg = useSelector(getOrg)
+  const dispatch = useDispatch()
+
   const org = useRef<Organization>(reduxOrg)
 
   const handleDeepLink = useCallback(async () => {
@@ -142,7 +147,7 @@ const NotFound: FC = () => {
       if (CLOUD) {
         try {
           setIsFetchingOrg(true)
-          const defaultQuartzOrg = await getDefaultAccountDefaultOrg()
+          const defaultQuartzOrg = await fetchDefaultAccountDefaultOrg()
           org.current = defaultQuartzOrg
         } catch {
           history.push(`/no-orgs`)
@@ -168,6 +173,13 @@ const NotFound: FC = () => {
       handleDeepLink()
     }
   }, [handleDeepLink])
+
+  useEffect(() => {
+    dispatch(setCurrentPage('not found'))
+    return () => {
+      dispatch(setCurrentPage('not set'))
+    }
+  }, [dispatch])
 
   if (isFetchingOrg) {
     // don't render anything if this component is actively fetching org id

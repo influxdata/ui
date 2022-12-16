@@ -5,7 +5,7 @@ import {
 } from 'src/timeMachine/constants/queryBuilder'
 import {Color, GaugeViewProperties} from 'src/types'
 
-export default {
+export const GaugeProperties = {
   type: 'gauge',
   shape: 'chronograf-v2',
 

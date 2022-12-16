@@ -1,21 +1,33 @@
 import React, {FC, useContext, useCallback} from 'react'
-import {DapperScrollbars} from '@influxdata/clockface'
+import {useSelector} from 'react-redux'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import Functions from 'src/shared/components/GroupedFunctionsList'
 import DynamicFunctions from 'src/shared/components/DynamicFunctionsList'
+import {ResultOptions} from 'src/dataExplorer/components/ResultOptions'
+import {
+  Accordion,
+  DapperScrollbars,
+  FlexBox,
+  FlexDirection,
+  JustifyContent,
+} from '@influxdata/clockface'
 
 // Contexts
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 import {EditorContext} from 'src/shared/contexts/editor'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Types
 import {FluxFunction, FluxToolbarFunction} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import './Sidebar.scss'
 
@@ -25,6 +37,8 @@ functions, and variables which may be useful when constructing your flux query.`
 const Sidebar: FC = () => {
   const {injectFunction} = useContext(EditorContext)
   const {visible, menu, clear} = useContext(SidebarContext)
+  const {resource} = useContext(PersistanceContext)
+  const isIoxOrg = useSelector(isOrgIOx)
 
   const inject = useCallback(
     (fn: FluxFunction | FluxToolbarFunction) => {
@@ -73,11 +87,46 @@ const Sidebar: FC = () => {
     )
   }
 
+  const resultOptions = isFlagEnabled('resultOptions') ? (
+    <FlexBox.Child
+      className="result-options--container"
+      style={{flex: '0 0 0px'}}
+    >
+      <ResultOptions />
+    </FlexBox.Child>
+  ) : null
+
+  const fluxLibrary = isFlagEnabled('resultOptions') ? (
+    <FlexBox.Child className="flux-library--container">
+      <Accordion className="flux-library" expanded={true}>
+        <Accordion.AccordionHeader className="flux-library--header">
+          <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
+        </Accordion.AccordionHeader>
+        {browser}
+      </Accordion>
+    </FlexBox.Child>
+  ) : (
+    <FlexBox.Child className="flux-library--container">
+      <div className="flux-library-original">
+        <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
+        {browser}
+      </div>
+    </FlexBox.Child>
+  )
+
   return (
-    <div className="container-right-side-bar">
-      <SelectorTitle label="Flux library" tooltipContents={TOOLTIP} />
-      {browser}
-    </div>
+    <FlexBox
+      direction={FlexDirection.Column}
+      justifyContent={JustifyContent.FlexStart}
+      className="container-right-side-bar"
+    >
+      {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
+        <>
+          {resultOptions}
+          {fluxLibrary}
+        </>
+      )}
+    </FlexBox>
   )
 }
 

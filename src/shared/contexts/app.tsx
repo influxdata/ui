@@ -1,4 +1,4 @@
-import React, {FC, useCallback} from 'react'
+import React, {FC, useCallback, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 import {
@@ -10,6 +10,7 @@ import {
   disablePresentationMode,
   setFlowsCTA as setFlowsCTAAction,
   setSubscriptionsCertificateInterest as setSubscriptionsCertificateInterestAction,
+  setWorkerRegistration,
 } from 'src/shared/actions/app'
 import {
   timeZone as timeZoneFromState,
@@ -27,6 +28,15 @@ import {presentationMode as presentationModeCopy} from 'src/shared/copy/notifica
 import {AppState, TimeZone, Theme, NavBarState, FlowsCTA} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
+let workerRegistration
+import(
+  /* webpackPreload: true */
+  /* webpackChunkName: "setup-interceptor" */
+  'src/shared/workers/serviceWorker'
+).then(
+  ({registerServiceWorker}) => (workerRegistration = registerServiceWorker())
+)
+
 interface AppSettingContextType {
   timeZone: TimeZone
   theme: Theme
@@ -35,6 +45,7 @@ interface AppSettingContextType {
   navbarMode: NavBarState
   flowsCTA: FlowsCTA
   subscriptionsCertificateInterest: boolean
+  workerRegistration: Promise<ServiceWorkerRegistration>
 
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
@@ -53,6 +64,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   navbarMode: 'collapsed' as NavBarState,
   flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
   subscriptionsCertificateInterest: false,
+  workerRegistration,
 
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
@@ -135,6 +147,10 @@ export const AppSettingProvider: FC = ({children}) => {
     dispatch(setSubscriptionsCertificateInterestAction())
   }, [dispatch])
 
+  useEffect(() => {
+    dispatch(setWorkerRegistration(workerRegistration))
+  }, [workerRegistration])
+
   return (
     <AppSettingContext.Provider
       value={{
@@ -145,6 +161,7 @@ export const AppSettingProvider: FC = ({children}) => {
         navbarMode,
         flowsCTA,
         subscriptionsCertificateInterest,
+        workerRegistration,
 
         setTimeZone,
         setTheme,

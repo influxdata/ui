@@ -3,9 +3,6 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
-// Components
-import {getExperimentVariantId} from 'src/cloud/utils/experiments'
-
 // Utils
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -13,7 +10,6 @@ import {
   getSettingsNotifications,
   postCheckout,
 } from 'src/client/unityRoutes'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {states} from 'src/billing/constants'
@@ -23,7 +19,6 @@ import {
 } from 'src/shared/copy/notifications'
 import {
   BALANCE_THRESHOLD_DEFAULT,
-  CREDIT_250_EXPERIMENT_ID,
   EMPTY_ZUORA_PARAMS,
 } from 'src/shared/constants'
 
@@ -261,11 +256,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     return errs.length
   }
 
-  const isPaygCreditActive =
-    isFlagEnabled('credit250Experiment') &&
-    (getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1' ||
-      isCredit250ExperienceActive)
-
   const handleSubmit = useCallback(
     async (paymentMethodId: string) => {
       if (isDirty === false) {
@@ -303,7 +293,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         const paymentInformation = {
           ...formData,
           paymentMethodId,
-          isPaygCreditActive,
+          isPaygCreditActive: isCredit250ExperienceActive,
         }
         const response = await postCheckout({data: paymentInformation})
 
@@ -312,7 +302,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         }
 
         event('CheckoutSuccess', {
-          creditApplied: isPaygCreditActive.toString(),
+          creditApplied: String(isCredit250ExperienceActive),
         })
         setCheckoutStatus(RemoteDataState.Done)
       } catch (error) {
@@ -328,8 +318,8 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       getInvalidFields,
       handleSetErrors,
       inputs,
+      isCredit250ExperienceActive,
       isDirty,
-      isPaygCreditActive,
     ]
   )
 
@@ -358,12 +348,10 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         isSubmitting,
         setIsDirty,
         zuoraParams,
-        isPaygCreditActive,
+        isPaygCreditActive: isCredit250ExperienceActive,
       }}
     >
       {children}
     </CheckoutContext.Provider>
   )
 })
-
-export default CheckoutProvider

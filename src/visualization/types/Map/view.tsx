@@ -11,15 +11,11 @@ import {VisualizationProps} from 'src/visualization'
 import {getGeoCoordinates} from 'src/shared/utils/vis'
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 let getMapToken = null
 
 if (CLOUD) {
-  getMapToken = require('src/client/mapsdRoutes').getMapToken
-  if (isFlagEnabled('uiproxyd')) {
-    getMapToken = require('src/client/uiproxydRoutes').getMapToken
-  }
+  getMapToken = require('src/client/uiproxydRoutes').getUiproxyMapToken
 }
 
 interface Props extends VisualizationProps {
@@ -31,7 +27,7 @@ type GeoCoordinates = {
   lon: number
 }
 
-const GeoPlot: FC<Props> = ({result, properties}) => {
+export const Geo: FC<Props> = ({result, properties}) => {
   const {
     layers,
     zoom,
@@ -202,5 +198,3 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
 
   return <Plot config={config} />
 }
-
-export default GeoPlot

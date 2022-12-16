@@ -6,6 +6,7 @@ import CSVMarkdown from 'src/writeData/components/fileUploads/CSV.md'
 // Graphics
 import CSVLogo from 'src/writeData/graphics/csv.svg'
 import LPLogo from 'src/writeData/graphics/lp.svg'
+import CLIIcon from 'src/writeData/graphics/CLIIcon.svg'
 
 // Types
 export interface FileUpload {
@@ -18,7 +19,7 @@ export interface FileUpload {
 export const WRITE_DATA_FILE_UPLOADS: FileUpload[] = [
   {
     id: 'annotated_csv',
-    name: 'Flux Annotated CSV',
+    name: 'Upload a CSV',
     image: CSVLogo,
     markdown: AnnotatedCSVMarkdown,
   },
@@ -30,8 +31,8 @@ export const WRITE_DATA_FILE_UPLOADS: FileUpload[] = [
   },
   {
     id: 'csv',
-    name: 'CSV Data (CLI)',
-    image: CSVLogo,
+    name: 'Influx CLI',
+    image: CLIIcon,
     markdown: CSVMarkdown,
   },
 ]

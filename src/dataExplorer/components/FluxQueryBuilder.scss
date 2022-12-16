@@ -20,8 +20,8 @@
   }
 }
 
-.flux-query-builder--header {
-  margin-bottom: 0;
+.cf-page-header.flux-query-builder--header {
+  margin-bottom: 0 !important;
 }
 
 .flux-query-builder--menu {
@@ -53,4 +53,11 @@
     border-top: 2px solid $cf-grey-15;
     border-bottom: 2px solid $cf-grey-15;
   }
+}
+
+.script-dropdown__flux {
+  text-transform: capitalize;
+}
+.script-dropdown__sql {
+  text-transform: uppercase;
 }

@@ -20,6 +20,7 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Syles
 import './Schema.scss'
@@ -39,7 +40,7 @@ conceptually similar to a non-indexed column and value.`
 const FieldSelector: FC = () => {
   const {fields, loading} = useContext(FieldsContext)
   const {selectField, searchTerm} = useContext(FluxQueryBuilderContext)
-  const {selection} = useContext(PersistanceContext)
+  const {selection, resource} = useContext(PersistanceContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
 
   const handleSelectField = (field: string) => {
@@ -83,7 +84,18 @@ const FieldSelector: FC = () => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && fieldsToShow.length) {
-    if (isFlagEnabled('schemaComposition')) {
+    if (resource?.language === LanguageType.SQL) {
+      // readOnly
+      list = fieldsToShow.map(field => (
+        <dd
+          key={field}
+          className="field-selector--list-item--readonly"
+          data-testid="field-selector--list-item--readonly"
+        >
+          <code>{field}</code>
+        </dd>
+      ))
+    } else if (isFlagEnabled('schemaComposition')) {
       list = (
         <SelectorList
           items={fieldsToShow}

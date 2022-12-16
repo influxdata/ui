@@ -12,9 +12,8 @@ import {
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
-
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
-import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import {
   View,
   ViewTypeDropdown,
@@ -24,32 +23,39 @@ import {
 import {FluxResult} from 'src/types/flows'
 
 import './Results.scss'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {bytesFormatter} from 'src/shared/copy/notifications'
 
 // simplified version migrated from src/flows/pipes/Table/view.tsx
 const QueryStat: FC = () => {
   const {result} = useContext(ResultsContext)
 
   const tableColumn = result?.parsed?.table?.getColumn('table') || []
-  const lastTableValue = tableColumn[tableColumn.length - 1] || -1
+  const lastTableValue = tableColumn[tableColumn.length - 1]
 
   let tableNum = 0
 
   if (typeof lastTableValue === 'string') {
     tableNum = parseInt(lastTableValue) + 1
   } else if (typeof lastTableValue === 'boolean') {
-    tableNum = lastTableValue ? 1 : 0
-  } else {
-    // number
+    console.error('Cannot extract tableId. Check parsed csv output.')
+  } else if (typeof lastTableValue === 'number') {
     tableNum = lastTableValue + 1
   }
 
   return (
-    <div className="query-stat">
-      <span className="query-stat--bold">{`${tableNum} tables`}</span>
-      <span className="query-stat--bold">{`${
-        result?.parsed?.table?.length || 0
-      } rows`}</span>
+    <div className="query-stat" data-testid="query-stat">
+      {result?.truncated ? (
+        <span className="query-stat--bold">{`Max. display limit exceeded. Result truncated to ${bytesFormatter(
+          result.bytes
+        )}.`}</span>
+      ) : (
+        <>
+          <span className="query-stat--bold">{`${tableNum} tables`}</span>
+          <span className="query-stat--bold">{`${
+            result?.parsed?.table?.length || 0
+          } rows`}</span>
+        </>
+      )}
     </div>
   )
 }
@@ -87,6 +93,7 @@ const WrappedOptions: FC = () => {
 
 const Results: FC = () => {
   const [search, setSearch] = useState('')
+  const {range} = useContext(PersistanceContext)
   const {result, status, view, setView} = useContext(ResultsContext)
   const {launch} = useContext(SidebarContext)
   const res = useMemo(() => {
@@ -156,6 +163,7 @@ const Results: FC = () => {
               } as SimpleTableViewProperties
             }
             result={res}
+            timeRange={range}
             hideTimer
           />
         </div>
@@ -167,6 +175,7 @@ const Results: FC = () => {
             loading={status}
             properties={view.properties}
             result={res}
+            timeRange={range}
             hideTimer
           />
         </div>
@@ -250,9 +259,6 @@ const Results: FC = () => {
             {tableHeader}
             {vizHeader}
             <div className="data-explorer-results--timezone">
-              {isFlagEnabled('newTimeRangeComponent') ? null : (
-                <TimeZoneDropdown />
-              )}
               <SelectGroup style={{marginRight: 12}}>
                 <SelectGroup.Option
                   id="table"

@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext, useEffect} from 'react'
-import {Switch, Route, Link} from 'react-router-dom'
+import {Switch, Route, Link, useHistory} from 'react-router-dom'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
@@ -18,7 +18,6 @@ import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
 import GetResources from 'src/resources/components/GetResources'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import SaveAsOverlay from 'src/dataExplorer/components/SaveAsOverlay'
 import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
 import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
@@ -41,24 +40,28 @@ import {
   PersistanceProvider,
 } from 'src/dataExplorer/context/persistance'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 const DataExplorerPageHeader: FC = () => {
   const {fluxQueryBuilder, setFluxQueryBuilder} = useContext(AppSettingContext)
-  const {resource, setResource} = useContext(PersistanceContext)
+  const {resource, save} = useContext(PersistanceContext)
+  const history = useHistory()
 
   const toggleSlider = () => {
     event('toggled new query builder', {active: `${!fluxQueryBuilder}`})
+    if (!fluxQueryBuilder) {
+      history.push({
+        search: SCRIPT_EDITOR_PARAMS,
+      })
+    } else {
+      history.push({search: null})
+    }
     setFluxQueryBuilder(!fluxQueryBuilder)
   }
 
   const handleRename = (name: string) => {
-    setResource({
-      ...resource,
-      data: {
-        ...resource.data,
-        name,
-      },
-    })
+    resource.data.name = name
+    save(resource?.language)
   }
 
   const showNewExplorer = fluxQueryBuilder && isFlagEnabled('newDataExplorer')
@@ -66,18 +69,14 @@ const DataExplorerPageHeader: FC = () => {
   let pageTitle = <Page.Title title="Data Explorer" />
 
   if (showNewExplorer && resource?.data?.hasOwnProperty('name')) {
-    if (resource?.data?.type === ResourceType.Scripts) {
-      pageTitle = <Page.Title title={resource?.data?.name ?? ''} />
-    } else {
-      pageTitle = (
-        <RenamablePageTitle
-          onRename={handleRename}
-          name={resource?.data?.name || ''}
-          placeholder="Untitled Script"
-          maxLength={100}
-        />
-      )
-    }
+    pageTitle = (
+      <RenamablePageTitle
+        onRename={handleRename}
+        name={resource?.data?.name || ''}
+        placeholder="Untitled Script"
+        maxLength={100}
+      />
+    )
   }
 
   return (
@@ -92,16 +91,13 @@ const DataExplorerPageHeader: FC = () => {
       <FlexBox margin={ComponentSize.Large}>
         {isFlagEnabled('newDataExplorer') && (
           <FlexBox margin={ComponentSize.Medium}>
-            <InputLabel>&#10024; Preview New Script Editor</InputLabel>
+            <InputLabel>&#10024; Try New Script Editor</InputLabel>
             <SlideToggle
               active={fluxQueryBuilder}
               onChange={toggleSlider}
               testID="flux-query-builder-toggle"
             />
           </FlexBox>
-        )}
-        {!isFlagEnabled('multiOrg') && (
-          <RateLimitAlert location="data explorer" />
         )}
       </FlexBox>
     </Page.Header>
@@ -113,6 +109,7 @@ const DataExplorerPage: FC = () => {
     useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
   const showNewExplorer = fluxQueryBuilder && isFlagEnabled('newDataExplorer')
+  const history = useHistory()
 
   const hideFlowsCTA = () => {
     setFlowsCTA({explorer: false})
@@ -123,10 +120,19 @@ const DataExplorerPage: FC = () => {
   }
 
   useEffect(() => {
+    if (fluxQueryBuilder) {
+      history.push({
+        search: SCRIPT_EDITOR_PARAMS,
+      })
+    } else {
+      history.push({
+        search: null,
+      })
+    }
     return () => {
       event('Exited Data Explorer')
     }
-  }, [])
+  }, [fluxQueryBuilder, history])
 
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>

@@ -1,5 +1,6 @@
 // Libraries
 import React, {ReactElement, PureComponent, Suspense, lazy} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 import {Switch, Route, RouteComponentProps} from 'react-router-dom'
 
 // APIs
@@ -7,51 +8,57 @@ import {getSetup} from 'src/client'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import {getPublicFlags} from 'src/shared/thunks/flags'
 import PageSpinner from 'src/perf/components/PageSpinner'
-import {LoginPage} from 'src/onboarding/containers/LoginPage'
-// lazy loading the signin component causes wasm issues
-import Signin from 'src/Signin'
+import {CloudLoginPage} from 'src/onboarding/containers/CloudLoginPage'
+// lazy loading the Authenticate component causes wasm issues
+import {Authenticate} from 'src/Authenticate'
 
 const OnboardingWizardPage = lazy(
   () => import('src/onboarding/containers/OnboardingWizardPage')
 )
-const SigninPage = lazy(() => import('src/onboarding/containers/SigninPage'))
+const OSSLoginPage = lazy(
+  () => import('src/onboarding/containers/OSSLoginPage')
+)
 const Logout = lazy(() => import('src/Logout'))
 const ReadOnlyNotebook = lazy(() => import('src/flows/components/ReadOnly'))
-
-// Constants
-import {LOGIN, SIGNIN, LOGOUT} from 'src/shared/constants/routes'
 
 // Utils
 import {isOnboardingURL} from 'src/onboarding/utils'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {CLOUD} from 'src/shared/constants'
 
 interface State {
   loading: RemoteDataState
-  allowed: boolean
+  shouldShowOnboarding: boolean
 }
 
 interface OwnProps {
   children: ReactElement<any>
 }
 
-type Props = RouteComponentProps & OwnProps
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = OwnProps & RouteComponentProps & ReduxProps
 
 @ErrorHandling
-export class Setup extends PureComponent<Props, State> {
+export class SetupUnconnected extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
     this.state = {
       loading: RemoteDataState.NotStarted,
-      allowed: false,
+      shouldShowOnboarding: false,
     }
   }
 
   public async componentDidMount() {
     const {history} = this.props
+
+    if (CLOUD) {
+      await this.props.getPublicFlags()
+    }
 
     if (isOnboardingURL()) {
       this.setState({
@@ -66,22 +73,21 @@ export class Setup extends PureComponent<Props, State> {
       throw new Error('There was an error onboarding')
     }
 
-    const {allowed} = resp.data
+    const shouldShowOnboarding = resp.data.allowed
 
     this.setState({
       loading: RemoteDataState.Done,
-      allowed,
+      shouldShowOnboarding,
     })
 
-    if (!allowed) {
+    if (shouldShowOnboarding) {
+      history.push('/onboarding/0')
       return
     }
-
-    history.push('/onboarding/0')
   }
 
   async componentDidUpdate(prevProps: Props, prevState: State) {
-    if (!prevState.allowed) {
+    if (!prevState.shouldShowOnboarding) {
       return
     }
 
@@ -93,34 +99,33 @@ export class Setup extends PureComponent<Props, State> {
         throw new Error('There was an error onboarding')
       }
 
-      const {allowed} = resp.data
-      this.setState({allowed, loading: RemoteDataState.Done})
+      const shouldShowOnboarding = resp.data.allowed
+      this.setState({shouldShowOnboarding, loading: RemoteDataState.Done})
     }
   }
 
   public render() {
-    const {loading, allowed} = this.state
+    const {loading, shouldShowOnboarding} = this.state
 
     return (
       <PageSpinner loading={loading}>
         <Suspense fallback={<PageSpinner />}>
-          {allowed && (
+          {shouldShowOnboarding ? (
             <Route
               path="/onboarding/:stepID"
               component={OnboardingWizardPage}
             />
-          )}
-          {!allowed && (
+          ) : (
             <Switch>
               <Route
                 path="/onboarding/:stepID"
                 component={OnboardingWizardPage}
               />
               <Route path="/share/:accessID" component={ReadOnlyNotebook} />
-              <Route path={LOGIN} component={LoginPage} />
-              <Route path={SIGNIN} component={SigninPage} />
-              <Route path={LOGOUT} component={Logout} />
-              <Route component={Signin} />
+              <Route path="/login" component={CloudLoginPage} />
+              <Route path="/signin" component={OSSLoginPage} />
+              <Route path="/logout" component={Logout} />
+              <Route component={Authenticate} />
             </Switch>
           )}
         </Suspense>
@@ -129,4 +134,10 @@ export class Setup extends PureComponent<Props, State> {
   }
 }
 
-export default Setup
+const mdtp = {
+  getPublicFlags: getPublicFlags,
+}
+
+const connector = connect(null, mdtp)
+
+export const Setup = connector(SetupUnconnected)

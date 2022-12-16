@@ -6,9 +6,7 @@ import {
   RemoteDataState,
   SpinnerContainer,
   TechnoSpinner,
-  Button,
   IconFont,
-  ComponentStatus,
   ComponentSize,
   FlexBox,
   FlexDirection,
@@ -16,32 +14,44 @@ import {
   AlignItems,
   Icon,
 } from '@influxdata/clockface'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {QueryContext} from 'src/shared/contexts/query'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {
+  PersistanceContext,
+  DEFAULT_FLUX_EDITOR_TEXT,
+  DEFAULT_SQL_EDITOR_TEXT,
+} from 'src/dataExplorer/context/persistance'
 
 // Components
-import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
 import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
+import {SqlEditorMonaco} from 'src/shared/components/SqlMonacoEditor'
+import CSVExportButton from 'src/shared/components/CSVExportButton'
 
 // Types
 import {TimeRange} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
-import {downloadTextFile} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
+import {csvDownloadFailure} from 'src/shared/copy/notifications'
+import {
+  sqlAsFlux,
+  updateWindowPeriod,
+} from 'src/shared/contexts/query/preprocessing'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {API_BASE_PATH} from 'src/shared/constants'
 
 const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
@@ -89,8 +99,12 @@ const rangeToParam = (timeRange: TimeRange) => {
   }
 }
 
+const isDefaultText = text => {
+  return text == DEFAULT_FLUX_EDITOR_TEXT || text == DEFAULT_SQL_EDITOR_TEXT
+}
+
 const ResultsPane: FC = () => {
-  const {basic, query, cancel} = useContext(QueryContext)
+  const {query, cancel} = useContext(QueryContext)
   const {status, result, setStatus, setResult} = useContext(ResultsContext)
   const {
     horizontal,
@@ -98,34 +112,83 @@ const ResultsPane: FC = () => {
     query: text,
     setQuery,
     range,
-    setRange,
     selection,
+    resource,
   } = useContext(PersistanceContext)
+  const orgID = useSelector(getOrg)?.id
+  const isIoxOrg = useSelector(isOrgIOx)
+  const language = resource?.language ?? LanguageType.FLUX
+  const dispatch = useDispatch()
 
-  const submitButtonDisabled = !text && !selection.measurement
+  let submitButtonDisabled = false
+  let disabledTitleText = ''
+  if (!text || isDefaultText(text)) {
+    submitButtonDisabled = true
+    disabledTitleText = 'Write a query before running script'
+  } else if (language == LanguageType.SQL && !selection.bucket) {
+    submitButtonDisabled = true
+    disabledTitleText = 'Select a bucket before running script'
+  } else if (
+    language == LanguageType.FLUX &&
+    selection.composition.synced && // using composition
+    selection.bucket &&
+    !selection.measurement
+  ) {
+    submitButtonDisabled = true
+    disabledTitleText = 'Select a measurement before running script'
+  }
 
-  const disabledTitleText = submitButtonDisabled
-    ? 'Select measurement before running script'
-    : ''
+  const downloadByServiceWorker = () => {
+    try {
+      event('runQuery.downloadCSV', {context: 'query experience'})
 
-  const download = () => {
-    event('CSV Download Initiated')
-    basic(text, {
-      vars: rangeToParam(range),
-    }).promise.then(response => {
-      if (response.type !== 'SUCCESS') {
-        return
-      }
+      const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
+      const hiddenForm = document.createElement('form')
+      hiddenForm.setAttribute('id', 'downloadDiv')
+      hiddenForm.setAttribute('style', 'display: none;')
+      hiddenForm.setAttribute('method', 'post')
+      hiddenForm.setAttribute('action', url)
 
-      downloadTextFile(response.csv, 'influx.data', '.csv', 'text/csv')
-    })
+      const query =
+        language == LanguageType.SQL ? sqlAsFlux(text, selection.bucket) : text
+      const extern = updateWindowPeriod(
+        query,
+        {
+          vars: rangeToParam(range),
+        },
+        'ast'
+      )
+
+      const input = document.createElement('input')
+      input.setAttribute('name', 'data')
+      input.setAttribute(
+        'value',
+        JSON.stringify({
+          query,
+          extern,
+          dialect: {annotations: ['group', 'datatype', 'default']},
+        })
+      )
+      hiddenForm.appendChild(input)
+      document.body.appendChild(hiddenForm)
+      hiddenForm.submit()
+    } catch (error) {
+      dispatch(notify(csvDownloadFailure()))
+    }
   }
 
   const submit = useCallback(() => {
     setStatus(RemoteDataState.Loading)
-    query(text, {
-      vars: rangeToParam(range),
-    })
+    query(
+      text,
+      {
+        vars: rangeToParam(range),
+      },
+      {
+        language,
+        bucket: selection.bucket,
+      }
+    )
       .then(r => {
         event('resultReceived', {
           status: r.parsed.table.length === 0 ? 'empty' : 'good',
@@ -138,11 +201,13 @@ const ResultsPane: FC = () => {
           source: text,
           parsed: null,
           error: e.message,
+          truncated: false,
+          bytes: 0,
         })
         event('resultReceived', {status: 'error'})
         setStatus(RemoteDataState.Error)
       })
-  }, [text, range])
+  }, [text, range, resource?.language, selection.bucket])
 
   const timeVars = [
     getRangeVariable(TIME_RANGE_START, range),
@@ -176,12 +241,20 @@ const ResultsPane: FC = () => {
                   />
                 }
               >
-                <FluxMonacoEditor
-                  variables={variables}
-                  script={text}
-                  onChangeScript={setQuery}
-                  onSubmitScript={submit}
-                />
+                {resource?.language == LanguageType.SQL ? (
+                  <SqlEditorMonaco
+                    script={text}
+                    onChangeScript={setQuery}
+                    onSubmitScript={submit}
+                  />
+                ) : (
+                  <FluxMonacoEditor
+                    variables={variables}
+                    script={text}
+                    onChangeScript={setQuery}
+                    onSubmitScript={submit}
+                  />
+                )}
               </Suspense>
             </div>
           </div>
@@ -199,22 +272,12 @@ const ResultsPane: FC = () => {
               margin={ComponentSize.Small}
             >
               <QueryTime />
-              <Button
-                titleText="Download query results as a .CSV file"
-                text="CSV"
-                icon={IconFont.Download_New}
-                onClick={download}
-                status={
-                  text ? ComponentStatus.Default : ComponentStatus.Disabled
-                }
+              <CSVExportButton
+                disabled={submitButtonDisabled}
+                download={downloadByServiceWorker}
               />
-              {isFlagEnabled('newTimeRangeComponent') ? (
+              {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
                 <NewDatePicker />
-              ) : (
-                <TimeRangeDropdown
-                  timeRange={range}
-                  onSetTimeRange={(range: TimeRange) => setRange(range)}
-                />
               )}
               <SubmitQueryButton
                 className="submit-btn"
@@ -241,4 +304,4 @@ const ResultsPane: FC = () => {
   )
 }
 
-export default ResultsPane
+export {ResultsPane}

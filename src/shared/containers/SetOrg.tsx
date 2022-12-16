@@ -6,6 +6,7 @@ import {Route, Switch, useHistory, useParams} from 'react-router-dom'
 // Components
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 import PageSpinner from 'src/perf/components/PageSpinner'
+
 import {
   AlertHistoryIndex,
   AlertingIndex,
@@ -50,7 +51,12 @@ import {
   DetailsSubscriptionPage,
   GoWizard,
 } from 'src/shared/containers'
+import {OrganizationList} from 'src/cloud/containers'
+
 import {UserProfilePage} from 'src/identity/components/userprofile/UserProfilePage'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
@@ -80,7 +86,6 @@ import {setOrg} from 'src/organizations/actions/creators'
 
 // Utils
 import {updateReportingContext} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Decorators
 import {RemoteDataState} from '@influxdata/clockface'
@@ -220,6 +225,14 @@ const SetOrg: FC = () => {
           )}
           {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
+              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id/notifications`}
+              render={props => (
+                <DetailsSubscriptionPage {...props} showNotifications={true} />
+              )}
+            />
+          )}
+          {CLOUD && (
+            <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
               component={DetailsSubscriptionPage}
             />
@@ -282,6 +295,13 @@ const SetOrg: FC = () => {
               component={UserAccountPage}
             />
           )}
+          {/* list of organizations in the user's current CLOUD account */}
+          {CLOUD && isFlagEnabled('createDeleteOrgs') && (
+            <Route
+              path={`${orgPath}/accounts/orglist`}
+              component={OrganizationList}
+            />
+          )}
           {/* Homepage / First Mile */}
           <Route exact path="/orgs/:orgID" component={HomepageContainer} />
           <Route
@@ -302,22 +322,19 @@ const SetOrg: FC = () => {
             key="/golang"
             component={GoWizard}
           />
-          {isFlagEnabled('onboardArduino') && (
-            <Route
-              exact
-              path="/orgs/:orgID/new-user-setup/arduino"
-              key="/arduino"
-              component={ArduinoWizard}
-            />
-          )}
-          ,
+          <Route
+            exact
+            path="/orgs/:orgID/new-user-setup/arduino"
+            key="/arduino"
+            component={ArduinoWizard}
+          />
           <Route
             exact
             path="/orgs/:orgID/new-user-setup/cli"
             component={CliWizard}
           />
           {/* User Profile Page */}
-          {CLOUD && isFlagEnabled('multiOrg') && (
+          {CLOUD && (
             <Route
               exact
               path="/orgs/:orgId/user/profile"

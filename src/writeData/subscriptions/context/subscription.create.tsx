@@ -76,6 +76,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     },
     bucket: 'nifi',
     timestampPrecision: 'NS',
+    useSSL: false,
   },
   updateForm: () => {},
   loading: RemoteDataState.NotStarted,

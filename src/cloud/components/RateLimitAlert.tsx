@@ -16,7 +16,7 @@ import {
   Button,
   ComponentColor,
 } from '@influxdata/clockface'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {
@@ -24,18 +24,12 @@ import {
   extractRateLimitStatus,
 } from 'src/cloud/utils/limits'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  getDataLayerIdentity,
-  getExperimentVariantId,
-} from 'src/cloud/utils/experiments'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
-import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Types
-import RateLimitAlertContent from 'src/cloud/components/RateLimitAlertContent'
+import {RateLimitAlertContent} from 'src/cloud/components/RateLimitAlertContent'
 
 import {notify} from 'src/shared/actions/notifications'
 import {writeLimitReached} from 'src/shared/copy/notifications'
@@ -58,7 +52,7 @@ interface Props {
 
 const bannerStyle = {border: 'none', borderRadius: '6px'}
 
-const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
+export const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   const resources = useSelector(extractRateLimitResources)
   const status = useSelector(extractRateLimitStatus)
   const showUpgrade = useSelector(shouldShowUpgradeButton)
@@ -109,10 +103,6 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
     [`${className}`]: className,
   })
 
-  const icon = isFlagEnabled('credit250Experiment')
-    ? IconFont.AlertTriangle
-    : IconFont.Cloud
-
   // banner panel for cardinality limit exceeded
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
     return (
@@ -125,7 +115,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
         <BannerPanel
           size={ComponentSize.ExtraSmall}
           gradient={Gradients.PolarExpress}
-          icon={icon}
+          icon={IconFont.AlertTriangle}
           hideMobileIcon={true}
           textColor={InfluxColors.Yeti}
           style={bannerStyle}
@@ -142,23 +132,11 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
       <CloudUpgradeButton
         className="upgrade-payg--button__header"
         metric={() => {
-          const experimentVariantId = getExperimentVariantId(
-            CREDIT_250_EXPERIMENT_ID
-          )
-          const identity = getDataLayerIdentity()
           event(
-            isFlagEnabled('credit250Experiment') &&
-              (experimentVariantId === '1' || isCredit250ExperienceActive)
+            isCredit250ExperienceActive
               ? `${location}.alert.credit-250.upgrade`
               : `${location}.alert.upgrade`,
-            {
-              location,
-              ...identity,
-              experimentId: CREDIT_250_EXPERIMENT_ID,
-              experimentVariantId: isCredit250ExperienceActive
-                ? '2'
-                : experimentVariantId,
-            }
+            {location}
           )
         }}
         size={ComponentSize.ExtraSmall}
@@ -168,5 +146,3 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
 
   return null
 }
-
-export default RateLimitAlert

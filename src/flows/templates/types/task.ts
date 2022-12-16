@@ -1,6 +1,9 @@
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
-import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
+import {
+  parse,
+  format_from_js_file,
+} from 'src/languageSupport/languages/flux/parser'
 import {remove} from 'src/shared/contexts/query'
 
 export default register =>

@@ -1,0 +1,64 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.account--organizations-tab-orgs-card {
+  background-color: $cf-grey-15;
+  border-radius: 2px;
+  margin-bottom: $cf-space-3xs;
+  margin-top: $cf-space-3xs;
+}
+
+.account--organizations-tab-suspended-orgs-card {
+  background-color: #11121a;
+  border-radius: 2px;
+  margin-bottom: $cf-space-3xs;
+  margin-top: $cf-space-3xs;
+  div:not(:last-child) {
+    opacity: 0.5;
+  }
+}
+
+.account--organizations-tab-orgs-card-cluster-data {
+  width: 150px;
+}
+
+.account--organizations-tab-orgs-card-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 90%;
+}
+
+.account-organizations-tab-orgs-card-location-data {
+  width: 200px;
+}
+
+.account-organizations-tab-orgs-status--text {
+  color: $cf-white;
+}
+
+.account-organizations-tab-orgs-card-org-status {
+  width: 150px;
+  .cf-question-mark-tooltip {
+    background-color: $cf-white;
+    color: $cf-grey-5;
+  }
+}
+
+.account--organizations-tab-orgs-card-orgname {
+  .cf-resource-name--text {
+    font-size: $cf-text-base-1;
+    font-weight: $cf-font-weight--bold;
+    color: $cf-white;
+  }
+  margin-left: 0 !important;
+}
+
+.account--organizations-tab-active-org {
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 5px;
+  color: $c-rainforest;
+  display: inline-block;
+  left: 9px;
+  margin-top: 6px;
+  position: absolute;
+}

@@ -60,6 +60,7 @@ import {
 import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
 import perfReducer from 'src/perf/reducers'
 import quartzOrganizationReducer from 'src/identity/quartzOrganizations/reducers'
+import orgCreationAllowancesReducer from 'src/identity/allowances/reducers'
 
 // Types
 import {AppState, LocalStorage} from 'src/types'
@@ -92,6 +93,7 @@ export const rootReducer = (history: History) => (state, action) => {
     identity: combineReducers({
       currentIdentity: identityReducer,
       quartzOrganizations: quartzOrganizationReducer,
+      allowances: orgCreationAllowancesReducer,
     }),
     flags: flagReducer,
     noteEditor: noteEditorReducer,

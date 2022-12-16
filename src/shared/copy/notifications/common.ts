@@ -13,7 +13,7 @@ import {
 } from 'src/shared/constants/index'
 import {IconFont} from '@influxdata/clockface'
 
-const bytesFormatter = binaryPrefixFormatter({
+export const bytesFormatter = binaryPrefixFormatter({
   suffix: 'B',
   significantDigits: 2,
   trimZeros: true,

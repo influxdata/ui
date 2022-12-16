@@ -3,60 +3,90 @@
     "id": "9296169091c64567",
     "name": "Test Org 0",
     "isDefault": true,
-    "isActive": true
+    "isActive": true,
+    "provider": "AWS",
+    "regionCode": "us-east-1",
+    "regionName": "US East (N. Virginia)"
   },
   {
     "id": "a71ced2b8238902b",
     "name": "Test Org 1",
     "isDefault": false,
-    "isActive": false
+    "isActive": false,
+    "provider": "AWS",
+    "regionCode": "eu-central-1",
+    "regionName": "EU Frankfurt"
   },
   {
     "id": "ac3d3c04b8f1a545",
     "name": "Test Org 2",
     "isDefault": false,
-    "isActive": false
+    "isActive": false,
+    "provider": "AWS",
+    "regionCode": "us-east-1-2",
+    "regionName": "US East (N. Virginia) 2"
   },
   {
     "id": "fc734484afa0fcac",
     "name": "Test Org 3",
     "isDefault": false,
-    "isActive": false
+    "isActive": false,
+    "provider": "Azure",
+    "regionCode": "us-west-2-2",
+    "regionName": "US West (Oregon)"
   },
   {
     "id": "62cba0af4760ce02",
     "name": "Test Org 4",
     "isDefault": false,
-    "isActive": false
+    "isActive": false,
+    "provider": "Azure",
+    "regionCode": "westeurope",
+    "regionName": "Amsterdam"
   },
   {
     "id": "58fafbb4f68e05e5",
     "name": "Test Org 5",
     "isDefault": false,
-    "isActive": false
+    "isActive": false,
+    "provider": "Azure",
+    "regionCode": "eastus",
+    "regionName": "Virginia"
   },
   {
     "id": "3f3fd71611a4a0fe",
     "name": "Test Org 6",
     "isDefault": false,
-    "isActive": false
+    "isActive": false,
+    "provider": "GCP",
+    "regionCode": "eu-west1",
+    "regionName": "Belgium"
   },
   {
     "id": "1232a0085d2af2dd",
     "name": "Test Org 7",
     "isDefault": false,
-    "isActive": false
+    "isActive": false,
+    "provider": "GCP",
+    "regionCode": "us-central1",
+    "regionName": "Iowa"
   },
   {
     "id": "e337e5c5ee6439a2",
     "name": "Test Org 8",
     "isDefault": false,
-    "isActive": false
+    "isActive": false,
+    "provider": "GCP",
+    "regionCode": "us-central1-2",
+    "regionName": "Iowa"
   },
   {
     "id": "3b3ca09032853015",
     "name": "Test Org 9",
     "isDefault": false,
-    "isActive": false
+    "isActive": false,
+    "provider": "GCP",
+    "regionCode": "us-west1",
+    "regionName": "Oregon"
   }
 ]

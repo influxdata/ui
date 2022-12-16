@@ -1,5 +1,3 @@
 # Changes to any file in this repo require approval from a member of the InfluxData ui-team
 
-*   @influxdata/ui-team
-/src/writeData/subscriptions/ @influxdata/data-acquisition
-/src/types/subscriptions.ts @influxdata/data-acquisition
+*   @influxdata/ui-team @influxdata/ecommerce

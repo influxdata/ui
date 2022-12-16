@@ -28,7 +28,7 @@ interface State {
 }
 
 @ErrorHandling
-class SearchWidget extends Component<Props, State> {
+export class SearchWidget extends Component<Props, State> {
   public static defaultProps = {
     widthPixels: 440,
     placeholderText: 'Search...',
@@ -102,5 +102,3 @@ class SearchWidget extends Component<Props, State> {
     this.setState({searchTerm: ''}, this.handleSearch)
   }
 }
-
-export default SearchWidget

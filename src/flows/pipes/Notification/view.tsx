@@ -10,7 +10,7 @@ import React, {
   useEffect,
 } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {parse} from '@influxdata/flux-lsp-browser'
+import {parse} from 'src/languageSupport/languages/flux/parser'
 import {
   ComponentStatus,
   Form,

@@ -1,30 +1,33 @@
-import {QuartzOrganizations} from 'src/identity/apis/auth'
+// Actions
 import {
   Actions,
   SET_QUARTZ_ORGANIZATIONS,
   SET_QUARTZ_ORGANIZATIONS_STATUS,
   SET_QUARTZ_DEFAULT_ORG,
 } from 'src/identity/quartzOrganizations/actions/creators'
-import {emptyOrg} from 'src/identity/components/GlobalHeader/DefaultEntities'
+
+// Libraries
 import produce from 'immer'
 
 // Types
+import {QuartzOrganizations} from 'src/identity/apis/org'
 
-import {OrganizationSummaries} from 'src/client/unityRoutes'
+// Mock Data
+import {emptyOrg} from 'src/identity/components/GlobalHeader/DefaultEntities'
+
+// Types
 import {RemoteDataState} from 'src/types'
 
 export const initialState = {
-  orgs: [emptyOrg] as OrganizationSummaries,
+  orgs: [emptyOrg],
   status: RemoteDataState.NotStarted,
-} as QuartzOrganizations
+}
 
 export default (state = initialState, action: Actions): QuartzOrganizations =>
   produce(state, draftState => {
     switch (action.type) {
       case SET_QUARTZ_ORGANIZATIONS: {
         draftState.orgs = action.quartzOrganizations
-        draftState.status = RemoteDataState.Done
-
         return
       }
 

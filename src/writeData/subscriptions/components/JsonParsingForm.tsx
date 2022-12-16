@@ -37,7 +37,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
-import ValidationInputWithTooltip from './ValidationInputWithTooltip'
+import ValidationInputWithTooltip from 'src/writeData/subscriptions/components/ValidationInputWithTooltip'
 
 interface Props {
   formContent: Subscription
@@ -80,7 +80,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           <p className="json-parsing-form__link">
             See our{' '}
             <a
-              href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/load-data/?t=JSON#define-parsing-rules"
+              href="https://docs.influxdata.com/influxdb/cloud/reference/json-parsing"
               target="_blank"
               rel="noreferrer"
             >

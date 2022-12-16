@@ -1,0 +1,83 @@
+@import '~src/style/modules';
+
+.monaco-editor__language {
+  -webkit-user-select: none;
+  user-select: none;
+  position: absolute;
+  bottom: 0;
+  right: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: $cf-grey-35;
+  font-family: 'Proxima Nova';
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  height: 18px;
+  line-height: 14px;
+}
+// the specificity here is important to override the dynamic
+// base theme that monaco loads in at runtime
+.react-monaco-editor-container > .monaco-editor {
+  -webkit-user-select: text;
+  user-select: text;
+  font-family: $cf-code-font;
+  font-weight: 500;
+  font-size: 13px;
+
+  .mtk1 {
+    color: $cf-grey-75;
+  }
+
+  .minimap {
+    border-left: 2px solid #4d4d60;
+
+    .minimap-slider {
+      background: rgba(53, 54, 64, 0.4);
+
+      .minimap-slider-horizontal {
+        background: rgba(53, 54, 64, 0.4);
+      }
+
+      &:hover {
+        background: rgba(53, 54, 64, 0.4);
+        .minimap-slider-horizontal {
+          background: rgba(53, 54, 64, 0.4);
+        }
+      }
+    }
+  }
+
+  .monaco-scrollable-element .scrollbar.vertical .slider {
+    background: rgba(53, 54, 64, 0.6);
+  }
+
+  .scroll-decoration {
+    box-shadow: #1b1b1b 0 6px 6px -6px inset;
+  }
+
+  .current-line ~ .line-numbers {
+    color: #bec2cc;
+  }
+}
+
+.qx-editor--monaco {
+  position: relative;
+  overflow: hidden;
+
+  .composition-sync--on {
+    background: #00a3ff26; // blue with 15% opacity
+  }
+
+  .composition-sync--on--first {
+    border-top: 1px solid $c-pool;
+    // composition sync icon
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M4.82511 4.0427L7.10622 1.6971L5.67243 0.302734L0.0902793 6.0427H16V4.0427H4.82511ZM11.1749 11.9571H0V9.95714H15.9097L10.3275 15.6971L8.89376 14.3027L11.1749 11.9571Z' fill='%2300a3ff'/%3E%3C/svg%3E%0A");
+    background-repeat: no-repeat;
+    background-size: 11px 11px;
+    background-position: $cf-space-3xs $cf-space-3xs;
+  }
+
+  .composition-sync--on--last {
+    border-bottom: 1px solid $c-pool;
+  }
+}

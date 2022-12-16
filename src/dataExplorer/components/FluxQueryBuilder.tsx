@@ -1,15 +1,16 @@
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useCallback, useState, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Components
 import {
-  ComponentColor,
   DraggableResizer,
+  Dropdown,
   FlexBox,
   FlexDirection,
   Orientation,
   Button,
+  Icon,
   IconFont,
   AlignItems,
   JustifyContent,
@@ -24,20 +25,24 @@ import {
   PersistanceProvider,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
-import ResultsPane from 'src/dataExplorer/components/ResultsPane'
+import {LanguageType} from 'src/dataExplorer/components/resources'
+import {ResultsPane} from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
 import Schema from 'src/dataExplorer/components/Schema'
 import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getOrg} from 'src/organizations/selectors'
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {RemoteDataState} from 'src/types'
+import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 // Styles
 import './FluxQueryBuilder.scss'
 
 export enum OverlayType {
+  DELETE = 'delete',
+  EDIT = 'edit',
   NEW = 'new',
   OPEN = 'open',
   SAVE = 'save',
@@ -45,41 +50,55 @@ export enum OverlayType {
 
 const FluxQueryBuilder: FC = () => {
   const history = useHistory()
-  const {hasChanged, query, vertical, setVertical} =
+  const {resource, hasChanged, vertical, setVertical, setHasChanged} =
     useContext(PersistanceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false)
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    resource?.language ?? LanguageType.FLUX
+  )
+  const isIoxOrg = useSelector(isOrgIOx)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const org = useSelector(getOrg)
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
 
-    history.replace(`/orgs/${org.id}/data-explorer/from/script`)
-
-    if (!isFlagEnabled('saveAsScript')) {
-      setIsOverlayVisible(false)
-    }
-  }
-
-  const handleNewScript = () => {
-    if (isFlagEnabled('saveAsScript')) {
-      if (hasChanged) {
-        setOverlayType(OverlayType.NEW)
-      } else {
-        handleClear()
-      }
+    if (isIoxOrg) {
+      history.replace(
+        `/orgs/${org.id}/data-explorer/from/script?language=${selectedLanguage}&${SCRIPT_EDITOR_PARAMS}`
+      )
     } else {
-      if (hasChanged) {
-        setIsOverlayVisible(true)
-      } else {
-        handleClear()
-      }
+      history.replace(
+        `/orgs/${org.id}/data-explorer/from/script${SCRIPT_EDITOR_PARAMS}`
+      )
     }
+  }, [
+    cancel,
+    isIoxOrg,
+    org.id,
+    history,
+    setResult,
+    setStatus,
+    selectedLanguage,
+  ])
+
+  const handleSelectDropdown = (language: LanguageType) => {
+    // set the language in the state until we can confirm the selection
+    setSelectedLanguage(language)
+    setHasChanged(true)
+    setOverlayType(OverlayType.NEW)
   }
+
+  const handleNewScript = useCallback(() => {
+    if (hasChanged) {
+      setOverlayType(OverlayType.NEW)
+    } else {
+      handleClear()
+    }
+  }, [handleClear, hasChanged])
 
   const handleUserpilot = () => {
     if (window.userpilot) {
@@ -90,36 +109,14 @@ const FluxQueryBuilder: FC = () => {
   return (
     <EditorProvider>
       <SidebarProvider>
-        {isFlagEnabled('saveAsScript') ? (
-          <Overlay visible={overlayType !== null}>
-            <SaveAsScript
-              type={overlayType}
-              onClose={() => setOverlayType(null)}
-            />
-          </Overlay>
-        ) : (
-          <Overlay visible={isOverlayVisible}>
-            <Overlay.Container maxWidth={500}>
-              <Overlay.Header title="Caution" />
-              <Overlay.Body>
-                This operation will wipe out your existing query text. Are you
-                sure you want to continue clearing your existing query?
-              </Overlay.Body>
-              <Overlay.Footer>
-                <Button
-                  color={ComponentColor.Default}
-                  onClick={() => setIsOverlayVisible(false)}
-                  text="No"
-                />
-                <Button
-                  color={ComponentColor.Primary}
-                  onClick={handleClear}
-                  text="Yes"
-                />
-              </Overlay.Footer>
-            </Overlay.Container>
-          </Overlay>
-        )}
+        <Overlay visible={overlayType !== null}>
+          <SaveAsScript
+            language={selectedLanguage}
+            type={overlayType}
+            setOverlayType={setOverlayType}
+            onClose={() => setOverlayType(null)}
+          />
+        </Overlay>
         <FlexBox
           className="flux-query-builder--container"
           direction={FlexDirection.Column}
@@ -134,37 +131,66 @@ const FluxQueryBuilder: FC = () => {
               direction={FlexDirection.Row}
               justifyContent={JustifyContent.SpaceBetween}
             >
-              <div>
-                <Button
-                  onClick={handleNewScript}
-                  text={isFlagEnabled('saveAsScript') ? 'New Script' : 'Clear'}
-                  icon={IconFont.Plus_New}
-                  status={
-                    query.length === 0
-                      ? ComponentStatus.Disabled
-                      : ComponentStatus.Default
-                  }
-                  testID="flux-query-builder--new-script"
-                />
-                {isFlagEnabled('saveAsScript') && (
+              <div style={{display: 'flex'}}>
+                {isIoxOrg ? (
+                  <Dropdown
+                    menu={onCollapse => (
+                      <Dropdown.Menu onCollapse={onCollapse}>
+                        {[LanguageType.FLUX, LanguageType.SQL].map(option => (
+                          <Dropdown.Item
+                            className={`script-dropdown__${option}`}
+                            key={option}
+                            onClick={() => handleSelectDropdown(option)}
+                            selected={resource?.language === option}
+                          >
+                            {option}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    )}
+                    button={(active, onClick) => (
+                      <Dropdown.Button active={active} onClick={onClick}>
+                        <>
+                          <Icon glyph={IconFont.Plus_New} />
+                          &nbsp;New Script
+                        </>
+                      </Dropdown.Button>
+                    )}
+                    testID="select-option-dropdown"
+                  />
+                ) : (
                   <Button
-                    className="flux-query-builder__action-button"
-                    onClick={() => setOverlayType(OverlayType.OPEN)}
-                    text="Open"
-                    icon={IconFont.FolderOpen}
+                    onClick={handleNewScript}
+                    text="New Script"
+                    icon={IconFont.Plus_New}
+                    testID="flux-query-builder--new-script"
                   />
                 )}
-                {isFlagEnabled('saveAsScript') && (
+                <Button
+                  className="flux-query-builder__action-button"
+                  onClick={() => setOverlayType(OverlayType.OPEN)}
+                  text="Open"
+                  icon={IconFont.FolderOpen}
+                />
+                <Button
+                  className="flux-query-builder__action-button"
+                  onClick={() => setOverlayType(OverlayType.SAVE)}
+                  status={
+                    hasChanged
+                      ? ComponentStatus.Default
+                      : ComponentStatus.Disabled
+                  }
+                  text="Save"
+                  testID="flux-query-builder--save-script"
+                  icon={IconFont.Save}
+                />
+                {resource?.data?.id && (
                   <Button
                     className="flux-query-builder__action-button"
-                    onClick={() => setOverlayType(OverlayType.SAVE)}
-                    status={
-                      hasChanged
-                        ? ComponentStatus.Default
-                        : ComponentStatus.Disabled
-                    }
-                    text="Save"
-                    icon={IconFont.SaveOutline}
+                    onClick={() => setOverlayType(OverlayType.EDIT)}
+                    status={ComponentStatus.Default}
+                    text="Edit"
+                    icon={IconFont.Pencil}
                   />
                 )}
               </div>

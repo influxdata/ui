@@ -1,6 +1,6 @@
 import React from 'react'
 
-const icon = (
+export const BandIcon = (
   <div className="vis-graphic" data-testid="vis-graphic--band">
     <svg
       id="Band Chart"
@@ -31,5 +31,3 @@ const icon = (
     </svg>
   </div>
 )
-
-export default icon

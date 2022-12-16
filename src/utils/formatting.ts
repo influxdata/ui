@@ -28,12 +28,14 @@ export const ruleToString = (seconds: number): string => {
       return acc
     }
 
-    return `${acc} ${v} ${k}`
+    // removes the trailing plural 's' if magnitude is singular
+    const kSingularOrPlural = v <= 1 ? k.slice(0, -1) : k
+    return `${acc} ${v} ${kSingularOrPlural}`
   }, '')
 
   if (!rpString) {
     return 'forever'
   }
 
-  return rpString
+  return rpString.trim()
 }

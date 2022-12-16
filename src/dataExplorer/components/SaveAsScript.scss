@@ -1,3 +1,44 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.data-source--list__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  color: $cf-grey-45;
+  height: 300px;
+}
+
+.open-script__menu-items {
+  background-color: #000;
+}
+
 .save-script-overlay__warning-text {
   margin-bottom: 25px;
+}
+
+.save-script--error {
+  display: block;
+  margin: -10px 0 12px 0;
+}
+
+.edit-overlay__delete-script {
+  margin-top: $cf-space-s;
+}
+
+.invokable-script__url {
+  display: flex;
+  justify-content: space-between;
+
+  input {
+    pointer-events: none;
+  }
+
+  input:hover {
+    cursor: pointer;
+  }
+}
+
+.script-description__input {
+  margin-bottom: $cf-space-s;
 }

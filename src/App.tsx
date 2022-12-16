@@ -15,7 +15,7 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Components
 import {AppWrapper, Page} from '@influxdata/clockface'
-import TreeNav from 'src/pageLayout/containers/TreeNav'
+import {MainNavigation} from 'src/pageLayout/containers/MainNavigation'
 import TooltipPortal from 'src/portals/TooltipPortal'
 import NotesPortal from 'src/portals/NotesPortal'
 import Notifications from 'src/shared/components/notifications/Notifications'
@@ -41,19 +41,17 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {executeVWO} from 'src/utils/vwo'
 
-// Styles
-import './MultiOrgOverrideStyles.scss'
-
 // Providers
 import {UserAccountProvider} from 'src/accounts/context/userAccount'
 
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
   const currentPage = useSelector((state: AppState) => state.currentPage)
+  const shouldShowCloudHeader = CLOUD && currentPage !== 'not found'
 
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
-    'multi-org': isFlagEnabled('multiOrg'),
+    'multi-org': CLOUD,
   })
 
   useEffect(() => {
@@ -120,10 +118,10 @@ const App: FC = () => {
         <OverlayController />
       </OverlayProviderComp>
       <EngagementLink />
-      <TreeNav />
+      <MainNavigation />
       <Suspense fallback={<PageSpinner />}>
         <Page>
-          {CLOUD && isFlagEnabled('multiOrg') && <GlobalHeader />}
+          {shouldShowCloudHeader && <GlobalHeader />}
           <Switch>
             <Route path="/orgs/new" component={CreateOrgOverlay} />
             <Route path="/orgs/:orgID" component={SetOrg} />

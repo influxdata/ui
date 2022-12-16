@@ -1,0 +1,74 @@
+[
+  {
+    "isProviderAvailable": true,
+    "isRegionAvailable": true,
+    "priority": 2,
+    "providerId": "AWS",
+    "providerName": "Amazon Web Services",
+    "regionId": "ap-southeast-2",
+    "regionName": "Asia Pacific (Australia)"
+  },
+  {
+    "isProviderAvailable": true,
+    "isRegionAvailable": true,
+    "priority": 4,
+    "providerId": "AWS",
+    "providerName": "Amazon Web Services",
+    "regionId": "eu-central-1",
+    "regionName": "EU Frankfurt"
+  },
+  {
+    "isProviderAvailable": true,
+    "isRegionAvailable": true,
+    "priority": 1,
+    "providerId": "AWS",
+    "providerName": "Amazon Web Services",
+    "regionId": "us-east-1",
+    "regionName": "US East (N. Virginia)"
+  },
+  {
+    "isProviderAvailable": true,
+    "isRegionAvailable": true,
+    "priority": 3,
+    "providerId": "AWS",
+    "providerName": "Amazon Web Services",
+    "regionId": "us-west-2-2",
+    "regionName": "US West (Oregon)"
+  },
+  {
+    "isProviderAvailable": true,
+    "isRegionAvailable": true,
+    "priority": 1,
+    "providerId": "Azure",
+    "providerName": "Microsoft Azure",
+    "regionId": "eastus",
+    "regionName": "Virginia"
+  },
+  {
+    "isProviderAvailable": true,
+    "isRegionAvailable": true,
+    "priority": 2,
+    "providerId": "Azure",
+    "providerName": "Microsoft Azure",
+    "regionId": "westeurope",
+    "regionName": "Amsterdam"
+  },
+  {
+    "isProviderAvailable": true,
+    "isRegionAvailable": true,
+    "priority": 1,
+    "providerId": "GCP",
+    "providerName": "Google Cloud",
+    "regionId": "eu-west1",
+    "regionName": "Belgium"
+  },
+  {
+    "isProviderAvailable": true,
+    "isRegionAvailable": true,
+    "priority": 2,
+    "providerId": "GCP",
+    "providerName": "Google Cloud",
+    "regionId": "us-central1",
+    "regionName": "Iowa"
+  }
+]

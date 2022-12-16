@@ -1,15 +1,14 @@
-import icon from './icon'
-import properties from './properties'
-import options from './options'
-import view from './view'
+import {Visualization} from 'src/visualization'
+import {TableIcon} from './icon'
+import {TableOptions} from './options'
+import {TableProperties} from './properties'
+import {Table} from './view'
 
-export default register => {
-  register({
-    type: 'table',
-    name: 'Table',
-    graphic: icon,
-    initial: properties,
-    component: view,
-    options,
-  })
+export class View implements Visualization {
+  type = 'table'
+  name = 'Table'
+  graphic = TableIcon
+  initial = TableProperties
+  component = Table
+  options = TableOptions
 }

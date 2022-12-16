@@ -1,6 +1,6 @@
 import React from 'react'
 
-const icon = (
+export const SimpleTableIcon = (
   <div className="vis-graphic" data-testid="vis-graphic--table">
     <svg
       id="Table"
@@ -76,5 +76,3 @@ const icon = (
     </svg>
   </div>
 )
-
-export default icon

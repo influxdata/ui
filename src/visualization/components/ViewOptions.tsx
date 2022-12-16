@@ -6,7 +6,7 @@ import {
   SUPPORTED_VISUALIZATIONS,
 } from 'src/visualization'
 
-const ViewOptions: FC<VisualizationOptionProps> = ({
+export const ViewOptions: FC<VisualizationOptionProps> = ({
   properties,
   results,
   update,
@@ -27,5 +27,3 @@ const ViewOptions: FC<VisualizationOptionProps> = ({
     </ErrorBoundary>
   )
 }
-
-export default ViewOptions

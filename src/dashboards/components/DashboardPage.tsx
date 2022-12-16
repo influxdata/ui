@@ -7,12 +7,11 @@ import {Switch, Route, useRouteMatch} from 'react-router-dom'
 import {Page} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import DashboardHeader from 'src/dashboards/components/DashboardHeader'
-import DashboardComponent from 'src/dashboards/components/Dashboard'
+import {DashboardCells} from 'src/shared/components/cells/DashboardCells'
 import ManualRefresh from 'src/shared/components/ManualRefresh'
 import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import VariablesControlBar from 'src/dashboards/components/variablesControlBar/VariablesControlBar'
 import LimitChecker from 'src/cloud/components/LimitChecker'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import {EditViewVEO} from 'src/dashboards/components/EditVEO'
 import {NewViewVEO} from 'src/dashboards/components/NewVEO'
 import {
@@ -46,7 +45,6 @@ import {
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 
@@ -63,12 +61,9 @@ const SingleDashboardPage: FC<ManualRefreshProps> = ({
   return (
     <>
       <DashboardHeader onManualRefresh={onManualRefresh} />
-      {!isFlagEnabled('multiOrg') && (
-        <RateLimitAlert alertOnly={true} location="dashboard page" />
-      )}
       <VariablesControlBar />
       <ErrorBoundary>
-        <DashboardComponent manualRefresh={manualRefresh} />
+        <DashboardCells manualRefresh={manualRefresh} />
       </ErrorBoundary>
     </>
   )
@@ -92,42 +87,37 @@ class DashboardPage extends Component<Props> {
     const {manualRefresh, onManualRefresh} = this.props
 
     return (
-      <>
-        <ErrorBoundary>
-          <Page titleTag={this.pageTitle} testID="dashboard-page">
-            <LimitChecker>
-              <HoverTimeProvider>
-                <SingleDashboardPage
-                  manualRefresh={manualRefresh}
-                  onManualRefresh={onManualRefresh}
+      <ErrorBoundary>
+        <Page titleTag={this.pageTitle} testID="dashboard-page">
+          <LimitChecker>
+            <HoverTimeProvider>
+              <SingleDashboardPage
+                manualRefresh={manualRefresh}
+                onManualRefresh={onManualRefresh}
+              />
+              <Switch>
+                <Route path={`${dashRoute}/cells/new`} component={NewViewVEO} />
+                <Route
+                  path={`${dashRoute}/cells/:cellID/edit`}
+                  component={EditViewVEO}
                 />
-                <Switch>
-                  <Route
-                    path={`${dashRoute}/cells/new`}
-                    component={NewViewVEO}
-                  />
-                  <Route
-                    path={`${dashRoute}/cells/:cellID/edit`}
-                    component={EditViewVEO}
-                  />
-                  <Route
-                    path={`${dashRoute}/notes/new`}
-                    component={AddNoteOverlay}
-                  />
-                  <Route
-                    path={`${dashRoute}/notes/:cellID/edit`}
-                    component={EditNoteOverlay}
-                  />
-                  <Route
-                    path={`${dashRoute}/edit-annotation`}
-                    component={EditAnnotationDashboardOverlay}
-                  />
-                </Switch>
-              </HoverTimeProvider>
-            </LimitChecker>
-          </Page>
-        </ErrorBoundary>
-      </>
+                <Route
+                  path={`${dashRoute}/notes/new`}
+                  component={AddNoteOverlay}
+                />
+                <Route
+                  path={`${dashRoute}/notes/:cellID/edit`}
+                  component={EditNoteOverlay}
+                />
+                <Route
+                  path={`${dashRoute}/edit-annotation`}
+                  component={EditAnnotationDashboardOverlay}
+                />
+              </Switch>
+            </HoverTimeProvider>
+          </LimitChecker>
+        </Page>
+      </ErrorBoundary>
     )
   }
 

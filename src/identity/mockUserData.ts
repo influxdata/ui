@@ -1,5 +1,6 @@
-import {CurrentIdentity, CurrentOrg} from 'src/identity/apis/auth'
-import {BillingProvider} from 'src/types'
+import {CurrentIdentity} from 'src/identity/apis/auth'
+import {CurrentOrg} from 'src/identity/apis/org'
+import {BillingProvider, RemoteDataState} from 'src/types'
 
 export const mockBillingProviders: BillingProvider[] = [
   'zuora',
@@ -16,6 +17,7 @@ export const mockIdentities: CurrentIdentity[] = [
       name: 'TestCo',
       paygCreditStartDate: null,
       type: 'free',
+      isUpgradeable: true,
     },
     org: {
       clusterHost: 'https://fakehost.fakehost.fake',
@@ -31,6 +33,11 @@ export const mockIdentities: CurrentIdentity[] = [
       operatorRole: null,
       orgCount: 1,
     },
+    loadingStatus: {
+      identityStatus: RemoteDataState.NotStarted,
+      billingStatus: RemoteDataState.NotStarted,
+      orgDetailsStatus: RemoteDataState.NotStarted,
+    },
   },
   {
     account: {
@@ -39,6 +46,7 @@ export const mockIdentities: CurrentIdentity[] = [
       name: 'TestCo 2',
       paygCreditStartDate: null,
       type: 'contract',
+      isUpgradeable: false,
     },
     org: {
       clusterHost: 'https://newhost.newhost.new',
@@ -54,6 +62,11 @@ export const mockIdentities: CurrentIdentity[] = [
       operatorRole: null,
       orgCount: 3,
     },
+    loadingStatus: {
+      identityStatus: RemoteDataState.NotStarted,
+      billingStatus: RemoteDataState.NotStarted,
+      orgDetailsStatus: RemoteDataState.NotStarted,
+    },
   },
   {
     account: {
@@ -62,6 +75,7 @@ export const mockIdentities: CurrentIdentity[] = [
       name: 'Test Name 3',
       paygCreditStartDate: null,
       type: 'pay_as_you_go',
+      isUpgradeable: false,
     },
     org: {
       clusterHost: 'https://testdomain.testdomain.org',
@@ -77,6 +91,11 @@ export const mockIdentities: CurrentIdentity[] = [
       operatorRole: null,
       orgCount: 5,
     },
+    loadingStatus: {
+      identityStatus: RemoteDataState.NotStarted,
+      billingStatus: RemoteDataState.NotStarted,
+      orgDetailsStatus: RemoteDataState.NotStarted,
+    },
   },
 ]
 
@@ -85,7 +104,6 @@ export const mockOrgDetailsArr: CurrentOrg[] = [
     clusterHost: 'https://fakehost.fakehost.fake',
     creationDate: '2022-06-08T16:59:44.827046Z',
     description: null,
-    isRegionBeta: false,
     id: '89d20c01076ba140',
     name: 'fakeemail@influxdata.com',
     provider: 'Azure',
@@ -96,7 +114,6 @@ export const mockOrgDetailsArr: CurrentOrg[] = [
     clusterHost: 'https://newhost.new.new',
     creationDate: '2022-06-10T16:59:44.827046Z',
     description: null,
-    isRegionBeta: true,
     id: '72d20c01076ba120',
     name: 'newemail@influxdata.com',
     provider: 'AWS',
@@ -107,7 +124,6 @@ export const mockOrgDetailsArr: CurrentOrg[] = [
     clusterHost: 'https://oldhost.oldhost.old',
     creationDate: '2022-06-04T16:59:44.827046Z',
     description: null,
-    isRegionBeta: false,
     id: '59d20c01076be140',
     name: 'newemail@influxdata.com',
     provider: 'GCP',
@@ -118,7 +134,6 @@ export const mockOrgDetailsArr: CurrentOrg[] = [
     clusterHost: 'https://temphost.temphost.temp',
     creationDate: '2022-06-02T16:59:44.827046Z',
     description: null,
-    isRegionBeta: true,
     id: '64d20c01076be140',
     name: 'newemail@influxdata.com',
     provider: 'AWS',

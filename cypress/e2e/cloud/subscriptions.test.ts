@@ -13,11 +13,7 @@ describe('Subscriptions', () => {
             }).then(() => {
               cy.visit(`${orgs}/${id}/load-data/sources`)
 
-              cy.setFeatureFlags({
-                subscriptionsUI: true,
-                multiOrg: true,
-                quartzIdentity: true,
-              })
+              cy.setFeatureFlags({subscriptionsUI: true})
 
               cy.getByTestID('subscriptions--tab').should('be.visible')
               cy.intercept('POST', `/api/v2private/broker/subs*`).as(
@@ -273,7 +269,10 @@ describe('Subscriptions', () => {
     cy.getByTestID('create-parsing-form-overlay').should('be.visible')
     // json
     cy.getByTestID('create-parsing-form-json--button').click()
-    cy.getByTestID('timestamp-json-parsing').type('$.t')
+    cy.getByTestID('timestamp-json-parsing')
+      .scrollIntoView()
+      .should('be.visible')
+      .type('$.t')
     cy.getByTestID('json-timestamp-precision')
       .scrollIntoView()
       .should('be.visible')

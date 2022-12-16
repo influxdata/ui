@@ -1,15 +1,14 @@
-import icon from './icon'
-import properties from './properties'
-import view from './view'
-import options from './options'
+import {Visualization} from 'src/visualization'
+import {MosaicIcon} from './icon'
+import {MosaicOptions} from './options'
+import {MosaicProperties} from './properties'
+import {Mosaic} from './view'
 
-export default register => {
-  register({
-    type: 'mosaic',
-    name: 'Mosaic',
-    graphic: icon,
-    component: view,
-    initial: properties,
-    options,
-  })
+export class View implements Visualization {
+  type = 'mosaic'
+  name = 'Mosaic'
+  graphic = MosaicIcon
+  component = Mosaic
+  initial = MosaicProperties
+  options = MosaicOptions
 }

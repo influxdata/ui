@@ -6,12 +6,18 @@ import React, {FC, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import BillingFree from 'src/billing/components/Free/Free'
+import {BillingFree} from 'src/billing/components/Free/Free'
 import BillingPayAsYouGo from 'src/billing/components/PayAsYouGo/PayAsYouGo'
 import MarketplaceBilling from 'src/billing/components/marketplace/MarketplaceBilling'
 
+// Types
+import {RemoteDataState} from 'src/types'
+
 // Utils
-import {selectCurrentIdentity} from 'src/identity/selectors'
+import {
+  selectCurrentIdentity,
+  selectQuartzBillingStatus,
+} from 'src/identity/selectors'
 
 // Thunks
 import {getBillingProviderThunk} from 'src/identity/actions/thunks'
@@ -19,16 +25,17 @@ import {getBillingProviderThunk} from 'src/identity/actions/thunks'
 const BillingPageContents: FC = () => {
   const dispatch = useDispatch()
   const {account} = useSelector(selectCurrentIdentity)
+  const quartzBillingStatus = useSelector(selectQuartzBillingStatus)
 
   useEffect(() => {
     if (!CLOUD) {
       return
     }
 
-    if (!account.billingProvider) {
+    if (quartzBillingStatus === RemoteDataState.NotStarted) {
       dispatch(getBillingProviderThunk())
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, quartzBillingStatus])
 
   if (account.billingProvider === undefined) {
     return null

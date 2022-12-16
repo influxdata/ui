@@ -1,15 +1,20 @@
 // Libraries
-import React, {FC, useMemo} from 'react'
+import React, {FC, useCallback, useMemo, useState} from 'react'
+import {debounce} from 'lodash'
 import {
-  Input,
-  Grid,
+  ButtonShape,
   Columns,
+  ComponentSize,
+  ComponentStatus,
+  Dropdown,
+  FlexBox,
   Form,
+  Grid,
+  Input,
+  InputLabel,
   SelectDropdown,
   SelectGroup,
-  Dropdown,
-  ComponentStatus,
-  ButtonShape,
+  SlideToggle,
 } from '@influxdata/clockface'
 import {createGroupIDColumn} from '@influxdata/giraffe'
 
@@ -35,7 +40,6 @@ import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSche
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
-import Checkbox from 'src/shared/components/Checkbox'
 import {XYViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
 
@@ -45,7 +49,16 @@ interface Props extends VisualizationOptionProps {
   properties: XYViewProperties
 }
 
-const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
+export const GraphOptions: FC<Props> = ({properties, results, update}) => {
+  const [yAxisLabel, setYAxisLabel] = useState(properties.axes.y.label)
+  const [yAxisPrefix, setYAxisPrefix] = useState(properties.axes.y.prefix)
+  const [yAxisSuffix, setYAxisSuffix] = useState(properties.axes.y.suffix)
+
+  const groupKey = useMemo(
+    () => [...results.fluxGroupKeyUnion, 'result'],
+    [results]
+  )
+
   const numericColumns = (results?.table?.columnKeys || []).filter(key => {
     if (key === 'result' || key === 'table') {
       return false
@@ -55,11 +68,6 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
 
     return columnType === 'time' || columnType === 'number'
   })
-
-  const groupKey = useMemo(
-    () => [...results.fluxGroupKeyUnion, 'result'],
-    [results]
-  )
 
   const xColumn = defaultXColumn(results?.table, properties.xColumn)
   const yColumn = defaultYColumn(results?.table, properties.yColumn)
@@ -91,6 +99,10 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
     })
   }
 
+  const updateAxisDebounced = useCallback(debounce(updateAxis, 200), [
+    properties,
+  ])
+
   const handleSetYDomain = (yDomain: [number, number]): void => {
     let bounds: [string | null, string | null]
 
@@ -118,6 +130,7 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
           widthXS={Columns.Twelve}
           widthMD={Columns.Six}
           widthLG={Columns.Four}
+          className="view-options-container"
         >
           <h5 className="view-options--header">Data</h5>
           <Form.Element label="X Column">
@@ -253,15 +266,6 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-
-          <Checkbox
-            label="Shade Area Below Lines"
-            checked={!!properties.shadeBelow}
-            onSetChecked={shadeBelow => {
-              update({shadeBelow})
-            }}
-          />
-          <br />
           <Form.Element label="Hover Dimension">
             <Dropdown
               button={(active, onClick) => (
@@ -315,6 +319,17 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               )}
             />
           </Form.Element>
+          <Form.Element label="">
+            <FlexBox margin={ComponentSize.Medium}>
+              <SlideToggle
+                active={!!properties.shadeBelow}
+                onChange={() => {
+                  update({shadeBelow: !properties.shadeBelow})
+                }}
+              />
+              <InputLabel>Shade area below graph</InputLabel>
+            </FlexBox>
+          </Form.Element>
         </Grid.Column>
         <Grid.Column>
           <h5 className="view-options--header">X-Axis</h5>
@@ -333,9 +348,15 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
           <h5 className="view-options--header">Y-Axis</h5>
           <Form.Element label="Y Axis Label">
             <Input
-              value={properties.axes.y.label}
-              onChange={evt => {
-                updateAxis('y', {label: evt.target.value})
+              value={yAxisLabel}
+              onKeyPress={event => {
+                if (event.code === 'Enter') {
+                  updateAxis('y', {label: yAxisLabel})
+                }
+              }}
+              onChange={event => {
+                setYAxisLabel(event.target.value)
+                updateAxisDebounced('y', {label: event.target.value})
               }}
             />
           </Form.Element>
@@ -383,9 +404,15 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
             <Grid.Column widthXS={Columns.Six}>
               <Form.Element label="Y Axis Prefix">
                 <Input
-                  value={properties.axes.y.prefix}
-                  onChange={evt => {
-                    updateAxis('y', {prefix: evt.target.value})
+                  value={yAxisPrefix}
+                  onKeyPress={event => {
+                    if (event.code === 'Enter') {
+                      updateAxis('y', {prefix: yAxisPrefix})
+                    }
+                  }}
+                  onChange={event => {
+                    setYAxisPrefix(event.target.value)
+                    updateAxisDebounced('y', {prefix: event.target.value})
                   }}
                 />
               </Form.Element>
@@ -393,9 +420,15 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
             <Grid.Column widthXS={Columns.Six}>
               <Form.Element label="Y Axis Suffix">
                 <Input
-                  value={properties.axes.y.suffix}
-                  onChange={evt => {
-                    updateAxis('y', {suffix: evt.target.value})
+                  value={yAxisSuffix}
+                  onKeyPress={event => {
+                    if (event.code === 'Enter') {
+                      updateAxis('y', {suffix: yAxisSuffix})
+                    }
+                  }}
+                  onChange={event => {
+                    setYAxisSuffix(event.target.value)
+                    updateAxisDebounced('y', {suffix: event.target.value})
                   }}
                 />
               </Form.Element>
@@ -470,5 +503,3 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
     </Grid>
   )
 }
-
-export default GraphViewOptions

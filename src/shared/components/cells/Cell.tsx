@@ -28,7 +28,7 @@ import {
 } from 'src/types'
 
 // Selectors
-import {getAllVariables} from 'src/variables/selectors'
+import {getAllVariablesMemoized} from 'src/variables/selectors'
 import {getWindowPeriodFromQueryBuilder} from 'src/timeMachine/selectors'
 
 // Constants
@@ -130,7 +130,8 @@ class CellComponent extends Component<Props, State> {
     switch (type) {
       case 'xy':
       case 'line-plus-single-stat':
-      case 'band': {
+      case 'band':
+      case 'scatter': {
         if (this.props.windowPeriodFromQueryBuilder === AGG_WINDOW_AUTO) {
           return (
             <span className="cell--window-period">
@@ -138,11 +139,14 @@ class CellComponent extends Component<Props, State> {
             </span>
           )
         }
-        return (
-          <span className="cell--window-period">
-            window period: {this.props.windowPeriodFromQueryBuilder}
-          </span>
-        )
+        if (this.props.windowPeriodFromQueryBuilder.length) {
+          return (
+            <span className="cell--window-period">
+              window period: {this.props.windowPeriodFromQueryBuilder}
+            </span>
+          )
+        }
+        return null
       }
       default:
         return null
@@ -235,7 +239,8 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
     state,
     view?.id
   )
-  const variables = getAllVariables(state)
+  const variables = getAllVariablesMemoized(state)
+
   return {variables, view, windowPeriodFromQueryBuilder}
 }
 

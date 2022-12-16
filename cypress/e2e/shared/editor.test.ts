@@ -46,18 +46,13 @@ describe('Editor+LSP communication', () => {
     before(() => {
       cy.flush()
       cy.signin()
+      cy.setFeatureFlags({schemaComposition: true})
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
         })
       )
       // Double check that the new schemaComposition flag does not interfere.
-      cy.setFeatureFlags({
-        schemaComposition: true,
-      })
-      // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-      // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-      cy.wait(1200)
       cy.getByTestID('version-info')
       cy.getByTestID('nav-item-flows').should('be.visible')
       cy.getByTestID('nav-item-flows').click()
@@ -78,6 +73,9 @@ describe('Editor+LSP communication', () => {
     before(() => {
       cy.flush()
       cy.signin()
+      cy.setFeatureFlags({
+        schemaComposition: true,
+      })
       cy.get('@org').then(({id}: Organization) => {
         cy.createMapVariable(id)
         cy.fixture('routes').then(({orgs, explorer}) => {
@@ -86,12 +84,6 @@ describe('Editor+LSP communication', () => {
         })
       })
       // Double check that the new schemaComposition flag does not interfere.
-      cy.setFeatureFlags({
-        schemaComposition: true,
-      })
-      // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-      // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-      cy.wait(1200)
       cy.getByTestID('switch-to-script-editor').should('be.visible').click()
     })
 
@@ -102,25 +94,21 @@ describe('Editor+LSP communication', () => {
     before(() => {
       cy.flush()
       cy.signin()
+      cy.setFeatureFlags({
+        newDataExplorer: true,
+        schemaComposition: false,
+      })
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/data-explorer`)
         cy.getByTestID('tree-nav').should('be.visible')
-        cy.setFeatureFlags({
-          newDataExplorer: true,
-          schemaComposition: false,
-        }).then(() => {
-          // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-          // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-          cy.wait(1200)
-          cy.getByTestID('flux-query-builder-toggle').then($toggle => {
-            cy.wrap($toggle).should('be.visible')
-            // Switch to Flux Query Builder if not yet
-            if (!$toggle.hasClass('active')) {
-              // hasClass is a jQuery function
-              $toggle.click()
-              cy.getByTestID('flux-query-builder--menu').contains('Clear')
-            }
-          })
+        cy.getByTestID('flux-query-builder-toggle').then($toggle => {
+          cy.wrap($toggle).should('be.visible')
+          // Switch to Flux Query Builder if not yet
+          if (!$toggle.hasClass('active')) {
+            // hasClass is a jQuery function
+            $toggle.click()
+            cy.getByTestID('flux-query-builder--menu').contains('New Script')
+          }
         })
       })
     })

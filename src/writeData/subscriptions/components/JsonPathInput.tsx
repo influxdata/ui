@@ -31,9 +31,10 @@ import {
   sanitizeType,
   dataTypeList,
   handleAvroValidation,
+  handleDuplicateFieldTagName,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
-import ValidationInputWithTooltip from './ValidationInputWithTooltip'
+import ValidationInputWithTooltip from 'src/writeData/subscriptions/components/ValidationInputWithTooltip'
 
 interface Props {
   name: string
@@ -110,7 +111,8 @@ const JsonPathInput: FC<Props> = ({
                 : formContent.jsonFieldKeys[itemNum].name
               return (
                 handleValidation(name, value) ??
-                handleAvroValidation(name, value)
+                handleAvroValidation(name, value) ??
+                handleDuplicateFieldTagName(value, formContent)
               )
             }}
             placeholder={`${name}_name`.toLowerCase()}

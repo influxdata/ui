@@ -1,5 +1,5 @@
+// Libraries
 import React, {FC, useEffect} from 'react'
-
 import {
   ButtonShape,
   Columns,
@@ -14,8 +14,7 @@ import {
   SelectGroup,
 } from '@influxdata/clockface'
 
-import AutoDomainInput from 'src/shared/components/AutoDomainInput'
-import {AXES_SCALE_OPTIONS} from 'src/visualization/constants'
+// Utils
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
@@ -25,13 +24,22 @@ import {
   defaultYColumn,
   parseYBounds,
 } from 'src/shared/utils/vis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Components
+import {AdaptiveZoomToggle} from 'src/visualization/components/internal/AdaptiveZoomOption'
+import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 
+// Types
 import {BandViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
+
+// Constants
+import {AXES_SCALE_OPTIONS} from 'src/visualization/constants'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 const REMOVE_COLUMN = '(none)'
@@ -47,7 +55,7 @@ interface Props extends VisualizationOptionProps {
   properties: BandViewProperties
 }
 
-const BandViewOptions: FC<Props> = ({properties, results, update}) => {
+export const BandOptions: FC<Props> = ({properties, results, update}) => {
   useEffect(() => {
     const {mainColumn} = properties
     if (!mainColumn) {
@@ -173,6 +181,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           widthXS={Columns.Twelve}
           widthMD={Columns.Six}
           widthLG={Columns.Four}
+          className="view-options-container"
         >
           <h5 className="view-options--header">Data</h5>
           <Form.Element label="X Column">
@@ -205,15 +214,13 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
               }
             />
           </Form.Element>
-          <Form.Element label="Time Format">
-            <SelectDropdown
-              options={FORMAT_OPTIONS.map(option => option.text)}
-              selectedOption={resolveTimeFormat(properties.timeFormat)}
-              onSelect={(format: string) => {
-                update({timeFormat: format})
-              }}
+          {isFlagEnabled('zoomRequery') && (
+            <AdaptiveZoomToggle
+              adaptiveZoomHide={properties.adaptiveZoomHide}
+              type={properties.type}
+              update={update}
             />
-          </Form.Element>
+          )}
         </Grid.Column>
         <Grid.Column
           widthXS={Columns.Twelve}
@@ -327,6 +334,15 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Options</h5>
+          <Form.Element label="Time Format">
+            <SelectDropdown
+              options={FORMAT_OPTIONS.map(option => option.text)}
+              selectedOption={resolveTimeFormat(properties.timeFormat)}
+              onSelect={(format: string) => {
+                update({timeFormat: format})
+              }}
+            />
+          </Form.Element>
           {properties.geom && (
             <Form.Element label="Interpolation">
               <Dropdown
@@ -377,8 +393,6 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-
-          <br />
           <Form.Element label="Hover Dimension">
             <Dropdown
               button={(active, onClick) => (
@@ -554,5 +568,3 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
     </Grid>
   )
 }
-
-export default BandViewOptions

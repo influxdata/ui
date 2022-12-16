@@ -12,8 +12,6 @@ import {VisualizationProps} from 'src/visualization'
 
 import {Config, Plot, getLatestValues} from '@influxdata/giraffe'
 
-import './style.scss'
-
 // Selectors
 import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
@@ -21,7 +19,7 @@ interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
 }
 
-const SingleStat: FC<Props> = ({properties, result}) => {
+export const SingleStat: FC<Props> = ({properties, result}) => {
   const {prefix, suffix, colors, decimalPlaces} = properties
 
   const dispatch = useDispatch()
@@ -70,5 +68,3 @@ const SingleStat: FC<Props> = ({properties, result}) => {
   }
   return <Plot config={config} />
 }
-
-export default SingleStat

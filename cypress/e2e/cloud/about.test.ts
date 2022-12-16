@@ -5,18 +5,13 @@ describe.skip('About Page for free users with only 1 user', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.setFeatureFlags({
-          quartzIdentity: true,
-          multiOrg: true,
-        }).then(() => {
-          cy.get('@org').then(({id}: Organization) => {
-            cy.quartzProvision({
-              accountType: 'free',
-              hasUsers: false,
-            }).then(() => {
-              cy.visit(`/orgs/${id}/org-settings`)
-              cy.getByTestID('about-page--header').should('be.visible')
-            })
+        cy.get('@org').then(({id}: Organization) => {
+          cy.quartzProvision({
+            accountType: 'free',
+            hasUsers: false,
+          }).then(() => {
+            cy.visit(`/orgs/${id}/org-settings`)
+            cy.getByTestID('about-page--header').should('be.visible')
           })
         })
       })
@@ -51,26 +46,27 @@ describe.skip('About Page for free users with only 1 user', () => {
 })
 
 describe('About Page for free users with multiple users', () => {
-  beforeEach(() =>
+  beforeEach(() => {
+    cy.intercept('GET', 'api/v2/quartz/identity', req => {
+      req.continue(res => {
+        res.body.user.orgCount = 1
+        res.send(res.body)
+      })
+    })
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.setFeatureFlags({
-          quartzIdentity: true,
-          multiOrg: true,
-        }).then(() => {
-          cy.get('@org').then(({id}: Organization) => {
-            cy.quartzProvision({
-              accountType: 'free',
-              hasUsers: true,
-            }).then(() => {
-              cy.visit(`/orgs/${id}/org-settings`)
-              cy.getByTestID('about-page--header').should('be.visible')
-            })
+        cy.get('@org').then(({id}: Organization) => {
+          cy.quartzProvision({
+            accountType: 'free',
+            hasUsers: true,
+          }).then(() => {
+            cy.visit(`/orgs/${id}/org-settings`)
+            cy.getByTestID('about-page--header').should('be.visible')
           })
         })
       })
     )
-  )
+  })
   it('should display the warning and allow users to navigate to the users page when trying to delete when the user has multiple users', () => {
     cy.getByTestID('delete-org--button').should('exist').click()
 
@@ -90,17 +86,12 @@ describe('About Page for PAYG users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.setFeatureFlags({
-          quartzIdentity: true,
-          multiOrg: true,
-        }).then(() => {
-          cy.get('@org').then(({id}: Organization) => {
-            cy.quartzProvision({
-              accountType: 'pay_as_you_go',
-            }).then(() => {
-              cy.visit(`/orgs/${id}/org-settings`)
-              cy.getByTestID('about-page--header').should('be.visible')
-            })
+        cy.get('@org').then(({id}: Organization) => {
+          cy.quartzProvision({
+            accountType: 'pay_as_you_go',
+          }).then(() => {
+            cy.visit(`/orgs/${id}/org-settings`)
+            cy.getByTestID('about-page--header').should('be.visible')
           })
         })
       })

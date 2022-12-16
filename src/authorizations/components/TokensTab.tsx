@@ -16,9 +16,9 @@ import {
   Sort,
   Toggle,
 } from '@influxdata/clockface'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/components/TokenList'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
@@ -38,6 +38,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 // Constants
+import {CLOUD} from 'src/shared/constants'
 import {GLOBAL_HEADER_HEIGHT} from 'src/identity/components/GlobalHeader/constants'
 
 enum AuthSearchKeys {
@@ -73,7 +74,7 @@ type SortKey = keyof Authorization
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = StateProps & RouteComponentProps<{orgID: string}> & ReduxProps
 
-const FilterAuthorizations = FilterList<Authorization>()
+const FilterAuthorizations = FilterListContainer<Authorization>()
 
 class TokensTab extends PureComponent<Props, State> {
   private paginationRef: RefObject<HTMLDivElement>
@@ -188,9 +189,7 @@ class TokensTab extends PureComponent<Props, State> {
             DEFAULT_PAGINATION_CONTROL_HEIGHT + DEFAULT_TAB_NAVIGATION_HEIGHT
 
           const adjustedHeight =
-            height -
-            heightWithPagination -
-            (isFlagEnabled('multiOrg') ? GLOBAL_HEADER_HEIGHT : 0)
+            height - heightWithPagination - (CLOUD ? GLOBAL_HEADER_HEIGHT : 0)
 
           return (
             <>

@@ -13,11 +13,10 @@ import {
 } from '@influxdata/clockface'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import FlowCards from 'src/flows/components/FlowCards'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import {SortTypes} from 'src/shared/utils/sort'
 import PresetFlows from 'src/flows/components/PresetFlows'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import {event} from 'src/cloud/utils/reporting'
 
 // Utils
@@ -149,7 +148,6 @@ const FlowsIndex = () => {
             stretchToFitWidth
           >
             <Page.Title title={PROJECT_NAME_PLURAL} />
-            {!isFlagEnabled('multiOrg') && <RateLimitAlert location="flows" />}
           </FlexBox>
         )}
         {showButtonMode &&

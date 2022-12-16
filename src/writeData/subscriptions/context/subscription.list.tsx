@@ -20,7 +20,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {Subscription} from 'src/types/subscriptions'
 import {RemoteDataState} from 'src/types'
 import {SubscriptionStatus} from 'src/client/subscriptionsRoutes'
-import {getBulletinsFromStatus} from '../utils/form'
+import {getBulletinsFromStatus} from 'src/writeData/subscriptions/utils/form'
 
 export interface SubscriptionListContextType {
   getAll: () => void
@@ -124,13 +124,10 @@ export const SubscriptionListProvider: FC = ({children}) => {
     }
   }
   const change = useCallback(
-    async (id: string): Promise<void> => {
-      setLoading(RemoteDataState.Loading)
-      if (!subscriptions) {
-        await getAll()
+    (id: string) => {
+      if (subscriptions) {
+        setCurrentID(id)
       }
-      setCurrentID(id)
-      setLoading(RemoteDataState.Done)
     },
     [setCurrentID, subscriptions]
   )

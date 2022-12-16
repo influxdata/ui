@@ -4,7 +4,7 @@ import {Dispatch} from 'react'
 import {
   fetchOrgsByAccountID,
   updateDefaultOrgByAccountID,
-} from 'src/identity/apis/auth'
+} from 'src/identity/apis/org'
 
 // Actions
 import {
@@ -58,6 +58,8 @@ export const getQuartzOrganizationsThunk =
       const quartzOrganizations = await fetchOrgsByAccountID(accountId)
 
       dispatch(setQuartzOrganizations(quartzOrganizations))
+
+      dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
     } catch (err) {
       reportErrorThroughHoneyBadger(err, {
         name: 'Failed to fetch /quartz/orgs/',
@@ -80,13 +82,15 @@ export const updateDefaultOrgThunk =
       dispatch(setQuartzDefaultOrg(newDefaultOrg.id))
 
       const state = getState()
-      const orgStatus = state.identity.currentIdentity.status
+      const orgStatus = state.identity.quartzOrganizations.status
 
       if (orgStatus === RemoteDataState.Error) {
         throw new DefaultOrgStateError(
           OrganizationThunkErrors.DefaultOrgStateError
         )
       }
+
+      dispatch(setQuartzOrganizationsStatus(RemoteDataState.Done))
     } catch (err) {
       reportErrorThroughHoneyBadger(err, {
         name: err.name,

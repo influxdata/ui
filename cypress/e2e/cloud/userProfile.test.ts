@@ -1,9 +1,3 @@
-// Constants
-const userProfileFeatureFlags = {
-  quartzIdentity: true,
-  multiOrg: true,
-}
-
 export const singleAccount = [
   {
     id: 1,
@@ -34,6 +28,9 @@ export const singleOrg = [
     name: 'single org',
     isDefault: true,
     isActive: true,
+    provider: 'AWS',
+    regionCode: 'us-east-1',
+    regionName: 'US East (N. Virginia)',
   },
 ]
 
@@ -43,12 +40,18 @@ export const multipleOrgs = [
     name: 'org 1 of 2',
     isDefault: true,
     isActive: true,
+    provider: 'Azure',
+    regionCode: 'westeurope',
+    regionName: 'Amsterdam',
   },
   {
     id: '2',
     name: 'org 2 of 2',
     isDefault: false,
     isActive: false,
+    provider: 'AWS', // Azure, AWS, GCP
+    regionCode: 'us-east-1',
+    regionName: 'US East (N. Virginia)',
   },
 ]
 
@@ -64,12 +67,10 @@ export const setupProfile = (): Promise<any> => {
           })
           cy.visit('/')
           cy.getByTestID('home-page--header').should('be.visible')
-          cy.setFeatureFlags(userProfileFeatureFlags).then(() => {
-            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-            cy.wait(1200).then(() => {
-              cy.visit('/me/profile')
-            })
+          // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+          // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+          cy.wait(1200).then(() => {
+            cy.visit('/me/profile')
           })
         })
       })

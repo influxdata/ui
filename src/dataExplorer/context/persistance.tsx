@@ -1,24 +1,74 @@
+// Libraries
 import React, {FC, createContext, useCallback} from 'react'
+import {useSelector} from 'react-redux'
+
+// Types
 import {TimeRange, RecursivePartial} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {Bucket, TagKeyValuePair} from 'src/types'
 import {
+  LanguageType,
   RESOURCES,
   ResourceConnectedQuery,
 } from 'src/dataExplorer/components/resources'
 
-interface SchemaComposition {
+// Utils
+import {isOrgIOx} from 'src/organizations/selectors'
+
+interface CompositionStatus {
   synced: boolean // true == can modify session's schema
-  diverged: boolean // true == cannot re-sync. (e.g. user has typed in the composition block)
 }
 
-export interface SchemaSelection {
+export enum GroupType {
+  Default = 'Default',
+  GroupBy = 'Group By',
+  Ungroup = 'Ungroup',
+}
+
+export interface GroupOptions {
+  type: GroupType
+  columns: string[]
+}
+
+export const DEFAULT_GROUP_OPTIONS: GroupOptions = {
+  type: GroupType.Default,
+  columns: [],
+}
+
+export interface AggregateWindow {
+  isOn: boolean
+  isAutoWindowPeriod: boolean
+  every: string // TODO: check if there is a duration type
+  fn: string // TODO: check if there is a enum fn list
+  column: string
+  createEmpty: boolean
+}
+
+export const DEFAULT_WINDOW_PERIOD: string = '1m'
+
+export const DEFAULT_AGGREGATE_WINDOW: AggregateWindow = {
+  isOn: false,
+  isAutoWindowPeriod: true,
+  every: DEFAULT_WINDOW_PERIOD,
+  fn: '',
+  column: '',
+  createEmpty: true,
+}
+
+interface ResultOptions {
+  fieldsAsColumn: boolean
+  group: GroupOptions
+  aggregateWindow: AggregateWindow
+}
+
+export interface CompositionSelection {
   bucket: Bucket
   measurement: string
   fields: string[]
   tagValues: TagKeyValuePair[]
-  composition: SchemaComposition
+  composition: CompositionStatus
+  resultOptions: ResultOptions
 }
 
 interface ContextType {
@@ -28,7 +78,7 @@ interface ContextType {
   range: TimeRange
   query: string
   resource: ResourceConnectedQuery<any>
-  selection: SchemaSelection
+  selection: CompositionSelection
 
   setHasChanged: (hasChanged: boolean) => void
   setHorizontal: (val: number[]) => void
@@ -36,34 +86,39 @@ interface ContextType {
   setRange: (val: TimeRange) => void
   setQuery: (val: string) => void
   setResource: (val: ResourceConnectedQuery<any>) => void
-  setSelection: (val: RecursivePartial<SchemaSelection>) => void
-  clearSchemaSelection: () => void
+  setSelection: (val: RecursivePartial<CompositionSelection>) => void
+  clearCompositionSelection: () => void
 
-  save: () => Promise<ResourceConnectedQuery<any>>
+  save: (language: LanguageType) => Promise<ResourceConnectedQuery<any>>
 }
 
-export const DEFAULT_SCHEMA: SchemaSelection = {
+export const DEFAULT_SELECTION: CompositionSelection = {
   bucket: null,
   measurement: null,
   fields: [] as string[],
   tagValues: [] as TagKeyValuePair[],
   composition: {
     synced: true,
-    diverged: false,
-  },
+  } as CompositionStatus,
+  resultOptions: {
+    fieldsAsColumn: false,
+    group: DEFAULT_GROUP_OPTIONS,
+    aggregateWindow: DEFAULT_AGGREGATE_WINDOW,
+  } as ResultOptions,
 }
 
-export const DEFAULT_EDITOR_TEXT =
+export const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
+export const DEFAULT_SQL_EDITOR_TEXT = '/* Start by typing SQL here */'
 
 const DEFAULT_CONTEXT = {
   hasChanged: false,
   horizontal: [0.5],
   vertical: [0.25, 0.8],
   range: DEFAULT_TIME_RANGE,
-  query: DEFAULT_EDITOR_TEXT,
+  query: '',
   resource: null,
-  selection: JSON.parse(JSON.stringify(DEFAULT_SCHEMA)),
+  selection: JSON.parse(JSON.stringify(DEFAULT_SELECTION)),
 
   setHasChanged: (_: boolean) => {},
   setHorizontal: (_: number[]) => {},
@@ -71,14 +126,16 @@ const DEFAULT_CONTEXT = {
   setRange: (_: TimeRange) => {},
   setQuery: (_: string) => {},
   setResource: (_: any) => {},
-  setSelection: (_: RecursivePartial<SchemaSelection>) => {},
-  clearSchemaSelection: () => {},
-  save: () => Promise.resolve(null),
+  setSelection: (_: RecursivePartial<CompositionSelection>) => {},
+  clearCompositionSelection: () => {},
+  save: (_: LanguageType) => Promise.resolve(null),
 }
 
 export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
 export const PersistanceProvider: FC = ({children}) => {
+  const isIoxOrg = useSelector(isOrgIOx)
+
   const [horizontal, setHorizontal] = useSessionStorage(
     'dataExplorer.resize.horizontal',
     [...DEFAULT_CONTEXT.horizontal]
@@ -93,7 +150,7 @@ export const PersistanceProvider: FC = ({children}) => {
   )
   const [query, setQuery] = useSessionStorage(
     'dataExplorer.query',
-    DEFAULT_CONTEXT.query
+    isIoxOrg ? DEFAULT_SQL_EDITOR_TEXT : DEFAULT_FLUX_EDITOR_TEXT
   )
   const [range, setRange] = useSessionStorage(
     'dataExplorer.range',
@@ -102,6 +159,7 @@ export const PersistanceProvider: FC = ({children}) => {
   const [resource, setResource] = useSessionStorage('dataExplorer.resource', {
     type: 'scripts',
     flux: '',
+    language: isIoxOrg ? LanguageType.SQL : LanguageType.FLUX,
     data: {},
   })
   const [selection, setSelection] = useSessionStorage(
@@ -126,23 +184,28 @@ export const PersistanceProvider: FC = ({children}) => {
     [hasChanged]
   )
 
-  const clearSchemaSelection = () => {
-    setSelection(JSON.parse(JSON.stringify(DEFAULT_SCHEMA)))
+  const clearCompositionSelection = () => {
+    setSelection(JSON.parse(JSON.stringify(DEFAULT_SELECTION)))
   }
 
-  const setSchemaSelection = useCallback(
-    schema => {
-      if (selection.composition?.diverged && schema.composition?.synced) {
-        // cannot re-sync if diverged
-        return
+  const setCompositionSelection = useCallback(
+    newSelection => {
+      const composition: CompositionStatus = {
+        ...(selection.composition || {}),
+        ...(newSelection.composition || {}),
       }
-      const nextState: SchemaSelection = {
+      if (resource?.language === LanguageType.SQL) {
+        // cannot sync for sql support
+        composition.synced = false
+      }
+      const nextState: CompositionSelection = {
         ...selection,
-        ...schema,
-        composition: {
-          ...(selection.composition || {}),
-          ...(schema.composition || {}),
-        },
+        ...newSelection,
+        composition,
+        resultOptions: {
+          ...(selection.resultOptions || {}),
+          ...(newSelection.resultOptions || {}),
+        } as ResultOptions,
       }
       if (hasChanged === false) {
         setHasChanged(true)
@@ -151,19 +214,22 @@ export const PersistanceProvider: FC = ({children}) => {
     },
     [
       hasChanged,
+      resource?.language,
       selection.composition,
+      selection.resultOptions,
       selection.fields,
       selection.tagValues,
       setSelection,
     ]
   )
 
-  const save = () => {
+  const save = (language: LanguageType = LanguageType.FLUX) => {
     if (!resource || !RESOURCES[resource.type]) {
       return Promise.resolve(null)
     }
 
     resource.flux = query
+    resource.language = language
 
     return RESOURCES[resource.type].persist(resource).then(data => {
       handleSetResource(data)
@@ -189,8 +255,8 @@ export const PersistanceProvider: FC = ({children}) => {
         setRange,
         setQuery: handleSetQuery,
         setResource: handleSetResource,
-        setSelection: setSchemaSelection,
-        clearSchemaSelection,
+        setSelection: setCompositionSelection,
+        clearCompositionSelection,
 
         save,
       }}

@@ -21,10 +21,11 @@ import {Subscription} from 'src/types/subscriptions'
 import {
   handleRegexValidation,
   handleValidation,
+  handleDuplicateFieldTagName,
   REGEX_TOOLTIP,
 } from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
-import ValidationInputWithTooltip from './ValidationInputWithTooltip'
+import ValidationInputWithTooltip from 'src/writeData/subscriptions/components/ValidationInputWithTooltip'
 
 interface Props {
   name: string
@@ -90,14 +91,15 @@ const StringPatternInput: FC<Props> = ({
           tooltip={`This will become the the ${
             tagType ? 'tag' : 'field'
           }'s key`}
-          validationFunc={() =>
-            handleValidation(
-              `${name}`,
-              tagType
-                ? formContent.stringTags[itemNum].name
-                : formContent.stringFields[itemNum].name
+          validationFunc={() => {
+            const value = tagType
+              ? formContent.stringTags[itemNum].name
+              : formContent.stringFields[itemNum].name
+            return (
+              handleValidation(`${name}`, value) ??
+              handleDuplicateFieldTagName(value, formContent)
             )
-          }
+          }}
           placeholder={`${name}_name`.toLowerCase()}
           onChange={e => {
             let newArr

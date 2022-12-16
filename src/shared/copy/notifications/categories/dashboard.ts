@@ -140,3 +140,24 @@ export const copyQueryFailure = (cellName: string = ''): Notification => {
     message: `There was an error copying the query${fromCellName}. Please try again.`,
   }
 }
+
+export const csvDownloadFailure = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Failed to download csv.',
+})
+
+export const oldSession = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Old user session detected. Please create a new script.',
+})
+
+export const compositionUpdateFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Composition was not updated. Try again.',
+})
+
+export const compositionEnded = (): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    'Composition has ended. Turn on flux sync, to start a new composition.',
+})

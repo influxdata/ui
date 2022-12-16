@@ -1,46 +1,12 @@
-describe('change-account change-org global header', () => {
-  const globalHeaderFeatureFlags = {
-    quartzIdentity: true,
-    multiOrg: true,
-  }
+import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
 
+describe('change-account change-org global header', () => {
   let idpeOrgID: string
 
   const interceptPageReload = () => {
     cy.intercept('GET', 'api/v2/orgs').as('getOrgs')
     cy.intercept('GET', 'api/v2/flags').as('getFlags')
     cy.intercept('GET', 'api/v2/quartz/accounts/**/orgs').as('getQuartzOrgs')
-  }
-
-  const makeQuartzUseIDPEOrgID = () => {
-    cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
-      cy.intercept('GET', 'api/v2/quartz/accounts', quartzAccounts).as(
-        'getQuartzAccounts'
-      )
-    })
-
-    cy.fixture('multiOrgIdentity').then(quartzIdentity => {
-      quartzIdentity.org.id = idpeOrgID
-
-      cy.intercept('GET', 'api/v2/quartz/identity', quartzIdentity).as(
-        'getQuartzIdentity'
-      )
-    })
-
-    cy.fixture('multiOrgOrgs1').then(quartzOrgs => {
-      quartzOrgs[0].id = idpeOrgID
-
-      cy.intercept('GET', 'api/v2/quartz/accounts/**/orgs', quartzOrgs).as(
-        'getQuartzOrgs'
-      )
-    })
-
-    cy.fixture('orgDetails').then(quartzOrgDetails => {
-      quartzOrgDetails.id = idpeOrgID
-      cy.intercept('GET', 'api/v2/quartz/orgs/*', quartzOrgDetails).as(
-        'getQuartzOrgDetails'
-      )
-    })
   }
 
   const mockQuartzOutage = () => {
@@ -64,7 +30,7 @@ describe('change-account change-org global header', () => {
           method: 'GET',
           url: 'api/v2/orgs',
         }).then(res => {
-          makeQuartzUseIDPEOrgID()
+          makeQuartzUseIDPEOrgID(idpeOrgID)
           // Store the IDPE org ID so that it can be cloned when intercepting quartz.
           if (res.body.orgs) {
             idpeOrgID = res.body.orgs[0].id
@@ -76,9 +42,8 @@ describe('change-account change-org global header', () => {
 
   beforeEach(() => {
     // Preserve one session throughout.
-    makeQuartzUseIDPEOrgID()
+    makeQuartzUseIDPEOrgID(idpeOrgID)
     Cypress.Cookies.preserveOnce('sid')
-    cy.setFeatureFlags(globalHeaderFeatureFlags)
   })
 
   afterEach(() => {
@@ -89,22 +54,19 @@ describe('change-account change-org global header', () => {
     it('does not render when API requests to quartz fail', () => {
       mockQuartzOutage()
       interceptPageReload()
-      cy.setFeatureFlags(globalHeaderFeatureFlags).then(() => {
-        cy.visit('/')
-        cy.wait('@getQuartzAccounts')
-        cy.getByTestID('global-header--container').should('not.exist')
-      })
+      cy.visit('/')
+      cy.wait('@getQuartzAccounts')
+      cy.getByTestID('global-header--container').should('not.exist')
     })
 
     describe('change org dropdown', () => {
       before(() => {
-        makeQuartzUseIDPEOrgID()
-        cy.setFeatureFlags(globalHeaderFeatureFlags)
+        makeQuartzUseIDPEOrgID(idpeOrgID)
         cy.visit('/')
       })
 
       it('navigates to the org settings page', () => {
-        makeQuartzUseIDPEOrgID()
+        makeQuartzUseIDPEOrgID(idpeOrgID)
         cy.getByTestID('globalheader--org-dropdown')
           .should('be.visible')
           .click()
@@ -120,7 +82,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the org members page', () => {
-        makeQuartzUseIDPEOrgID()
+        makeQuartzUseIDPEOrgID(idpeOrgID)
         cy.getByTestID('globalheader--org-dropdown')
           .should('be.visible')
           .click()
@@ -136,7 +98,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the org usage page', () => {
-        makeQuartzUseIDPEOrgID()
+        makeQuartzUseIDPEOrgID(idpeOrgID)
 
         cy.getByTestID('globalheader--org-dropdown').should('exist').click()
         cy.getByTestID('globalheader--org-dropdown-main').should('be.visible')
@@ -150,7 +112,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('can change change the active org', () => {
-        makeQuartzUseIDPEOrgID()
+        makeQuartzUseIDPEOrgID(idpeOrgID)
         cy.getByTestID('globalheader--org-dropdown').should('exist').click()
 
         cy.getByTestID('globalheader--org-dropdown-main').should('be.visible')
@@ -177,17 +139,16 @@ describe('change-account change-org global header', () => {
 
     describe('change account dropdown', () => {
       beforeEach(() => {
-        makeQuartzUseIDPEOrgID()
-        cy.setFeatureFlags(globalHeaderFeatureFlags)
+        makeQuartzUseIDPEOrgID(idpeOrgID)
       })
 
       before(() => {
-        makeQuartzUseIDPEOrgID()
+        makeQuartzUseIDPEOrgID(idpeOrgID)
         cy.visit('/')
       })
 
       it('navigates to the account settings page', () => {
-        makeQuartzUseIDPEOrgID()
+        makeQuartzUseIDPEOrgID(idpeOrgID)
         cy.getByTestID('globalheader--account-dropdown').should('exist').click()
 
         cy.getByTestID('globalheader--account-dropdown-main').should(
@@ -202,7 +163,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('navigates to the account billing page', () => {
-        makeQuartzUseIDPEOrgID()
+        makeQuartzUseIDPEOrgID(idpeOrgID)
         cy.getByTestID('globalheader--account-dropdown').should('exist').click()
 
         cy.getByTestID('globalheader--account-dropdown-main').should(
@@ -219,7 +180,7 @@ describe('change-account change-org global header', () => {
       })
 
       it('can change change the active account', () => {
-        makeQuartzUseIDPEOrgID()
+        makeQuartzUseIDPEOrgID(idpeOrgID)
         cy.getByTestID('globalheader--account-dropdown').should('exist').click()
 
         cy.getByTestID('globalheader--account-dropdown-main').should(
@@ -248,13 +209,12 @@ describe('change-account change-org global header', () => {
 
   describe('user profile avatar', {scrollBehavior: false}, () => {
     before(() => {
-      makeQuartzUseIDPEOrgID()
-      cy.setFeatureFlags(globalHeaderFeatureFlags)
+      makeQuartzUseIDPEOrgID(idpeOrgID)
       cy.visit('/')
     })
 
     it('navigates to the `user profile` page', () => {
-      makeQuartzUseIDPEOrgID()
+      makeQuartzUseIDPEOrgID(idpeOrgID)
       cy.getByTestID('global-header--user-avatar').should('be.visible').click()
 
       cy.getByTestID('global-header--user-popover-profile-button')
@@ -267,7 +227,7 @@ describe('change-account change-org global header', () => {
     })
 
     it('allows the user to log out', () => {
-      makeQuartzUseIDPEOrgID()
+      makeQuartzUseIDPEOrgID(idpeOrgID)
       cy.getByTestID('global-header--user-avatar').should('be.visible').click()
 
       // Logout can't be handled in the test, and redirects to a 404 that

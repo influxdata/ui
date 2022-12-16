@@ -25,6 +25,7 @@ import {
   ArduinoIcon,
   CLIIcon,
   GoIcon,
+  MQTTIcon,
   NodejsIcon,
   PythonIcon,
   TelegrafIcon,
@@ -34,10 +35,9 @@ import './HomepageContainer.scss'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import UsageProvider from 'src/usage/context/usage'
 import Resources from 'src/me/components/Resources'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -54,6 +54,7 @@ export const HomepageContainer: FC = () => {
   const arduinoLink = `/orgs/${org.id}/new-user-setup/arduino`
   const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
   const cliPageLink = `/orgs/${org.id}/new-user-setup/cli`
+  const mqttPageLink = `/orgs/${org.id}/load-data/subscriptions/create`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
   const newTelegrafPageLink = `/orgs/${org.id}/load-data/telegrafs/new`
   const golangLink = `/orgs/${org.id}/new-user-setup/golang`
@@ -62,11 +63,9 @@ export const HomepageContainer: FC = () => {
 
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
-  const moreStyle = {height: '100%', ...linkStyle}
   // checks for
   const inlineViewMoreStyle = {
     marginTop: '8px',
-    visibility: isFlagEnabled('onboardArduino') ? 'visible' : 'hidden',
   } as CSSProperties
 
   const squareGridCardSize = '200px'
@@ -106,6 +105,10 @@ export const HomepageContainer: FC = () => {
     event('firstMile.CLIButton.clicked')
   }
 
+  const logMQTTButtonClick = () => {
+    event('firstMile.MQTTButton.clicked')
+  }
+
   const logTelegrafButtonClick = () => {
     event('firstMile.telegrafButton.clicked')
   }
@@ -121,9 +124,6 @@ export const HomepageContainer: FC = () => {
           >
             Get Started
           </Heading>
-          {!isFlagEnabled('multiOrg') && (
-            <RateLimitAlert location="firstMile.homepage" />
-          )}
         </Page.Header>
         <Page.Contents scrollable={true} fullWidth={true}>
           <Grid>
@@ -163,7 +163,7 @@ export const HomepageContainer: FC = () => {
                         onClick={logNodeJSWizardClick}
                       >
                         <div className="homepage-wizard-language-tile">
-                          <h5>JavaScript/Node.js</h5>
+                          <h5>Node.js</h5>
                           {NodejsIcon}
                         </div>
                       </Link>
@@ -180,40 +180,21 @@ export const HomepageContainer: FC = () => {
                         </div>
                       </Link>
                     </ResourceCard>
-                    {isFlagEnabled('onboardArduino') && (
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={arduinoLink}
-                          style={linkStyle}
-                          onClick={logArduinoWizardClick}
+                    <ResourceCard style={cardStyle}>
+                      <Link
+                        to={arduinoLink}
+                        style={linkStyle}
+                        onClick={logArduinoWizardClick}
+                      >
+                        <div
+                          className="homepage-wizard-language-tile"
+                          data-testid="homepage-wizard-language-tile--arduino"
                         >
-                          <div
-                            className="homepage-wizard-language-tile"
-                            data-testid="homepage-wizard-language-tile--arduino"
-                          >
-                            <h5>Arduino</h5>
-                            {ArduinoIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                    )}
-                    {!isFlagEnabled('onboardArduino') && (
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={loadDataSourcesLink}
-                          style={moreStyle}
-                          onClick={logMoreButtonClick}
-                        >
-                          <div className="homepage-wizard-language-tile">
-                            <span>
-                              <h5>
-                                MORE <Icon glyph={IconFont.ArrowRight_New} />
-                              </h5>
-                            </span>
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                    )}
+                          <h5>Arduino</h5>
+                          {ArduinoIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
                   </SquareGrid>
                   <FlexBox justifyContent={JustifyContent.FlexStart}>
                     <Link
@@ -225,6 +206,33 @@ export const HomepageContainer: FC = () => {
                     </Link>
                   </FlexBox>
                   <hr style={{marginTop: '8px'}} />
+                  {isFlagEnabled('subscriptionsUI') && (
+                    <Link
+                      to={mqttPageLink}
+                      style={linkStyle}
+                      onClick={logMQTTButtonClick}
+                    >
+                      <div
+                        className="homepage-write-data-tile"
+                        data-testid="homepage-wizard-tile--mqtt"
+                      >
+                        <div className="tile-icon-text-wrapper">
+                          <div className="icon">{MQTTIcon}</div>
+                          <div>
+                            <h4>Native MQTT</h4>
+                            <h6>
+                              Connect to your MQTT subscription in the cloud.
+                            </h6>
+                          </div>
+                        </div>
+
+                        <Icon
+                          glyph={IconFont.ArrowRight_New}
+                          className="arrow-button"
+                        />
+                      </div>
+                    </Link>
+                  )}
                   <Link
                     to={cliPageLink}
                     style={linkStyle}

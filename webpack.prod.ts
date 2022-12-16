@@ -1,22 +1,25 @@
-export {}
-
 // utils
-const common = require('./webpack.common.ts')
-const merge = require('webpack-merge')
-const path = require('path')
+const commonWebpack = require('./webpack.common.ts')
+const mergeWebpack = require('webpack-merge').merge
+const commonPath = require('path')
 
 // Plugins
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
-const {STATIC_DIRECTORY} = require('./src/utils/env')
+const DIRECTORY_STATIC = require('./src/utils/env').STATIC_DIRECTORY
 
-module.exports = merge(common, {
+module.exports = mergeWebpack(commonWebpack, {
   mode: 'production',
   devtool: 'source-map',
   output: {
-    filename: `${STATIC_DIRECTORY}[contenthash:10].js`,
+    filename: `${DIRECTORY_STATIC}[contenthash:10].js`,
+    chunkFilename: pathData => {
+      return ['interceptor', 'setup-interceptor'].includes(pathData.chunk.name)
+        ? '[contenthash:10].js'
+        : `${DIRECTORY_STATIC}[contenthash:10].js`
+    },
   },
   module: {
     rules: [
@@ -25,25 +28,21 @@ module.exports = merge(common, {
         enforce: 'pre', // this forces this rule to run first.
         use: ['source-map-loader'],
         include: [
-          path.resolve(__dirname, 'node_modules/@influxdata/giraffe'),
-          path.resolve(__dirname, 'node_modules/@influxdata/clockface'),
+          commonPath.resolve(__dirname, 'node_modules/@influxdata/giraffe'),
+          commonPath.resolve(__dirname, 'node_modules/@influxdata/clockface'),
         ],
       },
     ],
   },
   optimization: {
-    noEmitOnErrors: true,
+    emitOnErrors: false,
+    minimize: true,
     minimizer: [
       new TerserJSPlugin({
-        cache: true,
         parallel: 2,
-        sourceMap: true,
       }),
-      new OptimizeCSSAssetsPlugin({}),
+      new CssMinimizerPlugin(),
     ],
-    splitChunks: {
-      chunks: 'all',
-    },
   },
   plugins: [new ForkTsCheckerWebpackPlugin()],
 })

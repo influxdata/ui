@@ -7,18 +7,36 @@ import {useHistory} from 'react-router-dom'
 import {postSignout} from 'src/client'
 
 // Constants
-import {CLOUD, CLOUD_SIGNOUT_PATHNAME} from 'src/shared/constants'
+import {
+  CLOUD,
+  CLOUD_LOGOUT_PATH,
+  CLOUD_SIGNOUT_PATHNAME,
+} from 'src/shared/constants'
 
 // Components
 import {reset} from 'src/shared/actions/flags'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const Logout: FC = () => {
   const history = useHistory()
   const dispatch = useDispatch()
 
   useEffect(() => {
+    const universalLoginFlagValue = isFlagEnabled('universalLogin') ?? false
     const handleSignOut = async () => {
       if (CLOUD) {
+        console.warn('universalLoginFlagValue: ', universalLoginFlagValue)
+        if (universalLoginFlagValue) {
+          fetch('/api/env/quartz-login-url')
+            .then(async response => {
+              const quartzUrl = await response.text()
+              const redirectUrl = `${quartzUrl}${CLOUD_LOGOUT_PATH}`
+              console.warn('Redirect to cloud url: ', redirectUrl)
+              window.location.replace(`${redirectUrl}`)
+            })
+            .catch(error => console.error(error))
+          return null
+        }
         const url = new URL(
           `${window.location.origin}${CLOUD_SIGNOUT_PATHNAME}`
         ).href

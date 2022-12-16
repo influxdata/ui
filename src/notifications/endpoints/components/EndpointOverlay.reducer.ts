@@ -1,7 +1,5 @@
-import {omit} from 'lodash'
-
 // Types
-import {NotificationEndpoint, NotificationEndpointBase} from 'src/types'
+import {NotificationEndpoint} from 'src/types'
 import {DEFAULT_ENDPOINT_URLS} from 'src/alerting/constants'
 
 export type Action =
@@ -23,18 +21,39 @@ export const reducer = (
     case 'UPDATE_ENDPOINT_TYPE': {
       const {endpoint} = action
       if (state.type != endpoint.type) {
-        const baseProps: NotificationEndpointBase = omit(endpoint, [
-          'url',
-          'token',
-          'username',
-          'password',
-          'method',
-          'authMethod',
-          'contentTemplate',
-          'headers',
-          'clientURL',
-          'routingKey',
-        ]) as NotificationEndpoint
+        const baseProps: any = {
+          ...endpoint,
+        }
+        if (baseProps?.url) {
+          delete baseProps.url
+        }
+        if (baseProps?.token) {
+          delete baseProps.token
+        }
+        if (baseProps?.username) {
+          delete baseProps.username
+        }
+        if (baseProps?.password) {
+          delete baseProps.password
+        }
+        if (baseProps?.method) {
+          delete baseProps.method
+        }
+        if (baseProps?.authMethod) {
+          delete baseProps.authMethod
+        }
+        if (baseProps?.contentTemplate) {
+          delete baseProps.contentTemplate
+        }
+        if (baseProps?.headers) {
+          delete baseProps.headers
+        }
+        if (baseProps?.clientURL) {
+          delete baseProps.clientURL
+        }
+        if (baseProps?.routingKey) {
+          delete baseProps.routingKey
+        }
 
         switch (endpoint.type) {
           case 'pagerduty':

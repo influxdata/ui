@@ -4,6 +4,7 @@ import 'cypress-plugin-tab'
 
 import {
   signin,
+  signinWithoutUserReprovision,
   setupUser,
   createDashboard,
   createCell,
@@ -61,6 +62,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       signin: typeof signin
+      signinWithoutUserReprovision: typeof signinWithoutUserReprovision
       setupUser: typeof setupUser
       clickAttached: typeof clickAttached
       clickNavBarItem: typeof clickNavBarItem
@@ -103,7 +105,7 @@ declare global {
       createCheck: typeof createCheck
       createAlertGroup: typeof createAlertGroup
       setFeatureFlags: typeof setFeatureFlags
-      setFeatureFlagsNoNav: typeof setFeatureFlags
+      setFeatureFlagsNoNav: typeof setFeatureFlagsNoNav
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision
       createTaskFromEmpty: typeof createTaskFromEmpty

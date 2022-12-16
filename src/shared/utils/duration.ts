@@ -8,7 +8,7 @@ import {Duration, DurationUnit} from 'src/types/ast'
 import {TIME_RANGE_FORMAT} from 'src/shared/constants/timeRanges'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
-export const removeSpacesAndNow = (input: string): string =>
+export const removeSpacesNowAndMinus = (input: string): string =>
   input.replace(/\s/g, '').replace(/now\(\)-/, '')
 
 export const isDurationWithNowParseable = (lower: string): boolean => {
@@ -17,7 +17,7 @@ export const isDurationWithNowParseable = (lower: string): boolean => {
     return false
   }
   // warning! Using string.match(regex) here instead of regex.test(string) because regex.test() modifies the regex object, and can lead to unexpected behavior
-  const removedLower = removeSpacesAndNow(lower)
+  const removedLower = removeSpacesNowAndMinus(lower)
 
   return !!removedLower.match(durationRegExp)
 }
@@ -126,7 +126,7 @@ export const timeRangeToDuration = (timeRange: TimeRange): string => {
     throw new Error('cannot convert time range to duration')
   }
 
-  return removeSpacesAndNow(timeRange.lower)
+  return removeSpacesNowAndMinus(timeRange.lower)
 }
 
 export const convertTimeRangeToCustom = (

@@ -50,13 +50,16 @@ const FileUploadSection = () => {
         weight={FontWeight.Regular}
         style={{marginBottom: '24px'}}
       >
-        Upload line protocol or Annotated CSVs
+        Upload CSV or a line protocol file
       </Heading>
       <SquareGrid cardSize="170px" gutter={ComponentSize.Small}>
         {items.map(item => {
           const goto = () => {
             event('Load data file upload clicked', {type: item.name})
-            history.push(
+            if (item.id === 'csv') {
+              return history.push(`/${ORGS}/${org.id}/new-user-setup/cli`)
+            }
+            return history.push(
               `/${ORGS}/${org.id}/load-data/${FILE_UPLOAD}/${item.id}`
             )
           }

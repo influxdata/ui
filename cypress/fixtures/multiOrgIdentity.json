@@ -19,6 +19,7 @@
     "name": "Influx",
     "type": "free",
     "accountCreatedAt": "Tue Jun 01 2022 08:49:14 GMT-0400 (Eastern Daylight Time)",
-    "billing_provider": "zuora"
+    "billing_provider": "zuora",
+    "isUpgradeable": true
   }
 }

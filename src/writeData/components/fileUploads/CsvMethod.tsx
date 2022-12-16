@@ -14,13 +14,11 @@ import {useDispatch, useSelector} from 'react-redux'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
 import StatusIndicator from 'src/buckets/components/csvUploader/StatusIndicator'
-import {PROJECT_NAME} from 'src/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {runQuery} from 'src/shared/apis/query'
 
@@ -119,13 +117,7 @@ const CsvMethod: FC = () => {
   )
 
   const handleSeeUploadedData = () => {
-    if (isFlagEnabled('exploreWithFlows')) {
-      history.push(
-        `/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}/${bucket.id}`
-      )
-    } else {
-      history.push(`/orgs/${orgId}/data-explorer?bucket=${bucket.name}`)
-    }
+    history.push(`/orgs/${orgId}/data-explorer?bucket=${bucket.name}`)
   }
 
   let buttonText = 'Close'

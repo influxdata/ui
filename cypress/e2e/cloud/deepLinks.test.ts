@@ -3,9 +3,7 @@ import {Organization} from '../../../src/types'
 describe('Deep linking', () => {
   beforeEach(() => {
     cy.flush()
-    cy.signin().then(() => {
-      cy.setFeatureFlags({quartzIdentity: true, multiOrg: true})
-    })
+    cy.signin()
   })
 
   // If you're here and the test failure you're looking at is legitimate, it probably means a page

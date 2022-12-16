@@ -18,5 +18,5 @@ This will add a line like this to your package's `pubspec.yaml`:
 
 ```
 dependencies:
-  influxdb_client: ^2.2.0
+  influxdb_client: ^2.6.0
 ```

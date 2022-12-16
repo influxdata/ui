@@ -5,7 +5,6 @@ import {
   RESET_FEATURE_FLAGS,
   CLEAR_FEATURE_FLAG_OVERRIDES,
   SET_FEATURE_FLAG_OVERRIDE,
-  SET_FEATURE_FLAG_OVERRIDES,
   FlagMap,
 } from 'src/shared/actions/flags'
 import {RemoteDataState} from 'src/types'
@@ -77,11 +76,6 @@ export default (state = defaultState, action: Actions): FlagState => {
       return {
         ...state,
         override,
-      }
-    case SET_FEATURE_FLAG_OVERRIDES:
-      return {
-        ...state,
-        override: action.payload.flags,
       }
     default:
       return state

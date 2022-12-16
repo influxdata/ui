@@ -97,7 +97,7 @@ const TimeMachineQueries: FC<Props> = ({maxHeight}) => {
           <RawDataToggle />
           {!isInCheckOverlay && (
             <>
-              <CSVExportButton />
+              <CSVExportButton disabled={activeQuery.text === ''} />
               <TimeMachineRefreshDropdown />
               <TimeRangeDropdown
                 timeRange={timeRange}

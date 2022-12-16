@@ -5,7 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import {ResourceList} from '@influxdata/clockface'
 import CollectorRow from 'src/telegrafs/components/CollectorCard'
-import FilterList from 'src/shared/components/FilterList'
+import {FilterListContainer} from 'src/shared/components/FilterList'
 
 // Types
 import {Sort} from '@influxdata/clockface'
@@ -84,7 +84,7 @@ type FilteredOwnProps = OwnProps & {
 
 type FilteredProps = Props & FilteredOwnProps
 
-const FilterTelegrafs = FilterList<Telegraf>()
+const FilterTelegrafs = FilterListContainer<Telegraf>()
 class FilteredCollectorList extends PureComponent<FilteredProps> {
   render() {
     const {

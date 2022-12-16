@@ -6,6 +6,12 @@ export enum BrokerAuthTypes {
   Certificate = 'certificate',
 }
 
+export enum DataFormatTypes {
+  LineProtocol = 'lineprotocol',
+  JSON = 'json',
+  String = 'string',
+}
+
 export interface Subscription {
   id?: string
   name?: string
@@ -44,6 +50,8 @@ export interface Subscription {
   brokerCACert?: string
   authType: BrokerAuthTypes
   brokerCertCreationDate?: string
+  clientID?: string
+  useSSL: boolean
 }
 
 export interface SubscriptionStatus {

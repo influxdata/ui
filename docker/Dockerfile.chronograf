@@ -1,7 +1,7 @@
 # [jdstrand] lts breaks webpack 4 so temporarily choose a currently supported
 # node alpine release. When we migrate to webpack 5, move back to node:lts
-#FROM node:lts AS base
-FROM node:gallium AS base
+FROM node:lts AS base
+#FROM node:gallium AS base
 
 RUN curl --compressed -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.4
 

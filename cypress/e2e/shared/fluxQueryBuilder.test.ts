@@ -6,7 +6,7 @@ const DEFAULT_FLUX_EDITOR_TEXT =
 // These delays are separately loaded in the UI.
 // But cypress checks for them in series...and the LspServer takes longer.
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
-const DELAY_FOR_LSP_SERVER_BOOTUP = 30000
+const DELAY_FOR_LSP_SERVER_BOOTUP = 7000
 
 const DELAY_FOR_FILE_DOWNLOAD = 5000
 
@@ -526,6 +526,9 @@ describe('Script Builder', () => {
         cy.log('empty editor text')
         cy.getByTestID('flux-editor').monacoType('{selectAll}{del}')
 
+        cy.log('Ensure LSP is online') // deflake
+        cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
+
         cy.log('select bucket and measurement')
         selectSchema()
         confirmSchemaComposition()
@@ -556,6 +559,9 @@ describe('Script Builder', () => {
       it('can contruct a composition with tagValues', () => {
         cy.log('empty editor text')
         cy.getByTestID('flux-editor').monacoType('{selectAll}{del}')
+
+        cy.log('Ensure LSP is online') // deflake
+        cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
 
         cy.log('select bucket and measurement')
         selectSchema()

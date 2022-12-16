@@ -12,6 +12,30 @@ export enum HeaderNavEvent {
   UserAvatarClick = 'headerNav.userAvatarIcon.clicked',
   UserProfileClick = 'headerNav.userAvatarProfile.clicked',
   UserLogoutClick = 'headerNav.userAvatarLogOut.clicked',
+
+  CreateOrgClick = 'headerNav.createOrg.clicked',
+  UpgradeButtonClick = 'headerNav.upgradeButton.clicked',
+}
+
+export enum CreateOrgOverlayEvent {
+  OrgCreationSuccess = 'headerNav.orgDropdown.createOrgsuccess',
+  OrgCreationFail = 'headerNav.orgDropdown.createOrgfail',
+  SwitchToNewOrg = 'headerNav.createOrganization.switchToNewOrgClicked'
+}
+
+export enum DeleteOrgOverlay {
+  DeleteOrgFail = 'userProfile.orgsTab.deleteOrgFailed',
+  DeleteOrgSuccess = 'userProfile.orgsTab.deleteOrgSuccess',
+}
+
+export enum AccountUpgradeOverlay {
+  MarketoAccountUpgradeFail = 'userProfile.marketoAccountUpgradeForm.submitFail',
+  MarketoAccountUpgradeSuccess = 'userProfile.marketoAccountUpgradeForm.submitSuccess',
+  SalesFormLinkClick = 'userProfile.marketoAccountUpgradeForm.salesFormLinkClicked',
+}
+
+export enum OrgListEvent {
+  UpgradeAccount = 'accountSettings.orgsTab.upgradeBannerClicked'
 }
 
 export enum UserProfileEvent {

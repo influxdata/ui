@@ -92,18 +92,27 @@ import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thu
 import {generateProviderMap} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/utils/generateProviderMap'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
+// Eventing
+import {event} from 'src/cloud/utils/reporting'
+import {CreateOrgOverlayEvent, multiOrgTag} from 'src/identity/events/multiOrgEvents'
+
 const switchToNewOrgButtonStyle = {
   color: 'black',
   textDecoration: 'underline',
   cursor: 'pointer',
 }
 
-const SwitchToNewOrgButton = (url: string): JSX.Element => {
+const SwitchToNewOrgButton = (url: string, newOrg: CreatedOrg, currentOrgId): JSX.Element => {
   return (
     <a
       href={url}
       data-testid="go-to-new-org--link"
       style={switchToNewOrgButtonStyle}
+      onClick={() => event(CreateOrgOverlayEvent.SwitchToNewOrg, multiOrgTag, {
+        currentOrgId,
+        createdOrgId: newOrg.id,
+        createdOrgName: newOrg.name,
+      })}
     >
       Switch to new org.
     </a>
@@ -211,7 +220,7 @@ export const CreateOrganizationOverlay: FC = () => {
 
     const switchToOrgLink =
       newOrg.provisioningStatus === 'provisioned'
-        ? () => SwitchToNewOrgButton(newOrgUrl)
+        ? () => SwitchToNewOrgButton(newOrgUrl, newOrg, currentOrgId)
         : null
 
     dispatch(notify(quartzOrgCreateSuccess(newOrg.name, switchToOrgLink)))
@@ -239,6 +248,12 @@ export const CreateOrganizationOverlay: FC = () => {
             dispatch(notify(quartzOrgQuotaReached()))
           }
 
+          event(CreateOrgOverlayEvent.OrgCreationSuccess, multiOrgTag, {
+            createdOrgId: newOrg.id,
+            createdOrgName: newOrg.name,
+            currentOrgId,
+          })
+
           history.push(`/orgs/${currentOrgId}/accounts/orglist`)
 
           onClose()
@@ -254,6 +269,11 @@ export const CreateOrganizationOverlay: FC = () => {
       } else {
         setNetworkErrorMsg(OrgOverlayNetworkError.DefaultError)
       }
+
+      event(CreateOrgOverlayEvent.OrgCreationFail, multiOrgTag, {
+        currentOrgId
+      })
+      
       setCreateOrgButtonStatus(ComponentStatus.Error)
     }
   }

@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 import {BannerPanel, FlexBox, Gradients, IconFont} from '@influxdata/clockface'
 
@@ -12,6 +12,16 @@ import {availableUpgrade} from 'src/client/unityRoutes'
 
 // Utils
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+
+// Selectors
+import {selectCurrentAccountId} from 'src/identity/selectors'
+
+// Eventing 
+import {
+  multiOrgTag,
+  OrgListEvent
+} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
 
 interface OrgAllowance {
   availableUpgrade: availableUpgrade
@@ -28,8 +38,14 @@ export const OrgBannerPanel: FC<OrgAllowance> = ({
 }) => {
   const dispatch = useDispatch()
   const history = useHistory()
+  const accountId = useSelector(selectCurrentAccountId)
 
   const handleUpgradeAccount = () => {
+    event(OrgListEvent.UpgradeAccount, multiOrgTag, {
+      availableUpgrade,
+      accountId
+    })
+    
     if (availableUpgrade === 'pay_as_you_go') {
       history.push(`/checkout`)
     } else {

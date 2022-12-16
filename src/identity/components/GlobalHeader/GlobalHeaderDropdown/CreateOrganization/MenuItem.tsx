@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   AlignItems,
   Dropdown,
@@ -7,14 +8,36 @@ import {
   Icon,
   IconFont,
 } from '@influxdata/clockface'
-import {useDispatch} from 'react-redux'
 
 // Components
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
+// Selectors
+import {
+  selectCurrentAccountId,
+  selectCurrentAccountType,
+  selectUser,
+} from 'src/identity/selectors'
+
+// Eventing
+import {
+  HeaderNavEvent,
+  multiOrgTag,
+} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
+
 export const CreateOrganizationMenuItem: FC = () => {
   const dispatch = useDispatch()
+  const user = useSelector(selectUser)
+  const accountId = useSelector(selectCurrentAccountId)
+  const accountType = useSelector(selectCurrentAccountType)
+
   const handleCreateOrg = () => {
+    event(HeaderNavEvent.CreateOrgClick, multiOrgTag, {
+      userId: user.id,
+      accountId,
+      accountType,
+    })
     dispatch(
       showOverlay('create-organization', null, () => dispatch(dismissOverlay()))
     )

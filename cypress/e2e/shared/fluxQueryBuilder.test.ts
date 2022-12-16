@@ -79,7 +79,7 @@ describe('Script Builder', () => {
       timeout: DELAY_FOR_LSP_SERVER_BOOTUP,
     })
     cy.getByTestID('flux-editor').contains(
-      `|> filter(fn: (r) => r._measurement == "${measurement}")`
+      `fn: (r) => r._measurement == "${measurement}"`
     )
     cy.getByTestID('flux-editor').within(() => {
       cy.get('.composition-sync--on').should('have.length', 3) // three lines
@@ -568,15 +568,8 @@ describe('Script Builder', () => {
       })
 
       it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {
-        cy.log('start with empty editor text')
-        cy.getByTestID('flux-editor', {
-          timeout: DELAY_FOR_LSP_SERVER_ONLINE,
-        }).within(() => {
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
-        })
+        cy.log('empty editor text')
+        cy.getByTestID('flux-editor').monacoType('{selectall}{enter}')
 
         cy.log('turn off sync')
         cy.getByTestID('flux-sync--toggle')
@@ -591,10 +584,7 @@ describe('Script Builder', () => {
         cy.log('editor text is still empty')
         cy.getByTestID('flux-editor').within(() => {
           // selecting bucket will empty the editor text
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
+          cy.get('textarea.inputarea').should('have.value', '\n')
         })
 
         cy.log('turn on sync')

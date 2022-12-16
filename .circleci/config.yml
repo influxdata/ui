@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   unit:
     docker:
-      - image: circleci/golang:1.17-node
+      - image: circleci/golang:1.19.4-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:
@@ -37,7 +37,7 @@ jobs:
             - ~/.cache/yarn
   unit-cloud:
     docker:
-      - image: circleci/golang:1.15-node
+      - image: circleci/golang:1.19.4-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:
@@ -71,7 +71,7 @@ jobs:
             - ~/.cache/yarn
   lint:
     docker:
-      - image: circleci/golang:1.15-node
+      - image: circleci/golang:1.19.4-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:
@@ -104,7 +104,7 @@ jobs:
 
   lint-cloud:
     docker:
-      - image: circleci/golang:1.15-node
+      - image: circleci/golang:1.19.4-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:

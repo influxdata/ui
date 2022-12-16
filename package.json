@@ -188,7 +188,7 @@
     "lodash": "^4.17.21",
     "luxon": "^3.1.1",
     "memoize-one": "^4.0.2",
-    "monaco-editor": "~0.34.0",
+    "monaco-editor": "~0.32.1",
     "monaco-editor-textmate": "^3.0.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-languageclient": "~0.18.1",

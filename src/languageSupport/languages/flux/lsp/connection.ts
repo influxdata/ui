@@ -42,7 +42,7 @@ import {
 } from 'src/shared/copy/notifications'
 
 const APPROXIMATE_LSP_STARTUP_DELAY = 3000
-const APPROXIMATE_EDITOR_SET_VALUE_DELAY = 3000
+const APPROXIMATE_EDITOR_SET_VALUE_DELAY = 1000
 
 export class ConnectionManager {
   private _worker: Worker
@@ -229,6 +229,31 @@ export class ConnectionManager {
     }
   }
 
+  _removeDefaultAndUpdateLsp(callbackToUpdateLsp: Function) {
+    const disposeOfHandler = this._model.onDidChangeContent(e => {
+      const modelResetValueApplied = e.changes.some(({range, text}) => {
+        const isExpectedRange =
+          range.startLineNumber === 1 &&
+          range.endLineNumber === 1 &&
+          range.endColumn - range.startColumn ===
+            DEFAULT_FLUX_EDITOR_TEXT.length
+        const isExpectedResetValue = text === ''
+        return isExpectedRange && isExpectedResetValue
+      })
+      if (modelResetValueApplied) {
+        setTimeout(
+          () => callbackToUpdateLsp(),
+          APPROXIMATE_EDITOR_SET_VALUE_DELAY
+        )
+      }
+    })
+    this._model.setValue('')
+    setTimeout(
+      () => disposeOfHandler.dispose(),
+      APPROXIMATE_EDITOR_SET_VALUE_DELAY * 4
+    )
+  }
+
   _initLspComposition(toAdd: Partial<CompositionSelection>) {
     if (toAdd.bucket) {
       const payload = {
@@ -256,20 +281,18 @@ export class ConnectionManager {
   ) {
     const toAdd: Partial<CompositionSelection> = {}
     const toRemove: Partial<CompositionSelection> = {}
-    let shouldDelay = false
+    let shouldRemoveDefaultMsg = false
 
     if (this._isNewScript(schema, previousState)) {
       // no action to take.
       // `textDocument/didChange` --> will inform LSP to drop composition
-      return {toAdd, toRemove, shouldDelay}
+      return {toAdd, toRemove, shouldRemoveDefaultMsg}
     }
 
     if (schema.bucket && previousState.bucket != schema.bucket) {
       toAdd.bucket = schema.bucket
       if (this._model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
-        // first time selecting bucket --> remove if default message
-        this._model.setValue('')
-        shouldDelay = true
+        shouldRemoveDefaultMsg = true
       }
     }
     if (schema.measurement && previousState.measurement != schema.measurement) {
@@ -308,7 +331,7 @@ export class ConnectionManager {
       }
     }
 
-    return {toAdd, toRemove, shouldDelay}
+    return {toAdd, toRemove, shouldRemoveDefaultMsg}
   }
 
   onSchemaSessionChange(schema: CompositionSelection, sessionCb, dispatch) {
@@ -329,33 +352,61 @@ export class ConnectionManager {
     }
 
     this._session = {...schema, composition: {...schema.composition}}
-    const {toAdd, toRemove, shouldDelay} = this._diffSchemaChange(
+    const {toAdd, toRemove, shouldRemoveDefaultMsg} = this._diffSchemaChange(
       schema,
       previousState
     )
 
     const hasMultipleItemsToSync =
       Object.keys(toAdd).length + Object.keys(toRemove).length > 1
-    if (this._first_load || hasMultipleItemsToSync) {
-      this._first_load = false
-      setTimeout(
-        () => this._initLspComposition(toAdd),
-        APPROXIMATE_LSP_STARTUP_DELAY
-      )
-      return
-    }
+    const hasChanges = Object.keys(toAdd).length || Object.keys(toRemove).length
 
-    if (Object.keys(toAdd).length || Object.keys(toRemove).length) {
-      // since this._diffSchemaChange() can set the model
-      // we need the executeCommand to be issued after the model update
-      if (shouldDelay) {
+    switch (
+      `${this._first_load}|${hasMultipleItemsToSync}|${Boolean(hasChanges)}`
+    ) {
+      case 'true|false|true':
+      case 'true|true|true':
+        // on first load.
+        this._first_load = false
+        if (shouldRemoveDefaultMsg) {
+          this._model.setValue('')
+        }
         setTimeout(
-          () => this._updateLsp(toAdd, toRemove),
-          APPROXIMATE_EDITOR_SET_VALUE_DELAY
+          () => this._initLspComposition(toAdd),
+          APPROXIMATE_LSP_STARTUP_DELAY
         )
-      } else {
-        this._updateLsp(toAdd, toRemove)
-      }
+        break
+      case 'true|false|false':
+        // first load, no composition.
+        this._first_load = false
+        break
+      case 'false|true|true':
+        // re-sync just turned on.
+        if (shouldRemoveDefaultMsg) {
+          this._removeDefaultAndUpdateLsp(() => this._initLspComposition(toAdd))
+        } else {
+          this._initLspComposition(toAdd)
+        }
+        break
+      case 'false|false|true':
+        // normal update.
+        if (shouldRemoveDefaultMsg) {
+          this._removeDefaultAndUpdateLsp(() =>
+            this._updateLsp(toAdd, toRemove)
+          )
+        } else {
+          this._updateLsp(toAdd, toRemove)
+        }
+        break
+      case 'false|false|false':
+        // no composition change
+        break
+      default:
+        console.error(
+          `Unexpected branch conditional: ${
+            this._first_load
+          }|${hasMultipleItemsToSync}|${Boolean(hasChanges)}`
+        )
     }
   }
 

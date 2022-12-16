@@ -46,7 +46,13 @@ describe.skip('About Page for free users with only 1 user', () => {
 })
 
 describe('About Page for free users with multiple users', () => {
-  beforeEach(() =>
+  beforeEach(() => {
+    cy.intercept('GET', 'api/v2/quartz/identity', req => {
+      req.continue(res => {
+        res.body.user.orgCount = 1
+        res.send(res.body)
+      })
+    })
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
@@ -60,7 +66,7 @@ describe('About Page for free users with multiple users', () => {
         })
       })
     )
-  )
+  })
   it('should display the warning and allow users to navigate to the users page when trying to delete when the user has multiple users', () => {
     cy.getByTestID('delete-org--button').should('exist').click()
 

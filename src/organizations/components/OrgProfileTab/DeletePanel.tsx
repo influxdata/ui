@@ -67,16 +67,18 @@ const DeletePanel: FC = () => {
     handleDeleteFreeAccount = handleShowWarning
   }
 
-  const showDeleteFreeAccountButton =
+  const shouldShowDeleteFreeAccountButton =
     CLOUD && account.type === 'free' && user.orgCount === 1
 
-  const showDeleteOrgButton =
-    CLOUD && isFlagEnabled('createDeleteOrgs') && !showDeleteFreeAccountButton
+  const shouldShowDeleteOrgButton =
+    CLOUD &&
+    isFlagEnabled('createDeleteOrgs') &&
+    !shouldShowDeleteFreeAccountButton
 
   return (
     <PageSpinner loading={status}>
       <>
-        {showDeleteFreeAccountButton && (
+        {shouldShowDeleteFreeAccountButton && (
           <>
             <FlexBox.Child>
               <h4>Delete Organization</h4>
@@ -95,7 +97,7 @@ const DeletePanel: FC = () => {
             </FlexBox.Child>
           </>
         )}
-        {showDeleteOrgButton && (
+        {shouldShowDeleteOrgButton && (
           <>
             <FlexBox.Child>
               <h4>Delete Organization</h4>

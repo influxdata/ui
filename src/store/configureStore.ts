@@ -61,6 +61,7 @@ import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
 import perfReducer from 'src/perf/reducers'
 import quartzOrganizationReducer from 'src/identity/quartzOrganizations/reducers'
 import orgCreationAllowancesReducer from 'src/identity/allowances/reducers'
+import {flowsReducer} from 'src/flows/reducers/flowsReducer'
 
 // Types
 import {AppState, LocalStorage} from 'src/types'
@@ -110,6 +111,7 @@ export const rootReducer = (history: History) => (state, action) => {
       endpoints: endpointsReducer,
       labels: labelsReducer,
       members: membersReducer,
+      notebooks: flowsReducer,
       orgs: orgsReducer,
       rules: rulesReducer,
       scrapers: scrapersReducer,

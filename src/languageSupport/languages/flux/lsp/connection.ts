@@ -59,6 +59,7 @@ export class ConnectionManager {
   ) => void = () => null
   private _dispatcher = _ => {}
   private _first_load = true
+  private _compositionRange: LspRange
 
   constructor(worker: Worker) {
     this._worker = worker
@@ -147,8 +148,10 @@ export class ConnectionManager {
     })
   }
 
-  _compositionSyncStyle(startLine: number, endLine: number) {
-    const classNamePrefix = 'composition-sync--on'
+  _compositionSyncStyle(startLine: number, endLine: number, synced: boolean) {
+    const classNamePrefix = synced
+      ? 'composition-sync--on'
+      : 'composition-sync--off'
 
     // Customize the full width of Monaco editor margin using API `marginClassName`
     // https://github.com/microsoft/monaco-editor/blob/35eb0ef/website/typedoc/monaco.d.ts#L1533
@@ -173,14 +176,15 @@ export class ConnectionManager {
     return [startLineStyle, middleLinesStyle, endLineStyle]
   }
 
-  _setEditorBlockStyle(range: LspRange | null) {
+  _setEditorBlockStyle(range: LspRange | null, synced: boolean = false) {
+    this._compositionRange = range
     const shouldRemoveAllStyles = range == null
 
     this._compositionStyle = this._editor.deltaDecorations(
       this._compositionStyle,
       shouldRemoveAllStyles
         ? []
-        : this._compositionSyncStyle(range.start.line, range.end.line)
+        : this._compositionSyncStyle(range.start.line, range.end.line, synced)
     )
   }
 
@@ -348,9 +352,17 @@ export class ConnectionManager {
     }
 
     if (!schema.composition.synced) {
+      this._session.composition.synced = false
+      this._setEditorBlockStyle(this._compositionRange)
       return
     }
+    const syncTurnedBackOn =
+      schema.composition.synced && !previousState.composition.synced
+    if (syncTurnedBackOn) {
+      this._setEditorBlockStyle(this._compositionRange, true)
+    }
 
+    // don't update the `this._session` until here. Since used to diffChange.
     this._session = {...schema, composition: {...schema.composition}}
     const {toAdd, toRemove, shouldRemoveDefaultMsg} = this._diffSchemaChange(
       schema,
@@ -414,7 +426,7 @@ export class ConnectionManager {
     actions.forEach((action: ActionItem) => {
       switch (action.title) {
         case ActionItemCommand.CompositionRange:
-          this._setEditorBlockStyle(action.range)
+          this._setEditorBlockStyle(action.range, true)
           break
         case ActionItemCommand.CompositionState:
           if (action.state) {

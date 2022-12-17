@@ -638,13 +638,30 @@ describe('Script Builder', () => {
         cy.log('starts as synced')
         cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
 
-        cy.log('sync toggles on and off')
+        cy.log('empty editor text')
+        cy.getByTestID('flux-editor').monacoType('{selectAll}{del}')
+
+        cy.log('Ensure LSP is online') // deflake
+        cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
+
+        cy.log('make a composition')
+        selectSchema()
+        confirmSchemaComposition()
+
+        cy.log('sync toggles on and off, with matching styles')
+        cy.get('.composition-sync--on').should('have.length', 3)
+        cy.get('.composition-sync--off').should('have.length', 0)
         cy.getByTestID('flux-sync--toggle')
           .should('have.class', 'active')
           .click()
           .should('not.have.class', 'active')
+        cy.get('.composition-sync--on').should('have.length', 0)
+        cy.get('.composition-sync--off').should('have.length', 3)
+        cy.getByTestID('flux-sync--toggle')
           .click()
           .should('have.class', 'active')
+        cy.get('.composition-sync--on').should('have.length', 3)
+        cy.get('.composition-sync--off').should('have.length', 0)
 
         cy.log('turn off flux sync')
         cy.getByTestID('flux-sync--toggle')

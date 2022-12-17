@@ -3,10 +3,10 @@ import {Organization} from '../../../src/types'
 const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
 
-// monaco-editor lazy loads + LspServer comes online
-const DELAY_FOR_LSP_SERVER_ONLINE = 30000
-
-const APPROXIMATE_EDITOR_SET_VALUE_DELAY = 3000
+// These delays are separately loaded in the UI.
+// But cypress checks for them in series...and the LspServer takes longer.
+const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
+const DELAY_FOR_LSP_SERVER_BOOTUP = 7000
 
 const DELAY_FOR_FILE_DOWNLOAD = 5000
 
@@ -59,13 +59,24 @@ describe('Script Builder', () => {
     )
   }
 
+  const selectListItem = (name, beActive) => {
+    cy.getByTestID('field-selector').should('be.visible')
+    cy.getByTestID(`selector-list ${name}`)
+      .should('be.visible')
+      .click({force: true})
+    cy.getByTestID(`selector-list ${name}`).should(
+      beActive ? 'have.class' : 'not.have.class',
+      'cf-list-item__active'
+    )
+  }
+
   const selectSchema = () => {
     cy.log('select bucket')
     selectBucket(bucketName)
     cy.getByTestID('flux-editor', {
-      timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+      timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
     }).contains(`from(bucket: "${bucketName}")`, {
-      timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
+      timeout: DELAY_FOR_LSP_SERVER_BOOTUP,
     })
 
     cy.log('select measurement')
@@ -74,12 +85,12 @@ describe('Script Builder', () => {
 
   const confirmSchemaComposition = () => {
     cy.getByTestID('flux-editor', {
-      timeout: DELAY_FOR_LSP_SERVER_ONLINE,
+      timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
     }).contains(`from(bucket: "${bucketName}")`, {
-      timeout: APPROXIMATE_EDITOR_SET_VALUE_DELAY,
+      timeout: DELAY_FOR_LSP_SERVER_BOOTUP,
     })
     cy.getByTestID('flux-editor').contains(
-      `|> filter(fn: (r) => r._measurement == "${measurement}")`
+      `fn: (r) => r._measurement == "${measurement}"`
     )
     cy.getByTestID('flux-editor').within(() => {
       cy.get('.composition-sync--on').should('have.length', 3) // three lines
@@ -177,7 +188,7 @@ describe('Script Builder', () => {
 
         clearSession()
         cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
-        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
       })
     })
 
@@ -506,7 +517,119 @@ describe('Script Builder', () => {
       }).then(() => {
         clearSession()
         cy.getByTestID('flux-sync--toggle')
-        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
+      })
+    })
+
+    describe('basic functionality', () => {
+      it('can construct a composition with fields', () => {
+        cy.log('empty editor text')
+        cy.getByTestID('flux-editor').monacoType('{selectAll}{del}')
+
+        cy.log('Ensure LSP is online') // deflake
+        cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
+
+        cy.log('select bucket and measurement')
+        selectSchema()
+        confirmSchemaComposition()
+
+        cy.log('select field --> adds to composition')
+        const fieldName0 = 'station_id_0'
+        const fieldName10 = 'station_id_10'
+        selectListItem(fieldName0, true)
+        cy.getByTestID('flux-editor').contains(
+          `|> filter(fn: (r) => r._field == "${fieldName0}")`
+        )
+        selectListItem(fieldName10, true)
+        cy.getByTestID('flux-editor').contains(
+          `fn: (r) => r._field == "${fieldName0}" or r._field == "${fieldName10}"`
+        )
+
+        cy.log('select field --> removes from composition')
+        selectListItem(fieldName10, false)
+        cy.wait(1000)
+        cy.getByTestID('flux-editor').contains(
+          `|> filter(fn: (r) => r._field == "${fieldName0}")`
+        )
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea.inputarea').should('not.contain', fieldName10)
+        })
+      })
+
+      it('can construct a composition with tagValues', () => {
+        cy.log('empty editor text')
+        cy.getByTestID('flux-editor').monacoType('{selectAll}{del}')
+
+        cy.log('Ensure LSP is online') // deflake
+        cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
+
+        cy.log('select bucket and measurement')
+        selectSchema()
+        confirmSchemaComposition()
+
+        cy.log('select tagValue --> adds to composition')
+        cy.getByTestID('container-side-bar--tag-keys').within(() => {
+          cy.getByTestID('accordion-header').should('be.visible').click()
+        })
+        const tagKey = 'air_temp_degc'
+        const tagValue = '70_degrees'
+        selectListItem(tagValue, true)
+        cy.getByTestID('flux-editor').contains(
+          `|> filter(fn: (r) => r.${tagKey} == "${tagValue}")`
+        )
+
+        cy.log('select tagValue --> removes from composition')
+        selectListItem(tagValue, false)
+        cy.wait(1000)
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea.inputarea').should('not.contain', tagKey)
+        })
+      })
+
+      it('will empty the default text on first bucket selection', () => {
+        cy.log('start with default text')
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea.inputarea').should(
+            'have.value',
+            DEFAULT_FLUX_EDITOR_TEXT
+          )
+        })
+
+        cy.log('select bucket')
+        selectBucket(bucketName)
+        cy.getByTestID('flux-editor').contains(`from(bucket: "${bucketName}")`)
+        cy.getByTestID('flux-editor').should(
+          'not.contain',
+          DEFAULT_FLUX_EDITOR_TEXT
+        )
+      })
+
+      // TODO: this works fine in remocal, but fails in cypress
+      it.skip('can re-attached a composition on page reload', () => {
+        cy.log('empty editor text')
+        cy.getByTestID('flux-editor').monacoType('{selectAll}{del}')
+
+        cy.log('make composition')
+        selectSchema()
+        confirmSchemaComposition()
+
+        cy.reload()
+
+        cy.log('confirm composition is re-attached')
+        cy.getByTestID('flux-editor', {
+          timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
+        }).within(() => {
+          cy.get('.composition-sync--on', {
+            timeout: DELAY_FOR_LSP_SERVER_BOOTUP,
+          }).should('have.length', 3)
+        })
+
+        cy.log('can still change composition')
+        const fieldName10 = 'station_id_10'
+        selectListItem(fieldName10, false)
+        cy.getByTestID('flux-editor').contains(
+          `|> filter(fn: (r) => r._field == "${fieldName10}")`
+        )
       })
     })
 
@@ -533,7 +656,7 @@ describe('Script Builder', () => {
       })
 
       it('should clear the editor text and schema browser, with a new script', () => {
-        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LSP_SERVER_ONLINE})
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
 
         cy.log('modify schema browser')
         selectSchema()
@@ -568,15 +691,8 @@ describe('Script Builder', () => {
       })
 
       it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {
-        cy.log('start with empty editor text')
-        cy.getByTestID('flux-editor', {
-          timeout: DELAY_FOR_LSP_SERVER_ONLINE,
-        }).within(() => {
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
-        })
+        cy.log('empty editor text')
+        cy.getByTestID('flux-editor').monacoType('{selectall}{enter}')
 
         cy.log('turn off sync')
         cy.getByTestID('flux-sync--toggle')
@@ -591,10 +707,7 @@ describe('Script Builder', () => {
         cy.log('editor text is still empty')
         cy.getByTestID('flux-editor').within(() => {
           // selecting bucket will empty the editor text
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
+          cy.get('textarea.inputarea').should('have.value', '\n')
         })
 
         cy.log('turn on sync')
@@ -604,9 +717,6 @@ describe('Script Builder', () => {
         cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
 
         cy.log('editor text contains the composition')
-        // we set a manual delay for composition initialization
-        // https://github.com/influxdata/ui/blob/e76f934c6af60e24c6356f4e4ce9b067e5a9d0d5/src/languageSupport/languages/flux/lsp/connection.ts#L435-L440
-        cy.wait(3000)
         confirmSchemaComposition()
       })
     })

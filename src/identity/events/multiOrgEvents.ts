@@ -18,19 +18,19 @@ export enum HeaderNavEvent {
 }
 
 export enum CreateOrgOverlayEvent {
-  OrgCreationSuccess = 'headerNav.orgDropdown.createOrgsuccess',
-  OrgCreationFail = 'headerNav.orgDropdown.createOrgfail',
-  SwitchToNewOrg = 'headerNav.createOrganization.switchToNewOrgClicked',
+  OrgCreationSuccess = 'headerNav.createOrgOverlay.creationSuccess',
+  OrgCreationFail = 'headerNav.createOrgOverlay.creationFail',
+  SwitchToNewOrg = 'headerNav.createOrg.switchedToNewOrg',
 }
 
 export enum DeleteOrgOverlay {
-  DeleteOrgFail = 'userProfile.orgsTab.deleteOrgFailed',
-  DeleteOrgSuccess = 'userProfile.orgsTab.deleteOrgSuccess',
+  DeleteOrgFail = 'userProfile.orgProfileTab.orgDeletionFailed',
+  DeleteOrgSuccess = 'userProfile.orgProfileTab.orgDeletionSuccess',
 }
 
 export enum AccountUpgradeOverlay {
-  MarketoAccountUpgradeFail = 'userProfile.marketoAccountUpgradeForm.submitFail',
-  MarketoAccountUpgradeSuccess = 'userProfile.marketoAccountUpgradeForm.submitSuccess',
+  MarketoAccountUpgradeFail = 'userProfile.marketoAccountUpgradeForm.submissionFail',
+  MarketoAccountUpgradeSuccess = 'userProfile.marketoAccountUpgradeForm.submissionSuccess',
   SalesFormLinkClick = 'userProfile.marketoAccountUpgradeForm.salesFormLinkClicked',
 }
 

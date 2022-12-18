@@ -114,7 +114,7 @@ export const DeletePaidOrgOverlay: FC = () => {
         event(DeleteOrgOverlay.DeleteOrgSuccess, multiOrgTag, {
           userId: org.id,
           orgName: org.name,
-          accountName: account.name,
+          accountType: account.type,
           accountId: account.id,
         })
         setTimeout(() => {
@@ -128,7 +128,7 @@ export const DeletePaidOrgOverlay: FC = () => {
         event(DeleteOrgOverlay.DeleteOrgFail, multiOrgTag, {
           userId: org.id,
           orgName: org.name,
-          accountName: account.name,
+          accountType: account.type,
           accountId: account.id,
         })
         reportErrorThroughHoneyBadger(err, {

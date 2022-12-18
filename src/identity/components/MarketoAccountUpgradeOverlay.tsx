@@ -81,7 +81,7 @@ interface MarketoFormElement extends Element {
 }
 
 // If marketo isn't working, still need the user to have some means of contacting sales.
-const SalesFormLink: FC = () => {
+const SalesFormLink = () => {
   const user = useSelector(selectUser)
   const accountId = useSelector(selectCurrentAccountId)
   const accountType = useSelector(selectCurrentAccountType)
@@ -169,7 +169,7 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
       onClose()
     } catch (err) {
       handleError(MarketoError.FormSubmitError, err)
-      event(AccountUpgradeOverlay.MarketoAccountUpgradeSuccess, multiOrgTag, {
+      event(AccountUpgradeOverlay.MarketoAccountUpgradeFail, multiOrgTag, {
         userId: user.id,
         accountId,
         accountType,

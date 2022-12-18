@@ -110,7 +110,6 @@ const SwitchToNewOrgButton = (
   newOrg: CreatedOrg,
   currentOrgId
 ): JSX.Element => {
-
   const handleEventing = () => {
     event(CreateOrgOverlayEvent.SwitchToNewOrg, multiOrgTag, {
       currentOrgId,

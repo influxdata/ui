@@ -16,11 +16,8 @@ import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 // Selectors
 import {selectCurrentAccountId} from 'src/identity/selectors'
 
-// Eventing 
-import {
-  multiOrgTag,
-  OrgListEvent
-} from 'src/identity/events/multiOrgEvents'
+// Eventing
+import {multiOrgTag, OrgListEvent} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
 interface OrgAllowance {
@@ -43,9 +40,9 @@ export const OrgBannerPanel: FC<OrgAllowance> = ({
   const handleUpgradeAccount = () => {
     event(OrgListEvent.UpgradeAccount, multiOrgTag, {
       availableUpgrade,
-      accountId
+      accountId,
     })
-    
+
     if (availableUpgrade === 'pay_as_you_go') {
       history.push(`/checkout`)
     } else {

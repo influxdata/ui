@@ -39,11 +39,8 @@ import {notify} from 'src/shared/actions/notifications'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
-// Eventing 
-import {
-  DeleteOrgOverlay,
-  multiOrgTag
-} from 'src/identity/events/multiOrgEvents'
+// Eventing
+import {DeleteOrgOverlay, multiOrgTag} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
 // Styles
@@ -116,9 +113,9 @@ export const DeletePaidOrgOverlay: FC = () => {
         dispatch(notify(deleteOrgSuccess(org.name, account.name)))
         event(DeleteOrgOverlay.DeleteOrgSuccess, multiOrgTag, {
           userId: org.id,
-          orgName: org.name, 
+          orgName: org.name,
           accountName: account.name,
-          accountId: account.id
+          accountId: account.id,
         })
         setTimeout(() => {
           onClose()
@@ -132,7 +129,7 @@ export const DeletePaidOrgOverlay: FC = () => {
           userId: org.id,
           orgName: org.name,
           accountName: account.name,
-          accountId: account.id
+          accountId: account.id,
         })
         reportErrorThroughHoneyBadger(err, {
           name: 'Org deletion failed',

@@ -20,10 +20,7 @@ import {
 } from 'src/identity/selectors'
 
 // Eventing
-import {
-  HeaderNavEvent,
-  multiOrgTag,
-} from 'src/identity/events/multiOrgEvents'
+import {HeaderNavEvent, multiOrgTag} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
 export const CreateOrganizationMenuItem: FC = () => {

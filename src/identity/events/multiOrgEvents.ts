@@ -20,7 +20,7 @@ export enum HeaderNavEvent {
 export enum CreateOrgOverlayEvent {
   OrgCreationSuccess = 'headerNav.orgDropdown.createOrgsuccess',
   OrgCreationFail = 'headerNav.orgDropdown.createOrgfail',
-  SwitchToNewOrg = 'headerNav.createOrganization.switchToNewOrgClicked'
+  SwitchToNewOrg = 'headerNav.createOrganization.switchToNewOrgClicked',
 }
 
 export enum DeleteOrgOverlay {
@@ -35,7 +35,7 @@ export enum AccountUpgradeOverlay {
 }
 
 export enum OrgListEvent {
-  UpgradeAccount = 'accountSettings.orgsTab.upgradeBannerClicked'
+  UpgradeAccount = 'accountSettings.orgsTab.upgradeBannerClicked',
 }
 
 export enum UserProfileEvent {

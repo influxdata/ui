@@ -94,7 +94,10 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Eventing
 import {event} from 'src/cloud/utils/reporting'
-import {CreateOrgOverlayEvent, multiOrgTag} from 'src/identity/events/multiOrgEvents'
+import {
+  CreateOrgOverlayEvent,
+  multiOrgTag,
+} from 'src/identity/events/multiOrgEvents'
 
 const switchToNewOrgButtonStyle = {
   color: 'black',
@@ -102,17 +105,25 @@ const switchToNewOrgButtonStyle = {
   cursor: 'pointer',
 }
 
-const SwitchToNewOrgButton = (url: string, newOrg: CreatedOrg, currentOrgId): JSX.Element => {
+const SwitchToNewOrgButton = (
+  url: string,
+  newOrg: CreatedOrg,
+  currentOrgId
+): JSX.Element => {
+
+  const handleEventing = () => {
+    event(CreateOrgOverlayEvent.SwitchToNewOrg, multiOrgTag, {
+      currentOrgId,
+      createdOrgId: newOrg.id,
+      createdOrgName: newOrg.name,
+    })
+  }
   return (
     <a
       href={url}
       data-testid="go-to-new-org--link"
       style={switchToNewOrgButtonStyle}
-      onClick={() => event(CreateOrgOverlayEvent.SwitchToNewOrg, multiOrgTag, {
-        currentOrgId,
-        createdOrgId: newOrg.id,
-        createdOrgName: newOrg.name,
-      })}
+      onClick={handleEventing}
     >
       Switch to new org.
     </a>
@@ -271,9 +282,9 @@ export const CreateOrganizationOverlay: FC = () => {
       }
 
       event(CreateOrgOverlayEvent.OrgCreationFail, multiOrgTag, {
-        currentOrgId
+        currentOrgId,
       })
-      
+
       setCreateOrgButtonStatus(ComponentStatus.Error)
     }
   }

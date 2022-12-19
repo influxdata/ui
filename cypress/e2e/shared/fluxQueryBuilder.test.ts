@@ -597,7 +597,10 @@ describe('Script Builder', () => {
 
         cy.log('select bucket')
         selectBucket(bucketName)
-        cy.getByTestID('flux-editor').contains(`from(bucket: "${bucketName}")`)
+        cy.getByTestID('flux-editor').contains(
+          `from(bucket: "${bucketName}")`,
+          {timeout: DELAY_FOR_LSP_SERVER_BOOTUP}
+        )
         cy.getByTestID('flux-editor').should(
           'not.contain',
           DEFAULT_FLUX_EDITOR_TEXT

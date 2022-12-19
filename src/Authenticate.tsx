@@ -102,7 +102,7 @@ class AuthenticateUnconnected extends PureComponent<Props, State> {
 
   private fetchMe = async () => {
     try {
-      if (isFlagEnabled('quartzSession')) {
+      if (CLOUD) {
         await this.props.getQuartzIdentityThunkNoErrorHandling()
         // TODO: completing https://github.com/influxdata/ui/issues/5826 will make this
         // line unnecessary
@@ -123,7 +123,7 @@ class AuthenticateUnconnected extends PureComponent<Props, State> {
 
   private authenticate = async () => {
     try {
-      if (isFlagEnabled('quartzSession')) {
+      if (CLOUD) {
         await fetchIdentity()
       } else {
         await fetchLegacyIdentity()

@@ -178,3 +178,5 @@ export const INFLUXDATA_SUPPORT_CONTACT_US = '+1 855-958-1047'
 export const INFLUXDATA_SUPPORT_CONTACT_US_TELEPHONE_LINK = 'tel:+18559581047'
 
 export const TOOLS_URL = 'https://us-east-1-2.aws.cloud2.influxdata.com/'
+
+export const IOX_SWITCHOVER_CREATION_DATE = '2023-01-31T00:00:00Z' // January 31, 2023, 00:00:00 GMT

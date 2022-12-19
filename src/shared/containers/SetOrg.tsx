@@ -63,7 +63,6 @@ import {AppState, Organization, ResourceType} from 'src/types'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
-import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {
   LOAD_DATA,
   SETTINGS,
@@ -92,6 +91,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -99,6 +99,8 @@ const SetOrg: FC = () => {
   const orgs = useSelector((state: AppState) =>
     getAll<Organization>(state, ResourceType.Orgs)
   )
+  const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
+
   const history = useHistory()
   const {orgID} = useParams<{orgID: string}>()
 
@@ -165,19 +167,20 @@ const SetOrg: FC = () => {
             path={`${orgPath}/dashboards`}
             component={RouteToDashboardList}
           />
-          {/* Flows  */}
-          <Route
-            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:notebookID/versions/:id`}
-            component={VersionPage}
-          />
-          <Route
-            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
-            component={FlowPage}
-          />
-          <Route
-            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}`}
-            component={FlowsIndex}
-          />
+          {/* Notebooks  */}
+          {shouldShowNotebooks && (
+            <Route
+              path={`${orgPath}/notebooks/:notebookID/versions/:id`}
+              component={VersionPage}
+            />
+          )}
+          {shouldShowNotebooks && (
+            <Route path={`${orgPath}/notebooks/:id`} component={FlowPage} />
+          )}
+          {shouldShowNotebooks && (
+            <Route path={`${orgPath}/notebooks`} component={FlowsIndex} />
+          )}
+
           {/* Write Data */}
           <Route
             path={`${orgPath}/${LOAD_DATA}/sources`}

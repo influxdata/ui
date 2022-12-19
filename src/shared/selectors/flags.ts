@@ -26,7 +26,6 @@ export const OSS_FLAGS = {
   'notification-endpoint-telegram': false,
   boardWithFlows: false,
   createWithFlows: false,
-  leadWithFlows: false,
 }
 
 export const CLOUD_FLAGS = {
@@ -51,7 +50,6 @@ export const CLOUD_FLAGS = {
   'notification-endpoint-telegram': false,
   boardWithFlows: false,
   createWithFlows: false,
-  leadWithFlows: false,
 }
 
 const getConfigCatFlags = (state: AppState) => state.flags.original || {}

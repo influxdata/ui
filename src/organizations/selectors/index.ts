@@ -18,6 +18,12 @@ export const isOrgIOx = (state: AppState): boolean => {
   )
 }
 
+export const selectOrgCreationDate = (state: AppState): string => {
+  const org = getOrg(state)
+
+  return org?.createdAt
+}
+
 export const getOrg = (state: AppState): Organization => {
   return get(state, 'resources.orgs.org', null)
 }

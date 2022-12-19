@@ -21,6 +21,8 @@ import {
   Subscription,
 } from 'src/types'
 
+import {NotebooksState} from 'src/flows/reducers/flowsReducer'
+
 export enum ResourceType {
   Authorizations = 'tokens',
   Buckets = 'buckets',
@@ -31,6 +33,7 @@ export enum ResourceType {
   Labels = 'labels',
   Orgs = 'orgs',
   Members = 'members',
+  Notebooks = 'notebooks',
   NotificationRules = 'rules',
   NotificationEndpoints = 'endpoints',
   Plugins = 'plugins',
@@ -90,6 +93,7 @@ export interface ResourceState {
   [ResourceType.Dashboards]: DashboardsState
   [ResourceType.Labels]: NormalizedState<Label>
   [ResourceType.Members]: NormalizedState<Member>
+  [ResourceType.Notebooks]: NotebooksState
   [ResourceType.Orgs]: OrgsState
   [ResourceType.Scrapers]: NormalizedState<Scraper>
   [ResourceType.Secrets]: NormalizedState<Secret>

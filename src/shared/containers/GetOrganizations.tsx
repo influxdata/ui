@@ -39,6 +39,7 @@ import {RemoteDataState} from 'src/types'
 
 // Thunks
 import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
+import {getNotebooks} from 'src/flows/actions/flowsThunks'
 
 const GetOrganizations: FunctionComponent = () => {
   const {status: orgLoadingStatus} = useSelector(getAllOrgs)
@@ -49,7 +50,6 @@ const GetOrganizations: FunctionComponent = () => {
 
   const dispatch = useDispatch()
 
-  // This doesn't require another API call.
   useEffect(() => {
     if (orgLoadingStatus === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
@@ -91,6 +91,12 @@ const GetOrganizations: FunctionComponent = () => {
       })
     }
   }, [account.type, account.isUpgradeable])
+
+  useEffect(() => {
+    if (CLOUD && org?.id) {
+      dispatch(getNotebooks(org.id))
+    }
+  }, [org.id])
 
   return (
     <PageSpinner loading={orgLoadingStatus}>

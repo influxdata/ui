@@ -24,7 +24,7 @@ export enum HeaderNavEvent {
   CreateOrgClick = 'headerNav.createOrg.clicked',
   OrgDropdownClick = 'headerNav.orgDropdown.clicked',
   OrgSwitch = 'headerNav.orgDropdown.orgSwitched',
-  
+
   UpgradeButtonClick = 'headerNav.upgradeButton.clicked',
   UserAvatarClick = 'headerNav.userAvatarIcon.clicked',
   UserProfileClick = 'headerNav.userAvatarProfile.clicked',

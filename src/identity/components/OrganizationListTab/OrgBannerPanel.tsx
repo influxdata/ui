@@ -14,7 +14,10 @@ import {availableUpgrade} from 'src/client/unityRoutes'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 // Selectors
-import {selectCurrentAccountId, selectCurrentAccountName} from 'src/identity/selectors'
+import {
+  selectCurrentAccountId,
+  selectCurrentAccountName,
+} from 'src/identity/selectors'
 
 // Eventing
 import {multiOrgTag, OrgListEvent} from 'src/identity/events/multiOrgEvents'

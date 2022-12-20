@@ -13,10 +13,7 @@ import {
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 // Selectors
-import {
-  selectCurrentAccount,
-  selectUser,
-} from 'src/identity/selectors'
+import {selectCurrentAccount, selectUser} from 'src/identity/selectors'
 
 // Eventing
 import {HeaderNavEvent, multiOrgTag} from 'src/identity/events/multiOrgEvents'

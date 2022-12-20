@@ -105,7 +105,10 @@ const switchToNewOrgButtonStyle = {
   cursor: 'pointer',
 }
 
-const SwitchToNewOrgButton = (url: string, handleClick: () => void): JSX.Element => {
+const SwitchToNewOrgButton = (
+  url: string,
+  handleClick: () => void
+): JSX.Element => {
   return (
     <a
       href={url}
@@ -213,7 +216,10 @@ export const CreateOrganizationOverlay: FC = () => {
     retrieveClusters()
   }, [])
 
-  const createNewOrgPopup = (newOrg: CreatedOrg, handleEventing: () => void) => {
+  const createNewOrgPopup = (
+    newOrg: CreatedOrg,
+    handleEventing: () => void
+  ) => {
     const newOrgUrl = `${CLOUD_URL}/orgs/${newOrg.id}`
 
     const switchToOrgLink =

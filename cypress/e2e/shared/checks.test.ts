@@ -226,17 +226,25 @@ describe('Checks', () => {
   })
 
   it('can create and filter checks', () => {
-    cy.get<Organization>('@org').then((org: Organization) => {
-      cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-        if (req.body.query.includes('_measurement')) {
-          req.alias = 'measurementQuery'
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+      cy.intercept(
+        'POST',
+        `/api/v2/query?${new URLSearchParams({orgID})}`,
+        req => {
+          if (req.body.query.includes('_measurement')) {
+            req.alias = 'measurementQuery'
+          }
         }
-      })
-      cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-        if (req.body.query.includes('distinct(column: "_field")')) {
-          req.alias = 'fieldQuery'
+      )
+      cy.intercept(
+        'POST',
+        `/api/v2/query?${new URLSearchParams({orgID})}`,
+        req => {
+          if (req.body.query.includes('distinct(column: "_field")')) {
+            req.alias = 'fieldQuery'
+          }
         }
-      })
+      )
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
           cy.log('create first check')
@@ -265,16 +273,24 @@ describe('Checks', () => {
           cy.getByTestID('overlay').should('not.exist')
 
           // create a second check
-          cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-            if (req.body.query.includes('distinct(column: "_field")')) {
-              req.alias = 'fieldQueryBeta'
+          cy.intercept(
+            'POST',
+            `/api/v2/query?${new URLSearchParams({orgID})}`,
+            req => {
+              if (req.body.query.includes('distinct(column: "_field")')) {
+                req.alias = 'fieldQueryBeta'
+              }
             }
-          })
-          cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-            if (req.body.query.includes('_measurement')) {
-              req.alias = 'measurementQueryBeta'
+          )
+          cy.intercept(
+            'POST',
+            `/api/v2/query?${new URLSearchParams({orgID})}`,
+            req => {
+              if (req.body.query.includes('_measurement')) {
+                req.alias = 'measurementQueryBeta'
+              }
             }
-          })
+          )
           // bust the /query cache
           cy.reload()
 

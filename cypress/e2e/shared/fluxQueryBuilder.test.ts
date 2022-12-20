@@ -168,22 +168,26 @@ describe('Script Builder', () => {
         schemaComposition: true,
         newDataExplorer: true,
       }).then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          route = `/orgs/${id}/data-explorer`
-          cy.intercept('POST', `/api/v2/query?orgID=${id}`, req => {
-            const {extern} = req.body
-            if (
-              extern?.body[0]?.location?.source ==
-              `option v =  {  timeRangeStart: -1h,\n  timeRangeStop: now()}`
-            ) {
-              req.alias = 'query -1h'
-            } else if (
-              extern?.body[0]?.location?.source ==
-              `option v =  {  timeRangeStart: -15m,\n  timeRangeStop: now()}`
-            ) {
-              req.alias = 'query -15m'
+        cy.get('@org').then(({id: orgID}: Organization) => {
+          route = `/orgs/${orgID}/data-explorer`
+          cy.intercept(
+            'POST',
+            `/api/v2/query?${new URLSearchParams({orgID})}`,
+            req => {
+              const {extern} = req.body
+              if (
+                extern?.body[0]?.location?.source ==
+                `option v =  {  timeRangeStart: -1h,\n  timeRangeStop: now()}`
+              ) {
+                req.alias = 'query -1h'
+              } else if (
+                extern?.body[0]?.location?.source ==
+                `option v =  {  timeRangeStart: -15m,\n  timeRangeStop: now()}`
+              ) {
+                req.alias = 'query -15m'
+              }
             }
-          })
+          )
         })
 
         clearSession()

@@ -1,8 +1,12 @@
 import {File} from 'src/types/ast'
 import {
+  initLog,
   parse as flux_parse,
   format_from_js_file as flux_format_from_js_file,
 } from '@influxdata/flux-lsp-browser'
+
+initLog()
+
 /*
   NOTE: This is a work around for flux being generated (from rust) for the browser and jest tests running in
         a node environment (this is only for handling tests). If a test requires a specific AST result

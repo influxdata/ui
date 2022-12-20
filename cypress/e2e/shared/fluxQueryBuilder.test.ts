@@ -16,19 +16,16 @@ describe('Script Builder', () => {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
     writeData.push(`ndbc2,air_temp_degc=70_degrees station_id_${i}=${i}`)
   }
-  const writeDataMoar: string[] = []
-  for (let i = 0; i < 500; i++) {
-    writeDataMoar.push(
+  const writeDataMoar: Array<string[]> = [[], [], [], []]
+  const numOfUniqueColumns = 198 // 200 - 2
+  for (let i = 0; i < numOfUniqueColumns; i++) {
+    writeDataMoar[0]?.push(
       `ndbc_big,air_temp_degc=70_degrees station_id_A${i}=${i}`
     )
-    writeDataMoar.push(
-      `ndbc_big,air_temp_degc=70_degrees station_id_B${i}=${i}`
-    )
-    writeDataMoar.push(
-      `ndbc_big,air_temp_degc=70_degrees station_id_C${i}=${i}`
-    )
-    writeDataMoar.push(
-      `ndbc_big,air_temp_degc=70_degrees station_id_C${i}=${i + 500}`
+    writeDataMoar[1]?.push(
+      `ndbc_big,air_temp_degc=70_degrees station_id_A${i}=${
+        i + numOfUniqueColumns
+      }`
     )
   }
 
@@ -163,7 +160,7 @@ describe('Script Builder', () => {
             [`ndbc_1table,air_temp_degc=70_degrees station_id=1`],
             'defbuck4'
           )
-          cy.writeData(writeDataMoar, 'defbuck4')
+          writeDataMoar.forEach(data => cy.writeData(data, 'defbuck4'))
         })
       })
     })
@@ -365,7 +362,7 @@ describe('Script Builder', () => {
             `|> filter(fn: (r) => r._measurement == "ndbc_big")`
           )
 
-          runTest(3 * 500, 4 * 500, true)
+          runTest(numOfUniqueColumns, 2 * numOfUniqueColumns, true)
         })
       })
     })

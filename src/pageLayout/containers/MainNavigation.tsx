@@ -9,7 +9,6 @@ import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
 
 // Constants
-import {generateNavItems} from 'src/pageLayout/constants/navigationHierarchy'
 import {CLOUD} from 'src/shared/constants'
 
 // Utils
@@ -17,6 +16,8 @@ import {getNavItemActivation} from 'src/pageLayout/utils'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {isUserOperator} from 'src/operator/utils'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -26,13 +27,217 @@ import {
 } from 'src/identity/selectors'
 
 // Types
-import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
+import {IdentityUser} from 'src/client/unityRoutes'
 
 // Overlays
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Styles
 import './MainNavigation.scss'
+
+interface NavItem {
+  id: string
+  testID: string
+  label: string
+  shortLabel?: string
+  link: string
+  icon: IconFont
+  enabled?: () => boolean
+  menu?: NavSubItem[]
+  activeKeywords: string[]
+}
+
+interface NavSubItem {
+  id: string
+  testID: string
+  label: string
+  link: string
+  enabled?: () => boolean
+}
+
+const generateNavItems = (
+  orgID: string,
+  operatorRole: IdentityUser['operatorRole']
+): NavItem[] => {
+  const navItems: NavItem[] = [
+    {
+      id: 'load-data',
+      testID: 'nav-item-load-data',
+      icon: IconFont.Upload_New,
+      label: 'Load Data',
+      shortLabel: 'Data',
+      link: `/orgs/${orgID}/load-data/sources`,
+      activeKeywords: ['load-data'],
+      menu: [
+        {
+          id: 'sources',
+          testID: 'nav-subitem-sources',
+          label: 'Sources',
+          link: `/orgs/${orgID}/load-data/sources`,
+        },
+        {
+          id: 'buckets',
+          testID: 'nav-subitem-buckets',
+          label: 'Buckets',
+          link: `/orgs/${orgID}/load-data/buckets`,
+        },
+        {
+          id: 'telegrafs',
+          testID: 'nav-subitem-telegrafs',
+          label: 'Telegraf',
+          link: `/orgs/${orgID}/load-data/telegrafs`,
+        },
+        {
+          id: 'scrapers',
+          testID: 'nav-subitem-scrapers',
+          label: 'Scrapers',
+          link: `/orgs/${orgID}/load-data/scrapers`,
+          enabled: () => !CLOUD,
+        },
+        {
+          id: 'subscriptions',
+          testID: 'nav-subitem-subscriptions',
+          label: 'Native Subscriptions',
+          link: `/orgs/${orgID}/load-data/subscriptions`,
+          enabled: () => CLOUD && isFlagEnabled('subscriptionsUI'),
+        },
+        {
+          id: 'tokens',
+          testID: 'nav-subitem-tokens',
+          label: 'API Tokens',
+          link: `/orgs/${orgID}/load-data/tokens`,
+        },
+      ],
+    },
+    {
+      id: 'data-explorer',
+      testID: 'nav-item-data-explorer',
+      icon: IconFont.GraphLine_New,
+      label: 'Data Explorer',
+      shortLabel: 'Explore',
+      link: `/orgs/${orgID}/data-explorer`,
+      activeKeywords: ['data-explorer'],
+      enabled: () => !isFlagEnabled('leadWithFlows'),
+    },
+    {
+      id: 'notebook-explorer',
+      testID: 'nav-item-data-explorer',
+      icon: IconFont.GraphLine_New,
+      label: 'Data Explorer',
+      shortLabel: 'Explore',
+      link: `/notebook/from/default`,
+      activeKeywords: ['data-explorer'],
+      enabled: () => isFlagEnabled('leadWithFlows'),
+    },
+    {
+      id: 'flows',
+      testID: 'nav-item-flows',
+      icon: IconFont.BookCode,
+      label: 'Notebooks',
+      shortLabel: 'Books',
+      link: `/orgs/${orgID}/notebooks`,
+      activeKeywords: ['notebooks', 'notebook/from'],
+    },
+    {
+      id: 'dashboards',
+      testID: 'nav-item-dashboards',
+      icon: IconFont.DashH,
+      label: 'Dashboards',
+      shortLabel: 'Boards',
+      link: `/orgs/${orgID}/dashboards-list`,
+      activeKeywords: ['dashboards', 'dashboards-list'],
+    },
+    {
+      id: 'tasks',
+      testID: 'nav-item-tasks',
+      icon: IconFont.Calendar,
+      label: 'Tasks',
+      link: `/orgs/${orgID}/tasks`,
+      activeKeywords: ['tasks'],
+    },
+    {
+      id: 'alerting',
+      testID: 'nav-item-alerting',
+      icon: IconFont.Bell,
+      label: 'Alerts',
+      link: `/orgs/${orgID}/alerting`,
+      activeKeywords: ['alerting', 'alert-history'],
+      menu: [
+        {
+          id: 'alerting',
+          testID: 'nav-subitem-alerting',
+          label: 'Alerts',
+          link: `/orgs/${orgID}/alerting`,
+        },
+        {
+          id: 'history',
+          testID: 'nav-subitem-history',
+          label: 'Alert History',
+          link: `/orgs/${orgID}/alert-history`,
+        },
+      ],
+    },
+    {
+      id: 'settings',
+      testID: 'nav-item-settings',
+      icon: IconFont.CogOutline_New,
+      label: 'Settings',
+      link: `/orgs/${orgID}/settings/variables`,
+      activeKeywords: ['settings'],
+      menu: [
+        {
+          id: 'variables',
+          testID: 'nav-subitem-variables',
+          label: 'Variables',
+          link: `/orgs/${orgID}/settings/variables`,
+        },
+        {
+          id: 'templates',
+          testID: 'nav-subitem-templates',
+          label: 'Templates',
+          link: `/orgs/${orgID}/settings/templates`,
+        },
+        {
+          id: 'labels',
+          testID: 'nav-subitem-labels',
+          label: 'Labels',
+          link: `/orgs/${orgID}/settings/labels`,
+        },
+        {
+          id: 'secrets',
+          testID: 'nav-subitem-secrets',
+          label: 'Secrets',
+          link: `/orgs/${orgID}/settings/secrets`,
+        },
+      ],
+    },
+    {
+      id: 'operator',
+      enabled: () => CLOUD && isUserOperator(operatorRole),
+      testID: 'nav-item--operator',
+      icon: IconFont.Shield,
+      label: 'Operator',
+      shortLabel: 'Operator',
+      link: `/operator`,
+      activeKeywords: ['operator'],
+    },
+  ]
+
+  return navItems.filter(item => {
+    if (item?.menu) {
+      item.menu = item.menu.filter(sub => {
+        if (sub?.enabled) {
+          return sub.enabled()
+        }
+        return true
+      })
+    }
+    if (item?.enabled) {
+      return item.enabled()
+    }
+    return true
+  })
+}
 
 export const MainNavigation: FC = () => {
   const {presentationMode, navbarMode, setNavbarMode} =

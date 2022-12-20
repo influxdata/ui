@@ -103,6 +103,7 @@ const AccountAboutPage: FC = () => {
   }
 
   const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
+  const showLeaveAcctBtn = !isFlagEnabled('createDeleteOrgs')
 
   return (
     <AccountTabContainer activeTab="settings">
@@ -130,7 +131,7 @@ const AccountAboutPage: FC = () => {
             text="Save"
           />
         </FlexBox>
-        {allowSelfRemoval && leaveAcctBtn}
+        {allowSelfRemoval && showLeaveAcctBtn && leaveAcctBtn}
         {showDeactivateAccountSection && (
           <>
             <hr style={dividerStyle} />

@@ -227,6 +227,14 @@ export const wrapDefaultPassword = (): Cypress.Chainable => {
   return cy.wrap(password).as('defaultPassword')
 }
 
+export const isIoxOrg = (): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.get('@org').then(({defaultStorageType}: Organization) => {
+    return Boolean(
+      defaultStorageType && defaultStorageType.toLowerCase() === 'iox'
+    )
+  })
+}
+
 export const createDashboard = (
   orgID?: string,
   name: string = 'test dashboard'
@@ -1153,6 +1161,7 @@ Cypress.Commands.add(
   'wrapEnvironmentVariablesForOss',
   wrapEnvironmentVariablesForOss
 )
+Cypress.Commands.add('isIoxOrg', isIoxOrg)
 
 // navigation bar
 Cypress.Commands.add('clickNavBarItem', clickNavBarItem)

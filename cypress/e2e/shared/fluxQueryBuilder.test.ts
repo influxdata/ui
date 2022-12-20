@@ -98,27 +98,36 @@ describe('Script Builder', () => {
   }
 
   const clearSession = () => {
-    cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
-      if (!$saveButton.is(':disabled')) {
-        cy.log('clearing session')
-        cy.getByTestID('flux-query-builder--new-script')
-          .should('be.visible')
-          .click()
+    return cy.isIoxOrg().then(isIox => {
+      if (isIox) {
+        cy.getByTestID('query-builder--new-script').should('be.visible').click()
+        cy.getByTestID('script-dropdown__flux').should('be.visible').click()
         cy.getByTestID('overlay--container').within(() => {
           cy.getByTestID('flux-query-builder--no-save').click({force: true})
         })
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
+      } else {
+        cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
+          if (!$saveButton.is(':disabled')) {
+            cy.getByTestID('flux-query-builder--new-script')
+              .should('be.visible')
+              .click()
+            cy.getByTestID('overlay--container').within(() => {
+              cy.getByTestID('flux-query-builder--no-save').click({force: true})
+            })
+          }
         })
       }
-    })
-    cy.getByTestID('flux-sync--toggle').then($toggle => {
-      if (!$toggle.hasClass('active')) {
-        $toggle.click()
-      }
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('textarea.inputarea').should(
+          'have.value',
+          DEFAULT_FLUX_EDITOR_TEXT
+        )
+      })
+      return cy.getByTestID('flux-sync--toggle').then($toggle => {
+        if (!$toggle.hasClass('active')) {
+          $toggle.click()
+        }
+      })
     })
   }
 
@@ -167,6 +176,7 @@ describe('Script Builder', () => {
       loginWithFlags({
         schemaComposition: true,
         newDataExplorer: true,
+        saveAsScript: true,
       }).then(() => {
         cy.get('@org').then(({id: orgID}: Organization) => {
           route = `/orgs/${orgID}/data-explorer`
@@ -518,6 +528,7 @@ describe('Script Builder', () => {
       loginWithFlags({
         schemaComposition: true,
         newDataExplorer: true,
+        saveAsScript: true,
       }).then(() => {
         clearSession()
         cy.getByTestID('flux-sync--toggle')

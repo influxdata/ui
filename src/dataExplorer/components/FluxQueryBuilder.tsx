@@ -142,6 +142,7 @@ const FluxQueryBuilder: FC = () => {
                             key={option}
                             onClick={() => handleSelectDropdown(option)}
                             selected={resource?.language === option}
+                            testID={`script-dropdown__${option}`}
                           >
                             {option}
                           </Dropdown.Item>
@@ -149,7 +150,11 @@ const FluxQueryBuilder: FC = () => {
                       </Dropdown.Menu>
                     )}
                     button={(active, onClick) => (
-                      <Dropdown.Button active={active} onClick={onClick}>
+                      <Dropdown.Button
+                        active={active}
+                        onClick={onClick}
+                        testID="query-builder--new-script"
+                      >
                         <>
                           <Icon glyph={IconFont.Plus_New} />
                           &nbsp;New Script

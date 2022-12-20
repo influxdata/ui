@@ -105,24 +105,13 @@ const switchToNewOrgButtonStyle = {
   cursor: 'pointer',
 }
 
-const SwitchToNewOrgButton = (
-  url: string,
-  newOrg: CreatedOrg,
-  currentOrgId
-): JSX.Element => {
-  const handleEventing = () => {
-    event(CreateOrgOverlayEvent.SwitchToNewOrg, multiOrgTag, {
-      currentOrgId,
-      createdOrgId: newOrg.id,
-      createdOrgName: newOrg.name,
-    })
-  }
+const SwitchToNewOrgButton = (url: string, handleClick: () => void): JSX.Element => {
   return (
     <a
       href={url}
       data-testid="go-to-new-org--link"
       style={switchToNewOrgButtonStyle}
-      onClick={handleEventing}
+      onClick={handleClick}
     >
       Switch to new org.
     </a>
@@ -224,13 +213,12 @@ export const CreateOrganizationOverlay: FC = () => {
     retrieveClusters()
   }, [])
 
-  // Event Handlers
-  const createNewOrgPopup = (newOrg: CreatedOrg) => {
+  const createNewOrgPopup = (newOrg: CreatedOrg, handleEventing: () => void) => {
     const newOrgUrl = `${CLOUD_URL}/orgs/${newOrg.id}`
 
     const switchToOrgLink =
       newOrg.provisioningStatus === 'provisioned'
-        ? () => SwitchToNewOrgButton(newOrgUrl, newOrg, currentOrgId)
+        ? () => SwitchToNewOrgButton(newOrgUrl, handleEventing)
         : null
 
     dispatch(notify(quartzOrgCreateSuccess(newOrg.name, switchToOrgLink)))
@@ -252,16 +240,24 @@ export const CreateOrganizationOverlay: FC = () => {
         orgCreationAllowed => {
           dispatch(getQuartzOrganizationsThunk(currentAccountId))
 
-          createNewOrgPopup(newOrg)
+          // Event Handlers
+          const handleSwitchToNewOrgEvent = () => {
+            event(CreateOrgOverlayEvent.SwitchToNewOrg, multiOrgTag, {
+              newOrgID: newOrg.id,
+              newOrgName: newOrg.name,
+              oldOrgID: currentOrgId,
+            })
+          }
+          createNewOrgPopup(newOrg, handleSwitchToNewOrgEvent)
 
           if (!orgCreationAllowed) {
             dispatch(notify(quartzOrgQuotaReached()))
           }
 
           event(CreateOrgOverlayEvent.OrgCreationSuccess, multiOrgTag, {
-            createdOrgId: newOrg.id,
-            createdOrgName: newOrg.name,
-            currentOrgId,
+            newOrgID: newOrg.id,
+            newOrgName: newOrg.name,
+            oldOrgID: currentOrgId,
           })
 
           history.push(`/orgs/${currentOrgId}/accounts/orglist`)
@@ -281,7 +277,7 @@ export const CreateOrganizationOverlay: FC = () => {
       }
 
       event(CreateOrgOverlayEvent.OrgCreationFail, multiOrgTag, {
-        currentOrgId,
+        oldOrgID: currentOrgId,
       })
 
       setCreateOrgButtonStatus(ComponentStatus.Error)

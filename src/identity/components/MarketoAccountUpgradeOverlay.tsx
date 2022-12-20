@@ -16,6 +16,7 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Selectors
 import {
   selectCurrentAccountId,
+  selectCurrentAccountName,
   selectCurrentAccountType,
   selectUser,
 } from 'src/identity/selectors'
@@ -84,12 +85,14 @@ interface MarketoFormElement extends Element {
 const SalesFormLink = () => {
   const user = useSelector(selectUser)
   const accountId = useSelector(selectCurrentAccountId)
+  const accountName = useSelector(selectCurrentAccountName)
   const accountType = useSelector(selectCurrentAccountType)
 
   const handleEventing = () => {
     event(AccountUpgradeOverlay.SalesFormLinkClick, multiOrgTag, {
       userId: user.id,
       accountId,
+      accountName,
       accountType,
     })
   }
@@ -113,6 +116,7 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
 
   const user = useSelector(selectUser)
   const accountId = useSelector(selectCurrentAccountId)
+  const accountName = useSelector(selectCurrentAccountName)
   const accountType = useSelector(selectCurrentAccountType)
 
   const [scriptHasLoaded, setScriptHasLoaded] = useState(false)
@@ -161,19 +165,15 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
     try {
       window.MktoForms2.getForm(MARKETO_FORM_ID).submit()
       dispatch(notify(marketoFormSubmitSuccess()))
-      event(AccountUpgradeOverlay.MarketoAccountUpgradeSuccess, multiOrgTag, {
-        userId: user.id,
+      event(AccountUpgradeOverlay.MarketoAccountUpgrade, multiOrgTag, {
         accountId,
+        accountName,
         accountType,
+        userId: user.id,
       })
       onClose()
     } catch (err) {
       handleError(MarketoError.FormSubmitError, err)
-      event(AccountUpgradeOverlay.MarketoAccountUpgradeFail, multiOrgTag, {
-        userId: user.id,
-        accountId,
-        accountType,
-      })
     }
   }
 

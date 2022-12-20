@@ -111,11 +111,12 @@ export const DeletePaidOrgOverlay: FC = () => {
       .then(() => {
         clearTimeout(responseTimer)
         dispatch(notify(deleteOrgSuccess(org.name, account.name)))
-        event(DeleteOrgOverlay.DeleteOrgSuccess, multiOrgTag, {
-          userId: org.id,
-          orgName: org.name,
-          accountType: account.type,
+        event(DeleteOrgOverlay.DeleteOrg, multiOrgTag, {
           accountId: account.id,
+          accoutnName: account.name,
+          accountType: account.type,
+          orgName: org.name,
+          userId: org.id,
         })
         setTimeout(() => {
           onClose()
@@ -125,12 +126,6 @@ export const DeletePaidOrgOverlay: FC = () => {
       .catch(err => {
         clearTimeout(responseTimer)
         dispatch(notify(deleteOrgFailed(SupportLink, org.name)))
-        event(DeleteOrgOverlay.DeleteOrgFail, multiOrgTag, {
-          userId: org.id,
-          orgName: org.name,
-          accountType: account.type,
-          accountId: account.id,
-        })
         reportErrorThroughHoneyBadger(err, {
           name: 'Org deletion failed',
           context: {

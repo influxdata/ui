@@ -14,7 +14,7 @@ import {availableUpgrade} from 'src/client/unityRoutes'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 // Selectors
-import {selectCurrentAccountId} from 'src/identity/selectors'
+import {selectCurrentAccountId, selectCurrentAccountName} from 'src/identity/selectors'
 
 // Eventing
 import {multiOrgTag, OrgListEvent} from 'src/identity/events/multiOrgEvents'
@@ -36,11 +36,13 @@ export const OrgBannerPanel: FC<OrgAllowance> = ({
   const dispatch = useDispatch()
   const history = useHistory()
   const accountId = useSelector(selectCurrentAccountId)
+  const accountName = useSelector(selectCurrentAccountName)
 
   const handleUpgradeAccount = () => {
     event(OrgListEvent.UpgradeAccount, multiOrgTag, {
       availableUpgrade,
       accountId,
+      accountName,
     })
 
     if (availableUpgrade === 'pay_as_you_go') {

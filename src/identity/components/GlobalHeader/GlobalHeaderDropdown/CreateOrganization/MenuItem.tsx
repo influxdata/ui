@@ -14,8 +14,7 @@ import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 // Selectors
 import {
-  selectCurrentAccountId,
-  selectCurrentAccountType,
+  selectCurrentAccount,
   selectUser,
 } from 'src/identity/selectors'
 
@@ -26,14 +25,14 @@ import {event} from 'src/cloud/utils/reporting'
 export const CreateOrganizationMenuItem: FC = () => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
-  const accountId = useSelector(selectCurrentAccountId)
-  const accountType = useSelector(selectCurrentAccountType)
+  const account = useSelector(selectCurrentAccount)
 
   const handleCreateOrg = () => {
     event(HeaderNavEvent.CreateOrgClick, multiOrgTag, {
       userId: user.id,
-      accountId,
-      accountType,
+      accountId: account.id,
+      accountName: account.name,
+      accountType: account.type,
     })
     dispatch(
       showOverlay('create-organization', null, () => dispatch(dismissOverlay()))

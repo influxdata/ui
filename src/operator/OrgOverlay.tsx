@@ -57,7 +57,7 @@ const OrgOverlay: FC = () => {
   const history = useHistory()
   const canReactivateOrg =
     hasWritePermissions && organization?.state === 'suspended'
-  const isIOx = organization?.storageType == 'iox'
+  const isIOx = organization?.storageType.toLowerCase() === 'iox'
   const canSeeCardinalityLimits = !isIOx
 
   useEffect(() => {

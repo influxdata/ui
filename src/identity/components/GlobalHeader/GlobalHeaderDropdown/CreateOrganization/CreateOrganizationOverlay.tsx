@@ -218,13 +218,13 @@ export const CreateOrganizationOverlay: FC = () => {
 
   const createNewOrgPopup = (
     newOrg: CreatedOrg,
-    handleEventing: () => void
+    handleSwitchToNewOrgEvent: () => void
   ) => {
     const newOrgUrl = `${CLOUD_URL}/orgs/${newOrg.id}`
 
     const switchToOrgLink =
       newOrg.provisioningStatus === 'provisioned'
-        ? () => SwitchToNewOrgButton(newOrgUrl, handleEventing)
+        ? () => SwitchToNewOrgButton(newOrgUrl, handleSwitchToNewOrgEvent)
         : null
 
     dispatch(notify(quartzOrgCreateSuccess(newOrg.name, switchToOrgLink)))

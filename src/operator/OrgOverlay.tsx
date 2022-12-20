@@ -57,6 +57,7 @@ const OrgOverlay: FC = () => {
   const history = useHistory()
   const canReactivateOrg =
     hasWritePermissions && organization?.state === 'suspended'
+  const canSeeCardinalityLimits = organization?.storageType == 'tsm'
 
   useEffect(() => {
     handleGetLimits(orgID)
@@ -176,15 +177,17 @@ const OrgOverlay: FC = () => {
                         onChangeLimits={setLimits}
                       />
                     </Grid.Column>
-                    <Grid.Column widthMD={Columns.Four}>
-                      <Form.Label label="Series Cardinality" />
-                      <LimitsField
-                        type={InputType.Number}
-                        name="rate.cardinality"
-                        limits={limits}
-                        onChangeLimits={setLimits}
-                      />
-                    </Grid.Column>
+                    {canSeeCardinalityLimits && (
+                      <Grid.Column widthMD={Columns.Four}>
+                        <Form.Label label="Series Cardinality" />
+                        <LimitsField
+                          type={InputType.Number}
+                          name="rate.cardinality"
+                          limits={limits}
+                          onChangeLimits={setLimits}
+                        />
+                      </Grid.Column>
+                    )}
                   </Grid.Row>
                   <Grid.Row>
                     <Grid.Column widthMD={Columns.Four}>

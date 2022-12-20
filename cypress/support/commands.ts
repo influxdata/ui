@@ -882,7 +882,11 @@ export const writeData = (
       const bucketToUse = namedBucket ?? bucket.name
       return cy.request({
         method: 'POST',
-        url: '/api/v2/write?org=' + org.name + '&bucket=' + bucketToUse,
+        url:
+          '/api/v2/write?' +
+          new URLSearchParams({orgID: org.id}) +
+          '&bucket=' +
+          bucketToUse,
         body: lines.join('\n'),
       })
     })

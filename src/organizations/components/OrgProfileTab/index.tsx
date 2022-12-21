@@ -1,36 +1,39 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import React, {FC, useEffect, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
-  FlexBox,
   AlignItems,
-  FlexDirection,
   ComponentSize,
+  FlexBox,
+  FlexDirection,
   JustifyContent,
 } from '@influxdata/clockface'
-import UsersProvider from 'src/users/context/users'
 import LabeledData from 'src/organizations/components/OrgProfileTab/LabeledData'
 import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/CopyableLabeledData'
-import DeletePanel from 'src/organizations/components/OrgProfileTab/DeletePanel'
+import {DeletePanel} from 'src/organizations/components/OrgProfileTab/DeletePanel'
 
-// Types
-import {RemoteDataState} from 'src/types'
+// Notifications
+import {orgDetailsFetchError} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
-// Utils
-import {CLOUD} from 'src/shared/constants'
+// Providers
+import UsersProvider from 'src/users/context/users'
 
 // Selectors
 import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
-import {
-  selectCurrentIdentity,
-  selectQuartzOrgDetailsStatus,
-} from 'src/identity/selectors'
+import {selectCurrentOrg} from 'src/identity/selectors'
 
 // Thunks
 import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
+
+// Types
+import {RemoteDataState} from 'src/types'
+
+// Constants
+import {CLOUD} from 'src/shared/constants'
 
 // Styles
 import 'src/organizations/components/OrgProfileTab/style.scss'
@@ -38,27 +41,39 @@ import 'src/organizations/components/OrgProfileTab/style.scss'
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
-  const {org: quartzOrg} = useSelector(selectCurrentIdentity)
-  const orgDetailsStatus = useSelector(selectQuartzOrgDetailsStatus)
-
+  const quartzOrg = useSelector(selectCurrentOrg)
   const dispatch = useDispatch()
 
-  const identityOrgId = quartzOrg.id
+  // Data about the user's organization is intentionally re-fetched when this component mounts again.
+  const [orgDetailsStatus, setOrgDetailsStatus] = useState(
+    RemoteDataState.NotStarted
+  )
+
+  const orgDetailsLoaded = orgDetailsStatus === RemoteDataState.Done
 
   useEffect(() => {
     if (!CLOUD) {
       return
     }
 
-    if (orgDetailsStatus === RemoteDataState.NotStarted) {
-      dispatch(getCurrentOrgDetailsThunk(identityOrgId))
+    const retrieveOrgDetails = async () => {
+      if (orgDetailsStatus === RemoteDataState.NotStarted) {
+        try {
+          await Promise.resolve(
+            dispatch(getCurrentOrgDetailsThunk(quartzOrg.id))
+          )
+          setOrgDetailsStatus(RemoteDataState.Done)
+        } catch (err) {
+          setOrgDetailsStatus(RemoteDataState.Error)
+          dispatch(notify(orgDetailsFetchError()))
+        }
+      }
     }
-  }, [dispatch, orgDetailsStatus, identityOrgId])
 
-  const hasIdentityData =
-    quartzOrg.provider || quartzOrg.regionCode || quartzOrg.regionName
+    retrieveOrgDetails()
+  }, [dispatch, orgDetailsStatus, quartzOrg.id])
 
-  const orgProviderExists = !!quartzOrg.provider
+  const hasFetchedOrgDetails = orgDetailsStatus === RemoteDataState.Done
 
   const OrgProfile = () => (
     <FlexBox.Child
@@ -72,33 +87,25 @@ const OrgProfileTab: FC = () => {
         src={org.name}
         isRenameableOrg={true}
       />
-      {CLOUD && hasIdentityData && (
+      {CLOUD && hasFetchedOrgDetails && (
         <>
           <FlexBox
+            className="org-profile-tab--details"
             direction={FlexDirection.Row}
             margin={ComponentSize.Medium}
             justifyContent={JustifyContent.SpaceBetween}
             stretchToFitWidth={true}
-            style={orgProviderExists ? {width: '85%'} : {width: '48%'}}
             testID="org-profile--labeled-data"
           >
-            {orgProviderExists && (
-              <LabeledData label="Cloud Provider" src={quartzOrg.provider} />
-            )}
-            {quartzOrg.regionCode && (
-              <LabeledData label="Region" src={quartzOrg.regionCode} />
-            )}
-            {quartzOrg.regionName && (
-              <LabeledData label="Location" src={quartzOrg.regionName} />
-            )}
+            <LabeledData label="Cloud Provider" src={quartzOrg.provider} />
+            <LabeledData label="Region" src={quartzOrg.regionCode} />
+            <LabeledData label="Location" src={quartzOrg.regionName} />
           </FlexBox>
-          {CLOUD && quartzOrg.clusterHost && (
-            <CopyableLabeledData
-              id="clusterUrl"
-              label="Cluster URL (Host Name)"
-              src={quartzOrg.clusterHost}
-            />
-          )}
+          <CopyableLabeledData
+            id="clusterUrl"
+            label="Cluster URL (Host Name)"
+            src={quartzOrg.clusterHost}
+          />
         </>
       )}
     </FlexBox.Child>
@@ -141,7 +148,7 @@ const OrgProfileTab: FC = () => {
         <CommonIds />
       </FlexBox>
 
-      {CLOUD && (
+      {CLOUD && orgDetailsLoaded && (
         <FlexBox.Child className="org-profile-tab--section">
           <UsersProvider>
             <DeletePanel />

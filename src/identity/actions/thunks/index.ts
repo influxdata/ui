@@ -8,6 +8,9 @@ import {
   setCurrentOrgDetailsStatus,
 } from 'src/identity/actions/creators'
 
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
+
 // Types
 import {RemoteDataState, GetState, NotificationAction} from 'src/types'
 import {Actions as IdentityActions} from 'src/identity/actions/creators'
@@ -81,12 +84,18 @@ export const getCurrentOrgDetailsThunk =
 
       dispatch(setCurrentOrgDetails(orgDetails))
       dispatch(setCurrentOrgDetailsStatus(RemoteDataState.Done))
+
+      return orgDetails
     } catch (err) {
       dispatch(setCurrentOrgDetailsStatus(RemoteDataState.Error))
 
+      const state = getState()
+      const identity = selectCurrentIdentity(state)
+
       reportErrorThroughHoneyBadger(err, {
         name: 'Failed to fetch /quartz/orgs/:orgId',
-        context: {state: getState()},
+        context: {identity},
       })
+      throw new Error(err)
     }
   }

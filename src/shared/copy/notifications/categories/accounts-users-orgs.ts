@@ -151,6 +151,12 @@ export const orgCreateSuccess = (): Notification => ({
   message: 'Organization was successfully created',
 })
 
+export const orgDetailsFetchError = (): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    'Sorry, we had difficulty retrieving the data about this organization.',
+})
+
 export const orgEditFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to update organization',

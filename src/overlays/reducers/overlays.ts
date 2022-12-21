@@ -39,7 +39,7 @@ export type OverlayID =
   | 'subscription-replace-certificate'
   | 'create-organization'
   | 'marketo-upgrade-account-overlay'
-  | 'delete-org-in-paid-account'
+  | 'suspend-org-in-paid-account'
 
 export interface OverlayState {
   id: OverlayID | null

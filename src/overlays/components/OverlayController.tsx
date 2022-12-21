@@ -47,7 +47,7 @@ import FeedbackQuestionsOverlay from 'src/support/components/FeedbackQuestionsOv
 import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
 import {CreateOrganizationOverlay} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationOverlay'
 import {MarketoAccountUpgradeOverlay} from 'src/identity/components/MarketoAccountUpgradeOverlay'
-import {DeletePaidOrgOverlay} from 'src/organizations/components/OrgProfileTab/DeletePaidOrgOverlay'
+import {SuspendPaidOrgOverlay} from 'src/organizations/components/OrgProfileTab/SuspendPaidOrgOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -186,8 +186,8 @@ export const OverlayController: FunctionComponent = () => {
       case 'marketo-upgrade-account-overlay':
         activeOverlay.current = <MarketoAccountUpgradeOverlay />
         break
-      case 'delete-org-in-paid-account':
-        activeOverlay.current = <DeletePaidOrgOverlay />
+      case 'suspend-org-in-paid-account':
+        activeOverlay.current = <SuspendPaidOrgOverlay />
         break
       default:
         activeOverlay.current = null

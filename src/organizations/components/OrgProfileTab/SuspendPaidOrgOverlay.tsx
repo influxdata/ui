@@ -44,7 +44,7 @@ import {DeleteOrgOverlay, multiOrgTag} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
 
 // Styles
-import './DeletePaidOrgOverlay.scss'
+import './SuspendPaidOrgOverlay.scss'
 
 // Constants
 import {CLOUD_URL} from 'src/shared/constants'
@@ -72,7 +72,7 @@ const SupportLink = (): JSX.Element => {
   )
 }
 
-export const DeletePaidOrgOverlay: FC = () => {
+export const SuspendPaidOrgOverlay: FC = () => {
   const account = useSelector(selectCurrentAccount)
   const org = useSelector(selectCurrentOrg)
   const user = useSelector(selectUser)

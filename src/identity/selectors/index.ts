@@ -66,6 +66,12 @@ export const selectOrgCreationAvailableUpgrade = (
   return state.identity.allowances.orgCreation.availableUpgrade
 }
 
+export const selectOrgSuspendable = (
+  state: AppState
+): AppState['identity']['currentIdentity']['org']['isSuspendable'] => {
+  return state.identity.currentIdentity.org.isSuspendable
+}
+
 export const selectQuartzActiveOrgs = (
   state: AppState
 ): AppState['identity']['quartzOrganizations']['orgs'] => {
@@ -83,11 +89,6 @@ export const selectQuartzIdentityStatus = (state: AppState): RemoteDataState =>
 
 export const selectQuartzBillingStatus = (state: AppState): RemoteDataState =>
   state.identity.currentIdentity.loadingStatus.billingStatus
-
-export const selectQuartzOrgDetailsStatus = (
-  state: AppState
-): RemoteDataState =>
-  state.identity.currentIdentity.loadingStatus.orgDetailsStatus
 
 export const selectQuartzOrgs = (
   state: AppState

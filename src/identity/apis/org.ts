@@ -42,6 +42,7 @@ export interface CurrentOrg {
   provider?: string
   regionCode?: string
   regionName?: string
+  isSuspendable?: boolean
 }
 
 export interface OrgCreationAllowance {

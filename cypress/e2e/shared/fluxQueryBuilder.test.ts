@@ -694,29 +694,7 @@ describe('Script Builder', () => {
         confirmSchemaComposition()
 
         cy.log('click new script, and choose to delete current script')
-        cy.getByTestID('flux-query-builder--new-script')
-          .should('be.visible')
-          .click()
-        cy.getByTestID('overlay--container')
-          .should('be.visible')
-          .within(() => {
-            cy.getByTestID('flux-query-builder--no-save')
-              .should('be.visible')
-              .click()
-          })
-
-        cy.log('editor text is now empty')
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
-        })
-
-        cy.log('schema browser has been cleared')
-        cy.getByTestID('bucket-selector--dropdown-button').contains(
-          'Select bucket'
-        )
+        clearSession()
       })
 
       it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {

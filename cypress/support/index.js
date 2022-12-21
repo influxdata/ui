@@ -18,6 +18,7 @@ import './commands'
 
 import 'cypress-pipe'
 import 'cypress-plugin-tab'
+import '@cypress/skip-test/support'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

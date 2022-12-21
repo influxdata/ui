@@ -1,5 +1,8 @@
 import {Organization} from '../../../src/types'
 
+const DEFAULT_FLUX_EDITOR_TEXT =
+  '// Start by selecting data from the schema browser or typing flux here'
+
 // to see list of monaco-editor widgets to check:
 // document.querySelectorAll('[widgetid]')
 
@@ -91,12 +94,33 @@ describe('Editor+LSP communication', () => {
   })
 
   describe('in Script Editor', () => {
+    const setScriptToFlux = () => {
+      return cy.isIoxOrg().then(isIox => {
+        if (isIox) {
+          cy.getByTestID('query-builder--new-script')
+            .should('be.visible')
+            .click()
+          cy.getByTestID('script-dropdown__flux').should('be.visible').click()
+          cy.getByTestID('overlay--container').within(() => {
+            cy.getByTestID('flux-query-builder--no-save').click({force: true})
+          })
+        }
+        return cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea.inputarea').should(
+            'have.value',
+            DEFAULT_FLUX_EDITOR_TEXT
+          )
+        })
+      })
+    }
+
     before(() => {
       cy.flush()
       cy.signin()
       cy.setFeatureFlags({
         newDataExplorer: true,
         schemaComposition: false,
+        saveAsScript: true,
       })
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/data-explorer`)
@@ -109,6 +133,7 @@ describe('Editor+LSP communication', () => {
             $toggle.click()
             cy.getByTestID('flux-query-builder--menu').contains('New Script')
           }
+          return setScriptToFlux()
         })
       })
     })

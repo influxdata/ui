@@ -92,18 +92,29 @@ import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thu
 import {generateProviderMap} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/utils/generateProviderMap'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
+// Eventing
+import {event} from 'src/cloud/utils/reporting'
+import {
+  CreateOrgOverlayEvent,
+  multiOrgTag,
+} from 'src/identity/events/multiOrgEvents'
+
 const switchToNewOrgButtonStyle = {
   color: 'black',
   textDecoration: 'underline',
   cursor: 'pointer',
 }
 
-const SwitchToNewOrgButton = (url: string): JSX.Element => {
+const SwitchToNewOrgButton = (
+  url: string,
+  handleClick: () => void
+): JSX.Element => {
   return (
     <a
       href={url}
       data-testid="go-to-new-org--link"
       style={switchToNewOrgButtonStyle}
+      onClick={handleClick}
     >
       Switch to new org.
     </a>
@@ -205,13 +216,15 @@ export const CreateOrganizationOverlay: FC = () => {
     retrieveClusters()
   }, [])
 
-  // Event Handlers
-  const createNewOrgPopup = (newOrg: CreatedOrg) => {
+  const createNewOrgPopup = (
+    newOrg: CreatedOrg,
+    handleSwitchToNewOrgEvent: () => void
+  ) => {
     const newOrgUrl = `${CLOUD_URL}/orgs/${newOrg.id}`
 
     const switchToOrgLink =
       newOrg.provisioningStatus === 'provisioned'
-        ? () => SwitchToNewOrgButton(newOrgUrl)
+        ? () => SwitchToNewOrgButton(newOrgUrl, handleSwitchToNewOrgEvent)
         : null
 
     dispatch(notify(quartzOrgCreateSuccess(newOrg.name, switchToOrgLink)))
@@ -233,11 +246,25 @@ export const CreateOrganizationOverlay: FC = () => {
         orgCreationAllowed => {
           dispatch(getQuartzOrganizationsThunk(currentAccountId))
 
-          createNewOrgPopup(newOrg)
+          // Event Handlers
+          const handleSwitchToNewOrgEvent = () => {
+            event(CreateOrgOverlayEvent.SwitchToNewOrg, multiOrgTag, {
+              newOrgID: newOrg.id,
+              newOrgName: newOrg.name,
+              oldOrgID: currentOrgId,
+            })
+          }
+          createNewOrgPopup(newOrg, handleSwitchToNewOrgEvent)
 
           if (!orgCreationAllowed) {
             dispatch(notify(quartzOrgQuotaReached()))
           }
+
+          event(CreateOrgOverlayEvent.OrgCreated, multiOrgTag, {
+            newOrgID: newOrg.id,
+            newOrgName: newOrg.name,
+            oldOrgID: currentOrgId,
+          })
 
           history.push(`/orgs/${currentOrgId}/accounts/orglist`)
 

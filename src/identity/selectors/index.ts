@@ -14,6 +14,12 @@ export const selectCurrentAccountId = (
   return state.identity.currentIdentity.account.id
 }
 
+export const selectCurrentAccountName = (
+  state: AppState
+): AppState['identity']['currentIdentity']['account']['name'] => {
+  return state.identity.currentIdentity.account.name
+}
+
 export const selectCurrentAccountType = (
   state: AppState
 ): AppState['identity']['currentIdentity']['account']['type'] => {

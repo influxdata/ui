@@ -33,9 +33,11 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {
+  selectCurrentAccount,
   selectOrgCreationAllowance,
   selectOrgCreationAllowanceStatus,
   selectOrgCreationAvailableUpgrade,
+  selectUser,
 } from 'src/identity/selectors'
 import {CreateOrganizationMenuItem} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/MenuItem'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
@@ -56,10 +58,18 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   const orgCreationAllowanceStatus = useSelector(
     selectOrgCreationAllowanceStatus
   )
+  const user = useSelector(selectUser)
+  const account = useSelector(selectCurrentAccount)
 
   const dispatch = useDispatch()
 
   const openMarketoOverlay = () => {
+    event(HeaderNavEvent.UpgradeButtonClick, multiOrgTag, {
+      accountId: account.id,
+      accountName: account.name,
+      accountType: account.type,
+      userId: user.id,
+    })
     dispatch(
       showOverlay('marketo-upgrade-account-overlay', null, () =>
         dispatch(dismissOverlay())

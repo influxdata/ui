@@ -14,7 +14,12 @@ import {
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Selectors
-import {selectCurrentAccountId, selectUser} from 'src/identity/selectors'
+import {
+  selectCurrentAccountId,
+  selectCurrentAccountName,
+  selectCurrentAccountType,
+  selectUser,
+} from 'src/identity/selectors'
 
 // Error Reporting
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
@@ -28,6 +33,13 @@ import {
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
+
+// Eventing
+import {
+  AccountUpgradeOverlay,
+  multiOrgTag,
+} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import './MarketoAccountUpgradeOverlay.scss'
@@ -70,13 +82,28 @@ interface MarketoFormElement extends Element {
 }
 
 // If marketo isn't working, still need the user to have some means of contacting sales.
-const SalesFormLink = (): JSX.Element => {
+const SalesFormLink = () => {
+  const user = useSelector(selectUser)
+  const accountId = useSelector(selectCurrentAccountId)
+  const accountName = useSelector(selectCurrentAccountName)
+  const accountType = useSelector(selectCurrentAccountType)
+
+  const handleEventing = () => {
+    event(AccountUpgradeOverlay.SalesFormLinkClick, multiOrgTag, {
+      userId: user.id,
+      accountId,
+      accountName,
+      accountType,
+    })
+  }
+
   return (
     <a
       data-testid="use-sales-form--link"
       href={BACKUP_CONTACT_SALES_LINK}
       target="_blank"
       style={popupLinkStyle}
+      onClick={handleEventing}
     >
       Click here to contact sales.
     </a>
@@ -89,6 +116,8 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
 
   const user = useSelector(selectUser)
   const accountId = useSelector(selectCurrentAccountId)
+  const accountName = useSelector(selectCurrentAccountName)
+  const accountType = useSelector(selectCurrentAccountType)
 
   const [scriptHasLoaded, setScriptHasLoaded] = useState(false)
   const [formHasLoaded, setFormHasLoaded] = useState(false)
@@ -99,7 +128,6 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
     delete window.MktoForms2
     onClose()
   }
-
   const handleComment = (evt: React.ChangeEvent<HTMLInputElement>) => {
     if (window.MktoForms2.getForm) {
       try {
@@ -137,6 +165,12 @@ export const MarketoAccountUpgradeOverlay: FC = () => {
     try {
       window.MktoForms2.getForm(MARKETO_FORM_ID).submit()
       dispatch(notify(marketoFormSubmitSuccess()))
+      event(AccountUpgradeOverlay.MarketoAccountUpgrade, multiOrgTag, {
+        accountId,
+        accountName,
+        accountType,
+        userId: user.id,
+      })
       onClose()
     } catch (err) {
       handleError(MarketoError.FormSubmitError, err)

@@ -39,6 +39,10 @@ import {notify} from 'src/shared/actions/notifications'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
+// Eventing
+import {DeleteOrgOverlay, multiOrgTag} from 'src/identity/events/multiOrgEvents'
+import {event} from 'src/cloud/utils/reporting'
+
 // Styles
 import './DeletePaidOrgOverlay.scss'
 
@@ -107,6 +111,13 @@ export const DeletePaidOrgOverlay: FC = () => {
       .then(() => {
         clearTimeout(responseTimer)
         dispatch(notify(deleteOrgSuccess(org.name, account.name)))
+        event(DeleteOrgOverlay.DeleteOrg, multiOrgTag, {
+          accountId: account.id,
+          accoutnName: account.name,
+          accountType: account.type,
+          orgName: org.name,
+          userId: org.id,
+        })
         setTimeout(() => {
           onClose()
           window.location.href = CLOUD_URL

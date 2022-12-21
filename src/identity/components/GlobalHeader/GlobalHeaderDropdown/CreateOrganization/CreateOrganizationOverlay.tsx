@@ -260,7 +260,7 @@ export const CreateOrganizationOverlay: FC = () => {
             dispatch(notify(quartzOrgQuotaReached()))
           }
 
-          event(CreateOrgOverlayEvent.OrgCreationSuccess, multiOrgTag, {
+          event(CreateOrgOverlayEvent.OrgCreated, multiOrgTag, {
             newOrgID: newOrg.id,
             newOrgName: newOrg.name,
             oldOrgID: currentOrgId,
@@ -281,11 +281,6 @@ export const CreateOrganizationOverlay: FC = () => {
       } else {
         setNetworkErrorMsg(OrgOverlayNetworkError.DefaultError)
       }
-
-      event(CreateOrgOverlayEvent.OrgCreationFail, multiOrgTag, {
-        oldOrgID: currentOrgId,
-      })
-
       setCreateOrgButtonStatus(ComponentStatus.Error)
     }
   }

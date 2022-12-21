@@ -8,8 +8,7 @@ export enum AccountUpgradeOverlay {
 }
 
 export enum CreateOrgOverlayEvent {
-  OrgCreationSuccess = 'headerNav.createOrgOverlay.creationSuccess',
-  OrgCreationFail = 'headerNav.createOrgOverlay.creationFail',
+  OrgCreated = 'headerNav.createOrgOverlay.orgCreated',
   SwitchToNewOrg = 'headerNav.createOrgOverlay.switchedToNewOrg',
 }
 

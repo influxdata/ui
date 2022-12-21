@@ -38,6 +38,7 @@
     "test:e2e:all": "yarn test:e2e:clean && yarn test:e2e; yarn test:e2e:report;",
     "test:e2e:kind": "CYPRESS_dexUrl=http://dex-twodotoh.a.influxcloud.dev.local CYPRESS_baseUrl=https://twodotoh.a.influxcloud.dev.local CYPRESS_password=password cypress open --browser chrome --config chromeWebSecurity=false",
     "test:e2e:remocal": "CYPRESS_dexUrl=https://dex-${NS}.remocal.influxdev.co CYPRESS_baseUrl=https://${NS}.remocal.influxdev.co CYPRESS_password=password cypress open --browser chrome --config chromeWebSecurity=false",
+    "test:e2e:remocal:iox": "CYPRESS_ioxUser=true yarn test:e2e:remocal",
     "test:circleci": "yarn run test:ci --runInBand",
     "test:ci": "JEST_JUNIT_OUTPUT_DIR=\"./coverage\" jest --ci --coverage",
     "lint": "yarn tsc && yarn prettier && yarn eslint",

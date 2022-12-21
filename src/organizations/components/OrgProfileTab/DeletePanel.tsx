@@ -24,6 +24,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {
   selectCurrentAccount,
   selectCurrentIdentity,
+  selectOrgCreationAllowance,
   selectOrgSuspendable,
   selectUser,
 } from 'src/identity/selectors'
@@ -133,11 +134,22 @@ const DeleteOrgButton: FC = () => {
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
   const orgCanBeSuspended = useSelector(selectOrgSuspendable)
+  const canCreateOrgs = useSelector(selectOrgCreationAllowance)
+
   const popoverRef = useRef()
 
   const handleClickCreateOrg = (hidePopup: Function) => {
     dispatch(
       showOverlay('create-organization', null, () => dispatch(dismissOverlay()))
+    )
+    hidePopup()
+  }
+
+  const handleClickUpgradeAccount = (hidePopup: Function) => {
+    dispatch(
+      showOverlay('marketo-upgrade-account-overlay', null, () =>
+        dispatch(dismissOverlay())
+      )
     )
     hidePopup()
   }
@@ -169,15 +181,21 @@ const DeleteOrgButton: FC = () => {
                 <div>
                   <>
                     <Popover.DismissButton onClick={onHide} />
-                    <b>"{org.name}"</b> cannot be deleted because it is the last
-                    organization in this account. <br />
-                    To delete "{org.name}", please{' '}
+                    <b>"{org.name}"</b> cannot be deleted because it is your
+                    last accessible organization in this account. <br />
+                    To continue, please{' '}
                     <a
                       className="delete-org-panel--create-org-link"
-                      onClick={() => handleClickCreateOrg(onHide)}
+                      onClick={
+                        canCreateOrgs
+                          ? () => handleClickCreateOrg(onHide)
+                          : () => handleClickUpgradeAccount(onHide)
+                      }
                       style={linkStyle}
                     >
-                      create another organization
+                      {canCreateOrgs
+                        ? 'create another organization'
+                        : 'upgrade this account'}
                     </a>{' '}
                     first.
                   </>

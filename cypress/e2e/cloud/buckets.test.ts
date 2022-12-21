@@ -101,6 +101,9 @@ describe('Explicit Buckets', () => {
   })
 
   it('can create a bucket with an explicit schema', () => {
+    cy.isIoxOrg().then(isIox => {
+      cy.skipOn(isIox)
+    })
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('overlay--container').within(() => {
       cy.getByInputName('name').type('explicit-bucket-test')
@@ -151,6 +154,9 @@ describe('Explicit Buckets', () => {
   })
 
   it('can create a (normal) bucket with an implicit schema', () => {
+    cy.isIoxOrg().then(isIox => {
+      cy.skipOn(isIox)
+    })
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('overlay--container').within(() => {
       cy.getByInputName('name').type('implicit-bucket-test')
@@ -201,6 +207,9 @@ describe('Explicit Buckets', () => {
   })
 
   it('should be able to create an explicit bucket using one schema file', function () {
+    cy.isIoxOrg().then(isIox => {
+      cy.skipOn(isIox)
+    })
     const schemaName = 'only one schema'
     const filename = 'validSchema1.json'
 
@@ -254,6 +263,9 @@ describe('Explicit Buckets', () => {
   })
 
   it('should be able to create an explicit bucket and add json schema file during editing', function () {
+    cy.isIoxOrg().then(isIox => {
+      cy.skipOn(isIox)
+    })
     const origFileContents = `[{"name":"time","type":"timestamp"},
         {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
@@ -282,6 +294,9 @@ describe('Explicit Buckets', () => {
   })
 
   it('should be able to create an explicit bucket and add csv schema file during editing', function () {
+    cy.isIoxOrg().then(isIox => {
+      cy.skipOn(isIox)
+    })
     const origFileContents = `name,type,dataType
 time,timestamp,
 host,tag,
@@ -305,6 +320,9 @@ fsRead,field,float`
   })
 
   it('should be able to create an explicit bucket and update the existing schema file during editing', function () {
+    cy.isIoxOrg().then(isIox => {
+      cy.skipOn(isIox)
+    })
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('create-bucket-form').should('be.visible')
     cy.getByTestID('bucket-form-name').type(bucketName)

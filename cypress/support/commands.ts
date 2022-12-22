@@ -851,14 +851,21 @@ export const writeLPDataFromFile = (
   })
 }
 
+// a generous commitment to delivering this page in a loaded state
+const PAGE_LOAD_SLA = 30000
+
 // DOM node getters
 export const getByTestID = (
   dataTest: string,
-  options?: Partial<
+  requestedOptions?: Partial<
     Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow
   >
 ): Cypress.Chainable => {
-  return cy.get(`[data-testid="${dataTest}"]`, options)
+  const options = requestedOptions ?? {}
+  return cy.get(`[data-testid="${dataTest}"]`, {
+    ...options,
+    ...(dataTest === 'tree-nav' ? {timeout: PAGE_LOAD_SLA} : {}),
+  })
 }
 
 export const getByTestIDHead = (

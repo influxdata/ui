@@ -18,6 +18,11 @@ describe('flows alert panel', () => {
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${id}`)
             cy.getByTestID('version-info')
+
+            cy.createNotebook(id).then(() => {
+              cy.reload()
+            })
+
             return cy
               .setFeatureFlags({
                 notebooksExp: true,

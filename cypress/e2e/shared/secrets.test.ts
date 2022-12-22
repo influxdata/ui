@@ -120,6 +120,7 @@ describe('Secrets', () => {
       })
     })
   })
+
   describe('usage in notebooks', () => {
     beforeEach(() => {
       cy.flush()
@@ -127,6 +128,9 @@ describe('Secrets', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
+          cy.createNotebook(id).then(() => {
+            cy.reload()
+          })
         })
       )
       cy.getByTestID('version-info')

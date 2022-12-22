@@ -1,7 +1,7 @@
 import {Notebook} from 'src/client/notebooksRoutes'
 import {AppState} from 'src/types'
 
-import {IOX_SWITCHOVER_CREATION_DATE} from 'src/shared/constants'
+import {CLOUD, IOX_SWITCHOVER_CREATION_DATE} from 'src/shared/constants'
 
 import {selectOrgCreationDate} from 'src/organizations/selectors'
 
@@ -15,11 +15,15 @@ export const selectShouldShowNotebooks = (state: AppState): boolean => {
 
   const wasCreatedBeforeIOxCutoff = orgCreationDate < ioxCutoffDate
 
-  // Don't show notebooks for any org created after the IOx cutover date
+  if (!CLOUD) {
+    return true
+  }
+
+  // In cloud, don't show notebooks for any org created after the IOx cutover date
   if (!wasCreatedBeforeIOxCutoff) {
     return false
   }
 
-  // If the org was created before the IOx cutover date, only show notebooks if the account has notebooks
+  // In cloud, if the org was created before the IOx cutover date, only show notebooks if the account has notebooks
   return selectNotebooks(state).length > 0
 }

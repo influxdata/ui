@@ -7,6 +7,9 @@ describe('Flows', () => {
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
         cy.visit(`${orgs}/${id}`)
+        cy.createNotebook(id).then(() => {
+          cy.reload()
+        })
       })
     )
     // Double check that the new schemaComposition flag does not interfere.
@@ -246,7 +249,7 @@ describe('Flows', () => {
       })
     )
 
-    cy.get('.cf-resource-card').should('have.length', 1)
+    cy.get('.cf-resource-card').should('have.length', 2)
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
   })
@@ -332,7 +335,7 @@ describe('Flows', () => {
     cy.clickNavBarItem('nav-item-flows')
     cy.getByTestID('tree-nav').should('be.visible')
     cy.getByTestID('resource-editable-name').should('exist')
-    cy.getByTestID('resource-editable-name').click()
+    cy.getByTestID('resource-editable-name').first().click()
 
     // validation and visualization should exist
     cy.getByTestID('simple-table').should('exist')
@@ -427,7 +430,7 @@ describe('Flows', () => {
     cy.clickNavBarItem('nav-item-flows')
     cy.getByTestID('tree-nav').should('be.visible')
     cy.getByTestID('resource-editable-name').should('exist')
-    cy.getByTestID('resource-editable-name').click()
+    cy.getByTestID('resource-editable-name').first().click()
 
     // visualization should exist but not validation
     cy.getByTestID('simple-table').should('not.exist')

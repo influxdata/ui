@@ -594,6 +594,151 @@ export const createToken = (
   })
 }
 
+export const createNotebook = (
+  orgID,
+  name = 'Default Notebook to pass notebook deprecation checks'
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request('POST', '/api/v2private/notebooks', {
+    orgID,
+    name,
+    spec: {
+      name,
+      readOnly: false,
+      range: {
+        seconds: 3600,
+        lower: 'now() - 1h',
+        upper: null,
+        label: 'Past 1h',
+        duration: '1h',
+        type: 'selectable-duration',
+        windowPeriod: 10000,
+      },
+      refresh: {
+        status: 'paused',
+        interval: 0,
+        duration: null,
+        inactivityTimeout: 0,
+        infiniteDuration: false,
+        label: '',
+      },
+      pipes: [
+        {
+          type: 'queryBuilder',
+          buckets: [],
+          tags: [
+            {key: '_measurement', values: [], aggregateFunctionType: 'filter'},
+          ],
+          id: 'local_cxjzb8S8Nt6nStkd-MqjF',
+          title: 'Build a Query',
+          visible: true,
+        },
+        {
+          type: 'table',
+          id: 'local_Y7j37pbyZibPmj_ToemAo',
+          title: 'Validate the Data',
+          visible: true,
+        },
+        {
+          type: 'visualization',
+          properties: {
+            type: 'xy',
+            shape: 'chronograf-v2',
+            geom: 'line',
+            xColumn: null,
+            yColumn: null,
+            position: 'overlaid',
+            hoverDimension: 'auto',
+            queries: [
+              {
+                name: '',
+                text: '',
+                editMode: 'builder',
+                builderConfig: {
+                  buckets: [],
+                  tags: [
+                    {
+                      key: '_measurement',
+                      values: [],
+                      aggregateFunctionType: 'filter',
+                    },
+                  ],
+                  functions: [{name: 'mean'}],
+                  aggregateWindow: {period: 'auto', fillValues: false},
+                },
+              },
+            ],
+            colors: [
+              {
+                type: 'scale',
+                hex: '#31C0F6',
+                id: 'VNWzqjV7KpDG7iaMLQ4oS',
+                name: 'Nineteen Eighty Four',
+                value: 0,
+              },
+              {
+                type: 'scale',
+                hex: '#A500A5',
+                id: 'd0V9jZYP1q6-Yn_f8-wRv',
+                name: 'Nineteen Eighty Four',
+                value: 0,
+              },
+              {
+                type: 'scale',
+                hex: '#FF7E27',
+                id: 'wC8pf-gi7KKgzyWKZ76Y9',
+                name: 'Nineteen Eighty Four',
+                value: 0,
+              },
+            ],
+            legendColorizeRows: true,
+            legendOpacity: 1,
+            legendOrientationThreshold: 100000000,
+            staticLegend: {
+              colorizeRows: true,
+              heightRatio: 0,
+              opacity: 1,
+              orientationThreshold: 100000000,
+              show: false,
+              widthRatio: 1,
+            },
+            note: '',
+            showNoteWhenEmpty: false,
+            axes: {
+              x: {
+                bounds: ['', ''],
+                label: '',
+                prefix: '',
+                suffix: '',
+                base: '10',
+                scale: 'linear',
+              },
+              y: {
+                bounds: ['', ''],
+                label: '',
+                prefix: '',
+                suffix: '',
+                base: '10',
+                scale: 'linear',
+              },
+            },
+            generateXAxisTicks: [],
+            generateYAxisTicks: [],
+            xTotalTicks: null,
+            xTickStart: null,
+            xTickStep: null,
+            yTotalTicks: null,
+            yTickStart: null,
+            yTickStep: null,
+          },
+          id: 'local_rFh--ymiiJwXTzeUjZkl9',
+          title: 'Visualize the Result',
+          visible: true,
+        },
+      ],
+    },
+  })
+}
+
 export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
   useIox = Cypress.env('useIox') || useIox
   const defaultUser = Cypress.env('defaultUser')
@@ -1182,6 +1327,9 @@ Cypress.Commands.add('createTask', createTask)
 
 // tokens
 Cypress.Commands.add('createToken', createToken)
+
+// notebooks
+Cypress.Commands.add('createNotebook', createNotebook)
 
 // variables
 Cypress.Commands.add('createQueryVariable', createQueryVariable)

@@ -988,14 +988,21 @@ export const writeLPDataFromFile = (
   })
 }
 
+// Longer SLA on finding all elements, will resolve slower load times with our CI remocal deployed with tsm & iox orgs.
+const LOAD_SLA = 30000
+
 // DOM node getters
 export const getByTestID = (
   dataTest: string,
-  options?: Partial<
+  requestedOptions?: Partial<
     Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow
   >
 ): Cypress.Chainable => {
-  return cy.get(`[data-testid="${dataTest}"]`, options)
+  const options = requestedOptions ?? {}
+  return cy.get(`[data-testid="${dataTest}"]`, {
+    ...options,
+    ...{timeout: Math.max(LOAD_SLA, options.timeout ?? 0)},
+  })
 }
 
 export const getByTestIDHead = (

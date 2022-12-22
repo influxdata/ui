@@ -421,6 +421,13 @@ describe('Checks', () => {
     })
 
     it('deadman checks should render a table for non-numeric fields', () => {
+      cy.isIoxOrg().then(isIox => {
+        // iox uses `${orgId}_${bucketId}` for a namespace_id
+        // And gives a namespace_id failure if no data is written yet.
+        // https://github.com/influxdata/monitor-ci/issues/402#issuecomment-1362368473
+        cy.skipOn(isIox)
+      })
+
       cy.intercept('POST', '/api/v2/query?*', req => {
         if (req.body.query.includes('_measurement')) {
           req.alias = 'measurementQuery'
@@ -589,6 +596,13 @@ describe('Checks', () => {
     })
 
     it('ensures the history page has a graph after check creation confirmation', () => {
+      cy.isIoxOrg().then(isIox => {
+        // iox uses `${orgId}_${bucketId}` for a namespace_id
+        // And gives a namespace_id failure if no data is written yet.
+        // https://github.com/influxdata/monitor-ci/issues/402#issuecomment-1362368473
+        cy.skipOn(isIox)
+      })
+
       cy.getByTestID('context-menu-task').click()
       cy.getByTestID('context-history-task').click()
       cy.getByTestID('giraffe-axes').should('be.visible')

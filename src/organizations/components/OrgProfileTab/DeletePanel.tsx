@@ -13,7 +13,7 @@ import {
   PopoverInteraction,
   PopoverPosition,
 } from '@influxdata/clockface'
-import {getDeleteAccountWarningButton} from 'src/shared/components/notifications/NotificationButtons'
+import {OrgUsersLink} from 'src/shared/components/notifications/NotificationButtons'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
 // Contexts
@@ -30,7 +30,10 @@ import {
 } from 'src/identity/selectors'
 
 // Notifications
-import {deleteAccountWarning} from 'src/shared/copy/notifications'
+import {
+  deleteAccountWarning,
+  deleteOrgWarning,
+} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils
@@ -80,7 +83,7 @@ const DeleteFreeAccountButton: FC = () => {
 
   const dispatch = useDispatch()
 
-  const handleShowDeleteOverlay = () => {
+  const showDeleteFreeAccountOverlay = () => {
     const payload = {
       org: org.id,
       tier: account.type,
@@ -95,17 +98,14 @@ const DeleteFreeAccountButton: FC = () => {
     history.push(`/orgs/${org.id}/org-settings/delete`)
   }
 
-  const handleShowWarning = () => {
+  const showRemoveUsersWarning = () => {
     const buttonElement: NotificationButtonElement = onDismiss =>
-      getDeleteAccountWarningButton(`/orgs/${org.id}/members`, onDismiss)
+      OrgUsersLink(`/orgs/${org.id}/members`, onDismiss)
     dispatch(notify(deleteAccountWarning(buttonElement)))
   }
 
-  let handleDeleteAccountFree = handleShowDeleteOverlay
-
-  if (users.length > 1) {
-    handleDeleteAccountFree = handleShowWarning
-  }
+  const handleDeleteAccountFree =
+    users.length > 1 ? showRemoveUsersWarning : showDeleteFreeAccountOverlay
 
   return (
     <>
@@ -135,6 +135,7 @@ const DeleteOrgButton: FC = () => {
   const org = useSelector(getOrg)
   const orgCanBeSuspended = useSelector(selectOrgSuspendable)
   const canCreateOrgs = useSelector(selectOrgCreationAllowance)
+  const {users} = useContext(UsersContext)
 
   const popoverRef = useRef()
 
@@ -156,11 +157,17 @@ const DeleteOrgButton: FC = () => {
 
   const handleSuspendOrg = () => {
     if (orgCanBeSuspended) {
-      dispatch(
-        showOverlay('suspend-org-in-paid-account', null, () =>
-          dispatch(dismissOverlay())
+      if (users.length > 1) {
+        const buttonElement: NotificationButtonElement = onDismiss =>
+          OrgUsersLink(`/orgs/${org.id}/members`, onDismiss)
+        dispatch(notify(deleteOrgWarning(buttonElement)))
+      } else {
+        dispatch(
+          showOverlay('suspend-org-in-paid-account', null, () =>
+            dispatch(dismissOverlay())
+          )
         )
-      )
+      }
     }
   }
 

@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom'
 // Types
 import {NotificationDismiss} from 'src/types'
 
-export const getDeleteAccountWarningButton = (
+export const OrgUsersLink = (
   url: string,
   onDismiss: NotificationDismiss
 ): JSX.Element => {

@@ -8,6 +8,7 @@ import {FIFTEEN_SECONDS} from 'src/shared/constants'
 import {
   defaultErrorNotification,
   defaultSuccessNotification,
+  defaultWarningNotification,
 } from 'src/shared/copy/notifications'
 
 // Types
@@ -44,6 +45,17 @@ export const accountRenameSuccess = (
   message: `Account "${oldAccountName}" was successfully renamed to "${newAccountName}"`,
 })
 
+export const deleteAccountWarning = (
+  buttonElement: NotificationButtonElement
+): Notification => ({
+  ...defaultWarningNotification,
+  message: `All additional users must be removed from the current organization before this account can be deleted.\n`,
+  buttonElement,
+  styles: {
+    flexWrap: 'wrap',
+  },
+})
+
 export const deleteOrgDelayed = (
   supportLink: NotificationButtonElement
 ): Notification => ({
@@ -68,6 +80,17 @@ export const deleteOrgSuccess = (
 ): Notification => ({
   ...defaultSuccessNotification,
   message: `${orgName} will be deleted from ${accountName}.`,
+})
+
+export const deleteOrgWarning = (
+  buttonElement: NotificationButtonElement
+): Notification => ({
+  ...defaultWarningNotification,
+  message: `All additional users must be removed from this organization before it can be deleted.\n`,
+  buttonElement,
+  styles: {
+    flexWrap: 'wrap',
+  },
 })
 
 export const inviteFailed = (): Notification => ({

@@ -851,8 +851,8 @@ export const writeLPDataFromFile = (
   })
 }
 
-// a generous commitment to delivering this page in a loaded state
-const PAGE_LOAD_SLA = 30000
+// see if longer SLA on finding all elements, will resolve CI issues.
+const LOAD_SLA = 30000
 
 // DOM node getters
 export const getByTestID = (
@@ -864,7 +864,7 @@ export const getByTestID = (
   const options = requestedOptions ?? {}
   return cy.get(`[data-testid="${dataTest}"]`, {
     ...options,
-    ...(dataTest === 'tree-nav' ? {timeout: PAGE_LOAD_SLA} : {}),
+    ...{timeout: Math.max(LOAD_SLA, options.timeout ?? 0)},
   })
 }
 

@@ -9,7 +9,7 @@
     "url": "github:influxdata/ui"
   },
   "engines": {
-    "node": ">=14.17.0",
+    "node": ">=18.12.1",
     "yarn": ">=1.16.0"
   },
   "alias": {

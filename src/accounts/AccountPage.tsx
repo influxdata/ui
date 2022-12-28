@@ -1,13 +1,9 @@
 // Libraries
 import React, {ChangeEvent, FC, useContext, useEffect, useState} from 'react'
-import {useSelector} from 'react-redux'
 
 import {
   Button,
-  ButtonShape,
-  ComponentColor,
   ComponentSize,
-  ConfirmationButton,
   FlexBox,
   FlexDirection,
   Input,
@@ -15,9 +11,6 @@ import {
   Overlay,
   Page,
 } from '@influxdata/clockface'
-
-import {getMe} from 'src/me/selectors'
-import {UsersContext, UsersProvider} from 'src/users/context/users'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -31,19 +24,10 @@ import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServi
 
 // Styles
 import './AccountPageStyles.scss'
-import {CLOUD_URL} from 'src/shared/constants'
-
-const leaveBtnStyle = {
-  width: 'auto',
-  marginTop: 32,
-  paddingLeft: '8px',
-  paddingRight: '8px',
-}
 
 const AccountAboutPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} =
     useContext(UserAccountContext)
-  const {users, handleRemoveUser} = useContext(UsersContext)
 
   const [isDeactivateAccountVisible, setDeactivateAccountVisible] =
     useState(false)
@@ -60,30 +44,6 @@ const AccountAboutPage: FC = () => {
   const updateAcctName = (evt: ChangeEvent<HTMLInputElement>) => {
     setActiveAcctName(evt.target.value)
   }
-
-  const currentUserId = useSelector(getMe)?.id
-
-  const handleRemove = () => {
-    handleRemoveUser(currentUserId)
-    window.location.href = CLOUD_URL
-  }
-
-  const allowSelfRemoval = users.length > 1
-
-  const leaveAcctBtn = (
-    <ConfirmationButton
-      confirmationLabel="This action will remove yourself from accessing this organization"
-      confirmationButtonText="Leave Account"
-      titleText="Leave Account"
-      text="Leave Account"
-      confirmationButtonColor={ComponentColor.Danger}
-      color={ComponentColor.Default}
-      shape={ButtonShape.Square}
-      onConfirm={handleRemove}
-      testID="delete-user"
-      style={leaveBtnStyle}
-    />
-  )
 
   const inputStyle = {width: 250}
   const labelStyle = {marginBottom: 8, maxWidth: '500px'}
@@ -103,7 +63,6 @@ const AccountAboutPage: FC = () => {
   }
 
   const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
-  const showLeaveAcctBtn = !isFlagEnabled('createDeleteOrgs')
 
   return (
     <AccountTabContainer activeTab="settings">
@@ -131,7 +90,6 @@ const AccountAboutPage: FC = () => {
             text="Save"
           />
         </FlexBox>
-        {allowSelfRemoval && showLeaveAcctBtn && leaveAcctBtn}
         {showDeactivateAccountSection && (
           <>
             <hr style={dividerStyle} />
@@ -169,9 +127,7 @@ const AccountPage: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
       <AccountHeader testID="account-page--header" />
-      <UsersProvider>
-        <AccountAboutPage />
-      </UsersProvider>
+      <AccountAboutPage />
     </Page>
   )
 }

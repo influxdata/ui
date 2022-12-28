@@ -1,9 +1,6 @@
 import {Notification} from 'src/types'
 import {FIVE_SECONDS} from 'src/shared/constants/index'
-import {
-  defaultErrorNotification,
-  defaultWarningNotification,
-} from 'src/shared/copy/notifications'
+import {defaultErrorNotification} from 'src/shared/copy/notifications'
 
 // Billing Notifications
 export const updateBillingSettingsError = (message: string): Notification => ({
@@ -78,13 +75,4 @@ export const zuoraParamsGetFailure = (message): Notification => ({
 export const accountSelfDeletionFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `There was an error deleting the organization, please try again.`,
-})
-
-export const deleteAccountWarning = (buttonElement): Notification => ({
-  ...defaultWarningNotification,
-  message: `All additional users must be removed from the Organization before the account can be deleted.\n`,
-  buttonElement,
-  styles: {
-    flexWrap: 'wrap',
-  },
 })

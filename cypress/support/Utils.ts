@@ -168,7 +168,9 @@ export function genCurve(args: CurveArgs): string[] {
 
 export const makeQuartzUseIDPEOrgID = (
   idpeOrgID: string,
-  accountType = 'free'
+  accountType = 'free',
+  orgCount = 0,
+  orgSuspendable = false
 ) => {
   cy.fixture('multiOrgAccounts1.json').then(quartzAccounts => {
     cy.intercept('GET', 'api/v2/quartz/accounts', quartzAccounts).as(
@@ -187,6 +189,10 @@ export const makeQuartzUseIDPEOrgID = (
   cy.fixture(fixtureName).then(quartzIdentity => {
     quartzIdentity.org.id = idpeOrgID
 
+    if (orgCount) {
+      quartzIdentity.user.orgCount = orgCount
+    }
+
     cy.intercept('GET', 'api/v2/quartz/identity', quartzIdentity).as(
       'getQuartzIdentity'
     )
@@ -202,6 +208,9 @@ export const makeQuartzUseIDPEOrgID = (
 
   cy.fixture('orgDetails').then(quartzOrgDetails => {
     quartzOrgDetails.id = idpeOrgID
+
+    quartzOrgDetails.isSuspendable = orgSuspendable
+
     cy.intercept('GET', 'api/v2/quartz/orgs/*', quartzOrgDetails).as(
       'getQuartzOrgDetails'
     )

@@ -50,10 +50,15 @@ describe('Editor+LSP communication', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
+
+          cy.createNotebook(id).then(() => {
+            cy.reload()
+          })
         })
       )
       // Double check that the new schemaComposition flag does not interfere.
       cy.getByTestID('version-info')
+
       cy.getByTestID('nav-item-flows').should('be.visible')
       cy.getByTestID('nav-item-flows').click()
 

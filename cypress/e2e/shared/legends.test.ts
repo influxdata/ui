@@ -555,6 +555,9 @@ describe('Legends', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.createMapVariable(id)
         cy.fixture('routes').then(({orgs, notebooks}) => {
+          cy.createNotebook(id).then(() => {
+            cy.reload()
+          })
           cy.visit(`${orgs}/${id}${notebooks}`)
           cy.getByTestID('tree-nav').should('be.visible')
         })

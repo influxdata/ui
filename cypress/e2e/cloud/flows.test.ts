@@ -8,6 +8,11 @@ describe('Flows', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
           cy.getByTestID('version-info').should('be.visible')
+
+          cy.createNotebook(id).then(() => {
+            cy.reload()
+          })
+
           cy.getByTestID('nav-item-flows').should('be.visible')
           cy.getByTestID('nav-item-flows').click()
         })
@@ -104,7 +109,7 @@ describe('Flows', () => {
 
     cy.clickNavBarItem('nav-item-flows')
 
-    cy.get('.cf-resource-card').should('have.length', 1)
+    cy.get('.cf-resource-card').should('have.length', 2)
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
@@ -133,7 +138,7 @@ describe('Flows', () => {
 
     cy.clickNavBarItem('nav-item-flows')
 
-    cy.get('.cf-resource-card').should('have.length', 2)
+    cy.get('.cf-resource-card').should('have.length', 3)
     cy.get('.cf-resource-editable-name').first().contains(flowCloneNamePrefix)
 
     // Delete the cloned flow
@@ -145,7 +150,7 @@ describe('Flows', () => {
     cy.getByTestID('notification-success').should('be.visible')
     cy.getByTestID('notification-success--dismiss').click()
 
-    cy.get('.cf-resource-card').should('have.length', 1)
+    cy.get('.cf-resource-card').should('have.length', 2)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
     // Clone a flow again
@@ -177,8 +182,8 @@ describe('Flows', () => {
 
     cy.getByTestID('notification-success').should('be.visible')
 
-    cy.get('.cf-resource-card').should('have.length', 1)
-    cy.get('.cf-resource-editable-name').should('have.length', 1)
+    cy.get('.cf-resource-card').should('have.length', 2)
+    cy.get('.cf-resource-editable-name').should('have.length', 2)
     cy.get('.cf-resource-editable-name').contains(`${flowName}`)
   })
 
@@ -260,9 +265,13 @@ describe('Flows with newQueryBuilder flag on', () => {
         }).then(() => {
           cy.visit(`${orgs}/${id}`)
         })
+        cy.createNotebook(id).then(() => {
+          cy.reload()
+        })
       })
     )
     cy.getByTestID('version-info')
+
     cy.getByTestID('nav-item-flows').should('be.visible')
     cy.getByTestID('nav-item-flows').click()
   })
@@ -354,7 +363,7 @@ describe('Flows with newQueryBuilder flag on', () => {
 
     cy.clickNavBarItem('nav-item-flows')
 
-    cy.get('.cf-resource-card').should('have.length', 1)
+    cy.get('.cf-resource-card').should('have.length', 2)
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
@@ -383,7 +392,7 @@ describe('Flows with newQueryBuilder flag on', () => {
 
     cy.clickNavBarItem('nav-item-flows')
 
-    cy.get('.cf-resource-card').should('have.length', 2)
+    cy.get('.cf-resource-card').should('have.length', 3)
     cy.get('.cf-resource-editable-name').first().contains(flowCloneNamePrefix)
 
     // Delete the cloned flow
@@ -395,7 +404,7 @@ describe('Flows with newQueryBuilder flag on', () => {
     cy.getByTestID('notification-success').should('be.visible')
     cy.getByTestID('notification-success--dismiss').click()
 
-    cy.get('.cf-resource-card').should('have.length', 1)
+    cy.get('.cf-resource-card').should('have.length', 2)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
     // Clone a flow again
@@ -427,8 +436,8 @@ describe('Flows with newQueryBuilder flag on', () => {
 
     cy.getByTestID('notification-success').should('be.visible')
 
-    cy.get('.cf-resource-card').should('have.length', 1)
-    cy.get('.cf-resource-editable-name').should('have.length', 1)
+    cy.get('.cf-resource-card').should('have.length', 2)
+    cy.get('.cf-resource-editable-name').should('have.length', 2)
     cy.get('.cf-resource-editable-name').contains(`${flowName}`)
   })
 })

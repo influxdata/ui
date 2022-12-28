@@ -851,7 +851,7 @@ export const writeLPDataFromFile = (
   })
 }
 
-// see if longer SLA on finding all elements, will resolve CI issues.
+// Longer SLA on finding all elements, will resolve slower load times with our CI remocal deployed with tsm and iox orgs.
 const LOAD_SLA = 30000
 
 // DOM node getters

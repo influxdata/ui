@@ -101,6 +101,7 @@ describe('Explicit Buckets', () => {
   })
 
   it('can create a bucket with an explicit schema', () => {
+    // TODO: iox is not yet supporting explicit schema.
     cy.isIoxOrg().then(isIox => {
       cy.skipOn(isIox)
     })
@@ -154,22 +155,26 @@ describe('Explicit Buckets', () => {
   })
 
   it('can create a (normal) bucket with an implicit schema', () => {
-    cy.isIoxOrg().then(isIox => {
-      cy.skipOn(isIox)
-    })
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('overlay--container').within(() => {
       cy.getByInputName('name').type('implicit-bucket-test')
 
-      cy.getByTestID('schemaBucketToggle').click()
+      cy.isIoxOrg().then(isIox => {
+        // TODO: iox is not yet supporting explicit schema.
+        if (!isIox) {
+          cy.getByTestID('schemaBucketToggle').click()
 
-      // check that it is there; but don't click on it; leave it as implicit:
-      cy.getByTestID('explicit-bucket-schema-choice-ID').should('be.visible')
+          // check that it is there; but don't click on it; leave it as implicit:
+          cy.getByTestID('explicit-bucket-schema-choice-ID').should(
+            'be.visible'
+          )
 
-      // implicit button should be selected by default:
-      cy.getByTestID('implicit-bucket-schema-choice-ID--input').should(
-        'be.checked'
-      )
+          // implicit button should be selected by default:
+          cy.getByTestID('implicit-bucket-schema-choice-ID--input').should(
+            'be.checked'
+          )
+        }
+      })
 
       // measurement schema section should NOT be showing at this time
       // (b/c it only shows if explicit is set)
@@ -207,6 +212,7 @@ describe('Explicit Buckets', () => {
   })
 
   it('should be able to create an explicit bucket using one schema file', function () {
+    // TODO: iox is not yet supporting explicit schema.
     cy.isIoxOrg().then(isIox => {
       cy.skipOn(isIox)
     })
@@ -263,6 +269,7 @@ describe('Explicit Buckets', () => {
   })
 
   it('should be able to create an explicit bucket and add json schema file during editing', function () {
+    // TODO: iox is not yet supporting explicit schema.
     cy.isIoxOrg().then(isIox => {
       cy.skipOn(isIox)
     })
@@ -294,6 +301,7 @@ describe('Explicit Buckets', () => {
   })
 
   it('should be able to create an explicit bucket and add csv schema file during editing', function () {
+    // TODO: iox is not yet supporting explicit schema.
     cy.isIoxOrg().then(isIox => {
       cy.skipOn(isIox)
     })
@@ -320,6 +328,7 @@ fsRead,field,float`
   })
 
   it('should be able to create an explicit bucket and update the existing schema file during editing', function () {
+    // TODO: iox is not yet supporting explicit schema.
     cy.isIoxOrg().then(isIox => {
       cy.skipOn(isIox)
     })

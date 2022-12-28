@@ -80,8 +80,17 @@ const DeleteFreeAccountButton: FC = () => {
   const org = useSelector(getOrg)
   const user = useSelector(selectUser)
   const {users} = useContext(UsersContext)
-
   const dispatch = useDispatch()
+
+  const shouldShowUsersWarning = users.length > 1
+
+  const handleClickDeleteFreeAccount = () => {
+    if (shouldShowUsersWarning) {
+      showRemoveUsersWarning()
+    } else {
+      showDeleteFreeAccountOverlay()
+    }
+  }
 
   const showDeleteFreeAccountOverlay = () => {
     const payload = {
@@ -104,9 +113,6 @@ const DeleteFreeAccountButton: FC = () => {
     dispatch(notify(deleteAccountWarning(buttonElement)))
   }
 
-  const handleDeleteAccountFree =
-    users.length > 1 ? showRemoveUsersWarning : showDeleteFreeAccountOverlay
-
   return (
     <>
       <FlexBox.Child>
@@ -121,7 +127,7 @@ const DeleteFreeAccountButton: FC = () => {
           testID="delete-org--button"
           text="Delete"
           icon={IconFont.Trash_New}
-          onClick={handleDeleteAccountFree}
+          onClick={handleClickDeleteFreeAccount}
         />
       </FlexBox.Child>
     </>
@@ -155,9 +161,11 @@ const DeleteOrgButton: FC = () => {
     hidePopup()
   }
 
+  const shouldShowUsersWarning = users.length > 1
+
   const handleSuspendOrg = () => {
     if (orgCanBeSuspended) {
-      if (users.length > 1) {
+      if (shouldShowUsersWarning) {
         const buttonElement: NotificationButtonElement = onDismiss =>
           OrgUsersLink(`/orgs/${org.id}/members`, onDismiss)
         dispatch(notify(deleteOrgWarning(buttonElement)))

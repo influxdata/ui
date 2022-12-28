@@ -1,13 +1,17 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
   AlignItems,
+  ButtonShape,
+  ComponentColor,
   ComponentSize,
+  ConfirmationButton,
   FlexBox,
   FlexDirection,
+  IconFont,
   JustifyContent,
 } from '@influxdata/clockface'
 import LabeledData from 'src/organizations/components/OrgProfileTab/LabeledData'
@@ -19,7 +23,7 @@ import {orgDetailsFetchError} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
 // Providers
-import UsersProvider from 'src/users/context/users'
+import {UsersContext, UsersProvider} from 'src/users/context/users'
 
 // Selectors
 import {getMe} from 'src/me/selectors'
@@ -33,7 +37,7 @@ import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 import {RemoteDataState} from 'src/types'
 
 // Constants
-import {CLOUD} from 'src/shared/constants'
+import {CLOUD, CLOUD_URL} from 'src/shared/constants'
 
 // Styles
 import 'src/organizations/components/OrgProfileTab/style.scss'
@@ -132,6 +136,45 @@ const OrgProfileTab: FC = () => {
     </FlexBox.Child>
   )
 
+  const LeaveOrg = () => {
+    const currentUserId = me.id
+    const {users, handleRemoveUser} = useContext(UsersContext)
+
+    const allowSelfRemoval = users.length < 1 // change this back to GREATER
+
+    const handleRemove = () => {
+      // removes user from the current org
+      handleRemoveUser(currentUserId)
+      window.location.href = CLOUD_URL
+    }
+
+    return (
+      <>
+        {allowSelfRemoval && (
+          <FlexBox.Child>
+            <h4>Leave Organization</h4>
+            <p className="org-profile-tab--heading org-profile-tab--deleteHeading">
+              Leave the <b>{org.name}</b> organization.
+            </p>
+            <ConfirmationButton
+              className="org-profile-tab--leaveOrgButton"
+              confirmationLabel="This action will remove yourself from accessing this organization"
+              confirmationButtonText="Leave Organization"
+              titleText="Leave Organization"
+              text="Leave Organization"
+              confirmationButtonColor={ComponentColor.Danger}
+              color={ComponentColor.Default}
+              shape={ButtonShape.Square}
+              onConfirm={handleRemove}
+              testID="delete-user"
+              icon={IconFont.Logout}
+            />
+          </FlexBox.Child>
+        )}
+      </>
+    )
+  }
+
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -149,11 +192,18 @@ const OrgProfileTab: FC = () => {
       </FlexBox>
 
       {CLOUD && orgDetailsLoaded && (
-        <FlexBox.Child className="org-profile-tab--section">
+        <FlexBox
+          direction={FlexDirection.Row}
+          stretchToFitWidth={true}
+          className="org-profile-tab--section"
+        >
           <UsersProvider>
-            <DeletePanel />
+            <>
+              <DeletePanel />
+              <LeaveOrg />
+            </>
           </UsersProvider>
-        </FlexBox.Child>
+        </FlexBox>
       )}
     </FlexBox>
   )

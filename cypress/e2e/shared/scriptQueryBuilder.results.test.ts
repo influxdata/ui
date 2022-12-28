@@ -202,7 +202,6 @@ describe('Script Builder', () => {
 
     describe('data completeness', () => {
       const downloadsDirectory = Cypress.config('downloadsFolder')
-      const browser = Cypress.config('browser')
 
       const validateCsv = (csv: string, tableCnt: number) => {
         cy.wrap(csv)
@@ -250,12 +249,6 @@ describe('Script Builder', () => {
         cy.intercept('POST', '/api/v2/query?*', req => {
           req.redirect(route)
         }).as('queryDownloadCSV')
-
-        // TODO: debug intermittent failures which occur 30% of the time
-        // in firefox only, in the CI only, and only when no data is returned
-        if (browser.name.toLowerCase() != 'chrome') {
-          return
-        }
 
         cy.getByTestID('csv-download-button').should('not.be.disabled').click()
 

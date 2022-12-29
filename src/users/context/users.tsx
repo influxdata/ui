@@ -34,6 +34,7 @@ import {CloudUser, DraftInvite, Invite, RemoteDataState} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
 import {CLOUD_URL} from 'src/shared/constants'
+import {selectCurrentOrg, selectUser} from 'src/identity/selectors'
 
 export type Props = {
   children: JSX.Element
@@ -77,7 +78,9 @@ export const UsersContext =
 
 export const UsersProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
+  const email = useSelector(selectUser).email
   const orgId = useSelector(getOrg)?.id
+  const orgName = useSelector(selectCurrentOrg).name
   const currentUserId = useSelector(getMe)?.id
 
   const [users, setUsers] = useState<CloudUser[]>([])
@@ -133,7 +136,7 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
       switch (resp.status) {
         case 201:
           setInvites(prevInvites => [resp.data, ...prevInvites])
-          dispatch(notify(inviteSent()))
+          dispatch(notify(inviteSent({orgName, email})))
           setDraftInvite(draft)
           break
         case 200:
@@ -241,7 +244,7 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
         })
       }
     },
-    [dispatch, orgId, users]
+    [currentUserId, dispatch, orgId, users]
   )
 
   return (
@@ -264,5 +267,3 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
     </UsersContext.Provider>
   )
 })
-
-export default UsersProvider

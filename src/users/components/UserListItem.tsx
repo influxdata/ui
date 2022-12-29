@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState} from 'react'
+import React, {FC} from 'react'
 import {capitalize} from 'lodash'
 
 // Components
@@ -9,14 +9,14 @@ import {
   Alignment,
   ButtonShape,
   ComponentColor,
-  ConfirmationButton,
-  RemoteDataState,
   ComponentStatus,
+  Button,
 } from '@influxdata/clockface'
-import {UsersContext} from 'src/users/context/users'
 
 // Types
 import {CloudUser} from 'src/types'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+import {useDispatch} from 'react-redux'
 
 interface Props {
   user: CloudUser
@@ -39,31 +39,17 @@ const formatName = (firstName: string | null, lastName: string | null) => {
   return ''
 }
 
-const UserListItem: FC<Props> = ({user, isDeletable}) => {
+export const UserListItem: FC<Props> = ({user, isDeletable}) => {
   const {email, firstName, lastName, role} = user
-  const {removeUser, removeUserStatus} = useContext(UsersContext)
 
-  const [revealOnHover, toggleRevealOnHover] = useState(true)
+  const dispatch = useDispatch()
 
-  const handleShow = () => {
-    toggleRevealOnHover(false)
-  }
-
-  const handleHide = () => {
-    toggleRevealOnHover(true)
-  }
-
-  const handleRemove = () => {
-    removeUser(user.id)
-  }
-
-  let status = ComponentStatus.Default
-
-  if (removeUserStatus.id === user.id) {
-    status =
-      removeUserStatus.status === RemoteDataState.Loading
-        ? ComponentStatus.Loading
-        : ComponentStatus.Default
+  const openRemoveMemberOverlay = () => {
+    dispatch(
+      showOverlay('remove-member', {userToRemove: user}, () =>
+        dispatch(dismissOverlay)
+      )
+    )
   }
 
   return (
@@ -80,26 +66,19 @@ const UserListItem: FC<Props> = ({user, isDeletable}) => {
         {capitalize(role)}
       </IndexList.Cell>
       <IndexList.Cell className="user-list-cell-status">Active</IndexList.Cell>
-      <IndexList.Cell revealOnHover={revealOnHover} alignment={Alignment.Right}>
+      <IndexList.Cell alignment={Alignment.Right} revealOnHover={true}>
         {isDeletable && (
-          <ConfirmationButton
+          <Button
             icon={IconFont.Trash_New}
-            onShow={handleShow}
-            status={status}
-            onHide={handleHide}
-            confirmationLabel="This action will remove this user from accessing this organization"
-            confirmationButtonText="Remove user access"
             titleText="Remove user access"
-            confirmationButtonColor={ComponentColor.Danger}
             color={ComponentColor.Danger}
             shape={ButtonShape.Square}
-            onConfirm={handleRemove}
-            testID="delete-user"
+            status={ComponentStatus.Valid}
+            onClick={openRemoveMemberOverlay}
+            testID="delete-user--button"
           />
         )}
       </IndexList.Cell>
     </IndexList.Row>
   )
 }
-
-export default UserListItem

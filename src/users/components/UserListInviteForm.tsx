@@ -3,11 +3,11 @@ import React, {ChangeEvent, FC, useContext, useState} from 'react'
 
 // Components
 import {UsersContext} from 'src/users/context/users'
-import UserRoleDropdown from './UserRoleDropdown'
-import UserInviteSubmit from './UserInviteSubmit'
+import {UserInviteSubmit} from './UserInviteSubmit'
 import {
   Columns,
   ComponentSize,
+  FlexBox,
   FontWeight,
   Form,
   Grid,
@@ -21,15 +21,18 @@ import {gaEvent} from 'src/cloud/utils/reporting'
 
 // Constants
 import {GTM_INVITE_SENT} from 'src/users/constants'
+import {selectCurrentOrg} from 'src/identity/selectors'
+import {useSelector} from 'react-redux'
 
 interface InviteErrors {
   email?: string
 }
 
-const UserListInviteForm: FC = () => {
+export const UserListInviteForm: FC = () => {
   const [errors, setErrors] = useState<InviteErrors>({})
   const {draftInvite, handleEditDraftInvite, handleInviteUser} =
     useContext(UsersContext)
+  const org = useSelector(selectCurrentOrg)
 
   const onInviteUser = () => {
     handleInviteUser()
@@ -52,31 +55,30 @@ const UserListInviteForm: FC = () => {
                 weight={FontWeight.Light}
                 element={HeadingElement.H2}
                 className="user-list-invite--form-heading"
+                testID="user-list-invite--form-heading"
               >
-                Add a new user to your organization
+                Add members to {org.name}
               </Heading>
             </Panel.Header>
             <Panel.Body size={ComponentSize.Small}>
+              <FlexBox className="user-list-invite--instructions">
+                Members added will have "Owner" access to the organization's
+                resources.
+              </FlexBox>
               <Form onSubmit={onInviteUser} className="user-list-invite--form">
                 <Form.Element
-                  label="Enter user Email Address"
-                  className="element email--input"
+                  label="Email Address"
+                  className="email--input"
                   errorMessage={errors.email}
                 >
                   <Input
                     testID="email--input"
-                    placeholder="email address"
+                    placeholder="name@company.com"
                     onChange={onChangeInvitee}
                     value={draftInvite.email}
                     type={InputType.Email}
                     required={true}
                   />
-                </Form.Element>
-                <Form.Element
-                  label="Assign a Role"
-                  className="element role--dropdown"
-                >
-                  <UserRoleDropdown />
                 </Form.Element>
                 <Form.Element label="" className="element submit--button">
                   <UserInviteSubmit />
@@ -89,5 +91,3 @@ const UserListInviteForm: FC = () => {
     </Grid>
   )
 }
-
-export default UserListInviteForm

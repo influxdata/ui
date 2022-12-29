@@ -1,8 +1,13 @@
 .user-list-invite--form-panel {
   margin-bottom: $cf-space-l + $cf-space-3xs;
+  padding-bottom: 0px;
 
   .user-list-invite--form-heading {
+    font-size: $cf-text-base-3;
     color: $c-neutrino;
+    font-weight: 700;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
   }
 }
 
@@ -25,6 +30,11 @@
     flex-grow: 1;
     max-width: 450px;
   }
+}
+
+.user-list-invite--instructions {
+  font-weight: 500 !important;
+  margin-bottom: $cf-space-xs !important;
 }
 
 .user-role--dropdown--button,

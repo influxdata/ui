@@ -64,7 +64,7 @@ function InviteListContextMenu({invite}: Props) {
         <SquareButton
           titleText="Resend Invitation"
           icon={IconFont.Refresh_New}
-          color={ComponentColor.Secondary}
+          color={ComponentColor.Primary}
           onClick={handleResend}
           testID="resend-invite"
         />

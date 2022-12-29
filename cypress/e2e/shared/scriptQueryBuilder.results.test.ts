@@ -79,32 +79,45 @@ describe('Script Builder', () => {
       `fn: (r) => r._measurement == "${measurement}"`
     )
     cy.getByTestID('flux-editor').within(() => {
-      cy.get('.composition-sync--on').should('have.length.gte', 3) // three lines
+      cy.get('.composition-sync--on').should('have.length', 3) // three lines
     })
   }
 
   const clearSession = () => {
-    cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
-      if (!$saveButton.is(':disabled')) {
-        cy.log('clearing session')
-        cy.getByTestID('flux-query-builder--new-script')
-          .should('be.visible')
-          .click()
+    return cy.isIoxOrg().then(isIox => {
+      if (isIox) {
+        cy.getByTestID('query-builder--new-script').should('be.visible').click()
+        cy.getByTestID('script-dropdown__flux').should('be.visible').click()
         cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('flux-query-builder--no-save').click({force: true})
+          cy.getByTestID('flux-query-builder--no-save')
+            .should('be.visible')
+            .click()
         })
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
+      } else {
+        cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
+          if (!$saveButton.is(':disabled')) {
+            cy.getByTestID('flux-query-builder--new-script')
+              .should('be.visible')
+              .click()
+            cy.getByTestID('overlay--container').within(() => {
+              cy.getByTestID('flux-query-builder--no-save')
+                .should('be.visible')
+                .click()
+            })
+          }
         })
       }
-    })
-    cy.getByTestID('flux-sync--toggle').then($toggle => {
-      if (!$toggle.hasClass('active')) {
-        $toggle.click()
-      }
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('textarea.inputarea').should(
+          'have.value',
+          DEFAULT_FLUX_EDITOR_TEXT
+        )
+      })
+      return cy.getByTestID('flux-sync--toggle').then($toggle => {
+        if (!$toggle.hasClass('active')) {
+          $toggle.click()
+        }
+      })
     })
   }
 
@@ -140,7 +153,7 @@ describe('Script Builder', () => {
             [`ndbc_1table,air_temp_degc=70_degrees station_id=1`],
             'defbuck4'
           )
-          cy.writeData(writeDataMoar, 'defbuck4')
+          writeDataMoar.forEach(data => cy.writeData(data, 'defbuck4'))
         })
       })
     })
@@ -153,6 +166,7 @@ describe('Script Builder', () => {
       loginWithFlags({
         schemaComposition: true,
         newDataExplorer: true,
+        saveAsScript: true,
       }).then(() => {
         cy.get('@org').then(({id: orgID}: Organization) => {
           route = `/orgs/${orgID}/data-explorer`

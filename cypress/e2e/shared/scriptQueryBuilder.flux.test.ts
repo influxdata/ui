@@ -80,28 +80,55 @@ describe('Script Builder', () => {
     })
   }
 
-  const clearSession = () => {
-    cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
-      if (!$saveButton.is(':disabled')) {
-        cy.log('clearing session')
-        cy.getByTestID('flux-query-builder--new-script')
-          .should('be.visible')
-          .click()
+  const setScriptToFlux = () => {
+    return cy.isIoxOrg().then(isIox => {
+      if (isIox) {
+        cy.getByTestID('query-builder--new-script').should('be.visible').click()
+        cy.getByTestID('script-dropdown__flux').should('be.visible').click()
         cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('flux-query-builder--no-save').click({force: true})
-        })
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
+          cy.getByTestID('flux-query-builder--no-save')
+            .should('be.visible')
+            .click()
         })
       }
+      return cy.getByTestID('flux-editor').within(() => {
+        cy.get('textarea.inputarea').should(
+          'have.value',
+          DEFAULT_FLUX_EDITOR_TEXT
+        )
+      })
     })
-    cy.getByTestID('flux-sync--toggle').then($toggle => {
-      if (!$toggle.hasClass('active')) {
-        $toggle.click()
+  }
+
+  const clearSession = () => {
+    return cy.isIoxOrg().then(isIox => {
+      if (isIox) {
+        setScriptToFlux()
+      } else {
+        cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
+          if (!$saveButton.is(':disabled')) {
+            cy.getByTestID('flux-query-builder--new-script')
+              .should('be.visible')
+              .click()
+            cy.getByTestID('overlay--container').within(() => {
+              cy.getByTestID('flux-query-builder--no-save')
+                .should('be.visible')
+                .click()
+            })
+          }
+        })
       }
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('textarea.inputarea').should(
+          'have.value',
+          DEFAULT_FLUX_EDITOR_TEXT
+        )
+      })
+      return cy.getByTestID('flux-sync--toggle').then($toggle => {
+        if (!$toggle.hasClass('active')) {
+          $toggle.click()
+        }
+      })
     })
   }
 
@@ -144,6 +171,7 @@ describe('Script Builder', () => {
       }).then(() => {
         cy.getByTestID('flux-sync--toggle').should('not.exist')
         cy.getByTestID('flux-query-builder--menu').contains('New Script')
+        setScriptToFlux()
       })
     })
 
@@ -293,6 +321,7 @@ describe('Script Builder', () => {
       loginWithFlags({
         schemaComposition: true,
         newDataExplorer: true,
+        saveAsScript: true,
       }).then(() => {
         clearSession()
         cy.getByTestID('flux-sync--toggle')
@@ -461,29 +490,7 @@ describe('Script Builder', () => {
         confirmSchemaComposition()
 
         cy.log('click new script, and choose to delete current script')
-        cy.getByTestID('flux-query-builder--new-script')
-          .should('be.visible')
-          .click()
-        cy.getByTestID('overlay--container')
-          .should('be.visible')
-          .within(() => {
-            cy.getByTestID('flux-query-builder--no-save')
-              .should('be.visible')
-              .click()
-          })
-
-        cy.log('editor text is now empty')
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
-        })
-
-        cy.log('schema browser has been cleared')
-        cy.getByTestID('bucket-selector--dropdown-button').contains(
-          'Select bucket'
-        )
+        clearSession()
       })
 
       it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {

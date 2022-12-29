@@ -76,7 +76,7 @@ describe('Script Builder', () => {
       `fn: (r) => r._measurement == "${measurement}"`
     )
     cy.getByTestID('flux-editor').within(() => {
-      cy.get('.composition-sync--on').should('have.length', 3) // three lines
+      cy.get('.composition-sync--on').should('have.length.gte', 3) // three lines
     })
   }
 
@@ -400,7 +400,7 @@ describe('Script Builder', () => {
         }).within(() => {
           cy.get('.composition-sync--on', {
             timeout: DELAY_FOR_LSP_SERVER_BOOTUP,
-          }).should('have.length', 3)
+          }).should('have.length.gte', 3)
         })
 
         cy.log('can still change composition')
@@ -428,18 +428,18 @@ describe('Script Builder', () => {
         confirmSchemaComposition()
 
         cy.log('sync toggles on and off, with matching styles')
-        cy.get('.composition-sync--on').should('have.length', 3)
+        cy.get('.composition-sync--on').should('have.length.gte', 3)
         cy.get('.composition-sync--off').should('have.length', 0)
         cy.getByTestID('flux-sync--toggle')
           .should('have.class', 'active')
           .click()
           .should('not.have.class', 'active')
         cy.get('.composition-sync--on').should('have.length', 0)
-        cy.get('.composition-sync--off').should('have.length', 3)
+        cy.get('.composition-sync--off').should('have.length.gte', 3)
         cy.getByTestID('flux-sync--toggle')
           .click()
           .should('have.class', 'active')
-        cy.get('.composition-sync--on').should('have.length', 3)
+        cy.get('.composition-sync--on').should('have.length.gte', 3)
         cy.get('.composition-sync--off').should('have.length', 0)
 
         cy.log('turn off flux sync')

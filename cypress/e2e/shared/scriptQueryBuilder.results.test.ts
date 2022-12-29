@@ -82,7 +82,7 @@ describe('Script Builder', () => {
       `fn: (r) => r._measurement == "${measurement}"`
     )
     cy.getByTestID('flux-editor').within(() => {
-      cy.get('.composition-sync--on').should('have.length', 3) // three lines
+      cy.get('.composition-sync--on').should('have.length.gte', 3) // three lines
     })
   }
 

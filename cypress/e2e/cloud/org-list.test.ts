@@ -73,11 +73,6 @@ describe('Account / Organizations Tab', () => {
         .should('have.attr', 'href', 'mailto:support@influxdata.com')
     })
 
-    cy.getByTestID('account--organizations-tab-orgs-card').should(
-      'have.length',
-      9
-    )
-
     cy.getByTestID('pagination-item')
       .should('have.length', 2)
       .contains('2')

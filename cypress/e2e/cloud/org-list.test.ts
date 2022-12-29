@@ -38,8 +38,12 @@ const testSearchTerm = (searchTerm: string, expectedResults: string[]) => {
 }
 
 describe('Account / Organizations Tab', () => {
-  beforeEach(() => {
+  before(() => {
     setupTest()
+  })
+
+  beforeEach(() => {
+    Cypress.Cookies.preserveOnce('sid')
   })
 
   it('displays a paginated list of provisioned and suspended organizations in the current account', () => {
@@ -78,6 +82,11 @@ describe('Account / Organizations Tab', () => {
       .click()
 
     cy.url().should('include', 'orglist?page=2')
+
+    cy.getByTestID('pagination-item')
+      .should('have.length', 2)
+      .contains('1')
+      .click()
   })
 
   it('searches the organizations in the current account', () => {
@@ -97,6 +106,8 @@ describe('Account / Organizations Tab', () => {
 
     // Search by human-readable location
     testSearchTerm('Amsterdam', ['Suspended Organization', 'Test Org 4'])
+
+    cy.getByTestID('search-widget').should('be.visible').clear()
   })
 
   it('sorts the organizations in the current account', () => {

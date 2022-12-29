@@ -1,8 +1,11 @@
 // Libraries
 import React, {ChangeEvent, FC, useContext, useEffect, useState} from 'react'
+import {useSelector} from 'react-redux'
+import {Switch, Route} from 'react-router-dom'
 
 import {
   Button,
+  // IconFont,
   ComponentSize,
   FlexBox,
   FlexDirection,
@@ -15,6 +18,14 @@ import {LeaveOrgButton} from 'src/organizations/components/OrgProfileTab/LeaveOr
 
 // Context
 import {UsersContext, UsersProvider} from 'src/users/context/users'
+import {DeleteFreeAccountButton} from 'src/accounts/DeleteFreeAccount'
+import DeleteAccountOverlay from 'src/organizations/components/DeleteAccountOverlay'
+
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
+
+// Constants
+import {CLOUD} from 'src/shared/constants'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -22,6 +33,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
 import AccountHeader from 'src/accounts/AccountHeader'
+import DeleteOrgProvider from 'src/organizations/components/DeleteOrgContext'
 
 import CancellationOverlay from './CancellationOverlay'
 import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServiceContext'
@@ -47,14 +59,11 @@ const AccountAboutPage: FC = () => {
     setActiveAcctName(activeAccount?.name)
   }, [activeAccount])
 
+  const {user, account} = useSelector(selectCurrentIdentity)
+
   const updateAcctName = (evt: ChangeEvent<HTMLInputElement>) => {
     setActiveAcctName(evt.target.value)
   }
-
-  const inputStyle = {width: 250}
-  const labelStyle = {marginBottom: '10px', maxWidth: '500px'}
-  const dividerStyle = {marginTop: '32px', maxWidth: '500px'}
-  const actionButtonStyle = {marginTop: '24px'}
 
   const showDeactivateAccountOverlay = () => {
     setDeactivateAccountVisible(true)
@@ -67,6 +76,8 @@ const AccountAboutPage: FC = () => {
   const onRenameAccountBtnClick = () => {
     handleRenameActiveAccount(activeAccount.id, activeAcctName)
   }
+  const shouldShowDeleteFreeAccountButton =
+    CLOUD && account.type === 'free' && user.orgCount > 1 // change this to ===
 
   const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
   const showLeaveOrgButton = !isFlagEnabled('createDeleteOrgs')
@@ -81,16 +92,16 @@ const AccountAboutPage: FC = () => {
         >
           Account Details
         </h4>
-        <div style={labelStyle}>Account Name</div>
+        <div className="account-settings--account-name">Account Name</div>
         <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
           <Input
             name="accountName"
             testID="input--active-account-name"
+            className="account-settings--name-input"
             type={InputType.Text}
             value={activeAcctName}
             onChange={updateAcctName}
             size={ComponentSize.Medium}
-            style={inputStyle}
           />
           <Button
             onClick={onRenameAccountBtnClick}
@@ -100,29 +111,29 @@ const AccountAboutPage: FC = () => {
         </FlexBox>
         {allowSelfRemoval && showLeaveOrgButton && (
           <>
-            <hr style={dividerStyle} />
+            <hr className="account-settings--divider" />
             <LeaveOrgButton />
           </>
         )}
         {showDeactivateAccountSection && (
           <>
-            <hr style={dividerStyle} />
+            <hr className="account-settings--divider" />
             <h4
               data-testid="account-settings--header"
               className="account-settings--header"
             >
               Deactivate Account
             </h4>
-            <div style={labelStyle}>
+            <div className="account-settings--deactivate-description">
               If you decide to deactivate this account, all your writes,
               queries, and tasks will be suspended immediately.
             </div>
             <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Large}>
               <Button
+                className="account-settings--deactivate-button"
                 onClick={showDeactivateAccountOverlay}
                 testID="deactivate-account--button"
                 text="DEACTIVATE ACCOUNT"
-                style={actionButtonStyle}
               />
             </FlexBox>
           </>
@@ -132,19 +143,32 @@ const AccountAboutPage: FC = () => {
             <CancellationOverlay onHideOverlay={hideDeactivateAccountOverlay} />
           </Overlay>
         </CancelServiceProvider>
+        {shouldShowDeleteFreeAccountButton && <DeleteFreeAccountButton />}
       </>
     </AccountTabContainer>
   )
 }
 
 const AccountPage: FC = () => {
+  const {account} = useSelector(selectCurrentIdentity)
+
   return (
-    <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
-      <AccountHeader testID="account-page--header" />
-      <UsersProvider>
+    <>
+      <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
+        <AccountHeader testID="account-page--header" />
         <AccountAboutPage />
-      </UsersProvider>
-    </Page>
+      </Page>
+      <Switch>
+        {CLOUD && account.type === 'free' && (
+          <DeleteOrgProvider>
+            <Route
+              path="/orgs/:orgID/accounts/settings/delete"
+              component={DeleteAccountOverlay}
+            />
+          </DeleteOrgProvider>
+        )}
+      </Switch>
+    </>
   )
 }
 

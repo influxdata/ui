@@ -44,6 +44,8 @@ describe('Account / Organizations Tab', () => {
 
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('sid')
+    // Resolves issue with misidentifying the first org card when the DOM is updated.
+    cy.wait(500)
   })
 
   it('displays a paginated list of provisioned and suspended organizations in the current account', () => {

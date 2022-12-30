@@ -70,7 +70,7 @@ const AccountAboutPage: FC = () => {
 
   const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
   const showLeaveOrgtButton = !isFlagEnabled('createDeleteOrgs')
-  const allowSelfRemoval = users.length < 1
+  const allowSelfRemoval = users.length > 1
 
   return (
     <AccountTabContainer activeTab="settings">

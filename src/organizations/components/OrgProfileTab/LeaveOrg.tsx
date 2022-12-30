@@ -12,8 +12,10 @@ import {
 } from '@influxdata/clockface'
 
 // Selector
-import {getMe} from 'src/me/selectors'
-import {getOrg} from 'src/organizations/selectors'
+import {
+  selectCurrentOrg,
+  selectUser,
+} from 'src/identity/selectors'
 
 // Providers
 import {UsersContext} from 'src/users/context/users'
@@ -25,8 +27,8 @@ import {CLOUD_URL} from 'src/shared/constants'
 import 'src/organizations/components/OrgProfileTab/style.scss'
 
 export const LeaveOrgButton: FC = () => {
-  const org = useSelector(getOrg)
-  const currentUserId = useSelector(getMe)?.id
+  const org = useSelector(selectCurrentOrg)
+  const currentUserId = useSelector(selectUser)?.id
   const {handleRemoveUser} = useContext(UsersContext)
 
   const handleRemove = () => {
@@ -43,16 +45,16 @@ export const LeaveOrgButton: FC = () => {
         </p>
         <ConfirmationButton
           className="org-profile-tab--leaveOrgButton"
-          confirmationLabel="This action will remove yourself from accessing this organization"
-          confirmationButtonText="Leave Organization"
-          titleText="Leave Organization"
-          text="Leave Organization"
-          confirmationButtonColor={ComponentColor.Danger}
           color={ComponentColor.Default}
-          shape={ButtonShape.Square}
-          onConfirm={handleRemove}
-          testID="delete-user"
+          confirmationButtonColor={ComponentColor.Danger}
+          confirmationButtonText="Leave Organization"
+          confirmationLabel="This action will remove yourself from accessing this organization"
           icon={IconFont.Logout}
+          onConfirm={handleRemove}
+          shape={ButtonShape.Square}
+          testID="delete-user"
+          text="Leave Organization"
+          titleText="Leave Organization"
         />
       </FlexBox.Child>
     </>

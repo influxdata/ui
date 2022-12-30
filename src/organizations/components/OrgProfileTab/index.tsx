@@ -141,10 +141,10 @@ const OrgProfileTab: FC = () => {
 
   return (
     <FlexBox
-      direction={FlexDirection.Column}
       alignItems={AlignItems.FlexStart}
-      testID="organization-profile--panel"
+      direction={FlexDirection.Column}
       margin={ComponentSize.Large}
+      testID="organization-profile--panel"
     >
       <FlexBox
         direction={FlexDirection.Row}
@@ -157,14 +157,14 @@ const OrgProfileTab: FC = () => {
 
       {CLOUD && orgDetailsLoaded && (
         <FlexBox
+          className="org-profile-tab--section"
           direction={FlexDirection.Row}
           stretchToFitWidth={true}
-          className="org-profile-tab--section"
         >
           <UsersProvider>
             <>
-              <DeletePanel />
               {allowSelfRemoval && showLeaveOrgButton && <LeaveOrgButton />}
+              <DeletePanel />
             </>
           </UsersProvider>
         </FlexBox>

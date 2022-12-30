@@ -12,10 +12,7 @@ import {
 } from '@influxdata/clockface'
 
 // Selector
-import {
-  selectCurrentOrg,
-  selectUser,
-} from 'src/identity/selectors'
+import {selectCurrentOrg, selectUser} from 'src/identity/selectors'
 
 // Providers
 import {UsersContext} from 'src/users/context/users'

@@ -76,7 +76,7 @@ const AccountAboutPage: FC = () => {
     handleRenameActiveAccount(activeAccount.id, activeAcctName)
   }
   const shouldShowDeleteFreeAccountButton =
-    CLOUD && account.type === 'free' && user.orgCount > 1 // change this to ===
+    CLOUD && account.type === 'free' && user.orgCount === 1
 
   const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
   const showLeaveOrgButton = !isFlagEnabled('createDeleteOrgs')

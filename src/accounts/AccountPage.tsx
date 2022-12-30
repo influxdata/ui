@@ -11,6 +11,10 @@ import {
   Overlay,
   Page,
 } from '@influxdata/clockface'
+import {LeaveOrgButton} from 'src/organizations/components/OrgProfileTab/LeaveOrg'
+
+// Context
+import {UsersContext, UsersProvider} from 'src/users/context/users'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -29,6 +33,8 @@ const AccountAboutPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} =
     useContext(UserAccountContext)
 
+  const {users} = useContext(UsersContext)
+
   const [isDeactivateAccountVisible, setDeactivateAccountVisible] =
     useState(false)
 
@@ -46,7 +52,7 @@ const AccountAboutPage: FC = () => {
   }
 
   const inputStyle = {width: 250}
-  const labelStyle = {marginBottom: 8, maxWidth: '500px'}
+  const labelStyle = {marginBottom: '10px', maxWidth: '500px'}
   const dividerStyle = {marginTop: '32px', maxWidth: '500px'}
   const actionButtonStyle = {marginTop: '24px'}
 
@@ -63,6 +69,8 @@ const AccountAboutPage: FC = () => {
   }
 
   const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
+  const showLeaveOrgtButton = !isFlagEnabled('createDeleteOrgs')
+  const allowSelfRemoval = users.length < 1
 
   return (
     <AccountTabContainer activeTab="settings">
@@ -90,6 +98,12 @@ const AccountAboutPage: FC = () => {
             text="Save"
           />
         </FlexBox>
+        {allowSelfRemoval && showLeaveOrgtButton && (
+          <>
+            <hr style={dividerStyle} />
+            <LeaveOrgButton />
+          </>
+        )}
         {showDeactivateAccountSection && (
           <>
             <hr style={dividerStyle} />
@@ -127,7 +141,9 @@ const AccountPage: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
       <AccountHeader testID="account-page--header" />
-      <AccountAboutPage />
+      <UsersProvider>
+        <AccountAboutPage />
+      </UsersProvider>
     </Page>
   )
 }

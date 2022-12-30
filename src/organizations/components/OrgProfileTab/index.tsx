@@ -5,18 +5,15 @@ import {useDispatch, useSelector} from 'react-redux'
 // Components
 import {
   AlignItems,
-  ButtonShape,
-  ComponentColor,
   ComponentSize,
-  ConfirmationButton,
   FlexBox,
   FlexDirection,
-  IconFont,
   JustifyContent,
 } from '@influxdata/clockface'
 import LabeledData from 'src/organizations/components/OrgProfileTab/LabeledData'
 import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/CopyableLabeledData'
 import {DeletePanel} from 'src/organizations/components/OrgProfileTab/DeletePanel'
+import {LeaveOrgButton} from 'src/organizations/components/OrgProfileTab/LeaveOrg'
 
 // Notifications
 import {orgDetailsFetchError} from 'src/shared/copy/notifications'
@@ -37,7 +34,10 @@ import {getCurrentOrgDetailsThunk} from 'src/identity/actions/thunks'
 import {RemoteDataState} from 'src/types'
 
 // Constants
-import {CLOUD, CLOUD_URL} from 'src/shared/constants'
+import {CLOUD} from 'src/shared/constants'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/organizations/components/OrgProfileTab/style.scss'
@@ -47,6 +47,7 @@ const OrgProfileTab: FC = () => {
   const org = useSelector(getOrg)
   const quartzOrg = useSelector(selectCurrentOrg)
   const dispatch = useDispatch()
+  const {users} = useContext(UsersContext)
 
   // Data about the user's organization is intentionally re-fetched when this component mounts again.
   const [orgDetailsStatus, setOrgDetailsStatus] = useState(
@@ -77,6 +78,8 @@ const OrgProfileTab: FC = () => {
     retrieveOrgDetails()
   }, [dispatch, orgDetailsStatus, quartzOrg.id])
 
+  const allowSelfRemoval = users.length > 1
+  const showLeaveOrgButton = isFlagEnabled('createDeleteOrgs')
   const hasFetchedOrgDetails = orgDetailsStatus === RemoteDataState.Done
 
   const OrgProfile = () => (
@@ -136,44 +139,6 @@ const OrgProfileTab: FC = () => {
     </FlexBox.Child>
   )
 
-  const LeaveOrgButton = () => {
-    const currentUserId = me.id
-    const {users, handleRemoveUser} = useContext(UsersContext)
-
-    const allowSelfRemoval = users.length > 1
-
-    const handleRemove = () => {
-      handleRemoveUser(currentUserId)
-      window.location.href = CLOUD_URL
-    }
-
-    return (
-      <>
-        {allowSelfRemoval && (
-          <FlexBox.Child>
-            <h4>Leave Organization</h4>
-            <p className="org-profile-tab--heading org-profile-tab--deleteHeading">
-              Leave the <b>{org.name}</b> organization.
-            </p>
-            <ConfirmationButton
-              className="org-profile-tab--leaveOrgButton"
-              confirmationLabel="This action will remove yourself from accessing this organization"
-              confirmationButtonText="Leave Organization"
-              titleText="Leave Organization"
-              text="Leave Organization"
-              confirmationButtonColor={ComponentColor.Danger}
-              color={ComponentColor.Default}
-              shape={ButtonShape.Square}
-              onConfirm={handleRemove}
-              testID="delete-user"
-              icon={IconFont.Logout}
-            />
-          </FlexBox.Child>
-        )}
-      </>
-    )
-  }
-
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -199,7 +164,7 @@ const OrgProfileTab: FC = () => {
           <UsersProvider>
             <>
               <DeletePanel />
-              <LeaveOrgButton />
+              {allowSelfRemoval && showLeaveOrgButton && <LeaveOrgButton />}
             </>
           </UsersProvider>
         </FlexBox>

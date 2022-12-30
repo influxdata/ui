@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -13,13 +13,14 @@ import {
 import LabeledData from 'src/organizations/components/OrgProfileTab/LabeledData'
 import CopyableLabeledData from 'src/organizations/components/OrgProfileTab/CopyableLabeledData'
 import {DeletePanel} from 'src/organizations/components/OrgProfileTab/DeletePanel'
+import {LeaveOrgButton} from 'src/organizations/components/OrgProfileTab/LeaveOrg'
 
 // Notifications
 import {orgDetailsFetchError} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
 // Providers
-import UsersProvider from 'src/users/context/users'
+import {UsersContext, UsersProvider} from 'src/users/context/users'
 
 // Selectors
 import {getMe} from 'src/me/selectors'
@@ -35,6 +36,9 @@ import {RemoteDataState} from 'src/types'
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 // Styles
 import 'src/organizations/components/OrgProfileTab/style.scss'
 
@@ -43,6 +47,7 @@ const OrgProfileTab: FC = () => {
   const org = useSelector(getOrg)
   const quartzOrg = useSelector(selectCurrentOrg)
   const dispatch = useDispatch()
+  const {users} = useContext(UsersContext)
 
   // Data about the user's organization is intentionally re-fetched when this component mounts again.
   const [orgDetailsStatus, setOrgDetailsStatus] = useState(
@@ -73,6 +78,8 @@ const OrgProfileTab: FC = () => {
     retrieveOrgDetails()
   }, [dispatch, orgDetailsStatus, quartzOrg.id])
 
+  const allowSelfRemoval = users.length > 1
+  const showLeaveOrgButton = isFlagEnabled('createDeleteOrgs')
   const hasFetchedOrgDetails = orgDetailsStatus === RemoteDataState.Done
 
   const OrgProfile = () => (
@@ -134,10 +141,10 @@ const OrgProfileTab: FC = () => {
 
   return (
     <FlexBox
-      direction={FlexDirection.Column}
       alignItems={AlignItems.FlexStart}
-      testID="organization-profile--panel"
+      direction={FlexDirection.Column}
       margin={ComponentSize.Large}
+      testID="organization-profile--panel"
     >
       <FlexBox
         direction={FlexDirection.Row}
@@ -149,11 +156,18 @@ const OrgProfileTab: FC = () => {
       </FlexBox>
 
       {CLOUD && orgDetailsLoaded && (
-        <FlexBox.Child className="org-profile-tab--section">
+        <FlexBox
+          className="org-profile-tab--section"
+          direction={FlexDirection.Row}
+          stretchToFitWidth={true}
+        >
           <UsersProvider>
-            <DeletePanel />
+            <>
+              {allowSelfRemoval && showLeaveOrgButton && <LeaveOrgButton />}
+              <DeletePanel />
+            </>
           </UsersProvider>
-        </FlexBox.Child>
+        </FlexBox>
       )}
     </FlexBox>
   )

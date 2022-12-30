@@ -187,8 +187,6 @@ const DeleteOrgButton: FC = () => {
           Delete the <b>{org.name}</b> organization and remove any data that you
           have loaded.
         </p>
-      </FlexBox.Child>
-      <FlexBox.Child>
         <>
           {!orgCanBeSuspended && (
             <Popover

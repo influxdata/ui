@@ -19,8 +19,15 @@
   margin-bottom: $cf-space-l;
   margin-right: $cf-space-3xl;
   flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
 .org-profile-tab--copyableText {
   min-width: 500px;
+}
+
+.org-profile-tab--leaveOrgButton {
+  width: auto !important;
+  padding-left: 8px;
+  padding-right: 8px;
 }

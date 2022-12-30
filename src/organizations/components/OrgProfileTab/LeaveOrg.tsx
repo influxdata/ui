@@ -28,7 +28,7 @@ export const LeaveOrgButton: FC = () => {
   const currentUserId = useSelector(selectUser)?.id
   const {handleRemoveUser} = useContext(UsersContext)
 
-  const handleRemove = () => {
+  const removeUser = () => {
     handleRemoveUser(currentUserId)
     window.location.href = CLOUD_URL
   }
@@ -47,7 +47,7 @@ export const LeaveOrgButton: FC = () => {
           confirmationButtonText="Leave Organization"
           confirmationLabel="This action will remove yourself from accessing this organization"
           icon={IconFont.Logout}
-          onConfirm={handleRemove}
+          onConfirm={removeUser}
           shape={ButtonShape.Square}
           testID="delete-user"
           text="Leave Organization"

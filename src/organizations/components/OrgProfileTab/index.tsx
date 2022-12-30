@@ -136,7 +136,7 @@ const OrgProfileTab: FC = () => {
     </FlexBox.Child>
   )
 
-  const LeaveOrg = () => {
+  const LeaveOrgButton = () => {
     const currentUserId = me.id
     const {users, handleRemoveUser} = useContext(UsersContext)
 
@@ -199,7 +199,7 @@ const OrgProfileTab: FC = () => {
           <UsersProvider>
             <>
               <DeletePanel />
-              <LeaveOrg />
+              <LeaveOrgButton />
             </>
           </UsersProvider>
         </FlexBox>

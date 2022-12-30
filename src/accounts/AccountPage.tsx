@@ -5,7 +5,6 @@ import {Switch, Route} from 'react-router-dom'
 
 import {
   Button,
-  // IconFont,
   ComponentSize,
   FlexBox,
   FlexDirection,
@@ -19,7 +18,7 @@ import {LeaveOrgButton} from 'src/organizations/components/OrgProfileTab/LeaveOr
 // Context
 import {UsersContext, UsersProvider} from 'src/users/context/users'
 import {DeleteFreeAccountButton} from 'src/accounts/DeleteFreeAccount'
-import DeleteAccountOverlay from 'src/organizations/components/DeleteAccountOverlay'
+import {DeleteFreeAccountOverlay} from 'src/accounts/DeleteFreeAccountOverlay'
 
 // Selectors
 import {selectCurrentIdentity} from 'src/identity/selectors'
@@ -33,7 +32,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
 import AccountHeader from 'src/accounts/AccountHeader'
-import DeleteOrgProvider from 'src/organizations/components/DeleteOrgContext'
+import {DeleteFreeAccountProvider} from 'src/accounts/context/DeleteFreeAccountContext'
 
 import CancellationOverlay from './CancellationOverlay'
 import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServiceContext'
@@ -156,16 +155,18 @@ const AccountPage: FC = () => {
     <>
       <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
         <AccountHeader testID="account-page--header" />
-        <AccountAboutPage />
+        <UsersProvider>
+          <AccountAboutPage />
+        </UsersProvider>
       </Page>
       <Switch>
         {CLOUD && account.type === 'free' && (
-          <DeleteOrgProvider>
+          <DeleteFreeAccountProvider>
             <Route
               path="/orgs/:orgID/accounts/settings/delete"
-              component={DeleteAccountOverlay}
+              component={DeleteFreeAccountOverlay}
             />
-          </DeleteOrgProvider>
+          </DeleteFreeAccountProvider>
         )}
       </Switch>
     </>

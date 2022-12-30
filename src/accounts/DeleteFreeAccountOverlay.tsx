@@ -20,11 +20,12 @@ import {
 } from '@influxdata/clockface'
 import {track} from 'rudder-sdk-js'
 
-// Selectors
+// Context
 import {
-  DeleteOrgContext,
+  DeleteFreeAccountContext,
   VariableItems,
-} from 'src/organizations/components/DeleteOrgContext'
+} from 'src/accounts/context/DeleteFreeAccountContext'
+
 import {getOrg} from 'src/organizations/selectors'
 import {selectCurrentIdentity} from 'src/identity/selectors'
 
@@ -32,16 +33,16 @@ import {selectCurrentIdentity} from 'src/identity/selectors'
 import {deleteAccount} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {accountSelfDeletionFailed} from 'src/shared/copy/notifications'
-import DeleteOrgReasonsForm from 'src/organizations/components/DeleteOrgReasonsForm'
+import {DeleteFreeAccountReasonsForm} from 'src/accounts/DeleteFreeAccountReasonsForm'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
-const DeleteAccountOverlay: FC = () => {
+export const DeleteFreeAccountOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const dispatch = useDispatch()
   const {reason, shortSuggestion, suggestions, getRedirectLocation} =
-    useContext(DeleteOrgContext)
+    useContext(DeleteFreeAccountContext)
   const {user, account} = useSelector(selectCurrentIdentity)
   const org = useSelector(getOrg)
 
@@ -111,7 +112,7 @@ const DeleteAccountOverlay: FC = () => {
             justifyContent={JustifyContent.FlexStart}
             margin={ComponentSize.Medium}
           >
-            <DeleteOrgReasonsForm />
+            <DeleteFreeAccountReasonsForm />
           </FlexBox>
           <ul style={{margin: '32px 0'}}>
             <li>
@@ -165,5 +166,3 @@ const DeleteAccountOverlay: FC = () => {
     </Overlay>
   )
 }
-
-export default DeleteAccountOverlay

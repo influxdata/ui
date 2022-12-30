@@ -9,8 +9,11 @@ import {Button, IconFont, FlexBox} from '@influxdata/clockface'
 import {OrgUsersLink} from 'src/shared/components/notifications/NotificationButtons'
 
 // Selectors
-import {getOrg} from 'src/organizations/selectors'
-import {selectCurrentAccount, selectUser} from 'src/identity/selectors'
+import {
+  selectCurrentAccount,
+  selectCurrentOrg,
+  selectUser,
+} from 'src/identity/selectors'
 
 // Contexts
 import {UsersContext} from 'src/users/context/users'
@@ -29,7 +32,7 @@ import {NotificationButtonElement} from 'src/types'
 export const DeleteFreeAccountButton: FC = () => {
   const account = useSelector(selectCurrentAccount)
   const history = useHistory()
-  const org = useSelector(getOrg)
+  const org = useSelector(selectCurrentOrg)
   const user = useSelector(selectUser)
   const {users} = useContext(UsersContext)
   const dispatch = useDispatch()

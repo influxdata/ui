@@ -69,7 +69,7 @@ const AccountAboutPage: FC = () => {
   }
 
   const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
-  const showLeaveOrgtButton = !isFlagEnabled('createDeleteOrgs')
+  const showLeaveOrgButton = !isFlagEnabled('createDeleteOrgs')
   const allowSelfRemoval = users.length > 1
 
   return (
@@ -98,7 +98,7 @@ const AccountAboutPage: FC = () => {
             text="Save"
           />
         </FlexBox>
-        {allowSelfRemoval && showLeaveOrgtButton && (
+        {allowSelfRemoval && showLeaveOrgButton && (
           <>
             <hr style={dividerStyle} />
             <LeaveOrgButton />

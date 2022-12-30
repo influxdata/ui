@@ -140,10 +140,9 @@ const OrgProfileTab: FC = () => {
     const currentUserId = me.id
     const {users, handleRemoveUser} = useContext(UsersContext)
 
-    const allowSelfRemoval = users.length < 1 // change this back to GREATER
+    const allowSelfRemoval = users.length > 1
 
     const handleRemove = () => {
-      // removes user from the current org
       handleRemoveUser(currentUserId)
       window.location.href = CLOUD_URL
     }

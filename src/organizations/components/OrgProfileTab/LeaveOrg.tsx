@@ -26,10 +26,10 @@ import 'src/organizations/components/OrgProfileTab/style.scss'
 export const LeaveOrgButton: FC = () => {
   const org = useSelector(selectCurrentOrg)
   const currentUserId = useSelector(selectUser)?.id
-  const {handleRemoveUser} = useContext(UsersContext)
+  const {removeUser} = useContext(UsersContext)
 
-  const removeUser = () => {
-    handleRemoveUser(currentUserId)
+  const handleRemoveUser = () => {
+    removeUser(currentUserId)
     window.location.href = CLOUD_URL
   }
 
@@ -47,7 +47,7 @@ export const LeaveOrgButton: FC = () => {
           confirmationButtonText="Leave Organization"
           confirmationLabel="This action will remove yourself from accessing this organization"
           icon={IconFont.Logout}
-          onConfirm={removeUser}
+          onConfirm={handleRemoveUser}
           shape={ButtonShape.Square}
           testID="delete-user"
           text="Leave Organization"

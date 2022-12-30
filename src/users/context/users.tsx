@@ -43,7 +43,7 @@ export interface UsersContextType {
   draftInvite: DraftInvite
   handleEditDraftInvite: (_: DraftInvite) => void
   handleInviteUser: () => void
-  handleRemoveUser: (userId: string) => void
+  removeUser: (userId: string) => void
   handleResendInvite: (inviteId: number) => void
   handleWithdrawInvite: (inviteId: number) => void
   invites: Invite[]
@@ -62,7 +62,7 @@ export const DEFAULT_CONTEXT: UsersContextType = {
   draftInvite: draft,
   handleEditDraftInvite: (_draftInvite: DraftInvite) => {},
   handleInviteUser: () => {},
-  handleRemoveUser: (_userId: string) => {},
+  removeUser: (_userId: string) => {},
   handleResendInvite: (_inviteId: number) => {},
   handleWithdrawInvite: (_inviteId: number) => {},
   invites: [],
@@ -207,7 +207,7 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
     [dispatch, invites, orgId]
   )
 
-  const handleRemoveUser = useCallback(
+  const removeUser = useCallback(
     async (userId: string) => {
       try {
         setRemoveUserStatus({
@@ -250,7 +250,7 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
         draftInvite,
         handleEditDraftInvite,
         handleInviteUser,
-        handleRemoveUser,
+        removeUser,
         handleResendInvite,
         handleWithdrawInvite,
         invites,

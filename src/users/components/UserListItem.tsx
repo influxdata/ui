@@ -41,7 +41,7 @@ const formatName = (firstName: string | null, lastName: string | null) => {
 
 const UserListItem: FC<Props> = ({user, isDeletable}) => {
   const {email, firstName, lastName, role} = user
-  const {handleRemoveUser, removeUserStatus} = useContext(UsersContext)
+  const {removeUser, removeUserStatus} = useContext(UsersContext)
 
   const [revealOnHover, toggleRevealOnHover] = useState(true)
 
@@ -54,7 +54,7 @@ const UserListItem: FC<Props> = ({user, isDeletable}) => {
   }
 
   const handleRemove = () => {
-    handleRemoveUser(user.id)
+    removeUser(user.id)
   }
 
   let status = ComponentStatus.Default

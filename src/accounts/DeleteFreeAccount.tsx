@@ -53,10 +53,10 @@ export const DeleteFreeAccountButton: FC = () => {
       tier: account.type,
       email: user.email,
     }
-    event('DeleteOrgInitiation Event', payload)
+    event('DeleteFreeAccountInitiation Event', payload)
 
     if (isFlagEnabled('rudderstackReporting')) {
-      track('DeleteOrgInitiation', payload)
+      track('DeleteFreeAccountInitiation', payload)
     }
 
     history.push(`/orgs/${org.id}/accounts/settings/delete`)
@@ -77,7 +77,7 @@ export const DeleteFreeAccountButton: FC = () => {
           have loaded.
         </p>
         <Button
-          testID="delete-org--button"
+          testID="delete-free-account--button"
           text="Delete"
           icon={IconFont.Trash_New}
           onClick={handleClickDeleteFreeAccount}

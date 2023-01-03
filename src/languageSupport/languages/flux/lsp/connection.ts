@@ -393,7 +393,13 @@ export class ConnectionManager {
         this._first_load = false
         break
       case 'false|true|true':
-        // re-sync just turned on.
+        // 1) re-sync just turned on or
+        // 2) measurement selection is changed when fields
+        //    and/or tag values were previously selected
+        if (!toAdd.bucket) {
+          // bucket is needed for initialization
+          toAdd.bucket = schema.bucket
+        }
         if (shouldRemoveDefaultMsg) {
           this._removeDefaultAndUpdateLsp(() => this._initLspComposition(toAdd))
         } else {

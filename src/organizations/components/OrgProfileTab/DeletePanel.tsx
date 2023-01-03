@@ -1,8 +1,6 @@
 // Libraries
 import React, {FC, useContext, useRef} from 'react'
-import {track} from 'rudder-sdk-js'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
 
 // Components
 import {
@@ -22,22 +20,13 @@ import {UsersContext} from 'src/users/context/users'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {
-  selectCurrentAccount,
-  selectCurrentIdentity,
   selectOrgCreationAllowance,
   selectOrgSuspendable,
-  selectUser,
 } from 'src/identity/selectors'
 
 // Notifications
-import {
-  deleteAccountWarning,
-  deleteOrgWarning,
-} from 'src/shared/copy/notifications'
+import {deleteOrgWarning} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
-
-// Utils
-import {event} from 'src/cloud/utils/reporting'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -53,84 +42,14 @@ import 'src/organizations/components/OrgProfileTab/style.scss'
 const linkStyle = {textDecoration: 'underline'}
 
 export const DeletePanel: FC = () => {
-  const {user, account} = useSelector(selectCurrentIdentity)
   const {status} = useContext(UsersContext)
 
-  const shouldShowDeleteFreeAccountButton =
-    CLOUD && account.type === 'free' && user.orgCount === 1
-
-  const shouldShowDeleteOrgButton =
-    CLOUD &&
-    isFlagEnabled('createDeleteOrgs') &&
-    !shouldShowDeleteFreeAccountButton
+  const shouldShowDeleteOrgButton = CLOUD && isFlagEnabled('createDeleteOrgs')
 
   return (
     <PageSpinner loading={status}>
-      <>
-        {shouldShowDeleteFreeAccountButton && <DeleteFreeAccountButton />}
-        {shouldShowDeleteOrgButton && <DeleteOrgButton />}
-      </>
+      <>{shouldShowDeleteOrgButton && <DeleteOrgButton />}</>
     </PageSpinner>
-  )
-}
-
-const DeleteFreeAccountButton: FC = () => {
-  const account = useSelector(selectCurrentAccount)
-  const history = useHistory()
-  const org = useSelector(getOrg)
-  const user = useSelector(selectUser)
-  const {users} = useContext(UsersContext)
-  const dispatch = useDispatch()
-
-  const shouldShowUsersWarning = users.length > 1
-
-  const handleClickDeleteFreeAccount = () => {
-    if (shouldShowUsersWarning) {
-      showRemoveUsersWarning()
-    } else {
-      showDeleteFreeAccountOverlay()
-    }
-  }
-
-  const showDeleteFreeAccountOverlay = () => {
-    const payload = {
-      org: org.id,
-      tier: account.type,
-      email: user.email,
-    }
-    event('DeleteOrgInitiation Event', payload)
-
-    if (isFlagEnabled('rudderstackReporting')) {
-      track('DeleteOrgInitiation', payload)
-    }
-
-    history.push(`/orgs/${org.id}/org-settings/delete`)
-  }
-
-  const showRemoveUsersWarning = () => {
-    const buttonElement: NotificationButtonElement = onDismiss =>
-      OrgUsersLink(`/orgs/${org.id}/members`, onDismiss)
-    dispatch(notify(deleteAccountWarning(buttonElement)))
-  }
-
-  return (
-    <>
-      <FlexBox.Child>
-        <h4>Delete Organization</h4>
-        <p className="org-profile-tab--heading org-profile-tab--deleteHeading">
-          Delete your Free InfluxDB Cloud account and remove any data that you
-          have loaded.
-        </p>
-      </FlexBox.Child>
-      <FlexBox.Child>
-        <Button
-          testID="delete-org--button"
-          text="Delete"
-          icon={IconFont.Trash_New}
-          onClick={handleClickDeleteFreeAccount}
-        />
-      </FlexBox.Child>
-    </>
   )
 }
 

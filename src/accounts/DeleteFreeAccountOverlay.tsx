@@ -99,7 +99,7 @@ export const DeleteFreeAccountOverlay: FC = () => {
   }
 
   return (
-    <Overlay visible={true} testID="delete-org--overlay">
+    <Overlay visible={true} testID="delete-free-account--overlay">
       <Overlay.Container maxWidth={400}>
         <Overlay.Header title="Delete Account" onDismiss={handleClose} />
         <Overlay.Body>
@@ -155,7 +155,7 @@ export const DeleteFreeAccountOverlay: FC = () => {
           <Button
             color={ComponentColor.Danger}
             text="Delete Account"
-            testID="delete-organization--button"
+            testID="delete-free-account--button"
             status={
               isFormValid ? ComponentStatus.Default : ComponentStatus.Disabled
             }

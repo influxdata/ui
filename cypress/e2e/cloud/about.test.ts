@@ -135,14 +135,14 @@ const createOrg = (accountType: string) => {
 }
 
 const deleteFreeAccount = () => {
-  cy.getByTestID('delete-org--button').should('be.visible').click()
+  cy.getByTestID('delete-free-account--button').should('be.visible').click()
   cy.getByTestID('notification-warning').should('not.exist')
 
   cy.url()
-    .should('include', `/org-settings/delete`)
+    .should('include', `/accounts/settings/delete`)
     .then(() => {
-      cy.getByTestID('delete-org--overlay').should('be.visible')
-      cy.getByTestID('delete-organization--button').should('be.disabled')
+      cy.getByTestID('delete-free-account--overlay').should('be.visible')
+      cy.getByTestID('delete-free-account--button').should('be.disabled')
 
       cy.getByTestID('agree-terms--input').click()
       cy.getByTestID('agree-terms--checkbox').should('be.checked')
@@ -152,7 +152,7 @@ const deleteFreeAccount = () => {
       cy.contains("It doesn't work for my use case")
         .should('be.visible')
         .click()
-      cy.getByTestID('delete-organization--button')
+      cy.getByTestID('delete-free-account--button')
         .should('not.be.disabled')
         .click()
       cy.location().should(loc => {

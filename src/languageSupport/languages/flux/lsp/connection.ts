@@ -397,7 +397,7 @@ export class ConnectionManager {
         if (shouldRemoveDefaultMsg) {
           this._removeDefaultAndUpdateLsp(() => this._initLspComposition(toAdd))
         } else {
-          this._initLspComposition(toAdd)
+          this._updateLsp(toAdd, toRemove)
         }
         break
       case 'false|false|true':

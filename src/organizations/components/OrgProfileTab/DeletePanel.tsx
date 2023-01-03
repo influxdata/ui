@@ -20,6 +20,7 @@ import {UsersContext} from 'src/users/context/users'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {
+  selectCurrentIdentity,
   selectOrgCreationAllowance,
   selectOrgSuspendable,
 } from 'src/identity/selectors'
@@ -43,8 +44,11 @@ const linkStyle = {textDecoration: 'underline'}
 
 export const DeletePanel: FC = () => {
   const {status} = useContext(UsersContext)
+  const {user, account} = useSelector(selectCurrentIdentity)
 
-  const shouldShowDeleteOrgButton = CLOUD && isFlagEnabled('createDeleteOrgs')
+  const freeAccountWithOneOrg = account.type === 'free' && user.orgCount === 1
+  const shouldShowDeleteOrgButton =
+    CLOUD && isFlagEnabled('createDeleteOrgs') && !freeAccountWithOneOrg
 
   return (
     <PageSpinner loading={status}>

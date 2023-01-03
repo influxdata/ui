@@ -78,7 +78,6 @@ export const DeleteFreeAccountOverlay: FC = () => {
       suggestions,
       reason: VariableItems[reason],
     }
-    event('DeleteAccountExecuted Event', payload)
 
     if (isFlagEnabled('rudderstackReporting')) {
       track('DeleteAccountExecuted', payload)
@@ -114,7 +113,7 @@ export const DeleteFreeAccountOverlay: FC = () => {
           >
             <DeleteFreeAccountReasonsForm />
           </FlexBox>
-          <ul style={{margin: '32px 0'}}>
+          <ul className="account-settings-deleteAccount--overlay">
             <li>
               The account for this Organization will be deleted immediately.
               This is irreversible and cannot be undone.

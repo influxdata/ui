@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useContext, useMemo, useState} from 'react'
-import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 import {
   Alert,
   AlignItems,
@@ -18,32 +18,31 @@ import {
   JustifyContent,
   Overlay,
 } from '@influxdata/clockface'
-import {track} from 'rudder-sdk-js'
+
+// Context
+import {
+  DeleteFreeAccountContext,
+  VariableItems,
+} from 'src/accounts/context/DeleteFreeAccountContext'
+
+// Selectors
+import {selectCurrentIdentity, selectCurrentOrg} from 'src/identity/selectors'
 
 // Utils
 import {deleteAccount} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {accountSelfDeletionFailed} from 'src/shared/copy/notifications'
-import DeleteOrgReasonsForm from 'src/organizations/components/DeleteOrgReasonsForm'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {DeleteFreeAccountReasonsForm} from 'src/accounts/DeleteFreeAccountReasonsForm'
 import {event} from 'src/cloud/utils/reporting'
 
-// Selectors
-import {
-  DeleteOrgContext,
-  VariableItems,
-} from 'src/organizations/components/DeleteOrgContext'
-import {getOrg} from 'src/organizations/selectors'
-import {selectCurrentIdentity} from 'src/identity/selectors'
-
-const DeleteOrgOverlay: FC = () => {
+export const DeleteFreeAccountOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const dispatch = useDispatch()
   const {reason, shortSuggestion, suggestions, getRedirectLocation} =
-    useContext(DeleteOrgContext)
+    useContext(DeleteFreeAccountContext)
   const {user, account} = useSelector(selectCurrentIdentity)
-  const org = useSelector(getOrg)
+  const org = useSelector(selectCurrentOrg)
 
   const handleClose = () => {
     const payload = {
@@ -51,12 +50,7 @@ const DeleteOrgOverlay: FC = () => {
       tier: account.type,
       email: user.email,
     }
-    event('DeleteOrgDismissed Event', payload)
-
-    if (isFlagEnabled('rudderstackReporting')) {
-      // Send to Rudderstack
-      track('DeleteOrgDismissed', payload)
-    }
+    event('delete_free_account_overlay.dismissed', payload)
 
     history.goBack()
   }
@@ -77,15 +71,10 @@ const DeleteOrgOverlay: FC = () => {
       suggestions,
       reason: VariableItems[reason],
     }
-    event('DeleteOrgExecuted Event', payload)
-
-    if (isFlagEnabled('rudderstackReporting')) {
-      track('DeleteOrgExecuted', payload)
-    }
 
     try {
       const resp = await deleteAccount({})
-      event('Delete Org Executed', payload)
+      event('delete_free_account_overlay.executed', payload)
 
       if (resp.status !== 204) {
         throw new Error(resp.data.message)
@@ -98,9 +87,9 @@ const DeleteOrgOverlay: FC = () => {
   }
 
   return (
-    <Overlay visible={true} testID="delete-org--overlay">
+    <Overlay visible={true} testID="delete-free-account--overlay">
       <Overlay.Container maxWidth={400}>
-        <Overlay.Header title="Delete Organization" onDismiss={handleClose} />
+        <Overlay.Header title="Delete Account" onDismiss={handleClose} />
         <Overlay.Body>
           <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>
             This action cannot be undone
@@ -111,9 +100,9 @@ const DeleteOrgOverlay: FC = () => {
             justifyContent={JustifyContent.FlexStart}
             margin={ComponentSize.Medium}
           >
-            <DeleteOrgReasonsForm />
+            <DeleteFreeAccountReasonsForm />
           </FlexBox>
-          <ul style={{margin: '32px 0'}}>
+          <ul className="account-settings-deleteAccount--overlay">
             <li>
               The account for this Organization will be deleted immediately.
               This is irreversible and cannot be undone.
@@ -153,8 +142,8 @@ const DeleteOrgOverlay: FC = () => {
         <Overlay.Footer>
           <Button
             color={ComponentColor.Danger}
-            text="Delete Organization"
-            testID="delete-organization--button"
+            text="Delete Account"
+            testID="delete-free-account--button"
             status={
               isFormValid ? ComponentStatus.Default : ComponentStatus.Disabled
             }
@@ -165,5 +154,3 @@ const DeleteOrgOverlay: FC = () => {
     </Overlay>
   )
 }
-
-export default DeleteOrgOverlay

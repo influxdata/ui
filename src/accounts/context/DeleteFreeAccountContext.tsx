@@ -18,7 +18,7 @@ export enum VariableItems {
   OTHER_REASON = 'Other reason',
 }
 
-export interface DeleteOrgContextType {
+export interface DeleteFreeAccountContextType {
   shortSuggestion: string
   isShortSuggestionEnabled: boolean
   setShortSuggestionFlag: (_: boolean) => void
@@ -30,17 +30,18 @@ export interface DeleteOrgContextType {
   getRedirectLocation: () => string
 }
 
-export const DEFAULT_DELETE_ORG_CONTEXT: DeleteOrgContextType = {
-  shortSuggestion: '',
-  isShortSuggestionEnabled: false,
-  setShortSuggestionFlag: (_: boolean) => null,
-  setShortSuggestion: (_: string) => null,
-  suggestions: '',
-  setSuggestions: (_: string) => null,
-  reason: 'NO_OPTION',
-  setReason: (_: string) => null,
-  getRedirectLocation: () => DEFAULT_REDIRECT_LOCATION,
-}
+export const DEFAULT_DELETE_FREE_ACCOUNT_CONTEXT: DeleteFreeAccountContextType =
+  {
+    shortSuggestion: '',
+    isShortSuggestionEnabled: false,
+    setShortSuggestionFlag: (_: boolean) => null,
+    setShortSuggestion: (_: string) => null,
+    suggestions: '',
+    setSuggestions: (_: string) => null,
+    reason: 'NO_OPTION',
+    setReason: (_: string) => null,
+    getRedirectLocation: () => DEFAULT_REDIRECT_LOCATION,
+  }
 
 const RedirectLocations = {
   SWITCHING_ORGANIZATION: '/org_cancel',
@@ -48,21 +49,24 @@ const RedirectLocations = {
 }
 const DEFAULT_REDIRECT_LOCATION = '/mkt_cancel'
 
-export const DeleteOrgContext = createContext<DeleteOrgContextType>(
-  DEFAULT_DELETE_ORG_CONTEXT
-)
+export const DeleteFreeAccountContext =
+  createContext<DeleteFreeAccountContextType>(
+    DEFAULT_DELETE_FREE_ACCOUNT_CONTEXT
+  )
 
-const DeleteOrgProvider: FC<Props> = ({children}) => {
+export const DeleteFreeAccountProvider: FC<Props> = ({children}) => {
   const [shortSuggestion, setShortSuggestion] = useState(
-    DEFAULT_DELETE_ORG_CONTEXT.shortSuggestion
+    DEFAULT_DELETE_FREE_ACCOUNT_CONTEXT.shortSuggestion
   )
   const [isShortSuggestionEnabled, setShortSuggestionFlag] = useState(
-    DEFAULT_DELETE_ORG_CONTEXT.isShortSuggestionEnabled
+    DEFAULT_DELETE_FREE_ACCOUNT_CONTEXT.isShortSuggestionEnabled
   )
   const [suggestions, setSuggestions] = useState(
-    DEFAULT_DELETE_ORG_CONTEXT.suggestions
+    DEFAULT_DELETE_FREE_ACCOUNT_CONTEXT.suggestions
   )
-  const [reason, setReason] = useState(DEFAULT_DELETE_ORG_CONTEXT.reason)
+  const [reason, setReason] = useState(
+    DEFAULT_DELETE_FREE_ACCOUNT_CONTEXT.reason
+  )
 
   const getRedirectLocation = () => {
     const uri = RedirectLocations[reason] ?? '/mkt_cancel'
@@ -71,7 +75,7 @@ const DeleteOrgProvider: FC<Props> = ({children}) => {
   }
 
   return (
-    <DeleteOrgContext.Provider
+    <DeleteFreeAccountContext.Provider
       value={{
         shortSuggestion,
         isShortSuggestionEnabled,
@@ -85,8 +89,6 @@ const DeleteOrgProvider: FC<Props> = ({children}) => {
       }}
     >
       {children}
-    </DeleteOrgContext.Provider>
+    </DeleteFreeAccountContext.Provider>
   )
 }
-
-export default DeleteOrgProvider

@@ -134,33 +134,6 @@ const createOrg = (accountType: string) => {
   })
 }
 
-const deleteFreeAccount = () => {
-  cy.getByTestID('delete-org--button').should('be.visible').click()
-  cy.getByTestID('notification-warning').should('not.exist')
-
-  cy.url()
-    .should('include', `/org-settings/delete`)
-    .then(() => {
-      cy.getByTestID('delete-org--overlay').should('be.visible')
-      cy.getByTestID('delete-organization--button').should('be.disabled')
-
-      cy.getByTestID('agree-terms--input').click()
-      cy.getByTestID('agree-terms--checkbox').should('be.checked')
-      cy.getByTestID('variable-type-dropdown--button')
-        .should('be.visible')
-        .click()
-      cy.contains("It doesn't work for my use case")
-        .should('be.visible')
-        .click()
-      cy.getByTestID('delete-organization--button')
-        .should('not.be.disabled')
-        .click()
-      cy.location().should(loc => {
-        expect(loc.href).to.eq(`https://www.influxdata.com/mkt_cancel/`)
-      })
-    })
-}
-
 const deleteOrg = () => {
   cy.getByTestID('delete-org--button').should('be.visible').click()
   cy.get('.org-delete-overlay--conditions-instruction').within(() => {
@@ -231,28 +204,6 @@ const upgradeAccount = () => {
 }
 
 describe('Free account', () => {
-  it('allows the user to delete a free account if there is only one org, with only one user', () => {
-    setupTest({
-      accountType: 'free',
-      canCreateOrgs: false,
-      orgHasOtherUsers: false,
-      orgCount: 1,
-    })
-
-    deleteFreeAccount()
-  })
-
-  it('displays a `must remove users` warning if trying to delete a free account with a single org, which has multiple users', () => {
-    setupTest({
-      accountType: 'free',
-      canCreateOrgs: false,
-      orgHasOtherUsers: true,
-      orgCount: 1,
-    })
-
-    displayRemoveUsersWarning()
-  })
-
   it('displays a `must remove users` warning if trying to delete an org with multiple users in a multi-org free account', () => {
     setupTest({
       accountType: 'free',

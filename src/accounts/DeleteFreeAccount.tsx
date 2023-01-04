@@ -70,9 +70,9 @@ export const DeleteFreeAccountButton: FC = () => {
 
   return (
     <>
-      <FlexBox.Child style={{marginTop: '30px'}}>
+      <FlexBox.Child className="account-settings-deleteAccount">
         <h4>Delete Account</h4>
-        <p className="org-profile-tab--heading org-profile-tab--deleteHeading">
+        <p className="account-settings--deleteHeading">
           Delete your Free InfluxDB Cloud account and remove any data that you
           have loaded.
         </p>

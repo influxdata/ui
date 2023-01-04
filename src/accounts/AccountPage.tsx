@@ -149,7 +149,7 @@ const AccountAboutPage: FC = () => {
 }
 
 const AccountPage: FC = () => {
-  const {account} = useSelector(selectCurrentIdentity)
+  const {account, user} = useSelector(selectCurrentIdentity)
 
   return (
     <>
@@ -160,7 +160,7 @@ const AccountPage: FC = () => {
         </UsersProvider>
       </Page>
       <Switch>
-        {CLOUD && account.type === 'free' && (
+        {CLOUD && account.type === 'free' && user.orgCount === 1 && (
           <DeleteFreeAccountProvider>
             <Route
               path="/orgs/:orgID/accounts/settings/delete"

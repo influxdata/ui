@@ -22,10 +22,10 @@ const setupTest = (setupParams: SetupParams) => {
         if (res.body.orgs) {
           idpeOrgID = res.body.orgs[0].id
         }
-        const {accountType, orgHasOtherUsers, orgCount} = setupParams
+        const {accountType, orgCount, orgHasOtherUsers} = setupParams
 
         if (orgHasOtherUsers) {
-          cy.intercept('GET', `api/v2/quartz/orgs/${idpeOrgID}/users`, {
+          cy.intercept('GET', `api/v2/quartz/orgs/**/users`, {
             body: [
               {
                 id: '234234324',
@@ -195,7 +195,10 @@ describe('Free account Deletion', () => {
       orgHasOtherUsers: true,
       orgCount: 1,
     })
-
+    // wait until api request to /users is complete
+    cy.intercept('GET', '**/users').as('getusers')
+    cy.wait('@getusers')
+    cy.wait(2000)
     displayRemoveUsersWarning()
   })
 })

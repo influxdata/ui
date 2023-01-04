@@ -1,9 +1,24 @@
 import {Organization} from '../../../src/types'
+import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
+
+let idpeOrgID: string
 
 describe('Deep linking', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
+    cy.setFeatureFlags({createDeleteOrgs: true})
+    cy.request({
+      method: 'GET',
+      url: 'api/v2/orgs',
+    }).then(res => {
+      // Store the IDPE org ID so that it can be cloned when intercepting quartz.
+      if (res.body.orgs) {
+        idpeOrgID = res.body.orgs[0].id
+      }
+
+      makeQuartzUseIDPEOrgID(idpeOrgID)
+    })
   })
 
   // If you're here and the test failure you're looking at is legitimate, it probably means a page
@@ -71,6 +86,9 @@ describe('Deep linking', () => {
 
       cy.visit('/me/notebooks')
       cy.location('pathname').should('eq', `/orgs/${org.id}/notebooks`)
+
+      cy.visit('/me/orglist')
+      cy.location('pathname').should('eq', `/orgs/${org.id}/accounts/orglist`)
 
       cy.visit('/me/profile')
       cy.location('pathname').should('eq', `/orgs/${org.id}/user/profile`)

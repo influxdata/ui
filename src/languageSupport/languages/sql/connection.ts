@@ -13,11 +13,14 @@ import {
 
 // Utils
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {rangeToInterval as buildTimeRange} from 'src/shared/utils/sqlInterval'
 import {notify} from 'src/shared/actions/notifications'
 import {compositionEnded} from 'src/shared/copy/notifications'
 
 const castType = (value, _typ = null) => {
-  // DLW TODO -- determine type and cast
+  // Outstanding tech debt.
+  // For the TagValue selector (Qx builder), flux composition, and rest of codebase.
+  // It only supports tagValues of type string.
   return `'${value}'`
 }
 
@@ -33,7 +36,7 @@ const groupedTagValues = (
   )
 
 export class ConnectionManager extends AgnosticConnectionManager {
-  private _timeRange: SelectableDurationTimeRange = DEFAULT_TIME_RANGE
+  private _timeRange: TimeRange = DEFAULT_TIME_RANGE
 
   _couldBeFromComposition(change) {
     return change.forceMoveMarkers == true
@@ -108,13 +111,15 @@ export class ConnectionManager extends AgnosticConnectionManager {
       )
       .join(' AND ')
 
+    const timeRangeExpr = buildTimeRange(this._timeRange)
+
     switch (
       `${this._session.fields.length > 0}|${this._session.tagValues.length > 0}`
     ) {
       case `true|true`:
         composition = composition.concat([
           'WHERE',
-          this._timeRange.sql,
+          timeRangeExpr,
           'AND',
           `(${fieldsExpr})`,
           'AND',
@@ -125,7 +130,7 @@ export class ConnectionManager extends AgnosticConnectionManager {
       case `true|false`:
         composition = composition.concat([
           'WHERE',
-          this._timeRange.sql,
+          timeRangeExpr,
           'AND',
           `(${fieldsExpr})`,
         ])
@@ -134,14 +139,14 @@ export class ConnectionManager extends AgnosticConnectionManager {
       case `false|true`:
         composition = composition.concat([
           'WHERE',
-          this._timeRange.sql,
+          timeRangeExpr,
           'AND',
           tagValuesExpr,
         ])
         lines += 4
         break
       default:
-        composition = composition.concat(['WHERE', this._timeRange.sql])
+        composition = composition.concat(['WHERE', timeRangeExpr])
         lines += 2
         break
     }
@@ -218,14 +223,12 @@ export class ConnectionManager extends AgnosticConnectionManager {
       this._model.setValue('')
     }
 
-    // DLW TODO -- handle when is wrong timeRange type. Perhaps conditionally rendering in datePicker?
-    const isAcceptedTimeRange = range.hasOwnProperty('label')
-    if (!isAcceptedTimeRange) {
-      return
-    }
     const rangeChanged =
-      this._timeRange.label != (range as SelectableDurationTimeRange).label
+      this._timeRange?.lower != range.lower ||
+      this._timeRange?.upper != range.upper
+
     this._timeRange = range as SelectableDurationTimeRange
+
     if (
       Object.keys(toAdd).length ||
       Object.keys(toRemove).length ||

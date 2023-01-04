@@ -2,7 +2,6 @@
 import React, {FC, useContext} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
-import {track} from 'rudder-sdk-js'
 
 import {Button, IconFont, FlexBox} from '@influxdata/clockface'
 
@@ -24,7 +23,6 @@ import {notify} from 'src/shared/actions/notifications'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {NotificationButtonElement} from 'src/types'
@@ -53,11 +51,7 @@ export const DeleteFreeAccountButton: FC = () => {
       tier: account.type,
       email: user.email,
     }
-    event('DeleteFreeAccountInitiation Event', payload)
-
-    if (isFlagEnabled('rudderstackReporting')) {
-      track('DeleteFreeAccountInitiation', payload)
-    }
+    event('delete_free_account.initiation', payload)
 
     history.push(`/orgs/${org.id}/accounts/settings/delete`)
   }

@@ -18,7 +18,6 @@ import {
   JustifyContent,
   Overlay,
 } from '@influxdata/clockface'
-import {track} from 'rudder-sdk-js'
 
 // Context
 import {
@@ -26,15 +25,14 @@ import {
   VariableItems,
 } from 'src/accounts/context/DeleteFreeAccountContext'
 
-import {getOrg} from 'src/organizations/selectors'
-import {selectCurrentIdentity} from 'src/identity/selectors'
+// Selectors
+import {selectCurrentIdentity, selectCurrentOrg} from 'src/identity/selectors'
 
 // Utils
 import {deleteAccount} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {accountSelfDeletionFailed} from 'src/shared/copy/notifications'
 import {DeleteFreeAccountReasonsForm} from 'src/accounts/DeleteFreeAccountReasonsForm'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 export const DeleteFreeAccountOverlay: FC = () => {
@@ -44,7 +42,7 @@ export const DeleteFreeAccountOverlay: FC = () => {
   const {reason, shortSuggestion, suggestions, getRedirectLocation} =
     useContext(DeleteFreeAccountContext)
   const {user, account} = useSelector(selectCurrentIdentity)
-  const org = useSelector(getOrg)
+  const org = useSelector(selectCurrentOrg)
 
   const handleClose = () => {
     const payload = {
@@ -52,12 +50,7 @@ export const DeleteFreeAccountOverlay: FC = () => {
       tier: account.type,
       email: user.email,
     }
-    event('DeleteAccountDismissed Event', payload)
-
-    if (isFlagEnabled('rudderstackReporting')) {
-      // Send to Rudderstack
-      track('DeleteAccountDismissed', payload)
-    }
+    event('delete_free_account_overlay.dismissed', payload)
 
     history.goBack()
   }
@@ -79,13 +72,9 @@ export const DeleteFreeAccountOverlay: FC = () => {
       reason: VariableItems[reason],
     }
 
-    if (isFlagEnabled('rudderstackReporting')) {
-      track('DeleteAccountExecuted', payload)
-    }
-
     try {
       const resp = await deleteAccount({})
-      event('Delete Account Executed', payload)
+      event('delete_free_account_overlay.executed', payload)
 
       if (resp.status !== 204) {
         throw new Error(resp.data.message)

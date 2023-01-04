@@ -10,7 +10,7 @@ export const OrgUsersLink = (
   onDismiss: NotificationDismiss
 ): JSX.Element => {
   return (
-    <Link to={url} onClick={onDismiss} data-testID="go-to-users--link">
+    <Link to={url} onClick={onDismiss} data-testid="go-to-users--link">
       Go to Users page
     </Link>
   )

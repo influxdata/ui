@@ -3,6 +3,7 @@ import {
   initLog,
   parse as flux_parse,
   format_from_js_file as flux_format_from_js_file,
+  is_valid_flux as flux_is_valid_flux,
 } from '@influxdata/flux-lsp-browser'
 
 initLog()
@@ -36,5 +37,13 @@ export const format_from_js_file = (script: File): string => {
     return flux_format_from_js_file(script)
   } else {
     return ''
+  }
+}
+
+export const is_valid_flux = (script: string): boolean => {
+  if (window) {
+    return flux_is_valid_flux(script)
+  } else {
+    return false
   }
 }

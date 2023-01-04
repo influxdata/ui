@@ -2,7 +2,7 @@
 import {NumericColumnData} from '@influxdata/giraffe'
 
 // APIs
-import {parse} from 'src/languageSupport/languages/flux/parser'
+import {parse, is_valid_flux} from 'src/languageSupport/languages/flux/parser'
 
 // Utils
 import {getMinDurationFromAST} from 'src/shared/utils/getMinDurationFromAST'
@@ -97,6 +97,10 @@ export const getWindowPeriod = (
     return null
   }
   try {
+    if (!is_valid_flux(query)) {
+      return null
+    }
+
     const ast = parse(query)
     const substitutedAST: Package = {
       package: '',
@@ -128,6 +132,10 @@ export const getWindowPeriodFromVariables = (
     return null
   }
   try {
+    if (!is_valid_flux(query)) {
+      return null
+    }
+
     const ast = parse(query)
     const substitutedAST: Package = {
       package: '',

@@ -25,14 +25,17 @@ export enum TimeRangeDirection {
   Lower = 'lower',
 }
 export interface SelectableDurationTimeRange {
-  lower: SelectableTimeRangeLower
-  upper: Nullable<string>
   seconds: number
   format?: string
   label: string
   duration: string
   type: 'selectable-duration'
   windowPeriod: number
+  // flux range
+  lower: SelectableTimeRangeLower
+  upper: Nullable<string>
+  // sql range
+  sql: string
 }
 
 export interface DurationTimeRange {

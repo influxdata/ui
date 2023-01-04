@@ -29,7 +29,7 @@ export class ConnectionManager {
   ) => void = () => null
   protected _dispatcher = _ => {}
   protected _first_load = true
-  protected _compositionRange: LspRange
+  protected _compositionRange: LspRange = null
 
   subscribeToModel(editor: EditorType) {
     this._editor = editor
@@ -173,7 +173,6 @@ export class ConnectionManager {
       this._setEditorBlockStyle(this._compositionRange, true)
     }
 
-    // don't update the `this._session` until here. Since used to diffChange.
     this._session = {...schema, composition: {...schema.composition}}
     return {previousState, shouldContinue: true}
   }

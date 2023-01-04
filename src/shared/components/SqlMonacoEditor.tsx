@@ -1,5 +1,13 @@
 // Libraries
-import React, {FC, useEffect, useState, useMemo} from 'react'
+import React, {
+  FC,
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+  useContext,
+} from 'react'
+import {useDispatch} from 'react-redux'
 import classnames from 'classnames'
 
 // Components
@@ -11,6 +19,10 @@ import {LANGID as SQLLANGID} from 'src/languageSupport/languages/sql/monaco.sql.
 import {THEME_NAME} from 'src/languageSupport/languages/sql/monaco.sql.theme'
 import {submit} from 'src/languageSupport/languages/sql/monaco.sql.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
+import {ConnectionManager} from 'src/languageSupport/languages/sql/connection'
+
+// Contexts
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
@@ -38,10 +50,30 @@ const SqlEditorMonaco: FC<Props> = ({
   autofocus,
   wrapLines,
 }) => {
+  const dispatch = useDispatch()
+  const connection = useRef<ConnectionManager>(new ConnectionManager())
+  const sessionStore = useContext(PersistanceContext)
   const [editor, setEditor] = useState(null)
   const wrapperClassName = classnames('qx-editor--monaco', {
     'qx-editor--monaco__autogrow': autogrow,
   })
+
+  useEffect(() => {
+    if (connection.current) {
+      connection.current.onSchemaSessionChange(
+        sessionStore.selection,
+        sessionStore.setSelection,
+        dispatch,
+        sessionStore.range
+      )
+    }
+  }, [
+    connection.current,
+    sessionStore?.selection,
+    sessionStore?.selection.composition || null,
+    sessionStore?.setSelection,
+    sessionStore.range,
+  ])
 
   useEffect(() => {
     if (!editor) {
@@ -56,6 +88,7 @@ const SqlEditorMonaco: FC<Props> = ({
 
   const editorDidMount = (editor: EditorType) => {
     setEditor(editor)
+    connection.current.subscribeToModel(editor)
 
     if (autogrow) {
       registerAutogrow(editor)
@@ -107,7 +140,7 @@ const SqlEditorMonaco: FC<Props> = ({
         </div>
       </ErrorBoundary>
     ),
-    [onChangeScript, script]
+    [onChangeScript, script, connection]
   )
 }
 

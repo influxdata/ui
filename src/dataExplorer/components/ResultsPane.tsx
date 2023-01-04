@@ -276,9 +276,7 @@ const ResultsPane: FC = () => {
                 disabled={submitButtonDisabled}
                 download={downloadByServiceWorker}
               />
-              {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
-                <NewDatePicker />
-              )}
+              {isIoxOrg && <NewDatePicker />}
               <SubmitQueryButton
                 className="submit-btn"
                 text="Run"

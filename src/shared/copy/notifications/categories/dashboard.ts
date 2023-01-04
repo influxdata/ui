@@ -158,6 +158,5 @@ export const compositionUpdateFailed = (): Notification => ({
 
 export const compositionEnded = (): Notification => ({
   ...defaultErrorNotification,
-  message:
-    'Composition has ended. Turn on flux sync, to start a new composition.',
+  message: 'Composition has ended. Turn on sync, to start a new composition.',
 })

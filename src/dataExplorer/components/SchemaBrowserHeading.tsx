@@ -46,9 +46,8 @@ const SchemaBrowserHeading: FC = () => {
     return null
   }
 
-  if (resource?.language === LanguageType.SQL) {
-    return null
-  }
+  const label =
+    resource?.language === LanguageType.SQL ? 'SQL Sync' : 'Flux Sync'
 
   return (
     <FlexBox
@@ -65,7 +64,7 @@ const SchemaBrowserHeading: FC = () => {
         />
         <InputLabel className="flux-sync--label">
           <SelectorTitle
-            label="Flux Sync"
+            label={label}
             tooltipContents={tooltipContents}
             icon={IconFont.Sync}
           />

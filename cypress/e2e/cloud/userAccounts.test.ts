@@ -24,6 +24,10 @@ const setupTest = (setupParams: SetupParams) => {
         }
         const {accountType, orgCount, orgHasOtherUsers} = setupParams
 
+        makeQuartzUseIDPEOrgID(idpeOrgID, accountType, orgCount)
+
+        cy.intercept('GET', 'api/v2/quartz/orgs/**/users').as('getOrgsUsers')
+
         if (orgHasOtherUsers) {
           cy.intercept('GET', `api/v2/quartz/orgs/**/users`, {
             body: [
@@ -42,12 +46,14 @@ const setupTest = (setupParams: SetupParams) => {
                 role: 'owner',
               },
             ],
-          })
+          }).as('getOrgsUsers')
         }
 
-        makeQuartzUseIDPEOrgID(idpeOrgID, accountType, orgCount)
-
         cy.visit(`orgs/${idpeOrgID}/accounts/settings`)
+
+        cy.wait('@getOrgsUsers')
+
+        cy.getByTestID('account-settings--header')
       })
     })
   )
@@ -57,8 +63,9 @@ const doSetup = cy => {
   cy.flush().then(() => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
+        cy.intercept('GET', 'api/v2/quartz/orgs/**/users').as('getOrgsUsers')
         cy.visit(`/orgs/${id}/accounts/settings`)
-        cy.wait(300)
+        cy.wait('@getOrgsUsers')
       })
     })
   })
@@ -195,10 +202,6 @@ describe('Free account Deletion', () => {
       orgHasOtherUsers: true,
       orgCount: 1,
     })
-    // wait until api request to /users is complete
-    cy.intercept('GET', '**/users').as('getusers')
-    cy.wait('@getusers')
-    cy.wait(2000)
     displayRemoveUsersWarning()
   })
 })

@@ -108,7 +108,7 @@ export const invitationResentSuccessful = (): Notification => ({
   message: `Invitation Re-sent`,
 })
 
-export const inviteSent = ({orgName, email}): Notification => ({
+export const inviteSent = ({email, orgName}): Notification => ({
   ...defaultSuccessNotification,
   message: `Invitation sent to ${email} to join ${orgName}`,
 })

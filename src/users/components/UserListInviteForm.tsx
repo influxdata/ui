@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {UsersContext} from 'src/users/context/users'
-import {UserInviteSubmit} from './UserInviteSubmit'
+import {UserInviteSubmit} from 'src/users/components/UserInviteSubmit'
 import {
   Columns,
   ComponentSize,

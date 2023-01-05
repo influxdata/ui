@@ -1,11 +1,71 @@
 import {Organization} from '../../../src/types'
+import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
+
+// This variable stores the current IDPE orgid and syncs it with the quartz-mock orgid.
+let idpeOrgID: string
+
+interface SetupParams {
+  accountType: string
+  orgHasOtherUsers: boolean
+  orgCount?: number
+  orgIsSuspendable?: boolean
+}
+
+const setupTest = (setupParams: SetupParams) => {
+  cy.flush().then(() =>
+    cy.signin().then(() => {
+      cy.request({
+        method: 'GET',
+        url: 'api/v2/orgs',
+      }).then(res => {
+        // Store the IDPE org ID so that it can be cloned when intercepting quartz.
+        if (res.body.orgs) {
+          idpeOrgID = res.body.orgs[0].id
+        }
+        const {accountType, orgCount, orgHasOtherUsers} = setupParams
+
+        makeQuartzUseIDPEOrgID(idpeOrgID, accountType, orgCount)
+
+        cy.intercept('GET', 'api/v2/quartz/orgs/**/users').as('getOrgsUsers')
+
+        if (orgHasOtherUsers) {
+          cy.intercept('GET', `api/v2/quartz/orgs/**/users`, {
+            body: [
+              {
+                id: '234234324',
+                firstName: 'User',
+                lastName: 'McUserface',
+                email: 'user@influxdata.com',
+                role: 'owner',
+              },
+              {
+                id: '234234234324',
+                firstName: 'Josh',
+                lastName: 'Ritter',
+                email: 'josh@influxdata.com',
+                role: 'owner',
+              },
+            ],
+          }).as('getOrgsUsers')
+        }
+
+        cy.visit(`orgs/${idpeOrgID}/accounts/settings`)
+
+        cy.wait('@getOrgsUsers')
+
+        cy.getByTestID('account-settings--header')
+      })
+    })
+  )
+}
 
 const doSetup = cy => {
   cy.flush().then(() => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
+        cy.intercept('GET', 'api/v2/quartz/orgs/**/users').as('getOrgsUsers')
         cy.visit(`/orgs/${id}/accounts/settings`)
-        cy.wait(300)
+        cy.wait('@getOrgsUsers')
       })
     })
   })
@@ -80,5 +140,68 @@ describe('Account Page tests', () => {
       cy.getByTestID('notification-success').should('be.visible')
       cy.contains(secondNewAccountName)
     })
+  })
+})
+
+describe('Free account Deletion', () => {
+  const deleteFreeAccount = () => {
+    cy.getByTestID('delete-free-account--button').should('be.visible').click()
+    cy.getByTestID('notification-warning').should('not.exist')
+
+    cy.url()
+      .should('include', `/accounts/settings/delete`)
+      .then(() => {
+        cy.getByTestID('delete-free-account--overlay')
+          .should('be.visible')
+          .within(() => {
+            cy.getByTestID('delete-free-account--button').should('be.disabled')
+
+            cy.getByTestID('agree-terms--input').click()
+            cy.getByTestID('agree-terms--checkbox').should('be.checked')
+            cy.getByTestID('variable-type-dropdown--button')
+              .should('be.visible')
+              .click()
+            cy.contains("It doesn't work for my use case")
+              .should('be.visible')
+              .click()
+            cy.getByTestID('delete-free-account--button')
+              .should('not.be.disabled')
+              .click()
+          })
+        cy.location().should(loc => {
+          expect(loc.href).to.eq(`https://www.influxdata.com/mkt_cancel/`)
+        })
+      })
+  }
+
+  const displayRemoveUsersWarning = () => {
+    cy.getByTestID('delete-free-account--button').should('exist').click()
+
+    cy.getByTestID('notification-warning')
+      .should('exist')
+      .contains('All additional users must be removed')
+
+    cy.getByTestID('go-to-users--link').click()
+
+    cy.url().should('include', `/members`)
+  }
+
+  it('allows the user to delete a free account if there is only one org, with only one user', () => {
+    setupTest({
+      accountType: 'free',
+      orgHasOtherUsers: false,
+      orgCount: 1,
+    })
+
+    deleteFreeAccount()
+  })
+
+  it('displays a `must remove users` warning if trying to delete a free account with a single org, which has multiple users', () => {
+    setupTest({
+      accountType: 'free',
+      orgHasOtherUsers: true,
+      orgCount: 1,
+    })
+    displayRemoveUsersWarning()
   })
 })

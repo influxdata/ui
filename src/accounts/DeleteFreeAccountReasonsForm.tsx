@@ -1,18 +1,18 @@
 // Libraries
-import React, {useContext} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {Dropdown, Form, Input, InputType, TextArea} from '@influxdata/clockface'
 
-// Utilities
+// Context
 import {
-  DeleteOrgContext,
+  DeleteFreeAccountContext,
   VariableItems,
-} from 'src/organizations/components/DeleteOrgContext'
+} from 'src/accounts/context/DeleteFreeAccountContext'
 
 // Types
 
-function DeleteOrgReasonsForm() {
+export const DeleteFreeAccountReasonsForm: FC = () => {
   const {
     shortSuggestion,
     isShortSuggestionEnabled,
@@ -22,7 +22,7 @@ function DeleteOrgReasonsForm() {
     setSuggestions,
     reason,
     setReason,
-  } = useContext(DeleteOrgContext)
+  } = useContext(DeleteFreeAccountContext)
 
   const onChange = (selected: string) => {
     const isAlternateProductSelected =
@@ -96,5 +96,3 @@ function DeleteOrgReasonsForm() {
     </div>
   )
 }
-
-export default DeleteOrgReasonsForm

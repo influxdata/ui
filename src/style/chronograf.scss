@@ -7,6 +7,7 @@
 @import 'modules';
 
 // Components
+@import 'src/accounts/DeleteFreeAccountReasonsForm.scss';
 @import 'src/alerting/components/AlertHistoryIndex.scss';
 @import 'src/alerting/components/AlertingIndex.scss';
 @import 'src/alerting/components/LevelTableField.scss';
@@ -63,7 +64,6 @@
 @import 'src/operator/OrgOverlay.scss';
 @import 'src/operator/account/AccountGrid.scss';
 @import 'src/operator/account/ConvertAccountToContractOverlay.scss';
-@import 'src/organizations/components/DeleteOrgReasonsForm.scss';
 @import 'src/pageLayout/components/OrgSwitcherOverlay.scss';
 @import 'src/pageLayout/components/RenamablePageTitle.scss';
 @import 'src/pageLayout/components/TabbedPage.scss';

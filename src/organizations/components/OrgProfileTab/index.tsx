@@ -38,6 +38,7 @@ import {CLOUD} from 'src/shared/constants'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Styles
 import 'src/organizations/components/OrgProfileTab/style.scss'
@@ -45,6 +46,7 @@ import 'src/organizations/components/OrgProfileTab/style.scss'
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
+  const storageType = useSelector(isOrgIOx) ? 'IOx' : 'TSM'
   const quartzOrg = useSelector(selectCurrentOrg)
   const dispatch = useDispatch()
   const {users} = useContext(UsersContext)
@@ -107,6 +109,7 @@ const OrgProfileTab: FC = () => {
             <LabeledData label="Cloud Provider" src={quartzOrg.provider} />
             <LabeledData label="Region" src={quartzOrg.regionCode} />
             <LabeledData label="Location" src={quartzOrg.regionName} />
+            <LabeledData label="Storage Type" src={storageType} />
           </FlexBox>
           <CopyableLabeledData
             id="clusterUrl"

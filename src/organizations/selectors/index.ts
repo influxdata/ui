@@ -5,7 +5,7 @@ import {get} from 'lodash'
 import {AppState, Organization} from 'src/types'
 
 interface OrganizationWithStorageType extends Organization {
-  defaultStorageType?: string
+  defaultStorageType?: 'tsm' | 'iox'
 }
 
 export const isOrgIOx = (state: AppState): boolean => {

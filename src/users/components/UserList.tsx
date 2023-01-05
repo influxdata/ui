@@ -13,7 +13,6 @@ import {filter} from 'src/users/utils/filter'
 
 export const UserList: FC = () => {
   const {users, invites} = useContext(UsersContext)
-  console.log(users)
 
   const [searchTerm, setSearchTerm] = useState('')
 

@@ -40,7 +40,6 @@ export type OverlayID =
   | 'create-organization'
   | 'marketo-upgrade-account-overlay'
   | 'suspend-org-in-paid-account'
-  | 'remove-member'
 
 export interface OverlayState {
   id: OverlayID | null

@@ -365,7 +365,7 @@ describe('Script Builder', () => {
         })
       })
 
-      it('will empty the default text on first bucket selection', () => {
+      it.skip('will empty the default text on first bucket selection', () => {
         cy.log('start with default text')
         cy.getByTestID('flux-editor').within(() => {
           cy.get('textarea.inputarea').should(

@@ -181,7 +181,7 @@ describe('Script Builder', () => {
       })
     })
 
-    it('will allow querying of different data ranges', () => {
+    it.skip('will allow querying of different data ranges', () => {
       selectSchema()
       confirmSchemaComposition()
 

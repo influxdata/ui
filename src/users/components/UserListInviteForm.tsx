@@ -1,5 +1,6 @@
 // Libraries
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import {UsersContext} from 'src/users/context/users'
@@ -19,10 +20,11 @@ import {
 } from '@influxdata/clockface'
 import {gaEvent} from 'src/cloud/utils/reporting'
 
+// Selectors
+import {selectCurrentOrg} from 'src/identity/selectors'
+
 // Constants
 import {GTM_INVITE_SENT} from 'src/users/constants'
-import {selectCurrentOrg} from 'src/identity/selectors'
-import {useSelector} from 'react-redux'
 
 interface InviteErrors {
   email?: string

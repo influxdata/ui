@@ -1,5 +1,5 @@
 // Utils
-import {parse, is_valid_flux} from 'src/languageSupport/languages/flux/parser'
+import {parse} from 'src/languageSupport/languages/flux/parser'
 import {findNodes} from 'src/shared/utils/ast'
 
 // Types
@@ -21,9 +21,7 @@ const parseAllVariables = (ast: File): MemberExpression[] => {
 export const parseASTIM = (query: string): ASTIM => {
   let ast: File = null
   try {
-    if (is_valid_flux(query)) {
-      ast = parse(query)
-    }
+    ast = parse(query)
   } catch (e) {
     console.error(e)
   }

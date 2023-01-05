@@ -11,7 +11,6 @@ import {
   PopoverInteraction,
   PopoverPosition,
 } from '@influxdata/clockface'
-import {OrgUsersLink} from 'src/shared/components/notifications/NotificationButtons'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
 // Contexts
@@ -25,17 +24,10 @@ import {
   selectOrgSuspendable,
 } from 'src/identity/selectors'
 
-// Notifications
-import {deleteOrgWarning} from 'src/shared/copy/notifications'
-import {notify} from 'src/shared/actions/notifications'
-
 // Constants
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
-
-// Types
-import {NotificationButtonElement} from 'src/types'
 
 // Styles
 import 'src/organizations/components/OrgProfileTab/style.scss'
@@ -84,21 +76,13 @@ const DeleteOrgButton: FC = () => {
     hidePopup()
   }
 
-  const shouldShowUsersWarning = users.length > 1
-
   const handleSuspendOrg = () => {
     if (orgCanBeSuspended) {
-      if (shouldShowUsersWarning) {
-        const buttonElement: NotificationButtonElement = onDismiss =>
-          OrgUsersLink(`/orgs/${org.id}/members`, onDismiss)
-        dispatch(notify(deleteOrgWarning(buttonElement)))
-      } else {
-        dispatch(
-          showOverlay('suspend-org-in-paid-account', null, () =>
-            dispatch(dismissOverlay())
-          )
+      dispatch(
+        showOverlay('suspend-org-in-paid-account', {users: users.length}, () =>
+          dispatch(dismissOverlay())
         )
-      }
+      )
     }
   }
 

@@ -65,11 +65,8 @@ describe('Users Page', () => {
       cy.getByTestID('delete-user--button').click()
     })
 
-    cy.getByTestID('remove-member-overlay--header').should('be.visible')
-    cy.getByTestID('remove-member-overlay--warning-message').should(
-      'be.visible'
-    )
-    cy.getByTestID('remove-member-overlay--submit-button').click()
+    cy.getByTestID('delete-user--confirm-button').should('be.visible')
+    cy.getByTestID('delete-user--confirm-button').click()
 
     cy.getByTestID('notification-success--dismiss').click()
 

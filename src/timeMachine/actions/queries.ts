@@ -277,6 +277,7 @@ export const executeQueries =
     const executeQueriesStartTime = Date.now()
 
     const state = getState()
+    const orgID = getOrg(state).id
 
     const activeTimeMachine = getActiveTimeMachine(state)
     const queries = activeTimeMachine.view.properties.queries.filter(
@@ -300,8 +301,6 @@ export const executeQueries =
       const startDate = Date.now()
 
       const pendingResults = queries.map(({text}) => {
-        const orgID = getOrg(state).id
-
         const queryID = generateHashedQueryID(text, allVariables, orgID)
         if (isCurrentPageDashboard(state)) {
           // reset any existing matching query in the cache

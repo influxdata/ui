@@ -135,6 +135,7 @@ describe('convertTimeRangeToCustom', () => {
       duration: '1h',
       type: 'selectable-duration',
       windowPeriod: 10000, // 10s
+      sql: "time >= now() - interval '1 hour'",
     }
 
     const lowerDate = new Date(1466424490000)

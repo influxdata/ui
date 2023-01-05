@@ -262,9 +262,6 @@ export const runTimeMachineQuery = (
   event('executeQueries query', {}, {query: queryText})
 
   const orgID = getOrg(state).id
-  if (getOrg(state).id === orgID) {
-    event('orgData_queried')
-  }
 
   const extern = buildUsedVarsOption(queryText, allVariables)
   event('runQuery', {context: 'timeMachine'})
@@ -375,9 +372,6 @@ export const runDownloadQuery = () => async (dispatch, getState: GetState) => {
     event('executeQueries query', {}, {query: queryText})
 
     const orgID = getOrg(state).id
-    if (getOrg(state).id === orgID) {
-      event('orgData_queried')
-    }
 
     const extern = buildUsedVarsOption(queryText, allVariables)
     const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`

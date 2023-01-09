@@ -47,8 +47,9 @@ const OrgProfileTab: FC = () => {
   const org = useSelector(getOrg)
   const quartzOrg = useSelector(selectCurrentOrg)
   const storageType = org?.defaultStorageType
-  const dispatch = useDispatch()
   const {users} = useContext(UsersContext)
+
+  const dispatch = useDispatch()
 
   // Data about the user's organization is intentionally re-fetched when this component mounts again.
   const [orgDetailsStatus, setOrgDetailsStatus] = useState(
@@ -89,7 +90,7 @@ const OrgProfileTab: FC = () => {
     tsm: 'TSM',
   }
 
-  const capitalizedStorageType =
+  const formattedStorageType =
     storageTypeMap[storageType.toLowerCase()] || storageType
 
   const OrgProfile = () => (
@@ -118,7 +119,7 @@ const OrgProfileTab: FC = () => {
             <LabeledData label="Region" src={quartzOrg.regionCode} />
             <LabeledData label="Location" src={quartzOrg.regionName} />
             {hasFetchedStorageType && (
-              <LabeledData label="Storage Type" src={capitalizedStorageType} />
+              <LabeledData label="Storage Type" src={formattedStorageType} />
             )}
           </FlexBox>
           <CopyableLabeledData

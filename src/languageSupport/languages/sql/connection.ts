@@ -1,6 +1,7 @@
 import {ConnectionManager as AgnosticConnectionManager} from 'src/languageSupport/languages/agnostic/connection'
 
 // Types
+import {LspRange} from 'src/languageSupport/languages/agnostic/types'
 import {
   DEFAULT_SQL_EDITOR_TEXT,
   CompositionSelection,
@@ -51,21 +52,21 @@ export class ConnectionManager extends AgnosticConnectionManager {
       end: {line: endLine},
     } = this._compositionRange
 
-    const changeInBlock =
+    const hasChangeInBlock =
       change.range.startLineNumber >= startLine &&
       change.range.endLineNumber <= endLine
 
     const isDeletion = change.text == ''
-    let deletionFromBlock = false
+    let hasDeletionFromBlock = false
     if (isDeletion) {
       const linesDeleted =
         change.range.endLineNumber - change.range.startLineNumber
-      deletionFromBlock =
+      hasDeletionFromBlock =
         change.range.startLineNumber >= startLine &&
         change.range.endLineNumber <= endLine + linesDeleted
     }
 
-    return changeInBlock || deletionFromBlock
+    return hasChangeInBlock || hasDeletionFromBlock
   }
 
   _setCompositionHandlers() {
@@ -169,11 +170,11 @@ export class ConnectionManager extends AgnosticConnectionManager {
     // replacement Range
     const startLineNumber = this._compositionRange?.start?.line ?? 1
     const endLineNumber = this._compositionRange?.end?.line ?? 1
-    const addNewLine = startLineNumber == 1 && endLineNumber == 1
-    const endColumn = addNewLine ? 1 : Infinity
+    const shouldAddNewLine = startLineNumber == 1 && endLineNumber == 1
+    const endColumn = shouldAddNewLine ? 1 : Infinity
     this._model.applyEdits([
       {
-        text: `${composition}${addNewLine ? '\n' : ''}`,
+        text: `${composition}${shouldAddNewLine ? '\n' : ''}`,
         forceMoveMarkers: true,
         range: {
           startLineNumber,
@@ -189,7 +190,7 @@ export class ConnectionManager extends AgnosticConnectionManager {
       {
         start: {line: startLineNumber, column: 1},
         end: {line: startLineNumber + lines - 1, column: lenLastLine},
-      },
+      } as LspRange,
       lines > 0 ? true : false
     )
   }

@@ -8,14 +8,11 @@ import {
 
 // Types
 import {EditorType, RecursivePartial} from 'src/types'
-import {LspRange as FluxLspRange} from 'src/languageSupport/languages/flux/lsp/types'
+import {LspRange} from 'src/languageSupport/languages/agnostic/types'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
 import {oldSession} from 'src/shared/copy/notifications'
-
-// May as well re-use this well formed type.
-export type LspRange = FluxLspRange
 
 export class ConnectionManager {
   protected _editor: EditorType

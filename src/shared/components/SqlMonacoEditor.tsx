@@ -61,10 +61,10 @@ const SqlEditorMonaco: FC<Props> = ({
   useEffect(() => {
     if (connection.current) {
       connection.current.onSchemaSessionChange(
-        sessionStore.selection,
-        sessionStore.setSelection,
+        sessionStore?.selection,
+        sessionStore?.setSelection,
         dispatch,
-        sessionStore.range
+        sessionStore?.range
       )
     }
   }, [
@@ -72,7 +72,7 @@ const SqlEditorMonaco: FC<Props> = ({
     sessionStore?.selection,
     sessionStore?.selection.composition || null,
     sessionStore?.setSelection,
-    sessionStore.range,
+    sessionStore?.range,
   ])
 
   useEffect(() => {

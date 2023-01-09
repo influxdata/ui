@@ -31,6 +31,11 @@ describe('rangeToInterval:', () => {
         input: {lower: '-8h', upper: null, type: 'duration'},
         expected: `time >= now() - interval '8 hour' AND time <= now()`,
       },
+      {
+        msg: 'for durations which are not negative (into the future)',
+        input: {lower: 'now()', upper: '8h', type: 'duration'},
+        expected: `time >= now() AND time <= now() + interval '8 hour'`,
+      },
     ]
     toTest.forEach(({msg, input, expected}) => {
       it(msg, () => {

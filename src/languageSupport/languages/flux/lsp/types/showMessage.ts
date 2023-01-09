@@ -1,3 +1,5 @@
+import {LspRange} from 'src/languageSupport/languages/agnostic/types'
+
 /**
  * @typedef {enum} LspClientRequest
  * LSP server-initiated request, intended for UI response.
@@ -48,14 +50,4 @@ export enum LspClientRequestPriority {
   ERROR = 1,
   WARN = 2,
   INFO = 3,
-}
-
-export interface LspRange {
-  start: LspPosition
-  end: LspPosition
-}
-
-export interface LspPosition {
-  column: number
-  line: number
 }

@@ -90,8 +90,7 @@ const OrgProfileTab: FC = () => {
     tsm: 'TSM',
   }
 
-  const formattedStorageType =
-    storageTypeMap[storageType.toLowerCase()] || storageType
+  const formattedStorageType = storageTypeMap[storageType] || storageType
 
   const OrgProfile = () => (
     <FlexBox.Child

@@ -20,6 +20,7 @@ import {UsersContext} from 'src/users/context/users'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {
+  selectCurrentAccount,
   selectCurrentIdentity,
   selectOrgCreationAllowance,
   selectOrgSuspendable,
@@ -65,7 +66,7 @@ const DeleteOrgButton: FC = () => {
   const orgCanBeSuspended = useSelector(selectOrgSuspendable)
   const canCreateOrgs = useSelector(selectOrgCreationAllowance)
   const {users} = useContext(UsersContext)
-  const {account} = useSelector(selectCurrentIdentity)
+  const account = useSelector(selectCurrentAccount)
 
   const popoverRef = useRef()
 
@@ -86,11 +87,11 @@ const DeleteOrgButton: FC = () => {
   }
 
   // only show warning for free accounts with multiple users
-  const shouldShowUsersWarning = account.type === 'free' && users.length > 1
+  const freeAccountWithOtherUsers = account.type === 'free' && users.length > 1
 
   const handleSuspendOrg = () => {
     if (orgCanBeSuspended) {
-      if (shouldShowUsersWarning) {
+      if (freeAccountWithOtherUsers) {
         const buttonElement: NotificationButtonElement = onDismiss =>
           OrgUsersLink(`/orgs/${org.id}/members`, onDismiss)
         dispatch(notify(deleteOrgWarning(buttonElement)))
@@ -98,7 +99,7 @@ const DeleteOrgButton: FC = () => {
         dispatch(
           showOverlay(
             'suspend-org-in-paid-account',
-            {users: users.length},
+            {userCount: users.length || 0},
             () => dispatch(dismissOverlay())
           )
         )

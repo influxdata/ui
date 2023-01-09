@@ -162,6 +162,14 @@ const displayRemoveUsersWarning = () => {
   cy.url().should('include', `/members`)
 }
 
+const displayOtherUsersWarning = () => {
+  cy.getByTestID('delete-org--button').should('be.visible').click()
+  cy.get('.org-delete-overlay--warning-message').within(() => {
+    cy.contains('a', 'users in this organization').click()
+    cy.url().should('include', `/members`)
+  })
+}
+
 const upgradeAccount = () => {
   cy.getByTestID('delete-org--button').should('be.visible').click()
   cy.getByTestID('popover--dialog')
@@ -252,7 +260,7 @@ describe('PAYG Account', () => {
     createOrg('pay_as_you_go')
   })
 
-  it('displays the `remove other users` popup if there are other orgs in the account, but the current org has other users in it', () => {
+  it('when deleting an org with multiple users in a multi-org payg account, delete org overlay shows how many other users the org has and clicking it takes user to /members page', () => {
     setupTest({
       accountType: 'pay_as_you_go',
       canCreateOrgs: false,
@@ -260,7 +268,7 @@ describe('PAYG Account', () => {
       orgIsSuspendable: true,
     })
 
-    displayRemoveUsersWarning()
+    displayOtherUsersWarning()
   })
 
   it('allows the user to delete an org if there are other orgs in the account, and they are the only user in the current org', () => {
@@ -298,7 +306,7 @@ describe('Contract Account', () => {
     createOrg('contract')
   })
 
-  it('displays the `remove other users` popup if there are other orgs in the account, but the current org has other users in it', () => {
+  it('when deleting an org with multiple users in a multi-org contract account, delete org overlay shows how many other users the org has and clicking it takes user to /members page ', () => {
     setupTest({
       accountType: 'contract',
       canCreateOrgs: false,
@@ -306,7 +314,7 @@ describe('Contract Account', () => {
       orgIsSuspendable: true,
     })
 
-    displayRemoveUsersWarning()
+    displayOtherUsersWarning()
   })
 
   it('allows the user to delete an org if there are other orgs in the account, and they are the only user in the current org', () => {

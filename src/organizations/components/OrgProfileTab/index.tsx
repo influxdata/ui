@@ -46,6 +46,7 @@ const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
   const quartzOrg = useSelector(selectCurrentOrg)
+  const storageType = org?.defaultStorageType
   const dispatch = useDispatch()
   const {users} = useContext(UsersContext)
 
@@ -81,7 +82,15 @@ const OrgProfileTab: FC = () => {
   const allowSelfRemoval = users.length > 1
   const showLeaveOrgButton = isFlagEnabled('createDeleteOrgs')
   const hasFetchedOrgDetails = orgDetailsStatus === RemoteDataState.Done
-  const hasFetchedStorageType = Boolean(org?.defaultStorageType)
+  const hasFetchedStorageType = Boolean(storageType)
+
+  const storageTypeMap = {
+    iox: 'IOx',
+    tsm: 'TSM',
+  }
+
+  const capitalizedStorageType =
+    storageTypeMap[storageType.toLowerCase()] || storageType
 
   const OrgProfile = () => (
     <FlexBox.Child
@@ -109,7 +118,7 @@ const OrgProfileTab: FC = () => {
             <LabeledData label="Region" src={quartzOrg.regionCode} />
             <LabeledData label="Location" src={quartzOrg.regionName} />
             {hasFetchedStorageType && (
-              <LabeledData label="Storage Type" src={org.defaultStorageType} />
+              <LabeledData label="Storage Type" src={capitalizedStorageType} />
             )}
           </FlexBox>
           <CopyableLabeledData

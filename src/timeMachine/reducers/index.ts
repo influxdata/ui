@@ -1129,12 +1129,12 @@ export const timeMachineReducer = (
       return produce(state, draftState => {
         draftState.view.properties.queries = draftState.draftQueries.filter(
           q => {
-              if (!is_valid_flux(q.text)) {
-                console.error('Invalid flux', {
-                  query: q.text,
-                })
-                return false
-              }
+            if (!is_valid_flux(q.text)) {
+              console.error('Invalid flux', {
+                query: q.text,
+              })
+              return false
+            }
             return !q.hidden
           }
         )

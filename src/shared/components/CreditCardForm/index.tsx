@@ -8,7 +8,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {CreditCardParams, ZuoraClient} from 'src/types'
 
 export const ZUORA_SCRIPT_URL =
-  'https://apisandboxstatic.zuora.com/Resources/libs/hosted/1.3.0/zuora-min.js'
+  'https://static.zuora.com/Resources/libs/hosted/1.3.0/zuora-min.js'
 export const ZUORA_ID = 'zuora_payment'
 
 export interface Props {

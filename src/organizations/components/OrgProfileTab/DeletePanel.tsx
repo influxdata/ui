@@ -11,6 +11,7 @@ import {
   PopoverInteraction,
   PopoverPosition,
 } from '@influxdata/clockface'
+import {OrgUsersLink} from 'src/shared/components/notifications/NotificationButtons'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
 // Contexts
@@ -28,6 +29,13 @@ import {
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+
+// Notifications
+import {deleteOrgWarning} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
+
+// Types
+import {NotificationButtonElement} from 'src/types'
 
 // Styles
 import 'src/organizations/components/OrgProfileTab/style.scss'
@@ -57,6 +65,7 @@ const DeleteOrgButton: FC = () => {
   const orgCanBeSuspended = useSelector(selectOrgSuspendable)
   const canCreateOrgs = useSelector(selectOrgCreationAllowance)
   const {users} = useContext(UsersContext)
+  const {account} = useSelector(selectCurrentIdentity)
 
   const popoverRef = useRef()
 
@@ -76,13 +85,24 @@ const DeleteOrgButton: FC = () => {
     hidePopup()
   }
 
+  // only show warning for free accounts with multiple users
+  const shouldShowUsersWarning = account.type === 'free' && users.length > 1
+
   const handleSuspendOrg = () => {
     if (orgCanBeSuspended) {
-      dispatch(
-        showOverlay('suspend-org-in-paid-account', {users: users.length}, () =>
-          dispatch(dismissOverlay())
+      if (shouldShowUsersWarning) {
+        const buttonElement: NotificationButtonElement = onDismiss =>
+          OrgUsersLink(`/orgs/${org.id}/members`, onDismiss)
+        dispatch(notify(deleteOrgWarning(buttonElement)))
+      } else {
+        dispatch(
+          showOverlay(
+            'suspend-org-in-paid-account',
+            {users: users.length},
+            () => dispatch(dismissOverlay())
+          )
         )
-      )
+      }
     }
   }
 

@@ -100,12 +100,6 @@ const FluxQueryBuilder: FC = () => {
     }
   }, [handleClear, hasChanged])
 
-  const handleUserpilot = () => {
-    if (window.userpilot) {
-      window.userpilot.trigger('1663269889fDfn2554')
-    }
-  }
-
   return (
     <EditorProvider>
       <SidebarProvider>
@@ -194,14 +188,6 @@ const FluxQueryBuilder: FC = () => {
                   />
                 )}
               </div>
-              {isFlagEnabled('userFeedback') && (
-                <button
-                  className="userpilot-feedback"
-                  onClick={handleUserpilot}
-                >
-                  Provide Feedback
-                </button>
-              )}
             </FlexBox>
           </div>
           <DraggableResizer

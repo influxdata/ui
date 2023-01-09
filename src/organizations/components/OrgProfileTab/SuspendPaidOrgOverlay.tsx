@@ -160,12 +160,16 @@ export const SuspendPaidOrgOverlay: FC = () => {
         >
           You will be able to recover this organization's data for up to 7 days
           by contacting support. It will be unrecoverable afterwards.
-          <br />
-          <br />
-          <Link to={`/orgs/${org.id}/members`} onClick={onClickCancel}>
-            {params.users} users in this organization
-          </Link>{' '}
-          will lose access to all organization data immediately.
+          {params.users > 0 && (
+            <>
+              <br />
+              <br />
+              <Link to={`/orgs/${org.id}/members`} onClick={onClickCancel}>
+                {params.users} users in this organization
+              </Link>{' '}
+              will lose access to all organization data immediately.
+            </>
+          )}
         </Alert>
         <br />
         <ul>

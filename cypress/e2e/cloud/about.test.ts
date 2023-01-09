@@ -1,4 +1,5 @@
 import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
+import {Organization} from 'src/client'
 
 const deleteOrgsFeatureFlags = {
   createDeleteOrgs: true,
@@ -7,9 +8,7 @@ const deleteOrgsFeatureFlags = {
 // This variable stores the current IDPE orgid and syncs it with the quartz-mock orgid.
 let idpeOrgID: string
 
-type StorageTypes = 'iox' | 'tsm'
-
-const spoofStorageType = (storageType: StorageTypes) => {
+const spoofStorageType = (storageType: Organization['defaultStorageType']) => {
   cy.intercept('GET', 'api/v2/orgs', req => {
     req.continue(res => {
       res.body.orgs[0].defaultStorageType = storageType

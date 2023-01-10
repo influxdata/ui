@@ -26,7 +26,7 @@ const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
     organization?.storageType === 'iox' && name === 'rate.cardinality'
 
   const getIOxCardinalityValue = () => {
-    const ioxCardinalityLimit = 'N/A'
+    const ioxCardinalityLimit = 'N/A - IOx'
 
     // update the type to text so that the input field is not a number field
     type = InputType.Text

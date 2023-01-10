@@ -9,11 +9,9 @@ import SelectorList from 'src/timeMachine/components/SelectorList'
 // Contexts
 import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
 import {TagsContext} from 'src/dataExplorer/context/tags'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
 import {
@@ -41,7 +39,6 @@ const TagValues: FC<TagValuesProps> = ({loading, tagKey, tagValues}) => {
     selectTagValue,
     searchTerm,
   } = useContext(FluxQueryBuilderContext)
-  const {resource} = useContext(PersistanceContext)
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])
 
@@ -85,18 +82,7 @@ const TagValues: FC<TagValuesProps> = ({loading, tagKey, tagValues}) => {
       </div>
     )
   } else if (loading === RemoteDataState.Done && valuesToShow.length) {
-    if (resource?.language === LanguageType.SQL) {
-      // readOnly
-      list = valuesToShow.map(value => (
-        <dd
-          key={value}
-          className="tag-selector-value--list-item--readonly"
-          data-testid="tag-selector-value--list-item--readonly"
-        >
-          <code>{value}</code>
-        </dd>
-      ))
-    } else if (isFlagEnabled('schemaComposition')) {
+    if (isFlagEnabled('schemaComposition')) {
       list = (
         <SelectorList
           items={valuesToShow}

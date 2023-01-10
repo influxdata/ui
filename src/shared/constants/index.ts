@@ -88,7 +88,6 @@ export const BASE_PATH = formatConstant(process.env.STATIC_PREFIX)
 export const API_BASE_PATH = formatConstant(process.env.API_PREFIX)
 export const HONEYBADGER_KEY = formatConstant(process.env.HONEYBADGER_KEY)
 export const HONEYBADGER_ENV = formatConstant(process.env.HONEYBADGER_ENV)
-export const AMPLITUDE_KEY = formatConstant(process.env.AMPLITUDE_KEY)
 
 export const RUDDERSTACK_DATA_PLANE_URL = formatConstant(
   process.env.RUDDERSTACK_DATA_PLANE_URL

@@ -32,7 +32,6 @@ import Schema from 'src/dataExplorer/components/Schema'
 import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {RemoteDataState} from 'src/types'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
@@ -99,12 +98,6 @@ const FluxQueryBuilder: FC = () => {
       handleClear()
     }
   }, [handleClear, hasChanged])
-
-  const handleUserpilot = () => {
-    if (window.userpilot) {
-      window.userpilot.trigger('1663269889fDfn2554')
-    }
-  }
 
   return (
     <EditorProvider>
@@ -199,14 +192,6 @@ const FluxQueryBuilder: FC = () => {
                   />
                 )}
               </div>
-              {isFlagEnabled('userFeedback') && (
-                <button
-                  className="userpilot-feedback"
-                  onClick={handleUserpilot}
-                >
-                  Provide Feedback
-                </button>
-              )}
             </FlexBox>
           </div>
           <DraggableResizer

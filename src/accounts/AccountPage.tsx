@@ -10,7 +10,6 @@ import {
   FlexDirection,
   Input,
   InputType,
-  Overlay,
   Page,
 } from '@influxdata/clockface'
 import {LeaveOrgButton} from 'src/organizations/components/OrgProfileTab/LeaveOrg'
@@ -34,9 +33,6 @@ import AccountTabContainer from 'src/accounts/AccountTabContainer'
 import AccountHeader from 'src/accounts/AccountHeader'
 import {DeleteFreeAccountProvider} from 'src/accounts/context/DeleteFreeAccountContext'
 
-import CancellationOverlay from './CancellationOverlay'
-import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServiceContext'
-
 // Styles
 import './AccountPageStyles.scss'
 
@@ -45,9 +41,6 @@ const AccountAboutPage: FC = () => {
     useContext(UserAccountContext)
 
   const {users} = useContext(UsersContext)
-
-  const [isDeactivateAccountVisible, setDeactivateAccountVisible] =
-    useState(false)
 
   const activeAccount =
     userAccounts && userAccounts.filter(acct => acct.isActive)[0]
@@ -64,21 +57,12 @@ const AccountAboutPage: FC = () => {
     setActiveAcctName(evt.target.value)
   }
 
-  const showDeactivateAccountOverlay = () => {
-    setDeactivateAccountVisible(true)
-  }
-
-  const hideDeactivateAccountOverlay = () => {
-    setDeactivateAccountVisible(false)
-  }
-
   const onRenameAccountBtnClick = () => {
     handleRenameActiveAccount(activeAccount.id, activeAcctName)
   }
   const shouldShowDeleteFreeAccountButton =
     CLOUD && account.type === 'free' && user.orgCount === 1
 
-  const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
   const showLeaveOrgButton = !isFlagEnabled('createDeleteOrgs')
   const allowSelfRemoval = users.length > 1
 
@@ -114,34 +98,6 @@ const AccountAboutPage: FC = () => {
             <LeaveOrgButton />
           </>
         )}
-        {showDeactivateAccountSection && (
-          <>
-            <hr className="account-settings--divider" />
-            <h4
-              data-testid="account-settings--header"
-              className="account-settings--header"
-            >
-              Deactivate Account
-            </h4>
-            <div className="account-settings--deactivate-description">
-              If you decide to deactivate this account, all your writes,
-              queries, and tasks will be suspended immediately.
-            </div>
-            <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Large}>
-              <Button
-                className="account-settings--deactivate-button"
-                onClick={showDeactivateAccountOverlay}
-                testID="deactivate-account--button"
-                text="DEACTIVATE ACCOUNT"
-              />
-            </FlexBox>
-          </>
-        )}
-        <CancelServiceProvider>
-          <Overlay visible={isDeactivateAccountVisible}>
-            <CancellationOverlay onHideOverlay={hideDeactivateAccountOverlay} />
-          </Overlay>
-        </CancelServiceProvider>
         {shouldShowDeleteFreeAccountButton && <DeleteFreeAccountButton />}
       </>
     </AccountTabContainer>

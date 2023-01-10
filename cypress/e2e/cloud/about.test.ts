@@ -1,4 +1,5 @@
 import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
+import {Organization} from 'src/client'
 
 const deleteOrgsFeatureFlags = {
   createDeleteOrgs: true,
@@ -6,6 +7,15 @@ const deleteOrgsFeatureFlags = {
 
 // This variable stores the current IDPE orgid and syncs it with the quartz-mock orgid.
 let idpeOrgID: string
+
+const spoofStorageType = (storageType: Organization['defaultStorageType']) => {
+  cy.intercept('GET', 'api/v2/orgs', req => {
+    req.continue(res => {
+      res.body.orgs[0].defaultStorageType = storageType
+      res.send(res)
+    })
+  })
+}
 
 const getOrgCreationAllowance = (allowanceFixture: string) => {
   cy.intercept('GET', 'api/v2/quartz/allowances/orgs/create', {
@@ -202,6 +212,35 @@ const upgradeAccount = () => {
     .should('be.visible')
     .contains('Your account upgrade inquiry has been submitted.')
 }
+
+describe('Storage types', () => {
+  it('identifies the storage type as iox in an iox org', () => {
+    spoofStorageType('iox')
+    setupTest({
+      accountType: 'pay_as_you_go',
+      canCreateOrgs: true,
+      orgHasOtherUsers: false,
+    })
+
+    cy.getByTestID('org-profile--labeled-data').within(() => {
+      cy.getByTestID('heading').contains('Storage Type')
+      cy.contains('IOx')
+    })
+  })
+
+  it('identifies the storage type as tsm in a tsm org', () => {
+    spoofStorageType('tsm')
+    setupTest({
+      accountType: 'contract',
+      canCreateOrgs: false,
+      orgHasOtherUsers: true,
+    })
+    cy.getByTestID('org-profile--labeled-data').within(() => {
+      cy.getByTestID('heading').contains('Storage Type')
+      cy.contains('TSM')
+    })
+  })
+})
 
 describe('Free account', () => {
   it('displays a `must remove users` warning if trying to delete an org with multiple users in a multi-org free account', () => {

@@ -46,8 +46,10 @@ const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
   const org = useSelector(getOrg)
   const quartzOrg = useSelector(selectCurrentOrg)
-  const dispatch = useDispatch()
+  const storageType = org?.defaultStorageType
   const {users} = useContext(UsersContext)
+
+  const dispatch = useDispatch()
 
   // Data about the user's organization is intentionally re-fetched when this component mounts again.
   const [orgDetailsStatus, setOrgDetailsStatus] = useState(
@@ -81,6 +83,14 @@ const OrgProfileTab: FC = () => {
   const allowSelfRemoval = users.length > 1
   const showLeaveOrgButton = isFlagEnabled('createDeleteOrgs')
   const hasFetchedOrgDetails = orgDetailsStatus === RemoteDataState.Done
+  const hasFetchedStorageType = Boolean(storageType)
+
+  const storageTypeMap = {
+    iox: 'IOx',
+    tsm: 'TSM',
+  }
+
+  const formattedStorageType = storageTypeMap[storageType] || storageType
 
   const OrgProfile = () => (
     <FlexBox.Child
@@ -107,6 +117,9 @@ const OrgProfileTab: FC = () => {
             <LabeledData label="Cloud Provider" src={quartzOrg.provider} />
             <LabeledData label="Region" src={quartzOrg.regionCode} />
             <LabeledData label="Location" src={quartzOrg.regionName} />
+            {hasFetchedStorageType && (
+              <LabeledData label="Storage Type" src={formattedStorageType} />
+            )}
           </FlexBox>
           <CopyableLabeledData
             id="clusterUrl"

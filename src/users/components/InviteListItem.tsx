@@ -17,7 +17,7 @@ const getDate = datetime => {
   return new Date(datetime).toLocaleDateString()
 }
 
-const InviteListItem: FC<Props> = ({invite}) => {
+export const InviteListItem: FC<Props> = ({invite}) => {
   const {email, role, expiresAt} = invite
 
   return (
@@ -39,5 +39,3 @@ const InviteListItem: FC<Props> = ({invite}) => {
     </IndexList.Row>
   )
 }
-
-export default InviteListItem

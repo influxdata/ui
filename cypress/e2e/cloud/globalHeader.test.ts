@@ -64,9 +64,9 @@ describe('change-account change-org global header', () => {
           .click()
 
         cy.location('pathname').should('eq', `/orgs/${idpeOrgID}/members`)
-        cy.getByTestID('tabs--container')
+        cy.getByTestID('user-list-invite--form-heading')
           .should('be.visible')
-          .and('contain', 'Add a new user to your organization')
+          .and('contain', 'Add members to')
       })
 
       it('navigates to the org usage page', () => {

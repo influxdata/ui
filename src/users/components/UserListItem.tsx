@@ -39,7 +39,7 @@ const formatName = (firstName: string | null, lastName: string | null) => {
   return ''
 }
 
-const UserListItem: FC<Props> = ({user, isDeletable}) => {
+export const UserListItem: FC<Props> = ({user, isDeletable}) => {
   const {email, firstName, lastName, role} = user
   const {removeUser, removeUserStatus} = useContext(UsersContext)
 
@@ -87,9 +87,9 @@ const UserListItem: FC<Props> = ({user, isDeletable}) => {
             onShow={handleShow}
             status={status}
             onHide={handleHide}
-            confirmationLabel="This action will remove this user from accessing this organization"
-            confirmationButtonText="Remove user access"
-            titleText="Remove user access"
+            confirmationLabel="Removing this member will remove their tasks and alerts."
+            confirmationButtonText="Remove member access"
+            titleText="Remove member access"
             confirmationButtonColor={ComponentColor.Danger}
             color={ComponentColor.Danger}
             shape={ButtonShape.Square}
@@ -101,5 +101,3 @@ const UserListItem: FC<Props> = ({user, isDeletable}) => {
     </IndexList.Row>
   )
 }
-
-export default UserListItem

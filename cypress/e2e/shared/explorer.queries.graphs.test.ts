@@ -169,6 +169,13 @@ describe('writing queries and making graphs using Data Explorer', () => {
     })
 
     it('shows the empty state when the query returns no results', () => {
+      cy.isIoxOrg().then(isIox => {
+        // iox uses `${orgId}_${bucketId}` for a namespace_id
+        // And gives a namespace_id failure if no data is written yet.
+        // https://github.com/influxdata/monitor-ci/issues/402#issuecomment-1362368473
+        cy.skipOn(isIox)
+      })
+
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor').should('be.visible')
           .monacoType(`from(bucket: "defbuck")

@@ -16,19 +16,16 @@ describe('Script Builder', () => {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
     writeData.push(`ndbc2,air_temp_degc=70_degrees station_id_${i}=${i}`)
   }
-  const writeDataMoar: string[] = []
-  for (let i = 0; i < 500; i++) {
-    writeDataMoar.push(
+  const writeDataMoar: Array<string[]> = [[], [], [], []]
+  const numOfUniqueColumns = 198 // 200 - 2
+  for (let i = 0; i < numOfUniqueColumns; i++) {
+    writeDataMoar[0]?.push(
       `ndbc_big,air_temp_degc=70_degrees station_id_A${i}=${i}`
     )
-    writeDataMoar.push(
-      `ndbc_big,air_temp_degc=70_degrees station_id_B${i}=${i}`
-    )
-    writeDataMoar.push(
-      `ndbc_big,air_temp_degc=70_degrees station_id_C${i}=${i}`
-    )
-    writeDataMoar.push(
-      `ndbc_big,air_temp_degc=70_degrees station_id_C${i}=${i + 500}`
+    writeDataMoar[1]?.push(
+      `ndbc_big,air_temp_degc=70_degrees station_id_A${i}=${
+        i + numOfUniqueColumns
+      }`
     )
   }
 
@@ -82,32 +79,45 @@ describe('Script Builder', () => {
       `fn: (r) => r._measurement == "${measurement}"`
     )
     cy.getByTestID('flux-editor').within(() => {
-      cy.get('.composition-sync--on').should('have.length.gte', 3) // three lines
+      cy.get('.composition-sync--on').should('have.length', 3) // three lines
     })
   }
 
   const clearSession = () => {
-    cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
-      if (!$saveButton.is(':disabled')) {
-        cy.log('clearing session')
-        cy.getByTestID('flux-query-builder--new-script')
-          .should('be.visible')
-          .click()
+    return cy.isIoxOrg().then(isIox => {
+      if (isIox) {
+        cy.getByTestID('query-builder--new-script').should('be.visible').click()
+        cy.getByTestID('script-dropdown__flux').should('be.visible').click()
         cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('flux-query-builder--no-save').click({force: true})
+          cy.getByTestID('flux-query-builder--no-save')
+            .should('be.visible')
+            .click()
         })
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
+      } else {
+        cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
+          if (!$saveButton.is(':disabled')) {
+            cy.getByTestID('flux-query-builder--new-script')
+              .should('be.visible')
+              .click()
+            cy.getByTestID('overlay--container').within(() => {
+              cy.getByTestID('flux-query-builder--no-save')
+                .should('be.visible')
+                .click()
+            })
+          }
         })
       }
-    })
-    cy.getByTestID('flux-sync--toggle').then($toggle => {
-      if (!$toggle.hasClass('active')) {
-        $toggle.click()
-      }
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('textarea.inputarea').should(
+          'have.value',
+          DEFAULT_FLUX_EDITOR_TEXT
+        )
+      })
+      return cy.getByTestID('flux-sync--toggle').then($toggle => {
+        if (!$toggle.hasClass('active')) {
+          $toggle.click()
+        }
+      })
     })
   }
 
@@ -143,7 +153,7 @@ describe('Script Builder', () => {
             [`ndbc_1table,air_temp_degc=70_degrees station_id=1`],
             'defbuck4'
           )
-          cy.writeData(writeDataMoar, 'defbuck4')
+          writeDataMoar.forEach(data => cy.writeData(data, 'defbuck4'))
         })
       })
     })
@@ -156,23 +166,28 @@ describe('Script Builder', () => {
       loginWithFlags({
         schemaComposition: true,
         newDataExplorer: true,
+        saveAsScript: true,
       }).then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          route = `/orgs/${id}/data-explorer`
-          cy.intercept('POST', `/api/v2/query?orgID=${id}`, req => {
-            const {extern} = req.body
-            if (
-              extern?.body[0]?.location?.source ==
-              `option v =  {  timeRangeStart: -1h,\n  timeRangeStop: now()}`
-            ) {
-              req.alias = 'query -1h'
-            } else if (
-              extern?.body[0]?.location?.source ==
-              `option v =  {  timeRangeStart: -15m,\n  timeRangeStop: now()}`
-            ) {
-              req.alias = 'query -15m'
+        cy.get('@org').then(({id: orgID}: Organization) => {
+          route = `/orgs/${orgID}/data-explorer`
+          cy.intercept(
+            'POST',
+            `/api/v2/query?${new URLSearchParams({orgID})}`,
+            req => {
+              const {extern} = req.body
+              if (
+                extern?.body[0]?.location?.source ==
+                `option v =  {  timeRangeStart: -1h,\n  timeRangeStop: now()}`
+              ) {
+                req.alias = 'query -1h'
+              } else if (
+                extern?.body[0]?.location?.source ==
+                `option v =  {  timeRangeStart: -15m,\n  timeRangeStop: now()}`
+              ) {
+                req.alias = 'query -15m'
+              }
             }
-          })
+          )
         })
 
         clearSession()
@@ -201,7 +216,6 @@ describe('Script Builder', () => {
 
     describe('data completeness', () => {
       const downloadsDirectory = Cypress.config('downloadsFolder')
-      const browser = Cypress.config('browser')
 
       const validateCsv = (csv: string, tableCnt: number) => {
         cy.wrap(csv)
@@ -250,12 +264,6 @@ describe('Script Builder', () => {
           req.redirect(route)
         }).as('queryDownloadCSV')
 
-        // TODO: debug intermittent failures which occur 30% of the time
-        // in firefox only, in the CI only, and only when no data is returned
-        if (browser.name.toLowerCase() != 'chrome') {
-          return
-        }
-
         cy.getByTestID('csv-download-button').should('not.be.disabled').click()
 
         cy.wait('@queryDownloadCSV', {timeout: DELAY_FOR_FILE_DOWNLOAD})
@@ -285,6 +293,13 @@ describe('Script Builder', () => {
       })
 
       it('will return 0 tables and 0 rows, for an empty dataset', () => {
+        cy.isIoxOrg().then(isIox => {
+          // iox uses `${orgId}_${bucketId}` for a namespace_id
+          // And gives a namespace_id failure if no data is written yet.
+          // https://github.com/influxdata/monitor-ci/issues/402#issuecomment-1362368473
+          cy.skipOn(isIox)
+        })
+
         cy.log('turn off composition sync')
         cy.getByTestID('flux-sync--toggle').click()
         cy.getByTestID('flux-sync--toggle').should('not.have.class', 'active')
@@ -340,7 +355,7 @@ describe('Script Builder', () => {
             `|> filter(fn: (r) => r._measurement == "ndbc_big")`
           )
 
-          runTest(3 * 500, 4 * 500, true)
+          runTest(numOfUniqueColumns, 2 * numOfUniqueColumns, true)
         })
       })
     })

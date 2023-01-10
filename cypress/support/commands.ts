@@ -29,9 +29,8 @@ Cypress.on('uncaught:exception', (err, _) => {
   )
 })
 
-export const signin = (
-  useIox: boolean = false
-): Cypress.Chainable<Cypress.Response<any>> => {
+export const signin = (): Cypress.Chainable<Cypress.Response<any>> => {
+  const useIox = Boolean(Cypress.env('ioxUser'))
   return cy.setupUser(useIox).then((response: any) => {
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
@@ -225,6 +224,14 @@ export const wrapDefaultUser = (): Cypress.Chainable => {
 export const wrapDefaultPassword = (): Cypress.Chainable => {
   const password = Cypress.env('password') ?? 'CHECKMEOUTASUPERSECRETPASSWORD'
   return cy.wrap(password).as('defaultPassword')
+}
+
+export const isIoxOrg = (): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.get('@org').then(({defaultStorageType}: Organization) => {
+    return Boolean(
+      defaultStorageType && defaultStorageType.toLowerCase() === 'iox'
+    )
+  })
 }
 
 export const createDashboard = (
@@ -882,7 +889,11 @@ export const writeData = (
       const bucketToUse = namedBucket ?? bucket.name
       return cy.request({
         method: 'POST',
-        url: '/api/v2/write?org=' + org.name + '&bucket=' + bucketToUse,
+        url:
+          '/api/v2/write?' +
+          new URLSearchParams({orgID: org.id}) +
+          '&bucket=' +
+          bucketToUse,
         body: lines.join('\n'),
       })
     })
@@ -985,14 +996,21 @@ export const writeLPDataFromFile = (
   })
 }
 
+// Longer SLA on finding all elements, will resolve slower load times with our CI remocal deployed with tsm & iox orgs.
+const LOAD_SLA = 30000
+
 // DOM node getters
 export const getByTestID = (
   dataTest: string,
-  options?: Partial<
+  requestedOptions?: Partial<
     Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow
   >
 ): Cypress.Chainable => {
-  return cy.get(`[data-testid="${dataTest}"]`, options)
+  const options = requestedOptions ?? {}
+  return cy.get(`[data-testid="${dataTest}"]`, {
+    ...options,
+    ...{timeout: Math.max(LOAD_SLA, options.timeout ?? 0)},
+  })
 }
 
 export const getByTestIDHead = (
@@ -1294,6 +1312,7 @@ Cypress.Commands.add(
   'wrapEnvironmentVariablesForOss',
   wrapEnvironmentVariablesForOss
 )
+Cypress.Commands.add('isIoxOrg', isIoxOrg)
 
 // navigation bar
 Cypress.Commands.add('clickNavBarItem', clickNavBarItem)

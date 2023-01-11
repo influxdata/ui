@@ -22,20 +22,22 @@ const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
   const [hasFocus, setHasFocus] = useState(false)
   const {hasWritePermissions} = useContext(OperatorContext)
   const {organization} = useContext(OverlayContext)
-  const ioxCardinality =
-    organization?.storageType === 'iox' && name === 'rate.cardinality'
+  const isIOxCardinalityField =
+    organization?.storageType &&
+    organization.storageType === 'iox' &&
+    name === 'rate.cardinality'
 
-  const getIOxCardinalityValue = () => {
-    const ioxCardinalityLimit = 'N/A - IOx'
-
-    // update the type to text so that the input field is not a number field
+  const getIOxCardinalityLimit = () => {
+    // update the type to text so value doesn't get incorrectly formatted
     type = InputType.Text
+
+    const ioxCardinalityLimit = 'N/A - IOx'
 
     return ioxCardinalityLimit
   }
 
-  const value = ioxCardinality
-    ? getIOxCardinalityValue()
+  const value = isIOxCardinalityField
+    ? getIOxCardinalityLimit()
     : get(limits, name, '')
 
   const formatted_value =

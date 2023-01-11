@@ -40,8 +40,6 @@ import {
   RemoteDataState,
   StatusRow,
   Node,
-  ResourceType,
-  Bucket,
   QueryEditMode,
   BuilderTagsType,
   Variable,
@@ -50,7 +48,6 @@ import {
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-import {getAll} from 'src/resources/selectors/index'
 import {isCurrentPageDashboard} from 'src/dashboards/selectors'
 import {getAllVariables} from 'src/variables/selectors'
 import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
@@ -86,26 +83,6 @@ export const setQueryResults = (
 })
 
 let pendingCheckStatuses: CancelBox<StatusRow[][]> = null
-
-export const getOrgIDFromBuckets = (
-  text: string,
-  allBuckets: Bucket[]
-): string | null => {
-  try {
-    const ast = parse(text)
-    const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
-      get(node, 'arguments.0.properties.0.value.value', '')
-    )
-
-    // if there are buckets from multiple orgs in a query, query will error, and user will receive error from query
-    const bucketMatch = allBuckets.find(a => bucketsInQuery.includes(a.name))
-
-    return get(bucketMatch, 'orgID', null)
-  } catch (e) {
-    console.error(e)
-    return null
-  }
-}
 
 // We only need a minimum of one bucket, function, and tag,
 export const getQueryFromFlux = (text: string) => {
@@ -280,15 +257,11 @@ export const runTimeMachineQuery = (
   state: AppState,
   abortController: AbortController
 ) => {
-  const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
   const allVariables = getAllVariables(state)
 
   event('executeQueries query', {}, {query: queryText})
 
-  const orgID = getOrgIDFromBuckets(queryText, allBuckets) || getOrg(state).id
-  if (getOrg(state).id === orgID) {
-    event('orgData_queried')
-  }
+  const orgID = getOrg(state).id
 
   const extern = buildUsedVarsOption(queryText, allVariables)
   event('runQuery', {context: 'timeMachine'})
@@ -301,6 +274,7 @@ export const executeQueries =
     const executeQueriesStartTime = Date.now()
 
     const state = getState()
+    const orgID = getOrg(state).id
 
     const activeTimeMachine = getActiveTimeMachine(state)
     const queries = activeTimeMachine.view.properties.queries.filter(
@@ -319,14 +293,11 @@ export const executeQueries =
 
       await dispatch(hydrateVariables())
       const allVariables = getAllVariables(state)
-      const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
 
       const startTime = window.performance.now()
       const startDate = Date.now()
 
       const pendingResults = queries.map(({text}) => {
-        const orgID = getOrgIDFromBuckets(text, allBuckets) || getOrg(state).id
-
         const queryID = generateHashedQueryID(text, allVariables, orgID)
         if (isCurrentPageDashboard(state)) {
           // reset any existing matching query in the cache
@@ -396,15 +367,11 @@ export const runDownloadQuery = () => async (dispatch, getState: GetState) => {
   try {
     await dispatch(hydrateVariables())
 
-    const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
     const allVariables = getAllVariables(state)
 
     event('executeQueries query', {}, {query: queryText})
 
-    const orgID = getOrgIDFromBuckets(queryText, allBuckets) || getOrg(state).id
-    if (getOrg(state).id === orgID) {
-      event('orgData_queried')
-    }
+    const orgID = getOrg(state).id
 
     const extern = buildUsedVarsOption(queryText, allVariables)
     const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`

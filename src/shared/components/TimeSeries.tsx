@@ -20,7 +20,6 @@ import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {getWindowVarsFromVariables} from 'src/variables/utils/getWindowVars'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
-import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
 import {hashCode} from 'src/shared/apis/queryCache'
 import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
 import {parseASTIM} from 'src/variables/utils/astim'
@@ -199,7 +198,6 @@ class TimeSeries extends Component<Props, State> {
 
   private reload = async () => {
     const {
-      buckets,
       check,
       isCurrentPageDashboard,
       notify,
@@ -207,6 +205,7 @@ class TimeSeries extends Component<Props, State> {
       variables,
     } = this.props
     const queries = this.props.queries.filter(({text}) => !!text.trim())
+    const orgID = this.props.match.params.orgID
 
     if (!queries.length) {
       this.setState(defaultState())
@@ -241,9 +240,6 @@ class TimeSeries extends Component<Props, State> {
 
       // Issue new queries
       this.pendingResults = queries.map(({text}) => {
-        const orgID =
-          getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
-
         const windowVars = getWindowVarsFromVariables(text, variables)
         const extern = buildUsedVarsOption(text, variables, windowVars)
 

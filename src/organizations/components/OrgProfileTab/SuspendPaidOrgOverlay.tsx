@@ -1,6 +1,8 @@
 // Libraries
 import React, {FC, useContext, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
+import {Link} from 'react-router-dom'
+
 import {
   Alert,
   AlignItems,
@@ -77,7 +79,7 @@ export const SuspendPaidOrgOverlay: FC = () => {
   const org = useSelector(selectCurrentOrg)
   const user = useSelector(selectUser)
   const dispatch = useDispatch()
-  const {onClose} = useContext(OverlayContext)
+  const {onClose, params} = useContext(OverlayContext)
 
   const [deleteButtonStatus, setDeleteButtonStatus] = useState(
     ComponentStatus.Disabled
@@ -142,7 +144,7 @@ export const SuspendPaidOrgOverlay: FC = () => {
   return (
     <Overlay.Container
       className="org-delete-overlay"
-      maxWidth={600}
+      maxWidth={750}
       testID="create-org-overlay--container"
     >
       <Overlay.Header
@@ -158,6 +160,16 @@ export const SuspendPaidOrgOverlay: FC = () => {
         >
           You will be able to recover this organization's data for up to 7 days
           by contacting support. It will be unrecoverable afterwards.
+          {params.userCount > 1 && (
+            <>
+              <br />
+              <br />
+              <Link to={`/orgs/${org.id}/members`} onClick={onClickCancel}>
+                {params.userCount} users in this organization
+              </Link>{' '}
+              will lose access to all organization data immediately.
+            </>
+          )}
         </Alert>
         <br />
         <ul>

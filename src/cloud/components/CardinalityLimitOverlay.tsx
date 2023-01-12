@@ -31,7 +31,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 
 type Props = OwnProps & ReduxProps
 
-const RateLimitOverlay: FC<Props> = ({onClose, orgID}) => {
+const CardinalityLimitOverlayUnconnected: FC<Props> = ({onClose, orgID}) => {
   const history = useHistory()
   const [showForm, toggleShowForm] = useState<boolean>(false)
 
@@ -118,4 +118,6 @@ const mstp = (state: AppState) => {
 
 const connector = connect(mstp)
 
-export default connector(RateLimitOverlay)
+export const CardinalityLimitOverlay = connector(
+  CardinalityLimitOverlayUnconnected
+)

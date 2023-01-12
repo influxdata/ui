@@ -15,4 +15,4 @@ export const shouldGetCredit250Experience = (state: AppState): boolean => {
 }
 
 export const shouldShowUpgradeButton = (state: AppState): boolean =>
-  state.identity.currentIdentity.account.isUpgradeable === true
+  state.identity.currentIdentity.account.isUpgradeable

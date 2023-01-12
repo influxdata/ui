@@ -1,6 +1,6 @@
 import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
 
-describe('change-account change-org global header', () => {
+describe('global header', () => {
   let idpeOrgID: string
 
   before(() => {
@@ -30,7 +30,7 @@ describe('change-account change-org global header', () => {
     cy.wait(1200)
   })
 
-  describe('global change-account and change-org header', () => {
+  describe('change-account and change-org dropdowns', () => {
     describe('change org dropdown', () => {
       before(() => {
         makeQuartzUseIDPEOrgID(idpeOrgID)
@@ -179,7 +179,53 @@ describe('change-account change-org global header', () => {
     })
   })
 
-  describe('user profile avatar', {scrollBehavior: false}, () => {
+  describe('cardinality alerts', () => {
+    interface TestParams {
+      orgIsIOx: boolean
+    }
+
+    const setupCardinalityTest = (params: TestParams) => {
+      cy.intercept('GET', 'api/v2private/orgs/**/limits/status', req => {
+        req.continue(res => {
+          res.body.cardinality.status = 'exceeded'
+        })
+      })
+
+      if (params.orgIsIOx) {
+        cy.intercept('GET', '/api/v2/orgs', req => {
+          req.continue(res => {
+            res.body.orgs[0].defaultStorageType = 'iox'
+          })
+        })
+      }
+
+      makeQuartzUseIDPEOrgID(idpeOrgID, 'pay_as_you_go')
+      // Alert will appear in global header on any page (like data explorer)
+      // that has <LimitChecker />, which displays cardinality alerts.
+      cy.visit(`/orgs/${idpeOrgID}/data-explorer`)
+    }
+
+    it('shows a cardinality limit alert for TSM orgs if cardinality limits are exceeded', () => {
+      setupCardinalityTest({orgIsIOx: false})
+
+      cy.getByTestID('rate-alert--banner')
+        .should('be.visible')
+        .within(() => {
+          cy.contains('series cardinality').should('be.visible')
+          cy.contains('your data stopped writing.').should('be.visible')
+        })
+    })
+
+    it('never shows a cardinality limit alert for IOx orgs', () => {
+      setupCardinalityTest({orgIsIOx: true})
+
+      cy.getByTestID('rate-alert--banner').should('not.exist')
+      cy.contains('series cardinality').should('not.exist')
+      cy.contains('your data stopped writing.').should('not.exist')
+    })
+  })
+
+  describe('user profile avatar', () => {
     before(() => {
       makeQuartzUseIDPEOrgID(idpeOrgID)
       cy.visit('/')

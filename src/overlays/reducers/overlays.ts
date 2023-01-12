@@ -20,7 +20,7 @@ export type OverlayID =
   | 'switch-organizations'
   | 'create-bucket'
   | 'asset-limit'
-  | 'rate-limit'
+  | 'cardinality-limit'
   | 'write-limit'
   | 'create-annotation-stream'
   | 'update-annotation-stream'

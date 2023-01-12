@@ -154,7 +154,7 @@ export class ConnectionManager extends AgnosticConnectionManager {
     return {
       composition: composition.join('\n'),
       lines,
-      lenLastLine: composition[composition.length - 1].length,
+      lenLastLine: composition[composition.length - 1]?.length ?? 0,
     }
   }
 

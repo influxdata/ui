@@ -17,7 +17,7 @@ import {
 import {useSelector, useDispatch} from 'react-redux'
 
 // Contexts
-import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {ResultsContext} from 'src/dataExplorer/context/results'
 import {QueryContext} from 'src/shared/contexts/query'
 import {
   PersistanceContext,

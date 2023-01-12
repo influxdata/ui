@@ -10,7 +10,7 @@ import {
 } from '@influxdata/clockface'
 
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
-import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {ResultsContext} from 'src/dataExplorer/context/results'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'

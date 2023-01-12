@@ -128,8 +128,8 @@ describe('Script Builder', () => {
         return cy.setFeatureFlags(flags).then(() => {
           cy.getByTestID('flux-query-builder-toggle').then($toggle => {
             cy.wrap($toggle).should('be.visible')
-            // Switch to Flux Query Builder if not yet
-            if (!$toggle.hasClass('active')) {
+            // Switch to Script Editor if not yet
+            if ($toggle.hasClass('active')) { // active means showing the old Data Explorer
               // hasClass is a jQuery function
               $toggle.click()
             }

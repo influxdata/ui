@@ -9,7 +9,6 @@ import {OrgLimits} from 'src/types'
 
 // Contexts
 import {OperatorContext} from 'src/operator/context/operator'
-import {OverlayContext} from 'src/operator/context/overlay'
 
 interface Props {
   type: InputType
@@ -21,24 +20,8 @@ interface Props {
 const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
   const [hasFocus, setHasFocus] = useState(false)
   const {hasWritePermissions} = useContext(OperatorContext)
-  const {organization} = useContext(OverlayContext)
-  const isIOxCardinalityField =
-    organization?.storageType &&
-    organization.storageType === 'iox' &&
-    name === 'rate.cardinality'
 
-  const getIOxCardinalityLimit = () => {
-    // update the type to text so value doesn't get incorrectly formatted
-    type = InputType.Text
-
-    const ioxCardinalityLimit = 'N/A - IOx'
-
-    return ioxCardinalityLimit
-  }
-
-  const value = isIOxCardinalityField
-    ? getIOxCardinalityLimit()
-    : get(limits, name, '')
+  const value = get(limits, name, '')
 
   const formatted_value =
     type === InputType.Number

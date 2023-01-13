@@ -9,10 +9,14 @@ interface View {
   properties: ViewProperties
 }
 
+interface ViewOptions {}
+
 interface ResultsViewContextType {
   view: View
+  viewOptions: ViewOptions
 
   setView: (view: View) => void
+  setViewOptions: (viewOptions: Object) => void
 }
 
 const DEFAULT_STATE: ResultsViewContextType = {
@@ -20,8 +24,10 @@ const DEFAULT_STATE: ResultsViewContextType = {
     state: 'table',
     properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
   },
+  viewOptions: {}, // TODO -- set default options. Such as all tagKeys for `|> group()`
 
   setView: _ => {},
+  setViewOptions: _ => {},
 }
 
 export const ResultsViewContext =
@@ -36,12 +42,19 @@ export const ResultsViewProvider: FC = ({children}) => {
     } as SimpleTableViewProperties,
   })
 
+  const [viewOptions, setViewOptions] = useSessionStorage(
+    'dataExplorer.resultsOptions',
+    {}
+  )
+
   return (
     <ResultsViewContext.Provider
       value={{
         view,
+        viewOptions,
 
         setView,
+        setViewOptions,
       }}
     >
       {children}

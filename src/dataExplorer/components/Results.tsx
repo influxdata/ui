@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext, useMemo} from 'react'
+import React, {FC, useState, useContext, useMemo, useCallback} from 'react'
 import {
   FlexBox,
   FlexDirection,
@@ -165,22 +165,35 @@ const GraphResults: FC = () => {
 const WrappedOptions: FC = () => {
   // use parent `results` so all metadata is present for the viz options
   const {result} = useContext(ResultsContext)
-  const {view, setView} = useContext(ResultsViewContext)
+  const {setResult, setStatus} = useContext(ChildResultsContext)
+  const {view, setView /* setViewOptions*/} = useContext(ResultsViewContext)
+
+  const updateChildResults = useCallback(
+    update => {
+      setView({
+        ...view,
+        properties: {
+          ...view.properties,
+          ...update,
+        },
+      })
+    },
+    [setStatus, setResult]
+  )
+
+  // TODO: make component, for QxBuilder-specific graph subquery options
+  const subQueryOptions = null
 
   return (
-    <ViewOptions
-      properties={view.properties}
-      results={result.parsed}
-      update={update => {
-        setView({
-          ...view,
-          properties: {
-            ...view.properties,
-            ...update,
-          },
-        })
-      }}
-    />
+    <>
+      {subQueryOptions}
+      {/* <SubQueryOptions update={setViewOptions} /> */}
+      <ViewOptions
+        properties={view.properties}
+        results={result.parsed}
+        update={updateChildResults}
+      />
+    </>
   )
 }
 

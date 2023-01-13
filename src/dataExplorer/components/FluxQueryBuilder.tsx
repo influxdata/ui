@@ -223,13 +223,13 @@ const FluxQueryBuilder: FC = () => {
 export default () => (
   <QueryProvider>
     <ResultsProvider>
-      <ChildResultsProvider>
-        <ResultsViewProvider>
+      <ResultsViewProvider>
+        <ChildResultsProvider>
           <PersistanceProvider>
             <FluxQueryBuilder />
           </PersistanceProvider>
-        </ResultsViewProvider>
-      </ChildResultsProvider>
+        </ChildResultsProvider>
+      </ResultsViewProvider>
     </ResultsProvider>
   </QueryProvider>
 )

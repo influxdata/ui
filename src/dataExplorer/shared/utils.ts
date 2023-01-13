@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react'
 import {LanguageType} from 'src/dataExplorer/components/resources'
+import {TimeRange} from 'src/types'
 
 export const LOAD_MORE_LIMIT_INITIAL = 8
 export const LOAD_MORE_LIMIT = 25
@@ -86,4 +87,44 @@ export const debouncer = (action: NOOP): void => {
     action()
     timer = null
   }, DEBOUNCE_TIMEOUT)
+}
+
+export const rangeToParam = (timeRange: TimeRange) => {
+  let timeRangeStart: string, timeRangeStop: string
+  const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
+
+  if (!timeRange) {
+    timeRangeStart = timeRangeStop = null
+  } else {
+    if (timeRange.type === 'selectable-duration') {
+      timeRangeStart = '-' + timeRange.duration
+    } else if (timeRange.type === 'duration') {
+      timeRangeStart = '-' + timeRange.lower
+    } else if (!isNaN(Number(timeRange.lower)) || timeRange.lower === 'now()') {
+      timeRangeStart = timeRange.lower
+    } else if (!!timeRange?.lower?.match(durationRegExp)) {
+      timeRangeStart = timeRange.lower
+    } else if (isNaN(Date.parse(timeRange.lower))) {
+      timeRangeStart = null
+    } else {
+      timeRangeStart = new Date(timeRange.lower).toISOString()
+    }
+
+    if (!timeRange.upper) {
+      timeRangeStop = 'now()'
+    } else if (!isNaN(Number(timeRange.upper)) || timeRange.upper === 'now()') {
+      timeRangeStop = timeRange.upper
+    } else if (!!timeRange?.upper?.match(durationRegExp)) {
+      timeRangeStop = timeRange.upper
+    } else if (isNaN(Date.parse(timeRange.upper))) {
+      timeRangeStop = null
+    } else {
+      timeRangeStop = new Date(timeRange.upper).toISOString()
+    }
+  }
+
+  return {
+    timeRangeStart,
+    timeRangeStop,
+  }
 }

@@ -69,7 +69,7 @@ export const organizationColumnHeaders = [
   'Provider',
   'Region',
   'Date Created',
-  'Storage Type'
+  'Storage Type',
 ]
 
 export const organizationColumnInfo: CellInfo[] = [

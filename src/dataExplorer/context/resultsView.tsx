@@ -4,8 +4,13 @@ import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {ViewProperties, SimpleTableViewProperties} from 'src/types'
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
+export enum ViewStateType {
+  Table = 'table',
+  Graph = 'graph',
+}
+
 interface View {
-  state: 'table' | 'graph'
+  state: ViewStateType
   properties: ViewProperties
 }
 
@@ -21,7 +26,7 @@ interface ResultsViewContextType {
 
 const DEFAULT_STATE: ResultsViewContextType = {
   view: {
-    state: 'table',
+    state: ViewStateType.Table,
     properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
   },
   viewOptions: {}, // TODO -- set default options. Such as all tagKeys for `|> group()`
@@ -35,7 +40,7 @@ export const ResultsViewContext =
 
 export const ResultsViewProvider: FC = ({children}) => {
   const [view, setView] = useSessionStorage('dataExplorer.results', {
-    state: 'table',
+    state: ViewStateType.Table,
     properties: {
       type: 'simple-table',
       showAll: false,

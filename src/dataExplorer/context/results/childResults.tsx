@@ -97,15 +97,15 @@ export const ChildResultsProvider: FC = ({children}) => {
         sqlQueryModifiers,
       }
     )
-      .then(r => {
-        setResult(r)
+      .then(result => {
+        setResult(result)
         setStatus(RemoteDataState.Done)
       })
-      .catch(e => {
+      .catch(error => {
         setResult({
           source: queryText,
           parsed: null,
-          error: e.message,
+          error: error.message,
           truncated: false,
           bytes: 0,
         })

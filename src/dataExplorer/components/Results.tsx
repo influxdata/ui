@@ -11,7 +11,10 @@ import {
 
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
 import {ResultsContext} from 'src/dataExplorer/context/results'
-import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
+import {
+  ResultsViewContext,
+  ViewStateType,
+} from 'src/dataExplorer/context/resultsView'
 import {ChildResultsContext} from 'src/dataExplorer/context/results/childResults'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
@@ -77,7 +80,7 @@ const TableResults: FC<{search: string}> = ({search}) => {
   const {range} = useContext(PersistanceContext)
 
   const res = useMemo(() => {
-    if (!search.trim() || !result?.parsed) {
+    if (search.trim() === '' || !result?.parsed) {
       return result?.parsed
     }
 
@@ -181,13 +184,12 @@ const WrappedOptions: FC = () => {
     [setStatus, setResult]
   )
 
-  // TODO: make component, for QxBuilder-specific graph subquery options
+  // TODO: make component with `update={setViewOptions}`, for QxBuilder-specific graph subquery options
   const subQueryOptions = null
 
   return (
     <>
       {subQueryOptions}
-      {/* <SubQueryOptions update={setViewOptions} /> */}
       <ViewOptions
         properties={view.properties}
         results={result.parsed}
@@ -209,7 +211,7 @@ const GraphHeader: FC = () => {
 
   const updateType = viewType => {
     setView({
-      state: 'graph',
+      state: ViewStateType.Graph,
       properties: SUPPORTED_VISUALIZATIONS[viewType].initial,
     })
   }
@@ -253,7 +255,7 @@ const Results: FC = () => {
   if (status === RemoteDataState.NotStarted) {
     resultView = <EmptyResults />
   } else {
-    if (view.state === 'table') {
+    if (view.state === ViewStateType.Table) {
       resultView = <TableResults search={search} />
     } else {
       resultView = <GraphResults />
@@ -261,23 +263,24 @@ const Results: FC = () => {
   }
 
   const updateViewState = state => {
-    if (state === 'graph') {
+    if (state === ViewStateType.Graph) {
       setView({
-        state: 'graph',
+        state: ViewStateType.Graph,
         properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
       })
     } else {
       setView({
-        state: 'table',
+        state: ViewStateType.Table,
         properties: SUPPORTED_VISUALIZATIONS['simple-table'].initial,
       })
     }
   }
 
+  const headerStyle = {width: '300px'}
   const Header =
-    view.state === 'table' ? (
+    view.state === ViewStateType.Table ? (
       <>
-        <div style={{width: '300px'}}>
+        <div style={headerStyle}>
           <SearchWidget
             placeholderText="Search results..."
             onSearch={setSearch}
@@ -295,9 +298,10 @@ const Results: FC = () => {
       <GraphHeader />
     )
 
+  const flexContainerStyle = {height: '100%'}
   return (
     <div className="data-explorer-results">
-      <FlexBox direction={FlexDirection.Column} style={{height: '100%'}}>
+      <FlexBox direction={FlexDirection.Column} style={flexContainerStyle}>
         <div className="data-explorer-results--header">
           <FlexBox>
             {Header}
@@ -307,7 +311,7 @@ const Results: FC = () => {
                   id="table"
                   name="viz-setting"
                   value="table"
-                  active={view.state === 'table'}
+                  active={view.state === ViewStateType.Table}
                   onClick={updateViewState}
                 >
                   Table
@@ -316,7 +320,7 @@ const Results: FC = () => {
                   id="graph"
                   name="viz-setting"
                   value="graph"
-                  active={view.state === 'graph'}
+                  active={view.state === ViewStateType.Graph}
                   onClick={updateViewState}
                 >
                   Graph

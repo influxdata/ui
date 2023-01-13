@@ -2,9 +2,12 @@ import React, {FC, createContext, useState, useContext, useEffect} from 'react'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/context/results'
-import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
+import {
+  ResultsViewContext,
+  ViewOptions,
+} from 'src/dataExplorer/context/resultsView'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
-import {QueryContext} from 'src/shared/contexts/query'
+import {QueryContext, SqlQueryModifiers} from 'src/shared/contexts/query'
 
 // Types
 import {FluxResult} from 'src/types/flows'
@@ -14,17 +17,17 @@ import {LanguageType} from 'src/dataExplorer/components/resources'
 // Utils
 import {rangeToParam} from 'src/dataExplorer/shared/utils'
 
-const transformSmoothing = (text: string) => {
+const modifiersToApply = (_viewOptions: ViewOptions): SqlQueryModifiers => {
   // e.g. to smooth by selected column foo. Rough example.
   const shouldSmooth = false
-
   if (shouldSmooth) {
-    text = `import "experimental/polyline"
-    ${text}
-      |> polyline.rdp(valColumn: "foo", timeColumn: "time")
-    `
+    return {
+      prepend: `import "experimental/polyline"`,
+      append: `|> polyline.rdp(valColumn: "foo", timeColumn: "time")`,
+    }
   }
-  return text
+
+  return null
 }
 
 interface ChildResultsContextType {
@@ -76,21 +79,22 @@ export const ChildResultsProvider: FC = ({children}) => {
     }
 
     // TODO: tranform functions, based on viewOptions change
-    const text = transformSmoothing(queryText)
+    const sqlQueryModifiers = modifiersToApply(viewOptions)
 
-    if (text == queryText) {
+    if (!sqlQueryModifiers) {
       return
     }
 
     setStatus(RemoteDataState.Loading)
     query(
-      text,
+      queryText,
       {
         vars: rangeToParam(range),
       },
       {
         language: resource?.language ?? LanguageType.SQL,
         bucket: selection.bucket,
+        sqlQueryModifiers,
       }
     )
       .then(r => {
@@ -99,7 +103,7 @@ export const ChildResultsProvider: FC = ({children}) => {
       })
       .catch(e => {
         setResult({
-          source: text,
+          source: queryText,
           parsed: null,
           error: e.message,
           truncated: false,

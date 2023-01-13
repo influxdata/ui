@@ -9,7 +9,7 @@ interface View {
   properties: ViewProperties
 }
 
-interface ViewOptions {}
+export interface ViewOptions {}
 
 interface ResultsViewContextType {
   view: View

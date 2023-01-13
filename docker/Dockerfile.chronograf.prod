@@ -23,8 +23,6 @@ ARG UI_SHA
 ARG CLOUD_URL
 # Configure what honey badger uses for auth
 ARG HONEYBADGER_KEY
-# Configure the amplitude access key
-ARG AMPLITUDE_KEY
 # Throw any string up in the header, we use it for google tag manager
 ARG INJECT_HEADER
 # Injecting strings into the html never went wrong. we use this for google tag manager

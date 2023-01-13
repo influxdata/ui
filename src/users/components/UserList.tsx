@@ -4,14 +4,14 @@ import React, {FC, useContext, useState} from 'react'
 // Components
 import {Columns, Grid, IndexList} from '@influxdata/clockface'
 import {UsersContext} from 'src/users/context/users'
-import UserListItem from 'src/users/components/UserListItem'
-import InviteListItem from 'src/users/components/InviteListItem'
+import {UserListItem} from 'src/users/components/UserListItem'
+import {InviteListItem} from 'src/users/components/InviteListItem'
 
 // Utils
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import {filter} from 'src/users/utils/filter'
 
-const UserList: FC = () => {
+export const UserList: FC = () => {
   const {users, invites} = useContext(UsersContext)
 
   const [searchTerm, setSearchTerm] = useState('')
@@ -31,7 +31,7 @@ const UserList: FC = () => {
       <Grid.Row>
         <Grid.Column widthMD={Columns.Ten} widthLG={Columns.Six}>
           <SearchWidget
-            placeholderText="Filter members..."
+            placeholderText="Search members"
             searchTerm={searchTerm}
             onSearch={setSearchTerm}
           />
@@ -61,5 +61,3 @@ const UserList: FC = () => {
     </Grid>
   )
 }
-
-export default UserList

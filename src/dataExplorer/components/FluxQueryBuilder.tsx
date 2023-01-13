@@ -32,7 +32,6 @@ import Schema from 'src/dataExplorer/components/Schema'
 import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {RemoteDataState} from 'src/types'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
@@ -100,12 +99,6 @@ const FluxQueryBuilder: FC = () => {
     }
   }, [handleClear, hasChanged])
 
-  const handleUserpilot = () => {
-    if (window.userpilot) {
-      window.userpilot.trigger('1663269889fDfn2554')
-    }
-  }
-
   return (
     <EditorProvider>
       <SidebarProvider>
@@ -142,6 +135,7 @@ const FluxQueryBuilder: FC = () => {
                             key={option}
                             onClick={() => handleSelectDropdown(option)}
                             selected={resource?.language === option}
+                            testID={`script-dropdown__${option}`}
                           >
                             {option}
                           </Dropdown.Item>
@@ -149,7 +143,11 @@ const FluxQueryBuilder: FC = () => {
                       </Dropdown.Menu>
                     )}
                     button={(active, onClick) => (
-                      <Dropdown.Button active={active} onClick={onClick}>
+                      <Dropdown.Button
+                        active={active}
+                        onClick={onClick}
+                        testID="query-builder--new-script"
+                      >
                         <>
                           <Icon glyph={IconFont.Plus_New} />
                           &nbsp;New Script
@@ -194,14 +192,6 @@ const FluxQueryBuilder: FC = () => {
                   />
                 )}
               </div>
-              {isFlagEnabled('userFeedback') && (
-                <button
-                  className="userpilot-feedback"
-                  onClick={handleUserpilot}
-                >
-                  Provide Feedback
-                </button>
-              )}
             </FlexBox>
           </div>
           <DraggableResizer

@@ -205,6 +205,7 @@ class TimeSeries extends Component<Props, State> {
       variables,
     } = this.props
     const queries = this.props.queries.filter(({text}) => !!text.trim())
+    const orgID = this.props.match.params.orgID
 
     if (!queries.length) {
       this.setState(defaultState())
@@ -239,8 +240,6 @@ class TimeSeries extends Component<Props, State> {
 
       // Issue new queries
       this.pendingResults = queries.map(({text}) => {
-        const orgID = this.props.match.params.orgID
-
         const windowVars = getWindowVarsFromVariables(text, variables)
         const extern = buildUsedVarsOption(text, variables, windowVars)
 

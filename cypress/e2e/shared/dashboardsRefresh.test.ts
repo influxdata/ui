@@ -73,10 +73,14 @@ describe('Dashboard refresh', () => {
     })
 
     it('can enable the auto refresh process, then manually stop the process via the dropdown', done => {
-      cy.get<Organization>('@org').then((org: Organization) => {
-        cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-          req.alias = 'refreshQuery'
-        })
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+        cy.intercept(
+          'POST',
+          `/api/v2/query?${new URLSearchParams({orgID})}`,
+          req => {
+            req.alias = 'refreshQuery'
+          }
+        )
         cy.getByTestID('enable-auto-refresh-button').click()
         cy.getByTestID('auto-refresh-input').clear().type('2s', {force: true})
         cy.getByTestID('refresh-form-activate-button').click({force: true})
@@ -94,7 +98,7 @@ describe('Dashboard refresh', () => {
     })
 
     it('can timeout on a preset timeout selected by the user', done => {
-      cy.get<Organization>('@org').then((org: Organization) => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
         cy.getByTestID('enable-auto-refresh-button').click()
         cy.getByTestID('auto-refresh-input')
           .clear()
@@ -109,9 +113,13 @@ describe('Dashboard refresh', () => {
         })
         cy.getByTestID('refresh-form-activate-button').click()
 
-        cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-          req.alias = 'refreshQuery'
-        })
+        cy.intercept(
+          'POST',
+          `/api/v2/query?${new URLSearchParams({orgID})}`,
+          req => {
+            req.alias = 'refreshQuery'
+          }
+        )
 
         cy.wait('@refreshQuery')
         cy.wait('@refreshQuery')
@@ -125,7 +133,7 @@ describe('Dashboard refresh', () => {
     })
 
     it('does not refresh if user edits cell, until user comes back, and then continues', () => {
-      cy.get<Organization>('@org').then((org: Organization) => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
         cy.getByTestID('enable-auto-refresh-button').click()
         cy.getByTestID('auto-refresh-input')
           .clear()
@@ -138,9 +146,13 @@ describe('Dashboard refresh', () => {
             .type(`${jumpAheadTime('00:00:10')}`, {force: true})
           cy.getByTestID('daterange--apply-btn').click()
         })
-        cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-          req.alias = 'refreshQuery'
-        })
+        cy.intercept(
+          'POST',
+          `/api/v2/query?${new URLSearchParams({orgID})}`,
+          req => {
+            req.alias = 'refreshQuery'
+          }
+        )
 
         cy.getByTestID('refresh-form-activate-button').click()
 
@@ -163,7 +175,7 @@ describe('Dashboard refresh', () => {
       })
     })
     it('can timeout on a preset inactivity timeout', done => {
-      cy.get<Organization>('@org').then((org: Organization) => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
         cy.getByTestID('enable-auto-refresh-button').contains(
           'SET AUTO REFRESH',
           {matchCase: false}
@@ -181,9 +193,13 @@ describe('Dashboard refresh', () => {
             .type(`${jumpAheadTime('00:00:08')}`, {force: true})
           cy.getByTestID('daterange--apply-btn').click()
         })
-        cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-          req.alias = 'refreshQuery'
-        })
+        cy.intercept(
+          'POST',
+          `/api/v2/query?${new URLSearchParams({orgID})}`,
+          req => {
+            req.alias = 'refreshQuery'
+          }
+        )
 
         cy.getByTestID('refresh-form-activate-button').click()
 
@@ -270,16 +286,24 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('flux-editor').monacoType(query2)
         cy.getByTestID('save-cell--button').click()
 
-        cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
-          if (req.body.query === query1) {
-            req.alias = 'firstCellQuery'
+        cy.intercept(
+          'POST',
+          `/api/v2/query?${new URLSearchParams({orgID})}`,
+          req => {
+            if (req.body.query === query1) {
+              req.alias = 'firstCellQuery'
+            }
           }
-        })
-        cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
-          if (req.body.query === query2) {
-            req.alias = 'secondCellQuery'
+        )
+        cy.intercept(
+          'POST',
+          `/api/v2/query?${new URLSearchParams({orgID})}`,
+          req => {
+            if (req.body.query === query2) {
+              req.alias = 'secondCellQuery'
+            }
           }
-        })
+        )
         cy.getByTestID('cell blah').within(() => {
           cy.getByTestID('giraffe-inner-plot')
           cy.getByTestID('cell-context--toggle').last().click()
@@ -353,15 +377,19 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('flux-editor').monacoType(query2)
         cy.getByTestID('save-cell--button').click()
 
-        cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
-          if (req.body.query === query1) {
-            // This will only fire when the first cell is unpaused AND it then gets refreshed as part of auto refresh loop, indicating successful operation
-            done()
+        cy.intercept(
+          'POST',
+          `/api/v2/query?${new URLSearchParams({orgID})}`,
+          req => {
+            if (req.body.query === query1) {
+              // This will only fire when the first cell is unpaused AND it then gets refreshed as part of auto refresh loop, indicating successful operation
+              done()
+            }
+            if (req.body.query === query2) {
+              req.alias = 'secondCellQuery'
+            }
           }
-          if (req.body.query === query2) {
-            req.alias = 'secondCellQuery'
-          }
-        })
+        )
         cy.getByTestID('cell blah').within(() => {
           cy.getByTestID('giraffe-inner-plot')
           cy.getByTestID('cell-context--toggle').last().click()
@@ -441,14 +469,18 @@ describe('Dashboard refresh', () => {
           cy.getByTestID('giraffe-inner-plot')
         })
 
-        cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
-          if (req.body.query === query1) {
-            req.alias = 'refreshCellQuery'
+        cy.intercept(
+          'POST',
+          `/api/v2/query?${new URLSearchParams({orgID})}`,
+          req => {
+            if (req.body.query === query1) {
+              req.alias = 'refreshCellQuery'
+            }
+            if (req.body.query === query2) {
+              throw new Error('Refreshed the wrong cell')
+            }
           }
-          if (req.body.query === query2) {
-            throw new Error('Refreshed the wrong cell')
-          }
-        })
+        )
         cy.getByTestID('cell blah').within(() => {
           cy.getByTestID('giraffe-inner-plot')
           cy.getByTestID('cell-context--toggle').last().click()
@@ -516,14 +548,18 @@ describe('Dashboard refresh', () => {
           cy.getByTestID('giraffe-inner-plot')
         })
 
-        cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
-          if (req.body.query === query1) {
-            req.alias = 'refreshCellQuery'
+        cy.intercept(
+          'POST',
+          `/api/v2/query?${new URLSearchParams({orgID})}`,
+          req => {
+            if (req.body.query === query1) {
+              req.alias = 'refreshCellQuery'
+            }
+            if (req.body.query === query2) {
+              req.alias = 'refreshSecondQuery'
+            }
           }
-          if (req.body.query === query2) {
-            req.alias = 'refreshSecondQuery'
-          }
-        })
+        )
 
         cy.getByTestID('autorefresh-dropdown-refresh').click()
         cy.wait('@refreshCellQuery')

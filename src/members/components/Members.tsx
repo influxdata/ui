@@ -54,7 +54,7 @@ class Members extends PureComponent<Props, State> {
         <TabbedPageHeader
           childrenLeft={
             <SearchWidget
-              placeholderText="Filter members..."
+              placeholderText="Search members"
               searchTerm={searchTerm}
               onSearch={this.handleFilterChange}
             />

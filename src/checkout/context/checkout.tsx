@@ -28,11 +28,15 @@ import {getErrorMessage} from 'src/utils/api'
 import {event} from 'src/cloud/utils/reporting'
 
 // Thunks
+import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thunks'
 import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 
 // Selectors
 import {selectCurrentIdentity} from 'src/identity/selectors'
 import {shouldGetCredit250Experience} from 'src/me/selectors'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export type Props = {
   children: JSX.Element
@@ -311,6 +315,10 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         dispatch(notify(submitError()))
       } finally {
         setIsSubmitting(false)
+        // Refresh whether user is allowed to create new orgs after upgrading to PAYG.
+        if (isFlagEnabled('createDeleteOrgs')) {
+          dispatch(getOrgCreationAllowancesThunk())
+        }
       }
     },
     [

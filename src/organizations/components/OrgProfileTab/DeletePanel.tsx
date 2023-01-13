@@ -20,19 +20,20 @@ import {UsersContext} from 'src/users/context/users'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {
+  selectCurrentAccount,
   selectCurrentIdentity,
   selectOrgCreationAllowance,
   selectOrgSuspendable,
 } from 'src/identity/selectors'
 
-// Notifications
-import {deleteOrgWarning} from 'src/shared/copy/notifications'
-import {notify} from 'src/shared/actions/notifications'
-
 // Constants
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+
+// Notifications
+import {deleteOrgWarning} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {NotificationButtonElement} from 'src/types'
@@ -65,6 +66,7 @@ const DeleteOrgButton: FC = () => {
   const orgCanBeSuspended = useSelector(selectOrgSuspendable)
   const canCreateOrgs = useSelector(selectOrgCreationAllowance)
   const {users} = useContext(UsersContext)
+  const account = useSelector(selectCurrentAccount)
 
   const popoverRef = useRef()
 
@@ -84,18 +86,21 @@ const DeleteOrgButton: FC = () => {
     hidePopup()
   }
 
-  const shouldShowUsersWarning = users.length > 1
+  // only show warning for free accounts with multiple users
+  const freeAccountWithOtherUsers = account.type === 'free' && users.length > 1
 
   const handleSuspendOrg = () => {
     if (orgCanBeSuspended) {
-      if (shouldShowUsersWarning) {
+      if (freeAccountWithOtherUsers) {
         const buttonElement: NotificationButtonElement = onDismiss =>
           OrgUsersLink(`/orgs/${org.id}/members`, onDismiss)
         dispatch(notify(deleteOrgWarning(buttonElement)))
       } else {
         dispatch(
-          showOverlay('suspend-org-in-paid-account', null, () =>
-            dispatch(dismissOverlay())
+          showOverlay(
+            'suspend-org-in-paid-account',
+            {userCount: users.length || 0},
+            () => dispatch(dismissOverlay())
           )
         )
       }

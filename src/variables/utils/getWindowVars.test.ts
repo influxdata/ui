@@ -139,6 +139,7 @@ describe('utils/getWindowVars', () => {
         duration: '1m',
         type: 'selectable-duration',
         windowPeriod: 10,
+        sql: "time >= now() - interval '1 minute'",
       }
       expect(
         normalizeWindowPeriodForZoomRequery(
@@ -180,6 +181,7 @@ describe('utils/getWindowVars', () => {
         duration: '1m',
         type: 'selectable-duration',
         windowPeriod: 10,
+        sql: "time >= now() - interval '1 minute'",
       }
       const domain = [3000, 9000]
       const column = [
@@ -216,6 +218,7 @@ describe('utils/getWindowVars', () => {
         duration: '1m',
         type: 'selectable-duration',
         windowPeriod: 10,
+        sql: "time >= now() - interval '1 minute'",
       }
       const domain = [3000, 9000]
       let column = [
@@ -254,6 +257,7 @@ describe('utils/getWindowVars', () => {
         duration: '1m',
         type: 'selectable-duration',
         windowPeriod: 10,
+        sql: "time >= now() - interval '1 minute'",
       }
       let domain = [0, Infinity]
       let column = [Infinity, Infinity]
@@ -310,6 +314,7 @@ describe('utils/getWindowVars', () => {
         duration: '1m',
         type: 'selectable-duration',
         windowPeriod: 10,
+        sql: "time >= now() - interval '1 minute'",
       }
       let domain = [0, NaN]
       let column = [-Infinity, Infinity]

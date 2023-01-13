@@ -1,4 +1,5 @@
 import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
+import {Organization} from 'src/client'
 
 const deleteOrgsFeatureFlags = {
   createDeleteOrgs: true,
@@ -6,6 +7,15 @@ const deleteOrgsFeatureFlags = {
 
 // This variable stores the current IDPE orgid and syncs it with the quartz-mock orgid.
 let idpeOrgID: string
+
+const spoofStorageType = (storageType: Organization['defaultStorageType']) => {
+  cy.intercept('GET', 'api/v2/orgs', req => {
+    req.continue(res => {
+      res.body.orgs[0].defaultStorageType = storageType
+      res.send(res)
+    })
+  })
+}
 
 const getOrgCreationAllowance = (allowanceFixture: string) => {
   cy.intercept('GET', 'api/v2/quartz/allowances/orgs/create', {
@@ -162,6 +172,14 @@ const displayRemoveUsersWarning = () => {
   cy.url().should('include', `/members`)
 }
 
+const displayOtherUsersWarning = () => {
+  cy.getByTestID('delete-org--button').should('be.visible').click()
+  cy.get('.org-delete-overlay--warning-message').within(() => {
+    cy.contains('a', 'users in this organization').click()
+    cy.url().should('include', `/members`)
+  })
+}
+
 const upgradeAccount = () => {
   cy.getByTestID('delete-org--button').should('be.visible').click()
   cy.getByTestID('popover--dialog')
@@ -202,6 +220,35 @@ const upgradeAccount = () => {
     .should('be.visible')
     .contains('Your account upgrade inquiry has been submitted.')
 }
+
+describe('Storage types', () => {
+  it('identifies the storage type as iox in an iox org', () => {
+    spoofStorageType('iox')
+    setupTest({
+      accountType: 'pay_as_you_go',
+      canCreateOrgs: true,
+      orgHasOtherUsers: false,
+    })
+
+    cy.getByTestID('org-profile--labeled-data').within(() => {
+      cy.getByTestID('heading').contains('Storage Type')
+      cy.contains('IOx')
+    })
+  })
+
+  it('identifies the storage type as tsm in a tsm org', () => {
+    spoofStorageType('tsm')
+    setupTest({
+      accountType: 'contract',
+      canCreateOrgs: false,
+      orgHasOtherUsers: true,
+    })
+    cy.getByTestID('org-profile--labeled-data').within(() => {
+      cy.getByTestID('heading').contains('Storage Type')
+      cy.contains('TSM')
+    })
+  })
+})
 
 describe('Free account', () => {
   it('displays a `must remove users` warning if trying to delete an org with multiple users in a multi-org free account', () => {
@@ -252,7 +299,7 @@ describe('PAYG Account', () => {
     createOrg('pay_as_you_go')
   })
 
-  it('displays the `remove other users` popup if there are other orgs in the account, but the current org has other users in it', () => {
+  it('when deleting an org with multiple users in a multi-org payg account, delete org overlay shows how many other users the org has and clicking it takes user to /members page', () => {
     setupTest({
       accountType: 'pay_as_you_go',
       canCreateOrgs: false,
@@ -260,7 +307,7 @@ describe('PAYG Account', () => {
       orgIsSuspendable: true,
     })
 
-    displayRemoveUsersWarning()
+    displayOtherUsersWarning()
   })
 
   it('allows the user to delete an org if there are other orgs in the account, and they are the only user in the current org', () => {
@@ -298,7 +345,7 @@ describe('Contract Account', () => {
     createOrg('contract')
   })
 
-  it('displays the `remove other users` popup if there are other orgs in the account, but the current org has other users in it', () => {
+  it('when deleting an org with multiple users in a multi-org contract account, delete org overlay shows how many other users the org has and clicking it takes user to /members page ', () => {
     setupTest({
       accountType: 'contract',
       canCreateOrgs: false,
@@ -306,7 +353,7 @@ describe('Contract Account', () => {
       orgIsSuspendable: true,
     })
 
-    displayRemoveUsersWarning()
+    displayOtherUsersWarning()
   })
 
   it('allows the user to delete an org if there are other orgs in the account, and they are the only user in the current org', () => {

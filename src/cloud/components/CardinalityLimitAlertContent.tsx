@@ -4,10 +4,10 @@ import {useDispatch, useSelector} from 'react-redux'
 import classnames from 'classnames'
 import {
   Button,
-  FlexBox,
-  ComponentSize,
-  JustifyContent,
   ComponentColor,
+  ComponentSize,
+  FlexBox,
+  JustifyContent,
 } from '@influxdata/clockface'
 
 // Components
@@ -30,11 +30,11 @@ interface Props {
 }
 
 interface UpgradeProps {
-  type: string
-  link: string
   className?: string
-  limitText?: string
   location?: string
+  limitText?: string
+  link: string
+  type: string
 }
 
 interface UpgradeMessageProps {
@@ -90,9 +90,10 @@ export const UpgradeContent: FC<UpgradeProps> = ({
   return (
     <div className={`${className} rate-alert--content__free`}>
       <FlexBox
-        justifyContent={JustifyContent.SpaceBetween}
         className="rate-alert--button"
+        justifyContent={JustifyContent.SpaceBetween}
         stretchToFitWidth={true}
+        testID="rate-alert--banner"
       >
         <UpgradeMessage
           {...{isCredit250ExperienceActive, limitText, link, type}}
@@ -115,30 +116,37 @@ export const UpgradeContent: FC<UpgradeProps> = ({
   )
 }
 
-export const RateLimitAlertContent: FC<Props> = ({className, location}) => {
+export const CardinalityLimitAlertContent: FC<Props> = ({
+  className,
+  location,
+}) => {
   const dispatch = useDispatch()
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
-  const rateLimitAlertContentClass = classnames('rate-alert--content', {
+  const cardinalityLimitAlertContentClass = classnames('rate-alert--content', {
     [`${className}`]: className,
   })
 
   const handleShowOverlay = () => {
-    dispatch(showOverlay('rate-limit', null, () => dispatch(dismissOverlay)))
+    dispatch(
+      showOverlay('cardinality-limit', null, () => dispatch(dismissOverlay))
+    )
   }
 
   if (showUpgradeButton) {
     return (
       <UpgradeContent
-        type="series cardinality"
+        className={cardinalityLimitAlertContentClass}
         link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/"
-        className={rateLimitAlertContentClass}
         location={location}
+        type="series cardinality"
       />
     )
   }
 
   return (
-    <div className={`${rateLimitAlertContentClass} rate-alert--content__payg`}>
+    <div
+      className={`${cardinalityLimitAlertContentClass} rate-alert--content__payg`}
+    >
       <span>
         Data in has stopped because you've hit the{' '}
         <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/">

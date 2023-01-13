@@ -1,7 +1,8 @@
 import {MonacoLanguageClient} from 'monaco-languageclient'
-import isEqual from 'lodash/isEqual'
 import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
 import {format_from_js_file} from 'src/languageSupport/languages/flux/parser'
+
+import {ConnectionManager as AgnosticConnectionManager} from 'src/languageSupport/languages/agnostic/connection'
 
 // handling variables
 import {EditorType, Variable} from 'src/types'
@@ -10,7 +11,6 @@ import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 // handling schema composition
 import {RecursivePartial, TagKeyValuePair} from 'src/types'
 import {
-  DEFAULT_SELECTION,
   DEFAULT_FLUX_EDITOR_TEXT,
   CompositionSelection,
 } from 'src/dataExplorer/context/persistance'
@@ -29,7 +29,6 @@ import {
   LspClientCommand,
   ActionItem,
   ActionItemCommand,
-  LspRange,
 } from 'src/languageSupport/languages/flux/lsp/types'
 
 // Utils
@@ -38,30 +37,18 @@ import {notify} from 'src/shared/actions/notifications'
 import {
   compositionUpdateFailed,
   compositionEnded,
-  oldSession,
 } from 'src/shared/copy/notifications'
 
 const APPROXIMATE_LSP_STARTUP_DELAY = 3000
 const APPROXIMATE_EDITOR_SET_VALUE_DELAY = 1000
 
-export class ConnectionManager {
+export class ConnectionManager extends AgnosticConnectionManager {
   private _worker: Worker
-  private _editor: EditorType
-  private _model: MonacoTypes.editor.IModel
   private _preludeModel: MonacoTypes.editor.IModel
   private _variables: Variable[] = []
-  private _compositionStyle: string[] = []
-  private _session: CompositionSelection = JSON.parse(
-    JSON.stringify(DEFAULT_SELECTION)
-  )
-  private _callbackSetSession: (
-    schema: RecursivePartial<CompositionSelection>
-  ) => void = () => null
-  private _dispatcher = _ => {}
-  private _first_load = true
-  private _compositionRange: LspRange
 
   constructor(worker: Worker) {
+    super()
     this._worker = worker
     // note: LSP handle multiple documents, but does so in alphabetical order
     // create this model/uri first
@@ -93,8 +80,7 @@ export class ConnectionManager {
   }
 
   subscribeToModel(editor: EditorType) {
-    this._editor = editor
-    this._model = editor.getModel()
+    super.subscribeToModel(editor)
 
     this._model.onDidChangeContent(() => this.updatePreludeModel())
     this._worker.postMessage(
@@ -140,59 +126,6 @@ export class ConnectionManager {
       return
     }
     this._worker.postMessage(msg)
-  }
-
-  _setSessionSync(synced: boolean) {
-    this._callbackSetSession({
-      composition: {synced},
-    })
-  }
-
-  _compositionSyncStyle(startLine: number, endLine: number, synced: boolean) {
-    const classNamePrefix = synced
-      ? 'composition-sync--on'
-      : 'composition-sync--off'
-
-    // Customize the full width of Monaco editor margin using API `marginClassName`
-    // https://github.com/microsoft/monaco-editor/blob/35eb0ef/website/typedoc/monaco.d.ts#L1533
-    const startLineStyle = {
-      range: new MonacoTypes.Range(startLine, 1, startLine, 1),
-      options: {
-        marginClassName: `${classNamePrefix}--first`,
-      },
-    }
-    const middleLinesStyle = {
-      range: new MonacoTypes.Range(startLine, 1, endLine, 1),
-      options: {
-        marginClassName: classNamePrefix,
-      },
-    }
-    const endLineStyle = {
-      range: new MonacoTypes.Range(endLine, 1, endLine, 1),
-      options: {
-        marginClassName: `${classNamePrefix}--last`,
-      },
-    }
-    return [startLineStyle, middleLinesStyle, endLineStyle]
-  }
-
-  _setEditorBlockStyle(range: LspRange | null, synced: boolean = false) {
-    this._compositionRange = range
-    const shouldRemoveAllStyles = range == null
-
-    this._compositionStyle = this._editor.deltaDecorations(
-      this._compositionStyle,
-      shouldRemoveAllStyles
-        ? []
-        : this._compositionSyncStyle(range.start.line, range.end.line, synced)
-    )
-  }
-
-  _isNewScript(
-    schema: CompositionSelection,
-    previousState: CompositionSelection
-  ): boolean {
-    return previousState.bucket != null && schema.bucket == null
   }
 
   _updateLsp(
@@ -279,94 +212,20 @@ export class ConnectionManager {
     }
   }
 
-  _diffSchemaChange(
-    schema: CompositionSelection,
-    previousState: CompositionSelection
-  ) {
-    const toAdd: Partial<CompositionSelection> = {}
-    const toRemove: Partial<CompositionSelection> = {}
-    let shouldRemoveDefaultMsg = false
-
-    if (this._isNewScript(schema, previousState)) {
-      // no action to take.
-      // `textDocument/didChange` --> will inform LSP to drop composition
-      return {toAdd, toRemove, shouldRemoveDefaultMsg}
-    }
-
-    if (schema.bucket && previousState.bucket != schema.bucket) {
-      toAdd.bucket = schema.bucket
-      if (this._model.getValue() == DEFAULT_FLUX_EDITOR_TEXT) {
-        shouldRemoveDefaultMsg = true
-      }
-    }
-    if (schema.measurement && previousState.measurement != schema.measurement) {
-      toAdd.measurement = schema.measurement
-    }
-    if (!isEqual(schema.fields, previousState.fields)) {
-      const fieldsToRemove = previousState.fields.filter(
-        f => !schema.fields.includes(f)
-      )
-      if (fieldsToRemove.length) {
-        toRemove.fields = fieldsToRemove
-      }
-      const fieldsToAdd = schema.fields.filter(
-        f => !previousState.fields.includes(f)
-      )
-      if (fieldsToAdd.length) {
-        toAdd.fields = fieldsToAdd
-      }
-    }
-    if (!isEqual(schema.tagValues, previousState.tagValues)) {
-      const tagValuesToRemove = previousState.tagValues.filter(
-        ({key, value}) =>
-          !schema.tagValues.some(pair => pair.value == value && pair.key == key)
-      )
-      if (tagValuesToRemove.length) {
-        toRemove.tagValues = tagValuesToRemove
-      }
-      const tagValuesToAdd = schema.tagValues.filter(
-        ({key, value}) =>
-          !previousState.tagValues.some(
-            pair => pair.value == value && pair.key == key
-          )
-      )
-      if (tagValuesToAdd.length) {
-        toAdd.tagValues = tagValuesToAdd
-      }
-    }
-
-    return {toAdd, toRemove, shouldRemoveDefaultMsg}
-  }
-
   onSchemaSessionChange(schema: CompositionSelection, sessionCb, dispatch) {
-    if (!schema.composition) {
-      dispatch(notify(oldSession()))
+    const {shouldContinue, previousState} = this._updateLocalState(
+      schema,
+      sessionCb,
+      dispatch
+    )
+    if (!shouldContinue) {
       return
     }
 
-    this._dispatcher = dispatch
-    this._callbackSetSession = sessionCb
-    const previousState = {
-      ...this._session,
-      composition: {...this._session?.composition},
-    }
-
-    if (!schema.composition.synced) {
-      this._session.composition.synced = false
-      this._setEditorBlockStyle(this._compositionRange)
-      return
-    }
-    const syncTurnedBackOn =
-      schema.composition.synced && !previousState.composition.synced
-    if (syncTurnedBackOn) {
-      this._setEditorBlockStyle(this._compositionRange, true)
-    }
-
-    // don't update the `this._session` until here. Since used to diffChange.
-    this._session = {...schema, composition: {...schema.composition}}
     const {toAdd, toRemove, shouldRemoveDefaultMsg} = this._diffSchemaChange(
       schema,
-      previousState
+      previousState,
+      DEFAULT_FLUX_EDITOR_TEXT
     )
 
     const hasMultipleItemsToSync =
@@ -478,9 +337,5 @@ export class ConnectionManager {
       default:
         return
     }
-  }
-
-  dispose() {
-    this._model.onDidChangeContent(null)
   }
 }

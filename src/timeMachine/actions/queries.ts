@@ -262,9 +262,6 @@ export const runTimeMachineQuery = (
   event('executeQueries query', {}, {query: queryText})
 
   const orgID = getOrg(state).id
-  if (getOrg(state).id === orgID) {
-    event('orgData_queried')
-  }
 
   const extern = buildUsedVarsOption(queryText, allVariables)
   event('runQuery', {context: 'timeMachine'})
@@ -277,6 +274,7 @@ export const executeQueries =
     const executeQueriesStartTime = Date.now()
 
     const state = getState()
+    const orgID = getOrg(state).id
 
     const activeTimeMachine = getActiveTimeMachine(state)
     const queries = activeTimeMachine.view.properties.queries.filter(
@@ -300,8 +298,6 @@ export const executeQueries =
       const startDate = Date.now()
 
       const pendingResults = queries.map(({text}) => {
-        const orgID = getOrg(state).id
-
         const queryID = generateHashedQueryID(text, allVariables, orgID)
         if (isCurrentPageDashboard(state)) {
           // reset any existing matching query in the cache
@@ -376,9 +372,6 @@ export const runDownloadQuery = () => async (dispatch, getState: GetState) => {
     event('executeQueries query', {}, {query: queryText})
 
     const orgID = getOrg(state).id
-    if (getOrg(state).id === orgID) {
-      event('orgData_queried')
-    }
 
     const extern = buildUsedVarsOption(queryText, allVariables)
     const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`

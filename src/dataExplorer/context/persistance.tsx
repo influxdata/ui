@@ -194,10 +194,6 @@ export const PersistanceProvider: FC = ({children}) => {
         ...(selection.composition || {}),
         ...(newSelection.composition || {}),
       }
-      if (resource?.language === LanguageType.SQL) {
-        // cannot sync for sql support
-        composition.synced = false
-      }
       const nextState: CompositionSelection = {
         ...selection,
         ...newSelection,

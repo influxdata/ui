@@ -38,7 +38,7 @@ import {TimeRange} from 'src/types'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
-import {getOrg, isOrgIOx} from 'src/organizations/selectors'
+import {getOrg} from 'src/organizations/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
@@ -116,7 +116,6 @@ const ResultsPane: FC = () => {
     resource,
   } = useContext(PersistanceContext)
   const orgID = useSelector(getOrg)?.id
-  const isIoxOrg = useSelector(isOrgIOx)
   const language = resource?.language ?? LanguageType.FLUX
   const dispatch = useDispatch()
 
@@ -276,9 +275,7 @@ const ResultsPane: FC = () => {
                 disabled={submitButtonDisabled}
                 download={downloadByServiceWorker}
               />
-              {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
-                <NewDatePicker />
-              )}
+              <NewDatePicker />
               <SubmitQueryButton
                 className="submit-btn"
                 text="Run"

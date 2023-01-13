@@ -4,12 +4,8 @@ import {get} from 'lodash'
 // Types
 import {AppState, Organization} from 'src/types'
 
-interface OrganizationWithStorageType extends Organization {
-  defaultStorageType?: string
-}
-
 export const isOrgIOx = (state: AppState): boolean => {
-  const org: OrganizationWithStorageType = getOrg(state)
+  const org: Organization = getOrg(state)
 
   return Boolean(
     org &&

@@ -124,9 +124,9 @@ export const BucketProvider: FC<Props> = ({
     }
 
     fetch(
-      `${scope?.region}/api/v2/buckets?limit=${CLOUD ? -1 : 100}&orgID=${
-        scope?.org
-      }`,
+      `${scope?.region}/api/v2/buckets?limit=${
+        CLOUD ? -1 : 100
+      }&${new URLSearchParams({orgID: scope?.org})}`,
       {
         method: 'GET',
         headers,

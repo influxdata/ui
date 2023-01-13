@@ -13,7 +13,13 @@ import {UsersContext} from 'src/users/context/users'
 // Constants
 import {roles} from 'src/users/constants'
 
-const UserInviteSubmit: FC = () => {
+// Styles
+const buttonStyle = {
+  marginLeft: '10px',
+  maxWidth: '100px',
+}
+
+export const UserInviteSubmit: FC = () => {
   const {draftInvite} = useContext(UsersContext)
 
   const isRoleSelected = roles.includes(draftInvite.role)
@@ -37,14 +43,12 @@ const UserInviteSubmit: FC = () => {
   return (
     <Button
       icon={IconFont.Plus_New}
-      text="Add &amp; Invite"
+      text="Add"
       color={ComponentColor.Primary}
+      style={buttonStyle}
       type={ButtonType.Submit}
       titleText={getTitleText()}
-      className="user-list-invite--button"
       testID="user-list-invite--button"
     />
   )
 }
-
-export default UserInviteSubmit

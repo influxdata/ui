@@ -26,7 +26,6 @@ import {FluxResult} from 'src/types/flows'
 import './Results.scss'
 import {bytesFormatter} from 'src/shared/copy/notifications'
 
-// simplified version migrated from src/flows/pipes/Table/view.tsx
 const QueryStat: FC = () => {
   const {result} = useContext(ResultsContext)
 
@@ -72,35 +71,12 @@ const EmptyResults: FC = () => {
   )
 }
 
-const WrappedOptions: FC = () => {
-  const {result} = useContext(ResultsContext)
-  const {view, setView} = useContext(ResultsViewContext)
-
-  return (
-    <ViewOptions
-      properties={view.properties}
-      results={result.parsed}
-      update={update => {
-        setView({
-          ...view,
-          properties: {
-            ...view.properties,
-            ...update,
-          },
-        })
-      }}
-    />
-  )
-}
-
-const Results: FC = () => {
-  const [search, setSearch] = useState('')
-  const {range} = useContext(PersistanceContext)
+const TableResults: FC<{search: string}> = ({search}) => {
   const {result, status} = useContext(ResultsContext)
-  const {view, setView} = useContext(ResultsViewContext)
-  const {launch} = useContext(SidebarContext)
+  const {range} = useContext(PersistanceContext)
+
   const res = useMemo(() => {
-    if (view.state === 'graph' || !search.trim() || !result?.parsed) {
+    if (!search.trim() || !result?.parsed) {
       return result?.parsed
     }
 
@@ -147,46 +123,74 @@ const Results: FC = () => {
     dupped.table.length = newLen
 
     return dupped as FluxResult['parsed']
-  }, [search, result?.parsed, view.state])
+  }, [search, result?.parsed])
 
-  let resultView
+  return (
+    <div className="data-explorer-results--view">
+      <View
+        loading={status}
+        properties={
+          {
+            type: 'simple-table',
+            showAll: false,
+          } as SimpleTableViewProperties
+        }
+        result={res}
+        timeRange={range}
+        hideTimer
+      />
+    </div>
+  )
+}
 
-  if (status === RemoteDataState.NotStarted) {
-    resultView = <EmptyResults />
-  } else {
-    if (view.state === 'table') {
-      resultView = (
-        <div className="data-explorer-results--view">
-          <View
-            loading={status}
-            properties={
-              {
-                type: 'simple-table',
-                showAll: false,
-              } as SimpleTableViewProperties
-            }
-            result={res}
-            timeRange={range}
-            hideTimer
-          />
-        </div>
-      )
-    } else {
-      resultView = (
-        <div className="data-explorer-results--view">
-          <View
-            loading={status}
-            properties={view.properties}
-            result={res}
-            timeRange={range}
-            hideTimer
-          />
-        </div>
-      )
-    }
+const GraphResults: FC = () => {
+  const {view} = useContext(ResultsViewContext)
+  const {result, status} = useContext(ResultsContext)
+  const {range} = useContext(PersistanceContext)
+
+  return (
+    <div className="data-explorer-results--view">
+      <View
+        loading={status}
+        properties={view.properties}
+        result={result?.parsed}
+        timeRange={range}
+        hideTimer
+      />
+    </div>
+  )
+}
+
+const WrappedOptions: FC = () => {
+  const {result} = useContext(ResultsContext)
+  const {view, setView} = useContext(ResultsViewContext)
+
+  return (
+    <ViewOptions
+      properties={view.properties}
+      results={result.parsed}
+      update={update => {
+        setView({
+          ...view,
+          properties: {
+            ...view.properties,
+            ...update,
+          },
+        })
+      }}
+    />
+  )
+}
+
+const GraphHeader: FC = () => {
+  const {view, setView} = useContext(ResultsViewContext)
+  const {result} = useContext(ResultsContext)
+  const {launch} = useContext(SidebarContext)
+
+  const launcher = () => {
+    launch(<WrappedOptions />)
   }
 
-  const dataExists = res && Object.entries(res).length
   const updateType = viewType => {
     setView({
       state: 'graph',
@@ -194,11 +198,61 @@ const Results: FC = () => {
     })
   }
 
-  const launcher = () => {
-    launch(<WrappedOptions />)
+  const dataExists = !!result?.parsed
+
+  return (
+    <>
+      <ViewTypeDropdown
+        viewType={view.properties.type}
+        onUpdateType={updateType}
+      />
+      <Button
+        text="Customize"
+        icon={IconFont.CogSolid_New}
+        onClick={launcher}
+        status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
+        color={ComponentColor.Default}
+        titleText={
+          dataExists ? 'Configure Visualization' : 'No data to visualize yet'
+        }
+        className="de-config-visualization-button"
+      />
+    </>
+  )
+}
+
+const Results: FC = () => {
+  const [search, setSearch] = useState('')
+  const {status} = useContext(ResultsContext)
+  const {view, setView} = useContext(ResultsViewContext)
+
+  let resultView
+
+  if (status === RemoteDataState.NotStarted) {
+    resultView = <EmptyResults />
+  } else {
+    if (view.state === 'table') {
+      resultView = <TableResults search={search} />
+    } else {
+      resultView = <GraphResults />
+    }
   }
 
-  const tableHeader =
+  const updateViewState = state => {
+    if (state === 'graph') {
+      setView({
+        state: 'graph',
+        properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
+      })
+    } else {
+      setView({
+        state: 'table',
+        properties: SUPPORTED_VISUALIZATIONS['simple-table'].initial,
+      })
+    }
+  }
+
+  const Header =
     view.state === 'table' ? (
       <>
         <div style={{width: '300px'}}>
@@ -215,52 +269,16 @@ const Results: FC = () => {
         </div>
         <QueryStat />
       </>
-    ) : null
-
-  const vizHeader =
-    view.state === 'graph' ? (
-      <>
-        <ViewTypeDropdown
-          viewType={view.properties.type}
-          onUpdateType={updateType}
-        />
-        <Button
-          text="Customize"
-          icon={IconFont.CogSolid_New}
-          onClick={launcher}
-          status={
-            dataExists ? ComponentStatus.Default : ComponentStatus.Disabled
-          }
-          color={ComponentColor.Default}
-          titleText={
-            dataExists ? 'Configure Visualization' : 'No data to visualize yet'
-          }
-          className="de-config-visualization-button"
-        />
-      </>
-    ) : null
-
-  const updateViewState = state => {
-    if (state === 'graph') {
-      setView({
-        state: 'graph',
-        properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
-      })
-    } else {
-      setView({
-        state: 'table',
-        properties: SUPPORTED_VISUALIZATIONS['simple-table'].initial,
-      })
-    }
-  }
+    ) : (
+      <GraphHeader />
+    )
 
   return (
     <div className="data-explorer-results">
       <FlexBox direction={FlexDirection.Column} style={{height: '100%'}}>
         <div className="data-explorer-results--header">
           <FlexBox>
-            {tableHeader}
-            {vizHeader}
+            {Header}
             <div className="data-explorer-results--timezone">
               <SelectGroup style={{marginRight: 12}}>
                 <SelectGroup.Option

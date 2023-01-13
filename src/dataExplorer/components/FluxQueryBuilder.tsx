@@ -224,11 +224,11 @@ export default () => (
   <QueryProvider>
     <ResultsProvider>
       <ResultsViewProvider>
-        <ChildResultsProvider>
-          <PersistanceProvider>
+        <PersistanceProvider>
+          <ChildResultsProvider>
             <FluxQueryBuilder />
-          </PersistanceProvider>
-        </ChildResultsProvider>
+          </ChildResultsProvider>
+        </PersistanceProvider>
       </ResultsViewProvider>
     </ResultsProvider>
   </QueryProvider>

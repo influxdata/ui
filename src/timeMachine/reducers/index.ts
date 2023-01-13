@@ -5,7 +5,6 @@ import {produce} from 'immer'
 // Utils
 import {createView, defaultViewQuery} from 'src/views/helpers'
 import {isConfigValid, buildQuery} from 'src/timeMachine/utils/queryBuilder'
-import {is_valid_flux} from 'src/languageSupport/languages/flux/parser'
 
 // Constants
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
@@ -1128,15 +1127,7 @@ export const timeMachineReducer = (
     case 'SAVE_DRAFT_QUERIES': {
       return produce(state, draftState => {
         draftState.view.properties.queries = draftState.draftQueries.filter(
-          q => {
-            if (!is_valid_flux(q.text)) {
-              console.error('Invalid flux', {
-                query: q.text,
-              })
-              return false
-            }
-            return !q.hidden
-          }
+          q => !q.hidden
         )
       })
     }

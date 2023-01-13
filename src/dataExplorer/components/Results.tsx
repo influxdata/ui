@@ -12,6 +12,7 @@ import {
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
 import {ResultsContext} from 'src/dataExplorer/context/results'
 import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
+import {ChildResultsContext} from 'src/dataExplorer/context/results/childResults'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
@@ -145,7 +146,7 @@ const TableResults: FC<{search: string}> = ({search}) => {
 
 const GraphResults: FC = () => {
   const {view} = useContext(ResultsViewContext)
-  const {result, status} = useContext(ResultsContext)
+  const {result, status} = useContext(ChildResultsContext)
   const {range} = useContext(PersistanceContext)
 
   return (
@@ -162,6 +163,7 @@ const GraphResults: FC = () => {
 }
 
 const WrappedOptions: FC = () => {
+  // use parent `results` so all metadata is present for the viz options
   const {result} = useContext(ResultsContext)
   const {view, setView} = useContext(ResultsViewContext)
 
@@ -185,6 +187,7 @@ const WrappedOptions: FC = () => {
 const GraphHeader: FC = () => {
   const {view, setView} = useContext(ResultsViewContext)
   const {result} = useContext(ResultsContext)
+  const {result: subQueryResult} = useContext(ChildResultsContext)
   const {launch} = useContext(SidebarContext)
 
   const launcher = () => {
@@ -199,6 +202,14 @@ const GraphHeader: FC = () => {
   }
 
   const dataExists = !!result?.parsed
+  const subqueryReturnsData = !!subQueryResult?.parsed
+  let titleText = 'Configure Visualization'
+  if (!dataExists) {
+    titleText = 'No data to visualize yet'
+  }
+  if (!subqueryReturnsData) {
+    titleText = 'Graph customization options returned no data'
+  }
 
   return (
     <>
@@ -212,9 +223,7 @@ const GraphHeader: FC = () => {
         onClick={launcher}
         status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
         color={ComponentColor.Default}
-        titleText={
-          dataExists ? 'Configure Visualization' : 'No data to visualize yet'
-        }
+        titleText={titleText}
         className="de-config-visualization-button"
       />
     </>

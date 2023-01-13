@@ -20,6 +20,7 @@ import {
 import {QueryProvider} from 'src/shared/contexts/query'
 import {EditorProvider} from 'src/shared/contexts/editor'
 import {ResultsProvider, ResultsContext} from 'src/dataExplorer/context/results'
+import {ChildResultsProvider} from 'src/dataExplorer/context/results/childResults'
 import {ResultsViewProvider} from 'src/dataExplorer/context/resultsView'
 import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
 import {
@@ -222,11 +223,13 @@ const FluxQueryBuilder: FC = () => {
 export default () => (
   <QueryProvider>
     <ResultsProvider>
-      <ResultsViewProvider>
-        <PersistanceProvider>
-          <FluxQueryBuilder />
-        </PersistanceProvider>
-      </ResultsViewProvider>
+      <ChildResultsProvider>
+        <ResultsViewProvider>
+          <PersistanceProvider>
+            <FluxQueryBuilder />
+          </PersistanceProvider>
+        </ResultsViewProvider>
+      </ChildResultsProvider>
     </ResultsProvider>
   </QueryProvider>
 )

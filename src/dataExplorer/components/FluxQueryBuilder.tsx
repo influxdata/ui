@@ -19,7 +19,8 @@ import {
 } from '@influxdata/clockface'
 import {QueryProvider} from 'src/shared/contexts/query'
 import {EditorProvider} from 'src/shared/contexts/editor'
-import {ResultsProvider} from 'src/dataExplorer/context/results'
+import {ResultsProvider, ResultsContext} from 'src/dataExplorer/context/results'
+import {ResultsViewProvider} from 'src/dataExplorer/context/resultsView'
 import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
 import {
   PersistanceProvider,
@@ -31,7 +32,6 @@ import Sidebar from 'src/dataExplorer/components/Sidebar'
 import Schema from 'src/dataExplorer/components/Schema'
 import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 import {QueryContext} from 'src/shared/contexts/query'
-import {ResultsContext} from 'src/dataExplorer/context/results'
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {RemoteDataState} from 'src/types'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
@@ -222,9 +222,11 @@ const FluxQueryBuilder: FC = () => {
 export default () => (
   <QueryProvider>
     <ResultsProvider>
-      <PersistanceProvider>
-        <FluxQueryBuilder />
-      </PersistanceProvider>
+      <ResultsViewProvider>
+        <PersistanceProvider>
+          <FluxQueryBuilder />
+        </PersistanceProvider>
+      </ResultsViewProvider>
     </ResultsProvider>
   </QueryProvider>
 )

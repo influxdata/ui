@@ -10,11 +10,11 @@ import {
 // Components
 import UsageProvider from 'src/usage/context/usage'
 import UsageResults from 'src/usage/UsageResults'
-import RateLimits from 'src/usage/RateLimits'
+import {RateLimits} from 'src/usage/RateLimits'
 import BillingStatsPanel from 'src/usage/BillingStatsPanel'
 import UsageTimeRangeDropdown from 'src/usage/UsageTimeRangeDropdown'
 
-const UsageToday: FC = () => (
+export const UsageToday: FC = () => (
   <FlexBox
     alignItems={AlignItems.Stretch}
     direction={FlexDirection.Column}
@@ -30,5 +30,3 @@ const UsageToday: FC = () => (
     </UsageProvider>
   </FlexBox>
 )
-
-export default UsageToday

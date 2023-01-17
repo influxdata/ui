@@ -111,7 +111,10 @@ const OrgOverlay: FC = () => {
             <Panel.Body>
               <Grid>
                 <Grid.Row>
-                  <Grid.Column widthMD={Columns.Four}>
+                  <Grid.Column
+                    widthMD={Columns.Four}
+                    testID="org-overlay-orgID"
+                  >
                     <label className="org-overlay-detail--text">
                       Organization ID
                     </label>

@@ -113,7 +113,7 @@ describe('Script Builder', () => {
           DEFAULT_FLUX_EDITOR_TEXT
         )
       })
-      return cy.getByTestID('flux-sync--toggle').then($toggle => {
+      return cy.getByTestID('editor-sync--toggle').then($toggle => {
         if (!$toggle.hasClass('active')) {
           $toggle.click()
         }
@@ -191,7 +191,7 @@ describe('Script Builder', () => {
         })
 
         clearSession()
-        cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+        cy.getByTestID('editor-sync--toggle').should('have.class', 'active')
         cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
       })
     })
@@ -301,8 +301,8 @@ describe('Script Builder', () => {
         })
 
         cy.log('turn off composition sync')
-        cy.getByTestID('flux-sync--toggle').click()
-        cy.getByTestID('flux-sync--toggle').should('not.have.class', 'active')
+        cy.getByTestID('editor-sync--toggle').click()
+        cy.getByTestID('editor-sync--toggle').should('not.have.class', 'active')
         cy.log('select empty dataset')
         cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
           from(bucket: "defbuck3") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)

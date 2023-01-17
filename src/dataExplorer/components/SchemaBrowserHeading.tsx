@@ -57,10 +57,10 @@ const SchemaBrowserHeading: FC = () => {
       <div className="schema-browser-heading--text">Schema Browser</div>
       <FlexBox className="flux-sync">
         <SlideToggle
-          className="flux-sync--toggle"
+          className="editor-sync--toggle"
           active={fluxSync}
           onChange={handleFluxSyncToggle}
-          testID="flux-sync--toggle"
+          testID="editor-sync--toggle"
         />
         <InputLabel className="flux-sync--label">
           <SelectorTitle

@@ -107,7 +107,7 @@ describe('Editor+LSP communication', () => {
             .click()
           cy.getByTestID('script-dropdown__flux').should('be.visible').click()
           cy.getByTestID('overlay--container').within(() => {
-            cy.getByTestID('flux-query-builder--no-save')
+            cy.getByTestID('script-query-builder--no-save')
               .should('be.visible')
               .click()
           })

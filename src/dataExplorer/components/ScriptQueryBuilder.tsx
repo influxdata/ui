@@ -180,7 +180,7 @@ const ScriptQueryBuilder: FC = () => {
                       : ComponentStatus.Disabled
                   }
                   text="Save"
-                  testID="flux-query-builder--save-script"
+                  testID="script-query-builder--save-script"
                   icon={IconFont.Save}
                 />
                 {resource?.data?.id && (

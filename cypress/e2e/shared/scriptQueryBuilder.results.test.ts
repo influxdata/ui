@@ -94,7 +94,7 @@ describe('Script Builder', () => {
             .click()
         })
       } else {
-        cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
+        cy.getByTestID('script-query-builder--save-script').then($saveButton => {
           if (!$saveButton.is(':disabled')) {
             cy.getByTestID('flux-query-builder--new-script')
               .should('be.visible')

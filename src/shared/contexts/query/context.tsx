@@ -49,6 +49,12 @@ export interface QueryOptions {
   language?: LanguageType
   bucket?: OwnBucket
   rawBlob?: boolean
+  sqlQueryModifiers?: SqlQueryModifiers
+}
+
+export interface SqlQueryModifiers {
+  prepend?: string
+  append?: string
 }
 
 export interface QueryScope {
@@ -102,7 +108,7 @@ const buildQueryRequest = (
 
   let query = text
   if (language == LanguageType.SQL) {
-    query = sqlAsFlux(text, options?.bucket)
+    query = sqlAsFlux(text, options?.bucket, options?.sqlQueryModifiers)
   } else if (mechanism === OverrideMechanism.Inline) {
     query = simplify(text, override?.vars ?? {}, override?.params ?? {})
   }

@@ -17,7 +17,7 @@ import {CLOUD} from 'src/shared/constants'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
-import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {ResultsContext} from 'src/dataExplorer/context/results'
 import {QueryContext} from 'src/shared/contexts/query'
 import {debouncer} from 'src/dataExplorer/shared/utils'
 

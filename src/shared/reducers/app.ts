@@ -14,7 +14,7 @@ export interface AppState {
     showTemplateControlBar: boolean
     timeZone: TimeZone
     navBarState: NavBarState
-    fluxQueryBuilder: boolean
+    scriptQueryBuilder: boolean
     theme: Theme
     versionInfo: VersionInfo
     flowsCTA: FlowsCTA
@@ -33,7 +33,7 @@ const initialState: AppState = {
     showTemplateControlBar: false,
     timeZone: 'Local',
     navBarState: 'collapsed',
-    fluxQueryBuilder: false,
+    scriptQueryBuilder: false,
     versionInfo: {version: '', commit: ''},
     flowsCTA: {explorer: true, tasks: true, alerts: true},
     subscriptionsCertificateInterest: false,
@@ -99,8 +99,8 @@ const appPersistedReducer = (
       return {...state, timeZone}
     }
 
-    case ActionTypes.SetFluxQueryBuilder: {
-      return {...state, fluxQueryBuilder: action.active}
+    case ActionTypes.SetScriptQueryBuilder: {
+      return {...state, scriptQueryBuilder: action.active}
     }
 
     case ActionTypes.SetNavBarState: {

@@ -43,20 +43,21 @@ import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 const DataExplorerPageHeader: FC = () => {
-  const {fluxQueryBuilder, setFluxQueryBuilder} = useContext(AppSettingContext)
+  const {scriptQueryBuilder, setScriptQueryBuilder} =
+    useContext(AppSettingContext)
   const {resource, save} = useContext(PersistanceContext)
   const history = useHistory()
 
   const toggleSlider = () => {
-    event('toggled new query builder', {active: `${!fluxQueryBuilder}`})
-    if (!fluxQueryBuilder) {
+    event('toggled new query builder', {active: `${!scriptQueryBuilder}`})
+    if (!scriptQueryBuilder) {
       history.push({
         search: SCRIPT_EDITOR_PARAMS,
       })
     } else {
       history.push({search: null})
     }
-    setFluxQueryBuilder(!fluxQueryBuilder)
+    setScriptQueryBuilder(!scriptQueryBuilder)
   }
 
   const handleRename = (name: string) => {
@@ -64,7 +65,7 @@ const DataExplorerPageHeader: FC = () => {
     save(resource?.language)
   }
 
-  const showNewExplorer = fluxQueryBuilder && isFlagEnabled('newDataExplorer')
+  const showNewExplorer = scriptQueryBuilder && isFlagEnabled('newDataExplorer')
 
   let pageTitle = <Page.Title title="Data Explorer" />
 
@@ -93,7 +94,7 @@ const DataExplorerPageHeader: FC = () => {
           <FlexBox margin={ComponentSize.Medium}>
             <InputLabel>&#10024; Try New Script Editor</InputLabel>
             <SlideToggle
-              active={fluxQueryBuilder}
+              active={scriptQueryBuilder}
               onChange={toggleSlider}
               testID="script-query-builder-toggle"
             />
@@ -105,10 +106,10 @@ const DataExplorerPageHeader: FC = () => {
 }
 
 const DataExplorerPage: FC = () => {
-  const {flowsCTA, fluxQueryBuilder, setFlowsCTA} =
+  const {flowsCTA, scriptQueryBuilder, setFlowsCTA} =
     useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
-  const showNewExplorer = fluxQueryBuilder && isFlagEnabled('newDataExplorer')
+  const showNewExplorer = scriptQueryBuilder && isFlagEnabled('newDataExplorer')
   const history = useHistory()
 
   const hideFlowsCTA = () => {
@@ -120,7 +121,7 @@ const DataExplorerPage: FC = () => {
   }
 
   useEffect(() => {
-    if (fluxQueryBuilder) {
+    if (scriptQueryBuilder) {
       history.push({
         search: SCRIPT_EDITOR_PARAMS,
       })
@@ -132,7 +133,7 @@ const DataExplorerPage: FC = () => {
     return () => {
       event('Exited Data Explorer')
     }
-  }, [fluxQueryBuilder, history])
+  }, [scriptQueryBuilder, history])
 
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>

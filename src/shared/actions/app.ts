@@ -4,7 +4,7 @@ export enum ActionTypes {
   EnablePresentationMode = 'ENABLE_PRESENTATION_MODE',
   DisablePresentationMode = 'DISABLE_PRESENTATION_MODE',
   SetNavBarState = 'SET_NAV_BAR_STATE',
-  SetFluxQueryBuilder = 'SET_FLUX_QUERY_BUILDER',
+  SetScriptQueryBuilder = 'SET_SCRIPT_QUERY_BUILDER',
   SetAutoRefresh = 'SET_AUTOREFRESH',
   SetTimeZone = 'SET_APP_TIME_ZONE',
   SetVersionInfo = 'SET_VERSION_INFO',
@@ -18,7 +18,7 @@ export enum ActionTypes {
 export type Action =
   | ReturnType<typeof enablePresentationMode>
   | ReturnType<typeof disablePresentationMode>
-  | ReturnType<typeof setFluxQueryBuilder>
+  | ReturnType<typeof setScriptQueryBuilder>
   | ReturnType<typeof setNavBarState>
   | ReturnType<typeof setAutoRefresh>
   | ReturnType<typeof setTimeZone>
@@ -44,9 +44,9 @@ export const disablePresentationMode = () =>
 
 export const setTheme = (theme: Theme) => ({type: 'SET_THEME', theme} as const)
 
-export const setFluxQueryBuilder = (active: boolean) =>
+export const setScriptQueryBuilder = (active: boolean) =>
   ({
-    type: ActionTypes.SetFluxQueryBuilder,
+    type: ActionTypes.SetScriptQueryBuilder,
     active,
   } as const)
 

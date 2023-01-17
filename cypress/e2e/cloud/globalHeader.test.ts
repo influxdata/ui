@@ -1,7 +1,11 @@
 import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
+import {Organization} from 'src/client'
 
 describe('global header', () => {
   let idpeOrgID: string
+  let idpeOrg: Organization
+
+  const orgIsIOx = () => idpeOrg.defaultStorageType === 'iox'
 
   before(() => {
     cy.flush().then(() =>
@@ -14,6 +18,7 @@ describe('global header', () => {
           // Store the IDPE org ID so that it can be cloned when intercepting quartz.
           if (res.body.orgs) {
             idpeOrgID = res.body.orgs[0].id
+            idpeOrg = res.body.orgs[0]
           }
         })
       })
@@ -180,25 +185,12 @@ describe('global header', () => {
   })
 
   describe('cardinality alerts', () => {
-    interface TestParams {
-      orgIsIOx: boolean
-    }
-
-    const setupCardinalityTest = (params: TestParams) => {
+    const setupCardinalityTest = () => {
       cy.intercept('GET', 'api/v2private/orgs/**/limits/status', req => {
         req.continue(res => {
           res.body.cardinality.status = 'exceeded'
         })
       })
-
-      if (params.orgIsIOx) {
-        cy.intercept('GET', '/api/v2/orgs', req => {
-          req.continue(res => {
-            res.body.orgs[0].defaultStorageType = 'iox'
-          })
-        })
-      }
-
       makeQuartzUseIDPEOrgID(idpeOrgID, 'pay_as_you_go')
       // Alert will appear in global header on any page (like data explorer)
       // that has <LimitChecker />, which displays cardinality alerts.
@@ -206,10 +198,8 @@ describe('global header', () => {
     }
 
     it('shows a cardinality limit alert for TSM orgs if cardinality limits are exceeded', () => {
-      cy.isIoxOrg().then(isIOx => {
-        cy.skipOn(isIOx)
-      })
-      setupCardinalityTest({orgIsIOx: false})
+      cy.skipOn(orgIsIOx())
+      setupCardinalityTest()
 
       cy.getByTestID('rate-alert--banner')
         .should('be.visible')
@@ -220,7 +210,8 @@ describe('global header', () => {
     })
 
     it('never shows a cardinality limit alert for IOx orgs', () => {
-      setupCardinalityTest({orgIsIOx: true})
+      cy.skipOn(!orgIsIOx())
+      setupCardinalityTest()
 
       cy.getByTestID('rate-alert--banner').should('not.exist')
       cy.contains('series cardinality').should('not.exist')

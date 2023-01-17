@@ -162,7 +162,7 @@ const ScriptQueryBuilder: FC = () => {
                     onClick={handleNewScript}
                     text="New Script"
                     icon={IconFont.Plus_New}
-                    testID="flux-query-builder--new-script"
+                    testID="script-query-builder--new-script"
                   />
                 )}
                 <Button

@@ -1,78 +1,118 @@
+// Libraries
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
-import {Grid, Columns} from '@influxdata/clockface'
+import {Columns, Grid} from '@influxdata/clockface'
+
+// Components
 import OrgLimitStat from 'src/billing/components/Free/OrgLimitStat'
+
+// Selectors
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Types
 import {AppState} from 'src/types'
 import {Limit} from 'src/cloud/actions/limits'
 import {LimitsState} from 'src/cloud/reducers/limits'
 
-const limits = (orgLimits: LimitsState | {}) =>
+enum LimitNames {
+  Buckets = 'buckets',
+  Endpoints = 'endpoints',
+  MaxRetentionSeconds = 'maxRetentionSeconds',
+  OrgID = 'orgID',
+  Rate = 'rate',
+  Status = 'status',
+}
+
+interface LimitCardProps {
+  limitName: string
+  limitValue: Limit
+}
+
+const removeUnrenderedProps = (orgLimits: LimitsState | {}) =>
   Object.entries(orgLimits).filter(
     ([limitName]) =>
-      limitName !== 'orgID' &&
-      limitName !== 'status' &&
-      limitName !== 'endpoints'
+      limitName !== LimitNames.OrgID &&
+      limitName !== LimitNames.Status &&
+      limitName !== LimitNames.Endpoints
   )
 
-const OrgLimits: FC = () => {
+const LimitCard: FC<LimitCardProps> = ({limitName, limitValue}) => {
+  return (
+    <Grid.Column
+      key={limitName}
+      widthXS={Columns.Twelve}
+      widthSM={Columns.Six}
+      widthMD={Columns.Four}
+      widthLG={Columns.Three}
+    >
+      <OrgLimitStat name={limitName} value={limitValue.maxAllowed} />
+    </Grid.Column>
+  )
+}
+
+export const OrgLimits: FC = () => {
   const orgLimits = useSelector((state: AppState) => state.cloud?.limits ?? {})
+  const orgUsesIOx = useSelector(isOrgIOx)
 
   return (
     <Grid>
-      {limits(orgLimits).flatMap(([name, value]: [string, Limit]) => {
-        if (name === 'buckets') {
-          return Object.entries(value)
-            .filter(([n]) => n !== 'limitStatus')
-            .map(([n, v]: [string, number]) => {
+      {removeUnrenderedProps(orgLimits).map(limit => {
+        const [limitName, limitValue] = limit
+
+        // The "Rate" category includes multiple object literal 'limits', each with its own 'limitStatus.'
+        if (limitName === LimitNames.Rate) {
+          const hiddenLimits = ['queryTime']
+          // IOx orgs have no cardinality limit.
+          if (orgUsesIOx) {
+            hiddenLimits.push('cardinality')
+          }
+
+          return Object.keys(limitValue)
+            .filter(sublimitName => !hiddenLimits.includes(sublimitName))
+            .map(sublimitName => {
               return (
-                <Grid.Column
-                  key={n}
-                  widthXS={Columns.Twelve}
-                  widthSM={Columns.Six}
-                  widthMD={Columns.Four}
-                  widthLG={Columns.Three}
-                >
-                  <OrgLimitStat
-                    name={n === 'maxAllowed' ? name : n}
-                    value={v}
-                  />
-                </Grid.Column>
+                <LimitCard
+                  key={sublimitName}
+                  limitName={sublimitName}
+                  limitValue={limitValue[sublimitName]}
+                />
               )
             })
         }
-        if (name === 'rate') {
-          return Object.entries(value)
-            .filter(([n]) => n !== 'queryTime')
-            .map(([n, v]: [string, Limit]) => {
-              return (
-                <Grid.Column
-                  key={n}
-                  widthXS={Columns.Twelve}
-                  widthSM={Columns.Six}
-                  widthMD={Columns.Four}
-                  widthLG={Columns.Three}
-                >
-                  <OrgLimitStat name={n} value={v.maxAllowed} />
-                </Grid.Column>
-              )
-            })
+
+        // The "Buckets" category is one object literal with two sublimits and a shared 'limitStatus.'
+        if (limitName === LimitNames.Buckets) {
+          const maxBucketsLimit = limitValue
+          const maxRetentionLimit = {
+            maxAllowed: limitValue.maxRetentionSeconds,
+            limitStatus: limitValue.limitStatus,
+          }
+
+          return (
+            <div key={`${LimitNames.Buckets}-limits`}>
+              <LimitCard
+                key={LimitNames.Buckets}
+                limitName={LimitNames.Buckets}
+                limitValue={maxBucketsLimit}
+              />
+              <LimitCard
+                key={LimitNames.MaxRetentionSeconds}
+                limitName={LimitNames.MaxRetentionSeconds}
+                limitValue={maxRetentionLimit}
+              />
+            </div>
+          )
         }
+
+        // By default, any 'limit' is a single object literal containing one limitStatus.
         return (
-          <Grid.Column
-            key={name}
-            widthXS={Columns.Twelve}
-            widthSM={Columns.Six}
-            widthMD={Columns.Four}
-            widthLG={Columns.Three}
-          >
-            <OrgLimitStat name={name} value={value.maxAllowed} />
-          </Grid.Column>
+          <LimitCard
+            key={limitName}
+            limitName={limitName}
+            limitValue={limitValue}
+          />
         )
       })}
     </Grid>
   )
 }
-
-export default OrgLimits

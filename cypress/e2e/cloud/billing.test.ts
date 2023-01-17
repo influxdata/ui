@@ -1,7 +1,31 @@
 import {Organization} from '../../../src/types'
 
 describe('Billing Page Free Users', () => {
-  beforeEach(() =>
+  const limitNames = [
+    'Max Dashboards',
+    'Max Tasks',
+    'Max Buckets',
+    'Max Retention Seconds',
+    'Max Checks',
+    'Max Notifications',
+    'Reads',
+    'Writes',
+    'Series Cardinality',
+  ]
+
+  interface FreeTestSettings {
+    orgIsIOx: boolean
+  }
+
+  const setupFreeTest = (settings: FreeTestSettings) => {
+    cy.intercept('GET', '/api/v2/orgs', req => {
+      req.continue(res => {
+        if (settings.orgIsIOx) {
+          res.body.orgs[0].defaultStorageType = 'iox'
+        }
+      })
+    })
+
     cy.flush().then(() => {
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
@@ -14,30 +38,46 @@ describe('Billing Page Free Users', () => {
         })
       })
     })
-  )
+  }
 
   it('should display the free billing page for free users', () => {
+    setupFreeTest({orgIsIOx: false})
+
     cy.getByTestID('cloud-upgrade--button').should('be.visible')
     cy.getByTestID('title-header--name')
       .should('not.have.value', 'blockedNotificationRules')
       .and('not.have.value', 'blockedNotificationEndpoints')
       .and('have.length', 9)
 
-    const categoryHeaders = [
-      'Max Dashboards',
-      'Max Tasks',
-      'Max Buckets',
-      'Max Retention Seconds',
-      'Max Checks',
-      'Max Notifications',
-      'Reads',
-      'Writes',
-      'Series Cardinality',
-    ]
+    cy.getByTestID('title-header--name').each((child, index) => {
+      expect(child.text().trim()).to.equal(limitNames[index])
+    })
+
+    cy.get('.credit-250-conversion-upgrade--button').should('be.visible')
+    cy.get('.credit-250-conversion-upgrade--button').click()
+
+    cy.location().should(loc => {
+      expect(loc.pathname).to.eq('/checkout')
+    })
+  })
+
+  it('should not display the cardinality limit in an iox org', () => {
+    setupFreeTest({orgIsIOx: true})
+
+    const limitsWithoutCardinality = limitNames.slice(0, -1)
+
+    cy.getByTestID('cloud-upgrade--button').should('be.visible')
+    cy.getByTestID('title-header--name')
+      .should('not.have.value', 'blockedNotificationRules')
+      .and('not.have.value', 'blockedNotificationEndpoints')
+      .and('have.length', 8)
 
     cy.getByTestID('title-header--name').each((child, index) => {
-      expect(child.text().trim()).to.equal(categoryHeaders[index])
+      expect(child.text().trim()).to.equal(limitsWithoutCardinality[index])
     })
+
+    cy.get('Series Cardinality').should('not.exist')
+    cy.get('series cardinality').should('not.exist')
 
     cy.get('.credit-250-conversion-upgrade--button').should('be.visible')
     cy.get('.credit-250-conversion-upgrade--button').click()

@@ -55,14 +55,14 @@ const SchemaBrowserHeading: FC = () => {
       justifyContent={JustifyContent.SpaceBetween}
     >
       <div className="schema-browser-heading--text">Schema Browser</div>
-      <FlexBox className="flux-sync">
+      <FlexBox className="editor-sync">
         <SlideToggle
           className="editor-sync--toggle"
           active={fluxSync}
           onChange={handleFluxSyncToggle}
           testID="editor-sync--toggle"
         />
-        <InputLabel className="flux-sync--label">
+        <InputLabel className="editor-sync--label">
           <SelectorTitle
             label={label}
             tooltipContents={tooltipContents}

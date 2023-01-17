@@ -226,7 +226,7 @@ export const wrapDefaultPassword = (): Cypress.Chainable => {
   return cy.wrap(password).as('defaultPassword')
 }
 
-export const isIoxOrg = (): Cypress.Chainable<Cypress.Response<any>> => {
+export const isIoxOrg = (): Cypress.Chainable<boolean> => {
   return cy.get('@org').then(({defaultStorageType}: Organization) => {
     return Boolean(
       defaultStorageType && defaultStorageType.toLowerCase() === 'iox'

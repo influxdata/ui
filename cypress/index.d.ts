@@ -1,6 +1,7 @@
 /* eslint @typescript-eslint/no-unused-vars: "off" */
 import 'jest'
 import 'cypress-plugin-tab'
+import {skipOn} from '@cypress/skip-test'
 
 import {
   signin,
@@ -12,6 +13,7 @@ import {
   createSource,
   deleteOrg,
   flush,
+  isIoxOrg,
   getByTestID,
   getByTestIDHead,
   getByInputName,
@@ -80,6 +82,8 @@ declare global {
       createOrg: typeof createOrg
       deleteOrg: typeof deleteOrg
       flush: typeof flush
+      isIoxOrg: typeof isIoxOrg
+      skipOn: typeof skipOn
       getByTestID: typeof getByTestID
       getByTestIDHead: typeof getByTestIDHead
       getByInputName: typeof getByInputName

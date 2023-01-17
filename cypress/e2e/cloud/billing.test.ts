@@ -13,35 +13,28 @@ describe('Billing Page Free Users', () => {
     'Series Cardinality',
   ]
 
-  interface FreeTestSettings {
-    orgIsIOx: boolean
-  }
-
-  const setupFreeTest = (settings: FreeTestSettings) => {
-    cy.intercept('GET', '/api/v2/orgs', req => {
-      req.continue(res => {
-        if (settings.orgIsIOx) {
-          res.body.orgs[0].defaultStorageType = 'iox'
-        }
-      })
-    })
-
+  beforeEach(() => {
     cy.flush().then(() => {
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.quartzProvision({
-            accountType: 'free',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/billing`)
-            cy.getByTestID('billing-page--header').should('be.visible')
-          })
-        })
+      cy.signin()
+    })
+  })
+
+  const setupFreeTest = () => {
+    cy.get('@org').then(({id}: Organization) => {
+      cy.quartzProvision({
+        accountType: 'free',
+      }).then(() => {
+        cy.visit(`/orgs/${id}/billing`)
+        cy.getByTestID('billing-page--header').should('be.visible')
       })
     })
   }
 
   it('should display the free billing page for free users', () => {
-    setupFreeTest({orgIsIOx: false})
+    cy.isIoxOrg().then(isIOx => {
+      cy.skipOn(isIOx)
+    })
+    setupFreeTest()
 
     cy.getByTestID('cloud-upgrade--button').should('be.visible')
     cy.getByTestID('title-header--name')
@@ -62,7 +55,10 @@ describe('Billing Page Free Users', () => {
   })
 
   it('should not display the cardinality limit in an iox org', () => {
-    setupFreeTest({orgIsIOx: true})
+    cy.isIoxOrg().then(isIOx => {
+      cy.skipOn(!isIOx)
+    })
+    setupFreeTest()
 
     const limitsWithoutCardinality = limitNames.slice(0, -1)
 

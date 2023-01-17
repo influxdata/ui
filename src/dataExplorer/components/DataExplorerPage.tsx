@@ -83,7 +83,7 @@ const DataExplorerPageHeader: FC = () => {
     <Page.Header
       fullWidth={true}
       className={`${
-        showNewExplorer ? 'flux-query-builder' : 'data-explorer'
+        showNewExplorer ? 'script-query-builder' : 'data-explorer'
       }--header`}
       testID="data-explorer--header"
     >

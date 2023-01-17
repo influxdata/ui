@@ -1,6 +1,6 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-.flux-query-builder--container {
+.script-query-builder--container {
   height: 100%;
 }
 
@@ -20,17 +20,17 @@
   }
 }
 
-.cf-page-header.flux-query-builder--header {
+.cf-page-header.script-query-builder--header {
   margin-bottom: 0 !important;
 }
 
-.flux-query-builder--menu {
+.script-query-builder--menu {
   padding: $cf-space-xs 0;
   border-top: 2px solid $cf-grey-15;
   border-bottom: 2px solid $cf-grey-15;
 }
 
-.flux-query-builder__action-button {
+.script-query-builder__action-button {
   margin-left: $cf-space-s;
 }
 

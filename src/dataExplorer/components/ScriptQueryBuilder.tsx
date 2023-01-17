@@ -112,14 +112,14 @@ const ScriptQueryBuilder: FC = () => {
           />
         </Overlay>
         <FlexBox
-          className="flux-query-builder--container"
+          className="script-query-builder--container"
           direction={FlexDirection.Column}
           justifyContent={JustifyContent.SpaceBetween}
           alignItems={AlignItems.Stretch}
         >
           <div
-            className="flux-query-builder--menu"
-            data-testid="flux-query-builder--menu"
+            className="script-query-builder--menu"
+            data-testid="script-query-builder--menu"
           >
             <FlexBox
               direction={FlexDirection.Row}
@@ -166,13 +166,13 @@ const ScriptQueryBuilder: FC = () => {
                   />
                 )}
                 <Button
-                  className="flux-query-builder__action-button"
+                  className="script-query-builder__action-button"
                   onClick={() => setOverlayType(OverlayType.OPEN)}
                   text="Open"
                   icon={IconFont.FolderOpen}
                 />
                 <Button
-                  className="flux-query-builder__action-button"
+                  className="script-query-builder__action-button"
                   onClick={() => setOverlayType(OverlayType.SAVE)}
                   status={
                     hasChanged
@@ -185,7 +185,7 @@ const ScriptQueryBuilder: FC = () => {
                 />
                 {resource?.data?.id && (
                   <Button
-                    className="flux-query-builder__action-button"
+                    className="script-query-builder__action-button"
                     onClick={() => setOverlayType(OverlayType.EDIT)}
                     status={ComponentStatus.Default}
                     text="Edit"
@@ -205,7 +205,7 @@ const ScriptQueryBuilder: FC = () => {
               <Schema />
             </DraggableResizer.Panel>
             <DraggableResizer.Panel
-              testID="flux-query-builder-middle-panel"
+              testID="script-query-builder-middle-panel"
               className="new-data-explorer-rightside"
             >
               <ResultsPane />

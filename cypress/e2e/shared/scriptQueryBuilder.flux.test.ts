@@ -170,7 +170,7 @@ describe('Script Builder', () => {
         newDataExplorer: true,
       }).then(() => {
         cy.getByTestID('editor-sync--toggle').should('not.exist')
-        cy.getByTestID('flux-query-builder--menu').contains('New Script')
+        cy.getByTestID('script-query-builder--menu').contains('New Script')
         setScriptToFlux()
       })
     })

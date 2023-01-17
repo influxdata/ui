@@ -126,7 +126,7 @@ describe('Script Builder', () => {
       return cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/data-explorer`)
         return cy.setFeatureFlags(flags).then(() => {
-          cy.getByTestID('flux-query-builder-toggle').then($toggle => {
+          cy.getByTestID('script-query-builder-toggle').then($toggle => {
             cy.wrap($toggle).should('be.visible')
             // Switch to Flux Query Builder if not yet
             if (!$toggle.hasClass('active')) {

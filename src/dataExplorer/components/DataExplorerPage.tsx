@@ -95,7 +95,7 @@ const DataExplorerPageHeader: FC = () => {
             <SlideToggle
               active={fluxQueryBuilder}
               onChange={toggleSlider}
-              testID="flux-query-builder-toggle"
+              testID="script-query-builder-toggle"
             />
           </FlexBox>
         )}

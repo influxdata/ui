@@ -38,7 +38,7 @@ import {RemoteDataState} from 'src/types'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 // Styles
-import './FluxQueryBuilder.scss'
+import './ScriptQueryBuilder.scss'
 
 export enum OverlayType {
   DELETE = 'delete',
@@ -48,7 +48,7 @@ export enum OverlayType {
   SAVE = 'save',
 }
 
-const FluxQueryBuilder: FC = () => {
+const ScriptQueryBuilder: FC = () => {
   const history = useHistory()
   const {resource, hasChanged, vertical, setVertical, setHasChanged} =
     useContext(PersistanceContext)
@@ -226,7 +226,7 @@ export default () => (
       <ResultsViewProvider>
         <PersistanceProvider>
           <ChildResultsProvider>
-            <FluxQueryBuilder />
+            <ScriptQueryBuilder />
           </ChildResultsProvider>
         </PersistanceProvider>
       </ResultsViewProvider>

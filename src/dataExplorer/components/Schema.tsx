@@ -12,9 +12,9 @@ import SchemaBrowserHeading from 'src/dataExplorer/components/SchemaBrowserHeadi
 
 // Context
 import {
-  FluxQueryBuilderContext,
-  FluxQueryBuilderProvider,
-} from 'src/dataExplorer/context/fluxQueryBuilder'
+  ScriptQueryBuilderContext,
+  ScriptQueryBuilderProvider,
+} from 'src/dataExplorer/context/scriptQueryBuilder'
 import {BucketProvider} from 'src/shared/contexts/buckets'
 import {MeasurementsProvider} from 'src/dataExplorer/context/measurements'
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
@@ -31,7 +31,7 @@ import './Schema.scss'
 
 const FieldsTags: FC = () => {
   const {selectedBucket, selectedMeasurement, searchTerm, setSearchTerm} =
-    useContext(FluxQueryBuilderContext)
+    useContext(ScriptQueryBuilderContext)
 
   useEffect(() => {
     setSearchTerm('')
@@ -72,7 +72,7 @@ const Schema: FC = () => {
     <MeasurementsProvider scope={scope}>
       <FieldsProvider scope={scope}>
         <TagsProvider scope={scope}>
-          <FluxQueryBuilderProvider>
+          <ScriptQueryBuilderProvider>
             <BucketProvider scope={scope} omitSampleData>
               <div className="scroll--container">
                 <DapperScrollbars>
@@ -87,7 +87,7 @@ const Schema: FC = () => {
                 </DapperScrollbars>
               </div>
             </BucketProvider>
-          </FluxQueryBuilderProvider>
+          </ScriptQueryBuilderProvider>
         </TagsProvider>
       </FieldsProvider>
     </MeasurementsProvider>

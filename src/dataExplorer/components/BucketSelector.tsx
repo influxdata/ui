@@ -12,7 +12,7 @@ import {
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Contexts
-import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
+import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
 import {BucketContext} from 'src/shared/contexts/buckets'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -29,7 +29,7 @@ const REMAP_BUCKET_TYPES = {
 }
 
 const BucketSelector: FC = () => {
-  const {selectedBucket, selectBucket} = useContext(FluxQueryBuilderContext)
+  const {selectedBucket, selectBucket} = useContext(ScriptQueryBuilderContext)
   const {loading, buckets} = useContext(BucketContext)
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')

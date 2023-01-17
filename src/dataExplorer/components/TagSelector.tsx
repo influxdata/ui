@@ -7,7 +7,7 @@ import WaitingText from 'src/shared/components/WaitingText'
 import SelectorList from 'src/timeMachine/components/SelectorList'
 
 // Contexts
-import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
+import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 
 // Types
@@ -38,7 +38,7 @@ const TagValues: FC<TagValuesProps> = ({loading, tagKey, tagValues}) => {
     selectedTagValues,
     selectTagValue,
     searchTerm,
-  } = useContext(FluxQueryBuilderContext)
+  } = useContext(ScriptQueryBuilderContext)
   const {getTagValues} = useContext(TagsContext)
   const [valuesToShow, setValuesToShow] = useState([])
 

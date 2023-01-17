@@ -4,7 +4,7 @@ import {Switch, Route, Link, useHistory} from 'react-router-dom'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
-import FluxQueryBuilder from 'src/dataExplorer/components/FluxQueryBuilder'
+import ScriptQueryBuilder from 'src/dataExplorer/components/ScriptQueryBuilder'
 import {
   Page,
   Icon,
@@ -192,7 +192,7 @@ const DataExplorerPage: FC = () => {
         )}
         <Page.Contents fullWidth={true} scrollable={false}>
           {!showNewExplorer && <DataExplorer />}
-          {showNewExplorer && <FluxQueryBuilder />}
+          {showNewExplorer && <ScriptQueryBuilder />}
         </Page.Contents>
       </GetResources>
     </Page>

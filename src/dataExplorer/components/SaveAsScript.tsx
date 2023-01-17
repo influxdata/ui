@@ -20,7 +20,7 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {RemoteDataState} from 'src/types'
 import './SaveAsScript.scss'
 import {CLOUD} from 'src/shared/constants'
-import {OverlayType} from './FluxQueryBuilder'
+import {OverlayType} from './ScriptQueryBuilder'
 import {useDispatch, useSelector} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
 import {

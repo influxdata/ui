@@ -94,18 +94,20 @@ describe('Script Builder', () => {
             .click()
         })
       } else {
-        cy.getByTestID('script-query-builder--save-script').then($saveButton => {
-          if (!$saveButton.is(':disabled')) {
-            cy.getByTestID('script-query-builder--new-script')
-              .should('be.visible')
-              .click()
-            cy.getByTestID('overlay--container').within(() => {
-              cy.getByTestID('script-query-builder--no-save')
+        cy.getByTestID('script-query-builder--save-script').then(
+          $saveButton => {
+            if (!$saveButton.is(':disabled')) {
+              cy.getByTestID('script-query-builder--new-script')
                 .should('be.visible')
                 .click()
-            })
+              cy.getByTestID('overlay--container').within(() => {
+                cy.getByTestID('script-query-builder--no-save')
+                  .should('be.visible')
+                  .click()
+              })
+            }
           }
-        })
+        )
       }
       cy.getByTestID('flux-editor').within(() => {
         cy.get('textarea.inputarea').should(

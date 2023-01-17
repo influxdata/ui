@@ -206,6 +206,9 @@ describe('global header', () => {
     }
 
     it('shows a cardinality limit alert for TSM orgs if cardinality limits are exceeded', () => {
+      cy.isIoxOrg().then(isIOx => {
+        cy.skipOn(isIOx)
+      })
       setupCardinalityTest({orgIsIOx: false})
 
       cy.getByTestID('rate-alert--banner')

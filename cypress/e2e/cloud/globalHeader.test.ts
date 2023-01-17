@@ -180,24 +180,12 @@ describe('global header', () => {
   })
 
   describe('cardinality alerts', () => {
-    interface TestParams {
-      orgIsIOx: boolean
-    }
-
-    const setupCardinalityTest = (params: TestParams) => {
+    const setupCardinalityTest = () => {
       cy.intercept('GET', 'api/v2private/orgs/**/limits/status', req => {
         req.continue(res => {
           res.body.cardinality.status = 'exceeded'
         })
       })
-
-      if (params.orgIsIOx) {
-        cy.intercept('GET', '/api/v2/orgs', req => {
-          req.continue(res => {
-            res.body.orgs[0].defaultStorageType = 'iox'
-          })
-        })
-      }
 
       makeQuartzUseIDPEOrgID(idpeOrgID, 'pay_as_you_go')
       // Alert will appear in global header on any page (like data explorer)
@@ -206,10 +194,10 @@ describe('global header', () => {
     }
 
     it('shows a cardinality limit alert for TSM orgs if cardinality limits are exceeded', () => {
+      setupCardinalityTest()
       cy.isIoxOrg().then(isIOx => {
         cy.skipOn(isIOx)
       })
-      setupCardinalityTest({orgIsIOx: false})
 
       cy.getByTestID('rate-alert--banner')
         .should('be.visible')
@@ -220,7 +208,13 @@ describe('global header', () => {
     })
 
     it('never shows a cardinality limit alert for IOx orgs', () => {
-      setupCardinalityTest({orgIsIOx: true})
+      setupCardinalityTest()
+      // mocking for tsm tests
+      cy.intercept('GET', '/api/v2/orgs', req => {
+        req.continue(res => {
+          res.body.orgs[0].defaultStorageType = 'iox'
+        })
+      })
 
       cy.getByTestID('rate-alert--banner').should('not.exist')
       cy.contains('series cardinality').should('not.exist')

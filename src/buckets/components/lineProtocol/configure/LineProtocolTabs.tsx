@@ -5,13 +5,13 @@ import React, {useContext, FC} from 'react'
 import PrecisionDropdown from 'src/buckets/components/lineProtocol/configure/PrecisionDropdown'
 import TabSelector from 'src/buckets/components/lineProtocol/configure/TabSelector'
 import TabBody from 'src/buckets/components/lineProtocol/configure/TabBody'
-import StatusIndicator from 'src/buckets/components/lineProtocol/verify/StatusIndicator'
+import {StatusIndicator} from 'src/buckets/components/lineProtocol/verify/StatusIndicator'
 import {LineProtocolContext} from 'src/buckets/components/context/lineProtocol'
 
 // Types
 import {RemoteDataState} from 'src/types'
 
-const LineProtocolTabs: FC = () => {
+export const LineProtocolTabs: FC = () => {
   const {writeStatus} = useContext(LineProtocolContext)
 
   if (writeStatus !== RemoteDataState.NotStarted) {
@@ -28,5 +28,3 @@ const LineProtocolTabs: FC = () => {
     </>
   )
 }
-
-export default LineProtocolTabs

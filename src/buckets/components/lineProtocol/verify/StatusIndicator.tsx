@@ -40,9 +40,8 @@ const className = status =>
     error: status === RemoteDataState.Error,
   })
 
-const StatusIndicator: FC = () => {
+export const StatusIndicator: FC = () => {
   const {writeStatus, writeError} = useContext(LineProtocolContext)
-
   return (
     <div className="line-protocol--spinner">
       <p data-testid="line-protocol--status" className={className(status)}>
@@ -55,5 +54,3 @@ const StatusIndicator: FC = () => {
     </div>
   )
 }
-
-export default StatusIndicator

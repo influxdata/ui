@@ -196,11 +196,11 @@ describe('Free account Deletion', () => {
     deleteFreeAccount()
   })
 
-  it('displays a `must remove users` warning when user attempts to delete a free account with multiple users', () => {
+  it('displays a `must remove users` warning when user attempts to delete a free account from an org with multiple users', () => {
     setupTest({
       accountType: 'free',
       orgHasOtherUsers: true,
-      orgCount: 2,
+      orgCount: 1,
     })
     displayRemoveUsersWarning()
   })

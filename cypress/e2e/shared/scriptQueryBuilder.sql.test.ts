@@ -5,12 +5,6 @@ const DEFAULT_SQL_EDITOR_TEXT = '/* Start by typing SQL here */'
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
 
 describe('Script Builder', () => {
-  const writeData: string[] = []
-  for (let i = 0; i < 30; i++) {
-    writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
-    writeData.push(`ndbc2,air_temp_degc=70_degrees station_id_${i}=${i}`)
-  }
-
   const bucketName = 'defbuck'
   const measurement = 'ndbc'
 
@@ -146,6 +140,12 @@ describe('Script Builder', () => {
   }
 
   before(() => {
+    const writeData: string[] = []
+    for (let i = 0; i < 30; i++) {
+      writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
+      writeData.push(`ndbc2,air_temp_degc=70_degrees station_id_${i}=${i}`)
+    }
+
     cy.flush().then(() => {
       return cy.signin().then(() => {
         return cy.get('@org').then(({id, name}: Organization) => {

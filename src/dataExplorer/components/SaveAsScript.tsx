@@ -37,6 +37,7 @@ import {
   copyToClipboardFailed,
   copyToClipboardSuccess,
 } from 'src/shared/copy/notifications'
+import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
 interface Props {
   language: LanguageType
   onClose: () => void
@@ -52,6 +53,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
   const isIoxOrg = useSelector(isOrgIOx)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
+  const {clear: clearViewOptions} = useContext(ResultsViewContext)
   const [error, setError] = useState<string>()
   // Setting the name to state rather than persisting it to session storage
   // so that we can cancel out of a name change if needed
@@ -96,6 +98,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
+    clearViewOptions()
 
     if (isIoxOrg) {
       history.replace(

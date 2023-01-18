@@ -35,6 +35,7 @@ interface ResultsViewContextType {
   setView: (view: View) => void
   setDefaultViewOptions: (viewOptions: Partial<ViewOptions>) => void
   selectViewOptions: (viewOptions: Partial<ViewOptions>) => void
+  clear: () => void
 }
 
 const DEFAULT_VIEW_OPTIONS = {groupby: []}
@@ -50,6 +51,7 @@ const DEFAULT_STATE: ResultsViewContextType = {
   setView: _ => {},
   setDefaultViewOptions: _ => {},
   selectViewOptions: _ => {},
+  clear: () => {},
 }
 
 export const ResultsViewContext =
@@ -66,40 +68,46 @@ export const ResultsViewProvider: FC = ({children}) => {
   })
 
   // what can be chosen (e.g. the list of all options)
-  const [viewOptionsAll, saveViewOptionsAll] = useSessionStorage(
+  const [viewOptionsAll, persistViewOptionsAll] = useSessionStorage(
     'dataExplorer.resultsOptions.all',
     DEFAULT_VIEW_OPTIONS
   )
   const setViewOptionsAll = useCallback(
     (updatedOptions: Partial<ViewOptions>) => {
-      saveViewOptionsAll({...viewOptionsAll, ...updatedOptions})
+      persistViewOptionsAll({...viewOptionsAll, ...updatedOptions})
     },
     [viewOptionsAll]
   )
 
   // default options (a.k.a. based on schema)
-  const [defaultViewOptions, saveDefaultViewOptions] = useSessionStorage(
+  const [defaultViewOptions, persistDefaultViewOptions] = useSessionStorage(
     'dataExplorer.resultsOptions.default',
     DEFAULT_VIEW_OPTIONS
   )
   const setDefaultViewOptions = useCallback(
     (updatedOptions: Partial<ViewOptions>) => {
-      saveDefaultViewOptions({...defaultViewOptions, ...updatedOptions})
+      persistDefaultViewOptions({...defaultViewOptions, ...updatedOptions})
     },
     [defaultViewOptions]
   )
 
   // what was chosen (e.g. sublist chosen)
-  const [selectedViewOptions, saveSelectedViewOptions] = useSessionStorage(
+  const [selectedViewOptions, persistSelectedViewOptions] = useSessionStorage(
     'dataExplorer.resultsOptions',
     DEFAULT_VIEW_OPTIONS
   )
   const selectViewOptions = useCallback(
     (updatedOptions: Partial<ViewOptions>) => {
-      saveSelectedViewOptions({...selectedViewOptions, ...updatedOptions})
+      persistSelectedViewOptions({...selectedViewOptions, ...updatedOptions})
     },
     [selectedViewOptions]
   )
+
+  const clear = () => {
+    persistViewOptionsAll(DEFAULT_VIEW_OPTIONS)
+    persistDefaultViewOptions(DEFAULT_VIEW_OPTIONS)
+    persistSelectedViewOptions(DEFAULT_VIEW_OPTIONS)
+  }
 
   useEffect(() => {
     // if parent query is re-run => decide what to reset in subquery viewOptions
@@ -126,6 +134,7 @@ export const ResultsViewProvider: FC = ({children}) => {
         setView,
         setDefaultViewOptions,
         selectViewOptions,
+        clear,
       }}
     >
       {children}

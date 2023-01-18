@@ -192,6 +192,7 @@ const WrappedOptions: FC = () => {
   const {view, setView, selectViewOptions, viewOptions, selectedViewOptions} =
     useContext(ResultsViewContext)
   const {resource} = useContext(PersistanceContext)
+  const dataExists = !!result?.parsed
 
   const updateChildResults = useCallback(
     update => {
@@ -206,8 +207,13 @@ const WrappedOptions: FC = () => {
     [setStatus, setResult]
   )
 
+  if (!dataExists) {
+    return null
+  }
+
   const subQueryOptions =
-    resource?.language === LanguageType.SQL ? (
+    resource?.language === LanguageType.SQL &&
+    view.state == ViewStateType.Graph ? (
       <SqlViewOptions
         selectViewOptions={selectViewOptions}
         allViewOptions={viewOptions}
@@ -231,7 +237,7 @@ const GraphHeader: FC = () => {
   const {view, setView, viewOptions} = useContext(ResultsViewContext)
   const {result} = useContext(ResultsContext)
   const {result: subQueryResult} = useContext(ChildResultsContext)
-  const {launch} = useContext(SidebarContext)
+  const {launch, clear: closeSidebar} = useContext(SidebarContext)
 
   const dataExists = !!result?.parsed
 
@@ -243,6 +249,11 @@ const GraphHeader: FC = () => {
       launcher()
     }
   }, [viewOptions])
+  useEffect(() => {
+    if (!dataExists) {
+      closeSidebar()
+    }
+  }, [dataExists])
 
   const updateType = viewType => {
     setView({

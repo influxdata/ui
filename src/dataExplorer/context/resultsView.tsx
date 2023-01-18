@@ -108,10 +108,10 @@ export const ResultsViewProvider: FC = ({children}) => {
     const excludeFromGroupby = NOT_PERMITTED_GROUPBY
     const groupby = Object.keys(
       resultFromParent?.parsed?.table?.columns || {}
-    ).filter(g => !excludeFromGroupby.includes(g))
+    ).filter(columnName => !excludeFromGroupby.includes(columnName))
     setViewOptionsAll({groupby})
-    const defaultsWhichExist = defaultViewOptions.groupby.filter(g =>
-      groupby.includes(g)
+    const defaultsWhichExist = defaultViewOptions.groupby.filter(defaultGroup =>
+      groupby.includes(defaultGroup)
     )
     selectViewOptions({groupby: defaultsWhichExist})
   }, [resultFromParent, defaultViewOptions])

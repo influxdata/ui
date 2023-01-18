@@ -495,7 +495,7 @@ describe('Script Builder', () => {
         clearSession()
       })
 
-      it('should not be able to modify the composition when unsynced, yet still modify the saved schema -- which updates the composition when re-synced', () => {
+      it('should not be able to modify the composition when unsynced, yet still modify the session -- which updates the composition when re-synced', () => {
         cy.log('empty editor text')
         cy.getByTestID('flux-editor').monacoType('{selectall}{enter}')
 

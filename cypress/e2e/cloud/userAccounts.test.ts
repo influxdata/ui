@@ -186,21 +186,21 @@ describe('Free account Deletion', () => {
     cy.url().should('include', `/members`)
   }
 
-  it('allows the user to delete a free account if there is only one org, with only one user', () => {
+  it('allows the user to delete a free account with multiple orgs', () => {
     setupTest({
       accountType: 'free',
       orgHasOtherUsers: false,
-      orgCount: 1,
+      orgCount: 3,
     })
 
     deleteFreeAccount()
   })
 
-  it('displays a `must remove users` warning if trying to delete a free account with a single org, which has multiple users', () => {
+  it('displays a `must remove users` warning when user attempts to delete a free account with multiple users', () => {
     setupTest({
       accountType: 'free',
       orgHasOtherUsers: true,
-      orgCount: 1,
+      orgCount: 2,
     })
     displayRemoveUsersWarning()
   })

@@ -42,7 +42,6 @@ const FluxInjectionOption: FC<Props> = ({
   setToolTipPopup,
   setHoverdFunction,
 }) => {
-  // TODO: move this to a flag once design wants to branch it out further
   const {scriptQueryBuilder} = useContext(AppSettingContext)
   const {path} = useRouteMatch()
   const useNewStyling =

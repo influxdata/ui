@@ -17,17 +17,33 @@ import {LanguageType} from 'src/dataExplorer/components/resources'
 // Utils
 import {rangeToParam} from 'src/dataExplorer/shared/utils'
 
-const modifiersToApply = (_viewOptions: ViewOptions): SqlQueryModifiers => {
+const modifiersToApply = (viewOptions: ViewOptions): SqlQueryModifiers => {
+  const prepend = []
+  const append = []
+
+  // 1. groupby first
+  if (viewOptions.groupby?.length) {
+    append.push(
+      `|> group(columns: [${viewOptions.groupby
+        .map(columnName => `"${columnName}"`)
+        .join(',')}])`
+    )
+  }
+
+  // 2. smoothing transformation next
   // e.g. to smooth by selected column foo. Rough example.
   const shouldSmooth = false
   if (shouldSmooth) {
-    return {
-      prepend: `import "experimental/polyline"`,
-      append: `|> polyline.rdp(valColumn: "foo", timeColumn: "time")`,
-    }
+    prepend.push(`import "experimental/polyline"`)
+    // append.push(`|> polyline.rdp(valColumn: "foo", timeColumn: "time")`) // TODO
   }
 
-  return null
+  return Boolean(prepend.length + append.length)
+    ? {
+        prepend: prepend.join('\n'),
+        append: append.join('\n'),
+      }
+    : null
 }
 
 interface ChildResultsContextType {
@@ -51,12 +67,13 @@ export const ChildResultsContext =
 
 export const ChildResultsProvider: FC = ({children}) => {
   const [result, setResult] = useState<FluxResult>({} as FluxResult)
+  const [queryModifers, setQueryModifiers] = useState(null)
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
   const {status: statusFromParent, result: resultFromParent} =
     useContext(ResultsContext)
-  const {viewOptions} = useContext(ResultsViewContext)
+  const {selectedViewOptions: viewOptions} = useContext(ResultsViewContext)
   const {
     query: queryText,
     selection,
@@ -78,10 +95,11 @@ export const ChildResultsProvider: FC = ({children}) => {
       return
     }
 
-    // TODO: tranform functions, based on viewOptions change
     const sqlQueryModifiers = modifiersToApply(viewOptions)
+    const previousQueryModifiers = queryModifers
+    setQueryModifiers(sqlQueryModifiers)
 
-    if (!sqlQueryModifiers) {
+    if (sqlQueryModifiers === previousQueryModifiers) {
       return
     }
 

@@ -1,4 +1,4 @@
-import React, {FC, createContext} from 'react'
+import React, {FC, createContext, useCallback} from 'react'
 
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {ViewProperties, SimpleTableViewProperties} from 'src/types'
@@ -14,25 +14,33 @@ interface View {
   properties: ViewProperties
 }
 
-export interface ViewOptions {}
+export interface ViewOptions {
+  groupby: string[]
+}
 
 interface ResultsViewContextType {
   view: View
   viewOptions: ViewOptions
+  selectedViewOptions: ViewOptions
 
   setView: (view: View) => void
-  setViewOptions: (viewOptions: Object) => void
+  setViewOptions: (viewOptions: Partial<ViewOptions>) => void
+  selectViewOptions: (viewOptions: Partial<ViewOptions>) => void
 }
+
+const DEFAULT_VIEW_OPTIONS = {groupby: []}
 
 const DEFAULT_STATE: ResultsViewContextType = {
   view: {
     state: ViewStateType.Table,
     properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
   },
-  viewOptions: {}, // TODO -- set default options. Such as all tagKeys for `|> group()`
+  viewOptions: JSON.parse(JSON.stringify(DEFAULT_VIEW_OPTIONS)),
+  selectedViewOptions: JSON.parse(JSON.stringify(DEFAULT_VIEW_OPTIONS)),
 
   setView: _ => {},
   setViewOptions: _ => {},
+  selectViewOptions: _ => {},
 }
 
 export const ResultsViewContext =
@@ -47,9 +55,28 @@ export const ResultsViewProvider: FC = ({children}) => {
     } as SimpleTableViewProperties,
   })
 
-  const [viewOptions, setViewOptions] = useSessionStorage(
+  // what can be chosen (e.g. the list of all options)
+  const [viewOptions, saveViewOptions] = useSessionStorage(
+    'dataExplorer.resultsOptions.all',
+    DEFAULT_VIEW_OPTIONS
+  )
+  const setViewOptions = useCallback(
+    (updatedOptions: Partial<ViewOptions>) => {
+      saveViewOptions({...viewOptions, ...updatedOptions})
+    },
+    [viewOptions]
+  )
+
+  // what was chosen (e.g. sublist chosen)
+  const [selectedViewOptions, saveSelectedViewOptions] = useSessionStorage(
     'dataExplorer.resultsOptions',
-    {}
+    DEFAULT_VIEW_OPTIONS
+  )
+  const selectViewOptions = useCallback(
+    (updatedOptions: Partial<ViewOptions>) => {
+      saveSelectedViewOptions({...viewOptions, ...updatedOptions})
+    },
+    [viewOptions]
   )
 
   return (
@@ -57,9 +84,11 @@ export const ResultsViewProvider: FC = ({children}) => {
       value={{
         view,
         viewOptions,
+        selectedViewOptions,
 
         setView,
         setViewOptions,
+        selectViewOptions,
       }}
     >
       {children}

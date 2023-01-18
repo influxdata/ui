@@ -58,7 +58,7 @@ interface Prop {
 export const TagsProvider: FC<Prop> = ({children, scope}) => {
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
-  const {setViewOptions} = useContext(ResultsViewContext)
+  const {setViewOptions, selectViewOptions} = useContext(ResultsViewContext)
 
   // States
   const [tags, setTags] = useState<Tags>(
@@ -135,6 +135,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       setLoadingTagKeys(RemoteDataState.Done)
       setLoadingTagValues(tagValueStatuses)
       setViewOptions({groupby: Object.keys(newTags)})
+      selectViewOptions({groupby: Object.keys(newTags)}) // groupby all tagKeys, as default
     } catch (e) {
       console.error(
         `Failed to get tags for measurement: "${measurement}"\n`,

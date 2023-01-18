@@ -95,6 +95,11 @@ export const ChildResultsProvider: FC = ({children}) => {
       return
     }
 
+    const cannotRunIoxSqlMethod = !selection?.bucket
+    if (cannotRunIoxSqlMethod) {
+      return
+    }
+
     const sqlQueryModifiers = modifiersToApply(viewOptions)
     const previousQueryModifiers = queryModifers
     setQueryModifiers(sqlQueryModifiers)

@@ -7,6 +7,8 @@ import {
   IconFont,
   ComponentStatus,
   ComponentColor,
+  SpinnerContainer,
+  TechnoSpinner,
 } from '@influxdata/clockface'
 
 // Components
@@ -163,13 +165,15 @@ const GraphResults: FC = () => {
 
   return (
     <div className="data-explorer-results--view">
-      <View
-        loading={status}
-        properties={view.properties}
-        result={result?.parsed}
-        timeRange={range}
-        hideTimer
-      />
+      <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>
+        <View
+          loading={status}
+          properties={view.properties}
+          result={result?.parsed}
+          timeRange={range}
+          hideTimer
+        />
+      </SpinnerContainer>
     </div>
   )
 }

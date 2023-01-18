@@ -16,6 +16,8 @@ import {
   ComponentColor,
   SpinnerContainer,
   TechnoSpinner,
+  Overlay,
+  TextArea,
 } from '@influxdata/clockface'
 
 // Components
@@ -44,6 +46,7 @@ import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
 
 // Utils
 import {bytesFormatter} from 'src/shared/copy/notifications'
+import {sqlAsFlux} from 'src/shared/contexts/query/preprocessing'
 
 import './Results.scss'
 import {LanguageType} from './resources'
@@ -165,6 +168,22 @@ const TableResults: FC<{search: string}> = ({search}) => {
   )
 }
 
+const GraphSubQueryOverlay: FC<{text: string; onClose: () => void}> = ({
+  text,
+  onClose,
+}) => (
+  <Overlay.Container maxWidth={600}>
+    <Overlay.Header title="Subquery for graph data:" onDismiss={onClose} />
+    <Overlay.Body>
+      <TextArea
+        testID="data-explorer-results--graph-subquery"
+        value={text}
+        readOnly
+      />
+    </Overlay.Body>
+  </Overlay.Container>
+)
+
 const GraphResults: FC = () => {
   const {view} = useContext(ResultsViewContext)
   const {result, status} = useContext(ChildResultsContext)
@@ -186,13 +205,21 @@ const GraphResults: FC = () => {
 }
 
 const WrappedOptions: FC = () => {
+  const [showOverlay, setShowOverlay] = useState(false)
+
   // use parent `results` so all metadata is present for the viz options
   const {result} = useContext(ResultsContext)
-  const {setResult, setStatus} = useContext(ChildResultsContext)
+  const {queryModifers, setResult, setStatus} = useContext(ChildResultsContext)
   const {view, setView, selectViewOptions, viewOptions, selectedViewOptions} =
     useContext(ResultsViewContext)
-  const {resource} = useContext(PersistanceContext)
+  const {resource, query: text, selection} = useContext(PersistanceContext)
   const dataExists = !!result?.parsed
+
+  const subquery = useMemo(
+    () => sqlAsFlux(text, selection?.bucket, queryModifers),
+    [text, selection?.bucket, queryModifers]
+  )
+  const seeGraphSubquery = () => setShowOverlay(true)
 
   const updateChildResults = useCallback(
     update => {
@@ -218,11 +245,18 @@ const WrappedOptions: FC = () => {
         selectViewOptions={selectViewOptions}
         allViewOptions={viewOptions}
         selectedViewOptions={selectedViewOptions}
+        seeSubquery={selection?.bucket ? seeGraphSubquery : null}
       />
     ) : null
 
   return (
     <>
+      <Overlay visible={showOverlay}>
+        <GraphSubQueryOverlay
+          text={subquery}
+          onClose={() => setShowOverlay(false)}
+        />
+      </Overlay>
       {subQueryOptions}
       <ViewOptions
         properties={view.properties}

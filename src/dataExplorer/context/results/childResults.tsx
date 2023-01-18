@@ -49,6 +49,7 @@ const modifiersToApply = (viewOptions: ViewOptions): SqlQueryModifiers => {
 interface ChildResultsContextType {
   status: RemoteDataState
   result: FluxResult
+  readonly queryModifers: SqlQueryModifiers
 
   setStatus: (status: RemoteDataState) => void
   setResult: (result: FluxResult) => void
@@ -57,6 +58,7 @@ interface ChildResultsContextType {
 const DEFAULT_STATE: ChildResultsContextType = {
   status: RemoteDataState.NotStarted,
   result: {} as FluxResult,
+  queryModifers: {} as SqlQueryModifiers,
 
   setStatus: _ => {},
   setResult: _ => {},
@@ -141,6 +143,7 @@ export const ChildResultsProvider: FC = ({children}) => {
       value={{
         status,
         result,
+        queryModifers,
 
         setStatus,
         setResult,

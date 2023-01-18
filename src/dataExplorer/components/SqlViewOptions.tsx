@@ -1,7 +1,8 @@
 import React, {FC} from 'react'
-import {Columns, Form, Grid} from '@influxdata/clockface'
+import {Columns, Grid} from '@influxdata/clockface'
 
 import SelectorList from 'src/timeMachine/components/SelectorList'
+import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {ViewOptions} from 'src/dataExplorer/context/resultsView'
 
 import './SqlViewOptions.scss'
@@ -29,6 +30,24 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
     }
   }
 
+  const groupbyTooltipContents = (
+    <div>
+      <span>Select the GROUPBY used for the graph subquery.</span>
+      <br />
+      <br />
+      <span>
+        Options are based on returned data results (refer to your table
+        columns).
+      </span>
+      <br />
+      <br />
+      <span>
+        By default, the GROUPBY is done on all tagKeys in order to produce a
+        dataseries.
+      </span>
+    </div>
+  )
+
   return (
     <div className="view-options sql-view-options">
       <Grid>
@@ -40,16 +59,16 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
             className="view-options-container"
           >
             <h5 className="view-options--header">Query Modifier</h5>
-            <Form.Element label="Dataseries Grouping">
-              <SelectorList
-                items={allViewOptions?.groupby ?? []}
-                selectedItems={selectedViewOptions?.groupby ?? []}
-                onSelectItem={tagKey =>
-                  handleSelectedListItem('groupby', tagKey)
-                }
-                multiSelect={true}
-              />
-            </Form.Element>
+            <SelectorTitle
+              label="Grouping"
+              tooltipContents={groupbyTooltipContents}
+            />
+            <SelectorList
+              items={allViewOptions?.groupby ?? []}
+              selectedItems={selectedViewOptions?.groupby ?? []}
+              onSelectItem={tagKey => handleSelectedListItem('groupby', tagKey)}
+              multiSelect={true}
+            />
           </Grid.Column>
         </Grid.Row>
       </Grid>

@@ -1,8 +1,17 @@
-import React, {FC, createContext, useCallback} from 'react'
+import React, {
+  FC,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+} from 'react'
 
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {ViewProperties, SimpleTableViewProperties} from 'src/types'
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
+import {ResultsContext} from 'src/dataExplorer/context/results'
+
+const NOT_PERMITTED_GROUPBY = ['_result', 'result', '_time', 'time', 'table']
 
 export enum ViewStateType {
   Table = 'table',
@@ -24,7 +33,7 @@ interface ResultsViewContextType {
   selectedViewOptions: ViewOptions
 
   setView: (view: View) => void
-  setViewOptions: (viewOptions: Partial<ViewOptions>) => void
+  setDefaultViewOptions: (viewOptions: Partial<ViewOptions>) => void
   selectViewOptions: (viewOptions: Partial<ViewOptions>) => void
 }
 
@@ -39,7 +48,7 @@ const DEFAULT_STATE: ResultsViewContextType = {
   selectedViewOptions: JSON.parse(JSON.stringify(DEFAULT_VIEW_OPTIONS)),
 
   setView: _ => {},
-  setViewOptions: _ => {},
+  setDefaultViewOptions: _ => {},
   selectViewOptions: _ => {},
 }
 
@@ -47,6 +56,7 @@ export const ResultsViewContext =
   createContext<ResultsViewContextType>(DEFAULT_STATE)
 
 export const ResultsViewProvider: FC = ({children}) => {
+  const {result: resultFromParent} = useContext(ResultsContext)
   const [view, setView] = useSessionStorage('dataExplorer.results', {
     state: ViewStateType.Table,
     properties: {
@@ -56,15 +66,27 @@ export const ResultsViewProvider: FC = ({children}) => {
   })
 
   // what can be chosen (e.g. the list of all options)
-  const [viewOptions, saveViewOptions] = useSessionStorage(
+  const [viewOptionsAll, saveViewOptionsAll] = useSessionStorage(
     'dataExplorer.resultsOptions.all',
     DEFAULT_VIEW_OPTIONS
   )
-  const setViewOptions = useCallback(
+  const setViewOptionsAll = useCallback(
     (updatedOptions: Partial<ViewOptions>) => {
-      saveViewOptions({...viewOptions, ...updatedOptions})
+      saveViewOptionsAll({...viewOptionsAll, ...updatedOptions})
     },
-    [viewOptions]
+    [viewOptionsAll]
+  )
+
+  // default options (a.k.a. based on schema)
+  const [defaultViewOptions, saveDefaultViewOptions] = useSessionStorage(
+    'dataExplorer.resultsOptions.default',
+    DEFAULT_VIEW_OPTIONS
+  )
+  const setDefaultViewOptions = useCallback(
+    (updatedOptions: Partial<ViewOptions>) => {
+      saveDefaultViewOptions({...defaultViewOptions, ...updatedOptions})
+    },
+    [defaultViewOptions]
   )
 
   // what was chosen (e.g. sublist chosen)
@@ -74,20 +96,35 @@ export const ResultsViewProvider: FC = ({children}) => {
   )
   const selectViewOptions = useCallback(
     (updatedOptions: Partial<ViewOptions>) => {
-      saveSelectedViewOptions({...viewOptions, ...updatedOptions})
+      saveSelectedViewOptions({...selectedViewOptions, ...updatedOptions})
     },
-    [viewOptions]
+    [selectedViewOptions]
   )
+
+  useEffect(() => {
+    // if parent query is re-run => decide what to reset in subquery viewOptions
+
+    // reset groupby
+    const excludeFromGroupby = NOT_PERMITTED_GROUPBY
+    const groupby = Object.keys(
+      resultFromParent?.parsed?.table?.columns || {}
+    ).filter(g => !excludeFromGroupby.includes(g))
+    setViewOptionsAll({groupby})
+    const defaultsWhichExist = defaultViewOptions.groupby.filter(g =>
+      groupby.includes(g)
+    )
+    selectViewOptions({groupby: defaultsWhichExist})
+  }, [resultFromParent, defaultViewOptions])
 
   return (
     <ResultsViewContext.Provider
       value={{
         view,
-        viewOptions,
+        viewOptions: viewOptionsAll,
         selectedViewOptions,
 
         setView,
-        setViewOptions,
+        setDefaultViewOptions,
         selectViewOptions,
       }}
     >

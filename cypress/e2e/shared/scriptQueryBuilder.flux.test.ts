@@ -86,7 +86,7 @@ describe('Script Builder', () => {
         cy.getByTestID('query-builder--new-script').should('be.visible').click()
         cy.getByTestID('script-dropdown__flux').should('be.visible').click()
         cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('flux-query-builder--no-save')
+          cy.getByTestID('script-query-builder--no-save')
             .should('be.visible')
             .click()
         })
@@ -105,18 +105,20 @@ describe('Script Builder', () => {
       if (isIox) {
         setScriptToFlux()
       } else {
-        cy.getByTestID('flux-query-builder--save-script').then($saveButton => {
-          if (!$saveButton.is(':disabled')) {
-            cy.getByTestID('flux-query-builder--new-script')
-              .should('be.visible')
-              .click()
-            cy.getByTestID('overlay--container').within(() => {
-              cy.getByTestID('flux-query-builder--no-save')
+        cy.getByTestID('script-query-builder--save-script').then(
+          $saveButton => {
+            if (!$saveButton.is(':disabled')) {
+              cy.getByTestID('script-query-builder--new-script')
                 .should('be.visible')
                 .click()
-            })
+              cy.getByTestID('overlay--container').within(() => {
+                cy.getByTestID('script-query-builder--no-save')
+                  .should('be.visible')
+                  .click()
+              })
+            }
           }
-        })
+        )
       }
       cy.getByTestID('flux-editor').within(() => {
         cy.get('textarea.inputarea').should(
@@ -124,7 +126,7 @@ describe('Script Builder', () => {
           DEFAULT_FLUX_EDITOR_TEXT
         )
       })
-      return cy.getByTestID('flux-sync--toggle').then($toggle => {
+      return cy.getByTestID('editor-sync--toggle').then($toggle => {
         if (!$toggle.hasClass('active')) {
           $toggle.click()
         }
@@ -137,7 +139,7 @@ describe('Script Builder', () => {
       return cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/data-explorer`)
         return cy.setFeatureFlags(flags).then(() => {
-          cy.getByTestID('flux-query-builder-toggle').then($toggle => {
+          cy.getByTestID('script-query-builder-toggle').then($toggle => {
             cy.wrap($toggle).should('be.visible')
             // Switch to Flux Query Builder if not yet
             if (!$toggle.hasClass('active')) {
@@ -169,8 +171,8 @@ describe('Script Builder', () => {
         schemaComposition: false,
         newDataExplorer: true,
       }).then(() => {
-        cy.getByTestID('flux-sync--toggle').should('not.exist')
-        cy.getByTestID('flux-query-builder--menu').contains('New Script')
+        cy.getByTestID('editor-sync--toggle').should('not.exist')
+        cy.getByTestID('script-query-builder--menu').contains('New Script')
         setScriptToFlux()
       })
     })
@@ -324,7 +326,7 @@ describe('Script Builder', () => {
         saveAsScript: true,
       }).then(() => {
         clearSession()
-        cy.getByTestID('flux-sync--toggle')
+        cy.getByTestID('editor-sync--toggle')
         cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
       })
     })
@@ -444,7 +446,7 @@ describe('Script Builder', () => {
     describe('sync and resetting behavior:', () => {
       it('sync defaults to on. Can be toggled on/off. And can diverge (be disabled).', () => {
         cy.log('starts as synced')
-        cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+        cy.getByTestID('editor-sync--toggle').should('have.class', 'active')
 
         cy.log('empty editor text')
         cy.getByTestID('flux-editor').monacoType('{selectAll}{del}')
@@ -459,20 +461,20 @@ describe('Script Builder', () => {
         cy.log('sync toggles on and off, with matching styles')
         cy.get('.composition-sync--on').should('have.length.gte', 3)
         cy.get('.composition-sync--off').should('have.length', 0)
-        cy.getByTestID('flux-sync--toggle')
+        cy.getByTestID('editor-sync--toggle')
           .should('have.class', 'active')
           .click()
           .should('not.have.class', 'active')
         cy.get('.composition-sync--on').should('have.length', 0)
         cy.get('.composition-sync--off').should('have.length.gte', 3)
-        cy.getByTestID('flux-sync--toggle')
+        cy.getByTestID('editor-sync--toggle')
           .click()
           .should('have.class', 'active')
         cy.get('.composition-sync--on').should('have.length.gte', 3)
         cy.get('.composition-sync--off').should('have.length', 0)
 
         cy.log('turn off flux sync')
-        cy.getByTestID('flux-sync--toggle')
+        cy.getByTestID('editor-sync--toggle')
           .click()
           .should('not.have.class', 'active')
 
@@ -498,10 +500,10 @@ describe('Script Builder', () => {
         cy.getByTestID('flux-editor').monacoType('{selectall}{enter}')
 
         cy.log('turn off sync')
-        cy.getByTestID('flux-sync--toggle')
+        cy.getByTestID('editor-sync--toggle')
           .should('have.class', 'active')
           .click()
-        cy.getByTestID('flux-sync--toggle').should('not.have.class', 'active')
+        cy.getByTestID('editor-sync--toggle').should('not.have.class', 'active')
 
         cy.log('modify schema browser')
         selectBucket(bucketName)
@@ -514,10 +516,10 @@ describe('Script Builder', () => {
         })
 
         cy.log('turn on sync')
-        cy.getByTestID('flux-sync--toggle')
+        cy.getByTestID('editor-sync--toggle')
           .should('not.have.class', 'active')
           .click()
-        cy.getByTestID('flux-sync--toggle').should('have.class', 'active')
+        cy.getByTestID('editor-sync--toggle').should('have.class', 'active')
 
         cy.log('editor text contains the composition')
         confirmSchemaComposition()

@@ -5,7 +5,7 @@ import {
   setTimeZone as setTimeZoneAction,
   setTheme as setThemeAction,
   setNavBarState as setNavbarModeAction,
-  setFluxQueryBuilder as setFluxQueryBuilderAction,
+  setScriptQueryBuilder as setScriptQueryBuilderAction,
   enablePresentationMode,
   disablePresentationMode,
   setFlowsCTA as setFlowsCTAAction,
@@ -16,7 +16,7 @@ import {
   timeZone as timeZoneFromState,
   theme as themeFromState,
   getPresentationMode as presentationModeFromState,
-  fluxQueryBuilder as fluxQueryBuilderFromState,
+  scriptQueryBuilder as scriptQueryBuilderFromState,
   navbarMode as navbarModeFromState,
   getFlowsCTA,
   getSubscriptionsCertificateInterest,
@@ -41,7 +41,7 @@ interface AppSettingContextType {
   timeZone: TimeZone
   theme: Theme
   presentationMode: boolean
-  fluxQueryBuilder: boolean
+  scriptQueryBuilder: boolean
   navbarMode: NavBarState
   flowsCTA: FlowsCTA
   subscriptionsCertificateInterest: boolean
@@ -50,7 +50,7 @@ interface AppSettingContextType {
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
   setPresentationMode: (active: boolean) => void
-  setFluxQueryBuilder: (active: boolean) => void
+  setScriptQueryBuilder: (active: boolean) => void
   setNavbarMode: (mode: NavBarState) => void
   setFlowsCTA: (flowsCTA: FlowsCTA) => void
   setSubscriptionsCertificateInterest: () => void
@@ -60,7 +60,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   timeZone: 'Local' as TimeZone,
   theme: 'dark' as Theme,
   presentationMode: false,
-  fluxQueryBuilder: false,
+  scriptQueryBuilder: false,
   navbarMode: 'collapsed' as NavBarState,
   flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
   subscriptionsCertificateInterest: false,
@@ -69,7 +69,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
   setPresentationMode: (_active: boolean) => {},
-  setFluxQueryBuilder: (_active: boolean) => {},
+  setScriptQueryBuilder: (_active: boolean) => {},
   setNavbarMode: (_mode: NavBarState) => {},
   setFlowsCTA: (_flowsCTA: FlowsCTA) => {},
   setSubscriptionsCertificateInterest: () => {},
@@ -83,7 +83,7 @@ export const AppSettingProvider: FC = ({children}) => {
     timeZone,
     theme,
     presentationMode,
-    fluxQueryBuilder,
+    scriptQueryBuilder,
     navbarMode,
     flowsCTA,
     subscriptionsCertificateInterest,
@@ -91,7 +91,7 @@ export const AppSettingProvider: FC = ({children}) => {
     timeZone: timeZoneFromState(state),
     theme: themeFromState(state),
     presentationMode: presentationModeFromState(state),
-    fluxQueryBuilder: fluxQueryBuilderFromState(state),
+    scriptQueryBuilder: scriptQueryBuilderFromState(state),
     navbarMode: navbarModeFromState(state),
     flowsCTA: getFlowsCTA(state),
     subscriptionsCertificateInterest:
@@ -124,9 +124,9 @@ export const AppSettingProvider: FC = ({children}) => {
     },
     [dispatch]
   )
-  const setFluxQueryBuilder = useCallback(
+  const setScriptQueryBuilder = useCallback(
     (_active: boolean) => {
-      dispatch(setFluxQueryBuilderAction(_active))
+      dispatch(setScriptQueryBuilderAction(_active))
     },
     [dispatch]
   )
@@ -157,7 +157,7 @@ export const AppSettingProvider: FC = ({children}) => {
         timeZone,
         theme,
         presentationMode,
-        fluxQueryBuilder,
+        scriptQueryBuilder,
         navbarMode,
         flowsCTA,
         subscriptionsCertificateInterest,
@@ -166,7 +166,7 @@ export const AppSettingProvider: FC = ({children}) => {
         setTimeZone,
         setTheme,
         setPresentationMode,
-        setFluxQueryBuilder,
+        setScriptQueryBuilder,
         setNavbarMode,
         setFlowsCTA,
         setSubscriptionsCertificateInterest,

@@ -20,7 +20,7 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {RemoteDataState} from 'src/types'
 import './SaveAsScript.scss'
 import {CLOUD} from 'src/shared/constants'
-import {OverlayType} from './FluxQueryBuilder'
+import {OverlayType} from './ScriptQueryBuilder'
 import {useDispatch, useSelector} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -250,7 +250,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
               color={ComponentColor.Danger}
               onClick={handleDeleteScript}
               text="Delete Script"
-              testID="flux-query-builder--no-save"
+              testID="script-query-builder--no-save"
             />
           )}
         </Form>
@@ -266,7 +266,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
             color={ComponentColor.Default}
             onClick={clear}
             text="No, Discard"
-            testID="flux-query-builder--no-save"
+            testID="script-query-builder--no-save"
           />
         )}
         {CLOUD && (

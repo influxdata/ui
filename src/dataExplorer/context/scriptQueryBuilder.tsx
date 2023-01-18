@@ -22,7 +22,7 @@ interface SelectedTagValues {
   [key: string]: string[]
 }
 
-interface FluxQueryBuilderContextType {
+interface ScriptQueryBuilderContextType {
   // Flux Sync
   fluxSync: boolean
   toggleFluxSync: (synced: boolean) => void
@@ -39,7 +39,7 @@ interface FluxQueryBuilderContextType {
   setSearchTerm: (str: string) => void
 }
 
-const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
+const DEFAULT_CONTEXT: ScriptQueryBuilderContextType = {
   // Flux Sync
   fluxSync: true,
   toggleFluxSync: _s => {},
@@ -56,10 +56,10 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   setSearchTerm: (_s: string) => {},
 }
 
-export const FluxQueryBuilderContext =
-  createContext<FluxQueryBuilderContextType>(DEFAULT_CONTEXT)
+export const ScriptQueryBuilderContext =
+  createContext<ScriptQueryBuilderContextType>(DEFAULT_CONTEXT)
 
-export const FluxQueryBuilderProvider: FC = ({children}) => {
+export const ScriptQueryBuilderProvider: FC = ({children}) => {
   // Contexts
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
@@ -197,7 +197,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
   return useMemo(
     () => (
-      <FluxQueryBuilderContext.Provider
+      <ScriptQueryBuilderContext.Provider
         value={{
           // Flux Sync
           fluxSync: selection.composition?.synced,
@@ -216,7 +216,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
         }}
       >
         {children}
-      </FluxQueryBuilderContext.Provider>
+      </ScriptQueryBuilderContext.Provider>
     ),
     [
       // Flux Sync

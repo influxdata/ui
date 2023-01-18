@@ -43,10 +43,10 @@ const FluxInjectionOption: FC<Props> = ({
   setHoverdFunction,
 }) => {
   // TODO: move this to a flag once design wants to branch it out further
-  const {fluxQueryBuilder} = useContext(AppSettingContext)
+  const {scriptQueryBuilder} = useContext(AppSettingContext)
   const {path} = useRouteMatch()
   const useNewStyling =
-    fluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
+    scriptQueryBuilder && path === '/orgs/:orgID/data-explorer'
   const itemRef = createRef<HTMLDListElement>()
   const handleClick = () => {
     onClick(option)

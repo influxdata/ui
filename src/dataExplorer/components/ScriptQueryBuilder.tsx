@@ -38,7 +38,7 @@ import {RemoteDataState} from 'src/types'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 // Styles
-import './FluxQueryBuilder.scss'
+import './ScriptQueryBuilder.scss'
 
 export enum OverlayType {
   DELETE = 'delete',
@@ -48,7 +48,7 @@ export enum OverlayType {
   SAVE = 'save',
 }
 
-const FluxQueryBuilder: FC = () => {
+const ScriptQueryBuilder: FC = () => {
   const history = useHistory()
   const {resource, hasChanged, vertical, setVertical, setHasChanged} =
     useContext(PersistanceContext)
@@ -112,14 +112,14 @@ const FluxQueryBuilder: FC = () => {
           />
         </Overlay>
         <FlexBox
-          className="flux-query-builder--container"
+          className="script-query-builder--container"
           direction={FlexDirection.Column}
           justifyContent={JustifyContent.SpaceBetween}
           alignItems={AlignItems.Stretch}
         >
           <div
-            className="flux-query-builder--menu"
-            data-testid="flux-query-builder--menu"
+            className="script-query-builder--menu"
+            data-testid="script-query-builder--menu"
           >
             <FlexBox
               direction={FlexDirection.Row}
@@ -162,17 +162,17 @@ const FluxQueryBuilder: FC = () => {
                     onClick={handleNewScript}
                     text="New Script"
                     icon={IconFont.Plus_New}
-                    testID="flux-query-builder--new-script"
+                    testID="script-query-builder--new-script"
                   />
                 )}
                 <Button
-                  className="flux-query-builder__action-button"
+                  className="script-query-builder__action-button"
                   onClick={() => setOverlayType(OverlayType.OPEN)}
                   text="Open"
                   icon={IconFont.FolderOpen}
                 />
                 <Button
-                  className="flux-query-builder__action-button"
+                  className="script-query-builder__action-button"
                   onClick={() => setOverlayType(OverlayType.SAVE)}
                   status={
                     hasChanged
@@ -180,12 +180,12 @@ const FluxQueryBuilder: FC = () => {
                       : ComponentStatus.Disabled
                   }
                   text="Save"
-                  testID="flux-query-builder--save-script"
+                  testID="script-query-builder--save-script"
                   icon={IconFont.Save}
                 />
                 {resource?.data?.id && (
                   <Button
-                    className="flux-query-builder__action-button"
+                    className="script-query-builder__action-button"
                     onClick={() => setOverlayType(OverlayType.EDIT)}
                     status={ComponentStatus.Default}
                     text="Edit"
@@ -205,7 +205,7 @@ const FluxQueryBuilder: FC = () => {
               <Schema />
             </DraggableResizer.Panel>
             <DraggableResizer.Panel
-              testID="flux-query-builder-middle-panel"
+              testID="script-query-builder-middle-panel"
               className="new-data-explorer-rightside"
             >
               <ResultsPane />
@@ -226,7 +226,7 @@ export default () => (
       <ResultsViewProvider>
         <PersistanceProvider>
           <ChildResultsProvider>
-            <FluxQueryBuilder />
+            <ScriptQueryBuilder />
           </ChildResultsProvider>
         </PersistanceProvider>
       </ResultsViewProvider>

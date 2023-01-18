@@ -196,7 +196,7 @@ describe('Operator Page', () => {
     })
 
     cy.getByTestID('overlay--container').should('be.visible')
-    cy.getByTestID('overlay--header').contains('678')
+    cy.getByTestID('org-overlay-orgID').contains('678')
 
     cy.getByTestID('limits-rate.readKBs--input').clear().type('666')
 
@@ -244,7 +244,7 @@ describe('Operator Page', () => {
     })
 
     cy.getByTestID('overlay--container').should('be.visible')
-    cy.getByTestID('overlay--header').contains('678')
+    cy.getByTestID('org-overlay-orgID').contains('678')
 
     cy.getByTestID('limits-rate.readKBs--input')
       .invoke('attr', 'value')

@@ -1,4 +1,11 @@
-import React, {FC, useState, useContext, useMemo, useCallback} from 'react'
+import React, {
+  FC,
+  useState,
+  useContext,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react'
 import {
   FlexBox,
   FlexDirection,
@@ -221,14 +228,21 @@ const WrappedOptions: FC = () => {
 }
 
 const GraphHeader: FC = () => {
-  const {view, setView} = useContext(ResultsViewContext)
+  const {view, setView, viewOptions} = useContext(ResultsViewContext)
   const {result} = useContext(ResultsContext)
   const {result: subQueryResult} = useContext(ChildResultsContext)
   const {launch} = useContext(SidebarContext)
 
+  const dataExists = !!result?.parsed
+
   const launcher = () => {
     launch(<WrappedOptions />)
   }
+  useEffect(() => {
+    if (dataExists) {
+      launcher()
+    }
+  }, [viewOptions])
 
   const updateType = viewType => {
     setView({
@@ -237,7 +251,6 @@ const GraphHeader: FC = () => {
     })
   }
 
-  const dataExists = !!result?.parsed
   const subqueryReturnsData = !!subQueryResult?.parsed
   let titleText = 'Configure Visualization'
   if (!dataExists) {

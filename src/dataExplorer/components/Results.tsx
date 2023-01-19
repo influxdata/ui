@@ -7,16 +7,16 @@ import React, {
   useState,
 } from 'react'
 import {
+  Button,
+  ComponentColor,
+  ComponentStatus,
   FlexBox,
   FlexDirection,
-  SelectGroup,
-  Button,
   IconFont,
-  ComponentStatus,
-  ComponentColor,
+  Overlay,
+  SelectGroup,
   SpinnerContainer,
   TechnoSpinner,
-  Overlay,
   TextArea,
 } from '@influxdata/clockface'
 

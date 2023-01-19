@@ -20,18 +20,23 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 const SchemaBrowserHeading: FC = () => {
-  const {fluxSync, toggleFluxSync} = useContext(ScriptQueryBuilderContext)
+  const {compositionSync, toggleCompositionSync} = useContext(
+    ScriptQueryBuilderContext
+  )
   const {resource} = useContext(PersistanceContext)
 
-  const handleFluxSyncToggle = () => {
-    event('Toggled Flux Sync in schema browser', {active: `${!fluxSync}`})
-    toggleFluxSync(!fluxSync)
+  const handleCompositionSyncToggle = () => {
+    // Note: kept same event naming, so can compare across time. (Even though is Flux and SQL sync.)
+    event('Toggled Flux Sync in schema browser', {
+      active: `${!compositionSync}`,
+    })
+    toggleCompositionSync(!compositionSync)
   }
 
   const tooltipContents = (
     <div>
       <span>
-        Flux Sync autopopulates the script editor to help you start a query.
+        Sync autopopulates the script editor to help you start a query.
       </span>
       <br />
       <br />
@@ -58,8 +63,8 @@ const SchemaBrowserHeading: FC = () => {
       <FlexBox className="editor-sync">
         <SlideToggle
           className="editor-sync--toggle"
-          active={fluxSync}
-          onChange={handleFluxSyncToggle}
+          active={compositionSync}
+          onChange={handleCompositionSyncToggle}
           testID="editor-sync--toggle"
         />
         <InputLabel className="editor-sync--label">

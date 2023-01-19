@@ -23,9 +23,9 @@ interface SelectedTagValues {
 }
 
 interface ScriptQueryBuilderContextType {
-  // Flux Sync
-  fluxSync: boolean
-  toggleFluxSync: (synced: boolean) => void
+  // Composition Sync
+  compositionSync: boolean
+  toggleCompositionSync: (synced: boolean) => void
 
   // Schema
   selectedBucket: Bucket
@@ -40,9 +40,9 @@ interface ScriptQueryBuilderContextType {
 }
 
 const DEFAULT_CONTEXT: ScriptQueryBuilderContextType = {
-  // Flux Sync
-  fluxSync: true,
-  toggleFluxSync: _s => {},
+  // Composition Sync
+  compositionSync: true,
+  toggleCompositionSync: _s => {},
 
   // Schema
   selectedBucket: null,
@@ -106,7 +106,7 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
     setSelectedTagValues(transformSessionTagValuesToLocal(selection.tagValues))
   }, [selection.tagValues])
 
-  const handleToggleFluxSync = (synced: boolean): void => {
+  const handleCompositionFluxSync = (synced: boolean): void => {
     setSelection({composition: {synced}})
   }
 
@@ -199,9 +199,9 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
     () => (
       <ScriptQueryBuilderContext.Provider
         value={{
-          // Flux Sync
-          fluxSync: selection.composition?.synced,
-          toggleFluxSync: handleToggleFluxSync,
+          // Composition Sync
+          compositionSync: selection.composition?.synced,
+          toggleCompositionSync: handleCompositionFluxSync,
 
           // Schema
           selectedBucket: selection.bucket,
@@ -219,7 +219,7 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
       </ScriptQueryBuilderContext.Provider>
     ),
     [
-      // Flux Sync
+      // Composition Sync
       selection.composition?.synced,
 
       // Schema

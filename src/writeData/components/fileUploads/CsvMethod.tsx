@@ -104,7 +104,9 @@ export const CsvMethod: FC = () => {
         if (resp.type === 'RATE_LIMIT_ERROR') {
           setUploadState(RemoteDataState.Error)
           if (orgIsIOx) {
-            setUploadError('Failed due to plan limits')
+            setUploadError(
+              'Failed due to request exceeding read or write limits of plan'
+            )
           } else {
             setUploadError(
               'Failed due to plan limits: read cardinality reached'

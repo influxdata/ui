@@ -1,4 +1,11 @@
-import React, {FC, useState, useContext, useMemo, useCallback} from 'react'
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import {
   FlexBox,
   FlexDirection,
@@ -7,9 +14,21 @@ import {
   IconFont,
   ComponentStatus,
   ComponentColor,
+  SpinnerContainer,
+  TechnoSpinner,
 } from '@influxdata/clockface'
 
-import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
+// Components
+import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
+import {
+  View,
+  ViewTypeDropdown,
+  ViewOptions,
+  SUPPORTED_VISUALIZATIONS,
+} from 'src/visualization'
+import {SqlViewOptions} from 'src/dataExplorer/components/SqlViewOptions'
+
+// Contexts
 import {ResultsContext} from 'src/dataExplorer/context/results'
 import {
   ResultsViewContext,
@@ -18,17 +37,16 @@ import {
 import {ChildResultsContext} from 'src/dataExplorer/context/results/childResults'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
-import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
-import {
-  View,
-  ViewTypeDropdown,
-  ViewOptions,
-  SUPPORTED_VISUALIZATIONS,
-} from 'src/visualization'
+
+// Types
 import {FluxResult} from 'src/types/flows'
+import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
+
+// Utils
+import {bytesFormatter} from 'src/shared/copy/notifications'
 
 import './Results.scss'
-import {bytesFormatter} from 'src/shared/copy/notifications'
+import {LanguageType} from './resources'
 
 const QueryStat: FC = () => {
   const {result} = useContext(ResultsContext)
@@ -154,13 +172,15 @@ const GraphResults: FC = () => {
 
   return (
     <div className="data-explorer-results--view">
-      <View
-        loading={status}
-        properties={view.properties}
-        result={result?.parsed}
-        timeRange={range}
-        hideTimer
-      />
+      <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>
+        <View
+          loading={status}
+          properties={view.properties}
+          result={result?.parsed}
+          timeRange={range}
+          hideTimer
+        />
+      </SpinnerContainer>
     </div>
   )
 }
@@ -169,7 +189,10 @@ const WrappedOptions: FC = () => {
   // use parent `results` so all metadata is present for the viz options
   const {result} = useContext(ResultsContext)
   const {setResult, setStatus} = useContext(ChildResultsContext)
-  const {view, setView /* setViewOptions*/} = useContext(ResultsViewContext)
+  const {view, setView, selectViewOptions, viewOptions, selectedViewOptions} =
+    useContext(ResultsViewContext)
+  const {resource} = useContext(PersistanceContext)
+  const dataExists = !!result?.parsed
 
   const updateChildResults = useCallback(
     update => {
@@ -184,8 +207,19 @@ const WrappedOptions: FC = () => {
     [setStatus, setResult]
   )
 
-  // TODO: make component with `update={setViewOptions}`, for QxBuilder-specific graph subquery options
-  const subQueryOptions = null
+  if (!dataExists) {
+    return null
+  }
+
+  const subQueryOptions =
+    resource?.language === LanguageType.SQL &&
+    view.state == ViewStateType.Graph ? (
+      <SqlViewOptions
+        selectViewOptions={selectViewOptions}
+        allViewOptions={viewOptions}
+        selectedViewOptions={selectedViewOptions}
+      />
+    ) : null
 
   return (
     <>
@@ -200,14 +234,26 @@ const WrappedOptions: FC = () => {
 }
 
 const GraphHeader: FC = () => {
-  const {view, setView} = useContext(ResultsViewContext)
+  const {view, setView, viewOptions} = useContext(ResultsViewContext)
   const {result} = useContext(ResultsContext)
   const {result: subQueryResult} = useContext(ChildResultsContext)
-  const {launch} = useContext(SidebarContext)
+  const {launch, clear: closeSidebar} = useContext(SidebarContext)
+
+  const dataExists = !!result?.parsed
 
   const launcher = () => {
     launch(<WrappedOptions />)
   }
+  useEffect(() => {
+    if (dataExists) {
+      launcher()
+    }
+  }, [viewOptions])
+  useEffect(() => {
+    if (!dataExists) {
+      closeSidebar()
+    }
+  }, [dataExists])
 
   const updateType = viewType => {
     setView({
@@ -216,7 +262,6 @@ const GraphHeader: FC = () => {
     })
   }
 
-  const dataExists = !!result?.parsed
   const subqueryReturnsData = !!subQueryResult?.parsed
   let titleText = 'Configure Visualization'
   if (!dataExists) {

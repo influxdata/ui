@@ -1,0 +1,11 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.sql-view-options {
+  .cf-list {
+    flex: 1 0 !important;
+
+    .selector-list--item {
+      height: $cf-form-xs-height;
+    }
+  }
+}

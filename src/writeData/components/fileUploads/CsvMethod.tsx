@@ -32,6 +32,12 @@ import {notify} from 'src/shared/actions/notifications'
 // Types
 import {RemoteDataState} from 'src/types'
 
+enum Response {
+  SUCCESS = 'SUCCESS',
+  RATE_LIMIT_ERROR = 'RATE_LIMIT_ERROR',
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+}
+
 export const CsvMethod: FC = () => {
   const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
   const [uploadError, setUploadError] = useState('')
@@ -97,11 +103,11 @@ export const CsvMethod: FC = () => {
           controller.current
         ).promise
 
-        if (resp.type === 'SUCCESS') {
+        if (resp.type === Response.SUCCESS) {
           setUploadState(RemoteDataState.Done)
           return
         }
-        if (resp.type === 'RATE_LIMIT_ERROR') {
+        if (resp.type === Response.RATE_LIMIT_ERROR) {
           setUploadState(RemoteDataState.Error)
           if (orgIsIOx) {
             setUploadError(
@@ -109,12 +115,12 @@ export const CsvMethod: FC = () => {
             )
           } else {
             setUploadError(
-              'Failed due to plan limits: read cardinality reached'
+              'Failed due to request exceeding read, write, or cardinality limits of plan'
             )
           }
           return
         }
-        if (resp.type === 'UNKNOWN_ERROR') {
+        if (resp.type === Response.UNKNOWN_ERROR) {
           const error = getErrorMessage(resp)
           throw new Error(error)
         }

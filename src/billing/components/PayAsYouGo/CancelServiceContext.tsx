@@ -5,16 +5,16 @@ interface Props {
   children: ReactChild
 }
 
-export enum VariableItems {
-  NO_OPTION = '----',
-  USE_CASE_DIFFERENT = "It doesn't work for my use case",
-  SWITCHING_ORGANIZATION = 'I want to join my account to another organization',
+export enum CancelationReasons {
   ALTERNATIVE_PRODUCT = 'I found an alternative product',
+  NONE = '----',
   RE_SIGNUP = 'I want to sign up for a new account using a marketplace option',
+  SWITCHING_ORGANIZATION = 'I want to join my account to another organization',
   TOO_EXPENSIVE = 'It’s too expensive',
-  USABILITY_ISSUE = 'I found Flux hard to use',
-  UNSTABLE_PLATFORM = 'Platform isn’t stable enough',
   UNSUPPORTED_HIGH_CARDINALITY = 'Platform doesn’t support my high Cardinality',
+  UNSTABLE_PLATFORM = 'Platform isn’t stable enough',
+  USABILITY_ISSUE = 'I found Flux hard to use',
+  USE_CASE_DIFFERENT = "It doesn't work for my use case",
   OTHER_REASON = 'Other reason',
 }
 
@@ -23,6 +23,13 @@ const RedirectLocations = {
   RE_SIGNUP: '/cancel',
 }
 const DEFAULT_REDIRECT_LOCATION = '/mkt_cancel'
+
+// Ensures that the default cancelation "reason" is always the key name for the "NONE" enum.
+const getDefaultCancelationReason = () => {
+  return Object.keys(CancelationReasons).filter(
+    reason => CancelationReasons[reason] === CancelationReasons.NONE
+  )[0]
+}
 
 export interface CancelServiceContextType {
   shortSuggestion: string
@@ -45,7 +52,7 @@ export const DEFAULT_CANCEL_SERVICE_CONTEXT: CancelServiceContextType = {
   setShortSuggestion: (_: string) => null,
   suggestions: '',
   setSuggestions: (_: string) => null,
-  reason: 'NO_OPTION',
+  reason: getDefaultCancelationReason(),
   setReason: (_: string) => null,
   canContactForFeedback: false,
   toggleCanContactForFeedback: () => null,
@@ -56,7 +63,7 @@ export const CancelServiceContext = createContext<CancelServiceContextType>(
   DEFAULT_CANCEL_SERVICE_CONTEXT
 )
 
-const CancelServiceProvider: FC<Props> = ({children}) => {
+export const CancelServiceProvider: FC<Props> = ({children}) => {
   const [shortSuggestion, setShortSuggestion] = useState(
     DEFAULT_CANCEL_SERVICE_CONTEXT.shortSuggestion
   )
@@ -101,5 +108,3 @@ const CancelServiceProvider: FC<Props> = ({children}) => {
     </CancelServiceContext.Provider>
   )
 }
-
-export default CancelServiceProvider

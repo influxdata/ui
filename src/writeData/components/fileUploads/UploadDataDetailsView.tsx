@@ -11,7 +11,7 @@ import CodeSnippet, {
   Provider as TemplateProvider,
 } from 'src/shared/components/CodeSnippet'
 import GetResources from 'src/resources/components/GetResources'
-import CsvMethod from 'src/writeData/components/fileUploads/CsvMethod'
+import {CsvMethod} from 'src/writeData/components/fileUploads/CsvMethod'
 import {LineProtocolTabs} from 'src/buckets/components/lineProtocol/configure/LineProtocolTabs'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 

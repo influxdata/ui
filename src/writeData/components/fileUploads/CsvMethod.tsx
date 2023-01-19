@@ -18,7 +18,7 @@ import StatusIndicator from 'src/buckets/components/csvUploader/StatusIndicator'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
-import {getOrg} from 'src/organizations/selectors'
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {runQuery} from 'src/shared/apis/query'
 
@@ -32,7 +32,7 @@ import {notify} from 'src/shared/actions/notifications'
 // Types
 import {RemoteDataState} from 'src/types'
 
-const CsvMethod: FC = () => {
+export const CsvMethod: FC = () => {
   const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
   const [uploadError, setUploadError] = useState('')
 
@@ -40,6 +40,7 @@ const CsvMethod: FC = () => {
   const orgId = useSelector(getOrg)?.id
   const history = useHistory()
   const org = useSelector(getOrg)
+  const orgIsIOx = useSelector(isOrgIOx)
 
   const dispatch = useDispatch()
 
@@ -102,7 +103,13 @@ const CsvMethod: FC = () => {
         }
         if (resp.type === 'RATE_LIMIT_ERROR') {
           setUploadState(RemoteDataState.Error)
-          setUploadError('Failed due to plan limits: read cardinality reached')
+          if (orgIsIOx) {
+            setUploadError('Failed due to plan limits')
+          } else {
+            setUploadError(
+              'Failed due to plan limits: read cardinality reached'
+            )
+          }
           return
         }
         if (resp.type === 'UNKNOWN_ERROR') {
@@ -113,7 +120,7 @@ const CsvMethod: FC = () => {
         handleError(error)
       }
     },
-    [handleError, org?.id]
+    [handleError, org?.id, orgIsIOx]
   )
 
   const handleSeeUploadedData = () => {
@@ -173,5 +180,3 @@ const CsvMethod: FC = () => {
     </Panel>
   )
 }
-
-export default CsvMethod

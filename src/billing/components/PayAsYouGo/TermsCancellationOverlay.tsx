@@ -1,5 +1,5 @@
+// Libraries
 import React, {FC} from 'react'
-
 import {
   ComponentSize,
   FlexBox,
@@ -10,14 +10,16 @@ import {
   InputLabel,
   AlignItems,
 } from '@influxdata/clockface'
-import CancelServiceReasonsForm from './CancelServiceReasonsForm'
+
+// Components
+import {CancelServiceReasonsForm} from 'src/billing/components/PayAsYouGo/CancelServiceReasonsForm'
 
 interface Props {
   hasAgreedToTerms: boolean
   onAgreedToTerms: () => void
 }
 
-const TermsCancellationOverlay: FC<Props> = ({
+export const TermsCancellationOverlay: FC<Props> = ({
   hasAgreedToTerms,
   onAgreedToTerms,
 }) => (
@@ -73,5 +75,3 @@ const TermsCancellationOverlay: FC<Props> = ({
     </FlexBox>
   </div>
 )
-
-export default TermsCancellationOverlay

@@ -1,5 +1,6 @@
 // Libraries
-import React, {useContext, useMemo} from 'react'
+import React, {FC, useContext, useMemo} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -17,31 +18,49 @@ import {
 } from '@influxdata/clockface'
 
 // Utilities
-import {CancelServiceContext, VariableItems} from './CancelServiceContext'
+import {
+  CancelServiceContext,
+  CancelationReasons,
+} from 'src/billing/components/PayAsYouGo/CancelServiceContext'
 
-// Types
+// Selectors
+import {isOrgIOx} from 'src/organizations/selectors'
 
-function CancelServiceReasonsForm() {
+export const CancelServiceReasonsForm: FC = () => {
   const {
-    shortSuggestion,
-    isShortSuggestionEnabled,
-    suggestions,
-    setShortSuggestionFlag,
-    setShortSuggestion,
-    setSuggestions,
-    reason,
-    setReason,
     canContactForFeedback,
+    isShortSuggestionEnabled,
+    reason,
+    shortSuggestion,
+    suggestions,
+    setReason,
+    setShortSuggestion,
+    setShortSuggestionFlag,
+    setSuggestions,
     toggleCanContactForFeedback,
   } = useContext(CancelServiceContext)
 
+  const orgIsIOx = useSelector(isOrgIOx)
+
+  const generateCancelationReasons = () => {
+    if (orgIsIOx) {
+      return Object.keys(CancelationReasons).filter(
+        reason =>
+          CancelationReasons[reason] !==
+          CancelationReasons.UNSUPPORTED_HIGH_CARDINALITY
+      )
+    }
+
+    return Object.keys(CancelationReasons)
+  }
+
   const isDropdownOptionValid = useMemo(() => {
-    return VariableItems[reason] !== VariableItems.NO_OPTION
+    return CancelationReasons[reason] !== CancelationReasons.NONE
   }, [reason])
 
-  const onChange = (selected: string) => {
+  const onSelectReason = (selected: string) => {
     const isAlternateProductSelected =
-      VariableItems[selected] === VariableItems.ALTERNATIVE_PRODUCT
+      CancelationReasons[selected] === CancelationReasons.ALTERNATIVE_PRODUCT
     if (!isAlternateProductSelected) {
       setShortSuggestion('')
     }
@@ -63,20 +82,20 @@ function CancelServiceReasonsForm() {
               onClick={onClick}
               testID="variable-type-dropdown--button"
             >
-              {VariableItems[reason]}
+              {CancelationReasons[reason]}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
-              {Object.keys(VariableItems).map(key => (
+              {generateCancelationReasons().map(reason => (
                 <Dropdown.Item
-                  key={key}
-                  id={key}
-                  value={key}
-                  onClick={onChange}
-                  testID={`variable-type-dropdown-${key}`}
+                  key={reason}
+                  id={reason}
+                  value={reason}
+                  onClick={onSelectReason}
+                  testID={`variable-type-dropdown-${reason}`}
                 >
-                  {VariableItems[key]}
+                  {CancelationReasons[reason]}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
@@ -140,5 +159,3 @@ function CancelServiceReasonsForm() {
     </div>
   )
 }
-
-export default CancelServiceReasonsForm

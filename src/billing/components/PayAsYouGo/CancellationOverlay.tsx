@@ -1,35 +1,47 @@
 // Libraries
 import React, {FC, useContext, useMemo, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+
 import {
-  Overlay,
   Alert,
+  Button,
   ComponentColor,
   ComponentSize,
-  IconFont,
-  Button,
   ComponentStatus,
+  IconFont,
+  Overlay,
 } from '@influxdata/clockface'
 
-// Components
-import TermsCancellationOverlay from 'src/billing/components/PayAsYouGo/TermsCancellationOverlay'
+// Overlays
 import ConfirmCancellationOverlay from 'src/billing/components/PayAsYouGo/ConfirmCancellationOverlay'
-import {CancelServiceContext, VariableItems} from './CancelServiceContext'
-import {track} from 'rudder-sdk-js'
-import {event} from 'src/cloud/utils/reporting'
-import {useDispatch, useSelector} from 'react-redux'
+import {TermsCancellationOverlay} from 'src/billing/components/PayAsYouGo/TermsCancellationOverlay'
+import {
+  CancelServiceContext,
+  CancelationReasons,
+} from 'src/billing/components/PayAsYouGo/CancelServiceContext'
+
+// Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {postSignout} from 'src/client'
-import {postCancel} from 'src/client/unityRoutes'
+import {event} from 'src/cloud/utils/reporting'
+import {track} from 'rudder-sdk-js'
 import {getErrorMessage} from 'src/utils/api'
+
+// APIs
+import {postCancel} from 'src/client/unityRoutes'
+import {postSignout} from 'src/client'
+
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
+
+// Notifications
 import {accountCancellationError} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
-import {selectCurrentIdentity} from 'src/identity/selectors'
 
 interface Props {
   onHideOverlay: () => void
 }
 
-const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
+export const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const [hasClickedCancel, setHasClickedCancel] = useState(false)
   const {
@@ -72,7 +84,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
       email: user.email,
       alternativeProduct: shortSuggestion,
       suggestions,
-      reason: VariableItems[reason],
+      reason: CancelationReasons[reason],
       canContactForFeedback: canContactForFeedback ? 'true' : 'false',
     }
     event('CancelServiceExecuted Event', payload)
@@ -114,7 +126,9 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     // Has Agreed to Terms & Conditions
     // as well as
     // Selected an option from the Reasons Dropdown
-    return hasAgreedToTerms && VariableItems[reason] !== VariableItems.NO_OPTION
+    return (
+      hasAgreedToTerms && CancelationReasons[reason] !== CancelationReasons.NONE
+    )
   }, [hasAgreedToTerms, reason])
 
   return (
@@ -158,5 +172,3 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     </Overlay>
   )
 }
-
-export default CancellationOverlay

@@ -16,10 +16,9 @@ import {
   IconFont,
   InfluxColors,
 } from '@influxdata/clockface'
-import {CardinalityLimitAlertContent} from 'src/cloud/components/CardinalityLimitAlertContent'
-import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
+
+// Overlays
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
-import {UpgradeContent} from 'src/cloud/components/CardinalityLimitAlertContent'
 
 // Utils
 import {
@@ -27,6 +26,11 @@ import {
   extractRateLimitStatus,
 } from 'src/cloud/utils/limits'
 import {event} from 'src/cloud/utils/reporting'
+
+// Components
+import {CardinalityLimitAlertContent} from 'src/cloud/components/CardinalityLimitAlertContent'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
+import {UpgradeContent} from 'src/cloud/components/CardinalityLimitAlertContent'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'

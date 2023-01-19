@@ -21,7 +21,10 @@ import {QueryProvider} from 'src/shared/contexts/query'
 import {EditorProvider} from 'src/shared/contexts/editor'
 import {ResultsProvider, ResultsContext} from 'src/dataExplorer/context/results'
 import {ChildResultsProvider} from 'src/dataExplorer/context/results/childResults'
-import {ResultsViewProvider} from 'src/dataExplorer/context/resultsView'
+import {
+  ResultsViewProvider,
+  ResultsViewContext,
+} from 'src/dataExplorer/context/resultsView'
 import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
 import {
   PersistanceProvider,
@@ -59,12 +62,14 @@ const ScriptQueryBuilder: FC = () => {
   const isIoxOrg = useSelector(isOrgIOx)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
+  const {clear: clearViewOptions} = useContext(ResultsViewContext)
   const org = useSelector(getOrg)
 
   const handleClear = useCallback(() => {
     cancel()
     setStatus(RemoteDataState.NotStarted)
     setResult(null)
+    clearViewOptions()
 
     if (isIoxOrg) {
       history.replace(

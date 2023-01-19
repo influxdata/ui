@@ -11,7 +11,7 @@ import {
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Context
-import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
+import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Utils
@@ -20,7 +20,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 const SchemaBrowserHeading: FC = () => {
-  const {fluxSync, toggleFluxSync} = useContext(FluxQueryBuilderContext)
+  const {fluxSync, toggleFluxSync} = useContext(ScriptQueryBuilderContext)
   const {resource} = useContext(PersistanceContext)
 
   const handleFluxSyncToggle = () => {
@@ -55,14 +55,14 @@ const SchemaBrowserHeading: FC = () => {
       justifyContent={JustifyContent.SpaceBetween}
     >
       <div className="schema-browser-heading--text">Schema Browser</div>
-      <FlexBox className="flux-sync">
+      <FlexBox className="editor-sync">
         <SlideToggle
-          className="flux-sync--toggle"
+          className="editor-sync--toggle"
           active={fluxSync}
           onChange={handleFluxSyncToggle}
-          testID="flux-sync--toggle"
+          testID="editor-sync--toggle"
         />
-        <InputLabel className="flux-sync--label">
+        <InputLabel className="editor-sync--label">
           <SelectorTitle
             label={label}
             tooltipContents={tooltipContents}

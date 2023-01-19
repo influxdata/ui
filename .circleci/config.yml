@@ -23,6 +23,7 @@ jobs:
           name: parallel jest tests
           command: |
             set +e
+            shopt -s globstar
             TESTFILES=$(circleci tests glob "src/**/*.test.ts*" | circleci tests split --split-by=timings)
             npx yarn test:circleci $TESTFILES
       - store_test_results:
@@ -57,6 +58,7 @@ jobs:
           name: parallel jest tests
           command: |
             set +e
+            shopt -s globstar
             TESTFILES=$(circleci tests glob "src/**/*.test.ts*" | circleci tests split --split-by=timings)
             npx yarn test:circleci $TESTFILES
       - store_test_results:
@@ -94,6 +96,7 @@ jobs:
           name: parallel eslint
           command: |
             set +e
+            shopt -s globstar
             TESTFILES=$(circleci tests glob "src/**/*.ts*" "cypress/**/*.ts*" | circleci tests split --split-by=filesize)
             yarn eslint:circleci $TESTFILES
       - save_cache:
@@ -127,6 +130,7 @@ jobs:
           name: parallel eslint
           command: |
             set +e
+            shopt -s globstar
             TESTFILES=$(circleci tests glob "src/**/*.ts*" "cypress/**/*.ts*" | circleci tests split --split-by=filesize)
             yarn eslint:circleci $TESTFILES
       - save_cache:

@@ -2,21 +2,24 @@
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
 import {
-  Panel,
-  ComponentSize,
+  Button,
+  Columns,
   ComponentColor,
+  ComponentSize,
+  FontWeight,
   Gradients,
   Grid,
-  Columns,
   Heading,
   HeadingElement,
-  FontWeight,
-  Button,
+  Panel,
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 
 // Components
 import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
+
+// Selectors
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Utils
 import {shouldGetCredit250Experience} from 'src/me/selectors'
@@ -26,6 +29,7 @@ const CARDINALITY_LIMIT = 1_000_000
 
 export const Credit250PAYGConversion: FC = () => {
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
+  const orgUsesIOx = useSelector(isOrgIOx)
 
   const credit250Experience = (
     <Grid className="credit-250-conversion-panel" key="1">
@@ -67,10 +71,12 @@ export const Credit250PAYGConversion: FC = () => {
             <li>Unlimited tasks</li>
             <li>Unlimited alert checks and notification rules</li>
             <li>HTTP and PagerDuty notifications</li>
-            <li>
-              Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)} series
-              cardinality
-            </li>
+            {!orgUsesIOx && (
+              <li>
+                Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)} series
+                cardinality
+              </li>
+            )}
           </ul>
         </div>
       </Grid.Column>
@@ -85,6 +91,7 @@ export const Credit250PAYGConversion: FC = () => {
 
 export const PAYGConversion: FC = () => {
   const history = useHistory()
+  const orgUsesIOx = useSelector(isOrgIOx)
 
   const handleClick = () => {
     history.push('/checkout')
@@ -118,10 +125,12 @@ export const PAYGConversion: FC = () => {
                       <li>Unlimited tasks</li>
                       <li>Unlimited alert checks and notification rules</li>
                       <li>HTTP and PagerDuty notifications</li>
-                      <li>
-                        Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)}{' '}
-                        series cardinality
-                      </li>
+                      {!orgUsesIOx && (
+                        <li>
+                          Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)}{' '}
+                          series cardinality
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </div>

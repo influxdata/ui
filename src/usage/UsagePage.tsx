@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 import {Page} from '@influxdata/clockface'
 
 // Components
-import UsageToday from 'src/usage/UsageToday'
+import {UsageToday} from 'src/usage/UsageToday'
 import OrgHeader from 'src/organizations/components/OrgHeader'
 import OrgTabbedPage from 'src/organizations/components/OrgTabbedPage'
 

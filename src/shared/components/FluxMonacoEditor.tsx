@@ -22,7 +22,7 @@ import {ConnectionManager} from 'src/languageSupport/languages/flux/lsp/connecti
 // Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
-import {fluxQueryBuilder} from 'src/shared/selectors/app'
+import {scriptQueryBuilder} from 'src/shared/selectors/app'
 import {isOrgIOx} from 'src/organizations/selectors'
 
 // Types
@@ -64,14 +64,14 @@ const FluxEditorMonaco: FC<Props> = ({
   const dispatch = useDispatch()
   const connection = useRef<ConnectionManager>(null)
   const {editor, setEditor} = useContext(EditorContext)
-  const isFluxQueryBuilder = useSelector(fluxQueryBuilder)
+  const isScriptQueryBuilder = useSelector(scriptQueryBuilder)
   const sessionStore = useContext(PersistanceContext)
   const isIoxOrg = useSelector(isOrgIOx)
   const {path} = useRouteMatch()
-  const isInFluxQueryBuilder =
-    isFluxQueryBuilder && path === '/orgs/:orgID/data-explorer'
+  const isInScriptQueryBuilder =
+    isScriptQueryBuilder && path === '/orgs/:orgID/data-explorer'
   const useSchemaComposition =
-    isInFluxQueryBuilder && isFlagEnabled('schemaComposition')
+    isInScriptQueryBuilder && isFlagEnabled('schemaComposition')
 
   const wrapperClassName = classnames('qx-editor--monaco', {
     'qx-editor--monaco__autogrow': autogrow,
@@ -166,7 +166,7 @@ const FluxEditorMonaco: FC<Props> = ({
             }}
             editorDidMount={editorDidMount}
           />
-          {isIoxOrg && isInFluxQueryBuilder && (
+          {isIoxOrg && isInScriptQueryBuilder && (
             <div className="monaco-editor__language">{FLUXLANGID}</div>
           )}
         </div>

@@ -23,7 +23,7 @@ import TelegrafUIRefreshWizard from 'src/dataLoaders/components/collectorsWizard
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
 import CreateBucketOverlay from 'src/buckets/components/createBucketForm/CreateBucketOverlay'
 import {AssetLimitOverlay} from 'src/cloud/components/AssetLimitOverlay'
-import RateLimitOverlay from 'src/cloud/components/RateLimitOverlay'
+import {CardinalityLimitOverlay} from 'src/cloud/components/CardinalityLimitOverlay'
 import WriteLimitOverlay from 'src/cloud/components/WriteLimitOverlay'
 import {AddAnnotationOverlay} from 'src/annotations/components/AddAnnotationOverlay'
 import {ShowBucketSchemaOverlay} from 'src/buckets/components/schemaOverlay/ShowBucketSchemaOverlay'
@@ -117,8 +117,8 @@ export const OverlayController: FunctionComponent = () => {
       case 'asset-limit':
         activeOverlay.current = <AssetLimitOverlay onClose={onClose} />
         break
-      case 'rate-limit':
-        activeOverlay.current = <RateLimitOverlay onClose={onClose} />
+      case 'cardinality-limit':
+        activeOverlay.current = <CardinalityLimitOverlay onClose={onClose} />
         break
       case 'write-limit':
         activeOverlay.current = <WriteLimitOverlay />

@@ -9,7 +9,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Types and Constants
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {File, OwnBucket} from 'src/types'
-import {QueryScope} from 'src/shared/contexts/query'
+import {QueryScope, SqlQueryModifiers} from 'src/shared/contexts/query'
 
 const DESIRED_POINTS_PER_GRAPH = 360
 const FALLBACK_WINDOW_PERIOD = 15000
@@ -417,9 +417,15 @@ export const updateWindowPeriod = (
   }
 }
 
-export const sqlAsFlux = (text: string, bucket: OwnBucket) => {
-  return `import "experimental/iox"
+export const sqlAsFlux = (
+  text: string,
+  bucket: OwnBucket,
+  queryModifiers?: SqlQueryModifiers
+) => {
+  return `${
+    queryModifiers?.prepend ? `${queryModifiers.prepend}\n` : ''
+  }import "experimental/iox"
 
 iox.sql(bucket: "${bucket.name}", query: ${JSON.stringify(text)})
-  `
+${queryModifiers?.append ? `${queryModifiers.append}` : ''}`
 }

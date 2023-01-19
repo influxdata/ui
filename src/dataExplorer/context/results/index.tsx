@@ -1,42 +1,24 @@
 import React, {FC, createContext, useState, useRef, useEffect} from 'react'
 
-import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 import {FluxResult} from 'src/types/flows'
-import {
-  RemoteDataState,
-  ViewProperties,
-  SimpleTableViewProperties,
-} from 'src/types'
-import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
-
-interface View {
-  state: 'table' | 'graph'
-  properties: ViewProperties
-}
+import {RemoteDataState} from 'src/types'
 
 interface ResultsContextType {
   status: RemoteDataState
   result: FluxResult
   time: number
-  view: View
 
   setStatus: (status: RemoteDataState) => void
   setResult: (result: FluxResult) => void
-  setView: (view: View) => void
 }
 
 const DEFAULT_STATE: ResultsContextType = {
   status: RemoteDataState.NotStarted,
   result: {} as FluxResult,
   time: null,
-  view: {
-    state: 'table',
-    properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
-  },
 
   setStatus: _ => {},
   setResult: _ => {},
-  setView: _ => {},
 }
 
 export const ResultsContext = createContext<ResultsContextType>(DEFAULT_STATE)
@@ -48,15 +30,6 @@ export const ResultsProvider: FC = ({children}) => {
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
-
-  // for display, should be moved
-  const [view, setView] = useSessionStorage('dataExplorer.results', {
-    state: 'table',
-    properties: {
-      type: 'simple-table',
-      showAll: false,
-    } as SimpleTableViewProperties,
-  })
 
   useEffect(() => {
     let running = false
@@ -96,11 +69,9 @@ export const ResultsProvider: FC = ({children}) => {
         status,
         result,
         time,
-        view,
 
         setStatus,
         setResult,
-        setView,
       }}
     >
       {children}

@@ -5,18 +5,20 @@ import classnames from 'classnames'
 
 // Components
 import {
-  FlexBox,
-  FlexDirection,
   AlignItems,
-  ComponentSize,
-  IconFont,
-  Gradients,
-  InfluxColors,
   BannerPanel,
   Button,
   ComponentColor,
+  ComponentSize,
+  FlexBox,
+  FlexDirection,
+  Gradients,
+  IconFont,
+  InfluxColors,
 } from '@influxdata/clockface'
-import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
+
+// Overlays
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 // Utils
 import {
@@ -25,12 +27,15 @@ import {
 } from 'src/cloud/utils/limits'
 import {event} from 'src/cloud/utils/reporting'
 
+// Components
+import {CardinalityLimitAlertContent} from 'src/cloud/components/CardinalityLimitAlertContent'
+import {CloudUpgradeButton} from 'src/shared/components/CloudUpgradeButton'
+import {UpgradeContent} from 'src/cloud/components/CardinalityLimitAlertContent'
+
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
-// Types
-import {RateLimitAlertContent} from 'src/cloud/components/RateLimitAlertContent'
-
+// Notifications
 import {notify} from 'src/shared/actions/notifications'
 import {writeLimitReached} from 'src/shared/copy/notifications'
 
@@ -39,9 +44,9 @@ import {
   shouldGetCredit250Experience,
   shouldShowUpgradeButton,
 } from 'src/me/selectors'
-import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
-import {UpgradeContent} from 'src/cloud/components/RateLimitAlertContent'
+import {isOrgIOx} from 'src/organizations/selectors'
 
+// Styles
 import './RateLimitAlert.scss'
 
 interface Props {
@@ -57,6 +62,7 @@ export const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   const status = useSelector(extractRateLimitStatus)
   const showUpgrade = useSelector(shouldShowUpgradeButton)
   const isCredit250ExperienceActive = useSelector(shouldGetCredit250Experience)
+  const orgIsIOx = useSelector(isOrgIOx)
 
   const dispatch = useDispatch()
 
@@ -104,7 +110,12 @@ export const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
   })
 
   // banner panel for cardinality limit exceeded
-  if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
+  if (
+    CLOUD &&
+    !orgIsIOx &&
+    status === 'exceeded' &&
+    resources.includes('cardinality')
+  ) {
     return (
       <FlexBox
         direction={FlexDirection.Column}
@@ -120,7 +131,7 @@ export const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
           textColor={InfluxColors.Yeti}
           style={bannerStyle}
         >
-          <RateLimitAlertContent />
+          <CardinalityLimitAlertContent />
         </BannerPanel>
       </FlexBox>
     )

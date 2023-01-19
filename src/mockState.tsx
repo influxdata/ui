@@ -29,7 +29,7 @@ export const localState: LocalStorage = {
       navBarState: 'expanded',
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
-      fluxQueryBuilder: false,
+      scriptQueryBuilder: false,
       versionInfo: {
         version: '',
         commit: '',

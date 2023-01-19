@@ -6,7 +6,7 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 // Context
-import {FluxQueryBuilderContext} from 'src/dataExplorer/context/fluxQueryBuilder'
+import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 
 // Types
@@ -20,7 +20,7 @@ similar to a table.`
 
 const MeasurementSelector: FC = () => {
   const {selectedBucket, selectedMeasurement, selectMeasurement} = useContext(
-    FluxQueryBuilderContext
+    ScriptQueryBuilderContext
   )
   const {measurements, loading} = useContext(MeasurementsContext)
   const [searchTerm, setSearchTerm] = useState('')

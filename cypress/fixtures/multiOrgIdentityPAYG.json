@@ -19,6 +19,7 @@
     "name": "Influx",
     "type": "pay_as_you_go",
     "accountCreatedAt": "Tue Jun 01 2022 08:49:14 GMT-0400 (Eastern Daylight Time)",
-    "billing_provider": "aws"
+    "billing_provider": "aws",
+    "isUpgradeable": true
   }
 }

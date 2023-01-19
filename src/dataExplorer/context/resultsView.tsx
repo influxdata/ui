@@ -7,11 +7,23 @@ import React, {
 } from 'react'
 
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
-import {ViewProperties, SimpleTableViewProperties} from 'src/types'
+import {
+  RecursivePartial,
+  SimpleTableViewProperties,
+  ViewProperties,
+} from 'src/types'
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {ResultsContext} from 'src/dataExplorer/context/results'
 
-const NOT_PERMITTED_GROUPBY = ['_result', 'result', '_time', 'time', 'table']
+const NOT_PERMITTED_NAMES_COLUMN_SELECTOR = [
+  '_result',
+  'result',
+  '_time',
+  'time',
+  'table',
+]
+// subset of FluxDataType
+const PERMITTED_TYPES_COLUMN_SELECTOR = ['unsignedLong', 'long', 'double']
 
 export enum ViewStateType {
   Table = 'table',
@@ -25,7 +37,23 @@ interface View {
 
 export interface ViewOptions {
   groupby: string[]
+  smoothing: {
+    columns: string[] // currently `|> polyling.rdp()` is applied to a single column, but is not a fundamental requirement
+    applied: boolean
+  }
 }
+
+const mergeViewOptions = (
+  original: ViewOptions,
+  updated: RecursivePartial<ViewOptions>
+) => ({
+  ...original,
+  ...updated,
+  smoothing: {
+    ...original.smoothing,
+    ...(updated.smoothing ?? {}),
+  },
+})
 
 interface ResultsViewContextType {
   view: View
@@ -33,12 +61,15 @@ interface ResultsViewContextType {
   selectedViewOptions: ViewOptions
 
   setView: (view: View) => void
-  setDefaultViewOptions: (viewOptions: Partial<ViewOptions>) => void
-  selectViewOptions: (viewOptions: Partial<ViewOptions>) => void
+  setDefaultViewOptions: (viewOptions: RecursivePartial<ViewOptions>) => void
+  selectViewOptions: (viewOptions: RecursivePartial<ViewOptions>) => void
   clear: () => void
 }
 
-const DEFAULT_VIEW_OPTIONS = {groupby: []}
+const DEFAULT_VIEW_OPTIONS = {
+  groupby: [],
+  smoothing: {column: [], applied: true},
+}
 
 const DEFAULT_STATE: ResultsViewContextType = {
   view: {
@@ -73,8 +104,8 @@ export const ResultsViewProvider: FC = ({children}) => {
     DEFAULT_VIEW_OPTIONS
   )
   const setViewOptionsAll = useCallback(
-    (updatedOptions: Partial<ViewOptions>) => {
-      persistViewOptionsAll({...viewOptionsAll, ...updatedOptions})
+    (updatedOptions: RecursivePartial<ViewOptions>) => {
+      persistViewOptionsAll(mergeViewOptions(viewOptionsAll, updatedOptions))
     },
     [viewOptionsAll]
   )
@@ -85,8 +116,10 @@ export const ResultsViewProvider: FC = ({children}) => {
     DEFAULT_VIEW_OPTIONS
   )
   const setDefaultViewOptions = useCallback(
-    (updatedOptions: Partial<ViewOptions>) => {
-      persistDefaultViewOptions({...defaultViewOptions, ...updatedOptions})
+    (updatedOptions: RecursivePartial<ViewOptions>) => {
+      persistDefaultViewOptions(
+        mergeViewOptions(defaultViewOptions, updatedOptions)
+      )
     },
     [defaultViewOptions]
   )
@@ -97,8 +130,10 @@ export const ResultsViewProvider: FC = ({children}) => {
     DEFAULT_VIEW_OPTIONS
   )
   const selectViewOptions = useCallback(
-    (updatedOptions: Partial<ViewOptions>) => {
-      persistSelectedViewOptions({...selectedViewOptions, ...updatedOptions})
+    (updatedOptions: RecursivePartial<ViewOptions>) => {
+      persistSelectedViewOptions(
+        mergeViewOptions(selectedViewOptions, updatedOptions)
+      )
     },
     [selectedViewOptions]
   )
@@ -109,20 +144,69 @@ export const ResultsViewProvider: FC = ({children}) => {
     persistSelectedViewOptions(DEFAULT_VIEW_OPTIONS)
   }
 
-  useEffect(() => {
-    // if parent query is re-run => decide what to reset in subquery viewOptions
+  const buildGroupbys = (): {
+    all: RecursivePartial<ViewOptions>
+    selected: RecursivePartial<ViewOptions>
+  } => {
+    const excludeFromColumnSelectors = NOT_PERMITTED_NAMES_COLUMN_SELECTOR
 
-    // reset groupby
-    const excludeFromGroupby = NOT_PERMITTED_GROUPBY
-    const groupby = Object.keys(
+    // all
+    const columns = Object.keys(
       resultFromParent?.parsed?.table?.columns || {}
-    ).filter(columnName => !excludeFromGroupby.includes(columnName))
-    setViewOptionsAll({groupby})
+    ).filter(columnName => !excludeFromColumnSelectors.includes(columnName))
+
+    // initial selection
     const defaultsWhichExist = defaultViewOptions.groupby.filter(defaultGroup =>
-      groupby.includes(defaultGroup)
+      columns.includes(defaultGroup)
     )
-    selectViewOptions({groupby: defaultsWhichExist})
-  }, [resultFromParent, defaultViewOptions])
+
+    return {
+      all: {groupby: [...columns]},
+      selected: {groupby: defaultsWhichExist},
+    }
+  }
+
+  const buildSmoothing = (): {
+    all: RecursivePartial<ViewOptions>
+    selected: RecursivePartial<ViewOptions>
+  } => {
+    const excludeFromColumnSelectors = NOT_PERMITTED_NAMES_COLUMN_SELECTOR
+
+    // all
+    const numericColumns = Object.keys(
+      resultFromParent?.parsed?.table?.columns || {}
+    ).filter(columnName => {
+      const {fluxDataType} = (resultFromParent?.parsed?.table?.columns || {})[
+        columnName
+      ]
+      return (
+        !excludeFromColumnSelectors.includes(columnName) &&
+        PERMITTED_TYPES_COLUMN_SELECTOR.includes(fluxDataType)
+      )
+    })
+
+    // initial selection
+    const firstFieldIfExists = defaultViewOptions.smoothing.columns.filter(
+      defaultColumn => numericColumns.includes(defaultColumn)
+    )[0]
+    const defaultSmoothingColumn = firstFieldIfExists ?? numericColumns[0]
+
+    return {
+      all: {smoothing: {columns: numericColumns}},
+      selected: {
+        smoothing: {columns: [defaultSmoothingColumn]},
+      },
+    }
+  }
+
+  useEffect(() => {
+    const {all: allGB, selected: selectedGB} = buildGroupbys()
+    const {all: allS, selected: selectedS} = buildSmoothing()
+    setViewOptionsAll({...allGB, ...allS})
+    selectViewOptions({...selectedGB, ...selectedS})
+  }, [
+    resultFromParent, // reset if parent query is re-run, same as other graph options
+  ])
 
   return (
     <ResultsViewContext.Provider

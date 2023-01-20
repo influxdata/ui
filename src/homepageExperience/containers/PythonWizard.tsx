@@ -13,11 +13,14 @@ import {
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
+import {InstallDependenciesSql} from 'src/homepageExperience/components/steps/python/InstallDependenciesSql'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
 import {InitializeClient} from 'src/homepageExperience/components/steps/python/InitializeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
+import {WriteDataSql} from 'src/homepageExperience/components/steps/python/WriteDataSql'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
+import {ExecuteQuerySql} from 'src/homepageExperience/components/steps/python/ExecuteQuerySql'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuery'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
@@ -26,10 +29,12 @@ import {PythonIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
+  HOMEPAGE_NAVIGATION_STEPS_SQL,
 } from 'src/homepageExperience/utils'
 
 interface State {
@@ -48,6 +53,20 @@ export class PythonWizard extends PureComponent<null, State> {
     tokenValue: null,
     finalFeedback: null,
   }
+
+  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+    ? HOMEPAGE_NAVIGATION_STEPS_SQL
+    : HOMEPAGE_NAVIGATION_STEPS
+
+  installDependenciesStep = isFlagEnabled('ioxOnboarding')
+    ? InstallDependenciesSql
+    : InstallDependencies
+
+  writeDataStep = isFlagEnabled('ioxOnboarding') ? WriteDataSql : WriteData
+
+  executeQueryStep = isFlagEnabled('ioxOnboarding')
+    ? ExecuteQuerySql
+    : ExecuteQuery
 
   private handleSelectBucket = (bucketName: string) => {
     this.setState({selectedBucket: bucketName})
@@ -70,7 +89,7 @@ export class PythonWizard extends PureComponent<null, State> {
       {
         currentStep: Math.min(
           this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS.length
+          this.subwayNavSteps.length
         ),
       },
       () => {
@@ -79,10 +98,10 @@ export class PythonWizard extends PureComponent<null, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 2].name
+              this.subwayNavSteps[this.state.currentStep - 2].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -100,10 +119,10 @@ export class PythonWizard extends PureComponent<null, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep].name
+              this.subwayNavSteps[this.state.currentStep].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -119,7 +138,7 @@ export class PythonWizard extends PureComponent<null, State> {
       {},
       {
         currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS[clickedStep - 1].name
+          this.subwayNavSteps[clickedStep - 1].name
         ),
       }
     )
@@ -132,7 +151,7 @@ export class PythonWizard extends PureComponent<null, State> {
         return <Overview wizard="pythonWizard" />
       }
       case 2: {
-        return <InstallDependencies />
+        return <this.installDependenciesStep />
       }
       case 3: {
         return (
@@ -147,13 +166,25 @@ export class PythonWizard extends PureComponent<null, State> {
         return <InitializeClient />
       }
       case 5: {
-        return <WriteData onSelectBucket={this.handleSelectBucket} />
+        return <this.writeDataStep onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        return <ExecuteQuery bucket={this.state.selectedBucket} />
+        return <this.executeQueryStep bucket={this.state.selectedBucket} />
       }
       case 7: {
-        return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
+        if (!isFlagEnabled('ioxOnboarding')) {
+          return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
+        } else {
+          return (
+            <Finish
+              wizardEventName="pythonSqlWizard"
+              markStepAsCompleted={this.handleMarkStepAsCompleted}
+              finishStepCompleted={this.state.finishStepCompleted}
+              finalFeedback={this.state.finalFeedback}
+              setFinalFeedback={this.setFinalFeedback}
+            />
+          )
+        }
       }
       case 8: {
         return (
@@ -188,7 +219,7 @@ export class PythonWizard extends PureComponent<null, State> {
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
-                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS}
+                  navigationSteps={this.subwayNavSteps}
                   settingUpIcon={PythonIcon}
                   settingUpText="Python"
                   setupTime="5 minutes"
@@ -202,8 +233,7 @@ export class PythonWizard extends PureComponent<null, State> {
                   {
                     verticallyCentered:
                       this.state.currentStep === 1 ||
-                      this.state.currentStep ===
-                        HOMEPAGE_NAVIGATION_STEPS.length,
+                      this.state.currentStep === this.subwayNavSteps.length,
                   }
                 )}
               >
@@ -231,7 +261,7 @@ export class PythonWizard extends PureComponent<null, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    currentStep < HOMEPAGE_NAVIGATION_STEPS.length
+                    currentStep < this.subwayNavSteps.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

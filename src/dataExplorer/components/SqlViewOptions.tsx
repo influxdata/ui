@@ -9,7 +9,7 @@ import {
 } from '@influxdata/clockface'
 
 import {RecursivePartial} from 'src/types'
-import SelectorList from 'src/timeMachine/components/SelectorList'
+import {DropdownList as SelectorList} from 'src/shared/components/DropdownList'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {ViewOptions} from 'src/dataExplorer/context/resultsView'
 

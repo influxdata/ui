@@ -1,6 +1,7 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .sql-view-options {
+  padding-bottom: calc($cf-form-xs-height * 0.5);
   .cf-list {
     flex: 1 0 !important;
 
@@ -9,7 +10,8 @@
     }
   }
   .view-options--smoothing-header {
-    padding-top: $cf-form-xs-height;
+    padding-top: calc($cf-form-xs-height * 0.5);
+    height: $cf-form-lg-height;
     justify-content: space-between;
   }
   .sql-view-options--see-query {

@@ -116,7 +116,10 @@ for value in range(5):
         Once you write this data, you’ll begin to see the confirmation below
       </p>
 
-      <Panel backgroundColor={InfluxColors.Grey15}>
+      <Panel
+        backgroundColor={InfluxColors.Grey15}
+        style={{marginBottom: '24px'}}
+      >
         <Panel.Body>
           <DataListening bucket={selectedBucket.name} />
         </Panel.Body>

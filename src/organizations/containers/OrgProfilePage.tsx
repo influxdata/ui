@@ -9,6 +9,12 @@ import OrgHeader from 'src/organizations/components/OrgHeader'
 import OrgProfileTab from 'src/organizations/components/OrgProfileTab'
 import RenameOrgOverlay from 'src/organizations/components/RenameOrgOverlay'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
+// Context Providers
+import {UsersProvider} from 'src/users/context/users'
+
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
@@ -18,7 +24,13 @@ const OrgProfilePage: FC = () => {
       <Page titleTag={pageTitleSuffixer(['Settings', 'Organization'])}>
         <OrgHeader testID="about-page--header" />
         <OrgTabbedPage activeTab="about">
-          <OrgProfileTab />
+          {CLOUD ? (
+            <UsersProvider>
+              <OrgProfileTab />
+            </UsersProvider>
+          ) : (
+            <OrgProfileTab />
+          )}
         </OrgTabbedPage>
       </Page>
       <Switch>

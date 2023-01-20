@@ -20,7 +20,7 @@ import {orgDetailsFetchError} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
 // Providers
-import {UsersContext, UsersProvider} from 'src/users/context/users'
+import {UsersContext} from 'src/users/context/users'
 
 // Selectors
 import {getMe} from 'src/me/selectors'
@@ -174,12 +174,10 @@ const OrgProfileTab: FC = () => {
           direction={FlexDirection.Row}
           stretchToFitWidth={true}
         >
-          <UsersProvider>
-            <>
-              {allowSelfRemoval && showLeaveOrgButton && <LeaveOrgButton />}
-              <DeletePanel />
-            </>
-          </UsersProvider>
+          <>
+            {allowSelfRemoval && showLeaveOrgButton && <LeaveOrgButton />}
+            <DeletePanel />
+          </>
         </FlexBox>
       )}
     </FlexBox>

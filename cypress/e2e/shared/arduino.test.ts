@@ -67,10 +67,10 @@ describe('Arduino onboarding flow', () => {
         cy.contains(/^Write Data$/).click()
         cy.get('h1').contains('Write Data')
 
-        cy.contains(/^Execute Flux Query$/).click()
+        cy.contains(/^Execute a Flux Query$/).click()
         cy.get('h1').contains('Execute a Flux Query')
 
-        cy.contains(/^Execute Aggregate$/).click()
+        cy.contains(/^Execute an Aggregate Query$/).click()
         cy.get('h1').contains('Execute a Flux Aggregate Query')
 
         cy.contains(/^Finish$/).click()

@@ -12,11 +12,13 @@ export class InstallDependenciesSql extends PureComponent {
     return (
       <>
         <h1>Install Dependencies</h1>
-        <p>The first thing you'll need to do is ensure you have{' '}
+        <p>
+          The first thing you'll need to do is ensure you have{' '}
           <SafeBlankLink href="https://www.python.org/download/releases/3.0/">
             Python 3
           </SafeBlankLink>{' '}
-          installed, this will not work with older versions of Python.</p>
+          installed, this will not work with older versions of Python.
+        </p>
         <p>
           Then, install the{' '}
           <code className="homepage-wizard--code-highlight">

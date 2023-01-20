@@ -8,4 +8,10 @@
       height: $cf-form-xs-height;
     }
   }
+  .sql-view-options--see-query {
+    padding-top: $cf-form-xs-height;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+  }
 }

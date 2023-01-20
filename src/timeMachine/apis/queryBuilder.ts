@@ -20,6 +20,7 @@ import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 import {TimeRange, BuilderConfig} from 'src/types'
 import {CancelBox} from 'src/types/promises'
 import {pastThirtyDaysTimeRange} from 'src/shared/constants/timeRanges'
+import {RunQueryResponse} from 'src/types/queries'
 
 const DEFAULT_TIME_RANGE: TimeRange = pastThirtyDaysTimeRange
 
@@ -155,7 +156,7 @@ export function extractBoxedCol(
   colName: string
 ): CancelBox<string[]> {
   const promise = resp.promise.then<string[]>(result => {
-    if (result.type !== 'SUCCESS') {
+    if (result.type !== RunQueryResponse.SUCCESS) {
       return Promise.reject(new Error(result.message))
     }
 

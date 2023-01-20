@@ -21,6 +21,7 @@ import {getErrorMessage} from 'src/utils/api'
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {runQuery} from 'src/shared/apis/query'
+import {RunQueryResponse} from 'src/types/queries'
 
 // Selectors
 import {
@@ -31,12 +32,6 @@ import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
-
-enum Response {
-  SUCCESS = 'SUCCESS',
-  RATE_LIMIT_ERROR = 'RATE_LIMIT_ERROR',
-  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
-}
 
 export const CsvMethod: FC = () => {
   const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
@@ -103,11 +98,11 @@ export const CsvMethod: FC = () => {
           controller.current
         ).promise
 
-        if (resp.type === Response.SUCCESS) {
+        if (resp.type === RunQueryResponse.SUCCESS) {
           setUploadState(RemoteDataState.Done)
           return
         }
-        if (resp.type === Response.RATE_LIMIT_ERROR) {
+        if (resp.type === RunQueryResponse.RATE_LIMIT_ERROR) {
           setUploadState(RemoteDataState.Error)
           if (orgIsIOx) {
             setUploadError(
@@ -120,7 +115,7 @@ export const CsvMethod: FC = () => {
           }
           return
         }
-        if (resp.type === Response.UNKNOWN_ERROR) {
+        if (resp.type === RunQueryResponse.UNKNOWN_ERROR) {
           const error = getErrorMessage(resp)
           throw new Error(error)
         }

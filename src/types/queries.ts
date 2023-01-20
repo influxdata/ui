@@ -49,3 +49,9 @@ export interface CustomTimeRange {
   upper: string
   type: 'custom'
 }
+
+export enum RunQueryResponse {
+  SUCCESS = 'SUCCESS',
+  RATE_LIMIT_ERROR = 'RATE_LIMIT_ERROR',
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+}

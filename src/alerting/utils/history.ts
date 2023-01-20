@@ -16,6 +16,7 @@ import {MONITORING_BUCKET} from 'src/alerting/constants'
 
 // Types
 import {State as EventViewerState} from 'src/eventViewer/components/EventViewer.reducer'
+import {RunQueryResponse} from 'src/types/queries'
 
 import {
   CancelBox,
@@ -145,7 +146,7 @@ export const processResponse = ({
   cancel,
 }: CancelBox<RunQueryResult>): CancelBox<Row[]> => {
   const promise = queryPromise.then<Row[]>(resp => {
-    if (resp.type !== 'SUCCESS') {
+    if (resp.type !== RunQueryResponse.SUCCESS) {
       return Promise.reject(new Error(resp.message))
     }
 

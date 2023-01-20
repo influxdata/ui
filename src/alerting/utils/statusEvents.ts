@@ -8,8 +8,9 @@ import {MONITORING_BUCKET} from 'src/alerting/constants'
 
 // Types
 import {CancelBox, StatusRow, File} from 'src/types'
-import {RunQueryResult} from 'src/shared/apis/query'
 import {Row} from 'src/types'
+import {RunQueryResult} from 'src/shared/apis/query'
+import {RunQueryResponse} from 'src/types/queries'
 
 export const runStatusesQuery = (
   orgID: string,
@@ -46,7 +47,7 @@ export const processStatusesResponse = ({
   cancel,
 }: CancelBox<RunQueryResult>): CancelBox<Row[][]> => {
   const promise = queryPromise.then<Row[][]>(resp => {
-    if (resp.type !== 'SUCCESS') {
+    if (resp.type !== RunQueryResponse.SUCCESS) {
       return Promise.reject(new Error(resp.message))
     }
 

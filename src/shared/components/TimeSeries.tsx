@@ -45,6 +45,7 @@ import {
   CancelBox,
 } from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
+import {RunQueryResponse} from 'src/types/queries'
 
 interface QueriesState {
   files: string[] | null
@@ -278,12 +279,12 @@ class TimeSeries extends Component<Props, State> {
       const duration = Date.now() - startTime
 
       for (const result of results) {
-        if (result.type === 'UNKNOWN_ERROR') {
+        if (result.type === RunQueryResponse.UNKNOWN_ERROR) {
           errorMessage = result.message
           throw new Error(result.message)
         }
 
-        if (result.type === 'RATE_LIMIT_ERROR') {
+        if (result.type === RunQueryResponse.RATE_LIMIT_ERROR) {
           errorMessage = result.message
           notify(rateLimitReached(result.retryAfter))
 

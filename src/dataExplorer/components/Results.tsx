@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 import {
   Button,
   ComponentColor,
@@ -206,10 +199,7 @@ const GraphResults: FC = () => {
 
 const WrappedOptions: FC = () => {
   const [showOverlay, setShowOverlay] = useState(false)
-
-  // use parent `results` so all metadata is present for the viz options
-  const {result} = useContext(ResultsContext)
-  const {queryModifers, setResult, setStatus} = useContext(ChildResultsContext)
+  const {result, queryModifers} = useContext(ChildResultsContext)
   const {view, setView, selectViewOptions, viewOptions, selectedViewOptions} =
     useContext(ResultsViewContext)
   const {resource, query: text, selection} = useContext(PersistanceContext)
@@ -221,18 +211,15 @@ const WrappedOptions: FC = () => {
   )
   const seeGraphSubquery = () => setShowOverlay(true)
 
-  const updateChildResults = useCallback(
-    update => {
-      setView({
-        ...view,
-        properties: {
-          ...view.properties,
-          ...update,
-        },
-      })
-    },
-    [setStatus, setResult]
-  )
+  const updateChildResults = update => {
+    setView({
+      ...view,
+      properties: {
+        ...view.properties,
+        ...update,
+      },
+    })
+  }
 
   if (!dataExists) {
     return null

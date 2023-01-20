@@ -124,6 +124,7 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
                 selectViewOptions({smoothing: {columns: [column]}})
               }
               multiSelect={false}
+              disabled={!selectedViewOptions?.smoothing?.applied}
             />
             <div className="sql-view-options--see-query">
               <Button

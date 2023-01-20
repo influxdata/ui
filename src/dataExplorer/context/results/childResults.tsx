@@ -138,7 +138,7 @@ export const ChildResultsProvider: FC = ({children}) => {
         })
         setStatus(RemoteDataState.Error)
       })
-  }, [resultFromParent, viewOptions, setStatus, setResult])
+  }, [resultFromParent, setStatus, setResult, viewOptions])
 
   return (
     <ChildResultsContext.Provider

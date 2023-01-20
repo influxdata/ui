@@ -66,9 +66,9 @@ interface ResultsViewContextType {
   clear: () => void
 }
 
-const DEFAULT_VIEW_OPTIONS = {
+const DEFAULT_VIEW_OPTIONS: ViewOptions = {
   groupby: [],
-  smoothing: {column: [], applied: true},
+  smoothing: {columns: [], applied: true},
 }
 
 const DEFAULT_STATE: ResultsViewContextType = {
@@ -144,26 +144,53 @@ export const ResultsViewProvider: FC = ({children}) => {
     persistSelectedViewOptions(DEFAULT_VIEW_OPTIONS)
   }
 
-  const buildGroupbys = (): {
-    all: RecursivePartial<ViewOptions>
-    selected: RecursivePartial<ViewOptions>
-  } => {
-    const excludeFromColumnSelectors = NOT_PERMITTED_NAMES_COLUMN_SELECTOR
-
-    // all
-    const columns = Object.keys(
-      resultFromParent?.parsed?.table?.columns || {}
-    ).filter(columnName => !excludeFromColumnSelectors.includes(columnName))
-
-    // initial selection
-    const defaultsWhichExist = defaultViewOptions.groupby.filter(defaultGroup =>
-      columns.includes(defaultGroup)
-    )
-
-    return {
-      all: {groupby: [...columns]},
-      selected: {groupby: defaultsWhichExist},
+  const setViewPropertiesForSmoothing = (defaultColumn: string) => {
+    switch (view.properties.type) {
+      case 'xy':
+      case 'line-plus-single-stat':
+        setView({
+          ...view,
+          properties: {
+            ...view.properties,
+            yColumn: defaultColumn,
+          },
+        })
+        break
+      case 'heatmap':
+      case 'scatter':
+        setView({
+          ...view,
+          properties: {
+            ...view.properties,
+            yColumn: defaultColumn,
+            xColumn: defaultColumn,
+          },
+        })
+        break
+      case 'gauge':
+      case 'histogram':
+      case 'single-stat':
+        // can only work (as currently implemented) if returning a `_value` from RDP
+        // FIXME -- why? dig into graphs? Or leave for now?
+        break
+      case 'band':
+        // FIXME TODO -- keeps failing to load in UI. Both RDP (`_value`) and sql-pivoted data fails.
+        break
+      case 'check':
+      case 'geo':
+      case 'mosaic':
+      case 'simple-table':
+      case 'table':
+      default:
+        break
     }
+  }
+
+  const defineDefaultSmoothingColumn = numericColumns => {
+    const firstFieldIfExists = (
+      defaultViewOptions?.smoothing?.columns || []
+    ).filter(defaultColumn => numericColumns.includes(defaultColumn))[0]
+    return firstFieldIfExists ?? numericColumns[0]
   }
 
   const buildSmoothing = (): {
@@ -186,16 +213,35 @@ export const ResultsViewProvider: FC = ({children}) => {
     })
 
     // initial selection
-    const firstFieldIfExists = defaultViewOptions.smoothing.columns.filter(
-      defaultColumn => numericColumns.includes(defaultColumn)
-    )[0]
-    const defaultSmoothingColumn = firstFieldIfExists ?? numericColumns[0]
+    const defaultSmoothingColumn = defineDefaultSmoothingColumn(numericColumns)
 
     return {
       all: {smoothing: {columns: numericColumns}},
       selected: {
         smoothing: {columns: [defaultSmoothingColumn]},
       },
+    }
+  }
+
+  const buildGroupbys = (): {
+    all: RecursivePartial<ViewOptions>
+    selected: RecursivePartial<ViewOptions>
+  } => {
+    const excludeFromColumnSelectors = NOT_PERMITTED_NAMES_COLUMN_SELECTOR
+
+    // all
+    const columns = Object.keys(
+      resultFromParent?.parsed?.table?.columns || {}
+    ).filter(columnName => !excludeFromColumnSelectors.includes(columnName))
+
+    // initial selection
+    const defaultsWhichExist = defaultViewOptions.groupby.filter(defaultGroup =>
+      columns.includes(defaultGroup)
+    )
+
+    return {
+      all: {groupby: [...columns]},
+      selected: {groupby: defaultsWhichExist},
     }
   }
 
@@ -206,6 +252,40 @@ export const ResultsViewProvider: FC = ({children}) => {
     selectViewOptions({...selectedGB, ...selectedS})
   }, [
     resultFromParent, // reset if parent query is re-run, same as other graph options
+  ])
+
+  useEffect(() => {
+    const wasToggledOff = !selectedViewOptions.smoothing.applied
+    if (wasToggledOff) {
+      const allNumericColumns = viewOptionsAll.smoothing.columns
+      const defaultSmoothingColumn =
+        defineDefaultSmoothingColumn(allNumericColumns)
+      setViewPropertiesForSmoothing(defaultSmoothingColumn)
+    } else {
+      setViewPropertiesForSmoothing(selectedViewOptions.smoothing.columns[0])
+    }
+  }, [
+    selectedViewOptions.smoothing.applied, // smoothing toggled on|off
+  ])
+
+  useEffect(() => {
+    const smoothingIsOn = selectedViewOptions.smoothing.applied
+    if (!smoothingIsOn) {
+      return
+    }
+    const chosenColumn = selectedViewOptions.smoothing.columns[0]
+    setViewPropertiesForSmoothing(chosenColumn)
+  }, [
+    selectedViewOptions.smoothing.columns, // new smoothing column is chosen
+  ])
+
+  useEffect(() => {
+    const column = selectedViewOptions.smoothing.applied
+      ? selectedViewOptions.smoothing.columns[0]
+      : defineDefaultSmoothingColumn(viewOptionsAll.smoothing.columns)
+    setViewPropertiesForSmoothing(column)
+  }, [
+    view.properties.type, // new graph view is chosen
   ])
 
   return (

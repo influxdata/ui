@@ -134,8 +134,9 @@ describe('Editor+LSP communication', () => {
         cy.getByTestID('tree-nav').should('be.visible')
         cy.getByTestID('script-query-builder-toggle').then($toggle => {
           cy.wrap($toggle).should('be.visible')
-          // Switch to Flux Query Builder if not yet
-          if (!$toggle.hasClass('active')) {
+          // Switch to Script Editor if not yet
+          if ($toggle.hasClass('active')) {
+            // active means showing the old Data Explorer
             // hasClass is a jQuery function
             $toggle.click()
             cy.getByTestID('script-query-builder--menu').contains('New Script')

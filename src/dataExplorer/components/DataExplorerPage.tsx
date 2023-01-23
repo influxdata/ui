@@ -92,9 +92,9 @@ const DataExplorerPageHeader: FC = () => {
       <FlexBox margin={ComponentSize.Large}>
         {isFlagEnabled('newDataExplorer') && (
           <FlexBox margin={ComponentSize.Medium}>
-            <InputLabel>&#10024; Try New Script Editor</InputLabel>
+            <InputLabel>Switch to old Data Explorer</InputLabel>
             <SlideToggle
-              active={scriptQueryBuilder}
+              active={!scriptQueryBuilder}
               onChange={toggleSlider}
               testID="script-query-builder-toggle"
             />

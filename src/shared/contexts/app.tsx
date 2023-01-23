@@ -60,7 +60,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   timeZone: 'Local' as TimeZone,
   theme: 'dark' as Theme,
   presentationMode: false,
-  scriptQueryBuilder: false,
+  scriptQueryBuilder: true,
   navbarMode: 'collapsed' as NavBarState,
   flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
   subscriptionsCertificateInterest: false,

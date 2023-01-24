@@ -51,7 +51,7 @@ const AccountAboutPage: FC = () => {
     setActiveAcctName(activeAccount?.name)
   }, [activeAccount])
 
-  const {user, account} = useSelector(selectCurrentIdentity)
+  const {account} = useSelector(selectCurrentIdentity)
 
   const updateAcctName = (evt: ChangeEvent<HTMLInputElement>) => {
     setActiveAcctName(evt.target.value)
@@ -60,8 +60,7 @@ const AccountAboutPage: FC = () => {
   const onRenameAccountBtnClick = () => {
     handleRenameActiveAccount(activeAccount.id, activeAcctName)
   }
-  const shouldShowDeleteFreeAccountButton =
-    CLOUD && account.type === 'free' && user.orgCount === 1
+  const shouldShowDeleteFreeAccountButton = CLOUD && account.type === 'free'
 
   const showLeaveOrgButton = !isFlagEnabled('createDeleteOrgs')
   const allowSelfRemoval = users.length > 1
@@ -105,9 +104,8 @@ const AccountAboutPage: FC = () => {
 }
 
 const AccountPage: FC = () => {
-  const {account, user} = useSelector(selectCurrentIdentity)
-  const freeAccountWithOneOrg =
-    CLOUD && account.type === 'free' && user.orgCount === 1
+  const {account} = useSelector(selectCurrentIdentity)
+  const freeAccount = CLOUD && account.type === 'free'
 
   return (
     <>
@@ -118,7 +116,7 @@ const AccountPage: FC = () => {
         </UsersProvider>
       </Page>
       <Switch>
-        {freeAccountWithOneOrg && (
+        {freeAccount && (
           <DeleteFreeAccountProvider>
             <Route
               path="/orgs/:orgID/accounts/settings/delete"

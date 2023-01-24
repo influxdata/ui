@@ -20,7 +20,9 @@ interface Props {
 const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
   const [hasFocus, setHasFocus] = useState(false)
   const {hasWritePermissions} = useContext(OperatorContext)
+
   const value = get(limits, name, '')
+
   const formatted_value =
     type === InputType.Number
       ? Intl.NumberFormat(navigator.language).format(value)

@@ -7,7 +7,7 @@ import {postWrite} from 'src/client'
 import {getErrorMessage} from 'src/utils/api'
 
 // Selectors
-import {getOrg} from 'src/organizations/selectors'
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 
 // Types
 import {RemoteDataState, LineProtocolTab, WritePrecision} from 'src/types'
@@ -55,6 +55,7 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
   const [writeError, setWriteError] = useState('')
 
   const org = useSelector(getOrg).name
+  const orgIsIOx = useSelector(isOrgIOx)
 
   const handleResetLineProtocol = () => {
     setBody('')
@@ -71,22 +72,6 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
    *  change in newest api (since the hash was last updated in 9/2021):
    *     * error 429 (too many requests) is in CLOUD and not in OSS
    *     * error 403 was removed, added error 404 (not found)
-   *
-   *  for error 429 which exists in only CLOUD:
-   *    doing the 'as any' cast away from the type because: safest way; this error code will never happen in OSS;
-   *    so the clause will never be activated, and the user still gets the proper error when in CLOUD.
-   *
-   *    other strategies not implemented here, with reasoning:
-   *
-   *    1) not removing the clause and drop down to the generic error
-   *          because then the user doesn't get a good error message
-   *    2) bad code smell: add it to oss for code purposes, knowing it will never be called
-   *    3) can't do an IF CLOUD b/c the code just ISN'T THERE; the type (PostWriteResult) exists in both
-   *       cloud and oss and is different in each environment
-   *
-   *       for local testing, need to check out the open api repo, make sure it is named "openapi" (the default name) and
-   *       is present in the same directory as the ui repo,
-   *       and then run "yarn generate-local" in the ui repo to generate the OSS (not the cloud) files.
    */
   const writeLineProtocol = useCallback(
     async (bucket: string) => {
@@ -102,7 +87,15 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
           // here is the cast:
         } else if ((resp.status as any) === 429) {
           setWriteStatus(RemoteDataState.Error)
-          setWriteError('Failed due to plan limits: read cardinality reached')
+          if (orgIsIOx) {
+            setWriteError(
+              'This request exceeded the read or write limits for your plan'
+            )
+          } else {
+            setWriteError(
+              'This request exceeded the read, write, or cardinality limits for your plan'
+            )
+          }
         } else if (resp.status === 404) {
           const error =
             getErrorMessage(resp) || 'Endpoint not Found; Failed to write data'
@@ -163,5 +156,3 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
     </LineProtocolContext.Provider>
   )
 })
-
-export default LineProtocolProvider

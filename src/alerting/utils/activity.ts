@@ -10,6 +10,7 @@ import {MONITORING_BUCKET} from 'src/alerting/constants'
 import {CancelBox, CheckIDsMap, StatusRow} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 import {LoadRowsOptions, Row} from 'src/types'
+import {RunQueryResponse} from 'src/types/queries'
 
 export const runAlertsActivityQuery = (
   orgID: string,
@@ -50,7 +51,7 @@ export const processResponse = ({
   cancel,
 }: CancelBox<RunQueryResult>): CancelBox<Row[]> => {
   const promise = queryPromise.then<Row[]>(resp => {
-    if (resp.type !== 'SUCCESS') {
+    if (resp.type !== RunQueryResponse.SUCCESS) {
       return Promise.reject(new Error(resp.message))
     }
 

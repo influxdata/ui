@@ -22,10 +22,10 @@ interface SelectedTagValues {
   [key: string]: string[]
 }
 
-interface FluxQueryBuilderContextType {
-  // Flux Sync
-  fluxSync: boolean
-  toggleFluxSync: (synced: boolean) => void
+interface ScriptQueryBuilderContextType {
+  // Composition Sync
+  compositionSync: boolean
+  toggleCompositionSync: (synced: boolean) => void
 
   // Schema
   selectedBucket: Bucket
@@ -39,10 +39,10 @@ interface FluxQueryBuilderContextType {
   setSearchTerm: (str: string) => void
 }
 
-const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
-  // Flux Sync
-  fluxSync: true,
-  toggleFluxSync: _s => {},
+const DEFAULT_CONTEXT: ScriptQueryBuilderContextType = {
+  // Composition Sync
+  compositionSync: true,
+  toggleCompositionSync: _s => {},
 
   // Schema
   selectedBucket: null,
@@ -56,10 +56,10 @@ const DEFAULT_CONTEXT: FluxQueryBuilderContextType = {
   setSearchTerm: (_s: string) => {},
 }
 
-export const FluxQueryBuilderContext =
-  createContext<FluxQueryBuilderContextType>(DEFAULT_CONTEXT)
+export const ScriptQueryBuilderContext =
+  createContext<ScriptQueryBuilderContextType>(DEFAULT_CONTEXT)
 
-export const FluxQueryBuilderProvider: FC = ({children}) => {
+export const ScriptQueryBuilderProvider: FC = ({children}) => {
   // Contexts
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
@@ -106,7 +106,7 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
     setSelectedTagValues(transformSessionTagValuesToLocal(selection.tagValues))
   }, [selection.tagValues])
 
-  const handleToggleFluxSync = (synced: boolean): void => {
+  const handleCompositionFluxSync = (synced: boolean): void => {
     setSelection({composition: {synced}})
   }
 
@@ -197,11 +197,11 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
 
   return useMemo(
     () => (
-      <FluxQueryBuilderContext.Provider
+      <ScriptQueryBuilderContext.Provider
         value={{
-          // Flux Sync
-          fluxSync: selection.composition?.synced,
-          toggleFluxSync: handleToggleFluxSync,
+          // Composition Sync
+          compositionSync: selection.composition?.synced,
+          toggleCompositionSync: handleCompositionFluxSync,
 
           // Schema
           selectedBucket: selection.bucket,
@@ -216,10 +216,10 @@ export const FluxQueryBuilderProvider: FC = ({children}) => {
         }}
       >
         {children}
-      </FluxQueryBuilderContext.Provider>
+      </ScriptQueryBuilderContext.Provider>
     ),
     [
-      // Flux Sync
+      // Composition Sync
       selection.composition?.synced,
 
       // Schema

@@ -57,6 +57,7 @@ const OrgOverlay: FC = () => {
   const history = useHistory()
   const canReactivateOrg =
     hasWritePermissions && organization?.state === 'suspended'
+
   const isIOx =
     organization?.storageType &&
     organization.storageType.toLowerCase() === 'iox'
@@ -98,8 +99,8 @@ const OrgOverlay: FC = () => {
     >
       <Overlay.Container maxWidth={1000}>
         <Overlay.Header
-          title={orgID}
-          className="overlay-header--color overlay-header--title"
+          title="Organization Details"
+          className="overlay-header--color"
           onDismiss={() => history.goBack()}
         />
         <SpinnerContainer
@@ -110,13 +111,20 @@ const OrgOverlay: FC = () => {
             <Panel.Body>
               <Grid>
                 <Grid.Row>
-                  <Grid.Column widthMD={Columns.Four}>
-                    <label>Organization Name</label>
-                    <p>{organization?.name ?? ''}</p>
+                  <Grid.Column
+                    widthMD={Columns.Four}
+                    testID="org-overlay-orgID"
+                  >
+                    <label className="org-overlay-detail--text">
+                      Organization ID
+                    </label>
+                    <p>{orgID}</p>
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Four}>
-                    <label>Account Type</label>
-                    <p>{organization?.account?.type ?? ''}</p>
+                    <label className="org-overlay-detail--text">
+                      Organization Name
+                    </label>
+                    <p>{organization?.name ?? ''}</p>
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Four}>
                     <LinkButton
@@ -151,8 +159,16 @@ const OrgOverlay: FC = () => {
                 </Grid.Row>
                 <Grid.Row>
                   <Grid.Column widthMD={Columns.Four}>
-                    <label>Organization State</label>
+                    <label className="org-overlay-detail--text">
+                      Organization State
+                    </label>
                     <p>{organization?.state ?? ''}</p>
+                  </Grid.Column>
+                  <Grid.Column widthMD={Columns.Four}>
+                    <label className="org-overlay-detail--text">
+                      Account Type
+                    </label>
+                    <p>{organization?.account?.type ?? ''}</p>
                   </Grid.Column>
                 </Grid.Row>
                 <SpinnerContainer

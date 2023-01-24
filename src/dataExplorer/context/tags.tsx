@@ -11,6 +11,7 @@ import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Contexts
 import {QueryContext, QueryScope} from 'src/shared/contexts/query'
+import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
 
 // Utils
 import {
@@ -57,6 +58,7 @@ interface Prop {
 export const TagsProvider: FC<Prop> = ({children, scope}) => {
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
+  const {setDefaultViewOptions} = useContext(ResultsViewContext)
 
   // States
   const [tags, setTags] = useState<Tags>(
@@ -132,6 +134,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       setTags(newTags)
       setLoadingTagKeys(RemoteDataState.Done)
       setLoadingTagValues(tagValueStatuses)
+      setDefaultViewOptions({groupby: Object.keys(newTags)})
     } catch (e) {
       console.error(
         `Failed to get tags for measurement: "${measurement}"\n`,

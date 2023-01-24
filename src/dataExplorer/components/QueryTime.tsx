@@ -1,5 +1,5 @@
 import React, {FC, useContext} from 'react'
-import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {ResultsContext} from 'src/dataExplorer/context/results'
 import {RemoteDataState} from 'src/types'
 
 import 'src/dataExplorer/components/QueryTime.scss'

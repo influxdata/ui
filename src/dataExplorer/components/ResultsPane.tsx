@@ -17,7 +17,7 @@ import {
 import {useSelector, useDispatch} from 'react-redux'
 
 // Contexts
-import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {ResultsContext} from 'src/dataExplorer/context/results'
 import {QueryContext} from 'src/shared/contexts/query'
 import {
   PersistanceContext,
@@ -34,7 +34,6 @@ import {SqlEditorMonaco} from 'src/shared/components/SqlMonacoEditor'
 import CSVExportButton from 'src/shared/components/CSVExportButton'
 
 // Types
-import {TimeRange} from 'src/types'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
@@ -48,6 +47,7 @@ import {
   sqlAsFlux,
   updateWindowPeriod,
 } from 'src/shared/contexts/query/preprocessing'
+import {rangeToParam} from 'src/dataExplorer/shared/utils'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
@@ -58,46 +58,6 @@ const FluxMonacoEditor = lazy(
 )
 
 const fakeNotify = notify
-
-const rangeToParam = (timeRange: TimeRange) => {
-  let timeRangeStart: string, timeRangeStop: string
-  const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
-
-  if (!timeRange) {
-    timeRangeStart = timeRangeStop = null
-  } else {
-    if (timeRange.type === 'selectable-duration') {
-      timeRangeStart = '-' + timeRange.duration
-    } else if (timeRange.type === 'duration') {
-      timeRangeStart = '-' + timeRange.lower
-    } else if (!isNaN(Number(timeRange.lower)) || timeRange.lower === 'now()') {
-      timeRangeStart = timeRange.lower
-    } else if (!!timeRange?.lower?.match(durationRegExp)) {
-      timeRangeStart = timeRange.lower
-    } else if (isNaN(Date.parse(timeRange.lower))) {
-      timeRangeStart = null
-    } else {
-      timeRangeStart = new Date(timeRange.lower).toISOString()
-    }
-
-    if (!timeRange.upper) {
-      timeRangeStop = 'now()'
-    } else if (!isNaN(Number(timeRange.upper)) || timeRange.upper === 'now()') {
-      timeRangeStop = timeRange.upper
-    } else if (!!timeRange?.upper?.match(durationRegExp)) {
-      timeRangeStop = timeRange.upper
-    } else if (isNaN(Date.parse(timeRange.upper))) {
-      timeRangeStop = null
-    } else {
-      timeRangeStop = new Date(timeRange.upper).toISOString()
-    }
-  }
-
-  return {
-    timeRangeStart,
-    timeRangeStop,
-  }
-}
 
 const isDefaultText = text => {
   return text == DEFAULT_FLUX_EDITOR_TEXT || text == DEFAULT_SQL_EDITOR_TEXT

@@ -109,6 +109,27 @@ describe('Operator Page', () => {
 
     cy.getByTestID('operator-resource--searchbar').clear()
 
+    // displays org storage type - iox
+    cy.getByTestID('operator-resource--searchbar').type('345')
+    cy.wait('@quartzSearchOrgs')
+    cy.getByTestID('table-body').within(() => {
+      cy.getByTestID('table-row').within(() => {
+        cy.getByTestID('storage_type').should('exist').and('have.text', 'iox')
+      })
+    })
+    cy.getByTestID('operator-resource--searchbar').clear()
+
+    // displays org storage type - tsm
+    cy.getByTestID('operator-resource--searchbar').type('678')
+    cy.wait('@quartzSearchOrgs')
+    cy.getByTestID('table-body').within(() => {
+      cy.getByTestID('table-row').within(() => {
+        cy.getByTestID('storage_type').should('exist').and('have.text', 'tsm')
+      })
+    })
+
+    cy.getByTestID('operator-resource--searchbar').clear()
+
     // search for an unknown org
     const unknownOrg = ['i', 'n', 'v', 'a', 'l', 'i', 'd']
     for (let index = 0; index < unknownOrg.length; index += 1) {
@@ -175,7 +196,7 @@ describe('Operator Page', () => {
     })
 
     cy.getByTestID('overlay--container').should('be.visible')
-    cy.getByTestID('overlay--header').contains('678')
+    cy.getByTestID('org-overlay-orgID').contains('678')
 
     cy.getByTestID('limits-rate.readKBs--input').clear().type('666')
 
@@ -223,7 +244,7 @@ describe('Operator Page', () => {
     })
 
     cy.getByTestID('overlay--container').should('be.visible')
-    cy.getByTestID('overlay--header').contains('678')
+    cy.getByTestID('org-overlay-orgID').contains('678')
 
     cy.getByTestID('limits-rate.readKBs--input')
       .invoke('attr', 'value')

@@ -8,10 +8,11 @@ import {useSelector, useDispatch} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
 import {deleteScriptFail} from 'src/shared/copy/notifications/categories/scripts'
-import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
+import {ResultsContext} from 'src/dataExplorer/context/results'
 import {RemoteDataState} from 'src/types'
 import {QueryContext} from 'src/shared/contexts/query'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
+import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
 
 let deleteScript
 
@@ -28,6 +29,7 @@ const DeleteScript: FC<Props> = ({onBack, onClose}) => {
   const {resource} = useContext(PersistanceContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
+  const {clear: clearViewOptions} = useContext(ResultsViewContext)
   const history = useHistory()
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
@@ -43,6 +45,7 @@ const DeleteScript: FC<Props> = ({onBack, onClose}) => {
 
         setStatus(RemoteDataState.NotStarted)
         setResult(null)
+        clearViewOptions()
         cancel()
         history.replace(
           `/orgs/${org.id}/data-explorer/from/script${SCRIPT_EDITOR_PARAMS}`

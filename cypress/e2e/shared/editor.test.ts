@@ -107,7 +107,7 @@ describe('Editor+LSP communication', () => {
             .click()
           cy.getByTestID('script-dropdown__flux').should('be.visible').click()
           cy.getByTestID('overlay--container').within(() => {
-            cy.getByTestID('flux-query-builder--no-save')
+            cy.getByTestID('script-query-builder--no-save')
               .should('be.visible')
               .click()
           })
@@ -132,13 +132,14 @@ describe('Editor+LSP communication', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/data-explorer`)
         cy.getByTestID('tree-nav').should('be.visible')
-        cy.getByTestID('flux-query-builder-toggle').then($toggle => {
+        cy.getByTestID('script-query-builder-toggle').then($toggle => {
           cy.wrap($toggle).should('be.visible')
-          // Switch to Flux Query Builder if not yet
-          if (!$toggle.hasClass('active')) {
+          // Switch to Script Editor if not yet
+          if ($toggle.hasClass('active')) {
+            // active means showing the old Data Explorer
             // hasClass is a jQuery function
             $toggle.click()
-            cy.getByTestID('flux-query-builder--menu').contains('New Script')
+            cy.getByTestID('script-query-builder--menu').contains('New Script')
           }
           return setScriptToFlux()
         })

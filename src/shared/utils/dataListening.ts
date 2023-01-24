@@ -1,5 +1,9 @@
+// Utils
 import {runQuery} from 'src/shared/apis/query'
 import {LoadingState} from 'src/shared/components/DataListening/ConnectionInformation'
+
+// Types
+import {RunQueryResponse} from 'src/types/queries'
 
 export const TIMEOUT_MILLISECONDS = 60000
 export const TIMER_WAIT = 1000
@@ -41,7 +45,7 @@ export const checkForData = async (orgID, bucket): Promise<LoadingState> => {
   try {
     const result = await runQuery(orgID, script).promise
 
-    if (result.type !== 'SUCCESS') {
+    if (result.type !== RunQueryResponse.SUCCESS) {
       throw new Error(result.message)
     }
 

@@ -16,6 +16,7 @@ import {
   Variable,
 } from 'src/types'
 import {CancelBox} from 'src/types/promises'
+import {RunQueryResponse} from 'src/types/queries'
 
 const cacheKey = (
   url: string,
@@ -104,7 +105,7 @@ export class DefaultValueFetcher implements ValueFetcher {
     event('runQuery', {context: 'variables'})
 
     const promise = request.promise.then(result => {
-      if (result.type !== 'SUCCESS') {
+      if (result.type !== RunQueryResponse.SUCCESS) {
         return Promise.reject(result.message)
       }
 

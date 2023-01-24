@@ -18,9 +18,10 @@ import StatusIndicator from 'src/buckets/components/csvUploader/StatusIndicator'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
-import {getOrg} from 'src/organizations/selectors'
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {runQuery} from 'src/shared/apis/query'
+import {RunQueryResponse} from 'src/types/queries'
 
 // Selectors
 import {
@@ -32,7 +33,7 @@ import {notify} from 'src/shared/actions/notifications'
 // Types
 import {RemoteDataState} from 'src/types'
 
-const CsvMethod: FC = () => {
+export const CsvMethod: FC = () => {
   const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
   const [uploadError, setUploadError] = useState('')
 
@@ -40,6 +41,7 @@ const CsvMethod: FC = () => {
   const orgId = useSelector(getOrg)?.id
   const history = useHistory()
   const org = useSelector(getOrg)
+  const orgIsIOx = useSelector(isOrgIOx)
 
   const dispatch = useDispatch()
 
@@ -96,16 +98,24 @@ const CsvMethod: FC = () => {
           controller.current
         ).promise
 
-        if (resp.type === 'SUCCESS') {
+        if (resp.type === RunQueryResponse.SUCCESS) {
           setUploadState(RemoteDataState.Done)
           return
         }
-        if (resp.type === 'RATE_LIMIT_ERROR') {
+        if (resp.type === RunQueryResponse.RATE_LIMIT_ERROR) {
           setUploadState(RemoteDataState.Error)
-          setUploadError('Failed due to plan limits: read cardinality reached')
+          if (orgIsIOx) {
+            setUploadError(
+              'Failed due to request exceeding read or write limits of plan'
+            )
+          } else {
+            setUploadError(
+              'Failed due to request exceeding read, write, or cardinality limits of plan'
+            )
+          }
           return
         }
-        if (resp.type === 'UNKNOWN_ERROR') {
+        if (resp.type === RunQueryResponse.UNKNOWN_ERROR) {
           const error = getErrorMessage(resp)
           throw new Error(error)
         }
@@ -113,7 +123,7 @@ const CsvMethod: FC = () => {
         handleError(error)
       }
     },
-    [handleError, org?.id]
+    [handleError, org?.id, orgIsIOx]
   )
 
   const handleSeeUploadedData = () => {
@@ -173,5 +183,3 @@ const CsvMethod: FC = () => {
     </Panel>
   )
 }
-
-export default CsvMethod

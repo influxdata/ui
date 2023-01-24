@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useState} from 'react'
+import {useSelector} from 'react-redux'
 import {
   Panel,
   ComponentSize,
@@ -9,14 +10,17 @@ import {
 import {track} from 'rudder-sdk-js'
 
 // Components
-import CancellationOverlay from 'src/billing/components/PayAsYouGo/CancellationOverlay'
+import {CancellationOverlay} from 'src/billing/components/PayAsYouGo/CancellationOverlay'
+
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {useSelector} from 'react-redux'
-import {selectCurrentIdentity} from 'src/identity/selectors'
 import {event} from 'src/cloud/utils/reporting'
-import CancelServiceProvider from './CancelServiceContext'
+
+// Contexts
+import {CancelServiceProvider} from 'src/billing/components/PayAsYouGo/CancelServiceContext'
 
 const CancellationPanel: FC = () => {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)

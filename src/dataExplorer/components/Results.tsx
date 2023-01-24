@@ -1,18 +1,26 @@
-import React, {FC, useState, useContext, useMemo} from 'react'
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import {
+  Button,
+  ComponentColor,
+  ComponentStatus,
   FlexBox,
   FlexDirection,
-  SelectGroup,
-  Button,
   IconFont,
-  ComponentStatus,
-  ComponentColor,
+  Overlay,
+  SelectGroup,
+  SpinnerContainer,
+  TechnoSpinner,
+  TextArea,
 } from '@influxdata/clockface'
 
-import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
-import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
-import {SidebarContext} from 'src/dataExplorer/context/sidebar'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+// Components
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import {
   View,
@@ -20,12 +28,29 @@ import {
   ViewOptions,
   SUPPORTED_VISUALIZATIONS,
 } from 'src/visualization'
+import {SqlViewOptions} from 'src/dataExplorer/components/SqlViewOptions'
+
+// Contexts
+import {ResultsContext} from 'src/dataExplorer/context/results'
+import {
+  ResultsViewContext,
+  ViewStateType,
+} from 'src/dataExplorer/context/resultsView'
+import {ChildResultsContext} from 'src/dataExplorer/context/results/childResults'
+import {SidebarContext} from 'src/dataExplorer/context/sidebar'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+
+// Types
 import {FluxResult} from 'src/types/flows'
+import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
+
+// Utils
+import {bytesFormatter} from 'src/shared/copy/notifications'
+import {sqlAsFlux} from 'src/shared/contexts/query/preprocessing'
 
 import './Results.scss'
-import {bytesFormatter} from 'src/shared/copy/notifications'
+import {LanguageType} from './resources'
 
-// simplified version migrated from src/flows/pipes/Table/view.tsx
 const QueryStat: FC = () => {
   const {result} = useContext(ResultsContext)
 
@@ -71,33 +96,12 @@ const EmptyResults: FC = () => {
   )
 }
 
-const WrappedOptions: FC = () => {
-  const {result, view, setView} = useContext(ResultsContext)
-
-  return (
-    <ViewOptions
-      properties={view.properties}
-      results={result.parsed}
-      update={update => {
-        setView({
-          ...view,
-          properties: {
-            ...view.properties,
-            ...update,
-          },
-        })
-      }}
-    />
-  )
-}
-
-const Results: FC = () => {
-  const [search, setSearch] = useState('')
+const TableResults: FC<{search: string}> = ({search}) => {
+  const {result, status} = useContext(ResultsContext)
   const {range} = useContext(PersistanceContext)
-  const {result, status, view, setView} = useContext(ResultsContext)
-  const {launch} = useContext(SidebarContext)
+
   const res = useMemo(() => {
-    if (view.state === 'graph' || !search.trim() || !result?.parsed) {
+    if (search.trim() === '' || !result?.parsed) {
       return result?.parsed
     }
 
@@ -144,61 +148,218 @@ const Results: FC = () => {
     dupped.table.length = newLen
 
     return dupped as FluxResult['parsed']
-  }, [search, result?.parsed, view.state])
+  }, [search, result?.parsed])
+
+  return (
+    <div className="data-explorer-results--view">
+      <View
+        loading={status}
+        properties={
+          {
+            type: 'simple-table',
+            showAll: false,
+          } as SimpleTableViewProperties
+        }
+        result={res}
+        timeRange={range}
+        hideTimer
+      />
+    </div>
+  )
+}
+
+const GraphSubQueryOverlay: FC<{text: string; onClose: () => void}> = ({
+  text,
+  onClose,
+}) => (
+  <Overlay.Container maxWidth={600}>
+    <Overlay.Header title="Subquery for graph data:" onDismiss={onClose} />
+    <Overlay.Body>
+      <TextArea
+        testID="data-explorer-results--graph-subquery"
+        value={text}
+        readOnly
+      />
+    </Overlay.Body>
+  </Overlay.Container>
+)
+
+const GraphResults: FC = () => {
+  const {view} = useContext(ResultsViewContext)
+  const {result, status} = useContext(ChildResultsContext)
+  const {range} = useContext(PersistanceContext)
+
+  return (
+    <div className="data-explorer-results--view">
+      <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>
+        <View
+          loading={status}
+          properties={view.properties}
+          result={result?.parsed}
+          timeRange={range}
+          hideTimer
+        />
+      </SpinnerContainer>
+    </div>
+  )
+}
+
+const WrappedOptions: FC = () => {
+  const [showOverlay, setShowOverlay] = useState(false)
+
+  // use parent `results` so all metadata is present for the viz options
+  const {result} = useContext(ResultsContext)
+  const {queryModifers, setResult, setStatus} = useContext(ChildResultsContext)
+  const {view, setView, selectViewOptions, viewOptions, selectedViewOptions} =
+    useContext(ResultsViewContext)
+  const {resource, query: text, selection} = useContext(PersistanceContext)
+  const dataExists = !!result?.parsed
+
+  const subquery = useMemo(
+    () => sqlAsFlux(text, selection?.bucket, queryModifers),
+    [text, selection?.bucket, queryModifers]
+  )
+  const seeGraphSubquery = () => setShowOverlay(true)
+
+  const updateChildResults = useCallback(
+    update => {
+      setView({
+        ...view,
+        properties: {
+          ...view.properties,
+          ...update,
+        },
+      })
+    },
+    [setStatus, setResult]
+  )
+
+  if (!dataExists) {
+    return null
+  }
+
+  const subQueryOptions =
+    resource?.language === LanguageType.SQL &&
+    view.state == ViewStateType.Graph ? (
+      <SqlViewOptions
+        selectViewOptions={selectViewOptions}
+        allViewOptions={viewOptions}
+        selectedViewOptions={selectedViewOptions}
+        seeSubquery={selection?.bucket ? seeGraphSubquery : null}
+      />
+    ) : null
+
+  return (
+    <>
+      <Overlay visible={showOverlay}>
+        <GraphSubQueryOverlay
+          text={subquery}
+          onClose={() => setShowOverlay(false)}
+        />
+      </Overlay>
+      {subQueryOptions}
+      <ViewOptions
+        properties={view.properties}
+        results={result.parsed}
+        update={updateChildResults}
+      />
+    </>
+  )
+}
+
+const GraphHeader: FC = () => {
+  const {view, setView, viewOptions} = useContext(ResultsViewContext)
+  const {result} = useContext(ResultsContext)
+  const {result: subQueryResult} = useContext(ChildResultsContext)
+  const {launch, clear: closeSidebar} = useContext(SidebarContext)
+
+  const dataExists = !!result?.parsed
+
+  const launcher = () => {
+    launch(<WrappedOptions />)
+  }
+  useEffect(() => {
+    if (dataExists) {
+      launcher()
+    }
+  }, [viewOptions])
+  useEffect(() => {
+    if (!dataExists) {
+      closeSidebar()
+    }
+  }, [dataExists])
+
+  const updateType = viewType => {
+    setView({
+      state: ViewStateType.Graph,
+      properties: SUPPORTED_VISUALIZATIONS[viewType].initial,
+    })
+  }
+
+  const subqueryReturnsData = !!subQueryResult?.parsed
+  let titleText = 'Configure Visualization'
+  if (!dataExists) {
+    titleText = 'No data to visualize yet'
+  }
+  if (!subqueryReturnsData) {
+    titleText = 'Graph customization options returned no data'
+  }
+
+  return (
+    <>
+      <ViewTypeDropdown
+        viewType={view.properties.type}
+        onUpdateType={updateType}
+      />
+      <Button
+        text="Customize"
+        icon={IconFont.CogSolid_New}
+        onClick={launcher}
+        status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
+        color={ComponentColor.Default}
+        titleText={titleText}
+        className="de-config-visualization-button"
+      />
+    </>
+  )
+}
+
+const Results: FC = () => {
+  const [search, setSearch] = useState('')
+  const {status} = useContext(ResultsContext)
+  const {view, setView} = useContext(ResultsViewContext)
 
   let resultView
 
   if (status === RemoteDataState.NotStarted) {
     resultView = <EmptyResults />
   } else {
-    if (view.state === 'table') {
-      resultView = (
-        <div className="data-explorer-results--view">
-          <View
-            loading={status}
-            properties={
-              {
-                type: 'simple-table',
-                showAll: false,
-              } as SimpleTableViewProperties
-            }
-            result={res}
-            timeRange={range}
-            hideTimer
-          />
-        </div>
-      )
+    if (view.state === ViewStateType.Table) {
+      resultView = <TableResults search={search} />
     } else {
-      resultView = (
-        <div className="data-explorer-results--view">
-          <View
-            loading={status}
-            properties={view.properties}
-            result={res}
-            timeRange={range}
-            hideTimer
-          />
-        </div>
-      )
+      resultView = <GraphResults />
     }
   }
 
-  const dataExists = res && Object.entries(res).length
-  const updateType = viewType => {
-    setView({
-      state: 'graph',
-      properties: SUPPORTED_VISUALIZATIONS[viewType].initial,
-    })
+  const updateViewState = state => {
+    if (state === ViewStateType.Graph) {
+      setView({
+        state: ViewStateType.Graph,
+        properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
+      })
+    } else {
+      setView({
+        state: ViewStateType.Table,
+        properties: SUPPORTED_VISUALIZATIONS['simple-table'].initial,
+      })
+    }
   }
 
-  const launcher = () => {
-    launch(<WrappedOptions />)
-  }
-
-  const tableHeader =
-    view.state === 'table' ? (
+  const headerStyle = {width: '300px'}
+  const Header =
+    view.state === ViewStateType.Table ? (
       <>
-        <div style={{width: '300px'}}>
+        <div style={headerStyle}>
           <SearchWidget
             placeholderText="Search results..."
             onSearch={setSearch}
@@ -212,59 +373,24 @@ const Results: FC = () => {
         </div>
         <QueryStat />
       </>
-    ) : null
+    ) : (
+      <GraphHeader />
+    )
 
-  const vizHeader =
-    view.state === 'graph' ? (
-      <>
-        <ViewTypeDropdown
-          viewType={view.properties.type}
-          onUpdateType={updateType}
-        />
-        <Button
-          text="Customize"
-          icon={IconFont.CogSolid_New}
-          onClick={launcher}
-          status={
-            dataExists ? ComponentStatus.Default : ComponentStatus.Disabled
-          }
-          color={ComponentColor.Default}
-          titleText={
-            dataExists ? 'Configure Visualization' : 'No data to visualize yet'
-          }
-          className="de-config-visualization-button"
-        />
-      </>
-    ) : null
-
-  const updateViewState = state => {
-    if (state === 'graph') {
-      setView({
-        state: 'graph',
-        properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
-      })
-    } else {
-      setView({
-        state: 'table',
-        properties: SUPPORTED_VISUALIZATIONS['simple-table'].initial,
-      })
-    }
-  }
-
+  const flexContainerStyle = {height: '100%'}
   return (
     <div className="data-explorer-results">
-      <FlexBox direction={FlexDirection.Column} style={{height: '100%'}}>
+      <FlexBox direction={FlexDirection.Column} style={flexContainerStyle}>
         <div className="data-explorer-results--header">
           <FlexBox>
-            {tableHeader}
-            {vizHeader}
+            {Header}
             <div className="data-explorer-results--timezone">
               <SelectGroup style={{marginRight: 12}}>
                 <SelectGroup.Option
                   id="table"
                   name="viz-setting"
                   value="table"
-                  active={view.state === 'table'}
+                  active={view.state === ViewStateType.Table}
                   onClick={updateViewState}
                 >
                   Table
@@ -273,7 +399,7 @@ const Results: FC = () => {
                   id="graph"
                   name="viz-setting"
                   value="graph"
-                  active={view.state === 'graph'}
+                  active={view.state === ViewStateType.Graph}
                   onClick={updateViewState}
                 >
                   Graph

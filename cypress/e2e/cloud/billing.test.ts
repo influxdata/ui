@@ -1,7 +1,19 @@
 import {Organization} from '../../../src/types'
 
 describe('Billing Page Free Users', () => {
-  beforeEach(() =>
+  const limitNames = [
+    'Max Dashboards',
+    'Max Tasks',
+    'Max Buckets',
+    'Max Retention Seconds',
+    'Max Checks',
+    'Max Notifications',
+    'Reads',
+    'Writes',
+    'Series Cardinality',
+  ]
+
+  beforeEach(() => {
     cy.flush().then(() => {
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
@@ -14,30 +26,50 @@ describe('Billing Page Free Users', () => {
         })
       })
     })
-  )
+  })
 
   it('should display the free billing page for free users', () => {
+    cy.isIoxOrg().then(isIOx => {
+      cy.skipOn(isIOx)
+    })
+
     cy.getByTestID('cloud-upgrade--button').should('be.visible')
     cy.getByTestID('title-header--name')
       .should('not.have.value', 'blockedNotificationRules')
       .and('not.have.value', 'blockedNotificationEndpoints')
       .and('have.length', 9)
 
-    const categoryHeaders = [
-      'Max Dashboards',
-      'Max Tasks',
-      'Max Buckets',
-      'Max Retention Seconds',
-      'Max Checks',
-      'Max Notifications',
-      'Reads',
-      'Writes',
-      'Series Cardinality',
-    ]
+    cy.getByTestID('title-header--name').each((child, index) => {
+      expect(child.text().trim()).to.equal(limitNames[index])
+    })
+
+    cy.get('.credit-250-conversion-upgrade--button').should('be.visible')
+    cy.get('.credit-250-conversion-upgrade--button').click()
+
+    cy.location().should(loc => {
+      expect(loc.pathname).to.eq('/checkout')
+    })
+  })
+
+  it('should not display the cardinality limit in an iox org', () => {
+    cy.isIoxOrg().then(isIOx => {
+      cy.skipOn(!isIOx)
+    })
+
+    const limitsWithoutCardinality = limitNames.slice(0, -1)
+
+    cy.getByTestID('cloud-upgrade--button').should('be.visible')
+    cy.getByTestID('title-header--name')
+      .should('not.have.value', 'blockedNotificationRules')
+      .and('not.have.value', 'blockedNotificationEndpoints')
+      .and('have.length', 8)
 
     cy.getByTestID('title-header--name').each((child, index) => {
-      expect(child.text().trim()).to.equal(categoryHeaders[index])
+      expect(child.text().trim()).to.equal(limitsWithoutCardinality[index])
     })
+
+    cy.get('Series Cardinality').should('not.exist')
+    cy.get('series cardinality').should('not.exist')
 
     cy.get('.credit-250-conversion-upgrade--button').should('be.visible')
     cy.get('.credit-250-conversion-upgrade--button').click()
@@ -70,7 +102,7 @@ describe('Billing Page PAYG Users', () => {
     )
   )
 
-  it('should display the free billing page for PAYG users', () => {
+  it('should display the PAYG billing page for PAYG users', () => {
     // The implication here is that there is no Upgrade Now button
     cy.get('.cf-page-header--fluid').children().should('have.length', 1)
 
@@ -201,5 +233,33 @@ describe('Billing Page PAYG Users', () => {
 
     // TLDR; we double confirm here, this is by design. The overlay changes to reflect a new state so this isn't an error in the test
     cy.getByTestID('cancel-service-confirmation--button').click()
+  })
+
+  it('does not display high cardinality as a cancelation reason in iox orgs', () => {
+    cy.isIoxOrg().then(isIOx => {
+      cy.skipOn(!isIOx)
+    })
+
+    cy.getByTestID('cancel-service--header').contains('Cancel Service')
+    cy.getByTestID('cancel-service--button').click()
+    cy.getByTestID('cancel-overlay--alert').contains(
+      'This action cannot be undone'
+    )
+    // check that the button is disabled
+    cy.getByTestID('cancel-service-confirmation--button').should('be.disabled')
+    cy.getByTestID('agree-terms--checkbox').should('not.be.checked')
+
+    cy.getByTestID('agree-terms--input').click()
+    cy.getByTestID('agree-terms--checkbox').should('be.checked')
+    cy.getByTestID('variable-type-dropdown--button')
+      .click()
+      .then(() => {
+        cy.getByTestID(
+          'variable-type-dropdown-UNSUPPORTED_HIGH_CARDINALITY'
+        ).should('not.exist')
+        cy.getByTestID('dropdown-menu--contents')
+          .children()
+          .should('have.length', 9)
+      })
   })
 })

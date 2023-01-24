@@ -254,6 +254,13 @@ const WrappedOptions: FC = () => {
   )
 }
 
+const NOT_SUPPORTED_GRAPH_TYPES = [
+  SUPPORTED_VISUALIZATIONS.check.type,
+  SUPPORTED_VISUALIZATIONS.gauge.type,
+  SUPPORTED_VISUALIZATIONS.geo.type,
+  SUPPORTED_VISUALIZATIONS.mosaic.type,
+  SUPPORTED_VISUALIZATIONS['single-stat'].type,
+]
 const GraphHeader: FC = () => {
   const {view, setView, viewOptions} = useContext(ResultsViewContext)
   const {result} = useContext(ResultsContext)
@@ -297,6 +304,7 @@ const GraphHeader: FC = () => {
       <ViewTypeDropdown
         viewType={view.properties.type}
         onUpdateType={updateType}
+        filter={NOT_SUPPORTED_GRAPH_TYPES}
       />
       <Button
         text="Customize"

@@ -188,17 +188,11 @@ export const ResultsViewProvider: FC = ({children}) => {
           },
         })
         break
-      case 'gauge':
-      case 'single-stat':
-        // These graphs are about calculating a single value.
+      case 'line-plus-single-stat':
+        // This graph includes a calculation for a single value.
         // The graph unions over all `results.parsed.fluxGroupKeyUnion = []`, to try creating a single value.
         // For the unpivoted data --> it has all field values under a single column `_value`. Then fluxGroupKeyUnion = tagKeys.
         // For the pivoted data --> it has the data broken into different column per field. Cannot support.
-        if (!hasSingleValueColumn) {
-          dispatch(notify(trySmoothingData(view.properties.type)))
-        }
-        break
-      case 'line-plus-single-stat':
         // Has the same issue as 'single-stat'. Read above.
         if (!hasSingleValueColumn) {
           dispatch(notify(trySmoothingData('single-stat')))
@@ -213,12 +207,6 @@ export const ResultsViewProvider: FC = ({children}) => {
           },
         })
         break
-      case 'check':
-      case 'mosaic':
-      // TODO: Is not working at all.
-      // Unclear if there is a data query results format, in which it will work.
-      case 'geo':
-      // user chooses own column with the appropriate json geo data struct
       case 'simple-table':
       case 'table':
       default:

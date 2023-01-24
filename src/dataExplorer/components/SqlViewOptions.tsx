@@ -41,6 +41,11 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
     }
   }
 
+  const handleSmoothingRangeSlider = event =>
+    selectViewOptions({
+      smoothing: {percentageRetained: parseInt(event.target.value)},
+    })
+
   const groupbyTooltipContents = (
     <div>
       <span>Select the GROUPBY used for the graph subquery.</span>
@@ -132,11 +137,7 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
               min={5}
               max={100}
               step={5}
-              onChange={event =>
-                selectViewOptions({
-                  smoothing: {percentageRetained: parseInt(event.target.value)},
-                })
-              }
+              onChange={handleSmoothingRangeSlider}
               labelPrefix="retained "
               labelSuffix="%"
             />

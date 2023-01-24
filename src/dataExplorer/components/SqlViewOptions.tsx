@@ -5,6 +5,7 @@ import {
   ComponentStatus,
   FlexBox,
   Grid,
+  RangeSlider,
   SlideToggle,
 } from '@influxdata/clockface'
 
@@ -125,6 +126,19 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
               }
               multiSelect={false}
               disabled={!selectedViewOptions?.smoothing?.applied}
+            />
+            <RangeSlider
+              value={selectedViewOptions?.smoothing?.percentageRetained}
+              min={5}
+              max={100}
+              step={5}
+              onChange={event =>
+                selectViewOptions({
+                  smoothing: {percentageRetained: parseInt(event.target.value)},
+                })
+              }
+              labelPrefix="retained "
+              labelSuffix="%"
             />
             <div className="sql-view-options--see-query">
               <Button

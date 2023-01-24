@@ -1,14 +1,22 @@
 import React, {FC} from 'react'
-import {Columns, Grid, Button, ComponentStatus} from '@influxdata/clockface'
+import {
+  Button,
+  Columns,
+  ComponentStatus,
+  FlexBox,
+  Grid,
+  SlideToggle,
+} from '@influxdata/clockface'
 
-import SelectorList from 'src/timeMachine/components/SelectorList'
+import {RecursivePartial} from 'src/types'
+import {DropdownList as SelectorList} from 'src/shared/components/DropdownList'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {ViewOptions} from 'src/dataExplorer/context/resultsView'
 
 import './SqlViewOptions.scss'
 
 interface SqlViewOptionsT {
-  selectViewOptions: (_: Partial<ViewOptions>) => void
+  selectViewOptions: (_: RecursivePartial<ViewOptions>) => void
   allViewOptions: ViewOptions
   selectedViewOptions: ViewOptions
   seeSubquery: () => void
@@ -50,6 +58,28 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
     </div>
   )
 
+  const smoothingTooltipContents = (
+    <div>
+      <span>Smoothing used for the graph subquery.</span>
+      <br />
+      <br />
+      <span>
+        Smoothing applies a{' '}
+        <a href="https://docs.influxdata.com/flux/v0.x/stdlib/experimental/polyline/rdp/">
+          RDP algorithm
+        </a>{' '}
+        to downsample your data, while maintaining the trends. Smoothing will be
+        applied to a single column of data, based upon your chosen 'Y column'.
+      </span>
+      <br />
+      <br />
+      <span>
+        Goal is to display a graph covering the entire time range, even if your
+        full returned results are truncated in the table view.
+      </span>
+    </div>
+  )
+
   return (
     <div className="view-options sql-view-options">
       <Grid>
@@ -70,6 +100,31 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
               selectedItems={selectedViewOptions?.groupby ?? []}
               onSelectItem={tagKey => handleSelectedListItem('groupby', tagKey)}
               multiSelect={true}
+            />
+            <FlexBox className="view-options--smoothing-header">
+              <SelectorTitle
+                label="Graph smoothing"
+                tooltipContents={smoothingTooltipContents}
+              />
+              <SlideToggle
+                active={selectedViewOptions?.smoothing?.applied}
+                onChange={() =>
+                  selectViewOptions({
+                    smoothing: {
+                      applied: !selectedViewOptions?.smoothing?.applied,
+                    },
+                  })
+                }
+              />
+            </FlexBox>
+            <SelectorList
+              items={allViewOptions?.smoothing?.columns ?? []}
+              selectedItems={selectedViewOptions?.smoothing?.columns ?? []}
+              onSelectItem={column =>
+                selectViewOptions({smoothing: {columns: [column]}})
+              }
+              multiSelect={false}
+              disabled={!selectedViewOptions?.smoothing?.applied}
             />
             <div className="sql-view-options--see-query">
               <Button

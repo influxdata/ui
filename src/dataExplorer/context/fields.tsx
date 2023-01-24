@@ -11,6 +11,7 @@ import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Contexts
 import {QueryContext, QueryScope} from 'src/shared/contexts/query'
+import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
 
 // Utils
 import {
@@ -46,6 +47,7 @@ interface Prop {
 export const FieldsProvider: FC<Prop> = ({children, scope}) => {
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
+  const {setDefaultViewOptions} = useContext(ResultsViewContext)
 
   // States
   const [fields, setFields] = useState<Array<string>>(
@@ -105,6 +107,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
       )[0]?.data ?? []) as string[]
       setFields(values)
       setLoading(RemoteDataState.Done)
+      setDefaultViewOptions({smoothing: {columns: values}})
     } catch (e) {
       console.error(e.message)
       setLoading(RemoteDataState.Error)

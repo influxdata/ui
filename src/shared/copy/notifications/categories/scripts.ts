@@ -2,6 +2,7 @@ import {Notification} from 'src/types'
 import {
   defaultErrorNotification,
   defaultSuccessNotification,
+  defaultWarningNotification,
 } from 'src/shared/copy/notifications'
 
 // Scripts
@@ -25,4 +26,9 @@ export const getScriptsFail = (): Notification => ({
   ...defaultErrorNotification,
   message:
     'There was an error fetching Scripts. Please try reloading this page',
+})
+
+export const trySmoothingData = (graphType: string): Notification => ({
+  ...defaultWarningNotification,
+  message: `The ${graphType} graph requires a single column of returned data. Try smoothing data, and toggle for each data field.`,
 })

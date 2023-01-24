@@ -31,11 +31,13 @@ const modifiersToApply = (viewOptions: ViewOptions): SqlQueryModifiers => {
   }
 
   // 2. smoothing transformation next
-  // e.g. to smooth by selected column foo. Rough example.
-  const shouldSmooth = false
+  const shouldSmooth =
+    viewOptions.smoothing?.columns?.length > 0 && viewOptions.smoothing?.applied
   if (shouldSmooth) {
     prepend.push(`import "experimental/polyline"`)
-    // append.push(`|> polyline.rdp(valColumn: "foo", timeColumn: "time")`) // TODO
+    append.push(
+      `|> polyline.rdp(valColumn: "${viewOptions.smoothing.columns[0]}", timeColumn: "time")`
+    )
   }
 
   return Boolean(prepend.length + append.length)
@@ -136,7 +138,7 @@ export const ChildResultsProvider: FC = ({children}) => {
         })
         setStatus(RemoteDataState.Error)
       })
-  }, [resultFromParent, viewOptions, setStatus, setResult])
+  }, [resultFromParent, setStatus, setResult, viewOptions])
 
   return (
     <ChildResultsContext.Provider

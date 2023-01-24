@@ -8,16 +8,21 @@ import React, {
 } from 'react'
 import {useDispatch} from 'react-redux'
 
-import {useSessionStorage} from 'src/dataExplorer/shared/utils'
+// Components & Contexts
+import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
+import {ResultsContext} from 'src/dataExplorer/context/results'
+
+// Types & Constants
 import {
   RecursivePartial,
   SimpleTableViewProperties,
   ViewProperties,
 } from 'src/types'
-import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
-import {ResultsContext} from 'src/dataExplorer/context/results'
+
+// Utils
 import {notify} from 'src/shared/actions/notifications'
 import {trySmoothingData} from 'src/shared/copy/notifications'
+import {useSessionStorage} from 'src/dataExplorer/shared/utils'
 
 const DEFAULT_TIME_COLUMN = '_time' // unpivoted data
 const DEFAULT_DATA_COLUMN = '_value' // unpivoted data
@@ -48,6 +53,8 @@ export interface ViewOptions {
   smoothing: {
     columns: string[] // currently `|> polyling.rdp()` is applied to a single column, but is not a fundamental requirement
     applied: boolean
+    percentageRetained: number
+    timeColumn: string
   }
 }
 
@@ -76,7 +83,12 @@ interface ResultsViewContextType {
 
 const DEFAULT_VIEW_OPTIONS: ViewOptions = {
   groupby: [],
-  smoothing: {columns: [], applied: true},
+  smoothing: {
+    columns: [],
+    applied: true,
+    percentageRetained: 50,
+    timeColumn: 'time',
+  },
 }
 
 const DEFAULT_STATE: ResultsViewContextType = {
@@ -274,11 +286,12 @@ export const ResultsViewProvider: FC = ({children}) => {
     const numericColumns = getNumericSelectorColumns()
     // initial selection
     const defaultSmoothingColumn = defineDefaultUnpivotedColumn(numericColumns)
+    const timeColumn = defineTimeColumn()
 
     return {
       all: {smoothing: {columns: numericColumns}},
       selected: {
-        smoothing: {columns: [defaultSmoothingColumn]},
+        smoothing: {columns: [defaultSmoothingColumn], timeColumn},
       },
     }
   }

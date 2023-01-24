@@ -299,6 +299,16 @@ const GraphHeader: FC = () => {
     titleText = 'Graph customization options returned no data'
   }
 
+  const GraphQueryStat = () => (
+    <div className="query-stat" data-testid="query-stat">
+      {subQueryResult?.truncated ? (
+        <span className="query-stat--bold">{`Max. display limit exceeded. Result truncated to ${bytesFormatter(
+          subQueryResult.bytes
+        )}.`}</span>
+      ) : null}
+    </div>
+  )
+
   return (
     <>
       <ViewTypeDropdown
@@ -315,6 +325,7 @@ const GraphHeader: FC = () => {
         titleText={titleText}
         className="de-config-visualization-button"
       />
+      <GraphQueryStat />
     </>
   )
 }

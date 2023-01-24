@@ -35,8 +35,16 @@ const modifiersToApply = (viewOptions: ViewOptions): SqlQueryModifiers => {
     viewOptions.smoothing?.columns?.length > 0 && viewOptions.smoothing?.applied
   if (shouldSmooth) {
     prepend.push(`import "experimental/polyline"`)
+    // will error if give 100.0 --> so instead do 99.9
+    const percentage = Number(
+      viewOptions.smoothing.percentageRetained ?? 50
+    ).toFixed(1)
     append.push(
-      `|> polyline.rdp(valColumn: "${viewOptions.smoothing.columns[0]}", timeColumn: "time")`
+      `|> polyline.rdp(
+        valColumn: "${viewOptions.smoothing.columns[0]}",
+        timeColumn: "${viewOptions.smoothing.timeColumn ?? 'time'}",
+        retention: ${percentage === '100.0' ? '99.9' : percentage}
+      )`
     )
   }
 

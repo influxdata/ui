@@ -26,6 +26,7 @@ import {
   selectOperatorRole,
 } from 'src/identity/selectors'
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
+import {selectShouldShowTasks} from 'src/tasks/selectors/tasksSelectors'
 
 // Types
 import {IdentityUser} from 'src/client/unityRoutes'
@@ -59,7 +60,8 @@ interface NavSubItem {
 const generateNavItems = (
   orgID: string,
   operatorRole: IdentityUser['operatorRole'],
-  shouldShowNotebooks: boolean
+  shouldShowNotebooks: boolean,
+  shouldShowTasks: boolean
 ): NavItem[] => {
   const navItems: NavItem[] = [
     {
@@ -147,6 +149,7 @@ const generateNavItems = (
       label: 'Tasks',
       link: `/orgs/${orgID}/tasks`,
       activeKeywords: ['tasks'],
+      enabled: () => shouldShowTasks,
     },
     {
       id: 'alerting',
@@ -239,6 +242,7 @@ export const MainNavigation: FC = () => {
   const accountType = useSelector(selectCurrentAccountType)
   const operatorRole = useSelector(selectOperatorRole)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
+  const shouldShowTasks = useSelector(selectShouldShowTasks)
 
   const dispatch = useDispatch()
 
@@ -296,67 +300,70 @@ export const MainNavigation: FC = () => {
       userElement={CLOUD ? null : <UserWidget />}
       onToggleClick={handleToggleNavExpansion}
     >
-      {generateNavItems(org.id, operatorRole, shouldShowNotebooks).map(
-        (item: NavItem) => {
-          const linkElement = (className: string): JSX.Element => (
-            <Link
-              to={item.link}
-              className={className}
-              title={item.label}
-              onClick={() => {
-                event('nav clicked', {which: item.id})
-              }}
-            />
-          )
-          return (
-            <TreeNav.Item
-              key={item.id}
-              id={item.id}
-              testID={item.testID}
-              icon={<Icon glyph={item.icon} />}
-              label={item.label}
-              shortLabel={item.shortLabel}
-              active={getNavItemActivation(
-                item.activeKeywords,
-                location.pathname
-              )}
-              linkElement={linkElement}
-            >
-              {Boolean(item.menu) && (
-                <TreeNav.SubMenu>
-                  {item.menu.map((menuItem: NavSubItem) => {
-                    const linkElement = (className: string): JSX.Element => (
-                      <Link
-                        to={menuItem.link}
-                        className={className}
-                        onClick={() => {
-                          event('nav clicked', {
-                            which: `${item.id} - ${menuItem.id}`,
-                          })
-                        }}
-                      />
-                    )
+      {generateNavItems(
+        org.id,
+        operatorRole,
+        shouldShowNotebooks,
+        shouldShowTasks
+      ).map((item: NavItem) => {
+        const linkElement = (className: string): JSX.Element => (
+          <Link
+            to={item.link}
+            className={className}
+            title={item.label}
+            onClick={() => {
+              event('nav clicked', {which: item.id})
+            }}
+          />
+        )
+        return (
+          <TreeNav.Item
+            key={item.id}
+            id={item.id}
+            testID={item.testID}
+            icon={<Icon glyph={item.icon} />}
+            label={item.label}
+            shortLabel={item.shortLabel}
+            active={getNavItemActivation(
+              item.activeKeywords,
+              location.pathname
+            )}
+            linkElement={linkElement}
+          >
+            {Boolean(item.menu) && (
+              <TreeNav.SubMenu>
+                {item.menu.map((menuItem: NavSubItem) => {
+                  const linkElement = (className: string): JSX.Element => (
+                    <Link
+                      to={menuItem.link}
+                      className={className}
+                      onClick={() => {
+                        event('nav clicked', {
+                          which: `${item.id} - ${menuItem.id}`,
+                        })
+                      }}
+                    />
+                  )
 
-                    return (
-                      <TreeNav.SubItem
-                        key={menuItem.id}
-                        id={menuItem.id}
-                        testID={menuItem.testID}
-                        active={getNavItemActivation(
-                          [menuItem.id],
-                          location.pathname
-                        )}
-                        label={menuItem.label}
-                        linkElement={linkElement}
-                      />
-                    )
-                  })}
-                </TreeNav.SubMenu>
-              )}
-            </TreeNav.Item>
-          )
-        }
-      )}
+                  return (
+                    <TreeNav.SubItem
+                      key={menuItem.id}
+                      id={menuItem.id}
+                      testID={menuItem.testID}
+                      active={getNavItemActivation(
+                        [menuItem.id],
+                        location.pathname
+                      )}
+                      label={menuItem.label}
+                      linkElement={linkElement}
+                    />
+                  )
+                })}
+              </TreeNav.SubMenu>
+            )}
+          </TreeNav.Item>
+        )
+      })}
       <TreeNav.Item
         id="support"
         testID="nav-item-support"

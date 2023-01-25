@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState, useCallback} from 'react'
-import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import SaveAsCellForm from 'src/dataExplorer/components/SaveAsCellForm'
@@ -32,6 +32,8 @@ enum SaveAsOption {
 const SaveAsOverlay: FC = () => {
   const history = useHistory()
   const [saveAsOption, setSaveAsOption] = useState(SaveAsOption.Dashboard)
+  const shouldShowTasks = useSelector(selectShouldShowTasks)
+
   const hide = useCallback(() => {
     history.goBack()
   }, [history])
@@ -70,13 +72,15 @@ const SaveAsOverlay: FC = () => {
                 onClick={() => setSaveAsOption(SaveAsOption.Dashboard)}
                 active={saveAsOption === SaveAsOption.Dashboard}
               />
-              <Tabs.Tab
-                id={SaveAsOption.Task}
-                text="Task"
-                testID="task--radio-button"
-                onClick={() => setSaveAsOption(SaveAsOption.Task)}
-                active={saveAsOption === SaveAsOption.Task}
-              />
+              {shouldShowTasks && (
+                <Tabs.Tab
+                  id={SaveAsOption.Task}
+                  text="Task"
+                  testID="task--radio-button"
+                  onClick={() => setSaveAsOption(SaveAsOption.Task)}
+                  active={saveAsOption === SaveAsOption.Task}
+                />
+              )}
               <Tabs.Tab
                 id={SaveAsOption.Variable}
                 text="Variable"

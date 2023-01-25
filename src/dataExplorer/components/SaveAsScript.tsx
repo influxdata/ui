@@ -38,6 +38,7 @@ import {
   copyToClipboardSuccess,
 } from 'src/shared/copy/notifications'
 import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
+import {is_valid_flux} from 'src/languageSupport/languages/flux/parser'
 interface Props {
   language: LanguageType
   onClose: () => void
@@ -48,7 +49,7 @@ interface Props {
 const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const {hasChanged, resource, setResource, save} =
+  const {query, hasChanged, resource, setResource, save} =
     useContext(PersistanceContext)
   const isIoxOrg = useSelector(isOrgIOx)
   const {cancel} = useContext(QueryContext)
@@ -116,6 +117,12 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
 
   const handleSaveScript = () => {
     resource.data.name = newName
+
+    if (language === LanguageType.FLUX) {
+      // eslint-disable-next-line no-console
+      console.log({'is valid flux': is_valid_flux(query), query})
+    }
+
     save(language)
       .then(() => {
         setError(null)

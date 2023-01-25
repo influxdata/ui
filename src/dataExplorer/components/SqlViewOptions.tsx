@@ -83,7 +83,10 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
   )
 
   return (
-    <div className="view-options sql-view-options">
+    <div
+      className="view-options sql-view-options"
+      data-testid="sql-view-options"
+    >
       <Grid>
         <Grid.Row>
           <Grid.Column
@@ -102,6 +105,7 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
               selectedItems={selectedViewOptions?.groupby ?? []}
               onSelectItem={tagKey => handleSelectedListItem('groupby', tagKey)}
               multiSelect={true}
+              testID="view-options--grouping--selector-list"
             />
             <FlexBox className="view-options--smoothing-header">
               <SelectorTitle
@@ -117,6 +121,7 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
                     },
                   })
                 }
+                testID="view-options--smoothing-toggle"
               />
             </FlexBox>
             <SelectorList
@@ -127,6 +132,7 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
               }
               multiSelect={false}
               disabled={!selectedViewOptions?.smoothing?.applied}
+              testID="view-options--smoothing--selector-list"
             />
             <RangeSlider
               value={selectedViewOptions?.smoothing?.percentageRetained}

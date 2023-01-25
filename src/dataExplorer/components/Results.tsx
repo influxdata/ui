@@ -141,7 +141,10 @@ const TableResults: FC<{search: string}> = ({search}) => {
   }, [search, result?.parsed])
 
   return (
-    <div className="data-explorer-results--view">
+    <div
+      className="data-explorer-results--view"
+      data-testid="data-explorer-results--view"
+    >
       <View
         loading={status}
         properties={
@@ -179,7 +182,10 @@ const GraphResults: FC = () => {
   }
 
   return (
-    <div className="data-explorer-results--view">
+    <div
+      className="data-explorer-results--view"
+      data-testid="data-explorer-results--view"
+    >
       <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>
         <View
           loading={status}
@@ -376,7 +382,7 @@ const Results: FC = () => {
 
   const flexContainerStyle = {height: '100%'}
   return (
-    <div className="data-explorer-results">
+    <div className="data-explorer-results" data-testid="data-explorer-results">
       <FlexBox direction={FlexDirection.Column} style={flexContainerStyle}>
         <div className="data-explorer-results--header">
           <FlexBox>
@@ -398,6 +404,7 @@ const Results: FC = () => {
                   value="graph"
                   active={view.state === ViewStateType.Graph}
                   onClick={updateViewState}
+                  testID="data-explorer-results--graph-view"
                 >
                   Graph
                 </SelectGroup.Option>

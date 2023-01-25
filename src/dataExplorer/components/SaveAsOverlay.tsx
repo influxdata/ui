@@ -46,7 +46,7 @@ const SaveAsOverlay: FC = () => {
 
   let saveAsForm = <SaveAsCellForm dismiss={hide} />
 
-  if (saveAsOption === SaveAsOption.Task) {
+  if (shouldShowTasks && saveAsOption === SaveAsOption.Task) {
     saveAsForm = <SaveAsTaskForm dismiss={hide} />
   } else if (saveAsOption === SaveAsOption.Variable) {
     saveAsForm = <SaveAsVariable onHideOverlay={hide} />

@@ -92,6 +92,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 // Selectors
 import {getAll} from 'src/resources/selectors'
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
+import {selectShouldShowTasks} from 'src/tasks/selectors/tasksSelectors'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -100,6 +101,7 @@ const SetOrg: FC = () => {
     getAll<Organization>(state, ResourceType.Orgs)
   )
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
+  const shouldShowTasks = useSelector(selectShouldShowTasks)
 
   const history = useHistory()
   const {orgID} = useParams<{orgID: string}>()
@@ -140,14 +142,31 @@ const SetOrg: FC = () => {
           />
           <Route path={`${orgPath}/checks/:checkID`} component={CheckHistory} />
           {/* Tasks */}
-          <Route path={`${orgPath}/tasks/:id/runs`} component={TaskRunsPage} />
-          <Route path={`${orgPath}/tasks/:id/edit`} component={TaskEditPage} />
-          <Route path={`${orgPath}/tasks/new`} component={TaskPage} />
-          <Route
-            path={`${orgPath}/tasks/import`}
-            component={TaskImportOverlay}
-          />
-          <Route path={`${orgPath}/tasks`} component={TasksPage} />
+          {shouldShowTasks && (
+            <Route
+              path={`${orgPath}/tasks/:id/runs`}
+              component={TaskRunsPage}
+            />
+          )}
+          {shouldShowTasks && (
+            <Route
+              path={`${orgPath}/tasks/:id/edit`}
+              component={TaskEditPage}
+            />
+          )}
+          {shouldShowTasks && (
+            <Route path={`${orgPath}/tasks/new`} component={TaskPage} />
+          )}
+          {shouldShowTasks && (
+            <Route path={`${orgPath}/tasks`} component={TasksPage} />
+          )}
+          {shouldShowTasks && (
+            <Route
+              path={`${orgPath}/tasks/import`}
+              component={TaskImportOverlay}
+            />
+          )}
+
           {/* Data Explorer */}
           <Route
             path={`${orgPath}/data-explorer`}

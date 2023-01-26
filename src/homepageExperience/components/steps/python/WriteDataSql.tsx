@@ -252,7 +252,7 @@ print("Complete. Return to the InfluxDB UI.")
         </Table.Body>
         <Table.Footer />
       </Table>
-      <p style={{marginTop: '24px'}}>
+      <p>
         These concepts are important in building your time-series schema. Now,
         let's write this data into our bucket.
       </p>
@@ -262,16 +262,14 @@ print("Complete. Return to the InfluxDB UI.")
         onCopy={logCopyCodeSnippet}
         text={codeSnippet}
       />
-      <p style={{marginTop: '24px'}}>
+      <p>
         Once you write this data, you'll begin to see the confirmation below
       </p>
-      <div style={{marginBottom: '24px'}}>
-        <Panel backgroundColor={InfluxColors.Grey15}>
-          <Panel.Body>
-            <DataListening bucket={selectedBucket.name} />
-          </Panel.Body>
-        </Panel>
-      </div>
+      <Panel backgroundColor={InfluxColors.Grey15}>
+        <Panel.Body>
+          <DataListening bucket={selectedBucket.name} />
+        </Panel.Body>
+      </Panel>
     </>
   )
 }

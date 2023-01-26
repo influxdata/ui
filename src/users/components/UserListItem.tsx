@@ -64,6 +64,7 @@ export const UserListItem: FC<Props> = ({
             icon={IconFont.Trash_New}
             id={user.id}
             onClick={handleRemoveUser}
+            testID="delete-user"
             titleText="Remove member access"
           />
         )}

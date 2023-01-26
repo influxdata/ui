@@ -55,6 +55,7 @@ export const LeaveOrgButton: FC = () => {
           icon={IconFont.Logout}
           id={currentUserId}
           onClick={handleRemoveUser}
+          testID="delete-user"
           titleText="Remove member access"
         />
       </FlexBox.Child>

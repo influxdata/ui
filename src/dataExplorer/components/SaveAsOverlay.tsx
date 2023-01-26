@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState, useCallback} from 'react'
-import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import SaveAsCellForm from 'src/dataExplorer/components/SaveAsCellForm'
@@ -17,10 +17,12 @@ import {
 
 // Selectors
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
+import {selectShouldShowResource} from 'src/shared/selectors/app'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {PROJECT_NAME} from 'src/flows'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 enum SaveAsOption {
   Dashboard = 'dashboard',
@@ -32,6 +34,9 @@ enum SaveAsOption {
 const SaveAsOverlay: FC = () => {
   const history = useHistory()
   const [saveAsOption, setSaveAsOption] = useState(SaveAsOption.Dashboard)
+  const shouldShowResource = useSelector(selectShouldShowResource)
+  const shouldShowTasks = shouldShowResource && !isFlagEnabled('hideTasks')
+
   const hide = useCallback(() => {
     history.goBack()
   }, [history])
@@ -44,7 +49,7 @@ const SaveAsOverlay: FC = () => {
 
   let saveAsForm = <SaveAsCellForm dismiss={hide} />
 
-  if (saveAsOption === SaveAsOption.Task) {
+  if (shouldShowTasks && saveAsOption === SaveAsOption.Task) {
     saveAsForm = <SaveAsTaskForm dismiss={hide} />
   } else if (saveAsOption === SaveAsOption.Variable) {
     saveAsForm = <SaveAsVariable onHideOverlay={hide} />
@@ -70,13 +75,15 @@ const SaveAsOverlay: FC = () => {
                 onClick={() => setSaveAsOption(SaveAsOption.Dashboard)}
                 active={saveAsOption === SaveAsOption.Dashboard}
               />
-              <Tabs.Tab
-                id={SaveAsOption.Task}
-                text="Task"
-                testID="task--radio-button"
-                onClick={() => setSaveAsOption(SaveAsOption.Task)}
-                active={saveAsOption === SaveAsOption.Task}
-              />
+              {shouldShowTasks && (
+                <Tabs.Tab
+                  id={SaveAsOption.Task}
+                  text="Task"
+                  testID="task--radio-button"
+                  onClick={() => setSaveAsOption(SaveAsOption.Task)}
+                  active={saveAsOption === SaveAsOption.Task}
+                />
+              )}
               <Tabs.Tab
                 id={SaveAsOption.Variable}
                 text="Variable"

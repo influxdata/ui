@@ -8,6 +8,10 @@ import {
   FluxFunction,
 } from 'src/types'
 
+import {CLOUD, IOX_SWITCHOVER_CREATION_DATE} from 'src/shared/constants'
+
+import {selectOrgCreationDate, isOrgIOx} from 'src/organizations/selectors'
+
 export const timeZone = (state: AppState): TimeZone =>
   state.app.persisted.timeZone || ('Local' as TimeZone)
 
@@ -35,3 +39,22 @@ export const getAllFluxFunctions = (state: AppState): FluxFunction[] =>
 
 export const getSubscriptionsCertificateInterest = (state: AppState): boolean =>
   state.app.persisted.subscriptionsCertificateInterest || false
+
+export const selectShouldShowResource = (state: AppState): boolean => {
+  if (!CLOUD) {
+    return true
+  }
+
+  const orgCreationDate = new Date(selectOrgCreationDate(state)).valueOf()
+  const ioxCutoffDate = new Date(IOX_SWITCHOVER_CREATION_DATE).valueOf()
+  const isIOxEnabled = isOrgIOx(state)
+
+  const wasCreatedBeforeIOxCutoff = orgCreationDate < ioxCutoffDate
+
+  // In cloud, don't show resource if org is IOx enabled && org is created after iox cutoff date
+  if (!wasCreatedBeforeIOxCutoff && isIOxEnabled) {
+    return false
+  }
+
+  return true
+}

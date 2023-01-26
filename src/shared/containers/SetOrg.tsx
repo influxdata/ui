@@ -130,18 +130,27 @@ const SetOrg: FC = () => {
 
   const orgPath = '/orgs/:orgID'
   const shouldShowTasks = shouldShowResource && !isFlagEnabled('hideTasks')
-
+  const shouldShowAlerts = shouldShowResource && !isFlagEnabled('hideAlerts')
   return (
     <PageSpinner loading={loading}>
       <Suspense fallback={<PageSpinner />}>
         <Switch>
           {/* Alerting */}
-          <Route path={`${orgPath}/alerting`} component={AlertingIndex} />
-          <Route
-            path={`${orgPath}/alert-history`}
-            component={AlertHistoryIndex}
-          />
-          <Route path={`${orgPath}/checks/:checkID`} component={CheckHistory} />
+          {shouldShowAlerts && (
+            <Route path={`${orgPath}/alerting`} component={AlertingIndex} />
+          )}
+          {shouldShowAlerts && (
+            <Route
+              path={`${orgPath}/alert-history`}
+              component={AlertHistoryIndex}
+            />
+          )}
+          {shouldShowAlerts && (
+            <Route
+              path={`${orgPath}/checks/:checkID`}
+              component={CheckHistory}
+            />
+          )}
           {/* Tasks */}
           {shouldShowTasks && (
             <Route

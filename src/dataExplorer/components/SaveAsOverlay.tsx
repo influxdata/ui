@@ -1,6 +1,7 @@
 import React, {FC, useEffect, useState, useCallback} from 'react'
 import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import SaveAsCellForm from 'src/dataExplorer/components/SaveAsCellForm'
@@ -42,6 +43,7 @@ const SaveAsOverlay: FC = () => {
   }, [history])
 
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
+  const shouldShowDashboards = useSelector(selectShouldShowDashboards)
 
   useEffect(() => {
     event('Data Explorer Save as Menu Changed', {menu: saveAsOption})

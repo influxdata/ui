@@ -270,6 +270,7 @@ print("Complete. Return to the InfluxDB UI.")
           <DataListening bucket={selectedBucket.name} />
         </Panel.Body>
       </Panel>
+      <p>Once it says "Connection Found!" procede to the next step.</p>
     </>
   )
 }

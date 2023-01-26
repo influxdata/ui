@@ -11,9 +11,6 @@ import {selectCurrentOrg, selectUser} from 'src/identity/selectors'
 // Providers
 import {UsersContext} from 'src/users/context/users'
 
-// Constants
-import {CLOUD_URL} from 'src/shared/constants'
-
 // Overlay
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 

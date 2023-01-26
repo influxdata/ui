@@ -172,6 +172,7 @@ const generateNavItems = (
           link: `/orgs/${orgID}/alert-history`,
         },
       ],
+      enabled: () => shouldShowResource && !isFlagEnabled('hideAlerts'),
     },
     {
       id: 'settings',

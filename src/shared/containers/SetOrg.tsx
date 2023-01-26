@@ -159,13 +159,13 @@ const SetOrg: FC = () => {
             <Route path={`${orgPath}/tasks/new`} component={TaskPage} />
           )}
           {shouldShowTasks && (
-            <Route path={`${orgPath}/tasks`} component={TasksPage} />
-          )}
-          {shouldShowTasks && (
             <Route
               path={`${orgPath}/tasks/import`}
               component={TaskImportOverlay}
             />
+          )}
+          {shouldShowTasks && (
+            <Route path={`${orgPath}/tasks`} component={TasksPage} />
           )}
 
           {/* Data Explorer */}

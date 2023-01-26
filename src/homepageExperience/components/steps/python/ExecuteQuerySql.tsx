@@ -1,6 +1,10 @@
 import React from 'react'
+import {useSelector} from 'react-redux'
+
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
+
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.executeQuery.code.copied')
@@ -11,6 +15,9 @@ type OwnProps = {
 }
 
 export const ExecuteQuerySql = (props: OwnProps) => {
+  const {org: quartzOrg} = useSelector(selectCurrentIdentity)
+  const url = quartzOrg.clusterHost || window.location.origin
+
   const {bucket} = props
 
   const sqlSnippet = `SELECT *
@@ -18,21 +25,26 @@ FROM 'census'
 WHERE time >= now() - interval '1 hour'
 AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)`
 
-  const query = `query = """SELECT *
+  const query = `from flightsql import FlightSQLClient
+
+query = """SELECT *
 FROM 'census'
 WHERE time >= now() - interval '24 hours'
 AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)"""
 
-# Define the query api
-sql_client = client.sql_client(bucket="${bucket}")
+# Define the query client
+query_client = FlightSQLClient(
+  host = "${url.replace(/^https?:\/\//, '')}",
+  token = os.environ.get("INFLUXDB_TOKEN"),
+  metadata={"bucket-name": "${bucket}"})
 
 # Execute the query
-result = sql_client.query(query)
-result_data = result.read_all()
+info = query_client.execute(query)
+reader = query_client.do_get(info.endpoints[0].ticket)
 
-# Convert the result to a pandas dataframe
-df = result_data.to_pandas()
-df = df.sort_values(by="time")
+# Convert to dataframe
+data = reader.read_all()
+df = data.to_pandas().sort_values(by="time")
 print(df)
 `
 

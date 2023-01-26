@@ -52,7 +52,7 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
   const codeSnippet = `bucket="${bucket.name}"
 
 # Define the write api
-write_api = client.write_api(write_options=SYNCHRONOUS)
+write_api = write_client.write_api(write_options=SYNCHRONOUS)
 
 data = {
   "point1": {

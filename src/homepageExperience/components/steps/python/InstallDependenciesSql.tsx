@@ -20,24 +20,43 @@ export class InstallDependenciesSql extends PureComponent {
           installed, this will not work with older versions of Python.
         </p>
         <p>
-          Then, install the{' '}
-          <code className="homepage-wizard--code-highlight">
+          Install the{' '}
+          {' '}
+          <SafeBlankLink href="https://github.com/influxdata/influxdb-client-python">
             influxdb-client
-          </code>{' '}
-          module by running the command below in your terminal:
+          </SafeBlankLink>{' '}
+          module. You'll use this to write to InfluxDB. Run the command below in your terminal:
         </p>
         <CodeSnippet
-          text="pip3 install influxdb-client[sql]"
+          text="pip install influxdb-client"
           onCopy={this.logCopyCodeSnippet}
           language="properties"
         />
         <p>
-          This also comes with{' '}
+          Next, install the{' '}
+          {' '}
+          <SafeBlankLink href="https://github.com/influxdata/flightsql-dbapi">
+            flightsql-dbapi
+          </SafeBlankLink>.{' '}
+          This is used to Query InfluxDB with SQL.
+        </p>
+        <CodeSnippet
+          text="pip install flightsql-dbapi"
+          onCopy={this.logCopyCodeSnippet}
+          language="properties"
+        />
+        <p>
+          Lastly, let's install{' '}
           <SafeBlankLink href="https://pandas.pydata.org/">
             pandas
           </SafeBlankLink>{' '}
           which will be helpful for organizing our data output when we query.
         </p>
+        <CodeSnippet
+          text="pip install pandas"
+          onCopy={this.logCopyCodeSnippet}
+          language="properties"
+        />
       </>
     )
   }

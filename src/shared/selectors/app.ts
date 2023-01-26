@@ -10,7 +10,7 @@ import {
 
 import {CLOUD, IOX_SWITCHOVER_CREATION_DATE} from 'src/shared/constants'
 
-import {selectOrgCreationDate} from 'src/organizations/selectors'
+import {selectOrgCreationDate, isOrgIOx} from 'src/organizations/selectors'
 
 export const timeZone = (state: AppState): TimeZone =>
   state.app.persisted.timeZone || ('Local' as TimeZone)
@@ -47,11 +47,12 @@ export const selectShouldShowResource = (state: AppState): boolean => {
 
   const orgCreationDate = new Date(selectOrgCreationDate(state)).valueOf()
   const ioxCutoffDate = new Date(IOX_SWITCHOVER_CREATION_DATE).valueOf()
+  const isIOxEnabled = isOrgIOx(state)
 
   const wasCreatedBeforeIOxCutoff = orgCreationDate < ioxCutoffDate
 
-  // In cloud, don't show resource if org was created after the IOx cutoff date and feature flag is enabled
-  if (!wasCreatedBeforeIOxCutoff) {
+  // In cloud, don't show resource if org is IOx enabled && org is created after iox cutoff date
+  if (!wasCreatedBeforeIOxCutoff && isIOxEnabled) {
     return false
   }
 

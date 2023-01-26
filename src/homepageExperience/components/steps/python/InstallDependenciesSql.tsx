@@ -28,9 +28,9 @@ export class InstallDependenciesSql extends PureComponent {
           module. You'll use this to write to InfluxDB. Run the command below in your terminal:
         </p>
         <CodeSnippet
-          text="pip install influxdb-client"
-          onCopy={this.logCopyCodeSnippet}
           language="properties"
+          onCopy={this.logCopyCodeSnippet}
+          text="pip install influxdb-client"
         />
         <p>
           Next, install the{' '}
@@ -41,9 +41,9 @@ export class InstallDependenciesSql extends PureComponent {
           This is used to Query InfluxDB with SQL.
         </p>
         <CodeSnippet
-          text="pip install flightsql-dbapi"
-          onCopy={this.logCopyCodeSnippet}
           language="properties"
+          onCopy={this.logCopyCodeSnippet}
+          text="pip install flightsql-dbapi"
         />
         <p>
           Lastly, let's install{' '}
@@ -53,9 +53,9 @@ export class InstallDependenciesSql extends PureComponent {
           which will be helpful for organizing our data output when we query.
         </p>
         <CodeSnippet
-          text="pip install pandas"
-          onCopy={this.logCopyCodeSnippet}
           language="properties"
+          onCopy={this.logCopyCodeSnippet}
+          text="pip install pandas"
         />
       </>
     )

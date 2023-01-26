@@ -34,15 +34,15 @@ write_client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
       <p>
         Run this command in your terminal to open the interactive Python shell:
       </p>
-      <CodeSnippet text="python3" language="properties" />
+      <CodeSnippet language="properties" text="python3" />
       <p style={{marginTop: '40px'}}>
         Paste the following code after the prompt (&gt;&gt;&gt;) and press
         Enter.
       </p>
       <CodeSnippet
-        text={pythonCode}
-        onCopy={logCopyCodeSnippet}
         language="python"
+        onCopy={logCopyCodeSnippet}
+        text={pythonCode}
       />
       <p style={{marginTop: '42px'}}>
         Here, we initialize the token, organization info, and server url that

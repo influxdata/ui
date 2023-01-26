@@ -65,10 +65,10 @@ print(df)
         what our query looks like on its own:
       </p>
       <CodeSnippet
-        text={sqlSnippet}
-        showCopyControl={false}
-        onCopy={logCopyCodeSnippet}
         language="sql"
+        onCopy={logCopyCodeSnippet}
+        showCopyControl={false}
+        text={sqlSnippet}
       />
       <p>
         In this query, we are looking for data points within the last 1 hour
@@ -80,16 +80,16 @@ print(df)
         table.
       </p>
       <p>Run the following:</p>
-      <CodeSnippet text={query} onCopy={logCopyCodeSnippet} language="python" />
+      <CodeSnippet language="python" onCopy={logCopyCodeSnippet} text={query} />
       <p>
         The code snippet above should print out the data you wrote in previous
         steps. The result should resemble this:
       </p>
       <CodeSnippet
-        text={queryPreview}
-        showCopyControl={false}
-        onCopy={logCopyCodeSnippet}
         language="text"
+        onCopy={logCopyCodeSnippet}
+        showCopyControl={false}
+        text={queryPreview}
       />
     </>
   )

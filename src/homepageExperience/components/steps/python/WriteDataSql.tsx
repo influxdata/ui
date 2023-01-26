@@ -258,9 +258,9 @@ print("Complete. Return to the InfluxDB UI.")
       </p>
       <p>Run the following code in your Python shell:</p>
       <CodeSnippet
-        text={codeSnippet}
-        onCopy={logCopyCodeSnippet}
         language="python"
+        onCopy={logCopyCodeSnippet}
+        text={codeSnippet}
       />
       <p style={{marginTop: '24px'}}>
         Once you write this data, you'll begin to see the confirmation below

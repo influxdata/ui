@@ -15,10 +15,15 @@ import {
 // Utility
 import {currentContext} from 'src/shared/selectors/currentContext'
 import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {timesNeedConverting} from 'src/shared/utils/dateTimeUtils'
+import {CLOUD, IOX_SWITCHOVER_CREATION_DATE} from 'src/shared/constants'
+
+// Selectors
+import {selectOrgCreationDate} from 'src/organizations/selectors'
 
 export const getTimeRange = (state: AppState): TimeRange => {
   const contextID = currentContext(state)
@@ -101,3 +106,21 @@ export const hasNoDashboards = (state: AppState): boolean =>
 
 export const getCurrentDashboardId = (state: AppState): string =>
   state.currentDashboard.id
+
+export const selectShouldShowDashboards = (state: AppState): boolean => {
+  if (!CLOUD) {
+    return true
+  }
+
+  const orgCreationDate = new Date(selectOrgCreationDate(state)).valueOf()
+  const ioxCutoffDate = new Date(IOX_SWITCHOVER_CREATION_DATE).valueOf()
+
+  const wasCreatedBeforeIOxCutoff = orgCreationDate < ioxCutoffDate
+
+  // In cloud, don't show alerts if org was created after the IOx cutoff date and feature flag is enabled
+  if (!wasCreatedBeforeIOxCutoff && isFlagEnabled('hideDashboards')) {
+    return false
+  }
+
+  return true
+}

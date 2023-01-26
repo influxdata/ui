@@ -13,7 +13,7 @@ import {
 import {
   parse,
   format_from_js_file,
-} from 'src/languageSupport/languages/flux/parser'
+} from 'src/languageSupport/languages/flux/lspUtils'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 import {patchTask, TaskUpdateRequest} from 'src/client'
 

@@ -3,7 +3,7 @@ import {useDispatch} from 'react-redux'
 import {
   parse,
   format_from_js_file,
-} from 'src/languageSupport/languages/flux/parser'
+} from 'src/languageSupport/languages/flux/lspUtils'
 
 // Components
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'

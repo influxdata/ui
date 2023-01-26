@@ -3,7 +3,7 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {
   parse,
   format_from_js_file,
-} from 'src/languageSupport/languages/flux/parser'
+} from 'src/languageSupport/languages/flux/lspUtils'
 import {remove} from 'src/shared/contexts/query'
 
 export default register =>

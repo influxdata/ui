@@ -1,6 +1,6 @@
 import View from './view'
 import './style.scss'
-import {parse} from 'src/languageSupport/languages/flux/parser'
+import {parse} from 'src/languageSupport/languages/flux/lspUtils'
 import {parseQuery} from 'src/shared/contexts/query'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 

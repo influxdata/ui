@@ -5,7 +5,7 @@ import {FC, useEffect, useContext} from 'react'
 import {
   parse,
   format_from_js_file,
-} from 'src/languageSupport/languages/flux/parser'
+} from 'src/languageSupport/languages/flux/lspUtils'
 import {find} from 'src/shared/contexts/query'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 

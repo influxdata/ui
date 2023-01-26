@@ -33,7 +33,7 @@ import * as copy from 'src/shared/copy/notifications'
 import {
   parse,
   format_from_js_file,
-} from 'src/languageSupport/languages/flux/parser'
+} from 'src/languageSupport/languages/flux/lspUtils'
 
 // Types
 import {

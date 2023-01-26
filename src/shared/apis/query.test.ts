@@ -11,7 +11,7 @@ import {
 } from 'src/shared/utils/mocks/data'
 import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
 
-jest.mock('src/languageSupport/languages/flux/parser', () => {
+jest.mock('src/languageSupport/languages/flux/lspUtils', () => {
   return {
     parse: jest.fn(getMockedParse()),
   }

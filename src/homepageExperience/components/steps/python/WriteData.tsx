@@ -115,15 +115,13 @@ for value in range(5):
       <p style={{marginTop: '40px'}}>
         Once you write this data, you’ll begin to see the confirmation below
       </p>
-
-      <Panel
-        backgroundColor={InfluxColors.Grey15}
-        style={{marginBottom: '24px'}}
-      >
-        <Panel.Body>
-          <DataListening bucket={selectedBucket.name} />
-        </Panel.Body>
-      </Panel>
+      <div style={{marginBottom: '24px'}}>
+        <Panel backgroundColor={InfluxColors.Grey15}>
+          <Panel.Body>
+            <DataListening bucket={selectedBucket.name} />
+          </Panel.Body>
+        </Panel>
+      </div>
     </>
   )
 }

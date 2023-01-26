@@ -1,5 +1,6 @@
 import React, {FC, useEffect, useState, useCallback} from 'react'
 import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import SaveAsCellForm from 'src/dataExplorer/components/SaveAsCellForm'
@@ -14,6 +15,9 @@ import {
   Orientation,
 } from '@influxdata/clockface'
 
+// Selectors
+import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
+
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {PROJECT_NAME} from 'src/flows'
@@ -27,10 +31,12 @@ enum SaveAsOption {
 
 const SaveAsOverlay: FC = () => {
   const history = useHistory()
-  const [saveAsOption, setSaveAsOption] = useState(SaveAsOption.Notebook)
+  const [saveAsOption, setSaveAsOption] = useState(SaveAsOption.Dashboard)
   const hide = useCallback(() => {
     history.goBack()
   }, [history])
+
+  const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
 
   useEffect(() => {
     event('Data Explorer Save as Menu Changed', {menu: saveAsOption})
@@ -42,7 +48,7 @@ const SaveAsOverlay: FC = () => {
     saveAsForm = <SaveAsTaskForm dismiss={hide} />
   } else if (saveAsOption === SaveAsOption.Variable) {
     saveAsForm = <SaveAsVariable onHideOverlay={hide} />
-  } else if (saveAsOption === SaveAsOption.Notebook) {
+  } else if (shouldShowNotebooks && saveAsOption === SaveAsOption.Notebook) {
     saveAsForm = <SaveAsNotebookForm dismiss={hide} />
   }
 
@@ -57,13 +63,6 @@ const SaveAsOverlay: FC = () => {
         <Overlay.Body>
           <Tabs.Container orientation={Orientation.Horizontal}>
             <Tabs alignment={Alignment.Center} size={ComponentSize.Medium}>
-              <Tabs.Tab
-                id={SaveAsOption.Notebook}
-                text={`${PROJECT_NAME}`}
-                testID={`${PROJECT_NAME.toLowerCase()}--radio-button`}
-                onClick={() => setSaveAsOption(SaveAsOption.Notebook)}
-                active={saveAsOption === SaveAsOption.Notebook}
-              />
               <Tabs.Tab
                 id={SaveAsOption.Dashboard}
                 text="Dashboard Cell"
@@ -85,6 +84,15 @@ const SaveAsOverlay: FC = () => {
                 onClick={() => setSaveAsOption(SaveAsOption.Variable)}
                 active={saveAsOption === SaveAsOption.Variable}
               />
+              {shouldShowNotebooks && (
+                <Tabs.Tab
+                  id={SaveAsOption.Notebook}
+                  text={`${PROJECT_NAME}`}
+                  testID={`${PROJECT_NAME.toLowerCase()}--radio-button`}
+                  onClick={() => setSaveAsOption(SaveAsOption.Notebook)}
+                  active={saveAsOption === SaveAsOption.Notebook}
+                />
+              )}
             </Tabs>
             <Tabs.TabContents>{saveAsForm}</Tabs.TabContents>
           </Tabs.Container>

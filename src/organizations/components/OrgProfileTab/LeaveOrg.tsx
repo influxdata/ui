@@ -39,7 +39,6 @@ export const LeaveOrgButton: FC = () => {
     }
 
     dispatch(showOverlay('remove-member', params, () => dismissOverlay()))
-    window.location.href = CLOUD_URL
   }
 
   return (
@@ -56,6 +55,7 @@ export const LeaveOrgButton: FC = () => {
           id={currentUserId}
           onClick={handleRemoveUser}
           testID="delete-user"
+          text="Leave Organization"
           titleText="Remove member access"
         />
       </FlexBox.Child>

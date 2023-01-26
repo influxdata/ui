@@ -527,4 +527,61 @@ describe('Script Builder', () => {
       })
     })
   })
+
+  describe('saveAsScript', () => {
+    beforeEach(() => {
+      loginWithFlags({
+        schemaComposition: true,
+        newDataExplorer: true,
+        saveAsScript: true,
+      }).then(() => {
+        clearSession()
+        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
+      })
+    })
+
+    it('will not save an invalid flux query', () => {
+      cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
+          invalid query
+        `)
+      cy.getByTestID('script-query-builder--save-script')
+        .should('be.visible')
+        .click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('save-script-name__input')
+          .should('be.visible')
+          .type('foo')
+        cy.getByTestID('script-query-builder--save')
+          .should('be.visible')
+          .click()
+      })
+      cy.log('should notify user of an error')
+      cy.getByTestID('notification-error--dismiss').should('be.visible')
+      cy.log('modal will stay open')
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('script-query-builder--cancel').should('be.visible')
+      })
+    })
+
+    it('will save a valid flux query', () => {
+      cy.getByTestID('editor-sync--toggle').focus()
+      cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
+          from(bucket: "defbuck") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+        `)
+      cy.getByTestID('script-query-builder--save-script')
+        .should('be.visible')
+        .click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('save-script-name__input')
+          .should('be.visible')
+          .type('foo')
+        cy.getByTestID('script-query-builder--save')
+          .should('be.visible')
+          .click()
+      })
+      cy.log('should notify user of a success')
+      cy.getByTestID('notification-success--dismiss').should('be.visible')
+      cy.getByTestID('overlay--container').should('not.exist')
+    })
+  })
 })

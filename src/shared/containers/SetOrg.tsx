@@ -102,6 +102,7 @@ const SetOrg: FC = () => {
   )
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
   const shouldShowResource = useSelector(selectShouldShowResource)
+  const shouldShowDashboards = useSelector(selectShouldShowDashboards)
 
   const history = useHistory()
   const {orgID} = useParams<{orgID: string}>()
@@ -183,19 +184,25 @@ const SetOrg: FC = () => {
             component={DataExplorerPage}
           />
           {/* Dashboards */}
-          <Route
-            path={`${orgPath}/dashboards-list`}
-            component={DashboardsIndex}
-          />
-          <Route
-            path={`${orgPath}/dashboards/:dashboardID`}
-            component={DashboardContainer}
-          />
-          <Route
-            exact
-            path={`${orgPath}/dashboards`}
-            component={RouteToDashboardList}
-          />
+          {shouldShowDashboards && (
+            <Route
+              path={`${orgPath}/dashboards-list`}
+              component={DashboardsIndex}
+            />
+          )}
+          {shouldShowDashboards && (
+            <Route
+              path={`${orgPath}/dashboards/:dashboardID`}
+              component={DashboardContainer}
+            />
+          )}
+          {shouldShowDashboards && (
+            <Route
+              exact
+              path={`${orgPath}/dashboards`}
+              component={RouteToDashboardList}
+            />
+          )}
           {/* Notebooks  */}
           {shouldShowNotebooks && (
             <Route

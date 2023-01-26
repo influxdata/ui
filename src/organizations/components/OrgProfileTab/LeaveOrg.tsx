@@ -16,6 +16,8 @@ import {CLOUD_URL} from 'src/shared/constants'
 
 // Overlay
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+
+// Types
 import {RemoveMemberOverlayParams} from 'src/users/components/RemoveMemberOverlay'
 
 // Styles

@@ -14,6 +14,9 @@ import {
   Form,
   IconFont,
   Overlay,
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
 } from '@influxdata/clockface'
 
 // Contexts
@@ -27,9 +30,10 @@ import {selectUser} from 'src/identity/selectors'
 
 // Types
 import {User} from 'src/client/unityRoutes'
+import {UsersContextType} from 'src/users/context/users'
 
 export interface RemoveMemberOverlayParams {
-  removeUser: Function
+  removeUser: UsersContextType['removeUser']
   users: User[]
   userToRemove: User
 }
@@ -57,7 +61,9 @@ export const RemoveMemberOverlay: FC = () => {
     }
   }
 
-  const usersLoaded = Boolean(users.length)
+  const usersLoadedStatus = Boolean(users.length)
+    ? RemoteDataState.Done
+    : RemoteDataState.Loading
 
   return (
     <Overlay.Container
@@ -81,16 +87,19 @@ export const RemoveMemberOverlay: FC = () => {
           so that scripts are not interrupted.
         </Alert>
         <br />
-        <FlexBox
-          alignItems={AlignItems.FlexStart}
-          className="org-delete-overlay--conditions-instruction"
-          direction={FlexDirection.Row}
+        <SpinnerContainer
+          loading={usersLoadedStatus}
+          spinnerComponent={<TechnoSpinner />}
         >
-          <Form.Element
-            label={`Transfer ${userToRemove.email}'s tasks and alerts to:`}
-            required={true}
+          <FlexBox
+            alignItems={AlignItems.FlexStart}
+            className="remove-member-overlay--form"
+            direction={FlexDirection.Row}
           >
-            {usersLoaded && (
+            <Form.Element
+              label={`Transfer ${userToRemove.email}'s tasks and alerts to:`}
+              required={true}
+            >
               <Dropdown
                 testID="remove-member--transfer-dropdown"
                 button={(active, onClick) => (
@@ -114,22 +123,22 @@ export const RemoveMemberOverlay: FC = () => {
                   </Dropdown.Menu>
                 )}
               />
-            )}
-          </Form.Element>
-        </FlexBox>
+            </Form.Element>
+          </FlexBox>
+        </SpinnerContainer>
       </Overlay.Body>
       <Overlay.Footer>
         <Button
           color={ComponentColor.Default}
           onClick={onClose}
-          testID="remove-member-form-cancel"
+          testID="remove-member-form--cancel"
           text="Cancel"
         />
         <Button
           color={ComponentColor.Danger}
           onClick={handleRemoveAndTransfer}
           status={ComponentStatus.Default}
-          testID="remove-member-form-submit"
+          testID="remove-member-form--submit"
           text="Remove and Transfer"
         />
       </Overlay.Footer>

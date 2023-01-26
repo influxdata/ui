@@ -15,7 +15,7 @@ import {
 import {CloudUser} from 'src/types'
 
 interface Props {
-  handleRemoveUser: any
+  handleRemoveUser: (evt: React.MouseEvent<HTMLElement, MouseEvent>) => void
   isDeletable: boolean
   user: CloudUser
 }

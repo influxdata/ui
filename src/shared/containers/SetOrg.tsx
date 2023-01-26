@@ -102,7 +102,6 @@ const SetOrg: FC = () => {
   )
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
   const shouldShowResource = useSelector(selectShouldShowResource)
-   
 
   const history = useHistory()
   const {orgID} = useParams<{orgID: string}>()

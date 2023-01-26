@@ -16,8 +16,8 @@ const {getScript, patchScript, postScript} = CLOUD
       postScript: false,
     }
 
-export default function script(register) {
-  register({
+export default () => {
+  return {
     type: ResourceType.Scripts,
     editor,
     init: id => {
@@ -104,5 +104,5 @@ export default function script(register) {
         }
       })
     },
-  })
+  }
 }

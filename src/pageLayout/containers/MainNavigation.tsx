@@ -26,7 +26,7 @@ import {
   selectOperatorRole,
 } from 'src/identity/selectors'
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
-import {selectShouldShowTasks} from 'src/tasks/selectors/tasksSelectors'
+import {selectShouldShowResource} from 'src/shared/selectors/app'
 
 // Types
 import {IdentityUser} from 'src/client/unityRoutes'
@@ -61,7 +61,7 @@ const generateNavItems = (
   orgID: string,
   operatorRole: IdentityUser['operatorRole'],
   shouldShowNotebooks: boolean,
-  shouldShowTasks: boolean
+  shouldShowResource: boolean
 ): NavItem[] => {
   const navItems: NavItem[] = [
     {
@@ -149,7 +149,7 @@ const generateNavItems = (
       label: 'Tasks',
       link: `/orgs/${orgID}/tasks`,
       activeKeywords: ['tasks'],
-      enabled: () => shouldShowTasks,
+      enabled: () => shouldShowResource && !isFlagEnabled('hideTasks'),
     },
     {
       id: 'alerting',
@@ -242,7 +242,7 @@ export const MainNavigation: FC = () => {
   const accountType = useSelector(selectCurrentAccountType)
   const operatorRole = useSelector(selectOperatorRole)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowTasks = useSelector(selectShouldShowTasks)
+  const shouldShowResource = useSelector(selectShouldShowResource)
 
   const dispatch = useDispatch()
 
@@ -304,7 +304,7 @@ export const MainNavigation: FC = () => {
         org.id,
         operatorRole,
         shouldShowNotebooks,
-        shouldShowTasks
+        shouldShowResource
       ).map((item: NavItem) => {
         const linkElement = (className: string): JSX.Element => (
           <Link

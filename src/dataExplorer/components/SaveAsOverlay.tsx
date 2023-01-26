@@ -17,10 +17,12 @@ import {
 
 // Selectors
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
+import {selectShouldShowResource} from 'src/shared/selectors/app'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {PROJECT_NAME} from 'src/flows'
+import { isFlagEnabled } from 'src/shared/utils/featureFlag'
 
 enum SaveAsOption {
   Dashboard = 'dashboard',
@@ -32,7 +34,8 @@ enum SaveAsOption {
 const SaveAsOverlay: FC = () => {
   const history = useHistory()
   const [saveAsOption, setSaveAsOption] = useState(SaveAsOption.Dashboard)
-  const shouldShowTasks = useSelector(selectShouldShowTasks)
+  const shouldShowResource = useSelector(selectShouldShowResource)
+  const shouldShowTasks = shouldShowResource && !isFlagEnabled('hideTasks')
 
   const hide = useCallback(() => {
     history.goBack()

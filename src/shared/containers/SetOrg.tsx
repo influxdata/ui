@@ -92,7 +92,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 // Selectors
 import {getAll} from 'src/resources/selectors'
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
-import {selectShouldShowTasks} from 'src/tasks/selectors/tasksSelectors'
+import {selectShouldShowResource} from 'src/shared/selectors/app'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -101,7 +101,7 @@ const SetOrg: FC = () => {
     getAll<Organization>(state, ResourceType.Orgs)
   )
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowTasks = useSelector(selectShouldShowTasks)
+  const shouldShowResource = useSelector(selectShouldShowResource)
 
   const history = useHistory()
   const {orgID} = useParams<{orgID: string}>()
@@ -129,6 +129,7 @@ const SetOrg: FC = () => {
   }, [orgID, firstOrgID, foundOrg, dispatch, history, orgs.length])
 
   const orgPath = '/orgs/:orgID'
+  const shouldShowTasks = shouldShowResource && !isFlagEnabled('hideTasks')
 
   return (
     <PageSpinner loading={loading}>

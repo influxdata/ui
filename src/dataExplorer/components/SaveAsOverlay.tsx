@@ -22,7 +22,7 @@ import {selectShouldShowResource} from 'src/shared/selectors/app'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {PROJECT_NAME} from 'src/flows'
-import { isFlagEnabled } from 'src/shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 enum SaveAsOption {
   Dashboard = 'dashboard',

@@ -133,6 +133,8 @@ const SetOrg: FC = () => {
   const shouldShowAlerts = shouldShowResource && !isFlagEnabled('hideAlerts')
   const shouldShowDashboards =
     shouldShowResource && !isFlagEnabled('hideDashboards')
+  const shouldShowTemplates =
+    shouldShowResource && !isFlagEnabled('hideTemplates')
 
   return (
     <PageSpinner loading={loading}>
@@ -289,10 +291,12 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${SETTINGS}/${VARIABLES}`}
             component={VariablesIndex}
           />
-          <Route
-            path={`${orgPath}/${SETTINGS}/${TEMPLATES}`}
-            component={CommunityTemplatesIndex}
-          />
+          {shouldShowTemplates && (
+            <Route
+              path={`${orgPath}/${SETTINGS}/${TEMPLATES}`}
+              component={CommunityTemplatesIndex}
+            />
+          )}
           <Route
             exact
             path={`${orgPath}/${SETTINGS}/${LABELS}`}

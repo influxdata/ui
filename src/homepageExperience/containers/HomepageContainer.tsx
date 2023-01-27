@@ -288,27 +288,13 @@ export const HomepageContainer: FC = () => {
                   </Link>
                 </FlexBox>
               </Grid.Column>
-              <Grid.Column
-                widthSM={Columns.Four}
-                widthMD={Columns.Three}
-                style={{marginTop: '-8px'}}
-              >
+              <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>
                 {CLOUD ? (
                   <UsageProvider>
-                    <Resources
-                      style={{
-                        backgroundColor: InfluxColors.Grey5,
-                        paddingRight: 0,
-                      }}
-                    />
+                    <Resources />
                   </UsageProvider>
                 ) : (
-                  <Resources
-                    style={{
-                      backgroundColor: InfluxColors.Grey5,
-                      paddingRight: 0,
-                    }}
-                  />
+                  <Resources />
                 )}
               </Grid.Column>
             </Grid.Row>

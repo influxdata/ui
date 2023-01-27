@@ -174,7 +174,7 @@ class AddResourceDropdown extends PureComponent<Props> {
 const mstp = (state: AppState) => {
   return {
     shouldShowTemplates:
-      !selectIsNewIOxOrg(state) || !isFlagEnabled('hideTemplates'),
+      !selectIsNewIOxOrg(state) || isFlagEnabled('showTemplatesInNewIOx'),
   }
 }
 

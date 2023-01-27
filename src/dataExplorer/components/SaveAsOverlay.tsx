@@ -35,9 +35,9 @@ const SaveAsOverlay: FC = () => {
   const history = useHistory()
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowDashboards = !isNewIOxOrg || !isFlagEnabled('hideDashboards')
-  const shouldShowTasks = !isNewIOxOrg || !isFlagEnabled('hideTasks')
-  const shouldShowVariables = !isNewIOxOrg || !isFlagEnabled('hideVariables')
+  const shouldShowDashboards = !isNewIOxOrg || isFlagEnabled('showDashboardsInNewIOx')
+  const shouldShowTasks = !isNewIOxOrg || isFlagEnabled('showTasksInNewIOx')
+  const shouldShowVariables = !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx')
 
   const getActiveTab = (): SaveAsOption => {
     if (shouldShowDashboards) {

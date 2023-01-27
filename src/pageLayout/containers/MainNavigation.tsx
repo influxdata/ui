@@ -141,7 +141,7 @@ const generateNavItems = (
       shortLabel: 'Boards',
       link: `/orgs/${orgID}/dashboards-list`,
       activeKeywords: ['dashboards', 'dashboards-list'],
-      enabled: () => !isNewIOxOrg || !isFlagEnabled('hideDashboards'),
+      enabled: () => !isNewIOxOrg || isFlagEnabled('showDashboardsInNewIOx'),
     },
     {
       id: 'tasks',
@@ -150,7 +150,7 @@ const generateNavItems = (
       label: 'Tasks',
       link: `/orgs/${orgID}/tasks`,
       activeKeywords: ['tasks'],
-      enabled: () => !isNewIOxOrg || !isFlagEnabled('hideTasks'),
+      enabled: () => !isNewIOxOrg || isFlagEnabled('showTasksInNewIOx'),
     },
     {
       id: 'alerting',
@@ -173,7 +173,7 @@ const generateNavItems = (
           link: `/orgs/${orgID}/alert-history`,
         },
       ],
-      enabled: () => !isNewIOxOrg || !isFlagEnabled('hideAlerts'),
+      enabled: () => !isNewIOxOrg || isFlagEnabled('showAlertsInNewIOx'),
     },
     {
       id: 'settings',
@@ -188,14 +188,14 @@ const generateNavItems = (
           testID: 'nav-subitem-variables',
           label: 'Variables',
           link: `/orgs/${orgID}/settings/variables`,
-          enabled: () => !isNewIOxOrg || !isFlagEnabled('hideVariables'),
+          enabled: () => !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx'),
         },
         {
           id: 'templates',
           testID: 'nav-subitem-templates',
           label: 'Templates',
           link: `/orgs/${orgID}/settings/templates`,
-          enabled: () => !isNewIOxOrg || !isFlagEnabled('hideTemplates'),
+          enabled: () => !isNewIOxOrg || isFlagEnabled('showTemplatesInNewIOx'),
         },
         {
           id: 'labels',

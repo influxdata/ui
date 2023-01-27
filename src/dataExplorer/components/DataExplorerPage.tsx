@@ -28,6 +28,7 @@ import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 
 // Selectors
 import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
+import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -116,14 +117,14 @@ const DataExplorerPage: FC = () => {
   const showNewExplorer = scriptQueryBuilder && isFlagEnabled('newDataExplorer')
   const history = useHistory()
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
+  const showNotebooks = useSelector(selectShouldShowNotebooks)
 
-  const allIOxDeprecateFlagsEnabled =
-    isFlagEnabled('hideTasks') &&
-    isFlagEnabled('hideDashboards') &&
-    isFlagEnabled('hideVariables') &&
-    isFlagEnabled('hideNotebooks')
-
-  const showSaveAsButton = !isNewIOxOrg || !allIOxDeprecateFlagsEnabled
+  const showSaveAsButton =
+    !isNewIOxOrg ||
+    showNotebooks ||
+    isFlagEnabled('showTasksInNewIOx') ||
+    isFlagEnabled('showDashboardsInNewIOx') ||
+    isFlagEnabled('showVariablesInNewIOx')
 
   const hideFlowsCTA = () => {
     setFlowsCTA({explorer: false})

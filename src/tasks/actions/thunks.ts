@@ -33,6 +33,7 @@ import * as copy from 'src/shared/copy/notifications'
 import {
   parse,
   format_from_js_file,
+  isValidFlux,
 } from 'src/languageSupport/languages/flux/lspUtils'
 
 // Types
@@ -277,6 +278,9 @@ export const updateTask =
   async (dispatch: Dispatch<Action>) => {
     try {
       const fluxScript = await insertPreambleInScript(script, preamble)
+      if (!isValidFlux(fluxScript)) {
+        throw new Error('Invalid flux script. Please check your query text.')
+      }
       const resp = await api.patchTask({
         taskID: task.id,
         data: {...task, offset: '0s', every: interval, flux: fluxScript},
@@ -399,6 +403,9 @@ export const cloneTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
     })
 
     const fluxWithNewName = format_from_js_file(ast)
+    if (!isValidFlux(fluxWithNewName)) {
+      throw new Error('Invalid flux script. Please check your query text.')
+    }
 
     const newTaskResponse = await api.postTask({
       data: {
@@ -534,6 +541,10 @@ export const updateScript =
         },
       } = state.resources
 
+      if (!isValidFlux(script)) {
+        throw new Error('Invalid flux script. Please check your query text.')
+      }
+
       const updatedTask: Partial<Task> & {
         name: string
         flux: string
@@ -579,6 +590,9 @@ export const saveNewScript =
   async (dispatch: Dispatch<Action>, getState: GetState): Promise<void> => {
     try {
       const fluxScript = await insertPreambleInScript(script, preamble)
+      if (!isValidFlux(fluxScript)) {
+        throw new Error('Invalid flux script. Please check your query text.')
+      }
       const org = getOrg(getState())
       const resp = await api.postTask({data: {orgID: org.id, flux: fluxScript}})
       if (resp.status !== 201) {

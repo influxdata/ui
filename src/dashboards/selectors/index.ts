@@ -106,21 +106,3 @@ export const hasNoDashboards = (state: AppState): boolean =>
 
 export const getCurrentDashboardId = (state: AppState): string =>
   state.currentDashboard.id
-
-export const selectShouldShowDashboards = (state: AppState): boolean => {
-  if (!CLOUD) {
-    return true
-  }
-
-  const orgCreationDate = new Date(selectOrgCreationDate(state)).valueOf()
-  const ioxCutoffDate = new Date(IOX_SWITCHOVER_CREATION_DATE).valueOf()
-
-  const wasCreatedBeforeIOxCutoff = orgCreationDate < ioxCutoffDate
-
-  // In cloud, don't show alerts if org was created after the IOx cutoff date and feature flag is enabled
-  if (!wasCreatedBeforeIOxCutoff && isFlagEnabled('hideDashboards')) {
-    return false
-  }
-
-  return true
-}

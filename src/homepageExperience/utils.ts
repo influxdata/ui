@@ -6,19 +6,19 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
     glyph: IconFont.BookOutline,
   },
   {
-    name: 'Install\n Dependencies',
+    name: 'Install Dependencies',
     glyph: IconFont.Install,
   },
   {
-    name: 'Tokens',
+    name: 'Get Token',
     glyph: IconFont.CopperCoin,
   },
   {
-    name: 'Initialize\n Client',
+    name: 'Initialize Client',
     glyph: IconFont.CogSolid_New,
   },
   {
-    name: 'Write\n Data',
+    name: 'Write Data',
     glyph: IconFont.Pencil,
   },
   {
@@ -35,29 +35,60 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
   },
 ]
 
+export const HOMEPAGE_NAVIGATION_STEPS_SQL = [
+  {
+    name: 'Overview',
+    glyph: IconFont.BookOutline,
+  },
+  {
+    name: 'Install Dependencies',
+    glyph: IconFont.Install,
+  },
+  {
+    name: 'Get Token',
+    glyph: IconFont.CopperCoin,
+  },
+  {
+    name: 'Initialize Client',
+    glyph: IconFont.CogSolid_New,
+  },
+  {
+    name: 'Write Data',
+    glyph: IconFont.Pencil,
+  },
+  {
+    name: 'Query Data',
+    glyph: IconFont.Play,
+  },
+  {
+    name: 'Finish',
+    glyph: IconFont.StarSmile,
+  },
+]
+
 export const HOMEPAGE_NAVIGATION_STEPS_SHORT = [
   {
     name: 'Overview',
     glyph: IconFont.BookOutline,
   },
   {
-    name: 'Install\n Dependencies',
+    name: 'Install Dependencies',
     glyph: IconFont.Install,
   },
   {
-    name: 'Initialize\n Client',
+    name: 'Initialize Client',
     glyph: IconFont.CogSolid_New,
   },
   {
-    name: 'Write\n Data',
+    name: 'Write Data',
     glyph: IconFont.Pencil,
   },
   {
-    name: 'Execute\n Flux Query',
+    name: 'Execute a\n Flux Query',
     glyph: IconFont.Play,
   },
   {
-    name: 'Execute\n Aggregate',
+    name: 'Execute an\n Aggregate Query',
     glyph: IconFont.Play,
   },
   {
@@ -76,23 +107,23 @@ export const HOMEPAGE_NAVIGATION_STEPS_ARDUINO = [
     glyph: IconFont.Braces,
   },
   {
-    name: 'Install\n Dependencies',
+    name: 'Install Dependencies',
     glyph: IconFont.Install,
   },
   {
-    name: 'Initialize\n Client',
+    name: 'Initialize Client',
     glyph: IconFont.CogSolid_New,
   },
   {
-    name: 'Write\n Data',
+    name: 'Write Data',
     glyph: IconFont.Pencil,
   },
   {
-    name: 'Execute\n Flux Query',
+    name: 'Execute a\n Flux Query',
     glyph: IconFont.Play,
   },
   {
-    name: 'Execute\n Aggregate',
+    name: 'Execute an\n Aggregate Query',
     glyph: IconFont.Play,
   },
   {

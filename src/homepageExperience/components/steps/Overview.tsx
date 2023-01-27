@@ -30,11 +30,11 @@ export const Overview: FC<Props> = ({wizard}) => {
       <h1>Hello, Time-Series World!</h1>
       <article>
         <p>Welcome and thanks for checking out InfluxData!</p>
-
         <p>
           In the next 5 minutes, you will set up InfluxData on your machine and
           write and execute some basic queries.
         </p>
+        <p>New to time-series data? Here's a brief video introduction:</p>
         <iframe
           ref={videoFrame}
           width="560"

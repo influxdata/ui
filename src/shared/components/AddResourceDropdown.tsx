@@ -15,7 +15,7 @@ import {
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Selectors
-import {selectShouldShowResource} from 'src/shared/selectors/app'
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -174,7 +174,7 @@ class AddResourceDropdown extends PureComponent<Props> {
 const mstp = (state: AppState) => {
   return {
     shouldShowTemplates:
-      selectShouldShowResource(state) && !isFlagEnabled('hideTemplates'),
+    !selectIsNewIOxOrg(state) || !isFlagEnabled('hideTemplates'),
   }
 }
 

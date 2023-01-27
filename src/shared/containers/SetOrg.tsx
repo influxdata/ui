@@ -102,7 +102,6 @@ const SetOrg: FC = () => {
   )
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
   const shouldShowResource = useSelector(selectShouldShowResource)
-  const shouldShowDashboards = useSelector(selectShouldShowDashboards)
 
   const history = useHistory()
   const {orgID} = useParams<{orgID: string}>()
@@ -132,6 +131,9 @@ const SetOrg: FC = () => {
   const orgPath = '/orgs/:orgID'
   const shouldShowTasks = shouldShowResource && !isFlagEnabled('hideTasks')
   const shouldShowAlerts = shouldShowResource && !isFlagEnabled('hideAlerts')
+  const shouldShowDashboards =
+    shouldShowResource && !isFlagEnabled('hideDashboards')
+
   return (
     <PageSpinner loading={loading}>
       <Suspense fallback={<PageSpinner />}>

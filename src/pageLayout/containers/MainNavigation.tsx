@@ -141,7 +141,7 @@ const generateNavItems = (
       shortLabel: 'Boards',
       link: `/orgs/${orgID}/dashboards-list`,
       activeKeywords: ['dashboards', 'dashboards-list'],
-      enabled: () => shouldShowDashboards,
+      enabled: () => shouldShowResource && !isFlagEnabled('hideDashboards'),
     },
     {
       id: 'tasks',
@@ -245,7 +245,6 @@ export const MainNavigation: FC = () => {
   const operatorRole = useSelector(selectOperatorRole)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
   const shouldShowResource = useSelector(selectShouldShowResource)
-  const shouldShowDashboards = useSelector(selectShouldShowDashboards)
 
   const dispatch = useDispatch()
 

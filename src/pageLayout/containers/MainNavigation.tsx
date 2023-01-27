@@ -26,7 +26,7 @@ import {
   selectOperatorRole,
 } from 'src/identity/selectors'
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
-import {selectShouldShowResource} from 'src/shared/selectors/app'
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
 
 // Types
 import {IdentityUser} from 'src/client/unityRoutes'
@@ -61,7 +61,7 @@ const generateNavItems = (
   orgID: string,
   operatorRole: IdentityUser['operatorRole'],
   shouldShowNotebooks: boolean,
-  shouldShowResource: boolean
+  isNewIOxOrg: boolean
 ): NavItem[] => {
   const navItems: NavItem[] = [
     {
@@ -141,7 +141,7 @@ const generateNavItems = (
       shortLabel: 'Boards',
       link: `/orgs/${orgID}/dashboards-list`,
       activeKeywords: ['dashboards', 'dashboards-list'],
-      enabled: () => shouldShowResource && !isFlagEnabled('hideDashboards'),
+      enabled: () => !isNewIOxOrg || !isFlagEnabled('hideDashboards'),
     },
     {
       id: 'tasks',
@@ -150,7 +150,7 @@ const generateNavItems = (
       label: 'Tasks',
       link: `/orgs/${orgID}/tasks`,
       activeKeywords: ['tasks'],
-      enabled: () => shouldShowResource && !isFlagEnabled('hideTasks'),
+      enabled: () => !isNewIOxOrg || !isFlagEnabled('hideTasks'),
     },
     {
       id: 'alerting',
@@ -173,7 +173,7 @@ const generateNavItems = (
           link: `/orgs/${orgID}/alert-history`,
         },
       ],
-      enabled: () => shouldShowResource && !isFlagEnabled('hideAlerts'),
+      enabled: () => !isNewIOxOrg || !isFlagEnabled('hideAlerts'),
     },
     {
       id: 'settings',
@@ -188,13 +188,14 @@ const generateNavItems = (
           testID: 'nav-subitem-variables',
           label: 'Variables',
           link: `/orgs/${orgID}/settings/variables`,
+          enabled: () => !isNewIOxOrg || !isFlagEnabled('hideVariables'),
         },
         {
           id: 'templates',
           testID: 'nav-subitem-templates',
           label: 'Templates',
           link: `/orgs/${orgID}/settings/templates`,
-          enabled: () => shouldShowResource && !isFlagEnabled('hideTemplates'),
+          enabled: () => !isNewIOxOrg || !isFlagEnabled('hideTemplates')
         },
         {
           id: 'labels',
@@ -245,7 +246,7 @@ export const MainNavigation: FC = () => {
   const accountType = useSelector(selectCurrentAccountType)
   const operatorRole = useSelector(selectOperatorRole)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowResource = useSelector(selectShouldShowResource)
+  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
 
   const dispatch = useDispatch()
 
@@ -307,7 +308,7 @@ export const MainNavigation: FC = () => {
         org.id,
         operatorRole,
         shouldShowNotebooks,
-        shouldShowResource
+        isNewIOxOrg
       ).map((item: NavItem) => {
         const linkElement = (className: string): JSX.Element => (
           <Link

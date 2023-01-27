@@ -15,15 +15,10 @@ import {
 // Utility
 import {currentContext} from 'src/shared/selectors/currentContext'
 import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {timesNeedConverting} from 'src/shared/utils/dateTimeUtils'
-import {CLOUD, IOX_SWITCHOVER_CREATION_DATE} from 'src/shared/constants'
-
-// Selectors
-import {selectOrgCreationDate} from 'src/organizations/selectors'
 
 export const getTimeRange = (state: AppState): TimeRange => {
   const contextID = currentContext(state)

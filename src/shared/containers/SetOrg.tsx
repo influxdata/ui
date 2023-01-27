@@ -131,6 +131,9 @@ const SetOrg: FC = () => {
   const orgPath = '/orgs/:orgID'
   const shouldShowTasks = shouldShowResource && !isFlagEnabled('hideTasks')
   const shouldShowAlerts = shouldShowResource && !isFlagEnabled('hideAlerts')
+  const shouldShowDashboards =
+    shouldShowResource && !isFlagEnabled('hideDashboards')
+
   return (
     <PageSpinner loading={loading}>
       <Suspense fallback={<PageSpinner />}>
@@ -183,19 +186,25 @@ const SetOrg: FC = () => {
             component={DataExplorerPage}
           />
           {/* Dashboards */}
-          <Route
-            path={`${orgPath}/dashboards-list`}
-            component={DashboardsIndex}
-          />
-          <Route
-            path={`${orgPath}/dashboards/:dashboardID`}
-            component={DashboardContainer}
-          />
-          <Route
-            exact
-            path={`${orgPath}/dashboards`}
-            component={RouteToDashboardList}
-          />
+          {shouldShowDashboards && (
+            <Route
+              path={`${orgPath}/dashboards-list`}
+              component={DashboardsIndex}
+            />
+          )}
+          {shouldShowDashboards && (
+            <Route
+              path={`${orgPath}/dashboards/:dashboardID`}
+              component={DashboardContainer}
+            />
+          )}
+          {shouldShowDashboards && (
+            <Route
+              exact
+              path={`${orgPath}/dashboards`}
+              component={RouteToDashboardList}
+            />
+          )}
           {/* Notebooks  */}
           {shouldShowNotebooks && (
             <Route

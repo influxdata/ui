@@ -141,6 +141,7 @@ const generateNavItems = (
       shortLabel: 'Boards',
       link: `/orgs/${orgID}/dashboards-list`,
       activeKeywords: ['dashboards', 'dashboards-list'],
+      enabled: () => shouldShowResource && !isFlagEnabled('hideDashboards'),
     },
     {
       id: 'tasks',

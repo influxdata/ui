@@ -118,11 +118,11 @@ const DataExplorerPage: FC = () => {
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
 
   const allIOxDeprecateFlags =
-  isFlagEnabled('hideTasks') &&
-  isFlagEnabled('hideDashboards') &&
-  isFlagEnabled('hideVariables') &&
-  isFlagEnabled('hideNotebooks')
-  
+    isFlagEnabled('hideTasks') &&
+    isFlagEnabled('hideDashboards') &&
+    isFlagEnabled('hideVariables') &&
+    isFlagEnabled('hideNotebooks')
+
   // show SaveAsButton if org is not new iox org or all iox deprecation feature flags are enabled
   const showSaveAsButton = !isNewIOxOrg || !allIOxDeprecateFlags
 

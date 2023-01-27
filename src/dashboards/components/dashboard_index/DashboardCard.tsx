@@ -249,7 +249,7 @@ const mdtp = {
 const mstp = (state: AppState, props: OwnProps) => {
   const dashboard = state.resources.dashboards.byID[props.id]
   const shouldShowTemplates =
-  !selectIsNewIOxOrg(state) || !isFlagEnabled('hideTemplates')
+    !selectIsNewIOxOrg(state) || !isFlagEnabled('hideTemplates')
 
   return {
     dashboard,

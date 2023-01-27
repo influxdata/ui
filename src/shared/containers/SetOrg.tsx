@@ -131,10 +131,8 @@ const SetOrg: FC = () => {
   const orgPath = '/orgs/:orgID'
   const shouldShowTasks = !isNewIOxOrg || !isFlagEnabled('hideTasks')
   const shouldShowAlerts = !isNewIOxOrg || !isFlagEnabled('hideAlerts')
-  const shouldShowDashboards =
-    !isNewIOxOrg || !isFlagEnabled('hideDashboards')
-  const shouldShowTemplates =
-    !isNewIOxOrg || !isFlagEnabled('hideTemplates')
+  const shouldShowDashboards = !isNewIOxOrg || !isFlagEnabled('hideDashboards')
+  const shouldShowTemplates = !isNewIOxOrg || !isFlagEnabled('hideTemplates')
   const shouldShowVariables = !isNewIOxOrg || !isFlagEnabled('hideVariables')
 
   return (
@@ -289,10 +287,10 @@ const SetOrg: FC = () => {
           )}
           {/* Settings */}
           {shouldShowVariables && (
-          <Route
-            path={`${orgPath}/${SETTINGS}/${VARIABLES}`}
-            component={VariablesIndex}
-          />
+            <Route
+              path={`${orgPath}/${SETTINGS}/${VARIABLES}`}
+              component={VariablesIndex}
+            />
           )}
           {shouldShowTemplates && (
             <Route

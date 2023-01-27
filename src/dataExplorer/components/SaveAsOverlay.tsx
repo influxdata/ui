@@ -35,18 +35,16 @@ const SaveAsOverlay: FC = () => {
   const history = useHistory()
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowDashboards =
-    !isNewIOxOrg || !isFlagEnabled('hideDashboards')
+  const shouldShowDashboards = !isNewIOxOrg || !isFlagEnabled('hideDashboards')
   const shouldShowTasks = !isNewIOxOrg || !isFlagEnabled('hideTasks')
-  const shouldShowVariables =
-    !isNewIOxOrg || !isFlagEnabled('hideVariables')
+  const shouldShowVariables = !isNewIOxOrg || !isFlagEnabled('hideVariables')
 
   const getActiveTab = (): SaveAsOption => {
-    if(shouldShowDashboards) {
+    if (shouldShowDashboards) {
       return SaveAsOption.Dashboard
-    } else if(shouldShowVariables) {
+    } else if (shouldShowVariables) {
       return SaveAsOption.Variable
-    } else if(shouldShowTasks) {
+    } else if (shouldShowTasks) {
       return SaveAsOption.Task
     } else {
       return SaveAsOption.Notebook
@@ -80,7 +78,7 @@ const SaveAsOverlay: FC = () => {
     saveAsForm = <SaveAsVariable onHideOverlay={hide} />
   } else if (shouldShowNotebooks && saveAsOption === SaveAsOption.Notebook) {
     saveAsForm = <SaveAsNotebookForm dismiss={hide} />
-  } 
+  }
 
   return (
     <Overlay visible={true}>

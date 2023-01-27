@@ -194,6 +194,7 @@ const generateNavItems = (
           testID: 'nav-subitem-templates',
           label: 'Templates',
           link: `/orgs/${orgID}/settings/templates`,
+          enabled: () => shouldShowResource && !isFlagEnabled('hideTemplates'),
         },
         {
           id: 'labels',

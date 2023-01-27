@@ -14,8 +14,15 @@ import {
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
+// Selectors
+import {selectShouldShowResource} from 'src/shared/selectors/app'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 // Types
 import {LimitStatus} from 'src/cloud/actions/limits'
+import {AppState} from 'src/types'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -81,7 +88,9 @@ class AddResourceDropdown extends PureComponent<Props> {
     const importOption = this.importOption
     const newOption = this.newOption
     const templateOption = this.templateOption
-    const fromDashboard = this.props.resourceName === 'Dashboard'
+    const shouldShowTemplateFromDashboard =
+      this.props.resourceName === 'Dashboard' &&
+      this.props.shouldShowTemplates === true
 
     const templateFromDashboard = (
       <Dropdown.Item
@@ -114,7 +123,7 @@ class AddResourceDropdown extends PureComponent<Props> {
       >
         {importOption}
       </Dropdown.Item>,
-      ...(fromDashboard ? [templateFromDashboard] : []),
+      ...(shouldShowTemplateFromDashboard ? [templateFromDashboard] : []),
     ]
 
     return items
@@ -162,11 +171,18 @@ class AddResourceDropdown extends PureComponent<Props> {
   }
 }
 
+const mstp = (state: AppState) => {
+  return {
+    shouldShowTemplates:
+      selectShouldShowResource(state) && !isFlagEnabled('hideTemplates'),
+  }
+}
+
 const mdtp = {
   onShowOverlay: showOverlay,
   onDismissOverlay: dismissOverlay,
 }
 
-const connector = connect(null, mdtp)
+const connector = connect(mstp, mdtp)
 
 export default connector(AddResourceDropdown)

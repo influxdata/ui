@@ -1,7 +1,6 @@
 import React, {FC, useEffect, useState, useCallback} from 'react'
 import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
 
 // Components
 import SaveAsCellForm from 'src/dataExplorer/components/SaveAsCellForm'
@@ -34,16 +33,19 @@ enum SaveAsOption {
 
 const SaveAsOverlay: FC = () => {
   const history = useHistory()
-  const [saveAsOption, setSaveAsOption] = useState(SaveAsOption.Dashboard)
   const shouldShowResource = useSelector(selectShouldShowResource)
+  const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
+  const shouldShowDashboards =
+    shouldShowResource && !isFlagEnabled('hideDashboards')
   const shouldShowTasks = shouldShowResource && !isFlagEnabled('hideTasks')
+
+  const [saveAsOption, setSaveAsOption] = useState(
+    shouldShowDashboards ? SaveAsOption.Dashboard : SaveAsOption.Variable
+  )
 
   const hide = useCallback(() => {
     history.goBack()
   }, [history])
-
-  const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowDashboards = useSelector(selectShouldShowDashboards)
 
   useEffect(() => {
     event('Data Explorer Save as Menu Changed', {menu: saveAsOption})
@@ -70,13 +72,15 @@ const SaveAsOverlay: FC = () => {
         <Overlay.Body>
           <Tabs.Container orientation={Orientation.Horizontal}>
             <Tabs alignment={Alignment.Center} size={ComponentSize.Medium}>
-              <Tabs.Tab
-                id={SaveAsOption.Dashboard}
-                text="Dashboard Cell"
-                testID="cell--radio-button"
-                onClick={() => setSaveAsOption(SaveAsOption.Dashboard)}
-                active={saveAsOption === SaveAsOption.Dashboard}
-              />
+              {shouldShowDashboards && (
+                <Tabs.Tab
+                  id={SaveAsOption.Dashboard}
+                  text="Dashboard Cell"
+                  testID="cell--radio-button"
+                  onClick={() => setSaveAsOption(SaveAsOption.Dashboard)}
+                  active={saveAsOption === SaveAsOption.Dashboard}
+                />
+              )}
               {shouldShowTasks && (
                 <Tabs.Tab
                   id={SaveAsOption.Task}

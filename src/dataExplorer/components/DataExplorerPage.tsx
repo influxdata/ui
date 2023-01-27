@@ -117,14 +117,13 @@ const DataExplorerPage: FC = () => {
   const history = useHistory()
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
 
-  const allIOxDeprecateFlags =
+  const allIOxDeprecateFlagsEnabled =
     isFlagEnabled('hideTasks') &&
     isFlagEnabled('hideDashboards') &&
     isFlagEnabled('hideVariables') &&
     isFlagEnabled('hideNotebooks')
 
-  // show SaveAsButton if org is not new iox org or all iox deprecation feature flags are enabled
-  const showSaveAsButton = !isNewIOxOrg || !allIOxDeprecateFlags
+  const showSaveAsButton = !isNewIOxOrg || !allIOxDeprecateFlagsEnabled
 
   const hideFlowsCTA = () => {
     setFlowsCTA({explorer: false})

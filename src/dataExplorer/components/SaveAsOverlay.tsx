@@ -17,7 +17,7 @@ import {
 
 // Selectors
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
-import {selectShouldShowResource} from 'src/shared/selectors/app'
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -33,15 +33,27 @@ enum SaveAsOption {
 
 const SaveAsOverlay: FC = () => {
   const history = useHistory()
-  const shouldShowResource = useSelector(selectShouldShowResource)
+  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
   const shouldShowDashboards =
-    shouldShowResource && !isFlagEnabled('hideDashboards')
-  const shouldShowTasks = shouldShowResource && !isFlagEnabled('hideTasks')
+    !isNewIOxOrg || !isFlagEnabled('hideDashboards')
+  const shouldShowTasks = !isNewIOxOrg || !isFlagEnabled('hideTasks')
+  const shouldShowVariables =
+    !isNewIOxOrg || !isFlagEnabled('hideVariables')
 
-  const [saveAsOption, setSaveAsOption] = useState(
-    shouldShowDashboards ? SaveAsOption.Dashboard : SaveAsOption.Variable
-  )
+  const getActiveTab = (): SaveAsOption => {
+    if(shouldShowDashboards) {
+      return SaveAsOption.Dashboard
+    } else if(shouldShowVariables) {
+      return SaveAsOption.Variable
+    } else if(shouldShowTasks) {
+      return SaveAsOption.Task
+    } else {
+      return SaveAsOption.Notebook
+    }
+  }
+
+  const [saveAsOption, setSaveAsOption] = useState(getActiveTab())
 
   const hide = useCallback(() => {
     history.goBack()
@@ -51,15 +63,24 @@ const SaveAsOverlay: FC = () => {
     event('Data Explorer Save as Menu Changed', {menu: saveAsOption})
   }, [saveAsOption])
 
-  let saveAsForm = <SaveAsCellForm dismiss={hide} />
+  let saveAsForm
+  if (shouldShowDashboards) {
+    saveAsForm = <SaveAsCellForm dismiss={hide} />
+  } else if (shouldShowTasks) {
+    saveAsForm = <SaveAsTaskForm dismiss={hide} />
+  } else if (shouldShowVariables) {
+    saveAsForm = <SaveAsVariable onHideOverlay={hide} />
+  } else if (shouldShowNotebooks) {
+    saveAsForm = <SaveAsNotebookForm dismiss={hide} />
+  }
 
   if (shouldShowTasks && saveAsOption === SaveAsOption.Task) {
     saveAsForm = <SaveAsTaskForm dismiss={hide} />
-  } else if (saveAsOption === SaveAsOption.Variable) {
+  } else if (shouldShowVariables && saveAsOption === SaveAsOption.Variable) {
     saveAsForm = <SaveAsVariable onHideOverlay={hide} />
   } else if (shouldShowNotebooks && saveAsOption === SaveAsOption.Notebook) {
     saveAsForm = <SaveAsNotebookForm dismiss={hide} />
-  }
+  } 
 
   return (
     <Overlay visible={true}>
@@ -90,13 +111,15 @@ const SaveAsOverlay: FC = () => {
                   active={saveAsOption === SaveAsOption.Task}
                 />
               )}
-              <Tabs.Tab
-                id={SaveAsOption.Variable}
-                text="Variable"
-                testID="variable--radio-button"
-                onClick={() => setSaveAsOption(SaveAsOption.Variable)}
-                active={saveAsOption === SaveAsOption.Variable}
-              />
+              {shouldShowVariables && (
+                <Tabs.Tab
+                  id={SaveAsOption.Variable}
+                  text="Variable"
+                  testID="variable--radio-button"
+                  onClick={() => setSaveAsOption(SaveAsOption.Variable)}
+                  active={saveAsOption === SaveAsOption.Variable}
+                />
+              )}
               {shouldShowNotebooks && (
                 <Tabs.Tab
                   id={SaveAsOption.Notebook}

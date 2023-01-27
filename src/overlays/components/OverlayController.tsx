@@ -48,10 +48,11 @@ import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
 import {CreateOrganizationOverlay} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationOverlay'
 import {MarketoAccountUpgradeOverlay} from 'src/identity/components/MarketoAccountUpgradeOverlay'
 import {SuspendPaidOrgOverlay} from 'src/organizations/components/OrgProfileTab/SuspendPaidOrgOverlay'
+import {ReplaceCertificateOverlay} from 'src/writeData/subscriptions/components/CertificateInput'
+import {RemoveMemberOverlay} from 'src/users/components/RemoveMemberOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
-import {ReplaceCertificateOverlay} from 'src/writeData/subscriptions/components/CertificateInput'
 
 export interface OverlayContextType {
   onClose: () => void
@@ -188,6 +189,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'suspend-org-in-paid-account':
         activeOverlay.current = <SuspendPaidOrgOverlay />
+        break
+      case 'remove-member':
+        activeOverlay.current = <RemoveMemberOverlay />
         break
       default:
         activeOverlay.current = null

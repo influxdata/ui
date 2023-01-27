@@ -10,6 +10,7 @@ import {
   getOrgsInvites,
   postOrgsInvite,
   postOrgsInvitesResend,
+  DeleteOrgsUserParams,
 } from 'src/client/unityRoutes'
 
 // Notifications
@@ -43,7 +44,7 @@ export interface UsersContextType {
   draftInvite: DraftInvite
   handleEditDraftInvite: (_: DraftInvite) => void
   handleInviteUser: () => void
-  removeUser: (userId: string) => void
+  removeUser: (userId: string, transferIdpeId?: string) => void
   handleResendInvite: (inviteId: number) => void
   handleWithdrawInvite: (inviteId: number) => void
   invites: Invite[]
@@ -211,14 +212,18 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
   )
 
   const removeUser = useCallback(
-    async (userId: string) => {
+    async (userId: string, transferIdpeId: string) => {
       try {
         setRemoveUserStatus({
           id: userId,
           status: RemoteDataState.Loading,
         })
 
-        await deleteOrgsUser({orgId, userId})
+        const removeUserParams: DeleteOrgsUserParams = transferIdpeId
+          ? {orgId, userId, data: {transferIdpeId}}
+          : {orgId, userId}
+
+        await deleteOrgsUser(removeUserParams)
 
         const updatedUsers = users.filter(({id}) => userId !== id)
 

@@ -92,7 +92,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 // Selectors
 import {getAll} from 'src/resources/selectors'
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
-import {selectShouldShowResource} from 'src/shared/selectors/app'
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -101,7 +101,7 @@ const SetOrg: FC = () => {
     getAll<Organization>(state, ResourceType.Orgs)
   )
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowResource = useSelector(selectShouldShowResource)
+  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
 
   const history = useHistory()
   const {orgID} = useParams<{orgID: string}>()
@@ -129,12 +129,13 @@ const SetOrg: FC = () => {
   }, [orgID, firstOrgID, foundOrg, dispatch, history, orgs.length])
 
   const orgPath = '/orgs/:orgID'
-  const shouldShowTasks = shouldShowResource && !isFlagEnabled('hideTasks')
-  const shouldShowAlerts = shouldShowResource && !isFlagEnabled('hideAlerts')
+  const shouldShowTasks = !isNewIOxOrg || !isFlagEnabled('hideTasks')
+  const shouldShowAlerts = !isNewIOxOrg || !isFlagEnabled('hideAlerts')
   const shouldShowDashboards =
-    shouldShowResource && !isFlagEnabled('hideDashboards')
+    !isNewIOxOrg || !isFlagEnabled('hideDashboards')
   const shouldShowTemplates =
-    shouldShowResource && !isFlagEnabled('hideTemplates')
+    !isNewIOxOrg || !isFlagEnabled('hideTemplates')
+  const shouldShowVariables = !isNewIOxOrg || !isFlagEnabled('hideVariables')
 
   return (
     <PageSpinner loading={loading}>
@@ -287,10 +288,12 @@ const SetOrg: FC = () => {
             />
           )}
           {/* Settings */}
+          {shouldShowVariables && (
           <Route
             path={`${orgPath}/${SETTINGS}/${VARIABLES}`}
             component={VariablesIndex}
           />
+          )}
           {shouldShowTemplates && (
             <Route
               path={`${orgPath}/${SETTINGS}/${TEMPLATES}`}

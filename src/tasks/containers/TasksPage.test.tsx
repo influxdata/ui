@@ -58,6 +58,7 @@ jest.mock('src/languageSupport/languages/flux/lspUtils', () => ({
     }
   }),
   format_from_js_file: jest.fn(),
+  isValidFlux: jest.fn(_ => true),
 }))
 
 jest.mock('src/client', () => ({

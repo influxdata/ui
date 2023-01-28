@@ -27,7 +27,6 @@ const SettingsNavigation: FC<Props> = ({activeTab}) => {
   const org = useSelector(getOrg)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
 
-
   const handleTabClick = (id: string): void => {
     event('page-nav clicked', {which: `settings--${id}`})
     history.push(`/orgs/${org.id}/settings/${id}`)
@@ -37,22 +36,22 @@ const SettingsNavigation: FC<Props> = ({activeTab}) => {
     {
       text: 'Variables',
       id: 'variables',
-      enabled: !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx')
+      enabled: !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx'),
     },
     {
       text: 'Templates',
       id: 'templates',
-      enabled: !isNewIOxOrg || isFlagEnabled('showTemplatesInNewIOx')
+      enabled: !isNewIOxOrg || isFlagEnabled('showTemplatesInNewIOx'),
     },
     {
       text: 'Labels',
       id: 'labels',
-      enabled: true
+      enabled: true,
     },
     {
       text: 'Secrets',
       id: 'secrets',
-      enabled: true
+      enabled: true,
     },
   ].filter(tab => tab.enabled)
 

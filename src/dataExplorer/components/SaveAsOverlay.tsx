@@ -35,9 +35,11 @@ const SaveAsOverlay: FC = () => {
   const history = useHistory()
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowDashboards = !isNewIOxOrg || isFlagEnabled('showDashboardsInNewIOx')
+  const shouldShowDashboards =
+    !isNewIOxOrg || isFlagEnabled('showDashboardsInNewIOx')
   const shouldShowTasks = !isNewIOxOrg || isFlagEnabled('showTasksInNewIOx')
-  const shouldShowVariables = !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx')
+  const shouldShowVariables =
+    !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx')
 
   const getActiveTab = (): SaveAsOption => {
     if (shouldShowDashboards) {
@@ -61,6 +63,7 @@ const SaveAsOverlay: FC = () => {
     event('Data Explorer Save as Menu Changed', {menu: saveAsOption})
   }, [saveAsOption])
 
+  // sets the default tab to be the first tab that is enabled
   let saveAsForm
   if (shouldShowDashboards) {
     saveAsForm = <SaveAsCellForm dismiss={hide} />
@@ -72,6 +75,7 @@ const SaveAsOverlay: FC = () => {
     saveAsForm = <SaveAsNotebookForm dismiss={hide} />
   }
 
+  // displays the correct tab based on the selected tab
   if (shouldShowTasks && saveAsOption === SaveAsOption.Task) {
     saveAsForm = <SaveAsTaskForm dismiss={hide} />
   } else if (shouldShowVariables && saveAsOption === SaveAsOption.Variable) {

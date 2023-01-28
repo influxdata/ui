@@ -130,10 +130,13 @@ const SetOrg: FC = () => {
 
   const orgPath = '/orgs/:orgID'
   const shouldShowAlerts = !isNewIOxOrg || isFlagEnabled('showAlertsInNewIOx')
-  const shouldShowDashboards = !isNewIOxOrg || isFlagEnabled('showDashboardsInNewIOx')
+  const shouldShowDashboards =
+    !isNewIOxOrg || isFlagEnabled('showDashboardsInNewIOx')
   const shouldShowTasks = !isNewIOxOrg || isFlagEnabled('showTasksInNewIOx')
-  const shouldShowTemplates = !isNewIOxOrg || isFlagEnabled('showTemplatesInNewIOx')
-  const shouldShowVariables = !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx')
+  const shouldShowTemplates =
+    !isNewIOxOrg || isFlagEnabled('showTemplatesInNewIOx')
+  const shouldShowVariables =
+    !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx')
 
   return (
     <PageSpinner loading={loading}>

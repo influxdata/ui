@@ -443,17 +443,19 @@ export const MainNavigation: FC = () => {
               <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
             )}
           />
-          <TreeNav.SubItem
-            id="influxUniversity"
-            label="InfluxDB University"
-            testID="nav-subitem-university"
-            linkElement={() => (
-              <SafeBlankLink
-                href="https://university.influxdata.com/"
-                onClick={() => handleEventing('influxdbUniversity')}
-              />
-            )}
-          />
+          {!isNewIOxOrg && (
+            <TreeNav.SubItem
+              id="influxUniversity"
+              label="InfluxDB University"
+              testID="nav-subitem-university"
+              linkElement={() => (
+                <SafeBlankLink
+                  href="https://university.influxdata.com/"
+                  onClick={() => handleEventing('influxdbUniversity')}
+                />
+              )}
+            />
+          )}
           {CLOUD && (
             <>
               <TreeNav.SubHeading label="Useful Links" />

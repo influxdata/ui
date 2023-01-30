@@ -41,19 +41,5 @@ export const getSubscriptionsCertificateInterest = (state: AppState): boolean =>
   state.app.persisted.subscriptionsCertificateInterest || false
 
 export const selectIsNewIOxOrg = (state: AppState): boolean => {
-  if (!CLOUD) {
-    return false
-  }
-
-  const orgCreationDate = new Date(selectOrgCreationDate(state)).valueOf()
-  const ioxCutoffDate = new Date(IOX_SWITCHOVER_CREATION_DATE).valueOf()
-  const isIOxEnabled = isOrgIOx()
-
-  const wasCreatedBeforeIOxCutoff = orgCreationDate < ioxCutoffDate
-
-  if (!wasCreatedBeforeIOxCutoff && isIOxEnabled) {
-    return true
-  }
-
-  return false
+  return true
 }

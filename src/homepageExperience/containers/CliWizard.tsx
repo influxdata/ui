@@ -28,8 +28,11 @@ import {event} from 'src/cloud/utils/reporting'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS_SHORT,
+  HOMEPAGE_NAVIGATION_STEPS_SHORT_SQL,
 } from 'src/homepageExperience/utils'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {ExecuteQuerySql} from '../components/steps/cli/ExecuteQuerySql'
 
 interface State {
   currentStep: number
@@ -47,6 +50,10 @@ export class CliWizard extends PureComponent<{}, State> {
     tokenValue: null,
     finalFeedback: null,
   }
+
+  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+    ? HOMEPAGE_NAVIGATION_STEPS_SHORT_SQL
+    : HOMEPAGE_NAVIGATION_STEPS_SHORT
 
   private handleSelectBucket = (bucketName: string) => {
     this.setState({selectedBucket: bucketName})
@@ -69,7 +76,7 @@ export class CliWizard extends PureComponent<{}, State> {
       {
         currentStep: Math.min(
           this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS_SHORT.length
+          this.subwayNavSteps.length
         ),
       },
       () => {
@@ -78,10 +85,10 @@ export class CliWizard extends PureComponent<{}, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 2].name
+              this.subwayNavSteps[this.state.currentStep - 2].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -100,10 +107,10 @@ export class CliWizard extends PureComponent<{}, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep].name
+              this.subwayNavSteps[this.state.currentStep].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_SHORT[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -120,7 +127,7 @@ export class CliWizard extends PureComponent<{}, State> {
       {},
       {
         currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_SHORT[clickedStep - 1].name
+          this.subwayNavSteps[clickedStep - 1].name
         ),
       }
     )
@@ -148,10 +155,26 @@ export class CliWizard extends PureComponent<{}, State> {
         return <WriteData bucket={this.state.selectedBucket} />
       }
       case 5: {
-        return <ExecuteQuery bucket={this.state.selectedBucket} />
+        if (isFlagEnabled('ioxOnboarding')) {
+          return <ExecuteQuerySql bucket={this.state.selectedBucket} />
+        } else {
+          return <ExecuteQuery bucket={this.state.selectedBucket} />
+        }
       }
       case 6: {
-        return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
+        if (isFlagEnabled('ioxOnboarding')) {
+          return (
+            <Finish
+              wizardEventName="cliWizard"
+              markStepAsCompleted={this.handleMarkStepAsCompleted}
+              finishStepCompleted={this.state.finishStepCompleted}
+              finalFeedback={this.state.finalFeedback}
+              setFinalFeedback={this.setFinalFeedback}
+            />
+          )
+        } else {
+          return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
+        }
       }
       case 7: {
         return (
@@ -184,7 +207,7 @@ export class CliWizard extends PureComponent<{}, State> {
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
-                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS_SHORT}
+                  navigationSteps={this.subwayNavSteps}
                   settingUpIcon={CLIIcon}
                   settingUpText="InfluxDB CLI"
                   setupTime="5 minutes"
@@ -198,8 +221,7 @@ export class CliWizard extends PureComponent<{}, State> {
                   {
                     verticallyCentered:
                       this.state.currentStep === 1 ||
-                      this.state.currentStep ===
-                        HOMEPAGE_NAVIGATION_STEPS_SHORT.length,
+                      this.state.currentStep === this.subwayNavSteps.length,
                   }
                 )}
               >
@@ -227,8 +249,7 @@ export class CliWizard extends PureComponent<{}, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    this.state.currentStep <
-                    HOMEPAGE_NAVIGATION_STEPS_SHORT.length
+                    this.state.currentStep < this.subwayNavSteps.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

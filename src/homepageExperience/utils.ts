@@ -97,6 +97,33 @@ export const HOMEPAGE_NAVIGATION_STEPS_SHORT = [
   },
 ]
 
+export const HOMEPAGE_NAVIGATION_STEPS_SHORT_SQL = [
+  {
+    name: 'Overview',
+    glyph: IconFont.BookOutline,
+  },
+  {
+    name: 'Install Dependencies',
+    glyph: IconFont.Install,
+  },
+  {
+    name: 'Initialize Client',
+    glyph: IconFont.CogSolid_New,
+  },
+  {
+    name: 'Write Data',
+    glyph: IconFont.Pencil,
+  },
+  {
+    name: 'Execute a SQL Query',
+    glyph: IconFont.Play,
+  },
+  {
+    name: 'Finish',
+    glyph: IconFont.StarSmile,
+  },
+]
+
 export const HOMEPAGE_NAVIGATION_STEPS_ARDUINO = [
   {
     name: 'Overview',

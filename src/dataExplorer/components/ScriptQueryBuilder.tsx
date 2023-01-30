@@ -66,7 +66,9 @@ const ScriptQueryBuilder: FC = () => {
   const {setStatus, setResult} = useContext(ResultsContext)
   const {clear: clearViewOptions} = useContext(ResultsViewContext)
   const org = useSelector(getOrg)
-  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
+  const isNewIOxOrg =
+    useSelector(selectIsNewIOxOrg) &&
+    !isFlagEnabled('showOldDataExplorerInNewIOx')
 
   const handleClear = useCallback(() => {
     cancel()
@@ -108,6 +110,9 @@ const ScriptQueryBuilder: FC = () => {
     }
   }, [handleClear, hasChanged])
 
+  const filterOutFluxInIOx = option =>
+    isNewIOxOrg ? option !== LanguageType.FLUX : true
+
   return (
     <EditorProvider>
       <SidebarProvider>
@@ -138,21 +143,9 @@ const ScriptQueryBuilder: FC = () => {
                   <Dropdown
                     menu={onCollapse => (
                       <Dropdown.Menu onCollapse={onCollapse}>
-                        {isNewIOxOrg &&
-                        !isFlagEnabled('showOldDataExplorerInNewIOx') ? (
-                          <Dropdown.Item
-                            className="script-dropdown__LanguageType.SQL"
-                            key={LanguageType.SQL}
-                            onClick={() =>
-                              handleSelectDropdown(LanguageType.SQL)
-                            }
-                            selected={resource?.language === LanguageType.SQL}
-                            testID="script-dropdown__LanguageType.SQL"
-                          >
-                            {LanguageType.SQL.toLocaleUpperCase()}
-                          </Dropdown.Item>
-                        ) : (
-                          [LanguageType.FLUX, LanguageType.SQL].map(option => (
+                        {[LanguageType.FLUX, LanguageType.SQL]
+                          .filter(filterOutFluxInIOx)
+                          .map(option => (
                             <Dropdown.Item
                               className={`script-dropdown__${option}`}
                               key={option}
@@ -162,8 +155,7 @@ const ScriptQueryBuilder: FC = () => {
                             >
                               {option}
                             </Dropdown.Item>
-                          ))
-                        )}
+                          ))}
                       </Dropdown.Menu>
                     )}
                     button={(active, onClick) => (
@@ -234,10 +226,7 @@ const ScriptQueryBuilder: FC = () => {
               <ResultsPane />
             </DraggableResizer.Panel>
             <DraggableResizer.Panel isCollapsible={true}>
-              {isNewIOxOrg &&
-              !isFlagEnabled('showOldDataExplorerInNewIOx') ? null : (
-                <Sidebar />
-              )}
+              {!isNewIOxOrg && <Sidebar />}
             </DraggableResizer.Panel>
           </DraggableResizer>
         </FlexBox>

@@ -313,7 +313,7 @@ const SetOrg: FC = () => {
           <Route
             exact
             path={`${orgPath}/${SETTINGS}`}
-            component={VariablesIndex}
+            component={isNewIOxOrg ? LabelsIndex : VariablesIndex}
           />
           {/* Users - route has multiple paths to ensure backwards compatibility while https://github.com/influxdata/ui/issues/5396 is being worked on*/}
           {CLOUD && (

@@ -52,8 +52,9 @@ const DataExplorerPageHeader: FC = () => {
     useContext(AppSettingContext)
   const {resource, save} = useContext(PersistanceContext)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
-  const showBothDataExplorers =
-    !isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx')
+  const showDataExplorerToggle =
+    isFlagEnabled('newDataExplorer') &&
+    (!isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx'))
 
   const history = useHistory()
 
@@ -74,9 +75,7 @@ const DataExplorerPageHeader: FC = () => {
     save(resource?.language)
   }
 
-  const showNewExplorer =
-    (scriptQueryBuilder && isFlagEnabled('newDataExplorer')) ||
-    showBothDataExplorers
+  const showNewExplorer = scriptQueryBuilder && isFlagEnabled('newDataExplorer')
 
   let pageTitle = <Page.Title title="Data Explorer" />
 
@@ -101,7 +100,7 @@ const DataExplorerPageHeader: FC = () => {
     >
       {pageTitle}
       <FlexBox margin={ComponentSize.Large}>
-        {showBothDataExplorers && isFlagEnabled('newDataExplorer') && (
+        {showDataExplorerToggle && (
           <FlexBox margin={ComponentSize.Medium}>
             <InputLabel>Switch to old Data Explorer</InputLabel>
             <SlideToggle
@@ -121,13 +120,12 @@ const DataExplorerPage: FC = () => {
     useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
   const history = useHistory()
-  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
+  const isNewIOxOrg =
+    useSelector(selectIsNewIOxOrg) &&
+    !isFlagEnabled('showOldDataExplorerInNewIOx')
   const showNotebooks = useSelector(selectShouldShowNotebooks)
-  const onlyShowNewDataExplorer =
-    isNewIOxOrg && !isFlagEnabled('showOldDataExplorerInNewIOx')
   const showNewExplorer =
-    (scriptQueryBuilder && isFlagEnabled('newDataExplorer')) ||
-    onlyShowNewDataExplorer
+    (scriptQueryBuilder && isFlagEnabled('newDataExplorer')) || isNewIOxOrg
 
   const showSaveAsButton =
     !isNewIOxOrg ||

@@ -52,7 +52,7 @@ const DataExplorerPageHeader: FC = () => {
     useContext(AppSettingContext)
   const {resource, save} = useContext(PersistanceContext)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
-  const showDataExplorerToggle =
+  const shouldShowDataExplorerToggle =
     isFlagEnabled('newDataExplorer') &&
     (!isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx'))
 
@@ -100,7 +100,7 @@ const DataExplorerPageHeader: FC = () => {
     >
       {pageTitle}
       <FlexBox margin={ComponentSize.Large}>
-        {showDataExplorerToggle && (
+        {shouldShowDataExplorerToggle && (
           <FlexBox margin={ComponentSize.Medium}>
             <InputLabel>Switch to old Data Explorer</InputLabel>
             <SlideToggle
@@ -123,13 +123,13 @@ const DataExplorerPage: FC = () => {
   const isNewIOxOrg =
     useSelector(selectIsNewIOxOrg) &&
     !isFlagEnabled('showOldDataExplorerInNewIOx')
-  const showNotebooks = useSelector(selectShouldShowNotebooks)
-  const showNewExplorer =
+  const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
+  const shouldShowNewExplorer =
     (scriptQueryBuilder && isFlagEnabled('newDataExplorer')) || isNewIOxOrg
 
-  const showSaveAsButton =
+  const shouldShowSaveAsButton =
     !isNewIOxOrg ||
-    showNotebooks ||
+    shouldShowNotebooks ||
     isFlagEnabled('showTasksInNewIOx') ||
     isFlagEnabled('showDashboardsInNewIOx') ||
     isFlagEnabled('showVariablesInNewIOx')
@@ -201,7 +201,7 @@ const DataExplorerPage: FC = () => {
             </div>
           </FeatureFlag>
         )}
-        {!showNewExplorer && (
+        {!shouldShowNewExplorer && (
           <Page.ControlBar fullWidth={true}>
             <Page.ControlBarLeft>
               <ViewTypeDropdown />
@@ -209,13 +209,13 @@ const DataExplorerPage: FC = () => {
             </Page.ControlBarLeft>
             <Page.ControlBarRight>
               <TimeZoneDropdown />
-              {showSaveAsButton && <SaveAsButton />}
+              {shouldShowSaveAsButton && <SaveAsButton />}
             </Page.ControlBarRight>
           </Page.ControlBar>
         )}
         <Page.Contents fullWidth={true} scrollable={false}>
-          {!showNewExplorer && <DataExplorer />}
-          {showNewExplorer && <ScriptQueryBuilder />}
+          {!shouldShowNewExplorer && <DataExplorer />}
+          {shouldShowNewExplorer && <ScriptQueryBuilder />}
         </Page.Contents>
       </GetResources>
     </Page>

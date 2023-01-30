@@ -113,8 +113,8 @@ This sflow implementation was built from the reference document
 [sflow.org/sflow_version_5.txt](sflow_version_5)
 
 [metric filtering]: https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#metric-filtering
-[retention policy]: https://docs.influxdata.com/influxdb/latest/guides/downsampling_and_retention/
-[tsi]: https://docs.influxdata.com/influxdb/latest/concepts/time-series-index/
-[series cardinality]: https://docs.influxdata.com/influxdb/latest/query_language/spec/#show-cardinality
+[retention policy]: https://docs.influxdata.com/influxdb/latest/reference/internals/data-retention/
+[tsi]: https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-series-index-tsi
+[series cardinality]: https://docs.influxdata.com/influxdb/latest/reference/syntax/influxql/spec/#show-cardinality
 [influx-docs]: https://docs.influxdata.com/influxdb/latest/
 [sflow_version_5]: https://sflow.org/sflow_version_5.txt

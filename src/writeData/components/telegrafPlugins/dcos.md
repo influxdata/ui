@@ -10,14 +10,14 @@ create a high number of series which, when unchecked, can cause high load on
 your database.
 
 - Use the
-  [measurement filtering](https://docs.influxdata.com/telegraf/latest/administration/configuration/#measurement-filtering)
+  [measurement filtering](https://docs.influxdata.com/telegraf/latest/configuration/#metric-filtering)
   options to exclude unneeded tags.
 - Write to a database with an appropriate
-  [retention policy](https://docs.influxdata.com/influxdb/latest/guides/downsampling_and_retention/).
+  [retention policy](https://docs.influxdata.com/influxdb/latest/reference/internals/data-retention/).
 - Consider using the
-  [Time Series Index](https://docs.influxdata.com/influxdb/latest/concepts/time-series-index/).
+  [Time Series Index](https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-series-index-tsi).
 - Monitor your databases
-  [series cardinality](https://docs.influxdata.com/influxdb/latest/query_language/spec/#show-cardinality).
+  [series cardinality](https://docs.influxdata.com/influxdb/latest/reference/syntax/influxql/spec/#show-cardinality).
 
 ## Configuration
 

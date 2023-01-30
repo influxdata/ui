@@ -15,8 +15,8 @@ import {isOrgIOx} from 'src/organizations/selectors'
 const VersionInfo: FC = () => {
   const engineName = useSelector(isOrgIOx) ? 'IOx' : 'TSM'
   const engineLink = useSelector(isOrgIOx)
-    ? 'http://docs.influxdata.com/influxdb/cloud-iox/'
-    : 'https://docs.influxdata.com/influxdb/v2.6/reference/internals/storage-engine/'
+    ? 'https://docs.influxdata.com/influxdb/cloud-iox/'
+    : 'https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-structured-merge-tree-tsm'
 
   return (
     <div className="version-info" data-testid="version-info">

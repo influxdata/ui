@@ -80,7 +80,7 @@ export const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
               '',
               <UpgradeContent
                 type="write"
-                link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/optimize-writes/"
+                link="https://docs.influxdata.com/influxdb/latest/write-data/best-practices/optimize-writes/"
                 className="flex-upgrade-content"
               />
             )

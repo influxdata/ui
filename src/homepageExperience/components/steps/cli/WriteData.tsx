@@ -115,7 +115,7 @@ export const WriteDataComponent = (props: OwnProps) => {
           <p>
             The sample file is an Annotated CSV. The InfluxDB CLI supports both
             annotated and standard CSV formats.{' '}
-            <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/syntax/annotated-csv/">
+            <SafeBlankLink href="https://docs.influxdata.com/influxdb/latest/reference/syntax/annotated-csv/">
               Annotated CSVs
             </SafeBlankLink>{' '}
             contain metadata about the data types in the file, which allows for
@@ -183,7 +183,7 @@ export const WriteDataComponent = (props: OwnProps) => {
           <p>
             The sample file is an Annotated CSV. The InfluxDB CLI supports both
             annotated and standard CSV formats.{' '}
-            <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/syntax/annotated-csv/">
+            <SafeBlankLink href="https://docs.influxdata.com/influxdb/latest/reference/syntax/annotated-csv/">
               Annotated CSVs
             </SafeBlankLink>{' '}
             contain metadata about the data types in the file, which allows for

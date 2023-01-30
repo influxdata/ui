@@ -99,7 +99,7 @@ export const ExecuteQuery = (props: OwnProps) => {
         Now let's query the data we wrote into the database. We use the Flux
         scripting language to query data.{' '}
         <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/v2.2/reference/syntax/flux/"
+          href="https://docs.influxdata.com/influxdb/latest/reference/syntax/flux/"
           onClick={() =>
             event('firstMile.arduinoWizard.documentation.link.clicked')
           }

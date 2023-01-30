@@ -45,7 +45,7 @@ const AgentOutputNotification: FC<AgentOutputNotificationProps> = props => (
         <span className="plugin-create-configuration--popover-contents">
           The agent settings configures Telegraf across all plugins. Read{' '}
           <a
-            href="https://docs.influxdata.com/telegraf/latest/administration/configuration/#agent-configuration"
+            href="https://docs.influxdata.com/telegraf/latest/configuration/#agent-configuration"
             target="_blank"
             rel="noopener noreferrer"
           >

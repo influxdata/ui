@@ -113,7 +113,7 @@ export const Finish = (props: OwnProps) => {
         >
           <ResourceCard className="homepage-wizard-next-steps">
             <SafeBlankLink
-              href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/"
+              href="https://docs.influxdata.com/influxdb/latest/reference/key-concepts/"
               onClick={() =>
                 handleNextStepEvent(wizardEventName, 'keyConcepts')
               }

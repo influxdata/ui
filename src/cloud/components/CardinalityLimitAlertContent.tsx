@@ -136,7 +136,7 @@ export const CardinalityLimitAlertContent: FC<Props> = ({
     return (
       <UpgradeContent
         className={cardinalityLimitAlertContentClass}
-        link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/"
+        link="https://docs.influxdata.com/influxdb/latest/write-data/best-practices/resolve-high-cardinality/"
         location={location}
         type="series cardinality"
       />
@@ -149,7 +149,7 @@ export const CardinalityLimitAlertContent: FC<Props> = ({
     >
       <span>
         Data in has stopped because you've hit the{' '}
-        <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/">
+        <SafeBlankLink href="https://docs.influxdata.com/influxdb/latest/write-data/best-practices/resolve-high-cardinality/">
           series cardinality
         </SafeBlankLink>{' '}
         limit. Let's get it flowing again.

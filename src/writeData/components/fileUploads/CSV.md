@@ -1,4 +1,4 @@
-For more detailed and up to date information check out the [Annotated CSV Documentation](https://docs.influxdata.com/influxdb/v2.0/reference/syntax/annotated-csv/).
+For more detailed and up to date information check out the [Annotated CSV Documentation](https://docs.influxdata.com/influxdb/latest/reference/syntax/annotated-csv/).
 
 For ingesting custom CSV files into InfluxDB, we recommend you use the [`influx write` command](https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/write/) in the InfluxDB Command Line Interface (CLI).
 

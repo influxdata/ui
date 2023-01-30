@@ -158,9 +158,9 @@ kubernetes_system_container
 ```
 
 [metric filtering]: https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#metric-filtering
-[retention policy]: https://docs.influxdata.com/influxdb/latest/guides/downsampling_and_retention/
-[tsi]: https://docs.influxdata.com/influxdb/latest/concepts/time-series-index/
-[series cardinality]: https://docs.influxdata.com/influxdb/latest/query_language/spec/#show-cardinality
+[retention policy]: https://docs.influxdata.com/influxdb/latest/reference/internals/data-retention/
+[tsi]: https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-series-index-tsi
+[series cardinality]: https://docs.influxdata.com/influxdb/latest/reference/syntax/influxql/spec/#show-cardinality
 [influx-docs]: https://docs.influxdata.com/influxdb/latest/
 [k8s-telegraf]: https://www.influxdata.com/blog/monitoring-kubernetes-architecture/
 [telegraf]: https://github.com/helm/charts/tree/master/stable/telegraf

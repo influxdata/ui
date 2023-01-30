@@ -78,7 +78,7 @@ class DataListening extends PureComponent<Props, State> {
         bucket={this.props.bucket}
         countDownSeconds={this.state.secondsLeft}
       >
-        <SafeBlankLink href="https://docs.influxdata.com/telegraf/latest/administration/troubleshooting/">
+        <SafeBlankLink href="https://docs.influxdata.com/telegraf/latest/configure_plugins/troubleshoot/">
           Telegraf Troubleshooting
         </SafeBlankLink>
       </ConnectionInformation>

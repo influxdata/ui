@@ -11,6 +11,7 @@ import {
 import {CLOUD, IOX_SWITCHOVER_CREATION_DATE} from 'src/shared/constants'
 
 import {selectOrgCreationDate, isOrgIOx} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const timeZone = (state: AppState): TimeZone =>
   state.app.persisted.timeZone || ('Local' as TimeZone)
@@ -43,6 +44,10 @@ export const getSubscriptionsCertificateInterest = (state: AppState): boolean =>
 export const selectIsNewIOxOrg = (state: AppState): boolean => {
   if (!CLOUD) {
     return false
+  }
+
+  if (isFlagEnabled('ioxLaunchMock')) {
+    return true
   }
 
   const orgCreationDate = new Date(selectOrgCreationDate(state)).valueOf()

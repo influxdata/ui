@@ -1,4 +1,7 @@
 import React, {useEffect} from 'react'
+import confetti from 'canvas-confetti'
+
+// Components
 import {
   AlignItems,
   ComponentSize,
@@ -6,18 +9,17 @@ import {
   FlexDirection,
   ResourceCard,
 } from '@influxdata/clockface'
-
-import confetti from 'canvas-confetti'
-
 import {
   BookIcon,
   CodeTerminalIcon,
 } from 'src/homepageExperience/components/HomepageIcons'
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-
-import {event} from 'src/cloud/utils/reporting'
 import FeedbackBar from 'src/homepageExperience/components/FeedbackBar'
 import SampleAppCard from 'src/homepageExperience/components/steps/SampleAppCard'
+import DashboardIntegrations from 'src/homepageExperience/components/steps/DashboardIntegrations'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type OwnProps = {
@@ -162,6 +164,12 @@ export const Finish = (props: OwnProps) => {
             wizardEventName={props.wizardEventName}
           />
         ) : null}
+        {isFlagEnabled('ioxOnboarding') && (
+          <DashboardIntegrations
+            handleNextStepEvent={handleNextStepEvent}
+            wizardEventName={props.wizardEventName}
+          />
+        )}
       </FlexBox>
     </>
   )

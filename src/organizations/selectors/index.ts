@@ -4,14 +4,8 @@ import {get} from 'lodash'
 // Types
 import {AppState, Organization} from 'src/types'
 
-export const isOrgIOx = (state: AppState): boolean => {
-  const org: Organization = getOrg(state)
-
-  return Boolean(
-    org &&
-      org.defaultStorageType &&
-      org.defaultStorageType.toLowerCase() === 'iox'
-  )
+export const isOrgIOx = (): boolean => {
+  return true
 }
 
 export const selectOrgCreationDate = (state: AppState): string => {

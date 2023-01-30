@@ -47,7 +47,7 @@ export const selectIsNewIOxOrg = (state: AppState): boolean => {
 
   const orgCreationDate = new Date(selectOrgCreationDate(state)).valueOf()
   const ioxCutoffDate = new Date(IOX_SWITCHOVER_CREATION_DATE).valueOf()
-  const isIOxEnabled = isOrgIOx(state)
+  const isIOxEnabled = isOrgIOx()
 
   const wasCreatedBeforeIOxCutoff = orgCreationDate < ioxCutoffDate
 

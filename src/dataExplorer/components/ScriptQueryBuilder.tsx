@@ -39,6 +39,8 @@ import {QueryContext} from 'src/shared/contexts/query'
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {RemoteDataState} from 'src/types'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import './ScriptQueryBuilder.scss'
@@ -64,6 +66,7 @@ const ScriptQueryBuilder: FC = () => {
   const {setStatus, setResult} = useContext(ResultsContext)
   const {clear: clearViewOptions} = useContext(ResultsViewContext)
   const org = useSelector(getOrg)
+  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
 
   const handleClear = useCallback(() => {
     cancel()
@@ -135,17 +138,32 @@ const ScriptQueryBuilder: FC = () => {
                   <Dropdown
                     menu={onCollapse => (
                       <Dropdown.Menu onCollapse={onCollapse}>
-                        {[LanguageType.FLUX, LanguageType.SQL].map(option => (
+                        {isNewIOxOrg &&
+                        !isFlagEnabled('showOldDataExplorerInNewIOx') ? (
                           <Dropdown.Item
-                            className={`script-dropdown__${option}`}
-                            key={option}
-                            onClick={() => handleSelectDropdown(option)}
-                            selected={resource?.language === option}
-                            testID={`script-dropdown__${option}`}
+                            className="script-dropdown__LanguageType.SQL"
+                            key={LanguageType.SQL}
+                            onClick={() =>
+                              handleSelectDropdown(LanguageType.SQL)
+                            }
+                            selected={resource?.language === LanguageType.SQL}
+                            testID="script-dropdown__LanguageType.SQL"
                           >
-                            {option}
+                            {LanguageType.SQL.toLocaleUpperCase()}
                           </Dropdown.Item>
-                        ))}
+                        ) : (
+                          [LanguageType.FLUX, LanguageType.SQL].map(option => (
+                            <Dropdown.Item
+                              className={`script-dropdown__${option}`}
+                              key={option}
+                              onClick={() => handleSelectDropdown(option)}
+                              selected={resource?.language === option}
+                              testID={`script-dropdown__${option}`}
+                            >
+                              {option}
+                            </Dropdown.Item>
+                          ))
+                        )}
                       </Dropdown.Menu>
                     )}
                     button={(active, onClick) => (
@@ -216,7 +234,10 @@ const ScriptQueryBuilder: FC = () => {
               <ResultsPane />
             </DraggableResizer.Panel>
             <DraggableResizer.Panel isCollapsible={true}>
-              <Sidebar />
+              {isNewIOxOrg &&
+              !isFlagEnabled('showOldDataExplorerInNewIOx') ? null : (
+                <Sidebar />
+              )}
             </DraggableResizer.Panel>
           </DraggableResizer>
         </FlexBox>

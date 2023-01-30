@@ -180,7 +180,7 @@ const generateNavItems = (
       testID: 'nav-item-settings',
       icon: IconFont.CogOutline_New,
       label: 'Settings',
-      link: `/orgs/${orgID}/settings/variables`,
+      link: `/orgs/${orgID}/settings`,
       activeKeywords: ['settings'],
       menu: [
         {

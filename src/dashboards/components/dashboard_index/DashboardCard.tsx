@@ -32,7 +32,7 @@ import {
 import {resetViews} from 'src/views/actions/creators'
 
 // Selectors
-import {selectShouldShowResource} from 'src/shared/selectors/app'
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
 
 // Types
 import {Label, AppState} from 'src/types'
@@ -249,7 +249,7 @@ const mdtp = {
 const mstp = (state: AppState, props: OwnProps) => {
   const dashboard = state.resources.dashboards.byID[props.id]
   const shouldShowTemplates =
-    selectShouldShowResource(state) && !isFlagEnabled('hideTemplates')
+    !selectIsNewIOxOrg(state) || isFlagEnabled('showTemplatesInNewIOx')
 
   return {
     dashboard,

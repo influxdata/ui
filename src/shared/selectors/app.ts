@@ -40,9 +40,9 @@ export const getAllFluxFunctions = (state: AppState): FluxFunction[] =>
 export const getSubscriptionsCertificateInterest = (state: AppState): boolean =>
   state.app.persisted.subscriptionsCertificateInterest || false
 
-export const selectShouldShowResource = (state: AppState): boolean => {
+export const selectIsNewIOxOrg = (state: AppState): boolean => {
   if (!CLOUD) {
-    return true
+    return false
   }
 
   const orgCreationDate = new Date(selectOrgCreationDate(state)).valueOf()
@@ -51,10 +51,9 @@ export const selectShouldShowResource = (state: AppState): boolean => {
 
   const wasCreatedBeforeIOxCutoff = orgCreationDate < ioxCutoffDate
 
-  // In cloud, don't show resource if org is IOx enabled && org is created after iox cutoff date
   if (!wasCreatedBeforeIOxCutoff && isIOxEnabled) {
-    return false
+    return true
   }
 
-  return true
+  return false
 }

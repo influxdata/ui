@@ -13,6 +13,10 @@ import {TabbedPageTab} from 'src/shared/tabbedPage/TabbedPageTabs'
 //  Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   activeTab: string
@@ -21,6 +25,7 @@ interface Props {
 const SettingsNavigation: FC<Props> = ({activeTab}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
+  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
 
   const handleTabClick = (id: string): void => {
     event('page-nav clicked', {which: `settings--${id}`})
@@ -31,20 +36,24 @@ const SettingsNavigation: FC<Props> = ({activeTab}) => {
     {
       text: 'Variables',
       id: 'variables',
+      enabled: !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx'),
     },
     {
       text: 'Templates',
       id: 'templates',
+      enabled: !isNewIOxOrg || isFlagEnabled('showTemplatesInNewIOx'),
     },
     {
       text: 'Labels',
       id: 'labels',
+      enabled: true,
     },
     {
       text: 'Secrets',
       id: 'secrets',
+      enabled: true,
     },
-  ]
+  ].filter(tab => tab.enabled)
 
   return (
     <ErrorBoundary>

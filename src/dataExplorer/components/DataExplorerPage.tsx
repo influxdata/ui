@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useContext, useEffect} from 'react'
 import {Switch, Route, Link, useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
@@ -24,6 +25,10 @@ import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
 import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 import TemplatePage from 'src/dataExplorer/components/resources/TemplatePage'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
+
+// Selectors
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
+import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -111,6 +116,15 @@ const DataExplorerPage: FC = () => {
   useLoadTimeReporting('DataExplorerPage load start')
   const showNewExplorer = scriptQueryBuilder && isFlagEnabled('newDataExplorer')
   const history = useHistory()
+  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
+  const showNotebooks = useSelector(selectShouldShowNotebooks)
+
+  const showSaveAsButton =
+    !isNewIOxOrg ||
+    showNotebooks ||
+    isFlagEnabled('showTasksInNewIOx') ||
+    isFlagEnabled('showDashboardsInNewIOx') ||
+    isFlagEnabled('showVariablesInNewIOx')
 
   const hideFlowsCTA = () => {
     setFlowsCTA({explorer: false})
@@ -187,7 +201,7 @@ const DataExplorerPage: FC = () => {
             </Page.ControlBarLeft>
             <Page.ControlBarRight>
               <TimeZoneDropdown />
-              <SaveAsButton />
+              {showSaveAsButton && <SaveAsButton />}
             </Page.ControlBarRight>
           </Page.ControlBar>
         )}

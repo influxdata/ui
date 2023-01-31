@@ -54,7 +54,7 @@ const ResourceLists: FC = () => {
               </>
             }
             ctaText="Learn more"
-            ctaLink="https://www.influxdata.com/blog/influxdb-cloud-announces-new-time-series-engine/"
+            ctaLink="https://www.influxdata.com/cloud-iox-faq/"
           />
         </AnnouncementCenter>
       )}

@@ -105,10 +105,10 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
 
   const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
 
-  const validateInput = value => {
+  const validateInput = (value: string) => {
     return (
       isValidDatepickerFormat(value) ||
-      !!value.match(durationRegExp) ||
+      !!value?.match(durationRegExp) ||
       value === 'now()' ||
       isNaN(Number(value)) === false
     )
@@ -335,7 +335,7 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                     : ComponentStatus.Error
                 }
                 type={InputType.Text}
-                value={convertToDisplayFormat(inputStartDate, timeZone)}
+                value={convertToDisplayFormat(inputStartDate, timeZone) ?? ''}
               >
                 <div
                   className="date-picker--calendar-icon"
@@ -355,7 +355,7 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                     : ComponentStatus.Error
                 }
                 type={InputType.Text}
-                value={convertToDisplayFormat(inputEndDate, timeZone)}
+                value={convertToDisplayFormat(inputEndDate, timeZone) ?? ''}
               >
                 <div
                   className="date-picker--calendar-icon"

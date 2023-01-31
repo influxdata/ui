@@ -274,6 +274,10 @@ export const MainNavigation: FC = () => {
     return null
   }
 
+  const docslink = isNewIOxOrg
+    ? 'http://docs.influxdata.com/influxdb/cloud-iox/'
+    : 'https://docs.influxdata.com/'
+
   const handleToggleNavExpansion = (): void => {
     if (navbarMode === 'expanded') {
       setNavbarMode('collapsed')
@@ -412,7 +416,7 @@ export const MainNavigation: FC = () => {
             testID="nav-subitem-documentation"
             linkElement={() => (
               <SafeBlankLink
-                href="https://docs.influxdata.com/"
+                href={docslink}
                 onClick={() => handleEventing('documentation')}
               />
             )}

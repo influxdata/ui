@@ -68,7 +68,8 @@ const ScriptQueryBuilder: FC = () => {
   const org = useSelector(getOrg)
   const isNewIOxOrg =
     useSelector(selectIsNewIOxOrg) &&
-    !isFlagEnabled('showOldDataExplorerInNewIOx')
+    !isFlagEnabled('showOldDataExplorerInNewIOx') &&
+    !isFlagEnabled('enableFluxInScriptBuilder')
 
   const handleClear = useCallback(() => {
     cancel()
@@ -226,7 +227,7 @@ const ScriptQueryBuilder: FC = () => {
               <ResultsPane />
             </DraggableResizer.Panel>
             <DraggableResizer.Panel isCollapsible={true}>
-              {!isNewIOxOrg && <Sidebar />}
+              <Sidebar />
             </DraggableResizer.Panel>
           </DraggableResizer>
         </FlexBox>

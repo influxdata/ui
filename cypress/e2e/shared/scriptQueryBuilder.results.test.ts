@@ -170,6 +170,7 @@ describe('Script Builder', () => {
         schemaComposition: true,
         newDataExplorer: true,
         saveAsScript: true,
+        enableFluxInScriptBuilder: true,
       }).then(() => {
         cy.get('@org').then(({id: orgID}: Organization) => {
           route = `/orgs/${orgID}/data-explorer`

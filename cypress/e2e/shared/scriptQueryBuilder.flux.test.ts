@@ -171,6 +171,7 @@ describe('Script Builder', () => {
       loginWithFlags({
         schemaComposition: false,
         newDataExplorer: true,
+        enableFluxInScriptBuilder: true,
       }).then(() => {
         cy.getByTestID('editor-sync--toggle').should('not.exist')
         cy.getByTestID('script-query-builder--menu').contains('New Script')
@@ -325,6 +326,7 @@ describe('Script Builder', () => {
         schemaComposition: true,
         newDataExplorer: true,
         saveAsScript: true,
+        enableFluxInScriptBuilder: true,
       }).then(() => {
         clearSession()
         cy.getByTestID('editor-sync--toggle')

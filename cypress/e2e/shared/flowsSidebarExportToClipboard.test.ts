@@ -110,18 +110,21 @@ describe('Flows Copy To Clipboard', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
-
           cy.createNotebook(id).then(() => {
             cy.reload()
           })
         })
       })
-      cy.getByTestID('tree-nav')
+      cy.setFeatureFlags({
+        showNotebooksForCI: true,
+      }).then(() => {
+        cy.getByTestID('tree-nav')
 
-      cy.clickNavBarItem('nav-item-flows')
-      cy.intercept('PATCH', `/api/v2private/notebooks/*`).as(
-        'NotebooksPatchRequest'
-      )
+        cy.clickNavBarItem('nav-item-flows')
+        cy.intercept('PATCH', `/api/v2private/notebooks/*`).as(
+          'NotebooksPatchRequest'
+        )
+      })
     })
   })
 

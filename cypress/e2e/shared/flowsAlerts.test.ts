@@ -27,6 +27,7 @@ describe('flows alert panel', () => {
               .setFeatureFlags({
                 notebooksExp: true,
                 notebooksNewEndpoints: true,
+                showNotebooksForCI: true,
               })
               .then(() => {
                 cy.getByTestID('nav-item-flows').should('be.visible')

@@ -558,8 +558,12 @@ describe('Legends', () => {
           cy.createNotebook(id).then(() => {
             cy.reload()
           })
-          cy.visit(`${orgs}/${id}${notebooks}`)
-          cy.getByTestID('tree-nav').should('be.visible')
+          cy.setFeatureFlags({
+            showNotebooksForCI: true,
+          }).then(() => {
+            cy.visit(`${orgs}/${id}${notebooks}`)
+            cy.getByTestID('tree-nav').should('be.visible')
+          })
         })
       })
     })

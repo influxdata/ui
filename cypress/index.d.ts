@@ -31,6 +31,7 @@ import {
   createBucket,
   createScraper,
   createView,
+  createNotebook,
   fluxEqual,
   createTelegraf,
   createToken,
@@ -79,6 +80,7 @@ declare global {
       createDashWithCell: typeof createDashWithCell
       createDashWithViewAndVar: typeof createDashWithViewAndVar
       createView: typeof createView
+      createNotebook: typeof createNotebook
       createOrg: typeof createOrg
       deleteOrg: typeof deleteOrg
       flush: typeof flush

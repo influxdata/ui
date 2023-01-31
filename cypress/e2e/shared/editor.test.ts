@@ -49,11 +49,10 @@ describe('Editor+LSP communication', () => {
     before(() => {
       cy.flush()
       cy.signin()
-      cy.setFeatureFlags({schemaComposition: true})
+      cy.setFeatureFlags({schemaComposition: true, showNotebooksForCI: true})
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
-
           cy.createNotebook(id).then(() => {
             cy.reload()
           })

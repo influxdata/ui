@@ -264,6 +264,7 @@ describe('Flows with newQueryBuilder flag on', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.setFeatureFlags({
           newQueryBuilder: true,
+          showNotebooksForCI: true,
         }).then(() => {
           cy.visit(`${orgs}/${id}`)
         })

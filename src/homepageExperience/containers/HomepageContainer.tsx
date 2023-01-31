@@ -133,82 +133,112 @@ export const HomepageContainer: FC = () => {
                   direction={FlexDirection.Column}
                   alignItems={AlignItems.Stretch}
                 >
-                  <h5>
-                    Write and query data using the programming language of your
-                    choice
-                  </h5>
-                  <SquareGrid
-                    cardSize={squareGridCardSize}
-                    gutter={ComponentSize.Large}
-                  >
-                    <ResourceCard style={cardStyle}>
+                  {isFlagEnabled('ioxOnboarding') ? (
+                    <>
+                      <h3>Write & query your data</h3>
                       <Link
                         to={pythonWizardLink}
                         style={linkStyle}
                         onClick={logPythonWizardClick}
                       >
                         <div
-                          className="homepage-wizard-language-tile"
+                          className="homepage-write-data-tile"
                           data-testid="homepage-wizard-language-tile--python"
                         >
-                          <h5>Python</h5>
-                          {PythonIcon}
+                          <div className="tile-icon-text-wrapper">
+                            <div className="icon">{PythonIcon}</div>
+                            <div>
+                              <h4>Python</h4>
+                              <h6>
+                                Integrate with your own application code using
+                                Python.
+                              </h6>
+                            </div>
+                          </div>
+                          <Icon
+                            glyph={IconFont.ArrowRight_New}
+                            className="arrow-button"
+                          />
                         </div>
                       </Link>
-                    </ResourceCard>
-                    {!isFlagEnabled('ioxOnboarding') && (
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={javaScriptNodeLink}
-                          style={linkStyle}
-                          onClick={logNodeJSWizardClick}
-                        >
-                          <div className="homepage-wizard-language-tile">
-                            <h5>Node.js</h5>
-                            {NodejsIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                    )}
-                    <ResourceCard style={cardStyle}>
-                      <Link
-                        to={golangLink}
-                        style={linkStyle}
-                        onClick={logGoWizardClick}
+                    </>
+                  ) : (
+                    <>
+                      <h5>
+                        Write and query data using the programming language of
+                        your choice
+                      </h5>
+                      <SquareGrid
+                        cardSize={squareGridCardSize}
+                        gutter={ComponentSize.Large}
                       >
-                        <div className="homepage-wizard-language-tile">
-                          <h5>Go</h5>
-                          {GoIcon}
-                        </div>
-                      </Link>
-                    </ResourceCard>
-                    {!isFlagEnabled('ioxOnboarding') && (
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={arduinoLink}
-                          style={linkStyle}
-                          onClick={logArduinoWizardClick}
-                        >
-                          <div
-                            className="homepage-wizard-language-tile"
-                            data-testid="homepage-wizard-language-tile--arduino"
+                        <ResourceCard style={cardStyle}>
+                          <Link
+                            to={pythonWizardLink}
+                            style={linkStyle}
+                            onClick={logPythonWizardClick}
                           >
-                            <h5>Arduino</h5>
-                            {ArduinoIcon}
-                          </div>
+                            <div
+                              className="homepage-wizard-language-tile"
+                              data-testid="homepage-wizard-language-tile--python"
+                            >
+                              <h5>Python</h5>
+                              {PythonIcon}
+                            </div>
+                          </Link>
+                        </ResourceCard>
+
+                        <ResourceCard style={cardStyle}>
+                          <Link
+                            to={javaScriptNodeLink}
+                            style={linkStyle}
+                            onClick={logNodeJSWizardClick}
+                          >
+                            <div className="homepage-wizard-language-tile">
+                              <h5>Node.js</h5>
+                              {NodejsIcon}
+                            </div>
+                          </Link>
+                        </ResourceCard>
+                        <ResourceCard style={cardStyle}>
+                          <Link
+                            to={golangLink}
+                            style={linkStyle}
+                            onClick={logGoWizardClick}
+                          >
+                            <div className="homepage-wizard-language-tile">
+                              <h5>Go</h5>
+                              {GoIcon}
+                            </div>
+                          </Link>
+                        </ResourceCard>
+                        <ResourceCard style={cardStyle}>
+                          <Link
+                            to={arduinoLink}
+                            style={linkStyle}
+                            onClick={logArduinoWizardClick}
+                          >
+                            <div
+                              className="homepage-wizard-language-tile"
+                              data-testid="homepage-wizard-language-tile--arduino"
+                            >
+                              <h5>Arduino</h5>
+                              {ArduinoIcon}
+                            </div>
+                          </Link>
+                        </ResourceCard>
+                      </SquareGrid>
+                      <FlexBox justifyContent={JustifyContent.FlexStart}>
+                        <Link
+                          to={loadDataSourcesLink}
+                          onClick={logMoreButtonClick}
+                          style={inlineViewMoreStyle}
+                        >
+                          View more
                         </Link>
-                      </ResourceCard>
-                    )}
-                  </SquareGrid>
-                  <FlexBox justifyContent={JustifyContent.FlexStart}>
-                    <Link
-                      to={loadDataSourcesLink}
-                      onClick={logMoreButtonClick}
-                      style={inlineViewMoreStyle}
-                    >
-                      View more
-                    </Link>
-                  </FlexBox>
+                      </FlexBox>
+                    </>
+                  )}
                   <hr style={{marginTop: '8px'}} />
                   {isFlagEnabled('subscriptionsUI') && (
                     <Link

@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import { useSelector } from 'react-redux'
 
 // Contexts
 import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
@@ -14,11 +15,13 @@ import {CLOUD} from 'src/shared/constants'
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
 import FileUploadSection from 'src/writeData/components/FileUploadSection'
 import ClientLibrarySection from 'src/writeData/components/ClientLibrarySection'
+import ClientLibrarySectionSql from './ClientLibrarySectionSql'
 import TelegrafPluginSection from 'src/writeData/components/TelegrafPluginSection'
 import CloudNativeSources from 'src/writeData/subscriptions/components/CloudNativeSources'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import { isOrgIOx } from 'src/organizations/selectors'
 
 const WriteDataSections: FC = () => {
   const {searchTerm} = useContext(WriteDataSearchContext)
@@ -40,7 +43,7 @@ const WriteDataSections: FC = () => {
   return (
     <>
       <FileUploadSection />
-      <ClientLibrarySection />
+      {useSelector(isOrgIOx) ? <ClientLibrarySectionSql /> : <ClientLibrarySection />}
       {CLOUD && isFlagEnabled('subscriptionsUI') && <CloudNativeSources />}
       <TelegrafPluginSection />
     </>

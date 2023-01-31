@@ -8,13 +8,15 @@ describe('Flows', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
           cy.getByTestID('version-info').should('be.visible')
-
           cy.createNotebook(id).then(() => {
             cy.reload()
           })
-
-          cy.getByTestID('nav-item-flows').should('be.visible')
-          cy.getByTestID('nav-item-flows').click()
+          cy.setFeatureFlags({
+            showNotebooksForCI: true,
+          }).then(() => {
+            cy.getByTestID('nav-item-flows').should('be.visible')
+            cy.getByTestID('nav-item-flows').click()
+          })
         })
       })
     })

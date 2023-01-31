@@ -128,6 +128,9 @@ describe('Secrets', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
+          cy.setFeatureFlags({
+            showNotebooksForCI: true,
+          })
           cy.createNotebook(id).then(() => {
             cy.reload()
           })

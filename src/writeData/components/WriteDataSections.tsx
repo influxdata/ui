@@ -25,6 +25,7 @@ import {isOrgIOx} from 'src/organizations/selectors'
 
 const WriteDataSections: FC = () => {
   const {searchTerm} = useContext(WriteDataSearchContext)
+  const isIOxOrg = useSelector(isOrgIOx)
   const hasResults =
     !!searchUploads(searchTerm).length ||
     !!searchClients(searchTerm).length ||
@@ -43,7 +44,7 @@ const WriteDataSections: FC = () => {
   return (
     <>
       <FileUploadSection />
-      {useSelector(isOrgIOx) ? (
+      {isIOxOrg ? (
         <ClientLibrarySectionSql />
       ) : (
         <ClientLibrarySection />

@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
 
 // Components
 import DocSearch, {DocSearchType} from 'src/shared/search/DocSearch'
@@ -11,7 +10,6 @@ import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isOrgIOx} from 'src/organizations/selectors'
 
 // Styles
 import 'src/me/components/DocSearchWidget.scss'
@@ -75,30 +73,26 @@ const DocSearchWidget: FC = () => {
   return (
     <div className="WidgetSearch">
       <DocSearch type={DocSearchType.Widget} />
-      {!useSelector(isOrgIOx) && (
-        <>
-          <p className="WidgetHelperText">
-            Press CTRL + M on any page to search
-          </p>
-          <div className="useful-links">
-            <h4 style={{textTransform: 'uppercase'}}>Useful Links</h4>
-            <ul className="docslinks-list">
-              {supportLinks.map(({link, title, eventName}) => (
-                <li key={title}>
-                  <a
-                    href={link}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => handleEventing(eventName)}
-                  >
-                    {title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
-      )}
+      <p className="WidgetHelperText">
+        Press CTRL + M on any page to search
+      </p>
+      <div className="useful-links">
+        <h4 style={{textTransform: 'uppercase'}}>Useful Links</h4>
+        <ul className="docslinks-list">
+          {supportLinks.map(({link, title, eventName}) => (
+            <li key={title}>
+              <a
+                href={link}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => handleEventing(eventName)}
+              >
+                {title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }

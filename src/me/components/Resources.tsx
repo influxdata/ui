@@ -24,6 +24,7 @@ import {isOrgIOx} from 'src/organizations/selectors'
 
 const ResourceLists: FC = () => {
   const {paygCreditEnabled} = useContext(UsageContext)
+  const isIOxOrg = useSelector(isOrgIOx)
 
   return (
     <FlexBox
@@ -33,8 +34,7 @@ const ResourceLists: FC = () => {
       stretchToFitHeight={true}
       margin={ComponentSize.Large}
     >
-      <DocSearchWidget />
-      {useSelector(isOrgIOx) && (
+      {isIOxOrg ? (
         <AnnouncementCenter>
           <AnnouncementBlock
             title="New time-series engine for InfluxDB"
@@ -57,7 +57,7 @@ const ResourceLists: FC = () => {
             ctaLink="https://www.influxdata.com/cloud-iox-faq/"
           />
         </AnnouncementCenter>
-      )}
+      ) : <DocSearchWidget />}
       {CLOUD && paygCreditEnabled && <UsagePanel />}
       <VersionInfo />
     </FlexBox>

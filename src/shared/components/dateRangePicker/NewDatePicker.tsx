@@ -219,6 +219,8 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
         setInputEndDate(`${inputEndDate}ms`)
       }
     } else if (validateInput(inputStartDate)) {
+      // persist custom time in ISO format:
+      // 'YYYY-MM-DDTHH:mm:ss.sssZ', i.e. UTC time zone
       let lower: string = inputStartDate
       if (isValidDatepickerFormat(inputStartDate)) {
         const date =

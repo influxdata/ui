@@ -36,6 +36,9 @@ const groupedTagValues = (
     {}
   )
 
+// tech debt: because product requirement to re-attach composition on page reload/nav
+const TRACKED_COMPOSITION_START_LINE = 1
+
 export class ConnectionManager extends AgnosticConnectionManager {
   private _timeRange: TimeRange = DEFAULT_TIME_RANGE
 
@@ -158,6 +161,14 @@ export class ConnectionManager extends AgnosticConnectionManager {
     }
   }
 
+  _reattachExistingComposition(composition: string) {
+    const currentEditorText = this._model.getValue()
+    if (currentEditorText.startsWith(`${composition}\n`)) {
+      return true
+    }
+    return false
+  }
+
   _updateComposition(
     toAdd: Partial<CompositionSelection>,
     toRemove: Partial<CompositionSelection>
@@ -172,18 +183,22 @@ export class ConnectionManager extends AgnosticConnectionManager {
     const endLineNumber = this._compositionRange?.end?.line ?? 1
     const shouldAddNewLine = startLineNumber == 1 && endLineNumber == 1
     const endColumn = shouldAddNewLine ? 1 : Infinity
-    this._model.applyEdits([
-      {
-        text: `${composition}${shouldAddNewLine ? '\n' : ''}`,
-        forceMoveMarkers: true,
-        range: {
-          startLineNumber,
-          startColumn: 1,
-          endLineNumber,
-          endColumn,
+
+    // determine if reattachment (in which case, do nothing), or adding the composition
+    if (!this._reattachExistingComposition(composition)) {
+      this._model.applyEdits([
+        {
+          text: `${composition}${shouldAddNewLine ? '\n' : ''}`,
+          forceMoveMarkers: true,
+          range: {
+            startLineNumber,
+            startColumn: TRACKED_COMPOSITION_START_LINE,
+            endLineNumber,
+            endColumn,
+          },
         },
-      },
-    ])
+      ])
+    }
 
     // updated composition's new Range
     this._setEditorBlockStyle(

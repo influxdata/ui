@@ -55,7 +55,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
         setScripts(resp.data.scripts)
         setLoading(RemoteDataState.Done)
       } else {
-        alert('you are in an supported environment')
+        alert('you are in an unsupported environment')
       }
     } catch (error) {
       setLoading(RemoteDataState.Error)

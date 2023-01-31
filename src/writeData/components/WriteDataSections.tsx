@@ -15,7 +15,7 @@ import {CLOUD} from 'src/shared/constants'
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
 import FileUploadSection from 'src/writeData/components/FileUploadSection'
 import ClientLibrarySection from 'src/writeData/components/ClientLibrarySection'
-import ClientLibrarySectionSql from './ClientLibrarySectionSql'
+import ClientLibrarySectionSql from 'src/writeData/components/ClientLibrarySectionSql'
 import TelegrafPluginSection from 'src/writeData/components/TelegrafPluginSection'
 import CloudNativeSources from 'src/writeData/subscriptions/components/CloudNativeSources'
 
@@ -44,11 +44,7 @@ const WriteDataSections: FC = () => {
   return (
     <>
       <FileUploadSection />
-      {isIOxOrg ? (
-        <ClientLibrarySectionSql />
-      ) : (
-        <ClientLibrarySection />
-      )}
+      {isIOxOrg ? <ClientLibrarySectionSql /> : <ClientLibrarySection />}
       {CLOUD && isFlagEnabled('subscriptionsUI') && <CloudNativeSources />}
       <TelegrafPluginSection />
     </>

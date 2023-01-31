@@ -4,6 +4,7 @@ import {AppState} from 'src/types'
 import {CLOUD, IOX_SWITCHOVER_CREATION_DATE} from 'src/shared/constants'
 
 import {selectOrgCreationDate} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const selectNotebooks = (state: AppState): Notebook[] => {
   return state.resources.notebooks.notebooks
@@ -20,7 +21,7 @@ export const selectShouldShowNotebooks = (state: AppState): boolean => {
   }
 
   // In cloud, don't show notebooks for any org created after the IOx cutover date
-  if (!wasCreatedBeforeIOxCutoff) {
+  if (!wasCreatedBeforeIOxCutoff && !isFlagEnabled('showNotebooksForCI')) {
     return false
   }
 

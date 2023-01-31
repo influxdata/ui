@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext, useState} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {Columns, Grid, IndexList} from '@influxdata/clockface'
@@ -7,24 +8,35 @@ import {UsersContext} from 'src/users/context/users'
 import {UserListItem} from 'src/users/components/UserListItem'
 import {InviteListItem} from 'src/users/components/InviteListItem'
 
+// Overlays
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+
+// Types
+import {RemoveMemberOverlayParams} from 'src/users/components/RemoveMemberOverlay'
+
 // Utils
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import {filter} from 'src/users/utils/filter'
 
 export const UserList: FC = () => {
-  const {users, invites} = useContext(UsersContext)
-
+  const {removeUser, users, invites} = useContext(UsersContext)
+  const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState('')
-
   const filteredUsers = filter(
     users,
     ['email', 'firstName', 'lastName', 'role'],
     searchTerm
   )
-
   const filteredInvites = filter(invites, ['email', 'role'], searchTerm)
 
   const isDeletable = users.length > 1
+
+  const handleRemoveUser = (evt: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const userToRemove = users.find(user => user.id === evt.currentTarget.id)
+    const params: RemoveMemberOverlayParams = {removeUser, users, userToRemove}
+
+    dispatch(showOverlay('remove-member', params, () => dismissOverlay()))
+  }
 
   return (
     <Grid>
@@ -51,6 +63,7 @@ export const UserList: FC = () => {
           ))}
           {filteredUsers.map(user => (
             <UserListItem
+              handleRemoveUser={handleRemoveUser}
               key={`user-${user.id}`}
               user={user}
               isDeletable={isDeletable}

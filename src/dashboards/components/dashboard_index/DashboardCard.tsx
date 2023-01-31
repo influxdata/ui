@@ -31,6 +31,9 @@ import {
 } from 'src/dashboards/actions/thunks'
 import {resetViews} from 'src/views/actions/creators'
 
+// Selectors
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
+
 // Types
 import {Label, AppState} from 'src/types'
 
@@ -154,14 +157,16 @@ class DashboardCard extends PureComponent<Props> {
           style={minWidth}
           contents={_ => (
             <List>
-              <List.Item
-                onClick={this.handleExport}
-                size={ComponentSize.Small}
-                style={fontWeight}
-                testID="context-export-dashboard"
-              >
-                Download Template
-              </List.Item>
+              {this.props.shouldShowTemplates && (
+                <List.Item
+                  onClick={this.handleExport}
+                  size={ComponentSize.Small}
+                  style={fontWeight}
+                  testID="context-export-dashboard"
+                >
+                  Download Template
+                </List.Item>
+              )}
               <List.Item
                 onClick={this.handleCloneDashboard}
                 size={ComponentSize.Small}
@@ -243,9 +248,12 @@ const mdtp = {
 
 const mstp = (state: AppState, props: OwnProps) => {
   const dashboard = state.resources.dashboards.byID[props.id]
+  const shouldShowTemplates =
+    !selectIsNewIOxOrg(state) || isFlagEnabled('showTemplatesInNewIOx')
 
   return {
     dashboard,
+    shouldShowTemplates,
   }
 }
 const connector = connect(mstp, mdtp)

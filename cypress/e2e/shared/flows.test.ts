@@ -15,6 +15,7 @@ describe('Flows', () => {
     // Double check that the new schemaComposition flag does not interfere.
     cy.setFeatureFlags({
       schemaComposition: true,
+      showNotebooksForCI: true,
     })
     // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
     // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).

@@ -18,6 +18,7 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {event} from 'src/cloud/utils/reporting'
 import FeedbackBar from 'src/homepageExperience/components/FeedbackBar'
 import SampleAppCard from 'src/homepageExperience/components/steps/SampleAppCard'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type OwnProps = {
   wizardEventName: string
@@ -113,7 +114,7 @@ export const Finish = (props: OwnProps) => {
         >
           <ResourceCard className="homepage-wizard-next-steps">
             <SafeBlankLink
-              href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/"
+              href="https://docs.influxdata.com/influxdb/latest/reference/key-concepts/"
               onClick={() =>
                 handleNextStepEvent(wizardEventName, 'keyConcepts')
               }
@@ -122,21 +123,23 @@ export const Finish = (props: OwnProps) => {
             </SafeBlankLink>
             <p>Learn about important concepts for writing time-series data.</p>
           </ResourceCard>
-          <ResourceCard className="homepage-wizard-next-steps">
-            <SafeBlankLink
-              href="https://university.influxdata.com/"
-              onClick={() =>
-                handleNextStepEvent(wizardEventName, 'influxUniversity')
-              }
-            >
-              <h4>{CodeTerminalIcon}InfluxDB University</h4>
-            </SafeBlankLink>
-            <p>
-              Our free hands-on courses teach you the technical skills and best
-              practices to get the most out of your real-time data with
-              InfluxDB.
-            </p>
-          </ResourceCard>
+          {!isFlagEnabled('ioxOnboarding') && (
+            <ResourceCard className="homepage-wizard-next-steps">
+              <SafeBlankLink
+                href="https://university.influxdata.com/"
+                onClick={() =>
+                  handleNextStepEvent(wizardEventName, 'influxUniversity')
+                }
+              >
+                <h4>{CodeTerminalIcon}InfluxDB University</h4>
+              </SafeBlankLink>
+              <p>
+                Our free hands-on courses teach you the technical skills and
+                best practices to get the most out of your real-time data with
+                InfluxDB.
+              </p>
+            </ResourceCard>
+          )}
           {props.wizardEventName === 'cliWizard' && (
             <ResourceCard className="homepage-wizard-next-steps">
               <SafeBlankLink
@@ -152,7 +155,8 @@ export const Finish = (props: OwnProps) => {
           )}
         </FlexBox>
         {props.wizardEventName !== 'cliWizard' &&
-        props.wizardEventName !== 'arduinoWizard' ? (
+        props.wizardEventName !== 'arduinoWizard' &&
+        !isFlagEnabled('ioxOnboarding') ? (
           <SampleAppCard
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}

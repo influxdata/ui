@@ -9,7 +9,6 @@ import {DEFAULT_BUCKET} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {
   isUsingWindows,
   keyboardCopyTriggered,
@@ -24,15 +23,47 @@ type OwnProps = {
   bucket: string
 }
 
-export const ExecuteQuery = (props: OwnProps) => {
+export const ExecuteQuerySql = (props: OwnProps) => {
   const {bucket} = props
-  const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
-  const queryMac = `influx query 'from(bucket:"${bucketName}") |> range(start:-30m)'`
-  const queryWindows = `.\\influx query 'from(bucket:\\"${bucketName}\\") |> range(start:-30m)'`
 
-  const fluxExample = `from(bucket: “weather-data”)
-  |> range(start: -10m)
-  |> filter(fn: (r) => r._measurement == “temperature”)`
+  const bucketName = bucket === DEFAULT_BUCKET ? 'sample-bucket' : bucket
+
+  const queryMacSql = `influx query "
+import \\"experimental/iox\\"
+
+iox.sql(
+  bucket: \\"${bucketName}\\",
+  query: \\"
+    SELECT
+      *
+    FROM
+      'airSensors'
+    WHERE
+      time >= now() - interval '30 minutes'
+  \\",
+)"`
+
+  const queryWindowsSql = `.\\influx query
+import \\"experimental/iox\\"
+
+iox.sql(
+  bucket: \\"${bucketName}\\",
+  query: \\"
+    SELECT
+      *
+    FROM
+      'airSensors'
+    WHERE
+      time >= now() - interval '30 minutes'
+  \\",
+)"`
+
+  const sqlExample = `SELECT
+  *
+FROM
+  'airSensors'
+WHERE
+  time >= now() - interval '30 minutes'`
 
   useEffect(() => {
     const fireKeyboardCopyEvent = event => {
@@ -49,35 +80,23 @@ export const ExecuteQuery = (props: OwnProps) => {
 
   return (
     <>
-      <h1>Execute a Flux Query</h1>
+      <h1>Execute a SQL Query</h1>
       <p>
-        Now let's query the data we wrote into the database. We use the Flux
-        scripting language to query data.{' '}
-        <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/latest/reference/syntax/flux/"
-          onClick={() =>
-            event('firstMile.cliWizard.documentation.link.clicked')
-          }
-        >
-          Flux
-        </SafeBlankLink>{' '}
-        is designed for querying, analyzing, and acting on data.
-        <br />
-        <br />
-        Here's an example of a basic Flux script:
+        Now let's query the data we wrote into the database. This is isolated
+        SQL query:
       </p>
       <CodeSnippet
-        text={fluxExample}
+        text={sqlExample}
         showCopyControl={false}
         language="properties"
       ></CodeSnippet>
       <p style={{marginTop: '60px'}}>
-        Let's write a Flux query in the InfluxDB CLI to read back all of the
+        Let's write our SQL query in the InfluxDB CLI to read back all of the
         data you wrote in the previous step. Copy the code snippet below into
         the InfluxDB CLI.
       </p>
       <CodeSnippet
-        text={isUsingWindows() ? queryWindows : queryMac}
+        text={isUsingWindows() ? queryWindowsSql : queryMacSql}
         onCopy={logCopyCodeSnippet}
         language="properties"
       />

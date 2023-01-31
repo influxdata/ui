@@ -102,14 +102,14 @@ for (let i = 0; i < 5; i++) {
         In the above code snippet, we define five data points and write each one
         to InfluxDB. Each of the 5 points we write has a{' '}
         <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#field-key"
+          href="https://docs.influxdata.com/influxdb/latest/reference/glossary/#field-key"
           onClick={logDocsOpened}
         >
           field
         </SafeBlankLink>{' '}
         and a{' '}
         <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key"
+          href="https://docs.influxdata.com/influxdb/latest/reference/glossary/#tag-key"
           onClick={logDocsOpened}
         >
           tag

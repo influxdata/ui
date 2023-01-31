@@ -1,8 +1,6 @@
 import React, {FC} from 'react'
 import {
-  Button,
   Columns,
-  ComponentStatus,
   FlexBox,
   Grid,
   RangeSlider,
@@ -20,14 +18,12 @@ interface SqlViewOptionsT {
   selectViewOptions: (_: RecursivePartial<ViewOptions>) => void
   allViewOptions: ViewOptions
   selectedViewOptions: ViewOptions
-  seeSubquery: () => void
 }
 
 export const SqlViewOptions: FC<SqlViewOptionsT> = ({
   selectViewOptions,
   allViewOptions,
   selectedViewOptions,
-  seeSubquery,
 }) => {
   const handleSelectedListItem = (propKey, value) => {
     if ((selectedViewOptions[propKey] ?? []).includes(value)) {
@@ -141,18 +137,6 @@ export const SqlViewOptions: FC<SqlViewOptionsT> = ({
               labelPrefix="retained "
               labelSuffix="%"
             />
-            <div className="sql-view-options--see-query">
-              <Button
-                testID="sql-view-options--see-query"
-                text="View graph subquery"
-                status={
-                  !seeSubquery
-                    ? ComponentStatus.Disabled
-                    : ComponentStatus.Valid
-                }
-                onClick={seeSubquery}
-              />
-            </div>
           </Grid.Column>
         </Grid.Row>
       </Grid>

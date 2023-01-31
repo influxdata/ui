@@ -115,7 +115,7 @@ The total number of Kapacitor tasks.
 ## kapacitor_alert
 
 The `kapacitor_alert` measurement stores fields with information related to
-[Kapacitor alerts](https://docs.influxdata.com/kapacitor/v1.5/working/alerts/).
+[Kapacitor alerts](https://docs.influxdata.com/kapacitor/latest/working/alerts/).
 
 ### notification-dropped
 

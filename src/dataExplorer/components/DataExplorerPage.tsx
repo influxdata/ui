@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useContext, useEffect} from 'react'
 import {Switch, Route, Link, useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
@@ -25,6 +26,10 @@ import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 import TemplatePage from 'src/dataExplorer/components/resources/TemplatePage'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 
+// Selectors
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
+import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
+
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event, useLoadTimeReporting} from 'src/cloud/utils/reporting'
@@ -46,6 +51,11 @@ const DataExplorerPageHeader: FC = () => {
   const {scriptQueryBuilder, setScriptQueryBuilder} =
     useContext(AppSettingContext)
   const {resource, save} = useContext(PersistanceContext)
+  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
+  const shouldShowDataExplorerToggle =
+    isFlagEnabled('newDataExplorer') &&
+    (!isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx'))
+
   const history = useHistory()
 
   const toggleSlider = () => {
@@ -90,7 +100,7 @@ const DataExplorerPageHeader: FC = () => {
     >
       {pageTitle}
       <FlexBox margin={ComponentSize.Large}>
-        {isFlagEnabled('newDataExplorer') && (
+        {shouldShowDataExplorerToggle && (
           <FlexBox margin={ComponentSize.Medium}>
             <InputLabel>Switch to old Data Explorer</InputLabel>
             <SlideToggle
@@ -109,8 +119,20 @@ const DataExplorerPage: FC = () => {
   const {flowsCTA, scriptQueryBuilder, setFlowsCTA} =
     useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
-  const showNewExplorer = scriptQueryBuilder && isFlagEnabled('newDataExplorer')
   const history = useHistory()
+  const isNewIOxOrg =
+    useSelector(selectIsNewIOxOrg) &&
+    !isFlagEnabled('showOldDataExplorerInNewIOx')
+  const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
+  const shouldShowNewExplorer =
+    (scriptQueryBuilder && isFlagEnabled('newDataExplorer')) || isNewIOxOrg
+
+  const shouldShowSaveAsButton =
+    !isNewIOxOrg ||
+    shouldShowNotebooks ||
+    isFlagEnabled('showTasksInNewIOx') ||
+    isFlagEnabled('showDashboardsInNewIOx') ||
+    isFlagEnabled('showVariablesInNewIOx')
 
   const hideFlowsCTA = () => {
     setFlowsCTA({explorer: false})
@@ -179,7 +201,7 @@ const DataExplorerPage: FC = () => {
             </div>
           </FeatureFlag>
         )}
-        {!showNewExplorer && (
+        {!shouldShowNewExplorer && (
           <Page.ControlBar fullWidth={true}>
             <Page.ControlBarLeft>
               <ViewTypeDropdown />
@@ -187,13 +209,13 @@ const DataExplorerPage: FC = () => {
             </Page.ControlBarLeft>
             <Page.ControlBarRight>
               <TimeZoneDropdown />
-              <SaveAsButton />
+              {shouldShowSaveAsButton && <SaveAsButton />}
             </Page.ControlBarRight>
           </Page.ControlBar>
         )}
         <Page.Contents fullWidth={true} scrollable={false}>
-          {!showNewExplorer && <DataExplorer />}
-          {showNewExplorer && <ScriptQueryBuilder />}
+          {!shouldShowNewExplorer && <DataExplorer />}
+          {shouldShowNewExplorer && <ScriptQueryBuilder />}
         </Page.Contents>
       </GetResources>
     </Page>

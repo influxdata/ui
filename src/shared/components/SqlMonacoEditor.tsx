@@ -115,7 +115,7 @@ const SqlEditorMonaco: FC<Props> = ({
       <ErrorBoundary>
         <div className={wrapperClassName} data-testid="sql-editor">
           <MonacoEditor
-            language="pgsql"
+            language={SQLLANGID}
             theme={THEME_NAME}
             value={script}
             onChange={onChange}

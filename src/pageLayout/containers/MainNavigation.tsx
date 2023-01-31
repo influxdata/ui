@@ -26,6 +26,7 @@ import {
   selectOperatorRole,
 } from 'src/identity/selectors'
 import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
 
 // Types
 import {IdentityUser} from 'src/client/unityRoutes'
@@ -59,7 +60,8 @@ interface NavSubItem {
 const generateNavItems = (
   orgID: string,
   operatorRole: IdentityUser['operatorRole'],
-  shouldShowNotebooks: boolean
+  shouldShowNotebooks: boolean,
+  isNewIOxOrg: boolean
 ): NavItem[] => {
   const navItems: NavItem[] = [
     {
@@ -139,6 +141,7 @@ const generateNavItems = (
       shortLabel: 'Boards',
       link: `/orgs/${orgID}/dashboards-list`,
       activeKeywords: ['dashboards', 'dashboards-list'],
+      enabled: () => !isNewIOxOrg || isFlagEnabled('showDashboardsInNewIOx'),
     },
     {
       id: 'tasks',
@@ -147,6 +150,7 @@ const generateNavItems = (
       label: 'Tasks',
       link: `/orgs/${orgID}/tasks`,
       activeKeywords: ['tasks'],
+      enabled: () => !isNewIOxOrg || isFlagEnabled('showTasksInNewIOx'),
     },
     {
       id: 'alerting',
@@ -169,13 +173,14 @@ const generateNavItems = (
           link: `/orgs/${orgID}/alert-history`,
         },
       ],
+      enabled: () => !isNewIOxOrg || isFlagEnabled('showAlertsInNewIOx'),
     },
     {
       id: 'settings',
       testID: 'nav-item-settings',
       icon: IconFont.CogOutline_New,
       label: 'Settings',
-      link: `/orgs/${orgID}/settings/variables`,
+      link: `/orgs/${orgID}/settings`,
       activeKeywords: ['settings'],
       menu: [
         {
@@ -183,12 +188,14 @@ const generateNavItems = (
           testID: 'nav-subitem-variables',
           label: 'Variables',
           link: `/orgs/${orgID}/settings/variables`,
+          enabled: () => !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx'),
         },
         {
           id: 'templates',
           testID: 'nav-subitem-templates',
           label: 'Templates',
           link: `/orgs/${orgID}/settings/templates`,
+          enabled: () => !isNewIOxOrg || isFlagEnabled('showTemplatesInNewIOx'),
         },
         {
           id: 'labels',
@@ -239,6 +246,7 @@ export const MainNavigation: FC = () => {
   const accountType = useSelector(selectCurrentAccountType)
   const operatorRole = useSelector(selectOperatorRole)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
+  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
 
   const dispatch = useDispatch()
 
@@ -296,67 +304,70 @@ export const MainNavigation: FC = () => {
       userElement={CLOUD ? null : <UserWidget />}
       onToggleClick={handleToggleNavExpansion}
     >
-      {generateNavItems(org.id, operatorRole, shouldShowNotebooks).map(
-        (item: NavItem) => {
-          const linkElement = (className: string): JSX.Element => (
-            <Link
-              to={item.link}
-              className={className}
-              title={item.label}
-              onClick={() => {
-                event('nav clicked', {which: item.id})
-              }}
-            />
-          )
-          return (
-            <TreeNav.Item
-              key={item.id}
-              id={item.id}
-              testID={item.testID}
-              icon={<Icon glyph={item.icon} />}
-              label={item.label}
-              shortLabel={item.shortLabel}
-              active={getNavItemActivation(
-                item.activeKeywords,
-                location.pathname
-              )}
-              linkElement={linkElement}
-            >
-              {Boolean(item.menu) && (
-                <TreeNav.SubMenu>
-                  {item.menu.map((menuItem: NavSubItem) => {
-                    const linkElement = (className: string): JSX.Element => (
-                      <Link
-                        to={menuItem.link}
-                        className={className}
-                        onClick={() => {
-                          event('nav clicked', {
-                            which: `${item.id} - ${menuItem.id}`,
-                          })
-                        }}
-                      />
-                    )
+      {generateNavItems(
+        org.id,
+        operatorRole,
+        shouldShowNotebooks,
+        isNewIOxOrg
+      ).map((item: NavItem) => {
+        const linkElement = (className: string): JSX.Element => (
+          <Link
+            to={item.link}
+            className={className}
+            title={item.label}
+            onClick={() => {
+              event('nav clicked', {which: item.id})
+            }}
+          />
+        )
+        return (
+          <TreeNav.Item
+            key={item.id}
+            id={item.id}
+            testID={item.testID}
+            icon={<Icon glyph={item.icon} />}
+            label={item.label}
+            shortLabel={item.shortLabel}
+            active={getNavItemActivation(
+              item.activeKeywords,
+              location.pathname
+            )}
+            linkElement={linkElement}
+          >
+            {Boolean(item.menu) && (
+              <TreeNav.SubMenu>
+                {item.menu.map((menuItem: NavSubItem) => {
+                  const linkElement = (className: string): JSX.Element => (
+                    <Link
+                      to={menuItem.link}
+                      className={className}
+                      onClick={() => {
+                        event('nav clicked', {
+                          which: `${item.id} - ${menuItem.id}`,
+                        })
+                      }}
+                    />
+                  )
 
-                    return (
-                      <TreeNav.SubItem
-                        key={menuItem.id}
-                        id={menuItem.id}
-                        testID={menuItem.testID}
-                        active={getNavItemActivation(
-                          [menuItem.id],
-                          location.pathname
-                        )}
-                        label={menuItem.label}
-                        linkElement={linkElement}
-                      />
-                    )
-                  })}
-                </TreeNav.SubMenu>
-              )}
-            </TreeNav.Item>
-          )
-        }
-      )}
+                  return (
+                    <TreeNav.SubItem
+                      key={menuItem.id}
+                      id={menuItem.id}
+                      testID={menuItem.testID}
+                      active={getNavItemActivation(
+                        [menuItem.id],
+                        location.pathname
+                      )}
+                      label={menuItem.label}
+                      linkElement={linkElement}
+                    />
+                  )
+                })}
+              </TreeNav.SubMenu>
+            )}
+          </TreeNav.Item>
+        )
+      })}
       <TreeNav.Item
         id="support"
         testID="nav-item-support"
@@ -432,17 +443,19 @@ export const MainNavigation: FC = () => {
               <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
             )}
           />
-          <TreeNav.SubItem
-            id="influxUniversity"
-            label="InfluxDB University"
-            testID="nav-subitem-university"
-            linkElement={() => (
-              <SafeBlankLink
-                href="https://university.influxdata.com/"
-                onClick={() => handleEventing('influxdbUniversity')}
-              />
-            )}
-          />
+          {!isNewIOxOrg && (
+            <TreeNav.SubItem
+              id="influxUniversity"
+              label="InfluxDB University"
+              testID="nav-subitem-university"
+              linkElement={() => (
+                <SafeBlankLink
+                  href="https://university.influxdata.com/"
+                  onClick={() => handleEventing('influxdbUniversity')}
+                />
+              )}
+            />
+          )}
           {CLOUD && (
             <>
               <TreeNav.SubHeading label="Useful Links" />

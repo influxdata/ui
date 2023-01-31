@@ -2,7 +2,7 @@ import * as pgsql from 'monaco-editor/esm/vs/basic-languages/pgsql/pgsql'
 
 import {MonacoBasicLanguage} from 'src/types'
 
-const LANGID = 'pgsql'
+const LANGID = 'sql'
 
 function addSyntax() {
   monaco.languages.register({

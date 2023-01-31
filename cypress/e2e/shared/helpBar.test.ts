@@ -52,16 +52,4 @@ describe('Help bar menu sub nav links', () => {
         })
       })
   })
-
-  it('checks if help bar InfluxDB University link is correct', () => {
-    cy.getByTestID('tree-nav--sub-menu')
-      .get('#influxUniversity')
-      .within(() => {
-        cy.get('a').should($a => {
-          expect($a.attr('href'), 'href').to.equal(
-            'https://university.influxdata.com/'
-          )
-        })
-      })
-  })
 })

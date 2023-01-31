@@ -1,4 +1,5 @@
 import React, {FC, useEffect, useState, useCallback} from 'react'
+import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
 // Components
@@ -14,9 +15,14 @@ import {
   Orientation,
 } from '@influxdata/clockface'
 
+// Selectors
+import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
+import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
+
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {PROJECT_NAME} from 'src/flows'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 enum SaveAsOption {
   Dashboard = 'dashboard',
@@ -27,7 +33,28 @@ enum SaveAsOption {
 
 const SaveAsOverlay: FC = () => {
   const history = useHistory()
-  const [saveAsOption, setSaveAsOption] = useState(SaveAsOption.Notebook)
+  const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
+  const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
+  const shouldShowDashboards =
+    !isNewIOxOrg || isFlagEnabled('showDashboardsInNewIOx')
+  const shouldShowTasks = !isNewIOxOrg || isFlagEnabled('showTasksInNewIOx')
+  const shouldShowVariables =
+    !isNewIOxOrg || isFlagEnabled('showVariablesInNewIOx')
+
+  const getActiveTab = (): SaveAsOption => {
+    if (shouldShowDashboards) {
+      return SaveAsOption.Dashboard
+    } else if (shouldShowVariables) {
+      return SaveAsOption.Variable
+    } else if (shouldShowTasks) {
+      return SaveAsOption.Task
+    } else {
+      return SaveAsOption.Notebook
+    }
+  }
+
+  const [saveAsOption, setSaveAsOption] = useState(getActiveTab())
+
   const hide = useCallback(() => {
     history.goBack()
   }, [history])
@@ -36,13 +63,24 @@ const SaveAsOverlay: FC = () => {
     event('Data Explorer Save as Menu Changed', {menu: saveAsOption})
   }, [saveAsOption])
 
-  let saveAsForm = <SaveAsCellForm dismiss={hide} />
-
-  if (saveAsOption === SaveAsOption.Task) {
+  // sets the default tab to be the first tab that is enabled
+  let saveAsForm
+  if (shouldShowDashboards) {
+    saveAsForm = <SaveAsCellForm dismiss={hide} />
+  } else if (shouldShowTasks) {
     saveAsForm = <SaveAsTaskForm dismiss={hide} />
-  } else if (saveAsOption === SaveAsOption.Variable) {
+  } else if (shouldShowVariables) {
     saveAsForm = <SaveAsVariable onHideOverlay={hide} />
-  } else if (saveAsOption === SaveAsOption.Notebook) {
+  } else if (shouldShowNotebooks) {
+    saveAsForm = <SaveAsNotebookForm dismiss={hide} />
+  }
+
+  // displays the correct tab based on the selected tab
+  if (shouldShowTasks && saveAsOption === SaveAsOption.Task) {
+    saveAsForm = <SaveAsTaskForm dismiss={hide} />
+  } else if (shouldShowVariables && saveAsOption === SaveAsOption.Variable) {
+    saveAsForm = <SaveAsVariable onHideOverlay={hide} />
+  } else if (shouldShowNotebooks && saveAsOption === SaveAsOption.Notebook) {
     saveAsForm = <SaveAsNotebookForm dismiss={hide} />
   }
 
@@ -57,34 +95,42 @@ const SaveAsOverlay: FC = () => {
         <Overlay.Body>
           <Tabs.Container orientation={Orientation.Horizontal}>
             <Tabs alignment={Alignment.Center} size={ComponentSize.Medium}>
-              <Tabs.Tab
-                id={SaveAsOption.Notebook}
-                text={`${PROJECT_NAME}`}
-                testID={`${PROJECT_NAME.toLowerCase()}--radio-button`}
-                onClick={() => setSaveAsOption(SaveAsOption.Notebook)}
-                active={saveAsOption === SaveAsOption.Notebook}
-              />
-              <Tabs.Tab
-                id={SaveAsOption.Dashboard}
-                text="Dashboard Cell"
-                testID="cell--radio-button"
-                onClick={() => setSaveAsOption(SaveAsOption.Dashboard)}
-                active={saveAsOption === SaveAsOption.Dashboard}
-              />
-              <Tabs.Tab
-                id={SaveAsOption.Task}
-                text="Task"
-                testID="task--radio-button"
-                onClick={() => setSaveAsOption(SaveAsOption.Task)}
-                active={saveAsOption === SaveAsOption.Task}
-              />
-              <Tabs.Tab
-                id={SaveAsOption.Variable}
-                text="Variable"
-                testID="variable--radio-button"
-                onClick={() => setSaveAsOption(SaveAsOption.Variable)}
-                active={saveAsOption === SaveAsOption.Variable}
-              />
+              {shouldShowDashboards && (
+                <Tabs.Tab
+                  id={SaveAsOption.Dashboard}
+                  text="Dashboard Cell"
+                  testID="cell--radio-button"
+                  onClick={() => setSaveAsOption(SaveAsOption.Dashboard)}
+                  active={saveAsOption === SaveAsOption.Dashboard}
+                />
+              )}
+              {shouldShowTasks && (
+                <Tabs.Tab
+                  id={SaveAsOption.Task}
+                  text="Task"
+                  testID="task--radio-button"
+                  onClick={() => setSaveAsOption(SaveAsOption.Task)}
+                  active={saveAsOption === SaveAsOption.Task}
+                />
+              )}
+              {shouldShowVariables && (
+                <Tabs.Tab
+                  id={SaveAsOption.Variable}
+                  text="Variable"
+                  testID="variable--radio-button"
+                  onClick={() => setSaveAsOption(SaveAsOption.Variable)}
+                  active={saveAsOption === SaveAsOption.Variable}
+                />
+              )}
+              {shouldShowNotebooks && (
+                <Tabs.Tab
+                  id={SaveAsOption.Notebook}
+                  text={`${PROJECT_NAME}`}
+                  testID={`${PROJECT_NAME.toLowerCase()}--radio-button`}
+                  onClick={() => setSaveAsOption(SaveAsOption.Notebook)}
+                  active={saveAsOption === SaveAsOption.Notebook}
+                />
+              )}
             </Tabs>
             <Tabs.TabContents>{saveAsForm}</Tabs.TabContents>
           </Tabs.Container>

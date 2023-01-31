@@ -59,16 +59,21 @@ describe('Users Page', () => {
     cy.getByTestIDSubStr('user-list-item').should('have.length', 2)
 
     cy.getByTestID(`user-list-item user@influxdata.com`).within(() => {
-      cy.getByTestID('delete-user--button').trigger('mouseover')
-      // TODO figure out how to have cypress handle hover events
-      // cy.getByTestID('delete-user--button').should('be.visible')
-      cy.getByTestID('delete-user--button').click()
+      // This won't be deemed visible due to Cypress's (lack of) hover handling.
+      // Just check for existence. https://docs.cypress.io/api/commands/hover
+      cy.getByTestID('delete-user--button').should('exist').click()
     })
 
-    cy.getByTestID('delete-user--confirm-button').should('be.visible')
-    cy.getByTestID('delete-user--confirm-button').click()
+    cy.getByTestID('remove-member-overlay--container').within(() => {
+      cy.getByTestID('dropdown--button').should('be.visible').click()
+      cy.getByTestID('dropdown-menu')
+        .should('be.visible')
+        .and('contain', 'josh@influxdata.com')
+        .click()
+      cy.getByTestID('remove-member-form--submit').should('be.visible').click()
+    })
 
-    cy.getByTestID('notification-success--dismiss').click()
+    cy.getByTestID('notification-success--dismiss').should('be.visible').click()
 
     cy.getByTestIDSubStr('user-list-item').should('have.length', 1)
   })

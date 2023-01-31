@@ -94,28 +94,27 @@ for value in range(5):
         onCopy={logCopyCodeSnippet}
         language="python"
       />
-      <p style={{marginTop: '20px'}}>
+      <p>
         In the above code snippet, we define five data points and write each one
         to InfluxDB. Each of the 5 points we write has a{' '}
         <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#field-key"
+          href="https://docs.influxdata.com/influxdb/latest/reference/glossary/#field-key"
           onClick={logDocsOpened}
         >
           field
         </SafeBlankLink>{' '}
         and a{' '}
         <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key"
+          href="https://docs.influxdata.com/influxdb/latest/reference/glossary/#tag-key"
           onClick={logDocsOpened}
         >
           tag
         </SafeBlankLink>
         .
       </p>
-      <p style={{marginTop: '40px'}}>
+      <p>
         Once you write this data, you’ll begin to see the confirmation below
       </p>
-
       <Panel backgroundColor={InfluxColors.Grey15}>
         <Panel.Body>
           <DataListening bucket={selectedBucket.name} />

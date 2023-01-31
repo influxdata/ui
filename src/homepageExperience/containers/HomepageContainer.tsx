@@ -156,18 +156,20 @@ export const HomepageContainer: FC = () => {
                         </div>
                       </Link>
                     </ResourceCard>
-                    <ResourceCard style={cardStyle}>
-                      <Link
-                        to={javaScriptNodeLink}
-                        style={linkStyle}
-                        onClick={logNodeJSWizardClick}
-                      >
-                        <div className="homepage-wizard-language-tile">
-                          <h5>Node.js</h5>
-                          {NodejsIcon}
-                        </div>
-                      </Link>
-                    </ResourceCard>
+                    {!isFlagEnabled('ioxOnboarding') && (
+                      <ResourceCard style={cardStyle}>
+                        <Link
+                          to={javaScriptNodeLink}
+                          style={linkStyle}
+                          onClick={logNodeJSWizardClick}
+                        >
+                          <div className="homepage-wizard-language-tile">
+                            <h5>Node.js</h5>
+                            {NodejsIcon}
+                          </div>
+                        </Link>
+                      </ResourceCard>
+                    )}
                     <ResourceCard style={cardStyle}>
                       <Link
                         to={golangLink}
@@ -180,21 +182,23 @@ export const HomepageContainer: FC = () => {
                         </div>
                       </Link>
                     </ResourceCard>
-                    <ResourceCard style={cardStyle}>
-                      <Link
-                        to={arduinoLink}
-                        style={linkStyle}
-                        onClick={logArduinoWizardClick}
-                      >
-                        <div
-                          className="homepage-wizard-language-tile"
-                          data-testid="homepage-wizard-language-tile--arduino"
+                    {!isFlagEnabled('ioxOnboarding') && (
+                      <ResourceCard style={cardStyle}>
+                        <Link
+                          to={arduinoLink}
+                          style={linkStyle}
+                          onClick={logArduinoWizardClick}
                         >
-                          <h5>Arduino</h5>
-                          {ArduinoIcon}
-                        </div>
-                      </Link>
-                    </ResourceCard>
+                          <div
+                            className="homepage-wizard-language-tile"
+                            data-testid="homepage-wizard-language-tile--arduino"
+                          >
+                            <h5>Arduino</h5>
+                            {ArduinoIcon}
+                          </div>
+                        </Link>
+                      </ResourceCard>
+                    )}
                   </SquareGrid>
                   <FlexBox justifyContent={JustifyContent.FlexStart}>
                     <Link
@@ -284,27 +288,13 @@ export const HomepageContainer: FC = () => {
                   </Link>
                 </FlexBox>
               </Grid.Column>
-              <Grid.Column
-                widthSM={Columns.Four}
-                widthMD={Columns.Three}
-                style={{marginTop: '-8px'}}
-              >
+              <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>
                 {CLOUD ? (
                   <UsageProvider>
-                    <Resources
-                      style={{
-                        backgroundColor: InfluxColors.Grey5,
-                        paddingRight: 0,
-                      }}
-                    />
+                    <Resources />
                   </UsageProvider>
                 ) : (
-                  <Resources
-                    style={{
-                      backgroundColor: InfluxColors.Grey5,
-                      paddingRight: 0,
-                    }}
-                  />
+                  <Resources />
                 )}
               </Grid.Column>
             </Grid.Row>

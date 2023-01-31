@@ -2538,7 +2538,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     package: 'experimental/http',
     desc: 'Submits an HTTP GET request to the specified URL and returns the HTTP status code, response body, and response headers.',
     example:
-      'http.get(url: "https://docs.influxdata.com/influxdb/v2.0/", headers: {foo: "bar"})',
+      'http.get(url: "https://docs.influxdata.com/influxdb/latest/", headers: {foo: "bar"})',
     category: 'Miscellaneous',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/http/get/`,
   },

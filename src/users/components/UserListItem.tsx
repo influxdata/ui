@@ -1,26 +1,23 @@
 // Libraries
-import React, {FC, useContext, useState} from 'react'
+import React, {FC} from 'react'
 import {capitalize} from 'lodash'
 
 // Components
 import {
+  Alignment,
+  Button,
+  ComponentColor,
   IconFont,
   IndexList,
-  Alignment,
-  ButtonShape,
-  ComponentColor,
-  ConfirmationButton,
-  RemoteDataState,
-  ComponentStatus,
 } from '@influxdata/clockface'
-import {UsersContext} from 'src/users/context/users'
 
 // Types
 import {CloudUser} from 'src/types'
 
 interface Props {
-  user: CloudUser
+  handleRemoveUser: (evt: React.MouseEvent<HTMLElement, MouseEvent>) => void
   isDeletable: boolean
+  user: CloudUser
 }
 
 const formatName = (firstName: string | null, lastName: string | null) => {
@@ -39,32 +36,12 @@ const formatName = (firstName: string | null, lastName: string | null) => {
   return ''
 }
 
-export const UserListItem: FC<Props> = ({user, isDeletable}) => {
+export const UserListItem: FC<Props> = ({
+  user,
+  handleRemoveUser,
+  isDeletable,
+}) => {
   const {email, firstName, lastName, role} = user
-  const {removeUser, removeUserStatus} = useContext(UsersContext)
-
-  const [revealOnHover, toggleRevealOnHover] = useState(true)
-
-  const handleShow = () => {
-    toggleRevealOnHover(false)
-  }
-
-  const handleHide = () => {
-    toggleRevealOnHover(true)
-  }
-
-  const handleRemove = () => {
-    removeUser(user.id)
-  }
-
-  let status = ComponentStatus.Default
-
-  if (removeUserStatus.id === user.id) {
-    status =
-      removeUserStatus.status === RemoteDataState.Loading
-        ? ComponentStatus.Loading
-        : ComponentStatus.Default
-  }
 
   return (
     <IndexList.Row brighten={true} testID={`user-list-item ${email}`}>
@@ -80,21 +57,15 @@ export const UserListItem: FC<Props> = ({user, isDeletable}) => {
         {capitalize(role)}
       </IndexList.Cell>
       <IndexList.Cell className="user-list-cell-status">Active</IndexList.Cell>
-      <IndexList.Cell revealOnHover={revealOnHover} alignment={Alignment.Right}>
+      <IndexList.Cell alignment={Alignment.Right} revealOnHover={true}>
         {isDeletable && (
-          <ConfirmationButton
-            icon={IconFont.Trash_New}
-            onShow={handleShow}
-            status={status}
-            onHide={handleHide}
-            confirmationLabel="Removing this member will remove their tasks and alerts."
-            confirmationButtonText="Remove member access"
-            titleText="Remove member access"
-            confirmationButtonColor={ComponentColor.Danger}
+          <Button
             color={ComponentColor.Danger}
-            shape={ButtonShape.Square}
-            onConfirm={handleRemove}
-            testID="delete-user"
+            icon={IconFont.Trash_New}
+            id={user.id}
+            onClick={handleRemoveUser}
+            testID="delete-user--button"
+            titleText="Remove member access"
           />
         )}
       </IndexList.Cell>

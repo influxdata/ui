@@ -186,7 +186,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
               </Table.Row>
               <Table.Row>
                 <Table.Cell>query</Table.Cell>
-                <Table.Cell>Execute a Flux query</Table.Cell>
+                <Table.Cell>Execute a query</Table.Cell>
               </Table.Row>
               <Table.Row>
                 <Table.Cell>write</Table.Cell>
@@ -264,7 +264,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
               </Table.Row>
               <Table.Row>
                 <Table.Cell>query</Table.Cell>
-                <Table.Cell>Execute a Flux query</Table.Cell>
+                <Table.Cell>Execute a query</Table.Cell>
               </Table.Row>
               <Table.Row>
                 <Table.Cell>write</Table.Cell>
@@ -348,7 +348,7 @@ sudo cp influxdb2-client-latest-linux-arm64/influx /usr/local/bin/
               </Table.Row>
               <Table.Row>
                 <Table.Cell>query</Table.Cell>
-                <Table.Cell>Execute a Flux query</Table.Cell>
+                <Table.Cell>Execute a query</Table.Cell>
               </Table.Row>
               <Table.Row>
                 <Table.Cell>write</Table.Cell>

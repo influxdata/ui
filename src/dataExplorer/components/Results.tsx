@@ -158,10 +158,25 @@ const TableResults: FC<{search: string}> = ({search}) => {
   )
 }
 
+const ErrorResults: FC<{error: string}> = ({error}) => {
+  return (
+    <div className="data-explorer-results--empty">
+      <div className="data-explorer-results--empty-header">
+        <h3>Graph Query Results</h3>
+        <p>{error}</p>
+      </div>
+    </div>
+  )
+}
+
 const GraphResults: FC = () => {
   const {view} = useContext(ResultsViewContext)
   const {result, status} = useContext(ChildResultsContext)
   const {range} = useContext(PersistanceContext)
+
+  if (result.error) {
+    return <ErrorResults error={result.error} />
+  }
 
   return (
     <div className="data-explorer-results--view">
@@ -179,11 +194,13 @@ const GraphResults: FC = () => {
 }
 
 const WrappedOptions: FC = () => {
+  const {result: parentResult} = useContext(ResultsContext)
   const {result} = useContext(ChildResultsContext)
   const {view, setView, selectViewOptions, viewOptions, selectedViewOptions} =
     useContext(ResultsViewContext)
   const {resource} = useContext(PersistanceContext)
-  const dataExists = !!result?.parsed
+  const graphDataExists = !!result?.parsed
+  const parentDataExists = !!parentResult?.parsed
 
   const updateChildResults = update => {
     setView({
@@ -193,10 +210,6 @@ const WrappedOptions: FC = () => {
         ...update,
       },
     })
-  }
-
-  if (!dataExists) {
-    return null
   }
 
   const subQueryOptions =
@@ -212,11 +225,23 @@ const WrappedOptions: FC = () => {
   return (
     <>
       {subQueryOptions}
-      <ViewOptions
-        properties={view.properties}
-        results={result.parsed}
-        update={updateChildResults}
-      />
+      {graphDataExists ? (
+        <ViewOptions
+          properties={view.properties}
+          results={result.parsed}
+          update={updateChildResults}
+        />
+      ) : (
+        <div className="view-options">
+          <p>Data cannot be graphed. Requires 2+ data points.</p>
+          {parentDataExists && viewOptions.smoothing.applied && (
+            <p>
+              If you are using Graph Smooth, please increase the percentage
+              retained or turn it off.
+            </p>
+          )}
+        </div>
+      )}
     </>
   )
 }
@@ -229,26 +254,25 @@ const NOT_SUPPORTED_GRAPH_TYPES = [
   SUPPORTED_VISUALIZATIONS['single-stat'].type,
 ]
 const GraphHeader: FC = () => {
-  const {view, setView, viewOptions} = useContext(ResultsViewContext)
+  const {view, setView} = useContext(ResultsViewContext)
   const {result} = useContext(ResultsContext)
   const {result: subQueryResult} = useContext(ChildResultsContext)
   const {launch, clear: closeSidebar} = useContext(SidebarContext)
 
-  const dataExists = !!result?.parsed
+  const dataExists =
+    !!result?.parsed && result.parsed.resultColumnNames.length > 0
 
   const launcher = () => {
     launch(<WrappedOptions />)
   }
+
   useEffect(() => {
     if (dataExists) {
       launcher()
-    }
-  }, [viewOptions])
-  useEffect(() => {
-    if (!dataExists) {
+    } else {
       closeSidebar()
     }
-  }, [dataExists])
+  }, [result])
 
   const updateType = viewType => {
     setView({

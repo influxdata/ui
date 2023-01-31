@@ -146,17 +146,6 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
 
   const handleSelectDate = (dates): void => {
     const [start, end] = dates
-    // The ReactDatePicker forces the timezone to be the Local timezone,
-    // so when our app in in UTC mode, to make the datepicker respect
-    // that timezone, we have to manually manipulate the Local time
-    if (timeZone === 'UTC') {
-      if (start) {
-        start.setMinutes(start.getMinutes() + start.getTimezoneOffset())
-      }
-      if (end) {
-        end.setMinutes(end.getMinutes() + end.getTimezoneOffset())
-      }
-    }
     setDateRange([start, end])
     let startInput = start
     let endInput = end

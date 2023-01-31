@@ -1,6 +1,6 @@
 import {MonacoLanguageClient} from 'monaco-languageclient'
 import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
-import {format_from_js_file} from 'src/languageSupport/languages/flux/parser'
+import {format_from_js_file} from 'src/languageSupport/languages/flux/lspUtils'
 
 import {ConnectionManager as AgnosticConnectionManager} from 'src/languageSupport/languages/agnostic/connection'
 

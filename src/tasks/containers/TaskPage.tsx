@@ -33,6 +33,9 @@ import {
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {isValidFlux} from 'src/languageSupport/languages/flux/lspUtils'
+import {taskNotCreated} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
@@ -144,6 +147,11 @@ class TaskPage extends PureComponent<Props> {
     // currently we delete that part of the script
     script = script.replace(new RegExp('option\\s+task\\s+=\\s+{(.|\\s)*}'), '')
 
+    if (!isValidFlux(script)) {
+      this.props.invalidFlux()
+      return
+    }
+
     event('Valid Task Form Submitted')
     this.props.saveNewScript(script, preamble).then(() => {
       this.props.goToTasks()
@@ -180,6 +188,10 @@ const mdtp = {
   clearTask,
   goToTasks,
   cancel,
+  invalidFlux: () =>
+    notify(
+      taskNotCreated('Invalid flux script. Please check your query text.')
+    ),
 }
 
 const connector = connect(mstp, mdtp)

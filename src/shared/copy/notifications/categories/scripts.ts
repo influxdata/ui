@@ -7,9 +7,12 @@ import {
 
 // Scripts
 
-export const scriptSaveFail = (scriptName: string): Notification => ({
+export const scriptSaveFail = (
+  scriptName: string,
+  reason?: string
+): Notification => ({
   ...defaultErrorNotification,
-  message: `${scriptName} failed to save`,
+  message: `${scriptName} failed to save${reason ? `: ${reason}` : ''}`,
 })
 
 export const scriptSaveSuccess = (scriptName: string): Notification => ({

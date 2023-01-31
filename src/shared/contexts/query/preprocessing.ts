@@ -1,7 +1,7 @@
 import {
   parse,
   format_from_js_file,
-} from 'src/languageSupport/languages/flux/parser'
+} from 'src/languageSupport/languages/flux/lspUtils'
 
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'

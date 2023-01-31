@@ -26,7 +26,7 @@ const DELAYTIME = 300
 
 window.TextDecoder = FakeTextDecoder
 
-jest.mock('src/languageSupport/languages/flux/parser', () => {
+jest.mock('src/languageSupport/languages/flux/lspUtils', () => {
   return {
     parse: jest.fn(getMockedParse()),
   }

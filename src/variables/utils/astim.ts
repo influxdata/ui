@@ -1,5 +1,5 @@
 // Utils
-import {parse} from 'src/languageSupport/languages/flux/parser'
+import {parse} from 'src/languageSupport/languages/flux/lspUtils'
 import {findNodes} from 'src/shared/utils/ast'
 
 // Types

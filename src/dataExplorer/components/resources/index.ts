@@ -1,5 +1,6 @@
 import {ReactNode} from 'react'
 import {ResourceType} from 'src/types/resources'
+import scriptResourceRegistration from 'src/dataExplorer/components/resources/types/script'
 
 export const SCRIPT_EDITOR_PARAMS = '?fluxScriptEditor'
 
@@ -28,18 +29,6 @@ interface Resources {
   [type: string]: ResourceRegistration
 }
 
-export const RESOURCES: Resources = {}
-// eslint-disable-next-line no-extra-semi
-;[require('./types/script')].forEach(mod => {
-  mod.default((def: ResourceRegistration) => {
-    if (RESOURCES.hasOwnProperty(def.type)) {
-      throw new Error(
-        `Resource of type [${def.type}] has already been registered`
-      )
-    }
-
-    RESOURCES[def.type] = {
-      ...def,
-    }
-  })
-})
+export const RESOURCES: Resources = {
+  scripts: scriptResourceRegistration(),
+}

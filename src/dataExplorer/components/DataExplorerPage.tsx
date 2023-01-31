@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useContext, useEffect} from 'react'
 import {Switch, Route, Link, useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
@@ -34,6 +34,8 @@ import {selectShouldShowNotebooks} from 'src/flows/selectors/flowsSelectors'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event, useLoadTimeReporting} from 'src/cloud/utils/reporting'
 import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {notify} from 'src/shared/actions/notifications'
+import {scriptSaveFail} from 'src/shared/copy/notifications'
 
 // Types
 import {ResourceType} from 'src/types'
@@ -57,6 +59,7 @@ const DataExplorerPageHeader: FC = () => {
     (!isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx'))
 
   const history = useHistory()
+  const dispatch = useDispatch()
 
   const toggleSlider = () => {
     event('toggled new query builder', {active: `${!scriptQueryBuilder}`})
@@ -72,7 +75,13 @@ const DataExplorerPageHeader: FC = () => {
 
   const handleRename = (name: string) => {
     resource.data.name = name
-    save(resource?.language)
+    save(resource?.language).catch(error => {
+      dispatch(
+        notify(
+          scriptSaveFail(resource?.data?.name ?? '', error?.message ?? error)
+        )
+      )
+    })
   }
 
   const showNewExplorer = scriptQueryBuilder && isFlagEnabled('newDataExplorer')

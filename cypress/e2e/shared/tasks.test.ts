@@ -397,6 +397,25 @@ from(bucket: "defbuck")
     })
   })
 
+  it('will not permit task creation with invalid flux', () => {
+    const willFail = 'my invalid flux query'
+    cy.createTaskFromEmpty(
+      willFail,
+      _ => {
+        return `foo`
+      },
+      '12h',
+      '30m'
+    )
+    cy.getByTestID('task-save-btn').click()
+
+    cy.log('error notification will appear')
+    cy.getByTestID('notification-error--dismiss').should('be.visible')
+    cy.log('task editor will remain open')
+    cy.getByInputValue(willFail)
+    cy.getByTestID('flux-editor').should('exist')
+  })
+
   describe('update & persist data', () => {
     // address a bug that was reported when editing tasks:
     // https://github.com/influxdata/influxdb/issues/15534
@@ -470,6 +489,19 @@ from(bucket: "defbuck")
       cy.getByInputValue(cronInput)
       cy.getByInputValue(offset)
       cy.getByTestID('task-save-btn').click()
+    })
+
+    it('will not permit invalid flux to update task', () => {
+      cy.getByTestID('flux-editor').monacoType(
+        `{selectAll}{rightArrow}{enter} foo`
+      )
+      cy.getByTestID('task-save-btn').click()
+
+      cy.log('error notification will appear')
+      cy.getByTestID('notification-error--dismiss').should('be.visible')
+      cy.log('task editor will remain open')
+      cy.getByInputValue(taskName)
+      cy.getByTestID('flux-editor').should('exist')
     })
   })
 

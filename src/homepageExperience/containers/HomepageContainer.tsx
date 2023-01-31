@@ -135,33 +135,32 @@ export const HomepageContainer: FC = () => {
                 >
                   {isFlagEnabled('ioxOnboarding') ? (
                     <>
-                    <h3>
-                      Write & query from your application
-                    </h3>
-                    <Link
-                      to={pythonWizardLink}
-                      style={linkStyle}
-                      onClick={logPythonWizardClick}
-                    >
-                      <div
-                        className="homepage-write-data-tile"
-                        data-testid="homepage-wizard-language-tile--python"
+                      <h3>Write & query from your application</h3>
+                      <Link
+                        to={pythonWizardLink}
+                        style={linkStyle}
+                        onClick={logPythonWizardClick}
                       >
-                        <div className="tile-icon-text-wrapper">
-                          <div className="icon">{PythonIcon}</div>
-                          <div>
-                            <h4>Python</h4>
-                            <h6>
-                              Integrate with your own application code using Python.
-                            </h6>
+                        <div
+                          className="homepage-write-data-tile"
+                          data-testid="homepage-wizard-language-tile--python"
+                        >
+                          <div className="tile-icon-text-wrapper">
+                            <div className="icon">{PythonIcon}</div>
+                            <div>
+                              <h4>Python</h4>
+                              <h6>
+                                Integrate with your own application code using
+                                Python.
+                              </h6>
+                            </div>
                           </div>
+                          <Icon
+                            glyph={IconFont.ArrowRight_New}
+                            className="arrow-button"
+                          />
                         </div>
-                        <Icon
-                          glyph={IconFont.ArrowRight_New}
-                          className="arrow-button"
-                        />
-                      </div>
-                    </Link>
+                      </Link>
                     </>
                   ) : (
                     <>

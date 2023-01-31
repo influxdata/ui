@@ -275,7 +275,7 @@ export const MainNavigation: FC = () => {
   }
 
   const docslink = isNewIOxOrg
-    ? 'http://docs.influxdata.com/influxdb/cloud-iox/'
+    ? 'https://docs.influxdata.com/influxdb/cloud-iox/'
     : 'https://docs.influxdata.com/'
 
   const handleToggleNavExpansion = (): void => {

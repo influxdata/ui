@@ -73,9 +73,7 @@ const DocSearchWidget: FC = () => {
   return (
     <div className="WidgetSearch">
       <DocSearch type={DocSearchType.Widget} />
-      <p className="WidgetHelperText">
-        Press CTRL + M on any page to search
-      </p>
+      <p className="WidgetHelperText">Press CTRL + M on any page to search</p>
       <div className="useful-links">
         <h4 style={{textTransform: 'uppercase'}}>Useful Links</h4>
         <ul className="docslinks-list">

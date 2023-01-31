@@ -57,7 +57,9 @@ const ResourceLists: FC = () => {
             ctaLink="https://www.influxdata.com/cloud-iox-faq/"
           />
         </AnnouncementCenter>
-      ) : <DocSearchWidget />}
+      ) : (
+        <DocSearchWidget />
+      )}
       {CLOUD && paygCreditEnabled && <UsagePanel />}
       <VersionInfo />
     </FlexBox>

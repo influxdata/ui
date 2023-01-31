@@ -20,7 +20,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {isUserOperator} from 'src/operator/utils'
 
 // Selectors
-import {getOrg} from 'src/organizations/selectors'
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {
   selectCurrentAccountType,
   selectOperatorRole,
@@ -247,6 +247,7 @@ export const MainNavigation: FC = () => {
   const operatorRole = useSelector(selectOperatorRole)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
+  const isIOxOrg = useSelector(isOrgIOx)
 
   const dispatch = useDispatch()
 
@@ -274,7 +275,7 @@ export const MainNavigation: FC = () => {
     return null
   }
 
-  const docslink = isNewIOxOrg
+  const docslink = isIOxOrg
     ? 'https://docs.influxdata.com/influxdb/cloud-iox/'
     : 'https://docs.influxdata.com/'
 

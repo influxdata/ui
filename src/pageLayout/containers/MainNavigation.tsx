@@ -252,9 +252,13 @@ export const MainNavigation: FC = () => {
 
   const location = useLocation()
   useEffect(() => {
-    const helpBarMenu = document.querySelectorAll<HTMLElement>(
+    const linksWithSubMenus = document.querySelectorAll<HTMLElement>(
       '.cf-tree-nav--sub-menu-trigger'
-    )[3]
+    )
+    const lastSubMenu = linksWithSubMenus.length - 1
+
+    const helpBarMenu = linksWithSubMenus[lastSubMenu]
+
     if (!helpBarMenu) {
       return
     }

@@ -127,6 +127,7 @@ describe('Editor+LSP communication', () => {
         newDataExplorer: true,
         schemaComposition: false,
         saveAsScript: true,
+        enableFluxInScriptBuilder: true,
       })
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/data-explorer`)

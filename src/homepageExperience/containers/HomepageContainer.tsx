@@ -135,7 +135,7 @@ export const HomepageContainer: FC = () => {
                 >
                   {isFlagEnabled('ioxOnboarding') ? (
                     <>
-                      <h3>Write & query from your application</h3>
+                      <h3>Write & query your data</h3>
                       <Link
                         to={pythonWizardLink}
                         style={linkStyle}

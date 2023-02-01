@@ -7,16 +7,27 @@ const dashboardName = 'Bee Happy'
 const dashboardName2 = 'test dashboard'
 const dashSearchName = 'bEE'
 
-describe.skip('Dashboards', () => {
+describe('Dashboards', () => {
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-        cy.visit(`${orgs}/${orgID}/dashboards-list`)
-      })
-    })
-    cy.getByTestID('tree-nav')
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy
+          .setFeatureFlags({
+            showDashboardsInNewIOx: true,
+            showVariablesInNewIOx: true,
+          })
+          .then(() => {
+            cy.fixture('routes').then(({orgs}) => {
+              return cy
+                .get<Organization>('@org')
+                .then(({id: orgID}: Organization) => {
+                  cy.visit(`${orgs}/${orgID}/dashboards-list`)
+                })
+            })
+            return cy.getByTestID('tree-nav')
+          })
+      )
+    )
   })
 
   it('empty state should have a header with text and a button to create a dashboard', () => {
@@ -508,8 +519,8 @@ describe.skip('Dashboards', () => {
         cy.getByTestID('search-widget').should('have.value', dashSearchName)
 
         // Navigate Away and come back by clicking on Boards icon
-        cy.getByTestID('nav-item-tasks').click()
-        cy.getByTestID('page-title').contains('Tasks')
+        cy.getByTestID('nav-item-data-explorer').click()
+        cy.getByTestID('page-title').contains('Data Explorer')
         cy.getByTestID('nav-item-dashboards').click()
         cy.getByTestID('search-widget').should('have.value', dashSearchName)
       })

@@ -1,20 +1,25 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
-describe('Dashboard', () => {
-  beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.isIoxOrg().then(isIoxOrg => {
-      cy.skipOn(isIoxOrg)
+const isIOxOrg = Boolean(Cypress.env('ioxUser'))
+const isTSMOrg = !isIOxOrg
 
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-          cy.visit(`${orgs}/${orgID}/dashboards-list`)
-          cy.getByTestID('tree-nav')
-        })
-      })
+const setupTest = () => {
+  cy.flush()
+  cy.signin()
+  cy.fixture('routes').then(({orgs}) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+      cy.visit(`${orgs}/${orgID}/dashboards-list`)
+      cy.getByTestID('tree-nav')
     })
+  })
+}
+
+describe('Dashboard - TSM', () => {
+  beforeEach(() => {
+    cy.skipOn(isIOxOrg)
+
+    setupTest()
   })
 
   it("can edit a dashboard's name", () => {
@@ -535,5 +540,14 @@ describe('Dashboard', () => {
       cy.getByTestID('tree-nav')
       cy.getByTestID('empty-state--text').should('be.visible')
     })
+  })
+})
+
+describe('Dashboard - IOx', () => {
+  it('should not show Dashboard', () => {
+    cy.skipOn(isTSMOrg)
+
+    setupTest()
+    cy.contains('404: Page Not Found')
   })
 })

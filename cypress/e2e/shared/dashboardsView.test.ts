@@ -1,14 +1,18 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
-describe.skip('Dashboard', () => {
+describe('Dashboard', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-        cy.visit(`${orgs}/${orgID}/dashboards-list`)
-        cy.getByTestID('tree-nav')
+    cy.isIoxOrg().then(isIoxOrg => {
+      cy.skipOn(isIoxOrg)
+
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+          cy.visit(`${orgs}/${orgID}/dashboards-list`)
+          cy.getByTestID('tree-nav')
+        })
       })
     })
   })

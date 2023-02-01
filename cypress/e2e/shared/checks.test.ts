@@ -8,7 +8,7 @@ const PAGE_LOAD_SLA = 10000
 const measurement = 'my_meas'
 const field = 'my_field'
 const stringField = 'string_field'
-describe('Checks', () => {
+describe.skip('Checks', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

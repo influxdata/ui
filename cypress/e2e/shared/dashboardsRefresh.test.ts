@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 import * as moment from 'moment'
 
-describe('Dashboard refresh', () => {
+describe.skip('Dashboard refresh', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

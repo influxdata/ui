@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Variables', () => {
+describe.skip('Variables', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

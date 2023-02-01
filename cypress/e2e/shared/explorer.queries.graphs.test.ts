@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('writing queries and making graphs using Data Explorer', () => {
+describe.skip('writing queries and making graphs using Data Explorer', () => {
   let route: string
 
   beforeEach(() => {

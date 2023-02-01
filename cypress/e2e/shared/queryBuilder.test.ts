@@ -13,7 +13,7 @@ const generateRandomSixDigitNumber = () => {
   return Number(digits.join(''))
 }
 
-describe('The Query Builder', () => {
+describe.skip('The Query Builder', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

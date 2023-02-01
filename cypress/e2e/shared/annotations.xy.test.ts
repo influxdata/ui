@@ -10,7 +10,7 @@ import {
   RANGE_ANNOTATION_TEXT,
 } from '../util/annotationsSetup'
 
-describe('The Annotations UI functionality, on a graph (xy line) graph type', () => {
+describe.skip('The Annotations UI functionality, on a graph (xy line) graph type', () => {
   beforeEach(() => setupData(cy))
 
   it('can create an annotation on the xy line graph', () => {

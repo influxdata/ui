@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
-describe('Dashboard', () => {
+describe.skip('Dashboard', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

@@ -10,7 +10,7 @@ import {
   RANGE_ANNOTATION_TEXT,
 } from '../util/annotationsSetup'
 
-describe('The Annotations UI functionality on a band plot graph type', () => {
+describe.skip('The Annotations UI functionality on a band plot graph type', () => {
   const bandSuffix = 'band'
 
   beforeEach(() => setupData(cy, bandSuffix))

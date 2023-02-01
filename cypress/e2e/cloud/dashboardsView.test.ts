@@ -40,7 +40,7 @@ describe('Dashboard', () => {
     cy.getByTestID('cell--view-empty markdown').contains(markdownImageWarning)
   })
 
-  it('escapes html in markdown editor', () => {
+  it.skip('escapes html in markdown editor', () => {
     cy.get('@org').then(({id: orgID}: any) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {

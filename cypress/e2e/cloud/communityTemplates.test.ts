@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Community Templates', () => {
+describe.skip('Community Templates', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {

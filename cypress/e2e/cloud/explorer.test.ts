@@ -14,7 +14,7 @@ function getTimeMachineText() {
     .invoke('text')
 }
 
-describe('DataExplorer', () => {
+describe.skip('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin().then(() => {

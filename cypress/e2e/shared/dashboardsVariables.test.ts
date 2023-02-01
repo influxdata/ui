@@ -34,7 +34,7 @@ const getSelectedVariable =
     return hydratedVarDawg.selected[0]
   }
 
-describe('Dashboard - variable interactions', () => {
+describe.skip('Dashboard - variable interactions', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

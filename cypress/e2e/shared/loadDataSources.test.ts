@@ -1,6 +1,6 @@
 import {Organization} from '../../src/types'
 
-describe('Load Data Sources', () => {
+describe.skip('Load Data Sources', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

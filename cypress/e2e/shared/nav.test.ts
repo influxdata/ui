@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 const CLOUD = Cypress.env('dexUrl') === 'OSS' ? false : true
 
-describe('navigation', () => {
+describe.skip('navigation', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

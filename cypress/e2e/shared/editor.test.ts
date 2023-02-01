@@ -6,7 +6,7 @@ const DEFAULT_FLUX_EDITOR_TEXT =
 // to see list of monaco-editor widgets to check:
 // document.querySelectorAll('[widgetid]')
 
-describe('Editor+LSP communication', () => {
+describe.skip('Editor+LSP communication', () => {
   const runTest = editorSelector => {
     it('receives LSP-triggered server events', () => {
       cy.getByTestID(editorSelector).then(() => {

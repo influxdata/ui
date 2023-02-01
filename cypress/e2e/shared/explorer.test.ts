@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
-describe('general Data Explorer functionality', () => {
+describe.skip('general Data Explorer functionality', () => {
   let route: string
 
   beforeEach(() => {

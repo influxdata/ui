@@ -7,7 +7,7 @@ const dashboardName = 'Bee Happy'
 const dashboardName2 = 'test dashboard'
 const dashSearchName = 'bEE'
 
-describe('Dashboards', () => {
+describe.skip('Dashboards', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

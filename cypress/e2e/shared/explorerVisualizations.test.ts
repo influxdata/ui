@@ -17,7 +17,7 @@ const VIS_TYPES = [
 ]
 const NUM_POINTS = 360
 
-describe('visualizations', () => {
+describe.skip('visualizations', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()

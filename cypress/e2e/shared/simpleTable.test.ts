@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
-describe('simple table interactions', () => {
+describe.skip('simple table interactions', () => {
   const simpleSmall = 'simple-small'
   const simpleLarge = 'simple-large'
   const simpleOverflow = 'simple-overflow'

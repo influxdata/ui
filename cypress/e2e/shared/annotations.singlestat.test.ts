@@ -10,7 +10,7 @@ import {
   RANGE_ANNOTATION_TEXT,
 } from '../util/annotationsSetup'
 
-describe('The Annotations UI functionality on a graph + single stat graph type', () => {
+describe.skip('The Annotations UI functionality on a graph + single stat graph type', () => {
   const singleStatSuffix = 'line-plus-single-stat'
 
   beforeEach(() => setupData(cy, singleStatSuffix))

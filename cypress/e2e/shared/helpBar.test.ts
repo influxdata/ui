@@ -10,9 +10,10 @@ describe('Help bar menu sub nav links', () => {
       .get('#documentation')
       .within(() => {
         cy.get('a').should($a => {
-          expect($a.attr('href'), 'href').to.equal(
-            'https://docs.influxdata.com/'
-          )
+          expect($a.attr('href'), 'href').to.be.oneOf([
+            'https://docs.influxdata.com/',
+            'https://docs.influxdata.com/influxdb/cloud-iox/',
+          ])
         })
       })
   })

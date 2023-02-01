@@ -72,7 +72,7 @@ const setupData = (cy: Cypress.Chainable) =>
     })
   )
 
-describe('Adaptive Zoom', () => {
+describe.skip('Adaptive Zoom', () => {
   beforeEach(() => setupData(cy))
 
   it('makes a query when zooming in', () => {

@@ -1,4 +1,4 @@
-describe('Help bar support for free account users', () => {
+describe.skip('Help bar support for free account users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {

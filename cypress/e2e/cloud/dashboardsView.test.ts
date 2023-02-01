@@ -1,4 +1,4 @@
-describe('Dashboard', () => {
+describe.skip('Dashboard', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() =>

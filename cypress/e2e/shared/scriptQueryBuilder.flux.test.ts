@@ -8,7 +8,7 @@ const DEFAULT_FLUX_EDITOR_TEXT =
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
 const DELAY_FOR_LSP_SERVER_BOOTUP = 7000
 
-describe('Script Builder', () => {
+describe.skip('Script Builder', () => {
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)

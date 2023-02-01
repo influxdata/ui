@@ -6,7 +6,7 @@ const DEFAULT_FLUX_EDITOR_TEXT =
 // to see list of monaco-editor widgets to check:
 // document.querySelectorAll('[widgetid]')
 
-describe.skip('Editor+LSP communication', () => {
+describe('Editor+LSP communication', () => {
   const runTest = editorSelector => {
     it('receives LSP-triggered server events', () => {
       cy.getByTestID(editorSelector).then(() => {
@@ -82,6 +82,7 @@ describe.skip('Editor+LSP communication', () => {
       cy.signin()
       cy.setFeatureFlags({
         schemaComposition: true,
+        showOldDataExplorerInNewIOx: true,
       })
       cy.get('@org').then(({id}: Organization) => {
         cy.createMapVariable(id)
@@ -132,17 +133,23 @@ describe.skip('Editor+LSP communication', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/data-explorer`)
         cy.getByTestID('tree-nav').should('be.visible')
-        cy.getByTestID('script-query-builder-toggle').then($toggle => {
-          cy.wrap($toggle).should('be.visible')
-          // Switch to Script Editor if not yet
-          if ($toggle.hasClass('active')) {
-            // active means showing the old Data Explorer
-            // hasClass is a jQuery function
-            $toggle.click()
-            cy.getByTestID('script-query-builder--menu').contains('New Script')
+        cy.isIoxOrg().then(isIox => {
+          if (!isIox) {
+            cy.getByTestID('script-query-builder-toggle').then($toggle => {
+              cy.wrap($toggle).should('be.visible')
+              // Switch to Script Editor if not yet
+              if ($toggle.hasClass('active')) {
+                // active means showing the old Data Explorer
+                // hasClass is a jQuery function
+                $toggle.click()
+                cy.getByTestID('script-query-builder--menu').contains(
+                  'New Script'
+                )
+              }
+            })
           }
-          return setScriptToFlux()
         })
+        return setScriptToFlux()
       })
     })
 

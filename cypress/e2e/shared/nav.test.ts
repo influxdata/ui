@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 const CLOUD = Cypress.env('dexUrl') === 'OSS' ? false : true
 
-describe.skip('navigation', () => {
+describe('using the main navigation menu', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
@@ -23,17 +23,21 @@ describe.skip('navigation', () => {
     cy.clickNavBarItem('nav-item-data-explorer')
     cy.getByTestID('data-explorer--header').should('exist')
 
-    // Dashboard Index Page
-    cy.clickNavBarItem('nav-item-dashboards')
-    cy.getByTestID('empty-dashboards-list').should('exist')
+    cy.isIoxOrg().then(isIOx => {
+      if (!isIOx) {
+        // Dashboard Index Page
+        cy.clickNavBarItem('nav-item-dashboards')
+        cy.getByTestID('empty-dashboards-list').should('exist')
 
-    // Tasks Index Page
-    cy.clickNavBarItem('nav-item-tasks')
-    cy.getByTestID('tasks-page--header').should('exist')
+        // Tasks Index Page
+        cy.clickNavBarItem('nav-item-tasks')
+        cy.getByTestID('tasks-page--header').should('exist')
 
-    // Alerts Page
-    cy.clickNavBarItem('nav-item-alerting')
-    cy.getByTestID('alerts-page--header').should('exist')
+        // Alerts Page
+        cy.clickNavBarItem('nav-item-alerting')
+        cy.getByTestID('alerts-page--header').should('exist')
+      }
+    })
 
     // Settings Page
     cy.clickNavBarItem('nav-item-settings')
@@ -135,41 +139,48 @@ describe.skip('navigation', () => {
     })
   })
 
-  const exploreTabs = (tabs: string[]) => {
-    tabs.forEach(tab => {
-      cy.getByTestID(`${tab}--tab`).should('be.visible').click()
-      cy.url().should('contain', tab)
+  describe('navigating in an IOx org', () => {
+    const isIox = Boolean(Cypress.env('ioxUser'))
+    const exploreTabs = (tabs: string[]) => {
+      tabs.forEach(tab => {
+        cy.getByTestID(`${tab}--tab`).should('be.visible').click()
+        cy.url().should('contain', tab)
+      })
+    }
+
+    it('can navigate in tabs of settings page', () => {
+      if (!isIox) {
+        cy.getByTestID('nav-item-settings').should('be.visible')
+        cy.clickNavBarItem('nav-item-settings')
+        exploreTabs(['templates', 'labels', 'variables'])
+      }
     })
-  }
 
-  it('can navigate in tabs of settings page', () => {
-    cy.getByTestID('nav-item-settings').should('be.visible')
-    cy.clickNavBarItem('nav-item-settings')
-    exploreTabs(['templates', 'labels', 'variables'])
-  })
-
-  it('can navigate in tabs of collapsed alerts page', () => {
-    cy.getByTestID('nav-item-alerting').should('be.visible')
-    cy.clickNavBarItem('nav-item-alerting')
-    ;['checks', 'endpoints', 'rules'].forEach(tab => {
-      cy.getByTestID(`alerting-tab--${tab}`).click()
-      cy.getByTestID(`alerting-tab--${tab}--input`).should('to.be', 'checked')
+    it('can navigate in tabs of collapsed alerts page', () => {
+      if (!isIox) {
+        cy.getByTestID('nav-item-alerting').should('be.visible')
+        cy.clickNavBarItem('nav-item-alerting')
+        ;['checks', 'endpoints', 'rules'].forEach(tab => {
+          cy.getByTestID(`alerting-tab--${tab}`).click()
+          cy.getByTestID(`alerting-tab--${tab}--input`).should(
+            'to.be',
+            'checked'
+          )
+        })
+      }
     })
   })
 
   it('can navigate in tabs from maximized left tree nav', () => {
     // TODO: check if nav is already maximized
+    const isIox = Boolean(Cypress.env('ioxUser'))
     cy.get('.cf-tree-nav--toggle').click({force: true})
-    ;[
-      'sources',
-      'buckets',
-      'telegrafs',
-      'tokens',
-      'history',
-      'variables',
-      'templates',
-      'labels',
-    ].forEach(navItem => {
+
+    const items = isIox
+      ? ['sources', 'buckets', 'telegrafs', 'tokens', 'labels']
+      : ['history', 'variables', 'templates']
+
+    items.forEach(navItem => {
       if (navItem === 'history') {
         cy.clickNavBarItem('nav-item-alerting')
       } else if (

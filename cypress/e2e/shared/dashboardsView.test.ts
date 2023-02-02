@@ -551,7 +551,8 @@ describe('Dashboard - post marty release IOx', () => {
     cy.fixture('routes').then(({orgs}) => {
       cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
         cy.visit(`${orgs}/${orgID}/dashboards-list`)
-        cy.getByTestID('tree-nav')
+        cy.getByTestID('tree-nav').should('be.visible')
+        cy.getByTestID('nav-item-dashboards').should('not.exist')
       })
     })
     cy.contains('404: Page Not Found')

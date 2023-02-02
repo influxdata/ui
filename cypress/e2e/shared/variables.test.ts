@@ -3,12 +3,12 @@ import {Organization} from '../../../src/types'
 const isIOxOrg = Boolean(Cypress.env('useIox'))
 const isTSMOrg = !isIOxOrg
 
-const setupTest = (shouldShowTasks: boolean = true) => {
+const setupTest = (shouldShowVariables: boolean = true) => {
   cy.flush().then(() =>
     cy.signin().then(() =>
       cy
         .setFeatureFlags({
-          showVariablesInNewIOx: shouldShowTasks,
+          showVariablesInNewIOx: shouldShowVariables,
           schemaComposition: true,
         })
         .then(() =>
@@ -427,8 +427,8 @@ describe('Variables - TSM', () => {
 describe('Variables - IOx', () => {
   it('routes to 404 page when IOx user attempts to access variables', () => {
     cy.skipOn(isTSMOrg)
-    const shouldShowTasks = false
-    setupTest(shouldShowTasks)
+    const shouldShowVariables = false
+    setupTest(shouldShowVariables)
     cy.contains('404: Page Not Found')
     cy.clickNavBarItem('nav-item-settings')
     cy.getByTestID('variables--tab').should('not.exist')

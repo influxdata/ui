@@ -766,7 +766,7 @@ export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
         Cypress.env('defaultUser', response.body.user.name)
         if (defaultUser) {
           return cy
-            .log(`re-provsioned user ${defaultUser} successfully`)
+            .log(`re-provisioned user ${defaultUser} successfully`)
             .then(() => response)
         } else {
           return cy

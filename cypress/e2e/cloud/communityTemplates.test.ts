@@ -1,15 +1,22 @@
 import {Organization} from '../../../src/types'
 
-describe.skip('Community Templates', () => {
+const isIOxOrg = Boolean(Cypress.env('useIox'))
+const isTSMOrg = !isIOxOrg
+
+describe('Community Templates - TSM', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${id}/settings/templates`)
-            cy.getByTestID('tree-nav')
+        cy.setFeatureFlags({
+          showTemplatesInNewIOx: true,
+        }).then(() => {
+          cy.get('@org').then(({id}: Organization) => {
+            cy.fixture('routes').then(({orgs}) => {
+              cy.visit(`${orgs}/${id}/settings/templates`)
+              cy.getByTestID('tree-nav').should('be.visible')
+            })
           })
-        )
+        })
       })
     )
   )
@@ -258,5 +265,23 @@ describe.skip('Community Templates', () => {
       cy.getByTestID('template-delete-button-dashboard--confirm-button').click()
       cy.getByTestID('installed-template-dashboard').should('not.exist')
     })
+  })
+})
+
+describe('Community Templates - IOx', () => {
+  it('routes to 404 page when IOx user attempts to access Templates', () => {
+    cy.skipOn(isTSMOrg)
+
+    cy.flush()
+    cy.signin()
+    cy.fixture('routes').then(({orgs}) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
+        cy.visit(`${orgs}/${id}/settings/templates`)
+        cy.getByTestID('tree-nav').should('be.visible')
+        cy.clickNavBarItem('nav-item-settings')
+        cy.getByTestID('templates--tab').should('not.exist')
+      })
+    })
+    cy.contains('404: Page Not Found')
   })
 })

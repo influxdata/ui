@@ -1,29 +1,41 @@
 import {Organization} from '../../../src/types'
 
-describe.skip('Variables', () => {
-  beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.get('@org').then(({id}: Organization) => {
-      cy.createQueryVariable(id)
+const isIOxOrg = Boolean(Cypress.env('ioxUser'))
+const isTSMOrg = !isIOxOrg
+
+const setupTest = () => {
+  cy.flush()
+  cy.signin()
+  cy.get('@org').then(({id}: Organization) => {
+    if (isTSMOrg) {
+      cy.clickNavBarItem('nav-item-settings')
+      cy.getByTestID('variables--tab').should('be.visible').click()
+      // Double check that the new schemaComposition flag does not interfere.
+      cy.setFeatureFlags({
+        schemaComposition: true,
+      })
+      // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+      // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+      cy.wait(1200)
+      cy.location('pathname').should('match', /\/variables$/)
+    } else {
       cy.visit(`orgs/${id}/settings/variables`)
-      cy.getByTestID('tree-nav')
-    })
-    // Double check that the new schemaComposition flag does not interfere.
-    cy.setFeatureFlags({
-      schemaComposition: true,
-    })
-    // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-    // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-    cy.wait(1200)
-    cy.location('pathname').should('match', /\/variables$/)
+    }
+  })
+}
+
+describe('Variables - TSM', () => {
+  beforeEach(() => {
+    // Skip all Variables tests for IOx orgs.
+    cy.skipOn(isIOxOrg)
+    setupTest()
   })
 
   it('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {
     // Navigate away from and back to variables index using the nav bar
-    cy.clickNavBarItem('nav-item-dashboards')
+    cy.clickNavBarItem('nav-item-data-explorer')
     cy.clickNavBarItem('nav-item-settings')
-    cy.getByTestID('templates--tab').click()
+    cy.getByTestID('labels--tab').click()
     cy.getByTestID('variables--tab').click()
 
     cy.getByTestID('resource-card variable').should('have.length', 1)
@@ -87,9 +99,9 @@ describe.skip('Variables', () => {
 
       const lastMapItem = 'Mila Emile,"o61AhpOGr5aO3cYVArC0"'
       cy.get('textarea').type(`Juanito MacNeil,"5TKl6l8i4idg15Fxxe4P"
-      Astrophel Chaudhary,"bDhZbuVj5RV94NcFXZPm"
-      Ochieng Benes,"YIhg6SoMKRUH8FMlHs3V"
-      ${lastMapItem}`)
+                  Astrophel Chaudhary,"bDhZbuVj5RV94NcFXZPm"
+                  Ochieng Benes,"YIhg6SoMKRUH8FMlHs3V"
+                  ${lastMapItem}`)
 
       cy.getByTestID('map-variable-dropdown--button').click()
       cy.contains(lastMapItem).click()
@@ -158,7 +170,7 @@ describe.skip('Variables', () => {
     cy.getByInputName('name').type(mapVariableName)
 
     cy.get('textarea').type(`Astrophel Chaudhary,"bDhZbuVj5RV94NcFXZPm"
-      Ochieng Benes,"YIhg6SoMKRUH8FMlHs3V"`)
+                  Ochieng Benes,"YIhg6SoMKRUH8FMlHs3V"`)
 
     cy.getByTestID('map-variable-dropdown--button').click().last().click()
 
@@ -410,5 +422,14 @@ describe.skip('Variables', () => {
     cy.getByTestID('resource-card variable')
       .should('have.length', 1)
       .contains(thirdVariableName)
+  })
+})
+
+describe('Variables - IOx', () => {
+  it('routes to 404 page when IOx user attempts to access variables', () => {
+    cy.skipOn(isTSMOrg)
+    setupTest()
+    cy.getByTestID('nav-item-variables').should('not.exist')
+    cy.contains('404: Page Not Found')
   })
 })

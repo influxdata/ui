@@ -10,7 +10,6 @@ describe('simple table interactions', () => {
     cy.signin()
     cy.setFeatureFlags({
       showOldDataExplorerInNewIOx: true,
-      // showVariablesInNewIOx: true,
     }).then(() =>
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.fixture('routes').then(({orgs, explorer}) => {

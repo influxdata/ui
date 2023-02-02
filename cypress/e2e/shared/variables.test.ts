@@ -430,5 +430,7 @@ describe('Variables - IOx', () => {
     const shouldShowTasks = false
     setupTest(shouldShowTasks)
     cy.contains('404: Page Not Found')
+    cy.clickNavBarItem('nav-item-settings')
+    cy.getByTestID('variables--tab').should('not.exist')
   })
 })

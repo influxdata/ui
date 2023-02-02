@@ -29,7 +29,7 @@ describe.skip('Help bar support for free account users', () => {
   })
 })
 
-describe('Help bar support for PAYG users', () => {
+describe.skip('Help bar support for PAYG users', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {

@@ -1,25 +1,24 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
-const isIOxOrg = Boolean(Cypress.env('ioxUser'))
+const isIOxOrg = Boolean(Cypress.env('useIox'))
 const isTSMOrg = !isIOxOrg
 
-const setupTest = () => {
-  cy.flush()
-  cy.signin()
-  cy.fixture('routes').then(({orgs}) => {
-    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-      cy.visit(`${orgs}/${orgID}/dashboards-list`)
-      cy.getByTestID('tree-nav')
-    })
-  })
-}
-
-describe('Dashboard - TSM', () => {
+describe('Dashboard - TSM and pre marty release IOx', () => {
   beforeEach(() => {
-    cy.skipOn(isIOxOrg)
-
-    setupTest()
+    cy.flush()
+    cy.signin()
+    cy.setFeatureFlags({
+      showDashboardsInNewIOx: true,
+      showVariablesInNewIOx: true,
+    }).then(() => {
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+          cy.visit(`${orgs}/${orgID}/dashboards-list`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+    })
   })
 
   it("can edit a dashboard's name", () => {
@@ -543,11 +542,18 @@ describe('Dashboard - TSM', () => {
   })
 })
 
-describe('Dashboard - IOx', () => {
+describe('Dashboard - post marty release IOx', () => {
   it('should not show Dashboard', () => {
     cy.skipOn(isTSMOrg)
 
-    setupTest()
+    cy.flush()
+    cy.signin()
+    cy.fixture('routes').then(({orgs}) => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+        cy.visit(`${orgs}/${orgID}/dashboards-list`)
+        cy.getByTestID('tree-nav')
+      })
+    })
     cy.contains('404: Page Not Found')
   })
 })

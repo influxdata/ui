@@ -6,8 +6,8 @@ import {Page} from '@influxdata/clockface'
 class SettingsHeader extends Component {
   public render() {
     return (
-      <Page.Header fullWidth={true}>
-        <Page.Title title="Settings" testID="settings-page--header" />
+      <Page.Header fullWidth={true} testID="settings-page--header">
+        <Page.Title title="Settings" />
       </Page.Header>
     )
   }

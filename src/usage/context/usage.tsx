@@ -226,15 +226,17 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         )
       })
 
-      Promise.all(promises).then(result => {
-        const amount: number = result
-          .reduce((a: number, b) => a + parseFloat(b), 0)
-          .toFixed(2)
-        setCreditUsage({
-          amount,
-          status: RemoteDataState.Done,
+      Promise.all(promises)
+        .then(result => {
+          const amount: number = result
+            .reduce((a: number, b) => a + parseFloat(b), 0)
+            .toFixed(2)
+          setCreditUsage({
+            amount,
+            status: RemoteDataState.Done,
+          })
         })
-      })
+        .catch(err => console.error(err))
     } catch (error) {
       setCreditUsage(prev => ({
         ...prev,

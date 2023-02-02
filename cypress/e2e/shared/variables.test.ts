@@ -27,8 +27,6 @@ const setupTest = (shouldShowTasks: boolean = true) => {
 
 describe('Variables - TSM', () => {
   beforeEach(() => {
-    // Skip all Variables tests for IOx orgs.
-    cy.skipOn(isIOxOrg)
     setupTest()
   })
 
@@ -431,8 +429,6 @@ describe('Variables - IOx', () => {
     cy.skipOn(isTSMOrg)
     const shouldShowTasks = false
     setupTest(shouldShowTasks)
-    cy.clickNavBarItem('nav-item-settings')
-    cy.getByTestID('variables--tab').should('not.exist')
     cy.contains('404: Page Not Found')
   })
 })

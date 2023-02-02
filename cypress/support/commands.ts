@@ -30,7 +30,7 @@ Cypress.on('uncaught:exception', (err, _) => {
 })
 
 export const signin = (): Cypress.Chainable<Cypress.Response<any>> => {
-  const useIox = Boolean(Cypress.env('ioxUser'))
+  const useIox = Boolean(Cypress.env('useIox'))
   return cy.setupUser(useIox).then((response: any) => {
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())

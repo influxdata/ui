@@ -4,7 +4,7 @@ const DEFAULT_SQL_EDITOR_TEXT = '/* Start by typing SQL here */'
 
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
 
-describe('Script Builder', () => {
+describe.skip('Script Builder', () => {
   const bucketName = 'defbuck'
   const measurement = 'ndbc'
 

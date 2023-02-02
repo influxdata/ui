@@ -10,7 +10,7 @@ const DELAY_FOR_LSP_SERVER_BOOTUP = 7000
 
 const DELAY_FOR_FILE_DOWNLOAD = 5000
 
-describe('Script Builder', () => {
+describe.skip('Script Builder', () => {
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)

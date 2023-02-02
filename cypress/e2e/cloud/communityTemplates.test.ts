@@ -271,17 +271,16 @@ describe('Community Templates - TSM', () => {
 describe('Community Templates - IOx', () => {
   it('routes to 404 page when IOx user attempts to access Templates', () => {
     cy.skipOn(isTSMOrg)
-
     cy.flush()
     cy.signin()
     cy.fixture('routes').then(({orgs}) => {
       cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.visit(`${orgs}/${id}/settings/templates`)
+        cy.contains('404: Page Not Found')
         cy.getByTestID('tree-nav').should('be.visible')
         cy.clickNavBarItem('nav-item-settings')
         cy.getByTestID('templates--tab').should('not.exist')
       })
     })
-    cy.contains('404: Page Not Found')
   })
 })

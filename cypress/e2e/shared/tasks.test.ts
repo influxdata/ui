@@ -10,6 +10,8 @@ import {Organization} from '../../../src/types'
 const isIOxOrg = Boolean(Cypress.env('useIox'))
 const isTSMOrg = !isIOxOrg
 
+// shouldShowTasks determines whether the flag for 'forcing'
+// the display of tasks in iox orgs should be enabled.
 const setupTest = (shouldShowTasks: boolean = true) => {
   cy.flush()
   cy.signin()

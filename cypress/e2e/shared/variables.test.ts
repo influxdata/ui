@@ -4,25 +4,25 @@ const isIOxOrg = Boolean(Cypress.env('useIox'))
 const isTSMOrg = !isIOxOrg
 
 const setupTest = (shouldShowTasks: boolean = true) => {
-  cy.flush()
-  cy.signin()
-  cy.setFeatureFlags({showVariablesInNewIOx: shouldShowTasks})
-  cy.get('@org').then(({id}: Organization) => {
-    if (isTSMOrg) {
-      cy.clickNavBarItem('nav-item-settings')
-      cy.getByTestID('variables--tab').should('be.visible').click()
-      // Double check that the new schemaComposition flag does not interfere.
-      cy.setFeatureFlags({
-        schemaComposition: true,
-      })
-      // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-      // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-      cy.wait(1200)
-      cy.location('pathname').should('match', /\/variables$/)
-    } else {
-      cy.visit(`orgs/${id}/settings/variables`)
-    }
-  })
+  cy.flush().then(() =>
+    cy.signin().then(() =>
+      cy
+        .setFeatureFlags({
+          showVariablesInNewIOx: shouldShowTasks,
+          schemaComposition: true,
+        })
+        .then(() =>
+          cy.get('@org').then(({id}: Organization) => {
+            cy.createQueryVariable(id)
+            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+            cy.visit(`orgs/${id}/settings/variables`)
+            cy.wait(1200)
+            cy.location('pathname').should('match', /\/variables$/)
+          })
+        )
+    )
+  )
 }
 
 describe('Variables - TSM', () => {

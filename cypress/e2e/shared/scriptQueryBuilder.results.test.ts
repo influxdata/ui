@@ -10,7 +10,7 @@ const DELAY_FOR_LSP_SERVER_BOOTUP = 7000
 
 const DELAY_FOR_FILE_DOWNLOAD = 5000
 
-describe.skip('Script Builder', () => {
+describe('Script Builder', () => {
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
@@ -167,6 +167,7 @@ describe.skip('Script Builder', () => {
 
     beforeEach(() => {
       loginWithFlags({
+        showOldDataExplorerInNewIOx: true,
         schemaComposition: true,
         newDataExplorer: true,
         saveAsScript: true,
@@ -342,6 +343,7 @@ describe.skip('Script Builder', () => {
       describe('for larger payloads', () => {
         beforeEach(() => {
           cy.setFeatureFlags({
+            showOldDataExplorerInNewIOx: true,
             newDataExplorer: true,
             schemaComposition: true,
             dataExplorerCsvLimit: 10000 as any,

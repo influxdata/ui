@@ -4,7 +4,7 @@ const DEFAULT_SQL_EDITOR_TEXT = '/* Start by typing SQL here */'
 
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
 
-describe.skip('Script Builder', () => {
+describe('Script Builder', () => {
   const bucketName = 'defbuck'
   const measurement = 'ndbc'
 
@@ -162,6 +162,7 @@ describe.skip('Script Builder', () => {
   describe('Schema Composition', () => {
     beforeEach(() => {
       loginWithFlags({
+        showOldDataExplorerInNewIOx: true,
         schemaComposition: true,
         newDataExplorer: true,
         saveAsScript: true,

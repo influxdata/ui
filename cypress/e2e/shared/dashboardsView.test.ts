@@ -1,14 +1,22 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
-describe.skip('Dashboard', () => {
+const isIOxOrg = Boolean(Cypress.env('useIox'))
+const isTSMOrg = !isIOxOrg
+
+describe('Dashboard - TSM and pre marty release IOx', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-        cy.visit(`${orgs}/${orgID}/dashboards-list`)
-        cy.getByTestID('tree-nav')
+    cy.setFeatureFlags({
+      showDashboardsInNewIOx: true,
+      showVariablesInNewIOx: true,
+    }).then(() => {
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+          cy.visit(`${orgs}/${orgID}/dashboards-list`)
+          cy.getByTestID('tree-nav')
+        })
       })
     })
   })
@@ -531,5 +539,22 @@ describe.skip('Dashboard', () => {
       cy.getByTestID('tree-nav')
       cy.getByTestID('empty-state--text').should('be.visible')
     })
+  })
+})
+
+describe('Dashboard - post marty release IOx', () => {
+  it('should not show Dashboard', () => {
+    cy.skipOn(isTSMOrg)
+
+    cy.flush()
+    cy.signin()
+    cy.fixture('routes').then(({orgs}) => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+        cy.visit(`${orgs}/${orgID}/dashboards-list`)
+        cy.getByTestID('tree-nav').should('be.visible')
+        cy.getByTestID('nav-item-dashboards').should('not.exist')
+      })
+    })
+    cy.contains('404: Page Not Found')
   })
 })

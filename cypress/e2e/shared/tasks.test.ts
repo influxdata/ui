@@ -10,7 +10,7 @@ import {Organization} from '../../../src/types'
 const isIOxOrg = Boolean(Cypress.env('useIox'))
 const isTSMOrg = !isIOxOrg
 
-const setupTest = (showTasksInNewIOx = true) => {
+const setupTest = ({showTasksInNewIOx = true}) => {
   cy.flush()
   cy.signin()
 
@@ -720,7 +720,7 @@ describe('Tasks - TSM', () => {
 describe('Tasks - IOx', () => {
   it('New IOx orgs do not have Tasks', () => {
     cy.skipOn(isTSMOrg)
-    setupTest(false)
+    setupTest({showTasksInNewIOx: false})
     cy.getByTestID('nav-item-tasks').should('not.exist')
     cy.contains('404: Page Not Found')
   })

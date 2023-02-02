@@ -1,5 +1,7 @@
-import {IOX_SWITCHOVER_CREATION_DATE} from 'src/shared/constants'
 import {Organization} from '../../../src/types'
+
+// webpack bundling error if try importing --> due to imports in the constants file
+const IOX_SWITCHOVER_CREATION_DATE = '2023-01-31T00:00:00Z'
 
 describe('Deprecations per cloud release', () => {
   before(() => {

@@ -10,15 +10,6 @@ import {Organization} from '../../../src/types'
 const isIOxOrg = Boolean(Cypress.env('useIox'))
 const isTSMOrg = !isIOxOrg
 
-describe('Tasks - IOx', () => {
-  it('New IOx orgs do not have Tasks', () => {
-    cy.skipOn(isTSMOrg)
-    setupTest(false)
-    cy.getByTestID('nav-item-tasks').should('not.exist')
-    cy.contains('404: Page Not Found')
-  })
-})
-
 const setupTest = (showTasksInNewIOx = true) => {
   cy.flush()
   cy.signin()
@@ -52,7 +43,6 @@ const setupTest = (showTasksInNewIOx = true) => {
 
 describe('Tasks - TSM', () => {
   beforeEach(() => {
-    // Skip all tasks tests for IOx orgs, which do not have tasks.
     setupTest()
   })
 
@@ -724,5 +714,14 @@ describe('Tasks - TSM', () => {
         .getByTestID('task-card--name')
         .contains(task.name)
     })
+  })
+})
+
+describe('Tasks - IOx', () => {
+  it('New IOx orgs do not have Tasks', () => {
+    cy.skipOn(isTSMOrg)
+    setupTest(false)
+    cy.getByTestID('nav-item-tasks').should('not.exist')
+    cy.contains('404: Page Not Found')
   })
 })

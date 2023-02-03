@@ -10,7 +10,7 @@ import {
 import {Bucket} from '../../../src/client'
 import {calcNanoTimestamp} from '../../support/Utils'
 
-describe.skip('NotificationRules', () => {
+describe('NotificationRules', () => {
   const name1 = 'Slack 1'
   const name2 = 'Slack 2'
   const name3 = 'Slack 3'
@@ -18,6 +18,7 @@ describe.skip('NotificationRules', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
+    cy.setFeatureFlags({showAlertsInNewIOx: true})
     cy.get<Organization>('@org').then(({id}: Organization) => {
       // create the notification endpoints
       cy.fixture('endpoints').then(({slack}) => {
@@ -36,19 +37,19 @@ describe.skip('NotificationRules', () => {
     })
   })
 
-  describe('When a rule does not exist', () => {
-    it('should route the user to the alerting index page', () => {
-      const nonexistentID = '04984be058066088'
+  // describe('When a rule does not exist', () => {
+  //   it('should route the user to the alerting index page', () => {
+  //     const nonexistentID = '04984be058066088'
 
-      // visitng the rules edit overlay
-      cy.get<Organization>('@org').then(({id}: Organization) => {
-        cy.fixture('routes').then(({orgs, alerting, rules}) => {
-          cy.visit(`${orgs}/${id}${alerting}${rules}/${nonexistentID}/edit`)
-          cy.url().should('include', `${orgs}/${id}${alerting}`)
-        })
-      })
-    })
-  })
+  //     // visiting the rules edit overlay
+  //     cy.get<Organization>('@org').then(({id}: Organization) => {
+  //       cy.fixture('routes').then(({orgs, alerting, rules}) => {
+  //         cy.visit(`${orgs}/${id}${alerting}${rules}/${nonexistentID}/edit`)
+  //         cy.url().should('include', `${orgs}/${id}${alerting}`)
+  //       })
+  //     })
+  //   })
+  // })
 
   describe('numeric input validation in Theshold Checks', () => {
     beforeEach(() => {

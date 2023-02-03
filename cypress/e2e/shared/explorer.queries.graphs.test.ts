@@ -6,24 +6,26 @@ describe('writing queries and making graphs using Data Explorer', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() =>
-        cy.setFeatureFlags({
-          showOldDataExplorerInNewIOx: true,
-          showTasksInNewIOx: true,
-          showVariablesInNewIOx: true,
-          schemaComposition: true, // Double check that the new schemaComposition flag does not interfere.
-        }).then(() => {
-          // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-          // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-          cy.wait(1200)
-          cy.get('@org').then(({id}: Organization) => {
-            cy.createMapVariable(id)
-            cy.fixture('routes').then(({orgs, explorer}) => {
-              route = `${orgs}/${id}${explorer}`
-              cy.visit(route)
-              cy.getByTestID('tree-nav').should('be.visible')
+        cy
+          .setFeatureFlags({
+            showOldDataExplorerInNewIOx: true,
+            showTasksInNewIOx: true,
+            showVariablesInNewIOx: true,
+            schemaComposition: true, // Double check that the new schemaComposition flag does not interfere.
+          })
+          .then(() => {
+            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+            cy.wait(1200)
+            cy.get('@org').then(({id}: Organization) => {
+              cy.createMapVariable(id)
+              cy.fixture('routes').then(({orgs, explorer}) => {
+                route = `${orgs}/${id}${explorer}`
+                cy.visit(route)
+                cy.getByTestID('tree-nav').should('be.visible')
+              })
             })
           })
-        })
       )
     )
   })

@@ -1371,6 +1371,6 @@ describe('Checks - IOx', () => {
     setupTest(shouldShowAlerts)
     cy.contains('404: Page Not Found')
     cy.clickNavBarItem('nav-item-settings')
-    cy.getByTestID('checks--tab').should('not.exist')
+    cy.getByTestID('alerting-tab--checks').should('not.exist')
   })
 })

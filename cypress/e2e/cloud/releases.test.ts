@@ -17,16 +17,43 @@ describe('Deprecations per cloud release', () => {
   })
 
   describe('Marty-release', () => {
-    describe('has specific navigation options', () => {
-      beforeEach(() => {
-        cy.signinWithoutUserReprovision()
-      })
+    beforeEach(() => {
+      cy.signinWithoutUserReprovision()
+    })
 
-      it('depreciated features do not exist', () => {
-        cy.getByTestID('nav-item-flows').should('not.exist')
-        cy.getByTestID('nav-item-alerting').should('not.exist')
-        cy.getByTestID('nav-item-dashboards').should('not.exist')
-        cy.getByTestID('nav-item-tasks').should('not.exist')
+    describe('has specific navigation options', () => {
+      describe('depreciated features do not exist', () => {
+        ;[
+          {
+            route: orgID => `orgs/${orgID}/notebooks`,
+            navId: 'nav-item-flows',
+            name: 'notebooks',
+          },
+          {
+            route: orgID => `orgs/${orgID}/alerting`,
+            navId: 'nav-item-alerting',
+            name: 'alerts',
+          },
+          {
+            route: orgID => `orgs/${orgID}/dashboards-list`,
+            navId: 'nav-item-dashboards',
+            name: 'dashboards',
+          },
+          {
+            route: orgID => `orgs/${orgID}/tasks`,
+            navId: 'nav-item-tasks',
+            name: 'tasks',
+          },
+        ].forEach(({route, navId, name}) => {
+          it(`does not permit access to ${name}`, () => {
+            cy.getByTestID(navId).should('not.exist')
+            cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+              cy.visit(route(orgID))
+              cy.getByTestID('tree-nav').should('be.visible')
+              cy.contains('404: Page Not Found')
+            })
+          })
+        })
       })
 
       describe('supported features are still navigable', () => {
@@ -103,8 +130,6 @@ describe('Deprecations per cloud release', () => {
         })
       })
     })
-
-    // TODO: add any more marty-specific features
   })
 
   describe('iox users prior to the Marty-release date', () => {

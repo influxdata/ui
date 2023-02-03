@@ -15,11 +15,11 @@ import {
   InputLabel,
   SlideToggle,
 } from '@influxdata/clockface'
-import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
+import {SaveAsButton} from 'src/dataExplorer/components/SaveAsButton'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
 import GetResources from 'src/resources/components/GetResources'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import SaveAsOverlay from 'src/dataExplorer/components/SaveAsOverlay'
+import {SaveAsOverlay} from 'src/dataExplorer/components/SaveAsOverlay'
 import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
 import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
 import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
@@ -137,7 +137,7 @@ const DataExplorerPage: FC = () => {
     (scriptQueryBuilder && isFlagEnabled('newDataExplorer')) || isNewIOxOrg
 
   const shouldShowSaveAsButton =
-    !isNewIOxOrg ||
+    !useSelector(selectIsNewIOxOrg) ||
     shouldShowNotebooks ||
     isFlagEnabled('showTasksInNewIOx') ||
     isFlagEnabled('showDashboardsInNewIOx') ||

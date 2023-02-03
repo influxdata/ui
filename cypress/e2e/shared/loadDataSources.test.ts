@@ -1,7 +1,6 @@
 import {Organization} from '../../src/types'
 
 const isIOxOrg = Boolean(Cypress.env('useIox'))
-const isTSMOrg = !isIOxOrg
 
 // Library to use when testing client library details view.
 // As of 2/2023, IOx only has one client library - python, which has a wizard.
@@ -200,22 +199,5 @@ describe('Load Data Sources', () => {
     cy.getByTestID('searchable-dropdown--item mymeasurement')
       .contains('mymeasurement')
       .click()
-  })
-})
-
-describe('Load Data Sources - New IOx', () => {
-  it('there is no old data explorer for new iox orgs', () => {
-    cy.skipOn(isTSMOrg)
-    cy.flush()
-    cy.signin()
-    cy.setFeatureFlags({
-      newDataExplorer: true,
-    })
-    cy.get('@org').then(({id}: Organization) =>
-      cy.fixture('routes').then(({orgs}) => {
-        cy.visit(`${orgs}/${id}/load-data/sources`)
-        cy.getByTestID('tree-nav')
-      })
-    )
   })
 })

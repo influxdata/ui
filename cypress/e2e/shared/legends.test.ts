@@ -13,11 +13,19 @@ const VIS_TYPES = [
   'table',
 ]
 
-describe.skip('Legends', () => {
+// Absence of this feature (legends - old data explorer) in IOx is tested
+// in the Data Explorer tests.
+describe('Legends', () => {
   describe('in the Data Explorer', () => {
     beforeEach(() => {
       cy.flush()
       cy.signin()
+      cy.setFeatureFlags({
+        newDataExplorer: true,
+        showDashboardsInNewIOx: true,
+        showOldDataExplorerInNewIOx: true,
+        showTasksInNewIOx: true,
+      })
       cy.get('@org').then(({id}: Organization) => {
         cy.createMapVariable(id)
         cy.fixture('routes').then(({orgs, explorer}) => {

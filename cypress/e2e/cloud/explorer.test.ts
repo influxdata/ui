@@ -14,18 +14,23 @@ function getTimeMachineText() {
     .invoke('text')
 }
 
-describe.skip('DataExplorer', () => {
+describe('DataExplorer', () => {
   beforeEach(() => {
-    cy.flush()
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.createMapVariable(id)
-        cy.fixture('routes').then(({orgs, explorer}) => {
-          cy.visit(`${orgs}/${id}${explorer}`)
-          cy.getByTestID('tree-nav').should('be.visible')
-        })
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.setFeatureFlags({
+          showOldDataExplorerInNewIOx: true,
+        }).then(() =>
+          cy.get('@org').then(({id}: Organization) => {
+            cy.createMapVariable(id)
+            cy.fixture('routes').then(({orgs, explorer}) => {
+              cy.visit(`${orgs}/${id}${explorer}`)
+              cy.getByTestID('tree-nav').should('be.visible')
+            })
+          })
+        )
       })
-    })
+    )
   })
 
   describe('Script Editor', () => {

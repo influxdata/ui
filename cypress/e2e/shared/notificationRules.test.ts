@@ -10,7 +10,9 @@ import {
 import {Bucket} from '../../../src/client'
 import {calcNanoTimestamp} from '../../support/Utils'
 
-describe.skip('NotificationRules', () => {
+const isTSMOrg = !Boolean(Cypress.env('useIox'))
+
+describe('NotificationRules', () => {
   const name1 = 'Slack 1'
   const name2 = 'Slack 2'
   const name3 = 'Slack 3'
@@ -18,6 +20,7 @@ describe.skip('NotificationRules', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
+    cy.setFeatureFlags({showAlertsInNewIOx: true})
     cy.get<Organization>('@org').then(({id}: Organization) => {
       // create the notification endpoints
       cy.fixture('endpoints').then(({slack}) => {
@@ -32,20 +35,6 @@ describe.skip('NotificationRules', () => {
       cy.fixture('routes').then(({orgs, alerting}) => {
         cy.visit(`${orgs}/${id}${alerting}`)
         cy.getByTestID('tree-nav')
-      })
-    })
-  })
-
-  describe('When a rule does not exist', () => {
-    it('should route the user to the alerting index page', () => {
-      const nonexistentID = '04984be058066088'
-
-      // visitng the rules edit overlay
-      cy.get<Organization>('@org').then(({id}: Organization) => {
-        cy.fixture('routes').then(({orgs, alerting, rules}) => {
-          cy.visit(`${orgs}/${id}${alerting}${rules}/${nonexistentID}/edit`)
-          cy.url().should('include', `${orgs}/${id}${alerting}`)
-        })
       })
     })
   })
@@ -1111,6 +1100,23 @@ describe.skip('NotificationRules', () => {
             cy.getByTestID('context-delete-task--confirm-button').click()
             cy.getByTestID(`rule-card ${newName}`).should('not.exist')
           })
+      })
+    })
+  })
+})
+
+describe('New IOx orgs', () => {
+  it('Alerts are not present for new IOx orgs', () => {
+    cy.skipOn(isTSMOrg)
+    cy.flush()
+    cy.signin()
+    // visit the alerting index
+    cy.get<Organization>('@org').then(({id}: Organization) => {
+      cy.fixture('routes').then(({orgs, alerting}) => {
+        cy.getByTestID('tree-nav')
+        cy.getByTestID('nav-item-alerting').should('not.exist')
+        cy.visit(`${orgs}/${id}${alerting}`)
+        cy.contains('404: Page Not Found')
       })
     })
   })

@@ -2,11 +2,15 @@ import {Organization} from '../../../src/types'
 const CLOUD = Cypress.env('dexUrl') === 'OSS' ? false : true
 
 describe('using the main navigation menu', () => {
+  before(() => {
+    cy.flush().then(() => cy.signin())
+  })
+
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.visit('/')
-    cy.getByTestID('home-page--header').should('be.visible')
+    cy.signinWithoutUserReprovision().then(() => {
+      cy.visit('/')
+      return cy.getByTestID('home-page--header').should('be.visible')
+    })
   })
 
   it('can navigate to each page from left nav', () => {
@@ -139,8 +143,7 @@ describe('using the main navigation menu', () => {
     })
   })
 
-  describe('navigating in an IOx org', () => {
-    const isIox = Boolean(Cypress.env('ioxUser'))
+  describe('explore tabs', () => {
     const exploreTabs = (tabs: string[]) => {
       tabs.forEach(tab => {
         cy.getByTestID(`${tab}--tab`).should('be.visible').click()
@@ -149,54 +152,66 @@ describe('using the main navigation menu', () => {
     }
 
     it('can navigate in tabs of settings page', () => {
-      if (!isIox) {
+      cy.isIoxOrg().then(isIox => {
+        const tabs = isIox
+          ? ['labels', 'secrets']
+          : ['templates', 'labels', 'variables', 'secrets']
         cy.getByTestID('nav-item-settings').should('be.visible')
         cy.clickNavBarItem('nav-item-settings')
-        exploreTabs(['templates', 'labels', 'variables'])
-      }
+        exploreTabs(tabs)
+      })
     })
 
     it('can navigate in tabs of collapsed alerts page', () => {
-      if (!isIox) {
-        cy.getByTestID('nav-item-alerting').should('be.visible')
-        cy.clickNavBarItem('nav-item-alerting')
-        ;['checks', 'endpoints', 'rules'].forEach(tab => {
-          cy.getByTestID(`alerting-tab--${tab}`).click()
-          cy.getByTestID(`alerting-tab--${tab}--input`).should(
-            'to.be',
-            'checked'
-          )
-        })
-      }
+      cy.isIoxOrg().then(isIox => {
+        cy.skipOn(isIox)
+      })
+      cy.getByTestID('nav-item-alerting').should('be.visible')
+      cy.clickNavBarItem('nav-item-alerting')
+      ;['checks', 'endpoints', 'rules'].forEach(tab => {
+        cy.getByTestID(`alerting-tab--${tab}`).click()
+        cy.getByTestID(`alerting-tab--${tab}--input`).should('to.be', 'checked')
+      })
     })
   })
 
   it('can navigate in tabs from maximized left tree nav', () => {
-    // TODO: check if nav is already maximized
-    const isIox = Boolean(Cypress.env('ioxUser'))
-    cy.get('.cf-tree-nav--toggle').click({force: true})
+    cy.isIoxOrg().then(isIox => {
+      cy.get('.cf-tree-nav--toggle').click({force: true})
 
-    const items = isIox
-      ? ['sources', 'buckets', 'telegrafs', 'tokens', 'labels']
-      : ['history', 'variables', 'templates']
+      const items = isIox
+        ? ['sources', 'buckets', 'telegrafs', 'tokens', 'labels', 'secrets']
+        : [
+            'sources',
+            'buckets',
+            'telegrafs',
+            'tokens',
+            'labels',
+            'secrets',
+            'history',
+            'variables',
+            'templates',
+          ]
 
-    items.forEach(navItem => {
-      if (navItem === 'history') {
-        cy.clickNavBarItem('nav-item-alerting')
-      } else if (
-        navItem === 'variables' ||
-        navItem === 'templates' ||
-        navItem === 'labels'
-      ) {
-        cy.clickNavBarItem('nav-item-settings')
-      } else {
-        cy.clickNavBarItem('nav-item-load-data')
-      }
+      items.forEach(navItem => {
+        if (navItem === 'history') {
+          cy.clickNavBarItem('nav-item-alerting')
+        } else if (
+          navItem === 'variables' ||
+          navItem === 'templates' ||
+          navItem === 'labels' ||
+          navItem === 'secrets'
+        ) {
+          cy.clickNavBarItem('nav-item-settings')
+        } else {
+          cy.clickNavBarItem('nav-item-load-data')
+        }
 
-      cy.getByTestID(`nav-subitem-${navItem}`).last().click()
-      cy.url().should('contain', navItem)
+        cy.getByTestID(`nav-subitem-${navItem}`).last().click()
+        cy.url().should('contain', navItem)
+      })
+
+      cy.get('.cf-tree-nav--toggle').click()
     })
-
-    cy.get('.cf-tree-nav--toggle').click()
   })
 })

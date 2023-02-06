@@ -145,7 +145,7 @@ jobs:
     steps:
       - run:
           name: Run monitor-ci tests
-          command: API_KEY=${MONITOR_CI_API_KEY} PULL_REQUEST=${CIRCLE_PULL_REQUEST} MONITOR_CI_BRANCH="master" UI_BRANCH=${CIRCLE_BRANCH} UI_SHA=${CIRCLE_SHA1} SHA=${CIRCLE_SHA1} RUN_WORKFLOW="build" /run-monitor-ci-tests.bash
+          command: API_KEY=${MONITOR_CI_API_KEY} PULL_REQUEST=${CIRCLE_PULL_REQUEST} MONITOR_CI_BRANCH="chore/use-proper-api-defitions" UI_BRANCH=${CIRCLE_BRANCH} UI_SHA=${CIRCLE_SHA1} SHA=${CIRCLE_SHA1} RUN_WORKFLOW="build" /run-monitor-ci-tests.bash
       - store_artifacts:
           path: monitor-ci/test-artifacts/results/build-oss-image
           destination: test_artifacts/results/build-oss-image

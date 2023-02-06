@@ -34,20 +34,29 @@ const getSelectedVariable =
     return hydratedVarDawg.selected[0]
   }
 
-describe.skip('Dashboard - variable interactions', () => {
+describe('Dashboard - variable interactions', () => {
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-        cy.visit(`${orgs}/${orgID}/dashboards-list`)
-        const numLines = 360
-        cy.writeData(points(numLines))
-        cy.createDashboard(orgID).then(({body: dashboard}) => {
-          cy.wrap({dashboard}).as('dashboard')
-        })
-      })
-    })
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy
+          .setFeatureFlags({
+            showDashboardsInNewIOx: true,
+            showVariablesInNewIOx: true,
+          })
+          .then(() =>
+            cy.fixture('routes').then(({orgs}) => {
+              cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+                cy.visit(`${orgs}/${orgID}/dashboards-list`)
+                const numLines = 360
+                cy.writeData(points(numLines))
+                cy.createDashboard(orgID).then(({body: dashboard}) => {
+                  cy.wrap({dashboard}).as('dashboard')
+                })
+              })
+            })
+          )
+      )
+    )
   })
 
   it('informs user if variables are enabled but not defined', () => {

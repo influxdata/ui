@@ -1,12 +1,16 @@
 import {Organization} from '../../../src/types'
 const CLOUD = Cypress.env('dexUrl') === 'OSS' ? false : true
 
-describe.skip('navigation', () => {
+describe('using the main navigation menu', () => {
+  before(() => {
+    cy.flush().then(() => cy.signin())
+  })
+
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.visit('/')
-    cy.getByTestID('home-page--header').should('be.visible')
+    cy.signinWithoutUserReprovision().then(() => {
+      cy.visit('/')
+      return cy.getByTestID('home-page--header').should('be.visible')
+    })
   })
 
   it('can navigate to each page from left nav', () => {
@@ -23,17 +27,21 @@ describe.skip('navigation', () => {
     cy.clickNavBarItem('nav-item-data-explorer')
     cy.getByTestID('data-explorer--header').should('exist')
 
-    // Dashboard Index Page
-    cy.clickNavBarItem('nav-item-dashboards')
-    cy.getByTestID('empty-dashboards-list').should('exist')
+    cy.isIoxOrg().then(isIOx => {
+      if (!isIOx) {
+        // Dashboard Index Page
+        cy.clickNavBarItem('nav-item-dashboards')
+        cy.getByTestID('empty-dashboards-list').should('exist')
 
-    // Tasks Index Page
-    cy.clickNavBarItem('nav-item-tasks')
-    cy.getByTestID('tasks-page--header').should('exist')
+        // Tasks Index Page
+        cy.clickNavBarItem('nav-item-tasks')
+        cy.getByTestID('tasks-page--header').should('exist')
 
-    // Alerts Page
-    cy.clickNavBarItem('nav-item-alerting')
-    cy.getByTestID('alerts-page--header').should('exist')
+        // Alerts Page
+        cy.clickNavBarItem('nav-item-alerting')
+        cy.getByTestID('alerts-page--header').should('exist')
+      }
+    })
 
     // Settings Page
     cy.clickNavBarItem('nav-item-settings')
@@ -135,57 +143,75 @@ describe.skip('navigation', () => {
     })
   })
 
-  const exploreTabs = (tabs: string[]) => {
-    tabs.forEach(tab => {
-      cy.getByTestID(`${tab}--tab`).should('be.visible').click()
-      cy.url().should('contain', tab)
+  describe('explore tabs', () => {
+    const exploreTabs = (tabs: string[]) => {
+      tabs.forEach(tab => {
+        cy.getByTestID(`${tab}--tab`).should('be.visible').click()
+        cy.url().should('contain', tab)
+      })
+    }
+
+    it('can navigate in tabs of settings page', () => {
+      cy.isIoxOrg().then(isIox => {
+        const tabs = isIox
+          ? ['labels', 'secrets']
+          : ['templates', 'labels', 'variables', 'secrets']
+        cy.getByTestID('nav-item-settings').should('be.visible')
+        cy.clickNavBarItem('nav-item-settings')
+        exploreTabs(tabs)
+      })
     })
-  }
 
-  it('can navigate in tabs of settings page', () => {
-    cy.getByTestID('nav-item-settings').should('be.visible')
-    cy.clickNavBarItem('nav-item-settings')
-    exploreTabs(['templates', 'labels', 'variables'])
-  })
-
-  it('can navigate in tabs of collapsed alerts page', () => {
-    cy.getByTestID('nav-item-alerting').should('be.visible')
-    cy.clickNavBarItem('nav-item-alerting')
-    ;['checks', 'endpoints', 'rules'].forEach(tab => {
-      cy.getByTestID(`alerting-tab--${tab}`).click()
-      cy.getByTestID(`alerting-tab--${tab}--input`).should('to.be', 'checked')
+    it('can navigate in tabs of collapsed alerts page', () => {
+      cy.isIoxOrg().then(isIox => {
+        cy.skipOn(isIox)
+      })
+      cy.getByTestID('nav-item-alerting').should('be.visible')
+      cy.clickNavBarItem('nav-item-alerting')
+      ;['checks', 'endpoints', 'rules'].forEach(tab => {
+        cy.getByTestID(`alerting-tab--${tab}`).click()
+        cy.getByTestID(`alerting-tab--${tab}--input`).should('to.be', 'checked')
+      })
     })
   })
 
   it('can navigate in tabs from maximized left tree nav', () => {
-    // TODO: check if nav is already maximized
-    cy.get('.cf-tree-nav--toggle').click({force: true})
-    ;[
-      'sources',
-      'buckets',
-      'telegrafs',
-      'tokens',
-      'history',
-      'variables',
-      'templates',
-      'labels',
-    ].forEach(navItem => {
-      if (navItem === 'history') {
-        cy.clickNavBarItem('nav-item-alerting')
-      } else if (
-        navItem === 'variables' ||
-        navItem === 'templates' ||
-        navItem === 'labels'
-      ) {
-        cy.clickNavBarItem('nav-item-settings')
-      } else {
-        cy.clickNavBarItem('nav-item-load-data')
-      }
+    cy.isIoxOrg().then(isIox => {
+      cy.get('.cf-tree-nav--toggle').click({force: true})
 
-      cy.getByTestID(`nav-subitem-${navItem}`).last().click()
-      cy.url().should('contain', navItem)
+      const items = isIox
+        ? ['sources', 'buckets', 'telegrafs', 'tokens', 'labels', 'secrets']
+        : [
+            'sources',
+            'buckets',
+            'telegrafs',
+            'tokens',
+            'labels',
+            'secrets',
+            'history',
+            'variables',
+            'templates',
+          ]
+
+      items.forEach(navItem => {
+        if (navItem === 'history') {
+          cy.clickNavBarItem('nav-item-alerting')
+        } else if (
+          navItem === 'variables' ||
+          navItem === 'templates' ||
+          navItem === 'labels' ||
+          navItem === 'secrets'
+        ) {
+          cy.clickNavBarItem('nav-item-settings')
+        } else {
+          cy.clickNavBarItem('nav-item-load-data')
+        }
+
+        cy.getByTestID(`nav-subitem-${navItem}`).last().click()
+        cy.url().should('contain', navItem)
+      })
+
+      cy.get('.cf-tree-nav--toggle').click()
     })
-
-    cy.get('.cf-tree-nav--toggle').click()
   })
 })

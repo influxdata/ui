@@ -16,7 +16,6 @@ describe('simple table interactions', () => {
           cy.visit(`${orgs}/${orgID}${explorer}`)
         })
         cy.getByTestID('tree-nav')
-        cy.switchToDataExplorer('old')
         cy.createBucket(orgID, name, simpleLarge)
         cy.writeData(points(300), simpleLarge)
         cy.createBucket(orgID, name, simpleSmall)

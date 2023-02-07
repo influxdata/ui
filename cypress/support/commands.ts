@@ -746,6 +746,21 @@ export const createNotebook = (
   })
 }
 
+export const newScriptWithoutLanguageSelection = () => {
+  cy.getByTestID('script-query-builder--save-script').then($saveButton => {
+    if (!$saveButton.is(':disabled')) {
+      cy.getByTestID('script-query-builder--new-script')
+        .should('be.visible')
+        .click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('script-query-builder--delete-script')
+          .should('be.visible')
+          .click()
+      })
+    }
+  })
+}
+
 const setScriptToLanguage = (
   lang: 'sql' | 'flux',
   defaultEditorText: string
@@ -761,6 +776,8 @@ const setScriptToLanguage = (
           .should('be.visible')
           .click()
       })
+    } else {
+      newScriptWithoutLanguageSelection()
     }
     return cy.getByTestID(`${lang}-editor`).within(() => {
       cy.get('textarea.inputarea').should('have.value', defaultEditorText)
@@ -785,21 +802,6 @@ export const confirmSyncIsOn = () => {
   return cy.getByTestID('editor-sync--toggle').then($toggle => {
     if (!$toggle.hasClass('active')) {
       $toggle.click()
-    }
-  })
-}
-
-export const newScriptWithoutSaveAsScript = () => {
-  cy.getByTestID('script-query-builder--save-script').then($saveButton => {
-    if (!$saveButton.is(':disabled')) {
-      cy.getByTestID('script-query-builder--new-script')
-        .should('be.visible')
-        .click()
-      cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('script-query-builder--delete-script')
-          .should('be.visible')
-          .click()
-      })
     }
   })
 }

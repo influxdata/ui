@@ -22,7 +22,7 @@ describe('The Query Builder', () => {
             showOldDataExplorerInNewIOx: true,
             showDashboardsInNewIOx: true,
           })
-          .then(() => {
+          .then(() =>
             cy.writeData([
               `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
               `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
@@ -30,8 +30,7 @@ describe('The Query Builder', () => {
               `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
               `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
             ])
-            cy.switchToDataExplorer('old')
-          })
+          )
       )
     )
   })

@@ -94,9 +94,8 @@ describe('Script Builder', () => {
             }
           )
         })
-
+        cy.setScriptToFlux()
         cy.getByTestID('editor-sync--toggle').should('have.class', 'active')
-        cy.clearFluxScriptSession()
         cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
       })
     })
@@ -240,7 +239,7 @@ describe('Script Builder', () => {
         beforeEach(() => {
           cy.setFeatureFlags({
             newDataExplorer: true,
-            schemaComposition: true,
+            enableFluxInScriptBuilder: true,
             dataExplorerCsvLimit: 10000 as any,
           })
         })

@@ -93,6 +93,7 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
                 active={active}
                 onClick={onClick}
                 icon={IconFont.Clock_New}
+                testID="timerange-dropdown--label"
               >
                 {timeRangeLabel}
               </Dropdown.Button>

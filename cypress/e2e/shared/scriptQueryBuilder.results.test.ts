@@ -219,8 +219,6 @@ describe.skip('Script Builder', () => {
     })
 
     describe('data completeness', () => {
-      const downloadsDirectory = Cypress.config('downloadsFolder')
-
       const validateCsv = (csv: string, tableCnt: number) => {
         cy.wrap(csv)
           .then(doc => doc.trim().split('\n'))
@@ -290,11 +288,6 @@ describe.skip('Script Builder', () => {
               })
           })
       }
-
-      beforeEach(() => {
-        cy.log('empty downloads directory')
-        cy.task('deleteDownloads', {dirPath: downloadsDirectory})
-      })
 
       it('will return 0 tables and 0 rows, for an empty dataset', () => {
         cy.isIoxOrg().then(isIox => {

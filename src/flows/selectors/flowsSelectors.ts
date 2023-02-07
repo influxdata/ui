@@ -11,6 +11,11 @@ export const selectNotebooks = (state: AppState): Notebook[] => {
 }
 
 export const selectShouldShowNotebooks = (state: AppState): boolean => {
+  // Use this flag in CI to force the display of notebooks, even if no notebooks yet exist.
+  if (isFlagEnabled('showNotebooksForCI')) {
+    return true
+  }
+
   const orgCreationDate = new Date(selectOrgCreationDate(state)).valueOf()
   const ioxCutoffDate = new Date(IOX_SWITCHOVER_CREATION_DATE).valueOf()
 
@@ -21,7 +26,7 @@ export const selectShouldShowNotebooks = (state: AppState): boolean => {
   }
 
   // In cloud, don't show notebooks for any org created after the IOx cutover date
-  if (!wasCreatedBeforeIOxCutoff && !isFlagEnabled('showNotebooksForCI')) {
+  if (!wasCreatedBeforeIOxCutoff) {
     return false
   }
 

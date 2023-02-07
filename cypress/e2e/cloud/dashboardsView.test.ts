@@ -1,13 +1,19 @@
-describe.skip('Dashboard', () => {
+describe('Dashboard', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() =>
-        cy.fixture('routes').then(({orgs}) => {
-          cy.get('@org').then(({id: orgID}: any) => {
-            cy.visit(`${orgs}/${orgID}/dashboards-list`)
-            cy.getByTestID('tree-nav')
+        cy
+          .setFeatureFlags({
+            showDashboardsInNewIOx: true,
           })
-        })
+          .then(() =>
+            cy.fixture('routes').then(({orgs}) => {
+              cy.get('@org').then(({id: orgID}: any) => {
+                cy.visit(`${orgs}/${orgID}/dashboards-list`)
+                cy.getByTestID('tree-nav')
+              })
+            })
+          )
       )
     )
   )
@@ -40,7 +46,7 @@ describe.skip('Dashboard', () => {
     cy.getByTestID('cell--view-empty markdown').contains(markdownImageWarning)
   })
 
-  it.skip('escapes html in markdown editor', () => {
+  it('escapes html in markdown editor', () => {
     cy.get('@org').then(({id: orgID}: any) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {

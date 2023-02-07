@@ -17,19 +17,27 @@ const VIS_TYPES = [
 ]
 const NUM_POINTS = 360
 
-describe.skip('visualizations', () => {
+describe('visualizations', () => {
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-
-    cy.get('@org').then(({id}: Organization) => {
-      cy.createMapVariable(id)
-      cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
-      })
-    })
-    cy.writeData(points(NUM_POINTS))
-    cy.getByTestID('time-machine--bottom')
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy
+          .setFeatureFlags({
+            showOldDataExplorerInNewIOx: true,
+            showVariablesInNewIOx: true,
+          })
+          .then(() => {
+            cy.get('@org').then(({id}: Organization) => {
+              cy.createMapVariable(id)
+              cy.fixture('routes').then(({orgs, explorer}) => {
+                cy.visit(`${orgs}/${id}${explorer}`)
+              })
+            })
+            cy.writeData(points(NUM_POINTS))
+            cy.getByTestID('time-machine--bottom')
+          })
+      )
+    )
   })
 
   describe('empty states', () => {

@@ -8,26 +8,38 @@ const PAGE_LOAD_SLA = 10000
 const measurement = 'my_meas'
 const field = 'my_field'
 const stringField = 'string_field'
-describe.skip('Checks', () => {
-  beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.writeData([
-      `${measurement} ${field}=0,${stringField}="string1"`,
-      `${measurement} ${field}=1,${stringField}="string2"`,
-    ])
-    // visit the alerting index
-    cy.get<Organization>('@org').then((org: Organization) => {
-      cy.fixture('routes').then(({orgs, alerting}) => {
-        cy.visit(`${orgs}/${org.id}${alerting}`)
-      })
+
+const isIOxOrg = Boolean(Cypress.env('useIox'))
+const isTSMOrg = !isIOxOrg
+
+const setupTest = (shouldShowAlerts: boolean = true) => {
+  cy.flush()
+  cy.signin()
+  cy.setFeatureFlags({showAlertsInNewIOx: shouldShowAlerts})
+
+  cy.writeData([
+    `${measurement} ${field}=0,${stringField}="string1"`,
+    `${measurement} ${field}=1,${stringField}="string2"`,
+  ])
+  // visit the alerting index
+  cy.get<Organization>('@org').then((org: Organization) => {
+    cy.fixture('routes').then(({orgs, alerting}) => {
+      cy.visit(`${orgs}/${org.id}${alerting}`)
     })
+  })
+  if (isTSMOrg) {
     cy.getByTestID('tree-nav')
     cy.get('[data-testid="resource-list--body"]', {
       timeout: PAGE_LOAD_SLA,
     })
     // User can only see all panels at once on large screens
     cy.getByTestID('alerting-tab--checks').click({force: true})
+  }
+}
+
+describe('Checks - TSM', () => {
+  beforeEach(() => {
+    setupTest()
   })
 
   describe('threshold checks', () => {
@@ -1349,5 +1361,16 @@ describe.skip('Checks', () => {
           })
       }
     })
+  })
+})
+
+describe('Checks - IOx', () => {
+  it('routes to 404 page when IOx user attempts to access checks', () => {
+    cy.skipOn(isTSMOrg)
+    const shouldShowAlerts = false
+    setupTest(shouldShowAlerts)
+    cy.contains('404: Page Not Found')
+    cy.clickNavBarItem('nav-item-settings')
+    cy.getByTestID('alerting-tab--checks').should('not.exist')
   })
 })

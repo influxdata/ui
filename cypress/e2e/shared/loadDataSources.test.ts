@@ -1,9 +1,21 @@
 import {Organization} from '../../src/types'
 
-describe.skip('Load Data Sources', () => {
+const isIOxOrg = Boolean(Cypress.env('useIox'))
+
+// Library to use when testing client library details view.
+// As of 2/2023, IOx only has one client library - python, which has a wizard.
+// In TSM, there are more libraries, and it's desirable to test a page both with and without a wizard.
+const libraryWithWizard = isIOxOrg ? 'python' : 'arduino'
+const libraryWithoutWizard = 'csharp'
+
+describe('Load Data Sources', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
+    cy.setFeatureFlags({
+      newDataExplorer: true,
+      showOldDataExplorerInNewIOx: true,
+    })
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
         cy.visit(`${orgs}/${id}/load-data/sources`)
@@ -13,9 +25,14 @@ describe.skip('Load Data Sources', () => {
   })
 
   it('navigates to Client Library details view and renders details without a wizard', () => {
+    // Skip this test in IOx because as of 2/2023, there is only one library (python), which has a wizard.
+    cy.skipOn(isIOxOrg)
+
     cy.getByTestID('write-data--section client-libraries').within(() => {
       cy.getByTestID('square-grid').within(() => {
-        cy.getByTestIDSubStr('load-data-item csharp').first().click()
+        cy.getByTestIDSubStr(`load-data-item ${libraryWithoutWizard}`)
+          .first()
+          .click()
       })
     })
 
@@ -28,10 +45,9 @@ describe.skip('Load Data Sources', () => {
   })
 
   it('navigates to Client Library details view and renders a wizard', () => {
-    const libaryWithWizard = 'Arduino'
     cy.getByTestID('write-data--section client-libraries').within(() => {
       cy.getByTestID('square-grid').within(() => {
-        cy.getByTestIDSubStr(`load-data-item ${libaryWithWizard.toLowerCase()}`)
+        cy.getByTestIDSubStr(`load-data-item ${libraryWithWizard}`)
           .first()
           .click()
       })
@@ -42,7 +58,11 @@ describe.skip('Load Data Sources', () => {
     contentNav.children().should('exist')
 
     const titleElement = cy.get('.subway-navigation-title-text')
-    titleElement.contains(libaryWithWizard)
+
+    const capitalizedLibraryWithWizard =
+      libraryWithWizard[0].toUpperCase() + libraryWithWizard.slice(1)
+
+    titleElement.contains(capitalizedLibraryWithWizard)
   })
 
   it('navigates to Telegraf Plugin details view and render it with essentials', () => {
@@ -73,7 +93,7 @@ describe.skip('Load Data Sources', () => {
   })
 
   // TODO(ariel): address these skipped tests later https://github.com/influxdata/ui/issues/3394
-  it.skip('can write data to buckets', () => {
+  it('can write data to buckets', () => {
     // writing a well-formed line is accepted
     cy.getByTestID('load-data-item lp').click()
     cy.getByTestID('Enter Manually').click()
@@ -109,7 +129,7 @@ describe.skip('Load Data Sources', () => {
     cy.getByTestID('line-protocol--status').contains('Success')
   })
 
-  it.skip('upload a file and write data', () => {
+  it('upload a file and write data', () => {
     cy.getByTestID('load-data-item lp').click()
     cy.getByTestID('Upload File').click()
 
@@ -152,32 +172,32 @@ describe.skip('Load Data Sources', () => {
     cy.getByTestID('lp-close--button').click()
 
     // navigate to data explorer to see data
+    // use new data explorer, since old data explorer is being deprecated
     cy.getByTestID('nav-item-data-explorer').click({force: true})
+
+    cy.getByTestID('script-query-builder-toggle').click()
+
     cy.getByTestID('timerange-dropdown').click()
-    cy.getByTestID('dropdown-item-customtimerange').click()
 
     // time range start
-    cy.getByTestID('timerange--input')
+    cy.get('.date-picker__input')
       .first()
       .clear()
       .type('2020-08-06 00:00:00.000')
 
     // time range stop
-    cy.getByTestID('timerange--input')
-      .last()
-      .clear()
-      .type('2020-08-08 00:00:00.000')
+    cy.get('.date-picker__input').last().clear().type('2020-08-08 00:00:00.000')
 
     cy.getByTestID('daterange--apply-btn').click()
 
-    // TODO replace this with proper health checks
     cy.wait(1000)
-    cy.get<string>('@defaultBucketListSelector').then(
-      (defaultBucketListSelector: string) => {
-        cy.getByTestID(defaultBucketListSelector).click()
-      }
-    )
+    cy.getByTestID('bucket-selector--dropdown-button').click()
+    cy.getByTestID('bucket-selector--dropdown--defbuck').click()
+
     // mymeasurement comes from fixtures/data.txt
-    cy.getByTestID('selector-list mymeasurement').should('exist')
+    cy.getByTestID('measurement-selector--dropdown-button').click()
+    cy.getByTestID('searchable-dropdown--item mymeasurement')
+      .contains('mymeasurement')
+      .click()
   })
 })

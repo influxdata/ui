@@ -34,6 +34,7 @@ describe('visualizations', () => {
               })
             })
             cy.writeData(points(NUM_POINTS))
+            cy.switchToDataExplorer('old')
             cy.getByTestID('time-machine--bottom')
           })
       )

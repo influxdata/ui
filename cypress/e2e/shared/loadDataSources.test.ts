@@ -20,6 +20,7 @@ describe('Load Data Sources', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.visit(`${orgs}/${id}/load-data/sources`)
         cy.getByTestID('tree-nav')
+        cy.switchToDataExplorer('old')
       })
     )
   })

@@ -4,7 +4,7 @@ import {points} from '../../support/commands'
 const setupData = (cy: Cypress.Chainable) =>
   cy.flush().then(() =>
     cy.signin().then(() => {
-      cy.setFeatureFlags({zoomRequery: true})
+      cy.setFeatureFlags({zoomRequery: true, showDashboardsInNewIOx: true})
       return cy.get('@org').then(({id: orgID, name}: Organization) =>
         cy.createDashboard(orgID).then(({body}) =>
           cy.fixture('routes').then(({orgs}) => {
@@ -72,7 +72,7 @@ const setupData = (cy: Cypress.Chainable) =>
     })
   )
 
-describe.skip('Adaptive Zoom', () => {
+describe('Adaptive Zoom', () => {
   beforeEach(() => setupData(cy))
 
   it('makes a query when zooming in', () => {

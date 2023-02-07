@@ -258,7 +258,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
               color={ComponentColor.Danger}
               onClick={handleDeleteScript}
               text="Delete Script"
-              testID="script-query-builder--no-save"
+              testID="script-query-builder--delete-script"
             />
           )}
         </Form>
@@ -275,7 +275,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
             color={ComponentColor.Default}
             onClick={clear}
             text="No, Discard"
-            testID="script-query-builder--no-save"
+            testID="script-query-builder--delete-script"
           />
         )}
         {CLOUD && (

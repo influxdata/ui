@@ -1,8 +1,5 @@
 import {Organization} from '../../../src/types'
 
-const DEFAULT_FLUX_EDITOR_TEXT =
-  '// Start by selecting data from the schema browser or typing flux here'
-
 // These delays are separately loaded in the UI.
 // But cypress checks for them in series...and the LspServer takes longer.
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
@@ -10,7 +7,7 @@ const DELAY_FOR_LSP_SERVER_BOOTUP = 7000
 
 const DELAY_FOR_FILE_DOWNLOAD = 5000
 
-describe.skip('Script Builder', () => {
+describe('Script Builder', () => {
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)
@@ -32,41 +29,9 @@ describe.skip('Script Builder', () => {
   const bucketName = 'defbuck'
   const measurement = 'ndbc'
 
-  const selectBucket = (bucketName: string) => {
-    cy.getByTestID('bucket-selector--dropdown-button').click()
-    cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
-    cy.getByTestID('bucket-selector--dropdown-button').should(
-      'contain',
-      bucketName
-    )
-  }
-
-  const selectMeasurement = (measurement: string) => {
-    cy.getByTestID('measurement-selector--dropdown-button')
-      .should('be.visible')
-      .should('contain', 'Select measurement')
-      .click()
-    cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
-    cy.getByTestID(`searchable-dropdown--item ${measurement}`)
-      .should('be.visible')
-      .click()
-    cy.getByTestID('measurement-selector--dropdown-button').should(
-      'contain',
-      measurement
-    )
-  }
-
   const selectSchema = () => {
-    cy.log('select bucket')
-    selectBucket(bucketName)
-    cy.getByTestID('flux-editor', {
-      timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
-    }).contains(`from(bucket: "${bucketName}")`, {
-      timeout: DELAY_FOR_LSP_SERVER_BOOTUP,
-    })
-
-    cy.log('select measurement')
-    selectMeasurement(measurement)
+    cy.selectScriptBucket(bucketName)
+    cy.selectScriptMeasurement(measurement)
   }
 
   const confirmSchemaComposition = () => {
@@ -80,65 +45,6 @@ describe.skip('Script Builder', () => {
     )
     cy.getByTestID('flux-editor').within(() => {
       cy.get('.composition-sync--on').should('have.length', 3) // three lines
-    })
-  }
-
-  const clearSession = () => {
-    return cy.isIoxOrg().then(isIox => {
-      if (isIox) {
-        cy.getByTestID('query-builder--new-script').should('be.visible').click()
-        cy.getByTestID('script-dropdown__flux').should('be.visible').click()
-        cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('script-query-builder--no-save')
-            .should('be.visible')
-            .click()
-        })
-      } else {
-        cy.getByTestID('script-query-builder--save-script').then(
-          $saveButton => {
-            if (!$saveButton.is(':disabled')) {
-              cy.getByTestID('script-query-builder--new-script')
-                .should('be.visible')
-                .click()
-              cy.getByTestID('overlay--container').within(() => {
-                cy.getByTestID('script-query-builder--no-save')
-                  .should('be.visible')
-                  .click()
-              })
-            }
-          }
-        )
-      }
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('textarea.inputarea').should(
-          'have.value',
-          DEFAULT_FLUX_EDITOR_TEXT
-        )
-      })
-      return cy.getByTestID('editor-sync--toggle').then($toggle => {
-        if (!$toggle.hasClass('active')) {
-          $toggle.click()
-        }
-      })
-    })
-  }
-
-  const loginWithFlags = flags => {
-    return cy.signinWithoutUserReprovision().then(() => {
-      return cy.get('@org').then(({id}: Organization) => {
-        cy.visit(`/orgs/${id}/data-explorer`)
-        return cy.setFeatureFlags(flags).then(() => {
-          cy.getByTestID('script-query-builder-toggle').then($toggle => {
-            cy.wrap($toggle).should('be.visible')
-            // Switch to Script Editor if not yet
-            if ($toggle.hasClass('active')) {
-              // active means showing the old Data Explorer
-              // hasClass is a jQuery function
-              $toggle.click()
-            }
-          })
-        })
-      })
     })
   }
 
@@ -166,12 +72,7 @@ describe.skip('Script Builder', () => {
     let route: string
 
     beforeEach(() => {
-      loginWithFlags({
-        schemaComposition: true,
-        newDataExplorer: true,
-        saveAsScript: true,
-        enableFluxInScriptBuilder: true,
-      }).then(() => {
+      cy.scriptsLoginWithFlags({}).then(() => {
         cy.get('@org').then(({id: orgID}: Organization) => {
           route = `/orgs/${orgID}/data-explorer`
           cy.intercept(
@@ -194,13 +95,16 @@ describe.skip('Script Builder', () => {
           )
         })
 
-        clearSession()
         cy.getByTestID('editor-sync--toggle').should('have.class', 'active')
+        cy.clearFluxScriptSession()
         cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
       })
     })
 
     it('will allow querying of different data ranges', () => {
+      cy.log('Ensure LSP is online') // deflake
+      cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
+
       selectSchema()
       confirmSchemaComposition()
 

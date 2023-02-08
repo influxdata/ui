@@ -16,7 +16,7 @@ const {getScript, patchScript, postScript} = CLOUD
       postScript: false,
     }
 
-export default () => {
+export const scriptResourceRegistration = () => {
   return {
     type: ResourceType.Scripts,
     editor,

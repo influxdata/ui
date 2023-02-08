@@ -163,7 +163,7 @@ const ScriptQueryBuilder: FC = () => {
                       <Dropdown.Button
                         active={active}
                         onClick={onClick}
-                        testID="query-builder--new-script"
+                        testID="script-query-builder--new-script"
                       >
                         <>
                           <Icon glyph={IconFont.Plus_New} />

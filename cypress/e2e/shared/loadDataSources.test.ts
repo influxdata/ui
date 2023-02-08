@@ -14,7 +14,6 @@ describe('Load Data Sources', () => {
     cy.signin()
     cy.setFeatureFlags({
       newDataExplorer: true,
-      showOldDataExplorerInNewIOx: true,
     })
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
@@ -174,8 +173,6 @@ describe('Load Data Sources', () => {
     // navigate to data explorer to see data
     // use new data explorer, since old data explorer is being deprecated
     cy.getByTestID('nav-item-data-explorer').click({force: true})
-
-    cy.getByTestID('script-query-builder-toggle').click()
 
     cy.getByTestID('timerange-dropdown').click()
 

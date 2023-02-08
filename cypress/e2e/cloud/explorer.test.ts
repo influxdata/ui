@@ -15,21 +15,28 @@ function getTimeMachineText() {
 }
 
 describe('DataExplorer', () => {
+  before(() => {
+    cy.flush().then(() => cy.signin())
+  })
+
   beforeEach(() => {
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.setFeatureFlags({
-          showOldDataExplorerInNewIOx: true,
-        }).then(() =>
-          cy.get('@org').then(({id}: Organization) => {
-            cy.createMapVariable(id)
-            cy.fixture('routes').then(({orgs, explorer}) => {
-              cy.visit(`${orgs}/${id}${explorer}`)
-              cy.getByTestID('tree-nav').should('be.visible')
-            })
+    cy.mockIsCloud2Org().then(() =>
+      cy.signinWithoutUserReprovision().then(() =>
+        cy
+          .setFeatureFlags({
+            newDataExplorer: true,
           })
-        )
-      })
+          .then(() =>
+            cy.get('@org').then(({id}: Organization) => {
+              return cy.fixture('routes').then(({orgs, explorer}) => {
+                cy.visit(`${orgs}/${id}${explorer}`)
+                cy.getByTestID('tree-nav').should('be.visible')
+                cy.switchToDataExplorer('old')
+                cy.getByTestID('switch-to-script-editor').should('exist')
+              })
+            })
+          )
+      )
     )
   })
 

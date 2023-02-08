@@ -1,8 +1,5 @@
 import {Organization} from '../../../src/types'
 
-// webpack bundling error if try importing --> due to imports in the constants file
-const IOX_SWITCHOVER_CREATION_DATE = '2023-01-31T00:00:00Z'
-
 describe('Deprecations per cloud release', () => {
   before(() => {
     cy.flush().then(() =>
@@ -133,20 +130,8 @@ describe('Deprecations per cloud release', () => {
   })
 
   describe('iox users prior to the Marty-release date', () => {
-    const beforeCutoff = new Date(
-      new Date(IOX_SWITCHOVER_CREATION_DATE) - 10000
-    ).toISOString()
     beforeEach(() => {
-      cy.intercept('GET', '/api/v2/orgs', req => {
-        req.continue(res => {
-          const orgs = res.body.orgs.map(org => ({
-            ...org,
-            createdAt: beforeCutoff,
-          }))
-          res.body.orgs = orgs
-        })
-      })
-      cy.signinWithoutUserReprovision()
+      cy.mockIsCloud2Org().then(() => cy.signinWithoutUserReprovision())
     })
 
     it('have everything exist except notebooks', () => {

@@ -234,6 +234,24 @@ export const isIoxOrg = (): Cypress.Chainable<boolean> => {
   })
 }
 
+const IOX_SWITCHOVER_CREATION_DATE = '2023-01-31T00:00:00Z'
+
+export const mockIsCloud2Org = (): Cypress.Chainable<null> => {
+  const beforeCutoff = new Date(
+    new Date(IOX_SWITCHOVER_CREATION_DATE) - 10000
+  ).toISOString()
+
+  return cy.intercept('GET', '/api/v2/orgs', req => {
+    req.continue(res => {
+      const orgs = res.body.orgs.map(org => ({
+        ...org,
+        createdAt: beforeCutoff,
+      }))
+      res.body.orgs = orgs
+    })
+  })
+}
+
 export const createDashboard = (
   orgID?: string,
   name: string = 'test dashboard'
@@ -868,18 +886,23 @@ export const selectScriptFieldOrTag = (name: string, beActive: boolean) => {
 }
 
 export const switchToDataExplorer = (typ: 'new' | 'old') => {
-  if (Cypress.$(`[data-testid="script-query-builder-toggle"]`).length > 0) {
-    cy.getByTestID('script-query-builder-toggle').then($toggle => {
-      cy.wrap($toggle).should('be.visible')
-      // active means showing the old Data Explorer
-      if (
-        ($toggle.hasClass('active') && typ == 'new') ||
-        (!$toggle.hasClass('active') && typ == 'old')
-      ) {
-        $toggle.click()
-      }
-    })
-  }
+  cy.getByTestID('page-title').contains('Data Explorer')
+  cy.get('[data-testid="data-explorer--header"]').then($body => {
+    if (
+      $body.has('button[data-testid="script-query-builder-toggle"]').length > 0
+    ) {
+      return cy.getByTestID('script-query-builder-toggle').then($toggle => {
+        cy.wrap($toggle).should('be.visible')
+        // active means showing the old Data Explorer
+        if (
+          ($toggle.hasClass('active') && typ == 'new') ||
+          (!$toggle.hasClass('active') && typ == 'old')
+        ) {
+          $toggle.click()
+        }
+      })
+    }
+  })
 }
 
 export const scriptsLoginWithFlags = (flags): Cypress.Chainable<any> => {
@@ -1472,6 +1495,7 @@ Cypress.Commands.add(
   wrapEnvironmentVariablesForOss
 )
 Cypress.Commands.add('isIoxOrg', isIoxOrg)
+Cypress.Commands.add('mockIsCloud2Org', mockIsCloud2Org)
 
 // navigation bar
 Cypress.Commands.add('clickNavBarItem', clickNavBarItem)

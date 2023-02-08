@@ -24,16 +24,25 @@ function getTimeMachineText() {
 }
 describe('DataExplorer', () => {
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.get('@org').then(({id}: Organization) => {
-      cy.createMapVariable(id)
-      cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
-        cy.getByTestID('tree-nav').should('be.visible')
-      })
-    })
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy
+          .setFeatureFlags({
+            newDataExplorer: true,
+          })
+          .then(() =>
+            cy.get('@org').then(({id}: Organization) => {
+              cy.fixture('routes').then(({orgs, explorer}) => {
+                cy.visit(`${orgs}/${id}${explorer}`)
+                cy.getByTestID('tree-nav').should('be.visible')
+                cy.switchToDataExplorer('old')
+              })
+            })
+          )
+      )
+    )
   })
+
   describe('raw script editing', () => {
     beforeEach(() => {
       cy.getByTestID('switch-to-script-editor').should('be.visible').click()

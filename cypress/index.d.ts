@@ -7,6 +7,7 @@ import {
   signin,
   signinWithoutUserReprovision,
   setupUser,
+  mockIsCloud2Org,
   createDashboard,
   createCell,
   createOrg,
@@ -77,6 +78,7 @@ declare global {
       signin: typeof signin
       signinWithoutUserReprovision: typeof signinWithoutUserReprovision
       setupUser: typeof setupUser
+      mockIsCloud2Org: typeof mockIsCloud2Org
       clickAttached: typeof clickAttached
       clickNavBarItem: typeof clickNavBarItem
       createSource: typeof createSource

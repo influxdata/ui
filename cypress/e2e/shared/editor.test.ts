@@ -98,13 +98,19 @@ describe('Editor+LSP communication', () => {
 
   describe('in Script Editor', () => {
     before(() => {
-      cy.flush().then(() =>
-        cy
-          .signin()
-          .then(() =>
-            cy.scriptsLoginWithFlags({}).then(() => cy.setScriptToFlux())
-          )
-      )
+      cy.flush()
+      cy.signin()
+      cy.setFeatureFlags({
+        newDataExplorer: true,
+        saveAsScript: true,
+        enableFluxInScriptBuilder: true,
+      })
+      cy.get('@org').then(({id}: Organization) => {
+        cy.visit(`/orgs/${id}/data-explorer`)
+        cy.getByTestID('tree-nav').should('be.visible')
+        cy.switchToDataExplorer('new')
+        cy.setScriptToFlux()
+      })
     })
 
     runTest('flux-editor')

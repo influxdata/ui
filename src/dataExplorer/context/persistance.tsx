@@ -15,7 +15,6 @@ import {
   ResourceConnectedQuery,
 } from 'src/dataExplorer/components/resources'
 import {isOrgIOx} from 'src/organizations/selectors'
-import {isValidFlux} from 'src/languageSupport/languages/flux/lspUtils'
 
 interface CompositionStatus {
   synced: boolean // true == can modify session's schema
@@ -220,12 +219,6 @@ export const PersistanceProvider: FC = ({children}) => {
     ]
   )
 
-  const buildMockStringifiedExtern = () => {
-    // Only used for validation. Not persisted.
-    // Note: new dataExplorer (a.k.a. scripts builder) only uses these variables
-    return `option v = {timeRangeStart: -1h, timeRangeStop: now()}`
-  }
-
   const save = (language: LanguageType) => {
     if (!resource || !RESOURCES[resource.type]) {
       return Promise.resolve(null)
@@ -233,16 +226,6 @@ export const PersistanceProvider: FC = ({children}) => {
 
     resource.flux = query
     resource.language = language
-
-    const externForValidation = buildMockStringifiedExtern()
-    if (
-      language === LanguageType.FLUX &&
-      !isValidFlux(`${externForValidation}\n${query}`)
-    ) {
-      return Promise.reject(
-        'Invalid flux script. Please check your query text.'
-      )
-    }
 
     return RESOURCES[resource.type].persist(resource).then(data => {
       handleSetResource(data)

@@ -5,7 +5,7 @@ import {
   Organization,
 } from '../../../src/types'
 
-describe.skip('Notification Endpoints', () => {
+describe('Notification Endpoints', () => {
   const endpoint: GenEndpoint = {
     orgID: '',
     name: 'Pre-Created Endpoint',
@@ -20,6 +20,9 @@ describe.skip('Notification Endpoints', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
+    cy.setFeatureFlags({
+      showAlertsInNewIOx: true,
+    })
     cy.get<Organization>('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs, alerting}) => {
         cy.createEndpoint({

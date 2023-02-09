@@ -18,18 +18,37 @@ const VIS_TYPES = [
 const NUM_POINTS = 360
 
 describe('visualizations', () => {
-  beforeEach(() => {
-    cy.flush()
-    cy.signin()
-
-    cy.get('@org').then(({id}: Organization) => {
-      cy.createMapVariable(id)
-      cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
+  before(() => {
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.createMapVariable(id)
+        })
+        cy.writeData(points(NUM_POINTS))
       })
-    })
-    cy.writeData(points(NUM_POINTS))
-    cy.getByTestID('time-machine--bottom')
+    )
+  })
+
+  beforeEach(() => {
+    cy.mockIsCloud2Org().then(() =>
+      cy.signinWithoutUserReprovision().then(() =>
+        cy
+          .setFeatureFlags({
+            newDataExplorer: true,
+            showVariablesInNewIOx: true,
+          })
+          .then(() => {
+            cy.get('@org').then(({id}: Organization) => {
+              cy.fixture('routes').then(({orgs, explorer}) => {
+                cy.visit(`${orgs}/${id}${explorer}`)
+                cy.getByTestID('tree-nav').should('be.visible')
+                cy.switchToDataExplorer('old')
+              })
+            })
+            cy.getByTestID('time-machine--bottom')
+          })
+      )
+    )
   })
 
   describe('empty states', () => {
@@ -77,7 +96,10 @@ describe('visualizations', () => {
 
           cy.log('can revert back to query builder mode (with confirmation)')
           cy.getByTestID('switch-to-script-editor').should('be.visible').click()
+
+          cy.getByTestID('flux-toolbar-search--input').click().type('bottom')
           cy.getByTestID('flux--bottom--inject').click()
+          cy.getByTestID('flux-toolbar-search--input').clear()
 
           cy.log('check to see if new flux function is at the bottom')
           cy.get('.view-line').last().prev().contains('bottom')

@@ -7,6 +7,7 @@ import {
   signin,
   signinWithoutUserReprovision,
   setupUser,
+  mockIsCloud2Org,
   createDashboard,
   createCell,
   createOrg,
@@ -54,6 +55,16 @@ import {
   quartzProvision,
   createTaskFromEmpty,
   createAlertGroup,
+  switchToDataExplorer,
+  setScriptToFlux,
+  setScriptToSql,
+  confirmSyncIsOn,
+  clearFluxScriptSession,
+  clearSqlScriptSession,
+  selectScriptBucket,
+  selectScriptMeasurement,
+  selectScriptFieldOrTag,
+  scriptsLoginWithFlags,
 } from './support/commands'
 
 declare global {
@@ -67,6 +78,7 @@ declare global {
       signin: typeof signin
       signinWithoutUserReprovision: typeof signinWithoutUserReprovision
       setupUser: typeof setupUser
+      mockIsCloud2Org: typeof mockIsCloud2Org
       clickAttached: typeof clickAttached
       clickNavBarItem: typeof clickNavBarItem
       createSource: typeof createSource
@@ -115,6 +127,16 @@ declare global {
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision
       createTaskFromEmpty: typeof createTaskFromEmpty
+      switchToDataExplorer: typeof switchToDataExplorer
+      setScriptToFlux: typeof setScriptToFlux
+      setScriptToSql: typeof setScriptToSql
+      confirmSyncIsOn: typeof confirmSyncIsOn
+      clearFluxScriptSession: typeof clearFluxScriptSession
+      clearSqlScriptSession: typeof clearSqlScriptSession
+      selectScriptBucket: typeof selectScriptBucket
+      selectScriptMeasurement: typeof selectScriptMeasurement
+      selectScriptFieldOrTag: typeof selectScriptFieldOrTag
+      scriptsLoginWithFlags: typeof scriptsLoginWithFlags
     }
   }
 }

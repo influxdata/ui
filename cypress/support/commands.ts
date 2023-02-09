@@ -30,7 +30,7 @@ Cypress.on('uncaught:exception', (err, _) => {
 })
 
 export const signin = (): Cypress.Chainable<Cypress.Response<any>> => {
-  const useIox = Boolean(Cypress.env('ioxUser'))
+  const useIox = Boolean(Cypress.env('useIox'))
   return cy.setupUser(useIox).then((response: any) => {
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
@@ -231,6 +231,24 @@ export const isIoxOrg = (): Cypress.Chainable<boolean> => {
     return Boolean(
       defaultStorageType && defaultStorageType.toLowerCase() === 'iox'
     )
+  })
+}
+
+const IOX_SWITCHOVER_CREATION_DATE = '2023-01-31T00:00:00Z'
+
+export const mockIsCloud2Org = (): Cypress.Chainable<null> => {
+  const beforeCutoff = new Date(
+    new Date(IOX_SWITCHOVER_CREATION_DATE) - 10000
+  ).toISOString()
+
+  return cy.intercept('GET', '/api/v2/orgs', req => {
+    req.continue(res => {
+      const orgs = res.body.orgs.map(org => ({
+        ...org,
+        createdAt: beforeCutoff,
+      }))
+      res.body.orgs = orgs
+    })
   })
 }
 
@@ -746,6 +764,170 @@ export const createNotebook = (
   })
 }
 
+export const newScriptWithoutLanguageSelection = () => {
+  cy.getByTestID('script-query-builder--save-script').then($saveButton => {
+    if (!$saveButton.is(':disabled')) {
+      cy.getByTestID('script-query-builder--new-script')
+        .should('be.visible')
+        .click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('script-query-builder--delete-script')
+          .should('be.visible')
+          .click()
+      })
+    }
+  })
+}
+
+const setScriptToLanguage = (
+  lang: 'sql' | 'flux',
+  defaultEditorText: string
+) => {
+  return cy.isIoxOrg().then(isIox => {
+    if (isIox) {
+      cy.getByTestID('script-query-builder--new-script')
+        .should('be.visible')
+        .click()
+      cy.getByTestID(`script-dropdown__${lang}`).should('be.visible').click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('script-query-builder--delete-script')
+          .should('be.visible')
+          .click()
+      })
+    } else {
+      newScriptWithoutLanguageSelection()
+    }
+    return cy.getByTestID(`${lang}-editor`).within(() => {
+      cy.get('textarea.inputarea').should('have.value', defaultEditorText)
+    })
+  })
+}
+
+const DEFAULT_FLUX_EDITOR_TEXT =
+  '// Start by selecting data from the schema browser or typing flux here'
+
+export const setScriptToFlux = () => {
+  return setScriptToLanguage('flux', DEFAULT_FLUX_EDITOR_TEXT)
+}
+
+const DEFAULT_SQL_EDITOR_TEXT = '/* Start by typing SQL here */'
+
+export const setScriptToSql = () => {
+  return setScriptToLanguage('sql', DEFAULT_SQL_EDITOR_TEXT)
+}
+
+export const confirmSyncIsOn = () => {
+  return cy.getByTestID('editor-sync--toggle').then($toggle => {
+    if (!$toggle.hasClass('active')) {
+      $toggle.click()
+    }
+  })
+}
+
+export const clearFluxScriptSession = () => {
+  return cy.setScriptToFlux().then(() => {
+    return cy.getByTestID('flux-editor').within(() => {
+      cy.get('textarea.inputarea').should(
+        'have.value',
+        DEFAULT_FLUX_EDITOR_TEXT
+      )
+    })
+  })
+}
+
+export const clearSqlScriptSession = () => {
+  return cy.isIoxOrg().then(isIox => {
+    cy.skipOn(!isIox)
+
+    return cy.setScriptToSql().then(() => {
+      return cy.getByTestID('sql-editor').within(() => {
+        cy.get('textarea.inputarea').should(
+          'have.value',
+          DEFAULT_SQL_EDITOR_TEXT
+        )
+      })
+    })
+  })
+}
+
+export const selectScriptBucket = (bucketName: string) => {
+  cy.getByTestID('bucket-selector--dropdown-button').click()
+  cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
+  cy.getByTestID('bucket-selector--dropdown-button').should(
+    'contain',
+    bucketName
+  )
+}
+
+export const selectScriptMeasurement = (measurement: string) => {
+  cy.getByTestID('measurement-selector--dropdown-button')
+    .should('be.visible')
+    .should('contain', 'Select measurement')
+    .click()
+  cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
+  cy.getByTestID(`searchable-dropdown--item ${measurement}`)
+    .should('be.visible')
+    .click()
+  cy.getByTestID('measurement-selector--dropdown-button').should(
+    'contain',
+    measurement
+  )
+}
+
+export const selectScriptFieldOrTag = (name: string, beActive: boolean) => {
+  cy.getByTestID('field-selector').should('be.visible')
+  cy.getByTestID(`selector-list ${name}`)
+    .should('be.visible')
+    .click({force: true})
+  cy.getByTestID(`selector-list ${name}`).should(
+    beActive ? 'have.class' : 'not.have.class',
+    'cf-list-item__active'
+  )
+}
+
+export const switchToDataExplorer = (typ: 'new' | 'old') => {
+  cy.getByTestID('page-title').contains('Data Explorer')
+  cy.get('[data-testid="data-explorer--header"]').then($body => {
+    if (
+      $body.has('button[data-testid="script-query-builder-toggle"]').length > 0
+    ) {
+      return cy.getByTestID('script-query-builder-toggle').then($toggle => {
+        cy.wrap($toggle).should('be.visible')
+        // active means showing the old Data Explorer
+        if (
+          ($toggle.hasClass('active') && typ == 'new') ||
+          (!$toggle.hasClass('active') && typ == 'old')
+        ) {
+          $toggle.click()
+        }
+      })
+    }
+  })
+}
+
+export const scriptsLoginWithFlags = (flags): Cypress.Chainable<any> => {
+  return cy.signinWithoutUserReprovision().then(() => {
+    return cy.get('@org').then(({id}: Organization) => {
+      cy.visit(`/orgs/${id}/data-explorer`)
+      return cy
+        .setFeatureFlags({
+          showOldDataExplorerInNewIOx: false,
+          schemaComposition: true,
+          newDataExplorer: true,
+          saveAsScript: true,
+          enableFluxInScriptBuilder: true,
+          ...flags,
+        })
+        .then(() =>
+          cy.reload().then(() => {
+            cy.getByTestID('page-title').contains('Data Explorer')
+            cy.switchToDataExplorer('new')
+          })
+        )
+    })
+  })
+}
+
 export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
   useIox = Cypress.env('useIox') || useIox
   const defaultUser = Cypress.env('defaultUser')
@@ -766,7 +948,7 @@ export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
         Cypress.env('defaultUser', response.body.user.name)
         if (defaultUser) {
           return cy
-            .log(`re-provsioned user ${defaultUser} successfully`)
+            .log(`re-provisioned user ${defaultUser} successfully`)
             .then(() => response)
         } else {
           return cy
@@ -1313,6 +1495,7 @@ Cypress.Commands.add(
   wrapEnvironmentVariablesForOss
 )
 Cypress.Commands.add('isIoxOrg', isIoxOrg)
+Cypress.Commands.add('mockIsCloud2Org', mockIsCloud2Org)
 
 // navigation bar
 Cypress.Commands.add('clickNavBarItem', clickNavBarItem)
@@ -1349,6 +1532,18 @@ Cypress.Commands.add('createToken', createToken)
 
 // notebooks
 Cypress.Commands.add('createNotebook', createNotebook)
+
+// scripts
+Cypress.Commands.add('switchToDataExplorer', switchToDataExplorer)
+Cypress.Commands.add('setScriptToFlux', setScriptToFlux)
+Cypress.Commands.add('setScriptToSql', setScriptToSql)
+Cypress.Commands.add('confirmSyncIsOn', confirmSyncIsOn)
+Cypress.Commands.add('clearFluxScriptSession', clearFluxScriptSession)
+Cypress.Commands.add('clearSqlScriptSession', clearSqlScriptSession)
+Cypress.Commands.add('selectScriptBucket', selectScriptBucket)
+Cypress.Commands.add('selectScriptMeasurement', selectScriptMeasurement)
+Cypress.Commands.add('selectScriptFieldOrTag', selectScriptFieldOrTag)
+Cypress.Commands.add('scriptsLoginWithFlags', scriptsLoginWithFlags)
 
 // variables
 Cypress.Commands.add('createQueryVariable', createQueryVariable)

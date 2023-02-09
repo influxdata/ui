@@ -260,7 +260,7 @@ class TagSelector extends PureComponent<Props> {
 
     if (valuesStatus === RemoteDataState.Done && !values.length) {
       return (
-        <BuilderCard.Empty>
+        <BuilderCard.Empty testID="empty-tag-keys">
           No values found <small>in the current time range</small>
         </BuilderCard.Empty>
       )

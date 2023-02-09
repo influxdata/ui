@@ -8,19 +8,23 @@ describe('simple table interactions', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.get('@org').then(({id: orgID}: Organization) => {
-      cy.fixture('routes').then(({orgs, explorer}) => {
-        cy.visit(`${orgs}/${orgID}${explorer}`)
+    cy.setFeatureFlags({
+      showOldDataExplorerInNewIOx: true,
+    }).then(() =>
+      cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.fixture('routes').then(({orgs, explorer}) => {
+          cy.visit(`${orgs}/${orgID}${explorer}`)
+        })
+        cy.getByTestID('tree-nav')
+        cy.createBucket(orgID, name, simpleLarge)
+        cy.writeData(points(300), simpleLarge)
+        cy.createBucket(orgID, name, simpleSmall)
+        cy.writeData(points(30), simpleSmall)
+        cy.createBucket(orgID, name, simpleOverflow)
+        cy.writeData(points(31), simpleOverflow)
+        cy.reload()
       })
-      cy.getByTestID('tree-nav')
-      cy.createBucket(orgID, name, simpleLarge)
-      cy.writeData(points(300), simpleLarge)
-      cy.createBucket(orgID, name, simpleSmall)
-      cy.writeData(points(30), simpleSmall)
-      cy.createBucket(orgID, name, simpleOverflow)
-      cy.writeData(points(31), simpleOverflow)
-      cy.reload()
-    })
+    )
   })
 
   it('should render correctly after switching from a dataset with more pages to one with fewer', () => {

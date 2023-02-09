@@ -10,63 +10,65 @@ export const EDIT_RANGE_ANNOTATION_TEXT =
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
     cy.signin().then(() =>
-      cy.get('@org').then(({id: orgID, name}: Organization) =>
-        cy.createDashboard(orgID).then(({body}) =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-            return cy.then(() => {
-              cy.createBucket(orgID, name, 'devbucket')
-              /*
+      cy.setFeatureFlags({showDashboardsInNewIOx: true}).then(() =>
+        cy.get('@org').then(({id: orgID, name}: Organization) =>
+          cy.createDashboard(orgID).then(({body}) =>
+            cy.fixture('routes').then(({orgs}) => {
+              cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+              return cy.then(() => {
+                cy.createBucket(orgID, name, 'devbucket')
+                /*
                 note:
                   graph types vary in the presentation of the line
                   for example, "Graph" presents a line less steep than "Graph + Single Stat"
                   use enough points and a time difference that works for all graph types
                   10 points and 5 minute time difference works well
               */
-              cy.writeData(points(10, 600_000), 'devbucket')
+                cy.writeData(points(10, 600_000), 'devbucket')
 
-              // make a dashboard cell
-              cy.getByTestID('add-cell--button').click()
-              cy.getByTestID('selector-list devbucket').should(
-                'have.length.of.at.least',
-                1
-              )
-              cy.getByTestID('selector-list devbucket').click()
+                // make a dashboard cell
+                cy.getByTestID('add-cell--button').click()
+                cy.getByTestID('selector-list devbucket').should(
+                  'have.length.of.at.least',
+                  1
+                )
+                cy.getByTestID('selector-list devbucket').click()
 
-              cy.getByTestID('selector-list m').should(
-                'have.length.of.at.least',
-                1
-              )
-              cy.getByTestID('selector-list m').clickAttached()
+                cy.getByTestID('selector-list m').should(
+                  'have.length.of.at.least',
+                  1
+                )
+                cy.getByTestID('selector-list m').clickAttached()
 
-              cy.getByTestID('selector-list v').should(
-                'have.length.of.at.least',
-                1
-              )
-              cy.getByTestID('selector-list v').clickAttached()
+                cy.getByTestID('selector-list v').should(
+                  'have.length.of.at.least',
+                  1
+                )
+                cy.getByTestID('selector-list v').clickAttached()
 
-              if (plotTypeSuffix) {
-                cy.getByTestID('view-type--dropdown').click()
-                cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
-              }
+                if (plotTypeSuffix) {
+                  cy.getByTestID('view-type--dropdown').click()
+                  cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
+                }
 
-              cy.getByTestID(`selector-list tv1`).should(
-                'have.length.of.at.least',
-                1
-              )
-              cy.getByTestID(`selector-list tv1`).clickAttached()
+                cy.getByTestID(`selector-list tv1`).should(
+                  'have.length.of.at.least',
+                  1
+                )
+                cy.getByTestID(`selector-list tv1`).clickAttached()
 
-              cy.getByTestID('time-machine-submit-button').click()
+                cy.getByTestID('time-machine-submit-button').click()
 
-              cy.getByTestID('page-title').click()
-              cy.getByTestID('renamable-page-title--input')
-                .clear()
-                .type('blah{enter}')
-              cy.getByTestID('save-cell--button').click()
+                cy.getByTestID('page-title').click()
+                cy.getByTestID('renamable-page-title--input')
+                  .clear()
+                  .type('blah{enter}')
+                cy.getByTestID('save-cell--button').click()
 
-              cy.getByTestID('toggle-annotations-controls').click()
+                cy.getByTestID('toggle-annotations-controls').click()
+              })
             })
-          })
+          )
         )
       )
     )

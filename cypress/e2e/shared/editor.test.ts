@@ -1,8 +1,5 @@
 import {Organization} from '../../../src/types'
 
-const DEFAULT_FLUX_EDITOR_TEXT =
-  '// Start by selecting data from the schema browser or typing flux here'
-
 // to see list of monaco-editor widgets to check:
 // document.querySelectorAll('[widgetid]')
 
@@ -82,12 +79,14 @@ describe('Editor+LSP communication', () => {
       cy.signin()
       cy.setFeatureFlags({
         schemaComposition: true,
+        showOldDataExplorerInNewIOx: true,
       })
       cy.get('@org').then(({id}: Organization) => {
         cy.createMapVariable(id)
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${id}${explorer}`)
           cy.getByTestID('tree-nav').should('be.visible')
+          cy.switchToDataExplorer('old')
         })
       })
       // Double check that the new schemaComposition flag does not interfere.
@@ -98,50 +97,19 @@ describe('Editor+LSP communication', () => {
   })
 
   describe('in Script Editor', () => {
-    const setScriptToFlux = () => {
-      return cy.isIoxOrg().then(isIox => {
-        if (isIox) {
-          cy.getByTestID('query-builder--new-script')
-            .should('be.visible')
-            .click()
-          cy.getByTestID('script-dropdown__flux').should('be.visible').click()
-          cy.getByTestID('overlay--container').within(() => {
-            cy.getByTestID('script-query-builder--no-save')
-              .should('be.visible')
-              .click()
-          })
-        }
-        return cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea.inputarea').should(
-            'have.value',
-            DEFAULT_FLUX_EDITOR_TEXT
-          )
-        })
-      })
-    }
-
     before(() => {
       cy.flush()
       cy.signin()
       cy.setFeatureFlags({
         newDataExplorer: true,
-        schemaComposition: false,
         saveAsScript: true,
+        enableFluxInScriptBuilder: true,
       })
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/data-explorer`)
         cy.getByTestID('tree-nav').should('be.visible')
-        cy.getByTestID('script-query-builder-toggle').then($toggle => {
-          cy.wrap($toggle).should('be.visible')
-          // Switch to Script Editor if not yet
-          if ($toggle.hasClass('active')) {
-            // active means showing the old Data Explorer
-            // hasClass is a jQuery function
-            $toggle.click()
-            cy.getByTestID('script-query-builder--menu').contains('New Script')
-          }
-          return setScriptToFlux()
-        })
+        cy.switchToDataExplorer('new')
+        cy.setScriptToFlux()
       })
     })
 

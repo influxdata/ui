@@ -4,23 +4,30 @@ describe('writing queries and making graphs using Data Explorer', () => {
   let route: string
 
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    // Double check that the new schemaComposition flag does not interfere.
-    cy.setFeatureFlags({
-      schemaComposition: true,
-    })
-    // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-    // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-    cy.wait(1200)
-    cy.get('@org').then(({id}: Organization) => {
-      cy.createMapVariable(id)
-      cy.fixture('routes').then(({orgs, explorer}) => {
-        route = `${orgs}/${id}${explorer}`
-        cy.visit(route)
-        cy.getByTestID('tree-nav').should('be.visible')
-      })
-    })
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy
+          .setFeatureFlags({
+            showOldDataExplorerInNewIOx: true,
+            showTasksInNewIOx: true,
+            showVariablesInNewIOx: true,
+            schemaComposition: true, // Double check that the new schemaComposition flag does not interfere.
+          })
+          .then(() => {
+            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+            cy.wait(1200)
+            cy.get('@org').then(({id}: Organization) => {
+              cy.createMapVariable(id)
+              cy.fixture('routes').then(({orgs, explorer}) => {
+                route = `${orgs}/${id}${explorer}`
+                cy.visit(route)
+                cy.getByTestID('tree-nav').should('be.visible')
+              })
+            })
+          })
+      )
+    )
   })
 
   describe('numeric input in graphs', () => {
@@ -169,13 +176,6 @@ describe('writing queries and making graphs using Data Explorer', () => {
     })
 
     it('shows the empty state when the query returns no results', () => {
-      cy.isIoxOrg().then(isIox => {
-        // iox uses `${orgId}_${bucketId}` for a namespace_id
-        // And gives a namespace_id failure if no data is written yet.
-        // https://github.com/influxdata/monitor-ci/issues/402#issuecomment-1362368473
-        cy.skipOn(isIox)
-      })
-
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor').should('be.visible')
           .monacoType(`from(bucket: "defbuck")

@@ -8,53 +8,10 @@ describe('Script Builder', () => {
   const bucketName = 'defbuck'
   const measurement = 'ndbc'
 
-  const selectBucket = (bucketName: string) => {
-    cy.getByTestID('bucket-selector--dropdown-button').click()
-    cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
-    cy.getByTestID('bucket-selector--dropdown-button').should(
-      'contain',
-      bucketName
-    )
-  }
-
-  const selectMeasurement = (measurement: string) => {
-    cy.getByTestID('measurement-selector--dropdown-button')
-      .should('be.visible')
-      .should('contain', 'Select measurement')
-      .click()
-    cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
-    cy.getByTestID(`searchable-dropdown--item ${measurement}`)
-      .should('be.visible')
-      .click()
-    cy.getByTestID('measurement-selector--dropdown-button').should(
-      'contain',
-      measurement
-    )
-  }
-
-  const selectListItem = (name, beActive) => {
-    cy.getByTestID('field-selector').should('be.visible')
-    cy.getByTestID(`selector-list ${name}`)
-      .should('be.visible')
-      .click({force: true})
-    cy.getByTestID(`selector-list ${name}`).should(
-      beActive ? 'have.class' : 'not.have.class',
-      'cf-list-item__active'
-    )
-  }
-
-  const confirmSyncIsOn = () => {
-    return cy.getByTestID('editor-sync--toggle').then($toggle => {
-      if (!$toggle.hasClass('active')) {
-        $toggle.click()
-      }
-    })
-  }
-
   const selectSchema = () => {
     cy.log('select bucket')
-    selectBucket(bucketName)
-    confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
+    cy.selectScriptBucket(bucketName)
+    cy.confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
     cy.log('writes empty query statement with only the timerange')
     cy.getByTestID('sql-editor', {
       timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
@@ -63,7 +20,7 @@ describe('Script Builder', () => {
     cy.getByTestID('sql-editor').contains(`time >= now() - interval '1 hour'`)
 
     cy.log('select measurement')
-    selectMeasurement(measurement)
+    cy.selectScriptMeasurement(measurement)
   }
 
   const confirmSchemaComposition = () => {
@@ -82,62 +39,6 @@ describe('Script Builder', () => {
 
     cy.log('does not have other fields or tag filters')
     cy.getByTestID('sql-editor').should('not.contain', 'AND')
-  }
-
-  const setScriptToSql = () => {
-    return cy.isIoxOrg().then(isIox => {
-      if (isIox) {
-        cy.getByTestID('query-builder--new-script').should('be.visible').click()
-        cy.getByTestID('script-dropdown__sql').should('be.visible').click()
-        cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('script-query-builder--no-save')
-            .should('be.visible')
-            .click()
-        })
-      }
-      return cy.getByTestID('sql-editor').within(() => {
-        cy.get('textarea.inputarea').should(
-          'have.value',
-          DEFAULT_SQL_EDITOR_TEXT
-        )
-      })
-    })
-  }
-
-  const clearSession = () => {
-    return cy.isIoxOrg().then(isIox => {
-      if (isIox) {
-        setScriptToSql()
-      } else {
-        cy.skipOn(true)
-      }
-      cy.getByTestID('sql-editor').within(() => {
-        cy.get('textarea.inputarea').should(
-          'have.value',
-          DEFAULT_SQL_EDITOR_TEXT
-        )
-      })
-      return confirmSyncIsOn()
-    })
-  }
-
-  const loginWithFlags = flags => {
-    return cy.signinWithoutUserReprovision().then(() => {
-      return cy.get('@org').then(({id}: Organization) => {
-        cy.visit(`/orgs/${id}/data-explorer`)
-        return cy.setFeatureFlags(flags).then(() => {
-          cy.getByTestID('script-query-builder-toggle').then($toggle => {
-            cy.wrap($toggle).should('be.visible')
-            // Switch to Script Query Builder if not yet
-            if ($toggle.hasClass('active')) {
-              // active means showing the old Data Explorer
-              // hasClass is a jQuery function
-              $toggle.click()
-            }
-          })
-        })
-      })
-    })
   }
 
   before(() => {
@@ -161,12 +62,10 @@ describe('Script Builder', () => {
 
   describe('Schema Composition', () => {
     beforeEach(() => {
-      loginWithFlags({
-        schemaComposition: true,
-        newDataExplorer: true,
-        saveAsScript: true,
+      cy.scriptsLoginWithFlags({
+        enableFluxInScriptBuilder: false,
       }).then(() => {
-        clearSession()
+        cy.clearSqlScriptSession()
         cy.getByTestID('editor-sync--toggle')
         cy.getByTestID('sql-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
       })
@@ -179,21 +78,21 @@ describe('Script Builder', () => {
 
         cy.log('select bucket and measurement')
         selectSchema()
-        confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
+        cy.confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
         confirmSchemaComposition()
 
         cy.log('select field --> adds to composition')
         const fieldName0 = 'station_id_0'
         const fieldName10 = 'station_id_10'
-        selectListItem(fieldName0, true)
+        cy.selectScriptFieldOrTag(fieldName0, true)
         cy.getByTestID('sql-editor').contains(`("${fieldName0}" IS NOT NULL)`)
-        selectListItem(fieldName10, true)
+        cy.selectScriptFieldOrTag(fieldName10, true)
         cy.getByTestID('sql-editor').contains(
           `("${fieldName0}" IS NOT NULL OR "${fieldName10}" IS NOT NULL)`
         )
 
         cy.log('select field --> removes from composition')
-        selectListItem(fieldName10, false)
+        cy.selectScriptFieldOrTag(fieldName10, false)
         cy.wait(1000)
         cy.getByTestID('sql-editor').contains(`("${fieldName0}" IS NOT NULL)`)
         cy.getByTestID('sql-editor').within(() => {
@@ -207,7 +106,7 @@ describe('Script Builder', () => {
 
         cy.log('select bucket and measurement')
         selectSchema()
-        confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
+        cy.confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
         confirmSchemaComposition()
 
         cy.log('select tagValue --> adds to composition')
@@ -216,11 +115,11 @@ describe('Script Builder', () => {
         })
         const tagKey = 'air_temp_degc'
         const tagValue = '70_degrees'
-        selectListItem(tagValue, true)
+        cy.selectScriptFieldOrTag(tagValue, true)
         cy.getByTestID('sql-editor').contains(`"${tagKey}" IN ('${tagValue}')`)
 
         cy.log('select tagValue --> removes from composition')
-        selectListItem(tagValue, false)
+        cy.selectScriptFieldOrTag(tagValue, false)
         cy.wait(1000)
         cy.getByTestID('sql-editor').within(() => {
           cy.get('textarea.inputarea').should('not.contain', tagKey)
@@ -237,8 +136,8 @@ describe('Script Builder', () => {
         })
 
         cy.log('select bucket')
-        selectBucket(bucketName)
-        confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
+        cy.selectScriptBucket(bucketName)
+        cy.confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
         cy.log('writes empty query statement with only the timerange')
         cy.getByTestID('sql-editor').contains(`SELECT *`)
         cy.getByTestID('sql-editor').contains(`WHERE`)
@@ -263,7 +162,7 @@ describe('Script Builder', () => {
 
         cy.log('make a composition')
         selectSchema()
-        confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
+        cy.confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.
         confirmSchemaComposition()
 
         cy.log('sync toggles on and off, with matching styles')
@@ -287,7 +186,7 @@ describe('Script Builder', () => {
           .should('not.have.class', 'active')
 
         cy.log('can still browse schema while not synced')
-        selectBucket('defbuck2')
+        cy.selectScriptBucket('defbuck2')
       })
 
       it('should clear the editor text and schema browser, with a new script', () => {
@@ -300,7 +199,7 @@ describe('Script Builder', () => {
         confirmSchemaComposition()
 
         cy.log('click new script, and choose to delete current script')
-        clearSession()
+        cy.clearSqlScriptSession()
       })
 
       it('should not be able to modify the composition when unsynced, yet still modify the session -- which updates the composition when re-synced', () => {
@@ -314,8 +213,8 @@ describe('Script Builder', () => {
         cy.getByTestID('editor-sync--toggle').should('not.have.class', 'active')
 
         cy.log('modify schema browser')
-        selectBucket(bucketName)
-        selectMeasurement(measurement)
+        cy.selectScriptBucket(bucketName)
+        cy.selectScriptMeasurement(measurement)
 
         cy.log('editor text is still empty')
         cy.getByTestID('sql-editor').within(() => {

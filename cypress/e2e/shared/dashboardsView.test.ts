@@ -1,16 +1,24 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
-describe('Dashboard', () => {
+describe('Dashboard - TSM and pre marty release IOx', () => {
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-        cy.visit(`${orgs}/${orgID}/dashboards-list`)
-        cy.getByTestID('tree-nav')
-      })
-    })
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy
+          .setFeatureFlags({
+            showDashboardsInNewIOx: true,
+          })
+          .then(() =>
+            cy.fixture('routes').then(({orgs}) => {
+              cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+                cy.visit(`${orgs}/${orgID}/dashboards-list`)
+                cy.getByTestID('tree-nav')
+              })
+            })
+          )
+      )
+    )
   })
 
   it("can edit a dashboard's name", () => {

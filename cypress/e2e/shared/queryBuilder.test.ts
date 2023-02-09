@@ -15,15 +15,24 @@ const generateRandomSixDigitNumber = () => {
 
 describe('The Query Builder', () => {
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.writeData([
-      `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
-      `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy
+          .setFeatureFlags({
+            showOldDataExplorerInNewIOx: true,
+            showDashboardsInNewIOx: true,
+          })
+          .then(() =>
+            cy.writeData([
+              `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
+              `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
 
-      `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
-      `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
-    ])
+              `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
+              `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
+            ])
+          )
+      )
+    )
   })
 
   describe('from the Data Explorer', () => {

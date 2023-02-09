@@ -4,17 +4,18 @@ import {useSelector} from 'react-redux'
 
 // Types
 import {TimeRange, RecursivePartial} from 'src/types'
+import {Bucket, TagKeyValuePair} from 'src/types'
+
+// Utils
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {useSessionStorage} from 'src/dataExplorer/shared/utils'
-import {Bucket, TagKeyValuePair} from 'src/types'
 import {
   LanguageType,
   RESOURCES,
   ResourceConnectedQuery,
 } from 'src/dataExplorer/components/resources'
-
-// Utils
 import {isOrgIOx} from 'src/organizations/selectors'
+import {isValidFlux} from 'src/languageSupport/languages/flux/lspUtils'
 
 interface CompositionStatus {
   synced: boolean // true == can modify session's schema
@@ -219,13 +220,29 @@ export const PersistanceProvider: FC = ({children}) => {
     ]
   )
 
-  const save = (language: LanguageType = LanguageType.FLUX) => {
+  const buildMockStringifiedExtern = () => {
+    // Only used for validation. Not persisted.
+    // Note: new dataExplorer (a.k.a. scripts builder) only uses these variables
+    return `option v = {timeRangeStart: -1h, timeRangeStop: now()}`
+  }
+
+  const save = (language: LanguageType) => {
     if (!resource || !RESOURCES[resource.type]) {
       return Promise.resolve(null)
     }
 
     resource.flux = query
     resource.language = language
+
+    const externForValidation = buildMockStringifiedExtern()
+    if (
+      language === LanguageType.FLUX &&
+      !isValidFlux(`${externForValidation}\n${query}`)
+    ) {
+      return Promise.reject(
+        'Invalid flux script. Please check your query text.'
+      )
+    }
 
     return RESOURCES[resource.type].persist(resource).then(data => {
       handleSetResource(data)

@@ -20,7 +20,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {isUserOperator} from 'src/operator/utils'
 
 // Selectors
-import {getOrg} from 'src/organizations/selectors'
+import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {
   selectCurrentAccountType,
   selectOperatorRole,
@@ -247,14 +247,19 @@ export const MainNavigation: FC = () => {
   const operatorRole = useSelector(selectOperatorRole)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
+  const isIOxOrg = useSelector(isOrgIOx)
 
   const dispatch = useDispatch()
 
   const location = useLocation()
   useEffect(() => {
-    const helpBarMenu = document.querySelectorAll<HTMLElement>(
+    const linksWithSubMenus = document.querySelectorAll<HTMLElement>(
       '.cf-tree-nav--sub-menu-trigger'
-    )[3]
+    )
+    const lastSubMenu = linksWithSubMenus.length - 1
+
+    const helpBarMenu = linksWithSubMenus[lastSubMenu]
+
     if (!helpBarMenu) {
       return
     }
@@ -269,6 +274,10 @@ export const MainNavigation: FC = () => {
   if (presentationMode || !org) {
     return null
   }
+
+  const docslink = isIOxOrg
+    ? 'https://docs.influxdata.com/influxdb/cloud-iox/'
+    : 'https://docs.influxdata.com/'
 
   const handleToggleNavExpansion = (): void => {
     if (navbarMode === 'expanded') {
@@ -408,7 +417,7 @@ export const MainNavigation: FC = () => {
             testID="nav-subitem-documentation"
             linkElement={() => (
               <SafeBlankLink
-                href="https://docs.influxdata.com/"
+                href={docslink}
                 onClick={() => handleEventing('documentation')}
               />
             )}

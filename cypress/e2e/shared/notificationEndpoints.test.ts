@@ -20,6 +20,9 @@ describe('Notification Endpoints', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
+    cy.setFeatureFlags({
+      showAlertsInNewIOx: true,
+    })
     cy.get<Organization>('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs, alerting}) => {
         cy.createEndpoint({

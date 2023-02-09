@@ -33,7 +33,7 @@ const initialState: AppState = {
     showTemplateControlBar: false,
     timeZone: 'Local',
     navBarState: 'collapsed',
-    scriptQueryBuilder: false,
+    scriptQueryBuilder: true,
     versionInfo: {version: '', commit: ''},
     flowsCTA: {explorer: true, tasks: true, alerts: true},
     subscriptionsCertificateInterest: false,

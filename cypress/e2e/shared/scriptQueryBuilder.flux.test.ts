@@ -18,44 +18,9 @@ describe('Script Builder', () => {
   const bucketName = 'defbuck'
   const measurement = 'ndbc'
 
-  const selectBucket = (bucketName: string) => {
-    cy.getByTestID('bucket-selector--dropdown-button').click()
-    cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
-    cy.getByTestID('bucket-selector--dropdown-button').should(
-      'contain',
-      bucketName
-    )
-  }
-
-  const selectMeasurement = (measurement: string) => {
-    cy.getByTestID('measurement-selector--dropdown-button')
-      .should('be.visible')
-      .should('contain', 'Select measurement')
-      .click()
-    cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
-    cy.getByTestID(`searchable-dropdown--item ${measurement}`)
-      .should('be.visible')
-      .click()
-    cy.getByTestID('measurement-selector--dropdown-button').should(
-      'contain',
-      measurement
-    )
-  }
-
-  const selectListItem = (name, beActive) => {
-    cy.getByTestID('field-selector').should('be.visible')
-    cy.getByTestID(`selector-list ${name}`)
-      .should('be.visible')
-      .click({force: true})
-    cy.getByTestID(`selector-list ${name}`).should(
-      beActive ? 'have.class' : 'not.have.class',
-      'cf-list-item__active'
-    )
-  }
-
   const selectSchema = () => {
     cy.log('select bucket')
-    selectBucket(bucketName)
+    cy.selectScriptBucket(bucketName)
     cy.getByTestID('flux-editor', {
       timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
     }).contains(`from(bucket: "${bucketName}")`, {
@@ -63,7 +28,7 @@ describe('Script Builder', () => {
     })
 
     cy.log('select measurement')
-    selectMeasurement(measurement)
+    cy.selectScriptMeasurement(measurement)
   }
 
   const confirmSchemaComposition = () => {
@@ -80,79 +45,6 @@ describe('Script Builder', () => {
     })
   }
 
-  const setScriptToFlux = () => {
-    return cy.isIoxOrg().then(isIox => {
-      if (isIox) {
-        cy.getByTestID('query-builder--new-script').should('be.visible').click()
-        cy.getByTestID('script-dropdown__flux').should('be.visible').click()
-        cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('script-query-builder--no-save')
-            .should('be.visible')
-            .click()
-        })
-      }
-      return cy.getByTestID('flux-editor').within(() => {
-        cy.get('textarea.inputarea').should(
-          'have.value',
-          DEFAULT_FLUX_EDITOR_TEXT
-        )
-      })
-    })
-  }
-
-  const clearSession = () => {
-    return cy.isIoxOrg().then(isIox => {
-      if (isIox) {
-        setScriptToFlux()
-      } else {
-        cy.getByTestID('script-query-builder--save-script').then(
-          $saveButton => {
-            if (!$saveButton.is(':disabled')) {
-              cy.getByTestID('script-query-builder--new-script')
-                .should('be.visible')
-                .click()
-              cy.getByTestID('overlay--container').within(() => {
-                cy.getByTestID('script-query-builder--no-save')
-                  .should('be.visible')
-                  .click()
-              })
-            }
-          }
-        )
-      }
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('textarea.inputarea').should(
-          'have.value',
-          DEFAULT_FLUX_EDITOR_TEXT
-        )
-      })
-      return cy.getByTestID('editor-sync--toggle').then($toggle => {
-        if (!$toggle.hasClass('active')) {
-          $toggle.click()
-        }
-      })
-    })
-  }
-
-  const loginWithFlags = flags => {
-    return cy.signinWithoutUserReprovision().then(() => {
-      return cy.get('@org').then(({id}: Organization) => {
-        cy.visit(`/orgs/${id}/data-explorer`)
-        return cy.setFeatureFlags(flags).then(() => {
-          cy.getByTestID('script-query-builder-toggle').then($toggle => {
-            cy.wrap($toggle).should('be.visible')
-            // Switch to Script Editor if not yet
-            if ($toggle.hasClass('active')) {
-              // active means showing the old Data Explorer
-              // hasClass is a jQuery function
-              $toggle.click()
-            }
-          })
-        })
-      })
-    })
-  }
-
   before(() => {
     cy.flush().then(() => {
       return cy.signin().then(() => {
@@ -166,15 +58,14 @@ describe('Script Builder', () => {
     })
   })
 
-  describe('Schema browser, without composition or saveAsScript', () => {
+  describe('Schema browser, without composition', () => {
     beforeEach(() => {
-      loginWithFlags({
+      cy.scriptsLoginWithFlags({
         schemaComposition: false,
-        newDataExplorer: true,
       }).then(() => {
         cy.getByTestID('editor-sync--toggle').should('not.exist')
         cy.getByTestID('script-query-builder--menu').contains('New Script')
-        setScriptToFlux()
+        cy.clearFluxScriptSession()
       })
     })
 
@@ -321,13 +212,9 @@ describe('Script Builder', () => {
 
   describe('Schema Composition', () => {
     beforeEach(() => {
-      loginWithFlags({
-        schemaComposition: true,
-        newDataExplorer: true,
-        saveAsScript: true,
-      }).then(() => {
-        clearSession()
+      cy.scriptsLoginWithFlags({}).then(() => {
         cy.getByTestID('editor-sync--toggle')
+        cy.clearFluxScriptSession()
         cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
       })
     })
@@ -347,17 +234,17 @@ describe('Script Builder', () => {
         cy.log('select field --> adds to composition')
         const fieldName0 = 'station_id_0'
         const fieldName10 = 'station_id_10'
-        selectListItem(fieldName0, true)
+        cy.selectScriptFieldOrTag(fieldName0, true)
         cy.getByTestID('flux-editor').contains(
           `|> filter(fn: (r) => r._field == "${fieldName0}")`
         )
-        selectListItem(fieldName10, true)
+        cy.selectScriptFieldOrTag(fieldName10, true)
         cy.getByTestID('flux-editor').contains(
           `fn: (r) => r._field == "${fieldName0}" or r._field == "${fieldName10}"`
         )
 
         cy.log('select field --> removes from composition')
-        selectListItem(fieldName10, false)
+        cy.selectScriptFieldOrTag(fieldName10, false)
         cy.wait(1000)
         cy.getByTestID('flux-editor').contains(
           `|> filter(fn: (r) => r._field == "${fieldName0}")`
@@ -384,13 +271,13 @@ describe('Script Builder', () => {
         })
         const tagKey = 'air_temp_degc'
         const tagValue = '70_degrees'
-        selectListItem(tagValue, true)
+        cy.selectScriptFieldOrTag(tagValue, true)
         cy.getByTestID('flux-editor').contains(
           `|> filter(fn: (r) => r.${tagKey} == "${tagValue}")`
         )
 
         cy.log('select tagValue --> removes from composition')
-        selectListItem(tagValue, false)
+        cy.selectScriptFieldOrTag(tagValue, false)
         cy.wait(1000)
         cy.getByTestID('flux-editor').within(() => {
           cy.get('textarea.inputarea').should('not.contain', tagKey)
@@ -406,8 +293,11 @@ describe('Script Builder', () => {
           )
         })
 
+        cy.log('Ensure LSP is online') // deflake
+        cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
+
         cy.log('select bucket')
-        selectBucket(bucketName)
+        cy.selectScriptBucket(bucketName)
         cy.getByTestID('flux-editor').contains(`from(bucket: "${bucketName}")`)
         cy.getByTestID('flux-editor').should(
           'not.contain',
@@ -437,7 +327,7 @@ describe('Script Builder', () => {
 
         cy.log('can still change composition')
         const fieldName10 = 'station_id_10'
-        selectListItem(fieldName10, false)
+        cy.selectScriptFieldOrTag(fieldName10, false)
         cy.getByTestID('flux-editor').contains(
           `|> filter(fn: (r) => r._field == "${fieldName10}")`
         )
@@ -480,11 +370,14 @@ describe('Script Builder', () => {
           .should('not.have.class', 'active')
 
         cy.log('can still browse schema while not synced')
-        selectBucket('defbuck2')
+        cy.selectScriptBucket('defbuck2')
       })
 
       it('should clear the editor text and schema browser, with a new script', () => {
         cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
+
+        cy.log('Ensure LSP is online') // deflake
+        cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
 
         cy.log('modify schema browser')
         selectSchema()
@@ -493,7 +386,7 @@ describe('Script Builder', () => {
         confirmSchemaComposition()
 
         cy.log('click new script, and choose to delete current script')
-        clearSession()
+        cy.clearFluxScriptSession()
       })
 
       it('should not be able to modify the composition when unsynced, yet still modify the session -- which updates the composition when re-synced', () => {
@@ -507,8 +400,8 @@ describe('Script Builder', () => {
         cy.getByTestID('editor-sync--toggle').should('not.have.class', 'active')
 
         cy.log('modify schema browser')
-        selectBucket(bucketName)
-        selectMeasurement(measurement)
+        cy.selectScriptBucket(bucketName)
+        cy.selectScriptMeasurement(measurement)
 
         cy.log('editor text is still empty')
         cy.getByTestID('flux-editor').within(() => {

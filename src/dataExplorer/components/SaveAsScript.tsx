@@ -129,7 +129,11 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
         }
       })
       .catch(error => {
-        dispatch(notify(scriptSaveFail(resource?.data?.name ?? '')))
+        dispatch(
+          notify(
+            scriptSaveFail(resource?.data?.name ?? '', error?.message ?? error)
+          )
+        )
         setError(error.message)
       })
   }
@@ -201,6 +205,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
           <InputLabel>Save as</InputLabel>
           <Input
             className="save-script-name__input"
+            testID="save-script-name__input"
             name="name"
             required
             type={InputType.Text}
@@ -253,7 +258,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
               color={ComponentColor.Danger}
               onClick={handleDeleteScript}
               text="Delete Script"
-              testID="script-query-builder--no-save"
+              testID="script-query-builder--delete-script"
             />
           )}
         </Form>
@@ -263,13 +268,14 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
           color={ComponentColor.Tertiary}
           onClick={handleClose}
           text="Cancel"
+          testID="script-query-builder--cancel"
         />
         {(type === OverlayType.NEW || type === OverlayType.OPEN) && (
           <Button
             color={ComponentColor.Default}
             onClick={clear}
             text="No, Discard"
-            testID="script-query-builder--no-save"
+            testID="script-query-builder--delete-script"
           />
         )}
         {CLOUD && (
@@ -282,6 +288,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
             }
             onClick={handleSaveScript}
             text={saveText}
+            testID="script-query-builder--save"
           />
         )}
       </Overlay.Footer>

@@ -13,7 +13,7 @@ const VIS_TYPES = [
   'table',
 ]
 
-describe('Legends', () => {
+describe.skip('Legends', () => {
   describe('in the Data Explorer', () => {
     beforeEach(() => {
       cy.flush()

@@ -13,7 +13,7 @@ import {createMemoryHistory} from 'history'
 // Items under test
 import TasksPage from './TasksPage'
 import {deleteTask, patchTask, postTask, getTask} from 'src/client'
-import {parse} from 'src/languageSupport/languages/flux/parser'
+import {parse} from 'src/languageSupport/languages/flux/lspUtils'
 import {initialState} from 'src/tasks/reducers/helpers'
 
 const sampleScript =
@@ -42,7 +42,7 @@ const localHistory = createMemoryHistory({initialEntries: ['/']})
 
 withRouterProps.match.params.orgID = orgs[0].id
 
-jest.mock('src/languageSupport/languages/flux/parser', () => ({
+jest.mock('src/languageSupport/languages/flux/lspUtils', () => ({
   parse: jest.fn(() => {
     return {
       type: 'File',
@@ -58,6 +58,7 @@ jest.mock('src/languageSupport/languages/flux/parser', () => ({
     }
   }),
   format_from_js_file: jest.fn(),
+  isValidFlux: jest.fn(_ => true),
 }))
 
 jest.mock('src/client', () => ({

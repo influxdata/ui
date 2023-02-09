@@ -7,37 +7,65 @@ import {Organization} from '../../../src/types'
 // will pass without this. However, the chain of actions
 // implemented here replicates what would realistically occur.
 
-describe('Tasks', () => {
-  beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.get<Organization>('@org').then(({id: orgID}: Organization) =>
-      cy
-        .createToken(orgID, 'test token', 'active', [
-          {action: 'write', resource: {type: 'views', orgID}},
-          {action: 'write', resource: {type: 'documents', orgID}},
-          {action: 'write', resource: {type: 'tasks', orgID}},
-        ])
-        .then(({body}) => {
-          cy.wrap(body.token).as('token')
-        })
-    )
+const isIOxOrg = Boolean(Cypress.env('useIox'))
+const isTSMOrg = !isIOxOrg
 
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get<Organization>('@org').then(({id}: Organization) => {
-        cy.visit(`${orgs}/${id}/tasks`)
-        cy.getByTestID('tree-nav')
+// shouldShowTasks determines whether the flag for 'forcing'
+// the display of tasks in iox orgs should be enabled.
+const setupTest = (shouldShowTasks: boolean = true) => {
+  cy.flush()
+  cy.signin()
+
+  cy.setFeatureFlags({showTasksInNewIOx: shouldShowTasks})
+
+  cy.get<Organization>('@org')
+    .then(({id: orgID}: Organization) => {
+      cy.createToken(orgID, 'test token', 'active', [
+        {action: 'write', resource: {type: 'views', orgID}},
+        {action: 'write', resource: {type: 'documents', orgID}},
+        {action: 'write', resource: {type: 'tasks', orgID}},
+      ]).then(({body}) => {
+        cy.wrap(body.token).as('token')
       })
     })
+    .then(() => {
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
+          cy.getByTestID('tree-nav').should('be.visible')
+          // Tasks link should appear in nav in TSM orgs.
+          if (isTSMOrg) {
+            cy.getByTestID('nav-item-tasks').should('be.visible').click()
+          } else {
+            cy.visit(`${orgs}/${id}/tasks`)
+          }
+        })
+      })
+    })
+}
+
+describe('Tasks - IOx', () => {
+  it('New IOx orgs do not have Tasks', () => {
+    cy.skipOn(isTSMOrg)
+    const shouldShowTasks = false
+
+    setupTest(shouldShowTasks)
+    cy.getByTestID('nav-item-tasks').should('not.exist')
+    cy.contains('404: Page Not Found')
+  })
+})
+
+describe('Tasks - TSM', () => {
+  beforeEach(() => {
+    setupTest()
   })
 
   it('can create a task', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, ({name}) => {
       return `import "influxdata/influxdb/v1"
-v1.tagValues(bucket: "${name}", tag: "_field")
-from(bucket: "${name}")
-   |> range(start: -2m)`
+  v1.tagValues(bucket: "${name}", tag: "_field")
+  from(bucket: "${name}")
+     |> range(start: -2m)`
     })
 
     cy.getByTestID('task-save-btn').click()
@@ -53,7 +81,7 @@ from(bucket: "${name}")
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, () => {
       return `import "http" {enter}
-http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
+  http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
 
     cy.getByTestID('task-save-btn').click()
@@ -68,7 +96,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
 
     cy.createTaskFromEmpty(taskName, ({name}) => {
       return `from(bucket: "${name}")
-   |> range(start: -2m)`
+     |> range(start: -2m)`
     })
 
     cy.getByTestID('task-card-cron-btn').click()
@@ -104,12 +132,12 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     cy.focused()
 
     cy.getByTestID('flux-editor').monacoType(`option task = {
-  name: "Option Test",
-  every: 24h,
-  offset: 20m
-}
-from(bucket: "defbuck")
-  |> range(start: -2m)`)
+    name: "Option Test",
+    every: 24h,
+    offset: 20m
+  }
+  from(bucket: "defbuck")
+    |> range(start: -2m)`)
 
     cy.getByTestID('task-form-name')
       .click()
@@ -397,6 +425,25 @@ from(bucket: "defbuck")
     })
   })
 
+  it('will not permit task creation with invalid flux', () => {
+    const willFail = 'my invalid flux query'
+    cy.createTaskFromEmpty(
+      willFail,
+      _ => {
+        return `foo`
+      },
+      '12h',
+      '30m'
+    )
+    cy.getByTestID('task-save-btn').click()
+
+    cy.log('error notification will appear')
+    cy.getByTestID('notification-error--dismiss').should('be.visible')
+    cy.log('task editor will remain open')
+    cy.getByInputValue(willFail)
+    cy.getByTestID('flux-editor').should('exist')
+  })
+
   describe('update & persist data', () => {
     // address a bug that was reported when editing tasks:
     // https://github.com/influxdata/influxdb/issues/15534
@@ -408,9 +455,9 @@ from(bucket: "defbuck")
         taskName,
         ({name}) => {
           return `import "influxdata/influxdb/v1"
-  v1.tagValues(bucket: "${name}", tag: "_field")
-  from(bucket: "${name}")
-    |> range(start: -2m)`
+    v1.tagValues(bucket: "${name}", tag: "_field")
+    from(bucket: "${name}")
+      |> range(start: -2m)`
         },
         interval,
         offset
@@ -470,6 +517,19 @@ from(bucket: "defbuck")
       cy.getByInputValue(cronInput)
       cy.getByInputValue(offset)
       cy.getByTestID('task-save-btn').click()
+    })
+
+    it('will not permit invalid flux to update task', () => {
+      cy.getByTestID('flux-editor').monacoType(
+        `{selectAll}{rightArrow}{enter} foo`
+      )
+      cy.getByTestID('task-save-btn').click()
+
+      cy.log('error notification will appear')
+      cy.getByTestID('notification-error--dismiss').should('be.visible')
+      cy.log('task editor will remain open')
+      cy.getByInputValue(taskName)
+      cy.getByTestID('flux-editor').should('exist')
     })
   })
 

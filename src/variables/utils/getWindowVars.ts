@@ -2,7 +2,7 @@
 import {NumericColumnData} from '@influxdata/giraffe'
 
 // APIs
-import {parse} from 'src/languageSupport/languages/flux/parser'
+import {parse} from 'src/languageSupport/languages/flux/lspUtils'
 
 // Utils
 import {getMinDurationFromAST} from 'src/shared/utils/getMinDurationFromAST'

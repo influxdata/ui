@@ -32,9 +32,10 @@ jest.mock('src/shared/utils/errors')
   the mocked values in src/external/languages/flux/parser are ignored.
   So, need to mock here as well
 */
-jest.mock('src/languageSupport/languages/flux/parser', () => ({
+jest.mock('src/languageSupport/languages/flux/lspUtils', () => ({
   parse: jest.fn(getMockedParse()),
   format_from_js_file: jest.fn(),
+  isValidFlux: jest.fn(_ => true),
 }))
 
 jest.mock('src/shared/workers/serviceWorker', () => ({

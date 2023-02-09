@@ -3,14 +3,22 @@ import * as moment from 'moment'
 
 describe('Dashboard refresh', () => {
   beforeEach(() => {
-    cy.flush()
-    cy.signin()
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then((org: Organization) => {
-        cy.visit(`${orgs}/${org.id}/dashboards-list`)
-        cy.getByTestID('tree-nav')
-      })
-    })
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy
+          .setFeatureFlags({
+            showDashboardsInNewIOx: true,
+          })
+          .then(() =>
+            cy.fixture('routes').then(({orgs}) => {
+              cy.get('@org').then((org: Organization) => {
+                cy.visit(`${orgs}/${org.id}/dashboards-list`)
+                cy.getByTestID('tree-nav')
+              })
+            })
+          )
+      )
+    )
   })
 
   describe('Dashboard auto refresh', () => {
@@ -411,6 +419,12 @@ describe('Dashboard refresh', () => {
   })
 
   describe('Dashboard manual refresh', () => {
+    beforeEach(() => {
+      cy.setFeatureFlags({
+        showDashboardsInNewIOx: true,
+        showVariablesInNewIOx: true,
+      })
+    })
     it('can refresh a cell without refreshing the entire dashboard', () => {
       cy.get('@org').then(({id: orgID, name}: Organization) => {
         cy.createDashboard(orgID).then(({body}) => {

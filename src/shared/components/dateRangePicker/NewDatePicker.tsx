@@ -23,6 +23,7 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 // Utils
 import {getTimeRangeLabel} from 'src/shared/utils/duration'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
+import {durationRegExp} from 'src/shared/utils/sqlInterval'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {useSelector} from 'react-redux'
 import {getTimeZone} from 'src/dashboards/selectors'
@@ -102,8 +103,6 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
     setRange(selectedTimeRange)
     collapse()
   }
-
-  const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
 
   const validateInput = (value: string) => {
     return (

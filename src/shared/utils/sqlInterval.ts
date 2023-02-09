@@ -1,7 +1,7 @@
 import {TimeRange} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
-const durationExpr = /^(\-)?(([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns))+$/g
+export const durationRegExp = /^(\-)?(([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns))+$/g
 const singleDuration = /(([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns))/g
 const nanosecondDuration = /(([0-9]+)(ns))/g
 const microsecondDuration = /(([0-9,\.]+)(\W?)(microsecond))/g
@@ -10,7 +10,7 @@ const convertToInterval = (upperOrLower: string) => {
   if (upperOrLower == null || upperOrLower == 'now()') {
     return 'now()'
   }
-  if (!!upperOrLower.match(durationExpr)) {
+  if (!!upperOrLower.match(durationRegExp)) {
     const durationIntoPast = upperOrLower.trim()[0] == '-'
     let interval = [
       ...upperOrLower

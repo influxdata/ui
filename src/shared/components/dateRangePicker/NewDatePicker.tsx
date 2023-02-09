@@ -179,6 +179,16 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
         .join(':')
       endInput = `${dateParts} ${timeParts}`
     }
+
+    // the start and end date should be valid by now
+    // remove any error message if there is any
+    if (inputStartErrorMessage !== NBSP) {
+      setInputStartErrorMessage(NBSP)
+    }
+    if (inputEndErrorMessage !== NBSP) {
+      setInputEndErrorMessage(NBSP)
+    }
+
     setInputStartDate(startInput)
     setInputEndDate(endInput)
   }
@@ -335,7 +345,11 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                 </div>
               </Input>
             </Form.Element>
-            <Form.Element label="To" errorMessage={inputEndErrorMessage}>
+            <Form.Element
+              className="date-picker--form"
+              label="To"
+              errorMessage={inputEndErrorMessage}
+            >
               <Input
                 className="date-picker__input"
                 onChange={handleSetEndDate}

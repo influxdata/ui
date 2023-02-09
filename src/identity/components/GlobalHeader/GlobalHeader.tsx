@@ -71,8 +71,10 @@ export const GlobalHeader: FC = () => {
   }, [accountsList])
 
   useEffect(() => {
-    if (orgsList[0].id !== '') {
-      const currentActiveOrg = orgsList?.find(org => org.isActive === true)
+    if (orgsList.length && orgsList[0].id !== '') {
+      // Currently active org is the one marked "active" by quartz; or if no such org, the first org.
+      const currentActiveOrg =
+        orgsList?.find(org => org.isActive === true) || orgsList[0]
 
       setActiveOrg(currentActiveOrg)
 

@@ -765,6 +765,14 @@ export const createNotebook = (
 }
 
 export const newScriptWithoutLanguageSelection = () => {
+  const CLOUD = Cypress.env('dexUrl') === 'OSS' ? false : true
+  if (!CLOUD) {
+    return cy
+      .getByTestID('script-query-builder--new-script')
+      .should('be.visible')
+      .click()
+  }
+
   cy.getByTestID('script-query-builder--save-script').then($saveButton => {
     cy.getByTestID('page-title')
       .invoke('text')

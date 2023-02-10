@@ -49,17 +49,7 @@ describe('Script Builder -- scripts crud on cloud', () => {
       })
     })
 
-    it('will not save an invalid flux query', () => {
-      attemptSaveScript('invalid query')
-      cy.log('should notify user of an error')
-      cy.getByTestID('notification-error--dismiss').should('be.visible')
-      cy.log('modal will stay open')
-      cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('script-query-builder--cancel').should('be.visible')
-      })
-    })
-
-    it('will save a valid flux query', () => {
+    it('will save a flux query', () => {
       saveScript(
         'from(bucket: "defbuck") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)'
       )

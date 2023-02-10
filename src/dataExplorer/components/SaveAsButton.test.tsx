@@ -4,7 +4,7 @@ import {screen} from '@testing-library/react'
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
-import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
+import {SaveAsButton} from 'src/dataExplorer/components/SaveAsButton'
 
 const setup = () => {
   renderWithReduxAndRouter(<SaveAsButton />)

@@ -78,6 +78,7 @@ const DeleteScript: FC<Props> = ({onBack, onClose}) => {
           onClick={handleDeleteScript}
           text="delete"
           icon={IconFont.Trash_New}
+          testID="script-query-builder--confirm-delete"
         />
       </Overlay.Footer>
     </Overlay.Container>

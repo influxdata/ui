@@ -222,7 +222,11 @@ const DataExplorerPage: FC = () => {
             </Page.ControlBarRight>
           </Page.ControlBar>
         )}
-        <Page.Contents fullWidth={true} scrollable={false}>
+        <Page.Contents
+          fullWidth={true}
+          scrollable={false}
+          testID="data-explorer-page"
+        >
           {!shouldShowNewExplorer && <DataExplorer />}
           {shouldShowNewExplorer && <ScriptQueryBuilder />}
         </Page.Contents>

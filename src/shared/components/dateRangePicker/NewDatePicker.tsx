@@ -278,6 +278,7 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
       }}
       className="date-picker--menu"
       maxHeight={367}
+      testID="date-picker--menu"
     >
       <FlexBox direction={FlexDirection.Row} alignItems={AlignItems.Stretch}>
         {isDatePickerOpen && (
@@ -336,6 +337,7 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                 }
                 type={InputType.Text}
                 value={convertToDisplayFormat(inputStartDate, timeZone) ?? ''}
+                testID="date-picker--input--from"
               >
                 <div
                   className="date-picker--calendar-icon"
@@ -360,6 +362,7 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                 }
                 type={InputType.Text}
                 value={convertToDisplayFormat(inputEndDate, timeZone) ?? ''}
+                testID="date-picker--input--to"
               >
                 <div
                   className="date-picker--calendar-icon"
@@ -452,6 +455,7 @@ const DatePicker: FC = () => {
           active={active}
           onClick={onClick}
           icon={IconFont.Clock_New}
+          testID="timerange-dropdown--button"
         >
           {timeRangeLabel}
         </Dropdown.Button>

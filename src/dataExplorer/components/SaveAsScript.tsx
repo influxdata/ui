@@ -19,7 +19,6 @@ import {ResultsContext} from 'src/dataExplorer/context/results'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {RemoteDataState} from 'src/types'
 import './SaveAsScript.scss'
-import {CLOUD} from 'src/shared/constants'
 import {OverlayType} from './ScriptQueryBuilder'
 import {useDispatch, useSelector} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
@@ -278,19 +277,17 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
             testID="script-query-builder--delete-script"
           />
         )}
-        {CLOUD && (
-          <Button
-            color={ComponentColor.Primary}
-            status={
-              (newName?.length ?? 0) === 0
-                ? ComponentStatus.Disabled
-                : ComponentStatus.Default
-            }
-            onClick={handleSaveScript}
-            text={saveText}
-            testID="script-query-builder--save"
-          />
-        )}
+        <Button
+          color={ComponentColor.Primary}
+          status={
+            (newName?.length ?? 0) === 0
+              ? ComponentStatus.Disabled
+              : ComponentStatus.Default
+          }
+          onClick={handleSaveScript}
+          text={saveText}
+          testID="script-query-builder--save"
+        />
       </Overlay.Footer>
     </Overlay.Container>
   )

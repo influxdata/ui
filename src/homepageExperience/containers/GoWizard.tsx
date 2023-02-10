@@ -11,6 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/go/InstallDependencies'
+import {InstallDependenciesSql} from 'src/homepageExperience/components/steps/go/InstallDependenciesSql'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
 import {InitializeClient} from 'src/homepageExperience/components/steps/go/InitializeClient'
@@ -25,6 +26,7 @@ import {GoIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
@@ -46,6 +48,10 @@ export class GoWizard extends PureComponent<null, State> {
     tokenValue: null,
     finalFeedback: null,
   }
+
+  installDependenciesStep = isFlagEnabled('ioxOnboarding')
+    ? InstallDependenciesSql
+    : InstallDependencies
 
   private handleSelectBucket = (bucketName: string) => {
     this.setState({selectedBucket: bucketName})
@@ -130,7 +136,7 @@ export class GoWizard extends PureComponent<null, State> {
         return <Overview wizard="goWizard" />
       }
       case 2: {
-        return <InstallDependencies />
+        return <this.installDependenciesStep />
       }
       case 3: {
         return (

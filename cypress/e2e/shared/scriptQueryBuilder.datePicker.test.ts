@@ -1,4 +1,4 @@
-import {Organization} from '../../../src/types'
+// import {Organization} from '../../../src/types'
 
 // There are many different versions of date picker in UI.
 // This file covers the test for src/shared/components/dateRangePicker/NewDatePicker.tsx
@@ -7,7 +7,7 @@ describe('Date Picker', () => {
   before(() =>
     cy.flush().then(() =>
       cy.signin().then(() =>
-        cy.get('@org').then(({orgID}: Organization) => {
+        cy.get('@org').then(() => {
           // TODO(chunchun): write data?
         })
       )
@@ -26,14 +26,12 @@ describe('Date Picker', () => {
 
   it.only('should be able to select a duration', () => {
     cy.getByTestID('date-picker--menu').should('not.exist')
-    cy.getByTestID('timerange-dropdown--button')
-      .should('be.visible')
-      .click()
+    cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
 
     cy.log('select a duration')
     cy.getByTestID('dropdown-item-past15m').click()
     cy.getByTestID('date-picker--menu').should('not.exist')
-    
+
     cy.log('dropdown button should display the selected duation')
     cy.getByTestID('timerange-dropdown--button')
       .should('be.visible')
@@ -45,12 +43,12 @@ describe('Date Picker', () => {
     cy.getByTestID('date-picker--input--from')
       .should('be.visible')
       .should('have.value', '-15m')
-    
+
     cy.log('input field "To" should show "now()"')
     cy.getByTestID('date-picker--input--to')
       .should('be.visible')
       .should('have.value', 'now()')
-    
+
     cy.log('SQL composition should add the right expression for time')
   })
 

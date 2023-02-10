@@ -41,6 +41,7 @@ import {RemoteDataState} from 'src/types'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 
 // Styles
 import './ScriptQueryBuilder.scss'
@@ -100,11 +101,13 @@ const ScriptQueryBuilder: FC = () => {
     // set the language in the state until we can confirm the selection
     setSelectedLanguage(language)
     setHasChanged(true)
-    setOverlayType(OverlayType.NEW)
+    if (CLOUD) {
+      setOverlayType(OverlayType.NEW)
+    }
   }
 
   const handleNewScript = useCallback(() => {
-    if (hasChanged) {
+    if (hasChanged && CLOUD) {
       setOverlayType(OverlayType.NEW)
     } else {
       handleClear()
@@ -181,32 +184,38 @@ const ScriptQueryBuilder: FC = () => {
                     testID="script-query-builder--new-script"
                   />
                 )}
-                <Button
-                  className="script-query-builder__action-button"
-                  onClick={() => setOverlayType(OverlayType.OPEN)}
-                  text="Open"
-                  icon={IconFont.FolderOpen}
-                />
-                <Button
-                  className="script-query-builder__action-button"
-                  onClick={() => setOverlayType(OverlayType.SAVE)}
-                  status={
-                    hasChanged
-                      ? ComponentStatus.Default
-                      : ComponentStatus.Disabled
-                  }
-                  text="Save"
-                  testID="script-query-builder--save-script"
-                  icon={IconFont.Save}
-                />
-                {resource?.data?.id && (
-                  <Button
-                    className="script-query-builder__action-button"
-                    onClick={() => setOverlayType(OverlayType.EDIT)}
-                    status={ComponentStatus.Default}
-                    text="Edit"
-                    icon={IconFont.Pencil}
-                  />
+                {CLOUD && (
+                  <>
+                    <Button
+                      className="script-query-builder__action-button"
+                      onClick={() => setOverlayType(OverlayType.OPEN)}
+                      text="Open"
+                      icon={IconFont.FolderOpen}
+                      testID="script-query-builder--open-script"
+                    />
+                    <Button
+                      className="script-query-builder__action-button"
+                      onClick={() => setOverlayType(OverlayType.SAVE)}
+                      status={
+                        hasChanged
+                          ? ComponentStatus.Default
+                          : ComponentStatus.Disabled
+                      }
+                      text="Save"
+                      testID="script-query-builder--save-script"
+                      icon={IconFont.Save}
+                    />
+                    {resource?.data?.id && (
+                      <Button
+                        className="script-query-builder__action-button"
+                        onClick={() => setOverlayType(OverlayType.EDIT)}
+                        status={ComponentStatus.Default}
+                        text="Edit"
+                        icon={IconFont.Pencil}
+                        testID="script-query-builder--edit-script"
+                      />
+                    )}
+                  </>
                 )}
               </div>
             </FlexBox>

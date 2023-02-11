@@ -283,7 +283,10 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
       <FlexBox direction={FlexDirection.Row} alignItems={AlignItems.Stretch}>
         {isDatePickerOpen && (
           <div className="react-datepicker-ignore-onclickoutside date-picker--calendar-dropdown">
-            <div className="date-picker__select-date-picker range-picker--date-pickers">
+            <div
+              className="date-picker__select-date-picker range-picker--date-pickers"
+              data-testid="date-picker__select-date-picker"
+            >
               <InputLabel className="date-picker--label__calendar">
                 Calendar
               </InputLabel>
@@ -342,6 +345,7 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                 <div
                   className="date-picker--calendar-icon"
                   onClick={handleOpenCalendar}
+                  data-testid="date-picker--calendar-icon"
                 >
                   <Icon glyph={IconFont.Calendar} />
                 </div>

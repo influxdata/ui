@@ -70,9 +70,9 @@ describe('Date Picker', () => {
       .contains(validDuration)
   })
 
-  it.only('can set a custom time', () => {
+  it('can set a custom time', () => {
     const startTime = '2023-02-08 00:00'
-    const sqlTimestampRegex = "time >= timestamp '2023-02-08T00:00:00.000Z'"
+    // const sqlTimestampRegex = "time >= timestamp '2023-02-08T00:00:00.000Z'"
 
     cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
 

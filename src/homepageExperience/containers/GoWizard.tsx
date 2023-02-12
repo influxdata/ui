@@ -18,6 +18,7 @@ import {InitializeClient} from 'src/homepageExperience/components/steps/go/Initi
 import {WriteData} from 'src/homepageExperience/components/steps/go/WriteData'
 import {WriteDataSql} from 'src/homepageExperience/components/steps/go/WriteDataSql'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/go/ExecuteQuery'
+import {ExecuteQuerySql} from 'src/homepageExperience/components/steps/go/ExecuteQuerySql'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/go/ExecuteAggregateQuery'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
@@ -153,7 +154,7 @@ export class GoWizard extends PureComponent<null, State> {
         return <WriteDataSql onSelectBucket={this.handleSelectBucket} />
       }
       case 5: {
-        return <ExecuteQuery bucket={this.state.selectedBucket} />
+        return <ExecuteQuerySql bucket={this.state.selectedBucket} />
       }
       case 6: {
         return (

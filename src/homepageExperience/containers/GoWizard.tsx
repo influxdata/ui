@@ -16,6 +16,7 @@ import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
 import {InitializeClient} from 'src/homepageExperience/components/steps/go/InitializeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/go/WriteData'
+import {WriteDataSql} from 'src/homepageExperience/components/steps/go/WriteDataSql'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/go/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/go/ExecuteAggregateQuery'
@@ -30,6 +31,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
+  HOMEPAGE_NAVIGATION_STEPS_GO_SQL,
 } from 'src/homepageExperience/utils'
 
 interface State {
@@ -49,10 +51,6 @@ export class GoWizard extends PureComponent<null, State> {
     finalFeedback: null,
   }
 
-  installDependenciesStep = isFlagEnabled('ioxOnboarding')
-    ? InstallDependenciesSql
-    : InstallDependencies
-
   private handleSelectBucket = (bucketName: string) => {
     this.setState({selectedBucket: bucketName})
   }
@@ -69,12 +67,16 @@ export class GoWizard extends PureComponent<null, State> {
     this.setState({finalFeedback: feedbackValue})
   }
 
+  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+    ? HOMEPAGE_NAVIGATION_STEPS_GO_SQL
+    : HOMEPAGE_NAVIGATION_STEPS
+
   handleNextClick = () => {
     this.setState(
       {
         currentStep: Math.min(
           this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS.length
+          this.subwayNavSteps.length
         ),
       },
       () => {
@@ -83,10 +85,10 @@ export class GoWizard extends PureComponent<null, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 2].name
+              this.subwayNavSteps[this.state.currentStep - 2].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -104,10 +106,10 @@ export class GoWizard extends PureComponent<null, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep].name
+              this.subwayNavSteps[this.state.currentStep].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -123,20 +125,60 @@ export class GoWizard extends PureComponent<null, State> {
       {},
       {
         currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS[clickedStep - 1].name
+          this.subwayNavSteps[clickedStep - 1].name
         ),
       }
     )
     scrollNextPageIntoView()
   }
 
-  renderStep = () => {
+  renderSqlStep = () => {
     switch (this.state.currentStep) {
       case 1: {
         return <Overview wizard="goWizard" />
       }
       case 2: {
-        return <this.installDependenciesStep />
+        return <InstallDependenciesSql />
+      }
+      case 3: {
+        return (
+          <Tokens
+            wizardEventName="goWizard"
+            setTokenValue={this.setTokenValue}
+            tokenValue={this.state.tokenValue}
+          />
+        )
+      }
+      case 4: {
+        return <WriteDataSql onSelectBucket={this.handleSelectBucket} />
+      }
+      case 5: {
+        return <ExecuteQuery bucket={this.state.selectedBucket} />
+      }
+      case 6: {
+        return (
+          <Finish
+            wizardEventName="goWizard"
+            markStepAsCompleted={this.handleMarkStepAsCompleted}
+            finishStepCompleted={this.state.finishStepCompleted}
+            finalFeedback={this.state.finalFeedback}
+            setFinalFeedback={this.setFinalFeedback}
+          />
+        )
+      }
+      default: {
+        return <Overview wizard="goWizard" />
+      }
+    }
+  }
+
+  renderFluxStep = () => {
+    switch (this.state.currentStep) {
+      case 1: {
+        return <Overview wizard="goWizard" />
+      }
+      case 2: {
+        return <InstallDependencies />
       }
       case 3: {
         return (
@@ -187,7 +229,7 @@ export class GoWizard extends PureComponent<null, State> {
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
-                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS}
+                  navigationSteps={this.subwayNavSteps}
                   settingUpIcon={GoIcon}
                   settingUpText="Go"
                   setupTime="5 minutes"
@@ -201,13 +243,14 @@ export class GoWizard extends PureComponent<null, State> {
                   {
                     verticallyCentered:
                       this.state.currentStep === 1 ||
-                      this.state.currentStep ===
-                        HOMEPAGE_NAVIGATION_STEPS.length,
+                      this.state.currentStep === this.subwayNavSteps.length,
                   }
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {this.renderStep()}
+                  {isFlagEnabled('ioxOnboarding')
+                    ? this.renderSqlStep()
+                    : this.renderFluxStep()}
                 </WriteDataDetailsContextProvider>{' '}
               </div>
 
@@ -229,7 +272,7 @@ export class GoWizard extends PureComponent<null, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    this.state.currentStep < HOMEPAGE_NAVIGATION_STEPS.length
+                    this.state.currentStep < this.subwayNavSteps.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

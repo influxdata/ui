@@ -32,7 +32,7 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
   }, [dispatch])
 
   const logCopyInitializeClientSnippet = () => {
-    event('firstMile.goWizard.initializeClient.code.copied')
+    event('firstMile.goWizard.initializeWriteClient.code.copied')
   }
 
   const logCopyWriteCodeSnippet = () => {
@@ -146,10 +146,7 @@ return nil`
       <p>
         To start writing data, we need a place to store our time-series data.
         These named storage locations are called{' '}
-        <SafeBlankLink
-          href={`orgs/${org.id}/load-data/buckets`}
-          onClick={logDocsOpened}
-        >
+        <SafeBlankLink href={`orgs/${org.id}/load-data/buckets`}>
           buckets
         </SafeBlankLink>
         .
@@ -171,7 +168,7 @@ return nil`
         URL and token that are needed to set up the initial connection to
         InfluxDB. We then define our write API with the organization info and
         bucket we intend to write to. These will be added to a new function
-        called <code>dbWrite</code>.
+        called <code className="homepage-wizard--code-highlight">dbWrite</code>.
       </p>
       <p>
         Paste the following code in your{' '}

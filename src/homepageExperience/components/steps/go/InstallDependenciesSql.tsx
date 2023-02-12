@@ -23,7 +23,8 @@ export const InstallDependenciesSql: FC = () => {
     <>
       <h1>Install Dependencies</h1>
       <p>
-      First, you need to create a new go module. Run the commands below in your terminal.
+        First, you need to create a new go module. Run the commands below in
+        your terminal.
       </p>
       <CodeSnippet
         text={goModuleSnippet}
@@ -56,13 +57,9 @@ export const InstallDependenciesSql: FC = () => {
       />
       <p>
         You'll need to have{' '}
-        <SafeBlankLink href="https://go.dev/dl/">
-          Go 1.17
-        </SafeBlankLink>{' '}
-        or higher installed. This sample code assumes you have go tools like{' '}
-        <SafeBlankLink href="https://pkg.go.dev/cmd/gofmt">
-          gofmt
-        </SafeBlankLink>{' '}
+        <SafeBlankLink href="https://go.dev/dl/">Go 1.17</SafeBlankLink> or
+        higher installed. This sample code assumes you have go tools like{' '}
+        <SafeBlankLink href="https://pkg.go.dev/cmd/gofmt">gofmt</SafeBlankLink>{' '}
         and{' '}
         <SafeBlankLink href="https://pkg.go.dev/golang.org/x/tools/cmd/goimports">
           goimports

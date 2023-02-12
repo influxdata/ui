@@ -27,7 +27,7 @@ export const ExecuteQuerySql = (props: OwnProps) => {
   const logCopyImportsSnippet = () => {
     event('firstMile.goWizard.importLibraries.code.copied')
   }
-  
+
   const logCopyQueryCodeSnippet = () => {
     event('firstMile.goWizard.executeQuery.code.copied')
   }
@@ -164,15 +164,18 @@ return nil`
     <>
       <h1>Query Data</h1>
       <p>
-        To query our data we'll need to similarly initialize our Query Client. We'll do this in a new function called <code className="homepage-wizard--code-highlight">dbQuery</code>. The client we use to make our query is{' '}
-        <SafeBlankLink
-          href={`https://pkg.go.dev/github.com/apache/arrow/go`}
-        >
+        To query our data we'll need to similarly initialize our Query Client.
+        We'll do this in a new function called{' '}
+        <code className="homepage-wizard--code-highlight">dbQuery</code>. The
+        client we use to make our query is{' '}
+        <SafeBlankLink href="https://pkg.go.dev/github.com/apache/arrow/go">
           flight-sql
-        </SafeBlankLink>.
+        </SafeBlankLink>
+        .
       </p>
       <p>
-        Paste the following code as a new function called <code className="homepage-wizard--code-highlight">dbQuery</code>:
+        Paste the following code as a new function called{' '}
+        <code className="homepage-wizard--code-highlight">dbQuery</code>:
       </p>
       <CodeSnippet
         language="go"
@@ -180,9 +183,7 @@ return nil`
         showCopyControl={true}
         text={initSnippet}
       />
-      <p>
-        Ensure your imports match the following:
-      </p>
+      <p>Ensure your imports match the following:</p>
       <CodeSnippet
         language="go"
         onCopy={logCopyImportsSnippet}
@@ -190,18 +191,18 @@ return nil`
         text={importsSnippet}
       />
       <p>
-        Now let's query the data we wrote into the database with SQL. Here is what our query looks like on its own:
+        Now let's query the data we wrote into the database with SQL. Here is
+        what our query looks like on its own:
       </p>
-      <CodeSnippet
-        language="sql"
-        showCopyControl={false}
-        text={sqlSnippet}
-      />
+      <CodeSnippet language="sql" showCopyControl={false} text={sqlSnippet} />
       <p>
-        In this query, we are looking for data points within the last 1 hour with a "census" measurement and either "bees" or "ants" fields.
+        In this query, we are looking for data points within the last 1 hour
+        with a "census" measurement and either "bees" or "ants" fields.
       </p>
       <p>
-        Add the following function to the end of your <code className="homepage-wizard--code-highlight">dbQuery</code> function:
+        Add the following function to the end of your{' '}
+        <code className="homepage-wizard--code-highlight">dbQuery</code>{' '}
+        function:
       </p>
       <CodeSnippet
         language="go"
@@ -210,7 +211,11 @@ return nil`
         text={querySnippet}
       />
       <p>
-        Invoke your <code className="homepage-wizard--code-highlight">dbQuery</code> function by replacing the contents of your <code className="homepage-wizard--code-highlight">main</code> function with the following:
+        Invoke your{' '}
+        <code className="homepage-wizard--code-highlight">dbQuery</code>{' '}
+        function by replacing the contents of your{' '}
+        <code className="homepage-wizard--code-highlight">main</code> function
+        with the following:
       </p>
       <CodeSnippet
         language="go"
@@ -219,7 +224,9 @@ return nil`
         text={invokeSnippet}
       />
       <p>
-        When you run your application now, the code snippet above should print out the data you wrote in previous steps. The result should resemble this:
+        When you run your application now, the code snippet above should print
+        out the data you wrote in previous steps. The result should resemble
+        this:
       </p>
       <CodeSnippet
         language="json"

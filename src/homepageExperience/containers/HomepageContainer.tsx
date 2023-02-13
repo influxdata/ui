@@ -132,35 +132,93 @@ export const HomepageContainer: FC = () => {
                 <FlexBox
                   direction={FlexDirection.Column}
                   alignItems={AlignItems.Stretch}
+                  margin={ComponentSize.Large}
                 >
                   {isFlagEnabled('ioxOnboarding') ? (
                     <>
                       <h3>Write & query your data</h3>
-                      <Link
-                        to={pythonWizardLink}
-                        style={linkStyle}
-                        onClick={logPythonWizardClick}
-                      >
-                        <div
-                          className="homepage-write-data-tile"
-                          data-testid="homepage-wizard-language-tile--python"
-                        >
-                          <div className="tile-icon-text-wrapper">
-                            <div className="icon">{PythonIcon}</div>
-                            <div>
-                              <h4>Python</h4>
-                              <h6>
-                                Integrate with your own application code using
-                                Python.
-                              </h6>
+                      <Grid className="homepage-onboarding-grid">
+                        <Grid.Row>
+                          <Grid.Column widthLG={Columns.Six}>
+                          <Link
+                            to={golangLink}
+                            onClick={logGoWizardClick}
+                            className="homepage-write-data-tile"
+                            data-testid="homepage-wizard-language-tile--go"
+                          >
+                            <div className="tile-icon-text-wrapper">
+                              <div className="icon">{GoIcon}</div>
+                              <div>
+                                <h4>Go</h4>
+                                <h6>
+                                  Integrate with your own application code
+                                  using Golang.
+                                </h6>
+                              </div>
                             </div>
-                          </div>
-                          <Icon
-                            glyph={IconFont.ArrowRight_New}
-                            className="arrow-button"
-                          />
-                        </div>
-                      </Link>
+                          </Link>
+                          </Grid.Column>
+                          <Grid.Column widthLG={Columns.Six}>
+                          <Link
+                            to={pythonWizardLink}
+                            onClick={logPythonWizardClick}
+                            className="homepage-write-data-tile"
+                            data-testid="homepage-wizard-language-tile--python"
+                          >
+                            <div className="tile-icon-text-wrapper">
+                              <div className="icon">{PythonIcon}</div>
+                              <div>
+                                <h4>Python</h4>
+                                <h6>
+                                  Integrate with your own application code
+                                  using Python.
+                                </h6>
+                              </div>
+                            </div>
+                          </Link>
+                          </Grid.Column>
+                          </Grid.Row>
+                          <Grid.Row>
+                          <Grid.Column widthLG={Columns.Six}>
+                            <Link
+                              to={cliPageLink}
+                              onClick={logCLIButtonClick}
+                              className="homepage-write-data-tile"
+                              data-testid="homepage-wizard-tile--cli"
+                            >
+                              <div className="tile-icon-text-wrapper">
+                                <div className="icon">{CLIIcon}</div>
+                                <div>
+                                  <h4>InfluxDB CLI</h4>
+                                  <h6>
+                                    Write and query data using the InfluxDB Command Line
+                                    Interface. Supports CSV and Line Protocol.
+                                  </h6>
+                                </div>
+                              </div>
+                            </Link>
+                          </Grid.Column>
+                          <Grid.Column widthLG={Columns.Six}>
+                            <Link
+                              to={telegrafLink}
+                              onClick={logTelegrafButtonClick}
+                              className="homepage-write-data-tile"
+                              data-testid="homepage-wizard-tile--telegraf"
+                            >
+                              <div className="tile-icon-text-wrapper">
+                                <div className="icon">{TelegrafIcon}</div>
+                                <div>
+                                  <h4>Server Agent (Telegraf)</h4>
+                                  <h6>
+                                    Easily collect and write data using custom
+                                    stand-alone agent plugins
+                                  </h6>
+                                </div>
+                              </div>
+                            </Link>
+                          </Grid.Column>
+                          </Grid.Row>
+                        </Grid>
                     </>
                   ) : (
                     <>
@@ -237,9 +295,7 @@ export const HomepageContainer: FC = () => {
                           View more
                         </Link>
                       </FlexBox>
-                    </>
-                  )}
-                  <hr style={{marginTop: '8px'}} />
+                      <hr style={{marginTop: '8px'}} />
                   {isFlagEnabled('subscriptionsUI') && (
                     <Link
                       to={mqttPageLink}
@@ -316,6 +372,8 @@ export const HomepageContainer: FC = () => {
                       />
                     </div>
                   </Link>
+                  </>
+                  )}
                 </FlexBox>
               </Grid.Column>
               <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>

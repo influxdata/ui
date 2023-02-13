@@ -31,6 +31,7 @@ const ClientLibrarySectionSql = () => {
 
   const onBoardingItems = {
     python: 'python',
+    go: 'golang',
   }
 
   if (!items.length) {

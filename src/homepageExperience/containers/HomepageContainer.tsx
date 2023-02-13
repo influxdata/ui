@@ -140,45 +140,45 @@ export const HomepageContainer: FC = () => {
                       <Grid className="homepage-onboarding-grid">
                         <Grid.Row>
                           <Grid.Column widthLG={Columns.Six}>
-                          <Link
-                            to={golangLink}
-                            onClick={logGoWizardClick}
-                            className="homepage-write-data-tile"
-                            data-testid="homepage-wizard-language-tile--go"
-                          >
-                            <div className="tile-icon-text-wrapper">
-                              <div className="icon">{GoIcon}</div>
-                              <div>
-                                <h4>Go</h4>
-                                <h6>
-                                  Integrate with your own application code
-                                  using Golang.
-                                </h6>
+                            <Link
+                              to={golangLink}
+                              onClick={logGoWizardClick}
+                              className="homepage-write-data-tile"
+                              data-testid="homepage-wizard-language-tile--go"
+                            >
+                              <div className="tile-icon-text-wrapper">
+                                <div className="icon">{GoIcon}</div>
+                                <div>
+                                  <h4>Go</h4>
+                                  <h6>
+                                    Integrate with your own application code
+                                    using Golang.
+                                  </h6>
+                                </div>
                               </div>
-                            </div>
-                          </Link>
+                            </Link>
                           </Grid.Column>
                           <Grid.Column widthLG={Columns.Six}>
-                          <Link
-                            to={pythonWizardLink}
-                            onClick={logPythonWizardClick}
-                            className="homepage-write-data-tile"
-                            data-testid="homepage-wizard-language-tile--python"
-                          >
-                            <div className="tile-icon-text-wrapper">
-                              <div className="icon">{PythonIcon}</div>
-                              <div>
-                                <h4>Python</h4>
-                                <h6>
-                                  Integrate with your own application code
-                                  using Python.
-                                </h6>
+                            <Link
+                              to={pythonWizardLink}
+                              onClick={logPythonWizardClick}
+                              className="homepage-write-data-tile"
+                              data-testid="homepage-wizard-language-tile--python"
+                            >
+                              <div className="tile-icon-text-wrapper">
+                                <div className="icon">{PythonIcon}</div>
+                                <div>
+                                  <h4>Python</h4>
+                                  <h6>
+                                    Integrate with your own application code
+                                    using Python.
+                                  </h6>
+                                </div>
                               </div>
-                            </div>
-                          </Link>
+                            </Link>
                           </Grid.Column>
-                          </Grid.Row>
-                          <Grid.Row>
+                        </Grid.Row>
+                        <Grid.Row>
                           <Grid.Column widthLG={Columns.Six}>
                             <Link
                               to={cliPageLink}
@@ -191,8 +191,9 @@ export const HomepageContainer: FC = () => {
                                 <div>
                                   <h4>InfluxDB CLI</h4>
                                   <h6>
-                                    Write and query data using the InfluxDB Command Line
-                                    Interface. Supports CSV and Line Protocol.
+                                    Write and query data using the InfluxDB
+                                    Command Line Interface. Supports CSV and
+                                    Line Protocol.
                                   </h6>
                                 </div>
                               </div>
@@ -217,8 +218,8 @@ export const HomepageContainer: FC = () => {
                               </div>
                             </Link>
                           </Grid.Column>
-                          </Grid.Row>
-                        </Grid>
+                        </Grid.Row>
+                      </Grid>
                     </>
                   ) : (
                     <>
@@ -296,83 +297,84 @@ export const HomepageContainer: FC = () => {
                         </Link>
                       </FlexBox>
                       <hr style={{marginTop: '8px'}} />
-                  {isFlagEnabled('subscriptionsUI') && (
-                    <Link
-                      to={mqttPageLink}
-                      style={linkStyle}
-                      onClick={logMQTTButtonClick}
-                    >
-                      <div
-                        className="homepage-write-data-tile"
-                        data-testid="homepage-wizard-tile--mqtt"
-                      >
-                        <div className="tile-icon-text-wrapper">
-                          <div className="icon">{MQTTIcon}</div>
-                          <div>
-                            <h4>Native MQTT</h4>
-                            <h6>
-                              Connect to your MQTT subscription in the cloud.
-                            </h6>
+                      {isFlagEnabled('subscriptionsUI') && (
+                        <Link
+                          to={mqttPageLink}
+                          style={linkStyle}
+                          onClick={logMQTTButtonClick}
+                        >
+                          <div
+                            className="homepage-write-data-tile"
+                            data-testid="homepage-wizard-tile--mqtt"
+                          >
+                            <div className="tile-icon-text-wrapper">
+                              <div className="icon">{MQTTIcon}</div>
+                              <div>
+                                <h4>Native MQTT</h4>
+                                <h6>
+                                  Connect to your MQTT subscription in the
+                                  cloud.
+                                </h6>
+                              </div>
+                            </div>
+
+                            <Icon
+                              glyph={IconFont.ArrowRight_New}
+                              className="arrow-button"
+                            />
                           </div>
-                        </div>
+                        </Link>
+                      )}
+                      <Link
+                        to={cliPageLink}
+                        style={linkStyle}
+                        onClick={logCLIButtonClick}
+                      >
+                        <div
+                          className="homepage-write-data-tile"
+                          data-testid="homepage-wizard-tile--cli"
+                        >
+                          <div className="tile-icon-text-wrapper">
+                            <div className="icon">{CLIIcon}</div>
+                            <div>
+                              <h4>InfluxDB CLI</h4>
+                              <h6>
+                                Write and query data using the InfluxDB Command
+                                Line Interface. Supports CSV and Line Protocol.
+                              </h6>
+                            </div>
+                          </div>
 
-                        <Icon
-                          glyph={IconFont.ArrowRight_New}
-                          className="arrow-button"
-                        />
-                      </div>
-                    </Link>
-                  )}
-                  <Link
-                    to={cliPageLink}
-                    style={linkStyle}
-                    onClick={logCLIButtonClick}
-                  >
-                    <div
-                      className="homepage-write-data-tile"
-                      data-testid="homepage-wizard-tile--cli"
-                    >
-                      <div className="tile-icon-text-wrapper">
-                        <div className="icon">{CLIIcon}</div>
-                        <div>
-                          <h4>InfluxDB CLI</h4>
-                          <h6>
-                            Write and query data using the InfluxDB Command Line
-                            Interface. Supports CSV and Line Protocol.
-                          </h6>
+                          <Icon
+                            glyph={IconFont.ArrowRight_New}
+                            className="arrow-button"
+                          />
                         </div>
-                      </div>
+                      </Link>
+                      <Link
+                        to={telegrafLink}
+                        style={linkStyle}
+                        onClick={logTelegrafButtonClick}
+                      >
+                        <div className="homepage-write-data-tile">
+                          <div className="tile-icon-text-wrapper">
+                            <div className="icon">{TelegrafIcon}</div>
+                            <div>
+                              <h4>Server Agent (Telegraf)</h4>
+                              <h6>
+                                Easily collect and write data using custom
+                                stand-alone agent plugins
+                              </h6>
+                            </div>
+                          </div>
 
-                      <Icon
-                        glyph={IconFont.ArrowRight_New}
-                        className="arrow-button"
-                      />
-                    </div>
-                  </Link>
-                  <Link
-                    to={telegrafLink}
-                    style={linkStyle}
-                    onClick={logTelegrafButtonClick}
-                  >
-                    <div className="homepage-write-data-tile">
-                      <div className="tile-icon-text-wrapper">
-                        <div className="icon">{TelegrafIcon}</div>
-                        <div>
-                          <h4>Server Agent (Telegraf)</h4>
-                          <h6>
-                            Easily collect and write data using custom
-                            stand-alone agent plugins
-                          </h6>
+                          <Icon
+                            glyph={IconFont.ArrowRight_New}
+                            className="arrow-button"
+                          />
                         </div>
-                      </div>
-
-                      <Icon
-                        glyph={IconFont.ArrowRight_New}
-                        className="arrow-button"
-                      />
-                    </div>
-                  </Link>
-                  </>
+                      </Link>
+                    </>
                   )}
                 </FlexBox>
               </Grid.Column>

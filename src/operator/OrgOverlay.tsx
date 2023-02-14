@@ -278,6 +278,38 @@ const OrgOverlay: FC = () => {
                     </Grid.Column>
                   </Grid.Row>
                   <Grid.Row>
+                    <Grid.Column widthMD={Columns.Four}>
+                      <Form.Label label="Unconditional Timeout (seconds)" />
+                      <LimitsField
+                        type={InputType.Number}
+                        name="timeout.queryUnconditionalTimeoutSeconds"
+                        limits={limits}
+                        onChangeLimits={setLimits}
+                      />
+                    </Grid.Column>
+                    <Grid.Column widthMD={Columns.Four}>
+                      <Form.Label label="Idle Write Timeout (seconds)" />
+                      <LimitsField
+                        type={InputType.Number}
+                        name="timeout.queryidleWriteTimeoutSeconds"
+                        limits={limits}
+                        onChangeLimits={setLimits}
+                      />
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Grid.Column widthMD={Columns.Four}>
+                      <Form.Label label="Stack" />
+                      <LimitsField
+                        type={InputType.Text}
+                        name="stack.enabled"
+                        limits={limits}
+                        onChangeLimits={setLimits}
+                      />
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
                     <h4>Notification Rules</h4>
                     <Grid.Column widthMD={Columns.Four}>
                       <Form.Label label="Blocked Notification Rules" />

@@ -66,6 +66,33 @@ export const HOMEPAGE_NAVIGATION_STEPS_SQL = [
   },
 ]
 
+export const HOMEPAGE_NAVIGATION_STEPS_GO_SQL = [
+  {
+    name: 'Overview',
+    glyph: IconFont.BookOutline,
+  },
+  {
+    name: 'Install Dependencies',
+    glyph: IconFont.Install,
+  },
+  {
+    name: 'Get Token',
+    glyph: IconFont.CopperCoin,
+  },
+  {
+    name: 'Write Data',
+    glyph: IconFont.Pencil,
+  },
+  {
+    name: 'Query Data',
+    glyph: IconFont.Play,
+  },
+  {
+    name: 'Finish',
+    glyph: IconFont.StarSmile,
+  },
+]
+
 export const HOMEPAGE_NAVIGATION_STEPS_SHORT = [
   {
     name: 'Overview',

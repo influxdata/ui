@@ -15,8 +15,7 @@ describe('Date Picker', () => {
       schemaComposition: true,
     }).then(() => {
       cy.clearSqlScriptSession()
-      cy.getByTestID('editor-sync--toggle').should('be.enabled')
-      // TODO(chunchun): assert toggle is active
+      cy.getByTestID('editor-sync--toggle').should('have.class', 'active')
     })
   })
 
@@ -70,9 +69,8 @@ describe('Date Picker', () => {
       .contains(validDuration)
   })
 
-  it('can set a custom time', () => {
+  it.only('can set a custom time', () => {
     const startTime = '2023-02-08 00:00'
-    // const sqlTimestampRegex = "time >= timestamp '2023-02-08T00:00:00.000Z'"
 
     cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
 
@@ -109,12 +107,12 @@ describe('Date Picker', () => {
     cy.log(
       'SQL composition should use standard UTC timestamp regardless of timezone'
     )
-    // cy.getByTestID('sql-editor').within(() => {
-    //   cy.get('textarea.inputarea').should(
-    //     'contain',
-    //     new RegExp(sqlTimestampRegex, 'g')
-    //   )
-    // })
+    cy.getByTestID('sql-editor').within(() => {
+      cy.get('textarea.inputarea').should(
+        'contain.value',
+        `2023-02-08T06:00:00.000Z` // local time 00:00 equals standard UTD time 06:00
+      )
+    })
     // UTC time
     cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
     cy.getByTestID('timezone-dropdown').should('be.visible').click()
@@ -124,12 +122,12 @@ describe('Date Picker', () => {
     cy.getByTestID('timerange-dropdown--button')
       .should('be.visible')
       .contains(startTime)
-    // cy.getByTestID('sql-editor').within(() => {
-    //   cy.get('textarea.inputarea').should(
-    //     'contain',
-    //     new RegExp(sqlTimestampRegex, 'g')
-    //   )
-    // })
+    cy.getByTestID('sql-editor').within(() => {
+      cy.get('textarea.inputarea').should(
+        'contain.value',
+        `2023-02-08T00:00:00.000Z`
+      )
+    })
     cy.getByTestID('date-picker--menu').should('not.exist')
 
     cy.log(

@@ -4,9 +4,7 @@
 describe('Date Picker', () => {
   before(() =>
     cy.flush().then(() =>
-      cy.signin().then(() => {
-        // TODO(chunchun): write data?
-      })
+      cy.signin()
     )
   )
 
@@ -72,6 +70,7 @@ describe('Date Picker', () => {
   it('can set a custom time', () => {
     const startTimeString: string = '2023-02-08 00:00'
     const startTimeDate: Date = new Date(startTimeString)
+    const startTimeISOString: string = '2023-02-08T00:00:00.000Z'
 
     cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
 
@@ -104,16 +103,27 @@ describe('Date Picker', () => {
     cy.getByTestID('timerange-dropdown--button')
       .should('be.visible')
       .contains(startTimeString)
+      .then(() => {
+        cy.log('session storage should persist time in UTC')
+        cy.window()
+          .its('sessionStorage')
+          .invoke('getItem', 'dataExplorer.range')
+          .then(sessionTimeRange => {
+            cy.wrap(JSON.parse(sessionTimeRange || '')).should(
+              'have.a.property',
+              'lower',
+              startTimeDate.toISOString()
+            )
+          })
 
-    cy.log(
-      'when time zone is Local, SQL composition should use standard UTC timestamp'
-    )
-    cy.getByTestID('sql-editor').within(() => {
-      cy.get('textarea.inputarea').should(
-        'contain.value',
-        startTimeDate.toISOString()
-      )
-    })
+        cy.log('SQL composition should use standard UTC timestamp')
+        cy.getByTestID('sql-editor').within(() => {
+          cy.get('textarea.inputarea').should(
+            'contain.value',
+            startTimeDate.toISOString()
+          )
+        })
+      })
 
     cy.log(
       'when time zone is UTC, dropdown button should display the custome time'
@@ -126,16 +136,28 @@ describe('Date Picker', () => {
     cy.getByTestID('timerange-dropdown--button')
       .should('be.visible')
       .contains(startTimeString)
+      .then(() => {
+        cy.log('session storage should persist time in UTC')
+        cy.window()
+          .its('sessionStorage')
+          .invoke('getItem', 'dataExplorer.range')
+          .then(sessionTimeRange => {
+            cy.wrap(JSON.parse(sessionTimeRange || '')).should(
+              'have.a.property',
+              'lower',
+              startTimeISOString
+            )
+          })
 
-    cy.log(
-      'when time zone is UTC, SQL composition should use standard UTC timestamp'
-    )
-    cy.getByTestID('sql-editor').within(() => {
-      cy.get('textarea.inputarea').should(
-        'contain.value',
-        `2023-02-08T00:00:00.000Z`
-      )
-    })
+        cy.log('SQL composition should use standard UTC timestamp')
+        cy.getByTestID('sql-editor').within(() => {
+          cy.get('textarea.inputarea').should(
+            'contain.value',
+            startTimeISOString
+          )
+        })
+      })
+
     cy.getByTestID('date-picker--menu').should('not.exist')
   })
 })

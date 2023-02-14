@@ -308,7 +308,6 @@ const OrgOverlay: FC = () => {
                       />
                     </Grid.Column>
                   </Grid.Row>
-
                   <Grid.Row>
                     <h4>Notification Rules</h4>
                     <Grid.Column widthMD={Columns.Four}>

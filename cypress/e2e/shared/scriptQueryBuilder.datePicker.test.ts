@@ -69,7 +69,7 @@ describe('Date Picker', () => {
       .contains(validDuration)
   })
 
-  it.only('can set a custom time', () => {
+  it('can set a custom time', () => {
     const startTime = '2023-02-08 00:00'
 
     cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
@@ -92,9 +92,8 @@ describe('Date Picker', () => {
     cy.getByTestID('date-picker--input--from--error').should('not.exist')
 
     cy.log(
-      'dropdown button should display the custome time regardless of timezone'
+      'when time zone is Local, dropdown button should display the custome time'
     )
-    // Local time
     cy.getByTestID('timezone-dropdown').should('be.visible').click()
     cy.getByTestID('dropdown-item')
       .should('be.visible')
@@ -104,8 +103,9 @@ describe('Date Picker', () => {
     cy.getByTestID('timerange-dropdown--button')
       .should('be.visible')
       .contains(startTime)
+
     cy.log(
-      'SQL composition should use standard UTC timestamp regardless of timezone'
+      'when time zone is Local, SQL composition should use standard UTC timestamp'
     )
     cy.getByTestID('sql-editor').within(() => {
       cy.get('textarea.inputarea').should(
@@ -113,7 +113,10 @@ describe('Date Picker', () => {
         `2023-02-08T06:00:00.000Z` // local time 00:00 equals standard UTD time 06:00
       )
     })
-    // UTC time
+
+    cy.log(
+      'when time zone is UTC, dropdown button should display the custome time'
+    )
     cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
     cy.getByTestID('timezone-dropdown').should('be.visible').click()
     cy.getByTestID('dropdown-item').should('be.visible').contains('UTC').click()
@@ -122,6 +125,10 @@ describe('Date Picker', () => {
     cy.getByTestID('timerange-dropdown--button')
       .should('be.visible')
       .contains(startTime)
+
+    cy.log(
+      'when time zone is UTC, SQL composition should use standard UTC timestamp'
+    )
     cy.getByTestID('sql-editor').within(() => {
       cy.get('textarea.inputarea').should(
         'contain.value',
@@ -129,9 +136,5 @@ describe('Date Picker', () => {
       )
     })
     cy.getByTestID('date-picker--menu').should('not.exist')
-
-    cy.log(
-      'flux query variables should set to standard UTC time to the backend regardless of timezone'
-    )
   })
 })

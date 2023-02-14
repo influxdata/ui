@@ -70,7 +70,8 @@ describe('Date Picker', () => {
   })
 
   it('can set a custom time', () => {
-    const startTime = '2023-02-08 00:00'
+    const startTimeString: string = '2023-02-08 00:00'
+    const startTimeDate: Date = new Date(startTimeString)
 
     cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
 
@@ -88,7 +89,7 @@ describe('Date Picker', () => {
     cy.getByTestID('daterange--apply-btn').should('be.disabled')
 
     cy.log('valid input removes the error')
-    cy.getByTestID('date-picker--input--from').clear().type(startTime)
+    cy.getByTestID('date-picker--input--from').clear().type(startTimeString)
     cy.getByTestID('date-picker--input--from--error').should('not.exist')
 
     cy.log(
@@ -102,7 +103,7 @@ describe('Date Picker', () => {
     cy.getByTestID('daterange--apply-btn').should('be.enabled').click()
     cy.getByTestID('timerange-dropdown--button')
       .should('be.visible')
-      .contains(startTime)
+      .contains(startTimeString)
 
     cy.log(
       'when time zone is Local, SQL composition should use standard UTC timestamp'
@@ -110,7 +111,7 @@ describe('Date Picker', () => {
     cy.getByTestID('sql-editor').within(() => {
       cy.get('textarea.inputarea').should(
         'contain.value',
-        `2023-02-08T06:00:00.000Z` // local time 00:00 equals standard UTD time 06:00
+        startTimeDate.toISOString()
       )
     })
 
@@ -120,11 +121,11 @@ describe('Date Picker', () => {
     cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
     cy.getByTestID('timezone-dropdown').should('be.visible').click()
     cy.getByTestID('dropdown-item').should('be.visible').contains('UTC').click()
-    cy.getByTestID('date-picker--input--from').clear().type(startTime)
+    cy.getByTestID('date-picker--input--from').clear().type(startTimeString)
     cy.getByTestID('daterange--apply-btn').should('be.enabled').click()
     cy.getByTestID('timerange-dropdown--button')
       .should('be.visible')
-      .contains(startTime)
+      .contains(startTimeString)
 
     cy.log(
       'when time zone is UTC, SQL composition should use standard UTC timestamp'

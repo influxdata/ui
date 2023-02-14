@@ -1,4 +1,5 @@
 import React, {FC, useState, useContext, useEffect, useCallback} from 'react'
+const moment = require('moment/min/moment.min.js')
 import {
   AlignItems,
   Button,
@@ -30,6 +31,7 @@ import {TimeRange} from 'src/types'
 
 const NBSP = '\u00a0\u00a0'
 const MAX_WIDTH_FOR_CUSTOM_TIMES = 325
+const FORMAT = 'YYYY-MM-DD HH:mm'
 
 interface Props {
   onCollapse: () => void
@@ -118,8 +120,17 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
     setInputEndDate(value)
   }
 
-  const handleSelectDate = (dates): void => {
+  const handleSelectDate = (dates: [Date, Date]): void => {
     const [start, end] = dates
+    // end should be EOD
+    end && end.setMinutes(59)
+    end && end.setHours(23)
+
+    // clone mutable objects
+    const inputStart = new Date(start)
+    const inputEnd = new Date(end)
+
+    // set local state
     if (timeZone === 'UTC') {
       if (start) {
         start.setMinutes(start.getMinutes() + start.getTimezoneOffset())
@@ -129,38 +140,16 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
       }
     }
     setDateRange([start, end])
-    let startInput = start
-    let endInput = end
 
-    const pad = part => part.toString().padStart(2, '0')
-    if (startInput instanceof Date) {
-      const dateParts = [
-        startInput.getFullYear(),
-        startInput.getMonth() + 1,
-        startInput.getDate(),
-      ]
-        .map(pad)
-        .join('-')
-      const timeParts = [startInput.getHours(), startInput.getMinutes()]
-        .map(pad)
-        .join(':')
-      startInput = `${dateParts} ${timeParts}`
+    // format for input display in DatePicker
+    let startInput: string = null
+    let endInput: string = null
+
+    if (start instanceof Date) {
+      startInput = moment(inputStart).format(FORMAT)
     }
-    if (endInput instanceof Date) {
-      const endDate = new Date(endInput)
-      // this sets the time to the end of the selected end day
-      endDate.setMinutes(endDate.getMinutes() - 1)
-      const dateParts = [
-        endDate.getFullYear(),
-        endDate.getMonth() + 1,
-        endDate.getDate() + 1,
-      ]
-        .map(pad)
-        .join('-')
-      const timeParts = [endDate.getHours(), endDate.getMinutes()]
-        .map(pad)
-        .join(':')
-      endInput = `${dateParts} ${timeParts}`
+    if (end instanceof Date) {
+      endInput = moment(inputEnd).format(FORMAT)
     }
     setInputStartDate(startInput)
     setInputEndDate(endInput)

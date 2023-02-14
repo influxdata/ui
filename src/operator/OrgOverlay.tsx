@@ -277,7 +277,7 @@ const OrgOverlay: FC = () => {
                       />
                     </Grid.Column>
                   </Grid.Row>
-                  {limits.timeout && (
+                  {limits?.timeout && (
                     <Grid.Row>
                       <Grid.Column widthMD={Columns.Four}>
                         <Form.Label label="Unconditional Timeout (seconds)" />
@@ -299,7 +299,7 @@ const OrgOverlay: FC = () => {
                       </Grid.Column>
                     </Grid.Row>
                   )}
-                  {limits.stack && (
+                  {limits?.stack && (
                     <Grid.Row>
                       <Grid.Column widthMD={Columns.Four}>
                         <Form.Label label="Stack" />

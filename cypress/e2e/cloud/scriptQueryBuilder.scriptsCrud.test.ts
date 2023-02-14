@@ -97,7 +97,8 @@ describe('Script Builder -- scripts crud on cloud', () => {
       })
     })
 
-    it('can search existing scripts, and open new one', () => {
+    // Flaky test https://github.com/influxdata/ui/issues/6609
+    it.skip('can search existing scripts, and open new one', () => {
       cy.getByTestID('script-query-builder--open-script')
         .should('be.visible')
         .click()

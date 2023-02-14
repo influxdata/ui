@@ -67,24 +67,20 @@ describe('Script Builder -- scripts crud on cloud', () => {
 
     before(() => {
       cy.scriptsLoginWithFlags({}).then(() => {
-        cy.switchToDataExplorer('new')
-        cy.getByTestID('flux-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
-        cy.clearFluxScriptSession()
-        saveScript(
-          `from(bucket: "defbuck") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)`,
-          scriptName
+        cy.createScript(
+          scriptName,
+          `from(bucket: "defbuck") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> yield(name: "${scriptName}")`
         )
-        cy.clearFluxScriptSession()
-        cy.wait(DELAY_FOR_UPDATE)
-        saveScript(
-          `from(bucket: "defbuck") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)`,
-          anotherScriptName
+        cy.createScript(
+          anotherScriptName,
+          `from(bucket: "defbuck") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> yield(name: "${anotherScriptName}")`
         )
-        cy.clearFluxScriptSession()
-        cy.wait(DELAY_FOR_UPDATE)
-        saveScript(
-          `from(bucket: "defbuck") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)`,
-          scriptToDelete
+        cy.createScript(
+          scriptToDelete,
+          `from(bucket: "defbuck") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> yield(name: "${scriptToDelete}")`
         )
       })
     })
@@ -97,8 +93,7 @@ describe('Script Builder -- scripts crud on cloud', () => {
       })
     })
 
-    // Flaky test https://github.com/influxdata/ui/issues/6609
-    it.skip('can search existing scripts, and open new one', () => {
+    it('can search existing scripts, and open new one', () => {
       cy.getByTestID('script-query-builder--open-script')
         .should('be.visible')
         .click()

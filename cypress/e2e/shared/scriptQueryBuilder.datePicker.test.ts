@@ -2,11 +2,7 @@
 // This file covers the test for src/shared/components/dateRangePicker/NewDatePicker.tsx
 
 describe('Date Picker', () => {
-  before(() =>
-    cy.flush().then(() =>
-      cy.signin()
-    )
-  )
+  before(() => cy.flush().then(() => cy.signin()))
 
   beforeEach(() => {
     cy.scriptsLoginWithFlags({

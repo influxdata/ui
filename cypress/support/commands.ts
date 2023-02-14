@@ -923,6 +923,19 @@ export const switchToDataExplorer = (typ: 'new' | 'old') => {
   })
 }
 
+export const createScript = (
+  name: string,
+  script: string,
+  language = 'flux'
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request('POST', '/api/v2/scripts', {
+    description: 'words',
+    name,
+    script,
+    language,
+  })
+}
+
 export const scriptsLoginWithFlags = (flags): Cypress.Chainable<any> => {
   return cy.signinWithoutUserReprovision().then(() => {
     return cy.get('@org').then(({id}: Organization) => {
@@ -1563,6 +1576,7 @@ Cypress.Commands.add('selectScriptBucket', selectScriptBucket)
 Cypress.Commands.add('selectScriptMeasurement', selectScriptMeasurement)
 Cypress.Commands.add('selectScriptFieldOrTag', selectScriptFieldOrTag)
 Cypress.Commands.add('scriptsLoginWithFlags', scriptsLoginWithFlags)
+Cypress.Commands.add('createScript', createScript)
 
 // variables
 Cypress.Commands.add('createQueryVariable', createQueryVariable)

@@ -65,6 +65,7 @@ import {
   selectScriptMeasurement,
   selectScriptFieldOrTag,
   scriptsLoginWithFlags,
+  createScript,
 } from './support/commands'
 
 declare global {
@@ -137,6 +138,7 @@ declare global {
       selectScriptMeasurement: typeof selectScriptMeasurement
       selectScriptFieldOrTag: typeof selectScriptFieldOrTag
       scriptsLoginWithFlags: typeof scriptsLoginWithFlags
+      createScript: typeof createScript
     }
   }
 }

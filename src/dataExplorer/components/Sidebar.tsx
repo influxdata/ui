@@ -114,13 +114,18 @@ const Sidebar: FC = () => {
     </FlexBox.Child>
   )
 
+  const shouldNotShowSidebar =
+    [LanguageType.SQL, LanguageType.INFLUXQL].filter(
+      (language: LanguageType) => resource?.language === language
+    ).length > 0
+
   return (
     <FlexBox
       direction={FlexDirection.Column}
       justifyContent={JustifyContent.FlexStart}
       className="container-right-side-bar"
     >
-      {isIoxOrg && resource?.language === LanguageType.SQL ? null : (
+      {isIoxOrg && shouldNotShowSidebar ? null : (
         <>
           {resultOptions}
           {fluxLibrary}

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useRef, useState} from 'react'
+import React, {FC, useCallback, useRef, useState, useEffect} from 'react'
 import {debounce} from 'lodash'
 
 // Utils
@@ -46,6 +46,7 @@ import {
   LegendDisplayStatus,
   STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
+  STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
   STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   STATIC_LEGEND_HEIGHT_RATIO_STEP,
   STATIC_LEGEND_SHOW_DEFAULT,
@@ -71,7 +72,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
   const {
     staticLegend = {
       colorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
-      heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+      heightRatio: STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
       opacity: LEGEND_OPACITY_DEFAULT,
       orientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
       show: STATIC_LEGEND_SHOW_DEFAULT,
@@ -81,7 +82,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
   const {valueAxis} = staticLegend
   const {
     colorizeRows = false, // undefined is considered false because of omitempty
-    heightRatio: defaultHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+    heightRatio: defaultHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
     opacity = LEGEND_OPACITY_DEFAULT,
     orientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     show,
@@ -91,14 +92,15 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
   const heightRatioRef = useRef<number>(null)
   heightRatioRef.current = heightRatio
 
-  React.useEffect(() => {
-    if (
-      heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET &&
-      heightRatio !== defaultHeightRatio
-    ) {
-      setHeightRatio(defaultHeightRatio)
+  useEffect(() => {
+    setHeightRatio(defaultHeightRatio)
+  }, [defaultHeightRatio])
+
+  useEffect(() => {
+    if (showOptions && heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET) {
+      updateHeightRatio(STATIC_LEGEND_HEIGHT_RATIO_DEFAULT)
     }
-  }, [defaultHeightRatio, heightRatio])
+  }, [showOptions])
 
   const handleChooseStaticLegend = (value: string) => {
     setShowOptions(value === LegendDisplayStatus.SHOW)

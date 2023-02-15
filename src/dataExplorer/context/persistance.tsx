@@ -110,6 +110,8 @@ export const DEFAULT_SELECTION: CompositionSelection = {
 export const DEFAULT_FLUX_EDITOR_TEXT =
   '// Start by selecting data from the schema browser or typing flux here'
 export const DEFAULT_SQL_EDITOR_TEXT = '/* Start by typing SQL here */'
+export const DEFAULT_INFLUXQL_EDITOR_TEXT =
+  '/* Start by typing InfluxQL here */'
 
 const DEFAULT_CONTEXT = {
   hasChanged: false,

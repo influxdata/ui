@@ -23,6 +23,7 @@ import {
   PersistanceContext,
   DEFAULT_FLUX_EDITOR_TEXT,
   DEFAULT_SQL_EDITOR_TEXT,
+  DEFAULT_INFLUXQL_EDITOR_TEXT,
 } from 'src/dataExplorer/context/persistance'
 
 // Components
@@ -59,8 +60,15 @@ const FluxMonacoEditor = lazy(
 
 const fakeNotify = notify
 
-const isDefaultText = text => {
-  return text == DEFAULT_FLUX_EDITOR_TEXT || text == DEFAULT_SQL_EDITOR_TEXT
+const isDefaultText = (text: string) => {
+  return (
+    [
+      DEFAULT_FLUX_EDITOR_TEXT,
+      DEFAULT_SQL_EDITOR_TEXT,
+      DEFAULT_INFLUXQL_EDITOR_TEXT,
+    ].filter((defaultEditorText: string) => text === defaultEditorText).length >
+    0
+  )
 }
 
 const ResultsPane: FC = () => {

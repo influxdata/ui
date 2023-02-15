@@ -4,6 +4,7 @@ import {CLOUD} from 'src/shared/constants'
 import {
   DEFAULT_FLUX_EDITOR_TEXT,
   DEFAULT_SQL_EDITOR_TEXT,
+  DEFAULT_INFLUXQL_EDITOR_TEXT,
 } from 'src/dataExplorer/context/persistance'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 import {getLanguage} from 'src/dataExplorer/shared/utils'
@@ -25,8 +26,13 @@ export const scriptResourceRegistration = () => {
         const language = getLanguage()
         let flux = DEFAULT_FLUX_EDITOR_TEXT
 
-        if (language === LanguageType.SQL) {
-          flux = DEFAULT_SQL_EDITOR_TEXT
+        switch (language) {
+          case LanguageType.SQL:
+            flux = DEFAULT_SQL_EDITOR_TEXT
+            break
+          case LanguageType.INFLUXQL:
+            flux = DEFAULT_INFLUXQL_EDITOR_TEXT
+            break
         }
 
         return Promise.resolve({

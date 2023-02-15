@@ -1477,7 +1477,8 @@ export const createTaskFromEmpty = (
   force: boolean = true,
   delay: number = 0
 ) => {
-  cy.getByTestID('create-task--button').first().click()
+  cy.getByTestID('add-resource-dropdown--button').first().click()
+  cy.getByTestID('add-resource-dropdown--new').click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
     cy.getByTestID('flux-editor').monacoType(flux(bucket), force, delay)

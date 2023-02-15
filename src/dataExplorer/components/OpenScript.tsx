@@ -55,7 +55,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
         setScripts(resp.data.scripts)
         setLoading(RemoteDataState.Done)
       } else {
-        alert('you are in an supported environment')
+        alert('you are in an unsupported environment')
       }
     } catch (error) {
       setLoading(RemoteDataState.Error)
@@ -151,6 +151,7 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
             value={searchTerm}
             placeholder="Search Scripts"
             onChange={evt => handleSearchTerm(evt.target.value)}
+            testID="open-script__search"
           />
           <Dropdown.Menu className="open-script__menu-items" maxHeight={300}>
             {list}
@@ -162,18 +163,17 @@ const OpenScript: FC<Props> = ({onCancel, onClose}) => {
             onClick={onCancel}
             text="Cancel"
           />
-          {CLOUD && (
-            <Button
-              color={ComponentColor.Primary}
-              status={
-                scripts.length === 0 || Object.keys(selectedScript).length === 0
-                  ? ComponentStatus.Disabled
-                  : ComponentStatus.Default
-              }
-              onClick={handleOpenScript}
-              text="Open"
-            />
-          )}
+          <Button
+            color={ComponentColor.Primary}
+            status={
+              scripts.length === 0 || Object.keys(selectedScript).length === 0
+                ? ComponentStatus.Disabled
+                : ComponentStatus.Default
+            }
+            onClick={handleOpenScript}
+            text="Open"
+            testID="open-script__open"
+          />
         </Overlay.Footer>
       </Overlay.Container>
     )

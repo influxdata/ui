@@ -1,6 +1,6 @@
 import {ReactNode} from 'react'
 import {ResourceType} from 'src/types/resources'
-import scriptResourceRegistration from 'src/dataExplorer/components/resources/types/script'
+import {scriptResourceRegistration} from 'src/dataExplorer/components/resources/types/script'
 
 export const SCRIPT_EDITOR_PARAMS = '?fluxScriptEditor'
 

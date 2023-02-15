@@ -765,17 +765,35 @@ export const createNotebook = (
 }
 
 export const newScriptWithoutLanguageSelection = () => {
+  const CLOUD = Cypress.env('dexUrl') === 'OSS' ? false : true
+  if (!CLOUD) {
+    return cy
+      .getByTestID('script-query-builder--new-script')
+      .should('be.visible')
+      .click()
+  }
+
   cy.getByTestID('script-query-builder--save-script').then($saveButton => {
-    if (!$saveButton.is(':disabled')) {
-      cy.getByTestID('script-query-builder--new-script')
-        .should('be.visible')
-        .click()
-      cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('script-query-builder--delete-script')
-          .should('be.visible')
-          .click()
+    cy.getByTestID('page-title')
+      .invoke('text')
+      .then(title => {
+        if (!$saveButton.is(':disabled')) {
+          // unsaved existing script
+          cy.getByTestID('script-query-builder--new-script')
+            .should('be.visible')
+            .click()
+          cy.getByTestID('overlay--container').within(() => {
+            cy.getByTestID('script-query-builder--delete-script')
+              .should('be.visible')
+              .click()
+          })
+        } else if (!title.includes('Data Explorer')) {
+          // saved existing script
+          cy.getByTestID('script-query-builder--new-script')
+            .should('be.visible')
+            .click()
+        }
       })
-    }
   })
 }
 
@@ -886,7 +904,7 @@ export const selectScriptFieldOrTag = (name: string, beActive: boolean) => {
 }
 
 export const switchToDataExplorer = (typ: 'new' | 'old') => {
-  cy.getByTestID('page-title').contains('Data Explorer')
+  cy.getByTestID('data-explorer-page').should('exist')
   cy.get('[data-testid="data-explorer--header"]').then($body => {
     if (
       $body.has('button[data-testid="script-query-builder-toggle"]').length > 0
@@ -905,6 +923,19 @@ export const switchToDataExplorer = (typ: 'new' | 'old') => {
   })
 }
 
+export const createScript = (
+  name: string,
+  script: string,
+  language = 'flux'
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request('POST', '/api/v2/scripts', {
+    description: 'words',
+    name,
+    script,
+    language,
+  })
+}
+
 export const scriptsLoginWithFlags = (flags): Cypress.Chainable<any> => {
   return cy.signinWithoutUserReprovision().then(() => {
     return cy.get('@org').then(({id}: Organization) => {
@@ -920,7 +951,8 @@ export const scriptsLoginWithFlags = (flags): Cypress.Chainable<any> => {
         })
         .then(() =>
           cy.reload().then(() => {
-            cy.getByTestID('page-title').contains('Data Explorer')
+            cy.getByTestID('tree-nav')
+            cy.getByTestID('data-explorer-page').should('exist')
             cy.switchToDataExplorer('new')
           })
         )
@@ -1544,6 +1576,7 @@ Cypress.Commands.add('selectScriptBucket', selectScriptBucket)
 Cypress.Commands.add('selectScriptMeasurement', selectScriptMeasurement)
 Cypress.Commands.add('selectScriptFieldOrTag', selectScriptFieldOrTag)
 Cypress.Commands.add('scriptsLoginWithFlags', scriptsLoginWithFlags)
+Cypress.Commands.add('createScript', createScript)
 
 // variables
 Cypress.Commands.add('createQueryVariable', createQueryVariable)

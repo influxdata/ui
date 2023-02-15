@@ -1,5 +1,5 @@
 import React, {FC, useState, useContext, useEffect, useCallback} from 'react'
-import moment from 'moment'
+const moment = require('moment/min/moment.min.js')
 import {
   AlignItems,
   Button,
@@ -33,6 +33,7 @@ import {TimeRange, TimeZone} from 'src/types'
 
 const NBSP = '\u00a0\u00a0'
 const MAX_WIDTH_FOR_CUSTOM_TIMES = 325
+const FORMAT = 'YYYY-MM-DD HH:mm'
 
 // if the input time is in ISO format: 'YYYY-MM-DDTHH:mm:ss.sssZ',
 // then convert it to 'YYYY-MM-DD HH:mm'
@@ -40,8 +41,6 @@ const convertToDisplayFormat = (time: string, timeZone: TimeZone): string => {
   if (!time || !isISODate(time)) {
     return time
   }
-
-  const FORMAT = 'YYYY-MM-DD HH:mm'
 
   if (timeZone !== 'UTC') {
     return moment(time).format(FORMAT)
@@ -143,41 +142,27 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
     setInputEndDate(value)
   }
 
-  const handleSelectDate = (dates): void => {
+  const handleSelectDate = (dates: [Date, Date]): void => {
     const [start, end] = dates
-    setDateRange([start, end])
-    let startInput = start
-    let endInput = end
 
-    const pad = part => part.toString().padStart(2, '0')
-    if (startInput instanceof Date) {
-      const dateParts = [
-        startInput.getFullYear(),
-        startInput.getMonth() + 1,
-        startInput.getDate(),
-      ]
-        .map(pad)
-        .join('-')
-      const timeParts = [startInput.getHours(), startInput.getMinutes()]
-        .map(pad)
-        .join(':')
-      startInput = `${dateParts} ${timeParts}`
+    // end should be EOD
+    end && end.setMinutes(59)
+    end && end.setHours(23)
+    setDateRange([start, end])
+
+    // clone mutable objects
+    const inputStart = new Date(start)
+    const inputEnd = new Date(end)
+
+    // format for input display in DatePicker
+    let startInput: string = null
+    let endInput: string = null
+
+    if (start instanceof Date) {
+      startInput = moment(inputStart).format(FORMAT)
     }
-    if (endInput instanceof Date) {
-      const endDate = new Date(endInput)
-      // this sets the time to the end of the selected end day
-      endDate.setMinutes(endDate.getMinutes() - 1)
-      const dateParts = [
-        endDate.getFullYear(),
-        endDate.getMonth() + 1,
-        endDate.getDate() + 1,
-      ]
-        .map(pad)
-        .join('-')
-      const timeParts = [endDate.getHours(), endDate.getMinutes()]
-        .map(pad)
-        .join(':')
-      endInput = `${dateParts} ${timeParts}`
+    if (end instanceof Date) {
+      endInput = moment(inputEnd).format(FORMAT)
     }
 
     // the start and end date should be valid by now

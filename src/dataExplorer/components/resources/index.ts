@@ -7,6 +7,7 @@ export const SCRIPT_EDITOR_PARAMS = '?fluxScriptEditor'
 export enum LanguageType {
   FLUX = 'flux',
   SQL = 'sql',
+  INFLUXQL = 'influxql',
 }
 export interface ResourceConnectedQuery<T> {
   type: ResourceType

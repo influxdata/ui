@@ -7,9 +7,9 @@ import {
   NotificationRule,
   Secret,
 } from '../../src/types'
-import {Bucket, Organization} from '../../src/client'
-import {FlagMap} from 'src/shared/actions/flags'
-import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
+import { Bucket, Organization } from '../../src/client'
+import { FlagMap } from 'src/shared/actions/flags'
+import { addTimestampToRecs, addStaggerTimestampToRecs, parseTime } from './Utils'
 import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
@@ -95,13 +95,13 @@ export const loginViaDexUI = (username: string, password: string) => {
 
 Cypress.Commands.add(
   'monacoType',
-  {prevSubject: true},
+  { prevSubject: true },
   (subject, text: string, force = true, delay = 10) => {
     return cy.wrap(subject).within(() => {
       cy.get('.monaco-editor .view-line:last')
-        .click({force: true})
+        .click({ force: true })
         .focused()
-        .type(text, {force, delay})
+        .type(text, { force, delay })
     })
   }
 )
@@ -154,7 +154,7 @@ export const loginViaDex = (username: string, password: string) => {
                   followRedirect: true,
                   form: true,
                   method: 'POST',
-                  body: {req: req, approval: 'approve'},
+                  body: { req: req, approval: 'approve' },
                 })
                 .then(() => {
                   cy.visit('/')
@@ -181,7 +181,7 @@ export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<
       cy.request({
         method: 'GET',
         url: '/api/v2/buckets',
-        qs: {orgID: org.id},
+        qs: { orgID: org.id },
       }).then(bucketsResponse => {
         const buckets = bucketsResponse.body.buckets as Array<Bucket>
         const bucket = buckets.find(
@@ -227,7 +227,7 @@ export const wrapDefaultPassword = (): Cypress.Chainable => {
 }
 
 export const isIoxOrg = (): Cypress.Chainable<boolean> => {
-  return cy.get('@org').then(({defaultStorageType}: Organization) => {
+  return cy.get('@org').then(({ defaultStorageType }: Organization) => {
     return Boolean(
       defaultStorageType && defaultStorageType.toLowerCase() === 'iox'
     )
@@ -268,7 +268,7 @@ export const createDashboard = (
 
 export const createCell = (
   dbID: string,
-  dims: {x: number; y: number; height: number; width: number} = {
+  dims: { x: number; y: number; height: number; width: number } = {
     x: 0,
     y: 0,
     height: 4,
@@ -306,14 +306,14 @@ export const createView = (
 export const createDashWithCell = (
   orgID: string
 ): Cypress.Chainable<Cypress.Response<any>> =>
-  createDashboard(orgID).then(({body: dashboard}) => createCell(dashboard.id))
+  createDashboard(orgID).then(({ body: dashboard }) => createCell(dashboard.id))
 
 export const createDashWithViewAndVar = (
   orgID: string
 ): Cypress.Chainable<Cypress.Response<any>> => {
   createMapVariable(orgID)
-  return createDashboard(orgID).then(({body: dashboard}) =>
-    createCell(dashboard.id).then(({body: cell}) =>
+  return createDashboard(orgID).then(({ body: dashboard }) =>
+    createCell(dashboard.id).then(({ body: cell }) =>
       createView(dashboard.id, cell.id)
     )
   )
@@ -370,7 +370,7 @@ export const upsertSecret = (
 
 // TODO: (sahas) need to make this function to actually mimic the navbar functionality
 export const clickNavBarItem = (testID: string): Cypress.Chainable => {
-  return cy.getByTestID(testID).click({force: true})
+  return cy.getByTestID(testID).click({ force: true })
 }
 
 export const createTask = (
@@ -449,7 +449,7 @@ export const createMapVariable = (
 ): Cypress.Chainable<Cypress.Response<any>> => {
   const argumentsObj = {
     type: 'map',
-    values: {k1: 'v1', k2: 'v2'},
+    values: { k1: 'v1', k2: 'v2' },
   }
 
   return cy.request({
@@ -480,7 +480,7 @@ export const createMapVariableFromFixture = (
 export const createLabel = (
   name?: string,
   orgID?: string,
-  properties: {description: string; color: string} = {
+  properties: { description: string; color: string } = {
     description: `test ${name}`,
     color: '#ff0054',
   }
@@ -515,7 +515,7 @@ export const createAndAddLabel = (
         },
       },
     })
-    .then(({body}) => {
+    .then(({ body }) => {
       return addResourceLabel(resource, resourceID, body.label.id)
     })
 }
@@ -528,7 +528,7 @@ export const addResourceLabel = (
   return cy.request({
     method: 'POST',
     url: `/api/v2/${resource}/${resourceID}/labels`,
-    body: {labelID},
+    body: { labelID },
   })
 }
 
@@ -579,7 +579,7 @@ export const createTelegraf = (
     body: {
       name,
       description,
-      agent: {collectionInterval: 10000},
+      agent: { collectionInterval: 10000 },
       plugins: [
         {
           name: 'influxdb_v2',
@@ -651,7 +651,7 @@ export const createNotebook = (
           type: 'queryBuilder',
           buckets: [],
           tags: [
-            {key: '_measurement', values: [], aggregateFunctionType: 'filter'},
+            { key: '_measurement', values: [], aggregateFunctionType: 'filter' },
           ],
           id: 'local_cxjzb8S8Nt6nStkd-MqjF',
           title: 'Build a Query',
@@ -687,8 +687,8 @@ export const createNotebook = (
                       aggregateFunctionType: 'filter',
                     },
                   ],
-                  functions: [{name: 'mean'}],
-                  aggregateWindow: {period: 'auto', fillValues: false},
+                  functions: [{ name: 'mean' }],
+                  aggregateWindow: { period: 'auto', fillValues: false },
                 },
               },
             ],
@@ -896,7 +896,7 @@ export const selectScriptFieldOrTag = (name: string, beActive: boolean) => {
   cy.getByTestID('field-selector').should('be.visible')
   cy.getByTestID(`selector-list ${name}`)
     .should('be.visible')
-    .click({force: true})
+    .click({ force: true })
   cy.getByTestID(`selector-list ${name}`).should(
     beActive ? 'have.class' : 'not.have.class',
     'cf-list-item__active'
@@ -938,7 +938,7 @@ export const createScript = (
 
 export const scriptsLoginWithFlags = (flags): Cypress.Chainable<any> => {
   return cy.signinWithoutUserReprovision().then(() => {
-    return cy.get('@org').then(({id}: Organization) => {
+    return cy.get('@org').then(({ id }: Organization) => {
       cy.visit(`/orgs/${id}/data-explorer`)
       return cy
         .setFeatureFlags({
@@ -999,23 +999,23 @@ export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
 }
 
 export const flush = (): Cypress.Chainable<Cypress.Response<any>> => {
-  const defaultUser = Cypress.env('defaultUser')
-  if (defaultUser) {
-    return cy
-      .request({method: 'POST', url: `/debug/flush?user=${defaultUser}`})
-      .then(response => {
-        expect(response.status).to.eq(200)
-        return cy
-          .log(`flushed user ${defaultUser} successfully`)
-          .then(() => response)
-      })
-  } else {
-    // this isn't really needed - just need to return a chainable cypress obj
-    return cy.request({method: 'GET', url: '/debug/flush'}).then(response => {
-      expect(response.status).to.eq(200)
-      return response
-    })
+  // const defaultUser = Cypress.env('defaultUser')
+  // if (defaultUser) {
+  //   return cy
+  //     .request({method: 'POST', url: `/debug/flush?user=${defaultUser}`})
+  //     .then(response => {
+  //       expect(response.status).to.eq(200)
+  //       return cy
+  //         .log(`flushed user ${defaultUser} successfully`)
+  //         .then(() => response)
+  //     })
+  // } else {
+  // this isn't really needed - just need to return a chainable cypress obj
+  return cy.request({ method: 'GET', url: '/debug/flush' }).then(response => {
+    expect(response.status).to.eq(200)
+    return response
   }
+  )
 }
 
 /**
@@ -1105,7 +1105,7 @@ export const writeData = (
         method: 'POST',
         url:
           '/api/v2/write?' +
-          new URLSearchParams({orgID: org.id}) +
+          new URLSearchParams({ orgID: org.id }) +
           '&bucket=' +
           bucketToUse,
         body: lines.join('\n'),
@@ -1223,7 +1223,7 @@ export const getByTestID = (
   const options = requestedOptions ?? {}
   return cy.get(`[data-testid="${dataTest}"]`, {
     ...options,
-    ...{timeout: Math.max(LOAD_SLA, options.timeout ?? 0)},
+    ...{ timeout: Math.max(LOAD_SLA, options.timeout ?? 0) },
   })
 }
 
@@ -1361,7 +1361,7 @@ export const createAlertGroup = (
       cy.get<NotificationEndpoint>('@endp0').then(endp => {
         rules.forEach((rule, index) => {
           cy.log(`=== create rule ${rule.name}`)
-          cy.createRule({...rule, orgID: org.id, endpointID: endp.id}).then(
+          cy.createRule({ ...rule, orgID: org.id, endpointID: endp.id }).then(
             resp => {
               cy.wrap(resp.body).as(`rule${index}`)
             }
@@ -1421,7 +1421,7 @@ export const makeGraphSnapshot = (() => {
 
     return {
       name,
-      shouldBeSameAs: ({name: nameOther}, same = true, part = 'both') => {
+      shouldBeSameAs: ({ name: nameOther }, same = true, part = 'both') => {
         const assert = (str: any, str2: any, same: boolean) => {
           if (same) {
             expect(str).to.eq(str2)
@@ -1461,7 +1461,7 @@ export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
   flagsURIs.forEach(url => {
     cy.intercept(url, req => {
       req.continue(res => {
-        res.send({...res.body, ...flags})
+        res.send({ ...res.body, ...flags })
       })
     }).as('setFeatureFlagsResponse')
   })
@@ -1600,7 +1600,7 @@ Cypress.Commands.add(`writeLPData`, writeLPData)
 Cypress.Commands.add(`writeLPDataFromFile`, writeLPDataFromFile)
 
 // helpers
-Cypress.Commands.add('clickAttached', {prevSubject: 'element'}, clickAttached)
+Cypress.Commands.add('clickAttached', { prevSubject: 'element' }, clickAttached)
 Cypress.Commands.add(
   'fillInOSSLoginFormWithDefaults',
   fillInOSSLoginFormWithDefaults

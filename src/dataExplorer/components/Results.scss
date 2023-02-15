@@ -71,6 +71,8 @@
   background-color: $cf-grey-15;
   width: 100%;
   display: flex;
+  max-height: $cf-space-2xl;
+  overflow-y: scroll;
 
   .cf-icon {
     padding: $cf-space-2xs $cf-space-s;

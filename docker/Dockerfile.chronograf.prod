@@ -52,7 +52,7 @@ RUN apk \
 # makes big steps like yarn install expensive
 RUN yarn install --production=false && \
     yarn generate && \
-    npm exec --package=webpack -- webpack --config ./webpack.${WEBPACK_FILE}.ts && \
+    $(npm bin)/webpack --config ./webpack.${WEBPACK_FILE}.ts && \
     rm -rf ./node_modules
 
 RUN mkdir /includes

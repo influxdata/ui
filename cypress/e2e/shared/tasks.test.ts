@@ -43,8 +43,7 @@ const setupTest = (shouldShowTasks: boolean = true) => {
     })
 }
 
-// Flaky test https://github.com/influxdata/ui/issues/6609
-describe.skip('Tasks - IOx', () => {
+describe('Tasks - IOx', () => {
   it('New IOx orgs do not have Tasks', () => {
     cy.skipOn(isTSMOrg)
     const shouldShowTasks = false

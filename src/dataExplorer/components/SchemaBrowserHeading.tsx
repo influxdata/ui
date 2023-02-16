@@ -51,8 +51,15 @@ const SchemaBrowserHeading: FC = () => {
     return null
   }
 
-  const label =
-    resource?.language === LanguageType.SQL ? 'SQL Sync' : 'Flux Sync'
+  let label: string = 'Flux Sync'
+  switch (resource?.language) {
+    case LanguageType.SQL:
+      label = 'SQL Sync'
+      break
+    case LanguageType.INFLUXQL:
+      label = 'InfluxQL Sync'
+      break
+  }
 
   return (
     <FlexBox

@@ -160,6 +160,21 @@ const ScriptQueryBuilder: FC = () => {
                               {option}
                             </Dropdown.Item>
                           ))}
+                        {isFlagEnabled('influxqlUI') ? (
+                          <Dropdown.Item
+                            className={`script-dropdown__${LanguageType.INFLUXQL}`}
+                            key={LanguageType.INFLUXQL}
+                            onClick={() =>
+                              handleSelectDropdown(LanguageType.INFLUXQL)
+                            }
+                            selected={
+                              resource?.language === LanguageType.INFLUXQL
+                            }
+                            testID={`script-dropdown__${LanguageType.INFLUXQL}`}
+                          >
+                            {LanguageType.INFLUXQL}
+                          </Dropdown.Item>
+                        ) : null}
                       </Dropdown.Menu>
                     )}
                     button={(active, onClick) => (

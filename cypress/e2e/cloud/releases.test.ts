@@ -1,5 +1,18 @@
 import {Organization} from '../../../src/types'
 
+describe('IOX tests should be running', () => {
+  beforeEach(() => {
+    cy.flush().then(() => cy.signin())
+  })
+
+  it('cypress iox bool matches the storage provisioned', () => {
+    const isIOxOrg = Boolean(Cypress.env('useIox'))
+    cy.isIoxOrg().then(isIox => {
+      expect(isIox).to.equal(isIOxOrg)
+    })
+  })
+})
+
 describe('Deprecations per cloud release', () => {
   before(() => {
     cy.flush().then(() =>

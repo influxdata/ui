@@ -95,21 +95,19 @@ describe('Script Builder', () => {
         confirmSchemaComposition()
 
         cy.log('select field --> adds to composition')
-        const fieldName0 = 'air_degrees'
-        const fieldName10 = 'humidity'
-        cy.selectScriptFieldOrTag(fieldName0, true)
-        cy.getByTestID('sql-editor').contains(`("${fieldName0}" IS NOT NULL)`)
-        cy.selectScriptFieldOrTag(fieldName10, true)
+        cy.selectScriptFieldOrTag(fieldName, true)
+        cy.getByTestID('sql-editor').contains(`("${fieldName}" IS NOT NULL)`)
+        cy.selectScriptFieldOrTag(fieldName2, true)
         cy.getByTestID('sql-editor').contains(
-          `("${fieldName0}" IS NOT NULL OR "${fieldName10}" IS NOT NULL)`
+          `("${fieldName}" IS NOT NULL OR "${fieldName2}" IS NOT NULL)`
         )
 
         cy.log('select field --> removes from composition')
-        cy.selectScriptFieldOrTag(fieldName10, false)
+        cy.selectScriptFieldOrTag(fieldName2, false)
         cy.wait(1000)
-        cy.getByTestID('sql-editor').contains(`("${fieldName0}" IS NOT NULL)`)
+        cy.getByTestID('sql-editor').contains(`("${fieldName}" IS NOT NULL)`)
         cy.getByTestID('sql-editor').within(() => {
-          cy.get('textarea.inputarea').should('not.contain', fieldName10)
+          cy.get('textarea.inputarea').should('not.contain', fieldName2)
         })
       })
 
@@ -126,8 +124,6 @@ describe('Script Builder', () => {
         cy.getByTestID('container-side-bar--tag-keys').within(() => {
           cy.getByTestID('accordion-header').should('be.visible').click()
         })
-        const tagKey = 'air_station_id'
-        const tagValue = 'ST01'
         cy.selectScriptFieldOrTag(tagValue, true)
         cy.getByTestID('sql-editor').contains(`"${tagKey}" IN ('${tagValue}')`)
 

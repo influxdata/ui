@@ -112,10 +112,7 @@ describe('Script Builder', () => {
       cy.wait('@query -1h')
 
       cy.log('query date range can be adjusted')
-      cy.getByTestID('timerange-dropdown').within(() => {
-        cy.getByTestID('dropdown--button').should('exist')
-        cy.getByTestID('dropdown--button').clickAttached()
-      })
+      cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
       cy.getByTestID('dropdown-item-past15m').should('exist').click()
       cy.getByTestID('time-machine-submit-button').should('exist').click()
       cy.wait('@query -15m')
@@ -136,10 +133,9 @@ describe('Script Builder', () => {
         truncated: boolean
       ) => {
         cy.log('confirm on 1hr')
-        cy.getByTestID('timerange-dropdown').within(() => {
-          cy.getByTestID('dropdown--button').should('exist')
-          cy.getByTestID('dropdown--button').clickAttached()
-        })
+        cy.getByTestID('timerange-dropdown--button')
+          .should('be.visible')
+          .click()
         cy.getByTestID('dropdown-item-past1h').should('exist')
         cy.getByTestID('dropdown-item-past1h').clickAttached()
         cy.getByTestID('time-machine-submit-button').should('exist')

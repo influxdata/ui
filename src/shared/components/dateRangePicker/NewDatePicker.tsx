@@ -22,16 +22,40 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Utils
 import {getTimeRangeLabel} from 'src/shared/utils/duration'
+import {isISODate} from 'src/shared/utils/dateTimeUtils'
+import {durationRegExp} from 'src/shared/utils/sqlInterval'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {useSelector} from 'react-redux'
 import {getTimeZone} from 'src/dashboards/selectors'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {isValidDatepickerFormat} from 'src/shared/components/dateRangePicker/utils'
-import {TimeRange} from 'src/types'
+import {TimeRange, TimeZone} from 'src/types'
 
 const NBSP = '\u00a0\u00a0'
 const MAX_WIDTH_FOR_CUSTOM_TIMES = 325
 const FORMAT = 'YYYY-MM-DD HH:mm'
+
+// if the input time is in ISO format: 'YYYY-MM-DDTHH:mm:ss.sssZ',
+// then convert it to 'YYYY-MM-DD HH:mm'
+const convertToDisplayFormat = (time: string, timeZone: TimeZone): string => {
+  if (!time || !isISODate(time)) {
+    return time
+  }
+
+  if (timeZone !== 'UTC') {
+    return moment(time).format(FORMAT)
+  }
+
+  // since the data is in ISO format, and moment formats
+  // to local time. so when our app is in UTC mode, to make
+  // the moment formating respect that timezone, we have to
+  // manually manipulate the time
+  const convertedTime = new Date(time)
+  convertedTime.setMinutes(
+    convertedTime.getMinutes() + convertedTime.getTimezoneOffset()
+  )
+  return moment(convertedTime).format(FORMAT)
+}
 
 interface Props {
   onCollapse: () => void
@@ -79,12 +103,10 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
     collapse()
   }
 
-  const durationRegExp = /([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns)$/g
-
-  const validateInput = value => {
+  const validateInput = (value: string) => {
     return (
       isValidDatepickerFormat(value) ||
-      !!value.match(durationRegExp) ||
+      !!value?.match(durationRegExp) ||
       value === 'now()' ||
       isNaN(Number(value)) === false
     )
@@ -122,24 +144,15 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
 
   const handleSelectDate = (dates: [Date, Date]): void => {
     const [start, end] = dates
+
     // end should be EOD
     end && end.setMinutes(59)
     end && end.setHours(23)
+    setDateRange([start, end])
 
     // clone mutable objects
     const inputStart = new Date(start)
     const inputEnd = new Date(end)
-
-    // set local state
-    if (timeZone === 'UTC') {
-      if (start) {
-        start.setMinutes(start.getMinutes() + start.getTimezoneOffset())
-      }
-      if (end) {
-        end.setMinutes(end.getMinutes() + end.getTimezoneOffset())
-      }
-    }
-    setDateRange([start, end])
 
     // format for input display in DatePicker
     let startInput: string = null
@@ -151,6 +164,16 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
     if (end instanceof Date) {
       endInput = moment(inputEnd).format(FORMAT)
     }
+
+    // the start and end date should be valid by now
+    // remove any error message if there is any
+    if (inputStartErrorMessage !== NBSP) {
+      setInputStartErrorMessage(NBSP)
+    }
+    if (inputEndErrorMessage !== NBSP) {
+      setInputEndErrorMessage(NBSP)
+    }
+
     setInputStartDate(startInput)
     setInputEndDate(endInput)
   }
@@ -190,18 +213,30 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
         setInputEndDate(`${inputEndDate}ms`)
       }
     } else if (validateInput(inputStartDate)) {
-      if (!inputEndDate) {
+      // persist custom time in ISO format:
+      // 'YYYY-MM-DDTHH:mm:ss.sssZ', i.e. UTC time zone
+      let lower: string = inputStartDate
+      if (isValidDatepickerFormat(inputStartDate)) {
+        const date =
+          timeZone === 'UTC' && !isISODate(inputStartDate)
+            ? new Date(inputStartDate + 'Z')
+            : new Date(inputStartDate)
+        lower = date.toISOString()
+      }
+
+      let upper: string = inputEndDate || 'now()'
+      if (isValidDatepickerFormat(inputEndDate)) {
+        const date =
+          timeZone === 'UTC' && !isISODate(inputEndDate)
+            ? new Date(inputEndDate + 'Z')
+            : new Date(inputEndDate)
+        upper = date.toISOString()
+      }
+
+      if (!inputEndDate || validateInput(inputEndDate)) {
         setRange({
-          lower: inputStartDate,
-          upper: 'now()',
-          type: 'custom',
-        })
-        resetCalendar()
-        collapse()
-      } else if (validateInput(inputEndDate)) {
-        setRange({
-          lower: inputStartDate,
-          upper: inputEndDate,
+          lower,
+          upper,
           type: 'custom',
         })
         resetCalendar()
@@ -228,11 +263,15 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
       }}
       className="date-picker--menu"
       maxHeight={367}
+      testID="date-picker--menu"
     >
       <FlexBox direction={FlexDirection.Row} alignItems={AlignItems.Stretch}>
         {isDatePickerOpen && (
           <div className="react-datepicker-ignore-onclickoutside date-picker--calendar-dropdown">
-            <div className="date-picker__select-date-picker range-picker--date-pickers">
+            <div
+              className="date-picker__select-date-picker range-picker--date-pickers"
+              data-testid="date-picker__select-date-picker"
+            >
               <InputLabel className="date-picker--label__calendar">
                 Calendar
               </InputLabel>
@@ -285,17 +324,23 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                     : ComponentStatus.Error
                 }
                 type={InputType.Text}
-                value={inputStartDate ?? ''}
+                value={convertToDisplayFormat(inputStartDate, timeZone) ?? ''}
+                testID="date-picker--input--from"
               >
                 <div
                   className="date-picker--calendar-icon"
                   onClick={handleOpenCalendar}
+                  data-testid="date-picker--calendar-icon"
                 >
                   <Icon glyph={IconFont.Calendar} />
                 </div>
               </Input>
             </Form.Element>
-            <Form.Element label="To" errorMessage={inputEndErrorMessage}>
+            <Form.Element
+              className="date-picker--form"
+              label="To"
+              errorMessage={inputEndErrorMessage}
+            >
               <Input
                 className="date-picker__input"
                 onChange={handleSetEndDate}
@@ -305,7 +350,8 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
                     : ComponentStatus.Error
                 }
                 type={InputType.Text}
-                value={inputEndDate ?? ''}
+                value={convertToDisplayFormat(inputEndDate, timeZone) ?? ''}
+                testID="date-picker--input--to"
               >
                 <div
                   className="date-picker--calendar-icon"
@@ -398,6 +444,7 @@ const DatePicker: FC = () => {
           active={active}
           onClick={onClick}
           icon={IconFont.Clock_New}
+          testID="timerange-dropdown--button"
         >
           {timeRangeLabel}
         </Dropdown.Button>

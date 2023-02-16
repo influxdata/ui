@@ -43,13 +43,13 @@ describe('rangeToInterval:', () => {
       })
     })
   })
-  describe('handles timestamp timeRanges', () => {
+  describe('handles timestamp timeRanges in ISO format', () => {
     const toTest = [
       {
-        msg: 'when provided without timezones',
+        msg: 'timestamps with upper and lower bounds',
         input: {
-          lower: '2023-01-03 00:00Z',
-          upper: '2023-01-04 23:59Z',
+          lower: '2023-01-03T00:00:00.000Z',
+          upper: '2023-01-04T23:59:00.000Z',
           type: 'custom',
         },
         expected: `time >= timestamp '2023-01-03T00:00:00.000Z' AND time <= timestamp '2023-01-04T23:59:00.000Z'`,
@@ -57,22 +57,12 @@ describe('rangeToInterval:', () => {
       {
         msg: 'for timestamps without upper bounds',
         input: {
-          lower: '2023-01-03 00:00Z',
+          lower: '2023-01-03T00:00:00.000Z',
           upper: null,
           type: 'custom',
         },
         expected: `time >= timestamp '2023-01-03T00:00:00.000Z' AND time <= now()`,
       },
-      // TODO -- this is what the new datePicker places in persistence context. No timezone. Will Fail.
-      // {
-      //   msg: 'for timestamps without upper bounds',
-      //   input: {
-      //     lower: '2023-01-03 00:00',
-      //     upper: null,
-      //     type: 'custom',
-      //   },
-      //   expected: `time >= timestamp '2023-01-03T08:00:00.000Z' AND time <= now()`,
-      // },
     ]
     toTest.forEach(({msg, input, expected}) => {
       it(msg, () => {

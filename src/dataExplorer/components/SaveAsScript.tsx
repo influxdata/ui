@@ -196,6 +196,10 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
     saveText = 'Update'
   }
 
+  // any language in this array shows the invokable url
+  const shouldShowInvokableURL: boolean =
+    [LanguageType.FLUX].filter(lang => language === lang).length > 0
+
   return (
     <Overlay.Container maxWidth={540}>
       <Overlay.Header title={overlayTitle} onDismiss={handleClose} />
@@ -226,7 +230,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
             value={resource?.data?.description}
             onChange={handleUpdateDescription}
           />
-          {type === OverlayType.EDIT && (
+          {type === OverlayType.EDIT && shouldShowInvokableURL ? (
             <>
               <InputLabel>Invokable URL</InputLabel>
               <CopyToClipboard
@@ -237,6 +241,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
                   <Input
                     type={InputType.Text}
                     value={`${window.location.origin}/api/v2/scripts/${resource.data.id}`}
+                    onChange={() => {}} // read-only
                   />
                   <SquareButton
                     testID="copy-to-clipboard--script"
@@ -249,7 +254,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
                 </div>
               </CopyToClipboard>
             </>
-          )}
+          ) : null}
           {type === OverlayType.EDIT && (
             <Button
               icon={IconFont.Trash_New}

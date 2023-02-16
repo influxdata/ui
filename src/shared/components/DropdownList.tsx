@@ -37,7 +37,7 @@ const DropdownList: FC<Props> = props => {
         <Dropdown.Button
           active={active}
           onClick={onClick}
-          testID="variable-type-dropdown--button"
+          testID="selector-list--dropdown-button"
         >
           {selectedItems.join(',')}
         </Dropdown.Button>

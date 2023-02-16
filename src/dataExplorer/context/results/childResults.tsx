@@ -32,7 +32,9 @@ const modifiersToApply = (viewOptions: ViewOptions): SqlQueryModifiers => {
 
   // 2. smoothing transformation next
   const shouldSmooth =
-    viewOptions.smoothing?.columns?.length > 0 && viewOptions.smoothing?.applied
+    viewOptions.smoothing?.columns?.length > 0 &&
+    viewOptions.smoothing?.applied &&
+    viewOptions.smoothing.columns.length
   if (shouldSmooth) {
     prepend.push(`import "experimental/polyline"`)
     // will error if give 100.0 --> so instead do 99.9

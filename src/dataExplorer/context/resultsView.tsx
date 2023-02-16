@@ -291,7 +291,12 @@ export const ResultsViewProvider: FC = ({children}) => {
     return {
       all: {smoothing: {columns: numericColumns}},
       selected: {
-        smoothing: {columns: [defaultSmoothingColumn], timeColumn},
+        smoothing: {
+          columns: Boolean(defaultSmoothingColumn)
+            ? [defaultSmoothingColumn]
+            : [],
+          timeColumn,
+        },
       },
     }
   }

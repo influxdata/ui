@@ -1,10 +1,10 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {cloneDeep} from 'lodash'
 
 // Types
-import {UserAccount} from 'src/client/unityRoutes'
+import {Account, UserAccount} from 'src/client/unityRoutes'
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
@@ -21,9 +21,13 @@ import {event} from 'src/cloud/utils/reporting'
 // API
 import {
   fetchUserAccounts,
+  fetchAccountDetails,
   updateDefaultQuartzAccount,
   updateUserAccount,
 } from 'src/identity/apis/account'
+
+// Selectors
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
@@ -38,6 +42,7 @@ interface SetDefaultAccountOptions {
 }
 
 export interface UserAccountContextType {
+  accountDetails: Account
   userAccounts: UserAccount[]
   handleGetAccounts: () => void
   handleSetDefaultAccount: (
@@ -50,6 +55,7 @@ export interface UserAccountContextType {
 }
 
 export const DEFAULT_CONTEXT: UserAccountContextType = {
+  accountDetails: null,
   userAccounts: [],
   defaultAccountId: -1,
   activeAccountId: -1,
@@ -65,6 +71,9 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(null)
   const [defaultAccountId, setDefaultAccountId] = useState<number>(null)
   const [activeAccountId, setActiveAccountId] = useState<number>(null)
+  const [accountDetails, setAccountDetails] = useState<Account>(null)
+
+  const {account} = useSelector(selectCurrentIdentity)
 
   const dispatch = useDispatch()
 
@@ -171,13 +180,27 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     [dispatch, userAccounts, setUserAccounts]
   )
 
+  const handleGetAccountDetails = useCallback( async () => {
+    try {
+      const accountDetails = await fetchAccountDetails(account.id)
+      setAccountDetails(accountDetails)
+
+    } catch (error) {
+      reportErrorThroughHoneyBadger(error, {
+        name: 'failed to retrieve user account details',
+      })
+    }
+  }, [account.id])
+
   useEffect(() => {
     handleGetAccounts()
-  }, [handleGetAccounts])
+    handleGetAccountDetails()
+  }, [handleGetAccounts, handleGetAccountDetails])
 
   return (
     <UserAccountContext.Provider
       value={{
+        accountDetails,
         userAccounts,
         defaultAccountId,
         activeAccountId,

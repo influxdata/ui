@@ -19,6 +19,7 @@ import {
 
 export interface CurrentAccount extends IdentityAccount {
   billingProvider?: 'zuora' | 'aws' | 'gcm' | 'azure'
+  isDeletable?: boolean
 }
 
 // get a list of the user's accounts

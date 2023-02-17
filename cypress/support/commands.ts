@@ -999,7 +999,8 @@ export const setupUser = (useIox: boolean = false): Cypress.Chainable<any> => {
 
 export const flush = (): Cypress.Chainable<Cypress.Response<any>> => {
   const defaultUser = Cypress.env('defaultUser')
-  if (defaultUser) {
+  const isOssLocalTesting = Cypress.env(DEX_URL_VAR) === 'OSS'
+  if (defaultUser && !isOssLocalTesting) {
     return cy
       .request({method: 'POST', url: `/debug/flush?user=${defaultUser}`})
       .then(response => {
@@ -1008,13 +1009,12 @@ export const flush = (): Cypress.Chainable<Cypress.Response<any>> => {
           .log(`flushed user ${defaultUser} successfully`)
           .then(() => response)
       })
-  } else {
-    // this isn't really needed - just need to return a chainable cypress obj
-    return cy.request({method: 'GET', url: '/debug/flush'}).then(response => {
-      expect(response.status).to.eq(200)
-      return response
-    })
   }
+
+  return cy.request({method: 'GET', url: '/debug/flush'}).then(response => {
+    expect(response.status).to.eq(200)
+    return response
+  })
 }
 
 /**

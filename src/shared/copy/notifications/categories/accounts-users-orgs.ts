@@ -45,6 +45,17 @@ export const accountRenameSuccess = (
   message: `Account "${oldAccountName}" was successfully renamed to "${newAccountName}"`,
 })
 
+export const deleteAccountWarning = (
+  buttonElement: NotificationButtonElement
+): Notification => ({
+  ...defaultWarningNotification,
+  message: `All additional users must be removed from the current organization before this account can be deleted.\n`,
+  buttonElement,
+  styles: {
+    flexWrap: 'wrap',
+  },
+})
+
 export const deleteOrgDelayed = (
   supportLink: NotificationButtonElement
 ): Notification => ({

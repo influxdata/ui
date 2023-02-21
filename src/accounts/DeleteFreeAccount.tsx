@@ -1,11 +1,9 @@
 // Libraries
-import React, {FC, useContext} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
 import {Button, IconFont, FlexBox} from '@influxdata/clockface'
-
-import {OrgUsersLink} from 'src/shared/components/notifications/NotificationButtons'
 
 // Selectors
 import {
@@ -14,35 +12,17 @@ import {
   selectUser,
 } from 'src/identity/selectors'
 
-// Contexts
-import {UsersContext} from 'src/users/context/users'
-
-// Notifications
-import {deleteAccountWarning} from 'src/shared/copy/notifications'
-import {notify} from 'src/shared/actions/notifications'
-
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-
-// Types
-import {NotificationButtonElement} from 'src/types'
 
 export const DeleteFreeAccountButton: FC = () => {
   const account = useSelector(selectCurrentAccount)
   const history = useHistory()
   const org = useSelector(selectCurrentOrg)
   const user = useSelector(selectUser)
-  const {users} = useContext(UsersContext)
-  const dispatch = useDispatch()
-
-  const shouldShowUsersWarning = users.length > 1
 
   const handleClickDeleteFreeAccount = () => {
-    if (shouldShowUsersWarning) {
-      showRemoveUsersWarning()
-    } else {
-      showDeleteFreeAccountOverlay()
-    }
+    showDeleteFreeAccountOverlay()
   }
 
   const showDeleteFreeAccountOverlay = () => {
@@ -54,12 +34,6 @@ export const DeleteFreeAccountButton: FC = () => {
     event('delete_free_account.initiation', payload)
 
     history.push(`/orgs/${org.id}/accounts/settings/delete`)
-  }
-
-  const showRemoveUsersWarning = () => {
-    const buttonElement: NotificationButtonElement = onDismiss =>
-      OrgUsersLink(`/orgs/${org.id}/members`, onDismiss)
-    dispatch(notify(deleteAccountWarning(buttonElement)))
   }
 
   return (

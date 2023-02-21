@@ -37,11 +37,10 @@ import {DeleteFreeAccountProvider} from 'src/accounts/context/DeleteFreeAccountC
 import './AccountPageStyles.scss'
 
 const AccountAboutPage: FC = () => {
-  const {userAccounts, handleRenameActiveAccount} =
+  const {accountDetails, userAccounts, handleRenameActiveAccount} =
     useContext(UserAccountContext)
 
   const {users} = useContext(UsersContext)
-
   const activeAccount =
     userAccounts && userAccounts.filter(acct => acct.isActive)[0]
   const [activeAcctName, setActiveAcctName] = useState(activeAccount?.name)
@@ -51,7 +50,6 @@ const AccountAboutPage: FC = () => {
     setActiveAcctName(activeAccount?.name)
   }, [activeAccount])
 
-  const {account} = useSelector(selectCurrentIdentity)
 
   const updateAcctName = (evt: ChangeEvent<HTMLInputElement>) => {
     setActiveAcctName(evt.target.value)
@@ -60,7 +58,8 @@ const AccountAboutPage: FC = () => {
   const onRenameAccountBtnClick = () => {
     handleRenameActiveAccount(activeAccount.id, activeAcctName)
   }
-  const shouldShowDeleteFreeAccountButton = CLOUD && account.type === 'free'
+
+  const shouldShowDeleteFreeAccountButton = CLOUD && accountDetails?.isDeletable
 
   const showLeaveOrgButton = !isFlagEnabled('createDeleteOrgs')
   const allowSelfRemoval = users.length > 1

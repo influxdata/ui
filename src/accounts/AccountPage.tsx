@@ -50,7 +50,6 @@ const AccountAboutPage: FC = () => {
     setActiveAcctName(activeAccount?.name)
   }, [activeAccount])
 
-
   const updateAcctName = (evt: ChangeEvent<HTMLInputElement>) => {
     setActiveAcctName(evt.target.value)
   }

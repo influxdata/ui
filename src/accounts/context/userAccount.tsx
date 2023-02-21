@@ -180,11 +180,10 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     [dispatch, userAccounts, setUserAccounts]
   )
 
-  const handleGetAccountDetails = useCallback( async () => {
+  const handleGetAccountDetails = useCallback(async () => {
     try {
       const accountDetails = await fetchAccountDetails(account.id)
       setAccountDetails(accountDetails)
-
     } catch (error) {
       reportErrorThroughHoneyBadger(error, {
         name: 'failed to retrieve user account details',

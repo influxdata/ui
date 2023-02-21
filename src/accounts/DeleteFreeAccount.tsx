@@ -52,6 +52,7 @@ export const DeleteFreeAccountButton: FC = () => {
       email: user.email,
     }
     event('delete_free_account.initiation', payload)
+    
     history.push(`/orgs/${org.id}/accounts/settings/delete`)
   }
 

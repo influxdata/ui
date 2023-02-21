@@ -33,12 +33,20 @@ import AccountTabContainer from 'src/accounts/AccountTabContainer'
 import AccountHeader from 'src/accounts/AccountHeader'
 import {DeleteFreeAccountProvider} from 'src/accounts/context/DeleteFreeAccountContext'
 
+// Types
+import {RemoteDataState} from 'src/types'
+
 // Styles
 import './AccountPageStyles.scss'
 
 const AccountAboutPage: FC = () => {
-  const {accountDetails, userAccounts, handleRenameActiveAccount} =
-    useContext(UserAccountContext)
+  const {
+    accountDetails,
+    accountDetailsStatus,
+    userAccounts,
+    handleGetAccountDetails,
+    handleRenameActiveAccount,
+  } = useContext(UserAccountContext)
 
   const {users} = useContext(UsersContext)
   const activeAccount =
@@ -49,6 +57,12 @@ const AccountAboutPage: FC = () => {
   useEffect(() => {
     setActiveAcctName(activeAccount?.name)
   }, [activeAccount])
+
+  useEffect(() => {
+    if (accountDetailsStatus === RemoteDataState.NotStarted) {
+      handleGetAccountDetails()
+    }
+  }, [accountDetailsStatus, handleGetAccountDetails])
 
   const updateAcctName = (evt: ChangeEvent<HTMLInputElement>) => {
     setActiveAcctName(evt.target.value)

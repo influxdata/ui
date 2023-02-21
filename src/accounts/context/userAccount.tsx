@@ -33,6 +33,9 @@ import {selectCurrentIdentity} from 'src/identity/selectors'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {setCurrentIdentityAccountName} from 'src/identity/actions/creators'
 
+// Types
+import {RemoteDataState} from 'src/types'
+
 export type Props = {
   children: JSX.Element
 }
@@ -43,8 +46,10 @@ interface SetDefaultAccountOptions {
 
 export interface UserAccountContextType {
   accountDetails: Account
+  accountDetailsStatus: RemoteDataState
   userAccounts: UserAccount[]
   handleGetAccounts: () => void
+  handleGetAccountDetails: () => void
   handleSetDefaultAccount: (
     newId: number,
     options?: SetDefaultAccountOptions
@@ -56,10 +61,12 @@ export interface UserAccountContextType {
 
 export const DEFAULT_CONTEXT: UserAccountContextType = {
   accountDetails: null,
+  accountDetailsStatus: RemoteDataState.NotStarted,
   userAccounts: [],
   defaultAccountId: -1,
   activeAccountId: -1,
   handleGetAccounts: () => {},
+  handleGetAccountDetails: () => {},
   handleSetDefaultAccount: () => {},
   handleRenameActiveAccount: () => {},
 }
@@ -72,7 +79,9 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [defaultAccountId, setDefaultAccountId] = useState<number>(null)
   const [activeAccountId, setActiveAccountId] = useState<number>(null)
   const [accountDetails, setAccountDetails] = useState<Account>(null)
-
+  const [accountDetailsStatus, setAccountDetailsStatus] = useState(
+    RemoteDataState.NotStarted
+  )
   const {account} = useSelector(selectCurrentIdentity)
 
   const dispatch = useDispatch()
@@ -182,7 +191,9 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   const handleGetAccountDetails = useCallback(async () => {
     try {
+      setAccountDetailsStatus(RemoteDataState.Loading)
       const accountDetails = await fetchAccountDetails(account.id)
+      setAccountDetailsStatus(RemoteDataState.Done)
       setAccountDetails(accountDetails)
     } catch (error) {
       reportErrorThroughHoneyBadger(error, {
@@ -193,17 +204,18 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   useEffect(() => {
     handleGetAccounts()
-    handleGetAccountDetails()
-  }, [handleGetAccounts, handleGetAccountDetails])
+  }, [handleGetAccounts])
 
   return (
     <UserAccountContext.Provider
       value={{
         accountDetails,
+        accountDetailsStatus,
         userAccounts,
         defaultAccountId,
         activeAccountId,
         handleGetAccounts,
+        handleGetAccountDetails,
         handleSetDefaultAccount,
         handleRenameActiveAccount,
       }}

@@ -11,47 +11,47 @@ function addTheme(monaco: MonacoType) {
     inherit: false,
     rules: [
       {
-        token: 'delimiter.square.sql',
-        foreground: '#6BDFFF',
+        token: 'delimiter.square.influxql',
+        foreground: InfluxColors.Hydrogen,
       },
       {
-        token: 'delimiter.parenthesis.sql',
-        foreground: '#6BDFFF',
+        token: 'delimiter.parenthesis.influxql',
+        foreground: InfluxColors.Hydrogen,
       },
       {
-        token: 'delimiter.sql',
-        foreground: '#6BDFFF',
+        token: 'delimiter.influxql',
+        foreground: InfluxColors.Hydrogen,
       },
       {
-        token: 'identifier.sql',
+        token: 'identifier.influxql',
         foreground: '#7CE490',
       },
       {
-        token: 'comment.quote.sql',
+        token: 'comment.quote.influxql',
         foreground: '#676978',
       },
       {
-        token: 'comment.sql',
+        token: 'comment.influxql',
         foreground: '#676978',
       },
       {
-        token: 'keyword.sql',
-        foreground: '#9394FF',
+        token: 'keyword.influxql',
+        foreground: InfluxColors.Galaxy,
       },
       {
-        token: 'operator.sql',
-        foreground: '#FFB6A0',
+        token: 'operator.influxql',
+        foreground: InfluxColors.Tungsten,
       },
       {
-        token: 'number.sql',
-        foreground: '#6BDFFF',
+        token: 'number.influxql',
+        foreground: InfluxColors.Hydrogen,
       },
       {
-        token: 'string.sql',
+        token: 'string.influxql',
         foreground: '#7CE490',
       },
       {
-        token: 'identifier.quote.sql',
+        token: 'identifier.quote.influxql',
         foreground: '#7CE490',
       },
     ],
@@ -62,7 +62,7 @@ function addTheme(monaco: MonacoType) {
       'editor.selectionBackground': '#353640',
       'editorLineNumber.foreground': '#666978',
       'editor.lineHighlightBackground': '#353640',
-      'editorCursor.foreground': '#ffffff',
+      'editorCursor.foreground': InfluxColors.White,
       'editorActiveLineNumber.foreground': '#bec2cc',
       'minimap.background': InfluxColors.Grey15,
     },

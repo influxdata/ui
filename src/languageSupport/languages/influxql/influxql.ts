@@ -184,7 +184,7 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
       {include: '@complexIdentifiers'},
       {include: '@scopes'},
       [/[;,.]/, 'delimiter'],
-      [/[()]/, '@brackets'],
+      [/[()\[\]]/, '@brackets'],
       [
         /[\w@#$]+/,
         {
@@ -240,12 +240,13 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
       [/"/, {token: 'identifier.quote', next: '@quotedIdentifier'}],
     ],
     quotedIdentifier: [
-      [/[^"]+/, 'identifier'],
-      [/""/, 'identifier'],
+      [/[^"]+/, 'identifier.quote'],
+      [/""/, 'identifier.quote'],
       [/"/, {token: 'identifier.quote', next: '@pop'}],
     ],
     scopes: [
       // NOT SUPPORTED
     ],
+    // TODO(chunchun): duration units https://docs.influxdata.com/influxdb/v2.6/reference/syntax/influxql/spec/#durations
   },
 }

@@ -4,8 +4,8 @@ import {InfluxColors} from '@influxdata/clockface'
 const THEME_NAME = 'influxQLTheme'
 
 function addTheme(monaco: MonacoType) {
-  // Using monaco-editor pgsql tokenizer.
-  // Example tokens: https://github.com/microsoft/monaco-editor/blob/136ce723f73b8bd284565c0b7d6d851b52161015/src/basic-languages/pgsql/pgsql.test.ts
+  // Using the tokenizer defined in
+  // src/languageSupport/languages/influxql/influxql.ts
   monaco.editor.defineTheme(THEME_NAME, {
     base: 'vs-dark',
     inherit: false,
@@ -21,10 +21,6 @@ function addTheme(monaco: MonacoType) {
       {
         token: 'delimiter.influxql',
         foreground: InfluxColors.Hydrogen,
-      },
-      {
-        token: 'identifier.influxql',
-        foreground: '#7CE490',
       },
       {
         token: 'comment.quote.influxql',
@@ -52,7 +48,11 @@ function addTheme(monaco: MonacoType) {
       },
       {
         token: 'identifier.quote.influxql',
-        foreground: '#7CE490',
+        foreground: InfluxColors.White,
+      },
+      {
+        token: 'identifier.influxql',
+        foreground: InfluxColors.White,
       },
     ],
     colors: {

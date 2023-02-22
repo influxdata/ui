@@ -20,14 +20,14 @@ import {event} from 'src/cloud/utils/reporting'
 
 // API
 import {
-  fetchUserAccounts,
   fetchAccountDetails,
+  fetchUserAccounts,
   updateDefaultQuartzAccount,
   updateUserAccount,
 } from 'src/identity/apis/account'
 
 // Selectors
-import {selectCurrentIdentity} from 'src/identity/selectors'
+import {selectCurrentAccount} from 'src/identity/selectors'
 
 // Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
@@ -47,28 +47,28 @@ interface SetDefaultAccountOptions {
 export interface UserAccountContextType {
   accountDetails: Account
   accountDetailsStatus: RemoteDataState
-  userAccounts: UserAccount[]
-  handleGetAccounts: () => void
+  activeAccountId: number
+  defaultAccountId: number
   handleGetAccountDetails: () => void
+  handleGetAccounts: () => void
+  handleRenameActiveAccount: (accountId: number, newName: string) => void
   handleSetDefaultAccount: (
     newId: number,
     options?: SetDefaultAccountOptions
   ) => void
-  handleRenameActiveAccount: (accountId: number, newName: string) => void
-  defaultAccountId: number
-  activeAccountId: number
+  userAccounts: UserAccount[]
 }
 
 export const DEFAULT_CONTEXT: UserAccountContextType = {
   accountDetails: null,
   accountDetailsStatus: RemoteDataState.NotStarted,
-  userAccounts: [],
-  defaultAccountId: -1,
   activeAccountId: -1,
-  handleGetAccounts: () => {},
+  defaultAccountId: -1,
   handleGetAccountDetails: () => {},
-  handleSetDefaultAccount: () => {},
+  handleGetAccounts: () => {},
   handleRenameActiveAccount: () => {},
+  handleSetDefaultAccount: () => {},
+  userAccounts: [],
 }
 
 export const UserAccountContext =
@@ -82,7 +82,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [accountDetailsStatus, setAccountDetailsStatus] = useState(
     RemoteDataState.NotStarted
   )
-  const {account} = useSelector(selectCurrentIdentity)
+  const account = useSelector(selectCurrentAccount)
 
   const dispatch = useDispatch()
 
@@ -211,13 +211,13 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       value={{
         accountDetails,
         accountDetailsStatus,
-        userAccounts,
-        defaultAccountId,
         activeAccountId,
-        handleGetAccounts,
+        defaultAccountId,
         handleGetAccountDetails,
-        handleSetDefaultAccount,
+        handleGetAccounts,
         handleRenameActiveAccount,
+        handleSetDefaultAccount,
+        userAccounts,
       }}
     >
       {children}

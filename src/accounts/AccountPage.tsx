@@ -43,9 +43,9 @@ const AccountAboutPage: FC = () => {
   const {
     accountDetails,
     accountDetailsStatus,
-    userAccounts,
     handleGetAccountDetails,
     handleRenameActiveAccount,
+    userAccounts,
   } = useContext(UserAccountContext)
 
   const {users} = useContext(UsersContext)
@@ -72,7 +72,9 @@ const AccountAboutPage: FC = () => {
     handleRenameActiveAccount(activeAccount.id, activeAcctName)
   }
 
-  const shouldShowDeleteFreeAccountButton = CLOUD && accountDetails?.isDeletable
+  const shouldShowDeleteFreeAccountButton = Boolean(
+    CLOUD && accountDetails?.isDeletable
+  )
 
   const showLeaveOrgButton = !isFlagEnabled('createDeleteOrgs')
   const allowSelfRemoval = users.length > 1

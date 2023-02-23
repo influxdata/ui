@@ -28,6 +28,7 @@ module.exports = mergeDev(commonDev, {
     proxy: {
       '/api/v2': 'http://localhost:8086',
       '/debug/flush': 'http://localhost:8086',
+      '/debug/provision': 'http://localhost:8086',
       '/oauth': 'http://localhost:8086',
       '/health': 'http://localhost:8086',
     },

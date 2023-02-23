@@ -159,12 +159,6 @@ jobs:
           path: monitor-ci/test-artifacts/results/cloud-e2e
           destination: test_artifacts/results/cloud-e2e
       - store_artifacts:
-          path: monitor-ci/test-artifacts/results/cloud-e2e-firefox
-          destination: test_artifacts/results/cloud-e2e-firefox
-      - store_artifacts:
-          path: monitor-ci/test-artifacts/results/cloud-e2e-k8s-idpe
-          destination: test_artifacts/results/cloud-e2e-k8s-idpe
-      - store_artifacts:
           path: monitor-ci/test-artifacts/results/cloud-lighthouse
           destination: test_artifacts/results/cloud-lighthouse
       - store_artifacts:

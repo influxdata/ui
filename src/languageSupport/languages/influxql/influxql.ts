@@ -43,7 +43,7 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
   ],
 
   keywords: [
-    // This list is from
+    // InfluxQL Keywords
     // https://github.com/influxdata/influxql/blob/c87e0d6a754823381b1fc1016f40a40c86b23090/token.go#L68-L143
     'ALL',
     'ALTER',
@@ -123,7 +123,7 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
     'WRITE',
   ],
   operators: [
-    // This list is from
+    // InfluxQL Operators
     // https://github.com/influxdata/influxql/blob/c87e0d6a754823381b1fc1016f40a40c86b23090/token.go#L36-L55
     'ADD', // +
     'SUB', // -
@@ -145,7 +145,7 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
     'GTE', // >=
   ],
   illegal: [
-    // ILLEGAL Token, EOF, WS are Special InfluxQL tokens.
+    // ILLEGAL Token, EOF, WS are Special InfluxQL tokens
     // https://github.com/influxdata/influxql/blob/c87e0d6a754823381b1fc1016f40a40c86b23090/token.go#L13-L16
     'ILLEGAL',
     'EOF',
@@ -153,7 +153,7 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
     'COMMENT',
   ],
   literals: [
-    // InfluxQL literal tokens.
+    // InfluxQL literal tokens
     // https://github.com/influxdata/influxql/blob/c87e0d6a754823381b1fc1016f40a40c86b23090/token.go#L20-L31
     'IDENT', // main
     'BOUNDPARAM', // $param
@@ -167,6 +167,67 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
     'FALSE', // false
     'REGEX', // Regular expressions
     'BADREGEX', // `.*
+  ],
+  builtinFunctions: [
+    // InfluxQL functions
+    // https://docs.influxdata.com/influxdb/v2.6/query-data/influxql/functions/
+
+    // Aggregates
+    'COUNT',
+    'DISTINCT',
+    'INTEGRAL',
+    'MEAN',
+    'MEDIAN',
+    'MODE',
+    'SPREAD',
+    'STDDEV',
+    'SUM',
+    // Selectors
+    'BOTTOM',
+    'FIRST',
+    'LAST',
+    'MAX',
+    'MIN',
+    'PERCENTILE',
+    'SAMPLE',
+    'TOP',
+    // Transformations
+    'ABS',
+    'ACOS',
+    'ASIN',
+    'ATAN',
+    'ATAN2',
+    'CEIL',
+    'COS',
+    'CUMULATIVE_SUM',
+    'DERIVATIVE',
+    'DIFFERENCE',
+    'ELAPSED',
+    'EXP',
+    'FLOOR',
+    'HISTOGRAM',
+    'LN',
+    'LOG',
+    'LOG2',
+    'LOG10',
+    'MOVING_AVERAGE',
+    'NON_NEGATIVE_DERIVATIVE',
+    'NON_NEGATIVE_DIFFERENCE',
+    'POW',
+    'ROUND',
+    'SIN',
+    'SQRT',
+    'TAN',
+    // Technical analysis
+    'HOLT_WINTERS',
+    'CHANDE_MOMENTUM_OSCILLATOR',
+    'EXPONENTIAL_MOVING_AVERAGE',
+    'DOUBLE_EXPONENTIAL_MOVING_AVERAGE',
+    'KAUFMANS_EFFICIENCY_RATIO',
+    'KAUFMANS_ADAPTIVE_MOVING_AVERAGE',
+    'TRIPLE_EXPONENTIAL_MOVING_AVERAGE',
+    'TRIPLE_EXPONENTIAL_DERIVATIVE',
+    'RELATIVE_STRENGTH_INDEX',
   ],
   tokenizer: {
     root: [
@@ -187,6 +248,7 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
             '@operators': 'operator',
             '@illegal': 'illegal',
             '@literals': 'predefined',
+            '@builtinFunctions': 'builtin.function',
             '@default': 'identifier',
           },
         },

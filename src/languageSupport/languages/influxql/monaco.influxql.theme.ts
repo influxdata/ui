@@ -12,15 +12,19 @@ function addTheme(monaco: MonacoType) {
     rules: [
       // ordered by token name
       {
-        token: 'comment.quote.influxql',
-        foreground: InfluxColors.Grey45,
+        token: 'builtin.function.influxql',
+        foreground: InfluxColors.Galaxy,
       },
       {
         token: 'comment.influxql',
         foreground: InfluxColors.Grey45,
       },
       {
-        token: 'delimiter.square.influxql',
+        token: 'comment.quote.influxql',
+        foreground: InfluxColors.Grey45,
+      },
+      {
+        token: 'delimiter.influxql',
         foreground: InfluxColors.White,
       },
       {
@@ -28,15 +32,15 @@ function addTheme(monaco: MonacoType) {
         foreground: InfluxColors.White,
       },
       {
-        token: 'delimiter.influxql',
-        foreground: InfluxColors.White,
-      },
-      {
-        token: 'identifier.quote.influxql',
+        token: 'delimiter.square.influxql',
         foreground: InfluxColors.White,
       },
       {
         token: 'identifier.influxql',
+        foreground: InfluxColors.White,
+      },
+      {
+        token: 'identifier.quote.influxql',
         foreground: InfluxColors.White,
       },
       {
@@ -48,20 +52,20 @@ function addTheme(monaco: MonacoType) {
         foreground: InfluxColors.Galaxy,
       },
       {
-        token: 'literal.number.influxql',
-        foreground: InfluxColors.Hydrogen,
-      },
-      {
-        token: 'literal.string.influxql',
-        foreground: '#7CE490',
+        token: 'literal.boolean.influxql',
+        foreground: InfluxColors.Tungsten,
       },
       {
         token: 'literal.duration.influxql',
         foreground: InfluxColors.Hydrogen,
       },
       {
-        token: 'literal.boolean.influxql',
-        foreground: InfluxColors.Tungsten,
+        token: 'literal.number.influxql',
+        foreground: InfluxColors.Hydrogen,
+      },
+      {
+        token: 'literal.string.influxql',
+        foreground: '#7CE490',
       },
       {
         token: 'operator.influxql',

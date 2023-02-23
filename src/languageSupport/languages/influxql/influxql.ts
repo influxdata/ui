@@ -3,6 +3,9 @@ import * as allMonaco from 'monaco-editor/esm/vs/editor/editor.api'
 // This file is a modified version of
 // https://github.com/microsoft/monaco-editor/blob/136ce723f73b8bd284565c0b7d6d851b52161015/src/basic-languages/pgsql/pgsql.ts
 
+// The rules are referenced from the InfluxQL doc
+// https://docs.influxdata.com/influxdb/v2.6/reference/syntax/influxql/spec/
+
 export const conf: allMonaco.languages.LanguageConfiguration = {
   comments: {
     lineComment: '--',
@@ -165,43 +168,30 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
     'REGEX', // Regular expressions
     'BADREGEX', // `.*
   ],
-  builtinFunctions: [
-    // TODO(chunchun): check if supported
-  ],
-  builtinVariables: [
-    // NOT SUPPORTED
-  ],
-  pseudoColumns: [
-    // NOT SUPPORTED
-  ],
   tokenizer: {
     root: [
       {include: '@comments'},
       {include: '@whitespace'},
-      {include: '@pseudoColumns'},
       {include: '@numbers'},
       {include: '@strings'},
       {include: '@complexIdentifiers'},
-      {include: '@scopes'},
-      [/[;,.]/, 'delimiter'],
-      [/[()\[\]]/, '@brackets'],
+      {include: '@delimiters'},
+      [/(TRUE|FALSE)/, 'literal.boolean'],
       [
         /[\w@#$]+/,
         {
           cases: {
             '@keywords': 'keyword',
             '@operators': 'operator',
-            '@illegal': 'predefined',
+            '@illegal': 'illegal',
             '@literals': 'predefined',
-            '@builtinVariables': 'predefined',
-            '@builtinFunctions': 'predefined',
             '@default': 'identifier',
           },
         },
       ],
       [/[<>=!%&+\-*/|~^]/, 'operator'],
+      [/^([0-9]*(y|mo|w|d|h|m|s|ms|us|µs|ns))+$/, 'literal.duration'],
     ],
-    whitespace: [[/\s+/, 'white']],
     comments: [
       [/--+.*/, 'comment'],
       [/\/\*/, {token: 'comment.quote', next: '@comment'}],
@@ -214,27 +204,20 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
       [/\*\//, {token: 'comment.quote', next: '@pop'}],
       [/./, 'comment'],
     ],
-    pseudoColumns: [
-      [
-        /[$][A-Za-z_][\w@#$]*/,
-        {
-          cases: {
-            '@pseudoColumns': 'predefined',
-            '@default': 'identifier',
-          },
-        },
-      ],
-    ],
+    whitespace: [[/\s+/, 'white']],
     numbers: [
-      [/0[xX][0-9a-fA-F]*/, 'number'],
-      [/[$][+-]*\d*(\.\d*)?/, 'number'],
-      [/((\d+(\.\d*)?)|(\.\d+))([eE][\-+]?\d+)?/, 'number'],
+      [/0[xX][0-9a-fA-F]*/, 'literal.number'],
+      [/[$][+-]*\d*(\.\d*)?/, 'literal.number'],
+      [/((\d+(\.\d*)?)|(\.\d+))([eE][\-+]?\d+)?/, 'literal.number'],
     ],
-    strings: [[/'/, {token: 'string', next: '@string'}]],
+    strings: [[/'/, {token: 'literal.string', next: '@string'}]],
     string: [
-      [/[^']+/, 'string'],
-      [/''/, 'string'],
-      [/'/, {token: 'string', next: '@pop'}],
+      [/[^']+/, 'literal.string'],
+      [/''/, 'literal.string'],
+      // support single quotes with backslash escape
+      // https://docs.influxdata.com/influxdb/v2.6/reference/syntax/influxql/spec/#strings
+      [/^'((?:\\.|[^\\'])*)'$/, 'literal.string'],
+      [/'/, {token: 'literal.string', next: '@pop'}],
     ],
     complexIdentifiers: [
       [/"/, {token: 'identifier.quote', next: '@quotedIdentifier'}],
@@ -244,9 +227,10 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
       [/""/, 'identifier.quote'],
       [/"/, {token: 'identifier.quote', next: '@pop'}],
     ],
-    scopes: [
-      // NOT SUPPORTED
+    delimiters: [
+      [/[,:;.]/, 'delimiter'],
+      [/[\[\]]/, 'delimiter.square'],
+      [/[()]/, 'delimiter.parenthesis'],
     ],
-    // TODO(chunchun): duration units https://docs.influxdata.com/influxdb/v2.6/reference/syntax/influxql/spec/#durations
   },
 }

@@ -10,6 +10,15 @@ function addTheme(monaco: MonacoType) {
     base: 'vs-dark',
     inherit: false,
     rules: [
+      // ordered by token name
+      {
+        token: 'comment.quote.influxql',
+        foreground: InfluxColors.Grey45,
+      },
+      {
+        token: 'comment.influxql',
+        foreground: InfluxColors.Grey45,
+      },
       {
         token: 'delimiter.square.influxql',
         foreground: InfluxColors.Hydrogen,
@@ -23,36 +32,40 @@ function addTheme(monaco: MonacoType) {
         foreground: InfluxColors.Hydrogen,
       },
       {
-        token: 'comment.quote.influxql',
-        foreground: '#676978',
-      },
-      {
-        token: 'comment.influxql',
-        foreground: '#676978',
-      },
-      {
-        token: 'keyword.influxql',
-        foreground: InfluxColors.Galaxy,
-      },
-      {
-        token: 'operator.influxql',
-        foreground: InfluxColors.Tungsten,
-      },
-      {
-        token: 'number.influxql',
-        foreground: InfluxColors.Hydrogen,
-      },
-      {
-        token: 'string.influxql',
-        foreground: '#7CE490',
-      },
-      {
         token: 'identifier.quote.influxql',
         foreground: InfluxColors.White,
       },
       {
         token: 'identifier.influxql',
         foreground: InfluxColors.White,
+      },
+      {
+        token: 'illegal.influxql',
+        foreground: InfluxColors.Fire,
+      },
+      {
+        token: 'keyword.influxql',
+        foreground: InfluxColors.Galaxy,
+      },
+      {
+        token: 'literal.number.influxql',
+        foreground: InfluxColors.Hydrogen,
+      },
+      {
+        token: 'literal.string.influxql',
+        foreground: '#7CE490',
+      },
+      {
+        token: 'literal.duration.influxql',
+        foreground: InfluxColors.White,
+      },
+      {
+        token: 'literal.boolean.influxql',
+        foreground: InfluxColors.Tungsten,
+      },
+      {
+        token: 'operator.influxql',
+        foreground: InfluxColors.Tungsten,
       },
     ],
     colors: {

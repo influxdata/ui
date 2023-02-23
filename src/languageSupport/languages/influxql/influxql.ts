@@ -170,8 +170,10 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
   ],
   tokenizer: {
     root: [
+      // the order of the following operators in increasing precedence
       {include: '@comments'},
       {include: '@whitespace'},
+      [/([0-9]+(y|mo|w|d|h|m|s|ms|us|µs|ns))+/, 'literal.duration'],
       {include: '@numbers'},
       {include: '@strings'},
       {include: '@complexIdentifiers'},
@@ -190,7 +192,6 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
         },
       ],
       [/[<>=!%&+\-*/|~^]/, 'operator'],
-      [/^([0-9]*(y|mo|w|d|h|m|s|ms|us|µs|ns))+$/, 'literal.duration'],
     ],
     comments: [
       [/--+.*/, 'comment'],

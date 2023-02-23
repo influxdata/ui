@@ -21,15 +21,15 @@ function addTheme(monaco: MonacoType) {
       },
       {
         token: 'delimiter.square.influxql',
-        foreground: InfluxColors.Hydrogen,
+        foreground: InfluxColors.White,
       },
       {
         token: 'delimiter.parenthesis.influxql',
-        foreground: InfluxColors.Hydrogen,
+        foreground: InfluxColors.White,
       },
       {
         token: 'delimiter.influxql',
-        foreground: InfluxColors.Hydrogen,
+        foreground: InfluxColors.White,
       },
       {
         token: 'identifier.quote.influxql',
@@ -57,7 +57,7 @@ function addTheme(monaco: MonacoType) {
       },
       {
         token: 'literal.duration.influxql',
-        foreground: InfluxColors.White,
+        foreground: InfluxColors.Hydrogen,
       },
       {
         token: 'literal.boolean.influxql',

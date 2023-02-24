@@ -261,8 +261,8 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
     ],
     comment: [
       [/[^*/]+/, 'comment'],
-      // Not supporting nested comments, as nested comments seem to not be standard?
-      // i.e. http://stackoverflow.com/questions/728172/are-there-multiline-comment-delimiters-in-sql-that-are-vendor-agnostic
+      // InfluxQL does not support nested multi-line comments
+      // https://docs.influxdata.com/influxdb/v2.6/reference/syntax/influxql/spec/#comments
       // [/\/\*/, { token: 'comment.quote', next: '@push' }],    // nested comment not allowed :-(
       [/\*\//, {token: 'comment.quote', next: '@pop'}],
       [/./, 'comment'],
@@ -273,16 +273,21 @@ export const language = <allMonaco.languages.IMonarchLanguage>{
       [/[$][+-]*\d*(\.\d*)?/, 'literal.number'],
       [/((\d+(\.\d*)?)|(\.\d+))([eE][\-+]?\d+)?/, 'literal.number'],
     ],
-    strings: [[/'/, {token: 'literal.string', next: '@string'}]],
+    strings: [
+      // can contain escaped ' (i.e. \')
+      // https://docs.influxdata.com/influxdb/v2.6/reference/syntax/influxql/spec/#strings
+      [/'((.*)[\\](.*))+'$/, 'literal.string'],
+      [/'/, {token: 'literal.string', next: '@string'}],
+    ],
     string: [
       [/[^']+/, 'literal.string'],
       [/''/, 'literal.string'],
-      // support single quotes with backslash escape
-      // https://docs.influxdata.com/influxdb/v2.6/reference/syntax/influxql/spec/#strings
-      [/^'((?:\\.|[^\\'])*)'$/, 'literal.string'],
       [/'/, {token: 'literal.string', next: '@pop'}],
     ],
     complexIdentifiers: [
+      // can contain escaped " (i.e. \")
+      // https://docs.influxdata.com/influxdb/v2.6/reference/syntax/influxql/spec/#identifiers
+      [/"((.*)[\\](.*))+"$/, 'identifier.quote'],
       [/"/, {token: 'identifier.quote', next: '@quotedIdentifier'}],
     ],
     quotedIdentifier: [

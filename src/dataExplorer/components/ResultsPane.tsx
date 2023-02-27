@@ -32,6 +32,7 @@ import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
 import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
 import {SqlEditorMonaco} from 'src/shared/components/SqlMonacoEditor'
+import {InfluxQLMonacoEditor} from 'src/shared/components/InfluxQLMonacoEditor'
 import CSVExportButton from 'src/shared/components/CSVExportButton'
 
 // Types
@@ -176,14 +177,44 @@ const ResultsPane: FC = () => {
       })
   }, [text, range, resource?.language, selection.bucket])
 
-  const timeVars = [
-    getRangeVariable(TIME_RANGE_START, range),
-    getRangeVariable(TIME_RANGE_STOP, range),
-  ]
-
-  const variables = timeVars.concat(
-    getWindowPeriodVariableFromVariables(text, timeVars) || []
-  )
+  let monacoEditor: JSX.Element = null
+  switch (resource?.language) {
+    case LanguageType.SQL:
+      monacoEditor = (
+        <SqlEditorMonaco
+          script={text}
+          onChangeScript={setQuery}
+          onSubmitScript={submit}
+        />
+      )
+      break
+    case LanguageType.INFLUXQL:
+      monacoEditor = (
+        <InfluxQLMonacoEditor
+          script={text}
+          onChangeScript={setQuery}
+          onSubmitScript={submit}
+        />
+      )
+      break
+    default:
+      // LanguageType.FLUX
+      const timeVars = [
+        getRangeVariable(TIME_RANGE_START, range),
+        getRangeVariable(TIME_RANGE_STOP, range),
+      ]
+      const variables = timeVars.concat(
+        getWindowPeriodVariableFromVariables(text, timeVars) || []
+      )
+      monacoEditor = (
+        <FluxMonacoEditor
+          variables={variables}
+          script={text}
+          onChangeScript={setQuery}
+          onSubmitScript={submit}
+        />
+      )
+  }
 
   return (
     <DraggableResizer
@@ -208,20 +239,7 @@ const ResultsPane: FC = () => {
                   />
                 }
               >
-                {resource?.language == LanguageType.SQL ? (
-                  <SqlEditorMonaco
-                    script={text}
-                    onChangeScript={setQuery}
-                    onSubmitScript={submit}
-                  />
-                ) : (
-                  <FluxMonacoEditor
-                    variables={variables}
-                    script={text}
-                    onChangeScript={setQuery}
-                    onSubmitScript={submit}
-                  />
-                )}
+                {monacoEditor}
               </Suspense>
             </div>
           </div>

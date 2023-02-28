@@ -6,14 +6,14 @@ it('comment', () => {
     [
       {
         line: '-- a comment',
-        tokens: [{startIndex: 0, type: 'comment.influxql'}]
-      }
+        tokens: [{startIndex: 0, type: 'comment.influxql'}],
+      },
     ],
     [
       {
         line: '---sticky -- comment',
-        tokens: [{ startIndex: 0, type: 'comment.sql' }]
-      }
+        tokens: [{startIndex: 0, type: 'comment.sql'}],
+      },
     ],
   ])
 })

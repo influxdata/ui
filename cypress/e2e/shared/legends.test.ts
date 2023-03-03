@@ -13,11 +13,26 @@ const VIS_TYPES = [
   'table',
 ]
 
-describe.skip('Legends', () => {
+const CLOUD = Cypress.env('dexUrl') === 'OSS' ? false : true
+
+const dataExplorerFeatureFlags = {
+  showDashboardsInNewIOx: true,
+  showOldDataExplorerInNewIOx: true,
+  showTasksInNewIOx: true,
+}
+
+// Absence of this feature (legends - old data explorer) in IOx is tested
+// in the Data Explorer tests.
+describe('Legends', () => {
   describe('in the Data Explorer', () => {
     beforeEach(() => {
       cy.flush()
       cy.signin()
+
+      if (CLOUD) {
+        cy.setFeatureFlags(dataExplorerFeatureFlags)
+      }
+
       cy.get('@org').then(({id}: Organization) => {
         cy.createMapVariable(id)
         cy.fixture('routes').then(({orgs, explorer}) => {
@@ -348,8 +363,7 @@ describe.skip('Legends', () => {
         )
       })
 
-      // Skip for now because Firefox does not run the test correctly with a newly created cell with query and view options included
-      it.skip('saves to a dashboard as a cell with the static legend options open and with the query pre-submitted', () => {
+      it('saves to a dashboard as a cell with the static legend options open and with the query pre-submitted', () => {
         const cellName = 'anti-crash test pre-submitted data explorer'
         cy.writeData(points(100))
 
@@ -411,10 +425,19 @@ describe.skip('Legends', () => {
     })
   })
 
+  const dashboardsFeatureFlags = {
+    showDashboardsInNewIOx: true,
+  }
+
   describe('in Dashboards', () => {
     beforeEach(() => {
       cy.flush()
       cy.signin()
+
+      if (CLOUD) {
+        cy.setFeatureFlags(dashboardsFeatureFlags)
+      }
+
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
@@ -475,7 +498,7 @@ describe.skip('Legends', () => {
             .click()
             .type(cellName + '{enter}')
 
-          // Without submitting the query, save it to a dashboard
+          cy.get('.veo-contents').click() // click out of inline editor
           cy.getByTestID('save-cell--button').click()
           cy.get('.cell--name').should('have.text', cellName)
           cy.getByTestID('giraffe-legend-table').should('not.exist')
@@ -483,8 +506,7 @@ describe.skip('Legends', () => {
       )
     })
 
-    // Skip for now because Firefox does not run the test correctly with a newly created cell with query and view options included
-    it.skip('adds a new cell to a dashboard with the static legend options open and with the query pre-submitted', () => {
+    it('adds a new cell to a dashboard with the static legend options open and with the query pre-submitted', () => {
       const cellName = 'anti-crash test pre-submitted dashboard add cell'
       cy.writeData(points(100))
 
@@ -540,6 +562,7 @@ describe.skip('Legends', () => {
           cy.getByTestID('page-header').click().type(cellName)
 
           // Save it to a dashboard
+          cy.get('.veo-contents').click() // click out of inline editor
           cy.getByTestID('save-cell--button').click()
           cy.get('.cell--name').should('have.text', cellName)
           cy.getByTestID('giraffe-legend-table').should('be.visible')

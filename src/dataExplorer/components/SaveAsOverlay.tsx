@@ -31,7 +31,7 @@ enum SaveAsOption {
   Variable = 'variable',
 }
 
-const SaveAsOverlay: FC = () => {
+export const SaveAsOverlay: FC = () => {
   const history = useHistory()
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
@@ -139,5 +139,3 @@ const SaveAsOverlay: FC = () => {
     </Overlay>
   )
 }
-
-export default SaveAsOverlay

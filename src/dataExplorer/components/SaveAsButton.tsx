@@ -5,7 +5,7 @@ import {useHistory, useLocation} from 'react-router-dom'
 // Components
 import {IconFont, Button, ComponentColor} from '@influxdata/clockface'
 
-const SaveAsButton: FC = () => {
+export const SaveAsButton: FC = () => {
   const history = useHistory()
   const {pathname} = useLocation()
 
@@ -24,5 +24,3 @@ const SaveAsButton: FC = () => {
     />
   )
 }
-
-export default SaveAsButton

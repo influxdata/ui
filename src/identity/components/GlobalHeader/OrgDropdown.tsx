@@ -14,7 +14,7 @@ import {
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 
 // Constants
-import {CLOUD_URL} from 'src/shared/constants'
+import {CLOUD, CLOUD_URL} from 'src/shared/constants'
 
 // Eventing
 import {
@@ -27,9 +27,6 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Thunks
 import {getOrgCreationAllowancesThunk} from 'src/identity/allowances/actions/thunks'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {
@@ -78,10 +75,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   }
 
   useEffect(() => {
-    if (
-      isFlagEnabled('createDeleteOrgs') &&
-      orgCreationAllowanceStatus === RemoteDataState.NotStarted
-    ) {
+    if (CLOUD && orgCreationAllowanceStatus === RemoteDataState.NotStarted) {
       dispatch(getOrgCreationAllowancesThunk())
     }
   }, [dispatch, orgCreationAllowanceStatus])
@@ -115,7 +109,6 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   ]
 
   if (
-    isFlagEnabled('createDeleteOrgs') &&
     !orgCreationAllowed &&
     (availableUpgrade === 'pay_as_you_go' || availableUpgrade === 'contract')
   ) {
@@ -140,7 +133,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   }
 
   const additionalHeaderItems = []
-  if (isFlagEnabled('createDeleteOrgs') && orgCreationAllowed) {
+  if (orgCreationAllowed) {
     additionalHeaderItems.push(
       <CreateOrganizationMenuItem key="CreateOrgMenuItem" />
     )

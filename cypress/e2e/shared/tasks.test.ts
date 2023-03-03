@@ -132,13 +132,18 @@ describe('Tasks - TSM', () => {
 
     cy.focused()
 
-    cy.getByTestID('flux-editor').monacoType(`option task = {
+    cy.getByTestID('flux-editor')
+      .monacoType(
+        `option task = {
     name: "Option Test",
     every: 24h,
     offset: 20m
   }
   from(bucket: "defbuck")
-    |> range(start: -2m)`)
+    |> range(start: -2m)`
+      )
+      // Fix bug with monaco error inserting an extra } here.
+      .monacoType('{backSpace}')
 
     cy.getByTestID('task-form-name')
       .click()

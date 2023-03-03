@@ -145,7 +145,9 @@ class TaskPage extends PureComponent<Props> {
     // if the script has a pre-defined option task = {}
     // we want the taskOptions to take precedence over what is provided in the script
     // currently we delete that part of the script
-    script = script.replace(new RegExp('option\\s+task\\s+=\\s+{(.|\\s)*}'), '')
+
+    const removeTaskOptionsRegex = /option\s+task\s+=\s+{(\s|\S)*?}/
+    script = script.replace(removeTaskOptionsRegex, '')
 
     if (!isValidFlux(script)) {
       this.props.invalidFlux()

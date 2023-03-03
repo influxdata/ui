@@ -14,7 +14,7 @@ import {
 import {OrganizationSummaries} from 'src/client/unityRoutes'
 
 // Constants
-import {CLOUD, CLOUD_URL} from 'src/shared/constants'
+import {CLOUD_URL} from 'src/shared/constants'
 
 // Eventing
 import {
@@ -75,7 +75,7 @@ export const OrgDropdown: FC<Props> = ({activeOrg, orgsList}) => {
   }
 
   useEffect(() => {
-    if (CLOUD && orgCreationAllowanceStatus === RemoteDataState.NotStarted) {
+    if (orgCreationAllowanceStatus === RemoteDataState.NotStarted) {
       dispatch(getOrgCreationAllowancesThunk())
     }
   }, [dispatch, orgCreationAllowanceStatus])

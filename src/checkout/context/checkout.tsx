@@ -35,9 +35,6 @@ import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 import {selectCurrentIdentity} from 'src/identity/selectors'
 import {shouldGetCredit250Experience} from 'src/me/selectors'
 
-// Constants
-import {CLOUD} from 'src/shared/constants'
-
 export type Props = {
   children: JSX.Element
 }
@@ -316,9 +313,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       } finally {
         setIsSubmitting(false)
         // Refresh whether user is allowed to create new orgs after upgrading to PAYG.
-        if (CLOUD) {
-          dispatch(getOrgCreationAllowancesThunk())
-        }
+        dispatch(getOrgCreationAllowancesThunk())
       }
     },
     [

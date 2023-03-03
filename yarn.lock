@@ -7728,10 +7728,10 @@ monaco-editor-webpack-plugin@^7.0.1:
   dependencies:
     loader-utils "^2.0.2"
 
-monaco-editor@~0.35.0:
-  version "0.35.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.35.0.tgz#49c4220c815262a900dacf0ae8a59bef66efab8b"
-  integrity sha512-BJfkAZ0EJ7JgrgWzqjfBNP9hPSS8NlfECEDMEIIiozV2UaPq22yeuOjgbd3TwMh3anH0krWZirXZfn8KUSxiOA==
+monaco-editor@~0.36.1:
+  version "0.36.1"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.36.1.tgz#aad528c815605307473a1634612946921d8079b5"
+  integrity sha512-/CaclMHKQ3A6rnzBzOADfwdSJ25BFoFT0Emxsc4zYVyav5SkK9iA6lEtIeuN/oRYbwPgviJT+t3l+sjFa28jYg==
 
 monaco-languageclient@~0.18.1:
   version "0.18.1"
@@ -8885,10 +8885,10 @@ react-markdown@^6.0.3:
     unist-util-visit "^2.0.0"
     vfile "^4.0.0"
 
-react-monaco-editor@~0.51.0:
-  version "0.51.0"
-  resolved "https://registry.yarnpkg.com/react-monaco-editor/-/react-monaco-editor-0.51.0.tgz#68d6afc912f7fcb7782e57b39889a5fd75fc0ceb"
-  integrity sha512-6jx1V8p6gHVKJHFaTvicOtmlhFjOJhekobeNd92ZAo7F5UvAin1cF7bxWLCKgtxClYZ7CB3Ar284Kpbhj22FpQ==
+react-monaco-editor@~0.50.1:
+  version "0.50.1"
+  resolved "https://registry.yarnpkg.com/react-monaco-editor/-/react-monaco-editor-0.50.1.tgz#3b68ce03e4b316f435b9bcd8ec13ffd4c050c605"
+  integrity sha512-qvYdJhQdkPIrPDMxCrEl0T2x9TfBB+aUbrpFv69FwoTybeyfAjxgJ219MYSsgn3c/g06BgyLX4ENrXM4niZ9ag==
   dependencies:
     prop-types "^15.8.1"
 

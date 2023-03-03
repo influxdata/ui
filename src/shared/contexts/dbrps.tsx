@@ -1,44 +1,40 @@
 // Libraries
 import React, {createContext, FC, useEffect, useMemo, useRef} from 'react'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
-import {useSelector} from 'react-redux'
 
 // Types
 import {DBRP, getDbrps, GetDbrpsParams} from 'src/client'
 import {QueryScope} from 'src/shared/contexts/query'
-import {Organization, RemoteDataState} from 'src/types'
-
-// Utilities
-// import {getDbrpsForOrg} from 'src/shared/selectors/app'
-import {getOrg} from 'src/organizations/selectors'
+import {RemoteDataState} from 'src/types'
 
 interface DBRPContextType {
   loading: RemoteDataState
   dbrps: DBRP[]
-  refresh: () => void
 }
 
 const DEFAULT_CONTEXT: DBRPContextType = {
   loading: RemoteDataState.NotStarted,
   dbrps: [],
-  refresh: () => {},
 }
 
 export const DBRPContext = createContext<DBRPContextType>(DEFAULT_CONTEXT)
 
-const useLocalStorageState = createLocalStorageStateHook('dbrps', {})
+const DBRP_LOCAL_STORAGE_KEY = 'dbrps'
+const useLocalStorageState = createLocalStorageStateHook(
+  DBRP_LOCAL_STORAGE_KEY,
+  {}
+)
 
 interface Props {
   scope: QueryScope
 }
 
 export const DBRPProvider: FC<Props> = ({children, scope}) => {
-  const org: Organization = useSelector(getOrg)
   const cacheKey = `${scope.region};;<${scope.org}>`
   const [dbrpCache, setDBRPCache] = useLocalStorageState()
-  const loading = dbrpCache[cacheKey]?.loading ?? DEFAULT_CONTEXT.loading
   const dbrps = dbrpCache[cacheKey]?.dbrps ?? DEFAULT_CONTEXT.dbrps
-  // TODO: lastFetch
+  const lastFetch = dbrpCache[cacheKey]?.lastFetch ?? 0
+  const loading = dbrpCache[cacheKey]?.loading ?? DEFAULT_CONTEXT.loading
   const controller = useRef<AbortController>(null)
 
   useEffect(() => {
@@ -54,6 +50,23 @@ export const DBRPProvider: FC<Props> = ({children, scope}) => {
       }
     }
   }, [controller])
+
+  // make sure to fetch dbrps on mount
+  useEffect(() => {
+    const TWELVE_HOURS = 12 * 60 * 60 * 1000
+    if (Date.now() - lastFetch > TWELVE_HOURS) {
+      fetchDBRPs()
+    } else if (loading === RemoteDataState.NotStarted) {
+      fetchDBRPs()
+    }
+
+    return () => {
+      // reset the dbrp in local storage on ummount
+      // using `window.localStorage` since `createLocalStorageStateHook` has a bug
+      // to set local storage to an empty {}
+      window.localStorage.setItem(DBRP_LOCAL_STORAGE_KEY, JSON.stringify({}))
+    }
+  }, [])
 
   const updateCache = (update: any): void => {
     dbrpCache[cacheKey] = {
@@ -75,7 +88,7 @@ export const DBRPProvider: FC<Props> = ({children, scope}) => {
 
     getDbrps({
       query: {
-        orgID: org.id,
+        orgID: scope.org,
       },
     } as GetDbrpsParams)
       .then(resp => {
@@ -83,10 +96,9 @@ export const DBRPProvider: FC<Props> = ({children, scope}) => {
           throw new Error(resp.data.message)
         }
 
-        console.log({data: resp.data})
-
         updateCache({
           loading: RemoteDataState.Done,
+          lastFetch: Date.now(),
           dbrps: resp.data.content,
         })
       })
@@ -99,13 +111,9 @@ export const DBRPProvider: FC<Props> = ({children, scope}) => {
       })
   }
 
-  const refresh = (): void => {
-    fetchDBRPs()
-  }
-
   return useMemo(
     () => (
-      <DBRPContext.Provider value={{loading, dbrps, refresh}}>
+      <DBRPContext.Provider value={{loading, dbrps}}>
         {children}
       </DBRPContext.Provider>
     ),

@@ -1,10 +1,10 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {cloneDeep} from 'lodash'
 
 // Types
-import {UserAccount} from 'src/client/unityRoutes'
+import {Account, UserAccount} from 'src/client/unityRoutes'
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
@@ -20,14 +20,21 @@ import {event} from 'src/cloud/utils/reporting'
 
 // API
 import {
+  fetchAccountDetails,
   fetchUserAccounts,
   updateDefaultQuartzAccount,
   updateUserAccount,
 } from 'src/identity/apis/account'
 
+// Selectors
+import {selectCurrentAccount} from 'src/identity/selectors'
+
 // Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {setCurrentIdentityAccountName} from 'src/identity/actions/creators'
+
+// Types
+import {RemoteDataState} from 'src/types'
 
 export type Props = {
   children: JSX.Element
@@ -38,24 +45,30 @@ interface SetDefaultAccountOptions {
 }
 
 export interface UserAccountContextType {
-  userAccounts: UserAccount[]
+  accountDetails: Account
+  accountDetailsStatus: RemoteDataState
+  activeAccountId: number
+  defaultAccountId: number
+  handleGetAccountDetails: () => void
   handleGetAccounts: () => void
+  handleRenameActiveAccount: (accountId: number, newName: string) => void
   handleSetDefaultAccount: (
     newId: number,
     options?: SetDefaultAccountOptions
   ) => void
-  handleRenameActiveAccount: (accountId: number, newName: string) => void
-  defaultAccountId: number
-  activeAccountId: number
+  userAccounts: UserAccount[]
 }
 
 export const DEFAULT_CONTEXT: UserAccountContextType = {
-  userAccounts: [],
-  defaultAccountId: -1,
+  accountDetails: null,
+  accountDetailsStatus: RemoteDataState.NotStarted,
   activeAccountId: -1,
+  defaultAccountId: -1,
+  handleGetAccountDetails: () => {},
   handleGetAccounts: () => {},
-  handleSetDefaultAccount: () => {},
   handleRenameActiveAccount: () => {},
+  handleSetDefaultAccount: () => {},
+  userAccounts: [],
 }
 
 export const UserAccountContext =
@@ -65,6 +78,11 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(null)
   const [defaultAccountId, setDefaultAccountId] = useState<number>(null)
   const [activeAccountId, setActiveAccountId] = useState<number>(null)
+  const [accountDetails, setAccountDetails] = useState<Account>(null)
+  const [accountDetailsStatus, setAccountDetailsStatus] = useState(
+    RemoteDataState.NotStarted
+  )
+  const account = useSelector(selectCurrentAccount)
 
   const dispatch = useDispatch()
 
@@ -171,6 +189,19 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     [dispatch, userAccounts, setUserAccounts]
   )
 
+  const handleGetAccountDetails = useCallback(async () => {
+    try {
+      setAccountDetailsStatus(RemoteDataState.Loading)
+      const accountDetails = await fetchAccountDetails(account.id)
+      setAccountDetailsStatus(RemoteDataState.Done)
+      setAccountDetails(accountDetails)
+    } catch (error) {
+      reportErrorThroughHoneyBadger(error, {
+        name: 'failed to retrieve user account details',
+      })
+    }
+  }, [account.id])
+
   useEffect(() => {
     handleGetAccounts()
   }, [handleGetAccounts])
@@ -178,12 +209,15 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   return (
     <UserAccountContext.Provider
       value={{
-        userAccounts,
-        defaultAccountId,
+        accountDetails,
+        accountDetailsStatus,
         activeAccountId,
+        defaultAccountId,
+        handleGetAccountDetails,
         handleGetAccounts,
-        handleSetDefaultAccount,
         handleRenameActiveAccount,
+        handleSetDefaultAccount,
+        userAccounts,
       }}
     >
       {children}

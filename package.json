@@ -139,7 +139,6 @@
     "log-symbols": "^5.0.0",
     "mini-css-extract-plugin": "^2.6.1",
     "mocha": "^10.2.0",
-    "mocha-junit-reporter": "^1.18.0",
     "moment": "^2.29.4",
     "mutation-observer": "^1.0.3",
     "prettier": "^2.7.1",

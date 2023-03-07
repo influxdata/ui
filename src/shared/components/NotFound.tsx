@@ -39,6 +39,7 @@ import {fetchDefaultAccountDefaultOrg} from 'src/identity/apis/org'
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">
     <FunnelPage enableGraphic={true} className="page-not-found-funnel">
+      {CLOUD &&
       <FlexBox
         direction={FlexDirection.Row}
         margin={ComponentSize.Large}
@@ -48,6 +49,7 @@ const NotFoundNew: FC = () => (
         <LogoWithCubo />
         <GetInfluxButton />
       </FlexBox>
+      }
       <FlexBox
         className="page-not-found-content"
         direction={FlexDirection.Column}
@@ -70,6 +72,7 @@ const NotFoundNew: FC = () => (
           className="page-not-found-panel-content"
           margin={ComponentSize.Small}
         >
+          {CLOUD &&
           <FlexBoxChild className="page-not-found-panel-section">
             <div className="page-not-found-panel-title">Not a URL issue?</div>
             <div>
@@ -87,6 +90,7 @@ const NotFoundNew: FC = () => (
               </span>
             </div>
           </FlexBoxChild>
+          }
           <FlexBoxChild className="page-not-found-panel-section">
             <div className="page-not-found-panel-title">
               Have more feedback?

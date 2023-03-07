@@ -39,17 +39,17 @@ import {fetchDefaultAccountDefaultOrg} from 'src/identity/apis/org'
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found" testID="not-found">
     <FunnelPage enableGraphic={true} className="page-not-found-funnel">
-      {CLOUD &&
-      <FlexBox
-        direction={FlexDirection.Row}
-        margin={ComponentSize.Large}
-        stretchToFitWidth={true}
-        justifyContent={JustifyContent.SpaceBetween}
-      >
-        <LogoWithCubo />
-        <GetInfluxButton />
-      </FlexBox>
-      }
+      {CLOUD && (
+        <FlexBox
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Large}
+          stretchToFitWidth={true}
+          justifyContent={JustifyContent.SpaceBetween}
+        >
+          <LogoWithCubo />
+          <GetInfluxButton />
+        </FlexBox>
+      )}
       <FlexBox
         className="page-not-found-content"
         direction={FlexDirection.Column}
@@ -72,25 +72,25 @@ const NotFoundNew: FC = () => (
           className="page-not-found-panel-content"
           margin={ComponentSize.Small}
         >
-          {CLOUD &&
-          <FlexBoxChild className="page-not-found-panel-section">
-            <div className="page-not-found-panel-title">Not a URL issue?</div>
-            <div>
-              <span>
-                The webpage you were trying to reach may have been removed or
-                your access to this page may have expired.&nbsp;
-                {/* Add rel options to avoid "tabnapping" */}
-                <a
-                  href="mailto:support@influxdata.com"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  Contact InfluxData Support
-                </a>
-              </span>
-            </div>
-          </FlexBoxChild>
-          }
+          {CLOUD && (
+            <FlexBoxChild className="page-not-found-panel-section">
+              <div className="page-not-found-panel-title">Not a URL issue?</div>
+              <div>
+                <span>
+                  The webpage you were trying to reach may have been removed or
+                  your access to this page may have expired.&nbsp;
+                  {/* Add rel options to avoid "tabnapping" */}
+                  <a
+                    href="mailto:support@influxdata.com"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    Contact InfluxData Support
+                  </a>
+                </span>
+              </div>
+            </FlexBoxChild>
+          )}
           <FlexBoxChild className="page-not-found-panel-section">
             <div className="page-not-found-panel-title">
               Have more feedback?

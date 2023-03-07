@@ -2,7 +2,9 @@
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
 
 // Contexts
+import {BucketContext} from 'src/shared/contexts/buckets'
 import {DBRPContext} from 'src/shared/contexts/dbrps'
+import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -23,6 +25,8 @@ const DBRP_TOOLTIP = `TODO: test`
 
 export const DBRPSelector: FC = () => {
   const {loading, dbrps} = useContext(DBRPContext)
+  const {buckets} = useContext(BucketContext)
+  const {selectedDBRP, selectDBRP} = useContext(ScriptQueryBuilderContext)
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -30,13 +34,28 @@ export const DBRPSelector: FC = () => {
     `${d.database}`.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
   )
 
+  const handleSelectDBRP = (dbrp: DBRP) => {
+    // grab bucket object
+    const bucket = buckets.find(b => b.id === dbrp.bucketID)
+    if (!bucket) {
+      // TODO: no matching, suggest to ..? (this should never be happening)
+      console.log(
+        `no matching bucket for ${dbrp.database}/${dbrp.retention_policy}`
+      )
+    } else {
+      selectDBRP(dbrp, bucket)
+    }
+  }
+
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value)
   }
 
   let buttonText = 'Loading DBRPs...'
-  if (loading === RemoteDataState.Done) {
-    buttonText = 'Select...' // TDOD: add selectedDBRP
+  if (loading === RemoteDataState.Done && !selectedDBRP?.database) {
+    buttonText = 'Select DBRP...'
+  } else if (loading === RemoteDataState.Done && selectedDBRP?.database) {
+    buttonText = `${selectedDBRP.database}/${selectedDBRP.retention_policy}`
   }
 
   const button = (active: boolean, onClick: any) => (
@@ -74,14 +93,15 @@ export const DBRPSelector: FC = () => {
     _dbrps.length === 0 ? (
       <Dropdown.ItemEmpty>No DBRPs Found</Dropdown.ItemEmpty>
     ) : (
-      _dbrps.map(d => {
+      _dbrps.map((d: DBRP) => {
         const dbrpMapping = `${d.database}/${d.retention_policy}`
         return (
           <Dropdown.Item
             key={dbrpMapping}
             value={d}
-            onClick={() => {}} // TODO:
-            // TODO: selected
+            onClick={handleSelectDBRP}
+            // bucketID is unique for each DBRP pair
+            selected={selectedDBRP?.bucketID === d.bucketID}
             title={dbrpMapping}
             wrapText={true}
             testID={`dbrp-selector--dropdown--${dbrpMapping}`}
@@ -105,6 +125,7 @@ export const DBRPSelector: FC = () => {
               }
             }}
             theme={DropdownMenuTheme.Onyx}
+            scrollToSelected={true}
           >
             <div className="searchable-dropdown--input-container">
               <Input

@@ -5,6 +5,7 @@ import {useSelector} from 'react-redux'
 // Types
 import {TimeRange, RecursivePartial} from 'src/types'
 import {Bucket, TagKeyValuePair} from 'src/types'
+import {DBRP} from 'src/client'
 
 // Utils
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
@@ -64,6 +65,7 @@ interface ResultOptions {
 
 export interface CompositionSelection {
   bucket: Bucket
+  dbrp: DBRP
   measurement: string
   fields: string[]
   tagValues: TagKeyValuePair[]
@@ -94,6 +96,7 @@ interface ContextType {
 
 export const DEFAULT_SELECTION: CompositionSelection = {
   bucket: null,
+  dbrp: null,
   measurement: null,
   fields: [] as string[],
   tagValues: [] as TagKeyValuePair[],

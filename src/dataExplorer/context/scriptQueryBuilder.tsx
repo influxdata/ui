@@ -16,6 +16,7 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 import {debouncer} from 'src/dataExplorer/shared/utils'
 // Types
 import {Bucket, TagKeyValuePair} from 'src/types'
+import {DBRP} from 'src/client'
 
 const DEFAULT_SELECTED_TAG_VALUES: SelectedTagValues = {}
 interface SelectedTagValues {
@@ -33,6 +34,7 @@ interface ScriptQueryBuilderContextType {
   selectedTagValues: SelectedTagValues
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
+  selectDBRP: (dbrp: DBRP) => void
   selectMeasurement: (measurement: string) => void
   selectField: (field: string) => void
   selectTagValue: (tagKey: string, tagValue: string) => void
@@ -50,6 +52,7 @@ const DEFAULT_CONTEXT: ScriptQueryBuilderContextType = {
   selectedTagValues: DEFAULT_SELECTED_TAG_VALUES,
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
+  selectDBRP: (_d: DBRP) => {},
   selectMeasurement: (_m: string) => {},
   selectField: (_f: string) => {},
   selectTagValue: (_k: string, _v: string) => {},
@@ -120,6 +123,19 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
 
     // Fetch measurement values
     getMeasurements(bucket)
+  }
+
+  const handleSelectDBRP = (dbrp: DBRP): void => {
+    console.log('handleSelectDBRP', {dbrp})
+    // setSelection({dbrp, measurement: '', fields: [], tagValues: []})
+
+    // Reset measurement, tags, fields, selected tag values
+    resetFields()
+    resetTags()
+    setSelectedTagValues(DEFAULT_SELECTED_TAG_VALUES)
+
+    // Fetch measurement values
+    // TODO: getMeasurements()
   }
 
   const handleSelectMeasurement = (measurement: string): void => {
@@ -209,6 +225,7 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
           selectedTagValues,
           searchTerm,
           selectBucket: handleSelectBucket,
+          selectDBRP: handleSelectDBRP,
           selectMeasurement: handleSelectMeasurement,
           selectField: handleSelectField,
           selectTagValue: handleSelectTagValue,

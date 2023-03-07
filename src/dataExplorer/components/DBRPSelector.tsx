@@ -39,6 +39,7 @@ export const DBRPSelector: FC = () => {
     const bucket = buckets.find(b => b.id === dbrp.bucketID)
     if (!bucket) {
       // TODO: no matching, suggest to ..? (this should never be happening)
+      // eslint-disable-next-line no-console
       console.log(
         `no matching bucket for ${dbrp.database}/${dbrp.retention_policy}`
       )

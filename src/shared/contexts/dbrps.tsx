@@ -66,7 +66,7 @@ export const DBRPProvider: FC<Props> = ({children, scope}) => {
       // to set local storage to an empty {}
       window.localStorage.setItem(DBRP_LOCAL_STORAGE_KEY, JSON.stringify({}))
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateCache = (update: any): void => {
     dbrpCache[cacheKey] = {
@@ -117,6 +117,6 @@ export const DBRPProvider: FC<Props> = ({children, scope}) => {
         {children}
       </DBRPContext.Provider>
     ),
-    [loading, dbrps]
+    [loading, dbrps, children]
   )
 }

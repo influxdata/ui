@@ -15,9 +15,11 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
 import {BucketContext} from 'src/shared/contexts/buckets'
 import {event} from 'src/cloud/utils/reporting'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {RemoteDataState, Bucket} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 const BUCKET_TOOLTIP = `A bucket is a named location where time series data \
 is stored. You can think of a bucket like you would a database in SQL systems.`
@@ -33,6 +35,11 @@ const BucketSelector: FC = () => {
   const {loading, buckets} = useContext(BucketContext)
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const {resource} = useContext(PersistanceContext)
+
+  if (resource?.language === LanguageType.INFLUXQL) {
+    return null
+  }
 
   const _buckets = buckets.filter(b =>
     `${b.name}`.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
@@ -164,4 +171,4 @@ const BucketSelector: FC = () => {
   )
 }
 
-export default BucketSelector
+export {BucketSelector}

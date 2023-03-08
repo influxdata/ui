@@ -33,7 +33,7 @@ import {
 import {LanguageType} from 'src/dataExplorer/components/resources'
 import {ResultsPane} from 'src/dataExplorer/components/ResultsPane'
 import Sidebar from 'src/dataExplorer/components/Sidebar'
-import Schema from 'src/dataExplorer/components/Schema'
+import {Schema} from 'src/dataExplorer/components/Schema'
 import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 import {QueryContext} from 'src/shared/contexts/query'
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'

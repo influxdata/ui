@@ -106,7 +106,7 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
         setSelectedTagValues(_selectedTagValues)
       }
     }
-  }, [selection.bucket])
+  }, [selection.bucket]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setSelectedTagValues(transformSessionTagValuesToLocal(selection.tagValues))
@@ -238,6 +238,7 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
         {children}
       </ScriptQueryBuilderContext.Provider>
     ),
+    /* eslint-disable react-hooks/exhaustive-deps */
     [
       // Composition Sync
       selection.composition?.synced,
@@ -250,5 +251,6 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
 
       children,
     ]
+    /* eslint-enable react-hooks/exhaustive-deps */
   )
 }

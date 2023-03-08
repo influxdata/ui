@@ -5,10 +5,12 @@ import React, {ChangeEvent, FC, useContext, useState} from 'react'
 import {BucketContext} from 'src/shared/contexts/buckets'
 import {DBRPContext} from 'src/shared/contexts/dbrps'
 import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
+import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 
 // Types
 import {RemoteDataState} from 'src/types'
 import {DBRP} from 'src/client'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
@@ -29,6 +31,11 @@ export const DBRPSelector: FC = () => {
   const {selectedDBRP, selectDBRP} = useContext(ScriptQueryBuilderContext)
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const {resource} = useContext(PersistanceContext)
+
+  if (resource?.language !== LanguageType.INFLUXQL) {
+    return null
+  }
 
   const _dbrps: DBRP[] = dbrps.filter(d =>
     `${d.database}`.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())

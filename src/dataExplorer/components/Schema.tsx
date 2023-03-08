@@ -4,11 +4,12 @@ import {useSelector} from 'react-redux'
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
-import BucketSelector from 'src/dataExplorer/components/BucketSelector'
+import {BucketSelector} from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldSelector from 'src/dataExplorer/components/FieldSelector'
 import TagSelector from 'src/dataExplorer/components/TagSelector'
 import SchemaBrowserHeading from 'src/dataExplorer/components/SchemaBrowserHeading'
+import {DBRPSelector} from 'src/dataExplorer/components/DBRPSelector'
 
 // Context
 import {
@@ -19,6 +20,7 @@ import {BucketProvider} from 'src/shared/contexts/buckets'
 import {MeasurementsProvider} from 'src/dataExplorer/context/measurements'
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
 import {TagsProvider} from 'src/dataExplorer/context/tags'
+import {DBRPProvider} from 'src/shared/contexts/dbrps'
 
 // Types
 import {QueryScope} from 'src/shared/contexts/query'
@@ -35,7 +37,7 @@ const FieldsTags: FC = () => {
 
   useEffect(() => {
     setSearchTerm('')
-  }, [selectedBucket, selectedMeasurement])
+  }, [selectedBucket, selectedMeasurement]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSearchFieldsTags = (searchTerm: string): void => {
     setSearchTerm(searchTerm)
@@ -58,7 +60,7 @@ const FieldsTags: FC = () => {
         <TagSelector />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement, searchTerm])
+  }, [selectedBucket, selectedMeasurement, searchTerm]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 const Schema: FC = () => {
@@ -74,18 +76,24 @@ const Schema: FC = () => {
         <TagsProvider scope={scope}>
           <ScriptQueryBuilderProvider>
             <BucketProvider scope={scope} omitSampleData>
-              <div className="scroll--container">
-                <DapperScrollbars>
-                  <div className="schema-browser" data-testid="schema-browser">
-                    <SchemaBrowserHeading />
-                    <BucketSelector />
-                    <div className="container-side-bar">
-                      <MeasurementSelector />
-                      <FieldsTags />
+              <DBRPProvider scope={scope}>
+                <div className="scroll--container">
+                  <DapperScrollbars>
+                    <div
+                      className="schema-browser"
+                      data-testid="schema-browser"
+                    >
+                      <SchemaBrowserHeading />
+                      <BucketSelector />
+                      <DBRPSelector />
+                      <div className="container-side-bar">
+                        <MeasurementSelector />
+                        <FieldsTags />
+                      </div>
                     </div>
-                  </div>
-                </DapperScrollbars>
-              </div>
+                  </DapperScrollbars>
+                </div>
+              </DBRPProvider>
             </BucketProvider>
           </ScriptQueryBuilderProvider>
         </TagsProvider>
@@ -94,4 +102,4 @@ const Schema: FC = () => {
   )
 }
 
-export default Schema
+export {Schema}

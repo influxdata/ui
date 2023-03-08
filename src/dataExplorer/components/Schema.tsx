@@ -76,24 +76,20 @@ const Schema: FC = () => {
         <TagsProvider scope={scope}>
           <ScriptQueryBuilderProvider>
             <BucketProvider scope={scope} omitSampleData>
-              <DBRPProvider scope={scope}>
-                <div className="scroll--container">
-                  <DapperScrollbars>
-                    <div
-                      className="schema-browser"
-                      data-testid="schema-browser"
-                    >
-                      <SchemaBrowserHeading />
-                      <BucketSelector />
-                      <DBRPSelector />
-                      <div className="container-side-bar">
-                        <MeasurementSelector />
-                        <FieldsTags />
-                      </div>
+              {/* DBRPProvider is in upstream */}
+              <div className="scroll--container">
+                <DapperScrollbars>
+                  <div className="schema-browser" data-testid="schema-browser">
+                    <SchemaBrowserHeading />
+                    <BucketSelector />
+                    <DBRPSelector />
+                    <div className="container-side-bar">
+                      <MeasurementSelector />
+                      <FieldsTags />
                     </div>
-                  </DapperScrollbars>
-                </div>
-              </DBRPProvider>
+                  </div>
+                </DapperScrollbars>
+              </div>
             </BucketProvider>
           </ScriptQueryBuilderProvider>
         </TagsProvider>

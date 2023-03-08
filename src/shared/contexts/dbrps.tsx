@@ -1,5 +1,12 @@
 // Libraries
-import React, {createContext, FC, useEffect, useMemo, useRef} from 'react'
+import React, {
+  createContext,
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 // Types
@@ -10,11 +17,13 @@ import {RemoteDataState} from 'src/types'
 interface DBRPContextType {
   loading: RemoteDataState
   dbrps: DBRP[]
+  hasDBRPs: () => boolean
 }
 
 const DEFAULT_CONTEXT: DBRPContextType = {
   loading: RemoteDataState.NotStarted,
   dbrps: [],
+  hasDBRPs: () => false,
 }
 
 export const DBRPContext = createContext<DBRPContextType>(DEFAULT_CONTEXT)
@@ -30,11 +39,12 @@ interface Props {
 }
 
 export const DBRPProvider: FC<Props> = ({children, scope}) => {
-  const cacheKey = `${scope.region};;<${scope.org}>`
+  const cacheKey: string = `${scope.region};;<${scope.org}>`
   const [dbrpCache, setDBRPCache] = useLocalStorageState()
-  const dbrps = dbrpCache[cacheKey]?.dbrps ?? DEFAULT_CONTEXT.dbrps
-  const lastFetch = dbrpCache[cacheKey]?.lastFetch ?? 0
-  const loading = dbrpCache[cacheKey]?.loading ?? DEFAULT_CONTEXT.loading
+  const dbrps: DBRP[] = dbrpCache[cacheKey]?.dbrps ?? DEFAULT_CONTEXT.dbrps
+  const lastFetch: number = dbrpCache[cacheKey]?.lastFetch ?? 0
+  const loading: RemoteDataState =
+    dbrpCache[cacheKey]?.loading ?? DEFAULT_CONTEXT.loading
   const controller = useRef<AbortController>(null)
 
   useEffect(() => {
@@ -111,12 +121,16 @@ export const DBRPProvider: FC<Props> = ({children, scope}) => {
       })
   }
 
+  const hasDBRPs = useCallback((): boolean => {
+    return dbrps.length > 0
+  }, [dbrps])
+
   return useMemo(
     () => (
-      <DBRPContext.Provider value={{loading, dbrps}}>
+      <DBRPContext.Provider value={{loading, dbrps, hasDBRPs}}>
         {children}
       </DBRPContext.Provider>
     ),
-    [loading, dbrps, children]
+    [loading, dbrps, hasDBRPs, children]
   )
 }

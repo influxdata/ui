@@ -20,7 +20,6 @@ import {BucketProvider} from 'src/shared/contexts/buckets'
 import {MeasurementsProvider} from 'src/dataExplorer/context/measurements'
 import {FieldsProvider} from 'src/dataExplorer/context/fields'
 import {TagsProvider} from 'src/dataExplorer/context/tags'
-import {DBRPProvider} from 'src/shared/contexts/dbrps'
 
 // Types
 import {QueryScope} from 'src/shared/contexts/query'

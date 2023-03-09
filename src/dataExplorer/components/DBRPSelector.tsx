@@ -23,7 +23,11 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 
-const DBRP_TOOLTIP = `TODO: test`
+const DBRP_TOOLTIP = `InfluxQL requires a database and retention policy \
+(DBRP) combination in order to query data. In InfluxDB Cloud, databases \
+and retention policies have been combined and replaced by InfluxDB buckets. \
+To query InfluxDB Cloud with InfluxQL, the specified DBRP combination \
+must be mapped to a bucket.`
 
 export const DBRPSelector: FC = () => {
   const {loading, dbrps} = useContext(DBRPContext)
@@ -45,10 +49,11 @@ export const DBRPSelector: FC = () => {
     // grab bucket object
     const bucket = buckets.find(b => b.id === dbrp.bucketID)
     if (!bucket) {
-      // TODO: no matching, suggest to ..? (this should never be happening)
-      // eslint-disable-next-line no-console
-      console.log(
-        `no matching bucket for ${dbrp.database}/${dbrp.retention_policy}`
+      // this should never be happening
+      console.error(
+        `No matching bucket found for ${dbrp.database}/${dbrp.retention_policy}, \
+        suggest to create a DBRP mapping \
+        https://docs.influxdata.com/influxdb/cloud/query-data/influxql/dbrp/`
       )
     } else {
       selectDBRP(dbrp, bucket)

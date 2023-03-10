@@ -210,9 +210,20 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       const vectors = ['storage_gb', 'writes_mb', 'reads_gb', 'query_count']
       const promises = []
 
+      const secondsPerDay = 1000 * 3600 * 24
+
+      const currentDate = new Date()
+      const secondsWith250Credit =
+        currentDate.getTime() - new Date(paygCreditStartDate).getTime()
+      const daysWith250Credit = Math.floor(secondsWith250Credit / secondsPerDay)
+
+      if (isNaN(daysWith250Credit)) {
+        return
+      }
+
       vectors.forEach(vector_name => {
         promises.push(
-          getUsage({vector_name, query: {range: `${PAYG_CREDIT_DAYS}d`}}).then(
+          getUsage({vector_name, query: {range: `${daysWith250Credit}d`}}).then(
             resp => {
               if (resp.status !== 200) {
                 throw new Error(resp.data.message)

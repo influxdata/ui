@@ -66,8 +66,14 @@ class OnboardingWizard extends PureComponent<Props> {
   }
 
   public render() {
-    const {currentStepIndex, orgID, bucketID, setupParams, onSetupAdmin} =
-      this.props
+    const {
+      currentStepIndex,
+      orgID,
+      bucketID,
+      token,
+      setupParams,
+      onSetupAdmin,
+    } = this.props
 
     return (
       <WizardFullScreen>
@@ -81,6 +87,7 @@ class OnboardingWizard extends PureComponent<Props> {
               onSetupAdmin={onSetupAdmin}
               orgID={orgID}
               bucketID={bucketID}
+              token={token}
             />
           </div>
         </div>
@@ -148,12 +155,13 @@ class OnboardingWizard extends PureComponent<Props> {
 }
 
 const mstp = ({
-  onboarding: {stepStatuses, setupParams, orgID, bucketID},
+  onboarding: {stepStatuses, setupParams, orgID, bucketID, token},
 }: AppState) => ({
   stepStatuses,
   setupParams,
   orgID,
   bucketID,
+  token,
 })
 
 const mdtp = {

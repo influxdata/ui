@@ -10,6 +10,7 @@ export interface OnboardingState {
   setupParams: OnboardingRequest
   orgID: string
   bucketID: string
+  token: string
 }
 
 const INITIAL_STATE: OnboardingState = {
@@ -17,6 +18,7 @@ const INITIAL_STATE: OnboardingState = {
   setupParams: null,
   orgID: '',
   bucketID: '',
+  token: '',
 }
 
 export default (state = INITIAL_STATE, action: Action): OnboardingState => {
@@ -31,6 +33,8 @@ export default (state = INITIAL_STATE, action: Action): OnboardingState => {
       return {...state, orgID: action.payload.orgID}
     case 'SET_ONBOARDING_BUCKET_ID':
       return {...state, bucketID: action.payload.bucketID}
+    case 'SET_OPERATOR_TOKEN':
+      return {...state, token: action.payload.token}
     default:
       return state
   }

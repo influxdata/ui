@@ -18,6 +18,7 @@ interface Props {
   onSetupAdmin: any
   orgID: string
   bucketID: string
+  token: string
 }
 
 @ErrorHandling
@@ -27,6 +28,7 @@ class OnboardingStepSwitcher extends PureComponent<Props> {
       currentStepIndex,
       orgID,
       bucketID,
+      token,
       onboardingStepProps,
       onSetupAdmin,
     } = this.props
@@ -42,6 +44,7 @@ class OnboardingStepSwitcher extends PureComponent<Props> {
         return (
           <CompletionStep
             {...onboardingStepProps}
+            token={token}
             orgID={orgID}
             bucketID={bucketID}
           />

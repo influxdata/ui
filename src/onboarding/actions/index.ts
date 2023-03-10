@@ -20,6 +20,7 @@ export type Action =
   | SetStepStatus
   | SetOrganizationID
   | SetBucketID
+  | SetToken
 
 interface SetSetupParams {
   type: 'SET_SETUP_PARAMS'
@@ -69,6 +70,16 @@ export const setBucketID = (bucketID: string): SetBucketID => ({
   payload: {bucketID},
 })
 
+interface SetToken {
+  type: 'SET_OPERATOR_TOKEN'
+  payload: {token: string}
+}
+
+export const setToken = (token: string): SetToken => ({
+  type: 'SET_OPERATOR_TOKEN',
+  payload: {token},
+})
+
 export const setupAdmin =
   (params: OnboardingRequest): AppThunk<Promise<boolean>> =>
   async dispatch => {
@@ -79,6 +90,8 @@ export const setupAdmin =
       if (response.status !== 201) {
         throw new Error(response.data.message)
       }
+
+      dispatch(setToken(response.data.auth.token))
 
       const {id: orgID} = response.data.org
       const {id: bucketID} = response.data.bucket

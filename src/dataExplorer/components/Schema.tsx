@@ -36,6 +36,7 @@ const FieldsTags: FC = () => {
 
   useEffect(() => {
     setSearchTerm('')
+    // setSearchTerm will cause infinite re-rendering if added to the dependency list
   }, [selectedBucket, selectedMeasurement]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSearchFieldsTags = useCallback(

@@ -106,7 +106,10 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
         setSelectedTagValues(_selectedTagValues)
       }
     }
-  }, [selection.bucket]) // eslint-disable-line react-hooks/exhaustive-deps
+    // pass an empty array ([]) as the dependency list to
+    // run an effect and clean it up only once (on mount and unmount),
+    // https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setSelectedTagValues(transformSessionTagValuesToLocal(selection.tagValues))
@@ -238,7 +241,6 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
         {children}
       </ScriptQueryBuilderContext.Provider>
     ),
-    /* eslint-disable react-hooks/exhaustive-deps */
     [
       // Composition Sync
       selection.composition?.synced,
@@ -251,6 +253,5 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
 
       children,
     ]
-    /* eslint-enable react-hooks/exhaustive-deps */
   )
 }

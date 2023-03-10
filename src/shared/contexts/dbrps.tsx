@@ -76,6 +76,9 @@ export const DBRPProvider: FC<Props> = ({children, scope}) => {
       // to set local storage to an empty {}
       window.localStorage.setItem(DBRP_LOCAL_STORAGE_KEY, JSON.stringify({}))
     }
+    // pass an empty array ([]) as the dependency list to
+    // run an effect and clean it up only once (on mount and unmount),
+    // https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateCache = (update: any): void => {

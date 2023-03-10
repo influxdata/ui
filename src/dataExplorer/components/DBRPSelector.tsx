@@ -1,5 +1,6 @@
 // Libraries
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Contexts
 import {BucketContext} from 'src/shared/contexts/buckets'
@@ -11,6 +12,7 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 import {RemoteDataState} from 'src/types'
 import {DBRP} from 'src/client'
 import {LanguageType} from 'src/dataExplorer/components/resources'
+import {Notification} from 'src/types/notifications'
 
 // Components
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
@@ -22,6 +24,10 @@ import {
   Input,
   TechnoSpinner,
 } from '@influxdata/clockface'
+
+// Utils
+import {notify} from 'src/shared/actions/notifications'
+import {defaultErrorNotification} from 'src/shared/copy/notifications'
 
 const DROPDOWN_LABEL: string = 'Database/Retention policy'
 const DBRP_TOOLTIP: string = `InfluxQL requires a database and retention policy \
@@ -37,6 +43,7 @@ export const DBRPSelector: FC = () => {
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const {resource} = useContext(PersistanceContext)
+  const dispatch = useDispatch()
 
   if (resource?.language !== LanguageType.INFLUXQL) {
     return null
@@ -51,11 +58,13 @@ export const DBRPSelector: FC = () => {
     const bucket = buckets.find(b => b.id === dbrp.bucketID)
     if (!bucket) {
       // this should never be happening
-      console.error(
-        `No matching bucket found for ${dbrp.database}/${dbrp.retention_policy}, \
+      const notification: Notification = {
+        ...defaultErrorNotification,
+        message: `No matching bucket found for ${dbrp.database}/${dbrp.retention_policy}, \
         suggest to create a database and retention policy mapping \
-        https://docs.influxdata.com/influxdb/cloud/query-data/influxql/dbrp/`
-      )
+        https://docs.influxdata.com/influxdb/cloud/query-data/influxql/dbrp/`,
+      }
+      dispatch(notify(notification))
     } else {
       selectDBRP(dbrp, bucket)
     }

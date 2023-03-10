@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect, useMemo} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useMemo} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -38,9 +38,12 @@ const FieldsTags: FC = () => {
     setSearchTerm('')
   }, [selectedBucket, selectedMeasurement]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSearchFieldsTags = (searchTerm: string): void => {
-    setSearchTerm(searchTerm)
-  }
+  const handleSearchFieldsTags = useCallback(
+    (searchTerm: string): void => {
+      setSearchTerm(searchTerm)
+    },
+    [setSearchTerm]
+  )
 
   return useMemo(() => {
     if (!selectedBucket || !selectedMeasurement) {
@@ -59,7 +62,7 @@ const FieldsTags: FC = () => {
         <TagSelector />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement, searchTerm]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedBucket, selectedMeasurement, searchTerm, handleSearchFieldsTags])
 }
 
 const Schema: FC = () => {

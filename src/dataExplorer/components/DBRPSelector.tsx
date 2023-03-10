@@ -23,7 +23,8 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 
-const DBRP_TOOLTIP = `InfluxQL requires a database and retention policy \
+const DROPDOWN_LABEL: string = 'Database/Retention policy'
+const DBRP_TOOLTIP: string = `InfluxQL requires a database and retention policy \
 (DBRP) combination in order to query data. In InfluxDB Cloud, databases \
 and retention policies have been combined and replaced by InfluxDB buckets. \
 To query InfluxDB Cloud with InfluxQL, the specified DBRP combination \
@@ -52,7 +53,7 @@ export const DBRPSelector: FC = () => {
       // this should never be happening
       console.error(
         `No matching bucket found for ${dbrp.database}/${dbrp.retention_policy}, \
-        suggest to create a DBRP mapping \
+        suggest to create a database and retention policy mapping \
         https://docs.influxdata.com/influxdb/cloud/query-data/influxql/dbrp/`
       )
     } else {
@@ -64,9 +65,9 @@ export const DBRPSelector: FC = () => {
     setSearchTerm(e.target.value)
   }
 
-  let buttonText = 'Loading DBRPs...'
+  let buttonText = 'Loading database/retention policy...'
   if (loading === RemoteDataState.Done && !selectedDBRP?.database) {
-    buttonText = 'Select DBRP...'
+    buttonText = 'Select database/retention policy...'
   } else if (loading === RemoteDataState.Done && selectedDBRP?.database) {
     buttonText = `${selectedDBRP.database}/${selectedDBRP.retention_policy}`
   }
@@ -84,7 +85,7 @@ export const DBRPSelector: FC = () => {
   if (loading !== RemoteDataState.Done) {
     return (
       <div>
-        <SelectorTitle label="DBRP" tooltipContents={DBRP_TOOLTIP} />
+        <SelectorTitle label={DROPDOWN_LABEL} tooltipContents={DBRP_TOOLTIP} />
         <Dropdown
           button={button}
           menu={onCollapse => (
@@ -127,7 +128,7 @@ export const DBRPSelector: FC = () => {
 
   return (
     <div>
-      <SelectorTitle label="DBRP" tooltipContents={DBRP_TOOLTIP} />
+      <SelectorTitle label={DROPDOWN_LABEL} tooltipContents={DBRP_TOOLTIP} />
       <Dropdown
         button={button}
         menu={onCollapse => (

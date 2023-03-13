@@ -55,8 +55,7 @@ const DataExplorerPageHeader: FC = () => {
   const {resource, save} = useContext(PersistanceContext)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const shouldShowDataExplorerToggle =
-    isFlagEnabled('newDataExplorer') &&
-    (!isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx'))
+    !isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx')
 
   const history = useHistory()
   const dispatch = useDispatch()
@@ -84,11 +83,9 @@ const DataExplorerPageHeader: FC = () => {
     })
   }
 
-  const showNewExplorer = scriptQueryBuilder && isFlagEnabled('newDataExplorer')
-
   let pageTitle = <Page.Title title="Data Explorer" />
 
-  if (showNewExplorer && resource?.data?.hasOwnProperty('name')) {
+  if (scriptQueryBuilder && resource?.data?.hasOwnProperty('name')) {
     pageTitle = (
       <RenamablePageTitle
         onRename={handleRename}
@@ -103,7 +100,7 @@ const DataExplorerPageHeader: FC = () => {
     <Page.Header
       fullWidth={true}
       className={`${
-        showNewExplorer ? 'script-query-builder' : 'data-explorer'
+        scriptQueryBuilder ? 'script-query-builder' : 'data-explorer'
       }--header`}
       testID="data-explorer--header"
     >
@@ -133,8 +130,7 @@ const DataExplorerPage: FC = () => {
     useSelector(selectIsNewIOxOrg) &&
     !isFlagEnabled('showOldDataExplorerInNewIOx')
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowNewExplorer =
-    (scriptQueryBuilder && isFlagEnabled('newDataExplorer')) || isNewIOxOrg
+  const shouldShowNewExplorer = scriptQueryBuilder || isNewIOxOrg
 
   const shouldShowSaveAsButton =
     !useSelector(selectIsNewIOxOrg) ||

@@ -12,9 +12,6 @@ describe('Load Data Sources', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.setFeatureFlags({
-      newDataExplorer: true,
-    })
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
         cy.visit(`${orgs}/${id}/load-data/sources`)

@@ -34,7 +34,6 @@ describe('visualizations', () => {
       cy.signinWithoutUserReprovision().then(() =>
         cy
           .setFeatureFlags({
-            newDataExplorer: true,
             showVariablesInNewIOx: true,
           })
           .then(() => {

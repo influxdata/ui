@@ -38,6 +38,7 @@ describe('Legends', () => {
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${id}${explorer}`)
           cy.getByTestID('tree-nav').should('be.visible')
+          cy.switchToDataExplorer('old')
         })
       })
     })

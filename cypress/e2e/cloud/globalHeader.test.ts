@@ -195,6 +195,7 @@ describe('global header', () => {
       // Alert will appear in global header on any page (like data explorer)
       // that has <LimitChecker />, which displays cardinality alerts.
       cy.visit(`/orgs/${idpeOrgID}/data-explorer`)
+      cy.switchToDataExplorer('old')
     }
 
     it('shows a cardinality limit alert for TSM orgs if cardinality limits are exceeded', () => {

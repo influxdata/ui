@@ -1,14 +1,15 @@
-import React, {FC, useContext, useEffect, useMemo} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useMemo} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
-import BucketSelector from 'src/dataExplorer/components/BucketSelector'
+import {BucketSelector} from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldSelector from 'src/dataExplorer/components/FieldSelector'
 import TagSelector from 'src/dataExplorer/components/TagSelector'
 import SchemaBrowserHeading from 'src/dataExplorer/components/SchemaBrowserHeading'
+import {DBRPSelector} from 'src/dataExplorer/components/DBRPSelector'
 
 // Context
 import {
@@ -35,11 +36,15 @@ const FieldsTags: FC = () => {
 
   useEffect(() => {
     setSearchTerm('')
-  }, [selectedBucket, selectedMeasurement])
+    // setSearchTerm will cause infinite re-rendering if added to the dependency list
+  }, [selectedBucket, selectedMeasurement]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSearchFieldsTags = (searchTerm: string): void => {
-    setSearchTerm(searchTerm)
-  }
+  const handleSearchFieldsTags = useCallback(
+    (searchTerm: string): void => {
+      setSearchTerm(searchTerm)
+    },
+    [setSearchTerm]
+  )
 
   return useMemo(() => {
     if (!selectedBucket || !selectedMeasurement) {
@@ -58,7 +63,7 @@ const FieldsTags: FC = () => {
         <TagSelector />
       </div>
     )
-  }, [selectedBucket, selectedMeasurement, searchTerm])
+  }, [selectedBucket, selectedMeasurement, searchTerm, handleSearchFieldsTags])
 }
 
 const Schema: FC = () => {
@@ -74,11 +79,13 @@ const Schema: FC = () => {
         <TagsProvider scope={scope}>
           <ScriptQueryBuilderProvider>
             <BucketProvider scope={scope} omitSampleData>
+              {/* DBRPProvider is in upstream */}
               <div className="scroll--container">
                 <DapperScrollbars>
                   <div className="schema-browser" data-testid="schema-browser">
                     <SchemaBrowserHeading />
                     <BucketSelector />
+                    <DBRPSelector />
                     <div className="container-side-bar">
                       <MeasurementSelector />
                       <FieldsTags />
@@ -94,4 +101,4 @@ const Schema: FC = () => {
   )
 }
 
-export default Schema
+export {Schema}

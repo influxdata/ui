@@ -16,6 +16,7 @@ import {TagsContext} from 'src/dataExplorer/context/tags'
 import {debouncer} from 'src/dataExplorer/shared/utils'
 // Types
 import {Bucket, TagKeyValuePair} from 'src/types'
+import {DBRP} from 'src/client'
 
 const DEFAULT_SELECTED_TAG_VALUES: SelectedTagValues = {}
 interface SelectedTagValues {
@@ -29,10 +30,13 @@ interface ScriptQueryBuilderContextType {
 
   // Schema
   selectedBucket: Bucket
+  // only for InfluxQL, a DBRP in InfluxQL is equivalent to a bucket in Flux/SQL
+  selectedDBRP: DBRP
   selectedMeasurement: string
   selectedTagValues: SelectedTagValues
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
+  selectDBRP: (dbrp: DBRP, bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void
   selectField: (field: string) => void
   selectTagValue: (tagKey: string, tagValue: string) => void
@@ -46,10 +50,12 @@ const DEFAULT_CONTEXT: ScriptQueryBuilderContextType = {
 
   // Schema
   selectedBucket: null,
+  selectedDBRP: null,
   selectedMeasurement: '',
   selectedTagValues: DEFAULT_SELECTED_TAG_VALUES,
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
+  selectDBRP: (_d: DBRP, _b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
   selectField: (_f: string) => {},
   selectTagValue: (_k: string, _v: string) => {},
@@ -100,7 +106,10 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
         setSelectedTagValues(_selectedTagValues)
       }
     }
-  }, [selection.bucket])
+    // pass an empty array ([]) as the dependency list to
+    // run an effect and clean it up only once (on mount and unmount),
+    // https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setSelectedTagValues(transformSessionTagValuesToLocal(selection.tagValues))
@@ -112,6 +121,18 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
 
   const handleSelectBucket = (bucket: Bucket): void => {
     setSelection({bucket, measurement: '', fields: [], tagValues: []})
+
+    // Reset measurement, tags, fields, selected tag values
+    resetFields()
+    resetTags()
+    setSelectedTagValues(DEFAULT_SELECTED_TAG_VALUES)
+
+    // Fetch measurement values
+    getMeasurements(bucket)
+  }
+
+  const handleSelectDBRP = (dbrp: DBRP, bucket: Bucket): void => {
+    setSelection({dbrp, bucket, measurement: '', fields: [], tagValues: []})
 
     // Reset measurement, tags, fields, selected tag values
     resetFields()
@@ -205,10 +226,12 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
 
           // Schema
           selectedBucket: selection.bucket,
+          selectedDBRP: selection.dbrp,
           selectedMeasurement: selection.measurement,
           selectedTagValues,
           searchTerm,
           selectBucket: handleSelectBucket,
+          selectDBRP: handleSelectDBRP,
           selectMeasurement: handleSelectMeasurement,
           selectField: handleSelectField,
           selectTagValue: handleSelectTagValue,

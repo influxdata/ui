@@ -17,6 +17,12 @@ import {
   Overlay,
   ComponentStatus,
 } from '@influxdata/clockface'
+import {ResultsPane} from 'src/dataExplorer/components/ResultsPane'
+import Sidebar from 'src/dataExplorer/components/Sidebar'
+import {Schema} from 'src/dataExplorer/components/Schema'
+import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
+
+// Contexts
 import {QueryProvider} from 'src/shared/contexts/query'
 import {EditorProvider} from 'src/shared/contexts/editor'
 import {ResultsProvider, ResultsContext} from 'src/dataExplorer/context/results'
@@ -30,18 +36,20 @@ import {
   PersistanceProvider,
   PersistanceContext,
 } from 'src/dataExplorer/context/persistance'
-import {LanguageType} from 'src/dataExplorer/components/resources'
-import {ResultsPane} from 'src/dataExplorer/components/ResultsPane'
-import Sidebar from 'src/dataExplorer/components/Sidebar'
-import Schema from 'src/dataExplorer/components/Schema'
-import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 import {QueryContext} from 'src/shared/contexts/query'
+import {DBRPContext, DBRPProvider} from 'src/shared/contexts/dbrps'
+
+// Utilies
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
-import {RemoteDataState} from 'src/types'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+
+// Types
+import {RemoteDataState} from 'src/types'
+import {QueryScope} from 'src/shared/contexts/query'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Styles
 import './ScriptQueryBuilder.scss'
@@ -66,6 +74,7 @@ const ScriptQueryBuilder: FC = () => {
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const {clear: clearViewOptions} = useContext(ResultsViewContext)
+  const {hasDBRPs} = useContext(DBRPContext)
   const org = useSelector(getOrg)
   const isNewIOxOrg =
     useSelector(selectIsNewIOxOrg) &&
@@ -160,7 +169,7 @@ const ScriptQueryBuilder: FC = () => {
                               {option}
                             </Dropdown.Item>
                           ))}
-                        {isFlagEnabled('influxqlUI') ? (
+                        {isFlagEnabled('influxqlUI') && hasDBRPs() ? (
                           <Dropdown.Item
                             className={`script-dropdown__${LanguageType.INFLUXQL}`}
                             key={LanguageType.INFLUXQL}
@@ -260,16 +269,26 @@ const ScriptQueryBuilder: FC = () => {
   )
 }
 
-export default () => (
-  <QueryProvider>
-    <ResultsProvider>
-      <ResultsViewProvider>
-        <PersistanceProvider>
-          <ChildResultsProvider>
-            <ScriptQueryBuilder />
-          </ChildResultsProvider>
-        </PersistanceProvider>
-      </ResultsViewProvider>
-    </ResultsProvider>
-  </QueryProvider>
-)
+export default () => {
+  const org = useSelector(getOrg)
+  const scope = {
+    org: org.id,
+    region: window.location.origin,
+  } as QueryScope
+
+  return (
+    <QueryProvider>
+      <ResultsProvider>
+        <ResultsViewProvider>
+          <DBRPProvider scope={scope}>
+            <PersistanceProvider>
+              <ChildResultsProvider>
+                <ScriptQueryBuilder />
+              </ChildResultsProvider>
+            </PersistanceProvider>
+          </DBRPProvider>
+        </ResultsViewProvider>
+      </ResultsProvider>
+    </QueryProvider>
+  )
+}

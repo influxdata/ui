@@ -15,6 +15,7 @@ const setup = (override = {}) => {
     ...defaultOnboardingStepProps,
     orgID: '',
     bucketID: '',
+    token: '',
     ...override,
   }
 

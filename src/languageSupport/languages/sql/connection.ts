@@ -6,10 +6,7 @@ import {
   DEFAULT_SQL_EDITOR_TEXT,
   CompositionSelection,
 } from 'src/dataExplorer/context/persistance'
-import {
-  SelectableDurationTimeRange,
-  TimeRange,
-} from 'src/types'
+import {SelectableDurationTimeRange, TimeRange} from 'src/types'
 
 // Utils
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'

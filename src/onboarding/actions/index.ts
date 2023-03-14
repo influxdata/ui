@@ -5,6 +5,8 @@ import {get} from 'lodash'
 import {StepStatus} from 'src/shared/constants/wizard'
 import {SetupSuccess, SetupError} from 'src/shared/copy/notifications'
 
+import {CLOUD} from 'src/shared/constants'
+
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 
@@ -91,7 +93,9 @@ export const setupAdmin =
         throw new Error(response.data.message)
       }
 
-      dispatch(setToken(response.data.auth.token))
+      if (!CLOUD) {
+        dispatch(setToken(response.data.auth.token))
+      }
 
       const {id: orgID} = response.data.org
       const {id: bucketID} = response.data.bucket

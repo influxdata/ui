@@ -74,22 +74,24 @@ class CompletionStep extends PureComponent<Props> {
           <DapperScrollbars autoHide={false}>
             <div className="wizard-step--scroll-content">
               <h3 className="wizard-step--title">You are ready to go!</h3>
-              <FlexBox
-                direction={FlexDirection.Column}
-                margin={ComponentSize.Large}
-                alignItems={AlignItems.Stretch}
-              >
-                <Alert
-                  icon={IconFont.AlertTriangle}
-                  color={ComponentColor.Primary}
+              {CLOUD && (
+                <FlexBox
+                  direction={FlexDirection.Column}
+                  margin={ComponentSize.Large}
+                  alignItems={AlignItems.Stretch}
                 >
-                  <p>Make sure to copy your operator API token now.</p>
-                  This token enables superuser privileges like creating users,
-                  orgs, etc. You won't be able to see it again!
-                </Alert>
+                  <Alert
+                    icon={IconFont.AlertTriangle}
+                    color={ComponentColor.Primary}
+                  >
+                    <p>Make sure to copy your operator API token now.</p>
+                    This token enables superuser privileges like creating users,
+                    orgs, etc. You won't be able to see it again!
+                  </Alert>
 
-                <CodeSnippet text={this.props.token} type="Token" />
-              </FlexBox>
+                  <CodeSnippet text={this.props.token} type="Token" />
+                </FlexBox>
+              )}
               <h5 className="wizard-step--sub-title">
                 Your InfluxDB has 1 organization, 1 user, and 1 bucket.
               </h5>

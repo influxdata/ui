@@ -74,7 +74,7 @@ class CompletionStep extends PureComponent<Props> {
           <DapperScrollbars autoHide={false}>
             <div className="wizard-step--scroll-content">
               <h3 className="wizard-step--title">You are ready to go!</h3>
-              {CLOUD && (
+              {!CLOUD && (
                 <FlexBox
                   direction={FlexDirection.Column}
                   margin={ComponentSize.Large}

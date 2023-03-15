@@ -5,6 +5,8 @@ import {get} from 'lodash'
 import {StepStatus} from 'src/shared/constants/wizard'
 import {SetupSuccess, SetupError} from 'src/shared/copy/notifications'
 
+import {CLOUD} from 'src/shared/constants'
+
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 
@@ -20,6 +22,7 @@ export type Action =
   | SetStepStatus
   | SetOrganizationID
   | SetBucketID
+  | SetToken
 
 interface SetSetupParams {
   type: 'SET_SETUP_PARAMS'
@@ -69,6 +72,16 @@ export const setBucketID = (bucketID: string): SetBucketID => ({
   payload: {bucketID},
 })
 
+interface SetToken {
+  type: 'SET_OPERATOR_TOKEN'
+  payload: {token: string}
+}
+
+export const setToken = (token: string): SetToken => ({
+  type: 'SET_OPERATOR_TOKEN',
+  payload: {token},
+})
+
 export const setupAdmin =
   (params: OnboardingRequest): AppThunk<Promise<boolean>> =>
   async dispatch => {
@@ -78,6 +91,10 @@ export const setupAdmin =
 
       if (response.status !== 201) {
         throw new Error(response.data.message)
+      }
+
+      if (!CLOUD) {
+        dispatch(setToken(response.data.auth.token))
       }
 
       const {id: orgID} = response.data.org

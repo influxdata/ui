@@ -7,6 +7,15 @@ import ResourceFetcher from 'src/shared/components/resource_fetcher'
 import CompletionAdvancedButton from 'src/onboarding/components/CompletionAdvancedButton'
 import CompletionQuickStartButton from 'src/onboarding/components/CompletionQuickStartButton'
 
+import {
+  FlexBox,
+  Alert,
+  IconFont,
+  AlignItems,
+  FlexDirection,
+} from '@influxdata/clockface'
+import CodeSnippet from 'src/shared/components/CodeSnippet'
+
 // Constants
 import {
   QuickstartScraperCreationSuccess,
@@ -43,6 +52,7 @@ if (!CLOUD) {
 interface Props extends OnboardingStepProps {
   orgID: string
   bucketID: string
+  token: string
 }
 
 @ErrorHandling
@@ -64,6 +74,24 @@ class CompletionStep extends PureComponent<Props> {
           <DapperScrollbars autoHide={false}>
             <div className="wizard-step--scroll-content">
               <h3 className="wizard-step--title">You are ready to go!</h3>
+              {!CLOUD && (
+                <FlexBox
+                  direction={FlexDirection.Column}
+                  margin={ComponentSize.Large}
+                  alignItems={AlignItems.Stretch}
+                >
+                  <Alert
+                    icon={IconFont.AlertTriangle}
+                    color={ComponentColor.Primary}
+                  >
+                    <p>Make sure to copy your operator API token now.</p>
+                    This token enables superuser privileges like creating users,
+                    orgs, etc. You won't be able to see it again!
+                  </Alert>
+
+                  <CodeSnippet text={this.props.token} type="Token" />
+                </FlexBox>
+              )}
               <h5 className="wizard-step--sub-title">
                 Your InfluxDB has 1 organization, 1 user, and 1 bucket.
               </h5>

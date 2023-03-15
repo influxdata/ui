@@ -6,17 +6,14 @@ import {
   DEFAULT_SQL_EDITOR_TEXT,
   CompositionSelection,
 } from 'src/dataExplorer/context/persistance'
-import {
-  SelectableDurationTimeRange,
-  TagKeyValuePair,
-  TimeRange,
-} from 'src/types'
+import {SelectableDurationTimeRange, TimeRange} from 'src/types'
 
 // Utils
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {rangeToInterval as buildTimeRange} from 'src/shared/utils/sqlInterval'
 import {notify} from 'src/shared/actions/notifications'
 import {compositionEnded} from 'src/shared/copy/notifications'
+import {groupedTagValues} from 'src/languageSupport/languages/agnostic/utils'
 
 const castType = (value, _typ = null) => {
   // Outstanding tech debt.
@@ -24,17 +21,6 @@ const castType = (value, _typ = null) => {
   // It only supports tagValues of type string.
   return `'${value}'`
 }
-
-const groupedTagValues = (
-  tagValues: TagKeyValuePair[]
-): {[key: string]: string[]} =>
-  tagValues.reduce(
-    (acc, {key, value}) => ({
-      ...acc,
-      [key]: (acc[key] || []).concat([value]),
-    }),
-    {}
-  )
 
 export class ConnectionManager extends AgnosticConnectionManager {
   private _timeRange: TimeRange = DEFAULT_TIME_RANGE

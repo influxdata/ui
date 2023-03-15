@@ -18,7 +18,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {ResultsPane} from 'src/dataExplorer/components/ResultsPane'
-import Sidebar from 'src/dataExplorer/components/Sidebar'
+import {Sidebar} from 'src/dataExplorer/components/Sidebar'
 import {Schema} from 'src/dataExplorer/components/Schema'
 import SaveAsScript from 'src/dataExplorer/components/SaveAsScript'
 
@@ -39,7 +39,7 @@ import {
 import {QueryContext} from 'src/shared/contexts/query'
 import {DBRPContext, DBRPProvider} from 'src/shared/contexts/dbrps'
 
-// Utilies
+// Utils
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 import {selectIsNewIOxOrg} from 'src/shared/selectors/app'
@@ -126,6 +126,91 @@ const ScriptQueryBuilder: FC = () => {
   const filterOutFluxInIOx = option =>
     isNewIOxOrg ? option !== LanguageType.FLUX : true
 
+  const menuIOx = (onCollapse: () => void) => (
+    <Dropdown.Menu onCollapse={onCollapse}>
+      {[LanguageType.FLUX, LanguageType.SQL]
+        .filter(filterOutFluxInIOx)
+        .map(option => (
+          <Dropdown.Item
+            className={`script-dropdown__${option}`}
+            key={option}
+            onClick={() => handleSelectDropdown(option)}
+            selected={resource?.language === option}
+            testID={`script-dropdown__${option}`}
+          >
+            {option}
+          </Dropdown.Item>
+        ))}
+      {isFlagEnabled('influxqlUI') && hasDBRPs() ? (
+        <Dropdown.Item
+          className={`script-dropdown__${LanguageType.INFLUXQL}`}
+          key={LanguageType.INFLUXQL}
+          onClick={() => handleSelectDropdown(LanguageType.INFLUXQL)}
+          selected={resource?.language === LanguageType.INFLUXQL}
+          testID={`script-dropdown__${LanguageType.INFLUXQL}`}
+        >
+          {LanguageType.INFLUXQL}
+        </Dropdown.Item>
+      ) : null}
+    </Dropdown.Menu>
+  )
+
+  const menuTSM = (onCollapse: () => void) => (
+    <Dropdown.Menu onCollapse={onCollapse}>
+      {[LanguageType.FLUX].map(option => (
+        <Dropdown.Item
+          className={`script-dropdown__${option}`}
+          key={option}
+          onClick={() => handleSelectDropdown(option)}
+          selected={resource?.language === option}
+          testID={`script-dropdown__${option}`}
+        >
+          {option}
+        </Dropdown.Item>
+      ))}
+      {isFlagEnabled('influxqlUI') && hasDBRPs() ? (
+        <Dropdown.Item
+          className={`script-dropdown__${LanguageType.INFLUXQL}`}
+          key={LanguageType.INFLUXQL}
+          onClick={() => handleSelectDropdown(LanguageType.INFLUXQL)}
+          selected={resource?.language === LanguageType.INFLUXQL}
+          testID={`script-dropdown__${LanguageType.INFLUXQL}`}
+        >
+          {LanguageType.INFLUXQL}
+        </Dropdown.Item>
+      ) : null}
+    </Dropdown.Menu>
+  )
+
+  const button = (active: boolean, onClick) => (
+    <Dropdown.Button
+      active={active}
+      onClick={onClick}
+      testID="script-query-builder--new-script"
+    >
+      <>
+        <Icon glyph={IconFont.Plus_New} />
+        &nbsp;New Script
+      </>
+    </Dropdown.Button>
+  )
+
+  const tsmNewScriptDropDown =
+    isFlagEnabled('influxqlUI') && hasDBRPs() ? (
+      <Dropdown
+        menu={menuTSM}
+        button={button}
+        testID="select-option-dropdown"
+      />
+    ) : (
+      <Button
+        onClick={handleNewScript}
+        text="New Script"
+        icon={IconFont.Plus_New}
+        testID="script-query-builder--new-script"
+      />
+    )
+
   return (
     <EditorProvider>
       <SidebarProvider>
@@ -154,59 +239,12 @@ const ScriptQueryBuilder: FC = () => {
               <div style={{display: 'flex'}}>
                 {isIoxOrg ? (
                   <Dropdown
-                    menu={onCollapse => (
-                      <Dropdown.Menu onCollapse={onCollapse}>
-                        {[LanguageType.FLUX, LanguageType.SQL]
-                          .filter(filterOutFluxInIOx)
-                          .map(option => (
-                            <Dropdown.Item
-                              className={`script-dropdown__${option}`}
-                              key={option}
-                              onClick={() => handleSelectDropdown(option)}
-                              selected={resource?.language === option}
-                              testID={`script-dropdown__${option}`}
-                            >
-                              {option}
-                            </Dropdown.Item>
-                          ))}
-                        {isFlagEnabled('influxqlUI') && hasDBRPs() ? (
-                          <Dropdown.Item
-                            className={`script-dropdown__${LanguageType.INFLUXQL}`}
-                            key={LanguageType.INFLUXQL}
-                            onClick={() =>
-                              handleSelectDropdown(LanguageType.INFLUXQL)
-                            }
-                            selected={
-                              resource?.language === LanguageType.INFLUXQL
-                            }
-                            testID={`script-dropdown__${LanguageType.INFLUXQL}`}
-                          >
-                            {LanguageType.INFLUXQL}
-                          </Dropdown.Item>
-                        ) : null}
-                      </Dropdown.Menu>
-                    )}
-                    button={(active, onClick) => (
-                      <Dropdown.Button
-                        active={active}
-                        onClick={onClick}
-                        testID="script-query-builder--new-script"
-                      >
-                        <>
-                          <Icon glyph={IconFont.Plus_New} />
-                          &nbsp;New Script
-                        </>
-                      </Dropdown.Button>
-                    )}
+                    menu={menuIOx}
+                    button={button}
                     testID="select-option-dropdown"
                   />
                 ) : (
-                  <Button
-                    onClick={handleNewScript}
-                    text="New Script"
-                    icon={IconFont.Plus_New}
-                    testID="script-query-builder--new-script"
-                  />
+                  tsmNewScriptDropDown
                 )}
                 {CLOUD && (
                   <>

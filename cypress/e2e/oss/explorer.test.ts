@@ -26,19 +26,13 @@ describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() =>
-        cy
-          .setFeatureFlags({
-            newDataExplorer: true,
+        cy.get('@org').then(({id}: Organization) => {
+          cy.fixture('routes').then(({orgs, explorer}) => {
+            cy.visit(`${orgs}/${id}${explorer}`)
+            cy.getByTestID('tree-nav').should('be.visible')
+            cy.switchToDataExplorer('old')
           })
-          .then(() =>
-            cy.get('@org').then(({id}: Organization) => {
-              cy.fixture('routes').then(({orgs, explorer}) => {
-                cy.visit(`${orgs}/${id}${explorer}`)
-                cy.getByTestID('tree-nav').should('be.visible')
-                cy.switchToDataExplorer('old')
-              })
-            })
-          )
+        })
       )
     )
   })

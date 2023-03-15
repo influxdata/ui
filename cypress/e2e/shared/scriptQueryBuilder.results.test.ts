@@ -234,7 +234,6 @@ describe('Script Builder', () => {
       describe('for larger payloads', () => {
         beforeEach(() => {
           cy.setFeatureFlags({
-            newDataExplorer: true,
             enableFluxInScriptBuilder: true,
             dataExplorerCsvLimit: 10000 as any,
           })

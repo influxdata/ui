@@ -23,6 +23,7 @@ describe('writing queries and making graphs using Data Explorer', () => {
                 route = `${orgs}/${id}${explorer}`
                 cy.visit(route)
                 cy.getByTestID('tree-nav').should('be.visible')
+                cy.switchToDataExplorer('old')
               })
             })
           })
@@ -302,6 +303,7 @@ describe('writing queries and making graphs using Data Explorer', () => {
       cy.get<Organization>('@org').then(({id, name}) => {
         cy.createBucket(id, name, 'newBucket')
       })
+      cy.reload()
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
           cy.getByTestID(defaultBucketListSelector).should('be.visible')

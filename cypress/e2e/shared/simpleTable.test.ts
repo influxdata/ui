@@ -14,6 +14,7 @@ describe('simple table interactions', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${orgID}${explorer}`)
+          cy.switchToDataExplorer('old')
         })
         cy.getByTestID('tree-nav')
         cy.createBucket(orgID, name, simpleLarge)

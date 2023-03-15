@@ -21,6 +21,7 @@ describe('Data Explorer - general functionality - TSM', () => {
                 route = `${orgs}/${id}${explorer}`
                 cy.visit(route)
                 cy.getByTestID('tree-nav').should('be.visible')
+                cy.switchToDataExplorer('old')
               })
             })
           })

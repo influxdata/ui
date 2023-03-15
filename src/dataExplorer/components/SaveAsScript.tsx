@@ -1,4 +1,9 @@
+// Libraries
 import React, {FC, useContext, useCallback, ChangeEvent, useState} from 'react'
+import {useHistory} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
+
+// Components
 import {
   Button,
   ButtonShape,
@@ -13,30 +18,37 @@ import {
   Overlay,
   SquareButton,
 } from '@influxdata/clockface'
-import {useHistory} from 'react-router-dom'
+import OpenScript from 'src/dataExplorer/components/OpenScript'
+import {DeleteScript} from 'src/dataExplorer/components/DeleteScript'
+import {LanguageType} from 'src/dataExplorer/components/resources'
+import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
+
+// Contexts
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/context/results'
 import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
+
+// Types
 import {RemoteDataState} from 'src/types'
-import './SaveAsScript.scss'
 import {OverlayType} from './ScriptQueryBuilder'
-import {useDispatch, useSelector} from 'react-redux'
+
+// Utils
 import {notify} from 'src/shared/actions/notifications'
 import {
   scriptSaveFail,
   scriptSaveSuccess,
 } from 'src/shared/copy/notifications/categories/scripts'
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
-import OpenScript from 'src/dataExplorer/components/OpenScript'
-import {DeleteScript} from 'src/dataExplorer/components/DeleteScript'
-import {LanguageType} from 'src/dataExplorer/components/resources'
-import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
-import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 import {
   copyToClipboardFailed,
   copyToClipboardSuccess,
 } from 'src/shared/copy/notifications'
-import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+import './SaveAsScript.scss'
+
 interface Props {
   language: LanguageType
   onClose: () => void
@@ -99,7 +111,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
     setResult(null)
     clearViewOptions()
 
-    if (isIoxOrg) {
+    if (isIoxOrg || isFlagEnabled('influxqlUI')) {
       history.replace(
         `/orgs/${org.id}/data-explorer/from/script?language=${language}&${SCRIPT_EDITOR_PARAMS}`
       )

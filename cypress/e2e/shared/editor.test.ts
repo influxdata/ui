@@ -101,7 +101,6 @@ describe('Editor+LSP communication', () => {
       cy.flush()
       cy.signin()
       cy.setFeatureFlags({
-        newDataExplorer: true,
         saveAsScript: true,
         enableFluxInScriptBuilder: true,
       })

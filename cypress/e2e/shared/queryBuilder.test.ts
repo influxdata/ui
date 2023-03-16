@@ -36,12 +36,15 @@ describe('The Query Builder', () => {
   })
 
   describe('from the Data Explorer', () => {
-    it('creates a query, edits it to add another field, then views its results with pride and satisfaction', () => {
+    beforeEach(() => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
         cy.getByTestID('tree-nav')
+        cy.switchToDataExplorer('old')
       })
+    })
 
+    it('creates a query, edits it to add another field, then views its results with pride and satisfaction', () => {
       cy.contains('mem').click('right') // users sometimes click in random spots
       cy.contains('active').click('bottomLeft')
 
@@ -101,11 +104,6 @@ describe('The Query Builder', () => {
     })
 
     it('when it creates a query, the query has an aggregate window, clicking around aggregate window selections work', () => {
-      cy.get('@org').then((org: Organization) => {
-        cy.visit(`orgs/${org.id}/data-explorer`)
-        cy.getByTestID('tree-nav')
-      })
-
       cy.contains('mem').click('right') // users sometimes click in random spots
       cy.contains('active').click('bottomLeft')
 
@@ -143,11 +141,6 @@ describe('The Query Builder', () => {
     })
 
     it('can create a bucket from the buckets list', () => {
-      cy.get('@org').then((org: Organization) => {
-        cy.visit(`orgs/${org.id}/data-explorer`)
-        cy.getByTestID('tree-nav')
-      })
-
       const newBucketName = '٩(｡•́‿•̀｡)۶'
 
       cy.getByTestID('selector-list add-bucket').click()
@@ -169,6 +162,7 @@ describe('The Query Builder', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
         cy.getByTestID('tree-nav')
+        cy.switchToDataExplorer('old')
       })
 
       cy.contains('mem').click('left')

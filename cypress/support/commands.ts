@@ -943,7 +943,6 @@ export const scriptsLoginWithFlags = (flags): Cypress.Chainable<any> => {
         .setFeatureFlags({
           showOldDataExplorerInNewIOx: false,
           schemaComposition: true,
-          newDataExplorer: true,
           saveAsScript: true,
           enableFluxInScriptBuilder: true,
           ...flags,

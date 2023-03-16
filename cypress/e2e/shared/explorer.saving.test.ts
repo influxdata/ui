@@ -19,6 +19,7 @@ describe('Data Explorer saving', () => {
               cy.fixture('routes').then(({orgs}) => {
                 cy.visit(`${orgs}/${id}/data-explorer`)
                 cy.getByTestID('tree-nav').should('be.visible')
+                cy.switchToDataExplorer('old')
               })
             })
           })

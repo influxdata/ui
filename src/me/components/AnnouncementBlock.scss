@@ -1,0 +1,34 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.announcement-block {
+  .cf-panel {
+    background-color: transparent;
+  }
+
+  .announcement-block--type {
+    display: inline-flex;
+    align-self: stretch;
+    align-items: flex-start;
+
+    .announcement-block--type-icon {
+      color: $cf-grey-55;
+      font-size: $cf-text-base-1;
+      margin-top: $cf-space-2xs;
+    }
+  }
+
+  .announcement-block--panel {
+    .announcement-block--panel-header {
+      padding: $cf-space-2xs;
+      color: $cf-grey-95;
+    }
+
+    .announcement-block--panel-body {
+      color: $cf-grey-55;
+    }
+
+    .announcement-block--panel-footer {
+      border: none;
+    }
+  }
+}

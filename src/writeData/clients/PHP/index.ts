@@ -9,7 +9,9 @@ import writeArray from 'src/writeData/clients/PHP/write.2.example'
 import writeLP from 'src/writeData/clients/PHP/write.0.example'
 import writePoint from 'src/writeData/clients/PHP/write.1.example'
 import {ClientRegistration} from 'src/writeData'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
 export class Client implements ClientRegistration {
   id = 'php'
   name = 'PHP'
@@ -30,10 +32,10 @@ export class Client implements ClientRegistration {
       code: writeArray,
     },
   ]
-  execute = execute
-  query = query
+  execute = isTSMOnboarding && execute
+  query = isTSMOnboarding && query
   dispose = dispose
-  executeFull = executeFull
+  executeFull = isTSMOnboarding && executeFull
   querySanitize = (query: string) => {
     return query.replace(/"/g, '\\"')
   }

@@ -8,6 +8,7 @@ import {searchClients} from 'src/writeData'
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
+import { isOrgIOx } from 'src/organizations/selectors'
 
 // Contexts
 import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
@@ -35,6 +36,13 @@ const ClientLibrarySection = () => {
     'javascript-node': 'nodejs',
     python: 'python',
   }
+
+  const SqlWrite = {
+    go: 'golang',
+    python: 'python'
+  }
+
+  const isIOxOrg = useSelector(isOrgIOx)
 
   if (!items.length) {
     return null
@@ -73,6 +81,12 @@ const ClientLibrarySection = () => {
             )
           }
 
+          let capabilityTag = isIOxOrg && 'write'
+          
+          if (SqlWrite.hasOwnProperty(`${item.id}`)) {
+            capabilityTag = 'write | query'
+          }
+
           return (
             <WriteDataItem
               key={item.id}
@@ -80,6 +94,7 @@ const ClientLibrarySection = () => {
               name={item.name}
               image={item.logo}
               onClick={goto}
+              tag={capabilityTag}
             />
           )
         })}

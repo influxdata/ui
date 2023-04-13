@@ -26,9 +26,11 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS_ARDUINO,
+  HOMEPAGE_NAVIGATION_STEPS_ARDUINO_WRITE_ONLY,
 } from 'src/homepageExperience/utils'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
 
@@ -65,12 +67,16 @@ export class ArduinoWizard extends PureComponent<{}, State> {
     this.setState({finalFeedback: feedbackValue})
   }
 
+  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+    ? HOMEPAGE_NAVIGATION_STEPS_ARDUINO_WRITE_ONLY
+    : HOMEPAGE_NAVIGATION_STEPS_ARDUINO
+
   handleNextClick = () => {
     this.setState(
       {
         currentStep: Math.min(
           this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
+          this.subwayNavSteps.length
         ),
       },
       () => {
@@ -79,10 +85,10 @@ export class ArduinoWizard extends PureComponent<{}, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 2].name
+              this.subwayNavSteps[this.state.currentStep - 2].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -100,10 +106,10 @@ export class ArduinoWizard extends PureComponent<{}, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep].name
+              this.subwayNavSteps[this.state.currentStep].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS_ARDUINO[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -119,7 +125,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
       {},
       {
         currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS_ARDUINO[clickedStep - 1].name
+          this.subwayNavSteps[clickedStep - 1].name
         ),
       }
     )
@@ -150,7 +156,19 @@ export class ArduinoWizard extends PureComponent<{}, State> {
         return <WriteData bucket={this.state.selectedBucket} />
       }
       case 6: {
-        return <ExecuteQuery bucket={this.state.selectedBucket} />
+        if (isFlagEnabled('ioxOnboarding')) {
+          return (
+            <Finish
+              wizardEventName="arduinoWizard"
+              markStepAsCompleted={this.handleMarkStepAsCompleted}
+              finishStepCompleted={this.state.finishStepCompleted}
+              finalFeedback={this.state.finalFeedback}
+              setFinalFeedback={this.setFinalFeedback}
+            />
+          )
+        } else {
+          return <ExecuteQuery bucket={this.state.selectedBucket} />
+        }
       }
       case 7: {
         return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
@@ -186,7 +204,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
-                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS_ARDUINO}
+                  navigationSteps={this.subwayNavSteps}
                   settingUpIcon={ArduinoIcon}
                   settingUpText="Arduino"
                   setupTime="5 minutes"
@@ -201,7 +219,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
                     verticallyCentered:
                       this.state.currentStep === 1 ||
                       this.state.currentStep ===
-                        HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length,
+                        this.subwayNavSteps.length,
                   }
                 )}
               >
@@ -230,7 +248,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
                   color={ComponentColor.Primary}
                   status={
                     this.state.currentStep <
-                    HOMEPAGE_NAVIGATION_STEPS_ARDUINO.length
+                    this.subwayNavSteps.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

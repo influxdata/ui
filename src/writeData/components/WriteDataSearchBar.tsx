@@ -15,7 +15,7 @@ const WriteDataSearchBar: FC = () => {
     <SearchWidget
       placeholderText="Search data writing methods..."
       searchTerm={searchTerm}
-      size={ComponentSize.Large}
+      size={ComponentSize.Small}
       onSearch={setSearchTerm}
       autoFocus={true}
       testID="write-data--search"

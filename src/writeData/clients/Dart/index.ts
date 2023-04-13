@@ -8,7 +8,9 @@ import query from 'src/writeData/clients/Dart/query.example'
 import writeLP from 'src/writeData/clients/Dart/write.0.example'
 import writePoint from 'src/writeData/clients/Dart/write.1.example'
 import {ClientRegistration} from 'src/writeData'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
 export class Client implements ClientRegistration {
   id = 'dart'
   name = 'Dart'
@@ -25,8 +27,8 @@ export class Client implements ClientRegistration {
       code: writePoint,
     },
   ]
-  execute = execute
-  query = query
-  executeFull = executeFull
+  execute = isTSMOnboarding && execute
+  query = isTSMOnboarding && query
+  executeFull = isTSMOnboarding && executeFull
   dispose = dispose
 }

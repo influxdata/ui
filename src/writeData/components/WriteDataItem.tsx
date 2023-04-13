@@ -19,12 +19,14 @@ interface Props {
   selected?: boolean
   onClick: any
   testID?: string
+  tag?: string
 }
 
 const WriteDataItem: FC<Props> = ({
   id,
   name,
   image,
+  tag,
   style,
   selected,
   onClick,
@@ -54,6 +56,7 @@ const WriteDataItem: FC<Props> = ({
         className="write-data--item"
       >
         <div className="write-data--item-thumb">{thumb}</div>
+        {tag && <div className='load-data-cards--tag'>{tag}</div>}
       </SelectableCard>
     </SquareGrid.Card>
   )

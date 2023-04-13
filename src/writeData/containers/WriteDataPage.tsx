@@ -11,6 +11,9 @@ import LoadDataTabbedPage from 'src/settings/components/LoadDataTabbedPage'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
+// Styles
+import 'src/writeData/containers/WriteDataPage.scss'
+
 interface WriteDataSearchContextType {
   searchTerm: string
   setSearchTerm: (searchTerm: string) => void
@@ -31,8 +34,10 @@ const WriteDataPage: FC = () => {
       <Page titleTag={pageTitleSuffixer(['Sources', 'Load Data'])}>
         <LoadDataHeader />
         <LoadDataTabbedPage activeTab="sources">
-          <WriteDataSearchBar />
-          <Page.Contents scrollable={true}>
+          <div className='write-data--search-bar'>
+            <WriteDataSearchBar />
+          </div>
+          <Page.Contents scrollable={true} className='write-data--scroll-section'>
             <WriteDataSections />
           </Page.Contents>
         </LoadDataTabbedPage>

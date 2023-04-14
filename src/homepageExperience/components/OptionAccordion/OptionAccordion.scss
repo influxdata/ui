@@ -54,4 +54,8 @@
 
 .option-accordion--dropdown {
   z-index: 1000;
+
+  .cf-dropdown--button {
+    min-width: $cf-space-3xl;
+  }
 }

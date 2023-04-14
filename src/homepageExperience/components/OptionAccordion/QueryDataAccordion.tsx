@@ -94,7 +94,7 @@ export const QueryDataAccordion: FC = () => {
                           size={ComponentSize.ExtraSmall}
                           onClick={onClick}
                         >
-                          Select Programming Language
+                          {language}
                         </Dropdown.Button>
                       )}
                       menu={onCollapse => (

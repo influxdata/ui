@@ -137,247 +137,156 @@ export const HomepageContentsTSM: FC = () => {
                 alignItems={AlignItems.Stretch}
                 margin={ComponentSize.Large}
               >
-                {isFlagEnabled('ioxOnboarding') ? (
-                  <>
-                    <h3>Write & query your data</h3>
-                    <Grid className="homepage-onboarding-grid">
-                      <Grid.Row>
-                        <Grid.Column widthLG={Columns.Six}>
-                          <Link
-                            to={golangLink}
-                            onClick={logGoWizardClick}
-                            className="homepage-write-data-tile"
-                            data-testid="homepage-wizard-language-tile--go"
-                          >
-                            <div className="tile-icon-text-wrapper">
-                              <div className="icon">{GoIcon}</div>
-                              <div>
-                                <h4>Go</h4>
-                                <h6>
-                                  Integrate with your own application code using
-                                  Golang.
-                                </h6>
-                              </div>
-                            </div>
-                          </Link>
-                        </Grid.Column>
-                        <Grid.Column widthLG={Columns.Six}>
-                          <Link
-                            to={pythonWizardLink}
-                            onClick={logPythonWizardClick}
-                            className="homepage-write-data-tile"
-                            data-testid="homepage-wizard-language-tile--python"
-                          >
-                            <div className="tile-icon-text-wrapper">
-                              <div className="icon">{PythonIcon}</div>
-                              <div>
-                                <h4>Python</h4>
-                                <h6>
-                                  Integrate with your own application code using
-                                  Python.
-                                </h6>
-                              </div>
-                            </div>
-                          </Link>
-                        </Grid.Column>
-                      </Grid.Row>
-                      <Grid.Row>
-                        <Grid.Column widthLG={Columns.Six}>
-                          <Link
-                            to={cliPageLink}
-                            onClick={logCLIButtonClick}
-                            className="homepage-write-data-tile"
-                            data-testid="homepage-wizard-tile--cli"
-                          >
-                            <div className="tile-icon-text-wrapper">
-                              <div className="icon">{CLIIcon}</div>
-                              <div>
-                                <h4>InfluxDB CLI</h4>
-                                <h6>
-                                  Write and query data using the InfluxDB
-                                  Command Line Interface. Supports CSV and Line
-                                  Protocol.
-                                </h6>
-                              </div>
-                            </div>
-                          </Link>
-                        </Grid.Column>
-                        <Grid.Column widthLG={Columns.Six}>
-                          <Link
-                            to={telegrafLink}
-                            onClick={logTelegrafButtonClick}
-                            className="homepage-write-data-tile"
-                            data-testid="homepage-wizard-tile--telegraf"
-                          >
-                            <div className="tile-icon-text-wrapper">
-                              <div className="icon">{TelegrafIcon}</div>
-                              <div>
-                                <h4>Server Agent (Telegraf)</h4>
-                                <h6>
-                                  Easily collect and write data using custom
-                                  stand-alone agent plugins
-                                </h6>
-                              </div>
-                            </div>
-                          </Link>
-                        </Grid.Column>
-                      </Grid.Row>
-                    </Grid>
-                  </>
-                ) : (
-                  <>
-                    <h5>
-                      Write and query data using the programming language of
-                      your choice
-                    </h5>
-                    <SquareGrid
-                      cardSize={squareGridCardSize}
-                      gutter={ComponentSize.Large}
-                    >
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={pythonWizardLink}
-                          style={linkStyle}
-                          onClick={logPythonWizardClick}
-                        >
-                          <div
-                            className="homepage-wizard-language-tile"
-                            data-testid="homepage-wizard-language-tile--python"
-                          >
-                            <h5>Python</h5>
-                            {PythonIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={javaScriptNodeLink}
-                          style={linkStyle}
-                          onClick={logNodeJSWizardClick}
-                        >
-                          <div className="homepage-wizard-language-tile">
-                            <h5>Node.js</h5>
-                            {NodejsIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={golangLink}
-                          style={linkStyle}
-                          onClick={logGoWizardClick}
-                        >
-                          <div className="homepage-wizard-language-tile">
-                            <h5>Go</h5>
-                            {GoIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={arduinoLink}
-                          style={linkStyle}
-                          onClick={logArduinoWizardClick}
-                        >
-                          <div
-                            className="homepage-wizard-language-tile"
-                            data-testid="homepage-wizard-language-tile--arduino"
-                          >
-                            <h5>Arduino</h5>
-                            {ArduinoIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                    </SquareGrid>
-                    <FlexBox justifyContent={JustifyContent.FlexStart}>
-                      <Link
-                        to={loadDataSourcesLink}
-                        onClick={logMoreButtonClick}
-                        style={inlineViewMoreStyle}
-                      >
-                        View more
-                      </Link>
-                    </FlexBox>
-                    <hr style={{marginTop: '8px'}} />
-                    {isFlagEnabled('subscriptionsUI') && (
-                      <Link
-                        to={mqttPageLink}
-                        style={linkStyle}
-                        onClick={logMQTTButtonClick}
-                      >
-                        <div
-                          className="homepage-write-data-tile"
-                          data-testid="homepage-wizard-tile--mqtt"
-                        >
-                          <div className="tile-icon-text-wrapper">
-                            <div className="icon">{MQTTIcon}</div>
-                            <div>
-                              <h4>Native MQTT</h4>
-                              <h6>
-                                Connect to your MQTT subscription in the cloud.
-                              </h6>
-                            </div>
-                          </div>
-
-                          <Icon
-                            glyph={IconFont.ArrowRight_New}
-                            className="arrow-button"
-                          />
-                        </div>
-                      </Link>
-                    )}
+                <h5>
+                  Write and query data using the programming language of your
+                  choice
+                </h5>
+                <SquareGrid
+                  cardSize={squareGridCardSize}
+                  gutter={ComponentSize.Large}
+                >
+                  <ResourceCard style={cardStyle}>
                     <Link
-                      to={cliPageLink}
+                      to={pythonWizardLink}
                       style={linkStyle}
-                      onClick={logCLIButtonClick}
+                      onClick={logPythonWizardClick}
                     >
                       <div
-                        className="homepage-write-data-tile"
-                        data-testid="homepage-wizard-tile--cli"
+                        className="homepage-wizard-language-tile"
+                        data-testid="homepage-wizard-language-tile--python"
                       >
-                        <div className="tile-icon-text-wrapper">
-                          <div className="icon">{CLIIcon}</div>
-                          <div>
-                            <h4>InfluxDB CLI</h4>
-                            <h6>
-                              Write and query data using the InfluxDB Command
-                              Line Interface. Supports CSV and Line Protocol.
-                            </h6>
-                          </div>
-                        </div>
-
-                        <Icon
-                          glyph={IconFont.ArrowRight_New}
-                          className="arrow-button"
-                        />
+                        <h5>Python</h5>
+                        {PythonIcon}
                       </div>
                     </Link>
+                  </ResourceCard>
+
+                  <ResourceCard style={cardStyle}>
                     <Link
-                      to={telegrafLink}
+                      to={javaScriptNodeLink}
                       style={linkStyle}
-                      onClick={logTelegrafButtonClick}
+                      onClick={logNodeJSWizardClick}
                     >
-                      <div className="homepage-write-data-tile">
-                        <div className="tile-icon-text-wrapper">
-                          <div className="icon">{TelegrafIcon}</div>
-                          <div>
-                            <h4>Server Agent (Telegraf)</h4>
-                            <h6>
-                              Easily collect and write data using custom
-                              stand-alone agent plugins
-                            </h6>
-                          </div>
-                        </div>
-
-                        <Icon
-                          glyph={IconFont.ArrowRight_New}
-                          className="arrow-button"
-                        />
+                      <div className="homepage-wizard-language-tile">
+                        <h5>Node.js</h5>
+                        {NodejsIcon}
                       </div>
                     </Link>
-                  </>
+                  </ResourceCard>
+                  <ResourceCard style={cardStyle}>
+                    <Link
+                      to={golangLink}
+                      style={linkStyle}
+                      onClick={logGoWizardClick}
+                    >
+                      <div className="homepage-wizard-language-tile">
+                        <h5>Go</h5>
+                        {GoIcon}
+                      </div>
+                    </Link>
+                  </ResourceCard>
+                  <ResourceCard style={cardStyle}>
+                    <Link
+                      to={arduinoLink}
+                      style={linkStyle}
+                      onClick={logArduinoWizardClick}
+                    >
+                      <div
+                        className="homepage-wizard-language-tile"
+                        data-testid="homepage-wizard-language-tile--arduino"
+                      >
+                        <h5>Arduino</h5>
+                        {ArduinoIcon}
+                      </div>
+                    </Link>
+                  </ResourceCard>
+                </SquareGrid>
+                <FlexBox justifyContent={JustifyContent.FlexStart}>
+                  <Link
+                    to={loadDataSourcesLink}
+                    onClick={logMoreButtonClick}
+                    style={inlineViewMoreStyle}
+                  >
+                    View more
+                  </Link>
+                </FlexBox>
+                <hr style={{marginTop: '8px'}} />
+                {isFlagEnabled('subscriptionsUI') && (
+                  <Link
+                    to={mqttPageLink}
+                    style={linkStyle}
+                    onClick={logMQTTButtonClick}
+                  >
+                    <div
+                      className="homepage-write-data-tile"
+                      data-testid="homepage-wizard-tile--mqtt"
+                    >
+                      <div className="tile-icon-text-wrapper">
+                        <div className="icon">{MQTTIcon}</div>
+                        <div>
+                          <h4>Native MQTT</h4>
+                          <h6>
+                            Connect to your MQTT subscription in the cloud.
+                          </h6>
+                        </div>
+                      </div>
+
+                      <Icon
+                        glyph={IconFont.ArrowRight_New}
+                        className="arrow-button"
+                      />
+                    </div>
+                  </Link>
                 )}
+                <Link
+                  to={cliPageLink}
+                  style={linkStyle}
+                  onClick={logCLIButtonClick}
+                >
+                  <div
+                    className="homepage-write-data-tile"
+                    data-testid="homepage-wizard-tile--cli"
+                  >
+                    <div className="tile-icon-text-wrapper">
+                      <div className="icon">{CLIIcon}</div>
+                      <div>
+                        <h4>InfluxDB CLI</h4>
+                        <h6>
+                          Write and query data using the InfluxDB Command Line
+                          Interface. Supports CSV and Line Protocol.
+                        </h6>
+                      </div>
+                    </div>
+
+                    <Icon
+                      glyph={IconFont.ArrowRight_New}
+                      className="arrow-button"
+                    />
+                  </div>
+                </Link>
+                <Link
+                  to={telegrafLink}
+                  style={linkStyle}
+                  onClick={logTelegrafButtonClick}
+                >
+                  <div className="homepage-write-data-tile">
+                    <div className="tile-icon-text-wrapper">
+                      <div className="icon">{TelegrafIcon}</div>
+                      <div>
+                        <h4>Server Agent (Telegraf)</h4>
+                        <h6>
+                          Easily collect and write data using custom stand-alone
+                          agent plugins
+                        </h6>
+                      </div>
+                    </div>
+
+                    <Icon
+                      glyph={IconFont.ArrowRight_New}
+                      className="arrow-button"
+                    />
+                  </div>
+                </Link>
               </FlexBox>
             </Grid.Column>
             <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>

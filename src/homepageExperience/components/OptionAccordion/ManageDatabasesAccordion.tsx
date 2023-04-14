@@ -3,29 +3,37 @@ import React, {FC} from 'react'
 import {useHistory} from 'react-router-dom'
 
 // Components
-import {
-  Button,
-  ComponentSize,
-  IconFont,
-  LinkButton,
-} from '@influxdata/clockface'
+import {Button, ComponentSize, IconFont} from '@influxdata/clockface'
 import {OptionAccordion} from 'src/homepageExperience/components/OptionAccordion/OptionAccordion'
 import {OptionAccordionElement} from 'src/homepageExperience/components/OptionAccordion/OptionAccordionElement'
+import {OptionLink} from './OptionLink'
 
 // Utils
 import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 export const ManageDatabasesAccordion: FC = () => {
   const orgID = useSelector(getOrg).id
   const history = useHistory()
+  const optionId = 'manageDatabases'
 
   const handleDatabaseManagerClick = () => {
+    event(`homeOptions.${optionId}.databaseManager.clicked`)
     history.push(`/orgs/${orgID}/load-data/buckets`)
   }
 
   const handleTokenManagerClick = () => {
+    event(`homeOptions.${optionId}.tokenManager.clicked`)
     history.push(`/orgs/${orgID}/load-data/tokens`)
+  }
+
+  const handleAPIClick = () => {
+    event(`homeOptions.${optionId}.apiDocs.clicked`)
+  }
+
+  const handleCLIClick = () => {
+    event(`homeOptions.${optionId}.cliDocs.clicked`)
   }
 
   return (
@@ -34,6 +42,7 @@ export const ManageDatabasesAccordion: FC = () => {
       headerIconColor="#5EE4E4"
       headerTitle="Manage Databases & Security"
       headerDescription="Create and manage your buckets (databases) &amp; access tokens."
+      optionId={optionId}
       bodyContent={
         <>
           <OptionAccordionElement
@@ -67,11 +76,10 @@ export const ManageDatabasesAccordion: FC = () => {
             elementDescription="Use the InfluxDB REST API to manage your databases."
             cta={() => {
               return (
-                <LinkButton
-                  text="View API Docs"
-                  size={ComponentSize.ExtraSmall}
+                <OptionLink
                   href="https://docs.influxdata.com/influxdb/cloud-iox/admin/buckets/create-bucket/?t=InfluxDB+API"
-                  target="_blank"
+                  onClick={handleAPIClick}
+                  title="View API Docs"
                 />
               )
             }}
@@ -81,11 +89,10 @@ export const ManageDatabasesAccordion: FC = () => {
             elementDescription="Use the InfluxDB Command Line Interface to manage your databases."
             cta={() => {
               return (
-                <LinkButton
-                  text="View CLI Docs"
-                  size={ComponentSize.ExtraSmall}
+                <OptionLink
                   href="https://docs.influxdata.com/influxdb/cloud-iox/admin/buckets/create-bucket/?t=influx+CLI"
-                  target="_blank"
+                  onClick={handleCLIClick}
+                  title="View CLI Docs"
                 />
               )
             }}

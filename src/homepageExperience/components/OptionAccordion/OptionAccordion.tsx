@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState, useRef} from 'react'
+import React, {FC, useRef} from 'react'
 
 // Components
 import {
@@ -17,14 +17,15 @@ import {
 // Styles
 import 'src/homepageExperience/components/OptionAccordion/OptionAccordion.scss'
 
-// Types
-import {FlexBoxChildRef} from '@influxdata/clockface'
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 interface OwnProps {
   headerIcon: IconFont
   headerIconColor?: InfluxColors | string
   headerTitle: string
   headerDescription?: string
+  optionId?: string
   bodyContent: JSX.Element
 }
 
@@ -33,25 +34,32 @@ export const OptionAccordion: FC<OwnProps> = ({
   headerIconColor = InfluxColors.White,
   headerTitle,
   headerDescription,
+  optionId,
   bodyContent,
 }) => {
-  const accordionHeadeIconRef = useRef<FlexBoxChildRef>(null)
-  const [iconHeight, setIconHeight] = useState(0)
+  const accordionHeaderRef = useRef<HTMLButtonElement>(null)
 
-  useEffect(() => {
-    accordionHeadeIconRef.current &&
-      setIconHeight(accordionHeadeIconRef.current.clientHeight)
-  })
+  const handleEventing = () => {
+    const action = accordionHeaderRef.current.classList.contains(
+      'cf-accordion--header--active'
+    )
+      ? 'collapsed'
+      : 'expanded'
+    event(`homeOptions.${optionId}.${action}`)
+  }
 
   return (
-    <Accordion iconPlacement={Direction.Right} className="option-accordion">
-      <Accordion.AccordionHeader>
+    <Accordion
+      iconPlacement={Direction.Right}
+      className="option-accordion"
+      onChange={handleEventing}
+    >
+      <Accordion.AccordionHeader ref={accordionHeaderRef}>
         <FlexBox>
           <FlexBoxChild
             grow={0}
-            basis={iconHeight}
+            basis={90}
             className="option-accordion-header--icon"
-            ref={accordionHeadeIconRef}
           >
             <Icon glyph={headerIcon} style={{color: headerIconColor}} />
           </FlexBoxChild>

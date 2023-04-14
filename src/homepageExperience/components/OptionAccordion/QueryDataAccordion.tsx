@@ -12,26 +12,35 @@ import {
   FlexBoxChild,
   IconFont,
   JustifyContent,
-  LinkButton,
 } from '@influxdata/clockface'
 import {OptionAccordion} from 'src/homepageExperience/components/OptionAccordion/OptionAccordion'
 import {OptionAccordionElement} from 'src/homepageExperience/components/OptionAccordion/OptionAccordionElement'
+import {OptionLink} from './OptionLink'
 
 // Utils
 import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 export const QueryDataAccordion: FC = () => {
   const orgID = useSelector(getOrg).id
   const history = useHistory()
   const [language, setLanguage] = useState('Select Programming Language')
+  const optionId = 'queryData'
 
   const handleDataExplorerClick = () => {
+    event(`homeOptions.${optionId}.dataExplorer.clicked`)
     history.push(`/orgs/${orgID}/data-explorer`)
   }
 
   const handleAppCodeClick = () => {
+    const lang = languageList[language].split('/').pop()
+    event(`homeOptions.${optionId}.appCode.${lang}.clicked`)
     history.push(`/orgs/${orgID}/${languageList[language]}`)
+  }
+
+  const handleAPIClick = () => {
+    event(`homeOptions.${optionId}.apiDocs.clicked`)
   }
 
   const languageList = {
@@ -51,6 +60,7 @@ export const QueryDataAccordion: FC = () => {
       headerIconColor="#53E51A"
       headerTitle="Query Data"
       headerDescription="Query your data with the UI, programmatically, or integrate with 3rd party tools."
+      optionId="queryData"
       bodyContent={
         <>
           <OptionAccordionElement
@@ -115,11 +125,10 @@ export const QueryDataAccordion: FC = () => {
             elementDescription="Use the InfluxDB REST API to query data from your databases."
             cta={() => {
               return (
-                <LinkButton
-                  text="View API Docs"
-                  size={ComponentSize.ExtraSmall}
+                <OptionLink
+                  title="View API Docs"
                   href="https://docs.influxdata.com/influxdb/cloud-iox/reference/api/"
-                  target="_blank"
+                  onClick={handleAPIClick}
                 />
               )
             }}

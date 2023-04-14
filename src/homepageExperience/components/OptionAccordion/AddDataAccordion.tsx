@@ -13,34 +13,49 @@ import {
   IconFont,
   InfluxColors,
   JustifyContent,
-  LinkButton,
 } from '@influxdata/clockface'
 import {OptionAccordion} from 'src/homepageExperience/components/OptionAccordion/OptionAccordion'
 import {OptionAccordionElement} from 'src/homepageExperience/components/OptionAccordion/OptionAccordionElement'
+import {OptionLink} from './OptionLink'
 
 // Utils
 import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 export const AddDataAccordion: FC = () => {
   const orgID = useSelector(getOrg).id
   const history = useHistory()
   const [language, setLanguage] = useState('Select Programming Language')
+  const optionId = 'addData'
 
   const handleTelegrafClick = () => {
+    event(`homeOptions.${optionId}.telegraf.clicked`)
     history.push(`/orgs/${orgID}/load-data/telegrafs`)
   }
 
   const handleAppCodeClick = () => {
+    const lang = languageList[language].split('/').pop()
+    event(`homeOptions.${optionId}.appCode.${lang}.clicked`)
     history.push(`/orgs/${orgID}/${languageList[language]}`)
   }
 
   const handleUploadCSVClick = () => {
+    event(`homeOptions.${optionId}.uploadCSV.clicked`)
     history.push(`/orgs/${orgID}/load-data/file-upload/annotated_csv`)
   }
 
   const handleUploadLPClick = () => {
+    event(`homeOptions.${optionId}.uploadLP.clicked`)
     history.push(`/orgs/${orgID}/load-data/file-upload/lp`)
+  }
+
+  const handleAPIClick = () => {
+    event(`homeOptions.${optionId}.apiDocs.clicked`)
+  }
+
+  const handleCLIClick = () => {
+    event(`homeOptions.${optionId}.cliDocs.clicked`)
   }
 
   const languageList = {
@@ -71,6 +86,7 @@ export const AddDataAccordion: FC = () => {
       headerIconColor={InfluxColors.Chartreuse}
       headerTitle="Add Data"
       headerDescription="Write data into your database with our reporting agent, programmatically, API, CLI, or upload a CSV or Line Protocol File."
+      optionId={optionId}
       bodyContent={
         <>
           <OptionAccordionElement
@@ -135,11 +151,10 @@ export const AddDataAccordion: FC = () => {
             elementDescription="Use the InfluxDB REST API to write data into your databases."
             cta={() => {
               return (
-                <LinkButton
-                  text="View API Docs"
-                  size={ComponentSize.ExtraSmall}
+                <OptionLink
+                  title="View API Docs"
                   href="https://docs.influxdata.com/influxdb/cloud-iox/api/#operation/PostWrite"
-                  target="_blank"
+                  onClick={handleAPIClick}
                 />
               )
             }}
@@ -149,11 +164,10 @@ export const AddDataAccordion: FC = () => {
             elementDescription="Use the InfluxDB Command Line Interface to write data into your databases."
             cta={() => {
               return (
-                <LinkButton
-                  text="View CLI Docs"
-                  size={ComponentSize.ExtraSmall}
+                <OptionLink
+                  title="View CLI Docs"
                   href="https://docs.influxdata.com/influxdb/cloud-iox/write-data/csv/influx-cli/"
-                  target="_blank"
+                  onClick={handleCLIClick}
                 />
               )
             }}

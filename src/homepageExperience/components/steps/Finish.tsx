@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { useSelector } from 'react-redux'
+import {useSelector} from 'react-redux'
 import confetti from 'canvas-confetti'
 
 // Components
@@ -22,7 +22,7 @@ import DashboardIntegrations from 'src/homepageExperience/components/steps/Dashb
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import { isOrgIOx } from 'src/organizations/selectors'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 type OwnProps = {
   wizardEventName: string
@@ -96,10 +96,14 @@ export const Finish = (props: OwnProps) => {
     }
   }, [finishStepCompleted, markStepAsCompleted, wizardEventName])
 
-  const writeOnly = useSelector(isOrgIOx) && (wizardEventName === 'arduinoWizard' || wizardEventName === 'nodejsWizard')
+  const writeOnly =
+    useSelector(isOrgIOx) &&
+    (wizardEventName === 'arduinoWizard' || wizardEventName === 'nodejsWizard')
 
-  const outroContent = writeOnly ? `You completed setting up and writing data.` : `You completed setting up, writing, and querying data.`
-  
+  const outroContent = writeOnly
+    ? `You completed setting up and writing data.`
+    : `You completed setting up, writing, and querying data.`
+
   return (
     <>
       <h1>Congrats!</h1>

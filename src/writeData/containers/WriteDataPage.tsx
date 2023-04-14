@@ -34,10 +34,13 @@ const WriteDataPage: FC = () => {
       <Page titleTag={pageTitleSuffixer(['Sources', 'Load Data'])}>
         <LoadDataHeader />
         <LoadDataTabbedPage activeTab="sources">
-          <div className='write-data--search-bar'>
+          <div className="write-data--search-bar">
             <WriteDataSearchBar />
           </div>
-          <Page.Contents scrollable={true} className='write-data--scroll-section'>
+          <Page.Contents
+            scrollable={true}
+            className="write-data--scroll-section"
+          >
             <WriteDataSections />
           </Page.Contents>
         </LoadDataTabbedPage>

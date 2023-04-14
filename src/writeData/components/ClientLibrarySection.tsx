@@ -8,7 +8,7 @@ import {searchClients} from 'src/writeData'
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
-import { isOrgIOx } from 'src/organizations/selectors'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Contexts
 import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
@@ -39,7 +39,7 @@ const ClientLibrarySection = () => {
 
   const SqlWrite = {
     go: 'golang',
-    python: 'python'
+    python: 'python',
   }
 
   const isIOxOrg = useSelector(isOrgIOx)
@@ -82,7 +82,7 @@ const ClientLibrarySection = () => {
           }
 
           let capabilityTag = isIOxOrg && 'write'
-          
+
           if (SqlWrite.hasOwnProperty(`${item.id}`)) {
             capabilityTag = 'write | query'
           }

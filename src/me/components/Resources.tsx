@@ -30,7 +30,7 @@ const ResourceLists: FC = () => {
 
   return (
     <FlexBox
-      alignItems={AlignItems.Stretch}  
+      alignItems={AlignItems.Stretch}
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       stretchToFitWidth={true}

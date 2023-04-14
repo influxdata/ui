@@ -56,7 +56,7 @@ const WriteDataItem: FC<Props> = ({
         className="write-data--item"
       >
         <div className="write-data--item-thumb">{thumb}</div>
-        {tag && <div className='load-data-cards--tag'>{tag}</div>}
+        {tag && <div className="load-data-cards--tag">{tag}</div>}
       </SelectableCard>
     </SquareGrid.Card>
   )

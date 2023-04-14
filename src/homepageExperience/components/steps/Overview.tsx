@@ -1,11 +1,11 @@
 // Libraries
 import React, {FC, useEffect, useRef} from 'react'
-import { useSelector } from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Utils
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {event} from 'src/cloud/utils/reporting'
-import { isOrgIOx } from 'src/organizations/selectors'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 type Props = {
   wizard: string
@@ -30,18 +30,20 @@ export const Overview: FC<Props> = ({wizard}) => {
     window.addEventListener('blur', checkVidClick)
   }, [wizard])
 
-  const writeOnly = useSelector(isOrgIOx) && (wizard === 'arduinoWizard' || wizard === 'nodejsWizard')
+  const writeOnly =
+    useSelector(isOrgIOx) &&
+    (wizard === 'arduinoWizard' || wizard === 'nodejsWizard')
 
-  const introContent = writeOnly ? `In the next 5 minutes, you will set up InfluxData on your machine and write some basic data.` : `In the next 5 minutes, you will set up InfluxData on your machine and write and execute some basic queries.`
+  const introContent = writeOnly
+    ? `In the next 5 minutes, you will set up InfluxData on your machine and write some basic data.`
+    : `In the next 5 minutes, you will set up InfluxData on your machine and write and execute some basic queries.`
 
   return (
     <div>
       <h1>Hello, Time-Series World!</h1>
       <article>
         <p>Welcome and thanks for checking out InfluxData!</p>
-        <p>
-          {introContent}
-        </p>
+        <p>{introContent}</p>
         <p>New to time-series data? Here's a brief video introduction:</p>
         <iframe
           ref={videoFrame}

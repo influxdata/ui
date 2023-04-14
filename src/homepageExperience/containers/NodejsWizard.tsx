@@ -31,7 +31,7 @@ import {
   HOMEPAGE_NAVIGATION_STEPS,
   HOMEPAGE_NAVIGATION_STEPS_WRITE_ONLY,
 } from 'src/homepageExperience/utils'
-import { isFlagEnabled } from 'src/shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface State {
   currentStep: number
@@ -67,8 +67,8 @@ export class NodejsWizard extends PureComponent<null, State> {
   }
 
   subwayNavSteps = isFlagEnabled('ioxOnboarding')
-  ? HOMEPAGE_NAVIGATION_STEPS_WRITE_ONLY
-  : HOMEPAGE_NAVIGATION_STEPS
+    ? HOMEPAGE_NAVIGATION_STEPS_WRITE_ONLY
+    : HOMEPAGE_NAVIGATION_STEPS
 
   handleNextClick = () => {
     this.setState(
@@ -214,8 +214,7 @@ export class NodejsWizard extends PureComponent<null, State> {
                   {
                     verticallyCentered:
                       this.state.currentStep === 1 ||
-                      this.state.currentStep ===
-                        this.subwayNavSteps.length,
+                      this.state.currentStep === this.subwayNavSteps.length,
                   }
                 )}
               >

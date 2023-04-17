@@ -5,6 +5,7 @@ describe('Influx CLI onboarding', () => {
   })
 
   it('should load the main home-page that has the cli tile', function () {
+    cy.skipOn(isIOxOrg)
     cy.getByTestID('home-page--header').should('exist')
   })
 

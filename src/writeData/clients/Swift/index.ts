@@ -9,7 +9,9 @@ import writeLP from 'src/writeData/clients/Swift/write.0.example'
 import writePoint from 'src/writeData/clients/Swift/write.1.example'
 import writeTuple from 'src/writeData/clients/Swift/write.2.example'
 import {ClientRegistration} from 'src/writeData'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
 export class Client implements ClientRegistration {
   id = 'swift'
   name = 'Swift'
@@ -30,8 +32,8 @@ export class Client implements ClientRegistration {
       code: writeTuple,
     },
   ]
-  execute = execute
-  query = query
+  execute = isTSMOnboarding && execute
+  query = isTSMOnboarding && query
   dispose = dispose
-  executeFull = executeFull
+  executeFull = isTSMOnboarding && executeFull
 }

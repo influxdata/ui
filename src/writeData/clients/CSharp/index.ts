@@ -8,7 +8,9 @@ import writeLP from 'src/writeData/clients/CSharp/write.0.example'
 import writePOCO from 'src/writeData/clients/CSharp/write.2.example'
 import writePoint from 'src/writeData/clients/CSharp/write.1.example'
 import {ClientRegistration} from 'src/writeData'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
 export class Client implements ClientRegistration {
   id = 'csharp'
   name = 'C#'
@@ -29,10 +31,10 @@ export class Client implements ClientRegistration {
       code: writePOCO,
     },
   ]
-  execute = execute
-  query = query
+  execute = isTSMOnboarding && execute
+  query = isTSMOnboarding && query
   querySanitize = (query: string) => {
     return query.replace(/"/g, '""')
   }
-  executeFull = executeFull
+  executeFull = isTSMOnboarding && executeFull
 }

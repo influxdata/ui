@@ -5,7 +5,9 @@ import logo from 'src/writeData/clients/R/logo.svg'
 import query from 'src/writeData/clients/R/query.example'
 import write from 'src/writeData/clients/R/write.example'
 import {ClientRegistration} from 'src/writeData'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
 export class Client implements ClientRegistration {
   id = 'r'
   name = 'R'
@@ -14,6 +16,6 @@ export class Client implements ClientRegistration {
   logo = logo
   initialize = initialize
   write = write
-  execute = execute
-  query = query
+  execute = isTSMOnboarding && execute
+  query = isTSMOnboarding && query
 }

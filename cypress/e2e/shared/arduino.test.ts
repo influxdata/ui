@@ -1,5 +1,7 @@
 describe('Arduino onboarding flow', () => {
   beforeEach(() => {
+    const isIOxOrg = Boolean(Cypress.env('useIox'))
+    cy.skipOn(isIOxOrg)
     cy.flush()
     cy.signin()
   })

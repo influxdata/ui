@@ -9,7 +9,9 @@ import writeLP from 'src/writeData/clients/Java/write.0.example'
 import writePOJO from 'src/writeData/clients/Java/write.2.example'
 import writePoint from 'src/writeData/clients/Java/write.1.example'
 import {ClientRegistration} from 'src/writeData'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
 export class Client implements ClientRegistration {
   id = 'java'
   name = 'Java'
@@ -30,8 +32,8 @@ export class Client implements ClientRegistration {
       code: writePOJO,
     },
   ]
-  execute = execute
-  query = query
+  execute = isTSMOnboarding && execute
+  query = isTSMOnboarding && query
   querySanitize = (query: string) => {
     return (
       query
@@ -53,6 +55,6 @@ export class Client implements ClientRegistration {
         .join('\n')
     )
   }
-  executeFull = executeFull
+  executeFull = isTSMOnboarding && executeFull
   dispose = dispose
 }

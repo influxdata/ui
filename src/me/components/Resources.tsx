@@ -12,6 +12,8 @@ import {
   FlexDirection,
   ComponentSize,
   AlignItems,
+  Heading,
+  HeadingElement,
 } from '@influxdata/clockface'
 import AnnouncementCenter from './AnnouncementCenter'
 import AnnouncementBlock from './AnnouncementBlock'
@@ -28,16 +30,16 @@ const ResourceLists: FC = () => {
 
   return (
     <FlexBox
-      direction={FlexDirection.Column}
       alignItems={AlignItems.Stretch}
+      direction={FlexDirection.Column}
+      margin={ComponentSize.Large}
       stretchToFitWidth={true}
       stretchToFitHeight={true}
-      margin={ComponentSize.Large}
     >
       {isIOxOrg ? (
         <AnnouncementCenter>
+          <Heading element={HeadingElement.H3}>What's New</Heading>
           <AnnouncementBlock
-            title="New time-series engine for InfluxDB"
             body={
               <>
                 <p>
@@ -53,8 +55,9 @@ const ResourceLists: FC = () => {
                 </ul>
               </>
             }
-            ctaText="Learn more"
             ctaLink="https://www.influxdata.com/cloud-iox-faq/"
+            ctaText="Learn more"
+            title="New time-series engine for InfluxDB"
           />
         </AnnouncementCenter>
       ) : (

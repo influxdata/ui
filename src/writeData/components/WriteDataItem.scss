@@ -29,3 +29,11 @@
 .write-data--item.cf-selectable-card .cf-selectable-card--children {
   position: relative;
 }
+
+.load-data-cards--tag {
+  position: absolute;
+  bottom: -($cf-space-m);
+  right: -($cf-space-s);
+  color: $cf-grey-65;
+  font-size: $cf-text-base--1;
+}

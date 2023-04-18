@@ -35,6 +35,33 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
   },
 ]
 
+export const HOMEPAGE_NAVIGATION_STEPS_WRITE_ONLY = [
+  {
+    name: 'Overview',
+    glyph: IconFont.BookOutline,
+  },
+  {
+    name: 'Install Dependencies',
+    glyph: IconFont.Install,
+  },
+  {
+    name: 'Get Token',
+    glyph: IconFont.CopperCoin,
+  },
+  {
+    name: 'Initialize Client',
+    glyph: IconFont.CogSolid_New,
+  },
+  {
+    name: 'Write Data',
+    glyph: IconFont.Pencil,
+  },
+  {
+    name: 'Finish',
+    glyph: IconFont.StarSmile,
+  },
+]
+
 export const HOMEPAGE_NAVIGATION_STEPS_SQL = [
   {
     name: 'Overview',
@@ -179,6 +206,33 @@ export const HOMEPAGE_NAVIGATION_STEPS_ARDUINO = [
   {
     name: 'Execute an\n Aggregate Query',
     glyph: IconFont.Play,
+  },
+  {
+    name: 'Finish',
+    glyph: IconFont.StarSmile,
+  },
+]
+
+export const HOMEPAGE_NAVIGATION_STEPS_ARDUINO_WRITE_ONLY = [
+  {
+    name: 'Overview',
+    glyph: IconFont.BookOutline,
+  },
+  {
+    name: 'Prepare\n Arduino IDE',
+    glyph: IconFont.Braces,
+  },
+  {
+    name: 'Install Dependencies',
+    glyph: IconFont.Install,
+  },
+  {
+    name: 'Initialize Client',
+    glyph: IconFont.CogSolid_New,
+  },
+  {
+    name: 'Write Data',
+    glyph: IconFont.Pencil,
   },
   {
     name: 'Finish',

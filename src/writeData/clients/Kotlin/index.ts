@@ -9,15 +9,17 @@ import writeLP from 'src/writeData/clients/Kotlin/write.0.example'
 import writePOJO from 'src/writeData/clients/Kotlin/write.2.example'
 import writePoint from 'src/writeData/clients/Kotlin/write.1.example'
 import {ClientRegistration} from 'src/writeData'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
 export class Client implements ClientRegistration {
   id = 'kotlin'
   name = 'Kotlin'
   description = description
   logo = logo
   initialize = initialize
-  execute = execute
-  query = query
+  execute = isTSMOnboarding && execute
+  query = isTSMOnboarding && query
   write = [
     {
       title: 'Use InfluxDB Line Protocol to write data',
@@ -33,5 +35,5 @@ export class Client implements ClientRegistration {
     },
   ]
   dispose = dispose
-  executeFull = executeFull
+  executeFull = isTSMOnboarding && executeFull
 }

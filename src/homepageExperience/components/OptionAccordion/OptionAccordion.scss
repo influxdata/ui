@@ -1,0 +1,61 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.option-accordion {
+  margin-bottom: $cf-space-2xs;
+
+  .cf-accordion--header {
+    padding: 0 $cf-space-s 0 0;
+    background-color: $cf-grey-25;
+  }
+
+  .cf-accordion--body-alignment-right {
+    padding-right: $cf-space-s;
+  }
+}
+
+.option-accordion-header--icon {
+  background-color: $cf-grey-15;
+  display: inline-flex;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+
+  .cf-icon {
+    font-size: $cf-text-base-5;
+  }
+}
+
+.option-accordion-header--content {
+  padding: $cf-space-s;
+}
+
+.option-accordion-header--title {
+  color: $cf-white;
+}
+
+.option-accordion-header--description,
+.option-accordion-element--header {
+  color: $cf-grey-75;
+}
+
+.option-accordion-element--description {
+  color: $cf-grey-55;
+}
+
+.option-accordion-header--description,
+.option-accordion-element--description {
+  margin: $cf-marg-a 0 0 0;
+}
+
+.option-accordion-element {
+  display: inline-flex;
+  justify-content: space-between;
+}
+
+.option-accordion--dropdown {
+  z-index: 1000;
+
+  .cf-dropdown--button {
+    min-width: $cf-space-3xl;
+  }
+}

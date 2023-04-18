@@ -29,7 +29,9 @@ import {event} from 'src/cloud/utils/reporting'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
+  HOMEPAGE_NAVIGATION_STEPS_WRITE_ONLY,
 } from 'src/homepageExperience/utils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface State {
   currentStep: number
@@ -64,12 +66,16 @@ export class NodejsWizard extends PureComponent<null, State> {
     this.setState({finalFeedback: feedbackValue})
   }
 
+  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+    ? HOMEPAGE_NAVIGATION_STEPS_WRITE_ONLY
+    : HOMEPAGE_NAVIGATION_STEPS
+
   handleNextClick = () => {
     this.setState(
       {
         currentStep: Math.min(
           this.state.currentStep + 1,
-          HOMEPAGE_NAVIGATION_STEPS.length
+          this.subwayNavSteps.length
         ),
       },
       () => {
@@ -78,10 +84,10 @@ export class NodejsWizard extends PureComponent<null, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 2].name
+              this.subwayNavSteps[this.state.currentStep - 2].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -99,10 +105,10 @@ export class NodejsWizard extends PureComponent<null, State> {
           {},
           {
             clickedButtonAtStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep].name
+              this.subwayNavSteps[this.state.currentStep].name
             ),
             currentStep: normalizeEventName(
-              HOMEPAGE_NAVIGATION_STEPS[this.state.currentStep - 1].name
+              this.subwayNavSteps[this.state.currentStep - 1].name
             ),
           }
         )
@@ -118,7 +124,7 @@ export class NodejsWizard extends PureComponent<null, State> {
       {},
       {
         currentStep: normalizeEventName(
-          HOMEPAGE_NAVIGATION_STEPS[clickedStep - 1].name
+          this.subwayNavSteps[clickedStep - 1].name
         ),
       }
     )
@@ -149,7 +155,19 @@ export class NodejsWizard extends PureComponent<null, State> {
         return <WriteData onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        return <ExecuteQuery bucket={this.state.selectedBucket} />
+        if (isFlagEnabled('ioxOnboarding')) {
+          return (
+            <Finish
+              wizardEventName="nodejsWizard"
+              markStepAsCompleted={this.handleMarkStepAsCompleted}
+              finishStepCompleted={this.state.finishStepCompleted}
+              finalFeedback={this.state.finalFeedback}
+              setFinalFeedback={this.setFinalFeedback}
+            />
+          )
+        } else {
+          return <ExecuteQuery bucket={this.state.selectedBucket} />
+        }
       }
       case 7: {
         return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
@@ -182,7 +200,7 @@ export class NodejsWizard extends PureComponent<null, State> {
                 <SubwayNav
                   currentStep={this.state.currentStep}
                   onStepClick={this.handleNavClick}
-                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS}
+                  navigationSteps={this.subwayNavSteps}
                   settingUpIcon={NodejsIcon}
                   settingUpText="Nodejs"
                   setupTime="5 minutes"
@@ -196,8 +214,7 @@ export class NodejsWizard extends PureComponent<null, State> {
                   {
                     verticallyCentered:
                       this.state.currentStep === 1 ||
-                      this.state.currentStep ===
-                        HOMEPAGE_NAVIGATION_STEPS.length,
+                      this.state.currentStep === this.subwayNavSteps.length,
                   }
                 )}
               >
@@ -224,7 +241,7 @@ export class NodejsWizard extends PureComponent<null, State> {
                   size={ComponentSize.Large}
                   color={ComponentColor.Primary}
                   status={
-                    this.state.currentStep < HOMEPAGE_NAVIGATION_STEPS.length
+                    this.state.currentStep < this.subwayNavSteps.length
                       ? ComponentStatus.Default
                       : ComponentStatus.Disabled
                   }

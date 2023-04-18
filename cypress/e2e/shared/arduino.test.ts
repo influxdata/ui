@@ -1,13 +1,12 @@
 describe('Arduino onboarding flow', () => {
-  const isIOxOrg = Boolean(Cypress.env('useIox'))
-
   beforeEach(() => {
+    const isIOxOrg = Boolean(Cypress.env('useIox'))
+    cy.skipOn(isIOxOrg)
     cy.flush()
     cy.signin()
   })
 
   it('should load the main home-page that has the arduino tile', function () {
-    cy.skipOn(isIOxOrg)
     cy.getByTestID('home-page--header').should('exist')
   })
 

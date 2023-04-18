@@ -1,4 +1,6 @@
 describe('Influx CLI onboarding', () => {
+  const isIOxOrg = Boolean(Cypress.env('useIox'))
+  
   beforeEach(() => {
     cy.flush()
     cy.signin()

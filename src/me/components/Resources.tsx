@@ -15,8 +15,9 @@ import {
   Heading,
   HeadingElement,
 } from '@influxdata/clockface'
-import AnnouncementCenter from './AnnouncementCenter'
-import AnnouncementBlock from './AnnouncementBlock'
+import AnnouncementCenter from 'src/me/components/AnnouncementCenter'
+import AnnouncementBlock from 'src/me/components/AnnouncementBlock'
+import {BlogFeed} from 'src/me/components/BlogFeed'
 import UsagePanel from 'src/me/components/UsagePanel'
 import DocSearchWidget from 'src/me/components/DocSearchWidget'
 import VersionInfo from 'src/shared/components/VersionInfo'
@@ -59,6 +60,7 @@ const ResourceLists: FC = () => {
             ctaText="Learn more"
             title="New time-series engine for InfluxDB"
           />
+          <BlogFeed />
         </AnnouncementCenter>
       ) : (
         <DocSearchWidget />

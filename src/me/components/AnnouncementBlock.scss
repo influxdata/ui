@@ -7,24 +7,49 @@
 
   .announcement-block--type {
     display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-start;
     align-self: stretch;
-    align-items: flex-start;
+    align-items: center;
+    color: $cf-grey-45;
 
     .announcement-block--type-icon {
-      color: $cf-grey-55;
       font-size: $cf-text-base-1;
       margin-top: $cf-space-2xs;
+      display: block;
+    }
+
+    .announcement-block--date {
+      display: block;
+      text-align: center;
+      font-size: $cf-text-base--1;
+      line-height: $cf-text-base-1;
+      margin-top: $cf-space-2xs;
+      text-transform: uppercase;
+      font-weight: bold;
     }
   }
 
   .announcement-block--panel {
     .announcement-block--panel-header {
       padding: $cf-space-2xs;
-      color: $cf-grey-95;
+
+      h4 {
+        color: $cf-grey-85;
+
+        a:link,
+        a:visited {
+          color: $cf-grey-85;
+        }
+
+        a:hover {
+          color: $c-laser;
+        }
+      }
     }
 
     .announcement-block--panel-body {
-      color: $cf-grey-55;
+      color: $cf-grey-45;
     }
 
     .announcement-block--panel-footer {

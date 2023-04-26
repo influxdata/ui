@@ -13,9 +13,9 @@ import {VERSION, GIT_SHA, CLOUD} from 'src/shared/constants'
 import {isOrgIOx} from 'src/organizations/selectors'
 
 const VersionInfo: FC = () => {
-  const engineName = useSelector(isOrgIOx) ? 'IOx' : 'TSM'
+  const cloudEngine = useSelector(isOrgIOx) ? 'InfluxDB Cloud Serverless' : 'InfluxDB Cloud powered by TSM'
   const engineLink = useSelector(isOrgIOx)
-    ? 'https://docs.influxdata.com/influxdb/cloud-iox/'
+    ? 'https://docs.influxdata.com/influxdb/cloud-serverless/'
     : 'https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-structured-merge-tree-tsm'
 
   return (
@@ -23,7 +23,7 @@ const VersionInfo: FC = () => {
       {CLOUD ? (
         <div>
           <SafeBlankLink href={engineLink}>
-            InfluxDB Cloud powered by {engineName}
+            {cloudEngine}
           </SafeBlankLink>
           <br />
           Version {VERSION} {GIT_SHA && <code>({GIT_SHA.slice(0, 7)})</code>}

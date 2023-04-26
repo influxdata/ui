@@ -48,6 +48,8 @@ import {
 } from 'src/dataExplorer/context/persistance'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
+import {CLOUD} from 'src/shared/constants'
+
 
 const DataExplorerPageHeader: FC = () => {
   const {scriptQueryBuilder, setScriptQueryBuilder} =
@@ -55,7 +57,7 @@ const DataExplorerPageHeader: FC = () => {
   const {resource, save} = useContext(PersistanceContext)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const shouldShowDataExplorerToggle =
-    !isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx')
+    (!isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx')) && CLOUD
 
   const history = useHistory()
   const dispatch = useDispatch()
@@ -130,7 +132,7 @@ const DataExplorerPage: FC = () => {
     useSelector(selectIsNewIOxOrg) &&
     !isFlagEnabled('showOldDataExplorerInNewIOx')
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
-  const shouldShowNewExplorer = scriptQueryBuilder || isNewIOxOrg
+  const shouldShowNewExplorer = (scriptQueryBuilder || isNewIOxOrg) && CLOUD
 
   const shouldShowSaveAsButton =
     !useSelector(selectIsNewIOxOrg) ||

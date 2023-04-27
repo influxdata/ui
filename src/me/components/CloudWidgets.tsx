@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, memo, useContext} from 'react'
+import React, {FC, useContext} from 'react'
 import {useSelector} from 'react-redux'
 
 // Utils
@@ -15,8 +15,8 @@ import {
   Heading,
   HeadingElement,
 } from '@influxdata/clockface'
-import AnnouncementCenter from 'src/me/components/AnnouncementCenter'
-import AnnouncementBlock from 'src/me/components/AnnouncementBlock'
+import {AnnouncementCenter} from 'src/me/components/AnnouncementCenter'
+import {AnnouncementBlock} from 'src/me/components/AnnouncementBlock'
 import {BlogFeed} from 'src/me/components/BlogFeed'
 import UsagePanel from 'src/me/components/UsagePanel'
 import DocSearchWidget from 'src/me/components/DocSearchWidget'
@@ -24,8 +24,9 @@ import VersionInfo from 'src/shared/components/VersionInfo'
 
 // Utils
 import {isOrgIOx} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-const ResourceLists: FC = () => {
+export const CloudWidgets: FC = () => {
   const {paygCreditEnabled} = useContext(UsageContext)
   const isIOxOrg = useSelector(isOrgIOx)
 
@@ -60,7 +61,7 @@ const ResourceLists: FC = () => {
             ctaText="Learn more"
             title="New time-series engine for InfluxDB"
           />
-          <BlogFeed />
+          {isFlagEnabled('newBlogDisplay') && <BlogFeed />}
         </AnnouncementCenter>
       ) : (
         <DocSearchWidget />
@@ -70,5 +71,3 @@ const ResourceLists: FC = () => {
     </FlexBox>
   )
 }
-
-export default memo(ResourceLists)

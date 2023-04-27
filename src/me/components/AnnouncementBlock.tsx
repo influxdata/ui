@@ -30,7 +30,7 @@ interface OwnProps {
   title?: string
 }
 
-const AnnouncementBlock: FC<OwnProps> = ({
+export const AnnouncementBlock: FC<OwnProps> = ({
   body,
   ctaLink,
   ctaText,
@@ -91,5 +91,3 @@ const AnnouncementBlock: FC<OwnProps> = ({
     </FlexBox>
   )
 }
-
-export default AnnouncementBlock

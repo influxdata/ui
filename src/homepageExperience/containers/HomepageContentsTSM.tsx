@@ -21,7 +21,7 @@ import {
   ResourceCard,
   SquareGrid,
 } from '@influxdata/clockface'
-import Resources from 'src/me/components/Resources'
+import {CloudWidgets} from 'src/me/components/CloudWidgets'
 import {
   ArduinoIcon,
   CLIIcon,
@@ -292,10 +292,10 @@ export const HomepageContentsTSM: FC = () => {
             <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>
               {CLOUD ? (
                 <UsageProvider>
-                  <Resources />
+                  <CloudWidgets />
                 </UsageProvider>
               ) : (
-                <Resources />
+                <CloudWidgets />
               )}
             </Grid.Column>
           </Grid.Row>

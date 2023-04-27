@@ -11,7 +11,7 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
-import AnnouncementBlock from 'src/me/components/AnnouncementBlock'
+import {AnnouncementBlock} from 'src/me/components/AnnouncementBlock'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Utils

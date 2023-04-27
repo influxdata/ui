@@ -12,7 +12,7 @@ interface OwnProps {
   children?: JSX.Element | JSX.Element[]
 }
 
-const AnnouncementCenter: FC<OwnProps> = (props: OwnProps) => {
+export const AnnouncementCenter: FC<OwnProps> = (props: OwnProps) => {
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -23,5 +23,3 @@ const AnnouncementCenter: FC<OwnProps> = (props: OwnProps) => {
     </FlexBox>
   )
 }
-
-export default AnnouncementCenter

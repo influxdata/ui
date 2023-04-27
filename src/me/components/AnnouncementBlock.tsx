@@ -2,8 +2,6 @@ import React, {FC} from 'react'
 
 // Components
 import {
-  ButtonShape,
-  ComponentColor,
   ComponentSize,
   FlexBox,
   FlexDirection,
@@ -12,10 +10,12 @@ import {
   Icon,
   IconFont,
   JustifyContent,
-  LinkButton,
-  LinkTarget,
   Panel,
 } from '@influxdata/clockface'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/me/components/AnnouncementBlock.scss'
@@ -24,23 +24,30 @@ interface OwnProps {
   body?: string | JSX.Element
   ctaLink?: string
   ctaText?: string
+  date?: string
   icon?: IconFont
   image?: JSX.Element
   title?: string
 }
 
-const AnnouncementBlock: FC<OwnProps> = ({
+export const AnnouncementBlock: FC<OwnProps> = ({
   body,
   ctaLink,
   ctaText,
+  date,
   icon = IconFont.Star,
   image,
   title,
 }) => {
+  const handleCtaClick = () => {
+    event(`announcementBlock.${title}.clicked`)
+  }
+
   return (
     <FlexBox direction={FlexDirection.Row} className="announcement-block">
       <FlexBox.Child basis={0} grow={0} className="announcement-block--type">
         <Icon glyph={icon} className="announcement-block--type-icon" />
+        <div className="announcement-block--date">{date}</div>
       </FlexBox.Child>
       <FlexBox.Child basis={0} grow={1}>
         <Panel
@@ -52,7 +59,13 @@ const AnnouncementBlock: FC<OwnProps> = ({
             className="announcement-block--panel-header"
           >
             {image}
-            <Heading element={HeadingElement.H4}>{title}</Heading>
+            <Heading element={HeadingElement.H4}>
+              {ctaLink ? (
+                <SafeBlankLink href={ctaLink}>{title}</SafeBlankLink>
+              ) : (
+                {title}
+              )}
+            </Heading>
           </Panel.Header>
           <Panel.Body
             size={ComponentSize.ExtraSmall}
@@ -66,15 +79,11 @@ const AnnouncementBlock: FC<OwnProps> = ({
               size={ComponentSize.ExtraSmall}
               className="announcement-block--panel-footer"
             >
-              <LinkButton
-                text={ctaText}
-                titleText={ctaText}
-                href={ctaLink}
-                target={LinkTarget.Blank}
-                size={ComponentSize.ExtraSmall}
-                shape={ButtonShape.Default}
-                color={ComponentColor.Tertiary}
-              />
+              <SafeBlankLink href={ctaLink} onClick={handleCtaClick}>
+                <div className="cf-button cf-button-xs cf-button-tertiary">
+                  <span className="cf-button-label">{ctaText}</span>
+                </div>
+              </SafeBlankLink>
             </Panel.Footer>
           )}
         </Panel>
@@ -82,5 +91,3 @@ const AnnouncementBlock: FC<OwnProps> = ({
     </FlexBox>
   )
 }
-
-export default AnnouncementBlock

@@ -108,7 +108,12 @@ export const BlogFeed: FC = () => {
         loading={jsonData ? RemoteDataState.Done : RemoteDataState.Loading}
         spinnerComponent={<TechnoSpinner />}
       >
-        <Heading element={HeadingElement.H3}>Latest Blogs</Heading>
+        <Heading
+          element={HeadingElement.H3}
+          className="blog-feed--section-header"
+        >
+          Latest Blogs
+        </Heading>
         {jsonData &&
           jsonData.items.slice(0, 2).map(item => (
             <AnnouncementBlock
@@ -129,7 +134,7 @@ export const BlogFeed: FC = () => {
               ctaLink={item.url}
             />
           ))}
-        <div className="announcement-block--more-blogs">
+        <div className="blog-feed--more-blogs">
           <SafeBlankLink
             href="https://www.influxdata.com/blog/"
             onClick={handleMoreBlogsClick}

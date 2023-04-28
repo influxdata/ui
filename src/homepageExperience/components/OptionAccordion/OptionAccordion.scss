@@ -14,15 +14,7 @@
 }
 
 .option-accordion-header--icon {
-  background-color: $cf-grey-15;
-  display: inline-flex;
-  align-self: stretch;
-  align-items: center;
-  justify-content: center;
-
-  .cf-icon {
-    font-size: $cf-text-base-5;
-  }
+  display: none;
 }
 
 .option-accordion-header--content {
@@ -38,6 +30,12 @@
   color: $cf-grey-75;
 }
 
+.option-accordion-element--content {
+  flex-shrink: 0;
+  width: 100%;
+  margin-bottom: $cf-space-2xs;
+}
+
 .option-accordion-element--description {
   color: $cf-grey-55;
 }
@@ -50,6 +48,16 @@
 .option-accordion-element {
   display: inline-flex;
   justify-content: space-between;
+  position: relative;
+  flex-wrap: wrap;
+
+  .option-accordion--dropdown {
+    flex-wrap: wrap;
+
+    .cf-flex-box--child {
+      margin-bottom: $cf-space-2xs;
+    }
+  }
 }
 
 .option-accordion--dropdown {
@@ -57,5 +65,39 @@
 
   .cf-dropdown--button {
     min-width: $cf-space-3xl;
+  }
+}
+
+@media screen and (min-width: $cf-grid--breakpoint-md) {
+  .option-accordion-element--content {
+    flex-shrink: 1;
+    width: auto;
+    margin-bottom: auto;
+  }
+
+  .option-accordion-element {
+    flex-wrap: nowrap;
+
+    .option-accordion--dropdown {
+      flex-wrap: nowrap;
+
+      .cf-flex-box--child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: $cf-grid--breakpoint-md) {
+  .option-accordion-header--icon {
+    background-color: $cf-grey-15;
+    display: inline-flex;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+
+    .cf-icon {
+      font-size: $cf-text-base-5;
+    }
   }
 }

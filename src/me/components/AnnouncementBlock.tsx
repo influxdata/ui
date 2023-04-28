@@ -9,6 +9,7 @@ import {
   HeadingElement,
   Icon,
   IconFont,
+  InfluxColors,
   JustifyContent,
   Panel,
 } from '@influxdata/clockface'
@@ -26,6 +27,7 @@ interface OwnProps {
   ctaText?: string
   date?: string
   icon?: IconFont
+  iconColor?: InfluxColors | string
   image?: JSX.Element
   title?: string
 }
@@ -36,6 +38,7 @@ export const AnnouncementBlock: FC<OwnProps> = ({
   ctaText,
   date,
   icon = IconFont.Star,
+  iconColor,
   image,
   title,
 }) => {
@@ -46,7 +49,11 @@ export const AnnouncementBlock: FC<OwnProps> = ({
   return (
     <FlexBox direction={FlexDirection.Row} className="announcement-block">
       <FlexBox.Child basis={0} grow={0} className="announcement-block--type">
-        <Icon glyph={icon} className="announcement-block--type-icon" />
+        <Icon
+          glyph={icon}
+          className="announcement-block--type-icon"
+          style={iconColor && {color: iconColor}}
+        />
         <div className="announcement-block--date">{date}</div>
       </FlexBox.Child>
       <FlexBox.Child basis={0} grow={1}>

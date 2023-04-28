@@ -24,7 +24,6 @@ import VersionInfo from 'src/shared/components/VersionInfo'
 
 // Utils
 import {isOrgIOx} from 'src/organizations/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const CloudWidgets: FC = () => {
   const {paygCreditEnabled} = useContext(UsageContext)
@@ -61,7 +60,7 @@ export const CloudWidgets: FC = () => {
             ctaText="Learn more"
             title="New time-series engine for InfluxDB"
           />
-          {isFlagEnabled('newBlogDisplay') && <BlogFeed />}
+          <BlogFeed />
         </AnnouncementCenter>
       ) : (
         <DocSearchWidget />

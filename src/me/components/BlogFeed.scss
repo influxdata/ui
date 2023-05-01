@@ -1,4 +1,10 @@
-.announcement-block--more-blogs {
+@import '@influxdata/clockface/dist/variables.scss';
+
+.blog-feed--section-header {
+  margin-top: $cf-space-m;
+}
+
+.blog-feed--more-blogs {
   width: 100%;
   display: inline-flex;
   justify-content: flex-end;

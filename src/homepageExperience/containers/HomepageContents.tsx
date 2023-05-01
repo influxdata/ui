@@ -27,6 +27,9 @@ import {AddDataAccordion} from 'src/homepageExperience/components/OptionAccordio
 import {QueryDataAccordion} from 'src/homepageExperience/components/OptionAccordion/QueryDataAccordion'
 import {VisualizeAccordion} from 'src/homepageExperience/components/OptionAccordion/VisualizeAccordion'
 
+// Styles
+import 'src/homepageExperience/containers/HomepageContents.scss'
+
 export const HomepageContents: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Get Started'])}>
@@ -42,7 +45,7 @@ export const HomepageContents: FC = () => {
       <Page.Contents fullWidth={false} scrollable={true}>
         <Grid>
           <Grid.Row>
-            <Grid.Column widthSM={Columns.Eight} widthMD={Columns.Nine}>
+            <Grid.Column widthSM={Columns.Eight}>
               <FlexBox
                 direction={FlexDirection.Column}
                 margin={ComponentSize.Large}
@@ -58,7 +61,7 @@ export const HomepageContents: FC = () => {
                     What would you like to do?
                   </Heading>
                 </FlexBox.Child>
-                <FlexBox.Child>
+                <FlexBox.Child className="home-page--accordion-container">
                   <ManageDatabasesAccordion />
                   <AddDataAccordion />
                   <QueryDataAccordion />
@@ -66,7 +69,7 @@ export const HomepageContents: FC = () => {
                 </FlexBox.Child>
               </FlexBox>
             </Grid.Column>
-            <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>
+            <Grid.Column widthSM={Columns.Four}>
               {CLOUD ? (
                 <UsageProvider>
                   <CloudWidgets />

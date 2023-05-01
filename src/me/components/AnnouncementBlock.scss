@@ -1,5 +1,9 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
+.announcement-center {
+  margin-top: $cf-space-m;
+}
+
 .announcement-block {
   .cf-panel {
     background-color: transparent;
@@ -11,7 +15,7 @@
     justify-content: flex-start;
     align-self: stretch;
     align-items: center;
-    color: $cf-grey-45;
+    color: $cf-grey-35;
 
     .announcement-block--type-icon {
       font-size: $cf-text-base-1;
@@ -49,11 +53,17 @@
     }
 
     .announcement-block--panel-body {
-      color: $cf-grey-45;
+      color: $cf-grey-55;
     }
 
     .announcement-block--panel-footer {
       border: none;
     }
+  }
+}
+
+@media screen and (min-width: $cf-grid--breakpoint-sm) {
+  .announcement-center {
+    margin-top: 0;
   }
 }

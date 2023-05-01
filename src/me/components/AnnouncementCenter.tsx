@@ -15,6 +15,7 @@ interface OwnProps {
 export const AnnouncementCenter: FC<OwnProps> = (props: OwnProps) => {
   return (
     <FlexBox
+      className="announcement-center"
       direction={FlexDirection.Column}
       alignItems={AlignItems.Stretch}
       margin={ComponentSize.Medium}

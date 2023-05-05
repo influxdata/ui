@@ -218,11 +218,13 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         const currentDate = new Date()
         const secondsWith250Credit =
           currentDate.getTime() - new Date(paygCreditStartDate).getTime()
-        daysWith250Credit = Math.floor(secondsWith250Credit / secondsPerDay)
+        const creditDays = Math.floor(secondsWith250Credit / secondsPerDay)
 
-        if (daysWith250Credit <= 0 || isNaN(daysWith250Credit)) {
+        if (creditDays <= 0 || isNaN(creditDays)) {
           return
         }
+
+        daysWith250Credit = creditDays
       }
 
       vectors.forEach(vector_name => {

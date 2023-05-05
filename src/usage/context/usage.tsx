@@ -11,6 +11,7 @@ import {
   getUsageVectors,
   getUsageRateLimits,
 } from 'src/client/unityRoutes'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {PAYG_CREDIT_DAYS} from 'src/shared/constants'
@@ -210,9 +211,25 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       const vectors = ['storage_gb', 'writes_mb', 'reads_gb', 'query_count']
       const promises = []
 
+      let daysWith250Credit = PAYG_CREDIT_DAYS
+
+      if (isFlagEnabled('credit250fix')) {
+        const secondsPerDay = 1000 * 3600 * 24
+        const currentDate = new Date()
+        const secondsWith250Credit =
+          currentDate.getTime() - new Date(paygCreditStartDate).getTime()
+        const creditDays = Math.floor(secondsWith250Credit / secondsPerDay)
+
+        if (creditDays <= 0 || isNaN(creditDays)) {
+          return
+        }
+
+        daysWith250Credit = creditDays
+      }
+
       vectors.forEach(vector_name => {
         promises.push(
-          getUsage({vector_name, query: {range: `${PAYG_CREDIT_DAYS}d`}}).then(
+          getUsage({vector_name, query: {range: `${daysWith250Credit}d`}}).then(
             resp => {
               if (resp.status !== 200) {
                 throw new Error(resp.data.message)

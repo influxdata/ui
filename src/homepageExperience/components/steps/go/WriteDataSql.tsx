@@ -39,12 +39,12 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
     event('firstMile.goWizard.writeData.code.copied')
   }
 
-  const logCopyInvokeCodeSnippet = () => {
-    event('firstMile.goWizard.InvokeWrite.code.copied')
-  }
-
   const logDocsOpened = () => {
     event('firstMile.goWizard.writeData.docs.opened')
+  }
+
+  const logCopyRunCodeSnippet = () => {
+    event('firstMile.goWizard.RunGo.code.copied')
   }
 
   const {org} = useSelector(selectCurrentIdentity)
@@ -71,18 +71,20 @@ import (
     influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 )
 
-func main() {}
-
-func dbWrite(ctx context.Context) error {
-    // Create write client
+func main() {
+    // Create client
     url := "${url}"
     token := os.Getenv("INFLUXDB_TOKEN")
-    writeClient := influxdb2.NewClient(url, token)
+    reader, err := client.Query(context.Background(), bucket, query, nil)
 
-    // Define write API
-    org := "${org.name}"
+    // Check if created successfully
+    if err != nil {
+      panic(err)
+    }
+    // Close client at the end
+    defer client.Close()
+
     bucket := "${bucket.name}"
-    writeAPI := writeClient.WriteAPIBlocking(org, bucket)
 }`
 
   const writeCodeSnippet = `data := map[string]map[string]interface{}{
@@ -120,25 +122,18 @@ func dbWrite(ctx context.Context) error {
 
 // Write data
 for key := range data {
-  point := influxdb2.NewPointWithMeasurement("census").
+  point := influx.NewPointWithMeasurement("census").
     AddTag("location", data[key]["location"].(string)).
     AddField(data[key]["species"].(string), data[key]["count"])
 
-  if err := writeAPI.WritePoint(ctx, point); err != nil {
-    return fmt.Errorf("write API write point: %s", err)
+  if err := client.WritePoints(ctx, bucket, point); err != nil {
+    return fmt.Errorf("influx client write point: %s", err)
   }
 
   time.Sleep(1 * time.Second) // separate points by 1 second
 }
 
-return nil`
-
-  const invokeCodeSnippet = `func main() {
-	if err := dbWrite(context.Background()); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\\n", err)
-		os.Exit(1)
-	}
-}`
+`
 
   return (
     <>
@@ -164,11 +159,12 @@ return nil`
         </Panel.Body>
       </Panel>
       <p>
-        The first thing we'll do is initialize the write client with the server
+        The first thing we'll do is initialize the go client with the server
         URL and token that are needed to set up the initial connection to
-        InfluxDB. We then define our write API with the organization info and
-        bucket we intend to write to. These will be added to a new function
-        called <code className="homepage-wizard--code-highlight">dbWrite</code>.
+        InfluxDB. This client has functions 
+        <code className="homepage-wizard--code-highlight">WritePoints</code> 
+        and <code className="homepage-wizard--code-highlight">Query</code> 
+        .
       </p>
       <p>
         Paste the following code in your{' '}
@@ -311,7 +307,7 @@ return nil`
       </p>
       <p>
         Add the following to the end of your{' '}
-        <code className="homepage-wizard--code-highlight">dbWrite</code>{' '}
+        <code className="homepage-wizard--code-highlight">main</code>{' '}
         function:
       </p>
       <CodeSnippet
@@ -320,19 +316,16 @@ return nil`
         text={writeCodeSnippet}
       />
       <p>
-        Invoke your{' '}
-        <code className="homepage-wizard--code-highlight">dbWrite</code>{' '}
-        function by adding the following as your{' '}
-        <code className="homepage-wizard--code-highlight">main</code> function:
+        You can now run program with:
       </p>
       <CodeSnippet
-        language="go"
-        onCopy={logCopyInvokeCodeSnippet}
-        text={invokeCodeSnippet}
+        language="properties"
+        onCopy={logCopyRunCodeSnippet}
+        text="go run ./main.go"
       />
       <p>
-        When you run your program it should now write the data. Once the data is
-        written you'll see a confirmation below:
+        Program should write data once you run it. 
+        After the data is written, a confirmation will appear below:
       </p>
       <Panel backgroundColor={InfluxColors.Grey15}>
         <Panel.Body>

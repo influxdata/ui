@@ -33,31 +33,19 @@ export const InstallDependenciesSql: FC = () => {
       />
       <p>
         Install the{' '}
-        <SafeBlankLink href="https://github.com/influxdata/influxdb-client-go">
-          influxdb-client-go
+        <SafeBlankLink href="https://github.com/InfluxCommunity/influxdb3-go">
+          influxdb3-go
         </SafeBlankLink>{' '}
         module for writing. Run the command below in your terminal:
       </p>
       <CodeSnippet
         language="properties"
         onCopy={logCopyInstallCodeSnippet}
-        text="go get github.com/influxdata/influxdb-client-go/v2"
-      />
-      <p>
-        Install the{' '}
-        <SafeBlankLink href="https://pkg.go.dev/github.com/apache/arrow/go">
-          flight-sql
-        </SafeBlankLink>{' '}
-        module for querying. Run the command below in your terminal:
-      </p>
-      <CodeSnippet
-        language="properties"
-        onCopy={logCopyInstallCodeSnippet}
-        text="go get github.com/apache/arrow/go/v12/arrow/flight/flightsql"
+        text="go get github.com/InfluxCommunity/influxdb3-go"
       />
       <p>
         You'll need to have{' '}
-        <SafeBlankLink href="https://go.dev/dl/">Go 1.17</SafeBlankLink> or
+        <SafeBlankLink href="https://go.dev/dl/">Go 1.20</SafeBlankLink> or
         higher installed. This sample code assumes you have go tools like{' '}
         <SafeBlankLink href="https://pkg.go.dev/cmd/gofmt">gofmt</SafeBlankLink>{' '}
         and{' '}

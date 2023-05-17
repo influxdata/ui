@@ -34,6 +34,8 @@ export interface AccountContextType {
   organizations: OperatorOrg[]
   setConvertToContractOverlayVisible: (vis: boolean) => void
   convertToContractOverlayVisible: boolean
+  setCancelOverlayVisible: (vis: boolean) => void
+  cancelOverlayVisible: boolean
   setDeleteOverlayVisible: (vis: boolean) => void
   deleteOverlayVisible: boolean
 }
@@ -49,6 +51,8 @@ export const DEFAULT_CONTEXT: AccountContextType = {
   organizations: null,
   setConvertToContractOverlayVisible: (_: boolean) => {},
   convertToContractOverlayVisible: false,
+  cancelOverlayVisible: false,
+  setCancelOverlayVisible: (_: boolean) => {},
   setDeleteOverlayVisible: (_: boolean) => {},
   deleteOverlayVisible: false,
 }
@@ -61,6 +65,7 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
   const [organizations, setOrganizations] = useState<OperatorOrg[]>(null)
   const [convertToContractOverlayVisible, setConvertToContractOverlayVisible] =
     useState(false)
+  const [cancelOverlayVisible, setCancelOverlayVisible] = useState(false)
   const [deleteOverlayVisible, setDeleteOverlayVisible] = useState(false)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [convertStatus, setConvertStatus] = useState(RemoteDataState.NotStarted)
@@ -146,6 +151,8 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         organizations,
         setConvertToContractOverlayVisible,
         convertToContractOverlayVisible,
+        setCancelOverlayVisible,
+        cancelOverlayVisible,
         setDeleteOverlayVisible,
         deleteOverlayVisible,
       }}

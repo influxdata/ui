@@ -40,7 +40,7 @@ describe('Operator Page', () => {
 
     // preloads 6 accounts
     cy.getByTestID('table-body').within(() => {
-      cy.getByTestID('table-row').should('have.length', 6)
+      cy.getByTestID('table-row').should('have.length', 7)
     })
 
     cy.getByTestID('operator-resource--searchbar').clear()
@@ -74,6 +74,7 @@ describe('Operator Page', () => {
 
     // make sure the buttons don't exist on the page
     cy.getByTestID('account-delete--button').should('not.exist')
+    cy.getByTestID('account-cancel--button').should('not.exist')
     cy.getByTestID('account-convert-to-contract--button').should('not.exist')
     cy.getByTestID('remove-user--button').should('not.exist')
     cy.getByTestID('page-title').should('contain.text', 'operator1 (1)')

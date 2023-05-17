@@ -32,24 +32,17 @@ query := \`SELECT *
           WHERE time >= now() - interval '1 hour'
             AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)\`
 
-reader, err := client.Query(context.Background(), bucket, query, nil)
+iterator, err := client.Query(context.Background(), database, query, nil)
+
 if err != nil {
-  return fmt.Errorf("influx Query: %s", err)
+  panic(err)
 }
 
-// Print results as JSON
-for reader.Next() {
-  record := reader.Record()
-  b, err := json.MarshalIndent(record, "", "  ")
-  if err != nil {
-    return err
-  }
-  fmt.Println("RECORD BATCH")
-  fmt.Println(string(b))
+for iterator.Next() {
+  value := iterator.Value()
 
-  if err := reader.Err(); err != nil {
-    return fmt.Errorf("flightsql reader: %s", err)
-  }
+  fmt.Printf("avg is %f\n", value["avg"])
+  fmt.Printf("max is %f\n", value["max"])
 }
 
 return nil`

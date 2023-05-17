@@ -159,12 +159,11 @@ for key := range data {
         </Panel.Body>
       </Panel>
       <p>
-        The first thing we'll do is initialize the go client with the server
-        URL and token that are needed to set up the initial connection to
-        InfluxDB. This client has functions 
-        <code className="homepage-wizard--code-highlight">WritePoints</code> 
-        and <code className="homepage-wizard--code-highlight">Query</code> 
-        .
+        The first thing we'll do is initialize the go client with the server URL
+        and token that are needed to set up the initial connection to InfluxDB.
+        This client has functions{' '}
+        <code className="homepage-wizard--code-highlight">WritePoints</code> and{' '}
+        <code className="homepage-wizard--code-highlight">Query</code> .
       </p>
       <p>
         Paste the following code in your{' '}
@@ -307,25 +306,22 @@ for key := range data {
       </p>
       <p>
         Add the following to the end of your{' '}
-        <code className="homepage-wizard--code-highlight">main</code>{' '}
-        function:
+        <code className="homepage-wizard--code-highlight">main</code> function:
       </p>
       <CodeSnippet
         language="go"
         onCopy={logCopyWriteCodeSnippet}
         text={writeCodeSnippet}
       />
-      <p>
-        You can now run program with:
-      </p>
+      <p>You can now run program with:</p>
       <CodeSnippet
         language="properties"
         onCopy={logCopyRunCodeSnippet}
         text="go run ./main.go"
       />
       <p>
-        Program should write data once you run it. 
-        After the data is written, a confirmation will appear below:
+        Program should write data once you run it. After the data is written, a
+        confirmation will appear below:
       </p>
       <Panel backgroundColor={InfluxColors.Grey15}>
         <Panel.Body>

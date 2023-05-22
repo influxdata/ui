@@ -44,7 +44,7 @@ for iterator.Next() {
   location := value["location"]
   ants := value["ants"]
   bees := value["bees"]
-  fmt.Printf("in %s are %d ants and %d bees \n", location, ants, bees)
+  fmt.Printf("in %s are %d ants and %d bees\\n", location, ants, bees)
 }
 `
 

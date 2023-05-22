@@ -32,7 +32,7 @@ query := \`SELECT *
           WHERE time >= now() - interval '1 hour'
             AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)\`
 
-iterator, err := client.Query(context.Background(), database, query, nil)
+iterator, err := client.Query(context.Background(), database, query)
 
 if err != nil {
   panic(err)
@@ -41,11 +41,12 @@ if err != nil {
 for iterator.Next() {
   value := iterator.Value()
 
-  fmt.Printf("avg is %f\n", value["avg"])
-  fmt.Printf("max is %f\n", value["max"])
+  location := value["location"]
+  ants := value["ants"]
+  bees := value["bees"]
+  fmt.Printf("in %s are %d ants and %d bees \n", location, ants, bees)
 }
-
-return nil`
+`
 
   const resultPreviewSnippet = `RECORD BATCH
 [

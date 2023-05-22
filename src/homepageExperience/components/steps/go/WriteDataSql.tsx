@@ -65,26 +65,34 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
 import (
     "context"
     "fmt"
-    "os"
     "time"
 
-    influxdb2 "github.com/influxdata/influxdb-client-go/v2"
+    "github.com/InfluxCommunity/influxdb3-go/influx"
 )
 
 func main() {
     // Create client
     url := "${url}"
     token := os.Getenv("INFLUXDB_TOKEN")
-    reader, err := client.Query(context.Background(), bucket, query, nil)
 
-    // Check if created successfully
+    // Create a new client using an InfluxDB server base URL and an authentication token
+    client, err := influx.New(influx.Configs{
+      HostURL: url,
+      AuthToken: token,
+    })
+
     if err != nil {
       panic(err)
     }
-    // Close client at the end
-    defer client.Close()
+    // Close client at the end and escalate error if present
+    defer func (client *influx.Client)  {
+      err := client.Close()
+      if err != nil {
+        panic(err)
+      }
+    }(client)
 
-    bucket := "${bucket.name}"
+    database := "${bucket.name}"
 }`
 
   const writeCodeSnippet = `data := map[string]map[string]interface{}{
@@ -126,8 +134,8 @@ for key := range data {
     AddTag("location", data[key]["location"].(string)).
     AddField(data[key]["species"].(string), data[key]["count"])
 
-  if err := client.WritePoints(ctx, bucket, point); err != nil {
-    return fmt.Errorf("influx client write point: %s", err)
+  if err := client.WritePoints(context.Background(), database, point); err != nil {
+    panic(err)
   }
 
   time.Sleep(1 * time.Second) // separate points by 1 second

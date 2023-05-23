@@ -1,12 +1,12 @@
-import {rangeToInterval} from 'src/shared/utils/sqlInterval'
+import {rangeToSQLInterval} from 'src/shared/utils/rangeToInterval'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {DurationTimeRange} from 'src/types'
 
-describe('rangeToInterval:', () => {
+describe('rangeToSQLInterval:', () => {
   describe('handles selectable timeRanges', () => {
     SELECTABLE_TIME_RANGES.forEach(range => {
       it(`handles ${range.label}`, () => {
-        expect(rangeToInterval(range)).toEqual(range.sql)
+        expect(rangeToSQLInterval(range)).toEqual(range.sql)
       })
     })
   })
@@ -39,7 +39,7 @@ describe('rangeToInterval:', () => {
     ]
     toTest.forEach(({msg, input, expected}) => {
       it(msg, () => {
-        expect(rangeToInterval(input as DurationTimeRange)).toEqual(expected)
+        expect(rangeToSQLInterval(input as DurationTimeRange)).toEqual(expected)
       })
     })
   })
@@ -66,7 +66,7 @@ describe('rangeToInterval:', () => {
     ]
     toTest.forEach(({msg, input, expected}) => {
       it(msg, () => {
-        expect(rangeToInterval(input as DurationTimeRange)).toEqual(expected)
+        expect(rangeToSQLInterval(input as DurationTimeRange)).toEqual(expected)
       })
     })
   })

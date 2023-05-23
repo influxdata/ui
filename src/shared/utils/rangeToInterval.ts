@@ -1,12 +1,16 @@
 import {TimeRange} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 export const durationRegExp = /^(\-)?(([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns))+$/g
 const singleDuration = /(([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns))/g
 const nanosecondDuration = /(([0-9]+)(ns))/g
 const microsecondDuration = /(([0-9,\.]+)(\W?)(microsecond))/g
 
-const convertToInterval = (upperOrLower: string) => {
+const convertToInterval = (
+  upperOrLower: string,
+  languageType: LanguageType
+): string => {
   if (upperOrLower == null || upperOrLower == 'now()') {
     return 'now()'
   }
@@ -67,21 +71,23 @@ const convertToInterval = (upperOrLower: string) => {
   if (timestamp.toTimeString() === 'Invalid Date') {
     throw new Error(`Unknown custom time: ${upperOrLower}`)
   }
-  // TODO -- handle timezones.
-  return `timestamp '${timestamp.toISOString()}'`
+
+  return languageType === LanguageType.SQL
+    ? `timestamp '${timestamp.toISOString()}'`
+    : `'${timestamp.toISOString()}'`
 }
 
 /** Convert duration to postgres interval.
  *     https://www.postgresql.org/docs/15/datatype-datetime.html#DATATYPE-INTERVAL-INPUT
  */
-export const rangeToInterval = (range: TimeRange) => {
+export const rangeToSQLInterval = (range: TimeRange) => {
   switch (range.type) {
     case 'selectable-duration':
       return range.sql
     case 'custom':
     case 'duration':
-      const upper = convertToInterval(range.lower)
-      const lower = convertToInterval(range.upper)
+      const upper = convertToInterval(range.lower, LanguageType.SQL)
+      const lower = convertToInterval(range.upper, LanguageType.SQL)
       return `time >= ${upper} AND time <= ${lower}`
     default:
       return DEFAULT_TIME_RANGE.sql

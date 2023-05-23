@@ -1,16 +1,12 @@
 import {TimeRange} from 'src/types'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
-import {LanguageType} from 'src/dataExplorer/components/resources'
 
 export const durationRegExp = /^(\-)?(([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns))+$/g
 const singleDuration = /(([0-9]+)(y|mo|w|d|h|ms|s|m|us|µs|ns))/g
 const nanosecondDuration = /(([0-9]+)(ns))/g
 const microsecondDuration = /(([0-9,\.]+)(\W?)(microsecond))/g
 
-const convertToInterval = (
-  upperOrLower: string,
-  languageType: LanguageType
-): string => {
+const convertToSQLTimeSyntax = (upperOrLower: string): string => {
   if (upperOrLower == null || upperOrLower == 'now()') {
     return 'now()'
   }
@@ -72,24 +68,64 @@ const convertToInterval = (
     throw new Error(`Unknown custom time: ${upperOrLower}`)
   }
 
-  return languageType === LanguageType.SQL
-    ? `timestamp '${timestamp.toISOString()}'`
-    : `'${timestamp.toISOString()}'`
+  return `timestamp '${timestamp.toISOString()}'`
 }
 
 /** Convert duration to postgres interval.
  *     https://www.postgresql.org/docs/15/datatype-datetime.html#DATATYPE-INTERVAL-INPUT
  */
-export const rangeToSQLInterval = (range: TimeRange) => {
+export const rangeToSQLInterval = (range: TimeRange): string => {
   switch (range.type) {
     case 'selectable-duration':
       return range.sql
     case 'custom':
     case 'duration':
-      const upper = convertToInterval(range.lower, LanguageType.SQL)
-      const lower = convertToInterval(range.upper, LanguageType.SQL)
-      return `time >= ${upper} AND time <= ${lower}`
+      const lower = convertToSQLTimeSyntax(range.lower)
+      const upper = convertToSQLTimeSyntax(range.upper)
+      return `time >= ${lower} AND time <= ${upper}`
     default:
       return DEFAULT_TIME_RANGE.sql
+  }
+}
+
+/** Reference:
+ *     https://docs.influxdata.com/influxdb/cloud/query-data/influxql/explore-data/time-and-timezone/#time-syntax
+ */
+const convertToInfluxQLTimeSyntax = (upperOrLower: string): string => {
+  if (upperOrLower === null || upperOrLower === 'now()') {
+    return 'now()'
+  }
+
+  // relative time
+  if (!!upperOrLower.match(durationRegExp)) {
+    const durationIntoPast = upperOrLower.charAt(0) === '-'
+    const absoluteTimestamp = upperOrLower.replace(/^-/, '') // -12d6h -> 12d6h
+    return `now() ${durationIntoPast ? '-' : '+'} ${absoluteTimestamp}`
+  }
+
+  // absolute time
+  const timestamp = new Date(upperOrLower)
+  if (timestamp.toTimeString() === 'Invalid Date') {
+    throw new Error(`Unknown custom time: ${upperOrLower}`)
+  }
+
+  return `'${timestamp.toISOString()}'`
+}
+
+export const rangeToInfluxQLInterval = (range: TimeRange): string => {
+  switch (range.type) {
+    case 'selectable-duration':
+      return `time >= ${range.lower}`
+    case 'custom':
+    case 'duration':
+      try {
+        const upper = convertToInfluxQLTimeSyntax(range.upper)
+        const lower = convertToInfluxQLTimeSyntax(range.lower)
+        return `time >= ${lower} AND time <= ${upper}`
+      } catch (error) {
+        return ''
+      }
+    default:
+      return `time >= ${DEFAULT_TIME_RANGE.lower}`
   }
 }

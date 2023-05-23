@@ -1,4 +1,7 @@
-import {rangeToSQLInterval} from 'src/shared/utils/rangeToInterval'
+import {
+  rangeToSQLInterval,
+  rangeToInfluxQLInterval,
+} from 'src/shared/utils/rangeToInterval'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {DurationTimeRange} from 'src/types'
 
@@ -67,6 +70,89 @@ describe('rangeToSQLInterval:', () => {
     toTest.forEach(({msg, input, expected}) => {
       it(msg, () => {
         expect(rangeToSQLInterval(input as DurationTimeRange)).toEqual(expected)
+      })
+    })
+  })
+})
+
+describe('rangeToInfluxQLInterval:', () => {
+  describe('handles selectable timeRanges', () => {
+    SELECTABLE_TIME_RANGES.forEach(range => {
+      it(`handles ${range.label}`, () => {
+        expect(rangeToInfluxQLInterval(range)).toEqual(`time >= ${range.lower}`)
+      })
+    })
+  })
+  describe('handles duration timeRanges', () => {
+    const toTest = [
+      {
+        msg: 'for all units',
+        input: {
+          lower: '-12y11mo10w9d8h7m6s5ms4us3µs2ns',
+          upper: 'now()',
+          type: 'duration',
+        },
+        expected: `time >= now() - 12y11mo10w9d8h7m6s5ms4us3µs2ns AND time <= now()`,
+      },
+      {
+        msg: 'for single durations',
+        input: {lower: '-8h', upper: 'now()', type: 'duration'},
+        expected: `time >= now() - 8h AND time <= now()`,
+      },
+      {
+        msg: 'for durations without upper bounds',
+        input: {lower: '-8h', upper: null, type: 'duration'},
+        expected: `time >= now() - 8h AND time <= now()`,
+      },
+      {
+        msg: 'for durations which are not negative (into the future)',
+        input: {lower: 'now()', upper: '8h', type: 'duration'},
+        expected: `time >= now() AND time <= now() + 8h`,
+      },
+    ]
+    toTest.forEach(({msg, input, expected}) => {
+      it(msg, () => {
+        expect(rangeToInfluxQLInterval(input as DurationTimeRange)).toEqual(
+          expected
+        )
+      })
+    })
+  })
+  describe('handles timestamp timeRanges in ISO format', () => {
+    const toTest = [
+      {
+        msg: 'timestamps with upper and lower bounds',
+        input: {
+          lower: '2023-01-03T00:00:00.000Z',
+          upper: '2023-01-04T23:59:00.000Z',
+          type: 'custom',
+        },
+        expected: `time >= '2023-01-03T00:00:00.000Z' AND time <= '2023-01-04T23:59:00.000Z'`,
+      },
+      {
+        msg: 'for timestamps without upper bounds',
+        input: {
+          lower: '2023-01-03T00:00:00.000Z',
+          upper: null,
+          type: 'custom',
+        },
+        expected: `time >= '2023-01-03T00:00:00.000Z' AND time <= now()`,
+      },
+      {
+        msg: 'unknown custom time',
+        input: {
+          lower: '2023-01-03T00:00:00.000Zinvaliddate',
+          upper: null,
+          type: 'custom',
+        },
+        expected: '',
+      },
+    ]
+    toTest.forEach(({msg, input, expected}) => {
+      it(msg, () => {
+        expect(rangeToInfluxQLInterval(input as DurationTimeRange)).toEqual(
+          expected
+        )
       })
     })
   })

@@ -31,10 +31,10 @@ export interface SelectableDurationTimeRange {
   duration: string
   type: 'selectable-duration'
   windowPeriod: number
-  // flux range
+  // Flux, InfluxQL range
   lower: SelectableTimeRangeLower
   upper: Nullable<string>
-  // sql range
+  // SQL range
   sql: string
 }
 

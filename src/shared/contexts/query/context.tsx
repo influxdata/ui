@@ -149,7 +149,7 @@ const buildQueryRequest = (
   return {url, body, headers}
 }
 
-const handleQueryResponse = (response, cb) => {
+export const handleQueryResponse = (response, cb) => {
   if (response.status === 200) {
     return cb(response)
   }

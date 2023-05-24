@@ -18,7 +18,7 @@ import {useSelector, useDispatch} from 'react-redux'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/context/results'
-import {QueryContext} from 'src/shared/contexts/query'
+import {QueryContext, handleQueryResponse} from 'src/shared/contexts/query'
 import {
   PersistanceContext,
   DEFAULT_FLUX_EDITOR_TEXT,
@@ -37,6 +37,9 @@ import CSVExportButton from 'src/shared/components/CSVExportButton'
 
 // Types
 import {LanguageType} from 'src/dataExplorer/components/resources'
+import {CancellationError} from 'src/types'
+import {FluxResult} from 'src/types/flows'
+import {RunQueryResult} from 'src/shared/apis/query'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -44,16 +47,19 @@ import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
-import {csvDownloadFailure} from 'src/shared/copy/notifications'
+import {csvDownloadFailure, resultTooLarge} from 'src/shared/copy/notifications'
 import {
   sqlAsFlux,
   updateWindowPeriod,
 } from 'src/shared/contexts/query/preprocessing'
 import {rangeToParam} from 'src/dataExplorer/shared/utils'
+import {getFlagValue} from 'src/shared/utils/featureFlag'
+import {trimPartialLines} from 'src/shared/contexts/query/postprocessing'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
-import {API_BASE_PATH} from 'src/shared/constants'
+import {API_BASE_PATH, FLUX_RESPONSE_BYTES_LIMIT} from 'src/shared/constants'
+import {fromFlux} from '@influxdata/giraffe'
 
 const FluxMonacoEditor = lazy(
   () => import('src/shared/components/FluxMonacoEditor')
@@ -107,6 +113,14 @@ const ResultsPane: FC = () => {
   }
 
   const downloadByServiceWorker = () => {
+    // TODO chunchun:
+    //   temporarily using v1 endpoint for InfluxQL which only works for TSM,
+    //   replace it with v2 endpint once the InfluxQL bridge is ready on IOx
+    if (language === LanguageType.INFLUXQL) {
+      console.error('csv download for InfluxQL is not implemented')
+      return
+    }
+
     try {
       event('runQuery.downloadCSV', {context: 'query experience'})
 
@@ -147,6 +161,129 @@ const ResultsPane: FC = () => {
 
   const submit = useCallback(() => {
     setStatus(RemoteDataState.Loading)
+
+    // TODO chunchun:
+    //   temporarily using v1 endpoint for InfluxQL which only works for TSM,
+    //   replace it with v2 endpint once the InfluxQL bridge is ready on IOx
+    if (language === LanguageType.INFLUXQL) {
+      const handleUiParsing = async response => {
+        const reader = response.body.getReader()
+        const decoder = new TextDecoder()
+
+        let csv = ''
+        let bytesRead = 0
+        let didTruncate = false
+        let read = await reader.read()
+
+        const dataExplorerCsvLimit: string | boolean = getFlagValue(
+          'dataExplorerCsvLimit'
+        )
+        const BYTE_LIMIT: number = Boolean(dataExplorerCsvLimit)
+          ? Number(dataExplorerCsvLimit)
+          : FLUX_RESPONSE_BYTES_LIMIT
+
+        while (!read.done) {
+          const text = decoder.decode(read.value)
+
+          bytesRead += read.value.byteLength
+
+          if (bytesRead > BYTE_LIMIT) {
+            csv += trimPartialLines(text)
+            didTruncate = true
+            break
+          } else {
+            csv += text
+            read = await reader.read()
+          }
+        }
+
+        reader.cancel()
+
+        return {
+          type: 'SUCCESS',
+          csv,
+          bytesRead,
+          didTruncate,
+        }
+      }
+
+      try {
+        // Reference:
+        //  https://docs.influxdata.com/influxdb/cloud/api/v1-compatibility/#tag/Query
+        const params: URLSearchParams = new URLSearchParams({
+          orgID,
+          db: selection?.dbrp.database,
+          q: text,
+        })
+        if (selection?.dbrp.retention_policy) {
+          params.set('rp', selection?.dbrp.retention_policy)
+        }
+        const url = `${API_BASE_PATH}query?${params}`
+
+        const headers = {
+          'Content-Type': 'application/vnd.influxql',
+          'Accept-Encoding': 'gzip',
+        }
+        headers['Accept'] = 'text/csv'
+        // TODO chunchun: auth token?
+        headers['Authorization'] =
+          'Token 3WpeBwZlkO1FKZKuJU_wcegslvtzSH_sVz5Ux6dUzEslohc4PaucMnKp0bbFbbTIcm-7LC0HmWptv7XdVg53mg=='
+
+        const controller = new AbortController()
+
+        fetch(url, {
+          method: 'POST',
+          headers,
+          signal: controller.signal,
+        })
+          .then((resp: Response): Promise<RunQueryResult> => {
+            return handleQueryResponse(resp, handleUiParsing)
+          })
+          .then((resp): Promise<FluxResult> => {
+            if (resp.type !== 'SUCCESS') {
+              throw new Error(resp.message)
+            }
+            if (resp.didTruncate) {
+              dispatch(notify(resultTooLarge(resp.bytesRead)))
+            }
+            const parsed = fromFlux(resp.csv)
+
+            return Promise.resolve({
+              source: text,
+              parsed,
+              error: null,
+              truncated: resp.didTruncate,
+              bytes: resp.bytesRead,
+            } as FluxResult)
+          })
+          .then(resp => {
+            event('resultReceived', {
+              status: resp.parsed.table.length === 0 ? 'empty' : 'good',
+            })
+            setResult(resp)
+            setStatus(RemoteDataState.Done)
+          })
+          .catch(error => {
+            if (error.name === 'AbortError') {
+              return Promise.reject(new CancellationError())
+            }
+            return Promise.reject(error)
+          })
+      } catch (error) {
+        setResult({
+          source: text,
+          parsed: null,
+          error: error.message,
+          truncated: false,
+          bytes: 0,
+        })
+        event('resultReceived', {status: 'error'})
+        setStatus(RemoteDataState.Error)
+      }
+
+      return
+    }
+
     query(
       text,
       {

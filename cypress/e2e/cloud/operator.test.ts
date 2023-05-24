@@ -27,9 +27,9 @@ describe('Operator Page', () => {
 
     cy.getByTestID('logout-button').should('exist')
 
-    // preloads 6 accounts
+    // preloads 7 accounts
     cy.getByTestID('table-body').within(() => {
-      cy.getByTestID('table-row').should('have.length', 6)
+      cy.getByTestID('table-row').should('have.length', 7)
     })
 
     // placeholder says filter by email
@@ -48,7 +48,7 @@ describe('Operator Page', () => {
       cy.getByTestID('operator-resource--searchbar').type(knownUser[index])
       cy.wait('@quartzSearchAccounts')
       cy.getByTestID('table-body').within(() => {
-        cy.getByTestID('table-row').should('have.length', index === 0 ? 6 : 1)
+        cy.getByTestID('table-row').should('have.length', index === 0 ? 7 : 1)
       })
     }
 
@@ -84,9 +84,9 @@ describe('Operator Page', () => {
       'cf-tabs--tab__active'
     )
 
-    // preloads 6 organizations
+    // preloads 7 organizations
     cy.getByTestID('table-body').within(() => {
-      cy.getByTestID('table-row').should('have.length', 6)
+      cy.getByTestID('table-row').should('have.length', 7)
     })
 
     // placeholder says filter by id
@@ -181,7 +181,7 @@ describe('Operator Page', () => {
     )
 
     cy.getByTestID('associated-orgs--table-body').within(() => {
-      cy.getByTestID('table-row').should('have.length', 6)
+      cy.getByTestID('table-row').should('have.length', 7)
     })
 
     // Renders the org overlay

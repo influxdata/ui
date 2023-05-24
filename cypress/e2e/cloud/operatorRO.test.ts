@@ -38,9 +38,9 @@ describe('Operator Page', () => {
     cy.getByTestID('refless-popover--contents').contains('test@influxdata.com')
     cy.getByTestID('logout-button').should('exist')
 
-    // preloads 6 accounts
+    // preloads 7 accounts
     cy.getByTestID('table-body').within(() => {
-      cy.getByTestID('table-row').should('have.length', 6)
+      cy.getByTestID('table-row').should('have.length', 7)
     })
 
     cy.getByTestID('operator-resource--searchbar').clear()

@@ -97,7 +97,7 @@ const convertToInfluxQLTimeSyntax = (upperOrLower: string): string => {
   }
 
   // relative time
-  if (!!upperOrLower.match(durationRegExp)) {
+  if (Boolean(upperOrLower.match(durationRegExp))) {
     const durationIntoPast = upperOrLower.charAt(0) === '-'
     const absoluteTimestamp = upperOrLower.replace(/^-/, '') // -12d6h -> 12d6h
     return `now() ${durationIntoPast ? '-' : '+'} ${absoluteTimestamp}`

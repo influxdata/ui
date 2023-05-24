@@ -48,7 +48,7 @@ describe('Operator Page', () => {
       cy.getByTestID('operator-resource--searchbar').type(knownUser[index])
       cy.wait('@quartzSearchAccounts')
       cy.getByTestID('table-body').within(() => {
-        cy.getByTestID('table-row').should('have.length', index === 0 ? 7 : 1)
+        cy.getByTestID('table-row').should('have.length', index === 0 ? 6 : 1)
       })
     }
 

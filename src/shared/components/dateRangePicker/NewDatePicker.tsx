@@ -23,7 +23,7 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 // Utils
 import {getTimeRangeLabel} from 'src/shared/utils/duration'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
-import {durationRegExp} from 'src/shared/utils/sqlInterval'
+import {durationRegExp} from 'src/shared/utils/rangeToInterval'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {useSelector} from 'react-redux'
 import {getTimeZone} from 'src/dashboards/selectors'

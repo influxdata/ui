@@ -150,6 +150,10 @@ describe('Operator Page', () => {
     cy.getByTestID('orgTab').should('not.have.class', 'cf-tabs--tab__active')
 
     // can cancel a payg account
+    cy.intercept('DELETE', '/api/v2/quartz/operator/accounts/*', {
+      statusCode: 204,
+    }).as('quartzDeleteAccount')
+
     cy.getByTestID('account-id')
       .eq(3)
       .within(() => {
@@ -169,13 +173,14 @@ describe('Operator Page', () => {
     cy.getByTestID('account-cancel--button').click()
     cy.getByTestID('cancel-overlay').should('exist')
     cy.getByTestID('cancel-account--confirmation-button').click()
+    cy.wait('@quartzDeleteAccount')
 
     cy.location().should(loc => {
       expect(loc.pathname).to.eq('/operator')
     })
 
     cy.getByTestID('table-body').within(() => {
-      cy.getByTestID('table-row').should('have.length', 6)
+      cy.getByTestID('table-row').should('have.length', 7)
     })
 
     // validates account details page

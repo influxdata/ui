@@ -27,7 +27,7 @@ import {
 } from 'src/dataExplorer/context/persistance'
 
 // Components
-import Results from 'src/dataExplorer/components/Results'
+import {Results} from 'src/dataExplorer/components/Results'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
 import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'

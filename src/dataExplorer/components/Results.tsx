@@ -34,12 +34,12 @@ import {PersistanceContext} from 'src/dataExplorer/context/persistance'
 // Types
 import {FluxResult} from 'src/types/flows'
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
 import {bytesFormatter} from 'src/shared/copy/notifications'
 
 import './Results.scss'
-import {LanguageType} from './resources'
 
 const QueryStat: FC = () => {
   const {result} = useContext(ResultsContext)
@@ -418,4 +418,4 @@ const Results: FC = () => {
   )
 }
 
-export default Results
+export {Results}

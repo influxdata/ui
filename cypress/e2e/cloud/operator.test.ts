@@ -27,7 +27,7 @@ describe('Operator Page', () => {
 
     cy.getByTestID('logout-button').should('exist')
 
-    // preloads 6 accounts
+    // preloads 7 accounts
     cy.getByTestID('table-body').within(() => {
       cy.getByTestID('table-row').should('have.length', 7)
     })

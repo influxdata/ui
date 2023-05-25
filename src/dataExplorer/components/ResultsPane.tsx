@@ -99,9 +99,13 @@ const ResultsPane: FC = () => {
   if (!text || isDefaultText(text)) {
     submitButtonDisabled = true
     disabledTitleText = 'Write a query before running script'
-  } else if (language == LanguageType.SQL && !selection.bucket) {
+  } else if (language === LanguageType.SQL && !selection.bucket) {
     submitButtonDisabled = true
     disabledTitleText = 'Select a bucket before running script'
+  } else if (language === LanguageType.INFLUXQL && !selection.dbrp) {
+    submitButtonDisabled = true
+    disabledTitleText =
+      'Select a database/retention policy before running script'
   } else if (
     language == LanguageType.FLUX &&
     selection.composition.synced && // using composition
@@ -212,11 +216,11 @@ const ResultsPane: FC = () => {
         //  https://docs.influxdata.com/influxdb/cloud/api/v1-compatibility/#tag/Query
         const params: URLSearchParams = new URLSearchParams({
           orgID,
-          db: selection?.dbrp.database,
+          db: selection?.dbrp?.database,
           q: text,
         })
-        if (selection?.dbrp.retention_policy) {
-          params.set('rp', selection?.dbrp.retention_policy)
+        if (selection?.dbrp?.retention_policy) {
+          params.set('rp', selection.dbrp.retention_policy)
         }
         const url = `${API_BASE_PATH}query?${params}`
 

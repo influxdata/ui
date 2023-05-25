@@ -10,7 +10,7 @@ import {SelectableDurationTimeRange, TimeRange} from 'src/types'
 
 // Utils
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
-import {rangeToInterval as buildTimeRange} from 'src/shared/utils/sqlInterval'
+import {rangeToSQLInterval as buildTimeRange} from 'src/shared/utils/rangeToInterval'
 import {notify} from 'src/shared/actions/notifications'
 import {compositionEnded} from 'src/shared/copy/notifications'
 import {groupedTagValues} from 'src/languageSupport/languages/agnostic/utils'

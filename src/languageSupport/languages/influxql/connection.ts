@@ -15,9 +15,11 @@ import {LspRange} from 'src/languageSupport/languages/agnostic/types'
 
 // Utils
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {rangeToInfluxQLInterval as buildTimeRange} from 'src/shared/utils/rangeToInterval'
 import {notify} from 'src/shared/actions/notifications'
 import {compositionEnded} from 'src/shared/copy/notifications'
 import {groupedTagValues} from 'src/languageSupport/languages/agnostic/utils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export class ConnectionManager extends AgnosticConnectionManager {
   private _timeRange: TimeRange = DEFAULT_TIME_RANGE
@@ -53,19 +55,18 @@ export class ConnectionManager extends AgnosticConnectionManager {
       groupedTagValues(this._session.tagValues)
     )
       .map(([key, values]) =>
-        values.map((value: string) => `"${key}" = '${value}'`).join(' AND ')
+        values.map((value: string) => `"${key}" = '${value}'`).join(' OR ')
       )
       .join(' AND ')
 
-    // TODO: timestamp
+    const timeRangeExpr = buildTimeRange(this._timeRange)
 
     let whereClause: string[] = []
 
     if (this._session.tagValues.length > 0) {
-      // TODO: add timestamp
-      whereClause = ['WHERE', `(${tagValuesExpr})`]
+      whereClause = ['WHERE', timeRangeExpr, 'AND', `(${tagValuesExpr})`]
     } else {
-      // TODO: add timestamp
+      whereClause = ['WHERE', timeRangeExpr]
     }
 
     composition = composition.concat(whereClause)
@@ -178,7 +179,7 @@ export class ConnectionManager extends AgnosticConnectionManager {
       sessionCb,
       dispatch
     )
-    if (!shouldContinue) {
+    if (!shouldContinue || !isFlagEnabled('schemaComposition')) {
       return
     }
 

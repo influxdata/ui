@@ -37,7 +37,6 @@ import CSVExportButton from 'src/shared/components/CSVExportButton'
 
 // Types
 import {LanguageType} from 'src/dataExplorer/components/resources'
-import {CancellationError} from 'src/types'
 import {FluxResult} from 'src/types/flows'
 import {RunQueryResult} from 'src/shared/apis/query'
 
@@ -55,6 +54,7 @@ import {
 import {rangeToParam} from 'src/dataExplorer/shared/utils'
 import {getFlagValue} from 'src/shared/utils/featureFlag'
 import {trimPartialLines} from 'src/shared/contexts/query/postprocessing'
+import {addAnnotationToCSV} from 'src/shared/utils/addAnnotationToCSV'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
@@ -250,7 +250,12 @@ const ResultsPane: FC = () => {
             if (resp.didTruncate) {
               dispatch(notify(resultTooLarge(resp.bytesRead)))
             }
-            const parsed = fromFlux(resp.csv)
+
+            // Since InfluxQL v1 endpoint returns csv instead of annotated csv,
+            // in order to show values in table, add annotation row here
+            const annotatedCSV = addAnnotationToCSV(resp.csv)
+
+            const parsed = fromFlux(annotatedCSV)
 
             return Promise.resolve({
               source: text,
@@ -268,10 +273,15 @@ const ResultsPane: FC = () => {
             setStatus(RemoteDataState.Done)
           })
           .catch(error => {
-            if (error.name === 'AbortError') {
-              return Promise.reject(new CancellationError())
-            }
-            return Promise.reject(error)
+            setResult({
+              source: text,
+              parsed: null,
+              error: error.message,
+              truncated: false,
+              bytes: 0,
+            })
+            event('resultReceived', {status: 'error'})
+            setStatus(RemoteDataState.Error)
           })
       } catch (error) {
         setResult({

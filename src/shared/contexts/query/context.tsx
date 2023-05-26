@@ -113,13 +113,15 @@ const buildQueryRequest = (
   headers: {
     'Content-Type': string
     'Accept-Encoding': string
+    Accept?: string
+    Authorization?: string
   }
 } => {
   const mechanism = options?.overrideMechanism ?? OverrideMechanism.Extern
   const language = options?.language ?? LanguageType.FLUX
 
   if (language === LanguageType.INFLUXQL) {
-    // Reference:
+    // InfluxQL query endpoint doc:
     //  https://docs.influxdata.com/influxdb/cloud/api/v1-compatibility/#tag/Query
     const params: URLSearchParams = new URLSearchParams({
       orgID: org.id,
@@ -132,16 +134,16 @@ const buildQueryRequest = (
     }
     const url = `${API_BASE_PATH}query?${params}`
 
-    const body: any = null // TODO
+    const body = null
 
     const headers = {
       'Content-Type': 'application/vnd.influxql',
       'Accept-Encoding': 'gzip',
+      Accept: 'text/csv',
+      // TODO chunchun: token
+      Authorization:
+        'Token 3WpeBwZlkO1FKZKuJU_wcegslvtzSH_sVz5Ux6dUzEslohc4PaucMnKp0bbFbbTIcm-7LC0HmWptv7XdVg53mg==',
     }
-    headers['Accept'] = 'text/csv'
-    // TODO chunchun: auth token?
-    headers['Authorization'] =
-      'Token 3WpeBwZlkO1FKZKuJU_wcegslvtzSH_sVz5Ux6dUzEslohc4PaucMnKp0bbFbbTIcm-7LC0HmWptv7XdVg53mg=='
 
     return {url, body, headers}
   }

@@ -111,7 +111,7 @@ const ResultsPane: FC = () => {
   }
 
   const downloadByServiceWorker = () => {
-    // TODO chunchun
+    // TODO (chunchun): https://github.com/influxdata/ui/issues/6704
     if (language === LanguageType.INFLUXQL) {
       console.error('csv download for InfluxQL is not implemented')
       return
@@ -269,10 +269,12 @@ const ResultsPane: FC = () => {
               margin={ComponentSize.Small}
             >
               <QueryTime />
-              <CSVExportButton
-                disabled={submitButtonDisabled}
-                download={downloadByServiceWorker}
-              />
+              {resource?.language === LanguageType.INFLUXQL ? null : (
+                <CSVExportButton
+                  disabled={submitButtonDisabled}
+                  download={downloadByServiceWorker}
+                />
+              )}
               <NewDatePicker />
               <SubmitQueryButton
                 className="submit-btn"

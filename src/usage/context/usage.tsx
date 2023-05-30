@@ -1,7 +1,7 @@
 // Libraries
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { fromFlux, FromFluxResult } from '@influxdata/giraffe'
-import { useSelector } from 'react-redux'
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
+import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {useSelector} from 'react-redux'
 
 // Utils
 import {
@@ -11,15 +11,14 @@ import {
   getUsageVectors,
   getUsageRateLimits,
 } from 'src/client/unityRoutes'
-import { isFlagEnabled } from 'src/shared/utils/featureFlag'
 
 // Constants
-import { PAYG_CREDIT_DAYS } from 'src/shared/constants'
-import { DEFAULT_USAGE_TIME_RANGE } from 'src/shared/constants/timeRanges'
-import { MILLISECONDS_IN_ONE_DAY } from 'src/utils/datetime/constants'
+import {PAYG_CREDIT_DAYS} from 'src/shared/constants'
+import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {MILLISECONDS_IN_ONE_DAY} from 'src/utils/datetime/constants'
 
 // Selectors
-import { selectCurrentIdentity } from 'src/identity/selectors'
+import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Types
 import {
@@ -64,8 +63,8 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   billingDateTime: '',
   billingStats: [],
   billingStatsStatus: RemoteDataState.NotStarted,
-  handleSetSelectedUsage: () => { },
-  handleSetTimeRange: () => { },
+  handleSetSelectedUsage: () => {},
+  handleSetTimeRange: () => {},
   rateLimits: null,
   rateLimitsStatus: RemoteDataState.NotStarted,
   selectedUsage: '',
@@ -91,7 +90,7 @@ export const calculateCreditDaysUsed = (creditStartDate: string): number => {
   return Math.floor(diffTime / MILLISECONDS_IN_ONE_DAY)
 }
 
-export const UsageProvider: FC<Props> = React.memo(({ children }) => {
+export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [billingDateTime, setBillingDateTime] = useState('')
   const [usageVectors, setUsageVectors] = useState([])
   const [selectedUsage, setSelectedUsage] = useState('')
@@ -113,7 +112,7 @@ export const UsageProvider: FC<Props> = React.memo(({ children }) => {
     DEFAULT_USAGE_TIME_RANGE
   )
 
-  const { account } = useSelector(selectCurrentIdentity)
+  const {account} = useSelector(selectCurrentIdentity)
 
   const paygCreditStartDate = account.paygCreditStartDate ?? ''
 
@@ -216,19 +215,19 @@ export const UsageProvider: FC<Props> = React.memo(({ children }) => {
         const currentDate = new Date()
         const secondsWith250Credit =
           currentDate.getTime() - new Date(paygCreditStartDate).getTime()
-        const creditDays = Math.floor(secondsWith250Credit / secondsPerDay)
+        const daysWith250Credit = Math.floor(
+          secondsWith250Credit / secondsPerDay
+        )
 
-        if (creditDays <= 0 || isNaN(creditDays)) {
+        if (daysWith250Credit <= 0 || isNaN(daysWith250Credit)) {
           throw new Error('invalid number of credit days')
         }
-
-        const daysWith250Credit = creditDays
 
         vectors.forEach(vector_name => {
           promises.push(
             getUsage({
               vector_name,
-              query: { range: `${daysWith250Credit}d` },
+              query: {range: `${daysWith250Credit}d`},
             }).then(resp => {
               if (resp.status !== 200) {
                 throw new Error(resp.data.message)
@@ -301,7 +300,7 @@ export const UsageProvider: FC<Props> = React.memo(({ children }) => {
 
           const resp = await getUsage({
             vector_name: vector.fluxKey,
-            query: { range: duration },
+            query: {range: duration},
           })
 
           if (resp.status !== 200) {
@@ -330,7 +329,7 @@ export const UsageProvider: FC<Props> = React.memo(({ children }) => {
     try {
       setRateLimitsStatus(RemoteDataState.Loading)
       const resp = await getUsageRateLimits({
-        query: { range: duration },
+        query: {range: duration},
       })
 
       if (resp.status !== 200) {

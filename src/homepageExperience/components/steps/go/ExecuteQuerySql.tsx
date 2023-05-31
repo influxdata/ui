@@ -20,7 +20,6 @@ export const ExecuteQuerySql = (_props: OwnProps) => {
     event('firstMile.goWizard.RunGo.code.copied')
   }
 
-
   const sqlSnippet = `SELECT *
 FROM 'census'
 WHERE time >= now() - interval '1 hour'
@@ -92,7 +91,9 @@ for iterator.Next() {
     <>
       <h1>Query Data</h1>
       <p>
-        To query our data we'll just use <code className="homepage-wizard--code-highlight">Query</code> function of the client.
+        To query our data we'll just use{' '}
+        <code className="homepage-wizard--code-highlight">Query</code> function
+        of the client.
       </p>
       <p>
         Now let's query the data we wrote into the database with SQL. Here is
@@ -105,8 +106,7 @@ for iterator.Next() {
       </p>
       <p>
         Add the following function to the end of your{' '}
-        <code className="homepage-wizard--code-highlight">main</code>{' '}
-        function:
+        <code className="homepage-wizard--code-highlight">main</code> function:
       </p>
       <CodeSnippet
         language="go"
@@ -114,9 +114,7 @@ for iterator.Next() {
         showCopyControl={true}
         text={querySnippet}
       />
-      <p>
-        You can now run your application again:
-      </p>
+      <p>You can now run your application again:</p>
       <CodeSnippet
         language="properties"
         onCopy={logCopyRunCodeSnippet}

@@ -50,6 +50,7 @@ import {
   WriteDataPage,
   DetailsSubscriptionPage,
   GoWizard,
+  CSharpWizard,
 } from 'src/shared/containers'
 import {OrganizationList} from 'src/cloud/containers'
 
@@ -370,6 +371,12 @@ const SetOrg: FC = () => {
             path="/orgs/:orgID/new-user-setup/golang"
             key="/golang"
             component={GoWizard}
+          />
+          <Route
+            exact
+            path="/orgs/:orgID/new-user-setup/csharp"
+            key="/csharp"
+            component={CSharpWizard}
           />
           <Route
             exact

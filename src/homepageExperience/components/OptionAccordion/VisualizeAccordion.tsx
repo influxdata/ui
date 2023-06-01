@@ -48,8 +48,15 @@ export const VisualizeAccordion: FC = () => {
             }}
           />
           <OptionAccordionElement
-            elementTitle="Grafana"
-            elementDescription="Set up Grafana to visualize and alert on your data."
+            elementTitle={
+              <>
+                Grafana{' '}
+                <strong className="option-accordion--tag">
+                  New Cloud Plugin
+                </strong>
+              </>
+            }
+            elementDescription="Set up Grafana Local or Grafana Cloud to visualize and alert on your data."
             cta={() => {
               return (
                 <OptionLink

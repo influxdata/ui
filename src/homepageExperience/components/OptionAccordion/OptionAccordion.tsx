@@ -23,7 +23,7 @@ import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   headerIcon: IconFont
   headerIconColor?: InfluxColors | string
-  headerTitle: string
+  headerTitle: string | JSX.Element
   headerDescription?: string
   optionId?: string
   bodyContent: JSX.Element

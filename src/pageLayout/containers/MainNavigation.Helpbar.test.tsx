@@ -134,7 +134,9 @@ describe('Contact Support', () => {
     fireEvent.click(selectOption)
 
     // description
-    const supportDescription = getByTestId('contact-support-description--textarea')
+    const supportDescription = getByTestId(
+      'contact-support-description--textarea'
+    )
     fireEvent.change(supportDescription, {
       target: {value: 'Testing description area'},
     })
@@ -179,7 +181,9 @@ describe('Contact Support', () => {
     fireEvent.click(selectOption)
 
     // description
-    const supportDescription = getByTestId('contact-support-description--textarea')
+    const supportDescription = getByTestId(
+      'contact-support-description--textarea'
+    )
     fireEvent.change(supportDescription, {
       target: {value: 'Testing description area'},
     })

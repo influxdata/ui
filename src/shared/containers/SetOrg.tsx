@@ -51,6 +51,7 @@ import {
   DetailsSubscriptionPage,
   GoWizard,
   CSharpWizard,
+  JavaWizard,
 } from 'src/shared/containers'
 import {OrganizationList} from 'src/cloud/containers'
 
@@ -377,6 +378,12 @@ const SetOrg: FC = () => {
             path="/orgs/:orgID/new-user-setup/csharp"
             key="/csharp"
             component={CSharpWizard}
+          />
+          <Route
+            exact
+            path="/orgs/:orgID/new-user-setup/java"
+            key="/csharp"
+            component={JavaWizard}
           />
           <Route
             exact

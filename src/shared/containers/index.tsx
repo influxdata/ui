@@ -135,6 +135,12 @@ export const CSharpWizard = lazy(() =>
   }))
 )
 
+export const JavaWizard = lazy(() =>
+  import('src/homepageExperience/containers/JavaWizard').then(module => ({
+    default: module.JavaWizard,
+  }))
+)
+
 export const CliWizard = lazy(() =>
   import('src/homepageExperience/containers/CliWizard').then(module => ({
     default: module.CliWizard,

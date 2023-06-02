@@ -27,6 +27,7 @@ import {
   CLIIcon,
   CSharpIcon,
   GoIcon,
+  JavaIcon,
   MQTTIcon,
   NodejsIcon,
   PythonIcon,
@@ -66,6 +67,7 @@ export const HomepageContentsTSM: FC = () => {
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
   const javaScriptNodeLink = `/orgs/${org.id}/new-user-setup/nodejs`
   const csharpLink = `/orgs/${org.id}/new-user-setup/csharp`
+  const javaLink = `/orgs/${org.id}/new-user-setup/java`
 
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
@@ -104,6 +106,10 @@ export const HomepageContentsTSM: FC = () => {
   }
 
   const logCSharpWizardClick = () => {
+    event('firstMile.csharpWizard.clicked')
+  }
+
+  const logJavaWizardClick = () => {
     event('firstMile.csharpWizard.clicked')
   }
 
@@ -219,6 +225,23 @@ export const HomepageContentsTSM: FC = () => {
                         >
                           <h5>C#</h5>
                           {CSharpIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                  )}
+                  {isFlagEnabled('ioxOnboarding') && (
+                    <ResourceCard style={cardStyle}>
+                      <Link
+                        to={javaLink}
+                        style={linkStyle}
+                        onClick={logJavaWizardClick}
+                      >
+                        <div
+                          className="homepage-wizard-language-tile"
+                          data-testid="homepage-wizard-language-tile--csharp"
+                        >
+                          <h5>Java</h5>
+                          {JavaIcon}
                         </div>
                       </Link>
                     </ResourceCard>

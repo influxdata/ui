@@ -25,7 +25,7 @@ AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL) order by time asc`
         "AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL) order by time asc";
 
 System.out.printf("| %-5s | %-5s | %-8s | %-30s |%n", "ants", "bees", "location", "time");
-try (Stream<Object[]> stream = client.query(sql, new QueryParameters(${bucket}, QueryType.SQL))) {
+try (Stream<Object[]> stream = client.query(sql, new QueryParameters("${bucket}", QueryType.SQL))) {
     stream.forEach(row -> System.out.printf("| %-5s | %-5s | %-8s | %-30s |%n",  row[0], row[1], row[2], row[3]));
 }
 `

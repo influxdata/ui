@@ -25,7 +25,7 @@ WHERE time >= now() - interval '24 hours'
 AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL) order by time asc";
         
 Console.WriteLine("{0,-5}{1,-5}{2,-10}{3,-15}", "ants", "bees", "location", "time");
-await foreach (var row in client.Query(query: sql, database: ${bucket}))
+await foreach (var row in client.Query(query: sql, database: "${bucket}"))
 {
     Console.WriteLine("{0,-5}{1,-5}{2,-10}{3,-15}", row[0], row[1], row[2], row[3]);
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import {screen, fireEvent, cleanup, waitFor} from '@testing-library/react'
+import {screen, fireEvent, waitFor} from '@testing-library/react'
 import {jest} from '@jest/globals'
 
 // Mocks

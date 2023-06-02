@@ -275,6 +275,8 @@ export const MainNavigation: FC = () => {
     return null
   }
 
+  const isContractCustomer = accountType === 'contract'
+
   const docslink = isIOxOrg
     ? 'https://docs.influxdata.com/influxdb/cloud-iox/'
     : 'https://docs.influxdata.com/'
@@ -296,14 +298,8 @@ export const MainNavigation: FC = () => {
     evt: MouseEvent<HTMLAnchorElement>
   ): void => {
     evt.preventDefault()
-    const isPayGCustomer = accountType !== 'free'
-
-    if (isPayGCustomer) {
-      dispatch(showOverlay('payg-support', null, dismissOverlay))
-      event('helpBar.paygSupportRequest.overlay.shown')
-    } else {
-      dispatch(showOverlay('free-account-support', null, dismissOverlay))
-    }
+    dispatch(showOverlay('contact-support', null, dismissOverlay))
+    event('helpBar.contactSupportRequest.overlay.shown')
   }
 
   return (
@@ -422,7 +418,7 @@ export const MainNavigation: FC = () => {
               />
             )}
           />
-          {CLOUD && (
+          {CLOUD && isContractCustomer && (
             <TreeNav.SubItem
               id="contactSupport"
               label="Contact Support"

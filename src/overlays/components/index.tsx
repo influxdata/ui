@@ -155,17 +155,9 @@ export const ExportVariableOverlay = RouteOverlay(
   }
 )
 
-export const PayGSupportOverlay = RouteOverlay(
+export const ContactSupportOverlay = RouteOverlay(
   OverlayHandler,
-  'payg-support',
-  (history, params) => {
-    history.push(`/orgs/${params.orgID}/support`)
-  }
-)
-
-export const FreeAccountSupportOverlay = RouteOverlay(
-  OverlayHandler,
-  'free-account-support',
+  'contact-support',
   (history, params) => {
     history.push(`/orgs/${params.orgID}/support`)
   }

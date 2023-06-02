@@ -39,7 +39,7 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
     </p>
   )
 
-  const paygSupport = (
+  const contactSupport = (
     <>
       <BannerPanel
         size={ComponentSize.ExtraSmall}
@@ -80,12 +80,14 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
       <Overlay.Header
         testID="confirmation-overlay-header"
         title={
-          params.type === 'PAYG' ? 'Contact Support' : 'Feedback & Questions'
+          params.type === 'contract'
+            ? 'Contact Support'
+            : 'Feedback & Questions'
         }
         onDismiss={onClose}
       />
       <Overlay.Body>
-        {params.type === 'PAYG' ? paygSupport : feedbackAndQuestions}
+        {params.type === 'contract' ? contactSupport : feedbackAndQuestions}
       </Overlay.Body>
       <Overlay.Footer>
         <Button

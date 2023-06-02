@@ -104,34 +104,10 @@ const setup = currentIdentity => {
   )
 }
 
-describe('Free Account Contact Support', () => {
-  afterEach(() => {
-    cleanup()
-  })
-
-  const freeAccountMock = cloneDeep(identityMock)
-
-  it('opens support overlay for free account users', async () => {
-    const {getByTestId} = setup(freeAccountMock)
-
-    expect(getByTestId('nav-item-support')).toBeVisible()
-
-    const contactSupport = getByTestId('nav-subitem-contact-support')
-    fireEvent.click(contactSupport)
-
-    await waitFor(() => {
-      const freeAccountOverlay = screen.getByTestId(
-        'free-support-overlay-header'
-      )
-      expect(freeAccountOverlay).toBeVisible()
-    })
-  })
-})
-
-describe('PAYG Contact Support', () => {
-  it('can submit a support request from payg account', async () => {
+describe('Contact Support', () => {
+  it('can submit a support request from contract account', async () => {
     const paygMock = cloneDeep(identityMock)
-    paygMock.account.type = 'pay_as_you_go'
+    paygMock.account.type = 'contract'
 
     const {getByTestId} = setup(paygMock)
 
@@ -158,13 +134,13 @@ describe('PAYG Contact Support', () => {
     fireEvent.click(selectOption)
 
     // description
-    const supportDescription = getByTestId('support-description--textarea')
+    const supportDescription = getByTestId('contact-support-description--textarea')
     fireEvent.change(supportDescription, {
       target: {value: 'Testing description area'},
     })
 
     // submit support request
-    const submitButton = getByTestId('payg-contact-support--submit')
+    const submitButton = getByTestId('contact-support--submit')
     expect(submitButton).not.toBeDisabled()
 
     await waitFor(() => {
@@ -177,7 +153,7 @@ describe('PAYG Contact Support', () => {
 
   it('notifies user when support request has not been successfully submitted', async () => {
     const paygMock = cloneDeep(identityMock)
-    paygMock.account.type = 'pay_as_you_go'
+    paygMock.account.type = 'contract'
     const {getByTestId} = setup(paygMock)
 
     expect(getByTestId('nav-item-support')).toBeVisible()
@@ -203,13 +179,13 @@ describe('PAYG Contact Support', () => {
     fireEvent.click(selectOption)
 
     // description
-    const supportDescription = getByTestId('support-description--textarea')
+    const supportDescription = getByTestId('contact-support-description--textarea')
     fireEvent.change(supportDescription, {
       target: {value: 'Testing description area'},
     })
 
     // submit support request
-    const submitButton = getByTestId('payg-contact-support--submit')
+    const submitButton = getByTestId('contact-support--submit')
     expect(submitButton).not.toBeDisabled()
 
     await waitFor(() => {

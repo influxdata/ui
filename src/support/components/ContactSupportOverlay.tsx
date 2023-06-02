@@ -61,7 +61,7 @@ interface OwnProps {
   onClose: () => void
 }
 
-const PayGSupportOverlay: FC<OwnProps> = () => {
+export const ContactSupportOverlay: FC<OwnProps> = () => {
   const quartzIdentity = useSelector(selectQuartzIdentity)
   const {user: identityUser, org: identityOrg} = quartzIdentity.currentIdentity
 
@@ -89,7 +89,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   }
 
   const handleClose = () => {
-    event('helpBar.paygSupportRequest.overlay.closed')
+    event('helpBar.contactSupportRequest.overlay.closed')
     onClose()
   }
 
@@ -109,18 +109,18 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
         subject
       )
       event(
-        'helpBar.paygSupportRequest.submitted',
+        'helpBar.contactSupportRequest.submitted',
         {},
         {userID, orgName, orgID}
       )
       dispatch(
-        showOverlay('help-bar-confirmation', {type: 'PAYG'}, () =>
+        showOverlay('help-bar-confirmation', {type: 'contract'}, () =>
           dispatch(dismissOverlay)
         )
       )
     } catch {
       dispatch(notify(supportRequestError()))
-      event('helpBar.paygSupportRequest.failed', {}, {userID, orgID})
+      event('helpBar.contactSupportRequest.failed', {}, {userID, orgID})
     }
   }
 
@@ -166,7 +166,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   return (
     <Overlay.Container maxWidth={550}>
       <Overlay.Header
-        testID="payg-support-overlay-header"
+        testID="contact-support-overlay-header"
         title="Contact Support"
         onDismiss={handleClose}
       />
@@ -214,7 +214,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
               <TextArea
                 status={status}
                 rows={10}
-                testID="support-description--textarea"
+                testID="contact-support-description--textarea"
                 name="description"
                 value={description}
                 onChange={handleDescriptionChange}
@@ -229,13 +229,13 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
           color={ComponentColor.Tertiary}
           onClick={handleClose}
           type={ButtonType.Button}
-          testID="payg-contact-support--cancel"
+          testID="contact-support--cancel"
         />
         <Button
           text="Submit"
           color={ComponentColor.Success}
           type={ButtonType.Submit}
-          testID="payg-contact-support--submit"
+          testID="contact-support--submit"
           status={submitButtonStatus}
           onClick={handleSubmit}
         />
@@ -243,5 +243,3 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
     </Overlay.Container>
   )
 }
-
-export default PayGSupportOverlay

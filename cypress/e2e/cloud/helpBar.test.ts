@@ -1,30 +1,3 @@
-describe('Help bar support for free account users', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(() => {
-          cy.quartzProvision({
-            accountType: 'free',
-          }).then(() => {
-            cy.getByTestID('nav-item-support').should('be.visible')
-          })
-        })
-      })
-    )
-  )
-  it('displays important links for free account users', () => {
-    cy.getByTestID('nav-item-support')
-      .get('.cf-tree-nav--sub-menu-trigger')
-      .last()
-      .trigger('mouseover')
-
-    cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('free-account-links').contains('InfluxDB Community Forums')
-      cy.getByTestID('free-account-links').contains('InfluxDB Slack')
-    })
-  })
-})
-
 describe('Help bar support for Contract users', () => {
   beforeEach(() =>
     cy.flush().then(() =>

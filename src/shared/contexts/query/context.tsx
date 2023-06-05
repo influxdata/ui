@@ -114,7 +114,6 @@ const buildQueryRequest = (
     'Content-Type': string
     'Accept-Encoding': string
     Accept?: string
-    Authorization?: string
   }
 } => {
   const mechanism = options?.overrideMechanism ?? OverrideMechanism.Extern
@@ -140,9 +139,6 @@ const buildQueryRequest = (
       'Content-Type': 'application/vnd.influxql',
       'Accept-Encoding': 'gzip',
       Accept: 'text/csv',
-      // TODO chunchun: token
-      Authorization:
-        'Token 3WpeBwZlkO1FKZKuJU_wcegslvtzSH_sVz5Ux6dUzEslohc4PaucMnKp0bbFbbTIcm-7LC0HmWptv7XdVg53mg==',
     }
 
     return {url, body, headers}

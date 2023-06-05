@@ -5,10 +5,6 @@ export const addAnnotationToCSV = (csv: string): string => {
     return csv
   }
 
-  // TODO chunchun:
-  // this function only adds annotation rows to 1 table,
-  // need to support more than 1 tables
-
   // get number of columns
   const headerRow = csv.split('\n')[0]
   const headerSize = headerRow.split(',').length

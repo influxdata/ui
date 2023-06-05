@@ -41,11 +41,6 @@ const supportLinks = [
     eventName: 'WriteTask',
   },
   {
-    link: 'https://github.com/influxdata/ui/issues/new',
-    title: 'Report a bug',
-    eventName: 'GitBugs',
-  },
-  {
     link: 'https://community.influxdata.com',
     title: 'Community Forum',
     eventName: 'Community',

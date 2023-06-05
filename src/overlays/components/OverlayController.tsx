@@ -41,8 +41,7 @@ import NewRuleOverlay from 'src/notifications/rules/components/NewRuleOverlay'
 import CreateSecretOverlay from 'src/secrets/components/CreateSecret/CreateSecretOverlay'
 import VariableImportOverlay from 'src/variables/components/VariableImportOverlay'
 import ShareOverlay from 'src/flows/components/ShareOverlay'
-import PayGSupportOverlay from 'src/support/components/PayGSupportOverlay'
-import FreeAccountSupportOverlay from 'src/support/components/FreeAccountSupportOverlay'
+import {ContactSupportOverlay} from 'src/support/components/ContactSupportOverlay'
 import FeedbackQuestionsOverlay from 'src/support/components/FeedbackQuestionsOverlay'
 import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
 import {CreateOrganizationOverlay} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationOverlay'
@@ -166,11 +165,8 @@ export const OverlayController: FunctionComponent = () => {
       case 'share-overlay':
         activeOverlay.current = <ShareOverlay />
         break
-      case 'payg-support':
-        activeOverlay.current = <PayGSupportOverlay onClose={onClose} />
-        break
-      case 'free-account-support':
-        activeOverlay.current = <FreeAccountSupportOverlay onClose={onClose} />
+      case 'contact-support':
+        activeOverlay.current = <ContactSupportOverlay onClose={onClose} />
         break
       case 'feedback-questions':
         activeOverlay.current = <FeedbackQuestionsOverlay onClose={onClose} />

@@ -14,8 +14,8 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 import {
   AggregateWindow,
   DEFAULT_AGGREGATE_WINDOW,
-  PersistanceContext,
-} from 'src/dataExplorer/context/persistance'
+  PersistenceContext,
+} from 'src/dataExplorer/context/persistence'
 
 // Constants
 import {AGGREGATE_FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
@@ -25,7 +25,7 @@ import {ComponentStatus} from '@influxdata/clockface'
 
 export const AggregateFunctionsSelector: FC = () => {
   // Contexts
-  const {selection, setSelection} = useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistenceContext)
 
   // State
   const [functionSearchTerm, setFunctionSearchTerm] = useState('')

@@ -12,8 +12,8 @@ import {FillValuesToggle} from 'src/dataExplorer/components/FillValuesToggle'
 import {
   AggregateWindow,
   DEFAULT_AGGREGATE_WINDOW,
-  PersistanceContext,
-} from 'src/dataExplorer/context/persistance'
+  PersistenceContext,
+} from 'src/dataExplorer/context/persistence'
 
 // Styles
 import './Sidebar.scss'
@@ -22,7 +22,7 @@ const AGGREGATE_WINDOW_TOOLTIP = `test`
 
 const AggregateWindow: FC = () => {
   // Contexts
-  const {selection, setSelection} = useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistenceContext)
 
   const {isOn}: AggregateWindow =
     selection.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW

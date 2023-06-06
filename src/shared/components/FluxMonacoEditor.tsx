@@ -21,7 +21,7 @@ import {ConnectionManager} from 'src/languageSupport/languages/flux/lsp/connecti
 
 // Contexts and State
 import {EditorContext} from 'src/shared/contexts/editor'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 import {scriptQueryBuilder} from 'src/shared/selectors/app'
 import {isOrgIOx} from 'src/organizations/selectors'
 
@@ -65,7 +65,7 @@ const FluxEditorMonaco: FC<Props> = ({
   const connection = useRef<ConnectionManager>(null)
   const {editor, setEditor} = useContext(EditorContext)
   const isScriptQueryBuilder = useSelector(scriptQueryBuilder)
-  const sessionStore = useContext(PersistanceContext)
+  const sessionStore = useContext(PersistenceContext)
   const isIoxOrg = useSelector(isOrgIOx)
   const {path} = useRouteMatch()
   const isInScriptQueryBuilder =

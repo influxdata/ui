@@ -15,7 +15,7 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
 import {BucketContext} from 'src/shared/contexts/buckets'
 import {event} from 'src/cloud/utils/reporting'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 
 // Types
 import {RemoteDataState, Bucket} from 'src/types'
@@ -35,7 +35,7 @@ const BucketSelector: FC = () => {
   const {loading, buckets} = useContext(BucketContext)
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const {resource} = useContext(PersistanceContext)
+  const {resource} = useContext(PersistenceContext)
 
   if (resource?.language === LanguageType.INFLUXQL) {
     return null

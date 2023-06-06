@@ -4,7 +4,7 @@ import isEqual from 'lodash/isEqual'
 import {
   DEFAULT_SELECTION,
   CompositionSelection,
-} from 'src/dataExplorer/context/persistance'
+} from 'src/dataExplorer/context/persistence'
 
 // Types
 import {EditorType, RecursivePartial} from 'src/types'

@@ -7,14 +7,14 @@ import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabe
 import {
   AggregateWindow,
   DEFAULT_AGGREGATE_WINDOW,
-  PersistanceContext,
-} from 'src/dataExplorer/context/persistance'
+  PersistenceContext,
+} from 'src/dataExplorer/context/persistence'
 
 // Styles
 import './Sidebar.scss'
 
 export const FillValuesToggle: FC = () => {
-  const {selection, setSelection} = useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistenceContext)
   const {isOn, createEmpty}: AggregateWindow =
     selection.resultOptions?.aggregateWindow || DEFAULT_AGGREGATE_WINDOW
 

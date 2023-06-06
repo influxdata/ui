@@ -11,7 +11,7 @@ import React, {
 // Context
 import {MeasurementsContext} from 'src/dataExplorer/context/measurements'
 import {FieldsContext} from 'src/dataExplorer/context/fields'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 import {TagsContext} from 'src/dataExplorer/context/tags'
 import {debouncer} from 'src/dataExplorer/shared/utils'
 // Types
@@ -70,10 +70,10 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
   const {getMeasurements} = useContext(MeasurementsContext)
   const {getFields, resetFields} = useContext(FieldsContext)
   const {getTagKeys, resetTags} = useContext(TagsContext)
-  const {selection, setSelection} = useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistenceContext)
 
   // States
-  // This state is a restructed PersistanceContext selection.tagValues
+  // This state is a restructed PersistenceContext selection.tagValues
   // for performance reason. selection.tagValues is the source of true
   const [selectedTagValues, setSelectedTagValues] = useState(
     DEFAULT_SELECTED_TAG_VALUES

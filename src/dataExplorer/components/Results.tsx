@@ -30,7 +30,7 @@ import {
 } from 'src/dataExplorer/context/resultsView'
 import {ChildResultsContext} from 'src/dataExplorer/context/results/childResults'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 
 // Types
 import {FluxResult} from 'src/types/flows'
@@ -44,7 +44,7 @@ import './Results.scss'
 
 const QueryStat: FC = () => {
   const {result} = useContext(ResultsContext)
-  const {resource} = useContext(PersistanceContext)
+  const {resource} = useContext(PersistenceContext)
 
   const tableColumn = result?.parsed?.table?.getColumn('table') || []
   const lastTableValue = tableColumn[tableColumn.length - 1]
@@ -92,7 +92,7 @@ const EmptyResults: FC = () => {
 
 const TableResults: FC<{search: string}> = ({search}) => {
   const {result, status} = useContext(ResultsContext)
-  const {range, resource} = useContext(PersistanceContext)
+  const {range, resource} = useContext(PersistenceContext)
 
   const res = useMemo(() => {
     if (search.trim() === '' || !result?.parsed) {
@@ -183,7 +183,7 @@ const ErrorResults: FC<{error: string}> = ({error}) => {
 const GraphResults: FC = () => {
   const {view} = useContext(ResultsViewContext)
   const {result, status} = useContext(ChildResultsContext)
-  const {range} = useContext(PersistanceContext)
+  const {range} = useContext(PersistenceContext)
 
   if (result?.error) {
     return <ErrorResults error={result.error} />
@@ -212,7 +212,7 @@ const WrappedOptions: FC = () => {
   const {result} = useContext(ChildResultsContext)
   const {view, setView, selectViewOptions, viewOptions, selectedViewOptions} =
     useContext(ResultsViewContext)
-  const {resource} = useContext(PersistanceContext)
+  const {resource} = useContext(PersistenceContext)
   const graphDataExists = !!result?.parsed
   const parentDataExists = !!parentResult?.parsed
 
@@ -339,7 +339,7 @@ const Results: FC = () => {
   const [search, setSearch] = useState('')
   const {status} = useContext(ResultsContext)
   const {view, setView} = useContext(ResultsViewContext)
-  const {resource} = useContext(PersistanceContext)
+  const {resource} = useContext(PersistenceContext)
 
   let resultView
 

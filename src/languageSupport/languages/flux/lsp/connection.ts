@@ -13,7 +13,7 @@ import {RecursivePartial, TagKeyValuePair} from 'src/types'
 import {
   DEFAULT_FLUX_EDITOR_TEXT,
   CompositionSelection,
-} from 'src/dataExplorer/context/persistance'
+} from 'src/dataExplorer/context/persistence'
 
 // LSP methods
 import {

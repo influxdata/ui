@@ -22,7 +22,7 @@ import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
 import {ConnectionManager} from 'src/languageSupport/languages/sql/connection'
 
 // Contexts
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
@@ -52,7 +52,7 @@ const SqlEditorMonaco: FC<Props> = ({
 }) => {
   const dispatch = useDispatch()
   const connection = useRef<ConnectionManager>(new ConnectionManager())
-  const sessionStore = useContext(PersistanceContext)
+  const sessionStore = useContext(PersistenceContext)
   const [editor, setEditor] = useState(null)
   const wrapperClassName = classnames('qx-editor--monaco', {
     'qx-editor--monaco__autogrow': autogrow,

@@ -12,7 +12,7 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Context
 import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -23,7 +23,7 @@ const SchemaBrowserHeading: FC = () => {
   const {compositionSync, toggleCompositionSync} = useContext(
     ScriptQueryBuilderContext
   )
-  const {resource} = useContext(PersistanceContext)
+  const {resource} = useContext(PersistenceContext)
 
   const handleCompositionSyncToggle = () => {
     // Note: kept same event naming, so can compare across time. (Even though is Flux and SQL sync.)

@@ -13,8 +13,8 @@ import {
   DEFAULT_GROUP_OPTIONS,
   GroupType,
   GroupOptions,
-  PersistanceContext,
-} from 'src/dataExplorer/context/persistance'
+  PersistenceContext,
+} from 'src/dataExplorer/context/persistence'
 import {GroupKeysContext} from 'src/dataExplorer/context/groupKeys'
 
 // Utilies
@@ -30,7 +30,7 @@ const DEFAULT_COLUMNS: string[] = ['_measurement', '_field'] // only use this wh
 const GroupBy: FC = () => {
   const {groupKeys, loading, getGroupKeys, resetGroupKeys} =
     useContext(GroupKeysContext)
-  const {selection, setSelection} = useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistenceContext)
   const {type: selectedGroupType, columns: selectedGroupKeys}: GroupOptions =
     selection.resultOptions.group
 

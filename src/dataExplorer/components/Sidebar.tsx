@@ -16,7 +16,7 @@ import {
 // Contexts
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
 import {EditorContext} from 'src/shared/contexts/editor'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 
 // Types
 import {FluxFunction, FluxToolbarFunction} from 'src/types'
@@ -35,7 +35,7 @@ functions, and variables which may be useful when constructing your flux query.`
 const Sidebar: FC = () => {
   const {injectFunction} = useContext(EditorContext)
   const {visible, menu, clear} = useContext(SidebarContext)
-  const {resource} = useContext(PersistanceContext)
+  const {resource} = useContext(PersistenceContext)
 
   const inject = useCallback(
     (fn: FluxFunction | FluxToolbarFunction) => {

@@ -14,8 +14,8 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 import {
   AggregateWindow,
   DEFAULT_AGGREGATE_WINDOW,
-  PersistanceContext,
-} from 'src/dataExplorer/context/persistance'
+  PersistenceContext,
+} from 'src/dataExplorer/context/persistence'
 import {ColumnsContext} from 'src/dataExplorer/context/columns'
 
 // Utilities
@@ -26,7 +26,7 @@ import './Sidebar.scss'
 
 export const ColumnSelector: FC = () => {
   // Contexts
-  const {selection, setSelection} = useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistenceContext)
   const {columns, loading, getColumns, resetColumns} =
     useContext(ColumnsContext)
 

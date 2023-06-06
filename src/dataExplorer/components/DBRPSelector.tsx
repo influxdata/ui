@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux'
 import {BucketContext} from 'src/shared/contexts/buckets'
 import {DBRPContext} from 'src/shared/contexts/dbrps'
 import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -42,7 +42,7 @@ export const DBRPSelector: FC = () => {
   const {selectedDBRP, selectDBRP} = useContext(ScriptQueryBuilderContext)
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const {resource} = useContext(PersistanceContext)
+  const {resource} = useContext(PersistenceContext)
   const dispatch = useDispatch()
 
   if (resource?.language !== LanguageType.INFLUXQL) {

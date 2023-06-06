@@ -5,7 +5,7 @@ import {ConnectionManager as AgnosticConnectionManager} from 'src/languageSuppor
 import {
   CompositionSelection,
   DEFAULT_INFLUXQL_EDITOR_TEXT,
-} from 'src/dataExplorer/context/persistance'
+} from 'src/dataExplorer/context/persistence'
 import {
   RecursivePartial,
   SelectableDurationTimeRange,

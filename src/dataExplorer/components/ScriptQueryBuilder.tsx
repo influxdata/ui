@@ -33,9 +33,9 @@ import {
 } from 'src/dataExplorer/context/resultsView'
 import {SidebarProvider} from 'src/dataExplorer/context/sidebar'
 import {
-  PersistanceProvider,
-  PersistanceContext,
-} from 'src/dataExplorer/context/persistance'
+  PersistenceProvider,
+  PersistenceContext,
+} from 'src/dataExplorer/context/persistence'
 import {QueryContext} from 'src/shared/contexts/query'
 import {DBRPContext, DBRPProvider} from 'src/shared/contexts/dbrps'
 
@@ -65,7 +65,7 @@ export enum OverlayType {
 const ScriptQueryBuilder: FC = () => {
   const history = useHistory()
   const {resource, hasChanged, vertical, setVertical, setHasChanged} =
-    useContext(PersistanceContext)
+    useContext(PersistenceContext)
   const [overlayType, setOverlayType] = useState<OverlayType | null>(null)
   const [selectedLanguage, setSelectedLanguage] = useState(
     resource?.language ?? LanguageType.FLUX
@@ -319,11 +319,11 @@ export default () => {
       <ResultsProvider>
         <ResultsViewProvider>
           <DBRPProvider scope={scope}>
-            <PersistanceProvider>
+            <PersistenceProvider>
               <ChildResultsProvider>
                 <ScriptQueryBuilder />
               </ChildResultsProvider>
-            </PersistanceProvider>
+            </PersistenceProvider>
           </DBRPProvider>
         </ResultsViewProvider>
       </ResultsProvider>

@@ -6,7 +6,7 @@ import {
   ResultsViewContext,
   ViewOptions,
 } from 'src/dataExplorer/context/resultsView'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 import {QueryContext, SqlQueryModifiers} from 'src/shared/contexts/query'
 
 // Types
@@ -93,7 +93,7 @@ export const ChildResultsProvider: FC = ({children}) => {
     selection,
     resource,
     range,
-  } = useContext(PersistanceContext)
+  } = useContext(PersistenceContext)
   const {query} = useContext(QueryContext)
 
   useEffect(() => {

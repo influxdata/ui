@@ -10,8 +10,8 @@ import {
   AggregateWindow,
   DEFAULT_AGGREGATE_WINDOW,
   DEFAULT_WINDOW_PERIOD,
-  PersistanceContext,
-} from 'src/dataExplorer/context/persistance'
+  PersistenceContext,
+} from 'src/dataExplorer/context/persistence'
 
 // Constants
 import {
@@ -28,7 +28,7 @@ import './Sidebar.scss'
 const WINDOW_PERIOD_TOOLTIP = `test`
 
 export const WindowPeriod: FC = () => {
-  const {selection, setSelection} = useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistenceContext)
   const {
     isOn,
     isAutoWindowPeriod,

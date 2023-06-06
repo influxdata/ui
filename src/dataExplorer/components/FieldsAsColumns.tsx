@@ -2,14 +2,14 @@ import React, {FC, useCallback, useContext} from 'react'
 
 // Components
 import {ToggleWithLabelTooltip} from 'src/dataExplorer/components/ToggleWithLabelTooltip'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import './Sidebar.scss'
 
 const FieldsAsColumns: FC = () => {
-  const {selection, setSelection} = useContext(PersistanceContext)
+  const {selection, setSelection} = useContext(PersistenceContext)
 
   const handleToggle = useCallback(() => {
     const value = !selection?.resultOptions?.fieldsAsColumn

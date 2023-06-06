@@ -9,18 +9,18 @@ import {
   SCRIPT_EDITOR_PARAMS,
 } from 'src/dataExplorer/components/resources'
 import {
-  PersistanceContext,
-  PersistanceProvider,
+  PersistenceContext,
+  PersistenceProvider,
   DEFAULT_FLUX_EDITOR_TEXT,
   DEFAULT_SQL_EDITOR_TEXT,
   DEFAULT_INFLUXQL_EDITOR_TEXT,
-} from 'src/dataExplorer/context/persistance'
+} from 'src/dataExplorer/context/persistence'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 import {getLanguage} from 'src/dataExplorer/shared/utils'
 
 const Template: FC = () => {
   const {setQuery, setHasChanged, setResource, clearCompositionSelection} =
-    useContext(PersistanceContext)
+    useContext(PersistenceContext)
   const params = useParams()[0].split('/')
   const org = useSelector(getOrg)
   const history = useHistory()
@@ -77,7 +77,7 @@ const TemplatePage: FC = () => {
   const org = useSelector(getOrg)
 
   return (
-    <PersistanceProvider>
+    <PersistenceProvider>
       <Switch>
         <Route
           path={`/orgs/${org.id}/data-explorer/from/*`}
@@ -85,7 +85,7 @@ const TemplatePage: FC = () => {
         />
         <Route component={() => <div />} />
       </Switch>
-    </PersistanceProvider>
+    </PersistenceProvider>
   )
 }
 

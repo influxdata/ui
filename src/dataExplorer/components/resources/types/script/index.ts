@@ -5,7 +5,7 @@ import {
   DEFAULT_FLUX_EDITOR_TEXT,
   DEFAULT_SQL_EDITOR_TEXT,
   DEFAULT_INFLUXQL_EDITOR_TEXT,
-} from 'src/dataExplorer/context/persistance'
+} from 'src/dataExplorer/context/persistence'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 import {getLanguage} from 'src/dataExplorer/shared/utils'
 

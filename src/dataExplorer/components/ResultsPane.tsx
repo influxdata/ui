@@ -20,11 +20,11 @@ import {useSelector, useDispatch} from 'react-redux'
 import {ResultsContext} from 'src/dataExplorer/context/results'
 import {QueryContext} from 'src/shared/contexts/query'
 import {
-  PersistanceContext,
+  PersistenceContext,
   DEFAULT_FLUX_EDITOR_TEXT,
   DEFAULT_SQL_EDITOR_TEXT,
   DEFAULT_INFLUXQL_EDITOR_TEXT,
-} from 'src/dataExplorer/context/persistance'
+} from 'src/dataExplorer/context/persistence'
 
 // Components
 import {Results} from 'src/dataExplorer/components/Results'
@@ -83,7 +83,7 @@ const ResultsPane: FC = () => {
     range,
     selection,
     resource,
-  } = useContext(PersistanceContext)
+  } = useContext(PersistenceContext)
   const orgID = useSelector(getOrg)?.id
   const language = resource?.language ?? LanguageType.FLUX
   const dispatch = useDispatch()

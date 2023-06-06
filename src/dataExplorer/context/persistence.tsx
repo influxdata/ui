@@ -136,9 +136,9 @@ const DEFAULT_CONTEXT = {
   save: (_: LanguageType) => Promise.resolve(null),
 }
 
-export const PersistanceContext = createContext<ContextType>(DEFAULT_CONTEXT)
+export const PersistenceContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
-export const PersistanceProvider: FC = ({children}) => {
+export const PersistenceProvider: FC = ({children}) => {
   const isIoxOrg = useSelector(isOrgIOx)
 
   const [horizontal, setHorizontal] = useSessionStorage(
@@ -240,7 +240,7 @@ export const PersistanceProvider: FC = ({children}) => {
   }
 
   return (
-    <PersistanceContext.Provider
+    <PersistenceContext.Provider
       value={{
         hasChanged,
         horizontal,
@@ -263,6 +263,6 @@ export const PersistanceProvider: FC = ({children}) => {
       }}
     >
       {children}
-    </PersistanceContext.Provider>
+    </PersistenceContext.Provider>
   )
 }

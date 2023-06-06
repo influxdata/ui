@@ -5,7 +5,7 @@ import {LspRange} from 'src/languageSupport/languages/agnostic/types'
 import {
   DEFAULT_SQL_EDITOR_TEXT,
   CompositionSelection,
-} from 'src/dataExplorer/context/persistance'
+} from 'src/dataExplorer/context/persistence'
 import {SelectableDurationTimeRange, TimeRange} from 'src/types'
 
 // Utils

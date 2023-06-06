@@ -2,7 +2,7 @@
 // https://docs.influxdata.com/influxdb/cloud/reference/syntax/annotated-csv
 export const addAnnotationToCSV = (csv: string): string => {
   if (!csv) {
-    return csv
+    return ''
   }
 
   // get number of columns

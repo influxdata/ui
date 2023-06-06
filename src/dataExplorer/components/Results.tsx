@@ -10,6 +10,7 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
+import classNames from 'classnames'
 
 // Components
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
@@ -143,13 +144,13 @@ const TableResults: FC<{search: string}> = ({search}) => {
     return dupped as FluxResult['parsed']
   }, [search, result?.parsed])
 
+  const resultsViewClassNames = classNames('data-explorer-results--view', {
+    'hide-table-header-label': resource?.language === LanguageType.INFLUXQL,
+  })
+
   return (
     <div
-      className={`data-explorer-results--view ${
-        resource?.language === LanguageType.INFLUXQL
-          ? 'hide-table-header-label'
-          : ''
-      }`}
+      className={resultsViewClassNames}
       data-testid="data-explorer-results--view"
     >
       <View

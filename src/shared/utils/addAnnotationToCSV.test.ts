@@ -11,4 +11,7 @@ describe('addAnnotationToCSV:', () => {
   it('returns an empty csv if the input is empty', () => {
     expect(addAnnotationToCSV('')).toEqual('')
   })
+  it('returns an empty csv if the input is null', () => {
+    expect(addAnnotationToCSV(null)).toEqual('')
+  })
 })

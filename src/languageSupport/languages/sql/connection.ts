@@ -26,7 +26,16 @@ export class ConnectionManager extends AgnosticConnectionManager {
   private _timeRange: TimeRange = DEFAULT_TIME_RANGE
 
   _couldBeFromComposition(change) {
-    return change.forceMoveMarkers == true
+    // There are three types of change that are from composition
+    //  1. starting a new script
+    //  2. removing the DEFAULT_INFLUXQL_EDITOR_TEXT, i.e. selecting a bucket on a new script,
+    //     which happens in the onSchemaSessionChange() if statement shouldRemoveDefaultMsg
+    //  3. setting forceMoveMarkers to true manually in _updateComposition()
+    return (
+      change.text === DEFAULT_SQL_EDITOR_TEXT ||
+      change.rangeLength === DEFAULT_SQL_EDITOR_TEXT.length ||
+      change.forceMoveMarkers
+    )
   }
 
   _editorChangeIsWithinComposition(change) {

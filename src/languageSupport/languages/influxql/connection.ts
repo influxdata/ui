@@ -138,11 +138,13 @@ export class ConnectionManager extends AgnosticConnectionManager {
   }
 
   _couldBeFromComposition = (change: any): boolean => {
-    // There are two types of change is from composition
-    //  1. removing the DEFAULT_INFLUXQL_EDITOR_TEXT, which happens
-    //     in the onSchemaSessionChange() if statement shouldRemoveDefaultMsg
-    //  2. setting forceMoveMarkers to true manually in _updateComposition()
+    // There are three types of change that are from composition
+    //  1. starting a new script
+    //  2. removing the DEFAULT_INFLUXQL_EDITOR_TEXT, i.e. selecting a bucket on a new script,
+    //     which happens in the onSchemaSessionChange() if statement shouldRemoveDefaultMsg
+    //  3. setting forceMoveMarkers to true manually in _updateComposition()
     return (
+      change.text === DEFAULT_INFLUXQL_EDITOR_TEXT ||
       change.rangeLength === DEFAULT_INFLUXQL_EDITOR_TEXT.length ||
       change.forceMoveMarkers
     )

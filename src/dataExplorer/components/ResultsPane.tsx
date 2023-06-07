@@ -96,6 +96,14 @@ const ResultsPane: FC = () => {
   } else if (language === LanguageType.SQL && !selection.bucket) {
     submitButtonDisabled = true
     disabledTitleText = 'Select a bucket before running script'
+  } else if (
+    language === LanguageType.SQL &&
+    selection.composition.synced && // using composition
+    selection.bucket &&
+    !Boolean(selection.measurement)
+  ) {
+    submitButtonDisabled = true
+    disabledTitleText = 'Select a measurement before running script'
   } else if (language === LanguageType.INFLUXQL && !selection.dbrp) {
     submitButtonDisabled = true
     disabledTitleText =

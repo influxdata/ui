@@ -48,14 +48,14 @@ export const CloudWidgets: FC = () => {
                   Grafana now has a community plugin that enables communication
                   with Flight SQL-compatible databases.
                 </p>
-                <p>
+                <div>
                   What does that mean for you?
                   <ul>
                     <li>InfluxDB 3.0 Support and Compatibility</li>
                     <li>Easy Setup with Grafana Cloud</li>
                     <li>Enhanced Data Querying and Visualization</li>
                   </ul>
-                </p>
+                </div>
               </>
             }
             ctaLink="https://www.influxdata.com/blog/now-available-flight-sql-plugin-grafana/?utm_source=in-app&utm_medium=product&utm_campaign=2023-04-35_blog_flight-sql-plugin-grafana"

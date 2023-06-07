@@ -14,7 +14,7 @@ export class InstallDependenciesSql extends PureComponent {
         <h1>Install Dependencies</h1>
         <p>
           Install the NuGet package to your project{' '}
-          <SafeBlankLink href="https://github.com/bonitoo-io/influxdb3-csharp">
+          <SafeBlankLink href="https://github.com/InfluxCommunity/influxdb3-csharp">
             InfluxDB3.Client
           </SafeBlankLink>{' '}
           :

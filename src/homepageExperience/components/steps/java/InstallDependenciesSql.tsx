@@ -23,7 +23,7 @@ export class InstallDependenciesSql extends PureComponent {
         <h1>Install Dependencies</h1>
         <p>
           Install the JAR package to your project{' '}
-          <SafeBlankLink href="https://github.com/bonitoo-io/influxdb3-java">
+          <SafeBlankLink href="https://github.com/InfluxCommunity/influxdb3-java">
             influxdb3-java
           </SafeBlankLink>{' '}
           :

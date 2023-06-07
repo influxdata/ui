@@ -36,9 +36,6 @@ import {RemoteDataState} from 'src/types'
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 // Styles
 import 'src/organizations/components/OrgProfileTab/style.scss'
 
@@ -81,7 +78,6 @@ const OrgProfileTab: FC = () => {
   }, [dispatch, orgDetailsStatus, quartzOrg.id])
 
   const allowSelfRemoval = users.length > 1
-  const showLeaveOrgButton = isFlagEnabled('createDeleteOrgs')
   const hasFetchedOrgDetails = orgDetailsStatus === RemoteDataState.Done
   const hasFetchedStorageType = Boolean(storageType)
 
@@ -175,7 +171,7 @@ const OrgProfileTab: FC = () => {
           stretchToFitWidth={true}
         >
           <>
-            {allowSelfRemoval && showLeaveOrgButton && <LeaveOrgButton />}
+            {allowSelfRemoval && <LeaveOrgButton />}
             <DeletePanel />
           </>
         </FlexBox>

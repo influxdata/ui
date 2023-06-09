@@ -7,7 +7,8 @@ export const registerServiceWorker = (): Promise<ServiceWorkerRegistration> => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       new URL('../workers/downloadHelper.ts', import.meta.url),
-      {scope: '/api/v2/query'}
+      // {scope: '/api/v2/query'}
+      {scope: '/query'}
       /* webpackChunkName: "interceptor" */
     )
   }

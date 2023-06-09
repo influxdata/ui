@@ -119,9 +119,33 @@ const ResultsPane: FC = () => {
   }
 
   const downloadByServiceWorker = () => {
-    // TODO (chunchun): https://github.com/influxdata/ui/issues/6704
     if (language === LanguageType.INFLUXQL) {
-      console.error('csv download for InfluxQL is not implemented')
+      try {
+        event('runQuery.downloadCSV.influxql', {context: 'query experience'})
+
+        const params = new URLSearchParams({
+          db: selection.dbrp?.database,
+          q: text,
+        })
+        if (selection.dbrp?.retention_policy) {
+          params.set('rp', selection.dbrp?.retention_policy)
+        }
+        const url = `${API_BASE_PATH}query?${params}`
+        const hiddenForm = document.createElement('form')
+        hiddenForm.setAttribute('id', 'downloadDiv')
+        hiddenForm.setAttribute('style', 'display: none;')
+        hiddenForm.setAttribute('method', 'post')
+        hiddenForm.setAttribute('action', url)
+
+        const input = document.createElement('input')
+        input.setAttribute('name', 'data')
+        input.setAttribute('value', '')
+        hiddenForm.appendChild(input)
+        document.body.appendChild(hiddenForm)
+        hiddenForm.submit()
+      } catch (error) {
+        dispatch(notify(csvDownloadFailure()))
+      }
       return
     }
 
@@ -277,12 +301,10 @@ const ResultsPane: FC = () => {
               margin={ComponentSize.Small}
             >
               <QueryTime />
-              {resource?.language === LanguageType.INFLUXQL ? null : (
-                <CSVExportButton
-                  disabled={submitButtonDisabled}
-                  download={downloadByServiceWorker}
-                />
-              )}
+              <CSVExportButton
+                disabled={submitButtonDisabled}
+                download={downloadByServiceWorker}
+              />
               <NewDatePicker />
               <SubmitQueryButton
                 className="submit-btn"

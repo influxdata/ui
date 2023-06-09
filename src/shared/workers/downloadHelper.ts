@@ -26,7 +26,7 @@
 self.addEventListener('fetch', function (event: any) {
   const contentType = (event.request.headers as Headers).get('Content-Type')
   if (
-    new URL(event.request.url).pathname == '/api/v2/query' &&
+    new URL(event.request.url).pathname == '/query' &&
     contentType == 'application/x-www-form-urlencoded'
   ) {
     const headers = new Headers()

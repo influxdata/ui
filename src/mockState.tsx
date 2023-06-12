@@ -37,6 +37,7 @@ export const localState: LocalStorage = {
       flowsCTA: {alerts: true, explorer: true, tasks: true},
       subscriptionsCertificateInterest: false,
       workerRegistration: null,
+      workerRegistrationInfluxQL: null,
     },
   },
   flags: {

@@ -24,10 +24,13 @@
 */
 
 self.addEventListener('fetch', function (event: any) {
-  const contentType = (event.request.headers as Headers).get('Content-Type')
+  const contentType: string = (event.request.headers as Headers).get(
+    'Content-Type'
+  )
+  const pathname: string = new URL(event.request.url).pathname
   if (
-    new URL(event.request.url).pathname == '/query' &&
-    contentType == 'application/x-www-form-urlencoded'
+    (pathname === '/api/v2/query' || pathname === '/query') &&
+    contentType === 'application/x-www-form-urlencoded'
   ) {
     const headers = new Headers()
     for (const [headerType, headerValue] of event.request.headers) {

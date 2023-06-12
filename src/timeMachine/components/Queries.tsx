@@ -38,6 +38,7 @@ import {getTimeRange} from 'src/dashboards/selectors'
 
 // Types
 import {TimeRange, AutoRefreshStatus} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 type Props = {
   maxHeight: number
@@ -97,7 +98,10 @@ const TimeMachineQueries: FC<Props> = ({maxHeight}) => {
           <RawDataToggle />
           {!isInCheckOverlay && (
             <>
-              <CSVExportButton disabled={activeQuery.text === ''} />
+              <CSVExportButton
+                disabled={activeQuery.text === ''}
+                language={LanguageType.FLUX}
+              />
               <TimeMachineRefreshDropdown />
               <TimeRangeDropdown
                 timeRange={timeRange}

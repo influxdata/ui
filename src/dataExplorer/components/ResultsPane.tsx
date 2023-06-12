@@ -302,6 +302,7 @@ const ResultsPane: FC = () => {
             >
               <QueryTime />
               <CSVExportButton
+                language={language}
                 disabled={submitButtonDisabled}
                 download={downloadByServiceWorker}
               />

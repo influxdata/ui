@@ -39,8 +39,8 @@ export class ConnectionManager extends AgnosticConnectionManager {
     const dbrpMeasurement: string[] = []
     if (this._session.dbrp) {
       dbrpMeasurement.push(
-        this._session.dbrp.database,
-        this._session.dbrp.retention_policy
+        `"${this._session.dbrp.database}"`,
+        `"${this._session.dbrp.retention_policy}"`
       )
     }
     if (this._session.measurement) {

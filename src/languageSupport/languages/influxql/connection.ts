@@ -31,9 +31,11 @@ export class ConnectionManager extends AgnosticConnectionManager {
   } => {
     let lines: number = 1
 
-    const fieldsExpr = this._session.fields.map(f => `"${f}"`).join(', ')
+    const tagKeys = Object.entries(groupedTagValues(this._session.tagValues))
+    console.log({sessionTagKeys: this._session.tagValues, tagKeys, objEntries: Object.keys(this._session.tagValues)})
+    const selectedColumns = this._session.fields.map(f => `"${f}"`).join(', ')
     let composition = [
-      `SELECT ${this._session.fields.length === 0 ? '*' : fieldsExpr}`,
+      `SELECT ${this._session.fields.length === 0 ? '*' : selectedColumns}`,
     ]
 
     const dbrpMeasurement: string[] = []

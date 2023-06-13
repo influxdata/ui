@@ -10,6 +10,7 @@ import {
   RecursivePartial,
   SelectableDurationTimeRange,
   TimeRange,
+  TagKeyValuePair,
 } from 'src/types'
 import {LspRange} from 'src/languageSupport/languages/agnostic/types'
 
@@ -21,6 +22,26 @@ import {compositionEnded} from 'src/shared/copy/notifications'
 import {groupedTagValues} from 'src/languageSupport/languages/agnostic/utils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+/*
+  Input:
+  [
+    {key: 'a', value: '1'},
+    {key: 'a', value: '2'},
+    {key: 'b', value: '1'},
+    {key: 'c', value: '1'},
+  ]
+
+  Output:
+  ['a', 'b', 'c']
+*/
+const getTagKeys = (tagValues: TagKeyValuePair[]): string[] => {
+  const tagKeys = new Set<string>()
+  tagValues.forEach((pair: TagKeyValuePair) => {
+    tagKeys.add(pair.key)
+  })
+  return Array.from(tagKeys)
+}
+
 export class ConnectionManager extends AgnosticConnectionManager {
   private _timeRange: TimeRange = DEFAULT_TIME_RANGE
 
@@ -31,11 +52,13 @@ export class ConnectionManager extends AgnosticConnectionManager {
   } => {
     let lines: number = 1
 
-    const tagKeys = Object.entries(groupedTagValues(this._session.tagValues))
-    console.log({sessionTagKeys: this._session.tagValues, tagKeys, objEntries: Object.keys(this._session.tagValues)})
-    const selectedColumns = this._session.fields.map(f => `"${f}"`).join(', ')
+    const tagKeys = getTagKeys(this._session.tagValues)
+    const selectedFieldAndTagKeys = [...this._session.fields, ...tagKeys].sort()
+    const selectStatement = selectedFieldAndTagKeys
+      .map(k => `"${k}"`)
+      .join(', ')
     let composition = [
-      `SELECT ${this._session.fields.length === 0 ? '*' : selectedColumns}`,
+      `SELECT ${selectedFieldAndTagKeys.length === 0 ? '*' : selectStatement}`,
     ]
 
     const dbrpMeasurement: string[] = []

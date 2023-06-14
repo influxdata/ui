@@ -5,7 +5,7 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 import {selectCurrentIdentity} from 'src/identity/selectors'
 
-export const InitializeClient = () => {
+export const InitializeClientSql = () => {
   const {org: quartzOrg} = useSelector(selectCurrentIdentity)
 
   const url = quartzOrg.clusterHost || window.location.origin
@@ -17,8 +17,8 @@ export const InitializeClient = () => {
   const csharpCode = `using System;
 using System.Threading;
 using System.Threading.Tasks;
-using InfluxDB.Client;
-using InfluxDB.Client.Writes;
+using InfluxDB3.Client;
+using InfluxDB3.Client.Write;
 
 namespace Examples
 {
@@ -28,8 +28,8 @@ namespace Examples
         {
             var hostUrl = "${url}";
             var authToken = Environment.GetEnvironmentVariable("INFLUXDB_TOKEN");
-
-            using var client = new InfluxDBClient(hostUrl, token: authToken);
+            
+            using var client = new InfluxDBClient(hostUrl, authToken: authToken);
         }
     }
 }

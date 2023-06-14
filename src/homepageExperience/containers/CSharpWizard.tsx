@@ -15,7 +15,7 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 import {InstallDependenciesSql} from 'src/homepageExperience/components/steps/csharp/InstallDependenciesSql'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
-import {InitializeClient} from 'src/homepageExperience/components/steps/csharp/InitializeClient'
+import {InitializeClientSql} from 'src/homepageExperience/components/steps/csharp/InitializeClientSql'
 import {WriteDataSql} from 'src/homepageExperience/components/steps/csharp/WriteDataSql'
 import {ExecuteQuerySql} from 'src/homepageExperience/components/steps/csharp/ExecuteQuerySql'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
@@ -25,9 +25,16 @@ import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 import {CSharpIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 import {
+  HOMEPAGE_NAVIGATION_STEPS,
   HOMEPAGE_NAVIGATION_STEPS_SQL,
   scrollNextPageIntoView,
 } from 'src/homepageExperience/utils'
+import {isFlagEnabled} from '../../shared/utils/featureFlag'
+import {InstallDependencies} from '../components/steps/csharp/InstallDependencies'
+import {InitializeClient} from '../components/steps/csharp/InitializeClient'
+import {WriteData} from '../components/steps/csharp/WriteData'
+import {ExecuteQuery} from '../components/steps/csharp/ExecuteQuery'
+import {ExecuteAggregateQuery} from '../components/steps/csharp/ExecuteAggregateQuery'
 
 interface State {
   currentStep: number
@@ -46,13 +53,9 @@ export class CSharpWizard extends PureComponent<null, State> {
     finalFeedback: null,
   }
 
-  subwayNavSteps = HOMEPAGE_NAVIGATION_STEPS_SQL
-
-  installDependenciesStep = InstallDependenciesSql
-
-  writeDataStep = WriteDataSql
-
-  executeQueryStep = ExecuteQuerySql
+  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+    ? HOMEPAGE_NAVIGATION_STEPS_SQL
+    : HOMEPAGE_NAVIGATION_STEPS
 
   private handleSelectBucket = (bucketName: string) => {
     this.setState({selectedBucket: bucketName})
@@ -131,13 +134,56 @@ export class CSharpWizard extends PureComponent<null, State> {
     scrollNextPageIntoView()
   }
 
-  renderStep = () => {
+  renderSqlStep = () => {
     switch (this.state.currentStep) {
       case 1: {
         return <Overview wizard="csharpWizard" />
       }
       case 2: {
-        return <this.installDependenciesStep />
+        return <InstallDependenciesSql />
+      }
+      case 3: {
+        return (
+          <Tokens
+            wizardEventName="csharpWizard"
+            setTokenValue={this.setTokenValue}
+            tokenValue={this.state.tokenValue}
+          />
+        )
+      }
+      case 4: {
+        return <InitializeClientSql />
+      }
+      case 5: {
+        return <WriteDataSql onSelectBucket={this.handleSelectBucket} />
+      }
+      case 6: {
+        return <ExecuteQuerySql bucket={this.state.selectedBucket} />
+      }
+      case 7: {
+        return (
+          <Finish
+            wizardEventName="csharpSqlWizard"
+            markStepAsCompleted={this.handleMarkStepAsCompleted}
+            finishStepCompleted={this.state.finishStepCompleted}
+            finalFeedback={this.state.finalFeedback}
+            setFinalFeedback={this.setFinalFeedback}
+          />
+        )
+      }
+      default: {
+        return <Overview wizard="csharpWizard" />
+      }
+    }
+  }
+
+  renderFluxStep = () => {
+    switch (this.state.currentStep) {
+      case 1: {
+        return <Overview wizard="csharpWizard" />
+      }
+      case 2: {
+        return <InstallDependencies />
       }
       case 3: {
         return (
@@ -152,12 +198,15 @@ export class CSharpWizard extends PureComponent<null, State> {
         return <InitializeClient />
       }
       case 5: {
-        return <this.writeDataStep onSelectBucket={this.handleSelectBucket} />
+        return <WriteData onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        return <this.executeQueryStep bucket={this.state.selectedBucket} />
+        return <ExecuteQuery bucket={this.state.selectedBucket} />
       }
       case 7: {
+        return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
+      }
+      case 8: {
         return (
           <Finish
             wizardEventName="csharpSqlWizard"
@@ -209,7 +258,9 @@ export class CSharpWizard extends PureComponent<null, State> {
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {this.renderStep()}
+                  {isFlagEnabled('ioxOnboarding')
+                    ? this.renderSqlStep()
+                    : this.renderFluxStep()}
                 </WriteDataDetailsContextProvider>
               </div>
 

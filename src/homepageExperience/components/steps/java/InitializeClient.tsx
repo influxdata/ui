@@ -24,7 +24,7 @@ import com.influxdb.v3.client.query.QueryParameters;
 import com.influxdb.v3.client.write.Point;
 import com.influxdb.v3.client.write.WriteParameters;
 
-public final class IOxExample {
+public final class WriteQueryExample {
 
     public static void main(final String[] args) throws Exception {
         String hostUrl = "${url}";

@@ -22,7 +22,7 @@ using InfluxDB3.Client.Write;
 
 namespace InfluxDB3.Examples.IOx;
 
-public class IOxExample
+public class WriteQueryExample
 {
     static async Task Main(string[] args)
     {

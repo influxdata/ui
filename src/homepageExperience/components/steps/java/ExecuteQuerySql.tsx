@@ -61,7 +61,7 @@ try (Stream<Object[]> stream = client.query(sql, new QueryParameters("${bucket}"
         results of what we have written.
       </p>
       <p>
-        Add the following code to the <code>IOxExample</code> class:
+        Add the following code to the <code>WriteQueryExample</code> class:
       </p>
       <CodeSnippet language="java" onCopy={logCopyCodeSnippet} text={query} />
       <p>

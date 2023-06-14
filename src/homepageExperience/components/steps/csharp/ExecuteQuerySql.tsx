@@ -62,7 +62,7 @@ await foreach (var row in client.Query(query: sql, database: "${bucket}"))
         results of what we have written.
       </p>
       <p>
-        Add the following code to the <code>IOxExample</code> class:
+        Add the following code to the <code>WriteQueryExample</code> class:
       </p>
       <CodeSnippet language="csharp" onCopy={logCopyCodeSnippet} text={query} />
       <p>

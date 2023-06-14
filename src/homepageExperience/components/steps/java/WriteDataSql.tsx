@@ -239,7 +239,7 @@ System.out.println("Complete. Return to the InfluxDB UI.");
         let's write this data into our bucket.
       </p>
       <p>
-        Add the following code to the <code>IOxExample</code> class:
+        Add the following code to the <code>WriteQueryExample</code> class:
       </p>
       <CodeSnippet
         language="java"

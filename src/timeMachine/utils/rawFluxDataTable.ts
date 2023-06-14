@@ -41,7 +41,7 @@ export const parseFromFluxResults = (
     return false
   }
 
-  for (let i = 0; i < tables.length; i++) {
+  for (let i = 0; i < tables?.length; i++) {
     if (values[i] !== currVal || tables[i] !== currTable) {
       // sets the boundaries for the chunk based on different yields or tables
       currVal = values[i]

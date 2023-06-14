@@ -5,7 +5,7 @@ import React, {FC} from 'react'
 import {Accordion, Heading, HeadingElement} from '@influxdata/clockface'
 
 interface OwnProps {
-  elementTitle: string
+  elementTitle: string | JSX.Element
   elementDescription?: string
   bodyContent?: () => JSX.Element
   cta?: () => JSX.Element

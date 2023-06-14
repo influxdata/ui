@@ -27,7 +27,7 @@ import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 // Contexts
 import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/context/results'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
 
 // Types
@@ -60,7 +60,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const {hasChanged, resource, setResource, save} =
-    useContext(PersistanceContext)
+    useContext(PersistenceContext)
   const isIoxOrg = useSelector(isOrgIOx)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)

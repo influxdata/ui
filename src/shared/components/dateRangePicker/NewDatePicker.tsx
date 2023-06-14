@@ -18,12 +18,12 @@ import {
   Icon,
 } from '@influxdata/clockface'
 import ReactDatePicker from 'react-datepicker'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 
 // Utils
 import {getTimeRangeLabel} from 'src/shared/utils/duration'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
-import {durationRegExp} from 'src/shared/utils/sqlInterval'
+import {durationRegExp} from 'src/shared/utils/rangeToInterval'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {useSelector} from 'react-redux'
 import {getTimeZone} from 'src/dashboards/selectors'
@@ -66,7 +66,7 @@ interface Props {
 const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   const timeZone = useSelector(getTimeZone)
-  const {setRange} = useContext(PersistanceContext)
+  const {setRange} = useContext(PersistenceContext)
 
   const [inputStartDate, setInputStartDate] = useState(timeRange?.lower)
   const [inputEndDate, setInputEndDate] = useState(timeRange?.upper)
@@ -416,7 +416,7 @@ const DatePickerMenu: FC<Props> = ({onCollapse, timeRange, timeRangeLabel}) => {
 
 const DatePicker: FC = () => {
   const timeZone = useSelector(getTimeZone)
-  const {range} = useContext(PersistanceContext)
+  const {range} = useContext(PersistenceContext)
 
   const [timeRange, setTimeRange] = useState(range)
 

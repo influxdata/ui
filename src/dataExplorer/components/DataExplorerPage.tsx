@@ -43,16 +43,16 @@ import {ResourceType} from 'src/types'
 import 'src/shared/components/cta.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {
-  PersistanceContext,
-  PersistanceProvider,
-} from 'src/dataExplorer/context/persistance'
+  PersistenceContext,
+  PersistenceProvider,
+} from 'src/dataExplorer/context/persistence'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 
 const DataExplorerPageHeader: FC = () => {
   const {scriptQueryBuilder, setScriptQueryBuilder} =
     useContext(AppSettingContext)
-  const {resource, save} = useContext(PersistanceContext)
+  const {resource, save} = useContext(PersistenceContext)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const shouldShowDataExplorerToggle =
     !isNewIOxOrg || isFlagEnabled('showOldDataExplorerInNewIOx')
@@ -183,9 +183,9 @@ const DataExplorerPage: FC = () => {
         />
       </Switch>
       <GetResources resources={[ResourceType.Variables]}>
-        <PersistanceProvider>
+        <PersistenceProvider>
           <DataExplorerPageHeader />
-        </PersistanceProvider>
+        </PersistenceProvider>
         {flowsCTA.explorer && (
           <FeatureFlag name="flowsCTA">
             <div className="header-cta--de">

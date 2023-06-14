@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux'
 import {nanoid} from 'nanoid'
 
 import {getOrg} from 'src/organizations/selectors'
-import {fromFlux} from '@influxdata/giraffe'
+import {FromFluxResult, fromFlux} from '@influxdata/giraffe'
 import {FluxResult} from 'src/types/flows'
 
 // Query Helpers
@@ -16,7 +16,7 @@ import {
 import {trimPartialLines} from 'src/shared/contexts/query/postprocessing'
 
 // Constants
-import {FLUX_RESPONSE_BYTES_LIMIT} from 'src/shared/constants'
+import {API_BASE_PATH, FLUX_RESPONSE_BYTES_LIMIT} from 'src/shared/constants'
 import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
@@ -28,11 +28,15 @@ import {notify} from 'src/shared/actions/notifications'
 import {resultTooLarge} from 'src/shared/copy/notifications'
 
 // Types
-import {CancellationError, OwnBucket} from 'src/types'
+import {CancellationError, Organization, OwnBucket} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 import {event} from 'src/cloud/utils/reporting'
 import {PROJECT_NAME} from 'src/flows'
 import {LanguageType} from 'src/dataExplorer/components/resources'
+import {DBRP} from 'src/client'
+
+// Utils
+import {addAnnotationToCSV} from 'src/shared/utils/addAnnotationToCSV'
 
 interface CancelMap {
   [key: string]: () => void
@@ -48,6 +52,7 @@ export interface QueryOptions {
   overrideMechanism?: OverrideMechanism
   language?: LanguageType
   bucket?: OwnBucket
+  dbrp?: DBRP
   rawBlob?: boolean
   sqlQueryModifiers?: SqlQueryModifiers
 }
@@ -98,16 +103,49 @@ export const QueryContext =
   React.createContext<QueryContextType>(DEFAULT_CONTEXT)
 
 const buildQueryRequest = (
-  org,
+  org: Organization,
   text: string,
   override: QueryScope,
   options?: QueryOptions
-) => {
+): {
+  url: string
+  body: RequestBody | null
+  headers: {
+    'Content-Type': string
+    'Accept-Encoding': string
+    Accept?: string
+  }
+} => {
   const mechanism = options?.overrideMechanism ?? OverrideMechanism.Extern
   const language = options?.language ?? LanguageType.FLUX
 
+  if (language === LanguageType.INFLUXQL) {
+    // InfluxQL query endpoint doc:
+    //  https://docs.influxdata.com/influxdb/cloud/api/v1-compatibility/#tag/Query
+    const params: URLSearchParams = new URLSearchParams({
+      orgID: org.id,
+      db: options?.dbrp?.database,
+      q: text,
+    })
+    // retention_policy param is optional as mentioned in the doc above
+    if (options?.dbrp?.retention_policy) {
+      params.set('rp', options.dbrp.retention_policy)
+    }
+    const url = `${API_BASE_PATH}query?${params}`
+
+    const body = null
+
+    const headers = {
+      'Content-Type': 'application/vnd.influxql',
+      'Accept-Encoding': 'gzip',
+      Accept: 'text/csv',
+    }
+
+    return {url, body, headers}
+  }
+
   let query = text
-  if (language == LanguageType.SQL) {
+  if (language === LanguageType.SQL) {
     query = sqlAsFlux(text, options?.bucket, options?.sqlQueryModifiers)
   } else if (mechanism === OverrideMechanism.Inline) {
     query = simplify(text, override?.vars ?? {}, override?.params ?? {})
@@ -247,12 +285,20 @@ export const QueryProvider: FC = ({children}) => {
       let didTruncate = false
       let read = await reader.read()
 
-      let BYTE_LIMIT =
-        getFlagValue('increaseCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+      const increaseCsvLimit: string | boolean =
+        getFlagValue('increaseCsvLimit')
+
+      let BYTE_LIMIT: number = Boolean(increaseCsvLimit)
+        ? Number(increaseCsvLimit)
+        : FLUX_RESPONSE_BYTES_LIMIT
 
       if (!window.location.pathname.includes(PROJECT_NAME.toLowerCase())) {
-        BYTE_LIMIT =
-          getFlagValue('dataExplorerCsvLimit') ?? FLUX_RESPONSE_BYTES_LIMIT
+        const dataExplorerCsvLimit: string | boolean = getFlagValue(
+          'dataExplorerCsvLimit'
+        )
+        BYTE_LIMIT = Boolean(dataExplorerCsvLimit)
+          ? Number(dataExplorerCsvLimit)
+          : FLUX_RESPONSE_BYTES_LIMIT
       }
 
       while (!read.done) {
@@ -321,14 +367,21 @@ export const QueryProvider: FC = ({children}) => {
   ): Promise<FluxResult> => {
     const result = basic(text, override, options)
 
-    const promise: any = result.promise.then(async raw => {
+    const promise: any = result.promise.then(raw => {
       if (raw.type !== 'SUCCESS') {
         throw new Error(raw.message)
       }
       if (raw.didTruncate) {
         dispatch(notify(resultTooLarge(raw.bytesRead)))
       }
-      const parsed = await fromFlux(raw.csv)
+
+      // Since InfluxQL v1 endpoint returns csv instead of annotated csv,
+      // in order to show values in table, add annotation row here
+      const annotatedCSV =
+        options?.language === LanguageType.INFLUXQL
+          ? addAnnotationToCSV(raw.csv)
+          : raw.csv
+      const parsed: FromFluxResult = fromFlux(annotatedCSV)
 
       return {
         source: text,

@@ -5,12 +5,12 @@ import {LspRange} from 'src/languageSupport/languages/agnostic/types'
 import {
   DEFAULT_SQL_EDITOR_TEXT,
   CompositionSelection,
-} from 'src/dataExplorer/context/persistance'
+} from 'src/dataExplorer/context/persistence'
 import {SelectableDurationTimeRange, TimeRange} from 'src/types'
 
 // Utils
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
-import {rangeToInterval as buildTimeRange} from 'src/shared/utils/sqlInterval'
+import {rangeToSQLInterval as buildTimeRange} from 'src/shared/utils/rangeToInterval'
 import {notify} from 'src/shared/actions/notifications'
 import {compositionEnded} from 'src/shared/copy/notifications'
 import {groupedTagValues} from 'src/languageSupport/languages/agnostic/utils'
@@ -26,7 +26,16 @@ export class ConnectionManager extends AgnosticConnectionManager {
   private _timeRange: TimeRange = DEFAULT_TIME_RANGE
 
   _couldBeFromComposition(change) {
-    return change.forceMoveMarkers == true
+    // There are three types of change that are from composition
+    //  1. starting a new script
+    //  2. removing the DEFAULT_INFLUXQL_EDITOR_TEXT, i.e. selecting a bucket on a new script,
+    //     which happens in the onSchemaSessionChange() if statement shouldRemoveDefaultMsg
+    //  3. setting forceMoveMarkers to true manually in _updateComposition()
+    return (
+      change.text === DEFAULT_SQL_EDITOR_TEXT ||
+      change.rangeLength === DEFAULT_SQL_EDITOR_TEXT.length ||
+      change.forceMoveMarkers
+    )
   }
 
   _editorChangeIsWithinComposition(change) {

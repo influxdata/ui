@@ -10,8 +10,8 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {
   DEFAULT_FLUX_EDITOR_TEXT,
-  PersistanceContext,
-} from 'src/dataExplorer/context/persistance'
+  PersistenceContext,
+} from 'src/dataExplorer/context/persistence'
 
 // Selector
 import {getActiveQueryIndex} from 'src/timeMachine/selectors'
@@ -23,7 +23,7 @@ interface ZoomQueries {
 
 export const useZoomQuery = (queries: DashboardQuery[] = []): ZoomQueries => {
   const activeQueryIndex = useSelector(getActiveQueryIndex)
-  const {query} = useContext(PersistanceContext)
+  const {query} = useContext(PersistenceContext)
   const {id} = useContext(PipeContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
   const queryTexts = queries.map(query => `${query.text}`)

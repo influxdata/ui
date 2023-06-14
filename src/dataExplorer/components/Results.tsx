@@ -10,6 +10,7 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
+import classNames from 'classnames'
 
 // Components
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
@@ -29,20 +30,21 @@ import {
 } from 'src/dataExplorer/context/resultsView'
 import {ChildResultsContext} from 'src/dataExplorer/context/results/childResults'
 import {SidebarContext} from 'src/dataExplorer/context/sidebar'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 
 // Types
 import {FluxResult} from 'src/types/flows'
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
 import {bytesFormatter} from 'src/shared/copy/notifications'
 
 import './Results.scss'
-import {LanguageType} from './resources'
 
 const QueryStat: FC = () => {
   const {result} = useContext(ResultsContext)
+  const {resource} = useContext(PersistenceContext)
 
   const tableColumn = result?.parsed?.table?.getColumn('table') || []
   const lastTableValue = tableColumn[tableColumn.length - 1]
@@ -65,7 +67,9 @@ const QueryStat: FC = () => {
         )}.`}</span>
       ) : (
         <>
-          <span className="query-stat--bold">{`${tableNum} tables`}</span>
+          {resource?.language === LanguageType.INFLUXQL ? null : (
+            <span className="query-stat--bold">{`${tableNum} tables`}</span>
+          )}
           <span className="query-stat--bold">{`${
             result?.parsed?.table?.length || 0
           } rows`}</span>
@@ -88,7 +92,7 @@ const EmptyResults: FC = () => {
 
 const TableResults: FC<{search: string}> = ({search}) => {
   const {result, status} = useContext(ResultsContext)
-  const {range} = useContext(PersistanceContext)
+  const {range, resource} = useContext(PersistenceContext)
 
   const res = useMemo(() => {
     if (search.trim() === '' || !result?.parsed) {
@@ -140,9 +144,13 @@ const TableResults: FC<{search: string}> = ({search}) => {
     return dupped as FluxResult['parsed']
   }, [search, result?.parsed])
 
+  const resultsViewClassNames = classNames('data-explorer-results--view', {
+    'hide-table-header-label': resource?.language === LanguageType.INFLUXQL,
+  })
+
   return (
     <div
-      className="data-explorer-results--view"
+      className={resultsViewClassNames}
       data-testid="data-explorer-results--view"
     >
       <View
@@ -175,9 +183,9 @@ const ErrorResults: FC<{error: string}> = ({error}) => {
 const GraphResults: FC = () => {
   const {view} = useContext(ResultsViewContext)
   const {result, status} = useContext(ChildResultsContext)
-  const {range} = useContext(PersistanceContext)
+  const {range} = useContext(PersistenceContext)
 
-  if (result.error) {
+  if (result?.error) {
     return <ErrorResults error={result.error} />
   }
 
@@ -204,7 +212,7 @@ const WrappedOptions: FC = () => {
   const {result} = useContext(ChildResultsContext)
   const {view, setView, selectViewOptions, viewOptions, selectedViewOptions} =
     useContext(ResultsViewContext)
-  const {resource} = useContext(PersistanceContext)
+  const {resource} = useContext(PersistenceContext)
   const graphDataExists = !!result?.parsed
   const parentDataExists = !!parentResult?.parsed
 
@@ -331,6 +339,7 @@ const Results: FC = () => {
   const [search, setSearch] = useState('')
   const {status} = useContext(ResultsContext)
   const {view, setView} = useContext(ResultsViewContext)
+  const {resource} = useContext(PersistenceContext)
 
   let resultView
 
@@ -398,16 +407,18 @@ const Results: FC = () => {
                 >
                   Table
                 </SelectGroup.Option>
-                <SelectGroup.Option
-                  id="graph"
-                  name="viz-setting"
-                  value="graph"
-                  active={view.state === ViewStateType.Graph}
-                  onClick={updateViewState}
-                  testID="data-explorer-results--graph-view"
-                >
-                  Graph
-                </SelectGroup.Option>
+                {resource?.language === LanguageType.INFLUXQL ? null : (
+                  <SelectGroup.Option
+                    id="graph"
+                    name="viz-setting"
+                    value="graph"
+                    active={view.state === ViewStateType.Graph}
+                    onClick={updateViewState}
+                    testID="data-explorer-results--graph-view"
+                  >
+                    Graph
+                  </SelectGroup.Option>
+                )}
               </SelectGroup>
             </div>
           </FlexBox>
@@ -418,4 +429,4 @@ const Results: FC = () => {
   )
 }
 
-export default Results
+export {Results}

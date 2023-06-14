@@ -11,7 +11,6 @@ import {
   getUsageVectors,
   getUsageRateLimits,
 } from 'src/client/unityRoutes'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {PAYG_CREDIT_DAYS} from 'src/shared/constants'
@@ -203,34 +202,33 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }
 
   const handleGetCreditUsage = useCallback(() => {
-    try {
-      setCreditUsage(prev => ({
-        ...prev,
-        status: RemoteDataState.Loading,
-      }))
-      const vectors = ['storage_gb', 'writes_mb', 'reads_gb', 'query_count']
-      const promises = []
+    if (paygCreditEnabled) {
+      try {
+        setCreditUsage(prev => ({
+          ...prev,
+          status: RemoteDataState.Loading,
+        }))
+        const vectors = ['storage_gb', 'writes_mb', 'reads_gb', 'query_count']
+        const promises = []
 
-      let daysWith250Credit = PAYG_CREDIT_DAYS
-
-      if (isFlagEnabled('credit250fix')) {
         const secondsPerDay = 1000 * 3600 * 24
         const currentDate = new Date()
         const secondsWith250Credit =
           currentDate.getTime() - new Date(paygCreditStartDate).getTime()
-        const creditDays = Math.floor(secondsWith250Credit / secondsPerDay)
+        const daysWith250Credit = Math.floor(
+          secondsWith250Credit / secondsPerDay
+        )
 
-        if (creditDays <= 0 || isNaN(creditDays)) {
-          return
+        if (daysWith250Credit <= 0 || isNaN(daysWith250Credit)) {
+          throw new Error('invalid number of credit days')
         }
 
-        daysWith250Credit = creditDays
-      }
-
-      vectors.forEach(vector_name => {
-        promises.push(
-          getUsage({vector_name, query: {range: `${daysWith250Credit}d`}}).then(
-            resp => {
+        vectors.forEach(vector_name => {
+          promises.push(
+            getUsage({
+              vector_name,
+              query: {range: `${daysWith250Credit}d`},
+            }).then(resp => {
               if (resp.status !== 200) {
                 throw new Error(resp.data.message)
               }
@@ -238,29 +236,29 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
               return new Promise(resolve =>
                 resolve(getComputedUsage(vector_name, resp.data))
               )
-            }
+            })
           )
-        )
-      })
-
-      Promise.all(promises)
-        .then(result => {
-          const amount: number = result
-            .reduce((a: number, b) => a + parseFloat(b), 0)
-            .toFixed(2)
-          setCreditUsage({
-            amount,
-            status: RemoteDataState.Done,
-          })
         })
-        .catch(err => console.error(err))
-    } catch (error) {
-      setCreditUsage(prev => ({
-        ...prev,
-        status: RemoteDataState.Done,
-      }))
+
+        Promise.all(promises)
+          .then(result => {
+            const amount: number = result
+              .reduce((a: number, b) => a + parseFloat(b), 0)
+              .toFixed(2)
+            setCreditUsage({
+              amount,
+              status: RemoteDataState.Done,
+            })
+          })
+          .catch(err => console.error(err))
+      } catch (error) {
+        setCreditUsage(prev => ({
+          ...prev,
+          status: RemoteDataState.Done,
+        }))
+      }
     }
-  }, [])
+  }, [paygCreditEnabled])
 
   useEffect(() => {
     handleGetCreditUsage()

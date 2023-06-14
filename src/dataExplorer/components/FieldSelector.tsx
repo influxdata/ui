@@ -16,7 +16,7 @@ import SelectorList from 'src/timeMachine/components/SelectorList'
 // Contexts
 import {FieldsContext} from 'src/dataExplorer/context/fields'
 import {ScriptQueryBuilderContext} from 'src/dataExplorer/context/scriptQueryBuilder'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -39,7 +39,7 @@ conceptually similar to a non-indexed column and value.`
 const FieldSelector: FC = () => {
   const {fields, loading} = useContext(FieldsContext)
   const {selectField, searchTerm} = useContext(ScriptQueryBuilderContext)
-  const {selection} = useContext(PersistanceContext)
+  const {selection} = useContext(PersistenceContext)
   const [fieldsToShow, setFieldsToShow] = useState([])
 
   const handleSelectField = (field: string) => {

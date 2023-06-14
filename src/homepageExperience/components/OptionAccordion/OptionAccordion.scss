@@ -68,6 +68,11 @@
   }
 }
 
+.option-accordion--tag {
+  color: $c-chartreuse;
+  font-size: $cf-text-base--1;
+}
+
 @media screen and (min-width: $cf-grid--breakpoint-md) {
   .option-accordion-element--content {
     flex-shrink: 1;

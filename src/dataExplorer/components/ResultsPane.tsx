@@ -20,14 +20,14 @@ import {useSelector, useDispatch} from 'react-redux'
 import {ResultsContext} from 'src/dataExplorer/context/results'
 import {QueryContext} from 'src/shared/contexts/query'
 import {
-  PersistanceContext,
+  PersistenceContext,
   DEFAULT_FLUX_EDITOR_TEXT,
   DEFAULT_SQL_EDITOR_TEXT,
   DEFAULT_INFLUXQL_EDITOR_TEXT,
-} from 'src/dataExplorer/context/persistance'
+} from 'src/dataExplorer/context/persistence'
 
 // Components
-import Results from 'src/dataExplorer/components/Results'
+import {Results} from 'src/dataExplorer/components/Results'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import QueryTime from 'src/dataExplorer/components/QueryTime'
 import NewDatePicker from 'src/shared/components/dateRangePicker/NewDatePicker'
@@ -83,7 +83,7 @@ const ResultsPane: FC = () => {
     range,
     selection,
     resource,
-  } = useContext(PersistanceContext)
+  } = useContext(PersistenceContext)
   const orgID = useSelector(getOrg)?.id
   const language = resource?.language ?? LanguageType.FLUX
   const dispatch = useDispatch()
@@ -93,9 +93,21 @@ const ResultsPane: FC = () => {
   if (!text || isDefaultText(text)) {
     submitButtonDisabled = true
     disabledTitleText = 'Write a query before running script'
-  } else if (language == LanguageType.SQL && !selection.bucket) {
+  } else if (language === LanguageType.SQL && !selection.bucket) {
     submitButtonDisabled = true
     disabledTitleText = 'Select a bucket before running script'
+  } else if (
+    language === LanguageType.SQL &&
+    selection.composition.synced && // using composition
+    selection.bucket &&
+    !Boolean(selection.measurement)
+  ) {
+    submitButtonDisabled = true
+    disabledTitleText = 'Select a measurement before running script'
+  } else if (language === LanguageType.INFLUXQL && !selection.dbrp) {
+    submitButtonDisabled = true
+    disabledTitleText =
+      'Select a database/retention policy before running script'
   } else if (
     language == LanguageType.FLUX &&
     selection.composition.synced && // using composition
@@ -107,6 +119,12 @@ const ResultsPane: FC = () => {
   }
 
   const downloadByServiceWorker = () => {
+    // TODO (chunchun): https://github.com/influxdata/ui/issues/6704
+    if (language === LanguageType.INFLUXQL) {
+      console.error('csv download for InfluxQL is not implemented')
+      return
+    }
+
     try {
       event('runQuery.downloadCSV', {context: 'query experience'})
 
@@ -147,6 +165,7 @@ const ResultsPane: FC = () => {
 
   const submit = useCallback(() => {
     setStatus(RemoteDataState.Loading)
+
     query(
       text,
       {
@@ -155,6 +174,7 @@ const ResultsPane: FC = () => {
       {
         language,
         bucket: selection.bucket,
+        dbrp: selection.dbrp,
       }
     )
       .then(r => {
@@ -257,10 +277,12 @@ const ResultsPane: FC = () => {
               margin={ComponentSize.Small}
             >
               <QueryTime />
-              <CSVExportButton
-                disabled={submitButtonDisabled}
-                download={downloadByServiceWorker}
-              />
+              {resource?.language === LanguageType.INFLUXQL ? null : (
+                <CSVExportButton
+                  disabled={submitButtonDisabled}
+                  download={downloadByServiceWorker}
+                />
+              )}
               <NewDatePicker />
               <SubmitQueryButton
                 className="submit-btn"

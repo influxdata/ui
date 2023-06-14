@@ -2,7 +2,7 @@ import React, {FC, useContext} from 'react'
 import {Button, ComponentColor, IconFont, Overlay} from '@influxdata/clockface'
 import './SaveAsScript.scss'
 import {CLOUD} from 'src/shared/constants'
-import {PersistanceContext} from 'src/dataExplorer/context/persistance'
+import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 import {useHistory} from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
@@ -26,7 +26,7 @@ interface Props {
 }
 
 const DeleteScript: FC<Props> = ({onBack, onClose}) => {
-  const {resource} = useContext(PersistanceContext)
+  const {resource} = useContext(PersistenceContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const {clear: clearViewOptions} = useContext(ResultsViewContext)

@@ -5,7 +5,7 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 import {selectCurrentIdentity} from 'src/identity/selectors'
 
-export const InitializeClient = () => {
+export const InitializeClientSql = () => {
   const {org: quartzOrg} = useSelector(selectCurrentIdentity)
 
   const url = quartzOrg.clusterHost || window.location.origin
@@ -17,15 +17,12 @@ export const InitializeClient = () => {
   const javaCode = `package example;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.stream.Stream;
 
-import com.influxdb.client.InfluxDBClient;
-import com.influxdb.client.InfluxDBClientFactory;
-import com.influxdb.client.QueryApi;
-import com.influxdb.client.WriteApiBlocking;
-import com.influxdb.client.write.Point;
-import com.influxdb.query.FluxRecord;
-import com.influxdb.query.FluxTable;
+import com.influxdb.v3.client.InfluxDBClient;
+import com.influxdb.v3.client.query.QueryParameters;
+import com.influxdb.v3.client.write.Point;
+import com.influxdb.v3.client.write.WriteParameters;
 
 public final class WriteQueryExample {
 
@@ -33,7 +30,7 @@ public final class WriteQueryExample {
         String hostUrl = "${url}";
         char[] authToken = System.getenv("INFLUXDB_TOKEN").toCharArray();
 
-        try (InfluxDBClient client = InfluxDBClientFactory.create(hostUrl, authToken)) {
+        try (InfluxDBClient client = InfluxDBClient.getInstance(hostUrl, authToken, null)) {
 
         }
     }

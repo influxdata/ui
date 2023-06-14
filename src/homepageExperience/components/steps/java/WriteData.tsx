@@ -23,7 +23,7 @@ type OwnProps = {
   onSelectBucket: (bucketName: string) => void
 }
 
-export const WriteDataSqlComponent = (props: OwnProps) => {
+export const WriteDataComponent = (props: OwnProps) => {
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
   const {onSelectBucket} = props
@@ -49,7 +49,8 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket, onSelectBucket])
 
-  const codeSnippet = `String database = "${bucket.name}";
+  const codeSnippet = `String bucket = "${bucket.name}";
+String org = "${org.name}";
 
 Point[] points = new Point[] {
         Point.measurement("census")
@@ -72,9 +73,10 @@ Point[] points = new Point[] {
                 .addField("ants", 40)
 };
 
+WriteApiBlocking writeApi = client.getWriteApiBlocking();
 for (Point point : points) {
-    client.writePoint(point, new WriteParameters(database, null, null));
-    
+    writeApi.writePoint(bucket, org, point);
+
     Thread.sleep(1000); // separate points by 1 second
 }
 
@@ -259,6 +261,6 @@ System.out.println("Complete. Return to the InfluxDB UI.");
   )
 }
 
-export const WriteDataSql = props => {
-  return <WriteDataSqlComponent onSelectBucket={props.onSelectBucket} />
+export const WriteData = props => {
+  return <WriteDataComponent onSelectBucket={props.onSelectBucket} />
 }

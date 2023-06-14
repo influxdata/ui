@@ -328,8 +328,8 @@ for key := range data {
         text="go run ./main.go"
       />
       <p>
-        The program should write data once you run it. After the data is written, a
-        confirmation will appear below:
+        The program should write data once you run it. After the data is
+        written, a confirmation will appear below:
       </p>
       <Panel backgroundColor={InfluxColors.Grey15}>
         <Panel.Body>

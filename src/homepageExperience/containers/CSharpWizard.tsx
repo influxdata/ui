@@ -168,17 +168,6 @@ export class CSharpWizard extends PureComponent<null, State> {
           />
         )
       }
-      case 8: {
-        return (
-          <Finish
-            wizardEventName="csharpWizard"
-            markStepAsCompleted={this.handleMarkStepAsCompleted}
-            finishStepCompleted={this.state.finishStepCompleted}
-            finalFeedback={this.state.finalFeedback}
-            setFinalFeedback={this.setFinalFeedback}
-          />
-        )
-      }
       default: {
         return <Overview wizard="csharpWizard" />
       }

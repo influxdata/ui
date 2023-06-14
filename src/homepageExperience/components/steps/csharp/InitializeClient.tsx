@@ -5,14 +5,14 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 import {selectCurrentIdentity} from 'src/identity/selectors'
 
-const logCopyCodeSnippet = () => {
-  event('firstMile.csharpWizard.initializeClient.code.copied')
-}
-
 export const InitializeClient = () => {
   const {org: quartzOrg} = useSelector(selectCurrentIdentity)
 
   const url = quartzOrg.clusterHost || window.location.origin
+
+  const logCopyCodeSnippet = () => {
+    event('firstMile.csharpWizard.initializeClient.code.copied')
+  }
 
   const csharpCode = `using System;
 using System.Threading;

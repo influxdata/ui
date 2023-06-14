@@ -19,14 +19,6 @@ import DataListening from 'src/homepageExperience/components/DataListening'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
 
-const logCopyCodeSnippet = () => {
-  event('firstMile.csharpWizard.writeData.code.copied')
-}
-
-const logDocsOpened = () => {
-  event('firstMile.csharpWizard.writeData.docs.opened')
-}
-
 type OwnProps = {
   onSelectBucket: (bucketName: string) => void
 }
@@ -35,6 +27,14 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
   const {onSelectBucket} = props
+
+  const logCopyCodeSnippet = () => {
+    event('firstMile.csharpWizard.writeData.code.copied')
+  }
+
+  const logDocsOpened = () => {
+    event('firstMile.csharpWizard.writeData.docs.opened')
+  }
 
   useEffect(() => {
     dispatch(getBuckets())

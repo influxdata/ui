@@ -3,16 +3,16 @@ import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 
-const logCopyCodeSnippet = () => {
-  event('firstMile.javaWizard.executeQuery.code.copied')
-}
-
 type OwnProps = {
   bucket: string
 }
 
 export const ExecuteQuerySql = (props: OwnProps) => {
   const {bucket} = props
+
+  const logCopyCodeSnippet = () => {
+    event('firstMile.javaWizard.executeQuery.code.copied')
+  }
 
   const sqlSnippet = `SELECT *
 FROM 'census'

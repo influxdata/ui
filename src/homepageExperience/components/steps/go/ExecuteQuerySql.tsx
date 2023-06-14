@@ -11,7 +11,9 @@ type OwnProps = {
   bucket: string
 }
 
-export const ExecuteQuerySql = (_props: OwnProps) => {
+export const ExecuteQuerySql = (props: OwnProps) => {
+  const {bucket} = props
+
   const logCopyQueryCodeSnippet = () => {
     event('firstMile.goWizard.executeQuery.code.copied')
   }
@@ -31,7 +33,7 @@ query := \`SELECT *
           WHERE time >= now() - interval '1 hour'
             AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)\`
 
-iterator, err := client.Query(context.Background(), database, query)
+iterator, err := client.Query(context.Background(), "${bucket}", query)
 
 if err != nil {
   panic(err)

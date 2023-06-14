@@ -5,14 +5,14 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 import {selectCurrentIdentity} from 'src/identity/selectors'
 
-const logCopyCodeSnippet = () => {
-  event('firstMile.javaWizard.initializeClient.code.copied')
-}
-
 export const InitializeClient = () => {
   const {org: quartzOrg} = useSelector(selectCurrentIdentity)
 
   const url = quartzOrg.clusterHost || window.location.origin
+
+  const logCopyCodeSnippet = () => {
+    event('firstMile.javaWizard.initializeClient.code.copied')
+  }
 
   const javaCode = `package com.influxdb.v3;
 

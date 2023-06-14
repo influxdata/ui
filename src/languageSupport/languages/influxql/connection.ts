@@ -10,7 +10,6 @@ import {
   RecursivePartial,
   SelectableDurationTimeRange,
   TimeRange,
-  TagKeyValuePair,
 } from 'src/types'
 import {LspRange} from 'src/languageSupport/languages/agnostic/types'
 
@@ -19,28 +18,11 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {rangeToInfluxQLInterval as buildTimeRange} from 'src/shared/utils/rangeToInterval'
 import {notify} from 'src/shared/actions/notifications'
 import {compositionEnded} from 'src/shared/copy/notifications'
-import {groupedTagValues} from 'src/languageSupport/languages/agnostic/utils'
+import {
+  groupedTagValues,
+  getTagKeys,
+} from 'src/languageSupport/languages/agnostic/utils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-/*
-  Input:
-  [
-    {key: 'a', value: '1'},
-    {key: 'a', value: '2'},
-    {key: 'b', value: '1'},
-    {key: 'c', value: '1'},
-  ]
-
-  Output:
-  ['a', 'b', 'c']
-*/
-const getTagKeys = (tagValues: TagKeyValuePair[]): string[] => {
-  const tagKeys = new Set<string>()
-  tagValues.forEach((pair: TagKeyValuePair) => {
-    tagKeys.add(pair.key)
-  })
-  return Array.from(tagKeys)
-}
 
 export class ConnectionManager extends AgnosticConnectionManager {
   private _timeRange: TimeRange = DEFAULT_TIME_RANGE

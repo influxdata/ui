@@ -17,7 +17,7 @@ export const ExecuteQuerySql = (_props: OwnProps) => {
   }
 
   const logCopyRunCodeSnippet = () => {
-    event('firstMile.goWizard.RunGo.code.copied')
+    event('firstMile.goWizard.runGo.code.copied')
   }
 
   const sqlSnippet = `SELECT *

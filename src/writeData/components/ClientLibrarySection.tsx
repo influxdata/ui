@@ -35,11 +35,15 @@ const ClientLibrarySection = () => {
     go: 'golang',
     'javascript-node': 'nodejs',
     python: 'python',
+    java: 'java',
+    csharp: 'csharp',
   }
 
   const SqlWrite = {
     go: 'golang',
     python: 'python',
+    java: 'java',
+    csharp: 'csharp',
   }
 
   const isIOxOrg = useSelector(isOrgIOx)

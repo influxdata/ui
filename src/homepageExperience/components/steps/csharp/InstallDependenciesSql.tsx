@@ -13,11 +13,11 @@ export const InstallDependenciesSql: FC = () => {
     <>
       <h1>Install Dependencies</h1>
       <p>
-        Install the NuGet package to your project{' '}
+        Install the NuGet package{' '}
         <SafeBlankLink href="https://github.com/InfluxCommunity/influxdb3-csharp">
           InfluxDB3.Client
         </SafeBlankLink>{' '}
-        :
+        to your project :
       </p>
       <CodeSnippet
         language="properties"

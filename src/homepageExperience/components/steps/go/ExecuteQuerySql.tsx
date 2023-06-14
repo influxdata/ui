@@ -122,7 +122,7 @@ for iterator.Next() {
       />
       <p>
         When you run your application now, the code snippet above should print
-        out the data. The result should resemble like this:
+        out the data. The result should resemble this:
       </p>
       <CodeSnippet
         language="json"

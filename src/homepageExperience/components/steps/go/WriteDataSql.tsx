@@ -44,7 +44,7 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
   }
 
   const logCopyRunCodeSnippet = () => {
-    event('firstMile.goWizard.RunGo.code.copied')
+    event('firstMile.goWizard.runGo.code.copied')
   }
 
   const {org} = useSelector(selectCurrentIdentity)
@@ -328,7 +328,7 @@ for key := range data {
         text="go run ./main.go"
       />
       <p>
-        Program should write data once you run it. After the data is written, a
+        The program should write data once you run it. After the data is written, a
         confirmation will appear below:
       </p>
       <Panel backgroundColor={InfluxColors.Grey15}>

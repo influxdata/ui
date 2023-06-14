@@ -382,7 +382,7 @@ const SetOrg: FC = () => {
           <Route
             exact
             path="/orgs/:orgID/new-user-setup/java"
-            key="/csharp"
+            key="/java"
             component={JavaWizard}
           />
           <Route

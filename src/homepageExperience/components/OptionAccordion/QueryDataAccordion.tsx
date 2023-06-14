@@ -46,6 +46,8 @@ export const QueryDataAccordion: FC = () => {
   const languageList = {
     Go: 'new-user-setup/golang',
     Python: 'new-user-setup/python',
+    'C#': 'new-user-setup/csharp',
+    Java: 'new-user-setup/java',
   }
 
   const dropdownList = Object.entries(languageList).map(([lang]) => (

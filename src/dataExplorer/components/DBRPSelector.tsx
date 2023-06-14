@@ -157,7 +157,7 @@ export const DBRPSelector: FC = () => {
                 onChange={handleSearchChange}
                 onBlur={() => setIsSearchActive(false)}
                 value={searchTerm}
-                placeholder="Search DBRPs"
+                placeholder="Search database/retention policy combinations"
                 size={ComponentSize.Small}
                 autoFocus={true}
                 testID="dbrp-selector--search-bar"

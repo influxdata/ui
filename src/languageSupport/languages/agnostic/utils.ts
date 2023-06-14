@@ -11,3 +11,11 @@ export const groupedTagValues = (
     }),
     {}
   )
+
+export const getTagKeys = (tagValues: TagKeyValuePair[]): string[] => {
+  const tagKeys = new Set<string>()
+  tagValues.forEach((pair: TagKeyValuePair) => {
+    tagKeys.add(pair.key)
+  })
+  return Array.from(tagKeys)
+}

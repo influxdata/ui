@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 using InfluxDB3.Client;
 using InfluxDB3.Client.Write;
 
-namespace InfluxDB3.Examples.IOx;
+namespace InfluxDB3.Examples;
 
 public class WriteQueryExample
 {

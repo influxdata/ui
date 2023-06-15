@@ -1,7 +1,7 @@
 import {MonacoType} from 'src/types'
 import {InfluxColors} from '@influxdata/clockface'
 
-const THEME_NAME = 'influxQLTheme'
+const THEME_NAME = 'influxqlTheme'
 
 function addTheme(monaco: MonacoType) {
   // Using the tokenizer defined in

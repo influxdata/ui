@@ -23,7 +23,6 @@ import {ConnectionManager} from 'src/languageSupport/languages/flux/lsp/connecti
 import {EditorContext} from 'src/shared/contexts/editor'
 import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 import {scriptQueryBuilder} from 'src/shared/selectors/app'
-import {isOrgIOx} from 'src/organizations/selectors'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
@@ -66,7 +65,6 @@ const FluxEditorMonaco: FC<Props> = ({
   const {editor, setEditor} = useContext(EditorContext)
   const isScriptQueryBuilder = useSelector(scriptQueryBuilder)
   const sessionStore = useContext(PersistenceContext)
-  const isIoxOrg = useSelector(isOrgIOx)
   const {path} = useRouteMatch()
   const isInScriptQueryBuilder =
     isScriptQueryBuilder && path === '/orgs/:orgID/data-explorer'
@@ -166,13 +164,13 @@ const FluxEditorMonaco: FC<Props> = ({
             }}
             editorDidMount={editorDidMount}
           />
-          {isIoxOrg && isInScriptQueryBuilder && (
+          {isInScriptQueryBuilder && (
             <div className="monaco-editor__language">{FLUXLANGID}</div>
           )}
         </div>
       </ErrorBoundary>
     ),
-    [isIoxOrg, onChangeScript, setEditor, useSchemaComposition, script]
+    [onChangeScript, setEditor, useSchemaComposition, script]
   )
 }
 

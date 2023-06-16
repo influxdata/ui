@@ -26,21 +26,21 @@ describe('Script Builder -- InfluxQL', () => {
     )
   }
 
-  const selectSchema = () => {
-    cy.log('select database/retention policy')
-    selectScriptDBRP(databaseName, retentionPolicyName)
-    cy.confirmSyncIsOn() // influxql composition is dumb. On bucket selection, it will occasionally drop the sync.
-    cy.log('writes empty query statement with only the timerange')
-    cy.getByTestID('influxql-editor', {
-      timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
-    }).contains(`SELECT *`)
-    cy.getByTestID('influxql-editor').contains(`WHERE`)
-    cy.getByTestID('influxql-editor').contains(`time >= now() - 1h`)
-    cy.confirmSyncIsOn() // influxql sync sometimes toggles off
+  // const selectSchema = () => {
+  //   cy.log('select database/retention policy')
+  //   selectScriptDBRP(databaseName, retentionPolicyName)
+  //   cy.confirmSyncIsOn() // influxql composition is dumb. On bucket selection, it will occasionally drop the sync.
+  //   cy.log('writes empty query statement with only the timerange')
+  //   cy.getByTestID('influxql-editor', {
+  //     timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
+  //   }).contains(`SELECT *`)
+  //   cy.getByTestID('influxql-editor').contains(`WHERE`)
+  //   cy.getByTestID('influxql-editor').contains(`time >= now() - 1h`)
+  //   cy.confirmSyncIsOn() // influxql sync sometimes toggles off
 
-    cy.log('select measurement')
-    cy.selectScriptMeasurement(measurement)
-  }
+  //   cy.log('select measurement')
+  //   cy.selectScriptMeasurement(measurement)
+  // }
 
   const confirmSchemaComposition = () => {
     cy.log('has basic query')
@@ -149,13 +149,47 @@ describe('Script Builder -- InfluxQL', () => {
       confirmSchemaComposition()
 
       cy.log('select field --> add to composition')
+      cy.selectScriptFieldOrTag(fieldName, true)
+      cy.getByTestID('influxql-editor').contains(`SELECT "${fieldName}"`)
+      cy.selectScriptFieldOrTag(fieldName2, true)
+      cy.getByTestID('influxql-editor').contains(
+        `SELECT "${fieldName}", "${fieldName2}"`
+      )
 
       cy.log('select field --> remove from composition')
+      cy.selectScriptFieldOrTag(fieldName2, false)
+      cy.getByTestID('influxql-editor').contains(`SELECT "${fieldName}"`)
+      cy.getByTestID('influxql-editor').should('not.contain', fieldName2)
 
       cy.log('select tagValue --> add to composition')
+      cy.getByTestID('container-side-bar--tag-keys').within(() => {
+        cy.getByTestID('accordion-header').should('be.visible').click()
+      })
+      cy.selectScriptFieldOrTag(tagValue, true)
+      cy.getByTestID('influxql-editor').contains(
+        `("${tagKey}" = '${tagValue}')`
+      )
 
-      cy.log('select tagValue --> removes from composition')
+      cy.log('select tagValue --> remove from composition')
+      cy.selectScriptFieldOrTag(tagValue, false)
+      cy.getByTestID('influxql-editor').should('not.contain', tagKey)
     })
+
+    // it('composition sync functionality', () => {
+    //   cy.log('default to be on')
+
+    //   cy.log('turn off the sync by clearing the editor text')
+
+    //   cy.log('can still browse schema while not synced')
+
+    //   cy.log('editor text is still empty')
+
+    //   cy.log('turn on the sync and make a composition')
+
+    //   cy.log('editor text contains the composition')
+
+    //   cy.log('sync toggles on and off, with matching styles')
+    // })
   })
 
   // describe('CSV Download', () => {

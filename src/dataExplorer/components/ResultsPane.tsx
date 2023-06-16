@@ -119,71 +119,61 @@ const ResultsPane: FC = () => {
   }
 
   const downloadByServiceWorker = () => {
-    if (language === LanguageType.INFLUXQL) {
-      try {
-        event('runQuery.downloadCSV.influxql', {context: 'query experience'})
-
-        const params = new URLSearchParams({
-          db: selection.dbrp?.database,
-          q: text,
-        })
-        if (selection.dbrp?.retention_policy) {
-          params.set('rp', selection.dbrp?.retention_policy)
-        }
-        const url = `${API_BASE_PATH}query?${params}`
-        const hiddenForm = document.createElement('form')
-        hiddenForm.setAttribute('id', 'downloadDiv')
-        hiddenForm.setAttribute('style', 'display: none;')
-        hiddenForm.setAttribute('method', 'post')
-        hiddenForm.setAttribute('action', url)
-
-        const input = document.createElement('input')
-        input.setAttribute('name', 'data')
-        input.setAttribute('value', '')
-        hiddenForm.appendChild(input)
-        document.body.appendChild(hiddenForm)
-        hiddenForm.submit()
-      } catch (error) {
-        dispatch(notify(csvDownloadFailure()))
-      }
-      return
-    }
+    event(`runQuery.downloadCSV`, {context: `query experience: ${language}`})
 
     try {
-      event('runQuery.downloadCSV', {context: 'query experience'})
+      let url: string = ''
+      let inputValue: string = ''
 
-      const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
+      switch (language) {
+        case LanguageType.FLUX:
+        case LanguageType.SQL:
+          url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
+          const query =
+            language == LanguageType.SQL
+              ? sqlAsFlux(text, selection.bucket)
+              : text
+          const extern = updateWindowPeriod(
+            query,
+            {
+              vars: rangeToParam(range),
+            },
+            'ast'
+          )
+          inputValue = JSON.stringify({
+            query,
+            extern,
+            dialect: {annotations: ['group', 'datatype', 'default']},
+          })
+          break
+        case LanguageType.INFLUXQL:
+          const params = new URLSearchParams({
+            db: selection.dbrp?.database,
+            q: text,
+          })
+          if (selection.dbrp?.retention_policy) {
+            params.set('rp', selection.dbrp?.retention_policy)
+          }
+          url = `${API_BASE_PATH}query?${params}`
+          break
+        default:
+          throw new Error(`Language not supported - ${language}`)
+      }
+
       const hiddenForm = document.createElement('form')
       hiddenForm.setAttribute('id', 'downloadDiv')
       hiddenForm.setAttribute('style', 'display: none;')
       hiddenForm.setAttribute('method', 'post')
       hiddenForm.setAttribute('action', url)
 
-      const query =
-        language == LanguageType.SQL ? sqlAsFlux(text, selection.bucket) : text
-      const extern = updateWindowPeriod(
-        query,
-        {
-          vars: rangeToParam(range),
-        },
-        'ast'
-      )
-
       const input = document.createElement('input')
       input.setAttribute('name', 'data')
-      input.setAttribute(
-        'value',
-        JSON.stringify({
-          query,
-          extern,
-          dialect: {annotations: ['group', 'datatype', 'default']},
-        })
-      )
+      input.setAttribute('value', inputValue)
       hiddenForm.appendChild(input)
       document.body.appendChild(hiddenForm)
       hiddenForm.submit()
     } catch (error) {
-      dispatch(notify(csvDownloadFailure()))
+      dispatch(notify(csvDownloadFailure(error)))
     }
   }
 

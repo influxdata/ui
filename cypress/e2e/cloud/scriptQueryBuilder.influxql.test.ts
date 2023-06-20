@@ -3,6 +3,8 @@ import {Organization} from '../../../src/types'
 const DEFAULT_INFLUXQL_EDITOR_TEXT = '/* Start by typing InfluxQL here */'
 
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
+const DELAY_FOR_FILE_DOWNLOAD = 5000
+const NUMBER_OF_ROWS = 5 // see `generateWriteData` for why this number
 
 describe('Script Builder', () => {
   const bucketName = 'bucket-influxql'
@@ -14,6 +16,7 @@ describe('Script Builder', () => {
   const tagKey = 'air_station_id'
   const tagValue = 'ST01'
   const tagValue2 = 'ST02'
+  let route: string
 
   const selectScriptDBRP = (dbName: string, rpName: string) => {
     const dbrpName: string = `${dbName}/${rpName}`
@@ -74,6 +77,8 @@ describe('Script Builder', () => {
 
   before(() => {
     const generateWriteData = (value: number) => {
+      // this will generate a table of 5 rows in csv format
+      // 1 row of table header + 4 rows of data
       return [
         `${measurement},${tagKey}=${tagValue} ${fieldName}=${value}`,
         `${measurement},${tagKey}=${tagValue} ${fieldName2}=${value}`,
@@ -85,8 +90,9 @@ describe('Script Builder', () => {
     cy.flush().then(() => {
       return cy.signin().then(() => {
         return cy.get('@org').then(({id, name}: Organization) => {
-          cy.log('add mock data')
+          route = `/orgs/${id}/data-explorer`
 
+          cy.log('add mock data')
           cy.createBucket(id, name, bucketName).should(response => {
             expect(response.body).to.have.property('id')
             const bucketID: string = response.body['id']
@@ -273,6 +279,43 @@ describe('Script Builder', () => {
         .contains(scriptName)
     })
 
-    // it('Download CSV', () => {})
+    it('Download CSV', () => {
+      // The csv download functionality works the same for all the languages
+      // (i.e. Flux, SQL, InfluxQL), and the file `scriptQueryBuilder.result.test.ts`
+      // has already include a full coverage in general, so we are just doing a
+      // simple test for InfluxQL csv download here
+      cy.intercept('POST', '/query?*', req => {
+        req.redirect(route)
+      }).as('queryDownloadCSV')
+
+      cy.getByTestID('csv-download-button')
+        .should('be.visible')
+        .should('be.disabled')
+
+      selectScriptDBRP(databaseName, retentionPolicyName)
+      typeInQuery()
+
+      cy.log('will download complete csv data')
+      cy.getByTestID('csv-download-button').should('not.be.disabled').click()
+      cy.wait('@queryDownloadCSV', {timeout: DELAY_FOR_FILE_DOWNLOAD})
+        .its('request', {timeout: DELAY_FOR_FILE_DOWNLOAD})
+        .then(req => {
+          cy.request(req)
+            .then(({body, headers}) => {
+              expect(headers).to.have.property(
+                'content-type',
+                'text/csv; charset=utf-8'
+              )
+              return Promise.resolve(body)
+            })
+            .then((csv: string) => {
+              cy.wrap(csv)
+                .then(doc => doc.trim().split('\n'))
+                .then((list: string[]) => {
+                  expect(list.length).eq(NUMBER_OF_ROWS)
+                })
+            })
+        })
+    })
   })
 })

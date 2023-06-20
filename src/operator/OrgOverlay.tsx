@@ -4,6 +4,7 @@ import {useHistory, useParams} from 'react-router-dom'
 import {
   ButtonBase,
   ButtonShape,
+  ButtonType,
   Columns,
   ComponentColor,
   ComponentSize,
@@ -56,7 +57,9 @@ const OrgOverlay: FC = () => {
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
   const canReactivateOrg =
-    hasWritePermissions && organization?.state === 'suspended'
+    hasWritePermissions &&
+    organization?.state === 'suspended' &&
+    organization?.account?.type != 'cancelled'
 
   const isIOx =
     organization?.storageType &&
@@ -85,7 +88,6 @@ const OrgOverlay: FC = () => {
 
   const reactivateOrg = async () => {
     await handleReactivateOrg(orgID)
-    history.goBack()
   }
 
   return (
@@ -151,6 +153,7 @@ const OrgOverlay: FC = () => {
                             : ComponentStatus.Default
                         }
                         testID="org-overlay-reactivate-organization--button"
+                        type={ButtonType.Button}
                       >
                         Reactivate Organization
                       </ButtonBase>

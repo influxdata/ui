@@ -26,21 +26,21 @@ describe('Script Builder -- InfluxQL', () => {
     )
   }
 
-  // const selectSchema = () => {
-  //   cy.log('select database/retention policy')
-  //   selectScriptDBRP(databaseName, retentionPolicyName)
-  //   cy.confirmSyncIsOn() // influxql composition is dumb. On bucket selection, it will occasionally drop the sync.
-  //   cy.log('writes empty query statement with only the timerange')
-  //   cy.getByTestID('influxql-editor', {
-  //     timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
-  //   }).contains(`SELECT *`)
-  //   cy.getByTestID('influxql-editor').contains(`WHERE`)
-  //   cy.getByTestID('influxql-editor').contains(`time >= now() - 1h`)
-  //   cy.confirmSyncIsOn() // influxql sync sometimes toggles off
+  const selectSchema = () => {
+    cy.log('select database/retention policy')
+    selectScriptDBRP(databaseName, retentionPolicyName)
+    cy.confirmSyncIsOn() // influxql composition is dumb. On bucket selection, it will occasionally drop the sync.
+    cy.log('writes empty query statement with only the timerange')
+    cy.getByTestID('influxql-editor', {
+      timeout: DELAY_FOR_LAZY_LOAD_EDITOR,
+    }).contains(`SELECT *`)
+    cy.getByTestID('influxql-editor').contains(`WHERE`)
+    cy.getByTestID('influxql-editor').contains(`time >= now() - 1h`)
+    cy.confirmSyncIsOn() // influxql sync sometimes toggles off
 
-  //   cy.log('select measurement')
-  //   cy.selectScriptMeasurement(measurement)
-  // }
+    cy.log('select measurement')
+    cy.selectScriptMeasurement(measurement)
+  }
 
   const confirmSchemaComposition = () => {
     cy.log('has basic query')
@@ -175,21 +175,43 @@ describe('Script Builder -- InfluxQL', () => {
       cy.getByTestID('influxql-editor').should('not.contain', tagKey)
     })
 
-    // it('composition sync functionality', () => {
-    //   cy.log('default to be on')
+    it('composition sync functionality', () => {
+      cy.log('default to be on')
+      cy.getByTestID('editor-sync--toggle').should('have.class', 'active')
 
-    //   cy.log('turn off the sync by clearing the editor text')
+      cy.log('make a composition')
+      selectSchema()
+      confirmSchemaComposition()
 
-    //   cy.log('can still browse schema while not synced')
+      cy.log('sync toggles on, with matching styles')
+      cy.get('.composition-sync--on').should('have.length', 4)
+      cy.get('.composition-sync--off').should('have.length', 0)
 
-    //   cy.log('editor text is still empty')
+      cy.log('sync toggles off, with matching styles')
+      cy.getByTestID('editor-sync--toggle')
+        .should('have.class', 'active')
+        .click()
+        .should('not.have.class', 'active')
+      cy.get('.composition-sync--on').should('have.length', 0)
+      cy.get('.composition-sync--off').should('have.length', 4)
 
-    //   cy.log('turn on the sync and make a composition')
+      cy.log('can still browse schema while not synced, with matching styles')
+      selectScriptDBRP(databaseName, retentionPolicyName)
+      cy.selectScriptMeasurement(measurement)
+      cy.getByTestID('container-side-bar--tag-keys').within(() => {
+        cy.getByTestID('accordion-header').should('be.visible').click()
+      })
+      cy.selectScriptFieldOrTag(tagValue, true)
+      cy.get('.composition-sync--on').should('have.length', 0)
+      cy.get('.composition-sync--off').should('have.length', 4)
 
-    //   cy.log('editor text contains the composition')
-
-    //   cy.log('sync toggles on and off, with matching styles')
-    // })
+      cy.log('sync toggles on again, with updated matching styles')
+      cy.getByTestID('editor-sync--toggle')
+        .click()
+        .should('have.class', 'active')
+      cy.get('.composition-sync--on').should('have.length', 6)
+      cy.get('.composition-sync--off').should('have.length', 0)
+    })
   })
 
   // describe('CSV Download', () => {

@@ -924,7 +924,9 @@ export const selectScriptMeasurement = (measurement: string) => {
     .should('be.visible')
     .should('contain', 'Select measurement')
     .click()
-  cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
+  cy.getByTestID('measurement-selector--dropdown--menu').type(
+    `{selectall}${measurement}`
+  )
   cy.getByTestID(`searchable-dropdown--item ${measurement}`)
     .should('be.visible')
     .click()

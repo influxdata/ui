@@ -26,6 +26,7 @@ describe('Shared.Reducers.appReducer', () => {
       flowsCTA: {explorer: true, tasks: true, alerts: true},
       subscriptionsCertificateInterest: false,
       workerRegistration: null,
+      workerRegistrationInfluxQL: null,
     },
   }
 

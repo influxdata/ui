@@ -11,6 +11,7 @@ import {
   setFlowsCTA as setFlowsCTAAction,
   setSubscriptionsCertificateInterest as setSubscriptionsCertificateInterestAction,
   setWorkerRegistration,
+  setWorkerRegistrationInfluxQL,
 } from 'src/shared/actions/app'
 import {
   timeZone as timeZoneFromState,
@@ -28,14 +29,15 @@ import {presentationMode as presentationModeCopy} from 'src/shared/copy/notifica
 import {AppState, TimeZone, Theme, NavBarState, FlowsCTA} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
-let workerRegistration
+let workerRegistration, workerRegistrationInfluxQL
 import(
   /* webpackPreload: true */
   /* webpackChunkName: "setup-interceptor" */
   'src/shared/workers/serviceWorker'
-).then(
-  ({registerServiceWorker}) => (workerRegistration = registerServiceWorker())
-)
+).then(({registerServiceWorker, registerServiceWorkerInfluxQL}) => {
+  workerRegistration = registerServiceWorker()
+  workerRegistrationInfluxQL = registerServiceWorkerInfluxQL()
+})
 
 interface AppSettingContextType {
   timeZone: TimeZone
@@ -46,6 +48,7 @@ interface AppSettingContextType {
   flowsCTA: FlowsCTA
   subscriptionsCertificateInterest: boolean
   workerRegistration: Promise<ServiceWorkerRegistration>
+  workerRegistrationInfluxQL: Promise<ServiceWorkerRegistration>
 
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
@@ -65,6 +68,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
   subscriptionsCertificateInterest: false,
   workerRegistration,
+  workerRegistrationInfluxQL,
 
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
@@ -151,6 +155,10 @@ export const AppSettingProvider: FC = ({children}) => {
     dispatch(setWorkerRegistration(workerRegistration))
   }, [workerRegistration])
 
+  useEffect(() => {
+    dispatch(setWorkerRegistrationInfluxQL(workerRegistrationInfluxQL))
+  }, [workerRegistrationInfluxQL])
+
   return (
     <AppSettingContext.Provider
       value={{
@@ -162,6 +170,7 @@ export const AppSettingProvider: FC = ({children}) => {
         flowsCTA,
         subscriptionsCertificateInterest,
         workerRegistration,
+        workerRegistrationInfluxQL,
 
         setTimeZone,
         setTheme,

@@ -141,9 +141,9 @@ export const copyQueryFailure = (cellName: string = ''): Notification => {
   }
 }
 
-export const csvDownloadFailure = (): Notification => ({
+export const csvDownloadFailure = (msg: string = ''): Notification => ({
   ...defaultErrorNotification,
-  message: 'Failed to download csv.',
+  message: `Failed to download csv. ${msg}`,
 })
 
 export const oldSession = (): Notification => ({

@@ -4,11 +4,10 @@ const DEFAULT_INFLUXQL_EDITOR_TEXT = '/* Start by typing InfluxQL here */'
 
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
 
-describe('Script Builder -- InfluxQL', () => {
-  const bucketName = 'defbuck-influxql'
-  const databaseName = 'def-database'
-  const retentionPolicyName = 'def-retention-policy-name'
-  const anotherBucketName = 'defbuck-influxql-another'
+describe('Script Builder', () => {
+  const bucketName = 'bucket-influxql'
+  const databaseName = 'database-name'
+  const retentionPolicyName = 'retention-policy-name'
   const measurement = 'ndbc'
   const fieldName = 'air_degrees'
   const fieldName2 = 'humidity'
@@ -63,6 +62,16 @@ describe('Script Builder -- InfluxQL', () => {
     cy.getByTestID('influxql-editor').should('not.contain', 'AND')
   }
 
+  const typeInQuery = () => {
+    cy.log('type in a query')
+    cy.getByTestID('influxql-editor').monacoType(
+      `{selectall}{del}SELECT * FROM "${databaseName}"."${retentionPolicyName}"."${measurement}"`
+    )
+    cy.getByTestID('influxql-editor').contains(
+      `SELECT * FROM "${databaseName}"."${retentionPolicyName}"."${measurement}"`
+    )
+  }
+
   before(() => {
     const generateWriteData = (value: number) => {
       return [
@@ -92,13 +101,10 @@ describe('Script Builder -- InfluxQL', () => {
             })
           })
 
-          cy.createBucket(id, name, anotherBucketName)
-
           cy.log('create time series, with change of value over time')
           cy.writeData(generateWriteData(100), bucketName)
           cy.wait(2000)
           cy.writeData(generateWriteData(20), bucketName)
-          cy.writeData(generateWriteData(20), anotherBucketName)
         })
       })
     })
@@ -210,9 +216,63 @@ describe('Script Builder -- InfluxQL', () => {
     })
   })
 
-  // describe('CSV Download', () => {
-  // })
+  describe('Other Core Features', () => {
+    const CSV_PARSING: number = 2000
 
-  // describe('Save/Load Script', () => {
-  // })
+    it('Run query', () => {
+      cy.getByTestID('time-machine-submit-button')
+        .should('be.visible')
+        .should('be.disabled')
+
+      selectScriptDBRP(databaseName, retentionPolicyName)
+      typeInQuery()
+
+      cy.log('can execute the query')
+      cy.getByTestID('time-machine-submit-button')
+        .should('be.visible')
+        .should('not.have.class', 'cf-button--disabled')
+      cy.getByTestID('time-machine-submit-button').click()
+
+      cy.log('result view shows table')
+      cy.getByTestID('data-explorer-results--view').should('be.visible')
+      cy.getByTestID('data-explorer-results--view', {
+        timeout: CSV_PARSING,
+      }).contains(tagKey)
+
+      cy.log('should not have graph tab')
+      cy.getByTestID('data-explorer-results--graph-view').should('not.exist')
+    })
+
+    it('Save/Load as an InfluxQL Script', () => {
+      // The save/load functionality works the same for all the languages
+      // (i.e. Flux, SQL, InfluxQL) at the backend, and the file
+      // `scriptQueryBuilder.scriptsCrud.test.ts` has already include a
+      // full coverage in general, so we are just doing a simple test
+      // for InfluxQL save/load support here
+      const scriptName: string = 'InfluxQL script'
+      cy.intercept('POST', '/api/v2/scripts*').as('scripts')
+
+      cy.log('save an InfluxQL query')
+      typeInQuery()
+      cy.getByTestID('script-query-builder--save-script')
+        .should('be.visible')
+        .click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('save-script-name__input')
+          .should('be.visible')
+          .type(scriptName)
+        cy.getByTestID('script-query-builder--save')
+          .should('be.visible')
+          .click()
+      })
+
+      cy.log('check the script is saved successfully')
+      cy.wait('@scripts')
+      cy.getByTestID('notification-success')
+        .should('be.visible')
+        .contains(scriptName)
+    })
+
+    // it('Download CSV', () => {})
+  })
 })

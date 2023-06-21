@@ -91,6 +91,7 @@ const OrgOverlay: FC = () => {
   const deleteOn = organization?.deleteOn
     ? new Date(organization?.deleteOn)
     : null
+  const hasDeleteDate = Boolean(deleteOn)
 
   return (
     <Overlay
@@ -187,7 +188,7 @@ const OrgOverlay: FC = () => {
                       Delete On
                     </label>
                     <p>
-                      {organization?.state === 'suspended' && deleteOn
+                      {organization?.state === 'suspended' && hasDeleteDate
                         ? `${deleteOn.toLocaleTimeString()} ${deleteOn.toDateString()}`
                         : 'N/A'}
                     </p>

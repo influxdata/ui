@@ -23,6 +23,7 @@ const AccountGrid: FC = () => {
   const cancelledAt = account?.cancelledAt
     ? new Date(account?.cancelledAt)
     : null
+  const hasCancelledAt = Boolean(cancelledAt)
 
   return (
     <FlexBox
@@ -54,7 +55,7 @@ const AccountGrid: FC = () => {
         <AccountField
           header="Cancelled At"
           body={
-            account.type === 'cancelled' && cancelledAt
+            account.type === 'cancelled' && hasCancelledAt
               ? `${cancelledAt.toLocaleTimeString()} ${cancelledAt.toDateString()}`
               : 'N/A'
           }

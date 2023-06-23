@@ -149,7 +149,7 @@ const ScriptQueryBuilder: FC = () => {
           selected={resource?.language === LanguageType.INFLUXQL}
           testID={`script-dropdown__${LanguageType.INFLUXQL}`}
         >
-          {LanguageType.INFLUXQL}
+          InfluxQL
         </Dropdown.Item>
       ) : null}
     </Dropdown.Menu>
@@ -176,7 +176,7 @@ const ScriptQueryBuilder: FC = () => {
           selected={resource?.language === LanguageType.INFLUXQL}
           testID={`script-dropdown__${LanguageType.INFLUXQL}`}
         >
-          {LanguageType.INFLUXQL}
+          InfluxQL
         </Dropdown.Item>
       ) : null}
     </Dropdown.Menu>

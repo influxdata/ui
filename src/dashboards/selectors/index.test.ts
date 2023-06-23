@@ -116,6 +116,7 @@ describe('Dashboards.Selector', () => {
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
+        workerRegistrationInfluxQL: null,
       },
     }
 
@@ -142,6 +143,7 @@ describe('Dashboards.Selector', () => {
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
+        workerRegistrationInfluxQL: null,
       },
     }
 
@@ -176,6 +178,7 @@ describe('Dashboards.Selector', () => {
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
+        workerRegistrationInfluxQL: null,
       },
     }
 
@@ -210,6 +213,7 @@ describe('Dashboards.Selector', () => {
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
+        workerRegistrationInfluxQL: null,
       },
     }
 
@@ -240,6 +244,7 @@ describe('Dashboards.Selector', () => {
         flowsCTA: {explorer: true, alerts: true, tasks: true},
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
+        workerRegistrationInfluxQL: null,
       },
     }
 

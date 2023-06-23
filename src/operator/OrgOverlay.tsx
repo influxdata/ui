@@ -4,6 +4,7 @@ import {useHistory, useParams} from 'react-router-dom'
 import {
   ButtonBase,
   ButtonShape,
+  ButtonType,
   Columns,
   ComponentColor,
   ComponentSize,
@@ -56,7 +57,9 @@ const OrgOverlay: FC = () => {
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
   const canReactivateOrg =
-    hasWritePermissions && organization?.state === 'suspended'
+    hasWritePermissions &&
+    organization?.state === 'suspended' &&
+    organization?.account?.type != 'cancelled'
 
   const isIOx =
     organization?.storageType &&
@@ -85,8 +88,12 @@ const OrgOverlay: FC = () => {
 
   const reactivateOrg = async () => {
     await handleReactivateOrg(orgID)
-    history.goBack()
   }
+
+  const deleteOn = organization?.deleteOn
+    ? new Date(organization?.deleteOn)
+    : null
+  const hasDeleteDate = Boolean(deleteOn)
 
   return (
     <Overlay
@@ -151,6 +158,7 @@ const OrgOverlay: FC = () => {
                             : ComponentStatus.Default
                         }
                         testID="org-overlay-reactivate-organization--button"
+                        type={ButtonType.Button}
                       >
                         Reactivate Organization
                       </ButtonBase>
@@ -169,6 +177,24 @@ const OrgOverlay: FC = () => {
                       Account Type
                     </label>
                     <p>{organization?.account?.type ?? ''}</p>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                  <Grid.Column widthMD={Columns.Four}>
+                    <label className="org-overlay-detail--text">
+                      Organization State
+                    </label>
+                    <p>{organization?.state ?? ''}</p>
+                  </Grid.Column>
+                  <Grid.Column widthMD={Columns.Four}>
+                    <label className="org-overlay-detail--text">
+                      Delete On
+                    </label>
+                    <p>
+                      {organization?.state === 'suspended' && hasDeleteDate
+                        ? `${deleteOn.toLocaleTimeString()} ${deleteOn.toDateString()}`
+                        : 'N/A'}
+                    </p>
                   </Grid.Column>
                 </Grid.Row>
                 <SpinnerContainer

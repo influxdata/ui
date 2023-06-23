@@ -10,22 +10,28 @@ import {runDownloadQuery} from 'src/timeMachine/actions/queries'
 
 // Types
 import {AppState} from 'src/types'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 interface Props extends PropsFromRedux {
+  language: LanguageType
   disabled: boolean
   download?: () => void
 }
 
 interface State {
   browserSupportsDownload: boolean
+  browserSupportsDownloadInflxQL: boolean
 }
 
 class CSVExportButton extends PureComponent<Props, State> {
   constructor(props) {
     super(props)
-    this.state = {browserSupportsDownload: false}
+    this.state = {
+      browserSupportsDownload: false,
+      browserSupportsDownloadInflxQL: false,
+    }
 
     if (props.workerRegistration) {
       ;(props.workerRegistration as Promise<ServiceWorkerRegistration>).then(
@@ -46,9 +52,38 @@ class CSVExportButton extends PureComponent<Props, State> {
         }
       )
     }
+
+    if (props.workerRegistrationInfluxQL) {
+      ;(
+        props.workerRegistrationInfluxQL as Promise<ServiceWorkerRegistration>
+      ).then(
+        registrationResult => {
+          if (registrationResult.active.state == 'activated') {
+            this.setState({browserSupportsDownloadInflxQL: true})
+          } else {
+            console.error(
+              'Feature not available, because ServiceWorker is registered but inactive.'
+            )
+          }
+        },
+        function (err) {
+          console.error(
+            'Feature not available, because ServiceWorker registration failed: ',
+            err
+          )
+        }
+      )
+    }
   }
 
   public render() {
+    if (
+      this.props.language === LanguageType.INFLUXQL &&
+      !this.state.browserSupportsDownloadInflxQL
+    ) {
+      return null
+    }
+
     if (!this.state.browserSupportsDownload) {
       return null
     }
@@ -94,6 +129,7 @@ class CSVExportButton extends PureComponent<Props, State> {
 const mstp = (state: AppState) => {
   return {
     workerRegistration: state.app.persisted.workerRegistration,
+    workerRegistrationInfluxQL: state.app.persisted.workerRegistrationInfluxQL,
   }
 }
 

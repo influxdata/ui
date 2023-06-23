@@ -18,7 +18,10 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {rangeToInfluxQLInterval as buildTimeRange} from 'src/shared/utils/rangeToInterval'
 import {notify} from 'src/shared/actions/notifications'
 import {compositionEnded} from 'src/shared/copy/notifications'
-import {groupedTagValues} from 'src/languageSupport/languages/agnostic/utils'
+import {
+  groupedTagValues,
+  getTagKeys,
+} from 'src/languageSupport/languages/agnostic/utils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export class ConnectionManager extends AgnosticConnectionManager {
@@ -31,9 +34,13 @@ export class ConnectionManager extends AgnosticConnectionManager {
   } => {
     let lines: number = 1
 
-    const fieldsExpr = this._session.fields.map(f => `"${f}"`).join(', ')
+    const tagKeys = getTagKeys(this._session.tagValues)
+    const selectedFieldAndTagKeys = [...this._session.fields, ...tagKeys].sort()
+    const selectStatement = selectedFieldAndTagKeys
+      .map(k => `"${k}"`)
+      .join(', ')
     let composition = [
-      `SELECT ${this._session.fields.length === 0 ? '*' : fieldsExpr}`,
+      `SELECT ${selectedFieldAndTagKeys.length === 0 ? '*' : selectStatement}`,
     ]
 
     const dbrpMeasurement: string[] = []

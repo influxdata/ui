@@ -20,6 +20,11 @@ const AccountGrid: FC = () => {
     return account?.marketplaceSubscription?.subscriberId ?? 'N/A'
   }
 
+  const cancelledAt = account?.cancelledAt
+    ? new Date(account?.cancelledAt)
+    : null
+  const hasCancelledAt = Boolean(cancelledAt)
+
   return (
     <FlexBox
       direction={FlexDirection.Row}
@@ -46,6 +51,15 @@ const AccountGrid: FC = () => {
           header="Cloud Provider"
           body={organizations?.[0]?.provider ?? 'N/A'}
           testID="cloud-provider"
+        />
+        <AccountField
+          header="Cancelled At"
+          body={
+            account.type === 'cancelled' && hasCancelledAt
+              ? `${cancelledAt.toLocaleTimeString()} ${cancelledAt.toDateString()}`
+              : 'N/A'
+          }
+          testID="cancelled-at"
         />
       </FlexBox>
       <FlexBox

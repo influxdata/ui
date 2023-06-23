@@ -20,6 +20,7 @@ export interface AppState {
     flowsCTA: FlowsCTA
     subscriptionsCertificateInterest: boolean
     workerRegistration: Promise<ServiceWorkerRegistration>
+    workerRegistrationInfluxQL: Promise<ServiceWorkerRegistration>
   }
 }
 
@@ -38,6 +39,7 @@ const initialState: AppState = {
     flowsCTA: {explorer: true, tasks: true, alerts: true},
     subscriptionsCertificateInterest: false,
     workerRegistration: null,
+    workerRegistrationInfluxQL: null,
   },
 }
 
@@ -132,6 +134,13 @@ const appPersistedReducer = (
       return {
         ...state,
         workerRegistration: action.payload.workerRegistration,
+      }
+    }
+
+    case ActionTypes.SetWorkerRegistrationInfluxQL: {
+      return {
+        ...state,
+        workerRegistrationInfluxQL: action.payload.workerRegistrationInfluxQL,
       }
     }
 

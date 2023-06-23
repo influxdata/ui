@@ -44,10 +44,10 @@ export const QueryDataAccordion: FC = () => {
   }
 
   const languageList = {
-    Go: 'new-user-setup/golang',
-    Python: 'new-user-setup/python',
     'C#': 'new-user-setup/csharp',
+    Go: 'new-user-setup/golang',
     Java: 'new-user-setup/java',
+    Python: 'new-user-setup/python',
   }
 
   const dropdownList = Object.entries(languageList).map(([lang]) => (
@@ -80,7 +80,7 @@ export const QueryDataAccordion: FC = () => {
           />
           <OptionAccordionElement
             elementTitle="Application Code"
-            elementDescription="Write data into your database directly with your application code."
+            elementDescription="Query your data directly with your application code."
             cta={() => {
               return (
                 <FlexBox

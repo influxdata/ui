@@ -6,6 +6,7 @@ import {useDispatch} from 'react-redux'
 // Utils
 import {
   patchOperatorAccountsConvert,
+  patchOperatorAccountsReactivate,
   deleteOperatorAccount,
   getOperatorAccount,
 } from 'src/client/unityRoutes'
@@ -14,6 +15,7 @@ import {
   getAccountError,
   convertAccountError,
   deleteAccountError,
+  reactivateAccountError,
 } from 'src/shared/copy/notifications'
 
 // Types
@@ -28,9 +30,11 @@ export interface AccountContextType {
   accountStatus: RemoteDataState
   convertStatus: RemoteDataState
   deleteStatus: RemoteDataState
+  reactivateStatus: RemoteDataState
   handleConvertAccountToContract: (contractStartDate: string) => void
   handleDeleteAccount: () => void
   handleGetAccount: () => void
+  handleReactivateAccount: () => void
   organizations: OperatorOrg[]
   setConvertToContractOverlayVisible: (vis: boolean) => void
   convertToContractOverlayVisible: boolean
@@ -38,6 +42,8 @@ export interface AccountContextType {
   cancelOverlayVisible: boolean
   setDeleteOverlayVisible: (vis: boolean) => void
   deleteOverlayVisible: boolean
+  setReactivateOverlayVisible: (vis: boolean) => void
+  reactivateOverlayVisible: boolean
 }
 
 export const DEFAULT_CONTEXT: AccountContextType = {
@@ -45,16 +51,20 @@ export const DEFAULT_CONTEXT: AccountContextType = {
   accountStatus: RemoteDataState.NotStarted,
   convertStatus: RemoteDataState.NotStarted,
   deleteStatus: RemoteDataState.NotStarted,
+  reactivateStatus: RemoteDataState.NotStarted,
   handleConvertAccountToContract: () => {},
   handleDeleteAccount: () => {},
   handleGetAccount: () => {},
+  handleReactivateAccount: () => {},
   organizations: null,
   setConvertToContractOverlayVisible: (_: boolean) => {},
   convertToContractOverlayVisible: false,
-  cancelOverlayVisible: false,
   setCancelOverlayVisible: (_: boolean) => {},
   setDeleteOverlayVisible: (_: boolean) => {},
+  setReactivateOverlayVisible: (_: boolean) => {},
+  cancelOverlayVisible: false,
   deleteOverlayVisible: false,
+  reactivateOverlayVisible: false,
 }
 
 export const AccountContext =
@@ -67,9 +77,14 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
     useState(false)
   const [cancelOverlayVisible, setCancelOverlayVisible] = useState(false)
   const [deleteOverlayVisible, setDeleteOverlayVisible] = useState(false)
+  const [reactivateOverlayVisible, setReactivateOverlayVisible] =
+    useState(false)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [convertStatus, setConvertStatus] = useState(RemoteDataState.NotStarted)
   const [deleteStatus, setDeleteStatus] = useState(RemoteDataState.NotStarted)
+  const [reactivateStatus, setReactivateStatus] = useState(
+    RemoteDataState.NotStarted
+  )
 
   const {accountID} = useParams<{accountID: string}>()
   const history = useHistory()
@@ -138,6 +153,21 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }, [dispatch, history, accountID])
 
+  const handleReactivateAccount = useCallback(async () => {
+    try {
+      setReactivateStatus(RemoteDataState.Loading)
+      const resp = await patchOperatorAccountsReactivate({accountId: accountID})
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+      setReactivateStatus(RemoteDataState.Done)
+      history.push('/operator')
+    } catch (error) {
+      console.error({error})
+      dispatch(notify(reactivateAccountError(accountID)))
+    }
+  }, [dispatch, history, accountID])
+
   return (
     <AccountContext.Provider
       value={{
@@ -145,9 +175,11 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         accountStatus,
         convertStatus,
         deleteStatus,
+        reactivateStatus,
         handleConvertAccountToContract,
         handleDeleteAccount,
         handleGetAccount,
+        handleReactivateAccount,
         organizations,
         setConvertToContractOverlayVisible,
         convertToContractOverlayVisible,
@@ -155,6 +187,8 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         cancelOverlayVisible,
         setDeleteOverlayVisible,
         deleteOverlayVisible,
+        setReactivateOverlayVisible,
+        reactivateOverlayVisible,
       }}
     >
       {children}

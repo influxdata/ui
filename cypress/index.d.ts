@@ -30,6 +30,7 @@ import {
   createAndAddLabel,
   createLabel,
   createBucket,
+  createDBRP,
   createScraper,
   createView,
   createNotebook,
@@ -56,9 +57,11 @@ import {
   createTaskFromEmpty,
   createAlertGroup,
   switchToDataExplorer,
+  setScriptToInfluxQL,
   setScriptToFlux,
   setScriptToSql,
   confirmSyncIsOn,
+  clearInfluxQLScriptSession,
   clearFluxScriptSession,
   clearSqlScriptSession,
   selectScriptBucket,
@@ -109,6 +112,7 @@ declare global {
       createAndAddLabel: typeof createAndAddLabel
       createLabel: typeof createLabel
       createBucket: typeof createBucket
+      createDBRP: typeof createDBRP
       createScraper: typeof createScraper
       fluxEqual: typeof fluxEqual
       createTelegraf: typeof createTelegraf
@@ -129,9 +133,11 @@ declare global {
       quartzProvision: typeof quartzProvision
       createTaskFromEmpty: typeof createTaskFromEmpty
       switchToDataExplorer: typeof switchToDataExplorer
+      setScriptToInfluxQL: typeof setScriptToInfluxQL
       setScriptToFlux: typeof setScriptToFlux
       setScriptToSql: typeof setScriptToSql
       confirmSyncIsOn: typeof confirmSyncIsOn
+      clearInfluxQLScriptSession: typeof clearInfluxQLScriptSession
       clearFluxScriptSession: typeof clearFluxScriptSession
       clearSqlScriptSession: typeof clearSqlScriptSession
       selectScriptBucket: typeof selectScriptBucket

@@ -60,7 +60,7 @@ const ReactivateAccountOverlay: FC = () => {
           {message}
           <ol>
             {organizations.map(o => (
-              <li>{o.name} ?? 'N/A' </li>
+              <li key={o.id}>{o.name} ?? 'N/A' </li>
             ))}
           </ol>
         </Overlay.Body>

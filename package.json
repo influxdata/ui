@@ -52,7 +52,7 @@
     "prettier:fix": "pretty-quick --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx}'",
     "tsc": "tsc -p ./tsconfig.json --noEmit --pretty --skipLibCheck",
     "tsc:watch": "yarn tsc --watch",
-    "generate": "export SHA=0eab389b5a8f44a0114d038f5e953632c050b9b9 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
+    "generate": "export SHA=96ac07e89b65d81b5f84ffbc7279e8bf36353ddb && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-local-cloud": "export REMOTE=../openapi/ && yarn generate-meta-cloud",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",

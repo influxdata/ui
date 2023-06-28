@@ -1,12 +1,12 @@
 import React, {FC, useContext} from 'react'
 import {
-  Overlay,
-  Gradients,
   Alert,
-  ComponentColor,
-  IconFont,
   ButtonBase,
   ButtonShape,
+  ComponentColor,
+  Gradients,
+  IconFont,
+  Overlay,
 } from '@influxdata/clockface'
 import {AccountContext} from 'src/operator/context/account'
 

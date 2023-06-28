@@ -4,9 +4,11 @@ import {
   ButtonBase,
   ButtonShape,
   ComponentColor,
+  ComponentStatus,
   Gradients,
   IconFont,
   Overlay,
+  RemoteDataState,
 } from '@influxdata/clockface'
 import {AccountContext} from 'src/operator/context/account'
 
@@ -14,6 +16,7 @@ const ReactivateAccountOverlay: FC = () => {
   const {
     account,
     organizations,
+    reactivateStatus,
     handleReactivateAccount,
     setReactivateOverlayVisible,
     reactivateOverlayVisible,
@@ -32,6 +35,8 @@ const ReactivateAccountOverlay: FC = () => {
   const message = `
     This action will reactivate the Account
     ${account?.id ?? 'N/A'} and unsuspend the organizations:`
+
+  const active = reactivateStatus === RemoteDataState.NotStarted
 
   return (
     <Overlay
@@ -66,10 +71,12 @@ const ReactivateAccountOverlay: FC = () => {
         </Overlay.Body>
         <Overlay.Footer>
           <ButtonBase
-            color={ComponentColor.Danger}
+            color={ComponentColor.Primary}
             shape={ButtonShape.Default}
             onClick={reactivateAccount}
             testID="reactivate-account--confirmation-button"
+            active={active}
+            status={active ? ComponentStatus.Default : ComponentStatus.Disabled}
           >
             I understand, reactivate account.
           </ButtonBase>

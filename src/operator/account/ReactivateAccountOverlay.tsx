@@ -58,11 +58,11 @@ const ReactivateAccountOverlay: FC = () => {
             <strong>Warning</strong>
           </h4>
           {message}
-          <ol>
+          <ul>
             {organizations.map(o => (
-              <li key={o.id}>{o.name} ?? 'N/A' </li>
+              <li key={o.id}>{o.name ?? 'N/A'} </li>
             ))}
-          </ol>
+          </ul>
         </Overlay.Body>
         <Overlay.Footer>
           <ButtonBase

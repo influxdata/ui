@@ -73,6 +73,12 @@ export const deleteAccountError = (id: string): Notification => ({
   message: `Failed to delete the account with the ID ${id}, please try again.`,
 })
 
+export const reactivateAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to reactivate the account with the ID ${id}, please try again.`,
+})
+
 export const removeUserAccountError = (id: string): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,

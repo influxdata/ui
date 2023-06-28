@@ -9,6 +9,7 @@ import AssociatedUsersTable from 'src/operator/account/AssociatedUsersTable'
 import ConvertAccountToContractOverlay from 'src/operator/account/ConvertAccountToContractOverlay'
 import CancelAccountOverlay from 'src/operator/account/CancelAccountOverlay'
 import DeleteAccountOverlay from 'src/operator/account/DeleteAccountOverlay'
+import ReactivateAccountOverlay from 'src/operator/account/ReactivateAccountOverlay'
 import AccountViewHeader from 'src/operator/account/AccountViewHeader'
 import AccountGrid from 'src/operator/account/AccountGrid'
 import {AccountContext} from 'src/operator/context/account'
@@ -35,6 +36,7 @@ const AccountView: FC = () => {
             <ConvertAccountToContractOverlay />
             <CancelAccountOverlay />
             <DeleteAccountOverlay />
+            <ReactivateAccountOverlay />
             <AccountViewHeader />
             <AccountGrid />
             <h2 data-testid="associated-users--title">Associated Users</h2>

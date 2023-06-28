@@ -9,6 +9,7 @@ import {
   patchOperatorAccountsReactivate,
   deleteOperatorAccount,
   getOperatorAccount,
+  patchOperatorAccountsMigrate,
 } from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -16,6 +17,7 @@ import {
   convertAccountError,
   deleteAccountError,
   reactivateAccountError,
+  migrateAccountError,
 } from 'src/shared/copy/notifications'
 
 // Types
@@ -30,10 +32,12 @@ export interface AccountContextType {
   accountStatus: RemoteDataState
   convertStatus: RemoteDataState
   deleteStatus: RemoteDataState
+  migrateStatus: RemoteDataState
   reactivateStatus: RemoteDataState
   handleConvertAccountToContract: (contractStartDate: string) => void
   handleDeleteAccount: () => void
   handleGetAccount: () => void
+  handleMigrateOrgs: (toAccountId: string) => void
   handleReactivateAccount: () => void
   organizations: OperatorOrg[]
   setConvertToContractOverlayVisible: (vis: boolean) => void
@@ -42,6 +46,8 @@ export interface AccountContextType {
   cancelOverlayVisible: boolean
   setDeleteOverlayVisible: (vis: boolean) => void
   deleteOverlayVisible: boolean
+  setMigrateOverlayVisible: (vis: boolean) => void
+  migrateOverlayVisible: boolean
   setReactivateOverlayVisible: (vis: boolean) => void
   reactivateOverlayVisible: boolean
 }
@@ -51,19 +57,23 @@ export const DEFAULT_CONTEXT: AccountContextType = {
   accountStatus: RemoteDataState.NotStarted,
   convertStatus: RemoteDataState.NotStarted,
   deleteStatus: RemoteDataState.NotStarted,
+  migrateStatus: RemoteDataState.NotStarted,
   reactivateStatus: RemoteDataState.NotStarted,
   handleConvertAccountToContract: () => {},
   handleDeleteAccount: () => {},
   handleGetAccount: () => {},
+  handleMigrateOrgs: (_: string) => {},
   handleReactivateAccount: () => {},
   organizations: null,
   setConvertToContractOverlayVisible: (_: boolean) => {},
   convertToContractOverlayVisible: false,
   setCancelOverlayVisible: (_: boolean) => {},
   setDeleteOverlayVisible: (_: boolean) => {},
+  setMigrateOverlayVisible: (_: boolean) => {},
   setReactivateOverlayVisible: (_: boolean) => {},
   cancelOverlayVisible: false,
   deleteOverlayVisible: false,
+  migrateOverlayVisible: false,
   reactivateOverlayVisible: false,
 }
 
@@ -77,11 +87,13 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
     useState(false)
   const [cancelOverlayVisible, setCancelOverlayVisible] = useState(false)
   const [deleteOverlayVisible, setDeleteOverlayVisible] = useState(false)
+  const [migrateOverlayVisible, setMigrateOverlayVisible] = useState(false)
   const [reactivateOverlayVisible, setReactivateOverlayVisible] =
     useState(false)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [convertStatus, setConvertStatus] = useState(RemoteDataState.NotStarted)
   const [deleteStatus, setDeleteStatus] = useState(RemoteDataState.NotStarted)
+  const [migrateStatus, setMigrateStatus] = useState(RemoteDataState.NotStarted)
   const [reactivateStatus, setReactivateStatus] = useState(
     RemoteDataState.NotStarted
   )
@@ -168,6 +180,30 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }, [dispatch, history, accountID])
 
+  const handleMigrateOrgs = useCallback(
+    async (toAccountId: string) => {
+      try {
+        setMigrateStatus(RemoteDataState.Loading)
+        const resp = await patchOperatorAccountsMigrate({
+          fromAccountId: accountID,
+          toAccountId: toAccountId,
+        })
+
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        setMigrateOverlayVisible(false)
+        setMigrateStatus(RemoteDataState.Done)
+        history.push(`/operator/accounts/${toAccountId}`)
+      } catch (error) {
+        console.error({error})
+        dispatch(notify(migrateAccountError(accountID)))
+      }
+    },
+    [dispatch, history, accountID]
+  )
+
   return (
     <AccountContext.Provider
       value={{
@@ -175,10 +211,12 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         accountStatus,
         convertStatus,
         deleteStatus,
+        migrateStatus,
         reactivateStatus,
         handleConvertAccountToContract,
         handleDeleteAccount,
         handleGetAccount,
+        handleMigrateOrgs,
         handleReactivateAccount,
         organizations,
         setConvertToContractOverlayVisible,
@@ -187,6 +225,8 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         cancelOverlayVisible,
         setDeleteOverlayVisible,
         deleteOverlayVisible,
+        setMigrateOverlayVisible,
+        migrateOverlayVisible,
         setReactivateOverlayVisible,
         reactivateOverlayVisible,
       }}

@@ -20,7 +20,7 @@ const ReactivateAccountOverlay: FC = () => {
   } = useContext(AccountContext)
 
   const reactivateAccount = () => {
-    if (account?.deletable) {
+    if (account?.reactivatable) {
       try {
         handleReactivateAccount()
       } catch (e) {

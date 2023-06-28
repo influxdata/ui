@@ -51,9 +51,7 @@ const ReactivateAccountOverlay: FC = () => {
         <Overlay.Header
           title="Reactivate Account"
           style={{color: '#FFFFFF'}}
-          onDismiss={() =>
-            setReactivateOverlayVisible(!reactivateOverlayVisible)
-          }
+          onDismiss={() => setReactivateOverlayVisible(false)}
         />
         <Overlay.Body>
           <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>

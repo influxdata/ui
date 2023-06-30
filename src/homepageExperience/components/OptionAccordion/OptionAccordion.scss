@@ -11,6 +11,11 @@
   .cf-accordion--body-alignment-right {
     padding-right: $cf-space-s;
   }
+
+  .cf-accordion--body-container--expanded {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 .option-accordion-header--icon {

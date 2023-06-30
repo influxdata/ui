@@ -356,6 +356,25 @@ export const createBucket = (
   })
 }
 
+export const createDBRP = (
+  bucketID: string,
+  database: string,
+  retentionPolicy: string,
+  orgID?: string
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request({
+    method: 'POST',
+    url: '/api/v2/dbrps',
+    body: {
+      bucketID,
+      database,
+      default: false,
+      retention_policy: retentionPolicy,
+      orgID,
+    },
+  })
+}
+
 export const upsertSecret = (
   orgID: string,
   secret: Secret
@@ -797,11 +816,18 @@ export const newScriptWithoutLanguageSelection = () => {
 }
 
 const setScriptToLanguage = (
-  lang: 'sql' | 'flux',
+  lang: 'sql' | 'flux' | 'influxql',
   defaultEditorText: string
 ) => {
   return cy.isIoxOrg().then(isIox => {
-    if (isIox) {
+    if (lang === 'influxql') {
+      // give cypress some time to turn on the feature flag `influxqlUI`
+      // this block can be removed after this feature flag is removed
+      cy.wait(1000)
+    }
+
+    // influxql works on both IOx and TSM
+    if (isIox || lang === 'influxql') {
       cy.getByTestID('script-query-builder--new-script')
         .should('be.visible')
         .click()
@@ -818,6 +844,12 @@ const setScriptToLanguage = (
       cy.get('textarea.inputarea').should('have.value', defaultEditorText)
     })
   })
+}
+
+const DEFAULT_INFLUXQL_EDITOR_TEXT = '/* Start by typing InfluxQL here */'
+
+export const setScriptToInfluxQL = () => {
+  return setScriptToLanguage('influxql', DEFAULT_INFLUXQL_EDITOR_TEXT)
 }
 
 const DEFAULT_FLUX_EDITOR_TEXT =
@@ -838,6 +870,17 @@ export const confirmSyncIsOn = () => {
     if (!$toggle.hasClass('active')) {
       $toggle.click()
     }
+  })
+}
+
+export const clearInfluxQLScriptSession = () => {
+  return cy.setScriptToInfluxQL().then(() => {
+    return cy.getByTestID('influxql-editor').within(() => {
+      cy.get('textarea.inputarea').should(
+        'have.value',
+        DEFAULT_INFLUXQL_EDITOR_TEXT
+      )
+    })
   })
 }
 
@@ -881,7 +924,9 @@ export const selectScriptMeasurement = (measurement: string) => {
     .should('be.visible')
     .should('contain', 'Select measurement')
     .click()
-  cy.getByTestID('measurement-selector--dropdown--menu').type(measurement)
+  cy.getByTestID('measurement-selector--dropdown--menu').type(
+    `{selectall}${measurement}`
+  )
   cy.getByTestID(`searchable-dropdown--item ${measurement}`)
     .should('be.visible')
     .click()
@@ -952,6 +997,7 @@ export const scriptsLoginWithFlags = (flags): Cypress.Chainable<any> => {
             cy.getByTestID('tree-nav')
             cy.getByTestID('data-explorer-page').should('exist')
             cy.switchToDataExplorer('new')
+            cy.log('flags are on for script editor')
           })
         )
     })
@@ -1545,6 +1591,9 @@ Cypress.Commands.add('deleteOrg', deleteOrg)
 // buckets
 Cypress.Commands.add('createBucket', createBucket)
 
+// database / retention policy (DBRP)
+Cypress.Commands.add('createDBRP', createDBRP)
+
 // scrapers
 Cypress.Commands.add('createScraper', createScraper)
 
@@ -1566,9 +1615,11 @@ Cypress.Commands.add('createNotebook', createNotebook)
 
 // scripts
 Cypress.Commands.add('switchToDataExplorer', switchToDataExplorer)
+Cypress.Commands.add('setScriptToInfluxQL', setScriptToInfluxQL)
 Cypress.Commands.add('setScriptToFlux', setScriptToFlux)
 Cypress.Commands.add('setScriptToSql', setScriptToSql)
 Cypress.Commands.add('confirmSyncIsOn', confirmSyncIsOn)
+Cypress.Commands.add('clearInfluxQLScriptSession', clearInfluxQLScriptSession)
 Cypress.Commands.add('clearFluxScriptSession', clearFluxScriptSession)
 Cypress.Commands.add('clearSqlScriptSession', clearSqlScriptSession)
 Cypress.Commands.add('selectScriptBucket', selectScriptBucket)

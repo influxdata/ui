@@ -196,7 +196,7 @@ const ScriptQueryBuilder: FC = () => {
   )
 
   const tsmNewScriptDropDown =
-    isFlagEnabled('influxqlUI') && hasDBRPs() ? (
+    isFlagEnabled('influxqlUI') && hasDBRPs() && CLOUD ? (
       <Dropdown
         menu={menuTSM}
         button={button}

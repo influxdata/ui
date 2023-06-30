@@ -25,6 +25,7 @@ const AccountViewHeader: FC = () => {
     setCancelOverlayVisible,
     cancelOverlayVisible,
     setDeleteOverlayVisible,
+    setReactivateOverlayVisible,
     deleteOverlayVisible,
   } = useContext(AccountContext)
   const {hasWritePermissions} = useContext(OperatorContext)
@@ -59,6 +60,16 @@ const AccountViewHeader: FC = () => {
           testID="account-convert-to-contract--button"
         >
           Convert to Contract
+        </ButtonBase>
+      )}
+      {hasWritePermissions && account?.reactivatable && (
+        <ButtonBase
+          color={ComponentColor.Primary}
+          shape={ButtonShape.Default}
+          onClick={() => setReactivateOverlayVisible(true)}
+          testID="account-reactivate--button"
+        >
+          Reactivate Account
         </ButtonBase>
       )}
       {hasWritePermissions && account?.deletable && (

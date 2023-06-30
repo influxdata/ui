@@ -6,7 +6,7 @@ const isIOxOrg = Boolean(Cypress.env('useIox'))
 // As of 2/2023, IOx only has one client library - python, which has a wizard.
 // In TSM, there are more libraries, and it's desirable to test a page both with and without a wizard.
 const libraryWithWizard = isIOxOrg ? 'python' : 'arduino'
-const libraryWithoutWizard = 'csharp'
+const libraryWithoutWizard = 'dart'
 
 describe('Load Data Sources', () => {
   beforeEach(() => {

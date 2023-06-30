@@ -14,7 +14,7 @@ import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuck
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
-import {selectCurrentIdentity} from 'src/identity/selectors'
+import {getOrg} from 'src/organizations/selectors'
 import DataListening from 'src/homepageExperience/components/DataListening'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
@@ -23,33 +23,22 @@ type OwnProps = {
   onSelectBucket: (bucketName: string) => void
 }
 
-export const WriteDataSqlComponent = (props: OwnProps) => {
+export const WriteDataComponent = (props: OwnProps) => {
+  const org = useSelector(getOrg)
   const dispatch = useDispatch()
   const {onSelectBucket} = props
+
+  const logCopyCodeSnippet = () => {
+    event('firstMile.csharpWizard.writeData.code.copied')
+  }
+
+  const logDocsOpened = () => {
+    event('firstMile.csharpWizard.writeData.docs.opened')
+  }
 
   useEffect(() => {
     dispatch(getBuckets())
   }, [dispatch])
-
-  const logCopyInitializeClientSnippet = () => {
-    event('firstMile.goWizard.initializeWriteClient.code.copied')
-  }
-
-  const logCopyWriteCodeSnippet = () => {
-    event('firstMile.goWizard.writeData.code.copied')
-  }
-
-  const logDocsOpened = () => {
-    event('firstMile.goWizard.writeData.docs.opened')
-  }
-
-  const logCopyRunCodeSnippet = () => {
-    event('firstMile.goWizard.runGo.code.copied')
-  }
-
-  const {org} = useSelector(selectCurrentIdentity)
-
-  const url = org.clusterHost || window.location.origin
 
   const {bucket} = useContext(WriteDataDetailsContext)
 
@@ -60,87 +49,40 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket, onSelectBucket])
 
-  const initializeCodeSnippet = `package main
+  const codeSnippet = `const string bucket = "${bucket.name}";
+const string org = "${org.name}";
 
-import (
-    "context"
-    "fmt"
-    "time"
+var points = new[]
+{
+    PointData.Measurement("census")
+        .Tag("location", "Klamath")
+        .Field("bees", 23),
+    PointData.Measurement("census")
+        .Tag("location", "Portland")
+        .Field("ants", 30),
+    PointData.Measurement("census")
+        .Tag("location", "Klamath")
+        .Field("bees", 28),
+    PointData.Measurement("census")
+        .Tag("location", "Portland")
+        .Field("ants", 32),
+    PointData.Measurement("census")
+        .Tag("location", "Klamath")
+        .Field("bees", 29),
+    PointData.Measurement("census")
+        .Tag("location", "Portland")
+        .Field("ants", 40)
+};
 
-    "github.com/InfluxCommunity/influxdb3-go/influx"
-)
+var writeApi = client.GetWriteApiAsync();
+foreach (var point in points)
+{
+    await writeApi.WritePointAsync(point: point, bucket: bucket, org: org);
 
-func main() {
-    // Create client
-    url := "${url}"
-    token := os.Getenv("INFLUXDB_TOKEN")
-
-    // Create a new client using an InfluxDB server base URL and an authentication token
-    client, err := influx.New(influx.Configs{
-      HostURL: url,
-      AuthToken: token,
-    })
-
-    if err != nil {
-      panic(err)
-    }
-    // Close client at the end and escalate error if present
-    defer func (client *influx.Client)  {
-      err := client.Close()
-      if err != nil {
-        panic(err)
-      }
-    }(client)
-
-    database := "${bucket.name}"
-}`
-
-  const writeCodeSnippet = `data := map[string]map[string]interface{}{
-  "point1": {
-    "location": "Klamath",
-    "species":  "bees",
-    "count":    23,
-  },
-  "point2": {
-    "location": "Portland",
-    "species":  "ants",
-    "count":    30,
-  },
-  "point3": {
-    "location": "Klamath",
-    "species":  "bees",
-    "count":    28,
-  },
-  "point4": {
-    "location": "Portland",
-    "species":  "ants",
-    "count":    32,
-  },
-  "point5": {
-    "location": "Klamath",
-    "species":  "bees",
-    "count":    29,
-  },
-  "point6": {
-    "location": "Portland",
-    "species":  "ants",
-    "count":    40,
-  },
+    Thread.Sleep(1000); // separate points by 1 second
 }
 
-// Write data
-for key := range data {
-  point := influx.NewPointWithMeasurement("census").
-    AddTag("location", data[key]["location"].(string)).
-    AddField(data[key]["species"].(string), data[key]["count"])
-
-  if err := client.WritePoints(context.Background(), database, point); err != nil {
-    panic(err)
-  }
-
-  time.Sleep(1 * time.Second) // separate points by 1 second
-}
-
+Console.WriteLine("Complete. Return to the InfluxDB UI.");
 `
 
   return (
@@ -149,10 +91,12 @@ for key := range data {
       <p>
         To start writing data, we need a place to store our time-series data.
         These named storage locations are called{' '}
-        <SafeBlankLink href={`orgs/${org.id}/load-data/buckets`}>
-          buckets
+        <SafeBlankLink
+          href={`orgs/${org.id}/load-data/buckets`}
+          onClick={logDocsOpened}
+        >
+          buckets.
         </SafeBlankLink>
-        .
       </p>
       <p>Please select or create a new bucket:</p>
       <Panel backgroundColor={InfluxColors.Grey15}>
@@ -166,23 +110,7 @@ for key := range data {
           </Grid>
         </Panel.Body>
       </Panel>
-      <p>
-        The first thing we'll do is initialize the go client with the server URL
-        and token that are needed to set up the initial connection to InfluxDB.
-        This client has functions{' '}
-        <code className="homepage-wizard--code-highlight">WritePoints</code> and{' '}
-        <code className="homepage-wizard--code-highlight">Query</code> .
-      </p>
-      <p>
-        Paste the following code in your{' '}
-        <code className="homepage-wizard--code-highlight">main.go</code> file:
-      </p>
-      <CodeSnippet
-        language="go"
-        onCopy={logCopyInitializeClientSnippet}
-        text={initializeCodeSnippet}
-      />
-      <p>
+      <p style={{marginTop: '24px'}}>
         For this example, we will be writing to our database this simple insect
         census data:
       </p>
@@ -242,7 +170,9 @@ for key := range data {
         </Table.Body>
         <Table.Footer />
       </Table>
-      <p>In this data example, we have some important concepts:</p>
+      <p style={{marginTop: '24px'}}>
+        In this data example, we have some important concepts:
+      </p>
       <Table>
         <Table.Header>
           <Table.Row>
@@ -313,34 +243,26 @@ for key := range data {
         let's write this data into our bucket.
       </p>
       <p>
-        Add the following to the end of your{' '}
-        <code className="homepage-wizard--code-highlight">main</code> function:
+        Add the following code to the <code>WriteQueryExample</code> class:
       </p>
       <CodeSnippet
-        language="go"
-        onCopy={logCopyWriteCodeSnippet}
-        text={writeCodeSnippet}
-      />
-      <p>You can now run program with:</p>
-      <CodeSnippet
-        language="properties"
-        onCopy={logCopyRunCodeSnippet}
-        text="go run ./main.go"
+        language="csharp"
+        onCopy={logCopyCodeSnippet}
+        text={codeSnippet}
       />
       <p>
-        The program should write data once you run it. After the data is
-        written, a confirmation will appear below:
+        Once you write this data, you'll begin to see the confirmation below
       </p>
       <Panel backgroundColor={InfluxColors.Grey15}>
         <Panel.Body>
           <DataListening bucket={selectedBucket.name} />
         </Panel.Body>
       </Panel>
-      <p>Once it says "Connection Found!" procede to the next step.</p>
+      <p>Once it says "Connection Found!" proceed to the next step.</p>
     </>
   )
 }
 
-export const WriteDataSql = props => {
-  return <WriteDataSqlComponent onSelectBucket={props.onSelectBucket} />
+export const WriteData = props => {
+  return <WriteDataComponent onSelectBucket={props.onSelectBucket} />
 }

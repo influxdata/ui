@@ -129,6 +129,18 @@ export const GoWizard = lazy(() =>
   }))
 )
 
+export const CSharpWizard = lazy(() =>
+  import('src/homepageExperience/containers/CSharpWizard').then(module => ({
+    default: module.CSharpWizard,
+  }))
+)
+
+export const JavaWizard = lazy(() =>
+  import('src/homepageExperience/containers/JavaWizard').then(module => ({
+    default: module.JavaWizard,
+  }))
+)
+
 export const CliWizard = lazy(() =>
   import('src/homepageExperience/containers/CliWizard').then(module => ({
     default: module.CliWizard,

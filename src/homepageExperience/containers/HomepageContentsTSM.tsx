@@ -25,7 +25,9 @@ import {CloudWidgets} from 'src/me/components/CloudWidgets'
 import {
   ArduinoIcon,
   CLIIcon,
+  CSharpIcon,
   GoIcon,
+  JavaIcon,
   MQTTIcon,
   NodejsIcon,
   PythonIcon,
@@ -64,6 +66,8 @@ export const HomepageContentsTSM: FC = () => {
   const golangLink = `/orgs/${org.id}/new-user-setup/golang`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
   const javaScriptNodeLink = `/orgs/${org.id}/new-user-setup/nodejs`
+  const csharpLink = `/orgs/${org.id}/new-user-setup/csharp`
+  const javaLink = `/orgs/${org.id}/new-user-setup/java`
 
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
@@ -99,6 +103,14 @@ export const HomepageContentsTSM: FC = () => {
 
   const logPythonWizardClick = () => {
     event('firstMile.pythonWizard.clicked')
+  }
+
+  const logCSharpWizardClick = () => {
+    event('firstMile.csharpWizard.clicked')
+  }
+
+  const logJavaWizardClick = () => {
+    event('firstMile.javaWizard.clicked')
   }
 
   const logMoreButtonClick = () => {
@@ -197,6 +209,36 @@ export const HomepageContentsTSM: FC = () => {
                       >
                         <h5>Arduino</h5>
                         {ArduinoIcon}
+                      </div>
+                    </Link>
+                  </ResourceCard>
+                  <ResourceCard style={cardStyle}>
+                    <Link
+                      to={csharpLink}
+                      style={linkStyle}
+                      onClick={logCSharpWizardClick}
+                    >
+                      <div
+                        className="homepage-wizard-language-tile"
+                        data-testid="homepage-wizard-language-tile--csharp"
+                      >
+                        <h5>C#</h5>
+                        {CSharpIcon}
+                      </div>
+                    </Link>
+                  </ResourceCard>
+                  <ResourceCard style={cardStyle}>
+                    <Link
+                      to={javaLink}
+                      style={linkStyle}
+                      onClick={logJavaWizardClick}
+                    >
+                      <div
+                        className="homepage-wizard-language-tile"
+                        data-testid="homepage-wizard-language-tile--csharp"
+                      >
+                        <h5>Java</h5>
+                        {JavaIcon}
                       </div>
                     </Link>
                   </ResourceCard>

@@ -60,10 +60,10 @@ export const AddDataAccordion: FC = () => {
 
   const languageList = {
     Arduino: 'new-user-setup/arduino',
-    'C#': 'load-data/client-libraries/csharp',
+    'C#': 'new-user-setup/csharp',
     Dart: 'load-data/client-libraries/dart',
     Go: 'new-user-setup/golang',
-    Java: 'load-data/client-libraries/java',
+    Java: 'new-user-setup/java',
     Kotlin: 'load-data/client-libraries/kotlin',
     'Node.js': 'new-user-setup/nodejs',
     PHP: 'load-data/client-libraries/php',

@@ -19,11 +19,11 @@ interface Props {
 
 const MigrateOrgOverlay: FC<Props> = ({toAccount}) => {
   const {
-    organization,
-    migrateOverlayVisible,
-    setMigrateOverlayVisible,
     handleMigrateOrg,
+    migrateOverlayVisible,
     migrateStatus,
+    organization,
+    setMigrateOverlayVisible,
   } = useContext(OverlayContext)
 
   const migrateOrg = () => {
@@ -89,4 +89,4 @@ const MigrateOrgOverlay: FC<Props> = ({toAccount}) => {
   )
 }
 
-export default MigrateOrgOverlay
+export {MigrateOrgOverlay}

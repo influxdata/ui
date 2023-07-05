@@ -8,17 +8,23 @@ import {
   FlexBox,
   FlexDirection,
   Form,
+  InfluxColors,
   Input,
+  Label,
 } from '@influxdata/clockface'
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
 import {AccountContext} from '../context/account'
-import MigrateOrgsOverlay from './MigrateOrgsOverlay'
+import {MigrateOrgsOverlay} from './MigrateOrgsOverlay'
 import {OperatorAccount, getOperatorAccount} from 'src/client/unityRoutes'
+import {useDispatch} from 'react-redux'
+import {notify} from 'src/shared/actions/notifications'
+import {getAccountError} from 'src/shared/copy/notifications'
 
-const MigrateOrgsTool: FC = () => {
+export const MigrateOrgsTool: FC = () => {
   const {account, setMigrateOverlayVisible} = useContext(AccountContext)
   const [toAccountId, setToAccountId] = useState('')
   const [toAccount, setToAccount] = useState<OperatorAccount>(null)
+  const dispatch = useDispatch()
 
   const changeToAccountId = (event: ChangeEvent<HTMLInputElement>) => {
     setToAccountId(event.target.value)
@@ -32,6 +38,7 @@ const MigrateOrgsTool: FC = () => {
     try {
       const resp = await getOperatorAccount({accountId: toAccountId})
       if (resp.status !== 200) {
+        dispatch(notify(getAccountError(toAccountId)))
         return
       }
       setToAccount(resp.data)
@@ -57,6 +64,12 @@ const MigrateOrgsTool: FC = () => {
           alignItems={AlignItems.FlexStart}
           margin={ComponentSize.Large}
         >
+          <Label
+            id="accounts-migrate--account-id-label"
+            name="Please enter an Account ID to migrate to:"
+            description="Please enter an Account ID to migrate to:"
+            color={InfluxColors.Grey25}
+          />
           <Input
             placeholder="Account ID to migrate resources to"
             inputStyle={{width: '400px'}}
@@ -81,5 +94,3 @@ const MigrateOrgsTool: FC = () => {
     </>
   )
 }
-
-export default MigrateOrgsTool

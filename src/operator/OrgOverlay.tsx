@@ -34,12 +34,12 @@ import LimitsField from 'src/operator/LimitsField'
 
 // Constants
 import {TOOLS_URL} from 'src/shared/constants'
-import MigrateOrg from './MigrateOrg'
+import {MigrateOrg} from './MigrateOrg'
 
 const viewUsageButtonStyles = {marginRight: '12px'}
 const reactivateOrgButtonStyles = {marginTop: '8px'}
 
-const OrgOverlay: FC = () => {
+export const OrgOverlay: FC = () => {
   const {
     limits,
     limitsStatus,
@@ -399,5 +399,3 @@ const OrgOverlay: FC = () => {
     </Overlay>
   )
 }
-
-export default OrgOverlay

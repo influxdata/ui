@@ -193,8 +193,8 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
           throw new Error(resp.data.message)
         }
 
-        setMigrateOverlayVisible(false)
         setMigrateStatus(RemoteDataState.Done)
+        setMigrateOverlayVisible(false)
         history.push(`/operator/accounts/${toAccountId}`)
       } catch (error) {
         console.error({error})

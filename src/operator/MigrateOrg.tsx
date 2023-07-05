@@ -13,12 +13,16 @@ import {
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
 import {OverlayContext} from 'src/operator/context/overlay'
 import {OperatorAccount, getOperatorAccount} from 'src/client/unityRoutes'
-import MigrateOrgOverlay from './MigrateOrgOverlay'
+import {MigrateOrgOverlay} from './MigrateOrgOverlay'
+import {useDispatch} from 'react-redux'
+import {notify} from 'src/shared/actions/notifications'
+import {getAccountError} from 'src/shared/copy/notifications'
 
-const MigrateOrg: FC = () => {
+export const MigrateOrg: FC = () => {
   const {organization, setMigrateOverlayVisible} = useContext(OverlayContext)
   const [toAccountId, setToAccountId] = useState('')
   const [toAccount, setToAccount] = useState<OperatorAccount>(null)
+  const dispatch = useDispatch()
 
   const changeToAccountId = (event: ChangeEvent<HTMLInputElement>) => {
     setToAccountId(event.target.value)
@@ -32,6 +36,7 @@ const MigrateOrg: FC = () => {
     try {
       const resp = await getOperatorAccount({accountId: toAccountId})
       if (resp.status !== 200) {
+        dispatch(notify(getAccountError(toAccountId)))
         return
       }
       setToAccount(resp.data)
@@ -79,5 +84,3 @@ const MigrateOrg: FC = () => {
     </>
   )
 }
-
-export default MigrateOrg

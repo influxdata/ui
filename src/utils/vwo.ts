@@ -8,14 +8,17 @@ export const executeVWO = () => {
     window._vwo_code ||
     (function () {
       var account_id = 634566,
+        version = 1.5,
         settings_tolerance = 2000,
         library_tolerance = 2500,
         use_existing_jquery = false,
         is_spa = 1,
         hide_element = '',
+        hide_element_style = '',
         /* DO NOT EDIT BELOW THIS LINE */
         f = false,
         d = document,
+        vwoCodeEl = d.querySelector('#vwoCode'),
         code = {
           use_existing_jquery: function () {
             return use_existing_jquery
@@ -23,41 +26,78 @@ export const executeVWO = () => {
           library_tolerance: function () {
             return library_tolerance
           },
+          hide_element_style: function () {
+            return '{' + hide_element_style + '}'
+          },
           finish: function () {
             if (!f) {
               f = true
-              var a = d.getElementById('_vis_opt_path_hides')
-              if (a) a.parentNode.removeChild(a)
+              var e = d.getElementById('_vis_opt_path_hides')
+              if (e) e.parentNode.removeChild(e)
             }
           },
           finished: function () {
             return f
           },
-          load: function (a) {
-            var b = d.createElement('script')
-            b.src = a
-            b.type = 'text/javascript'
-            b.innerText
-            b.onerror = function () {
-              window._vwo_code.finish()
+          load: function (e) {
+            var t = d.createElement('script')
+            t.fetchPriority = 'high'
+            t.src = e
+            t.type = 'text/javascript'
+            t.onerror = function () {
+              _vwo_code.finish()
             }
-            d.getElementsByTagName('head')[0].appendChild(b)
+            d.getElementsByTagName('head')[0].appendChild(t)
+          },
+          getVersion: function () {
+            return version
+          },
+          getMatchedCookies: function (e) {
+            var t = []
+            if (document.cookie) {
+              t = document.cookie.match(e) || []
+            }
+            return t
+          },
+          getCombinationCookie: function () {
+            var e = code.getMatchedCookies(
+              /(?:^|;)\s?(_vis_opt_exp_\d+_combi=[^;$]*)/gi
+            )
+            e = e.map(function (e) {
+              try {
+                var t = decodeURIComponent(e)
+                if (!/_vis_opt_exp_\d+_combi=(?:\d+,?)+\s*$/.test(t)) {
+                  return ''
+                }
+                return t
+              } catch (e) {
+                return ''
+              }
+            })
+            var i = []
+            e.forEach(function (e) {
+              var t = e.match(/([\d,]+)/g)
+              t && i.push(t.join('-'))
+            })
+            return i.join('|')
           },
           init: function () {
+            if (d.URL.indexOf('__vwo_disable__') > -1) return
             window.settings_timer = setTimeout(function () {
-              window._vwo_code.finish()
+              _vwo_code.finish()
             }, settings_tolerance)
-            var a = d.createElement('style'),
-              b = hide_element
-                ? hide_element +
-                  '{opacity:0 !important;filter:alpha(opacity=0) !important;background:none !important;}'
+            var e = d.createElement('style'),
+              t = hide_element
+                ? hide_element + '{' + hide_element_style + '}'
                 : '',
-              h = d.getElementsByTagName('head')[0]
-            a.setAttribute('id', '_vis_opt_path_hides')
-            a.setAttribute('type', 'text/css')
-            if (a.styleSheet) a.styleSheet.cssText = b
-            else a.appendChild(d.createTextNode(b))
-            h.appendChild(a)
+              i = d.getElementsByTagName('head')[0]
+            e.setAttribute('id', '_vis_opt_path_hides')
+            vwoCodeEl && e.setAttribute('nonce', vwoCodeEl.nonce)
+            e.setAttribute('type', 'text/css')
+            if (e.styleSheet) e.styleSheet.cssText = t
+            else e.appendChild(d.createTextNode(t))
+            i.appendChild(e)
+            var n = this.getCombinationCookie()
             this.load(
               'https://dev.visualwebsiteoptimizer.com/j.php?a=' +
                 account_id +
@@ -65,10 +105,11 @@ export const executeVWO = () => {
                 encodeURIComponent(d.URL) +
                 '&f=' +
                 +is_spa +
-                '&r=' +
-                Math.random()
+                '&vn=' +
+                version +
+                (n ? '&c=' + n : '')
             )
-            return window.settings_timer
+            return settings_timer
           },
         }
       window._vwo_settings_timer = code.init()

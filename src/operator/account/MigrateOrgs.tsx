@@ -8,9 +8,7 @@ import {
   FlexBox,
   FlexDirection,
   Form,
-  InfluxColors,
   Input,
-  Label,
 } from '@influxdata/clockface'
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
 import {AccountContext} from '../context/account'
@@ -59,17 +57,15 @@ export const MigrateOrgsTool: FC = () => {
         Migrate Organizations and Users
       </h2>
       <Form onSubmit={submit}>
+        <Form.Label
+          id="accounts-migrate--account-id-label"
+          label="Please enter an Account ID to migrate to:"
+        />
         <FlexBox
           direction={FlexDirection.Row}
           alignItems={AlignItems.FlexStart}
           margin={ComponentSize.Large}
         >
-          <Label
-            id="accounts-migrate--account-id-label"
-            name="Please enter an Account ID to migrate to:"
-            description="Please enter an Account ID to migrate to:"
-            color={InfluxColors.Grey25}
-          />
           <Input
             placeholder="Account ID to migrate resources to"
             inputStyle={{width: '400px'}}

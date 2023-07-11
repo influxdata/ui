@@ -14,6 +14,7 @@ import AccountViewHeader from 'src/operator/account/AccountViewHeader'
 import AccountGrid from 'src/operator/account/AccountGrid'
 import {AccountContext} from 'src/operator/context/account'
 import PageSpinner from 'src/perf/components/PageSpinner'
+import {MigrateOrgsTool} from './MigrateOrgs'
 
 const AccountView: FC = () => {
   const {account, accountStatus} = useContext(AccountContext)
@@ -45,6 +46,7 @@ const AccountView: FC = () => {
               Associated Organizations
             </h2>
             <AssociatedOrgsTable />
+            <MigrateOrgsTool />
           </Page.Contents>
         </Page>
       </AppWrapper>

@@ -8,6 +8,7 @@ import {
   getOperatorOrg,
   postOperatorOrgsReactivate,
   putOperatorOrgsLimits,
+  patchOperatorOrgsMigrate,
 } from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -17,12 +18,14 @@ import {
   updateLimitsSuccess,
   reactivateOrgError,
   reactivateOrgSuccess,
+  migrateOrgError,
 } from 'src/shared/copy/notifications'
 import {toDisplayLimits} from 'src/operator/utils'
 
 // Types
 import {OperatorOrgLimits, OperatorOrg} from 'src/types'
 import {RemoteDataState} from 'src/types'
+import {useHistory} from 'react-router-dom'
 
 export type Props = {
   children: JSX.Element
@@ -40,6 +43,10 @@ export interface OverlayContextType {
   reactivateOrgStatus: RemoteDataState
   setLimits: (_: OperatorOrgLimits) => void
   updateLimitStatus: RemoteDataState
+  setMigrateOverlayVisible: (vis: boolean) => void
+  migrateOverlayVisible: boolean
+  migrateStatus: RemoteDataState
+  handleMigrateOrg: (id: string, toAccountId: string) => void
 }
 
 export const DEFAULT_CONTEXT: OverlayContextType = {
@@ -54,6 +61,10 @@ export const DEFAULT_CONTEXT: OverlayContextType = {
   reactivateOrgStatus: RemoteDataState.NotStarted,
   setLimits: (_: OperatorOrgLimits) => {},
   updateLimitStatus: RemoteDataState.NotStarted,
+  setMigrateOverlayVisible: (_: boolean) => {},
+  migrateOverlayVisible: false,
+  migrateStatus: RemoteDataState.NotStarted,
+  handleMigrateOrg: (_id: string, _accountId: string) => {},
 }
 
 export const OverlayContext =
@@ -69,7 +80,10 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     RemoteDataState.NotStarted
   )
   const [orgStatus, setOrgStatus] = useState(RemoteDataState.NotStarted)
+  const [migrateOverlayVisible, setMigrateOverlayVisible] = useState(false)
+  const [migrateStatus, setMigrateStatus] = useState(RemoteDataState.NotStarted)
 
+  const history = useHistory()
   const dispatch = useDispatch()
 
   const [organization, setOrganization] = useState(null)
@@ -149,6 +163,30 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     [dispatch]
   )
 
+  const handleMigrateOrg = useCallback(
+    async (id: string, toAccountId: string) => {
+      try {
+        setMigrateStatus(RemoteDataState.Loading)
+        const resp = await patchOperatorOrgsMigrate({
+          orgId: id,
+          toAccountId: toAccountId,
+        })
+
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        setMigrateOverlayVisible(false)
+        setMigrateStatus(RemoteDataState.Done)
+        history.push(`/operator/accounts/${toAccountId}`)
+      } catch (error) {
+        console.error({error})
+        dispatch(notify(migrateOrgError(id, toAccountId)))
+      }
+    },
+    [history, dispatch]
+  )
+
   return (
     <OverlayContext.Provider
       value={{
@@ -163,6 +201,10 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
         reactivateOrgStatus,
         setLimits,
         updateLimitStatus,
+        setMigrateOverlayVisible,
+        migrateOverlayVisible,
+        migrateStatus,
+        handleMigrateOrg,
       }}
     >
       {children}

@@ -47,7 +47,7 @@ const RedirectLocations = {
   SWITCHING_ORGANIZATION: '/org_cancel',
   RE_SIGNUP: '/cancel',
 }
-const DEFAULT_REDIRECT_LOCATION = '/mkt_cancel'
+const DEFAULT_REDIRECT_LOCATION = '/mkt-cancel'
 
 export const DeleteFreeAccountContext =
   createContext<DeleteFreeAccountContextType>(
@@ -69,7 +69,7 @@ export const DeleteFreeAccountProvider: FC<Props> = ({children}) => {
   )
 
   const getRedirectLocation = () => {
-    const uri = RedirectLocations[reason] ?? '/mkt_cancel'
+    const uri = RedirectLocations[reason] ?? '/mkt-cancel'
 
     return `https://www.influxdata.com${uri}`
   }

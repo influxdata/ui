@@ -49,10 +49,7 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket, onSelectBucket])
 
-  const codeSnippet = `bucket="${bucket.name}"
-
-# Define the write api
-write_api = write_client.write_api(write_options=SYNCHRONOUS)
+  const codeSnippet = `database="${bucket.name}"
 
 data = {
   "point1": {
@@ -93,7 +90,7 @@ for key in data:
     .tag("location", data[key]["location"])
     .field(data[key]["species"], data[key]["count"])
   )
-  write_api.write(bucket=bucket, org=org, record=point)
+  client.write(database=database, record=point)
   time.sleep(1) # separate points by 1 second
 
 print("Complete. Return to the InfluxDB UI.")
@@ -227,8 +224,7 @@ print("Complete. Return to the InfluxDB UI.")
             </Table.Cell>
             <Table.Cell>
               We are storing the "location" of where each census is taken. Tags
-              are indexed and should generally be bounded (i.e. only a few
-              cities).
+              form part of your primary key.
             </Table.Cell>
           </Table.Row>
           <Table.Row>

@@ -17,12 +17,15 @@ import {InstallDependenciesSql} from 'src/homepageExperience/components/steps/py
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
 import {InitializeClient} from 'src/homepageExperience/components/steps/python/InitializeClient'
+import {InitializeClientSql} from 'src/homepageExperience/components/steps/python/InitializeClientSql'
 import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
 import {WriteDataSql} from 'src/homepageExperience/components/steps/python/WriteDataSql'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
 import {ExecuteQuerySql} from 'src/homepageExperience/components/steps/python/ExecuteQuerySql'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuery'
+import {ExecuteAggregateQuerySql} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuerySql'
+
 import {normalizeEventName} from 'src/cloud/utils/reporting'
 
 import {PythonIcon} from 'src/homepageExperience/components/HomepageIcons'
@@ -34,7 +37,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
-  HOMEPAGE_NAVIGATION_STEPS_SQL,
 } from 'src/homepageExperience/utils'
 
 interface State {
@@ -54,9 +56,7 @@ export class PythonWizard extends PureComponent<null, State> {
     finalFeedback: null,
   }
 
-  subwayNavSteps = isFlagEnabled('ioxOnboarding')
-    ? HOMEPAGE_NAVIGATION_STEPS_SQL
-    : HOMEPAGE_NAVIGATION_STEPS
+  subwayNavSteps = HOMEPAGE_NAVIGATION_STEPS
 
   installDependenciesStep = isFlagEnabled('ioxOnboarding')
     ? InstallDependenciesSql
@@ -151,7 +151,11 @@ export class PythonWizard extends PureComponent<null, State> {
         return <Overview wizard="pythonWizard" />
       }
       case 2: {
-        return <this.installDependenciesStep />
+        if (!isFlagEnabled('ioxOnboarding')) {
+          return <InstallDependencies />
+        } else {
+          return <InstallDependenciesSql />
+        }
       }
       case 3: {
         return (
@@ -163,7 +167,11 @@ export class PythonWizard extends PureComponent<null, State> {
         )
       }
       case 4: {
-        return <InitializeClient />
+        if (!isFlagEnabled('ioxOnboarding')) {
+          return <InitializeClient bucket={this.state.selectedBucket} />
+        } else {
+          return <InitializeClientSql bucket={this.state.selectedBucket} />
+        }
       }
       case 5: {
         return <this.writeDataStep onSelectBucket={this.handleSelectBucket} />
@@ -175,6 +183,21 @@ export class PythonWizard extends PureComponent<null, State> {
         if (!isFlagEnabled('ioxOnboarding')) {
           return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
         } else {
+          return <ExecuteAggregateQuerySql bucket={this.state.selectedBucket} />
+        }
+      }
+      case 8: {
+        if (!isFlagEnabled('ioxOnboarding')) {
+          return (
+            <Finish
+              wizardEventName="pythonWizard"
+              markStepAsCompleted={this.handleMarkStepAsCompleted}
+              finishStepCompleted={this.state.finishStepCompleted}
+              finalFeedback={this.state.finalFeedback}
+              setFinalFeedback={this.setFinalFeedback}
+            />
+          )
+        } else {
           return (
             <Finish
               wizardEventName="pythonSqlWizard"
@@ -185,17 +208,7 @@ export class PythonWizard extends PureComponent<null, State> {
             />
           )
         }
-      }
-      case 8: {
-        return (
-          <Finish
-            wizardEventName="pythonWizard"
-            markStepAsCompleted={this.handleMarkStepAsCompleted}
-            finishStepCompleted={this.state.finishStepCompleted}
-            finalFeedback={this.state.finalFeedback}
-            setFinalFeedback={this.setFinalFeedback}
-          />
-        )
+
       }
       default: {
         return <Overview wizard="pythonWizard" />

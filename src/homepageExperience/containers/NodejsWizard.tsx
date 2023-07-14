@@ -32,6 +32,10 @@ import {
   HOMEPAGE_NAVIGATION_STEPS_SQL,
 } from 'src/homepageExperience/utils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {InstallDependenciesSql} from '../components/steps/nodejs/InstallDependenciesSql'
+import {InitializeClientSql} from '../components/steps/nodejs/InitializeClientSql'
+import {WriteDataSql} from '../components/steps/nodejs/WriteDataSql'
+import {ExecuteQuerySql} from '../components/steps/nodejs/ExecuteQuerySql'
 
 interface State {
   currentStep: number
@@ -137,7 +141,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         return <Overview wizard="nodejsWizard" />
       }
       case 2: {
-        return <InstallDependencies />
+        return <InstallDependenciesSql />
       }
       case 3: {
         return (
@@ -149,18 +153,15 @@ export class NodejsWizard extends PureComponent<null, State> {
         )
       }
       case 4: {
-        return <InitializeClient />
+        return <InitializeClientSql />
       }
       case 5: {
-        return <WriteData onSelectBucket={this.handleSelectBucket} />
+        return <WriteDataSql onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        return <ExecuteQuery bucket={this.state.selectedBucket} />
+        return <ExecuteQuerySql bucket={this.state.selectedBucket} />
       }
       case 7: {
-        return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
-      }
-      case 8: {
         return (
           <Finish
             wizardEventName="nodejsWizard"

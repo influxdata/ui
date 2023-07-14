@@ -48,23 +48,16 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket, onSelectBucket])
 
-  const codeSnippet = `let org = \`${org.name}\`
-let bucket = \`${bucket.name}\`
-
-let writeClient = client.getWriteApi(org, bucket, 'ns')
+  const codeSnippet = `let database = \`${bucket.name}\`
 
 for (let i = 0; i < 5; i++) {
   let point = new Point('measurement1')
     .tag('tagname1', 'tagvalue1')
     .intField('field1', i)
 
-  void setTimeout(() => {
-    writeClient.writePoint(point)
+  void setTimeout(async () => {
+    await client.write(point, database)
   }, i * 1000) // separate points by 1 second
-
-  void setTimeout(() => {
-    writeClient.flush()
-  }, 5000)
 }`
 
   return (

@@ -20,7 +20,7 @@ export const InitializeClientSql = () => {
 const token = process.env.INFLUXDB_TOKEN
 
 async function main() {
-    const client = new InfluxDBClient({"${url}", token})
+    const client = new InfluxDBClient({host: '${url}', token: token})
 
     // following code goes here
 

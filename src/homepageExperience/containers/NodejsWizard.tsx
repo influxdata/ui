@@ -202,19 +202,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         return <WriteData onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        if (isFlagEnabled('ioxOnboarding')) {
-          return (
-            <Finish
-              wizardEventName="nodejsWizard"
-              markStepAsCompleted={this.handleMarkStepAsCompleted}
-              finishStepCompleted={this.state.finishStepCompleted}
-              finalFeedback={this.state.finalFeedback}
-              setFinalFeedback={this.setFinalFeedback}
-            />
-          )
-        } else {
-          return <ExecuteQuery bucket={this.state.selectedBucket} />
-        }
+        return <ExecuteQuery bucket={this.state.selectedBucket} />
       }
       case 7: {
         return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />

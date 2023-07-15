@@ -14,40 +14,25 @@ type OwnProps = {
 export const ExecuteQuerySql = (props: OwnProps) => {
   const {bucket} = props
 
-  const fromBucketSnippet = `from(bucket: "${bucket}")
-  |> range(start: -10m)`
+  const sqlSnippet = `SELECT * FROM 'measurement1'`
 
-  const query = `let queryClient = client.getQueryApi(org)
-let fluxQuery = \`from(bucket: "${bucket}")
- |> range(start: -10m)
- |> filter(fn: (r) => r._measurement == "measurement1")\`
+  const query = `const query = \`SELECT * FROM 'measurement1'\`
 
-queryClient.queryRows(fluxQuery, {
-  next: (row, tableMeta) => {
-    const tableObject = tableMeta.toObject(row)
-    console.log(tableObject)
-  },
-  error: (error) => {
-    console.error('\\nError', error)
-  },
-  complete: () => {
-    console.log('\\nSuccess')
-  },
-})`
+const rows = await client.query(query, "${bucket}")
+for await (const row of rows) {
+    console.log(\`tagname1 is \${row.tagname1}\`)
+    console.log(\`field1 is \${row.field1}\`)
+}`
 
   return (
     <>
-      <h1>Execute a Flux Query</h1>
+      <h1>Execute a SQL Query</h1>
       <p>
-        Now let’s query the numbers we wrote into the database. We use the Flux
-        scripting language to query data. Flux is designed for querying,
-        analyzing, and acting on data.
-        <br />
-        <br />
-        Here is what a simple Flux query looks like on its own:
+        Now let's query the data we wrote into the database with SQL. Here is
+        what our query looks like on its own:
       </p>
       <CodeSnippet
-        text={fromBucketSnippet}
+        text={sqlSnippet}
         showCopyControl={false}
         onCopy={logCopyCodeSnippet}
         language="properties"
@@ -55,12 +40,13 @@ queryClient.queryRows(fluxQuery, {
       <p>
         In this query, we are looking for data points within the last 10 minutes
         with a measurement of "measurement1".
-        <br />
-        <br />
-        Let’s use that Flux query in our Nodejs code!
-        <br />
-        <br />
-        Run the following:
+      </p>
+      <p>
+        Let's use that SQL query in our <code>Node.js</code> code to show us the
+        results of what we have written.
+      </p>
+      <p>
+        Add the following code to the <code>main</code> function:
       </p>
       <CodeSnippet
         text={query}

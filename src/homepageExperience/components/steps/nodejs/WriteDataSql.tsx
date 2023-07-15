@@ -55,9 +55,10 @@ for (let i = 0; i < 5; i++) {
     .tag('tagname1', 'tagvalue1')
     .intField('field1', i)
 
-  void setTimeout(async () => {
-    await client.write(point, database)
-  }, i * 1000) // separate points by 1 second
+  await client
+    .write(point, database)
+    // separate points by 1 second
+    .then(() => new Promise(resolve => setTimeout(resolve, 1000)));
 }`
 
   return (
@@ -85,7 +86,9 @@ for (let i = 0; i < 5; i++) {
           </Grid>
         </Panel.Body>
       </Panel>
-      <p>Run the following code in your Nodejs shell:</p>
+      <p>
+        Add the following code to the <code>main</code> function:
+      </p>
       <CodeSnippet
         text={codeSnippet}
         onCopy={logCopyCodeSnippet}

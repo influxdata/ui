@@ -445,7 +445,7 @@ export const MainNavigation: FC = () => {
             label="InfluxDB Slack"
             testID="nav-subitem-influxdb-slack"
             linkElement={() => (
-              <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
+              <SafeBlankLink href="https://www.influxdata.com/slack" />
             )}
           />
           {!isNewIOxOrg && (

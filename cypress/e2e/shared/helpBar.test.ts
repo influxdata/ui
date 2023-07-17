@@ -48,7 +48,7 @@ describe('Help bar menu sub nav links', () => {
       .within(() => {
         cy.get('a').should($a => {
           expect($a.attr('href'), 'href').to.equal(
-            'https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email'
+            'https://www.influxdata.com/slack'
           )
         })
       })

@@ -1,10 +1,7 @@
 import React from 'react'
 
-
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
-
-
 
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.executeQuery.code.copied')
@@ -15,16 +12,15 @@ type OwnProps = {
 }
 
 export const ExecuteQuerySql = (props: OwnProps) => {
-
-
-
   const {bucket} = props
-// TODO check how this is done
-  const sqlSnippet = `SELECT * FROM 'census'
+
+  const sqlSnippet = `SELECT *
+FROM 'census'
 WHERE time >= now() - interval '1 hour'
 AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)`
 
-  const query = `query = """SELECT * FROM 'census'
+  const query = `query = """SELECT *
+FROM 'census'
 WHERE time >= now() - interval '24 hours'
 AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)"""
 

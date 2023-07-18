@@ -11,21 +11,20 @@ const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.initializeClient.code.copied')
 }
 
-export const InitializeClient = () => {
+export const InitializeClientSql = () => {
   const org = useSelector(getOrg)
   const {org: quartzOrg} = useSelector(selectCurrentIdentity)
 
   const url = quartzOrg.clusterHost || window.location.origin
 
   const pythonCode = `import os, time
-  from influxdb_client_3 import InfluxDBClient3, Point
+from influxdb_client_3 import InfluxDBClient3, Point
 
 token = os.environ.get("INFLUXDB_TOKEN")
 org = "${org.name}"
 host = "${url}"
 
-client = InfluxDBClient3(host=host, token=token, org=org)
-`
+client = InfluxDBClient3(host=host, token=token, org=org)`
 
   return (
     <>
@@ -44,8 +43,8 @@ client = InfluxDBClient3(host=host, token=token, org=org)
         text={pythonCode}
       />
       <p>
-        Here, we initialize the token, organization info, and server url host that
-        are needed to set up the initial connection to InfluxDB. The client
+        Here, we initialize the token, organization info, and server url host
+        that are needed to set up the initial connection to InfluxDB. The client
         connection is then established with the{' '}
         <code className="homepage-wizard--code-highlight">InfluxDBClient</code>{' '}
         initialization.

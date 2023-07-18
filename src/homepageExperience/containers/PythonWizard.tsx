@@ -58,16 +58,6 @@ export class PythonWizard extends PureComponent<null, State> {
 
   subwayNavSteps = HOMEPAGE_NAVIGATION_STEPS
 
-  installDependenciesStep = isFlagEnabled('ioxOnboarding')
-    ? InstallDependenciesSql
-    : InstallDependencies
-
-  writeDataStep = isFlagEnabled('ioxOnboarding') ? WriteDataSql : WriteData
-
-  executeQueryStep = isFlagEnabled('ioxOnboarding')
-    ? ExecuteQuerySql
-    : ExecuteQuery
-
   private handleSelectBucket = (bucketName: string) => {
     this.setState({selectedBucket: bucketName})
   }
@@ -151,11 +141,7 @@ export class PythonWizard extends PureComponent<null, State> {
         return <Overview wizard="pythonWizard" />
       }
       case 2: {
-        if (!isFlagEnabled('ioxOnboarding')) {
-          return <InstallDependencies />
-        } else {
-          return <InstallDependenciesSql />
-        }
+        return <InstallDependencies />
       }
       case 3: {
         return (
@@ -167,48 +153,73 @@ export class PythonWizard extends PureComponent<null, State> {
         )
       }
       case 4: {
-        if (!isFlagEnabled('ioxOnboarding')) {
-          return <InitializeClient bucket={this.state.selectedBucket} />
-        } else {
-          return <InitializeClientSql bucket={this.state.selectedBucket} />
-        }
+        return <InitializeClient />
       }
       case 5: {
-        return <this.writeDataStep onSelectBucket={this.handleSelectBucket} />
+        return <WriteData onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        return <this.executeQueryStep bucket={this.state.selectedBucket} />
+        return <ExecuteQuery bucket={this.state.selectedBucket} />
       }
       case 7: {
-        if (!isFlagEnabled('ioxOnboarding')) {
-          return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
-        } else {
-          return <ExecuteAggregateQuerySql bucket={this.state.selectedBucket} />
-        }
+        return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
       case 8: {
-        if (!isFlagEnabled('ioxOnboarding')) {
-          return (
-            <Finish
-              wizardEventName="pythonWizard"
-              markStepAsCompleted={this.handleMarkStepAsCompleted}
-              finishStepCompleted={this.state.finishStepCompleted}
-              finalFeedback={this.state.finalFeedback}
-              setFinalFeedback={this.setFinalFeedback}
-            />
-          )
-        } else {
-          return (
-            <Finish
-              wizardEventName="pythonSqlWizard"
-              markStepAsCompleted={this.handleMarkStepAsCompleted}
-              finishStepCompleted={this.state.finishStepCompleted}
-              finalFeedback={this.state.finalFeedback}
-              setFinalFeedback={this.setFinalFeedback}
-            />
-          )
-        }
+        return (
+          <Finish
+            wizardEventName="pythonWizard"
+            markStepAsCompleted={this.handleMarkStepAsCompleted}
+            finishStepCompleted={this.state.finishStepCompleted}
+            finalFeedback={this.state.finalFeedback}
+            setFinalFeedback={this.setFinalFeedback}
+          />
+        )
+      }
+      default: {
+        return <Overview wizard="pythonWizard" />
+      }
+    }
+  }
 
+  renderSqlStep = () => {
+    switch (this.state.currentStep) {
+      case 1: {
+        return <Overview wizard="pythonWizard" />
+      }
+      case 2: {
+        return <InstallDependenciesSql />
+      }
+      case 3: {
+        return (
+          <Tokens
+            wizardEventName="pythonWizard"
+            setTokenValue={this.setTokenValue}
+            tokenValue={this.state.tokenValue}
+          />
+        )
+      }
+      case 4: {
+        return <InitializeClientSql />
+      }
+      case 5: {
+        return <WriteDataSql onSelectBucket={this.handleSelectBucket} />
+      }
+      case 6: {
+        return <ExecuteQuerySql bucket={this.state.selectedBucket} />
+      }
+      case 7: {
+        return <ExecuteAggregateQuerySql bucket={this.state.selectedBucket} />
+      }
+      case 8: {
+        return (
+          <Finish
+            wizardEventName="pythonSqlWizard"
+            markStepAsCompleted={this.handleMarkStepAsCompleted}
+            finishStepCompleted={this.state.finishStepCompleted}
+            finalFeedback={this.state.finalFeedback}
+            setFinalFeedback={this.setFinalFeedback}
+          />
+        )
       }
       default: {
         return <Overview wizard="pythonWizard" />
@@ -251,7 +262,9 @@ export class PythonWizard extends PureComponent<null, State> {
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {this.renderStep()}
+                  {isFlagEnabled('ioxOnboarding')
+                    ? this.renderSqlStep()
+                    : this.renderStep()}
                 </WriteDataDetailsContextProvider>
               </div>
 

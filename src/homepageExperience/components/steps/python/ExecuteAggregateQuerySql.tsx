@@ -4,7 +4,6 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {event} from 'src/cloud/utils/reporting'
 
-
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.executeAggregateQuery.code.copied')
 }
@@ -17,19 +16,23 @@ type OwnProps = {
   bucket: string
 }
 
-export const ExecuteAggregateQuery = (props: OwnProps) => {
+export const ExecuteAggregateQuerySql = (props: OwnProps) => {
   const {bucket} = props
 
-  const fromBucketSnippet = `SELECT mean(count) FROM census WHERE time > now() - 10m`
+  const sqlSnippet = `SELECT mean(count)
+FROM 'census'
+WHERE time > now() - '10m'`
 
-  const codeSnippet = `query = '''SELECT mean(count) FROM census WHERE time > now() - 10m'''
-  
-  # Execute the query
-  table = client.query(query=query, database="${bucket}", language='influxql') )
-  
-  # Convert to dataframe
-  df = table.to_pandas().sort_values(by="time")
-  print(df)
+  const querySnippet = `query = """SELECT mean(count)
+FROM 'census'
+WHERE time > now() - '10m'"""
+
+# Execute the query
+table = client.query(query=query, database="${bucket}", language='influxql') )
+
+# Convert to dataframe
+df = table.to_pandas().sort_values(by="time")
+print(df)
 `
 
   return (
@@ -47,10 +50,10 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
         table.
       </p>
       <CodeSnippet
-        text={fromBucketSnippet}
+        text={sqlSnippet}
         showCopyControl={false}
         onCopy={logCopyCodeSnippet}
-        language="properties"
+        language="sql"
       />
       <p>
         In this example, we use the{' '}
@@ -61,12 +64,15 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
         Run the following:
       </p>
       <CodeSnippet
-        text={codeSnippet}
+        text={querySnippet}
         onCopy={logCopyCodeSnippet}
         language="python"
       />
-      <p style={{marginTop: '20px'}}>
-        In this example we use InfluxQL to perform our aggregation. SQL and InfluxQL can be used interchangeably in the Python client.
+      <p>
+        In this example we use{' '}
+        <code className="homepage-wizard--code-highlight">InfluxQL</code> to
+        perform our aggregation. SQL and InfluxQL can be used interchangeably in
+        the Python client.
       </p>
     </>
   )

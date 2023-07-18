@@ -24,8 +24,8 @@ export class InstallDependenciesSql extends PureComponent {
           <SafeBlankLink href="https://github.com/InfluxCommunity/influxdb3-python">
             influxdb3-python
           </SafeBlankLink>{' '}
-          module. You'll use this to write and query InfluxDB. Run the command below in
-          your terminal:
+          module. You'll use this to write and query InfluxDB. Run the command
+          below in your terminal:
         </p>
         <CodeSnippet
           language="properties"

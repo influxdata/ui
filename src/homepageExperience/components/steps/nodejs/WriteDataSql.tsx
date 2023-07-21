@@ -6,6 +6,7 @@ import {
   Grid,
   InfluxColors,
   Panel,
+  Table,
 } from '@influxdata/clockface'
 
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
@@ -50,16 +51,35 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
 
   const codeSnippet = `let database = \`${bucket.name}\`
 
-for (let i = 0; i < 5; i++) {
-  let point = new Point('measurement1')
-    .tag('tagname1', 'tagvalue1')
-    .intField('field1', i)
+const points =
+    [
+        new Point("census")
+            .tag("location", "Klamath")
+            .intField("bees", 23),
+        new Point("census")
+            .tag("location", "Portland")
+            .intField("ants", 30),
+        new Point("census")
+            .tag("location", "Klamath")
+            .intField("bees", 28),
+        new Point("census")
+            .tag("location", "Portland")
+            .intField("ants", 32),
+        new Point("census")
+            .tag("location", "Klamath")
+            .intField("bees", 29),
+        new Point("census")
+            .tag("location", "Portland")
+            .intField("ants", 40)
+    ];
 
-  await client
-    .write(point, database)
-    // separate points by 1 second
-    .then(() => new Promise(resolve => setTimeout(resolve, 1000)));
-}`
+for (let i = 0; i < points.length; i++) {
+    const point = points[i];
+    await client.write(point, database)
+        // separate points by 1 second
+        .then(() => new Promise(resolve => setTimeout(resolve, 1000)));
+}
+`
 
   return (
     <>
@@ -86,32 +106,147 @@ for (let i = 0; i < 5; i++) {
           </Grid>
         </Panel.Body>
       </Panel>
+      <p style={{marginTop: '24px'}}>
+        For this example, we will be writing to our database this simple insect
+        census data:
+      </p>
+      <Table>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>_time</Table.HeaderCell>
+            <Table.HeaderCell>_measurement</Table.HeaderCell>
+            <Table.HeaderCell>location</Table.HeaderCell>
+            <Table.HeaderCell>_field</Table.HeaderCell>
+            <Table.HeaderCell>_value</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>2023-01-01T00:00:00Z</Table.Cell>
+            <Table.Cell>census</Table.Cell>
+            <Table.Cell>Kalmath</Table.Cell>
+            <Table.Cell>bees</Table.Cell>
+            <Table.Cell>23</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>2023-01-01T00:00:00Z</Table.Cell>
+            <Table.Cell>census</Table.Cell>
+            <Table.Cell>Portland</Table.Cell>
+            <Table.Cell>ants</Table.Cell>
+            <Table.Cell>30</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>2023-01-01T00:00:00Z</Table.Cell>
+            <Table.Cell>census</Table.Cell>
+            <Table.Cell>Kalmath</Table.Cell>
+            <Table.Cell>bees</Table.Cell>
+            <Table.Cell>28</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>2023-01-01T00:00:00Z</Table.Cell>
+            <Table.Cell>census</Table.Cell>
+            <Table.Cell>Portland</Table.Cell>
+            <Table.Cell>ants</Table.Cell>
+            <Table.Cell>32</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>2023-01-01T00:00:00Z</Table.Cell>
+            <Table.Cell>census</Table.Cell>
+            <Table.Cell>Kalmath</Table.Cell>
+            <Table.Cell>bees</Table.Cell>
+            <Table.Cell>29</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>2023-01-01T00:00:00Z</Table.Cell>
+            <Table.Cell>census</Table.Cell>
+            <Table.Cell>Portland</Table.Cell>
+            <Table.Cell>ants</Table.Cell>
+            <Table.Cell>40</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+        <Table.Footer />
+      </Table>
+      <p style={{marginTop: '24px'}}>
+        In this data example, we have some important concepts:
+      </p>
+      <Table>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Term</Table.HeaderCell>
+            <Table.HeaderCell>Definition</Table.HeaderCell>
+            <Table.HeaderCell>Example Use Case</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>
+              <SafeBlankLink
+                href="https://docs.influxdata.com/influxdb/cloud/reference/glossary/#measurement"
+                onClick={logDocsOpened}
+              >
+                measurement
+              </SafeBlankLink>
+            </Table.Cell>
+            <Table.Cell>
+              Primary filter for the thing you are measuring.
+            </Table.Cell>
+            <Table.Cell>
+              Since we are measuring the sample census of insects, our
+              measurement is "census".
+            </Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <SafeBlankLink
+                href="https://docs.influxdata.com/influxdb/cloud/reference/glossary/#tag"
+                onClick={logDocsOpened}
+              >
+                tag
+              </SafeBlankLink>
+            </Table.Cell>
+            <Table.Cell>
+              Key-value pair to store metadata about your fields.
+            </Table.Cell>
+            <Table.Cell>
+              We are storing the "location" of where each census is taken. Tags
+              are indexed and should generally be bounded (i.e. only a few
+              cities).
+            </Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <SafeBlankLink
+                href="https://docs.influxdata.com/influxdb/cloud/reference/glossary/#field"
+                onClick={logDocsOpened}
+              >
+                field
+              </SafeBlankLink>
+            </Table.Cell>
+            <Table.Cell>
+              Key-value pair that stores the actual data you are measuring.
+            </Table.Cell>
+            <Table.Cell>
+              We are storing the insect "species" and "count" as the key-value
+              pair. Fields are not indexed and can be stored as integers,
+              floats, strings, or booleans.
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+        <Table.Footer />
+      </Table>
       <p>
-        Add the following code to the <code  className="homepage-wizard--code-highlight">main</code> function:
+        These concepts are important in building your time-series schema. Now,
+        let's write this data into our bucket.
+      </p>
+      <p>
+        Add the following code to the{' '}
+        <code className="homepage-wizard--code-highlight">main</code> function:
       </p>
       <CodeSnippet
         text={codeSnippet}
         onCopy={logCopyCodeSnippet}
         language="javascript"
       />
-      <p style={{marginTop: '20px'}}>
-        In the above code snippet, we define five data points and write each one
-        to InfluxDB. Each of the 5 points we write has a{' '}
-        <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/latest/reference/glossary/#field-key"
-          onClick={logDocsOpened}
-        >
-          field
-        </SafeBlankLink>{' '}
-        and a{' '}
-        <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/latest/reference/glossary/#tag-key"
-          onClick={logDocsOpened}
-        >
-          tag
-        </SafeBlankLink>
-        .
-      </p>
       <p style={{marginTop: '40px'}}>
         Once you write this data, you’ll begin to see the confirmation below
       </p>

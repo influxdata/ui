@@ -87,7 +87,7 @@ for (let i = 0; i < 5; i++) {
         </Panel.Body>
       </Panel>
       <p>
-        Add the following code to the <code>main</code> function:
+        Add the following code to the <code  className="homepage-wizard--code-highlight">main</code> function:
       </p>
       <CodeSnippet
         text={codeSnippet}

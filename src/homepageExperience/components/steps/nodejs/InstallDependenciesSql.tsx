@@ -31,7 +31,7 @@ export class InstallDependenciesSql extends PureComponent {
           onCopy={this.logCopyCodeSnippet}
           language="properties"
         />
-        <p style={{fontStyle: 'italic'}}>
+        <p>
           You’ll need to have{' '}
           <SafeBlankLink href="https://nodejs.org/en/">
             Node.js v16

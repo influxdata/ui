@@ -35,18 +35,18 @@ for await (const row of rows) {
         text={sqlSnippet}
         showCopyControl={false}
         onCopy={logCopyCodeSnippet}
-        language="properties"
+        language="sql"
       />
       <p>
         In this query, we are looking for data points within the last 10 minutes
         with a measurement of "measurement1".
       </p>
       <p>
-        Let's use that SQL query in our <code>Node.js</code> code to show us the
+        Let's use that SQL query in our <code  className="homepage-wizard--code-highlight">Node.js</code> code to show us the
         results of what we have written.
       </p>
       <p>
-        Add the following code to the <code>main</code> function:
+        Add the following code to the <code  className="homepage-wizard--code-highlight">main</code> function:
       </p>
       <CodeSnippet
         text={query}

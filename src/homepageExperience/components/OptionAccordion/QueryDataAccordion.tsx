@@ -47,6 +47,7 @@ export const QueryDataAccordion: FC = () => {
     'C#': 'new-user-setup/csharp',
     Go: 'new-user-setup/golang',
     Java: 'new-user-setup/java',
+    'Node.js': 'new-user-setup/nodejs',
     Python: 'new-user-setup/python',
   }
 

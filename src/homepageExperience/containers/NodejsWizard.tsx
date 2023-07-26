@@ -29,9 +29,13 @@ import {event} from 'src/cloud/utils/reporting'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
-  HOMEPAGE_NAVIGATION_STEPS_WRITE_ONLY,
+  HOMEPAGE_NAVIGATION_STEPS_SQL,
 } from 'src/homepageExperience/utils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {InstallDependenciesSql} from '../components/steps/nodejs/InstallDependenciesSql'
+import {InitializeClientSql} from '../components/steps/nodejs/InitializeClientSql'
+import {WriteDataSql} from '../components/steps/nodejs/WriteDataSql'
+import {ExecuteQuerySql} from '../components/steps/nodejs/ExecuteQuerySql'
 
 interface State {
   currentStep: number
@@ -67,7 +71,7 @@ export class NodejsWizard extends PureComponent<null, State> {
   }
 
   subwayNavSteps = isFlagEnabled('ioxOnboarding')
-    ? HOMEPAGE_NAVIGATION_STEPS_WRITE_ONLY
+    ? HOMEPAGE_NAVIGATION_STEPS_SQL
     : HOMEPAGE_NAVIGATION_STEPS
 
   handleNextClick = () => {
@@ -131,7 +135,50 @@ export class NodejsWizard extends PureComponent<null, State> {
     scrollNextPageIntoView()
   }
 
-  renderStep = () => {
+  renderSqlStep = () => {
+    switch (this.state.currentStep) {
+      case 1: {
+        return <Overview wizard="nodejsWizard" />
+      }
+      case 2: {
+        return <InstallDependenciesSql />
+      }
+      case 3: {
+        return (
+          <Tokens
+            wizardEventName="nodejsWizard"
+            setTokenValue={this.setTokenValue}
+            tokenValue={this.state.tokenValue}
+          />
+        )
+      }
+      case 4: {
+        return <InitializeClientSql />
+      }
+      case 5: {
+        return <WriteDataSql onSelectBucket={this.handleSelectBucket} />
+      }
+      case 6: {
+        return <ExecuteQuerySql bucket={this.state.selectedBucket} />
+      }
+      case 7: {
+        return (
+          <Finish
+            wizardEventName="nodejsWizard"
+            markStepAsCompleted={this.handleMarkStepAsCompleted}
+            finishStepCompleted={this.state.finishStepCompleted}
+            finalFeedback={this.state.finalFeedback}
+            setFinalFeedback={this.setFinalFeedback}
+          />
+        )
+      }
+      default: {
+        return <Overview wizard="nodejsWizard" />
+      }
+    }
+  }
+
+  renderFluxStep = () => {
     switch (this.state.currentStep) {
       case 1: {
         return <Overview wizard="nodejsWizard" />
@@ -155,19 +202,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         return <WriteData onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        if (isFlagEnabled('ioxOnboarding')) {
-          return (
-            <Finish
-              wizardEventName="nodejsWizard"
-              markStepAsCompleted={this.handleMarkStepAsCompleted}
-              finishStepCompleted={this.state.finishStepCompleted}
-              finalFeedback={this.state.finalFeedback}
-              setFinalFeedback={this.setFinalFeedback}
-            />
-          )
-        } else {
-          return <ExecuteQuery bucket={this.state.selectedBucket} />
-        }
+        return <ExecuteQuery bucket={this.state.selectedBucket} />
       }
       case 7: {
         return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
@@ -219,7 +254,9 @@ export class NodejsWizard extends PureComponent<null, State> {
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {this.renderStep()}
+                  {isFlagEnabled('ioxOnboarding')
+                    ? this.renderSqlStep()
+                    : this.renderFluxStep()}
                 </WriteDataDetailsContextProvider>
               </div>
 

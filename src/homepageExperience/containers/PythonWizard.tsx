@@ -17,12 +17,15 @@ import {InstallDependenciesSql} from 'src/homepageExperience/components/steps/py
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
 import {InitializeClient} from 'src/homepageExperience/components/steps/python/InitializeClient'
+import {InitializeClientSql} from 'src/homepageExperience/components/steps/python/InitializeClientSql'
 import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
 import {WriteDataSql} from 'src/homepageExperience/components/steps/python/WriteDataSql'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
 import {ExecuteQuerySql} from 'src/homepageExperience/components/steps/python/ExecuteQuerySql'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuery'
+import {ExecuteAggregateQuerySql} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuerySql'
+
 import {normalizeEventName} from 'src/cloud/utils/reporting'
 
 import {PythonIcon} from 'src/homepageExperience/components/HomepageIcons'
@@ -34,7 +37,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
-  HOMEPAGE_NAVIGATION_STEPS_SQL,
 } from 'src/homepageExperience/utils'
 
 interface State {
@@ -54,19 +56,7 @@ export class PythonWizard extends PureComponent<null, State> {
     finalFeedback: null,
   }
 
-  subwayNavSteps = isFlagEnabled('ioxOnboarding')
-    ? HOMEPAGE_NAVIGATION_STEPS_SQL
-    : HOMEPAGE_NAVIGATION_STEPS
-
-  installDependenciesStep = isFlagEnabled('ioxOnboarding')
-    ? InstallDependenciesSql
-    : InstallDependencies
-
-  writeDataStep = isFlagEnabled('ioxOnboarding') ? WriteDataSql : WriteData
-
-  executeQueryStep = isFlagEnabled('ioxOnboarding')
-    ? ExecuteQuerySql
-    : ExecuteQuery
+  subwayNavSteps = HOMEPAGE_NAVIGATION_STEPS
 
   private handleSelectBucket = (bucketName: string) => {
     this.setState({selectedBucket: bucketName})
@@ -151,7 +141,7 @@ export class PythonWizard extends PureComponent<null, State> {
         return <Overview wizard="pythonWizard" />
       }
       case 2: {
-        return <this.installDependenciesStep />
+        return <InstallDependencies />
       }
       case 3: {
         return (
@@ -166,30 +156,64 @@ export class PythonWizard extends PureComponent<null, State> {
         return <InitializeClient />
       }
       case 5: {
-        return <this.writeDataStep onSelectBucket={this.handleSelectBucket} />
+        return <WriteData onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        return <this.executeQueryStep bucket={this.state.selectedBucket} />
+        return <ExecuteQuery bucket={this.state.selectedBucket} />
       }
       case 7: {
-        if (!isFlagEnabled('ioxOnboarding')) {
-          return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
-        } else {
-          return (
-            <Finish
-              wizardEventName="pythonSqlWizard"
-              markStepAsCompleted={this.handleMarkStepAsCompleted}
-              finishStepCompleted={this.state.finishStepCompleted}
-              finalFeedback={this.state.finalFeedback}
-              setFinalFeedback={this.setFinalFeedback}
-            />
-          )
-        }
+        return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
       case 8: {
         return (
           <Finish
             wizardEventName="pythonWizard"
+            markStepAsCompleted={this.handleMarkStepAsCompleted}
+            finishStepCompleted={this.state.finishStepCompleted}
+            finalFeedback={this.state.finalFeedback}
+            setFinalFeedback={this.setFinalFeedback}
+          />
+        )
+      }
+      default: {
+        return <Overview wizard="pythonWizard" />
+      }
+    }
+  }
+
+  renderSqlStep = () => {
+    switch (this.state.currentStep) {
+      case 1: {
+        return <Overview wizard="pythonWizard" />
+      }
+      case 2: {
+        return <InstallDependenciesSql />
+      }
+      case 3: {
+        return (
+          <Tokens
+            wizardEventName="pythonWizard"
+            setTokenValue={this.setTokenValue}
+            tokenValue={this.state.tokenValue}
+          />
+        )
+      }
+      case 4: {
+        return <InitializeClientSql />
+      }
+      case 5: {
+        return <WriteDataSql onSelectBucket={this.handleSelectBucket} />
+      }
+      case 6: {
+        return <ExecuteQuerySql bucket={this.state.selectedBucket} />
+      }
+      case 7: {
+        return <ExecuteAggregateQuerySql bucket={this.state.selectedBucket} />
+      }
+      case 8: {
+        return (
+          <Finish
+            wizardEventName="pythonSqlWizard"
             markStepAsCompleted={this.handleMarkStepAsCompleted}
             finishStepCompleted={this.state.finishStepCompleted}
             finalFeedback={this.state.finalFeedback}
@@ -238,7 +262,9 @@ export class PythonWizard extends PureComponent<null, State> {
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {this.renderStep()}
+                  {isFlagEnabled('ioxOnboarding')
+                    ? this.renderSqlStep()
+                    : this.renderStep()}
                 </WriteDataDetailsContextProvider>
               </div>
 

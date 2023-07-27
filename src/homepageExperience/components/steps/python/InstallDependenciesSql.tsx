@@ -21,28 +21,16 @@ export class InstallDependenciesSql extends PureComponent {
         </p>
         <p>
           Install the{' '}
-          <SafeBlankLink href="https://github.com/influxdata/influxdb-client-python">
-            influxdb-client
+          <SafeBlankLink href="https://github.com/InfluxCommunity/influxdb3-python">
+            influxdb3-python
           </SafeBlankLink>{' '}
-          module. You'll use this to write to InfluxDB. Run the command below in
-          your terminal:
+          module. You'll use this to write and query InfluxDB. Run the command
+          below in your terminal:
         </p>
         <CodeSnippet
           language="properties"
           onCopy={this.logCopyCodeSnippet}
-          text="pip install influxdb-client"
-        />
-        <p>
-          Next, install the{' '}
-          <SafeBlankLink href="https://github.com/influxdata/flightsql-dbapi">
-            flightsql-dbapi
-          </SafeBlankLink>
-          . This is used to Query InfluxDB with SQL.
-        </p>
-        <CodeSnippet
-          language="properties"
-          onCopy={this.logCopyCodeSnippet}
-          text="pip install flightsql-dbapi"
+          text="pip install influxdb3-python"
         />
         <p>
           Lastly, let's install{' '}

@@ -20,15 +20,15 @@ export const ExecuteAggregateQuerySql = (props: OwnProps) => {
   const {bucket} = props
 
   const sqlSnippet = `SELECT mean(count)
-FROM 'census'
+FROM census
 WHERE time > now() - '10m'`
 
   const querySnippet = `query = """SELECT mean(count)
-FROM 'census'
+FROM census
 WHERE time > now() - '10m'"""
 
 # Execute the query
-table = client.query(query=query, database="${bucket}", language='influxql') )
+table = client.query(query=query, database="${bucket}", language='influxql')
 
 # Convert to dataframe
 df = table.to_pandas().sort_values(by="time")

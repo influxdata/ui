@@ -15,17 +15,17 @@ export const ExecuteQuerySql = (props: OwnProps) => {
   const {bucket} = props
 
   const sqlSnippet = `SELECT *
-FROM 'census'
+FROM census
 WHERE time >= now() - interval '1 hour'
 AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)`
 
   const query = `query = """SELECT *
-FROM 'census'
+FROM census
 WHERE time >= now() - interval '24 hours'
 AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)"""
 
 # Execute the query
-table = client.query(query=query, database="${bucket}", language='sql') )
+table = client.query(query=query, database="${bucket}", language='sql')
 
 # Convert to dataframe
 df = table.to_pandas().sort_values(by="time")

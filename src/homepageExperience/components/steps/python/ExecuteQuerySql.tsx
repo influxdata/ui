@@ -16,13 +16,11 @@ export const ExecuteQuerySql = (props: OwnProps) => {
 
   const sqlSnippet = `SELECT *
 FROM census
-WHERE time >= now() - interval '1 hour'
-AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)`
+WHERE time >= now() - interval '1 hour'`
 
   const query = `query = """SELECT *
 FROM census
-WHERE time >= now() - interval '24 hours'
-AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)"""
+WHERE time >= now() - interval '24 hours'"""
 
 # Execute the query
 table = client.query(query=query, database="${bucket}", language='sql')

@@ -7,13 +7,7 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-type OwnProps = {
-  bucket: string
-}
-
-export const ExecuteQuerySql = (props: OwnProps) => {
-  const {bucket} = props
-
+export const ExecuteQuerySql = () => {
   const logCopyQueryCodeSnippet = () => {
     event('firstMile.goWizard.executeQuery.code.copied')
   }
@@ -33,7 +27,10 @@ query := \`SELECT *
           WHERE time >= now() - interval '1 hour'
             AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)\`
 
-iterator, err := client.Query(context.Background(), "${bucket}", query)
+queryOptions := influxdb3.QueryOptions{
+  Database: database,
+}
+iterator, err := client.QueryWithOptions(context.Background(), &queryOptions, query)
 
 if err != nil {
   panic(err)

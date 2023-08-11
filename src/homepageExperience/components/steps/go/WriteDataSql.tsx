@@ -67,7 +67,7 @@ import (
     "fmt"
     "time"
 
-    "github.com/InfluxCommunity/influxdb3-go/influx"
+    "github.com/InfluxCommunity/influxdb3-go/influxdb3"
 )
 
 func main() {
@@ -76,16 +76,16 @@ func main() {
     token := os.Getenv("INFLUXDB_TOKEN")
 
     // Create a new client using an InfluxDB server base URL and an authentication token
-    client, err := influx.New(influx.Configs{
-      HostURL: url,
-      AuthToken: token,
+    client, err := influxdb3.New(influxdb3.ClientConfig{
+      Host:  url,
+      Token: token,
     })
 
     if err != nil {
       panic(err)
     }
     // Close client at the end and escalate error if present
-    defer func (client *influx.Client)  {
+    defer func (client *influxdb3.Client)  {
       err := client.Close()
       if err != nil {
         panic(err)
@@ -129,12 +129,15 @@ func main() {
 }
 
 // Write data
+options := influxdb3.WriteOptions{
+  Database: database,
+}
 for key := range data {
-  point := influx.NewPointWithMeasurement("census").
+  point := influxdb3.NewPointWithMeasurement("census").
     AddTag("location", data[key]["location"].(string)).
     AddField(data[key]["species"].(string), data[key]["count"])
 
-  if err := client.WritePoints(context.Background(), database, point); err != nil {
+  if err := client.WritePointsWithOptions(context.Background(), &options, point); err != nil {
     panic(err)
   }
 

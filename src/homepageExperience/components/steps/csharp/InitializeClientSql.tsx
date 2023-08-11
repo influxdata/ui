@@ -29,7 +29,7 @@ namespace Examples
             var hostUrl = "${url}";
             var authToken = Environment.GetEnvironmentVariable("INFLUXDB_TOKEN");
             
-            using var client = new InfluxDBClient(hostUrl, authToken: authToken);
+            using var client = new InfluxDBClient(hostUrl, token: authToken);
         }
     }
 }

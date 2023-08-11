@@ -73,7 +73,7 @@ Point[] points = new Point[] {
 };
 
 for (Point point : points) {
-    client.writePoint(point, new WriteParameters(database, null, null));
+    client.writePoint(point, new WriteOptions.Builder().database(database).build());
     
     Thread.sleep(1000); // separate points by 1 second
 }

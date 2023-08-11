@@ -154,7 +154,7 @@ export class GoWizard extends PureComponent<null, State> {
         return <WriteDataSql onSelectBucket={this.handleSelectBucket} />
       }
       case 5: {
-        return <ExecuteQuerySql bucket={this.state.selectedBucket} />
+        return <ExecuteQuerySql />
       }
       case 6: {
         return (

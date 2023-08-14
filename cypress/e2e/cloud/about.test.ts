@@ -211,12 +211,10 @@ const upgradeAccount = () => {
 
   cy.getByTestID('create-org-form-submit').should('be.visible').click()
 
-  // Disabling this temporarily - 8/14/23 - unblock CI while
-  // tracking down issues with the third-party script.
-  // cy.wait('@marketoResponse').then(res => {
-  //   // If this fails, it likely indicates a need to update MarketoAccountUpgradeOverlay.tsx, or the Marketo form.
-  //   expect(res?.response?.body.formID).to.equal('2826')
-  // })
+  cy.wait('@marketoResponse').then(res => {
+    // If this fails, it likely indicates a need to update MarketoAccountUpgradeOverlay.tsx, or the Marketo form.
+    expect(res?.response?.body.formID).to.equal('2826')
+  })
 
   cy.getByTestID('notification-success')
     .should('be.visible')

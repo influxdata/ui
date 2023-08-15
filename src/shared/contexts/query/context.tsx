@@ -260,7 +260,7 @@ export const QueryProvider: FC = ({children}) => {
     const promise = fetch(url, {
       method: 'POST',
       headers,
-      body: JSON.stringify(body),
+      body: typeof body === 'string' ? body : JSON.stringify(body),
       signal: controller.signal,
     })
       .then((res: Response): Promise<RunQueryResult> => {

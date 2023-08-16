@@ -37,6 +37,7 @@ import {DBRP} from 'src/client'
 
 // Utils
 import {addAnnotationToCSV} from 'src/shared/utils/addAnnotationToCSV'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface CancelMap {
   [key: string]: () => void
@@ -109,7 +110,7 @@ const buildQueryRequest = (
   options?: QueryOptions
 ): {
   url: string
-  body: RequestBody | null
+  body: RequestBody | null | string
   headers: {
     'Content-Type': string
     'Accept-Encoding': string
@@ -141,6 +142,17 @@ const buildQueryRequest = (
       Accept: 'text/csv',
     }
 
+    return {url, body, headers}
+  }
+
+  if (isFlagEnabled('v2privateQueryUI') && language === LanguageType.SQL) {
+    const url = `${API_BASE_PATH}api/v2private/query?database=${options?.bucket?.name}`
+    const body = text
+    const headers = {
+      'Content-Type': 'application/sql',
+      'Accept-Encoding': 'gzip',
+      Accept: 'text/csv;format=annotated',
+    }
     return {url, body, headers}
   }
 
@@ -222,7 +234,7 @@ const handleQueryResponse = (response, cb) => {
     } catch {
       return {
         type: 'UNKNOWN_ERROR',
-        message: 'Failed to execute Flux query',
+        message: 'Failed to execute query',
       }
     }
   })
@@ -248,7 +260,7 @@ export const QueryProvider: FC = ({children}) => {
     const promise = fetch(url, {
       method: 'POST',
       headers,
-      body: JSON.stringify(body),
+      body: typeof body === 'string' ? body : JSON.stringify(body),
       signal: controller.signal,
     })
       .then((res: Response): Promise<RunQueryResult> => {

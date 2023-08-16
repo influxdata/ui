@@ -68,4 +68,4 @@ const MeasurementSelector: FC = () => {
   )
 }
 
-export default MeasurementSelector
+export {MeasurementSelector}

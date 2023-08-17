@@ -1,6 +1,7 @@
 // Libraries
 import React, {createContext, FC, useContext, useMemo, useState} from 'react'
 import {Bucket, RemoteDataState} from 'src/types'
+import {useSelector} from 'react-redux'
 
 // Constants
 import {
@@ -8,9 +9,10 @@ import {
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
 import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Contexts
-import {QueryContext, QueryScope} from 'src/shared/contexts/query'
+import {QueryContext, QueryOptions, QueryScope} from 'src/shared/contexts/query'
 import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
 
 // Utils
@@ -21,6 +23,10 @@ import {
   SAMPLE_DATA_SET,
   SEARCH_STRING,
 } from 'src/dataExplorer/shared/utils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Selectors
+import {isOrgIOx} from 'src/organizations/selectors'
 
 interface TagsContextType {
   tags: Tags
@@ -56,6 +62,8 @@ interface Prop {
 }
 
 export const TagsProvider: FC<Prop> = ({children, scope}) => {
+  const isIOx = useSelector(isOrgIOx)
+
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
   const {setDefaultViewOptions} = useContext(ResultsViewContext)
@@ -157,6 +165,41 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       ...loadingTagValues,
       [tagKey]: RemoteDataState.Loading,
     })
+
+    if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+      const queryTextSQL: string = `
+        SELECT DISTINCT("${tagKey}")
+        FROM "${measurement}"
+        ORDER BY "${tagKey}"
+        LIMIT ${DEFAULT_LIMIT}
+      `
+      try {
+        const resp = await queryAPI(queryTextSQL, scope, {
+          language: LanguageType.SQL, // use SQL to get measurement list
+          bucket,
+        } as QueryOptions)
+        const values = (Object.values(resp.parsed.table?.columns ?? [])[0]
+          ?.data ?? []) as string[]
+
+        // Update the tag key with the corresponding tag values
+        const newTags = {...tags, [tagKey]: values}
+        setTags(newTags)
+        setLoadingTagValues({
+          ...loadingTagValues,
+          [tagKey]: RemoteDataState.Done,
+        })
+      } catch (e) {
+        console.error(
+          `Failed to get tag value for tag key: "${tagKey}"\n`,
+          e.message
+        )
+        setLoadingTagValues({
+          ...loadingTagValues,
+          [tagKey]: RemoteDataState.Error,
+        })
+      }
+      return
+    }
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx

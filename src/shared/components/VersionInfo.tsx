@@ -15,9 +15,7 @@ import {isOrgIOx} from 'src/organizations/selectors'
 const VersionInfo: FC = () => {
   const isIOxOrg = useSelector(isOrgIOx)
 
-  const versionNumber = isIOxOrg
-    ? '3'
-    : '2'
+  const versionNumber = isIOxOrg ? '3' : '2'
   const cloudEngine = isIOxOrg
     ? 'InfluxDB Cloud Serverless'
     : 'InfluxDB Cloud powered by TSM'
@@ -31,7 +29,8 @@ const VersionInfo: FC = () => {
         <div>
           <SafeBlankLink href={engineLink}>{cloudEngine}</SafeBlankLink>
           <br />
-          Storage Engine Version {versionNumber} {!isIOxOrg && GIT_SHA && <code>({GIT_SHA.slice(0, 7)})</code>}
+          Storage Engine Version {versionNumber}{' '}
+          {!isIOxOrg && GIT_SHA && <code>({GIT_SHA.slice(0, 7)})</code>}
         </div>
       ) : (
         <VersionInfoOSS />

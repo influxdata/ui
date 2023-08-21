@@ -7,16 +7,21 @@ import VersionInfoOSS from 'src/shared/components/VersionInfoOSS'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Constants
-import {VERSION, GIT_SHA, CLOUD} from 'src/shared/constants'
+import {GIT_SHA, CLOUD} from 'src/shared/constants'
 
 // Utils
 import {isOrgIOx} from 'src/organizations/selectors'
 
 const VersionInfo: FC = () => {
-  const cloudEngine = useSelector(isOrgIOx)
+  const isIOxOrg = useSelector(isOrgIOx)
+
+  const versionNumber = isIOxOrg
+    ? '3'
+    : '2'
+  const cloudEngine = isIOxOrg
     ? 'InfluxDB Cloud Serverless'
     : 'InfluxDB Cloud powered by TSM'
-  const engineLink = useSelector(isOrgIOx)
+  const engineLink = isIOxOrg
     ? 'https://docs.influxdata.com/influxdb/cloud-serverless/'
     : 'https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-structured-merge-tree-tsm'
 
@@ -26,7 +31,7 @@ const VersionInfo: FC = () => {
         <div>
           <SafeBlankLink href={engineLink}>{cloudEngine}</SafeBlankLink>
           <br />
-          Version {VERSION} {GIT_SHA && <code>({GIT_SHA.slice(0, 7)})</code>}
+          Storage Engine Version {versionNumber} {!isIOxOrg && GIT_SHA && <code>({GIT_SHA.slice(0, 7)})</code>}
         </div>
       ) : (
         <VersionInfoOSS />

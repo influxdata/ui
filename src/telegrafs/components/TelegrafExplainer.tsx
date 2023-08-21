@@ -29,7 +29,7 @@ const TelegrafExplainer: FunctionComponent<Props> = ({
   bodySize,
 }) => {
   const docsUrl = useSelector(isOrgIOx)
-    ? `https://docs.influxdata.com/influxdb/cloud-iox/write-data/use-telegraf/`
+    ? `https://docs.influxdata.com/influxdb/cloud-serverless/write-data/use-telegraf/`
     : `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/write-data/no-code/use-telegraf/`
 
   return (

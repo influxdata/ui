@@ -25,6 +25,10 @@ export const VisualizeAccordion: FC = () => {
     event(`homeOptions.${optionId}.supersetDocs.clicked`)
   }
 
+  const handleTableauClick = () => {
+    event(`homeOptions.${optionId}.tableauDocs.clicked`)
+  }
+
   return (
     <OptionAccordion
       headerIcon={IconFont.GraphLine_New}
@@ -41,7 +45,7 @@ export const VisualizeAccordion: FC = () => {
               return (
                 <OptionLink
                   title="View Pandas Docs"
-                  href="https://docs.influxdata.com/influxdb/cloud-iox/query-data/tools/pandas/"
+                  href="https://docs.influxdata.com/influxdb/cloud-serverless/process-data/tools/pandas/"
                   onClick={handlePandasClick}
                 />
               )
@@ -52,7 +56,7 @@ export const VisualizeAccordion: FC = () => {
               <>
                 Grafana{' '}
                 <strong className="option-accordion--tag">
-                  New Cloud Plugin
+                  New cloud plugin available
                 </strong>
               </>
             }
@@ -61,7 +65,7 @@ export const VisualizeAccordion: FC = () => {
               return (
                 <OptionLink
                   title="View Grafana Docs"
-                  href="https://docs.influxdata.com/influxdb/cloud-iox/query-data/tools/grafana/"
+                  href="https://docs.influxdata.com/influxdb/cloud-serverless/process-data/visualize/grafana/"
                   onClick={handleGrafanaClick}
                 />
               )
@@ -74,8 +78,21 @@ export const VisualizeAccordion: FC = () => {
               return (
                 <OptionLink
                   title="View Superset Docs"
-                  href="https://docs.influxdata.com/influxdb/cloud-iox/query-data/tools/superset/"
+                  href="https://docs.influxdata.com/influxdb/cloud-serverless/process-data/visualize/superset/"
                   onClick={handleSupersetClick}
+                />
+              )
+            }}
+          />
+          <OptionAccordionElement
+            elementTitle="Tableau"
+            elementDescription="Set up Tableau to visualize and alert on your data."
+            cta={() => {
+              return (
+                <OptionLink
+                  title="View Tableau Docs"
+                  href="https://docs.influxdata.com/influxdb/cloud-serverless/process-data/visualize/tableau/"
+                  onClick={handleTableauClick}
                 />
               )
             }}

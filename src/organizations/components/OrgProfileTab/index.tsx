@@ -86,8 +86,8 @@ const OrgProfileTab: FC = () => {
   const hasFetchedStorageType = Boolean(storageType)
 
   const storageTypeMap = {
-    iox: 'IOx',
-    tsm: 'TSM',
+    iox: 'Serverless (version 3.x)',
+    tsm: 'TSM (version 2.x)',
   }
 
   const formattedStorageType = storageTypeMap[storageType] || storageType

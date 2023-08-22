@@ -18,7 +18,7 @@ import {useSelector, useDispatch} from 'react-redux'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/context/results'
-import {QueryContext, QueryOptions} from 'src/shared/contexts/query'
+import {QueryContext} from 'src/shared/contexts/query'
 import {
   PersistenceContext,
   DEFAULT_FLUX_EDITOR_TEXT,

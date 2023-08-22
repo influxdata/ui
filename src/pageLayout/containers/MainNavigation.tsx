@@ -278,7 +278,7 @@ export const MainNavigation: FC = () => {
   const isContractCustomer = accountType === 'contract'
 
   const docslink = isIOxOrg
-    ? 'https://docs.influxdata.com/influxdb/cloud-iox/'
+    ? 'https://docs.influxdata.com/influxdb/cloud-serverless/'
     : 'https://docs.influxdata.com/'
 
   const handleToggleNavExpansion = (): void => {

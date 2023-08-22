@@ -12,7 +12,7 @@ describe('Help bar menu sub nav links', () => {
         cy.get('a').should($a => {
           expect($a.attr('href'), 'href').to.be.oneOf([
             'https://docs.influxdata.com/',
-            'https://docs.influxdata.com/influxdb/cloud-iox/',
+            'https://docs.influxdata.com/influxdb/cloud-serverless/',
           ])
         })
       })

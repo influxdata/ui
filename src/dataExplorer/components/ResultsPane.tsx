@@ -18,7 +18,7 @@ import {useSelector, useDispatch} from 'react-redux'
 
 // Contexts
 import {ResultsContext} from 'src/dataExplorer/context/results'
-import {QueryContext} from 'src/shared/contexts/query'
+import {QueryContext, QueryOptions} from 'src/shared/contexts/query'
 import {
   PersistenceContext,
   DEFAULT_FLUX_EDITOR_TEXT,
@@ -50,6 +50,7 @@ import {
   updateWindowPeriod,
 } from 'src/shared/contexts/query/preprocessing'
 import {rangeToParam} from 'src/dataExplorer/shared/utils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
@@ -126,8 +127,17 @@ const ResultsPane: FC = () => {
       let inputValue: string = ''
 
       switch (language) {
-        case LanguageType.FLUX:
         case LanguageType.SQL:
+          if (isFlagEnabled('v2privateQueryUI')) {
+            url = `${API_BASE_PATH}api/v2private/query?database=${selection.bucket?.name}`
+            // the `\n` character is interpreted by the browser as a line break
+            // so replacing the `\n` char with empty space to keep query in correct syntax
+            inputValue = text.replace(/\n/g, ' ')
+            break
+          }
+        // if the flag is not enabled, fall back
+        // to use the following Flux method
+        case LanguageType.FLUX:
           url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
           const query =
             language == LanguageType.SQL

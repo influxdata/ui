@@ -41,6 +41,7 @@ jest.mock('src/languageSupport/languages/flux/lspUtils', () => ({
 jest.mock('src/shared/workers/serviceWorker', () => ({
   registerServiceWorker: jest.fn(),
   registerServiceWorkerInfluxQL: jest.fn(),
+  registerServiceWorkerSQL: jest.fn(),
 }))
 
 class Worker {

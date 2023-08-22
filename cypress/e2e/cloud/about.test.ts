@@ -222,7 +222,7 @@ const upgradeAccount = () => {
 }
 
 describe('Storage types', () => {
-  it('identifies the storage type as iox in an iox org', () => {
+  it('identifies the storage type as Serverless in an iox org', () => {
     spoofStorageType('iox')
     setupTest({
       accountType: 'pay_as_you_go',
@@ -232,7 +232,7 @@ describe('Storage types', () => {
 
     cy.getByTestID('org-profile--labeled-data').within(() => {
       cy.getByTestID('heading').contains('Storage Type')
-      cy.contains('IOx')
+      cy.contains('Serverless (version 3)')
     })
   })
 
@@ -245,7 +245,7 @@ describe('Storage types', () => {
     })
     cy.getByTestID('org-profile--labeled-data').within(() => {
       cy.getByTestID('heading').contains('Storage Type')
-      cy.contains('TSM')
+      cy.contains('TSM (version 2)')
     })
   })
 })

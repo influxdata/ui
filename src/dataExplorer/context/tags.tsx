@@ -90,6 +90,51 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     setLoadingTagKeys(RemoteDataState.Loading)
 
+    if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+      const queryTextSQL: string = `
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE
+            table_schema = 'iox'
+            AND data_type LIKE 'Dictionary%'
+            AND table_name = '${measurement}'
+            AND column_name ILIKE '%${searchTerm}%'
+        LIMIT ${DEFAULT_LIMIT}
+      `
+      const newTags: Tags = {}
+      try {
+        const resp = await queryAPI(queryTextSQL, scope, {
+          language: LanguageType.SQL,
+          bucket,
+        } as QueryOptions)
+        const keys = (resp.parsed.table.columns?.column_name?.data ??
+          []) as string[]
+
+        // Initialize tags with keys
+        keys.map(key => {
+          newTags[key] = []
+        })
+
+        // Initialize status for each key
+        const tagValueStatuses = {} as Hash<RemoteDataState>
+        keys.map(key => {
+          tagValueStatuses[key] = RemoteDataState.NotStarted
+        })
+
+        setTags(newTags)
+        setLoadingTagKeys(RemoteDataState.Done)
+        setLoadingTagValues(tagValueStatuses)
+        setDefaultViewOptions({groupby: Object.keys(newTags)})
+      } catch (e) {
+        console.error(
+          `Failed to get tags for measurement: "${measurement}"\n`,
+          e.message
+        )
+        setLoadingTagKeys(RemoteDataState.Error)
+      }
+      return
+    }
+
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
     const queryText =

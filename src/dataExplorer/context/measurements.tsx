@@ -20,6 +20,7 @@ import {
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
+  sanitizeSQLSearchTerm,
 } from 'src/dataExplorer/shared/utils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -64,12 +65,14 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
     setLoading(RemoteDataState.Loading)
 
     if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+      // user input is sanitized to avoid SQL injection
+      const sanitized = sanitizeSQLSearchTerm(searchTerm)
       const queryTextSQL: string = `
         SELECT table_name
         FROM information_schema.tables
         WHERE
             table_schema = 'iox'
-            AND table_name ILIKE '%${searchTerm}%'
+            AND table_name ILIKE '%${sanitized}%'
         LIMIT ${DEFAULT_LIMIT}
       `
 

@@ -45,7 +45,11 @@ self.addEventListener('fetch', function (event: any) {
           }
           break
         case 'accept':
-          headers.append('Accept', '*/*')
+          if (pathname === '/api/v2private/query') {
+            headers.append('Accept', 'text/csv;format=annotated')
+          } else {
+            headers.append('Accept', '*/*')
+          }
           break
         default:
           headers.append(headerType, headerValue)

@@ -22,6 +22,7 @@ import {
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   SEARCH_STRING,
+  sanitizeSQLSearchTerm,
 } from 'src/dataExplorer/shared/utils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -77,6 +78,8 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     setLoading(RemoteDataState.Loading)
 
     if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+      // user input is sanitized to avoid SQL injection
+      const sanitized = sanitizeSQLSearchTerm(searchTerm)
       const queryTextSQL: string = `
       SELECT column_name
       FROM information_schema.columns
@@ -85,7 +88,7 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
            AND data_type NOT LIKE 'Dictionary%'
            AND table_name = '${measurement}'
            AND column_name != 'time'
-           AND column_name ILIKE '%${searchTerm}%'
+           AND column_name ILIKE '%${sanitized}%'
       LIMIT ${DEFAULT_LIMIT}
       `
       try {

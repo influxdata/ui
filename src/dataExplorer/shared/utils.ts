@@ -128,3 +128,15 @@ export const rangeToParam = (timeRange: TimeRange) => {
     timeRangeStop,
   }
 }
+
+export const sanitizeSQLSearchTerm = (searchTerm: string): string => {
+  const escapeMap: {[key: string]: string} = {
+    "'": "''", // escaping one single quote to two single quotes
+    '%': '\\%',
+    _: '\\_',
+  }
+  const regex = new RegExp(`[${Object.keys(escapeMap).join('')}]`, 'g')
+  return searchTerm.replace(regex, match => {
+    return escapeMap[match]
+  })
+}

@@ -31,7 +31,7 @@ const DashboardIntegrations: FC<Props> = ({
     >
       <ResourceCard className="homepage-wizard-next-steps">
         <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/cloud-iox/visualize-data/superset/"
+          href="https://docs.influxdata.com/influxdb/cloud-serverless/process-data/visualize/superset/"
           onClick={() =>
             handleNextStepEvent(wizardEventName, 'supersetIntegration')
           }
@@ -45,7 +45,7 @@ const DashboardIntegrations: FC<Props> = ({
       </ResourceCard>
       <ResourceCard className="homepage-wizard-next-steps">
         <SafeBlankLink
-          href="https://docs.influxdata.com/influxdb/cloud-iox/visualize-data/grafana/"
+          href="https://docs.influxdata.com/influxdb/cloud-serverless/process-data/visualize/grafana/"
           onClick={() =>
             handleNextStepEvent(wizardEventName, 'grafanaIntegration')
           }

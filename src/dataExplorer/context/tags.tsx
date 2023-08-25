@@ -22,6 +22,7 @@ import {
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   SEARCH_STRING,
+  sanitizeSQLSearchTerm,
 } from 'src/dataExplorer/shared/utils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -91,6 +92,8 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     setLoadingTagKeys(RemoteDataState.Loading)
 
     if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+      // user input is sanitized to avoid SQL injection
+      const sanitized = sanitizeSQLSearchTerm(searchTerm)
       const queryTextSQL: string = `
         SELECT column_name
         FROM information_schema.columns
@@ -98,7 +101,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
             table_schema = 'iox'
             AND data_type LIKE 'Dictionary%'
             AND table_name = '${measurement}'
-            AND column_name ILIKE '%${searchTerm}%'
+            AND column_name ILIKE '%${sanitized}%'
         LIMIT ${DEFAULT_LIMIT}
       `
       const newTags: Tags = {}

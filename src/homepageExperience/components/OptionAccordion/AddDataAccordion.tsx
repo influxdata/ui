@@ -153,7 +153,7 @@ export const AddDataAccordion: FC = () => {
               return (
                 <OptionLink
                   title="View API Docs"
-                  href="https://docs.influxdata.com/influxdb/cloud-iox/api/#operation/PostWrite"
+                  href="https://docs.influxdata.com/influxdb/cloud-serverless/api/#operation/PostWrite"
                   onClick={handleAPIClick}
                 />
               )
@@ -166,7 +166,7 @@ export const AddDataAccordion: FC = () => {
               return (
                 <OptionLink
                   title="View CLI Docs"
-                  href="https://docs.influxdata.com/influxdb/cloud-iox/write-data/csv/influx-cli/"
+                  href="https://docs.influxdata.com/influxdb/cloud-serverless/write-data/csv/influx-cli/"
                   onClick={handleCLIClick}
                 />
               )

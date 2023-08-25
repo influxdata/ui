@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
+import React, {FC, useCallback, useContext, useEffect} from 'react'
 
 // Components
 import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
@@ -19,26 +19,29 @@ strings, and, for any SQL users out there, a measurement is conceptually \
 similar to a table.`
 
 const MeasurementSelector: FC = () => {
-  const {selectedBucket, selectedMeasurement, selectMeasurement} = useContext(
-    ScriptQueryBuilderContext
-  )
+  const {
+    selectedBucket,
+    selectedMeasurement,
+    searchTermMeasurement,
+    setSearchTermMeasurement,
+    selectMeasurement,
+  } = useContext(ScriptQueryBuilderContext)
   const {measurements, loading} = useContext(MeasurementsContext)
-  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
-    setSearchTerm('')
+    setSearchTermMeasurement('')
   }, [selectedBucket])
 
   const handleSelect = useCallback(
     (option: string): void => {
       selectMeasurement(option)
-      event('measurementSelected', {search: searchTerm.length})
+      event('measurementSelected', {search: searchTermMeasurement.length})
     },
-    [searchTerm, selectMeasurement]
+    [searchTermMeasurement, selectMeasurement]
   )
 
   const handleChangeSearchTerm = (value: string) => {
-    setSearchTerm(value)
+    setSearchTermMeasurement(value)
   }
 
   if (!selectedBucket) {
@@ -52,7 +55,7 @@ const MeasurementSelector: FC = () => {
         tooltipContents={MEASUREMENT_TOOLTIP}
       />
       <SearchableDropdown
-        searchTerm={searchTerm}
+        searchTerm={searchTermMeasurement}
         searchPlaceholder="Search measurements"
         selectedOption={selectedMeasurement || 'Select measurement...'}
         onSelect={handleSelect}
@@ -68,4 +71,4 @@ const MeasurementSelector: FC = () => {
   )
 }
 
-export default MeasurementSelector
+export {MeasurementSelector}

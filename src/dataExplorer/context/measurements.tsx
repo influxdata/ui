@@ -1,5 +1,6 @@
 // Libraries
 import React, {createContext, FC, useContext, useMemo, useState} from 'react'
+import {useSelector} from 'react-redux'
 
 // Constants
 import {
@@ -9,7 +10,7 @@ import {
 import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Contexts
-import {QueryContext, QueryScope} from 'src/shared/contexts/query'
+import {QueryContext, QueryOptions, QueryScope} from 'src/shared/contexts/query'
 
 // Types
 import {Bucket, RemoteDataState} from 'src/types'
@@ -19,18 +20,24 @@ import {
   IMPORT_STRINGS,
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
+  sanitizeSQLSearchTerm,
 } from 'src/dataExplorer/shared/utils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Selectors
+import {isOrgIOx} from 'src/organizations/selectors'
+import {LanguageType} from '../components/resources'
 
 interface MeasurementsContextType {
   measurements: string[]
   loading: RemoteDataState
-  getMeasurements: (bucket: Bucket) => void
+  getMeasurements: (bucket: Bucket, searchTerm?: string) => void
 }
 
 const DEFAULT_CONTEXT: MeasurementsContextType = {
   measurements: [],
   loading: RemoteDataState.NotStarted,
-  getMeasurements: (_: Bucket) => {},
+  getMeasurements: (_b: Bucket, _s: string) => {},
 }
 
 export const MeasurementsContext =
@@ -41,6 +48,8 @@ interface Prop {
 }
 
 export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
+  const isIOx = useSelector(isOrgIOx)
+
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
 
@@ -48,12 +57,40 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
   const [measurements, setMeasurements] = useState<Array<string>>([])
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
 
-  const getMeasurements = async bucket => {
+  const getMeasurements = async (bucket: Bucket, searchTerm: string = '') => {
     if (!bucket) {
       return
     }
 
     setLoading(RemoteDataState.Loading)
+
+    if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+      // user input is sanitized to avoid SQL injection
+      const sanitized = sanitizeSQLSearchTerm(searchTerm)
+      const queryTextSQL: string = `
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE
+            table_schema = 'iox'
+            AND table_name ILIKE '%${sanitized}%'
+        LIMIT ${DEFAULT_LIMIT}
+      `
+
+      try {
+        const resp = await queryAPI(queryTextSQL, scope, {
+          language: LanguageType.SQL, // use SQL to get measurement list
+          bucket,
+        } as QueryOptions)
+        const values = (resp.parsed.table?.columns?.table_name?.data ??
+          []) as string[]
+        setMeasurements(values)
+        setLoading(RemoteDataState.Done)
+      } catch (e) {
+        console.error(e.message)
+        setLoading(RemoteDataState.Error)
+      }
+      return
+    }
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx

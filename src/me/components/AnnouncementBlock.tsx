@@ -68,9 +68,11 @@ export const AnnouncementBlock: FC<OwnProps> = ({
             {image}
             <Heading element={HeadingElement.H4}>
               {ctaLink ? (
-                <SafeBlankLink href={ctaLink}>{title}</SafeBlankLink>
+                <SafeBlankLink href={ctaLink} onClick={handleCtaClick}>
+                  {title}
+                </SafeBlankLink>
               ) : (
-                {title}
+                <>{title}</>
               )}
             </Heading>
           </Panel.Header>

@@ -130,7 +130,7 @@ export const QueryDataAccordion: FC = () => {
               return (
                 <OptionLink
                   title="View API Docs"
-                  href="https://docs.influxdata.com/influxdb/cloud-iox/reference/api/"
+                  href="https://docs.influxdata.com/influxdb/cloud-serverless/reference/api/"
                   onClick={handleAPIClick}
                 />
               )

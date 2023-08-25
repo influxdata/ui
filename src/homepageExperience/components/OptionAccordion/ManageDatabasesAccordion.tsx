@@ -77,7 +77,7 @@ export const ManageDatabasesAccordion: FC = () => {
             cta={() => {
               return (
                 <OptionLink
-                  href="https://docs.influxdata.com/influxdb/cloud-iox/admin/buckets/create-bucket/?t=InfluxDB+API"
+                  href="https://docs.influxdata.com/influxdb/cloud-serverless/admin/buckets/create-bucket/?t=InfluxDB+API"
                   onClick={handleAPIClick}
                   title="View API Docs"
                 />
@@ -90,7 +90,7 @@ export const ManageDatabasesAccordion: FC = () => {
             cta={() => {
               return (
                 <OptionLink
-                  href="https://docs.influxdata.com/influxdb/cloud-iox/admin/buckets/create-bucket/?t=influx+CLI"
+                  href="https://docs.influxdata.com/influxdb/cloud-serverless/admin/buckets/create-bucket/?t=influx+CLI"
                   onClick={handleCLIClick}
                   title="View CLI Docs"
                 />

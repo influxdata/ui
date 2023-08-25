@@ -34,12 +34,14 @@ interface ScriptQueryBuilderContextType {
   selectedDBRP: DBRP
   selectedMeasurement: string
   selectedTagValues: SelectedTagValues
+  searchTermMeasurement: string // for measurements only
   searchTerm: string // for searching fields and tags
   selectBucket: (bucket: Bucket) => void
   selectDBRP: (dbrp: DBRP, bucket: Bucket) => void
   selectMeasurement: (measurement: string) => void
   selectField: (field: string) => void
   selectTagValue: (tagKey: string, tagValue: string) => void
+  setSearchTermMeasurement: (str: string) => void
   setSearchTerm: (str: string) => void
 }
 
@@ -53,12 +55,14 @@ const DEFAULT_CONTEXT: ScriptQueryBuilderContextType = {
   selectedDBRP: null,
   selectedMeasurement: '',
   selectedTagValues: DEFAULT_SELECTED_TAG_VALUES,
+  searchTermMeasurement: '',
   searchTerm: '',
   selectBucket: (_b: Bucket) => {},
   selectDBRP: (_d: DBRP, _b: Bucket) => {},
   selectMeasurement: (_m: string) => {},
   selectField: (_f: string) => {},
   selectTagValue: (_k: string, _v: string) => {},
+  setSearchTermMeasurement: (_s: string) => {},
   setSearchTerm: (_s: string) => {},
 }
 
@@ -78,6 +82,7 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
   const [selectedTagValues, setSelectedTagValues] = useState(
     DEFAULT_SELECTED_TAG_VALUES
   )
+  const [searchTermMeasurement, setSearchTermMeasurement] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
 
   const transformSessionTagValuesToLocal = tagValues => {
@@ -205,6 +210,16 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
     setSelection({tagValues: sessionTagValues})
   }
 
+  const handleSearchTermMeasurement = useCallback(
+    (searchTermMeasurement: string): void => {
+      setSearchTermMeasurement(searchTermMeasurement)
+      debouncer(() => {
+        getMeasurements(selection.bucket, searchTermMeasurement)
+      })
+    },
+    [getMeasurements, selection.bucket]
+  )
+
   const handleSearchTerm = useCallback(
     (searchTerm: string): void => {
       setSearchTerm(searchTerm)
@@ -229,6 +244,7 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
           selectedDBRP: selection.dbrp,
           selectedMeasurement: selection.measurement,
           selectedTagValues,
+          searchTermMeasurement,
           searchTerm,
           selectBucket: handleSelectBucket,
           selectDBRP: handleSelectDBRP,
@@ -236,6 +252,7 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
           selectField: handleSelectField,
           selectTagValue: handleSelectTagValue,
           setSearchTerm: handleSearchTerm,
+          setSearchTermMeasurement: handleSearchTermMeasurement,
         }}
       >
         {children}
@@ -249,6 +266,7 @@ export const ScriptQueryBuilderProvider: FC = ({children}) => {
       selection,
       selection.fields,
       selection.tagValues,
+      searchTermMeasurement,
       searchTerm,
 
       children,

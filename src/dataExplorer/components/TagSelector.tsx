@@ -28,7 +28,7 @@ similar to an indexed column and value.`
 interface TagValuesProps {
   loading: RemoteDataState
   tagKey: string
-  tagValues: string[]
+  tagValues: string[] | number[] | boolean[]
 }
 
 const TagValues: FC<TagValuesProps> = ({loading, tagKey, tagValues}) => {

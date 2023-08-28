@@ -174,10 +174,11 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         LIMIT ${DEFAULT_LIMIT}
       `
       try {
-        const resp = await queryAPI(queryTextSQL, scope, {
+        const queryOptions: QueryOptions = {
           language: LanguageType.SQL, // use SQL to get measurement list
           bucket,
-        } as QueryOptions)
+        }
+        const resp = await queryAPI(queryTextSQL, scope, queryOptions)
         const values = (Object.values(resp.parsed.table?.columns ?? [])[0]
           ?.data ?? []) as string[]
 

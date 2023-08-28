@@ -56,7 +56,7 @@ interface Hash<T> {
   [key: string]: T
 }
 
-type Tags = Record<string, string[]>
+type Tags = Record<string, string[] | number[] | boolean[]>
 
 interface Prop {
   scope: QueryScope
@@ -226,8 +226,8 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
           language: LanguageType.SQL, // use SQL to get measurement list
           bucket,
         } as QueryOptions)
-        const values = (Object.values(resp.parsed.table?.columns ?? [])[0]
-          ?.data ?? []) as string[]
+        const values =
+          Object.values(resp.parsed.table?.columns ?? [])[0]?.data ?? []
 
         // Update the tag key with the corresponding tag values
         const newTags = {...tags, [tagKey]: values}
@@ -277,9 +277,10 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     try {
       const resp = await queryAPI(queryText, scope)
-      const values = (Object.values(resp.parsed.table.columns).filter(
-        c => c.name === '_value' && c.type === 'string'
-      )[0]?.data ?? []) as string[]
+      const values =
+        Object.values(resp.parsed.table.columns).filter(
+          c => c.name === '_value' && c.type === 'string'
+        )[0]?.data ?? []
 
       // Update the tag key with the corresponding tag values
       const newTags = {...tags, [tagKey]: values}

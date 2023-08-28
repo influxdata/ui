@@ -113,14 +113,11 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         const keys = (resp.parsed.table.columns?.column_name?.data ??
           []) as string[]
 
-        // Initialize tags with keys
-        keys.map(key => {
-          newTags[key] = []
-        })
-
-        // Initialize status for each key
         const tagValueStatuses = {} as Hash<RemoteDataState>
         keys.map(key => {
+          // Initialize tags with keys
+          newTags[key] = []
+          // Initialize status for each key
           tagValueStatuses[key] = RemoteDataState.NotStarted
         })
 
@@ -176,14 +173,11 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
 
-      // Initialize tags with keys
-      keys.map(key => {
-        newTags[key] = []
-      })
-
-      // Initialize status for each key
       const tagValueStatuses = {} as Hash<RemoteDataState>
       keys.map(key => {
+        // Initialize tags with keys
+        newTags[key] = []
+        // Initialize status for each key
         tagValueStatuses[key] = RemoteDataState.NotStarted
       })
 

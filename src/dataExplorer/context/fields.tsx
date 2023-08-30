@@ -1,6 +1,7 @@
 // Libraries
 import React, {createContext, FC, useContext, useMemo, useState} from 'react'
 import {Bucket, RemoteDataState} from 'src/types'
+import {useSelector} from 'react-redux'
 
 // Constants
 import {
@@ -8,9 +9,10 @@ import {
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
 import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
+import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Contexts
-import {QueryContext, QueryScope} from 'src/shared/contexts/query'
+import {QueryContext, QueryOptions, QueryScope} from 'src/shared/contexts/query'
 import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
 
 // Utils
@@ -20,7 +22,12 @@ import {
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   SEARCH_STRING,
+  sanitizeSQLSearchTerm,
 } from 'src/dataExplorer/shared/utils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Selectors
+import {isOrgIOx} from 'src/organizations/selectors'
 
 interface FieldsContextType {
   fields: Array<string>
@@ -45,6 +52,8 @@ interface Prop {
 }
 
 export const FieldsProvider: FC<Prop> = ({children, scope}) => {
+  const isIOx = useSelector(isOrgIOx)
+
   // Contexts
   const {query: queryAPI} = useContext(QueryContext)
   const {setDefaultViewOptions} = useContext(ResultsViewContext)
@@ -67,6 +76,37 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
     }
 
     setLoading(RemoteDataState.Loading)
+
+    if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+      // user input is sanitized to avoid SQL injection
+      const sanitized = sanitizeSQLSearchTerm(searchTerm)
+      const queryTextSQL: string = `
+      SELECT column_name
+      FROM information_schema.columns
+      WHERE
+           table_schema = 'iox'
+           AND data_type NOT LIKE 'Dictionary%'
+           AND table_name = '${measurement}'
+           AND column_name != 'time'
+           AND column_name ILIKE '%${sanitized}%'
+      LIMIT ${DEFAULT_LIMIT}
+      `
+      try {
+        const resp = await queryAPI(queryTextSQL, scope, {
+          language: LanguageType.SQL,
+          bucket,
+        } as QueryOptions)
+        const values = (resp.parsed.table?.columns?.column_name?.data ??
+          []) as string[]
+        setFields(values)
+        setLoading(RemoteDataState.Done)
+        setDefaultViewOptions({smoothing: {columns: values}})
+      } catch (e) {
+        console.error(e.message)
+        setLoading(RemoteDataState.Error)
+      }
+      return
+    }
 
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx

@@ -133,10 +133,14 @@ const ResultsPane: FC = () => {
             // the `\n` character is interpreted by the browser as a line break
             // so replacing the `\n` char with empty space to keep query in correct syntax
             inputValue = text.replace(/\n/g, ' ')
+            // Intentionally keep the `break` inside the if statement;
+            // Otherwide, users cannot download csv for SQL queries when
+            // the feature flag is not enabled
             break
           }
-        // if the flag is not enabled, fall back
-        // to use the following Flux method
+        // If the flag is not enabled, each SQL query actually will be wrapped
+        // inside a Flux query `iox.sql()`, and the if statement will be false,
+        // so we want the logic to fall to the next case LanguageType.FLUX
         case LanguageType.FLUX:
           url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
           const query =

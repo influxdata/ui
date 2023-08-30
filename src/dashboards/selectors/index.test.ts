@@ -117,6 +117,7 @@ describe('Dashboards.Selector', () => {
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
         workerRegistrationInfluxQL: null,
+        workerRegistrationSQL: null,
       },
     }
 
@@ -144,6 +145,7 @@ describe('Dashboards.Selector', () => {
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
         workerRegistrationInfluxQL: null,
+        workerRegistrationSQL: null,
       },
     }
 
@@ -179,6 +181,7 @@ describe('Dashboards.Selector', () => {
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
         workerRegistrationInfluxQL: null,
+        workerRegistrationSQL: null,
       },
     }
 
@@ -214,6 +217,7 @@ describe('Dashboards.Selector', () => {
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
         workerRegistrationInfluxQL: null,
+        workerRegistrationSQL: null,
       },
     }
 
@@ -245,6 +249,7 @@ describe('Dashboards.Selector', () => {
         subscriptionsCertificateInterest: false,
         workerRegistration: null,
         workerRegistrationInfluxQL: null,
+        workerRegistrationSQL: null,
       },
     }
 

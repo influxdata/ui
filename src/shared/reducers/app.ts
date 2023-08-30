@@ -21,6 +21,7 @@ export interface AppState {
     subscriptionsCertificateInterest: boolean
     workerRegistration: Promise<ServiceWorkerRegistration>
     workerRegistrationInfluxQL: Promise<ServiceWorkerRegistration>
+    workerRegistrationSQL: Promise<ServiceWorkerRegistration>
   }
 }
 
@@ -40,6 +41,7 @@ const initialState: AppState = {
     subscriptionsCertificateInterest: false,
     workerRegistration: null,
     workerRegistrationInfluxQL: null,
+    workerRegistrationSQL: null,
   },
 }
 
@@ -141,6 +143,13 @@ const appPersistedReducer = (
       return {
         ...state,
         workerRegistrationInfluxQL: action.payload.workerRegistrationInfluxQL,
+      }
+    }
+
+    case ActionTypes.SetWorkerRegistrationSQL: {
+      return {
+        ...state,
+        workerRegistrationSQL: action.payload.workerRegistrationSQL,
       }
     }
 

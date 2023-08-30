@@ -14,6 +14,7 @@ export enum ActionTypes {
   SetSubscriptionsCertificateInterest = 'SET_SUB_CERT_INTEREST',
   SetWorkerRegistration = 'SET_WORKER_REGISTRATION',
   SetWorkerRegistrationInfluxQL = 'SET_WORKER_REGISTRATION_INFLUXQL',
+  SetWorkerRegistrationSQL = 'SET_WORKER_REGISTRATION_SQL',
 }
 
 export type Action =
@@ -29,6 +30,7 @@ export type Action =
   | ReturnType<typeof setSubscriptionsCertificateInterest>
   | ReturnType<typeof setWorkerRegistration>
   | ReturnType<typeof setWorkerRegistrationInfluxQL>
+  | ReturnType<typeof setWorkerRegistrationSQL>
 
 // ephemeral state action creators
 
@@ -103,4 +105,12 @@ export const setWorkerRegistrationInfluxQL = (
   ({
     type: ActionTypes.SetWorkerRegistrationInfluxQL,
     payload: {workerRegistrationInfluxQL},
+  } as const)
+
+export const setWorkerRegistrationSQL = (
+  workerRegistrationSQL: Promise<ServiceWorkerRegistration>
+) =>
+  ({
+    type: ActionTypes.SetWorkerRegistrationSQL,
+    payload: {workerRegistrationSQL},
   } as const)

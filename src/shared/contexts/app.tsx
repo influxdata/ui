@@ -12,6 +12,7 @@ import {
   setSubscriptionsCertificateInterest as setSubscriptionsCertificateInterestAction,
   setWorkerRegistration,
   setWorkerRegistrationInfluxQL,
+  setWorkerRegistrationSQL,
 } from 'src/shared/actions/app'
 import {
   timeZone as timeZoneFromState,
@@ -29,15 +30,22 @@ import {presentationMode as presentationModeCopy} from 'src/shared/copy/notifica
 import {AppState, TimeZone, Theme, NavBarState, FlowsCTA} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
-let workerRegistration, workerRegistrationInfluxQL
+let workerRegistration, workerRegistrationInfluxQL, workerRegistrationSQL
 import(
   /* webpackPreload: true */
   /* webpackChunkName: "setup-interceptor" */
   'src/shared/workers/serviceWorker'
-).then(({registerServiceWorker, registerServiceWorkerInfluxQL}) => {
-  workerRegistration = registerServiceWorker()
-  workerRegistrationInfluxQL = registerServiceWorkerInfluxQL()
-})
+).then(
+  ({
+    registerServiceWorker,
+    registerServiceWorkerInfluxQL,
+    registerServiceWorkerSQL,
+  }) => {
+    workerRegistration = registerServiceWorker()
+    workerRegistrationInfluxQL = registerServiceWorkerInfluxQL()
+    workerRegistrationSQL = registerServiceWorkerSQL()
+  }
+)
 
 interface AppSettingContextType {
   timeZone: TimeZone
@@ -49,6 +57,7 @@ interface AppSettingContextType {
   subscriptionsCertificateInterest: boolean
   workerRegistration: Promise<ServiceWorkerRegistration>
   workerRegistrationInfluxQL: Promise<ServiceWorkerRegistration>
+  workerRegistrationSQL: Promise<ServiceWorkerRegistration>
 
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
@@ -69,6 +78,7 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   subscriptionsCertificateInterest: false,
   workerRegistration,
   workerRegistrationInfluxQL,
+  workerRegistrationSQL,
 
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
@@ -159,6 +169,10 @@ export const AppSettingProvider: FC = ({children}) => {
     dispatch(setWorkerRegistrationInfluxQL(workerRegistrationInfluxQL))
   }, [workerRegistrationInfluxQL])
 
+  useEffect(() => {
+    dispatch(setWorkerRegistrationSQL(workerRegistrationSQL))
+  }, [workerRegistrationSQL])
+
   return (
     <AppSettingContext.Provider
       value={{
@@ -171,6 +185,7 @@ export const AppSettingProvider: FC = ({children}) => {
         subscriptionsCertificateInterest,
         workerRegistration,
         workerRegistrationInfluxQL,
+        workerRegistrationSQL,
 
         setTimeZone,
         setTheme,

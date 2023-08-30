@@ -38,6 +38,7 @@ export const localState: LocalStorage = {
       subscriptionsCertificateInterest: false,
       workerRegistration: null,
       workerRegistrationInfluxQL: null,
+      workerRegistrationSQL: null,
     },
   },
   flags: {

@@ -222,7 +222,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         }
         const resp = await queryAPI(queryTextSQL, scope, queryOptions)
         const values: string[] | number[] | boolean[] =
-          resp.parsed.table?.columns[tagKey]?.data
+          resp.parsed.table?.columns[tagKey]?.data ?? []
 
         // Update the tag key with the corresponding tag values
         const newTags = {...tags, [tagKey]: values}
@@ -272,10 +272,8 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     try {
       const resp = await queryAPI(queryText, scope)
-      const values =
-        Object.values(resp.parsed.table.columns).filter(
-          c => c.name === '_value' && c.type === 'string'
-        )[0]?.data ?? []
+      const values: string[] | number[] | boolean[] =
+        resp.parsed.table?.columns['_value']?.data ?? []
 
       // Update the tag key with the corresponding tag values
       const newTags = {...tags, [tagKey]: values}

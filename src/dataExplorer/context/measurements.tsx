@@ -10,7 +10,7 @@ import {
 import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 
 // Contexts
-import {QueryContext, QueryOptions, QueryScope} from 'src/shared/contexts/query'
+import {QueryContext, QueryScope} from 'src/shared/contexts/query'
 
 // Types
 import {Bucket, RemoteDataState} from 'src/types'
@@ -80,10 +80,12 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
         const resp = await queryAPI(queryTextSQL, scope, {
           language: LanguageType.SQL, // use SQL to get measurement list
           bucket,
-        } as QueryOptions)
-        const values = (resp.parsed.table?.columns?.table_name?.data ??
+        })
+        // Measurements are strings only, so cast to string[] intentionally
+        // https://docs.influxdata.com/influxdb/cloud-serverless/get-started/write/#:~:text=String%20that%20identifies%20the%20measurement%20to%20store%20the%20data%20in
+        const measurements = (resp.parsed.table?.columns?.table_name?.data ??
           []) as string[]
-        setMeasurements(values)
+        setMeasurements(measurements)
         setLoading(RemoteDataState.Done)
       } catch (e) {
         console.error(e.message)
@@ -118,10 +120,12 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
 
     try {
       const resp = await queryAPI(queryText, scope)
-      const values = (Object.values(resp.parsed.table.columns).filter(
-        c => c.name === '_value' && c.type === 'string'
-      )[0]?.data ?? []) as string[]
-      setMeasurements(values)
+      // Measurements are strings only, so cast to string[] intentionally
+      // https://docs.influxdata.com/influxdb/cloud/get-started/write/#:~:text=String%20that%20identifies%20the%20measurement%20to%20store%20the%20data%20in
+      const measurements = (resp.parsed.table?.columns['_value']?.data ??
+        []) as string[]
+
+      setMeasurements(measurements)
       setLoading(RemoteDataState.Done)
     } catch (e) {
       console.error(e.message)

@@ -67,9 +67,9 @@ const QueryStat: FC = () => {
         )}.`}</span>
       ) : (
         <>
-          {resource?.language === LanguageType.INFLUXQL ? null : (
+          {resource?.language === LanguageType.FLUX ? (
             <span className="query-stat--bold">{`${tableNum} tables`}</span>
-          )}
+          ) : null}
           <span className="query-stat--bold">{`${
             result?.parsed?.table?.length || 0
           } rows`}</span>

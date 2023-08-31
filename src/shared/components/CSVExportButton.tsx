@@ -12,6 +12,9 @@ import {runDownloadQuery} from 'src/timeMachine/actions/queries'
 import {AppState} from 'src/types'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 interface Props extends PropsFromRedux {
@@ -22,7 +25,8 @@ interface Props extends PropsFromRedux {
 
 interface State {
   browserSupportsDownload: boolean
-  browserSupportsDownloadInflxQL: boolean
+  browserSupportsDownloadInfluxQL: boolean
+  browserSupportsDownloadSQL: boolean
 }
 
 class CSVExportButton extends PureComponent<Props, State> {
@@ -30,7 +34,8 @@ class CSVExportButton extends PureComponent<Props, State> {
     super(props)
     this.state = {
       browserSupportsDownload: false,
-      browserSupportsDownloadInflxQL: false,
+      browserSupportsDownloadInfluxQL: false,
+      browserSupportsDownloadSQL: false,
     }
 
     if (props.workerRegistration) {
@@ -59,7 +64,27 @@ class CSVExportButton extends PureComponent<Props, State> {
       ).then(
         registrationResult => {
           if (registrationResult.active.state == 'activated') {
-            this.setState({browserSupportsDownloadInflxQL: true})
+            this.setState({browserSupportsDownloadInfluxQL: true})
+          } else {
+            console.error(
+              'Feature not available, because ServiceWorker is registered but inactive.'
+            )
+          }
+        },
+        function (err) {
+          console.error(
+            'Feature not available, because ServiceWorker registration failed: ',
+            err
+          )
+        }
+      )
+    }
+
+    if (isFlagEnabled('v2privateQueryUI') && props.workerRegistrationSQL) {
+      ;(props.workerRegistrationSQL as Promise<ServiceWorkerRegistration>).then(
+        registrationResult => {
+          if (registrationResult.active.state == 'activated') {
+            this.setState({browserSupportsDownloadSQL: true})
           } else {
             console.error(
               'Feature not available, because ServiceWorker is registered but inactive.'
@@ -78,8 +103,16 @@ class CSVExportButton extends PureComponent<Props, State> {
 
   public render() {
     if (
+      isFlagEnabled('v2privateQueryUI') &&
+      this.props.language === LanguageType.SQL &&
+      !this.state.browserSupportsDownloadSQL
+    ) {
+      return null
+    }
+
+    if (
       this.props.language === LanguageType.INFLUXQL &&
-      !this.state.browserSupportsDownloadInflxQL
+      !this.state.browserSupportsDownloadInfluxQL
     ) {
       return null
     }
@@ -130,6 +163,7 @@ const mstp = (state: AppState) => {
   return {
     workerRegistration: state.app.persisted.workerRegistration,
     workerRegistrationInfluxQL: state.app.persisted.workerRegistrationInfluxQL,
+    workerRegistrationSQL: state.app.persisted.workerRegistrationSQL,
   }
 }
 

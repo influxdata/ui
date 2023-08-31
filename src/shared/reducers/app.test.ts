@@ -27,6 +27,7 @@ describe('Shared.Reducers.appReducer', () => {
       subscriptionsCertificateInterest: false,
       workerRegistration: null,
       workerRegistrationInfluxQL: null,
+      workerRegistrationSQL: null,
     },
   }
 

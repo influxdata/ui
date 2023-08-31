@@ -29,17 +29,27 @@ self.addEventListener('fetch', function (event: any) {
   )
   const pathname: string = new URL(event.request.url).pathname
   if (
-    (pathname === '/api/v2/query' || pathname === '/query') &&
+    (pathname === '/api/v2/query' ||
+      pathname === '/query' ||
+      pathname === '/api/v2private/query') &&
     contentType === 'application/x-www-form-urlencoded'
   ) {
     const headers = new Headers()
     for (const [headerType, headerValue] of event.request.headers) {
       switch (headerType) {
         case 'content-type':
-          headers.set('Content-Type', 'application/json')
+          if (pathname === '/api/v2private/query') {
+            headers.set('Content-Type', 'application/sql')
+          } else {
+            headers.set('Content-Type', 'application/json')
+          }
           break
         case 'accept':
-          headers.append('Accept', '*/*')
+          if (pathname === '/api/v2private/query') {
+            headers.append('Accept', 'text/csv;format=annotated')
+          } else {
+            headers.append('Accept', '*/*')
+          }
           break
         default:
           headers.append(headerType, headerValue)

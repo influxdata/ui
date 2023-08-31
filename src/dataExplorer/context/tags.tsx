@@ -216,12 +216,13 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         LIMIT ${DEFAULT_LIMIT}
       `
       try {
-        const resp = await queryAPI(queryTextSQL, scope, {
+        const queryOptions: QueryOptions = {
           language: LanguageType.SQL, // use SQL to get measurement list
           bucket,
-        } as QueryOptions)
-        const values =
-          Object.values(resp.parsed.table?.columns ?? [])[0]?.data ?? []
+        }
+        const resp = await queryAPI(queryTextSQL, scope, queryOptions)
+        const values: string[] | number[] | boolean[] =
+          resp.parsed.table?.columns[tagKey]?.data
 
         // Update the tag key with the corresponding tag values
         const newTags = {...tags, [tagKey]: values}

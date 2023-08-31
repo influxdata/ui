@@ -22,6 +22,7 @@ import {
   IMPORT_INFLUX_SCHEMA,
   SAMPLE_DATA_SET,
   SEARCH_STRING,
+  sanitizeSQLSearchTerm,
 } from 'src/dataExplorer/shared/utils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -90,6 +91,50 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     setLoadingTagKeys(RemoteDataState.Loading)
 
+    if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+      // user input is sanitized to avoid SQL injection
+      const sanitized = sanitizeSQLSearchTerm(searchTerm)
+      const queryTextSQL: string = `
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE
+            table_schema = 'iox'
+            AND data_type LIKE 'Dictionary%'
+            AND table_name = '${measurement}'
+            AND column_name ILIKE '%${sanitized}%'
+        LIMIT ${DEFAULT_LIMIT}
+      `
+      const newTags: Tags = {}
+      try {
+        const resp = await queryAPI(queryTextSQL, scope, {
+          language: LanguageType.SQL,
+          bucket,
+        } as QueryOptions)
+        const keys = (resp.parsed.table.columns?.column_name?.data ??
+          []) as string[]
+
+        const tagValueStatuses = {} as Hash<RemoteDataState>
+        keys.map(key => {
+          // Initialize tags with keys
+          newTags[key] = []
+          // Initialize status for each key
+          tagValueStatuses[key] = RemoteDataState.NotStarted
+        })
+
+        setTags(newTags)
+        setLoadingTagKeys(RemoteDataState.Done)
+        setLoadingTagValues(tagValueStatuses)
+        setDefaultViewOptions({groupby: Object.keys(newTags)})
+      } catch (e) {
+        console.error(
+          `Failed to get tags for measurement: "${measurement}"\n`,
+          e.message
+        )
+        setLoadingTagKeys(RemoteDataState.Error)
+      }
+      return
+    }
+
     // Simplified version of query from this file:
     //   src/flows/pipes/QueryBuilder/context.tsx
     const queryText =
@@ -128,14 +173,11 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         c => c.name === '_value' && c.type === 'string'
       )[0]?.data ?? []) as string[]
 
-      // Initialize tags with keys
-      keys.map(key => {
-        newTags[key] = []
-      })
-
-      // Initialize status for each key
       const tagValueStatuses = {} as Hash<RemoteDataState>
       keys.map(key => {
+        // Initialize tags with keys
+        newTags[key] = []
+        // Initialize status for each key
         tagValueStatuses[key] = RemoteDataState.NotStarted
       })
 
@@ -180,7 +222,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         }
         const resp = await queryAPI(queryTextSQL, scope, queryOptions)
         const values: string[] | number[] | boolean[] =
-          resp.parsed.table?.columns[tagKey]?.data
+          resp.parsed.table?.columns[tagKey]?.data ?? []
 
         // Update the tag key with the corresponding tag values
         const newTags = {...tags, [tagKey]: values}
@@ -230,9 +272,8 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     try {
       const resp = await queryAPI(queryText, scope)
-      const values = (Object.values(resp.parsed.table.columns).filter(
-        c => c.name === '_value' && c.type === 'string'
-      )[0]?.data ?? []) as string[]
+      const values: string[] | number[] | boolean[] =
+        resp.parsed.table?.columns['_value']?.data ?? []
 
       // Update the tag key with the corresponding tag values
       const newTags = {...tags, [tagKey]: values}

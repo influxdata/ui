@@ -45,7 +45,7 @@ export const CurrentAnnouncement: FC = () => {
           environments.
         </p>
       }
-      ctaLink="https://influxdata.com/blog/announcing-influxdb-clustered/?utm_source=in-app&utm_medium=product&utm_campaign=2023_09_launch_clustered"
+      ctaLink="https://www.influxdata.com/blog/announcing-influxdb-clustered/?utm_source=in-app&utm_medium=product&utm_campaign=2023_09_launch_clustered"
       ctaText="Learn More Here"
       iconColor={InfluxColors.Chartreuse}
       title="Now Available: InfluxDB Clustered"

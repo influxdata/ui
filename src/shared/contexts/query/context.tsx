@@ -56,6 +56,7 @@ export interface QueryOptions {
   dbrp?: DBRP
   rawBlob?: boolean
   sqlQueryModifiers?: SqlQueryModifiers
+  useFluxEndpoint?: boolean
 }
 
 export interface SqlQueryModifiers {
@@ -145,7 +146,11 @@ const buildQueryRequest = (
     return {url, body, headers}
   }
 
-  if (isFlagEnabled('v2privateQueryUI') && language === LanguageType.SQL) {
+  if (
+    isFlagEnabled('v2privateQueryUI') &&
+    language === LanguageType.SQL &&
+    !options?.useFluxEndpoint
+  ) {
     const url = `${API_BASE_PATH}api/v2private/query?database=${options?.bucket?.name}`
     const body = text
     const headers = {

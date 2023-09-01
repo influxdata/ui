@@ -185,6 +185,18 @@ const GraphResults: FC = () => {
   const {result, status} = useContext(ChildResultsContext)
   const {range} = useContext(PersistenceContext)
 
+  const viewElement = useMemo(() => {
+    return (
+      <View
+        loading={status}
+        properties={view.properties}
+        result={result?.parsed}
+        timeRange={range}
+        hideTimer
+      />
+    )
+  }, [status, view.properties, result?.parsed, range])
+
   if (result?.error) {
     return <ErrorResults error={result.error} />
   }
@@ -195,13 +207,7 @@ const GraphResults: FC = () => {
       data-testid="data-explorer-results--view"
     >
       <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>
-        <View
-          loading={status}
-          properties={view.properties}
-          result={result?.parsed}
-          timeRange={range}
-          hideTimer
-        />
+        {viewElement}
       </SpinnerContainer>
     </div>
   )

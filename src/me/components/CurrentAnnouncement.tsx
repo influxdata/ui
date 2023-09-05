@@ -38,17 +38,17 @@ export const CurrentAnnouncement: FC = () => {
     <AnnouncementBlock
       body={
         <p>
-          InfluxDB Clustered is the enterprise solution for organizations
-          needing control over their data and underlying infrastructure.
-          Clustered turns any InfluxDB instance into a production-ready cluster
-          that can run anywhere - on-premises, in the cloud, or in hybrid
-          environments.
+          InfluxDB Clustered is the solution for organizations needing control
+          over their data and underlying infrastructure. Clustered turns any
+          InfluxDB instance into a production-ready cluster that can run
+          on-premises or in your private cloud. Keep your time series data where
+          you need it.
         </p>
       }
-      ctaLink="https://www.influxdata.com/blog/announcing-influxdb-clustered/?utm_source=in-app&utm_medium=product&utm_campaign=2023_09_launch_clustered"
+      ctaLink="https://www.influxdata.com/blog/announcing-influxdb-clustered?utm_source=in-app&utm_medium=product&utm_campaign=2023_09_launch_clustered"
       ctaText="Learn More Here"
       iconColor={InfluxColors.Chartreuse}
-      title="Now Available: InfluxDB Clustered"
+      title="Announcing InfluxDB Clustered"
     />
   )
 

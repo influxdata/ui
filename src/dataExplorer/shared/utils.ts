@@ -129,7 +129,7 @@ export const rangeToParam = (timeRange: TimeRange) => {
   }
 }
 
-export const sanitizeSQLSearchTerm = (searchTerm: string): string => {
+export const sanitizeSQLSearchTerm = (searchTerm: string = ''): string => {
   const escapeMap: {[key: string]: string} = {
     "'": "''", // escaping one single quote to two single quotes
     '%': '\\%',

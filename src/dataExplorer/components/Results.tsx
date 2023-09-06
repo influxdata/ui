@@ -275,12 +275,12 @@ const NOT_SUPPORTED_GRAPH_TYPES = [
 ]
 const GraphHeader: FC = () => {
   const {view, setView} = useContext(ResultsViewContext)
-  const {result} = useContext(ResultsContext)
   const {result: subQueryResult} = useContext(ChildResultsContext)
   const {launch, clear: closeSidebar} = useContext(SidebarContext)
 
   const dataExists =
-    !!result?.parsed && result.parsed.resultColumnNames.length > 0
+    !!subQueryResult?.parsed &&
+    subQueryResult.parsed.resultColumnNames.length > 0
 
   const launcher = () => {
     launch(<WrappedOptions />)
@@ -292,7 +292,7 @@ const GraphHeader: FC = () => {
     } else {
       closeSidebar()
     }
-  }, [result])
+  }, [subQueryResult])
 
   const updateType = viewType => {
     setView({

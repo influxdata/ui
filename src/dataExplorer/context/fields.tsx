@@ -12,7 +12,7 @@ import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Contexts
-import {QueryContext, QueryOptions, QueryScope} from 'src/shared/contexts/query'
+import {QueryContext, QueryScope} from 'src/shared/contexts/query'
 import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
 
 // Utils
@@ -45,7 +45,7 @@ const DEFAULT_CONTEXT: FieldsContextType = {
 
 export const FieldsContext = createContext<FieldsContextType>(DEFAULT_CONTEXT)
 
-const INITIAL_FIELDS = [] as string[]
+const INITIAL_FIELDS: string[] = []
 
 interface Prop {
   scope: QueryScope
@@ -95,12 +95,14 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
         const resp = await queryAPI(queryTextSQL, scope, {
           language: LanguageType.SQL,
           bucket,
-        } as QueryOptions)
-        const values = (resp.parsed.table?.columns?.column_name?.data ??
+        })
+        // Field keys are strings only, so cast to string[] intentionally
+        // https://docs.influxdata.com/influxdb/cloud-serverless/get-started/write/#:~:text=Field%20keys%20are%20unquoted%20strings.
+        const fieldKeys = (resp.parsed.table?.columns?.column_name?.data ??
           []) as string[]
-        setFields(values)
+        setFields(fieldKeys)
         setLoading(RemoteDataState.Done)
-        setDefaultViewOptions({smoothing: {columns: values}})
+        setDefaultViewOptions({smoothing: {columns: fieldKeys}})
       } catch (e) {
         console.error(e.message)
         setLoading(RemoteDataState.Error)
@@ -142,12 +144,13 @@ export const FieldsProvider: FC<Prop> = ({children, scope}) => {
 
     try {
       const resp = await queryAPI(queryText, scope)
-      const values = (Object.values(resp.parsed.table.columns).filter(
-        c => c.name === '_value' && c.type === 'string'
-      )[0]?.data ?? []) as string[]
-      setFields(values)
+      // Field keys are strings only, so cast to string[] intentionally
+      // https://docs.influxdata.com/influxdb/cloud/get-started/write/#:~:text=Field%20keys%20are%20unquoted%20strings
+      const fieldKeys = (resp.parsed.table?.columns['_value']?.data ??
+        []) as string[]
+      setFields(fieldKeys)
       setLoading(RemoteDataState.Done)
-      setDefaultViewOptions({smoothing: {columns: values}})
+      setDefaultViewOptions({smoothing: {columns: fieldKeys}})
     } catch (e) {
       console.error(e.message)
       setLoading(RemoteDataState.Error)

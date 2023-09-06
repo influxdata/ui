@@ -39,9 +39,9 @@ interface TagsContextType {
 }
 
 const DEFAULT_CONTEXT: TagsContextType = {
-  tags: {} as Tags,
+  tags: {},
   loadingTagKeys: RemoteDataState.NotStarted,
-  loadingTagValues: {} as Hash<RemoteDataState>,
+  loadingTagValues: {},
   getTagKeys: (_b: Bucket, _m: string, _s: string) => {},
   getTagValues: (_b: Bucket, _m: string, _tk: string) => {},
   resetTags: () => {},
@@ -49,8 +49,8 @@ const DEFAULT_CONTEXT: TagsContextType = {
 
 export const TagsContext = createContext<TagsContextType>(DEFAULT_CONTEXT)
 
-const INITIAL_TAGS = {} as Tags
-const INITIAL_LOADING_TAG_VALUES = {} as Hash<RemoteDataState>
+const INITIAL_TAGS: Tags = {}
+const INITIAL_LOADING_TAG_VALUES: Hash<RemoteDataState> = {}
 
 interface Hash<T> {
   [key: string]: T
@@ -109,12 +109,14 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
         const resp = await queryAPI(queryTextSQL, scope, {
           language: LanguageType.SQL,
           bucket,
-        } as QueryOptions)
-        const keys = (resp.parsed.table.columns?.column_name?.data ??
+        })
+        // Tag keys are strings only, so cast to string[] intentionally
+        // https://docs.influxdata.com/influxdb/cloud/get-started/write/#:~:text=Tag%20keys%20and%20values%20are%20unquoted%20strings
+        const tagKeys = (resp.parsed.table.columns?.column_name?.data ??
           []) as string[]
 
-        const tagValueStatuses = {} as Hash<RemoteDataState>
-        keys.map(key => {
+        const tagValueStatuses: Hash<RemoteDataState> = {}
+        tagKeys.map(key => {
           // Initialize tags with keys
           newTags[key] = []
           // Initialize status for each key
@@ -169,11 +171,12 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
     const newTags: Tags = {}
     try {
       const resp = await queryAPI(queryText, scope)
-      const keys = (Object.values(resp.parsed.table.columns).filter(
-        c => c.name === '_value' && c.type === 'string'
-      )[0]?.data ?? []) as string[]
+      // Tag keys are strings only, so cast to string[] intentionally
+      // https://docs.influxdata.com/influxdb/cloud-serverless/get-started/write/#:~:text=Tag%20keys%20and%20values%20are%20unquoted%20strings
+      const keys = (resp.parsed.table?.columns['_value']?.data ??
+        []) as string[]
 
-      const tagValueStatuses = {} as Hash<RemoteDataState>
+      const tagValueStatuses: Hash<RemoteDataState> = {}
       keys.map(key => {
         // Initialize tags with keys
         newTags[key] = []

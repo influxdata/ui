@@ -10,8 +10,7 @@ import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 import {QueryContext, SqlQueryModifiers} from 'src/shared/contexts/query'
 
 // Types
-import {FluxResult} from 'src/types/flows'
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, FluxResult} from 'src/types'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
@@ -132,6 +131,10 @@ export const ChildResultsProvider: FC = ({children}) => {
         language: resource?.language ?? LanguageType.SQL,
         bucket: selection.bucket,
         sqlQueryModifiers,
+        // keep SQL using the Flux endpoint so that
+        // UI can keep reusing the Giraffe plots
+        // https://github.com/influxdata/idpe/issues/17986#issuecomment-1703346936
+        useFluxEndpoint: true,
       }
     )
       .then(result => {

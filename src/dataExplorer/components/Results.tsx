@@ -185,6 +185,18 @@ const GraphResults: FC = () => {
   const {result, status} = useContext(ChildResultsContext)
   const {range} = useContext(PersistenceContext)
 
+  const viewElement = useMemo(() => {
+    return (
+      <View
+        loading={status}
+        properties={view.properties}
+        result={result?.parsed}
+        timeRange={range}
+        hideTimer
+      />
+    )
+  }, [status, view.properties, result?.parsed, range])
+
   if (result?.error) {
     return <ErrorResults error={result.error} />
   }
@@ -195,13 +207,7 @@ const GraphResults: FC = () => {
       data-testid="data-explorer-results--view"
     >
       <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>
-        <View
-          loading={status}
-          properties={view.properties}
-          result={result?.parsed}
-          timeRange={range}
-          hideTimer
-        />
+        {viewElement}
       </SpinnerContainer>
     </div>
   )
@@ -269,12 +275,12 @@ const NOT_SUPPORTED_GRAPH_TYPES = [
 ]
 const GraphHeader: FC = () => {
   const {view, setView} = useContext(ResultsViewContext)
-  const {result} = useContext(ResultsContext)
   const {result: subQueryResult} = useContext(ChildResultsContext)
   const {launch, clear: closeSidebar} = useContext(SidebarContext)
 
   const dataExists =
-    !!result?.parsed && result.parsed.resultColumnNames.length > 0
+    !!subQueryResult?.parsed &&
+    subQueryResult.parsed.resultColumnNames.length > 0
 
   const launcher = () => {
     launch(<WrappedOptions />)
@@ -286,7 +292,7 @@ const GraphHeader: FC = () => {
     } else {
       closeSidebar()
     }
-  }, [result])
+  }, [subQueryResult])
 
   const updateType = viewType => {
     setView({

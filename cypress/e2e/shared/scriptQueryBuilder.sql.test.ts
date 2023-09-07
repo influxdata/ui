@@ -3,6 +3,8 @@ import {Organization} from '../../../src/types'
 const DEFAULT_SQL_EDITOR_TEXT = '/* Start by typing SQL here */'
 
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
+const DELAY_FOR_FILE_DOWNLOAD = 5000
+const NUMBER_OF_ROWS = 5 // see `generateWriteData` for why this number
 
 describe('Script Builder', () => {
   const bucketName = 'defbuck-sql'
@@ -13,6 +15,7 @@ describe('Script Builder', () => {
   const tagKey = 'air_station_id'
   const tagValue = 'ST01'
   const tagValue2 = 'ST02'
+  let route: string
 
   const selectSchema = () => {
     cy.log('select bucket')
@@ -50,6 +53,8 @@ describe('Script Builder', () => {
 
   before(() => {
     const generateWriteData = (value: number) => {
+      // this will generate a table of 5 rows in csv format
+      // 1 row of table header + 4 rows of data
       return [
         `${measurement},${tagKey}=${tagValue} ${fieldName}=${value}`,
         `${measurement},${tagKey}=${tagValue} ${fieldName2}=${value}`,
@@ -61,6 +66,8 @@ describe('Script Builder', () => {
     cy.flush().then(() => {
       return cy.signin().then(() => {
         return cy.get('@org').then(({id, name}: Organization) => {
+          route = `/orgs/${id}/data-explorer`
+
           cy.log('add mock data')
           cy.createBucket(id, name, bucketName)
           cy.createBucket(id, name, anotherBucketName)
@@ -76,10 +83,59 @@ describe('Script Builder', () => {
   })
 
   beforeEach(() => {
-    cy.scriptsLoginWithFlags({}).then(() => {
+    cy.scriptsLoginWithFlags({
+      v2privateQueryUI: true,
+    }).then(() => {
       cy.clearSqlScriptSession()
       cy.getByTestID('editor-sync--toggle')
       cy.getByTestID('sql-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})
+    })
+  })
+
+  describe('Other Core Features', () => {
+    it('Download CSV', () => {
+      // The csv download functionality works the same for all the languages
+      // (i.e. Flux, SQL, InfluxQL), and the file `scriptQueryBuilder.result.test.ts`
+      // has already include a full coverage in general, so we are just doing a
+      // simple test for SQL csv download here
+      cy.intercept('POST', '/api/v2private/query?*', req => {
+        req.redirect(route)
+      }).as('queryDownloadCSV')
+
+      cy.getByTestID('csv-download-button')
+        .should('be.visible')
+        .should('be.disabled')
+
+      cy.log('select bucket')
+      cy.selectScriptBucket(bucketName)
+
+      cy.log('type in a query')
+      cy.getByTestID('sql-editor').monacoType(
+        `{selectall}{del}SELECT * FROM "${measurement}"`
+      )
+      cy.getByTestID('sql-editor').contains(`SELECT * FROM "${measurement}"`)
+
+      cy.log('will download complete csv data')
+      cy.getByTestID('csv-download-button').should('not.be.disabled').click()
+      cy.wait('@queryDownloadCSV', {timeout: DELAY_FOR_FILE_DOWNLOAD})
+        .its('request', {timeout: DELAY_FOR_FILE_DOWNLOAD})
+        .then(req => {
+          cy.request(req)
+            .then(({body, headers}) => {
+              expect(headers).to.have.property(
+                'content-type',
+                'text/csv; format=annotated;header=present'
+              )
+              return Promise.resolve(body)
+            })
+            .then((csv: string) => {
+              cy.wrap(csv)
+                .then(doc => doc.trim().split('\n'))
+                .then((list: string[]) => {
+                  expect(list.length).eq(NUMBER_OF_ROWS)
+                })
+            })
+        })
     })
   })
 

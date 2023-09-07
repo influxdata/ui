@@ -119,6 +119,7 @@ describe('Script Builder', () => {
   beforeEach(() => {
     cy.scriptsLoginWithFlags({
       influxqlUI: true,
+      v2privateQueryUI: true,
     }).then(() => {
       cy.clearInfluxQLScriptSession()
       cy.getByTestID('editor-sync--toggle')

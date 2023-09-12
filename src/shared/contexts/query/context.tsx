@@ -37,7 +37,6 @@ import {DBRP} from 'src/client'
 
 // Utils
 import {addAnnotationToCSV} from 'src/shared/utils/addAnnotationToCSV'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface CancelMap {
   [key: string]: () => void
@@ -146,11 +145,7 @@ const buildQueryRequest = (
     return {url, body, headers}
   }
 
-  if (
-    isFlagEnabled('v2privateQueryUI') &&
-    language === LanguageType.SQL &&
-    !options?.useFluxEndpoint
-  ) {
+  if (language === LanguageType.SQL && !options?.useFluxEndpoint) {
     const url = `${API_BASE_PATH}api/v2private/query?database=${options?.bucket?.name}`
     const body = text
     const headers = {

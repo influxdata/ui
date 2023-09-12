@@ -83,9 +83,7 @@ describe('Script Builder', () => {
   })
 
   beforeEach(() => {
-    cy.scriptsLoginWithFlags({
-      v2privateQueryUI: true,
-    }).then(() => {
+    cy.scriptsLoginWithFlags({}).then(() => {
       cy.clearSqlScriptSession()
       cy.getByTestID('editor-sync--toggle')
       cy.getByTestID('sql-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})

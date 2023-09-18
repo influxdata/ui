@@ -12,10 +12,10 @@ export const InstallDependenciesSql: FC = () => {
   const mavenDependency = `<dependency>
     <groupId>com.influxdb</groupId>
     <artifactId>influxdb3-java</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>`
   const gradleDependency = `dependencies {
-    implementation "com.influxdb:influxdb3-java:0.1.0"
+    implementation "com.influxdb:influxdb3-java:0.2.0"
 }`
   return (
     <>

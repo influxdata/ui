@@ -20,9 +20,10 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import com.influxdb.v3.client.InfluxDBClient;
-import com.influxdb.v3.client.query.QueryParameters;
+import com.influxdb.v3.client.query.QueryOptions;
+import com.influxdb.v3.client.query.QueryType;
 import com.influxdb.v3.client.write.Point;
-import com.influxdb.v3.client.write.WriteParameters;
+import com.influxdb.v3.client.write.WriteOptions;
 
 public final class WriteQueryExample {
 

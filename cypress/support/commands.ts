@@ -822,7 +822,7 @@ const setScriptToLanguage = (
   return cy.isIoxOrg().then(isIox => {
     if (lang === 'influxql') {
       // give cypress some time to set up
-      // database and retetion policy (DBRP) mappings
+      // database and retention policy (DBRP) mappings
       cy.wait(1000)
     }
 

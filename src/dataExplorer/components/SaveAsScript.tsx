@@ -45,7 +45,6 @@ import {
   copyToClipboardFailed,
   copyToClipboardSuccess,
 } from 'src/shared/copy/notifications'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import './SaveAsScript.scss'
 
@@ -111,7 +110,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
     setResult(null)
     clearViewOptions()
 
-    if (isIoxOrg || isFlagEnabled('influxqlUI')) {
+    if (isIoxOrg) {
       history.replace(
         `/orgs/${org.id}/data-explorer/from/script?language=${language}&${SCRIPT_EDITOR_PARAMS}`
       )

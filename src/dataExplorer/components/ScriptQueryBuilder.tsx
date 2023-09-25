@@ -141,7 +141,7 @@ const ScriptQueryBuilder: FC = () => {
             {option}
           </Dropdown.Item>
         ))}
-      {isFlagEnabled('influxqlUI') && hasDBRPs() ? (
+      {hasDBRPs() ? (
         <Dropdown.Item
           className={`script-dropdown__${LanguageType.INFLUXQL}`}
           key={LanguageType.INFLUXQL}
@@ -168,7 +168,7 @@ const ScriptQueryBuilder: FC = () => {
           {option}
         </Dropdown.Item>
       ))}
-      {isFlagEnabled('influxqlUI') && hasDBRPs() ? (
+      {hasDBRPs() ? (
         <Dropdown.Item
           className={`script-dropdown__${LanguageType.INFLUXQL}`}
           key={LanguageType.INFLUXQL}
@@ -196,7 +196,7 @@ const ScriptQueryBuilder: FC = () => {
   )
 
   const tsmNewScriptDropDown =
-    isFlagEnabled('influxqlUI') && hasDBRPs() && CLOUD ? (
+    hasDBRPs() && CLOUD ? (
       <Dropdown
         menu={menuTSM}
         button={button}

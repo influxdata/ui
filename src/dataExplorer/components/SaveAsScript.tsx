@@ -29,6 +29,7 @@ import {QueryContext} from 'src/shared/contexts/query'
 import {ResultsContext} from 'src/dataExplorer/context/results'
 import {PersistenceContext} from 'src/dataExplorer/context/persistence'
 import {ResultsViewContext} from 'src/dataExplorer/context/resultsView'
+import {DBRPContext} from 'src/shared/contexts/dbrps'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -61,6 +62,7 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
   const {hasChanged, resource, setResource, save} =
     useContext(PersistenceContext)
   const isIoxOrg = useSelector(isOrgIOx)
+  const {hasDBRPs} = useContext(DBRPContext)
   const {cancel} = useContext(QueryContext)
   const {setStatus, setResult} = useContext(ResultsContext)
   const {clear: clearViewOptions} = useContext(ResultsViewContext)
@@ -110,7 +112,10 @@ const SaveAsScript: FC<Props> = ({language, onClose, setOverlayType, type}) => {
     setResult(null)
     clearViewOptions()
 
-    if (isIoxOrg) {
+    // InfluxQL works on both IOx and TSM, so if an account has
+    // any database and retention policy (DBRP) mappings, the url
+    // should include the parameter `language={}`
+    if (isIoxOrg || hasDBRPs()) {
       history.replace(
         `/orgs/${org.id}/data-explorer/from/script?language=${language}&${SCRIPT_EDITOR_PARAMS}`
       )

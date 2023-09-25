@@ -820,6 +820,12 @@ const setScriptToLanguage = (
   defaultEditorText: string
 ) => {
   return cy.isIoxOrg().then(isIox => {
+    if (lang === 'influxql') {
+      // give cypress some time to set up
+      // database and retetion policy (DBRP) mappings
+      cy.wait(1000)
+    }
+
     // influxql works on both IOx and TSM
     if (isIox || lang === 'influxql') {
       cy.getByTestID('script-query-builder--new-script')

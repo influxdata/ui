@@ -24,7 +24,6 @@ import {
   SEARCH_STRING,
   sanitizeSQLSearchTerm,
 } from 'src/dataExplorer/shared/utils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {isOrgIOx} from 'src/organizations/selectors'
@@ -91,7 +90,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
 
     setLoadingTagKeys(RemoteDataState.Loading)
 
-    if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+    if (isIOx) {
       // user input is sanitized to avoid SQL injection
       const sanitized = sanitizeSQLSearchTerm(searchTerm)
       const queryTextSQL: string = `
@@ -211,7 +210,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       [tagKey]: RemoteDataState.Loading,
     })
 
-    if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+    if (isIOx) {
       const queryTextSQL: string = `
         SELECT DISTINCT("${tagKey}")
         FROM "${measurement}"

@@ -45,12 +45,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 import {csvDownloadFailure} from 'src/shared/copy/notifications'
-import {
-  sqlAsFlux,
-  updateWindowPeriod,
-} from 'src/shared/contexts/query/preprocessing'
+import {updateWindowPeriod} from 'src/shared/contexts/query/preprocessing'
 import {rangeToParam} from 'src/dataExplorer/shared/utils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
@@ -128,25 +124,14 @@ const ResultsPane: FC = () => {
 
       switch (language) {
         case LanguageType.SQL:
-          if (isFlagEnabled('v2privateQueryUI')) {
-            url = `${API_BASE_PATH}api/v2private/query?database=${selection.bucket?.name}`
-            // the `\n` character is interpreted by the browser as a line break
-            // so replacing the `\n` char with empty space to keep query in correct syntax
-            inputValue = text.replace(/\n/g, ' ')
-            // Intentionally keep the `break` inside the if statement;
-            // Otherwide, users cannot download csv for SQL queries when
-            // the feature flag is not enabled
-            break
-          }
-        // If the flag is not enabled, each SQL query actually will be wrapped
-        // inside a Flux query `iox.sql()`, and the if statement will be false,
-        // so we want the logic to fall to the next case LanguageType.FLUX
+          url = `${API_BASE_PATH}api/v2private/query?database=${selection.bucket?.name}`
+          // the `\n` character is interpreted by the browser as a line break
+          // so replacing the `\n` char with empty space to keep query in correct syntax
+          inputValue = text.replace(/\n/g, ' ')
+          break
         case LanguageType.FLUX:
           url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
-          const query =
-            language == LanguageType.SQL
-              ? sqlAsFlux(text, selection.bucket)
-              : text
+          const query = text
           const extern = updateWindowPeriod(
             query,
             {

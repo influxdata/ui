@@ -13,7 +13,6 @@ import {AppState} from 'src/types'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
@@ -80,7 +79,7 @@ class CSVExportButton extends PureComponent<Props, State> {
       )
     }
 
-    if (isFlagEnabled('v2privateQueryUI') && props.workerRegistrationSQL) {
+    if (props.workerRegistrationSQL) {
       ;(props.workerRegistrationSQL as Promise<ServiceWorkerRegistration>).then(
         registrationResult => {
           if (registrationResult.active.state == 'activated') {
@@ -103,7 +102,6 @@ class CSVExportButton extends PureComponent<Props, State> {
 
   public render() {
     if (
-      isFlagEnabled('v2privateQueryUI') &&
       this.props.language === LanguageType.SQL &&
       !this.state.browserSupportsDownloadSQL
     ) {

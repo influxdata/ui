@@ -22,7 +22,6 @@ import {
   SAMPLE_DATA_SET,
   sanitizeSQLSearchTerm,
 } from 'src/dataExplorer/shared/utils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {isOrgIOx} from 'src/organizations/selectors'
@@ -64,7 +63,7 @@ export const MeasurementsProvider: FC<Prop> = ({children, scope}) => {
 
     setLoading(RemoteDataState.Loading)
 
-    if (isFlagEnabled('v2privateQueryUI') && isIOx) {
+    if (isIOx) {
       // user input is sanitized to avoid SQL injection
       const sanitized = sanitizeSQLSearchTerm(searchTerm)
       const queryTextSQL: string = `

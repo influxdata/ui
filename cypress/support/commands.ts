@@ -821,8 +821,8 @@ const setScriptToLanguage = (
 ) => {
   return cy.isIoxOrg().then(isIox => {
     if (lang === 'influxql') {
-      // give cypress some time to turn on the feature flag `influxqlUI`
-      // this block can be removed after this feature flag is removed
+      // give cypress some time to set up
+      // database and retention policy (DBRP) mappings
       cy.wait(1000)
     }
 

@@ -117,9 +117,7 @@ describe('Script Builder', () => {
   })
 
   beforeEach(() => {
-    cy.scriptsLoginWithFlags({
-      influxqlUI: true,
-    }).then(() => {
+    cy.scriptsLoginWithFlags({}).then(() => {
       cy.clearInfluxQLScriptSession()
       cy.getByTestID('editor-sync--toggle')
       cy.getByTestID('influxql-editor', {timeout: DELAY_FOR_LAZY_LOAD_EDITOR})

@@ -53,24 +53,24 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
 
 const points =
     [
-        new Point("census")
-            .tag("location", "Klamath")
-            .intField("bees", 23),
-        new Point("census")
-            .tag("location", "Portland")
-            .intField("ants", 30),
-        new Point("census")
-            .tag("location", "Klamath")
-            .intField("bees", 28),
-        new Point("census")
-            .tag("location", "Portland")
-            .intField("ants", 32),
-        new Point("census")
-            .tag("location", "Klamath")
-            .intField("bees", 29),
-        new Point("census")
-            .tag("location", "Portland")
-            .intField("ants", 40)
+        Point.measurement("census")
+            .setTag("location", "Klamath")
+            .setIntegerField("bees", 23),
+        Point.measurement("census")
+            .setTag("location", "Portland")
+            .setIntegerField("ants", 30),
+        Point.measurement("census")
+            .setTag("location", "Klamath")
+            .setIntegerField("bees", 28),
+        Point.measurement("census")
+            .setTag("location", "Portland")
+            .setIntegerField("ants", 32),
+        Point.measurement("census")
+            .setTag("location", "Klamath")
+            .setIntegerField("bees", 29),
+        Point.measurement("census")
+            .setTag("location", "Portland")
+            .setIntegerField("ants", 40)
     ];
 
 for (let i = 0; i < points.length; i++) {

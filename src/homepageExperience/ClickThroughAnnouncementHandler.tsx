@@ -44,11 +44,11 @@ export const ClickThroughAnnouncementHandler: FC = () => {
   useEffect(() => {
     // Current Announcement: PAYG Pricing Increase
     // Audience: Cloud, Pay As You Go, Direct Signups
-    const paygAccount = account.type === 'pay_as_you_go'
-    const directSignup = account.billingProvider === 'zuora'
-    const audience = CLOUD && paygAccount && directSignup
+    const isPaygAccount = account.type === 'pay_as_you_go'
+    const isDirectSignup = account.billingProvider === 'zuora'
+    const isTargetAudience = CLOUD && isPaygAccount && isDirectSignup
 
-    if (audience) {
+    if (isTargetAudience) {
       setCurrentAnnouncement('payg-pricing-increase-announcement')
 
       if (announcementState['display']) {

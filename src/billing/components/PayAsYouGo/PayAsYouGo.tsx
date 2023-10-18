@@ -26,7 +26,7 @@ import {selectCurrentIdentity} from 'src/identity/selectors'
 
 const BillingPayAsYouGo: FC = () => {
   const {account} = useSelector(selectCurrentIdentity)
-  const directSignup = account.billingProvider === 'zuora'
+  const isdDirectSignup = account.billingProvider === 'zuora'
 
   return (
     <FlexBox
@@ -36,7 +36,7 @@ const BillingPayAsYouGo: FC = () => {
     >
       <BillingInfoWrapper>
         <>
-          {directSignup && <PricingAlert />}
+          {isdDirectSignup && <PricingAlert />}
           <PlanTypePanel />
           <Panel>
             <Panel.Header testID="past-invoices--header">

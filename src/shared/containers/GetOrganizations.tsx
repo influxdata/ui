@@ -23,6 +23,7 @@ import {getAllOrgs} from 'src/resources/selectors'
 import {
   selectCurrentIdentity,
   selectQuartzIdentityStatus,
+  selectQuartzBillingStatus,
 } from 'src/identity/selectors'
 
 // Constants
@@ -40,6 +41,7 @@ import {RemoteDataState} from 'src/types'
 // Thunks
 import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 import {getNotebooks} from 'src/flows/actions/flowsThunks'
+import {getBillingProviderThunk} from 'src/identity/actions/thunks'
 
 const GetOrganizations: FunctionComponent = () => {
   const {status: orgLoadingStatus} = useSelector(getAllOrgs)
@@ -47,6 +49,7 @@ const GetOrganizations: FunctionComponent = () => {
   // This selector is CLOUD-only. It has default empty values in OSS.
   const {user, account, org} = useSelector(selectCurrentIdentity)
   const identityLoadingStatus = useSelector(selectQuartzIdentityStatus)
+  const quartzBillingStatus = useSelector(selectQuartzBillingStatus)
 
   const dispatch = useDispatch()
 
@@ -61,6 +64,12 @@ const GetOrganizations: FunctionComponent = () => {
       dispatch(getQuartzIdentityThunk())
     }
   }, [dispatch, identityLoadingStatus]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (CLOUD && quartzBillingStatus === RemoteDataState.NotStarted) {
+      dispatch(getBillingProviderThunk())
+    }
+  }, [dispatch, quartzBillingStatus])
 
   useEffect(() => {
     if (

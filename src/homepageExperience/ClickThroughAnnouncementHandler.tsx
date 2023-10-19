@@ -9,9 +9,6 @@ import {selectCurrentIdentity} from 'src/identity/selectors'
 // Utils
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
-// Constants
-import {CLOUD} from 'src/shared/constants'
-
 export const ClickThroughAnnouncementHandler: FC = () => {
   const dispatch = useDispatch()
   const {account} = useSelector(selectCurrentIdentity)
@@ -43,10 +40,10 @@ export const ClickThroughAnnouncementHandler: FC = () => {
 
   useEffect(() => {
     // Current Announcement: PAYG Pricing Increase
-    // Audience: Cloud, Pay As You Go, Direct Signups
+    // Audience: Pay As You Go & Direct Signups
     const isPaygAccount = account.type === 'pay_as_you_go'
     const isDirectSignup = account.billingProvider === 'zuora'
-    const isTargetAudience = CLOUD && isPaygAccount && isDirectSignup
+    const isTargetAudience = isPaygAccount && isDirectSignup
 
     if (isTargetAudience) {
       setCurrentAnnouncement('payg-pricing-increase-announcement')

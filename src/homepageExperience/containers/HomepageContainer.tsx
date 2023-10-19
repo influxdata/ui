@@ -10,6 +10,9 @@ import {ClickThroughAnnouncementHandler} from 'src/homepageExperience/ClickThrou
 // Utils
 import {isOrgIOx} from 'src/organizations/selectors'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 export const HomepageContainer: FC = () => {
   const homepageContents = useSelector(isOrgIOx) ? (
     <HomepageContents />
@@ -20,7 +23,7 @@ export const HomepageContainer: FC = () => {
   return (
     <>
       {homepageContents}
-      <ClickThroughAnnouncementHandler />
+      {CLOUD && <ClickThroughAnnouncementHandler />}
     </>
   )
 }

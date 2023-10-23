@@ -156,8 +156,10 @@ const setupTest = (setupParams: SetupParams) => {
         // If a url is specified, start the test at that url.
         if (urlToVisit) {
           cy.visit(`orgs/${idpeOrgID}/` + urlToVisit)
+          cy.disableClickThroughAnnouncement()
         } else {
           cy.visit('/')
+          cy.disableClickThroughAnnouncement()
         }
       })
     })

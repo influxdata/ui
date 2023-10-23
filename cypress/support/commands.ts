@@ -11,6 +11,7 @@ import {Bucket, Organization} from '../../src/client'
 import {FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
 import 'cypress-file-upload'
+import 'cypress-localstorage-commands'
 
 const DEX_URL_VAR = 'dexUrl'
 
@@ -1533,6 +1534,15 @@ export const createTaskFromEmpty = (
   cy.getByTestID('task-form-offset-input').type(offset)
 }
 
+export const disableClickThroughAnnouncement = () => {
+  const announcementState = {
+    announcementID: 'payg-pricing-increase-announcement',
+    display: false,
+  }
+
+  localStorage.setItem('clickThroughAnnouncement', JSON.stringify(announcementState))
+}
+
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)
@@ -1542,6 +1552,9 @@ Cypress.Commands.add('createRule', createRule)
 Cypress.Commands.add('createCheck', createCheck)
 // alert group
 Cypress.Commands.add('createAlertGroup', createAlertGroup)
+
+// click through announcements
+Cypress.Commands.add('disableClickThroughAnnouncement', disableClickThroughAnnouncement)
 
 // assertions
 Cypress.Commands.add('fluxEqual', fluxEqual)

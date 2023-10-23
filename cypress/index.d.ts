@@ -69,7 +69,7 @@ import {
   selectScriptFieldOrTag,
   scriptsLoginWithFlags,
   createScript,
-  disableClickThroughAnnouncement
+  disableClickThroughAnnouncement,
 } from './support/commands'
 
 declare global {

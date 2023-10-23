@@ -1540,7 +1540,10 @@ export const disableClickThroughAnnouncement = () => {
     display: false,
   }
 
-  localStorage.setItem('clickThroughAnnouncement', JSON.stringify(announcementState))
+  localStorage.setItem(
+    'clickThroughAnnouncement',
+    JSON.stringify(announcementState)
+  )
 }
 
 /* eslint-disable */
@@ -1554,7 +1557,10 @@ Cypress.Commands.add('createCheck', createCheck)
 Cypress.Commands.add('createAlertGroup', createAlertGroup)
 
 // click through announcements
-Cypress.Commands.add('disableClickThroughAnnouncement', disableClickThroughAnnouncement)
+Cypress.Commands.add(
+  'disableClickThroughAnnouncement',
+  disableClickThroughAnnouncement
+)
 
 // assertions
 Cypress.Commands.add('fluxEqual', fluxEqual)

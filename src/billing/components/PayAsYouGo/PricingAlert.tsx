@@ -26,7 +26,7 @@ export const PricingAlert: React.FC = () => {
   const org = useSelector(selectCurrentOrg)
   const user = useSelector(selectUser)
 
-  const encodedSubect = encodeURI('PAYG Pricing Increase')
+  const encodedSubject = encodeURI('PAYG Pricing Increase')
   const encodedBody = encodeURI(`User ID: ${user.email}
 Org ID: ${org.id}
 
@@ -48,7 +48,7 @@ Please describe your inquiry here.`)
           your usage-based pricing. Please feel free to{' '}
           <SafeBlankLink
             href={`mailto:payg-price-change@influxdata.com?
-            &subject=${encodedSubect}
+            &subject=${encodedSubject}
             &body=${encodedBody}`}
             onClick={handleContactUsClick}
           >

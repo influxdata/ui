@@ -49,6 +49,7 @@ import {MarketoAccountUpgradeOverlay} from 'src/identity/components/MarketoAccou
 import {SuspendPaidOrgOverlay} from 'src/organizations/components/OrgProfileTab/SuspendPaidOrgOverlay'
 import {ReplaceCertificateOverlay} from 'src/writeData/subscriptions/components/CertificateInput'
 import {RemoveMemberOverlay} from 'src/users/components/RemoveMemberOverlay'
+import {ClickThroughAnnouncementOverlay} from 'src/me/components/ClickThroughAnnouncementOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -188,6 +189,11 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'remove-member':
         activeOverlay.current = <RemoveMemberOverlay />
+        break
+      case 'click-through-announcement':
+        activeOverlay.current = (
+          <ClickThroughAnnouncementOverlay onClose={onClose} />
+        )
         break
       default:
         activeOverlay.current = null

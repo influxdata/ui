@@ -1533,6 +1533,18 @@ export const createTaskFromEmpty = (
   cy.getByTestID('task-form-offset-input').type(offset)
 }
 
+export const disableClickThroughAnnouncement = () => {
+  const announcementState = {
+    announcementID: 'payg-pricing-increase-announcement',
+    display: false,
+  }
+
+  window.localStorage.setItem(
+    'clickThroughAnnouncement',
+    JSON.stringify(announcementState)
+  )
+}
+
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)
@@ -1542,6 +1554,12 @@ Cypress.Commands.add('createRule', createRule)
 Cypress.Commands.add('createCheck', createCheck)
 // alert group
 Cypress.Commands.add('createAlertGroup', createAlertGroup)
+
+// click through announcements
+Cypress.Commands.add(
+  'disableClickThroughAnnouncement',
+  disableClickThroughAnnouncement
+)
 
 // assertions
 Cypress.Commands.add('fluxEqual', fluxEqual)

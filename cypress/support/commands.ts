@@ -11,7 +11,6 @@ import {Bucket, Organization} from '../../src/client'
 import {FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
 import 'cypress-file-upload'
-import 'cypress-localstorage-commands'
 
 const DEX_URL_VAR = 'dexUrl'
 

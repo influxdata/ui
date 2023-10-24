@@ -1539,7 +1539,7 @@ export const disableClickThroughAnnouncement = () => {
     display: false,
   }
 
-  localStorage.setItem(
+  window.localStorage.setItem(
     'clickThroughAnnouncement',
     JSON.stringify(announcementState)
   )

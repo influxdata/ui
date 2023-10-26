@@ -54,23 +54,23 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
 var points = new[]
 {
     PointData.Measurement("census")
-        .AddTag("location", "Klamath")
-        .AddField("bees", 23),
+        .SetTag("location", "Klamath")
+        .SetField("bees", 23),
     PointData.Measurement("census")
-        .AddTag("location", "Portland")
-        .AddField("ants", 30),
+        .SetTag("location", "Portland")
+        .SetField("ants", 30),
     PointData.Measurement("census")
-        .AddTag("location", "Klamath")
-        .AddField("bees", 28),
+        .SetTag("location", "Klamath")
+        .SetField("bees", 28),
     PointData.Measurement("census")
-        .AddTag("location", "Portland")
-        .AddField("ants", 32),
+        .SetTag("location", "Portland")
+        .SetField("ants", 32),
     PointData.Measurement("census")
-        .AddTag("location", "Klamath")
-        .AddField("bees", 29),
+        .SetTag("location", "Klamath")
+        .SetField("bees", 29),
     PointData.Measurement("census")
-        .AddTag("location", "Portland")
-        .AddField("ants", 40)
+        .SetTag("location", "Portland")
+        .SetField("ants", 40)
 };
 
 foreach (var point in points)

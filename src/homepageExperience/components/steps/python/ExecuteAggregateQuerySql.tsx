@@ -19,16 +19,16 @@ type OwnProps = {
 export const ExecuteAggregateQuerySql = (props: OwnProps) => {
   const {bucket} = props
 
-  const sqlSnippet = `SELECT mean(count)
-FROM 'census'
-WHERE time > now() - '10m'`
+  const sqlSnippet = `SELECT mean(ants) as ant_mean, mean(bees) as bee_mean
+  FROM census
+  WHERE time >= now() - 24h`
 
-  const querySnippet = `query = """SELECT mean(count)
-FROM 'census'
-WHERE time > now() - '10m'"""
+  const querySnippet = `query = """SELECT mean(ants) as ant_mean, mean(bees) as bee_mean
+  FROM census
+  WHERE time >= now() - 24h"""
 
 # Execute the query
-table = client.query(query=query, database="${bucket}", language='influxql') )
+table = client.query(query=query, database="${bucket}", language='influxql')
 
 # Convert to dataframe
 df = table.to_pandas().sort_values(by="time")
@@ -40,7 +40,7 @@ print(df)
       <h1>Execute an Aggregate Query</h1>
       <p>
         <SafeBlankLink
-          href="https://docs.influxdata.com/flux/v0.x/function-types/#aggregates"
+          href="https://docs.influxdata.com/influxdb/cloud-serverless/reference/influxql/functions/aggregates"
           onClick={logDocsOpened}
         >
           Aggregate functions
@@ -58,7 +58,7 @@ print(df)
       <p>
         In this example, we use the{' '}
         <code className="homepage-wizard--code-highlight">mean()</code> function
-        to calculate the average value of data points in the last 10 minutes.
+        to calculate the average value of data points in the last 24 hours.
         <br />
         <br />
         Run the following:

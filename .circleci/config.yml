@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   unit:
     docker:
-      - image: cimg/go:1.19-node
+      - image: cimg/go:1.21-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:
@@ -38,7 +38,7 @@ jobs:
             - ~/.cache/yarn
   unit-cloud:
     docker:
-      - image: cimg/go:1.19-node
+      - image: cimg/go:1.21-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:
@@ -73,7 +73,7 @@ jobs:
             - ~/.cache/yarn
   lint:
     docker:
-      - image: cimg/go:1.19-node
+      - image: cimg/go:1.21-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:
@@ -107,7 +107,7 @@ jobs:
 
   lint-cloud:
     docker:
-      - image: cimg/go:1.19-node
+      - image: cimg/go:1.21-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:

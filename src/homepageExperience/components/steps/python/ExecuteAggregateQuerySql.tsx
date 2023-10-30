@@ -20,11 +20,11 @@ export const ExecuteAggregateQuerySql = (props: OwnProps) => {
   const {bucket} = props
 
   const sqlSnippet = `SELECT mean(count)
-FROM 'census'
+FROM "census"
 WHERE time > now() - 10m`
 
   const querySnippet = `query = """SELECT mean(count)
-FROM 'census'
+FROM "census"
 WHERE time > now() - 10m"""
 
 # Execute the query

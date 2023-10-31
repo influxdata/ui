@@ -73,7 +73,7 @@ export const SubscriptionListProvider: FC = ({children}) => {
     } finally {
       setLoading(RemoteDataState.Done)
     }
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (!statuses.length) {
@@ -103,7 +103,7 @@ export const SubscriptionListProvider: FC = ({children}) => {
     } finally {
       setLoading(RemoteDataState.Done)
     }
-  }, [])
+  }, [dispatch])
 
   const deleteSubscription = async (id: string): Promise<void> => {
     setLoading(RemoteDataState.Loading)
@@ -129,13 +129,13 @@ export const SubscriptionListProvider: FC = ({children}) => {
         setCurrentID(id)
       }
     },
-    [setCurrentID, subscriptions]
+    [setCurrentID, getAll, subscriptions]
   )
 
   useEffect(() => {
     getAll()
     getAllSubsStatuses()
-  }, [])
+  }, [getAll, getAllSubsStatuses])
 
   return (
     <SubscriptionListContext.Provider

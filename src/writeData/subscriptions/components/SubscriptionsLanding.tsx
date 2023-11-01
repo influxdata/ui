@@ -21,6 +21,7 @@ import {SortTypes} from 'src/shared/utils/sort'
 import {SearchWidget} from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import LoadDataTabbedPage from 'src/settings/components/LoadDataTabbedPage'
+import {MqttEolAlert} from 'src/writeData/subscriptions/components/MqttEolAlert'
 
 // Contexts
 import {
@@ -113,6 +114,7 @@ const SubscriptionsLanding: FC = () => {
     >
       <LoadDataHeader />
       <LoadDataTabbedPage activeTab="subscriptions">
+        <MqttEolAlert />
         <SpinnerContainer
           spinnerComponent={<TechnoSpinner />}
           loading={loading}

@@ -1535,8 +1535,8 @@ export const createTaskFromEmpty = (
 
 export const disableClickThroughAnnouncement = () => {
   const announcementState = {
-    announcementID: 'payg-pricing-increase-announcement',
-    display: false,
+    mqttEolClickThroughAnnouncement: 'dismissed',
+    pricingClickThroughAnnouncement: 'dismissed',
   }
 
   window.localStorage.setItem(

@@ -8,6 +8,8 @@ import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Utils
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
 
 export const ClickThroughAnnouncementHandler: FC = () => {
   const dispatch = useDispatch()
@@ -15,48 +17,66 @@ export const ClickThroughAnnouncementHandler: FC = () => {
 
   const [announcementState, setAnnouncementState] = useLocalStorageState(
     'clickThroughAnnouncement',
-    {
-      announcementID: '',
-      display: true,
-    }
+    {}
   )
 
-  const setCurrentAnnouncement = (announcementID: string): void => {
-    if (announcementState['announcementID'] !== announcementID) {
-      setAnnouncementState({
-        announcementID: announcementID,
-        display: true,
-      })
+  const initAnnouncement = (announcementID: string): void => {
+    if (!announcementState[announcementID]) {
+      setAnnouncementState(prevState => ({
+        ...prevState,
+        [announcementID]: 'display',
+      }))
     }
   }
 
-  const handleDismissAnnouncement = (): void => {
-    setAnnouncementState(prevState => ({
-      ...prevState,
-      display: false,
-    }))
+  const handleDismissAnnouncement = (announcementID: string): void => {
     dismissOverlay()
+    event(`${announcementID}.dismissed`)
+    setTimeout(() => {
+      setAnnouncementState(prevState => ({
+        ...prevState,
+        [announcementID]: 'dismissed',
+      }))
+    }, 1000)
+  }
+
+  const handleDisplayAnnouncement = (announcementID: string): void => {
+    initAnnouncement(announcementID)
+
+    if (announcementState[announcementID] === 'display') {
+      const overlayParams = {
+        announcementID,
+      }
+      dispatch(
+        showOverlay('click-through-announcement', overlayParams, () =>
+          handleDismissAnnouncement(announcementID)
+        )
+      )
+    }
   }
 
   useEffect(() => {
-    // Current Announcement: PAYG Pricing Increase
-    // Audience: Pay As You Go & Direct Signups
+    // MQTT Audience: Cloud users with MQTT feature flag enabled
+    const mqttAnnouncementID = 'mqttEolClickThroughAnnouncement'
+    const isMqttAudience = isFlagEnabled('subscriptionsUI')
+
+    // PAYG Pricing Increase Audience: Pay As You Go & Direct Signups
+    const priceIncreaseAnnouncementID = 'pricingClickThroughAnnouncement'
     const isPaygAccount = account.type === 'pay_as_you_go'
     const isDirectSignup = account.billingProvider === 'zuora'
-    const isTargetAudience = isPaygAccount && isDirectSignup
+    const isPriceIncreaseAudience = isPaygAccount && isDirectSignup
 
-    if (isTargetAudience) {
-      setCurrentAnnouncement('payg-pricing-increase-announcement')
-
-      if (announcementState['display']) {
-        dispatch(
-          showOverlay(
-            'click-through-announcement',
-            null,
-            handleDismissAnnouncement
-          )
-        )
-      }
+    // Sequentially display announcements in order of priority
+    if (
+      isMqttAudience &&
+      announcementState[mqttAnnouncementID] !== 'dismissed'
+    ) {
+      handleDisplayAnnouncement(mqttAnnouncementID)
+    } else if (
+      isPriceIncreaseAudience &&
+      announcementState[priceIncreaseAnnouncementID] !== 'dismissed'
+    ) {
+      handleDisplayAnnouncement(priceIncreaseAnnouncementID)
     }
   }, [announcementState])
 

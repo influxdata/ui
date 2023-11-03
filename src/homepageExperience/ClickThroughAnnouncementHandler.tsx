@@ -11,6 +11,16 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
+enum AnnouncementID {
+  MqttEol = 'mqttEolClickThroughAnnouncement',
+  PriceIncrease = 'pricingClickThroughAnnouncement',
+}
+
+enum AnnouncementState {
+  Dismissed = 'dismissed',
+  Display = 'display',
+}
+
 export const ClickThroughAnnouncementHandler: FC = () => {
   const dispatch = useDispatch()
   const {account} = useSelector(selectCurrentIdentity)
@@ -24,7 +34,7 @@ export const ClickThroughAnnouncementHandler: FC = () => {
     if (!announcementState[announcementID]) {
       setAnnouncementState(prevState => ({
         ...prevState,
-        [announcementID]: 'display',
+        [announcementID]: AnnouncementState.Display,
       }))
     }
   }
@@ -35,7 +45,7 @@ export const ClickThroughAnnouncementHandler: FC = () => {
     setTimeout(() => {
       setAnnouncementState(prevState => ({
         ...prevState,
-        [announcementID]: 'dismissed',
+        [announcementID]: AnnouncementState.Dismissed,
       }))
     }, 1000)
   }
@@ -43,7 +53,7 @@ export const ClickThroughAnnouncementHandler: FC = () => {
   const handleDisplayAnnouncement = (announcementID: string): void => {
     initAnnouncement(announcementID)
 
-    if (announcementState[announcementID] === 'display') {
+    if (announcementState[announcementID] === AnnouncementState.Display) {
       const overlayParams = {
         announcementID,
       }
@@ -57,11 +67,9 @@ export const ClickThroughAnnouncementHandler: FC = () => {
 
   useEffect(() => {
     // MQTT Audience: Cloud users with MQTT feature flag enabled
-    const mqttAnnouncementID = 'mqttEolClickThroughAnnouncement'
     const isMqttAudience = isFlagEnabled('subscriptionsUI')
 
     // PAYG Pricing Increase Audience: Pay As You Go & Direct Signups
-    const priceIncreaseAnnouncementID = 'pricingClickThroughAnnouncement'
     const isPaygAccount = account.type === 'pay_as_you_go'
     const isDirectSignup = account.billingProvider === 'zuora'
     const isPriceIncreaseAudience = isPaygAccount && isDirectSignup
@@ -69,14 +77,15 @@ export const ClickThroughAnnouncementHandler: FC = () => {
     // Sequentially display announcements in order of priority
     if (
       isMqttAudience &&
-      announcementState[mqttAnnouncementID] !== 'dismissed'
+      announcementState[AnnouncementID.MqttEol] !== AnnouncementState.Dismissed
     ) {
-      handleDisplayAnnouncement(mqttAnnouncementID)
+      handleDisplayAnnouncement(AnnouncementID.MqttEol)
     } else if (
       isPriceIncreaseAudience &&
-      announcementState[priceIncreaseAnnouncementID] !== 'dismissed'
+      announcementState[AnnouncementID.PriceIncrease] !==
+        AnnouncementState.Dismissed
     ) {
-      handleDisplayAnnouncement(priceIncreaseAnnouncementID)
+      handleDisplayAnnouncement(AnnouncementID.PriceIncrease)
     }
   }, [announcementState])
 

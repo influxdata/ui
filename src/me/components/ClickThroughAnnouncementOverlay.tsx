@@ -9,6 +9,7 @@ import {MqttEolAnnouncement} from 'src/me/components/announcements/MqttEolAnnoun
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {AnnouncementID} from 'src/homepageExperience/ClickThroughAnnouncementHandler'
 
 // Selectors
 import {getOverlayParams} from 'src/overlays/selectors'
@@ -41,7 +42,7 @@ export const ClickThroughAnnouncementOverlay: FC<
 
   const announcementContents = (): JSX.Element => {
     switch (announcementID) {
-      case 'pricingClickThroughAnnouncement':
+      case AnnouncementID.PriceIncrease:
         return (
           <PaygPriceIncreaseAnnouncement
             handleAcknowledgeClick={handleAcknowledgeClick}
@@ -49,7 +50,7 @@ export const ClickThroughAnnouncementOverlay: FC<
             handleDetailsClick={handleDetailsClick}
           />
         )
-      case 'mqttEolClickThroughAnnouncement':
+      case AnnouncementID.MqttEol:
         return (
           <MqttEolAnnouncement
             handleAcknowledgeClick={handleAcknowledgeClick}

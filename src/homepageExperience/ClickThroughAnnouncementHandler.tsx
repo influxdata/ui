@@ -11,7 +11,7 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
-enum AnnouncementID {
+export enum AnnouncementID {
   MqttEol = 'mqttEolClickThroughAnnouncement',
   PriceIncrease = 'pricingClickThroughAnnouncement',
 }

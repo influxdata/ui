@@ -15,6 +15,7 @@ import {
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {AnnouncementID} from 'src/homepageExperience/ClickThroughAnnouncementHandler'
 
 export const MqttEolAlert: FC = () => {
   const dispatch = useDispatch()
@@ -26,7 +27,7 @@ export const MqttEolAlert: FC = () => {
   const handleDetailsClick = () => {
     event(`mqttEolAnnouncementBanner.details.clicked`)
     const overlayParams = {
-      announcementID: 'mqttEolClickThroughAnnouncement',
+      announcementID: AnnouncementID.MqttEol,
     }
     dispatch(
       showOverlay('click-through-announcement', overlayParams, () =>

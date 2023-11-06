@@ -32,9 +32,7 @@ export const CurrentAnnouncement: FC = () => {
 
   const incomingAnnouncement = (
     <AnnouncementBlock
-      image={
-        <img src={iiotWebinarBanner} />
-      }
+      image={<img src={iiotWebinarBanner} />}
       body={
         <p>
           Discover through real-life use cases how companies use InfluxDB for

@@ -5,9 +5,12 @@ import React, {FC} from 'react'
 import {InfluxColors} from '@influxdata/clockface'
 import {AnnouncementBlock} from 'src/me/components/AnnouncementBlock'
 
+// Assets
+import iiotWebinarBanner from 'assets/images/iiot-webinar-banner.png'
+
 export const CurrentAnnouncement: FC = () => {
   const currentDate = new Date()
-  const targetDate = new Date('2023-11-03T05:00:00-07:00')
+  const targetDate = new Date('2023-11-06T05:00:00-07:00')
 
   const outgoingAnnouncement = (
     <AnnouncementBlock
@@ -29,6 +32,9 @@ export const CurrentAnnouncement: FC = () => {
 
   const incomingAnnouncement = (
     <AnnouncementBlock
+      image={
+        <img src={iiotWebinarBanner} />
+      }
       body={
         <p>
           Discover through real-life use cases how companies use InfluxDB for
@@ -37,7 +43,7 @@ export const CurrentAnnouncement: FC = () => {
       }
       ctaLink="https://www.influxdata.com/resources/industrial-iot-or-live-demo/"
       ctaText="Save Your Spot"
-      iconColor={InfluxColors.Chartreuse}
+      icon={null}
       title="Live Demo"
     />
   )

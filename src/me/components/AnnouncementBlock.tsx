@@ -46,6 +46,8 @@ export const AnnouncementBlock: FC<OwnProps> = ({
     event(`announcementBlock.${title}.clicked`)
   }
 
+  const headerClasses = `announcement-block--panel-header${image && ' announcement-block--panel-header__image'}`
+
   return (
     <FlexBox direction={FlexDirection.Row} className="announcement-block">
       <FlexBox.Child basis={0} grow={0} className="announcement-block--type">
@@ -63,7 +65,7 @@ export const AnnouncementBlock: FC<OwnProps> = ({
         >
           <Panel.Header
             size={ComponentSize.ExtraSmall}
-            className="announcement-block--panel-header"
+            className={headerClasses}
           >
             {image}
             <Heading element={HeadingElement.H4}>

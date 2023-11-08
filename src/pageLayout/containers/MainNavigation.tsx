@@ -4,7 +4,14 @@ import {Link, useLocation} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
-import {Icon, IconFont, PopoverPosition, TreeNav} from '@influxdata/clockface'
+import {
+  Button,
+  ComponentColor,
+  Icon,
+  IconFont,
+  PopoverPosition,
+  TreeNav,
+} from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
 
@@ -302,6 +309,12 @@ export const MainNavigation: FC = () => {
     event('helpBar.contactSupportRequest.overlay.shown')
   }
 
+  const handleRequestPocClick = () => {
+    event('nav.requestPOC.clicked')
+    const newTab = window.open('https://www.influxdata.com/proof-of-concept/')
+    newTab.focus()
+  }
+
   return (
     <TreeNav
       expanded={navbarMode === 'expanded'}
@@ -373,13 +386,27 @@ export const MainNavigation: FC = () => {
           </TreeNav.Item>
         )
       })}
+      {accountType === 'free' && (
+        <div className="nav-item-poc">
+          <span>
+            This is a rate limited environment. Want to test the performance and
+            scalability of your workload?
+          </span>
+          <Button
+            icon={IconFont.Flask}
+            text="Request a POC"
+            color={ComponentColor.Primary}
+            onClick={handleRequestPocClick}
+          />
+        </div>
+      )}
       <TreeNav.Item
         id="support"
         testID="nav-item-support"
         icon={<Icon glyph={IconFont.QuestionMark_Outline} />}
         label="Help &amp; Support"
         shortLabel="Support"
-        className="helpBarStyle"
+        className="nav-item-support"
       >
         <TreeNav.SubMenu position={PopoverPosition.ToTheRight}>
           <TreeNav.SubHeading label="Support" />

@@ -25,6 +25,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {isUserOperator} from 'src/operator/utils'
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 // Selectors
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
@@ -311,8 +312,7 @@ export const MainNavigation: FC = () => {
 
   const handleRequestPocClick = () => {
     event('nav.requestPOC.clicked')
-    const newTab = window.open('https://www.influxdata.com/proof-of-concept/')
-    newTab.focus()
+    safeBlankLinkOpen('https://www.influxdata.com/proof-of-concept/')
   }
 
   return (

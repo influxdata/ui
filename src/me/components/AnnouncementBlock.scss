@@ -50,6 +50,23 @@
           color: $c-laser;
         }
       }
+
+      img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        border-radius: $cf-radius;
+      }
+    }
+
+    .announcement-block--panel-header__image {
+      flex-direction: column;
+      align-items: flex-start;
+
+      h4 {
+        margin-top: $cf-space-m;
+      }
     }
 
     .announcement-block--panel-body {

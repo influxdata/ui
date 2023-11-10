@@ -4,16 +4,10 @@ import {Link, useLocation} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
-import {
-  Button,
-  ComponentColor,
-  Icon,
-  IconFont,
-  PopoverPosition,
-  TreeNav,
-} from '@influxdata/clockface'
+import {Icon, IconFont, PopoverPosition, TreeNav} from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
+import {RequestPocWidget} from '../components/RequestPocWidget'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -25,7 +19,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {isUserOperator} from 'src/operator/utils'
-import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 // Selectors
 import {getOrg, isOrgIOx} from 'src/organizations/selectors'
@@ -310,11 +303,6 @@ export const MainNavigation: FC = () => {
     event('helpBar.contactSupportRequest.overlay.shown')
   }
 
-  const handleRequestPocClick = () => {
-    event('nav.requestPOC.clicked')
-    safeBlankLinkOpen('https://www.influxdata.com/proof-of-concept/')
-  }
-
   return (
     <TreeNav
       expanded={navbarMode === 'expanded'}
@@ -387,18 +375,7 @@ export const MainNavigation: FC = () => {
         )
       })}
       {accountType === 'free' && (
-        <div className="nav-item-poc">
-          <span>
-            This is a rate limited environment. Want to test the performance and
-            scalability of your workload?
-          </span>
-          <Button
-            icon={IconFont.Flask}
-            text="Request a POC"
-            color={ComponentColor.Primary}
-            onClick={handleRequestPocClick}
-          />
-        </div>
+        <RequestPocWidget expanded={navbarMode === 'expanded'} />
       )}
       <TreeNav.Item
         id="support"

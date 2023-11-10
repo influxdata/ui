@@ -1,24 +1,3 @@
-@import '@influxdata/clockface/dist/variables.scss';
-
 .nav-item-support {
   margin-top: auto !important;
-}
-
-.nav-item-poc {
-  background: rgba(241, 241, 243, 0.05);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: $cf-space-s;
-  text-align: center;
-  margin-top: auto;
-
-  .cf-button {
-    margin-top: $cf-space-s;
-  }
-
-  + .nav-item-support {
-    margin-top: $cf-space-s !important;
-  }
 }

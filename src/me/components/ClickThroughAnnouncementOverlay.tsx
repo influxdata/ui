@@ -1,107 +1,70 @@
 // Libraries
-import React, {useEffect} from 'react'
+import React, {FC, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
-import {Overlay, Button, ComponentColor} from '@influxdata/clockface'
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {Overlay} from '@influxdata/clockface'
+import {PaygPriceIncreaseAnnouncement} from 'src/me/components/announcements/PaygPriceIncreaseAnnouncement'
+import {MqttEolAnnouncement} from 'src/me/components/announcements/MqttEolAnnouncement'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {AnnouncementID} from 'src/homepageExperience/ClickThroughAnnouncementHandler'
 
 // Selectors
-import {selectCurrentOrg, selectUser} from 'src/identity/selectors'
+import {getOverlayParams} from 'src/overlays/selectors'
 
 interface ClickThroughAnnouncementOverlayProps {
   onClose: () => void
 }
 
-export const ClickThroughAnnouncementOverlay: React.FC<
+export const ClickThroughAnnouncementOverlay: FC<
   ClickThroughAnnouncementOverlayProps
 > = ({onClose}) => {
+  const {announcementID} = useSelector(getOverlayParams)
+
   useEffect(() => {
-    event(`pricingClickThroughAnnouncement.displayed`)
+    event(`${announcementID}.displayed`)
   }, [])
 
-  const org = useSelector(selectCurrentOrg)
-  const user = useSelector(selectUser)
-
-  const encodedSubject = encodeURI('PAYG Pricing Increase')
-  const encodedBody = encodeURI(`User ID: ${user.email}
-Org ID: ${org.id}
-
-Please describe your inquiry here.`)
-
-  const handlePricingAnnouncementClick = () => {
-    event(`pricingClickThroughAnnouncement.details.clicked`)
+  const handleDetailsClick = () => {
+    event(`${announcementID}.details.clicked`)
   }
 
   const handleContactUsClick = () => {
-    event(`pricingClickThroughAnnouncement.contactUs.clicked`)
+    event(`${announcementID}.contactUs.clicked`)
   }
 
   const handleAcknowledgeClick = () => {
-    event(`pricingClickThroughAnnouncement.acknowledge.clicked`)
+    event(`${announcementID}.acknowledge.clicked`)
     onClose()
+  }
+
+  const announcementContents = (): JSX.Element => {
+    switch (announcementID) {
+      case AnnouncementID.PriceIncrease:
+        return (
+          <PaygPriceIncreaseAnnouncement
+            handleAcknowledgeClick={handleAcknowledgeClick}
+            handleContactUsClick={handleContactUsClick}
+            handleDetailsClick={handleDetailsClick}
+          />
+        )
+      case AnnouncementID.MqttEol:
+        return (
+          <MqttEolAnnouncement
+            handleAcknowledgeClick={handleAcknowledgeClick}
+            handleDetailsClick={handleDetailsClick}
+          />
+        )
+      default:
+        return null
+    }
   }
 
   return (
     <Overlay visible={true}>
-      <Overlay.Container>
-        <Overlay.Header title="Notice: Your Plan Pricing is Changing" />
-        <Overlay.Body>
-          <p>
-            Starting on <strong>December 1, 2023</strong> there will be an
-            increase in to your usage-based pricing.
-          </p>
-          <p>
-            Your monthly charges will continue to be based on your actual
-            consumption of the four billable usage vectors: Data In, Query
-            Count, Storage and Data Out. This is unchanged. However, unit
-            pricing for two of these vectors will be increased beginning{' '}
-            <strong>December 1, 2023</strong>:
-          </p>
-          <ul>
-            <li>
-              Data In will increase from $0.002 to $0.0025 per MB ingested
-            </li>
-            <li>
-              Query Count will increase from $0.01 to $0.012 per 100 executed
-            </li>
-          </ul>
-          <p>
-            This increase to your total monthly charges will depend on the
-            specific distribution of your workload across the billable vectors.
-            Most customers will experience an increase between 14% - 24%.
-          </p>
-          <p>
-            Please feel free to{' '}
-            <SafeBlankLink
-              href={`mailto:payg-price-change@influxdata.com?
-              &subject=${encodedSubject}
-              &body=${encodedBody}`}
-              onClick={handleContactUsClick}
-            >
-              contact us
-            </SafeBlankLink>{' '}
-            with questions or refer to our website for{' '}
-            <SafeBlankLink
-              href="https://www.influxdata.com/influxdb-pricing"
-              onClick={handlePricingAnnouncementClick}
-            >
-              additional information
-            </SafeBlankLink>
-            .
-          </p>
-        </Overlay.Body>
-        <Overlay.Footer>
-          <Button
-            text="Acknowledge"
-            color={ComponentColor.Primary}
-            onClick={handleAcknowledgeClick}
-          />
-        </Overlay.Footer>
-      </Overlay.Container>
+      <Overlay.Container>{announcementContents()}</Overlay.Container>
     </Overlay>
   )
 }

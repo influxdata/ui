@@ -26,6 +26,7 @@ import {ManageDatabasesAccordion} from 'src/homepageExperience/components/Option
 import {AddDataAccordion} from 'src/homepageExperience/components/OptionAccordion/AddDataAccordion'
 import {QueryDataAccordion} from 'src/homepageExperience/components/OptionAccordion/QueryDataAccordion'
 import {VisualizeAccordion} from 'src/homepageExperience/components/OptionAccordion/VisualizeAccordion'
+import {DeployAccordion} from 'src/homepageExperience/components/OptionAccordion/DeployAccordion'
 
 // Styles
 import 'src/homepageExperience/containers/HomepageContents.scss'
@@ -66,6 +67,7 @@ export const HomepageContents: FC = () => {
                   <AddDataAccordion />
                   <QueryDataAccordion />
                   <VisualizeAccordion />
+                  <DeployAccordion />
                 </FlexBox.Child>
               </FlexBox>
             </Grid.Column>

@@ -178,7 +178,7 @@ class LoginPageContents extends PureComponent<Props> {
 
     if (pwlen > 72){
       const passwordError = 'Password is longer than 72 bytes'
-    else {
+    } else {
       const passwordError = password === '' ? 'Password is required' : ''
     }
 

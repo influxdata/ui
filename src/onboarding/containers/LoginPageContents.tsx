@@ -174,7 +174,13 @@ class LoginPageContents extends PureComponent<Props> {
     const {email, password} = this.state
 
     const emailError = email === '' ? 'Email is required' : ''
-    const passwordError = password === '' ? 'Password is required' : ''
+    const pwlen = new Blob([password]).size
+
+    if (pwlen > 72){
+      const passwordError = 'Password is longer than 72 bytes'
+    else {
+      const passwordError = password === '' ? 'Password is required' : ''
+    }
 
     const errors: ErrorObject = {
       emailError,

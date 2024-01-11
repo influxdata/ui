@@ -249,6 +249,8 @@ export const MainNavigation: FC = () => {
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const isIOxOrg = useSelector(isOrgIOx)
+  const showPocRequest =
+    accountType === 'free' && isFlagEnabled('navbarPocRequest')
 
   const dispatch = useDispatch()
 
@@ -374,7 +376,7 @@ export const MainNavigation: FC = () => {
           </TreeNav.Item>
         )
       })}
-      {accountType === 'free' && (
+      {showPocRequest && (
         <RequestPocWidget expanded={navbarMode === 'expanded'} />
       )}
       <TreeNav.Item

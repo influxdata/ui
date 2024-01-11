@@ -31,6 +31,7 @@ import {AddDataAccordion} from 'src/homepageExperience/components/OptionAccordio
 import {QueryDataAccordion} from 'src/homepageExperience/components/OptionAccordion/QueryDataAccordion'
 import {VisualizeAccordion} from 'src/homepageExperience/components/OptionAccordion/VisualizeAccordion'
 import {DeployAccordion} from 'src/homepageExperience/components/OptionAccordion/DeployAccordion'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/homepageExperience/containers/HomepageContents.scss'
@@ -38,6 +39,7 @@ import 'src/homepageExperience/containers/HomepageContents.scss'
 export const HomepageContents: FC = () => {
   const {account} = useSelector(selectCurrentIdentity)
   const freeAccount = CLOUD && account.type === 'free'
+  const showDeployAccordion = freeAccount && isFlagEnabled('deployAccordion')
 
   return (
     <Page titleTag={pageTitleSuffixer(['Get Started'])}>
@@ -74,7 +76,7 @@ export const HomepageContents: FC = () => {
                   <AddDataAccordion />
                   <QueryDataAccordion />
                   <VisualizeAccordion />
-                  {freeAccount && <DeployAccordion />}
+                  {showDeployAccordion && <DeployAccordion />}
                 </FlexBox.Child>
               </FlexBox>
             </Grid.Column>

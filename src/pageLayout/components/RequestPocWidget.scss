@@ -1,0 +1,32 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.nav-item-poc--contents {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: $cf-space-s;
+  text-align: center;
+  background: rgba(241, 241, 243, 0.05);
+
+  .cf-button {
+    margin-top: $cf-space-s;
+  }
+}
+
+.nav-item-poc {
+  margin-top: auto !important;
+
+  + .nav-item-support {
+    margin-top: $cf-space-s !important;
+  }
+}
+
+.cf-popover {
+  .nav-item-poc--contents {
+    background: transparent;
+    padding: 0;
+    font-weight: normal;
+    width: 220px;
+  }
+}

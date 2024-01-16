@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {Icon, IconFont, PopoverPosition, TreeNav} from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
+import {RequestPocWidget} from '../components/RequestPocWidget'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -248,6 +249,8 @@ export const MainNavigation: FC = () => {
   const shouldShowNotebooks = useSelector(selectShouldShowNotebooks)
   const isNewIOxOrg = useSelector(selectIsNewIOxOrg)
   const isIOxOrg = useSelector(isOrgIOx)
+  const showPocRequest =
+    accountType === 'free' && isFlagEnabled('navbarPocRequest')
 
   const dispatch = useDispatch()
 
@@ -373,13 +376,16 @@ export const MainNavigation: FC = () => {
           </TreeNav.Item>
         )
       })}
+      {showPocRequest && (
+        <RequestPocWidget expanded={navbarMode === 'expanded'} />
+      )}
       <TreeNav.Item
         id="support"
         testID="nav-item-support"
         icon={<Icon glyph={IconFont.QuestionMark_Outline} />}
         label="Help &amp; Support"
         shortLabel="Support"
-        className="helpBarStyle"
+        className="nav-item-support"
       >
         <TreeNav.SubMenu position={PopoverPosition.ToTheRight}>
           <TreeNav.SubHeading label="Support" />

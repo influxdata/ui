@@ -2,37 +2,17 @@
 import React, {FC} from 'react'
 
 // Components
-import {InfluxColors} from '@influxdata/clockface'
 import {AnnouncementBlock} from 'src/me/components/AnnouncementBlock'
 
 // Assets
-import iiotWebinarBanner from 'assets/images/iiot-webinar-banner.png'
+import influxdbu from 'assets/images/influxdbu.svg'
 
 export const CurrentAnnouncement: FC = () => {
   const currentDate = new Date()
-  const targetDate = new Date('2023-11-06T05:00:00-07:00')
+  const targetDate = new Date('2024-02-06T01:00:00-07:00')
 
   const outgoingAnnouncement = (
     <AnnouncementBlock
-      body={
-        <p>
-          InfluxDB Clustered is the solution for organizations needing control
-          over their data and underlying infrastructure. Clustered turns any
-          InfluxDB instance into a production-ready cluster that can run
-          on-premises or in your private cloud. Keep your time series data where
-          you need it.
-        </p>
-      }
-      ctaLink="https://www.influxdata.com/blog/announcing-influxdb-clustered?utm_source=in-app&utm_medium=product&utm_campaign=2023_09_launch_clustered"
-      ctaText="Learn More Here"
-      iconColor={InfluxColors.Chartreuse}
-      title="Announcing InfluxDB Clustered"
-    />
-  )
-
-  const incomingAnnouncement = (
-    <AnnouncementBlock
-      image={<img src={iiotWebinarBanner} />}
       body={
         <p>
           Discover through real-life use cases how companies use InfluxDB for
@@ -43,6 +23,28 @@ export const CurrentAnnouncement: FC = () => {
       ctaText="Save Your Spot"
       icon={null}
       title="Live Demo"
+    />
+  )
+
+  const incomingAnnouncement = (
+    <AnnouncementBlock
+      image={
+        <div className="announcement-block--image-spacer announcement-block--image-spacer__light">
+          <img src={influxdbu} />
+        </div>
+      }
+      body={
+        <p>
+          In this training, we'll learn about a variety of third-party solutions
+          that can replace the task engine in InfluxDB 2.0. We'll also learn
+          about the advantages of each solution and some of the advancements to
+          the Python Client Library.
+        </p>
+      }
+      ctaLink="https://www.influxdata.com/training/influxdb-3-0-task-engine-training/?utm_source=in-app&utm_medium=product&utm_campaign=2024-02-22_Training_InfluxDBTaskEngine"
+      ctaText="Save Your Spot"
+      icon={null}
+      title="New Live Training: InfluxDB 3.0 Task Engine"
     />
   )
 

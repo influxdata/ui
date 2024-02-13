@@ -69,6 +69,19 @@
       }
     }
 
+    .announcement-block--image-spacer {
+      padding: $cf-space-s $cf-space-2xl;
+      border-radius: $cf-radius;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+
+      &.announcement-block--image-spacer__light {
+        background-color: $cf-grey-95;
+      }
+    }
+
     .announcement-block--panel-body {
       color: $cf-grey-55;
     }

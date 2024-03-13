@@ -8,7 +8,10 @@ import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
-import {DEFAULT_INTERVAL, DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
+import {
+  DEFAULT_INTERVAL,
+  DEFAULT_LIMIT,
+} from 'src/shared/constants/queryBuilder'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Contexts

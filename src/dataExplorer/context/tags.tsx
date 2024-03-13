@@ -8,7 +8,7 @@ import {
   CACHING_REQUIRED_END_DATE,
   CACHING_REQUIRED_START_DATE,
 } from 'src/utils/datetime/constants'
-import {DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
+import {DEFAULT_INTERVAL, DEFAULT_LIMIT} from 'src/shared/constants/queryBuilder'
 import {LanguageType} from 'src/dataExplorer/components/resources'
 
 // Contexts
@@ -214,6 +214,7 @@ export const TagsProvider: FC<Prop> = ({children, scope}) => {
       const queryTextSQL: string = `
         SELECT DISTINCT("${tagKey}")
         FROM "${measurement}"
+        WHERE time < NOW() AND time >= NOW() - INTERVAL '${DEFAULT_INTERVAL}'
         ORDER BY "${tagKey}"
         LIMIT ${DEFAULT_LIMIT}
       `

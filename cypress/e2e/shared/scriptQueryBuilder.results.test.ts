@@ -63,7 +63,7 @@ describe('Script Builder', () => {
             'defbuck4'
           )
           writeDataMoar.forEach(data => {
-            if ((data, length > 0)) {
+            if (data.length > 0) {
               cy.writeData(data, 'defbuck4')
             }
           })

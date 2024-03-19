@@ -62,7 +62,7 @@ describe('Script Builder', () => {
             [`ndbc_1table,air_temp_degc=70_degrees station_id=1`],
             'defbuck4'
           )
-          writeDataMoar.forEach(data => {if (data,length > 0) cy.writeData(data, 'defbuck4')})
+          writeDataMoar.forEach(data => {if (data,length > 0) {cy.writeData(data, 'defbuck4')}})
         })
       })
     })

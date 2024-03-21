@@ -361,6 +361,27 @@ export const OrgOverlay: FC = () => {
                     </Grid.Column>
                   </Grid.Row>
                   <Grid.Row>
+                    <h4>IOx Query</h4>
+                    <Grid.Column widthMD={Columns.Four}>
+                      <Form.Label label="Partitions" />
+                      <LimitsField
+                        type={InputType.Number}
+                        name="ioxQuery.partitions"
+                        limits={limits}
+                        onChangeLimits={setLimits}
+                      />
+                    </Grid.Column>
+                    <Grid.Column widthMD={Columns.Four}>
+                      <Form.Label label="Parquet Files" />
+                      <LimitsField
+                        type={InputType.Number}
+                        name="ioxQuery.parquetFiles"
+                        limits={limits}
+                        onChangeLimits={setLimits}
+                      />
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row>
                     <Grid.Column widthMD={Columns.Twelve}>
                       <MigrateOrg />
                     </Grid.Column>

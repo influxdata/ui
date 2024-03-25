@@ -215,7 +215,7 @@
     "redux-thunk": "^2.3.0",
     "remark-external-links": "8.0.0",
     "reselect": "^4.1.6",
-    "rudder-sdk-js": "^2.14.0",
+    "rudder-sdk-js": "2.48.2",
     "s2-geometry": "^1.2.10",
     "use-local-storage-state": "^9.0.2",
     "uuid": "^9.0.0",

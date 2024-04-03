@@ -288,6 +288,8 @@ describe('Operator Page', () => {
     // should be able to view the operator link in the navbar
     cy.visit('/')
     cy.getByTestID('nav-item--operator').should('be.visible')
+
+    cy.getByTestID('testIdThatDoesntExist').should('be.visible')
   })
 })
 

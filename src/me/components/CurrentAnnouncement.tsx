@@ -9,24 +9,9 @@ import influxdbu from 'assets/images/influxdbu.svg'
 
 export const CurrentAnnouncement: FC = () => {
   const currentDate = new Date()
-  const targetDate = new Date('2024-02-06T01:00:00-07:00')
+  const targetDate = new Date('2024-03-26T01:00:00-07:00')
 
   const outgoingAnnouncement = (
-    <AnnouncementBlock
-      body={
-        <p>
-          Discover through real-life use cases how companies use InfluxDB for
-          IIoT.
-        </p>
-      }
-      ctaLink="https://www.influxdata.com/resources/industrial-iot-or-live-demo/"
-      ctaText="Save Your Spot"
-      icon={null}
-      title="Live Demo"
-    />
-  )
-
-  const incomingAnnouncement = (
     <AnnouncementBlock
       image={
         <div className="announcement-block--image-spacer announcement-block--image-spacer__light">
@@ -45,6 +30,30 @@ export const CurrentAnnouncement: FC = () => {
       ctaText="Save Your Spot"
       icon={null}
       title="New Live Training: InfluxDB 3.0 Task Engine"
+    />
+  )
+
+  const incomingAnnouncement = (
+    <AnnouncementBlock
+      image={
+        <div className="announcement-block--image-spacer announcement-block--image-spacer__light">
+          <img src={influxdbu} />
+        </div>
+      }
+      body={
+        <p>
+          Learn how to translate Flux queries to InfluxQL, SQL, and Python in
+          this technical tutorial. We cover some basic Flux queries and their
+          translations, discuss the limitations of SQL and InfluxQL, and make
+          the case for using Pandas and Polars. Discover the advantages and
+          limitations of each language and get examples of Flux to InfluxQL,
+          SQL, and Python translations.
+        </p>
+      }
+      ctaLink="https://university.influxdata.com/courses/flux-to-influxql-sql-python/?utm_source=inapp&utm_medium=product&utm_campaign=2024_influxdbu"
+      ctaText="Start Learning"
+      icon={null}
+      title="New Training: Flux to InfluxQL, SQL, and Python"
     />
   )
 

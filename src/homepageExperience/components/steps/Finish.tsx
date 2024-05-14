@@ -21,7 +21,6 @@ import DashboardIntegrations from 'src/homepageExperience/components/steps/Dashb
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {isOrgIOx} from 'src/organizations/selectors'
 
 type OwnProps = {
@@ -96,8 +95,10 @@ export const Finish = (props: OwnProps) => {
     }
   }, [finishStepCompleted, markStepAsCompleted, wizardEventName])
 
+  const isIOxOrg = useSelector(isOrgIOx)
+
   const writeOnly =
-    useSelector(isOrgIOx) &&
+    isIOxOrg &&
     (wizardEventName === 'arduinoWizard' || wizardEventName === 'nodejsWizard')
 
   const outroContent = writeOnly
@@ -124,7 +125,7 @@ export const Finish = (props: OwnProps) => {
           alignItems={AlignItems.Stretch}
           direction={FlexDirection.Row}
         >
-          {isFlagEnabled('ioxOnboarding') ? (
+          {isIOxOrg ? (
             <ResourceCard className="homepage-wizard-next-steps">
               <SafeBlankLink
                 href="https://docs.influxdata.com/influxdb/cloud-serverless/write-data/best-practices/"
@@ -154,7 +155,7 @@ export const Finish = (props: OwnProps) => {
               </p>
             </ResourceCard>
           )}
-          {!isFlagEnabled('ioxOnboarding') && (
+          {!isIOxOrg && (
             <ResourceCard className="homepage-wizard-next-steps">
               <SafeBlankLink
                 href="https://university.influxdata.com/"
@@ -187,13 +188,13 @@ export const Finish = (props: OwnProps) => {
         </FlexBox>
         {props.wizardEventName !== 'cliWizard' &&
         props.wizardEventName !== 'arduinoWizard' &&
-        !isFlagEnabled('ioxOnboarding') ? (
+        !isIOxOrg ? (
           <SampleAppCard
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}
           />
         ) : null}
-        {isFlagEnabled('ioxOnboarding') && (
+        {isIOxOrg && (
           <DashboardIntegrations
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}

@@ -65,7 +65,7 @@ export const OrgOverlay: FC = () => {
   const isIOx =
     organization?.storageType &&
     organization.storageType.toLowerCase() === 'iox'
-  const canSeeCardinalityLimits = !isIOx
+  const canSeeTsmLimits = !isIOx
 
   useEffect(() => {
     handleGetLimits(orgID)
@@ -223,7 +223,7 @@ export const OrgOverlay: FC = () => {
                         onChangeLimits={setLimits}
                       />
                     </Grid.Column>
-                    {canSeeCardinalityLimits && (
+                    {canSeeTsmLimits && (
                       <Grid.Column widthMD={Columns.Four}>
                         <Form.Label label="Series Cardinality" />
                         <LimitsField
@@ -265,45 +265,49 @@ export const OrgOverlay: FC = () => {
                         onChangeLimits={setLimits}
                       />
                     </Grid.Column>
-                    <Grid.Column widthMD={Columns.Four}>
-                      <Form.Label label="Max Notifications" />
-                      <LimitsField
-                        type={InputType.Number}
-                        name="notificationRule.maxNotifications"
-                        limits={limits}
-                        onChangeLimits={setLimits}
-                      />
-                    </Grid.Column>
+                    {canSeeTsmLimits && (
+                      <Grid.Column widthMD={Columns.Four}>
+                        <Form.Label label="Max Notifications" />
+                        <LimitsField
+                          type={InputType.Number}
+                          name="notificationRule.maxNotifications"
+                          limits={limits}
+                          onChangeLimits={setLimits}
+                        />
+                      </Grid.Column>
+                    )}
                   </Grid.Row>
-                  <Grid.Row>
-                    <Grid.Column widthMD={Columns.Four}>
-                      <Form.Label label="Max Dashboards" />
-                      <LimitsField
-                        type={InputType.Number}
-                        name="dashboard.maxDashboards"
-                        limits={limits}
-                        onChangeLimits={setLimits}
-                      />
-                    </Grid.Column>
-                    <Grid.Column widthMD={Columns.Four}>
-                      <Form.Label label="Max Tasks" />
-                      <LimitsField
-                        type={InputType.Number}
-                        name="task.maxTasks"
-                        limits={limits}
-                        onChangeLimits={setLimits}
-                      />
-                    </Grid.Column>
-                    <Grid.Column widthMD={Columns.Four}>
-                      <Form.Label label="Max Checks" />
-                      <LimitsField
-                        type={InputType.Number}
-                        name="check.maxChecks"
-                        limits={limits}
-                        onChangeLimits={setLimits}
-                      />
-                    </Grid.Column>
-                  </Grid.Row>
+                  {canSeeTsmLimits && (
+                    <Grid.Row>
+                      <Grid.Column widthMD={Columns.Four}>
+                        <Form.Label label="Max Dashboards" />
+                        <LimitsField
+                          type={InputType.Number}
+                          name="dashboard.maxDashboards"
+                          limits={limits}
+                          onChangeLimits={setLimits}
+                        />
+                      </Grid.Column>
+                      <Grid.Column widthMD={Columns.Four}>
+                        <Form.Label label="Max Tasks" />
+                        <LimitsField
+                          type={InputType.Number}
+                          name="task.maxTasks"
+                          limits={limits}
+                          onChangeLimits={setLimits}
+                        />
+                      </Grid.Column>
+                      <Grid.Column widthMD={Columns.Four}>
+                        <Form.Label label="Max Checks" />
+                        <LimitsField
+                          type={InputType.Number}
+                          name="check.maxChecks"
+                          limits={limits}
+                          onChangeLimits={setLimits}
+                        />
+                      </Grid.Column>
+                    </Grid.Row>
+                  )}
                   {limits?.timeout && (
                     <Grid.Row>
                       <Grid.Column widthMD={Columns.Four}>

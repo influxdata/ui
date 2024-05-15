@@ -67,15 +67,17 @@ export const Credit250PAYGConversion: FC = () => {
           <ul className="credit-250-conversion-panel--benefits">
             <li>Unlimited buckets to store your data</li>
             <li>Unlimited storage retention</li>
-            <li>Unlimited dashboards</li>
-            <li>Unlimited tasks</li>
-            <li>Unlimited alert checks and notification rules</li>
-            <li>HTTP and PagerDuty notifications</li>
             {!orgUsesIOx && (
-              <li>
-                Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)} series
-                cardinality
-              </li>
+              <>
+                <li>Unlimited dashboards</li>
+                <li>Unlimited tasks</li>
+                <li>Unlimited alert checks and notification rules</li>
+                <li>HTTP and PagerDuty notifications</li>
+                <li>
+                  Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)} series
+                  cardinality
+                </li>
+              </>
             )}
           </ul>
         </div>
@@ -121,15 +123,18 @@ export const PAYGConversion: FC = () => {
                     <ul className="conversion-panel--benefits">
                       <li>Unlimited buckets to store your data</li>
                       <li>Unlimited storage retention</li>
-                      <li>Unlimited dashboards</li>
-                      <li>Unlimited tasks</li>
-                      <li>Unlimited alert checks and notification rules</li>
-                      <li>HTTP and PagerDuty notifications</li>
                       {!orgUsesIOx && (
-                        <li>
-                          Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)}{' '}
-                          series cardinality
-                        </li>
+                        <>
+                          <li>Unlimited dashboards</li>
+                          <li>Unlimited tasks</li>
+                          <li>Unlimited alert checks and notification rules</li>
+                          <li>HTTP and PagerDuty notifications</li>
+                          <li>
+                            Up to{' '}
+                            {Intl.NumberFormat().format(CARDINALITY_LIMIT)}{' '}
+                            series cardinality
+                          </li>
+                        </>
                       )}
                     </ul>
                   </div>

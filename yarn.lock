@@ -1530,10 +1530,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/influxdb-templates/-/influxdb-templates-0.11.0.tgz#872d7b71aa9b578c7ec194368deaa7b568790d1a"
   integrity sha512-aUvnP3HlEC4/3SnD4GBrtesLRZQPrBJOP4VA/0K63gnuEXO8k0/zBMpNVJOQqM+1tS/ZOmMhGpg3moQxAtwPcg==
 
-"@influxdata/oats@0.5.3":
-  version "0.5.3"
-  resolved "https://registry.npmjs.org/@influxdata/oats/-/oats-0.5.3.tgz"
-  integrity sha512-OG3kr6p5U+wpa2qny+Cu8CBqHJne9mKEC5ux4JJTnk1eQnfAtNv+DGdz0QH+Ouz/8cqjl2erkPx6RPMGmUYMeA==
+"@influxdata/oats@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/oats/-/oats-0.7.0.tgz#dd3d94a7b8d42a5d8dbedf4e2ccdb097dd9563f4"
+  integrity sha512-i78Y0svY0H9nYo1YZ0KzTV4KO6mj+jItTJcUgZq8/y6TJlexE3wma9qpG2lxzwj1LGBSogTjfUWVYdRUm2m05Q==
   dependencies:
     commander "^2.20.0"
     humps "^2.0.1"
@@ -3390,11 +3390,11 @@ brace-expansion@^1.1.7:
     concat-map "0.0.1"
 
 braces@^3.0.1, braces@^3.0.2, braces@~3.0.2:
-  version "3.0.2"
-  resolved "https://registry.npmjs.org/braces/-/braces-3.0.2.tgz"
-  integrity sha512-b8um+L1RzM3WDSzvhm6gIz1yfTbBt6YTlcEKAvsmqCZZFw46z626lVj9j1yEPW33H5H+lBQpZMP1k8l+78Ha0A==
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/braces/-/braces-3.0.3.tgz#490332f40919452272d55a8480adc0c441358789"
+  integrity sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==
   dependencies:
-    fill-range "^7.0.1"
+    fill-range "^7.1.1"
 
 browser-process-hrtime@^1.0.0:
   version "1.0.0"
@@ -5249,10 +5249,10 @@ file-entry-cache@^6.0.1:
   dependencies:
     flat-cache "^3.0.4"
 
-fill-range@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.npmjs.org/fill-range/-/fill-range-7.0.1.tgz"
-  integrity sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==
+fill-range@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/fill-range/-/fill-range-7.1.1.tgz#44265d3cac07e3ea7dc247516380643754a05292"
+  integrity sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==
   dependencies:
     to-regex-range "^5.0.1"
 

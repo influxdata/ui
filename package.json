@@ -224,6 +224,7 @@
     "yjs": "^13.5.36"
   },
   "resolutions": {
+    "auth0-js/**/superagent": "^9.0",
     "minimatch": "^3.0.5"
   }
 }

@@ -97,7 +97,7 @@ export const RemoveMemberOverlay: FC = () => {
             direction={FlexDirection.Row}
           >
             <Form.Element
-              label={`Transfer ${userToRemove.email}'s tasks and alerts to:`}
+              label={`Transfer ${userToRemove.email}'s tasks, alerts, and API tokens to:`}
               required={true}
             >
               <Dropdown

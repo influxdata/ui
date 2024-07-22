@@ -1,10 +1,18 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {Panel, ComponentSize, InfluxColors} from '@influxdata/clockface'
+import {
+  Panel,
+  ComponentSize,
+  InfluxColors,
+  QuestionMarkTooltip,
+} from '@influxdata/clockface'
 
 // Components
 import {View} from 'src/visualization'
 import {UsageContext} from 'src/usage/context/usage'
+
+// Constants
+const QUERY_COUNT_VECTOR_NAME = 'Query Count'
 
 // Types
 import {
@@ -39,6 +47,10 @@ const UsageSingleStat: FC<Props> = ({
     decimalPlaces: {isEnforced: false, digits: 0},
   }
 
+  // Adjusts table properties to warn user that only flux queries are included in the Query Count.
+  const isQueryCount: Boolean = usageVector.name === QUERY_COUNT_VECTOR_NAME
+  const vectorName = isQueryCount ? 'Query Count (Flux Only)' : usageVector.name
+
   const error = fromFluxResult?.table?.columns?.error?.data?.[0]
 
   return (
@@ -51,9 +63,14 @@ const UsageSingleStat: FC<Props> = ({
         size={ComponentSize.ExtraSmall}
         testID="usage-single-stat--header"
       >
-        <h5>{`${usageVector.name} ${
-          usageVector.unit !== '' ? `(${usageVector.unit})` : ''
-        }`}</h5>
+        <h5>
+          {`${vectorName} ${
+            usageVector.unit !== '' ? `(${usageVector.unit})` : ''
+          }`}
+          {isQueryCount && (
+            <QuestionMarkTooltip tooltipContents={queryCountWarning} />
+          )}
+        </h5>
       </Panel.Header>
       <Panel.Body className="panel-body--size" style={{height: 300 / length}}>
         <View
@@ -67,5 +84,9 @@ const UsageSingleStat: FC<Props> = ({
     </Panel>
   )
 }
+
+const queryCountWarning = (
+  <p>SQL and InfluxQL query counts are not displayed.</p>
+)
 
 export default UsageSingleStat

@@ -119,6 +119,7 @@ describe('When tasks already exist', () => {
     cy.getByTestID('inline-labels--popover-field').type(`${firstLabel}{enter}`)
     cy.getByTestID('overlay--container').should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
+    cy.wait(2000)
 
     cy.getByTestID('overlay--container').should('not.exist')
     cy.get('button.cf-button[title="Add labels"]').click()
@@ -126,11 +127,13 @@ describe('When tasks already exist', () => {
     cy.getByTestID('inline-labels--popover-field').type(`${secondLabel}{enter}`)
     cy.getByTestID('overlay--container').should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
+    cy.wait(2000)
 
     // ensure the two labels are present before cloning
     cy.getByTestID('overlay--container').should('not.exist')
     cy.getByTestID(`label--pill ${firstLabel}`).should('be.visible')
     cy.getByTestID(`label--pill ${secondLabel}`).should('be.visible')
+    cy.wait(2000)
 
     // clone the task
     cy.getByTestID('context-menu-task').click()
@@ -138,6 +141,7 @@ describe('When tasks already exist', () => {
     cy.getByTestID('task-card--slide-toggle').should('have.length', 2)
     cy.getByTestID(`label--pill ${firstLabel}`).should('have.length', 2)
     cy.getByTestID(`label--pill ${secondLabel}`).should('have.length', 2)
+    cy.wait(2000)
 
     // disable the first task
     cy.getByTestID('task-card--slide-toggle')

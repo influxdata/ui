@@ -16,7 +16,7 @@ describe('writing queries and making graphs using Data Explorer', () => {
           .then(() => {
             // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
             // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-            cy.wait(1200)
+            cy.wait(3000)
             cy.get('@org').then(({id}: Organization) => {
               cy.createMapVariable(id)
               cy.fixture('routes').then(({orgs, explorer}) => {

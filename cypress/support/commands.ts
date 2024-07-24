@@ -1510,7 +1510,7 @@ export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
     }).as('setFeatureFlagsResponse')
   })
 
-  return cy.wait(0)
+  return cy.wait(1500)
 }
 
 export const createTaskFromEmpty = (

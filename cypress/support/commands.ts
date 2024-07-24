@@ -911,8 +911,10 @@ export const clearSqlScriptSession = () => {
 }
 
 export const selectScriptBucket = (bucketName: string) => {
-  cy.getByTestID('bucket-selector--dropdown-button').click()
-  cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
+  const MENU_WAIT_DELAY = 1000
+  
+  cy.getByTestID('bucket-selector--dropdown-button').click().wait(MENU_WAIT_DELAY)
+  cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click().wait(MENU_WAIT_DELAY)
   cy.getByTestID('bucket-selector--dropdown-button').should(
     'contain',
     bucketName

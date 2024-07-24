@@ -1,5 +1,12 @@
 import {Organization} from '../../../src/types'
 
+const featureFlags = {
+  showOldDataExplorerInNewIOx: true,
+  showTasksInNewIOx: true,
+  showVariablesInNewIOx: true,
+  schemaComposition: true, // Double check that the new schemaComposition flag does not interfere.
+}
+
 describe('writing queries and making graphs using Data Explorer', () => {
   let route: string
 
@@ -7,12 +14,7 @@ describe('writing queries and making graphs using Data Explorer', () => {
     cy.flush().then(() =>
       cy.signin().then(() =>
         cy
-          .setFeatureFlags({
-            showOldDataExplorerInNewIOx: true,
-            showTasksInNewIOx: true,
-            showVariablesInNewIOx: true,
-            schemaComposition: true, // Double check that the new schemaComposition flag does not interfere.
-          })
+          .setFeatureFlags(featureFlags)
           .then(() => {
             // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
             // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
@@ -66,14 +68,14 @@ describe('writing queries and making graphs using Data Explorer', () => {
 
     describe('numeric input validation when changing bin sizes in Heat Maps', () => {
       beforeEach(() => {
-        cy.getByTestID('view-type--dropdown').click()
-        cy.getByTestID(`view-type--heatmap`).click()
-        cy.getByTestID('cog-cell--button').click()
+        cy.getByTestID('view-type--dropdown').click().wait(1000)
+        cy.getByTestID(`view-type--heatmap`).click().wait(1000)
+        cy.getByTestID('cog-cell--button').click().wait(1000)
       })
 
       it('should put input field in error status and stay in error status when input is invalid or empty', () => {
-        cy.get('.view-options').within(() => {
-          cy.getByTestID('grid--column').within(() => {
+        cy.get('.view-options').first().within(() => {
+          cy.getByTestID('grid--column').first().within(() => {
             cy.getByTestID('bin-size-input')
               .clear()
               .getByTestID('bin-size-input--error')
@@ -95,8 +97,8 @@ describe('writing queries and making graphs using Data Explorer', () => {
       })
 
       it('should not have input field in error status when "10" becomes valid input such as "5"', () => {
-        cy.get('.view-options').within(() => {
-          cy.getByTestID('grid--column').within(() => {
+        cy.get('.view-options').first().within(() => {
+          cy.getByTestID('grid--column').first().within(() => {
             cy.getByTestID('bin-size-input')
               .clear()
               .type('5')
@@ -109,14 +111,14 @@ describe('writing queries and making graphs using Data Explorer', () => {
 
     describe('numeric input validation when changing number of decimal places in Single Stat', () => {
       beforeEach(() => {
-        cy.getByTestID('view-type--dropdown').click()
-        cy.getByTestID(`view-type--single-stat`).click()
-        cy.getByTestID('cog-cell--button').click()
+        cy.getByTestID('view-type--dropdown').click().wait(1000)
+        cy.getByTestID(`view-type--single-stat`).click().wait(1000)
+        cy.getByTestID('cog-cell--button').click().wait(1000)
       })
 
       it('should put input field in error status and stay in error status when input is invalid or empty', () => {
-        cy.get('.view-options').within(() => {
-          cy.getByTestID('auto-input--input').within(() => {
+        cy.get('.view-options').first().within(() => {
+          cy.getByTestID('auto-input--input').first().within(() => {
             cy.getByTestID('input-field')
               .click()
               .type('{backspace}')
@@ -143,8 +145,8 @@ describe('writing queries and making graphs using Data Explorer', () => {
       })
 
       it('should not have input field in error status when "2" becomes valid input such as "11"', () => {
-        cy.get('.view-options').within(() => {
-          cy.getByTestID('auto-input--input').within(() => {
+        cy.get('.view-options').first().within(() => {
+          cy.getByTestID('auto-input--input').first().within(() => {
             cy.getByTestID('input-field')
               .click()
               .type('{backspace}11')
@@ -303,7 +305,7 @@ describe('writing queries and making graphs using Data Explorer', () => {
       cy.get<Organization>('@org').then(({id, name}) => {
         cy.createBucket(id, name, 'newBucket')
       })
-      cy.reload()
+      cy.setFeatureFlags(featureFlags)
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
           cy.getByTestID(defaultBucketListSelector).should('be.visible')

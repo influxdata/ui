@@ -3,7 +3,7 @@ import {Organization} from '../../../src/types'
 // These delays are separately loaded in the UI.
 // But cypress checks for them in series...and the LspServer takes longer.
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
-const DELAY_FOR_LSP_SERVER_BOOTUP = 10000
+const DELAY_FOR_LSP_SERVER_BOOTUP = 25000
 
 const DELAY_FOR_FILE_DOWNLOAD = 10000
 

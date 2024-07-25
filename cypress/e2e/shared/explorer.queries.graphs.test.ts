@@ -1,32 +1,34 @@
 import {Organization} from '../../../src/types'
 
+const featureFlags = {
+  showOldDataExplorerInNewIOx: true,
+  showTasksInNewIOx: true,
+  showVariablesInNewIOx: true,
+  schemaComposition: true, // Double check that the new schemaComposition flag does not interfere.
+}
+
+const DEFAULT_DELAY_MS = 1000
+
 describe('writing queries and making graphs using Data Explorer', () => {
   let route: string
 
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() =>
-        cy
-          .setFeatureFlags({
-            showOldDataExplorerInNewIOx: true,
-            showTasksInNewIOx: true,
-            showVariablesInNewIOx: true,
-            schemaComposition: true, // Double check that the new schemaComposition flag does not interfere.
-          })
-          .then(() => {
-            // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
-            // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
-            cy.wait(1200)
-            cy.get('@org').then(({id}: Organization) => {
-              cy.createMapVariable(id)
-              cy.fixture('routes').then(({orgs, explorer}) => {
-                route = `${orgs}/${id}${explorer}`
-                cy.visit(route)
-                cy.getByTestID('tree-nav').should('be.visible')
-                cy.switchToDataExplorer('old')
-              })
+        cy.setFeatureFlags(featureFlags).then(() => {
+          // cy.wait($time) is necessary to consistently ensure sufficient time for the feature flag override.
+          // The flag reset happens via redux, (it's not a network request), so we can't cy.wait($intercepted_route).
+          cy.wait(1200)
+          cy.get('@org').then(({id}: Organization) => {
+            cy.createMapVariable(id)
+            cy.fixture('routes').then(({orgs, explorer}) => {
+              route = `${orgs}/${id}${explorer}`
+              cy.visit(route)
+              cy.getByTestID('tree-nav').should('be.visible')
+              cy.switchToDataExplorer('old')
             })
           })
+        })
       )
     )
   })
@@ -34,84 +36,100 @@ describe('writing queries and making graphs using Data Explorer', () => {
   describe('numeric input in graphs', () => {
     describe('numeric input using custom bin sizes in Histograms', () => {
       beforeEach(() => {
-        cy.getByTestID('view-type--dropdown').click()
-        cy.getByTestID(`view-type--histogram`).click()
-        cy.getByTestID('cog-cell--button').click()
+        cy.getByTestID('view-type--dropdown').click().wait(DEFAULT_DELAY_MS)
+        cy.getByTestID(`view-type--histogram`).click().wait(DEFAULT_DELAY_MS)
+        cy.getByTestID('cog-cell--button').click().wait(DEFAULT_DELAY_MS)
       })
 
       it('should put input field in error status and stay in error status when input is invalid or empty', () => {
-        cy.get('.view-options').within(() => {
-          cy.getByTestID('auto-input').within(() => {
-            cy.getByTestID('input-field').clear()
-            cy.getByTestID('auto-input--custom').should(
-              'have.class',
-              'cf-select-group--option__active'
-            )
-            cy.getByTestID('input-field--error').should('have.length', 1)
-            cy.getByTestID('input-field').type('adfuiopbvmc')
-            cy.getByTestID('input-field--error').should('have.length', 1)
+        cy.get('.view-options')
+          .first()
+          .within(() => {
+            cy.getByTestID('auto-input')
+              .first()
+              .within(() => {
+                cy.getByTestID('input-field').clear()
+                cy.getByTestID('auto-input--custom').should(
+                  'have.class',
+                  'cf-select-group--option__active'
+                )
+                cy.getByTestID('input-field--error').should('have.length', 1)
+                cy.getByTestID('input-field').type('adfuiopbvmc')
+                cy.getByTestID('input-field--error').should('have.length', 1)
+              })
           })
-        })
       })
 
       it('should not have the input field in error status when input becomes valid', () => {
-        cy.get('.view-options').within(() => {
-          cy.getByTestID('auto-input').within(() => {
-            cy.getByTestID('input-field').clear().type('3')
-            cy.getByTestID('input-field--error').should('have.length', 0)
+        cy.get('.view-options')
+          .first()
+          .within(() => {
+            cy.getByTestID('auto-input')
+              .first()
+              .within(() => {
+                cy.getByTestID('input-field').clear().type('3')
+                cy.getByTestID('input-field--error').should('have.length', 0)
+              })
           })
-        })
       })
     })
 
     describe('numeric input validation when changing bin sizes in Heat Maps', () => {
       beforeEach(() => {
-        cy.getByTestID('view-type--dropdown').click()
-        cy.getByTestID(`view-type--heatmap`).click()
-        cy.getByTestID('cog-cell--button').click()
+        cy.getByTestID('view-type--dropdown').click().wait(DEFAULT_DELAY_MS)
+        cy.getByTestID(`view-type--heatmap`).click().wait(DEFAULT_DELAY_MS)
+        cy.getByTestID('cog-cell--button').click().wait(DEFAULT_DELAY_MS)
       })
 
       it('should put input field in error status and stay in error status when input is invalid or empty', () => {
-        cy.get('.view-options').within(() => {
-          cy.getByTestID('grid--column').within(() => {
-            cy.getByTestID('bin-size-input')
-              .clear()
-              .getByTestID('bin-size-input--error')
-              .should('have.length', 1)
-            cy.getByTestID('bin-size-input')
-              .type('{backspace}')
-              .getByTestID('bin-size-input--error')
-              .should('have.length', 1)
-            cy.getByTestID('bin-size-input')
-              .type('4')
-              .getByTestID('bin-size-input--error')
-              .should('have.length', 1)
-            cy.getByTestID('bin-size-input')
-              .type('{backspace}abcdefg')
-              .getByTestID('bin-size-input--error')
-              .should('have.length', 1)
+        cy.get('.view-options')
+          .first()
+          .within(() => {
+            cy.getByTestID('grid--column')
+              .first()
+              .within(() => {
+                cy.getByTestID('bin-size-input')
+                  .clear()
+                  .getByTestID('bin-size-input--error')
+                  .should('have.length', 1)
+                cy.getByTestID('bin-size-input')
+                  .type('{backspace}')
+                  .getByTestID('bin-size-input--error')
+                  .should('have.length', 1)
+                cy.getByTestID('bin-size-input')
+                  .type('4')
+                  .getByTestID('bin-size-input--error')
+                  .should('have.length', 1)
+                cy.getByTestID('bin-size-input')
+                  .type('{backspace}abcdefg')
+                  .getByTestID('bin-size-input--error')
+                  .should('have.length', 1)
+              })
           })
-        })
       })
 
       it('should not have input field in error status when "10" becomes valid input such as "5"', () => {
-        cy.get('.view-options').within(() => {
-          cy.getByTestID('grid--column').within(() => {
-            cy.getByTestID('bin-size-input')
-              .clear()
-              .type('5')
-              .getByTestID('bin-size-input--error')
-              .should('have.length', 0)
+        cy.get('.view-options')
+          .first()
+          .within(() => {
+            cy.getByTestID('grid--column')
+              .first()
+              .within(() => {
+                cy.getByTestID('bin-size-input')
+                  .clear()
+                  .type('5')
+                  .getByTestID('bin-size-input--error')
+                  .should('have.length', 0)
+              })
           })
-        })
       })
     })
 
     describe('numeric input validation when changing number of decimal places in Single Stat', () => {
       beforeEach(() => {
-        cy.getByTestID('view-type--dropdown').click()
-        cy.getByTestID(`view-type--single-stat`).click()
-        cy.getByTestID('cog-cell--button').click()
+        cy.getByTestID('view-type--dropdown').click().wait(DEFAULT_DELAY_MS)
+        cy.getByTestID(`view-type--single-stat`).click().wait(DEFAULT_DELAY_MS)
+        cy.getByTestID('cog-cell--button').click().wait(DEFAULT_DELAY_MS)
       })
 
       it('should put input field in error status and stay in error status when input is invalid or empty', () => {
@@ -143,24 +161,31 @@ describe('writing queries and making graphs using Data Explorer', () => {
       })
 
       it('should not have input field in error status when "2" becomes valid input such as "11"', () => {
-        cy.get('.view-options').within(() => {
-          cy.getByTestID('auto-input--input').within(() => {
-            cy.getByTestID('input-field')
-              .click()
-              .type('{backspace}11')
-              .invoke('val')
-              .should('equal', '11')
-              .getByTestID('input-field--error')
-              .should('have.length', 0)
+        cy.get('.view-options')
+          .first()
+          .within(() => {
+            cy.getByTestID('auto-input--input')
+              .first()
+              .within(() => {
+                cy.getByTestID('input-field')
+                  .click()
+                  .type('{backspace}11')
+                  .invoke('val')
+                  .should('equal', '11')
+                  .getByTestID('input-field--error')
+                  .should('have.length', 0)
+              })
           })
-        })
       })
     })
   })
 
   describe('raw script editing', () => {
     beforeEach(() => {
-      cy.getByTestID('switch-to-script-editor').should('be.visible').click()
+      cy.getByTestID('switch-to-script-editor')
+        .should('be.visible')
+        .click()
+        .wait(1000)
     })
 
     it('shows the proper query button state', () => {
@@ -177,13 +202,15 @@ describe('writing queries and making graphs using Data Explorer', () => {
     })
 
     it('shows the empty state when the query returns no results', () => {
-      cy.getByTestID('time-machine--bottom').within(() => {
-        cy.getByTestID('flux-editor').should('be.visible')
-          .monacoType(`from(bucket: "defbuck")
+      cy.getByTestID('time-machine--bottom')
+        .first()
+        .within(() => {
+          cy.getByTestID('flux-editor').should('be.visible')
+            .monacoType(`from(bucket: "defbuck")
   |> range(start: -10s)
   |> filter(fn: (r) => r._measurement == "no exist")`)
-        cy.getByTestID('time-machine-submit-button').click()
-      })
+          cy.getByTestID('time-machine-submit-button').click()
+        })
 
       cy.getByTestID('empty-graph--no-results').should('exist')
     })
@@ -303,7 +330,7 @@ describe('writing queries and making graphs using Data Explorer', () => {
       cy.get<Organization>('@org').then(({id, name}) => {
         cy.createBucket(id, name, 'newBucket')
       })
-      cy.reload()
+      cy.setFeatureFlags(featureFlags)
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
           cy.getByTestID(defaultBucketListSelector).should('be.visible')

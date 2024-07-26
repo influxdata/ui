@@ -120,7 +120,9 @@ describe('When tasks already exist', () => {
       .click()
       .wait(DEFAULT_DELAY_MS)
     cy.getByTestID('inline-labels--popover--dialog').should('be.visible')
-    cy.getByTestID('inline-labels--popover-field').type(`${firstLabel}{enter}`)
+    cy.getByTestID('inline-labels--popover-field')
+      .type(`${firstLabel}{enter}`)
+      .wait(DEFAULT_DELAY_MS)
     cy.getByTestID('overlay--container').should('be.visible')
     cy.getByTestID('create-label-form--submit').click().wait(DEFAULT_DELAY_MS)
 
@@ -129,7 +131,9 @@ describe('When tasks already exist', () => {
       .click()
       .wait(DEFAULT_DELAY_MS)
     cy.getByTestID('inline-labels--popover--dialog').should('be.visible')
-    cy.getByTestID('inline-labels--popover-field').type(`${secondLabel}{enter}`)
+    cy.getByTestID('inline-labels--popover-field')
+      .type(`${secondLabel}{enter}`)
+      .wait(DEFAULT_DELAY_MS)
     cy.getByTestID('overlay--container').should('be.visible')
     cy.getByTestID('create-label-form--submit').click().wait(DEFAULT_DELAY_MS)
 

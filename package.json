@@ -225,5 +225,15 @@
   },
   "resolutions": {
     "minimatch": "^3.0.5"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "usage"
+        }
+      ]
+    ]
   }
 }

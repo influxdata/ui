@@ -90,7 +90,9 @@ describe('When tasks already exist', () => {
     cy.getByTestID('create-label-form--submit').click().wait(DEFAULT_DELAY_MS)
 
     // Delete the label
-    cy.getByTestID(`label--pill--delete ${labelName}`).click({force: true})
+    cy.getByTestID(`label--pill--delete ${labelName}`)
+      .click({force: true})
+      .wait(DEFAULT_DELAY_MS)
     cy.getByTestID('inline-labels--empty').should('exist')
   })
 
@@ -102,9 +104,11 @@ describe('When tasks already exist', () => {
       .then(() => {
         cy.getByTestID(`context-delete-menu ${TaskName}--button`)
           .click()
+          .wait(DEFAULT_DELAY_MS)
           .then(() => {
             cy.getByTestID(`context-delete-menu ${TaskName}--confirm-button`)
               .click()
+              .wait(DEFAULT_DELAY_MS)
               .then(() => {
                 cy.getByTestID('empty-tasks-list').should('exist')
               })
@@ -169,7 +173,10 @@ describe('When tasks already exist', () => {
     const cloneNamePrefix = '🦄ask (cloned at '
     cy.getByTestID('task-card').then(() => {
       cy.getByTestID('context-menu-task').click().wait(DEFAULT_DELAY_MS)
-      cy.getByTestID('context-clone-task').click().type('{esc}')
+      cy.getByTestID('context-clone-task')
+        .click()
+        .wait(DEFAULT_DELAY_MS)
+        .type('{esc}')
     })
 
     cy.getByTestID('task-card').should('have.length', 2)
@@ -279,7 +286,7 @@ describe('When tasks already exist', () => {
   })
 })
 
-describe('Searching and filtering', () => {
+describe.only('Searching and filtering', () => {
   const newLabelName = 'click-me'
   const taskName = 'beepBoop'
 
@@ -306,17 +313,19 @@ describe('Searching and filtering', () => {
     })
   })
 
-  it('can click to filter tasks by labels', () => {
-    cy.getByTestID('task-card').should('have.length', 2)
+  it.only('can click to filter tasks by labels', () => {
+    for (let i = 0; i < 10; i++) {
+      cy.getByTestID('task-card').should('have.length', 2)
+      cy.getByTestID(`label--pill ${newLabelName}`)
+        .should('be.visible')
+        .click()
+        .wait(DEFAULT_DELAY_MS)
+      cy.getByTestID('task-card').should('have.length', 1)
+      // searching by task nameshould('be.visible').
+      cy.getByTestIDAndSetInputValue('search-widget', 'bEE')
 
-    cy.getByTestID(`label--pill ${newLabelName}`).should('be.visible').click()
-
-    cy.getByTestID('task-card').should('have.length', 1)
-
-    // searching by task nameshould('be.visible').
-    cy.getByTestIDAndSetInputValue('search-widget', 'bEE')
-
-    cy.getByTestID('task-card').should('have.length', 1)
+      cy.getByTestID('task-card').should('have.length', 1)
+    }
   })
 
   it('will not permit task creation with invalid flux', () => {

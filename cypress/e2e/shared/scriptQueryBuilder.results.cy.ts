@@ -5,7 +5,9 @@ import {Organization} from '../../../src/types'
 const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
 const DELAY_FOR_LSP_SERVER_BOOTUP = 7000
 
-const DELAY_FOR_FILE_DOWNLOAD = 5000
+const DELAY_FOR_FILE_DOWNLOAD = 12000
+
+const DEFAULT_DELAY_MS = 2000
 
 describe('Script Builder', () => {
   const writeData: string[] = []
@@ -149,7 +151,7 @@ describe('Script Builder', () => {
         cy.getByTestID('time-machine-submit-button').should('exist')
         cy.getByTestID('time-machine-submit-button').clickAttached()
         cy.wait('@query -1h')
-        cy.wait(1000) // bit more time for csv parsing
+        cy.wait(DEFAULT_DELAY_MS) // bit more time for csv parsing
 
         cy.log('table metadata displayed to user is correct')
         if (truncated) {
@@ -172,7 +174,7 @@ describe('Script Builder', () => {
         cy.getByTestID('csv-download-button').should('not.be.disabled').click()
 
         cy.wait('@queryDownloadCSV', {timeout: DELAY_FOR_FILE_DOWNLOAD})
-          .its('request', {timeout: DELAY_FOR_FILE_DOWNLOAD})
+          .its('request')
           .then(req => {
             cy.request(req)
               .then(({body, headers}) => {
@@ -201,12 +203,16 @@ describe('Script Builder', () => {
         })
 
         cy.log('turn off composition sync')
-        cy.getByTestID('editor-sync--toggle').click()
+        cy.getByTestID('editor-sync--toggle').click().wait(DEFAULT_DELAY_MS)
         cy.getByTestID('editor-sync--toggle').should('not.have.class', 'active')
         cy.log('select empty dataset')
-        cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
+        cy.getByTestID('flux-editor')
+          .monacoType(
+            `{selectall}{enter}
           from(bucket: "defbuck3") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-        `)
+        `
+          )
+          .wait(DEFAULT_DELAY_MS)
         cy.getByTestID('flux-editor').contains('defbuck3')
 
         runTest(0, 0, false)

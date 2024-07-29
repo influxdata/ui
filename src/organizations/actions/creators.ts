@@ -1,5 +1,5 @@
 // Libraries
-import HoneyBadger from 'honeybadger-js'
+import HoneyBadger from '@honeybadger-io/js'
 import {NormalizedSchema} from 'normalizr'
 
 // Types

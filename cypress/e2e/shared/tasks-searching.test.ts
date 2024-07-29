@@ -27,7 +27,10 @@ const setupTest = (shouldShowTasks: boolean = true) => {
           cy.getByTestID('tree-nav').should('be.visible')
           // Tasks link should appear in nav in TSM orgs.
           if (isTSMOrg) {
-            cy.getByTestID('nav-item-tasks').should('be.visible').click()
+            cy.getByTestID('nav-item-tasks')
+              .should('be.visible')
+              .click()
+              .wait(DEFAULT_DELAY_MS)
           } else {
             cy.visit(`${orgs}/${id}/tasks`)
           }
@@ -55,6 +58,7 @@ describe('When tasks already exist', () => {
       .then(() => {
         cy.getByTestID('task-card--slide-toggle')
           .click()
+          .wait(DEFAULT_DELAY_MS)
           .then(() => {
             cy.getByTestID('task-card--slide-toggle').should(
               'not.have.class',
@@ -70,6 +74,7 @@ describe('When tasks already exist', () => {
       cy.getByTestID('task-card--name').then(() => {
         cy.getByTestID('task-card--name-button')
           .click()
+          .wait(DEFAULT_DELAY_MS)
           .then(() => {
             cy.getByTestID('task-card--input').type(newName).type('{enter}')
           })
@@ -90,7 +95,9 @@ describe('When tasks already exist', () => {
     cy.getByTestID('create-label-form--submit').click().wait(DEFAULT_DELAY_MS)
 
     // Delete the label
-    cy.getByTestID(`label--pill--delete ${labelName}`).click({force: true})
+    cy.getByTestID(`label--pill--delete ${labelName}`)
+      .click({force: true})
+      .wait(DEFAULT_DELAY_MS)
     cy.getByTestID('inline-labels--empty').should('exist')
   })
 
@@ -102,9 +109,11 @@ describe('When tasks already exist', () => {
       .then(() => {
         cy.getByTestID(`context-delete-menu ${TaskName}--button`)
           .click()
+          .wait(DEFAULT_DELAY_MS)
           .then(() => {
             cy.getByTestID(`context-delete-menu ${TaskName}--confirm-button`)
               .click()
+              .wait(DEFAULT_DELAY_MS)
               .then(() => {
                 cy.getByTestID('empty-tasks-list').should('exist')
               })
@@ -169,7 +178,10 @@ describe('When tasks already exist', () => {
     const cloneNamePrefix = '🦄ask (cloned at '
     cy.getByTestID('task-card').then(() => {
       cy.getByTestID('context-menu-task').click().wait(DEFAULT_DELAY_MS)
-      cy.getByTestID('context-clone-task').click().type('{esc}')
+      cy.getByTestID('context-clone-task')
+        .click()
+        .wait(DEFAULT_DELAY_MS)
+        .type('{esc}')
     })
 
     cy.getByTestID('task-card').should('have.length', 2)
@@ -309,7 +321,10 @@ describe('Searching and filtering', () => {
   it('can click to filter tasks by labels', () => {
     cy.getByTestID('task-card').should('have.length', 2)
 
-    cy.getByTestID(`label--pill ${newLabelName}`).should('be.visible').click()
+    cy.getByTestID(`label--pill ${newLabelName}`)
+      .should('be.visible')
+      .click()
+      .wait(DEFAULT_DELAY_MS)
 
     cy.getByTestID('task-card').should('have.length', 1)
 

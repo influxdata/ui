@@ -1,5 +1,5 @@
 // Libraries
-import HoneyBadger from '@honeybadger-io/js'
+import HoneyBadger from 'honeybadger-js'
 import {Dispatch} from 'react'
 
 // Functions making API calls

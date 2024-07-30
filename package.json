@@ -162,7 +162,6 @@
   "dependencies": {
     "@codingame/monaco-jsonrpc": "^0.3.1",
     "@docsearch/react": "^3.0.0-alpha.37",
-    "@honeybadger-io/js": "^6.9.3",
     "@influxdata/clockface": "^6.3.11",
     "@influxdata/flux-lsp-browser": "0.8.40",
     "@influxdata/giraffe": "^2.38.1",
@@ -178,6 +177,7 @@
     "deep-object-diff": "^1.1.0",
     "fix-date": "^1.1.6",
     "history": "^4.7.2",
+    "honeybadger-js": "^1.0.2",
     "html2canvas": "^1.4.1",
     "immer": "^9.0.15",
     "intersection-observer": "^0.12.2",

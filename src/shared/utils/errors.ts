@@ -1,5 +1,5 @@
 import {ErrorInfo} from 'react'
-import HoneyBadger from '@honeybadger-io/js'
+import HoneyBadger from 'honeybadger-js'
 import {
   CLOUD,
   GIT_SHA,

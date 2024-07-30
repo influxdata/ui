@@ -1,6 +1,6 @@
 import React from 'react'
 
-jest.mock('@honeybadger-io/js', () => {
+jest.mock('honeybadger-js', () => {
   return {
     configure: jest.fn(),
     notify: jest.fn(),

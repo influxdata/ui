@@ -106,7 +106,8 @@ describe('Script Builder', () => {
       })
     })
 
-    it('will allow querying of different data ranges', () => {
+    // Temporarily disabled due to excess flake. Do not re-enable without rewriting this test.
+    it.skip('will allow querying of different data ranges', () => {
       cy.log('Ensure LSP is online') // deflake
       cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
 

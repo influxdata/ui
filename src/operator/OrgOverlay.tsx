@@ -180,12 +180,6 @@ export const OrgOverlay: FC = () => {
                 <Grid.Row>
                   <Grid.Column widthMD={Columns.Four}>
                     <label className="org-overlay-detail--text">
-                      Organization State
-                    </label>
-                    <p>{organization?.state ?? ''}</p>
-                  </Grid.Column>
-                  <Grid.Column widthMD={Columns.Four}>
-                    <label className="org-overlay-detail--text">
                       Delete On
                     </label>
                     <p>

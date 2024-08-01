@@ -6,7 +6,7 @@ import {identify} from 'rudder-sdk-js'
 
 // Components
 import PageSpinner from 'src/perf/components/PageSpinner'
-import {CheckoutPage, OperatorPage} from 'src/shared/containers'
+import {CheckoutPage, ProductsPage, OperatorPage} from 'src/shared/containers'
 const NoOrgsPage = lazy(() => import('src/organizations/containers/NoOrgsPage'))
 const NotebookTemplates = lazy(
   () => import('src/flows/components/FromTemplatePage')
@@ -120,6 +120,9 @@ const GetOrganizations: FunctionComponent = () => {
               />
               <Route path="/orgs" component={App} />
               <Route exact path="/" component={RouteToOrg} />
+              {CLOUD && account.isUpgradeable === true && (
+                <Route path="/products" component={ProductsPage} />
+              )}
               {CLOUD && account.isUpgradeable === true && (
                 <Route path="/checkout" component={CheckoutPage} />
               )}

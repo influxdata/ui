@@ -34,6 +34,7 @@ import {
 } from 'src/shared/copy/notifications'
 import {setCloneName} from 'src/utils/naming'
 import {CLOUD} from 'src/shared/constants'
+import {getErrorMessage} from 'src/utils/api'
 
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string | void>
@@ -238,8 +239,8 @@ export const FlowListProvider: FC = ({children}) => {
 
         return flow.id
       })
-      .catch(() => {
-        dispatch(notify(notebookCreateFail()))
+      .catch(err => {
+        dispatch(notify(notebookCreateFail(getErrorMessage(err))))
       })
   }
 

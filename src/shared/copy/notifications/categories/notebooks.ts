@@ -21,9 +21,9 @@ export const panelCopyLinkFail = (): Notification => ({
   message: `Failed to copy the panel link`,
 })
 
-export const notebookCreateFail = (): Notification => ({
+export const notebookCreateFail = (error: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to create Notebook, please try again.`,
+  message: `Failed to create Notebook, please try again: ${error}`,
 })
 
 export const notebookUpdateFail = (): Notification => ({

@@ -118,7 +118,7 @@
     "css-loader": "^6.7.2",
     "css-minimizer-webpack-plugin": "^4.2.2",
     "css-unicode-loader": "^1.0.3",
-    "cypress": "^9.5.2",
+    "cypress": "^13.0.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-log-to-output": "^1.1.2",
     "cypress-pipe": "^2.0.0",

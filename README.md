@@ -65,7 +65,7 @@ Unit tests can be run via command line with `yarn test`, from within the `/ui` d
 
 ## Cypress Testing
 
-**cloud platform**
+**cloud platforms**
 1. have your local dev running (see above).
 1. `export NS=<your-remocal-namespace>`
 1. run cypress test:

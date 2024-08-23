@@ -59,11 +59,18 @@ export const writeThenFetchAndSetAnnotations =
 export const deleteAnnotations =
   annotation =>
   async (dispatch: Dispatch<AnnotationAction | NotificationAction>) => {
+    try {
+      throw new Error('Forced error for testing purposes')
       await deleteAnnotation({
         ...annotation,
         endTime: annotation.startTime,
       })
       dispatch(deleteAnnotationAction(annotation))
+
+    } catch (error) {
+      console.error('Error in deleteAnnotations:', error)
+      throw error
+    }
 }
 
 export const editAnnotation =

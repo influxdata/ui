@@ -129,7 +129,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const editedAnnotation = {
       summary,
       startTime,
@@ -140,7 +140,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     }
 
     try {
-      dispatch(deleteAnnotations(editedAnnotation))
+      await dispatch(deleteAnnotations(editedAnnotation))
       event(`annotations.delete_annotation.success`, {
         prefix: props.eventPrefix,
       })

@@ -59,12 +59,12 @@ export const writeThenFetchAndSetAnnotations =
 export const deleteAnnotations =
   annotation =>
   async (dispatch: Dispatch<AnnotationAction | NotificationAction>) => {
-    await deleteAnnotation({
-      ...annotation,
-      endTime: annotation.startTime,
-    })
-    dispatch(deleteAnnotationAction(annotation))
-  }
+      await deleteAnnotation({
+        ...annotation,
+        endTime: annotation.startTime,
+      })
+      dispatch(deleteAnnotationAction(annotation))
+}
 
 export const editAnnotation =
   annotation =>

@@ -296,7 +296,7 @@ export const FlowListProvider: FC = ({children}) => {
       await deleteAPI({id})
       dispatch(notify(notebookDeleteSuccess()))
     } catch (error) {
-      dispatch(notify(notebookDeleteFail()))
+      dispatch(notify(notebookDeleteFail(getErrorMessage(error))))
     }
 
     delete _flows[id]

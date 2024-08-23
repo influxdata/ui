@@ -5,6 +5,7 @@ import {useDispatch} from 'react-redux'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import classnames from 'classnames'
+import {getErrorMessage} from 'src/utils/api'
 
 // Components
 import {
@@ -129,7 +130,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const editedAnnotation = {
       summary,
       startTime,
@@ -150,7 +151,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       event(`annotations.delete_annotation.failure`, {
         prefix: props.eventPrefix,
       })
-      dispatch(notify(deleteAnnotationFailed(err)))
+      dispatch(notify(deleteAnnotationFailed(getErrorMessage(err))))
     }
   }
 

@@ -23,10 +23,10 @@ export const dashboardsGetFailed = (error: string): Notification => ({
   message: `Failed to retrieve dashboards: ${error}`,
 })
 
-export const dashboardUpdateFailed = (): Notification => ({
+export const dashboardUpdateFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.DashH,
-  message: 'Could not update dashboard',
+  message: `Could not update dashboard: ${error}`,
 })
 
 export const dashboardDeleted = (name: string): Notification => ({
@@ -35,9 +35,9 @@ export const dashboardDeleted = (name: string): Notification => ({
   message: `Dashboard ${name} deleted successfully.`,
 })
 
-export const dashboardCreateFailed = () => ({
+export const dashboardCreateFailed = (error: string) => ({
   ...defaultErrorNotification,
-  message: 'Failed to create dashboard.',
+  message: `Failed to create dashboard: ${error}`,
 })
 
 export const dashboardCreateSuccess = () => ({

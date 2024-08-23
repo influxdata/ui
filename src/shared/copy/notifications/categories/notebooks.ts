@@ -23,17 +23,17 @@ export const panelCopyLinkFail = (): Notification => ({
 
 export const notebookCreateFail = (error: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to create Notebook, please try again: ${error}`,
+  message: `Failed to create Notebook: ${error}`,
 })
 
-export const notebookUpdateFail = (): Notification => ({
+export const notebookUpdateFail = (error: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to save changes to Notebook, please try again.`,
+  message: `Failed to save changes to Notebook: ${error}`,
 })
 
-export const notebookDeleteFail = (): Notification => ({
+export const notebookDeleteFail = (error: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to delete Notebook, please try again.`,
+  message: `Failed to delete Notebook: ${error}`,
 })
 
 export const notebookDeleteSuccess = (): Notification => ({
@@ -58,7 +58,7 @@ export const publishNotebookSuccessful = (name: string): Notification => ({
   message: `Successfully saved this version to ${name}'s version history.`,
 })
 
-export const publishNotebookFailed = (name: string): Notification => ({
+export const publishNotebookFailed = (name: string, error: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to save this version to ${name}'s version history`,
+  message: `Failed to save this version to ${name}'s version history: ${error}`,
 })

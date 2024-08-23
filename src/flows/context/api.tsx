@@ -9,6 +9,7 @@ import {
 } from 'src/client/notebooksRoutes'
 import {notebookUpdateFail} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
+import {getErrorMessage} from 'src/utils/api'
 
 const DEFAULT_API_FLOW: PatchNotebookParams = {
   id: '',
@@ -99,10 +100,10 @@ export const migrateLocalFlowsToAPI = async (
         delete flows[localID]
         flows[id] = flow
       })
-    ).catch(() => {
+    ).catch((err) => {
       // do not throw the error because some flows might have saved and we
       // need to save the new IDs to avoid creating duplicates next time.
-      dispatch(notify(notebookUpdateFail()))
+      dispatch(notify(notebookUpdateFail(getErrorMessage(err))))
     })
   }
   return flows

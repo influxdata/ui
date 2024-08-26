@@ -100,7 +100,7 @@ export const migrateLocalFlowsToAPI = async (
         delete flows[localID]
         flows[id] = flow
       })
-    ).catch((err) => {
+    ).catch(err => {
       // do not throw the error because some flows might have saved and we
       // need to save the new IDs to avoid creating duplicates next time.
       dispatch(notify(notebookUpdateFail(getErrorMessage(err))))

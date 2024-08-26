@@ -58,7 +58,10 @@ export const publishNotebookSuccessful = (name: string): Notification => ({
   message: `Successfully saved this version to ${name}'s version history.`,
 })
 
-export const publishNotebookFailed = (name: string, error: string): Notification => ({
+export const publishNotebookFailed = (
+  name: string,
+  error: string
+): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to save this version to ${name}'s version history: ${error}`,
 })

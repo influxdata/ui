@@ -2,7 +2,7 @@ import {Organization} from '../../../src/types'
 
 const statHeaders = [
   'Data In (MB)',
-  'Query Count (Flux Only) ?',
+  'Query Count',
   'Storage (GB-hr)',
   'Data Out (GB)',
 ]

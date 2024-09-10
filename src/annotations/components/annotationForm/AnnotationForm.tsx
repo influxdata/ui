@@ -5,6 +5,7 @@ import {useDispatch} from 'react-redux'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import classnames from 'classnames'
+import {getErrorMessage} from 'src/utils/api'
 
 // Components
 import {
@@ -58,7 +59,8 @@ export const START_TIME_IN_FUTURE_MESSAGE = 'Start Time cannot be in the future'
 
 /**
  *  Form for editing and creating annotations.
- *  It does support multi-line annotations, but the tradeoff is that the user cannot then press 'return' to submit the form.
+ *  It does support multi-line annotations, but the tradeoff is that the user
+ *  cannot then press 'return' to submit the form.
  * */
 export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
@@ -129,7 +131,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const editedAnnotation = {
       summary,
       startTime,
@@ -140,7 +142,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     }
 
     try {
-      dispatch(deleteAnnotations(editedAnnotation))
+      await dispatch(deleteAnnotations(editedAnnotation))
       event(`annotations.delete_annotation.success`, {
         prefix: props.eventPrefix,
       })
@@ -150,7 +152,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       event(`annotations.delete_annotation.failure`, {
         prefix: props.eventPrefix,
       })
-      dispatch(notify(deleteAnnotationFailed(err)))
+      dispatch(notify(deleteAnnotationFailed(getErrorMessage(err))))
     }
   }
 

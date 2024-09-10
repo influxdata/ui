@@ -23,19 +23,19 @@ export const getLabelsFailed = (): Notification => ({
   message: 'Failed to fetch labels',
 })
 
-export const createLabelFailed = (): Notification => ({
+export const createLabelFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
-  message: 'Failed to create label',
+  message: `Failed to create label: ${error}`,
 })
 
-export const updateLabelFailed = (): Notification => ({
+export const updateLabelFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
-  message: 'Failed to update label',
+  message: `Failed to update label: ${error}`,
 })
 
-export const deleteLabelFailed = (): Notification => ({
+export const deleteLabelFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
-  message: 'Failed to delete label',
+  message: `Failed to delete label: ${error}`,
 })
 
 export const taskNotCreated = (additionalMessage: string): Notification => ({

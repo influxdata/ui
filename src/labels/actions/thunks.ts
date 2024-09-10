@@ -42,6 +42,7 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {viewableLabels} from 'src/labels/selectors'
 import {getStatus} from 'src/resources/selectors'
+import {getErrorMessage} from 'src/utils/api'
 
 export const getLabels =
   () => async (dispatch: Dispatch<Action>, getState: GetState) => {
@@ -99,7 +100,7 @@ export const createLabel =
       dispatch(setLabel(resp.data.label.id, RemoteDataState.Done, label))
     } catch (error) {
       console.error(error)
-      dispatch(notify(createLabelFailed()))
+      dispatch(notify(createLabelFailed(getErrorMessage(error))))
     }
   }
 
@@ -121,7 +122,7 @@ export const updateLabel =
       dispatch(setLabel(id, RemoteDataState.Done, label))
     } catch (error) {
       console.error(error)
-      dispatch(notify(updateLabelFailed()))
+      dispatch(notify(updateLabelFailed(getErrorMessage(error))))
     }
   }
 
@@ -137,6 +138,6 @@ export const deleteLabel =
       dispatch(removeLabel(id))
     } catch (error) {
       console.error(error)
-      dispatch(notify(deleteLabelFailed()))
+      dispatch(notify(deleteLabelFailed(getErrorMessage(error))))
     }
   }

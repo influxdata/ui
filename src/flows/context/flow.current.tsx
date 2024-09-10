@@ -24,6 +24,7 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {RemoteDataState} from '@influxdata/clockface'
 import {setCloneName} from 'src/utils/naming'
+import {getErrorMessage} from 'src/utils/api'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
@@ -84,7 +85,7 @@ export const FlowProvider: FC = ({children}) => {
       dispatch(notify(notebookDeleteSuccess()))
       return id
     } catch (error) {
-      dispatch(notify(notebookDeleteFail()))
+      dispatch(notify(notebookDeleteFail(getErrorMessage(error))))
     }
   }, [dispatch, id])
 

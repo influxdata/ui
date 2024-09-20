@@ -50,7 +50,6 @@ import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 import {SCRIPT_EDITOR_PARAMS} from 'src/dataExplorer/components/resources'
 import {CLOUD} from 'src/shared/constants'
 
-
 const DataExplorerPageHeader: FC = () => {
   const {scriptQueryBuilder, setScriptQueryBuilder} =
     useContext(AppSettingContext)

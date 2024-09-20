@@ -27,6 +27,7 @@ import {
   publishNotebookSuccessful,
 } from 'src/shared/copy/notifications'
 import {event} from 'src/cloud/utils/reporting'
+import {getErrorMessage} from 'src/utils/api'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -103,7 +104,7 @@ export const VersionPublishProvider: FC = ({children}) => {
       setPublishLoading(RemoteDataState.Done)
       handleGetNotebookVersions()
     } catch (error) {
-      dispatch(notify(publishNotebookFailed(flow.name)))
+      dispatch(notify(publishNotebookFailed(flow.name, getErrorMessage(error))))
       setPublishLoading(RemoteDataState.Error)
     }
   }, [dispatch, handleGetNotebookVersions, flow.id, flow.name])

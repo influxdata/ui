@@ -50,6 +50,7 @@ import {setCloneName} from 'src/utils/naming'
 import {isLimitError} from 'src/cloud/utils/limits'
 import {getOrg} from 'src/organizations/selectors'
 import {getByID, getStatus} from 'src/resources/selectors'
+import {getErrorMessage} from 'src/utils/api'
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
@@ -111,7 +112,7 @@ export const createDashboard =
       if (isLimitError(error)) {
         dispatch(notify(copy.resourceLimitReached('dashboards')))
       } else {
-        dispatch(notify(copy.dashboardCreateFailed()))
+        dispatch(notify(copy.dashboardCreateFailed(getErrorMessage(error))))
       }
     }
   }
@@ -199,7 +200,7 @@ export const cloneDashboard =
       if (isLimitError(error)) {
         dispatch(notify(copy.resourceLimitReached('dashboards')))
       } else {
-        dispatch(notify(copy.dashboardCreateFailed()))
+        dispatch(notify(copy.dashboardCreateFailed(getErrorMessage(error))))
       }
     }
   }
@@ -442,7 +443,7 @@ export const updateDashboard =
       dispatch(creators.editDashboard(updatedDashboard))
     } catch (error) {
       console.error(error)
-      dispatch(notify(copy.dashboardUpdateFailed()))
+      dispatch(notify(copy.dashboardUpdateFailed(getErrorMessage(error))))
     }
   }
 

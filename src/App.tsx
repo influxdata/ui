@@ -38,7 +38,7 @@ import {AppState} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-import {executeVWO, executeHeap} from 'src/utils/analyticsTools'
+import {executeVWO, executeHeap, unloadHeap} from 'src/utils/analyticsTools'
 
 // Providers
 import {UserAccountProvider} from 'src/accounts/context/userAccount'
@@ -108,6 +108,7 @@ const App: FC = () => {
       try {
         executeHeap()
       } catch (err) {
+        unloadHeap()
         reportErrorThroughHoneyBadger(err, {
           name: 'Unable to load Heap Analytics',
         })

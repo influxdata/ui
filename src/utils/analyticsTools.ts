@@ -1,8 +1,14 @@
-// this code is related to implementing the A/B testing tool VMO: https://vwo.com/
-// Whenever this script is updated, ensure that any changes are reflected in the
-// error handling in App.tsx, especially for any elements that change opacity of the page.
 /* eslint-disable */
 // @ts-nocheck
+
+import {getFlagValue} from 'src/shared/utils/featureFlag'
+
+/* This file is exclusively for third-party analytics tools used by the Cloud2 UI. */
+
+/* This code implements the A/B testing tool VWO: https://vwo.com/
+   The copy is largely copy-pasted from VWO instructions and is not maintained by InfluxData.
+   Whenever this script is updated, ensure that any changes are reflected in the
+   error handling in App.tsx, especially for any elements that change opacity of the page. */
 export const executeVWO = () => {
   window._vwo_code =
     window._vwo_code ||
@@ -117,7 +123,23 @@ export const executeVWO = () => {
     })()
 }
 
+const HEAP_API_SCRIPT_SRC = 'heap-api.com'
+
+/*
+  The JS code in this function is copied from the installation instructions
+  at https://developers.heap.io/docs/web and is not maintained by InfluxData.
+
+  Semicolons have been added to avoid ASI issues because this script uses IIFEs.
+  // Example: https://circleci.com/blog/ci-cd-for-js-iifes/
+*/
 export const executeHeap = () => {
+  // Retrieve the heap analytics id appropriate to the environment from ConfigCat.
+  const heapId = getFlagValue('heapAnalyticsId')
+  if (!heapId) {
+    return
+  }
+
+  // This block is imported from Heap.
   ;(window.heapReadyCb = window.heapReadyCb || []),
     (window.heap = window.heap || []),
     (heap.load = function (e, t) {
@@ -167,5 +189,19 @@ export const executeHeap = () => {
         }
       for (var p = 0; p < n.length; p++) heap[n[p]] = i(n[p])
     })
-  heap.load('1919519062')
+
+  heap.load(heapId.toString())
+}
+
+// This unloads all artifacts from the Heap script if an error is encountered.
+export const unloadHeap = () => {
+  delete window.heap
+  delete window.heapReadyCb
+
+  const scripts = document.getElementsByTagName('script')
+  for (let s of scripts) {
+    if (s.src.includes(HEAP_API_SCRIPT_SRC)) {
+      s.remove()
+    }
+  }
 }

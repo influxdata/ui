@@ -38,7 +38,7 @@ import {AppState} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-import {executeVWO} from 'src/utils/vwo'
+import {executeVWO, executeHeap, unloadHeap} from 'src/utils/analyticsTools'
 
 // Providers
 import {UserAccountProvider} from 'src/accounts/context/userAccount'
@@ -57,14 +57,14 @@ const App: FC = () => {
     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
       try {
         load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
-      } catch (error) {
+      } catch (err) {
         console.error(
           'Error loading Rudderstack with wk: ',
           RUDDERSTACK_WRITE_KEY,
           ' at: ',
           RUDDERSTACK_DATA_PLANE_URL
         )
-        reportErrorThroughHoneyBadger(error, {
+        reportErrorThroughHoneyBadger(err, {
           name: 'Rudderstack Loading Function',
         })
       }
@@ -100,6 +100,17 @@ const App: FC = () => {
 
         reportErrorThroughHoneyBadger(err, {
           name: 'VWO script failed to execute successfully',
+        })
+      }
+    }
+
+    if (CLOUD && isFlagEnabled('heapAnalytics')) {
+      try {
+        executeHeap()
+      } catch (err) {
+        unloadHeap()
+        reportErrorThroughHoneyBadger(err, {
+          name: 'Unable to load Heap Analytics',
         })
       }
     }

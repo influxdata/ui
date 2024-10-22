@@ -1,8 +1,14 @@
-// this code is related to implementing the A/B testing tool VMO: https://vwo.com/
-// Whenever this script is updated, ensure that any changes are reflected in the
-// error handling in App.tsx, especially for any elements that change opacity of the page.
 /* eslint-disable */
 // @ts-nocheck
+
+import {getFlagValue} from 'src/shared/utils/featureFlag'
+
+/* This file is exclusively for third-party analytics tools used by the Cloud2 UI. */
+
+/* This code implements the A/B testing tool VWO: https://vwo.com/
+   The copy is largely copy-pasted from VWO instructions and is not maintained by InfluxData.
+   Whenever this script is updated, ensure that any changes are reflected in the
+   error handling in App.tsx, especially for any elements that change opacity of the page. */
 export const executeVWO = () => {
   window._vwo_code =
     window._vwo_code ||
@@ -115,4 +121,87 @@ export const executeVWO = () => {
       window._vwo_settings_timer = code.init()
       return code
     })()
+}
+
+const HEAP_API_SCRIPT_SRC = 'heap-api.com'
+
+/*
+  The JS code in this function is copied from the installation instructions
+  at https://developers.heap.io/docs/web and is not maintained by InfluxData.
+
+  Semicolons have been added to avoid ASI issues because this script uses IIFEs.
+  // Example: https://circleci.com/blog/ci-cd-for-js-iifes/
+*/
+export const executeHeap = () => {
+  // Retrieve the heap analytics id appropriate to the environment from ConfigCat.
+  const heapId = getFlagValue('heapanalyticsid')
+  if (!heapId) {
+    return
+  }
+
+  // This block is imported from Heap.
+  ;(window.heapReadyCb = window.heapReadyCb || []),
+    (window.heap = window.heap || []),
+    (heap.load = function (e, t) {
+      ;(window.heap.envId = e),
+        (window.heap.clientConfig = t = t || {}),
+        (window.heap.clientConfig.shouldFetchServerConfig = !1)
+      var a = document.createElement('script')
+      ;(a.type = 'text/javascript'),
+        (a.async = !0),
+        (a.src = 'https://cdn.us.heap-api.com/config/' + e + '/heap_config.js')
+      var r = document.getElementsByTagName('script')[0]
+      r.parentNode.insertBefore(a, r)
+      var n = [
+          'init',
+          'startTracking',
+          'stopTracking',
+          'track',
+          'resetIdentity',
+          'identify',
+          'getSessionId',
+          'getUserId',
+          'getIdentity',
+          'addUserProperties',
+          'addEventProperties',
+          'removeEventProperty',
+          'clearEventProperties',
+          'addAccountProperties',
+          'addAdapter',
+          'addTransformer',
+          'addTransformerFn',
+          'onReady',
+          'addPageviewProperties',
+          'removePageviewProperty',
+          'clearPageviewProperties',
+          'trackPageview',
+        ],
+        i = function (e) {
+          return function () {
+            var t = Array.prototype.slice.call(arguments, 0)
+            window.heapReadyCb.push({
+              name: e,
+              fn: function () {
+                heap[e] && heap[e].apply(heap, t)
+              },
+            })
+          }
+        }
+      for (var p = 0; p < n.length; p++) heap[n[p]] = i(n[p])
+    })
+
+  heap.load(heapId.toString())
+}
+
+// This unloads all artifacts from the Heap script if an error is encountered.
+export const unloadHeap = () => {
+  delete window.heap
+  delete window.heapReadyCb
+
+  const scripts = document.getElementsByTagName('script')
+  for (let s of scripts) {
+    if (s.src.includes(HEAP_API_SCRIPT_SRC)) {
+      s.remove()
+    }
+  }
 }

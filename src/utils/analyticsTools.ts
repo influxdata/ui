@@ -134,7 +134,7 @@ const HEAP_API_SCRIPT_SRC = 'heap-api.com'
 */
 export const executeHeap = () => {
   // Retrieve the heap analytics id appropriate to the environment from ConfigCat.
-  const heapId = getFlagValue('heapAnalyticsId')
+  const heapId = getFlagValue('heapanalyticsid')
   if (!heapId) {
     return
   }

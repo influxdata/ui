@@ -1525,10 +1525,10 @@
   dependencies:
     merge-images "^2.0.0"
 
-"@influxdata/influxdb-templates@0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/influxdb-templates/-/influxdb-templates-0.11.0.tgz#872d7b71aa9b578c7ec194368deaa7b568790d1a"
-  integrity sha512-aUvnP3HlEC4/3SnD4GBrtesLRZQPrBJOP4VA/0K63gnuEXO8k0/zBMpNVJOQqM+1tS/ZOmMhGpg3moQxAtwPcg==
+"@influxdata/influxdb-templates@0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/influxdb-templates/-/influxdb-templates-0.12.0.tgz#03fa1787ba2235c99da72421594a45bdf6449c68"
+  integrity sha512-HVfQeuuX5reJDRwjPRXX9ztOL654gKeZys+RC1pk+CU3g3MbCTzpgGMEoBDVYkPEhppopuHfB8mHndG6gh2xSw==
 
 "@influxdata/oats@^0.7.0":
   version "0.7.0"
@@ -5954,9 +5954,9 @@ http-proxy-agent@^5.0.0:
     debug "4"
 
 http-proxy-middleware@^2.0.3:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-2.0.6.tgz#e1a4dd6979572c7ab5a4e4b55095d1f32a74963f"
-  integrity sha512-ya/UeJ6HVBYxrgYotAZo1KvPWlgB48kUJLDePFeneHsVujFaW5WNj2NgWCAE//B1Dl02BIfYlpNgBy8Kf8Rjmw==
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-2.0.7.tgz#915f236d92ae98ef48278a95dedf17e991936ec6"
+  integrity sha512-fgVY8AV7qU7z/MmXJ/rxwbrtQH4jBQ9m7kp3llF0liB7glmFeVZFBepQb32T3y8n8k2+AEYuMPCpinYW+/CuRA==
   dependencies:
     "@types/http-proxy" "^1.17.8"
     http-proxy "^1.18.1"

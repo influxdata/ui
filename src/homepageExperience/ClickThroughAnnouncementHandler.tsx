@@ -8,11 +8,9 @@ import {selectCurrentIdentity} from 'src/identity/selectors'
 
 // Utils
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 export enum AnnouncementID {
-  MqttEol = 'mqttEolClickThroughAnnouncement',
   PriceIncrease = 'pricingClickThroughAnnouncement',
 }
 
@@ -66,9 +64,6 @@ export const ClickThroughAnnouncementHandler: FC = () => {
   }
 
   useEffect(() => {
-    // MQTT Audience: Cloud users with MQTT feature flag enabled
-    const isMqttAudience = isFlagEnabled('subscriptionsUI')
-
     // PAYG Pricing Increase Audience: Pay As You Go & Direct Signups
     const isPaygAccount = account.type === 'pay_as_you_go'
     const isDirectSignup = account.billingProvider === 'zuora'
@@ -76,11 +71,6 @@ export const ClickThroughAnnouncementHandler: FC = () => {
 
     // Sequentially display announcements in order of priority
     if (
-      isMqttAudience &&
-      announcementState[AnnouncementID.MqttEol] !== AnnouncementState.Dismissed
-    ) {
-      handleDisplayAnnouncement(AnnouncementID.MqttEol)
-    } else if (
       isPriceIncreaseAudience &&
       announcementState[AnnouncementID.PriceIncrease] !==
         AnnouncementState.Dismissed

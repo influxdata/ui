@@ -29,7 +29,6 @@ export const buildDeepLinkingMap = (orgId: string) => ({
   '/me/setup-nodejs': `/orgs/${orgId}/new-user-setup/nodejs`,
   '/me/setup-python': `/orgs/${orgId}/new-user-setup/python`,
   '/me/tasks': `/orgs/${orgId}/tasks`,
-  '/me/telegraf-mqtt': `/orgs/${orgId}/load-data/telegraf-plugins/mqtt_consumer`,
   '/me/telegrafs': `/orgs/${orgId}/load-data/telegrafs`,
   '/me/templates': `/orgs/${orgId}/settings/templates`,
   '/me/tokens': `/orgs/${orgId}/load-data/tokens`,

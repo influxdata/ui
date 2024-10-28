@@ -100,13 +100,6 @@ const generateNavItems = (
           enabled: () => !CLOUD,
         },
         {
-          id: 'subscriptions',
-          testID: 'nav-subitem-subscriptions',
-          label: 'Native Subscriptions',
-          link: `/orgs/${orgID}/load-data/subscriptions`,
-          enabled: () => CLOUD && isFlagEnabled('subscriptionsUI'),
-        },
-        {
           id: 'tokens',
           testID: 'nav-subitem-tokens',
           label: 'API Tokens',

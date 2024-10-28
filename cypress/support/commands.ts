@@ -1542,7 +1542,6 @@ export const createTaskFromEmpty = (
 
 export const disableClickThroughAnnouncement = () => {
   const announcementState = {
-    mqttEolClickThroughAnnouncement: 'dismissed',
     pricingClickThroughAnnouncement: 'dismissed',
   }
 

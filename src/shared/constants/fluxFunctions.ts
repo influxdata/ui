@@ -4391,6 +4391,77 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/movingaverage/`,
   },
   {
+    name: 'mqtt.to',
+    args: [
+      {
+        name: 'broker',
+        desc: 'The MQTT broker connection string.',
+        type: 'String',
+      },
+      {
+        name: 'topic',
+        desc: 'The MQTT topic to send data to.',
+        type: 'String',
+      },
+      {
+        name: 'message',
+        desc: 'The message or payload to send to the MQTT broker. The default payload is an output table.',
+        type: 'String',
+      },
+      {
+        name: 'qos',
+        desc: 'The MQTT Quality of Service (QoS) level. Values range from 0-2. Default is 0.',
+        type: 'Integer',
+      },
+      {
+        name: 'clientid',
+        desc: 'The MQTT client ID.',
+        type: 'String',
+      },
+      {
+        name: 'username',
+        desc: 'The username to send to the MQTT broker.',
+        type: 'String',
+      },
+      {
+        name: 'password',
+        desc: 'The password to send to the MQTT broker.',
+        type: 'String',
+      },
+      {
+        name: 'name',
+        desc: 'The name for the MQTT message.',
+        type: 'String',
+      },
+      {
+        name: 'timeout',
+        desc: 'The MQTT connection timeout. Default is 1s.',
+        type: 'Duration',
+      },
+      {
+        name: 'timeColumn',
+        desc: 'The column to use as time values in the output line protocol. Default is `"_time"`.',
+        type: 'String',
+      },
+      {
+        name: 'tagColumns',
+        desc: 'The columns to use as tag sets in the output line protocol. Default is `[]`.',
+        type: 'Array of Strings',
+      },
+      {
+        name: 'valueColumns',
+        desc: 'The columns to use as field values in the output line protocol. Default is `["_value"]`.',
+        type: 'Array of Strings',
+      },
+    ],
+    package: 'experimental/mqtt',
+    desc: 'Outputs data to an MQTT broker using MQTT protocol.',
+    example:
+      'mqtt.to(broker: "tcp://localhost:8883", topic: "example-topic", clientid: "exampleID", tagColumns: ["exampleTagKey"], valueColumns: ["_value"])',
+    category: 'Outputs',
+    link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/experimental/mqtt/to/`,
+  },
+  {
     name: 'now',
     args: [],
     package: '',

@@ -126,6 +126,7 @@ const inputPluginsList = [
   'modbus',
   'mongodb',
   'monit',
+  'mqtt_consumer',
   'multifile',
   'mysql',
   'nats',

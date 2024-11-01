@@ -116,6 +116,7 @@ import mockMarkdown from 'src/writeData/components/telegrafPlugins/mock.md'
 import modbusMarkdown from 'src/writeData/components/telegrafPlugins/modbus.md'
 import mongodbMarkdown from 'src/writeData/components/telegrafPlugins/mongodb.md'
 import monitMarkdown from 'src/writeData/components/telegrafPlugins/monit.md'
+import mqtt_consumerMarkdown from 'src/writeData/components/telegrafPlugins/mqtt_consumer.md'
 import multifileMarkdown from 'src/writeData/components/telegrafPlugins/multifile.md'
 import mysqlMarkdown from 'src/writeData/components/telegrafPlugins/mysql.md'
 import natsMarkdown from 'src/writeData/components/telegrafPlugins/nats.md'
@@ -299,6 +300,7 @@ import modbusLogo from 'src/writeData/graphics/modbus.svg'
 import mongodbLogo from 'src/writeData/graphics/mongodb.svg'
 import monitLogo from 'src/writeData/graphics/monit.svg'
 import monitor_with_workerLogo from 'src/writeData/graphics/monitor_with_worker.svg'
+import mqtt_consumerLogo from 'src/writeData/graphics/mqtt_consumer.svg'
 import multifileLogo from 'src/writeData/graphics/multifile.svg'
 import mysqlLogo from 'src/writeData/graphics/mysql.svg'
 import natsLogo from 'src/writeData/graphics/nats.svg'
@@ -1074,6 +1076,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'Monit',
     markdown: monitMarkdown,
     image: monitLogo,
+  },
+  {
+    id: 'mqtt_consumer',
+    name: 'MQTT Consumer',
+    markdown: mqtt_consumerMarkdown,
+    image: mqtt_consumerLogo,
   },
   {
     id: 'multifile',

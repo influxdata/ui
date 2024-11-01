@@ -132,6 +132,12 @@ describe('Deep linking', () => {
       cy.visit('/me/tasks')
       cy.location('pathname').should('eq', `/orgs/${org.id}/tasks`)
 
+      cy.visit('/me/telegraf-mqtt')
+      cy.location('pathname').should(
+        'eq',
+        `/orgs/${org.id}/load-data/telegraf-plugins/mqtt_consumer`
+      )
+
       cy.visit('/me/telegrafs')
       cy.location('pathname').should(
         'eq',

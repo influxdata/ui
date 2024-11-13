@@ -5,7 +5,6 @@ import {useSelector} from 'react-redux'
 // Components
 import {Overlay} from '@influxdata/clockface'
 import {PaygPriceIncreaseAnnouncement} from 'src/me/components/announcements/PaygPriceIncreaseAnnouncement'
-import {MqttEolAnnouncement} from 'src/me/components/announcements/MqttEolAnnouncement'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -47,13 +46,6 @@ export const ClickThroughAnnouncementOverlay: FC<
           <PaygPriceIncreaseAnnouncement
             handleAcknowledgeClick={handleAcknowledgeClick}
             handleContactUsClick={handleContactUsClick}
-            handleDetailsClick={handleDetailsClick}
-          />
-        )
-      case AnnouncementID.MqttEol:
-        return (
-          <MqttEolAnnouncement
-            handleAcknowledgeClick={handleAcknowledgeClick}
             handleDetailsClick={handleDetailsClick}
           />
         )

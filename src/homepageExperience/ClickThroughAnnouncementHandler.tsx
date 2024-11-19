@@ -5,16 +5,16 @@ import {useLocalStorageState} from 'use-local-storage-state'
 
 // Utils
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 export enum AnnouncementID {
-  MqttEol = 'mqttEolClickThroughAnnouncement',
+  None = 'none',
 }
 
 enum AnnouncementState {
   Dismissed = 'dismissed',
   Display = 'display',
+  Disabled = 'disabled',
 }
 
 export const ClickThroughAnnouncementHandler: FC = () => {
@@ -46,6 +46,10 @@ export const ClickThroughAnnouncementHandler: FC = () => {
   }
 
   const handleDisplayAnnouncement = (announcementID: string): void => {
+    if (announcementID === AnnouncementID.None) {
+      return null
+    }
+
     initAnnouncement(announcementID)
 
     if (announcementState[announcementID] === AnnouncementState.Display) {
@@ -61,16 +65,8 @@ export const ClickThroughAnnouncementHandler: FC = () => {
   }
 
   useEffect(() => {
-    // MQTT Audience: Cloud users with MQTT feature flag enabled
-    const isMqttAudience = isFlagEnabled('subscriptionsUI')
-
-    // Sequentially display announcements in order of priority
-    if (
-      isMqttAudience &&
-      announcementState[AnnouncementID.MqttEol] !== AnnouncementState.Dismissed
-    ) {
-      handleDisplayAnnouncement(AnnouncementID.MqttEol)
-    }
+    // Sequentially display announcements in order of priority (use AnnouncementID.None to disable)
+    handleDisplayAnnouncement(AnnouncementID.None)
   }, [announcementState])
 
   return null

@@ -1,6 +1,3 @@
-import 'babel-polyfill'
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
-
 // Libraries
 import React, {PureComponent, Suspense} from 'react'
 import {render} from 'react-dom'

@@ -14,7 +14,6 @@ export enum AnnouncementID {
 enum AnnouncementState {
   Dismissed = 'dismissed',
   Display = 'display',
-  Disabled = 'disabled',
 }
 
 export const ClickThroughAnnouncementHandler: FC = () => {

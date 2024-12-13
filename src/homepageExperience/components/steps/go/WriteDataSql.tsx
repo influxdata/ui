@@ -61,13 +61,14 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
   }, [bucket, onSelectBucket])
 
   const initializeCodeSnippet = `package main
-
+  
 import (
     "context"
     "fmt"
     "time"
+    "os"
 
-    "github.com/InfluxCommunity/influxdb3-go/influxdb3"
+    "github.com/InfluxCommunity/influxdb3-go/v2/influxdb3"
 )
 
 func main() {
@@ -95,55 +96,61 @@ func main() {
     database := "${bucket.name}"
 }`
 
-  const writeCodeSnippet = `data := map[string]map[string]interface{}{
-  "point1": {
-    "location": "Klamath",
-    "species":  "bees",
-    "count":    23,
-  },
-  "point2": {
-    "location": "Portland",
-    "species":  "ants",
-    "count":    30,
-  },
-  "point3": {
-    "location": "Klamath",
-    "species":  "bees",
-    "count":    28,
-  },
-  "point4": {
-    "location": "Portland",
-    "species":  "ants",
-    "count":    32,
-  },
-  "point5": {
-    "location": "Klamath",
-    "species":  "bees",
-    "count":    29,
-  },
-  "point6": {
-    "location": "Portland",
-    "species":  "ants",
-    "count":    40,
-  },
-}
-
-// Write data
-options := influxdb3.WriteOptions{
-  Database: database,
-}
-for key := range data {
-  point := influxdb3.NewPointWithMeasurement("census").
-    AddTag("location", data[key]["location"].(string)).
-    AddField(data[key]["species"].(string), data[key]["count"])
-
-  if err := client.WritePointsWithOptions(context.Background(), &options, point); err != nil {
-    panic(err)
+  const writeCodeSnippet = `    data := map[string]map[string]interface{}{
+    "point1": {
+      "location": "Klamath",
+      "species":  "bees",
+      "count":    23,
+    },
+    "point2": {
+      "location": "Portland",
+      "species":  "ants",
+      "count":    30,
+    },
+    "point3": {
+      "location": "Klamath",
+      "species":  "bees",
+      "count":    28,
+    },
+    "point4": {
+      "location": "Portland",
+      "species":  "ants",
+      "count":    32,
+    },
+    "point5": {
+      "location": "Klamath",
+      "species":  "bees",
+      "count":    29,
+    },
+    "point6": {
+      "location": "Portland",
+      "species":  "ants",
+      "count":    40,
+    },
   }
 
-  time.Sleep(1 * time.Second) // separate points by 1 second
-}
+  // convert data to Points
+  points := []*influxdb3.Point{}
+  // start time stamp
+  stamp := time.Now().Add(time.Duration(len(data)) * time.Second * -1)
 
+  for key := range data {
+	  points = append(points,
+		  influxdb3.NewPointWithMeasurement("census").
+			  SetTag("location", data[key]["location"].(string)).
+			  SetIntegerField(data[key]["species"].(string),
+				  int64(data[key]["count"].(int))).
+			  SetTimestamp(stamp))
+	  stamp = stamp.Add(time.Second) // Add a second to the stamp
+  }
+
+  // Write data
+  fmt.Printf("Writing %d points\\n", len(points))  
+  if err := client.WritePoints(context.Background(),
+	  points,
+	  influxdb3.WithDatabase(database)); err != nil {
+	    panic(err)
+  }
 `
 
   return (
@@ -328,7 +335,7 @@ for key := range data {
       <CodeSnippet
         language="properties"
         onCopy={logCopyRunCodeSnippet}
-        text="go run ./main.go"
+        text="go mod tidy && go run ./main.go"
       />
       <p>
         The program should write data once you run it. After the data is

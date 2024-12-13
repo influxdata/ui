@@ -21,70 +21,48 @@ FROM 'census'
 WHERE time >= now() - interval '1 hour'
 AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)`
 
-  const querySnippet = `// Execute query
-query := \`SELECT *
-          FROM 'census'
-          WHERE time >= now() - interval '1 hour'
-            AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL)\`
+  const querySnippet = `  // Execute query with parameters
+  query := \`SELECT *
+   FROM 'census'
+   WHERE time >= now() - interval '1 hour'
+   AND ($species1 IS NOT NULL OR $species2 IS NOT NULL)\`
 
-queryOptions := influxdb3.QueryOptions{
-  Database: database,
-}
-iterator, err := client.QueryWithOptions(context.Background(), &queryOptions, query)
+  iterator, err := client.QueryWithParameters(context.Background(),
+	  query, influxdb3.QueryParameters{
+		  "species1": "bees",
+		  "species2": "ants",
+	  },
+	  influxdb3.WithDatabase(database))
 
-if err != nil {
-  panic(err)
-}
+  if err != nil {
+	  panic(err)
+  }
 
-for iterator.Next() {
-  value := iterator.Value()
+  val2int := func(v interface{}) int64 {
+	  if v == nil {
+		  return 0
+	  }
+	  return v.(int64)
+  }
+	
+  for iterator.Next() {
+	  value := iterator.Value()
 
-  location := value["location"]
-  ants := value["ants"]
-  bees := value["bees"]
-  fmt.Printf("in %s are %d ants and %d bees\\n", location, ants, bees)
-}
+	  location := value["location"]
+	  ants := val2int(value["ants"])
+	  bees := val2int(value["bees"])
+	  ts := value["time"].(time.Time)
+	  fmt.Printf("At %s in %s there were %d ants and %d bees\\n", 
+	    ts.Format(time.RFC3339), location, ants, bees)
+  }
 `
 
-  const resultPreviewSnippet = `RECORD BATCH
-[
-  {
-    "ants": null,
-    "bees": 23,
-    "location": "Klamath",
-    "time": "2023-02-08 00:50:22.729692187"
-  },
-  {
-    "ants": null,
-    "bees": 28,
-    "location": "Klamath",
-    "time": "2023-02-08 00:50:25.22003343"
-  },
-  {
-    "ants": null,
-    "bees": 29,
-    "location": "Klamath",
-    "time": "2023-02-08 00:50:27.5276304"
-  },
-  {
-    "ants": 40,
-    "bees": null,
-    "location": "Portland",
-    "time": "2023-02-08 00:50:21.465572125"
-  },
-  {
-    "ants": 30,
-    "bees": null,
-    "location": "Portland",
-    "time": "2023-02-08 00:50:23.866994344"
-  },
-  {
-    "ants": 32,
-    "bees": null,
-    "location": "Portland",
-    "time": "2023-02-08 00:50:26.42849497"
-  }
-]`
+  const resultPreviewSnippet = `At 2024-12-13T13:33:13Z in Klamath there were 0 ants and 28 bees
+At 2024-12-13T13:33:15Z in Klamath there were 0 ants and 29 bees
+At 2024-12-13T13:33:17Z in Klamath there were 0 ants and 23 bees
+At 2024-12-13T13:33:14Z in Portland there were 32 ants and 0 bees
+At 2024-12-13T13:33:16Z in Portland there were 40 ants and 0 bees
+At 2024-12-13T13:33:18Z in Portland there were 30 ants and 0 bees`
 
   return (
     <>
@@ -104,7 +82,9 @@ for iterator.Next() {
         with a "census" measurement and either "bees" or "ants" fields.
       </p>
       <p>
-        Add the following function to the end of your{' '}
+        The following snippet introduces query parameters for the model query above.
+        The fixed values "bees" and "ants" are replaced with "species1" and "species2".
+        Add this to the end of your{' '}
         <code className="homepage-wizard--code-highlight">main</code> function:
       </p>
       <CodeSnippet

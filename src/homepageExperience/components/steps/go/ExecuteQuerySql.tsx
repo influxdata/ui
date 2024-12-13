@@ -82,9 +82,9 @@ At 2024-12-13T13:33:18Z in Portland there were 30 ants and 0 bees`
         with a "census" measurement and either "bees" or "ants" fields.
       </p>
       <p>
-        The following snippet introduces query parameters for the model query above.
-        The fixed values "bees" and "ants" are replaced with "species1" and "species2".
-        Add this to the end of your{' '}
+        The following snippet introduces query parameters for the model query
+        above. The fixed values "bees" and "ants" are replaced with "species1"
+        and "species2". Add this to the end of your{' '}
         <code className="homepage-wizard--code-highlight">main</code> function:
       </p>
       <CodeSnippet

@@ -6,7 +6,7 @@
   "numTestsKeptInMemory": 25,
   "integrationFolder": "cypress/e2e",
   "defaultCommandTimeout": 10000,
-  "videoUploadOnPasses": false,
+  "videoUploadOnPasses": true,
   "chromeWebSecurity": false,
   "blockHosts": [
     "www.google-analytics.com",

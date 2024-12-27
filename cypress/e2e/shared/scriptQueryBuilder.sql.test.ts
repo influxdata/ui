@@ -18,6 +18,7 @@ describe('Script Builder', () => {
   let route: string
 
   const selectSchema = () => {
+    console.log('making a change to a test')
     cy.log('select bucket')
     cy.selectScriptBucket(bucketName)
     cy.confirmSyncIsOn() // SQL composition is dumb. On bucket selection, it will occasionally drop the sync.

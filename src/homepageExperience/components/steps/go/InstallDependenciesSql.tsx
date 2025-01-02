@@ -41,7 +41,7 @@ export const InstallDependenciesSql: FC = () => {
       <CodeSnippet
         language="properties"
         onCopy={logCopyInstallCodeSnippet}
-        text="go get github.com/InfluxCommunity/influxdb3-go"
+        text="go get github.com/InfluxCommunity/influxdb3-go/v2"
       />
       <p>
         You'll need to have{' '}

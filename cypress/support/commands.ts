@@ -100,6 +100,7 @@ Cypress.Commands.add(
     return cy.wrap(subject).within(() => {
       cy.get('.monaco-editor .view-line:last')
         .click({force: true})
+        .wait(200)
         .focused()
         .type(text, {force, delay})
     })

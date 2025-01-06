@@ -73,7 +73,7 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
         }
     }`
 
-  const dataPrep = `String database = "${bucket.name}"
+  const dataPrep = `   String database = "${bucket.name}";
 
     List<CensusRecord> records = Arrays.asList(
           new CensusRecord("Klamath", "bees", 23),

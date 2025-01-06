@@ -259,23 +259,29 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
         These concepts are important in building your time-series schema. Now,
         let's write this data into our bucket.
       </p>
-      <p>First, add the following internal class to the
-        <code>InfluxClientExample</code> <em>above</em> the <code>main</code> method:</p>
+      <p>
+        First, add the following internal class to the
+        <code>InfluxClientExample</code> <em>above</em> the <code>main</code>{' '}
+        method:
+      </p>
       <CodeSnippet
-         language="java"
-         onCopy={logCopyCodeSnippet}
-         text={internalClass}
+        language="java"
+        onCopy={logCopyCodeSnippet}
+        text={internalClass}
       />
-      <p>Then, copy the following data preparation statements, into
-      the <code>main</code> method <em>above</em> the <code>try(InfluxDBClient ...)</code> block:</p>
+      <p>
+        Then, copy the following data preparation statements, into the{' '}
+        <code>main</code> method <em>above</em> the{' '}
+        <code>try(InfluxDBClient ...)</code> block:
+      </p>
       <CodeSnippet
         language="java"
         onCopy={logCopyCodeSnippet}
         text={dataPrep}
       />
       <p>
-        Finally, add the following
-        code <em>within</em> the <code>try(InfluxDBClient ...)</code> block:
+        Finally, add the following code <em>within</em> the{' '}
+        <code>try(InfluxDBClient ...)</code> block:
       </p>
       <CodeSnippet
         language="java"

@@ -75,21 +75,26 @@ AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL) order by time asc`
   return (
     <>
       <h1>Execute a SQL Query</h1>
-      <p>The query transport makes use of Apache Arrow Flight to
-      shorten processing time.  When executing queries Arrow needs
-      access to internal JVM resources.  This means setting the
-        following JVM argument: <code>--add-opens=java.base/java.nio=ALL-UNNAMED</code></p>
+      <p>
+        The query transport makes use of Apache Arrow Flight to shorten
+        processing time. When executing queries Arrow needs access to internal
+        JVM resources. This means setting the following JVM argument:{' '}
+        <code>--add-opens=java.base/java.nio=ALL-UNNAMED</code>
+      </p>
       <h2>Java</h2>
-      <p>With straightforward Java this can be done with an
-        environment variable:</p>
+      <p>
+        With straightforward Java this can be done with an environment variable:
+      </p>
       <CodeSnippet
-         language="bash"
-         onCopy={logCopyCodeSnippet}
-         showCopyControl={false}
-         text='export JDK_JAVA_OPTIONS="--add-opens=java.base/java.nio=ALL-UNNAMED"'
+        language="bash"
+        onCopy={logCopyCodeSnippet}
+        showCopyControl={false}
+        text='export JDK_JAVA_OPTIONS="--add-opens=java.base/java.nio=ALL-UNNAMED"'
       />
       <h2>Maven</h2>
-      <p>This argument can also be added to <code>MAVEN_OPTS</code>:</p>
+      <p>
+        This argument can also be added to <code>MAVEN_OPTS</code>:
+      </p>
       <CodeSnippet
         language="bash"
         onCopy={logCopyCodeSnippet}
@@ -97,7 +102,10 @@ AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL) order by time asc`
         text='export MAVEN_OPTS="--add-opens=java.base/java.nio=ALL-UNNAMED"'
       />
       <h2>Gradle</h2>
-      <p>With gradle this can be added to the build file, e.g. in <code>build.gradle.kts</code>:</p>
+      <p>
+        With gradle this can be added to the build file, e.g. in{' '}
+        <code>build.gradle.kts</code>:
+      </p>
       <CodeSnippet
         language="kotlin"
         onCopy={logCopyCodeSnippet}
@@ -124,26 +132,28 @@ application {
         In this query, we are looking for data points within the last 1 hour
         with a "census" measurement and either "bees" or "ants" fields.
       </p>
-      <p>The client API will pass through null values for mismatched or missing
-      tags, fields and timestamps.  In anticipation of this possibility copy the
-      following static helper methods to the <em>bottom</em> of
-        the <code>InfluxClientExample</code> class.</p>
+      <p>
+        The client API will pass through null values for mismatched or missing
+        tags, fields and timestamps. In anticipation of this possibility copy
+        the following static helper methods to the <em>bottom</em> of the{' '}
+        <code>InfluxClientExample</code> class.
+      </p>
       <CodeSnippet
         language="java"
         onCopy={logCopyCodeSnippet}
         text={staticHelpers}
       />
       <p>
-        Now let's use the model SQL query in our <code>Java</code> code
-        to show us the results of what we have written.  Furthermore, let's use the SQL query
-        parameters feature of the client library to make query calls more
+        Now let's use the model SQL query in our <code>Java</code> code to show
+        us the results of what we have written. Furthermore, let's use the SQL
+        query parameters feature of the client library to make query calls more
         dynamic.
       </p>
       <p>
-        The following code replaces the fixed values of "bees" and "ants"
-        with the parameters <code>$species1</code> and <code>$species2</code>.
-        Add it to the <code>InfluxClientExample</code> class <em>after</em> the
-        write code added in the previous step:
+        The following code replaces the fixed values of "bees" and "ants" with
+        the parameters <code>$species1</code> and <code>$species2</code>. Add it
+        to the <code>InfluxClientExample</code> class <em>after</em> the write
+        code added in the previous step:
       </p>
       <CodeSnippet language="java" onCopy={logCopyCodeSnippet} text={query} />
       <p>

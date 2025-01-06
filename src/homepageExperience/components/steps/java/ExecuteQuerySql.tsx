@@ -126,7 +126,7 @@ application {
       </p>
       <p>The client API will pass through null values for mismatched or missing
       tags, fields and timestamps.  In anticipation of this possibility copy the
-      following static helper methods to the bottom of
+      following static helper methods to the <em>bottom</em> of
         the <code>InfluxClientExample</code> class.</p>
       <CodeSnippet
         language="java"

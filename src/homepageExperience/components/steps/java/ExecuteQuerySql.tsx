@@ -78,12 +78,12 @@ AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL) order by time asc`
       <p>
         The query transport makes use of Apache Arrow Flight to shorten
         processing time. When executing queries Arrow needs access to internal
-        JVM resources. This means setting the following JVM argument:{' '}
+        JVM resources. This requires setting the following JVM argument:{' '}
         <code>--add-opens=java.base/java.nio=ALL-UNNAMED</code>
       </p>
       <h2>Java</h2>
       <p>
-        With straightforward Java this can be done with an environment variable:
+        This can be done with an environment variable:
       </p>
       <CodeSnippet
         language="bash"

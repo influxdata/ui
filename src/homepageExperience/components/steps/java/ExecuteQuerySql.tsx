@@ -82,9 +82,7 @@ AND ('bees' IS NOT NULL OR 'ants' IS NOT NULL) order by time asc`
         <code>--add-opens=java.base/java.nio=ALL-UNNAMED</code>
       </p>
       <h2>Java</h2>
-      <p>
-        This can be done with an environment variable:
-      </p>
+      <p>This can be done with an environment variable:</p>
       <CodeSnippet
         language="bash"
         onCopy={logCopyCodeSnippet}

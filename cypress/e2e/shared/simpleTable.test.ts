@@ -1,6 +1,10 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
+const featureFlags = {
+  showOldDataExplorerInNewIOx: true,
+}
+
 describe('simple table interactions', () => {
   const simpleSmall = 'simple-small'
   const simpleLarge = 'simple-large'
@@ -8,9 +12,7 @@ describe('simple table interactions', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.setFeatureFlags({
-      showOldDataExplorerInNewIOx: true,
-    }).then(() =>
+    cy.setFeatureFlags(featureFlags).then(() =>
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${orgID}${explorer}`)
@@ -23,7 +25,7 @@ describe('simple table interactions', () => {
         cy.writeData(points(30), simpleSmall)
         cy.createBucket(orgID, name, simpleOverflow)
         cy.writeData(points(31), simpleOverflow)
-        cy.reload()
+        cy.setFeatureFlags(featureFlags)
       })
     )
   })

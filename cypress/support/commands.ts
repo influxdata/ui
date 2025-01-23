@@ -100,6 +100,7 @@ Cypress.Commands.add(
     return cy.wrap(subject).within(() => {
       cy.get('.monaco-editor .view-line:last')
         .click({force: true})
+        .wait(200)
         .focused()
         .type(text, {force, delay})
     })
@@ -868,8 +869,14 @@ export const clearSqlScriptSession = () => {
 }
 
 export const selectScriptBucket = (bucketName: string) => {
-  cy.getByTestID('bucket-selector--dropdown-button').click()
-  cy.getByTestID(`bucket-selector--dropdown--${bucketName}`).click()
+  const MENU_WAIT_DELAY_MS = 1000
+
+  cy.getByTestID('bucket-selector--dropdown-button')
+    .click()
+    .wait(MENU_WAIT_DELAY_MS)
+  cy.getByTestID(`bucket-selector--dropdown--${bucketName}`)
+    .click()
+    .wait(MENU_WAIT_DELAY_MS)
   cy.getByTestID('bucket-selector--dropdown-button').should(
     'contain',
     bucketName
@@ -1464,7 +1471,7 @@ export const setFeatureFlagsNoNav = (flags: FlagMap): Cypress.Chainable => {
     }).as('setFeatureFlagsResponse')
   })
 
-  return cy.wait(0)
+  return cy.wait(1000)
 }
 
 export const createTaskFromEmpty = (

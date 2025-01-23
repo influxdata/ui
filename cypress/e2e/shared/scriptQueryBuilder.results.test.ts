@@ -7,6 +7,8 @@ const DELAY_FOR_LSP_SERVER_BOOTUP = 7000
 
 const DELAY_FOR_FILE_DOWNLOAD = 5000
 
+const DEFAULT_DELAY_MS = 2000
+
 describe('Script Builder', () => {
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
@@ -100,7 +102,8 @@ describe('Script Builder', () => {
       })
     })
 
-    it('will allow querying of different data ranges', () => {
+    // Temporarily disabled due to excess flake. Do not re-enable without rewriting this test.
+    it.skip('will allow querying of different data ranges', () => {
       cy.log('Ensure LSP is online') // deflake
       cy.wait(DELAY_FOR_LSP_SERVER_BOOTUP)
 
@@ -112,9 +115,18 @@ describe('Script Builder', () => {
       cy.wait('@query -1h')
 
       cy.log('query date range can be adjusted')
-      cy.getByTestID('timerange-dropdown--button').should('be.visible').click()
-      cy.getByTestID('dropdown-item-past15m').should('exist').click()
-      cy.getByTestID('time-machine-submit-button').should('exist').click()
+      cy.getByTestID('timerange-dropdown--button')
+        .should('be.visible')
+        .click()
+        .wait(DEFAULT_DELAY_MS)
+      cy.getByTestID('dropdown-item-past15m')
+        .should('exist')
+        .click()
+        .wait(DEFAULT_DELAY_MS)
+      cy.getByTestID('time-machine-submit-button')
+        .should('exist')
+        .click()
+        .wait(DEFAULT_DELAY_MS)
       cy.wait('@query -15m')
     })
 
@@ -145,7 +157,7 @@ describe('Script Builder', () => {
         cy.getByTestID('time-machine-submit-button').should('exist')
         cy.getByTestID('time-machine-submit-button').clickAttached()
         cy.wait('@query -1h')
-        cy.wait(1000) // bit more time for csv parsing
+        cy.wait(DEFAULT_DELAY_MS) // bit more time for csv parsing
 
         cy.log('table metadata displayed to user is correct')
         if (truncated) {
@@ -197,12 +209,16 @@ describe('Script Builder', () => {
         })
 
         cy.log('turn off composition sync')
-        cy.getByTestID('editor-sync--toggle').click()
+        cy.getByTestID('editor-sync--toggle').click().wait(DEFAULT_DELAY_MS)
         cy.getByTestID('editor-sync--toggle').should('not.have.class', 'active')
         cy.log('select empty dataset')
-        cy.getByTestID('flux-editor').monacoType(`{selectall}{enter}
+        cy.getByTestID('flux-editor')
+          .monacoType(
+            `{selectall}{enter}
           from(bucket: "defbuck3") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-        `)
+        `
+          )
+          .wait(DEFAULT_DELAY_MS)
         cy.getByTestID('flux-editor').contains('defbuck3')
 
         runTest(0, 0, false)

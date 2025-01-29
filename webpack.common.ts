@@ -11,7 +11,7 @@ const {
   STATIC_DIRECTORY,
   BASE_PATH,
   API_BASE_PATH,
-} = require('./src/utils/env')
+} = require('./src/utils/env.ts')
 
 const MONACO_DIR = path.resolve(__dirname, './node_modules/monaco-editor')
 

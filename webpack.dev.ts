@@ -3,7 +3,7 @@ const mergeDev = require('webpack-merge').merge
 const commonDev = require('./webpack.common.ts')
 const PORT = parseInt(process.env.PORT, 10) || 8080
 const PUBLIC = process.env.PUBLIC || undefined
-const BASE_PATH_DEV = require('./src/utils/env').BASE_PATH
+const BASE_PATH_DEV = require('./src/utils/env.ts').BASE_PATH
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = mergeDev(commonDev, {

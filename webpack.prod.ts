@@ -8,7 +8,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
-const DIRECTORY_STATIC = require('./src/utils/env').STATIC_DIRECTORY
+const DIRECTORY_STATIC = require('./src/utils/env.ts').STATIC_DIRECTORY
 
 module.exports = mergeWebpack(commonWebpack, {
   mode: 'production',

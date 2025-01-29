@@ -29,12 +29,14 @@ import {
   HOMEPAGE_NAVIGATION_STEPS_SQL,
   scrollNextPageIntoView,
 } from 'src/homepageExperience/utils'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
 import {InitializeClient} from '../components/steps/java/InitializeClient'
 import {WriteData} from '../components/steps/java/WriteData'
 import {ExecuteQuery} from '../components/steps/java/ExecuteQuery'
 import {ExecuteAggregateQuery} from '../components/steps/java/ExecuteAggregateQuery'
 import {InstallDependencies} from '../components/steps/java/InstallDependencies'
+import {isOrgIOx} from 'src/organizations/selectors'
+import {connect} from 'react-redux'
+import {AppState} from 'src/types'
 
 interface State {
   currentStep: number
@@ -44,7 +46,11 @@ interface State {
   finalFeedback: number
 }
 
-export class JavaWizard extends PureComponent<null, State> {
+interface Props {
+  isIOx: boolean
+}
+
+export class JavaWizard extends PureComponent<Props, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',
@@ -53,7 +59,7 @@ export class JavaWizard extends PureComponent<null, State> {
     finalFeedback: null,
   }
 
-  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+  subwayNavSteps = this.props.isIOx
     ? HOMEPAGE_NAVIGATION_STEPS_SQL
     : HOMEPAGE_NAVIGATION_STEPS
 
@@ -258,7 +264,7 @@ export class JavaWizard extends PureComponent<null, State> {
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {isFlagEnabled('ioxOnboarding')
+                  {this.props.isIOx
                     ? this.renderSqlStep()
                     : this.renderFluxStep()}
                 </WriteDataDetailsContextProvider>
@@ -297,3 +303,11 @@ export class JavaWizard extends PureComponent<null, State> {
     )
   }
 }
+
+const mapStateToProps = (state: AppState) => {
+  return {
+    isIOx: isOrgIOx(state),
+  }
+}
+
+export default connect(mapStateToProps)(JavaWizard)

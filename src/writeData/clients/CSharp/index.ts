@@ -8,9 +8,12 @@ import writeLP from 'src/writeData/clients/CSharp/write.0.example'
 import writePOCO from 'src/writeData/clients/CSharp/write.2.example'
 import writePoint from 'src/writeData/clients/CSharp/write.1.example'
 import {ClientRegistration} from 'src/writeData'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {useSelector} from 'react-redux'
+import {isOrgIOx} from 'src/organizations/selectors'
 
-const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
+// Stopped here - need to restructure this a bit so that the selector is called outside the class.
+// Could be done as argument passed to constructor.
+const isTSMOnboarding = !useSelector(isOrgIOx)
 export class Client implements ClientRegistration {
   id = 'csharp'
   name = 'C#'

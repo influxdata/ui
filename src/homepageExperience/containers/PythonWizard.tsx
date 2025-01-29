@@ -32,12 +32,14 @@ import {PythonIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
 } from 'src/homepageExperience/utils'
+import {isOrgIOx} from 'src/organizations/selectors'
+import {AppState} from 'src/types'
+import {connect} from 'react-redux'
 
 interface State {
   currentStep: number
@@ -47,7 +49,11 @@ interface State {
   finalFeedback: number
 }
 
-export class PythonWizard extends PureComponent<null, State> {
+interface Props {
+  isOrgIOx: boolean
+}
+
+export class PythonWizard extends PureComponent<Props, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',
@@ -262,7 +268,7 @@ export class PythonWizard extends PureComponent<null, State> {
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {isFlagEnabled('ioxOnboarding')
+                  {this.props.isOrgIOx
                     ? this.renderSqlStep()
                     : this.renderStep()}
                 </WriteDataDetailsContextProvider>
@@ -301,3 +307,11 @@ export class PythonWizard extends PureComponent<null, State> {
     )
   }
 }
+
+const mapStateToProps = (state: AppState) => {
+  return {
+    isIOx: isOrgIOx(state),
+  }
+}
+
+export default connect(mapStateToProps)(PythonWizard)

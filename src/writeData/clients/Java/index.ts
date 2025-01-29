@@ -10,8 +10,10 @@ import writePOJO from 'src/writeData/clients/Java/write.2.example'
 import writePoint from 'src/writeData/clients/Java/write.1.example'
 import {ClientRegistration} from 'src/writeData'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {useSelector} from 'react-redux'
+import {isOrgIOx} from 'src/organizations/selectors'
 
-const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
+const isTSMOnboarding = !useSelector(isOrgIOx)
 export class Client implements ClientRegistration {
   id = 'java'
   name = 'Java'

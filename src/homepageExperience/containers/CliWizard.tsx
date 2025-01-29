@@ -31,8 +31,9 @@ import {
   HOMEPAGE_NAVIGATION_STEPS_SHORT_SQL,
 } from 'src/homepageExperience/utils'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {ExecuteQuerySql} from '../components/steps/cli/ExecuteQuerySql'
+import {useSelector} from 'react-redux'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 interface State {
   currentStep: number
@@ -51,7 +52,7 @@ export class CliWizard extends PureComponent<{}, State> {
     finalFeedback: null,
   }
 
-  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+  subwayNavSteps = useSelector(isOrgIOx)
     ? HOMEPAGE_NAVIGATION_STEPS_SHORT_SQL
     : HOMEPAGE_NAVIGATION_STEPS_SHORT
 
@@ -155,14 +156,14 @@ export class CliWizard extends PureComponent<{}, State> {
         return <WriteData bucket={this.state.selectedBucket} />
       }
       case 5: {
-        if (isFlagEnabled('ioxOnboarding')) {
+        if (useSelector(isOrgIOx)) {
           return <ExecuteQuerySql bucket={this.state.selectedBucket} />
         } else {
           return <ExecuteQuery bucket={this.state.selectedBucket} />
         }
       }
       case 6: {
-        if (isFlagEnabled('ioxOnboarding')) {
+        if (useSelector(isOrgIOx)) {
           return (
             <Finish
               wizardEventName="cliWizard"

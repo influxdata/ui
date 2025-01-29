@@ -28,12 +28,14 @@ import {GoIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS,
   HOMEPAGE_NAVIGATION_STEPS_GO_SQL,
 } from 'src/homepageExperience/utils'
+import {isOrgIOx} from 'src/organizations/selectors'
+import {connect} from 'react-redux'
+import {AppState} from 'src/types'
 
 interface State {
   currentStep: number
@@ -43,7 +45,11 @@ interface State {
   finalFeedback: number
 }
 
-export class GoWizard extends PureComponent<null, State> {
+interface Props {
+  isIOx: boolean
+}
+
+export class GoWizard extends PureComponent<Props, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',
@@ -68,7 +74,7 @@ export class GoWizard extends PureComponent<null, State> {
     this.setState({finalFeedback: feedbackValue})
   }
 
-  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+  subwayNavSteps = this.props.isIOx
     ? HOMEPAGE_NAVIGATION_STEPS_GO_SQL
     : HOMEPAGE_NAVIGATION_STEPS
 
@@ -220,6 +226,8 @@ export class GoWizard extends PureComponent<null, State> {
   }
 
   render() {
+    const {isIOx} = this.props
+
     return (
       <Page>
         <Page.Header fullWidth={false} />
@@ -249,9 +257,7 @@ export class GoWizard extends PureComponent<null, State> {
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {isFlagEnabled('ioxOnboarding')
-                    ? this.renderSqlStep()
-                    : this.renderFluxStep()}
+                  {isIOx ? this.renderSqlStep() : this.renderFluxStep()}
                 </WriteDataDetailsContextProvider>{' '}
               </div>
 
@@ -286,3 +292,11 @@ export class GoWizard extends PureComponent<null, State> {
     )
   }
 }
+
+const mapStateToProps = (state: AppState) => {
+  return {
+    isIOx: isOrgIOx(state),
+  }
+}
+
+export default connect(mapStateToProps)(GoWizard)

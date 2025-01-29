@@ -26,13 +26,14 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   scrollNextPageIntoView,
   HOMEPAGE_NAVIGATION_STEPS_ARDUINO,
   HOMEPAGE_NAVIGATION_STEPS_ARDUINO_WRITE_ONLY,
 } from 'src/homepageExperience/utils'
 import {normalizeEventName} from 'src/cloud/utils/reporting'
+import {useSelector} from 'react-redux'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 interface State {
   currentStep: number
@@ -67,7 +68,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
     this.setState({finalFeedback: feedbackValue})
   }
 
-  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+  subwayNavSteps = useSelector(isOrgIOx)
     ? HOMEPAGE_NAVIGATION_STEPS_ARDUINO_WRITE_ONLY
     : HOMEPAGE_NAVIGATION_STEPS_ARDUINO
 
@@ -156,7 +157,7 @@ export class ArduinoWizard extends PureComponent<{}, State> {
         return <WriteData bucket={this.state.selectedBucket} />
       }
       case 6: {
-        if (isFlagEnabled('ioxOnboarding')) {
+        if (useSelector(isOrgIOx)) {
           return (
             <Finish
               wizardEventName="arduinoWizard"

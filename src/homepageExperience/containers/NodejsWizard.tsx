@@ -31,11 +31,14 @@ import {
   HOMEPAGE_NAVIGATION_STEPS,
   HOMEPAGE_NAVIGATION_STEPS_SQL,
 } from 'src/homepageExperience/utils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {InstallDependenciesSql} from '../components/steps/nodejs/InstallDependenciesSql'
 import {InitializeClientSql} from '../components/steps/nodejs/InitializeClientSql'
 import {WriteDataSql} from '../components/steps/nodejs/WriteDataSql'
 import {ExecuteQuerySql} from '../components/steps/nodejs/ExecuteQuerySql'
+import {useSelector} from 'react-redux'
+import {isOrgIOx} from 'src/organizations/selectors'
+import {connect} from 'react-redux'
+import {AppState} from 'src/types'
 
 interface State {
   currentStep: number
@@ -45,7 +48,11 @@ interface State {
   finalFeedback: number
 }
 
-export class NodejsWizard extends PureComponent<null, State> {
+interface Props {
+  isOrgIOx: boolean
+}
+
+export class NodejsWizard extends PureComponent<Props, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',
@@ -70,7 +77,7 @@ export class NodejsWizard extends PureComponent<null, State> {
     this.setState({finalFeedback: feedbackValue})
   }
 
-  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+  subwayNavSteps = useSelector(isOrgIOx)
     ? HOMEPAGE_NAVIGATION_STEPS_SQL
     : HOMEPAGE_NAVIGATION_STEPS
 
@@ -254,7 +261,7 @@ export class NodejsWizard extends PureComponent<null, State> {
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {isFlagEnabled('ioxOnboarding')
+                  {this.props.isOrgIOx
                     ? this.renderSqlStep()
                     : this.renderFluxStep()}
                 </WriteDataDetailsContextProvider>
@@ -291,3 +298,11 @@ export class NodejsWizard extends PureComponent<null, State> {
     )
   }
 }
+
+const mapStateToProps = (state: AppState) => {
+  return {
+    isIOx: isOrgIOx(state),
+  }
+}
+
+export default connect(mapStateToProps)(NodejsWizard)

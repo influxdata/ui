@@ -6,8 +6,10 @@ import query from 'src/writeData/clients/R/query.example'
 import write from 'src/writeData/clients/R/write.example'
 import {ClientRegistration} from 'src/writeData'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {useSelector} from 'react-redux'
+import {isOrgIOx} from 'src/organizations/selectors'
 
-const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
+const isTSMOnboarding = !useSelector(isOrgIOx)
 export class Client implements ClientRegistration {
   id = 'r'
   name = 'R'

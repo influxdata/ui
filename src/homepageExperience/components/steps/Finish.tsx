@@ -21,7 +21,6 @@ import DashboardIntegrations from 'src/homepageExperience/components/steps/Dashb
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {isOrgIOx} from 'src/organizations/selectors'
 
 type OwnProps = {
@@ -104,6 +103,8 @@ export const Finish = (props: OwnProps) => {
     ? `You completed setting up and writing data.`
     : `You completed setting up, writing, and querying data.`
 
+  const isIOx = useSelector(isOrgIOx)
+
   return (
     <>
       <h1>Congrats!</h1>
@@ -124,7 +125,7 @@ export const Finish = (props: OwnProps) => {
           alignItems={AlignItems.Stretch}
           direction={FlexDirection.Row}
         >
-          {isFlagEnabled('ioxOnboarding') ? (
+          {useSelector(isOrgIOx) ? (
             <ResourceCard className="homepage-wizard-next-steps">
               <SafeBlankLink
                 href="https://docs.influxdata.com/influxdb/cloud-serverless/write-data/best-practices/"
@@ -154,7 +155,7 @@ export const Finish = (props: OwnProps) => {
               </p>
             </ResourceCard>
           )}
-          {!isFlagEnabled('ioxOnboarding') && (
+          {isIOx && (
             <ResourceCard className="homepage-wizard-next-steps">
               <SafeBlankLink
                 href="https://university.influxdata.com/"
@@ -187,13 +188,13 @@ export const Finish = (props: OwnProps) => {
         </FlexBox>
         {props.wizardEventName !== 'cliWizard' &&
         props.wizardEventName !== 'arduinoWizard' &&
-        !isFlagEnabled('ioxOnboarding') ? (
+        !isIOx ? (
           <SampleAppCard
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}
           />
         ) : null}
-        {isFlagEnabled('ioxOnboarding') && (
+        {isIOx && (
           <DashboardIntegrations
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}

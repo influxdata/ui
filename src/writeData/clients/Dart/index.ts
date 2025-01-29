@@ -8,9 +8,10 @@ import query from 'src/writeData/clients/Dart/query.example'
 import writeLP from 'src/writeData/clients/Dart/write.0.example'
 import writePoint from 'src/writeData/clients/Dart/write.1.example'
 import {ClientRegistration} from 'src/writeData'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {useSelector} from 'react-redux'
+import {isOrgIOx} from 'src/organizations/selectors'
 
-const isTSMOnboarding = !isFlagEnabled('ioxOnboarding')
+const isTSMOnboarding = !useSelector(isOrgIOx)
 export class Client implements ClientRegistration {
   id = 'dart'
   name = 'Dart'

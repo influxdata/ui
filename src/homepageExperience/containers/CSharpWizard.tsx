@@ -29,12 +29,15 @@ import {
   HOMEPAGE_NAVIGATION_STEPS_SQL,
   scrollNextPageIntoView,
 } from 'src/homepageExperience/utils'
-import {isFlagEnabled} from '../../shared/utils/featureFlag'
 import {InstallDependencies} from '../components/steps/csharp/InstallDependencies'
 import {InitializeClient} from '../components/steps/csharp/InitializeClient'
 import {WriteData} from '../components/steps/csharp/WriteData'
 import {ExecuteQuery} from '../components/steps/csharp/ExecuteQuery'
 import {ExecuteAggregateQuery} from '../components/steps/csharp/ExecuteAggregateQuery'
+import {useSelector} from 'react-redux'
+import {isOrgIOx} from 'src/organizations/selectors'
+import {connect} from 'react-redux'
+import {AppState} from 'src/types'
 
 interface State {
   currentStep: number
@@ -44,7 +47,11 @@ interface State {
   finalFeedback: number
 }
 
-export class CSharpWizard extends PureComponent<null, State> {
+interface Props {
+  isIOx: boolean
+}
+
+class CSharpWizard extends PureComponent<Props, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',
@@ -53,7 +60,7 @@ export class CSharpWizard extends PureComponent<null, State> {
     finalFeedback: null,
   }
 
-  subwayNavSteps = isFlagEnabled('ioxOnboarding')
+  subwayNavSteps = useSelector(isOrgIOx)
     ? HOMEPAGE_NAVIGATION_STEPS_SQL
     : HOMEPAGE_NAVIGATION_STEPS
 
@@ -224,6 +231,7 @@ export class CSharpWizard extends PureComponent<null, State> {
   }
 
   render() {
+    const {isIOx} = this.props
     const {currentStep} = this.state
 
     return (
@@ -258,9 +266,7 @@ export class CSharpWizard extends PureComponent<null, State> {
                 )}
               >
                 <WriteDataDetailsContextProvider>
-                  {isFlagEnabled('ioxOnboarding')
-                    ? this.renderSqlStep()
-                    : this.renderFluxStep()}
+                  {isIOx ? this.renderSqlStep() : this.renderFluxStep()}
                 </WriteDataDetailsContextProvider>
               </div>
 
@@ -297,3 +303,11 @@ export class CSharpWizard extends PureComponent<null, State> {
     )
   }
 }
+
+const mapStateToProps = (state: AppState) => {
+  return {
+    isIOx: isOrgIOx(state),
+  }
+}
+
+export default connect(mapStateToProps)(CSharpWizard)

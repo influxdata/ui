@@ -28,7 +28,6 @@ import {
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 // Notifications
@@ -48,8 +47,7 @@ export const DeletePanel: FC = () => {
   const {user, account} = useSelector(selectCurrentIdentity)
 
   const freeAccountWithOneOrg = account.type === 'free' && user.orgCount === 1
-  const shouldShowDeleteOrgButton =
-    CLOUD && isFlagEnabled('createDeleteOrgs') && !freeAccountWithOneOrg
+  const shouldShowDeleteOrgButton = CLOUD && !freeAccountWithOneOrg
 
   return (
     <PageSpinner loading={status}>

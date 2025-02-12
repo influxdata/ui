@@ -21,7 +21,6 @@ import DashboardIntegrations from 'src/homepageExperience/components/steps/Dashb
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {isOrgIOx} from 'src/organizations/selectors'
 
 type OwnProps = {
@@ -96,8 +95,10 @@ export const Finish = (props: OwnProps) => {
     }
   }, [finishStepCompleted, markStepAsCompleted, wizardEventName])
 
+  const isIoxOrg = useSelector(isOrgIOx)
+
   const writeOnly =
-    useSelector(isOrgIOx) &&
+    isIoxOrg &&
     (wizardEventName === 'arduinoWizard' || wizardEventName === 'nodejsWizard')
 
   const outroContent = writeOnly
@@ -124,7 +125,7 @@ export const Finish = (props: OwnProps) => {
           alignItems={AlignItems.Stretch}
           direction={FlexDirection.Row}
         >
-          {isFlagEnabled('ioxOnboarding') ? (
+          {isIoxOrg ? (
             <ResourceCard className="homepage-wizard-next-steps">
               <SafeBlankLink
                 href="https://docs.influxdata.com/influxdb/cloud-serverless/write-data/best-practices/"
@@ -140,36 +141,36 @@ export const Finish = (props: OwnProps) => {
               </p>
             </ResourceCard>
           ) : (
-            <ResourceCard className="homepage-wizard-next-steps">
-              <SafeBlankLink
-                href="https://docs.influxdata.com/influxdb/latest/reference/key-concepts/"
-                onClick={() =>
-                  handleNextStepEvent(wizardEventName, 'keyConcepts')
-                }
-              >
-                <h4>{BookIcon}Key Concepts</h4>
-              </SafeBlankLink>
-              <p>
-                Learn about important concepts for writing time-series data.
-              </p>
-            </ResourceCard>
-          )}
-          {!isFlagEnabled('ioxOnboarding') && (
-            <ResourceCard className="homepage-wizard-next-steps">
-              <SafeBlankLink
-                href="https://university.influxdata.com/"
-                onClick={() =>
-                  handleNextStepEvent(wizardEventName, 'influxUniversity')
-                }
-              >
-                <h4>{CodeTerminalIcon}InfluxDB University</h4>
-              </SafeBlankLink>
-              <p>
-                Our free hands-on courses teach you the technical skills and
-                best practices to get the most out of your real-time data with
-                InfluxDB.
-              </p>
-            </ResourceCard>
+            <>
+              <ResourceCard className="homepage-wizard-next-steps">
+                <SafeBlankLink
+                  href="https://docs.influxdata.com/influxdb/latest/reference/key-concepts/"
+                  onClick={() =>
+                    handleNextStepEvent(wizardEventName, 'keyConcepts')
+                  }
+                >
+                  <h4>{BookIcon}Key Concepts</h4>
+                </SafeBlankLink>
+                <p>
+                  Learn about important concepts for writing time-series data.
+                </p>
+              </ResourceCard>
+              <ResourceCard className="homepage-wizard-next-steps">
+                <SafeBlankLink
+                  href="https://university.influxdata.com/"
+                  onClick={() =>
+                    handleNextStepEvent(wizardEventName, 'influxUniversity')
+                  }
+                >
+                  <h4>{CodeTerminalIcon}InfluxDB University</h4>
+                </SafeBlankLink>
+                <p>
+                  Our free hands-on courses teach you the technical skills and
+                  best practices to get the most out of your real-time data with
+                  InfluxDB.
+                </p>
+              </ResourceCard>
+            </>
           )}
           {props.wizardEventName === 'cliWizard' && (
             <ResourceCard className="homepage-wizard-next-steps">
@@ -187,13 +188,13 @@ export const Finish = (props: OwnProps) => {
         </FlexBox>
         {props.wizardEventName !== 'cliWizard' &&
         props.wizardEventName !== 'arduinoWizard' &&
-        !isFlagEnabled('ioxOnboarding') ? (
+        !isIoxOrg ? (
           <SampleAppCard
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}
           />
         ) : null}
-        {isFlagEnabled('ioxOnboarding') && (
+        {isIoxOrg && (
           <DashboardIntegrations
             handleNextStepEvent={handleNextStepEvent}
             wizardEventName={props.wizardEventName}

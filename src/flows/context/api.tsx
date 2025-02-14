@@ -7,7 +7,10 @@ import {
   deleteNotebook,
   getNotebooks,
 } from 'src/client/notebooksRoutes'
-import {notebookEditFail, notebookUpdateFail} from 'src/shared/copy/notifications'
+import {
+  notebookEditFail,
+  notebookUpdateFail,
+} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 import {getErrorMessage} from 'src/utils/api'
 
@@ -22,7 +25,10 @@ let reportMaxTimeout = null
 const REPORT_DECAY = 500 // number of miliseconds to wait after last event before sending
 const REPORT_MAX_WAIT = 5000 // max number of miliseconds to wait between sends
 
-export const pooledUpdateAPI = (flow: PatchNotebookParams, dispatch: Function) => {
+export const pooledUpdateAPI = (
+  flow: PatchNotebookParams,
+  dispatch: Function
+) => {
   stagedFlow = flow
 
   if (!!reportDecayTimeout) {
@@ -41,14 +47,18 @@ export const pooledUpdateAPI = (flow: PatchNotebookParams, dispatch: Function) =
 
       clearTimeout(reportDecayTimeout)
       reportDecayTimeout = null
-      updateAPI(stagedFlow).catch(err => dispatch(notify(notebookEditFail(err.message))))
+      updateAPI(stagedFlow).catch(err =>
+        dispatch(notify(notebookEditFail(err.message)))
+      )
 
       stagedFlow = DEFAULT_API_FLOW
     }, REPORT_MAX_WAIT)
   }
 
   reportDecayTimeout = setTimeout(() => {
-    updateAPI(stagedFlow).catch(err => dispatch(notify(notebookEditFail(err.message))))
+    updateAPI(stagedFlow).catch(err =>
+      dispatch(notify(notebookEditFail(err.message)))
+    )
 
     stagedFlow = DEFAULT_API_FLOW
   }, REPORT_DECAY)

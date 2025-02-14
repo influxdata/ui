@@ -1,12 +1,9 @@
 // Libraries
-import React, {FC, useCallback, useContext, useEffect} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {
-  VersionPublishContext,
-  VersionPublishProvider,
-} from 'src/flows/context/version.publish'
+import {VersionPublishProvider} from 'src/flows/context/version.publish'
 import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Components
@@ -35,25 +32,6 @@ import {DEFAULT_PROJECT_NAME} from 'src/flows'
 
 const FlowHeader: FC = () => {
   const {flow, updateOther} = useContext(FlowContext)
-  const {handlePublish} = useContext(VersionPublishContext)
-
-  const handleSave = useCallback(
-    event => {
-      if ((event.ctrlKey || event.metaKey) && event.key === 's') {
-        event.preventDefault()
-        handlePublish()
-      }
-    },
-    [handlePublish]
-  )
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleSave)
-
-    return () => {
-      window.removeEventListener('keydown', handleSave)
-    }
-  }, [handleSave])
 
   const handleRename = (name: string) => {
     updateOther({name})
@@ -88,12 +66,6 @@ const FlowHeader: FC = () => {
           <PresentationMode />
           <TimeZoneDropdown />
           <TimeRangeDropdown />
-          <SquareButton
-            icon={IconFont.Save}
-            onClick={handlePublish}
-            color={ComponentColor.Default}
-            titleText="Save to version history"
-          />
           {flow?.id && (
             <>
               <MenuButton />

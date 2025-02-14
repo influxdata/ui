@@ -1,21 +1,19 @@
-import React, {FC, createRef, RefObject, useContext, useState} from 'react'
+import React, {createRef, FC, RefObject, useContext, useState} from 'react'
 import {
-  IconFont,
   Icon,
+  IconFont,
   List,
   Popover,
   PopoverInteraction,
-  SquareButton,
-  InfluxColors,
   RemoteDataState,
   SpinnerContainer,
+  SquareButton,
   TechnoSpinner,
 } from '@influxdata/clockface'
 import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {VersionPublishContext} from 'src/flows/context/version.publish'
 import {useHistory} from 'react-router-dom'
 
 // Utils
@@ -29,13 +27,8 @@ import {CLOUD} from 'src/shared/constants'
 
 const backgroundColor = '#07070E'
 
-type Props = {
-  handleResetShare: () => void
-}
-
-const MenuButton: FC<Props> = ({handleResetShare}) => {
+const MenuButton: FC = () => {
   const {flow, cloneNotebook, deleteNotebook} = useContext(FlowContext)
-  const {versions} = useContext(VersionPublishContext)
   const {id: orgID} = useSelector(getOrg)
   const [loading, setLoading] = useState(RemoteDataState.Done)
 
@@ -49,7 +42,6 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
         context: 'notebook',
       })
       const clonedId = await cloneNotebook()
-      handleResetShare()
       setLoading(RemoteDataState.Done)
       history.push(
         `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
@@ -155,38 +147,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
     )
   }
 
-  const handleViewPublish = () => {
-    event('viewing_publish_history')
-    const [first, second] = versions
-    // accounts for the draft state
-    let versionId = first?.id
-    if (first?.id === 'draft' && second?.id) {
-      versionId = second?.id
-    }
-    history.push(
-      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
-        flow.id
-      }/versions/${versionId}`
-    )
-  }
-
   const menuItems: any[] = [
-    {
-      type: 'menuitem',
-      title: 'Version history',
-      onClick: handleViewPublish,
-      icon: IconFont.History,
-      disabled: () => {
-        const [first, second] = versions
-        // accounts for the draft state
-        let versionId = first?.id
-        if (first?.id === 'draft' && second?.id) {
-          versionId = second?.id
-        }
-        return !(versionId !== 'draft' && typeof versionId !== undefined)
-      },
-    },
-    {title: 'divider', type: 'divider'},
     {
       type: 'menuitem',
       title: 'Download as PNG',
@@ -241,14 +202,6 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
           contents={onHide => (
             <List>
               {menuItems.map(item => {
-                if (item.type === 'divider') {
-                  return (
-                    <List.Divider
-                      key={item.title}
-                      style={{backgroundColor: InfluxColors.Grey35}}
-                    />
-                  )
-                }
                 return (
                   <List.Item
                     key={item.title}

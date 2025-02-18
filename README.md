@@ -3,7 +3,6 @@
 ### Adding new packages
 
 To add a new package, run
-
 ```sh
 yarn add packageName
 ```

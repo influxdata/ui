@@ -210,7 +210,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
         },
       },
       {title: 'divider', type: 'divider'},
-      ...menuItems
+      ...menuItems,
     ]
 
     menuItems.splice(3, 0, {

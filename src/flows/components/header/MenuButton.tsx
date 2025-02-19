@@ -2,6 +2,7 @@ import React, {createRef, FC, RefObject, useContext, useState} from 'react'
 import {
   Icon,
   IconFont,
+  InfluxColors,
   List,
   Popover,
   PopoverInteraction,
@@ -14,6 +15,7 @@ import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
+import {VersionPublishContext} from 'src/flows/context/version.publish'
 import {useHistory} from 'react-router-dom'
 
 // Utils
@@ -27,8 +29,13 @@ import {CLOUD} from 'src/shared/constants'
 
 const backgroundColor = '#07070E'
 
-const MenuButton: FC = () => {
+type Props = {
+  handleResetShare: () => void
+}
+
+const MenuButton: FC<Props> = ({handleResetShare}) => {
   const {flow, cloneNotebook, deleteNotebook} = useContext(FlowContext)
+  const {versions} = useContext(VersionPublishContext)
   const {id: orgID} = useSelector(getOrg)
   const [loading, setLoading] = useState(RemoteDataState.Done)
 
@@ -42,6 +49,7 @@ const MenuButton: FC = () => {
         context: 'notebook',
       })
       const clonedId = await cloneNotebook()
+      handleResetShare()
       setLoading(RemoteDataState.Done)
       history.push(
         `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
@@ -147,7 +155,22 @@ const MenuButton: FC = () => {
     )
   }
 
-  const menuItems: any[] = [
+  const handleViewPublish = () => {
+    event('viewing_publish_history')
+    const [first, second] = versions
+    // accounts for the draft state
+    let versionId = first?.id
+    if (first?.id === 'draft' && second?.id) {
+      versionId = second?.id
+    }
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
+        flow.id
+      }/versions/${versionId}`
+    )
+  }
+
+  let menuItems: any[] = [
     {
       type: 'menuitem',
       title: 'Download as PNG',
@@ -170,6 +193,26 @@ const MenuButton: FC = () => {
   ]
 
   if (CLOUD) {
+    menuItems = [
+      {
+        type: 'menuitem',
+        title: 'Version history',
+        onClick: handleViewPublish,
+        icon: IconFont.History,
+        disabled: () => {
+          const [first, second] = versions
+          // accounts for the draft state
+          let versionId = first?.id
+          if (first?.id === 'draft' && second?.id) {
+            versionId = second?.id
+          }
+          return !(versionId !== 'draft' && typeof versionId !== undefined)
+        },
+      },
+      {title: 'divider', type: 'divider'},
+      ...menuItems
+    ]
+
     menuItems.splice(3, 0, {
       type: 'menuitem',
       title: 'Clone',
@@ -202,6 +245,14 @@ const MenuButton: FC = () => {
           contents={onHide => (
             <List>
               {menuItems.map(item => {
+                if (item.type === 'divider') {
+                  return (
+                    <List.Divider
+                      key={item.title}
+                      style={{backgroundColor: InfluxColors.Grey35}}
+                    />
+                  )
+                }
                 return (
                   <List.Item
                     key={item.title}

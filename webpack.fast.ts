@@ -1,7 +1,7 @@
 // utils
 const common = require('./webpack.common.ts')
 const merge = require('webpack-merge').merge
-const STATIC_DIR = require('./src/utils/env').STATIC_DIRECTORY
+const STATIC_DIR = require('./src/utils/env.ts').STATIC_DIRECTORY
 
 module.exports = merge(common, {
   mode: 'none',

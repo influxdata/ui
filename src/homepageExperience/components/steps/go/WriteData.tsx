@@ -48,8 +48,7 @@ export const WriteDataComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket, onSelectBucket])
 
-  const codeSnippet = `// FOO
-org := "${org.name}"
+  const codeSnippet = `org := "${org.name}"
 bucket := "${bucket.name}"
 writeAPI := client.WriteAPIBlocking(org, bucket)
 for value := 0; value < 5; value++ {

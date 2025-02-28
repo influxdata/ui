@@ -45,7 +45,7 @@ export const WizardContainer: FC<Props> = ({
         currentStep: normalizeEventName(subwayNavSteps[clickedStep - 1].name),
       }
     )
-    console.log('currentStep', subwayNavSteps[clickedStep - 1].name)
+
     scrollNextPageIntoView()
   }
 

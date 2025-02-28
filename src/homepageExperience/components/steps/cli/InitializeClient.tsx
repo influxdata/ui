@@ -71,26 +71,11 @@ export const InitializeClient: FC<OwnProps> = ({
   })
   const token = currentAuth.token
 
-  const codeSnippetMac = `influx config create --config-name onboarding \\
-    --host-url "${url}" \\
-    --org "${org.id}" \\
-    --token "${token}" \\
-    --active`
-
-  const bucketSnippetMac = `influx bucket create --name sample-bucket -c onboarding`
-
-  const codeSnippetWindows = `.\\influx config create --config-name onboarding \`
-  --host-url "${url}" \`
-  --org "${org.id}" \`
-  --token "${token}" \`
-  --active`
-
-  const bucketSnippetWindows = `.\\influx bucket create --name sample-bucket -c onboarding`
-
   const sortedPermissionTypes = useMemo(
     () => allPermissionTypes.sort((a, b) => collator.compare(a, b)),
     [allPermissionTypes]
   )
+
   const {bucket} = useContext(WriteDataDetailsContext)
 
   useEffect(() => {
@@ -142,6 +127,22 @@ export const InitializeClient: FC<OwnProps> = ({
     document.addEventListener('keydown', fireKeyboardCopyEvent)
     return () => document.removeEventListener('keydown', fireKeyboardCopyEvent)
   }, [])
+
+  const codeSnippetMac = `influx config create --config-name onboarding \\
+    --host-url "${url}" \\
+    --org "${org.id}" \\
+    --token "${token}" \\
+    --active`
+
+  const bucketSnippetMac = `influx bucket create --name ${bucket.name} -c onboarding`
+
+  const codeSnippetWindows = `.\\influx config create --config-name onboarding \`
+  --host-url "${url}" \`
+  --org "${org.id}" \`
+  --token "${token}" \`
+  --active`
+
+  const bucketSnippetWindows = `.\\influx bucket create --name ${bucket.name} -c onboarding`
 
   // Events log handling
   const logCopyCodeSnippet = () => {

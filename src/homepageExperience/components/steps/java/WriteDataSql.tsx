@@ -49,36 +49,57 @@ export const WriteDataSqlComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket, onSelectBucket])
 
-  const codeSnippet = `String database = "${bucket.name}";
+  const internalClass = `    static class CensusRecord {
+        String location;
+        String species;
+        int count;
 
-Point[] points = new Point[] {
-        Point.measurement("census")
-                .addTag("location", "Klamath")
-                .addField("bees", 23),
-        Point.measurement("census")
-                .addTag("location", "Portland")
-                .addField("ants", 30),
-        Point.measurement("census")
-                .addTag("location", "Klamath")
-                .addField("bees", 28),
-        Point.measurement("census")
-                .addTag("location", "Portland")
-                .addField("ants", 32),
-        Point.measurement("census")
-                .addTag("location", "Klamath")
-                .addField("bees", 29),
-        Point.measurement("census")
-                .addTag("location", "Portland")
-                .addField("ants", 40)
-};
+        public CensusRecord(String location, String species, int count) {
+            this.location = location;
+            this.species = species;
+            this.count = count;
+        }
 
-for (Point point : points) {
-    client.writePoint(point, new WriteOptions.Builder().database(database).build());
-    
-    Thread.sleep(1000); // separate points by 1 second
-}
+        public String getLocation() {
+            return location;
+        }
 
-System.out.println("Complete. Return to the InfluxDB UI.");
+        public String getSpecies() {
+            return species;
+        }
+
+        public int getCount() {
+            return count;
+        }
+    }`
+
+  const dataPrep = `   String database = "${bucket.name}";
+
+    List<CensusRecord> records = Arrays.asList(
+          new CensusRecord("Klamath", "bees", 23),
+          new CensusRecord("Portland", "ants", 30),
+          new CensusRecord("Klamath", "bees", 28),
+          new CensusRecord("Portland", "ants", 32),
+          new CensusRecord("Klamath", "bees", 29),
+          new CensusRecord("Portland", "ants", 40)
+        );
+
+        List<Point> points = new ArrayList<>();
+
+        Instant stamp = Instant.now().minusSeconds(records.size());
+
+        for (CensusRecord record : records) {
+            points.add(Point.measurement("census")
+              .setTag("location", record.getLocation())
+              .setIntegerField(record.getSpecies(), record.getCount())
+              .setTimestamp(stamp)
+            );
+            stamp = stamp.plusSeconds(1);
+        }`
+
+  const codeSnippet = `            client.writePoints(points, new WriteOptions.Builder().database(database).build());
+
+            System.out.println("Complete. Return to the InfluxDB UI.");
 `
 
   return (
@@ -239,7 +260,28 @@ System.out.println("Complete. Return to the InfluxDB UI.");
         let's write this data into our bucket.
       </p>
       <p>
-        Add the following code to the <code>WriteQueryExample</code> class:
+        First, add the following internal class to the
+        <code>InfluxClientExample</code> <em>above</em> the <code>main</code>{' '}
+        method:
+      </p>
+      <CodeSnippet
+        language="java"
+        onCopy={logCopyCodeSnippet}
+        text={internalClass}
+      />
+      <p>
+        Then, copy the following data preparation statements, into the{' '}
+        <code>main</code> method <em>above</em> the{' '}
+        <code>try(InfluxDBClient ...)</code> block:
+      </p>
+      <CodeSnippet
+        language="java"
+        onCopy={logCopyCodeSnippet}
+        text={dataPrep}
+      />
+      <p>
+        Finally, add the following code <em>within</em> the{' '}
+        <code>try(InfluxDBClient ...)</code> block:
       </p>
       <CodeSnippet
         language="java"

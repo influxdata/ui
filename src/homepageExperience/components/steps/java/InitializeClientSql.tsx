@@ -20,12 +20,12 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import com.influxdb.v3.client.InfluxDBClient;
+import com.influxdb.v3.client.Point;
 import com.influxdb.v3.client.query.QueryOptions;
 import com.influxdb.v3.client.query.QueryType;
-import com.influxdb.v3.client.write.Point;
 import com.influxdb.v3.client.write.WriteOptions;
 
-public final class WriteQueryExample {
+public final class InfluxClientExample {
 
     public static void main(final String[] args) throws Exception {
         String hostUrl = "${url}";

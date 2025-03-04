@@ -28,7 +28,6 @@ import {
   CSharpIcon,
   GoIcon,
   JavaIcon,
-  MQTTIcon,
   NodejsIcon,
   PythonIcon,
   TelegrafIcon,
@@ -43,7 +42,6 @@ import 'src/homepageExperience/containers/HomepageContentsTSM.scss'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import UsageProvider from 'src/usage/context/usage'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Selectors
@@ -60,7 +58,6 @@ export const HomepageContentsTSM: FC = () => {
   const arduinoLink = `/orgs/${org.id}/new-user-setup/arduino`
   const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
   const cliPageLink = `/orgs/${org.id}/new-user-setup/cli`
-  const mqttPageLink = `/orgs/${org.id}/load-data/subscriptions/create`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
   const newTelegrafPageLink = `/orgs/${org.id}/load-data/telegrafs/new`
   const golangLink = `/orgs/${org.id}/new-user-setup/golang`
@@ -119,10 +116,6 @@ export const HomepageContentsTSM: FC = () => {
 
   const logCLIButtonClick = () => {
     event('firstMile.CLIButton.clicked')
-  }
-
-  const logMQTTButtonClick = () => {
-    event('firstMile.MQTTButton.clicked')
   }
 
   const logTelegrafButtonClick = () => {
@@ -253,33 +246,6 @@ export const HomepageContentsTSM: FC = () => {
                   </Link>
                 </FlexBox>
                 <hr style={{marginTop: '8px'}} />
-                {isFlagEnabled('subscriptionsUI') && (
-                  <Link
-                    to={mqttPageLink}
-                    style={linkStyle}
-                    onClick={logMQTTButtonClick}
-                  >
-                    <div
-                      className="homepage-write-data-tile"
-                      data-testid="homepage-wizard-tile--mqtt"
-                    >
-                      <div className="tile-icon-text-wrapper">
-                        <div className="icon">{MQTTIcon}</div>
-                        <div>
-                          <h4>Native MQTT</h4>
-                          <h6>
-                            Connect to your MQTT subscription in the cloud.
-                          </h6>
-                        </div>
-                      </div>
-
-                      <Icon
-                        glyph={IconFont.ArrowRight_New}
-                        className="arrow-button"
-                      />
-                    </div>
-                  </Link>
-                )}
                 <Link
                   to={cliPageLink}
                   style={linkStyle}

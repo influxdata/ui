@@ -45,10 +45,7 @@ import {
   UsersPage,
   VariablesIndex,
   VersionPage,
-  SubscriptionsLanding,
-  CreateSubscriptionForm,
   WriteDataPage,
-  DetailsSubscriptionPage,
   GoWizard,
   CSharpWizard,
   JavaWizard,
@@ -79,7 +76,6 @@ import {
   CLIENT_LIBS,
   TELEGRAF_PLUGINS,
   SECRETS,
-  SUBSCRIPTIONS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -264,32 +260,6 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
             component={BucketsIndex}
           />
-          {CLOUD && isFlagEnabled('subscriptionsUI') && (
-            <Route
-              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/create`}
-              component={CreateSubscriptionForm}
-            />
-          )}
-          {CLOUD && isFlagEnabled('subscriptionsUI') && (
-            <Route
-              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id/notifications`}
-              render={props => (
-                <DetailsSubscriptionPage {...props} showNotifications={true} />
-              )}
-            />
-          )}
-          {CLOUD && (
-            <Route
-              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
-              component={DetailsSubscriptionPage}
-            />
-          )}
-          {CLOUD && isFlagEnabled('subscriptionsUI') && (
-            <Route
-              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
-              component={SubscriptionsLanding}
-            />
-          )}
           {/* Settings */}
           {shouldShowVariables && (
             <Route

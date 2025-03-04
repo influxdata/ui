@@ -1,14 +1,14 @@
-import React, {FC, createRef, RefObject, useContext, useState} from 'react'
+import React, {createRef, FC, RefObject, useContext, useState} from 'react'
 import {
-  IconFont,
   Icon,
+  IconFont,
+  InfluxColors,
   List,
   Popover,
   PopoverInteraction,
-  SquareButton,
-  InfluxColors,
   RemoteDataState,
   SpinnerContainer,
+  SquareButton,
   TechnoSpinner,
 } from '@influxdata/clockface'
 import {useSelector} from 'react-redux'
@@ -170,23 +170,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
     )
   }
 
-  const menuItems: any[] = [
-    {
-      type: 'menuitem',
-      title: 'Version history',
-      onClick: handleViewPublish,
-      icon: IconFont.History,
-      disabled: () => {
-        const [first, second] = versions
-        // accounts for the draft state
-        let versionId = first?.id
-        if (first?.id === 'draft' && second?.id) {
-          versionId = second?.id
-        }
-        return !(versionId !== 'draft' && typeof versionId !== undefined)
-      },
-    },
-    {title: 'divider', type: 'divider'},
+  let menuItems: any[] = [
     {
       type: 'menuitem',
       title: 'Download as PNG',
@@ -209,6 +193,26 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   ]
 
   if (CLOUD) {
+    menuItems = [
+      {
+        type: 'menuitem',
+        title: 'Version history',
+        onClick: handleViewPublish,
+        icon: IconFont.History,
+        disabled: () => {
+          const [first, second] = versions
+          // accounts for the draft state
+          let versionId = first?.id
+          if (first?.id === 'draft' && second?.id) {
+            versionId = second?.id
+          }
+          return !(versionId !== 'draft' && typeof versionId !== undefined)
+        },
+      },
+      {title: 'divider', type: 'divider'},
+      ...menuItems,
+    ]
+
     menuItems.splice(3, 0, {
       type: 'menuitem',
       title: 'Clone',

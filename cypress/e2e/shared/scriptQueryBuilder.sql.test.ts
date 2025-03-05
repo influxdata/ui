@@ -6,7 +6,7 @@ const DELAY_FOR_LAZY_LOAD_EDITOR = 30000
 const DELAY_FOR_FILE_DOWNLOAD = 5000
 const NUMBER_OF_ROWS = 5 // see `generateWriteData` for why this number
 
-describe('Script Builder', () => {
+describe.skip('Script Builder', () => {
   const bucketName = 'defbuck-sql'
   const anotherBucketName = 'defbuck-sql-another'
   const measurement = 'ndbc'

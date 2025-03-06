@@ -170,12 +170,34 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
     )
   }
 
-  let menuItems: any[] = [
+  const possibleMenuItems: any[] = [
+    {
+      type: 'menuitem',
+      title: 'Version history',
+      onClick: handleViewPublish,
+      icon: IconFont.History,
+      disabled: () => {
+        const [first, second] = versions
+        // accounts for the draft state
+        let versionId = first?.id
+        if (first?.id === 'draft' && second?.id) {
+          versionId = second?.id
+        }
+        return !(versionId !== 'draft' && typeof versionId !== undefined)
+      },
+    },
+    {title: 'divider', type: 'divider'},
     {
       type: 'menuitem',
       title: 'Download as PNG',
       onClick: handleDownloadAsPNG,
       icon: IconFont.Download_New,
+    },
+    {
+      type: 'menuitem',
+      title: 'Clone',
+      onClick: handleClone,
+      icon: IconFont.Duplicate_New,
     },
     {
       type: 'menuitem',
@@ -192,34 +214,16 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
     },
   ]
 
-  if (CLOUD) {
-    menuItems = [
-      {
-        type: 'menuitem',
-        title: 'Version history',
-        onClick: handleViewPublish,
-        icon: IconFont.History,
-        disabled: () => {
-          const [first, second] = versions
-          // accounts for the draft state
-          let versionId = first?.id
-          if (first?.id === 'draft' && second?.id) {
-            versionId = second?.id
-          }
-          return !(versionId !== 'draft' && typeof versionId !== undefined)
-        },
-      },
-      {title: 'divider', type: 'divider'},
-      ...menuItems,
-    ]
-
-    menuItems.splice(3, 0, {
-      type: 'menuitem',
-      title: 'Clone',
-      onClick: handleClone,
-      icon: IconFont.Duplicate_New,
-    })
-  }
+  const menuItems = possibleMenuItems.filter(item => {
+    if (!CLOUD) {
+      return (
+        item.title !== 'Version history' &&
+        item.title !== 'divider' &&
+        item.title !== 'Clone'
+      )
+    }
+    return true
+  })
 
   return (
     <SpinnerContainer

@@ -198,7 +198,7 @@ export const FlowProvider: FC = ({children}) => {
 
       pooledUpdateAPI({id, ...apiFlow}, dispatch)
     },
-    [id]
+    [id, dispatch]
   )
 
   const updateData = useCallback(

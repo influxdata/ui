@@ -1,13 +1,13 @@
 // Libraries
 import React, {
-  FunctionComponent,
-  useEffect,
-  useState,
   ChangeEvent,
   FormEvent,
+  FunctionComponent,
   useCallback,
+  useEffect,
+  useState,
 } from 'react'
-import {useParams, useHistory} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {get} from 'lodash'
 
@@ -153,7 +153,7 @@ const UpdateBucketOverlay: FunctionComponent = () => {
     } else {
       setBucketDraft({
         ...bucketDraft,
-        retentionRules: [],
+        retentionRules: CLOUD ? [] : [{everySeconds: 0}],
       })
     }
   }

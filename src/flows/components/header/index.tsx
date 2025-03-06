@@ -40,7 +40,7 @@ import {RemoteDataState} from 'src/types'
 
 // Constants
 import {DEFAULT_PROJECT_NAME, PROJECT_NAME} from 'src/flows'
-import {CLOUD} from 'src/shared//constants'
+import {CLOUD} from 'src/shared/constants'
 
 interface Share {
   id: string

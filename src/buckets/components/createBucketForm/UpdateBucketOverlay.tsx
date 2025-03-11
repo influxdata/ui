@@ -1,13 +1,13 @@
 // Libraries
 import React, {
-  ChangeEvent,
-  FormEvent,
   FunctionComponent,
-  useCallback,
   useEffect,
   useState,
+  ChangeEvent,
+  FormEvent,
+  useCallback,
 } from 'react'
-import {useHistory, useParams} from 'react-router-dom'
+import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {get} from 'lodash'
 

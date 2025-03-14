@@ -183,7 +183,7 @@
     "intersection-observer": "^0.12.2",
     "jsonlint-mod": "^1.7.5",
     "jsonpath": "^1.1.1",
-    "jspdf": "2.5.1",
+    "jspdf": "3.0.0",
     "lodash": "^4.17.21",
     "luxon": "^3.2.1",
     "memoize-one": "^4.0.2",

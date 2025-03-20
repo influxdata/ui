@@ -1,14 +1,14 @@
-import React, {FC, createRef, RefObject, useContext, useState} from 'react'
+import React, {createRef, FC, RefObject, useContext, useState} from 'react'
 import {
-  IconFont,
   Icon,
+  IconFont,
+  InfluxColors,
   List,
   Popover,
   PopoverInteraction,
-  SquareButton,
-  InfluxColors,
   RemoteDataState,
   SpinnerContainer,
+  SquareButton,
   TechnoSpinner,
 } from '@influxdata/clockface'
 import {useSelector} from 'react-redux'
@@ -170,7 +170,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
     )
   }
 
-  const menuItems: any[] = [
+  const possibleMenuItems: any[] = [
     {
       type: 'menuitem',
       title: 'Version history',
@@ -195,6 +195,12 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
     },
     {
       type: 'menuitem',
+      title: 'Clone',
+      onClick: handleClone,
+      icon: IconFont.Duplicate_New,
+    },
+    {
+      type: 'menuitem',
       title: 'Download as PDF',
       onClick: handleDownloadAsPDF,
       icon: IconFont.Download_New,
@@ -208,14 +214,16 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
     },
   ]
 
-  if (CLOUD) {
-    menuItems.splice(3, 0, {
-      type: 'menuitem',
-      title: 'Clone',
-      onClick: handleClone,
-      icon: IconFont.Duplicate_New,
-    })
-  }
+  const menuItems = possibleMenuItems.filter(item => {
+    if (!CLOUD) {
+      return (
+        item.title !== 'Version history' &&
+        item.title !== 'divider' &&
+        item.title !== 'Clone'
+      )
+    }
+    return true
+  })
 
   return (
     <SpinnerContainer

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useContext, useState, useEffect} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Contexts
@@ -12,11 +12,11 @@ import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Components
 import {
-  Page,
-  SquareButton,
-  IconFont,
   ComponentColor,
   ComponentStatus,
+  IconFont,
+  Page,
+  SquareButton,
 } from '@influxdata/clockface'
 
 import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
@@ -40,6 +40,7 @@ import {RemoteDataState} from 'src/types'
 
 // Constants
 import {DEFAULT_PROJECT_NAME, PROJECT_NAME} from 'src/flows'
+import {CLOUD} from 'src/shared/constants'
 
 interface Share {
   id: string
@@ -159,31 +160,35 @@ const FlowHeader: FC = () => {
           <PresentationMode />
           <TimeZoneDropdown />
           <TimeRangeDropdown />
-          <SquareButton
-            icon={IconFont.Save}
-            onClick={handlePublish}
-            color={ComponentColor.Default}
-            titleText="Save to version history"
-          />
+          {CLOUD && (
+            <SquareButton
+              icon={IconFont.Save}
+              onClick={handlePublish}
+              color={ComponentColor.Default}
+              titleText="Save to version history"
+            />
+          )}
           {flow?.id && (
             <>
-              <SquareButton
-                icon={IconFont.Share}
-                onClick={
-                  !!share
-                    ? () => openShareLinkOverlay(share)
-                    : () => generateLink()
-                }
-                color={
-                  !!share ? ComponentColor.Primary : ComponentColor.Secondary
-                }
-                status={
-                  linkLoading === RemoteDataState.Loading
-                    ? ComponentStatus.Loading
-                    : ComponentStatus.Default
-                }
-                titleText={`Share ${PROJECT_NAME}`}
-              />
+              {CLOUD && (
+                <SquareButton
+                  icon={IconFont.Share}
+                  onClick={
+                    !!share
+                      ? () => openShareLinkOverlay(share)
+                      : () => generateLink()
+                  }
+                  color={
+                    !!share ? ComponentColor.Primary : ComponentColor.Secondary
+                  }
+                  status={
+                    linkLoading === RemoteDataState.Loading
+                      ? ComponentStatus.Loading
+                      : ComponentStatus.Default
+                  }
+                  titleText={`Share ${PROJECT_NAME}`}
+                />
+              )}
               <MenuButton handleResetShare={() => setShare(null)} />
             </>
           )}

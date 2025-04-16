@@ -1,11 +1,11 @@
-import React, {FC, useCallback, useRef, useState, useEffect} from 'react'
+import React, {FC, useCallback, useEffect, useRef, useState} from 'react'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
 import {customAlphabet} from 'nanoid'
 import {PIPE_DEFINITIONS, PROJECT_NAME_PLURAL} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Doc} from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
-import {serialize, hydrate} from 'src/flows/context/flow.list'
+import {hydrate, serialize} from 'src/flows/context/flow.list'
 import {useParams} from 'react-router-dom'
 import {
   deleteNotebook,
@@ -196,9 +196,9 @@ export const FlowProvider: FC = ({children}) => {
         ...flow,
       })
 
-      pooledUpdateAPI({id, ...apiFlow})
+      pooledUpdateAPI({id, ...apiFlow}, dispatch)
     },
-    [id]
+    [id, dispatch]
   )
 
   const updateData = useCallback(

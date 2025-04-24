@@ -153,7 +153,7 @@ const UpdateBucketOverlay: FunctionComponent = () => {
     } else {
       setBucketDraft({
         ...bucketDraft,
-        retentionRules: [],
+        retentionRules: CLOUD ? [] : [{everySeconds: 0}],
       })
     }
   }

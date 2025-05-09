@@ -149,13 +149,15 @@ export const DeleteFreeAccountOverlay: FC = () => {
             color={ComponentColor.Danger}
             text="Delete Account"
             testID="delete-free-account--button"
-            status={
-              isLoading
-                ? ComponentStatus.Loading
-                : isFormValid
-                ? ComponentStatus.Default
-                : ComponentStatus.Disabled
-            }
+            status={(() => {
+              if (isLoading) {
+                return ComponentStatus.Loading
+              } else if (!isFormValid) {
+                return ComponentStatus.Disabled
+              } else {
+                return ComponentStatus.Default
+              }
+            })()}
             onClick={handleDeleteAccount}
           />
         </Overlay.Footer>

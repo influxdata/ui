@@ -13,6 +13,7 @@
     "www.googletagmanager.com",
     "www.honeybadger.io"
   ],
+  "video": false,
   "viewportWidth": 1400,
   "viewportHeight": 1000
 }

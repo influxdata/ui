@@ -225,7 +225,9 @@
   },
   "resolutions": {
     "auth0-js/**/superagent": "^9.0",
+    "expect": "27.5.1",
     "minimatch": "^3.0.5",
+    "pretty-format": "27.5.1",
     "prismjs": "^1.30.0"
   }
 }

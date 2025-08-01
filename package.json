@@ -225,7 +225,10 @@
   },
   "resolutions": {
     "auth0-js/**/superagent": "^9.0",
+    "expect": "27.5.1",
     "minimatch": "^3.0.5",
-    "prismjs": "^1.30.0"
+    "pretty-format": "27.5.1",
+    "prismjs": "^1.30.0",
+    "superagent/**/form-data": "^4.0.4"
   }
 }

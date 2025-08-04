@@ -2,7 +2,6 @@ const setupTest = () => {
   cy.flush().then(() =>
     cy.signin().then(() => {
       cy.get('@org').then(({id}) => {
-        cy.setFeatureFlags({createDeleteOrgs: true})
         cy.visit(`/orgs/${id}/accounts/orglist`)
       })
     })

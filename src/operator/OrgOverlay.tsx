@@ -33,11 +33,12 @@ import LimitsField from 'src/operator/LimitsField'
 
 // Constants
 import {TOOLS_URL} from 'src/shared/constants'
+import {MigrateOrg} from './MigrateOrg'
 
 const viewUsageButtonStyles = {marginRight: '12px'}
 const reactivateOrgButtonStyles = {marginTop: '8px'}
 
-const OrgOverlay: FC = () => {
+export const OrgOverlay: FC = () => {
   const {
     limits,
     limitsStatus,
@@ -87,6 +88,11 @@ const OrgOverlay: FC = () => {
     await handleReactivateOrg(orgID)
     history.goBack()
   }
+
+  const deleteOn = organization?.deleteOn
+    ? new Date(organization?.deleteOn)
+    : null
+  const hasDeleteDate = Boolean(deleteOn)
 
   return (
     <Overlay
@@ -169,6 +175,18 @@ const OrgOverlay: FC = () => {
                       Account Type
                     </label>
                     <p>{organization?.account?.type ?? ''}</p>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                  <Grid.Column widthMD={Columns.Four}>
+                    <label className="org-overlay-detail--text">
+                      Delete On
+                    </label>
+                    <p>
+                      {organization?.state === 'suspended' && hasDeleteDate
+                        ? `${deleteOn.toLocaleTimeString()} ${deleteOn.toDateString()}`
+                        : 'N/A'}
+                    </p>
                   </Grid.Column>
                 </Grid.Row>
                 <SpinnerContainer
@@ -333,6 +351,11 @@ const OrgOverlay: FC = () => {
                       />
                     </Grid.Column>
                   </Grid.Row>
+                  <Grid.Row>
+                    <Grid.Column widthMD={Columns.Twelve}>
+                      <MigrateOrg />
+                    </Grid.Column>
+                  </Grid.Row>
                 </SpinnerContainer>
               </Grid>
             </Panel.Body>
@@ -367,5 +390,3 @@ const OrgOverlay: FC = () => {
     </Overlay>
   )
 }
-
-export default OrgOverlay

@@ -169,7 +169,7 @@ describe('Free account Deletion', () => {
               .click()
           })
         cy.location().should(loc => {
-          expect(loc.href).to.eq(`https://www.influxdata.com/mkt_cancel/`)
+          expect(loc.href).to.eq(`https://www.influxdata.com/mkt-cancel/`)
         })
       })
   }

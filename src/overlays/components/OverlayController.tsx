@@ -48,7 +48,6 @@ import ConfirmationOverlay from 'src/support/components/ConfirmationOverlay'
 import {CreateOrganizationOverlay} from 'src/identity/components/GlobalHeader/GlobalHeaderDropdown/CreateOrganization/CreateOrganizationOverlay'
 import {MarketoAccountUpgradeOverlay} from 'src/identity/components/MarketoAccountUpgradeOverlay'
 import {SuspendPaidOrgOverlay} from 'src/organizations/components/OrgProfileTab/SuspendPaidOrgOverlay'
-import {ReplaceCertificateOverlay} from 'src/writeData/subscriptions/components/CertificateInput'
 import {RemoveMemberOverlay} from 'src/users/components/RemoveMemberOverlay'
 
 // Actions
@@ -177,9 +176,6 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'help-bar-confirmation':
         activeOverlay.current = <ConfirmationOverlay onClose={onClose} />
-        break
-      case 'subscription-replace-certificate':
-        activeOverlay.current = <ReplaceCertificateOverlay onClose={onClose} />
         break
       case 'create-organization':
         activeOverlay.current = <CreateOrganizationOverlay />

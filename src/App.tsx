@@ -54,6 +54,8 @@ const App: FC = () => {
     'multi-org': CLOUD,
   })
 
+  // Test CI
+
   useEffect(() => {
     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
       try {

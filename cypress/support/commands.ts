@@ -1494,16 +1494,6 @@ export const createTaskFromEmpty = (
   cy.getByTestID('task-form-offset-input').type(offset)
 }
 
-export const disableClickThroughAnnouncement = () => {
-  const announcementState = {
-    pricingClickThroughAnnouncement: 'dismissed',
-  }
-
-  window.localStorage.setItem(
-    'clickThroughAnnouncement',
-    JSON.stringify(announcementState)
-  )
-}
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)

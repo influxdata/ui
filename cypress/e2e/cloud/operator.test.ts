@@ -27,9 +27,9 @@ describe('Operator Page', () => {
 
     cy.getByTestID('logout-button').should('exist')
 
-    // preloads 6 accounts
+    // preloads 7 accounts
     cy.getByTestID('table-body').within(() => {
-      cy.getByTestID('table-row').should('have.length', 6)
+      cy.getByTestID('table-row').should('have.length', 7)
     })
 
     // placeholder says filter by email
@@ -84,9 +84,9 @@ describe('Operator Page', () => {
       'cf-tabs--tab__active'
     )
 
-    // preloads 6 organizations
+    // preloads 7 organizations
     cy.getByTestID('table-body').within(() => {
-      cy.getByTestID('table-row').should('have.length', 6)
+      cy.getByTestID('table-row').should('have.length', 7)
     })
 
     // placeholder says filter by id
@@ -149,6 +149,41 @@ describe('Operator Page', () => {
     cy.getByTestID('accountTab').should('have.class', 'cf-tabs--tab__active')
     cy.getByTestID('orgTab').should('not.have.class', 'cf-tabs--tab__active')
 
+    // can cancel a payg account
+    cy.intercept('DELETE', '/api/v2/quartz/operator/accounts/*', {
+      statusCode: 204,
+    }).as('quartzDeleteAccount')
+
+    cy.getByTestID('account-id')
+      .eq(3)
+      .within(() => {
+        cy.get('a').click()
+      })
+
+    cy.location().should(loc => {
+      expect(loc.pathname).to.eq('/operator/accounts/4')
+    })
+
+    cy.getByTestID('account-cancel--button').should('exist')
+    cy.getByTestID('account-delete--button').should('not.exist')
+    cy.getByTestID('account-convert-to-contract--button').should(
+      'not.be.disabled'
+    )
+
+    cy.getByTestID('account-cancel--button').click()
+    cy.getByTestID('cancel-overlay').should('exist')
+    cy.getByTestID('cancel-account--confirmation-button').click()
+    cy.wait('@quartzDeleteAccount')
+
+    cy.location().should(loc => {
+      expect(loc.pathname).to.eq('/operator')
+    })
+
+    cy.getByTestID('table-body').within(() => {
+      cy.getByTestID('table-row').should('have.length', 7)
+    })
+
+    // validates account details page
     cy.getByTestID('account-id')
       .first()
       .within(() => {
@@ -161,7 +196,7 @@ describe('Operator Page', () => {
 
     cy.getByTestID('account-view--header').contains('operator1 (1)')
     // should not be able to delete undeletable accounts
-    cy.getByTestID('account-delete--button').should('be.disabled')
+    cy.getByTestID('account-delete--button').should('not.exist')
     // should not be able to convert cancelled accounts to contract
     cy.getByTestID('account-convert-to-contract--button').should('be.disabled')
 
@@ -181,7 +216,7 @@ describe('Operator Page', () => {
     )
 
     cy.getByTestID('associated-orgs--table-body').within(() => {
-      cy.getByTestID('table-row').should('have.length', 6)
+      cy.getByTestID('table-row').should('have.length', 7)
     })
 
     // Renders the org overlay
@@ -215,7 +250,7 @@ describe('Operator Page', () => {
     })
 
     // should be able to delete deletable accounts
-    cy.getByTestID('account-delete--button').should('not.be.disabled')
+    cy.getByTestID('account-delete--button').should('exist')
     // should be able to convert free accounts to contract
     cy.getByTestID('account-convert-to-contract--button').should(
       'not.be.disabled'

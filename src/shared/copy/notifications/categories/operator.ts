@@ -31,6 +31,15 @@ export const reactivateOrgError = (id: string): Notification => ({
   message: `Could not reactivate organization with ID ${id}`,
 })
 
+export const migrateOrgError = (
+  id: string,
+  accountId: string
+): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not migrate organization with ID ${id} to the account with id ${accountId}`,
+})
+
 export const getLimitsError = (id: string): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,
@@ -71,6 +80,18 @@ export const deleteAccountError = (id: string): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,
   message: `Failed to delete the account with the ID ${id}, please try again.`,
+})
+
+export const reactivateAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to reactivate the account with the ID ${id}, please try again.`,
+})
+
+export const migrateAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to migrate the organizations from the account with the ID ${id}, please try again.`,
 })
 
 export const removeUserAccountError = (id: string): Notification => ({

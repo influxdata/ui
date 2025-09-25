@@ -9,7 +9,6 @@ import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
 import {search as searchUploads} from 'src/writeData/constants/contentFileUploads'
 import {search as searchPlugins} from 'src/writeData/constants/contentTelegrafPlugins'
 import {searchClients} from 'src/writeData'
-import {CLOUD} from 'src/shared/constants'
 
 // Components
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
@@ -17,10 +16,7 @@ import FileUploadSection from 'src/writeData/components/FileUploadSection'
 import ClientLibrarySection from 'src/writeData/components/ClientLibrarySection'
 import ClientLibrarySectionSql from 'src/writeData/components/ClientLibrarySectionSql'
 import TelegrafPluginSection from 'src/writeData/components/TelegrafPluginSection'
-import CloudNativeSources from 'src/writeData/subscriptions/components/CloudNativeSources'
-
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {isOrgIOx} from 'src/organizations/selectors'
 
 const WriteDataSections: FC = () => {
@@ -45,7 +41,6 @@ const WriteDataSections: FC = () => {
     <>
       <FileUploadSection />
       {isIOxOrg ? <ClientLibrarySectionSql /> : <ClientLibrarySection />}
-      {CLOUD && isFlagEnabled('subscriptionsUI') && <CloudNativeSources />}
       <TelegrafPluginSection />
     </>
   )

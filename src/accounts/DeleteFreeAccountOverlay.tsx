@@ -43,6 +43,7 @@ export const DeleteFreeAccountOverlay: FC = () => {
     useContext(DeleteFreeAccountContext)
   const {user, account} = useSelector(selectCurrentIdentity)
   const org = useSelector(selectCurrentOrg)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleClose = () => {
     const payload = {
@@ -63,6 +64,8 @@ export const DeleteFreeAccountOverlay: FC = () => {
   }, [hasAgreedToTerms, reason])
 
   const handleDeleteAccount = async () => {
+    setIsLoading(true)
+
     const payload = {
       org: org.id,
       tier: account.type,
@@ -83,6 +86,8 @@ export const DeleteFreeAccountOverlay: FC = () => {
       window.location.href = getRedirectLocation()
     } catch {
       dispatch(notify(accountSelfDeletionFailed()))
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -144,9 +149,15 @@ export const DeleteFreeAccountOverlay: FC = () => {
             color={ComponentColor.Danger}
             text="Delete Account"
             testID="delete-free-account--button"
-            status={
-              isFormValid ? ComponentStatus.Default : ComponentStatus.Disabled
-            }
+            status={(() => {
+              if (isLoading) {
+                return ComponentStatus.Loading
+              } else if (!isFormValid) {
+                return ComponentStatus.Disabled
+              } else {
+                return ComponentStatus.Default
+              }
+            })()}
             onClick={handleDeleteAccount}
           />
         </Overlay.Footer>

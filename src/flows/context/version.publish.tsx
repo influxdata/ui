@@ -31,6 +31,7 @@ import {getErrorMessage} from 'src/utils/api'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {CLOUD} from '../../shared/constants'
 
 interface ContextType {
   handlePublish: () => void
@@ -88,7 +89,9 @@ export const VersionPublishProvider: FC = ({children}) => {
   }, [flow.id, notebookID])
 
   useEffect(() => {
-    handleGetNotebookVersions()
+    if (CLOUD) {
+      handleGetNotebookVersions()
+    }
   }, [handleGetNotebookVersions])
 
   const handlePublish = useCallback(async () => {

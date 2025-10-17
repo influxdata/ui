@@ -69,8 +69,8 @@ describe('Account / Organizations Tab', () => {
 
     cy.getByTestID('question-mark-tooltip--tooltip--dialog').within(() => {
       cy.get('a')
-        .contains('support@influxdata.com')
-        .should('have.attr', 'href', 'mailto:support@influxdata.com')
+        .contains('https://support.influxdata.com')
+        .should('have.attr', 'href', 'https://support.influxdata.com')
     })
 
     cy.getByTestID('pagination-item')

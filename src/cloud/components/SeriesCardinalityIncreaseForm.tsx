@@ -17,11 +17,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 
-interface Props {
-  orgID: string
-}
-
-export const SeriesCardinalityIncreaseForm: FC<Props> = ({orgID}) => {
+export const SeriesCardinalityIncreaseForm: FC = () => {
   const [increaseAmount, onChangeIncreaseAmount] = useState<string>('')
   const [requestDetails, onChangeRequestDetails] = useState<string>('')
 
@@ -44,9 +40,7 @@ export const SeriesCardinalityIncreaseForm: FC<Props> = ({orgID}) => {
   }
 
   const handleSubmit = (): void => {
-    window.open(
-      `mailto:support@influxdata.com?subject=Request%20Series%20Cardinality%20Increase&body=Organization ID%3A%20${orgID}%0D%0A%0D%0ARequested Series Cardinality Limit:%20${increaseAmount}%0D%0A%0D%0AUse-Case Details:%0D%0A${requestDetails}`
-    )
+    window.open(`https://support.influxdata.com`)
   }
 
   return (

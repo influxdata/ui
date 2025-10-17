@@ -26,8 +26,8 @@ const tooltipContent = (
   <p>
     Organizations can be reactivated within 7 days of deletion. Contact support
     at{' '}
-    <SafeBlankLink href="mailto:support@influxdata.com">
-      support@influxdata.com
+    <SafeBlankLink href="https://support.influxdata.com">
+      https://support.influxdata.com
     </SafeBlankLink>{' '}
     to reactivate.
   </p>

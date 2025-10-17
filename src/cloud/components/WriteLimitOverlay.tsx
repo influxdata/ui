@@ -1,5 +1,4 @@
 import React, {useState, useContext, FC} from 'react'
-import {useSelector} from 'react-redux'
 
 import {
   OverlayContainer,
@@ -19,9 +18,6 @@ import {
 
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-// Selectors
-import {getOrg} from 'src/organizations/selectors'
-
 // Reporting
 import {event} from 'src/cloud/utils/reporting'
 
@@ -33,14 +29,10 @@ const WriteLimitOverlay: FC = () => {
 
   const {onClose} = useContext(OverlayContext)
 
-  const {id} = useSelector(getOrg)
-
   const handleSubmit = (): void => {
     event('limit.requestincrease.writes', {reason: limitReason})
 
-    window.open(
-      `mailto:support@influxdata.com?subject=Request%20Query%20Write%20Limit%20Increase&body=Organization ID%3A%20${id}%0D%0A%0D%0AUse-Case Details:%0D%0A${limitReason}`
-    )
+    window.open(`https://support.influxdata.com`)
   }
   return (
     <OverlayContainer

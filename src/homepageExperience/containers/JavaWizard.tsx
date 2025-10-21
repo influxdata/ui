@@ -22,7 +22,7 @@ import {WriteData} from 'src/homepageExperience/components/steps/java/WriteData'
 import {WriteDataSql} from 'src/homepageExperience/components/steps/java/WriteDataSql'
 
 // Utils
-import {isOrgIOx} from 'src/organizations/selectors'
+import {isOrgIOx, getOrg} from 'src/organizations/selectors'
 import {
   HOMEPAGE_NAVIGATION_STEPS,
   HOMEPAGE_NAVIGATION_STEPS_SQL,
@@ -34,8 +34,12 @@ export const JavaWizard: FC<{}> = () => {
   const [tokenValue, setTokenValue] = useState<string | null>(null)
   const [finalFeedback, setFinalFeedback] = useState<number | null>(null)
 
+  const org = useSelector(getOrg)
   const isIOxOrg = useSelector(isOrgIOx)
-  const subwayNavSteps = isIOxOrg
+  // TSM (Legacy, GCP, Azure) should use the v2 client (influxdb-client-java)
+  // Only show v3 client (influxdb3-java) for IOx with explicit 'iox' storage type
+  const shouldUseV3Client = isIOxOrg && org?.defaultStorageType?.toLowerCase() === 'iox'
+  const subwayNavSteps = shouldUseV3Client
     ? HOMEPAGE_NAVIGATION_STEPS_SQL
     : HOMEPAGE_NAVIGATION_STEPS
 
@@ -141,7 +145,7 @@ export const JavaWizard: FC<{}> = () => {
         languageTitle="Java"
       >
         {currentStep =>
-          isIOxOrg ? renderSqlStep(currentStep) : renderFluxStep(currentStep)
+          shouldUseV3Client ? renderSqlStep(currentStep) : renderFluxStep(currentStep)
         }
       </WizardContainer>
     </WriteDataDetailsContextProvider>

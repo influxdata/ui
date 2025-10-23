@@ -1,32 +1,15 @@
 # RAS Daemon Input Plugin
 
-This plugin gathers statistics and error counts provided by the local
-[RAS (reliability, availability and serviceability)][ras] daemon.
+This plugin is only available on Linux (only for `386`, `amd64`, `arm` and
+`arm64` architectures).
 
-> [!NOTE]
-> This plugin requires access to SQLite3 database from `RASDaemon`. Please make
-> sure the Telegraf user has the required permissions to this database!
-
-⭐ Telegraf v1.16.0
-🏷️ server
-💻 linux
-
-[ras]: https://github.com/mchehab/rasdaemon
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+The `RAS` plugin gathers and counts errors provided by
+[RASDaemon](https://github.com/mchehab/rasdaemon).
 
 ## Configuration
 
 ```toml @sample.conf
 # RAS plugin exposes counter metrics for Machine Check Errors provided by RASDaemon (sqlite3 output is required).
-# This plugin ONLY supports Linux on 386, amd64, arm, and arm64
 [[inputs.ras]]
   ## Optional path to RASDaemon sqlite3 database.
   ## Default: /var/lib/rasdaemon/ras-mc_event.db
@@ -71,9 +54,14 @@ following MCE events:
 - microcode_rom_parity_errors
 - unclassified_mce_errors
 
+## Permissions
+
+This plugin requires access to SQLite3 database from `RASDaemon`. Please make
+sure that user has required permissions to this database.
+
 ## Example Output
 
-```text
+```shell
 ras,host=ubuntu,socket_id=0 external_mce_base_errors=1i,frc_errors=1i,instruction_tlb_errors=5i,internal_parity_errors=1i,internal_timer_errors=1i,l0_and_l1_cache_errors=7i,memory_read_corrected_errors=25i,memory_read_uncorrectable_errors=0i,memory_write_corrected_errors=5i,memory_write_uncorrectable_errors=0i,microcode_rom_parity_errors=1i,processor_base_errors=7i,processor_bus_errors=1i,smm_handler_code_access_violation_errors=1i,unclassified_mce_base_errors=1i 1598867393000000000
 ras,host=ubuntu level_2_cache_errors=0i,upi_errors=0i 1598867393000000000
 ```

@@ -1,19 +1,6 @@
 # Filecount Input Plugin
 
-This plugin reports the number and total size of files in specified directories.
-
-⭐ Telegraf v1.8.0
-🏷️ system
-💻 all
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+Reports the number and total size of files in specified directories.
 
 ## Configuration
 
@@ -60,12 +47,10 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   - fields:
     - count (integer)
     - size_bytes (integer)
-    - oldest_file_timestamp (int, unix time nanoseconds)
-    - newest_file_timestamp (int, unix time nanoseconds)
 
 ## Example Output
 
-```text
-filecount,directory=/var/cache/apt count=7i,size_bytes=7438336i,oldest_file_timestamp=1507152973123456789i,newest_file_timestamp=1507152973123456789i 1530034445000000000
-filecount,directory=/tmp count=17i,size_bytes=28934786i,oldest_file_timestamp=1507152973123456789i,newest_file_timestamp=1507152973123456789i 1530034445000000000
+```shell
+filecount,directory=/var/cache/apt count=7i,size_bytes=7438336i 1530034445000000000
+filecount,directory=/tmp count=17i,size_bytes=28934786i 1530034445000000000
 ```

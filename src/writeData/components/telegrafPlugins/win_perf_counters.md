@@ -1,199 +1,19 @@
 # Windows Performance Counters Input Plugin
 
-This plugin produces metrics from the collected
-[Windows Performance Counters][perf_counters].
+This document presents the input plugin to read Performance Counters on Windows
+operating systems.
 
-⭐ Telegraf v0.10.2
-🏷️ system
-💻 windows
+The configuration is parsed and then tested for validity, such as
+whether the Object, Instance and Counter exist on Telegraf startup.
 
-[perf_counters]: https://learn.microsoft.com/en-us/windows/win32/perfctrs/about-performance-counters
+Counter paths are refreshed periodically, see the
+[CountersRefreshInterval](#countersrefreshinterval) configuration parameter for
+more info.
 
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+In case of query for all instances `["*"]`, the plugin does not return the
+instance `_Total` by default. See [IncludeTotal](#includetotal) for more info.
 
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
-
-## Configuration
-
-```toml @sample.conf
-# Input plugin to counterPath Performance Counters on Windows operating systems
-# This plugin ONLY supports Windows
-[[inputs.win_perf_counters]]
-  ## By default this plugin returns basic CPU and Disk statistics. See the
-  ## README file for more examples. Uncomment examples below or write your own
-  ## as you see fit. If the system being polled for data does not have the
-  ## Object at startup of the Telegraf agent, it will not be gathered.
-
-  ## Print All matching performance counters
-  # PrintValid = false
-
-  ## Whether request a timestamp along with the PerfCounter data or use current
-  ## time
-  # UsePerfCounterTime = true
-
-  ## If UseWildcardsExpansion params is set to true, wildcards (partial
-  ## wildcards in instance names and wildcards in counters names) in configured
-  ## counter paths will be expanded and in case of localized Windows, counter
-  ## paths will be also localized. It also returns instance indexes in instance
-  ## names. If false, wildcards (not partial) in instance names will still be
-  ## expanded, but instance indexes will not be returned in instance names.
-  # UseWildcardsExpansion = false
-
-  ## When running on a localized version of Windows and with
-  ## UseWildcardsExpansion = true, Windows will localize object and counter
-  ## names. When LocalizeWildcardsExpansion = false, use the names in
-  ## object.Counters instead of the localized names. Only Instances can have
-  ## wildcards in this case. ObjectName and Counters must not have wildcards
-  ## when this setting is false.
-  # LocalizeWildcardsExpansion = true
-
-  ## Period after which counters will be reread from configuration and
-  ## wildcards in counter paths expanded
-  # CountersRefreshInterval="1m"
-
-  ## Accepts a list of PDH error codes which are defined in pdh.go, if this
-  ## error is encountered it will be ignored. For example, you can provide
-  ## "PDH_NO_DATA" to ignore performance counters with no instances. By default
-  ## no errors are ignored You can find the list here:
-  ##   https://github.com/influxdata/telegraf/blob/master/plugins/inputs/win_perf_counters/pdh.go
-  ## e.g. IgnoredErrors = ["PDH_NO_DATA"]
-  # IgnoredErrors = []
-
-  ## Maximum size of the buffer for values returned by the API
-  ## Increase this value if you experience "buffer limit reached" errors.
-  # MaxBufferSize = "4MiB"
-
-  ## NOTE: Due to the way TOML is parsed, tables must be at the END of the
-  ## plugin definition, otherwise additional config options are read as part of
-  ## the table
-
-  # [[inputs.win_perf_counters.object]]
-    # Measurement = ""
-    # ObjectName = ""
-    # Instances = [""]
-    # Counters = []
-    ## Additional Object Settings
-    ##   * IncludeTotal: set to true to include _Total instance when querying
-    ##                   for all metrics via '*'
-    ##   * WarnOnMissing: print out when the performance counter is missing
-    ##                    from object, counter or instance
-    ##   * UseRawValues: gather raw values instead of formatted. Raw values are
-    ##                   stored in the field name with the "_Raw" suffix, e.g.
-    ##                   "Disk_Read_Bytes_sec_Raw".
-    # IncludeTotal = false
-    # WarnOnMissing = false
-    # UseRawValues = false
-
-  ## Processor usage, alternative to native, reports on a per core.
-  # [[inputs.win_perf_counters.object]]
-    # Measurement = "win_cpu"
-    # ObjectName = "Processor"
-    # Instances = ["*"]
-    # UseRawValues = true
-    # Counters = [
-    #   "% Idle Time",
-    #   "% Interrupt Time",
-    #   "% Privileged Time",
-    #   "% User Time",
-    #   "% Processor Time",
-    #   "% DPC Time",
-    # ]
-
-  ## Disk times and queues
-  # [[inputs.win_perf_counters.object]]
-    # Measurement = "win_disk"
-    # ObjectName = "LogicalDisk"
-    # Instances = ["*"]
-    # Counters = [
-    #   "% Idle Time",
-    #   "% Disk Time",
-    #   "% Disk Read Time",
-    #   "% Disk Write Time",
-    #   "% User Time",
-    #   "% Free Space",
-    #   "Current Disk Queue Length",
-    #   "Free Megabytes",
-    # ]
-
-  # [[inputs.win_perf_counters.object]]
-    # Measurement = "win_diskio"
-    # ObjectName = "PhysicalDisk"
-    # Instances = ["*"]
-    # Counters = [
-    #   "Disk Read Bytes/sec",
-    #   "Disk Write Bytes/sec",
-    #   "Current Disk Queue Length",
-    #   "Disk Reads/sec",
-    #   "Disk Writes/sec",
-    #   "% Disk Time",
-    #   "% Disk Read Time",
-    #   "% Disk Write Time",
-    # ]
-
-  # [[inputs.win_perf_counters.object]]
-    # Measurement = "win_net"
-    # ObjectName = "Network Interface"
-    # Instances = ["*"]
-    # Counters = [
-    # "Bytes Received/sec",
-    # "Bytes Sent/sec",
-    # "Packets Received/sec",
-    # "Packets Sent/sec",
-    # "Packets Received Discarded",
-    # "Packets Outbound Discarded",
-    # "Packets Received Errors",
-    # "Packets Outbound Errors",
-    # ]
-
-  # [[inputs.win_perf_counters.object]]
-    # Measurement = "win_system"
-    # ObjectName = "System"
-    # Instances = ["------"]
-    # Counters = [
-    #   "Context Switches/sec",
-    #   "System Calls/sec",
-    #   "Processor Queue Length",
-    #   "System Up Time",
-    # ]
-
-  ## Example counterPath where the Instance portion must be removed to get
-  ## data back, such as from the Memory object.
-  # [[inputs.win_perf_counters.object]]
-    # Measurement = "win_mem"
-    # ObjectName = "Memory"
-    ## Use 6 x - to remove the Instance bit from the counterPath.
-    # Instances = ["------"]
-    # Counters = [
-    #   "Available Bytes",
-    #   "Cache Faults/sec",
-    #   "Demand Zero Faults/sec",
-    #   "Page Faults/sec",
-    #   "Pages/sec",
-    #   "Transition Faults/sec",
-    #   "Pool Nonpaged Bytes",
-    #   "Pool Paged Bytes",
-    #   "Standby Cache Reserve Bytes",
-    #   "Standby Cache Normal Priority Bytes",
-    #   "Standby Cache Core Bytes",
-    # ]
-
-  ## Example query where the Instance portion must be removed to get data back,
-  ## such as from the Paging File object.
-  # [[inputs.win_perf_counters.object]]
-    # Measurement = "win_swap"
-    # ObjectName = "Paging File"
-    # Instances = ["_Total"]
-    # Counters = [
-    #   "% Usage",
-    # ]
-```
-
-### Basics
+## Basics
 
 The examples contained in this file have been found on the internet
 as counters used when performance monitoring
@@ -206,34 +26,18 @@ For more information on concepts and terminology including object,
 counter, and instance names, see the help in the Windows Performance
 Monitor app.
 
-#### Schema
-
-*Measurement name* is specified per performance object
-or `win_perf_counters` by default.
-
-*Tags:*
-
-- source - computer name, as specified in the `Sources` parameter. Name
-          `localhost` is translated into the host name
-- objectname - normalized name of the performance object
-- instance - instance name, if performance object supports multiple instances,
-             otherwise omitted
-
-*Fields* are counters of the performance object.
-The field name is normalized counter name.
-
-#### Plugin wide
+### Plugin wide
 
 Plugin wide entries are underneath `[[inputs.win_perf_counters]]`.
 
-##### PrintValid
+#### PrintValid
 
 Bool, if set to `true` will print out all matching performance objects.
 
 Example:
 `PrintValid=true`
 
-##### UseWildcardsExpansion
+#### UseWildcardsExpansion
 
 If `UseWildcardsExpansion` is true, wildcards can be used in the
 instance name and the counter name. Instance indexes will also be
@@ -248,7 +52,7 @@ used, but instance indexes will not be returned in the instance names.
 Example:
 `UseWildcardsExpansion=true`
 
-##### LocalizeWildcardsExpansion
+#### LocalizeWildcardsExpansion
 
 `LocalizeWildcardsExpansion` selects whether object and counter names
 are localized when `UseWildcardsExpansion` is true and Telegraf is
@@ -268,7 +72,7 @@ in instances. Object and counter names must not have wildcards.
 Example:
 `LocalizeWildcardsExpansion=true`
 
-##### CountersRefreshInterval
+#### CountersRefreshInterval
 
 Configured counters are matched against available counters at the interval
 specified by the `CountersRefreshInterval` parameter. The default value is `1m`
@@ -285,7 +89,7 @@ Set it to `0s` to disable periodic refreshing.
 Example:
 `CountersRefreshInterval=1m`
 
-##### PreVistaSupport
+#### PreVistaSupport
 
 (Deprecated in 1.7; Necessary features on Windows Vista and newer are checked
 dynamically)
@@ -300,7 +104,7 @@ since Vista.
 Example for Windows Server 2003, this would be set to true:
 `PreVistaSupport=true`
 
-##### UsePerfCounterTime
+#### UsePerfCounterTime
 
 Bool, if set to `true` will request a timestamp along with the PerfCounter data.
 If se to `false`, current time will be used.
@@ -309,7 +113,7 @@ Supported on Windows Vista/Windows Server 2008 and newer
 Example:
 `UsePerfCounterTime=true`
 
-##### IgnoredErrors
+#### IgnoredErrors
 
 IgnoredErrors accepts a list of PDH error codes which are defined in pdh.go, if
 this error is encountered it will be ignored.  For example, you can provide
@@ -320,30 +124,11 @@ errors](pdh.go).
 Example:
 `IgnoredErrors=["PDH_NO_DATA"]`
 
-##### Sources (Optional)
-
-Host names or ip addresses of computers to gather all performance counters from.
-The user running Telegraf must be authenticated to the remote computer(s).
-E.g. via Windows sharing `net use \\SQL-SERVER-01`.
-Use either localhost (`"localhost"`) or real local computer name to gather
-counters also from localhost among other computers. Skip, if gather only from
-localhost.
-
-If a performance counter is present only on specific hosts set `Sources` param
-on the specific counter level configuration to override global (plugin wide)
-sources.
-
-Example:
-`Sources = ["localhost", "SQL-SERVER-01", "SQL-SERVER-02", "SQL-SERVER-03"]`
-
-Default:
-`Sources = ["localhost"]`
-
-#### Object
+### Object
 
 See Entry below.
 
-#### Entry
+### Entry
 
 A new configuration entry consists of the TOML header starting with,
 `[[inputs.win_perf_counters.object]]`.
@@ -353,14 +138,18 @@ beneath the main win_perf_counters entry, `[[inputs.win_perf_counters]]`.
 Following this are 3 required key/value pairs and three optional parameters and
 their usage.
 
-##### ObjectName (Required)
+#### ObjectName
+
+(Required)
 
 ObjectName is the Object to query for, like Processor, DirectoryServices,
 LogicalDisk or similar.
 
 Example: `ObjectName = "LogicalDisk"`
 
-##### Instances (Required)
+#### Instances
+
+(Required)
 
 The instances key (this is an array) declares the instances of a counter you
 would like returned, it can be one or more values.
@@ -379,7 +168,9 @@ Some Objects do not have instances to select from at all.
 Here only one option is valid if you want data back,
 and that is to specify `Instances = ["------"]`.
 
-##### Counters (Required)
+#### Counters
+
+(Required)
 
 The Counters key (this is an array) declares the counters of the ObjectName
 you would like returned, it can also be one or more values.
@@ -390,12 +181,9 @@ This must be specified for every counter you want the results of, or use
 `["*"]` for all the counters of the object, if the `UseWildcardsExpansion` param
 is set to `true`.
 
-##### Sources (Object) (Optional)
+#### Measurement
 
-Overrides the [Sources](#sources-optional) global parameter for current performance
-object. See [Sources](#sources-optional) description for more details.
-
-##### Measurement (Optional)
+(Optional)
 
 This key is optional. If it is not set it will be `win_perf_counters`.  In
 InfluxDB this is the key underneath which the returned data is stored.  So for
@@ -404,7 +192,9 @@ you want your IIS and Disk results stored separately from Processor results.
 
 Example: `Measurement = "win_disk"`
 
-##### UseRawValues (Optional)
+#### UseRawValues
+
+(Optional)
 
 This key is optional. It is a simple bool.  If set to `true`, counter values
 will be provided in the raw, integer, form. This is in contrast with the default
@@ -414,21 +204,14 @@ as seen in the Windows Performance Monitor.
 A field representing raw counter value has the `_Raw` suffix. Raw values should
 be further used in a calculation,
 e.g. `100-(non_negative_derivative("Percent_Processor_Time_Raw",1s)/100000`
-Note: Time based counters (i.e. *% Processor Time*) are reported in hundredths
+Note: Time based counters (i.e. _% Processor Time_) are reported in hundredths
 of nanoseconds.
-This key is optional. It is a simple bool.
-If set to `true`, counter values will be provided in the raw, integer, form.
-This is in contrast with the default behavior, where values are returned in a
-formatted, displayable, form as seen in the Windows Performance Monitor.
-A field representing raw counter value has the `_Raw` suffix.
-Raw values should be further used in a calculation,
-e.g. `100-(non_negative_derivative("Percent_Processor_Time_Raw",1s)/100000`
-Note: Time based counters (i.e. `% Processor Time`)
-are reported in hundredths of nanoseconds.
 
 Example: `UseRawValues = true`
 
-##### IncludeTotal (Optional)
+#### IncludeTotal
+
+(Optional)
 
 This key is optional. It is a simple bool.
 If it is not set to true or included it is treated as false.
@@ -437,7 +220,9 @@ and you would also like all instances containing `_Total` to be returned,
 like `_Total`, `0,_Total` and so on where applicable
 (Processor Information is one example).
 
-##### WarnOnMissing (Optional)
+#### WarnOnMissing
+
+(Optional)
 
 This key is optional. It is a simple bool.
 If it is not set to true or included it is treated as false.
@@ -445,16 +230,157 @@ This only has effect on the first execution of the plugin.
 It will print out any ObjectName/Instance/Counter combinations
 asked for that do not match. Useful when debugging new configurations.
 
-##### FailOnMissing (Internal)
+#### FailOnMissing
+
+(Internal)
 
 This key should not be used. It is for testing purposes only.  It is a simple
 bool. If it is not set to true or included this is treated as false.  If this is
 set to true, the plugin will abort and end prematurely if any of the
 combinations of ObjectName/Instances/Counters are invalid.
 
-### Query examples
+## Configuration
 
-#### Generic Queries
+```toml @sample.conf
+# # Input plugin to counterPath Performance Counters on Windows operating systems
+# [[inputs.win_perf_counters]]
+#   ## By default this plugin returns basic CPU and Disk statistics.
+#   ## See the README file for more examples.
+#   ## Uncomment examples below or write your own as you see fit. If the system
+#   ## being polled for data does not have the Object at startup of the Telegraf
+#   ## agent, it will not be gathered.
+#   ## Settings:
+#   # PrintValid = false # Print All matching performance counters
+#   # Whether request a timestamp along with the PerfCounter data or just use current time
+#   # UsePerfCounterTime=true
+#   # If UseWildcardsExpansion params is set to true, wildcards (partial wildcards in instance names and wildcards in counters names) in configured counter paths will be expanded
+#   # and in case of localized Windows, counter paths will be also localized. It also returns instance indexes in instance names.
+#   # If false, wildcards (not partial) in instance names will still be expanded, but instance indexes will not be returned in instance names.
+#   #UseWildcardsExpansion = false
+#   # When running on a localized version of Windows and with UseWildcardsExpansion = true, Windows will
+#   # localize object and counter names. When LocalizeWildcardsExpansion = false, use the names in object.Counters instead
+#   # of the localized names. Only Instances can have wildcards in this case. ObjectName and Counters must not have wildcards when this
+#   # setting is false.
+#   #LocalizeWildcardsExpansion = true
+#   # Period after which counters will be reread from configuration and wildcards in counter paths expanded
+#   CountersRefreshInterval="1m"
+#   ## Accepts a list of PDH error codes which are defined in pdh.go, if this error is encountered it will be ignored
+#   ## For example, you can provide "PDH_NO_DATA" to ignore performance counters with no instances
+#   ## By default no errors are ignored
+#   ## You can find the list here: https://github.com/influxdata/telegraf/blob/master/plugins/inputs/win_perf_counters/pdh.go
+#   ## e.g.: IgnoredErrors = ["PDH_NO_DATA"]
+#   # IgnoredErrors = []
+#
+#   [[inputs.win_perf_counters.object]]
+#     # Processor usage, alternative to native, reports on a per core.
+#     ObjectName = "Processor"
+#     Instances = ["*"]
+#     Counters = [
+#       "% Idle Time",
+#       "% Interrupt Time",
+#       "% Privileged Time",
+#       "% User Time",
+#       "% Processor Time",
+#       "% DPC Time",
+#     ]
+#     Measurement = "win_cpu"
+#     # Set to true to include _Total instance when querying for all (*).
+#     # IncludeTotal=false
+#     # Print out when the performance counter is missing from object, counter or instance.
+#     # WarnOnMissing = false
+#     # Gather raw values instead of formatted. Raw value is stored in the field name with the "_Raw" suffix, e.g. "Disk_Read_Bytes_sec_Raw".
+#     # UseRawValues = true
+#
+#   [[inputs.win_perf_counters.object]]
+#     # Disk times and queues
+#     ObjectName = "LogicalDisk"
+#     Instances = ["*"]
+#     Counters = [
+#       "% Idle Time",
+#       "% Disk Time",
+#       "% Disk Read Time",
+#       "% Disk Write Time",
+#       "% User Time",
+#       "% Free Space",
+#       "Current Disk Queue Length",
+#       "Free Megabytes",
+#     ]
+#     Measurement = "win_disk"
+#
+#   [[inputs.win_perf_counters.object]]
+#     ObjectName = "PhysicalDisk"
+#     Instances = ["*"]
+#     Counters = [
+#       "Disk Read Bytes/sec",
+#       "Disk Write Bytes/sec",
+#       "Current Disk Queue Length",
+#       "Disk Reads/sec",
+#       "Disk Writes/sec",
+#       "% Disk Time",
+#       "% Disk Read Time",
+#       "% Disk Write Time",
+#     ]
+#     Measurement = "win_diskio"
+#
+#   [[inputs.win_perf_counters.object]]
+#     ObjectName = "Network Interface"
+#     Instances = ["*"]
+#     Counters = [
+#       "Bytes Received/sec",
+#       "Bytes Sent/sec",
+#       "Packets Received/sec",
+#       "Packets Sent/sec",
+#       "Packets Received Discarded",
+#       "Packets Outbound Discarded",
+#       "Packets Received Errors",
+#       "Packets Outbound Errors",
+#     ]
+#     Measurement = "win_net"
+#
+#
+#   [[inputs.win_perf_counters.object]]
+#     ObjectName = "System"
+#     Counters = [
+#       "Context Switches/sec",
+#       "System Calls/sec",
+#       "Processor Queue Length",
+#       "System Up Time",
+#     ]
+#     Instances = ["------"]
+#     Measurement = "win_system"
+#
+#   [[inputs.win_perf_counters.object]]
+#     # Example counterPath where the Instance portion must be removed to get data back,
+#     # such as from the Memory object.
+#     ObjectName = "Memory"
+#     Counters = [
+#       "Available Bytes",
+#       "Cache Faults/sec",
+#       "Demand Zero Faults/sec",
+#       "Page Faults/sec",
+#       "Pages/sec",
+#       "Transition Faults/sec",
+#       "Pool Nonpaged Bytes",
+#       "Pool Paged Bytes",
+#       "Standby Cache Reserve Bytes",
+#       "Standby Cache Normal Priority Bytes",
+#       "Standby Cache Core Bytes",
+#     ]
+#     Instances = ["------"] # Use 6 x - to remove the Instance bit from the counterPath.
+#     Measurement = "win_mem"
+#
+#   [[inputs.win_perf_counters.object]]
+#     # Example query where the Instance portion must be removed to get data back,
+#     # such as from the Paging File object.
+#     ObjectName = "Paging File"
+#     Counters = [
+#       "% Usage",
+#     ]
+#     Instances = ["_Total"]
+#     Measurement = "win_swap"
+```
+
+### Generic Queries
 
 ```toml
 [[inputs.win_perf_counters]]
@@ -499,7 +425,7 @@ combinations of ObjectName/Instances/Counters are invalid.
     #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
 ```
 
-#### Active Directory Domain Controller
+### Active Directory Domain Controller
 
 ```toml
 [[inputs.win_perf_counters]]
@@ -528,7 +454,7 @@ combinations of ObjectName/Instances/Counters are invalid.
     #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
 ```
 
-#### DFS Namespace + Domain Controllers
+### DFS Namespace + Domain Controllers
 
 ```toml
 [[inputs.win_perf_counters]]
@@ -542,7 +468,7 @@ combinations of ObjectName/Instances/Counters are invalid.
     #WarnOnMissing = false # Print out when the performance counter is missing, either of object, counter or instance.
 ```
 
-#### DFS Replication + Domain Controllers
+### DFS Replication + Domain Controllers
 
 ```toml
 [[inputs.win_perf_counters]]
@@ -556,7 +482,7 @@ combinations of ObjectName/Instances/Counters are invalid.
     #WarnOnMissing = false # Print out when the performance counter is missing, either of object, counter or instance.
 ```
 
-#### DNS Server + Domain Controllers
+### DNS Server + Domain Controllers
 
 ```toml
 [[inputs.win_perf_counters]]
@@ -568,7 +494,7 @@ combinations of ObjectName/Instances/Counters are invalid.
     #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
 ```
 
-#### IIS / ASP.NET
+### IIS / ASP.NET
 
 ```toml
 [[inputs.win_perf_counters]]
@@ -613,7 +539,7 @@ combinations of ObjectName/Instances/Counters are invalid.
     #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
 ```
 
-#### Process
+### Process
 
 ```toml
 [[inputs.win_perf_counters]]
@@ -626,7 +552,7 @@ combinations of ObjectName/Instances/Counters are invalid.
     #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
 ```
 
-#### .NET Monitoring
+### .NET Monitoring
 
 ```toml
 [[inputs.win_perf_counters]]
@@ -688,17 +614,11 @@ to check the counter path on the command line.  E.g. `typeperf
 If no metrics are emitted even with the default config, you may need to repair
 your performance counters.
 
-1. Launch the Command Prompt as Administrator
-   (right click "Runs As Administrator").
-1. Drop into the C:\WINDOWS\System32 directory by typing `C:` then
-   `cd \Windows\System32`
+1. Launch the Command Prompt as Administrator (right click Runs As Administrator).
+1. Drop into the C:\WINDOWS\System32 directory by typing `C:` then `cd \Windows\System32`
 1. Rebuild your counter values, which may take a few moments so please be
    patient, by running:
 
 ```batchfile
 lodctr /r
 ```
-
-## Metrics
-
-## Example Output

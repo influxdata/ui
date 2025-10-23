@@ -1,33 +1,25 @@
 # Passenger Input Plugin
 
-This plugin gathers metrics from the [Phusion Passenger][phusion] service.
+Gather [Phusion Passenger](https://www.phusionpassenger.com/) metrics using the
+`passenger-status` command line utility.
 
-> [!WARNING]
-> Depending on your environment, this plugin can create a high number of series
-> which can cause high load on your database. Please use
-> [measurement filtering][metric_filtering] to manage your series cardinality!
+## Series Cardinality Warning
 
-The plugin uses the `passenger-status` command line tool.
+Depending on your environment, this `passenger_process` measurement of this
+plugin can quickly create a high number of series which, when unchecked, can
+cause high load on your database.  You can use the following techniques to
+manage your series cardinality:
 
-> [!NOTE]
-> This plugin requires the `passenger-status` binary to be installed on the
-> system and to be executable by Telegraf.
-
-⭐ Telegraf v0.10.1
-🏷️ web
-💻 all
-
-[phusion]: https://www.phusionpassenger.com/
-[metric_filtering]: /docs/CONFIGURATION.md#metric-filtering
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+- Use the
+  [measurement filtering](https://docs.influxdata.com/telegraf/latest/configuration/#metric-filtering)
+  options to exclude unneeded tags.  In some environments, you may wish to use
+  `tagexclude` to remove the `pid` and `process_group_id` tags.
+- Write to a database with an appropriate
+  [retention policy](https://docs.influxdata.com/influxdb/latest/reference/internals/data-retention/).
+- Consider using the
+  [Time Series Index](https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-series-index-tsi).
+- Monitor your databases
+  [series cardinality](https://docs.influxdata.com/influxdb/latest/reference/syntax/influxql/spec/#show-cardinality).
 
 ## Configuration
 
@@ -49,24 +41,6 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
 
 Telegraf must have permission to execute the `passenger-status` command.  On
 most systems, Telegraf runs as the `telegraf` user.
-
-### Series Cardinality
-
-Depending on your environment, this `passenger_process` measurement of this
-plugin can quickly create a high number of series which, when unchecked, can
-cause high load on your database.  You can use the following techniques to
-manage your series cardinality:
-
-- Use the
-  [measurement filtering](https://docs.influxdata.com/telegraf/latest/administration/configuration/#measurement-filtering)
-  options to exclude unneeded tags.  In some environments, you may wish to use
-  `tagexclude` to remove the `pid` and `process_group_id` tags.
-- Write to a database with an appropriate
-  [retention policy](https://docs.influxdata.com/influxdb/latest/guides/downsampling_and_retention/).
-- Consider using the
-  [Time Series Index](https://docs.influxdata.com/influxdb/latest/concepts/time-series-index/).
-- Monitor your databases
-  [series cardinality](https://docs.influxdata.com/influxdb/latest/query_language/spec/#show-cardinality).
 
 ## Metrics
 
@@ -125,7 +99,7 @@ manage your series cardinality:
 
 ## Example Output
 
-```text
+```shell
 passenger,passenger_version=5.0.17 capacity_used=23i,get_wait_list_size=0i,max=23i,process_count=23i 1452984112799414257
 passenger_supergroup,name=/var/app/current/public capacity_used=23i,get_wait_list_size=0i 1452984112799496977
 passenger_group,app_root=/var/app/current,app_type=rack,name=/var/app/current/public capacity_used=23i,get_wait_list_size=0i,processes_being_spawned=0i 1452984112799527021

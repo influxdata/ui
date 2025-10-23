@@ -1,35 +1,31 @@
 # Elasticsearch Input Plugin
 
-This plugin queries endpoints of a [Elasticsearch][elastic] instance to obtain
-[node statistics][node_stats] and optionally [cluster-health][cluster_health]
-metrics.
-Additionally, the plugin is able to query [cluster][cluster_stats],
-[indices and shard][indices_stats] statistics for the master node.
+The [elasticsearch](https://www.elastic.co/) plugin queries endpoints to obtain
+[Node Stats][1] and optionally [Cluster-Health][2] metrics.
 
-> [!NOTE]
-> Specific statistics information can change between Elasticsearch versions. In
-> general, this plugin attempts to stay as version-generic as possible by
-> tagging high-level categories only and creating unique field names of
-> whatever statistics names are provided at the mid-low level.
+In addition, the following optional queries are only made by the master node:
+ [Cluster Stats][3] [Indices Stats][4] [Shard Stats][5]
 
-⭐ Telegraf v0.1.5
-🏷️ server
-💻 all
+Specific Elasticsearch endpoints that are queried:
 
-[elastic]: https://www.elastic.co/
-[node_stats]: https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html
-[cluster_health]: https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html
-[cluster_stats]: https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-stats.html
-[indices_stats]: https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-stats.html
+- Node: either /_nodes/stats or /_nodes/_local/stats depending on 'local'
+  configuration setting
+- Cluster Heath: /_cluster/health?level=indices
+- Cluster Stats: /_cluster/stats
+- Indices Stats: /_all/_stats
+- Shard Stats: /_all/_stats?level=shards
 
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+Note that specific statistics information can change between Elasticsearch
+versions. In general, this plugin attempts to stay as version-generic as
+possible by tagging high-level categories only and using a generic json parser
+to make unique field names of whatever statistics names are provided at the
+mid-low level.
 
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+[1]: https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html
+[2]: https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html
+[3]: https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-stats.html
+[4]: https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-stats.html
+[5]: https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-stats.html
 
 ## Configuration
 
@@ -41,8 +37,8 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   ## servers = ["http://user:pass@localhost:9200"]
   servers = ["http://localhost:9200"]
 
-  ## HTTP headers to send with each request
-  # headers = { "X-Custom-Header" = "Custom" }
+  ## Timeout for HTTP requests to the elastic search server(s)
+  http_timeout = "5s"
 
   ## When local is true (the default), the node will read only its own stats.
   ## Set local to false when you want to read the node stats from all nodes
@@ -64,9 +60,6 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   ## Only gather cluster_stats from the master node.
   ## To work this require local = true
   cluster_stats_only_from_master = true
-
-  ## Gather stats from the enrich API
-  # enrich_stats = false
 
   ## Indices to collect; can be one or more indices names or _all
   ## Use of wildcards is allowed. Use a wildcard at the end to retrieve index
@@ -92,13 +85,6 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   # tls_key = "/etc/telegraf/key.pem"
   ## Use TLS but skip chain & host verification
   # insecure_skip_verify = false
-
-  ## If 'use_system_proxy' is set to true, Telegraf will check env vars such as
-  ## HTTP_PROXY, HTTPS_PROXY, and NO_PROXY (or their lowercase counterparts).
-  ## If 'use_system_proxy' is set to false (default) and 'http_proxy_url' is
-  ## provided, Telegraf will use the specified URL as HTTP proxy.
-  # use_system_proxy = false
-  # http_proxy_url = "http://localhost:8888"
 
   ## Sets the number of most recent indices to return for indices that are
   ## configured with a date-stamped suffix. Each 'indices_include' entry
@@ -884,5 +870,3 @@ Emitted when the appropriate `shards_stats` options are set.
     - warmer_current (float)
     - warmer_total (float)
     - warmer_total_time_in_millis (float)
-
-## Example Output

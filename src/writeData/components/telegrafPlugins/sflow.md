@@ -1,43 +1,22 @@
 # SFlow Input Plugin
 
-This service plugin produces metrics from information received by acting as a
-[SFlow V5][sflow_v5] collector. Currently, the plugin can collect Flow Samples
-of Ethernet / IPv4, IPv4 TCP and UDP headers. Counters and other header samples
-are ignored. Please use the [netflow plugin][netflow] for a more modern and
-sophisticated implementation.
+The SFlow Input Plugin provides support for acting as an SFlow V5 collector in
+accordance with the specification from [sflow.org](https://sflow.org/).
 
-> [!CRITICAL]
-> This plugin produces high cardinality data, which when not controlled for will
-> cause high load on your database. Please make sure to [filter][filtering] the
-> produced metrics or configure your database to avoid cardinality issues!
+Currently only Flow Samples of Ethernet / IPv4 & IPv4 TCP & UDP headers are
+turned into metrics.  Counters and other header samples are ignored.
 
-⭐ Telegraf v1.14.0
-🏷️ network
-💻 all
+## Series Cardinality Warning
 
-[sflow_v5]: https://sflow.org/sflow_version_5.txt
-[netflow]: /plugins/inputs/netflow/README.md
-[filtering]: /docs/CONFIGURATION.md#metric-filtering
+This plugin may produce a high number of series which, when not controlled
+for, will cause high load on your database. Use the following techniques to
+avoid cardinality issues:
 
-## Service Input <!-- @/docs/includes/service_input.md -->
-
-This plugin is a service input. Normal plugins gather metrics determined by the
-interval setting. Service plugins start a service to listen and wait for
-metrics or events to occur. Service plugins have two key differences from
-normal plugins:
-
-1. The global or plugin specific `interval` setting may not apply
-2. The CLI options of `--test`, `--test-wait`, and `--once` may not produce
-   output for this plugin
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+- Use [metric filtering][] options to exclude unneeded measurements and tags.
+- Write to a database with an appropriate [retention policy][].
+- Consider using the [Time Series Index][tsi].
+- Monitor your databases [series cardinality][].
+- Consult the [InfluxDB documentation][influx-docs] for the most up-to-date techniques.
 
 ## Configuration
 
@@ -59,55 +38,49 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
 
 - sflow
   - tags:
-    - agent_address      - IP address of the agent obtaining the sflow sample and
-                           sent it to this collector
-    - source_id_type     - type of flow_sample or flow_sample_expanded structures
-    - source_id_index    - index of flow_sample or flow_sample_expanded structures
-    - input_ifindex      - input value of flow_sample or flow_sample_expanded structures
-    - output_ifindex     - output value of flow_sample or flow_sample_expanded structures
-    - sample_direction   - source_id_index, netif_index_in and netif_index_out
-    - header_protocol    - header_protocol field of sampled_header structures
-    - ether_type         - ethernet type of an ETHERNET-ISO88023 header
-    - src_ip             - source IP address of IPv4 or IPv6 structures
-    - src_port           - source port of TCP or UDP structures
-    - src_port_name      - name of the source port
-    - src_mac            - source MAC address of an ETHERNET-ISO88023 header
-    - src_vlan           - source VLAN of extended_switch structure
-    - src_priority       - source priority of extended_switch structure
-    - src_mask_len       - length of source mask of extended_router structure
-    - dst_ip             - destination IP address of IPv4 or IPv6 structures
-    - dst_port           - destination port of TCP or UDP structures
-    - dst_port_name      - name of the destination port
-    - dst_mac            - destination MAC address of an ETHERNET-ISO88023 header
-    - dst_vlan           - destination VLAN of extended_switch structure
-    - dst_priority       - destination priority extended_switch structure
-    - dst_mask_len       - length of destinationd mask of extended_router structure
-    - next_hop           - next hop of extended_router structure
-    - ip_version         - IP version of IPv4 or IPv6 structures
-    - ip_protocol        - IP protocol of IPv4 or IPv6 structures
-    - ip_dscp            - IP DSCP of IPv4 or IPv6 structures
-    - ip_ecn             - IP ECN of IPv4 or IPv6 structures
-    - tcp_urgent_pointer - urgent pointer of TCP structure
+    - agent_address (IP address of the agent that obtained the sflow sample and sent it to this collector)
+    - source_id_type(source_id_type field of flow_sample or flow_sample_expanded structures)
+    - source_id_index(source_id_index field of flow_sample or flow_sample_expanded structures)
+    - input_ifindex (value (input) field of flow_sample or flow_sample_expanded structures)
+    - output_ifindex (value (output) field of flow_sample or flow_sample_expanded structures)
+    - sample_direction (source_id_index, netif_index_in and netif_index_out)
+    - header_protocol (header_protocol field of sampled_header structures)
+    - ether_type (eth_type field of an ETHERNET-ISO88023 header)
+    - src_ip (source_ipaddr field of IPv4 or IPv6 structures)
+    - src_port (src_port field of TCP or UDP structures)
+    - src_port_name (src_port)
+    - src_mac (source_mac_addr field of an ETHERNET-ISO88023 header)
+    - src_vlan (src_vlan field of extended_switch structure)
+    - src_priority (src_priority field of extended_switch structure)
+    - src_mask_len (src_mask_len field of extended_router structure)
+    - dst_ip (destination_ipaddr field of IPv4 or IPv6 structures)
+    - dst_port (dst_port field of TCP or UDP structures)
+    - dst_port_name (dst_port)
+    - dst_mac (destination_mac_addr field of an ETHERNET-ISO88023 header)
+    - dst_vlan (dst_vlan field of extended_switch structure)
+    - dst_priority (dst_priority field of extended_switch structure)
+    - dst_mask_len (dst_mask_len field of extended_router structure)
+    - next_hop (next_hop field of extended_router structure)
+    - ip_version (ip_ver field of IPv4 or IPv6 structures)
+    - ip_protocol (ip_protocol field of IPv4 or IPv6 structures)
+    - ip_dscp (ip_dscp field of IPv4 or IPv6 structures)
+    - ip_ecn (ecn field of IPv4 or IPv6 structures)
+    - tcp_urgent_pointer (urgent_pointer field of TCP structure)
   - fields:
-    - bytes              (int) - product of frame length and packets
-    - drops              (int) - drops field of flow_sample or
-                                 flow_sample_expanded structures
-    - packets            (int) - sampling_rate field of flow_sample or
-                                 flow_sample_expanded structures
-    - frame_length       (int) - frame_length field of sampled_header structures
-    - header_size        (int) - header_size field of sampled_header structures
-    - ip_fragment_offset (int) - ip_ver field of IPv4 structures
-    - ip_header_length   (int) - ip_ver field of IPv4 structures
-    - ip_total_length    (int) - ip_total_len field of IPv4 structures
-    - ip_ttl             (int) - ip_ttl field of IPv4 structures or
-                                 ip_hop_limit field IPv6 structures
-    - tcp_header_length  (int) - size field of TCP structure. This value is
-                                 specified in 32-bit words. It must be multiplied
-                                 by 4 to produce a valuein bytes.
-    - tcp_window_size    (int) - window_size field of TCP structure
-    - udp_length         (int) - length field of UDP structures
-    - ip_flags           (int) - ip_ver field of IPv4 structures
-    - tcp_flags          (int) - TCP flags of TCP IP header (IPv4 or IPv6)
+    - bytes (integer, the product of frame_length and packets)
+    - drops (integer, drops field of flow_sample or flow_sample_expanded structures)
+    - packets (integer, sampling_rate field of flow_sample or flow_sample_expanded structures)
+    - frame_length (integer, frame_length field of sampled_header structures)
+    - header_size (integer, header_size field of sampled_header structures)
+    - ip_fragment_offset (integer, ip_ver field of IPv4 structures)
+    - ip_header_length (integer, ip_ver field of IPv4 structures)
+    - ip_total_length (integer, ip_total_len field of IPv4 structures)
+    - ip_ttl (integer, ip_ttl field of IPv4 structures or ip_hop_limit field IPv6 structures)
+    - tcp_header_length (integer, size field of TCP structure. This value is specified in 32-bit words. It must be multiplied by 4 to produce a value in bytes.)
+    - tcp_window_size (integer, window_size field of TCP structure)
+    - udp_length (integer, length field of UDP structures)
+    - ip_flags (integer, ip_ver field of IPv4 structures)
+    - tcp_flags (integer, TCP flags of TCP IP header (IPv4 or IPv6))
 
 ## Troubleshooting
 
@@ -130,6 +103,18 @@ sudo tcpdump -s 0 -i eth0 -w telegraf-sflow.pcap host 127.0.0.1 and port 6343
 
 ## Example Output
 
-```text
+```shell
 sflow,agent_address=0.0.0.0,dst_ip=10.0.0.2,dst_mac=ff:ff:ff:ff:ff:ff,dst_port=40042,ether_type=IPv4,header_protocol=ETHERNET-ISO88023,input_ifindex=6,ip_dscp=27,ip_ecn=0,output_ifindex=1073741823,source_id_index=3,source_id_type=0,src_ip=10.0.0.1,src_mac=ff:ff:ff:ff:ff:ff,src_port=443 bytes=1570i,drops=0i,frame_length=157i,header_length=128i,ip_flags=2i,ip_fragment_offset=0i,ip_total_length=139i,ip_ttl=42i,sampling_rate=10i,tcp_header_length=0i,tcp_urgent_pointer=0i,tcp_window_size=14i 1584473704793580447
 ```
+
+## Reference Documentation
+
+This sflow implementation was built from the reference document
+[sflow.org/sflow_version_5.txt](sflow_version_5)
+
+[metric filtering]: https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#metric-filtering
+[retention policy]: https://docs.influxdata.com/influxdb/latest/reference/internals/data-retention/
+[tsi]: https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-series-index-tsi
+[series cardinality]: https://docs.influxdata.com/influxdb/latest/reference/syntax/influxql/spec/#show-cardinality
+[influx-docs]: https://docs.influxdata.com/influxdb/latest/
+[sflow_version_5]: https://sflow.org/sflow_version_5.txt

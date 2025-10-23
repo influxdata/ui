@@ -1,26 +1,9 @@
 # Logstash Input Plugin
 
-This plugin gathers metrics from a [Logstash][logstash] endpoint using the
-[Monitoring API][logstash_api].
+This plugin reads metrics exposed by [Logstash Monitoring
+API](https://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html).
 
-> [!NOTE]
-> This plugin supports Logstash 5+.
-
-⭐ Telegraf v1.12.0
-🏷️ server
-💻 all
-
-[logstash]: https://www.elastic.co/logstash
-[logstash_api]: https://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+Logstash 5 and later is supported.
 
 ## Configuration
 
@@ -52,13 +35,6 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
 
   ## Use TLS but skip chain & host verification.
   # insecure_skip_verify = false
-
-  ## If 'use_system_proxy' is set to true, Telegraf will check env vars such as
-  ## HTTP_PROXY, HTTPS_PROXY, and NO_PROXY (or their lowercase counterparts).
-  ## If 'use_system_proxy' is set to false (default) and 'http_proxy_url' is
-  ## provided, Telegraf will use the specified URL as HTTP proxy.
-  # use_system_proxy = false
-  # http_proxy_url = "http://localhost:8888"
 
   ## Optional HTTP headers.
   # [inputs.logstash.headers]
@@ -177,7 +153,7 @@ expose all stats)
 
 ## Example Output
 
-```text
+```shell
 logstash_jvm,node_id=3da53ed0-a946-4a33-9cdb-33013f2273f6,node_name=debian-stretch-logstash6.virt,node_version=6.8.1,source=debian-stretch-logstash6.virt gc_collectors_old_collection_count=2,gc_collectors_old_collection_time_in_millis=100,gc_collectors_young_collection_count=26,gc_collectors_young_collection_time_in_millis=1028,mem_heap_committed_in_bytes=1056309248,mem_heap_max_in_bytes=1056309248,mem_heap_used_in_bytes=207216328,mem_heap_used_percent=19,mem_non_heap_committed_in_bytes=160878592,mem_non_heap_used_in_bytes=140838184,mem_pools_old_committed_in_bytes=899284992,mem_pools_old_max_in_bytes=899284992,mem_pools_old_peak_max_in_bytes=899284992,mem_pools_old_peak_used_in_bytes=189468088,mem_pools_old_used_in_bytes=189468088,mem_pools_survivor_committed_in_bytes=17432576,mem_pools_survivor_max_in_bytes=17432576,mem_pools_survivor_peak_max_in_bytes=17432576,mem_pools_survivor_peak_used_in_bytes=17432576,mem_pools_survivor_used_in_bytes=12572640,mem_pools_young_committed_in_bytes=139591680,mem_pools_young_max_in_bytes=139591680,mem_pools_young_peak_max_in_bytes=139591680,mem_pools_young_peak_used_in_bytes=139591680,mem_pools_young_used_in_bytes=5175600,threads_count=20,threads_peak_count=24,uptime_in_millis=739089 1566425244000000000
 logstash_process,node_id=3da53ed0-a946-4a33-9cdb-33013f2273f6,node_name=debian-stretch-logstash6.virt,node_version=6.8.1,source=debian-stretch-logstash6.virt cpu_load_average_15m=0.03,cpu_load_average_1m=0.01,cpu_load_average_5m=0.04,cpu_percent=0,cpu_total_in_millis=83230,max_file_descriptors=16384,mem_total_virtual_in_bytes=3689132032,open_file_descriptors=118,peak_open_file_descriptors=118 1566425244000000000
 logstash_events,node_id=3da53ed0-a946-4a33-9cdb-33013f2273f6,node_name=debian-stretch-logstash6.virt,node_version=6.8.1,pipeline=main,source=debian-stretch-logstash6.virt duration_in_millis=0,filtered=0,in=0,out=0,queue_push_duration_in_millis=0 1566425244000000000

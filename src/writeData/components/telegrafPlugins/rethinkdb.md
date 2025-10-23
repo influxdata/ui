@@ -1,21 +1,6 @@
 # RethinkDB Input Plugin
 
-This plugin collects metrics from [RethinkDB][rethinkdb] servers.
-
-⭐ Telegraf v0.1.3
-🏷️ server
-💻 all
-
-[rethinkdb]: https://www.rethinkdb.com/
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+Collect metrics from [RethinkDB](https://www.rethinkdb.com/).
 
 ## Configuration
 
@@ -26,9 +11,16 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   ## with optional port add password. ie,
   ##   rethinkdb://user:auth_key@10.10.3.30:28105,
   ##   rethinkdb://10.10.3.33:18832,
-  ## For rethinkdb v2.3.0+ with username/password authorization you should use
-  ##   rethinkdb2://username:password@127.0.0.1:28015"
+  ##   10.0.0.1:10000, etc.
   servers = ["127.0.0.1:28015"]
+
+  ## If you use actual rethinkdb of > 2.3.0 with username/password authorization,
+  ## protocol have to be named "rethinkdb2" - it will use 1_0 H.
+  # servers = ["rethinkdb2://username:password@127.0.0.1:28015"]
+
+  ## If you use older versions of rethinkdb (<2.2) with auth_key, protocol
+  ## have to be named "rethinkdb".
+  # servers = ["rethinkdb://username:auth_key@127.0.0.1:28015"]
 ```
 
 ## Metrics
@@ -65,5 +57,3 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
     - total_reads (integer, reads)
     - written_docs_per_sec (integer, writes)
     - total_writes (integer, writes)
-
-## Example Output

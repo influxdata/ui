@@ -1,22 +1,8 @@
-# NLnet Labs Name Server Daemon Input Plugin
+# NSD Input Plugin
 
-This plugin gathers statistics from a [NLnet Labs Name Server Daemon][nsd], an
-authoritative DNS name server.
-
-⭐ Telegraf v1.0.0
-🏷️ server
-💻 all
-
-[nsd]: https://www.nlnetlabs.nl/projects/nsd/about
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+This plugin gathers stats from
+[NSD](https://www.nlnetlabs.nl/projects/nsd/about) - an authoritative DNS name
+server.
 
 ## Configuration
 
@@ -191,5 +177,3 @@ dots in the nsd-control stat name are replaced by underscores (see
     - server
   - fields:
     - queries
-
-## Example Output

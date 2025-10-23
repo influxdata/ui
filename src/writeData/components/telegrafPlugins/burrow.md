@@ -1,24 +1,10 @@
-# Burrow Input Plugin
+# Burrow Kafka Consumer Lag Checking Input Plugin
 
-This plugin collect Kafka topic, consumer and partition status from the
-[Burrow - Kafka Consumer Lag Checking][burrow] companion via [HTTP API][api].
-Burrow v1.x versions are supported.
+Collect Kafka topic, consumer and partition status via
+[Burrow](https://github.com/linkedin/Burrow) HTTP
+[API](https://github.com/linkedin/Burrow/wiki/HTTP-Endpoint).
 
-⭐ Telegraf v1.7.0
-🏷️ messaging
-💻 all
-
-[burrow]: https://github.com/linkedin/Burrow
-[api]: https://github.com/linkedin/Burrow/wiki/HTTP-Endpoint
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+Supported Burrow version: `1.x`
 
 ## Configuration
 
@@ -117,5 +103,3 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   * cluster (string)
   * topic (string)
   * partition (int)
-
-## Example Output

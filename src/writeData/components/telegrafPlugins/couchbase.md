@@ -1,23 +1,8 @@
 # Couchbase Input Plugin
 
-This plugin collects metrics from [Couchbase][couchbase], a distributed NoSQL
-database. Metrics are collected for each node, as well as detailed metrics for
-each bucket, for a given couchbase server.
-
-⭐ Telegraf v0.12.0
-🏷️ server
-💻 all
-
-[couchbase]: https://www.couchbase.com/
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+Couchbase is a distributed NoSQL database.  This plugin gets metrics for each
+Couchbase node, as well as detailed metrics for each bucket, for a given
+couchbase server.
 
 ## Configuration
 
@@ -49,14 +34,10 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   ## Whether to collect cluster-wide bucket statistics
   ## It is recommended to disable this in favor of node_stats
   ## to get a better view of the cluster.
-  # cluster_bucket_stats = true
+  cluster_bucket_stats = true
 
   ## Whether to collect bucket stats for each individual node
-  # node_bucket_stats = false
-
-  ## List of additional stats to collect, choose from:
-  ##  * autofailover
-  # additional_stats = []
+  node_bucket_stats = false
 ```
 
 ## Metrics
@@ -74,21 +55,6 @@ Fields:
 
 - memory_free (unit: bytes, example: 23181365248.0)
 - memory_total (unit: bytes, example: 64424656896.0)
-
-### couchbase_autofailover
-
-Tags:
-
-- cluster: sanitized string from `servers` configuration field
-  e.g.: `http://user:password@couchbase-0.example.com:8091/endpoint` becomes
-  `http://couchbase-0.example.com:8091/endpoint`
-
-Fields:
-
-- count (unit: int, example: 1)
-- enabled (unit: bool, example: true)
-- max_count (unit: int, example: 2)
-- timeout (unit: int, example: 72)
 
 ### couchbase_bucket and couchbase_node_bucket
 
@@ -331,7 +297,7 @@ option:
 
 ## Example Output
 
-```text
+```shell
 couchbase_node,cluster=http://localhost:8091/,hostname=172.17.0.2:8091 memory_free=7705575424,memory_total=16558182400 1547829754000000000
 couchbase_bucket,bucket=beer-sample,cluster=http://localhost:8091/ quota_percent_used=27.09285736083984,ops_per_sec=0,disk_fetches=0,item_count=7303,disk_used=21662946,data_used=9325087,mem_used=28408920 1547829754000000000
 ```

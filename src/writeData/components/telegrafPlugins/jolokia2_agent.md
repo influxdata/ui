@@ -1,22 +1,7 @@
 # Jolokia2 Agent Input Plugin
 
-This plugin reads JMX metrics from one or more [Jolokia agent][jolokia_agent]
-REST endpoints.
-
-⭐ Telegraf v1.5.0
-🏷️ applications, network
-💻 all
-
-[jolokia_agent]: https://jolokia.org/agent/jvm.html
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+The `jolokia2_agent` input plugin reads JMX metrics from one or more
+[Jolokia agent](https://jolokia.org/agent/jvm.html) REST endpoints.
 
 ## Configuration
 
@@ -89,7 +74,7 @@ Use `paths` to refine which fields to collect.
   paths = ["HeapMemoryUsage", "NonHeapMemoryUsage", "ObjectPendingFinalizationCount"]
 ```
 
-The preceding `jvm_memory` `metric` declaration produces the following output:
+The preceeding `jvm_memory` `metric` declaration produces the following output:
 
 ```text
 jvm_memory HeapMemoryUsage.committed=4294967296,HeapMemoryUsage.init=4294967296,HeapMemoryUsage.max=4294967296,HeapMemoryUsage.used=1750658992,NonHeapMemoryUsage.committed=67350528,NonHeapMemoryUsage.init=2555904,NonHeapMemoryUsage.max=-1,NonHeapMemoryUsage.used=65821352,ObjectPendingFinalizationCount=0 1503762436000000000
@@ -107,7 +92,7 @@ by capturing values into `tag_keys`.
 ```
 
 Since `name=*` matches both `G1 Old Generation` and `G1 Young Generation`, and
-`name` is used as a tag, the preceding `jvm_garbage_collector` `metric`
+`name` is used as a tag, the preceeding `jvm_garbage_collector` `metric`
 declaration produces two metrics.
 
 ```shell
@@ -126,7 +111,7 @@ Use `tag_prefix` along with `tag_keys` to add detail to tag names.
   tag_prefix = "pool_"
 ```
 
-The preceding `jvm_memory_pool` `metric` declaration produces six metrics, each
+The preceeding `jvm_memory_pool` `metric` declaration produces six metrics, each
 with a distinct `pool_name` tag.
 
 ```text
@@ -151,7 +136,7 @@ the property-key `name`, and `$2` represents the value of the property-key
   tag_keys     = ["topic"]
 ```
 
-The preceding `kafka_topic` `metric` declaration produces a metric per Kafka
+The preceeding `kafka_topic` `metric` declaration produces a metric per Kafka
 topic. The `name` Mbean property-key is used as a field prefix to aid in
 gathering fields together into the single metric.
 

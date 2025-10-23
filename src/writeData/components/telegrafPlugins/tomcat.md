@@ -1,24 +1,12 @@
-# Apache Tomcat Input Plugin
+# Tomcat Input Plugin
 
-This plugin collects statistics from a [Tomcat server][tomcat] instance using
-the manager status page. See the [Tomcat documentation][status_docs] for
-details of these statistics.
+The Tomcat plugin collects statistics available from the tomcat manager status
+page from the `http://<host>/manager/status/all?XML=true URL.` (`XML=true` will
+return only xml data).
 
-⭐ Telegraf v1.4.0
-🏷️ server, web
-💻 all
+See the [Tomcat documentation][1] for details of these statistics.
 
-[tomcat]: https://tomcat.apache.org
-[status_docs]: https://tomcat.apache.org/tomcat-9.0-doc/manager-howto.html#Server_Status
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+[1]: https://tomcat.apache.org/tomcat-9.0-doc/manager-howto.html#Server_Status
 
 ## Configuration
 
@@ -46,40 +34,41 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
 ## Metrics
 
 - tomcat_jvm_memory
-  - tags
-    - source
-  - fields
-    - free
-    - max
-    - total
+  - free
+  - total
+  - max
 - tomcat_jvm_memorypool
-  - tags
-    - name
-    - type
-    - source
-  - fields
-    - committed
-    - init
-    - max
-    - used
+  - max_threads
+  - current_thread_count
+  - current_threads_busy
+  - max_time
+  - processing_time
+  - request_count
+  - error_count
+  - bytes_received
+  - bytes_sent
 - tomcat_connector
-  - tags
-    - name
-    - source
-  - fields
-    - bytes_received
-    - bytes_sent
-    - current_thread_busy
-    - current_thread_count
-    - error_count
-    - max_threads
-    - max_time
-    - processing_time
-    - request_count
+  - max_threads
+  - current_thread_count
+  - current_thread_busy
+  - max_time
+  - processing_time
+  - request_count
+  - error_count
+  - bytes_received
+  - bytes_sent
+
+### Tags
+
+- tomcat_jvm_memorypool has the following tags:
+  - name
+  - type
+- tomcat_connector
+  - name
 
 ## Example Output
 
-```text
+```shell
 tomcat_jvm_memory,host=N8-MBP free=20014352i,max=127729664i,total=41459712i 1474663361000000000
 tomcat_jvm_memorypool,host=N8-MBP,name=Eden\ Space,type=Heap\ memory committed=11534336i,init=2228224i,max=35258368i,used=1941200i 1474663361000000000
 tomcat_jvm_memorypool,host=N8-MBP,name=Survivor\ Space,type=Heap\ memory committed=1376256i,init=262144i,max=4390912i,used=1376248i 1474663361000000000

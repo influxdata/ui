@@ -1,28 +1,23 @@
-# Mesosphere Distributed Cloud OS Input Plugin
+# DC/OS Input Plugin
 
-This input plugin gathers metrics from a [Distributed Cloud OS][dcos] cluster's
-[metrics component][metrics].
+This input plugin gathers metrics from a DC/OS cluster's [metrics
+component](https://docs.mesosphere.com/1.10/metrics/).
 
-> [!WARNING]
-> Depending on the workload of your DC/OS cluster, this plugin can quickly
-> create a high number of series which, when unchecked, can cause high load on
-> your database!
+## Series Cardinality Warning
 
-⭐ Telegraf v1.5.0
-🏷️ containers
-💻 all
+Depending on the work load of your DC/OS cluster, this plugin can quickly
+create a high number of series which, when unchecked, can cause high load on
+your database.
 
-[dcos]: https://dcos.io/
-[metrics]: https://docs.mesosphere.com/1.10/metrics/
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+- Use the
+  [measurement filtering](https://docs.influxdata.com/telegraf/latest/configuration/#metric-filtering)
+  options to exclude unneeded tags.
+- Write to a database with an appropriate
+  [retention policy](https://docs.influxdata.com/influxdb/latest/reference/internals/data-retention/).
+- Consider using the
+  [Time Series Index](https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-series-index-tsi).
+- Monitor your databases
+  [series cardinality](https://docs.influxdata.com/influxdb/latest/reference/syntax/influxql/spec/#show-cardinality).
 
 ## Configuration
 
@@ -122,17 +117,6 @@ the cluster.  For more information on this technique reference
 
 [2]: https://medium.com/@richardgirges/authenticating-open-source-dc-os-with-third-party-services-125fa33a5add
 
-### Series Cardinality Mitigation
-
-- Use [measurement filtering](/docs/CONFIGURATION.md#metric-filtering)to exclude
-unnecessary tags.
-- Write to a database with an appropriate
-  [retention policy](https://docs.influxdata.com/influxdb/latest/guides/downsampling_and_retention/).
-- Consider using the
-  [Time Series Index](https://docs.influxdata.com/influxdb/latest/concepts/time-series-index/).
-- Monitor your databases'
-  [series cardinality](https://docs.influxdata.com/influxdb/latest/query_language/spec/#show-cardinality).
-
 ## Metrics
 
 Please consult the [Metrics Reference][3] for details about field
@@ -215,7 +199,7 @@ interpretation.
 
 ## Example Output
 
-```text
+```shell
 dcos_node,cluster=enterprise,hostname=192.168.122.18,path=/boot filesystem_capacity_free_bytes=918188032i,filesystem_capacity_total_bytes=1063256064i,filesystem_capacity_used_bytes=145068032i,filesystem_inode_free=523958,filesystem_inode_total=524288,filesystem_inode_used=330 1511859222000000000
 dcos_node,cluster=enterprise,hostname=192.168.122.18,interface=dummy0 network_in_bytes=0i,network_in_dropped=0,network_in_errors=0,network_in_packets=0,network_out_bytes=0i,network_out_dropped=0,network_out_errors=0,network_out_packets=0 1511859222000000000
 dcos_node,cluster=enterprise,hostname=192.168.122.18,interface=docker0 network_in_bytes=0i,network_in_dropped=0,network_in_errors=0,network_in_packets=0,network_out_bytes=0i,network_out_dropped=0,network_out_errors=0,network_out_packets=0 1511859222000000000

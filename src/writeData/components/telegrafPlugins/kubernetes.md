@@ -1,59 +1,57 @@
 # Kubernetes Input Plugin
 
-This plugin gathers metrics about running pods and containers of a
-[Kubernetes][kubernetes] instance via the Kubelet API.
+The Kubernetes plugin talks to the Kubelet API and gathers metrics about the
+running pods and containers for a single host. It is assumed that this plugin
+is running as part of a `daemonset` within a kubernetes installation. This
+means that telegraf is running on every node within the cluster. Therefore, you
+should configure this plugin to talk to its locally running kubelet.
 
-> [!NOTE]
-> This plugin has to run as part of a `daemonset` within a Kubernetes
-> installation, i.e. Telegraf is running on every node within the cluster.
+To find the ip address of the host you are running on you can issue a command
+like the following:
 
-You should configure this plugin to talk to its locally running kubelet.
+```sh
+curl -s $API_URL/api/v1/namespaces/$POD_NAMESPACE/pods/$HOSTNAME --header "Authorization: Bearer $TOKEN" --insecure | jq -r '.status.hostIP'
+```
 
-> [!CRITICAL]
-> This plugin produces high cardinality data, which when not controlled for will
-> cause high load on your database. Please make sure to [filter][filtering] the
-> produced metrics or configure your database to avoid cardinality issues!
+In this case we used the downward API to pass in the `$POD_NAMESPACE` and
+`$HOSTNAME` is the hostname of the pod which is set by the kubernetes API.
 
-⭐ Telegraf v1.1.0
-🏷️ containers
-💻 all
+Kubernetes is a fast moving project, with a new minor release every 3 months. As
+such, we will aim to maintain support only for versions that are supported by
+the major cloud providers; this is roughly 4 release / 2 years.
 
-[kubernetes]: https://kubernetes.io/
-[filtering]: /docs/CONFIGURATION.md#metric-filtering
+**This plugin supports Kubernetes 1.11 and later.**
 
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+## Series Cardinality Warning
 
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+This plugin may produce a high number of series which, when not controlled
+for, will cause high load on your database. Use the following techniques to
+avoid cardinality issues:
 
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+- Use [metric filtering][] options to exclude unneeded measurements and tags.
+- Write to a database with an appropriate [retention policy][].
+- Consider using the [Time Series Index][tsi].
+- Monitor your databases [series cardinality][].
+- Consult the [InfluxDB documentation][influx-docs] for the most up-to-date techniques.
 
 ## Configuration
 
 ```toml @sample.conf
 # Read metrics from the kubernetes kubelet api
 [[inputs.kubernetes]]
-  ## URL for the kubelet, if empty read metrics from all nodes in the cluster
+  ## URL for the kubelet
   url = "http://127.0.0.1:10255"
 
   ## Use bearer token for authorization. ('bearer_token' takes priority)
   ## If both of these are empty, we'll use the default serviceaccount:
-  ## at: /var/run/secrets/kubernetes.io/serviceaccount/token
+  ## at: /run/secrets/kubernetes.io/serviceaccount/token
   ##
   ## To re-read the token at each interval, please use a file with the
   ## bearer_token option. If given a string, Telegraf will always use that
   ## token.
-  # bearer_token = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+  # bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
   ## OR
   # bearer_token_string = "abc_123"
-
-  ## Kubernetes Node Metric Name
-  ## The default Kubernetes node metric name (i.e. kubernetes_node) is the same
-  ## for the kubernetes and kube_inventory plugins. To avoid conflicts, set this
-  ## option to a different value.
-  # node_metric_name = "kubernetes_node"
 
   ## Pod labels to be added as tags.  An empty array for both include and
   ## exclude will include all labels.
@@ -71,40 +69,15 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   # insecure_skip_verify = false
 ```
 
-### Host IP
+## DaemonSet
 
-To find the ip address of the host you are running on you can issue a command
-like the following:
+For recommendations on running Telegraf as a DaemonSet see [Monitoring
+Kubernetes Architecture][k8s-telegraf] or view the Helm charts:
 
-```sh
-curl -s $API_URL/api/v1/namespaces/$POD_NAMESPACE/pods/$HOSTNAME \
-  --header "Authorization: Bearer $TOKEN" \
-  --insecure | jq -r '.status.hostIP'
-```
-
-This example uses the downward API to pass in the `$POD_NAMESPACE` and
-`$HOSTNAME` is the hostname of the pod which is set by the kubernetes API.
-See the [Kubernetes documentation][Kubernetes_docs] for a full example of
-generating a bearer token to explore the Kubernetes API.
-
-[Kubernetes_docs]: https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/#without-kubectl-proxy
-
-### Daemon-set
-
-For recommendations on running Telegraf as a daemon-set see the
-[Monitoring Kubernetes Architecture blog post][k8s_telegraf_blog] or check the
-following Helm charts:
-
-- [Telegraf][helm_telegraf]
-- [InfluxDB][helm_influxdb]
-- [Chronograf][helm_chronograf]
-- [Kapacitor][helm_kapacitor]
-
-[k8s_telegraf_blog]: https://www.influxdata.com/blog/monitoring-kubernetes-architecture/
-[helm_telegraf]: https://github.com/helm/charts/tree/master/stable/telegraf
-[helm_influxdb]: https://github.com/helm/charts/tree/master/stable/influxdb
-[helm_chronograf]: https://github.com/helm/charts/tree/master/stable/chronograf
-[helm_kapacitor]: https://github.com/helm/charts/tree/master/stable/kapacitor
+- [Telegraf][]
+- [InfluxDB][]
+- [Chronograf][]
+- [Kapacitor][]
 
 ## Metrics
 
@@ -176,10 +149,21 @@ following Helm charts:
 
 ## Example Output
 
-```text
+```shell
 kubernetes_node
 kubernetes_pod_container,container_name=deis-controller,namespace=deis,node_name=ip-10-0-0-0.ec2.internal,pod_name=deis-controller-3058870187-xazsr cpu_usage_core_nanoseconds=2432835i,cpu_usage_nanocores=0i,logsfs_available_bytes=121128271872i,logsfs_capacity_bytes=153567944704i,logsfs_used_bytes=20787200i,memory_major_page_faults=0i,memory_page_faults=175i,memory_rss_bytes=0i,memory_usage_bytes=0i,memory_working_set_bytes=0i,rootfs_available_bytes=121128271872i,rootfs_capacity_bytes=153567944704i,rootfs_used_bytes=1110016i 1476477530000000000
 kubernetes_pod_network,namespace=deis,node_name=ip-10-0-0-0.ec2.internal,pod_name=deis-controller-3058870187-xazsr rx_bytes=120671099i,rx_errors=0i,tx_bytes=102451983i,tx_errors=0i 1476477530000000000
 kubernetes_pod_volume,volume_name=default-token-f7wts,namespace=default,node_name=ip-172-17-0-1.internal,pod_name=storage-7 available_bytes=8415240192i,capacity_bytes=8415252480i,used_bytes=12288i 1546910783000000000
 kubernetes_system_container
 ```
+
+[metric filtering]: https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#metric-filtering
+[retention policy]: https://docs.influxdata.com/influxdb/latest/reference/internals/data-retention/
+[tsi]: https://docs.influxdata.com/influxdb/latest/reference/internals/storage-engine/#time-series-index-tsi
+[series cardinality]: https://docs.influxdata.com/influxdb/latest/reference/syntax/influxql/spec/#show-cardinality
+[influx-docs]: https://docs.influxdata.com/influxdb/latest/
+[k8s-telegraf]: https://www.influxdata.com/blog/monitoring-kubernetes-architecture/
+[telegraf]: https://github.com/helm/charts/tree/master/stable/telegraf
+[influxdb]: https://github.com/helm/charts/tree/master/stable/influxdb
+[chronograf]: https://github.com/helm/charts/tree/master/stable/chronograf
+[kapacitor]: https://github.com/helm/charts/tree/master/stable/kapacitor

@@ -1,20 +1,7 @@
 # Interrupts Input Plugin
 
-This plugin gathers metrics about IRQs from interrupts (`/proc/interrupts`) and
-soft-interrupts (`/proc/softirqs`).
-
-⭐ Telegraf v1.3.0
-🏷️ system
-💻 all
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+The interrupts plugin gathers metrics about IRQs from `/proc/interrupts` and
+`/proc/softirqs`.
 
 ## Configuration
 
@@ -84,7 +71,7 @@ With `cpu_as_tag = true`:
 
 With `cpu_as_tag = false`:
 
-```text
+```shell
 interrupts,irq=0,type=IO-APIC,device=2-edge\ timer,cpu=cpu0 count=23i 1489346531000000000
 interrupts,irq=1,type=IO-APIC,device=1-edge\ i8042,cpu=cpu0 count=9i 1489346531000000000
 interrupts,irq=30,type=PCI-MSI,device=65537-edge\ virtio1-input.0,cpu=cpu1 count=1i 1489346531000000000
@@ -93,7 +80,7 @@ soft_interrupts,irq=NET_RX,cpu=cpu0 count=280879i 1489346531000000000
 
 With `cpu_as_tag = true`:
 
-```text
+```shell
 interrupts,cpu=cpu6,irq=PIW,type=Posted-interrupt\ wakeup\ event count=0i 1543539773000000000
 interrupts,cpu=cpu7,irq=PIW,type=Posted-interrupt\ wakeup\ event count=0i 1543539773000000000
 soft_interrupts,cpu=cpu0,irq=HI count=246441i 1543539773000000000

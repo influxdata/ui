@@ -1,27 +1,13 @@
 # Fail2ban Input Plugin
 
-This plugin gathers the count of failed and banned IP addresses using
-[fail2ban][fail2ban] by running the `fail2ban-client` command.
+The fail2ban plugin gathers the count of failed and banned ip addresses using
+[fail2ban](https://www.fail2ban.org).
 
-> [!NOTE]
-> The `fail2ban-client` requires root access, so please make sure to either
-> allow Telegraf to run that command using `sudo` without a password or by
-> running telegraf as root (not recommended).
+This plugin runs the `fail2ban-client` command which generally requires root
+access.  Acquiring the required permissions can be done using several methods:
 
-⭐ Telegraf v1.4.0
-🏷️ network, system
-💻 all
-
-[fail2ban]: https://www.fail2ban.org
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+- [Use sudo](#using-sudo) run fail2ban-client.
+- Run telegraf as root. (not recommended)
 
 ## Configuration
 
@@ -29,10 +15,7 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
 # Read metrics from fail2ban.
 [[inputs.fail2ban]]
   ## Use sudo to run fail2ban-client
-  # use_sudo = false
-
-  ## Use the given socket instead of the default one
-  # socket = "/var/run/fail2ban/fail2ban.sock"
+  use_sudo = false
 ```
 
 ## Using sudo
@@ -68,12 +51,6 @@ Defaults!FAIL2BAN !logfile, !syslog, !pam_session
 
 ## Example Output
 
-```text
-fail2ban,jail=sshd failed=5i,banned=2i 1495868667000000000
-```
-
-### Execute the binary directly
-
 ```shell
 # fail2ban-client status sshd
 Status for the jail: sshd
@@ -85,4 +62,8 @@ Status for the jail: sshd
    |- Currently banned: 2
    |- Total banned:     10
    `- Banned IP list:   192.168.0.1 192.168.0.2
+```
+
+```shell
+fail2ban,jail=sshd failed=5i,banned=2i 1495868667000000000
 ```

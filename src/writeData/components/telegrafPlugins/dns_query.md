@@ -1,20 +1,7 @@
 # DNS Query Input Plugin
 
-This plugin gathers information about DNS queries such as response time and
-result codes.
-
-⭐ Telegraf v1.4.0
-🏷️ system, network
-💻 all
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+The DNS plugin gathers dns query times in miliseconds - like
+[Dig](https://en.wikipedia.org/wiki/Dig_\(command\))
 
 ## Configuration
 
@@ -37,14 +24,8 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   ## Dns server port.
   # port = 53
 
-  ## Query timeout
-  # timeout = "2s"
-
-  ## Include the specified additional properties in the resulting metric.
-  ## The following values are supported:
-  ##    "first_ip" -- return IP of the first A and AAAA answer
-  ##    "all_ips"  -- return IPs of all A and AAAA answers
-  # include_fields = []
+  ## Query timeout in seconds.
+  # timeout = 2
 ```
 
 ## Metrics
@@ -88,6 +69,6 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
 
 ## Example Output
 
-```text
+```shell
 dns_query,domain=google.com,rcode=NOERROR,record_type=A,result=success,server=127.0.0.1 rcode_value=0i,result_code=0i,query_time_ms=0.13746 1550020750001000000
 ```

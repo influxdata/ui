@@ -1,30 +1,16 @@
 # Postfix Input Plugin
 
-This plugin collects metrics on a local [Postfix][postfix] instance reporting
-the length, size and age of the active, hold, incoming, maildrop, and deferred
-[queues][queues].
+The postfix plugin reports metrics on the postfix queues.
 
-⭐ Telegraf v1.5.0
-🏷️ server
-💻 freebsd, linux, macos, solaris
-
-[postfix]: https://www.postfix.org/
-[queues]: https://www.postfix.org/QSHAPE_README.html#queues
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+For each of the active, hold, incoming, maildrop, and deferred queues
+(<http://www.postfix.org/QSHAPE_README.html#queues>), it will report the queue
+length (number of items), size (bytes used by items), and age (age of oldest
+item in seconds).
 
 ## Configuration
 
 ```toml @sample.conf
 # Measure postfix queue statistics
-# This plugin ONLY supports non-Windows
 [[inputs.postfix]]
   ## Postfix queue directory. If not provided, telegraf will try to use
   ## 'postconf -h queue_directory' to determine it.
@@ -68,7 +54,7 @@ sudo setfacl -dm g:telegraf:rX /var/spool/postfix/
 
 ## Example Output
 
-```text
+```shell
 postfix_queue,queue=active length=3,size=12345,age=9
 postfix_queue,queue=hold length=0,size=0,age=0
 postfix_queue,queue=maildrop length=1,size=2000,age=2

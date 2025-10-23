@@ -1,109 +1,41 @@
 # Suricata Input Plugin
 
-This service plugin reports internal performance counters of the
-[Suricata IDS/IPS][suricata] engine, such as captured traffic volume, memory
-usage, uptime, flow counters, and much more. This plugin provides a socket for
-the Suricata log output to write JSON stats output to, and processes the
-incoming data to fit Telegraf's format. It can also report for triggered
-Suricata IDS/IPS alerts.
-
-⭐ Telegraf v1.13.0
-🏷️ applications, network
-💻 all
-
-[suricata]: https://suricata.io/
-
-## Service Input <!-- @/docs/includes/service_input.md -->
-
-This plugin is a service input. Normal plugins gather metrics determined by the
-interval setting. Service plugins start a service to listen and wait for
-metrics or events to occur. Service plugins have two key differences from
-normal plugins:
-
-1. The global or plugin specific `interval` setting may not apply
-2. The CLI options of `--test`, `--test-wait`, and `--once` may not produce
-   output for this plugin
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+This plugin reports internal performance counters of the Suricata IDS/IPS
+engine, such as captured traffic volume, memory usage, uptime, flow counters,
+and much more. It provides a socket for the Suricata log output to write JSON
+stats output to, and processes the incoming data to fit Telegraf's format.
+It can also report for triggered Suricata IDS/IPS alerts.
 
 ## Configuration
 
 ```toml @sample.conf
 # Suricata stats and alerts plugin
 [[inputs.suricata]]
-  ## Source
-  ## Data sink for Suricata stats log. This is expected to be a filename of a
-  ## unix socket to be created for listening.
-  # source = "/var/run/suricata-stats.sock"
+  ## Data sink for Suricata stats log.
+  # This is expected to be a filename of a
+  # unix socket to be created for listening.
+  source = "/var/run/suricata-stats.sock"
 
-  ## Delimiter
-  ## Used for flattening field keys, e.g. subitem "alert" of "detect" becomes
-  ## "detect_alert" when delimiter is "_".
-  # delimiter = "_"
+  # Delimiter for flattening field keys, e.g. subitem "alert" of "detect"
+  # becomes "detect_alert" when delimiter is "_".
+  delimiter = "_"
 
-  ## Metric version
-  ## Version 1 only collects stats and optionally will look for alerts if
-  ## the configuration setting alerts is set to true.
-  ## Version 2 parses any event type message by default and produced metrics
-  ## under a single metric name using a tag to differentiate between event
-  ## types. The timestamp for the message is applied to the generated metric.
-  ## Additional tags and fields are included as well.
-  # version = "1"
-
-  ## Alerts
-  ## In metric version 1, only status is captured by default, alerts must be
-  ## turned on with this configuration option. This option does not apply for
-  ## metric version 2.
-  # alerts = false
-```
-
-### Suricata configuration
-
-Suricata needs to deliver the 'stats' event type to a given unix socket for
-this plugin to pick up. This can be done, for example, by creating an additional
-output in the Suricata configuration file:
-
-```yaml
-- eve-log:
-    enabled: yes
-    filetype: unix_stream
-    filename: /tmp/suricata-stats.sock
-    types:
-      - stats:
-         threads: yes
-```
-
-### FreeBSD tuning
-
-Under FreeBSD it is necessary to increase the localhost buffer space to at least
-16384, default is 8192 otherwise messages from Suricata are truncated as they
-exceed the default available buffer space, consequently no statistics are
-processed by the plugin.
-
-```text
-sysctl -w net.local.stream.recvspace=16384
-sysctl -w net.local.stream.sendspace=16384
+  # Detect alert logs
+  alerts = false
 ```
 
 ## Metrics
 
 Fields in the 'suricata' measurement follow the JSON format used by Suricata's
-stats output. See the [statistics documentation][stats_doc] for more
-information.
+stats output.
+See <http://suricata.readthedocs.io/en/latest/performance/statistics.html> for
+more information.
 
 All fields for Suricata stats are numeric.
 
 - suricata
   - tags:
-    - thread: `Global` for global statistics (if enabled), thread IDs
-              (e.g. `W#03-enp0s31f6`) for thread-specific statistics
+    - thread: `Global` for global statistics (if enabled), thread IDs (e.g. `W#03-enp0s31f6`) for thread-specific statistics
   - fields:
     - app_layer_flow_dcerpc_udp
     - app_layer_flow_dns_tcp
@@ -169,7 +101,7 @@ All fields for Suricata stats are numeric.
     - ...
 
 Some fields of the Suricata alerts are strings, for example the signatures. See
-the Suricata [event documentation][events_doc] for more information.
+the Suricata [event docs][1] for more information.
 
 - suricata_alert
   - fields:
@@ -183,8 +115,35 @@ the Suricata [event documentation][events_doc] for more information.
     - target_port
     - ...
 
-[stats_doc]: http://suricata.readthedocs.io/en/latest/performance/statistics.html
-[events_doc]: https://suricata.readthedocs.io/en/suricata-6.0.0/output/eve/eve-json-format.html?highlight=priority#event-type-alert
+[1]: https://suricata.readthedocs.io/en/suricata-6.0.0/output/eve/eve-json-format.html?highlight=priority#event-type-alert
+
+### Suricata configuration
+
+Suricata needs to deliver the 'stats' event type to a given unix socket for
+this plugin to pick up. This can be done, for example, by creating an additional
+output in the Suricata configuration file:
+
+```yaml
+- eve-log:
+    enabled: yes
+    filetype: unix_stream
+    filename: /tmp/suricata-stats.sock
+    types:
+      - stats:
+         threads: yes
+```
+
+### FreeBSD tuning
+
+Under FreeBSD it is necessary to increase the localhost buffer space to at least
+16384, default is 8192 otherwise messages from Suricata are truncated as they
+exceed the default available buffer space, consequently no statistics are
+processed by the plugin.
+
+```text
+sysctl -w net.local.stream.recvspace=16384
+sysctl -w net.local.stream.sendspace=16384
+```
 
 ## Example Output
 

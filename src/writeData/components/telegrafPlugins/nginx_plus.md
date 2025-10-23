@@ -1,30 +1,15 @@
 # Nginx Plus Input Plugin
 
-This plugin gathers metrics from the commercial
-[Nginx Plus web server][nginx_plus] via the [status module][status_module].
+Nginx Plus is a commercial version of the open source web server Nginx. The use
+this plugin you will need a license. For more information about the differences
+between Nginx (F/OSS) and Nginx Plus, see the Nginx [documentation][diff-doc].
 
-> [!NOTE]
-> Using this plugin requires a license.
+Structures for Nginx Plus have been built based on history of [status module
+documentation][status-mod].
 
-For more information about differences between Nginx (F/OSS) and Nginx Plus, see
-the Nginx [documentation][diff_doc].
+[diff-doc]: https://www.nginx.com/blog/whats-difference-nginx-foss-nginx-plus/
 
-⭐ Telegraf v1.5.0
-🏷️ server, web
-💻 all
-
-[nginx_plus]: https://www.f5.com/products/nginx/nginx-plus
-[status_module]: http://nginx.org/en/docs/http/ngx_http_status_module.html
-[diff_doc]: https://www.nginx.com/blog/whats-difference-nginx-foss-nginx-plus/
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+[status-mod]: http://nginx.org/en/docs/http/ngx_http_status_module.html
 
 ## Configuration
 

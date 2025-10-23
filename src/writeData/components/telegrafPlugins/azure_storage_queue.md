@@ -1,33 +1,19 @@
-# Azure Queue Storage Input Plugin
+# Azure Storage Queue Input Plugin
 
-This plugin gathers queue sizes from the [Azure Queue Storage][azure_queues]
-service, storing a large numbers of messages.
-
-⭐ Telegraf v1.13.0
-🏷️ cloud
-💻 all
-
-[azure_queues]: https://learn.microsoft.com/en-us/azure/storage/queues
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+This plugin gathers sizes of Azure Storage Queues.
 
 ## Configuration
 
 ```toml @sample.conf
 # Gather Azure Storage Queue metrics
 [[inputs.azure_storage_queue]]
-  ## Azure Storage Account name and shared access key (required)
+  ## Required Azure Storage Account name
   account_name = "mystorageaccount"
+
+  ## Required Azure Storage Account access key
   account_key = "storageaccountaccesskey"
 
-  ## Disable peeking age of oldest message (faster)
+  ## Set to false to disable peeking age of oldest message (executes faster)
   # peek_oldest_message_age = true
 ```
 
@@ -45,7 +31,7 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
 
 ## Example Output
 
-```text
+```shell
 azure_storage_queues,queue=myqueue,account=mystorageaccount oldest_message_age=799714900i,size=7i 1565970503000000000
 azure_storage_queues,queue=myemptyqueue,account=mystorageaccount size=0i 1565970502000000000
 ```

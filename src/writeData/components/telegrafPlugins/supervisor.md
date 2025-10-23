@@ -1,32 +1,30 @@
 # Supervisor Input Plugin
 
-This plugin gathers information about processes running under
-[supervisord][supervisord] using the [XML-RPC API][api].
+This plugin gathers information about processes that
+running under supervisor using XML-RPC API.
 
-> [!NOTE]
-> This plugin requires supervisor v3.3.2+.
+Minimum tested version of supervisor: 3.3.2
 
-⭐ Telegraf v1.24.0
-🏷️ applications
-💻 all
+## Supervisor configuration
 
-[supervisord]: https://supervisord.org/
-[api]: https://supervisord.org/api.html
+This plugin needs an HTTP server to be enabled in supervisor,
+also it's recommended to enable basic authentication on the
+HTTP server. When using basic authentication make sure to
+include the username and password in the plugin's url setting.
+Here is an example of the `inet_http_server` section in supervisor's
+config that will work with default plugin configuration:
 
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+```ini
+[inet_http_server]
+port = 127.0.0.1:9001
+username = user
+password = pass
+```
 
 ## Configuration
 
-```toml @sample.conf
-# Gathers information about processes that running under supervisor using XML-RPC API
-[[inputs.supervisor]]
+```toml
+[inputs.supervisor]
   ## Url of supervisor's XML-RPC endpoint if basic auth enabled in supervisor http server,
   ## than you have to add credentials to url (ex. http://login:pass@localhost:9001/RPC2)
   # url="http://localhost:9001/RPC2"
@@ -35,21 +33,6 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
   ## Currently supported supported additional metrics are: pid, rc
   # metrics_include = []
   # metrics_exclude = ["pid", "rc"]
-```
-
-### Supervisor configuration
-
-This plugin needs an HTTP server to be enabled in supervisor. It is  recommended
-to enable basic authentication on the HTTP server. When using basic
-authentication make sure to include the username and password in the plugin's
-`url` setting. Here is an example of the `inet_http_server` section in
-supervisor's config that will work with default plugin configuration:
-
-```ini
-[inet_http_server]
-port = 127.0.0.1:9001
-username = user
-password = pass
 ```
 
 ### Optional metrics
@@ -112,7 +95,7 @@ configuration file.
 
 ## Example Output
 
-```text
+```shell
 supervisor_processes,group=ExampleGroup,id=supervisor,port=9001,process=ExampleProcess,source=localhost state=20i,uptime=75958i 1659786637000000000
 supervisor_instance,id=supervisor,port=9001,source=localhost state=1i 1659786637000000000
 ```

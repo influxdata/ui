@@ -1,34 +1,13 @@
 # SNMP Input Plugin
 
-This plugin gathers metrics by polling [SNMP][snmp] agents with individual OIDs
-or complete SNMP tables.
+The `snmp` input plugin uses polling to gather metrics from SNMP agents.
+Support for gathering individual OIDs as well as complete SNMP tables is
+included.
 
-> [!NOTE]
-> The path setting is shared between all instances of all SNMP plugin types!
+## Note about Paths
 
-⭐ Telegraf v0.10.1
-🏷️ hardware, network
-💻 all
-
-[snmp]: https://datatracker.ietf.org/doc/html/rfc1157
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
-
-## Secret-store support
-
-This plugin supports secrets from secret-stores for the `auth_password` and
-`priv_password` option.
-See the [secret-store documentation][SECRETSTORE] for more details on how
-to use them.
-
-[SECRETSTORE]: ../../../docs/CONFIGURATION.md#secret-store-secrets
+Path is a global variable, separate snmp instances will append the specified
+path onto the global path variable
 
 ## Configuration
 
@@ -52,10 +31,10 @@ to use them.
   # version = 2
 
   ## Unconnected UDP socket
-  ## When true, SNMP responses are accepted from any address not just
+  ## When true, SNMP reponses are accepted from any address not just
   ## the requested address. This can be useful when gathering from
   ## redundant/failover systems.
-  # unconnected_udp_socket = false
+  # unconnected_udp_socket = false 
 
   ## Path to mib files
   ## Used by the gosmi translator.
@@ -65,12 +44,7 @@ to use them.
   ## SNMP community string.
   # community = "public"
 
-  ## Agent host tag; should be set to "source" for consistent usage across plugins
-  ##   example: agent_host_tag = "source"
-  ## The default value is inconsistent with other plugins. Users will get a
-  ## warning that can be ignored if this is not changed. However, to have a
-  ## consistent experience, set this to "source" in your config to align with
-  ## other plugins.
+  ## Agent host tag
   # agent_host_tag = "agent_host"
 
   ## Number of retries to attempt.
@@ -103,38 +77,23 @@ to use them.
   ## full plugin documentation for configuration details.
   [[inputs.snmp.field]]
     oid = "RFC1213-MIB::sysUpTime.0"
-    name = "sysUptime"
-    conversion = "float(2)"
+    name = "uptime"
 
   [[inputs.snmp.field]]
     oid = "RFC1213-MIB::sysName.0"
-    name = "sysName"
+    name = "source"
     is_tag = true
 
   [[inputs.snmp.table]]
     oid = "IF-MIB::ifTable"
     name = "interface"
-    inherit_tags = ["sysName"]
+    inherit_tags = ["source"]
 
     [[inputs.snmp.table.field]]
       oid = "IF-MIB::ifDescr"
       name = "ifDescr"
       is_tag = true
 ```
-
-### SNMP backend: `gosmi` vs `netsnmp`
-
-This plugin supports two backends to translate SNMP objects. By default,
-Telegraf will use `netsnmp`, however, this option is deprecated and it is
-encouraged to migrate to `gosmi`. If users find issues with `gosmi` that do not
-occur with `netsnmp` please open a project issue on GitHub.
-
-The SNMP backend setting is a global-level setting that applies to all use of
-SNMP in Telegraf. Users can set this option in the `[agent]` configuration via
-the `snmp_translator` option. See the [agent configuration][agent] for more
-details.
-
-[agent]: /docs/CONFIGURATION.md#agent
 
 ### Configure SNMP Requests
 
@@ -172,17 +131,13 @@ option operate similar to the `snmpget` utility.
     ##   float:       Convert the value into a float with no adjustment. Same
     ##                as `float(0)`.
     ##   int:         Convert the value into an integer.
+    ##   hwaddr:      Convert the value to a MAC address.
     ##   ipaddr:      Convert the value to an IP address.
-    ##   hex:         Convert bytes to a hex string.
-    ##   hextoint:X:Y Convert bytes to integer, where X is the endian and Y the
-    ##                bit size. For example: hextoint:LittleEndian:uint64 or
-    ##                hextoint:BigEndian:uint32. Valid options for the endian
-    ##                are: BigEndian and LittleEndian. For the bit size:
-    ##                uint16, uint32 and uint64.
-    ##   enum:        Convert the value according to its syntax in the MIB.
-    ##                (Only supported with gosmi translator)
-    ##   displayhint: Format the value according to the textual convention in the MIB.
-    ##                (Only supported with gosmi translator)
+    ##   hextoint:X:Y Convert a hex string value to integer. Where X is the Endian
+    ##                and Y the bit size. For example: hextoint:LittleEndian:uint64
+    ##                or hextoint:BigEndian:uint32. Valid options for the Endian are:
+    ##                BigEndian and LittleEndian. For the bit size: uint16, uint32
+    ##                and uint64.
     ##
     # conversion = ""
 ```
@@ -199,9 +154,9 @@ By default all columns of the SNMP table will be collected - it is not required
 to add a nested field for each column, only those which you wish to modify. To
 *only* collect certain columns, omit the `oid` from the `table` section and only
 include `oid` settings in `field` sections. For more complex include/exclude
-cases for columns use [metric filtering][filtering].
+cases for columns use [metric filtering][].
 
-One metric is created for each row of the SNMP table.
+One [metric][] is created for each row of the SNMP table.
 
 ```toml
 [[inputs.snmp]]
@@ -264,12 +219,10 @@ One metric is created for each row of the SNMP table.
       ## Controls if entries from secondary table should be added or not
       ## if joining index is present or not. I set to true, means that join
       ## is outer, and index is prepended with "Secondary." for missing values
-      ## to avoid overlapping indexes from both tables. Can be set per field or
+      ## to avoid overlaping indexes from both tables. Can be set per field or
       ## globally with SecondaryIndexTable, global true overrides per field false.
       # secondary_outer_join = false
 ```
-
-[filtering]: /docs/CONFIGURATION.md#metric-filtering
 
 #### Two Table Join
 
@@ -310,7 +263,7 @@ name = "EntPhyIndex"
 oid = "CISCO-POWER-ETHERNET-EXT-MIB::cpeExtPsePortEntPhyIndex"
 ```
 
-Partial result (removed agent and host tags from all following outputs
+Partial result (removed agent_host and host columns from all following outputs
 in this section):
 
 ```text
@@ -406,15 +359,14 @@ sudo tcpdump -s 0 -i eth0 -w telegraf-snmp.pcap host 127.0.0.1 and port 161
 
 The field and tags will depend on the table and fields configured.
 
-* snmp
-  * tags:
-    * agent_host (deprecated in 1.29: use `source` instead)
-
 ## Example Output
 
-```text
-snmp,agent_host=127.0.0.1,sysName=example.org uptime=113319.74 1575509815000000000
-interface,agent_host=127.0.0.1,ifDescr=wlan0,ifIndex=3,sysName=example.org ifAdminStatus=1i,ifInDiscards=0i,ifInErrors=0i,ifInNUcastPkts=0i,ifInOctets=3436617431i,ifInUcastPkts=2717778i,ifInUnknownProtos=0i,ifLastChange=0i,ifMtu=1500i,ifOperStatus=1i,ifOutDiscards=0i,ifOutErrors=0i,ifOutNUcastPkts=0i,ifOutOctets=581368041i,ifOutQLen=0i,ifOutUcastPkts=1354338i,ifPhysAddress="c8:5b:76:c9:e6:8c",ifSpecific=".0.0",ifSpeed=0i,ifType=6i 1575509815000000000
-interface,agent_host=127.0.0.1,ifDescr=eth0,ifIndex=2,sysName=example.org ifAdminStatus=1i,ifInDiscards=0i,ifInErrors=0i,ifInNUcastPkts=21i,ifInOctets=3852386380i,ifInUcastPkts=3634004i,ifInUnknownProtos=0i,ifLastChange=9088763i,ifMtu=1500i,ifOperStatus=1i,ifOutDiscards=0i,ifOutErrors=0i,ifOutNUcastPkts=0i,ifOutOctets=434865441i,ifOutQLen=0i,ifOutUcastPkts=2110394i,ifPhysAddress="c8:5b:76:c9:e6:8c",ifSpecific=".0.0",ifSpeed=1000000000i,ifType=6i 1575509815000000000
-interface,agent_host=127.0.0.1,ifDescr=lo,ifIndex=1,sysName=example.org ifAdminStatus=1i,ifInDiscards=0i,ifInErrors=0i,ifInNUcastPkts=0i,ifInOctets=51555569i,ifInUcastPkts=339097i,ifInUnknownProtos=0i,ifLastChange=0i,ifMtu=65536i,ifOperStatus=1i,ifOutDiscards=0i,ifOutErrors=0i,ifOutNUcastPkts=0i,ifOutOctets=51555569i,ifOutQLen=0i,ifOutUcastPkts=339097i,ifSpecific=".0.0",ifSpeed=10000000i,ifType=24i 1575509815000000000
+```shell
+snmp,agent_host=127.0.0.1,source=loaner uptime=11331974i 1575509815000000000
+interface,agent_host=127.0.0.1,ifDescr=wlan0,ifIndex=3,source=example.org ifAdminStatus=1i,ifInDiscards=0i,ifInErrors=0i,ifInNUcastPkts=0i,ifInOctets=3436617431i,ifInUcastPkts=2717778i,ifInUnknownProtos=0i,ifLastChange=0i,ifMtu=1500i,ifOperStatus=1i,ifOutDiscards=0i,ifOutErrors=0i,ifOutNUcastPkts=0i,ifOutOctets=581368041i,ifOutQLen=0i,ifOutUcastPkts=1354338i,ifPhysAddress="c8:5b:76:c9:e6:8c",ifSpecific=".0.0",ifSpeed=0i,ifType=6i 1575509815000000000
+interface,agent_host=127.0.0.1,ifDescr=eth0,ifIndex=2,source=example.org ifAdminStatus=1i,ifInDiscards=0i,ifInErrors=0i,ifInNUcastPkts=21i,ifInOctets=3852386380i,ifInUcastPkts=3634004i,ifInUnknownProtos=0i,ifLastChange=9088763i,ifMtu=1500i,ifOperStatus=1i,ifOutDiscards=0i,ifOutErrors=0i,ifOutNUcastPkts=0i,ifOutOctets=434865441i,ifOutQLen=0i,ifOutUcastPkts=2110394i,ifPhysAddress="c8:5b:76:c9:e6:8c",ifSpecific=".0.0",ifSpeed=1000000000i,ifType=6i 1575509815000000000
+interface,agent_host=127.0.0.1,ifDescr=lo,ifIndex=1,source=example.org ifAdminStatus=1i,ifInDiscards=0i,ifInErrors=0i,ifInNUcastPkts=0i,ifInOctets=51555569i,ifInUcastPkts=339097i,ifInUnknownProtos=0i,ifLastChange=0i,ifMtu=65536i,ifOperStatus=1i,ifOutDiscards=0i,ifOutErrors=0i,ifOutNUcastPkts=0i,ifOutOctets=51555569i,ifOutQLen=0i,ifOutUcastPkts=339097i,ifSpecific=".0.0",ifSpeed=10000000i,ifType=24i 1575509815000000000
 ```
+
+[metric filtering]: /docs/CONFIGURATION.md#metric-filtering
+[metric]: /docs/METRICS.md

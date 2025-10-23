@@ -1,20 +1,8 @@
 # Bond Input Plugin
 
-This plugin collects metrics for both the network bond interface as well as its
-slave interfaces using `/proc/net/bonding/*` files.
-
-⭐ Telegraf v1.5.0
-🏷️ system
-💻 all
-
-## Global configuration options <!-- @/docs/includes/plugin_config.md -->
-
-In addition to the plugin-specific configuration settings, plugins support
-additional global and plugin configuration settings. These settings are used to
-modify metrics, tags, and field or create aliases and configure ordering, etc.
-See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
-
-[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+The Bond input plugin collects network bond interface status for both the
+network bond interface as well as slave interfaces.
+The plugin collects these metrics from `/proc/net/bonding/*` files.
 
 ## Configuration
 
@@ -42,31 +30,50 @@ See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
 ## Metrics
 
 - bond
-  - tags:
-    - `bond`: name of the bond
-  - fields:
-    - `active_slave`: currently active slave interface for active-backup mode
-    - `status`: status of the interface (0: down , 1: up)
+  - active_slave (for active-backup mode)
+  - status
 
 - bond_slave
-  - tags:
-    - `bond`: name of the bond
-    - `interface`: name of the network interface
-  - fields:
-    - `failures`: amount of failures for bond's slave interface
-    - `status`: status of the interface (0: down , 1: up)
-    - `count`: number of slaves attached to bond
-    - `actor_churned (for LACP bonds)`: count for local end of LACP bond flapped
-    - `partner_churned (for LACP bonds)`: count for remote end of LACP bond flapped
-    - `total_churned (for LACP bonds)`: full count of all churn events
+  - failures
+  - status
+  - count
+  - actor_churned (for LACP bonds)
+  - partner_churned (for LACP bonds)
+  - total_churned (for LACP bonds)
 
 - bond_sys
-  - tags:
-    - `bond`: name of the bond
-    - `mode`: name of the bonding mode
-  - fields:
-    - `slave_count`: number of slaves
-    - `ad_port_count`: number of ports
+  - slave_count
+  - ad_port_count
+
+## Description
+
+- active_slave
+  - Currently active slave interface for active-backup mode.
+- status
+  - Status of bond interface or bonds's slave interface (down = 0, up = 1).
+- failures
+  - Amount of failures for bond's slave interface.
+- count
+  - Number of slaves attached to bond
+- actor_churned
+  - number of times local end of LACP bond flapped
+- partner_churned
+  - number of times remote end of LACP bond flapped
+- total_churned
+  - full count of all churn events
+
+## Tags
+
+- bond
+  - bond
+
+- bond_slave
+  - bond
+  - interface
+
+- bond_sys
+  - bond
+  - mode
 
 ## Example Output
 
@@ -87,18 +94,21 @@ Configuration:
 Run:
 
 ```bash
+```shell
 telegraf --config telegraf.conf --input-filter bond --test
 ```
 
 Output:
 
-```text
-bond,bond=bond1,host=local active_slave="eth0",status=1i 1509704525000000000
-bond_slave,bond=bond1,interface=eth0,host=local status=1i,failures=0i 1509704525000000000
-bond_slave,host=local,bond=bond1,interface=eth1 status=1i,failures=0i 1509704525000000000
-bond_slave,host=local,bond=bond1 count=2i 1509704525000000000
-bond,bond=bond0,host=isvetlov-mac.local status=1i 1509704525000000000
-bond_slave,bond=bond0,interface=eth1,host=local status=1i,failures=0i 1509704525000000000
-bond_slave,bond=bond0,interface=eth2,host=local status=1i,failures=0i 1509704525000000000
-bond_slave,bond=bond0,host=local count=2i 1509704525000000000
+```bash
+```shell
+* Plugin: inputs.bond, Collection 1
+> bond,bond=bond1,host=local active_slave="eth0",status=1i 1509704525000000000
+> bond_slave,bond=bond1,interface=eth0,host=local status=1i,failures=0i 1509704525000000000
+> bond_slave,host=local,bond=bond1,interface=eth1 status=1i,failures=0i 1509704525000000000
+> bond_slave,host=local,bond=bond1 count=2i 1509704525000000000
+> bond,bond=bond0,host=isvetlov-mac.local status=1i 1509704525000000000
+> bond_slave,bond=bond0,interface=eth1,host=local status=1i,failures=0i 1509704525000000000
+> bond_slave,bond=bond0,interface=eth2,host=local status=1i,failures=0i 1509704525000000000
+> bond_slave,bond=bond0,host=local count=2i 1509704525000000000
 ```

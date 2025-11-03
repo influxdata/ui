@@ -65,11 +65,12 @@ const SupportLink = (): JSX.Element => {
   return (
     <a
       data-testid="go-to-new-org--link"
-      href="https://support.influxdata.com"
+      href="https://support.influxdata.com/s/login"
       style={linkStyle}
       target="_blank"
+      rel="noopener noreferrer"
     >
-      https://support.influxdata.com
+      https://support.influxdata.com/s/login
     </a>
   )
 }

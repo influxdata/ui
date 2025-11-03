@@ -1,6 +1,5 @@
 // Libraries
 import React, {useEffect} from 'react'
-import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -15,22 +14,10 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-// Selectors
-import {selectCurrentOrg, selectUser} from 'src/identity/selectors'
-
 export const PricingAlert: React.FC = () => {
   useEffect(() => {
     event(`pricingAnnouncementBanner.displayed`)
   }, [])
-
-  const org = useSelector(selectCurrentOrg)
-  const user = useSelector(selectUser)
-
-  const encodedSubject = encodeURI('PAYG Pricing Increase')
-  const encodedBody = encodeURI(`User ID: ${user.email}
-Org ID: ${org.id}
-
-Please describe your inquiry here.`)
 
   const handleContactUsClick = () => {
     event(`pricingAnnouncementBanner.contactUs.clicked`)
@@ -47,9 +34,7 @@ Please describe your inquiry here.`)
           Starting on <b>December 1, 2023</b> there will be an increase in to
           your usage-based pricing. Please feel free to{' '}
           <SafeBlankLink
-            href={`mailto:payg-price-change@influxdata.com?
-            &subject=${encodedSubject}
-            &body=${encodedBody}`}
+            href="https://support.influxdata.com/s/login"
             onClick={handleContactUsClick}
           >
             contact us

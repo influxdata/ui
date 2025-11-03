@@ -52,7 +52,7 @@ export const writeLimitReached = (
 
 export const resourceLimitReached = (resourceName: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Oops. It looks like you have reached the maximum number of ${resourceName} allowed as part of your plan. If you would like to upgrade and remove this restriction, reach out at https://support.influxdata.com.`,
+  message: `Oops. It looks like you have reached the maximum number of ${resourceName} allowed as part of your plan. If you would like to upgrade and remove this restriction, reach out at support.influxdata.com.`,
   duration: FIVE_SECONDS,
   type: 'resourceLimitReached',
 })

@@ -81,7 +81,7 @@ const NotFoundNew: FC = () => (
                   your access to this page may have expired.&nbsp;
                   {/* Add rel options to avoid "tabnapping" */}
                   <a
-                    href="mailto:support@influxdata.com"
+                    href="https://support.influxdata.com/s/login"
                     target="_blank"
                     rel="noreferrer noopener"
                   >

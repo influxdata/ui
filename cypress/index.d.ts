@@ -69,7 +69,6 @@ import {
   selectScriptFieldOrTag,
   scriptsLoginWithFlags,
   createScript,
-  disableClickThroughAnnouncement,
 } from './support/commands'
 
 declare global {
@@ -146,7 +145,6 @@ declare global {
       selectScriptFieldOrTag: typeof selectScriptFieldOrTag
       scriptsLoginWithFlags: typeof scriptsLoginWithFlags
       createScript: typeof createScript
-      disableClickThroughAnnouncement: typeof disableClickThroughAnnouncement
     }
   }
 }

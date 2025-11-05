@@ -102,7 +102,7 @@ const CardinalityLimitOverlayUnconnected: FC<Props> = ({onClose, orgID}) => {
             </p>
           </div>
         </div>
-        {showForm && <SeriesCardinalityIncreaseForm orgID={orgID} />}
+        {showForm && <SeriesCardinalityIncreaseForm />}
       </Overlay.Body>
     </OverlayContainer>
   )

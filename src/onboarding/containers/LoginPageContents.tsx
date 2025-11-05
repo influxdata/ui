@@ -244,7 +244,8 @@ class LoginPageContents extends PureComponent<Props> {
       const emailError = `The email and password combination you submitted don't match. Please try again`
       this.setState({...errors, emailError})
     } else {
-      const emailError = `We have been notified of an issue while accessing your account. If this issue persists, please contact support@influxdata.com`
+      const emailError =
+        'We have been notified of an issue while accessing your account. If this issue persists, please contact support at support.influxdata.com'
       this.setState({...errors, emailError})
     }
   }

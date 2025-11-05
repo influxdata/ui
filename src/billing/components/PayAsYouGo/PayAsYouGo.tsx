@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -19,15 +18,8 @@ import CancellationPanel from 'src/billing/components/PayAsYouGo/CancellationPan
 import NotificationPanel from 'src/billing/components/PayAsYouGo/NotificationPanel'
 import InvoiceLoadingWrapper from 'src/billing/components/AssetLoading/InvoiceWrapper'
 import BillingInfoWrapper from 'src/billing/components/AssetLoading/BillingInfoWrapper'
-import {PricingAlert} from 'src/billing/components/PayAsYouGo/PricingAlert'
-
-// Utils
-import {selectCurrentIdentity} from 'src/identity/selectors'
 
 const BillingPayAsYouGo: FC = () => {
-  const {account} = useSelector(selectCurrentIdentity)
-  const isDirectSignup = account.billingProvider === 'zuora'
-
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -36,7 +28,6 @@ const BillingPayAsYouGo: FC = () => {
     >
       <BillingInfoWrapper>
         <>
-          {isDirectSignup && <PricingAlert />}
           <PlanTypePanel />
           <Panel>
             <Panel.Header testID="past-invoices--header">

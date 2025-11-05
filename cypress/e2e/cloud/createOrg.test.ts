@@ -227,10 +227,6 @@ describe('Free account', () => {
 })
 
 describe('PAYG account', () => {
-  beforeEach(() => {
-    cy.disableClickThroughAnnouncement()
-  })
-
   it('can create new orgs, if there are orgs left in the quota', () => {
     setupTest({accountType: 'pay_as_you_go', canCreateOrgs: true})
 

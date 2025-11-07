@@ -56,14 +56,16 @@ const FlowHeader: FC = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
-      .then(res => {
-        if (!!res?.data?.[0]) {
-          // TODO: handle there being multiple links?
-          setShare({id: res.data[0].id, accessID: res.data[0].accessID})
-        }
-      })
-      .catch(err => console.error('failed to get notebook share', err))
+    if (CLOUD) {
+      getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
+        .then(res => {
+          if (!!res?.data?.[0]) {
+            // TODO: handle there being multiple links?
+            setShare({id: res.data[0].id, accessID: res.data[0].accessID})
+          }
+        })
+        .catch(err => console.error('failed to get notebook share', err))
+    }
   }, [flow.id])
 
   const handleSave = useCallback(

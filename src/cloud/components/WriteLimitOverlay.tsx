@@ -14,20 +14,12 @@ import {
 
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-// Reporting
-import {event} from 'src/cloud/utils/reporting'
-
 // Design
 import './WriteLimitOverlay.scss'
 
 const WriteLimitOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
 
-  const handleSubmit = (): void => {
-    event('limit.requestincrease.writes')
-
-    window.open(`https://support.influxdata.com/s/login`)
-  }
   return (
     <OverlayContainer
       maxWidth={760}
@@ -45,7 +37,7 @@ const WriteLimitOverlay: FC = () => {
             Request Query Write Limit Increase
           </Heading>
           <p>
-            To request a write limit increase, please contact our support team.
+            To request a write limit increase, please use the Contact Support option in the Help menu.
           </p>
         </div>
       </Overlay.Body>
@@ -55,16 +47,8 @@ const WriteLimitOverlay: FC = () => {
           type={ButtonType.Submit}
           size={ComponentSize.Medium}
           color={ComponentColor.Tertiary}
-          text="Cancel"
+          text="Close"
           onClick={onClose}
-        />
-        <Button
-          shape={ButtonShape.Default}
-          onClick={handleSubmit}
-          size={ComponentSize.Medium}
-          color={ComponentColor.Primary}
-          className="rate-alert--request-increase-button"
-          text="Submit Request"
         />
       </Overlay.Footer>
     </OverlayContainer>

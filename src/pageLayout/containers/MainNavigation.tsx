@@ -417,7 +417,7 @@ export const MainNavigation: FC = () => {
               />
             )}
           />
-          {CLOUD && (accountType === 'paid' || accountType === 'contract') && (
+          {CLOUD && (
             <TreeNav.SubItem
               id="contactSupport"
               label="Contact Support"

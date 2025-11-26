@@ -26,7 +26,10 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Selectors
-import {selectQuartzIdentity} from 'src/identity/selectors'
+import {
+  selectCurrentAccountType,
+  selectQuartzIdentity,
+} from 'src/identity/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -64,6 +67,7 @@ interface OwnProps {
 export const ContactSupportOverlay: FC<OwnProps> = () => {
   const quartzIdentity = useSelector(selectQuartzIdentity)
   const {user: identityUser, org: identityOrg} = quartzIdentity.currentIdentity
+  const accountType = useSelector(selectCurrentAccountType)
 
   const [subject, setSubject] = useState('')
   const [severity, setSeverity] = useState('3 - Standard')
@@ -71,6 +75,8 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
   const {onClose} = useContext(OverlayContext)
 
   const dispatch = useDispatch()
+
+  const isContractOrPaid = accountType === 'contract' || accountType === 'paid'
 
   const severityLevel = [
     '1 - Critical',
@@ -124,6 +130,10 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
     }
   }
 
+  // const accountType = useSelector(selectCurrentAccountType)
+  const isContractOrPAYG = true
+  // accountType === 'contract' || accountType === 'pay_as_you_go'
+
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSubject(event.target.value)
   }
@@ -172,55 +182,65 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
       />
       <Form>
         <Overlay.Body>
-          <p className="status-page-text">
-            <span>
-              {' '}
-              <Icon glyph={IconFont.Info_New} />{' '}
-            </span>
-            Check our{' '}
-            <SafeBlankLink href="https://status.influxdata.com">
-              status page
-            </SafeBlankLink>{' '}
-            to see if there is an outage impacting your region.
-          </p>
-          <Form.Element label="Subject" required={true}>
-            <Input
-              name="subject"
-              value={subject}
-              onChange={handleSubjectChange}
-              testID="contact-support-subject-input"
-            />
-          </Form.Element>
-          <Form.Element
-            label="Severity"
-            required={true}
-            labelAddOn={severityTip}
-          >
-            <SelectDropdown
-              options={severityLevel}
-              selectedOption={severity}
-              onSelect={handleChangeSeverity}
-              indicator={DropdownItemType.None}
-              testID="severity-level-dropdown"
-            />
-          </Form.Element>
-          <Form.ValidationElement
-            label="Description"
-            required={true}
-            value={description}
-            validationFunc={handleValidation}
-          >
-            {status => (
-              <TextArea
-                status={status}
-                rows={10}
-                testID="contact-support-description--textarea"
-                name="description"
+          {isContractOrPaid ? (
+            <>
+              <p className="status-page-text">
+                <span>
+                  {' '}
+                  <Icon glyph={IconFont.Info_New} />{' '}
+                </span>
+                Check our{' '}
+                <SafeBlankLink href="https://status.influxdata.com">
+                  status page
+                </SafeBlankLink>{' '}
+                to see if there is an outage impacting your region.
+              </p>
+              <Form.Element label="Subject" required={true}>
+                <Input
+                  name="subject"
+                  value={subject}
+                  onChange={handleSubjectChange}
+                  testID="contact-support-subject-input"
+                />
+              </Form.Element>
+              <Form.Element
+                label="Severity"
+                required={true}
+                labelAddOn={severityTip}
+              >
+                <SelectDropdown
+                  options={severityLevel}
+                  selectedOption={severity}
+                  onSelect={handleChangeSeverity}
+                  indicator={DropdownItemType.None}
+                  testID="severity-level-dropdown"
+                />
+              </Form.Element>
+              <Form.ValidationElement
+                label="Description"
+                required={true}
                 value={description}
-                onChange={handleDescriptionChange}
-              />
-            )}
-          </Form.ValidationElement>
+                validationFunc={handleValidation}
+              >
+                {status => (
+                  <TextArea
+                    status={status}
+                    rows={10}
+                    testID="contact-support-description--textarea"
+                    name="description"
+                    value={description}
+                    onChange={handleDescriptionChange}
+                  />
+                )}
+              </Form.ValidationElement>
+            </>
+          ) : (
+            <p>
+              Support is available only for paying customers. Please upgrade
+              your account or log into your paid account to submit a support
+              case.
+            </p>
+          )}
         </Overlay.Body>
       </Form>
       <Overlay.Footer>
@@ -231,14 +251,16 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
           type={ButtonType.Button}
           testID="contact-support--cancel"
         />
-        <Button
-          text="Submit"
-          color={ComponentColor.Success}
-          type={ButtonType.Submit}
-          testID="contact-support--submit"
-          status={submitButtonStatus}
-          onClick={handleSubmit}
-        />
+        {isContractOrPaid && (
+          <Button
+            text="Submit"
+            color={ComponentColor.Success}
+            type={ButtonType.Submit}
+            testID="contact-support--submit"
+            status={submitButtonStatus}
+            onClick={handleSubmit}
+          />
+        )}
       </Overlay.Footer>
     </Overlay.Container>
   )

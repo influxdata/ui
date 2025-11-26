@@ -41,6 +41,9 @@ import {notify} from 'src/shared/actions/notifications'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
+// Actions
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 // Eventing
 import {DeleteOrgOverlay, multiOrgTag} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
@@ -61,14 +64,6 @@ const linkStyle = {
   textDecoration: 'underline',
 }
 
-const SupportLink = (): JSX.Element => {
-  return (
-    <span style={linkStyle}>
-      Please use the Contact Support option in the Help menu to reach our support team.
-    </span>
-  )
-}
-
 export const SuspendPaidOrgOverlay: FC = () => {
   const account = useSelector(selectCurrentAccount)
   const org = useSelector(selectCurrentOrg)
@@ -83,6 +78,26 @@ export const SuspendPaidOrgOverlay: FC = () => {
 
   const orgDeleteInProgress = deleteButtonStatus === ComponentStatus.Loading
   const onClickCancel = orgDeleteInProgress ? noop : onClose
+
+  const handleContactSupport = () => {
+    dispatch(showOverlay('contact-support', null, dismissOverlay))
+  }
+
+  const SupportLink = (): JSX.Element => {
+    return (
+      <span style={linkStyle}>
+        Please{' '}
+        <a
+          href="#"
+          onClick={handleContactSupport}
+          style={{color: 'white', textDecoration: 'underline'}}
+        >
+          contact support
+        </a>{' '}
+        to reach our support team.
+      </span>
+    )
+  }
 
   const toggleAcceptedTerms = () => {
     const currentAcceptanceStatus = !userAcceptedTerms

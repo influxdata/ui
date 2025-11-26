@@ -1,4 +1,5 @@
 import React, {FC} from 'react'
+import {useDispatch} from 'react-redux'
 import {
   FlexBox,
   FlexDirection,
@@ -7,8 +8,8 @@ import {
   ResourceCard,
 } from '@influxdata/clockface'
 
-// Utils
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+// Actions
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Styles
 import './OrganizationCard.scss'
@@ -22,13 +23,6 @@ interface OrgCardProps {
   regionName: string
 }
 
-const tooltipContent = (
-  <p>
-    Organizations can be reactivated within 7 days of deletion. Please use the
-    Contact Support option in the Help menu to reactivate.
-  </p>
-)
-
 export const OrganizationCard: FC<OrgCardProps> = ({
   name,
   isActive,
@@ -37,7 +31,22 @@ export const OrganizationCard: FC<OrgCardProps> = ({
   regionCode,
   regionName,
 }) => {
+  const dispatch = useDispatch()
   const isOrgSuspended = provisioningStatus === 'suspended'
+
+  const handleContactSupport = () => {
+    dispatch(showOverlay('contact-support', null, dismissOverlay))
+  }
+
+  const tooltipContent = (
+    <p>
+      Organizations can be reactivated within 7 days of deletion. Please{' '}
+      <a href="#" onClick={handleContactSupport}>
+        contact support
+      </a>{' '}
+      to reactivate.
+    </p>
+  )
 
   return (
     <ResourceCard

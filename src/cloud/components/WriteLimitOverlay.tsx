@@ -1,4 +1,5 @@
 import React, {useContext, FC} from 'react'
+import {useDispatch} from 'react-redux'
 
 import {
   OverlayContainer,
@@ -13,12 +14,18 @@ import {
 } from '@influxdata/clockface'
 
 import {OverlayContext} from 'src/overlays/components/OverlayController'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Design
 import './WriteLimitOverlay.scss'
 
 const WriteLimitOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
+  const dispatch = useDispatch()
+
+  const handleContactSupport = () => {
+    dispatch(showOverlay('contact-support', null, dismissOverlay))
+  }
 
   return (
     <OverlayContainer
@@ -37,7 +44,11 @@ const WriteLimitOverlay: FC = () => {
             Request Query Write Limit Increase
           </Heading>
           <p>
-            To request a write limit increase, please use the Contact Support option in the Help menu.
+            To request a write limit increase, please{' '}
+            <a href="#" onClick={handleContactSupport}>
+              contact support
+            </a>
+            .
           </p>
         </div>
       </Overlay.Body>

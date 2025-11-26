@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -9,7 +10,16 @@ import {
   HeadingElement,
 } from '@influxdata/clockface'
 
+// Actions
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 export const SeriesCardinalityIncreaseForm: FC = () => {
+  const dispatch = useDispatch()
+
+  const handleContactSupport = () => {
+    dispatch(showOverlay('contact-support', null, dismissOverlay))
+  }
+
   return (
     <div>
       <Form.Divider lineColor={InfluxColors.Grey15} />
@@ -17,8 +27,11 @@ export const SeriesCardinalityIncreaseForm: FC = () => {
         Request Series Cardinality Limit Increase
       </Heading>
       <p>
-        To request a cardinality limit increase, please use the Contact Support
-        option in the Help menu.
+        To request a cardinality limit increase, please{' '}
+        <a href="#" onClick={handleContactSupport}>
+          contact support
+        </a>
+        .
       </p>
     </div>
   )

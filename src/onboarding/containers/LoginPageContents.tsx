@@ -245,7 +245,7 @@ class LoginPageContents extends PureComponent<Props> {
       this.setState({...errors, emailError})
     } else {
       const emailError =
-        'We have been notified of an issue while accessing your account. If this issue persists, please contact support at support.influxdata.com'
+        'We have been notified of an issue while accessing your account. If this issue persists, please use the Contact Support option in the Help menu'
       this.setState({...errors, emailError})
     }
   }

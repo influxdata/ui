@@ -24,12 +24,8 @@ interface OrgCardProps {
 
 const tooltipContent = (
   <p>
-    Organizations can be reactivated within 7 days of deletion. Contact support
-    at{' '}
-    <SafeBlankLink href="https://support.influxdata.com/s/login">
-      https://support.influxdata.com/s/login
-    </SafeBlankLink>{' '}
-    to reactivate.
+    Organizations can be reactivated within 7 days of deletion. Please use the
+    Contact Support option in the Help menu to reactivate.
   </p>
 )
 

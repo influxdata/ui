@@ -78,15 +78,8 @@ const NotFoundNew: FC = () => (
               <div>
                 <span>
                   The webpage you were trying to reach may have been removed or
-                  your access to this page may have expired.&nbsp;
-                  {/* Add rel options to avoid "tabnapping" */}
-                  <a
-                    href="https://support.influxdata.com/s/login"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    Contact InfluxData Support
-                  </a>
+                  your access to this page may have expired. Please use the
+                  Contact Support option in the Help menu.
                 </span>
               </div>
             </FlexBoxChild>

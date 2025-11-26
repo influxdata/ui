@@ -65,11 +65,8 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
           account email for a confirmation and follow-up.
         </p>
         <p>
-          For more resources, check out{' '}
-          <SafeBlankLink href="https://support.influxdata.com">
-            {' '}
-            support.influxdata.com{' '}
-          </SafeBlankLink>
+          For more resources, you can contact our support team via the Contact
+          Support option in the Help menu.
         </p>
       </Overlay.Body>
       <Overlay.Footer>

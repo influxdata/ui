@@ -7,7 +7,7 @@ WORKDIR /repo
 
 COPY ./package.json .
 
-RUN yarn add cypress-circleci-reporter
+RUN yarn add cypress-circleci-reporter^3.0
 
 COPY ./cypress.json ./cypress.json
 COPY ./cypress ./cypress

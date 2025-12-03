@@ -1,30 +1,53 @@
-import React, {useContext, FC} from 'react'
-import {useDispatch} from 'react-redux'
+import React, {useState, useContext, FC} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
 import {
   OverlayContainer,
   Overlay,
+  Form,
   Heading,
+  Input,
   HeadingElement,
   Button,
   ButtonType,
   ButtonShape,
   ComponentSize,
   ComponentColor,
+  ComponentStatus,
+  InputType,
 } from '@influxdata/clockface'
 
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
+// Selectors
+import {selectQuartzIdentity} from 'src/identity/selectors'
+
 // Design
 import './WriteLimitOverlay.scss'
 
 const WriteLimitOverlay: FC = () => {
+  const [limitReason, setLimitReason] = useState('')
+
   const {onClose} = useContext(OverlayContext)
   const dispatch = useDispatch()
+  const quartzIdentity = useSelector(selectQuartzIdentity)
+  const {org: identityOrg} = quartzIdentity.currentIdentity
 
-  const handleContactSupport = () => {
-    dispatch(showOverlay('contact-support', null, dismissOverlay))
+  const handleSubmit = (): void => {
+    const orgName = identityOrg.name
+    const orgID = identityOrg.id
+
+    dispatch(
+      showOverlay(
+        'contact-support',
+        {
+          subject: `[Org: ${orgName}] [Org Id: ${orgID}] Request Query Write Limit Increase`,
+          description: limitReason,
+        },
+        dismissOverlay
+      )
+    )
   }
 
   return (
@@ -39,18 +62,23 @@ const WriteLimitOverlay: FC = () => {
         wrapText={true}
       />
       <Overlay.Body className="limits-increasewrites--body">
-        <div className="limits-increasewrites--form">
+        <Form onSubmit={handleSubmit} className="limits-increasewrites--form">
           <Heading element={HeadingElement.H4}>
             Request Query Write Limit Increase
           </Heading>
-          <p>
-            To request a write limit increase, please{' '}
-            <a href="#" onClick={handleContactSupport}>
-              contact support
-            </a>
-            .
-          </p>
-        </div>
+          <Form.Element label="Request Details" required={true}>
+            <Input
+              name="Write Limit Increase"
+              placeholder="Tell us how much you need your write limit raised and your use-case details"
+              required={true}
+              autoFocus={true}
+              value={limitReason}
+              onChange={e => setLimitReason(e.target.value)}
+              testID="rate-alert-form-amount"
+              type={InputType.Text}
+            />
+          </Form.Element>
+        </Form>
       </Overlay.Body>
       <Overlay.Footer>
         <Button
@@ -58,8 +86,21 @@ const WriteLimitOverlay: FC = () => {
           type={ButtonType.Submit}
           size={ComponentSize.Medium}
           color={ComponentColor.Tertiary}
-          text="Close"
+          text="Cancel"
           onClick={onClose}
+        />
+        <Button
+          shape={ButtonShape.Default}
+          onClick={handleSubmit}
+          size={ComponentSize.Medium}
+          color={ComponentColor.Primary}
+          className="rate-alert--request-increase-button"
+          text="Submit Request"
+          status={
+            limitReason.length
+              ? ComponentStatus.Default
+              : ComponentStatus.Disabled
+          }
         />
       </Overlay.Footer>
     </OverlayContainer>

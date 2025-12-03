@@ -68,15 +68,19 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
   const quartzIdentity = useSelector(selectQuartzIdentity)
   const {user: identityUser, org: identityOrg} = quartzIdentity.currentIdentity
   const accountType = useSelector(selectCurrentAccountType)
+  const {onClose, params} = useContext(OverlayContext)
 
-  const [subject, setSubject] = useState('')
+  const prefilledSubject = params?.subject || ''
+  const prefilledDescription = params?.description || ''
+
+  const [subject, setSubject] = useState(prefilledSubject)
   const [severity, setSeverity] = useState('3 - Standard')
-  const [description, setDescription] = useState('')
-  const {onClose} = useContext(OverlayContext)
+  const [description, setDescription] = useState(prefilledDescription)
 
   const dispatch = useDispatch()
 
-  const isContractOrPaid = accountType === 'contract' || accountType === 'paid'
+  const isContractOrPAYG =
+    accountType === 'contract' || accountType === 'pay_as_you_go'
 
   const severityLevel = [
     '1 - Critical',
@@ -105,11 +109,10 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
     const orgName = identityOrg.name
     const orgID = identityOrg.id
 
-    const descriptionWithOrgId = `${description} \n\n [Org Name: ${orgName}] [Org Id: ${orgID}]`
     const translatedSeverity = translateSeverityLevelForSfdc(severity)
     try {
       await createSfdcSupportCase(
-        descriptionWithOrgId,
+        description,
         userEmail,
         translatedSeverity,
         subject
@@ -129,10 +132,6 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
       event('helpBar.contactSupportRequest.failed', {}, {userID, orgID})
     }
   }
-
-  // const accountType = useSelector(selectCurrentAccountType)
-  const isContractOrPAYG = true
-  // accountType === 'contract' || accountType === 'pay_as_you_go'
 
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSubject(event.target.value)
@@ -182,7 +181,7 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
       />
       <Form>
         <Overlay.Body>
-          {isContractOrPaid ? (
+          {isContractOrPAYG ? (
             <>
               <p className="status-page-text">
                 <span>
@@ -251,7 +250,7 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
           type={ButtonType.Button}
           testID="contact-support--cancel"
         />
-        {isContractOrPaid && (
+        {isContractOrPAYG && (
           <Button
             text="Submit"
             color={ComponentColor.Success}

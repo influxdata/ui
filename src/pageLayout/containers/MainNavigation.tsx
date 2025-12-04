@@ -271,8 +271,6 @@ export const MainNavigation: FC = () => {
     return null
   }
 
-  const isContractCustomer = accountType === 'contract'
-
   const docslink = isIOxOrg
     ? 'https://docs.influxdata.com/influxdb/cloud-serverless/'
     : 'https://docs.influxdata.com/'
@@ -417,7 +415,7 @@ export const MainNavigation: FC = () => {
               />
             )}
           />
-          {CLOUD && isContractCustomer && (
+          {CLOUD && (
             <TreeNav.SubItem
               id="contactSupport"
               label="Contact Support"

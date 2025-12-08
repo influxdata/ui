@@ -38,7 +38,7 @@ export const SeriesCardinalityIncreaseForm: FC = () => {
   }
 
   const isFormValid = (): boolean => {
-    return !!requestDetails
+    return Boolean(requestDetails)
   }
 
   const handleSubmit = (): void => {

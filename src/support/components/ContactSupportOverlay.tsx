@@ -7,17 +7,11 @@ import {
   ButtonType,
   ComponentColor,
   ComponentStatus,
-  DropdownItemType,
   Form,
-  Icon,
-  IconFont,
-  Input,
   Overlay,
-  QuestionMarkTooltip,
-  SelectDropdown,
-  TextArea,
 } from '@influxdata/clockface'
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {PaidSupportForm} from './PaidSupportForm'
+import {FreeSupportMessage} from './FreeSupportMessage'
 
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
@@ -30,6 +24,7 @@ import {
   selectCurrentAccountType,
   selectQuartzIdentity,
 } from 'src/identity/selectors'
+import {isOrgIOx} from 'src/organizations/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -68,6 +63,7 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
   const quartzIdentity = useSelector(selectQuartzIdentity)
   const {user: identityUser, org: identityOrg} = quartzIdentity.currentIdentity
   const accountType = useSelector(selectCurrentAccountType)
+  const isIOxOrg = useSelector(isOrgIOx)
   const {onClose, params} = useContext(OverlayContext)
 
   const prefilledSubject = params?.subject || ''
@@ -81,13 +77,6 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
 
   const isContractOrPAYG =
     accountType === 'contract' || accountType === 'pay_as_you_go'
-
-  const severityLevel = [
-    '1 - Critical',
-    '2 - High',
-    '3 - Standard',
-    '4 - Request',
-  ]
 
   const submitButtonStatus =
     description.length && severity.length && subject.length
@@ -110,12 +99,19 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
     const orgID = identityOrg.id
 
     const translatedSeverity = translateSeverityLevelForSfdc(severity)
+    const caseOrigin = 'Cloud App'
+    const deploymentType = isIOxOrg
+      ? 'InfluxDB Cloud Serverless'
+      : 'InfluxCloud2.0'
+
     try {
       await createSfdcSupportCase(
         description,
         userEmail,
         translatedSeverity,
-        subject
+        subject,
+        caseOrigin,
+        deploymentType
       )
       event(
         'helpBar.contactSupportRequest.submitted',
@@ -152,26 +148,6 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
     return null
   }
 
-  const severityTip = (): JSX.Element => {
-    const tooltipContent = (
-      <div>
-        Please refer to our severity levels in our
-        <SafeBlankLink href="https://www.influxdata.com/legal/support-policy">
-          {' '}
-          support policy{' '}
-        </SafeBlankLink>
-        website
-      </div>
-    )
-    return (
-      <QuestionMarkTooltip
-        diameter={14}
-        tooltipContents={tooltipContent}
-        tooltipStyle={{fontSize: '13px'}}
-      />
-    )
-  }
-
   return (
     <Overlay.Container maxWidth={550}>
       <Overlay.Header
@@ -182,63 +158,17 @@ export const ContactSupportOverlay: FC<OwnProps> = () => {
       <Form>
         <Overlay.Body>
           {isContractOrPAYG ? (
-            <>
-              <p className="status-page-text">
-                <span>
-                  {' '}
-                  <Icon glyph={IconFont.Info_New} />{' '}
-                </span>
-                Check our{' '}
-                <SafeBlankLink href="https://status.influxdata.com">
-                  status page
-                </SafeBlankLink>{' '}
-                to see if there is an outage impacting your region.
-              </p>
-              <Form.Element label="Subject" required={true}>
-                <Input
-                  name="subject"
-                  value={subject}
-                  onChange={handleSubjectChange}
-                  testID="contact-support-subject-input"
-                />
-              </Form.Element>
-              <Form.Element
-                label="Severity"
-                required={true}
-                labelAddOn={severityTip}
-              >
-                <SelectDropdown
-                  options={severityLevel}
-                  selectedOption={severity}
-                  onSelect={handleChangeSeverity}
-                  indicator={DropdownItemType.None}
-                  testID="severity-level-dropdown"
-                />
-              </Form.Element>
-              <Form.ValidationElement
-                label="Description"
-                required={true}
-                value={description}
-                validationFunc={handleValidation}
-              >
-                {status => (
-                  <TextArea
-                    status={status}
-                    rows={10}
-                    testID="contact-support-description--textarea"
-                    name="description"
-                    value={description}
-                    onChange={handleDescriptionChange}
-                  />
-                )}
-              </Form.ValidationElement>
-            </>
+            <PaidSupportForm
+              subject={subject}
+              severity={severity}
+              description={description}
+              onSubjectChange={handleSubjectChange}
+              onSeverityChange={handleChangeSeverity}
+              onDescriptionChange={handleDescriptionChange}
+              onValidation={handleValidation}
+            />
           ) : (
-            <p>
-              Support is available only for paying customers. Please upgrade
-              your account or log into your paid account to submit a support
-              case.
-            </p>
+            <FreeSupportMessage />
           )}
         </Overlay.Body>
       </Form>

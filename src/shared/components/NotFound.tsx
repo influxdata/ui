@@ -89,9 +89,19 @@ const NotFoundNew: FC = () => {
                   <span>
                     The webpage you were trying to reach may have been removed
                     or your access to this page may have expired. Please{' '}
-                    <a href="#" onClick={handleContactSupport}>
+                    <button
+                      onClick={handleContactSupport}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        color: 'inherit',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                    >
                       contact support
-                    </a>
+                    </button>
                     .
                   </span>
                 </div>

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, MouseEvent} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 import {Link, useLocation} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -288,10 +288,7 @@ export const MainNavigation: FC = () => {
     event(`helpBar.${link}.opened`, {}, {from: currentPage})
   }
 
-  const handleContactSupportClick = (
-    evt: MouseEvent<HTMLAnchorElement>
-  ): void => {
-    evt.preventDefault()
+  const handleContactSupportClick = (): void => {
     dispatch(showOverlay('contact-support', null, dismissOverlay))
     event('helpBar.contactSupportRequest.overlay.shown')
   }
@@ -421,7 +418,20 @@ export const MainNavigation: FC = () => {
               label="Contact Support"
               testID="nav-subitem-contact-support"
               linkElement={() => (
-                <a href="#" onClick={handleContactSupportClick}></a>
+                <button
+                  onClick={handleContactSupportClick}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    color: 'inherit',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    display: 'block',
+                    width: '100%',
+                    textAlign: 'left',
+                  }}
+                ></button>
               )}
             />
           )}

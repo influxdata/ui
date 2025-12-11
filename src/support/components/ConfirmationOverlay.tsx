@@ -74,9 +74,19 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
         </p>
         <p>
           For more resources, you can{' '}
-          <a href="#" onClick={handleContactSupport}>
+          <button
+            onClick={handleContactSupport}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              color: 'inherit',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}
+          >
             contact our support team
-          </a>
+          </button>
           .
         </p>
       </Overlay.Body>

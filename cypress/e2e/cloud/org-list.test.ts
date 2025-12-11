@@ -68,7 +68,7 @@ describe('Account / Organizations Tab', () => {
     )
 
     cy.getByTestID('question-mark-tooltip--tooltip--dialog').within(() => {
-      cy.get('a').contains('contact support').should('have.attr', 'href', '#')
+      cy.get('button').contains('contact support').should('exist')
     })
 
     cy.getByTestID('pagination-item')

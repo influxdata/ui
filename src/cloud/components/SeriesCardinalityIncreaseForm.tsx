@@ -87,7 +87,7 @@ export const SeriesCardinalityIncreaseForm: FC = () => {
         size={ComponentSize.Medium}
         color={ComponentColor.Primary}
         className="rate-alert--request-increase-button"
-        text="Submit Request"
+        text="Create Request"
         status={
           isFormValid() ? ComponentStatus.Default : ComponentStatus.Disabled
         }

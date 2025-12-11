@@ -41,9 +41,19 @@ export const OrganizationCard: FC<OrgCardProps> = ({
   const tooltipContent = (
     <p>
       Organizations can be reactivated within 7 days of deletion. Please{' '}
-      <a href="#" onClick={handleContactSupport}>
+      <button
+        onClick={handleContactSupport}
+        style={{
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          color: 'inherit',
+          textDecoration: 'underline',
+          cursor: 'pointer',
+        }}
+      >
         contact support
-      </a>{' '}
+      </button>{' '}
       to reactivate.
     </p>
   )

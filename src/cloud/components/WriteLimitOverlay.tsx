@@ -95,7 +95,7 @@ const WriteLimitOverlay: FC = () => {
           size={ComponentSize.Medium}
           color={ComponentColor.Primary}
           className="rate-alert--request-increase-button"
-          text="Submit Request"
+          text="Create Request"
           status={
             limitReason.length
               ? ComponentStatus.Default

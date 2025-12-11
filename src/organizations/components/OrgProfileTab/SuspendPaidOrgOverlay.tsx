@@ -87,13 +87,19 @@ export const SuspendPaidOrgOverlay: FC = () => {
     return (
       <span style={linkStyle}>
         Please{' '}
-        <a
-          href="#"
+        <button
           onClick={handleContactSupport}
-          style={{color: 'white', textDecoration: 'underline'}}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            color: 'white',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+          }}
         >
           contact support
-        </a>{' '}
+        </button>{' '}
         to reach our support team.
       </span>
     )

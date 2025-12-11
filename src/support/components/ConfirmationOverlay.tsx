@@ -1,4 +1,5 @@
 import React, {FC, useContext} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -12,10 +13,12 @@ import {
   InfluxColors,
   Overlay,
 } from '@influxdata/clockface'
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
+
+// Actions
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Constants
 import {
@@ -31,6 +34,11 @@ interface OwnProps {
 
 const ConfirmationOverlay: FC<OwnProps> = () => {
   const {onClose} = useContext(OverlayContext)
+  const dispatch = useDispatch()
+
+  const handleContactSupport = () => {
+    dispatch(showOverlay('contact-support', null, dismissOverlay))
+  }
 
   return (
     <Overlay.Container maxWidth={550}>
@@ -65,11 +73,21 @@ const ConfirmationOverlay: FC<OwnProps> = () => {
           account email for a confirmation and follow-up.
         </p>
         <p>
-          For more resources, check out{' '}
-          <SafeBlankLink href="https://support.influxdata.com">
-            {' '}
-            support.influxdata.com{' '}
-          </SafeBlankLink>
+          For more resources, you can{' '}
+          <button
+            onClick={handleContactSupport}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              color: 'inherit',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}
+          >
+            contact our support team
+          </button>
+          .
         </p>
       </Overlay.Body>
       <Overlay.Footer>

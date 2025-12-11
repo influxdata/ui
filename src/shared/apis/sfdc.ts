@@ -13,10 +13,19 @@ export const createSfdcSupportCase = async (
   description: string,
   email: string,
   severity: string,
-  subject: string
+  subject: string,
+  caseOrigin: string,
+  deploymentType: string
 ) => {
   const params: typeof PostUiproxySfdcSupportParams = {
-    data: {description, email, severity, subject},
+    data: {
+      description,
+      email,
+      severity,
+      subject,
+      caseOrigin,
+      deploymentType,
+    },
   }
 
   const response = await postUiproxySfdcSupport(params)

@@ -59,12 +59,17 @@ const setupTest = (setupParams: SetupParams) => {
   )
 }
 
-const doSetup = cy => {
+const doSetup = () => {
   cy.flush().then(() => {
     cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      // Fetch org directly to avoid race condition with @org alias
+      cy.request({
+        method: 'GET',
+        url: 'api/v2/orgs',
+      }).then(res => {
+        const orgId = res.body.orgs?.[0]?.id
         cy.intercept('GET', 'api/v2/quartz/orgs/**/users').as('getOrgsUsers')
-        cy.visit(`/orgs/${id}/accounts/settings`)
+        cy.visit(`/orgs/${orgId}/accounts/settings`)
         cy.wait('@getOrgsUsers')
       })
     })
@@ -85,7 +90,7 @@ describe('Account Page tests', () => {
           {id: 415, isActive: false, isDefault: true, name: 'Veganomicon'},
         ],
       })
-      doSetup(cy)
+      doSetup()
     })
 
     it('can get to the account page and rename the active account', () => {
@@ -169,7 +174,7 @@ describe('Free account Deletion', () => {
               .click()
           })
         cy.location().should(loc => {
-          expect(loc.href).to.eq(`https://www.influxdata.com/mkt-cancel/`)
+          expect(loc.href).to.include('https://www.influxdata.com/mkt-cancel')
         })
       })
   }

@@ -1,4 +1,3 @@
-import {Organization} from '../../../src/types'
 import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
 
 // This variable stores the current IDPE orgid and syncs it with the quartz-mock orgid.

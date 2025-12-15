@@ -98,6 +98,7 @@ export const OrganizationCard: FC<OrgCardProps> = ({
               <QuestionMarkTooltip
                 diameter={15}
                 tooltipContents={tooltipContent}
+                testID="question-mark-tooltip"
               />
             </>
           )}

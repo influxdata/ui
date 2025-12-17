@@ -20,6 +20,7 @@ import {getOrg as fetchOrg} from 'src/organizations/apis'
 
 // Actions
 import {setCurrentPage} from 'src/shared/reducers/currentPage'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Utils
 import {buildDeepLinkingMap} from 'src/utils/deepLinks'
@@ -36,106 +37,122 @@ import {CLOUD} from 'src/shared/constants'
 // API
 import {fetchDefaultAccountDefaultOrg} from 'src/identity/apis/org'
 
-const NotFoundNew: FC = () => (
-  <AppWrapper type="funnel" className="page-not-found" testID="not-found">
-    <FunnelPage enableGraphic={true} className="page-not-found-funnel">
-      {CLOUD && (
+const NotFoundNew: FC = () => {
+  const dispatch = useDispatch()
+
+  const handleContactSupport = () => {
+    dispatch(showOverlay('contact-support', null, dismissOverlay))
+  }
+
+  return (
+    <AppWrapper type="funnel" className="page-not-found" testID="not-found">
+      <FunnelPage enableGraphic={true} className="page-not-found-funnel">
+        {CLOUD && (
+          <FlexBox
+            direction={FlexDirection.Row}
+            margin={ComponentSize.Large}
+            stretchToFitWidth={true}
+            justifyContent={JustifyContent.SpaceBetween}
+          >
+            <LogoWithCubo />
+            <GetInfluxButton />
+          </FlexBox>
+        )}
         <FlexBox
-          direction={FlexDirection.Row}
+          className="page-not-found-content"
+          direction={FlexDirection.Column}
           margin={ComponentSize.Large}
           stretchToFitWidth={true}
-          justifyContent={JustifyContent.SpaceBetween}
         >
-          <LogoWithCubo />
-          <GetInfluxButton />
+          <h2 className="page-not-found-content-highlight">
+            404: Page Not Found
+          </h2>
+          <div>Please refresh the page or check the URL and try again.</div>
         </FlexBox>
-      )}
-      <FlexBox
-        className="page-not-found-content"
-        direction={FlexDirection.Column}
-        margin={ComponentSize.Large}
-        stretchToFitWidth={true}
-      >
-        <h2 className="page-not-found-content-highlight">
-          404: Page Not Found
-        </h2>
-        <div>Please refresh the page or check the URL and try again.</div>
-      </FlexBox>
-    </FunnelPage>
-    <FunnelPage.Footer className="page-not-found-footer">
-      <Panel
-        className="page-not-found-panel"
-        backgroundColor={InfluxColors.Grey15}
-      >
-        <FlexBox
-          direction={FlexDirection.Column}
-          className="page-not-found-panel-content"
-          margin={ComponentSize.Small}
+      </FunnelPage>
+      <FunnelPage.Footer className="page-not-found-footer">
+        <Panel
+          className="page-not-found-panel"
+          backgroundColor={InfluxColors.Grey15}
         >
-          {CLOUD && (
+          <FlexBox
+            direction={FlexDirection.Column}
+            className="page-not-found-panel-content"
+            margin={ComponentSize.Small}
+          >
+            {CLOUD && (
+              <FlexBoxChild className="page-not-found-panel-section">
+                <div className="page-not-found-panel-title">
+                  Not a URL issue?
+                </div>
+                <div>
+                  <span>
+                    The webpage you were trying to reach may have been removed
+                    or your access to this page may have expired. Please{' '}
+                    <button
+                      onClick={handleContactSupport}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        color: 'inherit',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      contact support
+                    </button>
+                    .
+                  </span>
+                </div>
+              </FlexBoxChild>
+            )}
             <FlexBoxChild className="page-not-found-panel-section">
-              <div className="page-not-found-panel-title">Not a URL issue?</div>
+              <div className="page-not-found-panel-title">
+                Have more feedback?
+              </div>
               <div>
-                <span>
-                  The webpage you were trying to reach may have been removed or
-                  your access to this page may have expired.&nbsp;
-                  {/* Add rel options to avoid "tabnapping" */}
-                  <a
-                    href="https://support.influxdata.com/s/login"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    Contact InfluxData Support
-                  </a>
-                </span>
+                We welcome and encourage your feedback and bug reports for
+                InfluxDB. The following resources are available:
               </div>
             </FlexBoxChild>
-          )}
-          <FlexBoxChild className="page-not-found-panel-section">
-            <div className="page-not-found-panel-title">
-              Have more feedback?
-            </div>
-            <div>
-              We welcome and encourage your feedback and bug reports for
-              InfluxDB. The following resources are available:
-            </div>
-          </FlexBoxChild>
-          <FlexBox alignItems={AlignItems.Stretch} stretchToFitWidth={true}>
-            <FlexBoxChild className="page-not-found-community-links">
-              <Icon glyph={IconFont.CuboSolid}></Icon>
-              {/* Add rel options to avoid "tabnapping" */}
-              <a
-                href="https://community.influxdata.com/"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                InfluxData Community
-              </a>
-            </FlexBoxChild>
-            <FlexBoxChild className="page-not-found-community-links">
-              <span className="slack-icon" />
-              {/* Add rel options to avoid "tabnapping" */}
-              <a
-                href="https://influxdata.com/slack/"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                InfluxDB Community Slack
-              </a>
-            </FlexBoxChild>
+            <FlexBox alignItems={AlignItems.Stretch} stretchToFitWidth={true}>
+              <FlexBoxChild className="page-not-found-community-links">
+                <Icon glyph={IconFont.CuboSolid}></Icon>
+                {/* Add rel options to avoid "tabnapping" */}
+                <a
+                  href="https://community.influxdata.com/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  InfluxData Community
+                </a>
+              </FlexBoxChild>
+              <FlexBoxChild className="page-not-found-community-links">
+                <span className="slack-icon" />
+                {/* Add rel options to avoid "tabnapping" */}
+                <a
+                  href="https://influxdata.com/slack/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  InfluxDB Community Slack
+                </a>
+              </FlexBoxChild>
+            </FlexBox>
           </FlexBox>
-        </FlexBox>
-      </Panel>
-      <FunnelPage.FooterSection>
-        <FlexBox
-          alignItems={AlignItems.Center}
-          margin={ComponentSize.Large}
-          justifyContent={JustifyContent.Center}
-        ></FlexBox>
-      </FunnelPage.FooterSection>
-    </FunnelPage.Footer>
-  </AppWrapper>
-)
+        </Panel>
+        <FunnelPage.FooterSection>
+          <FlexBox
+            alignItems={AlignItems.Center}
+            margin={ComponentSize.Large}
+            justifyContent={JustifyContent.Center}
+          ></FlexBox>
+        </FunnelPage.FooterSection>
+      </FunnelPage.Footer>
+    </AppWrapper>
+  )
+}
 
 const NotFound: FC = () => {
   const [isFetchingOrg, setIsFetchingOrg] = useState(false)

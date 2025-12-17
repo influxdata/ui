@@ -58,20 +58,17 @@ describe('Account / Organizations Tab', () => {
     cy.get('.account--organizations-tab-suspended-orgs-card')
       .should('have.length', 1)
       .and('be.visible')
-      .within(() => {
-        cy.getByTestID('question-mark-tooltip').click()
-        cy.contains('Deletion in progress')
-      })
+      .contains('Deletion in progress')
 
-    cy.getByTestID('question-mark-tooltip--tooltip--dialog').contains(
-      'Organizations can be reactivated within 7 days of deletion.'
-    )
+    cy.getByTestID('question-mark-tooltip').click()
 
     cy.getByTestID('question-mark-tooltip--tooltip--dialog').within(() => {
-      cy.get('a')
-        .contains('https://support.influxdata.com/s/login')
-        .should('have.attr', 'href', 'https://support.influxdata.com/s/login')
+      cy.get('button').contains('contact support').trigger('click')
     })
+
+    cy.getByTestID('contact-support-overlay-header').should('exist')
+
+    cy.contains('button', 'Cancel').click()
 
     cy.getByTestID('pagination-item')
       .should('have.length', 2)

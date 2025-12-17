@@ -1,4 +1,5 @@
 import React, {FC} from 'react'
+import {useDispatch} from 'react-redux'
 import {
   FlexBox,
   FlexDirection,
@@ -7,8 +8,8 @@ import {
   ResourceCard,
 } from '@influxdata/clockface'
 
-// Utils
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+// Actions
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Styles
 import './OrganizationCard.scss'
@@ -22,17 +23,6 @@ interface OrgCardProps {
   regionName: string
 }
 
-const tooltipContent = (
-  <p>
-    Organizations can be reactivated within 7 days of deletion. Contact support
-    at{' '}
-    <SafeBlankLink href="https://support.influxdata.com/s/login">
-      https://support.influxdata.com/s/login
-    </SafeBlankLink>{' '}
-    to reactivate.
-  </p>
-)
-
 export const OrganizationCard: FC<OrgCardProps> = ({
   name,
   isActive,
@@ -41,7 +31,32 @@ export const OrganizationCard: FC<OrgCardProps> = ({
   regionCode,
   regionName,
 }) => {
+  const dispatch = useDispatch()
   const isOrgSuspended = provisioningStatus === 'suspended'
+
+  const handleContactSupport = () => {
+    dispatch(showOverlay('contact-support', null, dismissOverlay))
+  }
+
+  const tooltipContent = (
+    <p>
+      Organizations can be reactivated within 7 days of deletion. Please{' '}
+      <button
+        onClick={handleContactSupport}
+        style={{
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          color: 'inherit',
+          textDecoration: 'underline',
+          cursor: 'pointer',
+        }}
+      >
+        contact support
+      </button>{' '}
+      to reactivate.
+    </p>
+  )
 
   return (
     <ResourceCard
@@ -83,6 +98,7 @@ export const OrganizationCard: FC<OrgCardProps> = ({
               <QuestionMarkTooltip
                 diameter={15}
                 tooltipContents={tooltipContent}
+                testID="question-mark-tooltip"
               />
             </>
           )}

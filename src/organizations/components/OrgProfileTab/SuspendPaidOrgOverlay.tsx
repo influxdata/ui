@@ -41,6 +41,9 @@ import {notify} from 'src/shared/actions/notifications'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
+// Actions
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 // Eventing
 import {DeleteOrgOverlay, multiOrgTag} from 'src/identity/events/multiOrgEvents'
 import {event} from 'src/cloud/utils/reporting'
@@ -61,20 +64,6 @@ const linkStyle = {
   textDecoration: 'underline',
 }
 
-const SupportLink = (): JSX.Element => {
-  return (
-    <a
-      data-testid="go-to-new-org--link"
-      href="https://support.influxdata.com/s/login"
-      style={linkStyle}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      https://support.influxdata.com/s/login
-    </a>
-  )
-}
-
 export const SuspendPaidOrgOverlay: FC = () => {
   const account = useSelector(selectCurrentAccount)
   const org = useSelector(selectCurrentOrg)
@@ -89,6 +78,32 @@ export const SuspendPaidOrgOverlay: FC = () => {
 
   const orgDeleteInProgress = deleteButtonStatus === ComponentStatus.Loading
   const onClickCancel = orgDeleteInProgress ? noop : onClose
+
+  const handleContactSupport = () => {
+    dispatch(showOverlay('contact-support', null, dismissOverlay))
+  }
+
+  const SupportLink = (): JSX.Element => {
+    return (
+      <span style={linkStyle}>
+        Please{' '}
+        <button
+          onClick={handleContactSupport}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            color: 'white',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+          }}
+        >
+          contact support
+        </button>{' '}
+        to reach our support team.
+      </span>
+    )
+  }
 
   const toggleAcceptedTerms = () => {
     const currentAcceptanceStatus = !userAcceptedTerms

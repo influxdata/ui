@@ -83,7 +83,7 @@ const WriteLimitOverlay: FC = () => {
       <Overlay.Footer>
         <Button
           shape={ButtonShape.Default}
-          type={ButtonType.Submit}
+          type={ButtonType.Button}
           size={ComponentSize.Medium}
           color={ComponentColor.Tertiary}
           text="Cancel"

@@ -52,6 +52,9 @@ const translateSeverityLevelForSfdc = (severity: string): string => {
     case '4 - Request': {
       return 'Severity 4'
     }
+    default: {
+      return 'Severity 3'
+    }
   }
 }
 

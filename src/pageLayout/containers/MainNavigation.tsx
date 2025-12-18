@@ -293,6 +293,10 @@ export const MainNavigation: FC = () => {
     event('helpBar.contactSupportRequest.overlay.shown')
   }
 
+  const contactSupportLinkElement = () => (
+    <a onClick={handleContactSupportClick} />
+  )
+
   return (
     <TreeNav
       expanded={navbarMode === 'expanded'}
@@ -417,22 +421,7 @@ export const MainNavigation: FC = () => {
               id="contactSupport"
               label="Contact Support"
               testID="nav-subitem-contact-support"
-              linkElement={() => (
-                <button
-                  onClick={handleContactSupportClick}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    padding: 0,
-                    color: 'inherit',
-                    textDecoration: 'none',
-                    cursor: 'pointer',
-                    display: 'block',
-                    width: '100%',
-                    textAlign: 'left',
-                  }}
-                ></button>
-              )}
+              linkElement={contactSupportLinkElement}
             />
           )}
           <TreeNav.SubHeading label="Community" />

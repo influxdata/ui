@@ -8,7 +8,9 @@ import {ComponentSize, Orientation, Tabs} from '@influxdata/clockface'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Constants
+import {CLOUD} from 'src/shared/constants'
 
 interface Props {
   activeTab: string
@@ -35,7 +37,7 @@ const AccountTabs: FC<Props> = ({activeTab}) => {
     },
     {
       id: 'organizations',
-      enabled: isFlagEnabled('createDeleteOrgs'),
+      enabled: CLOUD,
       link: `/orgs/${orgID}/accounts/orglist`,
       testID: 'accounts-orglist-tab',
       text: 'Organizations',

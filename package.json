@@ -182,7 +182,7 @@
     "immer": "^9.0.15",
     "intersection-observer": "^0.12.2",
     "jsonlint-mod": "^1.7.5",
-    "jsonpath": "^1.1.1",
+    "jsonpath": "^1.2.1",
     "jspdf": "4.1.0",
     "lodash": "^4.17.23",
     "luxon": "^3.2.1",

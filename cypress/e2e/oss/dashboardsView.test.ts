@@ -13,6 +13,10 @@ describe('Dashboard', () => {
   )
 
   it('does render image tags in markdown preview', () => {
+    cy.intercept('GET', 'https://influxdata.com/feedback-fill-icon.svg', {
+      fixture: 'feedback-fill-icon.svg',
+    })
+
     cy.get('@org').then(({id: orgID}: any) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
@@ -23,8 +27,7 @@ describe('Dashboard', () => {
     })
 
     // Note cell
-    const noteText =
-      '![](https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png)'
+    const noteText = '![](https://influxdata.com/feedback-fill-icon.svg)'
 
     cy.getByTestID('add-note--button').click()
     cy.getByTestID('note-editor--overlay').within(() => {

@@ -1,3 +1,5 @@
+import {BASE_PATH} from 'src/shared/constants'
+
 export const registerServiceWorker = (): Promise<ServiceWorkerRegistration> => {
   // Worker -- load prior to page load event, in order to intercept fetch in http/2.
   // see service worker life cycle. https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
@@ -7,7 +9,7 @@ export const registerServiceWorker = (): Promise<ServiceWorkerRegistration> => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       new URL('../workers/downloadHelper.ts', import.meta.url),
-      {scope: '/api/v2/query'}
+      {scope: `${BASE_PATH}api/v2/query`}
       /* webpackChunkName: "interceptor" */
     )
   }
@@ -25,7 +27,7 @@ export const registerServiceWorkerInfluxQL =
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         new URL('../workers/downloadHelper.ts', import.meta.url),
-        {scope: '/query'}
+        {scope: `${BASE_PATH}query`}
         /* webpackChunkName: "interceptor" */
       )
     }
@@ -43,7 +45,7 @@ export const registerServiceWorkerSQL =
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         new URL('../workers/downloadHelper.ts', import.meta.url),
-        {scope: '/api/v2private/query'}
+        {scope: `${BASE_PATH}api/v2private/query`}
         /* webpackChunkName: "interceptor" */
       )
     }

@@ -1,9 +1,27 @@
 # GitHub Input Plugin
 
-Gather repository information from [GitHub][] hosted repositories.
+This plugin gathers information from projects and repositories hosted on
+[GitHub][github].
 
-**Note:** Telegraf also contains the [webhook][] input which can be used as an
-alternative method for collecting repository information.
+> [!NOTE]
+> Telegraf also contains the [webhook input plugin][webhook] which can be used
+> as an alternative method for collecting repository information.
+
+⭐ Telegraf v1.11.0
+🏷️ applications
+💻 all
+
+[github]: https://www.github.com
+[webhook]: /plugins/inputs/webhooks/github
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -51,11 +69,11 @@ alternative method for collecting repository information.
     - stars (int)
     - watchers (int)
 
-When the [internal][] input is enabled:
+When the [internal][internal] input is enabled:
 
 - internal_github
   - tags:
-    - access_token - An obfuscated reference to the configured access token or "Unauthenticated"
+    - access_token - obfuscated reference to access token or "Unauthenticated"
   - fields:
     - limit - How many requests you are limited to (per hour)
     - remaining - How many requests you have remaining (per hour)
@@ -74,11 +92,9 @@ options with the required API-calls and the resulting fields
 
 ## Example Output
 
-```shell
+```text
 github_repository,language=Go,license=MIT\ License,name=telegraf,owner=influxdata forks=2679i,networks=2679i,open_issues=794i,size=23263i,stars=7091i,subscribers=316i,watchers=7091i 1563901372000000000
 internal_github,access_token=Unauthenticated closed_pull_requests=3522i,rate_limit_remaining=59i,rate_limit_limit=60i,rate_limit_blocks=0i,open_pull_requests=260i 1552653551000000000
 ```
 
-[GitHub]: https://www.github.com
 [internal]: /plugins/inputs/internal
-[webhook]: /plugins/inputs/webhooks/github

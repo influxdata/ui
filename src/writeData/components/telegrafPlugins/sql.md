@@ -1,10 +1,34 @@
 # SQL Input Plugin
 
-This plugin reads metrics from performing SQL queries against a SQL
+This plugin reads metrics from performing [SQL][sql] queries against a SQL
 server. Different server types are supported and their settings might differ
-(especially the connection parameters).  Please check the list of [supported SQL
-drivers](https://github.com/influxdata/telegraf/tree/master/docs/SQL_DRIVERS_INPUT.md) for the `driver` name and options
+(especially the connection parameters).  Please check the list of
+[supported SQL drivers][sql_drivers] for the `driver` name and options
 for the data-source-name (`dsn`) options.
+
+⭐ Telegraf v1.19.0
+🏷️ datastore
+💻 all
+
+[sql]: https://www.iso.org/standard/76583.html
+[sql_drivers]: /docs/SQL_DRIVERS_INPUT.md
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+
+## Secret-store support
+
+This plugin supports secrets from secret-stores for the `dsn` option.
+See the [secret-store documentation][SECRETSTORE] for more details on how
+to use them.
+
+[SECRETSTORE]: ../../../docs/CONFIGURATION.md#secret-store-secrets
 
 ## Configuration
 
@@ -18,7 +42,7 @@ for the data-source-name (`dsn`) options.
 
   ## Data source name for connecting
   ## The syntax and supported options depends on selected driver.
-  dsn = "username:password@mysqlserver:3307/dbname?param=value"
+  dsn = "username:password@tcp(mysqlserver:3307)/dbname?param=value"
 
   ## Timeout for any operation
   ## Note that the timeout for queries is per query not per gather.
@@ -39,6 +63,12 @@ for the data-source-name (`dsn`) options.
   # connection_max_open = 0
   # connection_max_idle = auto
 
+  ## Specifies plugin behavior regarding disconnected servers
+  ## Available choices :
+  ##   - error: telegraf will return an error on startup if one the servers is unreachable
+  ##   - ignore: telegraf will ignore unreachable servers on both startup and gather
+  # disconnected_servers_behavior = "error"
+
   [[inputs.sql.query]]
     ## Query to perform on the server
     query="SELECT user,state,latency,score FROM Scoreboard WHERE application > 0"
@@ -56,7 +86,7 @@ for the data-source-name (`dsn`) options.
     # measurement_column = ""
 
     ## Column name containing the time of the measurement
-    ## If ommited, the time of the query will be used.
+    ## If omitted, the time of the query will be used.
     # time_column = ""
 
     ## Format of the time contained in 'time_col'
@@ -88,8 +118,6 @@ for the data-source-name (`dsn`) options.
     # field_columns_exclude = []
 ```
 
-## Options
-
 ### Driver
 
 The `driver` and `dsn` options specify how to connect to the database. As
@@ -116,16 +144,16 @@ _not_ returned by the query, the plugin falls-back to the documented
 defaults. Fields or tags specified in the includes of the options but missing in
 the returned query are silently ignored.
 
-## Types
+### Types
 
 This plugin relies on the driver to do the type conversion. For the different
 properties of the metric the following types are accepted.
 
-### Measurement
+#### Measurement
 
 Only columns of type `string`  are accepted.
 
-### Time
+#### Time
 
 For the metric time columns of type `time` are accepted directly. For numeric
 columns, `time_format` should be set to any of `unix`, `unix_ms`, `unix_ns` or
@@ -134,13 +162,13 @@ expected. For string columns, please specify the `time_format` accordingly.  See
 the [golang time documentation](https://golang.org/pkg/time/#Time.Format) for
 details.
 
-### Tags
+#### Tags
 
 For tags columns with textual values (`string` and `bytes`), signed and unsigned
 integers (8, 16, 32 and 64 bit), floating-point (32 and 64 bit), `boolean` and
 `time` values are accepted. Those values will be converted to string.
 
-### Fields
+#### Fields
 
 For fields columns with textual values (`string` and `bytes`), signed and
 unsigned integers (8, 16, 32 and 64 bit), floating-point (32 and 64 bit),
@@ -148,6 +176,11 @@ unsigned integers (8, 16, 32 and 64 bit), floating-point (32 and 64 bit),
 `string`, signed and unsigned integer values will be converted to `int64` or
 `uint64` respectively. Floating-point values are converted to `float64` and
 `time` is converted to a nanosecond timestamp of type `int64`.
+
+## Metrics
+
+The format of metrics produced by this plugin depends on the content and data
+format of the file.
 
 ## Example Output
 
@@ -167,7 +200,7 @@ Using the [MariaDB sample database][maria-sample] and the configuration
 
 Telegraf will output the following metrics
 
-```shell
+```text
 nation,host=Hugin,name=John guest_id=1i 1611332164000000000
 nation,host=Hugin,name=Jane guest_id=2i 1611332164000000000
 nation,host=Hugin,name=Jean guest_id=3i 1611332164000000000

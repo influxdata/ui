@@ -104,6 +104,15 @@ export const OrgLimits: FC = () => {
           )
         }
 
+        // The 'dashboards', 'tasks', 'checks', and 'rules' limits are not applicable to orgs using IOx.
+        if (orgUsesIOx) {
+          const hiddenLimits = ['dashboards', 'tasks', 'checks', 'rules']
+
+          if (hiddenLimits.includes(limitName)) {
+            return null
+          }
+        }
+
         // By default, any 'limit' is a single object literal containing one limitStatus.
         return (
           <LimitCard

@@ -1,27 +1,26 @@
 # MySQL Input Plugin
 
-This plugin gathers the statistic data from MySQL server
+This plugin gathers statistics from [MySQL][mysql] server instances.
 
-* Global statuses
-* Global variables
-* Slave statuses
-* Binlog size
-* Process list
-* User Statistics
-* Info schema auto increment columns
-* InnoDB metrics
-* Table I/O waits
-* Index I/O waits
-* Perf Schema table lock waits
-* Perf Schema event waits
-* Perf Schema events statements
-* File events statistics
-* Table schema statistics
+> [!NOTE]
+> To gather metrics from the performance schema, it must first be enabled in
+> MySQL. See the performance schema [quick start][quick-start] for details.
 
-In order to gather metrics from the performance schema, it must first be enabled
-in mySQL configuration. See the performance schema [quick start][quick-start].
+⭐ Telegraf v0.1.1
+🏷️ datastore
+💻 all
 
+[mysql]: https://www.mysql.com/
 [quick-start]: https://dev.mysql.com/doc/refman/8.0/en/performance-schema-quick-start.html
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -76,7 +75,11 @@ in mySQL configuration. See the performance schema [quick start][quick-start].
   ## gather metrics from SHOW SLAVE STATUS command output
   # gather_slave_status = false
 
+  ## gather metrics from SHOW REPLICA STATUS command output
+  # gather_replica_status = false
+
   ## use SHOW ALL SLAVES STATUS command output for MariaDB
+  ## use SHOW ALL REPLICAS STATUS command if enable gather replica status
   # mariadb_dialect = false
 
   ## gather metrics from SHOW BINARY LOGS command output
@@ -109,8 +112,6 @@ in mySQL configuration. See the performance schema [quick start][quick-start].
   ## list of events to be gathered for gather_perf_sum_per_acc_per_event
   ## in case of empty list all events will be gathered
   # perf_summary_events                       = []
-  #
-  # gather_perf_events_statements = false
 
   ## the limits for metrics form perf_events_statements
   # perf_events_statements_digest_text_limit = 120
@@ -127,6 +128,28 @@ in mySQL configuration. See the performance schema [quick start][quick-start].
   # tls_key = "/etc/telegraf/key.pem"
   ## Use TLS but skip chain & host verification
   # insecure_skip_verify = false
+```
+
+### String Data
+
+Some fields may return string data. This is unhelpful for some outputs where
+numeric data is required (e.g. Prometheus). In these cases, users can make use
+of the enum processor to convert string values to numeric values. Below is an
+example using the `slave_slave_io_running` field, which can have a variety of
+string values:
+
+```toml
+[[processors.enum]]
+  namepass = "mysql"
+  [[processors.enum.mapping]]
+    field = "slave_slave_io_running"
+    dest = "slave_slave_io_running_int"
+    default = 4
+    [processors.enum.mapping.value_mappings]
+      Yes = 0
+      No = 1
+      Preparing = 2
+      Connecting = 3
 ```
 
 ### Metric Version
@@ -231,7 +254,8 @@ the single-source replication is on. If the multi-source replication is set,
 then everything works differently, this metric does not work with multi-source
 replication, unless you set `gather_all_slave_channels = true`. For MariaDB,
 `mariadb_dialect = true` should be set to address the field names and commands
-differences.
+differences. If enable `gather_replica_status` metrics gather from command
+`SHOW REPLICA STATUS`, for MariaDB will be `SHOW ALL REPLICAS STATUS`
   * slave_[column name]
 * Binary logs - all metrics including size and count of all binary files.
 Requires to be turned on in configuration.
@@ -375,3 +399,5 @@ The unit of fields varies by the tags.
   * engine
   * row_format
   * create_options
+
+## Example Output

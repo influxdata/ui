@@ -425,6 +425,7 @@ instance. For example:
   password = "secret"
 
   insecure_skip_verify = true
+  force_discover_on_init = true
 
   # Exclude all historical metrics
   datastore_metric_exclude = ["*"]

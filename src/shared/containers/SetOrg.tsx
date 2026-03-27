@@ -317,7 +317,7 @@ const SetOrg: FC = () => {
             />
           )}
           {/* list of organizations in the user's current CLOUD account */}
-          {CLOUD && isFlagEnabled('createDeleteOrgs') && (
+          {CLOUD && (
             <Route
               path={`${orgPath}/accounts/orglist`}
               component={OrganizationList}

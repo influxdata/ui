@@ -255,10 +255,6 @@ add this:
 vm_metric_exclude = [ "*" ]
 ```
 
-NOTE: To disable collection of a specific resource type, simply exclude all
-metrics using the XX_metric_exclude.
-For example, to disable collection of VMs, add this:
-
 ### Objects and Metrics per Query
 
 By default, in the vCenter configuration a limit is set to the number of

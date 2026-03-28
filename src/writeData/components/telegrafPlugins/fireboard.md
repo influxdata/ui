@@ -1,8 +1,27 @@
 # Fireboard Input Plugin
 
-The fireboard plugin gathers the real time temperature data from fireboard
-thermometers.  In order to use this input plugin, you'll need to sign up to use
-the [Fireboard REST API](https://docs.fireboard.io/reference/restapi.html).
+This plugin gathers real-time temperature data from [fireboard][fireboard]
+thermometers.
+
+> [!NOTE]
+> You will need to sign up to for the [Fireboard REST API][api] in order to use
+> this plugin.
+
+⭐ Telegraf v1.12.0
+🏷️ iot
+💻 all
+
+[fireboard]: https://www.fireboard.com
+[api]: https://docs.fireboard.io/reference/restapi.html
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -44,18 +63,18 @@ values are included if they are less than a minute old.
 - fireboard
   - tags:
     - channel
-    - scale (Celcius; Farenheit)
+    - scale (Celcius; Fahrenheit)
     - title (name of the Fireboard)
     - uuid (UUID of the Fireboard)
   - fields:
     - temperature (float, unit)
 
-## Example
+## Example Output
 
 This section shows example output in Line Protocol format.  You can often use
 `telegraf --input-filter <plugin-name> --test` or use the `file` output to get
 this information.
 
-```shell
-fireboard,channel=2,host=patas-mbp,scale=Farenheit,title=telegraf-FireBoard,uuid=b55e766c-b308-49b5-93a4-df89fe31efd0 temperature=78.2 1561690040000000000
+```text
+fireboard,channel=2,host=patas-mbp,scale=Fahrenheit,title=telegraf-FireBoard,uuid=b55e766c-b308-49b5-93a4-df89fe31efd0 temperature=78.2 1561690040000000000
 ```

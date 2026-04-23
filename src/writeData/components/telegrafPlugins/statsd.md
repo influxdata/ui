@@ -1,6 +1,32 @@
 # StatsD Input Plugin
 
-The StatsD input plugin gathers metrics from a Statsd server.
+This service plugin gathers metrics from a [Statsd][statsd] server.
+
+⭐ Telegraf v0.2.0
+🏷️ applications
+💻 all
+
+[statsd]: https://github.com/statsd/statsd
+
+## Service Input <!-- @/docs/includes/service_input.md -->
+
+This plugin is a service input. Normal plugins gather metrics determined by the
+interval setting. Service plugins start a service to listen and wait for
+metrics or events to occur. Service plugins have two key differences from
+normal plugins:
+
+1. The global or plugin specific `interval` setting may not apply
+2. The CLI options of `--test`, `--test-wait`, and `--once` may not produce
+   output for this plugin
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -36,16 +62,16 @@ The StatsD input plugin gathers metrics from a Statsd server.
   ## Reset timings & histograms every interval (default=true)
   delete_timings = true
 
+  ## Enable aggregation temporality adds temporality=delta or temporality=commulative tag, and
+  ## start_time field, which adds the start time of the metric accumulation.
+  ## You should use this when using OpenTelemetry output.
+  # enable_aggregation_temporality = false
+
   ## Percentiles to calculate for timing & histogram stats.
   percentiles = [50.0, 90.0, 99.0, 99.9, 99.95, 100.0]
 
   ## separator to use between elements of a statsd metric
   metric_separator = "_"
-
-  ## Parses tags in the datadog statsd format
-  ## http://docs.datadoghq.com/guides/dogstatsd/
-  ## deprecated in 1.10; use datadog_extensions option instead
-  parse_data_dog_tags = false
 
   ## Parses extensions to statsd in the datadog statsd format
   ## currently supports metrics and datadog tags.
@@ -56,6 +82,11 @@ The StatsD input plugin gathers metrics from a Statsd server.
   ## https://docs.datadoghq.com/developers/metrics/types/?tab=distribution#definition
   datadog_distributions = false
 
+  ## Keep or drop the container id as tag. Included as optional field
+  ## in DogStatsD protocol v1.2 if source is running in Kubernetes
+  ## https://docs.datadoghq.com/developers/dogstatsd/datagram_shell/?tab=metrics#dogstatsd-protocol-v12
+  datadog_keep_container_tag = false
+
   ## Statsd data translation templates, more info can be read here:
   ## https://github.com/influxdata/telegraf/blob/master/docs/TEMPLATE_PATTERN.md
   # templates = [
@@ -65,6 +96,9 @@ The StatsD input plugin gathers metrics from a Statsd server.
   ## Number of UDP messages allowed to queue up, once filled,
   ## the statsd server will start dropping packets
   allowed_pending_messages = 10000
+
+  ## Number of worker threads used to parse the incoming messages.
+  # number_workers_threads = 5
 
   ## Number of timing/histogram values to track per-measurement in the
   ## calculation of percentiles. Raising this limit increases the accuracy
@@ -82,9 +116,25 @@ The StatsD input plugin gathers metrics from a Statsd server.
   ## By default, telegraf will pass names directly as they are received.
   ## However, upstream statsd now does sanitization of names which can be
   ## enabled by using the "upstream" method option. This option will a) replace
-  ## white space with '_', replace '/' with '-', and remove charachters not
+  ## white space with '_', replace '/' with '-', and remove characters not
   ## matching 'a-zA-Z_\-0-9\.;='.
   #sanitize_name_method = ""
+
+  ## Replace dots (.) with underscore (_) and dashes (-) with
+  ## double underscore (__) in metric names.
+  # convert_names = false
+
+  ## Convert all numeric counters to float
+  ## Enabling this would ensure that both counters and guages are both emitted
+  ## as floats.
+  # float_counters = false
+
+  ## Emit timings `metric_<name>_count` field as float, the same as all other
+  ## histogram fields
+  # float_timings = false
+
+  ## Emit sets as float
+  # float_sets = false
 ```
 
 ## Description
@@ -196,8 +246,13 @@ metric type:
         period are below x. The most common value that people use for `P` is the
         `90`, this is a great number to try to optimize.
 - Distributions
-  - The Distribution metric represents the global statistical distribution of a set of values calculated across your entire distributed infrastructure in one time interval. A Distribution can be used to instrument logical objects, like services, independently from the underlying hosts.
-  - Unlike the Histogram metric type, which aggregates on the Agent during a given time interval, a Distribution metric sends all the raw data during a time interval.
+  - The Distribution metric represents the global statistical distribution of a
+    set of values calculated across your entire distributed infrastructure in
+    one time interval. A Distribution can be used to instrument logical objects,
+    like services, independently from the underlying hosts.
+  - Unlike the Histogram metric type, which aggregates on the Agent during a
+    given time interval, a Distribution metric sends all the raw data during a
+    time interval.
 
 ## Plugin arguments
 
@@ -205,7 +260,8 @@ metric type:
 - **max_tcp_connections** []int: Maximum number of concurrent TCP connections
 to allow. Used when protocol is set to tcp.
 - **tcp_keep_alive** boolean: Enable TCP keep alive probes
-- **tcp_keep_alive_period** duration: Specifies the keep-alive period for an active network connection
+- **tcp_keep_alive_period** duration: Specifies the keep-alive period for an
+                                      active network connection
 - **service_address** string: Address to listen for statsd UDP packets on
 - **delete_gauges** boolean: Delete gauges on every collection interval
 - **delete_counters** boolean: Delete counters on every collection interval
@@ -219,10 +275,22 @@ per-measurement in the calculation of percentiles. Raising this limit increases
 the accuracy of percentiles but also increases the memory usage and cpu time.
 - **templates** []string: Templates for transforming statsd buckets into influx
 measurements and tags.
-- **parse_data_dog_tags** boolean: Enable parsing of tags in DataDog's dogstatsd format (<http://docs.datadoghq.com/guides/dogstatsd/>)
-- **datadog_extensions** boolean: Enable parsing of DataDog's extensions to dogstatsd format (<http://docs.datadoghq.com/guides/dogstatsd/>)
-- **datadog_distributions** boolean: Enable parsing of the Distribution metric in DataDog's dogstatsd format (<https://docs.datadoghq.com/developers/metrics/types/?tab=distribution#definition>)
-- **max_ttl** config.Duration: Max duration (TTL) for each metric to stay cached/reported without being updated.
+- **parse_data_dog_tags** boolean:        Enable parsing of tags in DataDog's
+                                          [dogstatsd format][dogstatsd_format]
+- **datadog_extensions** boolean:         Enable parsing of DataDog's extensions
+                                          to [dogstatsd format][dogstatsd_format]
+                                          and more
+- **datadog_distributions** boolean:      Enable parsing of the Distribution metric
+                                          in [DataDog's distribution format][dogstatsd_distri_format]
+- **datadog_keep_container_tag** boolean: Keep or drop the container id as tag.
+                                          Included as optional field in
+                                          DogStatsD protocol v1.2 if source is
+                                          running in Kubernetes.
+- **max_ttl** config.Duration:            Max duration (TTL) for each metric to
+                                          stay cached/reported without being updated.
+
+[dogstatsd_format]: http://docs.datadoghq.com/guides/dogstatsd/
+[dogstatsd_distri_format]: https://docs.datadoghq.com/developers/metrics/types/?tab=distribution#definition
 
 ## Statsd bucket -> InfluxDB line-protocol Templates
 
@@ -267,3 +335,5 @@ mem.cached.localhost:256|g
 
 Consult the [Template Patterns](/docs/TEMPLATE_PATTERN.md) documentation for
 additional details.
+
+## Example Output

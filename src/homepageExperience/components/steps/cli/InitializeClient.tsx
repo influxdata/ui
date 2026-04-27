@@ -130,7 +130,7 @@ export const InitializeClient: FC<OwnProps> = ({
 
   const codeSnippetMac = `influx config create --config-name onboarding \\
     --host-url "${url}" \\
-    --org "${org.id}" \\
+    --org "${org.name}" \\
     --token "${token}" \\
     --active`
 
@@ -138,7 +138,7 @@ export const InitializeClient: FC<OwnProps> = ({
 
   const codeSnippetWindows = `.\\influx config create --config-name onboarding \`
   --host-url "${url}" \`
-  --org "${org.id}" \`
+  --org "${org.name}" \`
   --token "${token}" \`
   --active`
 

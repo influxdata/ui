@@ -1,3 +1,6 @@
-# Changes to any file in this repo require approval from a member of the InfluxData ui-team or aux team
+# Changes to any file in this repo require approval from one of the maintainers at InfluxData
 
-*   @influxdata/ui-team @influxdata/aux
+*   @influxdata/platform-services-team @mavarius
+
+yarn.lock @jdstrand @influxdata/platform-services-team
+package.json @jdstrand @influxdata/platform-services-team

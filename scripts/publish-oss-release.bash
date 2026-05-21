@@ -22,7 +22,7 @@ yarn clean
 current_tag="$(git tag --points-at HEAD)"
 previous_tag="$(git tag -l --merged | grep '^OSS-[0-9]*\.[0-9]*\.[0-9]*.*' | sort -V | tail -2 | head -1)"
 docker run \
-  -v "$(PWD)"/:/ui \
+  -v "${PWD}"/:/ui \
   --rm \
   -e GIT_REPO=https://github.com/influxdata/ui \
   quay.io/influxdb/changelogger:0dbf37ba8a912460358d322dcad414b80ce074f2 \

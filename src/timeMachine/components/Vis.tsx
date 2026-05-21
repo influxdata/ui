@@ -34,6 +34,9 @@ import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 import {setViewProperties} from 'src/timeMachine/actions'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
@@ -95,7 +98,7 @@ const TimeMachineVis: FC<Props> = ({
       !!giraffeResult.table.length)
 
   useEffect(() => {
-    if (viewProperties.hasOwnProperty('colors')) {
+    if (CLOUD && viewProperties.hasOwnProperty('colors')) {
       const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
       const [, fillColumnMap] = createGroupIDColumn(
         giraffeResult.table,

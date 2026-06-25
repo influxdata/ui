@@ -1,4 +1,4 @@
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useState} from 'react'
 import {
   Overlay,
   Gradients,
@@ -7,6 +7,7 @@ import {
   IconFont,
   ButtonBase,
   ButtonShape,
+  ComponentStatus,
 } from '@influxdata/clockface'
 import {AccountContext} from 'src/operator/context/account'
 
@@ -18,13 +19,17 @@ const DeleteAccountOverlay: FC = () => {
     setDeleteOverlayVisible,
     deleteOverlayVisible,
   } = useContext(AccountContext)
+  const [isLoading, setIsLoading] = useState(false)
 
   const deleteAccount = () => {
     if (account?.deletable) {
+      setIsLoading(true)
       try {
         handleDeleteAccount()
       } catch (e) {
         setDeleteOverlayVisible(false)
+      } finally {
+        setIsLoading(false)
       }
     }
   }
@@ -63,6 +68,9 @@ const DeleteAccountOverlay: FC = () => {
             color={ComponentColor.Danger}
             shape={ButtonShape.Default}
             onClick={deleteAccount}
+            status={
+              isLoading ? ComponentStatus.Loading : ComponentStatus.Default
+            }
             testID="delete-account--confirmation-button"
           >
             I understand, delete account.

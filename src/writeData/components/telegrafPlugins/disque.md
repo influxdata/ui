@@ -1,7 +1,22 @@
 # Disque Input Plugin
 
-[Disque](https://github.com/antirez/disque) is an ongoing experiment to build a
+This plugin gathers data from a [Disque][disque] instance, an experimental
 distributed, in-memory, message broker.
+
+⭐ Telegraf v0.10.0
+🏷️ messaging
+💻 all
+
+[disque]: https://github.com/antirez/disque
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -36,3 +51,5 @@ distributed, in-memory, message broker.
     - used_cpu_user_children
     - registered_jobs
     - registered_queues
+
+## Example Output

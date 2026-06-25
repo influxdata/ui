@@ -1,16 +1,25 @@
 # Nginx Upstream Check Input Plugin
 
-Read the status output of the [nginx_upstream_check][1].  This module can
-periodically check the servers in the Nginx's upstream with configured request
-and interval to determine if the server is still available. If checks are failed
-the server is marked as "down" and will not receive any requests until the check
-will pass and a server will be marked as "up" again.
+This plugin gathers metrics from the [Nginx web server][nginx] using the
+[upstream check module][upstream_check_module]. This module periodically sends
+the configured requests to servers in the Nginx's upstream determining their
+availability.
 
-The status page displays the current status of all upstreams and servers as well
-as number of the failed and successful checks. This information can be exported
-in JSON format and parsed by this input.
+⭐ Telegraf v1.10.0
+🏷️ server, web
+💻 all
 
-[1]: https://github.com/yaoweibin/nginx_upstream_check_module
+[nginx]: https://www.nginx.com
+[upstream_check_module]: https://github.com/yaoweibin/nginx_upstream_check_module
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -79,7 +88,6 @@ When run with:
 It produces:
 
 ```text
-* Plugin: nginx_upstream_check, Collection 1
-> nginx_upstream_check,host=node1,name=192.168.0.1:8080,port=0,type=http,upstream=my_backends,url=http://127.0.0.1:80/status?format\=json fall=0i,rise=100i,status="up",status_code=1i 1529088524000000000
-> nginx_upstream_check,host=node2,name=192.168.0.2:8080,port=0,type=http,upstream=my_backends,url=http://127.0.0.1:80/status?format\=json fall=100i,rise=0i,status="down",status_code=2i 1529088524000000000
+nginx_upstream_check,host=node1,name=192.168.0.1:8080,port=0,type=http,upstream=my_backends,url=http://127.0.0.1:80/status?format\=json fall=0i,rise=100i,status="up",status_code=1i 1529088524000000000
+nginx_upstream_check,host=node2,name=192.168.0.2:8080,port=0,type=http,upstream=my_backends,url=http://127.0.0.1:80/status?format\=json fall=100i,rise=0i,status="down",status_code=2i 1529088524000000000
 ```

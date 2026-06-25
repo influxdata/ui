@@ -1,7 +1,41 @@
 # OpenTelemetry Input Plugin
 
-This plugin receives traces, metrics and logs from
-[OpenTelemetry](https://opentelemetry.io) clients and agents via gRPC.
+This service plugin receives traces, metrics, logs and profiles from
+[OpenTelemetry][opentelemetry] clients and compatible agents via gRPC.
+
+> [!NOTE]
+> Telegraf v1.32 through v1.35 support the Profiles signal using the v1
+> experimental API.
+> Telegraf v1.36 supports the Profiles signal using the v1 development API
+> before v0.1.0.
+> Telegraf v1.37+ supports the Profiles signal using the v1 development API
+> v0.1.0.
+
+⭐ Telegraf v1.19.0
+🏷️ logging, messaging
+💻 all
+
+[opentelemetry]: https://opentelemetry.io
+
+## Service Input <!-- @/docs/includes/service_input.md -->
+
+This plugin is a service input. Normal plugins gather metrics determined by the
+interval setting. Service plugins start a service to listen and wait for
+metrics or events to occur. Service plugins have two key differences from
+normal plugins:
+
+1. The global or plugin specific `interval` setting may not apply
+2. The CLI options of `--test`, `--test-wait`, and `--once` may not produce
+   output for this plugin
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -14,6 +48,40 @@ This plugin receives traces, metrics and logs from
 
   ## Override the default (5s) new connection timeout
   # timeout = "5s"
+
+  ## gRPC Maximum Message Size
+  # max_msg_size = "4MB"
+
+  ## Override the default span attributes to be used as line protocol tags.
+  ## These are always included as tags:
+  ## - trace ID
+  ## - span ID
+  ## Common attributes can be found here:
+  ## - https://github.com/open-telemetry/opentelemetry-collector/tree/main/semconv
+  # span_dimensions = ["service.name", "span.name"]
+
+  ## Override the default log record attributes to be used as line protocol tags.
+  ## These are always included as tags, if available:
+  ## - trace ID
+  ## - span ID
+  ## Common attributes can be found here:
+  ## - https://github.com/open-telemetry/opentelemetry-collector/tree/main/semconv
+  ## When using InfluxDB for both logs and traces, be certain that log_record_dimensions
+  ## matches the span_dimensions value.
+  # log_record_dimensions = ["service.name"]
+
+  ## Override the default profile attributes to be used as line protocol tags.
+  ## These are always included as tags, if available:
+  ## - profile_id
+  ## - address
+  ## - sample
+  ## - sample_name
+  ## - sample_unit
+  ## - sample_type
+  ## - sample_type_unit
+  ## Common attributes can be found here:
+  ## - https://github.com/open-telemetry/opentelemetry-collector/tree/main/semconv
+  # profile_dimensions = []
 
   ## Override the default (prometheus-v1) metrics schema.
   ## Supports: "prometheus-v1", "prometheus-v2"
@@ -67,7 +135,7 @@ spans end_time_unix_nano="2021-02-19 20:50:25.6896741 +0000 UTC",instrumentation
 
 ### `prometheus-v1`
 
-```shell
+```text
 cpu_temp,foo=bar gauge=87.332
 http_requests_total,method=post,code=200 counter=1027
 http_requests_total,method=post,code=400 counter=3
@@ -77,7 +145,7 @@ rpc_duration_seconds 0.01=3102,0.05=3272,0.5=4773,0.9=9001,0.99=76656,sum=1.7560
 
 ### `prometheus-v2`
 
-```shell
+```text
 prometheus,foo=bar cpu_temp=87.332
 prometheus,method=post,code=200 http_requests_total=1027
 prometheus,method=post,code=400 http_requests_total=3
@@ -101,4 +169,20 @@ prometheus               rpc_duration_seconds_count=1.7560473e+07,rpc_duration_s
 logs fluent.tag="fluent.info",pid=18i,ppid=9i,worker=0i 1613769568895331700
 logs fluent.tag="fluent.debug",instance=1720i,queue_size=0i,stage_size=0i 1613769568895697200
 logs fluent.tag="fluent.info",worker=0i 1613769568896515100
+```
+
+### Profiles
+
+```text
+profiles,address=95210353,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=0,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="fab9b8c848218405738c11a7ec4982e9",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=18694144u,filename="chromium",frame_type="native",location="",memory_limit=250413056u,memory_start=18698240u,stack_trace_id="hYmAzQVF8vy8MWbzsKpQNw",start_time_unix_nano=1721306050081621681u,value=1i 1721306048731622020
+profiles,address=15945263,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=1,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="7dab4a2e0005d025e75cc72191f8d6bf",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=15638528u,filename="dockerd",frame_type="native",location="",memory_limit=47255552u,memory_start=15638528u,stack_trace_id="4N3KEcGylb5Qoi2905c1ZA",start_time_unix_nano=1721306050081621681u,value=1i 1721306049831718725
+profiles,address=15952400,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=1,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="7dab4a2e0005d025e75cc72191f8d6bf",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=15638528u,filename="dockerd",frame_type="native",location="",memory_limit=47255552u,memory_start=15638528u,stack_trace_id="4N3KEcGylb5Qoi2905c1ZA",start_time_unix_nano=1721306050081621681u,value=1i 1721306049831718725
+profiles,address=15953899,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=1,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="7dab4a2e0005d025e75cc72191f8d6bf",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=15638528u,filename="dockerd",frame_type="native",location="",memory_limit=47255552u,memory_start=15638528u,stack_trace_id="4N3KEcGylb5Qoi2905c1ZA",start_time_unix_nano=1721306050081621681u,value=1i 1721306049831718725
+profiles,address=16148175,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=1,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="7dab4a2e0005d025e75cc72191f8d6bf",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=15638528u,filename="dockerd",frame_type="native",location="",memory_limit=47255552u,memory_start=15638528u,stack_trace_id="4N3KEcGylb5Qoi2905c1ZA",start_time_unix_nano=1721306050081621681u,value=1i 1721306049831718725
+profiles,address=4770577,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=2,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="cfc3dc7d1638c1284a6b62d4b5c0d74e",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=0u,filename="",frame_type="kernel",location="do_epoll_wait",memory_limit=0u,memory_start=0u,stack_trace_id="UaO9bysJnAYXFYobSdHXqg",start_time_unix_nano=1721306050081621681u,value=1i 1721306050081621681
+profiles,address=4773632,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=2,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="cfc3dc7d1638c1284a6b62d4b5c0d74e",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=0u,filename="",frame_type="kernel",location="__x64_sys_epoll_wait",memory_limit=0u,memory_start=0u,stack_trace_id="UaO9bysJnAYXFYobSdHXqg",start_time_unix_nano=1721306050081621681u,value=1i 1721306050081621681
+profiles,address=14783666,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=2,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="cfc3dc7d1638c1284a6b62d4b5c0d74e",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=0u,filename="",frame_type="kernel",location="do_syscall_64",memory_limit=0u,memory_start=0u,stack_trace_id="UaO9bysJnAYXFYobSdHXqg",start_time_unix_nano=1721306050081621681u,value=1i 1721306050081621681
+profiles,address=16777518,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=2,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="cfc3dc7d1638c1284a6b62d4b5c0d74e",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=0u,filename="",frame_type="kernel",location="entry_SYSCALL_64_after_hwframe",memory_limit=0u,memory_start=0u,stack_trace_id="UaO9bysJnAYXFYobSdHXqg",start_time_unix_nano=1721306050081621681u,value=1i 1721306050081621681
+profiles,address=1139937,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=2,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="982ed6c7a77f99f0ae746be0187953bf",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=147456u,filename="libc.so.6",frame_type="native",location="",memory_limit=1638400u,memory_start=147456u,stack_trace_id="UaO9bysJnAYXFYobSdHXqg",start_time_unix_nano=1721306050081621681u,value=1i 1721306050081621681
+profiles,address=117834912,host.name=testbox,profile_id=618098d29a6cefd6a4c0ea806880c2a8,sample=2,sample_name=cpu,sample_type=samples,sample_type_unit=count,sample_unit=nanoseconds build_id="fab9b8c848218405738c11a7ec4982e9",build_id_type="BUILD_ID_BINARY_HASH",end_time_unix_nano=1721306050081621681u,file_offset=18694144u,filename="chromium",frame_type="native",location="",memory_limit=250413056u,memory_start=18698240u,stack_trace_id="UaO9bysJnAYXFYobSdHXqg",start_time_unix_nano=1721306050081621681u,value=1i 1721306050081621681
 ```

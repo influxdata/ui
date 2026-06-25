@@ -1,13 +1,26 @@
-# Consul Input Plugin
+# Hashicorp Consul Input Plugin
 
-This plugin will collect statistics about all health checks registered in the
-Consul. It uses [Consul API][1] to query the data. It will not report the
-[telemetry][2] but Consul can report those stats already using StatsD protocol
-if needed.
+This plugin will collect statistics about all health checks registered in
+[Consul][consul] using the [Consul API][api]. The plugin will not report any
+[telemetry metrics][telemetry] but Consul can report those statistics using
+the StatsD protocol if needed.
 
-[1]: https://www.consul.io/docs/agent/http/health.html#health_state
+⭐ Telegraf v1.0.0
+🏷️ server
+💻 all
 
-[2]: https://www.consul.io/docs/agent/telemetry.html
+[api]: https://www.consul.io/docs/agent/http/health.html#health_state
+[telemetry]: https://www.consul.io/docs/agent/telemetry.html
+[consul]: https://www.consul.io
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -47,7 +60,7 @@ if needed.
 
   ## Consul checks' tag splitting
   # When tags are formatted like "key:value" with ":" as a delimiter then
-  # they will be splitted and reported as proper key:value in Telegraf
+  # they will be split and reported as proper key:value in Telegraf
   # tag_delimiter = ":"
 ```
 
@@ -84,13 +97,13 @@ if needed.
     - warning (integer)
 
 `passing`, `critical`, and `warning` are integer representations of the health
-check state. A value of `1` represents that the status was the state of the the
+check state. A value of `1` represents that the status was the state of the
 health check at this sample. `status` is string representation of the same
 state.
 
 ## Example Output
 
-```shell
+```text
 consul_health_checks,host=wolfpit,node=consul-server-node,check_id="serfHealth" check_name="Serf Health Status",service_id="",status="passing",passing=1i,critical=0i,warning=0i 1464698464486439902
 consul_health_checks,host=wolfpit,node=consul-server-node,service_name=www.example.com,check_id="service:www-example-com.test01" check_name="Service 'www.example.com' check",service_id="www-example-com.test01",status="critical",passing=0i,critical=1i,warning=0i 1464698464486519036
 ```

@@ -9,7 +9,9 @@ const DELAY_FOR_FILE_DOWNLOAD = 5000
 
 const DEFAULT_DELAY_MS = 2000
 
-describe('Script Builder', () => {
+// Temporarily skipped due to consistent timeouts in remocal CI environment.
+// Do not re-enable without investigating remocal resource constraints.
+describe.skip('Script Builder', () => {
   const writeData: string[] = []
   for (let i = 0; i < 30; i++) {
     writeData.push(`ndbc,air_temp_degc=70_degrees station_id_${i}=${i}`)

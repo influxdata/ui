@@ -1,19 +1,29 @@
 # Elasticsearch Query Input Plugin
 
-This [elasticsearch](https://www.elastic.co/) query plugin queries endpoints
-to obtain metrics from data stored in an Elasticsearch cluster.
+This plugin allows to query an [Elasticsearch][elastic] instance to obtain
+metrics from data stored in the cluster. The plugins supports counting the
+number of hits for a search query, calculating statistics for numeric fields,
+filtered by a query, aggregated per tag and to count the number of terms for a
+particular field.
 
-The following is supported:
+> [!IMPORTANT]
+> This plugins supports Elasticsearch 5.x and 6.x but is known to break on 7.x
+> or higher.
 
-- return number of hits for a search query
-- calculate the avg/max/min/sum for a numeric field, filtered by a query,
-  aggregated per tag
-- count number of terms for a particular field
+⭐ Telegraf v1.20.0
+🏷️ datastore
+💻 all
 
-## Elasticsearch Support
+[elastic]: https://www.elastic.co/
 
-This plugins is tested against Elasticsearch 5.x and 6.x releases.
-Currently it is known to break on 7.x or greater versions.
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -46,6 +56,13 @@ Currently it is known to break on 7.x or greater versions.
   # tls_key = "/etc/telegraf/key.pem"
   ## Use TLS but skip chain & host verification
   # insecure_skip_verify = false
+ 
+  ## If 'use_system_proxy' is set to true, Telegraf will check env vars such as
+  ## HTTP_PROXY, HTTPS_PROXY, and NO_PROXY (or their lowercase counterparts).
+  ## If 'use_system_proxy' is set to false (default) and 'http_proxy_url' is
+  ## provided, Telegraf will use the specified URL as HTTP proxy.
+  # use_system_proxy = false
+  # http_proxy_url = "http://localhost:8888"
 
   [[inputs.elasticsearch_query.aggregation]]
     ## measurement name for the results of the aggregation query
@@ -170,7 +187,7 @@ of the examples below.
 - `filter_query`: Lucene query to filter the results (default: "\*")
 - `metric_fields`: The list of fields to perform metric aggregation (these must
   be indexed as numeric fields)
-- `metric_funcion`: The single-value metric aggregation function to be performed
+- `metric_function`: The single-value metric aggregation function to be performed
   on the `metric_fields` defined. Currently supported aggregations are "avg",
   "min", "max", "sum". (see the [aggregation docs][agg]
 - `tags`: The list of fields to be used as tags (these must be indexed as
@@ -184,3 +201,7 @@ of the examples below.
 
 [joda]: https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-aggregations-bucket-daterange-aggregation.html#date-format-pattern
 [agg]: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics.html
+
+## Metrics
+
+## Example Output

@@ -1,10 +1,24 @@
 # Nginx Input Plugin
 
-This plugin gathers basic status from the open source web server Nginx. Nginx
-Plus is a commercial version. For more information about the differences between
-Nginx (F/OSS) and Nginx Plus, see the Nginx [documentation][diff-doc].
+This plugin gathers metrics from the open source [Nginx web server][nginx].
+Nginx Plus is a commercial version. For more information about differences
+between Nginx (F/OSS) and Nginx Plus, see the Nginx [documentation][diff_doc].
 
-[diff-doc]: https://www.nginx.com/blog/whats-difference-nginx-foss-nginx-plus/
+⭐ Telegraf v0.1.5
+🏷️ server, web
+💻 all
+
+[nginx]: https://www.nginx.com
+[diff_doc]: https://www.nginx.com/blog/whats-difference-nginx-foss-nginx-plus/
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -25,7 +39,7 @@ Nginx (F/OSS) and Nginx Plus, see the Nginx [documentation][diff-doc].
   response_timeout = "5s"
 ```
 
-## Measurements & Fields
+## Metrics
 
 - Measurement
   - accepts
@@ -60,7 +74,6 @@ When run with:
 
 It produces:
 
-```shell
-* Plugin: nginx, Collection 1
-> nginx,port=80,server=localhost accepts=605i,active=2i,handled=605i,reading=0i,requests=12132i,waiting=1i,writing=1i 1456690994701784331
+```text
+nginx,port=80,server=localhost accepts=605i,active=2i,handled=605i,reading=0i,requests=12132i,waiting=1i,writing=1i 1456690994701784331
 ```

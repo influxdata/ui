@@ -29,18 +29,13 @@ fluxQuery = \`from(bucket: "${bucket}")
  |> filter(fn: (r) => r._measurement == "measurement1")
  |> mean()\`
 
-queryClient.queryRows(fluxQuery, {
-  next: (row, tableMeta) => {
-    const tableObject = tableMeta.toObject(row)
+async function iterateRowsAggregated() {
+  for await (const {values, tableMeta} of queryClient.iterateRows(fluxQuery)) {
+    const tableObject = tableMeta.toObject(values)
     console.log(tableObject)
-  },
-  error: (error) => {
-    console.error('\\nError', error)
-  },
-  complete: () => {
-    console.log('\\nSuccess')
-  },
-})`
+  }
+}
+iterateRowsAggregated()`
 
   return (
     <>

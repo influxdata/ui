@@ -43,7 +43,9 @@ import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksG
 import {XYViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
 
+// Constants
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
+import {CLOUD} from 'src/shared/constants'
 
 interface Props extends VisualizationOptionProps {
   properties: XYViewProperties
@@ -250,19 +252,23 @@ export const GraphOptions: FC<Props> = ({properties, results, update}) => {
             <ColorSchemeDropdown
               value={properties.colors?.filter(c => c.type === 'scale') ?? []}
               onChange={colors => {
-                const [, fillColumnMap] = createGroupIDColumn(
-                  results.table,
-                  groupKey
-                )
-                // the properties that we use to calculate the colors are updated in the next render cycle so we need
-                // to make a new object and override the colors
-                const newProperties = {...properties, colors}
-                const colorMapping = generateSeriesToColorHex(
-                  fillColumnMap,
-                  newProperties
-                )
+                if (CLOUD) {
+                  const [, fillColumnMap] = createGroupIDColumn(
+                    results.table,
+                    groupKey
+                  )
+                  // the properties that we use to calculate the colors are updated in the next render cycle so we need
+                  // to make a new object and override the colors
+                  const newProperties = {...properties, colors}
+                  const colorMapping = generateSeriesToColorHex(
+                    fillColumnMap,
+                    newProperties
+                  )
 
-                update({colors, colorMapping})
+                  update({colors, colorMapping})
+                } else {
+                  update({colors})
+                }
               }}
             />
           </Form.Element>

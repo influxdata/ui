@@ -7,7 +7,6 @@ describe('Deep linking', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin()
-    cy.setFeatureFlags({createDeleteOrgs: true})
     cy.request({
       method: 'GET',
       url: 'api/v2/orgs',

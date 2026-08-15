@@ -22,18 +22,13 @@ let fluxQuery = \`from(bucket: "${bucket}")
  |> range(start: -10m)
  |> filter(fn: (r) => r._measurement == "measurement1")\`
 
-queryClient.queryRows(fluxQuery, {
-  next: (row, tableMeta) => {
-    const tableObject = tableMeta.toObject(row)
+async function iterateRows() {
+  for await (const {values, tableMeta} of queryClient.iterateRows(fluxQuery)) {
+    const tableObject = tableMeta.toObject(values)
     console.log(tableObject)
-  },
-  error: (error) => {
-    console.error('\\nError', error)
-  },
-  complete: () => {
-    console.log('\\nSuccess')
-  },
-})`
+  }
+}
+iterateRows()`
 
   return (
     <>

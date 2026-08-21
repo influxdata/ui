@@ -1,17 +1,30 @@
 # Hugepages Input Plugin
 
-Transparent Huge Pages (THP) is a Linux memory management system that reduces
+This plugin gathers metrics from the Linux'
+[Transparent Huge Pages (THP) memory management system][hugetlb] that reduces
 the overhead of Translation Lookaside Buffer (TLB) lookups on machines with
-large amounts of memory by using larger memory pages.
+large amounts of memory.
 
-Consult [the website][website] for more details.
+⭐ Telegraf v1.22.0
+🏷️ system
+💻 linux
 
-[website]: https://www.kernel.org/doc/html/latest/admin-guide/mm/hugetlbpage.html
+[hugetlb]: https://www.kernel.org/doc/html/latest/admin-guide/mm/hugetlbpage.html
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
 ```toml @sample.conf
 # Gathers huge pages measurements.
+# This plugin ONLY supports Linux
 [[inputs.hugepages]]
   ## Supported huge page types:
   ##   - "root"     - based on root huge page control directory:
@@ -22,7 +35,9 @@ Consult [the website][website] for more details.
   # types = ["root", "per_node"]
 ```
 
-## Measurements
+## Metrics
+
+### Measurements
 
 **The following measurements are supported by Hugepages plugin:**
 
@@ -61,12 +76,11 @@ Consult [the website][website] for more details.
 ## Example Output
 
 ```text
-$ ./telegraf -config telegraf.conf -input-filter hugepages -test
-> hugepages_root,host=ubuntu,size_kb=1048576 free=0i,mempolicy=8i,overcommit=0i,reserved=0i,surplus=0i,total=8i 1646258020000000000
-> hugepages_root,host=ubuntu,size_kb=2048 free=883i,mempolicy=2048i,overcommit=0i,reserved=0i,surplus=0i,total=2048i 1646258020000000000
-> hugepages_per_node,host=ubuntu,size_kb=1048576,node=0 free=0i,surplus=0i,total=4i 1646258020000000000
-> hugepages_per_node,host=ubuntu,size_kb=2048,node=0 free=434i,surplus=0i,total=1024i 1646258020000000000
-> hugepages_per_node,host=ubuntu,size_kb=1048576,node=1 free=0i,surplus=0i,total=4i 1646258020000000000
-> hugepages_per_node,host=ubuntu,size_kb=2048,node=1 free=449i,surplus=0i,total=1024i 1646258020000000000
-> hugepages_meminfo,host=ubuntu anonymous_kb=0i,file_kb=0i,free=883i,reserved=0i,shared_kb=0i,size_kb=2048i,surplus=0i,tlb_kb=12582912i,total=2048i 1646258020000000000
+hugepages_root,host=ubuntu,size_kb=1048576 free=0i,mempolicy=8i,overcommit=0i,reserved=0i,surplus=0i,total=8i 1646258020000000000
+hugepages_root,host=ubuntu,size_kb=2048 free=883i,mempolicy=2048i,overcommit=0i,reserved=0i,surplus=0i,total=2048i 1646258020000000000
+hugepages_per_node,host=ubuntu,size_kb=1048576,node=0 free=0i,surplus=0i,total=4i 1646258020000000000
+hugepages_per_node,host=ubuntu,size_kb=2048,node=0 free=434i,surplus=0i,total=1024i 1646258020000000000
+hugepages_per_node,host=ubuntu,size_kb=1048576,node=1 free=0i,surplus=0i,total=4i 1646258020000000000
+hugepages_per_node,host=ubuntu,size_kb=2048,node=1 free=449i,surplus=0i,total=1024i 1646258020000000000
+hugepages_meminfo,host=ubuntu anonymous_kb=0i,file_kb=0i,free=883i,reserved=0i,shared_kb=0i,size_kb=2048i,surplus=0i,tlb_kb=12582912i,total=2048i 1646258020000000000
 ```

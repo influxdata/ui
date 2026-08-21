@@ -1,7 +1,31 @@
 # Prometheus Input Plugin
 
-The prometheus input plugin gathers metrics from HTTP servers exposing metrics
-in Prometheus format.
+This plugin gathers metrics from [Prometheus][prometheus] metric endpoints such
+as applications implementing such an endpoint or node-exporter instances. This
+plugin also supports various service-discovery methods.
+
+⭐ Telegraf v0.1.5
+🏷️ applications, server
+💻 all
+
+[prometheus]: https://prometheus.io/
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+
+## Secret-store support
+
+This plugin supports secrets from secret-stores for the `username`, `password`
+and `bearer_token_string` option. See the
+[secret-store documentation][SECRETSTORE] for more details on how to use them.
+
+[SECRETSTORE]: ../../../docs/CONFIGURATION.md#secret-store-secrets
 
 ## Configuration
 
@@ -10,46 +34,83 @@ in Prometheus format.
 [[inputs.prometheus]]
   ## An array of urls to scrape metrics from.
   urls = ["http://localhost:9100/metrics"]
-  
+
   ## Metric version controls the mapping from Prometheus metrics into Telegraf metrics.
   ## See "Metric Format Configuration" in plugins/inputs/prometheus/README.md for details.
   ## Valid options: 1, 2
   # metric_version = 1
-  
+
   ## Url tag name (tag containing scrapped url. optional, default is "url")
   # url_tag = "url"
-  
+
   ## Whether the timestamp of the scraped metrics will be ignored.
   ## If set to true, the gather time will be used.
   # ignore_timestamp = false
-  
+
+  ## Override content-type of the returned message
+  ## Available options are for prometheus:
+  ##   text, protobuf-delimiter, protobuf-compact, protobuf-text,
+  ## and for openmetrics:
+  ##   openmetrics-text, openmetrics-protobuf
+  ## By default the content-type of the response is used.
+  # content_type_override = ""
+
   ## An array of Kubernetes services to scrape metrics from.
   # kubernetes_services = ["http://my-service-dns.my-namespace:9100/metrics"]
-  
+
   ## Kubernetes config file to create client from.
   # kube_config = "/path/to/kubernetes.config"
-  
-  ## Scrape Kubernetes pods for the following prometheus annotations:
-  ## - prometheus.io/scrape: Enable scraping for this pod
-  ## - prometheus.io/scheme: If the metrics endpoint is secured then you will need to
-  ##     set this to 'https' & most likely set the tls config.
-  ## - prometheus.io/path: If the metrics path is not /metrics, define it with this annotation.
+
+  ## Scrape Pods
+  ## Enable scraping of k8s pods. Further settings as to which pods to scape
+  ## are determiend by the 'method' option below. When enabled, the default is
+  ## to use annotations to determine whether to scrape or not.
+  # monitor_kubernetes_pods = false
+
+  ## Scrape Pods Method
+  ## annotations: default, looks for specific pod annotations documented below
+  ## settings: only look for pods matching the settings provided, not
+  ##   annotations
+  ## settings+annotations: looks at pods that match annotations using the user
+  ##   defined settings
+  # monitor_kubernetes_pods_method = "annotations"
+
+  ## Scrape Pods 'annotations' method options
+  ## If set method is set to 'annotations' or 'settings+annotations', these
+  ## annotation flags are looked for:
+  ## - prometheus.io/scrape: Required to enable scraping for this pod. Can also
+  ##     use 'prometheus.io/scrape=false' annotation to opt-out entirely.
+  ## - prometheus.io/scheme: If the metrics endpoint is secured then you will
+  ##     need to set this to 'https' & most likely set the tls config
+  ## - prometheus.io/path: If the metrics path is not /metrics, define it with
+  ##     this annotation
   ## - prometheus.io/port: If port is not 9102 use this annotation
-  # monitor_kubernetes_pods = true
-  
+
+  ## Scrape Pods 'settings' method options
+  ## When using 'settings' or 'settings+annotations', the default values for
+  ## annotations can be modified using with the following options:
+  # monitor_kubernetes_pods_scheme = "http"
+  # monitor_kubernetes_pods_port = "9102"
+  # monitor_kubernetes_pods_path = "/metrics"
+
   ## Get the list of pods to scrape with either the scope of
   ## - cluster: the kubernetes watch api (default, no need to specify)
   ## - node: the local cadvisor api; for scalability. Note that the config node_ip or the environment variable NODE_IP must be set to the host IP.
   # pod_scrape_scope = "cluster"
-  
+
   ## Only for node scrape scope: node IP of the node that telegraf is running on.
   ## Either this config or the environment variable NODE_IP must be set.
   # node_ip = "10.180.1.1"
- 
+
   ## Only for node scrape scope: interval in seconds for how often to get updated pod list for scraping.
   ## Default is 60 seconds.
   # pod_scrape_interval = 60
-  
+
+  ## Content length limit
+  ## When set, telegraf will drop responses with length larger than the configured value.
+  ## Default is "0KB" which means unlimited.
+  # content_length_limit = "0KB"
+
   ## Restricts Kubernetes monitoring to a single namespace
   ##   ex: monitor_kubernetes_pods_namespace = "default"
   # monitor_kubernetes_pods_namespace = ""
@@ -62,9 +123,62 @@ in Prometheus format.
   # eg. To scrape pods on a specific node
   # kubernetes_field_selector = "spec.nodeName=$HOSTNAME"
 
-  # cache refresh interval to set the interval for re-sync of pods list. 
+  ## Filter which pod annotations and labels will be added to metric tags
+  #
+  # pod_annotation_include = ["annotation-key-1"]
+  # pod_annotation_exclude = ["exclude-me"]
+  # pod_label_include = ["label-key-1"]
+  # pod_label_exclude = ["exclude-me"]
+
+  # cache refresh interval to set the interval for re-sync of pods list.
   # Default is 60 minutes.
   # cache_refresh_interval = 60
+
+  ## Use bearer token for authorization. ('bearer_token' takes priority)
+  # bearer_token = "/path/to/bearer/token"
+  ## OR
+  # bearer_token_string = "abc_123"
+
+  ## HTTP Basic Authentication username and password. ('bearer_token' and
+  ## 'bearer_token_string' take priority)
+  # username = ""
+  # password = ""
+
+  ## Optional custom HTTP headers
+  # http_headers = {"X-Special-Header" = "Special-Value"}
+
+  ## Specify timeout duration for slower prometheus clients (default is 5s)
+  # timeout = "5s"
+
+  ## This option is now used by the HTTP client to set the header response
+  ## timeout, not the overall HTTP timeout.
+  # response_timeout = "5s"
+
+  ## HTTP Proxy support
+  # use_system_proxy = false
+  # http_proxy_url = ""
+
+  ## Optional TLS Config
+  # tls_ca = /path/to/cafile
+  # tls_cert = /path/to/certfile
+  # tls_key = /path/to/keyfile
+
+  ## Use TLS but skip chain & host verification
+  # insecure_skip_verify = false
+
+  ## Use the given name as the SNI server name on each URL
+  # tls_server_name = "myhost.example.org"
+
+  ## TLS renegotiation method, choose from "never", "once", "freely"
+  # tls_renegotiation_method = "never"
+
+  ## Enable/disable TLS
+  ## Set to true/false to enforce TLS being enabled/disabled. If not set,
+  ## enable TLS only if any of the other options are specified.
+  # tls_enable = true
+
+  ## This option allows you to report the status of prometheus requests.
+  # enable_request_metrics = false
 
   ## Scrape Services available in Consul Catalog
   # [inputs.prometheus.consul]
@@ -78,27 +192,20 @@ in Prometheus format.
   #     url = 'http://{{if ne .ServiceAddress ""}}{{.ServiceAddress}}{{else}}{{.Address}}{{end}}:{{.ServicePort}}/{{with .ServiceMeta.metrics_path}}{{.}}{{else}}metrics{{end}}'
   #     [inputs.prometheus.consul.query.tags]
   #       host = "{{.Node}}"
-  
-  ## Use bearer token for authorization. ('bearer_token' takes priority)
-  # bearer_token = "/path/to/bearer/token"
-  ## OR
-  # bearer_token_string = "abc_123"
-  
-  ## HTTP Basic Authentication username and password. ('bearer_token' and
-  ## 'bearer_token_string' take priority)
-  # username = ""
-  # password = ""
-  
-  ## Specify timeout duration for slower prometheus clients (default is 3s)
-  # response_timeout = "3s"
-  
-  ## Optional TLS Config
-  # tls_ca = /path/to/cafile
-  # tls_cert = /path/to/certfile
-  # tls_key = /path/to/keyfile
-  
-  ## Use TLS but skip chain & host verification
-  # insecure_skip_verify = false
+
+  ## Scrape Hosts available with http service discovery
+  # [inputs.prometheus.http_service_discovery]
+  #   enabled = false
+  #   url = "http://localhost:9000/service-discovery"
+  #   query_interval = "5m"
+
+  ## Control pod scraping based on pod namespace annotations
+  ## Pass and drop here act like tagpass and tagdrop, but instead
+  ## of filtering metrics they filters pod candidates for scraping
+  #[inputs.prometheus.namespace_annotation_pass]
+  # annotation_key = ["value1", "value2"]
+  #[inputs.prometheus.namespace_annotation_drop]
+  # some_annotation_key = ["dont-scrape"]
 ```
 
 `urls` can contain a unix socket as well. If a different path is required
@@ -155,9 +262,12 @@ cluster, or we use the kubeconfig file to determine where to monitor.  Currently
 the following annotation are supported:
 
 * `prometheus.io/scrape` Enable scraping for this pod.
-* `prometheus.io/scheme` If the metrics endpoint is secured then you will need to set this to `https` & most likely set the tls config. (default 'http')
-* `prometheus.io/path` Override the path for the metrics endpoint on the service. (default '/metrics')
-* `prometheus.io/port` Used to override the port. (default 9102)
+* `prometheus.io/scheme` If the metrics endpoint is secured then you will need
+                         to set this to `https` & most likely set the tls config.
+                        (default 'http')
+* `prometheus.io/path`  Override the path for the metrics endpoint on the service.
+                        (default '/metrics')
+* `prometheus.io/port`  Used to override the port. (default 9102)
 
 Using the `monitor_kubernetes_pods_namespace` option allows you to limit which
 pods you are scraping.
@@ -249,6 +359,19 @@ The following example fields can be used in url or tag templates:
 For full list of available fields and their type see struct CatalogService in
 <https://github.com/hashicorp/consul/blob/master/api/catalog.go>
 
+### HTTP Service Discovery
+
+Enabling this option and configuring `url` will allow the plugin to
+query a given http service discovery endpoint for available hosts. Using
+`query_interval` the plugin will periodically query the endpoint for services
+and refresh the list of scraped urls.  It can use the information from the
+response to build the scraped url and additional tags.
+
+More information on the format of http service discovery is found in the
+[prometheus documentation][http_sd].
+
+[http_sd]: https://prometheus.io/docs/prometheus/latest/http_sd
+
 ### Bearer Token
 
 If set, the file specified by the `bearer_token` parameter will be read on
@@ -282,6 +405,14 @@ All metrics receive the `url` tag indicating the related URL specified in the
 Telegraf configuration. If using Kubernetes service discovery the `address`
 tag is also added indicating the discovered ip address.
 
+* prometheus_request
+  * tags:
+    * url
+    * address
+  * fields:
+    * response_time (float, seconds)
+    * content_length (int, response body length)
+
 ## Example Output
 
 ### Source
@@ -309,18 +440,19 @@ cpu_usage_user{cpu="cpu3"} 1.5045135406226022
 
 ### Output
 
-```shell
+```text
 go_gc_duration_seconds,url=http://example.org:9273/metrics 1=0.001336611,count=14,sum=0.004527551,0=0.000057965,0.25=0.000083812,0.5=0.000286537,0.75=0.000365303 1505776733000000000
 go_goroutines,url=http://example.org:9273/metrics gauge=21 1505776695000000000
 cpu_usage_user,cpu=cpu0,url=http://example.org:9273/metrics gauge=1.513622603430151 1505776751000000000
 cpu_usage_user,cpu=cpu1,url=http://example.org:9273/metrics gauge=5.829145728641773 1505776751000000000
 cpu_usage_user,cpu=cpu2,url=http://example.org:9273/metrics gauge=2.119071644805144 1505776751000000000
 cpu_usage_user,cpu=cpu3,url=http://example.org:9273/metrics gauge=1.5228426395944945 1505776751000000000
+prometheus_request,result=success,url=http://example.org:9273/metrics content_length=179013i,http_response_code=200i,response_time=0.051521601 1505776751000000000
 ```
 
 ### Output (when metric_version = 2)
 
-```shell
+```text
 prometheus,quantile=1,url=http://example.org:9273/metrics go_gc_duration_seconds=0.005574303 1556075100000000000
 prometheus,quantile=0.75,url=http://example.org:9273/metrics go_gc_duration_seconds=0.0001046 1556075100000000000
 prometheus,quantile=0.5,url=http://example.org:9273/metrics go_gc_duration_seconds=0.0000719 1556075100000000000
@@ -332,4 +464,33 @@ prometheus,cpu=cpu0,url=http://example.org:9273/metrics cpu_usage_user=1.5136226
 prometheus,cpu=cpu1,url=http://example.org:9273/metrics cpu_usage_user=5.829145728641773 1505776751000000000
 prometheus,cpu=cpu2,url=http://example.org:9273/metrics cpu_usage_user=2.119071644805144 1505776751000000000
 prometheus,cpu=cpu3,url=http://example.org:9273/metrics cpu_usage_user=1.5228426395944945 1505776751000000000
+prometheus_request,result=success,url=http://example.org:9273/metrics content_length=179013i,http_response_code=200i,response_time=0.051521601 1505776751000000000
 ```
+
+### Output with timestamp included
+
+Below is an example of a Prometheus metric which includes a timestamp:
+
+```text
+# TYPE test_counter counter
+test_counter{label="test"} 1 1685443805885
+```
+
+Telegraf will generate the following metric:
+
+```text
+test_counter,address=127.0.0.1,label=test counter=1 1685443805885000000
+```
+
+using the standard configuration
+
+```toml
+[[inputs.prometheus]]
+  ## An array of urls to scrape metrics from.
+  urls = ["http://localhost:2019/metrics"]
+```
+
+**Please note:** Metrics generated by Prometheus endpoints are generated with
+*millisecond precision*. The default Telegraf agent level precision setting
+reduces this to seconds. Change the `precision` setting at agent or plugin level
+to milliseconds or smaller to report metric timestamps with full precision.

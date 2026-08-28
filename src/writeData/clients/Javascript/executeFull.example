@@ -9,16 +9,11 @@ const client = new InfluxDB({url: '<%= server %>', token: token})
 const queryApi = client.getQueryApi(org)
 
 const query = `<%= query %>`
-queryApi.queryRows(query, {
-  next: (row, tableMeta) => {
-    const o = tableMeta.toObject(row)
+
+async function iterateRows() {
+  for await (const {values, tableMeta} of queryClient.iterateRows(query)) {
+    const o = tableMeta.toObject(values)
     console.log(`${o._time} ${o._measurement}: ${o._field}=${o._value}`)
-  },
-  error: (error) => {
-    console.error(error)
-    console.log('Finished ERROR')
-  },
-  complete: () => {
-    console.log('Finished SUCCESS')
-  },
-})
+  }
+}
+iterateRows()

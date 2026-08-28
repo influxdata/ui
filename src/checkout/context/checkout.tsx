@@ -35,9 +35,6 @@ import {getQuartzIdentityThunk} from 'src/identity/actions/thunks'
 import {selectCurrentIdentity} from 'src/identity/selectors'
 import {shouldGetCredit250Experience} from 'src/me/selectors'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 export type Props = {
   children: JSX.Element
 }
@@ -316,9 +313,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       } finally {
         setIsSubmitting(false)
         // Refresh whether user is allowed to create new orgs after upgrading to PAYG.
-        if (isFlagEnabled('createDeleteOrgs')) {
-          dispatch(getOrgCreationAllowancesThunk())
-        }
+        dispatch(getOrgCreationAllowancesThunk())
       }
     },
     [

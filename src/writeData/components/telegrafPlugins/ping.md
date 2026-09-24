@@ -1,27 +1,24 @@
 # Ping Input Plugin
 
-Sends a ping message by executing the system ping command and reports the
-results.
+This plugin collects metrics on ICMP ping packets including the round-trip time,
+response times and other packet statistics.
 
-This plugin has two main methods of operation: `exec` and `native`.  The
-recommended method is `native`, which has greater system compatibility and
-performance.  However, for backwards compatibility the `exec` method is the
-default.
+> [!NOTE]
+> When using the `exec` method the `ping` command must be available on the
+> systems and executable by Telegraf.
 
-When using `method = "exec"`, the systems ping utility is executed to send the
-ping packets.
+⭐ Telegraf v0.1.8
+🏷️ network
+💻 all
 
-Most ping command implementations are supported, one notable exception being
-that there is currently no support for GNU Inetutils ping.  You may instead use
-the iputils-ping implementation:
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
 
-```sh
-apt-get install iputils-ping
-```
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
 
-When using `method = "native"` a ping is sent and the results are reported in
-native Go by the Telegraf process, eliminating the need to execute the system
-`ping` command.
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -71,13 +68,38 @@ native Go by the Telegraf process, eliminating the need to execute the system
   ## etc) will be ignored.
   # arguments = ["-c", "3"]
 
-  ## Use only IPv6 addresses when resolving a hostname.
+  ## Use only IPv4 addresses when resolving a hostname. By default, both IPv4
+  ## and IPv6 can be used.
+  # ipv4 = false
+
+  ## Use only IPv6 addresses when resolving a hostname. By default, both IPv4
+  ## and IPv6 can be used.
   # ipv6 = false
 
   ## Number of data bytes to be sent. Corresponds to the "-s"
   ## option of the ping command. This only works with the native method.
   # size = 56
 ```
+
+### Ping methods
+
+This plugin has two main methods of operation, the `exec` and `native` mode.
+The latter is the recommended method as it provides better system compatibility
+and performance. However, for backwards compatibility the `exec` method is the
+default.
+
+When using the `exec` method, most ping command implementations are supported,
+one notable exception being the GNU `inetutils` ping. You may instead use the
+iputils-ping implementation:
+
+```sh
+apt-get install iputils-ping
+```
+
+For the `native` method a corresponding ICMP packet is sent and the results are
+reported in native Go by the Telegraf process, eliminating the need to execute
+the system `ping` command. Therefore, this method doesn't have external
+dependencies.
 
 ### File Limit
 
@@ -111,8 +133,8 @@ systemctl restart telegraf
 
 ### Linux Permissions
 
-When using `method = "native"`, Telegraf will attempt to use privileged raw ICMP
-sockets.  On most systems, doing so requires `CAP_NET_RAW` capabilities or for
+When using the `native` method, Telegraf will attempt to use privileged raw ICMP
+sockets. On most systems, doing so requires `CAP_NET_RAW` capabilities or for
 Telegraf to be run as root.
 
 With systemd:
@@ -161,7 +183,8 @@ executable ping program for your OS.
     - minimum_response_ms (float)
     - maximum_response_ms (float)
     - standard_deviation_ms (float, Available on Windows only with method = "native")
-    - percentile\<N\>_ms (float, Where `<N>` is the percentile specified in `percentiles`. Available with method = "native" only)
+    - percentile\<N\>_ms (float, Where `<N>` is the percentile specified in
+     `percentiles`. Available with method = "native" only)
     - errors (float, Windows only)
     - reply_received (integer, Windows with method = "exec" only)
     - percent_reply_loss (float, Windows with method = "exec" only)
@@ -180,6 +203,6 @@ progress at <https://github.com/golang/go/issues/7175> and
 
 ## Example Output
 
-```shell
+```text
 ping,url=example.org average_response_ms=23.066,ttl=63,maximum_response_ms=24.64,minimum_response_ms=22.451,packets_received=5i,packets_transmitted=5i,percent_packet_loss=0,result_code=0i,standard_deviation_ms=0.809 1535747258000000000
 ```

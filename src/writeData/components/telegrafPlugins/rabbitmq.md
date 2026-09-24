@@ -1,12 +1,32 @@
 # RabbitMQ Input Plugin
 
-Reads metrics from RabbitMQ servers via the [Management Plugin][management].
+This plugin gathers statistics from [RabbitMQ][rabbitmq] servers via the
+[Management Plugin][mgmnt_plugin].
 
-For additional details reference the [RabbitMQ Management HTTP
-Stats][management-reference].
+⭐ Telegraf v0.1.5
+🏷️ server
+💻 all
 
-[management]: https://www.rabbitmq.com/management.html
-[management-reference]: https://raw.githack.com/rabbitmq/rabbitmq-management/rabbitmq_v3_6_9/priv/www/api/index.html
+[rabbitmq]: https://www.rabbitmq.com
+[mgmnt_plugin]: https://www.rabbitmq.com/management.html
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+
+## Secret-store support
+
+This plugin supports secrets from secret-stores for the `username` and
+`password` option.
+See the [secret-store documentation][SECRETSTORE] for more details on how
+to use them.
+
+[SECRETSTORE]: ../../../docs/CONFIGURATION.md#secret-store-secrets
 
 ## Configuration
 
@@ -15,8 +35,7 @@ Stats][management-reference].
 [[inputs.rabbitmq]]
   ## Management Plugin url. (default: http://localhost:15672)
   # url = "http://localhost:15672"
-  ## Tag added to rabbitmq_overview series; deprecated: use tags
-  # name = "rmq-server-1"
+
   ## Credentials
   # username = "guest"
   # password = "guest"
@@ -41,11 +60,6 @@ Stats][management-reference].
   ## A list of nodes to gather as the rabbitmq_node measurement. If not
   ## specified, metrics for all nodes are gathered.
   # nodes = ["rabbit@node1", "rabbit@node2"]
-
-  ## A list of queues to gather as the rabbitmq_queue measurement. If not
-  ## specified, metrics for all queues are gathered.
-  ## Deprecated in 1.6: Use queue_name_include instead.
-  # queues = ["telegraf"]
 
   ## A list of exchanges to gather as the rabbitmq_exchange measurement. If not
   ## specified, metrics for all exchanges are gathered.
@@ -159,11 +173,13 @@ Stats][management-reference].
     - node
     - durable
     - auto_delete
+    - type (queue type as returned by RabbitMQ, if empty it defaults to
+      "classic"; only included when include_queue_type_tag = true)
   - fields:
     - consumer_utilisation (float, percent)
     - consumers (int, int)
     - idle_since (string, time - e.g., "2006-01-02 15:04:05")
-    - head_message_timestamp (int, unix timestamp - only emitted if available from API)
+    - head_message_timestamp (int, unix timestamp - only emitted if available)
     - memory (int, bytes)
     - message_bytes (int, bytes)
     - message_bytes_persist (int, bytes)
@@ -220,16 +236,6 @@ Stats][management-reference].
     - messages_confirm (int, count)
     - messages_publish (int, count)
     - messages_return_unroutable (int, count)
-
-## Sample Queries
-
-Message rates for the entire node can be calculated from total message
-counts. For instance, to get the rate of messages published per minute, use this
-query:
-
-```sql
-SELECT NON_NEGATIVE_DERIVATIVE(LAST("messages_published"), 1m) AS messages_published_rate FROM rabbitmq_overview WHERE time > now() - 10m GROUP BY time(1m)
-```
 
 ## Example Output
 

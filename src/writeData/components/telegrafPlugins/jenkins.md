@@ -1,10 +1,23 @@
 # Jenkins Input Plugin
 
-The jenkins plugin gathers information about the nodes and jobs running in a
-jenkins instance.
+This plugin gathers information about the nodes and jobs running in a
+[Jenkins][jenkins] instance. The plugin uses the Jenkins API and does not
+require a plugin on the server.
 
-This plugin does not require a plugin on jenkins and it makes use of Jenkins API
-to retrieve all the information needed.
+⭐ Telegraf v1.9.0
+🏷️ applications
+💻 all
+
+[jenkins]: https://www.jenkins.io/
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -56,6 +69,11 @@ to retrieve all the information needed.
   ## Worker pool for jenkins plugin only
   ## Empty this field will use default value 5
   # max_connections = 5
+
+  ## When set to true will add node labels as a comma-separated tag. If none,
+  ## are found, then a tag with the value of 'none' is used. Finally, if a
+  ## label contains a comma it is replaced with an underscore.
+  # node_labels_as_tag = false
 ```
 
 ## Metrics
@@ -111,8 +129,7 @@ SELECT mean("duration") AS "mean_duration" FROM "jenkins_job" WHERE time > now()
 
 ## Example Output
 
-```shell
-$ ./telegraf --config telegraf.conf --input-filter jenkins --test
+```text
 jenkins,host=myhost,port=80,source=my-jenkins-instance busy_executors=4i,total_executors=8i 1580418261000000000
 jenkins_node,arch=Linux\ (amd64),disk_path=/var/jenkins_home,temp_path=/tmp,host=myhost,node_name=master,source=my-jenkins-instance,port=8080 swap_total=4294963200,memory_available=586711040,memory_total=6089498624,status=online,response_time=1000i,disk_available=152392036352,temp_available=152392036352,swap_available=3503263744,num_executors=2i 1516031535000000000
 jenkins_job,host=myhost,name=JOB1,parents=apps/br1,result=SUCCESS,source=my-jenkins-instance,port=8080 duration=2831i,result_code=0i 1516026630000000000

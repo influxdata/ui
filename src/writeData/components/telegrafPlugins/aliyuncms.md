@@ -1,9 +1,15 @@
-# Alibaba (Aliyun) CloudMonitor Service Statistics Input Plugin
+# Alibaba Cloud Monitor Service (Aliyun) Input Plugin
 
-Here and after we use `Aliyun` instead `Alibaba` as it is default naming
-across web console and docs.
+This plugin gathers statistics from the
+[Alibaba / Aliyun cloud monitoring service][alibaba]. In the following we will
+use `Aliyun` instead of `Alibaba` as it's the default naming across the web
+console and docs.
 
-This plugin will pull metric statistics from Aliyun CMS.
+⭐ Telegraf v1.19.0
+🏷️ cloud
+💻 all
+
+[alibaba]: https://www.alibabacloud.com
 
 ## Aliyun Authentication
 
@@ -22,6 +28,15 @@ to authenticate.
 7. Instance metadata credential
 
 [1]: https://www.alibabacloud.com/help/doc-detail/53045.htm?spm=a2c63.p38356.b99.127.5cba21fdt5MJKr&parentId=28572
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -97,46 +112,55 @@ to authenticate.
   ## How often the discovery API call executed (default 1m)
   #discovery_interval = "1m"
 
-  ## Metrics to Pull (Required)
+  ## NOTE: Due to the way TOML is parsed, tables must be at the END of the
+  ## plugin definition, otherwise additional config options are read as part of
+  ## the table
+
+  ## Metrics to Pull
+  ## At least one metrics definition required
   [[inputs.aliyuncms.metrics]]
-  ## Metrics names to be requested,
-  ## Description can be found here (per project):
-  ## https://help.aliyun.com/document_detail/28619.html?spm=a2c4g.11186623.6.690.1938ad41wg8QSq
-  names = ["InstanceActiveConnection", "InstanceNewConnection"]
+    ## Metrics names to be requested,
+    ## Description can be found here (per project):
+    ## https://help.aliyun.com/document_detail/28619.html?spm=a2c4g.11186623.6.690.1938ad41wg8QSq
+    names = ["InstanceActiveConnection", "InstanceNewConnection"]
 
-  ## Dimension filters for Metric (optional).
-  ## This allows to get additional metric dimension. If dimension is not
-  ## specified it can be returned or the data can be aggregated - it depends
-  ## on particular metric, you can find details here:
-  ## https://help.aliyun.com/document_detail/28619.html?spm=a2c4g.11186623.6.690.1938ad41wg8QSq
-  ##
-  ## Note, that by default dimension filter includes the list of discovered
-  ## objects in scope (if discovery is enabled).
-  # Values specified here would be added into the list of discovered objects.
-  ## You can specify either single dimension:
-  #dimensions = '{"instanceId": "p-example"}'
+    ## Dimension filters for Metric (optional)
+    ## This allows to get additional metric dimension. If dimension is not
+    ## specified it can be returned or the data can be aggregated - it depends
+    ## on particular metric, you can find details here:
+    ##   https://help.aliyun.com/document_detail/28619.html?spm=a2c4g.11186623.6.690.1938ad41wg8QSq
+    ##
+    ## Note, that by default dimension filter includes the list of discovered
+    ## objects in scope (if discovery is enabled). Values specified here would
+    ## be added into the list of discovered objects. You can specify either
+    ## single dimension:
+    # dimensions = '{"instanceId": "p-example"}'
 
-  ## Or you can specify several dimensions at once:
-  #dimensions = '[{"instanceId": "p-example"},{"instanceId": "q-example"}]'
+    ## Or you can specify several dimensions at once:
+    # dimensions = '[{"instanceId": "p-example"},{"instanceId": "q-example"}]'
 
-  ## Enrichment tags, can be added from discovery (if supported)
-  ## Notation is <measurement_tag_name>:<JMES query path (https://jmespath.org/tutorial.html)>
-  ## To figure out which fields are available, consult the Describe<ObjectType>
-  ## API per project.
-  ## For example, for SLB: https://api.aliyun.com/#/?product=Slb&version=2014-05-15&api=DescribeLoadBalancers&params={}&tab=MOCK&lang=GO
-  #tag_query_path = [
-  #    "address:Address",
-  #    "name:LoadBalancerName",
-  #    "cluster_owner:Tags.Tag[?TagKey=='cs.cluster.name'].TagValue | [0]"
-  #    ]
-  ## The following tags added by default:
-  ##   regionId (if discovery enabled), userId, instanceId.
+    ## Tag Query Path
+    ## The following tags added by default:
+    ##   * regionId (if discovery enabled)
+    ##   * userId
+    ##   * instanceId
+    ## Enrichment tags, can be added from discovery (if supported)
+    ## Notation is
+    ##   <measurement_tag_name>:<JMES query path (https://jmespath.org/tutorial.html)>
+    ## To figure out which fields are available, consult the
+    ## Describe<ObjectType> API per project. For example, for SLB see:
+    ##   https://api.aliyun.com/#/?product=Slb&version=2014-05-15&api=DescribeLoadBalancers&params={}&tab=MOCK&lang=GO
+    # tag_query_path = [
+    #    "address:Address",
+    #    "name:LoadBalancerName",
+    #    "cluster_owner:Tags.Tag[?TagKey=='cs.cluster.name'].TagValue | [0]"
+    #    ]
 
-  ## Allow metrics without discovery data, if discovery is enabled.
-  ## If set to true, then metric without discovery data would be emitted, otherwise dropped.
-  ## This cane be of help, in case debugging dimension filters, or partial coverage of
-  ## discovery scope vs monitoring scope 
-  # allow_dps_without_discovery = false
+    ## Allow metrics without discovery data, if discovery is enabled.
+    ## If set to true, then metric without discovery data would be emitted, otherwise dropped.
+    ## This cane be of help, in case debugging dimension filters, or partial coverage of
+    ## discovery scope vs monitoring scope
+    # allow_dps_without_discovery = false
 ```
 
 ### Requirements and Terminology
@@ -166,7 +190,6 @@ case](https://en.wikipedia.org/wiki/Snake_case)
 
 ## Example Output
 
-```shell
-$ ./telegraf --config telegraf.conf --input-filter aliyuncms --test
-> aliyuncms_acs_slb_dashboard,instanceId=p-example,regionId=cn-hangzhou,userId=1234567890 latency_average=0.004810798017284538,latency_maximum=0.1100282669067383,latency_minimum=0.0006084442138671875
+```text
+aliyuncms_acs_slb_dashboard,instanceId=p-example,regionId=cn-hangzhou,userId=1234567890 latency_average=0.004810798017284538,latency_maximum=0.1100282669067383,latency_minimum=0.0006084442138671875
 ```

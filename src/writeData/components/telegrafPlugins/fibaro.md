@@ -1,8 +1,24 @@
 # Fibaro Input Plugin
 
-The Fibaro plugin makes HTTP calls to the Fibaro controller API to gather values
-of hooked devices. Those values could be true (1) or false (0) for switches,
-percentage for dimmers, temperature, etc.
+This plugin gathers data from devices connected to a [Fibaro][fibaro]
+controller. Those values could be true (1) or false (0) for switches, percentage
+for dimmers, temperature, etc. Both _Home Center 2_ and _Home Center 3_ devices
+are supported.
+
+⭐ Telegraf v1.7.0
+🏷️ iot
+💻 all
+
+[fibaro]: https://www.fibaro.com
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
 
 ## Configuration
 
@@ -19,6 +35,11 @@ percentage for dimmers, temperature, etc.
 
   ## Amount of time allowed to complete the HTTP request
   # timeout = "5s"
+
+  ## Fibaro Device Type
+  ## By default, this plugin will attempt to read using the HC2 API. For HC3
+  ## devices, set this to "HC3"
+  # device_type = "HC2"
 ```
 
 ## Metrics
@@ -39,7 +60,7 @@ percentage for dimmers, temperature, etc.
 
 ## Example Output
 
-```shell
+```text
 fibaro,deviceId=9,host=vm1,name=Fenêtre\ haute,room=Cuisine,section=Cuisine,type=com.fibaro.FGRM222 energy=2.04,power=0.7,value=99,value2=99 1529996807000000000
 fibaro,deviceId=10,host=vm1,name=Escaliers,room=Dégagement,section=Pièces\ communes,type=com.fibaro.binarySwitch value=0 1529996807000000000
 fibaro,deviceId=13,host=vm1,name=Porte\ fenêtre,room=Salon,section=Pièces\ communes,type=com.fibaro.FGRM222 energy=4.33,power=0.7,value=99,value2=99 1529996807000000000

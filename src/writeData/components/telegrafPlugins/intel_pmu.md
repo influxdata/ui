@@ -1,27 +1,59 @@
 # Intel Performance Monitoring Unit Plugin
 
-This input plugin exposes Intel PMU (Performance Monitoring Unit) metrics
-available through [Linux Perf](https://perf.wiki.kernel.org/index.php/Main_Page)
-subsystem.
+This plugin gathers Intel Performance Monitoring Unit metrics available via the
+[Linux Perf][linux_perf] subsystem.
 
-PMU metrics gives insight into performance and health of IA processor's internal
-components, including core and uncore units. With the number of cores increasing
-and processor topology getting more complex the insight into those metrics is
-vital to assure the best CPU performance and utilization.
+PMU metrics provide insights into performance and health of IA processors'
+internal components, including core and uncore units. With the number of cores
+increasing and processor topology getting more complex the insight into those
+metrics is vital to assure the best CPU performance and utilization.
 
 Performance counters are CPU hardware registers that count hardware events such
 as instructions executed, cache-misses suffered, or branches mispredicted. They
 form a basis for profiling applications to trace dynamic control flow and
 identify hotspots.
 
+⭐ Telegraf v1.21.0
+🏷️ hardware, system
+💻 linux
+
+[linux_perf]: https://perf.wiki.kernel.org/index.php/Main_Page
+
+## Requirements
+
+The plugin uses the [iaevents library][iaevents_lib] that eases accessing the
+Linux kernel's perf interface.
+
+> [!IMPORTANT]
+> The Intel PMU plugin is only intended for use on **Linux 64-bit** systems.
+
+Event definition JSON files for specific architectures can be found at the
+[Github repository][repo]. Download the event definitions appropriate for your
+system e.g. using the [`event_download.py` PMU tool][pmu_tools] and keep them
+in a safe place on your system.
+
+[iaevents_lib]: https://github.com/intel/iaevents
+[repo]: https://github.com/intel/perfmon
+[pmu_tools]: https://github.com/andikleen/pmu-tools
+
+## Global configuration options <!-- @/docs/includes/plugin_config.md -->
+
+In addition to the plugin-specific configuration settings, plugins support
+additional global and plugin configuration settings. These settings are used to
+modify metrics, tags, and field or create aliases and configure ordering, etc.
+See the [CONFIGURATION.md][CONFIGURATION.md] for more details.
+
+[CONFIGURATION.md]: ../../../docs/CONFIGURATION.md#plugins
+
 ## Configuration
 
 ```toml @sample.conf
 # Intel Performance Monitoring Unit plugin exposes Intel PMU metrics available through Linux Perf subsystem
+# This plugin ONLY supports Linux on amd64
 [[inputs.intel_pmu]]
   ## List of filesystem locations of JSON files that contain PMU event definitions.
   event_definitions = ["/var/cache/pmu/GenuineIntel-6-55-4-core.json", "/var/cache/pmu/GenuineIntel-6-55-4-uncore.json"]
-  
+
   ## List of core events measurement entities. There can be more than one core_events sections.
   [[inputs.intel_pmu.core_events]]
     ## List of events to be counted. Event names shall match names from event_definitions files.
@@ -93,20 +125,6 @@ where:
 | I        | perf_event_attr.exclude_idle    | don't count when idle       |
 | G        | perf_event_attr.exclude_hv      | don't count hypervisor      |
 | D        | perf_event_attr.pinned          | must always be on PMU       |
-
-## Requirements
-
-The plugin is using [iaevents](https://github.com/intel/iaevents) library which
-is a golang package that makes accessing the Linux kernel's perf interface
-easier.
-
-Intel PMU plugin, is only intended for use on **linux 64-bit** systems.
-
-Event definition JSON files for specific architectures can be found at
-[01.org](https://download.01.org/perfmon/).  A script to download the event
-definitions that are appropriate for your system (event_download.py) is
-available at [pmu-tools](https://github.com/andikleen/pmu-tools).  Please keep
-these files in a safe place on your system.
 
 ## Measuring
 
@@ -192,7 +210,7 @@ On each Telegraf interval, Intel PMU plugin transmits following data:
 | unit      | name of event-capable PMU that the event was counted for, as listed in /sys/bus/event_source/devices/ e.g. uncore_cbox_1, uncore_imc_1 etc.  Present for non-aggregated uncore events only |
 | events_tag| (optional) tag as defined in "intel_pmu.uncore_events" configuration element                           |
 
-## Example outputs
+## Example Output
 
 Event group:
 
@@ -219,7 +237,7 @@ pmu_metric,event=UNC_CBO_XSNP_RESPONSE.MISS_XCORE,host=xyz,socket=0,unit=uncore_
 Uncore event aggregated:
 
 ```text
-pmu_metric,event=UNC_CBO_XSNP_RESPONSE.MISS_XCORE,host=xyz,socket=0,unit_type=cbox enabled=13199712335i,running=13199712335i,raw=467485i,scaled=467485i 1621254412000000000 
+pmu_metric,event=UNC_CBO_XSNP_RESPONSE.MISS_XCORE,host=xyz,socket=0,unit_type=cbox enabled=13199712335i,running=13199712335i,raw=467485i,scaled=467485i 1621254412000000000
 ```
 
 Time multiplexing:
@@ -234,3 +252,10 @@ pmu_metric,cpu=0,event=L1D_PEND_MISS.PENDING_CYCLES,host=xyz raw=18767833i,scale
 ```
 
 [man]: https://man7.org/linux/man-pages/man2/perf_event_open.2.html
+
+## Changelog
+
+| Version | Description |
+| --- | --- |
+| v1.0.0 | Initial version |
+| v1.1.0 | Added support for [new perfmon event format](https://github.com/intel/perfmon/issues/22). Old event format is still accepted (warn message will be printed in the log) |

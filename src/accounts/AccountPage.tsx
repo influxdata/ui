@@ -12,10 +12,9 @@ import {
   InputType,
   Page,
 } from '@influxdata/clockface'
-import {LeaveOrgButton} from 'src/organizations/components/OrgProfileTab/LeaveOrg'
 
 // Context
-import {UsersContext, UsersProvider} from 'src/users/context/users'
+import {UsersProvider} from 'src/users/context/users'
 import {DeleteFreeAccountButton} from 'src/accounts/DeleteFreeAccount'
 import {DeleteFreeAccountOverlay} from 'src/accounts/DeleteFreeAccountOverlay'
 
@@ -26,7 +25,6 @@ import {selectCurrentIdentity} from 'src/identity/selectors'
 import {CLOUD} from 'src/shared/constants'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
@@ -48,7 +46,6 @@ const AccountAboutPage: FC = () => {
     userAccounts,
   } = useContext(UserAccountContext)
 
-  const {users} = useContext(UsersContext)
   const activeAccount =
     userAccounts && userAccounts.filter(acct => acct.isActive)[0]
   const [activeAcctName, setActiveAcctName] = useState(activeAccount?.name)
@@ -76,9 +73,6 @@ const AccountAboutPage: FC = () => {
     CLOUD && accountDetails?.isDeletable
   )
 
-  const showLeaveOrgButton = !isFlagEnabled('createDeleteOrgs')
-  const allowSelfRemoval = users.length > 1
-
   return (
     <AccountTabContainer activeTab="settings">
       <>
@@ -105,12 +99,6 @@ const AccountAboutPage: FC = () => {
             text="Save"
           />
         </FlexBox>
-        {allowSelfRemoval && showLeaveOrgButton && (
-          <>
-            <hr className="account-settings--divider" />
-            <LeaveOrgButton />
-          </>
-        )}
         {shouldShowDeleteFreeAccountButton && <DeleteFreeAccountButton />}
       </>
     </AccountTabContainer>

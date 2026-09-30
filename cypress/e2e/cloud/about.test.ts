@@ -1,10 +1,6 @@
 import {makeQuartzUseIDPEOrgID} from 'cypress/support/Utils'
 import {Organization} from 'src/client'
 
-const deleteOrgsFeatureFlags = {
-  createDeleteOrgs: true,
-}
-
 // This variable stores the current IDPE orgid and syncs it with the quartz-mock orgid.
 let idpeOrgID: string
 
@@ -34,7 +30,6 @@ interface SetupParams {
 const setupTest = (setupParams: SetupParams) => {
   cy.flush().then(() =>
     cy.signin().then(() => {
-      cy.setFeatureFlags(deleteOrgsFeatureFlags)
       cy.request({
         method: 'GET',
         url: 'api/v2/orgs',

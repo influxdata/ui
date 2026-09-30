@@ -109,6 +109,11 @@ module.exports = {
             loader: 'sass-loader',
             options: {
               implementation: require('sass'),
+              // Sass prepends a BOM to any module containing non-ASCII. Those
+              // land mid-chunk once webpack concatenates, where postcss (which
+              // only strips a leading BOM) then misreads the following comment
+              // as a selector and CssMinimizerPlugin throws 'Unclosed comment'.
+              sassOptions: {charset: false},
             },
           },
         ],

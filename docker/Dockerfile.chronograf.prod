@@ -48,6 +48,10 @@ RUN apk \
     add \
     git
 
+# node images stopped bundling Yarn v1 as of Node 26, so install it
+# explicitly rather than relying on whatever lts-alpine ships
+RUN npm install -g yarn@1.22.22
+
 # these are all run together as docker's caching mechanism
 # makes big steps like yarn install expensive
 RUN yarn install --production=false && \

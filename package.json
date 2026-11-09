@@ -192,7 +192,7 @@
     "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-languageclient": "~0.18.1",
     "monaco-textmate": "^3.0.1",
-    "nanoid": "^3.2.0",
+    "nanoid": "^3.3.17",
     "normalizr": "^3.6.2",
     "onigasm": "^2.2.5",
     "papaparse": "^5.3.2",
@@ -218,7 +218,7 @@
     "rudder-sdk-js": "^2.14.0",
     "s2-geometry": "^1.2.10",
     "use-local-storage-state": "^9.0.2",
-    "uuid": "^9.0.0",
+    "uuid": "^14.0.0",
     "vscode-languageserver-protocol": "^3.16.0",
     "y-websocket": "^1.4.4",
     "yjs": "^13.5.36"
@@ -227,6 +227,7 @@
     "auth0-js/**/superagent": "^9.0",
     "expect": "27.5.1",
     "minimatch": "^3.0.5",
+    "mocha/**/nanoid": "^3.3.8",
     "pretty-format": "27.5.1",
     "prismjs": "^1.30.0",
     "superagent/**/form-data": "^4.0.4"

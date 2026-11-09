@@ -1,3 +1,5 @@
+    write_api = client.write_api(write_options=SYNCHRONOUS)
+    
     sequence = ["mem,host=host1 used_percent=23.43234543",
             "mem,host=host1 available_percent=15.856523"]
     write_api.write(bucket, org, sequence)
